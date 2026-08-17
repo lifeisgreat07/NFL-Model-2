@@ -34,6 +34,7 @@ Run manually: python weekly_update.py --season 2026 --week 2
 import argparse
 import json
 import sys
+from datetime import date
 from pathlib import Path
 import pandas as pd
 import numpy as np
@@ -43,6 +44,15 @@ sys.path.insert(0, str(Path(__file__).parent))
 from data_loader import load_plays, load_schedule
 from ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
 from config import TRAIN_SEASONS
+
+# Don't save (lock in) predictions more than this many days before the
+# earliest game in the target week. Prevents exactly the failure mode we
+# hit in testing: once week-autodetection and the offseason check both
+# work correctly, nothing else was stopping a routine run from generating
+# and permanently saving "Week 1" predictions weeks too early, using stale
+# injury/line data. 7 days keeps predictions close to kickoff without
+# being so tight that a routine running a day late misses the window.
+LOCKIN_WINDOW_DAYS = 7
 
 PRED_DIR = Path(__file__).parent.parent / 'predictions'
 PRED_DIR.mkdir(exist_ok=True)
@@ -200,6 +210,20 @@ def main(season, week):
         print(f"No games found for {season} week {week} -- likely means the season "
               f"(including playoffs) is over. Nothing to predict. Exiting cleanly.")
         return
+
+    if 'gameday' in week_games.columns:
+        earliest = pd.to_datetime(week_games['gameday']).min()
+        if pd.notna(earliest):
+            days_until = (earliest.date() - date.today()).days
+            if days_until > LOCKIN_WINDOW_DAYS:
+                print(f"Earliest game in {season} week {week} is {earliest.date()} "
+                      f"({days_until} days away). That's more than the {LOCKIN_WINDOW_DAYS}-day "
+                      f"lock-in window -- too early for injury/QB info to be reliable. "
+                      f"Skipping this run without saving anything. Re-run closer to kickoff.")
+                return
+    else:
+        print("WARNING: schedule data has no 'gameday' column -- can't check how far out "
+              "this week is. Proceeding anyway, but this safety check isn't active.")
 
     predictions = []
     for _, g in week_games.iterrows():
