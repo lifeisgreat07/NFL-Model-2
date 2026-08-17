@@ -167,11 +167,7 @@
     <button class="nav-btn disabled"><span class="dot"></span>My Picks Log</button>
     <button class="nav-btn disabled"><span class="dot"></span>Season Accuracy</button>
   </nav>
-  <div class="sidebar-foot">
-    Trained on: 2020-2025 nflfastR<br>
-    294,989 real plays<br>
-    Backtest: 2022-2025 (1,087 games)
-  </div>
+  <div class="sidebar-foot">Trained on: current nflfastR history<br>Showing: 2025 Week 10<br>14 games</div>
 </aside>
 
 <main>
@@ -304,57 +300,359 @@ half_life = 16 games   (tested 6, 10, 16 — 16 won on log loss)</div>
 
 <script>
 const teams = [
-  {team:"BUF",name:"Buffalo Bills",off:0.113,def:-0.014,net:0.127},
-  {team:"LA",name:"LA Rams",off:0.082,def:-0.034,net:0.116},
-  {team:"PHI",name:"Philadelphia Eagles",off:0.028,def:-0.065,net:0.093},
-  {team:"BAL",name:"Baltimore Ravens",off:0.073,def:-0.018,net:0.091},
-  {team:"DET",name:"Detroit Lions",off:0.074,def:-0.011,net:0.085},
-  {team:"GB",name:"Green Bay Packers",off:0.087,def:0.002,net:0.085},
-  {team:"SEA",name:"Seattle Seahawks",off:0.006,def:-0.070,net:0.076},
-  {team:"DEN",name:"Denver Broncos",off:0.007,def:-0.044,net:0.050},
-  {team:"SF",name:"San Francisco 49ers",off:0.079,def:0.031,net:0.048},
-  {team:"MIN",name:"Minnesota Vikings",off:-0.044,def:-0.090,net:0.045},
-  {team:"NE",name:"New England Patriots",off:0.028,def:-0.014,net:0.042},
-  {team:"KC",name:"Kansas City Chiefs",off:0.031,def:-0.011,net:0.041},
-  {team:"LAC",name:"LA Chargers",off:-0.011,def:-0.042,net:0.031},
-  {team:"HOU",name:"Houston Texans",off:-0.039,def:-0.067,net:0.027},
-  {team:"TB",name:"Tampa Bay Buccaneers",off:0.023,def:0.003,net:0.020},
-  {team:"JAX",name:"Jacksonville Jaguars",off:0.004,def:-0.009,net:0.013},
-  {team:"CHI",name:"Chicago Bears",off:0.015,def:0.005,net:0.009},
-  {team:"PIT",name:"Pittsburgh Steelers",off:-0.006,def:-0.008,net:0.002},
-  {team:"IND",name:"Indianapolis Colts",off:0.005,def:0.015,net:-0.011},
-  {team:"CIN",name:"Cincinnati Bengals",off:0.041,def:0.064,net:-0.023},
-  {team:"ATL",name:"Atlanta Falcons",off:-0.015,def:0.017,net:-0.032},
-  {team:"NO",name:"New Orleans Saints",off:-0.072,def:-0.037,net:-0.035},
-  {team:"DAL",name:"Dallas Cowboys",off:0.033,def:0.070,net:-0.037},
-  {team:"MIA",name:"Miami Dolphins",off:-0.024,def:0.026,net:-0.050},
-  {team:"ARI",name:"Arizona Cardinals",off:-0.004,def:0.047,net:-0.052},
-  {team:"WAS",name:"Washington Commanders",off:0.022,def:0.082,net:-0.060},
-  {team:"NYG",name:"NY Giants",off:-0.022,def:0.041,net:-0.063},
-  {team:"CLE",name:"Cleveland Browns",off:-0.152,def:-0.066,net:-0.085},
-  {team:"CAR",name:"Carolina Panthers",off:-0.049,def:0.059,net:-0.107},
-  {team:"LV",name:"Las Vegas Raiders",off:-0.126,def:0.006,net:-0.132},
-  {team:"TEN",name:"Tennessee Titans",off:-0.084,def:0.065,net:-0.149},
-  {team:"NYJ",name:"NY Jets",off:-0.102,def:0.064,net:-0.167},
+  {
+    "team": "BUF",
+    "name": "Buffalo Bills",
+    "off": 0.1274,
+    "def": -0.0134,
+    "net": 0.1408
+  },
+  {
+    "team": "LA",
+    "name": "LA Rams",
+    "off": 0.0938,
+    "def": -0.0397,
+    "net": 0.1335
+  },
+  {
+    "team": "PHI",
+    "name": "Philadelphia Eagles",
+    "off": 0.0295,
+    "def": -0.0762,
+    "net": 0.1057
+  },
+  {
+    "team": "BAL",
+    "name": "Baltimore Ravens",
+    "off": 0.0842,
+    "def": -0.0203,
+    "net": 0.1046
+  },
+  {
+    "team": "GB",
+    "name": "Green Bay Packers",
+    "off": 0.1019,
+    "def": 0.0009,
+    "net": 0.1009
+  },
+  {
+    "team": "DET",
+    "name": "Detroit Lions",
+    "off": 0.0857,
+    "def": -0.0145,
+    "net": 0.1002
+  },
+  {
+    "team": "SEA",
+    "name": "Seattle Seahawks",
+    "off": 0.0067,
+    "def": -0.0804,
+    "net": 0.0871
+  },
+  {
+    "team": "MIN",
+    "name": "Minnesota Vikings",
+    "off": -0.0501,
+    "def": -0.1056,
+    "net": 0.0555
+  },
+  {
+    "team": "SF",
+    "name": "San Francisco 49ers",
+    "off": 0.0904,
+    "def": 0.0352,
+    "net": 0.0553
+  },
+  {
+    "team": "DEN",
+    "name": "Denver Broncos",
+    "off": 0.0068,
+    "def": -0.0473,
+    "net": 0.0542
+  },
+  {
+    "team": "KC",
+    "name": "Kansas City Chiefs",
+    "off": 0.0351,
+    "def": -0.0108,
+    "net": 0.0458
+  },
+  {
+    "team": "NE",
+    "name": "New England Patriots",
+    "off": 0.03,
+    "def": -0.0144,
+    "net": 0.0444
+  },
+  {
+    "team": "LAC",
+    "name": "LA Chargers",
+    "off": -0.012,
+    "def": -0.0459,
+    "net": 0.0339
+  },
+  {
+    "team": "HOU",
+    "name": "Houston Texans",
+    "off": -0.046,
+    "def": -0.0758,
+    "net": 0.0297
+  },
+  {
+    "team": "TB",
+    "name": "Tampa Bay Buccaneers",
+    "off": 0.0249,
+    "def": 0.0047,
+    "net": 0.0202
+  },
+  {
+    "team": "CHI",
+    "name": "Chicago Bears",
+    "off": 0.0189,
+    "def": 0.0036,
+    "net": 0.0153
+  },
+  {
+    "team": "JAX",
+    "name": "Jacksonville Jaguars",
+    "off": 0.0041,
+    "def": -0.0073,
+    "net": 0.0113
+  },
+  {
+    "team": "PIT",
+    "name": "Pittsburgh Steelers",
+    "off": -0.006,
+    "def": -0.0091,
+    "net": 0.0031
+  },
+  {
+    "team": "IND",
+    "name": "Indianapolis Colts",
+    "off": 0.0054,
+    "def": 0.0192,
+    "net": -0.0137
+  },
+  {
+    "team": "CIN",
+    "name": "Cincinnati Bengals",
+    "off": 0.0482,
+    "def": 0.0743,
+    "net": -0.0261
+  },
+  {
+    "team": "ATL",
+    "name": "Atlanta Falcons",
+    "off": -0.0174,
+    "def": 0.0208,
+    "net": -0.0382
+  },
+  {
+    "team": "DAL",
+    "name": "Dallas Cowboys",
+    "off": 0.0372,
+    "def": 0.0791,
+    "net": -0.042
+  },
+  {
+    "team": "NO",
+    "name": "New Orleans Saints",
+    "off": -0.0843,
+    "def": -0.0414,
+    "net": -0.0429
+  },
+  {
+    "team": "ARI",
+    "name": "Arizona Cardinals",
+    "off": -0.0043,
+    "def": 0.0507,
+    "net": -0.055
+  },
+  {
+    "team": "MIA",
+    "name": "Miami Dolphins",
+    "off": -0.0285,
+    "def": 0.0309,
+    "net": -0.0593
+  },
+  {
+    "team": "WAS",
+    "name": "Washington Commanders",
+    "off": 0.0263,
+    "def": 0.0926,
+    "net": -0.0663
+  },
+  {
+    "team": "NYG",
+    "name": "NY Giants",
+    "off": -0.0246,
+    "def": 0.0454,
+    "net": -0.07
+  },
+  {
+    "team": "CLE",
+    "name": "Cleveland Browns",
+    "off": -0.1728,
+    "def": -0.0771,
+    "net": -0.0958
+  },
+  {
+    "team": "CAR",
+    "name": "Carolina Panthers",
+    "off": -0.0562,
+    "def": 0.0664,
+    "net": -0.1226
+  },
+  {
+    "team": "LV",
+    "name": "Las Vegas Raiders",
+    "off": -0.1432,
+    "def": 0.0073,
+    "net": -0.1504
+  },
+  {
+    "team": "TEN",
+    "name": "Tennessee Titans",
+    "off": -0.0941,
+    "def": 0.0756,
+    "net": -0.1697
+  },
+  {
+    "team": "NYJ",
+    "name": "NY Jets",
+    "off": -0.1169,
+    "def": 0.0725,
+    "net": -0.1895
+  }
 ];
 
 const games = [
-  {away:"NE",home:"SEA",kickoff:"Wed Sep 9, 8:20 PM ET",spread:3.5,fbA_home:48.3,mktB_home:59.3,flag:"SEA lost OC Kubiak + QB coach Janocko to LV this offseason -- model has no coaching-change feature, so it may be overrating Seattle's continuity."},
-  {away:"SF",home:"LA",kickoff:"Thu Sep 10, 8:35 PM ET (Melbourne, neutral)",spread:2.5,fbA_home:49.3,mktB_home:55.8,flag:""},
-  {away:"CHI",home:"CAR",kickoff:"Sun Sep 13, 1:00 PM ET",spread:2.5,fbA_home:52.8,mktB_home:57.6,flag:""},
-  {away:"TB",home:"CIN",kickoff:"Sun Sep 13, 1:00 PM ET",spread:3.5,fbA_home:58.2,mktB_home:62.2,flag:""},
-  {away:"NO",home:"DET",kickoff:"Sun Sep 13, 1:00 PM ET",spread:7.0,fbA_home:63.7,mktB_home:74.4,flag:"New Orleans coaching situation was flagged earlier as needing confirmation."},
-  {away:"BUF",home:"HOU",kickoff:"Sun Sep 13, 1:00 PM ET",spread:1.5,fbA_home:40.5,mktB_home:49.9,flag:"Model A actually favors the road team (BUF, our #1 rated team) here -- worth watching since it disagrees with the market's pick'em line."},
-  {away:"BAL",home:"IND",kickoff:"Sun Sep 13, 1:00 PM ET",spread:3.5,fbA_home:51.1,mktB_home:60.2,flag:""},
-  {away:"CLE",home:"JAX",kickoff:"Sun Sep 13, 1:00 PM ET",spread:7.0,fbA_home:66.1,mktB_home:75.2,flag:"CLE's new head coach was never confirmed in our research -- treat CLE's rating as less reliable."},
-  {away:"ATL",home:"PIT",kickoff:"Sun Sep 13, 1:00 PM ET",spread:3.0,fbA_home:52.4,mktB_home:59.1,flag:"Both teams have new head coaches this year (PIT: McCarthy, ATL: Stefanski)."},
-  {away:"NYJ",home:"TEN",kickoff:"Sun Sep 13, 1:00 PM ET",spread:3.0,fbA_home:54.9,mktB_home:60.7,flag:""},
-  {away:"ARI",home:"LAC",kickoff:"Sun Sep 13, 4:25 PM ET",spread:11.5,fbA_home:47.4,mktB_home:82.7,flag:"Biggest divergence on the board. ARI is reportedly moving on from Kyler Murray and starting a backup/rookie -- the market has priced this in, our EPA-only model has not. Trust the market number more here."},
-  {away:"MIA",home:"LV",kickoff:"Sun Sep 13, 4:25 PM ET",spread:3.0,fbA_home:45.9,mktB_home:57.9,flag:"Both teams have new head coaches this year (LV: Kubiak, MIA: Hafley)."},
-  {away:"GB",home:"MIN",kickoff:"Sun Sep 13, 4:25 PM ET",spread:1.5,fbA_home:39.4,mktB_home:49.7,flag:""},
-  {away:"WAS",home:"PHI",kickoff:"Sun Sep 13, 4:25 PM ET",spread:5.5,fbA_home:44.5,mktB_home:65.5,flag:""},
-  {away:"DAL",home:"NYG",kickoff:"Sun Sep 13, 8:20 PM ET",spread:-2.5,fbA_home:48.2,mktB_home:38.4,flag:"DAL's new head coach was never confirmed in our research -- treat DAL's rating as less reliable."},
-  {away:"DEN",home:"KC",kickoff:"Mon Sep 14, 8:15 PM ET",spread:2.5,fbA_home:56.7,mktB_home:58.0,flag:""},
+  {
+    "away": "LV",
+    "home": "DEN",
+    "kickoff": "2025 Week 10",
+    "spread": 9.5,
+    "fbA_home": 63.7,
+    "mktB_home": 80.6,
+    "flag": ""
+  },
+  {
+    "away": "ATL",
+    "home": "IND",
+    "kickoff": "2025 Week 10",
+    "spread": 6.5,
+    "fbA_home": 46.7,
+    "mktB_home": 72.8,
+    "flag": ""
+  },
+  {
+    "away": "NO",
+    "home": "CAR",
+    "kickoff": "2025 Week 10",
+    "spread": 5.5,
+    "fbA_home": 51.4,
+    "mktB_home": 71.8,
+    "flag": ""
+  },
+  {
+    "away": "NYG",
+    "home": "CHI",
+    "kickoff": "2025 Week 10",
+    "spread": 4.5,
+    "fbA_home": 54.7,
+    "mktB_home": 64.9,
+    "flag": ""
+  },
+  {
+    "away": "JAX",
+    "home": "HOU",
+    "kickoff": "2025 Week 10",
+    "spread": -1.5,
+    "fbA_home": 50.7,
+    "mktB_home": 39.9,
+    "flag": ""
+  },
+  {
+    "away": "BUF",
+    "home": "MIA",
+    "kickoff": "2025 Week 10",
+    "spread": -8.5,
+    "fbA_home": 31.4,
+    "mktB_home": 20.3,
+    "flag": ""
+  },
+  {
+    "away": "BAL",
+    "home": "MIN",
+    "kickoff": "2025 Week 10",
+    "spread": -4.5,
+    "fbA_home": 31.2,
+    "mktB_home": 29.5,
+    "flag": ""
+  },
+  {
+    "away": "CLE",
+    "home": "NYJ",
+    "kickoff": "2025 Week 10",
+    "spread": -1.5,
+    "fbA_home": 50.6,
+    "mktB_home": 49.0,
+    "flag": ""
+  },
+  {
+    "away": "NE",
+    "home": "TB",
+    "kickoff": "2025 Week 10",
+    "spread": 2.5,
+    "fbA_home": 43.4,
+    "mktB_home": 59.0,
+    "flag": ""
+  },
+  {
+    "away": "ARI",
+    "home": "SEA",
+    "kickoff": "2025 Week 10",
+    "spread": 7.0,
+    "fbA_home": 58.3,
+    "mktB_home": 69.9,
+    "flag": ""
+  },
+  {
+    "away": "LA",
+    "home": "SF",
+    "kickoff": "2025 Week 10",
+    "spread": -5.5,
+    "fbA_home": 55.7,
+    "mktB_home": 29.0,
+    "flag": ""
+  },
+  {
+    "away": "DET",
+    "home": "WAS",
+    "kickoff": "2025 Week 10",
+    "spread": -8.5,
+    "fbA_home": 47.3,
+    "mktB_home": 21.4,
+    "flag": ""
+  },
+  {
+    "away": "PIT",
+    "home": "LAC",
+    "kickoff": "2025 Week 10",
+    "spread": 3.0,
+    "fbA_home": 24.2,
+    "mktB_home": 62.6,
+    "flag": ""
+  },
+  {
+    "away": "PHI",
+    "home": "GB",
+    "kickoff": "2025 Week 10",
+    "spread": 1.5,
+    "fbA_home": 14.5,
+    "mktB_home": 62.9,
+    "flag": ""
+  }
 ];
 
 document.querySelectorAll('.nav-btn:not(.disabled)').forEach(btn=>{
