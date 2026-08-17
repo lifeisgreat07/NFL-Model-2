@@ -122,6 +122,30 @@ def build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_wee
     return pd.DataFrame(rows)
 
 
+def determine_next_week(season):
+    """If --week isn't given, figure out the right week automatically:
+    one past whatever week was most recently saved for this season.
+    Starts at week 1 if nothing's been saved yet. This is what lets the
+    routine run unattended all season without a manually-edited week
+    number in its prompt."""
+    existing = list(PRED_DIR.glob(f'{season}_week*.json'))
+    weeks_done = []
+    for f in existing:
+        try:
+            weeks_done.append(int(f.stem.split('_week')[1]))
+        except (IndexError, ValueError):
+            continue
+    if weeks_done:
+        next_week = max(weeks_done) + 1
+        print(f"Most recent saved week for {season}: {max(weeks_done)}. Using week {next_week}.")
+        return next_week
+    print(f"No predictions saved yet for {season}. Starting at week 1.")
+    return 1
+    # NOTE: this does not yet distinguish regular season (weeks 1-18) from
+    # playoffs (which nflverse numbers separately under season_type POST) --
+    # flagged as a known gap for whoever picks this up in January.
+
+
 def main(season, week):
     print(f"=== Weekly update: {season} Week {week} ===")
 
@@ -229,6 +253,9 @@ def main(season, week):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--season', type=int, required=True)
-    parser.add_argument('--week', type=int, required=True)
+    parser.add_argument('--week', type=int, default=None,
+                         help='Week number. If omitted, auto-detects the next '
+                              'un-saved week for this season.')
     args = parser.parse_args()
-    main(args.season, args.week)
+    week = args.week if args.week is not None else determine_next_week(args.season)
+    main(args.season, week)
