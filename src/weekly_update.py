@@ -318,3 +318,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
     week = args.week if args.week is not None else determine_next_week(args.season)
     main(args.season, week)
+
+# trigger-test marker: forcing a real diff to confirm the GitHub Action fires
