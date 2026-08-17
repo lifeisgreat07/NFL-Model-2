@@ -249,6 +249,17 @@ def main(season, week):
 
         prob_a = model_a.predict_proba([[off_matchup, def_matchup, qb_matchup]])[0][1]
 
+        # "Why" breakdown: each feature's raw contribution to the log-odds,
+        # i.e. coefficient * feature value. Signed toward home team (positive
+        # = pushes toward home win). This is exactly what the logistic
+        # regression actually used -- not a post-hoc approximation.
+        coefs = model_a.coef_[0]
+        why = {
+            'off_matchup': round(float(coefs[0] * off_matchup), 4),
+            'def_matchup': round(float(coefs[1] * def_matchup), 4),
+            'qb_matchup': round(float(coefs[2] * qb_matchup), 4),
+        }
+
         spread = g.get('spread_line', np.nan)
         if pd.notna(spread):
             prob_b = model_b.predict_proba([[off_matchup, def_matchup, qb_matchup, spread]])[0][1]
@@ -265,7 +276,22 @@ def main(season, week):
             'model_b_home_win_prob': round(float(prob_b), 4) if prob_b is not None else None,
             'market_prob_home': round(mkt, 4) if mkt is not None else None,
             'qb_note': qb_note,
+            'why': why,
         })
+
+    # Confidence ranking: sort this week's games by how far each pick is
+    # from a toss-up (using Model B's probability when available, since
+    # it's the better-performing model; falls back to Model A otherwise).
+    # Rank 1 = most confident. Standard confidence-pool points = N..1.
+    def confidence_key(p):
+        prob = p['model_b_home_win_prob'] if p['model_b_home_win_prob'] is not None else p['model_a_home_win_prob']
+        return abs(prob - 0.5)
+
+    ranked = sorted(predictions, key=confidence_key, reverse=True)
+    n = len(ranked)
+    for i, p in enumerate(ranked):
+        p['confidence_rank'] = i + 1
+        p['confidence_points'] = n - i
 
     out_path = PRED_DIR / f'{season}_week{week}.json'
     if out_path.exists():

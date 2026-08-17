@@ -101,7 +101,49 @@
   .srs-bar-fill{position:absolute; top:0; bottom:0; background:linear-gradient(90deg, var(--amber), var(--amber-bright)); border-radius:3px;}
 
   /* ---------- Week board ---------- */
-  .filter-row{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;}
+  .filter-row{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; align-items:center;}
+  .week-select{
+    background:var(--panel); border:1px solid var(--line); color:var(--chalk);
+    font-family:'IBM Plex Mono', monospace; font-size:12px; padding:9px 14px; border-radius:8px;
+    cursor:pointer; appearance:none; -webkit-appearance:none; min-width:160px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A93A8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 10px center; background-size:16px; padding-right:32px;
+  }
+  .week-select:focus{outline:1px solid var(--amber);}
+
+  .confidence-badge{
+    font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.05em; padding:4px 10px; border-radius:20px;
+    background:var(--blue-dim); color:var(--blue); white-space:nowrap;
+  }
+  .why-toggle{background:none; border:none; color:var(--chalk-dim); font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+    letter-spacing:.04em; cursor:pointer; padding:0; margin-top:11px; text-decoration:underline; text-underline-offset:3px;}
+  .why-panel{display:none; margin-top:10px; padding-top:10px; border-top:1px dashed var(--line);}
+  .why-panel.open{display:block; animation:fade .2s ease;}
+  .why-row{display:flex; align-items:center; gap:10px; font-size:11.5px; margin-bottom:6px;}
+  .why-row:last-child{margin-bottom:0;}
+  .why-label{font-family:'IBM Plex Mono', monospace; color:var(--chalk-dim); width:90px; flex-shrink:0;}
+  .why-bar-track{position:relative; flex:1; height:6px; background:var(--panel-hi); border-radius:3px; overflow:hidden;}
+  .why-bar-fill{position:absolute; top:0; bottom:0; border-radius:3px;}
+  .why-bar-fill.pos{background:var(--good); left:50%;}
+  .why-bar-fill.neg{background:var(--warn); right:50%;}
+  .why-val{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--chalk-dim); width:52px; text-align:right; flex-shrink:0;}
+  .graded-tag{font-family:'IBM Plex Mono', monospace; font-size:10px; padding:4px 10px; border-radius:20px;}
+  .graded-tag.correct{background:var(--good-dim); color:var(--good);}
+  .graded-tag.incorrect{background:var(--warn-dim); color:var(--warn);}
+
+  .pick-buttons{display:flex; gap:8px; margin-top:14px;}
+  .pick-btn{flex:1; background:transparent; border:1.5px solid var(--line); color:var(--chalk);
+    font-family:'Big Shoulders Display'; font-weight:700; font-size:15px; padding:10px 6px; border-radius:8px;
+    cursor:pointer; transition:all .15s ease;}
+  .pick-btn:hover{border-color:var(--amber);}
+  .pick-btn.selected{background:var(--amber); border-color:var(--amber); color:var(--ink);}
+  .pick-agrees{font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--chalk-dim); margin-top:8px;}
+
+  .accuracy-cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-bottom:20px;}
+  .accuracy-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm);}
+  .accuracy-card .label{font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:8px;}
+  .accuracy-card .value{font-family:'Big Shoulders Display', sans-serif; font-weight:800; font-size:32px;}
+  .accuracy-card .sub{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--chalk-dim); margin-top:4px;}
   .filter-btn{background:var(--panel); border:1px solid var(--line); color:var(--chalk-dim);
     font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.04em; padding:8px 14px; border-radius:20px;
     cursor:pointer; transition:all .15s ease;}
@@ -188,11 +230,11 @@
   }
   .bottom-nav-row{display:flex; justify-content:space-around; align-items:center;}
   .bnav-btn{
-    display:flex; flex-direction:column; align-items:center; gap:4px; background:none; border:none;
-    color:var(--chalk-dim); font-family:'IBM Plex Mono', monospace; font-size:9.5px; letter-spacing:.02em;
-    padding:6px 10px; border-radius:10px; flex:1; transition:color .15s ease;
+    display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:none;
+    color:var(--chalk-dim); font-family:'IBM Plex Mono', monospace; font-size:8.5px; letter-spacing:.01em;
+    padding:6px 4px; border-radius:10px; flex:1; transition:color .15s ease;
   }
-  .bnav-btn svg{width:20px; height:20px;}
+  .bnav-btn svg{width:18px; height:18px;}
   .bnav-btn.active{color:var(--amber);}
   .bnav-btn:active{transform:scale(.94);}
 
@@ -229,12 +271,12 @@
     <div class="nav-group-label">Model Output</div>
     <button class="nav-btn active" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Power Ratings</button>
     <button class="nav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Week Board</button>
+    <div class="nav-group-label">Your Picks</div>
+    <button class="nav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>My Picks Log</button>
+    <button class="nav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg>Season Accuracy</button>
     <div class="nav-group-label">Reference</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg>Roadmap</button>
-    <div class="nav-group-label">Coming Soon</div>
-    <button class="nav-btn disabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>My Picks Log</button>
-    <button class="nav-btn disabled"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg>Season Accuracy</button>
   </nav>
   <div class="sidebar-foot">__SIDEBAR_FOOT__</div>
 </aside>
@@ -275,12 +317,41 @@
       </div>
       <div class="badge" id="board-badge">—</div>
     </div>
+    <div class="filter-row">
+      <select id="week-select" class="week-select"></select>
+    </div>
     <div class="filter-row" id="filter-row">
       <button class="filter-btn active" data-filter="all">All Games</button>
       <button class="filter-btn" data-filter="divergent">Model Disagreement</button>
       <button class="filter-btn" data-filter="flagged">Flagged Only</button>
     </div>
     <div class="game-grid" id="game-grid"></div>
+  </section>
+
+  <!-- MY PICKS LOG -->
+  <section class="page" id="page-picks">
+    <div class="page-head">
+      <div>
+        <h2>My Picks Log</h2>
+        <div class="desc">Tap your actual pick for each game in the selected week. Saved locally on this device only — not synced to the repo or across devices.</div>
+      </div>
+      <div class="badge" id="picks-record-badge">—</div>
+    </div>
+    <div class="filter-row">
+      <select id="picks-week-select" class="week-select"></select>
+    </div>
+    <div class="game-grid" id="picks-grid"></div>
+  </section>
+
+  <!-- SEASON ACCURACY -->
+  <section class="page" id="page-accuracy">
+    <div class="page-head">
+      <div>
+        <h2>Season Accuracy</h2>
+        <div class="desc">Every saved prediction, graded against real results after the fact. Built from graded weeks only — nothing here is projected or estimated.</div>
+      </div>
+    </div>
+    <div id="accuracy-content"></div>
   </section>
 
   <!-- METHODOLOGY -->
@@ -351,9 +422,11 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Tuned Ridge Alpha</h4><p>Backtested 1-1600; alpha=200 was over-regularized, alpha=15 wins.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>QB-Specific Features</h4><p>Leak-free per-starter trailing EPA/dropback. Biggest single accuracy gain: 60.0% to 62.6%.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Automated Weekly Routine</h4><p>Scheduled, self-updating: auto-detects the current week, waits until 7 days out to lock in predictions, walks straight through the playoffs with no manual intervention.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>My Picks Log</h4><p>Record actual submitted picks each week, separate from raw model output.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Season Accuracy Tracker</h4><p>Grade saved predictions weekly — running accuracy, log loss, calibration over the season.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Injury &amp; Weather Features</h4><p>Close the remaining gaps from the original spec.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>My Picks Log</h4><p>Tap your actual pick per game, tracked locally with a real win/loss record against graded results.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Season Accuracy + Calibration</h4><p>Real running record for Model A, Model B, and market, plus a calibration table checking whether confidence buckets actually hit their rate.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Confidence Ranking + Why Breakdown</h4><p>Games auto-ranked by pick confidence for confidence-pool scoring; every pick shows its real feature-level math, not a black box.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Past-Week Browsing</h4><p>Week selector on the Board and Picks pages instead of only ever showing the latest week.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Rest / Travel / Weather Features</h4><p>Real model feature engineering, needs its own backtest validation before going live -- not rushed alongside the presentation-layer features above.</p></div>
       <div class="add-idea">+ next idea goes here</div>
     </div>
   </section>
@@ -364,6 +437,8 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
   <div class="bottom-nav-row">
     <button class="bnav-btn active" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Ratings</button>
     <button class="bnav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Board</button>
+    <button class="bnav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Picks</button>
+    <button class="bnav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg>Accuracy</button>
     <button class="bnav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Method</button>
     <button class="bnav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg>Roadmap</button>
   </div>
@@ -371,17 +446,30 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
 <script>
 const teams = __TEAMS_JSON__;
-const games = __GAMES_JSON__;
+const weeks = __WEEKS_JSON__;       // { "2026_week1": {season, week, games:[...]}, ... }
+const latestWeekKey = __LATEST_WEEK__;  // "2026_week1" or null
+const accuracy = __ACCURACY_JSON__;
+
+const weekKeysSorted = Object.keys(weeks).sort((a,b)=>{
+  const wa = weeks[a], wb = weeks[b];
+  return (wa.season - wb.season) || (wa.week - wb.week);
+});
+
+function weekLabel(key){
+  const w = weeks[key];
+  return `${w.season} · Week ${w.week}`;
+}
 
 function setActivePage(pageId){
   document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active', b.dataset.page===pageId));
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.id==='page-'+pageId));
-  window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+  window.scrollTo({top:0, behavior:'auto'});
 }
 document.querySelectorAll('[data-page]').forEach(btn=>{
   btn.addEventListener('click', ()=> setActivePage(btn.dataset.page));
 });
 
+/* ---------- Power Ratings ---------- */
 let sortKey = 'net', sortDir = -1;
 function renderRatings(){
   const sorted = [...teams].sort((a,b)=>{
@@ -414,18 +502,44 @@ document.querySelectorAll('#ratings-table th[data-key]').forEach(th=>{
 });
 renderRatings();
 
-let currentFilter='all';
+/* ---------- Week Board ---------- */
+let currentBoardWeek = latestWeekKey;
+let currentFilter = 'all';
+
+function populateWeekSelect(selectEl, onChange, initial){
+  if(weekKeysSorted.length===0){
+    selectEl.innerHTML = `<option>No weeks saved yet</option>`;
+    selectEl.disabled = true;
+    return;
+  }
+  selectEl.innerHTML = weekKeysSorted.map(k=>`<option value="${k}">${weekLabel(k)}</option>`).join('');
+  selectEl.value = initial || weekKeysSorted[weekKeysSorted.length-1];
+  selectEl.addEventListener('change', ()=> onChange(selectEl.value));
+}
+
+function whyRow(label, val){
+  const pct = Math.min(50, Math.abs(val)*300); // scaled for visual width, not a real unit
+  const cls = val >= 0 ? 'pos' : 'neg';
+  return `<div class="why-row">
+    <span class="why-label">${label}</span>
+    <div class="why-bar-track"><div class="why-bar-fill ${cls}" style="width:${pct}%;"></div></div>
+    <span class="why-val">${val>=0?'+':''}${val.toFixed(3)}</span>
+  </div>`;
+}
+
 function renderGames(){
   const grid = document.getElementById('game-grid');
   const badge = document.getElementById('board-badge');
-  badge.textContent = games.length ? `${games.length} game${games.length===1?'':'s'}` : 'No games yet';
+  const weekData = weeks[currentBoardWeek];
+  const gamesList = weekData ? weekData.games : [];
+  badge.textContent = gamesList.length ? `${gamesList.length} game${gamesList.length===1?'':'s'}` : 'No games';
 
-  if(games.length === 0){
-    grid.innerHTML = `<div class="empty-state">No predictions saved yet. Check back once the weekly update has run.</div>`;
+  if(!weekData || gamesList.length === 0){
+    grid.innerHTML = `<div class="empty-state">No predictions saved for this week yet.</div>`;
     return;
   }
 
-  const filtered = games.filter(g=>{
+  const filtered = gamesList.filter(g=>{
     const diverge = Math.abs(g.fbA_home - g.mktB_home);
     if(currentFilter==='all') return true;
     if(currentFilter==='flagged') return !!g.flag;
@@ -445,10 +559,23 @@ function renderGames(){
     const idSafe = (g.home+g.away).replace(/[^a-zA-Z]/g,'');
     const spreadText = (g.spread===null || g.spread===undefined) ? "No line available"
       : (g.spread>=0 ? `${g.home} -${g.spread}` : `${g.away} -${Math.abs(g.spread)}`);
+    const gradedTag = g.graded
+      ? `<span class="graded-tag ${g.model_b_correct ?? g.model_a_correct ? 'correct':'incorrect'}">${(g.model_b_correct ?? g.model_a_correct) ? 'Correct' : 'Missed'}</span>`
+      : '';
+    const whyHtml = g.why ? `
+      <button class="why-toggle" data-why="${idSafe}">+ why this pick</button>
+      <div class="why-panel" id="why-${idSafe}">
+        ${whyRow('Offense edge', g.why.off_matchup)}
+        ${whyRow('Defense edge', g.why.def_matchup)}
+        ${whyRow('QB edge', g.why.qb_matchup)}
+      </div>` : '';
     return `<div class="game-card ${g.flag?'has-flag':''}">
       <div class="game-top">
-        <span class="game-kickoff">${g.kickoff}</span>
-        <span class="conf-tag ${diverge>=12?'tag-warn':'tag-good'}">${diverge>=12 ? `gap ${diverge.toFixed(0)}pt` : 'Models agree'}</span>
+        <span class="game-kickoff">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}</span>
+        <div class="tag-row" style="display:flex; gap:6px; align-items:center;">
+          ${gradedTag}
+          <span class="conf-tag ${diverge>=12?'tag-warn':'tag-good'}">${diverge>=12 ? `gap ${diverge.toFixed(0)}pt` : 'Models agree'}</span>
+        </div>
       </div>
       <div class="model-row">
         <span class="model-label a">MODEL A</span>
@@ -467,6 +594,7 @@ function renderGames(){
         </div>
       </div>
       <div class="market-ref">Vegas line: <b>${spreadText}</b></div>
+      ${whyHtml}
       ${g.flag ? `<button class="toggle-flag" data-idx="${idSafe}">+ view note</button>
       <div class="flag-note" id="flag-${idSafe}"><b>Note:</b> ${g.flag}</div>` : ''}
     </div>`;
@@ -479,6 +607,13 @@ function renderGames(){
       btn.textContent = note.classList.contains('open') ? '− hide note' : '+ view note';
     });
   });
+  document.querySelectorAll('.why-toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const panel = document.getElementById('why-'+btn.dataset.why);
+      panel.classList.toggle('open');
+      btn.textContent = panel.classList.contains('open') ? '− hide why' : '+ why this pick';
+    });
+  });
 }
 document.querySelectorAll('.filter-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
@@ -488,7 +623,125 @@ document.querySelectorAll('.filter-btn').forEach(btn=>{
     renderGames();
   });
 });
+populateWeekSelect(document.getElementById('week-select'), (val)=>{ currentBoardWeek = val; renderGames(); }, latestWeekKey);
 renderGames();
+
+/* ---------- My Picks Log (localStorage, this device only) ---------- */
+let currentPicksWeek = latestWeekKey;
+const PICKS_STORAGE_KEY = 'nfl_pickem_my_picks';
+
+function loadMyPicks(){
+  try{ return JSON.parse(localStorage.getItem(PICKS_STORAGE_KEY) || '{}'); }
+  catch(e){ return {}; }
+}
+function saveMyPicks(picks){
+  try{ localStorage.setItem(PICKS_STORAGE_KEY, JSON.stringify(picks)); }
+  catch(e){ console.warn('Could not save picks locally', e); }
+}
+
+function renderPicksGrid(){
+  const grid = document.getElementById('picks-grid');
+  const badge = document.getElementById('picks-record-badge');
+  const weekData = weeks[currentPicksWeek];
+  const gamesList = weekData ? weekData.games : [];
+  const myPicks = loadMyPicks();
+
+  if(!weekData || gamesList.length === 0){
+    grid.innerHTML = `<div class="empty-state">No games to pick for this week yet.</div>`;
+    badge.textContent = '—';
+    return;
+  }
+
+  // record across ALL graded weeks where a pick was logged
+  let wins=0, losses=0;
+  weekKeysSorted.forEach(k=>{
+    (weeks[k].games||[]).forEach(g=>{
+      const pid = k+'|'+g.home+'|'+g.away;
+      const pick = myPicks[pid];
+      if(pick && g.graded && g.actual_home_win !== null){
+        const actualWinner = g.actual_home_win ? g.home : g.away;
+        if(pick === actualWinner) wins++; else losses++;
+      }
+    });
+  });
+  badge.textContent = (wins+losses)>0 ? `${wins}-${losses} on graded picks` : 'No graded picks yet';
+
+  grid.innerHTML = gamesList.map(g=>{
+    const pid = currentPicksWeek+'|'+g.home+'|'+g.away;
+    const pick = myPicks[pid];
+    const modelBPick = g.mktB_home >= 50 ? g.home : g.away;
+    return `<div class="game-card">
+      <div class="game-top"><span class="game-kickoff">${g.away} @ ${g.home}</span></div>
+      <div class="pick-buttons" data-pid="${pid}">
+        <button class="pick-btn ${pick===g.away?'selected':''}" data-team="${g.away}">${g.away}</button>
+        <button class="pick-btn ${pick===g.home?'selected':''}" data-team="${g.home}">${g.home}</button>
+      </div>
+      <div class="pick-agrees">Model B picks: ${modelBPick}${pick ? (pick===modelBPick ? ' (you agree)' : ' (you differ)') : ''}</div>
+    </div>`;
+  }).join('');
+
+  grid.querySelectorAll('.pick-buttons').forEach(group=>{
+    const pid = group.dataset.pid;
+    group.querySelectorAll('.pick-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const picks = loadMyPicks();
+        picks[pid] = btn.dataset.team;
+        saveMyPicks(picks);
+        renderPicksGrid();
+      });
+    });
+  });
+}
+populateWeekSelect(document.getElementById('picks-week-select'), (val)=>{ currentPicksWeek = val; renderPicksGrid(); }, latestWeekKey);
+renderPicksGrid();
+
+/* ---------- Season Accuracy ---------- */
+function renderAccuracy(){
+  const el = document.getElementById('accuracy-content');
+  if(!accuracy.overall){
+    el.innerHTML = `<div class="empty-state">No graded weeks yet. Run grade_predictions.py after a week's games finish.</div>`;
+    return;
+  }
+  const o = accuracy.overall;
+  const cardsHtml = `
+    <div class="accuracy-cards">
+      <div class="accuracy-card"><div class="label">Model A</div><div class="value">${o.model_a.pct ?? '—'}%</div><div class="sub">${o.model_a.correct}/${o.model_a.n} correct</div></div>
+      <div class="accuracy-card"><div class="label">Model B</div><div class="value">${o.model_b.pct ?? '—'}%</div><div class="sub">${o.model_b.correct}/${o.model_b.n} correct</div></div>
+      <div class="accuracy-card"><div class="label">Market</div><div class="value">${o.market.pct ?? '—'}%</div><div class="sub">${o.market.correct}/${o.market.n} correct</div></div>
+    </div>`;
+
+  const weeklyRows = accuracy.weeks.map(w=>`
+    <tr>
+      <td>${w.season} Wk ${w.week}</td>
+      <td class="num">${w.model_a_correct}/${w.model_a_n}</td>
+      <td class="num">${w.model_b_correct}/${w.model_b_n}</td>
+      <td class="num">${w.market_correct}/${w.market_n}</td>
+    </tr>`).join('');
+  const weeklyHtml = `
+    <div class="method-block">
+      <h3>Weekly Trend</h3>
+      <table class="metrics-table">
+        <thead><tr><th>Week</th><th>Model A</th><th>Model B</th><th>Market</th></tr></thead>
+        <tbody>${weeklyRows}</tbody>
+      </table>
+    </div>`;
+
+  const calibRows = accuracy.calibration.map(c=>`
+    <tr><td>${c.bucket}</td><td class="num">${c.n}</td><td class="num">${c.avg_predicted}%</td><td class="num">${c.actual_rate}%</td></tr>
+  `).join('');
+  const calibHtml = `
+    <div class="method-block">
+      <h3>Calibration</h3>
+      <p>Does a game we picked at, say, 65% confidence actually win about 65% of the time? Compares the average predicted probability in each confidence bucket to how often the pick was actually right.</p>
+      <table class="metrics-table">
+        <thead><tr><th>Confidence Bucket</th><th>Games</th><th>Avg Predicted</th><th>Actual Correct Rate</th></tr></thead>
+        <tbody>${calibRows || '<tr><td colspan="4">Not enough graded games yet.</td></tr>'}</tbody>
+      </table>
+    </div>`;
+
+  el.innerHTML = cardsHtml + weeklyHtml + calibHtml;
+}
+renderAccuracy();
 </script>
 </body>
 </html>
