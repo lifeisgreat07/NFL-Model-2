@@ -394,7 +394,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h3>Known Gaps</h3>
-      <div class="gap-item"><span class="gap-num">01</span><span>No injury or weather features implemented despite being in the original spec.</span></div>
+      <div class="gap-item"><span class="gap-num">01</span><span>Rest days and weather were tested and rejected (real backtest, not adopted) — see Roadmap. Travel distance still untested; no injury feature yet.</span></div>
       <div class="gap-item"><span class="gap-num">02</span><span>QB rating shrinkage constant (k=8) was set by convention, not backtested the way alpha and half-life were.</span></div>
       <div class="gap-item"><span class="gap-num">03</span><span>Gradient boosting was tested and did not beat logistic regression at this feature-set size.</span></div>
     </div>
@@ -428,7 +428,12 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Season Accuracy + Calibration</h4><p>Real running record for Model A, Model B, and market, plus a calibration table checking whether confidence buckets actually hit their rate.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Confidence Ranking + Why Breakdown</h4><p>Games auto-ranked by pick confidence for confidence-pool scoring; every pick shows its real feature-level math, not a black box.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Past-Week Browsing</h4><p>Week selector on the Board and Picks pages instead of only ever showing the latest week.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Rest / Travel / Weather Features</h4><p>Real model feature engineering, needs its own backtest validation before going live -- not rushed alongside the presentation-layer features above.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Rest &amp; Weather Features</h4><p>Real backtest: rest days, dome/cold/wind all made the model slightly WORSE (62.6% to ~61.5% accuracy). Honest negative result, not adopted — matches real NFL analytics findings that these effects are weaker than broadcast narratives suggest.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Travel Distance</h4><p>Needs a real stadium-coordinates lookup table, not yet built. The one piece of the rest/travel/weather group still genuinely untested.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Line Movement Tracking</h4><p>Capture the spread at multiple points before kickoff (open vs. current) — sharp money movement may carry real signal beyond a single snapshot line.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Formal Backup-QB Detection</h4><p>Right now QB uncertainty (like Arizona's) only surfaces as a manual flag. A real signal for "starter is genuinely in question" would let the model react instead of defaulting to neutral.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Annual Hyperparameter Re-tuning</h4><p>Alpha, half-life, and QB shrinkage were tuned once on 2020-2025 data. Re-running that search each offseason keeps the model honest as the league's scoring environment shifts.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Confidence-Pool Payout Optimizer</h4><p>Beyond just ranking picks by confidence — model the actual points-based scoring rules of the specific pool to optimize expected points, not just raw accuracy.</p></div>
       <div class="add-idea">+ next idea goes here</div>
     </div>
   </section>
