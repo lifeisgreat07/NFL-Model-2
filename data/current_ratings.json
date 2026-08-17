@@ -1,0 +1,226 @@
+[
+  {
+    "team": "BUF",
+    "name": "Buffalo Bills",
+    "off": 0.1274,
+    "def": -0.0134,
+    "net": 0.1408
+  },
+  {
+    "team": "LA",
+    "name": "LA Rams",
+    "off": 0.0938,
+    "def": -0.0397,
+    "net": 0.1335
+  },
+  {
+    "team": "PHI",
+    "name": "Philadelphia Eagles",
+    "off": 0.0295,
+    "def": -0.0762,
+    "net": 0.1057
+  },
+  {
+    "team": "BAL",
+    "name": "Baltimore Ravens",
+    "off": 0.0842,
+    "def": -0.0203,
+    "net": 0.1046
+  },
+  {
+    "team": "GB",
+    "name": "Green Bay Packers",
+    "off": 0.1019,
+    "def": 0.0009,
+    "net": 0.1009
+  },
+  {
+    "team": "DET",
+    "name": "Detroit Lions",
+    "off": 0.0857,
+    "def": -0.0145,
+    "net": 0.1002
+  },
+  {
+    "team": "SEA",
+    "name": "Seattle Seahawks",
+    "off": 0.0067,
+    "def": -0.0804,
+    "net": 0.0871
+  },
+  {
+    "team": "MIN",
+    "name": "Minnesota Vikings",
+    "off": -0.0501,
+    "def": -0.1056,
+    "net": 0.0555
+  },
+  {
+    "team": "SF",
+    "name": "San Francisco 49ers",
+    "off": 0.0904,
+    "def": 0.0352,
+    "net": 0.0553
+  },
+  {
+    "team": "DEN",
+    "name": "Denver Broncos",
+    "off": 0.0068,
+    "def": -0.0473,
+    "net": 0.0542
+  },
+  {
+    "team": "KC",
+    "name": "Kansas City Chiefs",
+    "off": 0.0351,
+    "def": -0.0108,
+    "net": 0.0458
+  },
+  {
+    "team": "NE",
+    "name": "New England Patriots",
+    "off": 0.03,
+    "def": -0.0144,
+    "net": 0.0444
+  },
+  {
+    "team": "LAC",
+    "name": "LA Chargers",
+    "off": -0.012,
+    "def": -0.0459,
+    "net": 0.0339
+  },
+  {
+    "team": "HOU",
+    "name": "Houston Texans",
+    "off": -0.046,
+    "def": -0.0758,
+    "net": 0.0297
+  },
+  {
+    "team": "TB",
+    "name": "Tampa Bay Buccaneers",
+    "off": 0.0249,
+    "def": 0.0047,
+    "net": 0.0202
+  },
+  {
+    "team": "CHI",
+    "name": "Chicago Bears",
+    "off": 0.0189,
+    "def": 0.0036,
+    "net": 0.0153
+  },
+  {
+    "team": "JAX",
+    "name": "Jacksonville Jaguars",
+    "off": 0.0041,
+    "def": -0.0073,
+    "net": 0.0113
+  },
+  {
+    "team": "PIT",
+    "name": "Pittsburgh Steelers",
+    "off": -0.006,
+    "def": -0.0091,
+    "net": 0.0031
+  },
+  {
+    "team": "IND",
+    "name": "Indianapolis Colts",
+    "off": 0.0054,
+    "def": 0.0192,
+    "net": -0.0137
+  },
+  {
+    "team": "CIN",
+    "name": "Cincinnati Bengals",
+    "off": 0.0482,
+    "def": 0.0743,
+    "net": -0.0261
+  },
+  {
+    "team": "ATL",
+    "name": "Atlanta Falcons",
+    "off": -0.0174,
+    "def": 0.0208,
+    "net": -0.0382
+  },
+  {
+    "team": "DAL",
+    "name": "Dallas Cowboys",
+    "off": 0.0372,
+    "def": 0.0791,
+    "net": -0.042
+  },
+  {
+    "team": "NO",
+    "name": "New Orleans Saints",
+    "off": -0.0843,
+    "def": -0.0414,
+    "net": -0.0429
+  },
+  {
+    "team": "ARI",
+    "name": "Arizona Cardinals",
+    "off": -0.0043,
+    "def": 0.0507,
+    "net": -0.055
+  },
+  {
+    "team": "MIA",
+    "name": "Miami Dolphins",
+    "off": -0.0285,
+    "def": 0.0309,
+    "net": -0.0593
+  },
+  {
+    "team": "WAS",
+    "name": "Washington Commanders",
+    "off": 0.0263,
+    "def": 0.0926,
+    "net": -0.0663
+  },
+  {
+    "team": "NYG",
+    "name": "NY Giants",
+    "off": -0.0246,
+    "def": 0.0454,
+    "net": -0.07
+  },
+  {
+    "team": "CLE",
+    "name": "Cleveland Browns",
+    "off": -0.1728,
+    "def": -0.0771,
+    "net": -0.0958
+  },
+  {
+    "team": "CAR",
+    "name": "Carolina Panthers",
+    "off": -0.0562,
+    "def": 0.0664,
+    "net": -0.1226
+  },
+  {
+    "team": "LV",
+    "name": "Las Vegas Raiders",
+    "off": -0.1432,
+    "def": 0.0073,
+    "net": -0.1504
+  },
+  {
+    "team": "TEN",
+    "name": "Tennessee Titans",
+    "off": -0.0941,
+    "def": 0.0756,
+    "net": -0.1697
+  },
+  {
+    "team": "NYJ",
+    "name": "NY Jets",
+    "off": -0.1169,
+    "def": 0.0725,
+    "net": -0.1895
+  }
+]
