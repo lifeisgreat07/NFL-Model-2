@@ -141,9 +141,13 @@ def determine_next_week(season):
         return next_week
     print(f"No predictions saved yet for {season}. Starting at week 1.")
     return 1
-    # NOTE: this does not yet distinguish regular season (weeks 1-18) from
-    # playoffs (which nflverse numbers separately under season_type POST) --
-    # flagged as a known gap for whoever picks this up in January.
+    # Playoff numbering note (resolved -- verified against real nflverse data
+    # and official docs): weeks do NOT reset after the regular season. They
+    # continue counting up (e.g. 2021+: reg season 1-18, wild card 19,
+    # divisional 20, conf champ 21, Super Bowl 22). So max+1 naturally walks
+    # straight through the playoffs with no special-casing needed. The one
+    # real edge case -- running this again after the Super Bowl -- is
+    # handled in main() by exiting cleanly when a week has zero games.
 
 
 def main(season, week):
@@ -191,6 +195,11 @@ def main(season, week):
     print("Loading target week's schedule + current lines...")
     sched = load_schedule(season)
     week_games = sched[sched['week'] == week]
+
+    if len(week_games) == 0:
+        print(f"No games found for {season} week {week} -- likely means the season "
+              f"(including playoffs) is over. Nothing to predict. Exiting cleanly.")
+        return
 
     predictions = []
     for _, g in week_games.iterrows():
