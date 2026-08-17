@@ -1,0 +1,44 @@
+name: Auto-regenerate dashboard
+
+# Runs whenever the template, generator script, or any saved data changes.
+# Deliberately does NOT watch index.html itself -- that's the file this
+# workflow writes to, so watching it would create an infinite trigger loop.
+# (GitHub also blocks a push made with the default GITHUB_TOKEN from
+# re-triggering further workflow runs, which is a second layer of
+# protection against that loop -- but the path scoping below is the main
+# safeguard and makes the intent clear either way.)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'data/**'
+      - 'predictions/**'
+      - 'results/**'
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Regenerate index.html
+        run: python src/generate_dashboard.py
+
+      - name: Commit and push if index.html changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-regenerate dashboard"
+          file_pattern: index.html
