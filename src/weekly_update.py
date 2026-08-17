@@ -46,6 +46,35 @@ from config import TRAIN_SEASONS
 
 PRED_DIR = Path(__file__).parent.parent / 'predictions'
 PRED_DIR.mkdir(exist_ok=True)
+DATA_DIR = Path(__file__).parent.parent / 'data'
+DATA_DIR.mkdir(exist_ok=True)
+
+TEAM_NAMES = {
+    'ARI':'Arizona Cardinals','ATL':'Atlanta Falcons','BAL':'Baltimore Ravens','BUF':'Buffalo Bills',
+    'CAR':'Carolina Panthers','CHI':'Chicago Bears','CIN':'Cincinnati Bengals','CLE':'Cleveland Browns',
+    'DAL':'Dallas Cowboys','DEN':'Denver Broncos','DET':'Detroit Lions','GB':'Green Bay Packers',
+    'HOU':'Houston Texans','IND':'Indianapolis Colts','JAX':'Jacksonville Jaguars','KC':'Kansas City Chiefs',
+    'LA':'LA Rams','LAC':'LA Chargers','LV':'Las Vegas Raiders','MIA':'Miami Dolphins','MIN':'Minnesota Vikings',
+    'NE':'New England Patriots','NO':'New Orleans Saints','NYG':'NY Giants','NYJ':'NY Jets',
+    'PHI':'Philadelphia Eagles','PIT':'Pittsburgh Steelers','SEA':'Seattle Seahawks','SF':'San Francisco 49ers',
+    'TB':'Tampa Bay Buccaneers','TEN':'Tennessee Titans','WAS':'Washington Commanders',
+}
+
+
+def save_current_ratings(team_ratings):
+    """Write the current team ratings snapshot to data/current_ratings.json
+    so generate_dashboard.py can display them without recomputing (which
+    would mean re-pulling all play-by-play data a second time)."""
+    rows = []
+    for team, (off, deff) in team_ratings.items():
+        rows.append({
+            'team': team, 'name': TEAM_NAMES.get(team, team),
+            'off': round(off, 4), 'def': round(deff, 4), 'net': round(off - deff, 4),
+        })
+    rows.sort(key=lambda r: -r['net'])
+    with open(DATA_DIR / 'current_ratings.json', 'w') as f:
+        json.dump(rows, f, indent=2)
+    print(f"Saved {len(rows)} team ratings to data/current_ratings.json")
 
 
 def market_prob(home_spread):
@@ -128,6 +157,7 @@ def main(season, week):
     print("Building current ('as of right now') team + QB ratings...")
     cutoff_i = len(week_keys)
     current_team_ratings = build_team_ratings(plays, week_keys, upto_cutoff_i=cutoff_i)
+    save_current_ratings(current_team_ratings)
     qb_cutoff = len(qb['week_keys'])
     # fallback starter source: most recent season with any starter data
     starter_season = season if season in [s for s, w in qb['week_keys']] else season - 1

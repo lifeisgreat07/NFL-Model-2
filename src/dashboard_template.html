@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pick'em Model — Command Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0E15; --panel:#131826; --panel-raised:#1B2233;
+    --line:rgba(237,235,228,0.09);
+    --chalk:#EDEBE4; --chalk-dim:#8A93A8;
+    --amber:#F2A93B; --amber-dim:rgba(242,169,59,0.14);
+    --blue:#5B9BE0; --blue-dim:rgba(91,155,224,0.14);
+    --good:#5FA777; --good-dim:rgba(95,167,119,0.14);
+    --warn:#C1554A; --warn-dim:rgba(193,85,74,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--ink); color:var(--chalk); font-family:'Work Sans', sans-serif; min-height:100vh; display:flex;}
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--panel-raised);border-radius:4px;}
+
+  .sidebar{width:230px; flex-shrink:0; background:var(--panel); border-right:1px solid var(--line);
+    display:flex; flex-direction:column; padding:22px 0; position:sticky; top:0; height:100vh;}
+  .brand{padding:0 20px 22px; border-bottom:1px solid var(--line); margin-bottom:14px;}
+  .brand-mark{font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.18em; color:var(--amber); text-transform:uppercase;}
+  .brand h1{font-family:'Big Shoulders Display', sans-serif; font-weight:700; font-size:24px; letter-spacing:.01em; line-height:1; margin-top:6px;}
+  .brand-sub{font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--chalk-dim); margin-top:6px;}
+  nav{display:flex; flex-direction:column; gap:2px; padding:0 12px;}
+  .nav-group-label{font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--chalk-dim); padding:14px 8px 6px;}
+  .nav-btn{display:flex; align-items:center; gap:10px; background:transparent; border:none; color:var(--chalk-dim);
+    font-family:'Work Sans'; font-weight:600; font-size:14px; text-align:left; padding:10px 10px; border-radius:6px; cursor:pointer; transition:all .12s ease;}
+  .nav-btn:hover{background:var(--panel-raised); color:var(--chalk);}
+  .nav-btn.active{background:var(--amber-dim); color:var(--amber);}
+  .nav-btn .dot{width:6px;height:6px;border-radius:50%; background:currentColor; opacity:.6; flex-shrink:0;}
+  .nav-btn.disabled{opacity:.4; cursor:default;}
+  .nav-btn.disabled:hover{background:transparent; color:var(--chalk-dim);}
+  .sidebar-foot{margin-top:auto; padding:14px 20px 0; border-top:1px solid var(--line);
+    font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--chalk-dim); line-height:1.6;}
+
+  main{flex:1; padding:32px 40px 60px; max-width:1220px;}
+  .page{display:none;}
+  .page.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+  .page-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:14px;
+    margin-bottom:26px; padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .page-head h2{font-family:'Big Shoulders Display', sans-serif; font-weight:700; font-size:32px; letter-spacing:.01em;}
+  .page-head .desc{color:var(--chalk-dim); font-size:13.5px; margin-top:4px; max-width:560px;}
+  .badge{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.05em; padding:5px 10px; border-radius:4px;
+    background:var(--panel-raised); color:var(--chalk-dim); border:1px solid var(--line);}
+
+  .table-wrap{background:var(--panel); border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  table{width:100%; border-collapse:collapse;}
+  thead th{font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--chalk-dim); text-align:left; padding:12px 16px; border-bottom:1px solid var(--line); cursor:pointer; user-select:none; white-space:nowrap;}
+  thead th:hover{color:var(--amber);}
+  thead th.sorted{color:var(--amber);}
+  tbody td{padding:11px 16px; border-bottom:1px solid var(--line); font-size:13.5px;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--panel-raised);}
+  td.num{font-family:'IBM Plex Mono', monospace; text-align:right;}
+  td.rank{font-family:'IBM Plex Mono', monospace; color:var(--chalk-dim); width:36px;}
+  .team-cell{display:flex; align-items:center; gap:8px;}
+  .team-abbr{font-family:'Big Shoulders Display', sans-serif; font-weight:700; font-size:15px; width:38px;}
+  .team-full{color:var(--chalk-dim); font-size:12.5px;}
+  .srs-bar-track{position:relative; width:90px; height:6px; background:var(--panel-raised); border-radius:3px; display:inline-block; vertical-align:middle; margin-left:10px;}
+  .srs-bar-fill{position:absolute; top:0; bottom:0; background:var(--amber); border-radius:3px;}
+
+  .filter-row{display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap;}
+  .filter-btn{background:var(--panel); border:1px solid var(--line); color:var(--chalk-dim);
+    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.04em; padding:7px 13px; border-radius:20px; cursor:pointer; transition:all .12s ease;}
+  .filter-btn:hover{border-color:var(--amber);}
+  .filter-btn.active{background:var(--amber-dim); border-color:var(--amber); color:var(--amber);}
+
+  .game-grid{display:flex; flex-direction:column; gap:10px;}
+  .game-card{background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px 20px; transition:border-color .15s ease;}
+  .game-card.has-flag{border-left:3px solid var(--warn);}
+  .game-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px;}
+  .game-kickoff{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--chalk-dim); letter-spacing:.03em;}
+  .tag-row{display:flex; gap:6px; align-items:center;}
+  .conf-tag{font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:3px 9px; border-radius:20px;}
+  .tag-good{background:var(--good-dim); color:var(--good);}
+  .tag-warn{background:var(--warn-dim); color:var(--warn);}
+  .tag-neutral{background:var(--panel-raised); color:var(--chalk-dim);}
+
+  .model-row{display:grid; grid-template-columns:52px 1fr; align-items:center; gap:12px; margin-bottom:8px;}
+  .model-row:last-of-type{margin-bottom:0;}
+  .model-label{font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--chalk-dim);}
+  .model-label.a{color:var(--blue);}
+  .model-label.b{color:var(--amber);}
+  .tele{display:grid; grid-template-columns:64px 1fr 64px; align-items:center; gap:10px;}
+  .tele-team{font-family:'Big Shoulders Display', sans-serif; font-weight:700; font-size:16px; line-height:1;}
+  .tele-team .pct{display:block; font-family:'IBM Plex Mono', monospace; font-weight:500; font-size:11px; color:var(--chalk-dim); margin-top:2px;}
+  .tele-team.right{text-align:right;}
+  .tele-team.winner.a{color:var(--blue);} .tele-team.winner.a .pct{color:var(--blue);}
+  .tele-team.winner.b{color:var(--amber);} .tele-team.winner.b .pct{color:var(--amber);}
+  .tele-bar{position:relative; height:9px; background:var(--panel-raised); border-radius:5px; overflow:hidden;}
+  .tele-bar-fill{position:absolute; top:0; bottom:0; left:0; border-radius:5px 0 0 5px;}
+  .tele-bar-fill.a{background:linear-gradient(90deg, var(--blue), #86BEF0);}
+  .tele-bar-fill.b{background:linear-gradient(90deg, var(--amber), #F7C877);}
+  .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--chalk); opacity:.5; left:50%;}
+
+  .market-ref{font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--chalk-dim); margin-top:10px; padding-top:10px; border-top:1px dashed var(--line);}
+  .market-ref b{color:var(--chalk);}
+
+  .flag-note{margin-top:10px; font-size:12.5px; color:var(--chalk-dim); display:none;}
+  .flag-note.open{display:block;}
+  .flag-note b{color:var(--warn); font-weight:600;}
+  .toggle-flag{background:none; border:none; color:var(--warn); font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+    letter-spacing:.04em; cursor:pointer; padding:0; margin-top:10px; text-decoration:underline; text-underline-offset:3px;}
+
+  .method-block{background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:22px 26px; margin-bottom:16px;}
+  .method-block h3{font-family:'Big Shoulders Display', sans-serif; font-weight:700; font-size:18px; margin-bottom:10px; color:var(--amber);}
+  .method-block p, .method-block li{font-size:13.5px; line-height:1.65; color:var(--chalk-dim);}
+  .method-block ul, .method-block ol{padding-left:20px; margin-top:6px;}
+  .formula{font-family:'IBM Plex Mono', monospace; background:var(--ink); border:1px solid var(--line); border-radius:6px;
+    padding:14px 16px; font-size:13px; color:var(--amber); margin:10px 0; overflow-x:auto; white-space:pre;}
+  .metrics-table{width:100%; border-collapse:collapse; margin-top:10px; font-size:12.5px;}
+  .metrics-table th{font-family:'IBM Plex Mono', monospace; font-size:10px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--chalk-dim); text-align:left; padding:8px 10px; border-bottom:1px solid var(--line);}
+  .metrics-table td{padding:8px 10px; border-bottom:1px solid var(--line); font-family:'IBM Plex Mono', monospace; color:var(--chalk);}
+  .metrics-table tr:last-child td{border-bottom:none;}
+  .metrics-table .highlight{color:var(--amber);}
+  .gap-item{display:flex; gap:10px; padding:9px 0; border-bottom:1px solid var(--line); font-size:13px;}
+  .gap-item:last-child{border-bottom:none;}
+  .gap-num{font-family:'IBM Plex Mono', monospace; color:var(--warn); flex-shrink:0;}
+
+  .roadmap-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:14px;}
+  .roadmap-card{background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:18px;}
+  .roadmap-status{font-family:'IBM Plex Mono', monospace; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+    padding:3px 8px; border-radius:20px; display:inline-block; margin-bottom:10px;}
+  .status-planned{background:var(--panel-raised); color:var(--chalk-dim);}
+  .status-next{background:var(--amber-dim); color:var(--amber);}
+  .status-done{background:var(--good-dim); color:var(--good);}
+  .roadmap-card h4{font-family:'Big Shoulders Display', sans-serif; font-weight:600; font-size:16px; margin-bottom:6px;}
+  .roadmap-card p{font-size:12.5px; color:var(--chalk-dim); line-height:1.5;}
+  .add-idea{border:1px dashed var(--line); background:transparent; display:flex; align-items:center; justify-content:center;
+    min-height:100px; border-radius:8px; color:var(--chalk-dim); font-family:'IBM Plex Mono', monospace; font-size:12px; text-align:center; padding:16px;}
+
+  @media (max-width:820px){
+    body{flex-direction:column;}
+    .sidebar{width:100%; height:auto; position:relative; flex-direction:row; overflow-x:auto; padding:14px;}
+    .brand{display:none;} nav{flex-direction:row; padding:0;} .nav-group-label{display:none;} .sidebar-foot{display:none;}
+    main{padding:22px 18px 50px;}
+    .tele{grid-template-columns:52px 1fr 52px; gap:6px;}
+    .tele-team{font-size:14px;}
+  }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark">Season 2026</div>
+    <h1>COMMAND<br>BOARD</h1>
+    <div class="brand-sub">NFL Pick'em Model v0.2 — real backtest</div>
+  </div>
+  <nav>
+    <div class="nav-group-label">Model Output</div>
+    <button class="nav-btn active" data-page="ratings"><span class="dot"></span>Power Ratings</button>
+    <button class="nav-btn" data-page="board"><span class="dot"></span>Week 1 Board</button>
+    <div class="nav-group-label">Reference</div>
+    <button class="nav-btn" data-page="method"><span class="dot"></span>Methodology</button>
+    <button class="nav-btn" data-page="roadmap"><span class="dot"></span>Roadmap</button>
+    <div class="nav-group-label">Coming Soon</div>
+    <button class="nav-btn disabled"><span class="dot"></span>My Picks Log</button>
+    <button class="nav-btn disabled"><span class="dot"></span>Season Accuracy</button>
+  </nav>
+  <div class="sidebar-foot">__SIDEBAR_FOOT__</div>
+</aside>
+
+<main>
+
+  <!-- POWER RATINGS -->
+  <section class="page active" id="page-ratings">
+    <div class="page-head">
+      <div>
+        <h2>Power Ratings</h2>
+        <div class="desc">Opponent-adjusted EPA/play ratings, current as of today — fit via ridge regression on all 294,989 plays with a 16-game recency half-life. Not a raw stat average: every number here already accounts for who each team played.</div>
+      </div>
+      <div class="badge">32 teams · real backtest</div>
+    </div>
+    <div class="table-wrap">
+      <table id="ratings-table">
+        <thead>
+          <tr>
+            <th data-key="rank">#</th>
+            <th data-key="team">Team</th>
+            <th data-key="net" class="sorted">Net Rating</th>
+            <th data-key="off">Offense</th>
+            <th data-key="def">Defense</th>
+          </tr>
+        </thead>
+        <tbody id="ratings-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- WEEK 1 BOARD -->
+  <section class="page" id="page-board">
+    <div class="page-head">
+      <div>
+        <h2>Week 1 Board</h2>
+        <div class="desc">Sept 9–14, 2026. Two models shown side by side: <b style="color:var(--blue)">Model A</b> is football-only (our EPA ratings, no market data). <b style="color:var(--amber)">Model B</b> blends Model A with the current Vegas spread. Large gaps between them are flagged — usually a sign our model is missing something the market prices in (injury, QB change).</div>
+      </div>
+      <div class="badge">16 games · DraftKings lines, Aug 10 2026</div>
+    </div>
+    <div class="filter-row" id="filter-row">
+      <button class="filter-btn active" data-filter="all">All Games</button>
+      <button class="filter-btn" data-filter="divergent">Model Disagreement</button>
+      <button class="filter-btn" data-filter="flagged">Flagged Only</button>
+    </div>
+    <div class="game-grid" id="game-grid"></div>
+  </section>
+
+  <!-- METHODOLOGY -->
+  <section class="page" id="page-method">
+    <div class="page-head">
+      <div>
+        <h2>Methodology</h2>
+        <div class="desc">Real data, real backtest, real numbers below — nothing here is estimated.</div>
+      </div>
+    </div>
+
+    <div class="method-block">
+      <h3>Data</h3>
+      <p>294,989 plays from nflfastR play-by-play, seasons 2020–2025 (regular season). Filtered to pass/rush attempts with valid EPA (209,559 plays) for the rating system.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Rating System — Opponent-Adjusted, Recency-Weighted</h3>
+      <p>For every team, at every point in time, we fit a two-way fixed-effects ridge regression: play-level EPA regressed on offense-team dummies + defense-team dummies, using only plays strictly before that point. Each play is weighted by exponential recency decay. This means a team's offensive rating already accounts for the strength of every defense it faced — not a raw average.</p>
+      <div class="formula">play_epa ~ ridge( offense_team_dummies + defense_team_dummies )
+sample_weight = 0.5 ^ (games_ago / half_life)
+half_life = 16 games   (tested 6, 10, 16 — 16 won on log loss)</div>
+    </div>
+
+    <div class="method-block">
+      <h3>Backtest Results — Chronological, Season-Level Holdout</h3>
+      <p>Each test season trained only on strictly earlier seasons. Pooled out-of-sample results across 2022-2025 (1,087 games):</p>
+      <table class="metrics-table">
+        <thead><tr><th>Model</th><th>Accuracy</th><th>Log Loss</th><th>Brier</th><th>AUC</th></tr></thead>
+        <tbody>
+          <tr><td>Coin flip</td><td>50.0%</td><td>0.693</td><td>0.250</td><td>0.500</td></tr>
+          <tr><td>Home team always wins</td><td>54.6%</td><td>-</td><td>-</td><td>-</td></tr>
+          <tr><td>Football-only, v1 (no QB, alpha=200)</td><td>60.0%</td><td>0.679</td><td>0.243</td><td>0.605</td></tr>
+          <tr><td>Football-only, v2 (tuned alpha=15 + QB feature)</td><td class="highlight">62.6%</td><td class="highlight">0.655</td><td class="highlight">0.231</td><td class="highlight">0.662</td></tr>
+          <tr><td>Vegas market alone</td><td>68.1%</td><td>0.607</td><td>0.210</td><td>0.724</td></tr>
+          <tr><td>Model + Market (Model B, v2 features)</td><td class="highlight">68.3%</td><td class="highlight">0.608</td><td class="highlight">0.210</td><td class="highlight">0.726</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:10px;">Two real upgrades since v1: tuning the ridge alpha via the same backtest process used for recency half-life found the model was over-regularized at 200 (a value picked by convention, not evidence) -- alpha=15 performs best. Separately, adding a leak-free, recency-weighted per-QB rating (trailing EPA/dropback for that week's actual starter, shrunk toward league average for small samples) was by far the single biggest improvement tested: accuracy 60.0% to 62.6%, AUC 0.605 to 0.662. The QB feature alone very nearly matches the full combined model -- a real, expected finding given how much quarterback play drives NFL outcomes. Model B still barely beats the market alone (68.1% to 68.3%) -- that gap hasn't closed much, which is an honest result, not a disappointing one.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Known Gaps</h3>
+      <div class="gap-item"><span class="gap-num">01</span><span>Ridge regularization strength (alpha=200) was set by convention, not tuned via backtest like the recency half-life was -- a real gap given the "don't set constants arbitrarily" rule this project runs on</span></div>
+      <div class="gap-item"><span class="gap-num">02</span><span>No QB-specific features yet -- the model can't see that Arizona is starting a backup/rookie situation, which is why Model A and the market diverge sharply on that game</span></div>
+      <div class="gap-item"><span class="gap-num">03</span><span>No injury, weather, or rest/travel features implemented despite being in the original spec</span></div>
+      <div class="gap-item"><span class="gap-num">04</span><span>Gradient boosting was tested and did not beat logistic regression at this feature-set size -- worth revisiting once more features exist</span></div>
+    </div>
+
+    <div class="method-block">
+      <h3>Weekly Re-run Process</h3>
+      <ol>
+        <li>Add the completed week's real plays to the training data</li>
+        <li>Refit team ratings at the new "as of" cutoff</li>
+        <li>Pull that week's Vegas lines for Model B</li>
+        <li>Generate both models' predictions for the upcoming week, save before kickoff</li>
+        <li>Grade last week's saved predictions against actual results</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="page" id="page-roadmap">
+    <div class="page-head">
+      <div>
+        <h2>Roadmap</h2>
+        <div class="desc">Built to keep growing. Tracking what's shipped and what's next.</div>
+      </div>
+    </div>
+    <div class="roadmap-grid">
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Opponent-Adjusted Ratings</h4><p>Replaced flat trailing averages with a real two-way fixed-effects ridge regression on 294,989 plays.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Recency Weighting</h4><p>Tested 3 half-life values via backtest; 16 games won on log loss.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Market Blend Model</h4><p>Model B combines football-only features with the Vegas spread; honestly evaluated against market alone.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Tune Ridge Alpha</h4><p>Backtested alpha=200 was over-regularized; alpha=15 wins on log loss. Same evidence-based process used for recency half-life.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>QB-Specific Features</h4><p>Per-starter trailing EPA/dropback, leak-free and shrunk for small samples. Biggest single accuracy gain so far: 60.0% to 62.6%.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Confirm Week 1 Starters</h4><p>QB feature needs each team's actual confirmed Week 1 starter -- several are genuinely uncertain this early (Arizona, others). Scheduled for the week of Sept 1-8 sweep, not fabricated ahead of time.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Claude Code Routine</h4><p>Move the pipeline into a repo with a scheduled weekly Routine: pull new data, retrain, refresh lines/injuries, regenerate this dashboard.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>My Picks Log</h4><p>Record actual submitted picks each week, separate from raw model output.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Season Accuracy Tracker</h4><p>Grade saved predictions against real results weekly -- running accuracy, log loss, calibration.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Injury &amp; Weather Features</h4><p>Close the remaining gaps from the original spec.</p></div>
+      <div class="add-idea">+ next idea goes here</div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+const teams = __TEAMS_JSON__;
+
+const games = __GAMES_JSON__;
+
+document.querySelectorAll('.nav-btn:not(.disabled)').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-'+btn.dataset.page).classList.add('active');
+  });
+});
+
+let sortKey = 'net', sortDir = -1;
+function renderRatings(){
+  const sorted = [...teams].sort((a,b)=>{
+    if(sortKey==='team') return a.team.localeCompare(b.team)*sortDir;
+    return (a[sortKey]-b[sortKey])*sortDir;
+  });
+  const maxAbs = Math.max(...teams.map(t=>Math.abs(t.net)));
+  document.getElementById('ratings-body').innerHTML = sorted.map((t,i)=>{
+    const width = (Math.abs(t.net)/maxAbs)*100;
+    return `<tr>
+      <td class="rank">${i+1}</td>
+      <td><div class="team-cell"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span></div></td>
+      <td class="num">${t.net>=0?'+':''}${t.net.toFixed(3)}
+        <div class="srs-bar-track"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
+      </td>
+      <td class="num">${t.off>=0?'+':''}${t.off.toFixed(3)}</td>
+      <td class="num">${t.def>=0?'+':''}${t.def.toFixed(3)}</td>
+    </tr>`;
+  }).join('');
+}
+document.querySelectorAll('#ratings-table th[data-key]').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const key = th.dataset.key;
+    if(key==='rank') return;
+    if(sortKey===key){sortDir*=-1;} else {sortKey=key; sortDir=-1;}
+    document.querySelectorAll('#ratings-table th').forEach(h=>h.classList.remove('sorted'));
+    th.classList.add('sorted');
+    renderRatings();
+  });
+});
+renderRatings();
+
+let currentFilter='all';
+function renderGames(){
+  const grid = document.getElementById('game-grid');
+  const filtered = games.filter(g=>{
+    const diverge = Math.abs(g.fbA_home - g.mktB_home);
+    if(currentFilter==='all') return true;
+    if(currentFilter==='flagged') return !!g.flag;
+    if(currentFilter==='divergent') return diverge >= 12;
+    return true;
+  });
+  grid.innerHTML = filtered.map(g=>{
+    const diverge = Math.abs(g.fbA_home - g.mktB_home);
+    const aHomeWin = g.fbA_home >= (100-g.fbA_home);
+    const bHomeWin = g.mktB_home >= (100-g.mktB_home);
+    const idSafe = (g.home+g.away).replace(/[^a-zA-Z]/g,'');
+    return `<div class="game-card ${g.flag?'has-flag':''}">
+      <div class="game-top">
+        <span class="game-kickoff">${g.kickoff}</span>
+        <div class="tag-row">
+          ${diverge>=12 ? `<span class="conf-tag tag-warn">gap ${diverge.toFixed(0)}pt</span>` : `<span class="conf-tag tag-good">Models agree</span>`}
+        </div>
+      </div>
+
+      <div class="model-row">
+        <span class="model-label a">MODEL A</span>
+        <div class="tele">
+          <div class="tele-team ${!aHomeWin?'winner a':''}">${g.away}<span class="pct">${(100-g.fbA_home).toFixed(1)}%</span></div>
+          <div class="tele-bar"><div class="tele-bar-fill a" style="width:${100-g.fbA_home}%;"></div><div class="tele-marker"></div></div>
+          <div class="tele-team right ${aHomeWin?'winner a':''}">${g.home}<span class="pct">${g.fbA_home.toFixed(1)}%</span></div>
+        </div>
+      </div>
+
+      <div class="model-row">
+        <span class="model-label b">MODEL B</span>
+        <div class="tele">
+          <div class="tele-team ${!bHomeWin?'winner b':''}">${g.away}<span class="pct">${(100-g.mktB_home).toFixed(1)}%</span></div>
+          <div class="tele-bar"><div class="tele-bar-fill b" style="width:${100-g.mktB_home}%;"></div><div class="tele-marker"></div></div>
+          <div class="tele-team right ${bHomeWin?'winner b':''}">${g.home}<span class="pct">${g.mktB_home.toFixed(1)}%</span></div>
+        </div>
+      </div>
+
+      <div class="market-ref">Vegas line: <b>${g.spread>=0 ? g.home+' -'+g.spread : g.away+' -'+Math.abs(g.spread)}</b> (DraftKings)</div>
+
+      ${g.flag ? `<button class="toggle-flag" data-idx="${idSafe}">+ view note</button>
+      <div class="flag-note" id="flag-${idSafe}"><b>Note:</b> ${g.flag}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.toggle-flag').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const note = document.getElementById('flag-'+btn.dataset.idx);
+      note.classList.toggle('open');
+      btn.textContent = note.classList.contains('open') ? '- hide note' : '+ view note';
+    });
+  });
+}
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderGames();
+  });
+});
+renderGames();
+</script>
+</body>
+</html>
