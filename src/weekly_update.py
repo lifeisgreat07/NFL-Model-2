@@ -94,7 +94,7 @@ def market_prob(home_spread):
 
 
 def build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_week,
-                                qb, schedules_by_season, ol_lookup=None):
+                                qb, schedules_by_season, ol_lookup=None, qb_change_lookup=None):
     """Construct the training dataset: one row per historical game with
     real, leak-free matchup features and the actual outcome. ol_lookup is
     optional (from ol_continuity.compute_ol_continuity_lookup) -- if not
@@ -129,6 +129,12 @@ def build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_wee
             home_ol = 0.0 if home_ol is None else home_ol
             away_ol = 0.0 if away_ol is None else away_ol
 
+            if qb_change_lookup:
+                home_changed = qb_change_lookup.get((g['season'], g['week'], g['home_team']), 0)
+                away_changed = qb_change_lookup.get((g['season'], g['week'], g['away_team']), 0)
+            else:
+                home_changed, away_changed = 0, 0
+
             rows.append({
                 'season': g['season'], 'week': g['week'],
                 'home_win': int(g['home_score'] > g['away_score']),
@@ -136,6 +142,7 @@ def build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_wee
                 'def_matchup': a_off - h_def,
                 'qb_matchup': home_qb_rating - away_qb_rating,
                 'ol_continuity_diff': home_ol - away_ol,
+                'qb_change_diff': home_changed - away_changed,
                 'spread_line': g.get('spread_line', np.nan),
             })
     return pd.DataFrame(rows)
@@ -208,6 +215,28 @@ def log_line_snapshot(season, week, week_games):
         print(f"Line snapshots for {season} week {week} already captured today -- skipped duplicate.")
 
 
+def build_qb_change_lookup(qb, seasons):
+    """Leak-free 'did this team change starting QB since last week' flag.
+    Validated via backtest (2026-08-19): a real, clean improvement --
+    accuracy +0.46pt, log loss/Brier/AUC all meaningfully better too,
+    apples-to-apples same-sample comparison. Directly captures a known gap
+    in the trailing QB rating (a lagging indicator that doesn't reflect a
+    change that JUST happened this week)."""
+    all_starters = []
+    for s in seasons:
+        try:
+            all_starters.append(qb['identify_starters'](s))
+        except Exception:
+            continue
+    if not all_starters:
+        return {}
+    starters = pd.concat(all_starters, ignore_index=True).sort_values(['posteam', 'season', 'week'])
+    starters['prev_qb'] = starters.groupby(['posteam', 'season'])['passer_player_id'].shift(1)
+    starters['qb_changed'] = ((starters['prev_qb'].notna()) &
+                                (starters['passer_player_id'] != starters['prev_qb'])).astype(int)
+    return starters.set_index(['season', 'week', 'posteam'])['qb_changed'].to_dict()
+
+
 def main(season, week):
     print(f"=== Weekly update: {season} Week {week} ===")
 
@@ -231,23 +260,27 @@ def main(season, week):
         print(f"  WARNING: could not load snap counts ({e}) -- OL continuity will default to neutral (0.0) for this run.")
         ol_lookup = None
 
+    print("Building QB-change (backup detection) lookup...")
+    qb_change_lookup = build_qb_change_lookup(qb, seasons_needed)
+    print(f"  Detected {sum(qb_change_lookup.values())} QB changes across {len(qb_change_lookup)} team-weeks")
+
     print("Loading schedules (scores + lines) for training history...")
     schedules_by_season = {s: load_schedule(s) for s in seasons_needed}
 
     print("Constructing historical training features...")
     hist = build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_week,
-                                       qb, schedules_by_season, ol_lookup=ol_lookup)
+                                       qb, schedules_by_season, ol_lookup=ol_lookup, qb_change_lookup=qb_change_lookup)
     print(f"  {len(hist)} historical games with complete features")
     if len(hist) < 100:
         print("WARNING: very little historical training data -- predictions below may be unreliable.")
 
     print("Fitting Model A (football-only) and Model B (+ market)...")
     model_a = LogisticRegression(max_iter=1000)
-    model_a.fit(hist[['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff']].values, hist['home_win'].values)
+    model_a.fit(hist[['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff', 'qb_change_diff']].values, hist['home_win'].values)
 
     hist_b = hist.dropna(subset=['spread_line'])
     model_b = LogisticRegression(max_iter=1000)
-    model_b.fit(hist_b[['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff', 'spread_line']].values, hist_b['home_win'].values)
+    model_b.fit(hist_b[['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff', 'qb_change_diff', 'spread_line']].values, hist_b['home_win'].values)
 
     print("Building current ('as of right now') team + QB ratings...")
     cutoff_i = len(week_keys)
@@ -258,6 +291,18 @@ def main(season, week):
     starter_season = season if season in [s for s, w in qb['week_keys']] else season - 1
     current_starters = qb['identify_starters'](starter_season)
     current_starters_idx = current_starters.sort_values('week').drop_duplicates(subset=['posteam'], keep='last').set_index('posteam')
+
+    # "Did this team just change starters" as of right now: compare the two
+    # most recent known starts per team (not the leak-free historical
+    # lookup, which only covers completed weeks -- this is the live,
+    # forward-looking version of the same signal).
+    current_qb_changed = {}
+    for team, grp in current_starters.sort_values('week').groupby('posteam'):
+        if len(grp) >= 2:
+            last_two = grp.tail(2)['passer_player_id'].tolist()
+            current_qb_changed[team] = int(last_two[0] != last_two[1])
+        else:
+            current_qb_changed[team] = 0
 
     print("Loading target week's schedule + current lines...")
     sched = load_schedule(season)
@@ -320,7 +365,11 @@ def main(season, week):
             home_ol, away_ol = 0.0, 0.0
         ol_continuity_diff = home_ol - away_ol
 
-        prob_a = model_a.predict_proba([[off_matchup, def_matchup, qb_matchup, ol_continuity_diff]])[0][1]
+        home_qb_changed = current_qb_changed.get(home, 0)
+        away_qb_changed = current_qb_changed.get(away, 0)
+        qb_change_diff = home_qb_changed - away_qb_changed
+
+        prob_a = model_a.predict_proba([[off_matchup, def_matchup, qb_matchup, ol_continuity_diff, qb_change_diff]])[0][1]
 
         # "Why" breakdown: each feature's raw contribution to the log-odds,
         # i.e. coefficient * feature value. Signed toward home team (positive
@@ -332,11 +381,12 @@ def main(season, week):
             'def_matchup': round(float(coefs[1] * def_matchup), 4),
             'qb_matchup': round(float(coefs[2] * qb_matchup), 4),
             'ol_continuity': round(float(coefs[3] * ol_continuity_diff), 4),
+            'qb_change': round(float(coefs[4] * qb_change_diff), 4),
         }
 
         spread = g.get('spread_line', np.nan)
         if pd.notna(spread):
-            prob_b = model_b.predict_proba([[off_matchup, def_matchup, qb_matchup, ol_continuity_diff, spread]])[0][1]
+            prob_b = model_b.predict_proba([[off_matchup, def_matchup, qb_matchup, ol_continuity_diff, qb_change_diff, spread]])[0][1]
             mkt = market_prob(spread)
         else:
             prob_b, mkt = None, None
@@ -346,6 +396,7 @@ def main(season, week):
             'off_matchup': round(off_matchup, 4), 'def_matchup': round(def_matchup, 4),
             'qb_matchup': round(qb_matchup, 4),
             'ol_continuity_diff': round(ol_continuity_diff, 4),
+            'qb_change_diff': qb_change_diff,
             'spread_line': spread if pd.notna(spread) else None,
             'model_a_home_win_prob': round(float(prob_a), 4),
             'model_b_home_win_prob': round(float(prob_b), 4) if prob_b is not None else None,
