@@ -468,6 +468,9 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Line Movement Tracking</h4><p>Every routine run now logs the current spread for the upcoming week's games to a running archive -- even weeks that are too early to lock in real predictions. Building real, first-party movement data starting this season.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Formal Backup-QB Detection</h4><p>Tested honestly first: a leak-free "did this team change starting QB since last week" flag improved every metric (accuracy +0.46pt, log loss/Brier/AUC all better too) and shows a clean, correctly-signed coefficient. Real signal -- now a live 5th model feature.</p></div>
 
+      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Time-Decay QB-Change Signal</h4><p>Replace the binary "did the starter change last week" flag with a decaying signal -- full disruption the week right after a change, tapering over the following weeks. Refines tonight's strongest model win rather than introducing an unproven idea.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Re-test Ensemble/Gradient Boosting</h4><p>GBM lost to logistic regression early on with only 3 features. With 5 real features now (more genuine interaction potential), that verdict deserves a fresh test.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Team Deep-Dive Page</h4><p>Click any team to see their rating trend across the season, recent starter history, and past context notes -- turns this from a weekly snapshot into a season-long analytical tool.</p></div>
       <div class="add-idea">+ next idea goes here</div>
     </div>
   </section>
