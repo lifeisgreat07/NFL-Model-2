@@ -428,8 +428,8 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Season Accuracy + Calibration</h4><p>Real running record for Model A, Model B, and market, plus a calibration table checking whether confidence buckets actually hit their rate.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Confidence Ranking + Why Breakdown</h4><p>Games auto-ranked by pick confidence for confidence-pool scoring; every pick shows its real feature-level math, not a black box.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Past-Week Browsing</h4><p>Week selector on the Board and Picks pages instead of only ever showing the latest week.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Rest &amp; Weather Features</h4><p>Real backtest: rest days, dome/cold/wind all made the model slightly WORSE (62.6% to ~61.5% accuracy). Honest negative result, not adopted — matches real NFL analytics findings that these effects are weaker than broadcast narratives suggest.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Travel Distance</h4><p>Needs a real stadium-coordinates lookup table, not yet built. The one piece of the rest/travel/weather group still genuinely untested.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Rest, Weather &amp; Travel Distance</h4><p>Real backtest on all three: rest days, dome/cold/wind, and haversine travel distance all made the model flat or slightly worse (62.6% down to ~61.5-62.2%). Honest negative results, none adopted.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Per-Game Context Notes</h4><p>Generalized from a single QB-only flag into a real multi-note list the routine's web-search step can populate with injuries, coaching changes, or anything else worth flagging — shown as a real bulleted list per game.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Line Movement Tracking</h4><p>Capture the spread at multiple points before kickoff (open vs. current) — sharp money movement may carry real signal beyond a single snapshot line.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Formal Backup-QB Detection</h4><p>Right now QB uncertainty (like Arizona's) only surfaces as a manual flag. A real signal for "starter is genuinely in question" would let the model react instead of defaulting to neutral.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Annual Hyperparameter Re-tuning</h4><p>Alpha, half-life, and QB shrinkage were tuned once on 2020-2025 data. Re-running that search each offseason keeps the model honest as the league's scoring environment shifts.</p></div>
@@ -602,16 +602,24 @@ function renderGames(){
       </div>
       <div class="market-ref">Vegas line: <b>${spreadText}</b></div>
       ${whyHtml}
-      ${g.flag ? `<button class="toggle-flag" data-idx="${idSafe}">+ view note</button>
-      <div class="flag-note" id="flag-${idSafe}"><b>Note:</b> ${g.flag}</div>` : ''}
+      ${(g.notes && g.notes.length) ? `<button class="toggle-flag" data-idx="${idSafe}">+ view context (${g.notes.length})</button>
+      <div class="flag-note" id="flag-${idSafe}">
+        <b>Context:</b>
+        <ul style="margin:6px 0 0 18px; padding:0;">
+          ${g.notes.map(n=>`<li style="margin-bottom:4px;">${n}</li>`).join('')}
+        </ul>
+      </div>` : ''}
     </div>`;
   }).join('');
 
   document.querySelectorAll('.toggle-flag').forEach(btn=>{
+    const originalLabel = btn.textContent;
     btn.addEventListener('click', ()=>{
       const note = document.getElementById('flag-'+btn.dataset.idx);
       note.classList.toggle('open');
-      btn.textContent = note.classList.contains('open') ? '− hide note' : '+ view note';
+      btn.textContent = note.classList.contains('open')
+        ? originalLabel.replace('+ view', '− hide')
+        : originalLabel;
     });
   });
   document.querySelectorAll('.why-toggle').forEach(btn=>{

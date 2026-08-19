@@ -77,16 +77,18 @@ def build_games_js(preds, graded_lookup_by_key):
         key = (p['home'], p['away'])
         graded = graded_lookup_by_key.get(key)
 
-        flag_parts = []
+        notes = p.get('context_notes') or []
+        # Backward compat with predictions saved before this change (single qb_note field)
         if p.get('qb_note'):
-            flag_parts.append(p['qb_note'])
+            notes = notes + [p['qb_note']]
 
         games.append({
             'away': p['away'], 'home': p['home'],
             'spread': p.get('spread_line'),
             'fbA_home': round(model_a * 100, 1),
             'mktB_home': round((model_b if model_b is not None else model_a) * 100, 1),
-            'flag': " ".join(flag_parts),
+            'flag': " ".join(notes),
+            'notes': notes,
             'confidence_rank': p.get('confidence_rank'),
             'confidence_points': p.get('confidence_points'),
             'why': p.get('why'),

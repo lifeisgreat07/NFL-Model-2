@@ -242,10 +242,10 @@ def main(season, week):
             home_qb_rating = qb['trailing_rating'](home_qb_id, qb_cutoff)
             away_qb_rating = qb['trailing_rating'](away_qb_id, qb_cutoff)
             qb_matchup = home_qb_rating - away_qb_rating
-            qb_note = None
+            context_notes = []
         else:
             qb_matchup = 0.0
-            qb_note = "No known starter found -- QB feature defaulted to neutral (0). Verify manually."
+            context_notes = ["No known starter found -- QB feature defaulted to neutral (0). Verify manually."]
 
         prob_a = model_a.predict_proba([[off_matchup, def_matchup, qb_matchup]])[0][1]
 
@@ -275,7 +275,14 @@ def main(season, week):
             'model_a_home_win_prob': round(float(prob_a), 4),
             'model_b_home_win_prob': round(float(prob_b), 4) if prob_b is not None else None,
             'market_prob_home': round(mkt, 4) if mkt is not None else None,
-            'qb_note': qb_note,
+            'context_notes': context_notes,
+            # Populated by the routine's web-search step (a script alone can't
+            # research current news) -- see README for the expected prompt
+            # addition. Left as None here; the routine appends real findings
+            # (injuries, coaching/staff changes, anything else worth flagging)
+            # before this file gets committed. A script-only run leaves this
+            # empty, which the dashboard displays honestly as "no notes yet"
+            # rather than fabricating something.
             'why': why,
         })
 
@@ -303,7 +310,7 @@ def main(season, week):
         for p in predictions:
             print(f"  {p['away']} @ {p['home']}: Model A home={p['model_a_home_win_prob']:.1%}"
                   + (f", Model B home={p['model_b_home_win_prob']:.1%}" if p['model_b_home_win_prob'] else "")
-                  + (f"  [{p['qb_note']}]" if p['qb_note'] else ""))
+                  + (f"  [notes: {'; '.join(p['context_notes'])}]" if p['context_notes'] else ""))
 
     print("\nNOTE: run grade_predictions.py separately once this week's games complete.")
     print("NOTE: this script does not regenerate dashboard.html yet -- see generate_dashboard.py.")
@@ -318,5 +325,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     week = args.week if args.week is not None else determine_next_week(args.season)
     main(args.season, week)
-
-# trigger-test marker: forcing a real diff to confirm the GitHub Action fires
