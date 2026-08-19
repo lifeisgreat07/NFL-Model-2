@@ -433,7 +433,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Line Movement Tracking</h4><p>Capture the spread at multiple points before kickoff (open vs. current) — sharp money movement may carry real signal beyond a single snapshot line.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Formal Backup-QB Detection</h4><p>Right now QB uncertainty (like Arizona's) only surfaces as a manual flag. A real signal for "starter is genuinely in question" would let the model react instead of defaulting to neutral.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Annual Hyperparameter Re-tuning</h4><p>Alpha, half-life, and QB shrinkage were tuned once on 2020-2025 data. Re-running that search each offseason keeps the model honest as the league's scoring environment shifts.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Confidence-Pool Payout Optimizer</h4><p>Beyond just ranking picks by confidence — model the actual points-based scoring rules of the specific pool to optimize expected points, not just raw accuracy.</p></div>
+
       <div class="add-idea">+ next idea goes here</div>
     </div>
   </section>
@@ -1035,6 +1035,7 @@ function renderGames(){
         ${whyRow('Offense edge', g.why.off_matchup)}
         ${whyRow('Defense edge', g.why.def_matchup)}
         ${whyRow('QB edge', g.why.qb_matchup)}
+        ${(g.why.ol_continuity !== undefined) ? whyRow('O-line continuity', g.why.ol_continuity) : ''}
       </div>` : '';
     return `<div class="game-card ${g.flag?'has-flag':''}">
       <div class="game-top">
