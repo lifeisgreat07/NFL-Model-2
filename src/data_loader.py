@@ -29,6 +29,16 @@ def load_schedule(season):
     return sched
 
 
+def load_snap_counts(seasons=None):
+    """Fetch player-level snap counts (with position) for the given
+    seasons -- used for the O-line continuity feature. Same nflverse
+    source as play-by-play, no auth needed."""
+    import nfl_data_py as nfl
+    seasons = seasons or TRAIN_SEASONS
+    df = nfl.import_snap_counts(seasons)
+    return df
+
+
 if __name__ == '__main__':
     # Smoke test -- run this after `pip install nfl_data_py` to confirm
     # network access works in whatever environment this executes in

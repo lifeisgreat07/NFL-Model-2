@@ -20,10 +20,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, log_loss, brier_score_loss, roc_auc_score
 
 sys.path.insert(0, str(Path(__file__).parent))
-from data_loader import load_plays, load_schedule
+from data_loader import load_plays, load_schedule, load_snap_counts
 from ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
 from config import TRAIN_SEASONS, BACKTEST_SEASONS
 from weekly_update import build_historical_features  # reuse the same feature logic
+from ol_continuity import compute_ol_continuity_lookup
 
 
 def backtest(hist, features, test_seasons):
@@ -55,17 +56,20 @@ def main():
     plays, week_keys, week_to_idx = prep_plays(raw)
     team_ratings_by_week = build_team_ratings(plays, week_keys, upto_cutoff_i=None)
     qb = build_qb_ratings(raw)
+    snap_counts = load_snap_counts(TRAIN_SEASONS)
+    ol_lookup = compute_ol_continuity_lookup(snap_counts)
     schedules_by_season = {s: load_schedule(s) for s in TRAIN_SEASONS}
     hist = build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_week,
-                                       qb, schedules_by_season)
+                                       qb, schedules_by_season, ol_lookup=ol_lookup)
     print(f"{len(hist)} historical games built.\n")
 
     print(f"{'Model':<40}{'Accuracy':<10}{'LogLoss':<10}{'Brier':<8}{'AUC':<8}")
     results = {}
     for name, features in [
         ('Football-only (off+def+qb)', ['off_matchup', 'def_matchup', 'qb_matchup']),
+        ('Football-only + OL continuity', ['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff']),
         ('Market alone', ['spread_line']),
-        ('Football + Market (blended)', ['off_matchup', 'def_matchup', 'qb_matchup', 'spread_line']),
+        ('Football + OL + Market (blended)', ['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff', 'spread_line']),
     ]:
         m = backtest(hist, features, BACKTEST_SEASONS)
         results[name] = m

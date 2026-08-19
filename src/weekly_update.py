@@ -41,7 +41,8 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 
 sys.path.insert(0, str(Path(__file__).parent))
-from data_loader import load_plays, load_schedule
+from data_loader import load_plays, load_schedule, load_snap_counts
+from ol_continuity import compute_ol_continuity_lookup, get_continuity, get_most_recent_continuity
 from ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
 from config import TRAIN_SEASONS
 
@@ -93,9 +94,11 @@ def market_prob(home_spread):
 
 
 def build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_week,
-                                qb, schedules_by_season):
+                                qb, schedules_by_season, ol_lookup=None):
     """Construct the training dataset: one row per historical game with
-    real, leak-free matchup features and the actual outcome."""
+    real, leak-free matchup features and the actual outcome. ol_lookup is
+    optional (from ol_continuity.compute_ol_continuity_lookup) -- if not
+    provided, ol_continuity_diff defaults to 0.0 (neutral) for every row."""
     rows = []
     for season, sched in schedules_by_season.items():
         played = sched.dropna(subset=['home_score', 'away_score'])
@@ -121,12 +124,18 @@ def build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_wee
             home_qb_rating = qb['trailing_rating'](starters_idx.loc[hk, 'passer_player_id'], qb_cutoff)
             away_qb_rating = qb['trailing_rating'](starters_idx.loc[ak, 'passer_player_id'], qb_cutoff)
 
+            home_ol = get_continuity(ol_lookup, g['home_team'], g['season'], g['week'], default=0.0) if ol_lookup else 0.0
+            away_ol = get_continuity(ol_lookup, g['away_team'], g['season'], g['week'], default=0.0) if ol_lookup else 0.0
+            home_ol = 0.0 if home_ol is None else home_ol
+            away_ol = 0.0 if away_ol is None else away_ol
+
             rows.append({
                 'season': g['season'], 'week': g['week'],
                 'home_win': int(g['home_score'] > g['away_score']),
                 'off_matchup': h_off - a_def,
                 'def_matchup': a_off - h_def,
                 'qb_matchup': home_qb_rating - away_qb_rating,
+                'ol_continuity_diff': home_ol - away_ol,
                 'spread_line': g.get('spread_line', np.nan),
             })
     return pd.DataFrame(rows)
@@ -213,23 +222,32 @@ def main(season, week):
     print("Building QB ratings...")
     qb = build_qb_ratings(raw)
 
+    print("Loading snap counts for O-line continuity...")
+    try:
+        snap_counts = load_snap_counts(seasons_needed)
+        ol_lookup = compute_ol_continuity_lookup(snap_counts)
+        print(f"  Built continuity lookup for {len(ol_lookup)} team-weeks")
+    except Exception as e:
+        print(f"  WARNING: could not load snap counts ({e}) -- OL continuity will default to neutral (0.0) for this run.")
+        ol_lookup = None
+
     print("Loading schedules (scores + lines) for training history...")
     schedules_by_season = {s: load_schedule(s) for s in seasons_needed}
 
     print("Constructing historical training features...")
     hist = build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_week,
-                                       qb, schedules_by_season)
+                                       qb, schedules_by_season, ol_lookup=ol_lookup)
     print(f"  {len(hist)} historical games with complete features")
     if len(hist) < 100:
         print("WARNING: very little historical training data -- predictions below may be unreliable.")
 
     print("Fitting Model A (football-only) and Model B (+ market)...")
     model_a = LogisticRegression(max_iter=1000)
-    model_a.fit(hist[['off_matchup', 'def_matchup', 'qb_matchup']].values, hist['home_win'].values)
+    model_a.fit(hist[['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff']].values, hist['home_win'].values)
 
     hist_b = hist.dropna(subset=['spread_line'])
     model_b = LogisticRegression(max_iter=1000)
-    model_b.fit(hist_b[['off_matchup', 'def_matchup', 'qb_matchup', 'spread_line']].values, hist_b['home_win'].values)
+    model_b.fit(hist_b[['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff', 'spread_line']].values, hist_b['home_win'].values)
 
     print("Building current ('as of right now') team + QB ratings...")
     cutoff_i = len(week_keys)
@@ -295,7 +313,14 @@ def main(season, week):
             qb_matchup = 0.0
             context_notes = ["No known starter found -- QB feature defaulted to neutral (0). Verify manually."]
 
-        prob_a = model_a.predict_proba([[off_matchup, def_matchup, qb_matchup]])[0][1]
+        if ol_lookup:
+            home_ol = get_most_recent_continuity(ol_lookup, home, season, week, default=0.0)
+            away_ol = get_most_recent_continuity(ol_lookup, away, season, week, default=0.0)
+        else:
+            home_ol, away_ol = 0.0, 0.0
+        ol_continuity_diff = home_ol - away_ol
+
+        prob_a = model_a.predict_proba([[off_matchup, def_matchup, qb_matchup, ol_continuity_diff]])[0][1]
 
         # "Why" breakdown: each feature's raw contribution to the log-odds,
         # i.e. coefficient * feature value. Signed toward home team (positive
@@ -306,11 +331,12 @@ def main(season, week):
             'off_matchup': round(float(coefs[0] * off_matchup), 4),
             'def_matchup': round(float(coefs[1] * def_matchup), 4),
             'qb_matchup': round(float(coefs[2] * qb_matchup), 4),
+            'ol_continuity': round(float(coefs[3] * ol_continuity_diff), 4),
         }
 
         spread = g.get('spread_line', np.nan)
         if pd.notna(spread):
-            prob_b = model_b.predict_proba([[off_matchup, def_matchup, qb_matchup, spread]])[0][1]
+            prob_b = model_b.predict_proba([[off_matchup, def_matchup, qb_matchup, ol_continuity_diff, spread]])[0][1]
             mkt = market_prob(spread)
         else:
             prob_b, mkt = None, None
@@ -319,6 +345,7 @@ def main(season, week):
             'season': season, 'week': week, 'home': home, 'away': away,
             'off_matchup': round(off_matchup, 4), 'def_matchup': round(def_matchup, 4),
             'qb_matchup': round(qb_matchup, 4),
+            'ol_continuity_diff': round(ol_continuity_diff, 4),
             'spread_line': spread if pd.notna(spread) else None,
             'model_a_home_win_prob': round(float(prob_a), 4),
             'model_b_home_win_prob': round(float(prob_b), 4) if prob_b is not None else None,
