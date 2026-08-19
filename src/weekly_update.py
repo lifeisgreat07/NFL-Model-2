@@ -160,6 +160,45 @@ def determine_next_week(season):
     # handled in main() by exiting cleanly when a week has zero games.
 
 
+LINE_HISTORY_DIR = Path(__file__).parent.parent / 'data' / 'line_history'
+LINE_HISTORY_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def log_line_snapshot(season, week, week_games):
+    """Append today's spread for each game in this week to a running
+    archive. Building this over the season is how we'll eventually have
+    real line-movement data to backtest against, without needing to buy
+    historical odds data we don't have access to."""
+    path = LINE_HISTORY_DIR / f'{season}_week{week}_lines.json'
+    existing = []
+    if path.exists():
+        with open(path) as f:
+            existing = json.load(f)
+
+    today_str = date.today().isoformat()
+    already_logged_today = {(e['home'], e['away']) for e in existing if e['captured_date'] == today_str}
+
+    added = 0
+    for _, g in week_games.iterrows():
+        key = (g['home_team'], g['away_team'])
+        if key in already_logged_today:
+            continue  # don't duplicate if this script runs more than once same day
+        spread = g.get('spread_line', None)
+        existing.append({
+            'captured_date': today_str,
+            'home': g['home_team'], 'away': g['away_team'],
+            'spread_line': spread if pd.notna(spread) else None,
+        })
+        added += 1
+
+    if added:
+        with open(path, 'w') as f:
+            json.dump(existing, f, indent=2)
+        print(f"Logged {added} line snapshot(s) for {season} week {week} (captured {today_str}).")
+    else:
+        print(f"Line snapshots for {season} week {week} already captured today -- skipped duplicate.")
+
+
 def main(season, week):
     print(f"=== Weekly update: {season} Week {week} ===")
 
@@ -210,6 +249,15 @@ def main(season, week):
         print(f"No games found for {season} week {week} -- likely means the season "
               f"(including playoffs) is over. Nothing to predict. Exiting cleanly.")
         return
+
+    # Line-movement archive: log today's spread for every game in the target
+    # week, EVERY time this runs -- including the weeks before the lock-in
+    # guard allows real predictions. This is deliberately placed before that
+    # guard so we capture multiple readings over time as kickoff approaches
+    # (e.g. a reading from 3 weeks out, another from 1 week out, another the
+    # day before). Unlike predictions/, this file is meant to accumulate
+    # multiple entries over time -- append, don't treat as write-once.
+    log_line_snapshot(season, week, week_games)
 
     if 'gameday' in week_games.columns:
         earliest = pd.to_datetime(week_games['gameday']).min()
