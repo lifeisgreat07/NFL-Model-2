@@ -103,7 +103,9 @@
   .tele-logo{width:20px; height:20px; object-fit:contain;}
   .team-abbr{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; width:38px;}
   .team-full{color:var(--chalk-dim); font-size:12.5px;}
-  .srs-bar-track{position:relative; width:90px; height:6px; background:var(--panel-hi); border-radius:3px; display:inline-block; vertical-align:middle; margin-left:10px; overflow:hidden;}
+  .net-cell-inner{display:grid; grid-template-columns:90px 62px; align-items:center; column-gap:10px; justify-content:center;}
+  .net-value{font-family:'Plus Jakarta Sans', sans-serif; text-align:right; justify-self:end; white-space:nowrap;}
+  .srs-bar-track{position:relative; width:90px; height:6px; background:var(--panel-hi); border-radius:3px; overflow:hidden;}
   .srs-bar-fill{position:absolute; top:0; bottom:0; background:linear-gradient(90deg, var(--amber), var(--amber-bright)); border-radius:3px;}
 
   /* ---------- Week board ---------- */
@@ -165,7 +167,6 @@
   .game-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
   .matchup-header{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   .at-symbol{color:var(--chalk-dim); font-weight:500;}
-  .home-tag{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:9.5px; letter-spacing:.06em; color:var(--amber); background:var(--amber-dim); padding:2px 8px; border-radius:20px; margin-left:2px;}
   .game-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); letter-spacing:.03em;}
   .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
   .tag-good{background:var(--good-dim); color:var(--good);}
@@ -174,17 +175,28 @@
   .model-row{display:grid; grid-template-columns:56px 1fr; align-items:center; gap:12px; margin-bottom:10px;}
   .model-row:last-of-type{margin-bottom:0;}
   .model-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--chalk-dim);}
-  .model-label.a{color:var(--blue);} .model-label.b{color:var(--amber);}
+  .model-label.a{color:var(--chalk);} .model-label.b{color:var(--chalk);}
   .tele{display:grid; grid-template-columns:60px 1fr 60px; align-items:center; gap:10px;}
   .tele-team .pct{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:500; font-size:11px; color:var(--chalk-dim); margin-top:3px;}
   .tele-team.right{text-align:right;}
-  .tele-team.winner.a{color:var(--blue);} .tele-team.winner.a .pct{color:var(--blue);}
-  .tele-team.winner.b{color:var(--amber);} .tele-team.winner.b .pct{color:var(--amber);}
-  .tele-bar{position:relative; height:9px; background:var(--panel-hi); border-radius:5px; overflow:hidden;}
-  .tele-bar-fill{position:absolute; top:0; bottom:0; left:0; border-radius:5px 0 0 5px; transition:width .4s cubic-bezier(.16,1,.3,1);}
-  .tele-bar-fill.a{background:linear-gradient(90deg, var(--blue), #86BEF0);}
-  .tele-bar-fill.b{background:linear-gradient(90deg, var(--amber), var(--amber-bright));}
-  .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--chalk); opacity:.4; left:50%;}
+  /* Winner indication deliberately does NOT use color/hue -- with 32 real
+     team colors spanning nearly every hue (the Rams' navy+gold nearly
+     matches our own blue/amber brand accents), any fixed color risks
+     looking like "that's just this team's color" instead of meaning
+     anything. A neutral checkmark badge can't be confused with team
+     identity regardless of matchup. */
+  .tele-team.winner{font-weight:800;}
+  .pick-badge{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px;
+    border-radius:50%; margin-bottom:3px; flex-shrink:0; box-sizing:border-box;}
+  .pick-badge.a{background:var(--good);}
+  .pick-badge.b{background:var(--good);}
+  .pick-badge.placeholder{background:transparent; border:1.5px dashed var(--line-strong);}
+  .pick-badge svg{width:9px; height:9px;}
+  .tele-bar{position:relative; height:9px; background:var(--panel-hi); border-radius:5px; overflow:hidden; display:flex;}
+  .tele-bar-seg{height:100%; transition:width .4s cubic-bezier(.16,1,.3,1); opacity:.88;}
+  .tele-bar-seg:first-child{border-radius:5px 0 0 5px;}
+  .tele-bar-seg:last-child{border-radius:0 5px 5px 0;}
+  .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--chalk); opacity:.55; left:50%; z-index:2;}
 
   .market-ref{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; color:var(--chalk-dim); margin-top:12px; padding-top:12px; border-top:1px dashed var(--line);}
   .market-ref b{color:var(--chalk);}
@@ -199,8 +211,9 @@
     background:var(--panel); border:1px dashed var(--line); border-radius:var(--radius);}
 
   /* ---------- Methodology ---------- */
-  .method-block{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:24px 26px; margin-bottom:16px; box-shadow:var(--shadow-sm);}
-  .method-block h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:18px; margin-bottom:11px; color:var(--amber);}
+  .method-block{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--line-strong); border-radius:var(--radius); padding:24px 26px; margin-bottom:16px; box-shadow:var(--shadow-sm);}
+  .method-block h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:17px; letter-spacing:.01em; margin-bottom:13px; color:var(--chalk); display:flex; align-items:center; gap:9px;}
+  .method-block h3::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--chalk-dim); flex-shrink:0;}
   .method-block p, .method-block li{font-size:13.5px; line-height:1.68; color:var(--chalk-dim);}
   .method-block ul, .method-block ol{padding-left:20px; margin-top:6px;}
   .formula{font-family:'Plus Jakarta Sans', sans-serif; background:var(--ink); border:1px solid var(--line); border-radius:8px;
@@ -307,9 +320,9 @@
           <tr>
             <th data-key="rank">#</th>
             <th data-key="team">Team</th>
-            <th data-key="net" class="sorted">Net Rating</th>
-            <th data-key="off">Offense</th>
-            <th data-key="def">Defense</th>
+            <th data-key="net" class="sorted" style="text-align:center;">Net Rating</th>
+            <th data-key="off" style="text-align:right;">Offense</th>
+            <th data-key="def" style="text-align:right;">Defense</th>
           </tr>
         </thead>
         <tbody id="ratings-body"></tbody>
@@ -703,6 +716,61 @@ const teams = [
 // Standard ESPN CDN logo pattern -- publicly hosted images, same approach
 // used across the NFL analytics open-source community. Most codes match
 // our team abbreviations lowercased; a handful of ESPN's own codes differ.
+// Team colors for the two-tone confidence bar -- chosen for visibility
+// against a dark background. Where a team's official primary color is
+// near-black/navy/dark-green (would vanish on our dark theme), using
+// their brighter secondary color instead -- standard practice for
+// dark-mode sports UIs, still recognizably "that team's color."
+const TEAM_COLOR = {
+  ARI:'#97233F', ATL:'#A71930', BAL:'#3E1F91', BUF:'#1E4DB7', CAR:'#0085CA',
+  CHI:'#C83803', CIN:'#FB4F14', CLE:'#FF3C00', DAL:'#869397', DEN:'#1E4D8C',
+  DET:'#0076B6', GB:'#FFB612',  HOU:'#C8102E', IND:'#2A5DAE', JAX:'#D7A22A',
+  KC:'#E31837',  LA:'#FFA300',  LAC:'#0080C6', LV:'#A5ACAF',  MIA:'#008E97',
+  MIN:'#FFC62F', NE:'#C60C30',  NO:'#D3BC8D',  NYG:'#1848A0', NYJ:'#1D8A5D',
+  PHI:'#046A38', PIT:'#A2AAAD', SEA:'#69BE28', SF:'#B3995D',  TB:'#D50A0A',
+  TEN:'#4B92DB', WAS:'#8B1538',
+};
+function teamColor(abbr){ return TEAM_COLOR[abbr] || '#8A93A8'; }
+
+// Per-matchup contrast safety net: even with a clean base palette, the NFL
+// has many teams sharing red/blue as a primary color (Chiefs/Bucs/Patriots,
+// several blues), so two SPECIFIC teams can still land close together.
+// Rather than trying to hand-solve every possible pair, detect low-contrast
+// pairings at render time and push them apart while keeping each team's
+// real hue (so it still reads as "that team," just more separated).
+function hexToRgb(hex){
+  const h = hex.replace('#','');
+  return [parseInt(h.substr(0,2),16), parseInt(h.substr(2,2),16), parseInt(h.substr(4,2),16)];
+}
+function rgbToHex(r,g,b){
+  const c = v => Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0');
+  return '#'+c(r)+c(g)+c(b);
+}
+function colorDistance(hex1, hex2){
+  const [r1,g1,b1] = hexToRgb(hex1), [r2,g2,b2] = hexToRgb(hex2);
+  return Math.sqrt((r1-r2)**2 + (g1-g2)**2 + (b1-b2)**2);
+}
+function shade(hex, amount){
+  // amount > 0 lightens toward white, < 0 darkens toward black
+  const [r,g,b] = hexToRgb(hex);
+  const target = amount > 0 ? 255 : 0;
+  const t = Math.abs(amount);
+  return rgbToHex(r+(target-r)*t, g+(target-g)*t, b+(target-b)*t);
+}
+const CONTRAST_THRESHOLD = 90;  // roughly: "would look muddy/hard to tell apart side by side"
+function matchupColors(awayAbbr, homeAbbr){
+  let away = teamColor(awayAbbr), home = teamColor(homeAbbr);
+  const dist = colorDistance(away, home);
+  if(dist < CONTRAST_THRESHOLD){
+    // Too close: darken the away segment and lighten the home segment,
+    // proportional to how close they are (closer = bigger push apart).
+    const push = 0.35 * (1 - dist/CONTRAST_THRESHOLD) + 0.2;
+    away = shade(away, -push);
+    home = shade(home, push);
+  }
+  return [away, home];
+}
+
 const ESPN_CODE = {
   ARI:'ari',ATL:'atl',BAL:'bal',BUF:'buf',CAR:'car',CHI:'chi',CIN:'cin',CLE:'cle',
   DAL:'dal',DEN:'den',DET:'det',GB:'gb',HOU:'hou',IND:'ind',JAX:'jax',KC:'kc',
@@ -984,9 +1052,10 @@ function renderRatings(){
     return `<tr>
       <td class="rank">${i+1}</td>
       <td><div class="team-cell"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span></div></td>
-      <td class="num">${t.net>=0?'+':''}${t.net.toFixed(3)}
+      <td class="num"><div class="net-cell-inner">
         <div class="srs-bar-track"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
-      </td>
+        <span class="net-value">${t.net>=0?'+':''}${t.net.toFixed(3)}</span>
+      </div></td>
       <td class="num">${t.off>=0?'+':''}${t.off.toFixed(3)}</td>
       <td class="num">${t.def>=0?'+':''}${t.def.toFixed(3)}</td>
     </tr>`;
@@ -1018,6 +1087,13 @@ function populateWeekSelect(selectEl, onChange, initial){
   selectEl.innerHTML = weekKeysSorted.map(k=>`<option value="${k}">${weekLabel(k)}</option>`).join('');
   selectEl.value = initial || weekKeysSorted[weekKeysSorted.length-1];
   selectEl.addEventListener('change', ()=> onChange(selectEl.value));
+}
+
+function pickBadge(modelKey, isWinner){
+  if(isWinner){
+    return `<span class="pick-badge ${modelKey}"><svg viewBox="0 0 24 24" fill="none" stroke="var(--chalk)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>`;
+  }
+  return `<span class="pick-badge placeholder"></span>`;
 }
 
 function whyRow(label, val){
@@ -1085,6 +1161,7 @@ function renderGames(){
     const aHomeWin = g.fbA_home >= (100-g.fbA_home);
     const bHomeWin = g.mktB_home >= (100-g.mktB_home);
     const idSafe = (g.home+g.away).replace(/[^a-zA-Z]/g,'');
+    const [awayC, homeC] = matchupColors(g.away, g.home);
     const spreadText = (g.spread===null || g.spread===undefined) ? "No line available"
       : (g.spread>=0 ? `${g.home} -${g.spread}` : `${g.away} -${Math.abs(g.spread)}`);
     const gradedTag = g.graded
@@ -1099,7 +1176,7 @@ function renderGames(){
         ${(g.why.ol_continuity !== undefined) ? whyRow('O-line continuity', g.why.ol_continuity) : ''}
       </div>` : '';
     return `<div class="game-card ${g.flag?'has-flag':''}">
-      <div class="matchup-header">${g.away} <span class="at-symbol">@</span> ${g.home}<span class="home-tag">HOME</span></div>
+      <div class="matchup-header">${g.away} <span class="at-symbol">@</span> ${g.home}</div>
       <div class="game-top">
         <span class="game-kickoff">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}</span>
         <div class="tag-row" style="display:flex; gap:6px; align-items:center;">
@@ -1110,17 +1187,25 @@ function renderGames(){
       <div class="model-row">
         <span class="model-label a">MODEL A</span>
         <div class="tele">
-          <div class="tele-team ${!aHomeWin?'winner a':''}"><img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.fbA_home).toFixed(1)}%</span></div>
-          <div class="tele-bar"><div class="tele-bar-fill a" style="width:${100-g.fbA_home}%;"></div><div class="tele-marker"></div></div>
-          <div class="tele-team right ${aHomeWin?'winner a':''}"><img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.fbA_home.toFixed(1)}%</span></div>
+          <div class="tele-team ${!aHomeWin?'winner':''}">${pickBadge('a', !aHomeWin)}<img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.fbA_home).toFixed(1)}%</span></div>
+          <div class="tele-bar">
+            <div class="tele-bar-seg" style="width:${100-g.fbA_home}%; background:${awayC};"></div>
+            <div class="tele-bar-seg" style="width:${g.fbA_home}%; background:${homeC};"></div>
+            <div class="tele-marker"></div>
+          </div>
+          <div class="tele-team right ${aHomeWin?'winner':''}">${pickBadge('a', aHomeWin)}<img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.fbA_home.toFixed(1)}%</span></div>
         </div>
       </div>
       <div class="model-row">
         <span class="model-label b">MODEL B</span>
         <div class="tele">
-          <div class="tele-team ${!bHomeWin?'winner b':''}"><img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.mktB_home).toFixed(1)}%</span></div>
-          <div class="tele-bar"><div class="tele-bar-fill b" style="width:${100-g.mktB_home}%;"></div><div class="tele-marker"></div></div>
-          <div class="tele-team right ${bHomeWin?'winner b':''}"><img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.mktB_home.toFixed(1)}%</span></div>
+          <div class="tele-team ${!bHomeWin?'winner':''}">${pickBadge('b', !bHomeWin)}<img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.mktB_home).toFixed(1)}%</span></div>
+          <div class="tele-bar">
+            <div class="tele-bar-seg" style="width:${100-g.mktB_home}%; background:${awayC};"></div>
+            <div class="tele-bar-seg" style="width:${g.mktB_home}%; background:${homeC};"></div>
+            <div class="tele-marker"></div>
+          </div>
+          <div class="tele-team right ${bHomeWin?'winner':''}">${pickBadge('b', bHomeWin)}<img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.mktB_home.toFixed(1)}%</span></div>
         </div>
       </div>
       <div class="market-ref">Vegas line: <b>${spreadText}</b></div>
@@ -1210,7 +1295,7 @@ function renderPicksGrid(){
     const pick = myPicks[pid];
     const modelBPick = g.mktB_home >= 50 ? g.home : g.away;
     return `<div class="game-card">
-      <div class="game-top"><span class="game-kickoff">${g.away} <span class="at-symbol">@</span> ${g.home}<span class="home-tag">HOME</span></span></div>
+      <div class="game-top"><span class="game-kickoff">${g.away} <span class="at-symbol">@</span> ${g.home}</span></div>
       <div class="pick-buttons" data-pid="${pid}">
         <button class="pick-btn ${pick===g.away?'selected':''}" data-team="${g.away}">${g.away}</button>
         <button class="pick-btn ${pick===g.home?'selected':''}" data-team="${g.home}">${g.home}</button>
