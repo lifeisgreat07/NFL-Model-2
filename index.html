@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Pick'em Board">
 <meta name="theme-color" content="#0B0E15">
 <title>Pick'em Model — Command Board</title>
-<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800&family=Work+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#0B0E15; --panel:#131826; --panel-raised:#1B2233; --panel-hi:#232B3F;
@@ -32,7 +32,7 @@
       radial-gradient(1200px 600px at 15% -10%, rgba(242,169,59,0.06), transparent 60%),
       radial-gradient(900px 500px at 100% 0%, rgba(91,155,224,0.05), transparent 55%),
       var(--ink);
-    color:var(--chalk); font-family:'Work Sans', sans-serif; min-height:100vh; display:flex;
+    color:var(--chalk); font-family:'Plus Jakarta Sans', sans-serif; min-height:100vh; display:flex;
     -webkit-font-smoothing:antialiased;
     padding-top:var(--safe-top);
   }
@@ -47,16 +47,16 @@
     padding:24px 0; position:sticky; top:0; height:100vh;
   }
   .brand{padding:0 22px 22px; border-bottom:1px solid var(--line); margin-bottom:16px;}
-  .brand-mark{display:flex; align-items:center; gap:7px; font-family:'IBM Plex Mono', monospace; font-size:10px;
+  .brand-mark{display:flex; align-items:center; gap:7px; font-family:'Plus Jakarta Sans', sans-serif; font-size:10px;
     letter-spacing:.18em; color:var(--amber); text-transform:uppercase;}
   .brand-mark .pulse{width:6px; height:6px; border-radius:50%; background:var(--amber); box-shadow:0 0 8px var(--amber);}
-  .brand h1{font-family:'Big Shoulders Display', sans-serif; font-weight:800; font-size:25px; letter-spacing:.01em; line-height:.98; margin-top:8px;}
-  .brand-sub{font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--chalk-dim); margin-top:7px;}
+  .brand h1{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:25px; letter-spacing:.01em; line-height:.98; margin-top:8px;}
+  .brand-sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; color:var(--chalk-dim); margin-top:7px;}
   nav.side-nav{display:flex; flex-direction:column; gap:2px; padding:0 12px;}
-  .nav-group-label{font-family:'IBM Plex Mono', monospace; font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--chalk-dim); padding:15px 10px 7px; opacity:.7;}
+  .nav-group-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--chalk-dim); padding:15px 10px 7px; opacity:.7;}
   .nav-btn{
     display:flex; align-items:center; gap:11px; background:transparent; border:none; color:var(--chalk-dim);
-    font-family:'Work Sans'; font-weight:600; font-size:14px; text-align:left; padding:10px 11px; border-radius:8px;
+    font-family:'Plus Jakarta Sans'; font-weight:600; font-size:14px; text-align:left; padding:10px 11px; border-radius:8px;
     cursor:pointer; transition:background .15s ease, color .15s ease, transform .1s ease; width:100%;
   }
   .nav-btn:hover{background:var(--panel-raised); color:var(--chalk);}
@@ -66,7 +66,7 @@
   .nav-btn.disabled{opacity:.38; cursor:default;}
   .nav-btn.disabled:hover{background:transparent; color:var(--chalk-dim);}
   .sidebar-foot{margin-top:auto; padding:16px 22px 0; border-top:1px solid var(--line);
-    font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--chalk-dim); line-height:1.7;}
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--chalk-dim); line-height:1.7;}
 
   /* ---------- Main ---------- */
   main{flex:1; padding:34px 42px 60px; max-width:1220px; min-width:0;}
@@ -76,15 +76,15 @@
 
   .page-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:14px;
     margin-bottom:28px; padding-bottom:20px; border-bottom:1px solid var(--line);}
-  .page-head h2{font-family:'Big Shoulders Display', sans-serif; font-weight:800; font-size:34px; letter-spacing:.005em;}
+  .page-head h2{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:34px; letter-spacing:.005em;}
   .page-head .desc{color:var(--chalk-dim); font-size:13.5px; margin-top:5px; max-width:560px; line-height:1.55;}
-  .badge{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.05em; padding:6px 11px; border-radius:20px;
+  .badge{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; letter-spacing:.05em; padding:6px 11px; border-radius:20px;
     background:var(--panel-raised); color:var(--chalk-dim); border:1px solid var(--line); white-space:nowrap;}
 
   /* ---------- Power Ratings table ---------- */
   .table-wrap{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-md);}
   table{width:100%; border-collapse:collapse;}
-  thead th{font-family:'IBM Plex Mono', monospace; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+  thead th{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
     color:var(--chalk-dim); text-align:left; padding:13px 16px; border-bottom:1px solid var(--line); cursor:pointer;
     user-select:none; white-space:nowrap; transition:color .15s ease;}
   thead th:hover{color:var(--amber);}
@@ -93,10 +93,15 @@
   tbody tr{transition:background .12s ease;}
   tbody tr:last-child td{border-bottom:none;}
   tbody tr:hover{background:var(--panel-raised);}
-  td.num{font-family:'IBM Plex Mono', monospace; text-align:right;}
-  td.rank{font-family:'IBM Plex Mono', monospace; color:var(--chalk-dim); width:36px;}
+  td.num{font-family:'Plus Jakarta Sans', sans-serif; text-align:right;}
+  td.rank{font-family:'Plus Jakarta Sans', sans-serif; color:var(--chalk-dim); width:36px;}
   .team-cell{display:flex; align-items:center; gap:9px;}
-  .team-abbr{font-family:'Big Shoulders Display', sans-serif; font-weight:700; font-size:15px; width:38px;}
+  .team-logo{width:22px; height:22px; object-fit:contain; flex-shrink:0;}
+  .tele-team{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:16px; line-height:1;
+    display:flex; flex-direction:column; align-items:center; gap:3px;}
+  .tele-team.right{align-items:flex-end;}
+  .tele-logo{width:20px; height:20px; object-fit:contain;}
+  .team-abbr{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; width:38px;}
   .team-full{color:var(--chalk-dim); font-size:12.5px;}
   .srs-bar-track{position:relative; width:90px; height:6px; background:var(--panel-hi); border-radius:3px; display:inline-block; vertical-align:middle; margin-left:10px; overflow:hidden;}
   .srs-bar-fill{position:absolute; top:0; bottom:0; background:linear-gradient(90deg, var(--amber), var(--amber-bright)); border-radius:3px;}
@@ -105,7 +110,7 @@
   .filter-row{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; align-items:center;}
   .week-select{
     background:var(--panel); border:1px solid var(--line); color:var(--chalk);
-    font-family:'IBM Plex Mono', monospace; font-size:12px; padding:9px 14px; border-radius:8px;
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; padding:9px 14px; border-radius:8px;
     cursor:pointer; appearance:none; -webkit-appearance:none; min-width:160px;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A93A8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat:no-repeat; background-position:right 10px center; background-size:16px; padding-right:32px;
@@ -113,40 +118,40 @@
   .week-select:focus{outline:1px solid var(--amber);}
 
   .confidence-badge{
-    font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.05em; padding:4px 10px; border-radius:20px;
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.05em; padding:4px 10px; border-radius:20px;
     background:var(--blue-dim); color:var(--blue); white-space:nowrap;
   }
-  .why-toggle{background:none; border:none; color:var(--chalk-dim); font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+  .why-toggle{background:none; border:none; color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px;
     letter-spacing:.04em; cursor:pointer; padding:0; margin-top:11px; text-decoration:underline; text-underline-offset:3px;}
   .why-panel{display:none; margin-top:10px; padding-top:10px; border-top:1px dashed var(--line);}
   .why-panel.open{display:block; animation:fade .2s ease;}
   .why-row{display:flex; align-items:center; gap:10px; font-size:11.5px; margin-bottom:6px;}
   .why-row:last-child{margin-bottom:0;}
-  .why-label{font-family:'IBM Plex Mono', monospace; color:var(--chalk-dim); width:90px; flex-shrink:0;}
+  .why-label{font-family:'Plus Jakarta Sans', sans-serif; color:var(--chalk-dim); width:90px; flex-shrink:0;}
   .why-bar-track{position:relative; flex:1; height:6px; background:var(--panel-hi); border-radius:3px; overflow:hidden;}
   .why-bar-fill{position:absolute; top:0; bottom:0; border-radius:3px;}
   .why-bar-fill.pos{background:var(--good); left:50%;}
   .why-bar-fill.neg{background:var(--warn); right:50%;}
-  .why-val{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--chalk-dim); width:52px; text-align:right; flex-shrink:0;}
-  .graded-tag{font-family:'IBM Plex Mono', monospace; font-size:10px; padding:4px 10px; border-radius:20px;}
+  .why-val{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); width:52px; text-align:right; flex-shrink:0;}
+  .graded-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; padding:4px 10px; border-radius:20px;}
   .graded-tag.correct{background:var(--good-dim); color:var(--good);}
   .graded-tag.incorrect{background:var(--warn-dim); color:var(--warn);}
 
   .pick-buttons{display:flex; gap:8px; margin-top:14px;}
   .pick-btn{flex:1; background:transparent; border:1.5px solid var(--line); color:var(--chalk);
-    font-family:'Big Shoulders Display'; font-weight:700; font-size:15px; padding:10px 6px; border-radius:8px;
+    font-family:'Plus Jakarta Sans'; font-weight:700; font-size:15px; padding:10px 6px; border-radius:8px;
     cursor:pointer; transition:all .15s ease;}
   .pick-btn:hover{border-color:var(--amber);}
   .pick-btn.selected{background:var(--amber); border-color:var(--amber); color:var(--ink);}
-  .pick-agrees{font-family:'IBM Plex Mono', monospace; font-size:10px; color:var(--chalk-dim); margin-top:8px;}
+  .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--chalk-dim); margin-top:8px;}
 
   .accuracy-cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-bottom:20px;}
   .accuracy-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm);}
-  .accuracy-card .label{font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:8px;}
-  .accuracy-card .value{font-family:'Big Shoulders Display', sans-serif; font-weight:800; font-size:32px;}
-  .accuracy-card .sub{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--chalk-dim); margin-top:4px;}
+  .accuracy-card .label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:8px;}
+  .accuracy-card .value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:32px;}
+  .accuracy-card .sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); margin-top:4px;}
   .filter-btn{background:var(--panel); border:1px solid var(--line); color:var(--chalk-dim);
-    font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:.04em; padding:8px 14px; border-radius:20px;
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; letter-spacing:.04em; padding:8px 14px; border-radius:20px;
     cursor:pointer; transition:all .15s ease;}
   .filter-btn:hover{border-color:var(--amber); color:var(--chalk);}
   .filter-btn:active{transform:scale(.96);}
@@ -158,18 +163,17 @@
   .game-card:hover{border-color:var(--line-strong); box-shadow:var(--shadow-md); transform:translateY(-1px);}
   .game-card.has-flag{border-left:3px solid var(--warn);}
   .game-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
-  .game-kickoff{font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--chalk-dim); letter-spacing:.03em;}
-  .conf-tag{font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
+  .game-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); letter-spacing:.03em;}
+  .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
   .tag-good{background:var(--good-dim); color:var(--good);}
   .tag-warn{background:var(--warn-dim); color:var(--warn);}
 
   .model-row{display:grid; grid-template-columns:56px 1fr; align-items:center; gap:12px; margin-bottom:10px;}
   .model-row:last-of-type{margin-bottom:0;}
-  .model-label{font-family:'IBM Plex Mono', monospace; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--chalk-dim);}
+  .model-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--chalk-dim);}
   .model-label.a{color:var(--blue);} .model-label.b{color:var(--amber);}
   .tele{display:grid; grid-template-columns:60px 1fr 60px; align-items:center; gap:10px;}
-  .tele-team{font-family:'Big Shoulders Display', sans-serif; font-weight:700; font-size:16px; line-height:1;}
-  .tele-team .pct{display:block; font-family:'IBM Plex Mono', monospace; font-weight:500; font-size:11px; color:var(--chalk-dim); margin-top:3px;}
+  .tele-team .pct{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:500; font-size:11px; color:var(--chalk-dim); margin-top:3px;}
   .tele-team.right{text-align:right;}
   .tele-team.winner.a{color:var(--blue);} .tele-team.winner.a .pct{color:var(--blue);}
   .tele-team.winner.b{color:var(--amber);} .tele-team.winner.b .pct{color:var(--amber);}
@@ -179,48 +183,48 @@
   .tele-bar-fill.b{background:linear-gradient(90deg, var(--amber), var(--amber-bright));}
   .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--chalk); opacity:.4; left:50%;}
 
-  .market-ref{font-family:'IBM Plex Mono', monospace; font-size:10.5px; color:var(--chalk-dim); margin-top:12px; padding-top:12px; border-top:1px dashed var(--line);}
+  .market-ref{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; color:var(--chalk-dim); margin-top:12px; padding-top:12px; border-top:1px dashed var(--line);}
   .market-ref b{color:var(--chalk);}
 
   .flag-note{margin-top:11px; font-size:12.5px; color:var(--chalk-dim); line-height:1.5; display:none;}
   .flag-note.open{display:block; animation:fade .2s ease;}
   .flag-note b{color:var(--warn); font-weight:600;}
-  .toggle-flag{background:none; border:none; color:var(--warn); font-family:'IBM Plex Mono', monospace; font-size:10.5px;
+  .toggle-flag{background:none; border:none; color:var(--warn); font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px;
     letter-spacing:.04em; cursor:pointer; padding:0; margin-top:11px; text-decoration:underline; text-underline-offset:3px;}
 
-  .empty-state{padding:48px 24px; text-align:center; color:var(--chalk-dim); font-family:'IBM Plex Mono', monospace; font-size:12.5px;
+  .empty-state{padding:48px 24px; text-align:center; color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px;
     background:var(--panel); border:1px dashed var(--line); border-radius:var(--radius);}
 
   /* ---------- Methodology ---------- */
   .method-block{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:24px 26px; margin-bottom:16px; box-shadow:var(--shadow-sm);}
-  .method-block h3{font-family:'Big Shoulders Display', sans-serif; font-weight:700; font-size:18px; margin-bottom:11px; color:var(--amber);}
+  .method-block h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:18px; margin-bottom:11px; color:var(--amber);}
   .method-block p, .method-block li{font-size:13.5px; line-height:1.68; color:var(--chalk-dim);}
   .method-block ul, .method-block ol{padding-left:20px; margin-top:6px;}
-  .formula{font-family:'IBM Plex Mono', monospace; background:var(--ink); border:1px solid var(--line); border-radius:8px;
+  .formula{font-family:'Plus Jakarta Sans', sans-serif; background:var(--ink); border:1px solid var(--line); border-radius:8px;
     padding:15px 17px; font-size:13px; color:var(--amber); margin:11px 0; overflow-x:auto; white-space:pre;}
   .metrics-table{width:100%; border-collapse:collapse; margin-top:10px; font-size:12.5px;}
-  .metrics-table th{font-family:'IBM Plex Mono', monospace; font-size:10px; text-transform:uppercase; letter-spacing:.06em;
+  .metrics-table th{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; text-transform:uppercase; letter-spacing:.06em;
     color:var(--chalk-dim); text-align:left; padding:9px 10px; border-bottom:1px solid var(--line);}
-  .metrics-table td{padding:9px 10px; border-bottom:1px solid var(--line); font-family:'IBM Plex Mono', monospace; color:var(--chalk);}
+  .metrics-table td{padding:9px 10px; border-bottom:1px solid var(--line); font-family:'Plus Jakarta Sans', sans-serif; color:var(--chalk);}
   .metrics-table tr:last-child td{border-bottom:none;}
   .metrics-table .highlight{color:var(--amber);}
   .gap-item{display:flex; gap:11px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13px;}
   .gap-item:last-child{border-bottom:none;}
-  .gap-num{font-family:'IBM Plex Mono', monospace; color:var(--warn); flex-shrink:0;}
+  .gap-num{font-family:'Plus Jakarta Sans', sans-serif; color:var(--warn); flex-shrink:0;}
 
   /* ---------- Roadmap ---------- */
   .roadmap-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:14px;}
   .roadmap-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:19px; box-shadow:var(--shadow-sm); transition:transform .18s ease, box-shadow .18s ease;}
   .roadmap-card:hover{transform:translateY(-2px); box-shadow:var(--shadow-md);}
-  .roadmap-status{font-family:'IBM Plex Mono', monospace; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+  .roadmap-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
     padding:4px 9px; border-radius:20px; display:inline-block; margin-bottom:11px;}
   .status-planned{background:var(--panel-hi); color:var(--chalk-dim);}
   .status-next{background:var(--amber-dim); color:var(--amber);}
   .status-done{background:var(--good-dim); color:var(--good);}
-  .roadmap-card h4{font-family:'Big Shoulders Display', sans-serif; font-weight:600; font-size:16px; margin-bottom:7px;}
+  .roadmap-card h4{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:16px; margin-bottom:7px;}
   .roadmap-card p{font-size:12.5px; color:var(--chalk-dim); line-height:1.55;}
   .add-idea{border:1px dashed var(--line); background:transparent; display:flex; align-items:center; justify-content:center;
-    min-height:100px; border-radius:var(--radius); color:var(--chalk-dim); font-family:'IBM Plex Mono', monospace; font-size:12px; text-align:center; padding:16px;}
+    min-height:100px; border-radius:var(--radius); color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; text-align:center; padding:16px;}
 
   /* ---------- Mobile bottom nav ---------- */
   .bottom-nav{
@@ -232,7 +236,7 @@
   .bottom-nav-row{display:flex; justify-content:space-between; align-items:center; overflow-x:hidden; gap:2px;}
   .bnav-btn{
     display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:none;
-    color:var(--chalk-dim); font-family:'IBM Plex Mono', monospace; font-size:8.5px; letter-spacing:.01em;
+    color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:8.5px; letter-spacing:.01em;
     padding:6px 2px; border-radius:10px; flex:1 1 0; min-width:0; transition:color .15s ease;
   }
   .bnav-btn svg{width:18px; height:18px; flex-shrink:0;}
@@ -363,6 +367,12 @@
     </div>
 
     <div class="method-block">
+      <h3>Model A vs. Model B — What Actually Separates Them</h3>
+      <p><b style="color:var(--blue)">Model A (football-only)</b> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, O-line continuity, and QB-change detection — all derived from real play-by-play and snap-count data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (see the "why this pick" breakdown on every game).</p>
+      <p><b style="color:var(--amber)">Model B (market-blended)</b> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.1% vs. ~63% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
+    </div>
+
+    <div class="method-block">
       <h3>Data</h3>
       <p>Real nflverse play-by-play, filtered to pass/rush attempts with valid EPA, used to fit opponent-adjusted team ratings and per-QB ratings.</p>
     </div>
@@ -384,12 +394,14 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
         <tbody>
           <tr><td>Coin flip</td><td>50.0%</td><td>0.693</td><td>0.250</td><td>0.500</td></tr>
           <tr><td>Home team always wins</td><td>54.6%</td><td>-</td><td>-</td><td>-</td></tr>
-          <tr><td>Model A (football + QB)</td><td class="highlight">62.6%</td><td class="highlight">0.655</td><td class="highlight">0.231</td><td class="highlight">0.662</td></tr>
+          <tr><td>3-feature (off+def+QB) only</td><td>62.6%</td><td>0.655</td><td>0.231</td><td>0.662</td></tr>
+          <tr><td>Model A -- live, all 5 features</td><td class="highlight">62.6%</td><td class="highlight">0.650</td><td class="highlight">0.229</td><td class="highlight">0.670</td></tr>
           <tr><td>Vegas market alone</td><td>68.1%</td><td>0.607</td><td>0.210</td><td>0.724</td></tr>
-          <tr><td>Model B (+ market)</td><td class="highlight">68.3%</td><td class="highlight">0.608</td><td class="highlight">0.210</td><td class="highlight">0.726</td></tr>
+          <tr><td>Model B -- live, all 5 + market</td><td class="highlight">67.8%</td><td class="highlight">0.606</td><td class="highlight">0.209</td><td class="highlight">0.728</td></tr>
         </tbody>
       </table>
-      <p style="margin-top:11px;">Honest read: the market barely improves when Model A is blended in (68.1% to 68.3%) — the Vegas line already captures almost everything our features see, plus information we don't have. Model A alone is real signal (beats the home-favorite baseline by ~8 points) but nowhere near market-level.</p>
+      <p style="margin-top:11px;">Honest read on the two newest features (O-line continuity, QB-change detection): tested SEPARATELY, each improved every metric, including accuracy. Combined together in the live model, accuracy dips a hair in both Model A and Model B (-0.09pt, -0.28pt) while log loss, Brier, and AUC all still improve. Likely explanation: the two features share some overlapping signal (a team in QB turmoil is often also in O-line turmoil), so combining them slightly redistributes the decision boundary even as it makes the underlying probabilities better-calibrated. We're not hiding that accuracy alone moved the wrong direction slightly -- for a confidence-ranked pool, calibration (log loss, Brier) likely matters more than raw accuracy, but both numbers are real and both are shown.</p>
+      <p style="margin-top:11px;">Separately: the market still barely improves when our full feature set is blended in (68.1% to 67.8% -- actually slightly worse on raw accuracy, though marginally better on log loss/Brier/AUC). The Vegas line still captures almost everything we can see, plus real-world information we structurally can't.</p>
     </div>
 
     <div class="method-block">
@@ -430,9 +442,8 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Past-Week Browsing</h4><p>Week selector on the Board and Picks pages instead of only ever showing the latest week.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Rest, Weather &amp; Travel Distance</h4><p>Real backtest on all three: rest days, dome/cold/wind, and haversine travel distance all made the model flat or slightly worse (62.6% down to ~61.5-62.2%). Honest negative results, none adopted.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Per-Game Context Notes</h4><p>Generalized from a single QB-only flag into a real multi-note list the routine's web-search step can populate with injuries, coaching changes, or anything else worth flagging — shown as a real bulleted list per game.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Line Movement Tracking</h4><p>Capture the spread at multiple points before kickoff (open vs. current) — sharp money movement may carry real signal beyond a single snapshot line.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Formal Backup-QB Detection</h4><p>Right now QB uncertainty (like Arizona's) only surfaces as a manual flag. A real signal for "starter is genuinely in question" would let the model react instead of defaulting to neutral.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-planned">Planned</div><h4>Annual Hyperparameter Re-tuning</h4><p>Alpha, half-life, and QB shrinkage were tuned once on 2020-2025 data. Re-running that search each offseason keeps the model honest as the league's scoring environment shifts.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Line Movement Tracking</h4><p>Every routine run now logs the current spread for the upcoming week's games to a running archive -- even weeks that are too early to lock in real predictions. Building real, first-party movement data starting this season.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Formal Backup-QB Detection</h4><p>Tested honestly first: a leak-free "did this team change starting QB since last week" flag improved every metric (accuracy +0.46pt, log loss/Brier/AUC all better too) and shows a clean, correctly-signed coefficient. Real signal -- now a live 5th model feature.</p></div>
 
       <div class="add-idea">+ next idea goes here</div>
     </div>
@@ -678,6 +689,20 @@ const teams = [
     "net": -0.1895
   }
 ];
+
+// Standard ESPN CDN logo pattern -- publicly hosted images, same approach
+// used across the NFL analytics open-source community. Most codes match
+// our team abbreviations lowercased; a handful of ESPN's own codes differ.
+const ESPN_CODE = {
+  ARI:'ari',ATL:'atl',BAL:'bal',BUF:'buf',CAR:'car',CHI:'chi',CIN:'cin',CLE:'cle',
+  DAL:'dal',DEN:'den',DET:'det',GB:'gb',HOU:'hou',IND:'ind',JAX:'jax',KC:'kc',
+  LA:'lar',LAC:'lac',LV:'lv',MIA:'mia',MIN:'min',NE:'ne',NO:'no',NYG:'nyg',
+  NYJ:'nyj',PHI:'phi',PIT:'pit',SEA:'sea',SF:'sf',TB:'tb',TEN:'ten',WAS:'wsh',
+};
+function teamLogo(abbr){
+  const code = ESPN_CODE[abbr] || abbr.toLowerCase();
+  return `https://a.espncdn.com/i/teamlogos/nfl/500/${code}.png`;
+}
 const weeks = {
   "2025_week10": {
     "season": 2025,
@@ -948,7 +973,7 @@ function renderRatings(){
     const width = (Math.abs(t.net)/maxAbs)*100;
     return `<tr>
       <td class="rank">${i+1}</td>
-      <td><div class="team-cell"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span></div></td>
+      <td><div class="team-cell"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span></div></td>
       <td class="num">${t.net>=0?'+':''}${t.net.toFixed(3)}
         <div class="srs-bar-track"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
       </td>
@@ -1048,17 +1073,17 @@ function renderGames(){
       <div class="model-row">
         <span class="model-label a">MODEL A</span>
         <div class="tele">
-          <div class="tele-team ${!aHomeWin?'winner a':''}">${g.away}<span class="pct">${(100-g.fbA_home).toFixed(1)}%</span></div>
+          <div class="tele-team ${!aHomeWin?'winner a':''}"><img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.fbA_home).toFixed(1)}%</span></div>
           <div class="tele-bar"><div class="tele-bar-fill a" style="width:${100-g.fbA_home}%;"></div><div class="tele-marker"></div></div>
-          <div class="tele-team right ${aHomeWin?'winner a':''}">${g.home}<span class="pct">${g.fbA_home.toFixed(1)}%</span></div>
+          <div class="tele-team right ${aHomeWin?'winner a':''}"><img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.fbA_home.toFixed(1)}%</span></div>
         </div>
       </div>
       <div class="model-row">
         <span class="model-label b">MODEL B</span>
         <div class="tele">
-          <div class="tele-team ${!bHomeWin?'winner b':''}">${g.away}<span class="pct">${(100-g.mktB_home).toFixed(1)}%</span></div>
+          <div class="tele-team ${!bHomeWin?'winner b':''}"><img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.mktB_home).toFixed(1)}%</span></div>
           <div class="tele-bar"><div class="tele-bar-fill b" style="width:${100-g.mktB_home}%;"></div><div class="tele-marker"></div></div>
-          <div class="tele-team right ${bHomeWin?'winner b':''}">${g.home}<span class="pct">${g.mktB_home.toFixed(1)}%</span></div>
+          <div class="tele-team right ${bHomeWin?'winner b':''}"><img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.mktB_home.toFixed(1)}%</span></div>
         </div>
       </div>
       <div class="market-ref">Vegas line: <b>${spreadText}</b></div>
@@ -1179,8 +1204,26 @@ function renderAccuracy(){
     return;
   }
   const o = accuracy.overall;
+
+  // My Picks record: compare localStorage picks against every graded week's actual outcome
+  const myPicks = loadMyPicks();
+  let myWins = 0, myLosses = 0;
+  weekKeysSorted.forEach(k=>{
+    (weeks[k].games||[]).forEach(g=>{
+      const pid = k+'|'+g.home+'|'+g.away;
+      const pick = myPicks[pid];
+      if(pick && g.graded && g.actual_home_win !== null){
+        const actualWinner = g.actual_home_win ? g.home : g.away;
+        if(pick === actualWinner) myWins++; else myLosses++;
+      }
+    });
+  });
+  const myTotal = myWins + myLosses;
+  const myPct = myTotal > 0 ? Math.round(1000*myWins/myTotal)/10 : null;
+
   const cardsHtml = `
     <div class="accuracy-cards">
+      <div class="accuracy-card"><div class="label">My Picks</div><div class="value">${myPct ?? '—'}%</div><div class="sub">${myWins}-${myLosses} graded</div></div>
       <div class="accuracy-card"><div class="label">Model A</div><div class="value">${o.model_a.pct ?? '—'}%</div><div class="sub">${o.model_a.correct}/${o.model_a.n} correct</div></div>
       <div class="accuracy-card"><div class="label">Model B</div><div class="value">${o.model_b.pct ?? '—'}%</div><div class="sub">${o.model_b.correct}/${o.model_b.n} correct</div></div>
       <div class="accuracy-card"><div class="label">Market</div><div class="value">${o.market.pct ?? '—'}%</div><div class="sub">${o.market.correct}/${o.market.n} correct</div></div>
