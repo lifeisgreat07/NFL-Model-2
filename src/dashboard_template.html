@@ -163,6 +163,9 @@
   .game-card:hover{border-color:var(--line-strong); box-shadow:var(--shadow-md); transform:translateY(-1px);}
   .game-card.has-flag{border-left:3px solid var(--warn);}
   .game-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
+  .matchup-header{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .at-symbol{color:var(--chalk-dim); font-weight:500;}
+  .home-tag{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:9.5px; letter-spacing:.06em; color:var(--amber); background:var(--amber-dim); padding:2px 8px; border-radius:20px; margin-left:2px;}
   .game-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); letter-spacing:.03em;}
   .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
   .tag-good{background:var(--good-dim); color:var(--good);}
@@ -325,6 +328,13 @@
     </div>
     <div class="filter-row">
       <select id="week-select" class="week-select"></select>
+      <select id="sort-select" class="week-select">
+        <option value="confidence">Sort: Most Confident First</option>
+        <option value="confidence_asc">Sort: Closest Games First</option>
+        <option value="disagreement">Sort: Biggest Model Disagreement</option>
+        <option value="spread">Sort: Biggest Spread First</option>
+        <option value="alpha">Sort: Alphabetical (Home Team)</option>
+      </select>
     </div>
     <div class="filter-row" id="filter-row">
       <button class="filter-btn active" data-filter="all">All Games</button>
@@ -537,6 +547,7 @@ renderRatings();
 /* ---------- Week Board ---------- */
 let currentBoardWeek = latestWeekKey;
 let currentFilter = 'all';
+let currentSort = 'confidence';
 
 function populateWeekSelect(selectEl, onChange, initial){
   if(weekKeysSorted.length===0){
@@ -584,7 +595,32 @@ function renderGames(){
     return;
   }
 
-  grid.innerHTML = filtered.map(g=>{
+  const sorted = [...filtered].sort((a,b)=>{
+    if(currentSort === 'confidence'){
+      // lower confidence_rank = more confident; nulls (ungraded/old-format) sink to the bottom
+      const ra = a.confidence_rank ?? 999, rb = b.confidence_rank ?? 999;
+      return ra - rb;
+    }
+    if(currentSort === 'confidence_asc'){
+      const ra = a.confidence_rank ?? -1, rb = b.confidence_rank ?? -1;
+      return rb - ra;  // highest rank number = least confident = closest game, shown first
+    }
+    if(currentSort === 'disagreement'){
+      const da = Math.abs(a.fbA_home - a.mktB_home), db = Math.abs(b.fbA_home - b.mktB_home);
+      return db - da;
+    }
+    if(currentSort === 'spread'){
+      const sa = a.spread === null || a.spread === undefined ? -1 : Math.abs(a.spread);
+      const sb = b.spread === null || b.spread === undefined ? -1 : Math.abs(b.spread);
+      return sb - sa;
+    }
+    if(currentSort === 'alpha'){
+      return a.home.localeCompare(b.home);
+    }
+    return 0;
+  });
+
+  grid.innerHTML = sorted.map(g=>{
     const diverge = Math.abs(g.fbA_home - g.mktB_home);
     const aHomeWin = g.fbA_home >= (100-g.fbA_home);
     const bHomeWin = g.mktB_home >= (100-g.mktB_home);
@@ -603,6 +639,7 @@ function renderGames(){
         ${(g.why.ol_continuity !== undefined) ? whyRow('O-line continuity', g.why.ol_continuity) : ''}
       </div>` : '';
     return `<div class="game-card ${g.flag?'has-flag':''}">
+      <div class="matchup-header">${g.away} <span class="at-symbol">@</span> ${g.home}<span class="home-tag">HOME</span></div>
       <div class="game-top">
         <span class="game-kickoff">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}</span>
         <div class="tag-row" style="display:flex; gap:6px; align-items:center;">
@@ -665,6 +702,7 @@ document.querySelectorAll('.filter-btn').forEach(btn=>{
   });
 });
 populateWeekSelect(document.getElementById('week-select'), (val)=>{ currentBoardWeek = val; renderGames(); }, latestWeekKey);
+document.getElementById('sort-select').addEventListener('change', (e)=>{ currentSort = e.target.value; renderGames(); });
 renderGames();
 
 /* ---------- My Picks Log (localStorage, this device only) ---------- */
@@ -712,7 +750,7 @@ function renderPicksGrid(){
     const pick = myPicks[pid];
     const modelBPick = g.mktB_home >= 50 ? g.home : g.away;
     return `<div class="game-card">
-      <div class="game-top"><span class="game-kickoff">${g.away} @ ${g.home}</span></div>
+      <div class="game-top"><span class="game-kickoff">${g.away} <span class="at-symbol">@</span> ${g.home}<span class="home-tag">HOME</span></span></div>
       <div class="pick-buttons" data-pid="${pid}">
         <button class="pick-btn ${pick===g.away?'selected':''}" data-team="${g.away}">${g.away}</button>
         <button class="pick-btn ${pick===g.home?'selected':''}" data-team="${g.home}">${g.home}</button>
