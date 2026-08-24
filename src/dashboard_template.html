@@ -104,6 +104,11 @@
   .team-abbr{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; width:38px;}
   .team-full{color:var(--chalk-dim); font-size:12.5px;}
   .net-cell-inner{display:grid; grid-template-columns:90px 62px; align-items:center; column-gap:10px; justify-content:center;}
+  .dive-row{display:flex; align-items:center; gap:16px; padding:9px 0; border-bottom:1px solid var(--line);}
+  .dive-row:last-child{border-bottom:none;}
+  .dive-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; color:var(--chalk-dim); width:80px; flex-shrink:0;}
+  .dive-label.live{color:var(--amber);}
+  .dive-value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:13.5px; width:62px; text-align:right; flex-shrink:0;}
   .net-value{font-family:'Plus Jakarta Sans', sans-serif; text-align:right; justify-self:end; white-space:nowrap;}
   .srs-bar-track{position:relative; width:90px; height:6px; background:var(--panel-hi); border-radius:3px; overflow:hidden;}
   .srs-bar-fill{position:absolute; top:0; bottom:0; background:linear-gradient(90deg, var(--amber), var(--amber-bright)); border-radius:3px;}
@@ -296,6 +301,8 @@
     <div class="nav-group-label">Your Picks</div>
     <button class="nav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>My Picks Log</button>
     <button class="nav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg>Season Accuracy</button>
+    <div class="nav-group-label">Model Output</div>
+    <button class="nav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Team Deep-Dive</button>
     <div class="nav-group-label">Reference</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg>Roadmap</button>
@@ -383,6 +390,21 @@
     <div id="accuracy-content"></div>
   </section>
 
+  <!-- TEAM DEEP-DIVE -->
+  <section class="page" id="page-teamdive">
+    <div class="page-head">
+      <div>
+        <h2>Team Deep-Dive</h2>
+        <div class="desc">Net rating over time -- 2020-2025 season-end snapshots (real backtested history), then week-by-week as the 2026 season is actually played.</div>
+      </div>
+      <div class="badge" id="teamdive-badge">—</div>
+    </div>
+    <div class="filter-row">
+      <select id="teamdive-select" class="week-select"></select>
+    </div>
+    <div id="teamdive-content"></div>
+  </section>
+
   <!-- METHODOLOGY -->
   <section class="page" id="page-method">
     <div class="page-head">
@@ -468,9 +490,9 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Line Movement Tracking</h4><p>Every routine run now logs the current spread for the upcoming week's games to a running archive -- even weeks that are too early to lock in real predictions. Building real, first-party movement data starting this season.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Formal Backup-QB Detection</h4><p>Tested honestly first: a leak-free "did this team change starting QB since last week" flag improved every metric (accuracy +0.46pt, log loss/Brier/AUC all better too) and shows a clean, correctly-signed coefficient. Real signal -- now a live 5th model feature.</p></div>
 
-      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Time-Decay QB-Change Signal</h4><p>Replace the binary "did the starter change last week" flag with a decaying signal -- full disruption the week right after a change, tapering over the following weeks. Refines tonight's strongest model win rather than introducing an unproven idea.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Re-test Ensemble/Gradient Boosting</h4><p>GBM lost to logistic regression early on with only 3 features. With 5 real features now (more genuine interaction potential), that verdict deserves a fresh test.</p></div>
-      <div class="roadmap-card"><div class="roadmap-status status-next">Next Up</div><h4>Team Deep-Dive Page</h4><p>Click any team to see their rating trend across the season, recent starter history, and past context notes -- turns this from a weekly snapshot into a season-long analytical tool.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Not Adopted</div><h4>Time-Decay QB-Change Signal</h4><p>Real backtest: the decay version actually scored slightly worse on accuracy (62.6-62.9% vs the binary flag's 63.1%) while only marginally improving log loss/Brier/AUC. Keeping the simpler binary flag -- it's not just simpler, it's genuinely no worse.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Decided Against</div><h4>Re-test Ensemble/Gradient Boosting</h4><p>With 5 features, GBM does edge out logistic regression on raw accuracy (63.4% vs 62.6%) -- but AUC drops notably (0.654 vs 0.670), meaning worse discrimination between confidence levels. Since confidence-ranked picks depend on that discrimination, staying with logistic regression.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Team Deep-Dive Page</h4><p>New tab: pick any team, see real season-end net ratings for 2020-2025, with live week-by-week 2026 data appending automatically as the season is actually played.</p></div>
       <div class="add-idea">+ next idea goes here</div>
     </div>
   </section>
@@ -483,6 +505,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <button class="bnav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span class="bnav-label">Board</span></button>
     <button class="bnav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="bnav-label">Picks</span></button>
     <button class="bnav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg><span class="bnav-label">Accuracy</span></button>
+    <button class="bnav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span class="bnav-label">Teams</span></button>
     <button class="bnav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span class="bnav-label">Method</span></button>
     <button class="bnav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg><span class="bnav-label">Roadmap</span></button>
   </div>
@@ -562,6 +585,7 @@ function teamLogo(abbr){
 const weeks = __WEEKS_JSON__;       // { "2026_week1": {season, week, games:[...]}, ... }
 const latestWeekKey = __LATEST_WEEK__;  // "2026_week1" or null
 const accuracy = __ACCURACY_JSON__;
+const teamHistory = __TEAM_HISTORY_JSON__;
 
 const weekKeysSorted = Object.keys(weeks).sort((a,b)=>{
   const wa = weeks[a], wb = weeks[b];
@@ -927,6 +951,49 @@ function renderAccuracy(){
   el.innerHTML = cardsHtml + weeklyHtml + calibHtml;
 }
 renderAccuracy();
+
+/* ---------- Team Deep-Dive ---------- */
+function renderTeamDive(){
+  const select = document.getElementById('teamdive-select');
+  const content = document.getElementById('teamdive-content');
+  const badge = document.getElementById('teamdive-badge');
+
+  if(!teamHistory || !teamHistory.names || Object.keys(teamHistory.names).length === 0){
+    content.innerHTML = `<div class="empty-state">No team history data available yet.</div>`;
+    select.innerHTML = '';
+    badge.textContent = '—';
+    return;
+  }
+
+  if(select.options.length === 0){
+    const sortedTeams = Object.keys(teamHistory.names).sort((a,b)=>teamHistory.names[a].localeCompare(teamHistory.names[b]));
+    select.innerHTML = sortedTeams.map(t=>`<option value="${t}">${teamHistory.names[t]} (${t})</option>`).join('');
+    select.addEventListener('change', renderTeamDive);
+  }
+
+  const team = select.value || select.options[0]?.value;
+  const points = (teamHistory.timeline[team] || []);
+  badge.textContent = `${points.length} data point${points.length===1?'':'s'}`;
+
+  if(points.length === 0){
+    content.innerHTML = `<div class="empty-state">No history for this team yet.</div>`;
+    return;
+  }
+
+  const maxAbs = Math.max(...points.map(p=>Math.abs(p.net)), 0.0001);
+  const rowsHtml = points.map(p=>{
+    const width = (Math.abs(p.net)/maxAbs)*100;
+    const isLive = p.label.includes('Wk');
+    return `<div class="dive-row">
+      <span class="dive-label ${isLive?'live':''}">${p.label}</span>
+      <div class="srs-bar-track" style="width:140px;"><div class="srs-bar-fill" style="left:${p.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
+      <span class="dive-value">${p.net>=0?'+':''}${p.net.toFixed(3)}</span>
+    </div>`;
+  }).join('');
+
+  content.innerHTML = `<div class="table-wrap" style="padding:18px 20px;">${rowsHtml}</div>`;
+}
+renderTeamDive();
 </script>
 </body>
 </html>

@@ -88,6 +88,26 @@ def save_current_ratings(team_ratings):
     print(f"Saved {len(rows)} team ratings to data/current_ratings.json")
 
 
+def append_live_history(team_ratings, season, week):
+    """Append this week's ratings to a running per-season file, building a
+    real in-season trend for the Team Deep-Dive page as the season
+    progresses. Unlike current_ratings.json (a snapshot, overwritten each
+    run), this file accumulates -- one entry per team per week, never
+    overwritten, same pattern as the line-movement archive."""
+    path = DATA_DIR / f'team_history_{season}.json'
+    existing = {}
+    if path.exists():
+        with open(path) as f:
+            existing = json.load(f)
+    for team, (off, deff) in team_ratings.items():
+        existing.setdefault(team, [])
+        if not any(e['week'] == week for e in existing[team]):
+            existing[team].append({'week': week, 'net': round(off-deff, 4), 'off': round(off,4), 'def': round(deff,4)})
+    with open(path, 'w') as f:
+        json.dump(existing, f, indent=2)
+    print(f"Appended week {week} to data/team_history_{season}.json")
+
+
 def market_prob(home_spread):
     """Simple market-implied probability from a home spread (+ = home favored)."""
     return 1 / (1 + np.exp(-home_spread / 5.5))
@@ -286,6 +306,13 @@ def main(season, week):
     cutoff_i = len(week_keys)
     current_team_ratings = build_team_ratings(plays, week_keys, upto_cutoff_i=cutoff_i)
     save_current_ratings(current_team_ratings)
+    current_season_weeks = [w for (s, w) in week_keys if s == season]
+    if current_season_weeks:
+        last_completed_week = max(current_season_weeks)
+        append_live_history(current_team_ratings, season, last_completed_week)
+    else:
+        print(f"No completed weeks yet for {season} -- skipping live history entry "
+              f"(these ratings reflect prior-season data, not a real {season} week).")
     qb_cutoff = len(qb['week_keys'])
     # fallback starter source: most recent season with any starter data
     starter_season = season if season in [s for s, w in qb['week_keys']] else season - 1

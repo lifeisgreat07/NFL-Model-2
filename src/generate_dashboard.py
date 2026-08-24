@@ -169,6 +169,40 @@ def build_teams_js(ratings):
     return [{'team': r['team'], 'name': r['name'], 'off': r['off'], 'def': r['def'], 'net': r['net']} for r in ratings]
 
 
+def load_team_history():
+    """Merges static historical season-end ratings (2020-2025, computed
+    once from real backtested data) with any live in-season weekly data
+    that weekly_update.py has been appending since -- building a single
+    continuous timeline per team: season-end points for past years, then
+    week-by-week points for the current season as it's actually played."""
+    static_path = DATA_DIR / 'team_history.json'
+    if not static_path.exists():
+        return {}
+    with open(static_path) as f:
+        static_data = json.load(f)
+    names = static_data.get('names', {})
+    history = static_data.get('history', {})
+
+    timeline = {team: [] for team in names}
+    for team, points in history.items():
+        for p in sorted(points, key=lambda x: x['season']):
+            timeline.setdefault(team, []).append({'label': str(p['season']), 'net': p['net']})
+
+    # Layer in any live current-season files (data/team_history_2026.json etc.),
+    # sorted by season so multiple seasons of live data would stack correctly.
+    live_files = sorted(DATA_DIR.glob('team_history_*.json'))
+    for f in live_files:
+        season = f.stem.replace('team_history_', '')
+        with open(f) as lf:
+            live_data = json.load(lf)
+        for team, points in live_data.items():
+            timeline.setdefault(team, [])
+            for p in sorted(points, key=lambda x: x['week']):
+                timeline[team].append({'label': f"{season} Wk{p['week']}", 'net': p['net']})
+
+    return {'names': names, 'timeline': timeline}
+
+
 def main():
     print("Loading current ratings...")
     ratings = load_current_ratings()
@@ -194,6 +228,9 @@ def main():
     print("Building season accuracy summary...")
     accuracy_js = build_accuracy_summary(all_graded)
 
+    print("Loading team history...")
+    team_history_js = load_team_history()
+
     if not all_preds:
         foot_html = f"Trained on: current nflfastR history<br>{len(ratings)} teams rated<br>No predictions saved yet"
     else:
@@ -206,6 +243,7 @@ def main():
     html = html.replace('__WEEKS_JSON__', json.dumps(weeks_js, indent=2))
     html = html.replace('__LATEST_WEEK__', json.dumps(latest_label))
     html = html.replace('__ACCURACY_JSON__', json.dumps(accuracy_js, indent=2))
+    html = html.replace('__TEAM_HISTORY_JSON__', json.dumps(team_history_js, indent=2))
     html = html.replace('__SIDEBAR_FOOT__', foot_html)
 
     with open(OUTPUT_PATH, 'w') as f:
