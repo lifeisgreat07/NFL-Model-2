@@ -303,6 +303,7 @@
     <button class="nav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg>Season Accuracy</button>
     <div class="nav-group-label">Model Output</div>
     <button class="nav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Team Deep-Dive</button>
+    <button class="nav-btn" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg>Model Lab</button>
     <div class="nav-group-label">Reference</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg>Roadmap</button>
@@ -405,6 +406,40 @@
     <div id="teamdive-content"></div>
   </section>
 
+  <!-- MODEL LAB -->
+  <section class="page" id="page-modellab">
+    <div class="page-head">
+      <div>
+        <h2>Model Lab</h2>
+        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.2</b>, last updated 2026-08-24.</div>
+      </div>
+    </div>
+    <div class="table-wrap" style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Experiment</th><th>Result</th><th>Decision</th></tr></thead>
+        <tbody>
+          <tr><td>QB feature (trailing EPA/dropback)</td><td class="num">Accuracy 60.0% to 62.6%, biggest single gain of the project</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
+          <tr><td>Ridge alpha tuning (200 -&gt; 15)</td><td class="num">Real backtest sweep across 1-1600, found interior optimum</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
+          <tr><td>Recency half-life tuning (6/10/16)</td><td class="num">16 games won on log loss</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
+          <tr><td>Rest days, weather, travel distance, altitude</td><td class="num">All flat or worse across every framing tested</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Divisional games, trap/look-ahead games, blowout letdown</td><td class="num">No real signal beyond existing team-strength features</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Gradient boosting vs. logistic regression</td><td class="num">+0.83pt accuracy but AUC drops 0.670&rarr;0.654; bootstrap CI included zero</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>QB shrinkage retune (k=8 -&gt; 96)</td><td class="num">+0.37pt confirmatory, CI included zero, adopted for methodological correctness</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
+          <tr><td>QB quality-differential change signal</td><td class="num">Identical to no-signal-at-all; binary flag clearly better</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Team-specific home-field advantage</td><td class="num">Split-half reliability 0.078 -- mostly noise, not a real trait</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Pass/rush-split matchup features</td><td class="num">Worse on every metric; 0.947 correlation with existing aggregate</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>All 9 rejected features combined, regularized</td><td class="num">No C value beat baseline even with proper scaling</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>O-line continuity</td><td class="num">Bootstrap CI included zero; later beaten by "no OL feature" on confirmatory test</td><td><span class="conf-tag tag-warn">REMOVED (was live)</span></td></tr>
+          <tr><td>Coaching changes (5 framings)</td><td class="num">Every variant tied or underperformed baseline</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Early-season extra shrinkage</td><td class="num">Real gap confirmed (61.7% vs 65.9%) but fix didn't close it</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Weekly-refitting backtest methodology</td><td class="num">Tied-or-better on every metric, free, more methodologically correct</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
+          <tr><td>Platt scaling / isotonic calibration</td><td class="num">Platt worse on every metric; isotonic's log loss broke (0.64&rarr;1.00) from overconfident extremes</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Player availability / injury model</td><td class="num">Real nflverse dataset exists but flagged broken for 2025 by nflreadpy maintainers</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
   <!-- METHODOLOGY -->
   <section class="page" id="page-method">
     <div class="page-head">
@@ -413,7 +448,7 @@
 
     <div class="method-block">
       <h3>Model A vs. Model B — What Actually Separates Them</h3>
-      <p><b style="color:var(--blue)">Model A (football-only)</b> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, O-line continuity, and QB-change detection — all derived from real play-by-play and snap-count data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (see the "why this pick" breakdown on every game).</p>
+      <p><b style="color:var(--blue)">Model A (football-only)</b> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, and QB-change detection — all derived from real play-by-play data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (see the "why this pick" breakdown on every game).</p>
       <p><b style="color:var(--amber)">Model B (market-blended)</b> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.1% vs. ~63% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
     </div>
 
@@ -432,27 +467,27 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     </div>
 
     <div class="method-block">
-      <h3>Backtest Results — Chronological, Season-Level Holdout</h3>
-      <p>Trained only on strictly earlier seasons, evaluated on 2022-2025 (1,087 games):</p>
+      <h3>Backtest Results — Chronological, Weekly-Refitting Walk-Forward</h3>
+      <p>Trained only on strictly earlier data, refit every week within the test season (not just once per season) -- validated 2026-08 (Stage 9) to match what the live model actually does: weekly_update.py always trains on all real completed games available up to "now," every single run. Evaluated on 2022-2025 (1,087 games):</p>
       <table class="metrics-table">
         <thead><tr><th>Model</th><th>Accuracy</th><th>Log Loss</th><th>Brier</th><th>AUC</th></tr></thead>
         <tbody>
           <tr><td>Coin flip</td><td>50.0%</td><td>0.693</td><td>0.250</td><td>0.500</td></tr>
           <tr><td>Home team always wins</td><td>54.6%</td><td>-</td><td>-</td><td>-</td></tr>
           <tr><td>3-feature (off+def+QB) only</td><td>62.6%</td><td>0.655</td><td>0.231</td><td>0.662</td></tr>
-          <tr><td>Model A -- live, all 5 features</td><td class="highlight">62.6%</td><td class="highlight">0.650</td><td class="highlight">0.229</td><td class="highlight">0.670</td></tr>
-          <tr><td>Vegas market alone</td><td>68.1%</td><td>0.607</td><td>0.210</td><td>0.724</td></tr>
-          <tr><td>Model B -- live, all 5 + market</td><td class="highlight">67.8%</td><td class="highlight">0.606</td><td class="highlight">0.209</td><td class="highlight">0.728</td></tr>
+          <tr><td>Model A -- live, 4 features, weekly refit</td><td class="highlight">63.2%</td><td class="highlight">0.649</td><td class="highlight">0.228</td><td class="highlight">0.672</td></tr>
+          <tr><td>Vegas market alone</td><td>68.2%</td><td>0.607</td><td>0.210</td><td>0.725</td></tr>
+          <tr><td>Model B -- live, 4 features + market, weekly refit</td><td class="highlight">68.0%</td><td class="highlight">0.606</td><td class="highlight">0.209</td><td class="highlight">0.727</td></tr>
         </tbody>
       </table>
-      <p style="margin-top:11px;">Honest read on the two newest features (O-line continuity, QB-change detection): tested SEPARATELY, each improved every metric, including accuracy. Combined together in the live model, accuracy dips a hair in both Model A and Model B (-0.09pt, -0.28pt) while log loss, Brier, and AUC all still improve. Likely explanation: the two features share some overlapping signal (a team in QB turmoil is often also in O-line turmoil), so combining them slightly redistributes the decision boundary even as it makes the underlying probabilities better-calibrated. We're not hiding that accuracy alone moved the wrong direction slightly -- for a confidence-ranked pool, calibration (log loss, Brier) likely matters more than raw accuracy, but both numbers are real and both are shown.</p>
+      <p style="margin-top:11px;">Update (2026-08, research Stage 6): O-line continuity was removed from the live model after two independent negative results -- a paired bootstrap found its individual contribution statistically indistinguishable from zero (95% CI included zero), and a later confirmatory test found "no OL feature at all" outperformed both the original and a smoothed version of it on held-out 2024-2025 data. It's still computed and logged as informational data, just no longer fed into the model, in case future evidence changes this. QB-change detection has held up across every test run against it and remains live.</p>
       <p style="margin-top:11px;">Separately: the market still barely improves when our full feature set is blended in (68.1% to 67.8% -- actually slightly worse on raw accuracy, though marginally better on log loss/Brier/AUC). The Vegas line still captures almost everything we can see, plus real-world information we structurally can't.</p>
     </div>
 
     <div class="method-block">
       <h3>Known Gaps</h3>
       <div class="gap-item"><span class="gap-num">01</span><span>Rest days and weather were tested and rejected (real backtest, not adopted) — see Roadmap. Travel distance still untested; no injury feature yet.</span></div>
-      <div class="gap-item"><span class="gap-num">02</span><span>QB rating shrinkage constant (k=8) was set by convention, not backtested the way alpha and half-life were.</span></div>
+      <div class="gap-item"><span class="gap-num">02</span><span>QB shrinkage was re-tuned via proper validation/test split (k=8 -> k=96) -- resolved, though the accuracy gain itself (+0.37pt) is not statistically significant at current sample size.</span></div>
       <div class="gap-item"><span class="gap-num">03</span><span>Gradient boosting was tested and did not beat logistic regression at this feature-set size.</span></div>
     </div>
 
@@ -461,6 +496,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <ol>
         <li>Pull fresh play-by-play + schedule data</li>
         <li>Refit team + QB ratings at the current "as of" cutoff</li>
+        <li>Refit Model A and Model B themselves (not just the underlying ratings) on all real completed games available -- confirmed 2026-08 to already match the weekly-refitting approach validated as the correct backtest methodology</li>
         <li>Web-search for QB/injury news that might contradict the assumed starter</li>
         <li>Generate both models' predictions, save before kickoff (never overwritten)</li>
         <li>Grade the previous week's saved predictions against actual results</li>
@@ -493,6 +529,10 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Not Adopted</div><h4>Time-Decay QB-Change Signal</h4><p>Real backtest: the decay version actually scored slightly worse on accuracy (62.6-62.9% vs the binary flag's 63.1%) while only marginally improving log loss/Brier/AUC. Keeping the simpler binary flag -- it's not just simpler, it's genuinely no worse.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Decided Against</div><h4>Re-test Ensemble/Gradient Boosting</h4><p>With 5 features, GBM does edge out logistic regression on raw accuracy (63.4% vs 62.6%) -- but AUC drops notably (0.654 vs 0.670), meaning worse discrimination between confidence levels. Since confidence-ranked picks depend on that discrimination, staying with logistic regression.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Team Deep-Dive Page</h4><p>New tab: pick any team, see real season-end net ratings for 2020-2025, with live week-by-week 2026 data appending automatically as the season is actually played.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Removed — Tested Twice, Negative</div><h4>O-Line Continuity</h4><p>Was live as a Model A/B feature; pulled after two independent tests (bootstrap CI included zero; a later confirmatory test found no-OL-feature beat both raw and smoothed versions on held-out data). Still computed and logged as data, not fed into the model.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Coaching Changes</h4><p>Tested 5 framings (season-level flag, in-season change, 3 decay half-lives) using real per-game coach data from nflverse schedules. Every variant tied or underperformed the baseline. Likely redundant with what opponent-adjusted team ratings already absorb.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Early-Season Prior Blending</h4><p>Confirmed a real gap (61.7% weeks 1-4 vs. 65.9% weeks 15+), but explicit extra shrinkage didn't close it -- the existing continuous recency-weighted ratings already blend across the season boundary correctly. Gap remains open; import_win_totals() (real preseason market data) flagged as a genuinely different angle for later.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Adopted</div><h4>Weekly-Refitting Backtest</h4><p>Backtest methodology now refits every week within a season (not just once), matching what the live weekly routine already does. Not statistically significant on its own (+0.37pt, CI included zero) but tied-or-better on every metric and free -- adopted as the more methodologically correct practice.</p></div>
       <div class="add-idea">+ next idea goes here</div>
     </div>
   </section>
