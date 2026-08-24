@@ -27,18 +27,61 @@ from weekly_update import build_historical_features, build_qb_change_lookup  # r
 from ol_continuity import compute_ol_continuity_lookup
 
 
-def backtest(hist, features, test_seasons):
+def backtest(hist, features, test_seasons, refit_every_n_weeks=1):
+    """Weekly-refitting walk-forward evaluation (default: refit every week).
+    Adopted 2026-08 (Stage 9) after confirming it matches the live model's
+    actual behavior -- weekly_update.py always trains on all real data
+    available up to "now" on every run, so it was ALREADY effectively
+    refitting weekly in production. This backtest function previously only
+    refit once per season, which meant our evaluation methodology didn't
+    match how the live model actually operates. Tested against the
+    season-level version: tied or better on every metric on the true
+    confirmatory holdout (2024-2025), though the accuracy delta itself
+    (+0.37pt) was not statistically significant (bootstrap 95% CI
+    [-0.37, +1.10]). Adopted anyway for the same reason as the QB
+    shrinkage fix: it's the methodologically correct practice (using more
+    real available data before each prediction) independent of whether
+    this specific delta is provably real.
+
+    Pass refit_every_n_weeks=None to restore the old season-level-only
+    behavior for comparison.
+    """
+    hist = hist.sort_values(['season', 'week'])
     all_true, all_prob = [], []
     for test_season in test_seasons:
-        train = hist[hist['season'] < test_season].dropna(subset=list(features) + ['home_win'])
-        test = hist[hist['season'] == test_season].dropna(subset=list(features) + ['home_win'])
-        if len(train) < 50 or len(test) == 0:
+        d2 = hist.dropna(subset=list(features) + ['home_win'])
+        season_weeks = sorted(d2[d2['season'] == test_season]['week'].unique())
+        if not season_weeks:
             continue
-        m = LogisticRegression(max_iter=1000)
-        m.fit(train[list(features)].values, train['home_win'].values)
-        probs = m.predict_proba(test[list(features)].values)[:, 1]
-        all_true.extend(test['home_win'].values)
-        all_prob.extend(probs)
+        if refit_every_n_weeks is None:
+            train = d2[d2['season'] < test_season]
+            test = d2[d2['season'] == test_season]
+            if len(train) < 50 or len(test) == 0:
+                continue
+            m = LogisticRegression(max_iter=1000)
+            m.fit(train[list(features)].values, train['home_win'].values)
+            probs = m.predict_proba(test[list(features)].values)[:, 1]
+            all_true.extend(test['home_win'].values)
+            all_prob.extend(probs)
+        else:
+            last_refit_week = None
+            model = None
+            for w in season_weeks:
+                if last_refit_week is None or (w - last_refit_week) >= refit_every_n_weeks:
+                    train = d2[(d2['season'] < test_season) | ((d2['season'] == test_season) & (d2['week'] < w))]
+                    if len(train) < 50:
+                        continue
+                    model = LogisticRegression(max_iter=1000)
+                    model.fit(train[list(features)].values, train['home_win'].values)
+                    last_refit_week = w
+                if model is None:
+                    continue
+                test_w = d2[(d2['season'] == test_season) & (d2['week'] == w)]
+                if len(test_w) == 0:
+                    continue
+                probs = model.predict_proba(test_w[list(features)].values)[:, 1]
+                all_true.extend(test_w['home_win'].values)
+                all_prob.extend(probs)
     all_true, all_prob = np.array(all_true), np.array(all_prob)
     pred = (all_prob >= 0.5).astype(int)
     return {
@@ -68,10 +111,11 @@ def main():
     results = {}
     for name, features in [
         ('Football-only (off+def+qb)', ['off_matchup', 'def_matchup', 'qb_matchup']),
-        ('+ OL continuity', ['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff']),
-        ('+ QB change flag', ['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff', 'qb_change_diff']),
+        ('LIVE MODEL A (off+def+qb+qbchange)', ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff']),
+        ('[reference only] + OL continuity', ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff', 'ol_continuity_diff']),
         ('Market alone', ['spread_line']),
-        ('Full blend (all + market)', ['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff', 'qb_change_diff', 'spread_line']),
+        ('LIVE MODEL B (+ market)', ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff', 'spread_line']),
+        ('[reference only] + OL + market', ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff', 'ol_continuity_diff', 'spread_line']),
     ]:
         m = backtest(hist, features, BACKTEST_SEASONS)
         results[name] = m

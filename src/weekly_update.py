@@ -44,7 +44,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from data_loader import load_plays, load_schedule, load_snap_counts
 from ol_continuity import compute_ol_continuity_lookup, get_continuity, get_most_recent_continuity
 from ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
-from config import TRAIN_SEASONS
+from config import TRAIN_SEASONS, MODEL_VERSION
 
 # Don't save (lock in) predictions more than this many days before the
 # earliest game in the target week. Prevents exactly the failure mode we
@@ -296,11 +296,11 @@ def main(season, week):
 
     print("Fitting Model A (football-only) and Model B (+ market)...")
     model_a = LogisticRegression(max_iter=1000)
-    model_a.fit(hist[['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff', 'qb_change_diff']].values, hist['home_win'].values)
+    model_a.fit(hist[['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff']].values, hist['home_win'].values)
 
     hist_b = hist.dropna(subset=['spread_line'])
     model_b = LogisticRegression(max_iter=1000)
-    model_b.fit(hist_b[['off_matchup', 'def_matchup', 'qb_matchup', 'ol_continuity_diff', 'qb_change_diff', 'spread_line']].values, hist_b['home_win'].values)
+    model_b.fit(hist_b[['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff', 'spread_line']].values, hist_b['home_win'].values)
 
     print("Building current ('as of right now') team + QB ratings...")
     cutoff_i = len(week_keys)
@@ -385,6 +385,14 @@ def main(season, week):
             qb_matchup = 0.0
             context_notes = ["No known starter found -- QB feature defaulted to neutral (0). Verify manually."]
 
+        # OL continuity is computed and saved as informational data only --
+        # removed from the live model 2026-08 (Stage 6 OL Model V2 pass).
+        # Two independent tests (Stage 1 bootstrap CI included zero; this
+        # confirmatory test showed "no OL feature" beating both raw and
+        # smoothed OL versions) were enough negative evidence to pull it,
+        # per the project's own "favor simplicity absent clear justification"
+        # rule. Kept here as data, not as a model input, so nothing is lost
+        # if future evidence changes this.
         if ol_lookup:
             home_ol = get_most_recent_continuity(ol_lookup, home, season, week, default=0.0)
             away_ol = get_most_recent_continuity(ol_lookup, away, season, week, default=0.0)
@@ -396,7 +404,7 @@ def main(season, week):
         away_qb_changed = current_qb_changed.get(away, 0)
         qb_change_diff = home_qb_changed - away_qb_changed
 
-        prob_a = model_a.predict_proba([[off_matchup, def_matchup, qb_matchup, ol_continuity_diff, qb_change_diff]])[0][1]
+        prob_a = model_a.predict_proba([[off_matchup, def_matchup, qb_matchup, qb_change_diff]])[0][1]
 
         # "Why" breakdown: each feature's raw contribution to the log-odds,
         # i.e. coefficient * feature value. Signed toward home team (positive
@@ -407,19 +415,19 @@ def main(season, week):
             'off_matchup': round(float(coefs[0] * off_matchup), 4),
             'def_matchup': round(float(coefs[1] * def_matchup), 4),
             'qb_matchup': round(float(coefs[2] * qb_matchup), 4),
-            'ol_continuity': round(float(coefs[3] * ol_continuity_diff), 4),
-            'qb_change': round(float(coefs[4] * qb_change_diff), 4),
+            'qb_change': round(float(coefs[3] * qb_change_diff), 4),
         }
 
         spread = g.get('spread_line', np.nan)
         if pd.notna(spread):
-            prob_b = model_b.predict_proba([[off_matchup, def_matchup, qb_matchup, ol_continuity_diff, qb_change_diff, spread]])[0][1]
+            prob_b = model_b.predict_proba([[off_matchup, def_matchup, qb_matchup, qb_change_diff, spread]])[0][1]
             mkt = market_prob(spread)
         else:
             prob_b, mkt = None, None
 
         predictions.append({
             'season': season, 'week': week, 'home': home, 'away': away,
+            'model_version': MODEL_VERSION,
             'off_matchup': round(off_matchup, 4), 'def_matchup': round(def_matchup, 4),
             'qb_matchup': round(qb_matchup, 4),
             'ol_continuity_diff': round(ol_continuity_diff, 4),
