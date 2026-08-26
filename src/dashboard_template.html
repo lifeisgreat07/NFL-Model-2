@@ -176,6 +176,7 @@
   .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
   .tag-good{background:var(--good-dim); color:var(--good);}
   .tag-warn{background:var(--warn-dim); color:var(--warn);}
+  .tag-neutral{background:var(--blue-dim); color:var(--blue);}
 
   .model-row{display:grid; grid-template-columns:56px 1fr; align-items:center; gap:12px; margin-bottom:10px;}
   .model-row:last-of-type{margin-bottom:0;}
@@ -411,7 +412,7 @@
     <div class="page-head">
       <div>
         <h2>Model Lab</h2>
-        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.2</b>, last updated 2026-08-24.</div>
+        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.2</b>, last updated 2026-08-26.</div>
       </div>
     </div>
     <div class="table-wrap" style="overflow-x:auto;">
@@ -434,7 +435,19 @@
           <tr><td>Early-season extra shrinkage</td><td class="num">Real gap confirmed (61.7% vs 65.9%) but fix didn't close it</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Weekly-refitting backtest methodology</td><td class="num">Tied-or-better on every metric, free, more methodologically correct</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
           <tr><td>Platt scaling / isotonic calibration</td><td class="num">Platt worse on every metric; isotonic's log loss broke (0.64&rarr;1.00) from overconfident extremes</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Player availability / injury model</td><td class="num">Real nflverse dataset exists but flagged broken for 2025 by nflreadpy maintainers</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
+          <tr><td>Player availability / injury model</td><td class="num">Re-confirmed 2026-08-25 via nflverse's own status page: "no 2025 data, no ETA." Still genuinely blocked, not just stale.</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
+          <tr><td>Dynamic Model A/B weighting by disagreement magnitude</td><td class="num">High-disagreement bucket's B-edge is real (bootstrap CI excludes zero), but B already wins in every bucket -- no dynamic scheme beat simply always using Model B on confirmatory data</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Margin-of-victory modeling (regression -&gt; sign -&gt; winner)</td><td class="num">-1.56pt vs. current classifier; CI [-3.13, +0.09] nearly significant negative. Regression's MSE objective isn't aligned with getting the sign right on close games -- broke 50 previously-correct calls to fix only 33</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Snap-share "key player disruption" signal (Objective 3 follow-up)</td><td class="num">INVALIDATED, not rejected -- used this-week's own snap percentage as a feature, which is only knowable after that week's game is played. Confirmed via direct correlation with the very outcome it claimed to predict. A real mistake, caught before shipping. Depends on Objective 2 (blocked) to do legitimately.</td><td><span class="conf-tag tag-warn">LEAKAGE -- INVALIDATED</span></td></tr>
+          <tr><td>CPOE-based QB rating (alone and blended with EPA)</td><td class="num">CPOE-only clearly worse on every metric; EPA+CPOE blend just flat/redundant. CPOE is stable but a weaker predictor of wins than EPA specifically</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Rookie-specific QB shrinkage (hierarchical refinement of k=96)</td><td class="num">+0.92pt on validation looked promising, reversed to -0.74pt on true confirmatory test (CI includes zero). A real example of why validation-then-confirm matters</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Nonlinear architectures (GBM, Random Forest)</td><td class="num">RF's +0.55pt accuracy edge not significant (CI [-2.57,+3.68]) and comes with worse log loss/Brier/AUC -- same pattern GBM showed in the first cycle. XGBoost/LightGBM untestable, no network access to install</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Early-season weakness diagnosis</td><td class="num">Not a broad phenomenon -- concentrated in early-season QB changes specifically (48.0% accuracy, n=25) vs. 62.8% for early-season games without a QB change. Real mechanism found, targeted fix not yet built</td><td><span class="conf-tag tag-neutral">DIAGNOSED</span></td></tr>
+          <tr><td>Early-season QB-change interaction term</td><td class="num">+0.37pt confirmatory, CI [-0.37,+1.10] includes zero. Real mechanism behind it but only 25 games -- genuinely can't distinguish from noise yet</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
+          <tr><td>Schedule-strength trajectory (next-3-games opponent difficulty)</td><td class="num">+0.18pt, CI [-1.65,+2.02], validation negative. Different mechanism from the earlier-rejected single-game trap-game test, same null result</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Referee/officiating crew tendencies</td><td class="num">Split-half reliability 0.252 (real, better than team home-field's 0.078) but translates to zero predictive value once shrunk properly -- flat across every metric</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>weekly_rosters as an injury-data alternative</td><td class="num">Confirmed NOT gameday active/inactive status via real player history checks (static ACT/INA over many weeks, not game-to-game). No inactives-list loader exists anywhere in nflreadpy -- Objective 2/3 blocker confirmed structural, not just stale data</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
+          <tr><td>FTN charting QB-fault-rate (sacks/INTs attributable to the QB)</td><td class="num">Completely flat -- identical to baseline on every metric. EPA already captures the cost of a bad play regardless of whose fault it was</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -455,6 +468,7 @@
     <div class="method-block">
       <h3>Data</h3>
       <p>Real nflverse play-by-play, filtered to pass/rush attempts with valid EPA, used to fit opponent-adjusted team ratings and per-QB ratings.</p>
+      <p style="margin-top:11px;">Data pipeline migrated from nfl_data_py to nflreadpy (2026-08) after nfl_data_py was officially deprecated. Verified column-schema match and exact value match (scores, spreads, EPA, snap counts) on a real completed week before merging -- see Roadmap.</p>
     </div>
 
     <div class="method-block">
@@ -533,6 +547,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Coaching Changes</h4><p>Tested 5 framings (season-level flag, in-season change, 3 decay half-lives) using real per-game coach data from nflverse schedules. Every variant tied or underperformed the baseline. Likely redundant with what opponent-adjusted team ratings already absorb.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Early-Season Prior Blending</h4><p>Confirmed a real gap (61.7% weeks 1-4 vs. 65.9% weeks 15+), but explicit extra shrinkage didn't close it -- the existing continuous recency-weighted ratings already blend across the season boundary correctly. Gap remains open; import_win_totals() (real preseason market data) flagged as a genuinely different angle for later.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Adopted</div><h4>Weekly-Refitting Backtest</h4><p>Backtest methodology now refits every week within a season (not just once), matching what the live weekly routine already does. Not statistically significant on its own (+0.37pt, CI included zero) but tied-or-better on every metric and free -- adopted as the more methodologically correct practice.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Migrated to nflreadpy</h4><p>nfl_data_py (our data source since day one) was officially deprecated by nflverse. Migrated to nflreadpy, the actively-maintained successor, with a safety toggle to instantly revert if needed. Verified two ways before merging: every required column present, and real 2025 Week 10 values (scores, spread lines, EPA, snap counts) matched exactly between old and new sources.</p></div>
       <div class="add-idea">+ next idea goes here</div>
     </div>
   </section>
