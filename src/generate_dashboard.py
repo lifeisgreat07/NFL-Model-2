@@ -166,7 +166,8 @@ def build_accuracy_summary(all_graded):
 
 
 def build_teams_js(ratings):
-    return [{'team': r['team'], 'name': r['name'], 'off': r['off'], 'def': r['def'], 'net': r['net']} for r in ratings]
+    return [{'team': r['team'], 'name': r['name'], 'off': r['off'], 'def': r['def'], 'net': r['net'],
+             'sos': r.get('sos'), 'games_played': r.get('games_played')} for r in ratings]
 
 
 def load_team_history():
