@@ -25,19 +25,39 @@ RECENCY_HALF_LIFE = 16
 # dropbacks in their sample. Originally 8, chosen by convention with no
 # backtest -- flagged as a known gap in the methodology doc.
 #
-# Re-tuned 2026-08 (Stage 2 QB Model V2): joint grid over half-life x
-# shrink_k on validation seasons 2022-2023 found a broad, flat optimum
-# around k=96-128 (log loss ~0.658 vs. 0.661 at k=8) -- not a fragile
-# single-point peak. Confirmed on truly held-out 2024-2025 (never touched
-# during tuning): 63.42% vs. 63.05% accuracy (+0.37pt), log loss 0.6482
-# vs. 0.6485. Paired bootstrap (5000 resamples) on the confirmatory set:
-# 95% CI [-0.92, +1.65] -- NOT statistically significant at this sample
-# size. Adopted anyway: k=96 replaces an admittedly-arbitrary constant
-# with one chosen via real validation/test separation, which is a
-# methodological correctness improvement independent of whether the
-# accuracy delta itself is provably real. Revisit significance once more
-# season data accumulates.
-QB_SHRINK_K = 96
+# Re-tuned 2026-08-31, run via src/tune_qb_shrink_k.py (a real, committed,
+# reproducible script -- see it for the exact method). This supersedes the
+# prior "k=8 -> 96" retune: that decision's own supporting numbers
+# (63.42% vs. 63.05% confirmatory accuracy) could not be reproduced from
+# anything in this repo when checked, for reasons unrelated to the leak
+# below -- most likely a script or data snapshot that no longer exists.
+# Also, by the time this ran, two things had changed underneath the
+# original retune: OL continuity was removed from the live feature set
+# (Stage 6) and the backtest switched to weekly refitting (Stage 9), so
+# even a reproduced version of that retune would've been evaluating a
+# different model than the one actually live today. And separately,
+# build_qb_ratings' league-average shrinkage target was found to leak
+# future weeks into every "as of" prediction (fixed the same day, see
+# ratings_engine.py) -- checked directly, that leak did NOT explain the
+# irreproducibility above (near-identical k=8-vs-96 comparison with the
+# leak present or fixed), but it's fixed regardless and this retune runs
+# under the fixed code.
+#
+# Grid search (1 to 2048) on validation seasons 2022-2023 only, current
+# live 4-feature model, weekly-refit backtest: broad flat optimum roughly
+# k=64-256 (log loss 0.6547-0.6555), winner k=128 (val log loss 0.654660
+# vs. 0.658188 at k=8). Confirmed on held-out 2024-2025 (n=544): k=128
+# accuracy 63.60%, log loss 0.641264; k=8 accuracy 63.79%, log loss
+# 0.641721; k=96 (old default) accuracy 63.05%, log loss 0.641058 --
+# genuinely mixed across metrics, no k in the whole grid dominates.
+# Paired bootstrap (5000 resamples), k=128 vs. k=8 on confirmatory:
+# accuracy delta -0.18pt, 95% CI [-1.65, +1.29] -- NOT statistically
+# significant, same epistemic status as the original retune. Adopted
+# anyway for the same reason as before: k=128 is what the validation-only
+# selection criterion (log loss) actually picked, via a method that's now
+# reproducible end to end, independent of whether this specific delta is
+# provably real. Revisit once more season data accumulates.
+QB_SHRINK_K = 128
 
 # Minimum plays required before computing a team rating cutoff (avoids
 # degenerate very-early-season fits).
