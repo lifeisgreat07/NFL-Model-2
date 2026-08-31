@@ -411,7 +411,7 @@
     <div class="page-head">
       <div>
         <h2>Model Lab</h2>
-        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.2</b>, last updated 2026-08-24.</div>
+        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.3</b>, last updated 2026-08-31.</div>
       </div>
     </div>
     <div class="table-wrap" style="overflow-x:auto;">
@@ -424,7 +424,8 @@
           <tr><td>Rest days, weather, travel distance, altitude</td><td class="num">All flat or worse across every framing tested</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Divisional games, trap/look-ahead games, blowout letdown</td><td class="num">No real signal beyond existing team-strength features</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Gradient boosting vs. logistic regression</td><td class="num">+0.83pt accuracy but AUC drops 0.670&rarr;0.654; bootstrap CI included zero</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>QB shrinkage retune (k=8 -&gt; 96)</td><td class="num">+0.37pt confirmatory, CI included zero, adopted for methodological correctness</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
+          <tr><td>QB rating shrinkage-target leak fix</td><td class="num">Shrinkage anchor was a global average, not cutoff-scoped -- fixed; ~0.1-0.3pt accuracy effect on its own, not the cause of anything below</td><td><span class="conf-tag tag-good">FIXED</span></td></tr>
+          <tr><td>QB shrinkage retune (k=96 -&gt; 128, re-run 2026-08-31)</td><td class="num">Real, reproducible script (was previously not reproducible); validation winner k=128, confirmatory delta vs. k=8 -0.18pt, CI included zero</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
           <tr><td>QB quality-differential change signal</td><td class="num">Identical to no-signal-at-all; binary flag clearly better</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Team-specific home-field advantage</td><td class="num">Split-half reliability 0.078 -- mostly noise, not a real trait</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Pass/rush-split matchup features</td><td class="num">Worse on every metric; 0.947 correlation with existing aggregate</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
@@ -449,7 +450,7 @@
     <div class="method-block">
       <h3>Model A vs. Model B — What Actually Separates Them</h3>
       <p><b style="color:var(--blue)">Model A (football-only)</b> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, and QB-change detection — all derived from real play-by-play data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (see the "why this pick" breakdown on every game).</p>
-      <p><b style="color:var(--amber)">Model B (market-blended)</b> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.1% vs. ~63% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
+      <p><b style="color:var(--amber)">Model B (market-blended)</b> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.1% vs. 62.5% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
     </div>
 
     <div class="method-block">
@@ -474,20 +475,20 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
         <tbody>
           <tr><td>Coin flip</td><td>50.0%</td><td>0.693</td><td>0.250</td><td>0.500</td></tr>
           <tr><td>Home team always wins</td><td>54.6%</td><td>-</td><td>-</td><td>-</td></tr>
-          <tr><td>3-feature (off+def+QB) only</td><td>62.6%</td><td>0.655</td><td>0.231</td><td>0.662</td></tr>
-          <tr><td>Model A -- live, 4 features, weekly refit</td><td class="highlight">63.2%</td><td class="highlight">0.649</td><td class="highlight">0.228</td><td class="highlight">0.672</td></tr>
+          <tr><td>3-feature (off+def+QB) only</td><td>63.1%</td><td>0.653</td><td>0.230</td><td>0.661</td></tr>
+          <tr><td>Model A -- live, 4 features, weekly refit</td><td class="highlight">62.5%</td><td class="highlight">0.648</td><td class="highlight">0.228</td><td class="highlight">0.670</td></tr>
           <tr><td>Vegas market alone</td><td>68.2%</td><td>0.607</td><td>0.210</td><td>0.725</td></tr>
-          <tr><td>Model B -- live, 4 features + market, weekly refit</td><td class="highlight">68.0%</td><td class="highlight">0.606</td><td class="highlight">0.209</td><td class="highlight">0.727</td></tr>
+          <tr><td>Model B -- live, 4 features + market, weekly refit</td><td class="highlight">68.1%</td><td class="highlight">0.606</td><td class="highlight">0.209</td><td class="highlight">0.727</td></tr>
         </tbody>
       </table>
       <p style="margin-top:11px;">Update (2026-08, research Stage 6): O-line continuity was removed from the live model after two independent negative results -- a paired bootstrap found its individual contribution statistically indistinguishable from zero (95% CI included zero), and a later confirmatory test found "no OL feature at all" outperformed both the original and a smoothed version of it on held-out 2024-2025 data. It's still computed and logged as informational data, just no longer fed into the model, in case future evidence changes this. QB-change detection has held up across every test run against it and remains live.</p>
-      <p style="margin-top:11px;">Separately: the market still barely improves when our full feature set is blended in (68.1% to 67.8% -- actually slightly worse on raw accuracy, though marginally better on log loss/Brier/AUC). The Vegas line still captures almost everything we can see, plus real-world information we structurally can't.</p>
+      <p style="margin-top:11px;">Separately: the market still barely improves when our full feature set is blended in (68.2% to 68.0% -- actually slightly worse on raw accuracy, though marginally better on log loss/Brier/AUC). The Vegas line still captures almost everything we can see, plus real-world information we structurally can't.</p>
     </div>
 
     <div class="method-block">
       <h3>Known Gaps</h3>
       <div class="gap-item"><span class="gap-num">01</span><span>Rest days and weather were tested and rejected (real backtest, not adopted) — see Roadmap. Travel distance still untested; no injury feature yet.</span></div>
-      <div class="gap-item"><span class="gap-num">02</span><span>QB shrinkage was re-tuned via proper validation/test split (k=8 -> k=96) -- resolved, though the accuracy gain itself (+0.37pt) is not statistically significant at current sample size.</span></div>
+      <div class="gap-item"><span class="gap-num">02</span><span>QB shrinkage: the shrinkage target had a real (small) leak -- fixed 2026-08-31 -- and was re-tuned via the same validation/test split discipline, this time with a real committed script (k=96 -> 128; confirmatory delta vs. the pre-2026-08 k=8 default is -0.18pt, CI included zero, not statistically significant, same as before). The prior retune's own supporting numbers could not be reproduced from this repo and are superseded.</span></div>
       <div class="gap-item"><span class="gap-num">03</span><span>Gradient boosting was tested and did not beat logistic regression at this feature-set size.</span></div>
     </div>
 

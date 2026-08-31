@@ -74,7 +74,14 @@ MIN_PLAYS_FOR_RATING = 200
 #   v2.1 (2026-08-24, Stage 6)  -- OL continuity removed (4 features: off, def, qb, qbchange)
 #   v2.2 (2026-08-24, Stage 9)  -- backtest methodology switched to weekly refitting
 #                                   (no live-model code change, live pipeline already did this)
-MODEL_VERSION = "2.2"
+#   v2.3 (2026-08-31) -- fixed a real leak in build_qb_ratings (shrinkage
+#                          target was a global average, not cutoff-scoped;
+#                          see ratings_engine.py); QB_SHRINK_K re-tuned
+#                          96->128 via a real, committed, reproducible
+#                          script (src/tune_qb_shrink_k.py), superseding
+#                          the prior retune whose own numbers couldn't be
+#                          reproduced from anything in this repo
+MODEL_VERSION = "2.3"
 
 TRAIN_SEASONS = [2020, 2021, 2022, 2023, 2024, 2025]
 BACKTEST_SEASONS = [2022, 2023, 2024, 2025]
