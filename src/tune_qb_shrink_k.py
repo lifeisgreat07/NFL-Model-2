@@ -21,6 +21,10 @@ never ambiguous again):
      actually generalizes rather than overfitting the validation split.
   3. Both are also reported for k=8 (the pre-2026-08 default) so the
      size of any real improvement is visible directly, not asserted.
+  4. A paired bootstrap (5000 resamples) on the confirmatory predictions
+     compares the validation winner against k=8, same rigor the prior
+     (unreproducible) retune claimed to use, so "is this real" has an
+     actual number attached instead of an assertion.
 
 Run: python src/tune_qb_shrink_k.py
 """
@@ -97,6 +101,27 @@ def main():
     pd.DataFrame(confirm_rows).set_index('k').to_csv(out_dir / 'qb_shrink_k_confirmatory.csv')
     print(f"\nSaved to {out_dir / 'qb_shrink_k_validation.csv'} and {out_dir / 'qb_shrink_k_confirmatory.csv'}")
     print(f"\nRECOMMENDATION: QB_SHRINK_K = {winner_k} (picked on validation only, confirmed above on held-out data)")
+
+    if winner_k != 8:
+        print(f"\nStep 3: paired bootstrap (5000 resamples) on confirmatory predictions, k={winner_k} vs. k=8\n")
+        hist_winner = hist_for_k(winner_k, plays, week_keys, week_to_idx, team_ratings_by_week, raw, schedules_by_season, ol_lookup)
+        _, y_true_w, y_prob_w = backtest(hist_winner, LIVE_MODEL_A_FEATURES, CONFIRMATORY_SEASONS, return_raw=True)
+        hist_k8 = hist_for_k(8, plays, week_keys, week_to_idx, team_ratings_by_week, raw, schedules_by_season, ol_lookup)
+        _, y_true_8, y_prob_8 = backtest(hist_k8, LIVE_MODEL_A_FEATURES, CONFIRMATORY_SEASONS, return_raw=True)
+        assert np.array_equal(y_true_w, y_true_8), "confirmatory game sets must match between k values for a paired comparison"
+
+        rng = np.random.default_rng(0)
+        n = len(y_true_w)
+        pred_w = (y_prob_w >= 0.5).astype(int)
+        pred_8 = (y_prob_8 >= 0.5).astype(int)
+        point_diff = (pred_w == y_true_w).mean() - (pred_8 == y_true_8).mean()
+        diffs = np.empty(5000)
+        for i in range(5000):
+            idx = rng.integers(0, n, size=n)
+            diffs[i] = (pred_w[idx] == y_true_w[idx]).mean() - (pred_8[idx] == y_true_8[idx]).mean()
+        lo, hi = np.percentile(diffs, [2.5, 97.5])
+        print(f"Accuracy delta (k={winner_k} minus k=8): {point_diff*100:+.4f}pt")
+        print(f"95% bootstrap CI: [{lo*100:+.4f}pt, {hi*100:+.4f}pt]  ({'excludes zero -- likely real' if lo > 0 or hi < 0 else 'includes zero -- not statistically significant at this sample size'})")
 
 
 if __name__ == '__main__':

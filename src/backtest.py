@@ -27,7 +27,7 @@ from weekly_update import build_historical_features, build_qb_change_lookup  # r
 from ol_continuity import compute_ol_continuity_lookup
 
 
-def backtest(hist, features, test_seasons, refit_every_n_weeks=1):
+def backtest(hist, features, test_seasons, refit_every_n_weeks=1, return_raw=False):
     """Weekly-refitting walk-forward evaluation (default: refit every week).
     Adopted 2026-08 (Stage 9) after confirming it matches the live model's
     actual behavior -- weekly_update.py always trains on all real data
@@ -84,13 +84,16 @@ def backtest(hist, features, test_seasons, refit_every_n_weeks=1):
                 all_prob.extend(probs)
     all_true, all_prob = np.array(all_true), np.array(all_prob)
     pred = (all_prob >= 0.5).astype(int)
-    return {
+    metrics = {
         'n': len(all_true),
         'accuracy': accuracy_score(all_true, pred),
         'log_loss': log_loss(all_true, all_prob),
         'brier': brier_score_loss(all_true, all_prob),
         'auc': roc_auc_score(all_true, all_prob),
     }
+    if return_raw:
+        return metrics, all_true, all_prob
+    return metrics
 
 
 def main():
