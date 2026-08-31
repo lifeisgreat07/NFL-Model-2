@@ -82,17 +82,38 @@ def build_qb_ratings(raw_pbp):
     week_to_idx = {wk: i for i, wk in enumerate(week_keys)}
     df['gwidx'] = list(zip(df['season'], df['week']))
     df['gwidx'] = df['gwidx'].map(week_to_idx)
-    league_avg = df['qb_epa'].mean()
+    league_avg = df['qb_epa'].mean()  # informational only -- never used for shrinkage below (that must be cutoff-scoped)
+
+    # Cumulative per-week sum/count so the shrinkage target itself can be
+    # computed leak-free -- "league average as of this cutoff" (gwidx <
+    # cutoff_gwidx only), not the global average across the whole input
+    # (which for a multi-season backtest silently includes future seasons).
+    n_weeks = len(week_keys)
+    week_sum = np.zeros(n_weeks)
+    week_count = np.zeros(n_weeks)
+    per_week = df.groupby('gwidx')['qb_epa'].agg(['sum', 'count'])
+    week_sum[per_week.index.values] = per_week['sum'].values
+    week_count[per_week.index.values] = per_week['count'].values
+    cum_sum = np.cumsum(week_sum)
+    cum_count = np.cumsum(week_count)
+
+    def league_avg_as_of(cutoff_gwidx):
+        idx = min(cutoff_gwidx, n_weeks) - 1
+        if idx < 0 or cum_count[idx] == 0:
+            return 0.0  # no history at all yet (e.g. week 1 of the very first season) --
+                        # a fixed neutral constant, never derived from data, so it can't leak
+        return cum_sum[idx] / cum_count[idx]
 
     def trailing_rating(player_id, cutoff_gwidx):
         prior = df[(df['passer_player_id'] == player_id) & (df['gwidx'] < cutoff_gwidx)]
+        cutoff_league_avg = league_avg_as_of(cutoff_gwidx)
         if len(prior) == 0:
-            return league_avg
+            return cutoff_league_avg
         distance = cutoff_gwidx - prior['gwidx'].values
         w = 0.5 ** (distance / RECENCY_HALF_LIFE)
         weighted_avg = np.average(prior['qb_epa'].values, weights=w)
         n_eff = w.sum()
-        return (n_eff * weighted_avg + QB_SHRINK_K * league_avg) / (n_eff + QB_SHRINK_K)
+        return (n_eff * weighted_avg + QB_SHRINK_K * cutoff_league_avg) / (n_eff + QB_SHRINK_K)
 
     def identify_starters(season, week=None):
         """Most-dropbacks passer per team for a given season (optionally week)."""
