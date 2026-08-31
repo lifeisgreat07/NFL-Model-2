@@ -355,6 +355,7 @@
     <div class="nav-group-label">Reference</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg>Roadmap</button>
+    <button class="nav-btn" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>Data Sources</button>
   </nav>
   <div class="sidebar-foot">__SIDEBAR_FOOT__</div>
 </aside>
@@ -629,7 +630,56 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Early-Season Prior Blending</h4><p>Confirmed a real gap (61.7% weeks 1-4 vs. 65.9% weeks 15+), but explicit extra shrinkage didn't close it -- the existing continuous recency-weighted ratings already blend across the season boundary correctly. Gap remains open; import_win_totals() (real preseason market data) flagged as a genuinely different angle for later.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Adopted</div><h4>Weekly-Refitting Backtest</h4><p>Backtest methodology now refits every week within a season (not just once), matching what the live weekly routine already does. Not statistically significant on its own (+0.37pt, CI included zero) but tied-or-better on every metric and free -- adopted as the more methodologically correct practice.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Migrated to nflreadpy</h4><p>nfl_data_py (our data source since day one) was officially deprecated by nflverse. Migrated to nflreadpy, the actively-maintained successor, with a safety toggle to instantly revert if needed. Verified two ways before merging: every required column present, and real 2025 Week 10 values (scores, spread lines, EPA, snap counts) matched exactly between old and new sources.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-next">Confirmed Infeasible</div><h4>Preseason EPA as Early-Season Prior</h4><p>Checked directly: nflreadpy's play-by-play loader has zero preseason rows, for any season 2020-2025. Not a data-quality problem to work around -- the play-level detail simply isn't in this pipeline. Ruled out, not deferred.</p></div>
       <div class="add-idea">+ next idea goes here</div>
+    </div>
+  </section>
+
+  <!-- DATA SOURCES -->
+  <section class="page" id="page-datasources">
+    <div class="page-head">
+      <div><h2>Data Sources</h2><div class="desc">Every dataset this project touches, honestly labeled -- what's actually live in production, what's research-only, and what's blocked.</div></div>
+    </div>
+
+    <div class="method-block">
+      <h3>In Production (used every single weekly run)</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dataset</th><th>Function</th><th>Used For</th></tr></thead>
+        <tbody>
+          <tr><td>Play-by-play</td><td class="num">load_pbp()</td><td class="num">Team ratings (ridge regression), per-QB trailing EPA</td></tr>
+          <tr><td>Schedules</td><td class="num">load_schedules()</td><td class="num">Game results, spread/total lines, home/away, current-week matchups</td></tr>
+          <tr><td>Snap counts</td><td class="num">load_snap_counts()</td><td class="num">Computed and logged each run for O-line continuity, though that feature was removed from the live model in v2.1 -- data collection continues in case future evidence changes that</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:11px;">All three migrated from the now-deprecated nfl_data_py to nflreadpy in 2026-08, verified with real column-schema and exact-value checks before merging -- see Roadmap.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Research-Only (fetched to test a specific idea, never part of live predictions)</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dataset</th><th>Function</th><th>What It Was Tested For</th><th>Outcome</th></tr></thead>
+        <tbody>
+          <tr><td>Officials</td><td class="num">load_officials()</td><td class="num">Referee-crew tendency</td><td class="num">Rejected</td></tr>
+          <tr><td>FTN charting</td><td class="num">load_ftn_charting()</td><td class="num">QB fault-rate, scheme tendencies, pressure/blitz rate</td><td class="num">Rejected</td></tr>
+          <tr><td>Trades</td><td class="num">load_trades()</td><td class="num">Personnel-disruption signal</td><td class="num">Rejected</td></tr>
+          <tr><td>Rosters (weekly)</td><td class="num">load_rosters_weekly()</td><td class="num">Checked as an injury-data alternative</td><td class="num">Not suitable -- confirmed not gameday active/inactive status</td></tr>
+          <tr><td>Participation</td><td class="num">load_participation()</td><td class="num">Checked as an injury-data alternative</td><td class="num">Not suitable -- same limitation as snap counts, also doesn't update during the season</td></tr>
+          <tr><td>ESPN QBR</td><td class="num">import_qbr() (nfl_data_py fallback)</td><td class="num">Alternative QB quality metric</td><td class="num">Source confirmed abandoned, stops at 2023</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h3>Checked and Blocked</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dataset</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Injury reports (load_injuries())</td><td class="num">No 2025+ data, no ETA -- confirmed directly via nflverse's own status page, re-checked multiple times</td></tr>
+          <tr><td>Gameday active/inactive list</td><td class="num">Doesn't exist anywhere in nflreadpy -- confirmed by checking the full function list, not just guessing from names</td></tr>
+          <tr><td>Preseason play-by-play</td><td class="num">Zero preseason rows in load_pbp() for any season 2020-2025 -- the data simply isn't in this pipeline</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:11px;">This section exists specifically so a claim like "we tried X" is checkable, not just asserted -- every row here has a real check behind it, documented on Model Lab or Roadmap.</p>
     </div>
   </section>
 
@@ -650,6 +700,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <button class="bnav-more-item" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span>Methodology</span></button>
     <button class="bnav-more-item" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg><span>Roadmap</span></button>
     <button class="bnav-more-item" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span>Model Lab</span></button>
+    <button class="bnav-more-item" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg><span>Data Sources</span></button>
   </div>
 </div>
 
