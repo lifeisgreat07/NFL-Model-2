@@ -72,16 +72,36 @@ TEAM_NAMES = {
 }
 
 
-def save_current_ratings(team_ratings):
+def save_current_ratings(team_ratings, season_schedule=None):
     """Write the current team ratings snapshot to data/current_ratings.json
     so generate_dashboard.py can display them without recomputing (which
-    would mean re-pulling all play-by-play data a second time)."""
+    would mean re-pulling all play-by-play data a second time).
+
+    season_schedule (optional): this season's full schedule dataframe.
+    When provided, also computes each team's strength of schedule -- the
+    average CURRENT net rating of opponents actually played so far (using
+    our best up-to-date read on each opponent, the standard convention for
+    "how tough is this team's real slate," not their rating at the time
+    they were played)."""
     rows = []
     for team, (off, deff) in team_ratings.items():
         rows.append({
             'team': team, 'name': TEAM_NAMES.get(team, team),
             'off': round(off, 4), 'def': round(deff, 4), 'net': round(off - deff, 4),
         })
+
+    if season_schedule is not None:
+        played = season_schedule.dropna(subset=['home_score', 'away_score'])
+        opponents = {}
+        for _, g in played.iterrows():
+            opponents.setdefault(g['home_team'], []).append(g['away_team'])
+            opponents.setdefault(g['away_team'], []).append(g['home_team'])
+        for row in rows:
+            opps = opponents.get(row['team'], [])
+            opp_nets = [team_ratings[o][0] - team_ratings[o][1] for o in opps if o in team_ratings]
+            row['sos'] = round(sum(opp_nets) / len(opp_nets), 4) if opp_nets else None
+            row['games_played'] = len(opps)
+
     rows.sort(key=lambda r: -r['net'])
     with open(DATA_DIR / 'current_ratings.json', 'w') as f:
         json.dump(rows, f, indent=2)
@@ -305,7 +325,7 @@ def main(season, week):
     print("Building current ('as of right now') team + QB ratings...")
     cutoff_i = len(week_keys)
     current_team_ratings = build_team_ratings(plays, week_keys, upto_cutoff_i=cutoff_i)
-    save_current_ratings(current_team_ratings)
+    save_current_ratings(current_team_ratings, season_schedule=schedules_by_season.get(season))
     current_season_weeks = [w for (s, w) in week_keys if s == season]
     if current_season_weeks:
         last_completed_week = max(current_season_weeks)
