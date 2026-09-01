@@ -46,7 +46,20 @@ def load_plays(seasons=None):
     seasons = seasons or TRAIN_SEASONS
     if USE_NFLREADPY:
         import nflreadpy as nfl
-        df = nfl.load_pbp(seasons)
+        # weekly_update.py always includes the *target* season here even
+        # when it hasn't kicked off yet (e.g. the week-1 offseason runs
+        # that only exist to check the lock-in window). nflreadpy's
+        # get_current_season() lags behind the calendar year until the
+        # Thursday after Labor Day, and load_pbp() hard-rejects any season
+        # past that point -- there's genuinely no pbp data to fetch yet,
+        # so drop those seasons instead of crashing the whole run.
+        current = nfl.get_current_season()
+        available = [s for s in seasons if s <= current]
+        skipped = [s for s in seasons if s > current]
+        if skipped:
+            print(f"  Skipping season(s) {skipped}: not started yet per nflverse "
+                  f"(no play-by-play data exists) -- current season is {current}.")
+        df = nfl.load_pbp(available)
         return df.to_pandas()
     else:
         import nfl_data_py as nfl
@@ -73,7 +86,11 @@ def load_snap_counts(seasons=None):
     seasons = seasons or TRAIN_SEASONS
     if USE_NFLREADPY:
         import nflreadpy as nfl
-        df = nfl.load_snap_counts(seasons)
+        # Same not-started-yet issue as load_plays above -- drop seasons
+        # nflreadpy doesn't consider current yet instead of crashing.
+        current = nfl.get_current_season()
+        available = [s for s in seasons if s <= current]
+        df = nfl.load_snap_counts(available)
         return df.to_pandas()
     else:
         import nfl_data_py as nfl
