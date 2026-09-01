@@ -22,22 +22,40 @@ RECENCY_HALF_LIFE = 16
 
 # Shrinkage pseudo-count for QB ratings: a QB's trailing rating is blended
 # toward league average, weighted as if there were this many league-average
-# dropbacks in their sample. Originally 8, chosen by convention with no
-# backtest -- flagged as a known gap in the methodology doc.
+# dropbacks in their sample.
 #
-# Re-tuned 2026-08 (Stage 2 QB Model V2): joint grid over half-life x
-# shrink_k on validation seasons 2022-2023 found a broad, flat optimum
-# around k=96-128 (log loss ~0.658 vs. 0.661 at k=8) -- not a fragile
-# single-point peak. Confirmed on truly held-out 2024-2025 (never touched
-# during tuning): 63.42% vs. 63.05% accuracy (+0.37pt), log loss 0.6482
-# vs. 0.6485. Paired bootstrap (5000 resamples) on the confirmatory set:
-# 95% CI [-0.92, +1.65] -- NOT statistically significant at this sample
-# size. Adopted anyway: k=96 replaces an admittedly-arbitrary constant
-# with one chosen via real validation/test separation, which is a
-# methodological correctness improvement independent of whether the
-# accuracy delta itself is provably real. Revisit significance once more
-# season data accumulates.
-QB_SHRINK_K = 96
+# Full honest history, because this constant has been through three
+# different states and the truth is more useful than the cleanest-sounding
+# one:
+#   1. Originally 8, chosen by convention -- never backtested at all.
+#   2. Retuned to 96 (2026-08, Stage 2): adopted despite the confirmatory
+#      accuracy delta's bootstrap CI including zero, because the direction
+#      (higher k better) was at least consistent across accuracy and log
+#      loss at the time.
+#   3. That retune turned out not to reproduce: by 2026-08-31, two things
+#      had changed underneath it (OL continuity removed, Stage 6; backtest
+#      switched to weekly refitting, Stage 9) so it was evaluating a
+#      different model than the one actually live, and separately
+#      build_qb_ratings' shrinkage target was found to be leaking future
+#      weeks into every "as of" prediction (fixed the same day, see
+#      ratings_engine.py -- checked directly, that leak was NOT what broke
+#      the reproduction, it's just also fixed now). A fresh retune under
+#      the current, fixed config -- real script, src/tune_qb_shrink_k.py,
+#      committed and reusable regardless of this outcome -- grid-searched
+#      k=1 to 2048 on validation seasons 2022-2023 only (broad flat
+#      optimum k=64-256 on log loss, winner k=128) and confirmed on
+#      held-out 2024-2025 (n=544): k=8 won accuracy (63.79% vs 63.60%),
+#      Brier (0.224668 vs 0.224831), and AUC (0.686688 vs 0.683713); k=128
+#      only edged log loss (0.641264 vs 0.641721). Paired bootstrap (5000
+#      resamples): accuracy delta -0.18pt, 95% CI [-1.65, +1.29] --
+#      includes zero. Neither retuned value (96 or 128) has consistent
+#      support across metrics against the original k=8, so reverted to
+#      k=8 as the more defensible default: it's the one that isn't
+#      relying on a single-metric edge inside a statistically
+#      insignificant result. Revisit if/when more season data accumulates
+#      and the confirmatory sample is large enough to actually resolve
+#      this.
+QB_SHRINK_K = 8
 
 # Minimum plays required before computing a team rating cutoff (avoids
 # degenerate very-early-season fits).
@@ -54,7 +72,23 @@ MIN_PLAYS_FOR_RATING = 200
 #   v2.1 (2026-08-24, Stage 6)  -- OL continuity removed (4 features: off, def, qb, qbchange)
 #   v2.2 (2026-08-24, Stage 9)  -- backtest methodology switched to weekly refitting
 #                                   (no live-model code change, live pipeline already did this)
-MODEL_VERSION = "2.2"
+#   v2.3 (2026-08-31) -- fixed a real leak in build_qb_ratings (shrinkage
+#                          target was a global average, not cutoff-scoped;
+#                          see ratings_engine.py); QB_SHRINK_K re-tuned
+#                          96->128 via a real, committed, reproducible
+#                          script (src/tune_qb_shrink_k.py), superseding
+#                          the prior retune whose own numbers couldn't be
+#                          reproduced from anything in this repo
+#   v2.4 (2026-08-31) -- QB shrinkage investigation: found the original
+#                          k=96 decision didn't reproduce under later
+#                          config changes (OL removal, weekly refit);
+#                          the fresh retune above (k=128) then turned out
+#                          inconsistent across metrics on confirmatory
+#                          data too (k=8 won 3 of 4); reverted to k=8 as
+#                          the defensible default. tune_qb_shrink_k.py
+#                          stays committed -- real, reusable methodology,
+#                          independent of what it concluded this time.
+MODEL_VERSION = "2.4"
 
 TRAIN_SEASONS = [2020, 2021, 2022, 2023, 2024, 2025]
 BACKTEST_SEASONS = [2022, 2023, 2024, 2025]

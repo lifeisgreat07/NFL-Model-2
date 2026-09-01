@@ -477,7 +477,7 @@
     <div class="page-head">
       <div>
         <h2>Model Lab</h2>
-        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.2</b>, last updated 2026-08-26.</div>
+        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.4</b>, last updated 2026-08-31.</div>
       </div>
     </div>
     <div class="table-wrap" style="overflow-x:auto;">
@@ -490,7 +490,7 @@
           <tr><td>Rest days, weather, travel distance, altitude</td><td class="num">All flat or worse across every framing tested</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Divisional games, trap/look-ahead games, blowout letdown</td><td class="num">No real signal beyond existing team-strength features</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Gradient boosting vs. logistic regression</td><td class="num">+0.83pt accuracy but AUC drops 0.670&rarr;0.654; bootstrap CI included zero</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>QB shrinkage retune (k=8 -&gt; 96)</td><td class="num">+0.37pt confirmatory, CI included zero, adopted for methodological correctness</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
+          <tr><td>QB Shrinkage Re-tune (k=96, then k=128)</td><td class="num">Investigation, not a clean win: the original k=8-&gt;96 decision didn't reproduce once OL removal + weekly refit changed the model underneath it (a real shrinkage-target leak was also found and fixed along the way, see ratings_engine.py). A fresh retune under the fixed, current config picked k=128 on validation, but on confirmatory data k=8 won 3 of 4 metrics (accuracy, Brier, AUC) against k=128, which only edged log loss -- bootstrap CI included zero either way. Reverted to k=8, the current live default.</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
           <tr><td>QB quality-differential change signal</td><td class="num">Identical to no-signal-at-all; binary flag clearly better</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Team-specific home-field advantage</td><td class="num">Split-half reliability 0.078 -- mostly noise, not a real trait</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Pass/rush-split matchup features</td><td class="num">Worse on every metric; 0.947 correlation with existing aggregate</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
@@ -523,7 +523,9 @@
         <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v1.1</span><span class="version-date">2026-08-17</span><p>Added O-line continuity and QB-change detection (5 features).</p></div></div>
         <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.0</span><span class="version-date">2026-08-24</span><p>QB shrinkage constant retuned (k=8 &rarr; k=96) via proper validation/test split.</p></div></div>
         <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.1</span><span class="version-date">2026-08-24</span><p>O-line continuity removed after two independent negative tests (4 features: off, def, qb, qb-change).</p></div></div>
-        <div class="version-item"><div class="version-dot current"></div><div class="version-content"><span class="version-tag">v2.2</span><span class="version-date">2026-08-24</span><p>Backtest methodology switched to weekly refitting, matching what the live pipeline already did in production. <b style="color:var(--good);">Current.</b></p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.2</span><span class="version-date">2026-08-24</span><p>Backtest methodology switched to weekly refitting, matching what the live pipeline already did in production.</p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.3</span><span class="version-date">2026-08-31</span><p>Fixed a real leak in the QB rating's shrinkage target (was a global average, not cutoff-scoped -- see ratings_engine.py); re-tuned QB_SHRINK_K 96 -&gt; 128 via a real, committed, reproducible script (tune_qb_shrink_k.py), superseding the prior retune whose own numbers couldn't be reproduced from this repo.</p></div></div>
+        <div class="version-item"><div class="version-dot current"></div><div class="version-content"><span class="version-tag">v2.4</span><span class="version-date">2026-08-31</span><p>QB shrinkage investigation: the fresh k=128 retune turned out inconsistent on its own confirmatory data (k=8 won 3 of 4 metrics). Reverted to k=8 as the defensible default. <b style="color:var(--good);">Current.</b></p></div></div>
       </div>
     </div>
   </section>
@@ -537,7 +539,7 @@
     <div class="method-block">
       <h3>Model A vs. Model B — What Actually Separates Them</h3>
       <p><b style="color:var(--blue)">Model A (football-only)</b> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, and QB-change detection — all derived from real play-by-play data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (see the "why this pick" breakdown on every game).</p>
-      <p><b style="color:var(--amber)">Model B (market-blended)</b> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.1% vs. ~63% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
+      <p><b style="color:var(--amber)">Model B (market-blended)</b> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.2% vs. 62.8% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
     </div>
 
     <div class="method-block">
@@ -563,14 +565,15 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
         <tbody>
           <tr><td>Coin flip</td><td>50.0%</td><td>0.693</td><td>0.250</td><td>0.500</td></tr>
           <tr><td>Home team always wins</td><td>54.6%</td><td>-</td><td>-</td><td>-</td></tr>
-          <tr><td>3-feature (off+def+QB) only</td><td>62.6%</td><td>0.655</td><td>0.231</td><td>0.662</td></tr>
-          <tr><td>Model A -- live, 4 features, weekly refit</td><td class="highlight">63.2%</td><td class="highlight">0.649</td><td class="highlight">0.228</td><td class="highlight">0.672</td></tr>
+          <tr><td>3-feature (off+def+QB) only</td><td>62.4%</td><td>0.654</td><td>0.231</td><td>0.662</td></tr>
+          <tr><td>Model A -- live, 4 features, weekly refit</td><td class="highlight">62.8%</td><td class="highlight">0.650</td><td class="highlight">0.229</td><td class="highlight">0.670</td></tr>
           <tr><td>Vegas market alone</td><td>68.2%</td><td>0.607</td><td>0.210</td><td>0.725</td></tr>
-          <tr><td>Model B -- live, 4 features + market, weekly refit</td><td class="highlight">68.0%</td><td class="highlight">0.606</td><td class="highlight">0.209</td><td class="highlight">0.727</td></tr>
+          <tr><td>Model B -- live, 4 features + market, weekly refit</td><td class="highlight">68.2%</td><td class="highlight">0.606</td><td class="highlight">0.209</td><td class="highlight">0.727</td></tr>
         </tbody>
       </table></div>
+      <p style="margin-top:11px;">Update (2026-08-31): these numbers reflect two real changes, not a silent swap. First, a leak in the QB rating's shrinkage target was found and fixed (it was averaging in future weeks instead of only strictly-earlier ones -- see ratings_engine.py). Second, we revisited our own earlier QB-shrinkage tuning decision (k=8 -&gt; 96) after it turned out not to reproduce, re-ran the retune under the fixed, current config, and found the fresh result (k=128) didn't hold up consistently on confirmatory data either -- so we reverted to the original k=8. See Model Lab, "QB Shrinkage Re-tune," for the full investigation.</p>
       <p style="margin-top:11px;">Update (2026-08, research Stage 6): O-line continuity was removed from the live model after two independent negative results -- a paired bootstrap found its individual contribution statistically indistinguishable from zero (95% CI included zero), and a later confirmatory test found "no OL feature at all" outperformed both the original and a smoothed version of it on held-out 2024-2025 data. It's still computed and logged as informational data, just no longer fed into the model, in case future evidence changes this. QB-change detection has held up across every test run against it and remains live.</p>
-      <p style="margin-top:11px;">Separately: the market still barely improves when our full feature set is blended in (68.1% to 67.8% -- actually slightly worse on raw accuracy, though marginally better on log loss/Brier/AUC). The Vegas line still captures almost everything we can see, plus real-world information we structurally can't.</p>
+      <p style="margin-top:11px;">Separately: the market barely changes when our full feature set is blended in (68.2% either way on raw accuracy, marginally better on log loss/Brier/AUC). The Vegas line still captures almost everything we can see, plus real-world information we structurally can't.</p>
     </div>
 
     <div class="method-block">
@@ -583,7 +586,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h3>Known Gaps</h3>
       <div class="gap-item"><span class="gap-num">01</span><span>Rest days and weather were tested and rejected (real backtest, not adopted) — see Roadmap. Travel distance still untested; no injury feature yet.</span></div>
-      <div class="gap-item"><span class="gap-num">02</span><span>QB shrinkage was re-tuned via proper validation/test split (k=8 -> k=96) -- resolved, though the accuracy gain itself (+0.37pt) is not statistically significant at current sample size.</span></div>
+      <div class="gap-item"><span class="gap-num">02</span><span>QB shrinkage: the shrinkage target had a real (small) leak -- fixed 2026-08-31. Re-tuning it turned out to be inconclusive: the original k=8 -> 96 decision didn't reproduce, and a fresh retune under the fixed config (k=128) won on validation but lost 3 of 4 metrics to k=8 on confirmatory data (bootstrap CI included zero). Reverted to k=8 as the more defensible default -- see Model Lab for the full investigation and src/tune_qb_shrink_k.py for the reusable methodology.</span></div>
       <div class="gap-item"><span class="gap-num">03</span><span>Gradient boosting was tested and did not beat logistic regression at this feature-set size.</span></div>
     </div>
 
