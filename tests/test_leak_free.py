@@ -1,14 +1,30 @@
 """
-Leak-free tests for the rating/continuity pipeline.
+Leak-free-ness test suite. Flagged as a gap in the very first audit of this
+project -- every leak-free claim made in Model Lab/Roadmap has, until now,
+been verified by manual, one-off sandbox checks during development, never
+by a real, repeatable, checked-into-the-repo test.
 
-These don't hit the network -- everything is built from small synthetic
-DataFrames shaped exactly like what data_loader.py hands to these
-functions, so each test isolates one specific leak-free property instead
-of depending on real season data (which changes shape from week to week
-and can't prove a negative -- "this future data had no effect" -- as
-cleanly as a synthetic before/after mutation can).
+Design principle: these tests import the ACTUAL production functions from
+src/ (not reimplementations), and feed them small, synthetic, fully-known
+inputs where we can independently compute what a leak-free answer must be.
+If any function's signature has drifted since this was written, these
+tests will fail loudly with a real import/call error -- that's a feature,
+not a bug: it means this suite can't silently pass while testing stale
+assumptions about the codebase.
 
-Run: python -m pytest test_leak_free.py -v
+Consolidated 2026-09-01 from two independently-written suites that landed
+in parallel (one here, one on a separate branch): kept both of this file's
+original QB-change-lookup tests (the other suite never covered that code
+path at all), replaced this file's OL-continuity/team-ratings tests with
+the other suite's stronger versions (exact mutate-and-diff equality checks
+instead of "plant one extreme value and assert the result looks
+reasonable"), and added the other suite's QB-rating shrinkage-target leak
+test, which doesn't exist here at all and is the one that actually caught
+a real bug (see ratings_engine.py). Also fixed this file's sys.path setup,
+which pointed at a nonexistent tests/src and made every real import here
+fail silently down to a skip -- confirmed by actually running it.
+
+Run with: pytest tests/test_leak_free.py -v
 """
 import sys
 from pathlib import Path
@@ -17,13 +33,60 @@ import numpy as np
 import pandas as pd
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent / "src"))
-
-from ratings_engine import build_team_ratings, build_qb_ratings
-from ol_continuity import compute_ol_continuity_lookup, get_continuity, get_most_recent_continuity
-from config import MIN_PLAYS_FOR_RATING
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 
+# ============================================================
+# Test 1: QB-change detection never uses a future week's starter
+# to determine whether THIS week represents a change.
+# ============================================================
+def test_qb_change_lookup_never_leaks_future_starter():
+    from weekly_update import build_qb_change_lookup
+
+    # Synthetic starters: team AAA starts QB1 weeks 1-2, switches to QB2 in
+    # week 3, switches BACK to QB1 in week 4. A leak-free implementation
+    # must flag week 3 and week 4 as changes using ONLY the prior week's
+    # starter -- never by looking ahead to see who starts later.
+    starters = pd.DataFrame([
+        {'season': 2024, 'week': 1, 'posteam': 'AAA', 'passer_player_id': 'QB1'},
+        {'season': 2024, 'week': 2, 'posteam': 'AAA', 'passer_player_id': 'QB1'},
+        {'season': 2024, 'week': 3, 'posteam': 'AAA', 'passer_player_id': 'QB2'},
+        {'season': 2024, 'week': 4, 'posteam': 'AAA', 'passer_player_id': 'QB1'},
+    ])
+
+    qb_dict = {'identify_starters': lambda season: starters[starters['season'] == season].copy()}
+    lookup = build_qb_change_lookup(qb_dict, seasons=[2024])
+
+    assert lookup.get((2024, 1, 'AAA'), 0) == 0, "week 1 has no prior week -- must not be flagged as a change"
+    assert lookup.get((2024, 2, 'AAA'), 0) == 0, "same QB as week 1 -- not a change"
+    assert lookup.get((2024, 3, 'AAA'), 0) == 1, "QB1 -> QB2 -- genuinely a change"
+    assert lookup.get((2024, 4, 'AAA'), 0) == 1, "QB2 -> QB1 -- also genuinely a change, even though QB1 started before"
+
+
+def test_qb_change_lookup_resets_across_season_boundary():
+    from weekly_update import build_qb_change_lookup
+
+    # Team BBB ends 2023 with QB2, opens 2024 with QB1 (who started 2023
+    # week 1). A leak-free, season-scoped implementation must NOT flag
+    # 2024 week 1 as "same as 2023 week 1" -- there's no valid "prior week"
+    # within the new season to compare against.
+    starters = pd.DataFrame([
+        {'season': 2023, 'week': 1, 'posteam': 'BBB', 'passer_player_id': 'QB1'},
+        {'season': 2023, 'week': 18, 'posteam': 'BBB', 'passer_player_id': 'QB2'},
+        {'season': 2024, 'week': 1, 'posteam': 'BBB', 'passer_player_id': 'QB1'},
+    ])
+    qb_dict = {'identify_starters': lambda season: starters[starters['season'] == season].copy()}
+    lookup = build_qb_change_lookup(qb_dict, seasons=[2023, 2024])
+
+    assert lookup.get((2024, 1, 'BBB'), 0) == 0, \
+        "no valid prior week exists within 2024 season -- must default to 0, not compare across season boundary"
+
+
+# ============================================================
+# Test 2: team ratings at a given cutoff never include that
+# cutoff week's own plays (the fundamental walk-forward property
+# the entire model depends on).
+# ============================================================
 def _synthetic_team_plays(rng, n_week0=260, n_week1=40):
     """gwidx=0 is the only week that should ever feed a cutoff_i=1 fit;
     gwidx=1 is 'the future' relative to that cutoff and must never leak in."""
@@ -42,10 +105,17 @@ def _synthetic_team_plays(rng, n_week0=260, n_week1=40):
     return plays, week_keys
 
 
-def test_team_ratings_cutoff_excludes_current_and_future_weeks():
-    """fit_at(cutoff_i) must use gwidx < cutoff_i, never <=. Proof: mutate
-    the cutoff week's own data into something wildly different and confirm
-    the rating computed *as of* that cutoff doesn't move at all."""
+def test_team_ratings_cutoff_excludes_current_week():
+    """This is the single most important leak-free property in the whole
+    project -- if this breaks, every downstream feature is compromised.
+    Proof: mutate the cutoff week's own data into something wildly
+    different and confirm the rating computed *as of* that cutoff doesn't
+    move at all -- a stronger check than "the rating still looks
+    reasonable," since even a real leak can produce a plausible-looking
+    number."""
+    from ratings_engine import build_team_ratings
+    from config import MIN_PLAYS_FOR_RATING
+
     rng = np.random.default_rng(42)
     plays, week_keys = _synthetic_team_plays(rng, n_week0=260, n_week1=40)
     assert (plays["gwidx"] == 0).sum() >= MIN_PLAYS_FOR_RATING
@@ -62,9 +132,19 @@ def test_team_ratings_cutoff_excludes_current_and_future_weeks():
         assert before[team] == after[team], f"{team} rating changed when only cutoff-week data was mutated -- leak"
 
 
-def test_qb_rating_cutoff_excludes_current_and_future_weeks():
+# ============================================================
+# Test 3: the QB rating's shrinkage target must be scoped to the
+# same cutoff as everything else -- this is the actual bug this
+# suite caught (see ratings_engine.py): league_avg was computed
+# once over the whole input, silently leaking future weeks into
+# every "as of" prediction's shrinkage anchor.
+# ============================================================
+def test_qb_rating_cutoff_excludes_current_week():
     """Same leak-free property as team ratings, but for build_qb_ratings'
-    trailing_rating closure: prior plays must satisfy gwidx < cutoff_gwidx."""
+    trailing_rating closure: prior plays AND the shrinkage target must
+    both satisfy gwidx < cutoff_gwidx."""
+    from ratings_engine import build_qb_ratings
+
     rng = np.random.default_rng(7)
     n_week0, n_week1 = 30, 10
     week0 = pd.DataFrame({
@@ -91,6 +171,11 @@ def test_qb_rating_cutoff_excludes_current_and_future_weeks():
     assert before == after, "trailing_rating changed when only the cutoff week's own plays were mutated -- leak"
 
 
+# ============================================================
+# Test 4: O-line continuity never compares to a bye-week gap or
+# season boundary as if it were a genuine consecutive week, and
+# respects the REG-season game_type filter.
+# ============================================================
 def _snap_row(team, season, week, player, snaps, position="OT", game_type="REG"):
     return {
         "team": team, "season": season, "week": week, "game_type": game_type,
@@ -103,6 +188,8 @@ def test_ol_continuity_bye_week_gets_no_score():
     a real continuity score against week 1. Week 4 must get NO score at all
     (excluded from the lookup) rather than being silently compared against
     week 2's lineup just because it's the next row in sorted order."""
+    from ol_continuity import compute_ol_continuity_lookup
+
     starters = ["L1", "L2", "L3", "L4", "L5"]
     rows = []
     for wk in (1, 2, 4):
@@ -129,6 +216,8 @@ def test_ol_continuity_bye_week_gets_no_score():
 def test_ol_continuity_respects_game_type_filter():
     """A POST-season row for the 'previous' week number must not be treated
     as a real adjacency for REG-season continuity."""
+    from ol_continuity import compute_ol_continuity_lookup
+
     starters = ["L1", "L2", "L3", "L4", "L5"]
     rows = []
     for p in starters:
@@ -139,10 +228,16 @@ def test_ol_continuity_respects_game_type_filter():
     assert ("AAA", 2023, 19) not in lookup  # week 18 was POST, filtered out before the adjacency check
 
 
+# ============================================================
+# Test 5: continuity lookup helpers never fabricate or leak a
+# value the caller shouldn't have yet.
+# ============================================================
 def test_most_recent_continuity_boundary_excludes_current_week():
     """get_most_recent_continuity(..., before_week=W) must only consider
     weeks strictly less than W. Asking 'as of week 5' must never see week
     5's own (not-yet-known) continuity value."""
+    from ol_continuity import get_most_recent_continuity
+
     lookup = {("AAA", 2023, 2): 3.0, ("AAA", 2023, 5): 7.0}
 
     # as-of week 5: only week 2 is strictly before it -> must return week 2's value, not week 5's own
@@ -161,6 +256,8 @@ def test_most_recent_continuity_boundary_excludes_current_week():
 
 
 def test_get_continuity_exact_match_and_default():
+    from ol_continuity import get_continuity
+
     lookup = {("AAA", 2023, 3): 2}
     assert get_continuity(lookup, "AAA", 2023, 3) == 2
     assert get_continuity(lookup, "AAA", 2023, 2) is None  # off-by-one week must not match
@@ -169,5 +266,5 @@ def test_get_continuity_exact_match_and_default():
     assert get_continuity(lookup, "BBB", 2023, 3, default=0) == 0
 
 
-if __name__ == "__main__":
-    sys.exit(pytest.main([__file__, "-v"]))
+if __name__ == '__main__':
+    sys.exit(pytest.main([__file__, '-v']))

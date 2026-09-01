@@ -82,7 +82,7 @@
     background:var(--panel-raised); color:var(--chalk-dim); border:1px solid var(--line); white-space:nowrap;}
 
   /* ---------- Power Ratings table ---------- */
-  .table-wrap{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow-md);}
+  .table-wrap{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow-x:auto; overflow-y:hidden; box-shadow:var(--shadow-md);}
   table{width:100%; border-collapse:collapse;}
   thead th{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
     color:var(--chalk-dim); text-align:left; padding:13px 16px; border-bottom:1px solid var(--line); cursor:pointer;
@@ -96,6 +96,36 @@
   td.num{font-family:'Plus Jakarta Sans', sans-serif; text-align:right;}
   td.rank{font-family:'Plus Jakarta Sans', sans-serif; color:var(--chalk-dim); width:36px;}
   .team-cell{display:flex; align-items:center; gap:9px;}
+  .trend-arrow{font-size:10px; margin-left:4px;}
+  .trend-arrow.up{color:var(--good);}
+  .trend-arrow.down{color:var(--warn);}
+  .streak-row{display:flex; align-items:center; gap:14px; margin-bottom:18px; flex-wrap:wrap;}
+  .streak-cells{display:flex; gap:3px;}
+  .streak-cell{width:14px; height:14px; border-radius:3px; background:var(--panel-hi);}
+  .streak-cell.win{background:var(--good);}
+  .streak-cell.loss{background:var(--warn);}
+  .streak-cell.even{background:var(--chalk-dim);}
+  .streak-label{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:12px; padding:4px 10px; border-radius:20px;}
+  .streak-label.win{background:var(--good-dim); color:var(--good);}
+  .streak-label.loss{background:var(--warn-dim); color:var(--warn);}
+  .version-timeline{display:flex; flex-direction:column; gap:0;}
+  .version-item{display:flex; gap:16px; position:relative; padding-bottom:20px;}
+  .version-item:last-child{padding-bottom:0;}
+  .version-item:not(:last-child)::before{content:''; position:absolute; left:5px; top:16px; bottom:0; width:2px; background:var(--line);}
+  .version-dot{width:12px; height:12px; border-radius:50%; background:var(--panel-hi); border:2px solid var(--line-strong); flex-shrink:0; margin-top:3px; z-index:1;}
+  .version-dot.current{background:var(--good); border-color:var(--good);}
+  .version-content{flex:1;}
+  .version-tag{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:13px; color:var(--chalk); margin-right:10px;}
+  .version-date{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim);}
+  .version-content p{font-size:12.5px; color:var(--chalk-dim); margin-top:4px; line-height:1.5;}
+  .onboarding-banner{background:var(--panel-raised); border:1px solid var(--blue); border-radius:var(--radius); padding:18px 22px; margin-bottom:18px;}
+  .onboarding-content h4{font-family:'Plus Jakarta Sans', sans-serif; font-size:14px; margin-bottom:9px; color:var(--chalk);}
+  .onboarding-content ul{margin:0 0 12px 18px; padding:0;}
+  .onboarding-content li{font-size:12.5px; color:var(--chalk-dim); line-height:1.6; margin-bottom:4px;}
+  .implied-margin{padding-top:10px; margin-top:6px; border-top:1px solid var(--line); font-size:11.5px;}
+  .implied-margin-label{color:var(--chalk-dim); margin-right:8px;}
+  .implied-margin-value{font-weight:600; color:var(--chalk); margin-right:8px;}
+  .implied-margin-note{color:var(--chalk-dim); font-size:10px; font-style:italic;}
   .team-logo{width:22px; height:22px; object-fit:contain; flex-shrink:0;}
   .tele-team{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:16px; line-height:1;
     display:flex; flex-direction:column; align-items:center; gap:3px;}
@@ -176,6 +206,7 @@
   .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
   .tag-good{background:var(--good-dim); color:var(--good);}
   .tag-warn{background:var(--warn-dim); color:var(--warn);}
+  .tag-neutral{background:var(--blue-dim); color:var(--blue);}
 
   .model-row{display:grid; grid-template-columns:56px 1fr; align-items:center; gap:12px; margin-bottom:10px;}
   .model-row:last-of-type{margin-bottom:0;}
@@ -264,6 +295,23 @@
   .bnav-label{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;}
   .bnav-btn.active{color:var(--amber);}
   .bnav-btn:active{transform:scale(.94);}
+  .bnav-more-sheet{
+    position:fixed; left:0; right:0; bottom:0; z-index:49;
+    background:rgba(19,24,38,0.97); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--line-strong); border-radius:16px 16px 0 0;
+    padding:14px 14px calc(90px + var(--safe-bottom));
+    transform:translateY(100%); transition:transform .2s ease;
+    pointer-events:none;
+  }
+  .bnav-more-sheet.open{transform:translateY(0); pointer-events:auto;}
+  .bnav-more-sheet-inner{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .bnav-more-item{
+    display:flex; align-items:center; gap:10px; background:var(--panel-hi); border:none; border-radius:12px;
+    padding:14px; color:var(--chalk); font-family:'Plus Jakarta Sans', sans-serif; font-size:13px; font-weight:600;
+  }
+  .bnav-more-item svg{width:20px; height:20px; flex-shrink:0; color:var(--chalk-dim);}
+  .bnav-more-item.active{background:var(--amber-dim); color:var(--amber);}
+  .bnav-more-item.active svg{color:var(--amber);}
 
   @media (max-width:820px){
     body{flex-direction:column;}
@@ -307,6 +355,7 @@
     <div class="nav-group-label">Reference</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg>Roadmap</button>
+    <button class="nav-btn" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>Data Sources</button>
   </nav>
   <div class="sidebar-foot">Trained on: current nflfastR history<br>1 week(s) saved<br>Latest: 2025_week10</div>
 </aside>
@@ -331,6 +380,7 @@
             <th data-key="net" class="sorted" style="text-align:center;">Net Rating</th>
             <th data-key="off" style="text-align:right;">Offense</th>
             <th data-key="def" style="text-align:right;">Defense</th>
+            <th data-key="sos" style="text-align:right;">SOS</th>
           </tr>
         </thead>
         <tbody id="ratings-body"></tbody>
@@ -340,6 +390,18 @@
 
   <!-- WEEK BOARD -->
   <section class="page" id="page-board">
+    <div id="onboarding-banner" class="onboarding-banner" style="display:none;">
+      <div class="onboarding-content">
+        <h4>New here? Quick orientation.</h4>
+        <ul>
+          <li><b style="color:var(--blue)">Model A</b> is football-only (team ratings, QB performance, no market data). <b style="color:var(--amber)">Model B</b> adds the current Vegas spread.</li>
+          <li>The green checkmark shows which team each model actually favors -- the dashed circle is the other side.</li>
+          <li>Tap "why this pick" on any game to see the exact math behind that specific prediction.</li>
+          <li>Check <b>Model Lab</b> for the full, honest research history -- including everything that didn't work.</li>
+        </ul>
+        <button class="filter-btn" onclick="dismissOnboarding()">Got it</button>
+      </div>
+    </div>
     <div class="page-head">
       <div>
         <h2>Week Board</h2>
@@ -370,13 +432,17 @@
     <div class="page-head">
       <div>
         <h2>My Picks Log</h2>
-        <div class="desc">Tap your actual pick for each game in the selected week. Saved locally on this device only — not synced to the repo or across devices.</div>
+        <div class="desc">Tap your actual pick for each game in the selected week. Saved locally on this device only -- not real-time synced across devices (this is a static site with no backend), but you can export your picks and import them on another device.</div>
       </div>
       <div class="badge" id="picks-record-badge">—</div>
     </div>
     <div class="filter-row">
       <select id="picks-week-select" class="week-select"></select>
+      <button class="filter-btn" onclick="exportMyPicks()">Export My Picks</button>
+      <button class="filter-btn" onclick="document.getElementById('picks-import-input').click()">Import My Picks</button>
+      <input type="file" id="picks-import-input" accept=".json" style="display:none;" onchange="if(this.files[0]) importMyPicks(this.files[0])">
     </div>
+    <div id="picks-streak-strip"></div>
     <div class="game-grid" id="picks-grid"></div>
   </section>
 
@@ -434,9 +500,33 @@
           <tr><td>Early-season extra shrinkage</td><td class="num">Real gap confirmed (61.7% vs 65.9%) but fix didn't close it</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Weekly-refitting backtest methodology</td><td class="num">Tied-or-better on every metric, free, more methodologically correct</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
           <tr><td>Platt scaling / isotonic calibration</td><td class="num">Platt worse on every metric; isotonic's log loss broke (0.64&rarr;1.00) from overconfident extremes</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Player availability / injury model</td><td class="num">Real nflverse dataset exists but flagged broken for 2025 by nflreadpy maintainers</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
+          <tr><td>Player availability / injury model</td><td class="num">Re-confirmed 2026-08-25 via nflverse's own status page: "no 2025 data, no ETA." Still genuinely blocked, not just stale.</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
+          <tr><td>Dynamic Model A/B weighting by disagreement magnitude</td><td class="num">High-disagreement bucket's B-edge is real (bootstrap CI excludes zero), but B already wins in every bucket -- no dynamic scheme beat simply always using Model B on confirmatory data</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Margin-of-victory modeling (regression -&gt; sign -&gt; winner)</td><td class="num">-1.56pt vs. current classifier; CI [-3.13, +0.09] nearly significant negative. Regression's MSE objective isn't aligned with getting the sign right on close games -- broke 50 previously-correct calls to fix only 33</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Snap-share "key player disruption" signal (Objective 3 follow-up)</td><td class="num">INVALIDATED, not rejected -- used this-week's own snap percentage as a feature, which is only knowable after that week's game is played. Confirmed via direct correlation with the very outcome it claimed to predict. A real mistake, caught before shipping. Depends on Objective 2 (blocked) to do legitimately.</td><td><span class="conf-tag tag-warn">LEAKAGE -- INVALIDATED</span></td></tr>
+          <tr><td>CPOE-based QB rating (alone and blended with EPA)</td><td class="num">CPOE-only clearly worse on every metric; EPA+CPOE blend just flat/redundant. CPOE is stable but a weaker predictor of wins than EPA specifically</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Rookie-specific QB shrinkage (hierarchical refinement of k=96)</td><td class="num">+0.92pt on validation looked promising, reversed to -0.74pt on true confirmatory test (CI includes zero). A real example of why validation-then-confirm matters</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Nonlinear architectures (GBM, Random Forest)</td><td class="num">RF's +0.55pt accuracy edge not significant (CI [-2.57,+3.68]) and comes with worse log loss/Brier/AUC -- same pattern GBM showed in the first cycle. XGBoost/LightGBM untestable, no network access to install</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Early-season weakness diagnosis</td><td class="num">Not a broad phenomenon -- concentrated in early-season QB changes specifically (48.0% accuracy, n=25) vs. 62.8% for early-season games without a QB change. Real mechanism found, targeted fix not yet built</td><td><span class="conf-tag tag-neutral">DIAGNOSED</span></td></tr>
+          <tr><td>Early-season QB-change interaction term</td><td class="num">+0.37pt confirmatory, CI [-0.37,+1.10] includes zero. Real mechanism behind it but only 25 games -- genuinely can't distinguish from noise yet</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
+          <tr><td>Schedule-strength trajectory (next-3-games opponent difficulty)</td><td class="num">+0.18pt, CI [-1.65,+2.02], validation negative. Different mechanism from the earlier-rejected single-game trap-game test, same null result</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Referee/officiating crew tendencies</td><td class="num">Split-half reliability 0.252 (real, better than team home-field's 0.078) but translates to zero predictive value once shrunk properly -- flat across every metric</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>weekly_rosters as an injury-data alternative</td><td class="num">Confirmed NOT gameday active/inactive status via real player history checks (static ACT/INA over many weeks, not game-to-game). No inactives-list loader exists anywhere in nflreadpy -- Objective 2/3 blocker confirmed structural, not just stale data</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
+          <tr><td>FTN charting QB-fault-rate (sacks/INTs attributable to the QB)</td><td class="num">Completely flat -- identical to baseline on every metric. EPA already captures the cost of a bad play regardless of whose fault it was</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
         </tbody>
       </table>
+    </div>
+    <div class="method-block" style="margin-top:16px;">
+      <h3>Version History</h3>
+      <div class="version-timeline">
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v1.0</span><span class="version-date">2026-08-17</span><p>Initial 3-feature model: opponent-adjusted offense, defense, QB rating.</p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v1.1</span><span class="version-date">2026-08-17</span><p>Added O-line continuity and QB-change detection (5 features).</p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.0</span><span class="version-date">2026-08-24</span><p>QB shrinkage constant retuned (k=8 &rarr; k=96) via proper validation/test split.</p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.1</span><span class="version-date">2026-08-24</span><p>O-line continuity removed after two independent negative tests (4 features: off, def, qb, qb-change).</p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.2</span><span class="version-date">2026-08-24</span><p>Backtest methodology switched to weekly refitting, matching what the live pipeline already did in production.</p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.3</span><span class="version-date">2026-08-31</span><p>Fixed a real leak in the QB rating's shrinkage target (was a global average, not cutoff-scoped -- see ratings_engine.py); re-tuned QB_SHRINK_K 96 -&gt; 128 via a real, committed, reproducible script (tune_qb_shrink_k.py), superseding the prior retune whose own numbers couldn't be reproduced from this repo.</p></div></div>
+        <div class="version-item"><div class="version-dot current"></div><div class="version-content"><span class="version-tag">v2.4</span><span class="version-date">2026-08-31</span><p>QB shrinkage investigation: the fresh k=128 retune turned out inconsistent on its own confirmatory data (k=8 won 3 of 4 metrics). Reverted to k=8 as the defensible default. <b style="color:var(--good);">Current.</b></p></div></div>
+      </div>
     </div>
   </section>
 
@@ -455,6 +545,7 @@
     <div class="method-block">
       <h3>Data</h3>
       <p>Real nflverse play-by-play, filtered to pass/rush attempts with valid EPA, used to fit opponent-adjusted team ratings and per-QB ratings.</p>
+      <p style="margin-top:11px;">Data pipeline migrated from nfl_data_py to nflreadpy (2026-08) after nfl_data_py was officially deprecated. Verified column-schema match and exact value match (scores, spreads, EPA, snap counts) on a real completed week before merging -- see Roadmap.</p>
     </div>
 
     <div class="method-block">
@@ -469,7 +560,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h3>Backtest Results — Chronological, Weekly-Refitting Walk-Forward</h3>
       <p>Trained only on strictly earlier data, refit every week within the test season (not just once per season) -- validated 2026-08 (Stage 9) to match what the live model actually does: weekly_update.py always trains on all real completed games available up to "now," every single run. Evaluated on 2022-2025 (1,087 games):</p>
-      <table class="metrics-table">
+      <div class="table-wrap"><table class="metrics-table">
         <thead><tr><th>Model</th><th>Accuracy</th><th>Log Loss</th><th>Brier</th><th>AUC</th></tr></thead>
         <tbody>
           <tr><td>Coin flip</td><td>50.0%</td><td>0.693</td><td>0.250</td><td>0.500</td></tr>
@@ -479,10 +570,17 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
           <tr><td>Vegas market alone</td><td>68.2%</td><td>0.607</td><td>0.210</td><td>0.725</td></tr>
           <tr><td>Model B -- live, 4 features + market, weekly refit</td><td class="highlight">68.2%</td><td class="highlight">0.606</td><td class="highlight">0.209</td><td class="highlight">0.727</td></tr>
         </tbody>
-      </table>
+      </table></div>
       <p style="margin-top:11px;">Update (2026-08-31): these numbers reflect two real changes, not a silent swap. First, a leak in the QB rating's shrinkage target was found and fixed (it was averaging in future weeks instead of only strictly-earlier ones -- see ratings_engine.py). Second, we revisited our own earlier QB-shrinkage tuning decision (k=8 -&gt; 96) after it turned out not to reproduce, re-ran the retune under the fixed, current config, and found the fresh result (k=128) didn't hold up consistently on confirmatory data either -- so we reverted to the original k=8. See Model Lab, "QB Shrinkage Re-tune," for the full investigation.</p>
       <p style="margin-top:11px;">Update (2026-08, research Stage 6): O-line continuity was removed from the live model after two independent negative results -- a paired bootstrap found its individual contribution statistically indistinguishable from zero (95% CI included zero), and a later confirmatory test found "no OL feature at all" outperformed both the original and a smoothed version of it on held-out 2024-2025 data. It's still computed and logged as informational data, just no longer fed into the model, in case future evidence changes this. QB-change detection has held up across every test run against it and remains live.</p>
       <p style="margin-top:11px;">Separately: the market barely changes when our full feature set is blended in (68.2% either way on raw accuracy, marginally better on log loss/Brier/AUC). The Vegas line still captures almost everything we can see, plus real-world information we structurally can't.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>How We Know a Result Is Real (Not Just Luck)</h3>
+      <p>Every experiment on Model Lab reports a real accuracy number, but a small difference between two numbers doesn't automatically mean one is genuinely better -- with only a few hundred games in a season, some of that difference is just random luck in which games happened to go a certain way.</p>
+      <p style="margin-top:11px;">To check, we use a technique called <b style="color:var(--chalk)">bootstrap resampling</b>: take the real games, randomly reshuffle which ones get counted (with repeats allowed) thousands of times, and see how much the accuracy difference bounces around. If it consistently stays positive across nearly all of those reshuffles, that's real signal. If it swings between positive and negative depending on which games got picked, that's a sign that we can't confidently tell the difference from noise yet -- even if the original number looked good.</p>
+      <p style="margin-top:11px;">This is why you'll see "CI [-1.2, +3.4]" type notation on Model Lab -- that's the range the true effect most likely falls in. When that range includes zero, we mark it INCONCLUSIVE rather than pretending we know for sure.</p>
     </div>
 
     <div class="method-block">
@@ -534,7 +632,57 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Coaching Changes</h4><p>Tested 5 framings (season-level flag, in-season change, 3 decay half-lives) using real per-game coach data from nflverse schedules. Every variant tied or underperformed the baseline. Likely redundant with what opponent-adjusted team ratings already absorb.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Early-Season Prior Blending</h4><p>Confirmed a real gap (61.7% weeks 1-4 vs. 65.9% weeks 15+), but explicit extra shrinkage didn't close it -- the existing continuous recency-weighted ratings already blend across the season boundary correctly. Gap remains open; import_win_totals() (real preseason market data) flagged as a genuinely different angle for later.</p></div>
       <div class="roadmap-card"><div class="roadmap-status status-done">Adopted</div><h4>Weekly-Refitting Backtest</h4><p>Backtest methodology now refits every week within a season (not just once), matching what the live weekly routine already does. Not statistically significant on its own (+0.37pt, CI included zero) but tied-or-better on every metric and free -- adopted as the more methodologically correct practice.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Migrated to nflreadpy</h4><p>nfl_data_py (our data source since day one) was officially deprecated by nflverse. Migrated to nflreadpy, the actively-maintained successor, with a safety toggle to instantly revert if needed. Verified two ways before merging: every required column present, and real 2025 Week 10 values (scores, spread lines, EPA, snap counts) matched exactly between old and new sources.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-next">Confirmed Infeasible</div><h4>Preseason EPA as Early-Season Prior</h4><p>Checked directly: nflreadpy's play-by-play loader has zero preseason rows, for any season 2020-2025. Not a data-quality problem to work around -- the play-level detail simply isn't in this pipeline. Ruled out, not deferred.</p></div>
       <div class="add-idea">+ next idea goes here</div>
+    </div>
+  </section>
+
+  <!-- DATA SOURCES -->
+  <section class="page" id="page-datasources">
+    <div class="page-head">
+      <div><h2>Data Sources</h2><div class="desc">Every dataset this project touches, honestly labeled -- what's actually live in production, what's research-only, and what's blocked.</div></div>
+    </div>
+
+    <div class="method-block">
+      <h3>In Production (used every single weekly run)</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dataset</th><th>Function</th><th>Used For</th></tr></thead>
+        <tbody>
+          <tr><td>Play-by-play</td><td class="num">load_pbp()</td><td class="num">Team ratings (ridge regression), per-QB trailing EPA</td></tr>
+          <tr><td>Schedules</td><td class="num">load_schedules()</td><td class="num">Game results, spread/total lines, home/away, current-week matchups</td></tr>
+          <tr><td>Snap counts</td><td class="num">load_snap_counts()</td><td class="num">Computed and logged each run for O-line continuity, though that feature was removed from the live model in v2.1 -- data collection continues in case future evidence changes that</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:11px;">All three migrated from the now-deprecated nfl_data_py to nflreadpy in 2026-08, verified with real column-schema and exact-value checks before merging -- see Roadmap.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Research-Only (fetched to test a specific idea, never part of live predictions)</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dataset</th><th>Function</th><th>What It Was Tested For</th><th>Outcome</th></tr></thead>
+        <tbody>
+          <tr><td>Officials</td><td class="num">load_officials()</td><td class="num">Referee-crew tendency</td><td class="num">Rejected</td></tr>
+          <tr><td>FTN charting</td><td class="num">load_ftn_charting()</td><td class="num">QB fault-rate, scheme tendencies, pressure/blitz rate</td><td class="num">Rejected</td></tr>
+          <tr><td>Trades</td><td class="num">load_trades()</td><td class="num">Personnel-disruption signal</td><td class="num">Rejected</td></tr>
+          <tr><td>Rosters (weekly)</td><td class="num">load_rosters_weekly()</td><td class="num">Checked as an injury-data alternative</td><td class="num">Not suitable -- confirmed not gameday active/inactive status</td></tr>
+          <tr><td>Participation</td><td class="num">load_participation()</td><td class="num">Checked as an injury-data alternative</td><td class="num">Not suitable -- same limitation as snap counts, also doesn't update during the season</td></tr>
+          <tr><td>ESPN QBR</td><td class="num">import_qbr() (nfl_data_py fallback)</td><td class="num">Alternative QB quality metric</td><td class="num">Source confirmed abandoned, stops at 2023</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h3>Checked and Blocked</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dataset</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Injury reports (load_injuries())</td><td class="num">No 2025+ data, no ETA -- confirmed directly via nflverse's own status page, re-checked multiple times</td></tr>
+          <tr><td>Gameday active/inactive list</td><td class="num">Doesn't exist anywhere in nflreadpy -- confirmed by checking the full function list, not just guessing from names</td></tr>
+          <tr><td>Preseason play-by-play</td><td class="num">Zero preseason rows in load_pbp() for any season 2020-2025 -- the data simply isn't in this pipeline</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:11px;">This section exists specifically so a claim like "we tried X" is checkable, not just asserted -- every row here has a real check behind it, documented on Model Lab or Roadmap.</p>
     </div>
   </section>
 
@@ -546,11 +694,18 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <button class="bnav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span class="bnav-label">Board</span></button>
     <button class="bnav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="bnav-label">Picks</span></button>
     <button class="bnav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg><span class="bnav-label">Accuracy</span></button>
-    <button class="bnav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span class="bnav-label">Teams</span></button>
-    <button class="bnav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span class="bnav-label">Method</span></button>
-    <button class="bnav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg><span class="bnav-label">Roadmap</span></button>
+    <button class="bnav-btn" id="bnav-more-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span class="bnav-label">More</span></button>
   </div>
 </nav>
+<div id="bnav-more-sheet" class="bnav-more-sheet">
+  <div class="bnav-more-sheet-inner">
+    <button class="bnav-more-item" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Team Deep-Dive</span></button>
+    <button class="bnav-more-item" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span>Methodology</span></button>
+    <button class="bnav-more-item" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg><span>Roadmap</span></button>
+    <button class="bnav-more-item" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span>Model Lab</span></button>
+    <button class="bnav-more-item" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg><span>Data Sources</span></button>
+  </div>
+</div>
 
 <script>
 const teams = [
@@ -1098,13 +1253,35 @@ function weekLabel(key){
   return `${w.season} · Week ${w.week}`;
 }
 
+const OVERFLOW_PAGES = ['teamdive','method','roadmap','modellab'];
 function setActivePage(pageId){
   document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active', b.dataset.page===pageId));
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.id==='page-'+pageId));
+  const moreBtn = document.getElementById('bnav-more-btn');
+  if(moreBtn) moreBtn.classList.toggle('active', OVERFLOW_PAGES.includes(pageId));
+  closeMoreSheet();
   window.scrollTo({top:0, behavior:'auto'});
 }
 document.querySelectorAll('[data-page]').forEach(btn=>{
   btn.addEventListener('click', ()=> setActivePage(btn.dataset.page));
+});
+
+function closeMoreSheet(){
+  const sheet = document.getElementById('bnav-more-sheet');
+  if(sheet) sheet.classList.remove('open');
+}
+const moreBtn = document.getElementById('bnav-more-btn');
+if(moreBtn){
+  moreBtn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    document.getElementById('bnav-more-sheet').classList.toggle('open');
+  });
+}
+document.addEventListener('click', (e)=>{
+  const sheet = document.getElementById('bnav-more-sheet');
+  if(sheet && sheet.classList.contains('open') && !sheet.contains(e.target) && e.target.id!=='bnav-more-btn' && !e.target.closest('#bnav-more-btn')){
+    closeMoreSheet();
+  }
 });
 
 /* ---------- Power Ratings ---------- */
@@ -1112,20 +1289,36 @@ let sortKey = 'net', sortDir = -1;
 function renderRatings(){
   const sorted = [...teams].sort((a,b)=>{
     if(sortKey==='team') return a.team.localeCompare(b.team)*sortDir;
-    return (a[sortKey]-b[sortKey])*sortDir;
+    const av = (a[sortKey]===null||a[sortKey]===undefined) ? -Infinity : a[sortKey];
+    const bv = (b[sortKey]===null||b[sortKey]===undefined) ? -Infinity : b[sortKey];
+    return (av-bv)*sortDir;
   });
   const maxAbs = Math.max(...teams.map(t=>Math.abs(t.net)), 0.0001);
   document.getElementById('ratings-body').innerHTML = sorted.map((t,i)=>{
     const width = (Math.abs(t.net)/maxAbs)*100;
+    // Trend: compare this team's own most recent two data points (not a
+    // full-league rank recompute, which would need every team's value at
+    // the exact same past week -- this is simpler and still shows real
+    // direction of movement).
+    const points = (teamHistory && teamHistory.timeline && teamHistory.timeline[t.team]) || [];
+    let trendHtml = '';
+    if(points.length >= 2){
+      const delta = points[points.length-1].net - points[points.length-2].net;
+      if(Math.abs(delta) >= 0.003){
+        const up = delta > 0;
+        trendHtml = `<span class="trend-arrow ${up?'up':'down'}" title="${up?'+':''}${delta.toFixed(3)} vs previous">${up?'&#9650;':'&#9660;'}</span>`;
+      }
+    }
     return `<tr>
       <td class="rank">${i+1}</td>
-      <td><div class="team-cell"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span></div></td>
+      <td><div class="team-cell"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span>${trendHtml}</div></td>
       <td class="num"><div class="net-cell-inner">
         <div class="srs-bar-track"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
         <span class="net-value">${t.net>=0?'+':''}${t.net.toFixed(3)}</span>
       </div></td>
       <td class="num">${t.off>=0?'+':''}${t.off.toFixed(3)}</td>
       <td class="num">${t.def>=0?'+':''}${t.def.toFixed(3)}</td>
+      <td class="num">${(t.sos===null||t.sos===undefined)?'—':(t.sos>=0?'+':'')+t.sos.toFixed(3)}</td>
     </tr>`;
   }).join('');
 }
@@ -1162,6 +1355,21 @@ function pickBadge(modelKey, isWinner){
     return `<span class="pick-badge ${modelKey}"><svg viewBox="0 0 24 24" fill="none" stroke="var(--chalk)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>`;
   }
   return `<span class="pick-badge placeholder"></span>`;
+}
+
+// Presentation-only: translates a win probability into an illustrative
+// point margin, using the exact inverse of the same sigmoid relationship
+// (prob = 1/(1+e^(-spread/5.5))) already used elsewhere in this project to
+// convert spreads to probabilities. This is NOT a separately-trained
+// margin model -- that idea was tested as an actual predictor and
+// rejected (see Model Lab). This is purely a display translation of a
+// probability we already trust, kept mathematically consistent with the
+// rest of the pipeline rather than inventing a new conversion.
+function impliedMargin(homeWinProbPct){
+  const p = homeWinProbPct/100;
+  if(p<=0.001 || p>=0.999) return null;
+  const spread = 5.5 * Math.log(p/(1-p));
+  return spread;
 }
 
 function whyRow(label, val){
@@ -1235,6 +1443,15 @@ function renderGames(){
     const gradedTag = g.graded
       ? `<span class="graded-tag ${g.model_b_correct ?? g.model_a_correct ? 'correct':'incorrect'}">${(g.model_b_correct ?? g.model_a_correct) ? 'Correct' : 'Missed'}</span>`
       : '';
+    const marginProb = (g.mktB_home !== undefined && g.mktB_home !== null) ? g.mktB_home : g.fbA_home;
+    const margin = impliedMargin(marginProb);
+    const marginHtml = margin !== null ? `
+      <div class="implied-margin">
+        <span class="implied-margin-label">Illustrative margin</span>
+        <span class="implied-margin-value">${margin>=0?g.home:g.away} by ~${Math.abs(margin).toFixed(1)}</span>
+        <span class="implied-margin-note">(derived from the win probability above -- not a separately modeled prediction)</span>
+      </div>` : '';
+
     const whyHtml = g.why ? `
       <button class="why-toggle" data-why="${idSafe}">+ why this pick</button>
       <div class="why-panel" id="why-${idSafe}">
@@ -1242,6 +1459,7 @@ function renderGames(){
         ${whyRow('Defense edge', g.why.def_matchup)}
         ${whyRow('QB edge', g.why.qb_matchup)}
         ${(g.why.ol_continuity !== undefined) ? whyRow('O-line continuity', g.why.ol_continuity) : ''}
+        ${marginHtml}
       </div>` : '';
     return `<div class="game-card ${g.flag?'has-flag':''}">
       <div class="matchup-header">${g.away} <span class="at-symbol">@</span> ${g.home}</div>
@@ -1318,6 +1536,20 @@ populateWeekSelect(document.getElementById('week-select'), (val)=>{ currentBoard
 document.getElementById('sort-select').addEventListener('change', (e)=>{ currentSort = e.target.value; renderGames(); });
 renderGames();
 
+/* ---------- Onboarding banner (first-visit only) ---------- */
+const ONBOARDING_KEY = 'nfl_pickem_onboarding_dismissed';
+function dismissOnboarding(){
+  try{ localStorage.setItem(ONBOARDING_KEY, '1'); }catch(e){}
+  const el = document.getElementById('onboarding-banner');
+  if(el) el.style.display = 'none';
+}
+(function initOnboarding(){
+  let dismissed = false;
+  try{ dismissed = localStorage.getItem(ONBOARDING_KEY) === '1'; }catch(e){}
+  const el = document.getElementById('onboarding-banner');
+  if(el && !dismissed) el.style.display = 'block';
+})();
+
 /* ---------- My Picks Log (localStorage, this device only) ---------- */
 let currentPicksWeek = latestWeekKey;
 const PICKS_STORAGE_KEY = 'nfl_pickem_my_picks';
@@ -1329,6 +1561,84 @@ function loadMyPicks(){
 function saveMyPicks(picks){
   try{ localStorage.setItem(PICKS_STORAGE_KEY, JSON.stringify(picks)); }
   catch(e){ console.warn('Could not save picks locally', e); }
+}
+
+function exportMyPicks(){
+  const picks = loadMyPicks();
+  const payload = { exported: new Date().toISOString(), picks };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'my_picks_export.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importMyPicks(file){
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try{
+      const payload = JSON.parse(e.target.result);
+      const incoming = payload.picks || payload; // tolerate a bare picks object too
+      if(typeof incoming !== 'object' || incoming === null) throw new Error('not an object');
+      const existing = loadMyPicks();
+      // Merge rather than overwrite -- imported picks fill in gaps, but don't
+      // silently clobber picks already made on this device for the same game.
+      const merged = {...incoming, ...existing};
+      saveMyPicks(merged);
+      alert(`Imported ${Object.keys(incoming).length} picks (existing picks on this device were kept where they overlap).`);
+      renderPicksGrid();
+    } catch(err){
+      alert('Could not read that file -- make sure it\'s a picks export from this same site.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function renderPicksStreak(myPicks){
+  const container = document.getElementById('picks-streak-strip');
+  const weekRecords = []; // {label, wins, losses, status}
+  weekKeysSorted.forEach(k=>{
+    let wins=0, losses=0;
+    (weeks[k].games||[]).forEach(g=>{
+      const pid = k+'|'+g.home+'|'+g.away;
+      const pick = myPicks[pid];
+      if(pick && g.graded && g.actual_home_win !== null){
+        const actualWinner = g.actual_home_win ? g.home : g.away;
+        if(pick === actualWinner) wins++; else losses++;
+      }
+    });
+    const total = wins+losses;
+    let status = 'none';
+    if(total>0) status = wins>losses ? 'win' : (losses>wins ? 'loss' : 'even');
+    weekRecords.push({label:k, wins, losses, status});
+  });
+
+  const graded = weekRecords.filter(w=>w.status!=='none');
+  if(graded.length === 0){
+    container.innerHTML = '';
+    return;
+  }
+
+  // Current streak: consecutive most-recent graded weeks with the SAME
+  // win/loss direction, counting backward from the latest graded week.
+  let streak = 0, streakType = null;
+  for(let i=graded.length-1; i>=0; i--){
+    const w = graded[i];
+    if(w.status==='even') break;
+    if(streakType===null){ streakType = w.status; streak = 1; }
+    else if(w.status===streakType){ streak++; }
+    else break;
+  }
+  const streakLabel = streak>0 ? `${streak}-week ${streakType==='win'?'winning':'losing'} streak` : '';
+
+  container.innerHTML = `
+    <div class="streak-row">
+      <div class="streak-cells">
+        ${weekRecords.map(w=>`<span class="streak-cell ${w.status}" title="${w.label}: ${w.wins}-${w.losses}"></span>`).join('')}
+      </div>
+      ${streakLabel ? `<span class="streak-label ${streakType}">${streakLabel}</span>` : ''}
+    </div>`;
 }
 
 function renderPicksGrid(){
@@ -1357,6 +1667,8 @@ function renderPicksGrid(){
     });
   });
   badge.textContent = (wins+losses)>0 ? `${wins}-${losses} on graded picks` : 'No graded picks yet';
+
+  renderPicksStreak(myPicks);
 
   grid.innerHTML = gamesList.map(g=>{
     const pid = currentPicksWeek+'|'+g.home+'|'+g.away;
@@ -1388,6 +1700,107 @@ populateWeekSelect(document.getElementById('picks-week-select'), (val)=>{ curren
 renderPicksGrid();
 
 /* ---------- Season Accuracy ---------- */
+function buildCumulativeTrendChart(){
+  if(!accuracy.weeks || accuracy.weeks.length === 0) return '';
+  const myPicks = loadMyPicks();
+
+  let cA=0, nA=0, cB=0, nB=0, cM=0, nM=0, cP=0, nP=0;
+  const points = accuracy.weeks.map(w=>{
+    cA += w.model_a_correct; nA += w.model_a_n;
+    cB += w.model_b_correct; nB += w.model_b_n;
+    cM += w.market_correct; nM += w.market_n;
+    const weekKey = Object.keys(weeks).find(k=>weeks[k].season===w.season && weeks[k].week===w.week);
+    if(weekKey){
+      (weeks[weekKey].games || []).forEach(g=>{
+        const pid = weekKey+'|'+g.home+'|'+g.away;
+        const pick = myPicks[pid];
+        if(pick && g.graded && g.actual_home_win !== null){
+          const actualWinner = g.actual_home_win ? g.home : g.away;
+          nP++; if(pick===actualWinner) cP++;
+        }
+      });
+    }
+    return {
+      label: `${w.season} Wk${w.week}`,
+      a: nA>0 ? (cA/nA*100) : null, b: nB>0 ? (cB/nB*100) : null,
+      m: nM>0 ? (cM/nM*100) : null, p: nP>0 ? (cP/nP*100) : null,
+    };
+  });
+
+  const W=680, H=220, padL=36, padR=14, padT=14, padB=28;
+  const n = points.length;
+  const x = i => n<=1 ? padL : padL + (i/(n-1))*(W-padL-padR);
+  const allVals = points.flatMap(p=>[p.a,p.b,p.m,p.p]).filter(v=>v!==null);
+  const yMin = Math.max(0, Math.min(...allVals, 40) - 5);
+  const yMax = Math.min(100, Math.max(...allVals, 60) + 5);
+  const y = v => padT + (1-(v-yMin)/(yMax-yMin))*(H-padT-padB);
+
+  function lineFor(key, color){
+    const valid = points.map((p,i)=>({i, v:p[key]})).filter(d=>d.v!==null);
+    if(valid.length < 2) return '';
+    const d = valid.map((d,idx)=>`${idx===0?'M':'L'}${x(d.i).toFixed(1)},${y(d.v).toFixed(1)}`).join(' ');
+    return `<path d="${d}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  }
+
+  const gridLines = [];
+  for(let gv = Math.ceil(yMin/10)*10; gv <= yMax; gv += 10){
+    gridLines.push(`<line x1="${padL}" y1="${y(gv).toFixed(1)}" x2="${W-padR}" y2="${y(gv).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>
+      <text x="${padL-6}" y="${(y(gv)+3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--chalk-dim)">${gv}%</text>`);
+  }
+
+  const legend = [['Model A','var(--blue)'],['Model B','var(--amber)'],['Market','var(--chalk-dim)'],['My Picks','var(--good)']]
+    .map(([label,color])=>`<span style="display:inline-flex; align-items:center; gap:5px; margin-right:16px;"><span style="width:9px; height:9px; border-radius:2px; background:${color}; display:inline-block;"></span>${label}</span>`).join('');
+
+  return `<div class="method-block">
+    <h3>Cumulative Accuracy Trend</h3>
+    <p style="margin-bottom:10px;">Running accuracy as the season progresses -- not week-by-week noise, but how each approach has performed overall up to that point.</p>
+    <div style="font-size:11px; color:var(--chalk-dim); margin-bottom:8px;">${legend}</div>
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:680px;">
+      ${gridLines.join('')}
+      ${lineFor('a','var(--blue)')}
+      ${lineFor('b','var(--amber)')}
+      ${lineFor('m','var(--chalk-dim)')}
+      ${lineFor('p','var(--good)')}
+    </svg>
+  </div>`;
+}
+
+function buildCalibrationChart(){
+  if(!accuracy.calibration || accuracy.calibration.length === 0) return '';
+
+  const S = 260, pad = 30;
+  const scale = v => pad + (v/100)*(S-2*pad);
+
+  const points = accuracy.calibration.map(c => ({x: c.avg_predicted, y: c.actual_rate, n: c.n, bucket: c.bucket}));
+  const maxN = Math.max(...points.map(p=>p.n), 1);
+
+  const dots = points.map(p => {
+    const r = 4 + (p.n/maxN)*8; // dot size reflects sample size in that bucket
+    return `<circle cx="${scale(p.x).toFixed(1)}" cy="${(S-scale(p.y)).toFixed(1)}" r="${r.toFixed(1)}" fill="var(--amber)" fill-opacity="0.85" stroke="var(--ink)" stroke-width="1">
+      <title>${p.bucket}: predicted ${p.x}%, actual ${p.y}% (n=${p.n})</title>
+    </circle>`;
+  }).join('');
+
+  return `
+    <div style="display:flex; align-items:flex-start; gap:20px; flex-wrap:wrap; margin-bottom:14px;">
+      <svg viewBox="0 0 ${S} ${S}" style="width:260px; height:260px; flex-shrink:0;">
+        <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${pad}" stroke="var(--line-strong)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="${pad}" y1="${S-pad}" x2="${pad}" y2="${pad}" stroke="var(--line)" stroke-width="1"/>
+        <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${S-pad}" stroke="var(--line)" stroke-width="1"/>
+        <text x="${pad}" y="${S-pad+14}" font-size="9" fill="var(--chalk-dim)">0%</text>
+        <text x="${S-pad}" y="${S-pad+14}" font-size="9" fill="var(--chalk-dim)" text-anchor="end">100%</text>
+        <text x="${pad-6}" y="${S-pad+4}" font-size="9" fill="var(--chalk-dim)" text-anchor="end">0%</text>
+        <text x="${pad-6}" y="${pad+4}" font-size="9" fill="var(--chalk-dim)" text-anchor="end">100%</text>
+        ${dots}
+      </svg>
+      <div style="font-size:11.5px; color:var(--chalk-dim); max-width:280px; padding-top:8px;">
+        <div style="margin-bottom:6px;"><span style="display:inline-block; width:8px; height:1.5px; background:var(--line-strong); margin-right:5px; vertical-align:middle;"></span>Dashed line = perfect calibration</div>
+        <div><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--amber); margin-right:5px; vertical-align:middle;"></span>Each dot = one confidence bucket (bigger dot = more games)</div>
+        <div style="margin-top:6px;">Dots above the line mean we're underconfident in that bucket; below means overconfident.</div>
+      </div>
+    </div>`;
+}
+
 function renderAccuracy(){
   const el = document.getElementById('accuracy-content');
   if(!accuracy.overall){
@@ -1420,6 +1833,8 @@ function renderAccuracy(){
       <div class="accuracy-card"><div class="label">Market</div><div class="value">${o.market.pct ?? '—'}%</div><div class="sub">${o.market.correct}/${o.market.n} correct</div></div>
     </div>`;
 
+  const cumulativeChartHtml = buildCumulativeTrendChart();
+
   const weeklyRows = accuracy.weeks.map(w=>`
     <tr>
       <td>${w.season} Wk ${w.week}</td>
@@ -1430,11 +1845,13 @@ function renderAccuracy(){
   const weeklyHtml = `
     <div class="method-block">
       <h3>Weekly Trend</h3>
-      <table class="metrics-table">
+      <div class="table-wrap"><table class="metrics-table">
         <thead><tr><th>Week</th><th>Model A</th><th>Model B</th><th>Market</th></tr></thead>
         <tbody>${weeklyRows}</tbody>
-      </table>
+      </table></div>
     </div>`;
+
+  const calibChartHtml = buildCalibrationChart();
 
   const calibRows = accuracy.calibration.map(c=>`
     <tr><td>${c.bucket}</td><td class="num">${c.n}</td><td class="num">${c.avg_predicted}%</td><td class="num">${c.actual_rate}%</td></tr>
@@ -1443,13 +1860,14 @@ function renderAccuracy(){
     <div class="method-block">
       <h3>Calibration</h3>
       <p>Does a game we picked at, say, 65% confidence actually win about 65% of the time? Compares the average predicted probability in each confidence bucket to how often the pick was actually right.</p>
-      <table class="metrics-table">
+      ${calibChartHtml}
+      <div class="table-wrap"><table class="metrics-table">
         <thead><tr><th>Confidence Bucket</th><th>Games</th><th>Avg Predicted</th><th>Actual Correct Rate</th></tr></thead>
         <tbody>${calibRows || '<tr><td colspan="4">Not enough graded games yet.</td></tr>'}</tbody>
-      </table>
+      </table></div>
     </div>`;
 
-  el.innerHTML = cardsHtml + weeklyHtml + calibHtml;
+  el.innerHTML = cardsHtml + cumulativeChartHtml + weeklyHtml + calibHtml;
 }
 renderAccuracy();
 
