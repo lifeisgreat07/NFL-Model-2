@@ -513,6 +513,13 @@
           <tr><td>Referee/officiating crew tendencies</td><td class="num">Split-half reliability 0.252 (real, better than team home-field's 0.078) but translates to zero predictive value once shrunk properly -- flat across every metric</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>weekly_rosters as an injury-data alternative</td><td class="num">Confirmed NOT gameday active/inactive status via real player history checks (static ACT/INA over many weeks, not game-to-game). No inactives-list loader exists anywhere in nflreadpy -- Objective 2/3 blocker confirmed structural, not just stale data</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
           <tr><td>FTN charting QB-fault-rate (sacks/INTs attributable to the QB)</td><td class="num">Completely flat -- identical to baseline on every metric. EPA already captures the cost of a bad play regardless of whose fault it was</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Total (over/under) line as a Model B input</td><td class="num">Small, mixed-direction result -- accuracy nudges up slightly but log loss/Brier/AUC move marginally worse. CI [-0.37,+0.74], includes zero</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
+          <tr><td>QB-change x spread interaction (re-tested under current leak-fixed code)</td><td class="num">Ties baseline exactly on confirmatory accuracy -- re-confirms the earlier rejection still holds after the leak fix and shrinkage revert</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Off_matchup x spread interaction</td><td class="num">Clean null -- identical confirmatory accuracy to baseline</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Stacking ensemble (Model A probability + market probability as a 2-input meta-model)</td><td class="num">Collapses to being statistically identical to market alone -- the meta-model discounts Model A's weaker signal almost entirely. Current flat 5-feature Model B beats it on every confirmatory metric (CI [-1.10,+0.55], not significant, but consistently negative)</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Market efficiency trend across seasons (2022-2025)</td><td class="num">No real trend -- market's edge over Model A bounces from +1.1pt to +9.9pt with no consistent direction, tracking Model A's own year-to-year variance rather than any change in the market itself</td><td><span class="conf-tag tag-neutral">NO PATTERN</span></td></tr>
+          <tr><td>First-half vs. second-half season market efficiency</td><td class="num">Market's edge narrows slightly (+5.5 to +4.2) as the season progresses, but this tracks Model A's own known early-season weakness rather than revealing anything new about the market's own behavior</td><td><span class="conf-tag tag-neutral">NOT A NEW FINDING</span></td></tr>
+          <tr><td>Market accuracy vs. travel distance</td><td class="num">No pattern across distance buckets (64-70% range, no trend), and the largest-distance bucket has only 23 games -- too small to trust on its own</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -584,8 +591,22 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     </div>
 
     <div class="method-block">
+      <h3>Why the Confidence Ranking Is the Right Strategy, Not Just a Guess</h3>
+      <p>For a standard confidence pool -- rank your picks, assign points 1 through N, earn those points if correct -- the strategy of assigning the highest point value to your highest-confidence pick, and so on down the list, isn't just a reasonable habit. It's <b style="color:var(--chalk)">mathematically provable</b> as the strategy that maximizes your expected total points, assuming the underlying probabilities are well-calibrated.</p>
+      <p style="margin-top:11px;">This follows from the <b style="color:var(--chalk)">rearrangement inequality</b>: when you're pairing two ordered lists (win probabilities and point values) to maximize their summed product, pairing largest-with-largest and smallest-with-smallest always beats any other pairing. We checked this isn't just theory -- a real simulation compared the rank-order strategy against 20,000 random point assignments for a realistic 16-game week, and rank-ordering beat every single one.</p>
+      <p style="margin-top:11px;">What this means practically: the confidence ranking you see on the Week Board isn't a stylistic choice or a rough heuristic -- it's the actual optimal strategy for this pool format, given whatever our probabilities say. The only way to do better is to have better probabilities, not a cleverer ranking scheme.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Trying to Beat the Market: An Honest Accounting</h3>
+      <p>A recurring question for Model B has been whether it can be made meaningfully more sophisticated than "our features plus the raw spread in one regression." Across two research cycles, we've tried roughly a dozen distinct approaches: a stacking ensemble combining Model A and market probabilities, feature-by-spread interaction terms, the total (over/under) line as an added input, dynamic weighting by model disagreement, market efficiency trends across and within seasons, and market accuracy conditional on travel distance.</p>
+      <p style="margin-top:11px;"><b style="color:var(--chalk)">None of them improved on the current flat regression.</b> Most came back as clean rejections; a couple were inconclusive with confidence intervals straddling zero. Not one showed a real, defensible edge.</p>
+      <p style="margin-top:11px;">We think this negative result is worth stating plainly rather than quietly moving past: the betting market for NFL point spreads is genuinely difficult to improve on with the data and methods available here. That's not a failure of effort -- it's a real, repeatedly-tested finding about market efficiency, and arguably more honest than claiming a marginal edge that wouldn't hold up under scrutiny.</p>
+    </div>
+
+    <div class="method-block">
       <h3>Known Gaps</h3>
-      <div class="gap-item"><span class="gap-num">01</span><span>Rest days and weather were tested and rejected (real backtest, not adopted) — see Roadmap. Travel distance still untested; no injury feature yet.</span></div>
+      <div class="gap-item"><span class="gap-num">01</span><span>Rest days, weather, and travel distance were tested and rejected (real backtests, not adopted) — see Roadmap and Model Lab. No injury feature yet, blocked on data availability.</span></div>
       <div class="gap-item"><span class="gap-num">02</span><span>QB shrinkage: the shrinkage target had a real (small) leak -- fixed 2026-08-31. Re-tuning it turned out to be inconclusive: the original k=8 -> 96 decision didn't reproduce, and a fresh retune under the fixed config (k=128) won on validation but lost 3 of 4 metrics to k=8 on confirmatory data (bootstrap CI included zero). Reverted to k=8 as the more defensible default -- see Model Lab for the full investigation and src/tune_qb_shrink_k.py for the reusable methodology.</span></div>
       <div class="gap-item"><span class="gap-num">03</span><span>Gradient boosting was tested and did not beat logistic regression at this feature-set size.</span></div>
     </div>
