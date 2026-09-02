@@ -30,6 +30,18 @@ def load_current_ratings():
         return json.load(f)
 
 
+def load_playoff_odds():
+    """Unlike load_current_ratings, this is deliberately tolerant of a
+    missing file -- weekly_update.py's save_playoff_odds() can fail soft
+    (simulation is a non-critical feature), so the dashboard must not
+    crash if it hasn't run yet or failed on a given run."""
+    path = DATA_DIR / 'playoff_odds.json'
+    if not path.exists():
+        return None
+    with open(path) as f:
+        return json.load(f)
+
+
 def parse_week_stem(stem):
     """'2026_week1' -> (2026, 1). Returns None if it doesn't match."""
     try:
@@ -209,6 +221,9 @@ def main():
     ratings = load_current_ratings()
     teams_js = build_teams_js(ratings)
 
+    print("Loading playoff odds...")
+    playoff_odds = load_playoff_odds()
+
     print("Loading all saved predictions...")
     all_preds = load_all_predictions()
     all_graded = load_all_graded()
@@ -241,6 +256,7 @@ def main():
         template = f.read()
 
     html = template.replace('__TEAMS_JSON__', json.dumps(teams_js, indent=2))
+    html = html.replace('__PLAYOFF_ODDS_JSON__', json.dumps(playoff_odds, indent=2))
     html = html.replace('__WEEKS_JSON__', json.dumps(weeks_js, indent=2))
     html = html.replace('__LATEST_WEEK__', json.dumps(latest_label))
     html = html.replace('__ACCURACY_JSON__', json.dumps(accuracy_js, indent=2))

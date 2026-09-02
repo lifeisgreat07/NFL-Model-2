@@ -345,6 +345,7 @@
   <nav class="side-nav">
     <div class="nav-group-label">Model Output</div>
     <button class="nav-btn active" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Power Ratings</button>
+    <button class="nav-btn" data-page="playoffs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>Playoff Odds</button>
     <button class="nav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Week Board</button>
     <div class="nav-group-label">Your Picks</div>
     <button class="nav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>My Picks Log</button>
@@ -386,6 +387,20 @@
         <tbody id="ratings-body"></tbody>
       </table>
     </div>
+  </section>
+
+  <!-- PLAYOFF ODDS -->
+  <section class="page" id="page-playoffs">
+    <div class="page-head">
+      <div>
+        <h2>Playoff Odds</h2>
+        <div class="desc" id="playoffs-desc">Monte Carlo simulation of the rest of the season, run from current team ratings.</div>
+      </div>
+    </div>
+    <div class="method-block" style="margin-bottom:16px;">
+      <p style="font-size:12.5px;">Real limitations, stated plainly: team ratings are held <b style="color:var(--chalk)">static</b> for the whole simulated season -- real teams improve or decline as the year goes on, and this can't capture that. Tiebreakers use the most common real NFL rules (head-to-head, division record, conference record) but aren't the league's full multi-step procedure. Treat these as a reasonable current-best-guess, not a precise forecast -- especially early in the season, and especially the further out a game is from being played.</p>
+    </div>
+    <div id="playoffs-content"></div>
   </section>
 
   <!-- WEEK BOARD -->
@@ -720,6 +735,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 </nav>
 <div id="bnav-more-sheet" class="bnav-more-sheet">
   <div class="bnav-more-sheet-inner">
+    <button class="bnav-more-item" data-page="playoffs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg><span>Playoff Odds</span></button>
     <button class="bnav-more-item" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Team Deep-Dive</span></button>
     <button class="bnav-more-item" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span>Methodology</span></button>
     <button class="bnav-more-item" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg><span>Roadmap</span></button>
@@ -730,6 +746,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
 <script>
 const teams = __TEAMS_JSON__;
+const playoffOdds = __PLAYOFF_ODDS_JSON__;
 
 // Standard ESPN CDN logo pattern -- publicly hosted images, same approach
 // used across the NFL analytics open-source community. Most codes match
@@ -814,7 +831,7 @@ function weekLabel(key){
   return `${w.season} · Week ${w.week}`;
 }
 
-const OVERFLOW_PAGES = ['teamdive','method','roadmap','modellab'];
+const OVERFLOW_PAGES = ['teamdive','method','roadmap','modellab','datasources','playoffs'];
 function setActivePage(pageId){
   document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active', b.dataset.page===pageId));
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.id==='page-'+pageId));
@@ -894,6 +911,40 @@ document.querySelectorAll('#ratings-table th[data-key]').forEach(th=>{
   });
 });
 renderRatings();
+
+/* ---------- Playoff Odds ---------- */
+function renderPlayoffs(){
+  const descEl = document.getElementById('playoffs-desc');
+  const contentEl = document.getElementById('playoffs-content');
+  if(!playoffOdds){
+    descEl.textContent = "Simulation hasn't run yet -- check back after the next weekly update.";
+    contentEl.innerHTML = '';
+    return;
+  }
+  descEl.textContent = `${playoffOdds.n_simulations.toLocaleString()} simulated seasons, run from current ratings -- ${playoffOdds.games_played} real game${playoffOdds.games_played===1?'':'s'} already decided, ${playoffOdds.games_remaining} remaining.`;
+
+  const maxPct = Math.max(...playoffOdds.teams.map(t=>t.playoff_pct), 0.01);
+  const rows = playoffOdds.teams.map(t=>{
+    const width = (t.playoff_pct/maxPct)*100;
+    return `<tr>
+      <td><div class="team-cell"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.division}</span></div></td>
+      <td class="num"><div class="net-cell-inner">
+        <div class="srs-bar-track"><div class="srs-bar-fill" style="left:0%; width:${width}%;"></div></div>
+        <span class="net-value">${t.playoff_pct}%</span>
+      </div></td>
+      <td class="num">${t.division_win_pct}%</td>
+    </tr>`;
+  }).join('');
+
+  contentEl.innerHTML = `
+    <div class="table-wrap">
+      <table id="playoffs-table">
+        <thead><tr><th>Team</th><th style="text-align:center;">Playoff Odds</th><th style="text-align:right;">Division Win Odds</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+renderPlayoffs();
 
 /* ---------- Week Board ---------- */
 let currentBoardWeek = latestWeekKey;

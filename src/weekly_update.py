@@ -44,6 +44,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from data_loader import load_plays, load_schedule, load_snap_counts
 from ol_continuity import compute_ol_continuity_lookup, get_continuity, get_most_recent_continuity
 from ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
+from simulate_season import fit_simple_win_model, simulate_season
 from config import TRAIN_SEASONS, MODEL_VERSION
 
 # Don't save (lock in) predictions more than this many days before the
@@ -106,6 +107,29 @@ def save_current_ratings(team_ratings, season_schedule=None):
     with open(DATA_DIR / 'current_ratings.json', 'w') as f:
         json.dump(rows, f, indent=2)
     print(f"Saved {len(rows)} team ratings to data/current_ratings.json")
+
+
+def save_playoff_odds(current_team_ratings, season_schedule, hist, season, n_sim=10000):
+    """Runs the Monte Carlo season simulation and writes results to
+    data/playoff_odds.json. See simulate_season.py for the real,
+    explicitly-stated limitations of this projection (static ratings,
+    simplified tiebreakers, no future news)."""
+    try:
+        model = fit_simple_win_model(hist)
+        results = simulate_season(current_team_ratings, season_schedule, model, n_sim=n_sim)
+        played_count = season_schedule.dropna(subset=['home_score', 'away_score']).shape[0]
+        payload = {
+            'season': season,
+            'games_played': int(played_count),
+            'games_remaining': int(len(season_schedule) - played_count),
+            'n_simulations': n_sim,
+            'teams': results.to_dict(orient='records'),
+        }
+        with open(DATA_DIR / 'playoff_odds.json', 'w') as f:
+            json.dump(payload, f, indent=2)
+        print(f"Saved playoff odds ({n_sim} simulations, {played_count} games already decided) to data/playoff_odds.json")
+    except Exception as e:
+        print(f"  WARNING: playoff simulation failed ({e}) -- data/playoff_odds.json not updated this run.")
 
 
 def append_live_history(team_ratings, season, week):
@@ -326,6 +350,7 @@ def main(season, week):
     cutoff_i = len(week_keys)
     current_team_ratings = build_team_ratings(plays, week_keys, upto_cutoff_i=cutoff_i)
     save_current_ratings(current_team_ratings, season_schedule=schedules_by_season.get(season))
+    save_playoff_odds(current_team_ratings, schedules_by_season.get(season), hist, season)
     current_season_weeks = [w for (s, w) in week_keys if s == season]
     if current_season_weeks:
         last_completed_week = max(current_season_weeks)
