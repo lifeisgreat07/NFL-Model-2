@@ -1,0 +1,71 @@
+name: Weekly update
+
+# Runs the actual weekly pipeline unattended during the season: generates
+# next week's predictions (once within the 7-day lock-in window), grades
+# any completed weeks, and regenerates the dashboard. This is the
+# scheduled trigger the project was designed around from the start (see
+# README's "Automating this with Claude Code Routines" section) but never
+# had -- without it, nothing runs unless someone does it by hand.
+#
+# Schedule: Tuesday mornings, after Monday Night Football has finished
+# and results are final. 11:00 UTC = 6:00/7:00 AM Eastern depending on
+# DST, matching the README's suggested "Tuesday 6 AM ET" cadence.
+on:
+  schedule:
+    - cron: '0 11 * * 2'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  weekly-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Determine current NFL season
+        id: season
+        run: |
+          year=$(date -u +%Y)
+          month=$(date -u +%m)
+          # Jan/Feb still belong to the season that kicked off the
+          # previous calendar year (playoffs/Super Bowl).
+          if [ "$month" -le 2 ]; then
+            year=$((year - 1))
+          fi
+          echo "season=$year" >> "$GITHUB_OUTPUT"
+
+      - name: Generate/lock in this week's predictions
+        run: python src/weekly_update.py --season ${{ steps.season.outputs.season }}
+
+      - name: Grade any completed weeks
+        run: |
+          shopt -s nullglob
+          for f in predictions/*_week*.json; do
+            fname=$(basename "$f")
+            if [[ "$fname" =~ ^([0-9]+)_week([0-9]+)\.json$ ]]; then
+              season="${BASH_REMATCH[1]}"
+              week="${BASH_REMATCH[2]}"
+              echo "Grading $season week $week..."
+              python src/grade_predictions.py --season "$season" --week "$week"
+            fi
+          done
+
+      - name: Regenerate dashboard
+        run: python src/generate_dashboard.py
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Weekly update: predictions, grading, dashboard"
+          file_pattern: 'predictions/** results/** data/** index.html'
