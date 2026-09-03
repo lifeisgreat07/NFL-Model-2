@@ -9,6 +9,7 @@ and calibration table, and passes through confidence ranking + why-
 breakdown that weekly_update.py now computes per game.
 """
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
@@ -247,10 +248,11 @@ def main():
     print("Loading team history...")
     team_history_js = load_team_history()
 
+    generated_at = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
     if not all_preds:
-        foot_html = f"Trained on: current nflfastR history<br>{len(ratings)} teams rated<br>No predictions saved yet"
+        foot_html = f"Trained on: current nflfastR history<br>{len(ratings)} teams rated<br>No predictions saved yet<br><span class='foot-freshness'>Data as of {generated_at}</span>"
     else:
-        foot_html = f"Trained on: current nflfastR history<br>{len(weeks_js)} week(s) saved<br>Latest: {latest_label}"
+        foot_html = f"Trained on: current nflfastR history<br>{len(weeks_js)} week(s) saved<br>Latest: {latest_label}<br><span class='foot-freshness'>Data as of {generated_at}</span>"
 
     with open(TEMPLATE_PATH) as f:
         template = f.read()

@@ -67,6 +67,7 @@
   .nav-btn.disabled:hover{background:transparent; color:var(--chalk-dim);}
   .sidebar-foot{margin-top:auto; padding:16px 22px 0; border-top:1px solid var(--line);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--chalk-dim); line-height:1.7;}
+  .foot-freshness{display:inline-block; margin-top:4px; opacity:0.75;}
 
   /* ---------- Main ---------- */
   main{flex:1; padding:34px 42px 60px; max-width:1220px; min-width:0;}
@@ -108,6 +109,25 @@
   .streak-label{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:12px; padding:4px 10px; border-radius:20px;}
   .streak-label.win{background:var(--good-dim); color:var(--good);}
   .streak-label.loss{background:var(--warn-dim); color:var(--warn);}
+  .skip-link{
+    position:absolute; top:-40px; left:8px; z-index:200;
+    background:var(--amber); color:var(--ink); padding:10px 16px; border-radius:8px;
+    font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:13px;
+    text-decoration:none; transition:top .15s ease;
+  }
+  .skip-link:focus{top:8px;}
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline:2px solid var(--amber); outline-offset:2px;
+  }
+  main:focus-visible{outline:none;}
+  .glance-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px;}
+  .glance-item{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px 18px; min-width:140px; flex:1;
+  }
+  .glance-label{display:block; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:6px;}
+  .glance-value{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:20px; color:var(--chalk);}
+  .glance-sub{display:block; font-size:11px; color:var(--chalk-dim); margin-top:3px;}
   .version-timeline{display:flex; flex-direction:column; gap:0;}
   .version-item{display:flex; gap:16px; position:relative; padding-bottom:20px;}
   .version-item:last-child{padding-bottom:0;}
@@ -335,6 +355,7 @@
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <aside class="sidebar">
   <div class="brand">
@@ -342,7 +363,7 @@
     <h1>COMMAND<br>BOARD</h1>
     <div class="brand-sub">NFL Pick'em Model</div>
   </div>
-  <nav class="side-nav">
+  <nav class="side-nav" aria-label="Main navigation">
     <div class="nav-group-label">Model Output</div>
     <button class="nav-btn active" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Power Ratings</button>
     <button class="nav-btn" data-page="playoffs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>Playoff Odds</button>
@@ -362,7 +383,7 @@
   <div class="sidebar-foot">__SIDEBAR_FOOT__</div>
 </aside>
 
-<main>
+<main id="main-content" tabindex="-1">
 
   <!-- POWER RATINGS -->
   <section class="page active" id="page-ratings">
@@ -423,8 +444,9 @@
         <h2>Week Board</h2>
         <div class="desc"><b style="color:var(--blue)">Model A</b> is football-only. <b style="color:var(--amber)">Model B</b> blends in the current Vegas spread. A flagged gap usually means our model is missing something the market prices in.</div>
       </div>
-      <div class="badge" id="board-badge">—</div>
+      <div class="badge" id="board-badge" aria-live="polite">—</div>
     </div>
+    <div id="week-glance"></div>
     <div class="filter-row">
       <select id="week-select" class="week-select"></select>
       <select id="sort-select" class="week-select">
@@ -450,7 +472,7 @@
         <h2>My Picks Log</h2>
         <div class="desc">Tap your actual pick for each game in the selected week. Saved locally on this device only -- not real-time synced across devices (this is a static site with no backend), but you can export your picks and import them on another device.</div>
       </div>
-      <div class="badge" id="picks-record-badge">—</div>
+      <div class="badge" id="picks-record-badge" aria-live="polite">—</div>
     </div>
     <div class="filter-row">
       <select id="picks-week-select" class="week-select"></select>
@@ -767,7 +789,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
 </main>
 
-<nav class="bottom-nav">
+<nav class="bottom-nav" aria-label="Mobile navigation">
   <div class="bottom-nav-row">
     <button class="bnav-btn active" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span class="bnav-label">Ratings</span></button>
     <button class="bnav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span class="bnav-label">Board</span></button>
@@ -1038,12 +1060,38 @@ function whyRow(label, val){
   </div>`;
 }
 
+function renderWeekGlance(gamesList){
+  const el = document.getElementById('week-glance');
+  if(!gamesList || gamesList.length===0){ el.innerHTML=''; return; }
+
+  const total = gamesList.length;
+  const highestConf = gamesList.reduce((best,g)=> (g.confidence_rank && (!best || g.confidence_rank < best.confidence_rank)) ? g : best, null);
+  const biggestMismatch = gamesList.reduce((best,g)=>{
+    const diverge = Math.abs(g.fbA_home - g.mktB_home);
+    const bestDiverge = best ? Math.abs(best.fbA_home - best.mktB_home) : -1;
+    return diverge > bestDiverge ? g : best;
+  }, null);
+
+  const cards = [];
+  cards.push(`<div class="glance-item"><span class="glance-label">Games</span><span class="glance-value">${total}</span></div>`);
+  if(highestConf){
+    const pickTeam = highestConf.mktB_home >= 50 ? highestConf.home : highestConf.away;
+    cards.push(`<div class="glance-item"><span class="glance-label">Most confident</span><span class="glance-value">${pickTeam}</span><span class="glance-sub">${highestConf.away} @ ${highestConf.home}</span></div>`);
+  }
+  if(biggestMismatch){
+    const diverge = Math.abs(biggestMismatch.fbA_home - biggestMismatch.mktB_home);
+    cards.push(`<div class="glance-item"><span class="glance-label">Biggest model gap</span><span class="glance-value">${diverge.toFixed(0)}pt</span><span class="glance-sub">${biggestMismatch.away} @ ${biggestMismatch.home}</span></div>`);
+  }
+  el.innerHTML = `<div class="glance-row">${cards.join('')}</div>`;
+}
+
 function renderGames(){
   const grid = document.getElementById('game-grid');
   const badge = document.getElementById('board-badge');
   const weekData = weeks[currentBoardWeek];
   const gamesList = weekData ? weekData.games : [];
   badge.textContent = gamesList.length ? `${gamesList.length} game${gamesList.length===1?'':'s'}` : 'No games';
+  renderWeekGlance(gamesList);
 
   if(!weekData || gamesList.length === 0){
     grid.innerHTML = `<div class="empty-state">No predictions saved for this week yet.</div>`;
