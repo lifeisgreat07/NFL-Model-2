@@ -1,0 +1,31 @@
+name: Run tests
+# Runs the leak-free test suite on every pull request that touches model
+# logic, so "tests pass" is a structural gate (a required status check)
+# rather than a claim a PR description can make without it being true.
+# See VERIFICATION.md for the full reasoning.
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'tests/**'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+      - name: Run leak-free test suite
+        run: python -m pytest tests/ -v
