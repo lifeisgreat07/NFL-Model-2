@@ -379,6 +379,8 @@
     <button class="nav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg>Roadmap</button>
     <button class="nav-btn" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>Data Sources</button>
     <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>AI Reliability</button>
+    <button class="nav-btn" data-page="compare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8l7-5 7 5M3 12h4l-2 5-2-5zM17 12h4l-2 5-2-5z"/></svg>How This Compares</button>
+    <button class="nav-btn" data-page="glossary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Glossary</button>
   </nav>
   <div class="sidebar-foot">__SIDEBAR_FOOT__</div>
 </aside>
@@ -787,6 +789,96 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     </div>
   </section>
 
+  <!-- HOW THIS COMPARES -->
+  <section class="page" id="page-compare">
+    <div class="page-head">
+      <div>
+        <h2>How This Compares</h2>
+        <div class="desc">An honest positioning of this model against what else exists -- including where it's genuinely behind.</div>
+      </div>
+    </div>
+
+    <div class="method-block">
+      <h3>The Short Version</h3>
+      <p>On raw predictive accuracy, <b style="color:var(--chalk)">this model does not beat the Vegas betting market</b>, and neither do most public NFL models. Across two full research cycles, roughly a dozen distinct approaches were tested to try to add something the market doesn't already price in. None of them worked. That's documented in detail on Model Lab and in the Methodology page's "Trying to Beat the Market" section.</p>
+      <p style="margin-top:11px;">What this project offers instead is <b style="color:var(--chalk)">transparency about how it actually works and what it actually gets wrong</b> -- which is genuinely rare among prediction sites, most of which publish a number and no accounting of how it was arrived at or how often it fails.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Where This Model Stands</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dimension</th><th>How this project does</th></tr></thead>
+        <tbody>
+          <tr><td>Raw accuracy vs. market</td><td class="num">Behind. The market is a genuinely hard benchmark and this doesn't clear it</td></tr>
+          <tr><td>Football-only accuracy (no market data)</td><td class="num">Reasonable -- roughly 63% on held-out data, well above the ~54% you'd get by always picking home teams</td></tr>
+          <tr><td>Methodology transparency</td><td class="num">Every constant is backtested and documented with its real justification; the tuning scripts are committed and re-runnable</td></tr>
+          <tr><td>Honest failure reporting</td><td class="num">Model Lab documents every rejected experiment with real numbers, including a data leak that was caught and fixed</td></tr>
+          <tr><td>Leak-free discipline</td><td class="num">A real, executable test suite guards the walk-forward properties -- and it caught a genuine production leak</td></tr>
+          <tr><td>Live, ongoing track record</td><td class="num">Predictions are locked in before kickoff and graded automatically -- no post-hoc editing</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h3>What Would Actually Close the Gap</h3>
+      <p>Being specific rather than vague about this: the single biggest missing input is <b style="color:var(--chalk)">injury and player-availability data</b>, which the market prices in heavily and this model has no access to (the upstream data source has been broken with no ETA -- see Data Sources). Beyond that, the market aggregates information this project structurally can't reach: sharp money, insider knowledge, and real-time news. Closing that gap isn't a matter of a better algorithm.</p>
+    </div>
+  </section>
+
+  <!-- GLOSSARY -->
+  <section class="page" id="page-glossary">
+    <div class="page-head">
+      <div>
+        <h2>Glossary</h2>
+        <div class="desc">Plain-language definitions for the terms used throughout this site.</div>
+      </div>
+    </div>
+
+    <div class="method-block">
+      <h3>Model &amp; Prediction Terms</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>EPA (Expected Points Added)</td><td class="num">How much a single play changed a team's expected points on that drive. A 40-yard gain has high positive EPA; a sack has negative EPA. Summed up, it's a better measure of team quality than raw yards</td></tr>
+          <tr><td>Model A</td><td class="num">The football-only model -- team ratings, QB performance, QB changes. Uses no betting market data at all</td></tr>
+          <tr><td>Model B</td><td class="num">Model A's features plus the current Vegas point spread</td></tr>
+          <tr><td>Opponent-adjusted rating</td><td class="num">A team's performance adjusted for who they played. Beating a strong defense counts more than beating a weak one</td></tr>
+          <tr><td>Recency weighting</td><td class="num">Recent games count more than old ones. This model uses a 16-game half-life -- a game 16 games ago counts half as much as this week's</td></tr>
+          <tr><td>Shrinkage</td><td class="num">Pulling a small-sample estimate toward the league average. A QB with 20 career dropbacks shouldn't be rated as confidently as one with 2,000</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h3>Evaluation Terms</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Log loss</td><td class="num">Penalizes confident wrong predictions heavily. Lower is better. A model that says 95% and is wrong is punished far more than one that said 55%</td></tr>
+          <tr><td>Brier score</td><td class="num">Average squared difference between predicted probability and what actually happened. Lower is better. Similar spirit to log loss, less harsh on confident misses</td></tr>
+          <tr><td>AUC</td><td class="num">How well the model ranks games from most to least likely home win. 0.5 is random, 1.0 is perfect. Measures ordering ability, not calibration</td></tr>
+          <tr><td>Calibration</td><td class="num">Whether stated confidence matches reality -- do games predicted at 70% actually win about 70% of the time?</td></tr>
+          <tr><td>Bootstrap / confidence interval</td><td class="num">Reshuffling the real results thousands of times to see how much a result bounces around. If the range includes zero, the difference can't be distinguished from luck</td></tr>
+          <tr><td>Walk-forward backtest</td><td class="num">Testing a model using only data that existed before each game. Prevents the model from "knowing" future results it couldn't have known</td></tr>
+          <tr><td>Data leakage</td><td class="num">When information from the future accidentally gets used to predict the past, making results look better than they really are. This project found and fixed a real one -- see AI Reliability</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h3>Betting Terms</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Point spread</td><td class="num">The margin the favorite is expected to win by. A -7 favorite is expected to win by 7</td></tr>
+          <tr><td>Over/under (total)</td><td class="num">The combined score both teams are expected to reach</td></tr>
+          <tr><td>Market-implied probability</td><td class="num">Converting a point spread into a win percentage, so it can be compared directly against a model's prediction</td></tr>
+          <tr><td>Confidence pool</td><td class="num">A pick'em format where you rank games and assign point values -- most confident pick gets the most points. See Methodology for why ranking by probability is provably optimal here</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
 </main>
 
 <nav class="bottom-nav" aria-label="Mobile navigation">
@@ -807,6 +899,8 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <button class="bnav-more-item" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span>Model Lab</span></button>
     <button class="bnav-more-item" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg><span>Data Sources</span></button>
     <button class="bnav-more-item" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg><span>AI Reliability</span></button>
+    <button class="bnav-more-item" data-page="compare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8l7-5 7 5M3 12h4l-2 5-2-5zM17 12h4l-2 5-2-5z"/></svg><span>How This Compares</span></button>
+    <button class="bnav-more-item" data-page="glossary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Glossary</span></button>
   </div>
 </div>
 
@@ -897,7 +991,7 @@ function weekLabel(key){
   return `${w.season} · Week ${w.week}`;
 }
 
-const OVERFLOW_PAGES = ['teamdive','method','roadmap','modellab','datasources','playoffs','reliability'];
+const OVERFLOW_PAGES = ['teamdive','method','roadmap','modellab','datasources','playoffs','reliability','compare','glossary'];
 function setActivePage(pageId){
   document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active', b.dataset.page===pageId));
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.id==='page-'+pageId));
