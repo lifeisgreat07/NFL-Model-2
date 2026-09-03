@@ -560,6 +560,11 @@
           <tr><td>Market efficiency trend across seasons (2022-2025)</td><td class="num">No real trend -- market's edge over Model A bounces from +1.1pt to +9.9pt with no consistent direction, tracking Model A's own year-to-year variance rather than any change in the market itself</td><td><span class="conf-tag tag-neutral">NO PATTERN</span></td></tr>
           <tr><td>First-half vs. second-half season market efficiency</td><td class="num">Market's edge narrows slightly (+5.5 to +4.2) as the season progresses, but this tracks Model A's own known early-season weakness rather than revealing anything new about the market's own behavior</td><td><span class="conf-tag tag-neutral">NOT A NEW FINDING</span></td></tr>
           <tr><td>Market accuracy vs. travel distance</td><td class="num">No pattern across distance buckets (64-70% range, no trend), and the largest-distance bucket has only 23 games -- too small to trust on its own</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Season-boundary-specific recency half-life</td><td class="num">Tested extra discounting (0.85, 0.7, 0.5) for plays crossing a season boundary, on top of normal recency decay. Every level was flat-or-worse than baseline on every metric, both splits, with a clean monotonic pattern -- stronger discount, worse performance. A team's true strength doesn't reset at a season boundary the way this assumed</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Referee crew x team-penalty-rate interaction</td><td class="num">A narrower framing than the earlier referee-tendency test: does a specific crew's penalty-calling rate interact with how penalty-prone the teams are? CI [-1.10,+0.74], includes zero, worse on validation too</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Systematic narrow-edge search (12 partitions)</td><td class="num">Scanned disagreement magnitude, spread size, QB-change presence, home favorite/underdog, and model confidence for ANY subset where Model A beats the market. Best candidate was +0.74pt with CI [-2.60,+4.09] -- and with 12 comparisons tested, one weak positive is exactly what noise produces. No defensible narrow edge exists</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Model A's low-confidence games are genuinely unreliable</td><td class="num">When Model A's own probability is near a coin flip (within 0.05 of 50%), it hits just 52.5% -- barely above chance -- while the market stays at 64.4% in those same games. A -11.95pt gap, CI [-18.37,-5.53], clearly excludes zero. Model A's uncertainty is trustworthy: when it says it doesn't know, it really doesn't</td><td><span class="conf-tag tag-good">CONFIRMED FINDING</span></td></tr>
+          <tr><td>Line-movement archive (infrastructure check)</td><td class="num">Confirmed working end-to-end -- real movement captured (CLE@TB moved a full point, JAX@DEN a half point). But only 2 of 32 games moved at all across consecutive days, so a meaningful predictive test needs many more weeks of accumulation, not a forced test on n=2</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -628,6 +633,22 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <p>Every experiment on Model Lab reports a real accuracy number, but a small difference between two numbers doesn't automatically mean one is genuinely better -- with only a few hundred games in a season, some of that difference is just random luck in which games happened to go a certain way.</p>
       <p style="margin-top:11px;">To check, we use a technique called <b style="color:var(--chalk)">bootstrap resampling</b>: take the real games, randomly reshuffle which ones get counted (with repeats allowed) thousands of times, and see how much the accuracy difference bounces around. If it consistently stays positive across nearly all of those reshuffles, that's real signal. If it swings between positive and negative depending on which games got picked, that's a sign that we can't confidently tell the difference from noise yet -- even if the original number looked good.</p>
       <p style="margin-top:11px;">This is why you'll see "CI [-1.2, +3.4]" type notation on Model Lab -- that's the range the true effect most likely falls in. When that range includes zero, we mark it INCONCLUSIVE rather than pretending we know for sure.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Which Features Actually Do the Work</h3>
+      <p>Most of this project's research has tested whether <i>adding</i> something helps. A formal ablation pass asks the opposite question: remove each existing feature one at a time, fully retrain, and measure what actually breaks. That's how you find out where a model's predictive power really lives, rather than assuming every feature is pulling its weight.</p>
+      <div class="table-wrap" style="margin-top:12px;"><table class="metrics-table">
+        <thead><tr><th>Feature removed</th><th>Accuracy change</th><th>95% CI</th></tr></thead>
+        <tbody>
+          <tr><td>QB matchup</td><td class="num">-2.39pt</td><td class="num">[-5.15, +0.37]</td></tr>
+          <tr><td>QB change</td><td class="num">-0.55pt</td><td class="num">[-1.93, +0.83]</td></tr>
+          <tr><td>Offense matchup</td><td class="num">-0.37pt</td><td class="num">[-1.20, +0.46]</td></tr>
+          <tr><td>Defense matchup</td><td class="num">+0.37pt</td><td class="num">[-0.83, +1.56]</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:11px;"><b style="color:var(--chalk)">QB quality is doing most of the work</b> -- removing it costs more than four times what any other feature costs. That matches football intuition, and it's why so much of this project's research effort has gone into getting the QB rating right.</p>
+      <p style="margin-top:11px;">Two honest caveats. First, <b style="color:var(--chalk)">none of these individually reach statistical significance</b> -- every confidence interval includes zero. That's expected with correlated features: the model partially compensates for a missing one using the others, so no single removal produces a clean, sharp drop. Second, defense matchup's point estimate is actually <i>positive</i> when removed, though well within noise. It isn't clearly earning its place, but there's no real evidence it's hurting either -- so it stays, and this is noted rather than acted on.</p>
     </div>
 
     <div class="method-block">
