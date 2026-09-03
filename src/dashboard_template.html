@@ -357,6 +357,7 @@
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg>Roadmap</button>
     <button class="nav-btn" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>Data Sources</button>
+    <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>AI Reliability</button>
   </nav>
   <div class="sidebar-foot">__SIDEBAR_FOOT__</div>
 </aside>
@@ -722,6 +723,48 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     </div>
   </section>
 
+  <!-- AI RELIABILITY -->
+  <section class="page" id="page-reliability">
+    <div class="page-head">
+      <div>
+        <h2>AI Reliability</h2>
+        <div class="desc">This project is built almost entirely by delegating real engineering work to an AI agent ("Scout" -- Claude Code, doing the research, coding, and PRs throughout this project). That's genuinely useful, and it also fails in specific, real ways. This page documents what actually went wrong here, not what could theoretically go wrong in the abstract.</div>
+      </div>
+    </div>
+
+    <div class="method-block">
+      <h3>Why This Page Exists</h3>
+      <p>An AI agent confidently stating something false -- about a result, about the state of a codebase, about whether a test actually passed -- is a real, well-documented failure mode, not a hypothetical. The honest mitigation isn't "use a smarter model" or "ask it to double-check itself" (the same failure mode that produced the wrong claim can just as easily produce a confident re-confirmation of it). The mitigation that actually worked here, every time, was <b style="color:var(--chalk)">external, mechanical verification</b> -- demanding the real command output, the real screenshot, the real re-run, rather than accepting a description of one.</p>
+      <p style="margin-top:11px;">Below are the three real incidents from this project where that discipline caught something that would otherwise have shipped wrong.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Incident 1 -- False Claim About Repository State</h3>
+      <p><b style="color:var(--warn)">Claim made:</b> Scout stated that a specific pull request "hasn't actually been merged yet," contradicting an earlier confirmation that it had been.</p>
+      <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> Rather than accept either statement, a direct screenshot of the actual PR page was requested. It showed a purple "Merged" badge -- the PR genuinely was merged. Scout's later claim was the false one.</p>
+      <p style="margin-top:8px;"><b style="color:var(--chalk);">Why it matters:</b> This was a claim about objective, checkable repo state -- not a judgment call or a probabilistic model output. It still came out wrong. Ground truth (a real screenshot) resolved it in seconds; trusting the more recent-sounding claim would not have.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Incident 2 -- An Unreproducible Result</h3>
+      <p><b style="color:var(--warn)">Claim made:</b> An earlier tuning decision (a model hyperparameter, retuned from 8 to 96) was recorded on this dashboard as a resolved ACCEPT, with specific supporting accuracy numbers.</p>
+      <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> When the same comparison was re-run from the actual current codebase, months later, the original numbers could not be reproduced under any configuration tried -- not with the original methodology, not with the current one. The result had been evaluated against a version of the model that no longer existed, and nothing had gone back to re-check it after later, independently-correct changes altered what it was really being compared against.</p>
+      <p style="margin-top:8px;"><b style="color:var(--chalk);">Why it matters:</b> Nobody fabricated this -- each individual step was reasonable at the time. The failure was in never re-verifying an old claim against the current state of the system. See Model Lab's "QB Shrinkage Re-tune" entry for the full resolution (re-tested fresh, found genuinely inconclusive, reverted to the simpler original default).</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Incident 3 -- A Test Suite That Wasn't Actually Testing Anything</h3>
+      <p><b style="color:var(--warn)">Claim made:</b> A leak-free test suite existed on the main branch, implying the codebase's leak-free properties were being actively verified.</p>
+      <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> When actually executed (not just confirmed to exist), 4 of its 5 tests failed immediately with an import error -- the file's own path configuration pointed at a directory that didn't exist -- and the fifth silently skipped. The suite had never successfully run a single real check.</p>
+      <p style="margin-top:8px;"><b style="color:var(--chalk);">Why it matters:</b> A test file's presence in the repo is not evidence it works. This is arguably the most important lesson on this page: a verification system that isn't itself verified provides false confidence, which is worse than no verification system at all.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>The Actual Rule</h3>
+      <p>Formalized in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/VERIFICATION.md" target="_blank" style="color:var(--blue);">VERIFICATION.md</a>: any claim about test results, repo state, or reproducibility must be backed by real, re-executed command output -- not a summary of one. See also <b style="color:var(--chalk)">Booth</b>, a dedicated verification role built specifically to audit Scout's work against this rule.</p>
+    </div>
+  </section>
+
 </main>
 
 <nav class="bottom-nav">
@@ -741,6 +784,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <button class="bnav-more-item" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg><span>Roadmap</span></button>
     <button class="bnav-more-item" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span>Model Lab</span></button>
     <button class="bnav-more-item" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg><span>Data Sources</span></button>
+    <button class="bnav-more-item" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg><span>AI Reliability</span></button>
   </div>
 </div>
 
@@ -831,7 +875,7 @@ function weekLabel(key){
   return `${w.season} · Week ${w.week}`;
 }
 
-const OVERFLOW_PAGES = ['teamdive','method','roadmap','modellab','datasources','playoffs'];
+const OVERFLOW_PAGES = ['teamdive','method','roadmap','modellab','datasources','playoffs','reliability'];
 function setActivePage(pageId){
   document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active', b.dataset.page===pageId));
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.id==='page-'+pageId));
