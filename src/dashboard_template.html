@@ -25,6 +25,21 @@
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-top: env(safe-area-inset-top, 0px);
   }
+  /* Light theme. Every text color here was checked against WCAG AA (4.5:1)
+     before being used -- the amber in particular had to be darkened from
+     the dark-theme value, which only hit 3.79:1 on a light background. */
+  [data-theme="light"]{
+    --ink:#F5F4F0; --panel:#FFFFFF; --panel-raised:#FAF9F6; --panel-hi:#EDEBE4;
+    --line:rgba(26,29,36,0.12); --line-strong:rgba(26,29,36,0.22);
+    --chalk:#1A1D24; --chalk-dim:#5A6172;
+    --amber:#8F5806; --amber-dim:rgba(143,88,6,0.12); --amber-bright:#B87410;
+    --blue:#2563A8; --blue-dim:rgba(37,99,168,0.12);
+    --good:#2F7A4A; --good-dim:rgba(47,122,74,0.12);
+    --warn:#A83226; --warn-dim:rgba(168,50,38,0.12);
+    --shadow-sm: 0 1px 2px rgba(26,29,36,.08);
+    --shadow-md: 0 1px 2px rgba(26,29,36,.06), 0 10px 28px -14px rgba(26,29,36,.18);
+    --shadow-lg: 0 2px 4px rgba(26,29,36,.08), 0 24px 48px -20px rgba(26,29,36,.22);
+  }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{-webkit-tap-highlight-color:transparent;}
   body{
@@ -68,6 +83,14 @@
   .sidebar-foot{margin-top:auto; padding:16px 22px 0; border-top:1px solid var(--line);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--chalk-dim); line-height:1.7;}
   .foot-freshness{display:inline-block; margin-top:4px; opacity:0.75;}
+  .theme-toggle{
+    display:flex; align-items:center; gap:8px; width:100%;
+    background:transparent; border:1px solid var(--line); border-radius:8px;
+    padding:8px 12px; margin-bottom:12px; cursor:pointer;
+    color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:11px;
+  }
+  .theme-toggle:hover{border-color:var(--line-strong); color:var(--chalk);}
+  .theme-toggle svg{width:14px; height:14px; flex-shrink:0;}
 
   /* ---------- Main ---------- */
   main{flex:1; padding:34px 42px 60px; max-width:1220px; min-width:0;}
@@ -173,6 +196,27 @@
     background-repeat:no-repeat; background-position:right 10px center; background-size:16px; padding-right:32px;
   }
   .week-select:focus{outline:1px solid var(--amber);}
+  .team-search{
+    background:var(--panel); border:1px solid var(--line); color:var(--chalk);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; padding:9px 14px; border-radius:8px;
+    min-width:200px;
+  }
+  .team-search::placeholder{color:var(--chalk-dim);}
+  .undo-toast{
+    position:fixed; left:50%; transform:translateX(-50%) translateY(120%);
+    bottom:calc(20px + var(--safe-bottom, 0px)); z-index:150;
+    background:var(--panel-hi); border:1px solid var(--line-strong); border-radius:10px;
+    padding:12px 16px; display:flex; align-items:center; gap:14px;
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; color:var(--chalk);
+    box-shadow:var(--shadow-md); opacity:0; transition:transform .22s ease, opacity .22s ease;
+    pointer-events:none;
+  }
+  .undo-toast.visible{transform:translateX(-50%) translateY(0); opacity:1; pointer-events:auto;}
+  .undo-btn{
+    background:transparent; border:none; color:var(--amber); font-weight:700;
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; cursor:pointer; padding:0;
+  }
+  @media (max-width:900px){ .undo-toast{bottom:calc(90px + var(--safe-bottom, 0px));} }
 
   .confidence-badge{
     font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.05em; padding:4px 10px; border-radius:20px;
@@ -355,6 +399,20 @@
 </style>
 </head>
 <body>
+<script>
+  // Applied before first paint so there's no visible flash of the wrong
+  // theme on load. Falls back to the OS preference when the user hasn't
+  // made an explicit choice yet.
+  (function(){
+    try{
+      var saved = localStorage.getItem('nfl_pickem_theme');
+      if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches){
+        saved = 'light';
+      }
+      if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+    }catch(e){}
+  })();
+</script>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 
 <aside class="sidebar">
@@ -382,7 +440,13 @@
     <button class="nav-btn" data-page="compare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8l7-5 7 5M3 12h4l-2 5-2-5zM17 12h4l-2 5-2-5z"/></svg>How This Compares</button>
     <button class="nav-btn" data-page="glossary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Glossary</button>
   </nav>
-  <div class="sidebar-foot">__SIDEBAR_FOOT__</div>
+  <div class="sidebar-foot">
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span id="theme-toggle-label">Light mode</span>
+    </button>
+    __SIDEBAR_FOOT__
+  </div>
 </aside>
 
 <main id="main-content" tabindex="-1">
@@ -395,6 +459,9 @@
         <div class="desc">Opponent-adjusted EPA/play ratings, current as of today — fit via ridge regression on real play-by-play with a 16-game recency half-life. Every number already accounts for who each team played.</div>
       </div>
       <div class="badge">32 teams</div>
+    </div>
+    <div class="filter-row">
+      <input type="search" id="ratings-search" class="team-search" placeholder="Search teams..." aria-label="Search teams by name or abbreviation">
     </div>
     <div class="table-wrap">
       <table id="ratings-table">
@@ -1052,8 +1119,23 @@ function renderRatings(){
     const bv = (b[sortKey]===null||b[sortKey]===undefined) ? -Infinity : b[sortKey];
     return (av-bv)*sortDir;
   });
+  // Assign rank BEFORE filtering, so a searched team still shows its real
+  // league position rather than "1" just because it's the only match shown.
+  const ranked = sorted.map((t,i)=>({...t, _rank: i+1}));
+  const searchEl = document.getElementById('ratings-search');
+  const q = searchEl ? searchEl.value.trim().toLowerCase() : '';
+  const visible = q ? ranked.filter(t=>
+    t.team.toLowerCase().includes(q) || (t.name && t.name.toLowerCase().includes(q))
+  ) : ranked;
+
   const maxAbs = Math.max(...teams.map(t=>Math.abs(t.net)), 0.0001);
-  document.getElementById('ratings-body').innerHTML = sorted.map((t,i)=>{
+  const body = document.getElementById('ratings-body');
+  if(visible.length === 0){
+    body.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--chalk-dim);">No teams match "${q}"</td></tr>`;
+    return;
+  }
+  body.innerHTML = visible.map((t)=>{
+    const i = t._rank - 1;
     const width = (Math.abs(t.net)/maxAbs)*100;
     // Trend: compare this team's own most recent two data points (not a
     // full-league rank recompute, which would need every team's value at
@@ -1092,6 +1174,11 @@ document.querySelectorAll('#ratings-table th[data-key]').forEach(th=>{
   });
 });
 renderRatings();
+
+const ratingsSearchEl = document.getElementById('ratings-search');
+if(ratingsSearchEl){
+  ratingsSearchEl.addEventListener('input', ()=> renderRatings());
+}
 
 /* ---------- Playoff Odds ---------- */
 function renderPlayoffs(){
@@ -1357,6 +1444,31 @@ renderGames();
 
 /* ---------- Onboarding banner (first-visit only) ---------- */
 const ONBOARDING_KEY = 'nfl_pickem_onboarding_dismissed';
+
+/* ---------- Theme toggle ---------- */
+const THEME_KEY = 'nfl_pickem_theme';
+function currentTheme(){
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+}
+function updateThemeLabel(){
+  const label = document.getElementById('theme-toggle-label');
+  if(label) label.textContent = currentTheme() === 'light' ? 'Dark mode' : 'Light mode';
+}
+(function initTheme(){
+  updateThemeLabel();
+  const btn = document.getElementById('theme-toggle');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    const next = currentTheme() === 'light' ? 'dark' : 'light';
+    if(next === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+    updateThemeLabel();
+  });
+})();
 function dismissOnboarding(){
   try{ localStorage.setItem(ONBOARDING_KEY, '1'); }catch(e){}
   const el = document.getElementById('onboarding-banner');
@@ -1460,6 +1572,8 @@ function renderPicksStreak(myPicks){
     </div>`;
 }
 
+let lastPickChange = null;
+
 function renderPicksGrid(){
   const grid = document.getElementById('picks-grid');
   const badge = document.getElementById('picks-record-badge');
@@ -1508,12 +1622,49 @@ function renderPicksGrid(){
     group.querySelectorAll('.pick-btn').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const picks = loadMyPicks();
-        picks[pid] = btn.dataset.team;
+        const previous = picks[pid];
+        const clicked = btn.dataset.team;
+        // Clicking your already-selected pick clears it, rather than being
+        // a no-op -- otherwise there's no way to un-pick a game at all.
+        if(previous === clicked){
+          delete picks[pid];
+        } else {
+          picks[pid] = clicked;
+        }
+        lastPickChange = {pid, previous};
         saveMyPicks(picks);
         renderPicksGrid();
+        showUndoToast();
       });
     });
   });
+}
+
+function showUndoToast(){
+  let toast = document.getElementById('undo-toast');
+  if(!toast){
+    toast = document.createElement('div');
+    toast.id = 'undo-toast';
+    toast.className = 'undo-toast';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<span>Pick saved</span><button class="undo-btn" id="undo-action">Undo</button>`;
+  toast.classList.add('visible');
+  document.getElementById('undo-action').onclick = ()=>{
+    if(!lastPickChange) return;
+    const picks = loadMyPicks();
+    if(lastPickChange.previous === undefined){
+      delete picks[lastPickChange.pid];
+    } else {
+      picks[lastPickChange.pid] = lastPickChange.previous;
+    }
+    saveMyPicks(picks);
+    lastPickChange = null;
+    toast.classList.remove('visible');
+    renderPicksGrid();
+  };
+  clearTimeout(showUndoToast._timer);
+  showUndoToast._timer = setTimeout(()=>{ toast.classList.remove('visible'); }, 5000);
 }
 populateWeekSelect(document.getElementById('picks-week-select'), (val)=>{ currentPicksWeek = val; renderPicksGrid(); }, latestWeekKey);
 renderPicksGrid();
