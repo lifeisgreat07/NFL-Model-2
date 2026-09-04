@@ -30,6 +30,14 @@ RESULTS_DIR = ROOT / 'results'
 TEMPLATE_PATH = ROOT / 'src' / 'dashboard_template.html'
 OUTPUT_PATH = ROOT / 'index.html'  # served as the default page by GitHub Pages
 
+# Minimum games in a live calibration bucket before its "actual rate" is
+# treated as meaning anything. 20 is a judgement call, not a derived value:
+# at n=20 the 95% interval on a rate is still roughly +/-20 points, so this
+# is a floor for "not obviously noise" rather than a threshold for
+# statistical confidence. Buckets under it are kept and flagged, never
+# silently dropped.
+MIN_CALIBRATION_BUCKET_N = 20
+
 
 def load_current_ratings():
     path = DATA_DIR / 'current_ratings.json'
@@ -162,6 +170,16 @@ def build_accuracy_summary(all_graded):
 
     # Calibration: bucket by Model B's predicted probability (fallback Model A),
     # compare average predicted prob in that bucket to actual win rate.
+    #
+    # Buckets below MIN_CALIBRATION_BUCKET_N are marked underpowered rather
+    # than dropped: the count is still real information, but an "actual rate"
+    # computed from one or two games is noise, and plotting it against the
+    # perfect-calibration line presents that noise as a finding. Before this
+    # guard the live dashboard was charting buckets of n=1 asserting 0% and
+    # 100% actual rates off single games -- from 14 graded games in total.
+    # Live calibration only becomes meaningful after many weeks; the
+    # backtest-derived reliability diagram (data/calibration.json, ~1087
+    # games) is what carries the real calibration claim.
     buckets = [(0, 0.55, '<55%'), (0.55, 0.60, '55-60%'), (0.60, 0.65, '60-65%'),
                (0.65, 0.70, '65-70%'), (0.70, 0.80, '70-80%'), (0.80, 1.01, '80%+')]
     calibration = []
@@ -184,9 +202,19 @@ def build_accuracy_summary(all_graded):
                 'bucket': label, 'n': len(bucket_games),
                 'avg_predicted': round(avg_pred * 100, 1),
                 'actual_rate': round(100 * correct_count / len(bucket_games), 1),
+                'underpowered': len(bucket_games) < MIN_CALIBRATION_BUCKET_N,
             })
 
-    return {'weeks': weekly, 'overall': overall, 'calibration': calibration}
+    n_graded = len(all_games)
+    return {
+        'weeks': weekly,
+        'overall': overall,
+        'calibration': calibration,
+        'n_graded': n_graded,
+        'min_bucket_n': MIN_CALIBRATION_BUCKET_N,
+        # True when nothing in the live calibration panel is worth plotting.
+        'calibration_underpowered': all(c['underpowered'] for c in calibration) if calibration else True,
+    }
 
 
 def build_teams_js(ratings):

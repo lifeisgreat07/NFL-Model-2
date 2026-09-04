@@ -458,7 +458,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <span id="theme-toggle-label">Light mode</span>
     </button>
-    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-04 16:32 UTC</span>
+    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-04 16:38 UTC</span>
   </div>
 </aside>
 
@@ -2200,39 +2200,48 @@ const accuracy = {
       "bucket": "<55%",
       "n": 1,
       "avg_predicted": 51.0,
-      "actual_rate": 0.0
+      "actual_rate": 0.0,
+      "underpowered": true
     },
     {
       "bucket": "55-60%",
       "n": 1,
       "avg_predicted": 59.0,
-      "actual_rate": 0.0
+      "actual_rate": 0.0,
+      "underpowered": true
     },
     {
       "bucket": "60-65%",
       "n": 4,
       "avg_predicted": 62.7,
-      "actual_rate": 50.0
+      "actual_rate": 50.0,
+      "underpowered": true
     },
     {
       "bucket": "65-70%",
       "n": 1,
       "avg_predicted": 69.9,
-      "actual_rate": 100.0
+      "actual_rate": 100.0,
+      "underpowered": true
     },
     {
       "bucket": "70-80%",
       "n": 6,
       "avg_predicted": 74.1,
-      "actual_rate": 66.7
+      "actual_rate": 66.7,
+      "underpowered": true
     },
     {
       "bucket": "80%+",
       "n": 1,
       "avg_predicted": 80.6,
-      "actual_rate": 100.0
+      "actual_rate": 100.0,
+      "underpowered": true
     }
-  ]
+  ],
+  "n_graded": 14,
+  "min_bucket_n": 20,
+  "calibration_underpowered": true
 };
 const teamHistory = {};
 
@@ -2915,6 +2924,25 @@ function buildCumulativeTrendChart(){
 function buildCalibrationChart(){
   if(!accuracy.calibration || accuracy.calibration.length === 0) return '';
 
+  // Refuse to draw a calibration chart that has no power behind it. Plotting
+  // a bucket of n=1 against a perfect-calibration line renders a coin flip
+  // as though it were a measurement -- the chart looks authoritative and
+  // says nothing. Live calibration needs many graded weeks; until then this
+  // states the sample size plainly instead.
+  if(accuracy.calibration_underpowered){
+    return `<div class="method-block">
+      <h3>Live Calibration</h3>
+      <p style="margin-bottom:0;">Not enough graded games yet to say anything about calibration.
+      Only <b style="color:var(--chalk)">${accuracy.n_graded}</b> game${accuracy.n_graded===1?'':'s'}
+      ${accuracy.n_graded===1?'has':'have'} been graded so far, spread across
+      ${accuracy.calibration.length} confidence buckets &mdash; every one of them below the
+      ${accuracy.min_bucket_n}-game floor this dashboard requires before reporting a hit rate.
+      A bucket of one game reporting &ldquo;0% actual&rdquo; is a coin flip, not a finding, so it
+      isn't charted. The counts are still shown in the table below.
+      Calibration measured over the full backtest is on <b style="color:var(--chalk)">Model Lab</b>.</p>
+    </div>`;
+  }
+
   const S = 260, pad = 30;
   const scale = v => pad + (v/100)*(S-2*pad);
 
@@ -3000,9 +3028,18 @@ function renderAccuracy(){
 
   const calibChartHtml = buildCalibrationChart();
 
-  const calibRows = accuracy.calibration.map(c=>`
-    <tr><td>${c.bucket}</td><td class="num">${c.n}</td><td class="num">${c.avg_predicted}%</td><td class="num">${c.actual_rate}%</td></tr>
-  `).join('');
+  // Underpowered rows keep their real counts but the "actual rate" is dimmed
+  // and marked, so the number is visible without reading as a result.
+  const calibRows = accuracy.calibration.map(c=>{
+    const rate = c.underpowered
+      ? `<span style="color:var(--chalk-dim);" title="n=${c.n}, below the ${accuracy.min_bucket_n}-game floor -- not a meaningful rate">${c.actual_rate}%&nbsp;*</span>`
+      : `${c.actual_rate}%`;
+    return `<tr><td>${c.bucket}</td><td class="num">${c.n}</td><td class="num">${c.avg_predicted}%</td><td class="num">${rate}</td></tr>`;
+  }).join('');
+  const anyUnderpowered = accuracy.calibration.some(c=>c.underpowered);
+  const calibFootnote = anyUnderpowered
+    ? `<p style="font-size:11px; color:var(--chalk-dim); margin-top:8px;">* Fewer than ${accuracy.min_bucket_n} games in this bucket &mdash; the rate is shown for completeness but is not a meaningful measurement.</p>`
+    : '';
   const calibHtml = `
     <div class="method-block">
       <h3>Calibration</h3>
@@ -3012,6 +3049,7 @@ function renderAccuracy(){
         <thead><tr><th>Confidence Bucket</th><th>Games</th><th>Avg Predicted</th><th>Actual Correct Rate</th></tr></thead>
         <tbody>${calibRows || '<tr><td colspan="4">Not enough graded games yet.</td></tr>'}</tbody>
       </table></div>
+      ${calibFootnote}
     </div>`;
 
   el.innerHTML = cardsHtml + cumulativeChartHtml + weeklyHtml + calibHtml;
