@@ -68,4 +68,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Weekly update: predictions, grading, dashboard"
-          file_pattern: 'predictions/** results/** data/** index.html'
+          file_pattern: 'predictions/** results/** data/** index.html dist/**'
