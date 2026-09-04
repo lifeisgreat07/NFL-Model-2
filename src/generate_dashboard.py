@@ -62,6 +62,27 @@ def load_playoff_odds():
         return json.load(f)
 
 
+def load_calibration():
+    """Backtest-derived calibration written by src/calibration.py.
+
+    Tolerant of a missing file for the same reason as playoff odds, but for a
+    different failure: calibration.py needs six seasons of play-by-play and
+    takes minutes, so it is run deliberately rather than on every dashboard
+    build. A checkout that has never run it still has to produce a dashboard.
+
+    Deliberately does NOT recompute anything. The numbers in this file came
+    from a specific machine on a specific date, and the cross-platform
+    reproducibility finding says that matters -- so the file's own provenance
+    block is passed through to the page and displayed, rather than the
+    dashboard silently implying the figures were computed here and now.
+    """
+    path = DATA_DIR / 'calibration.json'
+    if not path.exists():
+        return None
+    with open(path) as f:
+        return json.load(f)
+
+
 def parse_week_stem(stem):
     """'2026_week1' -> (2026, 1). Returns None if it doesn't match."""
     try:
@@ -316,6 +337,15 @@ def main():
     print("Building season accuracy summary...")
     accuracy_js = build_accuracy_summary(all_graded)
 
+    calibration_js = load_calibration()
+    if calibration_js is None:
+        print("  NOTE: data/calibration.json absent -- reliability diagram will "
+              "be omitted. Run src/calibration.py to produce it.")
+    else:
+        print(f"  Backtest calibration loaded "
+              f"({calibration_js['models']['model_a']['metrics']['n']} games, "
+              f"generated {calibration_js['generated_at']})")
+
     print("Loading team history...")
     team_history_js = load_team_history()
 
@@ -334,6 +364,7 @@ def main():
     html = html.replace('__LATEST_WEEK__', json.dumps(latest_label))
     html = html.replace('__PICKS_PDFS_JSON__', json.dumps(pdf_weeks))
     html = html.replace('__ACCURACY_JSON__', json.dumps(accuracy_js, indent=2))
+    html = html.replace('__CALIBRATION_JSON__', json.dumps(calibration_js, indent=2))
     html = html.replace('__TEAM_HISTORY_JSON__', json.dumps(team_history_js, indent=2))
     html = html.replace('__SIDEBAR_FOOT__', foot_html)
 

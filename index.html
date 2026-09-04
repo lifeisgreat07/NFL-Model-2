@@ -18,6 +18,25 @@
     --blue:#5B9BE0; --blue-dim:rgba(91,155,224,0.14);
     --good:#5FA777; --good-dim:rgba(95,167,119,0.14);
     --warn:#C1554A; --warn-dim:rgba(193,85,74,0.14);
+    /* Chart series colours. Deliberately NOT --blue/--amber: those are UI
+       accents used on buttons, tags, links and headings all over the page,
+       and a chart that borrows them makes "amber" mean both "Model B" and
+       "this control is active". These four are a categorical palette in a
+       fixed slot order -- a = Model A, b = Model B, c = market, d = your own
+       picks -- and the entity keeps its slot everywhere it appears.
+       Every value below was produced by the dataviz skill's palette
+       validator (OKLab dE, lightness band, chroma floor, CVD simulation,
+       WCAG contrast), not chosen by eye. Checked against this theme's own
+       chart surface (--panel): a/b/c pass with --pairs all (they overlap as
+       dots on the reliability diagram); all four pass adjacent (they are
+       lines on the accuracy trend). Worst margins, dark: CVD dE 13.6
+       deutan, normal-vision dE 20.4, all >= 3:1 contrast.
+       This replaced the previous chart colours, which FAILED: in light mode
+       --chalk-dim vs --amber sat at normal-vision dE 13.8, under the hard
+       floor of 15, so the market and Model B lines were genuinely hard to
+       tell apart for full-colour readers. --series-d also stays far from
+       --good (dE 27) so a series never reads as a status. */
+    --series-a:#5283E0; --series-b:#C97F2E; --series-c:#C94893; --series-d:#9A4CF6;
     --shadow-sm: 0 1px 2px rgba(0,0,0,.35);
     --shadow-md: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.65);
     --shadow-lg: 0 2px 4px rgba(0,0,0,.35), 0 24px 48px -20px rgba(0,0,0,.7);
@@ -36,6 +55,11 @@
     --blue:#2563A8; --blue-dim:rgba(37,99,168,0.12);
     --good:#2F7A4A; --good-dim:rgba(47,122,74,0.12);
     --warn:#A83226; --warn-dim:rgba(168,50,38,0.12);
+    /* Light-theme series steps. Same four hues, re-stepped for a white
+       surface and re-validated there -- not the dark values lightened,
+       which is how a palette that passes in one mode quietly fails in the
+       other. Worst margins here: CVD dE 15.0 deutan, normal-vision dE 20.8. */
+    --series-a:#4C75C3; --series-b:#B26A0C; --series-c:#893365; --series-d:#7D24D3;
     --shadow-sm: 0 1px 2px rgba(26,29,36,.08);
     --shadow-md: 0 1px 2px rgba(26,29,36,.06), 0 10px 28px -14px rgba(26,29,36,.18);
     --shadow-lg: 0 2px 4px rgba(26,29,36,.08), 0 24px 48px -20px rgba(26,29,36,.22);
@@ -264,6 +288,42 @@
   .accuracy-card .label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:8px;}
   .accuracy-card .value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:32px;}
   .accuracy-card .sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); margin-top:4px;}
+  /* ---------- Reliability diagram ---------- */
+  .rel-wrap{display:flex; gap:26px; flex-wrap:wrap; align-items:flex-start;}
+  .rel-plot{flex:1 1 420px; min-width:300px; max-width:520px; position:relative;}
+  /* Capped so the explanatory prose keeps a readable measure instead of
+     stretching to whatever width the panel happens to have. */
+  .rel-side{flex:1 1 300px; min-width:240px; max-width:440px;}
+  /* Series toggles. One row, above the chart. The dot in each is the series'
+     own colour, so the control says which line it governs without a label
+     that only repeats the button text. */
+  .rel-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
+  .rel-toggle{display:inline-flex; align-items:center; gap:7px; background:var(--panel);
+    border:1px solid var(--line); color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif;
+    font-size:11.5px; font-weight:600; padding:6px 13px; border-radius:20px; cursor:pointer;
+    transition:border-color .15s ease, color .15s ease, opacity .15s ease;}
+  .rel-toggle[aria-pressed="false"]{opacity:.45;}
+  .rel-toggle[aria-pressed="true"]{color:var(--chalk); border-color:var(--line-strong);}
+  .rel-toggle:focus-visible{outline:2px solid var(--chalk); outline-offset:2px;}
+  /* Hover/focus readout. Positioned over the plot, never over the cursor, and
+     pointer-events:none so it can't steal the next hover. */
+  .rel-tip{position:absolute; pointer-events:none; opacity:0; transition:opacity .1s ease;
+    background:var(--panel-raised); border:1px solid var(--line-strong); border-radius:8px;
+    box-shadow:var(--shadow-md); padding:9px 11px; font-size:11.5px; line-height:1.5;
+    color:var(--chalk-dim); max-width:230px; z-index:5;}
+  .rel-tip.on{opacity:1;}
+  .rel-tip b{color:var(--chalk);}
+  .rel-point{cursor:pointer;}
+  .rel-point:focus-visible{outline:none;}
+  .rel-point:focus-visible .rel-halo{stroke:var(--chalk); stroke-width:2; opacity:1;}
+  .rel-stat{display:grid; grid-template-columns:1fr auto auto; gap:2px 14px; align-items:baseline;
+    font-size:12px; padding:9px 0; border-bottom:1px solid var(--line);}
+  .rel-stat:last-of-type{border-bottom:none;}
+  .rel-stat .nm{display:inline-flex; align-items:center; gap:7px; color:var(--chalk); font-weight:600;}
+  .rel-stat .v{font-variant-numeric:tabular-nums; color:var(--chalk-dim);}
+  .rel-prov{font-size:10.5px; color:var(--chalk-dim); margin-top:12px; line-height:1.6;}
+  .rel-table summary{cursor:pointer; font-size:12px; color:var(--chalk-dim); padding:6px 0;}
+  .rel-table summary:hover{color:var(--chalk);}
   .filter-btn{background:var(--panel); border:1px solid var(--line); color:var(--chalk-dim);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; letter-spacing:.04em; padding:8px 14px; border-radius:20px;
     cursor:pointer; transition:all .15s ease;}
@@ -458,7 +518,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <span id="theme-toggle-label">Light mode</span>
     </button>
-    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-04 16:56 UTC</span>
+    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-04 17:38 UTC</span>
   </div>
 </aside>
 
@@ -608,6 +668,11 @@
         <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.4</b>, last updated 2026-09-04.</div>
       </div>
     </div>
+    <!-- Filled by buildReliabilityDiagram(). Empty when data/calibration.json
+         is absent, which is the correct state for a checkout that has never
+         run src/calibration.py -- the section omits itself rather than
+         rendering an empty axis. -->
+    <div id="reliability-diagram"></div>
     <div class="table-wrap" style="overflow-x:auto;">
       <table>
         <thead><tr><th>Experiment</th><th>Result</th><th>Decision</th></tr></thead>
@@ -2244,6 +2309,469 @@ const accuracy = {
   "calibration_underpowered": true
 };
 const teamHistory = {};
+// Backtest-derived calibration (data/calibration.json, ~1087 games). null when
+// src/calibration.py has never been run in this checkout -- the reliability
+// diagram omits itself rather than inventing numbers.
+const calibration = {
+  "generated_at": "2026-09-04 16:47 UTC",
+  "provenance": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.9",
+    "numpy": "1.26.4",
+    "pandas": "1.5.3",
+    "scikit-learn": "1.9.0"
+  },
+  "model_version": "2.4",
+  "backtest_seasons": [
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "bin_edges": [
+    0.0,
+    0.2,
+    0.3,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.7,
+    0.8,
+    1.0
+  ],
+  "min_bin_n": 25,
+  "models": {
+    "model_a": {
+      "features": [
+        "off_matchup",
+        "def_matchup",
+        "qb_matchup",
+        "qb_change_diff"
+      ],
+      "metrics": {
+        "n": 1087,
+        "accuracy": 0.6274149034038639,
+        "log_loss": 0.649812209965089,
+        "brier": 0.22860320109747892,
+        "auc": 0.6701189996654628
+      },
+      "decomposition": {
+        "reliability": 0.003147,
+        "resolution": 0.022507,
+        "uncertainty": 0.247926,
+        "base_rate": 0.545538
+      },
+      "bins": [
+        {
+          "lo": 0.0,
+          "hi": 0.2,
+          "label": "0-20%",
+          "n": 6,
+          "mean_predicted": 15.84,
+          "observed": 50.0,
+          "ci_lo": 18.76,
+          "ci_hi": 81.24,
+          "consistent_with_perfect": false,
+          "underpowered": true
+        },
+        {
+          "lo": 0.2,
+          "hi": 0.3,
+          "label": "20-30%",
+          "n": 35,
+          "mean_predicted": 25.82,
+          "observed": 28.57,
+          "ci_lo": 16.33,
+          "ci_hi": 45.06,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.3,
+          "hi": 0.4,
+          "label": "30-40%",
+          "n": 117,
+          "mean_predicted": 35.71,
+          "observed": 38.46,
+          "ci_lo": 30.15,
+          "ci_hi": 47.51,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.4,
+          "hi": 0.45,
+          "label": "40-45%",
+          "n": 128,
+          "mean_predicted": 42.6,
+          "observed": 38.28,
+          "ci_lo": 30.32,
+          "ci_hi": 46.93,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.45,
+          "hi": 0.5,
+          "label": "45-50%",
+          "n": 167,
+          "mean_predicted": 47.63,
+          "observed": 44.91,
+          "ci_lo": 37.56,
+          "ci_hi": 52.48,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.5,
+          "hi": 0.55,
+          "label": "50-55%",
+          "n": 176,
+          "mean_predicted": 52.67,
+          "observed": 50.0,
+          "ci_lo": 42.69,
+          "ci_hi": 57.31,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.55,
+          "hi": 0.6,
+          "label": "55-60%",
+          "n": 163,
+          "mean_predicted": 57.34,
+          "observed": 64.42,
+          "ci_lo": 56.81,
+          "ci_hi": 71.36,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.6,
+          "hi": 0.7,
+          "label": "60-70%",
+          "n": 202,
+          "mean_predicted": 64.68,
+          "observed": 69.8,
+          "ci_lo": 63.15,
+          "ci_hi": 75.72,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.7,
+          "hi": 0.8,
+          "label": "70-80%",
+          "n": 80,
+          "mean_predicted": 74.28,
+          "observed": 83.75,
+          "ci_lo": 74.16,
+          "ci_hi": 90.25,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.8,
+          "hi": 1.0,
+          "label": "80-100%",
+          "n": 13,
+          "mean_predicted": 83.37,
+          "observed": 76.92,
+          "ci_lo": 49.74,
+          "ci_hi": 91.82,
+          "consistent_with_perfect": true,
+          "underpowered": true
+        }
+      ]
+    },
+    "model_b": {
+      "features": [
+        "off_matchup",
+        "def_matchup",
+        "qb_matchup",
+        "qb_change_diff",
+        "spread_line"
+      ],
+      "metrics": {
+        "n": 1087,
+        "accuracy": 0.6826126954921803,
+        "log_loss": 0.6062088177820173,
+        "brier": 0.20947053255741319,
+        "auc": 0.7269493619897455
+      },
+      "decomposition": {
+        "reliability": 0.001697,
+        "resolution": 0.039321,
+        "uncertainty": 0.247926,
+        "base_rate": 0.545538
+      },
+      "bins": [
+        {
+          "lo": 0.0,
+          "hi": 0.2,
+          "label": "0-20%",
+          "n": 41,
+          "mean_predicted": 16.2,
+          "observed": 26.83,
+          "ci_lo": 15.69,
+          "ci_hi": 41.93,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.2,
+          "hi": 0.3,
+          "label": "20-30%",
+          "n": 100,
+          "mean_predicted": 25.69,
+          "observed": 22.0,
+          "ci_lo": 15.0,
+          "ci_hi": 31.07,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.3,
+          "hi": 0.4,
+          "label": "30-40%",
+          "n": 197,
+          "mean_predicted": 35.64,
+          "observed": 34.01,
+          "ci_lo": 27.76,
+          "ci_hi": 40.88,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.4,
+          "hi": 0.45,
+          "label": "40-45%",
+          "n": 73,
+          "mean_predicted": 42.37,
+          "observed": 41.1,
+          "ci_lo": 30.53,
+          "ci_hi": 52.55,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.45,
+          "hi": 0.5,
+          "label": "45-50%",
+          "n": 46,
+          "mean_predicted": 47.11,
+          "observed": 52.17,
+          "ci_lo": 38.14,
+          "ci_hi": 65.88,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.5,
+          "hi": 0.55,
+          "label": "50-55%",
+          "n": 66,
+          "mean_predicted": 52.75,
+          "observed": 59.09,
+          "ci_lo": 47.05,
+          "ci_hi": 70.13,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.55,
+          "hi": 0.6,
+          "label": "55-60%",
+          "n": 158,
+          "mean_predicted": 57.52,
+          "observed": 63.92,
+          "ci_lo": 56.19,
+          "ci_hi": 71.0,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.6,
+          "hi": 0.7,
+          "label": "60-70%",
+          "n": 194,
+          "mean_predicted": 64.96,
+          "observed": 66.49,
+          "ci_lo": 59.59,
+          "ci_hi": 72.76,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.7,
+          "hi": 0.8,
+          "label": "70-80%",
+          "n": 140,
+          "mean_predicted": 74.65,
+          "observed": 75.0,
+          "ci_lo": 67.22,
+          "ci_hi": 81.44,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.8,
+          "hi": 1.0,
+          "label": "80-100%",
+          "n": 72,
+          "mean_predicted": 86.5,
+          "observed": 90.28,
+          "ci_lo": 81.26,
+          "ci_hi": 95.21,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        }
+      ]
+    },
+    "market": {
+      "features": [
+        "spread_line"
+      ],
+      "metrics": {
+        "n": 1087,
+        "accuracy": 0.6816927322907084,
+        "log_loss": 0.6073980523603624,
+        "brier": 0.21009216466097622,
+        "auc": 0.7246332038423988
+      },
+      "decomposition": {
+        "reliability": 0.001334,
+        "resolution": 0.03818,
+        "uncertainty": 0.247926,
+        "base_rate": 0.545538
+      },
+      "bins": [
+        {
+          "lo": 0.0,
+          "hi": 0.2,
+          "label": "0-20%",
+          "n": 31,
+          "mean_predicted": 15.33,
+          "observed": 22.58,
+          "ci_lo": 11.39,
+          "ci_hi": 39.81,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.2,
+          "hi": 0.3,
+          "label": "20-30%",
+          "n": 109,
+          "mean_predicted": 25.57,
+          "observed": 25.69,
+          "ci_lo": 18.41,
+          "ci_hi": 34.62,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.3,
+          "hi": 0.4,
+          "label": "30-40%",
+          "n": 219,
+          "mean_predicted": 36.41,
+          "observed": 35.16,
+          "ci_lo": 29.14,
+          "ci_hi": 41.69,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.4,
+          "hi": 0.45,
+          "label": "40-45%",
+          "n": 75,
+          "mean_predicted": 42.68,
+          "observed": 44.0,
+          "ci_lo": 33.33,
+          "ci_hi": 55.25,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.45,
+          "hi": 0.5,
+          "label": "45-50%",
+          "n": 8,
+          "mean_predicted": 49.65,
+          "observed": 25.0,
+          "ci_lo": 7.15,
+          "ci_hi": 59.07,
+          "consistent_with_perfect": true,
+          "underpowered": true
+        },
+        {
+          "lo": 0.5,
+          "hi": 0.55,
+          "label": "50-55%",
+          "n": 60,
+          "mean_predicted": 53.01,
+          "observed": 56.67,
+          "ci_lo": 44.1,
+          "ci_hi": 68.43,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.55,
+          "hi": 0.6,
+          "label": "55-60%",
+          "n": 190,
+          "mean_predicted": 57.7,
+          "observed": 61.05,
+          "ci_lo": 53.97,
+          "ci_hi": 67.7,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.6,
+          "hi": 0.7,
+          "label": "60-70%",
+          "n": 191,
+          "mean_predicted": 64.9,
+          "observed": 69.11,
+          "ci_lo": 62.23,
+          "ci_hi": 75.23,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.7,
+          "hi": 0.8,
+          "label": "70-80%",
+          "n": 134,
+          "mean_predicted": 74.3,
+          "observed": 75.37,
+          "ci_lo": 67.44,
+          "ci_hi": 81.89,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.8,
+          "hi": 1.0,
+          "label": "80-100%",
+          "n": 70,
+          "mean_predicted": 86.11,
+          "observed": 90.0,
+          "ci_lo": 80.77,
+          "ci_hi": 95.07,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        }
+      ]
+    }
+  }
+};
 
 const weekKeysSorted = Object.keys(weeks).sort((a,b)=>{
   const wa = weeks[a], wb = weeks[b];
@@ -2855,6 +3383,45 @@ function showUndoToast(){
 populateWeekSelect(document.getElementById('picks-week-select'), (val)=>{ currentPicksWeek = val; renderPicksGrid(); }, latestWeekKey);
 renderPicksGrid();
 
+/* ---------- Chart series identity ----------
+   One definition of what each series looks like, shared by every chart on
+   the page. Colour follows the ENTITY, not its position in whatever subset
+   is currently drawn, so hiding Model A on the reliability diagram never
+   repaints the market. `shape` and `dash` are the secondary encoding: on a
+   greyscale print, in forced-colours mode, or for a reader whose vision the
+   OKLab checks can only approximate, identity survives without colour. */
+const SERIES = {
+  a:      {label:'Model A',  color:'var(--series-a)', shape:'circle',   dash:''},
+  b:      {label:'Model B',  color:'var(--series-b)', shape:'square',   dash:''},
+  market: {label:'Market',   color:'var(--series-c)', shape:'triangle', dash:''},
+  picks:  {label:'My Picks', color:'var(--series-d)', shape:'diamond',  dash:'6,4'},
+};
+
+/* Marker path for a series shape, centred on (cx,cy). Sized by `r` as a
+   radius so every shape reads at roughly the same visual weight; the skill's
+   floor is an 8px marker, so r stays >= 4.5 wherever these are hit targets. */
+function markerPath(shape, cx, cy, r){
+  const s = r * 0.92;
+  switch(shape){
+    case 'square':   return `<rect x="${(cx-s).toFixed(1)}" y="${(cy-s).toFixed(1)}" width="${(2*s).toFixed(1)}" height="${(2*s).toFixed(1)}" rx="1"`;
+    case 'triangle': return `<polygon points="${cx.toFixed(1)},${(cy-r*1.15).toFixed(1)} ${(cx+r).toFixed(1)},${(cy+r*0.75).toFixed(1)} ${(cx-r).toFixed(1)},${(cy+r*0.75).toFixed(1)}"`;
+    case 'diamond':  return `<polygon points="${cx.toFixed(1)},${(cy-r*1.2).toFixed(1)} ${(cx+r*1.2).toFixed(1)},${cy.toFixed(1)} ${cx.toFixed(1)},${(cy+r*1.2).toFixed(1)} ${(cx-r*1.2).toFixed(1)},${cy.toFixed(1)}"`;
+    default:         return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r.toFixed(1)}"`;
+  }
+}
+
+/* Legend swatches carry the shape as well as the colour, so the legend is a
+   real key to the marks rather than four coloured squares. */
+function seriesLegend(keys){
+  return keys.map(k=>{
+    const s = SERIES[k];
+    return `<span style="display:inline-flex; align-items:center; gap:6px; margin-right:16px; white-space:nowrap;">
+      <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" style="flex-shrink:0;">
+        ${markerPath(s.shape, 7, 7, 5)} fill="${s.color}"/>
+      </svg>${s.label}</span>`;
+  }).join('');
+}
+
 /* ---------- Season Accuracy ---------- */
 function buildCumulativeTrendChart(){
   if(!accuracy.weeks || accuracy.weeks.length === 0) return '';
@@ -2883,7 +3450,10 @@ function buildCumulativeTrendChart(){
     };
   });
 
-  const W=680, H=220, padL=36, padR=14, padT=14, padB=28;
+  // padR leaves room for the direct end-labels: four series is inside the
+  // "<= 4 series are also direct-labeled" rule, so identity never rests on
+  // colour alone even for a reader who skips the legend.
+  const W=680, H=220, padL=36, padR=74, padT=14, padB=28;
   const n = points.length;
   const x = i => n<=1 ? padL : padL + (i/(n-1))*(W-padL-padR);
   const allVals = points.flatMap(p=>[p.a,p.b,p.m,p.p]).filter(v=>v!==null);
@@ -2891,11 +3461,24 @@ function buildCumulativeTrendChart(){
   const yMax = Math.min(100, Math.max(...allVals, 60) + 5);
   const y = v => padT + (1-(v-yMin)/(yMax-yMin))*(H-padT-padB);
 
-  function lineFor(key, color){
+  // Series drawn in fixed order with a direct end-label. Labels are nudged
+  // apart only when two lines finish within a few pixels of each other --
+  // moving a label always costs a little honesty about where its line ends,
+  // so it is done only where they would otherwise overprint.
+  const labelSlots = [];
+  function lineFor(key, seriesKey){
+    const s = SERIES[seriesKey];
     const valid = points.map((p,i)=>({i, v:p[key]})).filter(d=>d.v!==null);
     if(valid.length < 2) return '';
     const d = valid.map((d,idx)=>`${idx===0?'M':'L'}${x(d.i).toFixed(1)},${y(d.v).toFixed(1)}`).join(' ');
-    return `<path d="${d}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    const last = valid[valid.length-1];
+    let ly = y(last.v);
+    while(labelSlots.some(v=>Math.abs(v-ly) < 11)) ly += 11;
+    labelSlots.push(ly);
+    const dash = s.dash ? ` stroke-dasharray="${s.dash}"` : '';
+    return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"${dash}/>
+      ${markerPath(s.shape, x(last.i), y(last.v), 4.5)} fill="${s.color}" stroke="var(--panel)" stroke-width="2"/>
+      <text x="${(x(last.i)+9).toFixed(1)}" y="${(ly+3.5).toFixed(1)}" font-size="10" font-weight="600" fill="var(--chalk-dim)">${s.label}</text>`;
   }
 
   const gridLines = [];
@@ -2904,8 +3487,7 @@ function buildCumulativeTrendChart(){
       <text x="${padL-6}" y="${(y(gv)+3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--chalk-dim)">${gv}%</text>`);
   }
 
-  const legend = [['Model A','var(--blue)'],['Model B','var(--amber)'],['Market','var(--chalk-dim)'],['My Picks','var(--good)']]
-    .map(([label,color])=>`<span style="display:inline-flex; align-items:center; gap:5px; margin-right:16px;"><span style="width:9px; height:9px; border-radius:2px; background:${color}; display:inline-block;"></span>${label}</span>`).join('');
+  const legend = seriesLegend(['a','b','market','picks']);
 
   return `<div class="method-block">
     <h3>Cumulative Accuracy Trend</h3>
@@ -2913,10 +3495,10 @@ function buildCumulativeTrendChart(){
     <div style="font-size:11px; color:var(--chalk-dim); margin-bottom:8px;">${legend}</div>
     <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:680px;">
       ${gridLines.join('')}
-      ${lineFor('a','var(--blue)')}
-      ${lineFor('b','var(--amber)')}
-      ${lineFor('m','var(--chalk-dim)')}
-      ${lineFor('p','var(--good)')}
+      ${lineFor('a','a')}
+      ${lineFor('b','b')}
+      ${lineFor('m','market')}
+      ${lineFor('p','picks')}
     </svg>
   </div>`;
 }
@@ -2951,7 +3533,7 @@ function buildCalibrationChart(){
 
   const dots = points.map(p => {
     const r = 4 + (p.n/maxN)*8; // dot size reflects sample size in that bucket
-    return `<circle cx="${scale(p.x).toFixed(1)}" cy="${(S-scale(p.y)).toFixed(1)}" r="${r.toFixed(1)}" fill="var(--amber)" fill-opacity="0.85" stroke="var(--ink)" stroke-width="1">
+    return `<circle cx="${scale(p.x).toFixed(1)}" cy="${(S-scale(p.y)).toFixed(1)}" r="${r.toFixed(1)}" fill="var(--series-b)" fill-opacity="0.85" stroke="var(--panel)" stroke-width="2">
       <title>${p.bucket}: predicted ${p.x}%, actual ${p.y}% (n=${p.n})</title>
     </circle>`;
   }).join('');
@@ -2970,10 +3552,225 @@ function buildCalibrationChart(){
       </svg>
       <div style="font-size:11.5px; color:var(--chalk-dim); max-width:280px; padding-top:8px;">
         <div style="margin-bottom:6px;"><span style="display:inline-block; width:8px; height:1.5px; background:var(--line-strong); margin-right:5px; vertical-align:middle;"></span>Dashed line = perfect calibration</div>
-        <div><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--amber); margin-right:5px; vertical-align:middle;"></span>Each dot = one confidence bucket (bigger dot = more games)</div>
+        <div><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--series-b); margin-right:5px; vertical-align:middle;"></span>Each dot = one confidence bucket (bigger dot = more games)</div>
         <div style="margin-top:6px;">Dots above the line mean we're underconfident in that bucket; below means overconfident.</div>
       </div>
     </div>`;
+}
+
+/* ---------- Reliability diagram (backtest calibration) ----------
+
+   What this chart answers: when a model says 70%, does that side actually win
+   about 70% of the time? Every point is one probability bin; x is the average
+   probability the model stated inside that bin, y is how often the home team
+   really won. Perfect calibration is the diagonal.
+
+   Two decisions worth naming, because they are what separate this from the
+   live calibration panel on Season Accuracy:
+
+   1. It is drawn from the BACKTEST (~1087 games), not from the handful of
+      graded games this season. The live panel refuses to draw itself until it
+      has the sample to justify a claim; this one has it.
+   2. Every point carries a Wilson interval. A reliability diagram of bare
+      dots invites the reader to treat every off-diagonal point as a defect.
+      Most of these intervals cross the diagonal, which means "consistent with
+      perfect calibration" -- and the chart has to be able to say so.
+
+   Bins under the min-n floor are drawn hollow rather than tinted, so the
+   "don't lean on this one" signal survives greyscale and colour-blindness. */
+const RELIABILITY_SERIES = [['model_a','a'], ['model_b','b'], ['market','market']];
+let relVisible = {model_a:true, model_b:true, market:true};
+
+function buildReliabilityDiagram(){
+  if(!calibration || !calibration.models) return '';
+
+  const W=470, padL=48, padR=16, padT=14, PLOT=390;
+  const H = padT + PLOT + 40;
+  const x = v => padL + (v/100)*PLOT;
+  const y = v => padT + (1 - v/100)*PLOT;
+
+  const grid = [0,25,50,75,100].map(g=>`
+    <line x1="${x(g).toFixed(1)}" y1="${padT}" x2="${x(g).toFixed(1)}" y2="${(padT+PLOT).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>
+    <line x1="${padL}" y1="${y(g).toFixed(1)}" x2="${(padL+PLOT).toFixed(1)}" y2="${y(g).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>
+    <text x="${x(g).toFixed(1)}" y="${(padT+PLOT+16).toFixed(1)}" font-size="10" fill="var(--chalk-dim)" text-anchor="middle">${g}%</text>
+    <text x="${(padL-8).toFixed(1)}" y="${(y(g)+3.5).toFixed(1)}" font-size="10" fill="var(--chalk-dim)" text-anchor="end">${g}%</text>`).join('');
+
+  // Marks are drawn series by series in fixed order so overlaps stack the same
+  // way on every render -- a chart whose z-order shuffles between loads is a
+  // chart nobody can point at in a screenshot.
+  const marks = RELIABILITY_SERIES.map(([modelKey, seriesKey])=>{
+    const m = calibration.models[modelKey];
+    if(!m) return '';
+    const s = SERIES[seriesKey];
+    const pts = m.bins.map(b=>{
+      const cx = x(b.mean_predicted), cy = y(b.observed);
+      const barTop = y(b.ci_hi), barBot = y(b.ci_lo);
+      // Wilson interval. Drawn under the marker so the marker's surface ring
+      // still separates it from whatever it overlaps.
+      const bar = `<line x1="${cx.toFixed(1)}" y1="${barTop.toFixed(1)}" x2="${cx.toFixed(1)}" y2="${barBot.toFixed(1)}" stroke="${s.color}" stroke-width="2" stroke-opacity="0.5" stroke-linecap="round"/>
+        <line x1="${(cx-3.5).toFixed(1)}" y1="${barTop.toFixed(1)}" x2="${(cx+3.5).toFixed(1)}" y2="${barTop.toFixed(1)}" stroke="${s.color}" stroke-width="2" stroke-opacity="0.5"/>
+        <line x1="${(cx-3.5).toFixed(1)}" y1="${barBot.toFixed(1)}" x2="${(cx+3.5).toFixed(1)}" y2="${barBot.toFixed(1)}" stroke="${s.color}" stroke-width="2" stroke-opacity="0.5"/>`;
+      const fill = b.underpowered ? 'var(--panel)' : s.color;
+      const marker = `${markerPath(s.shape, cx, cy, 5)} fill="${fill}" stroke="${b.underpowered ? s.color : 'var(--panel)'}" stroke-width="2"/>`;
+      const tip = [
+        `<b>${s.label} &middot; ${b.label} bin</b>`,
+        `Stated ${b.mean_predicted}% &rarr; actually won <b>${b.observed}%</b>`,
+        `95% interval ${b.ci_lo}%&ndash;${b.ci_hi}% over ${b.n} game${b.n===1?'':'s'}`,
+        b.underpowered
+          ? `Under the ${calibration.min_bin_n}-game floor &mdash; too thin to lean on`
+          : (b.consistent_with_perfect
+              ? 'Interval covers the stated rate: consistent with perfect calibration'
+              : 'Interval excludes the stated rate: a real miss in this bin'),
+      ].join('<br>');
+      // A transparent halo makes the hit target larger than the mark, which
+      // matters most for the thin bins nobody can click precisely.
+      return `<g class="rel-point" tabindex="0" role="img"
+                 aria-label="${s.label}, ${b.label} bin: stated ${b.mean_predicted} percent, observed ${b.observed} percent, ${b.n} games"
+                 data-tip="${tip.replace(/"/g,'&quot;')}" data-cx="${cx.toFixed(1)}" data-cy="${cy.toFixed(1)}">
+        ${bar}
+        <circle class="rel-halo" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="11" fill="transparent" stroke="none" opacity="0"/>
+        ${marker}
+      </g>`;
+    }).join('');
+    return `<g class="rel-series" data-model="${modelKey}">${pts}</g>`;
+  }).join('');
+
+  // The toggle row doubles as the legend: each control carries the series'
+  // own marker shape and colour next to its name, sits directly above the
+  // plot, and is always visible. Per-series direct labels inside the plot
+  // were tried and dropped -- Model B and the market finish 0.3 points apart
+  // in the top bin, so their labels collide exactly where the chart is most
+  // crowded. The rule those labels serve is that identity must never rest on
+  // colour alone; here the marker SHAPE carries it, which survives greyscale
+  // and colour-blindness at every one of the 30 points rather than at three.
+  const filters = RELIABILITY_SERIES.map(([modelKey, seriesKey])=>{
+    const s = SERIES[seriesKey];
+    return `<button class="rel-toggle" data-model="${modelKey}" aria-pressed="true">
+      <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">${markerPath(s.shape, 6, 6, 4.5)} fill="${s.color}"/></svg>${s.label}</button>`;
+  }).join('');
+
+  // The three decomposition scalars are single numbers, not shapes -- a bar
+  // chart of three values that differ in the third decimal place would be a
+  // worse read than the numbers themselves. Uncertainty is shown once,
+  // outside the per-model rows, because it is a property of the games and is
+  // identical for all three by construction.
+  const statRows = RELIABILITY_SERIES.map(([modelKey, seriesKey])=>{
+    const m = calibration.models[modelKey];
+    if(!m) return '';
+    const s = SERIES[seriesKey], d = m.decomposition;
+    return `<div class="rel-stat">
+      <span class="nm"><svg width="11" height="11" viewBox="0 0 11 11" aria-hidden="true">${markerPath(s.shape, 5.5, 5.5, 4.2)} fill="${s.color}"/></svg>${s.label}</span>
+      <span class="v">${d.reliability.toFixed(6)}</span>
+      <span class="v">${d.resolution.toFixed(6)}</span>
+    </div>`;
+  }).join('');
+
+  const tableRows = RELIABILITY_SERIES.map(([modelKey, seriesKey])=>{
+    const m = calibration.models[modelKey];
+    if(!m) return '';
+    return m.bins.map(b=>`<tr>
+      <td>${SERIES[seriesKey].label}</td><td>${b.label}</td>
+      <td class="num">${b.n}</td><td class="num">${b.mean_predicted}%</td>
+      <td class="num">${b.observed}%${b.underpowered?'&nbsp;*':''}</td>
+      <td class="num">${b.ci_lo}&ndash;${b.ci_hi}%</td></tr>`).join('');
+  }).join('');
+
+  const p = calibration.provenance || {};
+  const n = calibration.models.model_a ? calibration.models.model_a.metrics.n : 0;
+  const base = calibration.models.model_a
+    ? (calibration.models.model_a.decomposition.base_rate*100).toFixed(1) : '--';
+
+  return `<div class="method-block">
+    <h3>Reliability Diagram &mdash; Are the Probabilities Honest?</h3>
+    <p style="margin-bottom:14px;">Accuracy only asks whether we picked the right side. This asks something harder: when a model says <b style="color:var(--chalk)">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games; the vertical bar is its 95% Wilson interval. The dashed diagonal is perfect calibration &mdash; and a mark whose bar crosses that line is <i>consistent</i> with being perfectly calibrated, however far the mark itself sits from it.</p>
+    <div class="rel-filters">${filters}</div>
+    <div class="rel-wrap">
+      <div class="rel-plot">
+        <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto;" role="group" aria-label="Reliability diagram: stated probability against observed win rate">
+          ${grid}
+          <line x1="${x(0).toFixed(1)}" y1="${y(0).toFixed(1)}" x2="${x(100).toFixed(1)}" y2="${y(100).toFixed(1)}" stroke="var(--line-strong)" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <text x="${(x(100)-4).toFixed(1)}" y="${(y(100)+14).toFixed(1)}" font-size="9.5" fill="var(--chalk-dim)" text-anchor="end">perfect calibration</text>
+          ${marks}
+          <text x="${(padL+PLOT/2).toFixed(1)}" y="${(padT+PLOT+34).toFixed(1)}" font-size="10.5" fill="var(--chalk-dim)" text-anchor="middle">Probability the model stated</text>
+          <text x="12" y="${(padT+PLOT/2).toFixed(1)}" font-size="10.5" fill="var(--chalk-dim)" text-anchor="middle" transform="rotate(-90 12 ${(padT+PLOT/2).toFixed(1)})">How often it actually happened</text>
+        </svg>
+        <div class="rel-tip" id="rel-tip"></div>
+      </div>
+      <div class="rel-side">
+        <div class="rel-stat" style="border-bottom:1px solid var(--line-strong);">
+          <span class="nm" style="color:var(--chalk-dim); font-size:10px; letter-spacing:.06em; text-transform:uppercase;">Brier decomposition</span>
+          <span class="v" style="font-size:10px; letter-spacing:.06em; text-transform:uppercase;" title="Mean squared gap between stated probability and observed rate. Lower is better; 0 is perfect calibration.">Reliab. &darr;</span>
+          <span class="v" style="font-size:10px; letter-spacing:.06em; text-transform:uppercase;" title="How far the bins sit from the base rate. Higher is better; 0 means the model says nothing.">Resol. &uarr;</span>
+        </div>
+        ${statRows}
+        <p style="font-size:11.5px; margin-top:12px;">Brier = reliability &minus; resolution + uncertainty (Murphy, 1973). <b style="color:var(--chalk)">Reliability</b> is miscalibration: lower is better. <b style="color:var(--chalk)">Resolution</b> is how far the model dares to move away from the base rate: higher is better. A model that always predicts the ${base}% base rate scores a perfect 0 on reliability and a useless 0 on resolution &mdash; which is exactly why accuracy alone can't tell those two apart. Uncertainty (${calibration.models.model_a ? calibration.models.model_a.decomposition.uncertainty.toFixed(6) : '--'}) belongs to the games, not to any model.</p>
+        <p style="font-size:11.5px; margin-top:10px;">The interesting result: <b style="color:var(--chalk)">Model B separates games better than the market does</b> (higher resolution) while being <b style="color:var(--chalk)">slightly worse calibrated</b> (higher reliability). Raw accuracy showed those two as an effective tie &mdash; this is where they actually differ. The gap is small and has not been bootstrapped yet, so it is a lead, not a claim.</p>
+        <details class="rel-table" style="margin-top:12px;">
+          <summary>Show the numbers as a table</summary>
+          <div class="table-wrap" style="margin-top:8px;"><table class="metrics-table">
+            <thead><tr><th>Series</th><th>Bin</th><th>Games</th><th>Stated</th><th>Observed</th><th>95% interval</th></tr></thead>
+            <tbody>${tableRows}</tbody>
+          </table></div>
+          <p style="font-size:10.5px; color:var(--chalk-dim); margin-top:6px;">* Fewer than ${calibration.min_bin_n} games in the bin &mdash; shown for completeness, drawn hollow on the chart, and not a measurement.</p>
+        </details>
+        <p class="rel-prov">Computed by <code>src/calibration.py</code> over ${JSON.stringify(calibration.backtest_seasons)} &middot; model v${calibration.model_version} &middot; ${calibration.generated_at}<br>
+        ${p.platform || 'unknown platform'} &middot; Python ${p.python || '?'} &middot; numpy ${p.numpy || '?'} &middot; pandas ${p.pandas || '?'} &middot; scikit-learn ${p['scikit-learn'] || '?'}<br>
+        The machine is recorded because it has mattered before: see &ldquo;Backtest accuracy is not reproducible across platforms&rdquo; above.</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* Wires up the hover/focus readout and the series toggles. Runs after the
+   markup is in the DOM, so the chart is a plain string everywhere else. */
+function initReliabilityDiagram(){
+  const tip = document.getElementById('rel-tip');
+  if(!tip) return;
+  const plot = tip.parentElement;
+
+  function show(el){
+    tip.innerHTML = el.dataset.tip;
+    tip.classList.add('on');
+    // Position in the plot's own pixel space, converting from the SVG's
+    // viewBox units. Flips to the other side near an edge so the readout
+    // never runs off the panel.
+    const svg = plot.querySelector('svg');
+    const box = svg.getBoundingClientRect();
+    const vb = svg.viewBox.baseVal;
+    const k = box.width / vb.width;
+    let left = (+el.dataset.cx) * k + 16;
+    let top  = (+el.dataset.cy) * k - 10;
+    if(left + tip.offsetWidth > box.width) left = (+el.dataset.cx) * k - tip.offsetWidth - 16;
+    // Clamp both axes to the plot box. Flipping to the left of a mark near the
+    // right edge can still put the readout off the panel entirely, which is
+    // how the first version of this hid its own y-axis label.
+    left = Math.max(0, Math.min(left, Math.max(0, box.width - tip.offsetWidth)));
+    top = Math.max(0, Math.min(top, box.height - tip.offsetHeight));
+    tip.style.left = left + 'px';
+    tip.style.top = top + 'px';
+  }
+  function hide(){ tip.classList.remove('on'); }
+
+  plot.querySelectorAll('.rel-point').forEach(el=>{
+    el.addEventListener('mouseenter', ()=>show(el));
+    el.addEventListener('focus', ()=>show(el));
+    el.addEventListener('mouseleave', hide);
+    el.addEventListener('blur', hide);
+  });
+
+  document.querySelectorAll('.rel-toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const key = btn.dataset.model;
+      relVisible[key] = !relVisible[key];
+      // Never let the reader turn everything off -- an empty plot reads as a
+      // broken chart rather than a chosen filter.
+      if(!Object.values(relVisible).some(Boolean)){ relVisible[key] = true; return; }
+      btn.setAttribute('aria-pressed', String(relVisible[key]));
+      const g = document.querySelector(`.rel-series[data-model="${key}"]`);
+      if(g) g.style.display = relVisible[key] ? '' : 'none';
+      hide();
+    });
+  });
 }
 
 function renderAccuracy(){
@@ -3055,6 +3852,15 @@ function renderAccuracy(){
   el.innerHTML = cardsHtml + cumulativeChartHtml + weeklyHtml + calibHtml;
 }
 renderAccuracy();
+
+(function mountReliabilityDiagram(){
+  const el = document.getElementById('reliability-diagram');
+  if(!el) return;
+  const html = buildReliabilityDiagram();
+  if(!html) return;          // no calibration.json in this build
+  el.innerHTML = html;
+  initReliabilityDiagram();
+})();
 
 /* ---------- Team Deep-Dive ---------- */
 function renderTeamDive(){
