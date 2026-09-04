@@ -37,6 +37,17 @@ jobs:
       - name: Regenerate index.html
         run: python src/generate_dashboard.py
 
+              # index.html and the picks PDF are rewritten on every run, and both
+      # carry a build timestamp -- the dashboard's "Data as of" footer and
+      # reportlab's /CreationDate, /ModDate and derived /ID. That made seven
+      # of the first 26 runs of this workflow commit nothing but the moment
+      # they ran, and those commits collide with any open branch that also
+      # regenerated the same artifacts (see PR #13). This restores such files
+      # from HEAD so the commit step below finds nothing to commit. Files with
+      # a real change are untouched. Guarded by tests/test_build_churn.py.
+      - name: Drop artifacts that changed only their build stamp
+        run: python src/prune_build_churn.py
+
       - name: Commit and push if index.html changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
