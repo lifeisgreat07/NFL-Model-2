@@ -41,8 +41,11 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 
 sys.path.insert(0, str(Path(__file__).parent))
-from data_loader import load_plays, load_schedule, load_snap_counts
-from ol_continuity import compute_ol_continuity_lookup, get_continuity, get_most_recent_continuity
+from data_loader import load_plays, load_schedule
+# Only get_continuity is imported: build_historical_features still accepts an
+# ol_lookup so backtest.py can run its "[reference only] + OL continuity"
+# comparison. The live weekly path no longer builds one -- see main().
+from ol_continuity import get_continuity
 from ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
 from simulate_season import fit_simple_win_model, simulate_season
 from config import TRAIN_SEASONS, MODEL_VERSION
@@ -315,14 +318,19 @@ def main(season, week):
     print("Building QB ratings...")
     qb = build_qb_ratings(raw)
 
-    print("Loading snap counts for O-line continuity...")
-    try:
-        snap_counts = load_snap_counts(seasons_needed)
-        ol_lookup = compute_ol_continuity_lookup(snap_counts)
-        print(f"  Built continuity lookup for {len(ol_lookup)} team-weeks")
-    except Exception as e:
-        print(f"  WARNING: could not load snap counts ({e}) -- OL continuity will default to neutral (0.0) for this run.")
-        ol_lookup = None
+    # No snap-count load here on purpose. O-line continuity came out of the
+    # model at v2.1, and neither fitted model below uses ol_continuity_diff --
+    # so loading six seasons of snap counts every Tuesday only produced a
+    # number that was written to disk and read by nobody. Removing it takes a
+    # whole upstream data source out of the unattended job; load_snap_counts is
+    # in the same family as the call behind the 2026 Week 1 offseason crash
+    # (tests/test_data_loader.py), so this is one less way for the 6am run to
+    # fail. The feature itself is NOT gone: ol_continuity.py, the leak-free
+    # tests covering it, and backtest.py's "[reference only] + OL continuity"
+    # comparison all still exist, and backtest.py builds its own lookup from
+    # snap counts rather than reading saved predictions -- so nothing about
+    # revisiting OL continuity later depends on this field being stored.
+    # Guarded by tests/test_weekly_pipeline.py.
 
     print("Building QB-change (backup detection) lookup...")
     qb_change_lookup = build_qb_change_lookup(qb, seasons_needed)
@@ -333,7 +341,7 @@ def main(season, week):
 
     print("Constructing historical training features...")
     hist = build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_week,
-                                       qb, schedules_by_season, ol_lookup=ol_lookup, qb_change_lookup=qb_change_lookup)
+                                       qb, schedules_by_season, ol_lookup=None, qb_change_lookup=qb_change_lookup)
     print(f"  {len(hist)} historical games with complete features")
     if len(hist) < 100:
         print("WARNING: very little historical training data -- predictions below may be unreliable.")
@@ -430,20 +438,14 @@ def main(season, week):
             qb_matchup = 0.0
             context_notes = ["No known starter found -- QB feature defaulted to neutral (0). Verify manually."]
 
-        # OL continuity is computed and saved as informational data only --
-        # removed from the live model 2026-08 (Stage 6 OL Model V2 pass).
-        # Two independent tests (Stage 1 bootstrap CI included zero; this
-        # confirmatory test showed "no OL feature" beating both raw and
-        # smoothed OL versions) were enough negative evidence to pull it,
-        # per the project's own "favor simplicity absent clear justification"
-        # rule. Kept here as data, not as a model input, so nothing is lost
-        # if future evidence changes this.
-        if ol_lookup:
-            home_ol = get_most_recent_continuity(ol_lookup, home, season, week, default=0.0)
-            away_ol = get_most_recent_continuity(ol_lookup, away, season, week, default=0.0)
-        else:
-            home_ol, away_ol = 0.0, 0.0
-        ol_continuity_diff = home_ol - away_ol
+        # OL continuity was removed from the live model at v2.1 (Stage 6 OL
+        # Model V2 pass) after two independent negative tests -- Stage 1's
+        # bootstrap CI included zero, and the confirmatory test had "no OL
+        # feature" beating both raw and smoothed versions. It was kept here
+        # afterwards as saved-but-unused data; that stopped 2026-09-04, since
+        # nothing ever read the saved value and producing it cost the weekly
+        # job an entire upstream data source. See the comment in main() above
+        # the QB-change lookup for the full reasoning.
 
         home_qb_changed = current_qb_changed.get(home, 0)
         away_qb_changed = current_qb_changed.get(away, 0)
@@ -475,7 +477,6 @@ def main(season, week):
             'model_version': MODEL_VERSION,
             'off_matchup': round(off_matchup, 4), 'def_matchup': round(def_matchup, 4),
             'qb_matchup': round(qb_matchup, 4),
-            'ol_continuity_diff': round(ol_continuity_diff, 4),
             'qb_change_diff': qb_change_diff,
             'spread_line': spread if pd.notna(spread) else None,
             'model_a_home_win_prob': round(float(prob_a), 4),
