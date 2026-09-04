@@ -605,7 +605,7 @@
     <div class="page-head">
       <div>
         <h2>Model Lab</h2>
-        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.4</b>, last updated 2026-08-31.</div>
+        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.4</b>, last updated 2026-09-04.</div>
       </div>
     </div>
     <div class="table-wrap" style="overflow-x:auto;">
@@ -653,6 +653,7 @@
           <tr><td>Systematic narrow-edge search (12 partitions)</td><td class="num">Scanned disagreement magnitude, spread size, QB-change presence, home favorite/underdog, and model confidence for ANY subset where Model A beats the market. Best candidate was +0.74pt with CI [-2.60,+4.09] -- and with 12 comparisons tested, one weak positive is exactly what noise produces. No defensible narrow edge exists</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Model A's low-confidence games are genuinely unreliable</td><td class="num">When Model A's own probability is near a coin flip (within 0.05 of 50%), it hits just 52.5% -- barely above chance -- while the market stays at 64.4% in those same games. A -11.95pt gap, CI [-18.37,-5.53], clearly excludes zero. Model A's uncertainty is trustworthy: when it says it doesn't know, it really doesn't</td><td><span class="conf-tag tag-good">CONFIRMED FINDING</span></td></tr>
           <tr><td>Line-movement archive (infrastructure check)</td><td class="num">Confirmed working end-to-end -- real movement captured (CLE@TB moved a full point, JAX@DEN a half point). But only 2 of 32 games moved at all across consecutive days, so a meaningful predictive test needs many more weeks of accumulation, not a forced test on n=2</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
+          <tr><td>Backtest accuracy is not reproducible across platforms</td><td class="num">The same commit and the same 1599-game dataset, run on a GitHub Actions Linux runner and on a local Windows machine, disagree: Model A 0.6283 vs 0.6274, Model B 0.6817 vs 0.6826 -- gaps of exactly one to two games out of ~1087. Each machine is perfectly deterministic when re-run (byte-identical across every metric), so this is a difference between platforms, not run-to-run noise; almost certainly floating-point/BLAS. Log loss, Brier and AUC agree to four decimals across those same two runs. Accuracy is a threshold metric -- it only records which side of 0.5 a probability lands on -- so perturbations around 1e-6 flip games sitting near a coin flip while every calibration metric holds steady. Practical consequence: "Model B adds zero accuracy over the raw spread" is true on Linux and false on Windows, by one game. That claim has to be stated as <i>indistinguishable</i>, and accuracy alone cannot carry a result at this sample size</td><td><span class="conf-tag tag-good">CONFIRMED FINDING</span></td></tr>
         </tbody>
       </table>
     </div>
