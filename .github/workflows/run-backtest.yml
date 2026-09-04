@@ -1,0 +1,113 @@
+name: Run backtest / tuning
+
+# On-demand heavy model runs. These are the scripts that need real nflverse
+# data (nflreadpy, pyarrow) and six seasons of play-by-play, which is why
+# they can't run in a Cowork sandbox -- that environment has no PyPI access,
+# so nflreadpy/pyarrow can't even be installed there. A GitHub runner has
+# both, so this workflow is where "we re-ran the backtest" becomes a real,
+# checkable claim rather than something asserted from a local machine whose
+# state nobody else can reproduce.
+#
+# Deliberately NOT scheduled and NOT triggered by push/PR: a full run loads
+# six seasons of play-by-play and takes many minutes, so it runs only when
+# someone asks for it.
+#
+# Deliberately does NOT commit its output. results/backtest_metrics.csv and
+# the qb_shrink_k CSVs feed decisions about canonical numbers (see the
+# BACKTEST_ACCURACY comment in src/config.py, which says that value moves
+# only on a real, intentional re-run). Auto-committing would let a routine
+# run silently redefine the baseline that drift monitoring compares against.
+# Output is uploaded as a build artifact instead; promoting any of it into
+# the repo is a separate, deliberate commit by a human.
+
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: 'Which script to run'
+        required: true
+        default: 'backtest'
+        type: choice
+        options:
+          - backtest
+          - tune_qb_shrink_k
+          - check_drift
+      notes:
+        description: 'Why this run? (recorded in the run summary)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    # Six seasons of play-by-play plus a weekly-refit walk-forward is slow;
+    # the grid search in tune_qb_shrink_k is slower still. Generous ceiling
+    # so a legitimate long run isn't killed, but not unbounded.
+    timeout-minutes: 120
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Record run context
+        run: |
+          {
+            echo "### Run context"
+            echo ""
+            echo "| field | value |"
+            echo "| --- | --- |"
+            echo "| script | \`src/${{ inputs.script }}.py\` |"
+            echo "| commit | \`${{ github.sha }}\` |"
+            echo "| requested by | @${{ github.actor }} |"
+            echo "| notes | ${{ inputs.notes || '_none given_' }} |"
+            echo ""
+            echo "Config values this run used:"
+            echo ""
+            echo '```'
+            grep -E '^[A-Z_]+ *=' src/config.py
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Run ${{ inputs.script }}
+        id: run
+        run: |
+          mkdir -p results
+          set -o pipefail
+          python "src/${{ inputs.script }}.py" 2>&1 | tee "results/${{ inputs.script }}_run.log"
+
+      - name: Add output to run summary
+        # Runs even on failure so a crashed run still shows its tail in the
+        # summary instead of forcing a dig through raw logs.
+        if: always()
+        run: |
+          {
+            echo ""
+            echo "### Output (tail)"
+            echo ""
+            echo '```'
+            tail -n 60 "results/${{ inputs.script }}_run.log" 2>/dev/null || echo "(no log produced)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.script }}-results-${{ github.run_number }}
+          path: |
+            results/*.csv
+            results/*.log
+          if-no-files-found: warn
+          retention-days: 90
