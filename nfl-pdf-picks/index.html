@@ -1,0 +1,3064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pick'em Board">
+<meta name="theme-color" content="#0B0E15">
+<title>Pick'em Model — Command Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0E15; --panel:#131826; --panel-raised:#1B2233; --panel-hi:#232B3F;
+    --line:rgba(237,235,228,0.09); --line-strong:rgba(237,235,228,0.16);
+    --chalk:#EDEBE4; --chalk-dim:#8A93A8;
+    --amber:#F2A93B; --amber-dim:rgba(242,169,59,0.14); --amber-bright:#F7C877;
+    --blue:#5B9BE0; --blue-dim:rgba(91,155,224,0.14);
+    --good:#5FA777; --good-dim:rgba(95,167,119,0.14);
+    --warn:#C1554A; --warn-dim:rgba(193,85,74,0.14);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.35);
+    --shadow-md: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.65);
+    --shadow-lg: 0 2px 4px rgba(0,0,0,.35), 0 24px 48px -20px rgba(0,0,0,.7);
+    --radius: 10px;
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-top: env(safe-area-inset-top, 0px);
+  }
+  /* Light theme. Every text color here was checked against WCAG AA (4.5:1)
+     before being used -- the amber in particular had to be darkened from
+     the dark-theme value, which only hit 3.79:1 on a light background. */
+  [data-theme="light"]{
+    --ink:#F5F4F0; --panel:#FFFFFF; --panel-raised:#FAF9F6; --panel-hi:#EDEBE4;
+    --line:rgba(26,29,36,0.12); --line-strong:rgba(26,29,36,0.22);
+    --chalk:#1A1D24; --chalk-dim:#5A6172;
+    --amber:#8F5806; --amber-dim:rgba(143,88,6,0.12); --amber-bright:#B87410;
+    --blue:#2563A8; --blue-dim:rgba(37,99,168,0.12);
+    --good:#2F7A4A; --good-dim:rgba(47,122,74,0.12);
+    --warn:#A83226; --warn-dim:rgba(168,50,38,0.12);
+    --shadow-sm: 0 1px 2px rgba(26,29,36,.08);
+    --shadow-md: 0 1px 2px rgba(26,29,36,.06), 0 10px 28px -14px rgba(26,29,36,.18);
+    --shadow-lg: 0 2px 4px rgba(26,29,36,.08), 0 24px 48px -20px rgba(26,29,36,.22);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{-webkit-tap-highlight-color:transparent;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 15% -10%, rgba(242,169,59,0.06), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, rgba(91,155,224,0.05), transparent 55%),
+      var(--ink);
+    color:var(--chalk); font-family:'Plus Jakarta Sans', sans-serif; min-height:100vh; display:flex;
+    -webkit-font-smoothing:antialiased;
+    padding-top:var(--safe-top);
+  }
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--panel-hi);border-radius:4px;}
+  ::selection{background:var(--amber-dim); color:var(--amber);}
+
+  /* ---------- Desktop sidebar ---------- */
+  .sidebar{
+    width:236px; flex-shrink:0; background:linear-gradient(180deg, var(--panel), var(--ink) 140%);
+    border-right:1px solid var(--line); display:flex; flex-direction:column;
+    padding:24px 0; position:sticky; top:0; height:100vh;
+  }
+  .brand{padding:0 22px 22px; border-bottom:1px solid var(--line); margin-bottom:16px;}
+  .brand-mark{display:flex; align-items:center; gap:7px; font-family:'Plus Jakarta Sans', sans-serif; font-size:10px;
+    letter-spacing:.18em; color:var(--amber); text-transform:uppercase;}
+  .brand-mark .pulse{width:6px; height:6px; border-radius:50%; background:var(--amber); box-shadow:0 0 8px var(--amber);}
+  .brand h1{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:25px; letter-spacing:.01em; line-height:.98; margin-top:8px;}
+  .brand-sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; color:var(--chalk-dim); margin-top:7px;}
+  nav.side-nav{display:flex; flex-direction:column; gap:2px; padding:0 12px;}
+  .nav-group-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--chalk-dim); padding:15px 10px 7px; opacity:.7;}
+  .nav-btn{
+    display:flex; align-items:center; gap:11px; background:transparent; border:none; color:var(--chalk-dim);
+    font-family:'Plus Jakarta Sans'; font-weight:600; font-size:14px; text-align:left; padding:10px 11px; border-radius:8px;
+    cursor:pointer; transition:background .15s ease, color .15s ease, transform .1s ease; width:100%;
+  }
+  .nav-btn:hover{background:var(--panel-raised); color:var(--chalk);}
+  .nav-btn:active{transform:scale(.98);}
+  .nav-btn.active{background:var(--amber-dim); color:var(--amber);}
+  .nav-btn svg{width:16px; height:16px; flex-shrink:0; opacity:.85;}
+  .nav-btn.disabled{opacity:.38; cursor:default;}
+  .nav-btn.disabled:hover{background:transparent; color:var(--chalk-dim);}
+  .sidebar-foot{margin-top:auto; padding:16px 22px 0; border-top:1px solid var(--line);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--chalk-dim); line-height:1.7;}
+  .foot-freshness{display:inline-block; margin-top:4px; opacity:0.75;}
+  .theme-toggle{
+    display:flex; align-items:center; gap:8px; width:100%;
+    background:transparent; border:1px solid var(--line); border-radius:8px;
+    padding:8px 12px; margin-bottom:12px; cursor:pointer;
+    color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:11px;
+  }
+  .theme-toggle:hover{border-color:var(--line-strong); color:var(--chalk);}
+  .theme-toggle svg{width:14px; height:14px; flex-shrink:0;}
+
+  /* ---------- Main ---------- */
+  main{flex:1; padding:34px 42px 60px; max-width:1220px; min-width:0;}
+  .page{display:none;}
+  .page.active{display:block; animation:fade .28s cubic-bezier(.16,1,.3,1);}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  .page-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:14px;
+    margin-bottom:28px; padding-bottom:20px; border-bottom:1px solid var(--line);}
+  .page-head h2{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:34px; letter-spacing:.005em;}
+  .page-head .desc{color:var(--chalk-dim); font-size:13.5px; margin-top:5px; max-width:560px; line-height:1.55;}
+  .badge{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; letter-spacing:.05em; padding:6px 11px; border-radius:20px;
+    background:var(--panel-raised); color:var(--chalk-dim); border:1px solid var(--line); white-space:nowrap;}
+
+  /* ---------- Power Ratings table ---------- */
+  .table-wrap{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow-x:auto; overflow-y:hidden; box-shadow:var(--shadow-md);}
+  table{width:100%; border-collapse:collapse;}
+  thead th{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--chalk-dim); text-align:left; padding:13px 16px; border-bottom:1px solid var(--line); cursor:pointer;
+    user-select:none; white-space:nowrap; transition:color .15s ease;}
+  thead th:hover{color:var(--amber);}
+  thead th.sorted{color:var(--amber);}
+  tbody td{padding:12px 16px; border-bottom:1px solid var(--line); font-size:13.5px;}
+  tbody tr{transition:background .12s ease;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--panel-raised);}
+  td.num{font-family:'Plus Jakarta Sans', sans-serif; text-align:right;}
+  td.rank{font-family:'Plus Jakarta Sans', sans-serif; color:var(--chalk-dim); width:36px;}
+  .team-cell{display:flex; align-items:center; gap:9px;}
+  .trend-arrow{font-size:10px; margin-left:4px;}
+  .trend-arrow.up{color:var(--good);}
+  .trend-arrow.down{color:var(--warn);}
+  .streak-row{display:flex; align-items:center; gap:14px; margin-bottom:18px; flex-wrap:wrap;}
+  .streak-cells{display:flex; gap:3px;}
+  .streak-cell{width:14px; height:14px; border-radius:3px; background:var(--panel-hi);}
+  .streak-cell.win{background:var(--good);}
+  .streak-cell.loss{background:var(--warn);}
+  .streak-cell.even{background:var(--chalk-dim);}
+  .streak-label{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:12px; padding:4px 10px; border-radius:20px;}
+  .streak-label.win{background:var(--good-dim); color:var(--good);}
+  .streak-label.loss{background:var(--warn-dim); color:var(--warn);}
+  .skip-link{
+    position:absolute; top:-40px; left:8px; z-index:200;
+    background:var(--amber); color:var(--ink); padding:10px 16px; border-radius:8px;
+    font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:13px;
+    text-decoration:none; transition:top .15s ease;
+  }
+  .skip-link:focus{top:8px;}
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline:2px solid var(--amber); outline-offset:2px;
+  }
+  main:focus-visible{outline:none;}
+  .glance-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px;}
+  .glance-item{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px 18px; min-width:140px; flex:1;
+  }
+  .glance-label{display:block; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:6px;}
+  .glance-value{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:20px; color:var(--chalk);}
+  .glance-sub{display:block; font-size:11px; color:var(--chalk-dim); margin-top:3px;}
+  .version-timeline{display:flex; flex-direction:column; gap:0;}
+  .version-item{display:flex; gap:16px; position:relative; padding-bottom:20px;}
+  .version-item:last-child{padding-bottom:0;}
+  .version-item:not(:last-child)::before{content:''; position:absolute; left:5px; top:16px; bottom:0; width:2px; background:var(--line);}
+  .version-dot{width:12px; height:12px; border-radius:50%; background:var(--panel-hi); border:2px solid var(--line-strong); flex-shrink:0; margin-top:3px; z-index:1;}
+  .version-dot.current{background:var(--good); border-color:var(--good);}
+  .version-content{flex:1;}
+  .version-tag{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:13px; color:var(--chalk); margin-right:10px;}
+  .version-date{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim);}
+  .version-content p{font-size:12.5px; color:var(--chalk-dim); margin-top:4px; line-height:1.5;}
+  .onboarding-banner{background:var(--panel-raised); border:1px solid var(--blue); border-radius:var(--radius); padding:18px 22px; margin-bottom:18px;}
+  .onboarding-content h4{font-family:'Plus Jakarta Sans', sans-serif; font-size:14px; margin-bottom:9px; color:var(--chalk);}
+  .onboarding-content ul{margin:0 0 12px 18px; padding:0;}
+  .onboarding-content li{font-size:12.5px; color:var(--chalk-dim); line-height:1.6; margin-bottom:4px;}
+  .implied-margin{padding-top:10px; margin-top:6px; border-top:1px solid var(--line); font-size:11.5px;}
+  .implied-margin-label{color:var(--chalk-dim); margin-right:8px;}
+  .implied-margin-value{font-weight:600; color:var(--chalk); margin-right:8px;}
+  .implied-margin-note{color:var(--chalk-dim); font-size:10px; font-style:italic;}
+  .team-logo{width:22px; height:22px; object-fit:contain; flex-shrink:0;}
+  .tele-team{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:16px; line-height:1;
+    display:flex; flex-direction:column; align-items:center; gap:3px;}
+  .tele-team.right{align-items:flex-end;}
+  .tele-logo{width:20px; height:20px; object-fit:contain;}
+  .team-abbr{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; width:38px;}
+  .team-full{color:var(--chalk-dim); font-size:12.5px;}
+  .net-cell-inner{display:grid; grid-template-columns:90px 62px; align-items:center; column-gap:10px; justify-content:center;}
+  .dive-row{display:flex; align-items:center; gap:16px; padding:9px 0; border-bottom:1px solid var(--line);}
+  .dive-row:last-child{border-bottom:none;}
+  .dive-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; color:var(--chalk-dim); width:80px; flex-shrink:0;}
+  .dive-label.live{color:var(--amber);}
+  .dive-value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:13.5px; width:62px; text-align:right; flex-shrink:0;}
+  .net-value{font-family:'Plus Jakarta Sans', sans-serif; text-align:right; justify-self:end; white-space:nowrap;}
+  .srs-bar-track{position:relative; width:90px; height:6px; background:var(--panel-hi); border-radius:3px; overflow:hidden;}
+  .srs-bar-fill{position:absolute; top:0; bottom:0; background:linear-gradient(90deg, var(--amber), var(--amber-bright)); border-radius:3px;}
+
+  /* ---------- Week board ---------- */
+  .filter-row{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; align-items:center;}
+  .week-select{
+    background:var(--panel); border:1px solid var(--line); color:var(--chalk);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; padding:9px 14px; border-radius:8px;
+    cursor:pointer; appearance:none; -webkit-appearance:none; min-width:160px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A93A8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 10px center; background-size:16px; padding-right:32px;
+  }
+  .week-select:focus{outline:1px solid var(--amber);}
+  /* Print/PDF download. Sized to match .week-select so the control row reads
+     as one group; hidden entirely when no PDF exists for the selected week
+     rather than offering a link that would 404. */
+  .pdf-link{
+    display:inline-flex; align-items:center; gap:7px;
+    background:var(--panel); border:1px solid var(--line); color:var(--chalk);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; font-weight:600;
+    padding:9px 14px; border-radius:8px; cursor:pointer; text-decoration:none;
+  }
+  .pdf-link svg{width:14px; height:14px;}
+  .pdf-link:hover{border-color:var(--amber); color:var(--amber);}
+  .pdf-link:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
+  .pdf-link[hidden]{display:none;}
+  .team-search{
+    background:var(--panel); border:1px solid var(--line); color:var(--chalk);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; padding:9px 14px; border-radius:8px;
+    min-width:200px;
+  }
+  .team-search::placeholder{color:var(--chalk-dim);}
+  .undo-toast{
+    position:fixed; left:50%; transform:translateX(-50%) translateY(120%);
+    bottom:calc(20px + var(--safe-bottom, 0px)); z-index:150;
+    background:var(--panel-hi); border:1px solid var(--line-strong); border-radius:10px;
+    padding:12px 16px; display:flex; align-items:center; gap:14px;
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; color:var(--chalk);
+    box-shadow:var(--shadow-md); opacity:0; transition:transform .22s ease, opacity .22s ease;
+    pointer-events:none;
+  }
+  .undo-toast.visible{transform:translateX(-50%) translateY(0); opacity:1; pointer-events:auto;}
+  .undo-btn{
+    background:transparent; border:none; color:var(--amber); font-weight:700;
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; cursor:pointer; padding:0;
+  }
+  @media (max-width:900px){ .undo-toast{bottom:calc(90px + var(--safe-bottom, 0px));} }
+
+  .confidence-badge{
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.05em; padding:4px 10px; border-radius:20px;
+    background:var(--blue-dim); color:var(--blue); white-space:nowrap;
+  }
+  .why-toggle{background:none; border:none; color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px;
+    letter-spacing:.04em; cursor:pointer; padding:0; margin-top:11px; text-decoration:underline; text-underline-offset:3px;}
+  .why-panel{display:none; margin-top:10px; padding-top:10px; border-top:1px dashed var(--line);}
+  .why-panel.open{display:block; animation:fade .2s ease;}
+  .why-row{display:flex; align-items:center; gap:10px; font-size:11.5px; margin-bottom:6px;}
+  .why-row:last-child{margin-bottom:0;}
+  .why-label{font-family:'Plus Jakarta Sans', sans-serif; color:var(--chalk-dim); width:90px; flex-shrink:0;}
+  .why-bar-track{position:relative; flex:1; height:6px; background:var(--panel-hi); border-radius:3px; overflow:hidden;}
+  .why-bar-fill{position:absolute; top:0; bottom:0; border-radius:3px;}
+  .why-bar-fill.pos{background:var(--good); left:50%;}
+  .why-bar-fill.neg{background:var(--warn); right:50%;}
+  .why-val{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); width:52px; text-align:right; flex-shrink:0;}
+  .graded-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; padding:4px 10px; border-radius:20px;}
+  .graded-tag.correct{background:var(--good-dim); color:var(--good);}
+  .graded-tag.incorrect{background:var(--warn-dim); color:var(--warn);}
+
+  .pick-buttons{display:flex; gap:8px; margin-top:14px;}
+  .pick-btn{flex:1; background:transparent; border:1.5px solid var(--line); color:var(--chalk);
+    font-family:'Plus Jakarta Sans'; font-weight:700; font-size:15px; padding:10px 6px; border-radius:8px;
+    cursor:pointer; transition:all .15s ease;}
+  .pick-btn:hover{border-color:var(--amber);}
+  .pick-btn.selected{background:var(--amber); border-color:var(--amber); color:var(--ink);}
+  .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--chalk-dim); margin-top:8px;}
+
+  .accuracy-cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-bottom:20px;}
+  .accuracy-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm);}
+  .accuracy-card .label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:8px;}
+  .accuracy-card .value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:32px;}
+  .accuracy-card .sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); margin-top:4px;}
+  .filter-btn{background:var(--panel); border:1px solid var(--line); color:var(--chalk-dim);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; letter-spacing:.04em; padding:8px 14px; border-radius:20px;
+    cursor:pointer; transition:all .15s ease;}
+  .filter-btn:hover{border-color:var(--amber); color:var(--chalk);}
+  .filter-btn:active{transform:scale(.96);}
+  .filter-btn.active{background:var(--amber-dim); border-color:var(--amber); color:var(--amber);}
+
+  .game-grid{display:flex; flex-direction:column; gap:12px;}
+  .game-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;
+    box-shadow:var(--shadow-sm); transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;}
+  .game-card:hover{border-color:var(--line-strong); box-shadow:var(--shadow-md); transform:translateY(-1px);}
+  .game-card.has-flag{border-left:3px solid var(--warn);}
+  .game-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
+  .matchup-header{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .at-symbol{color:var(--chalk-dim); font-weight:500;}
+  .game-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); letter-spacing:.03em;}
+  .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
+  .tag-good{background:var(--good-dim); color:var(--good);}
+  .tag-warn{background:var(--warn-dim); color:var(--warn);}
+  .tag-neutral{background:var(--blue-dim); color:var(--blue);}
+
+  .model-row{display:grid; grid-template-columns:56px 1fr; align-items:center; gap:12px; margin-bottom:10px;}
+  .model-row:last-of-type{margin-bottom:0;}
+  .model-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--chalk-dim);}
+  .model-label.a{color:var(--chalk);} .model-label.b{color:var(--chalk);}
+  .tele{display:grid; grid-template-columns:60px 1fr 60px; align-items:center; gap:10px;}
+  .tele-team .pct{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:500; font-size:11px; color:var(--chalk-dim); margin-top:3px;}
+  .tele-team.right{text-align:right;}
+  /* Winner indication deliberately does NOT use color/hue -- with 32 real
+     team colors spanning nearly every hue (the Rams' navy+gold nearly
+     matches our own blue/amber brand accents), any fixed color risks
+     looking like "that's just this team's color" instead of meaning
+     anything. A neutral checkmark badge can't be confused with team
+     identity regardless of matchup. */
+  .tele-team.winner{font-weight:800;}
+  .pick-badge{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px;
+    border-radius:50%; margin-bottom:3px; flex-shrink:0; box-sizing:border-box;}
+  .pick-badge.a{background:var(--good);}
+  .pick-badge.b{background:var(--good);}
+  .pick-badge.placeholder{background:transparent; border:1.5px dashed var(--line-strong);}
+  .pick-badge svg{width:9px; height:9px;}
+  .tele-bar{position:relative; height:9px; background:var(--panel-hi); border-radius:5px; overflow:hidden; display:flex;}
+  .tele-bar-seg{height:100%; transition:width .4s cubic-bezier(.16,1,.3,1); opacity:.88;}
+  .tele-bar-seg:first-child{border-radius:5px 0 0 5px;}
+  .tele-bar-seg:last-child{border-radius:0 5px 5px 0;}
+  .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--chalk); opacity:.55; left:50%; z-index:2;}
+
+  .market-ref{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; color:var(--chalk-dim); margin-top:12px; padding-top:12px; border-top:1px dashed var(--line);}
+  .market-ref b{color:var(--chalk);}
+
+  .flag-note{margin-top:11px; font-size:12.5px; color:var(--chalk-dim); line-height:1.5; display:none;}
+  .flag-note.open{display:block; animation:fade .2s ease;}
+  .flag-note b{color:var(--warn); font-weight:600;}
+  .toggle-flag{background:none; border:none; color:var(--warn); font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px;
+    letter-spacing:.04em; cursor:pointer; padding:0; margin-top:11px; text-decoration:underline; text-underline-offset:3px;}
+
+  .empty-state{padding:48px 24px; text-align:center; color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px;
+    background:var(--panel); border:1px dashed var(--line); border-radius:var(--radius);}
+
+  /* ---------- Methodology ---------- */
+  .method-block{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--line-strong); border-radius:var(--radius); padding:24px 26px; margin-bottom:16px; box-shadow:var(--shadow-sm);}
+  .method-block h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:17px; letter-spacing:.01em; margin-bottom:13px; color:var(--chalk); display:flex; align-items:center; gap:9px;}
+  .method-block h3::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--chalk-dim); flex-shrink:0;}
+  .method-block p, .method-block li{font-size:13.5px; line-height:1.68; color:var(--chalk-dim);}
+  .method-block ul, .method-block ol{padding-left:20px; margin-top:6px;}
+  .formula{font-family:'Plus Jakarta Sans', sans-serif; background:var(--ink); border:1px solid var(--line); border-radius:8px;
+    padding:15px 17px; font-size:13px; color:var(--amber); margin:11px 0; overflow-x:auto; white-space:pre;}
+  .metrics-table{width:100%; border-collapse:collapse; margin-top:10px; font-size:12.5px;}
+  .metrics-table th{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--chalk-dim); text-align:left; padding:9px 10px; border-bottom:1px solid var(--line);}
+  .metrics-table td{padding:9px 10px; border-bottom:1px solid var(--line); font-family:'Plus Jakarta Sans', sans-serif; color:var(--chalk);}
+  .metrics-table tr:last-child td{border-bottom:none;}
+  .metrics-table .highlight{color:var(--amber);}
+  .gap-item{display:flex; gap:11px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13px;}
+  .gap-item:last-child{border-bottom:none;}
+  .gap-num{font-family:'Plus Jakarta Sans', sans-serif; color:var(--warn); flex-shrink:0;}
+
+  /* ---------- Roadmap ---------- */
+  .roadmap-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:14px;}
+  .roadmap-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:19px; box-shadow:var(--shadow-sm); transition:transform .18s ease, box-shadow .18s ease;}
+  .roadmap-card:hover{transform:translateY(-2px); box-shadow:var(--shadow-md);}
+  .roadmap-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+    padding:4px 9px; border-radius:20px; display:inline-block; margin-bottom:11px;}
+  .status-planned{background:var(--panel-hi); color:var(--chalk-dim);}
+  .status-next{background:var(--amber-dim); color:var(--amber);}
+  .status-done{background:var(--good-dim); color:var(--good);}
+  .roadmap-card h4{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:16px; margin-bottom:7px;}
+  .roadmap-card p{font-size:12.5px; color:var(--chalk-dim); line-height:1.55;}
+  .add-idea{border:1px dashed var(--line); background:transparent; display:flex; align-items:center; justify-content:center;
+    min-height:100px; border-radius:var(--radius); color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; text-align:center; padding:16px;}
+
+  /* ---------- Mobile bottom nav ---------- */
+  .bottom-nav{
+    display:none; position:fixed; left:0; right:0; bottom:0; z-index:50;
+    background:rgba(19,24,38,0.88); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--line-strong);
+    padding:8px 6px calc(8px + var(--safe-bottom));
+  }
+  .bottom-nav-row{display:flex; justify-content:space-between; align-items:center; overflow-x:hidden; gap:2px;}
+  .bnav-btn{
+    display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:none;
+    color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:8.5px; letter-spacing:.01em;
+    padding:6px 2px; border-radius:10px; flex:1 1 0; min-width:0; transition:color .15s ease;
+  }
+  .bnav-btn svg{width:18px; height:18px; flex-shrink:0;}
+  .bnav-label{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;}
+  .bnav-btn.active{color:var(--amber);}
+  .bnav-btn:active{transform:scale(.94);}
+  .bnav-more-sheet{
+    position:fixed; left:0; right:0; bottom:0; z-index:49;
+    background:rgba(19,24,38,0.97); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--line-strong); border-radius:16px 16px 0 0;
+    padding:14px 14px calc(90px + var(--safe-bottom));
+    transform:translateY(100%); transition:transform .2s ease;
+    pointer-events:none;
+  }
+  .bnav-more-sheet.open{transform:translateY(0); pointer-events:auto;}
+  .bnav-more-sheet-inner{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .bnav-more-item{
+    display:flex; align-items:center; gap:10px; background:var(--panel-hi); border:none; border-radius:12px;
+    padding:14px; color:var(--chalk); font-family:'Plus Jakarta Sans', sans-serif; font-size:13px; font-weight:600;
+  }
+  .bnav-more-item svg{width:20px; height:20px; flex-shrink:0; color:var(--chalk-dim);}
+  .bnav-more-item.active{background:var(--amber-dim); color:var(--amber);}
+  .bnav-more-item.active svg{color:var(--amber);}
+
+  @media (max-width:820px){
+    body{flex-direction:column;}
+    .sidebar{display:none;}
+    main{padding:20px 16px calc(88px + var(--safe-bottom));}
+    .page-head h2{font-size:27px;}
+    .page-head{margin-bottom:22px; padding-bottom:16px;}
+    .tele{grid-template-columns:50px 1fr 50px; gap:7px;}
+    .tele-team{font-size:14.5px;}
+    .model-row{grid-template-columns:48px 1fr; gap:8px;}
+    .bottom-nav{display:block;}
+    table{font-size:12.5px;}
+    thead th{padding:10px 10px;}
+    tbody td{padding:10px 10px;}
+    .team-full{display:none;}
+  }
+  @media (max-width:400px){
+    .page-head h2{font-size:24px;}
+    main{padding:16px 12px calc(84px + var(--safe-bottom));}
+  }
+</style>
+</head>
+<body>
+<script>
+  // Applied before first paint so there's no visible flash of the wrong
+  // theme on load. Falls back to the OS preference when the user hasn't
+  // made an explicit choice yet.
+  (function(){
+    try{
+      var saved = localStorage.getItem('nfl_pickem_theme');
+      if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches){
+        saved = 'light';
+      }
+      if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+    }catch(e){}
+  })();
+</script>
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark"><span class="pulse"></span>Season 2026</div>
+    <h1>COMMAND<br>BOARD</h1>
+    <div class="brand-sub">NFL Pick'em Model</div>
+  </div>
+  <nav class="side-nav" aria-label="Main navigation">
+    <div class="nav-group-label">Model Output</div>
+    <button class="nav-btn active" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Power Ratings</button>
+    <button class="nav-btn" data-page="playoffs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>Playoff Odds</button>
+    <button class="nav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Week Board</button>
+    <div class="nav-group-label">Your Picks</div>
+    <button class="nav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>My Picks Log</button>
+    <button class="nav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg>Season Accuracy</button>
+    <div class="nav-group-label">Model Output</div>
+    <button class="nav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Team Deep-Dive</button>
+    <button class="nav-btn" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg>Model Lab</button>
+    <div class="nav-group-label">Reference</div>
+    <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
+    <button class="nav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg>Roadmap</button>
+    <button class="nav-btn" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>Data Sources</button>
+    <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>AI Reliability</button>
+    <button class="nav-btn" data-page="compare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8l7-5 7 5M3 12h4l-2 5-2-5zM17 12h4l-2 5-2-5z"/></svg>How This Compares</button>
+    <button class="nav-btn" data-page="glossary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Glossary</button>
+  </nav>
+  <div class="sidebar-foot">
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span id="theme-toggle-label">Light mode</span>
+    </button>
+    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-04 01:19 UTC</span>
+  </div>
+</aside>
+
+<main id="main-content" tabindex="-1">
+
+  <!-- POWER RATINGS -->
+  <section class="page active" id="page-ratings">
+    <div class="page-head">
+      <div>
+        <h2>Power Ratings</h2>
+        <div class="desc">Opponent-adjusted EPA/play ratings, current as of today — fit via ridge regression on real play-by-play with a 16-game recency half-life. Every number already accounts for who each team played.</div>
+      </div>
+      <div class="badge">32 teams</div>
+    </div>
+    <div class="filter-row">
+      <input type="search" id="ratings-search" class="team-search" placeholder="Search teams..." aria-label="Search teams by name or abbreviation">
+    </div>
+    <div class="table-wrap">
+      <table id="ratings-table">
+        <thead>
+          <tr>
+            <th data-key="rank">#</th>
+            <th data-key="team">Team</th>
+            <th data-key="net" class="sorted" style="text-align:center;">Net Rating</th>
+            <th data-key="off" style="text-align:right;">Offense</th>
+            <th data-key="def" style="text-align:right;">Defense</th>
+            <th data-key="sos" style="text-align:right;">SOS</th>
+          </tr>
+        </thead>
+        <tbody id="ratings-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- PLAYOFF ODDS -->
+  <section class="page" id="page-playoffs">
+    <div class="page-head">
+      <div>
+        <h2>Playoff Odds</h2>
+        <div class="desc" id="playoffs-desc">Monte Carlo simulation of the rest of the season, run from current team ratings.</div>
+      </div>
+    </div>
+    <div class="method-block" style="margin-bottom:16px;">
+      <p style="font-size:12.5px;">Real limitations, stated plainly: team ratings are held <b style="color:var(--chalk)">static</b> for the whole simulated season -- real teams improve or decline as the year goes on, and this can't capture that. Tiebreakers use the most common real NFL rules (head-to-head, division record, conference record) but aren't the league's full multi-step procedure. Treat these as a reasonable current-best-guess, not a precise forecast -- especially early in the season, and especially the further out a game is from being played.</p>
+    </div>
+    <div id="playoffs-content"></div>
+  </section>
+
+  <!-- WEEK BOARD -->
+  <section class="page" id="page-board">
+    <div id="onboarding-banner" class="onboarding-banner" style="display:none;">
+      <div class="onboarding-content">
+        <h4>New here? Quick orientation.</h4>
+        <ul>
+          <li><b style="color:var(--blue)">Model A</b> is football-only (team ratings, QB performance, no market data). <b style="color:var(--amber)">Model B</b> adds the current Vegas spread.</li>
+          <li>The green checkmark shows which team each model actually favors -- the dashed circle is the other side.</li>
+          <li>Tap "why this pick" on any game to see the exact math behind that specific prediction.</li>
+          <li>Check <b>Model Lab</b> for the full, honest research history -- including everything that didn't work.</li>
+        </ul>
+        <button class="filter-btn" onclick="dismissOnboarding()">Got it</button>
+      </div>
+    </div>
+    <div class="page-head">
+      <div>
+        <h2>Week Board</h2>
+        <div class="desc"><b style="color:var(--blue)">Model A</b> is football-only. <b style="color:var(--amber)">Model B</b> blends in the current Vegas spread. A flagged gap usually means our model is missing something the market prices in.</div>
+      </div>
+      <div class="badge" id="board-badge" aria-live="polite">—</div>
+    </div>
+    <div id="week-glance"></div>
+    <div class="filter-row">
+      <select id="week-select" class="week-select"></select>
+      <select id="sort-select" class="week-select">
+        <option value="confidence">Sort: Most Confident First</option>
+        <option value="confidence_asc">Sort: Closest Games First</option>
+        <option value="disagreement">Sort: Biggest Model Disagreement</option>
+        <option value="spread">Sort: Biggest Spread First</option>
+        <option value="alpha">Sort: Alphabetical (Home Team)</option>
+      </select>
+      <a id="picks-pdf-link" class="pdf-link" href="#" download
+         title="Printable PDF of this week's picks, ordered by confidence">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <path d="M7 10l5 5 5-5M12 15V3"/>
+        </svg>Print / PDF
+      </a>
+    </div>
+    <div class="filter-row" id="filter-row">
+      <button class="filter-btn active" data-filter="all">All Games</button>
+      <button class="filter-btn" data-filter="divergent">Model Disagreement</button>
+      <button class="filter-btn" data-filter="flagged">Flagged Only</button>
+    </div>
+    <div class="game-grid" id="game-grid"></div>
+  </section>
+
+  <!-- MY PICKS LOG -->
+  <section class="page" id="page-picks">
+    <div class="page-head">
+      <div>
+        <h2>My Picks Log</h2>
+        <div class="desc">Tap your actual pick for each game in the selected week. Saved locally on this device only -- not real-time synced across devices (this is a static site with no backend), but you can export your picks and import them on another device.</div>
+      </div>
+      <div class="badge" id="picks-record-badge" aria-live="polite">—</div>
+    </div>
+    <div class="filter-row">
+      <select id="picks-week-select" class="week-select"></select>
+      <button class="filter-btn" onclick="exportMyPicks()">Export My Picks</button>
+      <button class="filter-btn" onclick="document.getElementById('picks-import-input').click()">Import My Picks</button>
+      <input type="file" id="picks-import-input" accept=".json" style="display:none;" onchange="if(this.files[0]) importMyPicks(this.files[0])">
+    </div>
+    <div id="picks-streak-strip"></div>
+    <div class="game-grid" id="picks-grid"></div>
+  </section>
+
+  <!-- SEASON ACCURACY -->
+  <section class="page" id="page-accuracy">
+    <div class="page-head">
+      <div>
+        <h2>Season Accuracy</h2>
+        <div class="desc">Every saved prediction, graded against real results after the fact. Built from graded weeks only — nothing here is projected or estimated.</div>
+      </div>
+    </div>
+    <div id="accuracy-content"></div>
+  </section>
+
+  <!-- TEAM DEEP-DIVE -->
+  <section class="page" id="page-teamdive">
+    <div class="page-head">
+      <div>
+        <h2>Team Deep-Dive</h2>
+        <div class="desc">Net rating over time -- 2020-2025 season-end snapshots (real backtested history), then week-by-week as the 2026 season is actually played.</div>
+      </div>
+      <div class="badge" id="teamdive-badge">—</div>
+    </div>
+    <div class="filter-row">
+      <select id="teamdive-select" class="week-select"></select>
+    </div>
+    <div id="teamdive-content"></div>
+  </section>
+
+  <!-- MODEL LAB -->
+  <section class="page" id="page-modellab">
+    <div class="page-head">
+      <div>
+        <h2>Model Lab</h2>
+        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.4</b>, last updated 2026-08-31.</div>
+      </div>
+    </div>
+    <div class="table-wrap" style="overflow-x:auto;">
+      <table>
+        <thead><tr><th>Experiment</th><th>Result</th><th>Decision</th></tr></thead>
+        <tbody>
+          <tr><td>QB feature (trailing EPA/dropback)</td><td class="num">Accuracy 60.0% to 62.6%, biggest single gain of the project</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
+          <tr><td>Ridge alpha tuning (200 -&gt; 15)</td><td class="num">Real backtest sweep across 1-1600, found interior optimum</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
+          <tr><td>Recency half-life tuning (6/10/16)</td><td class="num">16 games won on log loss</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
+          <tr><td>Rest days, weather, travel distance, altitude</td><td class="num">All flat or worse across every framing tested</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Divisional games, trap/look-ahead games, blowout letdown</td><td class="num">No real signal beyond existing team-strength features</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Gradient boosting vs. logistic regression</td><td class="num">+0.83pt accuracy but AUC drops 0.670&rarr;0.654; bootstrap CI included zero</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>QB Shrinkage Re-tune (k=96, then k=128)</td><td class="num">Investigation, not a clean win: the original k=8-&gt;96 decision didn't reproduce once OL removal + weekly refit changed the model underneath it (a real shrinkage-target leak was also found and fixed along the way, see ratings_engine.py). A fresh retune under the fixed, current config picked k=128 on validation, but on confirmatory data k=8 won 3 of 4 metrics (accuracy, Brier, AUC) against k=128, which only edged log loss -- bootstrap CI included zero either way. Reverted to k=8, the current live default.</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
+          <tr><td>QB quality-differential change signal</td><td class="num">Identical to no-signal-at-all; binary flag clearly better</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Team-specific home-field advantage</td><td class="num">Split-half reliability 0.078 -- mostly noise, not a real trait</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Pass/rush-split matchup features</td><td class="num">Worse on every metric; 0.947 correlation with existing aggregate</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>All 9 rejected features combined, regularized</td><td class="num">No C value beat baseline even with proper scaling</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>O-line continuity</td><td class="num">Bootstrap CI included zero; later beaten by "no OL feature" on confirmatory test</td><td><span class="conf-tag tag-warn">REMOVED (was live)</span></td></tr>
+          <tr><td>Coaching changes (5 framings)</td><td class="num">Every variant tied or underperformed baseline</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Early-season extra shrinkage</td><td class="num">Real gap confirmed (61.7% vs 65.9%) but fix didn't close it</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Weekly-refitting backtest methodology</td><td class="num">Tied-or-better on every metric, free, more methodologically correct</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
+          <tr><td>Platt scaling / isotonic calibration</td><td class="num">Platt worse on every metric; isotonic's log loss broke (0.64&rarr;1.00) from overconfident extremes</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Player availability / injury model</td><td class="num">Re-confirmed 2026-08-25 via nflverse's own status page: "no 2025 data, no ETA." Still genuinely blocked, not just stale.</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
+          <tr><td>Dynamic Model A/B weighting by disagreement magnitude</td><td class="num">High-disagreement bucket's B-edge is real (bootstrap CI excludes zero), but B already wins in every bucket -- no dynamic scheme beat simply always using Model B on confirmatory data</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Margin-of-victory modeling (regression -&gt; sign -&gt; winner)</td><td class="num">-1.56pt vs. current classifier; CI [-3.13, +0.09] nearly significant negative. Regression's MSE objective isn't aligned with getting the sign right on close games -- broke 50 previously-correct calls to fix only 33</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Snap-share "key player disruption" signal (Objective 3 follow-up)</td><td class="num">INVALIDATED, not rejected -- used this-week's own snap percentage as a feature, which is only knowable after that week's game is played. Confirmed via direct correlation with the very outcome it claimed to predict. A real mistake, caught before shipping. Depends on Objective 2 (blocked) to do legitimately.</td><td><span class="conf-tag tag-warn">LEAKAGE -- INVALIDATED</span></td></tr>
+          <tr><td>CPOE-based QB rating (alone and blended with EPA)</td><td class="num">CPOE-only clearly worse on every metric; EPA+CPOE blend just flat/redundant. CPOE is stable but a weaker predictor of wins than EPA specifically</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Rookie-specific QB shrinkage (hierarchical refinement of k=96)</td><td class="num">+0.92pt on validation looked promising, reversed to -0.74pt on true confirmatory test (CI includes zero). A real example of why validation-then-confirm matters</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Nonlinear architectures (GBM, Random Forest)</td><td class="num">RF's +0.55pt accuracy edge not significant (CI [-2.57,+3.68]) and comes with worse log loss/Brier/AUC -- same pattern GBM showed in the first cycle. XGBoost/LightGBM untestable, no network access to install</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Early-season weakness diagnosis</td><td class="num">Not a broad phenomenon -- concentrated in early-season QB changes specifically (48.0% accuracy, n=25) vs. 62.8% for early-season games without a QB change. Real mechanism found, targeted fix not yet built</td><td><span class="conf-tag tag-neutral">DIAGNOSED</span></td></tr>
+          <tr><td>Early-season QB-change interaction term</td><td class="num">+0.37pt confirmatory, CI [-0.37,+1.10] includes zero. Real mechanism behind it but only 25 games -- genuinely can't distinguish from noise yet</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
+          <tr><td>Schedule-strength trajectory (next-3-games opponent difficulty)</td><td class="num">+0.18pt, CI [-1.65,+2.02], validation negative. Different mechanism from the earlier-rejected single-game trap-game test, same null result</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Referee/officiating crew tendencies</td><td class="num">Split-half reliability 0.252 (real, better than team home-field's 0.078) but translates to zero predictive value once shrunk properly -- flat across every metric</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>weekly_rosters as an injury-data alternative</td><td class="num">Confirmed NOT gameday active/inactive status via real player history checks (static ACT/INA over many weeks, not game-to-game). No inactives-list loader exists anywhere in nflreadpy -- Objective 2/3 blocker confirmed structural, not just stale data</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
+          <tr><td>FTN charting QB-fault-rate (sacks/INTs attributable to the QB)</td><td class="num">Completely flat -- identical to baseline on every metric. EPA already captures the cost of a bad play regardless of whose fault it was</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Total (over/under) line as a Model B input</td><td class="num">Small, mixed-direction result -- accuracy nudges up slightly but log loss/Brier/AUC move marginally worse. CI [-0.37,+0.74], includes zero</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
+          <tr><td>QB-change x spread interaction (re-tested under current leak-fixed code)</td><td class="num">Ties baseline exactly on confirmatory accuracy -- re-confirms the earlier rejection still holds after the leak fix and shrinkage revert</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Off_matchup x spread interaction</td><td class="num">Clean null -- identical confirmatory accuracy to baseline</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Stacking ensemble (Model A probability + market probability as a 2-input meta-model)</td><td class="num">Collapses to being statistically identical to market alone -- the meta-model discounts Model A's weaker signal almost entirely. Current flat 5-feature Model B beats it on every confirmatory metric (CI [-1.10,+0.55], not significant, but consistently negative)</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Market efficiency trend across seasons (2022-2025)</td><td class="num">No real trend -- market's edge over Model A bounces from +1.1pt to +9.9pt with no consistent direction, tracking Model A's own year-to-year variance rather than any change in the market itself</td><td><span class="conf-tag tag-neutral">NO PATTERN</span></td></tr>
+          <tr><td>First-half vs. second-half season market efficiency</td><td class="num">Market's edge narrows slightly (+5.5 to +4.2) as the season progresses, but this tracks Model A's own known early-season weakness rather than revealing anything new about the market's own behavior</td><td><span class="conf-tag tag-neutral">NOT A NEW FINDING</span></td></tr>
+          <tr><td>Market accuracy vs. travel distance</td><td class="num">No pattern across distance buckets (64-70% range, no trend), and the largest-distance bucket has only 23 games -- too small to trust on its own</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Season-boundary-specific recency half-life</td><td class="num">Tested extra discounting (0.85, 0.7, 0.5) for plays crossing a season boundary, on top of normal recency decay. Every level was flat-or-worse than baseline on every metric, both splits, with a clean monotonic pattern -- stronger discount, worse performance. A team's true strength doesn't reset at a season boundary the way this assumed</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Referee crew x team-penalty-rate interaction</td><td class="num">A narrower framing than the earlier referee-tendency test: does a specific crew's penalty-calling rate interact with how penalty-prone the teams are? CI [-1.10,+0.74], includes zero, worse on validation too</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Systematic narrow-edge search (12 partitions)</td><td class="num">Scanned disagreement magnitude, spread size, QB-change presence, home favorite/underdog, and model confidence for ANY subset where Model A beats the market. Best candidate was +0.74pt with CI [-2.60,+4.09] -- and with 12 comparisons tested, one weak positive is exactly what noise produces. No defensible narrow edge exists</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Model A's low-confidence games are genuinely unreliable</td><td class="num">When Model A's own probability is near a coin flip (within 0.05 of 50%), it hits just 52.5% -- barely above chance -- while the market stays at 64.4% in those same games. A -11.95pt gap, CI [-18.37,-5.53], clearly excludes zero. Model A's uncertainty is trustworthy: when it says it doesn't know, it really doesn't</td><td><span class="conf-tag tag-good">CONFIRMED FINDING</span></td></tr>
+          <tr><td>Line-movement archive (infrastructure check)</td><td class="num">Confirmed working end-to-end -- real movement captured (CLE@TB moved a full point, JAX@DEN a half point). But only 2 of 32 games moved at all across consecutive days, so a meaningful predictive test needs many more weeks of accumulation, not a forced test on n=2</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="method-block" style="margin-top:16px;">
+      <h3>Version History</h3>
+      <div class="version-timeline">
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v1.0</span><span class="version-date">2026-08-17</span><p>Initial 3-feature model: opponent-adjusted offense, defense, QB rating.</p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v1.1</span><span class="version-date">2026-08-17</span><p>Added O-line continuity and QB-change detection (5 features).</p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.0</span><span class="version-date">2026-08-24</span><p>QB shrinkage constant retuned (k=8 &rarr; k=96) via proper validation/test split.</p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.1</span><span class="version-date">2026-08-24</span><p>O-line continuity removed after two independent negative tests (4 features: off, def, qb, qb-change).</p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.2</span><span class="version-date">2026-08-24</span><p>Backtest methodology switched to weekly refitting, matching what the live pipeline already did in production.</p></div></div>
+        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.3</span><span class="version-date">2026-08-31</span><p>Fixed a real leak in the QB rating's shrinkage target (was a global average, not cutoff-scoped -- see ratings_engine.py); re-tuned QB_SHRINK_K 96 -&gt; 128 via a real, committed, reproducible script (tune_qb_shrink_k.py), superseding the prior retune whose own numbers couldn't be reproduced from this repo.</p></div></div>
+        <div class="version-item"><div class="version-dot current"></div><div class="version-content"><span class="version-tag">v2.4</span><span class="version-date">2026-08-31</span><p>QB shrinkage investigation: the fresh k=128 retune turned out inconsistent on its own confirmatory data (k=8 won 3 of 4 metrics). Reverted to k=8 as the defensible default. <b style="color:var(--good);">Current.</b></p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- METHODOLOGY -->
+  <section class="page" id="page-method">
+    <div class="page-head">
+      <div><h2>Methodology</h2><div class="desc">Real data, real backtest, real numbers below.</div></div>
+    </div>
+
+    <div class="method-block">
+      <h3>Model A vs. Model B — What Actually Separates Them</h3>
+      <p><b style="color:var(--blue)">Model A (football-only)</b> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, and QB-change detection — all derived from real play-by-play data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (see the "why this pick" breakdown on every game).</p>
+      <p><b style="color:var(--amber)">Model B (market-blended)</b> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.2% vs. 62.8% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Data</h3>
+      <p>Real nflverse play-by-play, filtered to pass/rush attempts with valid EPA, used to fit opponent-adjusted team ratings and per-QB ratings.</p>
+      <p style="margin-top:11px;">Data pipeline migrated from nfl_data_py to nflreadpy (2026-08) after nfl_data_py was officially deprecated. Verified column-schema match and exact value match (scores, spreads, EPA, snap counts) on a real completed week before merging -- see Roadmap.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Rating System — Opponent-Adjusted, Recency-Weighted</h3>
+      <p>A two-way fixed-effects ridge regression: play-level EPA regressed on offense-team dummies + defense-team dummies, using only plays strictly before the point being rated. Each play is recency-weighted. A team's offensive rating already accounts for the strength of every defense it faced.</p>
+      <div class="formula">play_epa ~ ridge( offense_team_dummies + defense_team_dummies )
+sample_weight = 0.5 ^ (games_ago / half_life)
+half_life = 16 games   (backtested against 6 and 10 — 16 won on log loss)
+ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</div>
+    </div>
+
+    <div class="method-block">
+      <h3>Backtest Results — Chronological, Weekly-Refitting Walk-Forward</h3>
+      <p>Trained only on strictly earlier data, refit every week within the test season (not just once per season) -- validated 2026-08 (Stage 9) to match what the live model actually does: weekly_update.py always trains on all real completed games available up to "now," every single run. Evaluated on 2022-2025 (1,087 games):</p>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Model</th><th>Accuracy</th><th>Log Loss</th><th>Brier</th><th>AUC</th></tr></thead>
+        <tbody>
+          <tr><td>Coin flip</td><td>50.0%</td><td>0.693</td><td>0.250</td><td>0.500</td></tr>
+          <tr><td>Home team always wins</td><td>54.6%</td><td>-</td><td>-</td><td>-</td></tr>
+          <tr><td>3-feature (off+def+QB) only</td><td>62.4%</td><td>0.654</td><td>0.231</td><td>0.662</td></tr>
+          <tr><td>Model A -- live, 4 features, weekly refit</td><td class="highlight">62.8%</td><td class="highlight">0.650</td><td class="highlight">0.229</td><td class="highlight">0.670</td></tr>
+          <tr><td>Vegas market alone</td><td>68.2%</td><td>0.607</td><td>0.210</td><td>0.725</td></tr>
+          <tr><td>Model B -- live, 4 features + market, weekly refit</td><td class="highlight">68.2%</td><td class="highlight">0.606</td><td class="highlight">0.209</td><td class="highlight">0.727</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:11px;">Update (2026-08-31): these numbers reflect two real changes, not a silent swap. First, a leak in the QB rating's shrinkage target was found and fixed (it was averaging in future weeks instead of only strictly-earlier ones -- see ratings_engine.py). Second, we revisited our own earlier QB-shrinkage tuning decision (k=8 -&gt; 96) after it turned out not to reproduce, re-ran the retune under the fixed, current config, and found the fresh result (k=128) didn't hold up consistently on confirmatory data either -- so we reverted to the original k=8. See Model Lab, "QB Shrinkage Re-tune," for the full investigation.</p>
+      <p style="margin-top:11px;">Update (2026-08, research Stage 6): O-line continuity was removed from the live model after two independent negative results -- a paired bootstrap found its individual contribution statistically indistinguishable from zero (95% CI included zero), and a later confirmatory test found "no OL feature at all" outperformed both the original and a smoothed version of it on held-out 2024-2025 data. It's still computed and logged as informational data, just no longer fed into the model, in case future evidence changes this. QB-change detection has held up across every test run against it and remains live.</p>
+      <p style="margin-top:11px;">Separately: the market barely changes when our full feature set is blended in (68.2% either way on raw accuracy, marginally better on log loss/Brier/AUC). The Vegas line still captures almost everything we can see, plus real-world information we structurally can't.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>How We Know a Result Is Real (Not Just Luck)</h3>
+      <p>Every experiment on Model Lab reports a real accuracy number, but a small difference between two numbers doesn't automatically mean one is genuinely better -- with only a few hundred games in a season, some of that difference is just random luck in which games happened to go a certain way.</p>
+      <p style="margin-top:11px;">To check, we use a technique called <b style="color:var(--chalk)">bootstrap resampling</b>: take the real games, randomly reshuffle which ones get counted (with repeats allowed) thousands of times, and see how much the accuracy difference bounces around. If it consistently stays positive across nearly all of those reshuffles, that's real signal. If it swings between positive and negative depending on which games got picked, that's a sign that we can't confidently tell the difference from noise yet -- even if the original number looked good.</p>
+      <p style="margin-top:11px;">This is why you'll see "CI [-1.2, +3.4]" type notation on Model Lab -- that's the range the true effect most likely falls in. When that range includes zero, we mark it INCONCLUSIVE rather than pretending we know for sure.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Which Features Actually Do the Work</h3>
+      <p>Most of this project's research has tested whether <i>adding</i> something helps. A formal ablation pass asks the opposite question: remove each existing feature one at a time, fully retrain, and measure what actually breaks. That's how you find out where a model's predictive power really lives, rather than assuming every feature is pulling its weight.</p>
+      <div class="table-wrap" style="margin-top:12px;"><table class="metrics-table">
+        <thead><tr><th>Feature removed</th><th>Accuracy change</th><th>95% CI</th></tr></thead>
+        <tbody>
+          <tr><td>QB matchup</td><td class="num">-2.39pt</td><td class="num">[-5.15, +0.37]</td></tr>
+          <tr><td>QB change</td><td class="num">-0.55pt</td><td class="num">[-1.93, +0.83]</td></tr>
+          <tr><td>Offense matchup</td><td class="num">-0.37pt</td><td class="num">[-1.20, +0.46]</td></tr>
+          <tr><td>Defense matchup</td><td class="num">+0.37pt</td><td class="num">[-0.83, +1.56]</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:11px;"><b style="color:var(--chalk)">QB quality is doing most of the work</b> -- removing it costs more than four times what any other feature costs. That matches football intuition, and it's why so much of this project's research effort has gone into getting the QB rating right.</p>
+      <p style="margin-top:11px;">Two honest caveats. First, <b style="color:var(--chalk)">none of these individually reach statistical significance</b> -- every confidence interval includes zero. That's expected with correlated features: the model partially compensates for a missing one using the others, so no single removal produces a clean, sharp drop. Second, defense matchup's point estimate is actually <i>positive</i> when removed, though well within noise. It isn't clearly earning its place, but there's no real evidence it's hurting either -- so it stays, and this is noted rather than acted on.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Why the Confidence Ranking Is the Right Strategy, Not Just a Guess</h3>
+      <p>For a standard confidence pool -- rank your picks, assign points 1 through N, earn those points if correct -- the strategy of assigning the highest point value to your highest-confidence pick, and so on down the list, isn't just a reasonable habit. It's <b style="color:var(--chalk)">mathematically provable</b> as the strategy that maximizes your expected total points, assuming the underlying probabilities are well-calibrated.</p>
+      <p style="margin-top:11px;">This follows from the <b style="color:var(--chalk)">rearrangement inequality</b>: when you're pairing two ordered lists (win probabilities and point values) to maximize their summed product, pairing largest-with-largest and smallest-with-smallest always beats any other pairing. We checked this isn't just theory -- a real simulation compared the rank-order strategy against 20,000 random point assignments for a realistic 16-game week, and rank-ordering beat every single one.</p>
+      <p style="margin-top:11px;">What this means practically: the confidence ranking you see on the Week Board isn't a stylistic choice or a rough heuristic -- it's the actual optimal strategy for this pool format, given whatever our probabilities say. The only way to do better is to have better probabilities, not a cleverer ranking scheme.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Trying to Beat the Market: An Honest Accounting</h3>
+      <p>A recurring question for Model B has been whether it can be made meaningfully more sophisticated than "our features plus the raw spread in one regression." Across two research cycles, we've tried roughly a dozen distinct approaches: a stacking ensemble combining Model A and market probabilities, feature-by-spread interaction terms, the total (over/under) line as an added input, dynamic weighting by model disagreement, market efficiency trends across and within seasons, and market accuracy conditional on travel distance.</p>
+      <p style="margin-top:11px;"><b style="color:var(--chalk)">None of them improved on the current flat regression.</b> Most came back as clean rejections; a couple were inconclusive with confidence intervals straddling zero. Not one showed a real, defensible edge.</p>
+      <p style="margin-top:11px;">We think this negative result is worth stating plainly rather than quietly moving past: the betting market for NFL point spreads is genuinely difficult to improve on with the data and methods available here. That's not a failure of effort -- it's a real, repeatedly-tested finding about market efficiency, and arguably more honest than claiming a marginal edge that wouldn't hold up under scrutiny.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Known Gaps</h3>
+      <div class="gap-item"><span class="gap-num">01</span><span>Rest days, weather, and travel distance were tested and rejected (real backtests, not adopted) — see Roadmap and Model Lab. No injury feature yet, blocked on data availability.</span></div>
+      <div class="gap-item"><span class="gap-num">02</span><span>QB shrinkage: the shrinkage target had a real (small) leak -- fixed 2026-08-31. Re-tuning it turned out to be inconclusive: the original k=8 -> 96 decision didn't reproduce, and a fresh retune under the fixed config (k=128) won on validation but lost 3 of 4 metrics to k=8 on confirmatory data (bootstrap CI included zero). Reverted to k=8 as the more defensible default -- see Model Lab for the full investigation and src/tune_qb_shrink_k.py for the reusable methodology.</span></div>
+      <div class="gap-item"><span class="gap-num">03</span><span>Gradient boosting was tested and did not beat logistic regression at this feature-set size.</span></div>
+    </div>
+
+    <div class="method-block">
+      <h3>Weekly Automated Process</h3>
+      <ol>
+        <li>Pull fresh play-by-play + schedule data</li>
+        <li>Refit team + QB ratings at the current "as of" cutoff</li>
+        <li>Refit Model A and Model B themselves (not just the underlying ratings) on all real completed games available -- confirmed 2026-08 to already match the weekly-refitting approach validated as the correct backtest methodology</li>
+        <li>Web-search for QB/injury news that might contradict the assumed starter</li>
+        <li>Generate both models' predictions, save before kickoff (never overwritten)</li>
+        <li>Grade the previous week's saved predictions against actual results</li>
+        <li>Regenerate this dashboard</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section class="page" id="page-roadmap">
+    <div class="page-head">
+      <div><h2>Roadmap</h2><div class="desc">Built to keep growing. Tracking what's shipped and what's next.</div></div>
+    </div>
+    <div class="roadmap-grid">
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Opponent-Adjusted Ratings</h4><p>Two-way fixed-effects ridge regression on real play-by-play, replacing flat trailing averages.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Recency Weighting</h4><p>Backtested half-life values; 16 games won on log loss.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Market Blend Model</h4><p>Model B combines football-only features with the Vegas spread, evaluated honestly against market alone.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Tuned Ridge Alpha</h4><p>Backtested 1-1600; alpha=200 was over-regularized, alpha=15 wins.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>QB-Specific Features</h4><p>Leak-free per-starter trailing EPA/dropback. Biggest single accuracy gain: 60.0% to 62.6%.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Automated Weekly Routine</h4><p>Scheduled, self-updating: auto-detects the current week, waits until 7 days out to lock in predictions, walks straight through the playoffs with no manual intervention.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>My Picks Log</h4><p>Tap your actual pick per game, tracked locally with a real win/loss record against graded results.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Season Accuracy + Calibration</h4><p>Real running record for Model A, Model B, and market, plus a calibration table checking whether confidence buckets actually hit their rate.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Confidence Ranking + Why Breakdown</h4><p>Games auto-ranked by pick confidence for confidence-pool scoring; every pick shows its real feature-level math, not a black box.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Past-Week Browsing</h4><p>Week selector on the Board and Picks pages instead of only ever showing the latest week.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Rest, Weather &amp; Travel Distance</h4><p>Real backtest on all three: rest days, dome/cold/wind, and haversine travel distance all made the model flat or slightly worse (62.6% down to ~61.5-62.2%). Honest negative results, none adopted.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Per-Game Context Notes</h4><p>Generalized from a single QB-only flag into a real multi-note list the routine's web-search step can populate with injuries, coaching changes, or anything else worth flagging — shown as a real bulleted list per game.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Line Movement Tracking</h4><p>Every routine run now logs the current spread for the upcoming week's games to a running archive -- even weeks that are too early to lock in real predictions. Building real, first-party movement data starting this season.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Formal Backup-QB Detection</h4><p>Tested honestly first: a leak-free "did this team change starting QB since last week" flag improved every metric (accuracy +0.46pt, log loss/Brier/AUC all better too) and shows a clean, correctly-signed coefficient. Real signal -- now a live 5th model feature.</p></div>
+
+      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Not Adopted</div><h4>Time-Decay QB-Change Signal</h4><p>Real backtest: the decay version actually scored slightly worse on accuracy (62.6-62.9% vs the binary flag's 63.1%) while only marginally improving log loss/Brier/AUC. Keeping the simpler binary flag -- it's not just simpler, it's genuinely no worse.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Decided Against</div><h4>Re-test Ensemble/Gradient Boosting</h4><p>With 5 features, GBM does edge out logistic regression on raw accuracy (63.4% vs 62.6%) -- but AUC drops notably (0.654 vs 0.670), meaning worse discrimination between confidence levels. Since confidence-ranked picks depend on that discrimination, staying with logistic regression.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Team Deep-Dive Page</h4><p>New tab: pick any team, see real season-end net ratings for 2020-2025, with live week-by-week 2026 data appending automatically as the season is actually played.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Removed — Tested Twice, Negative</div><h4>O-Line Continuity</h4><p>Was live as a Model A/B feature; pulled after two independent tests (bootstrap CI included zero; a later confirmatory test found no-OL-feature beat both raw and smoothed versions on held-out data). Still computed and logged as data, not fed into the model.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Coaching Changes</h4><p>Tested 5 framings (season-level flag, in-season change, 3 decay half-lives) using real per-game coach data from nflverse schedules. Every variant tied or underperformed the baseline. Likely redundant with what opponent-adjusted team ratings already absorb.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Tested — Rejected</div><h4>Early-Season Prior Blending</h4><p>Confirmed a real gap (61.7% weeks 1-4 vs. 65.9% weeks 15+), but explicit extra shrinkage didn't close it -- the existing continuous recency-weighted ratings already blend across the season boundary correctly. Gap remains open; import_win_totals() (real preseason market data) flagged as a genuinely different angle for later.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Adopted</div><h4>Weekly-Refitting Backtest</h4><p>Backtest methodology now refits every week within a season (not just once), matching what the live weekly routine already does. Not statistically significant on its own (+0.37pt, CI included zero) but tied-or-better on every metric and free -- adopted as the more methodologically correct practice.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Done</div><h4>Migrated to nflreadpy</h4><p>nfl_data_py (our data source since day one) was officially deprecated by nflverse. Migrated to nflreadpy, the actively-maintained successor, with a safety toggle to instantly revert if needed. Verified two ways before merging: every required column present, and real 2025 Week 10 values (scores, spread lines, EPA, snap counts) matched exactly between old and new sources.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-next">Confirmed Infeasible</div><h4>Preseason EPA as Early-Season Prior</h4><p>Checked directly: nflreadpy's play-by-play loader has zero preseason rows, for any season 2020-2025. Not a data-quality problem to work around -- the play-level detail simply isn't in this pipeline. Ruled out, not deferred.</p></div>
+      <div class="add-idea">+ next idea goes here</div>
+    </div>
+  </section>
+
+  <!-- DATA SOURCES -->
+  <section class="page" id="page-datasources">
+    <div class="page-head">
+      <div><h2>Data Sources</h2><div class="desc">Every dataset this project touches, honestly labeled -- what's actually live in production, what's research-only, and what's blocked.</div></div>
+    </div>
+
+    <div class="method-block">
+      <h3>In Production (used every single weekly run)</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dataset</th><th>Function</th><th>Used For</th></tr></thead>
+        <tbody>
+          <tr><td>Play-by-play</td><td class="num">load_pbp()</td><td class="num">Team ratings (ridge regression), per-QB trailing EPA</td></tr>
+          <tr><td>Schedules</td><td class="num">load_schedules()</td><td class="num">Game results, spread/total lines, home/away, current-week matchups</td></tr>
+          <tr><td>Snap counts</td><td class="num">load_snap_counts()</td><td class="num">Computed and logged each run for O-line continuity, though that feature was removed from the live model in v2.1 -- data collection continues in case future evidence changes that</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:11px;">All three migrated from the now-deprecated nfl_data_py to nflreadpy in 2026-08, verified with real column-schema and exact-value checks before merging -- see Roadmap.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Research-Only (fetched to test a specific idea, never part of live predictions)</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dataset</th><th>Function</th><th>What It Was Tested For</th><th>Outcome</th></tr></thead>
+        <tbody>
+          <tr><td>Officials</td><td class="num">load_officials()</td><td class="num">Referee-crew tendency</td><td class="num">Rejected</td></tr>
+          <tr><td>FTN charting</td><td class="num">load_ftn_charting()</td><td class="num">QB fault-rate, scheme tendencies, pressure/blitz rate</td><td class="num">Rejected</td></tr>
+          <tr><td>Trades</td><td class="num">load_trades()</td><td class="num">Personnel-disruption signal</td><td class="num">Rejected</td></tr>
+          <tr><td>Rosters (weekly)</td><td class="num">load_rosters_weekly()</td><td class="num">Checked as an injury-data alternative</td><td class="num">Not suitable -- confirmed not gameday active/inactive status</td></tr>
+          <tr><td>Participation</td><td class="num">load_participation()</td><td class="num">Checked as an injury-data alternative</td><td class="num">Not suitable -- same limitation as snap counts, also doesn't update during the season</td></tr>
+          <tr><td>ESPN QBR</td><td class="num">import_qbr() (nfl_data_py fallback)</td><td class="num">Alternative QB quality metric</td><td class="num">Source confirmed abandoned, stops at 2023</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h3>Checked and Blocked</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dataset</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Injury reports (load_injuries())</td><td class="num">No 2025+ data, no ETA -- confirmed directly via nflverse's own status page, re-checked multiple times</td></tr>
+          <tr><td>Gameday active/inactive list</td><td class="num">Doesn't exist anywhere in nflreadpy -- confirmed by checking the full function list, not just guessing from names</td></tr>
+          <tr><td>Preseason play-by-play</td><td class="num">Zero preseason rows in load_pbp() for any season 2020-2025 -- the data simply isn't in this pipeline</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:11px;">This section exists specifically so a claim like "we tried X" is checkable, not just asserted -- every row here has a real check behind it, documented on Model Lab or Roadmap.</p>
+    </div>
+  </section>
+
+  <!-- AI RELIABILITY -->
+  <section class="page" id="page-reliability">
+    <div class="page-head">
+      <div>
+        <h2>AI Reliability</h2>
+        <div class="desc">This project is built almost entirely by delegating real engineering work to an AI agent ("Scout" -- Claude Code, doing the research, coding, and PRs throughout this project). That's genuinely useful, and it also fails in specific, real ways. This page documents what actually went wrong here, not what could theoretically go wrong in the abstract.</div>
+      </div>
+    </div>
+
+    <div class="method-block">
+      <h3>Why This Page Exists</h3>
+      <p>An AI agent confidently stating something false -- about a result, about the state of a codebase, about whether a test actually passed -- is a real, well-documented failure mode, not a hypothetical. The honest mitigation isn't "use a smarter model" or "ask it to double-check itself" (the same failure mode that produced the wrong claim can just as easily produce a confident re-confirmation of it). The mitigation that actually worked here, every time, was <b style="color:var(--chalk)">external, mechanical verification</b> -- demanding the real command output, the real screenshot, the real re-run, rather than accepting a description of one.</p>
+      <p style="margin-top:11px;">Below are the three real incidents from this project where that discipline caught something that would otherwise have shipped wrong.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Incident 1 -- False Claim About Repository State</h3>
+      <p><b style="color:var(--warn)">Claim made:</b> Scout stated that a specific pull request "hasn't actually been merged yet," contradicting an earlier confirmation that it had been.</p>
+      <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> Rather than accept either statement, a direct screenshot of the actual PR page was requested. It showed a purple "Merged" badge -- the PR genuinely was merged. Scout's later claim was the false one.</p>
+      <p style="margin-top:8px;"><b style="color:var(--chalk);">Why it matters:</b> This was a claim about objective, checkable repo state -- not a judgment call or a probabilistic model output. It still came out wrong. Ground truth (a real screenshot) resolved it in seconds; trusting the more recent-sounding claim would not have.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Incident 2 -- An Unreproducible Result</h3>
+      <p><b style="color:var(--warn)">Claim made:</b> An earlier tuning decision (a model hyperparameter, retuned from 8 to 96) was recorded on this dashboard as a resolved ACCEPT, with specific supporting accuracy numbers.</p>
+      <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> When the same comparison was re-run from the actual current codebase, months later, the original numbers could not be reproduced under any configuration tried -- not with the original methodology, not with the current one. The result had been evaluated against a version of the model that no longer existed, and nothing had gone back to re-check it after later, independently-correct changes altered what it was really being compared against.</p>
+      <p style="margin-top:8px;"><b style="color:var(--chalk);">Why it matters:</b> Nobody fabricated this -- each individual step was reasonable at the time. The failure was in never re-verifying an old claim against the current state of the system. See Model Lab's "QB Shrinkage Re-tune" entry for the full resolution (re-tested fresh, found genuinely inconclusive, reverted to the simpler original default).</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Incident 3 -- A Test Suite That Wasn't Actually Testing Anything</h3>
+      <p><b style="color:var(--warn)">Claim made:</b> A leak-free test suite existed on the main branch, implying the codebase's leak-free properties were being actively verified.</p>
+      <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> When actually executed (not just confirmed to exist), 4 of its 5 tests failed immediately with an import error -- the file's own path configuration pointed at a directory that didn't exist -- and the fifth silently skipped. The suite had never successfully run a single real check.</p>
+      <p style="margin-top:8px;"><b style="color:var(--chalk);">Why it matters:</b> A test file's presence in the repo is not evidence it works. This is arguably the most important lesson on this page: a verification system that isn't itself verified provides false confidence, which is worse than no verification system at all.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>The Actual Rule</h3>
+      <p>Formalized in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/VERIFICATION.md" target="_blank" style="color:var(--blue);">VERIFICATION.md</a>: any claim about test results, repo state, or reproducibility must be backed by real, re-executed command output -- not a summary of one. See also <b style="color:var(--chalk)">Booth</b>, a dedicated verification role built specifically to audit Scout's work against this rule.</p>
+    </div>
+  </section>
+
+  <!-- HOW THIS COMPARES -->
+  <section class="page" id="page-compare">
+    <div class="page-head">
+      <div>
+        <h2>How This Compares</h2>
+        <div class="desc">An honest positioning of this model against what else exists -- including where it's genuinely behind.</div>
+      </div>
+    </div>
+
+    <div class="method-block">
+      <h3>The Short Version</h3>
+      <p>On raw predictive accuracy, <b style="color:var(--chalk)">this model does not beat the Vegas betting market</b>, and neither do most public NFL models. Across two full research cycles, roughly a dozen distinct approaches were tested to try to add something the market doesn't already price in. None of them worked. That's documented in detail on Model Lab and in the Methodology page's "Trying to Beat the Market" section.</p>
+      <p style="margin-top:11px;">What this project offers instead is <b style="color:var(--chalk)">transparency about how it actually works and what it actually gets wrong</b> -- which is genuinely rare among prediction sites, most of which publish a number and no accounting of how it was arrived at or how often it fails.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Where This Model Stands</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dimension</th><th>How this project does</th></tr></thead>
+        <tbody>
+          <tr><td>Raw accuracy vs. market</td><td class="num">Behind. The market is a genuinely hard benchmark and this doesn't clear it</td></tr>
+          <tr><td>Football-only accuracy (no market data)</td><td class="num">Reasonable -- roughly 63% on held-out data, well above the ~54% you'd get by always picking home teams</td></tr>
+          <tr><td>Methodology transparency</td><td class="num">Every constant is backtested and documented with its real justification; the tuning scripts are committed and re-runnable</td></tr>
+          <tr><td>Honest failure reporting</td><td class="num">Model Lab documents every rejected experiment with real numbers, including a data leak that was caught and fixed</td></tr>
+          <tr><td>Leak-free discipline</td><td class="num">A real, executable test suite guards the walk-forward properties -- and it caught a genuine production leak</td></tr>
+          <tr><td>Live, ongoing track record</td><td class="num">Predictions are locked in before kickoff and graded automatically -- no post-hoc editing</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h3>What Would Actually Close the Gap</h3>
+      <p>Being specific rather than vague about this: the single biggest missing input is <b style="color:var(--chalk)">injury and player-availability data</b>, which the market prices in heavily and this model has no access to (the upstream data source has been broken with no ETA -- see Data Sources). Beyond that, the market aggregates information this project structurally can't reach: sharp money, insider knowledge, and real-time news. Closing that gap isn't a matter of a better algorithm.</p>
+    </div>
+  </section>
+
+  <!-- GLOSSARY -->
+  <section class="page" id="page-glossary">
+    <div class="page-head">
+      <div>
+        <h2>Glossary</h2>
+        <div class="desc">Plain-language definitions for the terms used throughout this site.</div>
+      </div>
+    </div>
+
+    <div class="method-block">
+      <h3>Model &amp; Prediction Terms</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>EPA (Expected Points Added)</td><td class="num">How much a single play changed a team's expected points on that drive. A 40-yard gain has high positive EPA; a sack has negative EPA. Summed up, it's a better measure of team quality than raw yards</td></tr>
+          <tr><td>Model A</td><td class="num">The football-only model -- team ratings, QB performance, QB changes. Uses no betting market data at all</td></tr>
+          <tr><td>Model B</td><td class="num">Model A's features plus the current Vegas point spread</td></tr>
+          <tr><td>Opponent-adjusted rating</td><td class="num">A team's performance adjusted for who they played. Beating a strong defense counts more than beating a weak one</td></tr>
+          <tr><td>Recency weighting</td><td class="num">Recent games count more than old ones. This model uses a 16-game half-life -- a game 16 games ago counts half as much as this week's</td></tr>
+          <tr><td>Shrinkage</td><td class="num">Pulling a small-sample estimate toward the league average. A QB with 20 career dropbacks shouldn't be rated as confidently as one with 2,000</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h3>Evaluation Terms</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Log loss</td><td class="num">Penalizes confident wrong predictions heavily. Lower is better. A model that says 95% and is wrong is punished far more than one that said 55%</td></tr>
+          <tr><td>Brier score</td><td class="num">Average squared difference between predicted probability and what actually happened. Lower is better. Similar spirit to log loss, less harsh on confident misses</td></tr>
+          <tr><td>AUC</td><td class="num">How well the model ranks games from most to least likely home win. 0.5 is random, 1.0 is perfect. Measures ordering ability, not calibration</td></tr>
+          <tr><td>Calibration</td><td class="num">Whether stated confidence matches reality -- do games predicted at 70% actually win about 70% of the time?</td></tr>
+          <tr><td>Bootstrap / confidence interval</td><td class="num">Reshuffling the real results thousands of times to see how much a result bounces around. If the range includes zero, the difference can't be distinguished from luck</td></tr>
+          <tr><td>Walk-forward backtest</td><td class="num">Testing a model using only data that existed before each game. Prevents the model from "knowing" future results it couldn't have known</td></tr>
+          <tr><td>Data leakage</td><td class="num">When information from the future accidentally gets used to predict the past, making results look better than they really are. This project found and fixed a real one -- see AI Reliability</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h3>Betting Terms</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Point spread</td><td class="num">The margin the favorite is expected to win by. A -7 favorite is expected to win by 7</td></tr>
+          <tr><td>Over/under (total)</td><td class="num">The combined score both teams are expected to reach</td></tr>
+          <tr><td>Market-implied probability</td><td class="num">Converting a point spread into a win percentage, so it can be compared directly against a model's prediction</td></tr>
+          <tr><td>Confidence pool</td><td class="num">A pick'em format where you rank games and assign point values -- most confident pick gets the most points. See Methodology for why ranking by probability is provably optimal here</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </section>
+
+</main>
+
+<nav class="bottom-nav" aria-label="Mobile navigation">
+  <div class="bottom-nav-row">
+    <button class="bnav-btn active" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span class="bnav-label">Ratings</span></button>
+    <button class="bnav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span class="bnav-label">Board</span></button>
+    <button class="bnav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="bnav-label">Picks</span></button>
+    <button class="bnav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg><span class="bnav-label">Accuracy</span></button>
+    <button class="bnav-btn" id="bnav-more-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span class="bnav-label">More</span></button>
+  </div>
+</nav>
+<div id="bnav-more-sheet" class="bnav-more-sheet">
+  <div class="bnav-more-sheet-inner">
+    <button class="bnav-more-item" data-page="playoffs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg><span>Playoff Odds</span></button>
+    <button class="bnav-more-item" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Team Deep-Dive</span></button>
+    <button class="bnav-more-item" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span>Methodology</span></button>
+    <button class="bnav-more-item" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg><span>Roadmap</span></button>
+    <button class="bnav-more-item" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span>Model Lab</span></button>
+    <button class="bnav-more-item" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg><span>Data Sources</span></button>
+    <button class="bnav-more-item" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg><span>AI Reliability</span></button>
+    <button class="bnav-more-item" data-page="compare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8l7-5 7 5M3 12h4l-2 5-2-5zM17 12h4l-2 5-2-5z"/></svg><span>How This Compares</span></button>
+    <button class="bnav-more-item" data-page="glossary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Glossary</span></button>
+  </div>
+</div>
+
+<script>
+const teams = [
+  {
+    "team": "BUF",
+    "name": "Buffalo Bills",
+    "off": 0.1274,
+    "def": -0.0134,
+    "net": 0.1408,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "LA",
+    "name": "LA Rams",
+    "off": 0.0938,
+    "def": -0.0397,
+    "net": 0.1335,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "PHI",
+    "name": "Philadelphia Eagles",
+    "off": 0.0295,
+    "def": -0.0762,
+    "net": 0.1057,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "BAL",
+    "name": "Baltimore Ravens",
+    "off": 0.0842,
+    "def": -0.0203,
+    "net": 0.1046,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "GB",
+    "name": "Green Bay Packers",
+    "off": 0.1019,
+    "def": 0.0009,
+    "net": 0.1009,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "DET",
+    "name": "Detroit Lions",
+    "off": 0.0857,
+    "def": -0.0145,
+    "net": 0.1002,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "SEA",
+    "name": "Seattle Seahawks",
+    "off": 0.0067,
+    "def": -0.0804,
+    "net": 0.0871,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "MIN",
+    "name": "Minnesota Vikings",
+    "off": -0.0501,
+    "def": -0.1056,
+    "net": 0.0555,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "SF",
+    "name": "San Francisco 49ers",
+    "off": 0.0904,
+    "def": 0.0352,
+    "net": 0.0553,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "DEN",
+    "name": "Denver Broncos",
+    "off": 0.0068,
+    "def": -0.0473,
+    "net": 0.0542,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "KC",
+    "name": "Kansas City Chiefs",
+    "off": 0.0351,
+    "def": -0.0108,
+    "net": 0.0458,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "NE",
+    "name": "New England Patriots",
+    "off": 0.03,
+    "def": -0.0144,
+    "net": 0.0444,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "LAC",
+    "name": "LA Chargers",
+    "off": -0.012,
+    "def": -0.0459,
+    "net": 0.0339,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "HOU",
+    "name": "Houston Texans",
+    "off": -0.046,
+    "def": -0.0758,
+    "net": 0.0297,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "TB",
+    "name": "Tampa Bay Buccaneers",
+    "off": 0.0249,
+    "def": 0.0047,
+    "net": 0.0202,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "CHI",
+    "name": "Chicago Bears",
+    "off": 0.0189,
+    "def": 0.0036,
+    "net": 0.0153,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "JAX",
+    "name": "Jacksonville Jaguars",
+    "off": 0.0041,
+    "def": -0.0073,
+    "net": 0.0113,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "PIT",
+    "name": "Pittsburgh Steelers",
+    "off": -0.006,
+    "def": -0.0091,
+    "net": 0.0031,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "IND",
+    "name": "Indianapolis Colts",
+    "off": 0.0054,
+    "def": 0.0192,
+    "net": -0.0137,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "CIN",
+    "name": "Cincinnati Bengals",
+    "off": 0.0482,
+    "def": 0.0743,
+    "net": -0.0261,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "ATL",
+    "name": "Atlanta Falcons",
+    "off": -0.0174,
+    "def": 0.0208,
+    "net": -0.0382,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "DAL",
+    "name": "Dallas Cowboys",
+    "off": 0.0372,
+    "def": 0.0791,
+    "net": -0.042,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "NO",
+    "name": "New Orleans Saints",
+    "off": -0.0843,
+    "def": -0.0414,
+    "net": -0.0429,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "ARI",
+    "name": "Arizona Cardinals",
+    "off": -0.0043,
+    "def": 0.0507,
+    "net": -0.055,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "MIA",
+    "name": "Miami Dolphins",
+    "off": -0.0285,
+    "def": 0.0309,
+    "net": -0.0593,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "WAS",
+    "name": "Washington Commanders",
+    "off": 0.0263,
+    "def": 0.0926,
+    "net": -0.0663,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "NYG",
+    "name": "NY Giants",
+    "off": -0.0246,
+    "def": 0.0454,
+    "net": -0.07,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "CLE",
+    "name": "Cleveland Browns",
+    "off": -0.1728,
+    "def": -0.0771,
+    "net": -0.0958,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "CAR",
+    "name": "Carolina Panthers",
+    "off": -0.0562,
+    "def": 0.0664,
+    "net": -0.1226,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "LV",
+    "name": "Las Vegas Raiders",
+    "off": -0.1432,
+    "def": 0.0073,
+    "net": -0.1504,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "TEN",
+    "name": "Tennessee Titans",
+    "off": -0.0941,
+    "def": 0.0756,
+    "net": -0.1697,
+    "sos": null,
+    "games_played": 0
+  },
+  {
+    "team": "NYJ",
+    "name": "NY Jets",
+    "off": -0.1169,
+    "def": 0.0725,
+    "net": -0.1895,
+    "sos": null,
+    "games_played": 0
+  }
+];
+const playoffOdds = {
+  "season": 2026,
+  "games_played": 0,
+  "games_remaining": 272,
+  "n_simulations": 10000,
+  "teams": [
+    {
+      "team": "CIN",
+      "division": "AFC North",
+      "playoff_pct": 71.7,
+      "division_win_pct": 45.9
+    },
+    {
+      "team": "BUF",
+      "division": "AFC East",
+      "playoff_pct": 67.5,
+      "division_win_pct": 42.7
+    },
+    {
+      "team": "SF",
+      "division": "NFC West",
+      "playoff_pct": 64.0,
+      "division_win_pct": 41.9
+    },
+    {
+      "team": "GB",
+      "division": "NFC North",
+      "playoff_pct": 61.0,
+      "division_win_pct": 39.0
+    },
+    {
+      "team": "WAS",
+      "division": "NFC East",
+      "playoff_pct": 61.0,
+      "division_win_pct": 36.4
+    },
+    {
+      "team": "BAL",
+      "division": "AFC North",
+      "playoff_pct": 59.7,
+      "division_win_pct": 31.4
+    },
+    {
+      "team": "DAL",
+      "division": "NFC East",
+      "playoff_pct": 57.9,
+      "division_win_pct": 32.8
+    },
+    {
+      "team": "DET",
+      "division": "NFC North",
+      "playoff_pct": 54.3,
+      "division_win_pct": 32.0
+    },
+    {
+      "team": "IND",
+      "division": "AFC South",
+      "playoff_pct": 53.3,
+      "division_win_pct": 33.9
+    },
+    {
+      "team": "KC",
+      "division": "AFC West",
+      "playoff_pct": 52.9,
+      "division_win_pct": 37.6
+    },
+    {
+      "team": "TB",
+      "division": "NFC South",
+      "playoff_pct": 49.2,
+      "division_win_pct": 31.5
+    },
+    {
+      "team": "ARI",
+      "division": "NFC West",
+      "playoff_pct": 47.9,
+      "division_win_pct": 25.1
+    },
+    {
+      "team": "CAR",
+      "division": "NFC South",
+      "playoff_pct": 47.7,
+      "division_win_pct": 31.2
+    },
+    {
+      "team": "NE",
+      "division": "AFC East",
+      "playoff_pct": 47.2,
+      "division_win_pct": 23.1
+    },
+    {
+      "team": "JAX",
+      "division": "AFC South",
+      "playoff_pct": 46.8,
+      "division_win_pct": 28.2
+    },
+    {
+      "team": "PIT",
+      "division": "AFC North",
+      "playoff_pct": 45.6,
+      "division_win_pct": 19.8
+    },
+    {
+      "team": "CHI",
+      "division": "NFC North",
+      "playoff_pct": 45.4,
+      "division_win_pct": 24.0
+    },
+    {
+      "team": "LA",
+      "division": "NFC West",
+      "playoff_pct": 44.6,
+      "division_win_pct": 23.0
+    },
+    {
+      "team": "TEN",
+      "division": "AFC South",
+      "playoff_pct": 43.8,
+      "division_win_pct": 26.4
+    },
+    {
+      "team": "ATL",
+      "division": "NFC South",
+      "playoff_pct": 42.7,
+      "division_win_pct": 26.4
+    },
+    {
+      "team": "NYG",
+      "division": "NFC East",
+      "playoff_pct": 42.3,
+      "division_win_pct": 20.5
+    },
+    {
+      "team": "MIA",
+      "division": "AFC East",
+      "playoff_pct": 40.8,
+      "division_win_pct": 18.4
+    },
+    {
+      "team": "DEN",
+      "division": "AFC West",
+      "playoff_pct": 40.4,
+      "division_win_pct": 25.6
+    },
+    {
+      "team": "LAC",
+      "division": "AFC West",
+      "playoff_pct": 36.5,
+      "division_win_pct": 22.2
+    },
+    {
+      "team": "NYJ",
+      "division": "AFC East",
+      "playoff_pct": 36.0,
+      "division_win_pct": 15.9
+    },
+    {
+      "team": "LV",
+      "division": "AFC West",
+      "playoff_pct": 26.1,
+      "division_win_pct": 14.5
+    },
+    {
+      "team": "PHI",
+      "division": "NFC East",
+      "playoff_pct": 25.2,
+      "division_win_pct": 10.3
+    },
+    {
+      "team": "SEA",
+      "division": "NFC West",
+      "playoff_pct": 23.2,
+      "division_win_pct": 10.0
+    },
+    {
+      "team": "HOU",
+      "division": "AFC South",
+      "playoff_pct": 22.3,
+      "division_win_pct": 11.5
+    },
+    {
+      "team": "NO",
+      "division": "NFC South",
+      "playoff_pct": 20.9,
+      "division_win_pct": 10.9
+    },
+    {
+      "team": "MIN",
+      "division": "NFC North",
+      "playoff_pct": 12.8,
+      "division_win_pct": 5.0
+    },
+    {
+      "team": "CLE",
+      "division": "AFC North",
+      "playoff_pct": 9.5,
+      "division_win_pct": 2.9
+    }
+  ]
+};
+
+// Standard ESPN CDN logo pattern -- publicly hosted images, same approach
+// used across the NFL analytics open-source community. Most codes match
+// our team abbreviations lowercased; a handful of ESPN's own codes differ.
+// Team colors for the two-tone confidence bar -- chosen for visibility
+// against a dark background. Where a team's official primary color is
+// near-black/navy/dark-green (would vanish on our dark theme), using
+// their brighter secondary color instead -- standard practice for
+// dark-mode sports UIs, still recognizably "that team's color."
+const TEAM_COLOR = {
+  ARI:'#97233F', ATL:'#A71930', BAL:'#3E1F91', BUF:'#1E4DB7', CAR:'#0085CA',
+  CHI:'#C83803', CIN:'#FB4F14', CLE:'#FF3C00', DAL:'#869397', DEN:'#1E4D8C',
+  DET:'#0076B6', GB:'#FFB612',  HOU:'#C8102E', IND:'#2A5DAE', JAX:'#D7A22A',
+  KC:'#E31837',  LA:'#FFA300',  LAC:'#0080C6', LV:'#A5ACAF',  MIA:'#008E97',
+  MIN:'#FFC62F', NE:'#C60C30',  NO:'#D3BC8D',  NYG:'#1848A0', NYJ:'#1D8A5D',
+  PHI:'#046A38', PIT:'#A2AAAD', SEA:'#69BE28', SF:'#B3995D',  TB:'#D50A0A',
+  TEN:'#4B92DB', WAS:'#8B1538',
+};
+function teamColor(abbr){ return TEAM_COLOR[abbr] || '#8A93A8'; }
+
+// Per-matchup contrast safety net: even with a clean base palette, the NFL
+// has many teams sharing red/blue as a primary color (Chiefs/Bucs/Patriots,
+// several blues), so two SPECIFIC teams can still land close together.
+// Rather than trying to hand-solve every possible pair, detect low-contrast
+// pairings at render time and push them apart while keeping each team's
+// real hue (so it still reads as "that team," just more separated).
+function hexToRgb(hex){
+  const h = hex.replace('#','');
+  return [parseInt(h.substr(0,2),16), parseInt(h.substr(2,2),16), parseInt(h.substr(4,2),16)];
+}
+function rgbToHex(r,g,b){
+  const c = v => Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0');
+  return '#'+c(r)+c(g)+c(b);
+}
+function colorDistance(hex1, hex2){
+  const [r1,g1,b1] = hexToRgb(hex1), [r2,g2,b2] = hexToRgb(hex2);
+  return Math.sqrt((r1-r2)**2 + (g1-g2)**2 + (b1-b2)**2);
+}
+function shade(hex, amount){
+  // amount > 0 lightens toward white, < 0 darkens toward black
+  const [r,g,b] = hexToRgb(hex);
+  const target = amount > 0 ? 255 : 0;
+  const t = Math.abs(amount);
+  return rgbToHex(r+(target-r)*t, g+(target-g)*t, b+(target-b)*t);
+}
+const CONTRAST_THRESHOLD = 90;  // roughly: "would look muddy/hard to tell apart side by side"
+function matchupColors(awayAbbr, homeAbbr){
+  let away = teamColor(awayAbbr), home = teamColor(homeAbbr);
+  const dist = colorDistance(away, home);
+  if(dist < CONTRAST_THRESHOLD){
+    // Too close: darken the away segment and lighten the home segment,
+    // proportional to how close they are (closer = bigger push apart).
+    const push = 0.35 * (1 - dist/CONTRAST_THRESHOLD) + 0.2;
+    away = shade(away, -push);
+    home = shade(home, push);
+  }
+  return [away, home];
+}
+
+const ESPN_CODE = {
+  ARI:'ari',ATL:'atl',BAL:'bal',BUF:'buf',CAR:'car',CHI:'chi',CIN:'cin',CLE:'cle',
+  DAL:'dal',DEN:'den',DET:'det',GB:'gb',HOU:'hou',IND:'ind',JAX:'jax',KC:'kc',
+  LA:'lar',LAC:'lac',LV:'lv',MIA:'mia',MIN:'min',NE:'ne',NO:'no',NYG:'nyg',
+  NYJ:'nyj',PHI:'phi',PIT:'pit',SEA:'sea',SF:'sf',TB:'tb',TEN:'ten',WAS:'wsh',
+};
+function teamLogo(abbr){
+  const code = ESPN_CODE[abbr] || abbr.toLowerCase();
+  return `https://a.espncdn.com/i/teamlogos/nfl/500/${code}.png`;
+}
+const weeks = {
+  "2025_week10": {
+    "season": 2025,
+    "week": 10,
+    "games": [
+      {
+        "away": "LV",
+        "home": "DEN",
+        "spread": 9.5,
+        "fbA_home": 63.7,
+        "mktB_home": 80.6,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 1,
+        "model_a_correct": 1,
+        "model_b_correct": 1
+      },
+      {
+        "away": "ATL",
+        "home": "IND",
+        "spread": 6.5,
+        "fbA_home": 46.7,
+        "mktB_home": 72.8,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 1,
+        "model_a_correct": 0,
+        "model_b_correct": 1
+      },
+      {
+        "away": "NO",
+        "home": "CAR",
+        "spread": 5.5,
+        "fbA_home": 51.4,
+        "mktB_home": 71.8,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 0,
+        "model_a_correct": 0,
+        "model_b_correct": 0
+      },
+      {
+        "away": "NYG",
+        "home": "CHI",
+        "spread": 4.5,
+        "fbA_home": 54.7,
+        "mktB_home": 64.9,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 1,
+        "model_a_correct": 1,
+        "model_b_correct": 1
+      },
+      {
+        "away": "JAX",
+        "home": "HOU",
+        "spread": -1.5,
+        "fbA_home": 50.7,
+        "mktB_home": 39.9,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 1,
+        "model_a_correct": 1,
+        "model_b_correct": 0
+      },
+      {
+        "away": "BUF",
+        "home": "MIA",
+        "spread": -8.5,
+        "fbA_home": 31.4,
+        "mktB_home": 20.3,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 1,
+        "model_a_correct": 0,
+        "model_b_correct": 0
+      },
+      {
+        "away": "BAL",
+        "home": "MIN",
+        "spread": -4.5,
+        "fbA_home": 31.2,
+        "mktB_home": 29.5,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 0,
+        "model_a_correct": 1,
+        "model_b_correct": 1
+      },
+      {
+        "away": "CLE",
+        "home": "NYJ",
+        "spread": -1.5,
+        "fbA_home": 50.6,
+        "mktB_home": 49.0,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 1,
+        "model_a_correct": 1,
+        "model_b_correct": 0
+      },
+      {
+        "away": "NE",
+        "home": "TB",
+        "spread": 2.5,
+        "fbA_home": 43.4,
+        "mktB_home": 59.0,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 0,
+        "model_a_correct": 1,
+        "model_b_correct": 0
+      },
+      {
+        "away": "ARI",
+        "home": "SEA",
+        "spread": 7.0,
+        "fbA_home": 58.3,
+        "mktB_home": 69.9,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 1,
+        "model_a_correct": 1,
+        "model_b_correct": 1
+      },
+      {
+        "away": "LA",
+        "home": "SF",
+        "spread": -5.5,
+        "fbA_home": 55.7,
+        "mktB_home": 29.0,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 0,
+        "model_a_correct": 0,
+        "model_b_correct": 1
+      },
+      {
+        "away": "DET",
+        "home": "WAS",
+        "spread": -8.5,
+        "fbA_home": 47.3,
+        "mktB_home": 21.4,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 0,
+        "model_a_correct": 1,
+        "model_b_correct": 1
+      },
+      {
+        "away": "PIT",
+        "home": "LAC",
+        "spread": 3.0,
+        "fbA_home": 24.2,
+        "mktB_home": 62.6,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 1,
+        "model_a_correct": 0,
+        "model_b_correct": 1
+      },
+      {
+        "away": "PHI",
+        "home": "GB",
+        "spread": 1.5,
+        "fbA_home": 14.5,
+        "mktB_home": 62.9,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": null,
+        "confidence_points": null,
+        "why": null,
+        "graded": true,
+        "actual_home_win": 0,
+        "model_a_correct": 1,
+        "model_b_correct": 0
+      }
+    ]
+  },
+  "2026_week1": {
+    "season": 2026,
+    "week": 1,
+    "games": [
+      {
+        "away": "NE",
+        "home": "SEA",
+        "spread": 3.5,
+        "fbA_home": 44.3,
+        "mktB_home": 60.0,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 7,
+        "confidence_points": 10,
+        "why": {
+          "off_matchup": 0.0131,
+          "def_matchup": -0.1022,
+          "qb_matchup": -0.2857,
+          "qb_change": -0.0
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "SF",
+        "home": "LA",
+        "spread": 3.5,
+        "fbA_home": 50.3,
+        "mktB_home": 59.1,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 9,
+        "confidence_points": 8,
+        "why": {
+          "off_matchup": 0.0363,
+          "def_matchup": -0.1204,
+          "qb_matchup": -0.0514,
+          "qb_change": -0.0
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "CHI",
+        "home": "CAR",
+        "spread": -2.5,
+        "fbA_home": 48.5,
+        "mktB_home": 40.4,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 8,
+        "confidence_points": 9,
+        "why": {
+          "off_matchup": -0.0371,
+          "def_matchup": 0.044,
+          "qb_matchup": -0.2142,
+          "qb_change": -0.0
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "TB",
+        "home": "CIN",
+        "spread": 3.5,
+        "fbA_home": 60.1,
+        "mktB_home": 62.2,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 6,
+        "confidence_points": 11,
+        "why": {
+          "off_matchup": 0.027,
+          "def_matchup": 0.0457,
+          "qb_matchup": 0.1912,
+          "qb_change": -0.0
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "NO",
+        "home": "DET",
+        "spread": 7.0,
+        "fbA_home": 66.3,
+        "mktB_home": 74.3,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 3,
+        "confidence_points": 14,
+        "why": {
+          "off_matchup": 0.0788,
+          "def_matchup": 0.0646,
+          "qb_matchup": 0.3879,
+          "qb_change": -0.0
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "BUF",
+        "home": "HOU",
+        "spread": -1.5,
+        "fbA_home": 46.8,
+        "mktB_home": 46.9,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 14,
+        "confidence_points": 3,
+        "why": {
+          "off_matchup": -0.0202,
+          "def_matchup": -0.188,
+          "qb_matchup": -0.5641,
+          "qb_change": 0.4998
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "BAL",
+        "home": "IND",
+        "spread": -3.5,
+        "fbA_home": 39.1,
+        "mktB_home": 36.7,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 5,
+        "confidence_points": 12,
+        "why": {
+          "off_matchup": 0.016,
+          "def_matchup": -0.0602,
+          "qb_matchup": -0.5455,
+          "qb_change": -0.0
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "CLE",
+        "home": "JAX",
+        "spread": 7.5,
+        "fbA_home": 74.5,
+        "mktB_home": 75.9,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 2,
+        "confidence_points": 15,
+        "why": {
+          "off_matchup": 0.0503,
+          "def_matchup": 0.1532,
+          "qb_matchup": 0.7247,
+          "qb_change": -0.0
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "ATL",
+        "home": "PIT",
+        "spread": 3.0,
+        "fbA_home": 54.2,
+        "mktB_home": 59.1,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 10,
+        "confidence_points": 7,
+        "why": {
+          "off_matchup": -0.0166,
+          "def_matchup": 0.0077,
+          "qb_matchup": 0.031,
+          "qb_change": -0.0
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "NYJ",
+        "home": "TEN",
+        "spread": 1.5,
+        "fbA_home": 34.8,
+        "mktB_home": 50.3,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 16,
+        "confidence_points": 1,
+        "why": {
+          "off_matchup": -0.1033,
+          "def_matchup": 0.1782,
+          "qb_matchup": -0.3473,
+          "qb_change": -0.4998
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "ARI",
+        "home": "LAC",
+        "spread": 10.5,
+        "fbA_home": 19.5,
+        "mktB_home": 78.3,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 1,
+        "confidence_points": 16,
+        "why": {
+          "off_matchup": -0.0389,
+          "def_matchup": -0.0385,
+          "qb_matchup": -0.9891,
+          "qb_change": -0.4998
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "MIA",
+        "home": "LV",
+        "spread": 3.5,
+        "fbA_home": 38.5,
+        "mktB_home": 52.4,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 15,
+        "confidence_points": 2,
+        "why": {
+          "off_matchup": -0.1079,
+          "def_matchup": 0.0331,
+          "qb_matchup": -0.0395,
+          "qb_change": -0.4998
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "GB",
+        "home": "MIN",
+        "spread": 1.5,
+        "fbA_home": 79.1,
+        "mktB_home": 42.2,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 11,
+        "confidence_points": 6,
+        "why": {
+          "off_matchup": -0.0317,
+          "def_matchup": -0.192,
+          "qb_matchup": 1.4081,
+          "qb_change": -0.0
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "WAS",
+        "home": "PHI",
+        "spread": 4.5,
+        "fbA_home": 36.5,
+        "mktB_home": 54.4,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 12,
+        "confidence_points": 5,
+        "why": {
+          "off_matchup": -0.0391,
+          "def_matchup": -0.0949,
+          "qb_matchup": -0.0665,
+          "qb_change": -0.4998
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "DAL",
+        "home": "NYG",
+        "spread": -2.5,
+        "fbA_home": 59.2,
+        "mktB_home": 46.0,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 13,
+        "confidence_points": 4,
+        "why": {
+          "off_matchup": -0.0643,
+          "def_matchup": 0.0076,
+          "qb_matchup": -0.2161,
+          "qb_change": 0.4998
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      },
+      {
+        "away": "DEN",
+        "home": "KC",
+        "spread": 3.0,
+        "fbA_home": 26.0,
+        "mktB_home": 64.9,
+        "flag": "",
+        "notes": [],
+        "confidence_rank": 4,
+        "confidence_points": 13,
+        "why": {
+          "off_matchup": 0.0511,
+          "def_matchup": -0.0163,
+          "qb_matchup": -1.2275,
+          "qb_change": -0.0
+        },
+        "graded": false,
+        "actual_home_win": null,
+        "model_a_correct": null,
+        "model_b_correct": null
+      }
+    ]
+  }
+};       // { "2026_week1": {season, week, games:[...]}, ... }
+const latestWeekKey = "2026_week1";  // "2026_week1" or null
+// Week keys that actually have a generated picks PDF on disk. Injected as a
+// real list rather than assumed for every week, so the download control can
+// hide itself instead of linking to a 404 for a week whose PDF is missing.
+const picksPdfs = ["2026_week1"];
+const accuracy = {
+  "weeks": [
+    {
+      "season": 2025,
+      "week": 10,
+      "n": 14,
+      "model_a_correct": 9,
+      "model_a_n": 14,
+      "model_b_correct": 8,
+      "model_b_n": 14,
+      "market_correct": 8,
+      "market_n": 14
+    },
+    {
+      "season": 2026,
+      "week": 1,
+      "n": 0,
+      "model_a_correct": 0,
+      "model_a_n": 0,
+      "model_b_correct": 0,
+      "model_b_n": 0,
+      "market_correct": 0,
+      "market_n": 0
+    }
+  ],
+  "overall": {
+    "model_a": {
+      "correct": 9,
+      "n": 14,
+      "pct": 64.3
+    },
+    "model_b": {
+      "correct": 8,
+      "n": 14,
+      "pct": 57.1
+    },
+    "market": {
+      "correct": 8,
+      "n": 14,
+      "pct": 57.1
+    }
+  },
+  "calibration": [
+    {
+      "bucket": "<55%",
+      "n": 1,
+      "avg_predicted": 51.0,
+      "actual_rate": 0.0
+    },
+    {
+      "bucket": "55-60%",
+      "n": 1,
+      "avg_predicted": 59.0,
+      "actual_rate": 0.0
+    },
+    {
+      "bucket": "60-65%",
+      "n": 4,
+      "avg_predicted": 62.7,
+      "actual_rate": 50.0
+    },
+    {
+      "bucket": "65-70%",
+      "n": 1,
+      "avg_predicted": 69.9,
+      "actual_rate": 100.0
+    },
+    {
+      "bucket": "70-80%",
+      "n": 6,
+      "avg_predicted": 74.1,
+      "actual_rate": 66.7
+    },
+    {
+      "bucket": "80%+",
+      "n": 1,
+      "avg_predicted": 80.6,
+      "actual_rate": 100.0
+    }
+  ]
+};
+const teamHistory = {};
+
+const weekKeysSorted = Object.keys(weeks).sort((a,b)=>{
+  const wa = weeks[a], wb = weeks[b];
+  return (wa.season - wb.season) || (wa.week - wb.week);
+});
+
+function weekLabel(key){
+  const w = weeks[key];
+  return `${w.season} · Week ${w.week}`;
+}
+
+const OVERFLOW_PAGES = ['teamdive','method','roadmap','modellab','datasources','playoffs','reliability','compare','glossary'];
+function setActivePage(pageId){
+  document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active', b.dataset.page===pageId));
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.id==='page-'+pageId));
+  const moreBtn = document.getElementById('bnav-more-btn');
+  if(moreBtn) moreBtn.classList.toggle('active', OVERFLOW_PAGES.includes(pageId));
+  closeMoreSheet();
+  window.scrollTo({top:0, behavior:'auto'});
+}
+document.querySelectorAll('[data-page]').forEach(btn=>{
+  btn.addEventListener('click', ()=> setActivePage(btn.dataset.page));
+});
+
+function closeMoreSheet(){
+  const sheet = document.getElementById('bnav-more-sheet');
+  if(sheet) sheet.classList.remove('open');
+}
+const moreBtn = document.getElementById('bnav-more-btn');
+if(moreBtn){
+  moreBtn.addEventListener('click', (e)=>{
+    e.stopPropagation();
+    document.getElementById('bnav-more-sheet').classList.toggle('open');
+  });
+}
+document.addEventListener('click', (e)=>{
+  const sheet = document.getElementById('bnav-more-sheet');
+  if(sheet && sheet.classList.contains('open') && !sheet.contains(e.target) && e.target.id!=='bnav-more-btn' && !e.target.closest('#bnav-more-btn')){
+    closeMoreSheet();
+  }
+});
+
+/* ---------- Power Ratings ---------- */
+let sortKey = 'net', sortDir = -1;
+function renderRatings(){
+  const sorted = [...teams].sort((a,b)=>{
+    if(sortKey==='team') return a.team.localeCompare(b.team)*sortDir;
+    const av = (a[sortKey]===null||a[sortKey]===undefined) ? -Infinity : a[sortKey];
+    const bv = (b[sortKey]===null||b[sortKey]===undefined) ? -Infinity : b[sortKey];
+    return (av-bv)*sortDir;
+  });
+  // Assign rank BEFORE filtering, so a searched team still shows its real
+  // league position rather than "1" just because it's the only match shown.
+  const ranked = sorted.map((t,i)=>({...t, _rank: i+1}));
+  const searchEl = document.getElementById('ratings-search');
+  const q = searchEl ? searchEl.value.trim().toLowerCase() : '';
+  const visible = q ? ranked.filter(t=>
+    t.team.toLowerCase().includes(q) || (t.name && t.name.toLowerCase().includes(q))
+  ) : ranked;
+
+  const maxAbs = Math.max(...teams.map(t=>Math.abs(t.net)), 0.0001);
+  const body = document.getElementById('ratings-body');
+  if(visible.length === 0){
+    body.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--chalk-dim);">No teams match "${q}"</td></tr>`;
+    return;
+  }
+  body.innerHTML = visible.map((t)=>{
+    const i = t._rank - 1;
+    const width = (Math.abs(t.net)/maxAbs)*100;
+    // Trend: compare this team's own most recent two data points (not a
+    // full-league rank recompute, which would need every team's value at
+    // the exact same past week -- this is simpler and still shows real
+    // direction of movement).
+    const points = (teamHistory && teamHistory.timeline && teamHistory.timeline[t.team]) || [];
+    let trendHtml = '';
+    if(points.length >= 2){
+      const delta = points[points.length-1].net - points[points.length-2].net;
+      if(Math.abs(delta) >= 0.003){
+        const up = delta > 0;
+        trendHtml = `<span class="trend-arrow ${up?'up':'down'}" title="${up?'+':''}${delta.toFixed(3)} vs previous">${up?'&#9650;':'&#9660;'}</span>`;
+      }
+    }
+    return `<tr>
+      <td class="rank">${i+1}</td>
+      <td><div class="team-cell"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span>${trendHtml}</div></td>
+      <td class="num"><div class="net-cell-inner">
+        <div class="srs-bar-track"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
+        <span class="net-value">${t.net>=0?'+':''}${t.net.toFixed(3)}</span>
+      </div></td>
+      <td class="num">${t.off>=0?'+':''}${t.off.toFixed(3)}</td>
+      <td class="num">${t.def>=0?'+':''}${t.def.toFixed(3)}</td>
+      <td class="num">${(t.sos===null||t.sos===undefined)?'—':(t.sos>=0?'+':'')+t.sos.toFixed(3)}</td>
+    </tr>`;
+  }).join('');
+}
+document.querySelectorAll('#ratings-table th[data-key]').forEach(th=>{
+  th.addEventListener('click', ()=>{
+    const key = th.dataset.key;
+    if(key==='rank') return;
+    if(sortKey===key){sortDir*=-1;} else {sortKey=key; sortDir=-1;}
+    document.querySelectorAll('#ratings-table th').forEach(h=>h.classList.remove('sorted'));
+    th.classList.add('sorted');
+    renderRatings();
+  });
+});
+renderRatings();
+
+const ratingsSearchEl = document.getElementById('ratings-search');
+if(ratingsSearchEl){
+  ratingsSearchEl.addEventListener('input', ()=> renderRatings());
+}
+
+/* ---------- Playoff Odds ---------- */
+function renderPlayoffs(){
+  const descEl = document.getElementById('playoffs-desc');
+  const contentEl = document.getElementById('playoffs-content');
+  if(!playoffOdds){
+    descEl.textContent = "Simulation hasn't run yet -- check back after the next weekly update.";
+    contentEl.innerHTML = '';
+    return;
+  }
+  descEl.textContent = `${playoffOdds.n_simulations.toLocaleString()} simulated seasons, run from current ratings -- ${playoffOdds.games_played} real game${playoffOdds.games_played===1?'':'s'} already decided, ${playoffOdds.games_remaining} remaining.`;
+
+  const maxPct = Math.max(...playoffOdds.teams.map(t=>t.playoff_pct), 0.01);
+  const rows = playoffOdds.teams.map(t=>{
+    const width = (t.playoff_pct/maxPct)*100;
+    return `<tr>
+      <td><div class="team-cell"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.division}</span></div></td>
+      <td class="num"><div class="net-cell-inner">
+        <div class="srs-bar-track"><div class="srs-bar-fill" style="left:0%; width:${width}%;"></div></div>
+        <span class="net-value">${t.playoff_pct}%</span>
+      </div></td>
+      <td class="num">${t.division_win_pct}%</td>
+    </tr>`;
+  }).join('');
+
+  contentEl.innerHTML = `
+    <div class="table-wrap">
+      <table id="playoffs-table">
+        <thead><tr><th>Team</th><th style="text-align:center;">Playoff Odds</th><th style="text-align:right;">Division Win Odds</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+renderPlayoffs();
+
+/* ---------- Week Board ---------- */
+let currentBoardWeek = latestWeekKey;
+let currentFilter = 'all';
+let currentSort = 'confidence';
+
+function populateWeekSelect(selectEl, onChange, initial){
+  if(weekKeysSorted.length===0){
+    selectEl.innerHTML = `<option>No weeks saved yet</option>`;
+    selectEl.disabled = true;
+    return;
+  }
+  selectEl.innerHTML = weekKeysSorted.map(k=>`<option value="${k}">${weekLabel(k)}</option>`).join('');
+  selectEl.value = initial || weekKeysSorted[weekKeysSorted.length-1];
+  selectEl.addEventListener('change', ()=> onChange(selectEl.value));
+}
+
+function pickBadge(modelKey, isWinner){
+  if(isWinner){
+    return `<span class="pick-badge ${modelKey}"><svg viewBox="0 0 24 24" fill="none" stroke="var(--chalk)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>`;
+  }
+  return `<span class="pick-badge placeholder"></span>`;
+}
+
+// Presentation-only: translates a win probability into an illustrative
+// point margin, using the exact inverse of the same sigmoid relationship
+// (prob = 1/(1+e^(-spread/5.5))) already used elsewhere in this project to
+// convert spreads to probabilities. This is NOT a separately-trained
+// margin model -- that idea was tested as an actual predictor and
+// rejected (see Model Lab). This is purely a display translation of a
+// probability we already trust, kept mathematically consistent with the
+// rest of the pipeline rather than inventing a new conversion.
+function impliedMargin(homeWinProbPct){
+  const p = homeWinProbPct/100;
+  if(p<=0.001 || p>=0.999) return null;
+  const spread = 5.5 * Math.log(p/(1-p));
+  return spread;
+}
+
+function whyRow(label, val){
+  const pct = Math.min(50, Math.abs(val)*300); // scaled for visual width, not a real unit
+  const cls = val >= 0 ? 'pos' : 'neg';
+  return `<div class="why-row">
+    <span class="why-label">${label}</span>
+    <div class="why-bar-track"><div class="why-bar-fill ${cls}" style="width:${pct}%;"></div></div>
+    <span class="why-val">${val>=0?'+':''}${val.toFixed(3)}</span>
+  </div>`;
+}
+
+function renderWeekGlance(gamesList){
+  const el = document.getElementById('week-glance');
+  if(!gamesList || gamesList.length===0){ el.innerHTML=''; return; }
+
+  const total = gamesList.length;
+  const highestConf = gamesList.reduce((best,g)=> (g.confidence_rank && (!best || g.confidence_rank < best.confidence_rank)) ? g : best, null);
+  const biggestMismatch = gamesList.reduce((best,g)=>{
+    const diverge = Math.abs(g.fbA_home - g.mktB_home);
+    const bestDiverge = best ? Math.abs(best.fbA_home - best.mktB_home) : -1;
+    return diverge > bestDiverge ? g : best;
+  }, null);
+
+  const cards = [];
+  cards.push(`<div class="glance-item"><span class="glance-label">Games</span><span class="glance-value">${total}</span></div>`);
+  if(highestConf){
+    const pickTeam = highestConf.mktB_home >= 50 ? highestConf.home : highestConf.away;
+    cards.push(`<div class="glance-item"><span class="glance-label">Most confident</span><span class="glance-value">${pickTeam}</span><span class="glance-sub">${highestConf.away} @ ${highestConf.home}</span></div>`);
+  }
+  if(biggestMismatch){
+    const diverge = Math.abs(biggestMismatch.fbA_home - biggestMismatch.mktB_home);
+    cards.push(`<div class="glance-item"><span class="glance-label">Biggest model gap</span><span class="glance-value">${diverge.toFixed(0)}pt</span><span class="glance-sub">${biggestMismatch.away} @ ${biggestMismatch.home}</span></div>`);
+  }
+  el.innerHTML = `<div class="glance-row">${cards.join('')}</div>`;
+}
+
+function renderGames(){
+  const grid = document.getElementById('game-grid');
+  const badge = document.getElementById('board-badge');
+  const weekData = weeks[currentBoardWeek];
+  const gamesList = weekData ? weekData.games : [];
+  badge.textContent = gamesList.length ? `${gamesList.length} game${gamesList.length===1?'':'s'}` : 'No games';
+  renderWeekGlance(gamesList);
+
+  const pdfLink = document.getElementById('picks-pdf-link');
+  if(pdfLink){
+    const hasPdf = picksPdfs.indexOf(currentBoardWeek) !== -1;
+    pdfLink.hidden = !hasPdf;
+    if(hasPdf){
+      pdfLink.href = 'dist/picks_' + currentBoardWeek + '.pdf';
+      pdfLink.setAttribute('aria-label', 'Download printable PDF of picks for ' + currentBoardWeek.replace('_week', ' week '));
+    }
+  }
+
+  if(!weekData || gamesList.length === 0){
+    grid.innerHTML = `<div class="empty-state">No predictions saved for this week yet.</div>`;
+    return;
+  }
+
+  const filtered = gamesList.filter(g=>{
+    const diverge = Math.abs(g.fbA_home - g.mktB_home);
+    if(currentFilter==='all') return true;
+    if(currentFilter==='flagged') return !!g.flag;
+    if(currentFilter==='divergent') return diverge >= 12;
+    return true;
+  });
+
+  if(filtered.length === 0){
+    grid.innerHTML = `<div class="empty-state">No games match this filter.</div>`;
+    return;
+  }
+
+  const sorted = [...filtered].sort((a,b)=>{
+    if(currentSort === 'confidence'){
+      // lower confidence_rank = more confident; nulls (ungraded/old-format) sink to the bottom
+      const ra = a.confidence_rank ?? 999, rb = b.confidence_rank ?? 999;
+      return ra - rb;
+    }
+    if(currentSort === 'confidence_asc'){
+      const ra = a.confidence_rank ?? -1, rb = b.confidence_rank ?? -1;
+      return rb - ra;  // highest rank number = least confident = closest game, shown first
+    }
+    if(currentSort === 'disagreement'){
+      const da = Math.abs(a.fbA_home - a.mktB_home), db = Math.abs(b.fbA_home - b.mktB_home);
+      return db - da;
+    }
+    if(currentSort === 'spread'){
+      const sa = a.spread === null || a.spread === undefined ? -1 : Math.abs(a.spread);
+      const sb = b.spread === null || b.spread === undefined ? -1 : Math.abs(b.spread);
+      return sb - sa;
+    }
+    if(currentSort === 'alpha'){
+      return a.home.localeCompare(b.home);
+    }
+    return 0;
+  });
+
+  grid.innerHTML = sorted.map(g=>{
+    const diverge = Math.abs(g.fbA_home - g.mktB_home);
+    const aHomeWin = g.fbA_home >= (100-g.fbA_home);
+    const bHomeWin = g.mktB_home >= (100-g.mktB_home);
+    const idSafe = (g.home+g.away).replace(/[^a-zA-Z]/g,'');
+    const [awayC, homeC] = matchupColors(g.away, g.home);
+    const spreadText = (g.spread===null || g.spread===undefined) ? "No line available"
+      : (g.spread>=0 ? `${g.home} -${g.spread}` : `${g.away} -${Math.abs(g.spread)}`);
+    const gradedTag = g.graded
+      ? `<span class="graded-tag ${g.model_b_correct ?? g.model_a_correct ? 'correct':'incorrect'}">${(g.model_b_correct ?? g.model_a_correct) ? 'Correct' : 'Missed'}</span>`
+      : '';
+    const marginProb = (g.mktB_home !== undefined && g.mktB_home !== null) ? g.mktB_home : g.fbA_home;
+    const margin = impliedMargin(marginProb);
+    const marginHtml = margin !== null ? `
+      <div class="implied-margin">
+        <span class="implied-margin-label">Illustrative margin</span>
+        <span class="implied-margin-value">${margin>=0?g.home:g.away} by ~${Math.abs(margin).toFixed(1)}</span>
+        <span class="implied-margin-note">(derived from the win probability above -- not a separately modeled prediction)</span>
+      </div>` : '';
+
+    const whyHtml = g.why ? `
+      <button class="why-toggle" data-why="${idSafe}">+ why this pick</button>
+      <div class="why-panel" id="why-${idSafe}">
+        ${whyRow('Offense edge', g.why.off_matchup)}
+        ${whyRow('Defense edge', g.why.def_matchup)}
+        ${whyRow('QB edge', g.why.qb_matchup)}
+        ${(g.why.ol_continuity !== undefined) ? whyRow('O-line continuity', g.why.ol_continuity) : ''}
+        ${marginHtml}
+      </div>` : '';
+    return `<div class="game-card ${g.flag?'has-flag':''}">
+      <div class="matchup-header">${g.away} <span class="at-symbol">@</span> ${g.home}</div>
+      <div class="game-top">
+        <span class="game-kickoff">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}</span>
+        <div class="tag-row" style="display:flex; gap:6px; align-items:center;">
+          ${gradedTag}
+          <span class="conf-tag ${diverge>=12?'tag-warn':'tag-good'}">${diverge>=12 ? `gap ${diverge.toFixed(0)}pt` : 'Models agree'}</span>
+        </div>
+      </div>
+      <div class="model-row">
+        <span class="model-label a">MODEL A</span>
+        <div class="tele">
+          <div class="tele-team ${!aHomeWin?'winner':''}">${pickBadge('a', !aHomeWin)}<img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.fbA_home).toFixed(1)}%</span></div>
+          <div class="tele-bar">
+            <div class="tele-bar-seg" style="width:${100-g.fbA_home}%; background:${awayC};"></div>
+            <div class="tele-bar-seg" style="width:${g.fbA_home}%; background:${homeC};"></div>
+            <div class="tele-marker"></div>
+          </div>
+          <div class="tele-team right ${aHomeWin?'winner':''}">${pickBadge('a', aHomeWin)}<img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.fbA_home.toFixed(1)}%</span></div>
+        </div>
+      </div>
+      <div class="model-row">
+        <span class="model-label b">MODEL B</span>
+        <div class="tele">
+          <div class="tele-team ${!bHomeWin?'winner':''}">${pickBadge('b', !bHomeWin)}<img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.mktB_home).toFixed(1)}%</span></div>
+          <div class="tele-bar">
+            <div class="tele-bar-seg" style="width:${100-g.mktB_home}%; background:${awayC};"></div>
+            <div class="tele-bar-seg" style="width:${g.mktB_home}%; background:${homeC};"></div>
+            <div class="tele-marker"></div>
+          </div>
+          <div class="tele-team right ${bHomeWin?'winner':''}">${pickBadge('b', bHomeWin)}<img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.mktB_home.toFixed(1)}%</span></div>
+        </div>
+      </div>
+      <div class="market-ref">Vegas line: <b>${spreadText}</b></div>
+      ${whyHtml}
+      ${(g.notes && g.notes.length) ? `<button class="toggle-flag" data-idx="${idSafe}">+ view context (${g.notes.length})</button>
+      <div class="flag-note" id="flag-${idSafe}">
+        <b>Context:</b>
+        <ul style="margin:6px 0 0 18px; padding:0;">
+          ${g.notes.map(n=>`<li style="margin-bottom:4px;">${n}</li>`).join('')}
+        </ul>
+      </div>` : ''}
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.toggle-flag').forEach(btn=>{
+    const originalLabel = btn.textContent;
+    btn.addEventListener('click', ()=>{
+      const note = document.getElementById('flag-'+btn.dataset.idx);
+      note.classList.toggle('open');
+      btn.textContent = note.classList.contains('open')
+        ? originalLabel.replace('+ view', '− hide')
+        : originalLabel;
+    });
+  });
+  document.querySelectorAll('.why-toggle').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const panel = document.getElementById('why-'+btn.dataset.why);
+      panel.classList.toggle('open');
+      btn.textContent = panel.classList.contains('open') ? '− hide why' : '+ why this pick';
+    });
+  });
+}
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    renderGames();
+  });
+});
+populateWeekSelect(document.getElementById('week-select'), (val)=>{ currentBoardWeek = val; renderGames(); }, latestWeekKey);
+document.getElementById('sort-select').addEventListener('change', (e)=>{ currentSort = e.target.value; renderGames(); });
+renderGames();
+
+/* ---------- Onboarding banner (first-visit only) ---------- */
+const ONBOARDING_KEY = 'nfl_pickem_onboarding_dismissed';
+
+/* ---------- Theme toggle ---------- */
+const THEME_KEY = 'nfl_pickem_theme';
+function currentTheme(){
+  return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+}
+function updateThemeLabel(){
+  const label = document.getElementById('theme-toggle-label');
+  if(label) label.textContent = currentTheme() === 'light' ? 'Dark mode' : 'Light mode';
+}
+(function initTheme(){
+  updateThemeLabel();
+  const btn = document.getElementById('theme-toggle');
+  if(!btn) return;
+  btn.addEventListener('click', ()=>{
+    const next = currentTheme() === 'light' ? 'dark' : 'light';
+    if(next === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+    updateThemeLabel();
+  });
+})();
+function dismissOnboarding(){
+  try{ localStorage.setItem(ONBOARDING_KEY, '1'); }catch(e){}
+  const el = document.getElementById('onboarding-banner');
+  if(el) el.style.display = 'none';
+}
+(function initOnboarding(){
+  let dismissed = false;
+  try{ dismissed = localStorage.getItem(ONBOARDING_KEY) === '1'; }catch(e){}
+  const el = document.getElementById('onboarding-banner');
+  if(el && !dismissed) el.style.display = 'block';
+})();
+
+/* ---------- My Picks Log (localStorage, this device only) ---------- */
+let currentPicksWeek = latestWeekKey;
+const PICKS_STORAGE_KEY = 'nfl_pickem_my_picks';
+
+function loadMyPicks(){
+  try{ return JSON.parse(localStorage.getItem(PICKS_STORAGE_KEY) || '{}'); }
+  catch(e){ return {}; }
+}
+function saveMyPicks(picks){
+  try{ localStorage.setItem(PICKS_STORAGE_KEY, JSON.stringify(picks)); }
+  catch(e){ console.warn('Could not save picks locally', e); }
+}
+
+function exportMyPicks(){
+  const picks = loadMyPicks();
+  const payload = { exported: new Date().toISOString(), picks };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'my_picks_export.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importMyPicks(file){
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try{
+      const payload = JSON.parse(e.target.result);
+      const incoming = payload.picks || payload; // tolerate a bare picks object too
+      if(typeof incoming !== 'object' || incoming === null) throw new Error('not an object');
+      const existing = loadMyPicks();
+      // Merge rather than overwrite -- imported picks fill in gaps, but don't
+      // silently clobber picks already made on this device for the same game.
+      const merged = {...incoming, ...existing};
+      saveMyPicks(merged);
+      alert(`Imported ${Object.keys(incoming).length} picks (existing picks on this device were kept where they overlap).`);
+      renderPicksGrid();
+    } catch(err){
+      alert('Could not read that file -- make sure it\'s a picks export from this same site.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function renderPicksStreak(myPicks){
+  const container = document.getElementById('picks-streak-strip');
+  const weekRecords = []; // {label, wins, losses, status}
+  weekKeysSorted.forEach(k=>{
+    let wins=0, losses=0;
+    (weeks[k].games||[]).forEach(g=>{
+      const pid = k+'|'+g.home+'|'+g.away;
+      const pick = myPicks[pid];
+      if(pick && g.graded && g.actual_home_win !== null){
+        const actualWinner = g.actual_home_win ? g.home : g.away;
+        if(pick === actualWinner) wins++; else losses++;
+      }
+    });
+    const total = wins+losses;
+    let status = 'none';
+    if(total>0) status = wins>losses ? 'win' : (losses>wins ? 'loss' : 'even');
+    weekRecords.push({label:k, wins, losses, status});
+  });
+
+  const graded = weekRecords.filter(w=>w.status!=='none');
+  if(graded.length === 0){
+    container.innerHTML = '';
+    return;
+  }
+
+  // Current streak: consecutive most-recent graded weeks with the SAME
+  // win/loss direction, counting backward from the latest graded week.
+  let streak = 0, streakType = null;
+  for(let i=graded.length-1; i>=0; i--){
+    const w = graded[i];
+    if(w.status==='even') break;
+    if(streakType===null){ streakType = w.status; streak = 1; }
+    else if(w.status===streakType){ streak++; }
+    else break;
+  }
+  const streakLabel = streak>0 ? `${streak}-week ${streakType==='win'?'winning':'losing'} streak` : '';
+
+  container.innerHTML = `
+    <div class="streak-row">
+      <div class="streak-cells">
+        ${weekRecords.map(w=>`<span class="streak-cell ${w.status}" title="${w.label}: ${w.wins}-${w.losses}"></span>`).join('')}
+      </div>
+      ${streakLabel ? `<span class="streak-label ${streakType}">${streakLabel}</span>` : ''}
+    </div>`;
+}
+
+let lastPickChange = null;
+
+function renderPicksGrid(){
+  const grid = document.getElementById('picks-grid');
+  const badge = document.getElementById('picks-record-badge');
+  const weekData = weeks[currentPicksWeek];
+  const gamesList = weekData ? weekData.games : [];
+  const myPicks = loadMyPicks();
+
+  if(!weekData || gamesList.length === 0){
+    grid.innerHTML = `<div class="empty-state">No games to pick for this week yet.</div>`;
+    badge.textContent = '—';
+    return;
+  }
+
+  // record across ALL graded weeks where a pick was logged
+  let wins=0, losses=0;
+  weekKeysSorted.forEach(k=>{
+    (weeks[k].games||[]).forEach(g=>{
+      const pid = k+'|'+g.home+'|'+g.away;
+      const pick = myPicks[pid];
+      if(pick && g.graded && g.actual_home_win !== null){
+        const actualWinner = g.actual_home_win ? g.home : g.away;
+        if(pick === actualWinner) wins++; else losses++;
+      }
+    });
+  });
+  badge.textContent = (wins+losses)>0 ? `${wins}-${losses} on graded picks` : 'No graded picks yet';
+
+  renderPicksStreak(myPicks);
+
+  grid.innerHTML = gamesList.map(g=>{
+    const pid = currentPicksWeek+'|'+g.home+'|'+g.away;
+    const pick = myPicks[pid];
+    const modelBPick = g.mktB_home >= 50 ? g.home : g.away;
+    return `<div class="game-card">
+      <div class="game-top"><span class="game-kickoff">${g.away} <span class="at-symbol">@</span> ${g.home}</span></div>
+      <div class="pick-buttons" data-pid="${pid}">
+        <button class="pick-btn ${pick===g.away?'selected':''}" data-team="${g.away}">${g.away}</button>
+        <button class="pick-btn ${pick===g.home?'selected':''}" data-team="${g.home}">${g.home}</button>
+      </div>
+      <div class="pick-agrees">Model B picks: ${modelBPick}${pick ? (pick===modelBPick ? ' (you agree)' : ' (you differ)') : ''}</div>
+    </div>`;
+  }).join('');
+
+  grid.querySelectorAll('.pick-buttons').forEach(group=>{
+    const pid = group.dataset.pid;
+    group.querySelectorAll('.pick-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const picks = loadMyPicks();
+        const previous = picks[pid];
+        const clicked = btn.dataset.team;
+        // Clicking your already-selected pick clears it, rather than being
+        // a no-op -- otherwise there's no way to un-pick a game at all.
+        if(previous === clicked){
+          delete picks[pid];
+        } else {
+          picks[pid] = clicked;
+        }
+        lastPickChange = {pid, previous};
+        saveMyPicks(picks);
+        renderPicksGrid();
+        showUndoToast();
+      });
+    });
+  });
+}
+
+function showUndoToast(){
+  let toast = document.getElementById('undo-toast');
+  if(!toast){
+    toast = document.createElement('div');
+    toast.id = 'undo-toast';
+    toast.className = 'undo-toast';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = `<span>Pick saved</span><button class="undo-btn" id="undo-action">Undo</button>`;
+  toast.classList.add('visible');
+  document.getElementById('undo-action').onclick = ()=>{
+    if(!lastPickChange) return;
+    const picks = loadMyPicks();
+    if(lastPickChange.previous === undefined){
+      delete picks[lastPickChange.pid];
+    } else {
+      picks[lastPickChange.pid] = lastPickChange.previous;
+    }
+    saveMyPicks(picks);
+    lastPickChange = null;
+    toast.classList.remove('visible');
+    renderPicksGrid();
+  };
+  clearTimeout(showUndoToast._timer);
+  showUndoToast._timer = setTimeout(()=>{ toast.classList.remove('visible'); }, 5000);
+}
+populateWeekSelect(document.getElementById('picks-week-select'), (val)=>{ currentPicksWeek = val; renderPicksGrid(); }, latestWeekKey);
+renderPicksGrid();
+
+/* ---------- Season Accuracy ---------- */
+function buildCumulativeTrendChart(){
+  if(!accuracy.weeks || accuracy.weeks.length === 0) return '';
+  const myPicks = loadMyPicks();
+
+  let cA=0, nA=0, cB=0, nB=0, cM=0, nM=0, cP=0, nP=0;
+  const points = accuracy.weeks.map(w=>{
+    cA += w.model_a_correct; nA += w.model_a_n;
+    cB += w.model_b_correct; nB += w.model_b_n;
+    cM += w.market_correct; nM += w.market_n;
+    const weekKey = Object.keys(weeks).find(k=>weeks[k].season===w.season && weeks[k].week===w.week);
+    if(weekKey){
+      (weeks[weekKey].games || []).forEach(g=>{
+        const pid = weekKey+'|'+g.home+'|'+g.away;
+        const pick = myPicks[pid];
+        if(pick && g.graded && g.actual_home_win !== null){
+          const actualWinner = g.actual_home_win ? g.home : g.away;
+          nP++; if(pick===actualWinner) cP++;
+        }
+      });
+    }
+    return {
+      label: `${w.season} Wk${w.week}`,
+      a: nA>0 ? (cA/nA*100) : null, b: nB>0 ? (cB/nB*100) : null,
+      m: nM>0 ? (cM/nM*100) : null, p: nP>0 ? (cP/nP*100) : null,
+    };
+  });
+
+  const W=680, H=220, padL=36, padR=14, padT=14, padB=28;
+  const n = points.length;
+  const x = i => n<=1 ? padL : padL + (i/(n-1))*(W-padL-padR);
+  const allVals = points.flatMap(p=>[p.a,p.b,p.m,p.p]).filter(v=>v!==null);
+  const yMin = Math.max(0, Math.min(...allVals, 40) - 5);
+  const yMax = Math.min(100, Math.max(...allVals, 60) + 5);
+  const y = v => padT + (1-(v-yMin)/(yMax-yMin))*(H-padT-padB);
+
+  function lineFor(key, color){
+    const valid = points.map((p,i)=>({i, v:p[key]})).filter(d=>d.v!==null);
+    if(valid.length < 2) return '';
+    const d = valid.map((d,idx)=>`${idx===0?'M':'L'}${x(d.i).toFixed(1)},${y(d.v).toFixed(1)}`).join(' ');
+    return `<path d="${d}" fill="none" stroke="${color}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`;
+  }
+
+  const gridLines = [];
+  for(let gv = Math.ceil(yMin/10)*10; gv <= yMax; gv += 10){
+    gridLines.push(`<line x1="${padL}" y1="${y(gv).toFixed(1)}" x2="${W-padR}" y2="${y(gv).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>
+      <text x="${padL-6}" y="${(y(gv)+3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--chalk-dim)">${gv}%</text>`);
+  }
+
+  const legend = [['Model A','var(--blue)'],['Model B','var(--amber)'],['Market','var(--chalk-dim)'],['My Picks','var(--good)']]
+    .map(([label,color])=>`<span style="display:inline-flex; align-items:center; gap:5px; margin-right:16px;"><span style="width:9px; height:9px; border-radius:2px; background:${color}; display:inline-block;"></span>${label}</span>`).join('');
+
+  return `<div class="method-block">
+    <h3>Cumulative Accuracy Trend</h3>
+    <p style="margin-bottom:10px;">Running accuracy as the season progresses -- not week-by-week noise, but how each approach has performed overall up to that point.</p>
+    <div style="font-size:11px; color:var(--chalk-dim); margin-bottom:8px;">${legend}</div>
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:680px;">
+      ${gridLines.join('')}
+      ${lineFor('a','var(--blue)')}
+      ${lineFor('b','var(--amber)')}
+      ${lineFor('m','var(--chalk-dim)')}
+      ${lineFor('p','var(--good)')}
+    </svg>
+  </div>`;
+}
+
+function buildCalibrationChart(){
+  if(!accuracy.calibration || accuracy.calibration.length === 0) return '';
+
+  const S = 260, pad = 30;
+  const scale = v => pad + (v/100)*(S-2*pad);
+
+  const points = accuracy.calibration.map(c => ({x: c.avg_predicted, y: c.actual_rate, n: c.n, bucket: c.bucket}));
+  const maxN = Math.max(...points.map(p=>p.n), 1);
+
+  const dots = points.map(p => {
+    const r = 4 + (p.n/maxN)*8; // dot size reflects sample size in that bucket
+    return `<circle cx="${scale(p.x).toFixed(1)}" cy="${(S-scale(p.y)).toFixed(1)}" r="${r.toFixed(1)}" fill="var(--amber)" fill-opacity="0.85" stroke="var(--ink)" stroke-width="1">
+      <title>${p.bucket}: predicted ${p.x}%, actual ${p.y}% (n=${p.n})</title>
+    </circle>`;
+  }).join('');
+
+  return `
+    <div style="display:flex; align-items:flex-start; gap:20px; flex-wrap:wrap; margin-bottom:14px;">
+      <svg viewBox="0 0 ${S} ${S}" style="width:260px; height:260px; flex-shrink:0;">
+        <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${pad}" stroke="var(--line-strong)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="${pad}" y1="${S-pad}" x2="${pad}" y2="${pad}" stroke="var(--line)" stroke-width="1"/>
+        <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${S-pad}" stroke="var(--line)" stroke-width="1"/>
+        <text x="${pad}" y="${S-pad+14}" font-size="9" fill="var(--chalk-dim)">0%</text>
+        <text x="${S-pad}" y="${S-pad+14}" font-size="9" fill="var(--chalk-dim)" text-anchor="end">100%</text>
+        <text x="${pad-6}" y="${S-pad+4}" font-size="9" fill="var(--chalk-dim)" text-anchor="end">0%</text>
+        <text x="${pad-6}" y="${pad+4}" font-size="9" fill="var(--chalk-dim)" text-anchor="end">100%</text>
+        ${dots}
+      </svg>
+      <div style="font-size:11.5px; color:var(--chalk-dim); max-width:280px; padding-top:8px;">
+        <div style="margin-bottom:6px;"><span style="display:inline-block; width:8px; height:1.5px; background:var(--line-strong); margin-right:5px; vertical-align:middle;"></span>Dashed line = perfect calibration</div>
+        <div><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--amber); margin-right:5px; vertical-align:middle;"></span>Each dot = one confidence bucket (bigger dot = more games)</div>
+        <div style="margin-top:6px;">Dots above the line mean we're underconfident in that bucket; below means overconfident.</div>
+      </div>
+    </div>`;
+}
+
+function renderAccuracy(){
+  const el = document.getElementById('accuracy-content');
+  if(!accuracy.overall){
+    el.innerHTML = `<div class="empty-state">No graded weeks yet. Run grade_predictions.py after a week's games finish.</div>`;
+    return;
+  }
+  const o = accuracy.overall;
+
+  // My Picks record: compare localStorage picks against every graded week's actual outcome
+  const myPicks = loadMyPicks();
+  let myWins = 0, myLosses = 0;
+  weekKeysSorted.forEach(k=>{
+    (weeks[k].games||[]).forEach(g=>{
+      const pid = k+'|'+g.home+'|'+g.away;
+      const pick = myPicks[pid];
+      if(pick && g.graded && g.actual_home_win !== null){
+        const actualWinner = g.actual_home_win ? g.home : g.away;
+        if(pick === actualWinner) myWins++; else myLosses++;
+      }
+    });
+  });
+  const myTotal = myWins + myLosses;
+  const myPct = myTotal > 0 ? Math.round(1000*myWins/myTotal)/10 : null;
+
+  const cardsHtml = `
+    <div class="accuracy-cards">
+      <div class="accuracy-card"><div class="label">My Picks</div><div class="value">${myPct ?? '—'}%</div><div class="sub">${myWins}-${myLosses} graded</div></div>
+      <div class="accuracy-card"><div class="label">Model A</div><div class="value">${o.model_a.pct ?? '—'}%</div><div class="sub">${o.model_a.correct}/${o.model_a.n} correct</div></div>
+      <div class="accuracy-card"><div class="label">Model B</div><div class="value">${o.model_b.pct ?? '—'}%</div><div class="sub">${o.model_b.correct}/${o.model_b.n} correct</div></div>
+      <div class="accuracy-card"><div class="label">Market</div><div class="value">${o.market.pct ?? '—'}%</div><div class="sub">${o.market.correct}/${o.market.n} correct</div></div>
+    </div>`;
+
+  const cumulativeChartHtml = buildCumulativeTrendChart();
+
+  const weeklyRows = accuracy.weeks.map(w=>`
+    <tr>
+      <td>${w.season} Wk ${w.week}</td>
+      <td class="num">${w.model_a_correct}/${w.model_a_n}</td>
+      <td class="num">${w.model_b_correct}/${w.model_b_n}</td>
+      <td class="num">${w.market_correct}/${w.market_n}</td>
+    </tr>`).join('');
+  const weeklyHtml = `
+    <div class="method-block">
+      <h3>Weekly Trend</h3>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Week</th><th>Model A</th><th>Model B</th><th>Market</th></tr></thead>
+        <tbody>${weeklyRows}</tbody>
+      </table></div>
+    </div>`;
+
+  const calibChartHtml = buildCalibrationChart();
+
+  const calibRows = accuracy.calibration.map(c=>`
+    <tr><td>${c.bucket}</td><td class="num">${c.n}</td><td class="num">${c.avg_predicted}%</td><td class="num">${c.actual_rate}%</td></tr>
+  `).join('');
+  const calibHtml = `
+    <div class="method-block">
+      <h3>Calibration</h3>
+      <p>Does a game we picked at, say, 65% confidence actually win about 65% of the time? Compares the average predicted probability in each confidence bucket to how often the pick was actually right.</p>
+      ${calibChartHtml}
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Confidence Bucket</th><th>Games</th><th>Avg Predicted</th><th>Actual Correct Rate</th></tr></thead>
+        <tbody>${calibRows || '<tr><td colspan="4">Not enough graded games yet.</td></tr>'}</tbody>
+      </table></div>
+    </div>`;
+
+  el.innerHTML = cardsHtml + cumulativeChartHtml + weeklyHtml + calibHtml;
+}
+renderAccuracy();
+
+/* ---------- Team Deep-Dive ---------- */
+function renderTeamDive(){
+  const select = document.getElementById('teamdive-select');
+  const content = document.getElementById('teamdive-content');
+  const badge = document.getElementById('teamdive-badge');
+
+  if(!teamHistory || !teamHistory.names || Object.keys(teamHistory.names).length === 0){
+    content.innerHTML = `<div class="empty-state">No team history data available yet.</div>`;
+    select.innerHTML = '';
+    badge.textContent = '—';
+    return;
+  }
+
+  if(select.options.length === 0){
+    const sortedTeams = Object.keys(teamHistory.names).sort((a,b)=>teamHistory.names[a].localeCompare(teamHistory.names[b]));
+    select.innerHTML = sortedTeams.map(t=>`<option value="${t}">${teamHistory.names[t]} (${t})</option>`).join('');
+    select.addEventListener('change', renderTeamDive);
+  }
+
+  const team = select.value || select.options[0]?.value;
+  const points = (teamHistory.timeline[team] || []);
+  badge.textContent = `${points.length} data point${points.length===1?'':'s'}`;
+
+  if(points.length === 0){
+    content.innerHTML = `<div class="empty-state">No history for this team yet.</div>`;
+    return;
+  }
+
+  const maxAbs = Math.max(...points.map(p=>Math.abs(p.net)), 0.0001);
+  const rowsHtml = points.map(p=>{
+    const width = (Math.abs(p.net)/maxAbs)*100;
+    const isLive = p.label.includes('Wk');
+    return `<div class="dive-row">
+      <span class="dive-label ${isLive?'live':''}">${p.label}</span>
+      <div class="srs-bar-track" style="width:140px;"><div class="srs-bar-fill" style="left:${p.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
+      <span class="dive-value">${p.net>=0?'+':''}${p.net.toFixed(3)}</span>
+    </div>`;
+  }).join('');
+
+  content.innerHTML = `<div class="table-wrap" style="padding:18px 20px;">${rowsHtml}</div>`;
+}
+renderTeamDive();
+</script>
+</body>
+</html>

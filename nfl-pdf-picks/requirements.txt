@@ -1,0 +1,8 @@
+pandas
+numpy
+scikit-learn
+nfl_data_py
+nflreadpy
+pyarrow
+reportlab
+pypdf
