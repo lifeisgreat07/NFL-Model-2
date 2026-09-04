@@ -78,6 +78,14 @@ jobs:
             echo '```'
             grep -E '^[A-Z_]+ *=' src/config.py
             echo '```'
+            echo ""
+            echo "<details><summary>Installed package versions</summary>"
+            echo ""
+            echo '```'
+            pip freeze
+            echo '```'
+            echo ""
+            echo "</details>"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Run ${{ inputs.script }}

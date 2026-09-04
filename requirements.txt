@@ -1,8 +1,32 @@
-pandas
-numpy
-scikit-learn
-nfl_data_py
-nflreadpy
-pyarrow
-reportlab
-pypdf
+# Pinned to exact versions 2026-09-05.
+#
+# Why pin: this project publishes numbers and claims they are reproducible.
+# Unpinned dependencies make that claim unverifiable -- a backtest run today
+# and the same commit re-run in three months could resolve different library
+# versions and produce different results, with nothing in the repo recording
+# which versions produced which numbers. These are the versions the suite and
+# the reproduced BACKTEST_ACCURACY baseline were last verified against.
+#
+# NOTE on pandas/numpy being 1.x: nfl_data_py requires "pandas <2.0" and
+# "numpy <2.0", so it -- not a deliberate choice -- is what holds this project
+# on the 1.x line. nfl_data_py is no longer the live data path (data_loader.py
+# defaults to nflreadpy and only falls back to nfl_data_py if USE_NFLREADPY is
+# flipped to False), and nflreadpy itself needs only polars, treating pandas as
+# an optional extra.
+#
+# Dropping nfl_data_py would therefore unlock pandas 2.x/3.x -- but it would
+# also remove the documented revert path, and a pandas major version change can
+# move model numerics. That makes it a real experiment, not hygiene: tune on
+# 2022-2023, confirm on 2024-2025, and judge it on log loss / Brier / AUC
+# rather than accuracy, which at n~1087 cannot distinguish a genuine change
+# from a one-game platform wobble (see the Model Lab reproducibility finding).
+# Queued as exactly that; deliberately not done as a drive-by.
+
+pandas==1.5.3
+numpy==1.26.4
+scikit-learn==1.9.0
+nfl_data_py==0.3.3
+nflreadpy==0.1.5
+pyarrow==25.0.1
+reportlab==5.0.1
+pypdf==6.16.2

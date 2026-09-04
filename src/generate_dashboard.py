@@ -12,7 +12,15 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from generate_picks_pdf import build_picks_rows, render_picks_pdf
+# generate_picks_pdf is imported lazily, inside the PDF loop in main() --
+# NOT here. It pulls in reportlab, and a module-level import would mean a
+# reportlab problem takes down the entire dashboard build rather than just
+# the PDFs. The dashboard is the actual deliverable and has been generated
+# fine without PDFs for most of this project's life; the printable sheet is
+# a nice-to-have on top. Making the dashboard's availability depend on a
+# rendering library it doesn't otherwise need was a regression introduced
+# with the PDF feature on 2026-09-04, not a deliberate choice.
+# Guarded by tests/test_weekly_pipeline.py.
 
 ROOT = Path(__file__).parent.parent
 DATA_DIR = ROOT / 'data'
@@ -252,7 +260,16 @@ def main():
     # download control can hide itself rather than link to a 404.
     print("Generating printable picks PDFs...")
     pdf_weeks = []
-    for key, preds in sorted(all_preds.items()):
+    try:
+        from generate_picks_pdf import build_picks_rows, render_picks_pdf
+    except Exception as exc:
+        # reportlab missing or broken: skip PDFs entirely and carry on. The
+        # dashboard still builds, and the download control hides itself
+        # because pdf_weeks stays empty.
+        print(f"  WARNING: PDF generation unavailable ({exc}) -- dashboard will build without printable sheets.")
+        build_picks_rows = render_picks_pdf = None
+
+    for key, preds in sorted(all_preds.items()) if build_picks_rows else []:
         season, week = key
         label = f"{season}_week{week}"
         try:
