@@ -181,5 +181,39 @@ def test_build_historical_features_defaults_ol_to_zero_without_lookup():
     assert hist.iloc[0]['qb_matchup'] == pytest.approx(0.20 - 0.05)
 
 
+# ============================================================
+# 4. The dashboard build must not depend on reportlab importing
+# ============================================================
+def test_generate_dashboard_does_not_import_pdf_module_at_top_level():
+    """The printable PDF is a nice-to-have layered on top of the dashboard;
+    the dashboard is the actual deliverable. A module-level
+    `from generate_picks_pdf import ...` pulls in reportlab, so any reportlab
+    problem would take the whole dashboard build down with it -- a regression
+    introduced alongside the PDF feature on 2026-09-04.
+
+    Parsed with ast rather than grepped, so the import must genuinely be at
+    module scope to fail this; the lazy import inside main() is fine.
+    """
+    import ast
+
+    src_path = Path(__file__).parent.parent / "src" / "generate_dashboard.py"
+    tree = ast.parse(src_path.read_text(encoding="utf-8"))
+
+    offenders = []
+    for node in tree.body:  # module scope only
+        if isinstance(node, ast.ImportFrom) and node.module == "generate_picks_pdf":
+            offenders.append(node.lineno)
+        elif isinstance(node, ast.Import):
+            offenders.extend(node.lineno for a in node.names
+                             if a.name == "generate_picks_pdf")
+
+    assert not offenders, (
+        f"generate_dashboard.py imports generate_picks_pdf at module scope "
+        f"(line{'s' if len(offenders) > 1 else ''} {offenders}). Import it "
+        "inside main()'s PDF block instead, so a reportlab failure costs the "
+        "PDFs and not the dashboard."
+    )
+
+
 if __name__ == '__main__':
     sys.exit(pytest.main([__file__, '-v']))
