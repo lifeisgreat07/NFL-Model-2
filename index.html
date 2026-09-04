@@ -196,6 +196,19 @@
     background-repeat:no-repeat; background-position:right 10px center; background-size:16px; padding-right:32px;
   }
   .week-select:focus{outline:1px solid var(--amber);}
+  /* Print/PDF download. Sized to match .week-select so the control row reads
+     as one group; hidden entirely when no PDF exists for the selected week
+     rather than offering a link that would 404. */
+  .pdf-link{
+    display:inline-flex; align-items:center; gap:7px;
+    background:var(--panel); border:1px solid var(--line); color:var(--chalk);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; font-weight:600;
+    padding:9px 14px; border-radius:8px; cursor:pointer; text-decoration:none;
+  }
+  .pdf-link svg{width:14px; height:14px;}
+  .pdf-link:hover{border-color:var(--amber); color:var(--amber);}
+  .pdf-link:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
+  .pdf-link[hidden]{display:none;}
   .team-search{
     background:var(--panel); border:1px solid var(--line); color:var(--chalk);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; padding:9px 14px; border-radius:8px;
@@ -445,7 +458,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <span id="theme-toggle-label">Light mode</span>
     </button>
-    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-03 15:36 UTC</span>
+    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-04 01:19 UTC</span>
   </div>
 </aside>
 
@@ -525,6 +538,14 @@
         <option value="spread">Sort: Biggest Spread First</option>
         <option value="alpha">Sort: Alphabetical (Home Team)</option>
       </select>
+      <a id="picks-pdf-link" class="pdf-link" href="#" download
+         title="Printable PDF of this week's picks, ordered by confidence">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <path d="M7 10l5 5 5-5M12 15V3"/>
+        </svg>Print / PDF
+      </a>
     </div>
     <div class="filter-row" id="filter-row">
       <button class="filter-btn active" data-filter="all">All Games</button>
@@ -2127,6 +2148,10 @@ const weeks = {
   }
 };       // { "2026_week1": {season, week, games:[...]}, ... }
 const latestWeekKey = "2026_week1";  // "2026_week1" or null
+// Week keys that actually have a generated picks PDF on disk. Injected as a
+// real list rather than assumed for every week, so the download control can
+// hide itself instead of linking to a 404 for a week whose PDF is missing.
+const picksPdfs = ["2026_week1"];
 const accuracy = {
   "weeks": [
     {
@@ -2435,6 +2460,16 @@ function renderGames(){
   const gamesList = weekData ? weekData.games : [];
   badge.textContent = gamesList.length ? `${gamesList.length} game${gamesList.length===1?'':'s'}` : 'No games';
   renderWeekGlance(gamesList);
+
+  const pdfLink = document.getElementById('picks-pdf-link');
+  if(pdfLink){
+    const hasPdf = picksPdfs.indexOf(currentBoardWeek) !== -1;
+    pdfLink.hidden = !hasPdf;
+    if(hasPdf){
+      pdfLink.href = 'dist/picks_' + currentBoardWeek + '.pdf';
+      pdfLink.setAttribute('aria-label', 'Download printable PDF of picks for ' + currentBoardWeek.replace('_week', ' week '));
+    }
+  }
 
   if(!weekData || gamesList.length === 0){
     grid.innerHTML = `<div class="empty-state">No predictions saved for this week yet.</div>`;

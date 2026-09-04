@@ -12,9 +12,12 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from generate_picks_pdf import build_picks_rows, render_picks_pdf
+
 ROOT = Path(__file__).parent.parent
 DATA_DIR = ROOT / 'data'
 PRED_DIR = ROOT / 'predictions'
+DIST_DIR = ROOT / 'dist'
 RESULTS_DIR = ROOT / 'results'
 TEMPLATE_PATH = ROOT / 'src' / 'dashboard_template.html'
 OUTPUT_PATH = ROOT / 'index.html'  # served as the default page by GitHub Pages
@@ -242,6 +245,29 @@ def main():
     latest_key = max(all_preds.keys()) if all_preds else None
     latest_label = f"{latest_key[0]}_week{latest_key[1]}" if latest_key else None
 
+    # Printable picks PDFs, one per saved week. Generated here rather than
+    # client-side because the sheet has to match exactly what the board
+    # shows, and browser print output silently varies by browser. Only the
+    # weeks that actually produce a file get listed, so the dashboard's
+    # download control can hide itself rather than link to a 404.
+    print("Generating printable picks PDFs...")
+    pdf_weeks = []
+    for key, preds in sorted(all_preds.items()):
+        season, week = key
+        label = f"{season}_week{week}"
+        try:
+            rows = build_picks_rows(preds)
+            versions = {p.get('model_version') for p in preds if p.get('model_version')}
+            model_version = versions.pop() if len(versions) == 1 else 'mixed'
+            render_picks_pdf(rows, season, week, model_version,
+                             DIST_DIR / f'picks_{label}.pdf')
+            pdf_weeks.append(label)
+        except Exception as exc:
+            # A malformed or empty week must not take the whole dashboard
+            # build down -- skip that week's PDF and say so out loud.
+            print(f"  WARNING: no PDF for {label}: {exc}")
+    print(f"  {len(pdf_weeks)} PDF(s) written to {DIST_DIR}")
+
     print("Building season accuracy summary...")
     accuracy_js = build_accuracy_summary(all_graded)
 
@@ -261,6 +287,7 @@ def main():
     html = html.replace('__PLAYOFF_ODDS_JSON__', json.dumps(playoff_odds, indent=2))
     html = html.replace('__WEEKS_JSON__', json.dumps(weeks_js, indent=2))
     html = html.replace('__LATEST_WEEK__', json.dumps(latest_label))
+    html = html.replace('__PICKS_PDFS_JSON__', json.dumps(pdf_weeks))
     html = html.replace('__ACCURACY_JSON__', json.dumps(accuracy_js, indent=2))
     html = html.replace('__TEAM_HISTORY_JSON__', json.dumps(team_history_js, indent=2))
     html = html.replace('__SIDEBAR_FOOT__', foot_html)
