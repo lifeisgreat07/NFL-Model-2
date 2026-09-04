@@ -1,0 +1,460 @@
+{
+  "generated_at": "2026-09-04 16:47 UTC",
+  "provenance": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.9",
+    "numpy": "1.26.4",
+    "pandas": "1.5.3",
+    "scikit-learn": "1.9.0"
+  },
+  "model_version": "2.4",
+  "backtest_seasons": [
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "bin_edges": [
+    0.0,
+    0.2,
+    0.3,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.7,
+    0.8,
+    1.0
+  ],
+  "min_bin_n": 25,
+  "models": {
+    "model_a": {
+      "features": [
+        "off_matchup",
+        "def_matchup",
+        "qb_matchup",
+        "qb_change_diff"
+      ],
+      "metrics": {
+        "n": 1087,
+        "accuracy": 0.6274149034038639,
+        "log_loss": 0.649812209965089,
+        "brier": 0.22860320109747892,
+        "auc": 0.6701189996654628
+      },
+      "decomposition": {
+        "reliability": 0.003147,
+        "resolution": 0.022507,
+        "uncertainty": 0.247926,
+        "base_rate": 0.545538
+      },
+      "bins": [
+        {
+          "lo": 0.0,
+          "hi": 0.2,
+          "label": "0-20%",
+          "n": 6,
+          "mean_predicted": 15.84,
+          "observed": 50.0,
+          "ci_lo": 18.76,
+          "ci_hi": 81.24,
+          "consistent_with_perfect": false,
+          "underpowered": true
+        },
+        {
+          "lo": 0.2,
+          "hi": 0.3,
+          "label": "20-30%",
+          "n": 35,
+          "mean_predicted": 25.82,
+          "observed": 28.57,
+          "ci_lo": 16.33,
+          "ci_hi": 45.06,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.3,
+          "hi": 0.4,
+          "label": "30-40%",
+          "n": 117,
+          "mean_predicted": 35.71,
+          "observed": 38.46,
+          "ci_lo": 30.15,
+          "ci_hi": 47.51,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.4,
+          "hi": 0.45,
+          "label": "40-45%",
+          "n": 128,
+          "mean_predicted": 42.6,
+          "observed": 38.28,
+          "ci_lo": 30.32,
+          "ci_hi": 46.93,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.45,
+          "hi": 0.5,
+          "label": "45-50%",
+          "n": 167,
+          "mean_predicted": 47.63,
+          "observed": 44.91,
+          "ci_lo": 37.56,
+          "ci_hi": 52.48,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.5,
+          "hi": 0.55,
+          "label": "50-55%",
+          "n": 176,
+          "mean_predicted": 52.67,
+          "observed": 50.0,
+          "ci_lo": 42.69,
+          "ci_hi": 57.31,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.55,
+          "hi": 0.6,
+          "label": "55-60%",
+          "n": 163,
+          "mean_predicted": 57.34,
+          "observed": 64.42,
+          "ci_lo": 56.81,
+          "ci_hi": 71.36,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.6,
+          "hi": 0.7,
+          "label": "60-70%",
+          "n": 202,
+          "mean_predicted": 64.68,
+          "observed": 69.8,
+          "ci_lo": 63.15,
+          "ci_hi": 75.72,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.7,
+          "hi": 0.8,
+          "label": "70-80%",
+          "n": 80,
+          "mean_predicted": 74.28,
+          "observed": 83.75,
+          "ci_lo": 74.16,
+          "ci_hi": 90.25,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.8,
+          "hi": 1.0,
+          "label": "80-100%",
+          "n": 13,
+          "mean_predicted": 83.37,
+          "observed": 76.92,
+          "ci_lo": 49.74,
+          "ci_hi": 91.82,
+          "consistent_with_perfect": true,
+          "underpowered": true
+        }
+      ]
+    },
+    "model_b": {
+      "features": [
+        "off_matchup",
+        "def_matchup",
+        "qb_matchup",
+        "qb_change_diff",
+        "spread_line"
+      ],
+      "metrics": {
+        "n": 1087,
+        "accuracy": 0.6826126954921803,
+        "log_loss": 0.6062088177820173,
+        "brier": 0.20947053255741319,
+        "auc": 0.7269493619897455
+      },
+      "decomposition": {
+        "reliability": 0.001697,
+        "resolution": 0.039321,
+        "uncertainty": 0.247926,
+        "base_rate": 0.545538
+      },
+      "bins": [
+        {
+          "lo": 0.0,
+          "hi": 0.2,
+          "label": "0-20%",
+          "n": 41,
+          "mean_predicted": 16.2,
+          "observed": 26.83,
+          "ci_lo": 15.69,
+          "ci_hi": 41.93,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.2,
+          "hi": 0.3,
+          "label": "20-30%",
+          "n": 100,
+          "mean_predicted": 25.69,
+          "observed": 22.0,
+          "ci_lo": 15.0,
+          "ci_hi": 31.07,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.3,
+          "hi": 0.4,
+          "label": "30-40%",
+          "n": 197,
+          "mean_predicted": 35.64,
+          "observed": 34.01,
+          "ci_lo": 27.76,
+          "ci_hi": 40.88,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.4,
+          "hi": 0.45,
+          "label": "40-45%",
+          "n": 73,
+          "mean_predicted": 42.37,
+          "observed": 41.1,
+          "ci_lo": 30.53,
+          "ci_hi": 52.55,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.45,
+          "hi": 0.5,
+          "label": "45-50%",
+          "n": 46,
+          "mean_predicted": 47.11,
+          "observed": 52.17,
+          "ci_lo": 38.14,
+          "ci_hi": 65.88,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.5,
+          "hi": 0.55,
+          "label": "50-55%",
+          "n": 66,
+          "mean_predicted": 52.75,
+          "observed": 59.09,
+          "ci_lo": 47.05,
+          "ci_hi": 70.13,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.55,
+          "hi": 0.6,
+          "label": "55-60%",
+          "n": 158,
+          "mean_predicted": 57.52,
+          "observed": 63.92,
+          "ci_lo": 56.19,
+          "ci_hi": 71.0,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.6,
+          "hi": 0.7,
+          "label": "60-70%",
+          "n": 194,
+          "mean_predicted": 64.96,
+          "observed": 66.49,
+          "ci_lo": 59.59,
+          "ci_hi": 72.76,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.7,
+          "hi": 0.8,
+          "label": "70-80%",
+          "n": 140,
+          "mean_predicted": 74.65,
+          "observed": 75.0,
+          "ci_lo": 67.22,
+          "ci_hi": 81.44,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.8,
+          "hi": 1.0,
+          "label": "80-100%",
+          "n": 72,
+          "mean_predicted": 86.5,
+          "observed": 90.28,
+          "ci_lo": 81.26,
+          "ci_hi": 95.21,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        }
+      ]
+    },
+    "market": {
+      "features": [
+        "spread_line"
+      ],
+      "metrics": {
+        "n": 1087,
+        "accuracy": 0.6816927322907084,
+        "log_loss": 0.6073980523603624,
+        "brier": 0.21009216466097622,
+        "auc": 0.7246332038423988
+      },
+      "decomposition": {
+        "reliability": 0.001334,
+        "resolution": 0.03818,
+        "uncertainty": 0.247926,
+        "base_rate": 0.545538
+      },
+      "bins": [
+        {
+          "lo": 0.0,
+          "hi": 0.2,
+          "label": "0-20%",
+          "n": 31,
+          "mean_predicted": 15.33,
+          "observed": 22.58,
+          "ci_lo": 11.39,
+          "ci_hi": 39.81,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.2,
+          "hi": 0.3,
+          "label": "20-30%",
+          "n": 109,
+          "mean_predicted": 25.57,
+          "observed": 25.69,
+          "ci_lo": 18.41,
+          "ci_hi": 34.62,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.3,
+          "hi": 0.4,
+          "label": "30-40%",
+          "n": 219,
+          "mean_predicted": 36.41,
+          "observed": 35.16,
+          "ci_lo": 29.14,
+          "ci_hi": 41.69,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.4,
+          "hi": 0.45,
+          "label": "40-45%",
+          "n": 75,
+          "mean_predicted": 42.68,
+          "observed": 44.0,
+          "ci_lo": 33.33,
+          "ci_hi": 55.25,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.45,
+          "hi": 0.5,
+          "label": "45-50%",
+          "n": 8,
+          "mean_predicted": 49.65,
+          "observed": 25.0,
+          "ci_lo": 7.15,
+          "ci_hi": 59.07,
+          "consistent_with_perfect": true,
+          "underpowered": true
+        },
+        {
+          "lo": 0.5,
+          "hi": 0.55,
+          "label": "50-55%",
+          "n": 60,
+          "mean_predicted": 53.01,
+          "observed": 56.67,
+          "ci_lo": 44.1,
+          "ci_hi": 68.43,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.55,
+          "hi": 0.6,
+          "label": "55-60%",
+          "n": 190,
+          "mean_predicted": 57.7,
+          "observed": 61.05,
+          "ci_lo": 53.97,
+          "ci_hi": 67.7,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.6,
+          "hi": 0.7,
+          "label": "60-70%",
+          "n": 191,
+          "mean_predicted": 64.9,
+          "observed": 69.11,
+          "ci_lo": 62.23,
+          "ci_hi": 75.23,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.7,
+          "hi": 0.8,
+          "label": "70-80%",
+          "n": 134,
+          "mean_predicted": 74.3,
+          "observed": 75.37,
+          "ci_lo": 67.44,
+          "ci_hi": 81.89,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        },
+        {
+          "lo": 0.8,
+          "hi": 1.0,
+          "label": "80-100%",
+          "n": 70,
+          "mean_predicted": 86.11,
+          "observed": 90.0,
+          "ci_lo": 80.77,
+          "ci_hi": 95.07,
+          "consistent_with_perfect": true,
+          "underpowered": false
+        }
+      ]
+    }
+  }
+}
