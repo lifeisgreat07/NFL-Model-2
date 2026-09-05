@@ -1,0 +1,115 @@
+name: Booth PR audit
+
+# Booth is the verification role defined in BOOTH_PROTOCOL.md: given a PR, it
+# independently RE-EXECUTES what the PR claims and reports discrepancies. It is
+# not a code reviewer and does not judge research direction -- that scope note
+# is in the protocol itself.
+#
+# Two design points that matter, both straight out of the protocol:
+#
+#   1. Booth must run real commands and show real output. A report that says
+#      "the claims look reasonable" is Scout's failure mode wearing Booth's
+#      name. That is why this workflow installs the project's dependencies
+#      before invoking Claude -- without them Booth cannot run pytest, and an
+#      agent that cannot re-execute will fall back to reading and agreeing.
+#
+#   2. Booth must not share context with whatever session produced the PR, so
+#      it is not primed to agree with its own earlier reasoning. A CI run gives
+#      that for free: every run is a fresh session with no memory of the work.
+#
+# The prompt deliberately points at BOOTH_PROTOCOL.md in the checkout rather
+# than restating it here. One source of truth; editing the protocol changes
+# Booth's behaviour without touching this file.
+#
+# Permissions are deliberately narrow. The protocol says Booth's job ends at
+# the report and that merging is a human decision, so `contents: read` means it
+# structurally cannot push, merge or modify the branch even if instructed to.
+# It can only comment.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  # Lets you re-run an audit by hand without pushing a new commit.
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to audit'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: write
+  id-token: write
+
+# A new push supersedes the audit in flight. Without this, a branch pushed
+# three times in a minute runs Booth three times and bills all three against
+# the subscription.
+concurrency:
+  group: booth-${{ github.event.pull_request.number || inputs.pr_number }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    # Draft PRs are still being written; auditing claims that aren't final yet
+    # spends usage on a moving target.
+    if: github.event.pull_request.draft == false || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the PR branch
+        uses: actions/checkout@v4
+        with:
+          # Full history: Booth checks claims about commits, branch state and
+          # what changed against main, none of which survive a shallow clone.
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || format('refs/pull/{0}/head', inputs.pr_number) }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        # Booth cannot verify "the tests pass" without being able to run them.
+        run: pip install -r requirements.txt
+
+      - name: Run Booth
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Subscription auth, not an API key: runs bill against the Claude
+          # subscription rather than metered API credits.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            You are Booth. Read BOOTH_PROTOCOL.md in this repository and follow
+            its procedure exactly for pull request #${{ github.event.pull_request.number || inputs.pr_number }}.
+
+            The repository is already checked out at the PR's head commit and
+            its dependencies are installed, so you can run its test suite and
+            git commands directly.
+
+            Read the PR's description and diff with:
+              gh pr view ${{ github.event.pull_request.number || inputs.pr_number }} --json title,body
+              gh pr diff ${{ github.event.pull_request.number || inputs.pr_number }}
+
+            Non-negotiable, from the protocol: you must RE-EXECUTE the commands
+            that would prove or disprove each claim, and your report must show
+            the real output you got. A report that reasons about whether claims
+            sound plausible, without running anything, is a failed audit. If a
+            claim genuinely cannot be checked with the tools available here,
+            mark it UNVERIFIABLE and say why rather than guessing.
+
+            When you are done, post your report as a PR comment using:
+              gh pr comment ${{ github.event.pull_request.number || inputs.pr_number }} --body-file <your report file>
+
+            Use the exact report structure the protocol specifies. Do not
+            merge, close, approve or modify the pull request -- the protocol
+            ends your job at the report, and this workflow has read-only
+            access to repository contents regardless.
+          claude_args: |
+            --max-turns 30
+            --allowedTools "Bash,Read,Glob,Grep"
