@@ -1,0 +1,217 @@
+{
+  "model_version": "2.4",
+  "backtest_seasons": [
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "n_games": 1087,
+  "n_resamples": 5000,
+  "seed": 20260905,
+  "coverage": {
+    "model_a": 1599,
+    "model_b": 1599,
+    "market": 1599,
+    "common": 1599
+  },
+  "full_sample": {
+    "model_a": {
+      "brier": 0.22860320109747892,
+      "log_loss": 0.649812209965089,
+      "reliability": 0.003146792718728916,
+      "resolution": 0.02250669654305338
+    },
+    "model_b": {
+      "brier": 0.20947053255741319,
+      "log_loss": 0.6062088177820173,
+      "reliability": 0.0016966010404024382,
+      "resolution": 0.0393211036961199
+    },
+    "market": {
+      "brier": 0.21009216466097622,
+      "log_loss": 0.6073980523603624,
+      "reliability": 0.0013342620665379127,
+      "resolution": 0.03818025859982775
+    }
+  },
+  "comparisons": {
+    "model_b_vs_market": {
+      "label": "Model B vs market",
+      "metrics": {
+        "brier": {
+          "label": "Brier",
+          "lower_is_better": true,
+          "a": 0.20947053255741319,
+          "b": 0.21009216466097622,
+          "difference": -0.0006216321035630301,
+          "ci_lo": -0.0023950220467819257,
+          "ci_hi": 0.0011413357953163916,
+          "excludes_zero": false,
+          "favours": "a",
+          "verdict": "INCONCLUSIVE",
+          "degenerate_resamples": 0,
+          "analytic_ci_lo": -0.002423676428345958,
+          "analytic_ci_hi": 0.0011804122212198617
+        },
+        "log_loss": {
+          "label": "Log loss",
+          "lower_is_better": true,
+          "a": 0.6062088177820173,
+          "b": 0.6073980523603624,
+          "difference": -0.0011892345783450775,
+          "ci_lo": -0.005156361944639298,
+          "ci_hi": 0.00283151874007259,
+          "excludes_zero": false,
+          "favours": "a",
+          "verdict": "INCONCLUSIVE",
+          "degenerate_resamples": 0
+        },
+        "reliability": {
+          "label": "Reliability",
+          "lower_is_better": true,
+          "a": 0.0016966010404024382,
+          "b": 0.0013342620665379127,
+          "difference": 0.0003623389738645255,
+          "ci_lo": -0.002009852138347407,
+          "ci_hi": 0.003052450420996235,
+          "excludes_zero": false,
+          "favours": "b",
+          "verdict": "INCONCLUSIVE",
+          "degenerate_resamples": 0
+        },
+        "resolution": {
+          "label": "Resolution",
+          "lower_is_better": false,
+          "a": 0.0393211036961199,
+          "b": 0.03818025859982775,
+          "difference": 0.0011408450962921493,
+          "ci_lo": -0.0021961860882782442,
+          "ci_hi": 0.004597241787337003,
+          "excludes_zero": false,
+          "favours": "a",
+          "verdict": "INCONCLUSIVE",
+          "degenerate_resamples": 0
+        }
+      }
+    },
+    "model_a_vs_market": {
+      "label": "Model A vs market",
+      "metrics": {
+        "brier": {
+          "label": "Brier",
+          "lower_is_better": true,
+          "a": 0.22860320109747892,
+          "b": 0.21009216466097622,
+          "difference": 0.018511036436502704,
+          "ci_lo": 0.011496245838690269,
+          "ci_hi": 0.025553495557020724,
+          "excludes_zero": true,
+          "favours": "b",
+          "verdict": "REAL DIFFERENCE",
+          "degenerate_resamples": 0,
+          "analytic_ci_lo": 0.011501328166214323,
+          "analytic_ci_hi": 0.025520744706791054
+        },
+        "log_loss": {
+          "label": "Log loss",
+          "lower_is_better": true,
+          "a": 0.649812209965089,
+          "b": 0.6073980523603624,
+          "difference": 0.042414157604726666,
+          "ci_lo": 0.026992229643704603,
+          "ci_hi": 0.05829117734815819,
+          "excludes_zero": true,
+          "favours": "b",
+          "verdict": "REAL DIFFERENCE",
+          "degenerate_resamples": 0
+        },
+        "reliability": {
+          "label": "Reliability",
+          "lower_is_better": true,
+          "a": 0.003146792718728916,
+          "b": 0.0013342620665379127,
+          "difference": 0.0018125306521910034,
+          "ci_lo": -0.0016810128457075098,
+          "ci_hi": 0.006154073272488025,
+          "excludes_zero": false,
+          "favours": "b",
+          "verdict": "INCONCLUSIVE",
+          "degenerate_resamples": 0
+        },
+        "resolution": {
+          "label": "Resolution",
+          "lower_is_better": false,
+          "a": 0.02250669654305338,
+          "b": 0.03818025859982775,
+          "difference": -0.015673562056774372,
+          "ci_lo": -0.024071612789635228,
+          "ci_hi": -0.007422848806956253,
+          "excludes_zero": true,
+          "favours": "b",
+          "verdict": "REAL DIFFERENCE",
+          "degenerate_resamples": 0
+        }
+      }
+    },
+    "model_b_vs_model_a": {
+      "label": "Model B vs Model A",
+      "metrics": {
+        "brier": {
+          "label": "Brier",
+          "lower_is_better": true,
+          "a": 0.20947053255741319,
+          "b": 0.22860320109747892,
+          "difference": -0.019132668540065734,
+          "ci_lo": -0.02583792806900802,
+          "ci_hi": -0.012687370751071143,
+          "excludes_zero": true,
+          "favours": "a",
+          "verdict": "REAL DIFFERENCE",
+          "degenerate_resamples": 0,
+          "analytic_ci_lo": -0.02575233158979295,
+          "analytic_ci_hi": -0.012513005490338538
+        },
+        "log_loss": {
+          "label": "Log loss",
+          "lower_is_better": true,
+          "a": 0.6062088177820173,
+          "b": 0.649812209965089,
+          "difference": -0.04360339218307174,
+          "ci_lo": -0.0586208611892391,
+          "ci_hi": -0.029231229133517,
+          "excludes_zero": true,
+          "favours": "a",
+          "verdict": "REAL DIFFERENCE",
+          "degenerate_resamples": 0
+        },
+        "reliability": {
+          "label": "Reliability",
+          "lower_is_better": true,
+          "a": 0.0016966010404024382,
+          "b": 0.003146792718728916,
+          "difference": -0.0014501916783264779,
+          "ci_lo": -0.005963449840391993,
+          "ci_hi": 0.002451565080301584,
+          "excludes_zero": false,
+          "favours": "a",
+          "verdict": "INCONCLUSIVE",
+          "degenerate_resamples": 0
+        },
+        "resolution": {
+          "label": "Resolution",
+          "lower_is_better": false,
+          "a": 0.0393211036961199,
+          "b": 0.02250669654305338,
+          "difference": 0.01681440715306652,
+          "ci_lo": 0.008990313549393563,
+          "ci_hi": 0.024818998741920815,
+          "excludes_zero": true,
+          "favours": "a",
+          "verdict": "REAL DIFFERENCE",
+          "degenerate_resamples": 0
+        }
+      }
+    }
+  }
+}
