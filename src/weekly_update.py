@@ -205,6 +205,13 @@ def build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_wee
             rows.append({
                 'season': g['season'], 'week': g['week'],
                 'home_win': int(g['home_score'] > g['away_score']),
+                # Final margin from the home team's perspective. Added
+                # 2026-09-05 for ATS evaluation (src/ats_evaluation.py), which
+                # needs the score, not just who won. Purely additive: no model
+                # trains on it, and every fitted model selects its columns by
+                # an explicit feature list, so nothing downstream sees it
+                # unless it asks. Guarded by tests/test_ats_evaluation.py.
+                'home_margin': int(g['home_score'] - g['away_score']),
                 'off_matchup': h_off - a_def,
                 'def_matchup': a_off - h_def,
                 'qb_matchup': home_qb_rating - away_qb_rating,
