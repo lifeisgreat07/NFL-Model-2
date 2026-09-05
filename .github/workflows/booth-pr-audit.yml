@@ -59,7 +59,7 @@ jobs:
 
     steps:
       - name: Check out the PR branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Full history: Booth checks claims about commits, branch state and
           # what changed against main, none of which survive a shallow clone.
@@ -67,7 +67,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || format('refs/pull/{0}/head', inputs.pr_number) }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -106,10 +106,24 @@ jobs:
             When you are done, post your report as a PR comment using:
               gh pr comment ${{ github.event.pull_request.number || inputs.pr_number }} --body-file <your report file>
 
+            Work through the claims in order of how load-bearing they are --
+            a claim the merge decision rests on before a decorative one. POST
+            YOUR REPORT BEFORE YOU RUN OUT OF TURNS. A report covering the
+            claims that matter, with the rest listed as not yet checked, is
+            far more useful than an exhausted run that posts nothing at all.
+            The first attempt at this workflow died exactly that way.
+
             Use the exact report structure the protocol specifies. Do not
             merge, close, approve or modify the pull request -- the protocol
             ends your job at the report, and this workflow has read-only
             access to repository contents regardless.
+          # 120, not the 30 this shipped with. The first run reached 30 turns
+          # in 3m47s against a 20-minute timeout and was killed mid-audit, so
+          # the cap -- picked for cost control before anyone knew what an audit
+          # actually costs -- was strangling the feature rather than protecting
+          # it. At roughly 8 turns/minute, 120 turns lands inside the timeout,
+          # which is the real backstop: wall-clock is the cost that matters,
+          # and turns are a blunt proxy for it.
           claude_args: |
-            --max-turns 30
+            --max-turns 120
             --allowedTools "Bash,Read,Glob,Grep"
