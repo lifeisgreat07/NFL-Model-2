@@ -1,0 +1,69 @@
+{
+  "model_version": "2.4",
+  "backtest_seasons": [
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "features": [
+    "off_matchup",
+    "def_matchup",
+    "qb_matchup",
+    "qb_change_diff",
+    "spread_line"
+  ],
+  "n_games": 1058,
+  "pushes_excluded": 33,
+  "spread_margin_correlation": 0.45516889435798424,
+  "break_even_rate": 0.5238095238095238,
+  "n_resamples": 5000,
+  "seed": 20260905,
+  "controls_sane": true,
+  "results": {
+    "model": {
+      "name": "Model (features + spread -> cover)",
+      "n": 1058,
+      "rate": 0.5160680529300568,
+      "ci_lo": 0.48582230623818523,
+      "ci_hi": 0.5463137996219282,
+      "wilson_lo": 0.48595105090528345,
+      "wilson_hi": 0.5460687908488916,
+      "beats_coin_flip": false,
+      "beats_break_even": false
+    },
+    "always_home": {
+      "name": "Control: always pick home",
+      "n": 1058,
+      "rate": 0.5,
+      "ci_lo": 0.4706994328922495,
+      "ci_hi": 0.5293005671077504,
+      "wilson_lo": 0.469925652899019,
+      "wilson_hi": 0.530074347100981,
+      "beats_coin_flip": false,
+      "beats_break_even": false
+    },
+    "always_away": {
+      "name": "Control: always pick away",
+      "n": 1058,
+      "rate": 0.5,
+      "ci_lo": 0.4706994328922495,
+      "ci_hi": 0.5293005671077504,
+      "wilson_lo": 0.469925652899019,
+      "wilson_hi": 0.530074347100981,
+      "beats_coin_flip": false,
+      "beats_break_even": false
+    },
+    "always_favourite": {
+      "name": "Control: always pick the favourite",
+      "n": 1058,
+      "rate": 0.5,
+      "ci_lo": 0.46975425330812853,
+      "ci_hi": 0.5302457466918714,
+      "wilson_lo": 0.469925652899019,
+      "wilson_hi": 0.530074347100981,
+      "beats_coin_flip": false,
+      "beats_break_even": false
+    }
+  }
+}
