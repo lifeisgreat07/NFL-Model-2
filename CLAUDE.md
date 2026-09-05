@@ -36,32 +36,97 @@ the engineering. Public repo, so anything committed is read by strangers.
 
 ## Current state (update this when it changes)
 
-Model v2.4. `TRAIN_SEASONS` 2020–2025, `BACKTEST_SEASONS` 2022–2025,
+Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Stage 1–2 — Foundations, cleanup, calibration data; done. Injury/availability
-data investigated and CLOSED on value, not availability; snap-count dependency
-removed from the live path; requirements pinned; `.gitattributes` added after
-real PDF corruption on a Windows checkout; `calibration.py` written.
+The ten-stage plan below is the canonical roadmap. It was written before the
+2026-09-04 compaction, lost with it, and recovered from the user's own chat
+scrollback on 2026-09-05. Status notes are current as of that date. Keep this
+list here, not in chat.
 
-Stage 3 — Calibration & evaluation depth; nearly done. Reliability diagram with
-Wilson intervals and the Murphy decomposition (PR #13); chart-palette defect
-found and fixed with a validator-backed test (PR #13); build-churn fix (PR #14);
-paired bootstrap, which killed the Model-B-vs-market lead and confirmed two new
-findings (PR #15); ATS evaluation, no edge (in flight). Remaining: confidence
-intervals on the picks display. Deferred: closing-line backtest, still gated on
-line-history accumulation.
+Stage 1 - Quick status checks (recurring, first every session, don't dwell)
+Injury/roster data (CLOSED 2026-09-04, and note this is a change from
+"blocked": the data question was settled on VALUE, not availability -- a QB is
+Out in only 6.9% of team-weeks and `qb_change_diff` already covers it, so stop
+re-checking nflverse for it); ensemble contingency (still blocked, now solely on
+another independently-useful model existing); ESPN QBR (source abandoned, stops
+at 2023 -- quick re-check only); public betting % (blocked, no free accessible
+source -- quick re-check only); line-movement accumulation (CONFIRMED WORKING
+end-to-end; needs many more weeks before a real predictive test, do not force
+one on a small sample); reverse line movement (blocked downstream of public
+betting %, not independently actionable).
 
-Stage 4 — Deploy Booth & agent development; next. API key as a repo secret,
-Claude GitHub App, `booth-pr-audit.yml`, a real test PR proving the verifier
-catches something; then Booth regression suite, prompt-injection test, Scout
-pre-flight, decision log, disagreement protocol, cost instrumentation, Archivist.
+Stage 2 - Deferred dashboard UX
+Print/PDF view of the week's picks (DONE); Team Deep-Dive game drill-down
+(remaining); shareable picks link (remaining).
 
-Stages 5–7 — Automation & monitoring; model depth & new data sources; v3.0
-dashboard visual overhaul & portfolio polish. **Coarse — these need re-expanding
-into concrete items before starting.** Their original detail was lost in the
-2026-09-04 compaction.
+Stage 3 - Repo hygiene & reproducibility quick wins
+Pin `requirements.txt` (DONE); remove `ol_continuity` dead code (DONE, but
+NARROWED -- it turned out not to be dead: `backtest.py` uses it for
+"[reference only]" rows and four leak-free tests cover it, so it was removed
+from the live weekly path only); `run-backtest.yml` workflow_dispatch (DONE,
+plus `pip freeze` provenance); auto-generated changelog page from `config.py`
+(remaining); resolve whether `nfl_data_py` is a real fallback or cruft
+(remaining -- tied to the queued pandas 2.x/3.x unlock experiment, which must be
+judged on log loss/Brier/AUC, never accuracy).
+
+Stage 4 - Evaluation honesty (methodological gate -- do before Stages 8-9)
+Calibration curve and reliability diagram (DONE, PR #13); against-the-spread
+evaluation with real CIs (DONE, PR #16 -- 51.61%, CI [48.58%, 54.63%], no edge,
+does not clear the 52.38% break-even); backtest against the closing line
+(DEFERRED, gated on line-history accumulation); confidence-interval display on
+picks (REMAINING -- the last item in this stage); isotonic/Platt recalibration
+only if warranted (CLOSED -- already REJECTED on Model Lab, and the reliability
+diagram shows no material miscalibration, so the condition is not met). Also
+landed here unplanned: the paired bootstrap (PR #15), which killed the
+Model-B-vs-market lead and confirmed two new findings, and the build-churn fix
+(PR #14).
+
+Stage 5 - Deploy Booth for real  <- NEXT
+`ANTHROPIC_API_KEY` repo secret; install the Claude GitHub App; upload
+`booth-pr-audit.yml` (remember `.github/` is write-protected against remote
+tooling, so this needs a web-editor walkthrough); open a real test PR and
+confirm Booth actually fires, re-executes and posts a genuine report -- not just
+that the workflow runs green; build the alert/communication system once
+autonomous operation is confirmed.
+
+Stage 6 - Agent development
+Booth regression suite of deliberately-bad PRs it must catch; prompt-injection
+resistance test; Scout pre-flight check enforcing `VERIFICATION.md` before any
+PR opens; structured agent decision log rendered as a dashboard page;
+inter-agent disagreement protocol (currently undefined); Booth cost and latency
+instrumentation; "Archivist" role regenerating the handoff from real repo state
+(note: this file is the manual version of that).
+
+Stage 7 - Automation & monitoring
+Data-quality checks on every weekly run; play-by-play cache layer; alerts on
+upstream nflverse schema changes; auto-open a PR when `check_drift.py` detects
+real drift; nightly canary against the last completed week (would have caught
+the `nflreadpy` offseason crash days early); automated weekly summary report;
+reproducibility audit and expanded leak-free coverage.
+
+Stage 8 - Model depth, real hypotheses only
+Residual analysis FIRST, since it tells you which of the rest are worth
+attempting; market-implied probability calibration as a Model B feature;
+per-team learned home-field advantage; rest and travel features; weather and
+wind for outdoor games; situational splits; multi-season QB priors;
+injury-adjusted QB ratings (gated on Stage 1's injury data, which is now closed,
+so treat as indefinitely parked); learned blend weight between Models A and B
+(if an ensemble doesn't beat both, that's a publishable REJECT).
+
+Stage 9 - New data sources
+Next Gen Stats via nflreadpy (most promising untapped source already in the
+stack); participation/personnel grouping; referee crew assignments (cheap, real,
+testable); multi-book line dispersion as an uncertainty signal (infrastructure
+exists, so this is accumulation-gated analysis under Stage 1, not a new build).
+Each item needs a stated hypothesis BEFORE the data is pulled, or it is fishing.
+
+Stage 10 - Portfolio polish
+README rewrite for a cold technical reader; architecture diagram; written case
+study of the QB rating leak; public "lessons learned" page; dedicated write-up
+of the Booth regression suite and injection test (if Stage 6 works, that is the
+most employer-relevant material in the project).
 
 ## Environment and workflow
 
