@@ -74,7 +74,11 @@ jobs:
 
       - name: Install dependencies
         # Booth cannot verify "the tests pass" without being able to run them.
-        run: pip install -r requirements.txt
+        # requirements-dev.txt carries the pinned pytest. Without it Booth
+        # installs an unpinned one mid-audit, and nothing records which
+        # version did the verifying -- the project's own reproducibility
+        # rule, broken inside the thing that enforces it.
+        run: pip install -r requirements.txt -r requirements-dev.txt
 
       - name: Run Booth
         uses: anthropics/claude-code-action@v1
