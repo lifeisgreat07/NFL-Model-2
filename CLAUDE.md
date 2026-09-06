@@ -40,7 +40,9 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-The stage plan was renumbered on 2026-09-06. The original ten-stage plan's
+The stage plan was renumbered on 2026-09-06. Carried-over incomplete work runs
+first (Stages 2-7); the dashboard visual overhaul from the design audit follows
+(Stages 8-10). The original ten-stage plan's
 Stages 2-5 are now finished, so carrying their numbering forward would have
 meant a roadmap that was mostly struck through. What follows replaces it. The
 old numbering appears nowhere else; if you find a reference to "Stage 4 -
@@ -78,19 +80,82 @@ confirmed working and needs many more weeks before a real predictive test -
 do not force one on a small sample. Closing-line backtest stays deferred on
 that same accumulation.
 
-### Stage 2 - Design system foundations  <- NEXT
+### Stage 2 - Deferred UX & repo hygiene  <- NEXT
+
+Carried over and unblocked. Team Deep-Dive game drill-down; shareable picks
+link; auto-generated changelog page from config.py's version history; resolve
+whether nfl_data_py is a real fallback or cruft, tied to the queued pandas
+2.x/3.x unlock experiment - judged on log loss/Brier/AUC, never accuracy; Net
+Rating bar rebuilt with a zero baseline and a scale; remove or populate the SOS
+column, currently an em-dash for all 32 teams. OPEN BUG: booth-pr-audit.yml
+does not install pytest, so Booth installs it mid-audit. One line, but .github/
+needs a web-editor edit and must land on main before it takes effect anywhere -
+do this before the Stage 8-10 visual PRs start, or every one of them gets
+audited by a Booth that had to bootstrap its own test runner first.
+
+### Stage 3 - Agent development
+
+Booth regression suite of deliberately-bad PRs it must catch; prompt-injection
+resistance test; Scout pre-flight enforcing VERIFICATION.md before any PR
+opens; structured agent decision log rendered as a dashboard page; inter-agent
+disagreement protocol, currently undefined; Booth cost and latency
+instrumentation; "Archivist" role regenerating the handoff from real repo state
+- this file is the manual version of that.
+
+### Stage 4 - Automation & monitoring
+
+Data-quality checks on every weekly run; play-by-play cache layer; alerts on
+upstream nflverse schema changes; auto-open a PR when check_drift.py detects
+real drift; nightly canary against the last completed week, which would have
+caught the nflreadpy offseason crash days early; automated weekly summary;
+reproducibility audit and expanded leak-free coverage. Also the alert and
+communication layer for Booth, now that autonomous operation is confirmed.
+
+### Stage 5 - Model depth, real hypotheses only
+
+Residual analysis FIRST, since it tells you which of the rest are worth
+attempting. Then market-implied probability calibration as a Model B feature;
+per-team learned home-field advantage; rest and travel; weather and wind for
+outdoor games; situational splits; multi-season QB priors; injury-adjusted QB
+ratings, indefinitely parked with the injury data closed; learned blend weight
+between Models A and B - if an ensemble doesn't beat both, that's a publishable
+REJECT.
+
+### Stage 6 - New data sources
+
+Next Gen Stats via nflreadpy, the most promising untapped source already in the
+stack; participation/personnel grouping; referee crew assignments, cheap and
+testable; multi-book line dispersion, accumulation-gated under Stage 1 rather
+than a new build. Each item needs a stated hypothesis BEFORE the data is
+pulled, or it is fishing.
+
+### Stage 7 - Portfolio polish
+
+README rewrite for a cold technical reader; architecture diagram; case study of
+the QB rating leak; public "lessons learned" page; write-up of the Booth
+regression suite and injection test. Add a case study of Booth's first audit -
+a verifier that caught a flaw in its own harness and an unreproduced claim on
+the live dashboard is a better story than the feature it was auditing.
+
+NOTE ON ORDER: this sits before the visual stages by explicit instruction, but
+anything in it that shows the dashboard - screenshots, the architecture
+diagram's UI layer, the lessons-learned page's framing - will be redone once
+Stages 8-10 land. The text-only items (README, QB-leak case study, Booth case
+study) are safe to do here; hold the visual ones.
+
+### Stage 8 - Design system foundations
 
 From the 2026-09-06 design audit, which scored the dashboard 15/40. These are
-the tokens everything else depends on, so they go first. Spacing scale
-replacing 31 ad-hoc values, 63% of which sit off a 4px grid; type scale
-replacing 21 distinct font sizes including seven half-pixel ones; tabular
-figures across every numeric surface, currently used once in a table-heavy
-dashboard; radius tokens replacing 8 values despite --radius already
-existing; a motion system of two durations and one easing replacing seven
-durations, plus a prefers-reduced-motion block which does not exist at all;
-an elevation pass so the six shadow tokens are actually used.
+the tokens the other two visual stages depend on, so they go first within the
+overhaul. Spacing scale replacing 31 ad-hoc values, 63% of which sit off a 4px
+grid; type scale replacing 21 distinct font sizes including seven half-pixel
+ones; tabular figures across every numeric surface, currently used once in a
+table-heavy dashboard; radius tokens replacing 8 values despite --radius
+already existing; a motion system of two durations and one easing replacing
+seven durations, plus a prefers-reduced-motion block which does not exist at
+all; an elevation pass so the six shadow tokens are actually used.
 
-### Stage 3 - Colour, components & interaction
+### Stage 9 - Colour, components & interaction
 
 Retire the 33 hardcoded team-brand hex values driving probability bars in
 favour of --series tokens - teamColor() falls back to a hardcoded dark
@@ -101,7 +166,7 @@ One button component with real variants and states. A focus and keyboard pass.
 Unify the two .game-card render paths. Run every new token through the palette
 validator in both themes.
 
-### Stage 4 - Layout, tables & responsiveness
+### Stage 10 - Layout, tables & responsiveness
 
 Fix the duplicate "Model Output" sidebar group label so the nav's own headings
 mean something. A shared page-header component across all 12 pages. Table
@@ -110,61 +175,6 @@ Mobile pass: bottom-nav clearance so the last row is not covered, the ratings
 table clipping mid-column at 430px, and real breakpoints beyond the three that
 exist. Move the onboarding banner below the h1 where it stops outranking the
 page title. Empty, error and loading states across all pages.
-
-### Stage 5 - Deferred UX & repo hygiene
-
-Team Deep-Dive game drill-down; shareable picks link; auto-generated changelog
-page from config.py's version history; resolve whether nfl_data_py is a real
-fallback or cruft, tied to the queued pandas 2.x/3.x unlock experiment - judged
-on log loss/Brier/AUC, never accuracy; Net Rating bar rebuilt with a zero
-baseline and a scale; remove or populate the SOS column, currently an em-dash
-for all 32 teams. OPEN BUG: booth-pr-audit.yml does not install pytest, so
-Booth installs it mid-audit. One line, but .github/ needs a web-editor edit and
-must land on main before it takes effect anywhere.
-
-### Stage 6 - Agent development
-
-Booth regression suite of deliberately-bad PRs it must catch; prompt-injection
-resistance test; Scout pre-flight enforcing VERIFICATION.md before any PR
-opens; structured agent decision log rendered as a dashboard page; inter-agent
-disagreement protocol, currently undefined; Booth cost and latency
-instrumentation; "Archivist" role regenerating the handoff from real repo state
-- this file is the manual version of that.
-
-### Stage 7 - Automation & monitoring
-
-Data-quality checks on every weekly run; play-by-play cache layer; alerts on
-upstream nflverse schema changes; auto-open a PR when check_drift.py detects
-real drift; nightly canary against the last completed week, which would have
-caught the nflreadpy offseason crash days early; automated weekly summary;
-reproducibility audit and expanded leak-free coverage. Also: the alert and
-communication layer for Booth, now that autonomous operation is confirmed.
-
-### Stage 8 - Model depth, real hypotheses only
-
-Residual analysis FIRST, since it tells you which of the rest are worth
-attempting. Then market-implied probability calibration as a Model B feature;
-per-team learned home-field advantage; rest and travel; weather and wind for
-outdoor games; situational splits; multi-season QB priors; injury-adjusted QB
-ratings, indefinitely parked with the injury data closed; learned blend weight
-between Models A and B - if an ensemble doesn't beat both, that's a publishable
-REJECT.
-
-### Stage 9 - New data sources
-
-Next Gen Stats via nflreadpy, the most promising untapped source already in the
-stack; participation/personnel grouping; referee crew assignments, cheap and
-testable; multi-book line dispersion, accumulation-gated under Stage 1 rather
-than a new build. Each item needs a stated hypothesis BEFORE the data is
-pulled, or it is fishing.
-
-### Stage 10 - Portfolio polish
-
-README rewrite for a cold technical reader; architecture diagram; case study of
-the QB rating leak; public "lessons learned" page; write-up of the Booth
-regression suite and injection test. Add a case study of Booth's first audit -
-a verifier that caught a flaw in its own harness and an unreproduced claim on
-the live dashboard is a better story than the feature it was auditing.
 
 ## Environment and workflow
 
