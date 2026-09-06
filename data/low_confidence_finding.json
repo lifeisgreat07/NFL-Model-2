@@ -1,0 +1,38 @@
+{
+  "model_version": "2.4",
+  "backtest_seasons": [
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "band": 0.05,
+  "n_games_total": 1087,
+  "n_games_in_band": 343,
+  "coverage": {
+    "model_a": 1599,
+    "model_b": 1599,
+    "market": 1599,
+    "common": 1599
+  },
+  "published": {
+    "model_a_accuracy": 52.5,
+    "market_accuracy": 64.4,
+    "gap_pt": -11.95,
+    "ci": [
+      -18.37,
+      -5.53
+    ]
+  },
+  "reproduced": {
+    "model_a_accuracy": 52.48,
+    "market_accuracy": 64.14,
+    "gap_pt": -11.66,
+    "ci_lo": -18.37,
+    "ci_hi": -5.25,
+    "excludes_zero": true
+  },
+  "n_resamples": 5000,
+  "seed": 20260906,
+  "verdict": "CONFIRMED"
+}
