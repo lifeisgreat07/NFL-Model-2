@@ -1,0 +1,20 @@
+# Test-harness dependencies. Pinned, and deliberately kept out of
+# requirements.txt.
+#
+# Why a separate file: requirements.txt is this project's reproducibility
+# record -- the exact versions that produced the published BACKTEST_ACCURACY
+# and every number on the dashboard. pytest produces none of those. Folding it
+# in would blur what that pin certifies, and it would drag a test-only
+# dependency into the pandas/numpy constraint discussion that file is already
+# carefully explaining.
+#
+# Why pinned anyway: Booth re-runs this suite to verify a PR's claims
+# (.github/workflows/booth-pr-audit.yml). An unpinned pytest means the version
+# that audited one PR and the version that audits the next can differ, with
+# nothing in the repo recording which was which. That is the same
+# unverifiable-claim problem the runtime pins exist to prevent, relocated into
+# the verifier -- which is a worse place for it.
+#
+# Install both:  pip install -r requirements.txt -r requirements-dev.txt
+
+pytest==9.1.1
