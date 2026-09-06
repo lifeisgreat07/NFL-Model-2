@@ -431,6 +431,39 @@
   .empty-state{padding:48px 24px; text-align:center; color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px;
     background:var(--panel); border:1px dashed var(--line); border-radius:var(--radius);}
 
+  /* ---------- Team Deep-Dive: game drill-down ----------
+     Reuses .why-panel / .why-row from the week board rather than restating
+     them, so the expanded breakdown looks the same in both places. */
+  .dive-games{margin-top:20px;}
+  .dive-games-title{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; color:var(--chalk); margin-bottom:6px;}
+  .dive-games-summary{font-size:12.5px; color:var(--chalk-dim); line-height:1.55; margin-bottom:12px;}
+  .dive-games-summary b{color:var(--chalk); font-weight:600;}
+  .dive-game{border-bottom:1px solid var(--line);}
+  .dive-game:last-child{border-bottom:none;}
+  .dive-game-head{width:100%; display:grid; grid-template-columns:104px 1fr 62px 66px 96px;
+    align-items:center; gap:12px; background:none; border:none; cursor:pointer; text-align:left;
+    padding:12px 14px; color:var(--chalk); font-family:'Plus Jakarta Sans', sans-serif; font-size:13px;}
+  .dive-game-head:hover{background:var(--panel-hi);}
+  .dive-game-week{color:var(--chalk-dim); font-size:12px;}
+  .dive-game-opp{font-weight:600;}
+  .dive-game-line,.dive-game-prob{text-align:right; font-variant-numeric:tabular-nums; color:var(--chalk-dim);}
+  .dive-game-prob{color:var(--chalk); font-weight:600;}
+  .dive-game-res{text-align:right;}
+  .dive-result{font-weight:700; font-size:13px;}
+  .dive-result.won{color:var(--good);}
+  .dive-result.lost{color:var(--warn);}
+  .dive-pending{color:var(--chalk-dim); font-size:11.5px;}
+  .dive-game .why-panel{padding:0 14px 14px;}
+  .dive-why-head{font-size:12.5px; color:var(--chalk-dim); margin-bottom:4px;}
+  .dive-why-note{font-size:11px; color:var(--chalk-dim); opacity:.85; margin-bottom:10px;}
+  .dive-tick{color:var(--good); font-weight:600;}
+  .dive-cross{color:var(--warn); font-weight:600;}
+  @media (max-width:640px){
+    .dive-game-head{grid-template-columns:1fr auto; gap:4px 10px;}
+    .dive-game-week{grid-column:1 / -1;}
+    .dive-game-line{display:none;}
+  }
+
   /* ---------- Changelog ---------- */
   .cl-entry{display:grid; grid-template-columns:104px 1fr; gap:0 22px; padding:20px 0; border-bottom:1px solid var(--line);}
   .cl-entry:last-child{border-bottom:none;}
@@ -588,7 +621,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <span id="theme-toggle-label">Light mode</span>
     </button>
-    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-06 19:38 UTC</span>
+    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-06 20:22 UTC</span>
   </div>
 </aside>
 
@@ -2482,7 +2515,876 @@ const accuracy = {
   "min_bucket_n": 20,
   "calibration_underpowered": true
 };
-const teamHistory = {};
+const teamHistory = {
+  "names": {
+    "ARI": "Arizona Cardinals",
+    "ATL": "Atlanta Falcons",
+    "BAL": "Baltimore Ravens",
+    "BUF": "Buffalo Bills",
+    "CAR": "Carolina Panthers",
+    "CHI": "Chicago Bears",
+    "CIN": "Cincinnati Bengals",
+    "CLE": "Cleveland Browns",
+    "DAL": "Dallas Cowboys",
+    "DEN": "Denver Broncos",
+    "DET": "Detroit Lions",
+    "GB": "Green Bay Packers",
+    "HOU": "Houston Texans",
+    "IND": "Indianapolis Colts",
+    "JAX": "Jacksonville Jaguars",
+    "KC": "Kansas City Chiefs",
+    "LA": "LA Rams",
+    "LAC": "LA Chargers",
+    "LV": "Las Vegas Raiders",
+    "MIA": "Miami Dolphins",
+    "MIN": "Minnesota Vikings",
+    "NE": "New England Patriots",
+    "NO": "New Orleans Saints",
+    "NYG": "NY Giants",
+    "NYJ": "NY Jets",
+    "PHI": "Philadelphia Eagles",
+    "PIT": "Pittsburgh Steelers",
+    "SEA": "Seattle Seahawks",
+    "SF": "San Francisco 49ers",
+    "TB": "Tampa Bay Buccaneers",
+    "TEN": "Tennessee Titans",
+    "WAS": "Washington Commanders"
+  },
+  "timeline": {
+    "ARI": [
+      {
+        "label": "2020",
+        "net": 0.0221
+      },
+      {
+        "label": "2021",
+        "net": 0.0978
+      },
+      {
+        "label": "2022",
+        "net": -0.0058
+      },
+      {
+        "label": "2023",
+        "net": -0.0828
+      },
+      {
+        "label": "2024",
+        "net": -0.0353
+      },
+      {
+        "label": "2025",
+        "net": -0.0518
+      }
+    ],
+    "ATL": [
+      {
+        "label": "2020",
+        "net": 0.0172
+      },
+      {
+        "label": "2021",
+        "net": -0.0994
+      },
+      {
+        "label": "2022",
+        "net": -0.0855
+      },
+      {
+        "label": "2023",
+        "net": -0.0675
+      },
+      {
+        "label": "2024",
+        "net": -0.0384
+      },
+      {
+        "label": "2025",
+        "net": -0.0344
+      }
+    ],
+    "BAL": [
+      {
+        "label": "2020",
+        "net": 0.066
+      },
+      {
+        "label": "2021",
+        "net": -0.009
+      },
+      {
+        "label": "2022",
+        "net": 0.0045
+      },
+      {
+        "label": "2023",
+        "net": 0.1295
+      },
+      {
+        "label": "2024",
+        "net": 0.1686
+      },
+      {
+        "label": "2025",
+        "net": 0.1073
+      }
+    ],
+    "BUF": [
+      {
+        "label": "2020",
+        "net": 0.1365
+      },
+      {
+        "label": "2021",
+        "net": 0.1688
+      },
+      {
+        "label": "2022",
+        "net": 0.1533
+      },
+      {
+        "label": "2023",
+        "net": 0.1493
+      },
+      {
+        "label": "2024",
+        "net": 0.168
+      },
+      {
+        "label": "2025",
+        "net": 0.1322
+      }
+    ],
+    "CAR": [
+      {
+        "label": "2020",
+        "net": -0.0103
+      },
+      {
+        "label": "2021",
+        "net": -0.0828
+      },
+      {
+        "label": "2022",
+        "net": -0.0626
+      },
+      {
+        "label": "2023",
+        "net": -0.137
+      },
+      {
+        "label": "2024",
+        "net": -0.1714
+      },
+      {
+        "label": "2025",
+        "net": -0.1267
+      }
+    ],
+    "CHI": [
+      {
+        "label": "2020",
+        "net": -0.0055
+      },
+      {
+        "label": "2021",
+        "net": -0.0638
+      },
+      {
+        "label": "2022",
+        "net": -0.1368
+      },
+      {
+        "label": "2023",
+        "net": -0.0618
+      },
+      {
+        "label": "2024",
+        "net": -0.0665
+      },
+      {
+        "label": "2025",
+        "net": 0.0162
+      }
+    ],
+    "CIN": [
+      {
+        "label": "2020",
+        "net": -0.1252
+      },
+      {
+        "label": "2021",
+        "net": -0.0139
+      },
+      {
+        "label": "2022",
+        "net": 0.0832
+      },
+      {
+        "label": "2023",
+        "net": 0.0324
+      },
+      {
+        "label": "2024",
+        "net": 0.0381
+      },
+      {
+        "label": "2025",
+        "net": -0.0241
+      }
+    ],
+    "CLE": [
+      {
+        "label": "2020",
+        "net": -0.0416
+      },
+      {
+        "label": "2021",
+        "net": -0.016
+      },
+      {
+        "label": "2022",
+        "net": 0.0084
+      },
+      {
+        "label": "2023",
+        "net": 0.0145
+      },
+      {
+        "label": "2024",
+        "net": -0.0818
+      },
+      {
+        "label": "2025",
+        "net": -0.0981
+      }
+    ],
+    "DAL": [
+      {
+        "label": "2020",
+        "net": -0.0804
+      },
+      {
+        "label": "2021",
+        "net": 0.0719
+      },
+      {
+        "label": "2022",
+        "net": 0.1187
+      },
+      {
+        "label": "2023",
+        "net": 0.1303
+      },
+      {
+        "label": "2024",
+        "net": -0.0012
+      },
+      {
+        "label": "2025",
+        "net": -0.0325
+      }
+    ],
+    "DEN": [
+      {
+        "label": "2020",
+        "net": -0.0915
+      },
+      {
+        "label": "2021",
+        "net": -0.0465
+      },
+      {
+        "label": "2022",
+        "net": -0.0465
+      },
+      {
+        "label": "2023",
+        "net": -0.0396
+      },
+      {
+        "label": "2024",
+        "net": 0.0148
+      },
+      {
+        "label": "2025",
+        "net": 0.0433
+      }
+    ],
+    "DET": [
+      {
+        "label": "2020",
+        "net": -0.1985
+      },
+      {
+        "label": "2021",
+        "net": -0.1746
+      },
+      {
+        "label": "2022",
+        "net": -0.0777
+      },
+      {
+        "label": "2023",
+        "net": 0.0072
+      },
+      {
+        "label": "2024",
+        "net": 0.1226
+      },
+      {
+        "label": "2025",
+        "net": 0.1004
+      }
+    ],
+    "GB": [
+      {
+        "label": "2020",
+        "net": 0.1489
+      },
+      {
+        "label": "2021",
+        "net": 0.1602
+      },
+      {
+        "label": "2022",
+        "net": 0.0633
+      },
+      {
+        "label": "2023",
+        "net": 0.0534
+      },
+      {
+        "label": "2024",
+        "net": 0.1353
+      },
+      {
+        "label": "2025",
+        "net": 0.1154
+      }
+    ],
+    "HOU": [
+      {
+        "label": "2020",
+        "net": -0.115
+      },
+      {
+        "label": "2021",
+        "net": -0.1706
+      },
+      {
+        "label": "2022",
+        "net": -0.1916
+      },
+      {
+        "label": "2023",
+        "net": -0.0989
+      },
+      {
+        "label": "2024",
+        "net": -0.0641
+      },
+      {
+        "label": "2025",
+        "net": 0.0308
+      }
+    ],
+    "IND": [
+      {
+        "label": "2020",
+        "net": 0.028
+      },
+      {
+        "label": "2021",
+        "net": 0.0692
+      },
+      {
+        "label": "2022",
+        "net": -0.0862
+      },
+      {
+        "label": "2023",
+        "net": -0.0489
+      },
+      {
+        "label": "2024",
+        "net": -0.0816
+      },
+      {
+        "label": "2025",
+        "net": -0.0147
+      }
+    ],
+    "JAX": [
+      {
+        "label": "2020",
+        "net": -0.2365
+      },
+      {
+        "label": "2021",
+        "net": -0.236
+      },
+      {
+        "label": "2022",
+        "net": -0.0737
+      },
+      {
+        "label": "2023",
+        "net": -0.0115
+      },
+      {
+        "label": "2024",
+        "net": -0.1028
+      },
+      {
+        "label": "2025",
+        "net": -0.0045
+      }
+    ],
+    "KC": [
+      {
+        "label": "2020",
+        "net": 0.1251
+      },
+      {
+        "label": "2021",
+        "net": 0.1113
+      },
+      {
+        "label": "2022",
+        "net": 0.1455
+      },
+      {
+        "label": "2023",
+        "net": 0.1144
+      },
+      {
+        "label": "2024",
+        "net": 0.1207
+      },
+      {
+        "label": "2025",
+        "net": 0.0549
+      }
+    ],
+    "LA": [
+      {
+        "label": "2020",
+        "net": 0.1545
+      },
+      {
+        "label": "2021",
+        "net": 0.1319
+      },
+      {
+        "label": "2022",
+        "net": 0.0157
+      },
+      {
+        "label": "2023",
+        "net": 0.0455
+      },
+      {
+        "label": "2024",
+        "net": 0.0385
+      },
+      {
+        "label": "2025",
+        "net": 0.1317
+      }
+    ],
+    "LAC": [
+      {
+        "label": "2020",
+        "net": -0.0309
+      },
+      {
+        "label": "2021",
+        "net": 0.0192
+      },
+      {
+        "label": "2022",
+        "net": 0.0279
+      },
+      {
+        "label": "2023",
+        "net": -0.0435
+      },
+      {
+        "label": "2024",
+        "net": 0.0224
+      },
+      {
+        "label": "2025",
+        "net": 0.0445
+      }
+    ],
+    "LV": [
+      {
+        "label": "2020",
+        "net": -0.0675
+      },
+      {
+        "label": "2021",
+        "net": -0.0657
+      },
+      {
+        "label": "2022",
+        "net": -0.0448
+      },
+      {
+        "label": "2023",
+        "net": -0.038
+      },
+      {
+        "label": "2024",
+        "net": -0.059
+      },
+      {
+        "label": "2025",
+        "net": -0.1608
+      }
+    ],
+    "MIA": [
+      {
+        "label": "2020",
+        "net": 0.0504
+      },
+      {
+        "label": "2021",
+        "net": 0.0053
+      },
+      {
+        "label": "2022",
+        "net": 0.0305
+      },
+      {
+        "label": "2023",
+        "net": 0.0672
+      },
+      {
+        "label": "2024",
+        "net": 0.028
+      },
+      {
+        "label": "2025",
+        "net": -0.0382
+      }
+    ],
+    "MIN": [
+      {
+        "label": "2020",
+        "net": -0.0084
+      },
+      {
+        "label": "2021",
+        "net": -0.0125
+      },
+      {
+        "label": "2022",
+        "net": -0.022
+      },
+      {
+        "label": "2023",
+        "net": -0.0016
+      },
+      {
+        "label": "2024",
+        "net": 0.0734
+      },
+      {
+        "label": "2025",
+        "net": 0.0428
+      }
+    ],
+    "NE": [
+      {
+        "label": "2020",
+        "net": -0.0812
+      },
+      {
+        "label": "2021",
+        "net": 0.0855
+      },
+      {
+        "label": "2022",
+        "net": 0.0578
+      },
+      {
+        "label": "2023",
+        "net": -0.0246
+      },
+      {
+        "label": "2024",
+        "net": -0.1222
+      },
+      {
+        "label": "2025",
+        "net": 0.0233
+      }
+    ],
+    "NO": [
+      {
+        "label": "2020",
+        "net": 0.1513
+      },
+      {
+        "label": "2021",
+        "net": 0.0628
+      },
+      {
+        "label": "2022",
+        "net": 0.0448
+      },
+      {
+        "label": "2023",
+        "net": 0.0169
+      },
+      {
+        "label": "2024",
+        "net": -0.0515
+      },
+      {
+        "label": "2025",
+        "net": -0.0481
+      }
+    ],
+    "NYG": [
+      {
+        "label": "2020",
+        "net": -0.0684
+      },
+      {
+        "label": "2021",
+        "net": -0.1146
+      },
+      {
+        "label": "2022",
+        "net": -0.0752
+      },
+      {
+        "label": "2023",
+        "net": -0.1154
+      },
+      {
+        "label": "2024",
+        "net": -0.1356
+      },
+      {
+        "label": "2025",
+        "net": -0.0816
+      }
+    ],
+    "NYJ": [
+      {
+        "label": "2020",
+        "net": -0.1617
+      },
+      {
+        "label": "2021",
+        "net": -0.1686
+      },
+      {
+        "label": "2022",
+        "net": -0.1016
+      },
+      {
+        "label": "2023",
+        "net": -0.1184
+      },
+      {
+        "label": "2024",
+        "net": -0.0943
+      },
+      {
+        "label": "2025",
+        "net": -0.1821
+      }
+    ],
+    "PHI": [
+      {
+        "label": "2020",
+        "net": -0.0667
+      },
+      {
+        "label": "2021",
+        "net": 0.0278
+      },
+      {
+        "label": "2022",
+        "net": 0.0873
+      },
+      {
+        "label": "2023",
+        "net": 0.0501
+      },
+      {
+        "label": "2024",
+        "net": 0.1219
+      },
+      {
+        "label": "2025",
+        "net": 0.1227
+      }
+    ],
+    "PIT": [
+      {
+        "label": "2020",
+        "net": 0.0977
+      },
+      {
+        "label": "2021",
+        "net": -0.0128
+      },
+      {
+        "label": "2022",
+        "net": 0.0157
+      },
+      {
+        "label": "2023",
+        "net": 0.0112
+      },
+      {
+        "label": "2024",
+        "net": -0.0045
+      },
+      {
+        "label": "2025",
+        "net": 0.0015
+      }
+    ],
+    "SEA": [
+      {
+        "label": "2020",
+        "net": 0.0743
+      },
+      {
+        "label": "2021",
+        "net": 0.0401
+      },
+      {
+        "label": "2022",
+        "net": 0.0008
+      },
+      {
+        "label": "2023",
+        "net": -0.0108
+      },
+      {
+        "label": "2024",
+        "net": -0.0096
+      },
+      {
+        "label": "2025",
+        "net": 0.0739
+      }
+    ],
+    "SF": [
+      {
+        "label": "2020",
+        "net": 0.0739
+      },
+      {
+        "label": "2021",
+        "net": 0.0835
+      },
+      {
+        "label": "2022",
+        "net": 0.1415
+      },
+      {
+        "label": "2023",
+        "net": 0.1976
+      },
+      {
+        "label": "2024",
+        "net": 0.1216
+      },
+      {
+        "label": "2025",
+        "net": 0.0697
+      }
+    ],
+    "TB": [
+      {
+        "label": "2020",
+        "net": 0.1979
+      },
+      {
+        "label": "2021",
+        "net": 0.18
+      },
+      {
+        "label": "2022",
+        "net": 0.0921
+      },
+      {
+        "label": "2023",
+        "net": 0.0381
+      },
+      {
+        "label": "2024",
+        "net": 0.081
+      },
+      {
+        "label": "2025",
+        "net": 0.0255
+      }
+    ],
+    "TEN": [
+      {
+        "label": "2020",
+        "net": 0.0228
+      },
+      {
+        "label": "2021",
+        "net": 0.0353
+      },
+      {
+        "label": "2022",
+        "net": -0.0359
+      },
+      {
+        "label": "2023",
+        "net": -0.0634
+      },
+      {
+        "label": "2024",
+        "net": -0.1162
+      },
+      {
+        "label": "2025",
+        "net": -0.1555
+      }
+    ],
+    "WAS": [
+      {
+        "label": "2020",
+        "net": 0.0224
+      },
+      {
+        "label": "2021",
+        "net": -0.0637
+      },
+      {
+        "label": "2022",
+        "net": -0.0452
+      },
+      {
+        "label": "2023",
+        "net": -0.0936
+      },
+      {
+        "label": "2024",
+        "net": -0.019
+      },
+      {
+        "label": "2025",
+        "net": -0.0831
+      }
+    ]
+  }
+};
 // Backtest-derived calibration (data/calibration.json, ~1087 games). null when
 // src/calibration.py has never been run in this checkout -- the reliability
 // diagram omits itself rather than inventing numbers.
@@ -4414,8 +5316,156 @@ function renderTeamDive(){
     </div>`;
   }).join('');
 
-  content.innerHTML = `<div class="table-wrap" style="padding:18px 20px;">${rowsHtml}</div>`;
+  content.innerHTML = `<div class="table-wrap" style="padding:18px 20px;">${rowsHtml}</div>`
+    + renderTeamGames(team);
+  wireTeamGameToggles();
 }
+
+/* ---------- Team Deep-Dive: game drill-down ----------
+
+   The net-rating history above answers "how good has this team been". This
+   answers "what did the model actually say about their games, and was it
+   right" -- which is the question the ratings are only a proxy for.
+
+   Everything in `weeks` is stored from the HOME team's point of view: fbA_home
+   and mktB_home are home win probabilities, spread_line is the home team's
+   line (positive when home is favoured, asserted at runtime in
+   ats_evaluation.py), and why{} holds contributions toward the home side. A
+   page built around one selected team has to flip all of it, and getting a
+   flip wrong is invisible: every number still looks like a plausible number.
+   So the flip happens once, here, and tests/test_team_dive.py checks it
+   against the away side of a real game rather than trusting it. */
+// null/undefined stay null (not graded); everything else becomes a real
+// boolean. Keeps "was the model right" a tri-state rather than collapsing
+// "not graded yet" into "wrong".
+function asBool(v){
+  return (v === null || v === undefined) ? null : !!v;
+}
+
+function teamGamesFor(team){
+  const out = [];
+  weekKeysSorted.forEach(k=>{
+    (weeks[k].games || []).forEach(g=>{
+      if(g.home !== team && g.away !== team) return;
+      const isHome = g.home === team;
+      const flipPct = p => (p===null||p===undefined) ? null : (isHome ? p : 100 - p);
+      out.push({
+        weekKey: k,
+        label: weekLabel(k),
+        isHome,
+        opponent: isHome ? g.away : g.home,
+        probA: flipPct(g.fbA_home),
+        probB: flipPct(g.mktB_home),
+        line: (g.spread===null||g.spread===undefined) ? null : (isHome ? g.spread : -g.spread),
+        graded: !!g.graded,
+        // actual_home_win is the home side's result, so the selected team won
+        // when it IS the home side and that is true, or when it is not and
+        // that is false.
+        won: (g.graded && g.actual_home_win !== null && g.actual_home_win !== undefined)
+              ? (isHome ? !!g.actual_home_win : !g.actual_home_win) : null,
+        // Normalised to real booleans here, at the boundary, because the
+        // graded files store 1/0 rather than true/false. A downstream
+        // `=== true` against a 1 is quietly false, which showed up as
+        // "Model A called 0 of 1" beside a game the model had plainly won,
+        // and as the correct/wrong marks silently not rendering at all.
+        modelACorrect: asBool(g.model_a_correct),
+        modelBCorrect: asBool(g.model_b_correct),
+        // Contributions point toward the HOME team, so they negate for an
+        // away view -- a +0.10 edge for the home side is a -0.10 edge here.
+        why: g.why ? Object.fromEntries(Object.entries(g.why)
+              .map(([k2, v]) => [k2, isHome ? v : -v])) : null,
+      });
+    });
+  });
+  return out;
+}
+
+const WHY_LABELS = {off_matchup: 'Offence', def_matchup: 'Defence',
+                    qb_matchup: 'QB', qb_change: 'QB change'};
+
+function renderTeamGames(team){
+  const games = teamGamesFor(team);
+  if(games.length === 0){
+    // Distinct from "no history": the ratings chart above is backtested and
+    // goes back to 2020, while saved per-game predictions only start when the
+    // weekly routine does. An empty list here is normal, not broken.
+    return `<div class="table-note" style="margin-top:16px;">
+      <b>No saved predictions for ${team} yet.</b>
+      The rating history above is backtested; this list only covers weeks the
+      live weekly run has actually saved predictions for, so it fills in from
+      the first run of the season onward.
+    </div>`;
+  }
+
+  const graded = games.filter(g => g.won !== null);
+  const wins = graded.filter(g => g.won).length;
+  const aRight = graded.filter(g => g.modelACorrect === true).length;
+  const bRight = graded.filter(g => g.modelBCorrect === true).length;
+
+  const summary = graded.length
+    ? `<div class="dive-games-summary">${team} are <b>${wins}-${graded.length-wins}</b>
+       across ${graded.length} graded game${graded.length===1?'':'s'} &middot;
+       Model A called ${aRight} of ${graded.length} &middot;
+       Model B called ${bRight} of ${graded.length}</div>`
+    : `<div class="dive-games-summary">None of these games have been graded yet,
+       so there is no record to report.</div>`;
+
+  const rows = games.map((g, i) => {
+    const pct = p => p===null ? '—' : `${p.toFixed(1)}%`;
+    const lineText = g.line===null ? '—'
+      : (g.line > 0 ? `-${g.line}` : (g.line < 0 ? `+${Math.abs(g.line)}` : 'PK'));
+    const result = g.won === null
+      ? `<span class="dive-pending">not yet played</span>`
+      : `<span class="dive-result ${g.won?'won':'lost'}">${g.won?'W':'L'}</span>`;
+    const mark = c => c === true ? '<span class="dive-tick">correct</span>'
+      : c === false ? '<span class="dive-cross">wrong</span>' : '';
+
+    const whyHtml = g.why
+      ? Object.entries(g.why)
+          .map(([k, v]) => whyRow(WHY_LABELS[k] || k, v)).join('')
+      : `<div class="why-row"><span class="why-label">No breakdown</span></div>`;
+
+    return `<div class="dive-game" data-i="${i}">
+      <button class="dive-game-head" aria-expanded="false" data-toggle="${i}">
+        <span class="dive-game-week">${g.label}</span>
+        <span class="dive-game-opp">${g.isHome ? 'vs' : '@'} ${g.opponent}</span>
+        <span class="dive-game-line">${lineText}</span>
+        <span class="dive-game-prob" title="Model B win probability for ${team}">${pct(g.probB)}</span>
+        <span class="dive-game-res">${result}</span>
+      </button>
+      <div class="why-panel" id="dive-why-${i}">
+        <div class="dive-why-head">
+          Model A gave ${team} ${pct(g.probA)} ${mark(g.modelACorrect)} &middot;
+          Model B gave ${team} ${pct(g.probB)} ${mark(g.modelBCorrect)}
+        </div>
+        <div class="dive-why-note">Contributions shown from ${team}'s side. Positive helps ${team}.</div>
+        ${whyHtml}
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="dive-games">
+    <h3 class="dive-games-title">Games</h3>
+    ${summary}
+    <div class="table-wrap">${rows}</div>
+  </div>`;
+}
+
+function wireTeamGameToggles(){
+  document.querySelectorAll('#teamdive-content .dive-game-head').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const panel = document.getElementById('dive-why-' + btn.dataset.toggle);
+      if(!panel) return;
+      const open = panel.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  });
+}
+// Called here, below WHY_LABELS, and not up beside the function definition.
+// WHY_LABELS is a const, so a call placed before it sits in the temporal dead
+// zone and throws the moment a team has games to render. The first draft
+// dropped this call entirely while moving code around, which was silent: the
+// select simply stayed empty and nothing errored.
 renderTeamDive();
 
 /* ---------- Changelog ---------- */

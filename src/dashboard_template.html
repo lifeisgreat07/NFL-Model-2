@@ -431,6 +431,39 @@
   .empty-state{padding:48px 24px; text-align:center; color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px;
     background:var(--panel); border:1px dashed var(--line); border-radius:var(--radius);}
 
+  /* ---------- Team Deep-Dive: game drill-down ----------
+     Reuses .why-panel / .why-row from the week board rather than restating
+     them, so the expanded breakdown looks the same in both places. */
+  .dive-games{margin-top:20px;}
+  .dive-games-title{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; color:var(--chalk); margin-bottom:6px;}
+  .dive-games-summary{font-size:12.5px; color:var(--chalk-dim); line-height:1.55; margin-bottom:12px;}
+  .dive-games-summary b{color:var(--chalk); font-weight:600;}
+  .dive-game{border-bottom:1px solid var(--line);}
+  .dive-game:last-child{border-bottom:none;}
+  .dive-game-head{width:100%; display:grid; grid-template-columns:104px 1fr 62px 66px 96px;
+    align-items:center; gap:12px; background:none; border:none; cursor:pointer; text-align:left;
+    padding:12px 14px; color:var(--chalk); font-family:'Plus Jakarta Sans', sans-serif; font-size:13px;}
+  .dive-game-head:hover{background:var(--panel-hi);}
+  .dive-game-week{color:var(--chalk-dim); font-size:12px;}
+  .dive-game-opp{font-weight:600;}
+  .dive-game-line,.dive-game-prob{text-align:right; font-variant-numeric:tabular-nums; color:var(--chalk-dim);}
+  .dive-game-prob{color:var(--chalk); font-weight:600;}
+  .dive-game-res{text-align:right;}
+  .dive-result{font-weight:700; font-size:13px;}
+  .dive-result.won{color:var(--good);}
+  .dive-result.lost{color:var(--warn);}
+  .dive-pending{color:var(--chalk-dim); font-size:11.5px;}
+  .dive-game .why-panel{padding:0 14px 14px;}
+  .dive-why-head{font-size:12.5px; color:var(--chalk-dim); margin-bottom:4px;}
+  .dive-why-note{font-size:11px; color:var(--chalk-dim); opacity:.85; margin-bottom:10px;}
+  .dive-tick{color:var(--good); font-weight:600;}
+  .dive-cross{color:var(--warn); font-weight:600;}
+  @media (max-width:640px){
+    .dive-game-head{grid-template-columns:1fr auto; gap:4px 10px;}
+    .dive-game-week{grid-column:1 / -1;}
+    .dive-game-line{display:none;}
+  }
+
   /* ---------- Changelog ---------- */
   .cl-entry{display:grid; grid-template-columns:104px 1fr; gap:0 22px; padding:20px 0; border-bottom:1px solid var(--line);}
   .cl-entry:last-child{border-bottom:none;}
@@ -2762,8 +2795,156 @@ function renderTeamDive(){
     </div>`;
   }).join('');
 
-  content.innerHTML = `<div class="table-wrap" style="padding:18px 20px;">${rowsHtml}</div>`;
+  content.innerHTML = `<div class="table-wrap" style="padding:18px 20px;">${rowsHtml}</div>`
+    + renderTeamGames(team);
+  wireTeamGameToggles();
 }
+
+/* ---------- Team Deep-Dive: game drill-down ----------
+
+   The net-rating history above answers "how good has this team been". This
+   answers "what did the model actually say about their games, and was it
+   right" -- which is the question the ratings are only a proxy for.
+
+   Everything in `weeks` is stored from the HOME team's point of view: fbA_home
+   and mktB_home are home win probabilities, spread_line is the home team's
+   line (positive when home is favoured, asserted at runtime in
+   ats_evaluation.py), and why{} holds contributions toward the home side. A
+   page built around one selected team has to flip all of it, and getting a
+   flip wrong is invisible: every number still looks like a plausible number.
+   So the flip happens once, here, and tests/test_team_dive.py checks it
+   against the away side of a real game rather than trusting it. */
+// null/undefined stay null (not graded); everything else becomes a real
+// boolean. Keeps "was the model right" a tri-state rather than collapsing
+// "not graded yet" into "wrong".
+function asBool(v){
+  return (v === null || v === undefined) ? null : !!v;
+}
+
+function teamGamesFor(team){
+  const out = [];
+  weekKeysSorted.forEach(k=>{
+    (weeks[k].games || []).forEach(g=>{
+      if(g.home !== team && g.away !== team) return;
+      const isHome = g.home === team;
+      const flipPct = p => (p===null||p===undefined) ? null : (isHome ? p : 100 - p);
+      out.push({
+        weekKey: k,
+        label: weekLabel(k),
+        isHome,
+        opponent: isHome ? g.away : g.home,
+        probA: flipPct(g.fbA_home),
+        probB: flipPct(g.mktB_home),
+        line: (g.spread===null||g.spread===undefined) ? null : (isHome ? g.spread : -g.spread),
+        graded: !!g.graded,
+        // actual_home_win is the home side's result, so the selected team won
+        // when it IS the home side and that is true, or when it is not and
+        // that is false.
+        won: (g.graded && g.actual_home_win !== null && g.actual_home_win !== undefined)
+              ? (isHome ? !!g.actual_home_win : !g.actual_home_win) : null,
+        // Normalised to real booleans here, at the boundary, because the
+        // graded files store 1/0 rather than true/false. A downstream
+        // `=== true` against a 1 is quietly false, which showed up as
+        // "Model A called 0 of 1" beside a game the model had plainly won,
+        // and as the correct/wrong marks silently not rendering at all.
+        modelACorrect: asBool(g.model_a_correct),
+        modelBCorrect: asBool(g.model_b_correct),
+        // Contributions point toward the HOME team, so they negate for an
+        // away view -- a +0.10 edge for the home side is a -0.10 edge here.
+        why: g.why ? Object.fromEntries(Object.entries(g.why)
+              .map(([k2, v]) => [k2, isHome ? v : -v])) : null,
+      });
+    });
+  });
+  return out;
+}
+
+const WHY_LABELS = {off_matchup: 'Offence', def_matchup: 'Defence',
+                    qb_matchup: 'QB', qb_change: 'QB change'};
+
+function renderTeamGames(team){
+  const games = teamGamesFor(team);
+  if(games.length === 0){
+    // Distinct from "no history": the ratings chart above is backtested and
+    // goes back to 2020, while saved per-game predictions only start when the
+    // weekly routine does. An empty list here is normal, not broken.
+    return `<div class="table-note" style="margin-top:16px;">
+      <b>No saved predictions for ${team} yet.</b>
+      The rating history above is backtested; this list only covers weeks the
+      live weekly run has actually saved predictions for, so it fills in from
+      the first run of the season onward.
+    </div>`;
+  }
+
+  const graded = games.filter(g => g.won !== null);
+  const wins = graded.filter(g => g.won).length;
+  const aRight = graded.filter(g => g.modelACorrect === true).length;
+  const bRight = graded.filter(g => g.modelBCorrect === true).length;
+
+  const summary = graded.length
+    ? `<div class="dive-games-summary">${team} are <b>${wins}-${graded.length-wins}</b>
+       across ${graded.length} graded game${graded.length===1?'':'s'} &middot;
+       Model A called ${aRight} of ${graded.length} &middot;
+       Model B called ${bRight} of ${graded.length}</div>`
+    : `<div class="dive-games-summary">None of these games have been graded yet,
+       so there is no record to report.</div>`;
+
+  const rows = games.map((g, i) => {
+    const pct = p => p===null ? '—' : `${p.toFixed(1)}%`;
+    const lineText = g.line===null ? '—'
+      : (g.line > 0 ? `-${g.line}` : (g.line < 0 ? `+${Math.abs(g.line)}` : 'PK'));
+    const result = g.won === null
+      ? `<span class="dive-pending">not yet played</span>`
+      : `<span class="dive-result ${g.won?'won':'lost'}">${g.won?'W':'L'}</span>`;
+    const mark = c => c === true ? '<span class="dive-tick">correct</span>'
+      : c === false ? '<span class="dive-cross">wrong</span>' : '';
+
+    const whyHtml = g.why
+      ? Object.entries(g.why)
+          .map(([k, v]) => whyRow(WHY_LABELS[k] || k, v)).join('')
+      : `<div class="why-row"><span class="why-label">No breakdown</span></div>`;
+
+    return `<div class="dive-game" data-i="${i}">
+      <button class="dive-game-head" aria-expanded="false" data-toggle="${i}">
+        <span class="dive-game-week">${g.label}</span>
+        <span class="dive-game-opp">${g.isHome ? 'vs' : '@'} ${g.opponent}</span>
+        <span class="dive-game-line">${lineText}</span>
+        <span class="dive-game-prob" title="Model B win probability for ${team}">${pct(g.probB)}</span>
+        <span class="dive-game-res">${result}</span>
+      </button>
+      <div class="why-panel" id="dive-why-${i}">
+        <div class="dive-why-head">
+          Model A gave ${team} ${pct(g.probA)} ${mark(g.modelACorrect)} &middot;
+          Model B gave ${team} ${pct(g.probB)} ${mark(g.modelBCorrect)}
+        </div>
+        <div class="dive-why-note">Contributions shown from ${team}'s side. Positive helps ${team}.</div>
+        ${whyHtml}
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="dive-games">
+    <h3 class="dive-games-title">Games</h3>
+    ${summary}
+    <div class="table-wrap">${rows}</div>
+  </div>`;
+}
+
+function wireTeamGameToggles(){
+  document.querySelectorAll('#teamdive-content .dive-game-head').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const panel = document.getElementById('dive-why-' + btn.dataset.toggle);
+      if(!panel) return;
+      const open = panel.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  });
+}
+// Called here, below WHY_LABELS, and not up beside the function definition.
+// WHY_LABELS is a const, so a call placed before it sits in the temporal dead
+// zone and throws the moment a team has games to render. The first draft
+// dropped this call entirely while moving code around, which was silent: the
+// select simply stayed empty and nothing errored.
 renderTeamDive();
 
 /* ---------- Changelog ---------- */
