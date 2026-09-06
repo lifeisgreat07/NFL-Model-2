@@ -260,6 +260,15 @@ def load_team_history():
     week-by-week points for the current season as it's actually played."""
     static_path = DATA_DIR / 'team_history.json'
     if not static_path.exists():
+        # Loudly, because quietly is how this broke. The file had been sitting
+        # in src/ rather than data/ since it was uploaded, so this branch
+        # returned {} on every build and the Team Deep-Dive page rendered "No
+        # team history data available yet" for all 32 teams -- while the
+        # roadmap listed the page as Done. A missing-file branch that returns
+        # empty and says nothing produces a page that looks deliberate.
+        print(f"  WARNING: {static_path} not found -- the Team Deep-Dive page "
+              f"will render empty. This file is committed; if it is missing, "
+              f"something moved it.")
         return {}
     with open(static_path) as f:
         static_data = json.load(f)
