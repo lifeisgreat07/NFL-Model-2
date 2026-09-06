@@ -189,6 +189,16 @@
   .onboarding-content h4{font-family:'Plus Jakarta Sans', sans-serif; font-size:14px; margin-bottom:9px; color:var(--chalk);}
   .onboarding-content ul{margin:0 0 12px 18px; padding:0;}
   .onboarding-content li{font-size:12.5px; color:var(--chalk-dim); line-height:1.6; margin-bottom:4px;}
+  /* Shared-picks view. Borrows the onboarding banner wholesale and only
+     re-colours the border, so this adds one value rather than a new block.
+     Amber, not blue: blue is the ordinary orientation banner, and this one
+     means "what you are looking at is not yours". */
+  .shared-banner{border-color:var(--amber);}
+  .shared-note{font-size:12.5px; color:var(--chalk-dim); line-height:1.6; margin-bottom:12px;}
+  .shared-actions{display:flex; gap:8px; flex-wrap:wrap;}
+  /* Read-only while viewing someone else's picks: the buttons still show the
+     selection, but tapping one must not silently start editing their log. */
+  .picks-readonly .pick-btn{cursor:default; opacity:.92;}
   .implied-margin{padding-top:10px; margin-top:6px; border-top:1px solid var(--line); font-size:11.5px;}
   .implied-margin-label{color:var(--chalk-dim); margin-right:8px;}
   .implied-margin-value{font-weight:600; color:var(--chalk); margin-right:8px;}
@@ -707,8 +717,22 @@
       </div>
       <div class="badge" id="picks-record-badge" aria-live="polite">—</div>
     </div>
+    <!-- Only appears when the page was opened from a share link. Reuses the
+         onboarding banner's styling rather than adding another one-off block;
+         the amber variant marks it as "this is not your data". -->
+    <div id="shared-picks-banner" class="onboarding-banner shared-banner" style="display:none;">
+      <div class="onboarding-content">
+        <h4 id="shared-picks-title">Viewing someone else's picks</h4>
+        <p id="shared-picks-note" class="shared-note"></p>
+        <div class="shared-actions">
+          <button class="filter-btn" onclick="importSharedPicks()">Copy these into my log</button>
+          <button class="filter-btn" onclick="exitSharedPicks()">Back to my picks</button>
+        </div>
+      </div>
+    </div>
     <div class="filter-row">
       <select id="picks-week-select" class="week-select"></select>
+      <button class="filter-btn" onclick="copyShareLink(this)">Copy Share Link</button>
       <button class="filter-btn" onclick="exportMyPicks()">Export My Picks</button>
       <button class="filter-btn" onclick="document.getElementById('picks-import-input').click()">Import My Picks</button>
       <input type="file" id="picks-import-input" accept=".json" style="display:none;" onchange="if(this.files[0]) importMyPicks(this.files[0])">
@@ -1728,6 +1752,202 @@ function saveMyPicks(picks){
   catch(e){ console.warn('Could not save picks locally', e); }
 }
 
+/* ---------- Shareable picks link ----------
+   A static site with no backend, so the picks have to travel inside the URL
+   itself. Three decisions worth stating:
+
+   1. One week per link, not the whole log. A week is ~16 games; a season is
+      272, and a URL carrying all of them would be long enough that mail
+      clients and chat apps start wrapping and truncating it. Truncation on a
+      link is the bad case, because a half-decoded pick set still looks like a
+      pick set.
+
+   2. The fragment (#), never the query string. Fragments are not sent to the
+      server, so someone's picks do not end up in GitHub Pages' request logs
+      just because they shared them.
+
+   3. One character per game, positional -- which is compact but only correct
+      if both ends agree on the game order. So the link carries a fingerprint
+      of the exact schedule the sender saw. If the receiver's copy of that
+      week differs at all, the link is REFUSED rather than decoded against the
+      wrong games. Silently attaching someone's picks to the wrong fixtures is
+      worse than not opening the link. */
+const SHARE_VERSION = '1';
+
+// FNV-1a. Not a security hash -- it exists to notice that two schedules
+// differ, and it only has to survive being pasted through a chat window.
+function scheduleFingerprint(games){
+  const s = games.map(g => g.away + '@' + g.home).join(',');
+  let h = 0x811c9dc5;
+  for(let i = 0; i < s.length; i++){
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h.toString(36);
+}
+
+function encodeSharedPicks(weekKey){
+  const weekData = weeks[weekKey];
+  if(!weekData || !(weekData.games||[]).length) return null;
+  const myPicks = loadMyPicks();
+  const games = weekData.games;
+
+  // h = home, a = away, - = no pick. Fixed length, one char per game, in the
+  // week's own order.
+  let bits = '', picked = 0;
+  games.forEach(g => {
+    const pick = myPicks[weekKey + '|' + g.home + '|' + g.away];
+    if(pick === g.home){ bits += 'h'; picked++; }
+    else if(pick === g.away){ bits += 'a'; picked++; }
+    else bits += '-';
+  });
+  if(picked === 0) return null;
+  return { token: [SHARE_VERSION, weekKey, bits, scheduleFingerprint(games)].join('~'),
+           picked };
+}
+
+function decodeSharedPicks(token){
+  const parts = String(token).split('~');
+  if(parts.length !== 4) return {error: 'That link is not in a format this page recognises.'};
+  const [version, weekKey, bits, fingerprint] = parts;
+
+  if(version !== SHARE_VERSION){
+    return {error: `That link was made by a different version of this page (v${version}).`};
+  }
+  const weekData = weeks[weekKey];
+  if(!weekData || !(weekData.games||[]).length){
+    return {error: `This site has no data for ${weekKey.replace('_',' ')}, so those picks cannot be shown.`};
+  }
+  const games = weekData.games;
+  if(bits.length !== games.length){
+    return {error: `That link covers ${bits.length} games but this site has ${games.length} for that week, so the picks cannot be lined up. Nothing was imported.`};
+  }
+  if(fingerprint !== scheduleFingerprint(games)){
+    // The dangerous case, and the reason the fingerprint exists at all.
+    return {error: 'That link was made from a different version of this week\'s schedule. Lining the picks up by position would attach them to the wrong games, so nothing was imported.'};
+  }
+
+  const picks = {};
+  let picked = 0;
+  games.forEach((g, i) => {
+    const c = bits[i];
+    if(c === 'h'){ picks[weekKey + '|' + g.home + '|' + g.away] = g.home; picked++; }
+    else if(c === 'a'){ picks[weekKey + '|' + g.home + '|' + g.away] = g.away; picked++; }
+    else if(c !== '-'){ /* tolerated: unknown char reads as no pick */ }
+  });
+  return {weekKey, picks, picked};
+}
+
+function copyShareLink(btn){
+  const encoded = encodeSharedPicks(currentPicksWeek);
+  const label = btn ? btn.textContent : '';
+  const flash = (msg) => {
+    if(!btn) return;
+    btn.textContent = msg;
+    setTimeout(()=>{ btn.textContent = label; }, 2600);
+  };
+  if(!encoded){
+    flash('No picks this week');
+    return;
+  }
+  const url = location.origin + location.pathname + '#picks=' + encoded.token;
+
+  // Clipboard access needs a secure context; opened from a file:// path it
+  // will not be there. Falling back to a prompt keeps the link reachable
+  // rather than failing with nothing on screen.
+  const fallback = () => {
+    window.prompt('Copy this link to share your picks:', url);
+    flash('Link ready');
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url)
+      .then(()=> flash(`Copied (${encoded.picked} picks)`))
+      .catch(fallback);
+  } else {
+    fallback();
+  }
+}
+
+// Non-null only while a shared link is open. renderPicksGrid reads it, which
+// is what keeps the shared view from touching localStorage at all.
+let sharedPicksView = null;
+
+function showSharedPicks(decoded){
+  sharedPicksView = decoded;
+  currentPicksWeek = decoded.weekKey;
+  const sel = document.getElementById('picks-week-select');
+  if(sel) sel.value = decoded.weekKey;
+
+  const banner = document.getElementById('shared-picks-banner');
+  const note = document.getElementById('shared-picks-note');
+  if(note){
+    const mine = Object.keys(loadMyPicks()).length;
+    note.textContent = `${decoded.picked} pick${decoded.picked===1?'':'s'} for `
+      + `${decoded.weekKey.replace('_',' ')}, shared from someone else's device. `
+      + `Nothing has been saved to this device. `
+      + (mine ? 'Your own picks are untouched and will come back when you leave this view.'
+              : 'You have no picks of your own logged yet.');
+  }
+  if(banner) banner.style.display = 'block';
+  // Dismiss any pending undo. It refers to a pick made on THIS device a
+  // moment ago, and leaving it up means shared view is showing a "Pick saved
+  // -- Undo" button that still writes to local storage, which is exactly the
+  // guarantee this view is supposed to make. Seen in a screenshot of the
+  // receive path; nothing in the logic would have surfaced it.
+  const toast = document.getElementById('undo-toast');
+  if(toast) toast.classList.remove('visible');
+  lastPickChange = null;
+
+  setActivePage('picks');
+  renderPicksGrid();
+}
+
+function exitSharedPicks(){
+  sharedPicksView = null;
+  const banner = document.getElementById('shared-picks-banner');
+  if(banner) banner.style.display = 'none';
+  if(location.hash.indexOf('picks=') !== -1){
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+  renderPicksGrid();
+}
+
+function importSharedPicks(){
+  if(!sharedPicksView) return;
+  const incoming = sharedPicksView.picks;
+  const existing = loadMyPicks();
+  const clashes = Object.keys(incoming).filter(k => existing[k] && existing[k] !== incoming[k]);
+
+  // Asked, not assumed. These picks belong to someone else, and overwriting
+  // a real logged pick would corrupt the record the Season Accuracy page is
+  // scored from.
+  let overwrite = false;
+  if(clashes.length){
+    overwrite = window.confirm(
+      `${clashes.length} of these games already have a different pick logged on this device.\n\n`
+      + `OK = replace yours with the shared pick.\n`
+      + `Cancel = keep your own and only fill in the games you have not picked.`);
+  }
+  const merged = overwrite ? {...existing, ...incoming} : {...incoming, ...existing};
+  saveMyPicks(merged);
+  exitSharedPicks();
+  alert('Shared picks copied into your log.');
+}
+
+function readSharedPicksFromUrl(){
+  const m = /[#&]picks=([^&]+)/.exec(location.hash || '');
+  if(!m) return;
+  const decoded = decodeSharedPicks(decodeURIComponent(m[1]));
+  if(decoded.error){
+    // Say what went wrong and drop the bad fragment, rather than leaving a
+    // link that fails again on every refresh.
+    alert(decoded.error);
+    history.replaceState(null, '', location.pathname + location.search);
+    return;
+  }
+  showSharedPicks(decoded);
+}
+
 function exportMyPicks(){
   const picks = loadMyPicks();
   const payload = { exported: new Date().toISOString(), picks };
@@ -1813,7 +2033,11 @@ function renderPicksGrid(){
   const badge = document.getElementById('picks-record-badge');
   const weekData = weeks[currentPicksWeek];
   const gamesList = weekData ? weekData.games : [];
-  const myPicks = loadMyPicks();
+  // While a share link is open the grid renders THEIR picks and never reads
+  // this device's storage, so viewing someone else's week cannot be mistaken
+  // for -- or quietly become -- your own log.
+  const myPicks = sharedPicksView ? sharedPicksView.picks : loadMyPicks();
+  grid.classList.toggle('picks-readonly', !!sharedPicksView);
 
   if(!weekData || gamesList.length === 0){
     grid.innerHTML = `<div class="empty-state">No games to pick for this week yet.</div>`;
@@ -1833,7 +2057,12 @@ function renderPicksGrid(){
       }
     });
   });
-  badge.textContent = (wins+losses)>0 ? `${wins}-${losses} on graded picks` : 'No graded picks yet';
+  // In shared view the only picks in hand are the one week that was shared,
+  // so the badge must not read as a season record -- it would be understating
+  // whatever the sharer's real record is.
+  badge.textContent = sharedPicksView
+    ? ((wins+losses)>0 ? `${wins}-${losses} on this shared week` : 'Shared week not graded yet')
+    : ((wins+losses)>0 ? `${wins}-${losses} on graded picks` : 'No graded picks yet');
 
   renderPicksStreak(myPicks);
 
@@ -1847,10 +2076,17 @@ function renderPicksGrid(){
         <button class="pick-btn ${pick===g.away?'selected':''}" data-team="${g.away}">${g.away}</button>
         <button class="pick-btn ${pick===g.home?'selected':''}" data-team="${g.home}">${g.home}</button>
       </div>
-      <div class="pick-agrees">Model B picks: ${modelBPick}${pick ? (pick===modelBPick ? ' (you agree)' : ' (you differ)') : ''}</div>
+      <div class="pick-agrees">Model B picks: ${modelBPick}${pick ? (sharedPicksView
+        ? (pick===modelBPick ? ' (they agree)' : ' (they differ)')
+        : (pick===modelBPick ? ' (you agree)' : ' (you differ)')) : ''}</div>
       ${trackRecordHtml(g.mktB_home)}
     </div>`;
   }).join('');
+
+  // No handlers at all in shared view. Disabling them here rather than
+  // ignoring the click inside the handler means there is no path from a tap
+  // on someone else's picks to a write against this device's storage.
+  if(sharedPicksView) return;
 
   grid.querySelectorAll('.pick-buttons').forEach(group=>{
     const pid = group.dataset.pid;
@@ -1901,8 +2137,27 @@ function showUndoToast(){
   clearTimeout(showUndoToast._timer);
   showUndoToast._timer = setTimeout(()=>{ toast.classList.remove('visible'); }, 5000);
 }
-populateWeekSelect(document.getElementById('picks-week-select'), (val)=>{ currentPicksWeek = val; renderPicksGrid(); }, latestWeekKey);
+populateWeekSelect(document.getElementById('picks-week-select'), (val)=>{
+  // A share link covers exactly one week, so navigating away from that week
+  // ends the shared view rather than showing an empty grid attributed to
+  // someone else.
+  if(sharedPicksView && val !== sharedPicksView.weekKey) exitSharedPicks();
+  currentPicksWeek = val;
+  renderPicksGrid();
+}, latestWeekKey);
 renderPicksGrid();
+// Last, so every function and the week selector it touches already exist.
+readSharedPicksFromUrl();
+
+// Pasting a share link into a tab that already has the dashboard open changes
+// only the fragment, so the browser does not reload and none of the above runs
+// again -- the link would appear to do nothing at all. Found by testing the
+// receive path as a real second visit rather than as a fresh page load.
+// The same listener handles the back button out of a shared view.
+window.addEventListener('hashchange', ()=>{
+  if(/[#&]picks=/.test(location.hash || '')) readSharedPicksFromUrl();
+  else if(sharedPicksView) exitSharedPicks();
+});
 
 /* ---------- What actually happened at this confidence level ----------
 
