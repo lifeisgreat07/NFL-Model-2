@@ -1,0 +1,167 @@
+{
+  "models_compared": [
+    "Football-only (off+def+qb)",
+    "LIVE MODEL A (off+def+qb+qbchange)",
+    "[reference only] + OL continuity",
+    "Market alone",
+    "LIVE MODEL B (+ market)",
+    "[reference only] + OL + market"
+  ],
+  "models_missing_from_candidate": [],
+  "same_row_sets": true,
+  "n_games": 1087,
+  "max_abs_delta": {
+    "log_loss": 0.0003415656149068358,
+    "brier": 0.00017511035124340157,
+    "auc": 0.0012493940780088364,
+    "accuracy": 0.0018399264029438367
+  },
+  "scoring_metrics_beyond_tolerance": {
+    "log_loss": 0.0003415656149068358,
+    "brier": 0.00017511035124340157,
+    "auc": 0.0012493940780088364
+  },
+  "per_model": {
+    "Football-only (off+def+qb)": {
+      "log_loss": {
+        "baseline": 0.6540786360793716,
+        "candidate": 0.6543146175282949,
+        "delta": 0.00023598144892333917
+      },
+      "brier": {
+        "baseline": 0.2305503327821602,
+        "candidate": 0.230664364885913,
+        "delta": 0.00011403210375279804
+      },
+      "auc": {
+        "baseline": 0.6629366905394242,
+        "candidate": 0.6622300660198948,
+        "delta": -0.0007066245195294085
+      },
+      "accuracy": {
+        "baseline": 0.624655013799448,
+        "candidate": 0.6237350505979761,
+        "delta": -0.0009199632014719183
+      }
+    },
+    "LIVE MODEL A (off+def+qb+qbchange)": {
+      "log_loss": {
+        "baseline": 0.649812209965089,
+        "candidate": 0.6494706443501822,
+        "delta": -0.0003415656149068358
+      },
+      "brier": {
+        "baseline": 0.2286032010974789,
+        "candidate": 0.2284280907462355,
+        "delta": -0.00017511035124340157
+      },
+      "auc": {
+        "baseline": 0.6701189996654628,
+        "candidate": 0.6712796389729024,
+        "delta": 0.0011606393074395926
+      },
+      "accuracy": {
+        "baseline": 0.6274149034038639,
+        "candidate": 0.6274149034038639,
+        "delta": 0.0
+      }
+    },
+    "[reference only] + OL continuity": {
+      "log_loss": {
+        "baseline": 0.6502935776689994,
+        "candidate": 0.6499552167611672,
+        "delta": -0.0003383609078322358
+      },
+      "brier": {
+        "baseline": 0.2288608169692255,
+        "candidate": 0.2286876233825316,
+        "delta": -0.00017319358669390383
+      },
+      "auc": {
+        "baseline": 0.6679922988168305,
+        "candidate": 0.6692416928948394,
+        "delta": 0.0012493940780088364
+      },
+      "accuracy": {
+        "baseline": 0.62557497700092,
+        "candidate": 0.6274149034038639,
+        "delta": 0.0018399264029438367
+      }
+    },
+    "Market alone": {
+      "log_loss": {
+        "baseline": 0.6073980523603624,
+        "candidate": 0.6073980523603624,
+        "delta": 0.0
+      },
+      "brier": {
+        "baseline": 0.2100921646609762,
+        "candidate": 0.2100921646609762,
+        "delta": 0.0
+      },
+      "auc": {
+        "baseline": 0.7246332038423988,
+        "candidate": 0.7246332038423988,
+        "delta": 0.0
+      },
+      "accuracy": {
+        "baseline": 0.6816927322907084,
+        "candidate": 0.6816927322907084,
+        "delta": 0.0
+      }
+    },
+    "LIVE MODEL B (+ market)": {
+      "log_loss": {
+        "baseline": 0.6062088177820173,
+        "candidate": 0.6061290256684686,
+        "delta": -7.979211354869342e-05
+      },
+      "brier": {
+        "baseline": 0.2094705325574131,
+        "candidate": 0.2094385161762011,
+        "delta": -3.201638121200223e-05
+      },
+      "auc": {
+        "baseline": 0.7269493619897455,
+        "candidate": 0.7270790805005769,
+        "delta": 0.0001297185108314336
+      },
+      "accuracy": {
+        "baseline": 0.6826126954921803,
+        "candidate": 0.6807727690892365,
+        "delta": -0.0018399264029438367
+      }
+    },
+    "[reference only] + OL + market": {
+      "log_loss": {
+        "baseline": 0.6065811770577282,
+        "candidate": 0.606488296589514,
+        "delta": -9.288046821420703e-05
+      },
+      "brier": {
+        "baseline": 0.209632255373158,
+        "candidate": 0.2095929113972958,
+        "delta": -3.934397586219385e-05
+      },
+      "auc": {
+        "baseline": 0.7263007694355879,
+        "candidate": 0.7264816926217478,
+        "delta": 0.0001809231861599203
+      },
+      "accuracy": {
+        "baseline": 0.6807727690892365,
+        "candidate": 0.6798528058877645,
+        "delta": -0.0009199632014719183
+      }
+    }
+  },
+  "controls": {
+    "baseline_reproduces": true,
+    "candidate_reproduces": true,
+    "both_deterministic": true
+  },
+  "hypothesis": "log loss, Brier and AUC agree to four decimal places across the pandas major version",
+  "tolerance": 5e-05,
+  "verdict": "REFUTED -- the pandas version moves the published metrics",
+  "note": "The hypothesis was that log loss, Brier and AUC would agree to four decimals. They do not: auc moves by 0.001249, 25x the threshold this project treats as noise. The pipeline is deterministic within each environment, so this is a real difference and not run-to-run variation."
+}

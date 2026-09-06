@@ -14,13 +14,40 @@
 # flipped to False), and nflreadpy itself needs only polars, treating pandas as
 # an optional extra.
 #
-# Dropping nfl_data_py would therefore unlock pandas 2.x/3.x -- but it would
-# also remove the documented revert path, and a pandas major version change can
-# move model numerics. That makes it a real experiment, not hygiene: tune on
-# 2022-2023, confirm on 2024-2025, and judge it on log loss / Brier / AUC
-# rather than accuracy, which at n~1087 cannot distinguish a genuine change
-# from a one-game platform wobble (see the Model Lab reproducibility finding).
-# Queued as exactly that; deliberately not done as a drive-by.
+# Dropping nfl_data_py would therefore unlock pandas 2.x/3.x. That was queued
+# here as a real experiment rather than hygiene. It has now been run, in two
+# parts, and the answer is to KEEP the pin for now.
+#
+# 1. Is the revert path real, or is nfl_data_py cruft?
+#    src/verify_data_source_fallback.py executes it rather than assuming.
+#    It imports, all three loaders work, every column this project depends on
+#    is present, and it agrees with nflreadpy exactly on 2025 week 10 -- 14
+#    games, zero differences in scores or spread lines. A REAL fallback. So
+#    the pin is buying a working revert path, not nothing.
+#
+# 2. Does the pandas version move the model?
+#    src/compare_pandas_versions.py, results in data/pandas_version_experiment.json.
+#    Pre-declared hypothesis: log loss, Brier and AUC agree to four decimals
+#    across the major version, which is the tolerance this project's own
+#    Linux-vs-Windows finding established. REFUTED. Both environments are
+#    deterministic (identical on repeat runs) and evaluate the same 1087
+#    games, but AUC moves up to 0.00125 -- 25x that threshold -- and log loss
+#    up to 0.00034.
+#
+#    Where it moves is the interesting part. "Market alone", the one model
+#    using a raw schedule column and no EPA aggregation, is bit-identical
+#    across versions. Every model built on EPA-derived features moves. The
+#    difference is in aggregating ~48k plays a season, not in the modelling
+#    or the metrics.
+#
+# No conclusion on the dashboard changes -- every shift is far inside the
+# published bootstrap intervals. But every published FIGURE would move in the
+# 3rd-4th decimal, the canonical BACKTEST_ACCURACY baseline would shift, and
+# drift monitoring compares against it. That is a real migration with a real
+# cost, and the benefit side has never been stated: nothing in this project
+# currently needs pandas 2.x. Revisit when something does, or when 1.5.3 going
+# unmaintained becomes the reason -- and regenerate every published number as
+# part of it, rather than discovering the shift afterwards.
 
 pandas==1.5.3
 numpy==1.26.4
