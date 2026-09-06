@@ -1,0 +1,22 @@
+{
+  "compare_season": 2025,
+  "compare_week": 10,
+  "pandas": "1.5.3",
+  "numpy": "1.26.4",
+  "committed_use_nflreadpy": true,
+  "importable": true,
+  "loader_errors": {
+    "schedule": null,
+    "plays": null,
+    "snap_counts": null
+  },
+  "missing_columns": {},
+  "comparison": {
+    "games_compared": 14,
+    "only_in_nfl_data_py": 0,
+    "only_in_nflreadpy": 0,
+    "mismatched_fields": {},
+    "values_agree": true
+  },
+  "verdict": "REAL FALLBACK -- imports, loads, and agrees with nflreadpy"
+}
