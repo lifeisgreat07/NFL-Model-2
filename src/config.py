@@ -64,31 +64,95 @@ MIN_PLAYS_FOR_RATING = 200
 # Seasons used for training/backtesting. Extend this list each year after
 # a season completes.
 # Model version -- bump this whenever the feature set or a tuned constant
-# changes, so saved predictions can be traced to exactly what produced
-# them. History:
-#   v1.0 (2026-08-17) -- initial 3-feature model (off, def, qb)
-#   v1.1 (2026-08-17) -- added OL continuity + QB-change (5 features)
-#   v2.0 (2026-08-24, Stage 2)  -- QB_SHRINK_K retuned 8->96
-#   v2.1 (2026-08-24, Stage 6)  -- OL continuity removed (4 features: off, def, qb, qbchange)
-#   v2.2 (2026-08-24, Stage 9)  -- backtest methodology switched to weekly refitting
-#                                   (no live-model code change, live pipeline already did this)
-#   v2.3 (2026-08-31) -- fixed a real leak in build_qb_ratings (shrinkage
-#                          target was a global average, not cutoff-scoped;
-#                          see ratings_engine.py); QB_SHRINK_K re-tuned
-#                          96->128 via a real, committed, reproducible
-#                          script (src/tune_qb_shrink_k.py), superseding
-#                          the prior retune whose own numbers couldn't be
-#                          reproduced from anything in this repo
-#   v2.4 (2026-08-31) -- QB shrinkage investigation: found the original
-#                          k=96 decision didn't reproduce under later
-#                          config changes (OL removal, weekly refit);
-#                          the fresh retune above (k=128) then turned out
-#                          inconsistent across metrics on confirmatory
-#                          data too (k=8 won 3 of 4); reverted to k=8 as
-#                          the defensible default. tune_qb_shrink_k.py
-#                          stays committed -- real, reusable methodology,
-#                          independent of what it concluded this time.
+# changes, so saved predictions can be traced to exactly what produced them.
+#
+# The history below used to live in this comment. It is a real list now
+# because the dashboard's Changelog page is generated from it, and a page
+# rendered out of a Python comment is the "prose drifts" failure this project
+# has already been burned by: nothing would have connected the words on the
+# page to anything, and reformatting the comment would have silently emptied
+# it. tests/test_version_history.py holds the two ends together -- every
+# release needs an entry, and MODEL_VERSION has to be the newest one.
+#
+# One thing was dropped in the move. Three entries carried a stage number
+# ("v2.0 (2026-08-24, Stage 2)"). Those pointed at a plan that has since been
+# renumbered twice, so on a public page they would read as the CURRENT Stage 2
+# and mean something entirely different. The dates and the substance are the
+# durable part; the stage labels were not.
 MODEL_VERSION = "2.4"
+
+VERSION_HISTORY = [
+    {
+        'version': '2.4',
+        'date': '2026-08-31',
+        'headline': 'Reverted QB shrinkage to k=8 after the retune failed to hold up',
+        'detail': (
+            "Investigated QB shrinkage properly and found the original k=96 "
+            "decision did not reproduce under later config changes (OL "
+            "removal, weekly refitting). The fresh retune to k=128 then turned "
+            "out inconsistent across metrics on confirmatory data as well -- "
+            "k=8 won three of four. Reverted to k=8 as the defensible default. "
+            "src/tune_qb_shrink_k.py stays committed: the methodology is real "
+            "and reusable regardless of what it concluded this time."
+        ),
+    },
+    {
+        'version': '2.3',
+        'date': '2026-08-31',
+        'headline': 'Fixed a real leak in build_qb_ratings',
+        'detail': (
+            "The shrinkage target was a global average rather than being "
+            "cutoff-scoped, so a QB rating could see beyond its own cutoff "
+            "(see ratings_engine.py). With the leak closed, QB_SHRINK_K was "
+            "re-tuned 96 to 128 by a committed, reproducible script -- "
+            "superseding an earlier retune whose numbers could not be "
+            "reproduced from anything in this repository."
+        ),
+    },
+    {
+        'version': '2.2',
+        'date': '2026-08-24',
+        'headline': 'Backtest switched to weekly refitting',
+        'detail': (
+            "A methodology change with no live-model code change behind it: "
+            "the live pipeline already refit weekly, and the backtest was the "
+            "thing out of step. Recorded as a version bump because it moves "
+            "the published numbers even though the model itself is untouched."
+        ),
+    },
+    {
+        'version': '2.1',
+        'date': '2026-08-24',
+        'headline': 'OL continuity removed -- down to four features',
+        'detail': (
+            "Offensive-line continuity did not earn its place. Feature set "
+            "back to off, def, qb and qb-change."
+        ),
+    },
+    {
+        'version': '2.0',
+        'date': '2026-08-24',
+        'headline': 'QB_SHRINK_K retuned 8 to 96',
+        'detail': (
+            "Superseded twice over: v2.3 re-tuned it again after finding a "
+            "leak, and v2.4 reverted the whole line of reasoning back to k=8. "
+            "Kept here because a changelog that quietly deletes the decisions "
+            "that were later reversed is not a changelog."
+        ),
+    },
+    {
+        'version': '1.1',
+        'date': '2026-08-17',
+        'headline': 'Added OL continuity and QB-change (five features)',
+        'detail': "Both added on plausibility. One of them did not survive v2.1.",
+    },
+    {
+        'version': '1.0',
+        'date': '2026-08-17',
+        'headline': 'Initial three-feature model',
+        'detail': "Opponent-adjusted offence, defence and QB rating.",
+    },
+]
 
 TRAIN_SEASONS = [2020, 2021, 2022, 2023, 2024, 2025]
 BACKTEST_SEASONS = [2022, 2023, 2024, 2025]

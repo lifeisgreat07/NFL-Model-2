@@ -421,6 +421,23 @@
   .empty-state{padding:48px 24px; text-align:center; color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px;
     background:var(--panel); border:1px dashed var(--line); border-radius:var(--radius);}
 
+  /* ---------- Changelog ---------- */
+  .cl-entry{display:grid; grid-template-columns:104px 1fr; gap:0 22px; padding:20px 0; border-bottom:1px solid var(--line);}
+  .cl-entry:last-child{border-bottom:none;}
+  .cl-meta{display:flex; flex-direction:column; gap:4px;}
+  .cl-version{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:16px; color:var(--chalk); font-variant-numeric:tabular-nums;}
+  .cl-date{font-size:11.5px; color:var(--chalk-dim); font-variant-numeric:tabular-nums;}
+  .cl-current{align-self:flex-start; margin-top:3px; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
+    font-weight:600; color:var(--amber); background:var(--amber-dim); border:1px solid var(--amber-dim);
+    border-radius:999px; padding:3px 8px;}
+  .cl-headline{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:14.5px; color:var(--chalk); line-height:1.45;}
+  .cl-detail{font-size:13px; color:var(--chalk-dim); line-height:1.68; margin-top:7px;}
+  @media (max-width:640px){
+    .cl-entry{grid-template-columns:1fr; gap:9px 0;}
+    .cl-meta{flex-direction:row; align-items:baseline; gap:10px; flex-wrap:wrap;}
+    .cl-current{margin-top:0;}
+  }
+
   /* ---------- Methodology ---------- */
   .method-block{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--line-strong); border-radius:var(--radius); padding:24px 26px; margin-bottom:16px; box-shadow:var(--shadow-sm);}
   /* Explanatory note sitting under a table, for the case where a column is
@@ -550,6 +567,7 @@
     <div class="nav-group-label">Reference</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg>Roadmap</button>
+    <button class="nav-btn" data-page="changelog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 21v-5h5"/></svg>Changelog</button>
     <button class="nav-btn" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>Data Sources</button>
     <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>AI Reliability</button>
     <button class="nav-btn" data-page="compare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8l7-5 7 5M3 12h4l-2 5-2-5zM17 12h4l-2 5-2-5z"/></svg>How This Compares</button>
@@ -943,6 +961,22 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     </div>
   </section>
 
+  <!-- CHANGELOG -->
+  <!-- Rendered from config.VERSION_HISTORY, which is the same object
+       MODEL_VERSION is checked against. A release-notes page maintained by
+       hand beside the constant it describes is a drift waiting to happen;
+       tests/test_version_history.py holds the two together. -->
+  <section class="page" id="page-changelog">
+    <div class="page-head">
+      <div>
+        <h2>Changelog</h2>
+        <div class="desc">Every version of the model, generated from <code>config.py</code> rather than written out by hand. Reversals are kept: a changelog that quietly deletes the decisions that were later undone is just marketing.</div>
+      </div>
+      <div class="badge" id="changelog-badge">—</div>
+    </div>
+    <div id="changelog-content"></div>
+  </section>
+
   <!-- DATA SOURCES -->
   <section class="page" id="page-datasources">
     <div class="page-head">
@@ -1141,6 +1175,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <button class="bnav-more-item" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Team Deep-Dive</span></button>
     <button class="bnav-more-item" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span>Methodology</span></button>
     <button class="bnav-more-item" data-page="roadmap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V4l4 2 4-2 4 2 4-2v13l-4 2-4-2-4 2-4-2z"/></svg><span>Roadmap</span></button>
+    <button class="bnav-more-item" data-page="changelog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 21v-5h5"/></svg><span>Changelog</span></button>
     <button class="bnav-more-item" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span>Model Lab</span></button>
     <button class="bnav-more-item" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg><span>Data Sources</span></button>
     <button class="bnav-more-item" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg><span>AI Reliability</span></button>
@@ -1150,6 +1185,8 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 </div>
 
 <script>
+const versionHistory = __VERSION_HISTORY_JSON__;
+const modelVersion = __MODEL_VERSION__;
 const teams = __TEAMS_JSON__;
 const playoffOdds = __PLAYOFF_ODDS_JSON__;
 
@@ -2473,6 +2510,47 @@ function renderTeamDive(){
   content.innerHTML = `<div class="table-wrap" style="padding:18px 20px;">${rowsHtml}</div>`;
 }
 renderTeamDive();
+
+/* ---------- Changelog ---------- */
+// Escaped rather than interpolated raw: this text comes out of config.py,
+// which is a source file people edit by hand, and an unescaped '<' in a
+// release note would silently break the page it is describing.
+function clEscape(s){
+  return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+function renderChangelog(){
+  const content = document.getElementById('changelog-content');
+  const badge = document.getElementById('changelog-badge');
+  if(!content) return;
+
+  if(!versionHistory || !versionHistory.length){
+    content.innerHTML = `<div class="empty-state">No version history recorded in config.py.</div>`;
+    if(badge) badge.textContent = '—';
+    return;
+  }
+  if(badge){
+    badge.textContent = versionHistory.length + ' version' + (versionHistory.length===1?'':'s');
+  }
+
+  content.innerHTML = `<div class="method-block">` + versionHistory.map(v => {
+    // The badge is derived, not stored: whichever entry matches the version
+    // the model is actually running is the current one. Storing a flag would
+    // let the page mark a release "current" that config.py disagrees with.
+    const isCurrent = v.version === modelVersion;
+    return `<div class="cl-entry">
+      <div class="cl-meta">
+        <span class="cl-version">v${clEscape(v.version)}</span>
+        <span class="cl-date">${clEscape(v.date)}</span>
+        ${isCurrent ? '<span class="cl-current">Running now</span>' : ''}
+      </div>
+      <div>
+        <div class="cl-headline">${clEscape(v.headline)}</div>
+        <div class="cl-detail">${clEscape(v.detail)}</div>
+      </div>
+    </div>`;
+  }).join('') + `</div>`;
+}
+renderChangelog();
 </script>
 </body>
 </html>
