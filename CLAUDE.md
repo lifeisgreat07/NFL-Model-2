@@ -47,7 +47,10 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: 174 passing. **Stage 2 is complete** (PRs #21-#24). Next up is Stage 3.
+Suite: **174 passing** on `main`.
+
+**Stage 2 is complete** — PRs #21, #22, #23 and #24, all merged. Next up is
+Stage 3.
 
 **Stage numbers are frozen from here.** They were renumbered twice in two days,
 "Stage 8" meant three different things in three days, and it caused real
