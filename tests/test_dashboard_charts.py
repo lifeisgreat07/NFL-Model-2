@@ -344,3 +344,98 @@ def test_dashboard_still_builds_without_calibration_json(tmp_path):
 
 if __name__ == '__main__':
     sys.exit(pytest.main([__file__, '-v']))
+
+
+# ---------------------------------------------------------------------------
+# Bar encoding: does the mark match the number it is drawing?
+#
+# Three bars on this dashboard share one pair of CSS classes, and two of them
+# are not the same chart. Power Ratings and Team Deep-Dive draw a SIGNED value
+# whose zero sits at the centre of the track. Playoff Odds draws a 0-100%
+# probability anchored at the left edge, where the centre means nothing at all.
+#
+# Before the zero line existed the two were indistinguishable, which is how a
+# shared class survived: nothing rendered differently. Now that .diverging
+# paints a zero reference, putting it on the playoff bar would draw a "zero"
+# at 50% probability -- a line asserting something the data does not contain.
+# ---------------------------------------------------------------------------
+
+# Non-greedy across the title attribute on purpose: those titles contain '>'
+# (from `t.net>=0`), so an [^>]* hop to the tag end stops in the wrong place.
+_BAR = re.compile(
+    r'srs-bar-track(?P<cls>[^"]*)"(?P<between>.*?)srs-bar-fill" style="left:(?P<left>.*?);',
+    re.S)
+
+
+def _bars():
+    page = TEMPLATE.read_text(encoding='utf-8')
+    return [(m.group('cls'), m.group('left').strip()) for m in _BAR.finditer(page)]
+
+
+def test_the_bar_regex_still_finds_the_bars():
+    """If the markup is restructured this regex can quietly match nothing, and
+    every property below would then pass over an empty list."""
+    bars = _bars()
+    assert len(bars) >= 3, (
+        f"found {len(bars)} bar(s); the dashboard has at least three "
+        f"(Power Ratings, Playoff Odds, Team Deep-Dive) -- the matcher has "
+        f"drifted off the markup and these guards are checking nothing")
+
+
+def test_a_zero_line_appears_on_exactly_the_bars_that_have_a_zero():
+    """The property, stated over geometry rather than over a list of pages.
+
+    A fill pinned to `left:0%` grows from the left edge: it is a magnitude,
+    and it has no centre to mark. Any other anchor is computed from the sign
+    of the value, which means the track's middle IS zero and has to be drawn.
+    A new bar added later is covered by this automatically.
+    """
+    for cls, left in _bars():
+        anchored_left = (left == '0%')
+        marked_diverging = 'diverging' in cls
+        if anchored_left:
+            assert not marked_diverging, (
+                f"a bar anchored at left:0% is marked .diverging, so it draws "
+                f"a zero reference at the middle of a 0-100% scale -- that "
+                f"line claims 50% is a neutral point, which it is not")
+        else:
+            assert marked_diverging, (
+                f"a bar anchored at '{left}' is signed -- its position encodes "
+                f"direction from a centre -- but carries no .diverging class, "
+                f"so its zero is invisible and a small positive looks like a "
+                f"small negative")
+
+
+def test_the_zero_reference_is_actually_drawn():
+    """The class has to paint something. A .diverging that resolves to no rule
+    passes the pairing test above while changing nothing on screen."""
+    page = TEMPLATE.read_text(encoding='utf-8')
+    assert '.srs-bar-track.diverging::before' in page, (
+        "nothing draws the zero line, so .diverging is decoration")
+    assert re.search(r'\.srs-bar-track\.diverging::before\{[^}]*left:50%', page), (
+        "the zero reference is not at the centre of the track, which is where "
+        "the fills are anchored")
+
+
+def test_the_net_rating_axis_is_read_from_the_league_not_hardcoded():
+    """The bars are normalised to the league's largest absolute rating, so the
+    printed domain has to come from that same number. A hardcoded '+0.19' would
+    be correct today and wrong next week, and silently so."""
+    page = TEMPLATE.read_text(encoding='utf-8')
+
+    assert '<span class="ax-min"></span>' in page and '<span class="ax-max"></span>' in page, (
+        "the axis endpoints are not empty in the markup, which means they are "
+        "baked into the HTML rather than filled from the data")
+    assert "axMin.textContent = '−' + maxAbs.toFixed(2)" in page, (
+        "the axis minimum is no longer derived from maxAbs")
+    assert "axMax.textContent = '+' + maxAbs.toFixed(2)" in page, (
+        "the axis maximum is no longer derived from maxAbs")
+
+
+def test_the_axis_describes_the_whole_league_not_the_filtered_view():
+    """maxAbs is computed from `teams`, not from the search-filtered subset.
+    If it ever moved, searching for one team would rescale the axis under the
+    reader and every bar on screen would silently change meaning."""
+    page = TEMPLATE.read_text(encoding='utf-8')
+    assert 'const maxAbs = Math.max(...teams.map(t=>Math.abs(t.net)), 0.0001);' in page, (
+        "the Power Ratings scale is no longer computed over the full league")

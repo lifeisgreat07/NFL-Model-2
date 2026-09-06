@@ -210,6 +210,31 @@
   .srs-bar-track{position:relative; width:90px; height:6px; background:var(--panel-hi); border-radius:3px; overflow:hidden;}
   .srs-bar-fill{position:absolute; top:0; bottom:0; background:linear-gradient(90deg, var(--amber), var(--amber-bright)); border-radius:3px;}
 
+  /* Diverging variant. These bars encode a SIGNED value whose zero is the
+     middle of the track, and until now that zero was invisible: a small
+     positive and a small negative both rendered as a short bar near the
+     centre, distinguishable only by reading the number beside it -- which
+     defeats the point of having a bar. Deliberately NOT applied to the
+     playoff-odds bar, which is a 0-100% magnitude bar anchored at the left
+     edge and has no meaningful centre to mark.
+     Colour is left alone here on purpose: encoding the sign by hue is a real
+     improvement but it belongs with the rest of the palette work, where it
+     can be run through the validator in both themes rather than eyeballed. */
+  .srs-bar-track.diverging{overflow:visible;}
+  .srs-bar-track.diverging::before{content:''; position:absolute; left:50%; top:-3px; bottom:-3px;
+    width:1px; margin-left:-.5px; background:var(--chalk-dim); opacity:.5; z-index:2;}
+
+  /* Printed domain for the Net Rating column. The bars are normalised to the
+     league's largest absolute rating, so a full-width bar does not mean "1.0"
+     or "the maximum possible" -- it means "the biggest in the league today".
+     Without the endpoints on the page that is unknowable. */
+  .net-head{display:flex; flex-direction:column; align-items:center; gap:5px;}
+  .net-head-row{display:grid; grid-template-columns:90px 62px; column-gap:10px; justify-content:center;}
+  .net-axis{position:relative; width:90px; display:flex; justify-content:space-between; align-items:center;
+    font-size:9px; letter-spacing:0; text-transform:none; font-weight:500; color:var(--chalk-dim); font-variant-numeric:tabular-nums;}
+  .net-axis .ax-zero{position:absolute; left:50%; transform:translateX(-50%);}
+  thead th.sorted .net-axis{color:var(--chalk-dim);}
+
   /* ---------- Week board ---------- */
   .filter-row{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; align-items:center;}
   .week-select{
@@ -569,7 +594,20 @@
           <tr>
             <th data-key="rank">#</th>
             <th data-key="team">Team</th>
-            <th data-key="net" class="sorted" style="text-align:center;">Net Rating</th>
+            <th data-key="net" class="sorted" style="text-align:center;">
+              <div class="net-head">
+                <span>Net Rating</span>
+                <!-- Endpoints filled in from the live data, not hardcoded: the
+                     domain is the league's own largest absolute rating and it
+                     moves every week. -->
+                <div class="net-head-row">
+                  <div class="net-axis" aria-hidden="true">
+                    <span class="ax-min"></span><span class="ax-zero">0</span><span class="ax-max"></span>
+                  </div>
+                  <span></span>
+                </div>
+              </div>
+            </th>
             <th data-key="off" style="text-align:right;">Offense</th>
             <th data-key="def" style="text-align:right;">Defense</th>
             <th data-key="sos" style="text-align:right;" title="Strength of schedule: the average current net rating of the opponents a team has actually played so far. Blank until games have been played.">SOS</th>
@@ -1264,6 +1302,17 @@ function renderRatings(){
   }
 
   const maxAbs = Math.max(...teams.map(t=>Math.abs(t.net)), 0.0001);
+
+  // Print the domain the bars are drawn against. Computed from the whole
+  // league, not the filtered view -- searching for one team must not silently
+  // rescale the axis under the reader.
+  const axMin = document.querySelector('#ratings-table .ax-min');
+  const axMax = document.querySelector('#ratings-table .ax-max');
+  if(axMin && axMax){
+    axMin.textContent = '−' + maxAbs.toFixed(2);
+    axMax.textContent = '+' + maxAbs.toFixed(2);
+  }
+
   const body = document.getElementById('ratings-body');
   if(visible.length === 0){
     body.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--chalk-dim);">No teams match "${q}"</td></tr>`;
@@ -1289,7 +1338,7 @@ function renderRatings(){
       <td class="rank">${i+1}</td>
       <td><div class="team-cell"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span>${trendHtml}</div></td>
       <td class="num"><div class="net-cell-inner">
-        <div class="srs-bar-track"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
+        <div class="srs-bar-track diverging" title="${t.net>=0?'+':''}${t.net.toFixed(3)} net rating; league scale ±${maxAbs.toFixed(2)}, centre line is zero"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
         <span class="net-value">${t.net>=0?'+':''}${t.net.toFixed(3)}</span>
       </div></td>
       <td class="num">${t.off>=0?'+':''}${t.off.toFixed(3)}</td>
@@ -2416,7 +2465,7 @@ function renderTeamDive(){
     const isLive = p.label.includes('Wk');
     return `<div class="dive-row">
       <span class="dive-label ${isLive?'live':''}">${p.label}</span>
-      <div class="srs-bar-track" style="width:140px;"><div class="srs-bar-fill" style="left:${p.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
+      <div class="srs-bar-track diverging" style="width:140px;" title="${p.net>=0?'+':''}${p.net.toFixed(3)} net rating; scale ±${maxAbs.toFixed(2)} across this team's own history, centre line is zero"><div class="srs-bar-fill" style="left:${p.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
       <span class="dive-value">${p.net>=0?'+':''}${p.net.toFixed(3)}</span>
     </div>`;
   }).join('');
