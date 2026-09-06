@@ -398,6 +398,10 @@
 
   /* ---------- Methodology ---------- */
   .method-block{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--line-strong); border-radius:var(--radius); padding:24px 26px; margin-bottom:16px; box-shadow:var(--shadow-sm);}
+  /* Explanatory note sitting under a table, for the case where a column is
+     legitimately empty and would otherwise read as broken. */
+  .table-note{color:var(--chalk-dim); font-size:12.5px; line-height:1.55; margin:2px 0 14px; padding:12px 14px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); max-width:680px;}
+  .table-note b{color:var(--chalk); font-weight:600;}
   .method-block h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:17px; letter-spacing:.01em; margin-bottom:13px; color:var(--chalk); display:flex; align-items:center; gap:9px;}
   .method-block h3::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--chalk-dim); flex-shrink:0;}
   .method-block p, .method-block li{font-size:13.5px; line-height:1.68; color:var(--chalk-dim);}
@@ -531,7 +535,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <span id="theme-toggle-label">Light mode</span>
     </button>
-    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-06 00:29 UTC</span>
+    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-06 18:27 UTC</span>
   </div>
 </aside>
 
@@ -549,6 +553,16 @@
     <div class="filter-row">
       <input type="search" id="ratings-search" class="team-search" placeholder="Search teams..." aria-label="Search teams by name or abbreviation">
     </div>
+    <!-- Above the table on purpose. Placed below it, this sat under 32 rows of
+         data -- the reader meets the empty column long before the sentence
+         explaining it. Only rendered while SOS is genuinely empty, so in-season
+         it costs nothing. -->
+    <div id="sos-empty-note" class="table-note" style="display:none;">
+      <b>SOS is blank because no games have been played yet this season.</b>
+      Strength of schedule is the average current net rating of the opponents a
+      team has actually faced, so it has nothing to average until Week 1 is in
+      the books. It fills in on its own from the first completed week onward.
+    </div>
     <div class="table-wrap">
       <table id="ratings-table">
         <thead>
@@ -558,7 +572,7 @@
             <th data-key="net" class="sorted" style="text-align:center;">Net Rating</th>
             <th data-key="off" style="text-align:right;">Offense</th>
             <th data-key="def" style="text-align:right;">Defense</th>
-            <th data-key="sos" style="text-align:right;">SOS</th>
+            <th data-key="sos" style="text-align:right;" title="Strength of schedule: the average current net rating of the opponents a team has actually played so far. Blank until games have been played.">SOS</th>
           </tr>
         </thead>
         <tbody id="ratings-body"></tbody>
@@ -2850,6 +2864,14 @@ function renderRatings(){
     t.team.toLowerCase().includes(q) || (t.name && t.name.toLowerCase().includes(q))
   ) : ranked;
 
+  // Decided on the full league, not the filtered view: whether SOS exists is a
+  // property of the season, not of what the user happens to have searched for.
+  const sosNote = document.getElementById('sos-empty-note');
+  if(sosNote){
+    const anySos = teams.some(t=>t.sos!==null && t.sos!==undefined);
+    sosNote.style.display = anySos ? 'none' : 'block';
+  }
+
   const maxAbs = Math.max(...teams.map(t=>Math.abs(t.net)), 0.0001);
   const body = document.getElementById('ratings-body');
   if(visible.length === 0){
@@ -2881,7 +2903,9 @@ function renderRatings(){
       </div></td>
       <td class="num">${t.off>=0?'+':''}${t.off.toFixed(3)}</td>
       <td class="num">${t.def>=0?'+':''}${t.def.toFixed(3)}</td>
-      <td class="num">${(t.sos===null||t.sos===undefined)?'—':(t.sos>=0?'+':'')+t.sos.toFixed(3)}</td>
+      <td class="num">${(t.sos===null||t.sos===undefined)
+        ? '<span title="No games played yet, so there are no opponents to average.">—</span>'
+        : (t.sos>=0?'+':'')+t.sos.toFixed(3)}</td>
     </tr>`;
   }).join('');
 }
