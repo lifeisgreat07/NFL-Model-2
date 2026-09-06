@@ -40,93 +40,141 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-The ten-stage plan below is the canonical roadmap. It was written before the
-2026-09-04 compaction, lost with it, and recovered from the user's own chat
-scrollback on 2026-09-05. Status notes are current as of that date. Keep this
-list here, not in chat.
+The stage plan was renumbered on 2026-09-06. Carried-over incomplete work runs
+first (Stages 2-7); the dashboard visual overhaul from the design audit follows
+(Stages 8-10). The original ten-stage plan's
+Stages 2-5 are now finished, so carrying their numbering forward would have
+meant a roadmap that was mostly struck through. What follows replaces it. The
+old numbering appears nowhere else; if you find a reference to "Stage 4 -
+evaluation honesty" or "Stage 5 - deploy Booth", it predates this rewrite.
 
-Stage 1 - Quick status checks (recurring, first every session, don't dwell)
-Injury/roster data (CLOSED 2026-09-04, and note this is a change from
-"blocked": the data question was settled on VALUE, not availability -- a QB is
-Out in only 6.9% of team-weeks and `qb_change_diff` already covers it, so stop
-re-checking nflverse for it); ensemble contingency (still blocked, now solely on
-another independently-useful model existing); ESPN QBR (source abandoned, stops
-at 2023 -- quick re-check only); public betting % (blocked, no free accessible
-source -- quick re-check only); line-movement accumulation (CONFIRMED WORKING
-end-to-end; needs many more weeks before a real predictive test, do not force
-one on a small sample); reverse line movement (blocked downstream of public
-betting %, not independently actionable).
+### Finished, and why it matters
 
-Stage 2 - Deferred dashboard UX
-Print/PDF view of the week's picks (DONE); Team Deep-Dive game drill-down
-(remaining); shareable picks link (remaining).
+Evaluation honesty is complete. The reliability diagram (PR #13) put Wilson
+intervals and the Murphy decomposition on Model Lab. The paired bootstrap
+(PR #15) then killed its own headline: Model B vs the market is INCONCLUSIVE
+on all four metrics, and the panel says so. It confirmed two real findings
+instead - Model B genuinely beats Model A on proper scoring rules, and the
+market genuinely beats Model A - both stated with intervals for the first
+time. ATS evaluation (PR #16) asked the betting question the project had
+never asked and answered it negatively: 51.61%, CI [48.58%, 54.63%], which
+contains 50% and does not reach the 52.38% break-even. Pick cards now carry
+their own band's historical record (PR #18). The low-confidence finding was
+re-derived after Booth flagged it unverifiable (PR #19) and it holds.
 
-Stage 3 - Repo hygiene & reproducibility quick wins
-Pin `requirements.txt` (DONE); remove `ol_continuity` dead code (DONE, but
-NARROWED -- it turned out not to be dead: `backtest.py` uses it for
-"[reference only]" rows and four leak-free tests cover it, so it was removed
-from the live weekly path only); `run-backtest.yml` workflow_dispatch (DONE,
-plus `pip freeze` provenance); auto-generated changelog page from `config.py`
-(remaining); resolve whether `nfl_data_py` is a real fallback or cruft
-(remaining -- tied to the queued pandas 2.x/3.x unlock experiment, which must be
-judged on log loss/Brier/AUC, never accuracy).
+Booth is deployed and validated (PR #16-18). Its first real audit re-ran the
+suite itself, performed the mutation itself rather than trusting the PR's
+description of it, and found two genuine defects: a missing pytest install in
+its own harness, and a CONFIRMED FINDING on the live dashboard with no script
+behind it. A verifier catching the project breaking its own VERIFICATION.md
+rule on its first outing is the strongest evidence this whole apparatus works.
 
-Stage 4 - Evaluation honesty (methodological gate -- do before Stages 8-9)
-Calibration curve and reliability diagram (DONE, PR #13); against-the-spread
-evaluation with real CIs (DONE, PR #16 -- 51.61%, CI [48.58%, 54.63%], no edge,
-does not clear the 52.38% break-even); backtest against the closing line
-(DEFERRED, gated on line-history accumulation); confidence-interval display on
-picks (REMAINING -- the last item in this stage); isotonic/Platt recalibration
-only if warranted (CLOSED -- already REJECTED on Model Lab, and the reliability
-diagram shows no material miscalibration, so the condition is not met). Also
-landed here unplanned: the paired bootstrap (PR #15), which killed the
-Model-B-vs-market lead and confirmed two new findings, and the build-churn fix
-(PR #14).
+### Stage 1 - Recurring status checks (first every session, don't dwell)
 
-Stage 5 - Deploy Booth for real  <- NEXT
-`ANTHROPIC_API_KEY` repo secret; install the Claude GitHub App; upload
-`booth-pr-audit.yml` (remember `.github/` is write-protected against remote
-tooling, so this needs a web-editor walkthrough); open a real test PR and
-confirm Booth actually fires, re-executes and posts a genuine report -- not just
-that the workflow runs green; build the alert/communication system once
-autonomous operation is confirmed.
+Injury/roster data is CLOSED, not blocked - settled on VALUE, not
+availability, so stop re-checking nflverse for it. Ensemble contingency is
+blocked solely on another independently-useful model existing. ESPN QBR stops
+at 2023, quick re-check only. Public betting % has no free source; reverse
+line movement is blocked downstream of it. Line-movement accumulation is
+confirmed working and needs many more weeks before a real predictive test -
+do not force one on a small sample. Closing-line backtest stays deferred on
+that same accumulation.
 
-Stage 6 - Agent development
+### Stage 2 - Deferred UX & repo hygiene  <- NEXT
+
+Carried over and unblocked. Team Deep-Dive game drill-down; shareable picks
+link; auto-generated changelog page from config.py's version history; resolve
+whether nfl_data_py is a real fallback or cruft, tied to the queued pandas
+2.x/3.x unlock experiment - judged on log loss/Brier/AUC, never accuracy; Net
+Rating bar rebuilt with a zero baseline and a scale; remove or populate the SOS
+column, currently an em-dash for all 32 teams. OPEN BUG: booth-pr-audit.yml
+does not install pytest, so Booth installs it mid-audit. One line, but .github/
+needs a web-editor edit and must land on main before it takes effect anywhere -
+do this before the Stage 8-10 visual PRs start, or every one of them gets
+audited by a Booth that had to bootstrap its own test runner first.
+
+### Stage 3 - Agent development
+
 Booth regression suite of deliberately-bad PRs it must catch; prompt-injection
-resistance test; Scout pre-flight check enforcing `VERIFICATION.md` before any
-PR opens; structured agent decision log rendered as a dashboard page;
-inter-agent disagreement protocol (currently undefined); Booth cost and latency
+resistance test; Scout pre-flight enforcing VERIFICATION.md before any PR
+opens; structured agent decision log rendered as a dashboard page; inter-agent
+disagreement protocol, currently undefined; Booth cost and latency
 instrumentation; "Archivist" role regenerating the handoff from real repo state
-(note: this file is the manual version of that).
+- this file is the manual version of that.
 
-Stage 7 - Automation & monitoring
+### Stage 4 - Automation & monitoring
+
 Data-quality checks on every weekly run; play-by-play cache layer; alerts on
-upstream nflverse schema changes; auto-open a PR when `check_drift.py` detects
-real drift; nightly canary against the last completed week (would have caught
-the `nflreadpy` offseason crash days early); automated weekly summary report;
-reproducibility audit and expanded leak-free coverage.
+upstream nflverse schema changes; auto-open a PR when check_drift.py detects
+real drift; nightly canary against the last completed week, which would have
+caught the nflreadpy offseason crash days early; automated weekly summary;
+reproducibility audit and expanded leak-free coverage. Also the alert and
+communication layer for Booth, now that autonomous operation is confirmed.
 
-Stage 8 - Model depth, real hypotheses only
+### Stage 5 - Model depth, real hypotheses only
+
 Residual analysis FIRST, since it tells you which of the rest are worth
-attempting; market-implied probability calibration as a Model B feature;
-per-team learned home-field advantage; rest and travel features; weather and
-wind for outdoor games; situational splits; multi-season QB priors;
-injury-adjusted QB ratings (gated on Stage 1's injury data, which is now closed,
-so treat as indefinitely parked); learned blend weight between Models A and B
-(if an ensemble doesn't beat both, that's a publishable REJECT).
+attempting. Then market-implied probability calibration as a Model B feature;
+per-team learned home-field advantage; rest and travel; weather and wind for
+outdoor games; situational splits; multi-season QB priors; injury-adjusted QB
+ratings, indefinitely parked with the injury data closed; learned blend weight
+between Models A and B - if an ensemble doesn't beat both, that's a publishable
+REJECT.
 
-Stage 9 - New data sources
-Next Gen Stats via nflreadpy (most promising untapped source already in the
-stack); participation/personnel grouping; referee crew assignments (cheap, real,
-testable); multi-book line dispersion as an uncertainty signal (infrastructure
-exists, so this is accumulation-gated analysis under Stage 1, not a new build).
-Each item needs a stated hypothesis BEFORE the data is pulled, or it is fishing.
+### Stage 6 - New data sources
 
-Stage 10 - Portfolio polish
-README rewrite for a cold technical reader; architecture diagram; written case
-study of the QB rating leak; public "lessons learned" page; dedicated write-up
-of the Booth regression suite and injection test (if Stage 6 works, that is the
-most employer-relevant material in the project).
+Next Gen Stats via nflreadpy, the most promising untapped source already in the
+stack; participation/personnel grouping; referee crew assignments, cheap and
+testable; multi-book line dispersion, accumulation-gated under Stage 1 rather
+than a new build. Each item needs a stated hypothesis BEFORE the data is
+pulled, or it is fishing.
+
+### Stage 7 - Portfolio polish
+
+README rewrite for a cold technical reader; architecture diagram; case study of
+the QB rating leak; public "lessons learned" page; write-up of the Booth
+regression suite and injection test. Add a case study of Booth's first audit -
+a verifier that caught a flaw in its own harness and an unreproduced claim on
+the live dashboard is a better story than the feature it was auditing.
+
+NOTE ON ORDER: this sits before the visual stages by explicit instruction, but
+anything in it that shows the dashboard - screenshots, the architecture
+diagram's UI layer, the lessons-learned page's framing - will be redone once
+Stages 8-10 land. The text-only items (README, QB-leak case study, Booth case
+study) are safe to do here; hold the visual ones.
+
+### Stage 8 - Design system foundations
+
+From the 2026-09-06 design audit, which scored the dashboard 15/40. These are
+the tokens the other two visual stages depend on, so they go first within the
+overhaul. Spacing scale replacing 31 ad-hoc values, 63% of which sit off a 4px
+grid; type scale replacing 21 distinct font sizes including seven half-pixel
+ones; tabular figures across every numeric surface, currently used once in a
+table-heavy dashboard; radius tokens replacing 8 values despite --radius
+already existing; a motion system of two durations and one easing replacing
+seven durations, plus a prefers-reduced-motion block which does not exist at
+all; an elevation pass so the six shadow tokens are actually used.
+
+### Stage 9 - Colour, components & interaction
+
+Retire the 33 hardcoded team-brand hex values driving probability bars in
+favour of --series tokens - teamColor() falls back to a hardcoded dark
+--chalk-dim, so it is wrong in light mode, and red-vs-blue bars read as
+bad-vs-good rather than as two teams. Disambiguate amber, which currently
+means brand, active nav, sorted column, flagged state and series-b at once.
+One button component with real variants and states. A focus and keyboard pass.
+Unify the two .game-card render paths. Run every new token through the palette
+validator in both themes.
+
+### Stage 10 - Layout, tables & responsiveness
+
+Fix the duplicate "Model Output" sidebar group label so the nav's own headings
+mean something. A shared page-header component across all 12 pages. Table
+system with sticky headers, scroll-edge affordance and consistent row hover.
+Mobile pass: bottom-nav clearance so the last row is not covered, the ratings
+table clipping mid-column at 430px, and real breakpoints beyond the three that
+exist. Move the onboarding banner below the h1 where it stops outranking the
+page title. Empty, error and loading states across all pages.
 
 ## Environment and workflow
 
@@ -154,3 +202,15 @@ most employer-relevant material in the project).
   row sets match rather than assume it (`bootstrap_brier_gap.py` does).
 - `home_margin` exists in the feature table for ATS work and must never enter a
   feature list — it is the scoreline being predicted.
+- **The Claude Code action refuses to run when a PR's copy of its workflow file
+  differs from `main`'s.** It skips with a *success* status and a validation
+  message, which looks like nothing happened. This is a security control, not a
+  bug — it stops a PR editing the workflow and having it run with repository
+  credentials. Consequence: after changing `booth-pr-audit.yml` on `main`, any
+  open PR must merge `main` in before Booth will audit it, and "re-run the job"
+  does not help, because a re-run replays the original workflow definition.
+- A guard whose comment claims more than its code delivers has now appeared
+  three times: the leak test that flagged a `dropna` subset, the "superseded
+  figures" check that banned its own honest disclosure, and the "quotes the
+  reproduced figures" check that passed a half-revert. **Mutation-test every new
+  guard** — write the failure it is supposed to catch and confirm it catches it.
