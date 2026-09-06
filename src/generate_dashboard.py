@@ -9,8 +9,17 @@ and calibration table, and passes through confidence ranking + why-
 breakdown that weekly_update.py now computes per game.
 """
 import json
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+# config is a pure-constants module with no third-party imports, so unlike
+# generate_picks_pdf below there is nothing here for a module-level import to
+# take down. sys.path is set explicitly rather than relying on the script's
+# own directory, so this still resolves when the module is imported by a test
+# rather than run as a script.
+sys.path.insert(0, str(Path(__file__).parent))
+from config import MODEL_VERSION, VERSION_HISTORY
 
 # generate_picks_pdf is imported lazily, inside the PDF loop in main() --
 # NOT here. It pulls in reportlab, and a module-level import would mean a
@@ -366,6 +375,11 @@ def main():
     html = html.replace('__ACCURACY_JSON__', json.dumps(accuracy_js, indent=2))
     html = html.replace('__CALIBRATION_JSON__', json.dumps(calibration_js, indent=2))
     html = html.replace('__TEAM_HISTORY_JSON__', json.dumps(team_history_js, indent=2))
+    # The Changelog page is rendered from config.VERSION_HISTORY, so the
+    # release notes on the site and the constant the model actually runs under
+    # cannot drift apart -- they are the same object.
+    html = html.replace('__VERSION_HISTORY_JSON__', json.dumps(VERSION_HISTORY, indent=2))
+    html = html.replace('__MODEL_VERSION__', json.dumps(MODEL_VERSION))
     html = html.replace('__SIDEBAR_FOOT__', foot_html)
 
     with open(OUTPUT_PATH, 'w') as f:
