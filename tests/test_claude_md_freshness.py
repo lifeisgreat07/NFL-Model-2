@@ -140,6 +140,38 @@ def test_every_test_name_it_names_exists():
     )
 
 
+def test_internal_section_references_name_a_real_heading():
+    """A `See "X" above` pointing at a renamed heading wastes a session.
+
+    This is not hypothetical. The 2026-09-07 prune renamed "Finished, and why
+    it matters" to "Findings that still constrain the work" and left Stage 2
+    pointing at the old title. Nothing failed; a reader just goes looking for
+    a heading that is not there, and cannot tell whether the section was
+    renamed or deleted.
+
+    The path and test-name checks above did not catch it, because a section
+    title is neither. Reading the file caught it, which is why the wrap-up
+    procedure ends with reading it -- but a check is cheaper than a read.
+    """
+    text = _text()
+    headings = {
+        h.strip().strip('*`')
+        for h in re.findall(r'^#{2,4}\s+(.+?)\s*$', text, re.M)
+    }
+    # Tolerate a heading carrying a trailing status marker like "<- COMPLETE".
+    headings |= {h.split('  <-')[0].strip() for h in headings}
+
+    referenced = re.findall(r'See "([^"]+)"\s+(?:above|below)', text)
+    missing = sorted({r for r in referenced if r not in headings})
+    assert not missing, (
+        'CLAUDE.md points at {} section(s) that do not exist:\n  {}\n'
+        'Headings present: {}\n'
+        'A renamed heading leaves a reader unable to tell whether the section '
+        'moved or was deleted.'.format(
+            len(missing), '\n  '.join(missing), sorted(headings))
+    )
+
+
 def test_the_stage_list_is_ordered_and_unique():
     """Numbers are frozen, but they must still read in order.
 

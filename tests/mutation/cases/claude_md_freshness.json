@@ -1,0 +1,34 @@
+{
+  "target": "CLAUDE.md",
+  "tests": "tests/test_claude_md_freshness.py",
+  "cases": [
+    {
+      "id": "handoff-section-reference-rots",
+      "why": "a `See \"X\" above` is left pointing at a renamed heading. Nothing fails; a reader goes looking for a section that is not there and cannot tell whether it moved or was deleted. This is the real defect that happened on 2026-09-07 when the prune renamed a heading and left Stage 2 pointing at the old title.",
+      "find": "See \"Findings that still constrain the work\" above",
+      "replace": "See \"Finished, and why it matters\" above",
+      "expect_caught_by": "test_internal_section_references_name_a_real_heading"
+    },
+    {
+      "id": "handoff-path-rots",
+      "why": "a file named in the handoff is renamed in prose but not on disk, leaving the next session hunting for something that does not exist. The anchor is deliberately in the Traps section rather than a stage section: stage sections name planned work and are excluded from the path check, so a mutation there would correctly survive and prove nothing.",
+      "find": "`src/prune_build_churn.py` stops the workflows committing their own build",
+      "replace": "`src/prune_build_stamps.py` stops the workflows committing their own build",
+      "expect_caught_by": "test_every_repository_path_it_names_exists"
+    },
+    {
+      "id": "handoff-names-a-deleted-guard",
+      "why": "the handoff names a test that no longer exists, so a guard reads as protection that is present when nothing enforces it",
+      "find": "`tests/test_workflow_churn_guard.py`, which asserts",
+      "replace": "`tests/test_workflow_prune_guard.py`, which asserts",
+      "expect_caught_by": "test_every_repository_path_it_names_exists"
+    },
+    {
+      "id": "handoff-stage-order-scrambled",
+      "why": "a stage heading lands out of reading order, which is exactly the confusion the frozen-numbers rule exists to prevent",
+      "find": "### Stage 6 - New data sources",
+      "replace": "### Stage 2.5 - New data sources",
+      "expect_caught_by": "test_the_stage_list_is_ordered_and_unique"
+    }
+  ]
+}
