@@ -337,8 +337,23 @@ starting 15/40.
 - **One item, one PR.** Booth flagged a PR bundling three undisclosed features:
   a reviewer approving on the description alone approves more than they think.
   If a branch grows past its title, either split it or rewrite the description.
-- **`.github/` is write-protected against remote tooling.** Workflow edits must
-  be made by the user in GitHub's web editor; walk them through it step by step.
+- **`.github/` is NOT write-protected — that claim was wrong.** This file said
+  from 2026-08 until 2026-09-07 that workflow edits "must be made by the user
+  in GitHub's web editor", and every session dutifully wrote a step-by-step
+  walkthrough instead of making a one-line change. It cost the user manual work
+  at least twice on 2026-09-07 alone. Tested rather than assumed: editing
+  `.github/workflows/weekly-update.yml` on `markys` and pushing it to a feature
+  branch both work normally.
+  What is verified: local write, and push to a feature branch. What is NOT
+  verified: pushing `.github/` straight to `main`, and whether merging such a
+  PR needs anything extra. Test those the same way before believing either.
+  The related restriction that IS real is separate and listed below: the Claude
+  Code action refuses to run when a PR's copy of **its own** workflow file
+  (`booth-pr-audit.yml`) differs from `main`'s. Changing any other workflow in
+  a PR does not affect whether Booth audits it.
+  General lesson, since this is the second stale belief this file has carried:
+  an inherited "you can't do X" with no recorded test behind it is a hypothesis.
+  Spend the thirty seconds to try it before building a manual process around it.
 - No `gh` CLI and no PR-body-edit tool. A PR description can be corrected only
   by the user in the web UI, so get the description right when opening it.
 - `cmd` mangles multi-line `python -c` strings, and **PowerShell has no
