@@ -47,7 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **387 passing** on `main` (2026-09-07). Run it before quoting it — this
+Suite: **400 passing** on `main` (2026-09-07). Run it before quoting it — this
 line read 174 for three days after it stopped being true, and a stale figure
 here is the first thing a fresh session anchors on.
 
@@ -104,7 +104,7 @@ that same accumulation.
 
 ### Stage 2 - Deferred UX & repo hygiene  <- COMPLETE (2026-09-06)
 
-Shipped as PRs #21-#24. See "Finished, and why it matters" above; the four
+Shipped as PRs #21-#24. See "Findings that still constrain the work" above; the four
 corrections it produced are worth reading before starting anything that
 assumes an audit finding is accurate.
 
@@ -242,9 +242,9 @@ allowed only where someone has opted into depth.
 **Deletions and merges, with what was checked:**
 
 - **Playoff Odds — delete.** The whole page is 585 characters of visible text
-  (953 of markup for the `<section>` element, measured with the regex in the PR that
-  corrected this line), and nearly all of it is
-  caveats about static ratings and incomplete tiebreakers. It also carries a
+  and 953 of markup, measured by extracting the `<section>` element with
+  `<section[^>]*id="page-playoffs".*?</section>` and stripping tags. Nearly all
+  of it is caveats about static ratings and incomplete tiebreakers. It carries a
   queued Stage 10 defect: the odds bars normalise to the leading team, so a 40%
   favourite renders full-width and reads as near-certainty. Deleting the tab
   deletes that work item too.
@@ -427,12 +427,11 @@ and should fold into whatever system this produces.
 
 **One known data-viz defect, LIKELY MOOT**: Stage 7.5 deletes the Playoff Odds
 page, which removes this item with it. Kept recorded in case that deletion is
-reversed, and as an example of the family — a scale that is not what the reader
-assumes. The bars are normalised
-to the highest team's odds rather than to 0-100%, so a league leader at 40%
-renders as a full-width bar reading as near-certainty. Same family as the
-missing zero line — a scale that is not what the reader assumes. Found during
-Stage 2 and deliberately left for this stage.
+reversed, and as an example of its family — the same shape as the missing zero
+line, a scale that is not what the reader assumes. The bars are normalised to
+the highest team's odds rather than to 0-100%, so a league leader at 40%
+renders as a full-width bar reading as near-certainty. Found during Stage 2 and
+deliberately left for this stage.
 
 Finish with a `dashboard-design-audit` re-run and record the score against the
 starting 15/40.
@@ -560,52 +559,48 @@ under compaction pressure, so its length is a cost paid on every session.
   Any sentence carrying one is a claim that must be looked up before it ships,
   and note that a claim about what *this file* has said is dated by this file's
   own history (created 2026-09-05), not by the history of the thing described.
-- **"Fixed everywhere" is a conclusion, not a search result.** Correcting the
-  date above, I ran the search over `.github/workflows` and `CLAUDE.md` -- the
-  two paths I already had in mind -- found nothing else, and wrote "corrected
-  everywhere" into a commit message. Booth found a third occurrence in
-  `tests/test_workflow_churn_guard.py`'s docstring, a file that same branch
-  added. Repo-wide, `git grep -n "2026-08"` returned 73 matches across 12 files
-  at `f482f4f`. Every one is a real historical date — model versions, the
-  nflreadpy migration, captured betting lines — except the single line in this
-  file that quotes the mistake inside this entry. That density is exactly why
-  the narrow search felt sufficient. (Booth marked an earlier wording of this
-  sentence UNVERIFIABLE, correctly: it read "72 were real history", which is an
-  editorial classification stated with the precision of a count, and gave the
-  auditor no way to tell which line was excluded. Name the exception; don't
-  publish a subtraction.)
-  (Anchored to that commit deliberately — this paragraph
-  contains the string too, so a live count stated here would be wrong the
-  moment it landed. A number that counts something the sentence is part of has
-  to name the commit it was taken at.)
-  This is the same shape as the bug the branch existed to fix: the
-  churn guard covered one of two workflows, the search covered two of the paths
-  that mattered, and both looked complete because nothing in them announced
-  their own scope. A completeness claim must cite the command that establishes
-  it, repo-wide, and the command must appear in the write-up so someone else
-  can re-run it. One habit produced four wrong claims in that single PR -- the
-  date, the completeness claim, "60 matches" in `f482f4f`'s commit message (it
-  is 73), and the same count in a draft of the PR body. The two that reached a
-  re-runnable check were caught; the two that did not, shipped. Commit messages
-  have no such check and cannot be corrected without invalidating the Booth
-  reports written against those SHAs, so the discipline has to happen before
-  the commit, not after.
-  A fourth variant, and the sharpest: a number that WAS measured and still
-  does not reproduce, because the method went unstated. "The Playoff Odds
-  page is 979 characters" came from a real slice, taken from that page's
-  `id=` attribute to the NEXT page's `id=` -- a span that runs past the
-  closing `</section>` into the following tag. The `<section>` itself is
-  953; the visible text is 585. Booth measured six plausible ways and got
-  none of them, correctly. Stating a figure without the command that
-  produced it makes it unfalsifiable by anyone but its author, which is
-  the same defect as not measuring at all. Give the span or give the
-  command.
-  Worth recording alongside it: **no test could have caught either error.**
-  Both are claims *about* the code rather than behaviour *of* it, and the suite
-  was green at 303 throughout. Two independent Booth runs reached the docstring
-  finding separately. That is the clearest evidence so far that Booth is doing
-  something a test suite structurally cannot, rather than agreeing with what it
-  reads.
+- **A number in prose is a claim, and prose has no test.** One habit produced
+  four wrong figures on 2026-09-07, in four distinct ways. They are worth
+  separating, because only one of them looks like carelessness:
+  1. *Recalled, never measured.* "The guard has run since 2026-08" — it was
+     2026-09-04. Written from memory into a permanent code comment, inside the
+     PR whose other half existed to correct an unverified inherited claim.
+  2. *A conclusion reported as a search result.* Correcting that date, I
+     searched the two paths I already had in mind, found nothing further, and
+     wrote "corrected everywhere". Booth found a third occurrence in a
+     docstring, in a file the same branch had just added.
+  3. *A judgement wearing the precision of a count.* "72 of the 73 matches
+     were real history" — which ones count as history is editorial, and the
+     phrasing left an auditor no way to tell which was excluded. Name the
+     exception; never publish a subtraction.
+  4. *Measured, and still unreproducible.* "The Playoff Odds page is 979
+     characters" came from a real slice — that page's `id=` attribute to the
+     next page's `id=`, a span running past the closing `</section>`. The
+     element is 953; the visible text is 585. Booth measured six plausible
+     ways and got none of them, correctly.
+
+  Only the two that reached a re-runnable check were caught before shipping.
+  Commit messages have no such check and cannot be corrected without
+  invalidating the Booth reports written against those SHAs, so the discipline
+  has to happen before the commit, not after.
+
+  **The rule.** A figure ships with the command that produced it, and a
+  completeness claim cites a repo-wide search rather than the paths you
+  happened to think of. A number whose method is unstated is unfalsifiable by
+  anyone but its author — the same defect as not measuring at all.
+
+  **The self-referential case.** A count of something its own sentence is part
+  of must name the commit it was taken at. `git grep -n "2026-08"` returned 73
+  matches across 12 files at `f482f4f`; every one is a real historical date
+  except the line in this file quoting the mistake. A live figure written here
+  would be wrong the moment it landed, because this paragraph contains the
+  string.
+
+  **None of it was catchable by a test.** All four are claims *about* the code
+  rather than behaviour *of* it, and the suite was green throughout. Two
+  independent Booth runs reached the docstring finding separately. That is the
+  clearest evidence yet that Booth does something a suite structurally cannot,
+  rather than agreeing with what it reads.
 - `backtest()` calls `dropna(subset=features)`, so different feature sets can
   silently evaluate different game sets. Any paired comparison must verify the
   row sets match rather than assume it (`bootstrap_brier_gap.py` does, and
