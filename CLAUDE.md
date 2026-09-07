@@ -366,6 +366,15 @@ starting 15/40.
   bug. Consequence: after changing `booth-pr-audit.yml` on `main`, any open PR
   must merge `main` in before Booth will audit it, and "re-run the job" does not
   help, because a re-run replays the original workflow definition.
+- **Mutation cases live in `tests/mutation/cases/*.json` and run via
+  `python tests/mutation/runner.py`.** Do not write a throwaway mutation
+  script: every PR before #27 did, threw it away, and left a mutation table
+  nobody could replay. Booth said so on PR #26. Add a case, run the id, quote
+  the command. `tests/test_mutation_corpus.py` keeps the anchors from rotting
+  on every ordinary suite run, and proves the runner can still report failure.
+  A case must name the test it expects to be caught by; a mutation caught by
+  a *different* guard is reported WRONG-GUARD, because the intended guard is
+  then still untested.
 - A guard whose comment claims more than its code delivers has now appeared
   **five** times: the leak test that flagged a `dropna` subset, the "superseded
   figures" check that banned its own honest disclosure, the "quotes the

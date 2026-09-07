@@ -1,0 +1,97 @@
+{
+  "target": "src/scout_preflight.py",
+  "tests": "tests/test_scout_preflight.py",
+  "cases": [
+    {
+      "id": "preflight-first-count-only",
+      "why": "only the FIRST claimed count is checked, so a second wrong figure passes",
+      "find": "    claims = {int(m) for m in TEST_COUNT_RE.findall(body)}",
+      "replace": "    claims = {int(m) for m in TEST_COUNT_RE.findall(body)[:1]}",
+      "expect_caught_by": "test_every_claimed_count_is_checked_not_just_the_first"
+    },
+    {
+      "id": "preflight-unrunnable-suite-passes",
+      "why": "a suite that cannot be run reports PASS, so the claim goes unverified",
+      "find": "        return Finding('test count', False,\n                       f\"the body claims {sorted(claims)} but the suite could \"",
+      "replace": "        return Finding('test count', True,\n                       f\"the body claims {sorted(claims)} but the suite could \"",
+      "expect_caught_by": "test_an_unrunnable_suite_fails_rather_than_passing_quietly"
+    },
+    {
+      "id": "preflight-scope-exempts-three",
+      "why": "the scope check exempts anything up to three commits, so PR #21 would pass",
+      "find": "    if len(commits) <= 1:",
+      "replace": "    if len(commits) <= 3:",
+      "expect_caught_by": "test_it_catches_pr21_exactly_as_booth_did"
+    },
+    {
+      "id": "preflight-scope-any-not-all",
+      "why": "scope passes if ANY commit is mentioned rather than all of them",
+      "find": "    missing = [(sha, subj) for sha, subj in commits if sha not in body]",
+      "replace": "    missing = [] if any(sha in body for sha, _ in commits) else list(commits)",
+      "expect_caught_by": "test_a_partial_enumeration_still_fails"
+    },
+    {
+      "id": "preflight-merges-counted",
+      "why": "merge commits counted as features a reviewer must be told about",
+      "find": "    raw = _git('log', '--no-merges', '--format=%h%x1f%s', f'{base}..{head}')",
+      "replace": "    raw = _git('log', '--format=%h%x1f%s', f'{base}..{head}')",
+      "expect_caught_by": "test_merge_commits_are_not_counted_as_undisclosed_features"
+    },
+    {
+      "id": "preflight-attachment-not-required",
+      "why": "a visual claim no longer needs an attachment",
+      "find": "    if ATTACHMENT_RE.search(full_body):",
+      "replace": "    if True:",
+      "expect_caught_by": "test_a_visual_claim_without_an_attachment_fails"
+    },
+    {
+      "id": "preflight-visual-wording-blind",
+      "why": "visual wording stops registering as a claim at all",
+      "find": "    r'\\b(screenshots?|rendered it|verified in both themes|'",
+      "replace": "    r'\\b(zzzznevermatch|'",
+      "expect_caught_by": "test_a_visual_claim_without_an_attachment_fails"
+    },
+    {
+      "id": "preflight-exits-zero-on-failure",
+      "why": "failing checks still exit 0, so nothing can gate on the tool",
+      "find": "        return 1\n    print(\"All checks passed.",
+      "replace": "        return 0\n    print(\"All checks passed.",
+      "expect_caught_by": "test_the_tool_exits_nonzero_when_a_check_fails"
+    },
+    {
+      "id": "preflight-no-quotation-stripping",
+      "why": "quoted output is read as an assertion, so citing history fails the check",
+      "find": "    return BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body))",
+      "replace": "    return body",
+      "expect_caught_by": "test_a_count_quoted_inside_a_code_block_is_not_a_claim"
+    },
+    {
+      "id": "preflight-stripping-hides-evidence",
+      "why": "stripping applied to the attachment search too, so an image in a code block is invisible",
+      "find": "        check_visual_claims_have_artifacts(claims, body, ui_files),",
+      "replace": "        check_visual_claims_have_artifacts(claims, claims, ui_files),",
+      "expect_caught_by": "test_an_attachment_inside_a_code_block_still_counts_as_evidence"
+    },
+    {
+      "id": "preflight-ui-gate-always-on",
+      "why": "the UI gate never opens, so a non-UI PR can never satisfy the visual check",
+      "find": "    if not ui_files:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_non_ui_pr_is_not_asked_to_screenshot_anything"
+    },
+    {
+      "id": "preflight-ui-gate-always-off",
+      "why": "the UI gate always opens, so a real UI PR can skip its screenshots",
+      "find": "    if not ui_files:",
+      "replace": "    if True:",
+      "expect_caught_by": "test_a_ui_pr_making_the_same_claim_still_fails"
+    },
+    {
+      "id": "preflight-ui-gate-blind-to-html",
+      "why": "the UI gate stops seeing .html changes, so template edits look non-visual",
+      "find": "    return [f for f in changed if f.endswith(('.html', '.css', '.svg'))]",
+      "replace": "    return [f for f in changed if f.endswith(('.css', '.svg'))]",
+      "expect_caught_by": "test_touches_ui_sees_template_changes_and_ignores_python"
+    }
+  ]
+}

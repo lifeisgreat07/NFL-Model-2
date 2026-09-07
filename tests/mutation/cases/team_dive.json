@@ -1,0 +1,64 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_team_dive.py",
+  "cases": [
+    {
+      "id": "dive-probability-not-flipped",
+      "why": "an away team is shown the opponent's win probability under its own name",
+      "find": "      const flipPct = p => (p===null||p===undefined) ? null : (isHome ? p : 100 - p);",
+      "replace": "      const flipPct = p => (p===null||p===undefined) ? null : p;",
+      "expect_caught_by": "test_win_probabilities_flip_to_the_selected_team"
+    },
+    {
+      "id": "dive-line-not-inverted",
+      "why": "a 9.5-point underdog is displayed as a 9.5-point favourite",
+      "find": "        line: (g.spread===null||g.spread===undefined) ? null : (isHome ? g.spread : -g.spread),",
+      "replace": "        line: (g.spread===null||g.spread===undefined) ? null : g.spread,",
+      "expect_caught_by": "test_the_betting_line_inverts_for_the_away_side"
+    },
+    {
+      "id": "dive-result-not-inverted",
+      "why": "both sides of the same game report a win",
+      "find": "              ? (isHome ? !!g.actual_home_win : !g.actual_home_win) : null,",
+      "replace": "              ? !!g.actual_home_win : null,",
+      "expect_caught_by": "test_the_result_flips_so_both_sides_cannot_win"
+    },
+    {
+      "id": "dive-contributions-not-negated",
+      "why": "the away view shows the reasons the OPPONENT was favoured, labelled as its own",
+      "find": "              .map(([k2, v]) => [k2, isHome ? v : -v])) : null,",
+      "replace": "              .map(([k2, v]) => [k2, v])) : null,",
+      "expect_caught_by": "test_contribution_signs_negate_for_the_away_side"
+    },
+    {
+      "id": "dive-correctness-not-normalised",
+      "why": "graded 1/0 left un-normalised, so `=== true` is quietly false",
+      "find": "        modelACorrect: asBool(g.model_a_correct),\n        modelBCorrect: asBool(g.model_b_correct),",
+      "replace": "        modelACorrect: g.model_a_correct,\n        modelBCorrect: g.model_b_correct,",
+      "expect_caught_by": "test_correctness_survives_being_stored_as_one_and_zero"
+    },
+    {
+      "id": "dive-asbool-collapses-null",
+      "why": "'not graded yet' collapses into false, so upcoming fixtures read as failed predictions",
+      "find": "  return (v === null || v === undefined) ? null : !!v;",
+      "replace": "  return !!v;",
+      "expect_caught_by": "test_an_ungraded_game_reports_no_result_rather_than_a_loss"
+    },
+    {
+      "id": "dive-loader-points-at-src",
+      "why": "the loader reads src/ again, orphaning the committed data file",
+      "target": "src/generate_dashboard.py",
+      "find": "    static_path = DATA_DIR / 'team_history.json'",
+      "replace": "    static_path = Path(__file__).parent / 'team_history.json'",
+      "expect_caught_by": "test_the_generator_looks_where_the_file_actually_is"
+    },
+    {
+      "id": "dive-missing-file-goes-silent",
+      "why": "the missing-history branch returns empty without a warning, the silence that hid a broken page for months",
+      "target": "src/generate_dashboard.py",
+      "find": "        print(f\"  WARNING: {static_path} not found",
+      "replace": "        print(f\"  {static_path} not found",
+      "expect_caught_by": "test_a_missing_history_file_is_reported_loudly"
+    }
+  ]
+}

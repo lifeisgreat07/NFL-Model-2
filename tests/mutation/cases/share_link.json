@@ -1,0 +1,62 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_share_link.py",
+  "cases": [
+    {
+      "id": "share-fingerprint-check-deleted",
+      "why": "the schedule fingerprint is never compared, so a reordered schedule decodes into wrong picks",
+      "find": "  if(fingerprint !== scheduleFingerprint(games)){",
+      "replace": "  if(false){",
+      "expect_caught_by": "test_a_broken_link_is_refused_with_a_reason"
+    },
+    {
+      "id": "share-fingerprint-ignores-sides",
+      "why": "the fingerprint stops distinguishing home from away, so a swapped fixture is accepted",
+      "find": "  const s = games.map(g => g.away + '@' + g.home).join(',');",
+      "replace": "  const s = games.map(g => [g.away, g.home].sort().join('@')).join(',');",
+      "expect_caught_by": "test_a_flipped_home_and_away_is_refused"
+    },
+    {
+      "id": "share-length-check-removed",
+      "why": "a truncated link decodes a partial pick set instead of being refused",
+      "find": "  if(bits.length !== games.length){",
+      "replace": "  if(false){",
+      "expect_caught_by": "test_a_broken_link_is_refused_with_a_reason"
+    },
+    {
+      "id": "share-link-in-query-string",
+      "why": "picks move into the query string, so every shared set reaches the server's logs",
+      "find": "const url = location.origin + location.pathname + '#picks=' + encoded.token;",
+      "replace": "const url = location.origin + location.pathname + '?picks=' + encoded.token;",
+      "expect_caught_by": "test_the_link_travels_in_the_fragment_not_the_query_string"
+    },
+    {
+      "id": "share-view-reads-local-storage",
+      "why": "shared view renders this device's picks instead of the shared ones",
+      "find": "  const myPicks = sharedPicksView ? sharedPicksView.picks : loadMyPicks();",
+      "replace": "  const myPicks = loadMyPicks();",
+      "expect_caught_by": "test_opening_a_share_link_cannot_write_to_this_device"
+    },
+    {
+      "id": "share-click-handlers-not-suppressed",
+      "why": "tapping someone else's pick can write to this device",
+      "find": "  if(sharedPicksView) return;\n\n  grid.querySelectorAll",
+      "replace": "  grid.querySelectorAll",
+      "expect_caught_by": "test_opening_a_share_link_cannot_write_to_this_device"
+    },
+    {
+      "id": "share-no-hashchange-listener",
+      "why": "a link pasted into an already-open tab silently does nothing",
+      "find": "window.addEventListener('hashchange', ()=>{",
+      "replace": "window.addEventListener('nothing-at-all', ()=>{",
+      "expect_caught_by": "test_a_share_link_pasted_into_an_open_tab_still_works"
+    },
+    {
+      "id": "share-empty-week-still-links",
+      "why": "a week with nothing picked still produces a link to an empty board",
+      "find": "  if(picked === 0) return null;",
+      "replace": "  if(false) return null;",
+      "expect_caught_by": "test_a_week_with_no_picks_produces_no_link"
+    }
+  ]
+}
