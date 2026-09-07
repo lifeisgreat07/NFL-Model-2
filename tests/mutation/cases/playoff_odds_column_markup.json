@@ -1,0 +1,63 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_playoff_odds_column.py",
+  "cases": [
+    {
+      "id": "sort-comparator-drops-the-null-guard",
+      "why": "(null - 5) is NaN, and a comparator that returns NaN leaves rows in whatever order the engine started with -- the table looks sorted and is not, which is worse than refusing to sort",
+      "find": "    const bv = (b[sortKey]===null||b[sortKey]===undefined) ? -Infinity : b[sortKey];",
+      "replace": "    const bv = b[sortKey];",
+      "expect_caught_by": "test_the_sort_survives_a_team_with_no_odds"
+    },
+    {
+      "id": "header-is-a-label-not-a-control",
+      "why": "the Playoff Odds header loses its sort key, so the column renders and refuses to sort -- the exact half-working state that joining the value onto the team object exists to prevent",
+      "find": "<th data-key=\"playoff\" style=\"text-align:right;\"",
+      "replace": "<th style=\"text-align:right;\"",
+      "expect_caught_by": "test_the_column_header_carries_the_sort_key"
+    },
+    {
+      "id": "cell-prints-a-number-it-does-not-have",
+      "why": "an unsimulated team renders as though it had odds, so 'we never ran this team' and a real percentage become indistinguishable on the page",
+      "find": "${(t.playoff===null||t.playoff===undefined)",
+      "replace": "${(false)",
+      "expect_caught_by": "test_the_cell_prints_a_dash_rather_than_a_number_it_does_not_have"
+    },
+    {
+      "id": "empty-state-no-longer-spans-the-table",
+      "why": "the colspan lags the column count, so the 'no teams' row draws a ragged edge exactly when something has gone wrong and the reader most needs the page to look deliberate",
+      "find": "colspan=\"7\"",
+      "replace": "colspan=\"6\"",
+      "expect_caught_by": "test_the_empty_state_still_spans_the_whole_table"
+    },
+    {
+      "id": "plain-english-note-removed",
+      "why": "the column ships as a bare percentage, which reads as 'the model is 67.5% sure' rather than 'the team made the playoffs in 67.5% of 10,000 simulated seasons' -- a different and much stronger claim",
+      "find": "id=\"playoff-note\"",
+      "replace": "id=\"playoff-note-x\"",
+      "expect_caught_by": "test_the_page_explains_the_number_in_words_a_reader_can_check"
+    },
+    {
+      "id": "rank-becomes-position-in-the-current-sort",
+      "why": "the # is recomputed from the row's position, so sorting by Playoff Odds prints '#1' beside the ninth-rated team on a page called Power Ratings -- and '#1' is the part a casual reader carries away",
+      "find": "  const ranked = sorted.map(t=>({...t, _rank: t.rank}));",
+      "replace": "  const ranked = sorted.map((t,i)=>({...t, _rank: i+1}));",
+      "expect_caught_by": "test_rank_is_a_number_on_the_team_and_not_a_row_position"
+    },
+    {
+      "id": "rank-header-becomes-a-live-sort-control",
+      "why": "the '#' header starts sorting, which this suite's header/field check explicitly exempts it from -- the exemption is only sound while the early return exists, so losing it silently widens what that guard permits",
+      "find": "    if(key==='rank') return;",
+      "replace": "    if(false) return;",
+      "expect_caught_by": "test_every_clickable_header_sorts_by_a_field_a_team_actually_has"
+    },
+    {
+      "id": "signed-bar-loses-its-centre-line",
+      "why": "the Team Deep-Dive bar still encodes a signed net rating from the middle of the track but stops drawing the zero, so a small positive and a small negative render as the same short mark near the centre and are distinguishable only by reading the number beside them",
+      "find": "<div class=\"srs-bar-track diverging\" style=\"width:140px;\"",
+      "replace": "<div class=\"srs-bar-track\" style=\"width:140px;\"",
+      "tests": "tests/test_dashboard_charts.py",
+      "expect_caught_by": "test_a_zero_line_appears_on_exactly_the_bars_that_have_a_zero"
+    }
+  ]
+}

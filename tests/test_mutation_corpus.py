@@ -28,6 +28,7 @@ the date guard passed while being entirely untested.
 
 Run with: pytest tests/test_mutation_corpus.py -v
 """
+import json
 import re
 import sys
 from pathlib import Path
@@ -91,6 +92,44 @@ def test_the_named_guard_exists(case):
                      src, re.MULTILINE), (
         f"{case['id']}: {case['tests']} defines no test named "
         f"{case['expect_caught_by']!r}")
+
+
+def test_a_case_naming_two_test_files_is_refused_at_load_time(tmp_path, monkeypatch):
+    """The runner hands `tests` to pytest as ONE argv element, so two paths
+    with a space between them arrive as a single filename that does not exist.
+    pytest then exits non-zero having reported no failures, and the runner
+    reads that as "the suite went red but the named guard passed" -- WRONG
+    GUARD. The verdict blames a guard that is perfectly fine, and the obvious
+    next move is to go and edit it.
+
+    This happened while writing the Playoff Odds cases. Refusing it at load
+    time turns a misleading verdict into a sentence naming the actual mistake.
+    """
+    (tmp_path / 'bad.json').write_text(json.dumps({
+        'target': FIXTURE_SUBJECT,
+        'tests': f'{FIXTURE_TESTS} {FIXTURE_TESTS}',
+        'cases': [{'id': 'two-paths', 'why': 'w', 'find': 'a', 'replace': 'b',
+                   'expect_caught_by': 'test_x'}],
+    }), encoding='utf-8')
+    monkeypatch.setattr(mc, 'CASES_DIR', tmp_path)
+
+    with pytest.raises(mc.CorpusError) as err:
+        mc.load_corpus()
+    assert 'two-paths' in str(err.value), "the error does not name the offending case"
+
+
+def test_a_case_naming_one_real_test_file_still_loads(tmp_path, monkeypatch):
+    """The other side of the check: the guard above must reject a bad path
+    because it is bad, not reject everything."""
+    (tmp_path / 'ok.json').write_text(json.dumps({
+        'target': FIXTURE_SUBJECT,
+        'tests': FIXTURE_TESTS,
+        'cases': [{'id': 'one-path', 'why': 'w', 'find': 'a', 'replace': 'b',
+                   'expect_caught_by': 'test_x'}],
+    }), encoding='utf-8')
+    monkeypatch.setattr(mc, 'CASES_DIR', tmp_path)
+
+    assert [c['id'] for c in mc.load_corpus()] == ['one-path']
 
 
 # --------------------------------------------------------------------------

@@ -1,0 +1,62 @@
+{
+  "target": "src/generate_dashboard.py",
+  "tests": "tests/test_playoff_odds_column.py",
+  "cases": [
+    {
+      "id": "join-missing-team-defaults-to-zero",
+      "why": "a team the simulation never covered is given 0.0% instead of None, so the page prints a number the model never produced and ranks that team last on merit rather than saying it does not know",
+      "find": "             'playoff': odds.get(r['team'])} for r in ratings]",
+      "replace": "             'playoff': odds.get(r['team'], 0.0)} for r in ratings]",
+      "expect_caught_by": "test_a_team_missing_from_the_simulation_gets_none_and_not_zero"
+    },
+    {
+      "id": "join-keys-a-nameless-row",
+      "why": "a malformed odds row with no team keys the lookup under None, and None is also what a miss returns, so every unmatched team inherits that stray row's percentage",
+      "find": "            if row.get('team') is not None:",
+      "replace": "            if True:",
+      "expect_caught_by": "test_a_nameless_row_in_the_odds_file_does_not_become_a_none_key"
+    },
+    {
+      "id": "join-assumes-the-odds-file-exists",
+      "why": "a fresh clone or a failed simulation leaves no odds file, and the whole Power Ratings table dies with it instead of rendering without the column",
+      "find": "    if playoff_odds:\n        for row in playoff_odds.get('teams') or []:",
+      "replace": "    if True:\n        for row in playoff_odds.get('teams'):",
+      "expect_caught_by": "test_no_odds_file_at_all_still_builds_every_team"
+    },
+    {
+      "id": "join-runs-before-the-odds-are-loaded",
+      "why": "the odds argument is optional, so joining before load_playoff_odds() has run raises nothing at all -- every team silently gets None and the column ships full of dashes. This was the real bug in the first draft",
+      "find": "    teams_js = build_teams_js(ratings, playoff_odds)",
+      "replace": "    teams_js = build_teams_js(ratings)",
+      "expect_caught_by": "test_main_loads_the_odds_before_it_joins_them"
+    },
+    {
+      "id": "meta-injects-the-teams-a-second-time",
+      "why": "the per-team odds ship twice -- once on the team objects the table sorts by and once in the meta block -- and the two copies can disagree after any change to only one of them",
+      "find": "        {k: (playoff_odds or {}).get(k) for k in\n         ('n_simulations', 'games_played', 'games_remaining', 'season')},",
+      "replace": "        {k: (playoff_odds or {}).get(k) for k in\n         ('n_simulations', 'games_played', 'games_remaining', 'season', 'teams')},",
+      "expect_caught_by": "test_the_meta_block_carries_the_run_details_and_not_the_teams"
+    },
+    {
+      "id": "rank-follows-the-input-order",
+      "why": "the rank is read off the ratings file's own ordering instead of the net rating, so any file that ever arrives unsorted numbers the league wrong while every row still looks plausible",
+      "find": "    order = sorted(ratings, key=lambda r: (-r['net'], r['team']))",
+      "replace": "    order = list(ratings)",
+      "expect_caught_by": "test_rank_follows_the_net_rating_and_not_the_order_of_the_input"
+    },
+    {
+      "id": "rank-ties-broken-arbitrarily",
+      "why": "two teams on an identical net rating can swap places between builds, so index.html churns with a ranking change nobody made and the diff hides real ones",
+      "find": "    order = sorted(ratings, key=lambda r: (-r['net'], r['team']))",
+      "replace": "    order = sorted(ratings, key=lambda r: -r['net'])",
+      "expect_caught_by": "test_tied_ratings_rank_the_same_way_on_every_build"
+    },
+    {
+      "id": "generator-still-writes-the-old-placeholder",
+      "why": "the generator and the template disagree on the placeholder name, so the substitution never fires and the literal __PLAYOFF_META_JSON__ string ships to the reader",
+      "find": "    html = html.replace('__PLAYOFF_META_JSON__', json.dumps(",
+      "replace": "    html = html.replace('__PLAYOFF_ODDS_JSON__', json.dumps(",
+      "expect_caught_by": "test_the_old_whole_file_placeholder_is_gone_from_both_sides"
+    }
+  ]
+}
