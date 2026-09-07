@@ -47,7 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **400 passing** on `main` (2026-09-07). Run it before quoting it — this
+Suite: **426 passing** on `main` (2026-09-07). Run it before quoting it — this
 line read 174 for three days after it stopped being true, and a stale figure
 here is the first thing a fresh session anchors on.
 
@@ -133,13 +133,21 @@ text already replaced. Fixed in #30 and #29 respectively.
 
 **Remaining, in the order agreed on 2026-09-07:**
 
-1. **The fixture runner.** #32 ships a fixture format with nothing that
-   executes it. Build a throwaway git repo from a fixture's `base/` and `head/`,
-   render Booth's prompt, record the verdict block as a committed baseline, and
-   let the ordinary suite re-check baselines for free. `workflow_dispatch` only,
+1. **The fixture runner — BUILT** (`src/booth_fixture_runner.py`).
+   `assemble` builds a throwaway git repo from a fixture's `base/` and `head/`
+   as two real commits, because Booth's procedure runs git commands and a
+   patch file could not answer them. `prompt` renders the instructions.
+   `record` parses the verdict block, checks it against the fixture's declared
+   expectation, and writes `baseline.json` — including when Booth FAILED,
+   since that is the most important result the suite can produce. `check`
+   re-derives the answer from the stored verdict rather than trusting the
+   stored flag, so an edited expectation stops a recorded pass from counting.
+   The loop is complete manually today: assemble, run the prompt in a fresh
+   session, record the report.
+   STILL TO DO: a `workflow_dispatch` workflow that invokes the real action,
    one fixture per dispatch. Booth runs on subscription auth, so it costs no
-   money — but it does cost usage, so never spend an audit to learn something a
-   committed baseline already records.
+   money — but it does cost usage, so never spend an audit to learn something
+   a committed baseline already records.
 2. **The agent decision log.** Listed here as agent work, but it is the item
    that renders. Right now a visitor sees no evidence that Scout, Booth, the
    mutation corpus or the fixture suite exist at all. It converts everything

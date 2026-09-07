@@ -7,3 +7,6 @@ __pycache__/
 results/backtest_metrics.csv
 results/qb_shrink_k_*.csv
 results/*_run.log
+
+# Throwaway repos built by src/booth_fixture_runner.py.
+.fixture-run/
