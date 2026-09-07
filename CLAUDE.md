@@ -47,7 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **382 passing** on `main` (2026-09-07). Run it before quoting it — this
+Suite: **387 passing** on `main` (2026-09-07). Run it before quoting it — this
 line read 174 for three days after it stopped being true, and a stale figure
 here is the first thing a fresh session anchors on.
 
@@ -116,7 +116,11 @@ corpus, so mutation tables are a command rather than a throwaway script
 (`tests/mutation/`, #27). A test that every regenerating workflow prunes build
 churn (#28). Booth reports that record the head SHA and body read-time, and a
 past-tense rule for claims about a description (#29). An `edited` trigger so a
-rewritten description is re-audited at all (#30). A machine-readable
+rewritten description is re-audited at all (#30) -- demonstrated live on PR
+#34 on 2026-09-07: editing the description with no manual dispatch fired a
+second audit on its own. #30 shipped on a mutation test and an argument
+because Booth structurally cannot audit its own workflow file, so that
+live run is the evidence it could not produce for itself. A machine-readable
 `booth-verdict` block plus the parser that reads it (`src/booth_verdict.py`,
 #31). The regression-fixture format and its integrity checks (#32).
 
@@ -237,7 +241,9 @@ allowed only where someone has opted into depth.
 
 **Deletions and merges, with what was checked:**
 
-- **Playoff Odds — delete.** The page is 979 characters and nearly all of it is
+- **Playoff Odds — delete.** The whole page is 585 characters of visible text
+  (953 of markup for the `<section>` element, measured with the regex in the PR that
+  corrected this line), and nearly all of it is
   caveats about static ratings and incomplete tiebreakers. It also carries a
   queued Stage 10 defect: the odds bars normalise to the leading team, so a 40%
   favourite renders full-width and reads as near-certainty. Deleting the tab
@@ -431,6 +437,55 @@ Stage 2 and deliberately left for this stage.
 Finish with a `dashboard-design-audit` re-run and record the score against the
 starting 15/40.
 
+## Ending a session
+
+Run this every time, before the session closes:
+
+```
+python src/session_wrapup.py
+```
+
+A session ends when usage runs out or attention moves, not when the work
+reaches a tidy boundary. Whatever is true at that moment is what the next
+session inherits -- and it inherits it through this file, cold, with no memory
+of the conversation that produced it. Every wrong fact here gets believed.
+
+That is not hypothetical. This file said "Suite: 174 passing" for three days
+after it stopped being true; the real number was 382. It is the first figure a
+fresh session anchors on.
+
+**What the script checks**, because these cannot be checked continuously:
+the suite count stated above against a real run; a clean working tree;
+nothing committed but unpushed; and which branch you are leaving behind. It
+exits non-zero if any of them fail.
+
+**What `tests/test_claude_md_freshness.py` checks**, free, on every commit:
+that every repository path and every test name this file mentions still
+exists, and that the stage headings are unique and in order. A moved file
+leaves a silently wrong pointer; a guard named here and absent from the suite
+reads as protection that is present. Note it deliberately skips the stage
+sections -- those name work that does not exist yet, and checking a plan the
+same way you check a description is wrong.
+
+**What neither can check, and matters most.** The script prints these as
+prompts:
+
+- Does "Current state" describe today -- which stage is in progress, and the
+  next concrete action?
+- Is every PR opened this session either merged, or recorded here with its
+  number and what it is waiting on?
+- Did anything surprise you? A trap entry is cheap now and expensive to
+  reconstruct later. Write the durable shape, not the story.
+- Did a decision get made that a future session would otherwise re-litigate?
+  Record the decision AND the reasoning, or it gets re-opened.
+- Are the stage sections still in the order work will actually happen?
+- Is the Progress tab consistent with this file?
+
+**Then re-read this file as if you had never seen it.** Not skimmed -- read.
+Ask of each paragraph whether it changes a decision. If it only records what
+happened, it belongs in a Stage 7 write-up instead. This document is read
+under compaction pressure, so its length is a cost paid on every session.
+
 ## Environment and workflow
 
 - Real clone lives on the user's Windows PC `markys` at `E:\NFL-Model-2`
@@ -535,6 +590,16 @@ starting 15/40.
   have no such check and cannot be corrected without invalidating the Booth
   reports written against those SHAs, so the discipline has to happen before
   the commit, not after.
+  A fourth variant, and the sharpest: a number that WAS measured and still
+  does not reproduce, because the method went unstated. "The Playoff Odds
+  page is 979 characters" came from a real slice, taken from that page's
+  `id=` attribute to the NEXT page's `id=` -- a span that runs past the
+  closing `</section>` into the following tag. The `<section>` itself is
+  953; the visible text is 585. Booth measured six plausible ways and got
+  none of them, correctly. Stating a figure without the command that
+  produced it makes it unfalsifiable by anyone but its author, which is
+  the same defect as not measuring at all. Give the span or give the
+  command.
   Worth recording alongside it: **no test could have caught either error.**
   Both are claims *about* the code rather than behaviour *of* it, and the suite
   was green at 303 throughout. Two independent Booth runs reached the docstring
