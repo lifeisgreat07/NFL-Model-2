@@ -7,15 +7,18 @@ commits collide with any open branch that regenerated the same artifacts --
 which is how PR #13 arrived with a merge conflict whose entire content was two
 timestamps disagreeing.
 
-CLAUDE.md has described that script since 2026-08 as simply preventing the
-problem. It does not, quite: it is wired into generate-dashboard.yml and NOT
-into weekly-update.yml, which regenerates the dashboard and commits
-`index.html dist/**` with no prune step. Found 2026-09-07 while investigating
-an unrelated auto-commit.
+The script was wired into generate-dashboard.yml on 2026-09-04 and not into
+weekly-update.yml, which regenerated the dashboard and committed
+`index.html dist/**` with no prune step. CLAUDE.md had described the script,
+from its creation on 2026-09-05, as simply preventing the problem -- and that
+sentence is what stopped anyone checking which workflows actually ran it.
+Found 2026-09-07 while investigating an unrelated auto-commit; both workflows
+run it now.
 
-The gap only bites when a weekly run produces no real data change -- the
-offseason state -- which is exactly when nobody is watching. So it is worth a
-test rather than a note.
+The gap only bit when a run produced no real data change -- the offseason
+state -- which is exactly when nobody is watching. Hence a test rather than a
+note: prose names a protection without naming its coverage, so this file
+enumerates the workflows instead of asserting the guard is present.
 
 Parsed by line position rather than with PyYAML, deliberately: yaml is not
 installed on the machine this suite runs on, adding a pin for one test is a
