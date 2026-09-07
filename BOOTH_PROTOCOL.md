@@ -53,6 +53,9 @@ primed to agree with its own earlier reasoning.
    ```
    ## Booth Audit: PR #<n>
 
+   Head commit audited: <sha from `git rev-parse HEAD`>
+   Description read at: <UTC timestamp of your `gh pr view` call>
+
    Claims checked: <count>
    Confirmed: <count>
    Discrepancies: <count>
@@ -65,6 +68,26 @@ primed to agree with its own earlier reasoning.
    ### Overall verdict
    [SAFE TO MERGE / DO NOT MERGE -- DISCREPANCIES FOUND / NEEDS HUMAN REVIEW]
    ```
+
+   The two header lines exist because a report is a snapshot and does not
+   look like one. Booth reads the PR body once, near the start of a run,
+   and posts minutes later; on PR #28 a run auto-triggered by a push read
+   a description that was replaced before the report appeared, and stated
+   "the currently-live description still says Two commits ... it is the
+   actual text a reviewer sees right now." Every command it ran was real
+   and its reasoning was sound. Only the tense was wrong, and the tense is
+   what made a stale finding look like a current one.
+
+   So: **write about the description in the past tense, anchored to the
+   read time** -- "the description read at 05:08 UTC said X", never "the
+   description says X". A human comparing that line against the body's
+   own edit history can see instantly whether the report still applies.
+   The same holds for the head SHA: an audit that does not say which
+   commit it ran against cannot be told apart from one that is out of
+   date, and a reader should never have to infer it from the claim text.
+
+   If the head SHA you audited is not the PR's current head by the time
+   you report, say so plainly at the top and mark the run superseded.
 
 6. **Do not merge, close, or modify the PR yourself.** Booth's job ends
    at the report. What happens next is a human decision.

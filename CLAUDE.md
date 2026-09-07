@@ -408,6 +408,35 @@ starting 15/40.
   Any sentence carrying one is a claim that must be looked up before it ships,
   and note that a claim about what *this file* has said is dated by this file's
   own history (created 2026-09-05), not by the history of the thing described.
+- **"Fixed everywhere" is a conclusion, not a search result.** Correcting the
+  date above, I ran the search over `.github/workflows` and `CLAUDE.md` -- the
+  two paths I already had in mind -- found nothing else, and wrote "corrected
+  everywhere" into a commit message. Booth found a third occurrence in
+  `tests/test_workflow_churn_guard.py`'s docstring, a file that same branch
+  added. Repo-wide, `git grep -n "2026-08"` returned 73 matches across 12 files
+  at `f482f4f`; 72 were real history, which is exactly why the narrow search
+  felt sufficient. (Anchored to that commit deliberately — this paragraph
+  contains the string too, so a live count stated here would be wrong the
+  moment it landed. A number that counts something the sentence is part of has
+  to name the commit it was taken at.)
+  This is the same shape as the bug the branch existed to fix: the
+  churn guard covered one of two workflows, the search covered two of the paths
+  that mattered, and both looked complete because nothing in them announced
+  their own scope. A completeness claim must cite the command that establishes
+  it, repo-wide, and the command must appear in the write-up so someone else
+  can re-run it. One habit produced four wrong claims in that single PR -- the
+  date, the completeness claim, "60 matches" in `f482f4f`'s commit message (it
+  is 73), and the same count in a draft of the PR body. The two that reached a
+  re-runnable check were caught; the two that did not, shipped. Commit messages
+  have no such check and cannot be corrected without invalidating the Booth
+  reports written against those SHAs, so the discipline has to happen before
+  the commit, not after.
+  Worth recording alongside it: **no test could have caught either error.**
+  Both are claims *about* the code rather than behaviour *of* it, and the suite
+  was green at 303 throughout. Two independent Booth runs reached the docstring
+  finding separately. That is the clearest evidence so far that Booth is doing
+  something a test suite structurally cannot, rather than agreeing with what it
+  reads.
 - `backtest()` calls `dropna(subset=features)`, so different feature sets can
   silently evaluate different game sets. Any paired comparison must verify the
   row sets match rather than assume it (`bootstrap_brier_gap.py` does, and
