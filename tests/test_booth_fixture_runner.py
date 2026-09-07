@@ -121,6 +121,34 @@ def test_a_file_dropped_by_head_is_deleted_not_left_behind(tmp_path):
     assert not (tmp_path / 'r' / 'gone.md').exists()
 
 
+def test_the_default_output_directory_is_hidden_from_pytest():
+    """An assembled fixture must not become part of this project's suite.
+
+    A fixture's head tree contains `test_guard.py` at its root. Assembled into
+    a plainly-named directory in the repo -- `fixture-repo/`, say -- pytest
+    collects it as an ordinary test of THIS project. That happened: a stray
+    assembled repo added a test to the suite and the count moved by one with
+    no code change, which took real time to explain.
+
+    `tests/booth_fixtures/conftest.py` does not help, because the assembled
+    copy lives outside that tree. What saves it is that pytest skips
+    dot-prefixed directories by default -- load-bearing behaviour resting on a
+    naming coincidence, so it is asserted here rather than left implicit.
+
+    A fixture is a deliberately bad pull request. The first one that seeds a
+    genuinely failing test would fail this project's real suite from a
+    directory nobody thinks of as source.
+    """
+    meta = FIXTURES[0]
+    default = runner.REPO / '.fixture-run' / meta['id']
+    rel = default.relative_to(runner.REPO)
+    assert any(part.startswith('.') for part in rel.parts), (
+        'the default assemble target is {}, which pytest will collect from. '
+        'An assembled fixture carries its own test files; they would join '
+        'this suite.'.format(rel)
+    )
+
+
 # --- the prompt -------------------------------------------------------------
 
 def test_the_prompt_names_the_head_and_the_body():
