@@ -47,11 +47,41 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **426 passing** on `main` (2026-09-07). Run it before quoting it — this
-line read 174 for three days after it stopped being true, and a stale figure
-here is the first thing a fresh session anchors on.
+Suite: **558 passing** (1 skipped) on `main` (2026-09-07). Run it before quoting
+it — this line read 174 for three days after it stopped being true, and a stale
+figure here is the first thing a fresh session anchors on.
 
-**Stages 1 and 2 are complete. Stage 3 is in progress.**
+Keep the shape `Suite: **N passing**` exactly. `src/session_wrapup.py` greps for
+that literal, and rewording it to `**N passing, 1 skipped**` did not make the
+check complain about the wording — it reported the line as *missing*, which
+reads like a deleted section rather than an edited sentence.
+
+**Stages 1 and 2 are complete. Stage 3 is in progress. Stage 7.5 has started.**
+
+### Start here (written 2026-09-07, end of session)
+
+PRs #39 (agent decision log data) and #40 (Playoff Odds → a column on Power
+Ratings) were both open at the end of the session; #39 merged, #40 was awaiting
+its Booth audit. **First action: `git checkout main; git pull origin main`, then
+confirm #40 is in `git log --oneline main`.** If it is not, it is still waiting
+on the audit — find out why before starting anything new. The 558 figure above
+was measured on #40's branch with main already merged into it, so it is the
+number main will have once #40 lands. If #40 was closed rather than merged, that
+figure is wrong: re-run the suite rather than deriving a smaller one by
+subtraction.
+
+Next concrete piece of work, second item of Stage 7.5's deletions: **the Roadmap
+"Done" list.** Delete it and fold the "what's next" half plus the
+DEFERRED/REJECTED entries into Changelog. The Done list duplicates the Changelog,
+which is generated from `config.VERSION_HISTORY` — two sources of truth for the
+same facts. This also closes the separate "remove 2025 Week 10" item, because
+that reference lives inside a Roadmap Done card about the nflreadpy migration.
+
+Two habits that paid for themselves this session and should carry forward: build
+the page and *click the thing you just added* before opening the PR (that is how
+the `#`-column defect was found — it was invisible in the diff), and when
+deleting a page, ask what it was the last example of before assuming the tests
+still cover what they did yesterday.
 
 **Stage numbers are frozen.** They were renumbered twice in two days and it
 confused both this file and the Progress tab. A finished stage keeps its number
@@ -249,13 +279,20 @@ allowed only where someone has opted into depth.
 
 **Deletions and merges, with what was checked:**
 
-- **Playoff Odds — delete.** The whole page is 585 characters of visible text
-  and 953 of markup, measured by extracting the `<section>` element with
-  `<section[^>]*id="page-playoffs".*?</section>` and stripping tags. Nearly all
-  of it is caveats about static ratings and incomplete tiebreakers. It carries a
-  queued Stage 10 defect: the odds bars normalise to the leading team, so a 40%
-  favourite renders full-width and reads as near-certainty. Deleting the tab
-  deletes that work item too.
+- **Playoff Odds — DONE (PR #40).** The page is gone; the number lives on as a
+  sortable column on Power Ratings. The page had been 585 characters of visible
+  text and 953 of markup (measured by extracting `<section[^>]*id="page-playoffs".*?</section>`
+  and stripping tags), nearly all caveats. Its bar normalised to the leading
+  team, so a 40% favourite rendered full-width and read as near-certainty; the
+  bar was deleted rather than transplanted, which retires that queued Stage 10
+  defect. The one non-obvious requirement: the odds are joined onto the team
+  objects in `build_teams_js` in Python, because the table sorts by reading
+  `a[sortKey]` off a team — a browser-side lookup would render in the cell and
+  silently refuse to sort. The same PR fixed the `#` column, which had been the
+  row's position in the current sort and started printing "#1" beside the
+  ninth-rated team as soon as the new header made another sort worth clicking;
+  it is now a power-rating rank computed in Python that travels with the team.
+  Guarded by `tests/test_playoff_odds_column.py` and sixteen mutation cases.
 - **Roadmap — delete, keeping only "what's next" and the DEFERRED/REJECTED
   entries**, folded into Changelog. Its "Done" list duplicates the Changelog,
   which is now generated from `config.VERSION_HISTORY` — two sources of truth
@@ -693,3 +730,55 @@ under compaction pressure, so its length is a cost paid on every session.
   into a tab that already has the dashboard open runs no init code; it needs a
   `hashchange` listener. Test a receive path as a genuine second visit, not as a
   fresh page load.
+- **A regex anchored on a bare class name also matches the CSS that defines
+  it.** `tests/test_dashboard_charts.py` matched `srs-bar-track(?P<cls>[^"]*)"`,
+  which hit the *stylesheet* rule declaring the class and then hopped forward
+  into the first real bar — one phantom "bar" whose class list was a wall of CSS
+  (containing the word `diverging`, so it passed) and whose `left:` had been
+  read off a different element entirely. The count guard beside it asserted
+  `len(bars) >= 3` and was satisfied by that phantom for as long as it existed.
+  Deleting the Playoff Odds page dropped the count to 2 and only then exposed
+  it. Two durable lessons: anchor markup matchers on `class="`, not on the class
+  name; and **a count assertion validates the number of matches, not their
+  identity** — a matcher can drift onto the wrong thing and still count high.
+- **Deleting the only input that reaches a branch silently untests that
+  branch.** The zero-line rule has two halves — a left-anchored magnitude bar
+  must NOT wear `.diverging`, a signed bar must. Playoff Odds was the only
+  left-anchored bar on the dashboard, so removing that page left the first half
+  unreachable with every test still green. The fix, and the pattern to reuse:
+  state the rule as a plain function, then check it twice — once over whatever
+  the page really contains, once over a parametrized table of synthetic inputs
+  that keeps both branches alive regardless of what the markup holds this week.
+  **When deleting a page, ask what it was the last example of.**
+- **A mutation case's `tests` must name exactly ONE pytest path.** Two paths
+  with a space between them load fine, reach pytest as a single nonexistent
+  filename, and pytest exits non-zero having reported no failures — which the
+  runner reads as "the suite went red but the named guard passed" and prints
+  WRONG-GUARD. The verdict blames a guard that is perfectly healthy and the
+  obvious next move is to go and edit it. `tests/mutation/corpus.py` now refuses
+  it at load time with a sentence naming the actual mistake. For a second test
+  file, give that individual case its own `tests` key.
+- **Adding a way to sort a table can make an existing column start lying.** The
+  Power Ratings `#` was the row's index in the current sort. That was harmless
+  while net rating was effectively the only sort anyone used, and the comment
+  beside it already claimed the number was the team's "real league position" —
+  true only by accident. The first click on the new Playoff Odds header printed
+  **"#1 Cincinnati" next to a negative net rating, on a page titled Power
+  Ratings**. Found by rendering the page and clicking the new control, not by
+  reading the diff. The rank is now computed once in Python from the net order
+  and travels with the team. Durable form: **a new control does not only add
+  behaviour, it reaches states the old code was never asked about** — after
+  adding one, exercise the page through it and re-read every neighbouring
+  claim, in prose and in cells, that was only ever true in the default state.
+- **A wrap-up check that greps this file for a literal string is disabled by
+  rewording that string, and says the line is MISSING.** `session_wrapup.py`
+  matches `Suite:\s*\*\*([0-9,]+)\s+passing\*\*`. Writing
+  `Suite: **527 passing, 1 skipped**` — strictly more information — made it
+  report "CLAUDE.md has no 'Suite: **N passing**' line to check", which reads
+  like a deleted section, not an edited sentence. Any prose this file carries
+  *for a tool* is an interface: extra detail goes outside the matched span.
+- **The full mutation run outlives the 60-second Desktop Commander timeout.**
+  78 cases take several minutes. The tool call returns "device did not respond"
+  while the run continues, so: redirect to a file, poll for completion, read the
+  file — and check `git status` before believing anything, because a killed
+  runner skips the `finally` that restores the mutated file.

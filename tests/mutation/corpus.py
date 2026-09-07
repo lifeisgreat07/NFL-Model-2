@@ -48,11 +48,24 @@ def load_corpus():
             if missing:
                 raise CorpusError(
                     f"{path.name}: case {case.get('id', '?')!r} missing {missing}")
+            tests = case.get('tests', data['tests'])
+            # The runner hands this to pytest as ONE argv element. Two paths
+            # separated by a space are accepted here, land as a single
+            # nonexistent filename, and pytest exits 4 having reported no
+            # failures at all -- which the runner then reads as "the suite
+            # went red but the named guard passed" and prints WRONG-GUARD.
+            # The case looks like a broken test rather than a broken case, and
+            # you go and edit a guard that was fine. Refuse it at load time.
+            if not (REPO_ROOT / tests).exists():
+                raise CorpusError(
+                    f"case {case['id']!r}: no such test file {tests!r}. A case "
+                    f"names exactly one pytest path -- for a second one, give "
+                    f"that case its own 'tests' key in a separate case.")
             cases.append({
                 **case,
                 'corpus': path.name,
                 'target': case.get('target', data['target']),
-                'tests': case.get('tests', data['tests']),
+                'tests': tests,
             })
     if not cases:
         raise CorpusError("the corpus is empty -- nothing would be tested")

@@ -247,9 +247,41 @@ def build_accuracy_summary(all_graded):
     }
 
 
-def build_teams_js(ratings):
+def build_teams_js(ratings, playoff_odds=None):
+    """Team rows for the Power Ratings table.
+
+    Playoff odds are joined here rather than looked up in the browser so the
+    table can SORT by them -- the sort reads `a[sortKey]` off the team object,
+    so a value living in a separate lookup would render but never sort, which
+    is the kind of half-working column nobody notices is broken.
+
+    A team with no odds gets None, not 0. Zero is a real playoff chance and
+    would rank a team last on merit; None means "not simulated" and the cell
+    says so. The same distinction the SOS column already makes.
+
+    The '#' the table prints is `rank`, computed here from the net-rating
+    order rather than in the browser from the row's position in whatever the
+    reader last sorted by. Position-in-sort would relabel the ninth-best team
+    "#1" the moment somebody sorted by playoff odds -- on a page titled Power
+    Ratings, and "#1" is the part a casual reader carries away. Computed once
+    here, every view agrees, and it also survives search filtering.
+    """
+    odds = {}
+    if playoff_odds:
+        for row in playoff_odds.get('teams') or []:
+            if row.get('team') is not None:
+                odds[row['team']] = row.get('playoff_pct')
+
+    # Ties broken by team code so the ranking is the same on every run; two
+    # teams on identical net ratings must not swap places between builds and
+    # show up as a diff nobody made.
+    order = sorted(ratings, key=lambda r: (-r['net'], r['team']))
+    rank_of = {r['team']: i + 1 for i, r in enumerate(order)}
+
     return [{'team': r['team'], 'name': r['name'], 'off': r['off'], 'def': r['def'], 'net': r['net'],
-             'sos': r.get('sos'), 'games_played': r.get('games_played')} for r in ratings]
+             'sos': r.get('sos'), 'games_played': r.get('games_played'),
+             'rank': rank_of[r['team']],
+             'playoff': odds.get(r['team'])} for r in ratings]
 
 
 def load_team_history():
@@ -298,10 +330,14 @@ def load_team_history():
 def main():
     print("Loading current ratings...")
     ratings = load_current_ratings()
-    teams_js = build_teams_js(ratings)
 
     print("Loading playoff odds...")
     playoff_odds = load_playoff_odds()
+
+    # Joined into the team rows, not injected separately: playoff odds are a
+    # column on Power Ratings now, and the table sorts by reading the value
+    # off the team object.
+    teams_js = build_teams_js(ratings, playoff_odds)
 
     print("Loading all saved predictions...")
     all_preds = load_all_predictions()
@@ -377,7 +413,12 @@ def main():
         template = f.read()
 
     html = template.replace('__TEAMS_JSON__', json.dumps(teams_js, indent=2))
-    html = html.replace('__PLAYOFF_ODDS_JSON__', json.dumps(playoff_odds, indent=2))
+    # Only the run's own metadata: the per-team odds now travel inside
+    # teams_js so the Power Ratings table can sort by them.
+    html = html.replace('__PLAYOFF_META_JSON__', json.dumps(
+        {k: (playoff_odds or {}).get(k) for k in
+         ('n_simulations', 'games_played', 'games_remaining', 'season')},
+        indent=2))
     html = html.replace('__WEEKS_JSON__', json.dumps(weeks_js, indent=2))
     html = html.replace('__LATEST_WEEK__', json.dumps(latest_label))
     html = html.replace('__PICKS_PDFS_JSON__', json.dumps(pdf_weeks))

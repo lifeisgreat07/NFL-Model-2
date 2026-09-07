@@ -349,21 +349,32 @@ if __name__ == '__main__':
 # ---------------------------------------------------------------------------
 # Bar encoding: does the mark match the number it is drawing?
 #
-# Three bars on this dashboard share one pair of CSS classes, and two of them
-# are not the same chart. Power Ratings and Team Deep-Dive draw a SIGNED value
-# whose zero sits at the centre of the track. Playoff Odds draws a 0-100%
-# probability anchored at the left edge, where the centre means nothing at all.
+# Two bars on this dashboard share one pair of CSS classes. Power Ratings and
+# Team Deep-Dive both draw a SIGNED value whose zero sits at the centre of the
+# track, so both wear .diverging and both get a zero reference painted at 50%.
 #
-# Before the zero line existed the two were indistinguishable, which is how a
-# shared class survived: nothing rendered differently. Now that .diverging
-# paints a zero reference, putting it on the playoff bar would draw a "zero"
-# at 50% probability -- a line asserting something the data does not contain.
+# There used to be a third. The Playoff Odds page drew a 0-100% probability
+# anchored at the left edge, where the centre means nothing at all, and it was
+# the whole reason .diverging is opt-in rather than baked into .srs-bar-track.
+# That page is gone -- the odds now ride as a plain column on Power Ratings,
+# with no bar -- which leaves the rule below with no left-anchored example on
+# the page to exercise it. So the rule is stated once as a function and checked
+# twice: against every bar the page actually contains, and against a table of
+# synthetic bars that still includes the left-anchored case. A branch that
+# nothing can reach is not being tested, and deleting the only input that
+# reached it is exactly how that happens quietly.
 # ---------------------------------------------------------------------------
 
-# Non-greedy across the title attribute on purpose: those titles contain '>'
-# (from `t.net>=0`), so an [^>]* hop to the tag end stops in the wrong place.
+# Anchored on `class="` on purpose. A bare `srs-bar-track` also matches the CSS
+# rules that DEFINE the class, and the non-greedy hop then runs from the
+# stylesheet all the way down into the first real bar -- yielding one phantom
+# "bar" whose class list is a wall of CSS (which contains the word `diverging`,
+# so it passes) and whose `left:` was read off a different element entirely.
+#
+# Non-greedy across the title attribute on purpose too: those titles contain
+# '>' (from `t.net>=0`), so an [^>]* hop to the tag end stops in the wrong place.
 _BAR = re.compile(
-    r'srs-bar-track(?P<cls>[^"]*)"(?P<between>.*?)srs-bar-fill" style="left:(?P<left>.*?);',
+    r'class="srs-bar-track(?P<cls>[^"]*)"(?P<between>.*?)srs-bar-fill" style="left:(?P<left>.*?);',
     re.S)
 
 
@@ -372,38 +383,60 @@ def _bars():
     return [(m.group('cls'), m.group('left').strip()) for m in _BAR.finditer(page)]
 
 
+def _zero_line_complaint(cls, left):
+    """The property, stated over geometry rather than over a list of pages.
+
+    A fill pinned to `left:0%` grows from the left edge: it is a magnitude, and
+    it has no centre to mark. Any other anchor is computed from the sign of the
+    value, which means the track's middle IS zero and has to be drawn. A new
+    bar added later is covered by this automatically.
+
+    Returns None when the bar is encoded honestly, else why it is not.
+    """
+    anchored_left = (left == '0%')
+    marked_diverging = 'diverging' in cls
+    if anchored_left and marked_diverging:
+        return ("a bar anchored at left:0% is marked .diverging, so it draws a "
+                "zero reference at the middle of a 0-100% scale -- that line "
+                "claims 50% is a neutral point, which it is not")
+    if not anchored_left and not marked_diverging:
+        return (f"a bar anchored at '{left}' is signed -- its position encodes "
+                f"direction from a centre -- but carries no .diverging class, "
+                f"so its zero is invisible and a small positive looks like a "
+                f"small negative")
+    return None
+
+
 def test_the_bar_regex_still_finds_the_bars():
     """If the markup is restructured this regex can quietly match nothing, and
     every property below would then pass over an empty list."""
     bars = _bars()
-    assert len(bars) >= 3, (
-        f"found {len(bars)} bar(s); the dashboard has at least three "
-        f"(Power Ratings, Playoff Odds, Team Deep-Dive) -- the matcher has "
-        f"drifted off the markup and these guards are checking nothing")
+    assert len(bars) >= 2, (
+        f"found {len(bars)} bar(s); the dashboard has at least two "
+        f"(Power Ratings, Team Deep-Dive) -- the matcher has drifted off the "
+        f"markup and these guards are checking nothing")
 
 
 def test_a_zero_line_appears_on_exactly_the_bars_that_have_a_zero():
-    """The property, stated over geometry rather than over a list of pages.
-
-    A fill pinned to `left:0%` grows from the left edge: it is a magnitude,
-    and it has no centre to mark. Any other anchor is computed from the sign
-    of the value, which means the track's middle IS zero and has to be drawn.
-    A new bar added later is covered by this automatically.
-    """
+    """Every bar the page really ships, run through the rule."""
     for cls, left in _bars():
-        anchored_left = (left == '0%')
-        marked_diverging = 'diverging' in cls
-        if anchored_left:
-            assert not marked_diverging, (
-                f"a bar anchored at left:0% is marked .diverging, so it draws "
-                f"a zero reference at the middle of a 0-100% scale -- that "
-                f"line claims 50% is a neutral point, which it is not")
-        else:
-            assert marked_diverging, (
-                f"a bar anchored at '{left}' is signed -- its position encodes "
-                f"direction from a centre -- but carries no .diverging class, "
-                f"so its zero is invisible and a small positive looks like a "
-                f"small negative")
+        complaint = _zero_line_complaint(cls, left)
+        assert complaint is None, complaint
+
+
+@pytest.mark.parametrize('cls, left, is_wrong', [
+    (' diverging', '${t.net>=0?50:50-width/2}%', False),  # signed, centre drawn
+    ('', '0%', False),                                    # magnitude, no centre
+    (' diverging', '0%', True),                           # magnitude wearing a centre line
+    ('', '${t.net>=0?50:50-width/2}%', True),             # signed, zero invisible
+])
+def test_the_zero_line_rule_is_awake_on_both_sides(cls, left, is_wrong):
+    """The page currently contains no left-anchored bar, so the first branch of
+    the rule above would go unexecuted and could rot -- inverted, or reading a
+    group the regex no longer captures -- without a single test turning red.
+    These four rows keep both branches alive independently of what the markup
+    happens to hold this week."""
+    assert (_zero_line_complaint(cls, left) is not None) is is_wrong
 
 
 def test_the_zero_reference_is_actually_drawn():
