@@ -1,0 +1,41 @@
+{
+  "target": "src/booth_fixture_runner.py",
+  "tests": "tests/test_booth_fixture_runner.py",
+  "cases": [
+    {
+      "id": "runner-trusts-the-stored-flag",
+      "why": "check_one returns the baseline's recorded `satisfied` instead of re-deriving it. A fixture whose expectation was later edited keeps reporting the old pass, so the corpus stays green for a question nobody is asking any more -- the exact rot a recorded baseline is most prone to.",
+      "find": "    ok, why = loader.satisfied_by(meta, baseline.get('verdict'))\n    return ok, why",
+      "replace": "    return baseline.get('satisfied'), baseline.get('explanation', '')",
+      "expect_caught_by": "test_a_baseline_is_rechecked_not_trusted"
+    },
+    {
+      "id": "runner-records-only-successes",
+      "why": "a fixture Booth MISSED is not written to disk, so the most important result the suite can produce is silently forgotten and stays invisible until someone spends another audit",
+      "find": "    baseline_path(meta).write_text(\n        json.dumps(payload, indent=2) + '\\n', encoding='utf-8')\n    return ok, why",
+      "replace": "    if ok:\n        baseline_path(meta).write_text(\n            json.dumps(payload, indent=2) + '\\n', encoding='utf-8')\n    return ok, why",
+      "expect_caught_by": "test_a_failing_result_is_still_recorded"
+    },
+    {
+      "id": "runner-leaves-deleted-files-behind",
+      "why": "a file the head tree drops is left in the working tree, so a deletion never appears in the diff and Booth audits a pull request that differs from the one the fixture describes",
+      "find": "    for rel in loader.base_tree(meta):\n        if rel not in loader.head_tree(meta):\n            (dest / rel).unlink()",
+      "replace": "    pass",
+      "expect_caught_by": "test_a_file_dropped_by_head_is_deleted_not_left_behind"
+    },
+    {
+      "id": "runner-reuses-a-dirty-directory",
+      "why": "assemble builds on top of whatever a previous run left behind, so a stale file silently changes the diff and two runs of the same fixture stop being the same test",
+      "find": "    if dest.exists():\n        _force_rmtree(dest)",
+      "replace": "    if False:\n        _force_rmtree(dest)",
+      "expect_caught_by": "test_assembling_twice_does_not_accumulate"
+    },
+    {
+      "id": "runner-prompt-drops-the-verdict-block",
+      "why": "the prompt stops asking for the machine-readable block, so record() has nothing to parse and every fixture reports 'no booth-verdict block' regardless of what Booth actually found",
+      "find": "Close with the machine-readable booth-verdict block the protocol specifies.",
+      "replace": "Close with a summary of what you found.",
+      "expect_caught_by": "test_the_prompt_names_the_head_and_the_body"
+    }
+  ]
+}
