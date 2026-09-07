@@ -1,0 +1,62 @@
+{
+  "target": "src/booth_verdict.py",
+  "tests": "tests/test_booth_verdict.py",
+  "cases": [
+    {
+      "id": "verdict-malformed-degrades-to-missing",
+      "why": "a garbled block reads as 'no block', so a broken report is indistinguishable from a pre-protocol one and sails through",
+      "find": "        raise VerdictError(f\"booth-verdict block is not valid JSON: {exc}\") from exc",
+      "replace": "        return None",
+      "expect_caught_by": "test_malformed_json_raises_rather_than_reading_as_missing"
+    },
+    {
+      "id": "verdict-missing-block-raises",
+      "why": "the inverse: an old report with no block becomes an error, so the suite breaks on history instead of reading it as 'no verdict available'",
+      "find": "    if not matches:\n        return None",
+      "replace": "    if not matches:\n        raise VerdictError('no block')",
+      "expect_caught_by": "test_missing_block_returns_none_rather_than_raising"
+    },
+    {
+      "id": "verdict-duplicate-ids-allowed",
+      "why": "claim ids index the prose; duplicates mean a verdict cannot be traced to the claim it belongs to",
+      "find": "        if claim['id'] in seen:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_duplicate_claim_ids_are_rejected"
+    },
+    {
+      "id": "verdict-any-verdict-string-accepted",
+      "why": "an invented verdict word passes validation, so the suite counts something that is not one of the three defined outcomes",
+      "find": "        if claim['verdict'] not in VERDICTS:",
+      "replace": "        if claim['verdict'] not in VERDICTS + (claim['verdict'],):",
+      "expect_caught_by": "test_unknown_verdict_is_rejected"
+    },
+    {
+      "id": "verdict-crosscheck-skips-discrepancies",
+      "why": "the count cross-check ignores discrepancies, so a block claiming zero while the prose reports two passes -- the exact 'block as second opinion' failure this check exists for",
+      "find": "        ('Discrepancies', 'DISCREPANCY'),",
+      "replace": "",
+      "expect_caught_by": "test_cross_check_catches_a_count_mismatch"
+    },
+    {
+      "id": "verdict-crosscheck-allows-discrepant-safe-merge",
+      "why": "a report listing discrepancies while concluding SAFE TO MERGE passes cross-check, which is the single most consequential inconsistency a report can carry",
+      "find": "    if tally['DISCREPANCY'] and data['overall'] == 'SAFE TO MERGE':",
+      "replace": "    if False:",
+      "expect_caught_by": "test_cross_check_catches_discrepancies_under_safe_to_merge"
+    },
+    {
+      "id": "verdict-implicates-counts-confirmed",
+      "why": "a CONFIRMED claim that merely names a file counts as Booth having caught a defect there, so a fixture passes without Booth finding anything",
+      "find": "        if claim['verdict'] in verdicts:",
+      "replace": "        if True:",
+      "expect_caught_by": "test_implicated_paths_ignores_confirmed_claims"
+    },
+    {
+      "id": "verdict-two-blocks-accepted",
+      "why": "two blocks in one report parse to whichever came first, so a report that changed its mind mid-write reports the discarded verdict",
+      "find": "    if len(matches) > 1:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_two_blocks_is_an_error"
+    }
+  ]
+}

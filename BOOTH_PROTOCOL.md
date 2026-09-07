@@ -67,7 +67,46 @@ primed to agree with its own earlier reasoning.
 
    ### Overall verdict
    [SAFE TO MERGE / DO NOT MERGE -- DISCREPANCIES FOUND / NEEDS HUMAN REVIEW]
+
+   [then the machine-readable verdict block -- see below]
    ```
+
+   **The machine-readable verdict block.** After the prose, close the
+   report with a fenced block tagged `booth-verdict` containing JSON:
+
+       ```booth-verdict
+       {
+         "pr": 31,
+         "head": "6be968c",
+         "claims": [
+           {"id": 1, "verdict": "CONFIRMED", "implicates": []},
+           {"id": 2, "verdict": "DISCREPANCY",
+            "implicates": ["tests/test_workflow_churn_guard.py"]}
+         ],
+         "overall": "SAFE TO MERGE"
+       }
+       ```
+
+   One entry per numbered claim in the prose, same ids and same verdicts --
+   the block is a restatement, never a second opinion. `implicates` lists
+   the repository paths a DISCREPANCY or UNVERIFIABLE actually concerns,
+   and is empty for a CONFIRMED. `overall` repeats the verdict line
+   verbatim.
+
+   This exists so a report can be read by something other than a person.
+   Booth's regression suite seeds a known defect in a known file and then
+   has to ask "did Booth catch it" -- a question that cannot be answered by
+   matching words in prose without testing Booth's phrasing instead of its
+   detection. Note what the block deliberately does NOT do: it does not ask
+   you to categorise a defect or grade your own accuracy. Booth self-reports
+   here, so a self-assessment would be worthless. The suite asserts only
+   that the claim implicating a seeded file came back DISCREPANCY, which is
+   checkable against a fixture whose defect is known in advance.
+
+   Emit it even when everything is CONFIRMED and the block looks
+   redundant. A parser that sometimes finds nothing cannot tell a clean
+   audit from a truncated one -- the same ambiguity as a skipped workflow
+   reporting success.
 
    The two header lines exist because a report is a snapshot and does not
    look like one. Booth reads the PR body once, near the start of a run,
