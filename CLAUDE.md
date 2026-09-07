@@ -47,71 +47,49 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **174 passing** on `main`.
+Suite: **382 passing** on `main` (2026-09-07). Run it before quoting it — this
+line read 174 for three days after it stopped being true, and a stale figure
+here is the first thing a fresh session anchors on.
 
-**Stage 2 is complete** — PRs #21, #22, #23 and #24, all merged. Next up is
-Stage 3.
+**Stages 1 and 2 are complete. Stage 3 is in progress.**
 
-**Stage numbers are frozen from here.** They were renumbered twice in two days,
-"Stage 8" meant three different things in three days, and it caused real
-confusion in both this file and the Progress tab. A finished stage is now
-recorded as finished and its number retired; nothing is renumbered again. If you
-find a reference to "Stage 4 - evaluation honesty" or "Stage 5 - deploy Booth",
-it predates 2026-09-06.
+**Stage numbers are frozen.** They were renumbered twice in two days and it
+confused both this file and the Progress tab. A finished stage keeps its number
+and is recorded as finished; nothing is renumbered again.
 
-### Finished, and why it matters
+### Findings that still constrain the work
 
-Evaluation honesty is complete. The reliability diagram (PR #13) put Wilson
-intervals and the Murphy decomposition on Model Lab. The paired bootstrap
-(PR #15) then killed its own headline: Model B vs the market is INCONCLUSIVE
-on all four metrics, and the panel says so. It confirmed two real findings
-instead - Model B genuinely beats Model A on proper scoring rules, and the
-market genuinely beats Model A - both stated with intervals for the first
-time. ATS evaluation (PR #16) asked the betting question the project had
-never asked and answered it negatively: 51.61%, CI [48.58%, 54.63%], which
-contains 50% and does not reach the 52.38% break-even. Pick cards now carry
-their own band's historical record (PR #18). The low-confidence finding was
-re-derived after Booth flagged it unverifiable (PR #19) and it holds.
+Conclusions, not history. Which PR produced what belongs in the Stage 7
+write-ups; what matters here is what is now settled and must not be re-opened
+casually.
 
-Booth is deployed and validated (PR #16-18). Its first real audit re-ran the
-suite itself, performed the mutation itself rather than trusting the PR's
-description of it, and found two genuine defects: a missing pytest install in
-its own harness, and a CONFIRMED FINDING on the live dashboard with no script
-behind it. A verifier catching the project breaking its own VERIFICATION.md
-rule on its first outing is the strongest evidence this whole apparatus works.
-
-**Stage 2 (2026-09-06, PRs #21-#24) corrected more than it built.** Four of its
-seven items turned out not to be the item as written:
-
-- **SOS was never broken.** The design audit recorded "an em-dash for all 32
-  teams" and queued the column for removal or population. The computation was
-  correct; the 2026 season had not started, and strength of schedule is defined
-  over opponents actually played. Acting on the audit would have deleted a
-  working feature for being audited in September. What was actually missing was
-  any way to tell a legitimate blank from a broken pipeline.
-- **The Team Deep-Dive page had never worked.** `load_team_history()` reads
-  `data/team_history.json`; the file sat in `src/`. The missing-file branch
-  returned `{}` in silence, so the live public page showed "No team history data
-  available yet" for all 32 teams while the roadmap listed it as Done.
-- **nfl_data_py is a real fallback**, verified by executing it rather than
-  assuming: it imports, all three loaders work, every required column is there,
-  and it agrees with nflreadpy exactly on 2025 week 10. So the pandas 1.x pin
-  buys a working revert path.
-- **The pandas 2.x unlock is not free.** Pre-declared hypothesis - log loss,
-  Brier and AUC agree to four decimals across the major version - REFUTED. AUC
+- **Model B vs the market is INCONCLUSIVE** on all four metrics, stated with
+  intervals. Two real findings did survive: Model B genuinely beats Model A on
+  proper scoring rules, and the market genuinely beats Model A. The dashboard
+  says all three.
+- **There is no ATS edge.** 51.61%, CI [48.58%, 54.63%] — contains 50% and does
+  not reach the 52.38% break-even. The betting question was asked properly and
+  answered negatively. Do not re-open it without new data.
+- **`nfl_data_py` is a verified fallback**, executed rather than assumed: it
+  imports, all three loaders work, every required column is present, and it
+  agrees with nflreadpy exactly on 2025 week 10. So the pandas 1.x pin buys a
+  working revert path rather than a theoretical one.
+- **The pandas 2.x unlock is not free.** Pre-declared hypothesis — log loss,
+  Brier and AUC agree to four decimals across the major version — REFUTED. AUC
   moves up to 0.00125, 25x this project's own noise threshold, with both
   environments proven deterministic and scoring the same 1087 games. "Market
   alone", the one model with no EPA aggregation, is bit-identical; everything
   built on EPA features moves, which localises it to float aggregation over
-  ~48k plays a season. Decision recorded in `requirements.txt`: keep the pin,
-  revisit when something actually needs pandas 2.x, and regenerate every
-  published figure as part of that work rather than discovering the shift after.
-
-Also shipped in Stage 2: the Net Rating bar has a zero line and a printed
-domain; the Changelog page is generated from `config.VERSION_HISTORY` rather
-than a hand-maintained comment; picks are shareable by link, with a schedule
-fingerprint that refuses a mismatched link instead of silently attaching picks
-to the wrong fixtures.
+  ~48k plays a season. Keep the pin; revisit only when something actually needs
+  pandas 2.x, and regenerate every published figure as part of that work rather
+  than discovering the shift afterwards.
+- **An audit finding is a hypothesis, not a defect.** Four of Stage 2's seven
+  queued items were not the item as written. SOS was computing correctly and
+  the season had not started — acting on the audit would have deleted a working
+  feature for being audited in September. The Team Deep-Dive page had never
+  worked at all: a missing file returned `{}` in silence while the roadmap
+  listed it Done. Read the code and render the page before believing a queued
+  finding.
 
 ### Stage 1 - Recurring status checks (first every session, don't dwell)
 
@@ -130,21 +108,52 @@ Shipped as PRs #21-#24. See "Finished, and why it matters" above; the four
 corrections it produced are worth reading before starting anything that
 assumes an audit finding is accurate.
 
-### Stage 3 - Agent development  <- NEXT
+### Stage 3 - Agent development  <- IN PROGRESS
 
-Booth regression suite of deliberately-bad PRs it must catch; prompt-injection
-resistance test; Scout pre-flight enforcing VERIFICATION.md before any PR
-opens; structured agent decision log rendered as a dashboard page; inter-agent
-disagreement protocol, currently undefined; Booth cost and latency
-instrumentation; "Archivist" role regenerating the handoff from real repo state
-- this file is the manual version of that.
+**Built and merged:** Scout pre-flight, which checks a PR description against
+reality before it opens (`src/scout_preflight.py`, #26). A committed mutation
+corpus, so mutation tables are a command rather than a throwaway script
+(`tests/mutation/`, #27). A test that every regenerating workflow prunes build
+churn (#28). Booth reports that record the head SHA and body read-time, and a
+past-tense rule for claims about a description (#29). An `edited` trigger so a
+rewritten description is re-audited at all (#30). A machine-readable
+`booth-verdict` block plus the parser that reads it (`src/booth_verdict.py`,
+#31). The regression-fixture format and its integrity checks (#32).
 
-Two additions from Stage 2's experience with Booth. It caught a **scope**
-discrepancy no test could have - a PR whose description covered one of three
-bundled features - and it repeatedly marked screenshot claims UNVERIFIABLE
-because none were attached. Both belong in the regression suite: a
-deliberately under-described PR it must flag, and a `VERIFICATION.md` rule that
-a visual claim without an attached artifact does not count as evidence.
+**Two Booth defects were found and fixed on 2026-09-07**, both invisible to any
+test because they concern how a report is read rather than what it checks. It
+never re-audited a description-only edit, so a body could be rewritten after
+its audit while the audit comment went on looking current. And it reported a
+snapshot in the present tense, asserting what "a reviewer sees right now" about
+text already replaced. Fixed in #30 and #29 respectively.
+
+**Remaining, in the order agreed on 2026-09-07:**
+
+1. **The fixture runner.** #32 ships a fixture format with nothing that
+   executes it. Build a throwaway git repo from a fixture's `base/` and `head/`,
+   render Booth's prompt, record the verdict block as a committed baseline, and
+   let the ordinary suite re-check baselines for free. `workflow_dispatch` only,
+   one fixture per dispatch. Booth runs on subscription auth, so it costs no
+   money — but it does cost usage, so never spend an audit to learn something a
+   committed baseline already records.
+2. **The agent decision log, as a dashboard page.** Listed here as agent work,
+   but it is the item that renders. Right now a visitor sees no evidence that
+   Scout, Booth, the mutation corpus or the fixture suite exist at all. It
+   converts everything invisible into the thing a hiring manager actually looks
+   at, and Booth's cost and latency numbers ride along in the same page nearly
+   free. Highest-leverage item left in this stage by a distance.
+
+**Then leave Stage 3.** The remaining items are deliberately parked, not
+forgotten: the other five regression fixtures (one proves the mechanism; five
+more is polish), the inter-agent disagreement protocol, the "Archivist" role,
+and migrating the remaining ad-hoc mutations into the corpus. The
+prompt-injection resistance test is the one worth returning to — it is a
+recognisable AI-safety competency and cheap as a single focused PR — but it
+does not belong ahead of the dashboard.
+
+The reason for stopping: seven PRs on 2026-09-07 all landed on agent
+infrastructure, and the dashboard has not been touched since Stage 2. Nothing
+remaining in this stage moves the thing a visitor sees.
 
 ### Stage 4 - Automation & monitoring
 
@@ -337,23 +346,13 @@ starting 15/40.
 - **One item, one PR.** Booth flagged a PR bundling three undisclosed features:
   a reviewer approving on the description alone approves more than they think.
   If a branch grows past its title, either split it or rewrite the description.
-- **`.github/` is NOT write-protected — that claim was wrong.** This file said
-  from 2026-09-05 until 2026-09-07 that workflow edits "must be made by the user
-  in GitHub's web editor", and every session dutifully wrote a step-by-step
-  walkthrough instead of making a one-line change. It cost the user manual work
-  at least twice on 2026-09-07 alone. Tested rather than assumed: editing
-  `.github/workflows/weekly-update.yml` on `markys` and pushing it to a feature
-  branch both work normally.
-  What is verified: local write, and push to a feature branch. What is NOT
-  verified: pushing `.github/` straight to `main`, and whether merging such a
-  PR needs anything extra. Test those the same way before believing either.
-  The related restriction that IS real is separate and listed below: the Claude
-  Code action refuses to run when a PR's copy of **its own** workflow file
-  (`booth-pr-audit.yml`) differs from `main`'s. Changing any other workflow in
-  a PR does not affect whether Booth audits it.
-  General lesson, since this is the second stale belief this file has carried:
-  an inherited "you can't do X" with no recorded test behind it is a hypothesis.
-  Spend the thirty seconds to try it before building a manual process around it.
+- **`.github/` is writable from `markys`.** Editing a workflow and pushing it to
+  a feature branch both work, tested rather than assumed. Not verified: pushing
+  `.github/` straight to `main`. The restriction that IS real is the Claude Code
+  action's own, listed under traps.
+  General lesson, and the second stale belief this file carried: an inherited
+  "you can't do X" with no recorded test behind it is a hypothesis. Spend the
+  thirty seconds testing it before building a manual process around it.
 - No `gh` CLI and no PR-body-edit tool. A PR description can be corrected only
   by the user in the web UI, so get the description right when opening it.
 - `cmd` mangles multi-line `python -c` strings, and **PowerShell has no
@@ -368,22 +367,17 @@ starting 15/40.
   file that holds uncommitted work, restore from a byte-level backup taken in
   the script, never from git.
 - **A guard wired into one of several paths reads as a guard that is present.**
-  The dashboard workflows used to commit their own build timestamps;
-  `src/prune_build_churn.py` prevents it, and this file described it from
-  2026-09-05 as simply "preventing" the churn. It was wired into
-  `generate-dashboard.yml` on 2026-09-04 and into `weekly-update.yml` only on
-  2026-09-07 — for three days the second workflow regenerated the dashboard and
-  committed `index.html dist/**` with no prune step, and the sentence in this
-  file was what stopped anyone looking. Both now run it, enforced by
+  `src/prune_build_churn.py` stops the workflows committing their own build
+  timestamps. It ran in only one of the two workflows that regenerate, and this
+  file's prose said merely that it "prevents" the churn — which is what stopped
+  anyone checking coverage. Both run it now, enforced by
   `tests/test_workflow_churn_guard.py`, which asserts that *any* workflow
-  regenerating and committing those artifacts calls the prune between the two
-  steps — so a third workflow inherits the guard instead of quietly missing it.
-  The durable lesson is the shape, not this instance: when a protection is
-  described in prose, the prose names the protection but not its coverage, and
-  the gap is invisible from the description alone. Ask which paths, and prefer
-  a test that enumerates them over a sentence that asserts them. This one only
-  bit when a run produced no real data change — the offseason state, which is
-  exactly when nobody is watching. Run the prune after regenerating locally.
+  regenerating and committing those artifacts prunes between the two steps, so
+  a third inherits the guard instead of quietly missing it.
+  The durable shape: prose names a protection but never its coverage, and the
+  gap is invisible from the description alone. Ask which paths, and prefer a
+  test that enumerates them over a sentence that asserts them. Run the prune
+  after regenerating locally.
 - **A zero-line binary diff is not automatically churn.** An auto-commit
   showing `dist/picks_2026_week1.pdf | Bin 3802 -> 3802 bytes, 0 insertions,
   0 deletions` looks exactly like the timestamp churn above, and on 2026-09-07
