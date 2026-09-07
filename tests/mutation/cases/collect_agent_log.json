@@ -1,0 +1,41 @@
+{
+  "target": "src/collect_agent_log.py",
+  "tests": "tests/test_collect_agent_log.py",
+  "cases": [
+    {
+      "id": "agentlog-counts-superseded-audits",
+      "why": "superseded runs are summed into the totals. PR #28 carried five audits, three of them reading descriptions that had already been replaced -- counting all five reports five discrepancies where one defect was found repeatedly, inflating the numbers in the one artifact that exists to be honest about this project's own verification.",
+      "find": "    scored = [r for r in current if r['has_verdict_block']]",
+      "replace": "    scored = [r for r in rows if r['has_verdict_block']]",
+      "expect_caught_by": "test_only_the_newest_audit_of_a_pull_request_counts"
+    },
+    {
+      "id": "agentlog-drops-clean-audits",
+      "why": "audits that found nothing are filtered out, so the log describes a verifier that finds something every time. That is selection bias in a portfolio artifact, and the same failure this project's methodology section bans for model results.",
+      "find": "    rows = [parse_audit(c) for c in comments if is_audit(c)]",
+      "replace": "    rows = [parse_audit(c) for c in comments if is_audit(c)]\n    rows = [r for r in rows if r.get('discrepancies')]",
+      "expect_caught_by": "test_a_clean_audit_is_kept"
+    },
+    {
+      "id": "agentlog-no-block-reads-as-zero-findings",
+      "why": "a report predating the verdict block reports zero discrepancies instead of null, making an unparseable report indistinguishable from a clean audit -- the absence-as-success failure this repo has been bitten by repeatedly",
+      "find": "        'discrepancies': None,",
+      "replace": "        'discrepancies': 0,",
+      "expect_caught_by": "test_a_report_without_a_verdict_block_is_recorded_not_dropped"
+    },
+    {
+      "id": "agentlog-malformed-block-discarded",
+      "why": "a report whose block will not parse is dropped instead of recorded with its reason, so the log understates how often the format has been wrong",
+      "find": "        row['block_error'] = str(exc)\n        return row",
+      "replace": "        row['block_error'] = None\n        return row",
+      "expect_caught_by": "test_a_malformed_block_is_recorded_with_its_reason"
+    },
+    {
+      "id": "agentlog-supersession-follows-input-order",
+      "why": "the newest audit is chosen by document order rather than timestamp, so which run counts depends on the order GitHub happens to return comments in",
+      "find": "        newest = max(indices, key=lambda i: (rows[i]['posted_utc'] or '', i))",
+      "replace": "        newest = indices[-1]",
+      "expect_caught_by": "test_supersession_does_not_depend_on_input_order"
+    }
+  ]
+}
