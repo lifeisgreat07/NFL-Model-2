@@ -47,11 +47,41 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **527 passing, 1 skipped** on `main` (2026-09-07). Run it before quoting it — this
-line read 174 for three days after it stopped being true, and a stale figure
-here is the first thing a fresh session anchors on.
+Suite: **558 passing** (1 skipped) on `main` (2026-09-07). Run it before quoting
+it — this line read 174 for three days after it stopped being true, and a stale
+figure here is the first thing a fresh session anchors on.
 
-**Stages 1 and 2 are complete. Stage 3 is in progress.**
+Keep the shape `Suite: **N passing**` exactly. `src/session_wrapup.py` greps for
+that literal, and rewording it to `**N passing, 1 skipped**` did not make the
+check complain about the wording — it reported the line as *missing*, which
+reads like a deleted section rather than an edited sentence.
+
+**Stages 1 and 2 are complete. Stage 3 is in progress. Stage 7.5 has started.**
+
+### Start here (written 2026-09-07, end of session)
+
+PRs #39 (agent decision log data) and #40 (Playoff Odds → a column on Power
+Ratings) were both open at the end of the session; #39 merged, #40 was awaiting
+its Booth audit. **First action: `git checkout main; git pull origin main`, then
+confirm #40 is in `git log --oneline main`.** If it is not, it is still waiting
+on the audit — find out why before starting anything new. The 558 figure above
+was measured on #40's branch with main already merged into it, so it is the
+number main will have once #40 lands. If #40 was closed rather than merged, that
+figure is wrong: re-run the suite rather than deriving a smaller one by
+subtraction.
+
+Next concrete piece of work, second item of Stage 7.5's deletions: **the Roadmap
+"Done" list.** Delete it and fold the "what's next" half plus the
+DEFERRED/REJECTED entries into Changelog. The Done list duplicates the Changelog,
+which is generated from `config.VERSION_HISTORY` — two sources of truth for the
+same facts. This also closes the separate "remove 2025 Week 10" item, because
+that reference lives inside a Roadmap Done card about the nflreadpy migration.
+
+Two habits that paid for themselves this session and should carry forward: build
+the page and *click the thing you just added* before opening the PR (that is how
+the `#`-column defect was found — it was invisible in the diff), and when
+deleting a page, ask what it was the last example of before assuming the tests
+still cover what they did yesterday.
 
 **Stage numbers are frozen.** They were renumbered twice in two days and it
 confused both this file and the Progress tab. A finished stage keeps its number
@@ -740,8 +770,15 @@ under compaction pressure, so its length is a cost paid on every session.
   behaviour, it reaches states the old code was never asked about** — after
   adding one, exercise the page through it and re-read every neighbouring
   claim, in prose and in cells, that was only ever true in the default state.
+- **A wrap-up check that greps this file for a literal string is disabled by
+  rewording that string, and says the line is MISSING.** `session_wrapup.py`
+  matches `Suite:\s*\*\*([0-9,]+)\s+passing\*\*`. Writing
+  `Suite: **527 passing, 1 skipped**` — strictly more information — made it
+  report "CLAUDE.md has no 'Suite: **N passing**' line to check", which reads
+  like a deleted section, not an edited sentence. Any prose this file carries
+  *for a tool* is an interface: extra detail goes outside the matched span.
 - **The full mutation run outlives the 60-second Desktop Commander timeout.**
-  69 cases take several minutes. The tool call returns "device did not respond"
+  78 cases take several minutes. The tool call returns "device did not respond"
   while the run continues, so: redirect to a file, poll for completion, read the
   file — and check `git status` before believing anything, because a killed
   runner skips the `finally` that restores the mutated file.
