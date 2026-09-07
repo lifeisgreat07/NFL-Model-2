@@ -1,0 +1,13 @@
+name: Release
+on:
+  workflow_dispatch:
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rebuild artifacts
+        run: python build.py
+      - name: Drop stamp-only changes
+        run: python scrub.py
+      - name: Commit artifacts
+        run: git commit -am "release"

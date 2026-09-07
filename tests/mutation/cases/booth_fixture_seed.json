@@ -1,0 +1,13 @@
+{
+  "target": "tests/booth_fixtures/fixed-everywhere/head/test_guard.py",
+  "tests": "tests/test_booth_fixtures.py",
+  "cases": [
+    {
+      "id": "seed-defect-quietly-removed",
+      "why": "the seeded defect drifts out of the fixture. Booth reporting no discrepancy then becomes CORRECT, the fixture reports a pass, and the regression suite is green while measuring nothing. This is the failure the corpus-integrity checks exist for, and mutating the fixture is the only way to prove they catch it.",
+      "find": "notes.md has described that script since 2019-04 as simply preventing the",
+      "replace": "notes.md has described that script since 2021-07 as simply preventing the",
+      "expect_caught_by": "test_the_seeded_defect_is_actually_present"
+    }
+  ]
+}

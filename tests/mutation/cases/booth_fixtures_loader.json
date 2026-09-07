@@ -1,0 +1,41 @@
+{
+  "target": "tests/booth_fixtures/loader.py",
+  "tests": "tests/test_booth_fixtures.py",
+  "cases": [
+    {
+      "id": "fixture-confirmed-counts-as-caught",
+      "why": "Booth merely MENTIONING the seeded file counts as catching a defect in it, so every fixture passes as long as the file is named anywhere",
+      "find": "        if c['verdict'] == 'DISCREPANCY' and wanted in c['implicates']",
+      "replace": "        if wanted in c['implicates']",
+      "expect_caught_by": "test_file_locus_is_not_satisfied_by_a_confirmed_naming_the_path"
+    },
+    {
+      "id": "fixture-missing-block-satisfies",
+      "why": "a report with no verdict block satisfies the expectation, so a truncated or failed audit reads as Booth having caught the defect -- absence counted as success",
+      "find": "    if verdict is None:\n        return False, \"no booth-verdict block in the report\"",
+      "replace": "    if verdict is None:\n        return True, \"no booth-verdict block in the report\"",
+      "expect_caught_by": "test_a_missing_verdict_block_never_satisfies_anything"
+    },
+    {
+      "id": "fixture-no-locus-accepts-safe-to-merge",
+      "why": "a no-locus fixture is satisfied even when Booth waved the PR straight through, which is the one outcome it exists to detect",
+      "find": "        ok = verdict['overall'] != 'SAFE TO MERGE'",
+      "replace": "        ok = True",
+      "expect_caught_by": "test_no_locus_is_satisfied_only_when_the_pr_is_not_waved_through"
+    },
+    {
+      "id": "fixture-id-need-not-match-directory",
+      "why": "a fixture's id can name a directory that does not exist, so a failure report points at nothing findable",
+      "find": "    if meta['id'] != path.name:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_an_id_that_does_not_match_its_directory_is_rejected"
+    },
+    {
+      "id": "fixture-required-keys-unchecked",
+      "why": "a fixture missing its provenance or assertion loads anyway, so an unlabelled fixture silently joins the corpus",
+      "find": "        if key not in meta:\n            raise FixtureError(f\"{path.name}: fixture.json is missing {key!r}\")",
+      "replace": "        pass",
+      "expect_caught_by": "test_a_malformed_fixture_is_rejected_loudly"
+    }
+  ]
+}

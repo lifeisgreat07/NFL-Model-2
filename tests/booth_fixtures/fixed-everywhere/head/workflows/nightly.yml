@@ -1,0 +1,14 @@
+name: Nightly
+on:
+  schedule:
+    - cron: '0 3 * * *'
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Rebuild artifacts
+        run: python build.py
+      - name: Drop stamp-only changes
+        run: python scrub.py
+      - name: Commit artifacts
+        run: git commit -am "nightly"
