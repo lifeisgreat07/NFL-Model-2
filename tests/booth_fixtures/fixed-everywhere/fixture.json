@@ -1,0 +1,20 @@
+{
+  "id": "fixed-everywhere",
+  "why": "A PR claims it corrected a false statement everywhere, having searched only the paths its author already had in mind. One instance survives -- in a file the PR itself adds, which is exactly where a narrow search does not look.",
+  "provenance": "PR #28, 2026-09-07. Commit a48e427 corrected a wrong date in .github/workflows/ and CLAUDE.md and its message claimed 'corrected everywhere'; tests/test_workflow_churn_guard.py, added by the same branch at d49e118, still asserted the false date in its docstring. Two independent Booth runs found it. f482f4f fixed it.",
+  "assertion": "file-locus",
+  "assertion_strength": "strong -- the defect has a file locus, so the verdict block's `implicates` is checked directly rather than inferring intent from prose",
+  "expect_discrepancy_implicating": "test_guard.py",
+  "seeded_defect": {
+    "file": "test_guard.py",
+    "contains": "since 2019-04",
+    "unique_in_head": true,
+    "explanation": "The docstring asserts the guard has existed since 2019-04. notes.md did not exist until 2021-07, so it cannot have described anything in 2019-04. The body claims the string was corrected everywhere; head/notes.md really was corrected, which is what makes the survivor plausible rather than obvious."
+  },
+  "head_suite": {
+    "command": "pytest test_guard.py",
+    "expect": "passes",
+    "why": "The fixture must isolate EXACTLY ONE defect. The body claims '1 passed', and that claim has to be true -- otherwise Booth finds a second, unseeded discrepancy and the fixture stops measuring what it names. head/workflows/nightly.yml therefore gains the scrub step, mirroring what PR #28's first commit actually did."
+  },
+  "notes": "Dates are deliberately NOT the real 2026-08/2026-09 ones. A fixture reusing the real strings would be indistinguishable from actual repository history in a grep, and a future audit or reader could mistake it for a live defect."
+}

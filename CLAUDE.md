@@ -467,6 +467,28 @@ starting 15/40.
   bug. Consequence: after changing `booth-pr-audit.yml` on `main`, any open PR
   must merge `main` in before Booth will audit it, and "re-run the job" does not
   help, because a re-run replays the original workflow definition.
+- **The mutation runner's restore does not survive the process being killed.**
+  It restores in a `finally`, which covers exceptions but not a hard kill. The
+  Desktop Commander bridge cuts a command off at ~60 seconds and a full corpus
+  run takes longer, so a run started in the foreground gets killed partway and
+  leaves whatever case was in flight applied to the working tree. On
+  2026-09-07 that left `src/scout_preflight.py` mutated and the next suite run
+  reported 8 unrelated failures. Two rules: run the corpus as
+  `python tests/mutation/runner.py > <file> 2>&1` and read the file afterwards,
+  never in the foreground; and after ANY interrupted mutation run, check
+  `git status` before believing a test result. A `git checkout -- <one file>`
+  is the right repair once the diff is confirmed to be only the mutation.
+- **Anything under a Booth fixture tree must be excluded from pytest
+  collection.** `tests/booth_fixtures/conftest.py` sets
+  `collect_ignore_glob = ['*']` for exactly this. A fixture is a deliberately
+  bad PR: the moment one seeds a genuinely failing test, a collected fixture
+  fails the real suite. It bit in a subtler form first — pytest imported a
+  fixture's `test_guard.py`, created a `__pycache__` beside it, and the
+  loader's tree walk then read a `.pyc` as UTF-8 and failed five fixture tests
+  for a reason unrelated to anything they assert. It reproduced ONLY in the
+  full suite; in isolation nothing collected the file and everything passed.
+  A failure that appears only alongside everything else is the expensive kind,
+  so the loader skips generated directories independently of the conftest.
 - **Mutation cases live in `tests/mutation/cases/*.json` and run via
   `python tests/mutation/runner.py`.** Do not write a throwaway mutation
   script: every PR before #27 did, threw it away, and left a mutation table
