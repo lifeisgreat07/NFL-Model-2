@@ -353,7 +353,26 @@ starting 15/40.
   file that holds uncommitted work, restore from a byte-level backup taken in
   the script, never from git.
 - The dashboard workflow used to commit its own build timestamps —
-  `src/prune_build_churn.py` now prevents it. Run it after regenerating locally.
+  `src/prune_build_churn.py` prevents it. Run it after regenerating locally.
+  **But it is wired into only one of the two workflows that regenerate.**
+  `generate-dashboard.yml` runs it before committing; `weekly-update.yml`
+  regenerates the dashboard and commits `index.html dist/**` with no prune
+  step at all. So the guard this file has described since 2026-08 as simply
+  "preventing" the churn covers one path and not the other. It only bites when
+  a weekly run produces no real data change — the offseason state — which is
+  exactly when nobody is watching. One line to fix, in `.github/`, so it needs
+  a web-editor edit.
+- **A zero-line binary diff is not automatically churn.** An auto-commit
+  showing `dist/picks_2026_week1.pdf | Bin 3802 -> 3802 bytes, 0 insertions,
+  0 deletions` looks exactly like the timestamp churn above, and on 2026-09-07
+  I nearly reported the guard as broken on that basis. It was not.
+  `prune_build_churn.py` deliberately does NOT normalise the "generated
+  `<date>`" line printed inside the picks PDF, because that is visible content
+  on a page someone prints — a rebuild on a different day is a REAL change and
+  should commit. The byte count is identical because a date string is the same
+  length either way. Its docstring says all of this. Read what a normaliser
+  deliberately excludes before concluding it failed; the symptom of "working
+  as designed" and "broken" are byte-identical here.
 - `backtest()` calls `dropna(subset=features)`, so different feature sets can
   silently evaluate different game sets. Any paired comparison must verify the
   row sets match rather than assume it (`bootstrap_brier_gap.py` does, and
