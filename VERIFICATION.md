@@ -25,6 +25,16 @@ Concretely:
   Existence and passing are different claims -- verify both, separately.
   (See [AI Reliability](https://lifeisgreat07.github.io/NFL-Model-2/),
   Incident 3, for exactly this failure mode occurring for real.)
+- **A screenshot that is not attached is not evidence.** "Verified in both
+  themes" describes a process; the images are the artifact. Booth marked the
+  same visual claim UNVERIFIABLE three times on PR #21 because the screenshots
+  existed only in the working session -- and it was right to. Attach them, or
+  state the claim as a process note rather than as proof.
+- **A figure is only true at a commit.** "144 passed" is a claim about a
+  specific tree, and a branch that grows makes it false without anyone editing
+  it. PR #21 quoted three different counts, each correct when written. If a
+  number is worth putting in a description, it is worth re-checking at the
+  head that description will be read against.
 
 ## Why External Verification, Not Self-Checking
 
@@ -50,6 +60,24 @@ an agent remembering to follow it:
   existing. Check the repo's current branch protection settings before
   assuming this is already enforced as a hard gate; if it isn't yet, the
   workflow still gives real, visible signal, it just isn't unbypassable.
+- **Scout pre-flight** (`src/scout_preflight.py`): run against a PR
+  description *before* the PR is opened. It checks the claims whose truth is
+  mechanically decidable -- that a quoted test count matches a real run at
+  HEAD, that a multi-commit branch enumerates its commits so a reviewer knows
+  what they are approving, and that a visual claim carries an attachment.
+  Exits non-zero, so it can gate.
+
+  It exists because every one of those three failures happened on PR #21 and
+  was caught by Booth *after* the PR was public, at the cost of a full audit,
+  when each was a two-second check beforehand. It is not a replacement for
+  Booth and cannot be: it is a regex over a description, and it has no opinion
+  about whether the work is right. It exists so that Booth's audit is spent on
+  substance rather than on arithmetic Scout could have done itself.
+
+  `tests/test_scout_preflight.py` replays PR #21's original description
+  against PR #21's real commit range and asserts the tool reaches the same two
+  findings Booth did. A checker that cannot catch the failure it was written
+  for is decoration.
 - **Booth**: a dedicated verification role (see below) whose job is
   auditing a PR's claims against the PR's own actual, re-executed output
   before it's trusted.
