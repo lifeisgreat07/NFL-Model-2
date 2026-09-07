@@ -1,0 +1,41 @@
+{
+  "target": ".github/workflows/booth-regression.yml",
+  "tests": "tests/test_booth_regression_workflow.py",
+  "cases": [
+    {
+      "id": "regression-workflow-runs-automatically",
+      "why": "an automatic trigger is added, so every fixture spends a Booth audit per event. It costs no money -- subscription auth -- but it burns usage silently, and the first symptom would be hitting a limit rather than any failure.",
+      "find": "on:\n  workflow_dispatch:",
+      "replace": "on:\n  pull_request:\n  workflow_dispatch:",
+      "expect_caught_by": "test_it_is_dispatch_only"
+    },
+    {
+      "id": "regression-booth-gains-write-access",
+      "why": "the auditing job gets write access, so the model that produces a verdict could also commit it. This is the failure the entire Scout/Booth separation exists to prevent.",
+      "find": "    permissions:\n      contents: read\n      id-token: write",
+      "replace": "    permissions:\n      contents: write\n      id-token: write",
+      "expect_caught_by": "test_the_auditing_job_cannot_write_to_the_repository"
+    },
+    {
+      "id": "regression-no-report-reads-as-a-pass",
+      "why": "the check that Booth actually produced a report is removed, so a run that did nothing looks exactly like a clean audit. This project has been bitten twice by a workflow reporting success while doing nothing.",
+      "find": "          test -s booth-report.md || {",
+      "replace": "          true || {",
+      "expect_caught_by": "test_a_missing_report_fails_the_run"
+    },
+    {
+      "id": "regression-missed-fixture-never-recorded",
+      "why": "a fixture Booth MISSED aborts the job before the baseline is committed, so the single most important result the suite can produce never reaches the repository and stays invisible until someone spends another audit",
+      "find": "        continue-on-error: true",
+      "replace": "        continue-on-error: false",
+      "expect_caught_by": "test_a_missed_fixture_is_still_recorded"
+    },
+    {
+      "id": "regression-prompt-pasted-into-yaml",
+      "why": "the prompt is restated in the workflow instead of generated from src/booth_fixture_runner.py, so the two drift with nothing failing -- invisible until a fixture starts behaving differently for no apparent reason",
+      "find": "            ${{ steps.prompt.outputs.text }}",
+      "replace": "            This is a REGRESSION FIXTURE, not a live pull request.",
+      "expect_caught_by": "test_the_prompt_is_generated_not_restated"
+    }
+  ]
+}

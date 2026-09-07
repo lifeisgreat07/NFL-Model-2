@@ -128,8 +128,11 @@ def assemble(meta, dest):
     return base, head
 
 
-PROMPT = """You are Booth. Read BOOTH_PROTOCOL.md in this checkout and follow
-its procedure exactly for the pull request described below.
+PROMPT = """You are Booth. The repository to audit is at {work_dir}. Work
+there -- `cd {work_dir}` first, and run every command inside it.
+
+Read BOOTH_PROTOCOL.md in that directory and follow its procedure exactly for
+the pull request described below.
 
 This is a REGRESSION FIXTURE, not a live pull request. There is no GitHub API
 here. The repository is checked out at the PR's head commit on branch
@@ -149,8 +152,16 @@ Use {head} as the head, and 0 as the PR number.
 """
 
 
-def prompt(meta, head_sha):
-    return PROMPT.format(head=head_sha[:7])
+def prompt(meta, head_sha, work_dir='.'):
+    """The exact instructions, as one source of truth.
+
+    The workflow calls this rather than restating the prompt in YAML. The
+    live audit workflow already makes that choice deliberately -- it points at
+    BOOTH_PROTOCOL.md instead of duplicating it, with a comment saying "one
+    source of truth" -- and a prompt copied into a workflow file would drift
+    from this one exactly the way that comment warns about.
+    """
+    return PROMPT.format(head=head_sha[:7], work_dir=work_dir)
 
 
 def baseline_path(meta):
@@ -212,9 +223,8 @@ def main(argv=None):
     for name in ('assemble', 'prompt', 'record'):
         p = sub.add_parser(name)
         p.add_argument('fixture')
-        if name != 'prompt':
-            p.add_argument('--out', default=None,
-                           help='directory for the throwaway repo')
+        p.add_argument('--out', default=None,
+                       help='directory for the throwaway repo')
         if name == 'record':
             p.add_argument('--report', required=True,
                            help="file holding Booth's report")
@@ -242,12 +252,15 @@ def main(argv=None):
     out = Path(args.out) if getattr(args, 'out', None) else \
         REPO / '.fixture-run' / meta['id']
 
-    if args.cmd == 'prompt':
-        base, head = assemble(meta, REPO / '.fixture-run' / meta['id'])
-        print(prompt(meta, head))
-        return 0
-
     base, head = assemble(meta, out)
+
+    if args.cmd == 'prompt':
+        # The work_dir the prompt names must be the directory that was just
+        # assembled. An earlier version reassembled somewhere else and told
+        # Booth to work in a third place; the CI job would have audited an
+        # empty directory and reported honestly on nothing.
+        print(prompt(meta, head, work_dir=str(out)))
+        return 0
 
     if args.cmd == 'assemble':
         print('assembled {} at {}'.format(meta['id'], out))
