@@ -136,12 +136,16 @@ text already replaced. Fixed in #30 and #29 respectively.
    one fixture per dispatch. Booth runs on subscription auth, so it costs no
    money — but it does cost usage, so never spend an audit to learn something a
    committed baseline already records.
-2. **The agent decision log, as a dashboard page.** Listed here as agent work,
-   but it is the item that renders. Right now a visitor sees no evidence that
-   Scout, Booth, the mutation corpus or the fixture suite exist at all. It
-   converts everything invisible into the thing a hiring manager actually looks
-   at, and Booth's cost and latency numbers ride along in the same page nearly
-   free. Highest-leverage item left in this stage by a distance.
+2. **The agent decision log.** Listed here as agent work, but it is the item
+   that renders. Right now a visitor sees no evidence that Scout, Booth, the
+   mutation corpus or the fixture suite exist at all. It converts everything
+   invisible into the thing a hiring manager actually looks at, and Booth's
+   cost and latency numbers ride along nearly free.
+   **It is not a new page.** It merges into the existing AI Reliability page,
+   which Stage 7.5 renames in plain English and rebuilds — that page is already
+   the agent story, told as three hand-written incidents frozen in time. Feed
+   it from Booth's `booth-verdict` blocks so it stops being maintained by hand.
+   Build the log here; do the rename and merge in 7.5.
 
 **Then leave Stage 3.** The remaining items are deliberately parked, not
 forgotten: the other five regression fixtures (one proves the mechanism; five
@@ -201,6 +205,101 @@ anything in it that shows the dashboard - screenshots, the architecture
 diagram's UI layer, the lessons-learned page's framing - will be redone once
 Stages 8-10 land. The text-only items (README, QB-leak case study, Booth case
 study) are safe to do here; hold the visual ones.
+
+### Stage 7.5 - Content & structure pass  <- BEFORE the visual overhaul
+
+A decimal, not a renumber: stage numbers are frozen, and this runs between 7
+and 8. It exists because doing it afterwards means designing pages we are
+about to delete and sizing token scales against markup that will not survive.
+
+**Why it comes first.** The dashboard has 14 pages. Stage 10 needs a shared
+page-header across all of them, a table system, empty/error/loading states on
+every page, and a mobile pass — so each page removed is removed from four
+workstreams at once. Stage 8's audit counts (31 ad-hoc spacing values, 21 font
+sizes, 8 radius values) were measured against current markup; building scales
+to fit pages that are about to go means sizing the system against the wrong
+target.
+
+**The reader is a 12-year-old, not a data scientist.** This is the governing
+constraint for the whole pass, from the user directly. The dashboard currently
+reads as AI slop in places and overwhelms rather than informs. Jargon is
+allowed only where someone has opted into depth.
+
+**Target structure, 14 pages down to 9:**
+
+- What the model says — Boards, My Picks, Power Ratings, Team Deep Dive
+- Track record — Season Accuracy
+- How it works — Methodology (absorbs How This Compares, Data Sources, and the
+  Glossary as a closing section), Model Lab
+- How this was built — the AI Reliability material plus the live agent decision
+  log, renamed in plain English
+- Changelog — absorbing the "what's next" half of Roadmap
+
+**Deletions and merges, with what was checked:**
+
+- **Playoff Odds — delete.** The page is 979 characters and nearly all of it is
+  caveats about static ratings and incomplete tiebreakers. It also carries a
+  queued Stage 10 defect: the odds bars normalise to the leading team, so a 40%
+  favourite renders full-width and reads as near-certainty. Deleting the tab
+  deletes that work item too.
+- **Roadmap — delete, keeping only "what's next" and the DEFERRED/REJECTED
+  entries**, folded into Changelog. Its "Done" list duplicates the Changelog,
+  which is now generated from `config.VERSION_HISTORY` — two sources of truth
+  for the same information. This also resolves the separate "remove 2025 Week
+  10" item: that reference lives inside a Roadmap Done card about the nflreadpy
+  migration, so one edit covers both.
+- **How This Compares — merge into Methodology.** Do NOT delete the content.
+  The page exists because it is the question a sceptical reader asks first, and
+  it carries the ATS finding: 51.61%, CI contains 50%, below break-even. That
+  honest negative is the project's credibility. It does not need its own tab;
+  it does need to survive.
+- **Data Sources — merge into Methodology.** Strip the "checked and blocked"
+  block and the Function column on the way; both are clutter.
+- **AI Reliability — one page, renamed plainly, made live.** It reads as
+  clutter because it is three hand-written incidents frozen in time. It is also
+  the single most employer-relevant page here: it documents real incidents
+  where the agent stated something false and the mechanical mitigation that
+  worked. Stage 3's agent decision log is the same page — merge them, feed it
+  from Booth's `booth-verdict` blocks, and stop maintaining it by hand.
+- **Season Accuracy — declutter.** Too much on one page.
+
+**Content work:**
+
+- Methodology in plain English throughout.
+- Simplify "track record at this confidence" on My Picks — currently far too
+  many words.
+- **Boards: a couple of plain sentences on why a team is favoured, in football
+  terms.** The best idea in the source document. The model already computes
+  per-feature contributions for Team Deep Dive, so the data exists; this needs
+  a translation layer, not new maths.
+- Update README.md for a cold reader.
+
+**Make plain English testable, not aspirational.** `tests/test_plain_language.py`
+holds a jargon list scoped per page: log loss, Brier, calibration,
+opponent-adjusted, shrinkage, bootstrap, confidence interval and similar are
+BANNED on Boards, My Picks, Power Ratings, Team Deep Dive and Season Accuracy,
+and allowed only on Methodology, Model Lab and the build page. A future session
+adding "the model's Brier score" to Boards fails the suite. Without a guard,
+this pass reverts the first time anyone writes new copy — the same reasoning as
+every other guard in this repo.
+
+**Explicitly NOT in this stage — these belong to the visual overhaul:**
+
+- How much room week-by-week net ratings take over a season on Team Deep Dive.
+  A layout question Stage 10 owns; deciding it before the Stage 8 direction
+  exists means deciding it twice.
+- Import/Export picks buttons staying highlighted after a tap on mobile. A
+  `:focus` state persisting after touch; Stage 9's focus and keyboard pass
+  covers exactly this. Fix earlier only if it is a one-liner.
+
+**Deferred as new features, not cleanup:**
+
+- Weekly team news on Team Deep Dive — injuries, trades, firings, releases,
+  scraped and summarised briefly. This is a new external data source with
+  staleness, rate-limit and reliability concerns; Stage 6 in nature, and it
+  must not gate the visual work. NOTE for a future session: Stage 1 records
+  injury DATA as closed, but that decision was about model features. Displaying
+  team news is a different question and is not foreclosed by it.
 
 ## The visual overhaul (Stages 8-10)
 
@@ -310,7 +409,8 @@ and no more.
 
 **The corrective list**, all still true: fix the duplicate "Model Output"
 sidebar group label so the nav's own headings mean something; a shared
-page-header component across all 13 pages (Changelog was added in Stage 2);
+page-header component across every surviving page (Stage 7.5 takes 14 down to
+9, so count them rather than quoting a figure from here);
 a table system with sticky headers, scroll-edge affordance and consistent row
 hover; a mobile pass covering bottom-nav clearance so the last row is not
 covered, the ratings table clipping mid-column at 430px, and real breakpoints
@@ -319,7 +419,10 @@ stops outranking the page title; empty, error and loading states across all
 pages — the SOS note and the shared-picks banner from Stage 2 are the first two
 and should fold into whatever system this produces.
 
-**One known data-viz defect to fix here**: the Playoff Odds bars are normalised
+**One known data-viz defect, LIKELY MOOT**: Stage 7.5 deletes the Playoff Odds
+page, which removes this item with it. Kept recorded in case that deletion is
+reversed, and as an example of the family — a scale that is not what the reader
+assumes. The bars are normalised
 to the highest team's odds rather than to 0-100%, so a league leader at 40%
 renders as a full-width bar reading as near-certainty. Same family as the
 missing zero line — a scale that is not what the reader assumes. Found during
