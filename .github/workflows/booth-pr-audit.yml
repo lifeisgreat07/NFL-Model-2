@@ -28,7 +28,15 @@ name: Booth PR audit
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    # `edited` fires on description changes, and it is here because without it
+    # Booth NEVER re-audits a rewritten description. That is the half of a PR a
+    # human actually approves on -- its scope, its claims, its evidence -- and a
+    # body could be replaced wholesale after the audit posted while the audit
+    # comment sat above it looking current. On PR #28 this happened three times
+    # in one session: two audits reported findings against descriptions that had
+    # already been superseded, and the only way to get a current one was to
+    # dispatch by hand and know to do so.
+    types: [opened, synchronize, reopened, ready_for_review, edited]
   # Lets you re-run an audit by hand without pushing a new commit.
   workflow_dispatch:
     inputs:
@@ -53,7 +61,20 @@ jobs:
   audit:
     # Draft PRs are still being written; auditing claims that aren't final yet
     # spends usage on a moving target.
-    if: github.event.pull_request.draft == false || github.event_name == 'workflow_dispatch'
+    #
+    # The second clause pairs with the `edited` trigger above. `edited` also
+    # fires for a title-only change, which cannot invalidate an audit, so
+    # without this guard every title tweak would spend a full audit. GitHub
+    # populates github.event.changes.body ONLY when the body actually changed,
+    # so this admits exactly the case the trigger was added for. Rapid edits
+    # collapse into one run via the concurrency group below.
+    #
+    # Keep the trigger and this guard together: `edited` without the guard
+    # burns usage, and the guard without `edited` is dead code that reads as
+    # protection. tests/test_booth_edited_trigger.py asserts the pairing.
+    if: >-
+      (github.event.pull_request.draft == false || github.event_name == 'workflow_dispatch')
+      && (github.event.action != 'edited' || github.event.changes.body != null)
     runs-on: ubuntu-latest
     timeout-minutes: 20
 

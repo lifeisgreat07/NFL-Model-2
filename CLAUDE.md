@@ -414,8 +414,15 @@ starting 15/40.
   everywhere" into a commit message. Booth found a third occurrence in
   `tests/test_workflow_churn_guard.py`'s docstring, a file that same branch
   added. Repo-wide, `git grep -n "2026-08"` returned 73 matches across 12 files
-  at `f482f4f`; 72 were real history, which is exactly why the narrow search
-  felt sufficient. (Anchored to that commit deliberately — this paragraph
+  at `f482f4f`. Every one is a real historical date — model versions, the
+  nflreadpy migration, captured betting lines — except the single line in this
+  file that quotes the mistake inside this entry. That density is exactly why
+  the narrow search felt sufficient. (Booth marked an earlier wording of this
+  sentence UNVERIFIABLE, correctly: it read "72 were real history", which is an
+  editorial classification stated with the precision of a count, and gave the
+  auditor no way to tell which line was excluded. Name the exception; don't
+  publish a subtraction.)
+  (Anchored to that commit deliberately — this paragraph
   contains the string too, so a live count stated here would be wrong the
   moment it landed. A number that counts something the sentence is part of has
   to name the commit it was taken at.)
@@ -443,6 +450,17 @@ starting 15/40.
   `compare_pandas_versions.py` checks it before reading any metric).
 - `home_margin` exists in the feature table for ATS work and must never enter a
   feature list — it is the scoreline being predicted.
+- **Booth's audit sandbox can check out a file one commit behind its own HEAD.**
+  Flagged in two separate audits (PRs #28 and #29), so it is the environment
+  rather than a one-off. `git status` shows `CLAUDE.md` modified, the on-disk
+  md5 matches `HEAD~1`, and `git reflog` records no second checkout — the
+  working tree is simply not what HEAD says it is. Booth handled it correctly
+  both times, verifying against the commit object (`git show HEAD:CLAUDE.md`,
+  `git grep <rev>`) and saying so in the report. Consequence for a reader: a
+  plain `git grep` run in that sandbox can disagree with a claim that is true
+  of the commit. This is NOT a regression and NOT something a PR caused; do not
+  spend a session chasing it. Verify against revisions, not the working tree,
+  whenever the two could differ.
 - **The Claude Code action refuses to run when a PR's copy of its workflow file
   differs from `main`'s.** It skips with a *success* status and a validation
   message, which looks like nothing happened. This is a security control, not a
