@@ -64,7 +64,7 @@ jobs:
       - name: Regenerate dashboard
         run: python src/generate_dashboard.py
 
-      # Same guard generate-dashboard.yml has run since 2026-08. Without it
+      # Same guard generate-dashboard.yml has run since 2026-09-04. Without it
       # this workflow commits index.html and the picks PDF on every run,
       # including runs where nothing but their build stamps changed -- the
       # no-op churn that collides with any open branch which regenerated the

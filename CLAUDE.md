@@ -338,7 +338,7 @@ starting 15/40.
   a reviewer approving on the description alone approves more than they think.
   If a branch grows past its title, either split it or rewrite the description.
 - **`.github/` is NOT write-protected — that claim was wrong.** This file said
-  from 2026-08 until 2026-09-07 that workflow edits "must be made by the user
+  from 2026-09-05 until 2026-09-07 that workflow edits "must be made by the user
   in GitHub's web editor", and every session dutifully wrote a step-by-step
   walkthrough instead of making a one-line change. It cost the user manual work
   at least twice on 2026-09-07 alone. Tested rather than assumed: editing
@@ -367,16 +367,23 @@ starting 15/40.
   re-applying a known edit over reverting a whole file. When mutation-testing a
   file that holds uncommitted work, restore from a byte-level backup taken in
   the script, never from git.
-- The dashboard workflow used to commit its own build timestamps —
-  `src/prune_build_churn.py` prevents it. Run it after regenerating locally.
-  **But it is wired into only one of the two workflows that regenerate.**
-  `generate-dashboard.yml` runs it before committing; `weekly-update.yml`
-  regenerates the dashboard and commits `index.html dist/**` with no prune
-  step at all. So the guard this file has described since 2026-08 as simply
-  "preventing" the churn covers one path and not the other. It only bites when
-  a weekly run produces no real data change — the offseason state — which is
-  exactly when nobody is watching. One line to fix, in `.github/`, so it needs
-  a web-editor edit.
+- **A guard wired into one of several paths reads as a guard that is present.**
+  The dashboard workflows used to commit their own build timestamps;
+  `src/prune_build_churn.py` prevents it, and this file described it from
+  2026-09-05 as simply "preventing" the churn. It was wired into
+  `generate-dashboard.yml` on 2026-09-04 and into `weekly-update.yml` only on
+  2026-09-07 — for three days the second workflow regenerated the dashboard and
+  committed `index.html dist/**` with no prune step, and the sentence in this
+  file was what stopped anyone looking. Both now run it, enforced by
+  `tests/test_workflow_churn_guard.py`, which asserts that *any* workflow
+  regenerating and committing those artifacts calls the prune between the two
+  steps — so a third workflow inherits the guard instead of quietly missing it.
+  The durable lesson is the shape, not this instance: when a protection is
+  described in prose, the prose names the protection but not its coverage, and
+  the gap is invisible from the description alone. Ask which paths, and prefer
+  a test that enumerates them over a sentence that asserts them. This one only
+  bit when a run produced no real data change — the offseason state, which is
+  exactly when nobody is watching. Run the prune after regenerating locally.
 - **A zero-line binary diff is not automatically churn.** An auto-commit
   showing `dist/picks_2026_week1.pdf | Bin 3802 -> 3802 bytes, 0 insertions,
   0 deletions` looks exactly like the timestamp churn above, and on 2026-09-07
@@ -388,6 +395,19 @@ starting 15/40.
   length either way. Its docstring says all of this. Read what a normaliser
   deliberately excludes before concluding it failed; the symptom of "working
   as designed" and "broken" are byte-identical here.
+- **A date recalled is a date invented. `git log` is three seconds away.**
+  Writing the churn guard into `weekly-update.yml` on 2026-09-07, I annotated it
+  "same guard generate-dashboard.yml has run since 2026-08" — from memory, into
+  a permanent code comment, in the same PR whose other half exists to correct an
+  unverified inherited claim. It was 2026-09-04. The same wrong date went into
+  two sentences of this file and into the commit message. Booth caught all three;
+  `git log --format="%h %ad %s" --date=short -- <path>` confirmed it in one call.
+  Provenance claims — when something landed, how long a file has said a thing,
+  which commit introduced a behaviour — feel like recall and are actually
+  queries. The tell is the phrasing: "since", "has always", "was originally".
+  Any sentence carrying one is a claim that must be looked up before it ships,
+  and note that a claim about what *this file* has said is dated by this file's
+  own history (created 2026-09-05), not by the history of the thing described.
 - `backtest()` calls `dropna(subset=features)`, so different feature sets can
   silently evaluate different game sets. Any paired comparison must verify the
   row sets match rather than assume it (`bootstrap_brier_gap.py` does, and
