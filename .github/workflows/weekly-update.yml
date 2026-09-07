@@ -64,6 +64,14 @@ jobs:
       - name: Regenerate dashboard
         run: python src/generate_dashboard.py
 
+      # Same guard generate-dashboard.yml has run since 2026-09-04. Without it
+      # this workflow commits index.html and the picks PDF on every run,
+      # including runs where nothing but their build stamps changed -- the
+      # no-op churn that collides with any open branch which regenerated the
+      # same artifacts. Guarded by tests/test_workflow_churn_guard.py.
+      - name: Drop artifacts that changed only their build stamp
+        run: python src/prune_build_churn.py
+
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
