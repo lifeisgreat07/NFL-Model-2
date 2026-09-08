@@ -97,8 +97,8 @@ RENDERERS = {
 # Measured, not guessed: produced by running this scan against the pages as
 # they stand. Each entry is (page, term). Delete entries as the rewrites land.
 # The content half of Stage 7.5 is done when this is empty.
-# EMPTY, and that is the point. It held eight entries when this guard was
-# written and each one has been rewritten:
+# EMPTY, and that is the point. It held NINE entries when this guard was
+# written. Eight were real jargon and were rewritten:
 #
 #   Power Ratings   one sentence carrying four terms -- "Opponent-adjusted
 #                   EPA/play ratings ... fit via ridge regression ... 16-game
@@ -110,6 +110,14 @@ RENDERERS = {
 #   My Picks        "backtested games" -> "past games".
 #   Team Deep-Dive  "real backtested history" -> "real history, replayed as if
 #                   we had been predicting it at the time".
+#
+# The ninth, ('board', 'epa'), was never real jargon. The Week Board's only
+# match was 'epa' inside "s-epa-rately", invented by the old substring
+# matcher. It left the list because the matcher was fixed, NOT because any
+# copy changed -- and the first writeup of this work counted the remaining
+# eight as if that had always been the total, which Booth caught on PR #44.
+# Two different causes moved this number in one change; a count that does not
+# say which is which misattributes the work.
 #
 # An entry added here is a debt, not a decision. Anything that goes in should
 # come out again in the same stage.

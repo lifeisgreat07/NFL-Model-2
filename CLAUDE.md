@@ -844,6 +844,15 @@ under compaction pressure, so its length is a cost paid on every session.
   "no PR-body-edit tool" line, the SOS "defect", the Team Deep-Dive "Done"
   status). **Before executing a deletion this file plans, verify the premise
   the plan rests on, and record the correction beside the original.**
+- **When one number moves for two different reasons, say which is which.**
+  The plain-language allowlist went from nine entries to zero: eight were
+  rewritten, and the ninth left because the guard's own matcher was fixed
+  (`epa` had been matching inside "s*epa*rately" — it was never on the page).
+  The writeup called it eight throughout, so the count silently credited a
+  matcher fix as a copy rewrite. Booth caught it on PR #44. Both facts were
+  known at the time and one was dropped in the summary, which is the specific
+  way this goes wrong: **the miscount is not a slip in arithmetic, it is a
+  cause that got left out of the sentence.**
 - **A wrap-up check that greps this file for a literal string is disabled by
   rewording that string, and says the line is MISSING.** `session_wrapup.py`
   matches `Suite:\s*\*\*([0-9,]+)\s+passing\*\*`. Writing
