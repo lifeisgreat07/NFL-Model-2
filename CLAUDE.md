@@ -47,7 +47,10 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **597 passing** (1 skipped) on `main` (2026-09-08). Run it before quoting
+Suite: **645 passing** (1 skipped) on branch claude/reliability-rebuild, the
+furthest-ahead branch (2026-09-08). `main` itself is at 635 + whatever #44 adds
+when it merges — re-measure after merging rather than trusting either figure.
+Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -58,7 +61,40 @@ reads like a deleted section rather than an edited sentence.
 
 **Stages 1 and 2 are complete. Stage 3 is in progress. Stage 7.5 has started.**
 
-### Start here (updated 2026-09-08)
+### Start here (updated 2026-09-08, end of session)
+
+**PR #44 is open and its audit is UNRESOLVED. Deal with this first.**
+
+State when the session ended, stated exactly: #40, #41, #42 and #43 are merged.
+#44 (branch claude/plain-english-rewrites, plain-English rewrites) is open. Booth has
+run on it three times. Runs one and two both flagged the same DISCREPANCY — the
+description said "eight" allowlist entries when the pre-PR list held nine. The
+description has since been corrected by hand and now reads correctly; verified
+against the live PR body. Mark fired a third run and reported it failed as well.
+**I did not see that third report** — he ran out of usage before it could be
+read, so its contents are unknown to me and are NOT recorded here as anything.
+
+First action: read the newest comment on PR #44 and find out what the third run
+actually says. Three possibilities, in order of likelihood, and they need
+different responses:
+
+1. It is another stale read. Booth records "Description read at: <time>" in its
+   own header — compare that to when the description was last edited. Run two
+   read the body at 22:17:12 and posted at 22:25, and the edit landed in
+   between, so it reported a discrepancy that had already been fixed. If run
+   three did the same, nothing is wrong and it needs one more trigger.
+2. A genuinely new finding. Fix it.
+3. The workflow itself failed rather than Booth returning a verdict — no audit
+   comment, a red run in the Actions tab. That is a CI problem, not a claim
+   problem, and the run log says which step died.
+
+Branch claude/reliability-rebuild is pushed but has NO pull request yet, deliberately:
+opening one starts an audit, and that was not Mark's to spend at the time. It
+carries the agent-log work described under Stage 3 and Stage 7.5 below, is green
+at its own head, and is branched off #44 — so merge #44 first, then merge main
+into it before opening its PR.
+
+### Earlier note (2026-09-08)
 
 **#39 and #40 are both merged.** Stage 7.5's first deletion is done: the Playoff
 Odds page is gone and the number is a sortable column on Power Ratings. A weekly
@@ -401,6 +437,40 @@ every other guard in this repo.
   injury DATA as closed, but that decision was about model features. Displaying
   team news is a different question and is not foreclosed by it.
 
+### Stage 7.6 - The repository front door  <- CHEAP, HIGH VISIBILITY, DO IT EARLY
+
+Added 2026-09-08 by Mark, who noticed it reviewing the repo as a stranger would.
+A decimal insert like 7.5; stage numbers stay frozen.
+
+**The problem:** GitHub's About panel says "No description, website, or topics
+provided". A recruiter's first screen of this project is therefore blank, and
+the README opens on fixed-effects regression, EPA, shrinkage and model metrics
+— excellent for a technical reader, useless as a first impression.
+
+Three items, none of which touch the dashboard:
+
+1. **Repository description.** Mark's wording, to use as given:
+   "NFL win-probability and analytics platform using real-world play-by-play
+   data, backtesting, automated data processing, testing, and AI-assisted
+   development."
+2. **Topics**, where accurate: `python`, `data-analysis`, `predictive-analytics`,
+   `sports-analytics`, `nfl`, `github-actions`, `testing`. Check each against
+   what the repo actually does before adding it — a topic is a claim.
+3. **A "For Recruiters / Project Overview" section at the very top of the
+   README**, before any methodology: what was built, why, what Mark personally
+   does on it, and which skills it demonstrates. The technical README that
+   exists today follows underneath, unchanged.
+
+**Items 1 and 2 cannot be done from here.** They are repository settings, not
+files: no `gh` CLI is installed on the Windows machine and the GitKraken MCP
+exposes no repo-settings tool. They are a two-minute job for Mark in the GitHub
+UI (Code tab → the gear beside "About"). Item 3 is a file and is ours.
+
+Note the overlap: Stage 7 already carries "README rewrite for a cold technical
+reader". That is the same file and should be done in one pass — the recruiter
+section on top, the technical rewrite below it — rather than editing the README
+twice.
+
 ## The visual overhaul (Stages 8-10)
 
 Read this before starting any of the three. The brief is not "fix the audit
@@ -427,6 +497,52 @@ because the scales do not exist yet. That is deliberate and accepted — the
 ordering was chosen so carried-over work ships first — but it means Stage 8's
 job is bigger than the audit's counts suggest. Reuse an existing class before
 inventing values; every new one is something Stage 8 has to unpick.
+
+### Design tooling available from Stage 8 onward
+
+Mark added these connectors and asked, on 2026-09-08, that they be used when the
+visual work starts: **Canva**, **Figma**, and — as candidates — **Watermelon UI**,
+**Motion Primitives**, **Haikei**. His instruction: "whatever we need to do to
+take the design from where it's at and make it the best it can possibly be."
+
+**The constraint that decides how each one fits.** This dashboard is ONE
+self-contained HTML file: `dashboard_template.html` with placeholders swapped by
+`generate_dashboard.py`. Vanilla JS, no framework, no bundler, no npm at
+runtime. That is why it deploys as a static page driven by a weekly cron, and
+for a portfolio piece it is a genuine asset — a stranger reading the repo sees
+no supply chain. Do not spend it casually.
+
+- **Haikei** (haikei.app) — best fit of the five. Generates SVG design assets
+  that paste straight into the existing file with no architectural change. The
+  caveat is what it generates: decoration. Stage 8 starts with a concept, and a
+  Haikei shape applied without one is prettier arbitrary decoration. Use it to
+  execute part of a concept, not to find one.
+- **Figma** (MCP connected) — strongest fit for Stage 8 proper.
+  `get_variable_defs` pulls design tokens, so the system lives somewhere durable
+  instead of only as CSS custom properties in one file, and the file itself
+  becomes portfolio material. Figma is the source; the single HTML file stays
+  the runtime.
+- **Canva** (MCP connected) — aim it at Stage 7, not the dashboard. README hero
+  image, architecture diagram, case-study one-pager. Designing the UI in it
+  would fight the code.
+- **Motion Primitives** and **Watermelon UI** — both are **React** (Framer
+  Motion components; shadcn-style blocks). Verified by looking them up, not
+  assumed. Neither drops into a vanilla single-file page: adopting either means
+  adding React and a build step to a project whose whole deployment story is one
+  static file. **Recommendation: borrow Motion Primitives' motion vocabulary —
+  its easings, durations, stagger patterns — and implement it in CSS transitions
+  and the Web Animations API.** Stage 9 already owns "seven transition
+  durations, no `prefers-reduced-motion` block", so a coherent motion spec is
+  exactly what is needed; the library is one way to get one, not the only way.
+  If Mark decides he wants the React components anyway, that is a legitimate
+  call — but it is an architecture decision with tradeoffs that should be put to
+  him explicitly, not something that arrives as a side effect of wanting nicer
+  animations.
+
+**Still open, and worth more than any of these tools:** Mark has not yet named a
+dashboard or site whose look he wants. Ask for a concrete reference before
+Stage 8 begins. A token system with no point of view behind it is just tidier
+arbitrary numbers — this file says so already, and no connector changes it.
 
 ### Skills to use, and what each is for
 
@@ -844,6 +960,23 @@ under compaction pressure, so its length is a cost paid on every session.
   "no PR-body-edit tool" line, the SOS "defect", the Team Deep-Dive "Done"
   status). **Before executing a deletion this file plans, verify the premise
   the plan rests on, and record the correction beside the original.**
+- **A PR description is a separate artifact from the code, and fixing one does
+  not fix the other.** Booth flagged a wrong count in #44's description. The
+  response was to correct the code comment and add a CLAUDE.md entry — both
+  real improvements, neither of them the thing under audit. The next run said
+  it plainly: *"Fixing a code comment does not fix a GitHub PR description;
+  those are different artifacts, and only one of them was touched."* A
+  description cannot be corrected by a commit, and there is **no MCP tool to
+  edit one** — GitKraken exposes `pull_request_create`, not update. So a
+  description fix is always a hand edit by Mark: give him the exact replacement
+  text rather than a description of the change.
+- **Booth reads the description ONCE, at a timestamp it records.** Its header
+  says `Description read at: <time>`. Edit the description after that moment
+  and the report is stale, not wrong — it will flag a discrepancy that is
+  already fixed, and re-reading the same report looks like the fix failed. On
+  #44 the read was 22:17:12, the post 22:25, and the edit landed between them.
+  **Before treating a repeated finding as unresolved, compare that timestamp to
+  when the description last changed.**
 - **When one number moves for two different reasons, say which is which.**
   The plain-language allowlist went from nine entries to zero: eight were
   rewritten, and the ninth left because the guard's own matcher was fixed
