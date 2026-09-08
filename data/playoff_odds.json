@@ -23,16 +23,16 @@
       "division_win_pct": 41.9
     },
     {
-      "team": "GB",
-      "division": "NFC North",
-      "playoff_pct": 61.0,
-      "division_win_pct": 39.0
-    },
-    {
       "team": "WAS",
       "division": "NFC East",
       "playoff_pct": 61.0,
       "division_win_pct": 36.4
+    },
+    {
+      "team": "GB",
+      "division": "NFC North",
+      "playoff_pct": 61.0,
+      "division_win_pct": 39.0
     },
     {
       "team": "BAL",
