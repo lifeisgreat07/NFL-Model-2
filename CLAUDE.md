@@ -318,7 +318,18 @@ allowed only where someone has opted into depth.
   for the same information. This also resolves the separate "remove 2025 Week
   10" item: that reference lives inside a Roadmap Done card about the nflreadpy
   migration, so one edit covers both.
-- **How This Compares — merge into Methodology.** Do NOT delete the content.
+- **How This Compares, Data Sources and Glossary — DONE (PR #43), merged into
+  Methodology together.** 12 tabs → **9**, which is Stage 7.5's target. All
+  content kept; the ATS finding survives and is asserted by a test.
+  The premise check this time was about SIZE, not duplication: Methodology was
+  already 10.7k visible characters and ten sections, and the three pages add
+  7.8k more. Merging them flat would have traded three tabs for one page nobody
+  finishes. So the page is now four `.method-part` blocks — How the model works,
+  How this compares, Where the numbers come from, Words used on this page —
+  each with a title and a one-line lead, behind a `.page-jump` row of anchor
+  links. The ten original Methodology headings were demoted h3 → h4 so the
+  parts are the only h3s and the hierarchy means something.
+  ORIGINAL PLAN, PRESERVED — **How This Compares — merge into Methodology.** Do NOT delete the content.
   The page exists because it is the question a sceptical reader asks first, and
   it carries the ATS finding: 51.61%, CI contains 50%, below break-even. That
   honest negative is the project's credibility. It does not need its own tab;

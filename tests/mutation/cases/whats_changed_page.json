@@ -33,7 +33,7 @@
     {
       "id": "wc-nav-points-at-a-deleted-page",
       "why": "a navigation control aims at a page that does not exist. On the sidebar that is a dead button; in the mobile more-sheet it is a tab that opens a blank screen, which is where a real one was found surviving PR #40",
-      "find": "<button class=\"nav-btn\" data-page=\"glossary\">",
+      "find": "<button class=\"nav-btn\" data-page=\"modellab\">",
       "replace": "<button class=\"nav-btn\" data-page=\"roadmap\">",
       "expect_caught_by": "test_every_nav_on_the_page_agrees_on_which_pages_exist"
     },
