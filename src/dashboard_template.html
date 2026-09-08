@@ -650,7 +650,7 @@
     <div class="page-head">
       <div>
         <h2>Power Ratings</h2>
-        <div class="desc">Opponent-adjusted EPA/play ratings, current as of today — fit via ridge regression on real play-by-play with a 16-game recency half-life. Every number already accounts for who each team played.</div>
+        <div class="desc">How good every team is right now, on a scale where 0 is average. Built from every play of real football this season and already adjusted for who each team has played &mdash; so beating a good team counts for more than beating a bad one, and recent games count for more than early ones. Methodology explains exactly how.</div>
       </div>
       <div class="badge">32 teams</div>
     </div>
@@ -803,7 +803,7 @@
     <div class="page-head">
       <div>
         <h2>Team Deep-Dive</h2>
-        <div class="desc">Net rating over time -- 2020-2025 season-end snapshots (real backtested history), then week-by-week as the 2026 season is actually played.</div>
+        <div class="desc">Net rating over time -- 2020-2025 season-end snapshots (real history, replayed as if we had been predicting it at the time), then week-by-week as the 2026 season is actually played.</div>
       </div>
       <div class="badge" id="teamdive-badge">—</div>
     </div>
@@ -2275,7 +2275,7 @@ function trackRecordHtml(homeProbPct){
   const t = pickTrackRecord(homeProbPct, 'model_b');
   if(!t) return '';
   if(t.underpowered){
-    return `<div class="track-record thin">Only ${t.n} backtested game${t.n===1?'':'s'}
+    return `<div class="track-record thin">Only ${t.n} past game${t.n===1?'':'s'}
       landed at this confidence &mdash; too few to report a track record.</div>`;
   }
   const coin = t.coinFlip
@@ -2284,7 +2284,7 @@ function trackRecordHtml(homeProbPct){
     : '';
   return `<div class="track-record${t.coinFlip?' warn':''}">
     <b>Track record at this confidence:</b> picks like this won
-    <b>${t.rate.toFixed(1)}%</b> of the time across ${t.n} backtested games
+    <b>${t.rate.toFixed(1)}%</b> of the time across ${t.n} past games
     (95% CI ${t.lo.toFixed(1)}&ndash;${t.hi.toFixed(1)}%).${coin}
     <span class="track-note">Model B's ${t.label} probability band, measured over
     ${seasonRange(calibration.backtest_seasons)}. A historical rate for the band,
@@ -2422,15 +2422,15 @@ function buildCalibrationChart(){
   // states the sample size plainly instead.
   if(accuracy.calibration_underpowered){
     return `<div class="method-block">
-      <h3>Live Calibration</h3>
-      <p style="margin-bottom:0;">Not enough graded games yet to say anything about calibration.
+      <h3>Not enough games yet to check</h3>
+      <p style="margin-bottom:0;">Not enough graded games yet to say whether these percentages are honest.
       Only <b style="color:var(--chalk)">${accuracy.n_graded}</b> game${accuracy.n_graded===1?'':'s'}
       ${accuracy.n_graded===1?'has':'have'} been graded so far, spread across
       ${accuracy.calibration.length} confidence buckets &mdash; every one of them below the
       ${accuracy.min_bucket_n}-game floor this dashboard requires before reporting a hit rate.
       A bucket of one game reporting &ldquo;0% actual&rdquo; is a coin flip, not a finding, so it
       isn't charted. The counts are still shown in the table below.
-      Calibration measured over the full backtest is on <b style="color:var(--chalk)">Model Lab</b>.</p>
+      The same check across every past season is on <b style="color:var(--chalk)">Model Lab</b>.</p>
     </div>`;
   }
 
@@ -2460,7 +2460,7 @@ function buildCalibrationChart(){
         ${dots}
       </svg>
       <div style="font-size:11.5px; color:var(--chalk-dim); max-width:280px; padding-top:8px;">
-        <div style="margin-bottom:6px;"><span style="display:inline-block; width:8px; height:1.5px; background:var(--line-strong); margin-right:5px; vertical-align:middle;"></span>Dashed line = perfect calibration</div>
+        <div style="margin-bottom:6px;"><span style="display:inline-block; width:8px; height:1.5px; background:var(--line-strong); margin-right:5px; vertical-align:middle;"></span>Dashed line = perfectly honest</div>
         <div><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--series-b); margin-right:5px; vertical-align:middle;"></span>Each dot = one confidence bucket (bigger dot = more games)</div>
         <div style="margin-top:6px;">Dots above the line mean we're underconfident in that bucket; below means overconfident.</div>
       </div>
@@ -2749,7 +2749,7 @@ function renderAccuracy(){
     : '';
   const calibHtml = `
     <div class="method-block">
-      <h3>Calibration</h3>
+      <h3>Are these percentages honest?</h3>
       <p>Does a game we picked at, say, 65% confidence actually win about 65% of the time? Compares the average predicted probability in each confidence bucket to how often the pick was actually right.</p>
       ${calibChartHtml}
       <div class="table-wrap"><table class="metrics-table">
@@ -2886,7 +2886,7 @@ function renderTeamGames(team){
     // weekly routine does. An empty list here is normal, not broken.
     return `<div class="table-note" style="margin-top:16px;">
       <b>No saved predictions for ${team} yet.</b>
-      The rating history above is backtested; this list only covers weeks the
+      The rating history above is replayed from past seasons; this list only covers weeks the
       live weekly run has actually saved predictions for, so it fills in from
       the first run of the season onward.
     </div>`;

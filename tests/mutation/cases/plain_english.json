@@ -1,0 +1,20 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_plain_language.py",
+  "cases": [
+    {
+      "id": "pe-duplicate-heading-returns",
+      "why": "Season Accuracy carries the same h3 twice, so the page reads as though it repeats itself and the heading stops identifying a section. This happened for real: rewriting two related sections in plain English converged on the same short question, which is exactly how it recurs. This case ALSO proves the heading scan reads render-function output and not just page markup -- the heading it mutates is emitted from a JavaScript template literal, so a markup-only scan would let this survive, which is what the first draft of the guard did",
+      "find": "<h3>Not enough games yet to check</h3>",
+      "replace": "<h3>Are these percentages honest?</h3>",
+      "expect_caught_by": "test_no_page_repeats_a_heading"
+    },
+    {
+      "id": "pe-jargon-returns-to-power-ratings",
+      "why": "the landing page goes back to opening with four statistics terms in one sentence -- the exact copy this stage rewrote, and the first thing a casual reader sees",
+      "find": "<div class=\"desc\">How good every team is right now, on a scale where 0 is average.",
+      "replace": "<div class=\"desc\">Opponent-adjusted EPA/play ratings fit via ridge regression with a 16-game recency half-life.",
+      "expect_caught_by": "test_no_new_jargon_on_the_pages_a_casual_reader_uses"
+    }
+  ]
+}
