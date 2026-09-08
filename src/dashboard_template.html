@@ -508,6 +508,15 @@
   .section-title:first-of-type{margin-top:0; padding-top:0; border-top:0;}
   .section-lead{font-size:12.5px; color:var(--chalk-dim); line-height:1.55; margin-bottom:14px; max-width:70ch;}
 
+  /* Booth's audit scoreboard. Deliberately plain numbers rather than a
+     chart: four counts do not need axes, and the point is that they are
+     measured rather than asserted. */
+  .agent-stats{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:12px; margin-top:14px;}
+  .agent-stat{background:var(--panel-hi); border:1px solid var(--line); border-radius:var(--radius); padding:14px;}
+  .agent-stat-n{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:26px; line-height:1.1;}
+  .agent-stat-l{font-size:12px; color:var(--chalk-dim); margin-top:4px; line-height:1.4;}
+  .agent-stat-note{font-size:11px; color:var(--chalk-dim); opacity:.8; margin-top:6px; line-height:1.4;}
+
   /* Jump links for Methodology, which is now four pages in one. Long
      enough that arriving at the top with no idea what is below it is its
      own problem -- so the page says what it holds before you scroll. */
@@ -632,7 +641,7 @@
     <div class="nav-group-label">Reference</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="changelog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 21v-5h5"/></svg>What&#39;s Changed</button>
-    <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>AI Reliability</button>
+    <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>Checking the AI&#39;s work</button>
   </nav>
   <div class="sidebar-foot">
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark theme">
@@ -1106,7 +1115,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
           <tr><td>Calibration</td><td class="num">Whether stated confidence matches reality -- do games predicted at 70% actually win about 70% of the time?</td></tr>
           <tr><td>Bootstrap / confidence interval</td><td class="num">Reshuffling the real results thousands of times to see how much a result bounces around. If the range includes zero, the difference can't be distinguished from luck</td></tr>
           <tr><td>Walk-forward backtest</td><td class="num">Testing a model using only data that existed before each game. Prevents the model from "knowing" future results it couldn't have known</td></tr>
-          <tr><td>Data leakage</td><td class="num">When information from the future accidentally gets used to predict the past, making results look better than they really are. This project found and fixed a real one -- see AI Reliability</td></tr>
+          <tr><td>Data leakage</td><td class="num">When information from the future accidentally gets used to predict the past, making results look better than they really are. This project found and fixed a real one -- see Checking the AI&#39;s work</td></tr>
         </tbody>
       </table></div>
     </div>
@@ -1205,10 +1214,18 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
   <section class="page" id="page-reliability">
     <div class="page-head">
       <div>
-        <h2>AI Reliability</h2>
+        <h2>Checking the AI&#39;s work</h2>
         <div class="desc">This project is built almost entirely by delegating real engineering work to an AI agent ("Scout" -- Claude Code, doing the research, coding, and PRs throughout this project). That's genuinely useful, and it also fails in specific, real ways. This page documents what actually went wrong here, not what could theoretically go wrong in the abstract.</div>
       </div>
     </div>
+
+    <!-- Filled by renderAgentLog(). Every audit Booth has posted, parsed
+         from its machine-readable verdict block by src/collect_agent_log.py.
+         Before this existed the page was three hand-written incidents frozen
+         in time: true when written, and saying nothing about whether any of
+         it still happens. The incidents stay below -- they are the part a
+         reader learns from -- but the counts above them are now measured. -->
+    <div id="agent-log"></div>
 
     <div class="method-block">
       <h3>Why This Page Exists</h3>
@@ -1264,11 +1281,12 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <button class="bnav-more-item" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span>Methodology</span></button>
     <button class="bnav-more-item" data-page="changelog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 21v-5h5"/></svg><span>What&#39;s Changed</span></button>
     <button class="bnav-more-item" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span>Model Lab</span></button>
-    <button class="bnav-more-item" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg><span>AI Reliability</span></button>
+    <button class="bnav-more-item" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg><span>Checking the AI&#39;s work</span></button>
   </div>
 </div>
 
 <script>
+const agentLog = __AGENT_LOG_JSON__;
 const versionHistory = __VERSION_HISTORY_JSON__;
 const modelVersion = __MODEL_VERSION__;
 const teams = __TEAMS_JSON__;
@@ -2970,6 +2988,56 @@ renderTeamDive();
 function clEscape(s){
   return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 }
+
+/* ---------- Booth's audit log (Checking the AI's work) ---------- */
+function renderAgentLog(){
+  const el = document.getElementById('agent-log');
+  if(!el) return;
+  // null means the collector has never run. That is NOT the same as "audits
+  // ran and found nothing", and the page must not let the reader read the
+  // second from the first -- it is the more flattering of the two.
+  if(!agentLog || !agentLog.summary){
+    el.innerHTML = `<div class="method-block">
+      <h3>The record has not been collected yet</h3>
+      <p>The audits below were written by hand. The automatic tally of every
+      audit this project's verifier has run is produced by a workflow that has
+      not been run yet, so rather than show an empty scoreboard this section
+      says so.</p></div>`;
+    return;
+  }
+  const s = agentLog.summary;
+  const stat = (n, label, note) => `<div class="agent-stat">
+      <div class="agent-stat-n">${n}</div>
+      <div class="agent-stat-l">${label}</div>
+      ${note ? `<div class="agent-stat-note">${note}</div>` : ''}
+    </div>`;
+  el.innerHTML = `<div class="method-block">
+    <h3>What the checking has actually caught</h3>
+    <p>Every pull request in this project is reviewed a second time by a
+    separate agent whose only job is to check whether what the first one
+    claimed is true. These numbers are counted from those reviews, not
+    written by hand.</p>
+    <div class="agent-stats">
+      ${stat(s.pull_requests_audited, 'changes reviewed')}
+      ${stat(s.claims_checked, 'claims checked one by one')}
+      ${stat(s.discrepancies_found, 'claims that turned out to be wrong',
+             s.pull_requests_with_a_discrepancy + ' of the reviews found at least one')}
+      ${stat(s.unverifiable, 'claims that could not be checked either way')}
+    </div>
+    <p style="margin-top:14px;">${s.audits_without_a_verdict_block} review${s.audits_without_a_verdict_block===1?'':'s'}
+    ${s.audits_without_a_verdict_block===1?'was':'were'} written before the checker started
+    reporting in a fixed format, so ${s.audits_without_a_verdict_block===1?'it is':'they are'}
+    counted here but ${s.audits_without_a_verdict_block===1?'its':'their'} findings are not.
+    ${s.reports_disagreeing_with_themselves} review${s.reports_disagreeing_with_themselves===1?'':'s'}
+    disagreed with ${s.reports_disagreeing_with_themselves===1?'itself':'themselves'} &mdash; the
+    summary said one thing and the detail said another &mdash; which is recorded rather than
+    quietly corrected.</p>
+    <p class="rel-prov">${s.audits_total} review${s.audits_total===1?'':'s'} in total,
+    ${s.audits_superseded} of them replaced by a later run of the same review and not counted.
+    Collected ${agentLog.generated_utc || 'unknown'}.</p>
+  </div>`;
+}
+
 function renderChangelog(){
   const content = document.getElementById('changelog-content');
   const badge = document.getElementById('changelog-badge');
@@ -3002,6 +3070,7 @@ function renderChangelog(){
     </div>`;
   }).join('') + `</div>`;
 }
+renderAgentLog();
 renderChangelog();
 </script>
 </body>

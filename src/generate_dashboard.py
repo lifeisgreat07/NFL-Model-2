@@ -71,6 +71,26 @@ def load_playoff_odds():
         return json.load(f)
 
 
+def load_agent_log():
+    """Booth's audit history, written by .github/workflows/collect-agent-log.yml.
+
+    Absent until that workflow has run, so a missing file is a normal state and
+    returns None rather than raising. It does NOT return {} -- the Team
+    Deep-Dive page rendered empty for months because a missing file came back
+    as an empty dict that every caller treated as real data, and the page said
+    nothing. None forces the caller to decide, and the page says the log has
+    not been collected yet.
+    """
+    path = DATA_DIR / 'agent_log.json'
+    if not path.exists():
+        print("  No data/agent_log.json yet -- run the Collect Booth's audit "
+              "log workflow. The reliability page will say so rather than "
+              "render an empty section.")
+        return None
+    with open(path) as f:
+        return json.load(f)
+
+
 def load_calibration():
     """Backtest-derived calibration written by src/calibration.py.
 
@@ -400,6 +420,9 @@ def main():
               f"({calibration_js['models']['model_a']['metrics']['n']} games, "
               f"generated {calibration_js['generated_at']})")
 
+    print("Loading Booth's audit log...")
+    agent_log = load_agent_log()
+
     print("Loading team history...")
     team_history_js = load_team_history()
 
@@ -425,6 +448,11 @@ def main():
     html = html.replace('__ACCURACY_JSON__', json.dumps(accuracy_js, indent=2))
     html = html.replace('__CALIBRATION_JSON__', json.dumps(calibration_js, indent=2))
     html = html.replace('__TEAM_HISTORY_JSON__', json.dumps(team_history_js, indent=2))
+    # null, not {}, when the collector has never run. The page distinguishes
+    # "no audits recorded yet" from "audits recorded, none of them found
+    # anything" -- those are opposite claims about the verifier, and an empty
+    # object would let the page make the flattering one by accident.
+    html = html.replace('__AGENT_LOG_JSON__', json.dumps(agent_log, indent=2))
     # The Changelog page is rendered from config.VERSION_HISTORY, so the
     # release notes on the site and the constant the model actually runs under
     # cannot drift apart -- they are the same object.

@@ -1,0 +1,88 @@
+name: Collect Booth's audit log
+
+# Turns Booth's audit comments into data/agent_log.json, which the dashboard
+# renders. Until this existed the collector had never run: src/collect_agent_log.py
+# was committed and tested, data/agent_log.json had never been written, and the
+# page that was supposed to show this work was three hand-written incidents.
+#
+# It runs HERE rather than locally for one practical reason: the audits live in
+# GitHub comments, and a token to read them already exists in Actions. Pulling
+# nineteen PRs of Booth reports down to a laptop to parse them is the same job
+# done in the more expensive place.
+#
+# Writing data/agent_log.json pushes to main under data/**, which is one of the
+# paths Auto-regenerate dashboard watches -- so the page updates itself from
+# here without this workflow knowing anything about index.html.
+# Triggered by the push that every merge produces, NOT by pull_request_target.
+# pull_request_target runs with the base repository's permissions and can be
+# started from a fork; combined with `contents: write` on a public repo that is
+# the pwn-request shape, and it would be one careless "check out the PR head"
+# away from letting a stranger's code run with a write token. A push to main is
+# the same signal with none of that exposure.
+#
+# The loop this could otherwise create -- write data/agent_log.json, which is a
+# push to main, which runs this again -- is stopped twice over: the paths below
+# ignore this workflow's own output, and GitHub does not start new runs from a
+# push made with the default GITHUB_TOKEN. Same belt-and-braces as
+# Auto-regenerate dashboard, for the same reason.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'data/agent_log.json'
+      - 'index.html'
+      - 'dist/**'
+
+# Read the comments, write the one data file. Nothing else.
+permissions:
+  contents: write
+  pull-requests: read
+  issues: read
+
+concurrency:
+  group: collect-agent-log
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch every issue comment in the repository
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # One endpoint covers it: PR conversation comments ARE issue comments.
+        # --paginate because the audits already run to several pages, and a
+        # silently truncated first page would understate the record rather
+        # than fail -- the failure mode this log exists to avoid.
+        run: |
+          gh api --paginate \
+            "/repos/${{ github.repository }}/issues/comments?per_page=100" \
+            --jq '[.[] | {body, html_url, created_at}]' \
+            | python -c "import json,sys; pages=[json.loads(l) for l in sys.stdin if l.strip()]; json.dump([c for p in pages for c in p], open('comments.json','w'))"
+          python -c "import json; print('fetched', len(json.load(open('comments.json'))), 'comments')"
+
+      - name: Build data/agent_log.json
+        run: python src/collect_agent_log.py --comments comments.json
+
+      - name: Show what was collected
+        run: python -c "import json; d=json.load(open('data/agent_log.json')); print(json.dumps(d.get('summary', {}), indent=2))"
+
+      - name: Remove the raw comment dump
+        run: rm -f comments.json
+
+      - name: Commit the log if it changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Collect Booth's audit log"
+          file_pattern: 'data/agent_log.json'

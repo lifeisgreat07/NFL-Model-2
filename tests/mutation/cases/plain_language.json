@@ -12,8 +12,8 @@
     {
       "id": "pl-scan-blinded-to-the-javascript",
       "why": "the render script stops being seen as a script, so the literal matcher finds nothing and every check below passes over an empty string. Most of this dashboard's prose lives in template literals -- a markup-only scan called Season Accuracy clean while it was rendering 'Brier decomposition' into the page",
-      "find": "<script>\nconst versionHistory = __VERSION_HISTORY_JSON__;",
-      "replace": "<scriptx>\nconst versionHistory = __VERSION_HISTORY_JSON__;",
+      "find": "<script>\nconst agentLog = __AGENT_LOG_JSON__;",
+      "replace": "<scriptx>\nconst agentLog = __AGENT_LOG_JSON__;",
       "expect_caught_by": "test_the_scan_actually_sees_the_javascript_copy"
     },
     {
