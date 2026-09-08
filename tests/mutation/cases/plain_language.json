@@ -28,7 +28,7 @@
     {
       "id": "pl-technical-pages-flattened",
       "why": "the ban is applied to EVERY page, so Methodology, Model Lab and the glossary are no longer allowed to use the vocabulary they exist to teach. Plain English on the reader-facing pages is the goal; flattening the technical explanations into baby talk is a different and worse outcome, and it would look like the guard working harder",
-      "find": "TECHNICAL_PAGES = {'method', 'modellab', 'changelog', 'glossary',\n                   'datasources', 'reliability', 'compare'}",
+      "find": "TECHNICAL_PAGES = {'method', 'modellab', 'changelog', 'reliability'}",
       "replace": "TECHNICAL_PAGES = set()",
       "target": "tests/test_plain_language.py",
       "expect_caught_by": "test_the_technical_pages_are_still_allowed_to_be_technical"

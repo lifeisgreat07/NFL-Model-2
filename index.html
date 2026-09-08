@@ -508,6 +508,19 @@
   .section-title:first-of-type{margin-top:0; padding-top:0; border-top:0;}
   .section-lead{font-size:12.5px; color:var(--chalk-dim); line-height:1.55; margin-bottom:14px; max-width:70ch;}
 
+  /* Jump links for Methodology, which is now four pages in one. Long
+     enough that arriving at the top with no idea what is below it is its
+     own problem -- so the page says what it holds before you scroll. */
+  .page-jump{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 22px;}
+  .page-jump a{font-family:'Plus Jakarta Sans', sans-serif; font-size:11.5px;
+    padding:6px 12px; border-radius:20px; background:var(--panel-hi);
+    color:var(--chalk-dim); text-decoration:none; border:1px solid var(--line);}
+  .page-jump a:hover{color:var(--chalk); border-color:var(--line-strong);}
+  .method-part{scroll-margin-top:18px;}
+  .method-part + .method-part{margin-top:34px; padding-top:26px; border-top:1px solid var(--line);}
+  .method-part > h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:19px; margin-bottom:5px;}
+  .part-lead{font-size:12.5px; color:var(--chalk-dim); line-height:1.55; margin-bottom:16px; max-width:70ch;}
+
   /* ---------- Milestone cards (What's Changed) ----------
      Named for the page they came from. .status-planned is the neutral pill:
      it carries every idea that was tested and not kept. Those cards wore
@@ -619,17 +632,14 @@
     <div class="nav-group-label">Reference</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="changelog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 21v-5h5"/></svg>What&#39;s Changed</button>
-    <button class="nav-btn" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>Data Sources</button>
     <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>AI Reliability</button>
-    <button class="nav-btn" data-page="compare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8l7-5 7 5M3 12h4l-2 5-2-5zM17 12h4l-2 5-2-5z"/></svg>How This Compares</button>
-    <button class="nav-btn" data-page="glossary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Glossary</button>
   </nav>
   <div class="sidebar-foot">
     <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark theme">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <span id="theme-toggle-label">Light mode</span>
     </button>
-    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-08 21:01 UTC</span>
+    Trained on: current nflfastR history<br>2 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-08 21:42 UTC</span>
   </div>
 </aside>
 
@@ -886,23 +896,33 @@
   <!-- METHODOLOGY -->
   <section class="page" id="page-method">
     <div class="page-head">
-      <div><h2>Methodology</h2><div class="desc">Real data, real backtest, real numbers below.</div></div>
+      <div><h2>Methodology</h2><div class="desc">How the model works, how it stacks up against other ways of picking games, where its data comes from, and what every word on this page means.</div></div>
     </div>
+    <nav class="page-jump" aria-label="Sections on this page">
+      <a href="#part-method">How the model works</a>
+      <a href="#part-compare">How this compares</a>
+      <a href="#part-datasources">Where the numbers come from</a>
+      <a href="#part-glossary">Words used here</a>
+    </nav>
+
+    <div class="method-part" id="part-method">
+      <h3>How the model works</h3>
+      <p class="part-lead">The whole method, in enough detail that a sceptical reader could rebuild it.</p>
 
     <div class="method-block">
-      <h3>Model A vs. Model B — What Actually Separates Them</h3>
+      <h4>Model A vs. Model B — What Actually Separates Them</h4>
       <p><b style="color:var(--blue)">Model A (football-only)</b> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, and QB-change detection — all derived from real play-by-play data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (see the "why this pick" breakdown on every game).</p>
       <p><b style="color:var(--amber)">Model B (market-blended)</b> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.2% vs. 62.8% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
     </div>
 
     <div class="method-block">
-      <h3>Data</h3>
+      <h4>Data</h4>
       <p>Real nflverse play-by-play, filtered to pass/rush attempts with valid EPA, used to fit opponent-adjusted team ratings and per-QB ratings.</p>
       <p style="margin-top:11px;">Data pipeline migrated from nfl_data_py to nflreadpy (2026-08) after nfl_data_py was officially deprecated. Verified column-schema match and exact value match (scores, spreads, EPA, snap counts) on a real completed week before merging -- see What&#39;s Changed.</p>
     </div>
 
     <div class="method-block">
-      <h3>Rating System — Opponent-Adjusted, Recency-Weighted</h3>
+      <h4>Rating System — Opponent-Adjusted, Recency-Weighted</h4>
       <p>A two-way fixed-effects ridge regression: play-level EPA regressed on offense-team dummies + defense-team dummies, using only plays strictly before the point being rated. Each play is recency-weighted. A team's offensive rating already accounts for the strength of every defense it faced.</p>
       <div class="formula">play_epa ~ ridge( offense_team_dummies + defense_team_dummies )
 sample_weight = 0.5 ^ (games_ago / half_life)
@@ -911,7 +931,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     </div>
 
     <div class="method-block">
-      <h3>Backtest Results — Chronological, Weekly-Refitting Walk-Forward</h3>
+      <h4>Backtest Results — Chronological, Weekly-Refitting Walk-Forward</h4>
       <p>Trained only on strictly earlier data, refit every week within the test season (not just once per season) -- validated 2026-08 (Stage 9) to match what the live model actually does: weekly_update.py always trains on all real completed games available up to "now," every single run. Evaluated on 2022-2025 (1,087 games):</p>
       <div class="table-wrap"><table class="metrics-table">
         <thead><tr><th>Model</th><th>Accuracy</th><th>Log Loss</th><th>Brier</th><th>AUC</th></tr></thead>
@@ -930,14 +950,14 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     </div>
 
     <div class="method-block">
-      <h3>How We Know a Result Is Real (Not Just Luck)</h3>
+      <h4>How We Know a Result Is Real (Not Just Luck)</h4>
       <p>Every experiment on Model Lab reports a real accuracy number, but a small difference between two numbers doesn't automatically mean one is genuinely better -- with only a few hundred games in a season, some of that difference is just random luck in which games happened to go a certain way.</p>
       <p style="margin-top:11px;">To check, we use a technique called <b style="color:var(--chalk)">bootstrap resampling</b>: take the real games, randomly reshuffle which ones get counted (with repeats allowed) thousands of times, and see how much the accuracy difference bounces around. If it consistently stays positive across nearly all of those reshuffles, that's real signal. If it swings between positive and negative depending on which games got picked, that's a sign that we can't confidently tell the difference from noise yet -- even if the original number looked good.</p>
       <p style="margin-top:11px;">This is why you'll see "CI [-1.2, +3.4]" type notation on Model Lab -- that's the range the true effect most likely falls in. When that range includes zero, we mark it INCONCLUSIVE rather than pretending we know for sure.</p>
     </div>
 
     <div class="method-block">
-      <h3>Which Features Actually Do the Work</h3>
+      <h4>Which Features Actually Do the Work</h4>
       <p>Most of this project's research has tested whether <i>adding</i> something helps. A formal ablation pass asks the opposite question: remove each existing feature one at a time, fully retrain, and measure what actually breaks. That's how you find out where a model's predictive power really lives, rather than assuming every feature is pulling its weight.</p>
       <div class="table-wrap" style="margin-top:12px;"><table class="metrics-table">
         <thead><tr><th>Feature removed</th><th>Accuracy change</th><th>95% CI</th></tr></thead>
@@ -953,28 +973,28 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     </div>
 
     <div class="method-block">
-      <h3>Why the Confidence Ranking Is the Right Strategy, Not Just a Guess</h3>
+      <h4>Why the Confidence Ranking Is the Right Strategy, Not Just a Guess</h4>
       <p>For a standard confidence pool -- rank your picks, assign points 1 through N, earn those points if correct -- the strategy of assigning the highest point value to your highest-confidence pick, and so on down the list, isn't just a reasonable habit. It's <b style="color:var(--chalk)">mathematically provable</b> as the strategy that maximizes your expected total points, assuming the underlying probabilities are well-calibrated.</p>
       <p style="margin-top:11px;">This follows from the <b style="color:var(--chalk)">rearrangement inequality</b>: when you're pairing two ordered lists (win probabilities and point values) to maximize their summed product, pairing largest-with-largest and smallest-with-smallest always beats any other pairing. We checked this isn't just theory -- a real simulation compared the rank-order strategy against 20,000 random point assignments for a realistic 16-game week, and rank-ordering beat every single one.</p>
       <p style="margin-top:11px;">What this means practically: the confidence ranking you see on the Week Board isn't a stylistic choice or a rough heuristic -- it's the actual optimal strategy for this pool format, given whatever our probabilities say. The only way to do better is to have better probabilities, not a cleverer ranking scheme.</p>
     </div>
 
     <div class="method-block">
-      <h3>Trying to Beat the Market: An Honest Accounting</h3>
+      <h4>Trying to Beat the Market: An Honest Accounting</h4>
       <p>A recurring question for Model B has been whether it can be made meaningfully more sophisticated than "our features plus the raw spread in one regression." Across two research cycles, we've tried roughly a dozen distinct approaches: a stacking ensemble combining Model A and market probabilities, feature-by-spread interaction terms, the total (over/under) line as an added input, dynamic weighting by model disagreement, market efficiency trends across and within seasons, and market accuracy conditional on travel distance.</p>
       <p style="margin-top:11px;"><b style="color:var(--chalk)">None of them improved on the current flat regression.</b> Most came back as clean rejections; a couple were inconclusive with confidence intervals straddling zero. Not one showed a real, defensible edge.</p>
       <p style="margin-top:11px;">We think this negative result is worth stating plainly rather than quietly moving past: the betting market for NFL point spreads is genuinely difficult to improve on with the data and methods available here. That's not a failure of effort -- it's a real, repeatedly-tested finding about market efficiency, and arguably more honest than claiming a marginal edge that wouldn't hold up under scrutiny.</p>
     </div>
 
     <div class="method-block">
-      <h3>Known Gaps</h3>
+      <h4>Known Gaps</h4>
       <div class="gap-item"><span class="gap-num">01</span><span>Rest days, weather, and travel distance were tested and rejected (real backtests, not adopted) — see What&#39;s Changed and Model Lab. No injury feature yet, blocked on data availability.</span></div>
       <div class="gap-item"><span class="gap-num">02</span><span>QB shrinkage: the shrinkage target had a real (small) leak -- fixed 2026-08-31. Re-tuning it turned out to be inconclusive: the original k=8 -> 96 decision didn't reproduce, and a fresh retune under the fixed config (k=128) won on validation but lost 3 of 4 metrics to k=8 on confirmatory data (bootstrap CI included zero). Reverted to k=8 as the more defensible default -- see Model Lab for the full investigation and src/tune_qb_shrink_k.py for the reusable methodology.</span></div>
       <div class="gap-item"><span class="gap-num">03</span><span>Gradient boosting was tested and did not beat logistic regression at this feature-set size.</span></div>
     </div>
 
     <div class="method-block">
-      <h3>Weekly Automated Process</h3>
+      <h4>Weekly Automated Process</h4>
       <ol>
         <li>Pull fresh play-by-play + schedule data</li>
         <li>Refit team + QB ratings at the current "as of" cutoff</li>
@@ -985,6 +1005,126 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
         <li>Regenerate this dashboard</li>
       </ol>
     </div>
+    </div>
+
+    <div class="method-part" id="part-compare">
+      <h3>How this compares to other ways of picking games</h3>
+      <p class="part-lead">The question a sceptical reader asks first.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>The Short Version</h4>
+      <p>On raw predictive accuracy, <b style="color:var(--chalk)">this model does not beat the Vegas betting market</b>, and neither do most public NFL models. Across two full research cycles, roughly a dozen distinct approaches were tested to try to add something the market doesn't already price in. None of them worked. That's documented in detail on Model Lab and in the Methodology page's "Trying to Beat the Market" section.</p>
+      <p style="margin-top:11px;">Added 2026-09-05, because it is the question a sceptical reader asks first and this project had never actually asked it: <b style="color:var(--chalk)">would any of this have beaten the spread?</b> Picking winners and beating the spread are not the same test, and the second one is the real claim. A model fitted on the same features against a <i>cover</i> target, over 1,058 backtested games, hit <b style="color:var(--chalk)">51.61%</b> against the spread &mdash; 95% CI [48.58%, 54.63%]. That interval contains 50%, so it is not distinguishable from a coin flip; and at standard &minus;110 juice you need <b style="color:var(--chalk)">52.38%</b> just to break even, which it does not reach either. Three trivial controls &mdash; always home, always away, always the favourite &mdash; all came back at exactly 50.00%, which is what a spread is for and what confirms the arithmetic. <b style="color:var(--chalk)">This model would not have made money.</b> See <code>src/ats_evaluation.py</code>.</p>
+      <p style="margin-top:11px;">What this project offers instead is <b style="color:var(--chalk)">transparency about how it actually works and what it actually gets wrong</b> -- which is genuinely rare among prediction sites, most of which publish a number and no accounting of how it was arrived at or how often it fails.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Where This Model Stands</h4>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dimension</th><th>How this project does</th></tr></thead>
+        <tbody>
+          <tr><td>Raw accuracy vs. market</td><td class="num">Behind. The market is a genuinely hard benchmark and this doesn't clear it</td></tr>
+          <tr><td>Football-only accuracy (no market data)</td><td class="num">Reasonable -- roughly 63% on held-out data, well above the ~54% you'd get by always picking home teams</td></tr>
+          <tr><td>Methodology transparency</td><td class="num">Every constant is backtested and documented with its real justification; the tuning scripts are committed and re-runnable</td></tr>
+          <tr><td>Honest failure reporting</td><td class="num">Model Lab documents every rejected experiment with real numbers, including a data leak that was caught and fixed</td></tr>
+          <tr><td>Leak-free discipline</td><td class="num">A real, executable test suite guards the walk-forward properties -- and it caught a genuine production leak</td></tr>
+          <tr><td>Live, ongoing track record</td><td class="num">Predictions are locked in before kickoff and graded automatically -- no post-hoc editing</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h4>What Would Actually Close the Gap</h4>
+      <p>Being specific rather than vague about this: the single biggest missing input is <b style="color:var(--chalk)">injury and player-availability data</b>, which the market prices in heavily and this model has no access to (the upstream data source has been broken with no ETA -- see Data Sources). Beyond that, the market aggregates information this project structurally can't reach: sharp money, insider knowledge, and real-time news. Closing that gap isn't a matter of a better algorithm.</p>
+    </div>
+    </div>
+
+    <div class="method-part" id="part-datasources">
+      <h3>Where the numbers come from</h3>
+      <p class="part-lead">Every dataset this project touches, honestly labelled.</p>
+    <div class="method-block">
+      <h4>In Production (used every single weekly run)</h4>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dataset</th><th>Used For</th></tr></thead>
+        <tbody>
+          <tr><td>Play-by-play</td><td class="num">Team ratings (ridge regression), per-QB trailing EPA</td></tr>
+          <tr><td>Schedules</td><td class="num">Game results, spread/total lines, home/away, current-week matchups</td></tr>
+          <tr><td>Snap counts</td><td class="num">Computed and logged each run for O-line continuity, though that feature was removed from the live model in v2.1 -- data collection continues in case future evidence changes that</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:11px;">All three migrated from the now-deprecated nfl_data_py to nflreadpy in 2026-08, verified with real column-schema and exact-value checks before merging -- see What&#39;s Changed.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Research-Only (fetched to test a specific idea, never part of live predictions)</h4>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Dataset</th><th>What happened</th></tr></thead>
+        <tbody>
+          <tr><td>Officials</td><td class="num">Rejected</td></tr>
+          <tr><td>FTN charting</td><td class="num">Rejected</td></tr>
+          <tr><td>Trades</td><td class="num">Rejected</td></tr>
+          <tr><td>Rosters (weekly)</td><td class="num">Not suitable -- confirmed not gameday active/inactive status</td></tr>
+          <tr><td>Participation</td><td class="num">Not suitable -- same limitation as snap counts, also doesn't update during the season</td></tr>
+          <tr><td>ESPN QBR</td><td class="num">Alternative QB quality metric -- Source confirmed abandoned, stops at 2023</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+          <p style="margin-top:11px;">This section exists specifically so a claim like "we tried X" is checkable, not just asserted -- every row here has a real check behind it, documented on Model Lab or What&#39;s Changed.</p>
+    </div>
+    </div>
+
+    <div class="method-part" id="part-glossary">
+      <h3>Words used on this page</h3>
+      <p class="part-lead">Look anything up here rather than guessing from context.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Model &amp; Prediction Terms</h4>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>EPA (Expected Points Added)</td><td class="num">How much a single play changed a team's expected points on that drive. A 40-yard gain has high positive EPA; a sack has negative EPA. Summed up, it's a better measure of team quality than raw yards</td></tr>
+          <tr><td>Model A</td><td class="num">The football-only model -- team ratings, QB performance, QB changes. Uses no betting market data at all</td></tr>
+          <tr><td>Model B</td><td class="num">Model A's features plus the current Vegas point spread</td></tr>
+          <tr><td>Opponent-adjusted rating</td><td class="num">A team's performance adjusted for who they played. Beating a strong defense counts more than beating a weak one</td></tr>
+          <tr><td>Recency weighting</td><td class="num">Recent games count more than old ones. This model uses a 16-game half-life -- a game 16 games ago counts half as much as this week's</td></tr>
+          <tr><td>Shrinkage</td><td class="num">Pulling a small-sample estimate toward the league average. A QB with 20 career dropbacks shouldn't be rated as confidently as one with 2,000</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h4>Evaluation Terms</h4>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Log loss</td><td class="num">Penalizes confident wrong predictions heavily. Lower is better. A model that says 95% and is wrong is punished far more than one that said 55%</td></tr>
+          <tr><td>Brier score</td><td class="num">Average squared difference between predicted probability and what actually happened. Lower is better. Similar spirit to log loss, less harsh on confident misses</td></tr>
+          <tr><td>AUC</td><td class="num">How well the model ranks games from most to least likely home win. 0.5 is random, 1.0 is perfect. Measures ordering ability, not calibration</td></tr>
+          <tr><td>Calibration</td><td class="num">Whether stated confidence matches reality -- do games predicted at 70% actually win about 70% of the time?</td></tr>
+          <tr><td>Bootstrap / confidence interval</td><td class="num">Reshuffling the real results thousands of times to see how much a result bounces around. If the range includes zero, the difference can't be distinguished from luck</td></tr>
+          <tr><td>Walk-forward backtest</td><td class="num">Testing a model using only data that existed before each game. Prevents the model from "knowing" future results it couldn't have known</td></tr>
+          <tr><td>Data leakage</td><td class="num">When information from the future accidentally gets used to predict the past, making results look better than they really are. This project found and fixed a real one -- see AI Reliability</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h4>Betting Terms</h4>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Point spread</td><td class="num">The margin the favorite is expected to win by. A -7 favorite is expected to win by 7</td></tr>
+          <tr><td>Over/under (total)</td><td class="num">The combined score both teams are expected to reach</td></tr>
+          <tr><td>Market-implied probability</td><td class="num">Converting a point spread into a win percentage, so it can be compared directly against a model's prediction</td></tr>
+          <tr><td>Confidence pool</td><td class="num">A pick'em format where you rank games and assign point values -- most confident pick gets the most points. See Methodology for why ranking by probability is provably optimal here</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    </div>
+
   </section>
 
 
@@ -1060,52 +1200,6 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
   </section>
 
   <!-- DATA SOURCES -->
-  <section class="page" id="page-datasources">
-    <div class="page-head">
-      <div><h2>Data Sources</h2><div class="desc">Every dataset this project touches, honestly labeled -- what's actually live in production, what's research-only, and what's blocked.</div></div>
-    </div>
-
-    <div class="method-block">
-      <h3>In Production (used every single weekly run)</h3>
-      <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Dataset</th><th>Function</th><th>Used For</th></tr></thead>
-        <tbody>
-          <tr><td>Play-by-play</td><td class="num">load_pbp()</td><td class="num">Team ratings (ridge regression), per-QB trailing EPA</td></tr>
-          <tr><td>Schedules</td><td class="num">load_schedules()</td><td class="num">Game results, spread/total lines, home/away, current-week matchups</td></tr>
-          <tr><td>Snap counts</td><td class="num">load_snap_counts()</td><td class="num">Computed and logged each run for O-line continuity, though that feature was removed from the live model in v2.1 -- data collection continues in case future evidence changes that</td></tr>
-        </tbody>
-      </table></div>
-      <p style="margin-top:11px;">All three migrated from the now-deprecated nfl_data_py to nflreadpy in 2026-08, verified with real column-schema and exact-value checks before merging -- see What&#39;s Changed.</p>
-    </div>
-
-    <div class="method-block">
-      <h3>Research-Only (fetched to test a specific idea, never part of live predictions)</h3>
-      <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Dataset</th><th>Function</th><th>What It Was Tested For</th><th>Outcome</th></tr></thead>
-        <tbody>
-          <tr><td>Officials</td><td class="num">load_officials()</td><td class="num">Referee-crew tendency</td><td class="num">Rejected</td></tr>
-          <tr><td>FTN charting</td><td class="num">load_ftn_charting()</td><td class="num">QB fault-rate, scheme tendencies, pressure/blitz rate</td><td class="num">Rejected</td></tr>
-          <tr><td>Trades</td><td class="num">load_trades()</td><td class="num">Personnel-disruption signal</td><td class="num">Rejected</td></tr>
-          <tr><td>Rosters (weekly)</td><td class="num">load_rosters_weekly()</td><td class="num">Checked as an injury-data alternative</td><td class="num">Not suitable -- confirmed not gameday active/inactive status</td></tr>
-          <tr><td>Participation</td><td class="num">load_participation()</td><td class="num">Checked as an injury-data alternative</td><td class="num">Not suitable -- same limitation as snap counts, also doesn't update during the season</td></tr>
-          <tr><td>ESPN QBR</td><td class="num">import_qbr() (nfl_data_py fallback)</td><td class="num">Alternative QB quality metric</td><td class="num">Source confirmed abandoned, stops at 2023</td></tr>
-        </tbody>
-      </table></div>
-    </div>
-
-    <div class="method-block">
-      <h3>Checked and Blocked</h3>
-      <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Dataset</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td>Injury reports (load_injuries())</td><td class="num">No 2025+ data, no ETA -- confirmed directly via nflverse's own status page, re-checked multiple times</td></tr>
-          <tr><td>Gameday active/inactive list</td><td class="num">Doesn't exist anywhere in nflreadpy -- confirmed by checking the full function list, not just guessing from names</td></tr>
-          <tr><td>Preseason play-by-play</td><td class="num">Zero preseason rows in load_pbp() for any season 2020-2025 -- the data simply isn't in this pipeline</td></tr>
-        </tbody>
-      </table></div>
-      <p style="margin-top:11px;">This section exists specifically so a claim like "we tried X" is checkable, not just asserted -- every row here has a real check behind it, documented on Model Lab or What&#39;s Changed.</p>
-    </div>
-  </section>
 
   <!-- AI RELIABILITY -->
   <section class="page" id="page-reliability">
@@ -1150,95 +1244,8 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
   </section>
 
   <!-- HOW THIS COMPARES -->
-  <section class="page" id="page-compare">
-    <div class="page-head">
-      <div>
-        <h2>How This Compares</h2>
-        <div class="desc">An honest positioning of this model against what else exists -- including where it's genuinely behind.</div>
-      </div>
-    </div>
-
-    <div class="method-block">
-      <h3>The Short Version</h3>
-      <p>On raw predictive accuracy, <b style="color:var(--chalk)">this model does not beat the Vegas betting market</b>, and neither do most public NFL models. Across two full research cycles, roughly a dozen distinct approaches were tested to try to add something the market doesn't already price in. None of them worked. That's documented in detail on Model Lab and in the Methodology page's "Trying to Beat the Market" section.</p>
-      <p style="margin-top:11px;">Added 2026-09-05, because it is the question a sceptical reader asks first and this project had never actually asked it: <b style="color:var(--chalk)">would any of this have beaten the spread?</b> Picking winners and beating the spread are not the same test, and the second one is the real claim. A model fitted on the same features against a <i>cover</i> target, over 1,058 backtested games, hit <b style="color:var(--chalk)">51.61%</b> against the spread &mdash; 95% CI [48.58%, 54.63%]. That interval contains 50%, so it is not distinguishable from a coin flip; and at standard &minus;110 juice you need <b style="color:var(--chalk)">52.38%</b> just to break even, which it does not reach either. Three trivial controls &mdash; always home, always away, always the favourite &mdash; all came back at exactly 50.00%, which is what a spread is for and what confirms the arithmetic. <b style="color:var(--chalk)">This model would not have made money.</b> See <code>src/ats_evaluation.py</code>.</p>
-      <p style="margin-top:11px;">What this project offers instead is <b style="color:var(--chalk)">transparency about how it actually works and what it actually gets wrong</b> -- which is genuinely rare among prediction sites, most of which publish a number and no accounting of how it was arrived at or how often it fails.</p>
-    </div>
-
-    <div class="method-block">
-      <h3>Where This Model Stands</h3>
-      <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Dimension</th><th>How this project does</th></tr></thead>
-        <tbody>
-          <tr><td>Raw accuracy vs. market</td><td class="num">Behind. The market is a genuinely hard benchmark and this doesn't clear it</td></tr>
-          <tr><td>Football-only accuracy (no market data)</td><td class="num">Reasonable -- roughly 63% on held-out data, well above the ~54% you'd get by always picking home teams</td></tr>
-          <tr><td>Methodology transparency</td><td class="num">Every constant is backtested and documented with its real justification; the tuning scripts are committed and re-runnable</td></tr>
-          <tr><td>Honest failure reporting</td><td class="num">Model Lab documents every rejected experiment with real numbers, including a data leak that was caught and fixed</td></tr>
-          <tr><td>Leak-free discipline</td><td class="num">A real, executable test suite guards the walk-forward properties -- and it caught a genuine production leak</td></tr>
-          <tr><td>Live, ongoing track record</td><td class="num">Predictions are locked in before kickoff and graded automatically -- no post-hoc editing</td></tr>
-        </tbody>
-      </table></div>
-    </div>
-
-    <div class="method-block">
-      <h3>What Would Actually Close the Gap</h3>
-      <p>Being specific rather than vague about this: the single biggest missing input is <b style="color:var(--chalk)">injury and player-availability data</b>, which the market prices in heavily and this model has no access to (the upstream data source has been broken with no ETA -- see Data Sources). Beyond that, the market aggregates information this project structurally can't reach: sharp money, insider knowledge, and real-time news. Closing that gap isn't a matter of a better algorithm.</p>
-    </div>
-  </section>
 
   <!-- GLOSSARY -->
-  <section class="page" id="page-glossary">
-    <div class="page-head">
-      <div>
-        <h2>Glossary</h2>
-        <div class="desc">Plain-language definitions for the terms used throughout this site.</div>
-      </div>
-    </div>
-
-    <div class="method-block">
-      <h3>Model &amp; Prediction Terms</h3>
-      <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
-        <tbody>
-          <tr><td>EPA (Expected Points Added)</td><td class="num">How much a single play changed a team's expected points on that drive. A 40-yard gain has high positive EPA; a sack has negative EPA. Summed up, it's a better measure of team quality than raw yards</td></tr>
-          <tr><td>Model A</td><td class="num">The football-only model -- team ratings, QB performance, QB changes. Uses no betting market data at all</td></tr>
-          <tr><td>Model B</td><td class="num">Model A's features plus the current Vegas point spread</td></tr>
-          <tr><td>Opponent-adjusted rating</td><td class="num">A team's performance adjusted for who they played. Beating a strong defense counts more than beating a weak one</td></tr>
-          <tr><td>Recency weighting</td><td class="num">Recent games count more than old ones. This model uses a 16-game half-life -- a game 16 games ago counts half as much as this week's</td></tr>
-          <tr><td>Shrinkage</td><td class="num">Pulling a small-sample estimate toward the league average. A QB with 20 career dropbacks shouldn't be rated as confidently as one with 2,000</td></tr>
-        </tbody>
-      </table></div>
-    </div>
-
-    <div class="method-block">
-      <h3>Evaluation Terms</h3>
-      <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
-        <tbody>
-          <tr><td>Log loss</td><td class="num">Penalizes confident wrong predictions heavily. Lower is better. A model that says 95% and is wrong is punished far more than one that said 55%</td></tr>
-          <tr><td>Brier score</td><td class="num">Average squared difference between predicted probability and what actually happened. Lower is better. Similar spirit to log loss, less harsh on confident misses</td></tr>
-          <tr><td>AUC</td><td class="num">How well the model ranks games from most to least likely home win. 0.5 is random, 1.0 is perfect. Measures ordering ability, not calibration</td></tr>
-          <tr><td>Calibration</td><td class="num">Whether stated confidence matches reality -- do games predicted at 70% actually win about 70% of the time?</td></tr>
-          <tr><td>Bootstrap / confidence interval</td><td class="num">Reshuffling the real results thousands of times to see how much a result bounces around. If the range includes zero, the difference can't be distinguished from luck</td></tr>
-          <tr><td>Walk-forward backtest</td><td class="num">Testing a model using only data that existed before each game. Prevents the model from "knowing" future results it couldn't have known</td></tr>
-          <tr><td>Data leakage</td><td class="num">When information from the future accidentally gets used to predict the past, making results look better than they really are. This project found and fixed a real one -- see AI Reliability</td></tr>
-        </tbody>
-      </table></div>
-    </div>
-
-    <div class="method-block">
-      <h3>Betting Terms</h3>
-      <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
-        <tbody>
-          <tr><td>Point spread</td><td class="num">The margin the favorite is expected to win by. A -7 favorite is expected to win by 7</td></tr>
-          <tr><td>Over/under (total)</td><td class="num">The combined score both teams are expected to reach</td></tr>
-          <tr><td>Market-implied probability</td><td class="num">Converting a point spread into a win percentage, so it can be compared directly against a model's prediction</td></tr>
-          <tr><td>Confidence pool</td><td class="num">A pick'em format where you rank games and assign point values -- most confident pick gets the most points. See Methodology for why ranking by probability is provably optimal here</td></tr>
-        </tbody>
-      </table></div>
-    </div>
-  </section>
 
 </main>
 
@@ -1257,10 +1264,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <button class="bnav-more-item" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span>Methodology</span></button>
     <button class="bnav-more-item" data-page="changelog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 21v-5h5"/></svg><span>What&#39;s Changed</span></button>
     <button class="bnav-more-item" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span>Model Lab</span></button>
-    <button class="bnav-more-item" data-page="datasources"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg><span>Data Sources</span></button>
     <button class="bnav-more-item" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg><span>AI Reliability</span></button>
-    <button class="bnav-more-item" data-page="compare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 8l7-5 7 5M3 12h4l-2 5-2-5zM17 12h4l-2 5-2-5z"/></svg><span>How This Compares</span></button>
-    <button class="bnav-more-item" data-page="glossary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span>Glossary</span></button>
   </div>
 </div>
 

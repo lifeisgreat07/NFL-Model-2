@@ -58,8 +58,9 @@ JARGON = [
 
 # The three pages that exist to be technical. A reader arrives at these having
 # chosen to; the vocabulary is the point.
-TECHNICAL_PAGES = {'method', 'modellab', 'changelog', 'glossary',
-                   'datasources', 'reliability', 'compare'}
+# 'compare', 'datasources' and 'glossary' were pages of their own until they
+# became parts of Methodology; their vocabulary now counts under 'method'.
+TECHNICAL_PAGES = {'method', 'modellab', 'changelog', 'reliability'}
 
 # Every render function that emits markup, and the page it emits it onto.
 # Deliberately exhaustive: an unmapped function fails the test below rather
