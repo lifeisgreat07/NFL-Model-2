@@ -1,0 +1,55 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_whats_changed_page.py",
+  "cases": [
+    {
+      "id": "wc-rejected-idea-painted-as-a-success",
+      "why": "a card reading 'Confirmed Infeasible' wears the success-green pill again, so the page's text and its colour say opposite things -- and the colour is the part most readers actually parse",
+      "find": "<div class=\"roadmap-status status-planned\">Confirmed Infeasible</div>",
+      "replace": "<div class=\"roadmap-status status-done\">Confirmed Infeasible</div>",
+      "expect_caught_by": "test_a_rejected_idea_does_not_wear_the_success_colour"
+    },
+    {
+      "id": "wc-neutral-pill-is-the-same-paint",
+      "why": "the two pill classes resolve to identical styling, so splitting shipped from not-kept changed nothing a reader can see while every structural test still passes",
+      "find": "  .status-planned{background:var(--panel-hi); color:var(--chalk-dim);}",
+      "replace": "  .status-planned{background:var(--good-dim); color:var(--good);}",
+      "expect_caught_by": "test_the_neutral_pill_is_actually_a_different_colour"
+    },
+    {
+      "id": "wc-a-milestone-quietly-disappears",
+      "why": "a piece of built work stops being recorded anywhere on the site. This is the exact failure the written plan would have caused sixteen times over, and until this suite existed nothing would have gone red",
+      "find": "<h4>My Picks Log</h4>",
+      "replace": "<h4>Picks</h4>",
+      "expect_caught_by": "test_the_milestones_the_changelog_never_covered_are_still_named"
+    },
+    {
+      "id": "wc-build-record-collapses",
+      "why": "the whole 'what got built' grid is emptied while the page still renders perfectly -- the history is deleted rather than moved, which is what a structure-only test would happily allow",
+      "find": "    <h3 class=\"section-title\">What got built</h3>",
+      "replace": "    <h3 class=\"section-title\">What got built</h3><!--",
+      "expect_caught_by": "test_the_build_record_survived_the_merge"
+    },
+    {
+      "id": "wc-nav-points-at-a-deleted-page",
+      "why": "a navigation control aims at a page that does not exist. On the sidebar that is a dead button; in the mobile more-sheet it is a tab that opens a blank screen, which is where a real one was found surviving PR #40",
+      "find": "<button class=\"nav-btn\" data-page=\"glossary\">",
+      "replace": "<button class=\"nav-btn\" data-page=\"roadmap\">",
+      "expect_caught_by": "test_every_nav_on_the_page_agrees_on_which_pages_exist"
+    },
+    {
+      "id": "wc-version-list-inlined-by-hand",
+      "why": "the generated version list becomes hand-written markup, so config.VERSION_HISTORY and the page can disagree -- the drift the changelog was built as a generated page to prevent",
+      "find": "    <div id=\"changelog-content\"></div>",
+      "replace": "    <div id=\"changelog-content-x\"></div>",
+      "expect_caught_by": "test_the_generated_version_list_is_still_generated"
+    },
+    {
+      "id": "wc-tab-name-reverts-to-jargon",
+      "why": "the tab goes back to 'Changelog', which is developer vocabulary on a dashboard that is supposed to be readable by a twelve-year-old",
+      "find": "</svg>What&#39;s Changed</button>",
+      "replace": "</svg>Changelog</button>",
+      "expect_caught_by": "test_the_tab_is_named_in_plain_english"
+    }
+  ]
+}
