@@ -47,7 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **558 passing** (1 skipped) on `main` (2026-09-07). Run it before quoting
+Suite: **597 passing** (1 skipped) on `main` (2026-09-08). Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -58,17 +58,13 @@ reads like a deleted section rather than an edited sentence.
 
 **Stages 1 and 2 are complete. Stage 3 is in progress. Stage 7.5 has started.**
 
-### Start here (written 2026-09-07, end of session)
+### Start here (updated 2026-09-08)
 
-PRs #39 (agent decision log data) and #40 (Playoff Odds → a column on Power
-Ratings) were both open at the end of the session; #39 merged, #40 was awaiting
-its Booth audit. **First action: `git checkout main; git pull origin main`, then
-confirm #40 is in `git log --oneline main`.** If it is not, it is still waiting
-on the audit — find out why before starting anything new. The 558 figure above
-was measured on #40's branch with main already merged into it, so it is the
-number main will have once #40 lands. If #40 was closed rather than merged, that
-figure is wrong: re-run the suite rather than deriving a smaller one by
-subtraction.
+**#39 and #40 are both merged.** Stage 7.5's first deletion is done: the Playoff
+Odds page is gone and the number is a sortable column on Power Ratings. A weekly
+update commit (`1446e51`) landed on top and regenerated `index.html`; the suite
+is green at 558 with it, so the built-page guards survived a real regeneration
+rather than only the one done by hand.
 
 Next concrete piece of work, second item of Stage 7.5's deletions: **the Roadmap
 "Done" list.** Delete it and fold the "what's next" half plus the
@@ -293,8 +289,31 @@ allowed only where someone has opted into depth.
   ninth-rated team as soon as the new header made another sort worth clicking;
   it is now a power-rating rank computed in Python that travels with the team.
   Guarded by `tests/test_playoff_odds_column.py` and sixteen mutation cases.
-- **Roadmap — delete, keeping only "what's next" and the DEFERRED/REJECTED
-  entries**, folded into Changelog. Its "Done" list duplicates the Changelog,
+- **Roadmap — DONE (PR #41), but NOT as planned.** The plan below was wrong and
+  is kept as written so the correction is legible. The Roadmap is gone and its
+  content is folded into Changelog, which is renamed **What's Changed** and now
+  has three parts: the generated model versions, "What got built" (the 16 Done
+  cards), and "What we tried that did not work" (the 7 rejections).
+  **The premise failed on inspection.** The claim was that the Done list
+  duplicated the Changelog. It did not: the Changelog is 7 *model* versions
+  from `config.VERSION_HISTORY`; the Done list was 16 mostly-*product*
+  milestones, and only ~3 overlap. Executing the plan literally would have
+  destroyed the only record of the picks log, the calibration table, the
+  deep-dive page and the nflreadpy migration — silently, with every test green,
+  because nothing tested that the content existed.
+  `tests/test_whats_changed_page.py` now asserts a floor on that record, and
+  `test_those_milestones_really_are_absent_from_the_generated_changelog` guards
+  the *reason*: if VERSION_HISTORY ever grows to cover product work, that test
+  goes red and the hand-written cards genuinely can be deleted.
+  Two dead links fell out of it, both found by the new nav guard rather than by
+  reading: **the mobile bottom-nav still listed Playoff Odds**, shipped on main
+  by PR #40 — that PR removed the sidebar button only — and it would have kept
+  the Roadmap tab too. There are TWO navs. Also on the merge: the rejection
+  cards had always worn `.status-done`, so "TESTED — REJECTED" was painted in
+  the success green; they now use the neutral pill.
+  ORIGINAL PLAN, PRESERVED — **Roadmap — delete, keeping only "what's next" and
+  the DEFERRED/REJECTED entries**, folded into Changelog. Its "Done" list
+  duplicates the Changelog,
   which is now generated from `config.VERSION_HISTORY` — two sources of truth
   for the same information. This also resolves the separate "remove 2025 Week
   10" item: that reference lives inside a Roadmap Done card about the nflreadpy
@@ -770,6 +789,31 @@ under compaction pressure, so its length is a cost paid on every session.
   behaviour, it reaches states the old code was never asked about** — after
   adding one, exercise the page through it and re-read every neighbouring
   claim, in prose and in cells, that was only ever true in the default state.
+- **This dashboard has TWO navigations, and deleting a page from one leaves a
+  dead tab in the other.** The desktop sidebar (`.nav-btn`) and the mobile
+  bottom-nav "more" sheet (`.bnav-more-item`, `.bnav-item`). PR #40 deleted the
+  Playoff Odds page and its sidebar button and shipped to main with the mobile
+  tab still there, opening a blank screen on a phone. The desktop render looked
+  perfect and every test passed. `test_every_nav_on_the_page_agrees_on_which_pages_exist`
+  now asserts that every `data-page` target has a matching `<section>`, stated
+  as a set relation so the next deletion is covered without anyone remembering
+  this. **Deleting a page means deleting every control that reaches it — grep
+  `data-page`, do not grep the nav you happen to be looking at.**
+- **A guard that reads the source FILE counts commented-out markup as present.**
+  Two of the strongest new guards — the ones asserting the build record had
+  survived a merge — both SURVIVED their mutations: one because wrapping the
+  whole grid in `<!--` left the regex matches intact, the other because the
+  title it searched for also appears in an unrelated nav label, so
+  `title in page` stayed true with the card renamed away. Strip comments and
+  match the ELEMENT you mean, not a substring of the file. Both were caught by
+  mutation testing and by nothing else, which is the argument for the harness.
+- **A plan in this file is a hypothesis about code, and this one was wrong.**
+  The Stage 7.5 entry asserted the Roadmap's Done list duplicated the Changelog.
+  Checking took one script and found ~3 of 16 overlapping; the rest existed
+  nowhere else. Three earlier inherited claims in this file were also wrong (the
+  "no PR-body-edit tool" line, the SOS "defect", the Team Deep-Dive "Done"
+  status). **Before executing a deletion this file plans, verify the premise
+  the plan rests on, and record the correction beside the original.**
 - **A wrap-up check that greps this file for a literal string is disabled by
   rewording that string, and says the line is MISSING.** `session_wrapup.py`
   matches `Suite:\s*\*\*([0-9,]+)\s+passing\*\*`. Writing
@@ -778,7 +822,7 @@ under compaction pressure, so its length is a cost paid on every session.
   like a deleted section, not an edited sentence. Any prose this file carries
   *for a tool* is an interface: extra detail goes outside the matched span.
 - **The full mutation run outlives the 60-second Desktop Commander timeout.**
-  78 cases take several minutes. The tool call returns "device did not respond"
+  85 cases take several minutes. The tool call returns "device did not respond"
   while the run continues, so: redirect to a file, poll for completion, read the
   file — and check `git status` before believing anything, because a killed
   runner skips the `finally` that restores the mutated file.
