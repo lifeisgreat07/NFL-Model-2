@@ -840,8 +840,16 @@ under compaction pressure, so its length is a cost paid on every session.
   report "CLAUDE.md has no 'Suite: **N passing**' line to check", which reads
   like a deleted section, not an edited sentence. Any prose this file carries
   *for a tool* is an interface: extra detail goes outside the matched span.
+- **`scout_preflight.py --base main` compares against LOCAL main, which goes
+  stale the moment a PR is merged on GitHub.** Right after merging #41 it
+  reported "2 commits on this branch, but the body never mentions 2 of them"
+  and named a commit that was already on main — which reads exactly like the
+  undisclosed-scope failure it exists to catch. The fix is
+  `git fetch origin main:main`, not editing the PR body to explain a commit
+  that is not actually in the diff. **Refresh local main before every
+  pre-flight.**
 - **The full mutation run outlives the 60-second Desktop Commander timeout.**
-  85 cases take several minutes. The tool call returns "device did not respond"
+  89 cases take several minutes. The tool call returns "device did not respond"
   while the run continues, so: redirect to a file, poll for completion, read the
   file — and check `git status` before believing anything, because a killed
   runner skips the `finally` that restores the mutated file.
