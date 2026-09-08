@@ -1,0 +1,37 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_plain_language.py",
+  "cases": [
+    {
+      "id": "pl-jargon-added-to-a-reader-page",
+      "why": "statistics vocabulary lands on the Week Board, the page whose entire job is telling a casual reader who to pick. This is the regression the guard exists to stop, and it is the one that happens by accident when somebody writes new copy",
+      "find": "<h2>Week Board</h2>",
+      "replace": "<h2>Week Board</h2><p>Ranked by log loss and Brier score.</p>",
+      "expect_caught_by": "test_no_new_jargon_on_the_pages_a_casual_reader_uses"
+    },
+    {
+      "id": "pl-scan-blinded-to-the-javascript",
+      "why": "the render script stops being seen as a script, so the literal matcher finds nothing and every check below passes over an empty string. Most of this dashboard's prose lives in template literals -- a markup-only scan called Season Accuracy clean while it was rendering 'Brier decomposition' into the page",
+      "find": "<script>\nconst versionHistory = __VERSION_HISTORY_JSON__;",
+      "replace": "<scriptx>\nconst versionHistory = __VERSION_HISTORY_JSON__;",
+      "expect_caught_by": "test_the_scan_actually_sees_the_javascript_copy"
+    },
+    {
+      "id": "pl-renderer-escapes-the-map",
+      "why": "a function that renders copy is not attributed to any page, so everything it writes goes unchecked -- the quiet way new jargon reaches a reader-facing page with the suite still green",
+      "find": "    'renderAccuracy': 'accuracy',",
+      "replace": "",
+      "tests": "tests/test_plain_language.py",
+      "target": "tests/test_plain_language.py",
+      "expect_caught_by": "test_every_render_function_is_attributed_to_a_page"
+    },
+    {
+      "id": "pl-technical-pages-flattened",
+      "why": "the ban is applied to EVERY page, so Methodology, Model Lab and the glossary are no longer allowed to use the vocabulary they exist to teach. Plain English on the reader-facing pages is the goal; flattening the technical explanations into baby talk is a different and worse outcome, and it would look like the guard working harder",
+      "find": "TECHNICAL_PAGES = {'method', 'modellab', 'changelog', 'glossary',\n                   'datasources', 'reliability', 'compare'}",
+      "replace": "TECHNICAL_PAGES = set()",
+      "target": "tests/test_plain_language.py",
+      "expect_caught_by": "test_the_technical_pages_are_still_allowed_to_be_technical"
+    }
+  ]
+}
