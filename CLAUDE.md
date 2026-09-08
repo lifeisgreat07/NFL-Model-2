@@ -344,6 +344,25 @@ allowed only where someone has opted into depth.
   a translation layer, not new maths.
 - Update README.md for a cold reader.
 
+**Two decisions taken 2026-09-08, with the reasoning, so they are not reopened:**
+
+- **Batch related items into one PR.** The remaining 7.5 items go out as roughly
+  four PRs, not eight. How This Compares, Data Sources and the Glossary all
+  merge into Methodology and all touch the same page and the same nav, so
+  splitting them means three audits of three fragments of one change — and
+  Booth reviews a coherent change better than a slice. The counter-argument
+  (small diffs are easier to revert) lost to the fact that each audit costs
+  usage and a manual trigger. NOT one giant end-of-stage PR: a large diff is
+  exactly where Booth's value drops, and #40 and #41 each surfaced a real
+  defect that was cheaper to find early.
+- **Build the plain-language guard FIRST, red, with a shrinking allowlist.**
+  The reader-facing pages fail it today, so it lands with today's violations
+  listed as known-bad, and each rewrite deletes entries. The list reaching
+  empty IS the definition of done for the content work. Written afterwards it
+  would be fitted to whatever copy happened to get written — ratifying the
+  result instead of testing it, which is the "guard written after the fact"
+  pattern that has bitten this repo five times.
+
 **Make plain English testable, not aspirational.** `tests/test_plain_language.py`
 holds a jargon list scoped per page: log loss, Brier, calibration,
 opponent-adjusted, shrinkage, bootstrap, confidence interval and similar are
