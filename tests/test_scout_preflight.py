@@ -276,7 +276,23 @@ def test_the_tool_exits_nonzero_when_a_check_fails(tmp_path):
     # two of them sit between base and HEAD however the branch was merged.
     log = subprocess.run(['git', 'log', '--no-merges', '--format=%H', '-3'],
                          cwd=REPO_ROOT, capture_output=True, text=True)
-    base = log.stdout.split()[-1]
+    shas = log.stdout.split()
+    # A shallow checkout has no third commit to walk back to, so `base` would
+    # come out equal to HEAD, the range would be empty, every check would pass
+    # and this test would fail while asserting nothing about scout_preflight.
+    # That is not hypothetical: actions/checkout defaults to fetch-depth 1, and
+    # run-tests.yml took that default, so this test failed on every pull request
+    # for days while the same suite ran green under Booth -- whose workflow sets
+    # fetch-depth: 0. Green in one CI job and red in another, for the same
+    # commit, with no test actually broken. run-tests.yml now asks for full
+    # history; this skip is the second half, so a shallow checkout anywhere else
+    # reports "cannot run" instead of "broken".
+    if len(shas) < 3:
+        pytest.skip(
+            f"shallow checkout: git log --no-merges -3 returned {len(shas)} "
+            f"commit(s). This test manufactures a scope failure out of real "
+            f"history and needs three non-merge commits to do it")
+    base = shas[-1]
     r = subprocess.run(
         [sys.executable, str(REPO_ROOT / 'src' / 'scout_preflight.py'),
          str(body), '--skip-tests', '--base', base],

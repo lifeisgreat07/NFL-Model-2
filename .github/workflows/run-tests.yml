@@ -19,6 +19,21 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
+        with:
+          # Full history, not the action's default fetch-depth of 1. Sixteen
+          # tests in this suite read real git history -- branch state, what
+          # changed against a base, how many non-merge commits a branch carries
+          # -- and under a shallow checkout they skip. One of them did not skip,
+          # it failed: tests/test_scout_preflight.py manufactures a scope
+          # failure out of the last three non-merge commits, and with only one
+          # commit available it manufactured nothing and asserted on the result.
+          #
+          # So this job was red on every pull request for days while
+          # booth-pr-audit.yml ran the identical suite green on the identical
+          # commit -- that workflow already sets fetch-depth: 0, for the same
+          # reason. Two CI jobs disagreeing about the same commit is worse than
+          # either being wrong, because it teaches you to ignore the red one.
+          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
