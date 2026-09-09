@@ -47,7 +47,8 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **672 passing** (1 skipped) on `main` (2026-09-09). Run it before quoting
+Suite: **672 passing** (1 skipped) on `main` (2026-09-09), and this branch is
+not yet re-measured on top of it. Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -65,12 +66,8 @@ rewritten every session and this section is not.** `docs/index.md` maps where
 everything is; `memory/` records what each session decided and why. This file
 keeps what stays true for months: methodology, stage plans, and the traps below.
 
-The note below is from 2026-09-09 and is kept until the branches it names land.
-
-**THE FULL HANDOFF IS NOT ON MAIN.** It is on the unmerged branch
-claude/reliability-rebuild, which carries an expanded version of this section,
-the Stage 7.6 entry, the Stage 8+ design-tooling notes, and four new trap
-entries. Everything below is the short version; merge that branch and re-read.
+This branch carries the expanded handoff that main's copy points at: the Stage
+8+ design-tooling notes and the extra trap entries below arrive with it.
 
 Merged: #40 through #46. Stage 7.5 has cut 14 pages to **9** — Playoff Odds
 became a column on Power Ratings, Roadmap folded into Changelog (renamed What's
@@ -429,6 +426,41 @@ every other guard in this repo.
   injury DATA as closed, but that decision was about model features. Displaying
   team news is a different question and is not foreclosed by it.
 
+### Stage 7.6 - The repository front door  <- CHEAP, HIGH VISIBILITY, DO IT EARLY
+
+Added 2026-09-08 by Mark, who noticed it reviewing the repo as a stranger would.
+A decimal insert like 7.5; stage numbers stay frozen.
+
+**The problem:** GitHub's About panel says "No description, website, or topics
+provided". A recruiter's first screen of this project is therefore blank, and
+the README opens on fixed-effects regression, EPA, shrinkage and model metrics
+— excellent for a technical reader, useless as a first impression.
+
+Three items, none of which touch the dashboard:
+
+1. **Repository description.** Mark's wording, to use as given:
+   "NFL win-probability and analytics platform using real-world play-by-play
+   data, backtesting, automated data processing, testing, and AI-assisted
+   development."
+2. **Topics**, where accurate: `python`, `data-analysis`, `predictive-analytics`,
+   `sports-analytics`, `nfl`, `github-actions`, `testing`. Check each against
+   what the repo actually does before adding it — a topic is a claim.
+3. ~~**A "For Recruiters / Project Overview" section at the very top of the
+   README.**~~ **DONE, PR #46 (2026-09-09).** It also turned up four claims the
+   README was making that were false, including a fifth line pointing at a
+   `METHODOLOGY.md` that has never existed here.
+   `tests/test_readme_accuracy.py` now holds the page to its own claims.
+
+**Items 1 and 2 are still open, and cannot be done from here.** They are repository settings, not
+files: no `gh` CLI is installed on the Windows machine and the GitKraken MCP
+exposes no repo-settings tool. They are a two-minute job for Mark in the GitHub
+UI (Code tab → the gear beside "About").
+
+Note the overlap: Stage 7 already carries "README rewrite for a cold technical
+reader". That is the same file. #46 put the recruiter section on top and fixed
+what was wrong below it; a full technical rewrite underneath, if still wanted,
+is what remains of that Stage 7 item.
+
 ## The visual overhaul (Stages 8-10)
 
 Read this before starting any of the three. The brief is not "fix the audit
@@ -455,6 +487,52 @@ because the scales do not exist yet. That is deliberate and accepted — the
 ordering was chosen so carried-over work ships first — but it means Stage 8's
 job is bigger than the audit's counts suggest. Reuse an existing class before
 inventing values; every new one is something Stage 8 has to unpick.
+
+### Design tooling available from Stage 8 onward
+
+Mark added these connectors and asked, on 2026-09-08, that they be used when the
+visual work starts: **Canva**, **Figma**, and — as candidates — **Watermelon UI**,
+**Motion Primitives**, **Haikei**. His instruction: "whatever we need to do to
+take the design from where it's at and make it the best it can possibly be."
+
+**The constraint that decides how each one fits.** This dashboard is ONE
+self-contained HTML file: `dashboard_template.html` with placeholders swapped by
+`generate_dashboard.py`. Vanilla JS, no framework, no bundler, no npm at
+runtime. That is why it deploys as a static page driven by a weekly cron, and
+for a portfolio piece it is a genuine asset — a stranger reading the repo sees
+no supply chain. Do not spend it casually.
+
+- **Haikei** (haikei.app) — best fit of the five. Generates SVG design assets
+  that paste straight into the existing file with no architectural change. The
+  caveat is what it generates: decoration. Stage 8 starts with a concept, and a
+  Haikei shape applied without one is prettier arbitrary decoration. Use it to
+  execute part of a concept, not to find one.
+- **Figma** (MCP connected) — strongest fit for Stage 8 proper.
+  `get_variable_defs` pulls design tokens, so the system lives somewhere durable
+  instead of only as CSS custom properties in one file, and the file itself
+  becomes portfolio material. Figma is the source; the single HTML file stays
+  the runtime.
+- **Canva** (MCP connected) — aim it at Stage 7, not the dashboard. README hero
+  image, architecture diagram, case-study one-pager. Designing the UI in it
+  would fight the code.
+- **Motion Primitives** and **Watermelon UI** — both are **React** (Framer
+  Motion components; shadcn-style blocks). Verified by looking them up, not
+  assumed. Neither drops into a vanilla single-file page: adopting either means
+  adding React and a build step to a project whose whole deployment story is one
+  static file. **Recommendation: borrow Motion Primitives' motion vocabulary —
+  its easings, durations, stagger patterns — and implement it in CSS transitions
+  and the Web Animations API.** Stage 9 already owns "seven transition
+  durations, no `prefers-reduced-motion` block", so a coherent motion spec is
+  exactly what is needed; the library is one way to get one, not the only way.
+  If Mark decides he wants the React components anyway, that is a legitimate
+  call — but it is an architecture decision with tradeoffs that should be put to
+  him explicitly, not something that arrives as a side effect of wanting nicer
+  animations.
+
+**Still open, and worth more than any of these tools:** Mark has not yet named a
+dashboard or site whose look he wants. Ask for a concrete reference before
+Stage 8 begins. A token system with no point of view behind it is just tidier
+arbitrary numbers — this file says so already, and no connector changes it.
 
 ### Skills to use, and what each is for
 
@@ -903,6 +981,23 @@ under compaction pressure, so its length is a cost paid on every session.
   "no PR-body-edit tool" line, the SOS "defect", the Team Deep-Dive "Done"
   status). **Before executing a deletion this file plans, verify the premise
   the plan rests on, and record the correction beside the original.**
+- **A PR description is a separate artifact from the code, and fixing one does
+  not fix the other.** Booth flagged a wrong count in #44's description. The
+  response was to correct the code comment and add a CLAUDE.md entry — both
+  real improvements, neither of them the thing under audit. The next run said
+  it plainly: *"Fixing a code comment does not fix a GitHub PR description;
+  those are different artifacts, and only one of them was touched."* A
+  description cannot be corrected by a commit, and there is **no MCP tool to
+  edit one** — GitKraken exposes `pull_request_create`, not update. So a
+  description fix is always a hand edit by Mark: give him the exact replacement
+  text rather than a description of the change.
+- **Booth reads the description ONCE, at a timestamp it records.** Its header
+  says `Description read at: <time>`. Edit the description after that moment
+  and the report is stale, not wrong — it will flag a discrepancy that is
+  already fixed, and re-reading the same report looks like the fix failed. On
+  #44 the read was 22:17:12, the post 22:25, and the edit landed between them.
+  **Before treating a repeated finding as unresolved, compare that timestamp to
+  when the description last changed.**
 - **When one number moves for two different reasons, say which is which.**
   The plain-language allowlist went from nine entries to zero: eight were
   rewritten, and the ninth left because the guard's own matcher was fixed

@@ -87,6 +87,10 @@ RENDERERS = {
     'buildReliabilityDiagram': 'modellab',
     'seriesLegend': 'modellab',
     'renderChangelog': 'changelog',
+    # "Checking the AI's work". A page ABOUT the verifier, so the vocabulary
+    # of verification belongs on it -- but it is written for the same reader
+    # as the rest, so it is scoped, not exempt.
+    'renderAgentLog': 'reliability',
 }
 
 

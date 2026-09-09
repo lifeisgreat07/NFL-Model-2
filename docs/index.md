@@ -80,4 +80,5 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | `.github/workflows/weekly-update.yml` | The weekly routine. |
 | `.github/workflows/booth-regression.yml` | Manual dispatch only. |
 | `.github/workflows/run-tests.yml` | The suite, on push and PR. |
+| `.github/workflows/collect-agent-log.yml` | Manual dispatch, and pushes to main, to record what the agents actually did. |
 | `.github/workflows/run-backtest.yml` | The backtest, deliberately not on every push. |
