@@ -49,6 +49,36 @@ def test_it_points_at_the_reading_order(output):
         assert doc in output, f"the reading order no longer mentions {doc}"
 
 
+def test_it_prints_the_context_file_rather_than_pointing_at_it(output):
+    """One command should leave you knowing where things stand, not holding a
+    reading list. context.md is capped at one screen for exactly this reason,
+    so pointing at it was a pointless extra step.
+
+    Checked by content, not by a heading: a section header saying it printed
+    the file is precisely the sort of claim that outlives the behaviour.
+    """
+    context = (REPO / 'docs' / 'context.md').read_text(encoding='utf-8')
+    substantive = [l.strip() for l in context.splitlines()
+                   if l.strip() and not l.startswith('#') and len(l.strip()) > 40]
+    assert substantive, "docs/context.md has no substantive lines to check against"
+    missing = [l for l in substantive if l not in output]
+    assert not missing, (
+        f"{len(missing)} line(s) of docs/context.md are not in the output, so "
+        f"the file is being referenced rather than shown. First: {missing[0][:80]!r}")
+
+
+def test_it_does_not_print_claude_md_in_full(output):
+    """The other half of that decision. CLAUDE.md is ~900 lines and mostly
+    durable; dumping it every session would bury the twenty lines that changed
+    under the eight hundred that did not."""
+    claude = (REPO / 'CLAUDE.md').read_text(encoding='utf-8')
+    long_lines = [l.strip() for l in claude.splitlines() if len(l.strip()) > 60]
+    hits = sum(1 for l in long_lines[:200] if l in output)
+    assert hits < 10, (
+        f"{hits} lines of CLAUDE.md appear in the output; it is meant to be "
+        f"pointed at, not printed")
+
+
 def test_it_refuses_to_state_pull_request_status(output):
     """The honesty rule, and the only one worth failing a build over.
 
