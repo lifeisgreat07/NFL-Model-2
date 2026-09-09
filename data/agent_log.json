@@ -1,16 +1,16 @@
 {
-  "generated_utc": "2026-09-09T18:20:32Z",
+  "generated_utc": "2026-09-09T18:34:31Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 45,
+    "audits_total": 46,
     "audits_superseded": 15,
-    "pull_requests_audited": 30,
+    "pull_requests_audited": 31,
     "audits_without_a_verdict_block": 13,
-    "claims_checked": 167,
-    "discrepancies_found": 11,
+    "claims_checked": 182,
+    "discrepancies_found": 12,
     "unverifiable": 11,
-    "pull_requests_with_a_discrepancy": 6,
-    "reports_disagreeing_with_themselves": 3
+    "pull_requests_with_a_discrepancy": 7,
+    "reports_disagreeing_with_themselves": 4
   },
   "audits": [
     {
@@ -834,6 +834,27 @@
         "tests/test_workflow_churn_guard.py"
       ],
       "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 49,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/49#issuecomment-5606844901",
+      "posted_utc": "2026-09-09T18:33:45Z",
+      "head": "a593aa9",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 15,
+      "confirmed": 14,
+      "discrepancies": 1,
+      "unverifiable": 0,
+      "overall": "SAFE TO MERGE",
+      "implicated": [
+        ".github/workflows"
+      ],
+      "inconsistencies": [
+        "block reports discrepancies but an unqualified SAFE TO MERGE"
+      ],
       "superseded": false
     }
   ]
