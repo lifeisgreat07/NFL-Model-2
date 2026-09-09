@@ -445,20 +445,21 @@ Three items, none of which touch the dashboard:
 2. **Topics**, where accurate: `python`, `data-analysis`, `predictive-analytics`,
    `sports-analytics`, `nfl`, `github-actions`, `testing`. Check each against
    what the repo actually does before adding it — a topic is a claim.
-3. **A "For Recruiters / Project Overview" section at the very top of the
-   README**, before any methodology: what was built, why, what Mark personally
-   does on it, and which skills it demonstrates. The technical README that
-   exists today follows underneath, unchanged.
+3. ~~**A "For Recruiters / Project Overview" section at the very top of the
+   README.**~~ **DONE, PR #46 (2026-09-09).** It also turned up four claims the
+   README was making that were false, including a fifth line pointing at a
+   `METHODOLOGY.md` that has never existed here.
+   `tests/test_readme_accuracy.py` now holds the page to its own claims.
 
-**Items 1 and 2 cannot be done from here.** They are repository settings, not
+**Items 1 and 2 are still open, and cannot be done from here.** They are repository settings, not
 files: no `gh` CLI is installed on the Windows machine and the GitKraken MCP
 exposes no repo-settings tool. They are a two-minute job for Mark in the GitHub
-UI (Code tab → the gear beside "About"). Item 3 is a file and is ours.
+UI (Code tab → the gear beside "About").
 
 Note the overlap: Stage 7 already carries "README rewrite for a cold technical
-reader". That is the same file and should be done in one pass — the recruiter
-section on top, the technical rewrite below it — rather than editing the README
-twice.
+reader". That is the same file. #46 put the recruiter section on top and fixed
+what was wrong below it; a full technical rewrite underneath, if still wanted,
+is what remains of that Stage 7 item.
 
 ## The visual overhaul (Stages 8-10)
 
