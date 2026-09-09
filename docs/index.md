@@ -70,13 +70,14 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | `tests/test_workflow_docs.py` | These four documents stay honest — see it for what "honest" means here. |
 | `tests/test_readme_accuracy.py` | README.md may not name a path that is not there, and its stated counts are compared against what they count. |
 | `tests/test_wrapup_date_slack.py` | The wrap-up gate's date tolerance is one-directional — tomorrow passes, yesterday does not — and both directions are asserted. |
+| `tests/test_generated_data_reaches_the_page.py` | A workflow that writes data the dashboard reads must also cause a rebuild. The collector wrote 44 audits to main and the page never changed. |
 
 ## Workflows
 
 | Path | When it runs |
 |---|---|
 | `.github/workflows/booth-pr-audit.yml` | Every PR open, push and description edit. |
-| `.github/workflows/generate-dashboard.yml` | Push to main touching `src/`, `data/`, `predictions/`, `results/`. |
+| `.github/workflows/generate-dashboard.yml` | Push to main touching `src/`, `data/`, `predictions/`, `results/` — **and** after `.github/workflows/collect-agent-log.yml` finishes, because a commit pushed by another workflow's GITHUB_TOKEN cannot trigger this one on its own. |
 | `.github/workflows/weekly-update.yml` | The weekly routine. |
 | `.github/workflows/booth-regression.yml` | Manual dispatch only. |
 | `.github/workflows/run-tests.yml` | The suite, on push and PR. |
