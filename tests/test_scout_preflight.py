@@ -266,9 +266,20 @@ def test_the_tool_exits_nonzero_when_a_check_fails(tmp_path):
     # An undisclosed-scope failure rather than a visual one: this branch may
     # touch no UI, and the visual check is gated on the diff.
     body.write_text("Describes nothing in particular.", encoding='utf-8')
+    # The base is computed, not hardcoded as HEAD~3. HEAD~3 spanned two
+    # non-merge commits when this was written and one after the next merge
+    # landed, at which point the scope check passed and this test failed --
+    # on a branch where nothing about scout_preflight had changed. A test
+    # that manufactures its failure out of the repository's own recent
+    # history fails on the shape of history rather than on the behaviour it
+    # is checking. Walking back three NON-MERGE commits guarantees at least
+    # two of them sit between base and HEAD however the branch was merged.
+    log = subprocess.run(['git', 'log', '--no-merges', '--format=%H', '-3'],
+                         cwd=REPO_ROOT, capture_output=True, text=True)
+    base = log.stdout.split()[-1]
     r = subprocess.run(
         [sys.executable, str(REPO_ROOT / 'src' / 'scout_preflight.py'),
-         str(body), '--skip-tests', '--base', 'HEAD~3'],
+         str(body), '--skip-tests', '--base', base],
         cwd=REPO_ROOT, capture_output=True, text=True)
     assert r.returncode != 0, (
         f"a failing check exited 0, so nothing can gate on it:\n{r.stdout}")

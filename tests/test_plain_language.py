@@ -93,25 +93,31 @@ RENDERERS = {
 # Measured, not guessed: produced by running this scan against the pages as
 # they stand. Each entry is (page, term). Delete entries as the rewrites land.
 # The content half of Stage 7.5 is done when this is empty.
-KNOWN_JARGON = {
-    # Power Ratings -- the page description, one sentence carrying four terms:
-    # "Opponent-adjusted EPA/play ratings ... fit via ridge regression on real
-    # play-by-play with a 16-game recency half-life."
-    ('ratings', 'opponent-adjusted'),
-    ('ratings', 'epa'),
-    ('ratings', 'ridge regression'),
-    ('ratings', 'half-life'),
-    # Season Accuracy -- the live calibration section and its cross-reference.
-    ('accuracy', 'calibration'),
-    ('accuracy', 'backtest'),
-    # "Only backtested game landed at this confidence", and the confidence
-    # track record beside each pick.
-    ('picks', 'backtest'),
-    ('board', 'epa'),
-    # "The rating history above is backtested; this list only covers weeks
-    # the live weekly routine has run."
-    ('teamdive', 'backtest'),
-}
+# EMPTY, and that is the point. It held NINE entries when this guard was
+# written. Eight were real jargon and were rewritten:
+#
+#   Power Ratings   one sentence carrying four terms -- "Opponent-adjusted
+#                   EPA/play ratings ... fit via ridge regression ... 16-game
+#                   recency half-life" -- now says what the number means and
+#                   sends the reader to Methodology for how it is computed.
+#   Season Accuracy "Live Calibration" and "Calibration" are now "Are these
+#                   percentages honest?", which is the question the section
+#                   actually answers.
+#   My Picks        "backtested games" -> "past games".
+#   Team Deep-Dive  "real backtested history" -> "real history, replayed as if
+#                   we had been predicting it at the time".
+#
+# The ninth, ('board', 'epa'), was never real jargon. The Week Board's only
+# match was 'epa' inside "s-epa-rately", invented by the old substring
+# matcher. It left the list because the matcher was fixed, NOT because any
+# copy changed -- and the first writeup of this work counted the remaining
+# eight as if that had always been the total, which Booth caught on PR #44.
+# Two different causes moved this number in one change; a count that does not
+# say which is which misattributes the work.
+#
+# An entry added here is a debt, not a decision. Anything that goes in should
+# come out again in the same stage.
+KNOWN_JARGON = set()
 
 
 # ---------------------------------------------------------------------------
@@ -170,14 +176,61 @@ def _copy_by_page():
     return pages
 
 
+def _headings_by_page():
+    """{page id: [h3 text, ...]} from the markup AND from the render functions.
+
+    Both halves matter, and the JS half is the one that caught the real bug:
+    the two duplicate headings on Season Accuracy were both produced by render
+    functions, so a scan of the page's `<section>` markup found neither. The
+    first version of the guard below did exactly that and would have passed
+    over the defect it is named for.
+    """
+    src = _source()
+    out = {}
+    for m in re.finditer(r'<section class="page[^"]*" id="page-([a-z0-9_-]+)".*?</section>',
+                         src, re.S):
+        out[m.group(1)] = re.findall(r'<h3[^>]*>(.*?)</h3>', m.group(0), re.S)
+    js = _scripts(src)
+    for fn_m in re.finditer(r'`([^`]*)`', js, re.S):
+        lit = fn_m.group(1)
+        if '<h3' not in lit:
+            continue
+        fns = _FN.findall(js[:fn_m.start()])
+        page = RENDERERS.get(fns[-1] if fns else '')
+        if page:
+            out.setdefault(page, []).extend(re.findall(r'<h3[^>]*>(.*?)</h3>', lit, re.S))
+    return {p: [re.sub(r'\s+', ' ', re.sub(r'<[^>]+>', '', h)).strip() for h in hs]
+            for p, hs in out.items()}
+
+
+def _mentions(copy, term):
+    """Anchored at a word START, with any suffix allowed.
+
+    Two failures, one on each side, both found by running it:
+
+    Plain substring matching flagged 'epa' inside 's-epa-rately' and sent a
+    rewrite at a sentence that was already fine. A guard whose false positives
+    cost edits to correct copy spends the very thing it exists to protect.
+
+    Closing both ends with \\b then hid 'backtested', because the term is
+    'backtest' and the word carries a suffix. That is worse: the guard went
+    quiet on jargon that was actually on the page, and the allowlist would
+    have recorded the work as done.
+
+    So: a word may not START inside another word, and may end however English
+    ends it. 'epa' does not match 'separately'; 'backtest' matches
+    'backtested', 'backtests' and 'backtesting'.
+    """
+    return re.search(r'\b%s\w*' % re.escape(term), copy, re.I) is not None
+
+
 def _violations():
     found = set()
     for page, copy in _copy_by_page().items():
         if page in TECHNICAL_PAGES:
             continue
-        low = copy.lower()
         for term in JARGON:
-            if term in low:
+            if _mentions(copy, term):
                 found.add((page, term))
     return found
 
@@ -226,6 +279,20 @@ def test_the_allowlist_does_not_keep_entries_that_are_already_clean():
         "KNOWN_JARGON lists jargon that is no longer on the page:\n  "
         + "\n  ".join(f"{page}: {term!r}" for page, term in sorted(stale))
         + "\n\nDelete these entries -- the work is done.")
+
+
+def test_no_page_repeats_a_heading():
+    """Rewriting two sections with the same question left Season Accuracy with
+    two identical `<h3>Are these percentages honest?</h3>` headings. To a
+    reader that says the page repeats itself; to anyone scanning for a section
+    it means the heading no longer identifies one.
+
+    Cheap to check and easy to reintroduce, because plain-English rewriting
+    naturally converges on the same short question for related sections.
+    """
+    for page, heads in _headings_by_page().items():
+        dupes = {h for h in heads if heads.count(h) > 1}
+        assert not dupes, f"page-{page} uses the same h3 more than once: {sorted(dupes)}"
 
 
 def test_the_technical_pages_are_still_allowed_to_be_technical():
