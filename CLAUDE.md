@@ -47,7 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **597 passing** (1 skipped) on `main` (2026-09-08). Run it before quoting
+Suite: **628 passing** (1 skipped) on `main` (2026-09-09). Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -58,22 +58,43 @@ reads like a deleted section rather than an edited sentence.
 
 **Stages 1 and 2 are complete. Stage 3 is in progress. Stage 7.5 has started.**
 
-### Start here (updated 2026-09-08)
+### Start here (updated 2026-09-09)
 
-**#39 and #40 are both merged.** Stage 7.5's first deletion is done: the Playoff
-Odds page is gone and the number is a sortable column on Power Ratings. A weekly
-update commit (`1446e51`) landed on top and regenerated `index.html`; the suite
-is green at 558 with it, so the built-page guards survived a real regeneration
-rather than only the one done by hand.
+**THE FULL HANDOFF IS NOT ON MAIN.** It is on the unmerged branch
+claude/reliability-rebuild, which carries an expanded version of this section,
+the Stage 7.6 entry, the Stage 8+ design-tooling notes, and four new trap
+entries. Everything below is the short version; merge that branch and re-read.
 
-Next concrete piece of work, second item of Stage 7.5's deletions: **the Roadmap
-"Done" list.** Delete it and fold the "what's next" half plus the
-DEFERRED/REJECTED entries into Changelog. The Done list duplicates the Changelog,
-which is generated from `config.VERSION_HISTORY` — two sources of truth for the
-same facts. This also closes the separate "remove 2025 Week 10" item, because
-that reference lives inside a Roadmap Done card about the nflreadpy migration.
+Merged: #40, #41, #42, #43. Stage 7.5 has cut 14 pages to **9** — Playoff Odds
+became a column on Power Ratings, Roadmap folded into Changelog (renamed What's
+Changed), and How This Compares, Data Sources and the Glossary became parts of
+Methodology. The plain-language guard is live and its allowlist is empty.
 
-Two habits that paid for themselves this session and should carry forward: build
+**Two branches are open and neither is merged:**
+
+1. **PR #44** (branch claude/plain-english-rewrites) — the plain-English
+   rewrites. Booth has audited it three times. The first two flagged the same
+   DISCREPANCY, a count of "eight" where the pre-PR allowlist held nine; the
+   description has since been corrected by hand and now reads correctly. Mark
+   fired a third run and reported it failed too, and **that report was never
+   read** — it is unknown, not resolved. First action: open #44, read the newest
+   Booth comment, and compare its `Description read at:` timestamp against when
+   the description was last edited. A run that read the body before the edit is
+   stale, not a new finding.
+2. **Branch claude/reliability-rebuild** — pushed, no PR yet, deliberately
+   (opening one starts an audit). Connects `src/collect_agent_log.py`, which was
+   built and tested in Stage 3 and had **never run**: the agent-log data file it
+   writes did not exist, nothing invoked it, and the generator had never heard
+   of it (which is why that path is not named here — on main there is still no
+   such file, and this document's own freshness guard is right to say so). Adds
+   the workflow that produces it and rebuilds the reliability page around it,
+   renamed "Checking the AI's work". Green at 645 on its own head. It is branched
+   off #44, so merge #44 first, then merge main into it before opening its PR.
+
+Then the next Stage 7.5 item: **Season Accuracy — declutter.** It is clean on
+vocabulary and still too dense.
+
+Two habits that paid for themselves and should carry forward: build
 the page and *click the thing you just added* before opening the PR (that is how
 the `#`-column defect was found — it was invisible in the diff), and when
 deleting a page, ask what it was the last example of before assuming the tests
