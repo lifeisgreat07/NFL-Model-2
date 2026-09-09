@@ -68,6 +68,8 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | `tests/test_claude_md_freshness.py` | Every path CLAUDE.md names exists; stage headings are ordered and unique. |
 | `tests/test_plain_language.py` | Statistics vocabulary stays off the reader-facing pages. Reads the JavaScript, not just the markup. |
 | `tests/test_workflow_docs.py` | These four documents stay honest — see it for what "honest" means here. |
+| `tests/test_readme_accuracy.py` | README.md may not name a path that is not there, and its stated counts are compared against what they count. |
+| `tests/test_wrapup_date_slack.py` | The wrap-up gate's date tolerance is one-directional — tomorrow passes, yesterday does not — and both directions are asserted. |
 
 ## Workflows
 

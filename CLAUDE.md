@@ -47,8 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **658 passing** (1 skipped) on branch claude/session-memory-docs
-(2026-09-09); `main` is at 635. Run it before quoting
+Suite: **672 passing** (1 skipped) on `main` (2026-09-09). Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -73,12 +72,15 @@ claude/reliability-rebuild, which carries an expanded version of this section,
 the Stage 7.6 entry, the Stage 8+ design-tooling notes, and four new trap
 entries. Everything below is the short version; merge that branch and re-read.
 
-Merged: #40, #41, #42, #43. Stage 7.5 has cut 14 pages to **9** — Playoff Odds
+Merged: #40 through #46. Stage 7.5 has cut 14 pages to **9** — Playoff Odds
 became a column on Power Ratings, Roadmap folded into Changelog (renamed What's
 Changed), and How This Compares, Data Sources and the Glossary became parts of
 Methodology. The plain-language guard is live and its allowlist is empty.
+Stage 7.6's repository half is done: the README opens on a recruiter overview
+and `tests/test_readme_accuracy.py` holds it to its own claims. Its browser
+half — the repo description and topics — is still Mark's to do in the GitHub UI.
 
-#44 is merged. **Which branches are open, and what each waits on, is in
+**Which branches are open, and what each waits on, is in
 `docs/context.md` — that file is rewritten every session and this one is not.**
 Do not maintain a second list here; that duplication is what this split exists
 to end. One branch is described below only because its reasoning is durable and
@@ -638,6 +640,37 @@ under compaction pressure, so its length is a cost paid on every session.
 
 ## Traps that have actually bitten
 
+- **Two CI jobs can disagree about the same commit, and the green one wins by
+  default.** `run-tests.yml` was red on every pull request for days while
+  `booth-pr-audit.yml` ran the identical suite green on the identical commit.
+  Nobody investigated, because Booth is the job that gets read. The cause was
+  the actions/checkout default of `fetch-depth: 1`: sixteen tests here read real
+  git history and skip without it, and one — `test_scout_preflight.py`'s
+  exit-code test — built its fixture from the last three non-merge commits,
+  found one, manufactured nothing, and failed on its own empty fixture. Both
+  workflows now set `fetch-depth: 0` and that test skips instead of failing.
+  **A red check you have learned to ignore is worse than no check.** When two
+  jobs disagree, the difference is in the workflow files, not the tests.
+- **A green checkmark on a Booth run means Booth posted a report, not that the
+  report was favourable.** The workflow exits 0 whenever the audit completes.
+  The verdict is in the comment text. PR #45's third audit was green in Actions
+  and read NEEDS HUMAN REVIEW with four discrepancies.
+- **The `edited` trigger on `booth-pr-audit.yml` fires for the PR description
+  only, and its `if:` guard additionally requires `github.event.changes.body`.**
+  Editing a *comment* in the thread raises `issue_comment`, which that workflow
+  does not listen to — so nothing starts and nothing explains why. If an audit
+  seems not to fire after an edit, check whether the edit went into the
+  description box at the top or a comment below it.
+- **A document can point at a file that has never existed, for months.**
+  `METHODOLOGY.md` was cited by the README's fifth line and two `src/`
+  docstrings; `git log --all --diff-filter=A -- METHODOLOGY.md` returns nothing.
+  `src/tune_qb_shrink_k.py` had already noticed and written it down, which fixed
+  nothing, because a note is not a check. `tests/test_readme_accuracy.py` is now
+  the check.
+- **A guard whose rule names a forbidden string will match its own docstring.**
+  Third occurrence this session. Exclude the file that states the rule, and say
+  so in a comment — the alternative is describing the banned string obliquely
+  enough to dodge your own regex, which damages the rule to protect the checker.
 - **`git reset --hard` and `git checkout --` have destroyed in-progress edits
   three times.** Before any restore, check what is uncommitted; prefer
   re-applying a known edit over reverting a whole file. When mutation-testing a
