@@ -2,7 +2,9 @@
 Core rating engine: opponent-adjusted team ratings + per-QB ratings.
 Both are leak-free (any "as of" cutoff only uses strictly earlier plays)
 and recency-weighted. This is the same method validated in the project's
-backtest -- see METHODOLOGY.md for the real, run numbers.
+backtest -- see the dashboard's Methodology page, and README.md, for the
+real, run numbers. (There has never been a METHODOLOGY.md in this repo;
+three files pointed at one anyway. See src/tune_qb_shrink_k.py.)
 """
 import pandas as pd
 import numpy as np

@@ -2,7 +2,8 @@
 O-line continuity feature. Validated via backtest (2026-08-19): a real,
 small, consistent improvement across all 4 metrics when added to the
 existing team+QB model (accuracy +0.11pt, log loss/Brier/AUC all improved
-too, on an apples-to-apples same-sample comparison). See METHODOLOGY.md.
+too, on an apples-to-apples same-sample comparison). See the dashboard's
+Methodology page.
 
 Mechanism: an offense's continuity of its starting 5 offensive linemen
 week-to-week is a leading indicator of blocking performance, independent
