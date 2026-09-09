@@ -19,10 +19,17 @@ in the parts that changed fastest.
 | `CLAUDE.md` | What stays true for months: methodology, stage plans, traps | When a rule or plan changes |
 | `memory/` | One file per session: what happened and why | Appended, never edited |
 
-**Session start:** `docs/context.md`, then CLAUDE.md. Reach for `memory/` only
-to answer "why did we decide that".
+**Session start:** `python src/session_start.py` — it computes the state rather
+than restating it, and cross-checks what `docs/context.md` claims against git.
+Then read `docs/context.md`, then CLAUDE.md. Reach for `memory/` only to answer
+"why did we decide that".
+
 **Session end:** `python src/session_wrapup.py`, then rewrite `docs/context.md`
 and add a `memory/` entry.
+
+Neither script fetches pull-request state — there is no `gh` CLI on this
+machine, and a guessed PR status would be exactly the unverified claim this
+project is built to avoid. Check open PRs on GitHub yourself.
 
 ## The model
 
@@ -50,7 +57,8 @@ and add a `memory/` entry.
 | `src/booth_verdict.py` | Parses the machine-readable verdict block out of a Booth report. |
 | `src/booth_fixture_runner.py` | Runs deliberately-bad PRs that Booth must catch. |
 | `src/collect_agent_log.py` | Turns Booth's audit comments into the data the reliability page renders. |
-| `src/session_wrapup.py` | End-of-session checks. Mechanical ones plus a by-hand list. |
+| `src/session_start.py` | Orientation: branch state, branch list, what `docs/context.md` claims vs what git knows, suite count vs the documented one. Never gates. |
+| `src/session_wrapup.py` | End-of-session checks. Mechanical ones plus a by-hand list. This one gates. |
 
 ## The tests worth knowing about
 

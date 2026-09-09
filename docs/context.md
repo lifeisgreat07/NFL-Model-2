@@ -17,16 +17,19 @@ Last updated: 2026-09-08
 complete; Stage 3 is winding down. Pages are down from 14 to **9**, which was
 7.5's target.
 
-**The single next action:** check whether PR #44's newest audit passed, then
-merge it.
+**The single next action:** merge PR #44. Booth returned SAFE TO MERGE on
+2026-09-09 — 13 claims, 13 confirmed, 0 discrepancies.
 
 ## Open work, and what each thing is waiting on
 
+Branch names are written in full on purpose: `src/session_start.py`
+cross-checks them against git and cannot see work referred to only by PR number.
+
 | What | State | Waiting on |
 |---|---|---|
-| PR #44 — plain-English rewrites | Open, audited 3× | A clean audit at head `6333700`. Its only finding was a count in the description, which has been corrected; the runs that flagged it read the old text. |
-| Branch `claude/session-memory-docs` | This branch | Its own PR — the file you are reading. |
-| Branch `claude/reliability-rebuild` | Pushed, no PR | Merge #44 first, then merge main into it. It is branched off #44. |
+| PR #44, branch claude/plain-english-rewrites | **SAFE TO MERGE** | Nothing. Merge it first — the other two sit behind it. |
+| PR #45, branch claude/session-memory-docs | Open | Its own audit. This is the file you are reading, plus `docs/index.md`, `memory/` and their guards. |
+| Branch claude/reliability-rebuild | Pushed, no PR | Merge #44, then merge main into it before opening its PR. It is branched off #44. |
 
 ## What is queued after that
 
