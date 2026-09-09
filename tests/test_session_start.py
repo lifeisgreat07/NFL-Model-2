@@ -105,6 +105,55 @@ def test_the_stale_threshold_is_stated_as_a_judgement_not_a_measurement():
         "choice rather than something measured")
 
 
+def test_the_wrapup_survives_a_detached_head_that_is_actually_pushed():
+    """Booth's audit sandbox checks a PR out detached, and `session_wrapup.py`
+    told it "commits exist only on this machine" about a commit that was sitting
+    on origin under a branch name. The check's real question is whether the
+    commit reached the remote, so it asks that rather than inferring it from a
+    tracking branch -- which a detached checkout never has.
+
+    Verified against this repository's own history rather than a fixture: any
+    commit already on a remote branch must not be reported as unpushed.
+    """
+    src = (REPO / 'src' / 'session_wrapup.py').read_text(encoding='utf-8')
+    assert "'branch', '-r', '--contains'" in src, (
+        "check_nothing_unpushed no longer asks whether the commit is on a "
+        "remote branch, so a detached checkout is reported as unpushed again")
+
+    head = subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=REPO,
+                          capture_output=True, text=True).stdout.strip()
+    on_remote = subprocess.run(['git', 'branch', '-r', '--contains', head],
+                               cwd=REPO, capture_output=True, text=True).stdout.strip()
+    if not on_remote:
+        pytest.skip('HEAD is not on a remote branch, so there is nothing to prove here')
+
+    # The FUNCTION, not the script. Running session_wrapup.py as a subprocess
+    # from inside the suite is the recursion its own docstring warns about --
+    # it runs pytest, which runs this test, which runs it again. The first
+    # draft of this test did exactly that and had to be killed.
+    sys.path.insert(0, str(REPO / 'src'))
+    import session_wrapup
+    result = session_wrapup.check_nothing_unpushed()
+    assert result.ok, (
+        f"HEAD is on {on_remote.splitlines()[0].strip()} yet check_nothing_unpushed "
+        f"reports: {result.detail}")
+
+
+def test_the_date_checks_say_they_are_expected_at_session_start():
+    """These two fail every morning by design -- the context file and the
+    memory entry are written at the END of a session, so a fresh one starts
+    with both red. Booth read that as a discrepancy against a PR claiming six
+    passing checks, which is a fair reading of an unexplained failure.
+
+    The failure text now says which kind of failure it is. A check that cannot
+    be told apart from a regression will eventually be ignored like one.
+    """
+    src = (REPO / 'src' / 'session_wrapup.py').read_text(encoding='utf-8')
+    assert src.count('EXPECTED at the start of a session') >= 2, (
+        "the date-based checks no longer explain that failing at session start "
+        "is the mechanism working rather than something being broken")
+
+
 def test_the_wrapup_and_start_scripts_read_the_same_count_line():
     """They are two halves of one ritual. If they parsed CLAUDE.md's suite line
     differently, one could pass while the other failed on the same file --

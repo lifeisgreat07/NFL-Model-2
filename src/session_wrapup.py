@@ -85,9 +85,22 @@ def check_nothing_unpushed():
     branch = _git('rev-parse', '--abbrev-ref', 'HEAD')
     upstream = _git('rev-parse', '--abbrev-ref', '@{u}')
     if not upstream:
+        # A detached HEAD has no upstream but may be perfectly safe: CI and
+        # review sandboxes check a PR out this way, and Booth's audit of PR #45
+        # reported "commits exist only on this machine" about a commit that was
+        # on origin under a branch name. The question this check actually asks
+        # is "does this commit exist on the remote", so ask that instead of
+        # inferring it from the presence of a tracking branch.
+        head = _git('rev-parse', 'HEAD')
+        on_remote = _git('branch', '-r', '--contains', head)
+        if on_remote:
+            first = on_remote.splitlines()[0].strip()
+            return Check('unpushed work', True,
+                         'detached HEAD, but this commit is on {} -- nothing '
+                         'is unpushed'.format(first))
         return Check('unpushed work', False,
-                     "branch {!r} has no upstream; commits on it exist only "
-                     "on this machine".format(branch))
+                     "branch {!r} has no upstream and this commit is on no "
+                     "remote branch; it exists only on this machine".format(branch))
     ahead = _git('rev-list', '--count', '@{u}..HEAD')
     if ahead and ahead != '0':
         return Check('unpushed work', False,
@@ -128,7 +141,11 @@ def check_context_is_current():
         return Check('context file', False,
                      'docs/context.md was last updated {}, not today ({}). '
                      'Rewrite it: open branches, what each waits on, and the '
-                     'single next action.'.format(m.group(1), today))
+                     'single next action.\nEXPECTED at the start of a session '
+                     '-- this check is a to-do, not a regression. It demands '
+                     "today's date deliberately, with no slack, because a "
+                     'context file that is "nearly current" is the thing that '
+                     'gets believed and is wrong.'.format(m.group(1), today))
     return Check('context file', True, 'updated today')
 
 
@@ -144,7 +161,9 @@ def check_session_memory_written():
     if not todays:
         return Check('session memory', False,
                      'no memory/{}.md yet. Four headings: Shipped, Decided '
-                     '(with the reasoning), Surprised us, Left open.'.format(today))
+                     '(with the reasoning), Surprised us, Left open.\n'
+                     'EXPECTED at the start of a session -- a to-do, not a '
+                     'regression.'.format(today))
     return Check('session memory', True,
                  'wrote {}'.format(', '.join(p.name for p in todays)))
 
