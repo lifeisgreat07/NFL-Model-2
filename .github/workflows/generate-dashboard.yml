@@ -15,12 +15,39 @@ on:
       - 'data/**'
       - 'predictions/**'
       - 'results/**'
+  # The same GITHUB_TOKEN rule the comment above calls a safeguard also severs
+  # a handoff. "Collect Booth's audit log" writes data/agent_log.json and
+  # commits it -- squarely inside the `data/**` paths above -- but because that
+  # commit is pushed with the default GITHUB_TOKEN, GitHub will not let it
+  # trigger this workflow. Observed on 2026-09-09, the first time the collector
+  # ever ran: agent_log.json landed on main with 44 audits in it, and the live
+  # page went on saying "The record has not been collected yet", because
+  # index.html was never rebuilt. The data was collected and simply never
+  # arrived anywhere a reader could see it.
+  #
+  # workflow_run is the supported way across that gap: it fires on the
+  # completion of a named workflow rather than on its push. Kept as a trigger
+  # on THIS workflow rather than by teaching the collector to build the
+  # dashboard itself, so that exactly one workflow ever regenerates index.html.
+  # A second builder would need its own copy of the prune-churn step, and a
+  # guard wired into one of several paths reading as a guard that is present is
+  # a mistake this repository has already made once.
+  workflow_run:
+    workflows: ["Collect Booth's audit log"]
+    types: [completed]
 
 permissions:
   contents: write
 
 jobs:
   regenerate:
+    # workflow_run fires on completion, not on success. A collector run that
+    # failed wrote no new data, so rebuilding on it spends a run to produce an
+    # identical index.html. Push events carry no workflow_run payload, so the
+    # second clause is what keeps them working.
+    if: >-
+      github.event_name != 'workflow_run'
+      || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo
