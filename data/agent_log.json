@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-09T19:12:51Z",
+  "generated_utc": "2026-09-09T19:20:15Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
     "audits_total": 47,
