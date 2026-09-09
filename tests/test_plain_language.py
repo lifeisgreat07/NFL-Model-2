@@ -51,6 +51,13 @@ JARGON = [
     'log loss', 'log-loss', 'brier', 'calibration', 'calibrated',
     'miscalibration', 'opponent-adjusted', 'shrinkage', 'bootstrap',
     'confidence interval', 'wilson interval', 'auc', 'epa',
+    # The abbreviation, which slipped past the spelled-out entry above for
+    # months: the Week Board shipped "(95% CI 67.2-81.4%)" on every game card
+    # while this list read clean. Anchored to "95% ci" rather than a bare "ci",
+    # which would match "circumstance", "decision" and half the copy on the
+    # site -- a guard that cries wolf gets an allowlist entry and then gets
+    # ignored, which is worse than the leak it was meant to catch.
+    '95% ci',
     'ridge regression', 'fixed-effects', 'logistic', 'coefficient',
     'residual', 'ensemble', 'half-life', 'backtest', 'held-out',
     'resolution + uncertainty', 'reliability diagram',
@@ -69,6 +76,8 @@ RENDERERS = {
     'renderRatings': 'ratings',
     'renderGames': 'board',
     'renderWeekGlance': 'board',
+    'whySentence': 'board',
+    'whyMarketSentence': 'board',
     'pickBadge': 'board',
     'lineFor': 'board',
     'whyRow': 'board',
