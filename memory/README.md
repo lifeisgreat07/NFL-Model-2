@@ -27,3 +27,4 @@ decision, leave it out.
 | Date | Headline |
 |---|---|
 | [2026-09-08](2026-09-08.md) | Stage 7.5 cut the dashboard from 14 pages to 9; the jargon guard went live; the agent log turned out never to have run |
+| [2026-09-09](2026-09-09.md) | #44 merged; the wrap-up gate and its pytest guard were found disagreeing about dates; METHODOLOGY.md turned out never to have existed |

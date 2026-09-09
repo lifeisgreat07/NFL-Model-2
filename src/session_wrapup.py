@@ -24,7 +24,7 @@ Exits non-zero if anything mechanical is wrong, so it can gate a wrap-up.
 import re
 import subprocess
 import sys
-from datetime import datetime
+from datetime import date, timedelta
 from pathlib import Path
 
 REPO = Path(__file__).parent.parent
@@ -125,6 +125,17 @@ def check_context_is_current():
 
     Checked by its own 'Last updated:' stamp rather than by git mtime, because
     a file can be touched by a merge without anyone revisiting what it says.
+
+    The slack is deliberately one-directional: today or tomorrow passes,
+    yesterday does not. Booth caught this check and the pytest guard in
+    tests/test_workflow_docs.py disagreeing, and it was a real disagreement,
+    not a wording one. The agent writing context.md runs on UTC; this script
+    runs on the machine, on US local time. On the evening this was written
+    they read 09-09 and 09-08, so a file stamped and rewritten inside one
+    session could fail its own session's wrap-up. That is the false alarm.
+    A stamp one day AHEAD is a timezone. A stamp one day BEHIND is a context
+    file nobody rewrote, which is the exact thing this check exists to catch,
+    so it stays a failure.
     """
     path = REPO / 'docs' / 'context.md'
     if not path.exists():
@@ -136,34 +147,42 @@ def check_context_is_current():
     if not m:
         return Check('context file', False,
                      "docs/context.md has no 'Last updated:' line")
-    today = datetime.now().strftime('%Y-%m-%d')
-    if m.group(1) != today:
+    today = date.today()
+    accepted = {today.isoformat(), (today + timedelta(days=1)).isoformat()}
+    if m.group(1) not in accepted:
         return Check('context file', False,
                      'docs/context.md was last updated {}, not today ({}). '
                      'Rewrite it: open branches, what each waits on, and the '
                      'single next action.\nEXPECTED at the start of a session '
-                     '-- this check is a to-do, not a regression. It demands '
-                     "today's date deliberately, with no slack, because a "
-                     'context file that is "nearly current" is the thing that '
-                     'gets believed and is wrong.'.format(m.group(1), today))
-    return Check('context file', True, 'updated today')
+                     '-- this check is a to-do, not a regression. Tomorrow is '
+                     'accepted (the agent writes on UTC, this runs on the '
+                     'machine); yesterday is not, because a context file that '
+                     'is "nearly current" is the thing that gets believed and '
+                     'is wrong.'.format(m.group(1), today.isoformat()))
+    return Check('context file', True,
+                 'stamped {}'.format(m.group(1)))
 
 
 def check_session_memory_written():
     """One memory file per session, appended not edited. The reasoning behind a
     decision is the expensive thing to reconstruct, and it is gone by the next
-    morning if nobody writes it down."""
+    morning if nobody writes it down.
+
+    Same one-directional slack as check_context_is_current, for the same
+    reason: the file is named by the clock of whichever machine wrote it.
+    """
     memory = REPO / 'memory'
-    today = datetime.now().strftime('%Y-%m-%d')
+    today = date.today()
     if not memory.is_dir():
         return Check('session memory', False, 'no memory/ directory')
-    todays = sorted(memory.glob(today + '*.md'))
+    todays = sorted(p for stamp in (today, today + timedelta(days=1))
+                    for p in memory.glob(stamp.isoformat() + '*.md'))
     if not todays:
         return Check('session memory', False,
                      'no memory/{}.md yet. Four headings: Shipped, Decided '
                      '(with the reasoning), Surprised us, Left open.\n'
                      'EXPECTED at the start of a session -- a to-do, not a '
-                     'regression.'.format(today))
+                     'regression.'.format(today.isoformat()))
     return Check('session memory', True,
                  'wrote {}'.format(', '.join(p.name for p in todays)))
 
