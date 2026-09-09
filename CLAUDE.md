@@ -47,7 +47,8 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **628 passing** (1 skipped) on `main` (2026-09-09). Run it before quoting
+Suite: **658 passing** (1 skipped) on branch claude/session-memory-docs
+(2026-09-09); `main` is at 635. Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -58,7 +59,14 @@ reads like a deleted section rather than an edited sentence.
 
 **Stages 1 and 2 are complete. Stage 3 is in progress. Stage 7.5 has started.**
 
-### Start here (updated 2026-09-09)
+### Start here
+
+**Current state now lives in `docs/context.md`. Read that first — it is
+rewritten every session and this section is not.** `docs/index.md` maps where
+everything is; `memory/` records what each session decided and why. This file
+keeps what stays true for months: methodology, stage plans, and the traps below.
+
+The note below is from 2026-09-09 and is kept until the branches it names land.
 
 **THE FULL HANDOFF IS NOT ON MAIN.** It is on the unmerged branch
 claude/reliability-rebuild, which carries an expanded version of this section,
@@ -70,26 +78,23 @@ became a column on Power Ratings, Roadmap folded into Changelog (renamed What's
 Changed), and How This Compares, Data Sources and the Glossary became parts of
 Methodology. The plain-language guard is live and its allowlist is empty.
 
-**Two branches are open and neither is merged:**
+#44 is merged. **Which branches are open, and what each waits on, is in
+`docs/context.md` — that file is rewritten every session and this one is not.**
+Do not maintain a second list here; that duplication is what this split exists
+to end. One branch is described below only because its reasoning is durable and
+would otherwise be lost:
 
-1. **PR #44** (branch claude/plain-english-rewrites) — the plain-English
-   rewrites. Booth has audited it three times. The first two flagged the same
-   DISCREPANCY, a count of "eight" where the pre-PR allowlist held nine; the
-   description has since been corrected by hand and now reads correctly. Mark
-   fired a third run and reported it failed too, and **that report was never
-   read** — it is unknown, not resolved. First action: open #44, read the newest
-   Booth comment, and compare its `Description read at:` timestamp against when
-   the description was last edited. A run that read the body before the edit is
-   stale, not a new finding.
-2. **Branch claude/reliability-rebuild** — pushed, no PR yet, deliberately
+1. **Branch claude/reliability-rebuild** — pushed, no PR yet, deliberately
    (opening one starts an audit). Connects `src/collect_agent_log.py`, which was
    built and tested in Stage 3 and had **never run**: the agent-log data file it
    writes did not exist, nothing invoked it, and the generator had never heard
    of it (which is why that path is not named here — on main there is still no
    such file, and this document's own freshness guard is right to say so). Adds
    the workflow that produces it and rebuilds the reliability page around it,
-   renamed "Checking the AI's work". Green at 645 on its own head. It is branched
-   off #44, so merge #44 first, then merge main into it before opening its PR.
+   renamed "Checking the AI's work". Green at 645 on its own head. It was
+   branched off #44, which is now merged; merge #45 first, then merge main into
+   it before opening its PR. It conflicts with #45 on the Start here section
+   above — take #45's version, the short pointer.
 
 Then the next Stage 7.5 item: **Season Accuracy — declutter.** It is clean on
 vocabulary and still too dense.
