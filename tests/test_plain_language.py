@@ -79,6 +79,11 @@ RENDERERS = {
     'showUndoToast': 'picks',
     'renderAccuracy': 'accuracy',
     'buildCalibrationChart': 'accuracy',
+    # Added when the trend chart gained a not-enough-data message. It used to
+    # return '' in that case and so rendered no prose at all; the moment it
+    # started explaining itself in words, its copy became reader-facing and
+    # this guard caught that on the same change that introduced it.
+    'buildCumulativeTrendChart': 'accuracy',
     'renderTeamDive': 'teamdive',
     'renderTeamGames': 'teamdive',
     # Model Lab: its reliability diagram is a technical chart on a technical

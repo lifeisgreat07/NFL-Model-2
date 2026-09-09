@@ -17,3 +17,6 @@ results/*_run.log
 # repo has already been bitten once by treating those two as the same thing
 # (fixing a code comment does not fix a PR description).
 .pr-body.md
+
+# Scratch commit message; PowerShell has no heredocs, so git commit -F needs a file.
+.commit-msg.txt

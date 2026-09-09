@@ -196,6 +196,20 @@ def build_accuracy_summary(all_graded):
 
     weekly = []
     for (season, week), graded in sorted(all_graded.items()):
+        # A week with nothing graded is not a data point, and emitting one puts
+        # a fiction in the JSON that every consumer then has to know about.
+        # 2026 Week 1 was graded before it was played, so results/ held an empty
+        # list for it -- and the dashboard printed "2026 Wk 1  0/0  0/0  0/0" in
+        # the Weekly Trend table, which reads as "we went 0 for 0" rather than
+        # "not played yet", and gave the cumulative trend chart a second point
+        # to draw a flat line to. Three steady-looking trend lines, entirely an
+        # artifact of charting an empty week.
+        #
+        # Dropped here rather than filtered in the page's JavaScript so the
+        # generated data has one meaning, not one meaning plus a convention the
+        # reader has to apply.
+        if not graded:
+            continue
         a_vals = [g['model_a_correct'] for g in graded if g.get('model_a_correct') is not None]
         b_vals = [g['model_b_correct'] for g in graded if g.get('model_b_correct') is not None]
         m_vals = [g['market_correct'] for g in graded if g.get('market_correct') is not None]
