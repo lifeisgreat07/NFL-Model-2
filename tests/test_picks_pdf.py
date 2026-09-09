@@ -123,17 +123,25 @@ def test_ranks_are_read_not_recomputed():
 
 
 def test_legacy_predictions_without_ranking_rejected_clearly():
-    """The real 2025 week 10 file predates confidence ranking. It must fail
-    with an explanatory error, not a bare KeyError, and must never have a
-    ranking invented for it."""
+    """Predictions written before confidence ranking existed must fail with an
+    explanatory error, not a bare KeyError, and must never have a ranking
+    invented for them."""
     from generate_picks_pdf import build_picks_rows
 
-    legacy = REPO_ROOT / "predictions" / "2025_week10.json"
-    if not legacy.exists():
-        pytest.skip("legacy prediction file not present")
-
-    with open(legacy) as f:
-        preds = json.load(f)
+    # Synthetic, not the real 2025 week 10 file. That file was deleted when the
+    # page it fed was corrected -- and had this test kept reading it, deleting
+    # it would have turned the guard into a permanent skip: a test that passes
+    # while testing nothing, which is the failure mode this repository keeps
+    # finding. The shape is what matters, and the shape is "no confidence_rank
+    # and no confidence_points", exactly as pre-ranking files were written.
+    preds = [
+        {"home": "DEN", "away": "LV", "prob_home_a": 0.61, "prob_home_b": 0.58,
+         "spread": -3.0},
+        {"home": "KC", "away": "BUF", "prob_home_a": 0.55, "prob_home_b": 0.54,
+         "spread": -1.5},
+    ]
+    assert not any('confidence_rank' in p or 'confidence_points' in p
+                   for p in preds), "the fixture must actually be pre-ranking"
 
     with pytest.raises(ValueError, match="predate confidence ranking"):
         build_picks_rows(preds)

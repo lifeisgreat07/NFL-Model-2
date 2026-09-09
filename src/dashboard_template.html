@@ -431,6 +431,19 @@
   .empty-state{padding:48px 24px; text-align:center; color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px;
     background:var(--panel); border:1px dashed var(--line); border-radius:var(--radius);}
 
+  /* A modifier, not a change to .empty-state. Everywhere else that class
+     carries one short line, and centring one line is right. Season Accuracy's
+     empty state is two paragraphs and is the entire page until the first week
+     is played, so it gets a reading measure and a left edge: centred prose
+     gives the eye no fixed point to return to at the start of each line, and
+     the cost grows with every line. Heading stays centred as a title. */
+  .empty-state.empty-readable{max-width:60ch; margin:0 auto; text-align:left;
+    font-size:13px; line-height:1.65;}
+  .empty-state.empty-readable h3{text-align:center; font-size:15px;
+    color:var(--chalk); margin:0 0 14px;}
+  .empty-state.empty-readable p{margin:0 0 12px;}
+  .empty-state.empty-readable p:last-child{margin-bottom:0;}
+
   /* ---------- Team Deep-Dive: game drill-down ----------
      Reuses .why-panel / .why-row from the week board rather than restating
      them, so the expanded breakdown looks the same in both places. */
@@ -2351,7 +2364,24 @@ function seriesLegend(keys){
 
 /* ---------- Season Accuracy ---------- */
 function buildCumulativeTrendChart(){
-  if(!accuracy.weeks || accuracy.weeks.length === 0) return '';
+  // Two points, not one. A trend needs somewhere to go, and a single graded
+  // week drew either nothing (every series short-circuits at valid.length < 2)
+  // or, when an empty week was still being emitted as a data point, three flat
+  // horizontal lines that looked like a considered finding and were an artifact
+  // of charting a week with no games in it.
+  //
+  // Says so rather than rendering nothing, following the calibration section
+  // further down this same page, which already handles its own not-enough-data
+  // case in words. An absent chart invites "is it broken?"; a sentence does not.
+  if(!accuracy.weeks || accuracy.weeks.length < 2){
+    const n = (accuracy.weeks || []).length;
+    return `<div class="method-block">
+      <h3>Accuracy over the season</h3>
+      <p>${n === 0
+          ? 'No weeks have been graded yet, so there is no trend to show. This fills in after the first week’s games are played and graded.'
+          : 'Only one week has been graded so far. A trend line needs at least two, so this chart appears once the second week is in — a single point drawn as a line would suggest a direction that has not been measured.'}</p>
+    </div>`;
+  }
   const myPicks = loadMyPicks();
 
   let cA=0, nA=0, cB=0, nB=0, cM=0, nM=0, cP=0, nP=0;
@@ -2704,7 +2734,20 @@ function initReliabilityDiagram(){
 function renderAccuracy(){
   const el = document.getElementById('accuracy-content');
   if(!accuracy.overall){
-    el.innerHTML = `<div class="empty-state">No graded weeks yet. Run grade_predictions.py after a week's games finish.</div>`;
+    // This is the whole page until the first week of the season is played, so
+    // it is written for a reader, not for whoever runs the scripts. The old
+    // copy said "Run grade_predictions.py after a week's games finish", which
+    // tells a visitor nothing except that something is missing.
+    el.innerHTML = `<div class="empty-state empty-readable">
+      <h3>Nothing to score yet</h3>
+      <p>Every pick on this site is saved before kickoff and checked against the
+      real result afterwards. No games have been played and graded yet, so there
+      is no record to show — and a record built from anything other than
+      already-saved picks would not be worth showing.</p>
+      <p>This page fills in on its own the day after the first week's games
+      finish: how often each model was right, how that changes week to week, and
+      whether the confidence numbers turn out to be honest.</p>
+    </div>`;
     return;
   }
   const o = accuracy.overall;
@@ -2727,7 +2770,7 @@ function renderAccuracy(){
 
   const cardsHtml = `
     <div class="accuracy-cards">
-      <div class="accuracy-card"><div class="label">My Picks</div><div class="value">${myPct ?? '—'}%</div><div class="sub">${myWins}-${myLosses} graded</div></div>
+      <div class="accuracy-card"><div class="label">My Picks</div><div class="value">${myTotal > 0 ? myPct + '%' : '—'}</div><div class="sub">${myTotal > 0 ? `${myWins}-${myLosses} graded` : 'Pick some games on the Week Board to start your record'}</div></div>
       <div class="accuracy-card"><div class="label">Model A</div><div class="value">${o.model_a.pct ?? '—'}%</div><div class="sub">${o.model_a.correct}/${o.model_a.n} correct</div></div>
       <div class="accuracy-card"><div class="label">Model B</div><div class="value">${o.model_b.pct ?? '—'}%</div><div class="sub">${o.model_b.correct}/${o.model_b.n} correct</div></div>
       <div class="accuracy-card"><div class="label">Market</div><div class="value">${o.market.pct ?? '—'}%</div><div class="sub">${o.market.correct}/${o.market.n} correct</div></div>
@@ -2742,13 +2785,18 @@ function renderAccuracy(){
       <td class="num">${w.model_b_correct}/${w.model_b_n}</td>
       <td class="num">${w.market_correct}/${w.market_n}</td>
     </tr>`).join('');
+  // An empty tbody renders as a header with nothing under it, which reads as a
+  // broken table rather than an empty one. Every not-enough-data case on this
+  // page now says what it is waiting for.
   const weeklyHtml = `
     <div class="method-block">
-      <h3>Weekly Trend</h3>
-      <div class="table-wrap"><table class="metrics-table">
+      <h3>Week by week</h3>
+      ${weeklyRows
+        ? `<div class="table-wrap"><table class="metrics-table">
         <thead><tr><th>Week</th><th>Model A</th><th>Model B</th><th>Market</th></tr></thead>
         <tbody>${weeklyRows}</tbody>
-      </table></div>
+      </table></div>`
+        : `<p>Nothing graded yet. Each week appears here the day after its games are played.</p>`}
     </div>`;
 
   const calibChartHtml = buildCalibrationChart();

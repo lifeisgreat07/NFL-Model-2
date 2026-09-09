@@ -715,6 +715,22 @@ under compaction pressure, so its length is a cost paid on every session.
 - `cmd` mangles multi-line `python -c` strings, and **PowerShell has no
   heredocs** — `git commit -F <file>` with a written message file, and script
   files instead of inline `-c`, are the reliable forms.
+- **To actually LOOK at the built dashboard, serve it over localhost.** Neither
+  browser available here will open a `file://` URL, and GitHub Pages serves
+  `main`, so a branch's page appeared unviewable — which cost PR #46 and PR #47
+  an honest "nobody has looked at this" disclosure each. The fix is one line,
+  and both the shell and the browser pane run on the same machine:
+
+      Start-Process -WindowStyle Hidden python -ArgumentList "-m","http.server","8765"
+
+  then open localhost:8765/index.html in the browser pane (not backticked: the
+  freshness guard reads a backticked path ending in .html as a repo file and is
+  right to). Regenerate, reload, look. The
+  first thing it caught was a new empty state rendering as two paragraphs of
+  centred prose. Stop it with `Get-Process python | Stop-Process` when done.
+  Note the screenshot tool here does not write image files, so a visual check
+  is still a **process note**, never attached evidence — Booth is right to mark
+  an unattached screenshot UNVERIFIABLE.
 
 ## Traps that have actually bitten
 
