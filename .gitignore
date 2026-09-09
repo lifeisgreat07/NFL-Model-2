@@ -10,3 +10,10 @@ results/*_run.log
 
 # Throwaway repos built by src/booth_fixture_runner.py.
 .fixture-run/
+
+# Scratch PR description. src/scout_preflight.py takes a body_file, so the
+# body gets written to disk before every PR; this is the conventional name for
+# it. It is a draft of a GitHub artifact, not a repository artifact -- and the
+# repo has already been bitten once by treating those two as the same thing
+# (fixing a code comment does not fix a PR description).
+.pr-body.md
