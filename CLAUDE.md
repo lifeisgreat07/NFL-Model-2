@@ -47,8 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **672 passing** (1 skipped) on `main` (2026-09-09), and this branch is
-not yet re-measured on top of it. Run it before quoting
+Suite: **704 passing** (1 skipped) on `main` (2026-09-09). Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -57,7 +56,8 @@ that literal, and rewording it to `**N passing, 1 skipped**` did not make the
 check complain about the wording — it reported the line as *missing*, which
 reads like a deleted section rather than an edited sentence.
 
-**Stages 1 and 2 are complete. Stage 3 is in progress. Stage 7.5 has started.**
+**Stages 1, 2, 3 and 7.5 are complete. Stage 7.6's repository half is done.
+Stage 8 is next and is blocked on a visual reference.**
 
 ### Start here
 
@@ -66,10 +66,7 @@ rewritten every session and this section is not.** `docs/index.md` maps where
 everything is; `memory/` records what each session decided and why. This file
 keeps what stays true for months: methodology, stage plans, and the traps below.
 
-This branch carries the expanded handoff that main's copy points at: the Stage
-8+ design-tooling notes and the extra trap entries below arrive with it.
-
-Merged: #40 through #46. Stage 7.5 has cut 14 pages to **9** — Playoff Odds
+Merged: #40 through #50. Stage 7.5 has cut 14 pages to **9** — Playoff Odds
 became a column on Power Ratings, Roadmap folded into Changelog (renamed What's
 Changed), and How This Compares, Data Sources and the Glossary became parts of
 Methodology. The plain-language guard is live and its allowlist is empty.
@@ -80,23 +77,21 @@ half — the repo description and topics — is still Mark's to do in the GitHub
 **Which branches are open, and what each waits on, is in
 `docs/context.md` — that file is rewritten every session and this one is not.**
 Do not maintain a second list here; that duplication is what this split exists
-to end. One branch is described below only because its reasoning is durable and
-would otherwise be lost:
+to end. As of 2026-09-09 there are no open branches at all.
 
-1. **Branch claude/reliability-rebuild** — pushed, no PR yet, deliberately
-   (opening one starts an audit). Connects `src/collect_agent_log.py`, which was
-   built and tested in Stage 3 and had **never run**: the agent-log data file it
-   writes did not exist, nothing invoked it, and the generator had never heard
-   of it (which is why that path is not named here — on main there is still no
-   such file, and this document's own freshness guard is right to say so). Adds
-   the workflow that produces it and rebuilds the reliability page around it,
-   renamed "Checking the AI's work". Green at 645 on its own head. It was
-   branched off #44, which is now merged; merge #45 first, then merge main into
-   it before opening its PR. It conflicts with #45 on the Start here section
-   above — take #45's version, the short pointer.
+**Stage 3 closed with the finding it exists to prevent.**
+`src/collect_agent_log.py` was written and tested in Stage 3 and had **never
+run** — nothing invoked it, its data file did not exist, and the generator had
+never heard of it. Tested, mutation-covered, and dead. PR #47 connected it. Then
+it ran and the page still said "The record has not been collected yet", because
+a commit pushed by one workflow's `GITHUB_TOKEN` cannot trigger another; #48
+fixed that with a `workflow_run` trigger. Two links of the same chain, each one
+a step that ran correctly and had nothing downstream consuming it. The record is
+live now: `data/agent_log.json`, 45 audits, 167 claims checked, 11 discrepancies.
 
-Then the next Stage 7.5 item: **Season Accuracy — declutter.** It is clean on
-vocabulary and still too dense.
+**The next thing is Stage 8, and it is blocked on Mark naming a visual
+reference.** Do not start it by working through the audit's defect list; see the
+Stage 8 section below for why.
 
 Two habits that paid for themselves and should carry forward: build
 the page and *click the thing you just added* before opening the PR (that is how
@@ -529,6 +524,38 @@ no supply chain. Do not spend it casually.
   him explicitly, not something that arrives as a side effect of wanting nicer
   animations.
 
+**Assessed and set aside, 2026-09-09.** Mark brought two candidates and neither
+becomes the direction, but the reasoning is worth keeping so they are not
+re-proposed:
+
+- **`basbruss/Minimalist-Dashboards`** is a **Home Assistant** Lovelace
+  configuration — YAML plus HACS custom cards, last released February 2023. It
+  only runs inside Home Assistant; there is no CSS or component code to lift at
+  any level of effort. Its *look* (soft-cornered tiles, muted palette, icon-led,
+  generous whitespace, very little text) is a fair mood reference and nothing
+  more. Checked, not assumed: the repository itself tells people not to copy it.
+- **shadcn/ui + Tremor or v0** is React throughout. Tremor is React + Tailwind +
+  Radix and was acquired by Vercel; v0 generates React/Next projects, usually on
+  shadcn. Adopting them literally means replacing this dashboard's architecture,
+  not restyling it — and a large share of the suite depends on the current
+  shape: the jargon guard parses the template's render functions, the chart and
+  why-sentence harnesses execute the shipped JavaScript, the mutation corpus
+  anchors on exact source strings. A rewrite spends Stage 8 rebuilding
+  verification. What a recruiter judges is the rendered page and the rigour, not
+  the framework.
+
+**The recommended path, if a shadcn-like look is what Mark wants:** take the
+token layer, not the components. Its appearance is largely CSS variables — a
+neutral scale, a radius scale, disciplined borders and shadows, a spacing
+rhythm — and this dashboard already has a token layer to swap. Use v0 as a
+design *generator* whose output is translated by hand, never imported. Keep the
+hand-built SVG charts: they already do things a chart library would lose
+(colour follows the entity so a filter cannot repaint the survivors; shape and
+dash carry identity without colour; dark mode is stepped, not flipped). And note
+the cost nobody mentions — shadcn is now the default look of a great many
+dashboards, which is a real price for a portfolio piece whose pitch is
+independent judgement.
+
 **Still open, and worth more than any of these tools:** Mark has not yet named a
 dashboard or site whose look he wants. Ask for a concrete reference before
 Stage 8 begins. A token system with no point of view behind it is just tidier
@@ -734,6 +761,44 @@ under compaction pressure, so its length is a cost paid on every session.
 
 ## Traps that have actually bitten
 
+- **A safeguard written down twice, both times as a benefit, hid what it broke.**
+  A push made with the default `GITHUB_TOKEN` cannot trigger another workflow.
+  Both `collect-agent-log.yml` and `generate-dashboard.yml` documented that rule
+  as loop protection, which it genuinely is. Neither noticed it also severs the
+  handoff between them, so the collector wrote 44 audits to `main` and the page
+  went on saying "The record has not been collected yet". Fixed with a
+  `workflow_run` trigger and guarded by
+  `tests/test_generated_data_reaches_the_page.py`. **Ask what a safeguard also
+  prevents.** Note the general shape too: a step that runs, produces correct
+  output, and has nothing downstream consuming it — the same shape as the
+  collector itself having never run, one link further along.
+- **Correct arithmetic on absent data still produces a lie.** Season Accuracy
+  showed 64.3%, three flat trend lines, and a row reading zero-of-zero. Every number
+  was computed correctly from what it was given. 2026 Week 1 had been graded
+  before it was played, so an empty week became a row that reads "we got none of
+  none right" and a second point for the chart to draw to — and underneath, the
+  entire page rested on one week of the *previous* season. The `return {}`
+  entry below is the same failure; this is what it looks like on a page.
+  Absent inputs must be dropped where the data is built, not filtered downstream.
+- **A sign error in generated prose is invisible.** The Week Board's
+  "the betting line agrees" shipped on all sixteen cards with `spread_line`'s
+  sign inverted — it is positive when the HOME team is favoured, and the card
+  displays it negated, football-style. "Agrees" reads exactly as well as
+  "disagrees". Caught only by loading the page and noticing the sentence
+  contradicted the card's own Vegas line two inches above it. **The convention
+  was already written down**, in `tests/team_dive_harness.js`; it was got wrong
+  by assuming rather than reading. When copy is generated from signed numbers,
+  execute it in a harness with mirrored inputs — `tests/test_why_words.py` does.
+- **Renaming a piece of UI leaves references behind.** Retitling the Week Board
+  toggle orphaned its own reset label, a line in the onboarding banner, and a
+  sentence in Methodology. Third instance of this shape, after the mobile nav
+  still listing Playoff Odds. `git grep` the old string before considering a
+  rename finished.
+- **A guard can ban a term and miss its abbreviation.** The jargon list held
+  "confidence interval" while `95% CI` sat on the Week Board's every card.
+  Anchor the abbreviation to a phrase that cannot false-positive (`95% ci`, not
+  a bare `ci`) — a guard that cries wolf earns an allowlist entry and then gets
+  ignored, which is worse than the leak.
 - **Two CI jobs can disagree about the same commit, and the green one wins by
   default.** `run-tests.yml` was red on every pull request for days while
   `booth-pr-audit.yml` ran the identical suite green on the identical commit.

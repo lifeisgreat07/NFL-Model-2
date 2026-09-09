@@ -11,47 +11,52 @@ Last updated: 2026-09-09
 
 ## Right now
 
-**Suite:** 672 passing, 1 skipped on `main`. Re-run before quoting it.
+**Suite:** 704 passing, 1 skipped on `main`. Re-run before quoting it.
 
-**Stage:** 7.5 (content & structure pass) is in progress. 7.6's repository half
-shipped. Stages 1 and 2 are complete; Stage 3 is winding down. Pages are down
-from 14 to **9**, which was 7.5's target.
+**Stage:** 7.5 is **complete** — every content and structure item has shipped.
+7.6's repository half is done. Stages 1 and 2 are complete; Stage 3 is closed
+apart from one post-merge check below. Pages are down from 14 to **9**.
 
-**The single next action:** open `claude/reliability-rebuild`'s PR. Main has
-already been merged into it and its CLAUDE.md conflict is resolved, so it is
-ready — opening the PR is what starts its audit, which is why it was held back.
+**The single next action:** Mark to name a visual reference — one or two real
+pages he likes looking at. Stage 8 cannot start without it, and two candidates
+were assessed and set aside on 2026-09-09 (see `memory/2026-09-09.md`).
 
 ## Open work, and what each thing is waiting on
 
 Branch names are written in full on purpose: `src/session_start.py`
 cross-checks them against git and cannot see work referred to only by PR number.
 
+**No branches are open.** PRs #44 through #50 are all merged and their branches
+deleted. `main` is the only branch, local and remote.
+
 | What | State | Waiting on |
 |---|---|---|
-| Branch claude/reliability-rebuild | Pushed, main merged in, no PR | Mark to open its PR. Connects `src/collect_agent_log.py`, which had never run, and rebuilds the reliability page around its output. |
-
-PRs #44, #45 and #46 are all merged and their branches deleted. This is the
-only branch left.
+| A visual reference for Stage 8 | Not chosen | Mark. This is the blocker. |
+| The repo's About panel | Empty | Mark, in the GitHub web UI. Wording is in CLAUDE.md, ready to paste. |
+| `Auto-regenerate dashboard` run #56 | Failed 2026-09-09 | Someone to read its log. See "Known" below. |
 
 ## What is queued after that
 
-1. **Season Accuracy — declutter.** Clean on vocabulary, still too dense. This
-   is the last substantive Stage 7.5 item.
-2. Remaining 7.5 content work: My Picks "track record at this confidence",
-   Boards "why this team is favoured" in football terms.
-3. **The README's repo-layout block does not list `docs/` or `memory/`.** They
-   did not exist on `main` when #46 was written and its own guard would have
-   failed. They exist now; adding them is a two-line follow-up.
-4. **Stage 7.6's browser half.** The repo's About panel is still empty. The
-   description and topics are set in the GitHub web UI, not in any file here,
-   so they are Mark's to do.
+1. **Stage 8 — design system foundations.** Blocked on the reference above.
+   Read the Stage 8 section of CLAUDE.md before starting: the brief is a point
+   of view, not the audit's defect list.
+2. **The first real graded week.** `.github/workflows/weekly-update.yml` fires Tuesday 2026-09-15
+   at 11:00 UTC (07:00 local) and grades 2026 Week 1. Season Accuracy fills in
+   by itself. Worth watching once, because it has never run against a week that
+   actually had games.
+3. **A two-line README follow-up:** its repo-layout block still omits `docs/`
+   and `memory/`, which did not exist on `main` when it was written.
 
 ## Known and deliberately not fixed
 
-- Season Accuracy's Weekly Trend still lists **2025 Wk 10** beside 2026 Week 1.
-  This is graded *data*, not copy, so removing it means editing data files.
-  Needs a deliberate decision, not a drive-by fix.
-- This file is stamped on UTC, the clock the agent writing it runs on.
-  `src/session_wrapup.py` runs on Mark's machine, hours behind, and accepts a
-  stamp one day ahead for exactly this reason. It does not accept one day
-  behind — that is a file nobody rewrote.
+- **`Auto-regenerate dashboard` run #56 failed** and nobody has read why. Its
+  log needs a GitHub sign-in this session did not have, and the only visible
+  annotation is a Node 20 deprecation warning, which is not an error. The
+  hypothesis — unverified — is two rebuilds racing to push, which a
+  `concurrency` group would fix, as `.github/workflows/booth-pr-audit.yml`
+  already does. Do not treat that hypothesis as a diagnosis.
+- **`index.html` is generated AND committed**, so `main` rebuilds it whenever
+  the collector runs and every branch touching the template conflicts with it.
+  It bit twice in one day. Resolve by taking the branch's copy and rebuilding
+  from the merged sources — never by editing conflict markers in a generated
+  file. Worth restructuring during Stage 8, when the template is open anyway.
