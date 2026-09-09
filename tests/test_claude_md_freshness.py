@@ -128,9 +128,15 @@ def test_every_test_name_it_names_exists():
     if not named:
         pytest.skip('CLAUDE.md names no tests outside the stage plan')
 
+    # Filenames as well as contents. A module named tests/test_x.py rarely
+    # contains the string "test_x" anywhere inside it, so citing a whole guard
+    # file by path -- which is how CLAUDE.md refers to most of them -- read as
+    # a missing test. The ones that passed only did so because some other
+    # file's docstring happened to mention them.
     haystack = '\n'.join(
-        p.read_text(encoding='utf-8', errors='ignore')
-        for p in (REPO / 'tests').rglob('*.py')
+        [p.stem for p in (REPO / 'tests').rglob('*.py')] +
+        [p.read_text(encoding='utf-8', errors='ignore')
+         for p in (REPO / 'tests').rglob('*.py')]
     )
     missing = sorted(n for n in named if n not in haystack)
     assert not missing, (

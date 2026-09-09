@@ -47,10 +47,8 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **645 passing** (1 skipped) on branch claude/reliability-rebuild, the
-furthest-ahead branch (2026-09-08). `main` itself is at 635 + whatever #44 adds
-when it merges — re-measure after merging rather than trusting either figure.
-Run it before quoting
+Suite: **672 passing** (1 skipped) on `main` (2026-09-09), and this branch is
+not yet re-measured on top of it. Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -61,55 +59,46 @@ reads like a deleted section rather than an edited sentence.
 
 **Stages 1 and 2 are complete. Stage 3 is in progress. Stage 7.5 has started.**
 
-### Start here (updated 2026-09-08, end of session)
+### Start here
 
-**PR #44 is open and its audit is UNRESOLVED. Deal with this first.**
+**Current state now lives in `docs/context.md`. Read that first — it is
+rewritten every session and this section is not.** `docs/index.md` maps where
+everything is; `memory/` records what each session decided and why. This file
+keeps what stays true for months: methodology, stage plans, and the traps below.
 
-State when the session ended, stated exactly: #40, #41, #42 and #43 are merged.
-#44 (branch claude/plain-english-rewrites, plain-English rewrites) is open. Booth has
-run on it three times. Runs one and two both flagged the same DISCREPANCY — the
-description said "eight" allowlist entries when the pre-PR list held nine. The
-description has since been corrected by hand and now reads correctly; verified
-against the live PR body. Mark fired a third run and reported it failed as well.
-**I did not see that third report** — he ran out of usage before it could be
-read, so its contents are unknown to me and are NOT recorded here as anything.
+This branch carries the expanded handoff that main's copy points at: the Stage
+8+ design-tooling notes and the extra trap entries below arrive with it.
 
-First action: read the newest comment on PR #44 and find out what the third run
-actually says. Three possibilities, in order of likelihood, and they need
-different responses:
+Merged: #40 through #46. Stage 7.5 has cut 14 pages to **9** — Playoff Odds
+became a column on Power Ratings, Roadmap folded into Changelog (renamed What's
+Changed), and How This Compares, Data Sources and the Glossary became parts of
+Methodology. The plain-language guard is live and its allowlist is empty.
+Stage 7.6's repository half is done: the README opens on a recruiter overview
+and `tests/test_readme_accuracy.py` holds it to its own claims. Its browser
+half — the repo description and topics — is still Mark's to do in the GitHub UI.
 
-1. It is another stale read. Booth records "Description read at: <time>" in its
-   own header — compare that to when the description was last edited. Run two
-   read the body at 22:17:12 and posted at 22:25, and the edit landed in
-   between, so it reported a discrepancy that had already been fixed. If run
-   three did the same, nothing is wrong and it needs one more trigger.
-2. A genuinely new finding. Fix it.
-3. The workflow itself failed rather than Booth returning a verdict — no audit
-   comment, a red run in the Actions tab. That is a CI problem, not a claim
-   problem, and the run log says which step died.
+**Which branches are open, and what each waits on, is in
+`docs/context.md` — that file is rewritten every session and this one is not.**
+Do not maintain a second list here; that duplication is what this split exists
+to end. One branch is described below only because its reasoning is durable and
+would otherwise be lost:
 
-Branch claude/reliability-rebuild is pushed but has NO pull request yet, deliberately:
-opening one starts an audit, and that was not Mark's to spend at the time. It
-carries the agent-log work described under Stage 3 and Stage 7.5 below, is green
-at its own head, and is branched off #44 — so merge #44 first, then merge main
-into it before opening its PR.
+1. **Branch claude/reliability-rebuild** — pushed, no PR yet, deliberately
+   (opening one starts an audit). Connects `src/collect_agent_log.py`, which was
+   built and tested in Stage 3 and had **never run**: the agent-log data file it
+   writes did not exist, nothing invoked it, and the generator had never heard
+   of it (which is why that path is not named here — on main there is still no
+   such file, and this document's own freshness guard is right to say so). Adds
+   the workflow that produces it and rebuilds the reliability page around it,
+   renamed "Checking the AI's work". Green at 645 on its own head. It was
+   branched off #44, which is now merged; merge #45 first, then merge main into
+   it before opening its PR. It conflicts with #45 on the Start here section
+   above — take #45's version, the short pointer.
 
-### Earlier note (2026-09-08)
+Then the next Stage 7.5 item: **Season Accuracy — declutter.** It is clean on
+vocabulary and still too dense.
 
-**#39 and #40 are both merged.** Stage 7.5's first deletion is done: the Playoff
-Odds page is gone and the number is a sortable column on Power Ratings. A weekly
-update commit (`1446e51`) landed on top and regenerated `index.html`; the suite
-is green at 558 with it, so the built-page guards survived a real regeneration
-rather than only the one done by hand.
-
-Next concrete piece of work, second item of Stage 7.5's deletions: **the Roadmap
-"Done" list.** Delete it and fold the "what's next" half plus the
-DEFERRED/REJECTED entries into Changelog. The Done list duplicates the Changelog,
-which is generated from `config.VERSION_HISTORY` — two sources of truth for the
-same facts. This also closes the separate "remove 2025 Week 10" item, because
-that reference lives inside a Roadmap Done card about the nflreadpy migration.
-
-Two habits that paid for themselves this session and should carry forward: build
+Two habits that paid for themselves and should carry forward: build
 the page and *click the thing you just added* before opening the PR (that is how
 the `#`-column defect was found — it was invisible in the diff), and when
 deleting a page, ask what it was the last example of before assuming the tests
@@ -728,6 +717,37 @@ under compaction pressure, so its length is a cost paid on every session.
 
 ## Traps that have actually bitten
 
+- **Two CI jobs can disagree about the same commit, and the green one wins by
+  default.** `run-tests.yml` was red on every pull request for days while
+  `booth-pr-audit.yml` ran the identical suite green on the identical commit.
+  Nobody investigated, because Booth is the job that gets read. The cause was
+  the actions/checkout default of `fetch-depth: 1`: sixteen tests here read real
+  git history and skip without it, and one — `test_scout_preflight.py`'s
+  exit-code test — built its fixture from the last three non-merge commits,
+  found one, manufactured nothing, and failed on its own empty fixture. Both
+  workflows now set `fetch-depth: 0` and that test skips instead of failing.
+  **A red check you have learned to ignore is worse than no check.** When two
+  jobs disagree, the difference is in the workflow files, not the tests.
+- **A green checkmark on a Booth run means Booth posted a report, not that the
+  report was favourable.** The workflow exits 0 whenever the audit completes.
+  The verdict is in the comment text. PR #45's third audit was green in Actions
+  and read NEEDS HUMAN REVIEW with four discrepancies.
+- **The `edited` trigger on `booth-pr-audit.yml` fires for the PR description
+  only, and its `if:` guard additionally requires `github.event.changes.body`.**
+  Editing a *comment* in the thread raises `issue_comment`, which that workflow
+  does not listen to — so nothing starts and nothing explains why. If an audit
+  seems not to fire after an edit, check whether the edit went into the
+  description box at the top or a comment below it.
+- **A document can point at a file that has never existed, for months.**
+  `METHODOLOGY.md` was cited by the README's fifth line and two `src/`
+  docstrings; `git log --all --diff-filter=A -- METHODOLOGY.md` returns nothing.
+  `src/tune_qb_shrink_k.py` had already noticed and written it down, which fixed
+  nothing, because a note is not a check. `tests/test_readme_accuracy.py` is now
+  the check.
+- **A guard whose rule names a forbidden string will match its own docstring.**
+  Third occurrence this session. Exclude the file that states the rule, and say
+  so in a comment — the alternative is describing the banned string obliquely
+  enough to dodge your own regex, which damages the rule to protect the checker.
 - **`git reset --hard` and `git checkout --` have destroyed in-progress edits
   three times.** Before any restore, check what is uncommitted; prefer
   re-applying a known edit over reverting a whole file. When mutation-testing a

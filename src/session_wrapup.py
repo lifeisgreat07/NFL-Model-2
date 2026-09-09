@@ -24,6 +24,7 @@ Exits non-zero if anything mechanical is wrong, so it can gate a wrap-up.
 import re
 import subprocess
 import sys
+from datetime import date, timedelta
 from pathlib import Path
 
 REPO = Path(__file__).parent.parent
@@ -84,9 +85,22 @@ def check_nothing_unpushed():
     branch = _git('rev-parse', '--abbrev-ref', 'HEAD')
     upstream = _git('rev-parse', '--abbrev-ref', '@{u}')
     if not upstream:
+        # A detached HEAD has no upstream but may be perfectly safe: CI and
+        # review sandboxes check a PR out this way, and Booth's audit of PR #45
+        # reported "commits exist only on this machine" about a commit that was
+        # on origin under a branch name. The question this check actually asks
+        # is "does this commit exist on the remote", so ask that instead of
+        # inferring it from the presence of a tracking branch.
+        head = _git('rev-parse', 'HEAD')
+        on_remote = _git('branch', '-r', '--contains', head)
+        if on_remote:
+            first = on_remote.splitlines()[0].strip()
+            return Check('unpushed work', True,
+                         'detached HEAD, but this commit is on {} -- nothing '
+                         'is unpushed'.format(first))
         return Check('unpushed work', False,
-                     "branch {!r} has no upstream; commits on it exist only "
-                     "on this machine".format(branch))
+                     "branch {!r} has no upstream and this commit is on no "
+                     "remote branch; it exists only on this machine".format(branch))
     ahead = _git('rev-list', '--count', '@{u}..HEAD')
     if ahead and ahead != '0':
         return Check('unpushed work', False,
@@ -104,11 +118,79 @@ def check_branch_state():
                  'for and whether its PR is open'.format(branch))
 
 
+def check_context_is_current():
+    """docs/context.md is the file the next session reads FIRST, and it is the
+    only one rewritten every time. A stale one is worse than none: it is
+    confidently wrong about which branch is open and what to do next.
+
+    Checked by its own 'Last updated:' stamp rather than by git mtime, because
+    a file can be touched by a merge without anyone revisiting what it says.
+
+    The slack is deliberately one-directional: today or tomorrow passes,
+    yesterday does not. Booth caught this check and the pytest guard in
+    tests/test_workflow_docs.py disagreeing, and it was a real disagreement,
+    not a wording one. The agent writing context.md runs on UTC; this script
+    runs on the machine, on US local time. On the evening this was written
+    they read 09-09 and 09-08, so a file stamped and rewritten inside one
+    session could fail its own session's wrap-up. That is the false alarm.
+    A stamp one day AHEAD is a timezone. A stamp one day BEHIND is a context
+    file nobody rewrote, which is the exact thing this check exists to catch,
+    so it stays a failure.
+    """
+    path = REPO / 'docs' / 'context.md'
+    if not path.exists():
+        return Check('context file', False,
+                     'docs/context.md is missing; it is the first thing the '
+                     'next session is told to read')
+    m = re.search(r'Last updated:\s*(\d{4}-\d{2}-\d{2})',
+                  path.read_text(encoding='utf-8'))
+    if not m:
+        return Check('context file', False,
+                     "docs/context.md has no 'Last updated:' line")
+    today = date.today()
+    accepted = {today.isoformat(), (today + timedelta(days=1)).isoformat()}
+    if m.group(1) not in accepted:
+        return Check('context file', False,
+                     'docs/context.md was last updated {}, not today ({}). '
+                     'Rewrite it: open branches, what each waits on, and the '
+                     'single next action.\nEXPECTED at the start of a session '
+                     '-- this check is a to-do, not a regression. Tomorrow is '
+                     'accepted (the agent writes on UTC, this runs on the '
+                     'machine); yesterday is not, because a context file that '
+                     'is "nearly current" is the thing that gets believed and '
+                     'is wrong.'.format(m.group(1), today.isoformat()))
+    return Check('context file', True,
+                 'stamped {}'.format(m.group(1)))
+
+
+def check_session_memory_written():
+    """One memory file per session, appended not edited. The reasoning behind a
+    decision is the expensive thing to reconstruct, and it is gone by the next
+    morning if nobody writes it down.
+
+    Same one-directional slack as check_context_is_current, for the same
+    reason: the file is named by the clock of whichever machine wrote it.
+    """
+    memory = REPO / 'memory'
+    today = date.today()
+    if not memory.is_dir():
+        return Check('session memory', False, 'no memory/ directory')
+    todays = sorted(p for stamp in (today, today + timedelta(days=1))
+                    for p in memory.glob(stamp.isoformat() + '*.md'))
+    if not todays:
+        return Check('session memory', False,
+                     'no memory/{}.md yet. Four headings: Shipped, Decided '
+                     '(with the reasoning), Surprised us, Left open.\n'
+                     'EXPECTED at the start of a session -- a to-do, not a '
+                     'regression.'.format(today.isoformat()))
+    return Check('session memory', True,
+                 'wrote {}'.format(', '.join(p.name for p in todays)))
+
+
 #: Things no script can check. Printed as a prompt, not asserted.
 BY_HAND = [
-    "Does CLAUDE.md's 'Current state' describe today, including which stage is "
-    "in progress and what the next concrete action is?",
-    "Is every PR opened this session either merged, or described in CLAUDE.md "
+    "Does docs/context.md name the single next action, not a list of five?",
+    "Is every PR opened this session either merged, or in docs/context.md "
     "with its number and what it is waiting on?",
     "Did anything surprise you today? A trap entry is cheap now and expensive "
     "to reconstruct later. Prefer the durable shape over the story.",
@@ -125,6 +207,8 @@ def main():
         check_tree_clean(),
         check_nothing_unpushed(),
         check_suite_count(),
+        check_context_is_current(),
+        check_session_memory_written(),
     ]
 
     print('Session wrap-up\n' + '-' * 60)
