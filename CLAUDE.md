@@ -47,7 +47,8 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **628 passing** (1 skipped) on `main` (2026-09-09). Run it before quoting
+Suite: **640 passing** (1 skipped) on branch claude/session-memory-docs
+(2026-09-08); `main` is at 628. Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -58,7 +59,14 @@ reads like a deleted section rather than an edited sentence.
 
 **Stages 1 and 2 are complete. Stage 3 is in progress. Stage 7.5 has started.**
 
-### Start here (updated 2026-09-09)
+### Start here
+
+**Current state now lives in `docs/context.md`. Read that first — it is
+rewritten every session and this section is not.** `docs/index.md` maps where
+everything is; `memory/` records what each session decided and why. This file
+keeps what stays true for months: methodology, stage plans, and the traps below.
+
+The note below is from 2026-09-09 and is kept until the branches it names land.
 
 **THE FULL HANDOFF IS NOT ON MAIN.** It is on the unmerged branch
 claude/reliability-rebuild, which carries an expanded version of this section,

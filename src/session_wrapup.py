@@ -24,6 +24,7 @@ Exits non-zero if anything mechanical is wrong, so it can gate a wrap-up.
 import re
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
 
 REPO = Path(__file__).parent.parent
@@ -104,11 +105,54 @@ def check_branch_state():
                  'for and whether its PR is open'.format(branch))
 
 
+def check_context_is_current():
+    """docs/context.md is the file the next session reads FIRST, and it is the
+    only one rewritten every time. A stale one is worse than none: it is
+    confidently wrong about which branch is open and what to do next.
+
+    Checked by its own 'Last updated:' stamp rather than by git mtime, because
+    a file can be touched by a merge without anyone revisiting what it says.
+    """
+    path = REPO / 'docs' / 'context.md'
+    if not path.exists():
+        return Check('context file', False,
+                     'docs/context.md is missing; it is the first thing the '
+                     'next session is told to read')
+    m = re.search(r'Last updated:\s*(\d{4}-\d{2}-\d{2})',
+                  path.read_text(encoding='utf-8'))
+    if not m:
+        return Check('context file', False,
+                     "docs/context.md has no 'Last updated:' line")
+    today = datetime.now().strftime('%Y-%m-%d')
+    if m.group(1) != today:
+        return Check('context file', False,
+                     'docs/context.md was last updated {}, not today ({}). '
+                     'Rewrite it: open branches, what each waits on, and the '
+                     'single next action.'.format(m.group(1), today))
+    return Check('context file', True, 'updated today')
+
+
+def check_session_memory_written():
+    """One memory file per session, appended not edited. The reasoning behind a
+    decision is the expensive thing to reconstruct, and it is gone by the next
+    morning if nobody writes it down."""
+    memory = REPO / 'memory'
+    today = datetime.now().strftime('%Y-%m-%d')
+    if not memory.is_dir():
+        return Check('session memory', False, 'no memory/ directory')
+    todays = sorted(memory.glob(today + '*.md'))
+    if not todays:
+        return Check('session memory', False,
+                     'no memory/{}.md yet. Four headings: Shipped, Decided '
+                     '(with the reasoning), Surprised us, Left open.'.format(today))
+    return Check('session memory', True,
+                 'wrote {}'.format(', '.join(p.name for p in todays)))
+
+
 #: Things no script can check. Printed as a prompt, not asserted.
 BY_HAND = [
-    "Does CLAUDE.md's 'Current state' describe today, including which stage is "
-    "in progress and what the next concrete action is?",
-    "Is every PR opened this session either merged, or described in CLAUDE.md "
+    "Does docs/context.md name the single next action, not a list of five?",
+    "Is every PR opened this session either merged, or in docs/context.md "
     "with its number and what it is waiting on?",
     "Did anything surprise you today? A trap entry is cheap now and expensive "
     "to reconstruct later. Prefer the durable shape over the story.",
@@ -125,6 +169,8 @@ def main():
         check_tree_clean(),
         check_nothing_unpushed(),
         check_suite_count(),
+        check_context_is_current(),
+        check_session_memory_written(),
     ]
 
     print('Session wrap-up\n' + '-' * 60)
