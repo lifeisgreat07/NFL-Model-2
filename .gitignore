@@ -10,3 +10,6 @@ results/*_run.log
 
 # Throwaway repos built by src/booth_fixture_runner.py.
 .fixture-run/
+
+# Scratch PR description; src/scout_preflight.py takes it as body_file.
+.pr-body.md
