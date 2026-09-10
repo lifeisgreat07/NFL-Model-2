@@ -2663,7 +2663,7 @@ function renderPicksGrid(){
     const pick = myPicks[pid];
     const modelBPick = g.mktB_home >= 50 ? g.home : g.away;
     return `<div class="game-card">
-      <div class="game-top"><span class="game-kickoff">${g.away} <span class="at-symbol">@</span> ${g.home}</span></div>
+      <div class="game-top"><span class="game-kickoff">${g.away} <span class="at-symbol">at</span> ${g.home}</span></div>
       <div class="pick-buttons" data-pid="${pid}">
         <button class="pick-btn ${pick===g.away?'selected':''}" data-team="${g.away}">${g.away}</button>
         <button class="pick-btn ${pick===g.home?'selected':''}" data-team="${g.home}">${g.home}</button>
