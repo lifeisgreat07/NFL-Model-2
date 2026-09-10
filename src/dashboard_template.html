@@ -424,7 +424,17 @@
      Two failures in one: an entity wearing two different colours in two places,
      and --accent (Job 2, the model's lean / the active thing) borrowed to mean
      series identity (Job 4). The dot now carries identity and matches the chart
-     exactly; the words wear --text like all other words. */
+     exactly; the words wear --text like all other words.
+
+     One residual to know about rather than discover. --accent (the pick tick)
+     and --series-a (Model A's dot) are the same two blues that caused the
+     problem above -- 11.5 dE00 dark, 8.1 light, 6.6 under CVD. That is not a
+     defect here because they never share a context: the tick sits on a game
+     card meaning "this is the pick", the dot sits in prose meaning "Model A",
+     and no view shows both. It DID make one sentence ambiguous -- the
+     onboarding list called the tick "a blue tick" one bullet below a blue
+     Model A dot -- so that copy no longer leans on the hue to identify it.
+     If those two ever land side by side, this is the pair to re-measure. */
   .model-chip{display:inline-flex; align-items:baseline; gap:6px; font-weight:700; color:var(--text);}
   .model-chip::before{content:''; width:8px; height:8px; border-radius:50%;
     background:var(--chip); flex:none; transform:translateY(-1px);}
@@ -1103,7 +1113,7 @@
         <ul>
           <li><span class="model-chip a">Model A</span> is football-only (team ratings, QB performance, no market data). <span class="model-chip b">Model B</span> adds the current Vegas spread.</li>
           <li>The bolder team name is the one that model leans toward. On games too close to call, neither side is bolded -- the model has not picked anybody.</li>
-          <li>A blue tick marks the team each model picked. Once the game is final it turns green if that pick was right, or a red cross if it was wrong -- so the colour tells you whether a result is a prediction or a verdict.</li>
+          <li>A tick marks the team each model picked. Once the game is final it turns green if that pick was right, or becomes a red cross if it was wrong -- so the colour tells you whether you are looking at a prediction or a verdict.</li>
           <li>Each game says in a sentence why that team is ahead. It will often say the quarterback matchup, because that is genuinely what moves this model most -- if the sentence looks repetitive across a week, that is the model showing through, not a stuck template.</li>
           <li>Tap "the numbers behind this" on any game to check that sentence against the exact figures it came from.</li>
           <li>Check <b>Model Lab</b> for the full, honest research history -- including everything that didn't work.</li>
