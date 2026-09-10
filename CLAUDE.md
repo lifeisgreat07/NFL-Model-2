@@ -57,7 +57,17 @@ check complain about the wording — it reported the line as *missing*, which
 reads like a deleted section rather than an edited sentence.
 
 **Stages 1, 2, 3 and 7.5 are complete. Stage 7.6's repository half is done.
-Stage 8 is next and is blocked on a visual reference.**
+Stage 8's design phase closed 2026-09-10; its decisions live in
+`docs/design/STAGE8-DESIGN.md` and its specification is the pair of mocks
+beside that file. Stage 8b — porting the design into
+`src/dashboard_template.html` — is next.**
+
+One habit from that stage is worth keeping whatever you work on: every numeric
+claim about colour or geometry was re-derived before being believed — contrast
+by recomputing WCAG luminance from the hex values, colour-blind separation by
+running the Machado 2009 matrices and CIEDE2000, layout by rendering in
+headless Chromium and reading `getBoundingClientRect`. Three claims were false.
+Two of them were mine. Reading your own CSS back is not verification.
 
 ### Start here
 
