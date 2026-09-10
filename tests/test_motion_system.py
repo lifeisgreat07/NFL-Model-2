@@ -54,6 +54,22 @@ def motion_declarations():
     return re.findall(r'(?:transition|animation)\s*:\s*([^;}]+)', css)
 
 
+# The brand mark's three animations (bm-settle, bm-nudge, bm-tumble) are the one
+# exemption, and it is narrow on purpose.
+#
+# The rule exists because a literal duration is INVISIBLE to the single
+# prefers-reduced-motion block that collapses --dur-*. That reasoning does not
+# reach these: the mark is switched off outright under reduced motion with
+# `animation:none !important`, which is stronger than collapsing a duration to
+# zero, and it swaps in a non-motion "busy" cue in its place. Tokenising them
+# would also mean adding 320/480/700ms to a scale whose whole claim is that the
+# dashboard's feel is four values.
+#
+# The exemption is only honest while that disabling rule exists, so the test
+# below asserts it rather than trusting this comment.
+BRAND_ANIMATIONS = ('bm-settle', 'bm-nudge', 'bm-tumble')
+
+
 def test_every_duration_is_a_token():
     """A literal duration cannot be collapsed by the reduced-motion block.
 
@@ -63,6 +79,8 @@ def test_every_duration_is_a_token():
     """
     offenders = []
     for decl in motion_declarations():
+        if any(name in decl for name in BRAND_ANIMATIONS):
+            continue
         for m in ANY_DURATION.finditer(decl):
             span = decl[max(0, m.start() - 24):m.end() + 4]
             if not LEGAL_DURATION.search(span):
@@ -71,6 +89,25 @@ def test_every_duration_is_a_token():
     assert not offenders, (
         "these declarations carry a literal duration instead of a --dur-* token, so "
         "prefers-reduced-motion cannot collapse them:\n  " + "\n  ".join(offenders))
+
+
+def test_the_brand_marks_exemption_is_paid_for():
+    """The brand mark may use literal durations ONLY because it is switched off
+    entirely under reduced motion. Delete that rule and the exemption above
+    becomes a hole: three animations that a reduced-motion user still sees, and
+    a test that no longer looks at them."""
+    css = stylesheet()
+    block = re.search(
+        r'@media\s*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)\s*\{'
+        r'[^{}]*\.brand-ball[^{}]*\{[^{}]*animation\s*:\s*none\s*!important',
+        css, re.S)
+    assert block, (
+        "no @media (prefers-reduced-motion: reduce) rule sets "
+        "`.brand-ball .spin { animation: none !important }`. Either restore it, "
+        "or remove bm-settle/bm-nudge/bm-tumble from BRAND_ANIMATIONS so their "
+        "durations are checked like everything else.")
+    for name in BRAND_ANIMATIONS:
+        assert name in css, f"{name} is exempted but no longer exists"
 
 
 def test_reduced_motion_collapses_every_duration_token():
