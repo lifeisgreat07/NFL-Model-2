@@ -465,7 +465,11 @@
   .pick-badge.placeholder{background:transparent; border:1.5px dashed var(--border-strong);}
   .pick-badge svg{width:9px; height:9px;}
   .tele-bar{position:relative; height:9px; background:var(--border); border-radius:5px; overflow:hidden; display:flex;}
-  .tele-bar-seg{height:100%; transition:width .4s cubic-bezier(.16,1,.3,1); opacity:.88;}
+  /* The last hardcoded duration on the page. It was held back while the game
+     card was under study; Booth caught that the exclusion made the PR's
+     "prefers-reduced-motion verified end to end" untrue -- 64 of these kept
+     animating at .4s for a user who had asked for no motion. */
+  .tele-bar-seg{height:100%; transition:width var(--dur-slow) var(--ease); opacity:.88;}
   .tele-bar-seg:first-child{border-radius:5px 0 0 5px;}
   .tele-bar-seg:last-child{border-radius:0 5px 5px 0;}
   .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--text); opacity:.55; left:50%; z-index:2;}
