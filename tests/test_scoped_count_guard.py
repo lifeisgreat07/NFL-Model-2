@@ -135,6 +135,36 @@ def test_an_unpaired_quote_does_not_swallow_the_document():
         "quote marks on different lines swallowed the claim between them")
 
 
+@pytest.mark.parametrize('row', [
+    "| Motion guards | `pytest tests/test_scoped_count_guard.py -q --collect-only` | 99 collected |",
+    "| Motion guards | `pytest tests/test_scoped_count_guard.py -q` | 99 passed |",
+    "`test_scoped_count_guard` — 99 passing",
+])
+def test_it_catches_the_phrasings_pytest_itself_prints(row):
+    """The hole that let PR #56 through.
+
+    The check matched the word "tests" and nothing else, so this row went green:
+
+        | `pytest tests/test_motion_system.py -q --collect-only` | 12 collected |
+
+    The real figure was 11. "collected" is what `--collect-only` prints and
+    "passed" is what a run prints, so those are the two phrasings most likely to
+    appear beside a module name in a verification table -- and they were exactly
+    the two it could not see. A guard that only recognises wording a person
+    invents, and not wording a tool emits, is guarding the rarer case.
+    """
+    assert not check_scoped_test_counts(row, skip_tests=False).ok, (
+        f"not caught: {row!r}")
+
+
+def test_a_whole_suite_count_is_not_blamed_on_a_module():
+    """`pytest tests/ -q` reports the whole suite, and its row names no module.
+    That belongs to check_test_count, not this one -- claiming otherwise would
+    make every verification table unfixable."""
+    row = "| Full suite | `pytest tests/ -q` | 751 passed, 1 skipped |"
+    assert check_scoped_test_counts(row, skip_tests=False).ok
+
+
 def test_an_unknown_module_is_ignored_rather_than_failed():
     """A body may discuss a test file that does not exist yet -- a plan, or a
     file a later phase adds. That is not a false claim about this branch."""

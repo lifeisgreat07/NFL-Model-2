@@ -1,0 +1,97 @@
+name: Scout pre-flight
+
+# Checks the PR DESCRIPTION against reality, automatically, on every PR.
+#
+# Why this workflow exists, stated plainly because the answer is embarrassing:
+# src/scout_preflight.py has existed since PR #26 and is a MANUAL tool. Nothing
+# ran it. On 2026-09-10 the same defect it was built to catch -- a number that
+# is real output from a command whose scope is not the sentence's scope --
+# shipped four more times, on PRs #51, #52, #54 and #56. CLAUDE.md documents the
+# trap at length. The entry was written the same day #56 reproduced it.
+#
+# So there were three separate failures, and only one was about the checker:
+#
+#   1. The documentation was inert. Prose that names a protection does not
+#      protect. tests/test_workflow_churn_guard.py already says this about
+#      itself: "prose names a protection without naming its coverage, so this
+#      file enumerates the workflows instead."
+#   2. The tool required someone to remember to run it, which is the same
+#      failure mode as a rule requiring someone to remember to follow it.
+#   3. Its coverage had a hole: it matched "N tests" and missed "N collected",
+#      the phrasing pytest itself prints. Fixed alongside this.
+#
+# This workflow fixes #2, which is the one that makes the other two survivable:
+# a hole in a check that runs gets found, a hole in a check that never runs does
+# not.
+#
+# It also fixes a subtler problem that no amount of care could. A count written
+# into a description is true at the commit it was written against, and a rebase
+# or a merge to main can falsify it without anyone touching the text. #56's
+# "731 passed" was true when typed; by audit time the real figure was 751,
+# because the branch rebased and another PR's tests arrived. Running on
+# `synchronize` and `edited` means the description is re-checked against the
+# head it is currently attached to, every time either one moves.
+
+on:
+  pull_request:
+    # `edited` matters as much as the others: the description is the artifact
+    # under test, and it can be rewritten after every prior check went green.
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+  workflow_dispatch:
+
+# Only the latest run per PR. An older run checking a superseded description
+# reports findings that are already fixed, which is how a stale report gets
+# mistaken for a failed fix.
+concurrency:
+  group: preflight-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the PR head
+        uses: actions/checkout@v4
+        with:
+          # The scope check compares commits against the base branch, so it
+          # needs real history rather than a depth-1 clone.
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write the PR description to a file
+        # Through the environment, not through the shell: a description is
+        # attacker-influenced text containing backticks, quotes and $(...), and
+        # interpolating it into a run: block would execute it.
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' "$PR_BODY" > .pr-body.md
+          echo "description is $(wc -c < .pr-body.md) bytes"
+
+      - name: Fetch the base branch
+        env:
+          BASE: ${{ github.event.pull_request.base.ref }}
+        run: git fetch origin "$BASE:refs/remotes/origin/$BASE"
+
+      - name: Check the description against reality
+        env:
+          BASE: ${{ github.event.pull_request.base.ref }}
+        # --skip-tests deliberately: run-tests.yml already runs the suite on
+        # this same head, and duplicating it here would double every PR's CI
+        # time to re-derive a number that job already knows. The scoped counts
+        # are NOT skipped by that flag -- collection is a parse, and those are
+        # the ones that keep going wrong.
+        run: |
+          python src/scout_preflight.py .pr-body.md \
+            --base "refs/remotes/origin/$BASE" --skip-tests
