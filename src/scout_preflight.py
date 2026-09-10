@@ -209,6 +209,80 @@ def check_visual_claims_have_artifacts(claims, full_body=None, ui_files=None):
                    f"rather than proof.")
 
 
+# A count of tests attributed to a NAMED test module: "`tests/test_x.py` -- 8
+# tests", "its 31 tests still pass". Both orders occur, so the pairing below
+# scans for modules and counts separately and matches them within a sentence.
+TEST_MODULE_RE = re.compile(r'(?:tests/)?(test_\w+)(?:\.py)?\b')
+SCOPED_COUNT_RE = re.compile(r'\b(\d+)\s+(?:of\s+(?:its|them|these)\s+)?tests?\b')
+# Sentence-ish. A count and a module in the same sentence are being associated
+# by the reader whether or not the writer meant to.
+SENTENCE_SPLIT_RE = re.compile(r'(?<=[.!?])\s+|\n{2,}|\n\|')
+
+
+def collected_count(module):
+    """How many cases pytest actually collects from tests/<module>.py."""
+    path = REPO_ROOT / 'tests' / f'{module}.py'
+    if not path.exists():
+        return None
+    out = subprocess.run(
+        [sys.executable, '-m', 'pytest', str(path), '-q', '--collect-only'],
+        cwd=REPO_ROOT, capture_output=True, text=True)
+    m = re.search(r'\b(\d+)\s+tests?\s+collected\b', out.stdout)
+    return int(m.group(1)) if m else None
+
+
+def check_scoped_test_counts(body, skip_tests):
+    """A count that is real output from a command with a DIFFERENT scope.
+
+    The failure this exists for, stated exactly: on PR #54 the body said
+    `test_workflow_churn_guard.py` -- "its 31 tests still pass". That file has
+    3. The 31 was not invented; it was the true total of a three-file pytest
+    run (3 + 20 + 8) quoted against a sentence about one of them.
+
+    That is the same shape as two earlier Booth findings. PR #51 claim 17 said
+    `--shadow-sm/md/lg` was "still used in ten places" -- 9 token references,
+    10 box-shadow declarations, a number counted on one thing attached to a
+    sentence naming another. PR #52 claim 5 said "seven pairs sit between 14.9
+    and 15.25" when the script printed nine, read by eye off a wider band.
+
+    None of the three was a fabrication, which is precisely why self-review
+    misses them: the author remembers running a real command and getting a real
+    number, so the figure feels earned. What went unchecked was the
+    ATTRIBUTION -- whether the command's scope is the sentence's scope.
+
+    So this check does the one thing that closes it mechanically: when the body
+    names a test module and a count in the same sentence, collect that module
+    and compare. `--skip-tests` does not disable it; collection is a parse, not
+    a run, and takes milliseconds.
+    """
+    findings = []
+    for sentence in SENTENCE_SPLIT_RE.split(strip_quotations(body)):
+        counts = SCOPED_COUNT_RE.findall(sentence)
+        modules = set(TEST_MODULE_RE.findall(sentence))
+        if not counts or not modules:
+            continue
+        for module in sorted(modules):
+            actual = collected_count(module)
+            if actual is None:
+                continue
+            for claimed in {int(c) for c in counts}:
+                if claimed != actual:
+                    findings.append(
+                        f"{module}.py: the body says {claimed} where pytest "
+                        f"collects {actual}\n"
+                        f"      in: \"{' '.join(sentence.split())[:160]}\"")
+    if findings:
+        return Finding('scoped test counts', False,
+                       "a count attributed to a named test module does not "
+                       "match that module:\n      " +
+                       "\n      ".join(findings) +
+                       "\n      Usually the number is real but came from a "
+                       "wider command -- a multi-file pytest run quoted "
+                       "against one file. Collect the file on its own.")
+    return Finding('scoped test counts', True,
+                   "no test-module count in the body disagrees with collection")
+
+
 def preflight(body, base='origin/main', skip_tests=False, head='HEAD'):
     commits = branch_commits(base, head)
     # Assertions are checked against quotation-stripped text; the attachment
@@ -218,6 +292,7 @@ def preflight(body, base='origin/main', skip_tests=False, head='HEAD'):
     ui_files = touches_ui(base, head)
     return [
         check_test_count(claims, skip_tests),
+        check_scoped_test_counts(claims, skip_tests),
         check_scope_disclosed(claims, commits),
         check_visual_claims_have_artifacts(claims, body, ui_files),
     ], commits
