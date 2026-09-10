@@ -1,11 +1,11 @@
 {
-  "generated_utc": "2026-09-10T17:39:47Z",
+  "generated_utc": "2026-09-10T18:25:40Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 55,
-    "audits_superseded": 19,
-    "pull_requests_audited": 36,
-    "audits_without_a_verdict_block": 13,
+    "audits_total": 57,
+    "audits_superseded": 20,
+    "pull_requests_audited": 37,
+    "audits_without_a_verdict_block": 14,
     "claims_checked": 253,
     "discrepancies_found": 13,
     "unverifiable": 15,
@@ -1021,6 +1021,45 @@
       "discrepancies": 0,
       "unverifiable": 0,
       "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 55,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/55#issuecomment-5622921758",
+      "posted_utc": "2026-09-10T17:41:47Z",
+      "head": "39cc4a7",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 10,
+      "confirmed": 7,
+      "discrepancies": 1,
+      "unverifiable": 2,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "src/scout_preflight.py"
+      ],
+      "inconsistencies": [
+        "prose says Confirmed: 8, block has 7",
+        "prose says Unverifiable: 1, block has 2"
+      ],
+      "superseded": true
+    },
+    {
+      "pr": 55,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/55#issuecomment-5623145078",
+      "posted_utc": "2026-09-10T18:00:03Z",
+      "head": "9e96bfd",
+      "records_head": true,
+      "has_verdict_block": false,
+      "block_error": "overall verdict 'DO NOT MERGE AS-IS' is not one of ('SAFE TO MERGE', 'DO NOT MERGE -- DISCREPANCIES FOUND', 'NEEDS HUMAN REVIEW')",
+      "claims": null,
+      "confirmed": null,
+      "discrepancies": null,
+      "unverifiable": null,
+      "overall": null,
       "implicated": [],
       "inconsistencies": [],
       "superseded": false
