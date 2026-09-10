@@ -35,7 +35,8 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-from scout_preflight import check_scoped_test_counts, collected_count  # noqa: E402
+from scout_preflight import (  # noqa: E402
+    SCOPED_COUNT_PHRASINGS, SCOPED_COUNT_RE, check_scoped_test_counts, collected_count)
 
 # Verbatim from PR #54's description, as Booth found it.
 THE_SENTENCE_THAT_SHIPPED = (
@@ -155,6 +156,29 @@ def test_it_catches_the_phrasings_pytest_itself_prints(row):
     """
     assert not check_scoped_test_counts(row, skip_tests=False).ok, (
         f"not caught: {row!r}")
+
+
+def test_every_declared_phrasing_is_actually_matched():
+    """The comment above SCOPED_COUNT_RE cannot drift from the regex again.
+
+    It already did. The comment said "`collected` and `passed` were added",
+    naming two of the three words the change actually added, and the PR body
+    called it "a two-word fix" -- a miscount in prose, inside the change whose
+    entire subject is miscounts in prose. Booth caught it on PR #57.
+
+    The words are data now, and this asserts the regex is built from all of
+    them. Add a phrasing to the tuple and forget the regex, or the reverse, and
+    this fails rather than the documentation quietly becoming false.
+    """
+    samples = {'tests?': '7 tests', 'collected': '7 collected',
+               'passed': '7 passed', 'passing': '7 passing'}
+    assert set(samples) == set(SCOPED_COUNT_PHRASINGS), (
+        f"SCOPED_COUNT_PHRASINGS is {SCOPED_COUNT_PHRASINGS} but this test only "
+        f"knows how to exercise {tuple(samples)}. Add a sample for the new one.")
+    for phrasing, sample in samples.items():
+        assert SCOPED_COUNT_RE.search(sample), (
+            f"{phrasing!r} is declared in SCOPED_COUNT_PHRASINGS but the regex "
+            f"does not match {sample!r}")
 
 
 def test_a_whole_suite_count_is_not_blamed_on_a_module():

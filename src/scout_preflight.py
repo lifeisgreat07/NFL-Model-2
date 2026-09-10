@@ -232,17 +232,28 @@ def check_visual_claims_have_artifacts(claims, full_body=None, ui_files=None):
 # tests", "its 31 tests still pass". Both orders occur, so the pairing below
 # scans for modules and counts separately and matches them within a sentence.
 TEST_MODULE_RE = re.compile(r'(?:tests/)?(test_\w+)(?:\.py)?\b')
-# "8 tests", "its 31 tests", "11 collected", "9 passed".
+# Recognised phrasings: "8 tests", "its 31 tests", "11 collected", "9 passed",
+# "9 passing". The list is asserted against the regex by
+# tests/test_scoped_count_guard.py, because of what happened when it was not.
 #
-# `collected` and `passed` were added after this check MISSED the defect it was
-# written for. PR #56's body carried
+# `collected`, `passed` and `passing` were added after this check MISSED the
+# defect it was written for. PR #56's body carried
 #     | `pytest tests/test_motion_system.py -q --collect-only` | 12 collected |
 # and the guard stayed green because it only matched the word "tests". The
 # actual figure was 11. The phrasing it could not see is the one pytest itself
 # prints -- so the check matched the wording a person might invent and missed
 # the wording the tool emits, which is the wording that will always be there.
+#
+# Then this comment got it wrong too. It said "`collected` and `passed` were
+# added" and omitted `passing`, and the PR body called it "a two-word fix" when
+# three words went in -- a miscount in prose, inside the change whose whole
+# subject is miscounts in prose, caught by Booth on PR #57. Hence
+# SCOPED_COUNT_PHRASINGS: the words are now data the regex is BUILT from and a
+# test compares against, so the comment cannot drift from the code again.
+SCOPED_COUNT_PHRASINGS = ('tests?', 'collected', 'passed', 'passing')
 SCOPED_COUNT_RE = re.compile(
-    r'\b(\d+)\s+(?:of\s+(?:its|them|these)\s+)?(?:tests?|collected|passed|passing)\b')
+    r'\b(\d+)\s+(?:of\s+(?:its|them|these)\s+)?(?:'
+    + '|'.join(SCOPED_COUNT_PHRASINGS) + r')\b')
 # Sentence-ish. A count and a module in the same sentence are being associated
 # by the reader whether or not the writer meant to.
 SENTENCE_SPLIT_RE = re.compile(r'(?<=[.!?])\s+|\n{2,}|\n\|')
