@@ -169,14 +169,32 @@ def check_scope_disclosed(body, commits):
     """Booth's scope discrepancy: a description covering part of the branch.
 
     The rule is deliberately mechanical rather than a fuzzy match on commit
-    subjects: a multi-commit PR must enumerate its commits by short SHA. A
-    single-commit branch is exempt, because its title already describes the
-    whole change and demanding a SHA there is noise.
+    subjects: a multi-commit PR must enumerate its commits by short SHA OR by
+    their exact subject line. A single-commit branch is exempt, because its
+    title already describes the whole change and demanding a SHA there is noise.
+
+    The subject alternative was added before this check was wired into CI,
+    because requiring a SHA would have failed every well-written description in
+    this repository. PR #56's body lists all four of its commits by title -- the
+    form a reviewer can actually read and check against the commit list -- and
+    the SHA-only rule called that undisclosed. A rule that fails the good case
+    gets worked around, and a worked-around rule protects nothing.
+
+    Matching the exact subject is still mechanical: it is a full-string
+    comparison against what git reports, not a similarity score. A subject that
+    appears in the body by coincidence would have to be reproduced verbatim.
     """
     if len(commits) <= 1:
         return Finding('scope disclosed', True,
                        f"{len(commits)} non-merge commit(s) -- title covers it")
-    missing = [(sha, subj) for sha, subj in commits if sha not in body]
+
+    def disclosed(sha, subj):
+        # Markdown may wrap a subject in backticks, bold it, or list it after a
+        # number; a substring test survives all of those without loosening what
+        # counts as a match.
+        return sha in body or subj.strip() in body
+
+    missing = [(sha, subj) for sha, subj in commits if not disclosed(sha, subj)]
     if missing:
         lines = '\n'.join(f"      {sha}  {subj}" for sha, subj in missing)
         return Finding('scope disclosed', False,
@@ -318,7 +336,12 @@ def check_scoped_test_counts(body, skip_tests):
                        "\n      ".join(findings) +
                        "\n      Usually the number is real but came from a "
                        "wider command -- a multi-file pytest run quoted "
-                       "against one file. Collect the file on its own.")
+                       "against one file. Collect the file on its own."
+                       "\n      NOTE: collected from the WORKING TREE. --head "
+                       "moves the commit range, not your checkout, so auditing "
+                       "another branch's body from here compares its numbers "
+                       "against this branch's files. In CI the checkout is the "
+                       "PR head, so there the two always agree.")
     return Finding('scoped test counts', True,
                    "no test-module count in the body disagrees with collection")
 
@@ -348,7 +371,12 @@ def main():
                     help="do not run the suite; test-count claims go unchecked")
     ap.add_argument('--head', default='HEAD',
                     help="tip of the branch under review (default: HEAD). Set "
-                         "it to audit an existing PR without checking it out.")
+                         "it to audit an existing PR without checking it out. "
+                         "NOTE: this moves the COMMIT RANGE only. Test "
+                         "collection always reads the working tree, so a "
+                         "scoped-count finding while --head points elsewhere "
+                         "may be comparing that branch's body against this "
+                         "checkout's files.")
     args = ap.parse_args()
 
     body = Path(args.body_file).read_text(encoding='utf-8')

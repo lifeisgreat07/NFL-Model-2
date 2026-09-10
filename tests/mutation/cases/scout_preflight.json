@@ -26,9 +26,23 @@
     {
       "id": "preflight-scope-any-not-all",
       "why": "scope passes if ANY commit is mentioned rather than all of them",
-      "find": "    missing = [(sha, subj) for sha, subj in commits if sha not in body]",
-      "replace": "    missing = [] if any(sha in body for sha, _ in commits) else list(commits)",
+      "find": "    missing = [(sha, subj) for sha, subj in commits if not disclosed(sha, subj)]",
+      "replace": "    missing = [] if any(disclosed(s, j) for s, j in commits) else list(commits)",
       "expect_caught_by": "test_a_partial_enumeration_still_fails"
+    },
+    {
+      "id": "preflight-scope-subject-match-is-fuzzy",
+      "why": "an approximation of a commit subject counts as disclosure, so a real undisclosed commit can hide behind a truncated or reworded title -- the risk introduced by accepting subjects as well as SHAs",
+      "find": "        return sha in body or subj.strip() in body",
+      "replace": "        return sha in body or subj.strip()[:10] in body",
+      "expect_caught_by": "test_a_near_miss_subject_does_not_count_as_disclosure"
+    },
+    {
+      "id": "preflight-scope-shas-only",
+      "why": "subjects stop counting as disclosure, so every well-written description that names its commits by title fails in CI and the check gets worked around",
+      "find": "        return sha in body or subj.strip() in body",
+      "replace": "        return sha in body",
+      "expect_caught_by": "test_listing_commits_by_their_exact_subject_also_counts_as_disclosure"
     },
     {
       "id": "preflight-merges-counted",
