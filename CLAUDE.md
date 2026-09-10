@@ -1185,6 +1185,17 @@ under compaction pressure, so its length is a cost paid on every session.
   report "CLAUDE.md has no 'Suite: **N passing**' line to check", which reads
   like a deleted section, not an edited sentence. Any prose this file carries
   *for a tool* is an interface: extra detail goes outside the matched span.
+- **The suite count is not a property of the code alone — one test skips while
+  HEAD is ahead of `origin`.** `tests/test_session_start.py:128` skips with
+  "HEAD is not on a remote branch, so there is nothing to prove here", so the
+  same tree reports `764 passed, 2 skipped` with a local commit sitting
+  unpushed and `765 passed, 1 skipped` the moment it is pushed. The wrap-up
+  gate then fails `suite count` against a `CLAUDE.md` line that is correct,
+  and the obvious repair — editing the number down to match the run — is the
+  wrong one: it makes the file false for every session that reads it from a
+  clean checkout. **Push first, then run the suite, then quote it.** Both of
+  that run's failures had this single cause, and `unpushed work` failing
+  alongside `suite count` is the tell.
 - **`scout_preflight.py --base main` compares against LOCAL main, which goes
   stale the moment a PR is merged on GitHub.** Right after merging #41 it
   reported "2 commits on this branch, but the body never mentions 2 of them"
