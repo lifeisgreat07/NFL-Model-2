@@ -414,7 +414,30 @@
   
   .filter-btn.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent);}
 
-  .game-grid{display:flex; flex-direction:column; gap:12px;}
+  /* A grid, which the name promised and the rule did not: this was
+     `display:flex; flex-direction:column`, a single-column stack that forced
+     every card to the full ~1100px content width. The component study that
+     chose this card rendered it at 340px in a multi-column grid -- measured
+     340 x 312-350, near-square -- and the shipped page rendered the same
+     markup as a full-width rectangle, which is why the design was approved
+     and then did not appear.
+
+     340px is not a guess: it is the floor the study measured against and the
+     width the card was required to hold together at.
+
+     Same idiom as .accuracy-cards, .agent-stats and .roadmap-grid, so the
+     page has one way of doing this rather than four. align-items:start
+     because cards carry different amounts of text and stretching them to a
+     common height would pad the short ones with dead space. */
+  .game-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr));
+    gap:12px; align-items:start;}
+
+  /* The card sizes its own internals from ITS width, not the viewport's.
+     Before this, the narrow treatments below were gated on a viewport media
+     query, which is correct for a stack and wrong for a grid: in a grid the
+     viewport is wide while each card is 340px, so a card would have taken
+     desktop internals inside a phone-width box. */
+  .game-card{container-type:inline-size; container-name:card;}
   /* Historical track record for a pick's confidence band. Recessive by
      default -- it is context, not the headline -- but gains a left rule and
      warm ink when the band's interval spans 50%, because "this confidence
@@ -451,12 +474,16 @@
      real team colours spanning nearly every hue, any fixed colour risks reading
      as "that's just this team's colour" instead of meaning anything. Weight is
      also the only encoding that can express "no pick": inside the even band
-     neither side is bolded, which a colour cannot say. The badge appears only
-     once the game is graded, and then carries the graded pair, because a colour
-     meaning "correct" must never sit on a game that has not been played. */
+     neither side is bolded, which a colour cannot say. The badge names the
+     picked side from the start, in --accent; it switches to the graded pair
+     only once the game has been played, because a colour meaning "correct"
+     must never sit on a game that has not happened. */
   .tele-team.winner{font-weight:800;}
   .pick-badge{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px;
     border-radius:50%; margin-bottom:3px; flex-shrink:0; box-sizing:border-box;}
+  /* Job 2, not Job 3: this marks the model's pick on a game nobody has played.
+     It must never wear --good, which means "this was right". */
+  .pick-badge.picked{background:var(--accent-soft); color:var(--accent);}
   .pick-badge.correct{background:var(--good-dim); color:var(--good);}
   .pick-badge.incorrect{background:var(--warn-dim); color:var(--warn);}
   .pick-badge.placeholder{background:transparent; border:1.5px dashed var(--border-strong);}
@@ -643,7 +670,14 @@
   /* ---------- Mobile bottom nav ---------- */
   .bottom-nav{
     display:none; position:fixed; left:0; right:0; bottom:0; z-index:50;
-    background:rgba(19,24,38,0.88); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    /* Was a hardcoded rgba(19,24,38,0.88) -- the OLD --panel (#131826) written
+       as literal channels, which is why the token migration walked straight
+       past it: a sweep for var() cannot see a colour that is not one. It left
+       the phone's nav bar on the pre-Stage-8 palette, and worse, pinned it
+       dark in BOTH themes, so light mode got a dark bar. Translucency is the
+       reason it was written raw; color-mix gets it from the token instead. */
+    background:color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
     border-top:1px solid var(--border-strong);
     padding:8px 6px calc(8px + var(--safe-bottom));
   }
@@ -659,7 +693,9 @@
   
   .bnav-more-sheet{
     position:fixed; left:0; right:0; bottom:0; z-index:49;
-    background:rgba(19,24,38,0.97); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    /* Same hardcoded old-palette literal as .bottom-nav above. */
+    background:color-mix(in srgb, var(--surface) 97%, transparent);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
     border-top:1px solid var(--border-strong); border-radius:16px 16px 0 0;
     padding:14px 14px calc(90px + var(--safe-bottom));
     transform:translateY(100%); transition:transform var(--dur-slow) var(--ease);
@@ -681,9 +717,6 @@
     main{padding:20px 16px calc(88px + var(--safe-bottom));}
     .page-head h2{font-size:27px;}
     .page-head{margin-bottom:22px; padding-bottom:16px;}
-    .tele{grid-template-columns:50px 1fr 50px; gap:7px;}
-    .tele-team{font-size:14.5px;}
-    .model-row{grid-template-columns:48px 1fr; gap:8px;}
     .bottom-nav{display:block;}
     table{font-size:12.5px;}
     thead th{padding:10px 10px;}
@@ -693,6 +726,20 @@
   @media (max-width:400px){
     .page-head h2{font-size:24px;}
     main{padding:16px 12px calc(84px + var(--safe-bottom));}
+  }
+
+  /* The card's narrow treatment, keyed to the CARD rather than the viewport.
+     These three rules used to live in the 820px viewport media query above,
+     which was right while the cards were a full-width stack -- card width and
+     viewport width moved together. In a grid they no longer do: at 1440px the
+     viewport is wide and every card is ~360px, so a viewport rule would leave
+     desktop internals in a phone-width box, and a phone would get the narrow
+     treatment on a card that is nearly full-bleed and has room to spare.
+     Asking the card its own width is the only thing that is true in both. */
+  @container card (max-width: 380px){
+    .tele{grid-template-columns:50px 1fr 50px; gap:7px;}
+    .tele-team{font-size:14.5px;}
+    .model-row{grid-template-columns:48px 1fr; gap:8px;}
   }
 
   /* The one press gesture, on everything clickable. Three different scale
@@ -840,7 +887,7 @@
         <ul>
           <li><b style="color:var(--series-a)">Model A</b> is football-only (team ratings, QB performance, no market data). <b style="color:var(--accent)">Model B</b> adds the current Vegas spread.</li>
           <li>The bolder team name is the one that model leans toward. On games too close to call, neither side is bolded -- the model has not picked anybody.</li>
-          <li>Once a game is final, a tick or a cross appears beside the team each model picked, so you can see at a glance which model got it right.</li>
+          <li>A blue tick marks the team each model picked. Once the game is final it turns green if that pick was right, or a red cross if it was wrong -- so the colour tells you whether a result is a prediction or a verdict.</li>
           <li>Each game says in a sentence why that team is ahead. It will often say the quarterback matchup, because that is genuinely what moves this model most -- if the sentence looks repetitive across a week, that is the model showing through, not a stuck template.</li>
           <li>Tap "the numbers behind this" on any game to check that sentence against the exact figures it came from.</li>
           <li>Check <b>Model Lab</b> for the full, honest research history -- including everything that didn't work.</li>
@@ -848,12 +895,26 @@
         <button class="filter-btn" onclick="dismissOnboarding()">Got it</button>
       </div>
     </div>
+    <!-- No standing caption and no count badge.
+
+         This block is STATIC markup, not a JS template literal - a ${...}
+         comment here renders as visible text on the page.
+
+         The caption explained Model A vs Model B on every visit, permanently,
+         to a reader who needs it once - and the onboarding banner directly
+         above says the same thing and can be dismissed, which is what "explain
+         this once" is supposed to look like. Two explanations of the same two
+         models, one of them undismissable, is the redundancy the owner named.
+
+         The badge said "16 games" beside a grid of sixteen game cards. A count
+         is worth showing when counting is hard; here the answer is on screen.
+         #board-badge is kept as a hidden hook because renderGames writes to it
+         and the empty state ("No games") still has to go somewhere. -->
     <div class="page-head">
       <div>
         <h2>Week Board</h2>
-        <div class="desc"><b style="color:var(--series-a)">Model A</b> is football-only. <b style="color:var(--accent)">Model B</b> blends in the current Vegas spread. A flagged gap usually means our model is missing something the market prices in.</div>
       </div>
-      <div class="badge" id="board-badge" aria-live="polite">—</div>
+      <div class="badge" id="board-badge" aria-live="polite" hidden></div>
     </div>
     <div id="week-glance"></div>
     <div class="filter-row">
@@ -1663,16 +1724,36 @@ function populateWeekSelect(selectEl, onChange, initial){
   selectEl.addEventListener('change', ()=> onChange(selectEl.value));
 }
 
-/* Marks the side a model picked, and whether that pick was right. Nothing is
-   drawn until the game is graded: a badge on an unplayed game is either
-   redundant with the bold weight beside it, or - if it carries a graded colour -
-   a verdict on something that has not happened. */
+/* Marks the side a model picked, and - once the game is played - whether that
+   pick was right.
+
+   Three states, and the colour is what separates them:
+
+     picked, not graded  tick in --accent    "this is the model's pick"
+     picked, correct     tick in --good      "the pick was right"
+     picked, wrong       cross in --warn     "the pick was wrong"
+     not picked          dashed outline      the other side, or a toss-up
+
+   The pre-game tick is deliberately NOT green. The version before this drew a
+   green tick on unplayed games, which said a model had been proved right about
+   a game nobody had played; that was one of six graded-colour violations fixed
+   in PR #52, and the onboarding copy had to be rewritten because it described
+   the tick as showing "which team each model actually favors" - which is the
+   job being restored here, minus the false verdict.
+
+   --accent is the right token for it: Job 2 is the model's lean and the active
+   thing. --good and --warn stay Job 3, graded outcomes only, and still cannot
+   appear on a game that has not happened. Bold weight beside the badge carries
+   the same information for anyone who cannot separate the two hues. */
 function pickBadge(picked, graded, correct){
-  if(!picked || !graded) return `<span class="pick-badge placeholder"></span>`;
+  if(!picked) return `<span class="pick-badge placeholder"></span>`;
   const tick = '<path d="M20 6L9 17l-5-5"/>';
   const cross = '<path d="M6 6l12 12M18 6L6 18"/>';
-  return `<span class="pick-badge ${correct ? 'correct' : 'incorrect'}" title="${correct ? 'this model was right' : 'this model was wrong'}">`
-    + `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">${correct ? tick : cross}</svg></span>`;
+  const state = !graded ? 'picked' : (correct ? 'correct' : 'incorrect');
+  const label = !graded ? "this model's pick"
+    : (correct ? 'this model was right' : 'this model was wrong');
+  return `<span class="pick-badge ${state}" title="${label}">`
+    + `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">${state === 'incorrect' ? cross : tick}</svg></span>`;
 }
 
 // Presentation-only: translates a win probability into an illustrative
@@ -1808,29 +1889,21 @@ function whyRow(label, val){
   </div>`;
 }
 
+/* The Week Board's summary strip is gone: Games / Most confident / Biggest
+   model gap. The owner asked for it removed twice -- "I do not need this at
+   all" -- and each tile earns that independently. Games duplicated the "16
+   games" badge already in the page head. Biggest model gap is the A-vs-market
+   gap he separately called unnecessary on the cards, stated in a unit
+   ("59pt") nobody has a scale for. Most confident restated what the first
+   card in the default sort already shows, since the board sorts by confidence.
+
+   Kept as an empty function rather than deleted outright because renderGames
+   calls it and the #week-glance node is a stable hook: the strip may come
+   back as something that earns its space, and an empty seam is easier to fill
+   than a removed one is to rebuild. */
 function renderWeekGlance(gamesList){
   const el = document.getElementById('week-glance');
-  if(!gamesList || gamesList.length===0){ el.innerHTML=''; return; }
-
-  const total = gamesList.length;
-  const highestConf = gamesList.reduce((best,g)=> (g.confidence_rank && (!best || g.confidence_rank < best.confidence_rank)) ? g : best, null);
-  const biggestMismatch = gamesList.reduce((best,g)=>{
-    const diverge = Math.abs(g.fbA_home - g.mktB_home);
-    const bestDiverge = best ? Math.abs(best.fbA_home - best.mktB_home) : -1;
-    return diverge > bestDiverge ? g : best;
-  }, null);
-
-  const cards = [];
-  cards.push(`<div class="glance-item"><span class="glance-label">Games</span><span class="glance-value">${total}</span></div>`);
-  if(highestConf){
-    const pickTeam = highestConf.mktB_home >= 50 ? highestConf.home : highestConf.away;
-    cards.push(`<div class="glance-item"><span class="glance-label">Most confident</span><span class="glance-value">${pickTeam}</span><span class="glance-sub">${highestConf.away} @ ${highestConf.home}</span></div>`);
-  }
-  if(biggestMismatch){
-    const diverge = Math.abs(biggestMismatch.fbA_home - biggestMismatch.mktB_home);
-    cards.push(`<div class="glance-item"><span class="glance-label">Biggest model gap</span><span class="glance-value">${diverge.toFixed(0)}pt</span><span class="glance-sub">${biggestMismatch.away} @ ${biggestMismatch.home}</span></div>`);
-  }
-  el.innerHTML = `<div class="glance-row">${cards.join('')}</div>`;
+  if(el) el.innerHTML = '';
 }
 
 function renderGames(){
@@ -1838,7 +1911,11 @@ function renderGames(){
   const badge = document.getElementById('board-badge');
   const weekData = weeks[currentBoardWeek];
   const gamesList = weekData ? weekData.games : [];
-  badge.textContent = gamesList.length ? `${gamesList.length} game${gamesList.length===1?'':'s'}` : 'No games';
+  // The badge now speaks only when there is nothing to count. "16 games" above
+  // sixteen visible cards told the reader what they could already see; "No
+  // games" is the one state the grid cannot say for itself.
+  badge.textContent = gamesList.length ? '' : 'No games';
+  badge.hidden = gamesList.length > 0;
   renderWeekGlance(gamesList);
 
   const pdfLink = document.getElementById('picks-pdf-link');
@@ -1901,6 +1978,9 @@ function renderGames(){
     const EVEN_BAND = 2;
     const leanOf = p => Math.abs(p - 50) < EVEN_BAND ? 'even' : (p >= 50 ? 'home' : 'away');
     const aLean = leanOf(g.fbA_home), bLean = leanOf(g.mktB_home);
+    // A game neither model will call. Distinct from "models agree", which on a
+    // 50/50 game would claim consensus where there is only shared uncertainty.
+    const tossUp = aLean === 'even' && bLean === 'even';
     const aHomeWin = aLean === 'home', aAwayWin = aLean === 'away';
     const bHomeWin = bLean === 'home', bAwayWin = bLean === 'away';
     const idSafe = (g.home+g.away).replace(/[^a-zA-Z]/g,'');
@@ -1934,14 +2014,22 @@ function renderGames(){
         ${whyRow('QB edge', g.why.qb_matchup)}
         ${(g.why.ol_continuity !== undefined) ? whyRow('O-line continuity', g.why.ol_continuity) : ''}
         ${marginHtml}
+        ${trackRecordHtml(g.mktB_home, 'panel')}
       </div>` : '';
     return `<div class="game-card ${g.flag?'has-flag':''}">
-      <div class="matchup-header">${g.away} <span class="at-symbol">@</span> ${g.home}</div>
+      <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
       <div class="game-top">
-        <span class="game-kickoff">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}</span>
+        <span class="game-kickoff">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}${g.confidence_points ? ` · ${g.confidence_points} pts` : ''}</span>
         <div class="tag-row" style="display:flex; gap:6px; align-items:center;">
           ${gradedTag}
-          <span class="conf-tag ${diverge>=12?'tag-neutral':''}">${diverge>=12 ? `gap ${diverge.toFixed(0)}pt` : 'Models agree'}</span>
+          ${/* The badge says WHETHER the models disagree, not by how much. It
+                read `gap 59pt` -- a number nobody has a scale for, and the
+                A-vs-market gap the owner named as unnecessary on the card
+                twice. Three states, matching the component study: a near-even
+                call is worth flagging on its own, because "the models agree"
+                on a 50/50 game means they agree they do not know. */''}
+          <span class="conf-tag ${tossUp ? 'tag-neutral' : ''}">${
+            tossUp ? 'Toss-up' : (diverge >= 12 ? 'Models split' : 'Models agree')}</span>
         </div>
       </div>
       <div class="model-row">
@@ -1969,7 +2057,7 @@ function renderGames(){
         </div>
       </div>
       <div class="market-ref">Vegas line: <b>${spreadText}</b></div>
-      ${trackRecordHtml(g.mktB_home)}
+      ${trackRecordHtml(g.mktB_home, 'card')}
       ${whyHtml}
       ${(g.notes && g.notes.length) ? `<button class="toggle-flag" data-idx="${idSafe}">+ view context (${g.notes.length})</button>
       <div class="flag-note" id="flag-${idSafe}">
@@ -2533,9 +2621,29 @@ function pickTrackRecord(homeProbPct, modelKey){
   };
 }
 
-function trackRecordHtml(homeProbPct){
+/* `where` decides whether the ordinary case is drawn on the card or tucked
+   into the breakdown the card already has a toggle for.
+
+   The reason is that this block is not per-game -- it is per confidence BAND,
+   so most of a week's cards carry a byte-identical paragraph. Rendered inline
+   on all sixteen it was ~140px of repeated text per card, which is what stopped
+   the cards being the near-square shape the component study measured, and it
+   is also the thing a reader stops seeing by the third card.
+
+   What stays on the card is the case a reader must not skim: the band whose
+   interval spans 50% (it has not been shown to beat a coin flip) and the band
+   with too few games to report. Those are rare, they differ between games, and
+   they change how much the number above them is worth. The routine case moves
+   behind "+ the numbers behind this", which is where someone who wants to check
+   a figure is already going to look.
+
+   'any' keeps the old always-inline behaviour for other callers. */
+function trackRecordHtml(homeProbPct, where='any'){
   const t = pickTrackRecord(homeProbPct, 'model_b');
   if(!t) return '';
+  const notable = t.underpowered || t.coinFlip;
+  if(where === 'card' && !notable) return '';
+  if(where === 'panel' && notable) return '';
   if(t.underpowered){
     return `<div class="track-record thin">Only ${t.n} past game${t.n===1?'':'s'}
       landed at this confidence &mdash; too few to report a track record.</div>`;
