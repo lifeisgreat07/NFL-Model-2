@@ -76,7 +76,7 @@ rewritten every session and this section is not.** `docs/index.md` maps where
 everything is; `memory/` records what each session decided and why. This file
 keeps what stays true for months: methodology, stage plans, and the traps below.
 
-Merged: #40 through #50. Stage 7.5 has cut 14 pages to **9** — Playoff Odds
+Merged: #40 through #57. Stage 7.5 has cut 14 pages to **9** — Playoff Odds
 became a column on Power Ratings, Roadmap folded into Changelog (renamed What's
 Changed), and How This Compares, Data Sources and the Glossary became parts of
 Methodology. The plain-language guard is live and its allowlist is empty.
@@ -87,7 +87,10 @@ half — the repo description and topics — is still Mark's to do in the GitHub
 **Which branches are open, and what each waits on, is in
 `docs/context.md` — that file is rewritten every session and this one is not.**
 Do not maintain a second list here; that duplication is what this split exists
-to end. As of 2026-09-09 there are no open branches at all.
+to end. This paragraph carried a count of open branches until 2026-09-10, when
+it was still claiming "no open branches at all" with one pushed and unmerged —
+the duplication it warns against, in the sentence warning against it. Go read
+`docs/context.md`.
 
 **Stage 3 closed with the finding it exists to prevent.**
 `src/collect_agent_log.py` was written and tested in Stage 3 and had **never
@@ -97,11 +100,16 @@ it ran and the page still said "The record has not been collected yet", because
 a commit pushed by one workflow's `GITHUB_TOKEN` cannot trigger another; #48
 fixed that with a `workflow_run` trigger. Two links of the same chain, each one
 a step that ran correctly and had nothing downstream consuming it. The record is
-live now: `data/agent_log.json`, 45 audits, 167 claims checked, 11 discrepancies.
+live now, in `data/agent_log.json`. **Its `summary` block is the count — do not
+copy those figures into prose here.** They grow with every audit, and the ones
+this paragraph used to carry (45 audits, 167 claims, 11 discrepancies) were
+understating the real totals by a third within a day.
 
-**The next thing is Stage 8, and it is blocked on Mark naming a visual
-reference.** Do not start it by working through the audit's defect list; see the
-Stage 8 section below for why.
+**Stage 8 is done** — design system, colour tokens and motion all merged, and
+Stage 9 is under way. This paragraph said "the next thing is Stage 8, and it is
+blocked on Mark naming a visual reference" for a day after that stopped being
+true. **What is next is in `docs/context.md`, never here.** The Stage 8 section
+below is kept for the reasoning, not as a to-do.
 
 Two habits that paid for themselves and should carry forward: build
 the page and *click the thing you just added* before opening the PR (that is how
