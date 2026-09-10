@@ -12,7 +12,7 @@
     {
       "id": "wc-neutral-pill-is-the-same-paint",
       "why": "the two pill classes resolve to identical styling, so splitting shipped from not-kept changed nothing a reader can see while every structural test still passes",
-      "find": "  .status-planned{background:var(--panel-hi); color:var(--chalk-dim);}",
+      "find": "  .status-planned{background:var(--border); color:var(--text-2);}",
       "replace": "  .status-planned{background:var(--good-dim); color:var(--good);}",
       "expect_caught_by": "test_the_neutral_pill_is_actually_a_different_colour"
     },
