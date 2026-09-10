@@ -1186,8 +1186,8 @@ under compaction pressure, so its length is a cost paid on every session.
   like a deleted section, not an edited sentence. Any prose this file carries
   *for a tool* is an interface: extra detail goes outside the matched span.
 - **The suite count is not a property of the code alone — one test skips while
-  HEAD is ahead of `origin`.** `tests/test_session_start.py:128` skips with
-  "HEAD is not on a remote branch, so there is nothing to prove here", so the
+  HEAD is ahead of `origin`.** A test in `tests/test_session_start.py` skips
+  with "HEAD is not on a remote branch, so there is nothing to prove here", so the
   same tree reports `764 passed, 2 skipped` with a local commit sitting
   unpushed and `765 passed, 1 skipped` the moment it is pushed. The wrap-up
   gate then fails `suite count` against a `CLAUDE.md` line that is correct,
@@ -1196,6 +1196,16 @@ under compaction pressure, so its length is a cost paid on every session.
   clean checkout. **Push first, then run the suite, then quote it.** Both of
   that run's failures had this single cause, and `unpushed work` failing
   alongside `suite count` is the tell.
+- **`session_wrapup.py` reports the PASSED count and says nothing about
+  failures, so `a real run gives N` can mean a red suite.** Writing the entry
+  above produced `764` a second time — not from the skip, but because its own
+  first draft put a test path with a trailing colon-and-line-number inside
+  backticks, which the path guard in `tests/test_claude_md_freshness.py` reads
+  as a filename that does not exist, and a test went red. Same number, wholly
+  different cause. **When `suite count` disagrees, run pytest yourself and read
+  the whole summary line before touching the figure.** A line number belongs
+  outside the backticks; only the bare path goes inside. The sentence you are
+  reading was itself rewritten twice for exactly that reason.
 - **`scout_preflight.py --base main` compares against LOCAL main, which goes
   stale the moment a PR is merged on GitHub.** Right after merging #41 it
   reported "2 commits on this branch, but the body never mentions 2 of them"
