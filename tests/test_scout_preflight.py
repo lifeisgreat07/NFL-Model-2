@@ -181,6 +181,41 @@ def test_a_partial_enumeration_still_fails():
     assert 'aaa1111' not in f.detail, "a disclosed commit was reported missing"
 
 
+def test_listing_commits_by_their_exact_subject_also_counts_as_disclosure():
+    """A SHA-only rule fails the well-written case, and this check is about to
+    run in CI on every PR.
+
+    PR #56's body enumerated all four of its commits by title -- the form a
+    reviewer can actually read and check against the commit list -- and the
+    SHA-only rule reported all four as undisclosed. A rule that fails the good
+    case gets worked around, and a worked-around rule protects nothing.
+
+    Still mechanical: a full-string comparison against what git reports, not a
+    similarity score.
+    """
+    body = ("**Three commits.**\n\n"
+            "1. `First feature`\n2. `Second feature`\n3. `Third feature`\n")
+    assert pf.check_scope_disclosed(body, THREE).ok
+
+
+def test_a_near_miss_subject_does_not_count_as_disclosure():
+    """The loosening must not become a fuzzy match. A truncated or reworded
+    subject is not the commit, and quietly accepting it would let a real
+    undisclosed commit hide behind an approximation of its title."""
+    body = "1. `First feature`\n2. `Second feature`\n3. `Third feat`\n"
+    f = pf.check_scope_disclosed(body, THREE)
+    assert not f.ok
+    assert 'ccc3333' in f.detail
+    assert 'aaa1111' not in f.detail, "a disclosed commit was reported missing"
+
+
+def test_subjects_and_shas_can_be_mixed():
+    """Real bodies do this: prose names the feature commits and a SHA is
+    quoted for the mechanical one nobody wants a paragraph about."""
+    body = "Adds `First feature` and `Second feature`. Also ccc3333 (regenerate)."
+    assert pf.check_scope_disclosed(body, THREE).ok
+
+
 def test_a_single_commit_pr_is_exempt():
     """Its title already describes the whole change; demanding a SHA there is
     noise, and a check that fires on everything gets ignored."""

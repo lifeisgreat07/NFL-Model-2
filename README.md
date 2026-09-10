@@ -41,9 +41,10 @@ What it is meant to demonstrate, and where to look:
   (`tests/mutation/`, 15 cases) deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
-- **Eight CI workflows** in `.github/workflows/` cover the test suite, the
+- **Nine CI workflows** in `.github/workflows/` cover the test suite, the
   weekly data pull, the backtest, dashboard regeneration, the Pages deploy,
-  the agent-activity log, and both halves of the Booth audit.
+  the agent-activity log, a pre-flight check on every pull request description,
+  and both halves of the Booth audit.
 
 If you have five minutes: open the live dashboard, read its **Methodology**
 page, then read `VERIFICATION.md`. Those three cover what the model does,

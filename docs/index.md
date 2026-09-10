@@ -83,4 +83,5 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | `.github/workflows/run-tests.yml` | The suite, on push and PR. |
 | `.github/workflows/collect-agent-log.yml` | Manual dispatch, and pushes to main, to record what the agents actually did. |
 | `.github/workflows/run-backtest.yml` | The backtest, deliberately not on every push. |
+| `.github/workflows/scout-preflight.yml` | Every PR open, push and description edit. Runs `src/scout_preflight.py` against the PR description so a wrong count is caught before Booth spends an audit on it. It existed as a manual tool from PR #26 and nothing ran it; the defect it was built to catch then shipped four more times. Also re-checks on `synchronize`, because a rebase can falsify a number nobody retyped. |
 | `.github/workflows/deploy-pages.yml` | Same triggers as the dashboard regeneration above, plus manual dispatch. Builds the dashboard and publishes it as a Pages artifact instead of serving a committed file. Phase 1 of removing `index.html` from version control — it does not commit anything, and `contents: read` means it cannot. |

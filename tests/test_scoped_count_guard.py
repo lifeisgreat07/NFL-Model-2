@@ -35,7 +35,8 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-from scout_preflight import check_scoped_test_counts, collected_count  # noqa: E402
+from scout_preflight import (  # noqa: E402
+    SCOPED_COUNT_PHRASINGS, SCOPED_COUNT_RE, check_scoped_test_counts, collected_count)
 
 # Verbatim from PR #54's description, as Booth found it.
 THE_SENTENCE_THAT_SHIPPED = (
@@ -133,6 +134,59 @@ def test_an_unpaired_quote_does_not_swallow_the_document():
     assert body.count('"') >= 2, "this test needs two quote marks to be meaningful"
     assert not check_scoped_test_counts(body, skip_tests=False).ok, (
         "quote marks on different lines swallowed the claim between them")
+
+
+@pytest.mark.parametrize('row', [
+    "| Motion guards | `pytest tests/test_scoped_count_guard.py -q --collect-only` | 99 collected |",
+    "| Motion guards | `pytest tests/test_scoped_count_guard.py -q` | 99 passed |",
+    "`test_scoped_count_guard` — 99 passing",
+])
+def test_it_catches_the_phrasings_pytest_itself_prints(row):
+    """The hole that let PR #56 through.
+
+    The check matched the word "tests" and nothing else, so this row went green:
+
+        | `pytest tests/test_motion_system.py -q --collect-only` | 12 collected |
+
+    The real figure was 11. "collected" is what `--collect-only` prints and
+    "passed" is what a run prints, so those are the two phrasings most likely to
+    appear beside a module name in a verification table -- and they were exactly
+    the two it could not see. A guard that only recognises wording a person
+    invents, and not wording a tool emits, is guarding the rarer case.
+    """
+    assert not check_scoped_test_counts(row, skip_tests=False).ok, (
+        f"not caught: {row!r}")
+
+
+def test_every_declared_phrasing_is_actually_matched():
+    """The comment above SCOPED_COUNT_RE cannot drift from the regex again.
+
+    It already did. The comment said "`collected` and `passed` were added",
+    naming two of the three words the change actually added, and the PR body
+    called it "a two-word fix" -- a miscount in prose, inside the change whose
+    entire subject is miscounts in prose. Booth caught it on PR #57.
+
+    The words are data now, and this asserts the regex is built from all of
+    them. Add a phrasing to the tuple and forget the regex, or the reverse, and
+    this fails rather than the documentation quietly becoming false.
+    """
+    samples = {'tests?': '7 tests', 'collected': '7 collected',
+               'passed': '7 passed', 'passing': '7 passing'}
+    assert set(samples) == set(SCOPED_COUNT_PHRASINGS), (
+        f"SCOPED_COUNT_PHRASINGS is {SCOPED_COUNT_PHRASINGS} but this test only "
+        f"knows how to exercise {tuple(samples)}. Add a sample for the new one.")
+    for phrasing, sample in samples.items():
+        assert SCOPED_COUNT_RE.search(sample), (
+            f"{phrasing!r} is declared in SCOPED_COUNT_PHRASINGS but the regex "
+            f"does not match {sample!r}")
+
+
+def test_a_whole_suite_count_is_not_blamed_on_a_module():
+    """`pytest tests/ -q` reports the whole suite, and its row names no module.
+    That belongs to check_test_count, not this one -- claiming otherwise would
+    make every verification table unfixable."""
+    row = "| Full suite | `pytest tests/ -q` | 751 passed, 1 skipped |"
+    assert check_scoped_test_counts(row, skip_tests=False).ok
 
 
 def test_an_unknown_module_is_ignored_rather_than_failed():
