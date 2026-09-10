@@ -487,9 +487,15 @@
      "992" was the trap: 32*31 ordered matchups and C(32,2) x 2 CVD types are
      both 992, so two people can agree on the total while counting different
      things. The denominator is 496 now for that reason. Note also that the
-     count is threshold-fragile -- seven pairs sit between 14.9 and 15.25, so
+     count is threshold-fragile -- 9 pairs sit between 14.9 and 15.25, so
      8-bit rounding at each step moves several across the line. Quote the worst
-     pairs, which are stable; treat the count as approximate. */
+     pairs, which are stable; treat the count as approximate.
+
+     That "9" was "seven" when this comment first shipped, which is the same
+     mistake one paragraph up, made while writing the paragraph that describes
+     it: a number read off a script's output by eye instead of asserted. Booth
+     caught it on PR #52 and noted the real reason it survived -- no test
+     covered this sentence, only the two above it. One does now. */
   .tele-bar-seg:first-child{border-radius:5px 0 0 5px; border-right:2px solid var(--surface);}
   .tele-bar-seg:last-child{border-radius:0 5px 5px 0;}
   .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--text); opacity:.55; left:50%; z-index:2;}

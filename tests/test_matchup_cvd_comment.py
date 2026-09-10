@@ -86,6 +86,30 @@ def test_the_worst_pairs_named_in_the_comment_are_the_worst_pairs(path, computed
             f'comment says {a}/{b} is {quoted}; computed {computed[key]:.2f}')
 
 
+@pytest.mark.parametrize('path', [TEMPLATE, GENERATED], ids=['template', 'generated'])
+def test_the_threshold_fragility_count_is_what_the_script_computes(path, computed):
+    """The sentence that got away.
+
+    The comment's caveat originally read "seven pairs sit between 14.9 and
+    15.25". The real figure is nine. Booth caught it on PR #52 and named the
+    reason it survived: the two tests above cover the headline count and the
+    worst-pairs list, and nothing covered this sentence -- so a number read off
+    the script's output by eye went straight into the file that exists to stop
+    numbers being read off by eye. Every number in that comment is asserted now.
+    """
+    lo, hi = 14.9, 15.25
+    actual = sum(1 for d in computed.values() if lo < d < hi)
+    text = comment(path)
+    m = re.search(r'(\d+) pairs sit between ([\d.]+) and ([\d.]+)', text)
+    assert m, 'the comment no longer states "N pairs sit between X and Y"'
+    assert (float(m.group(2)), float(m.group(3))) == (lo, hi), (
+        f'the comment quotes the band {m.group(2)}-{m.group(3)}; this test '
+        f'checks {lo}-{hi}. Change both together or neither.')
+    assert int(m.group(1)) == actual, (
+        f'comment says {m.group(1)} pairs between {lo} and {hi}; '
+        f'src/verify_matchup_cvd.py computes {actual}')
+
+
 def test_the_two_copies_of_the_comment_agree():
     """index.html is generated AND committed, so it can be left stale."""
     assert comment(TEMPLATE) == comment(GENERATED), (
