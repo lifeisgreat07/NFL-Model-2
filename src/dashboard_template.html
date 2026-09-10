@@ -84,17 +84,16 @@
     --ease:cubic-bezier(.2,.7,.2,1);
     --press:translateY(1px);
 
-    /* Elevation is a border, not a shadow. --shadow-overlay is for overlays
-       only; --shadow-sm/md/lg are legacy and retire with the aliases. */
+    /* Elevation is a border, not a shadow. --shadow-overlay is the only
+       ELEVATION shadow and has exactly two consumers, both of which genuinely
+       float above the page: the undo toast and the reliability tooltip.
+       Everything else is separated from the surface behind it by a 1px border.
+       One other box-shadow exists on the page and is deliberate: the live-season
+       dot in the brand mark carries a same-colour glow (0 0 8px, no offset),
+       which is an emphasis effect on a status indicator rather than elevation. */
     --shadow-overlay: 0 12px 32px rgba(0,0,0,.5);
     --z-nav:10; --z-overlay:20;
 
-    /* Legacy, kept until the elevation pass: nothing in the design uses these,
-       but a handful of components still do. --shadow-overlay above is the only
-       one the system sanctions. */
-    --shadow-sm: 0 1px 2px rgba(0,0,0,.35);
-    --shadow-md: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.65);
-    --shadow-lg: 0 2px 4px rgba(0,0,0,.35), 0 24px 48px -20px rgba(0,0,0,.7);
     --safe-bottom: env(safe-area-inset-bottom, 0px);
     --safe-top: env(safe-area-inset-top, 0px);
   }
@@ -114,9 +113,6 @@
     --series-a:#4C75C3; --series-b:#B26A0C; --series-c:#893365; --series-d:#7D24D3;
 
     --shadow-overlay: 0 12px 32px rgba(20,24,30,.14);
-    --shadow-sm: 0 1px 2px rgba(26,29,36,.08);
-    --shadow-md: 0 1px 2px rgba(26,29,36,.06), 0 10px 28px -14px rgba(26,29,36,.18);
-    --shadow-lg: 0 2px 4px rgba(26,29,36,.08), 0 24px 48px -20px rgba(26,29,36,.22);
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -182,7 +178,7 @@
     background:var(--surface-2); color:var(--text-2); border:1px solid var(--border); white-space:nowrap;}
 
   /* ---------- Power Ratings table ---------- */
-  .table-wrap{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); overflow-x:auto; overflow-y:hidden; box-shadow:var(--shadow-md);}
+  .table-wrap{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); overflow-x:auto; overflow-y:hidden;}
   table{width:100%; border-collapse:collapse;}
   thead th{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
     color:var(--text-2); text-align:left; padding:13px 16px; border-bottom:1px solid var(--border); cursor:pointer;
@@ -328,7 +324,7 @@
     background:var(--border); border:1px solid var(--border-strong); border-radius:10px;
     padding:12px 16px; display:flex; align-items:center; gap:14px;
     font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; color:var(--text);
-    box-shadow:var(--shadow-md); opacity:0; transition:transform var(--dur-slow) var(--ease), opacity var(--dur-slow) var(--ease);
+    box-shadow:var(--shadow-overlay); opacity:0; transition:transform var(--dur-slow) var(--ease), opacity var(--dur-slow) var(--ease);
     pointer-events:none;
   }
   .undo-toast.visible{transform:translateX(-50%) translateY(0); opacity:1; pointer-events:auto;}
@@ -373,7 +369,7 @@
   .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--text-2); margin-top:8px;}
 
   .accuracy-cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-bottom:20px;}
-  .accuracy-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:20px; box-shadow:var(--shadow-sm);}
+  .accuracy-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:20px;}
   .accuracy-card .label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); margin-bottom:8px;}
   .accuracy-card .value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:32px;}
   .accuracy-card .sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2); margin-top:4px;}
@@ -398,7 +394,7 @@
      pointer-events:none so it can't steal the next hover. */
   .rel-tip{position:absolute; pointer-events:none; opacity:0; transition:opacity var(--dur-fast) var(--ease);
     background:var(--surface-2); border:1px solid var(--border-strong); border-radius:8px;
-    box-shadow:var(--shadow-md); padding:9px 11px; font-size:11.5px; line-height:1.5;
+    box-shadow:var(--shadow-overlay); padding:9px 11px; font-size:11.5px; line-height:1.5;
     color:var(--text-2); max-width:230px; z-index:5;}
   .rel-tip.on{opacity:1;}
   .rel-tip b{color:var(--text);}
@@ -433,7 +429,7 @@
   .track-coin{color:var(--accent); font-weight:600;}
   .track-note{display:block; margin-top:5px; font-size:10.5px; opacity:.85;}
   .game-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:18px 20px;
-    box-shadow:var(--shadow-sm); transition:border-color var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease), transform var(--dur-base) var(--ease);}
+    transition:border-color var(--dur-base) var(--ease);}
   .game-card.has-flag{border-left:3px solid var(--accent);}
   .game-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
   .matchup-header{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
@@ -451,26 +447,56 @@
   .tele{display:grid; grid-template-columns:60px 1fr 60px; align-items:center; gap:10px;}
   .tele-team .pct{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:500; font-size:11px; color:var(--text-2); margin-top:3px;}
   .tele-team.right{text-align:right;}
-  /* Winner indication deliberately does NOT use color/hue -- with 32 real
-     team colors spanning nearly every hue (the Rams' navy+gold nearly
-     matches our own blue/amber brand accents), any fixed color risks
-     looking like "that's just this team's color" instead of meaning
-     anything. A neutral checkmark badge can't be confused with team
-     identity regardless of matchup. */
+  /* Which side a model leans toward is carried by WEIGHT, not hue -- with 32
+     real team colours spanning nearly every hue, any fixed colour risks reading
+     as "that's just this team's colour" instead of meaning anything. Weight is
+     also the only encoding that can express "no pick": inside the even band
+     neither side is bolded, which a colour cannot say. The badge appears only
+     once the game is graded, and then carries the graded pair, because a colour
+     meaning "correct" must never sit on a game that has not been played. */
   .tele-team.winner{font-weight:800;}
   .pick-badge{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px;
     border-radius:50%; margin-bottom:3px; flex-shrink:0; box-sizing:border-box;}
-  .pick-badge.a{background:var(--accent);}
-  .pick-badge.b{background:var(--accent);}
+  .pick-badge.correct{background:var(--good-dim); color:var(--good);}
+  .pick-badge.incorrect{background:var(--warn-dim); color:var(--warn);}
   .pick-badge.placeholder{background:transparent; border:1.5px dashed var(--border-strong);}
   .pick-badge svg{width:9px; height:9px;}
   .tele-bar{position:relative; height:9px; background:var(--border); border-radius:5px; overflow:hidden; display:flex;}
-  /* The last hardcoded duration on the page. It was held back while the game
-     card was under study; Booth caught that the exclusion made the PR's
-     "prefers-reduced-motion verified end to end" untrue -- 64 of these kept
-     animating at .4s for a user who had asked for no motion. */
+  /* Was the last hardcoded duration on the page, held back while the game card
+     was under study; Booth caught that the exclusion made "prefers-reduced-motion
+     verified end to end" untrue -- 64 of these kept animating at .4s for a user
+     who had asked for no motion. */
   .tele-bar-seg{height:100%; transition:width var(--dur-slow) var(--ease); opacity:.88;}
-  .tele-bar-seg:first-child{border-radius:5px 0 0 5px;}
+  /* The 2px gap is the accessibility half of the game-card study. matchupColors
+     compares RGB Euclidean distance, which models no form of colour vision:
+     60 of the 496 distinct team pairs (12.1%) sit under the dE00 15 floor once
+     simulated for the common red-green types, and 9 are effectively identical
+     (dE00 < 5) -- worst ARI/PHI 0.18, LA/SEA 1.10, GB/SEA 3.08, JAX/SEA 3.16.
+     Identity survives (logo, abbreviation and percentage sit at both ends) but
+     with the fills touching the SPLIT POINT vanishes, so the bar stops showing
+     the proportion.
+
+     Every number above is regenerated by `src/verify_matchup_cvd.py`, which
+     reads TEAM_COLOR and CONTRAST_THRESHOLD out of this file so it cannot drift
+     from the code it describes. Run it rather than trusting this comment.
+
+     It exists because the first version of this comment shipped "115 of 992
+     team/theme pairs ... and 15 effectively identical" with no script anywhere,
+     computed once in a browser. Booth re-ran the stated method on PR #52 and
+     got 71 and 9; re-deriving it here gives 70 and 9 for that same reading. The
+     "992" was the trap: 32*31 ordered matchups and C(32,2) x 2 CVD types are
+     both 992, so two people can agree on the total while counting different
+     things. The denominator is 496 now for that reason. Note also that the
+     count is threshold-fragile -- 9 pairs sit between 14.9 and 15.25, so
+     8-bit rounding at each step moves several across the line. Quote the worst
+     pairs, which are stable; treat the count as approximate.
+
+     That "9" was "seven" when this comment first shipped, which is the same
+     mistake one paragraph up, made while writing the paragraph that describes
+     it: a number read off a script's output by eye instead of asserted. Booth
+     caught it on PR #52 and noted the real reason it survived -- no test
+     covered this sentence, only the two above it. One does now. */
+  .tele-bar-seg:first-child{border-radius:5px 0 0 5px; border-right:2px solid var(--surface);}
   .tele-bar-seg:last-child{border-radius:0 5px 5px 0;}
   .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--text); opacity:.55; left:50%; z-index:2;}
 
@@ -549,7 +575,7 @@
   }
 
   /* ---------- Methodology ---------- */
-  .method-block{background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--border-strong); border-radius:var(--r-md); padding:24px 26px; margin-bottom:16px; box-shadow:var(--shadow-sm);}
+  .method-block{background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--border-strong); border-radius:var(--r-md); padding:24px 26px; margin-bottom:16px;}
   /* Explanatory note sitting under a table, for the case where a column is
      legitimately empty and would otherwise read as broken. */
   .table-note{color:var(--text-2); font-size:12.5px; line-height:1.55; margin:2px 0 14px; padding:12px 14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); max-width:680px;}
@@ -603,7 +629,7 @@
      existed, so "TESTED -- REJECTED" was painted as an achievement. The pill
      colour is the only thing most readers actually parse. */
   .roadmap-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:14px;}
-  .roadmap-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:19px; box-shadow:var(--shadow-sm); transition:transform var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);}
+  .roadmap-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:19px; transition:border-color var(--dur-base) var(--ease);}
   .roadmap-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
     padding:4px 9px; border-radius:20px; display:inline-block; margin-bottom:11px;}
   .status-planned{background:var(--border); color:var(--text-2);}
@@ -689,10 +715,10 @@
     .pick-btn:hover{border-color:var(--accent);}
     .rel-table summary:hover{color:var(--text);}
     .filter-btn:hover{border-color:var(--accent); color:var(--text);}
-    .game-card:hover{border-color:var(--border-strong); box-shadow:var(--shadow-md); transform:translateY(-1px);}
+    .game-card:hover{border-color:var(--border-strong);}
     .dive-game-head:hover{background:var(--border);}
     .page-jump a:hover{color:var(--text); border-color:var(--border-strong);}
-    .roadmap-card:hover{transform:translateY(-2px); box-shadow:var(--shadow-md);}
+    .roadmap-card:hover{border-color:var(--border-strong);}
   }
 </style>
 </head>
@@ -813,7 +839,8 @@
         <h4>New here? Quick orientation.</h4>
         <ul>
           <li><b style="color:var(--series-a)">Model A</b> is football-only (team ratings, QB performance, no market data). <b style="color:var(--accent)">Model B</b> adds the current Vegas spread.</li>
-          <li>The green checkmark shows which team each model actually favors -- the dashed circle is the other side.</li>
+          <li>The bolder team name is the one that model leans toward. On games too close to call, neither side is bolded -- the model has not picked anybody.</li>
+          <li>Once a game is final, a tick or a cross appears beside the team each model picked, so you can see at a glance which model got it right.</li>
           <li>Each game says in a sentence why that team is ahead. It will often say the quarterback matchup, because that is genuinely what moves this model most -- if the sentence looks repetitive across a week, that is the model showing through, not a stuck template.</li>
           <li>Tap "the numbers behind this" on any game to check that sentence against the exact figures it came from.</li>
           <li>Check <b>Model Lab</b> for the full, honest research history -- including everything that didn't work.</li>
@@ -1636,11 +1663,16 @@ function populateWeekSelect(selectEl, onChange, initial){
   selectEl.addEventListener('change', ()=> onChange(selectEl.value));
 }
 
-function pickBadge(modelKey, isWinner){
-  if(isWinner){
-    return `<span class="pick-badge ${modelKey}"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>`;
-  }
-  return `<span class="pick-badge placeholder"></span>`;
+/* Marks the side a model picked, and whether that pick was right. Nothing is
+   drawn until the game is graded: a badge on an unplayed game is either
+   redundant with the bold weight beside it, or - if it carries a graded colour -
+   a verdict on something that has not happened. */
+function pickBadge(picked, graded, correct){
+  if(!picked || !graded) return `<span class="pick-badge placeholder"></span>`;
+  const tick = '<path d="M20 6L9 17l-5-5"/>';
+  const cross = '<path d="M6 6l12 12M18 6L6 18"/>';
+  return `<span class="pick-badge ${correct ? 'correct' : 'incorrect'}" title="${correct ? 'this model was right' : 'this model was wrong'}">`
+    + `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">${correct ? tick : cross}</svg></span>`;
 }
 
 // Presentation-only: translates a win probability into an illustrative
@@ -1864,12 +1896,18 @@ function renderGames(){
 
   grid.innerHTML = sorted.map(g=>{
     const diverge = Math.abs(g.fbA_home - g.mktB_home);
-    const aHomeWin = g.fbA_home >= (100-g.fbA_home);
-    const bHomeWin = g.mktB_home >= (100-g.mktB_home);
+    // Within EVEN_BAND points of 50 the model has not picked anybody, and
+    // bolding one side of a 50.4/49.6 split states a confidence it does not have.
+    const EVEN_BAND = 2;
+    const leanOf = p => Math.abs(p - 50) < EVEN_BAND ? 'even' : (p >= 50 ? 'home' : 'away');
+    const aLean = leanOf(g.fbA_home), bLean = leanOf(g.mktB_home);
+    const aHomeWin = aLean === 'home', aAwayWin = aLean === 'away';
+    const bHomeWin = bLean === 'home', bAwayWin = bLean === 'away';
     const idSafe = (g.home+g.away).replace(/[^a-zA-Z]/g,'');
     const [awayC, homeC] = matchupColors(g.away, g.home);
     const spreadText = (g.spread===null || g.spread===undefined) ? "No line available"
-      : (g.spread>=0 ? `${g.home} -${g.spread}` : `${g.away} -${Math.abs(g.spread)}`);
+      : g.spread === 0 ? "PK"
+      : (g.spread>0 ? `${g.home} -${g.spread}` : `${g.away} -${Math.abs(g.spread)}`);
     const gradedTag = g.graded
       ? `<span class="graded-tag ${g.model_b_correct ?? g.model_a_correct ? 'correct':'incorrect'}">${(g.model_b_correct ?? g.model_a_correct) ? 'Correct' : 'Missed'}</span>`
       : '';
@@ -1909,25 +1947,25 @@ function renderGames(){
       <div class="model-row">
         <span class="model-label a">MODEL A</span>
         <div class="tele">
-          <div class="tele-team ${!aHomeWin?'winner':''}">${pickBadge('a', !aHomeWin)}<img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.fbA_home).toFixed(1)}%</span></div>
+          <div class="tele-team ${aAwayWin?'winner':''}">${pickBadge(aAwayWin, g.graded, g.model_a_correct)}<img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.fbA_home).toFixed(1)}%</span></div>
           <div class="tele-bar">
             <div class="tele-bar-seg" style="width:${100-g.fbA_home}%; background:${awayC};"></div>
             <div class="tele-bar-seg" style="width:${g.fbA_home}%; background:${homeC};"></div>
             <div class="tele-marker"></div>
           </div>
-          <div class="tele-team right ${aHomeWin?'winner':''}">${pickBadge('a', aHomeWin)}<img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.fbA_home.toFixed(1)}%</span></div>
+          <div class="tele-team right ${aHomeWin?'winner':''}">${pickBadge(aHomeWin, g.graded, g.model_a_correct)}<img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.fbA_home.toFixed(1)}%</span></div>
         </div>
       </div>
       <div class="model-row">
         <span class="model-label b">MODEL B</span>
         <div class="tele">
-          <div class="tele-team ${!bHomeWin?'winner':''}">${pickBadge('b', !bHomeWin)}<img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.mktB_home).toFixed(1)}%</span></div>
+          <div class="tele-team ${bAwayWin?'winner':''}">${pickBadge(bAwayWin, g.graded, g.model_b_correct)}<img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.mktB_home).toFixed(1)}%</span></div>
           <div class="tele-bar">
             <div class="tele-bar-seg" style="width:${100-g.mktB_home}%; background:${awayC};"></div>
             <div class="tele-bar-seg" style="width:${g.mktB_home}%; background:${homeC};"></div>
             <div class="tele-marker"></div>
           </div>
-          <div class="tele-team right ${bHomeWin?'winner':''}">${pickBadge('b', bHomeWin)}<img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.mktB_home.toFixed(1)}%</span></div>
+          <div class="tele-team right ${bHomeWin?'winner':''}">${pickBadge(bHomeWin, g.graded, g.model_b_correct)}<img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.mktB_home.toFixed(1)}%</span></div>
         </div>
       </div>
       <div class="market-ref">Vegas line: <b>${spreadText}</b></div>
