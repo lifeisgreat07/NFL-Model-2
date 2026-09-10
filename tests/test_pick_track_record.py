@@ -9,6 +9,7 @@ stops appearing, or appears saying the opposite of the truth.
 Run with: pytest tests/test_pick_track_record.py -v
 """
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -125,10 +126,39 @@ def test_a_band_whose_interval_spans_fifty_is_called_a_coin_flip():
 def test_the_track_record_appears_on_both_places_a_pick_is_shown():
     """The board is where picks are read; the Picks page is where they're
     chosen. Showing the record on only one of them means the decision screen is
-    the one missing it."""
-    src = TEMPLATE.read_text()
-    assert src.count('${trackRecordHtml(g.mktB_home)}') >= 2, (
-        "the track record is rendered in fewer than both pick views")
+    the one missing it.
+
+    Matched on the CALL rather than one exact spelling of it. This asserted
+    `src.count('${trackRecordHtml(g.mktB_home)}') >= 2` and went red when the
+    function gained a `where` argument -- the record was still rendered in both
+    views, and the test could not see it. The decision being protected is
+    "both views show it", so that is what is checked; the argument list is
+    free to change.
+    """
+    src = TEMPLATE.read_text(encoding='utf-8')
+    calls = re.findall(r'trackRecordHtml\(\s*g\.mktB_home\s*(?:,[^)]*)?\)', src)
+    assert len(calls) >= 2, (
+        f"the track record is rendered in fewer than both pick views "
+        f"(found {len(calls)} call(s): {calls})")
+
+
+def test_the_board_shows_the_track_record_somewhere_a_reader_will_meet_it():
+    """The routine case moved behind the card's existing breakdown toggle,
+    because it is per confidence BAND rather than per game -- most of a week's
+    cards carried a byte-identical paragraph, ~140px of repeat on each.
+
+    What must NOT move is the case a reader has to see: a band whose interval
+    spans 50% has not been shown to beat a coin flip, and a band with too few
+    games cannot report a rate at all. Those stay on the card face. This test
+    exists so that "tidy the card" can never quietly demote them.
+    """
+    body = _fn('trackRecordHtml')
+    assert "where === 'card'" in body and 'notable' in body, (
+        "trackRecordHtml no longer distinguishes where it is rendered")
+    assert 'underpowered || t.coinFlip' in body.replace('t.underpowered', 'underpowered'), (
+        "the notable cases are no longer the coin-flip and underpowered bands, "
+        "so something other than 'a reader must not skim this' is deciding "
+        "what stays on the card")
 
 
 def test_season_range_does_not_render_every_year(calibration):
