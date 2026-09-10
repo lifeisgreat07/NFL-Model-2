@@ -83,3 +83,4 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | `.github/workflows/run-tests.yml` | The suite, on push and PR. |
 | `.github/workflows/collect-agent-log.yml` | Manual dispatch, and pushes to main, to record what the agents actually did. |
 | `.github/workflows/run-backtest.yml` | The backtest, deliberately not on every push. |
+| `.github/workflows/deploy-pages.yml` | Same triggers as the dashboard regeneration above, plus manual dispatch. Builds the dashboard and publishes it as a Pages artifact instead of serving a committed file. Phase 1 of removing `index.html` from version control — it does not commit anything, and `contents: read` means it cannot. |
