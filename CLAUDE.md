@@ -597,18 +597,28 @@ These are available and should be used deliberately rather than mentioned.
   pass; contrast and CVD are already covered by the dataviz validator.
 - **`artifact-diagramming`** — for Stage 7's architecture diagram, not these.
 
-### Stage 8 - Design system foundations
+### Stage 8 - Design system foundations  <- DESIGN PHASE COMPLETE (2026-09-10)
 
-**First, the concept.** Before any token changes: decide what this dashboard
-looks like. It is a football analytics product that is honest about
-uncertainty, publishes its own failures, and is read by technical hiring
-managers. That is a real brief and it has a visual answer — the current page is
-a competent dark dashboard with amber accents and no particular opinion.
-Explore directions on a `design` canvas, get a `design:design-critique` pass,
-pick one, and write the decision down here before writing CSS. Everything below
-serves the chosen direction.
+**The concept is decided and written down.** It lives in
+`docs/design/STAGE8-DESIGN.md`, which carries the token block verbatim and the
+reasoning behind every value. Read it before touching CSS. The one-line
+version: colour has exactly four jobs and nothing else gets a hue; team
+identity is a logo, never a colour; elevation is a border, not a shadow; and
+the graded colours may appear only after a game has been scored, because a
+colour meaning "correct" on a game that has not happened makes the page lie.
 
-**Then the foundations**, which are the audit's list and are still all true:
+**What remains is Stage 8b, the port** — lifting that block into
+`src/dashboard_template.html` and restyling page by page. The template is
+3,250 lines across nine pages; the design was proven against two. Roughly 704
+tests assert on it, several on colour tokens and exact strings. Treat a failing
+colour assertion as a question, not as something to update to match: those
+tests encode earlier decisions that were themselves argued for.
+
+**The audit's foundations list is now satisfied by the token block** — spacing
+scale, type scale, tabular figures, radius tokens, a motion system of three
+durations and one easing, `prefers-reduced-motion`, and elevation-as-border
+with `--shadow-overlay` reserved for the single `.overlay` component. It is
+kept below for the record of what the page looked like before:
 a spacing scale replacing 31 ad-hoc values, 63% of which sit off a 4px grid; a
 type scale replacing 21 distinct font sizes including seven half-pixel ones;
 tabular figures across every numeric surface, currently used once in a
@@ -771,6 +781,42 @@ under compaction pressure, so its length is a cost paid on every session.
 
 ## Traps that have actually bitten
 
+- **Reading your own code back is not verification, and the failure is
+  asymmetric.** Stage 8's design phase re-derived every numeric claim rather
+  than believing it: contrast by recomputing WCAG luminance from the hex
+  values, colour-blindness by running the Machado 2009 matrices and CIEDE2000,
+  geometry by rendering in headless Chromium and reading
+  `getBoundingClientRect`. That caught three false claims from Fable — and then
+  two more of my own, in code I had just written and was confident about. One
+  was a CSS comment asserting three rules shared a specificity so source order
+  would decide; `.brand:hover .brand-mark .spin` is four classes and the rule
+  it was supposed to lose to was three, so hovering the logo froze the loading
+  spinner *and* hung the logic waiting for an animation that was no longer
+  running. One wrong assumption, two failures, neither visible by re-reading.
+  The other generalised a width measurement taken from one table row to rows
+  that carry an extra element. **Measure the specific case; specificity beats
+  source order; and a claim about rendered geometry is only true after
+  rendering.**
+- **An animated disclosure can leak its contents into the accessibility tree.**
+  Replacing `display: none` with a `grid-template-rows: 0fr` transition
+  animates beautifully and leaves the collapsed content readable by screen
+  readers and findable by find-in-page, contradicting the toggle's own
+  `aria-expanded="false"`. `display: none` had been doing that job correctly
+  and the animation quietly removed it. Fix: `visibility: hidden` on the inner
+  wrapper with `transition: visibility 0s linear var(--dur-slow)`.
+- **A wholesale `innerHTML` re-render silently destroys interaction state.** An
+  open breakdown vanished on a filter change. Whatever the user has toggled
+  must live in `state` and be re-derived on render, and floating UI (tooltips,
+  popovers) must live outside the rendered tree entirely. Worth naming because
+  the same deliverable that recommended this rule did not follow it.
+- **Naming a path in `docs/context.md` that does not exist fails the suite.**
+  `tests/test_workflow_docs.py` parses these documents for path-shaped strings
+  and asserts each one exists, and separately asserts `memory/README.md` lists
+  every file in `memory/`. Both fired within a minute of a wrap-up commit that
+  pointed at files delivered into a chat rather than committed. The guard is
+  right; fix the doc, do not reword around it — and if the answer is that the
+  files should not be in the repo, say so in the doc instead of implying they
+  are coming.
 - **A safeguard written down twice, both times as a benefit, hid what it broke.**
   A push made with the default `GITHUB_TOKEN` cannot trigger another workflow.
   Both `collect-agent-log.yml` and `generate-dashboard.yml` documented that rule
