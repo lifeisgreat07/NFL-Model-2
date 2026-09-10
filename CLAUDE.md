@@ -1144,6 +1144,40 @@ under compaction pressure, so its length is a cost paid on every session.
   known at the time and one was dropped in the summary, which is the specific
   way this goes wrong: **the miscount is not a slip in arithmetic, it is a
   cause that got left out of the sentence.**
+- **THE RECURRING ONE: a real number from a command whose scope is not the
+  sentence's scope.** Booth found this shape four times, three of them inside a
+  single afternoon (2026-09-10), on three different PRs:
+
+  | Where | Written | True |
+  |---|---|---|
+  | #51 claim 7 | "every measured element reports 0s" | 8 selectors measured; a 3,582-element sweep found 64 still animating |
+  | #51 claim 17 | the three `--shadow-sm` / `--shadow-md` / `--shadow-lg` tokens "still used in ten places" | 9 token references; 10 `box-shadow` declarations |
+  | #52 claim 5 | "seven pairs sit between 14.9 and 15.25" | nine — read by eye off a wider band printed for another purpose |
+  | #54 claim 4 | "`test_workflow_churn_guard.py` … its 31 tests still pass" | 3 — the 31 was a three-file run (3 + 20 + 8) |
+
+  **Not one of these was invented.** Every number was real output from a real
+  command. That is exactly why re-reading never catches them: the author
+  remembers running the command and getting the figure, so it feels earned.
+  What goes unchecked is the *attribution* — whether the command's scope is the
+  sentence's scope — and attribution is invisible to the person who did it.
+  Note also the direction of drift: the command is almost always **wider** than
+  the sentence (three files quoted at one, a wide band quoted at a narrow one,
+  eight selectors quoted as "every"), because the wider command was run first,
+  for a different reason, and the sentence was written later.
+
+  So the rule is not "be careful with numbers", which describes nothing you can
+  do. It is: **write the command beside the number.** `pytest
+  tests/test_workflow_churn_guard.py -q → 3` cannot be written next to "31" —
+  the mismatch becomes self-evident at the moment of writing, which is the only
+  moment it is cheap. Corollary, stated because it is the one that keeps
+  failing: **never quote a count from a multi-file pytest run.** Collect each
+  file on its own.
+
+  `check_scoped_test_counts` in `src/scout_preflight.py` closes the one variant
+  that is mechanically decidable — a count attributed to a named test module is
+  checked by collecting that module. `tests/test_scoped_count_guard.py` holds
+  #54's failing sentence verbatim, so the guard cannot rot silently. The other
+  three variants have no general check and are governed by the rule above.
 - **A wrap-up check that greps this file for a literal string is disabled by
   rewording that string, and says the line is MISSING.** `session_wrapup.py`
   matches `Suite:\s*\*\*([0-9,]+)\s+passing\*\*`. Writing

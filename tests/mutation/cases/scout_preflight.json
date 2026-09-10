@@ -61,9 +61,25 @@
     {
       "id": "preflight-no-quotation-stripping",
       "why": "quoted output is read as an assertion, so citing history fails the check",
-      "find": "    return BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body))",
+      "find": "    return QUOTED_SPAN_RE.sub('', BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body)))",
       "replace": "    return body",
       "expect_caught_by": "test_a_count_quoted_inside_a_code_block_is_not_a_claim"
+    },
+    {
+      "id": "preflight-quote-marks-not-stripped",
+      "why": "a span inside quotation marks reads as an assertion again, so a PR that explains a past miscount mid-sentence or in a table cell fails on the correction rather than the error -- Booth found this by running the tool against the PR that shipped it (#55)",
+      "find": "    return QUOTED_SPAN_RE.sub('', BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body)))",
+      "replace": "    return BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body))",
+      "tests": "tests/test_scoped_count_guard.py",
+      "expect_caught_by": "test_a_quoted_past_mistake_in_a_table_cell_is_not_an_assertion"
+    },
+    {
+      "id": "preflight-quote-span-unbounded",
+      "why": "the quoted span may cross newlines, so one unpaired quote mark swallows the rest of the body and silently disables every check below it",
+      "find": "QUOTED_SPAN_RE = re.compile(r'\"[^\"\\n]{0,400}\"|\u201c[^\u201d\\n]{0,400}\u201d')",
+      "replace": "QUOTED_SPAN_RE = re.compile(r'\"[^\"]{0,4000}\"|\u201c[^\u201d]{0,4000}\u201d', re.S)",
+      "tests": "tests/test_scoped_count_guard.py",
+      "expect_caught_by": "test_an_unpaired_quote_does_not_swallow_the_document"
     },
     {
       "id": "preflight-stripping-hides-evidence",
