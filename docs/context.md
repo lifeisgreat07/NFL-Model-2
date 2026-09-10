@@ -1,71 +1,83 @@
 # Where everything stands
 
-**Read this first, every session. It is the only file that is rewritten every
-time.** One screen, present tense, no history — history lives in `memory/`.
-If this contradicts CLAUDE.md, this file wins: CLAUDE.md holds what stays true
-for months, this holds what is true today.
+**Read this first, every session. It is the only file rewritten every time.**
+One screen, present tense, no history — history lives in `memory/`.
+If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-10
+Last updated: 2026-09-10 (long session, PRs #51-#57 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 704 passing, 1 skipped on `main`. Re-run before quoting it. Nothing
-in Stage 8's design phase touched `src/` or `tests/`, so that count still holds.
+**Suite:** 765 passing, 1 skipped on `main`. Re-run before quoting it.
 
-**Stage:** 7.5 is **complete** — every content and structure item has shipped.
-7.6's repository half is done. Stages 1 and 2 are complete; Stage 3 is closed
-apart from one post-merge check below. Pages are down from 14 to **9**.
-**Stage 8's design phase is complete** as of 2026-09-10; its implementation
-half (8b) has not started.
+**Stage:** 8 and 8b complete. 8c phase 1 merged and proven; phase 2 is next.
+Stage 9 started — the Week Board renders the design approved in Stage 8.
 
-**The single next action:** port the design into `src/dashboard_template.html`.
-Read `docs/design/STAGE8-DESIGN.md` first — it is the decision record and it
-carries the complete token block, and several of its rules exist because
-breaking them shipped a visible defect.
+**Next action:** Stage 8c phase 2 — stop versioning the generated dashboard.
+Not tidiness: `index.html` is generated AND committed, so it conflicted five
+times in one day across three branches, and every remaining template stage
+pays that tax until it stops being tracked.
 
-## Open work, and what each thing is waiting on
+**Most losable thing:** `stage-11-model-colours` is pushed with **no PR** — the
+only unmerged branch. It carries the Model B colour fix (ochre in charts, blue
+in prose; 6.6 dE00 from Model A under red-green CVD in light mode, i.e. the
+same colour). Rebase onto `main` and open a PR, or it will be forgotten.
 
-Branch names are written in full on purpose: `src/session_start.py`
-cross-checks them against git and cannot see work referred to only by PR number.
+**Pages serves a CI-built artifact now, not the committed file.** Proven: a
+manual deploy stamped 18:33 while the committed file said 18:26.
 
-**No branches are open.** PRs #44 through #50 are all merged and their branches
-deleted. `main` is the only branch, local and remote.
+## Open work, and what each is waiting on
+
+Branch names in full — `src/session_start.py` cross-checks them against git.
 
 | What | State | Waiting on |
 |---|---|---|
-| The two Stage 8 mock pages | Delivered into the 2026-09-10 conversation, deliberately not committed | Nothing. The irreplaceable part — the exact token values — is in the design record; the mocks themselves are scaffolding around fake data. Download them from that chat only if you want to see them run. |
-| The repo's About panel | Empty | Mark, in the GitHub web UI. Wording is in CLAUDE.md, ready to paste. |
-| `Auto-regenerate dashboard` run #56 | Failed 2026-09-09 | Someone to read its log. See "Known" below. |
+| `stage-11-model-colours` | Pushed, no PR | Rebase and open one |
+| Stage 8c phase 2 | Not started, scoped | Nothing |
+| Seven merged branches | Still on the remote | Mark, in the web UI |
+| The repo's About panel | Empty | Mark. Wording in CLAUDE.md |
+| `Auto-regenerate dashboard` #56 | Failed 2026-09-09 | Someone to read its log |
 
-## What is queued after that
+## Queued, in order
 
-1. **Stage 8b — port the design into `src/dashboard_template.html`.** Lift the
-   shared block, then restyle page by page: Week Board first (it exercises the
-   most components), then Season Accuracy, then the other seven. The template
-   is 3,250 lines / 224KB across nine pages against the mocks' two, and ~704
-   tests assert on it, several on colour tokens and exact strings. Expect test
-   churn, and treat a failing colour assertion as a question rather than
-   something to update to match — those tests encode decisions that were
-   argued for.
-2. **The first real graded week.** `.github/workflows/weekly-update.yml` fires Tuesday 2026-09-15
-   at 11:00 UTC (07:00 local) and grades 2026 Week 1. Season Accuracy fills in
-   by itself. Worth watching once, because it has never run against a week that
-   actually had games.
-3. **A two-line README follow-up:** its repo-layout block still omits `docs/`
-   and `memory/`, which did not exist on `main` when it was written.
+1. **Stage 8c phase 2.** Untrack `index.html` and `dist/`; add a ROOT pytest
+   conftest building the dashboard once per session — load-bearing, or eight
+   guarded tests silently become *skips*; six test failures (four are
+   template-vs-artifact drift tests to delete, not patch); two policy tests
+   fail once workflows stop committing; delete `src/prune_build_churn.py`,
+   then dead; three workflows and README's repo-layout block.
+2. **Date/time/channel in the pipeline — blocks three asked-for things.** A week
+   has only `season`, `week`, `games`; no game carries a date, kickoff or
+   channel. Fable's mock invented all three. Blocks: chronological first sort
+   on the Week Board, start time + channel on the card, and the stepper's date
+   range. Owner asked for each. Pipeline first; the surface work is small after.
+3. **Card visual bug (owner-reported, undiagnosed).** With a breakdown open its
+   grid row grows to 585px while its neighbours stay 354px, so `align-items:
+   start` leaves dead space; and the notable track-record box sits between the
+   Vegas line and the why sentences. Diagnose with a clean VIEWPORT screenshot —
+   a full-element capture of `#game-grid` is unreliable, the fixed bottom nav
+   bleeds into it.
+4. **Stage 11.** `matchupColors` still ranks colours by RGB Euclidean distance,
+   which models no colour vision. And `check_test_count` does not strip
+   quotations, so a body quoting a historical count false-positives (Booth, #57).
+5. **Stage 9, remaining.** Unify the TWO `.game-card` render paths — why the `@`
+   survived on My Picks. Then `teamColor()`'s `#8A93A8` fallback (wrong in
+   light), Net Rating diverging pair, one button component, focus/keyboard.
+6. **Stage 10.** Duplicate "Model Output" sidebar label (renders twice), shared
+   page-header, table system, mobile pass, empty/error/loading states, closing
+   `dashboard-design-audit` against the 15/40 baseline.
+7. **First graded week.** `.github/workflows/weekly-update.yml` fires Tue
+   2026-09-15, 11:00 UTC. Never yet run against a week that had games.
 
 ## Known and deliberately not fixed
 
-- **`Auto-regenerate dashboard` run #56 failed** and nobody has read why. Its
-  log needs a GitHub sign-in this session did not have, and the only visible
-  annotation is a Node 20 deprecation warning, which is not an error. The
-  hypothesis — unverified — is two rebuilds racing to push, which a
-  `concurrency` group would fix, as `.github/workflows/booth-pr-audit.yml`
-  already does. Do not treat that hypothesis as a diagnosis.
-- **`index.html` is generated AND committed**, so `main` rebuilds it whenever
-  the collector runs and every branch touching the template conflicts with it.
-  It bit twice in one day. Resolve by taking the branch's copy and rebuilding
-  from the merged sources — never by editing conflict markers in a generated
-  file. Worth restructuring during Stage 8, when the template is open anyway.
+- **`index.html` generated AND committed.** Resolve conflicts by taking the
+  branch's copy and rebuilding — never edit markers in a generated file.
+- **Run #56 failed, unread.** Hypothesis (unverified): two rebuilds racing.
+- **The recurring defect** — a real number from a command whose scope is not the
+  sentence's scope — now partly mechanised in CI. It checks
+  PR DESCRIPTIONS only; commit messages and source comments are unchecked, and
+  that is where two of four instances lived. Full entry in CLAUDE.md.
+- **A green check means Booth posted, not approved.** Misread twice today.
