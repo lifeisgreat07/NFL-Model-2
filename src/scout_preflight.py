@@ -73,10 +73,29 @@ ATTACHMENT_RE = re.compile(
 FENCED_RE = re.compile(r'^```.*?^```', re.MULTILINE | re.DOTALL)
 BLOCKQUOTE_RE = re.compile(r'^\s*>.*$', re.MULTILINE)
 
+# A span inside quotation marks is quotation too, and it is the form a PR uses
+# when it explains a past mistake mid-sentence or in a table cell -- neither of
+# which can be a fenced block.
+#
+# Added after Booth ran the tool this file ships against the very PR that
+# shipped it (#55) and it failed: that body's history table carried the row
+#     | #54 claim 4 | "`test_workflow_churn_guard.py` ... its 31 tests still
+#       pass" | 3 -- the 31 was a three-file run |
+# A markdown table row is neither fenced nor a blockquote, so the module name
+# and the wrong number landed in one unstripped sentence and the guard fired on
+# the correction rather than on the error. A check against misquoted numbers
+# that forbids quoting a misquoted number is not usable.
+#
+# Stripping the QUOTE rather than the table row is the narrow fix: a table cell
+# is frequently a real assertion (this repo's PR bodies put verification tables
+# in them), so exempting rows would blind the check where it is most needed.
+# Bounded and newline-free so an unpaired quote cannot swallow the document.
+QUOTED_SPAN_RE = re.compile(r'"[^"\n]{0,400}"|“[^”\n]{0,400}”')
+
 
 def strip_quotations(body):
     """Remove quoted regions so only the body's own assertions are checked."""
-    return BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body))
+    return QUOTED_SPAN_RE.sub('', BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body)))
 
 
 class Finding:

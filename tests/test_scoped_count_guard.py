@@ -80,6 +80,61 @@ def test_quoted_output_is_not_treated_as_an_assertion():
     assert check_scoped_test_counts(body, skip_tests=False).ok
 
 
+def test_a_quoted_past_mistake_in_a_table_cell_is_not_an_assertion():
+    """Booth ran this tool against the PR that shipped it, and it failed.
+
+    That body explained the #54 defect in a markdown table -- neither a fenced
+    block nor a blockquote, so the module name and the wrong number landed in
+    one unstripped sentence and the guard fired on the correction rather than
+    the error. A check against misquoted numbers that forbids quoting a
+    misquoted number is not usable, so quotation marks now count as quotation.
+
+    The row below is the one that tripped it, verbatim -- and the ellipsis is
+    U+2026, not three periods, which is not a detail. An earlier draft of this
+    test typed "..." instead. SENTENCE_SPLIT_RE breaks on a period, so the
+    module name and the count fell into different sentences, the check never
+    paired them, and the test passed no matter what strip_quotations did. The
+    mutation corpus caught it: preflight-quote-marks-not-stripped SURVIVED
+    against that draft. A test that passes for a reason unrelated to its name
+    is worse than no test, and this one is one character away from being that.
+    """
+    row = ('| #54 claim 4 | "`test_workflow_churn_guard.py` … its 31 tests '
+           'still pass" | 3 -- the 31 was a three-file run, 3 + 20 + 8 |')
+    assert '…' in row and '...' not in row, (
+        "the ellipsis was replaced with periods -- see this test's docstring; "
+        "that change silently disarms it")
+    assert check_scoped_test_counts(row, skip_tests=False).ok, (
+        "quoting a past miscount to correct it still trips the guard")
+
+
+def test_stripping_quotes_does_not_blind_the_check_inside_a_table():
+    """The narrow fix has to stay narrow. Exempting whole table ROWS would
+    blind the check where this repo most often puts real claims -- its
+    verification tables. An unquoted false count in a table must still fail."""
+    row = "| The new guard | `test_scoped_count_guard` | 99 tests passing |"
+    assert not check_scoped_test_counts(row, skip_tests=False).ok, (
+        "a table cell asserting a wrong count went unchecked")
+
+
+def test_an_unpaired_quote_does_not_swallow_the_document():
+    """A bounded, newline-free span, so stray quote marks cannot silently
+    disable every check between them.
+
+    The body below needs TWO quote marks with the claim between them. An
+    earlier draft used one, which no regex can pair, so nothing was stripped
+    under either version and the test passed vacuously -- the corpus caught
+    that too (preflight-quote-span-unbounded SURVIVED). With a multiline,
+    unbounded span the two marks below pair across the newlines and swallow
+    the false claim; with the shipped newline-free one they cannot.
+    """
+    body = ('A note that opens a quote "here and never closes it on this line.\n'
+            '`test_scoped_count_guard` has 99 tests.\n'
+            'Then later some "other quoted thing" appears.')
+    assert body.count('"') >= 2, "this test needs two quote marks to be meaningful"
+    assert not check_scoped_test_counts(body, skip_tests=False).ok, (
+        "quote marks on different lines swallowed the claim between them")
+
+
 def test_an_unknown_module_is_ignored_rather_than_failed():
     """A body may discuss a test file that does not exist yet -- a plan, or a
     file a later phase adds. That is not a false claim about this branch."""
