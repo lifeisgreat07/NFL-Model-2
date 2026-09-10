@@ -21,10 +21,9 @@ apart from one post-merge check below. Pages are down from 14 to **9**.
 half (8b) has not started.
 
 **The single next action:** port the design into `src/dashboard_template.html`.
-Read `docs/design/STAGE8-DESIGN.md` first — it is the decision record, and
-several of its rules exist because breaking them shipped a visible defect.
-The specification is the pair of mocks beside it; their first 19,577
-characters are byte-identical and that block is what gets lifted.
+Read `docs/design/STAGE8-DESIGN.md` first — it is the decision record and it
+carries the complete token block, and several of its rules exist because
+breaking them shipped a visible defect.
 
 ## Open work, and what each thing is waiting on
 
@@ -36,7 +35,7 @@ deleted. `main` is the only branch, local and remote.
 
 | What | State | Waiting on |
 |---|---|---|
-| `docs/design/weekboard.html` + `seasonaccuracy.html` | Delivered in chat 2026-09-10, not yet saved into the repo | Mark to download both from the conversation into `docs/design/`. Without them the decision record has no specification to point at. |
+| The two Stage 8 mock pages | Delivered into the 2026-09-10 conversation, deliberately not committed | Nothing. The irreplaceable part — the exact token values — is in the design record; the mocks themselves are scaffolding around fake data. Download them from that chat only if you want to see them run. |
 | The repo's About panel | Empty | Mark, in the GitHub web UI. Wording is in CLAUDE.md, ready to paste. |
 | `Auto-regenerate dashboard` run #56 | Failed 2026-09-09 | Someone to read its log. See "Known" below. |
 

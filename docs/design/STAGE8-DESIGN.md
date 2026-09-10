@@ -1,11 +1,15 @@
 # Stage 8 — the visual direction, as decided
 
-Closed 2026-09-10. This file is the decision record. The two mock files beside
-it (`weekboard.html`, `seasonaccuracy.html`) are the specification: their first
-19,577 characters -- token layer, base, layout, shared controls, overlay,
-hover guard -- are **byte-identical** between them, and that block is what gets
-lifted into `src/dashboard_template.html`. Verified identical by diff, not by
-eye.
+Closed 2026-09-10. The token values below were verified by computation, not by
+eye — before changing any of them, read "Numbers that were checked" and re-run
+the arithmetic. This file is the decision record **and** carries the token
+block, because that is the one part of the work that cannot be re-derived: the
+values were chosen against computed contrast and colour-blindness floors, not
+by eye. The mocks that exercised it were delivered into the 2026-09-10
+conversation and deliberately not committed -- they are scaffolding around fake
+data, and a stale copy in the repo would become a second source of truth. Their
+shared block was 19,577 characters and byte-identical across both pages,
+verified by diff.
 
 Produced over four rounds with Claude Fable (v3.0 -> v3.4). Every numeric claim
 in every round was re-derived independently before being accepted: contrast by
@@ -39,6 +43,60 @@ the page, because image errors do not bubble.
 
 **Elevation is a border, not a shadow.** `--shadow-overlay` has exactly one
 consumer, the `.overlay` component.
+
+## The token block, verbatim
+
+```css
+:root {
+  color-scheme: dark;
+  --n0: #0B0D10;  /* canvas */                --n1: #121519;  /* surface */
+  --n2: #181C22;  /* raised */                --n3: #232830;  /* hairline */
+  --n4: #2F3641;  /* strong border */         --n5: #4A5260;  /* disabled text */
+  --n6: #7D8794;  /* muted text */            --n7: #AEB6C0;  /* secondary text */
+  --n8: #E6E9ED;  /* primary text */
+  --bg: var(--n0); --surface: var(--n1); --surface-2: var(--n2);
+  --border: var(--n3); --border-strong: var(--n4);
+  --text: var(--n8); --text-2: var(--n7); --text-3: var(--n6); --text-disabled: var(--n5);
+  --accent: #7FA8F5; --accent-strong: #5C8CE8;
+  --accent-soft: rgba(127,168,245,.14); --accent-ring: rgba(127,168,245,.45);
+  --graded-correct: #4FAE8A; --graded-correct-soft: rgba(79,174,138,.14);
+  --graded-wrong:   #D46C6C; --graded-wrong-soft:   rgba(212,108,108,.14);
+  --series-a: #A78BF7; --series-b: #7EDDE8; --series-m: #D9AE45; --series-p: #D0699C;
+  --shadow-overlay: 0 12px 32px rgba(0,0,0,.5);
+  --z-nav: 10; --z-overlay: 20;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px;
+  --s6: 24px; --s7: 32px; --s8: 40px; --s9: 48px;
+  --r-sm: 4px; --r-md: 8px; --r-lg: 12px; --r-full: 999px;
+  --logo: 20px;
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+  --fs-11: 11px; --fs-12: 12px; --fs-13: 13px; --fs-14: 14px;
+  --fs-16: 16px; --fs-20: 20px; --fs-24: 24px; --fs-32: 32px;
+  --lh-tight: 1.15; --lh-body: 1.45; --track-label: .06em;
+  --dur-fast: 80ms; --dur-base: 160ms; --dur-slow: 240ms;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --press: translateY(1px);
+}
+[data-theme="light"] {
+  color-scheme: light;
+  --n0: #F3F4F6; --n1: #FFFFFF; --n2: #F7F8FA; --n3: #E4E7EB; --n4: #CBD1D9;
+  --n5: #A3ABB6; --n6: #626C7B; --n7: #4A5260; --n8: #14181E;
+  --accent: #1F5ED6; --accent-strong: #174BB0;
+  --accent-soft: rgba(31,94,214,.10); --accent-ring: rgba(31,94,214,.35);
+  --graded-correct: #187052; --graded-correct-soft: rgba(24,112,82,.12);
+  --graded-wrong:   #B94343; --graded-wrong-soft:   rgba(185,67,67,.10);
+  --series-a: #6D3BC7; --series-b: #0E7C84; --series-m: #8C6410; --series-p: #731847;
+  --shadow-overlay: 0 12px 32px rgba(20,24,30,.14);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 0ms; --dur-base: 0ms; --dur-slow: 0ms; }
+}
+```
+
+Series shapes and dashes, which carry identity when the colour cannot:
+Model A circle / solid, Model B square / `6 3`, Market triangle / `2 3`,
+My Picks diamond / `8 3 2 3`. Dark series values are stepped in lightness
+(L* 64 / 83 / 73 / 58) rather than being a brightness flip of the light ones.
 
 ## Numbers that were checked, and must stay true
 

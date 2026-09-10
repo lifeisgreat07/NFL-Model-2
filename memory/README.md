@@ -28,3 +28,4 @@ decision, leave it out.
 |---|---|
 | [2026-09-08](2026-09-08.md) | Stage 7.5 cut the dashboard from 14 pages to 9; the jargon guard went live; the agent log turned out never to have run |
 | [2026-09-09](2026-09-09.md) | #44 merged; the wrap-up gate and its pytest guard were found disagreeing about dates; METHODOLOGY.md turned out never to have existed |
+| [2026-09-10](2026-09-10.md) | Stage 8's design phase closed; re-deriving every colour and geometry claim caught three false ones, two of them mine |
