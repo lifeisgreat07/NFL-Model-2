@@ -57,7 +57,25 @@ CHROMA_FLOOR = 0.10                                     # OKLCH C
 
 # Each theme's chart surface is --panel, because .method-block (which every
 # chart sits inside) is painted with it.
-SURFACE = {'dark': '#131826', 'light': '#FFFFFF'}
+def _surface(theme):
+    """Read the chart surface out of the template instead of hardcoding it.
+
+    This was `{'dark': '#131826', 'light': '#FFFFFF'}` until the Stage 8 token
+    layer moved the dark surface to #121519, at which point the constant was
+    validating series contrast against a colour that no longer existed anywhere
+    on the page -- and still passing, because the stale value happened to be
+    lighter. A hardcoded copy of a token is a second source of truth waiting to
+    drift; read the token."""
+    src = TEMPLATE.read_text()
+    marker = ':root{' if theme == 'dark' else '[data-theme="light"]{'
+    start = src.index(marker)
+    block = src[start:src.index('}', start)]
+    m = re.search(r'--n1\s*:\s*(#[0-9A-Fa-f]{6})', block)
+    assert m, f"--n1 (the surface step) missing from the {theme} block"
+    return m.group(1).upper()
+
+
+SURFACE = {'dark': _surface('dark'), 'light': _surface('light')}
 
 MACHADO = {
     'protan': ((0.152286, 1.052583, -0.204868),
@@ -270,7 +288,11 @@ def test_charts_do_not_paint_series_with_ui_accents():
     thing to check."""
     src = TEMPLATE.read_text()
     block = src[src.index('const SERIES = {'):src.index('/* Marker path for a series shape')]
-    for banned in ('--amber', '--blue', '--chalk-dim', '--good', '--warn'):
+    # Renamed with the Stage 8 token layer: --amber -> --accent, --chalk-dim ->
+    # --text-2/--text-3, --blue retired. Repointed rather than deleted, because
+    # the rule it guards has not changed -- only the names have, and a banned
+    # list of tokens that no longer exist passes without testing anything.
+    for banned in ('--accent', '--accent-strong', '--text-2', '--text-3', '--good', '--warn'):
         assert banned not in block, f"SERIES assigns {banned} to a data series"
     assert block.count('var(--series-') == 4
 

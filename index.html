@@ -22,11 +22,9 @@
                                   been evaluated
        4. chart series identity-> --series-a/b/c/d, keyed to the ENTITY
 
-     The block below the tokens maps the OLD token names onto the new ones.
-     That is deliberate: it re-hues all 381 var() call sites in one edit
-     without touching any of them, so this change is reviewable and
-     reversible on its own. The aliases are retired page by page as each
-     page is restyled; when the last one is gone, delete that block.
+     The compatibility aliases that carried the old token names through the
+     first pass are gone: every call site now names a token in this block
+     directly. --good / --warn keep their old names on purpose (see below).
      ===================================================================== */
   :root{
     color-scheme: dark;
@@ -91,14 +89,9 @@
     --shadow-overlay: 0 12px 32px rgba(0,0,0,.5);
     --z-nav:10; --z-overlay:20;
 
-    /* ---- COMPATIBILITY ALIASES (retire page by page) ---- */
-    --ink:var(--bg); --panel:var(--surface); --panel-raised:var(--surface-2);
-    --panel-hi:var(--border);
-    --line:var(--border); --line-strong:var(--border-strong);
-    --chalk:var(--text); --chalk-dim:var(--text-2);
-    --amber:var(--accent); --amber-dim:var(--accent-soft); --amber-bright:var(--accent-strong);
-    --blue:var(--series-a); --blue-dim:var(--accent-soft);
-    --radius:var(--r-md);
+    /* Legacy, kept until the elevation pass: nothing in the design uses these,
+       but a handful of components still do. --shadow-overlay above is the only
+       one the system sanctions. */
     --shadow-sm: 0 1px 2px rgba(0,0,0,.35);
     --shadow-md: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.65);
     --shadow-lg: 0 2px 4px rgba(0,0,0,.35), 0 24px 48px -20px rgba(0,0,0,.7);
@@ -134,49 +127,49 @@
   html{-webkit-tap-highlight-color:transparent;}
   body{
     background: var(--bg);
-    color:var(--chalk); font-family:'Plus Jakarta Sans', sans-serif; min-height:100vh; display:flex;
+    color:var(--text); font-family:'Plus Jakarta Sans', sans-serif; min-height:100vh; display:flex;
     -webkit-font-smoothing:antialiased;
     padding-top:var(--safe-top);
   }
   ::-webkit-scrollbar{width:8px;height:8px;}
-  ::-webkit-scrollbar-thumb{background:var(--panel-hi);border-radius:4px;}
-  ::selection{background:var(--amber-dim); color:var(--amber);}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+  ::selection{background:var(--accent-soft); color:var(--accent);}
 
   /* ---------- Desktop sidebar ---------- */
   .sidebar{
-    width:236px; flex-shrink:0; background:linear-gradient(180deg, var(--panel), var(--ink) 140%);
-    border-right:1px solid var(--line); display:flex; flex-direction:column;
+    width:236px; flex-shrink:0; background:linear-gradient(180deg, var(--surface), var(--bg) 140%);
+    border-right:1px solid var(--border); display:flex; flex-direction:column;
     padding:24px 0; position:sticky; top:0; height:100vh;
   }
-  .brand{padding:0 22px 22px; border-bottom:1px solid var(--line); margin-bottom:16px;}
+  .brand{padding:0 22px 22px; border-bottom:1px solid var(--border); margin-bottom:16px;}
   .brand-mark{display:flex; align-items:center; gap:7px; font-family:'Plus Jakarta Sans', sans-serif; font-size:10px;
-    letter-spacing:.18em; color:var(--amber); text-transform:uppercase;}
-  .brand-mark .pulse{width:6px; height:6px; border-radius:50%; background:var(--amber); box-shadow:0 0 8px var(--amber);}
+    letter-spacing:.18em; color:var(--accent); text-transform:uppercase;}
+  .brand-mark .pulse{width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent);}
   .brand h1{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:25px; letter-spacing:.01em; line-height:.98; margin-top:8px;}
-  .brand-sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; color:var(--chalk-dim); margin-top:7px;}
+  .brand-sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; color:var(--text-2); margin-top:7px;}
   nav.side-nav{display:flex; flex-direction:column; gap:2px; padding:0 12px;}
-  .nav-group-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--chalk-dim); padding:15px 10px 7px; opacity:.7;}
+  .nav-group-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:9.5px; letter-spacing:.13em; text-transform:uppercase; color:var(--text-2); padding:15px 10px 7px; opacity:.7;}
   .nav-btn{
-    display:flex; align-items:center; gap:11px; background:transparent; border:none; color:var(--chalk-dim);
+    display:flex; align-items:center; gap:11px; background:transparent; border:none; color:var(--text-2);
     font-family:'Plus Jakarta Sans'; font-weight:600; font-size:14px; text-align:left; padding:10px 11px; border-radius:8px;
     cursor:pointer; transition:background .15s ease, color .15s ease, transform .1s ease; width:100%;
   }
-  .nav-btn:hover{background:var(--panel-raised); color:var(--chalk);}
+  .nav-btn:hover{background:var(--surface-2); color:var(--text);}
   .nav-btn:active{transform:scale(.98);}
-  .nav-btn.active{background:var(--amber-dim); color:var(--amber);}
+  .nav-btn.active{background:var(--accent-soft); color:var(--accent);}
   .nav-btn svg{width:16px; height:16px; flex-shrink:0; opacity:.85;}
   .nav-btn.disabled{opacity:.38; cursor:default;}
-  .nav-btn.disabled:hover{background:transparent; color:var(--chalk-dim);}
-  .sidebar-foot{margin-top:auto; padding:16px 22px 0; border-top:1px solid var(--line);
-    font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--chalk-dim); line-height:1.7;}
+  .nav-btn.disabled:hover{background:transparent; color:var(--text-2);}
+  .sidebar-foot{margin-top:auto; padding:16px 22px 0; border-top:1px solid var(--border);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--text-2); line-height:1.7;}
   .foot-freshness{display:inline-block; margin-top:4px; opacity:0.75;}
   .theme-toggle{
     display:flex; align-items:center; gap:8px; width:100%;
-    background:transparent; border:1px solid var(--line); border-radius:8px;
+    background:transparent; border:1px solid var(--border); border-radius:8px;
     padding:8px 12px; margin-bottom:12px; cursor:pointer;
-    color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:11px;
+    color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:11px;
   }
-  .theme-toggle:hover{border-color:var(--line-strong); color:var(--chalk);}
+  .theme-toggle:hover{border-color:var(--border-strong); color:var(--text);}
   .theme-toggle svg{width:14px; height:14px; flex-shrink:0;}
 
   /* ---------- Main ---------- */
@@ -186,102 +179,102 @@
   @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
 
   .page-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:14px;
-    margin-bottom:28px; padding-bottom:20px; border-bottom:1px solid var(--line);}
+    margin-bottom:28px; padding-bottom:20px; border-bottom:1px solid var(--border);}
   .page-head h2{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:34px; letter-spacing:.005em;}
-  .page-head .desc{color:var(--chalk-dim); font-size:13.5px; margin-top:5px; max-width:560px; line-height:1.55;}
+  .page-head .desc{color:var(--text-2); font-size:13.5px; margin-top:5px; max-width:560px; line-height:1.55;}
   .badge{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; letter-spacing:.05em; padding:6px 11px; border-radius:20px;
-    background:var(--panel-raised); color:var(--chalk-dim); border:1px solid var(--line); white-space:nowrap;}
+    background:var(--surface-2); color:var(--text-2); border:1px solid var(--border); white-space:nowrap;}
 
   /* ---------- Power Ratings table ---------- */
-  .table-wrap{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); overflow-x:auto; overflow-y:hidden; box-shadow:var(--shadow-md);}
+  .table-wrap{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); overflow-x:auto; overflow-y:hidden; box-shadow:var(--shadow-md);}
   table{width:100%; border-collapse:collapse;}
   thead th{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase;
-    color:var(--chalk-dim); text-align:left; padding:13px 16px; border-bottom:1px solid var(--line); cursor:pointer;
+    color:var(--text-2); text-align:left; padding:13px 16px; border-bottom:1px solid var(--border); cursor:pointer;
     user-select:none; white-space:nowrap; transition:color .15s ease;}
-  thead th:hover{color:var(--amber);}
-  thead th.sorted{color:var(--amber);}
-  tbody td{padding:12px 16px; border-bottom:1px solid var(--line); font-size:13.5px;}
+  thead th:hover{color:var(--accent);}
+  thead th.sorted{color:var(--accent);}
+  tbody td{padding:12px 16px; border-bottom:1px solid var(--border); font-size:13.5px;}
   tbody tr{transition:background .12s ease;}
   tbody tr:last-child td{border-bottom:none;}
-  tbody tr:hover{background:var(--panel-raised);}
+  tbody tr:hover{background:var(--surface-2);}
   td.num{font-family:'Plus Jakarta Sans', sans-serif; text-align:right;}
-  td.rank{font-family:'Plus Jakarta Sans', sans-serif; color:var(--chalk-dim); width:36px;}
+  td.rank{font-family:'Plus Jakarta Sans', sans-serif; color:var(--text-2); width:36px;}
   .team-cell{display:flex; align-items:center; gap:9px;}
   .trend-arrow{font-size:10px; margin-left:4px;}
   .trend-arrow.up{color:var(--good);}
   .trend-arrow.down{color:var(--warn);}
   .streak-row{display:flex; align-items:center; gap:14px; margin-bottom:18px; flex-wrap:wrap;}
   .streak-cells{display:flex; gap:3px;}
-  .streak-cell{width:14px; height:14px; border-radius:3px; background:var(--panel-hi);}
+  .streak-cell{width:14px; height:14px; border-radius:3px; background:var(--border);}
   .streak-cell.win{background:var(--good);}
   .streak-cell.loss{background:var(--warn);}
-  .streak-cell.even{background:var(--chalk-dim);}
+  .streak-cell.even{background:var(--text-2);}
   .streak-label{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:12px; padding:4px 10px; border-radius:20px;}
   .streak-label.win{background:var(--good-dim); color:var(--good);}
   .streak-label.loss{background:var(--warn-dim); color:var(--warn);}
   .skip-link{
     position:absolute; top:-40px; left:8px; z-index:200;
-    background:var(--amber); color:var(--ink); padding:10px 16px; border-radius:8px;
+    background:var(--accent); color:var(--bg); padding:10px 16px; border-radius:8px;
     font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:13px;
     text-decoration:none; transition:top .15s ease;
   }
   .skip-link:focus{top:8px;}
   a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible{
-    outline:2px solid var(--amber); outline-offset:2px;
+    outline:2px solid var(--accent); outline-offset:2px;
   }
   main:focus-visible{outline:none;}
   .glance-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px;}
   .glance-item{
-    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
     padding:14px 18px; min-width:140px; flex:1;
   }
-  .glance-label{display:block; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:6px;}
-  .glance-value{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:20px; color:var(--chalk);}
-  .glance-sub{display:block; font-size:11px; color:var(--chalk-dim); margin-top:3px;}
+  .glance-label{display:block; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); margin-bottom:6px;}
+  .glance-value{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:20px; color:var(--text);}
+  .glance-sub{display:block; font-size:11px; color:var(--text-2); margin-top:3px;}
   .version-timeline{display:flex; flex-direction:column; gap:0;}
   .version-item{display:flex; gap:16px; position:relative; padding-bottom:20px;}
   .version-item:last-child{padding-bottom:0;}
-  .version-item:not(:last-child)::before{content:''; position:absolute; left:5px; top:16px; bottom:0; width:2px; background:var(--line);}
-  .version-dot{width:12px; height:12px; border-radius:50%; background:var(--panel-hi); border:2px solid var(--line-strong); flex-shrink:0; margin-top:3px; z-index:1;}
+  .version-item:not(:last-child)::before{content:''; position:absolute; left:5px; top:16px; bottom:0; width:2px; background:var(--border);}
+  .version-dot{width:12px; height:12px; border-radius:50%; background:var(--border); border:2px solid var(--border-strong); flex-shrink:0; margin-top:3px; z-index:1;}
   .version-dot.current{background:var(--good); border-color:var(--good);}
   .version-content{flex:1;}
-  .version-tag{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:13px; color:var(--chalk); margin-right:10px;}
-  .version-date{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim);}
-  .version-content p{font-size:12.5px; color:var(--chalk-dim); margin-top:4px; line-height:1.5;}
-  .onboarding-banner{background:var(--panel-raised); border:1px solid var(--blue); border-radius:var(--radius); padding:18px 22px; margin-bottom:18px;}
-  .onboarding-content h4{font-family:'Plus Jakarta Sans', sans-serif; font-size:14px; margin-bottom:9px; color:var(--chalk);}
+  .version-tag{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:13px; color:var(--text); margin-right:10px;}
+  .version-date{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2);}
+  .version-content p{font-size:12.5px; color:var(--text-2); margin-top:4px; line-height:1.5;}
+  .onboarding-banner{background:var(--surface-2); border:1px solid var(--series-a); border-radius:var(--r-md); padding:18px 22px; margin-bottom:18px;}
+  .onboarding-content h4{font-family:'Plus Jakarta Sans', sans-serif; font-size:14px; margin-bottom:9px; color:var(--text);}
   .onboarding-content ul{margin:0 0 12px 18px; padding:0;}
-  .onboarding-content li{font-size:12.5px; color:var(--chalk-dim); line-height:1.6; margin-bottom:4px;}
+  .onboarding-content li{font-size:12.5px; color:var(--text-2); line-height:1.6; margin-bottom:4px;}
   /* Shared-picks view. Borrows the onboarding banner wholesale and only
      re-colours the border, so this adds one value rather than a new block.
      Amber, not blue: blue is the ordinary orientation banner, and this one
      means "what you are looking at is not yours". */
-  .shared-banner{border-color:var(--amber);}
-  .shared-note{font-size:12.5px; color:var(--chalk-dim); line-height:1.6; margin-bottom:12px;}
+  .shared-banner{border-color:var(--accent);}
+  .shared-note{font-size:12.5px; color:var(--text-2); line-height:1.6; margin-bottom:12px;}
   .shared-actions{display:flex; gap:8px; flex-wrap:wrap;}
   /* Read-only while viewing someone else's picks: the buttons still show the
      selection, but tapping one must not silently start editing their log. */
   .picks-readonly .pick-btn{cursor:default; opacity:.92;}
-  .implied-margin{padding-top:10px; margin-top:6px; border-top:1px solid var(--line); font-size:11.5px;}
-  .implied-margin-label{color:var(--chalk-dim); margin-right:8px;}
-  .implied-margin-value{font-weight:600; color:var(--chalk); margin-right:8px;}
-  .implied-margin-note{color:var(--chalk-dim); font-size:10px; font-style:italic;}
+  .implied-margin{padding-top:10px; margin-top:6px; border-top:1px solid var(--border); font-size:11.5px;}
+  .implied-margin-label{color:var(--text-2); margin-right:8px;}
+  .implied-margin-value{font-weight:600; color:var(--text); margin-right:8px;}
+  .implied-margin-note{color:var(--text-2); font-size:10px; font-style:italic;}
   .team-logo{width:22px; height:22px; object-fit:contain; flex-shrink:0;}
   .tele-team{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:16px; line-height:1;
     display:flex; flex-direction:column; align-items:center; gap:3px;}
   .tele-team.right{align-items:flex-end;}
   .tele-logo{width:20px; height:20px; object-fit:contain;}
   .team-abbr{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; width:38px;}
-  .team-full{color:var(--chalk-dim); font-size:12.5px;}
+  .team-full{color:var(--text-2); font-size:12.5px;}
   .net-cell-inner{display:grid; grid-template-columns:90px 62px; align-items:center; column-gap:10px; justify-content:center;}
-  .dive-row{display:flex; align-items:center; gap:16px; padding:9px 0; border-bottom:1px solid var(--line);}
+  .dive-row{display:flex; align-items:center; gap:16px; padding:9px 0; border-bottom:1px solid var(--border);}
   .dive-row:last-child{border-bottom:none;}
-  .dive-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; color:var(--chalk-dim); width:80px; flex-shrink:0;}
-  .dive-label.live{color:var(--amber);}
+  .dive-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; color:var(--text-2); width:80px; flex-shrink:0;}
+  .dive-label.live{color:var(--accent);}
   .dive-value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:13.5px; width:62px; text-align:right; flex-shrink:0;}
   .net-value{font-family:'Plus Jakarta Sans', sans-serif; text-align:right; justify-self:end; white-space:nowrap;}
-  .srs-bar-track{position:relative; width:90px; height:6px; background:var(--panel-hi); border-radius:3px; overflow:hidden;}
-  .srs-bar-fill{position:absolute; top:0; bottom:0; background:linear-gradient(90deg, var(--amber), var(--amber-bright)); border-radius:3px;}
+  .srs-bar-track{position:relative; width:90px; height:6px; background:var(--border); border-radius:3px; overflow:hidden;}
+  .srs-bar-fill{position:absolute; top:0; bottom:0; background:linear-gradient(90deg, var(--accent), var(--accent-strong)); border-radius:3px;}
 
   /* Diverging variant. These bars encode a SIGNED value whose zero is the
      middle of the track, and until now that zero was invisible: a small
@@ -295,7 +288,7 @@
      can be run through the validator in both themes rather than eyeballed. */
   .srs-bar-track.diverging{overflow:visible;}
   .srs-bar-track.diverging::before{content:''; position:absolute; left:50%; top:-3px; bottom:-3px;
-    width:1px; margin-left:-.5px; background:var(--chalk-dim); opacity:.5; z-index:2;}
+    width:1px; margin-left:-.5px; background:var(--text-2); opacity:.5; z-index:2;}
 
   /* Printed domain for the Net Rating column. The bars are normalised to the
      league's largest absolute rating, so a full-width bar does not mean "1.0"
@@ -304,95 +297,95 @@
   .net-head{display:flex; flex-direction:column; align-items:center; gap:5px;}
   .net-head-row{display:grid; grid-template-columns:90px 62px; column-gap:10px; justify-content:center;}
   .net-axis{position:relative; width:90px; display:flex; justify-content:space-between; align-items:center;
-    font-size:9px; letter-spacing:0; text-transform:none; font-weight:500; color:var(--chalk-dim); font-variant-numeric:tabular-nums;}
+    font-size:9px; letter-spacing:0; text-transform:none; font-weight:500; color:var(--text-2); font-variant-numeric:tabular-nums;}
   .net-axis .ax-zero{position:absolute; left:50%; transform:translateX(-50%);}
-  thead th.sorted .net-axis{color:var(--chalk-dim);}
+  thead th.sorted .net-axis{color:var(--text-2);}
 
   /* ---------- Week board ---------- */
   .filter-row{display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; align-items:center;}
   .week-select{
-    background:var(--panel); border:1px solid var(--line); color:var(--chalk);
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; padding:9px 14px; border-radius:8px;
     cursor:pointer; appearance:none; -webkit-appearance:none; min-width:160px;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A93A8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
     background-repeat:no-repeat; background-position:right 10px center; background-size:16px; padding-right:32px;
   }
-  .week-select:focus{outline:1px solid var(--amber);}
+  .week-select:focus{outline:1px solid var(--accent);}
   /* Print/PDF download. Sized to match .week-select so the control row reads
      as one group; hidden entirely when no PDF exists for the selected week
      rather than offering a link that would 404. */
   .pdf-link{
     display:inline-flex; align-items:center; gap:7px;
-    background:var(--panel); border:1px solid var(--line); color:var(--chalk);
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; font-weight:600;
     padding:9px 14px; border-radius:8px; cursor:pointer; text-decoration:none;
   }
   .pdf-link svg{width:14px; height:14px;}
-  .pdf-link:hover{border-color:var(--amber); color:var(--amber);}
-  .pdf-link:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
+  .pdf-link:hover{border-color:var(--accent); color:var(--accent);}
+  .pdf-link:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
   .pdf-link[hidden]{display:none;}
   .team-search{
-    background:var(--panel); border:1px solid var(--line); color:var(--chalk);
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; padding:9px 14px; border-radius:8px;
     min-width:200px;
   }
-  .team-search::placeholder{color:var(--chalk-dim);}
+  .team-search::placeholder{color:var(--text-2);}
   .undo-toast{
     position:fixed; left:50%; transform:translateX(-50%) translateY(120%);
     bottom:calc(20px + var(--safe-bottom, 0px)); z-index:150;
-    background:var(--panel-hi); border:1px solid var(--line-strong); border-radius:10px;
+    background:var(--border); border:1px solid var(--border-strong); border-radius:10px;
     padding:12px 16px; display:flex; align-items:center; gap:14px;
-    font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; color:var(--chalk);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; color:var(--text);
     box-shadow:var(--shadow-md); opacity:0; transition:transform .22s ease, opacity .22s ease;
     pointer-events:none;
   }
   .undo-toast.visible{transform:translateX(-50%) translateY(0); opacity:1; pointer-events:auto;}
   .undo-btn{
-    background:transparent; border:none; color:var(--amber); font-weight:700;
+    background:transparent; border:none; color:var(--accent); font-weight:700;
     font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; cursor:pointer; padding:0;
   }
   @media (max-width:900px){ .undo-toast{bottom:calc(90px + var(--safe-bottom, 0px));} }
 
   .confidence-badge{
     font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.05em; padding:4px 10px; border-radius:20px;
-    background:var(--blue-dim); color:var(--blue); white-space:nowrap;
+    background:var(--accent-soft); color:var(--series-a); white-space:nowrap;
   }
-  .why-toggle{background:none; border:none; color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px;
+  .why-toggle{background:none; border:none; color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px;
     letter-spacing:.04em; cursor:pointer; padding:0; margin-top:11px; text-decoration:underline; text-underline-offset:3px;}
   /* The plain-English reason, on the card rather than behind the toggle.
      Sized between the model rows and the footnotes: it is the first thing
      worth reading after the percentages, so it must not look like a caption. */
-  .why-words{margin:10px 0 0; font-size:12.5px; line-height:1.55; color:var(--chalk);}
-  .why-words.dim{color:var(--chalk-dim); font-size:12px;}
+  .why-words{margin:10px 0 0; font-size:12.5px; line-height:1.55; color:var(--text);}
+  .why-words.dim{color:var(--text-2); font-size:12px;}
   .why-panel .why-words{margin-top:0; margin-bottom:10px;}
 
-  .why-panel{display:none; margin-top:10px; padding-top:10px; border-top:1px dashed var(--line);}
+  .why-panel{display:none; margin-top:10px; padding-top:10px; border-top:1px dashed var(--border);}
   .why-panel.open{display:block; animation:fade .2s ease;}
   .why-row{display:flex; align-items:center; gap:10px; font-size:11.5px; margin-bottom:6px;}
   .why-row:last-child{margin-bottom:0;}
-  .why-label{font-family:'Plus Jakarta Sans', sans-serif; color:var(--chalk-dim); width:90px; flex-shrink:0;}
-  .why-bar-track{position:relative; flex:1; height:6px; background:var(--panel-hi); border-radius:3px; overflow:hidden;}
+  .why-label{font-family:'Plus Jakarta Sans', sans-serif; color:var(--text-2); width:90px; flex-shrink:0;}
+  .why-bar-track{position:relative; flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden;}
   .why-bar-fill{position:absolute; top:0; bottom:0; border-radius:3px;}
   .why-bar-fill.pos{background:var(--text-3); left:50%;}
   .why-bar-fill.neg{background:var(--text-3); right:50%;}
-  .why-val{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); width:52px; text-align:right; flex-shrink:0;}
+  .why-val{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2); width:52px; text-align:right; flex-shrink:0;}
   .graded-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; padding:4px 10px; border-radius:20px;}
   .graded-tag.correct{background:var(--good-dim); color:var(--good);}
   .graded-tag.incorrect{background:var(--warn-dim); color:var(--warn);}
 
   .pick-buttons{display:flex; gap:8px; margin-top:14px;}
-  .pick-btn{flex:1; background:transparent; border:1.5px solid var(--line); color:var(--chalk);
+  .pick-btn{flex:1; background:transparent; border:1.5px solid var(--border); color:var(--text);
     font-family:'Plus Jakarta Sans'; font-weight:700; font-size:15px; padding:10px 6px; border-radius:8px;
     cursor:pointer; transition:all .15s ease;}
-  .pick-btn:hover{border-color:var(--amber);}
-  .pick-btn.selected{background:var(--amber); border-color:var(--amber); color:var(--ink);}
-  .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--chalk-dim); margin-top:8px;}
+  .pick-btn:hover{border-color:var(--accent);}
+  .pick-btn.selected{background:var(--accent); border-color:var(--accent); color:var(--bg);}
+  .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--text-2); margin-top:8px;}
 
   .accuracy-cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-bottom:20px;}
-  .accuracy-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow-sm);}
-  .accuracy-card .label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--chalk-dim); margin-bottom:8px;}
+  .accuracy-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:20px; box-shadow:var(--shadow-sm);}
+  .accuracy-card .label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); margin-bottom:8px;}
   .accuracy-card .value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:32px;}
-  .accuracy-card .sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); margin-top:4px;}
+  .accuracy-card .sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2); margin-top:4px;}
   /* ---------- Reliability diagram ---------- */
   .rel-wrap{display:flex; gap:26px; flex-wrap:wrap; align-items:flex-start;}
   .rel-plot{flex:1 1 420px; min-width:300px; max-width:520px; position:relative;}
@@ -403,38 +396,38 @@
      own colour, so the control says which line it governs without a label
      that only repeats the button text. */
   .rel-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
-  .rel-toggle{display:inline-flex; align-items:center; gap:7px; background:var(--panel);
-    border:1px solid var(--line); color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif;
+  .rel-toggle{display:inline-flex; align-items:center; gap:7px; background:var(--surface);
+    border:1px solid var(--border); color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif;
     font-size:11.5px; font-weight:600; padding:6px 13px; border-radius:20px; cursor:pointer;
     transition:border-color .15s ease, color .15s ease, opacity .15s ease;}
   .rel-toggle[aria-pressed="false"]{opacity:.45;}
-  .rel-toggle[aria-pressed="true"]{color:var(--chalk); border-color:var(--line-strong);}
-  .rel-toggle:focus-visible{outline:2px solid var(--chalk); outline-offset:2px;}
+  .rel-toggle[aria-pressed="true"]{color:var(--text); border-color:var(--border-strong);}
+  .rel-toggle:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
   /* Hover/focus readout. Positioned over the plot, never over the cursor, and
      pointer-events:none so it can't steal the next hover. */
   .rel-tip{position:absolute; pointer-events:none; opacity:0; transition:opacity .1s ease;
-    background:var(--panel-raised); border:1px solid var(--line-strong); border-radius:8px;
+    background:var(--surface-2); border:1px solid var(--border-strong); border-radius:8px;
     box-shadow:var(--shadow-md); padding:9px 11px; font-size:11.5px; line-height:1.5;
-    color:var(--chalk-dim); max-width:230px; z-index:5;}
+    color:var(--text-2); max-width:230px; z-index:5;}
   .rel-tip.on{opacity:1;}
-  .rel-tip b{color:var(--chalk);}
+  .rel-tip b{color:var(--text);}
   .rel-point{cursor:pointer;}
   .rel-point:focus-visible{outline:none;}
-  .rel-point:focus-visible .rel-halo{stroke:var(--chalk); stroke-width:2; opacity:1;}
+  .rel-point:focus-visible .rel-halo{stroke:var(--text); stroke-width:2; opacity:1;}
   .rel-stat{display:grid; grid-template-columns:1fr auto auto; gap:2px 14px; align-items:baseline;
-    font-size:12px; padding:9px 0; border-bottom:1px solid var(--line);}
+    font-size:12px; padding:9px 0; border-bottom:1px solid var(--border);}
   .rel-stat:last-of-type{border-bottom:none;}
-  .rel-stat .nm{display:inline-flex; align-items:center; gap:7px; color:var(--chalk); font-weight:600;}
-  .rel-stat .v{font-variant-numeric:tabular-nums; color:var(--chalk-dim);}
-  .rel-prov{font-size:10.5px; color:var(--chalk-dim); margin-top:12px; line-height:1.6;}
-  .rel-table summary{cursor:pointer; font-size:12px; color:var(--chalk-dim); padding:6px 0;}
-  .rel-table summary:hover{color:var(--chalk);}
-  .filter-btn{background:var(--panel); border:1px solid var(--line); color:var(--chalk-dim);
+  .rel-stat .nm{display:inline-flex; align-items:center; gap:7px; color:var(--text); font-weight:600;}
+  .rel-stat .v{font-variant-numeric:tabular-nums; color:var(--text-2);}
+  .rel-prov{font-size:10.5px; color:var(--text-2); margin-top:12px; line-height:1.6;}
+  .rel-table summary{cursor:pointer; font-size:12px; color:var(--text-2); padding:6px 0;}
+  .rel-table summary:hover{color:var(--text);}
+  .filter-btn{background:var(--surface); border:1px solid var(--border); color:var(--text-2);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; letter-spacing:.04em; padding:8px 14px; border-radius:20px;
     cursor:pointer; transition:all .15s ease;}
-  .filter-btn:hover{border-color:var(--amber); color:var(--chalk);}
+  .filter-btn:hover{border-color:var(--accent); color:var(--text);}
   .filter-btn:active{transform:scale(.96);}
-  .filter-btn.active{background:var(--amber-dim); border-color:var(--amber); color:var(--amber);}
+  .filter-btn.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent);}
 
   .game-grid{display:flex; flex-direction:column; gap:12px;}
   /* Historical track record for a pick's confidence band. Recessive by
@@ -442,33 +435,33 @@
      warm ink when the band's interval spans 50%, because "this confidence
      level has never actually beaten a coin flip" is the one case a reader
      must not skim past. */
-  .track-record{font-size:11.5px; line-height:1.55; color:var(--chalk-dim);
-    background:var(--panel-raised); border:1px solid var(--line);
+  .track-record{font-size:11.5px; line-height:1.55; color:var(--text-2);
+    background:var(--surface-2); border:1px solid var(--border);
     border-radius:8px; padding:9px 12px; margin-top:10px;}
-  .track-record b{color:var(--chalk);}
-  .track-record.warn{border-left:3px solid var(--amber);}
-  .track-record.thin{color:var(--chalk-dim); font-style:italic;}
-  .track-coin{color:var(--amber); font-weight:600;}
+  .track-record b{color:var(--text);}
+  .track-record.warn{border-left:3px solid var(--accent);}
+  .track-record.thin{color:var(--text-2); font-style:italic;}
+  .track-coin{color:var(--accent); font-weight:600;}
   .track-note{display:block; margin-top:5px; font-size:10.5px; opacity:.85;}
-  .game-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;
+  .game-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:18px 20px;
     box-shadow:var(--shadow-sm); transition:border-color .18s ease, box-shadow .18s ease, transform .18s ease;}
-  .game-card:hover{border-color:var(--line-strong); box-shadow:var(--shadow-md); transform:translateY(-1px);}
+  .game-card:hover{border-color:var(--border-strong); box-shadow:var(--shadow-md); transform:translateY(-1px);}
   .game-card.has-flag{border-left:3px solid var(--accent);}
   .game-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
   .matchup-header{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
-  .at-symbol{color:var(--chalk-dim); font-weight:500;}
-  .game-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--chalk-dim); letter-spacing:.03em;}
+  .at-symbol{color:var(--text-2); font-weight:500;}
+  .game-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2); letter-spacing:.03em;}
   .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
   .tag-good{background:var(--good-dim); color:var(--good);}
   .tag-warn{background:var(--warn-dim); color:var(--warn);}
-  .tag-neutral{background:var(--blue-dim); color:var(--blue);}
+  .tag-neutral{background:var(--accent-soft); color:var(--series-a);}
 
   .model-row{display:grid; grid-template-columns:56px 1fr; align-items:center; gap:12px; margin-bottom:10px;}
   .model-row:last-of-type{margin-bottom:0;}
-  .model-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--chalk-dim);}
-  .model-label.a{color:var(--chalk);} .model-label.b{color:var(--chalk);}
+  .model-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.05em; text-transform:uppercase; color:var(--text-2);}
+  .model-label.a{color:var(--text);} .model-label.b{color:var(--text);}
   .tele{display:grid; grid-template-columns:60px 1fr 60px; align-items:center; gap:10px;}
-  .tele-team .pct{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:500; font-size:11px; color:var(--chalk-dim); margin-top:3px;}
+  .tele-team .pct{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:500; font-size:11px; color:var(--text-2); margin-top:3px;}
   .tele-team.right{text-align:right;}
   /* Winner indication deliberately does NOT use color/hue -- with 32 real
      team colors spanning nearly every hue (the Rams' navy+gold nearly
@@ -481,25 +474,25 @@
     border-radius:50%; margin-bottom:3px; flex-shrink:0; box-sizing:border-box;}
   .pick-badge.a{background:var(--accent);}
   .pick-badge.b{background:var(--accent);}
-  .pick-badge.placeholder{background:transparent; border:1.5px dashed var(--line-strong);}
+  .pick-badge.placeholder{background:transparent; border:1.5px dashed var(--border-strong);}
   .pick-badge svg{width:9px; height:9px;}
-  .tele-bar{position:relative; height:9px; background:var(--panel-hi); border-radius:5px; overflow:hidden; display:flex;}
+  .tele-bar{position:relative; height:9px; background:var(--border); border-radius:5px; overflow:hidden; display:flex;}
   .tele-bar-seg{height:100%; transition:width .4s cubic-bezier(.16,1,.3,1); opacity:.88;}
   .tele-bar-seg:first-child{border-radius:5px 0 0 5px;}
   .tele-bar-seg:last-child{border-radius:0 5px 5px 0;}
-  .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--chalk); opacity:.55; left:50%; z-index:2;}
+  .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--text); opacity:.55; left:50%; z-index:2;}
 
-  .market-ref{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; color:var(--chalk-dim); margin-top:12px; padding-top:12px; border-top:1px dashed var(--line);}
-  .market-ref b{color:var(--chalk);}
+  .market-ref{font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px; color:var(--text-2); margin-top:12px; padding-top:12px; border-top:1px dashed var(--border);}
+  .market-ref b{color:var(--text);}
 
-  .flag-note{margin-top:11px; font-size:12.5px; color:var(--chalk-dim); line-height:1.5; display:none;}
+  .flag-note{margin-top:11px; font-size:12.5px; color:var(--text-2); line-height:1.5; display:none;}
   .flag-note.open{display:block; animation:fade .2s ease;}
   .flag-note b{color:var(--text); font-weight:600;}
   .toggle-flag{background:none; border:none; color:var(--text-3); font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px;
     letter-spacing:.04em; cursor:pointer; padding:0; margin-top:11px; text-decoration:underline; text-underline-offset:3px;}
 
-  .empty-state{padding:48px 24px; text-align:center; color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px;
-    background:var(--panel); border:1px dashed var(--line); border-radius:var(--radius);}
+  .empty-state{padding:48px 24px; text-align:center; color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px;
+    background:var(--surface); border:1px dashed var(--border); border-radius:var(--r-md);}
 
   /* A modifier, not a change to .empty-state. Everywhere else that class
      carries one short line, and centring one line is right. Season Accuracy's
@@ -510,7 +503,7 @@
   .empty-state.empty-readable{max-width:60ch; margin:0 auto; text-align:left;
     font-size:13px; line-height:1.65;}
   .empty-state.empty-readable h3{text-align:center; font-size:15px;
-    color:var(--chalk); margin:0 0 14px;}
+    color:var(--text); margin:0 0 14px;}
   .empty-state.empty-readable p{margin:0 0 12px;}
   .empty-state.empty-readable p:last-child{margin-bottom:0;}
 
@@ -518,27 +511,27 @@
      Reuses .why-panel / .why-row from the week board rather than restating
      them, so the expanded breakdown looks the same in both places. */
   .dive-games{margin-top:20px;}
-  .dive-games-title{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; color:var(--chalk); margin-bottom:6px;}
-  .dive-games-summary{font-size:12.5px; color:var(--chalk-dim); line-height:1.55; margin-bottom:12px;}
-  .dive-games-summary b{color:var(--chalk); font-weight:600;}
-  .dive-game{border-bottom:1px solid var(--line);}
+  .dive-games-title{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; color:var(--text); margin-bottom:6px;}
+  .dive-games-summary{font-size:12.5px; color:var(--text-2); line-height:1.55; margin-bottom:12px;}
+  .dive-games-summary b{color:var(--text); font-weight:600;}
+  .dive-game{border-bottom:1px solid var(--border);}
   .dive-game:last-child{border-bottom:none;}
   .dive-game-head{width:100%; display:grid; grid-template-columns:104px 1fr 62px 66px 96px;
     align-items:center; gap:12px; background:none; border:none; cursor:pointer; text-align:left;
-    padding:12px 14px; color:var(--chalk); font-family:'Plus Jakarta Sans', sans-serif; font-size:13px;}
-  .dive-game-head:hover{background:var(--panel-hi);}
-  .dive-game-week{color:var(--chalk-dim); font-size:12px;}
+    padding:12px 14px; color:var(--text); font-family:'Plus Jakarta Sans', sans-serif; font-size:13px;}
+  .dive-game-head:hover{background:var(--border);}
+  .dive-game-week{color:var(--text-2); font-size:12px;}
   .dive-game-opp{font-weight:600;}
-  .dive-game-line,.dive-game-prob{text-align:right; font-variant-numeric:tabular-nums; color:var(--chalk-dim);}
-  .dive-game-prob{color:var(--chalk); font-weight:600;}
+  .dive-game-line,.dive-game-prob{text-align:right; font-variant-numeric:tabular-nums; color:var(--text-2);}
+  .dive-game-prob{color:var(--text); font-weight:600;}
   .dive-game-res{text-align:right;}
   .dive-result{font-weight:700; font-size:13px;}
   .dive-result.won{color:var(--good);}
   .dive-result.lost{color:var(--warn);}
-  .dive-pending{color:var(--chalk-dim); font-size:11.5px;}
+  .dive-pending{color:var(--text-2); font-size:11.5px;}
   .dive-game .why-panel{padding:0 14px 14px;}
-  .dive-why-head{font-size:12.5px; color:var(--chalk-dim); margin-bottom:4px;}
-  .dive-why-note{font-size:11px; color:var(--chalk-dim); opacity:.85; margin-bottom:10px;}
+  .dive-why-head{font-size:12.5px; color:var(--text-2); margin-bottom:4px;}
+  .dive-why-note{font-size:11px; color:var(--text-2); opacity:.85; margin-bottom:10px;}
   .dive-tick{color:var(--good); font-weight:600;}
   .dive-cross{color:var(--warn); font-weight:600;}
   @media (max-width:640px){
@@ -548,16 +541,16 @@
   }
 
   /* ---------- Changelog ---------- */
-  .cl-entry{display:grid; grid-template-columns:104px 1fr; gap:0 22px; padding:20px 0; border-bottom:1px solid var(--line);}
+  .cl-entry{display:grid; grid-template-columns:104px 1fr; gap:0 22px; padding:20px 0; border-bottom:1px solid var(--border);}
   .cl-entry:last-child{border-bottom:none;}
   .cl-meta{display:flex; flex-direction:column; gap:4px;}
-  .cl-version{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:16px; color:var(--chalk); font-variant-numeric:tabular-nums;}
-  .cl-date{font-size:11.5px; color:var(--chalk-dim); font-variant-numeric:tabular-nums;}
+  .cl-version{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:16px; color:var(--text); font-variant-numeric:tabular-nums;}
+  .cl-date{font-size:11.5px; color:var(--text-2); font-variant-numeric:tabular-nums;}
   .cl-current{align-self:flex-start; margin-top:3px; font-size:9.5px; letter-spacing:.08em; text-transform:uppercase;
-    font-weight:600; color:var(--amber); background:var(--amber-dim); border:1px solid var(--amber-dim);
+    font-weight:600; color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-soft);
     border-radius:999px; padding:3px 8px;}
-  .cl-headline{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:14.5px; color:var(--chalk); line-height:1.45;}
-  .cl-detail{font-size:13px; color:var(--chalk-dim); line-height:1.68; margin-top:7px;}
+  .cl-headline{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:14.5px; color:var(--text); line-height:1.45;}
+  .cl-detail{font-size:13px; color:var(--text-2); line-height:1.68; margin-top:7px;}
   @media (max-width:640px){
     .cl-entry{grid-template-columns:1fr; gap:9px 0;}
     .cl-meta{flex-direction:row; align-items:baseline; gap:10px; flex-wrap:wrap;}
@@ -565,53 +558,53 @@
   }
 
   /* ---------- Methodology ---------- */
-  .method-block{background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--line-strong); border-radius:var(--radius); padding:24px 26px; margin-bottom:16px; box-shadow:var(--shadow-sm);}
+  .method-block{background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--border-strong); border-radius:var(--r-md); padding:24px 26px; margin-bottom:16px; box-shadow:var(--shadow-sm);}
   /* Explanatory note sitting under a table, for the case where a column is
      legitimately empty and would otherwise read as broken. */
-  .table-note{color:var(--chalk-dim); font-size:12.5px; line-height:1.55; margin:2px 0 14px; padding:12px 14px; background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); max-width:680px;}
-  .table-note b{color:var(--chalk); font-weight:600;}
-  .method-block h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:17px; letter-spacing:.01em; margin-bottom:13px; color:var(--chalk); display:flex; align-items:center; gap:9px;}
-  .method-block h3::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--chalk-dim); flex-shrink:0;}
-  .method-block p, .method-block li{font-size:13.5px; line-height:1.68; color:var(--chalk-dim);}
+  .table-note{color:var(--text-2); font-size:12.5px; line-height:1.55; margin:2px 0 14px; padding:12px 14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); max-width:680px;}
+  .table-note b{color:var(--text); font-weight:600;}
+  .method-block h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:17px; letter-spacing:.01em; margin-bottom:13px; color:var(--text); display:flex; align-items:center; gap:9px;}
+  .method-block h3::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--text-2); flex-shrink:0;}
+  .method-block p, .method-block li{font-size:13.5px; line-height:1.68; color:var(--text-2);}
   .method-block ul, .method-block ol{padding-left:20px; margin-top:6px;}
-  .formula{font-family:'Plus Jakarta Sans', sans-serif; background:var(--ink); border:1px solid var(--line); border-radius:8px;
-    padding:15px 17px; font-size:13px; color:var(--amber); margin:11px 0; overflow-x:auto; white-space:pre;}
+  .formula{font-family:'Plus Jakarta Sans', sans-serif; background:var(--bg); border:1px solid var(--border); border-radius:8px;
+    padding:15px 17px; font-size:13px; color:var(--accent); margin:11px 0; overflow-x:auto; white-space:pre;}
   .metrics-table{width:100%; border-collapse:collapse; margin-top:10px; font-size:12.5px;}
   .metrics-table th{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; text-transform:uppercase; letter-spacing:.06em;
-    color:var(--chalk-dim); text-align:left; padding:9px 10px; border-bottom:1px solid var(--line);}
-  .metrics-table td{padding:9px 10px; border-bottom:1px solid var(--line); font-family:'Plus Jakarta Sans', sans-serif; color:var(--chalk);}
+    color:var(--text-2); text-align:left; padding:9px 10px; border-bottom:1px solid var(--border);}
+  .metrics-table td{padding:9px 10px; border-bottom:1px solid var(--border); font-family:'Plus Jakarta Sans', sans-serif; color:var(--text);}
   .metrics-table tr:last-child td{border-bottom:none;}
-  .metrics-table .highlight{color:var(--amber);}
-  .gap-item{display:flex; gap:11px; padding:10px 0; border-bottom:1px solid var(--line); font-size:13px;}
+  .metrics-table .highlight{color:var(--accent);}
+  .gap-item{display:flex; gap:11px; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px;}
   .gap-item:last-child{border-bottom:none;}
   .gap-num{font-family:'Plus Jakarta Sans', sans-serif; color:var(--warn); flex-shrink:0;}
 
   .section-title{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:15px;
-    margin:30px 0 4px; padding-top:22px; border-top:1px solid var(--line);}
+    margin:30px 0 4px; padding-top:22px; border-top:1px solid var(--border);}
   .section-title:first-of-type{margin-top:0; padding-top:0; border-top:0;}
-  .section-lead{font-size:12.5px; color:var(--chalk-dim); line-height:1.55; margin-bottom:14px; max-width:70ch;}
+  .section-lead{font-size:12.5px; color:var(--text-2); line-height:1.55; margin-bottom:14px; max-width:70ch;}
 
   /* Booth's audit scoreboard. Deliberately plain numbers rather than a
      chart: four counts do not need axes, and the point is that they are
      measured rather than asserted. */
   .agent-stats{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:12px; margin-top:14px;}
-  .agent-stat{background:var(--panel-hi); border:1px solid var(--line); border-radius:var(--radius); padding:14px;}
+  .agent-stat{background:var(--border); border:1px solid var(--border); border-radius:var(--r-md); padding:14px;}
   .agent-stat-n{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:26px; line-height:1.1;}
-  .agent-stat-l{font-size:12px; color:var(--chalk-dim); margin-top:4px; line-height:1.4;}
-  .agent-stat-note{font-size:11px; color:var(--chalk-dim); opacity:.8; margin-top:6px; line-height:1.4;}
+  .agent-stat-l{font-size:12px; color:var(--text-2); margin-top:4px; line-height:1.4;}
+  .agent-stat-note{font-size:11px; color:var(--text-2); opacity:.8; margin-top:6px; line-height:1.4;}
 
   /* Jump links for Methodology, which is now four pages in one. Long
      enough that arriving at the top with no idea what is below it is its
      own problem -- so the page says what it holds before you scroll. */
   .page-jump{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 22px;}
   .page-jump a{font-family:'Plus Jakarta Sans', sans-serif; font-size:11.5px;
-    padding:6px 12px; border-radius:20px; background:var(--panel-hi);
-    color:var(--chalk-dim); text-decoration:none; border:1px solid var(--line);}
-  .page-jump a:hover{color:var(--chalk); border-color:var(--line-strong);}
+    padding:6px 12px; border-radius:20px; background:var(--border);
+    color:var(--text-2); text-decoration:none; border:1px solid var(--border);}
+  .page-jump a:hover{color:var(--text); border-color:var(--border-strong);}
   .method-part{scroll-margin-top:18px;}
-  .method-part + .method-part{margin-top:34px; padding-top:26px; border-top:1px solid var(--line);}
+  .method-part + .method-part{margin-top:34px; padding-top:26px; border-top:1px solid var(--border);}
   .method-part > h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:19px; margin-bottom:5px;}
-  .part-lead{font-size:12.5px; color:var(--chalk-dim); line-height:1.55; margin-bottom:16px; max-width:70ch;}
+  .part-lead{font-size:12.5px; color:var(--text-2); line-height:1.55; margin-bottom:16px; max-width:70ch;}
 
   /* ---------- Milestone cards (What's Changed) ----------
      Named for the page they came from. .status-planned is the neutral pill:
@@ -620,39 +613,39 @@
      existed, so "TESTED -- REJECTED" was painted as an achievement. The pill
      colour is the only thing most readers actually parse. */
   .roadmap-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:14px;}
-  .roadmap-card{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:19px; box-shadow:var(--shadow-sm); transition:transform .18s ease, box-shadow .18s ease;}
+  .roadmap-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:19px; box-shadow:var(--shadow-sm); transition:transform .18s ease, box-shadow .18s ease;}
   .roadmap-card:hover{transform:translateY(-2px); box-shadow:var(--shadow-md);}
   .roadmap-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
     padding:4px 9px; border-radius:20px; display:inline-block; margin-bottom:11px;}
-  .status-planned{background:var(--panel-hi); color:var(--chalk-dim);}
-  .status-next{background:var(--amber-dim); color:var(--amber);}
+  .status-planned{background:var(--border); color:var(--text-2);}
+  .status-next{background:var(--accent-soft); color:var(--accent);}
   .status-done{background:var(--good-dim); color:var(--good);}
   .roadmap-card h4{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:16px; margin-bottom:7px;}
-  .roadmap-card p{font-size:12.5px; color:var(--chalk-dim); line-height:1.55;}
-  .add-idea{border:1px dashed var(--line); background:transparent; display:flex; align-items:center; justify-content:center;
-    min-height:100px; border-radius:var(--radius); color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; text-align:center; padding:16px;}
+  .roadmap-card p{font-size:12.5px; color:var(--text-2); line-height:1.55;}
+  .add-idea{border:1px dashed var(--border); background:transparent; display:flex; align-items:center; justify-content:center;
+    min-height:100px; border-radius:var(--r-md); color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; text-align:center; padding:16px;}
 
   /* ---------- Mobile bottom nav ---------- */
   .bottom-nav{
     display:none; position:fixed; left:0; right:0; bottom:0; z-index:50;
     background:rgba(19,24,38,0.88); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-    border-top:1px solid var(--line-strong);
+    border-top:1px solid var(--border-strong);
     padding:8px 6px calc(8px + var(--safe-bottom));
   }
   .bottom-nav-row{display:flex; justify-content:space-between; align-items:center; overflow-x:hidden; gap:2px;}
   .bnav-btn{
     display:flex; flex-direction:column; align-items:center; gap:3px; background:none; border:none;
-    color:var(--chalk-dim); font-family:'Plus Jakarta Sans', sans-serif; font-size:8.5px; letter-spacing:.01em;
+    color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:8.5px; letter-spacing:.01em;
     padding:6px 2px; border-radius:10px; flex:1 1 0; min-width:0; transition:color .15s ease;
   }
   .bnav-btn svg{width:18px; height:18px; flex-shrink:0;}
   .bnav-label{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;}
-  .bnav-btn.active{color:var(--amber);}
+  .bnav-btn.active{color:var(--accent);}
   .bnav-btn:active{transform:scale(.94);}
   .bnav-more-sheet{
     position:fixed; left:0; right:0; bottom:0; z-index:49;
     background:rgba(19,24,38,0.97); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-    border-top:1px solid var(--line-strong); border-radius:16px 16px 0 0;
+    border-top:1px solid var(--border-strong); border-radius:16px 16px 0 0;
     padding:14px 14px calc(90px + var(--safe-bottom));
     transform:translateY(100%); transition:transform .2s ease;
     pointer-events:none;
@@ -660,12 +653,12 @@
   .bnav-more-sheet.open{transform:translateY(0); pointer-events:auto;}
   .bnav-more-sheet-inner{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
   .bnav-more-item{
-    display:flex; align-items:center; gap:10px; background:var(--panel-hi); border:none; border-radius:12px;
-    padding:14px; color:var(--chalk); font-family:'Plus Jakarta Sans', sans-serif; font-size:13px; font-weight:600;
+    display:flex; align-items:center; gap:10px; background:var(--border); border:none; border-radius:12px;
+    padding:14px; color:var(--text); font-family:'Plus Jakarta Sans', sans-serif; font-size:13px; font-weight:600;
   }
-  .bnav-more-item svg{width:20px; height:20px; flex-shrink:0; color:var(--chalk-dim);}
-  .bnav-more-item.active{background:var(--amber-dim); color:var(--amber);}
-  .bnav-more-item.active svg{color:var(--amber);}
+  .bnav-more-item svg{width:20px; height:20px; flex-shrink:0; color:var(--text-2);}
+  .bnav-more-item.active{background:var(--accent-soft); color:var(--accent);}
+  .bnav-more-item.active svg{color:var(--accent);}
 
   @media (max-width:820px){
     body{flex-direction:column;}
@@ -731,7 +724,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <span id="theme-toggle-label">Light mode</span>
     </button>
-    Trained on: current nflfastR history<br>1 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-10 15:16 UTC</span>
+    Trained on: current nflfastR history<br>1 week(s) saved<br>Latest: 2026_week1<br><span class='foot-freshness'>Data as of 2026-09-10 15:24 UTC</span>
   </div>
 </aside>
 
@@ -804,7 +797,7 @@
       <div class="onboarding-content">
         <h4>New here? Quick orientation.</h4>
         <ul>
-          <li><b style="color:var(--blue)">Model A</b> is football-only (team ratings, QB performance, no market data). <b style="color:var(--amber)">Model B</b> adds the current Vegas spread.</li>
+          <li><b style="color:var(--series-a)">Model A</b> is football-only (team ratings, QB performance, no market data). <b style="color:var(--accent)">Model B</b> adds the current Vegas spread.</li>
           <li>The green checkmark shows which team each model actually favors -- the dashed circle is the other side.</li>
           <li>Each game says in a sentence why that team is ahead. It will often say the quarterback matchup, because that is genuinely what moves this model most -- if the sentence looks repetitive across a week, that is the model showing through, not a stuck template.</li>
           <li>Tap "the numbers behind this" on any game to check that sentence against the exact figures it came from.</li>
@@ -816,7 +809,7 @@
     <div class="page-head">
       <div>
         <h2>Week Board</h2>
-        <div class="desc"><b style="color:var(--blue)">Model A</b> is football-only. <b style="color:var(--amber)">Model B</b> blends in the current Vegas spread. A flagged gap usually means our model is missing something the market prices in.</div>
+        <div class="desc"><b style="color:var(--series-a)">Model A</b> is football-only. <b style="color:var(--accent)">Model B</b> blends in the current Vegas spread. A flagged gap usually means our model is missing something the market prices in.</div>
       </div>
       <div class="badge" id="board-badge" aria-live="polite">—</div>
     </div>
@@ -911,7 +904,7 @@
     <div class="page-head">
       <div>
         <h2>Model Lab</h2>
-        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--chalk)">2.4</b>, last updated 2026-09-04.</div>
+        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--text)">2.4</b>, last updated 2026-09-04.</div>
       </div>
     </div>
     <!-- Filled by buildReliabilityDiagram(). Empty when data/calibration.json
@@ -962,7 +955,7 @@
           <tr><td>Season-boundary-specific recency half-life</td><td class="num">Tested extra discounting (0.85, 0.7, 0.5) for plays crossing a season boundary, on top of normal recency decay. Every level was flat-or-worse than baseline on every metric, both splits, with a clean monotonic pattern -- stronger discount, worse performance. A team's true strength doesn't reset at a season boundary the way this assumed</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Referee crew x team-penalty-rate interaction</td><td class="num">A narrower framing than the earlier referee-tendency test: does a specific crew's penalty-calling rate interact with how penalty-prone the teams are? CI [-1.10,+0.74], includes zero, worse on validation too</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
           <tr><td>Systematic narrow-edge search (12 partitions)</td><td class="num">Scanned disagreement magnitude, spread size, QB-change presence, home favorite/underdog, and model confidence for ANY subset where Model A beats the market. Best candidate was +0.74pt with CI [-2.60,+4.09] -- and with 12 comparisons tested, one weak positive is exactly what noise produces. No defensible narrow edge exists</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Model A's low-confidence games are genuinely unreliable</td><td class="num"><b style="color:var(--chalk)">Re-derived from scratch 2026-09-06 and it holds.</b> Across the 343 of 1,087 backtested games where Model A's own probability sits within 0.05 of a coin flip, Model A hits <b style="color:var(--chalk)">52.48%</b> while the market hits <b style="color:var(--chalk)">64.14%</b> on those same games &mdash; a &minus;11.66pt gap, CI [&minus;18.37, &minus;5.25], which excludes zero. This row previously carried 52.5% / 64.4% / &minus;11.95pt with no script anywhere in the repository that produced them; Booth flagged that as UNVERIFIABLE while auditing PR #18, and it was right to. <code>src/verify_low_confidence_finding.py</code> now regenerates the whole thing, and the original figures agreed to within 0.3pt &mdash; a gap consistent with the cross-platform accuracy sensitivity documented below, since this claim is stated in accuracy. Model A's uncertainty is trustworthy: when it says it doesn't know, it really doesn't</td><td><span class="conf-tag tag-good">CONFIRMED FINDING</span></td></tr>
+          <tr><td>Model A's low-confidence games are genuinely unreliable</td><td class="num"><b style="color:var(--text)">Re-derived from scratch 2026-09-06 and it holds.</b> Across the 343 of 1,087 backtested games where Model A's own probability sits within 0.05 of a coin flip, Model A hits <b style="color:var(--text)">52.48%</b> while the market hits <b style="color:var(--text)">64.14%</b> on those same games &mdash; a &minus;11.66pt gap, CI [&minus;18.37, &minus;5.25], which excludes zero. This row previously carried 52.5% / 64.4% / &minus;11.95pt with no script anywhere in the repository that produced them; Booth flagged that as UNVERIFIABLE while auditing PR #18, and it was right to. <code>src/verify_low_confidence_finding.py</code> now regenerates the whole thing, and the original figures agreed to within 0.3pt &mdash; a gap consistent with the cross-platform accuracy sensitivity documented below, since this claim is stated in accuracy. Model A's uncertainty is trustworthy: when it says it doesn't know, it really doesn't</td><td><span class="conf-tag tag-good">CONFIRMED FINDING</span></td></tr>
           <tr><td>Line-movement archive (infrastructure check)</td><td class="num">Confirmed working end-to-end -- real movement captured (CLE@TB moved a full point, JAX@DEN a half point). But only 2 of 32 games moved at all across consecutive days, so a meaningful predictive test needs many more weeks of accumulation, not a forced test on n=2</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
           <tr><td>Against-the-spread evaluation (would this have made money?)</td><td class="num">The betting question, asked for the first time on 2026-09-05. Model B outputs a win probability, not a margin, so it cannot make an ATS pick directly &mdash; and margin-of-victory modelling is already rejected above. The well-posed version is a different target on the same features: fit the weekly-refit walk-forward on <i>home covered</i> instead of <i>home won</i>. Result over 1,058 games: 51.61% against the spread, 95% CI [48.58%, 54.63%]. The interval contains 50%, and it does not reach the 52.38% needed to break even at &minus;110. Three controls (always home, always away, always the favourite) all landed at exactly 50.00%, confirming the cover arithmetic, and the spread-to-margin correlation (+0.455) is asserted at runtime so an inverted sign convention cannot silently flip the result. Bootstrap and Wilson intervals agree to 0.02pt. Deliberately no subgroup search: the earlier 12-partition narrow-edge hunt already showed what that produces on noise</td><td><span class="conf-tag tag-warn">REJECT &mdash; NO ATS EDGE</span></td></tr>
           <tr><td>Model B vs. market, paired bootstrap on the calibration gaps</td><td class="num">The reliability diagram showed Model B with more resolution than the market (0.039321 vs 0.038180) and worse reliability (0.001697 vs 0.001334). A 5,000-resample paired bootstrap over the same 1,087 games says neither gap is real: Brier &minus;0.000622 CI [&minus;0.002395, +0.001141], log loss &minus;0.001189 CI [&minus;0.005156, +0.002832], reliability +0.000362 CI [&minus;0.002010, +0.003052], resolution +0.001141 CI [&minus;0.002196, +0.004597]. All four include zero. The chart's apparent split between "sharper" and "worse calibrated" was noise, and the panel has been rewritten to say so. Cross-checked against a closed-form paired standard error on Brier, which agrees to 3e-5</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
@@ -1004,8 +997,8 @@
 
     <div class="method-block">
       <h4>Model A vs. Model B — What Actually Separates Them</h4>
-      <p><b style="color:var(--blue)">Model A (football-only)</b> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, and QB-change detection — all derived from real play-by-play data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (every game on the Week Board says in a sentence which of these is driving it, with the underlying figures one tap away).</p>
-      <p><b style="color:var(--amber)">Model B (market-blended)</b> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.2% vs. 62.8% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
+      <p><b style="color:var(--series-a)">Model A (football-only)</b> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, and QB-change detection — all derived from real play-by-play data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (every game on the Week Board says in a sentence which of these is driving it, with the underlying figures one tap away).</p>
+      <p><b style="color:var(--accent)">Model B (market-blended)</b> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.2% vs. 62.8% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
     </div>
 
     <div class="method-block">
@@ -1045,7 +1038,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h4>How We Know a Result Is Real (Not Just Luck)</h4>
       <p>Every experiment on Model Lab reports a real accuracy number, but a small difference between two numbers doesn't automatically mean one is genuinely better -- with only a few hundred games in a season, some of that difference is just random luck in which games happened to go a certain way.</p>
-      <p style="margin-top:11px;">To check, we use a technique called <b style="color:var(--chalk)">bootstrap resampling</b>: take the real games, randomly reshuffle which ones get counted (with repeats allowed) thousands of times, and see how much the accuracy difference bounces around. If it consistently stays positive across nearly all of those reshuffles, that's real signal. If it swings between positive and negative depending on which games got picked, that's a sign that we can't confidently tell the difference from noise yet -- even if the original number looked good.</p>
+      <p style="margin-top:11px;">To check, we use a technique called <b style="color:var(--text)">bootstrap resampling</b>: take the real games, randomly reshuffle which ones get counted (with repeats allowed) thousands of times, and see how much the accuracy difference bounces around. If it consistently stays positive across nearly all of those reshuffles, that's real signal. If it swings between positive and negative depending on which games got picked, that's a sign that we can't confidently tell the difference from noise yet -- even if the original number looked good.</p>
       <p style="margin-top:11px;">This is why you'll see "CI [-1.2, +3.4]" type notation on Model Lab -- that's the range the true effect most likely falls in. When that range includes zero, we mark it INCONCLUSIVE rather than pretending we know for sure.</p>
     </div>
 
@@ -1061,21 +1054,21 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
           <tr><td>Defense matchup</td><td class="num">+0.37pt</td><td class="num">[-0.83, +1.56]</td></tr>
         </tbody>
       </table></div>
-      <p style="margin-top:11px;"><b style="color:var(--chalk)">QB quality is doing most of the work</b> -- removing it costs more than four times what any other feature costs. That matches football intuition, and it's why so much of this project's research effort has gone into getting the QB rating right.</p>
-      <p style="margin-top:11px;">Two honest caveats. First, <b style="color:var(--chalk)">none of these individually reach statistical significance</b> -- every confidence interval includes zero. That's expected with correlated features: the model partially compensates for a missing one using the others, so no single removal produces a clean, sharp drop. Second, defense matchup's point estimate is actually <i>positive</i> when removed, though well within noise. It isn't clearly earning its place, but there's no real evidence it's hurting either -- so it stays, and this is noted rather than acted on.</p>
+      <p style="margin-top:11px;"><b style="color:var(--text)">QB quality is doing most of the work</b> -- removing it costs more than four times what any other feature costs. That matches football intuition, and it's why so much of this project's research effort has gone into getting the QB rating right.</p>
+      <p style="margin-top:11px;">Two honest caveats. First, <b style="color:var(--text)">none of these individually reach statistical significance</b> -- every confidence interval includes zero. That's expected with correlated features: the model partially compensates for a missing one using the others, so no single removal produces a clean, sharp drop. Second, defense matchup's point estimate is actually <i>positive</i> when removed, though well within noise. It isn't clearly earning its place, but there's no real evidence it's hurting either -- so it stays, and this is noted rather than acted on.</p>
     </div>
 
     <div class="method-block">
       <h4>Why the Confidence Ranking Is the Right Strategy, Not Just a Guess</h4>
-      <p>For a standard confidence pool -- rank your picks, assign points 1 through N, earn those points if correct -- the strategy of assigning the highest point value to your highest-confidence pick, and so on down the list, isn't just a reasonable habit. It's <b style="color:var(--chalk)">mathematically provable</b> as the strategy that maximizes your expected total points, assuming the underlying probabilities are well-calibrated.</p>
-      <p style="margin-top:11px;">This follows from the <b style="color:var(--chalk)">rearrangement inequality</b>: when you're pairing two ordered lists (win probabilities and point values) to maximize their summed product, pairing largest-with-largest and smallest-with-smallest always beats any other pairing. We checked this isn't just theory -- a real simulation compared the rank-order strategy against 20,000 random point assignments for a realistic 16-game week, and rank-ordering beat every single one.</p>
+      <p>For a standard confidence pool -- rank your picks, assign points 1 through N, earn those points if correct -- the strategy of assigning the highest point value to your highest-confidence pick, and so on down the list, isn't just a reasonable habit. It's <b style="color:var(--text)">mathematically provable</b> as the strategy that maximizes your expected total points, assuming the underlying probabilities are well-calibrated.</p>
+      <p style="margin-top:11px;">This follows from the <b style="color:var(--text)">rearrangement inequality</b>: when you're pairing two ordered lists (win probabilities and point values) to maximize their summed product, pairing largest-with-largest and smallest-with-smallest always beats any other pairing. We checked this isn't just theory -- a real simulation compared the rank-order strategy against 20,000 random point assignments for a realistic 16-game week, and rank-ordering beat every single one.</p>
       <p style="margin-top:11px;">What this means practically: the confidence ranking you see on the Week Board isn't a stylistic choice or a rough heuristic -- it's the actual optimal strategy for this pool format, given whatever our probabilities say. The only way to do better is to have better probabilities, not a cleverer ranking scheme.</p>
     </div>
 
     <div class="method-block">
       <h4>Trying to Beat the Market: An Honest Accounting</h4>
       <p>A recurring question for Model B has been whether it can be made meaningfully more sophisticated than "our features plus the raw spread in one regression." Across two research cycles, we've tried roughly a dozen distinct approaches: a stacking ensemble combining Model A and market probabilities, feature-by-spread interaction terms, the total (over/under) line as an added input, dynamic weighting by model disagreement, market efficiency trends across and within seasons, and market accuracy conditional on travel distance.</p>
-      <p style="margin-top:11px;"><b style="color:var(--chalk)">None of them improved on the current flat regression.</b> Most came back as clean rejections; a couple were inconclusive with confidence intervals straddling zero. Not one showed a real, defensible edge.</p>
+      <p style="margin-top:11px;"><b style="color:var(--text)">None of them improved on the current flat regression.</b> Most came back as clean rejections; a couple were inconclusive with confidence intervals straddling zero. Not one showed a real, defensible edge.</p>
       <p style="margin-top:11px;">We think this negative result is worth stating plainly rather than quietly moving past: the betting market for NFL point spreads is genuinely difficult to improve on with the data and methods available here. That's not a failure of effort -- it's a real, repeatedly-tested finding about market efficiency, and arguably more honest than claiming a marginal edge that wouldn't hold up under scrutiny.</p>
     </div>
 
@@ -1107,9 +1100,9 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h4>The Short Version</h4>
-      <p>On raw predictive accuracy, <b style="color:var(--chalk)">this model does not beat the Vegas betting market</b>, and neither do most public NFL models. Across two full research cycles, roughly a dozen distinct approaches were tested to try to add something the market doesn't already price in. None of them worked. That's documented in detail on Model Lab and in the Methodology page's "Trying to Beat the Market" section.</p>
-      <p style="margin-top:11px;">Added 2026-09-05, because it is the question a sceptical reader asks first and this project had never actually asked it: <b style="color:var(--chalk)">would any of this have beaten the spread?</b> Picking winners and beating the spread are not the same test, and the second one is the real claim. A model fitted on the same features against a <i>cover</i> target, over 1,058 backtested games, hit <b style="color:var(--chalk)">51.61%</b> against the spread &mdash; 95% CI [48.58%, 54.63%]. That interval contains 50%, so it is not distinguishable from a coin flip; and at standard &minus;110 juice you need <b style="color:var(--chalk)">52.38%</b> just to break even, which it does not reach either. Three trivial controls &mdash; always home, always away, always the favourite &mdash; all came back at exactly 50.00%, which is what a spread is for and what confirms the arithmetic. <b style="color:var(--chalk)">This model would not have made money.</b> See <code>src/ats_evaluation.py</code>.</p>
-      <p style="margin-top:11px;">What this project offers instead is <b style="color:var(--chalk)">transparency about how it actually works and what it actually gets wrong</b> -- which is genuinely rare among prediction sites, most of which publish a number and no accounting of how it was arrived at or how often it fails.</p>
+      <p>On raw predictive accuracy, <b style="color:var(--text)">this model does not beat the Vegas betting market</b>, and neither do most public NFL models. Across two full research cycles, roughly a dozen distinct approaches were tested to try to add something the market doesn't already price in. None of them worked. That's documented in detail on Model Lab and in the Methodology page's "Trying to Beat the Market" section.</p>
+      <p style="margin-top:11px;">Added 2026-09-05, because it is the question a sceptical reader asks first and this project had never actually asked it: <b style="color:var(--text)">would any of this have beaten the spread?</b> Picking winners and beating the spread are not the same test, and the second one is the real claim. A model fitted on the same features against a <i>cover</i> target, over 1,058 backtested games, hit <b style="color:var(--text)">51.61%</b> against the spread &mdash; 95% CI [48.58%, 54.63%]. That interval contains 50%, so it is not distinguishable from a coin flip; and at standard &minus;110 juice you need <b style="color:var(--text)">52.38%</b> just to break even, which it does not reach either. Three trivial controls &mdash; always home, always away, always the favourite &mdash; all came back at exactly 50.00%, which is what a spread is for and what confirms the arithmetic. <b style="color:var(--text)">This model would not have made money.</b> See <code>src/ats_evaluation.py</code>.</p>
+      <p style="margin-top:11px;">What this project offers instead is <b style="color:var(--text)">transparency about how it actually works and what it actually gets wrong</b> -- which is genuinely rare among prediction sites, most of which publish a number and no accounting of how it was arrived at or how often it fails.</p>
     </div>
 
     <div class="method-block">
@@ -1129,7 +1122,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h4>What Would Actually Close the Gap</h4>
-      <p>Being specific rather than vague about this: the single biggest missing input is <b style="color:var(--chalk)">injury and player-availability data</b>, which the market prices in heavily and this model has no access to (the upstream data source has been broken with no ETA -- see Data Sources). Beyond that, the market aggregates information this project structurally can't reach: sharp money, insider knowledge, and real-time news. Closing that gap isn't a matter of a better algorithm.</p>
+      <p>Being specific rather than vague about this: the single biggest missing input is <b style="color:var(--text)">injury and player-availability data</b>, which the market prices in heavily and this model has no access to (the upstream data source has been broken with no ETA -- see Data Sources). Beyond that, the market aggregates information this project structurally can't reach: sharp money, insider knowledge, and real-time news. Closing that gap isn't a matter of a better algorithm.</p>
     </div>
     </div>
 
@@ -1313,7 +1306,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h3>Why This Page Exists</h3>
-      <p>An AI agent confidently stating something false -- about a result, about the state of a codebase, about whether a test actually passed -- is a real, well-documented failure mode, not a hypothetical. The honest mitigation isn't "use a smarter model" or "ask it to double-check itself" (the same failure mode that produced the wrong claim can just as easily produce a confident re-confirmation of it). The mitigation that actually worked here, every time, was <b style="color:var(--chalk)">external, mechanical verification</b> -- demanding the real command output, the real screenshot, the real re-run, rather than accepting a description of one.</p>
+      <p>An AI agent confidently stating something false -- about a result, about the state of a codebase, about whether a test actually passed -- is a real, well-documented failure mode, not a hypothetical. The honest mitigation isn't "use a smarter model" or "ask it to double-check itself" (the same failure mode that produced the wrong claim can just as easily produce a confident re-confirmation of it). The mitigation that actually worked here, every time, was <b style="color:var(--text)">external, mechanical verification</b> -- demanding the real command output, the real screenshot, the real re-run, rather than accepting a description of one.</p>
       <p style="margin-top:11px;">Below are the three real incidents from this project where that discipline caught something that would otherwise have shipped wrong.</p>
     </div>
 
@@ -1321,26 +1314,26 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <h3>Incident 1 -- False Claim About Repository State</h3>
       <p><b style="color:var(--warn)">Claim made:</b> Scout stated that a specific pull request "hasn't actually been merged yet," contradicting an earlier confirmation that it had been.</p>
       <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> Rather than accept either statement, a direct screenshot of the actual PR page was requested. It showed a purple "Merged" badge -- the PR genuinely was merged. Scout's later claim was the false one.</p>
-      <p style="margin-top:8px;"><b style="color:var(--chalk);">Why it matters:</b> This was a claim about objective, checkable repo state -- not a judgment call or a probabilistic model output. It still came out wrong. Ground truth (a real screenshot) resolved it in seconds; trusting the more recent-sounding claim would not have.</p>
+      <p style="margin-top:8px;"><b style="color:var(--text);">Why it matters:</b> This was a claim about objective, checkable repo state -- not a judgment call or a probabilistic model output. It still came out wrong. Ground truth (a real screenshot) resolved it in seconds; trusting the more recent-sounding claim would not have.</p>
     </div>
 
     <div class="method-block">
       <h3>Incident 2 -- An Unreproducible Result</h3>
       <p><b style="color:var(--warn)">Claim made:</b> An earlier tuning decision (a model hyperparameter, retuned from 8 to 96) was recorded on this dashboard as a resolved ACCEPT, with specific supporting accuracy numbers.</p>
       <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> When the same comparison was re-run from the actual current codebase, months later, the original numbers could not be reproduced under any configuration tried -- not with the original methodology, not with the current one. The result had been evaluated against a version of the model that no longer existed, and nothing had gone back to re-check it after later, independently-correct changes altered what it was really being compared against.</p>
-      <p style="margin-top:8px;"><b style="color:var(--chalk);">Why it matters:</b> Nobody fabricated this -- each individual step was reasonable at the time. The failure was in never re-verifying an old claim against the current state of the system. See Model Lab's "QB Shrinkage Re-tune" entry for the full resolution (re-tested fresh, found genuinely inconclusive, reverted to the simpler original default).</p>
+      <p style="margin-top:8px;"><b style="color:var(--text);">Why it matters:</b> Nobody fabricated this -- each individual step was reasonable at the time. The failure was in never re-verifying an old claim against the current state of the system. See Model Lab's "QB Shrinkage Re-tune" entry for the full resolution (re-tested fresh, found genuinely inconclusive, reverted to the simpler original default).</p>
     </div>
 
     <div class="method-block">
       <h3>Incident 3 -- A Test Suite That Wasn't Actually Testing Anything</h3>
       <p><b style="color:var(--warn)">Claim made:</b> A leak-free test suite existed on the main branch, implying the codebase's leak-free properties were being actively verified.</p>
       <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> When actually executed (not just confirmed to exist), 4 of its 5 tests failed immediately with an import error -- the file's own path configuration pointed at a directory that didn't exist -- and the fifth silently skipped. The suite had never successfully run a single real check.</p>
-      <p style="margin-top:8px;"><b style="color:var(--chalk);">Why it matters:</b> A test file's presence in the repo is not evidence it works. This is arguably the most important lesson on this page: a verification system that isn't itself verified provides false confidence, which is worse than no verification system at all.</p>
+      <p style="margin-top:8px;"><b style="color:var(--text);">Why it matters:</b> A test file's presence in the repo is not evidence it works. This is arguably the most important lesson on this page: a verification system that isn't itself verified provides false confidence, which is worse than no verification system at all.</p>
     </div>
 
     <div class="method-block">
       <h3>The Actual Rule</h3>
-      <p>Formalized in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/VERIFICATION.md" target="_blank" style="color:var(--blue);">VERIFICATION.md</a>: any claim about test results, repo state, or reproducibility must be backed by real, re-executed command output -- not a summary of one. See also <b style="color:var(--chalk)">Booth</b>, a dedicated verification role built specifically to audit Scout's work against this rule.</p>
+      <p>Formalized in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/VERIFICATION.md" target="_blank" style="color:var(--series-a);">VERIFICATION.md</a>: any claim about test results, repo state, or reproducibility must be backed by real, re-executed command output -- not a summary of one. See also <b style="color:var(--text)">Booth</b>, a dedicated verification role built specifically to audit Scout's work against this rule.</p>
     </div>
   </section>
 
@@ -4511,7 +4504,7 @@ function renderRatings(){
 
   const body = document.getElementById('ratings-body');
   if(visible.length === 0){
-    body.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--chalk-dim);">No teams match "${q}"</td></tr>`;
+    body.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--text-2);">No teams match "${q}"</td></tr>`;
     return;
   }
   body.innerHTML = visible.map((t)=>{
@@ -4583,7 +4576,7 @@ function populateWeekSelect(selectEl, onChange, initial){
 
 function pickBadge(modelKey, isWinner){
   if(isWinner){
-    return `<span class="pick-badge ${modelKey}"><svg viewBox="0 0 24 24" fill="none" stroke="var(--chalk)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>`;
+    return `<span class="pick-badge ${modelKey}"><svg viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>`;
   }
   return `<span class="pick-badge placeholder"></span>`;
 }
@@ -5575,14 +5568,14 @@ function buildCumulativeTrendChart(){
     labelSlots.push(ly);
     const dash = s.dash ? ` stroke-dasharray="${s.dash}"` : '';
     return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"${dash}/>
-      ${markerPath(s.shape, x(last.i), y(last.v), 4.5)} fill="${s.color}" stroke="var(--panel)" stroke-width="2"/>
-      <text x="${(x(last.i)+9).toFixed(1)}" y="${(ly+3.5).toFixed(1)}" font-size="10" font-weight="600" fill="var(--chalk-dim)">${s.label}</text>`;
+      ${markerPath(s.shape, x(last.i), y(last.v), 4.5)} fill="${s.color}" stroke="var(--surface)" stroke-width="2"/>
+      <text x="${(x(last.i)+9).toFixed(1)}" y="${(ly+3.5).toFixed(1)}" font-size="10" font-weight="600" fill="var(--text-2)">${s.label}</text>`;
   }
 
   const gridLines = [];
   for(let gv = Math.ceil(yMin/10)*10; gv <= yMax; gv += 10){
-    gridLines.push(`<line x1="${padL}" y1="${y(gv).toFixed(1)}" x2="${W-padR}" y2="${y(gv).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>
-      <text x="${padL-6}" y="${(y(gv)+3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--chalk-dim)">${gv}%</text>`);
+    gridLines.push(`<line x1="${padL}" y1="${y(gv).toFixed(1)}" x2="${W-padR}" y2="${y(gv).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>
+      <text x="${padL-6}" y="${(y(gv)+3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--text-2)">${gv}%</text>`);
   }
 
   const legend = seriesLegend(['a','b','market','picks']);
@@ -5590,7 +5583,7 @@ function buildCumulativeTrendChart(){
   return `<div class="method-block">
     <h3>Cumulative Accuracy Trend</h3>
     <p style="margin-bottom:10px;">Running accuracy as the season progresses -- not week-by-week noise, but how each approach has performed overall up to that point.</p>
-    <div style="font-size:11px; color:var(--chalk-dim); margin-bottom:8px;">${legend}</div>
+    <div style="font-size:11px; color:var(--text-2); margin-bottom:8px;">${legend}</div>
     <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:680px;">
       ${gridLines.join('')}
       ${lineFor('a','a')}
@@ -5613,13 +5606,13 @@ function buildCalibrationChart(){
     return `<div class="method-block">
       <h3>Not enough games yet to check</h3>
       <p style="margin-bottom:0;">Not enough graded games yet to say whether these percentages are honest.
-      Only <b style="color:var(--chalk)">${accuracy.n_graded}</b> game${accuracy.n_graded===1?'':'s'}
+      Only <b style="color:var(--text)">${accuracy.n_graded}</b> game${accuracy.n_graded===1?'':'s'}
       ${accuracy.n_graded===1?'has':'have'} been graded so far, spread across
       ${accuracy.calibration.length} confidence buckets &mdash; every one of them below the
       ${accuracy.min_bucket_n}-game floor this dashboard requires before reporting a hit rate.
       A bucket of one game reporting &ldquo;0% actual&rdquo; is a coin flip, not a finding, so it
       isn't charted. The counts are still shown in the table below.
-      The same check across every past season is on <b style="color:var(--chalk)">Model Lab</b>.</p>
+      The same check across every past season is on <b style="color:var(--text)">Model Lab</b>.</p>
     </div>`;
   }
 
@@ -5631,7 +5624,7 @@ function buildCalibrationChart(){
 
   const dots = points.map(p => {
     const r = 4 + (p.n/maxN)*8; // dot size reflects sample size in that bucket
-    return `<circle cx="${scale(p.x).toFixed(1)}" cy="${(S-scale(p.y)).toFixed(1)}" r="${r.toFixed(1)}" fill="var(--series-b)" fill-opacity="0.85" stroke="var(--panel)" stroke-width="2">
+    return `<circle cx="${scale(p.x).toFixed(1)}" cy="${(S-scale(p.y)).toFixed(1)}" r="${r.toFixed(1)}" fill="var(--series-b)" fill-opacity="0.85" stroke="var(--surface)" stroke-width="2">
       <title>${p.bucket}: predicted ${p.x}%, actual ${p.y}% (n=${p.n})</title>
     </circle>`;
   }).join('');
@@ -5639,17 +5632,17 @@ function buildCalibrationChart(){
   return `
     <div style="display:flex; align-items:flex-start; gap:20px; flex-wrap:wrap; margin-bottom:14px;">
       <svg viewBox="0 0 ${S} ${S}" style="width:260px; height:260px; flex-shrink:0;">
-        <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${pad}" stroke="var(--line-strong)" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <line x1="${pad}" y1="${S-pad}" x2="${pad}" y2="${pad}" stroke="var(--line)" stroke-width="1"/>
-        <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${S-pad}" stroke="var(--line)" stroke-width="1"/>
-        <text x="${pad}" y="${S-pad+14}" font-size="9" fill="var(--chalk-dim)">0%</text>
-        <text x="${S-pad}" y="${S-pad+14}" font-size="9" fill="var(--chalk-dim)" text-anchor="end">100%</text>
-        <text x="${pad-6}" y="${S-pad+4}" font-size="9" fill="var(--chalk-dim)" text-anchor="end">0%</text>
-        <text x="${pad-6}" y="${pad+4}" font-size="9" fill="var(--chalk-dim)" text-anchor="end">100%</text>
+        <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${pad}" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <line x1="${pad}" y1="${S-pad}" x2="${pad}" y2="${pad}" stroke="var(--border)" stroke-width="1"/>
+        <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${S-pad}" stroke="var(--border)" stroke-width="1"/>
+        <text x="${pad}" y="${S-pad+14}" font-size="9" fill="var(--text-2)">0%</text>
+        <text x="${S-pad}" y="${S-pad+14}" font-size="9" fill="var(--text-2)" text-anchor="end">100%</text>
+        <text x="${pad-6}" y="${S-pad+4}" font-size="9" fill="var(--text-2)" text-anchor="end">0%</text>
+        <text x="${pad-6}" y="${pad+4}" font-size="9" fill="var(--text-2)" text-anchor="end">100%</text>
         ${dots}
       </svg>
-      <div style="font-size:11.5px; color:var(--chalk-dim); max-width:280px; padding-top:8px;">
-        <div style="margin-bottom:6px;"><span style="display:inline-block; width:8px; height:1.5px; background:var(--line-strong); margin-right:5px; vertical-align:middle;"></span>Dashed line = perfectly honest</div>
+      <div style="font-size:11.5px; color:var(--text-2); max-width:280px; padding-top:8px;">
+        <div style="margin-bottom:6px;"><span style="display:inline-block; width:8px; height:1.5px; background:var(--border-strong); margin-right:5px; vertical-align:middle;"></span>Dashed line = perfectly honest</div>
         <div><span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--series-b); margin-right:5px; vertical-align:middle;"></span>Each dot = one confidence bucket (bigger dot = more games)</div>
         <div style="margin-top:6px;">Dots above the line mean we're underconfident in that bucket; below means overconfident.</div>
       </div>
@@ -5688,10 +5681,10 @@ function buildReliabilityDiagram(){
   const y = v => padT + (1 - v/100)*PLOT;
 
   const grid = [0,25,50,75,100].map(g=>`
-    <line x1="${x(g).toFixed(1)}" y1="${padT}" x2="${x(g).toFixed(1)}" y2="${(padT+PLOT).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>
-    <line x1="${padL}" y1="${y(g).toFixed(1)}" x2="${(padL+PLOT).toFixed(1)}" y2="${y(g).toFixed(1)}" stroke="var(--line)" stroke-width="1"/>
-    <text x="${x(g).toFixed(1)}" y="${(padT+PLOT+16).toFixed(1)}" font-size="10" fill="var(--chalk-dim)" text-anchor="middle">${g}%</text>
-    <text x="${(padL-8).toFixed(1)}" y="${(y(g)+3.5).toFixed(1)}" font-size="10" fill="var(--chalk-dim)" text-anchor="end">${g}%</text>`).join('');
+    <line x1="${x(g).toFixed(1)}" y1="${padT}" x2="${x(g).toFixed(1)}" y2="${(padT+PLOT).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>
+    <line x1="${padL}" y1="${y(g).toFixed(1)}" x2="${(padL+PLOT).toFixed(1)}" y2="${y(g).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>
+    <text x="${x(g).toFixed(1)}" y="${(padT+PLOT+16).toFixed(1)}" font-size="10" fill="var(--text-2)" text-anchor="middle">${g}%</text>
+    <text x="${(padL-8).toFixed(1)}" y="${(y(g)+3.5).toFixed(1)}" font-size="10" fill="var(--text-2)" text-anchor="end">${g}%</text>`).join('');
 
   // Marks are drawn series by series in fixed order so overlaps stack the same
   // way on every render -- a chart whose z-order shuffles between loads is a
@@ -5708,8 +5701,8 @@ function buildReliabilityDiagram(){
       const bar = `<line x1="${cx.toFixed(1)}" y1="${barTop.toFixed(1)}" x2="${cx.toFixed(1)}" y2="${barBot.toFixed(1)}" stroke="${s.color}" stroke-width="2" stroke-opacity="0.5" stroke-linecap="round"/>
         <line x1="${(cx-3.5).toFixed(1)}" y1="${barTop.toFixed(1)}" x2="${(cx+3.5).toFixed(1)}" y2="${barTop.toFixed(1)}" stroke="${s.color}" stroke-width="2" stroke-opacity="0.5"/>
         <line x1="${(cx-3.5).toFixed(1)}" y1="${barBot.toFixed(1)}" x2="${(cx+3.5).toFixed(1)}" y2="${barBot.toFixed(1)}" stroke="${s.color}" stroke-width="2" stroke-opacity="0.5"/>`;
-      const fill = b.underpowered ? 'var(--panel)' : s.color;
-      const marker = `${markerPath(s.shape, cx, cy, 5)} fill="${fill}" stroke="${b.underpowered ? s.color : 'var(--panel)'}" stroke-width="2"/>`;
+      const fill = b.underpowered ? 'var(--surface)' : s.color;
+      const marker = `${markerPath(s.shape, cx, cy, 5)} fill="${fill}" stroke="${b.underpowered ? s.color : 'var(--surface)'}" stroke-width="2"/>`;
       const tip = [
         `<b>${s.label} &middot; ${b.label} bin</b>`,
         `Stated ${b.mean_predicted}% &rarr; actually won <b>${b.observed}%</b>`,
@@ -5780,37 +5773,37 @@ function buildReliabilityDiagram(){
 
   return `<div class="method-block">
     <h3>Reliability Diagram &mdash; Are the Probabilities Honest?</h3>
-    <p style="margin-bottom:14px;">Accuracy only asks whether we picked the right side. This asks something harder: when a model says <b style="color:var(--chalk)">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games; the vertical bar is its 95% Wilson interval. The dashed diagonal is perfect calibration &mdash; and a mark whose bar crosses that line is <i>consistent</i> with being perfectly calibrated, however far the mark itself sits from it.</p>
+    <p style="margin-bottom:14px;">Accuracy only asks whether we picked the right side. This asks something harder: when a model says <b style="color:var(--text)">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games; the vertical bar is its 95% Wilson interval. The dashed diagonal is perfect calibration &mdash; and a mark whose bar crosses that line is <i>consistent</i> with being perfectly calibrated, however far the mark itself sits from it.</p>
     <div class="rel-filters">${filters}</div>
     <div class="rel-wrap">
       <div class="rel-plot">
         <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto;" role="group" aria-label="Reliability diagram: stated probability against observed win rate">
           ${grid}
-          <line x1="${x(0).toFixed(1)}" y1="${y(0).toFixed(1)}" x2="${x(100).toFixed(1)}" y2="${y(100).toFixed(1)}" stroke="var(--line-strong)" stroke-width="1.5" stroke-dasharray="5,4"/>
-          <text x="${(x(100)-4).toFixed(1)}" y="${(y(100)+14).toFixed(1)}" font-size="9.5" fill="var(--chalk-dim)" text-anchor="end">perfect calibration</text>
+          <line x1="${x(0).toFixed(1)}" y1="${y(0).toFixed(1)}" x2="${x(100).toFixed(1)}" y2="${y(100).toFixed(1)}" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <text x="${(x(100)-4).toFixed(1)}" y="${(y(100)+14).toFixed(1)}" font-size="9.5" fill="var(--text-2)" text-anchor="end">perfect calibration</text>
           ${marks}
-          <text x="${(padL+PLOT/2).toFixed(1)}" y="${(padT+PLOT+34).toFixed(1)}" font-size="10.5" fill="var(--chalk-dim)" text-anchor="middle">Probability the model stated</text>
-          <text x="12" y="${(padT+PLOT/2).toFixed(1)}" font-size="10.5" fill="var(--chalk-dim)" text-anchor="middle" transform="rotate(-90 12 ${(padT+PLOT/2).toFixed(1)})">How often it actually happened</text>
+          <text x="${(padL+PLOT/2).toFixed(1)}" y="${(padT+PLOT+34).toFixed(1)}" font-size="10.5" fill="var(--text-2)" text-anchor="middle">Probability the model stated</text>
+          <text x="12" y="${(padT+PLOT/2).toFixed(1)}" font-size="10.5" fill="var(--text-2)" text-anchor="middle" transform="rotate(-90 12 ${(padT+PLOT/2).toFixed(1)})">How often it actually happened</text>
         </svg>
         <div class="rel-tip" id="rel-tip"></div>
       </div>
       <div class="rel-side">
-        <div class="rel-stat" style="border-bottom:1px solid var(--line-strong);">
-          <span class="nm" style="color:var(--chalk-dim); font-size:10px; letter-spacing:.06em; text-transform:uppercase;">Brier decomposition</span>
+        <div class="rel-stat" style="border-bottom:1px solid var(--border-strong);">
+          <span class="nm" style="color:var(--text-2); font-size:10px; letter-spacing:.06em; text-transform:uppercase;">Brier decomposition</span>
           <span class="v" style="font-size:10px; letter-spacing:.06em; text-transform:uppercase;" title="Mean squared gap between stated probability and observed rate. Lower is better; 0 is perfect calibration.">Reliab. &darr;</span>
           <span class="v" style="font-size:10px; letter-spacing:.06em; text-transform:uppercase;" title="How far the bins sit from the base rate. Higher is better; 0 means the model says nothing.">Resol. &uarr;</span>
         </div>
         ${statRows}
-        <p style="font-size:11.5px; margin-top:12px;">Brier = reliability &minus; resolution + uncertainty (Murphy, 1973). <b style="color:var(--chalk)">Reliability</b> is miscalibration: lower is better. <b style="color:var(--chalk)">Resolution</b> is how far the model dares to move away from the base rate: higher is better. A model that always predicts the ${base}% base rate scores a perfect 0 on reliability and a useless 0 on resolution &mdash; which is exactly why accuracy alone can't tell those two apart. Uncertainty (${calibration.models.model_a ? calibration.models.model_a.decomposition.uncertainty.toFixed(6) : '--'}) belongs to the games, not to any model.</p>
-        <p style="font-size:11.5px; margin-top:10px;">Model B's numbers look better than the market's on resolution and worse on reliability, and until 2026-09-05 this panel called that "a lead, not a claim" because nothing had tested it. It has now been tested, with a 5,000-resample paired bootstrap, and <b style="color:var(--chalk)">the lead did not survive</b>: every one of the four gaps against the market has a 95% interval that includes zero. Brier &minus;0.000622, CI [&minus;0.002395, +0.001141]. Resolution +0.001141, CI [&minus;0.002196, +0.004597]. At 1,087 games those differences are indistinguishable from noise, so the honest reading of this chart is that <b style="color:var(--chalk)">Model B and the market are calibrated about equally well</b> &mdash; not that one edges the other.</p>
-        <p style="font-size:11.5px; margin-top:10px;">The same test did find two things that hold. Against <b style="color:var(--chalk)">Model A</b>, Model B is genuinely better &mdash; Brier &minus;0.019133, CI [&minus;0.025838, &minus;0.012687], and resolution +0.016814, CI [+0.008990, +0.024819] &mdash; which is the first version of "the spread helps" that rests on proper scoring rules rather than on accuracy, a metric this project has already shown moves by a whole game between platforms. And the market genuinely beats Model A: Brier +0.018511, CI [+0.011496, +0.025553]. See <b style="color:var(--chalk)">Model Lab</b> for all three, and <code>src/bootstrap_brier_gap.py</code> for the method.</p>
+        <p style="font-size:11.5px; margin-top:12px;">Brier = reliability &minus; resolution + uncertainty (Murphy, 1973). <b style="color:var(--text)">Reliability</b> is miscalibration: lower is better. <b style="color:var(--text)">Resolution</b> is how far the model dares to move away from the base rate: higher is better. A model that always predicts the ${base}% base rate scores a perfect 0 on reliability and a useless 0 on resolution &mdash; which is exactly why accuracy alone can't tell those two apart. Uncertainty (${calibration.models.model_a ? calibration.models.model_a.decomposition.uncertainty.toFixed(6) : '--'}) belongs to the games, not to any model.</p>
+        <p style="font-size:11.5px; margin-top:10px;">Model B's numbers look better than the market's on resolution and worse on reliability, and until 2026-09-05 this panel called that "a lead, not a claim" because nothing had tested it. It has now been tested, with a 5,000-resample paired bootstrap, and <b style="color:var(--text)">the lead did not survive</b>: every one of the four gaps against the market has a 95% interval that includes zero. Brier &minus;0.000622, CI [&minus;0.002395, +0.001141]. Resolution +0.001141, CI [&minus;0.002196, +0.004597]. At 1,087 games those differences are indistinguishable from noise, so the honest reading of this chart is that <b style="color:var(--text)">Model B and the market are calibrated about equally well</b> &mdash; not that one edges the other.</p>
+        <p style="font-size:11.5px; margin-top:10px;">The same test did find two things that hold. Against <b style="color:var(--text)">Model A</b>, Model B is genuinely better &mdash; Brier &minus;0.019133, CI [&minus;0.025838, &minus;0.012687], and resolution +0.016814, CI [+0.008990, +0.024819] &mdash; which is the first version of "the spread helps" that rests on proper scoring rules rather than on accuracy, a metric this project has already shown moves by a whole game between platforms. And the market genuinely beats Model A: Brier +0.018511, CI [+0.011496, +0.025553]. See <b style="color:var(--text)">Model Lab</b> for all three, and <code>src/bootstrap_brier_gap.py</code> for the method.</p>
         <details class="rel-table" style="margin-top:12px;">
           <summary>Show the numbers as a table</summary>
           <div class="table-wrap" style="margin-top:8px;"><table class="metrics-table">
             <thead><tr><th>Series</th><th>Bin</th><th>Games</th><th>Stated</th><th>Observed</th><th>95% interval</th></tr></thead>
             <tbody>${tableRows}</tbody>
           </table></div>
-          <p style="font-size:10.5px; color:var(--chalk-dim); margin-top:6px;">* Fewer than ${calibration.min_bin_n} games in the bin &mdash; shown for completeness, drawn hollow on the chart, and not a measurement.</p>
+          <p style="font-size:10.5px; color:var(--text-2); margin-top:6px;">* Fewer than ${calibration.min_bin_n} games in the bin &mdash; shown for completeness, drawn hollow on the chart, and not a measurement.</p>
         </details>
         <p class="rel-prov">Computed by <code>src/calibration.py</code> over ${JSON.stringify(calibration.backtest_seasons)} &middot; model v${calibration.model_version} &middot; ${calibration.generated_at}<br>
         ${p.platform || 'unknown platform'} &middot; Python ${p.python || '?'} &middot; numpy ${p.numpy || '?'} &middot; pandas ${p.pandas || '?'} &middot; scikit-learn ${p['scikit-learn'] || '?'}<br>
@@ -5946,13 +5939,13 @@ function renderAccuracy(){
   // and marked, so the number is visible without reading as a result.
   const calibRows = accuracy.calibration.map(c=>{
     const rate = c.underpowered
-      ? `<span style="color:var(--chalk-dim);" title="n=${c.n}, below the ${accuracy.min_bucket_n}-game floor -- not a meaningful rate">${c.actual_rate}%&nbsp;*</span>`
+      ? `<span style="color:var(--text-2);" title="n=${c.n}, below the ${accuracy.min_bucket_n}-game floor -- not a meaningful rate">${c.actual_rate}%&nbsp;*</span>`
       : `${c.actual_rate}%`;
     return `<tr><td>${c.bucket}</td><td class="num">${c.n}</td><td class="num">${c.avg_predicted}%</td><td class="num">${rate}</td></tr>`;
   }).join('');
   const anyUnderpowered = accuracy.calibration.some(c=>c.underpowered);
   const calibFootnote = anyUnderpowered
-    ? `<p style="font-size:11px; color:var(--chalk-dim); margin-top:8px;">* Fewer than ${accuracy.min_bucket_n} games in this bucket &mdash; the rate is shown for completeness but is not a meaningful measurement.</p>`
+    ? `<p style="font-size:11px; color:var(--text-2); margin-top:8px;">* Fewer than ${accuracy.min_bucket_n} games in this bucket &mdash; the rate is shown for completeness but is not a meaningful measurement.</p>`
     : '';
   const calibHtml = `
     <div class="method-block">
