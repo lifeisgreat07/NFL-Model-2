@@ -268,15 +268,26 @@
   .version-tag{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:13px; color:var(--text); margin-right:10px;}
   .version-date{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2);}
   .version-content p{font-size:12.5px; color:var(--text-2); margin-top:4px; line-height:1.5;}
-  .onboarding-banner{background:var(--surface-2); border:1px solid var(--series-a); border-radius:var(--r-md); padding:18px 22px; margin-bottom:18px;}
+  /* --accent, not --series-a: the banner is the active thing, not a series. */
+  .onboarding-banner{background:var(--surface-2); border:1px solid var(--accent); border-radius:var(--r-md); padding:18px 22px; margin-bottom:18px;}
   .onboarding-content h4{font-family:'Plus Jakarta Sans', sans-serif; font-size:14px; margin-bottom:9px; color:var(--text);}
   .onboarding-content ul{margin:0 0 12px 18px; padding:0;}
   .onboarding-content li{font-size:12.5px; color:var(--text-2); line-height:1.6; margin-bottom:4px;}
-  /* Shared-picks view. Borrows the onboarding banner wholesale and only
-     re-colours the border, so this adds one value rather than a new block.
-     Amber, not blue: blue is the ordinary orientation banner, and this one
-     means "what you are looking at is not yours". */
-  .shared-banner{border-color:var(--accent);}
+  /* Shared-picks view. Borrows the onboarding banner wholesale and changes one
+     property, so this adds a line rather than a block.
+
+     It used to differ by HUE: the onboarding banner was --series-a and this was
+     --accent. Two problems with that. The comment claimed "amber, not blue"
+     while --accent is #7FA8F5, a blue -- so the stated distinction had not been
+     true for some time. And --series-a was a chart-series token being spent on
+     a banner border, which is what this commit is removing everywhere.
+
+     Both banners are --accent now, so the difference is the BORDER STYLE
+     rather than a fifth hue: dashed reads as provisional, which is exactly what
+     "these picks are not yours" means. Colour has four jobs and "someone else's
+     data" is not one of them; inventing a hue for it is how a palette stops
+     meaning anything. The banner's own text says the rest. */
+  .shared-banner{border-style:dashed;}
   .shared-note{font-size:12.5px; color:var(--text-2); line-height:1.6; margin-bottom:12px;}
   .shared-actions{display:flex; gap:8px; flex-wrap:wrap;}
   /* Read-only while viewing someone else's picks: the buttons still show the
@@ -389,10 +400,36 @@
   }
   @media (max-width:900px){ .undo-toast{bottom:calc(90px + var(--safe-bottom, 0px));} }
 
+  /* --accent, not --series-a. A confidence badge is not a chart series; it is
+     the active/emphasised thing, which is Job 2. See the note on .model-chip. */
   .confidence-badge{
     font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.05em; padding:4px 10px; border-radius:20px;
-    background:var(--accent-soft); color:var(--series-a); white-space:nowrap;
+    background:var(--accent-soft); color:var(--accent); white-space:nowrap;
   }
+
+  /* ---------- Naming a model in prose ----------
+     A model's identity is a COLOURED MARK beside its name, never the name in
+     colour. That is the dataviz rule this project adopted -- "text wears text
+     tokens, never the series colour; a coloured mark beside them carries
+     identity" -- and it fixes a real defect rather than merely tidying one.
+
+     Before this, prose set Model A in --series-a (#5283E0) and Model B in
+     --accent (#7FA8F5). Two blues, measured 11.5 dE00 apart -- under the 15
+     floor, and 10.8 under red-green CVD. So the sentence that teaches a reader
+     which model is which was drawing them in near-identical colours, while the
+     charts drew the same pair 49.3 apart (Model B is ochre there). A reader who
+     learned "Model B is the blue one" from the text then met an orange Model B
+     in every chart.
+
+     Two failures in one: an entity wearing two different colours in two places,
+     and --accent (Job 2, the model's lean / the active thing) borrowed to mean
+     series identity (Job 4). The dot now carries identity and matches the chart
+     exactly; the words wear --text like all other words. */
+  .model-chip{display:inline-flex; align-items:baseline; gap:6px; font-weight:700; color:var(--text);}
+  .model-chip::before{content:''; width:8px; height:8px; border-radius:50%;
+    background:var(--chip); flex:none; transform:translateY(-1px);}
+  .model-chip.a{--chip:var(--series-a);}
+  .model-chip.b{--chip:var(--series-b);}
   .why-toggle{background:none; border:none; color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px;
     letter-spacing:.04em; cursor:pointer; padding:0; margin-top:11px; text-decoration:underline; text-underline-offset:3px;}
   /* The grid stretches cards in a row to a common height, and
@@ -618,7 +655,8 @@
   .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
   .tag-good{background:var(--good-dim); color:var(--good);}
   .tag-warn{background:var(--warn-dim); color:var(--warn);}
-  .tag-neutral{background:var(--accent-soft); color:var(--series-a);}
+  /* --accent, not --series-a: a neutral status tag is not a chart series. */
+  .tag-neutral{background:var(--accent-soft); color:var(--accent);}
 
   .model-row{display:grid; grid-template-columns:56px 1fr; align-items:center; gap:12px; margin-bottom:10px;}
   .model-row:last-of-type{margin-bottom:0;}
@@ -1063,7 +1101,7 @@
       <div class="onboarding-content">
         <h4>New here? Quick orientation.</h4>
         <ul>
-          <li><b style="color:var(--series-a)">Model A</b> is football-only (team ratings, QB performance, no market data). <b style="color:var(--accent)">Model B</b> adds the current Vegas spread.</li>
+          <li><span class="model-chip a">Model A</span> is football-only (team ratings, QB performance, no market data). <span class="model-chip b">Model B</span> adds the current Vegas spread.</li>
           <li>The bolder team name is the one that model leans toward. On games too close to call, neither side is bolded -- the model has not picked anybody.</li>
           <li>A blue tick marks the team each model picked. Once the game is final it turns green if that pick was right, or a red cross if it was wrong -- so the colour tells you whether a result is a prediction or a verdict.</li>
           <li>Each game says in a sentence why that team is ahead. It will often say the quarterback matchup, because that is genuinely what moves this model most -- if the sentence looks repetitive across a week, that is the model showing through, not a stuck template.</li>
@@ -1296,8 +1334,8 @@
 
     <div class="method-block">
       <h4>Model A vs. Model B — What Actually Separates Them</h4>
-      <p><b style="color:var(--series-a)">Model A (football-only)</b> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, and QB-change detection — all derived from real play-by-play data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (every game on the Week Board says in a sentence which of these is driving it, with the underlying figures one tap away).</p>
-      <p><b style="color:var(--accent)">Model B (market-blended)</b> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.2% vs. 62.8% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
+      <p><span class="model-chip a">Model A (football-only)</span> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, and QB-change detection — all derived from real play-by-play data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (every game on the Week Board says in a sentence which of these is driving it, with the underlying figures one tap away).</p>
+      <p><span class="model-chip b">Model B (market-blended)</span> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest, Model B consistently outperforms Model A (68.2% vs. 62.8% accuracy) precisely because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
     </div>
 
     <div class="method-block">
@@ -1632,7 +1670,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h3>The Actual Rule</h3>
-      <p>Formalized in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/VERIFICATION.md" target="_blank" style="color:var(--series-a);">VERIFICATION.md</a>: any claim about test results, repo state, or reproducibility must be backed by real, re-executed command output -- not a summary of one. See also <b style="color:var(--text)">Booth</b>, a dedicated verification role built specifically to audit Scout's work against this rule.</p>
+      <p>Formalized in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/VERIFICATION.md" target="_blank" style="color:var(--accent);">VERIFICATION.md</a>: any claim about test results, repo state, or reproducibility must be backed by real, re-executed command output -- not a summary of one. See also <b style="color:var(--text)">Booth</b>, a dedicated verification role built specifically to audit Scout's work against this rule.</p>
     </div>
   </section>
 
