@@ -1,0 +1,20 @@
+{
+  "target": "src/verify_model_colours.py",
+  "tests": "tests/test_model_colour_comment.py",
+  "cases": [
+    {
+      "id": "model-colour-verifier-hardcodes-a-token",
+      "why": "a copied palette is a second source of truth. The verifier exists so the comment cannot drift from the tokens; if it carries its own copy of them, it agrees with the comment forever and both can be wrong together. src/verify_matchup_cvd.py carries the same guard after the same lesson.",
+      "find": "            ha, hb = token(block, a), token(block, b)",
+      "replace": "            ha, hb = {'--accent': '#7FA8F5'}.get(a, token(block, a)), token(block, b)",
+      "expect_caught_by": "test_the_verifier_parses_the_palette_rather_than_copying_it"
+    },
+    {
+      "id": "model-colour-verifier-uses-the-shading-path",
+      "why": "the trap that produced a wrong number in the FLATTERING direction. verify_matchup_cvd.worst_dE applies matchupColors()' shading push before simulating, which is right for two team fills that touch in a bar and wrong for two tokens that are never pushed apart. It reports 34.1 for a pair that is really 10.8 -- a figure three times too reassuring, attached to the one sentence in the comment that admits a residual risk.",
+      "find": "    worst = min(\n        v.ciede2000(v.rgb_to_lab(v.simulate(ra, kind)),\n                    v.rgb_to_lab(v.simulate(rb, kind)))\n        for kind in v.MACHADO)",
+      "replace": "    worst = v.worst_dE(a_hex, b_hex)",
+      "expect_caught_by": "test_the_verifier_does_not_use_the_matchup_shading_path"
+    }
+  ]
+}

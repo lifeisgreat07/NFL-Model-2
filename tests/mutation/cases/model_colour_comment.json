@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_model_colour_comment.py",
+  "cases": [
+    {
+      "id": "model-colour-prose-distance-drifts",
+      "why": "the headline figure -- how far apart the two blues were in prose -- goes stale by one digit. This is the PR #52 defect exactly: a real-looking number in a permanent source comment, wrong in the code for as long as it takes someone to re-run the method by hand. Nothing behaves differently, so only an executable assertion can catch it.",
+      "find": "measured 11.5 dE00 apart",
+      "replace": "measured 12.5 dE00 apart",
+      "expect_caught_by": "test_the_prose_pair_distance_is_what_the_script_computes"
+    },
+    {
+      "id": "model-colour-chart-distance-drifts",
+      "why": "the comparison number goes stale. It is the one that makes the defect legible -- the charts drew the same two models far apart while the prose drew them close -- so a wrong value here quietly weakens the argument for the whole change.",
+      "find": "charts drew the same pair 49.3 apart",
+      "replace": "charts drew the same pair 44.3 apart",
+      "expect_caught_by": "test_the_chart_pair_distance_is_what_the_script_computes"
+    },
+    {
+      "id": "model-colour-residual-light-figure-drifts",
+      "why": "the residual pair is the honest part of the comment: --accent and --series-a stay close, and it is tolerable only because they never share a view. Whoever checks that claim later reads these three numbers. The light-theme CVD figure is the last of the three and the easiest to leave behind, which is the same position the 'seven pairs' sentence occupied on PR #52 when it got away.",
+      "find": "11.5 dE00 dark, 8.1 light, 6.6 under CVD",
+      "replace": "11.5 dE00 dark, 8.1 light, 9.6 under CVD",
+      "expect_caught_by": "test_the_residual_pair_is_stated_for_both_themes"
+    }
+  ]
+}
