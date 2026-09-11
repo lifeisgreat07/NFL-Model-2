@@ -395,6 +395,28 @@
   }
   .why-toggle{background:none; border:none; color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px;
     letter-spacing:.04em; cursor:pointer; padding:0; margin-top:11px; text-decoration:underline; text-underline-offset:3px;}
+  /* The grid stretches cards in a row to a common height, and
+     `margin-top:auto` sends whatever slack that creates above this button, so
+     it sits on the card's bottom edge and lines up across the row. padding-top
+     keeps the 11px minimum gap the margin above provided, since `auto`
+     replaces that margin rather than adding to it.
+
+     The `>` is a direct-child guard, not a page guard, and the first version
+     of this comment got that wrong. It said the rule was scoped "so the same
+     button on My Picks -- which is not in a stretched grid -- keeps its
+     ordinary margin." My Picks IS in a stretched grid: #picks-grid and
+     #game-grid carry the same `game-grid` class and there is exactly one
+     .game-grid rule in this file, so align-items:stretch reaches both. Booth
+     caught it on PR #59 by reading the computed style off the rendered page,
+     which is the only way that claim could have been checked -- it was a
+     statement about a page, written from the CSS.
+
+     What is actually true is duller: My Picks emits no `.why-toggle` at all --
+     only renderGames() writes that button, renderPicksGrid() does not -- so
+     this rule has nothing to select there either way. The `>` still earns its
+     place by keeping the rule off any toggle nested deeper inside a card,
+     such as one inside .why-panel. */
+  .game-card > .why-toggle{margin-top:auto; padding-top:11px;}
   /* The plain-English reason, on the card rather than behind the toggle.
      Sized between the model rows and the footnotes: it is the first thing
      worth reading after the percentages, so it must not look like a caption. */
@@ -481,11 +503,61 @@
      width the card was required to hold together at.
 
      Same idiom as .accuracy-cards, .agent-stats and .roadmap-grid, so the
-     page has one way of doing this rather than four. align-items:start
-     because cards carry different amounts of text and stretching them to a
-     common height would pad the short ones with dead space. */
+     page has one way of doing this rather than four.
+
+     align-items was `start`, and the reason given was that cards carry
+     different amounts of text, so stretching them to a common height would
+     pad the short ones with dead space. That was true when it was written and
+     is not true now. Measured at 1440px: with the coin-flip track record on
+     the card face, cards took SIX distinct heights spanning 205px, and
+     `start` left up to 205px of ragged gap BETWEEN cards in a row. With that
+     block behind the breakdown toggle the spread is 20px -- a single line of
+     explanation prose wrapping to two lines instead of three.
+
+     So the trade reversed. `start` now buys nothing and costs a ragged
+     bottom edge on every row, which is the thing a reader actually notices;
+     `stretch` costs at most 20px of slack inside the shorter card, and that
+     slack is absorbed by pinning the toggle to the bottom (below) so the row
+     ends on an aligned baseline rather than a gap.
+
+     NOT grid-auto-rows:1fr, which would make every row as tall as the
+     tallest row in the grid. Opening one breakdown would then pad all
+     sixteen cards to that height -- the 205px problem back, everywhere at
+     once, instead of in one row.
+
+     THIS RULE REACHES TWO PAGES, and that is deliberate rather than
+     incidental. `game-grid` is the class on both #game-grid (Week Board) and
+     #picks-grid (My Picks), and there is exactly one .game-grid rule, so the
+     stretch applies to both. Booth flagged it on PR #59 because the change
+     was described as being about the Week Board while quietly changing My
+     Picks too -- a fair catch under this repo's "one item, one PR" rule.
+
+     Kept shared rather than narrowed to #game-grid, for one reason: they are
+     the same component. A card grid whose rows end level is the behaviour
+     wanted on both, and splitting it by id would leave one class meaning two
+     different things depending on which page rendered it, which is a worse
+     trap than the one being fixed.
+
+     The difference between the two pages is what absorbs the slack. Week
+     Board cards end in a .why-toggle pinned with margin-top:auto, so the
+     slack sits above an aligned baseline. My Picks cards have no toggle, so
+     the slack sits at the bottom of the card -- which is what any stretched
+     card grid does, and is fine.
+
+     My Picks is improved by this, not merely unharmed. Measured at 1440px on
+     Week 1 data: its cards take two natural heights, 259px and 277px, so its
+     rows were ragged by up to 18px before and are level now.
+
+     That 18px is worth how it was arrived at. Booth's audit reported My Picks
+     rows as already uniform, spread 0.0px, and the first draft of this
+     comment repeated it. Both measurements were taken with align-items:
+     stretch applied, which makes the spread zero BY CONSTRUCTION -- it is the
+     property being measured. Re-measured with start forced back on, the real
+     natural spread is 18px. A measurement that cannot come out any other way
+     is not evidence, however many times it is run, and an audit is not exempt
+     from that. */
   .game-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr));
-    gap:12px; align-items:start;}
+    gap:12px; align-items:stretch;}
 
   /* The card sizes its own internals from ITS width, not the viewport's.
      Before this, the narrow treatments below were gated on a viewport media
@@ -495,9 +567,14 @@
   .game-card{container-type:inline-size; container-name:card;}
   /* Historical track record for a pick's confidence band. Recessive by
      default -- it is context, not the headline -- but gains a left rule and
-     warm ink when the band's interval spans 50%, because "this confidence
-     level has never actually beaten a coin flip" is the one case a reader
-     must not skim past. */
+     warm ink when the band's interval spans 50%.
+
+     That emphasis now lives inside the breakdown panel rather than on the
+     card face: the coin-flip case was moved behind the toggle because it
+     repeated on seven of sixteen cards saying the same thing. The `.warn`
+     treatment is kept and still fires there, because the point of it is to
+     stop the sentence being skimmed by someone who opened the panel to check
+     a number -- which is a different reader from the one scanning the board. */
   .track-record{font-size:11.5px; line-height:1.55; color:var(--text-2);
     background:var(--surface-2); border:1px solid var(--border);
     border-radius:8px; padding:9px 12px; margin-top:10px;}
@@ -506,7 +583,32 @@
   .track-record.thin{color:var(--text-2); font-style:italic;}
   .track-coin{color:var(--accent); font-weight:600;}
   .track-note{display:block; margin-top:5px; font-size:10.5px; opacity:.85;}
+  /* flex column so the toggle can pin to the bottom edge. The grid stretches
+     every card in a row to the row's height; without this the slack lands
+     after the last element as an unexplained gap, which reads as a mistake.
+     With it, "+ the numbers behind this" sits on the same baseline across the
+     row and the slack reads as structure.
+
+     Margins do NOT collapse between flex children, so vertical rhythm inside
+     the card is the sum of adjacent margins rather than the larger of the
+     two. That is not free: measured flex-vs-block at 1440, 1100 and 390px,
+     with stretch removed from both sides so each card reports its natural
+     height, every card is exactly 8px taller. One pair is responsible --
+     .model-row's 10px bottom margin meeting .market-ref's 12px top margin,
+     which used to collapse to 12 and now sums to 22.
+
+     8px on a ~362px card is accepted rather than tuned away, because it is
+     uniform across all sixteen cards and therefore costs nothing in the thing
+     this change is for. Tightening a margin to win it back would be fitting
+     the spacing scale to an implementation detail.
+
+     Stated precisely because the first draft of this comment claimed the
+     change had no effect on height, on the grounds that the margins looked
+     one-directional. They are not: it is the pair above. The claim was
+     written before it was measured, which is the defect this repository
+     documents as its recurring one. */
   .game-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:18px 20px;
+    display:flex; flex-direction:column;
     transition:border-color var(--dur-base) var(--ease);}
   .game-card.has-flag{border-left:3px solid var(--accent);}
   .game-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
@@ -2823,18 +2925,31 @@ function pickTrackRecord(homeProbPct, modelKey){
    the cards being the near-square shape the component study measured, and it
    is also the thing a reader stops seeing by the third card.
 
-   What stays on the card is the case a reader must not skim: the band whose
-   interval spans 50% (it has not been shown to beat a coin flip) and the band
-   with too few games to report. Those are rare, they differ between games, and
-   they change how much the number above them is worth. The routine case moves
-   behind "+ the numbers behind this", which is where someone who wants to check
-   a figure is already going to look.
+   What stays on the card is the band with too few games to report a rate at
+   all. That is a statement about missing evidence, it differs between games,
+   and nothing else on the card implies it.
+
+   The coin-flip case USED to stay here too, and it was removed on the owner's
+   call: "I don't need the week board essentially telling me over and over that
+   a split decision is not much better than a coinflip." He is right that it
+   repeats -- seven of sixteen cards carried it in Week 1, every one of them
+   saying the same thing about a band around 58-59% -- and the card already
+   says MODELS SPLIT and prints two probabilities either side of 50%. It is a
+   different claim (calibration of the band, not disagreement between models),
+   but it is not a claim a reader needs seven times on one screen.
+
+   It is not deleted: the routine path below still renders it inside the
+   breakdown, so it is one click away on every card it applies to.
+
+   This also happens to be what makes the cards uniform. That block was 129px
+   and appeared on some cards and not others, which alone accounted for a
+   205px spread in card height; without it the spread is 20px.
 
    'any' keeps the old always-inline behaviour for other callers. */
 function trackRecordHtml(homeProbPct, where='any'){
   const t = pickTrackRecord(homeProbPct, 'model_b');
   if(!t) return '';
-  const notable = t.underpowered || t.coinFlip;
+  const notable = t.underpowered;
   if(where === 'card' && !notable) return '';
   if(where === 'panel' && notable) return '';
   if(t.underpowered){

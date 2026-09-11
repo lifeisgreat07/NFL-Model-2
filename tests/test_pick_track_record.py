@@ -143,22 +143,38 @@ def test_the_track_record_appears_on_both_places_a_pick_is_shown():
 
 
 def test_the_board_shows_the_track_record_somewhere_a_reader_will_meet_it():
-    """The routine case moved behind the card's existing breakdown toggle,
+    """The routine case sits behind the card's existing breakdown toggle,
     because it is per confidence BAND rather than per game -- most of a week's
     cards carried a byte-identical paragraph, ~140px of repeat on each.
 
-    What must NOT move is the case a reader has to see: a band whose interval
-    spans 50% has not been shown to beat a coin flip, and a band with too few
-    games cannot report a rate at all. Those stay on the card face. This test
-    exists so that "tidy the card" can never quietly demote them.
+    One case stays on the card face: a band with too few games to report a
+    rate at all. That is a statement about missing evidence, it differs
+    between games, and nothing else on the card implies it.
+
+    The coin-flip case was here too until the owner asked for it to go -- it
+    fired on seven of sixteen Week 1 cards, every one saying the same thing
+    about a band around 58-59%, on cards that already read MODELS SPLIT above
+    two probabilities either side of 50%. It is still rendered, inside the
+    panel, one click away.
+
+    This test is deliberately kept rather than deleted. Its job never was
+    "the coin-flip case is on the card face"; it is "something decides what
+    stays, and that something is whether a reader can be expected to skim
+    it". Delete the distinction entirely and this still fails.
     """
     body = _fn('trackRecordHtml')
     assert "where === 'card'" in body and 'notable' in body, (
         "trackRecordHtml no longer distinguishes where it is rendered")
-    assert 'underpowered || t.coinFlip' in body.replace('t.underpowered', 'underpowered'), (
-        "the notable cases are no longer the coin-flip and underpowered bands, "
-        "so something other than 'a reader must not skim this' is deciding "
-        "what stays on the card")
+    normalised = body.replace('t.underpowered', 'underpowered')
+    assert 'const notable = underpowered;' in normalised, (
+        "the notable case is no longer the underpowered band alone. If the "
+        "coin-flip case is being put back on the card face, that is a "
+        "decision to argue for -- it was removed because it repeated on "
+        "seven of sixteen cards -- not something to widen this test to match")
+    assert 'coinFlip' in body, (
+        "the coin-flip sentence is gone entirely. It was moved behind the "
+        "breakdown toggle, not deleted; a reader checking a number must "
+        "still meet it")
 
 
 def test_season_range_does_not_render_every_year(calibration):
