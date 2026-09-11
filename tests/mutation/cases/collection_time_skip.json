@@ -1,0 +1,13 @@
+{
+  "target": "tests/test_accuracy_empty_states.py",
+  "tests": "tests/test_no_collection_time_artifact_gates.py",
+  "cases": [
+    {
+      "id": "collection-time-gate-on-the-built-page",
+      "why": "the exact decorator that shipped, put back. pytest evaluates a skipif condition at COLLECTION time, before any fixture runs, so the root conftest's session build cannot satisfy it. While index.html was committed the condition was always False and this was harmless; PR #58 untracked the file and from that moment the test skipped on every fresh checkout -- which is what CI does every run -- while the suite still reported green. It never appeared locally because a developer machine usually has an index.html lying around from an earlier build. Note what could NOT catch it: tests/test_build_artifacts_exist.py asserts the conftest built the page, and the conftest did. The artifact exists; the decorator simply asked too early.",
+      "find": "def test_the_built_page_does_not_show_a_zero_of_zero_week():",
+      "replace": "@pytest.mark.skipif(not BUILT.exists(), reason='index.html not built')\ndef test_the_built_page_does_not_show_a_zero_of_zero_week():",
+      "expect_caught_by": "test_no_skipif_gates_on_the_built_artifact"
+    }
+  ]
+}
