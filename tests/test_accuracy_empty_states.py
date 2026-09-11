@@ -109,10 +109,34 @@ def test_the_trend_chart_says_why_it_is_absent_below_two_weeks():
         'a gap where a chart was')
 
 
-@pytest.mark.skipif(not BUILT.exists(), reason='index.html not built')
 def test_the_built_page_does_not_show_a_zero_of_zero_week():
     """Against the real artifact, not just the generator. This is the exact
-    string a reader saw on the published site."""
+    string a reader saw on the published site.
+
+    This used to carry `@pytest.mark.skipif(not BUILT.exists(), ...)`, which
+    was correct while index.html was committed and became a silent hole the
+    moment it was not. pytest evaluates a skipif's condition at COLLECTION
+    time -- before any fixture runs -- so the root conftest's session build
+    happens strictly afterwards and cannot satisfy it. On a developer machine
+    the file is usually lying around from an earlier build and the test runs;
+    on a fresh checkout, which is what CI does every time, it does not exist
+    at collection and the test skips.
+
+    So this test had been skipping in CI ever since index.html was untracked,
+    while the suite reported green. That is precisely the failure mode the
+    conftest was introduced to prevent, surviving inside the change that
+    introduced it, and tests/test_build_artifacts_exist.py could not catch it
+    because the artifact genuinely IS built -- just too late for a decorator.
+
+    The fix is to stop asking at collection time. The conftest guarantees the
+    page exists by the time any test body runs, so a missing file here is now
+    a failure rather than a skip, which is what it always should have been.
+    """
+    assert BUILT.exists(), (
+        'index.html is missing, so the root conftest.py did not build it. '
+        'This is a failure rather than a skip on purpose: a skip here reads '
+        'as green and removes the only check that runs against the real '
+        'artifact rather than the generator.')
     html = BUILT.read_text(encoding='utf-8', errors='ignore')
     m = re.search(r'__ACCURACY_JSON__|const\s+accuracy\s*=\s*(\{.*?\});\n',
                   html, re.S)
