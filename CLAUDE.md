@@ -47,7 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **765 passing** (1 skipped) on `main` (2026-09-10). Run it before quoting
+Suite: **843 passing** (1 skipped) on `main` (2026-09-11). Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -1195,6 +1195,47 @@ under compaction pressure, so its length is a cost paid on every session.
   named was deleted and the checker deliberately passes counts for modules that
   do not exist (a body may describe a file a later phase adds). The other three
   variants have no general check and are governed by the rule above.
+- **THE OTHER RECURRING ONE, and it is NOT the same defect: a number that was
+  correct when written, falsified by the base moving underneath it.** Nobody
+  mis-attributed anything and nobody edited the text. The world moved and the
+  sentence stayed still. The entry above is an error at the moment of writing;
+  this one is an error that arrives later, in a file nobody has touched.
+
+  It happened five times on 2026-09-10/11 alone:
+
+  | Where | Written | What moved |
+  |---|---|---|
+  | PR #56 body | `731 passed` | the branch rebased; 751 by audit time |
+  | PR #60 commits 1-2 | `Suite: 751 passing` | rebased onto a base with ~23 more tests -> 774 |
+  | PR #61 README | `18 cases` | PR #59 merged and added one -> 19 |
+  | `.game-grid` comment | "stretching would pad the short ones" | true at a 205px spread, false at 20px |
+  | `.shared-banner` comment | "Amber, not blue" | `--accent` had become a blue |
+
+  The fix is not "be careful", which describes nothing you can do, and it is
+  not documentation — this file already documented the first variant at length
+  while PR #56 reproduced it four times the same afternoon. **The fix is that
+  a number in prose must have something that recomputes it.** 2026-09-11 ran
+  the experiment cleanly, by accident:
+
+  - README's counts are guarded by `tests/test_readme_accuracy.py` -> the
+    stale count failed loudly in CI within minutes of #59 merging.
+  - This file's suite line is guarded by `src/session_wrapup.py` -> caught.
+  - The dE00 figures in the template's model-colour comment are guarded by a
+    verifier plus its own mutation cases (PR #60) -> caught.
+  - The `Suite:` trailers in commit messages are guarded by **nothing, and
+    cannot be** -> they rotted silently and cost an audit to find.
+
+  So, mechanically: **before writing a number, name the thing that will
+  recompute it. If nothing can, do not write the number there.** A commit
+  message is the clearest case — it cannot be corrected without rewriting its
+  SHA, which invalidates every Booth report referencing it, so a count in one
+  is unfixable by construction. Put verification numbers in the PR body, which
+  `scout-preflight.yml` re-checks on `synchronize` precisely because a rebase
+  can falsify them, and leave them out of commit messages.
+
+  Not yet mechanised: nothing rejects a `Suite: N passing` trailer in a commit
+  message. That check is the obvious next step and is queued in
+  `docs/context.md`.
 - **A wrap-up check that greps this file for a literal string is disabled by
   rewording that string, and says the line is MISSING.** `session_wrapup.py`
   matches `Suite:\s*\*\*([0-9,]+)\s+passing\*\*`. Writing
