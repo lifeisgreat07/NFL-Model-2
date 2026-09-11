@@ -102,6 +102,60 @@ def test_the_toggle_is_pinned_to_the_card_bottom(css):
         "adding to it, so the padding is what keeps it off the prose above")
 
 
+def test_the_stretch_reaches_both_grids_and_that_is_known(css):
+    """Booth, PR #59 claim 12.
+
+    The comment beside `.game-card > .why-toggle` used to say the rule was
+    scoped so that "the same button on My Picks -- which is not in a stretched
+    grid -- keeps its ordinary margin." My Picks IS in a stretched grid:
+    #picks-grid and #game-grid carry the same class and there is one
+    .game-grid rule, so `align-items: stretch` reaches both pages. The claim
+    was about a rendered page and was written from the CSS, which is why
+    reading the CSS did not catch it and rendering did.
+
+    The behaviour was kept -- they are the same component, and narrowing it to
+    #game-grid would make one class mean two things. What changed is that it
+    is now written down. This test fails if either half stops being true: a
+    second .game-grid rule appearing (behaviour silently diverging), or one of
+    the two grids stopping using the class.
+    """
+    assert len(re.findall(r'\.game-grid\s*\{', css)) == 1, (
+        "there is now more than one .game-grid rule, so the two grids that "
+        "share that class may no longer behave the same way. If Week Board "
+        "and My Picks are meant to differ, give them different classes -- one "
+        "class meaning two things by id is the trap this guards")
+
+    grids = re.findall(r'<div[^>]*class="[^"]*game-grid[^"]*"[^>]*id="([\w-]+)"',
+                       css)
+    assert set(grids) == {'game-grid', 'picks-grid'}, (
+        f"the elements carrying the game-grid class are now {sorted(grids)}. "
+        "This rule was documented as reaching exactly the Week Board and My "
+        "Picks; if that set changed, the comment beside .game-grid describing "
+        "what absorbs the slack on each page needs rewriting too")
+
+
+def test_only_the_week_board_emits_the_pinned_toggle(css):
+    """The real reason the `>` scoping is harmless on My Picks.
+
+    Not "My Picks is not a stretched grid" -- it is one. My Picks emits no
+    .why-toggle at all, so the rule has nothing to select there. Pinned here
+    because the previous explanation sounded just as plausible and was wrong.
+    """
+    emitters = [m.start() for m in re.finditer(r'class="why-toggle"', css)]
+    assert len(emitters) == 1, (
+        f"expected exactly one place to emit a .why-toggle button, found "
+        f"{len(emitters)}. If My Picks now emits one too, it lands in a "
+        "stretched grid with margin-top:auto and will pin to the card bottom "
+        "-- which may well be right, but it is a change to make on purpose")
+
+    games = css.index('function renderGames')
+    picks = css.index('function renderPicksGrid')
+    assert games < emitters[0] < picks, (
+        "the .why-toggle button is no longer emitted from inside "
+        "renderGames(). The scoping comment on .game-card > .why-toggle "
+        "explains itself in terms of which renderer writes that button")
+
+
 def test_the_coin_flip_case_is_not_back_on_the_card_face(css):
     """The height spread is downstream of this one decision.
 
