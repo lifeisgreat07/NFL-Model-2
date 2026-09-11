@@ -1,16 +1,16 @@
 {
-  "generated_utc": "2026-09-11T04:11:50Z",
+  "generated_utc": "2026-09-11T05:08:20Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 62,
+    "audits_total": 64,
     "audits_superseded": 22,
-    "pull_requests_audited": 40,
+    "pull_requests_audited": 42,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 304,
-    "discrepancies_found": 14,
-    "unverifiable": 16,
-    "pull_requests_with_a_discrepancy": 9,
-    "reports_disagreeing_with_themselves": 5
+    "claims_checked": 328,
+    "discrepancies_found": 18,
+    "unverifiable": 17,
+    "pull_requests_with_a_discrepancy": 11,
+    "reports_disagreeing_with_themselves": 6
   },
   "audits": [
     {
@@ -1160,6 +1160,48 @@
       "overall": "SAFE TO MERGE",
       "implicated": [],
       "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 59,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/59#issuecomment-5629583083",
+      "posted_utc": "2026-09-11T04:41:27Z",
+      "head": "349ba65",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 13,
+      "confirmed": 11,
+      "discrepancies": 1,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "src/dashboard_template.html"
+      ],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 60,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/60#issuecomment-5629649712",
+      "posted_utc": "2026-09-11T04:50:40Z",
+      "head": "a971c43",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 11,
+      "confirmed": 8,
+      "discrepancies": 3,
+      "unverifiable": 0,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "README.md",
+        "src/verify_model_colours.py"
+      ],
+      "inconsistencies": [
+        "prose says Confirmed: 9, block has 8",
+        "prose says Discrepancies: 2, block has 3"
+      ],
       "superseded": false
     }
   ]
