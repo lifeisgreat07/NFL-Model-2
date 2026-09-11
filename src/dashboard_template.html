@@ -428,13 +428,44 @@
 
      One residual to know about rather than discover. --accent (the pick tick)
      and --series-a (Model A's dot) are the same two blues that caused the
-     problem above -- 11.5 dE00 dark, 8.1 light, 6.6 under CVD. That is not a
-     defect here because they never share a context: the tick sits on a game
-     card meaning "this is the pick", the dot sits in prose meaning "Model A",
-     and no view shows both. It DID make one sentence ambiguous -- the
-     onboarding list called the tick "a blue tick" one bullet below a blue
-     Model A dot -- so that copy no longer leans on the hue to identify it.
-     If those two ever land side by side, this is the pair to re-measure. */
+     problem above -- 11.5 dE00 dark, 8.1 light, 6.6 under CVD.
+
+     An earlier version of this comment justified that by asserting the two
+     marks are never on screen together. THAT WAS FALSE, and Booth caught it
+     on PR #60 by tracing the DOM. Both live inside the page-board section:
+     the onboarding banner holding the Model A chip at line ~1110, #game-grid
+     holding the ticks at ~1187. The banner is display:none only until
+     initOnboarding() shows it to any visitor without the dismissal key --
+     that is, every first-time reader, the exact audience it exists for.
+     Measured on the rendered page at 1440x1200: banner display:block, the dot
+     at y=78, the first tick at y=612. Both on screen, 534px apart, on a first
+     visit.
+
+     (The phrasing above is deliberately indirect. Quoting the false sentence
+     verbatim here trips tests/test_model_colour_comment.py, which forbids it
+     -- correctly: a guard that cannot tell a use from a mention is still
+     better than one that lets the claim back in, and this is the third time
+     tonight that explaining a defect reproduced it. Writing the tag names
+     with angle brackets also broke the section-balance check in
+     tests/test_methodology_merge.py, since a CSS comment is still inside the
+     document it describes.)
+
+     What is actually true, and what the residual now rests on, is weaker and
+     checkable. They never share a ROLE or a COMPONENT, and they do not look
+     alike beyond hue: the dot is a solid 8px circle; the tick is a 15px badge
+     whose fill is --accent at 10% opacity carrying a 9px glyph, so the only
+     saturated surfaces being compared are a circle and a checkmark. Shape,
+     size and meaning all differ, and neither is identified by hue in copy any
+     more -- the onboarding list used to call the tick "a blue tick" one
+     bullet below a blue Model A dot, which is fixed.
+
+     Be honest about the limit of that argument: shape carrying the difference
+     is what the dataviz rules permit only as a FLOOR case, and the
+     normal-vision figure in light mode (8.1) is below the 15 they ask for. It
+     is not a hypothetical-reader problem any more, it is a real one at low
+     severity. Re-stepping this token pair so it clears 15 is queued as Stage
+     11 work in docs/context.md. Until then, this is a known and measured
+     compromise rather than an unexamined one. */
   .model-chip{display:inline-flex; align-items:baseline; gap:6px; font-weight:700; color:var(--text);}
   .model-chip::before{content:''; width:8px; height:8px; border-radius:50%;
     background:var(--chip); flex:none; transform:translateY(-1px);}

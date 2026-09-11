@@ -22,6 +22,13 @@
       "find": "11.5 dE00 dark, 8.1 light, 6.6 under CVD",
       "replace": "11.5 dE00 dark, 8.1 light, 9.6 under CVD",
       "expect_caught_by": "test_the_residual_pair_is_stated_for_both_themes"
+    },
+    {
+      "id": "model-colour-residual-excused-by-a-false-claim",
+      "why": "the sentence Booth actually caught on PR #60, put back. The residual pair is 8.1 dE00 in light and 6.6 under red-green CVD -- below the floor -- and the comment used to excuse that by asserting the two marks never appear together. They do: the onboarding banner holding the Model A chip and #game-grid holding the pick ticks are both inside the page-board section, and the banner is shown to every visitor who has not dismissed it. Measured on the rendered page, the dot sits at y=78 and the first tick at y=612 on a first visit. This is the worst kind of comment to get wrong -- not a number, which something can recompute, but a claim about a rendered page written from the CSS, which nothing could check. The PR nominated it for review, which is the only reason a human looked.",
+      "find": "     An earlier version of this comment justified that by asserting the two",
+      "replace": "     That is fine because no view shows both of them at once.\n     An earlier version of this comment justified that by asserting the two",
+      "expect_caught_by": "test_the_comment_does_not_claim_the_two_marks_never_co_occur"
     }
   ]
 }

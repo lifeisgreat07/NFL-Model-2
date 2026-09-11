@@ -113,6 +113,78 @@ def test_the_chart_pair_clears_the_floor(measured):
             'carry identity on its own, which is the whole mechanism here')
 
 
+def test_the_comment_does_not_claim_the_two_marks_never_co_occur(comment):
+    """Booth, PR #60 claim 1 — and the one finding here that mattered.
+
+    The comment used to justify the residual by saying the pick tick and the
+    Model A dot "never share a context ... no view shows both". They do. Both
+    sit inside <section id="page-board">: the onboarding banner holds the chip,
+    #game-grid holds the ticks, and initOnboarding() shows that banner to every
+    visitor who has not dismissed it. Measured on the rendered page at
+    1440x1200: the dot at y=78, the first tick at y=612, both on screen.
+
+    The PR had designated that exact sentence as the thing a reviewer should
+    check, which is the only reason it was checked. It was the one claim in the
+    change that no test covered, because it was a claim about a rendered page
+    written from the CSS.
+
+    This test cannot render. What it can do is stop the false form of the
+    sentence coming back, and make the structural fact -- that the two are in
+    the same section -- something the suite asserts rather than something a
+    reader has to trace by hand.
+    """
+    for phrase in ('no view shows both', 'never share a context'):
+        assert phrase not in comment, (
+            f'the comment claims "{phrase}" again. It is false: the onboarding '
+            'banner and #game-grid are both inside <section id="page-board">, '
+            'and the banner is shown to every first-time visitor. Booth traced '
+            'this on PR #60 after the PR itself nominated the claim for '
+            'checking. Say what is true instead -- they never share a ROLE '
+            'or a COMPONENT -- or fix the colours so the question is moot.')
+
+
+def test_the_two_marks_really_are_in_the_same_section():
+    """The structural fact behind the test above, asserted rather than trusted.
+
+    If a later change moves the onboarding banner off the Week Board, the
+    residual argument gets easier and this test should be revisited
+    deliberately -- not silently inherited.
+    """
+    src = TEMPLATE.read_text(encoding='utf-8')
+    board = re.search(
+        r'<section class="page" id="page-board">(.*?)</section>', src, re.S)
+    assert board, 'the Week Board section is no longer findable'
+    body = board.group(1)
+    assert 'class="model-chip' in body, (
+        'the Model A chip has left the Week Board section. The residual '
+        'colour argument in the .model-chip comment assumes it is there; '
+        'revisit that comment rather than leaving it describing a page that '
+        'no longer exists')
+    assert 'id="game-grid"' in body, (
+        'the game grid has left the Week Board section, so the pick ticks no '
+        'longer render alongside the Model A chip -- see the note above')
+
+
+def test_the_onboarding_copy_does_not_identify_a_mark_by_its_hue():
+    """What actually fixed the ambiguity, as opposed to what was claimed.
+
+    The onboarding list called the tick "a blue tick" one bullet below a blue
+    Model A dot. With the two marks 8.1 dE00 apart in light mode -- 6.6 under
+    red-green CVD -- naming either by colour is what turns a tolerable
+    similarity into a wrong instruction.
+    """
+    src = TEMPLATE.read_text(encoding='utf-8')
+    board = re.search(
+        r'<div id="onboarding-banner".*?</div>', src, re.S)
+    assert board, 'the onboarding banner is no longer findable'
+    text = board.group(0).lower()
+    for hue in ('blue tick', 'blue check', 'blue dot', 'blue mark'):
+        assert hue not in text, (
+            f'the onboarding copy identifies a mark as "{hue}". The pick tick '
+            'and the Model A dot are 8.1 dE00 apart in light mode and 6.6 '
+            'under red-green CVD, so hue cannot carry that instruction')
+
+
 def test_the_verifier_parses_the_palette_rather_than_copying_it():
     """A copied palette is a second source of truth that goes stale silently.
     Same assertion tests/test_matchup_cvd_comment.py makes, for the same
