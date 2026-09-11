@@ -1,16 +1,16 @@
 {
-  "generated_utc": "2026-09-11T05:26:56Z",
+  "generated_utc": "2026-09-11T05:57:09Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 65,
-    "audits_superseded": 22,
+    "audits_total": 67,
+    "audits_superseded": 24,
     "pull_requests_audited": 43,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 342,
-    "discrepancies_found": 18,
+    "claims_checked": 334,
+    "discrepancies_found": 21,
     "unverifiable": 18,
-    "pull_requests_with_a_discrepancy": 11,
-    "reports_disagreeing_with_themselves": 6
+    "pull_requests_with_a_discrepancy": 12,
+    "reports_disagreeing_with_themselves": 5
   },
   "audits": [
     {
@@ -1202,7 +1202,7 @@
         "prose says Confirmed: 9, block has 8",
         "prose says Discrepancies: 2, block has 3"
       ],
-      "superseded": false
+      "superseded": true
     },
     {
       "pr": 61,
@@ -1218,6 +1218,45 @@
       "unverifiable": 1,
       "overall": "SAFE TO MERGE",
       "implicated": [],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 60,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/60#issuecomment-5630026486",
+      "posted_utc": "2026-09-11T05:40:20Z",
+      "head": "4882930",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 9,
+      "confirmed": 5,
+      "discrepancies": 3,
+      "unverifiable": 1,
+      "overall": "DO NOT MERGE -- DISCREPANCIES FOUND",
+      "implicated": [
+        "src/dashboard_template.html"
+      ],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 61,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/61#issuecomment-5630028155",
+      "posted_utc": "2026-09-11T05:40:33Z",
+      "head": "1e546a6",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 8,
+      "confirmed": 5,
+      "discrepancies": 3,
+      "unverifiable": 0,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "README.md",
+        "tests/mutation/cases/collection_time_skip.json"
+      ],
       "inconsistencies": [],
       "superseded": false
     }
