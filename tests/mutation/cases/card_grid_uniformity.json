@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_card_grid_uniformity.py",
+  "cases": [
+    {
+      "id": "card-grid-back-to-start",
+      "why": "align-items:start was correct while cards spanned 205px in height and is wrong now that they span 20px -- it leaves a ragged bottom edge on every row, which is the defect the owner reported on 2026-09-11. Reverting it looks like restoring a documented decision, because the comment justifying `start` was still in the file until this change rewrote it.",
+      "find": "gap:12px; align-items:stretch;}",
+      "replace": "gap:12px; align-items:start;}",
+      "expect_caught_by": "test_the_grid_stretches_cards_to_a_common_height"
+    },
+    {
+      "id": "card-toggle-no-longer-pinned",
+      "why": "without margin-top:auto the toggle sits directly under the prose and the slack the grid creates falls below it as an unexplained gap. The row still ends level, so the cards look right in a screenshot and wrong to a reader -- the kind of regression a visual check passes.",
+      "find": "  .game-card > .why-toggle{margin-top:auto; padding-top:11px;}",
+      "replace": "  .game-card > .why-toggle{padding-top:11px;}",
+      "expect_caught_by": "test_the_toggle_is_pinned_to_the_card_bottom"
+    },
+    {
+      "id": "card-coin-flip-back-on-the-face",
+      "why": "the 129px coin-flip block returning to the card face is what made heights span 205px in the first place. It is the single change that undoes this work, and it is a one-word edit.",
+      "find": "  const notable = t.underpowered;",
+      "replace": "  const notable = t.underpowered || t.coinFlip;",
+      "expect_caught_by": "test_the_coin_flip_case_is_not_back_on_the_card_face"
+    },
+    {
+      "id": "card-grid-rows-all-equal",
+      "why": "the overcorrection. grid-auto-rows:1fr makes every row as tall as the tallest row in the grid, so opening one breakdown pads all sixteen cards by ~230px. It reads as a stronger version of the fix and is strictly worse than the defect.",
+      "find": "    gap:12px; align-items:stretch;}",
+      "replace": "    gap:12px; align-items:stretch; grid-auto-rows:1fr;}",
+      "expect_caught_by": "test_the_grid_does_not_force_every_row_to_the_tallest_row"
+    }
+  ]
+}
