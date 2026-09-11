@@ -38,10 +38,31 @@ sys.path.insert(0, str(REPO_ROOT / 'src'))
 from scout_preflight import (  # noqa: E402
     SCOPED_COUNT_PHRASINGS, SCOPED_COUNT_RE, check_scoped_test_counts, collected_count)
 
-# Verbatim from PR #54's description, as Booth found it.
+# PR #54's sentence, as Booth found it, said:
+#
+#     "Confirmed this does not disturb the existing guard:
+#     `test_workflow_churn_guard` selects workflows that both regenerate *and*
+#     carry a `file_pattern`, so the new workflow is correctly outside its
+#     scope; its 31 tests still pass."
+#
+# That module is gone. Stage 8c phase 2 untracked index.html, which removed the
+# build churn it guarded, so it was replaced by
+# tests/test_workflows_do_not_commit_build_output.py.
+#
+# The sentence therefore cannot be executed verbatim any more, and pinning it
+# to the replacement would be worse than useless: the checker DELIBERATELY
+# passes a count for a module that does not exist (see
+# test_an_unknown_module_is_ignored_rather_than_failed below -- a body may
+# legitimately describe a file a later phase adds). A fixture naming a deleted
+# module would pass for that reason and look like coverage.
+#
+# So the sentence keeps its shape and its number and is re-anchored to a module
+# that is always present: this one. That is the same fix the parametrized cases
+# at the bottom of this file already carry, for the same reason -- an earlier
+# draft coupled them to a module that existed only on one branch.
 THE_SENTENCE_THAT_SHIPPED = (
     "Confirmed this does not disturb the existing guard: "
-    "`test_workflow_churn_guard` selects workflows that both regenerate *and* "
+    "`test_scoped_count_guard` selects workflows that both regenerate *and* "
     "carry a `file_pattern`, so the new workflow is correctly outside its "
     "scope; its 31 tests still pass."
 )
@@ -50,18 +71,22 @@ THE_SENTENCE_THAT_SHIPPED = (
 def test_it_catches_the_sentence_that_actually_shipped():
     f = check_scoped_test_counts(THE_SENTENCE_THAT_SHIPPED, skip_tests=False)
     assert not f.ok, (
-        "the scoped-count check passed the exact sentence Booth flagged on "
-        "PR #54 -- it is guarding nothing")
-    assert 'test_workflow_churn_guard' in f.detail
+        "the scoped-count check passed the sentence Booth flagged on PR #54 "
+        "-- it is guarding nothing")
+    assert 'test_scoped_count_guard' in f.detail
     assert '31' in f.detail
 
 
 def test_the_corrected_sentence_passes():
     """The fix must not be 'never mention a count beside a file name'."""
-    real = collected_count('test_workflow_churn_guard')
-    assert real is not None, "test_workflow_churn_guard.py is missing"
+    real = collected_count('test_scoped_count_guard')
+    assert real is not None, "test_scoped_count_guard.py is missing"
+    assert real != 31, (
+        "this file now really does collect 31 cases, so the fixture above no "
+        "longer states a WRONG count and proves nothing. Change the number in "
+        "THE_SENTENCE_THAT_SHIPPED to something this file is not.")
     body = (f"The new workflow is outside that guard's scope; "
-            f"`test_workflow_churn_guard` has {real} tests and all pass.")
+            f"`test_scoped_count_guard` has {real} tests and all pass.")
     assert check_scoped_test_counts(body, skip_tests=False).ok
 
 
@@ -98,8 +123,16 @@ def test_a_quoted_past_mistake_in_a_table_cell_is_not_an_assertion():
     mutation corpus caught it: preflight-quote-marks-not-stripped SURVIVED
     against that draft. A test that passes for a reason unrelated to its name
     is worse than no test, and this one is one character away from being that.
+
+    It happened a second time, in Stage 8c phase 2, and the same corpus case
+    caught it again. The row named `test_workflow_churn_guard.py`, which that
+    change deleted. `check_scoped_test_counts` skips a count it cannot verify
+    -- a module that is not there -- so the row passed whether or not
+    quotations were stripped, and the mutation survived. The row now names a
+    module that exists and states a count it does not have, so the assertion
+    below turns on the stripping again rather than on the module's absence.
     """
-    row = ('| #54 claim 4 | "`test_workflow_churn_guard.py` … its 31 tests '
+    row = ('| #54 claim 4 | "`test_scoped_count_guard.py` … its 31 tests '
            'still pass" | 3 -- the 31 was a three-file run, 3 + 20 + 8 |')
     assert '…' in row and '...' not in row, (
         "the ellipsis was replaced with periods -- see this test's docstring; "

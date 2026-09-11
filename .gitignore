@@ -20,3 +20,18 @@ results/*_run.log
 
 # Scratch commit message; PowerShell has no heredocs, so git commit -F needs a file.
 .commit-msg.txt
+
+# Build outputs. Both are produced by src/generate_dashboard.py and were
+# tracked until Stage 8c phase 2. Tracking a generated file meant every branch
+# that touched the template collided with whatever CI had regenerated on main
+# -- five conflicts in one day across three branches -- and neither file has a
+# meaningful diff to review: both carry a build stamp (the "Data as of" footer,
+# and reportlab's /CreationDate, /ModDate and derived /ID), so a no-op rebuild
+# still rewrites them.
+#
+# GitHub Pages now serves a CI-built artifact rather than the committed copy,
+# so nothing reads these from the repository. The root conftest.py builds them
+# for the test session. Leading slashes: only the ones at the repository root,
+# never a src/dist/ or similar further down.
+/index.html
+/dist/

@@ -38,12 +38,13 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, 15 cases) deliberately breaks the code in known
+  (`tests/mutation/`, 17 cases, one file per subject under test)
+  deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
-- **Nine CI workflows** in `.github/workflows/` cover the test suite, the
-  weekly data pull, the backtest, dashboard regeneration, the Pages deploy,
-  the agent-activity log, a pre-flight check on every pull request description,
+- **Eight CI workflows** in `.github/workflows/` cover the test suite, the
+  weekly data pull, the backtest, the Pages build-and-deploy, the
+  agent-activity log, a pre-flight check on every pull request description,
   and both halves of the Booth audit.
 
 If you have five minutes: open the live dashboard, read its **Methodology**
@@ -94,8 +95,12 @@ results/                -- graded predictions, builds the season accuracy record
 data/                   -- generated inputs the dashboard reads
 tests/                  -- the suite, plus tests/mutation/ (tests for the tests)
 .github/workflows/      -- CI: tests, weekly update, backtest, dashboard, Booth
-index.html              -- the generated dashboard (do not hand-edit)
 ```
+
+`index.html` and `dist/` are **build outputs and are not in the repository.**
+Both are produced by `src/generate_dashboard.py`; GitHub Pages publishes them
+from a CI build, and the test suite builds them itself via the root
+`conftest.py`. To see the dashboard locally, run the generator.
 
 ## Manual usage
 ```bash

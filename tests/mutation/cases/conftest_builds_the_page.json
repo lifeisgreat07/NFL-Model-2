@@ -1,0 +1,27 @@
+{
+  "target": "conftest.py",
+  "tests": "tests/test_build_artifacts_exist.py",
+  "cases": [
+    {
+      "id": "conftest-stops-building-the-page",
+      "why": "the load-bearing case. index.html is untracked, and seven tests SKIP rather than fail when it is absent -- so a conftest that stops building does not turn the suite red, it turns seven guards into green skips and the suite reports MORE passes than before. Two weaker versions of the guard let this mutation survive: an existence check (a stale file from an earlier run satisfies it) and an mtime-within-one-second check (two pytest runs back to back satisfy it, which is precisely what this corpus does). The guard now compares the artifact's mtime before and after the build.",
+      "find": "        [sys.executable, str(GENERATOR)],",
+      "replace": "        [sys.executable, '-c', 'pass'],",
+      "expect_caught_by": "test_the_session_built_this_artifact"
+    },
+    {
+      "id": "build-fixture-is-no-longer-autouse",
+      "why": "without autouse nothing requests the build, because the tests that need it are the ones that would silently skip without it -- they will never be the ones to ask. The guard deliberately does not request the fixture either: requesting it would trigger the build and make this mutation invisible to the only test looking for it.",
+      "find": "@pytest.fixture(scope='session', autouse=True)",
+      "replace": "@pytest.fixture(scope='session')",
+      "expect_caught_by": "test_the_session_built_this_artifact"
+    },
+    {
+      "id": "build-failure-stops-being-fatal",
+      "why": "a generator that exits non-zero must stop the session rather than let every downstream test measure whatever is on disk. Three earlier drafts of this case failed, each for a reason worth keeping. (1) Mutating the raise while the build still succeeded SURVIVED: the error branch never executes on a healthy checkout, so the mutation is unreachable and proves nothing. (2) Making the build actually fail came back WRONG-GUARD: the abort happens during fixture setup, so pytest reports a session error and no individual test fails -- a red suite with nothing accountable for it. (3) Commenting out the `raise` line left its argument lines dangling, which is a SyntaxError, so the conftest failed to import and again nothing owned the failure. What works is mutating the condition, which stays valid Python, and guarding it with a source assertion -- attributable, and reachable without needing the build to fail.",
+      "find": "    if result.returncode != 0:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_the_root_conftest_is_where_the_tests_expect_it"
+    }
+  ]
+}

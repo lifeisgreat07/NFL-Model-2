@@ -46,8 +46,12 @@ project is built to avoid. Check open PRs on GitHub yourself.
 |---|---|
 | `src/dashboard_template.html` | The whole site: markup, CSS and render functions in one file. Placeholders like `__TEAMS_JSON__` are swapped at build time. |
 | `src/generate_dashboard.py` | Reads `data/`, fills the placeholders, writes `index.html`. |
-| `index.html` | The built page. Generated — never hand-edited. |
-| `src/prune_build_churn.py` | Drops artifacts whose only change is a build timestamp. |
+| `conftest.py` | Repository root. Builds the page once per test session, because roughly a dozen tests read it and seven of them *skip* rather than fail when it is absent. |
+
+`index.html` and `dist/` are build outputs and are **not tracked**. Pages
+publishes them from a CI build; run `src/generate_dashboard.py` to see them
+locally. They were committed until Stage 8c phase 2, which is why several
+notes elsewhere still describe them as files you can open in the repository.
 
 ## The agents
 
@@ -77,11 +81,10 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | Path | When it runs |
 |---|---|
 | `.github/workflows/booth-pr-audit.yml` | Every PR open, push and description edit. |
-| `.github/workflows/generate-dashboard.yml` | Push to main touching `src/`, `data/`, `predictions/`, `results/` — **and** after `.github/workflows/collect-agent-log.yml` finishes, because a commit pushed by another workflow's GITHUB_TOKEN cannot trigger this one on its own. |
-| `.github/workflows/weekly-update.yml` | The weekly routine. |
+| `.github/workflows/weekly-update.yml` | The weekly routine. Commits predictions, results and data — **not** the dashboard, which the Pages deploy below rebuilds from that push. |
 | `.github/workflows/booth-regression.yml` | Manual dispatch only. |
 | `.github/workflows/run-tests.yml` | The suite, on push and PR. |
 | `.github/workflows/collect-agent-log.yml` | Manual dispatch, and pushes to main, to record what the agents actually did. |
 | `.github/workflows/run-backtest.yml` | The backtest, deliberately not on every push. |
 | `.github/workflows/scout-preflight.yml` | Every PR open, push and description edit. Runs `src/scout_preflight.py` against the PR description so a wrong count is caught before Booth spends an audit on it. It existed as a manual tool from PR #26 and nothing ran it; the defect it was built to catch then shipped four more times. Also re-checks on `synchronize`, because a rebase can falsify a number nobody retyped. |
-| `.github/workflows/deploy-pages.yml` | Same triggers as the dashboard regeneration above, plus manual dispatch. Builds the dashboard and publishes it as a Pages artifact instead of serving a committed file. Phase 1 of removing `index.html` from version control — it does not commit anything, and `contents: read` means it cannot. |
+| `.github/workflows/deploy-pages.yml` | Push to main touching `src/`, `data/`, `predictions/`, `results/` — **and** after `.github/workflows/collect-agent-log.yml` finishes, because a commit pushed by another workflow's GITHUB_TOKEN cannot trigger a workflow on its own — plus manual dispatch. The **only** builder of the published site. `index.html` and `dist/` are untracked, so there is no committed copy to serve; it does not commit anything, and `contents: read` means it cannot. |

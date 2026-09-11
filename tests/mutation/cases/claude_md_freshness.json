@@ -11,16 +11,16 @@
     },
     {
       "id": "handoff-path-rots",
-      "why": "a file named in the handoff is renamed in prose but not on disk, leaving the next session hunting for something that does not exist. The anchor is deliberately in the Traps section rather than a stage section: stage sections name planned work and are excluded from the path check, so a mutation there would correctly survive and prove nothing.",
-      "find": "`src/prune_build_churn.py` stops the workflows committing their own build",
-      "replace": "`src/prune_build_stamps.py` stops the workflows committing their own build",
+      "why": "a file named in the handoff is renamed in prose but not on disk, leaving the next session hunting for something that does not exist. The anchor is deliberately in the Traps section rather than a stage section: stage sections name planned work and are excluded from the path check, so a mutation there would correctly survive and prove nothing. Re-anchored in Stage 8c phase 2: the previous anchor named src/prune_build_churn.py, which that change deleted, so the anchor matched 0 times and the case was reported BAD-ANCHOR -- which is the corpus working, not failing.",
+      "find": "`tests/test_workflows_do_not_commit_build_output.py` now asserts the",
+      "replace": "`tests/test_workflows_do_not_commit_build_artifacts.py` now asserts the",
       "expect_caught_by": "test_every_repository_path_it_names_exists"
     },
     {
       "id": "handoff-names-a-deleted-guard",
-      "why": "the handoff names a test that no longer exists, so a guard reads as protection that is present when nothing enforces it",
-      "find": "`tests/test_workflow_churn_guard.py`, which asserts",
-      "replace": "`tests/test_workflow_prune_guard.py`, which asserts",
+      "why": "the handoff names a test that no longer exists, so a guard reads as protection that is present when nothing enforces it. Re-anchored in Stage 8c phase 2, and the reason is the case's own subject: its previous anchor named tests/test_workflow_churn_guard.py, and that change deleted exactly that guard. A case about naming a deleted guard was itself left naming one.",
+      "find": "`tests/test_generated_data_reaches_the_page.py`. **Ask what a safeguard also",
+      "replace": "`tests/test_generated_data_reaches_a_page.py`. **Ask what a safeguard also",
       "expect_caught_by": "test_every_repository_path_it_names_exists"
     },
     {

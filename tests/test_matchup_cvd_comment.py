@@ -23,8 +23,23 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
-GENERATED = ROOT / 'index.html'
 sys.path.insert(0, str(ROOT / 'src'))
+
+# These tests used to run twice, against the template and against index.html,
+# and a fifth test asserted the two copies agreed. That made sense while
+# index.html was committed: a generated file under version control can be left
+# stale, and the pair check was the thing that noticed.
+#
+# Stage 8c phase 2 untracked it. The root conftest.py now builds index.html
+# from this very template at the start of every session, so the generated copy
+# cannot differ from the template -- not "is unlikely to", cannot. A test that
+# can only fail if the generator stops copying a comment verbatim is testing
+# the generator, and tests/test_dashboard_charts.py already does that against
+# the real placeholders.
+#
+# So the [generated] parametrisation and test_the_two_copies_of_the_comment_agree
+# were removed rather than left passing. A test that cannot fail is worse than
+# no test: it reports coverage it does not provide.
 
 
 @pytest.fixture(scope='module')
@@ -46,8 +61,8 @@ def comment(path):
     return m.group(0)
 
 
-@pytest.mark.parametrize('path', [TEMPLATE, GENERATED], ids=['template', 'generated'])
-def test_the_pair_counts_in_the_comment_are_what_the_script_computes(path, computed):
+def test_the_pair_counts_in_the_comment_are_what_the_script_computes(computed):
+    path = TEMPLATE
     total = len(computed)
     under15 = sum(1 for d in computed.values() if d < 15)
     under5 = sum(1 for d in computed.values() if d < 5)
@@ -67,12 +82,11 @@ def test_the_pair_counts_in_the_comment_are_what_the_script_computes(path, compu
         f'comment says {m5.group(1)} effectively identical; computed {under5}')
 
 
-@pytest.mark.parametrize('path', [TEMPLATE, GENERATED], ids=['template', 'generated'])
-def test_the_worst_pairs_named_in_the_comment_are_the_worst_pairs(path, computed):
+def test_the_worst_pairs_named_in_the_comment_are_the_worst_pairs(computed):
     """The count is threshold-fragile; the worst pairs are not. So they are
     checked exactly, and they are what the comment tells a reader to trust."""
     # \d+\.\d+ rather than [\d.]+ so a sentence-ending period is not swallowed
-    named = re.findall(r'([A-Z]{2,3})/([A-Z]{2,3}) (\d+\.\d+)', comment(path))
+    named = re.findall(r'([A-Z]{2,3})/([A-Z]{2,3}) (\d+\.\d+)', comment(TEMPLATE))
     assert named, 'the comment names no worst pairs'
 
     ranked = sorted(computed.items(), key=lambda kv: kv[1])
@@ -86,8 +100,7 @@ def test_the_worst_pairs_named_in_the_comment_are_the_worst_pairs(path, computed
             f'comment says {a}/{b} is {quoted}; computed {computed[key]:.2f}')
 
 
-@pytest.mark.parametrize('path', [TEMPLATE, GENERATED], ids=['template', 'generated'])
-def test_the_threshold_fragility_count_is_what_the_script_computes(path, computed):
+def test_the_threshold_fragility_count_is_what_the_script_computes(computed):
     """The sentence that got away.
 
     The comment's caveat originally read "seven pairs sit between 14.9 and
@@ -99,7 +112,7 @@ def test_the_threshold_fragility_count_is_what_the_script_computes(path, compute
     """
     lo, hi = 14.9, 15.25
     actual = sum(1 for d in computed.values() if lo < d < hi)
-    text = comment(path)
+    text = comment(TEMPLATE)
     m = re.search(r'(\d+) pairs sit between ([\d.]+) and ([\d.]+)', text)
     assert m, 'the comment no longer states "N pairs sit between X and Y"'
     assert (float(m.group(2)), float(m.group(3))) == (lo, hi), (
@@ -108,13 +121,6 @@ def test_the_threshold_fragility_count_is_what_the_script_computes(path, compute
     assert int(m.group(1)) == actual, (
         f'comment says {m.group(1)} pairs between {lo} and {hi}; '
         f'src/verify_matchup_cvd.py computes {actual}')
-
-
-def test_the_two_copies_of_the_comment_agree():
-    """index.html is generated AND committed, so it can be left stale."""
-    assert comment(TEMPLATE) == comment(GENERATED), (
-        'the CVD comment differs between src/dashboard_template.html and the '
-        'generated index.html -- regenerate rather than editing index.html')
 
 
 def test_the_verifier_reads_the_palette_rather_than_copying_it():
