@@ -1,0 +1,20 @@
+{
+  "target": ".github/workflows/weekly-update.yml",
+  "tests": "tests/test_workflows_do_not_commit_build_output.py",
+  "cases": [
+    {
+      "id": "workflow-commits-the-build-output-again",
+      "why": "Stage 8c phase 2 untracked index.html and dist/ because a generated file under version control made every branch touching the template collide with whatever CI regenerated on main -- five conflicts in one day across three branches. Adding either path back to a file_pattern reinstates that tax, and does it quietly: the symptom appears on somebody else's open branch days later, not in the run that caused it.",
+      "find": "file_pattern: 'predictions/** results/** data/**'",
+      "replace": "file_pattern: 'predictions/** results/** data/** index.html dist/**'",
+      "expect_caught_by": "test_no_workflow_commits_the_build_outputs"
+    },
+    {
+      "id": "deleted-churn-pruner-revived-in-a-workflow",
+      "why": "src/prune_build_churn.py was deleted because untracking the artifacts removed the churn it managed. A step calling it would fail the run outright; worse is a workflow that merely NAMES it, which reads as a protection that is present while nothing enforces anything -- the exact shape this repo recorded as 'a guard wired into one of several paths reads as a guard that is present'.",
+      "find": "      - name: Commit and push changes",
+      "replace": "      - name: Drop churn\n        run: python src/prune_build_churn.py\n\n      - name: Commit and push changes",
+      "expect_caught_by": "test_no_workflow_runs_the_deleted_churn_pruner"
+    }
+  ]
+}

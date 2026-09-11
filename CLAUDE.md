@@ -827,13 +827,16 @@ under compaction pressure, so its length is a cost paid on every session.
   are coming.
 - **A safeguard written down twice, both times as a benefit, hid what it broke.**
   A push made with the default `GITHUB_TOKEN` cannot trigger another workflow.
-  Both `collect-agent-log.yml` and `generate-dashboard.yml` documented that rule
-  as loop protection, which it genuinely is. Neither noticed it also severs the
+  The collector and the dashboard builder both documented that rule as loop
+  protection, which it genuinely is. Neither noticed it also severs the
   handoff between them, so the collector wrote 44 audits to `main` and the page
   went on saying "The record has not been collected yet". Fixed with a
   `workflow_run` trigger and guarded by
   `tests/test_generated_data_reaches_the_page.py`. **Ask what a safeguard also
-  prevents.** Note the general shape too: a step that runs, produces correct
+  prevents.** *(The builder was the Auto-regenerate dashboard workflow; Stage 8c
+  phase 2 deleted it and moved the trigger to the Pages workflow. The guard
+  moved with it — that is what the test is for.)*
+  Note the general shape too: a step that runs, produces correct
   output, and has nothing downstream consuming it — the same shape as the
   collector itself having never run, one link further along.
 - **Correct arithmetic on absent data still produces a lie.** Season Accuracy
@@ -900,22 +903,25 @@ under compaction pressure, so its length is a cost paid on every session.
   file that holds uncommitted work, restore from a byte-level backup taken in
   the script, never from git.
 - **A guard wired into one of several paths reads as a guard that is present.**
-  `src/prune_build_churn.py` stops the workflows committing their own build
-  timestamps. It ran in only one of the two workflows that regenerate, and this
-  file's prose said merely that it "prevents" the churn — which is what stopped
-  anyone checking coverage. Both run it now, enforced by
-  `tests/test_workflow_churn_guard.py`, which asserts that *any* workflow
-  regenerating and committing those artifacts prunes between the two steps, so
-  a third inherits the guard instead of quietly missing it.
+  A churn pruner stopped the workflows committing their own build timestamps.
+  It ran in only one of the two workflows that regenerated, and this file's
+  prose said merely that it "prevents" the churn — which is what stopped anyone
+  checking coverage. Both ran it after that, enforced by a test asserting that
+  *any* workflow regenerating and committing those artifacts pruned between the
+  two steps, so a third would inherit the guard instead of quietly missing it.
   The durable shape: prose names a protection but never its coverage, and the
   gap is invisible from the description alone. Ask which paths, and prefer a
-  test that enumerates them over a sentence that asserts them. Run the prune
-  after regenerating locally.
+  test that enumerates them over a sentence that asserts them.
+  *(Both the pruner and that test were deleted in Stage 8c phase 2 — untracking
+  index.html removed the churn entirely, so the guard had nothing left to
+  guard. `tests/test_workflows_do_not_commit_build_output.py` now asserts the
+  stronger invariant that no workflow commits those paths at all. The lesson
+  above is kept because it is about prose and coverage, not about that file.)*
 - **A zero-line binary diff is not automatically churn.** An auto-commit
   showing `dist/picks_2026_week1.pdf | Bin 3802 -> 3802 bytes, 0 insertions,
   0 deletions` looks exactly like the timestamp churn above, and on 2026-09-07
   I nearly reported the guard as broken on that basis. It was not.
-  `prune_build_churn.py` deliberately does NOT normalise the "generated
+  The pruner deliberately did NOT normalise the "generated
   `<date>`" line printed inside the picks PDF, because that is visible content
   on a page someone prints — a rebuild on a different day is a REAL change and
   should commit. The byte count is identical because a date string is the same
@@ -924,7 +930,7 @@ under compaction pressure, so its length is a cost paid on every session.
   as designed" and "broken" are byte-identical here.
 - **A date recalled is a date invented. `git log` is three seconds away.**
   Writing the churn guard into `weekly-update.yml` on 2026-09-07, I annotated it
-  "same guard generate-dashboard.yml has run since 2026-08" — from memory, into
+  "same guard the other workflow has run since 2026-08" — from memory, into
   a permanent code comment, in the same PR whose other half exists to correct an
   unverified inherited claim. It was 2026-09-04. The same wrong date went into
   two sentences of this file and into the commit message. Booth caught all three;
@@ -1161,7 +1167,7 @@ under compaction pressure, so its length is a cost paid on every session.
   | #51 claim 7 | "every measured element reports 0s" | 8 selectors measured; a 3,582-element sweep found 64 still animating |
   | #51 claim 17 | the three `--shadow-sm` / `--shadow-md` / `--shadow-lg` tokens "still used in ten places" | 9 token references; 10 `box-shadow` declarations |
   | #52 claim 5 | "seven pairs sit between 14.9 and 15.25" | nine — read by eye off a wider band printed for another purpose |
-  | #54 claim 4 | "`test_workflow_churn_guard.py` … its 31 tests still pass" | 3 — the 31 was a three-file run (3 + 20 + 8) |
+  | #54 claim 4 | the churn-guard test file "… its 31 tests still pass" | 3 — the 31 was a three-file run (3 + 20 + 8) |
 
   **Not one of these was invented.** Every number was real output from a real
   command. That is exactly why re-reading never catches them: the author
@@ -1174,8 +1180,8 @@ under compaction pressure, so its length is a cost paid on every session.
   for a different reason, and the sentence was written later.
 
   So the rule is not "be careful with numbers", which describes nothing you can
-  do. It is: **write the command beside the number.** `pytest
-  tests/test_workflow_churn_guard.py -q → 3` cannot be written next to "31" —
+  do. It is: **write the command beside the number.** A one-file
+  `pytest … -q --collect-only → 3` cannot be written next to "31" —
   the mismatch becomes self-evident at the moment of writing, which is the only
   moment it is cheap. Corollary, stated because it is the one that keeps
   failing: **never quote a count from a multi-file pytest run.** Collect each
@@ -1184,8 +1190,11 @@ under compaction pressure, so its length is a cost paid on every session.
   `check_scoped_test_counts` in `src/scout_preflight.py` closes the one variant
   that is mechanically decidable — a count attributed to a named test module is
   checked by collecting that module. `tests/test_scoped_count_guard.py` holds
-  #54's failing sentence verbatim, so the guard cannot rot silently. The other
-  three variants have no general check and are governed by the rule above.
+  #54's failing sentence, so the guard cannot rot silently — re-anchored to
+  that test file itself in Stage 8c phase 2, because the module #54 actually
+  named was deleted and the checker deliberately passes counts for modules that
+  do not exist (a body may describe a file a later phase adds). The other three
+  variants have no general check and are governed by the rule above.
 - **A wrap-up check that greps this file for a literal string is disabled by
   rewording that string, and says the line is MISSING.** `session_wrapup.py`
   matches `Suite:\s*\*\*([0-9,]+)\s+passing\*\*`. Writing

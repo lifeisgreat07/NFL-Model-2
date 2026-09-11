@@ -32,8 +32,15 @@ WORKFLOWS = REPO / '.github' / 'workflows'
 
 #: The file the collector writes, and the workflow whose name must appear in a
 #: workflow_run trigger for that write to reach a reader.
+#:
+#: The builder was generate-dashboard.yml until Stage 8c phase 2. That workflow
+#: existed to regenerate index.html and COMMIT it; once the artifact stopped
+#: being tracked it had nothing left to do, and deploy-pages.yml -- which
+#: already carried the identical trigger set, deliberately, for this handoff --
+#: became the only builder. The chain this file guards is unchanged; only the
+#: far end of it has a different filename.
 COLLECTOR = WORKFLOWS / 'collect-agent-log.yml'
-BUILDER = WORKFLOWS / 'generate-dashboard.yml'
+BUILDER = WORKFLOWS / 'deploy-pages.yml'
 
 #: Data the dashboard renders. A workflow committing one of these has produced
 #: something a reader is meant to see.
@@ -54,7 +61,7 @@ def test_both_workflows_still_exist():
     """If either is renamed or removed, the pairing below is checking nothing
     and should say so loudly rather than pass vacuously."""
     assert COLLECTOR.exists(), 'collect-agent-log.yml is gone'
-    assert BUILDER.exists(), 'generate-dashboard.yml is gone'
+    assert BUILDER.exists(), 'deploy-pages.yml is gone'
 
 
 def test_the_collector_commits_a_file_the_dashboard_reads():
@@ -73,7 +80,7 @@ def test_the_builder_runs_when_the_collector_finishes():
     workflows. It has to name the collector in a workflow_run trigger."""
     text = _text(BUILDER)
     assert 'workflow_run:' in text, (
-        "generate-dashboard.yml has no workflow_run trigger, so a commit made "
+        "deploy-pages.yml has no workflow_run trigger, so a commit made "
         "by another workflow's GITHUB_TOKEN cannot rebuild the dashboard. That "
         "is the 2026-09-09 defect: data collected, page never updated")
     listed = re.search(r'workflow_run:\s*\n\s*workflows:\s*\[(.*?)\]', text, re.S)
@@ -81,7 +88,7 @@ def test_the_builder_runs_when_the_collector_finishes():
     names = [n.strip().strip('"\'') for n in listed.group(1).split(',')]
     collector_name = _workflow_name(COLLECTOR)
     assert collector_name in names, (
-        f"generate-dashboard.yml's workflow_run lists {names}, which does not "
+        f"deploy-pages.yml's workflow_run lists {names}, which does not "
         f"include {collector_name!r}. The name must match collect-agent-log.yml's "
         f"`name:` field exactly -- GitHub matches on the display name, and a "
         f"rename on one side fails silently with no run and no error")
@@ -93,7 +100,7 @@ def test_the_builder_ignores_a_failed_collector_run():
     byte-identical index.html."""
     text = _text(BUILDER)
     assert "workflow_run.conclusion == 'success'" in text, (
-        'generate-dashboard.yml does not gate on the triggering run having '
+        'deploy-pages.yml does not gate on the triggering run having '
         'succeeded, so it rebuilds after a failed collection too')
     assert "github.event_name != 'workflow_run'" in text, (
         'the conclusion check has no escape for push events, which carry no '
@@ -111,7 +118,7 @@ def test_the_reason_is_written_down_where_the_trigger_is():
     """
     text = _text(BUILDER)
     assert 'GITHUB_TOKEN' in text and 'workflow_run' in text, (
-        'the workflow_run trigger in generate-dashboard.yml is not accompanied '
+        'the workflow_run trigger in deploy-pages.yml is not accompanied '
         'by the GITHUB_TOKEN explanation. Without it the trigger looks '
         'redundant against the data/** paths and invites deletion')
 

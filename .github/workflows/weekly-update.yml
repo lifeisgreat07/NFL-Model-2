@@ -61,19 +61,19 @@ jobs:
             fi
           done
 
-      - name: Regenerate dashboard
-        run: python src/generate_dashboard.py
-
-      # Same guard generate-dashboard.yml has run since 2026-09-04. Without it
-      # this workflow commits index.html and the picks PDF on every run,
-      # including runs where nothing but their build stamps changed -- the
-      # no-op churn that collides with any open branch which regenerated the
-      # same artifacts. Guarded by tests/test_workflow_churn_guard.py.
-      - name: Drop artifacts that changed only their build stamp
-        run: python src/prune_build_churn.py
-
+      # This workflow no longer builds or commits the dashboard. It commits the
+      # DATA it produces; that push lands on main under `data/**`,
+      # `predictions/**` and `results/**`, which is exactly the path set
+      # "Deploy dashboard to Pages" watches, so the page is rebuilt and
+      # published from the new data by the one workflow that owns the build.
+      #
+      # Two steps were removed here in Stage 8c phase 2 -- a `generate_dashboard.py`
+      # run whose output nobody would have committed, and the churn pruner that
+      # existed only to stop the commit below from committing a build stamp.
+      # Untracking the artifacts removed the problem the pruner solved, so the
+      # pruner was deleted rather than left as a step that always does nothing.
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Weekly update: predictions, grading, dashboard"
-          file_pattern: 'predictions/** results/** data/** index.html dist/**'
+          commit_message: "Weekly update: predictions and grading"
+          file_pattern: 'predictions/** results/** data/**'
