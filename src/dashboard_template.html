@@ -692,6 +692,19 @@
   .game-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;}
   .matchup-header{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   .at-symbol{color:var(--text-2); font-weight:500;}
+  /* My Picks' variant. These values are not a new design choice -- they are
+     what .game-top > .game-kickoff produced there, measured on the rendered
+     page before the two render paths were merged into one helper: 11px,
+     weight 400, --text-2, .03em, and the 16px the wrapper carried. The card
+     is meant to look exactly as it did.
+
+     display:block matters and is not cosmetic: .matchup-header is a flex
+     container with an 8px gap, so on the Week Board the words are flex items
+     separated by that gap. The span this replaced on My Picks was ordinary
+     inline text with single spaces, and inheriting flex here would widen
+     "NE at SEA" without anyone deciding to. */
+  .matchup-header.quiet{display:block; font-weight:400; font-size:11px;
+    color:var(--text-2); letter-spacing:.03em; margin-bottom:16px;}
   .game-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2); letter-spacing:.03em;}
   .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
   .tag-good{background:var(--good-dim); color:var(--good);}
@@ -2269,6 +2282,28 @@ function renderWeekGlance(gamesList){
   if(el) el.innerHTML = '';
 }
 
+/* ---------- The matchup title, built in ONE place ----------
+   Two functions render a .game-card: renderGames() for the Week Board and
+   renderPicksGrid() for My Picks. Both used to hand-build this title, and
+   that is not a tidiness complaint -- it is why the `@` separator survived
+   on My Picks after being changed everywhere else. One edit, two sites, one
+   of them missed, and nothing could tell: the diff looked complete.
+
+   Appearance is deliberately NOT unified here. On My Picks the two pick
+   buttons already carry both team abbreviations, so the title is a quiet
+   label rather than a heading, and it is measured at 11px / weight 400 /
+   --text-2 on the rendered page. Whether that is right is a Stage 9/10
+   question about the card, not something a refactor should decide on its
+   way past. The variant keeps the CSS free to differ while the MARKUP can
+   only be written once.
+
+   Note for whoever adds a real kickoff time: `.game-kickoff` is now used
+   only by the Week Board, where it holds the confidence rank. The name
+   describes nothing it contains and will collide with an actual kickoff. */
+function matchupHeader(g, variant){
+  return `<div class="matchup-header${variant ? ' ' + variant : ''}">${g.away} <span class="at-symbol">at</span> ${g.home}</div>`;
+}
+
 function renderGames(){
   const grid = document.getElementById('game-grid');
   const badge = document.getElementById('board-badge');
@@ -2380,7 +2415,7 @@ function renderGames(){
         ${trackRecordHtml(g.mktB_home, 'panel')}
       </div>` : '';
     return `<div class="game-card ${g.flag?'has-flag':''}">
-      <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
+      ${matchupHeader(g)}
       <div class="game-top">
         <span class="game-kickoff">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}${g.confidence_points ? ` · ${g.confidence_points} pts` : ''}</span>
         <div class="tag-row" style="display:flex; gap:6px; align-items:center;">
@@ -2844,7 +2879,7 @@ function renderPicksGrid(){
     const pick = myPicks[pid];
     const modelBPick = g.mktB_home >= 50 ? g.home : g.away;
     return `<div class="game-card">
-      <div class="game-top"><span class="game-kickoff">${g.away} <span class="at-symbol">at</span> ${g.home}</span></div>
+      ${matchupHeader(g, 'quiet')}
       <div class="pick-buttons" data-pid="${pid}">
         <button class="pick-btn ${pick===g.away?'selected':''}" data-team="${g.away}">${g.away}</button>
         <button class="pick-btn ${pick===g.home?'selected':''}" data-team="${g.home}">${g.home}</button>

@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_game_card_header.py",
+  "cases": [
+    {
+      "id": "card-header-second-construction-site-returns",
+      "why": "the Week Board goes back to hand-building its own title. This is the defect exactly as it was, and it is invisible in review: both copies read correctly, and the next change to the title edits one of them while the other looks like code nobody needed to touch. That is how the `@` separator survived on My Picks after being changed everywhere else, with a green suite and a diff that looked complete.",
+      "find": "      ${matchupHeader(g)}",
+      "replace": "      <div class=\"matchup-header\">${g.away} <span class=\"at-symbol\">at</span> ${g.home}</div>",
+      "expect_caught_by": "test_the_matchup_title_is_built_in_exactly_one_place"
+    },
+    {
+      "id": "card-header-picks-stops-calling-the-helper",
+      "why": "My Picks drops its call, so the helper exists, is tested, and is used by one page. A guard that says 'the title is built in one place' is satisfied by a helper nobody calls -- which is the shape Stage 3 closed with, when src/collect_agent_log.py was written, mutation-covered and had never run. Coverage has to be enumerated, not asserted.",
+      "find": "      ${matchupHeader(g, 'quiet')}",
+      "replace": "      <div class=\"picks-title\">${g.away} at ${g.home}</div>",
+      "expect_caught_by": "test_both_render_paths_use_the_helper"
+    },
+    {
+      "id": "card-header-quiet-variant-inherits-flex",
+      "why": "the variant loses its display override and inherits .matchup-header's flex layout, whose 8px gap turns the words into flex items. 'NE at SEA' gets wider on My Picks with nobody deciding to -- a visual change riding along inside a refactor whose whole claim is that appearance did not move. Measured before and after precisely so this cannot happen quietly.",
+      "find": ".matchup-header.quiet{display:block; font-weight:400; font-size:11px;",
+      "replace": ".matchup-header.quiet{font-weight:400; font-size:11px;",
+      "expect_caught_by": "test_the_quiet_variant_keeps_its_own_box_model"
+    },
+    {
+      "id": "card-header-variant-changes-the-text-not-just-the-class",
+      "why": "the variant starts altering the separator as well as the class list. One construction site producing two different sentences is the original defect in a subtler and harder-to-spot form: the count guard still passes, the call-site guard still passes, and the two pages disagree again. Only executing the function catches it.",
+      "find": "<span class=\"at-symbol\">at</span>",
+      "replace": "<span class=\"at-symbol\">${variant ? '@' : 'at'}</span>",
+      "expect_caught_by": "test_the_variant_adds_a_class_and_changes_nothing_else"
+    }
+  ]
+}
