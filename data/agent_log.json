@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-09-12T19:54:00Z",
+  "generated_utc": "2026-09-12T20:18:51Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 78,
-    "audits_superseded": 29,
+    "audits_total": 80,
+    "audits_superseded": 31,
     "pull_requests_audited": 49,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 430,
+    "claims_checked": 433,
     "discrepancies_found": 20,
-    "unverifiable": 21,
+    "unverifiable": 22,
     "pull_requests_with_a_discrepancy": 12,
     "reports_disagreeing_with_themselves": 8
   },
@@ -1428,7 +1428,7 @@
       "overall": "SAFE TO MERGE",
       "implicated": [],
       "inconsistencies": [],
-      "superseded": false
+      "superseded": true
     },
     {
       "pr": 67,
@@ -1459,6 +1459,44 @@
       "confirmed": 15,
       "discrepancies": 0,
       "unverifiable": 0,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 66,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/66#issuecomment-5648353001",
+      "posted_utc": "2026-09-12T20:04:05Z",
+      "head": "4508bba",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 11,
+      "confirmed": 9,
+      "discrepancies": 1,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [
+        "prose says Claims checked: 13, block has 11",
+        "prose says Confirmed: 11, block has 9",
+        "block reports discrepancies but an unqualified SAFE TO MERGE"
+      ],
+      "superseded": true
+    },
+    {
+      "pr": 66,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/66#issuecomment-5648420055",
+      "posted_utc": "2026-09-12T20:16:40Z",
+      "head": "4508bba",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 16,
+      "confirmed": 14,
+      "discrepancies": 0,
+      "unverifiable": 2,
       "overall": "SAFE TO MERGE",
       "implicated": [],
       "inconsistencies": [],
