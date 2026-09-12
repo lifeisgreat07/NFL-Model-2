@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_kickoff_order.py",
+  "cases": [
+    {
+      "id": "kickoff-default-reverts-to-confidence",
+      "why": "the board opens by confidence again. This is a product decision reverting itself silently: the page still works, every card renders, and the only symptom is that the reader has to re-sort on every visit to find out what is on next -- which is the complaint the change was made to answer.",
+      "find": "let currentSort = 'chronological';",
+      "replace": "let currentSort = 'confidence';",
+      "expect_caught_by": "test_the_board_opens_in_kickoff_order"
+    },
+    {
+      "id": "kickoff-dropdown-disagrees-with-the-actual-sort",
+      "why": "the options are reordered so the browser shows 'Most Confident First' as selected over a board that is sorted by kickoff. Nothing connects the two -- currentSort is JavaScript, the shown option is whichever <option> is first in the markup -- so this is a page lying about itself with every test green, which is this repository's most expensive failure shape. A reader who trusts the control and re-picks the sort they are already looking at gets no change and concludes the control is broken.",
+      "find": "        <option value=\"chronological\">Sort: First Game to Last</option>\n        <option value=\"confidence\">Sort: Most Confident First</option>",
+      "replace": "        <option value=\"confidence\">Sort: Most Confident First</option>\n        <option value=\"chronological\">Sort: First Game to Last</option>",
+      "expect_caught_by": "test_the_dropdown_and_the_initial_sort_cannot_disagree"
+    },
+    {
+      "id": "kickoff-undated-games-lead-instead-of-sinking",
+      "why": "a game with no kickoff sorts to the FRONT rather than the back. An unknown kickoff is unknown, not midnight -- and this is not hypothetical: it is what every saved week looked like before the fields existed, and what a week looks like again if the schedule stops supplying them. The visible result is a board led by whichever games the pipeline knows least about.",
+      "find": "  if(ka === null) return 1;\n  if(kb === null) return -1;",
+      "replace": "  if(ka === null) return -1;\n  if(kb === null) return 1;",
+      "expect_caught_by": "test_a_game_with_no_kickoff_sinks_rather_than_leading"
+    },
+    {
+      "id": "kickoff-shared-slot-loses-its-tiebreak",
+      "why": "games sharing a kickoff fall back to file order. Thirteen of week 1's sixteen games start at the same minute, so this leaves most of the board unsorted while the control claims an order -- the sort appears to have run and to have done almost nothing, which reads as a data problem rather than a code one and sends the next person looking in the wrong place.",
+      "find": "  if(ka !== kb) return ka < kb ? -1 : 1;",
+      "replace": "  if(ka !== kb) return ka < kb ? -1 : 1;\n  return 0;",
+      "expect_caught_by": "test_a_shared_kickoff_is_broken_by_confidence"
+    },
+    {
+      "id": "kickoff-key-becomes-a-date-and-picks-up-a-timezone",
+      "why": "the string key becomes a Date. The stored time is EASTERN, and a Date built from it is interpreted in the runtime's zone -- so the same board orders itself differently in Los Angeles than in New York, and every card still looks perfectly correct. It is the sign-error shape: the output is plausible, nobody can see the defect on the page, and the only tell is that two readers disagree about what is on next.",
+      "find": "  return g.gameday ? `${g.gameday}T${g.gametime_et || '00:00'}` : null;",
+      "replace": "  return g.gameday ? new Date(`${g.gameday}T${g.gametime_et || '00:00'}`).getTime() : null;",
+      "expect_caught_by": "test_the_comparator_does_not_build_a_date"
+    }
+  ]
+}

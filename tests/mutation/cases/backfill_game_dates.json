@@ -1,0 +1,34 @@
+{
+  "target": "src/backfill_game_dates.py",
+  "tests": "tests/test_backfill_game_dates.py",
+  "cases": [
+    {
+      "id": "backfill-overwrites-a-value-that-disagrees",
+      "why": "the script starts overwriting a saved value that disagrees with today's schedule. This is the tempting change -- it makes a reported finding go away and the run look clean -- and it is the one thing that turns a narrow additive amendment into a script that edits saved predictions. A record whose date disagrees means the schedule moved after the prediction was saved, or the join is wrong; both are findings about the data, and rewriting them destroys the evidence.",
+      "find": "            if field in rec and rec[field] is not None:",
+      "replace": "            if False:",
+      "expect_caught_by": "test_a_saved_value_that_disagrees_with_the_schedule_is_reported_not_fixed"
+    },
+    {
+      "id": "backfill-guesses-at-an-unmatched-record",
+      "why": "a record with no schedule row gets dated anyway rather than reported. A prediction that cannot be joined to a game is a problem worth someone's attention -- a renamed team, a moved week, a bad key -- and inventing a plausible date for it hides exactly the case that needed looking at.",
+      "find": "        if not found:",
+      "replace": "        found = found or {'gameday': '2026-01-01', 'gametime_et': '13:00', 'weekday': 'Sunday'}\n        if False:",
+      "expect_caught_by": "test_an_unmatched_record_is_reported_rather_than_guessed_at"
+    },
+    {
+      "id": "backfill-check-mode-writes-anyway",
+      "why": "--check stops being read-only. It is what makes 'the corpus is settled' a claim rather than a habit, and a check mode that writes is worse than no check mode: it is invoked precisely by people who believe it is safe, in CI and in a suite, and it would amend saved predictions on every run.",
+      "find": "        if not check_only:",
+      "replace": "        if True:",
+      "expect_caught_by": "test_check_mode_writes_nothing"
+    },
+    {
+      "id": "backfill-writes-a-field-the-exception-does-not-cover",
+      "why": "the field list grows past the three the exception was argued for. The whole defence of touching a write-once file is that these are schedule facts and not model outputs; a fourth field slipped into this tuple inherits that defence without ever having earned it, and nothing about the run would look different.",
+      "find": "FIELDS = ('gameday', 'gametime_et', 'weekday')",
+      "replace": "FIELDS = ('gameday', 'gametime_et', 'weekday', 'spread_line')",
+      "expect_caught_by": "test_it_adds_only_the_three_fields_and_changes_nothing_else"
+    }
+  ]
+}

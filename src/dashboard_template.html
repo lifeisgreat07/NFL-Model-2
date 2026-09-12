@@ -1208,6 +1208,7 @@
       </div>
       <select id="week-select" class="week-select visually-hidden" aria-label="Week"></select>
       <select id="sort-select" class="week-select">
+        <option value="chronological">Sort: First Game to Last</option>
         <option value="confidence">Sort: Most Confident First</option>
         <option value="confidence_asc">Sort: Closest Games First</option>
         <option value="disagreement">Sort: Biggest Model Disagreement</option>
@@ -2087,7 +2088,13 @@ if(ratingsSearchEl){
 /* ---------- Week Board ---------- */
 let currentBoardWeek = latestWeekKey;
 let currentFilter = 'all';
-let currentSort = 'confidence';
+/* Kickoff order, not confidence. A week is a sequence of games before it is a
+   ranking of them: the reader's first question is what is on next, and the
+   board answering with "most confident" made them re-sort every visit to find
+   out. Confidence is still one click away, and is still the secondary sort
+   inside a single kickoff slot, which is where it earns its place -- thirteen
+   of week 1's sixteen games start at the same minute. */
+let currentSort = 'chronological';
 
 function populateWeekSelect(selectEl, onChange, initial){
   if(weekKeysSorted.length===0){
@@ -2271,7 +2278,12 @@ function whyRow(label, val){
    games" badge already in the page head. Biggest model gap is the A-vs-market
    gap he separately called unnecessary on the cards, stated in a unit
    ("59pt") nobody has a scale for. Most confident restated what the first
-   card in the default sort already shows, since the board sorts by confidence.
+   card in the default sort already showed, because the board sorted by
+   confidence at the time. It no longer does -- the default is now kickoff
+   order -- so that particular argument has expired even though the decision
+   it supported has not. Recorded rather than quietly reworded: the tile is
+   still not coming back, but the next person should not find a reason here
+   that stopped being true and assume the rest of the paragraph is current.
 
    Kept as an empty function rather than deleted outright because renderGames
    calls it and the #week-glance node is a stable hook: the strip may come
@@ -2302,6 +2314,44 @@ function renderWeekGlance(gamesList){
    describes nothing it contains and will collide with an actual kickoff. */
 function matchupHeader(g, variant){
   return `<div class="matchup-header${variant ? ' ' + variant : ''}">${g.away} <span class="at-symbol">at</span> ${g.home}</div>`;
+}
+
+/* ---------- Kickoff order ----------
+   ISO date + 24-hour zero-padded time compares correctly as a string, which is
+   why NO Date is constructed here. Parsing "2026-09-13" + "13:00" into a Date
+   attaches the RUNTIME's timezone to a value that is Eastern, so the board
+   would reorder itself depending on where the reader is sitting -- and the
+   failure is silent, because a misplaced card still looks like a card.
+   Verified against the real feed rather than assumed: every gameday is
+   YYYY-MM-DD and every gametime_et is HH:MM zero-padded, including the 09:30
+   London kickoffs, so lexical order IS chronological order.
+
+   A game with no date sinks rather than sorting first. An unknown kickoff is
+   unknown, not midnight. That branch is not hypothetical housekeeping: it is
+   what every saved week looked like before these fields existed, and what a
+   week looks like again if the schedule stops supplying them.
+
+   At module scope so the suite can execute them -- the comparator they serve
+   lives inside renderGames(), which needs a DOM and a week of real data, and
+   a sort nobody can run is a sort nobody can check. */
+function kickoffKey(g){
+  return g.gameday ? `${g.gameday}T${g.gametime_et || '00:00'}` : null;
+}
+
+function byConfidence(a, b){
+  return (a.confidence_rank ?? 999) - (b.confidence_rank ?? 999);
+}
+
+function byKickoff(a, b){
+  const ka = kickoffKey(a), kb = kickoffKey(b);
+  if(ka === null && kb === null) return byConfidence(a, b);
+  if(ka === null) return 1;
+  if(kb === null) return -1;
+  if(ka !== kb) return ka < kb ? -1 : 1;
+  // Thirteen of week 1's sixteen games kick off at the same minute, so without
+  // a tiebreak this sort would leave most of the board in file order and look
+  // like it had done nothing.
+  return byConfidence(a, b);
 }
 
 function renderGames(){
@@ -2345,6 +2395,7 @@ function renderGames(){
   }
 
   const sorted = [...filtered].sort((a,b)=>{
+    if(currentSort === 'chronological') return byKickoff(a,b);
     if(currentSort === 'confidence'){
       // lower confidence_rank = more confident; nulls (ungraded/old-format) sink to the bottom
       const ra = a.confidence_rank ?? 999, rb = b.confidence_rank ?? 999;
