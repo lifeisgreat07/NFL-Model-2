@@ -28,22 +28,22 @@ Branch names in full — `src/session_start.py` cross-checks them against git.
 
 | What | State | Waiting on |
 |---|---|---|
+| `pipeline-game-date-and-kickoff` | PR #62, 1 commit, suite green | The Tue 11:00 UTC grading run. It edits `src/weekly_update.py`. Merge Wednesday |
 | Ten merged branches | Still on the remote | Nobody — `git push origin --delete <name>` works from here, as #60's branch proved. Say the word |
 | The repo's About panel | Empty | Mark. Wording in CLAUDE.md |
 
 ## Queued, in order
 
 1. **Date/time in the pipeline. PREMISE CORRECTED 2026-09-12: channel has no
-   source.** This said no game carries a date, kickoff or channel. Half right.
+   source.** Now PR #62. This said no game carries date, kickoff or channel.
    `load_schedules` gives 46 columns, `gameday`/`gametime`/`weekday` among them
    with no nulls, and `src/data_loader.py` does not subset — so they reach
    `src/weekly_update.py` and are simply not written into the record. Pass them
    through there and through `build_games_js` in `src/generate_dashboard.py`
-   with `.get()`. **No broadcast column exists** (`espn`, `ftn`, `pff`, `pfr`
-   are cross-reference IDs), so channel needs a new feed, is Stage 6 in nature,
-   and must not gate the rest. `gametime` is EASTERN — the six Sunday 09:30
-   games are London and Munich — so store `gametime_et`, and note week 10+
-   crosses the US clock change.
+   with `.get()`. **No broadcast column exists** (`espn`/`ftn`/`pff`/`pfr` are
+   cross-reference IDs), so channel needs a new feed, is Stage 6 in nature, and
+   must not gate the rest. `gametime` is EASTERN — the six Sunday 09:30 games
+   are London and Munich — store `gametime_et`; week 10+ crosses the change.
 2. **Reject a suite count in a commit message.** `src/scout_preflight.py` checks
    the PR body and nothing checks commit messages, which is where three of the
    four discrepancies across #60's two audits lived. A count there cannot be
