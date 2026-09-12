@@ -15,12 +15,16 @@ Last updated: 2026-09-12 (#60 merged after a fifth commit and a fourth audit)
 **Stage:** 8, 8b and 8c complete. Stage 9 is done apart from the items below.
 Stage 11's model-colour work is merged; its remaining items are queued below.
 
-**Next action:** the pipeline item, premise corrected — see the queue. It edits
-`src/weekly_update.py`, which the Tuesday run invokes, so build and open it now
-and merge AFTER that run. The commit-message count guard can land meanwhile.
+**Next action:** merge PR #62 BEFORE Tue 11:00 UTC. Week 2's earliest game is
+2026-09-17, inside the 7-day lock-in, so that run saves week 2's predictions
+file permanently: merged first, week 2 carries kickoff times forever; merged
+after, it never will.
 
-**Do not touch the grading path before Tue 2026-09-15, 11:00 UTC.** That run
-is the first that will ever grade a week with real games in it.
+**The grading freeze is overridden for #62 deliberately (2026-09-12).** What it
+guards is that `src/weekly_update.py` is step 1 of that job and a crash there
+aborts grading. The added lines ran over all 272 real 2026 schedule rows with
+no exceptions, every value a plain `str` and JSON-safe, and `workflow_dispatch`
+is enabled, so a bad run is re-runnable. Nothing else touches that path first.
 
 ## Open work, and what each is waiting on
 
@@ -28,22 +32,18 @@ Branch names in full — `src/session_start.py` cross-checks them against git.
 
 | What | State | Waiting on |
 |---|---|---|
-| `pipeline-game-date-and-kickoff` | PR #62, 1 commit, suite green | The Tue 11:00 UTC grading run. It edits `src/weekly_update.py`. Merge Wednesday |
+| `pipeline-game-date-and-kickoff` | PR #62, 1 commit, suite green | Booth's audit. Then merge BEFORE Tue 11:00 UTC — see above |
 | Ten merged branches | Still on the remote | Nobody — `git push origin --delete <name>` works from here, as #60's branch proved. Say the word |
 | The repo's About panel | Empty | Mark. Wording in CLAUDE.md |
 
 ## Queued, in order
 
-1. **Date/time in the pipeline. PREMISE CORRECTED 2026-09-12: channel has no
-   source.** Now PR #62. This said no game carries date, kickoff or channel.
-   `load_schedules` gives 46 columns, `gameday`/`gametime`/`weekday` among them
-   with no nulls, and `src/data_loader.py` does not subset — so they reach
-   `src/weekly_update.py` and are simply not written into the record. Pass them
-   through there and through `build_games_js` in `src/generate_dashboard.py`
-   with `.get()`. **No broadcast column exists** (`espn`/`ftn`/`pff`/`pfr` are
-   cross-reference IDs), so channel needs a new feed, is Stage 6 in nature, and
-   must not gate the rest. `gametime` is EASTERN — the six Sunday 09:30 games
-   are London and Munich — store `gametime_et`; week 10+ crosses the change.
+1. **Date/time in the pipeline — PR #62, premise corrected.** `gameday`,
+   `gametime` and `weekday` were always in the schedule frame and merely never
+   written into the record. **No broadcast column exists**, so channel needs a
+   new feed and is Stage 6. `gametime` is Eastern; stored as `gametime_et`.
+   The surface work (chronological sort, start time, stepper range) follows,
+   and has nothing real to render until a week is saved with the fields.
 2. **Reject a suite count in a commit message.** `src/scout_preflight.py` checks
    the PR body and nothing checks commit messages, which is where three of the
    four discrepancies across #60's two audits lived. A count there cannot be
