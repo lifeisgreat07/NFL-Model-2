@@ -1,16 +1,16 @@
 {
-  "generated_utc": "2026-09-11T06:01:11Z",
+  "generated_utc": "2026-09-12T16:49:42Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 68,
-    "audits_superseded": 25,
+    "audits_total": 70,
+    "audits_superseded": 27,
     "pull_requests_audited": 43,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 339,
-    "discrepancies_found": 19,
+    "claims_checked": 340,
+    "discrepancies_found": 18,
     "unverifiable": 18,
-    "pull_requests_with_a_discrepancy": 12,
-    "reports_disagreeing_with_themselves": 5
+    "pull_requests_with_a_discrepancy": 11,
+    "reports_disagreeing_with_themselves": 6
   },
   "audits": [
     {
@@ -1278,6 +1278,43 @@
         "tests/test_model_colour_comment.py"
       ],
       "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 60,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/60#issuecomment-5647197932",
+      "posted_utc": "2026-09-12T16:32:11Z",
+      "head": "08f8240",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 11,
+      "confirmed": 7,
+      "discrepancies": 4,
+      "unverifiable": 0,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 60,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/60#issuecomment-5647279417",
+      "posted_utc": "2026-09-12T16:46:40Z",
+      "head": "08f8240",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 15,
+      "confirmed": 14,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [
+        "prose says Confirmed: 13, block has 14",
+        "prose says Unverifiable: 2, block has 1"
+      ],
       "superseded": false
     }
   ]
