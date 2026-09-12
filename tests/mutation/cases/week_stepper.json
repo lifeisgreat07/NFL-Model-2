@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_week_stepper.py",
+  "cases": [
+    {
+      "id": "stepper-picks-select-becomes-visible-again",
+      "why": "My Picks' native select loses visually-hidden, which is the change a tidy-up makes when it sees a hidden control and assumes it is dead markup. The page then has TWO week controls side by side doing the same job, and on a phone the visible one opens the iOS system wheel -- which is the complaint this change exists to answer. Nothing errors, nothing looks broken in a desktop screenshot, and the regression is only visible on the device that had the problem.",
+      "find": "      <select id=\"picks-week-select\" class=\"week-select visually-hidden\" aria-label=\"Week\"></select>",
+      "replace": "      <select id=\"picks-week-select\" class=\"week-select\" aria-label=\"Week\"></select>",
+      "expect_caught_by": "test_the_visible_control_is_never_the_native_select"
+    },
+    {
+      "id": "stepper-hardcodes-one-pages-ids-again",
+      "why": "the stepper goes back to naming the Week Board's elements directly. It keeps working on the Board and silently stops driving My Picks -- getElementById returns null there, the early return fires, and the arrows become decoration that renders perfectly. Worse, the obvious repair is to paste a second copy, which is exactly the two-render-paths duplication that let the game card's separator drift.",
+      "find": "  const sel = document.getElementById(`${prefix}-select`);\n  const label = document.getElementById(`${prefix}-step-label`);",
+      "replace": "  const sel = document.getElementById('week-select');\n  const label = document.getElementById('week-step-label');",
+      "expect_caught_by": "test_the_stepper_is_one_implementation_taking_a_prefix"
+    },
+    {
+      "id": "stepper-on-picks-is-never-wired",
+      "why": "the markup exists and nothing attaches behaviour to it. Two arrows render, are enabled, invite a click and do nothing at all -- a control that is present and inert, which reads to a user as a broken page rather than a missing feature. This is the written-tested-never-called shape that Stage 3 closed with when src/collect_agent_log.py ran nowhere behind a green suite.",
+      "find": "wireWeekStepper('picks-week');",
+      "replace": "",
+      "expect_caught_by": "test_both_pages_actually_wire_their_stepper"
+    },
+    {
+      "id": "stepper-loses-sync-on-the-share-link-path",
+      "why": "opening a share link stops telling the stepper the week moved. showSharedPicks assigns the select directly and must -- dispatching a change event there would run the handler that ENDS the shared view -- so this is the one place the 'everyone listens to the select' rule cannot apply, and therefore the one place the label can be left behind. The grid then shows the shared week while the arrows and their label show the previous one: two controls disagreeing about the same state, which is the precise failure a shared stepper exists to prevent.",
+      "find": "  syncWeekStepper('picks-week');\n\n  const banner = document.getElementById('shared-picks-banner');",
+      "replace": "\n  const banner = document.getElementById('shared-picks-banner');",
+      "expect_caught_by": "test_the_shared_link_view_moves_the_stepper_with_it"
+    },
+    {
+      "id": "stepper-picks-loses-its-label",
+      "why": "the label element goes and the arrows remain. The control still steps and still re-renders the grid, so every behavioural check passes -- and the reader has no idea which week they are looking at, on a page whose entire purpose is logging picks against a specific week. Three of the four elements is a control that misleads rather than one that fails.",
+      "find": "        <span class=\"week-step-label\" id=\"picks-week-step-label\" aria-live=\"polite\"></span>",
+      "replace": "        <span class=\"week-step-label\" aria-live=\"polite\"></span>",
+      "expect_caught_by": "test_both_pages_have_the_whole_stepper"
+    }
+  ]
+}
