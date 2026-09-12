@@ -22,7 +22,31 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
+VERIFIER = ROOT / 'src' / 'verify_model_colours.py'
 sys.path.insert(0, str(ROOT / 'src'))
+
+#: The false excuse, in the forms it has actually been written in.
+#
+# Deliberately NOT a match for "never on screen together" or "never share a
+# ROLE", because the template comment uses the first to say the claim was
+# false and the second to say what replaced it. A guard that cannot tell a use
+# from a mention is tolerable; one that forbids explaining the defect is the
+# "reword the rule to dodge your own regex" mistake this repo has made three
+# times. What is banned is the claim asserted as fact.
+CO_OCCURRENCE_EXCUSE = re.compile(
+    r'no view shows both'
+    r'|never share (?:a|the|one) (?:view|screen|page|render|context)'
+    r'|never land side by side'
+    r'|never appear (?:on|in) (?:the )?(?:same )?(?:view|screen|page)',
+    re.I)
+
+#: Why the scan covers these two and stops.
+#
+# Both put the claim in front of a reader who cannot see this test: the
+# template comment is read by anyone opening the source, and the verifier
+# PRINTS its rationale strings every time it runs. The mutation-case files
+# and this test file quote the false sentence in order to ban it, so they are
+# out of scope by construction rather than by oversight.
 
 
 @pytest.fixture(scope='module')
@@ -69,9 +93,10 @@ def test_the_chart_pair_distance_is_what_the_script_computes(measured, comment):
 def test_the_residual_pair_is_stated_for_both_themes(measured, comment):
     """The honest part of the comment, and the easiest to let rot.
 
-    --accent and --series-a stay close. That is acceptable only because they
-    never share a view, so the figures have to stay true for whoever checks
-    that claim later.
+    --accent and --series-a stay close, and the excuse that used to make that
+    acceptable turned out to be false (see the co-occurrence tests below).
+    What is left is a measured compromise resting on shape and role, so the
+    figures have to stay true for whoever weighs that compromise later.
     """
     m = re.search(r'([\d.]+) dE00 dark, ([\d.]+) light, ([\d.]+) under CVD',
                   comment)
@@ -133,14 +158,42 @@ def test_the_comment_does_not_claim_the_two_marks_never_co_occur(comment):
     the same section -- something the suite asserts rather than something a
     reader has to trace by hand.
     """
-    for phrase in ('no view shows both', 'never share a context'):
-        assert phrase not in comment, (
-            f'the comment claims "{phrase}" again. It is false: the onboarding '
-            'banner and #game-grid are both inside <section id="page-board">, '
-            'and the banner is shown to every first-time visitor. Booth traced '
-            'this on PR #60 after the PR itself nominated the claim for '
-            'checking. Say what is true instead -- they never share a ROLE '
-            'or a COMPONENT -- or fix the colours so the question is moot.')
+    hit = CO_OCCURRENCE_EXCUSE.search(comment)
+    assert not hit, (
+        f'the comment claims "{hit.group(0)}" again. It is false: the '
+        'onboarding banner and #game-grid are both inside the page-board '
+        'section, and the banner is shown to every first-time visitor. Booth '
+        'traced this on PR #60 after the PR itself nominated the claim for '
+        'checking. Say what is true instead -- they never share a ROLE '
+        'or a COMPONENT -- or fix the colours so the question is moot.')
+
+
+def test_the_verifier_does_not_claim_the_two_marks_never_co_occur():
+    """The same claim, in the second file that ships it -- Booth, #60 claim 12.
+
+    The fix above corrected the template comment and this test, and left the
+    identical sentence standing in src/verify_model_colours.py's PAIRS table:
+    "Not a defect while they never share a view". That file is the source of
+    truth the corrected comment cites, and it does not merely store the
+    sentence -- main() prints every rationale string, once per theme, so
+    running the verifier to check the numbers displayed the false excuse
+    twice in the same output.
+
+    Guarding one file and calling the phrasing unrepeatable is the shape this
+    repository keeps meeting: a protection whose prose names no coverage.
+    Docstrings are stripped first, for the same reason
+    test_the_verifier_does_not_use_the_matchup_shading_path strips them --
+    the module has to stay free to explain the trap it avoids.
+    """
+    code = re.sub(r'""".*?"""', '', VERIFIER.read_text(encoding='utf-8'),
+                  flags=re.S)
+    hit = CO_OCCURRENCE_EXCUSE.search(code)
+    assert not hit, (
+        f'src/verify_model_colours.py claims "{hit.group(0)}". It is false, '
+        'and this file prints its rationale strings -- so the claim reaches '
+        'the terminal of whoever runs the verifier to check the numbers the '
+        'template comment cites. Booth caught exactly this on PR #60 after '
+        'the first fix corrected the comment and not the script.')
 
 
 def test_the_two_marks_really_are_in_the_same_section():

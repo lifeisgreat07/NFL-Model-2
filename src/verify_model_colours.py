@@ -47,8 +47,11 @@ TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
 PAIRS = (
     ('--series-a', '--accent',
      "Model A's dot against the pick tick -- the residual this work leaves "
-     "behind. Not a defect while they never share a view; the pair to "
-     "re-measure if they ever land side by side."),
+     "behind. They DO co-occur: the onboarding banner holding the dot and "
+     "the game grid holding the ticks are both inside the page-board "
+     "section, on every first visit. Shape, size and role are what separate "
+     "them, which the dataviz rules permit only as a floor case -- so this "
+     "pair is queued for re-stepping above 15, not settled."),
     ('--series-a', '--series-b',
      "the two model series as the CHARTS draw them. The point of comparison: "
      "prose used to draw the same two models far closer than this."),

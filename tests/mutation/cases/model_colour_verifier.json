@@ -3,6 +3,13 @@
   "tests": "tests/test_model_colour_comment.py",
   "cases": [
     {
+      "id": "model-colour-verifier-excuses-the-residual-by-a-false-claim",
+      "why": "Booth's PR #60 claim 12, put back. The first fix deleted the 'never share a view' excuse from the template comment and from the guard that reads it, and left it standing here -- in the script the corrected comment names as its source of truth, and which PRINTS this string once per theme every time anyone runs it to check the figures. The same false sentence, reaching a reader through a second door nothing was watching. It is the recurring shape in this repo: a protection whose prose names no coverage, so guarding one file reads as guarding the claim.",
+      "find": "     \"behind. They DO co-occur: the onboarding banner holding the dot and \"",
+      "replace": "     \"behind. Not a defect while they never share a view; and \"",
+      "expect_caught_by": "test_the_verifier_does_not_claim_the_two_marks_never_co_occur"
+    },
+    {
       "id": "model-colour-verifier-hardcodes-a-token",
       "why": "a copied palette is a second source of truth. The verifier exists so the comment cannot drift from the tokens; if it carries its own copy of them, it agrees with the comment forever and both can be wrong together. src/verify_matchup_cvd.py carries the same guard after the same lesson.",
       "find": "            ha, hb = token(block, a), token(block, b)",

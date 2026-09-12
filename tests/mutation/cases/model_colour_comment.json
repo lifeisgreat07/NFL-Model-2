@@ -18,7 +18,7 @@
     },
     {
       "id": "model-colour-residual-light-figure-drifts",
-      "why": "the residual pair is the honest part of the comment: --accent and --series-a stay close, and it is tolerable only because they never share a view. Whoever checks that claim later reads these three numbers. The light-theme CVD figure is the last of the three and the easiest to leave behind, which is the same position the 'seven pairs' sentence occupied on PR #52 when it got away.",
+      "why": "the residual pair is the honest part of the comment: --accent and --series-a stay close, and what makes that tolerable is now shape and role rather than the co-occurrence excuse Booth demolished. Whoever weighs that compromise later reads these three numbers. The light-theme CVD figure is the last of the three and the easiest to leave behind, which is the same position the 'seven pairs' sentence occupied on PR #52 when it got away.",
       "find": "11.5 dE00 dark, 8.1 light, 6.6 under CVD",
       "replace": "11.5 dE00 dark, 8.1 light, 9.6 under CVD",
       "expect_caught_by": "test_the_residual_pair_is_stated_for_both_themes"
