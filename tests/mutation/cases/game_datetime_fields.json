@@ -1,0 +1,36 @@
+{
+  "target": "src/generate_dashboard.py",
+  "tests": "tests/test_game_datetime_fields.py",
+  "cases": [
+    {
+      "id": "game-datetime-record-drops-a-field",
+      "target": "src/weekly_update.py",
+      "why": "the write is dropped at the only place it can be made. Predictions are permanent once saved -- weekly_update refuses to overwrite an existing file -- so a field missing here is missing from that week forever, with no backfill and no second chance. Nothing downstream can tell the difference between 'this week had no date' and 'this week was written by a build that forgot to write one', which is exactly the shape that let a whole page render empty for months behind a silent return {}.",
+      "find": "            'gameday': str(gameday) if pd.notna(gameday) else None,",
+      "replace": "            'gameday_unused': str(gameday) if pd.notna(gameday) else None,",
+      "expect_caught_by": "test_the_record_builder_writes_all_three_schedule_fields"
+    },
+    {
+      "id": "game-datetime-kickoff-loses-its-zone",
+      "why": "the field is renamed to the source column's bare name, which is what a tidy-up naturally does: the schedule calls it gametime, so why not here. The value is Eastern and nothing downstream can discover that. A renderer that hands a bare gametime to the browser's local zone turns a correct 20:15 into a wrong one for most of the country, and the wrong answer is still a plausible-looking kickoff -- no test, no user and no chart can catch it. The name is the only place the zone can live.",
+      "find": "            'gametime_et': p.get('gametime_et'),",
+      "replace": "            'gametime': p.get('gametime_et'),",
+      "expect_caught_by": "test_the_kickoff_field_carries_its_timezone_in_its_name"
+    },
+    {
+      "id": "game-datetime-payload-fabricates-a-missing-date",
+      "why": "a default is added to the .get(), which is the tidy-looking change: now every card has a date and nothing is ever blank. It is the 'correct arithmetic on absent data' failure this repo has already shipped once, on Season Accuracy -- every number computed correctly from what it was given, and the page still lied, because an empty week had been turned into a row. Absent has to stay absent; a week saved before these fields existed must render with no date rather than with a plausible wrong one. NOTE ON THE MUTATION CHOSEN: the first version of this case turned the .get() into a subscript, which raises KeyError on predictions/2026_week1.json. That IS caught, but not attributably -- generate_dashboard.main() runs in conftest's session-scoped autouse built_dashboard fixture, so the crash errors every test at SETUP and none of them runs. The runner correctly reported WRONG-GUARD with 'Failures: none reported'. Any mutation that breaks the dashboard build is unattributable for that reason, so the case tests the half that survives a successful build.",
+      "find": "            'gameday': p.get('gameday'),",
+      "replace": "            'gameday': p.get('gameday', '2026-01-01'),",
+      "expect_caught_by": "test_a_week_saved_before_these_fields_existed_still_renders"
+    },
+    {
+      "id": "game-datetime-required-columns-drift",
+      "target": "src/data_loader.py",
+      "why": "one of the two copies of REQUIRED_SCHEDULE_COLS loses a column. The lists are what verify_data_source_fallback checks both sources against, so a name dropped from one of them means the fallback can stop supplying it with nothing complaining -- and the symptom is a game card quietly losing its kickoff, months later, at the moment the fallback is actually needed. A comment asking the next person to keep the copies in step would not catch this; a note is not a check.",
+      "find": "                               'gametime', 'weekday']",
+      "replace": "                               'weekday']",
+      "expect_caught_by": "test_the_two_required_column_lists_agree"
+    }
+  ]
+}

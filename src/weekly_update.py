@@ -479,8 +479,30 @@ def main(season, week):
         else:
             prob_b, mkt = None, None
 
+        # When the game is played. These three come straight off the schedule
+        # frame -- data_loader does not subset columns, so they have always
+        # been in scope here and simply were not written down, which is why
+        # the Week Board has no chronological order and the card has no start
+        # time. There is no broadcast-network column in this source at all;
+        # espn/ftn/pff/pfr are cross-reference IDs. Channel needs a new feed.
+        #
+        # gametime is EASTERN. Established from the distribution rather than
+        # assumed: the six Sunday 09:30 kickoffs in a season are the London
+        # and Munich games, which are 2:30pm local -- a figure that is only
+        # coherent as ET. The zone lives in the FIELD NAME for the same
+        # reason a measured number ships with its command: a time whose zone
+        # is unstated is unfalsifiable by anyone but its author. Note for
+        # whoever renders it that ET is EDT until early November and EST
+        # after, so week 10 onward crosses the US clock change.
+        gameday = g.get('gameday')
+        gametime = g.get('gametime')
+        weekday = g.get('weekday')
+
         predictions.append({
             'season': season, 'week': week, 'home': home, 'away': away,
+            'gameday': str(gameday) if pd.notna(gameday) else None,
+            'gametime_et': str(gametime) if pd.notna(gametime) else None,
+            'weekday': str(weekday) if pd.notna(weekday) else None,
             'model_version': MODEL_VERSION,
             'off_matchup': round(off_matchup, 4), 'def_matchup': round(def_matchup, 4),
             'qb_matchup': round(qb_matchup, 4),

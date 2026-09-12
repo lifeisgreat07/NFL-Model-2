@@ -105,8 +105,13 @@ if __name__ == '__main__':
     REQUIRED_PBP_COLS = ['posteam', 'defteam', 'epa', 'pass', 'rush', 'season_type',
                           'week', 'season', 'qb_dropback', 'qb_epa',
                           'passer_player_id', 'passer_player_name']
+    # gametime and weekday joined this list when the Week Board started
+    # needing a kickoff: they are read in weekly_update.main() exactly like
+    # gameday, so the fallback has to supply them or the cards lose their
+    # start time silently.
     REQUIRED_SCHEDULE_COLS = ['home_team', 'away_team', 'home_score', 'away_score',
-                               'spread_line', 'week', 'season', 'gameday']
+                               'spread_line', 'week', 'season', 'gameday',
+                               'gametime', 'weekday']
     REQUIRED_SNAP_COLS = ['team', 'season', 'week', 'position', 'offense_snaps',
                            'pfr_player_id', 'game_type']
 

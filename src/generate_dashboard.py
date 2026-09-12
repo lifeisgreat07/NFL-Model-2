@@ -166,6 +166,16 @@ def build_games_js(preds, graded_lookup_by_key):
 
         games.append({
             'away': p['away'], 'home': p['home'],
+            # .get(), not [], and the reason is a file that exists right now:
+            # predictions/2026_week1.json was written before these fields did,
+            # and predictions are permanent once saved -- weekly_update refuses
+            # to overwrite one. So every already-saved week reaches this line
+            # without them, for good, and a subscript here would take the
+            # Week Board down rather than render a card with no start time.
+            # Absent stays absent: None, never a fabricated date.
+            'gameday': p.get('gameday'),
+            'gametime_et': p.get('gametime_et'),
+            'weekday': p.get('weekday'),
             'spread': p.get('spread_line'),
             'fbA_home': round(model_a * 100, 1),
             'mktB_home': round((model_b if model_b is not None else model_a) * 100, 1),
