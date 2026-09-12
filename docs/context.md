@@ -72,8 +72,8 @@ Branch names in full — `src/session_start.py` cross-checks them against git.
 
 ## Known and deliberately not fixed
 
-- **A Booth header can disagree with its own verdict block, and the block is
-  what gets collected.** #60's audit 4; trap in CLAUDE.md, fix in `src/booth_verdict.py`.
+- **A Booth header can disagree with its own verdict block.** #60's audit 4 does;
+  `cross_check()` already catches and logs it. Open: should it fail an audit?
 - **A number that was right when written, falsified by the base moving.** Five
   instances in two days. Everything guarded failed loudly within minutes;
   the commit-message trailers, which nothing can guard, rotted silently and

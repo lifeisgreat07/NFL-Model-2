@@ -1294,16 +1294,29 @@ under compaction pressure, so its length is a cost paid on every session.
   pin the encoding on that subprocess. **The general shape: a tool that reports
   one number out of a multi-number summary will invent a cause for the
   difference, and the invented cause is plausible enough to act on.**
-- **A Booth report's prose header can disagree with its own `booth-verdict`
-  block, and the block is the half that gets collected.** #60's fourth audit,
-  2026-09-12: the header says "Confirmed: 13 ... Unverifiable: 2" while the
-  block lists fourteen CONFIRMED and one UNVERIFIABLE. The overall prose agrees
-  with the block ("only the pre-rebase branch-history claim is unverifiable",
-  singular), so the header is the odd one out. It changed nothing about that PR
-  — zero discrepancies either way — but `src/booth_verdict.py` parses the block
-  and `data/agent_log.json` is fed from it, so the published record and the
-  comment a human reads can carry different totals for the same audit. Two
-  counts of the same thing with nothing recomputing either, inside the tool
-  this project built to catch exactly that. The fix is a check in the parser:
-  assert the header tallies match the block, and fail the audit when they do
-  not.
+- **I FOUND A DEFECT THAT WAS ALREADY GUARDED, AND NEARLY SHIPPED THE WRONG
+  FIX INTO THIS FILE.** Worth more than the finding itself, so it is recorded
+  as the correction it is. #60's fourth audit disagrees with itself: the prose
+  header says "Confirmed: 13 ... Unverifiable: 2" while its `booth-verdict`
+  block lists fourteen CONFIRMED and one UNVERIFIABLE, and the overall prose
+  sides with the block. Real, and worth knowing. The first draft of this entry
+  then said the counts had "nothing recomputing either" and prescribed "a check
+  in the parser: assert the header tallies match the block." **Both halves were
+  false.** `cross_check()` in `src/booth_verdict.py` already does exactly that,
+  `src/collect_agent_log.py` already prefers the block over the prose and says
+  so in its own module docstring, `tests/test_collect_agent_log.py` has
+  `test_a_report_disagreeing_with_itself_is_counted`, and the log had already
+  recorded this very audit with the two sentences spelled out:
+  `"prose says Confirmed: 13, block has 14"` and
+  `"prose says Unverifiable: 2, block has 1"`, under a `summary` field named
+  `reports_disagreeing_with_themselves`. One `python -c` against
+  `data/agent_log.json` would have found all of it, and did — after the entry
+  was written.
+  **Two lessons.** The narrow one: a self-disagreeing report is detected and
+  TALLIED, not failed, so the only open question is whether it should stop an
+  audit rather than be counted by one — a much smaller question than "build the
+  check." The general one is this file's own rule, turned on its author:
+  *an audit finding is a hypothesis, not a defect.* Before writing that
+  something is unguarded, grep for the guard. The cost of not doing so is a
+  permanent instruction, in the document every session reads cold, to build a
+  thing that already exists.
