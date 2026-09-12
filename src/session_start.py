@@ -187,6 +187,24 @@ def main(argv=None):
     ap.add_argument('--skip-tests', action='store_true')
     args = ap.parse_args(argv)
 
+    # docs/context.md is written by whoever last had an opinion, and this
+    # prints it verbatim. On Windows a redirected stdout defaults to cp1252,
+    # which cannot encode an arrow, a curly quote or an em-dash in some
+    # code pages -- so a single typographic character in a DOCUMENT was able
+    # to crash the first command of every session with a UnicodeEncodeError
+    # partway through the file. That happened, on 2026-09-12, to a '->' the
+    # author had typed as a real arrow.
+    #
+    # The tests already pinned PYTHONIOENCODING=utf-8 at both ends, which is
+    # exactly why they never caught it: the fixture was more careful than the
+    # environment it was standing in for. An orientation tool must not be
+    # able to die on the contents of the file it exists to show you.
+    for stream in (sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding='utf-8', errors='replace')
+        except (AttributeError, ValueError, OSError):
+            pass
+
     print('Session start -- {}'.format(datetime.now().strftime('%Y-%m-%d %H:%M')))
     print('=' * 60)
     repo_state()

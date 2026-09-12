@@ -184,3 +184,39 @@ def test_the_wrapup_and_start_scripts_read_the_same_count_line():
 
 if __name__ == '__main__':
     sys.exit(pytest.main([__file__, '-v']))
+
+
+def test_it_survives_a_stdout_that_cannot_encode_the_context_file():
+    """The orientation tool must not die on the contents of the file it shows.
+
+    session_start prints docs/context.md verbatim. On Windows a REDIRECTED
+    stdout defaults to cp1252, which has no arrow -- so on 2026-09-12 a single
+    '->' typed as a real arrow in a DOCUMENT crashed the first command of the
+    session with a UnicodeEncodeError, partway through printing, after several
+    screens of correct output. The document was fine; the tool was not.
+
+    The module fixture above pins PYTHONIOENCODING=utf-8 at both ends, which
+    is precisely why it could never catch this: it is more careful than the
+    environment it stands in for. This test does the opposite on purpose --
+    it forces the narrowest plausible encoding and asserts the tool still
+    exits cleanly.
+
+    Guarding the tool rather than the document is the deliberate choice. A
+    rule saying "no typographic characters in context.md" would be one more
+    thing to remember, enforced by nothing, in a file anyone may edit.
+    """
+    env = {**os.environ, 'PYTHONIOENCODING': 'cp1252'}
+    r = subprocess.run([sys.executable, str(SCRIPT), '--skip-tests'],
+                       cwd=REPO, capture_output=True, env=env)
+
+    assert b'UnicodeEncodeError' not in r.stderr, (
+        'session_start.py died encoding its own output. It must reconfigure '
+        'stdout rather than inherit a code page that cannot represent '
+        'docs/context.md:\n' + r.stderr.decode('ascii', 'replace')[-600:])
+    assert r.returncode == 0, (
+        f'exit {r.returncode} under PYTHONIOENCODING=cp1252; it exits 0 '
+        f'always by design:\n' + r.stderr.decode('ascii', 'replace')[-600:])
+    # It must not bail early and call that success: the context file is the
+    # last thing printed, so reaching the footer proves it got all the way.
+    assert b'Read next' in r.stdout, (
+        'exited 0 without reaching the end of its own output')
