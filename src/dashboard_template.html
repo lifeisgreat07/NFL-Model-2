@@ -1208,8 +1208,13 @@
            the arrows drive it and it emits the change event, so there is one
            state, not two. It is also the fallback if this markup is ever
            rendered somewhere the stepper's script does not run.
-           No date range: the mock showed "Sep 11-15" and the pipeline has no
-           date field on a week at all - only season, week and games. -->
+           No date range. This used to say the pipeline had no date field at
+           all; that stopped being true when gameday/gametime_et/weekday were
+           added to the prediction record, so the reason is now a choice and
+           not a limitation: a week's span is a derived claim (min and max
+           kickoff) that would be wrong for any week saved before those fields
+           existed, and it would sit above a board that already prints each
+           game's own kickoff. One date per game, stated where the game is. -->
       <div class="week-step" id="week-step">
         <button type="button" class="week-step-btn" id="week-prev" aria-label="Previous week">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
