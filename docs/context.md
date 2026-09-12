@@ -10,7 +10,7 @@ Last updated: 2026-09-12 (#64, #65, #66, #67 merged; no open PRs; no open branch
 
 ## Right now
 
-**Suite:** 1044 passing, 1 skipped on `main`. Re-run before quoting it.
+**Suite:** 1045 passing, 1 skipped on `main`. Re-run before quoting it.
 Mutation corpus: 28 case files, 147 cases.
 
 **Stage:** 8, 8b and 8c complete. Stage 9 is done apart from one component
