@@ -57,8 +57,13 @@ COMPARE_WEEK = 10
 REQUIRED_PBP_COLS = ['posteam', 'defteam', 'epa', 'pass', 'rush', 'season_type',
                      'week', 'season', 'qb_dropback', 'qb_epa',
                      'passer_player_id', 'passer_player_name']
+# Keep in step with the list in src/data_loader.py's __main__ block. Two
+# copies of the same required-columns list is the duplication this repo keeps
+# getting bitten by, so tests/test_game_datetime_fields.py asserts they agree
+# rather than trusting this comment to be read.
 REQUIRED_SCHEDULE_COLS = ['home_team', 'away_team', 'home_score', 'away_score',
-                          'spread_line', 'week', 'season', 'gameday']
+                          'spread_line', 'week', 'season', 'gameday',
+                          'gametime', 'weekday']
 REQUIRED_SNAP_COLS = ['team', 'season', 'week', 'position', 'offense_snaps',
                       'pfr_player_id', 'game_type']
 
