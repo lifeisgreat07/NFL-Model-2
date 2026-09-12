@@ -88,11 +88,18 @@ RENDERERS = {
     # function, and the choice changes nothing that is enforced: jargon is
     # banned identically on both pages, so either mapping applies the same
     # rules to the same text. Said plainly rather than left as an apparent
-    # coverage gap -- 'trackRecordHtml' below is in the same position.
+    # coverage gap.
     'matchupHeader': 'board',
     'renderPicksGrid': 'picks',
     'renderPicksStreak': 'picks',
-    'trackRecordHtml': 'picks',
+    # The pick tile: a logo above the team abbreviation. My Picks only.
+    'pickButton': 'picks',
+    # WAS 'picks' until the track-record block was removed from that card. It
+    # now renders only on the Week Board -- once on the card and once inside
+    # the why-panel -- so the old mapping had stopped describing anything.
+    # Corrected rather than left, because a map whose entries are approximately
+    # true is how a real gap hides among the harmless ones.
+    'trackRecordHtml': 'board',
     'showUndoToast': 'picks',
     'renderAccuracy': 'accuracy',
     'buildCalibrationChart': 'accuracy',
