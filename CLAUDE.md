@@ -47,7 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **843 passing** (1 skipped) on `main` (2026-09-11). Run it before quoting
+Suite: **876 passing** (1 skipped) on `main` (2026-09-12, after PR #60). Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -1277,3 +1277,33 @@ under compaction pressure, so its length is a cost paid on every session.
   while the run continues, so: redirect to a file, poll for completion, read the
   file — and check `git status` before believing anything, because a killed
   runner skips the `finally` that restores the mutated file.
+- **`scout_preflight.py` reads only the PASSED count too, so a RED suite is
+  reported as a stale number.** An entry above records this for
+  `session_wrapup.py`; on 2026-09-12 it turned up in a second tool, where it is
+  worse, because the message preflight prints is the PR #21 stale-figure text —
+  "the body claims [876] passing but a real run at HEAD gives 875" — which
+  names a cause that is not the cause and sends the reader to edit the PR body
+  instead of to the red test. `run_test_suite` matches `(\d+) passed` and never
+  looks at the failures. The trigger is worth knowing on its own:
+  `test_it_prints_the_context_file_rather_than_pointing_at_it` in
+  `tests/test_session_start.py` compares `session_start.py`'s piped stdout
+  against `docs/context.md`, and every line it reported missing carried an em
+  dash — so the suite is green run directly and red run as a subprocess of
+  another Python process, which is exactly how preflight runs it. Two small
+  fixes: fail on a non-zero failure count rather than reporting a total, and
+  pin the encoding on that subprocess. **The general shape: a tool that reports
+  one number out of a multi-number summary will invent a cause for the
+  difference, and the invented cause is plausible enough to act on.**
+- **A Booth report's prose header can disagree with its own `booth-verdict`
+  block, and the block is the half that gets collected.** #60's fourth audit,
+  2026-09-12: the header says "Confirmed: 13 ... Unverifiable: 2" while the
+  block lists fourteen CONFIRMED and one UNVERIFIABLE. The overall prose agrees
+  with the block ("only the pre-rebase branch-history claim is unverifiable",
+  singular), so the header is the odd one out. It changed nothing about that PR
+  — zero discrepancies either way — but `src/booth_verdict.py` parses the block
+  and `data/agent_log.json` is fed from it, so the published record and the
+  comment a human reads can carry different totals for the same audit. Two
+  counts of the same thing with nothing recomputing either, inside the tool
+  this project built to catch exactly that. The fix is a check in the parser:
+  assert the header tallies match the block, and fail the audit when they do
+  not.
