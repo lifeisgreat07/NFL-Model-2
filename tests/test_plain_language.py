@@ -82,6 +82,14 @@ RENDERERS = {
     'lineFor': 'board',
     'whyRow': 'board',
     'populateWeekSelect': 'board',
+    # Renders onto BOTH the Week Board and My Picks -- it is the one piece of
+    # card markup the two pages share, which is the whole point of it. Mapped
+    # to 'board' rather than duplicated because this map takes one page per
+    # function, and the choice changes nothing that is enforced: jargon is
+    # banned identically on both pages, so either mapping applies the same
+    # rules to the same text. Said plainly rather than left as an apparent
+    # coverage gap -- 'trackRecordHtml' below is in the same position.
+    'matchupHeader': 'board',
     'renderPicksGrid': 'picks',
     'renderPicksStreak': 'picks',
     'trackRecordHtml': 'picks',
