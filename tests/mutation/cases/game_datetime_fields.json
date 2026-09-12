@@ -22,7 +22,7 @@
       "why": "a default is added to the .get(), which is the tidy-looking change: now every card has a date and nothing is ever blank. It is the 'correct arithmetic on absent data' failure this repo has already shipped once, on Season Accuracy -- every number computed correctly from what it was given, and the page still lied, because an empty week had been turned into a row. Absent has to stay absent; a week saved before these fields existed must render with no date rather than with a plausible wrong one. NOTE ON THE MUTATION CHOSEN: the first version of this case turned the .get() into a subscript, which raises KeyError on predictions/2026_week1.json. That IS caught, but not attributably -- generate_dashboard.main() runs in conftest's session-scoped autouse built_dashboard fixture, so the crash errors every test at SETUP and none of them runs. The runner correctly reported WRONG-GUARD with 'Failures: none reported'. Any mutation that breaks the dashboard build is unattributable for that reason, so the case tests the half that survives a successful build.",
       "find": "            'gameday': p.get('gameday'),",
       "replace": "            'gameday': p.get('gameday', '2026-01-01'),",
-      "expect_caught_by": "test_a_week_saved_before_these_fields_existed_still_renders"
+      "expect_caught_by": "test_a_week_saved_without_these_fields_still_renders"
     },
     {
       "id": "game-datetime-required-columns-drift",

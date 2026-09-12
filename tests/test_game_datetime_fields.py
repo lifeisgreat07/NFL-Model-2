@@ -118,37 +118,67 @@ def test_the_game_payload_carries_them_through():
             f"{field} did not survive build_games_js")
 
 
-def test_a_week_saved_before_these_fields_existed_still_renders():
-    """Checked against the real file, not a fixture.
+def test_a_week_saved_without_these_fields_still_renders():
+    """Absent stays absent -- the property, now on a synthetic record.
 
-    predictions/2026_week1.json was written before this change, and
-    weekly_update refuses to overwrite an existing prediction file -- they
-    are permanent by design. So this is not a hypothetical legacy shape; it
-    is the shape of every week already on disk, permanently. If the first
-    assertion below ever fails because the file HAS the fields, that means
-    a permanent file was rewritten, which is its own alarm.
+    THIS TEST USED THE REAL predictions/2026_week1.json AND DELIBERATELY NO
+    LONGER DOES. That is worth reading rather than skipping.
+
+    It asserted that the shipped week-1 file carried none of these fields, on
+    the reasoning that predictions are write-once so the pre-fields shape was
+    permanent. Its failure message said: either the write-once rule was broken
+    or this test is guarding the wrong file, find out which before changing
+    the assertion. The rule was bent, on purpose, with the reasoning recorded
+    in src/backfill_game_dates.py -- these three are schedule facts rather
+    than model outputs, and they became the Week Board's default sort key, so
+    leaving the only saved week unsorted to protect a rule about model outputs
+    was the wrong trade.
+
+    So the example moved and the property did not. What is being guarded is
+    that a record lacking the fields renders with None rather than a
+    fabricated date -- the 'correct arithmetic on absent data' failure this
+    repo has already shipped once, on Season Accuracy. A synthetic record is a
+    weaker example than a real file, and the test below is the compensation:
+    it pins what the real file is supposed to look like now.
     """
     import generate_dashboard
 
-    path = ROOT / 'predictions' / '2026_week1.json'
-    preds = json.loads(path.read_text(encoding='utf-8'))
-    assert preds, 'the week-1 predictions file is empty'
-    for field in FIELDS:
-        assert all(field not in p for p in preds), (
-            f"{path.name} now carries {field!r}. Predictions are permanent "
-            "once saved and weekly_update declines to overwrite them, so "
-            "either that rule was broken or this test is guarding the wrong "
-            "file -- find out which before changing the assertion.")
+    legacy = {'home': 'SEA', 'away': 'NE', 'model_a_home_win_prob': 0.44,
+              'model_b_home_win_prob': 0.60, 'spread_line': 3.5,
+              'confidence_rank': 7, 'confidence_points': 10}
+    games = generate_dashboard.build_games_js([legacy], {})
 
-    games = generate_dashboard.build_games_js(preds, {})
-    assert games, 'a pre-existing week stopped producing game cards'
-    for game in games:
-        for field in FIELDS:
-            assert game[field] is None, (
-                f"{field} came back as {game[field]!r} for a week saved "
-                "before the field existed. Absent must stay absent: a "
-                "fabricated date is the 'correct arithmetic on absent data' "
-                "failure this repo has already shipped once.")
+    assert games, 'a record without these fields stopped producing a game card'
+    for field in FIELDS:
+        assert games[0][field] is None, (
+            f"{field} came back as {games[0][field]!r} for a record that does "
+            "not carry it. Absent must stay absent; a fabricated date is the "
+            "'correct arithmetic on absent data' failure again.")
+
+
+def test_every_saved_week_now_carries_its_dates():
+    """The other half of the swap above, and the reason it is safe.
+
+    Every prediction file on disk should now be dated -- the ones written
+    since the fields existed by weekly_update, and the ones written before by
+    the backfill. If a file appears without them, either the backfill was not
+    run for it or a week was saved by something that does not write them, and
+    both make the Week Board's default sort silently partial.
+
+    `--check` is the mechanical version of this and exits non-zero if any file
+    would gain a field; this test states the invariant in the suite so it
+    cannot rot unnoticed between runs of that script.
+    """
+    paths = sorted((ROOT / 'predictions').glob('*_week*.json'))
+    assert paths, 'no prediction files on disk at all'
+    for path in paths:
+        for rec in json.loads(path.read_text(encoding='utf-8')):
+            for field in ('gameday', 'gametime_et'):
+                assert rec.get(field), (
+                    f"{path.name}: {rec['away']}@{rec['home']} has no "
+                    f"{field}. Run `python src/backfill_game_dates.py` -- and "
+                    "if it reports the record as unmatched, that is a finding "
+                    "about the schedule, not a formatting problem.")
 
 
 def _required_schedule_cols_from(path):

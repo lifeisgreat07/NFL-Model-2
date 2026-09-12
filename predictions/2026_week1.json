@@ -22,7 +22,10 @@
       "qb_change": -0.0
     },
     "confidence_rank": 7,
-    "confidence_points": 10
+    "confidence_points": 10,
+    "gameday": "2026-09-09",
+    "gametime_et": "20:20",
+    "weekday": "Wednesday"
   },
   {
     "season": 2026,
@@ -47,7 +50,10 @@
       "qb_change": -0.0
     },
     "confidence_rank": 9,
-    "confidence_points": 8
+    "confidence_points": 8,
+    "gameday": "2026-09-10",
+    "gametime_et": "20:35",
+    "weekday": "Thursday"
   },
   {
     "season": 2026,
@@ -72,7 +78,10 @@
       "qb_change": -0.0
     },
     "confidence_rank": 8,
-    "confidence_points": 9
+    "confidence_points": 9,
+    "gameday": "2026-09-13",
+    "gametime_et": "13:00",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -97,7 +106,10 @@
       "qb_change": -0.0
     },
     "confidence_rank": 6,
-    "confidence_points": 11
+    "confidence_points": 11,
+    "gameday": "2026-09-13",
+    "gametime_et": "13:00",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -122,7 +134,10 @@
       "qb_change": -0.0
     },
     "confidence_rank": 3,
-    "confidence_points": 14
+    "confidence_points": 14,
+    "gameday": "2026-09-13",
+    "gametime_et": "13:00",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -147,7 +162,10 @@
       "qb_change": 0.4998
     },
     "confidence_rank": 14,
-    "confidence_points": 3
+    "confidence_points": 3,
+    "gameday": "2026-09-13",
+    "gametime_et": "13:00",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -172,7 +190,10 @@
       "qb_change": -0.0
     },
     "confidence_rank": 5,
-    "confidence_points": 12
+    "confidence_points": 12,
+    "gameday": "2026-09-13",
+    "gametime_et": "13:00",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -197,7 +218,10 @@
       "qb_change": -0.0
     },
     "confidence_rank": 2,
-    "confidence_points": 15
+    "confidence_points": 15,
+    "gameday": "2026-09-13",
+    "gametime_et": "13:00",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -222,7 +246,10 @@
       "qb_change": -0.0
     },
     "confidence_rank": 10,
-    "confidence_points": 7
+    "confidence_points": 7,
+    "gameday": "2026-09-13",
+    "gametime_et": "13:00",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -247,7 +274,10 @@
       "qb_change": -0.4998
     },
     "confidence_rank": 16,
-    "confidence_points": 1
+    "confidence_points": 1,
+    "gameday": "2026-09-13",
+    "gametime_et": "13:00",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -272,7 +302,10 @@
       "qb_change": -0.4998
     },
     "confidence_rank": 1,
-    "confidence_points": 16
+    "confidence_points": 16,
+    "gameday": "2026-09-13",
+    "gametime_et": "16:25",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -297,7 +330,10 @@
       "qb_change": -0.4998
     },
     "confidence_rank": 15,
-    "confidence_points": 2
+    "confidence_points": 2,
+    "gameday": "2026-09-13",
+    "gametime_et": "16:25",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -322,7 +358,10 @@
       "qb_change": -0.0
     },
     "confidence_rank": 11,
-    "confidence_points": 6
+    "confidence_points": 6,
+    "gameday": "2026-09-13",
+    "gametime_et": "16:25",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -347,7 +386,10 @@
       "qb_change": -0.4998
     },
     "confidence_rank": 12,
-    "confidence_points": 5
+    "confidence_points": 5,
+    "gameday": "2026-09-13",
+    "gametime_et": "16:25",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -372,7 +414,10 @@
       "qb_change": 0.4998
     },
     "confidence_rank": 13,
-    "confidence_points": 4
+    "confidence_points": 4,
+    "gameday": "2026-09-13",
+    "gametime_et": "20:20",
+    "weekday": "Sunday"
   },
   {
     "season": 2026,
@@ -397,6 +442,9 @@
       "qb_change": -0.0
     },
     "confidence_rank": 4,
-    "confidence_points": 13
+    "confidence_points": 13,
+    "gameday": "2026-09-14",
+    "gametime_et": "20:15",
+    "weekday": "Monday"
   }
 ]
