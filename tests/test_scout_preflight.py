@@ -11,6 +11,10 @@ That replay is what keeps the tool honest. Unit tests prove the regexes fire;
 the replay proves the thing catches the failure it claims to catch.
 
 run_test_suite() is monkeypatched everywhere except where it is the subject.
+It returns (passed, broken, error) -- the middle value was added when the
+tool was found reporting a RED suite as a stale figure, so every stub here
+says 0 broken to keep asserting what it always asserted. The red-suite
+behaviour itself is tested in tests/test_preflight_count_honesty.py.
 Letting it run for real would mean pytest invoking pytest on every test in this
 file, which is slow, recursive and proves nothing extra.
 
@@ -118,35 +122,35 @@ def test_the_corrected_pr21_body_would_have_passed():
 # --------------------------------------------------------------------------
 
 def test_a_stale_test_count_fails(monkeypatch):
-    monkeypatch.setattr(pf, 'run_test_suite', lambda: (174, None))
+    monkeypatch.setattr(pf, 'run_test_suite', lambda: (174, 0, None))
     f = pf.check_test_count("Test evidence: 125 passed, 10 warnings.", False)
     assert not f.ok
     assert '125' in f.detail and '174' in f.detail
 
 
 def test_a_correct_test_count_passes(monkeypatch):
-    monkeypatch.setattr(pf, 'run_test_suite', lambda: (174, None))
+    monkeypatch.setattr(pf, 'run_test_suite', lambda: (174, 0, None))
     assert pf.check_test_count("174 passed, 10 warnings in 27s", False).ok
 
 
 def test_every_claimed_count_is_checked_not_just_the_first(monkeypatch):
     """A body can quote several figures -- PR #21's correction carried three in
     a table. Checking only the first would let a wrong one through."""
-    monkeypatch.setattr(pf, 'run_test_suite', lambda: (174, None))
+    monkeypatch.setattr(pf, 'run_test_suite', lambda: (174, 0, None))
     f = pf.check_test_count("was 174 passed, earlier 130 passed", False)
     assert not f.ok, "a second, wrong count was not checked"
     assert '130' in f.detail
 
 
 def test_a_body_with_no_count_is_not_a_failure(monkeypatch):
-    monkeypatch.setattr(pf, 'run_test_suite', lambda: (174, None))
+    monkeypatch.setattr(pf, 'run_test_suite', lambda: (174, 0, None))
     assert pf.check_test_count("A documentation-only change.", False).ok
 
 
 def test_an_unrunnable_suite_fails_rather_than_passing_quietly(monkeypatch):
     """If the count cannot be checked, the claim is unverified -- which is the
     thing this tool exists to stop, so it must not report PASS."""
-    monkeypatch.setattr(pf, 'run_test_suite', lambda: (None, 'collection error'))
+    monkeypatch.setattr(pf, 'run_test_suite', lambda: (None, None, 'collection error'))
     f = pf.check_test_count("174 passed", False)
     assert not f.ok
     assert 'could not be run' in f.detail
@@ -351,7 +355,7 @@ def test_a_count_quoted_inside_a_code_block_is_not_a_claim(monkeypatch):
     failure being fixed, and got flagged for claiming it. Pasted output is
     evidence, not assertion.
     """
-    monkeypatch.setattr(pf, 'run_test_suite', lambda: (194, None))
+    monkeypatch.setattr(pf, 'run_test_suite', lambda: (194, 0, None))
     body = "Head is 194 passed.\n\nPR #21 wrongly said:\n```\n125 passed\n```\n"
     findings, _ = pf.preflight(body, base='HEAD', skip_tests=False)
     tc = {f.check: f for f in findings}['test count']
@@ -360,14 +364,14 @@ def test_a_count_quoted_inside_a_code_block_is_not_a_claim(monkeypatch):
 
 def test_a_wrong_count_outside_a_code_block_still_fails(monkeypatch):
     """The stripping must not become a way to smuggle a claim past the check."""
-    monkeypatch.setattr(pf, 'run_test_suite', lambda: (194, None))
+    monkeypatch.setattr(pf, 'run_test_suite', lambda: (194, 0, None))
     body = "This PR: 125 passed.\n\n```\nirrelevant\n```\n"
     findings, _ = pf.preflight(body, base='HEAD', skip_tests=False)
     assert not {f.check: f for f in findings}['test count'].ok
 
 
 def test_a_blockquoted_claim_is_treated_as_quotation(monkeypatch):
-    monkeypatch.setattr(pf, 'run_test_suite', lambda: (194, None))
+    monkeypatch.setattr(pf, 'run_test_suite', lambda: (194, 0, None))
     body = "Booth reported:\n\n> 125 passed, 10 warnings\n\nCurrent: 194 passed.\n"
     findings, _ = pf.preflight(body, base='HEAD', skip_tests=False)
     assert {f.check: f for f in findings}['test count'].ok
