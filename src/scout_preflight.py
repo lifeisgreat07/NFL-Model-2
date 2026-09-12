@@ -49,6 +49,26 @@ REPO_ROOT = Path(__file__).parent.parent
 # shape these PR bodies quote it in.
 TEST_COUNT_RE = re.compile(r'\b(\d+)\s+passed\b')
 
+# "1 failed", "2 errors" -- everything in a pytest summary that means the suite
+# is not green. Read alongside the passed count, never instead of it.
+SUITE_BROKEN_RE = re.compile(r'\b(\d+)\s+(?:failed|errors?)\b')
+
+# A suite figure in a COMMIT MESSAGE. Two or more digits, because this
+# repository's totals are in the hundreds and "3 tests still pass" is ordinary
+# English that no rule should forbid.
+#
+# The rule this enforces is not "be careful with numbers". It is that a commit
+# message is the ONE artifact here that cannot be corrected: amending it
+# rewrites its SHA, and every Booth report referencing that SHA is invalidated.
+# A PR body can be edited and IS re-checked on every synchronize; a commit
+# message is fixed forever at the moment it is written, and a rebase onto a
+# moving base falsifies it without anyone touching the text. Three of the four
+# discrepancies across PR #60's audits were exactly this.
+#
+# So the rule is: do not write one. Put verification numbers in the PR body,
+# where something re-checks them.
+COMMIT_SUITE_COUNT_RE = re.compile(r'\b\d{2,}\s+(?:passed|passing)\b', re.I)
+
 # Phrases that assert somebody looked at rendered output. Deliberately narrow:
 # the point is to catch a claim of visual verification, not any mention of a
 # picture.
@@ -131,14 +151,106 @@ def branch_commits(base, head='HEAD'):
     return [tuple(line.split('\x1f', 1)) for line in raw.splitlines()]
 
 
-def run_test_suite():
-    """Returns the real passing count, or None if pytest could not be run."""
-    out = subprocess.run([sys.executable, '-m', 'pytest', '-q', '--no-header'],
-                         cwd=REPO_ROOT, capture_output=True, text=True)
-    m = TEST_COUNT_RE.search(out.stdout)
+def parse_suite_summary(stdout):
+    """(passed, broken) from pytest's own summary text, or (None, None).
+
+    A separate function because run_test_suite() shells out, which makes its
+    parsing untestable and therefore un-mutatable -- and the parsing is the
+    part that was wrong. Everything that stubs run_test_suite() stubs the bug
+    along with it.
+    """
+    m = TEST_COUNT_RE.search(stdout)
     if not m:
-        return None, out.stdout[-500:]
-    return int(m.group(1)), None
+        return None, None
+    return int(m.group(1)), sum(int(n) for n in SUITE_BROKEN_RE.findall(stdout))
+
+
+def branch_commit_messages(base, head='HEAD'):
+    """(short sha, subject, full message) for each non-merge commit.
+
+    branch_commits() reads subjects only, which is right for the scope check
+    and useless here: a suite count is written as a trailer, in the body,
+    below the subject line. \\x1e separates records because a commit message
+    contains newlines and blank lines by construction.
+    """
+    raw = _git('log', '--no-merges', '--format=%h%x1f%s%x1f%B%x1e',
+               f'{base}..{head}')
+    out = []
+    for record in raw.split('\x1e'):
+        record = record.strip('\n')
+        if not record:
+            continue
+        sha, subject, message = record.split('\x1f', 2)
+        out.append((sha, subject, message))
+    return out
+
+
+def check_no_suite_count_in_a_commit_message(base, head):
+    """The one artifact in this repository that cannot be corrected.
+
+    A PR body is editable and scout-preflight.yml re-checks it on every
+    synchronize, so a number falsified by a rebase gets caught within minutes.
+    A commit message has neither property: amending it rewrites its SHA, which
+    invalidates every Booth report written against that SHA, so the number
+    stays wrong forever and the only honest fix is worse than the defect.
+
+    Three of the four discrepancies across PR #60's audits were this exact
+    shape -- counts that were CORRECT when written and were falsified by the
+    base moving underneath them. Nothing could have caught them after the
+    fact. The only available guard is at the moment of writing.
+
+    Quotations are stripped first, for the same reason the body checks strip
+    them: a commit message that explains a past mistake has to be able to
+    quote the mistake. This docstring is why -- it would otherwise have to
+    describe the banned shape obliquely enough to dodge the repo's own
+    checker, which damages the rule to protect the checker.
+    """
+    offenders = []
+    for sha, subject, message in branch_commit_messages(base, head):
+        hits = COMMIT_SUITE_COUNT_RE.findall(strip_quotations(message))
+        if hits:
+            offenders.append(f"{sha}  {subject}\n        wrote: "
+                             + ', '.join(repr(h) for h in hits))
+    if offenders:
+        return Finding(
+            'no count in a commit message', False,
+            "a commit message states a suite count:\n      "
+            + "\n      ".join(offenders)
+            + "\n      A commit message cannot be corrected -- amending it "
+              "rewrites its SHA and invalidates every Booth report against "
+              "it -- and a rebase can falsify the number without anyone "
+              "touching the text. Put verification numbers in the PR body, "
+              "which scout-preflight re-checks on every synchronize. If the "
+              "commits are not yet pushed, rewrite the message now; if they "
+              "are, disclose the stale trailer in the body rather than "
+              "amending.")
+    return Finding('no count in a commit message', True,
+                   "no commit message on this branch states a suite count")
+
+
+def run_test_suite():
+    """Returns (passed, broken, error) for a real run at HEAD.
+
+    `broken` is failures plus errors. It exists because reading ONLY the
+    passed count is how this tool spent a day describing a red suite as a
+    stale figure: pytest prints "N passed" whether or not something failed
+    beside it, so a suite that went red by one test looks exactly like a body
+    quoting a number from one commit ago. The message the reader then gets
+    names the PR #21 staleness failure and points them at the description --
+    away from the actual broken test.
+
+    CLAUDE.md already recorded this for src/session_wrapup.py, which greps the
+    same shape. The entry said "a real run gives N can mean a red suite"; this
+    file reproduced it anyway, because documenting a defect in one tool does
+    not fix it in the other.
+    """
+    out = subprocess.run([sys.executable, '-m', 'pytest', '-q', '--no-header'],
+                         cwd=REPO_ROOT, capture_output=True, text=True,
+                         encoding='utf-8', errors='replace')
+    passed, broken = parse_suite_summary(out.stdout)
+    if passed is None:
+        return None, None, out.stdout[-500:]
+    return passed, broken, None
 
 
 def check_test_count(body, skip_tests):
@@ -151,11 +263,19 @@ def check_test_count(body, skip_tests):
         return Finding('test count', True,
                        f"claims {sorted(claims)} NOT verified (--skip-tests)")
 
-    actual, err = run_test_suite()
+    actual, broken, err = run_test_suite()
     if actual is None:
         return Finding('test count', False,
                        f"the body claims {sorted(claims)} but the suite could "
                        f"not be run to check it:\n{err}")
+    if broken:
+        return Finding('test count', False,
+                       f"the suite at HEAD is RED -- {broken} failing or "
+                       f"erroring, alongside {actual} passing. This is NOT a "
+                       f"stale figure in the description, and comparing the "
+                       f"body against a passed count while something is "
+                       f"broken beside it is how that mistake gets made. Fix "
+                       f"the suite, then re-check the description.")
     wrong = sorted(c for c in claims if c != actual)
     if wrong:
         return Finding('test count', False,
@@ -358,6 +478,11 @@ def preflight(body, base='origin/main', skip_tests=False, head='HEAD'):
         check_scoped_test_counts(claims, skip_tests),
         check_scope_disclosed(claims, commits),
         check_visual_claims_have_artifacts(claims, body, ui_files),
+        # Not skipped by --skip-tests. That flag exists so CI does not re-run
+        # the suite a second job already ran; this check reads git log and
+        # costs nothing, and it is the one whose subject cannot be fixed after
+        # the fact -- so it is precisely the check that must run everywhere.
+        check_no_suite_count_in_a_commit_message(base, head),
     ], commits
 
 

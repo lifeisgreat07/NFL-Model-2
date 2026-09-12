@@ -7,6 +7,7 @@ it cannot check -- a pull-request status above all -- it becomes another source
 of confident, unverified claims, which is the failure it was built to remove.
 """
 
+import os
 import re
 import subprocess
 import sys
@@ -20,8 +21,20 @@ SCRIPT = REPO / 'src' / 'session_start.py'
 
 @pytest.fixture(scope='module')
 def output():
+    # Both ends of the pipe are pinned to UTF-8, and neither may be left to
+    # the platform default. session_start prints docs/context.md verbatim and
+    # that file is full of em dashes; on Windows the child encoded its stdout
+    # as cp1252 and this end decoded it the same way, so every line carrying
+    # one came back mangled and the comparison below failed -- but ONLY when
+    # the suite was itself a subprocess of another Python process, which is
+    # exactly how src/scout_preflight.py runs it. Run directly the suite was
+    # green, so the red was invisible where anyone would look for it, and
+    # preflight reported the resulting count as a STALE FIGURE rather than as
+    # a failure. Two defects, one root cause; this is the root cause.
+    env = {**os.environ, 'PYTHONIOENCODING': 'utf-8'}
     r = subprocess.run([sys.executable, str(SCRIPT), '--skip-tests'],
-                       cwd=REPO, capture_output=True, text=True)
+                       cwd=REPO, capture_output=True, text=True,
+                       encoding='utf-8', env=env)
     assert r.returncode == 0, (
         f"session_start exited {r.returncode}. It is an orientation tool, not a "
         f"gate -- session_wrapup.py is the gate -- so it must never block a "

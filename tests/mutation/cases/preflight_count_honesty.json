@@ -1,0 +1,41 @@
+{
+  "target": "src/scout_preflight.py",
+  "tests": "tests/test_preflight_count_honesty.py",
+  "cases": [
+    {
+      "id": "preflight-ignores-the-failure-count",
+      "why": "the parser stops counting failures and reports every run as green. This is the original defect, restored: the tool then compares the body against the passed figure of a RED run and either calls a matching number correct or calls a mismatching one stale. Both readings send the reader to edit the description while a test is broken beside it. The parsing lives in its own function precisely so this mutation is reachable -- every test that stubs run_test_suite stubs the bug along with it, which is how it survived here in the first place.",
+      "find": "    return int(m.group(1)), sum(int(n) for n in SUITE_BROKEN_RE.findall(stdout))",
+      "replace": "    return int(m.group(1)), 0",
+      "expect_caught_by": "test_the_summary_parser_reads_real_pytest_output"
+    },
+    {
+      "id": "preflight-reports-a-red-suite-as-a-stale-figure",
+      "why": "the red-suite branch is removed, so a broken suite falls through to the count comparison and is reported in the words of the PR #21 staleness failure. The number in that message is real and the sentence around it names a cause that is not the cause -- the most expensive kind of wrong message, because it is actionable and the action is useless.",
+      "find": "    if broken:\n        return Finding('test count', False,",
+      "replace": "    if False:\n        return Finding('test count', False,",
+      "expect_caught_by": "test_a_red_suite_is_reported_as_red"
+    },
+    {
+      "id": "preflight-commit-count-rule-misses-three-digit-totals",
+      "why": "the digit floor rises past this repository's actual totals, so the rule matches nothing it exists to catch while still reading as present. A guard whose comment claims more than its code delivers has now appeared five times here; this is what that looks like when it is a single character.",
+      "find": "COMMIT_SUITE_COUNT_RE = re.compile(r'\\b\\d{2,}\\s+(?:passed|passing)\\b', re.I)",
+      "replace": "COMMIT_SUITE_COUNT_RE = re.compile(r'\\b\\d{4,}\\s+(?:passed|passing)\\b', re.I)",
+      "expect_caught_by": "test_a_count_in_a_commit_message_is_rejected"
+    },
+    {
+      "id": "preflight-commit-count-rule-cannot-tell-use-from-mention",
+      "why": "quotation stripping is dropped, so a commit that FIXES a stale trailer cannot describe the number it is fixing. That is the failure this repo has made three times in other guards: the rule gets worded obliquely enough to dodge its own checker, which damages the rule to protect the checker. A check that forbids explaining the defect it catches will be worked around, and a worked-around rule protects nothing.",
+      "find": "        hits = COMMIT_SUITE_COUNT_RE.findall(strip_quotations(message))",
+      "replace": "        hits = COMMIT_SUITE_COUNT_RE.findall(message)",
+      "expect_caught_by": "test_a_quoted_count_in_a_commit_message_is_allowed"
+    },
+    {
+      "id": "preflight-commit-count-check-is-not-wired-in",
+      "why": "the check is written, tested and never called -- the shape Stage 3 closed with, where src/collect_agent_log.py was fully tested and had never run. A check absent from preflight()'s list is invisible: the tool prints the checks it ran, so nothing says the missing one is missing, and CI goes green because it always did.",
+      "find": "        check_no_suite_count_in_a_commit_message(base, head),",
+      "replace": "",
+      "expect_caught_by": "test_the_commit_message_check_survives_skip_tests"
+    }
+  ]
+}
