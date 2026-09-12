@@ -4,27 +4,29 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-12 (#60 merged after a fifth commit and a fourth audit)
+Last updated: 2026-09-12 (#60 and #62 merged; #63 open)
 
 ---
 
 ## Right now
 
-**Suite:** 876 passing, 1 skipped on `main`. Re-run before quoting it.
+**Suite:** 894 passing, 1 skipped on `main`. Re-run before quoting it.
 
 **Stage:** 8, 8b and 8c complete. Stage 9 is done apart from the items below.
 Stage 11's model-colour work is merged; its remaining items are queued below.
 
-**Next action:** merge PR #62 BEFORE Tue 11:00 UTC. Week 2's earliest game is
-2026-09-17, inside the 7-day lock-in, so that run saves week 2's predictions
-file permanently: merged first, week 2 carries kickoff times forever; merged
-after, it never will.
+**Next action:** PR #63, and it needs a commit before it can merge. `main` has
+22 mutation-case files and a README saying 22; #63 adds a 23rd but edits that
+line from 21 to 22 — the same edit `main` already has, so git AUTO-MERGES it
+silently and `test_readme_accuracy` then goes red on `main`. A conflict would
+have stopped and asked; this will not. Bump it to 23, fix the two lines in the
+body quoting 22, then merge.
 
-**The grading freeze is overridden for #62 deliberately (2026-09-12).** What it
-guards is that `src/weekly_update.py` is step 1 of that job and a crash there
-aborts grading. The added lines ran over all 272 real 2026 schedule rows with
-no exceptions, every value a plain `str` and JSON-safe, and `workflow_dispatch`
-is enabled, so a bad run is re-runnable. Nothing else touches that path first.
+**The grading freeze stands for everything else until Tue 11:00 UTC.** It was
+overridden once, for #62, deliberately and on evidence — `src/weekly_update.py`
+is step 1 of that job and a crash there aborts grading, so the added lines were
+run over all 272 real schedule rows first. #62 is merged, so week 2's file will
+carry kickoff times. Nothing else touches that path before the run.
 
 ## Open work, and what each is waiting on
 
@@ -32,25 +34,23 @@ Branch names in full — `src/session_start.py` cross-checks them against git.
 
 | What | State | Waiting on |
 |---|---|---|
-| `pipeline-game-date-and-kickoff` | PR #62, 1 commit, suite green | Booth's audit. Then merge BEFORE Tue 11:00 UTC — see above |
+| `preflight-commit-message-counts` | PR #63, 1 commit, suite green, body pre-flighted clean | Booth's audit, then the README-to-23 commit — see above |
 | Ten merged branches | Still on the remote | Nobody — `git push origin --delete <name>` works from here, as #60's branch proved. Say the word |
 | The repo's About panel | Empty | Mark. Wording in CLAUDE.md |
 
 ## Queued, in order
 
-1. **Date/time in the pipeline — PR #62, premise corrected.** `gameday`,
-   `gametime` and `weekday` were always in the schedule frame and merely never
-   written into the record. **No broadcast column exists**, so channel needs a
-   new feed and is Stage 6. `gametime` is Eastern; stored as `gametime_et`.
-   The surface work (chronological sort, start time, stepper range) follows,
-   and has nothing real to render until a week is saved with the fields.
-2. **Reject a suite count in a commit message.** `src/scout_preflight.py` checks
-   the PR body and nothing checks commit messages, which is where three of the
-   four discrepancies across #60's two audits lived. A count there cannot be
-   corrected without rewriting its SHA, so the rule is "do not write one" and
-   the check should enforce it. Small, and it closes the defect class the
-   session ended on. Same file, same pass: `run_test_suite` reads only the
-   passed count, so a red suite reports as a stale figure (trap in CLAUDE.md).
+1. **Date/time on the SURFACE — the pipeline half merged as #62.** Records
+   carry `gameday`/`gametime_et`/`weekday`; the Week Board ignores them.
+   Chronological sort, start time on the card, stepper range. Two things
+   first: nothing renders until the Tuesday run saves week 2, and week 1 is
+   permanently dateless unless backfilled — decide that, it decides whether
+   the sort has anything to sort. ET becomes EST in November, so no naive
+   local-zone conversion. Channel has no source; a new feed, Stage 6.
+2. **Suite counts and `src/scout_preflight.py` — PR #63, open.** Rejects a
+   count in a commit message (the one artifact no later edit can repair),
+   stops a red suite being reported as a stale figure, and pins the encoding
+   on the subprocess that made the suite red only when nested.
 3. **Re-step `--accent` against `--series-a`.** They are 8.1 dE00 apart in light
    and 6.6 under red-green CVD, below the floor of 15, and Booth proved on #60
    that they DO share a screen — the onboarding banner's Model A dot and the
