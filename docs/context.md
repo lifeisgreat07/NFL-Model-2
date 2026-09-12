@@ -4,23 +4,23 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-12 (#60 and #62 merged; #63 open)
+Last updated: 2026-09-12 (#60, #62, #63 merged; no open PRs)
 
 ---
 
 ## Right now
 
-**Suite:** 894 passing, 1 skipped on `main`. Re-run before quoting it.
+**Suite:** 918 passing, 1 skipped on `main`. Re-run before quoting it.
 
 **Stage:** 8, 8b and 8c complete. Stage 9 is done apart from the items below.
 Stage 11's model-colour work is merged; its remaining items are queued below.
 
-**Next action:** PR #63, and it needs a commit before it can merge. `main` has
-22 mutation-case files and a README saying 22; #63 adds a 23rd but edits that
-line from 21 to 22 — the same edit `main` already has, so git AUTO-MERGES it
-silently and `test_readme_accuracy` then goes red on `main`. A conflict would
-have stopped and asked; this will not. Bump it to 23, fix the two lines in the
-body quoting 22, then merge.
+**Next action:** a decision, not a keystroke — whether to backfill week 1's
+date and kickoff. It is the only saved week, it has none, and predictions are
+write-once, so it stays blank in the stepper beside every dated week unless
+somebody amends it under a stated exception. It also decides whether the
+Week Board's chronological sort has anything to sort for week 1. Then the
+surface work, queue item 1.
 
 **The grading freeze stands for everything else until Tue 11:00 UTC.** It was
 overridden once, for #62, deliberately and on evidence — `src/weekly_update.py`
@@ -34,8 +34,7 @@ Branch names in full — `src/session_start.py` cross-checks them against git.
 
 | What | State | Waiting on |
 |---|---|---|
-| `preflight-commit-message-counts` | PR #63, 1 commit, suite green, body pre-flighted clean | Booth's audit, then the README-to-23 commit — see above |
-| Ten merged branches | Still on the remote | Nobody — `git push origin --delete <name>` works from here, as #60's branch proved. Say the word |
+| Eleven merged branches | Still on the remote | Nobody — `git push origin --delete <name>` works from here. Say the word |
 | The repo's About panel | Empty | Mark. Wording in CLAUDE.md |
 
 ## Queued, in order
@@ -47,10 +46,11 @@ Branch names in full — `src/session_start.py` cross-checks them against git.
    permanently dateless unless backfilled — decide that, it decides whether
    the sort has anything to sort. ET becomes EST in November, so no naive
    local-zone conversion. Channel has no source; a new feed, Stage 6.
-2. **Suite counts and `src/scout_preflight.py` — PR #63, open.** Rejects a
-   count in a commit message (the one artifact no later edit can repair),
-   stops a red suite being reported as a stale figure, and pins the encoding
-   on the subprocess that made the suite red only when nested.
+2. **Week 1's missing date — decide before the surface work.** Backfill it as
+   a stated, additive exception to write-once (they are schedule facts, not
+   model outputs, and cannot flatter the model), or leave one permanently
+   blank week in the stepper. A backfill needs a test proving no existing key
+   changed, and a revision of the guard that currently asserts week 1 has none.
 3. **Re-step `--accent` against `--series-a`.** They are 8.1 dE00 apart in light
    and 6.6 under red-green CVD, below the floor of 15, and Booth proved on #60
    that they DO share a screen — the onboarding banner's Model A dot and the
