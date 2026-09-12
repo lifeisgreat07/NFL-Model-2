@@ -1,0 +1,62 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_picks_card.py",
+  "cases": [
+    {
+      "id": "picks-card-noon-prints-as-zero",
+      "why": "the twelve-hour conversion loses its noon/midnight case, so 12:00 renders as '0:00 PM' and a 00:15 kickoff as '0:15 AM'. It is the classic clock defect and it reads as a typo rather than a bug, which is why it survives: someone sees it, shrugs, and does not report it. Only the two boundary hours are affected, so every other card on the page looks perfect.",
+      "find": "  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;",
+      "replace": "  const hour12 = hour24 % 12;",
+      "expect_caught_by": "test_noon_and_midnight_are_the_two_that_go_wrong"
+    },
+    {
+      "id": "picks-card-morning-kickoff-is-labelled-pm",
+      "why": "the AM/PM boundary moves by one, so a 09:30 kickoff -- the London games -- is labelled PM and an evening game keeps looking right. Nothing on the card contradicts it, nobody who reads 'Sunday, Sep 13 - 9:30 PM ET' has any reason to doubt it, and the only tell is a reader who knows the London slot is a morning game.",
+      "find": "  const suffix = hour24 >= 12 ? 'PM' : 'AM';",
+      "replace": "  const suffix = hour24 >= 9 ? 'PM' : 'AM';",
+      "expect_caught_by": "test_the_morning_kickoff_is_not_labelled_pm"
+    },
+    {
+      "id": "picks-card-kickoff-drops-its-timezone",
+      "why": "the ET suffix goes. The stored value is Eastern and the reader has no way to discover that, so a correct 8:20 becomes a wrong 5:20 for anyone on the west coast who assumes local time -- and the string still looks like a perfectly ordinary kickoff. This is the same defect class as a measured number published without its method: unfalsifiable by anyone but the author.",
+      "find": "  return `${day}${date} · ${hour12}:${hm[1]} ${suffix} ET`;",
+      "replace": "  return `${day}${date} · ${hour12}:${hm[1]} ${suffix}`;",
+      "expect_caught_by": "test_the_zone_is_always_stated"
+    },
+    {
+      "id": "picks-card-invents-a-kickoff-it-does-not-have",
+      "why": "a game with no date gets a placeholder instead of nothing. 'TBD' is a claim about when the game is that nobody made, and it is indistinguishable on the page from a real schedule entry that says the time is not yet set. Absent has to stay absent -- the same rule the payload follows, for the same reason.",
+      "find": "  if(!g.gameday) return '';",
+      "replace": "  if(!g.gameday) return 'TBD';",
+      "expect_caught_by": "test_a_missing_kickoff_renders_nothing_rather_than_a_placeholder"
+    },
+    {
+      "id": "picks-card-logo-becomes-the-accessible-name",
+      "why": "the logo gains alt text, so a screen reader announces the team twice -- once from the image and once from the abbreviation beside it. The visual card is unchanged, which is exactly why this kind of regression ships: it is invisible to everyone who is not using the assistive technology it breaks.",
+      "find": "src=\"${teamLogo(team)}\" alt=\"\" loading=\"lazy\"",
+      "replace": "src=\"${teamLogo(team)}\" alt=\"${team} logo\" loading=\"lazy\"",
+      "expect_caught_by": "test_the_logo_is_decorative_and_the_abbreviation_is_the_text"
+    },
+    {
+      "id": "picks-card-track-record-block-comes-back",
+      "why": "the removed block returns to the My Picks card. Worth a case because the removal is scoped -- it still renders twice on the Week Board -- so 'is it gone' cannot be answered by grepping the file for the function name, and a future change that re-adds it here would look like a restoration rather than a regression.",
+      "find": "      <div class=\"pick-agrees\">Model B picks: ${modelBPick}${pick ? (sharedPicksView",
+      "replace": "      ${trackRecordHtml(g.mktB_home)}\n      <div class=\"pick-agrees\">Model B picks: ${modelBPick}${pick ? (sharedPicksView",
+      "expect_caught_by": "test_the_track_record_block_is_off_this_card_but_not_the_board"
+    },
+    {
+      "id": "board-card-loses-the-kickoff-it-is-sorted-by",
+      "why": "the Week Board card stops printing its kickoff while renderGames still SORTS by kickoff. This is the defect that actually shipped in the first cut of this branch and was caught by looking at the page, not by the suite: the board was reordered by a fact it never displayed, so the cards appeared in an order with no visible explanation. Nothing errors, every test about My Picks still passes, and the only symptom is a reader asking why the games are in that order.",
+      "find": "      ${kickoff ? `<div class=\"card-kickoff\">${kickoff}</div>` : ''}\n      <div class=\"game-top\">",
+      "replace": "      <div class=\"game-top\">",
+      "expect_caught_by": "test_the_week_board_card_shows_the_kickoff_it_is_sorted_by"
+    },
+    {
+      "id": "confidence-span-goes-back-to-being-called-a-kickoff",
+      "why": "the confidence rank's class reverts to .game-kickoff, which is what it was called for months while holding no kickoff at all. With a real .card-kickoff now on the same card, two differently-named elements would both claim to be the kickoff and the wrong one holds 'Confidence #7'. Purely a naming defect, which is exactly why it would survive review: nothing renders differently.",
+      "find": "        <span class=\"game-confidence\">",
+      "replace": "        <span class=\"game-kickoff\">",
+      "expect_caught_by": "test_nothing_is_still_called_a_kickoff_that_is_not_one"
+    }
+  ]
+}
