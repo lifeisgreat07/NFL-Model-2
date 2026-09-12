@@ -43,6 +43,20 @@
       "find": "      <div class=\"pick-agrees\">Model B picks: ${modelBPick}${pick ? (sharedPicksView",
       "replace": "      ${trackRecordHtml(g.mktB_home)}\n      <div class=\"pick-agrees\">Model B picks: ${modelBPick}${pick ? (sharedPicksView",
       "expect_caught_by": "test_the_track_record_block_is_off_this_card_but_not_the_board"
+    },
+    {
+      "id": "board-card-loses-the-kickoff-it-is-sorted-by",
+      "why": "the Week Board card stops printing its kickoff while renderGames still SORTS by kickoff. This is the defect that actually shipped in the first cut of this branch and was caught by looking at the page, not by the suite: the board was reordered by a fact it never displayed, so the cards appeared in an order with no visible explanation. Nothing errors, every test about My Picks still passes, and the only symptom is a reader asking why the games are in that order.",
+      "find": "      ${kickoff ? `<div class=\"card-kickoff\">${kickoff}</div>` : ''}\n      <div class=\"game-top\">",
+      "replace": "      <div class=\"game-top\">",
+      "expect_caught_by": "test_the_week_board_card_shows_the_kickoff_it_is_sorted_by"
+    },
+    {
+      "id": "confidence-span-goes-back-to-being-called-a-kickoff",
+      "why": "the confidence rank's class reverts to .game-kickoff, which is what it was called for months while holding no kickoff at all. With a real .card-kickoff now on the same card, two differently-named elements would both claim to be the kickoff and the wrong one holds 'Confidence #7'. Purely a naming defect, which is exactly why it would survive review: nothing renders differently.",
+      "find": "        <span class=\"game-confidence\">",
+      "replace": "        <span class=\"game-kickoff\">",
+      "expect_caught_by": "test_nothing_is_still_called_a_kickoff_that_is_not_one"
     }
   ]
 }

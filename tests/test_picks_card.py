@@ -159,3 +159,56 @@ def test_the_card_still_says_what_model_b_picked(source):
     picks = re.search(r'grid\.innerHTML = gamesList\.map\(g=>\{.*?\}\)\.join',
                       source, re.S)
     assert 'Model B picks:' in picks.group(0)
+
+
+# ---------------------------------------------------------------------------
+# The kickoff line belongs to the CARD, not to one page.
+#
+# The first cut put it on My Picks only, and the Week Board -- which had just
+# been reordered BY kickoff -- still showed no kickoff anywhere. Sorting by a
+# fact you do not display is the kind of gap that reads as correct in a diff
+# and as broken on the screen, and it was caught by looking at the rendered
+# page rather than by anything here. These tests exist so it cannot come back.
+# ---------------------------------------------------------------------------
+
+def test_both_cards_print_the_kickoff_through_the_same_helper(source):
+    """One helper, one class, both render paths.
+
+    Two copies of "the kickoff line" drift, and the one that drifts is always
+    the page nobody was looking at -- which is the argument matchupHeader
+    already makes in this file for the title above it.
+    """
+    assert source.count('= kickoffLabel(g)') == 2, (
+        'exactly two cards should build a kickoff: the Week Board and My '
+        'Picks. A third call, or a missing one, means a page is either '
+        'duplicating the helper or has silently lost its kickoff line.')
+    assert source.count('class="card-kickoff"') == 2, (
+        'both cards render the kickoff into .card-kickoff')
+
+
+def test_the_week_board_card_shows_the_kickoff_it_is_sorted_by(source):
+    """The Board orders games by kickoff; it has to say what that kickoff is."""
+    board = re.search(r'return `<div class="game-card \$\{g\.flag.*?game-top',
+                      source, re.S)
+    assert board, 'the Week Board card template is no longer findable'
+    assert 'card-kickoff' in board.group(0), (
+        'the Week Board card has lost its kickoff line while still being '
+        'sorted by kickoff')
+
+
+def test_nothing_is_still_called_a_kickoff_that_is_not_one(source):
+    """.game-kickoff held a confidence rank. The name was a booby trap.
+
+    It was documented as one in this file for a fortnight before a real
+    kickoff arrived and collided with it. Renamed to .game-confidence; this
+    test is what stops the old name being reintroduced by muscle memory.
+    """
+    assert '.game-kickoff{' not in source, (
+        'a .game-kickoff rule is back in the stylesheet. The name still '
+        'appears in two comments on purpose -- the rule that replaced it and '
+        'the note that predicted the collision both say what it used to be -- '
+        'so this checks the stylesheet and the markup, not the whole file.')
+    assert 'class="game-kickoff"' not in source, (
+        '.game-kickoff is back. It never held a kickoff -- it holds the '
+        'confidence rank, and is called .game-confidence for that reason.')
+    assert 'class="game-confidence"' in source

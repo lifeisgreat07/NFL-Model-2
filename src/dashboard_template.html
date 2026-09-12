@@ -528,11 +528,17 @@
   .pick-logo{width:36px; height:36px; object-fit:contain;}
   .pick-abbr{font-size:15px; font-weight:700; letter-spacing:.02em;}
   .pick-btn.selected{background:var(--accent); border-color:var(--accent); color:var(--bg);}
-  /* Sits between the matchup and the buttons, quiet like the matchup above it:
-     the card's header is WHICH game and WHEN, and the choice is what should
-     draw the eye. Empty string from kickoffLabel() renders no element at all
-     rather than a blank line. */
-  .pick-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px;
+  /* One class, both pages. Sits under the matchup on the Week Board and
+     between the matchup and the buttons on My Picks, quiet in both places:
+     the card's header is WHICH game and WHEN, and what the card is FOR --
+     the models on one page, the choice on the other -- is what should draw
+     the eye. Empty string from kickoffLabel() renders no element at all
+     rather than a blank line.
+
+     Shared rather than duplicated per page for the reason matchupHeader is:
+     two copies of "the kickoff line" drift, and the one that drifts is
+     always the page nobody was looking at. */
+  .card-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px;
     color:var(--text-2); letter-spacing:.03em; margin-bottom:2px;}
   .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--text-2); margin-top:8px;}
 
@@ -706,7 +712,7 @@
   .matchup-header{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   .at-symbol{color:var(--text-2); font-weight:500;}
   /* My Picks' variant. These values are not a new design choice -- they are
-     what .game-top > .game-kickoff produced there, measured on the rendered
+     what .game-top > .game-confidence produced there, measured on the rendered
      page before the two render paths were merged into one helper: 11px,
      weight 400, --text-2, .03em, and the 16px the wrapper carried. The card
      is meant to look exactly as it did.
@@ -718,7 +724,12 @@
      "NE at SEA" without anyone deciding to. */
   .matchup-header.quiet{display:block; font-weight:400; font-size:11px;
     color:var(--text-2); letter-spacing:.03em; margin-bottom:16px;}
-  .game-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2); letter-spacing:.03em;}
+  /* WAS .game-kickoff, which held a confidence rank and never a kickoff. The
+     name was flagged in this file as a collision waiting to happen, and the
+     collision arrived the moment a real kickoff went on the card. Renamed
+     rather than worked around, because the next person to read
+     `.game-kickoff` would have believed it. */
+  .game-confidence{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2); letter-spacing:.03em;}
   .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
   .tag-good{background:var(--good-dim); color:var(--good);}
   .tag-warn{background:var(--warn-dim); color:var(--warn);}
@@ -2327,9 +2338,12 @@ function renderWeekGlance(gamesList){
    way past. The variant keeps the CSS free to differ while the MARKUP can
    only be written once.
 
-   Note for whoever adds a real kickoff time: `.game-kickoff` is now used
-   only by the Week Board, where it holds the confidence rank. The name
-   describes nothing it contains and will collide with an actual kickoff. */
+   The note that used to sit here warned that `.game-kickoff` held a
+   confidence rank and would collide with a real kickoff. That happened, and
+   the class is now `.game-confidence`; the kickoff line on both cards is
+   `.card-kickoff`. Left as a record rather than deleted: the warning was
+   written a fortnight before the collision, which is the argument for
+   writing them down at all. */
 /* ---------- The pick button ----------
    A team tile rather than a word: a logo above the abbreviation, so the thing
    you tap is recognisable at a glance instead of three capital letters.
@@ -2528,10 +2542,12 @@ function renderGames(){
         ${marginHtml}
         ${trackRecordHtml(g.mktB_home, 'panel')}
       </div>` : '';
+    const kickoff = kickoffLabel(g);
     return `<div class="game-card ${g.flag?'has-flag':''}">
       ${matchupHeader(g)}
+      ${kickoff ? `<div class="card-kickoff">${kickoff}</div>` : ''}
       <div class="game-top">
-        <span class="game-kickoff">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}${g.confidence_points ? ` · ${g.confidence_points} pts` : ''}</span>
+        <span class="game-confidence">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}${g.confidence_points ? ` · ${g.confidence_points} pts` : ''}</span>
         <div class="tag-row" style="display:flex; gap:6px; align-items:center;">
           ${gradedTag}
           ${/* The badge says WHETHER the models disagree, not by how much. It
@@ -2995,7 +3011,7 @@ function renderPicksGrid(){
     const kickoff = kickoffLabel(g);
     return `<div class="game-card">
       ${matchupHeader(g, 'quiet')}
-      ${kickoff ? `<div class="pick-kickoff">${kickoff}</div>` : ''}
+      ${kickoff ? `<div class="card-kickoff">${kickoff}</div>` : ''}
       <div class="pick-buttons" data-pid="${pid}">
         ${pickButton(g.away, pick)}
         ${pickButton(g.home, pick)}
