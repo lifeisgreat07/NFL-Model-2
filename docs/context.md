@@ -41,16 +41,14 @@ Branch names in full — `src/session_start.py` cross-checks them against git.
 
 1. **Date/time on the SURFACE — the pipeline half merged as #62.** Records
    carry `gameday`/`gametime_et`/`weekday`; the Week Board ignores them.
-   Chronological sort, start time on the card, stepper range. Two things
-   first: nothing renders until the Tuesday run saves week 2, and week 1 is
-   permanently dateless unless backfilled — decide that, it decides whether
-   the sort has anything to sort. ET becomes EST in November, so no naive
-   local-zone conversion. Channel has no source; a new feed, Stage 6.
-2. **Week 1's missing date — decide before the surface work.** Backfill it as
-   a stated, additive exception to write-once (they are schedule facts, not
-   model outputs, and cannot flatter the model), or leave one permanently
-   blank week in the stepper. A backfill needs a test proving no existing key
-   changed, and a revision of the guard that currently asserts week 1 has none.
+   Chronological sort, start time on the card, stepper range. Nothing renders
+   until the Tuesday run saves week 2, and week 1 stays dateless (item 2), so
+   the dateless case is the FIRST case, not an edge one. ET becomes EST in
+   November, so no naive local-zone conversion. Channel has no source.
+2. **Week 1's missing date — DECIDED 2026-09-12: no backfill.** The week is
+   played, so a date on it is cosmetic and not worth an exception to
+   write-once. Consequence: the Week Board must render a dateless week
+   properly and the sort must place it sanely. Do not re-open this.
 3. **Re-step `--accent` against `--series-a`.** They are 8.1 dE00 apart in light
    and 6.6 under red-green CVD, below the floor of 15, and Booth proved on #60
    that they DO share a screen — the onboarding banner's Model A dot and the
