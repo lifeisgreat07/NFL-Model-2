@@ -1254,7 +1254,22 @@
       </div>
     </div>
     <div class="filter-row">
-      <select id="picks-week-select" class="week-select"></select>
+      <!-- The same control the Week Board uses, driven by the same code with
+           prefix `picks-week`. It was a bare <select> here, which meant the
+           identical job looked like two different controls depending on the
+           tab -- and on a phone one of them was the iOS system wheel while the
+           other was a pair of arrows. The <select> stays as the single source
+           of truth and the no-script fallback, exactly as on the Board. -->
+      <div class="week-step" id="picks-week-step">
+        <button type="button" class="week-step-btn" id="picks-week-prev" aria-label="Previous week">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <span class="week-step-label" id="picks-week-step-label" aria-live="polite"></span>
+        <button type="button" class="week-step-btn" id="picks-week-next" aria-label="Next week">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <select id="picks-week-select" class="week-select visually-hidden" aria-label="Week"></select>
       <button class="filter-btn" onclick="copyShareLink(this)">Copy Share Link</button>
       <button class="filter-btn" onclick="exportMyPicks()">Export My Picks</button>
       <button class="filter-btn" onclick="document.getElementById('picks-import-input').click()">Import My Picks</button>
@@ -1905,12 +1920,24 @@ function weekLabel(key){
 /* ---------- Week stepper ----------
    The hidden <select> owns the selection; these only move it and then read it
    back. Two controls writing the same state independently is how they drift,
-   and the arrows would be the ones to get it wrong. */
-function syncWeekStepper(){
-  const sel = document.getElementById('week-select');
-  const label = document.getElementById('week-step-label');
-  const prev = document.getElementById('week-prev');
-  const next = document.getElementById('week-next');
+   and the arrows would be the ones to get it wrong.
+
+   TAKES A PREFIX because two pages use it. The Week Board had this control and
+   My Picks had a bare <select>, so the same job looked like two different
+   things depending on which tab you were on -- and on a phone one of them was
+   the iOS wheel. The fix is one implementation driven twice, not a second
+   copy: a copied stepper is the `.game-card` story again, where one edit
+   landed on one of two render paths and the diff looked complete.
+
+   Element ids are `<prefix>-select`, `<prefix>-step-label`, `<prefix>-prev`
+   and `<prefix>-next`. The Board's existing ids already fit that shape with
+   prefix `week`, and My Picks' select was already `picks-week-select`, so
+   nothing was renamed to make this work. */
+function syncWeekStepper(prefix){
+  const sel = document.getElementById(`${prefix}-select`);
+  const label = document.getElementById(`${prefix}-step-label`);
+  const prev = document.getElementById(`${prefix}-prev`);
+  const next = document.getElementById(`${prefix}-next`);
   if(!sel || !label || !prev || !next) return;
   const i = weekKeysSorted.indexOf(sel.value);
   label.textContent = i === -1 ? '—' : weekLabel(sel.value);
@@ -1920,8 +1947,8 @@ function syncWeekStepper(){
   next.disabled = i === -1 || i >= weekKeysSorted.length - 1;
 }
 
-function wireWeekStepper(){
-  const sel = document.getElementById('week-select');
+function wireWeekStepper(prefix){
+  const sel = document.getElementById(`${prefix}-select`);
   if(!sel) return;
   const step = d => {
     const i = weekKeysSorted.indexOf(sel.value);
@@ -1932,11 +1959,11 @@ function wireWeekStepper(){
     // does, so the stepper can never take a path the dropdown does not.
     sel.dispatchEvent(new Event('change'));
   };
-  const prev = document.getElementById('week-prev');
-  const next = document.getElementById('week-next');
+  const prev = document.getElementById(`${prefix}-prev`);
+  const next = document.getElementById(`${prefix}-next`);
   if(prev) prev.addEventListener('click', ()=>step(-1));
   if(next) next.addEventListener('click', ()=>step(1));
-  syncWeekStepper();
+  syncWeekStepper(prefix);
 }
 
 const OVERFLOW_PAGES = ['teamdive','method','roadmap','modellab','datasources','reliability','compare','glossary'];
@@ -2501,10 +2528,10 @@ populateWeekSelect(document.getElementById('week-select'), (val)=>{
   // than a flicker. A slow machine gets more turns, not a stutter.
   brandMark.start();
   renderGames();
-  syncWeekStepper();
+  syncWeekStepper('week');
   brandMark.stop();
 }, latestWeekKey);
-wireWeekStepper();
+wireWeekStepper('week');
 document.getElementById('sort-select').addEventListener('change', (e)=>{ currentSort = e.target.value; renderGames(); });
 renderGames();
 
@@ -2685,6 +2712,14 @@ function showSharedPicks(decoded){
   currentPicksWeek = decoded.weekKey;
   const sel = document.getElementById('picks-week-select');
   if(sel) sel.value = decoded.weekKey;
+  // Deliberately NOT a change event: that handler ends the shared view, so
+  // dispatching one here would close the thing it is opening. The select is
+  // moved directly and the stepper is told about it, which is the one case
+  // where the "let the select emit and everyone listens" rule cannot apply.
+  // Without this the arrows and their label keep showing the previous week
+  // while the grid shows the shared one -- two controls disagreeing about the
+  // same state, which is the exact failure a shared stepper exists to prevent.
+  syncWeekStepper('picks-week');
 
   const banner = document.getElementById('shared-picks-banner');
   const note = document.getElementById('shared-picks-note');
@@ -2952,7 +2987,9 @@ populateWeekSelect(document.getElementById('picks-week-select'), (val)=>{
   if(sharedPicksView && val !== sharedPicksView.weekKey) exitSharedPicks();
   currentPicksWeek = val;
   renderPicksGrid();
+  syncWeekStepper('picks-week');
 }, latestWeekKey);
+wireWeekStepper('picks-week');
 renderPicksGrid();
 // Last, so every function and the week selector it touches already exist.
 readSharedPicksFromUrl();
