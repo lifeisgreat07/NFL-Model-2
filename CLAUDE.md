@@ -47,7 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **918 passing** (1 skipped) on `main` (2026-09-12, after PR #63). Run it before quoting
+Suite: **1044 passing** (1 skipped) on `main` (2026-09-12, after PR #67 and #66). Run it before quoting
 it — this line read 174 for three days after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -789,6 +789,62 @@ under compaction pressure, so its length is a cost paid on every session.
 
 ## Traps that have actually bitten
 
+- **A figure nobody can trace to a command is the worst kind of wrong, because
+  it reads as evidence.** PR #67's body claimed the pre-PR tap target was
+  `163x62`. It was `163x41`. Booth measured it against the exact commit the
+  sentence named; so did I, afterwards, and got 41 too. The `88` was measured
+  and the `62` was not — and it could not be traced to any run at all. Two
+  things generalise. First, the tell was available at writing time: I could not
+  have said which command produced it, and that question is the check. **Before
+  a figure goes in a body, name the command that produced it, or delete the
+  figure.** Second, it *understated* the improvement — +47px/+115% was written
+  as +26px/+42%. A fabricated number does not flatter you; it lands anywhere,
+  which is why "but it was in the right direction" is not reassurance. A third,
+  smaller point: quoting a WIDTH in a before/after pair was wrong in principle,
+  because `.pick-btn` is `flex:1` and its width follows the viewport while only
+  the height is a property of the change.
+- **Scope a figure to the commit it was measured at, and it survives the base
+  moving.** This is the stronger version of the "number right when written,
+  falsified by the base moving" trap below, and it was demonstrated rather than
+  theorised. #66's body said "Measured at `4f76432`, after pushing". The branch
+  later merged `main`, which moved the suite from 961 to 1044 and the corpus
+  from 25 files to 28 — and Booth, rather than reporting four discrepancies,
+  built a worktree AT `4f76432` and confirmed every one of them there. The
+  prediction going in was that the merge would manufacture discrepancies; it
+  did not, purely because the original author had written down which commit the
+  numbers described. **Name the SHA next to the numbers.** The one claim that
+  did fail was the one sentence carrying no scope: the opening "One commit.",
+  falsified the moment a merge commit arrived.
+- **Sorting by a fact you do not display.** #65 ordered the Week Board by
+  kickoff. #67's first cut put the kickoff line on My Picks only. The Board
+  therefore presented its cards in an order with nothing on the page to explain
+  it — nothing errored, every test passed, and the only symptom was a human
+  asking why one page had the date and the other did not. The durable shape is
+  **an invisible sort key**: whenever ordering changes, check that the thing
+  being ordered by is on screen. Now `board-card-loses-the-kickoff-it-is-sorted-by`
+  in the mutation corpus.
+- **A green suite does not prove a mutation corpus still works.**
+  `test_every_anchor_still_matches_exactly_once` is parametrized per case and
+  proves each `find` string still RESOLVES — it never runs the mutation. A case
+  can therefore anchor cleanly and still be caught by the wrong guard, or by
+  nothing. After merging two branches that had both edited
+  `src/dashboard_template.html`, all 147 cases were run individually (147/147
+  CAUGHT) precisely because clean auto-merge only means no two edits touched the
+  same *lines*.
+- **Booth's environment is not the same from run to run.** #67's audit drove
+  headless Chromium and confirmed a rendered-geometry table. #66's audit, an
+  hour later, had no browser, no Playwright and no `node_modules`, returned
+  UNVERIFIABLE for the same class of claim, and fell back to CSS box-model
+  arithmetic. Do not read UNVERIFIABLE on a render claim as doubt about the
+  claim; check which runner it landed on. Conversely, do not assume a render
+  claim will be checked just because one was last time.
+- **Stack onto `main`, not onto an open PR, whenever the work allows.** The
+  picks-card branch was cut from an open PR and merged another open branch in,
+  so its diff against that base carried four already-merged commits: 15 files,
+  1091 insertions, most of it already audited. Cherry-picking the single commit
+  onto `main` produced 6 files and 334 insertions — the actual change. The two
+  PRs then merged in either order, with a one-digit README conflict either way,
+  verified by test-merging both directions before choosing.
 - **Reading your own code back is not verification, and the failure is
   asymmetric.** Stage 8's design phase re-derived every numeric claim rather
   than believing it: contrast by recomputing WCAG luminance from the hex

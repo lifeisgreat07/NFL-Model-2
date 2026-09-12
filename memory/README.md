@@ -30,3 +30,4 @@ decision, leave it out.
 | [2026-09-09](2026-09-09.md) | #44 merged; the wrap-up gate and its pytest guard were found disagreeing about dates; METHODOLOGY.md turned out never to have existed |
 | [2026-09-10](2026-09-10.md) | Stage 8's design phase closed; re-deriving every colour and geometry claim caught three false ones, two of them mine |
 | [2026-09-11](2026-09-11.md) | #58, #59 and #61 merged; a test was found silently skipping in CI since #58; the session's lesson is that a number in prose needs something that recomputes it |
+| [2026-09-12](2026-09-12.md) | #64, #65, #66 and #67 merged and the remote cut to one branch; a PR body was caught carrying a figure no command had produced; scoping a number to its commit proved to be what keeps it true |
