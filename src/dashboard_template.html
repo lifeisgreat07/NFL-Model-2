@@ -518,9 +518,28 @@
 
   .pick-buttons{display:flex; gap:8px; margin-top:14px;}
   .pick-btn{flex:1; background:transparent; border:1.5px solid var(--border); color:var(--text);
-    font-family:'Plus Jakarta Sans'; font-weight:700; font-size:15px; padding:10px 6px; border-radius:8px;
+    font-family:'Plus Jakarta Sans'; font-weight:700; font-size:15px; padding:12px 6px; border-radius:8px;
+    display:flex; flex-direction:column; align-items:center; gap:7px;
     cursor:pointer; transition:background-color var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease), transform var(--dur-fast) var(--ease);}
+  /* 36px against the 20px the Week Board's telemetry rows use. That is not an
+     inconsistency: those sit inline inside a probability bar where the team is
+     a label, and this is the thing being chosen. The tap target grew with it,
+     which is the accessibility half of the same change. */
+  .pick-logo{width:36px; height:36px; object-fit:contain;}
+  .pick-abbr{font-size:15px; font-weight:700; letter-spacing:.02em;}
   .pick-btn.selected{background:var(--accent); border-color:var(--accent); color:var(--bg);}
+  /* One class, both pages. Sits under the matchup on the Week Board and
+     between the matchup and the buttons on My Picks, quiet in both places:
+     the card's header is WHICH game and WHEN, and what the card is FOR --
+     the models on one page, the choice on the other -- is what should draw
+     the eye. Empty string from kickoffLabel() renders no element at all
+     rather than a blank line.
+
+     Shared rather than duplicated per page for the reason matchupHeader is:
+     two copies of "the kickoff line" drift, and the one that drifts is
+     always the page nobody was looking at. */
+  .card-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px;
+    color:var(--text-2); letter-spacing:.03em; margin-bottom:2px;}
   .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--text-2); margin-top:8px;}
 
   .accuracy-cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-bottom:20px;}
@@ -693,7 +712,7 @@
   .matchup-header{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:15px; margin-bottom:10px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
   .at-symbol{color:var(--text-2); font-weight:500;}
   /* My Picks' variant. These values are not a new design choice -- they are
-     what .game-top > .game-kickoff produced there, measured on the rendered
+     what .game-top > .game-confidence produced there, measured on the rendered
      page before the two render paths were merged into one helper: 11px,
      weight 400, --text-2, .03em, and the 16px the wrapper carried. The card
      is meant to look exactly as it did.
@@ -705,7 +724,12 @@
      "NE at SEA" without anyone deciding to. */
   .matchup-header.quiet{display:block; font-weight:400; font-size:11px;
     color:var(--text-2); letter-spacing:.03em; margin-bottom:16px;}
-  .game-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2); letter-spacing:.03em;}
+  /* WAS .game-kickoff, which held a confidence rank and never a kickoff. The
+     name was flagged in this file as a collision waiting to happen, and the
+     collision arrived the moment a real kickoff went on the card. Renamed
+     rather than worked around, because the next person to read
+     `.game-kickoff` would have believed it. */
+  .game-confidence{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2); letter-spacing:.03em;}
   .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
   .tag-good{background:var(--good-dim); color:var(--good);}
   .tag-warn{background:var(--warn-dim); color:var(--warn);}
@@ -1195,8 +1219,13 @@
            the arrows drive it and it emits the change event, so there is one
            state, not two. It is also the fallback if this markup is ever
            rendered somewhere the stepper's script does not run.
-           No date range: the mock showed "Sep 11-15" and the pipeline has no
-           date field on a week at all - only season, week and games. -->
+           No date range. This used to say the pipeline had no date field at
+           all; that stopped being true when gameday/gametime_et/weekday were
+           added to the prediction record, so the reason is now a choice and
+           not a limitation: a week's span is a derived claim (min and max
+           kickoff) that would be wrong for any week saved before those fields
+           existed, and it would sit above a board that already prints each
+           game's own kickoff. One date per game, stated where the game is. -->
       <div class="week-step" id="week-step">
         <button type="button" class="week-step-btn" id="week-prev" aria-label="Previous week">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -2309,9 +2338,30 @@ function renderWeekGlance(gamesList){
    way past. The variant keeps the CSS free to differ while the MARKUP can
    only be written once.
 
-   Note for whoever adds a real kickoff time: `.game-kickoff` is now used
-   only by the Week Board, where it holds the confidence rank. The name
-   describes nothing it contains and will collide with an actual kickoff. */
+   The note that used to sit here warned that `.game-kickoff` held a
+   confidence rank and would collide with a real kickoff. That happened, and
+   the class is now `.game-confidence`; the kickoff line on both cards is
+   `.card-kickoff`. Left as a record rather than deleted: the warning was
+   written a fortnight before the collision, which is the argument for
+   writing them down at all. */
+/* ---------- The pick button ----------
+   A team tile rather than a word: a logo above the abbreviation, so the thing
+   you tap is recognisable at a glance instead of three capital letters.
+
+   The logo is decorative and carries alt="" deliberately. The abbreviation is
+   real text beside it, so a screen reader that announced both would read the
+   team twice; and the button's accessible name has to stay the abbreviation
+   because that is what the pick is recorded as. onerror hides the image
+   rather than leaving a broken-image glyph -- the logos come from a third
+   party and the tile has to survive that host being unreachable, which is why
+   the abbreviation is the text and not the picture. */
+function pickButton(team, pick){
+  return `<button class="pick-btn ${pick===team?'selected':''}" data-team="${team}">`
+    + `<img class="pick-logo" src="${teamLogo(team)}" alt="" loading="lazy" onerror="this.style.display='none'">`
+    + `<span class="pick-abbr">${team}</span>`
+    + `</button>`;
+}
+
 function matchupHeader(g, variant){
   return `<div class="matchup-header${variant ? ' ' + variant : ''}">${g.away} <span class="at-symbol">at</span> ${g.home}</div>`;
 }
@@ -2334,6 +2384,33 @@ function matchupHeader(g, variant){
    At module scope so the suite can execute them -- the comparator they serve
    lives inside renderGames(), which needs a DOM and a week of real data, and
    a sort nobody can run is a sort nobody can check. */
+/* ---------- Kickoff, in words ----------
+   Built from the string parts, never from a Date, for the same reason
+   kickoffKey below is a string compare: the stored time is EASTERN, and a
+   Date is interpreted in the reader's zone, so "8:20 PM ET" would quietly
+   become 5:20 PM for anyone on the west coast while still reading as a
+   correct-looking kickoff. ET is stated in the output because a time whose
+   zone is unstated is unfalsifiable by whoever reads it.
+
+   Returns '' rather than a placeholder when there is no date. A week saved
+   before these fields existed has none, and an empty string renders nothing
+   at all -- which is honest -- where "TBD" would be a claim nobody made. */
+const KICKOFF_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun',
+                        'Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function kickoffLabel(g){
+  if(!g.gameday) return '';
+  const parts = g.gameday.split('-');
+  const date = `${KICKOFF_MONTHS[Number(parts[1]) - 1]} ${Number(parts[2])}`;
+  const day = g.weekday ? `${g.weekday}, ` : '';
+  if(!g.gametime_et) return `${day}${date}`;
+  const hm = g.gametime_et.split(':');
+  const hour24 = Number(hm[0]);
+  const suffix = hour24 >= 12 ? 'PM' : 'AM';
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return `${day}${date} · ${hour12}:${hm[1]} ${suffix} ET`;
+}
+
 function kickoffKey(g){
   return g.gameday ? `${g.gameday}T${g.gametime_et || '00:00'}` : null;
 }
@@ -2465,10 +2542,12 @@ function renderGames(){
         ${marginHtml}
         ${trackRecordHtml(g.mktB_home, 'panel')}
       </div>` : '';
+    const kickoff = kickoffLabel(g);
     return `<div class="game-card ${g.flag?'has-flag':''}">
       ${matchupHeader(g)}
+      ${kickoff ? `<div class="card-kickoff">${kickoff}</div>` : ''}
       <div class="game-top">
-        <span class="game-kickoff">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}${g.confidence_points ? ` · ${g.confidence_points} pts` : ''}</span>
+        <span class="game-confidence">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}${g.confidence_points ? ` · ${g.confidence_points} pts` : ''}</span>
         <div class="tag-row" style="display:flex; gap:6px; align-items:center;">
           ${gradedTag}
           ${/* The badge says WHETHER the models disagree, not by how much. It
@@ -2929,16 +3008,17 @@ function renderPicksGrid(){
     const pid = currentPicksWeek+'|'+g.home+'|'+g.away;
     const pick = myPicks[pid];
     const modelBPick = g.mktB_home >= 50 ? g.home : g.away;
+    const kickoff = kickoffLabel(g);
     return `<div class="game-card">
       ${matchupHeader(g, 'quiet')}
+      ${kickoff ? `<div class="card-kickoff">${kickoff}</div>` : ''}
       <div class="pick-buttons" data-pid="${pid}">
-        <button class="pick-btn ${pick===g.away?'selected':''}" data-team="${g.away}">${g.away}</button>
-        <button class="pick-btn ${pick===g.home?'selected':''}" data-team="${g.home}">${g.home}</button>
+        ${pickButton(g.away, pick)}
+        ${pickButton(g.home, pick)}
       </div>
       <div class="pick-agrees">Model B picks: ${modelBPick}${pick ? (sharedPicksView
         ? (pick===modelBPick ? ' (they agree)' : ' (they differ)')
         : (pick===modelBPick ? ' (you agree)' : ' (you differ)')) : ''}</div>
-      ${trackRecordHtml(g.mktB_home)}
     </div>`;
   }).join('');
 
