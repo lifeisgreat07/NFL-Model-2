@@ -2964,6 +2964,65 @@ function importMyPicks(file){
   reader.readAsText(file);
 }
 
+/* ---------- One card, one pick ----------
+   The single implementation of "what a card looks like given a pick". It is
+   called for every card by renderPicksGrid, and for exactly one card by the
+   tap handler and by Undo -- so the full render and the surgical update
+   cannot drift, which is the .game-card failure this repo has already paid
+   for once: two render paths, one edit, a diff that looked complete.
+
+   Everything else on a picks card -- the matchup, the kickoff -- is
+   independent of the pick and is never redrawn. */
+function paintPickCard(group, pick){
+  if(!group) return;
+  const modelBPick = group.dataset.modelB;
+  group.querySelectorAll('.pick-btn').forEach(btn=>{
+    btn.classList.toggle('selected', btn.dataset.team === pick);
+    // The button is a control with a persistent on/off state, so it says so
+    // rather than relying on a colour a screen reader cannot see.
+    btn.setAttribute('aria-pressed', btn.dataset.team === pick ? 'true' : 'false');
+  });
+  const agrees = group.parentElement && group.parentElement.querySelector('.pick-agrees');
+  if(agrees) agrees.textContent = pickAgreesText(pick, modelBPick);
+}
+
+/* Whose picks are being described changes the pronoun, and that is the only
+   thing sharedPicksView changes here. Extracted so the sentence exists once. */
+function pickAgreesText(pick, modelBPick){
+  if(!pick) return `Model B picks: ${modelBPick}`;
+  const agree = pick === modelBPick;
+  const suffix = sharedPicksView
+    ? (agree ? ' (they agree)' : ' (they differ)')
+    : (agree ? ' (you agree)' : ' (you differ)');
+  return `Model B picks: ${modelBPick}${suffix}`;
+}
+
+/* The record badge and the streak strip are the only things outside a card
+   that a single pick can change. They sit above the grid, not under the
+   finger, so redrawing them costs nothing the user can feel. */
+function refreshPickTotals(myPicks){
+  const badge = document.getElementById('picks-record-badge');
+  let wins=0, losses=0;
+  weekKeysSorted.forEach(k=>{
+    (weeks[k].games||[]).forEach(g=>{
+      const pid = k+'|'+g.home+'|'+g.away;
+      const pick = myPicks[pid];
+      if(pick && g.graded && g.actual_home_win !== null){
+        const actualWinner = g.actual_home_win ? g.home : g.away;
+        if(pick === actualWinner) wins++; else losses++;
+      }
+    });
+  });
+  // In shared view the only picks in hand are the one week that was shared,
+  // so the badge must not read as a season record -- it would be understating
+  // whatever the sharer's real record is.
+  if(badge) badge.textContent = sharedPicksView
+    ? ((wins+losses)>0 ? `${wins}-${losses} on this shared week` : 'Shared week not graded yet')
+    : ((wins+losses)>0 ? `${wins}-${losses} on graded picks` : 'No graded picks yet');
+
+  renderPicksStreak(myPicks);
+}
+
 function renderPicksStreak(myPicks){
   const container = document.getElementById('picks-streak-strip');
   const weekRecords = []; // {label, wins, losses, status}
@@ -3029,26 +3088,7 @@ function renderPicksGrid(){
     return;
   }
 
-  // record across ALL graded weeks where a pick was logged
-  let wins=0, losses=0;
-  weekKeysSorted.forEach(k=>{
-    (weeks[k].games||[]).forEach(g=>{
-      const pid = k+'|'+g.home+'|'+g.away;
-      const pick = myPicks[pid];
-      if(pick && g.graded && g.actual_home_win !== null){
-        const actualWinner = g.actual_home_win ? g.home : g.away;
-        if(pick === actualWinner) wins++; else losses++;
-      }
-    });
-  });
-  // In shared view the only picks in hand are the one week that was shared,
-  // so the badge must not read as a season record -- it would be understating
-  // whatever the sharer's real record is.
-  badge.textContent = sharedPicksView
-    ? ((wins+losses)>0 ? `${wins}-${losses} on this shared week` : 'Shared week not graded yet')
-    : ((wins+losses)>0 ? `${wins}-${losses} on graded picks` : 'No graded picks yet');
-
-  renderPicksStreak(myPicks);
+  refreshPickTotals(myPicks);
 
   grid.innerHTML = gamesList.map(g=>{
     const pid = currentPicksWeek+'|'+g.home+'|'+g.away;
@@ -3058,15 +3098,23 @@ function renderPicksGrid(){
     return `<div class="game-card">
       ${matchupHeader(g, 'quiet')}
       ${kickoff ? `<div class="card-kickoff">${kickoff}</div>` : ''}
-      <div class="pick-buttons" data-pid="${pid}">
+      <div class="pick-buttons" data-pid="${pid}" data-model-b="${modelBPick}">
         ${pickButton(g.away, pick)}
         ${pickButton(g.home, pick)}
       </div>
-      <div class="pick-agrees">Model B picks: ${modelBPick}${pick ? (sharedPicksView
-        ? (pick===modelBPick ? ' (they agree)' : ' (they differ)')
-        : (pick===modelBPick ? ' (you agree)' : ' (you differ)')) : ''}</div>
+      <div class="pick-agrees"></div>
     </div>`;
   }).join('');
+
+  // paintPickCard is the LAST writer on every path, including this one. The
+  // markup above still emits `selected` so the first frame is never wrong,
+  // but the class it wrote is immediately re-derived here -- so if the two
+  // ever disagree, the single authority wins rather than the string template.
+  // `.pick-agrees` is emitted empty for the same reason: one implementation
+  // of that sentence, not two that drift.
+  grid.querySelectorAll('.pick-buttons').forEach(group=>{
+    paintPickCard(group, myPicks[group.dataset.pid]);
+  });
 
   // No handlers at all in shared view. Disabling them here rather than
   // ignoring the click inside the handler means there is no path from a tap
@@ -3089,7 +3137,25 @@ function renderPicksGrid(){
         }
         lastPickChange = {pid, previous};
         saveMyPicks(picks);
-        renderPicksGrid();
+        // NOT renderPicksGrid(). That replaces the whole grid through
+        // innerHTML, which destroys the button being tapped along with every
+        // other card -- and on iOS the page jumps to the top when the element
+        // under your finger is removed mid-tap. Reported from a phone:
+        // "changing my pick on cards below the first two scrolls to the top".
+        // It does not reproduce in headless Chromium, which has scroll
+        // anchoring on by default and absorbs it; that is a difference in
+        // engines, not evidence there was nothing to fix.
+        //
+        // It is also the rule this repo already wrote down after an open
+        // breakdown vanished on a filter change: a wholesale innerHTML
+        // re-render silently destroys interaction state. Focus, the active
+        // touch and the scroll position are all interaction state.
+        //
+        // Nothing else on the card depends on the pick, so nothing else needs
+        // redrawing. The totals above the grid do, and they are not under the
+        // finger.
+        paintPickCard(group, picks[pid]);
+        refreshPickTotals(picks);
         showUndoToast();
       });
     });
@@ -3115,9 +3181,16 @@ function showUndoToast(){
       picks[lastPickChange.pid] = lastPickChange.previous;
     }
     saveMyPicks(picks);
+    const pid = lastPickChange.pid;
     lastPickChange = null;
     toast.classList.remove('visible');
-    renderPicksGrid();
+    // Same surgical path as the tap that created this toast. Undo is not
+    // under the finger, but routing it through renderPicksGrid would leave
+    // two ways for a card to reach its painted state, and the one nobody
+    // looks at is the one that drifts.
+    const group = document.querySelector(`#picks-grid .pick-buttons[data-pid="${CSS.escape(pid)}"]`);
+    paintPickCard(group, picks[pid]);
+    refreshPickTotals(picks);
   };
   clearTimeout(showUndoToast._timer);
   showUndoToast._timer = setTimeout(()=>{ toast.classList.remove('visible'); }, 5000);
