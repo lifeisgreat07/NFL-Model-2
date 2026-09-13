@@ -1,16 +1,16 @@
 {
-  "generated_utc": "2026-09-13T01:40:17Z",
+  "generated_utc": "2026-09-13T02:34:08Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 83,
-    "audits_superseded": 32,
-    "pull_requests_audited": 51,
+    "audits_total": 88,
+    "audits_superseded": 36,
+    "pull_requests_audited": 52,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 459,
+    "claims_checked": 474,
     "discrepancies_found": 20,
-    "unverifiable": 26,
+    "unverifiable": 27,
     "pull_requests_with_a_discrepancy": 12,
-    "reports_disagreeing_with_themselves": 9
+    "reports_disagreeing_with_themselves": 8
   },
   "audits": [
     {
@@ -1560,6 +1560,100 @@
         "prose says Confirmed: 12, block has 11",
         "prose says Unverifiable: 2, block has 3"
       ],
+      "superseded": true
+    },
+    {
+      "pr": 69,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/69#issuecomment-5650077985",
+      "posted_utc": "2026-09-13T01:56:04Z",
+      "head": "52a4bb5",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 16,
+      "confirmed": 14,
+      "discrepancies": 1,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "README.md"
+      ],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 69,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/69#issuecomment-5650129257",
+      "posted_utc": "2026-09-13T02:07:48Z",
+      "head": "52a4bb5",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 12,
+      "confirmed": 9,
+      "discrepancies": 1,
+      "unverifiable": 2,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "PR #69 description (Commits section)"
+      ],
+      "inconsistencies": [
+        "prose says Confirmed: 10, block has 9",
+        "prose says Unverifiable: 1, block has 2"
+      ],
+      "superseded": true
+    },
+    {
+      "pr": 69,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/69#issuecomment-5650191885",
+      "posted_utc": "2026-09-13T02:21:14Z",
+      "head": "52a4bb5",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 11,
+      "confirmed": 9,
+      "discrepancies": 1,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "PR #69 description (Commits section)"
+      ],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 70,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/70#issuecomment-5650232776",
+      "posted_utc": "2026-09-13T02:29:21Z",
+      "head": "d83a60d",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 13,
+      "confirmed": 11,
+      "discrepancies": 0,
+      "unverifiable": 2,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 69,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/69#issuecomment-5650264351",
+      "posted_utc": "2026-09-13T02:33:38Z",
+      "head": "52a4bb5",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 16,
+      "confirmed": 14,
+      "discrepancies": 0,
+      "unverifiable": 2,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
       "superseded": false
     }
   ]
