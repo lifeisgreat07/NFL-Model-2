@@ -155,10 +155,28 @@ def test_the_track_record_block_is_off_this_card_but_not_the_board(source):
 
 
 def test_the_card_still_says_what_model_b_picked(source):
-    """Explicitly kept, so a later tidy-up does not read it as clutter."""
-    picks = re.search(r'grid\.innerHTML = gamesList\.map\(g=>\{.*?\}\)\.join',
-                      source, re.S)
-    assert 'Model B picks:' in picks.group(0)
+    """Explicitly kept, so a later tidy-up does not read it as clutter.
+
+    Re-anchored when the sentence moved out of the card template. It used to
+    be built inline inside `grid.innerHTML = gamesList.map(...)`; it is now
+    written by `pickAgreesText()`, because the card is painted surgically on a
+    pick change rather than rebuilt, and a sentence that exists in two places
+    is a sentence that drifts. The guard follows the text to its single
+    source rather than being relaxed -- an assertion that stops naming where
+    the thing lives is how a real removal later reads as green.
+    """
+    fn = re.search(r'function pickAgreesText\([^)]*\)\{.*?\n\}\n', source, re.S)
+    assert fn, (
+        'pickAgreesText is gone. If the Model B sentence moved again, '
+        're-anchor this test on its new home rather than deleting it.')
+    assert 'Model B picks:' in fn.group(0)
+
+    # And it still reaches the card: the paint function is what writes it, and
+    # the template leaves an element for it to write into.
+    assert 'pickAgreesText(' in source, 'nothing calls pickAgreesText'
+    assert re.search(r'<div class="pick-agrees"></div>', source), (
+        'the card no longer has a .pick-agrees element for the sentence to '
+        'land in, so pickAgreesText would compute a string nobody shows')
 
 
 # ---------------------------------------------------------------------------

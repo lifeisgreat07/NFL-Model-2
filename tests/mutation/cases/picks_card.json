@@ -40,8 +40,8 @@
     {
       "id": "picks-card-track-record-block-comes-back",
       "why": "the removed block returns to the My Picks card. Worth a case because the removal is scoped -- it still renders twice on the Week Board -- so 'is it gone' cannot be answered by grepping the file for the function name, and a future change that re-adds it here would look like a restoration rather than a regression.",
-      "find": "      <div class=\"pick-agrees\">Model B picks: ${modelBPick}${pick ? (sharedPicksView",
-      "replace": "      ${trackRecordHtml(g.mktB_home)}\n      <div class=\"pick-agrees\">Model B picks: ${modelBPick}${pick ? (sharedPicksView",
+      "find": "      <div class=\"pick-agrees\"></div>",
+      "replace": "      ${trackRecordHtml(g.mktB_home)}\n      <div class=\"pick-agrees\"></div>",
       "expect_caught_by": "test_the_track_record_block_is_off_this_card_but_not_the_board"
     },
     {

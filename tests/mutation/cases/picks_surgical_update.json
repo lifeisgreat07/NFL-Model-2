@@ -1,0 +1,48 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_picks_surgical_update.py",
+  "cases": [
+    {
+      "id": "picks-tap-rebuilds-the-whole-grid-again",
+      "why": "the exact defect that was reported from a phone. renderPicksGrid() replaces the grid through innerHTML, so the button being tapped is destroyed mid-tap along with every other card, and iOS scrolls to the top. It is the obvious call to reach for, it is what was there, and nothing catches it: the suite stays green, the desktop page behaves perfectly, and headless Chromium absorbs it because scroll anchoring is on by default. Only a person on a phone, scrolled past the second card, ever sees it.",
+      "find": "        paintPickCard(group, picks[pid]);\n        refreshPickTotals(picks);\n        showUndoToast();",
+      "replace": "        renderPicksGrid();\n        showUndoToast();",
+      "expect_caught_by": "test_changing_a_pick_does_not_rebuild_the_grid"
+    },
+    {
+      "id": "picks-totals-refreshed-with-nothing",
+      "why": "refreshPickTotals() is called with no argument, which is the mistake actually made while writing this change. It indexes the object it is given, so it throws -- but only AFTER paintPickCard has already run, so the card updates correctly and the tap looks like it worked. What silently stops is the record badge, the streak strip, and the Undo toast, because the throw lands before showUndoToast(). Invisible to the suite and to anyone not watching the console; found only because the browser probe had a pageerror listener attached.",
+      "find": "        refreshPickTotals(picks);\n        showUndoToast();",
+      "replace": "        refreshPickTotals();\n        showUndoToast();",
+      "expect_caught_by": "test_the_totals_are_refreshed_with_the_picks_they_describe"
+    },
+    {
+      "id": "picks-full-render-stops-repainting-each-card",
+      "why": "the full render stops re-deriving each card through paintPickCard, leaving the card template's inline `selected` class as the only authority on first paint and paintPickCard as the authority afterwards. Two opinions about the same state, agreeing today. It renders identically right now, which is exactly why it would survive review -- the divergence only appears the next time one of the two is edited.",
+      "find": "  grid.querySelectorAll('.pick-buttons').forEach(group=>{\n    paintPickCard(group, myPicks[group.dataset.pid]);\n  });",
+      "replace": "",
+      "expect_caught_by": "test_the_full_render_repaints_every_card_through_the_same_function"
+    },
+    {
+      "id": "picks-agrees-sentence-goes-back-in-the-template",
+      "why": "the Model B sentence is rebuilt inline in the card template, as it was before. The paint function still writes its own copy, so the sentence now exists in two places whose wording both change with sharedPicksView -- and the one that renders depends on whether the card was built or repainted. The reader sees a correct sentence either way until somebody edits one of them.",
+      "find": "      <div class=\"pick-agrees\"></div>",
+      "replace": "      <div class=\"pick-agrees\">Model B picks: ${modelBPick}</div>",
+      "expect_caught_by": "test_the_agrees_sentence_is_written_by_the_paint_and_not_the_template"
+    },
+    {
+      "id": "picks-button-stops-announcing-its-state",
+      "why": "aria-pressed is dropped, so which team is picked is conveyed by colour alone. The page looks identical, every behavioural test passes, and a screen-reader user can no longer tell which of the two buttons is their pick -- on the page whose entire purpose is recording that choice.",
+      "find": "    btn.setAttribute('aria-pressed', btn.dataset.team === pick ? 'true' : 'false');",
+      "replace": "",
+      "expect_caught_by": "test_a_pick_button_reports_its_state_to_assistive_technology"
+    },
+    {
+      "id": "picks-undo-rebuilds-the-grid-instead-of-repainting",
+      "why": "Undo goes back to a full rebuild. It is not under the user's finger, so the scroll symptom does not return -- which is precisely what makes this the tempting simplification. What comes back is a second way for a card to reach its painted state, and the path nobody looks at is the one that drifts. This repo has already paid for that once with two .game-card render paths.",
+      "find": "    const group = document.querySelector(`#picks-grid .pick-buttons[data-pid=\"${CSS.escape(pid)}\"]`);\n    paintPickCard(group, picks[pid]);\n    refreshPickTotals(picks);",
+      "replace": "    renderPicksGrid();",
+      "expect_caught_by": "test_one_function_paints_a_card_and_every_path_uses_it"
+    }
+  ]
+}
