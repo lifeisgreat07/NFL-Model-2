@@ -350,6 +350,77 @@
   }
   .week-select:focus{outline:1px solid var(--accent);}
 
+  /* ---------- Listbox ----------
+     The replacement for a native <select> as the VISIBLE control. Not a
+     restyle: `appearance:none` on .week-select above changes the closed box
+     and does nothing to the picker iOS opens on tap, which is the whole
+     complaint. The only way to stop the system wheel is to stop using a
+     native select as the thing anyone sees.
+
+     This is also Stage 9's "one button component with real variants and
+     states". Building the button separately from the listbox would write the
+     same hover/focus/press/disabled behaviour twice, so .lbx-btn IS that
+     component and the list is what it opens.
+
+     Elevation is a border, not a shadow: the open list floats over content
+     with --border-strong and no box-shadow, so --shadow-overlay keeps the
+     consumer count docs/design/STAGE8-DESIGN.md states for it.
+
+     Every value here is a token. The control it replaces carried 12px, 9px
+     14px, 8px and a 160px minimum as literals, which is what Stage 8 exists
+     to stop. */
+  .lbx{position:relative; display:inline-block;}
+  .lbx-btn{
+    display:inline-flex; align-items:center; gap:var(--s2);
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12); font-weight:500;
+    padding:var(--s2) var(--s3); border-radius:var(--r-md); cursor:pointer;
+    min-width:160px; text-align:left;
+    transition:border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease);
+  }
+  .lbx-value{flex:1;}
+  .lbx-btn .lbx-chevron{
+    width:16px; height:16px; flex-shrink:0; color:var(--text-3);
+    transition:transform var(--dur-base) var(--ease);
+  }
+  /* currentColor, not a hardcoded stroke in a data-URI. .week-select's chevron
+     is `%238A93A8`, which is a dark-theme grey baked into a URL and therefore
+     wrong in light mode -- the same literal as teamColor()'s fallback. A
+     chevron that inherits cannot have that defect. */
+  .lbx-btn:hover{border-color:var(--accent); color:var(--text);}
+  .lbx-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .lbx-btn:active{transform:var(--press);}
+  .lbx-btn[aria-expanded="true"]{border-color:var(--accent); color:var(--accent);}
+  .lbx-btn[aria-expanded="true"] .lbx-chevron{transform:rotate(180deg); color:var(--accent);}
+  .lbx-btn:disabled{color:var(--text-disabled); cursor:default; border-color:var(--border);}
+  .lbx-btn:disabled .lbx-chevron{color:var(--text-disabled);}
+
+  .lbx-list{
+    position:absolute; top:calc(100% + var(--s1)); left:0; z-index:var(--z-overlay);
+    min-width:100%; max-height:min(320px, 60vh); overflow-y:auto;
+    background:var(--surface); border:1px solid var(--border-strong);
+    border-radius:var(--r-md); padding:var(--s1); margin:0; list-style:none;
+  }
+  .lbx-list[hidden]{display:none;}
+  .lbx-opt{
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12);
+    color:var(--text-2); padding:var(--s2) var(--s3); border-radius:var(--r-sm);
+    cursor:pointer; white-space:nowrap;
+    display:flex; align-items:center; gap:var(--s2);
+  }
+  /* The tick is always in the DOM and only changes opacity, so choosing an
+     option cannot reflow the list under the pointer mid-click. */
+  .lbx-opt::before{
+    content:''; width:6px; height:6px; border-radius:var(--r-full); flex-shrink:0;
+    background:var(--accent); opacity:0;
+  }
+  .lbx-opt[aria-selected="true"]{color:var(--text); font-weight:600;}
+  .lbx-opt[aria-selected="true"]::before{opacity:1;}
+  /* .is-active is keyboard position, aria-selected is the chosen value. They
+     are different things and a listbox that conflates them tells a screen
+     reader the selection moved when only the cursor did. */
+  .lbx-opt.is-active{background:var(--surface-2); color:var(--text);}
+
   /* The week stepper. Matches .week-select's height and border so the control
      row reads as one row of controls rather than a stepper beside a form. */
   .week-step{display:inline-flex; align-items:center; gap:2px; background:var(--surface);
@@ -1236,7 +1307,11 @@
         </button>
       </div>
       <select id="week-select" class="week-select visually-hidden" aria-label="Week"></select>
-      <select id="sort-select" class="week-select">
+      <!-- Ships VISIBLE and is hidden by enhanceSelect() once the listbox is
+           built, so a no-script reader keeps a working control. The list is
+           built entirely by script; hiding this in the markup the way the week
+           stepper does would leave nothing here at all. -->
+      <select id="sort-select" class="week-select" aria-label="Sort">
         <option value="chronological">Sort: First Game to Last</option>
         <option value="confidence">Sort: Most Confident First</option>
         <option value="confidence_asc">Sort: Closest Games First</option>
@@ -1996,6 +2071,204 @@ function wireWeekStepper(prefix){
   syncWeekStepper(prefix);
 }
 
+/* ---------- Listbox ----------
+   Replaces a native <select> as the VISIBLE control, for the reason recorded
+   on .lbx in the stylesheet: `appearance:none` restyles the closed box and
+   leaves the iOS system wheel exactly where it was.
+
+   Same contract as the week stepper above, deliberately: THE SELECT STILL OWNS
+   THE VALUE. This reads it, renders it, and writes back through
+   sel.value + dispatchEvent('change') -- so every consumer keeps listening to
+   the one element it already listened to, and the listbox cannot reach a state
+   the select could not. Nothing downstream of this knows it exists.
+
+   TAKES AN ELEMENT, never an id. #teamdive-select is next and is populated at
+   runtime, so the second consumer must be this same function rather than a
+   copy -- the .game-card lesson, where two render paths drifted because one
+   edit landed on one of them and the diff looked complete. refresh() exists
+   for exactly that case: a select whose options arrive after enhancement.
+
+   PROGRESSIVE ENHANCEMENT, and this is where it departs from the week
+   stepper. That control hardcodes `visually-hidden` in the markup, which is
+   safe there because its arrows are static markup that exist without
+   JavaScript. This list is built entirely by script, so hiding the select in
+   the markup would leave a no-script reader with no control at all. The class
+   is therefore applied HERE, after the list is successfully built, and the
+   select ships visible. */
+function enhanceSelect(sel){
+  if(!sel || sel.dataset.lbx === 'on') return null;
+
+  const wrap = document.createElement('div');
+  wrap.className = 'lbx';
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'lbx-btn';
+  btn.id = `${sel.id}-lbx-btn`;
+  btn.setAttribute('aria-haspopup', 'listbox');
+  btn.setAttribute('aria-expanded', 'false');
+  const lbl = sel.getAttribute('aria-label');
+  if(lbl) btn.setAttribute('aria-label', lbl);
+  btn.innerHTML = `<span class="lbx-value"></span>`
+    + `<svg class="lbx-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor"`
+    + ` stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">`
+    + `<path d="M6 9l6 6 6-6"/></svg>`;
+  const list = document.createElement('ul');
+  list.className = 'lbx-list';
+  list.id = `${sel.id}-lbx-list`;
+  list.setAttribute('role', 'listbox');
+  list.tabIndex = -1;
+  list.hidden = true;
+  if(lbl) list.setAttribute('aria-label', lbl);
+
+  sel.parentNode.insertBefore(wrap, sel);
+  wrap.appendChild(btn);
+  wrap.appendChild(list);
+  wrap.appendChild(sel);
+  sel.classList.add('visually-hidden');
+  sel.dataset.lbx = 'on';
+  sel.setAttribute('tabindex', '-1');
+
+  let open = false, active = -1, typed = '', typedAt = 0;
+  const opts = () => [...list.children];
+
+  function build(){
+    list.innerHTML = '';
+    [...sel.options].forEach((o, i) => {
+      const li = document.createElement('li');
+      li.className = 'lbx-opt';
+      li.id = `${sel.id}-lbx-opt-${i}`;
+      li.setAttribute('role', 'option');
+      li.dataset.value = o.value;
+      li.textContent = o.textContent;
+      list.appendChild(li);
+    });
+    sync();
+  }
+
+  /* One place decides what is selected, and it reads the select. Writing the
+     label from the click handler instead would let the button disagree with
+     the value whenever anything else moved it. */
+  function sync(){
+    const i = sel.selectedIndex;
+    btn.querySelector('.lbx-value').textContent = i === -1 ? '' : sel.options[i].textContent;
+    opts().forEach((li, j) => li.setAttribute('aria-selected', j === i ? 'true' : 'false'));
+    btn.disabled = sel.disabled || sel.options.length === 0;
+  }
+
+  function setActive(i){
+    const items = opts();
+    if(!items.length) return;
+    active = Math.max(0, Math.min(i, items.length - 1));
+    items.forEach((li, j) => li.classList.toggle('is-active', j === active));
+    const li = items[active];
+    list.setAttribute('aria-activedescendant', li.id);
+    // block:'nearest' so opening on a mid-list selection does not jump the
+    // page; the list is the scroll container, not the document.
+    li.scrollIntoView({block: 'nearest'});
+  }
+
+  function openList(){
+    if(open || btn.disabled) return;
+    build();
+    open = true;
+    list.hidden = false;
+    btn.setAttribute('aria-expanded', 'true');
+    setActive(sel.selectedIndex === -1 ? 0 : sel.selectedIndex);
+    list.focus();
+  }
+
+  function closeList(focusBtn){
+    if(!open) return;
+    open = false;
+    list.hidden = true;
+    btn.setAttribute('aria-expanded', 'false');
+    list.removeAttribute('aria-activedescendant');
+    if(focusBtn) btn.focus();
+  }
+
+  /* The write-back, and the only one. Setting .value without dispatching is
+     how a control goes silently out of sync with the page it drives. */
+  function choose(i){
+    const items = opts();
+    if(i < 0 || i >= items.length) return;
+    sel.value = items[i].dataset.value;
+    sync();
+    sel.dispatchEvent(new Event('change'));
+    closeList(true);
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    open ? closeList(true) : openList();
+  });
+  btn.addEventListener('keydown', (e) => {
+    if(e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      openList();
+    }
+  });
+
+  list.addEventListener('click', (e) => {
+    const li = e.target.closest('.lbx-opt');
+    if(li) choose(opts().indexOf(li));
+  });
+  list.addEventListener('mousemove', (e) => {
+    const li = e.target.closest('.lbx-opt');
+    if(li) setActive(opts().indexOf(li));
+  });
+  /* Type-ahead. The 700ms window is what makes "ch" find Chronological rather
+     than jumping to C and then to H. */
+  const TYPE_WINDOW = 700;
+  const typing = () => typed && Date.now() - typedAt < TYPE_WINDOW;
+  function typeAhead(ch){
+    const now = Date.now();
+    typed = (typing() ? typed : '') + ch.toLowerCase();
+    typedAt = now;
+    const j = opts().findIndex(li => li.textContent.toLowerCase().startsWith(typed));
+    if(j !== -1) setActive(j);
+  }
+
+  list.addEventListener('keydown', (e) => {
+    const n = opts().length;
+    switch(e.key){
+      case 'ArrowDown': e.preventDefault(); setActive(active + 1); break;
+      case 'ArrowUp':   e.preventDefault(); setActive(active - 1); break;
+      case 'Home':      e.preventDefault(); setActive(0); break;
+      case 'End':       e.preventDefault(); setActive(n - 1); break;
+      case 'Enter':     e.preventDefault(); choose(active); break;
+      /* Space is BOTH "select" and a character, and which one it is depends on
+         whether a search is in flight. Every option here starts "Sort: ", so a
+         space that always selected would make type-ahead reach nothing past
+         the first word -- measured: typing "sort: b" chose option 0 and closed
+         the list instead of finding "Sort: Biggest Model Disagreement". Inside
+         the window it extends the search; outside it, it selects. */
+      case ' ':
+        e.preventDefault();
+        if(typing()) typeAhead(' '); else choose(active);
+        break;
+      case 'Escape':    e.preventDefault(); closeList(true); break;
+      case 'Tab':       closeList(false); break;
+      default:
+        if(e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey){
+          typeAhead(e.key);
+        }
+    }
+  });
+  list.addEventListener('focusout', (e) => {
+    if(!wrap.contains(e.relatedTarget)) closeList(false);
+  });
+  document.addEventListener('click', (e) => {
+    if(open && !wrap.contains(e.target)) closeList(false);
+  });
+
+  // Anything that moves the select -- the stepper, a share link, a filter
+  // reset -- redraws the button through the same path a click takes.
+  sel.addEventListener('change', sync);
+
+  build();
+  return {refresh: build};
+}
+
 const OVERFLOW_PAGES = ['teamdive','method','roadmap','modellab','datasources','reliability','compare','glossary'];
 function setActivePage(pageId){
   document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active', b.dataset.page===pageId));
@@ -2663,6 +2936,11 @@ populateWeekSelect(document.getElementById('week-select'), (val)=>{
 }, latestWeekKey);
 wireWeekStepper('week');
 document.getElementById('sort-select').addEventListener('change', (e)=>{ currentSort = e.target.value; renderGames(); });
+/* After the change listener, not before. enhanceSelect() writes back through
+   dispatchEvent('change'), so wiring it first would build a control whose
+   clicks reached nothing -- the written-tested-never-called shape, in the one
+   ordering where it still looks correct on screen. */
+enhanceSelect(document.getElementById('sort-select'));
 renderGames();
 
 /* ---------- Onboarding banner (first-visit only) ---------- */

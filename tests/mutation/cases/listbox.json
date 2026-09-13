@@ -1,0 +1,62 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_listbox.py",
+  "cases": [
+    {
+      "id": "listbox-writes-straight-to-the-renderer",
+      "why": "the listbox calls renderGames() itself instead of dispatching change. It works perfectly on the Week Board and quietly breaks the contract: the select is no longer the element that owns the selection, so anything else that moves it -- the stepper, a share link, a future reset -- leaves the button label and the grid disagreeing about the same state with neither one wrong. This is the two-controls-writing-independently failure the week stepper comment above it exists to prevent.",
+      "find": "    sel.dispatchEvent(new Event('change'));\n    closeList(true);",
+      "replace": "    renderGames();\n    closeList(true);",
+      "expect_caught_by": "test_the_select_still_owns_the_value"
+    },
+    {
+      "id": "listbox-reaches-for-an-id-again",
+      "why": "enhanceSelect stops taking an element and names the Week Board's select directly. It keeps working here and can never serve #teamdive-select, so the second page needs a copied implementation -- the .game-card story, where the same markup lived in two render paths, one edit landed on one of them, and the diff looked complete either way.",
+      "find": "function enhanceSelect(sel){\n  if(!sel || sel.dataset.lbx === 'on') return null;",
+      "replace": "function enhanceSelect(){\n  const sel = document.getElementById('sort-select');\n  if(!sel || sel.dataset.lbx === 'on') return null;",
+      "expect_caught_by": "test_it_takes_an_element_and_never_an_id"
+    },
+    {
+      "id": "listbox-select-is-hidden-in-the-markup",
+      "why": "the select ships visually-hidden, which is the tidy-up a reader makes on seeing enhanceSelect hide it anyway -- and it matches what the week stepper's markup does, so it looks like consistency. With JavaScript off there is then no sort control on the page at all, because unlike the stepper's arrows this list does not exist until a script builds it. Nothing errors and the rendered page is identical for everyone else.",
+      "find": "      <select id=\"sort-select\" class=\"week-select\" aria-label=\"Sort\">",
+      "replace": "      <select id=\"sort-select\" class=\"week-select visually-hidden\" aria-label=\"Sort\">",
+      "expect_caught_by": "test_the_native_select_is_hidden_by_script_not_by_markup"
+    },
+    {
+      "id": "listbox-is-built-before-its-change-listener",
+      "why": "enhanceSelect is called one line earlier, above the change listener rather than below it. The control renders correctly, opens, highlights, closes and shows the chosen label -- and the board never re-sorts, because the change it dispatches reaches a listener that does not exist yet. Every visual check passes; only sorting is dead.",
+      "find": "document.getElementById('sort-select').addEventListener('change', (e)=>{ currentSort = e.target.value; renderGames(); });",
+      "replace": "enhanceSelect(document.getElementById('sort-select'));\ndocument.getElementById('sort-select').addEventListener('change', (e)=>{ currentSort = e.target.value; renderGames(); });",
+      "expect_caught_by": "test_the_listbox_is_actually_wired_and_wired_late_enough"
+    },
+    {
+      "id": "listbox-space-always-selects",
+      "why": "the Space arm stops asking whether a search is in flight. This is the defect that shipped in the first working build and that no amount of source reading found: every option begins \"Sort: \", so the first space typed selects whatever is under the cursor and closes the list. Type-ahead can never reach past the first word. Measured before the fix: typing \"sort: b\" chose option 0 instead of finding \"Sort: Biggest Model Disagreement\".",
+      "find": "        if(typing()) typeAhead(' '); else choose(active);",
+      "replace": "        choose(active);",
+      "expect_caught_by": "test_space_extends_a_search_in_flight_rather_than_selecting"
+    },
+    {
+      "id": "listbox-drops-aria-activedescendant",
+      "why": "the list stops publishing which option the keyboard is on. Sighted keyboard users still see .is-active move, every behavioural check still passes, and a screen-reader user hears nothing as they arrow through the list -- the option under the cursor is simply never announced. It is the piece most often dropped because it is the one with no visual consequence.",
+      "find": "    list.setAttribute('aria-activedescendant', li.id);",
+      "replace": "",
+      "expect_caught_by": "test_it_speaks_listbox_to_the_accessibility_tree"
+    },
+    {
+      "id": "listbox-chevron-gets-a-baked-in-hex",
+      "why": "the chevron stops inheriting and takes .week-select's exact stroke colour. In dark mode it is indistinguishable from correct. In light mode it is a dark-theme grey on a white surface -- the same defect, from the same literal, that teamColor()'s fallback has and that Stage 11 has queued as an accessibility item.",
+      "find": "<svg class=\"lbx-chevron\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"`",
+      "replace": "<svg class=\"lbx-chevron\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#8A93A8\"`",
+      "expect_caught_by": "test_the_chevron_inherits_its_colour"
+    },
+    {
+      "id": "listbox-styles-reintroduce-a-literal-padding",
+      "why": "one padding goes back to a hardcoded pair. It is exactly the change that feels harmless while nudging a control's height, and it is how .week-select accumulated the 31 ad-hoc spacing values Stage 8 exists to answer. A new component is where retired scales come back, one declaration at a time, each with a good local reason.",
+      "find": "    padding:var(--s2) var(--s3); border-radius:var(--r-md); cursor:pointer;",
+      "replace": "    padding:9px 14px; border-radius:var(--r-md); cursor:pointer;",
+      "expect_caught_by": "test_the_listbox_styles_use_tokens_for_spacing_type_and_radius"
+    }
+  ]
+}
