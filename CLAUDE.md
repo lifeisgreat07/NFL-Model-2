@@ -665,9 +665,11 @@ probability bars in favour of `--series` tokens — `teamColor()` falls back to 
 literal `#8A93A8` (the old dark `--chalk-dim`, retired in `007cebe`), so it is
 wrong in light mode -- and that same literal is baked into `.week-select`'s
 chevron data-URI, a second site nothing had recorded, and red-vs-blue
-bars read as bad-vs-good rather than as two teams. Disambiguate amber, which
-currently means brand, active nav, sorted column, flagged state and series-b at
-once.
+bars read as bad-vs-good rather than as two teams. Disambiguate amber -- DONE
+by Stage 8b (`c90a222`): `--amber` is gone, brand, active nav, sorted column
+and the flagged card all wear `--accent`, which is a blue, and the only ochre
+left is `--series-b`, Model B's chart series. When this was written amber
+meant all five at once.
 
 Beyond that: the Net Rating bar was deliberately left amber in Stage 2 with a
 note saying sign-encoding belongs here. A diverging pair with a neutral
@@ -730,10 +732,13 @@ after it stopped being true (written `69c3b18` 2026-09-06 16:34, corrected
 `b732ee0` 2026-09-07 13:52); the real number was 382. It is the first figure a
 fresh session anchors on.
 
-**What the script checks**, because these cannot be checked continuously:
-the suite count stated above against a real run; a clean working tree;
-nothing committed but unpushed; and which branch you are leaving behind. It
-exits non-zero if any of them fail.
+**What the script checks**, because these cannot be checked continuously --
+six checks, in the order it prints them: which branch you are leaving behind
+(informational, it cannot fail); a clean working tree; nothing committed but
+unpushed; the suite count stated above against a real run; `docs/context.md`
+stamped `Last updated:` today or tomorrow (tomorrow is a timezone, yesterday
+is a file nobody rewrote); and a `memory/` file named for today. It exits
+non-zero if any of the five that can fail do.
 
 **What `tests/test_claude_md_freshness.py` checks**, free, on every commit:
 that every repository path and every test name this file mentions still
@@ -744,18 +749,17 @@ sections -- those name work that does not exist yet, and checking a plan the
 same way you check a description is wrong.
 
 **What neither can check, and matters most.** The script prints these as
-prompts:
+prompts -- the wording below is `BY_HAND` in `src/session_wrapup.py`:
 
-- Does "Current state" describe today -- which stage is in progress, and the
-  next concrete action?
-- Is every PR opened this session either merged, or recorded here with its
-  number and what it is waiting on?
-- Did anything surprise you? A trap entry is cheap now and expensive to
-  reconstruct later. Write the durable shape, not the story.
-- Did a decision get made that a future session would otherwise re-litigate?
-  Record the decision AND the reasoning, or it gets re-opened.
+- Does `docs/context.md` name the single next action, not a list of five?
+- Is every PR opened this session either merged, or in `docs/context.md`
+  with its number and what it is waiting on?
+- Did anything surprise you today? A trap entry is cheap now and expensive
+  to reconstruct later. Prefer the durable shape over the story.
+- Did any decision get made that a future session would otherwise
+  re-litigate? Record the decision AND the reasoning, or it gets re-opened.
 - Are the stage sections still in the order work will actually happen?
-- Is the Progress tab consistent with this file?
+- Is the Progress tab consistent with CLAUDE.md?
 
 **Then re-read this file as if you had never seen it.** Not skimmed -- read.
 Ask of each paragraph whether it changes a decision. If it only records what
@@ -787,8 +791,12 @@ under compaction pressure, so its length is a cost paid on every session.
   General lesson, and the second stale belief this file carried: an inherited
   "you can't do X" with no recorded test behind it is a hypothesis. Spend the
   thirty seconds testing it before building a manual process around it.
-- No `gh` CLI and no PR-body-edit tool. A PR description can be corrected only
-  by the user in the web UI, so get the description right when opening it.
+- No `gh` CLI on `markys`, and no PR-body-edit tool in the MCP set: GitKraken
+  exposes `pull_request_create`, not update. (`gh` does exist inside the
+  Actions runners -- Booth's workflow calls `gh pr view` and `gh pr comment`
+  -- but nothing in the repo edits a PR body with it.) A PR description can
+  be corrected only by the user in the web UI, so get the description right
+  when opening it.
 - `cmd` mangles multi-line `python -c` strings, and **PowerShell has no
   heredocs** — `git commit -F <file>` with a written message file, and script
   files instead of inline `-c`, are the reliable forms.
@@ -948,8 +956,10 @@ under compaction pressure, so its length is a cost paid on every session.
   default.** `run-tests.yml` was red on every pull request for days while
   `booth-pr-audit.yml` ran the identical suite green on the identical commit.
   Nobody investigated, because Booth is the job that gets read. The cause was
-  the actions/checkout default of `fetch-depth: 1`: sixteen tests here read real
-  git history and skip without it, and one — `test_scout_preflight.py`'s
+  the actions/checkout default of `fetch-depth: 1`: the tests here that read
+  real git history skip without it (sixteen when this was written; at
+  `3471df5` five, all in `tests/test_scout_preflight.py` -- four under
+  `needs_history` and the one below), and one — `test_scout_preflight.py`'s
   exit-code test — built its fixture from the last three non-merge commits,
   found one, manufactured nothing, and failed on its own empty fixture. Both
   workflows now set `fetch-depth: 0` and that test skips instead of failing.
@@ -1207,9 +1217,12 @@ under compaction pressure, so its length is a cost paid on every session.
 - **A plan in this file is a hypothesis about code, and this one was wrong.**
   The Stage 7.5 entry asserted the Roadmap's Done list duplicated the Changelog.
   Checking took one script and found ~3 of 16 overlapping; the rest existed
-  nowhere else. Three earlier inherited claims in this file were also wrong (the
-  "no PR-body-edit tool" line, the SOS "defect", the Team Deep-Dive "Done"
-  status). **Before executing a deletion this file plans, verify the premise
+  nowhere else. Two earlier inherited claims in this file were also wrong (the
+  SOS "defect", the Team Deep-Dive "Done" status). From `0d6c8e1` this sentence
+  listed a third, the "no PR-body-edit tool" line -- but nothing in the repo
+  records what that correction was, and the line still verifies today, so the
+  listing was the unsupported claim, not the line.
+  **Before executing a deletion this file plans, verify the premise
   the plan rests on, and record the correction beside the original.**
 - **A PR description is a separate artifact from the code, and fixing one does
   not fix the other.** Booth flagged a wrong count in #44's description. The
@@ -1358,10 +1371,12 @@ under compaction pressure, so its length is a cost paid on every session.
   that is not actually in the diff. **Refresh local main before every
   pre-flight.**
 - **The full mutation run outlives the 60-second Desktop Commander timeout.**
-  89 cases take several minutes. The tool call returns "device did not respond"
-  while the run continues, so: redirect to a file, poll for completion, read the
-  file — and check `git status` before believing anything, because a killed
-  runner skips the `finally` that restores the mutated file.
+  The corpus takes several minutes -- 89 cases when this was written at
+  `1e75803`, 151 at `3471df5`; `docs/context.md` carries the live count. The
+  tool call returns "device did not respond" while the run continues, so:
+  redirect to a file, poll for completion, read the file — and check
+  `git status` before believing anything, because a killed runner skips the
+  `finally` that restores the mutated file.
 - **`scout_preflight.py` read only the PASSED count too, so a RED suite was
   reported as a stale number. FIXED in `9c3e320` (`SUITE_BROKEN_RE`, and the
   subprocess encoding pinned). `session_wrapup.py` still has the defect.** An entry above records this for

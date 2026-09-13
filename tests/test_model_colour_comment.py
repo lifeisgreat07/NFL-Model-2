@@ -1,6 +1,6 @@
 """The colour figures in the model-identity comment must match the script.
 
-Stage 11 put five measured numbers into a permanent source comment: how far
+Stage 9 put five measured numbers into a permanent source comment: how far
 Model A's dot sits from the pick tick in each theme, under normal vision and
 under red-green CVD, and how far apart the chart series are.
 

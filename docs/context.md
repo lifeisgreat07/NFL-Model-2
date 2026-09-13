@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-12 (#64, #65, #66, #67 merged; no open PRs; no open branches)
+Last updated: 2026-09-12 (#64-#68 merged; one unmerged branch, see below)
 
 ---
 
@@ -14,9 +14,9 @@ Last updated: 2026-09-12 (#64, #65, #66, #67 merged; no open PRs; no open branch
 Mutation corpus: 29 case files, 151 cases (at `6d5147d`; `python` sum over
 each file's `cases` list, not a recalled figure).
 
-**Stage:** 8, 8b and 8c complete. Stage 9 is done apart from one component
-pass. Stage 11's model-colour work is merged; its remaining items are below
-and are accessibility defects, not polish.
+**Stage:** 8, 8b and 8c complete. Stage 9's model-colour work (#60) is
+merged; what remains of Stage 9 is the component pass and the colour items
+below, which are accessibility defects, not polish. There is no Stage 11.
 
 **Next action:** Stage 9's component pass — replace the two native `<select>`
 controls with a real listbox. This is one job, not two: a listbox IS the
@@ -35,10 +35,11 @@ unaffected and is what the gap is for.
 | What | State | Waiting on |
 |---|---|---|
 | The repo's About panel | Empty | Mark. Needs repo settings. Wording in CLAUDE.md |
+| `feat/listbox-sort-select` | Pushed, unmerged | A PR and its audit. #68's branch is merged and only needs deleting |
 | First graded week | Scheduled | Tue 2026-09-15 11:00 UTC. Watch the run, check the output |
 
-No open PRs. No branches but `main` — sixteen were deleted on 2026-09-12,
-each checked with `git merge-base --is-ancestor` before any deletion.
+One unmerged branch besides `main` on the remote: `feat/listbox-sort-select`,
+two commits on `44762da` -- the next action, already begun. No PR verified.
 
 ## Queued, in order
 
