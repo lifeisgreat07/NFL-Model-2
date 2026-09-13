@@ -31,9 +31,10 @@ false that way and sent back. That habit should continue into the port.
    after a game has been scored.** This is load-bearing: a colour that means
    "correct" must never appear on a game that has not happened, or the page is
    lying. It is why the pick emphasis below uses weight and words, not green.
-4. **Chart series identity** -- `--series-a/-b/-m/-p`, keyed to the entity so
-   hiding one never repaints the others, and fenced to charts, legends,
-   end-labels and the swatch on a tile that names the same entity.
+4. **Chart series identity** -- `--series-a/-b/-c/-d` (a = Model A, b = Model
+   B, c = Market, d = My Picks), keyed to the entity so hiding one never
+   repaints the others, and fenced to charts, legends, end-labels and the
+   swatch on a tile that names the same entity.
 
 **Team identity is a logo, never a colour.** An image does not compete with the
 accent for signal. The `.logo` wrapper owns the 20x20 box, not the `<img>`, so
@@ -41,8 +42,10 @@ a failed load never shifts the layout; failure adds `is-fallback`, which draws
 a disc. One capture-phase `error` listener on `document` handles every logo on
 the page, because image errors do not bubble.
 
-**Elevation is a border, not a shadow.** `--shadow-overlay` has exactly one
-consumer, the `.overlay` component.
+**Elevation is a border, not a shadow.** `--shadow-overlay` has exactly two
+consumers in the shipped template: `.undo-toast` and `.rel-tip`. This line said
+one, the `.overlay` component -- `.overlay` was a mock-only element and appears
+zero times in `src/dashboard_template.html`.
 
 ## The token block, verbatim
 
@@ -61,7 +64,7 @@ consumer, the `.overlay` component.
   --accent-soft: rgba(127,168,245,.14); --accent-ring: rgba(127,168,245,.45);
   --graded-correct: #4FAE8A; --graded-correct-soft: rgba(79,174,138,.14);
   --graded-wrong:   #D46C6C; --graded-wrong-soft:   rgba(212,108,108,.14);
-  --series-a: #A78BF7; --series-b: #7EDDE8; --series-m: #D9AE45; --series-p: #D0699C;
+  --series-a: #5283E0; --series-b: #C97F2E; --series-c: #C94893; --series-d: #9A4CF6;
   --shadow-overlay: 0 12px 32px rgba(0,0,0,.5);
   --z-nav: 10; --z-overlay: 20;
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px;
@@ -85,7 +88,7 @@ consumer, the `.overlay` component.
   --accent-soft: rgba(31,94,214,.10); --accent-ring: rgba(31,94,214,.35);
   --graded-correct: #187052; --graded-correct-soft: rgba(24,112,82,.12);
   --graded-wrong:   #B94343; --graded-wrong-soft:   rgba(185,67,67,.10);
-  --series-a: #6D3BC7; --series-b: #0E7C84; --series-m: #8C6410; --series-p: #731847;
+  --series-a: #4C75C3; --series-b: #B26A0C; --series-c: #893365; --series-d: #7D24D3;
   --shadow-overlay: 0 12px 32px rgba(20,24,30,.14);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -93,10 +96,18 @@ consumer, the `.overlay` component.
 }
 ```
 
-Series shapes and dashes, which carry identity when the colour cannot:
-Model A circle / solid, Model B square / `6 3`, Market triangle / `2 3`,
-My Picks diamond / `8 3 2 3`. Dark series values are stepped in lightness
-(L* 64 / 83 / 73 / 58) rather than being a brightness flip of the light ones.
+**The series lines above are the shipped values, not the mocks'.** The mocks
+carried `--series-a/-b/-m/-p` at `#A78BF7 / #7EDDE8 / #D9AE45 / #D0699C` (dark)
+and `#6D3BC7 / #0E7C84 / #8C6410 / #731847` (light). The port kept the
+pre-Stage-8 chart palette on purpose: those four came out of the dataviz
+validator and `tests/test_dashboard_charts.py` enforces its gates (OKLCH
+lightness band, chroma floor, CVD simulation, contrast), and the mock palette
+fails six of those assertions when measured. The reasoning is the token
+comment in `src/dashboard_template.html`; this file records the decision.
+
+Series shapes and dashes, which carry identity when the colour cannot, as
+`SERIES` in the template defines them: Model A circle, Model B square, Market
+triangle, all solid; My Picks diamond / `6,4`.
 
 ## Numbers that were checked, and must stay true
 
@@ -109,13 +120,17 @@ My Picks diamond / `8 3 2 3`. Dark series values are stepped in lightness
   tint over white).
 - **Prohibited pairing:** dark `--text-3` on `--accent-soft` computes to
   3.97:1. It does not occur today. Do not introduce it.
-- Series separation, CIEDE2000 under Machado 2009 at full severity: the light
-  deuteranopia minimum is Model A -- Model B at 15.8, above the >= 15 floor.
-  Light `--series-p` is `#731847` for that reason (it was `#831F52`, which put
-  Model B -- My Picks at 14.7, under the floor). Moving any series colour means
-  re-running that computation, not eyeballing it.
-- Every series also carries a **shape and a dash**, so identity survives
-  greyscale, colour-blindness and forced-colours without the colour at all.
+- Series separation is held by `tests/test_dashboard_charts.py`, against the
+  shipped tokens parsed out of the template: OKLab dE >= 15 for full-colour
+  vision, >= 8 under Machado 2009 CVD, >= 3:1 contrast on the chart surface,
+  and the OKLCH lightness band and chroma floor. Moving any series colour
+  means re-running that suite, not eyeballing it. The figures this bullet
+  used to carry -- a light deuteranopia minimum of 15.8 for Model A -- Model
+  B, and light `--series-p` darkened from `#831F52` to `#731847` to lift
+  Model B -- My Picks from 14.7 -- were CIEDE2000 checks of the MOCK palette
+  and describe nothing shipped.
+- Every series also carries a **shape**, and My Picks a dash, so identity
+  survives greyscale, colour-blindness and forced-colours without the colour.
 
 ## Motion
 

@@ -47,8 +47,8 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1045 passing** (1 skipped) on `main` (2026-09-12, after PR #67 and #66). Run it before quoting
-it — this line read 174 for three days after it stopped being true, and a stale
+Suite: **1061 passing** (1 skipped) on `main` (2026-09-13, after PR #68). Run it before quoting
+it — this line read 174 for about a day after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
 Keep the shape `Suite: **N passing**` exactly. `src/session_wrapup.py` greps for
@@ -57,17 +57,17 @@ check complain about the wording — it reported the line as *missing*, which
 reads like a deleted section rather than an edited sentence.
 
 **Stages 1, 2, 3 and 7.5 are complete. Stage 7.6's repository half is done.
-Stage 8's design phase closed 2026-09-10; its decisions live in
+Stage 8, 8b and 8c are all complete; its decisions live in
 `docs/design/STAGE8-DESIGN.md` and its specification is the pair of mocks
-beside that file. Stage 8b — porting the design into
-`src/dashboard_template.html` — is next.**
+beside that file. Stage 9 is under way -- see `docs/context.md`, which is
+rewritten every session and is the only place current status belongs.**
 
 One habit from that stage is worth keeping whatever you work on: every numeric
 claim about colour or geometry was re-derived before being believed — contrast
 by recomputing WCAG luminance from the hex values, colour-blind separation by
 running the Machado 2009 matrices and CIEDE2000, layout by rendering in
-headless Chromium and reading `getBoundingClientRect`. Three claims were false.
-Two of them were mine. Reading your own CSS back is not verification.
+headless Chromium and reading `getBoundingClientRect`. Five claims were false:
+three of Fable's, and two of mine. Reading your own CSS back is not verification.
 
 ### Start here
 
@@ -76,7 +76,8 @@ rewritten every session and this section is not.** `docs/index.md` maps where
 everything is; `memory/` records what each session decided and why. This file
 keeps what stays true for months: methodology, stage plans, and the traps below.
 
-Merged: #40 through #57. Stage 7.5 has cut 14 pages to **9** — Playoff Odds
+Merged PRs are not listed here -- that list went stale at #57 while main reached #68.
+Stage 7.5 has cut 14 pages to **9** — Playoff Odds
 became a column on Power Ratings, Roadmap folded into Changelog (renamed What's
 Changed), and How This Compares, Data Sources and the Glossary became parts of
 Methodology. The plain-language guard is live and its allowlist is empty.
@@ -172,7 +173,7 @@ Shipped as PRs #21-#24. See "Findings that still constrain the work" above; the 
 corrections it produced are worth reading before starting anything that
 assumes an audit finding is accurate.
 
-### Stage 3 - Agent development  <- IN PROGRESS
+### Stage 3 - Agent development  <- COMPLETE
 
 **Built and merged:** Scout pre-flight, which checks a PR description against
 reality before it opens (`src/scout_preflight.py`, #26). A committed mutation
@@ -208,8 +209,10 @@ text already replaced. Fixed in #30 and #29 respectively.
    stored flag, so an edited expectation stops a recorded pass from counting.
    The loop is complete manually today: assemble, run the prompt in a fresh
    session, record the report.
-   STILL TO DO: a `workflow_dispatch` workflow that invokes the real action,
-   one fixture per dispatch. Booth runs on subscription auth, so it costs no
+   DONE: `.github/workflows/booth-regression.yml` invokes the real action on
+   `workflow_dispatch`, one fixture per dispatch. It landed in `79d5912`,
+   fourteen minutes after the sentence saying it was still to do -- which is
+   why this block is dated rather than trusted. Booth runs on subscription auth, so it costs no
    money — but it does cost usage, so never spend an audit to learn something
    a committed baseline already records.
 2. **The agent decision log.** Listed here as agent work, but it is the item
@@ -416,7 +419,8 @@ allowed only where someone has opted into depth.
 holds a jargon list scoped per page: log loss, Brier, calibration,
 opponent-adjusted, shrinkage, bootstrap, confidence interval and similar are
 BANNED on Boards, My Picks, Power Ratings, Team Deep Dive and Season Accuracy,
-and allowed only on Methodology, Model Lab and the build page. A future session
+and allowed only on Methodology, Model Lab, What's Changed and the build
+page -- `TECHNICAL_PAGES` in that file is four entries, not three. A future session
 adding "the model's Brier score" to Boards fails the suite. Without a guard,
 this pass reverts the first time anyone writes new copy — the same reasoning as
 every other guard in this repo.
@@ -426,9 +430,18 @@ every other guard in this repo.
 - How much room week-by-week net ratings take over a season on Team Deep Dive.
   A layout question Stage 10 owns; deciding it before the Stage 8 direction
   exists means deciding it twice.
-- Import/Export picks buttons staying highlighted after a tap on mobile. A
-  `:focus` state persisting after touch; Stage 9's focus and keyboard pass
-  covers exactly this. Fix earlier only if it is a one-liner.
+- ~~Import/Export picks buttons staying highlighted after a tap on mobile. A
+  `:focus` state persisting after touch.~~ **FIXED in PR #68, and the
+  diagnosis above was wrong.** It was not `:focus` and not touch-specific:
+  the Week Board's filter handler selected `.filter-btn` page-wide, and only
+  three of the nine elements wearing that class are filters. Clicking Export
+  My Picks added `.active` to it, stripped `.active` off All Games, and set
+  `currentFilter` to `undefined`. It reproduces under a programmatic click in
+  headless Chromium with no touch involved, and a focus ring cannot remove a
+  class from a different element -- the half of the symptom the original
+  entry never accounted for. Guarded by `tests/test_filter_button_scope.py`.
+  Kept rather than deleted, because a wrong diagnosis that survived in this
+  file for days is the thing worth remembering.
 
 **Deferred as new features, not cleanup:**
 
@@ -495,8 +508,8 @@ spacing scale with no concept behind it is just tidier arbitrary numbers.
 So Stage 8 starts with the concept, and Stages 9 and 10 execute against it.
 Treat the audit list as the floor, not the goal.
 
-One live tension: everything built in Stages 2-7 uses hardcoded pixel values,
-because the scales do not exist yet. That is deliberate and accepted — the
+One live tension, now resolved: everything built in Stages 2-7 used hardcoded
+pixel values, because the scales did not exist yet. That is deliberate and accepted — the
 ordering was chosen so carried-over work ships first — but it means Stage 8's
 job is bigger than the audit's counts suggest. Reuse an existing class before
 inventing values; every new one is something Stage 8 has to unpick.
@@ -574,9 +587,9 @@ the cost nobody mentions — shadcn is now the default look of a great many
 dashboards, which is a real price for a portfolio piece whose pitch is
 independent judgement.
 
-**Still open, and worth more than any of these tools:** Mark has not yet named a
-dashboard or site whose look he wants. Ask for a concrete reference before
-Stage 8 begins. A token system with no point of view behind it is just tidier
+**Closed:** this asked for a concrete visual reference before Stage 8 began.
+Stage 8 began and closed without one; the concept in
+`docs/design/STAGE8-DESIGN.md` is what answered it. A token system with no point of view behind it is just tidier
 arbitrary numbers — this file says so already, and no connector changes it.
 
 ### Skills to use, and what each is for
@@ -615,10 +628,10 @@ identity is a logo, never a colour; elevation is a border, not a shadow; and
 the graded colours may appear only after a game has been scored, because a
 colour meaning "correct" on a game that has not happened makes the page lie.
 
-**What remains is Stage 8b, the port** — lifting that block into
-`src/dashboard_template.html` and restyling page by page. The template is
-3,250 lines across nine pages; the design was proven against two. Roughly 704
-tests assert on it, several on colour tokens and exact strings. Treat a failing
+**Stage 8b, the port, is DONE** — it lifted that block into
+`src/dashboard_template.html` and restyling page by page. The template was
+3,250 lines across nine pages at `b5d6bb9`; the design was proven against two.
+A great many tests assert on it -- several on colour tokens and exact strings. Treat a failing
 colour assertion as a question, not as something to update to match: those
 tests encode earlier decisions that were themselves argued for.
 
@@ -635,6 +648,12 @@ already existing; a motion system of two durations and one easing replacing
 seven durations, plus a `prefers-reduced-motion` block which does not exist at
 all; an elevation pass so the six shadow tokens are actually used.
 
+**`--shadow-overlay` has TWO consumers, not one.** `docs/design/STAGE8-DESIGN.md`
+says one, the `.overlay` component -- but `.overlay` appears zero times in
+`src/dashboard_template.html`; it was a mock-only element. The real consumers
+are `.undo-toast` and `.rel-tip`, which is what the token comment in the
+template says. Corrected here rather than in only one of the two documents.
+
 Do the concept first. Tokens chosen to serve a direction are a design system;
 tokens chosen to reduce a count are a tidier mess.
 
@@ -642,11 +661,15 @@ tokens chosen to reduce a count are a tidier mess.
 
 **A point of view on colour**, not only the removal of ambiguity. The
 corrective work: retire the 33 hardcoded team-brand hex values driving
-probability bars in favour of `--series` tokens — `teamColor()` falls back to a
-hardcoded dark `--chalk-dim`, so it is wrong in light mode, and red-vs-blue
-bars read as bad-vs-good rather than as two teams. Disambiguate amber, which
-currently means brand, active nav, sorted column, flagged state and series-b at
-once.
+probability bars in favour of `--series` tokens — `teamColor()` falls back to the
+literal `#8A93A8` (the old dark `--chalk-dim`, retired in `007cebe`), so it is
+wrong in light mode -- and that same literal is baked into `.week-select`'s
+chevron data-URI, a second site nothing had recorded, and red-vs-blue
+bars read as bad-vs-good rather than as two teams. Disambiguate amber -- DONE
+by Stage 8b (`c90a222`): `--amber` is gone, brand, active nav, sorted column
+and the flagged card all wear `--accent`, which is a blue, and the only ochre
+left is `--series-b`, Model B's chart series. When this was written amber
+meant all five at once.
 
 Beyond that: the Net Rating bar was deliberately left amber in Stage 2 with a
 note saying sign-encoding belongs here. A diverging pair with a neutral
@@ -704,14 +727,18 @@ reaches a tidy boundary. Whatever is true at that moment is what the next
 session inherits -- and it inherits it through this file, cold, with no memory
 of the conversation that produced it. Every wrong fact here gets believed.
 
-That is not hypothetical. This file said "Suite: 174 passing" for three days
-after it stopped being true; the real number was 382. It is the first figure a
+That is not hypothetical. This file said "Suite: 174 passing" for about a day
+after it stopped being true (written `69c3b18` 2026-09-06 16:34, corrected
+`b732ee0` 2026-09-07 13:52); the real number was 382. It is the first figure a
 fresh session anchors on.
 
-**What the script checks**, because these cannot be checked continuously:
-the suite count stated above against a real run; a clean working tree;
-nothing committed but unpushed; and which branch you are leaving behind. It
-exits non-zero if any of them fail.
+**What the script checks**, because these cannot be checked continuously --
+six checks, in the order it prints them: which branch you are leaving behind
+(informational, it cannot fail); a clean working tree; nothing committed but
+unpushed; the suite count stated above against a real run; `docs/context.md`
+stamped `Last updated:` today or tomorrow (tomorrow is a timezone, yesterday
+is a file nobody rewrote); and a `memory/` file named for today. It exits
+non-zero if any of the five that can fail do.
 
 **What `tests/test_claude_md_freshness.py` checks**, free, on every commit:
 that every repository path and every test name this file mentions still
@@ -722,18 +749,17 @@ sections -- those name work that does not exist yet, and checking a plan the
 same way you check a description is wrong.
 
 **What neither can check, and matters most.** The script prints these as
-prompts:
+prompts -- the wording below is `BY_HAND` in `src/session_wrapup.py`:
 
-- Does "Current state" describe today -- which stage is in progress, and the
-  next concrete action?
-- Is every PR opened this session either merged, or recorded here with its
-  number and what it is waiting on?
-- Did anything surprise you? A trap entry is cheap now and expensive to
-  reconstruct later. Write the durable shape, not the story.
-- Did a decision get made that a future session would otherwise re-litigate?
-  Record the decision AND the reasoning, or it gets re-opened.
+- Does `docs/context.md` name the single next action, not a list of five?
+- Is every PR opened this session either merged, or in `docs/context.md`
+  with its number and what it is waiting on?
+- Did anything surprise you today? A trap entry is cheap now and expensive
+  to reconstruct later. Prefer the durable shape over the story.
+- Did any decision get made that a future session would otherwise
+  re-litigate? Record the decision AND the reasoning, or it gets re-opened.
 - Are the stage sections still in the order work will actually happen?
-- Is the Progress tab consistent with this file?
+- Is the Progress tab consistent with CLAUDE.md?
 
 **Then re-read this file as if you had never seen it.** Not skimmed -- read.
 Ask of each paragraph whether it changes a decision. If it only records what
@@ -765,8 +791,12 @@ under compaction pressure, so its length is a cost paid on every session.
   General lesson, and the second stale belief this file carried: an inherited
   "you can't do X" with no recorded test behind it is a hypothesis. Spend the
   thirty seconds testing it before building a manual process around it.
-- No `gh` CLI and no PR-body-edit tool. A PR description can be corrected only
-  by the user in the web UI, so get the description right when opening it.
+- No `gh` CLI on `markys`, and no PR-body-edit tool in the MCP set: GitKraken
+  exposes `pull_request_create`, not update. (`gh` does exist inside the
+  Actions runners -- Booth's workflow calls `gh pr view` and `gh pr comment`
+  -- but nothing in the repo edits a PR body with it.) A PR description can
+  be corrected only by the user in the web UI, so get the description right
+  when opening it.
 - `cmd` mangles multi-line `python -c` strings, and **PowerShell has no
   heredocs** — `git commit -F <file>` with a written message file, and script
   files instead of inline `-c`, are the reliable forms.
@@ -926,8 +956,10 @@ under compaction pressure, so its length is a cost paid on every session.
   default.** `run-tests.yml` was red on every pull request for days while
   `booth-pr-audit.yml` ran the identical suite green on the identical commit.
   Nobody investigated, because Booth is the job that gets read. The cause was
-  the actions/checkout default of `fetch-depth: 1`: sixteen tests here read real
-  git history and skip without it, and one — `test_scout_preflight.py`'s
+  the actions/checkout default of `fetch-depth: 1`: the tests here that read
+  real git history skip without it (sixteen when this was written; at
+  `3471df5` five, all in `tests/test_scout_preflight.py` -- four under
+  `needs_history` and the one below), and one — `test_scout_preflight.py`'s
   exit-code test — built its fixture from the last three non-merge commits,
   found one, manufactured nothing, and failed on its own empty fixture. Both
   workflows now set `fetch-depth: 0` and that test skips instead of failing.
@@ -1165,7 +1197,8 @@ under compaction pressure, so its length is a cost paid on every session.
   claim, in prose and in cells, that was only ever true in the default state.
 - **This dashboard has TWO navigations, and deleting a page from one leaves a
   dead tab in the other.** The desktop sidebar (`.nav-btn`) and the mobile
-  bottom-nav "more" sheet (`.bnav-more-item`, `.bnav-item`). PR #40 deleted the
+  bottom-nav (`.bnav-btn`) and its "more" sheet (`.bnav-more-item`).
+  `.bnav-item` never existed -- `git log --all -S bnav-item` returns nothing. PR #40 deleted the
   Playoff Odds page and its sidebar button and shipped to main with the mobile
   tab still there, opening a blank screen on a phone. The desktop render looked
   perfect and every test passed. `test_every_nav_on_the_page_agrees_on_which_pages_exist`
@@ -1184,9 +1217,12 @@ under compaction pressure, so its length is a cost paid on every session.
 - **A plan in this file is a hypothesis about code, and this one was wrong.**
   The Stage 7.5 entry asserted the Roadmap's Done list duplicated the Changelog.
   Checking took one script and found ~3 of 16 overlapping; the rest existed
-  nowhere else. Three earlier inherited claims in this file were also wrong (the
-  "no PR-body-edit tool" line, the SOS "defect", the Team Deep-Dive "Done"
-  status). **Before executing a deletion this file plans, verify the premise
+  nowhere else. Two earlier inherited claims in this file were also wrong (the
+  SOS "defect", the Team Deep-Dive "Done" status). From `0d6c8e1` this sentence
+  listed a third, the "no PR-body-edit tool" line -- but nothing in the repo
+  records what that correction was, and the line still verifies today, so the
+  listing was the unsupported claim, not the line.
+  **Before executing a deletion this file plans, verify the premise
   the plan rests on, and record the correction beside the original.**
 - **A PR description is a separate artifact from the code, and fixing one does
   not fix the other.** Booth flagged a wrong count in #44's description. The
@@ -1289,9 +1325,15 @@ under compaction pressure, so its length is a cost paid on every session.
   `scout-preflight.yml` re-checks on `synchronize` precisely because a rebase
   can falsify them, and leave them out of commit messages.
 
-  Not yet mechanised: nothing rejects a `Suite: N passing` trailer in a commit
-  message. That check is the obvious next step and is queued in
-  `docs/context.md`.
+  MECHANISED 2026-09-12, in `9c3e320`: `scout_preflight.py` has a
+  `no count in a commit message` check (`COMMIT_SUITE_COUNT_RE`), guarded by
+  `tests/test_preflight_count_honesty.py`. **But it matches suite-shaped
+  counts only** -- `\b\d{2,}\s+(?:passed|passing)\b` -- so a count of anything
+  else walks through. PR #68 put "147 individual cases" into a commit message
+  that way and Booth caught it after the fact; the real figure was 151. A
+  commit message is the one artifact that cannot be corrected without
+  invalidating every Booth report against its SHA, so the narrowness is the
+  live gap, not the absence of a check.
 - **A wrap-up check that greps this file for a literal string is disabled by
   rewording that string, and says the line is MISSING.** `session_wrapup.py`
   matches `Suite:\s*\*\*([0-9,]+)\s+passing\*\*`. Writing
@@ -1329,12 +1371,15 @@ under compaction pressure, so its length is a cost paid on every session.
   that is not actually in the diff. **Refresh local main before every
   pre-flight.**
 - **The full mutation run outlives the 60-second Desktop Commander timeout.**
-  89 cases take several minutes. The tool call returns "device did not respond"
-  while the run continues, so: redirect to a file, poll for completion, read the
-  file — and check `git status` before believing anything, because a killed
-  runner skips the `finally` that restores the mutated file.
-- **`scout_preflight.py` reads only the PASSED count too, so a RED suite is
-  reported as a stale number.** An entry above records this for
+  The corpus takes several minutes -- 89 cases when this was written at
+  `1e75803`, 151 at `3471df5`; `docs/context.md` carries the live count. The
+  tool call returns "device did not respond" while the run continues, so:
+  redirect to a file, poll for completion, read the file — and check
+  `git status` before believing anything, because a killed runner skips the
+  `finally` that restores the mutated file.
+- **`scout_preflight.py` read only the PASSED count too, so a RED suite was
+  reported as a stale number. FIXED in `9c3e320` (`SUITE_BROKEN_RE`, and the
+  subprocess encoding pinned). `session_wrapup.py` still has the defect.** An entry above records this for
   `session_wrapup.py`; on 2026-09-12 it turned up in a second tool, where it is
   worse, because the message preflight prints is the PR #21 stale-figure text —
   "the body claims [876] passing but a real run at HEAD gives 875" — which

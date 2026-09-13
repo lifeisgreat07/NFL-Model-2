@@ -1,4 +1,4 @@
-"""Regenerate the colour figures the Stage 11 model-identity comments state.
+"""Regenerate the colour figures the Stage 9 model-identity comments state.
 
 Those comments carry five measured numbers -- how far apart Model A's dot and
 the pick tick are, in both themes, under normal vision and under red-green

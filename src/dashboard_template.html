@@ -2920,9 +2920,20 @@ function renderGames(){
     });
   });
 }
-document.querySelectorAll('.filter-btn').forEach(btn=>{
+/* SCOPED TO #filter-row, deliberately. `.filter-btn` is a shared pill style,
+   not a Week Board filter: nine elements wear it and only three are filters.
+   The other six are "Got it" on the onboarding banner and, on My Picks, "Copy
+   these into my log", "Back to my picks", "Copy Share Link", "Export My Picks"
+   and "Import My Picks". An unscoped querySelectorAll gave all nine this
+   handler, so tapping Export My Picks stripped .active from All Games, painted
+   Export in the accent, and set currentFilter to undefined -- which falls
+   through the filter's final `return true`, so the board still showed every
+   game with no pill marked and nothing errored. Measured in headless Chromium
+   before the fix: .active went from ["All Games"] to ["Export My Picks"].
+   Select the buttons that have the attribute this handler reads. */
+document.querySelectorAll('#filter-row .filter-btn[data-filter]').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('#filter-row .filter-btn[data-filter]').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     currentFilter = btn.dataset.filter;
     renderGames();
