@@ -387,7 +387,10 @@
      is `%238A93A8`, which is a dark-theme grey baked into a URL and therefore
      wrong in light mode -- the same literal as teamColor()'s fallback. A
      chevron that inherits cannot have that defect. */
-  .lbx-btn:hover{border-color:var(--accent); color:var(--text);}
+  /* :hover for this component lives in the @media (hover: hover) block with
+     every other hover rule -- a bare :hover sticks after a tap on a touch
+     device, which is the "button stays highlighted after you tap it" symptom
+     this stage keeps meeting from a different direction each time. */
   .lbx-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
   .lbx-btn:active{transform:var(--press);}
   .lbx-btn[aria-expanded="true"]{border-color:var(--accent); color:var(--accent);}
@@ -1114,6 +1117,8 @@
     .pick-btn:hover{border-color:var(--accent);}
     .rel-table summary:hover{color:var(--text);}
     .filter-btn:hover{border-color:var(--accent); color:var(--text);}
+    .lbx-btn:hover{border-color:var(--accent); color:var(--text);}
+    .lbx-opt:hover{background:var(--surface-2); color:var(--text);}
     .game-card:hover{border-color:var(--border-strong);}
     .dive-game-head:hover{background:var(--border);}
     .page-jump a:hover{color:var(--text); border-color:var(--border-strong);}
