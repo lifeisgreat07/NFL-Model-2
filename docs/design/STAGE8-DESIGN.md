@@ -41,8 +41,10 @@ a failed load never shifts the layout; failure adds `is-fallback`, which draws
 a disc. One capture-phase `error` listener on `document` handles every logo on
 the page, because image errors do not bubble.
 
-**Elevation is a border, not a shadow.** `--shadow-overlay` has exactly one
-consumer, the `.overlay` component.
+**Elevation is a border, not a shadow.** `--shadow-overlay` has exactly two
+consumers in the shipped template: `.undo-toast` and `.rel-tip`. This line said
+one, the `.overlay` component -- `.overlay` was a mock-only element and appears
+zero times in `src/dashboard_template.html`.
 
 ## The token block, verbatim
 
