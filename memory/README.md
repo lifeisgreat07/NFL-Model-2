@@ -31,3 +31,4 @@ decision, leave it out.
 | [2026-09-10](2026-09-10.md) | Stage 8's design phase closed; re-deriving every colour and geometry claim caught three false ones, two of them mine |
 | [2026-09-11](2026-09-11.md) | #58, #59 and #61 merged; a test was found silently skipping in CI since #58; the session's lesson is that a number in prose needs something that recomputes it |
 | [2026-09-12](2026-09-12.md) | #64, #65, #66 and #67 merged and the remote cut to one branch; a PR body was caught carrying a figure no command had produced; scoping a number to its commit proved to be what keeps it true |
+| [2026-09-13](2026-09-13.md) | #68 and #70 merged; CLAUDE.md was audited against the repo and corrected in 34 places; four audits on #69 found four defects and none of them were in the code |

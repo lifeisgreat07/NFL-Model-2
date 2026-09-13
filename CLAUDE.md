@@ -47,7 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1061 passing** (1 skipped) on `main` (2026-09-13, after PR #68). Run it before quoting
+Suite: **1086 passing** (1 skipped) on `main` (2026-09-13, after PR #70). Run it before quoting
 it — this line read 174 for about a day after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -1377,6 +1377,45 @@ under compaction pressure, so its length is a cost paid on every session.
   redirect to a file, poll for completion, read the file — and check
   `git status` before believing anything, because a killed runner skips the
   `finally` that restores the mutated file.
+- **A PR comment is not the PR description, and a red check routed around is
+  worse than one ignored.** #69 grew two commits after its body was written.
+  A PR description cannot be edited from here, so the head move was documented
+  in a *comment* -- and `scout_preflight.py`'s `scope disclosed` check reads
+  the DESCRIPTION, as does Booth. The comment changed nothing, the `preflight`
+  job went red in CI, and the next audit reported the undisclosed commit as a
+  DISCREPANCY and reproduced the CI failure outside CI. Same family as the
+  entry below about a code comment not fixing a description. The durable
+  shape: **when a branch outgrows its body, the fix is exact replacement text
+  for Mark, never a comment** -- and the body is where the risk lives, because
+  every push after it is written can falsify it.
+- **A PR body is an auditable surface whose size is a liability, not a
+  virtue.** Four audits on #69 and the code was never once in question. All
+  four findings were in the description: an undisclosed commit, then three
+  suite figures where the check allows one, then a clause saying one file was
+  touched by both sides of a merge when two were. Each cost a manual edit by
+  the one person who can make it. A long, claim-dense description maximises
+  exactly the thing that cannot be corrected in place. **Put the detail in the
+  commit message and the code comments, which can be corrected or are audited
+  differently; keep the description short and its checkable claims few.**
+- **A guard whose FIXTURE fails reports as WRONG-GUARD with "Failures: none
+  reported".** A mutation changed a function's signature; the fixture that
+  extracted that function was anchored on its parameter list, so it failed at
+  *setup*. pytest calls that an ERROR, the mutation runner reads failures, and
+  the verdict blamed a perfectly healthy guard. Same shape as the tools here
+  that read one number out of a multi-number summary and invent a cause for
+  the difference. **A guard must fail on its own assertion, never by making
+  its fixture unusable** -- anchor fixtures loosely, assert strictly.
+- **A matcher anchored on a bare identifier finds whichever occurrence comes
+  first, and every assertion after it is then about the wrong text.** Three
+  times in one session: `lbx-chevron` found the CSS rule declaring the class
+  and ran 50,000 characters to the next `</svg>`, sweeping up the very hex it
+  was written to prove absent; `group.querySelectorAll('.pick-btn')` found
+  `paintPickCard`'s loop, not the tap handler's;
+  `btn.addEventListener('click', ()=>{` found the Week Board's filter handler.
+  Each produced a confident, wrong failure message. The existing entry says to
+  anchor on `class="` rather than a class name; the general form is stronger:
+  **anchor on something that occurs once, and assert the capture is the size
+  you expect before reading anything off it.**
 - **`scout_preflight.py` read only the PASSED count too, so a RED suite was
   reported as a stale number. FIXED in `9c3e320` (`SUITE_BROKEN_RE`, and the
   subprocess encoding pinned). `session_wrapup.py` still has the defect.** An entry above records this for
