@@ -439,7 +439,18 @@
   /* Kept in the DOM and out of sight: still focusable, still announced, still
      the element that owns which week is selected. display:none would remove it
      from the accessibility tree along with the picture. */
-  .visually-hidden{position:absolute; width:1px; height:1px; margin:-1px; padding:0;
+  /* min-width/min-height:0 are load-bearing, not tidy-up. `width:1px` is a
+     request and `min-width` is a floor, and the floor wins: every select
+     hidden here also wears .week-select, which sets `min-width:160px`, so
+     each one stayed a 160px box. Clipping stops it being painted and does
+     NOT remove it from the page's scrollable overflow, and with no left/top
+     it sits at its static position -- after the button, inside .lbx. On the
+     Week Board at 430px the filter row does not wrap, so the phantom select
+     ran to x=533 against a 430 viewport, the fixed bottom-nav stretched with
+     it, and a phone shrink-fit the whole page. Reported as "the board zoomed
+     out and the cards don't fit". Guarded by tests/test_visually_hidden.py. */
+  .visually-hidden{position:absolute; width:1px; height:1px; min-width:0; min-height:0;
+    margin:-1px; padding:0;
     overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0;}
   /* Print/PDF download. Sized to match .week-select so the control row reads
      as one group; hidden entirely when no PDF exists for the selected week

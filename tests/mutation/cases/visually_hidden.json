@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_visually_hidden.py",
+  "cases": [
+    {
+      "id": "vh-min-width-floor-returns",
+      "why": "the exact defect that shipped, put back. min-width:0 goes and .week-select's min-width:160px wins again, so every select the listbox and the stepper hide is a 160px box that is clipped but still in the page's scrollable overflow. Nothing looks different on a desktop width, because the Week Board's filter row wraps and the phantom select lands inside the viewport. At 430px the row does not wrap, the select runs to x=533 against a 430 viewport, the fixed bottom-nav stretches to match, and a phone shrink-fits the whole page -- reported as the board zooming out with the cards no longer fitting.",
+      "find": "width:1px; height:1px; min-width:0; min-height:0;",
+      "replace": "width:1px; height:1px; min-height:0;",
+      "expect_caught_by": "test_it_neutralises_the_minimums_that_outrank_its_own_size"
+    },
+    {
+      "id": "vh-min-height-floor-returns",
+      "why": "the other axis, which has never bitten and is one word away from doing so. No component hidden this way sets a min-height today; the guard covers it because a rule that names one axis and not the other is the shape this repo keeps meeting -- a protection whose coverage is narrower than the sentence describing it, and nobody checks the half that was never written down.",
+      "find": "width:1px; height:1px; min-width:0; min-height:0;",
+      "replace": "width:1px; height:1px; min-width:0;",
+      "expect_caught_by": "test_it_neutralises_the_minimums_that_outrank_its_own_size"
+    },
+    {
+      "id": "vh-size-becomes-auto",
+      "why": "the over-correction, and it is worse than the bug. Someone reading min-width:0 concludes the explicit 1px is now redundant and lets the element size itself, which hands it back the content width it had before -- 160px of select, clipped and still widening the document. The pair only works together: the 0 removes the floor, the 1px is what the element then is.",
+      "find": ".visually-hidden{position:absolute; width:1px;",
+      "replace": ".visually-hidden{position:absolute; width:auto;",
+      "expect_caught_by": "test_the_size_it_asks_for_is_still_one_pixel"
+    },
+    {
+      "id": "vh-becomes-display-none",
+      "why": "the obvious tidy-up, and it silently deletes a control. display:none removes the element from the accessibility tree along with the picture, and these selects ARE the accessible control -- the listbox and the week stepper are divs that read and write them, so a screen-reader user would be left with a custom widget and no native select behind it. The layout bug would be fixed and the page would render identically for everyone who can see it, which is why nothing else would catch this.",
+      "find": ".visually-hidden{position:absolute; width:1px; height:1px;",
+      "replace": ".visually-hidden{display:none; position:absolute; width:1px; height:1px;",
+      "expect_caught_by": "test_it_is_still_clipped_and_still_in_the_accessibility_tree"
+    }
+  ]
+}
