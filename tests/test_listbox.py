@@ -243,3 +243,199 @@ def test_the_chevron_inherits_its_colour(source):
     assert not re.search(r'%23[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{6}', m.group(0)), (
         'the listbox chevron has a hardcoded hex, which is how .week-select '
         'ended up with a dark-theme grey that is wrong in light mode')
+
+
+# ---------------------------------------------------------------------------
+# The second consumer: #teamdive-select.
+#
+# enhanceSelect takes an element rather than an id so that this page could use
+# the same function instead of a copy of it -- the .game-card lesson, where two
+# render paths drifted because one edit landed on one of them and the diff
+# looked complete. These guards are what makes that a fact rather than an
+# intention: the test above proves the function COULD serve a second select,
+# and proves nothing about whether one ever does.
+#
+# This select differs from #sort-select in the way that matters: its options do
+# not exist in the markup. renderTeamDive() writes them at runtime and uses
+# `select.options.length === 0` as its sentinel for "not populated yet", so the
+# listbox is built against a select that is empty when the page loads and has
+# to be rebuilt when it stops being.
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope='module')
+def teamdive(source):
+    """renderTeamDive's body with comments stripped.
+
+    Anchored on `\\([^)]*\\)` rather than `\\(\\)` for the reason the
+    enhanceSelect fixture above records: anchoring on a parameter list makes
+    this fixture fail at SETUP when a mutation changes the signature, pytest
+    calls that an ERROR rather than a FAILURE, and the mutation runner -- which
+    reads failures -- reports WRONG-GUARD against a guard that is perfectly
+    healthy.
+    """
+    m = re.search(r'function renderTeamDive\([^)]*\)\{.*?\n\}\n', source, re.S)
+    assert m, (
+        'renderTeamDive is gone or was renamed. If the Team Deep-Dive moved, '
+        're-anchor this file rather than deleting it.')
+    # A matcher that drifts can still satisfy every assertion below it. The
+    # function is ~45 lines; anything an order of magnitude past that is a
+    # match that ran on into the rest of the file.
+    assert len(m.group(0)) < 4000, (
+        f'the renderTeamDive match ran to {len(m.group(0))} characters, so it '
+        'is no longer just that function. Re-anchor it before reading '
+        'anything off it.')
+    code = re.sub(r'/\*.*?\*/', '', m.group(0), flags=re.S)
+    return re.sub(r'//.*', '', code)
+
+
+def test_the_team_select_is_enhanced_at_all(teamdive):
+    """Otherwise this page is the one still showing the iOS system wheel.
+
+    The written-tested-never-called shape has shipped here before
+    (src/collect_agent_log.py ran nowhere for weeks behind a full suite), and
+    a shared function with one caller is the same shape wearing a better name.
+    """
+    assert 'enhanceSelect(' in teamdive, (
+        'renderTeamDive never calls enhanceSelect, so #teamdive-select is '
+        'still a native select -- and on a phone that is the system wheel '
+        'this component exists to replace.')
+
+
+def test_the_team_listbox_is_built_after_its_change_listener(teamdive):
+    """Order decides whether the control does anything, and looks fine either way.
+
+    enhanceSelect writes back by dispatching change on the select. Build it
+    before renderTeamDive subscribes and choosing a team dispatches into
+    nothing: the button updates, the list closes, and the page below it keeps
+    showing the previous team. Every test that reads the source would still
+    pass. This is the same assertion the Week Board's call site already
+    carries, made against the call site that adds its listener at runtime.
+    """
+    listener = teamdive.find("addEventListener('change', renderTeamDive)")
+    call = teamdive.find('enhanceSelect(')
+    assert listener != -1, (
+        'renderTeamDive no longer subscribes to its own select, so choosing a '
+        'team changes nothing')
+    assert call != -1, 'renderTeamDive never calls enhanceSelect'
+    assert listener < call, (
+        'enhanceSelect runs before the change listener is attached. Choosing '
+        'a team would dispatch change to nothing and the page would keep '
+        'showing the previous team, while the control itself looked correct.')
+
+
+def test_every_write_to_the_options_reaches_the_listbox(teamdive):
+    """The refresh() half of the contract, stated as coverage rather than a case.
+
+    enhanceSelect renders the select's options once, at build time. This
+    select has none then, and renderTeamDive writes them later -- so every
+    write to select.innerHTML is a moment the listbox is showing something the
+    select no longer says. CLAUDE.md records the shape this is written against:
+    prose naming a protection but never its coverage is how a gap survives, so
+    this enumerates the writes instead of checking the one anybody remembered.
+
+    Segmented on the writes themselves rather than a fixed-size window, so it
+    cannot be satisfied by a refresh that belongs to a different branch.
+    """
+    writes = [m.start() for m in re.finditer(r'select\.innerHTML\s*=', teamdive)]
+    assert writes, 'renderTeamDive no longer writes the options at all'
+    bounds = writes + [len(teamdive)]
+    for n, start in enumerate(writes):
+        segment = teamdive[start:bounds[n + 1]]
+        assert re.search(r'enhanceSelect\(|refresh\(\)', segment), (
+            'a write to select.innerHTML in renderTeamDive is not followed by '
+            'enhanceSelect() or a refresh(), so the listbox keeps rendering '
+            'the options the select used to have. The offending write begins: '
+            + repr(segment[:80]))
+
+
+def test_the_no_data_branch_empties_the_listbox_too(teamdive):
+    """The specific case the coverage test above exists to keep honest.
+
+    With no team history the select is emptied and the page shows an empty
+    state -- but the listbox button is a div holding whatever label it last
+    rendered. Left alone it sits above an empty-state message still naming a
+    team, which is the "correct arithmetic on absent data" failure in its
+    presentational form: nothing errors and the page lies.
+    """
+    branch = re.search(r'No team history data available yet.*?return;', teamdive, re.S)
+    assert branch, 'the no-data branch of renderTeamDive is gone'
+    assert re.search(r'refresh\(\)', branch.group(0)), (
+        'the no-data branch empties the select without refreshing the '
+        'listbox, so the button goes on naming a team the select no longer '
+        'offers, directly above a message saying there is no data')
+
+
+def test_the_population_sentinel_is_still_the_option_count(teamdive):
+    """Enhancement must not become the thing that decides whether to populate.
+
+    `select.options.length === 0` asks the select, which is the element that
+    owns the value. Swapping it for a flag about the listbox -- dataset.lbx, a
+    stored handle, anything -- makes populating conditional on a control that
+    is meant to be invisible to everything downstream of it, and the page then
+    has two sources of truth for whether it has teams.
+    """
+    assert re.search(r'select\.options\.length\s*===\s*0', teamdive), (
+        'the runtime population is no longer gated on select.options.length, '
+        'so whether the page has teams is now decided by something other than '
+        'the select that owns them')
+
+
+def test_the_team_select_ships_visible_like_the_sort_select(source):
+    """Progressive enhancement, asserted per select rather than per component.
+
+    The same reasoning as the sort select above, and it is a separate test
+    because it is a separate element: a page can hide one in the markup and
+    not the other, and the component-level guard would not notice.
+    """
+    m = re.search(r'<select id="teamdive-select"[^>]*>', source)
+    assert m, 'the team select is gone entirely'
+    assert 'visually-hidden' not in m.group(0), (
+        f'{m.group(0)} hides the select in the markup. Its options are '
+        'written by script and the listbox that replaces it is built by '
+        'script, so with JavaScript off this leaves no team control at all.')
+
+
+def test_the_team_select_carries_an_accessible_name(source):
+    """A listbox button with no name announces as "button", and nothing else.
+
+    enhanceSelect copies the select's aria-label onto both the button and the
+    list, which is the only name either can have: there is no visible <label>
+    anywhere near this control, and the <h2> two elements up is the page
+    title, not a label for the select. A native select with no name is already
+    a defect; replacing it with a custom widget that has no name is the same
+    defect in a control a screen reader knows less about.
+    """
+    m = re.search(r'<select id="teamdive-select"[^>]*>', source)
+    assert m, 'the team select is gone entirely'
+    assert re.search(r'aria-label="[^"]+"', m.group(0)), (
+        f'{m.group(0)} has no aria-label, so enhanceSelect has nothing to '
+        'name the listbox button with and the control announces as an '
+        'unlabelled button')
+
+
+def test_the_listbox_handle_is_kept_and_is_the_one_refreshed(teamdive):
+    """Written because a mutation walked straight through every guard above it.
+
+    Dropping the assignment -- `enhanceSelect(select);` instead of
+    `handle = enhanceSelect(select);` -- leaves the listbox built and correct
+    on load, leaves the literal `refresh()` sitting in the no-data branch for
+    the branch test to find, and leaves `enhanceSelect(` in place for the
+    coverage test to find. Every listbox test passed and the refresh could
+    never run, because there was no longer anything to call it on.
+
+    So this ties the two halves together by name rather than checking that
+    each exists somewhere: whatever the handle is called, that is what has to
+    be refreshed. Found by asking what a mutation of this code would look
+    like, which is the whole argument for the corpus.
+    """
+    m = re.search(r'(\w+)\s*=\s*enhanceSelect\(', teamdive)
+    assert m, (
+        'renderTeamDive discards what enhanceSelect returns, so nothing can '
+        'call refresh() and the listbox silently stops tracking the select '
+        'the moment its options change')
+    handle = m.group(1)
+    assert f'{handle}.refresh()' in teamdive, (
+        f'the handle is stored as {handle} but nothing calls '
+        f'{handle}.refresh(), so the stored handle is decoration and the '
+        'listbox and the select can disagree')

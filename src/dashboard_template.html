@@ -1410,7 +1410,11 @@
       <div class="badge" id="teamdive-badge">—</div>
     </div>
     <div class="filter-row">
-      <select id="teamdive-select" class="week-select"></select>
+      <!-- Ships VISIBLE and with no options: renderTeamDive() writes them and
+           enhanceSelect() hides this once the listbox is built. The aria-label
+           is the only name either control can have -- there is no visible
+           <label> here, and the <h2> above is the page title, not a label. -->
+      <select id="teamdive-select" class="week-select" aria-label="Team"></select>
     </div>
     <div id="teamdive-content"></div>
   </section>
@@ -4137,7 +4141,19 @@ renderAccuracy();
   initReliabilityDiagram();
 })();
 
-/* ---------- Team Deep-Dive ---------- */
+/* ---------- Team Deep-Dive ----------
+
+   The listbox handle, kept because this select is the case enhanceSelect's
+   refresh() was written for. That function renders the options it can see at
+   the moment it runs, and at that moment this select has none -- they are
+   written below, from teamHistory, after the page has loaded. So every write
+   to select.innerHTML is a moment the listbox is showing something the select
+   no longer says, and has to come back through refresh().
+
+   Null until the first render enhances it, which is why every use is guarded
+   rather than assumed: the no-data branch runs BEFORE anything is enhanced. */
+let teamDiveListbox = null;
+
 function renderTeamDive(){
   const select = document.getElementById('teamdive-select');
   const content = document.getElementById('teamdive-content');
@@ -4146,6 +4162,10 @@ function renderTeamDive(){
   if(!teamHistory || !teamHistory.names || Object.keys(teamHistory.names).length === 0){
     content.innerHTML = `<div class="empty-state">No team history data available yet.</div>`;
     select.innerHTML = '';
+    // Without this the button keeps naming whatever team it last rendered,
+    // sitting directly above a message saying there is no data. sync() turns
+    // an empty select into a disabled button, which is the honest state.
+    if(teamDiveListbox) teamDiveListbox.refresh();
     badge.textContent = '—';
     return;
   }
@@ -4154,6 +4174,19 @@ function renderTeamDive(){
     const sortedTeams = Object.keys(teamHistory.names).sort((a,b)=>teamHistory.names[a].localeCompare(teamHistory.names[b]));
     select.innerHTML = sortedTeams.map(t=>`<option value="${t}">${teamHistory.names[t]} (${t})</option>`).join('');
     select.addEventListener('change', renderTeamDive);
+    /* AFTER the change listener, never before -- the same ordering the Week
+       Board's call site documents, and for the same reason. enhanceSelect
+       writes back by dispatching change on the select, so a listbox built
+       first would dispatch into a listener that does not exist yet: the
+       button would update, the list would close, and the page below it would
+       go on showing the previous team, with every source-reading test green.
+
+       `|| teamDiveListbox` because enhanceSelect returns null for a select it
+       has already enhanced. Nothing re-enters this branch today, since the
+       sentinel above is the option count and teamHistory does not change
+       after load -- but assigning that null would silently discard a working
+       handle, and the symptom would be a listbox that stops refreshing. */
+    teamDiveListbox = enhanceSelect(select) || teamDiveListbox;
   }
 
   const team = select.value || select.options[0]?.value;

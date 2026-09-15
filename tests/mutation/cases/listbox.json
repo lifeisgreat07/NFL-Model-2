@@ -57,6 +57,55 @@
       "find": "    padding:var(--s2) var(--s3); border-radius:var(--r-md); cursor:pointer;",
       "replace": "    padding:9px 14px; border-radius:var(--r-md); cursor:pointer;",
       "expect_caught_by": "test_the_listbox_styles_use_tokens_for_spacing_type_and_radius"
+    },
+    {
+      "id": "teamdive-listbox-is-built-before-its-change-listener",
+      "why": "the second consumer repeats the Week Board's ordering mistake, one line earlier than the listener instead of one line later. The control renders, opens, highlights, closes and shows the chosen team -- and the page below it keeps showing the previous one, because the change it dispatches reaches a listener that is attached on the next statement. Identical symptom to the sort-select case above, on the call site that attaches its listener at runtime.",
+      "find": "    select.addEventListener('change', renderTeamDive);\n    /* AFTER the change listener",
+      "replace": "    teamDiveListbox = enhanceSelect(select) || teamDiveListbox;\n    select.addEventListener('change', renderTeamDive);\n    /* AFTER the change listener",
+      "expect_caught_by": "test_the_team_listbox_is_built_after_its_change_listener"
+    },
+    {
+      "id": "teamdive-no-data-branch-forgets-the-listbox",
+      "why": "the no-data branch empties the select and stops there, which is exactly what it did before this change and reads as the obvious tidy-up of a line that looks defensive. The listbox button then goes on naming whatever team it last rendered, directly above an empty state saying there is no data. Nothing errors, nothing is out of range, and the page lies -- the presentational form of the correct-arithmetic-on-absent-data failure CLAUDE.md records.",
+      "find": "    if(teamDiveListbox) teamDiveListbox.refresh();\n    badge.textContent",
+      "replace": "    badge.textContent",
+      "expect_caught_by": "test_the_no_data_branch_empties_the_listbox_too"
+    },
+    {
+      "id": "teamdive-listbox-handle-is-discarded",
+      "why": "the assignment goes and the call stays. This is the mutation that was written before the guard that catches it, and it walked through every other test in the file: the listbox is still built, still correct on load, `enhanceSelect(` is still there for the coverage test and the literal `refresh()` is still there for the branch test. Only the thing that would call it is gone. It is the exact shape of a guard whose comment claims more than its code delivers, which this repository has now shipped five times.",
+      "find": "    teamDiveListbox = enhanceSelect(select) || teamDiveListbox;",
+      "replace": "    enhanceSelect(select);",
+      "expect_caught_by": "test_the_listbox_handle_is_kept_and_is_the_one_refreshed"
+    },
+    {
+      "id": "teamdive-select-loses-its-accessible-name",
+      "why": "the aria-label goes. Sighted use is completely unchanged, because the button's visible text is the selected team either way. To a screen reader the control announces as a bare button with no name, which is strictly less than the native select it replaced -- and there is no visible label anywhere near it to fall back on, only the page's own h2.",
+      "find": "class=\"week-select\" aria-label=\"Team\"></select>",
+      "replace": "class=\"week-select\"></select>",
+      "expect_caught_by": "test_the_team_select_carries_an_accessible_name"
+    },
+    {
+      "id": "teamdive-select-is-hidden-in-the-markup",
+      "why": "the same tidy-up as the sort-select case above, applied to the select that needs it even more: this one has no options in the markup either, so with JavaScript off a no-script reader gets an empty hidden control and a page with no way to choose a team at all. Identical rendered page for everyone else.",
+      "find": "      <select id=\"teamdive-select\" class=\"week-select\" aria-label=\"Team\"></select>",
+      "replace": "      <select id=\"teamdive-select\" class=\"week-select visually-hidden\" aria-label=\"Team\"></select>",
+      "expect_caught_by": "test_the_team_select_ships_visible_like_the_sort_select"
+    },
+    {
+      "id": "teamdive-population-sentinel-becomes-the-listbox",
+      "why": "the sentinel stops asking the select and starts asking the listbox. It works on load and reads as the more direct question, but it moves the answer to \"does this page have teams yet\" out of the element that owns them and into a control that is supposed to be invisible to everything downstream of it. Two sources of truth for one piece of state, which is the contract this component was built to avoid.",
+      "find": "  if(select.options.length === 0){",
+      "replace": "  if(teamDiveListbox === null){",
+      "expect_caught_by": "test_the_population_sentinel_is_still_the_option_count"
+    },
+    {
+      "id": "teamdive-adds-a-third-write-nothing-refreshes",
+      "why": "a THIRD write to the options appears, and neither existing branch is touched -- the no-data branch still refreshes and the populate branch still enhances, so both of the case-shaped guards above stay green. This is the case the coverage test exists for rather than a specific edit anyone is expected to make: the guard enumerates the writes precisely because the next one will be added by someone who checked that the two they knew about were handled. CLAUDE.md records the shape as prose naming a protection but never its coverage.",
+      "find": "  const team = select.value || select.options[0]?.value;",
+      "replace": "  select.innerHTML = [...select.options].map(o=>o.outerHTML).join('');\n  const team = select.value || select.options[0]?.value;",
+      "expect_caught_by": "test_every_write_to_the_options_reaches_the_listbox"
     }
   ]
 }
