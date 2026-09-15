@@ -82,6 +82,19 @@ RENDERERS = {
     'lineFor': 'board',
     'whyRow': 'board',
     'populateWeekSelect': 'board',
+    # The listbox that replaces a native <select> as the visible control.
+    # Mapped to 'board' because #sort-select is its only consumer today; it
+    # takes an element rather than an id precisely so #teamdive-select can be
+    # a second call, and when that lands this entry needs re-reading against
+    # the same one-page-per-function rule as matchupHeader below.
+    #
+    # Worth stating what its copy actually is: enhanceSelect emits no prose of
+    # its own. Every string a reader sees comes from the <option> text in the
+    # markup, which the markup half of this scan already covers. It is mapped
+    # anyway, because a function that builds markup and is absent from this map
+    # is exactly the gap the test below exists to refuse -- and "it happens to
+    # emit no copy today" is a fact about today.
+    'enhanceSelect': 'board',
     # Renders onto BOTH the Week Board and My Picks -- it is the one piece of
     # card markup the two pages share, which is the whole point of it. Mapped
     # to 'board' rather than duplicated because this map takes one page per
