@@ -62,10 +62,22 @@ jobs:
           done
 
       # This workflow no longer builds or commits the dashboard. It commits the
-      # DATA it produces; that push lands on main under `data/**`,
-      # `predictions/**` and `results/**`, which is exactly the path set
-      # "Deploy dashboard to Pages" watches, so the page is rebuilt and
-      # published from the new data by the one workflow that owns the build.
+      # DATA it produces, and "Deploy dashboard to Pages" turns that into the
+      # published page.
+      #
+      # It does NOT reach the builder through the path set. This comment said
+      # it did until 2026-09-15 -- that `data/**`, `predictions/**` and
+      # `results/**` are "exactly the path set Deploy dashboard to Pages
+      # watches, so the page is rebuilt". They are that path set, and the page
+      # was not rebuilt: the push below is made with the default GITHUB_TOKEN,
+      # and GitHub will not let such a push trigger another workflow. The
+      # builder reaches this run through a workflow_run trigger naming
+      # "Weekly update", which is the `name:` at the top of this file -- rename
+      # it and the handoff breaks silently, with no run and no error.
+      #
+      # Read that as the general warning it is: this is the second time the
+      # GITHUB_TOKEN rule has been written down as a safeguard by a workflow it
+      # was quietly severing.
       #
       # Two steps were removed here in Stage 8c phase 2 -- a `generate_dashboard.py`
       # run whose output nobody would have committed, and the churn pruner that
