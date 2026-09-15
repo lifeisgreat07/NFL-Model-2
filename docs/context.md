@@ -14,10 +14,10 @@ Last updated: 2026-09-15 (second session; #74 merged, no open PRs)
 it. Corpus: 33 case files, 180 cases — from `python tests/mutation/runner.py`
 with no `--id`, whose scope is every case.
 
-**#75 is open, from the Claude Code Routine**: a week-3 line snapshot whose
-16 spreads are all null (none posted 9 days out). Next Tuesday's run recreates
-it with real lines, so closing loses nothing; its QB flag needs no merge.
-Should the routine push branches at all?
+**#75 is open** (branch claude/ecstatic-clarke-npab1e), from the Claude Code
+Routine: a week-3 line snapshot whose 16 spreads are all null, none posted 9
+days out. Next Tuesday's run recreates it with real lines, so closing loses
+nothing; its QB flag needs no merge. Should the routine push branches at all?
 
 **Stage:** 8, 8b and 8c complete. Stage 9's component pass is DONE; what
 remains is colour, and those are accessibility defects. There is no Stage 11.
