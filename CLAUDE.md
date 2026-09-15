@@ -47,7 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1123 passing** (1 skipped) on `main` at `976d0a3` (2026-09-15, after PR #69). Run it before quoting
+Suite: **1156 passing** (1 skipped) on `main` at `41b1d5b` (2026-09-15, after PR #72). Run it before quoting
 it — this line read 174 for about a day after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 

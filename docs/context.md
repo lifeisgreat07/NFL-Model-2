@@ -4,84 +4,82 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-15 (#71 SAFE TO MERGE; #72 open, body being corrected)
+Last updated: 2026-09-15 (#71 and #72 merged; #73 open, awaiting its audit)
 
 ---
 
 ## Right now
 
-**Suite:** 1123 passing, 1 skipped on `main`. Re-run before quoting it.
-Mutation corpus: 31 case files, 165 cases (at `976d0a3`; `python` sum over
-each file's `cases` list, not a recalled figure).
+**Suite:** 1156 passing, 1 skipped on `main` at `41b1d5b`. Re-run before
+quoting it. Mutation corpus on `main`: 31 case files, 173 cases (`python` sum
+over each file's `cases` list, not a recalled figure). #73 takes those to 32
+and 176.
 
-**Stage:** 8, 8b and 8c complete. Stage 9's model-colour work (#60) is
-merged; what remains of Stage 9 is the component pass and the colour items
-below, which are accessibility defects, not polish. There is no Stage 11.
+**Stage:** 8, 8b and 8c complete. Stage 9's component pass is DONE --
+`#sort-select` in #69, `#teamdive-select` in #71, both driven by the one
+shared `enhanceSelect()`. What remains of Stage 9 is colour, and those items
+are accessibility defects rather than polish. There is no Stage 11.
 
-**Two PRs are open and `main` is green.** #71 is Stage 9's component pass,
-re-audited SAFE TO MERGE after its body was corrected. #72 is a Power Ratings
-declutter, NEEDS HUMAN REVIEW on two body claims, not on its code. Both
-branch from `main`; merged together the full corpus is 173/173 CAUGHT.
+**#73 is the only thing in flight.** A phone bug: `.visually-hidden` sets
+`width:1px` while `.week-select` sets `min-width:160px`, and min-width wins,
+so every hidden select stayed a 160px box that clipping hid but did not
+remove from the page's scrollable overflow. At 430px the Week Board's
+document measured 533 wide and a phone shrink-fit the whole page.
 
-**Next action: Stage 9's colour items.** `teamColor()`'s `#8A93A8` fallback,
-wrong in light mode, and the same literal in `.week-select`'s chevron -- two
-sites, one change. Then `--accent` vs `--series-a` and `matchupColors`.
+**Next action once #73 lands: Stage 9's colour items.** `teamColor()`'s
+`#8A93A8` fallback, wrong in light mode, and the same literal in
+`.week-select`'s chevron -- two sites, one change.
 
-**The grading path is frozen until Tue 2026-09-15, 11:00 UTC.** That run is
-the first ever to grade a week with real games in it. Nothing touches
-`src/weekly_update.py` or the grading path before it. Surface work is
-unaffected and is what the gap is for.
+**The first graded week runs Tue 2026-09-15 11:00 UTC**, the first ever to
+grade a week with real games in it. Nothing touches `src/weekly_update.py` or
+the grading path before it. Watch the run and check the output. Until it
+lands every team has `sos: null`, so the SOS note on Power Ratings renders --
+that is correct, and it stops rendering on its own.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| The repo's About panel | Empty | Mark. Needs repo settings. Wording in CLAUDE.md |
-| PR #71, `feat/teamdive-listbox` | SAFE TO MERGE | Mark merging it |
-| PR #72, `feat/ratings-page-declutter` | Code clean, two body claims wrong | Mark pasting the fix, then a re-audit |
-| First graded week | Scheduled | Tue 2026-09-15 11:00 UTC. Watch the run, check the output |
+| The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
+| PR #73, `fix/visually-hidden-min-width` | Open, preflight green | Booth, then Mark |
+| First graded week | Scheduled | Tue 2026-09-15 11:00 UTC |
+| Confirming #73 on a real phone | Not done | Emulation cannot shrink-to-fit; only the device proves the zoom is gone |
 
-Test-merged #71 then #72 onto `main` in a throwaway worktree: no conflict,
-1155 passed / 2 skipped, full corpus 173/173 CAUGHT.
+`fix/visually-hidden-min-width` is the only branch besides `main`.
 
 ## Queued, in order
 
-1. **Stage 9's colour items.** The component pass is done -- `#sort-select` in
-   #69, `#teamdive-select` in #71. What remains is `teamColor()`'s `#8A93A8`
-   fallback, wrong in light mode, and the same literal in `.week-select`'s
-   chevron, a second site nothing had recorded.
-2. **Colour, as accessibility.** `--accent` vs `--series-a` are 8.1 dE00 apart
+1. **Stage 9's colour items.** `teamColor()`'s `#8A93A8` fallback and the same
+   literal in `.week-select`'s chevron, a second site nothing had recorded.
+2. **The listbox opens off-screen at the right edge.** `.lbx-list` is `left:0`
+   with `white-space:nowrap` options, so a control near the right edge
+   overflows: 435 against a 430 viewport while open, back to 430 when it
+   closes. Needs an edge flip. Disclosed in #73 and left out of it on purpose.
+3. **Colour, as accessibility.** `--accent` vs `--series-a` are 8.1 dE00 apart
    in light and 6.6 under red-green CVD, against a floor of 15, and Booth
    proved on #60 that they DO share a screen. `matchupColors` still ranks by
    RGB Euclidean distance, which models no colour vision: 60 of 496 team pairs
    below the floor, worst ARI/PHI at 0.18. The Net Rating diverging pair needs
-   the dataviz validator in both themes. One investigation, one validator —
-   these were split across two stages and should not be.
-3. **Stage 10.** Duplicate "Model Output" sidebar label (renders twice),
-   shared page-header, table system, mobile pass, empty/error/loading states,
-   closing `dashboard-design-audit` against the 15/40 baseline.
-4. **Stage 6 — broadcast channel.** NOT deferred, unsourced: `load_schedules()`
+   the dataviz validator in both themes. One investigation, one validator.
+4. **Stage 10.** Duplicate "Model Output" sidebar label, shared page-header,
+   table system, mobile pass, empty/error/loading states, and closing
+   `dashboard-design-audit` against the 15/40 baseline. Add one: the glossary's
+   definition column is right-aligned because every cell carries `.num`, which
+   only became obvious once a long definition moved in.
+5. **Stage 6 — broadcast channel.** NOT deferred, unsourced: `load_schedules()`
    returns 46 columns and none is a network. Needs a new feed with its own
-   staleness story, and a flexed game changes network days before kickoff, so
-   it needs a refresh policy rather than a one-time fetch.
-5. **Two preflight gaps.** `check_test_count` does not strip quotations, so
-   a body quoting a historical count false-positives. And the
-   commit-message check matches suite-shaped counts only, so any other
-   count reaches a message that cannot be corrected without rewriting its
-   SHA -- "147 individual cases" did, on #68.
-6. **README says "N cases" where its guard counts FILES** (157 across 30).
-   Sentence and regex must change together; rewording alone makes the
-   check report the line as missing. Ends a collision that has now cost
-   three PRs a follow-up commit.
+   staleness story, and a flexed game changes network days before kickoff.
+6. **Four preflight and README guard gaps.** `check_test_count` does not strip
+   quotations; the commit-message check matches suite-shaped counts only; the
+   README says "N cases" where its guard counts FILES. New: a mutation count
+   quoted from an `--id` glob is the same class of unchecked figure, and
+   preflight already knows how to check a count against a command.
 7. **Stage 7's text-only items** are unblocked; the visual ones wait for 10.
 
 ## Known and deliberately not fixed
 
-- **A Booth header can disagree with its own verdict block.** #60's audit 4
-  does; `cross_check()` already catches and logs it. Open: should it fail?
+- **A Booth header can disagree with its own verdict block.** `cross_check()`
+  already catches and logs it. Open: should it fail?
 - **`check_scoped_test_counts` ignores a count for a module that does not
   exist.** Deliberate — a body may describe a file a later phase adds — but a
   count naming a DELETED module passes silently.
-
-Three durable entries moved out of here into CLAUDE.md's traps, where the
-length cap says they belong.
