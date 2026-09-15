@@ -1565,3 +1565,40 @@ under compaction pressure, so its length is a cost paid on every session.
   immediately and named both numbers, so the window was one commit wide rather
   than a month. A cheap number in prose plus a test that recomputes it is the
   pattern behaving exactly as designed.
+- **A GUARD THAT NAMES ITS SUBJECT IS SCOPED TO THE INSTANCE THAT PROMPTED IT,
+  AND THE SECOND INSTANCE WALKS PAST IT.** This is the sharpened form of the
+  "wired into one of several paths" entry above, and it is worth its own
+  because the guard here was written FOR this exact failure mode and still
+  missed it. `tests/test_generated_data_reaches_the_page.py` exists because a
+  GITHUB_TOKEN push cannot trigger another workflow and the collector's output
+  therefore never reached the page. It encoded that as `DASHBOARD_INPUTS =
+  ('data/agent_log.json',)` and `COLLECTOR = collect-agent-log.yml` — the one
+  file and the one workflow in front of it at the time. "Weekly update" writes
+  `predictions/**`, `results/**` and `data/**` with the same token, was never
+  in `deploy-pages.yml`'s `workflow_run` list, and was invisible to every
+  assertion in that file. On 2026-09-15 it graded the first real week at 11:05
+  UTC and the published page served 04:30 UTC data — no Week 2 in either week
+  control — until a build was dispatched by hand. Nothing failed. Fixed in #74
+  by enumerating the writers and reading the watched path set out of the
+  builder, so the builder stays the single source of truth.
+  The file's own docstring had written the trap down as a virtue: *"the check
+  is on the chain, not on either end of it."* There were two chains. **When a
+  guard names a file or a workflow, ask what class that name is an instance
+  of, and enumerate the class instead** — the constant is the tell, not the
+  logic around it.
+- **AN ASSERTION OVER A LIST SOME SCAN PRODUCES NEEDS A TEST THAT THE SCAN
+  FOUND ANYTHING.** Discovered while fixing the entry above, which is the point
+  of recording it. The widened guard computes "every workflow that writes a
+  dashboard input" and asserts each is bridged. The first draft's path parser
+  stripped quotes before the leading `-` of a YAML list item, so `- 'src/**'`
+  yielded the root `'src`, nothing ever intersected, and the scan returned an
+  empty list — over which the bridging assertion passed, cleanly, proving
+  nothing. It would have shipped green and re-created the original defect one
+  level up. The vacuity test named the two workflows known to write and failed
+  instead, which is the only reason the parser bug was found at all.
+  **Any assertion of the form "every X must Y" needs a companion asserting
+  that the search for X is not returning nothing**, and the companion has to
+  name specifics the scan must find. `rebuild-bridge-writer-scan-goes-blind`
+  in the corpus is that case. Note the asymmetry that makes this expensive:
+  a broken scan fails OPEN and looks like a pass, while a broken assertion
+  fails closed and gets fixed the same minute.
