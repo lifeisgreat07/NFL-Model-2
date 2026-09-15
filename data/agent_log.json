@@ -1,15 +1,15 @@
 {
-  "generated_utc": "2026-09-15T03:15:47Z",
+  "generated_utc": "2026-09-15T03:40:56Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 91,
-    "audits_superseded": 37,
+    "audits_total": 92,
+    "audits_superseded": 38,
     "pull_requests_audited": 54,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 499,
-    "discrepancies_found": 22,
+    "claims_checked": 498,
+    "discrepancies_found": 20,
     "unverifiable": 29,
-    "pull_requests_with_a_discrepancy": 13,
+    "pull_requests_with_a_discrepancy": 12,
     "reports_disagreeing_with_themselves": 8
   },
   "audits": [
@@ -1696,7 +1696,7 @@
         "tests/mutation/cases/playoff_odds_column_markup.json"
       ],
       "inconsistencies": [],
-      "superseded": false
+      "superseded": true
     },
     {
       "pr": 71,
@@ -1708,6 +1708,23 @@
       "block_error": null,
       "claims": 10,
       "confirmed": 9,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 72,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/72#issuecomment-5674197096",
+      "posted_utc": "2026-09-15T03:24:32Z",
+      "head": "374299f",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 14,
+      "confirmed": 13,
       "discrepancies": 0,
       "unverifiable": 1,
       "overall": "SAFE TO MERGE",
