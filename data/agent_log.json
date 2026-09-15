@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-09-15T02:59:43Z",
+  "generated_utc": "2026-09-15T03:15:14Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 89,
-    "audits_superseded": 36,
-    "pull_requests_audited": 53,
+    "audits_total": 91,
+    "audits_superseded": 37,
+    "pull_requests_audited": 54,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 485,
-    "discrepancies_found": 21,
-    "unverifiable": 28,
+    "claims_checked": 499,
+    "discrepancies_found": 22,
+    "unverifiable": 29,
     "pull_requests_with_a_discrepancy": 13,
     "reports_disagreeing_with_themselves": 8
   },
@@ -1672,6 +1672,46 @@
       "implicated": [
         "PR description"
       ],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 72,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/72#issuecomment-5674055448",
+      "posted_utc": "2026-09-15T03:06:17Z",
+      "head": "374299f",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 15,
+      "confirmed": 12,
+      "discrepancies": 2,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "data/current_ratings.json",
+        "data/playoff_odds.json",
+        "results/2026_week1_graded.json",
+        "tests/mutation/cases/plain_english.json",
+        "tests/mutation/cases/playoff_odds_column_markup.json"
+      ],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 71,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/71#issuecomment-5674088207",
+      "posted_utc": "2026-09-15T03:10:26Z",
+      "head": "73762d9",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 10,
+      "confirmed": 9,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
       "inconsistencies": [],
       "superseded": false
     }
