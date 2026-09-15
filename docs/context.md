@@ -4,52 +4,56 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-15 (second session; #74 open, nothing merged)
+Last updated: 2026-09-15 (second session; #74 merged, no open PRs)
 
 ---
 
 ## Right now
 
-**Suite:** 1173 passing, 1 skipped on `main` at `3f8a29f`; 1184 on the #74
-branch at `f7be6a4`. Re-run before quoting either. Corpus: 33 case files and
-180 cases on that branch, 32 and 177 on `main` — from
-`python tests/mutation/runner.py` with no `--id`, whose scope is every case.
+**Suite:** 1184 passing, 1 skipped on `main` at `a60bcb9`. Re-run before quoting
+it. Corpus: 33 case files, 180 cases — from `python tests/mutation/runner.py`
+with no `--id`, whose scope is every case.
+
+**No branches, no open PRs.** `main` is the only branch, local and remote.
 
 **Stage:** 8, 8b and 8c complete. Stage 9's component pass is DONE; what
 remains of Stage 9 is colour, and those are accessibility defects rather than
 polish. There is no Stage 11.
 
-**The first graded week landed and worked.** `3f8a29f` at 11:05 UTC graded
-Week 1 (Model A 11/16, Model B 11/16, market 12/16) and locked in Week 2. SOS
+**The first graded week landed and worked.** The Tuesday run graded Week 1
+(Model A 11/16, Model B 11/16, market 12/16) and locked in Week 2. SOS
 populated and its empty-state note retired itself, as predicted.
 
-**The page did not rebuild, and #74 fixes it.** The weekly workflow commits
-with the default `GITHUB_TOKEN`, which cannot trigger another workflow, and
-`.github/workflows/deploy-pages.yml`'s `workflow_run` list named only the
-collector. Mark dispatched a build by hand. The guard for this exact defect
-existed, scoped to one workflow and one file.
+**The weekly run now publishes on its own.** #74 added "Weekly update" to
+`.github/workflows/deploy-pages.yml`'s `workflow_run` list. Its push uses the
+default `GITHUB_TOKEN`, which cannot trigger a workflow, so the `paths:`
+trigger never fired and the page served eight-hour-old data.
 
-**Next action: get #74 merged, and it is time-boxed.** The next weekly run is
-Tue 2026-09-22 11:00 UTC. If #74 is not on `main` by then, that run fails to
-publish the same way. Nothing else is worth starting first.
+**Next action: the two Week Board sort-control defects, as one PR.** Reproduce
+the wrap first — it is the one with no measurement behind it yet.
+
+**Tue 2026-09-22 11:00 UTC is the bridge's first live test.** Check a Pages
+deploy follows it untouched; if not, suspect the `workflow_run` name match.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| #74 weekly run rebuilds the page | Open, green locally | Mark's review. Merge before Tue 2026-09-22 11:00 UTC |
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a real phone | Not done | Only a device proves the zoom is gone |
+| Week 2 grading | Tue 2026-09-22 | Nothing. Watch that the page rebuilds itself |
 
 ## Queued, in order
 
 1. **Two defects on the Week Board sort control — same control, same row, one
    PR.** (a) The listbox opens off-screen at the right edge: `.lbx-list` is
    `left:0` with nowrap options, so a control near the right edge overflows
-   while open and the document scrolls sideways. Needs an edge flip. (b) NEW,
-   from Mark: the sort button sizes to its own label, so any option longer
-   than "Sort: First Game to Last" wraps the filter row onto a second line
-   beside Print / PDF on mobile. Needs a stable width. Reproduce (b) first.
+   while open and the document scrolls sideways. Needs an edge flip. (b) From
+   Mark, 2026-09-15: the sort button sizes to its own label, so any option
+   longer than "Sort: First Game to Last" wraps the filter row onto a second
+   line beside Print / PDF on mobile. **Neither is reproduced here**, and (b)'s
+   stated cause is a hypothesis from the symptom. Reproduce both at a 430px
+   mobile-emulated viewport before writing any fix.
 2. **Stage 9's colour items.** `teamColor()`'s `#8A93A8` fallback, wrong in
    light mode, and the same literal in `.week-select`'s chevron data-URI — two
    sites, one change. `tests/test_listbox.py` asserts the inline-SVG
@@ -74,11 +78,10 @@ publish the same way. Nothing else is worth starting first.
 
 ## Known and deliberately not fixed
 
-- **CLAUDE.md's `Suite:` line goes 1173 -> 1184 when #74 merges.** Not on the
-  branch: its PR body enumerates two commits and a third would falsify it.
-  `src/session_start.py` prints the line against a real run, so the drift
-  announces itself next session.
 - **A Booth header can disagree with its own verdict block.** `cross_check()`
-  catches and logs it. Open: should it fail?
+  catches and logs it. Open: should it fail? #74's audit agreed with itself.
 - **`check_scoped_test_counts` ignores a count for a module that does not
   exist.** Deliberate, but a count naming a DELETED module passes silently.
+- **Nothing recomputes CLAUDE.md's `Suite:` line except the wrap-up gate and
+  the session-start print.** Both manual. Accepted: the alternative is a CI
+  test that goes red on every branch that adds a test.
