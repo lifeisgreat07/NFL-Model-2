@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-15 (#69 merged; README bumped to 31 in `976d0a3`)
+Last updated: 2026-09-15 (#71 SAFE TO MERGE; #72 open, body being corrected)
 
 ---
 
@@ -18,12 +18,10 @@ each file's `cases` list, not a recalled figure).
 merged; what remains of Stage 9 is the component pass and the colour items
 below, which are accessibility defects, not polish. There is no Stage 11.
 
-**#69 is merged and `main` is green.** The README bump did not ride with the
-merge, so `tests/test_readme_accuracy.py` was red for one commit; fixed in
-`976d0a3`. The "cases"/FILES wording gap in that sentence is still queued.
-
-**Stage 9's component pass is done and in review: PR #71.** `#teamdive-select`
-is the second `enhanceSelect()` consumer and the first use of `refresh()`.
+**Two PRs are open and `main` is green.** #71 is Stage 9's component pass,
+re-audited SAFE TO MERGE after its body was corrected. #72 is a Power Ratings
+declutter, NEEDS HUMAN REVIEW on two body claims, not on its code. Both
+branch from `main`; merged together the full corpus is 173/173 CAUGHT.
 
 **Next action: Stage 9's colour items.** `teamColor()`'s `#8A93A8` fallback,
 wrong in light mode, and the same literal in `.week-select`'s chevron -- two
@@ -39,11 +37,12 @@ unaffected and is what the gap is for.
 | What | State | Waiting on |
 |---|---|---|
 | The repo's About panel | Empty | Mark. Needs repo settings. Wording in CLAUDE.md |
-| PR #71, `feat/teamdive-listbox` | Open, preflight green | Booth, then Mark's review |
+| PR #71, `feat/teamdive-listbox` | SAFE TO MERGE | Mark merging it |
+| PR #72, `feat/ratings-page-declutter` | Code clean, two body claims wrong | Mark pasting the fix, then a re-audit |
 | First graded week | Scheduled | Tue 2026-09-15 11:00 UTC. Watch the run, check the output |
 
-#68, #69 and #70 are merged and their branches are deleted, local and remote.
-`feat/teamdive-listbox` is the only other branch.
+Test-merged #71 then #72 onto `main` in a throwaway worktree: no conflict,
+1155 passed / 2 skipped, full corpus 173/173 CAUGHT.
 
 ## Queued, in order
 

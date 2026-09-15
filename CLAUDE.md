@@ -1460,6 +1460,27 @@ under compaction pressure, so its length is a cost paid on every session.
   something is unguarded, grep for the guard. The cost of not doing so is a
   permanent instruction, in the document every session reads cold, to build a
   thing that already exists.
+- **NEVER QUOTE A MUTATION COUNT FROM AN `--id` GLOB. A glob looks like a
+  scope and is not one.** #72's body said "42 mutations over the two affected
+  files, 42 CAUGHT", from `runner.py --id "p*"`. The command was real and the
+  42 were genuinely all caught. But the two files this PR touched hold
+  **eleven** cases; the glob pulled in 38 from `picks_card`,
+  `picks_surgical_update`, `plain_language`, `scout_preflight` and
+  `preflight_count_honesty`, none of which the PR went near — and it MISSED
+  seven of the eleven that mattered, because their ids happen not to start
+  with `p` (`sort-comparator-...`, `rank-...`, `signed-bar-...`). Booth ran
+  those seven itself, found them all CAUGHT, and confirmed the safety
+  property while rejecting the sentence. It is the wider-command shape again,
+  with a new and worse property: **the glob was simultaneously too wide and
+  too narrow**, so the number was inflated by unrelated cases and the real
+  coverage gap was invisible inside it. Case ids are chosen for readability,
+  not as a namespace, so `p*` is not a selector for anything.
+  **Quote the full corpus — one command, `python tests/mutation/runner.py`,
+  whose scope is exactly "every case" — or name the ids and run them.** The
+  full run is a few minutes in the background, which is cheaper than an audit
+  cycle. This was the second mis-scoped figure in a PR body on 2026-09-15,
+  the first being the entry below, which had already been written down before
+  this one shipped: a trap entry is not a control either.
 - **THE TWO RECURRING NUMBER TRAPS, COMBINED IN ONE SENTENCE — a numerator
   measured against a set that later grew, quoted against the set's final
   size.** #71's body said "five of the eight new tests failed before the
