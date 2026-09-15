@@ -36,10 +36,10 @@ unaffected and is what the gap is for.
 | What | State | Waiting on |
 |---|---|---|
 | The repo's About panel | Empty | Mark. Needs repo settings. Wording in CLAUDE.md |
-| Three merged branches | `feat/listbox-sort-select`, `fix/filter-btn-handler-scope`, `fix/picks-surgical-update` | Deleting. Nothing depends on them |
 | First graded week | Scheduled | Tue 2026-09-15 11:00 UTC. Watch the run, check the output |
 
-#68, #69 and #70 are all merged; their branches only need deleting.
+#68, #69 and #70 are merged and their branches are deleted, local and remote.
+`main` is the only branch that exists.
 
 ## Queued, in order
 
