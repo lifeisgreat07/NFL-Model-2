@@ -47,7 +47,7 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1086 passing** (1 skipped) on `main` (2026-09-13, after PR #70). Run it before quoting
+Suite: **1123 passing** (1 skipped) on `main` at `976d0a3` (2026-09-15, after PR #69). Run it before quoting
 it — this line read 174 for about a day after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -1460,3 +1460,19 @@ under compaction pressure, so its length is a cost paid on every session.
   something is unguarded, grep for the guard. The cost of not doing so is a
   permanent instruction, in the document every session reads cold, to build a
   thing that already exists.
+- **A breakage that is predicted in writing still happens, because the remedy
+  was a human step and nothing enforced it.** `docs/context.md` said, in bold,
+  that merging #69 would put 31 files under a README claiming 30 and turn
+  `tests/test_readme_accuracy.py` red on `main` — and asked for the bump to
+  ride with the merge. #69 was merged from the GitHub UI on 2026-09-15 without
+  it, and `main` was red for exactly one commit until `976d0a3`. Nobody
+  misunderstood anything: the prediction was correct, read, and unactionable at
+  the moment it mattered, because a merge button does not carry a file edit
+  with it. The durable shape: **if the remedy for a known breakage is "remember
+  to do two things at once", it will eventually be done as one.** Either put
+  the second thing on the branch before it merges, where the merge carries it,
+  or accept the red and fix forward — but do not write the pairing into a
+  document and count it as a control. Note what DID work: the guard fired
+  immediately and named both numbers, so the window was one commit wide rather
+  than a month. A cheap number in prose plus a test that recomputes it is the
+  pattern behaving exactly as designed.

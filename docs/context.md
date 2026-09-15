@@ -4,29 +4,27 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-13 (#68 and #70 merged; #69 open and mergeable, see below)
+Last updated: 2026-09-15 (#69 merged; README bumped to 31 in `976d0a3`)
 
 ---
 
 ## Right now
 
-**Suite:** 1086 passing, 1 skipped on `main`. Re-run before quoting it.
-Mutation corpus: 30 case files, 157 cases (at `0ca2594`; `python` sum over
+**Suite:** 1123 passing, 1 skipped on `main`. Re-run before quoting it.
+Mutation corpus: 31 case files, 165 cases (at `976d0a3`; `python` sum over
 each file's `cases` list, not a recalled figure).
 
 **Stage:** 8, 8b and 8c complete. Stage 9's model-colour work (#60) is
 merged; what remains of Stage 9 is the component pass and the colour items
 below, which are accessibility defects, not polish. There is no Stage 11.
 
-**Next action: merge #69, bumping README to 31 in the same action.** It is
-audited four times and merges cleanly (local test-merge); GitHub stalled
-computing mergeability, which is a UI problem, not a conflict. The moment it
-lands, `tests/mutation/cases/` holds 31 against a README saying 30 and
-`tests/test_readme_accuracy.py` goes red on `main`.
+**#69 is merged and `main` is green.** The README bump did not ride with the
+merge, so `tests/test_readme_accuracy.py` was red for one commit; fixed in
+`976d0a3`. The "cases"/FILES wording gap in that sentence is still queued.
 
-Then Stage 9's last item: `#teamdive-select` as a second `enhanceSelect()`
-call -- runtime-populated, `options.length === 0` as its sentinel, an
-empty-state branch, and named nowhere in the suite. Guard first, red.
+**Next action: `#teamdive-select` as a second `enhanceSelect()` call.**
+Runtime-populated, `options.length === 0` as its sentinel, an empty-state
+branch, and named nowhere in the suite. Guard first, red.
 
 **The grading path is frozen until Tue 2026-09-15, 11:00 UTC.** That run is
 the first ever to grade a week with real games in it. Nothing touches
@@ -38,10 +36,10 @@ unaffected and is what the gap is for.
 | What | State | Waiting on |
 |---|---|---|
 | The repo's About panel | Empty | Mark. Needs repo settings. Wording in CLAUDE.md |
-| PR #69, `feat/listbox-sort-select` | Audited 4x, mergeable | Merging. Bump README to 31 with it |
+| Three merged branches | `feat/listbox-sort-select`, `fix/filter-btn-handler-scope`, `fix/picks-surgical-update` | Deleting. Nothing depends on them |
 | First graded week | Scheduled | Tue 2026-09-15 11:00 UTC. Watch the run, check the output |
 
-#68 and #70 are merged; their branches only need deleting.
+#68, #69 and #70 are all merged; their branches only need deleting.
 
 ## Queued, in order
 
