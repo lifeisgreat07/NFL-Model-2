@@ -40,16 +40,27 @@ on:
       - 'results/**'
       - '.github/workflows/deploy-pages.yml'
 
-  # "Collect Booth's audit log" writes data/agent_log.json with the default
-  # GITHUB_TOKEN, and GitHub will not let such a push trigger another workflow.
-  # workflow_run crosses that gap. It was documented in two workflows until
-  # phase 2; the two became one, as that note predicted, and this is the copy
-  # that survived. Guarded by tests/test_generated_data_reaches_the_page.py,
-  # which exists because this handoff was severed once already: the collector
-  # committed 44 audits and the live page went on saying the record had not
-  # been collected.
+  # EVERY workflow that commits something in the paths above must also be
+  # listed here, and the paths list alone is not enough for any of them: those
+  # pushes are made with the default GITHUB_TOKEN, and GitHub will not let such
+  # a push trigger another workflow. workflow_run crosses that gap.
+  #
+  # "Collect Booth's audit log" writes data/agent_log.json. That handoff was
+  # severed once already -- the collector committed 44 audits and the live page
+  # went on saying the record had not been collected.
+  #
+  # "Weekly update" writes predictions/**, results/** and data/** every
+  # Tuesday, and was missing from this list until 2026-09-15. It graded the
+  # first real week and locked in Week 2 at 11:05 UTC; the page went on serving
+  # 04:30 UTC data, with no Week 2 in either week control, until someone
+  # dispatched a build by hand. The same defect as the collector's, in a second
+  # workflow, invisible because the guard named only the first one.
+  #
+  # Guarded by tests/test_generated_data_reaches_the_page.py, which now
+  # enumerates the writers rather than listing them, so a third one is covered
+  # without anyone remembering to come back here.
   workflow_run:
-    workflows: ["Collect Booth's audit log"]
+    workflows: ["Collect Booth's audit log", "Weekly update"]
     types: [completed]
 
   workflow_dispatch:

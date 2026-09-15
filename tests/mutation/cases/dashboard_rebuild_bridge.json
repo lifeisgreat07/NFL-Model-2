@@ -1,0 +1,27 @@
+{
+  "target": ".github/workflows/deploy-pages.yml",
+  "tests": "tests/test_generated_data_reaches_the_page.py",
+  "cases": [
+    {
+      "id": "rebuild-bridge-drops-weekly-update",
+      "why": "the exact state main was in on 2026-09-15, and it cost a week of the dashboard being wrong in the first week anyone could have noticed. The Tuesday run graded Week 1 and locked in Week 2 at 11:05 UTC, committed all of it with the default GITHUB_TOKEN, and no build followed: the page served 04:30 UTC data with no Week 2 in either week control. Nothing failed, because the paths trigger LOOKS like it covers this and a GITHUB_TOKEN push cannot fire it. This is the case that says the widened guard is load-bearing rather than decorative -- revert this one line and the suite must go red.",
+      "find": "    workflows: [\"Collect Booth's audit log\", \"Weekly update\"]",
+      "replace": "    workflows: [\"Collect Booth's audit log\"]",
+      "expect_caught_by": "test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder"
+    },
+    {
+      "id": "rebuild-bridge-misnames-weekly-update",
+      "why": "GitHub matches workflow_run on the DISPLAY name, exactly, and a near-miss fails open: no run, no error, no annotation anywhere. A lowercase w is the most plausible way this breaks, because nothing about the YAML looks wrong and the reader's eye reads the words rather than the case. The guard has to compare against the `name:` field rather than eyeball the list, and this proves it does.",
+      "find": "\"Collect Booth's audit log\", \"Weekly update\"]",
+      "replace": "\"Collect Booth's audit log\", \"weekly update\"]",
+      "expect_caught_by": "test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder"
+    },
+    {
+      "id": "rebuild-bridge-writer-scan-goes-blind",
+      "why": "the vacuity failure, and it is here because it actually happened while this guard was being written. The bridging assertion is over a list the writer scan produces, so a scan that finds nothing makes it pass while testing nothing -- which is precisely the shape of defect this whole file exists to prevent, reproduced one level up. Narrowing the watched paths empties the scan; the vacuity test must be what fires, not the bridging test, because the bridging test would report success.",
+      "find": "      - 'data/**'\n      - 'predictions/**'\n      - 'results/**'\n",
+      "replace": "",
+      "expect_caught_by": "test_the_writer_scan_finds_the_workflows_we_know_write"
+    }
+  ]
+}

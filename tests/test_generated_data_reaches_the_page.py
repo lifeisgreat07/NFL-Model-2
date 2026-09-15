@@ -19,6 +19,23 @@ This is the same shape as the bug the collector itself was written to fix: a
 step that runs, produces correct output, and has nothing downstream consuming
 it. One layer further along the chain. So the check is on the chain, not on
 either end of it.
+
+WIDENED 2026-09-15, after the same defect recurred in a second workflow.
+
+The checks above are the collector's chain and only the collector's chain --
+DASHBOARD_INPUTS named one file and COLLECTOR named one workflow. "Weekly
+update" writes predictions/**, results/** and data/** with the same default
+GITHUB_TOKEN, is not in the workflow_run list, and was therefore invisible to
+every assertion here. On 2026-09-15 it graded the first real week and locked in
+Week 2 at 11:05 UTC; the published page went on serving 04:30 UTC data with no
+Week 2 in either week control, and nothing failed.
+
+That is this repo's own "a guard wired into one of several paths reads as a
+guard that is present", and the docstring above walked straight into it by
+saying the check is on the chain when it was on one of two. The tests added at
+the bottom of this file ENUMERATE the writers instead of naming them, and read
+the watched path set out of the builder, so a third writer -- or a new watched
+path -- is covered without anyone remembering this.
 """
 
 import re
@@ -121,6 +138,98 @@ def test_the_reason_is_written_down_where_the_trigger_is():
         'the workflow_run trigger in deploy-pages.yml is not accompanied '
         'by the GITHUB_TOKEN explanation. Without it the trigger looks '
         'redundant against the data/** paths and invites deletion')
+
+
+#: The two forms a workflow in this repo uses to commit: the action's
+#: file_pattern, and a literal `git add`. Both are matched because
+#: booth-regression.yml uses the second and a future workflow may too.
+FILE_PATTERN_RE = re.compile(r'^\s*file_pattern:\s*(.+?)\s*$', re.M)
+GIT_ADD_RE = re.compile(r'git add\s+(.+?)\s*$', re.M)
+
+
+def _roots(paths):
+    """Top-level directory of each path. Comparing roots rather than globs is
+    deliberately coarse: `data/**` and `data/agent_log.json` must both count as
+    'writes something under data', and a guard that tried to resolve globs
+    against the real tree would pass whenever the tree happened to be empty."""
+    out = set()
+    for p in paths:
+        # Order matters, and getting it wrong is silent: a YAML list item
+        # arrives as `- 'src/**'`, so the dash has to come off before the
+        # quotes or the leading quote survives and every root reads as "'src".
+        p = p.strip().lstrip('-').strip().strip('"\'').strip()
+        if p:
+            out.add(p.split('/')[0])
+    return out
+
+
+def _watched_roots():
+    """What the builder rebuilds for, read out of the builder. One source of
+    truth: adding a watched path widens this guard automatically."""
+    m = re.search(r'^\s*paths:\s*\n((?:\s*-\s*.+\n)+)', _text(BUILDER), re.M)
+    assert m, 'deploy-pages.yml has no paths: list under its push trigger'
+    return _roots(m.group(1).splitlines())
+
+
+def _committed_roots(path):
+    text = _text(path)
+    tokens = []
+    for m in FILE_PATTERN_RE.finditer(text):
+        tokens.extend(m.group(1).strip().strip('"\'').split())
+    for m in GIT_ADD_RE.finditer(text):
+        tokens.append(m.group(1))
+    return _roots(tokens)
+
+
+def _bridged_names():
+    listed = re.search(r'workflow_run:\s*\n\s*workflows:\s*\[(.*?)\]',
+                       _text(BUILDER), re.S)
+    assert listed, 'workflow_run block has no workflows: [...] list'
+    return [n.strip().strip('"\'') for n in listed.group(1).split(',')]
+
+
+def _writer_workflows():
+    """Every workflow that commits something the builder watches, discovered
+    rather than listed. Returns (path, display name, overlapping roots)."""
+    watched = _watched_roots()
+    found = []
+    for wf in sorted(WORKFLOWS.glob('*.yml')):
+        if wf == BUILDER:
+            continue  # holds contents: read; it publishes, it cannot commit
+        overlap = _committed_roots(wf) & watched
+        if overlap:
+            found.append((wf, _workflow_name(wf), sorted(overlap)))
+    return found
+
+
+def test_the_writer_scan_finds_the_workflows_we_know_write():
+    """Vacuity check, and the reason it is worth one: every assertion below is
+    over a list this scan produces. If the regexes stop matching -- an action
+    swapped, `file_pattern` renamed -- the scan returns nothing and the real
+    check passes while testing nothing at all."""
+    names = {wf.name for wf, _, _ in _writer_workflows()}
+    for expected in ('weekly-update.yml', 'collect-agent-log.yml'):
+        assert expected in names, (
+            f'{expected} commits paths the builder watches, but the writer '
+            f'scan did not find it (found: {sorted(names) or "nothing"}). '
+            f'The scan is broken, not the workflow -- fix the parsing before '
+            f'reading anything into the test below')
+
+
+def test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder():
+    """The widened rule. A `paths:` trigger does NOT cover these, because the
+    pushes are made with the default GITHUB_TOKEN and GitHub will not let such
+    a push start another workflow. Each writer must be named in the builder's
+    workflow_run list, matching its `name:` field exactly."""
+    bridged = _bridged_names()
+    missing = [(wf.name, name, roots)
+               for wf, name, roots in _writer_workflows() if name not in bridged]
+    assert not missing, (
+        'these workflows commit paths the dashboard is built from, with the '
+        'default GITHUB_TOKEN, and are not in deploy-pages.yml\'s '
+        'workflow_run list, so what they write never reaches the page:\n'
+        + '\n'.join(f'  {f} (name: {n!r}) writes {r}' for f, n, r in missing)
+        + f'\ncurrently bridged: {bridged}')
 
 
 if __name__ == '__main__':
