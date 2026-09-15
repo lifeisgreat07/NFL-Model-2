@@ -14,29 +14,25 @@ Last updated: 2026-09-15 (second session; #74 merged, no open PRs)
 it. Corpus: 33 case files, 180 cases — from `python tests/mutation/runner.py`
 with no `--id`, whose scope is every case.
 
-**One remote branch, not mine.** `claude/ecstatic-clarke-npab1e`, pushed
-2026-09-15 13:15 UTC by the Claude Code Routine: one commit adding
-`data/line_history/2026_week3_lines.json`, "no predictions yet". Unreviewed
-and unmerged. Decide whether the routine should be pushing branches at all.
+**One remote branch, not mine**: the Claude Code Routine pushed
+claude/ecstatic-clarke-npab1e at 13:15 UTC, one commit adding a week-3
+line-history snapshot. Unreviewed, unmerged. Should it push branches at all?
 
 **Stage:** 8, 8b and 8c complete. Stage 9's component pass is DONE; what
-remains of Stage 9 is colour, and those are accessibility defects rather than
-polish. There is no Stage 11.
+remains is colour, and those are accessibility defects. There is no Stage 11.
 
-**The first graded week landed and worked.** The Tuesday run graded Week 1
-(Model A 11/16, Model B 11/16, market 12/16) and locked in Week 2. SOS
-populated and its empty-state note retired itself, as predicted.
+**The first graded week landed and worked.** Week 1 graded (Model A 11/16,
+Model B 11/16, market 12/16), Week 2 locked in, SOS populated and its
+empty-state note retired itself.
 
 **The weekly run now publishes on its own.** #74 added "Weekly update" to
-`.github/workflows/deploy-pages.yml`'s `workflow_run` list. Its push uses the
+`.github/workflows/deploy-pages.yml`'s `workflow_run` list; its push uses the
 default `GITHUB_TOKEN`, which cannot trigger a workflow, so the `paths:`
-trigger never fired and the page served eight-hour-old data.
+trigger never fired. Tue 2026-09-22 11:00 UTC is the bridge's first live
+test — check a Pages deploy follows it untouched.
 
 **Next action: the two Week Board sort-control defects, as one PR.** Reproduce
 the wrap first — it is the one with no measurement behind it yet.
-
-**Tue 2026-09-22 11:00 UTC is the bridge's first live test.** Check a Pages
-deploy follows it untouched; if not, suspect the `workflow_run` name match.
 
 ## Open work, and what each is waiting on
 
@@ -45,7 +41,7 @@ deploy follows it untouched; if not, suspect the `workflow_run` name match.
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a real phone | Not done | Only a device proves the zoom is gone |
 | Week 2 grading | Tue 2026-09-22 | Nothing. Watch that the page rebuilds itself |
-| `claude/ecstatic-clarke-npab1e` | Pushed, unreviewed | Mark: merge the week-3 line snapshot, or delete the branch |
+| The routine's branch | Pushed, unreviewed | Mark: merge the snapshot or delete it |
 
 ## Queued, in order
 
@@ -62,16 +58,15 @@ deploy follows it untouched; if not, suspect the `workflow_run` name match.
    light mode, and the same literal in `.week-select`'s chevron data-URI — two
    sites, one change. `tests/test_listbox.py` asserts the inline-SVG
    `currentColor` pattern to copy.
-3. **Colour, as accessibility.** `--accent` vs `--series-a` are 8.1 dE00 apart
-   in light, 6.6 under red-green CVD, against a floor of 15, and #60 proved
-   they share a screen. `matchupColors` ranks by RGB Euclidean distance: 60 of
-   496 pairs below the floor, worst ARI/PHI at 0.18. One validator run, both
-   themes.
+3. **Colour, as accessibility.** `--accent` vs `--series-a`: 8.1 dE00 in
+   light, 6.6 under red-green CVD, floor is 15, and #60 proved they share a
+   screen. `matchupColors` ranks by RGB distance: 60 of 496 pairs below the
+   floor, worst ARI/PHI at 0.18. One validator run, both themes.
 4. **Four preflight and README guard gaps.** `check_test_count` does not strip
    quotations; the commit-message check matches suite-shaped counts only; the
-   README says "N cases" where its guard counts FILES (#74 bumped the number
-   and left the wording, which needs the guard's regex changed). A figure from
-   a mutation `--id` glob or a before/after table is the same unchecked shape.
+   README says "N cases" where its guard counts FILES (#74 bumped the number,
+   left the wording — needs the guard's regex changed). A figure from a
+   mutation `--id` glob or a before/after table is the same unchecked shape.
 5. **Stage 10.** Duplicate "Model Output" sidebar label, shared page-header,
    table system, mobile pass, empty/error/loading states, and closing
    `dashboard-design-audit` against 15/40. Add: the glossary's definition
@@ -86,6 +81,5 @@ deploy follows it untouched; if not, suspect the `workflow_run` name match.
   catches and logs it. Open: should it fail? #74's audit agreed with itself.
 - **`check_scoped_test_counts` ignores a count for a module that does not
   exist.** Deliberate, but a count naming a DELETED module passes silently.
-- **Nothing recomputes CLAUDE.md's `Suite:` line except the wrap-up gate and
-  the session-start print.** Both manual. Accepted: the alternative is a CI
-  test that goes red on every branch that adds a test.
+- **Only the wrap-up gate and the session-start print recompute CLAUDE.md's
+  `Suite:` line.** Both manual, accepted.
