@@ -1460,6 +1460,36 @@ under compaction pressure, so its length is a cost paid on every session.
   something is unguarded, grep for the guard. The cost of not doing so is a
   permanent instruction, in the document every session reads cold, to build a
   thing that already exists.
+- **THE TWO RECURRING NUMBER TRAPS, COMBINED IN ONE SENTENCE — a numerator
+  measured against a set that later grew, quoted against the set's final
+  size.** #71's body said "five of the eight new tests failed before the
+  template was touched". Booth restored the parent commit's template under
+  the PR's test file and got **six of eight**; re-run here in a throwaway
+  worktree, same answer. Both numbers were real. When the red run happened
+  there were SEVEN guards and five were red; the eighth was written later,
+  after the implementation, because a mutation walked through everything else
+  in the file — and it would have been red too, which is exactly why Booth's
+  six is the honest figure. The denominator moved after the numerator was
+  measured, and the sentence took one from each moment.
+  This is the intersection of the two traps above, and it is worth its own
+  entry because neither one alone describes it. It is not the command being
+  wider than the sentence: the command was correct when run. It is not the
+  base moving underneath a finished claim either: nothing rebased, and the
+  set that changed was the author's own, inside the same session. **A
+  test-driven red count is measured at a moment, and adding a guard later
+  invalidates it silently, because the later guard is indistinguishable in
+  the final diff from one written first.** So: name the count with the
+  moment — "seven guards went in first, five red; an eighth followed the
+  implementation" — or re-run the red pass against the final set before
+  quoting a fraction of it. A fraction whose denominator is "the new tests"
+  is a claim about the diff; a fraction whose numerator came from a run is a
+  claim about a point in time, and the two are only the same if nothing was
+  added in between.
+  Note what this cost and did not cost: the code was right, the guards were
+  right, and the only wrong thing was a sentence in the one artifact that
+  cannot be corrected without a human. Booth caught it on substance after
+  every mechanical check had passed, which is the argument for the audit in
+  one line.
 - **A breakage that is predicted in writing still happens, because the remedy
   was a human step and nothing enforced it.** `docs/context.md` said, in bold,
   that merging #69 would put 31 files under a README claiming 30 and turn
