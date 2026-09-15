@@ -14,7 +14,10 @@ Last updated: 2026-09-15 (second session; #74 merged, no open PRs)
 it. Corpus: 33 case files, 180 cases — from `python tests/mutation/runner.py`
 with no `--id`, whose scope is every case.
 
-**No branches, no open PRs.** `main` is the only branch, local and remote.
+**One remote branch, not mine.** `claude/ecstatic-clarke-npab1e`, pushed
+2026-09-15 13:15 UTC by the Claude Code Routine: one commit adding
+`data/line_history/2026_week3_lines.json`, "no predictions yet". Unreviewed
+and unmerged. Decide whether the routine should be pushing branches at all.
 
 **Stage:** 8, 8b and 8c complete. Stage 9's component pass is DONE; what
 remains of Stage 9 is colour, and those are accessibility defects rather than
@@ -42,6 +45,7 @@ deploy follows it untouched; if not, suspect the `workflow_run` name match.
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a real phone | Not done | Only a device proves the zoom is gone |
 | Week 2 grading | Tue 2026-09-22 | Nothing. Watch that the page rebuilds itself |
+| `claude/ecstatic-clarke-npab1e` | Pushed, unreviewed | Mark: merge the week-3 line snapshot, or delete the branch |
 
 ## Queued, in order
 
