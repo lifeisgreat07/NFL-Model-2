@@ -14,9 +14,10 @@ Last updated: 2026-09-15 (second session; #74 merged, no open PRs)
 it. Corpus: 33 case files, 180 cases — from `python tests/mutation/runner.py`
 with no `--id`, whose scope is every case.
 
-**One remote branch, not mine**: the Claude Code Routine pushed
-claude/ecstatic-clarke-npab1e at 13:15 UTC, one commit adding a week-3
-line-history snapshot. Unreviewed, unmerged. Should it push branches at all?
+**#75 is open, from the Claude Code Routine**: a week-3 line snapshot whose
+16 spreads are all null (none posted 9 days out). Next Tuesday's run recreates
+it with real lines, so closing loses nothing; its QB flag needs no merge.
+Should the routine push branches at all?
 
 **Stage:** 8, 8b and 8c complete. Stage 9's component pass is DONE; what
 remains is colour, and those are accessibility defects. There is no Stage 11.
@@ -40,8 +41,9 @@ the wrap first — it is the one with no measurement behind it yet.
 |---|---|---|
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a real phone | Not done | Only a device proves the zoom is gone |
-| Week 2 grading | Tue 2026-09-22 | Nothing. Watch that the page rebuilds itself |
-| The routine's branch | Pushed, unreviewed | Mark: merge the snapshot or delete it |
+| Week 2 grading | Tue 2026-09-22 | Watch that the page rebuilds itself |
+| #75, the routine's snapshot | Open | Mark: close it, or merge for completeness |
+| ATL's week 2 starter | Unresolved | Not ours to fix — predictions are write-once |
 
 ## Queued, in order
 
@@ -77,9 +79,7 @@ the wrap first — it is the one with no measurement behind it yet.
 
 ## Known and deliberately not fixed
 
-- **A Booth header can disagree with its own verdict block.** `cross_check()`
-  catches and logs it. Open: should it fail? #74's audit agreed with itself.
-- **`check_scoped_test_counts` ignores a count for a module that does not
-  exist.** Deliberate, but a count naming a DELETED module passes silently.
+- **A Booth header can disagree with its verdict block**, logged by `cross_check()`. Should it fail?
+- **`check_scoped_test_counts` skips a count for a module that does not exist** — deliberate, but a DELETED module passes silently.
 - **Only the wrap-up gate and the session-start print recompute CLAUDE.md's
   `Suite:` line.** Both manual, accepted.
