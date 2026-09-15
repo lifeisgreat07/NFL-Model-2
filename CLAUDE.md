@@ -1523,7 +1523,20 @@ under compaction pressure, so its length is a cost paid on every session.
   minutes apart, the header states one condition for both, and a row that
   moved for an unrelated reason looks exactly like a row that moved for the
   reason the table is about. **Measure both columns in the same session and
-  in the same call, or record the condition per row.** Three mis-scoped
+  in the same call, or record the condition per row.**
+  **And a rendered figure that is a sum of text widths is not portable.** #73
+  also claimed the unfixed page's `scrollWidth` was 533; two independent Booth
+  runs measured 537, and Booth argued that agreeing twice made 533 simply
+  wrong. It is subtler than that: both its runs share one environment, and the
+  figure decomposes as the sort control's x-position plus its button width plus
+  the phantom select's 160 — verified here, `191 + 183 + 160`, where every term
+  but the 160 is text measured in a webfont that another machine may not
+  resolve. Windows gives 533, that sandbox gives 537, and neither is wrong. So
+  for a rendered claim, **quote the decomposition and the invariant, not the
+  total**: "the hidden select adds its full 160px past the control" is true
+  everywhere, and "`scrollWidth` is 533" is true on one machine on one day.
+  The corollary for reading an audit: two runs in one sandbox are two samples
+  of one condition, not two independent confirmations. Three mis-scoped
   figures in one day, each caught by Booth and none by any mechanical check,
   is the argument for `scout_preflight.py` learning to check them: it already
   verifies a claimed suite count against a real run, and a claimed figure with
