@@ -222,15 +222,58 @@ def test_the_page_explains_the_number_in_words_a_reader_can_check():
     """This dashboard is meant to be readable by a twelve-year-old. A bare
     '67.5%' invites the reading 'the model is 67.5% sure', which is not what a
     simulation count means, so the sentence saying what was actually done has
-    to stay on the page beside the column."""
+    to stay somewhere a reader of that column can reach.
+
+    It MOVED on 2026-09-15 and this guard moved with it. The card above the
+    Power Ratings table went in a declutter pass; the sentence did not,
+    because nothing about the reason for it changed. It is now a glossary
+    definition on Methodology, which is a better home than a caveat card for a
+    second reason nobody planned: as a card it was shown only while some team
+    actually had odds, so the explanation disappeared exactly when the column
+    was empty and a confused reader had the most to ask. A definition is true
+    either way.
+
+    The point of the move is that the sentence survived it, so this asserts
+    the sentence, not the element that used to hold it.
+    """
     page = _page()
-    assert 'playoff-note' in page, "the plain-English note above the table is gone"
-    note = re.search(r'id="playoff-note".*?</div>', page, re.S)
-    assert note, "the note element lost its shape"
-    text = re.sub(r'<[^>]+>', ' ', note.group(0)).lower()
-    assert 'playoffs' in text or 'playoff' in text
+    # Anchored on a full cell, not on the words "Playoff Odds", which also
+    # appear in the column header and in the sortable th. The file's own
+    # history is the argument: a matcher on a bare identifier finds whichever
+    # occurrence comes first and every assertion after it is about the wrong
+    # text.
+    m = re.search(r'<td>Playoff Odds</td>.*?</tr>', page, re.S)
+    assert m, (
+        "the Playoff Odds glossary entry is gone, so the column is a bare "
+        "percentage with nothing anywhere saying what it counts")
+    assert len(m.group(0)) < 900, (
+        f"the glossary match ran to {len(m.group(0))} characters, so it is no "
+        "longer one table row. Re-anchor it before reading anything off it.")
+    assert 'id="playoff-sims"' in m.group(0), (
+        "the simulation count is no longer printed into the sentence from "
+        "playoffMeta, so it is either missing or a number typed into prose "
+        "with nothing to recompute it")
+    text = re.sub(r'<[^>]+>', ' ', m.group(0)).lower()
+    assert 'playoff' in text
     for jargon in ('monte carlo', 'stochastic', 'posterior', 'quantile'):
         assert jargon not in text, f"'{jargon}' is not twelve-year-old English"
+
+
+def test_the_simulation_count_is_still_filled_in_at_render_time():
+    """The move left the span on a page that never re-renders.
+
+    The count used to be written inside a block guarded by the note's own
+    existence. With the note gone that block had to be unwrapped, and an
+    unwrapped fill is exactly the kind of line a later edit deletes as
+    unreachable -- at which case the glossary reads "we play out the rest of
+    the season   times", with a gap where the number was and no error
+    anywhere.
+    """
+    page = _page()
+    assert "getElementById('playoff-sims')" in page, (
+        "nothing looks the span up any more, so the sentence has a hole in it")
+    assert 'playoffMeta.n_simulations' in page, (
+        "the count is no longer read from the run's own metadata")
 
 
 def test_the_empty_state_still_spans_the_whole_table():

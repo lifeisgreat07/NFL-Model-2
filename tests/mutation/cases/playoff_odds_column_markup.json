@@ -32,10 +32,17 @@
     },
     {
       "id": "plain-english-note-removed",
-      "why": "the column ships as a bare percentage, which reads as 'the model is 67.5% sure' rather than 'the team made the playoffs in 67.5% of 10,000 simulated seasons' -- a different and much stronger claim",
-      "find": "id=\"playoff-note\"",
-      "replace": "id=\"playoff-note-x\"",
+      "why": "the column ships as a bare percentage, which reads as 'the model is 67.5% sure' rather than 'the team made the playoffs in 67.5% of 10,000 simulated seasons' -- a different and much stronger claim. Re-anchored 2026-09-15: the explanation was a card above the table and is now a glossary definition, so this deletes the glossary row instead of renaming the card's id. The mutation is the same one either way, which is the point of writing the guard against the sentence rather than against the element holding it.",
+      "find": "          <tr><td>Playoff Odds</td>",
+      "replace": "          <tr><td>Playoff Chances</td>",
       "expect_caught_by": "test_the_page_explains_the_number_in_words_a_reader_can_check"
+    },
+    {
+      "id": "playoff-sims-count-is-typed-into-the-prose",
+      "why": "the span comes out and a real number goes into the sentence in its place. It is correct on the day it is written and becomes a lie the first time the simulation count changes, with nothing anywhere to recompute it -- the exact shape CLAUDE.md records as the number that was right when written and was falsified by the base moving underneath it. Nothing renders differently today.",
+      "find": "  const sims = document.getElementById('playoff-sims');",
+      "replace": "  const sims = null;",
+      "expect_caught_by": "test_the_simulation_count_is_still_filled_in_at_render_time"
     },
     {
       "id": "rank-becomes-position-in-the-current-sort",
