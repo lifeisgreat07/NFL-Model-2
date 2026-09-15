@@ -1536,7 +1536,15 @@ under compaction pressure, so its length is a cost paid on every session.
   total**: "the hidden select adds its full 160px past the control" is true
   everywhere, and "`scrollWidth` is 533" is true on one machine on one day.
   The corollary for reading an audit: two runs in one sandbox are two samples
-  of one condition, not two independent confirmations. Three mis-scoped
+  of one condition, not two independent confirmations.
+  One testing fact fell out of #73's third audit and is worth keeping, because
+  the obvious method gives a confidently wrong answer: **a `position:fixed;
+  left:0; right:0` element only tracks document overflow under MOBILE viewport
+  emulation.** Booth first measured `.bottom-nav` at a plain desktop viewport
+  and got 430 on both builds while `scrollWidth` read 537 and 430 -- which
+  looks like the claim being false. With Playwright's `is_mobile`/`has_touch`
+  on, it read 537 and 430, tracking exactly. Any future claim about a phone's
+  shrink-to-fit needs mobile emulation, or it cannot be reproduced at all. Three mis-scoped
   figures in one day, each caught by Booth and none by any mechanical check,
   is the argument for `scout_preflight.py` learning to check them: it already
   verifies a claimed suite count against a real run, and a claimed figure with

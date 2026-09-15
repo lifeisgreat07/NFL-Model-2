@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-15 (#71 and #72 merged; #73 open, awaiting its audit)
+Last updated: 2026-09-15 (#71 and #72 merged; #73 audited SAFE TO MERGE)
 
 ---
 
@@ -41,7 +41,7 @@ that is correct, and it stops rendering on its own.
 | What | State | Waiting on |
 |---|---|---|
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
-| PR #73, `fix/visually-hidden-min-width` | Open, preflight green | Booth, then Mark |
+| PR #73, `fix/visually-hidden-min-width` | SAFE TO MERGE (16/16 confirmed) | Mark merging it |
 | First graded week | Scheduled | Tue 2026-09-15 11:00 UTC |
 | Confirming #73 on a real phone | Not done | Emulation cannot shrink-to-fit; only the device proves the zoom is gone |
 
