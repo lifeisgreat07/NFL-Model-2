@@ -1,15 +1,15 @@
 {
-  "generated_utc": "2026-09-15T04:08:46Z",
+  "generated_utc": "2026-09-15T04:27:29Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 94,
-    "audits_superseded": 39,
+    "audits_total": 95,
+    "audits_superseded": 40,
     "pull_requests_audited": 55,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 509,
-    "discrepancies_found": 22,
+    "claims_checked": 514,
+    "discrepancies_found": 20,
     "unverifiable": 29,
-    "pull_requests_with_a_discrepancy": 13,
+    "pull_requests_with_a_discrepancy": 12,
     "reports_disagreeing_with_themselves": 8
   },
   "audits": [
@@ -1767,6 +1767,23 @@
       "implicated": [
         "PR body text"
       ],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 73,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/73#issuecomment-5674717965",
+      "posted_utc": "2026-09-15T04:25:41Z",
+      "head": "ecd9a92",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 16,
+      "confirmed": 16,
+      "discrepancies": 0,
+      "unverifiable": 0,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
       "inconsistencies": [],
       "superseded": false
     }
