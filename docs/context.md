@@ -22,9 +22,12 @@ below, which are accessibility defects, not polish. There is no Stage 11.
 merge, so `tests/test_readme_accuracy.py` was red for one commit; fixed in
 `976d0a3`. The "cases"/FILES wording gap in that sentence is still queued.
 
-**Next action: `#teamdive-select` as a second `enhanceSelect()` call.**
-Runtime-populated, `options.length === 0` as its sentinel, an empty-state
-branch, and named nowhere in the suite. Guard first, red.
+**Stage 9's component pass is done and in review: PR #71.** `#teamdive-select`
+is the second `enhanceSelect()` consumer and the first use of `refresh()`.
+
+**Next action: Stage 9's colour items.** `teamColor()`'s `#8A93A8` fallback,
+wrong in light mode, and the same literal in `.week-select`'s chevron -- two
+sites, one change. Then `--accent` vs `--series-a` and `matchupColors`.
 
 **The grading path is frozen until Tue 2026-09-15, 11:00 UTC.** That run is
 the first ever to grade a week with real games in it. Nothing touches
@@ -36,17 +39,18 @@ unaffected and is what the gap is for.
 | What | State | Waiting on |
 |---|---|---|
 | The repo's About panel | Empty | Mark. Needs repo settings. Wording in CLAUDE.md |
+| PR #71, `feat/teamdive-listbox` | Open, preflight green | Booth, then Mark's review |
 | First graded week | Scheduled | Tue 2026-09-15 11:00 UTC. Watch the run, check the output |
 
 #68, #69 and #70 are merged and their branches are deleted, local and remote.
-`main` is the only branch that exists.
+`feat/teamdive-listbox` is the only other branch.
 
 ## Queued, in order
 
-1. **Stage 9's component pass.** `#sort-select` is done in #69;
-   `#teamdive-select` is the second `enhanceSelect()` call and remains.
-   Then `teamColor()`'s `#8A93A8` fallback, wrong in light mode -- and the
-   same literal is in `.week-select`'s chevron, a second site.
+1. **Stage 9's colour items.** The component pass is done -- `#sort-select` in
+   #69, `#teamdive-select` in #71. What remains is `teamColor()`'s `#8A93A8`
+   fallback, wrong in light mode, and the same literal in `.week-select`'s
+   chevron, a second site nothing had recorded.
 2. **Colour, as accessibility.** `--accent` vs `--series-a` are 8.1 dE00 apart
    in light and 6.6 under red-green CVD, against a floor of 15, and Booth
    proved on #60 that they DO share a screen. `matchupColors` still ranks by
