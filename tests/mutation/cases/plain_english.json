@@ -11,9 +11,9 @@
     },
     {
       "id": "pe-jargon-returns-to-power-ratings",
-      "why": "the landing page goes back to opening with four statistics terms in one sentence -- the exact copy this stage rewrote, and the first thing a casual reader sees",
-      "find": "<div class=\"desc\">How good every team is right now, on a scale where 0 is average.",
-      "replace": "<div class=\"desc\">Opponent-adjusted EPA/play ratings fit via ridge regression with a 16-game recency half-life.",
+      "why": "the landing page goes back to explaining itself in statistics vocabulary. Re-anchored 2026-09-15: this used to mutate the page's standfirst paragraph, which was deleted in a declutter pass, and the SOS note is now the longest piece of prose a casual reader meets on Power Ratings. The lesson is the reason it was re-anchored rather than dropped -- deleting the only input that reaches a branch silently untests the branch, and this page is the guard's most important page precisely because it is the one that loads first.",
+      "find": "Strength of schedule is the average current net rating of the opponents a",
+      "replace": "Strength of schedule is the opponent-adjusted rating of the opponents, with shrinkage applied, for",
       "expect_caught_by": "test_no_new_jargon_on_the_pages_a_casual_reader_uses"
     }
   ]

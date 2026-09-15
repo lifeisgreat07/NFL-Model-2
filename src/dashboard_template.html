@@ -1193,9 +1193,7 @@
     <div class="page-head">
       <div>
         <h2>Power Ratings</h2>
-        <div class="desc">How good every team is right now, on a scale where 0 is average. Built from every play of real football this season and already adjusted for who each team has played &mdash; so beating a good team counts for more than beating a bad one, and recent games count for more than early ones. Methodology explains exactly how.</div>
       </div>
-      <div class="badge">32 teams</div>
     </div>
     <div class="filter-row">
       <input type="search" id="ratings-search" class="team-search" placeholder="Search teams..." aria-label="Search teams by name or abbreviation">
@@ -1209,14 +1207,6 @@
       Strength of schedule is the average current net rating of the opponents a
       team has actually faced, so it has nothing to average until Week 1 is in
       the books. It fills in on its own from the first completed week onward.
-    </div>
-    <div id="playoff-note" class="table-note" style="display:none;">
-      <b>About Playoff Odds.</b> We play out the rest of the season
-      <span id="playoff-sims"></span> times on a computer and count how often
-      each team makes the playoffs. Each run assumes every team stays exactly
-      as good as it is today, which is never quite true &mdash; teams get
-      better, get worse, and get injured. So treat these as a rough guide, not
-      a prediction, and trust them less the further away a game is.
     </div>
     <div class="table-wrap">
       <table id="ratings-table">
@@ -1691,6 +1681,13 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
           <tr><td>Model A</td><td class="num">The football-only model -- team ratings, QB performance, QB changes. Uses no betting market data at all</td></tr>
           <tr><td>Model B</td><td class="num">Model A's features plus the current Vegas point spread</td></tr>
           <tr><td>Opponent-adjusted rating</td><td class="num">A team's performance adjusted for who they played. Beating a strong defense counts more than beating a weak one</td></tr>
+          <!-- Moved here from a card above the Power Ratings table. The card
+               went because the page is being decluttered; the sentence stayed
+               because a bare "67.5%" reads as "the model is 67.5% sure", which
+               is not what a count of simulated seasons means. The simulation
+               count is still filled from playoffMeta at render time -- it is a
+               real number from the run, not a figure typed into prose. -->
+          <tr><td>Playoff Odds</td><td class="num">We play out the rest of the season <span id="playoff-sims"></span> times on a computer and count how often each team makes the playoffs. Each run assumes every team stays exactly as good as it is today, which is never quite true &mdash; teams get better, get worse, and get injured. So treat these as a rough guide, not a prediction, and trust them less the further away a game is</td></tr>
           <tr><td>Recency weighting</td><td class="num">Recent games count more than old ones. This model uses a 16-game half-life -- a game 16 games ago counts half as much as this week's</td></tr>
           <tr><td>Shrinkage</td><td class="num">Pulling a small-sample estimate toward the league average. A QB with 20 career dropbacks shouldn't be rated as confidently as one with 2,000</td></tr>
         </tbody>
@@ -2329,20 +2326,23 @@ function renderRatings(){
     t.team.toLowerCase().includes(q) || (t.name && t.name.toLowerCase().includes(q))
   ) : ranked;
 
-  // Decided on the full league, not the filtered view: whether SOS exists is a
-  // property of the season, not of what the user happens to have searched for.
-  // Only shown when there is something to explain. Same rule as the SOS
-  // note: a caveat about data that is not on screen is just more words.
-  const pNote = document.getElementById('playoff-note');
-  if(pNote){
-    const anyOdds = teams.some(t=>t.playoff!==null && t.playoff!==undefined);
-    pNote.style.display = anyOdds ? 'block' : 'none';
-    const sims = document.getElementById('playoff-sims');
-    if(sims && playoffMeta && playoffMeta.n_simulations){
-      sims.textContent = playoffMeta.n_simulations.toLocaleString();
-    } else if(sims){
-      sims.textContent = 'many thousands of';
-    }
+  /* The simulation count, printed into the Playoff Odds glossary entry.
+
+     It used to live in a card above this table and was shown only while some
+     team actually had odds -- a caveat about data that is not on screen being
+     just more words. The card is gone; the sentence is on Methodology now,
+     where it is a definition rather than a caveat and is therefore true
+     whether or not this table has odds in it today. So there is no longer a
+     condition, only the number.
+
+     Still filled from playoffMeta rather than written into the prose: the
+     count is a property of the run that produced the odds, and a figure typed
+     into a sentence is a figure nothing recomputes. */
+  const sims = document.getElementById('playoff-sims');
+  if(sims && playoffMeta && playoffMeta.n_simulations){
+    sims.textContent = playoffMeta.n_simulations.toLocaleString();
+  } else if(sims){
+    sims.textContent = 'many thousands of';
   }
 
   const sosNote = document.getElementById('sos-empty-note');
