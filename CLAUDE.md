@@ -1511,6 +1511,23 @@ under compaction pressure, so its length is a cost paid on every session.
   cannot be corrected without a human. Booth caught it on substance after
   every mechanical check had passed, which is the argument for the audit in
   one line.
+  **Third variant, same day, and the worst of the three: a BEFORE/AFTER TABLE
+  whose two columns were measured under different conditions.** #73's table
+  was headed "at a 430x900 viewport" and claimed `.game-card` went 351 to 398.
+  It did not. 351 is the card at **375px** and 398 is the card at **430px**,
+  on the same unfixed build -- the card is the viewport minus the page
+  gutters and never depended on the fix at all. Booth could not reproduce the
+  row and gave the mechanism: `.game-grid` is `repeat(auto-fit,
+  minmax(340px,1fr))`, one column at either width. A two-column table is the
+  highest-risk artifact this repo produces, because the columns are measured
+  minutes apart, the header states one condition for both, and a row that
+  moved for an unrelated reason looks exactly like a row that moved for the
+  reason the table is about. **Measure both columns in the same session and
+  in the same call, or record the condition per row.** Three mis-scoped
+  figures in one day, each caught by Booth and none by any mechanical check,
+  is the argument for `scout_preflight.py` learning to check them: it already
+  verifies a claimed suite count against a real run, and a claimed figure with
+  no command beside it is the same shape.
 - **A breakage that is predicted in writing still happens, because the remedy
   was a human step and nothing enforced it.** `docs/context.md` said, in bold,
   that merging #69 would put 31 files under a README claiming 30 and turn
