@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-16 (#76 merged, #77 open and awaiting Booth)
+Last updated: 2026-09-16 (#76 merged, #77 audited SAFE TO MERGE, not merged)
 
 ---
 
@@ -15,17 +15,17 @@ Last updated: 2026-09-16 (#76 merged, #77 open and awaiting Booth)
 files, 191 cases, all CAUGHT — from `python tests/mutation/runner.py` with no
 `--id`, whose scope is every case.
 
-**#77 is open and is the only branch**, awaiting Booth. It widens the colour
-verifier from a two-pair table to every meaning-carrying token pair and fixes
-nothing; its own suite figure is 1255 passing, 1 skipped at `69eea27`, and
-the full corpus there is 196 cases, all CAUGHT. #76 merged. #75 closed.
+**#77 is open, audited SAFE TO MERGE, and is the only branch.** It widens the
+colour verifier to every meaning-carrying token pair and fixes nothing. Booth:
+7 CONFIRMED, 1 DISCREPANCY (prose miscount, corrected here), 1 UNVERIFIABLE.
+Its own suite is 1255 passing, 1 skipped at `69eea27`; corpus 196, all CAUGHT.
 
 **Stage:** 8, 8b and 8c complete. Stage 9's component pass is done; colour is
 what remains, and those are accessibility defects. There is no Stage 11 —
 `src/dashboard_template.html`'s model-colour comment says the re-step is
 "Stage 11 work in docs/context.md", and that pointer has never been true.
 
-**Next action: trace the five pairs in `ACCEPTED_CLOSE` that say "not traced".**
+**Next action: trace the six pairs in `ACCEPTED_CLOSE` that say "not traced".**
 Whether each pair is ever on screen together decides how many of them are real
 defects and how many are pairs that can never meet. It is DOM work, not colour
 maths, and it has to happen before anyone picks a replacement colour — Booth
@@ -35,7 +35,7 @@ caught a false co-occurrence claim about a neighbouring pair on #60.
 
 | What | State | Waiting on |
 |---|---|---|
-| #77, the colour sweep | Open | Booth's audit, then Mark to merge |
+| #77, the colour sweep | Audited, clean | Mark to merge; body has a five-for-six to fix |
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a real phone | Not done | Only a device proves the zoom is gone |
 | Week 2 grading | Tue 2026-09-22 | Watch that the page rebuilds itself |
@@ -44,8 +44,9 @@ caught a false co-occurrence claim about a neighbouring pair on #60.
 
 ## Queued, in order
 
-1. **Trace the five "not traced" pairs** in `ACCEPTED_CLOSE`. Each entry either
-   becomes a defect with a reason or an entry saying the two can never meet.
+1. **Trace the six "not traced" pairs** in `ACCEPTED_CLOSE` — count with
+   `grep -c "'Not traced" tests/test_dashboard_charts.py`; #77's body said five
+   and Booth caught it. Each becomes a defect or a "they can never meet".
 2. **Separate the two known collisions:** `--accent` vs `--series-d` in light
    (OKLab CVD 1.3) and `--accent-strong` vs `--series-a` in dark (2.8 CVD, 2.9
    NORMAL). Quote OKLab, never CIEDE2000 — the rulers disagree about ranking,

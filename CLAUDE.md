@@ -1140,6 +1140,18 @@ under compaction pressure, so its length is a cost paid on every session.
   invalidating the Booth reports written against those SHAs, so the discipline
   has to happen before the commit, not after.
 
+  **A count of something that is IN THE REPOSITORY is a query, and counting it
+  by eye off your own draft is the cheapest version of this mistake.** PR #77's
+  body said five `ACCEPTED_CLOSE` entries read "Not traced". There are six;
+  `grep -c "'Not traced" tests/test_dashboard_charts.py` says so in two
+  seconds, and Booth reported it as the audit's single discrepancy. It then
+  propagated into `docs/context.md`, the session memory and the Progress tab
+  before anyone checked — and the Progress-tab entry wrote "five" directly
+  above a list of six items, so the sentence contradicted itself on the page.
+  There was no rebase, no wider command, no moved base: the number was simply
+  never run. When the thing being counted lives in the repo, the command
+  belongs beside the figure for the same reason a suite count does.
+
   **The rule.** A figure ships with the command that produced it, and a
   completeness claim cites a repo-wide search rather than the paths you
   happened to think of. A number whose method is unstated is unfalsifiable by
