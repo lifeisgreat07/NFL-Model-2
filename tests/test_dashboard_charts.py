@@ -189,6 +189,230 @@ def test_series_lightness_and_chroma_are_in_band(theme):
         assert C >= CHROMA_FLOOR, f"{theme} --series-{slot} {hex_str}: C={C:.3f} reads gray"
 
 
+# ============================================================
+# Every meaning-carrying pair, not just the ones someone thought of
+# ============================================================
+def meaning_tokens(theme):
+    """Every token in a theme block that carries MEANING, derived not listed.
+
+    A token qualifies when its value is a literal hex and its name is not part
+    of the neutral ramp. That keeps the accents, the two status colours and the
+    four chart series, and drops the surfaces and text steps (which carry no
+    identity) and the rgba() tints like --accent-soft (the same hue at low
+    opacity). Anything new that carries a hue joins this set the day it is
+    added, which is the entire point.
+
+    Derived rather than enumerated because every existing colour check names
+    its own pairs, and two collisions sat in the palette for as long as those
+    names did not happen to cover them: --accent against --series-d in light
+    (1.3 under CVD) and --accent-strong against --series-a in dark (2.8 under
+    CVD and 2.9 under normal vision). The chart guards below gate series
+    NEIGHBOURS and --series-d against --good; neither pair was ever in scope.
+    A hand-written pair list is the same defect one level up.
+    """
+    src = TEMPLATE.read_text()
+    marker = ':root{' if theme == 'dark' else '[data-theme="light"]{'
+    start = src.index(marker)
+    block = src[start:src.index('}', start)]
+    return {name: value.upper() for name, value in
+            re.findall(r'(--[a-z0-9-]+)\s*:\s*(#[0-9A-Fa-f]{6})\b', block)
+            if not re.fullmatch(r'--n\d+', name)}
+
+
+def _pair(a, b):
+    return frozenset((a, b))
+
+
+#: Pairs allowed to sit under CVD_TARGET, and why each one is tolerable.
+#: Shrinking this list is the definition of done for Stage 9's colour work --
+#: the same arrangement as the plain-language allowlist, which landed holding
+#: every violation of the day and was emptied one rewrite at a time.
+#: "not traced" means exactly that: nobody has checked whether the two are ever
+#: on screen together. It is not a judgement that they are fine.
+ACCEPTED_CLOSE = {
+    'dark': {
+        _pair('--good', '--warn'):
+            'NOT a defect. Both graded surfaces render the word -- the graded '
+            'tag prints "Correct"/"Missed" and Team Deep-Dive\'s mark() prints '
+            '"correct" -- so colour is redundant to text, which is the '
+            'secondary encoding the floor exists to require.',
+        _pair('--accent-strong', '--series-a'):
+            'KNOWN DEFECT, queued. 2.8 under CVD and 2.9 under NORMAL vision, '
+            'so this one is not a colour-vision problem, it is two colours '
+            'almost nobody can tell apart. Below NORMAL_FLOOR, which the '
+            'comment on that constant says nothing excuses.',
+        _pair('--series-a', '--series-d'):
+            'Not traced. Model A and My Picks are not neighbours in palette '
+            'order, so test_line_chart_quartet_separates_between_neighbours '
+            'never covered them; whether both are ever drawn on one chart is '
+            'the open question.',
+        _pair('--warn', '--series-b'):
+            'Not traced. A status red against Model B\'s ochre.',
+        _pair('--accent-strong', '--series-d'):
+            'Not traced.',
+    },
+    'light': {
+        _pair('--accent', '--series-d'):
+            'KNOWN DEFECT, queued, and the worst pair on the page: 1.3 under '
+            'CVD against 15.1 under normal vision, so it is invisible to '
+            'anyone checking with full colour vision. --series-d is My Picks '
+            'and --accent marks the pick tick. Whether they co-occur is '
+            'untraced, and Booth caught a false co-occurrence claim about the '
+            'neighbouring pair on #60 -- do not assert it either way.',
+        _pair('--good', '--warn'):
+            'NOT a defect, for the reason given in the dark block above.',
+        _pair('--good', '--series-c'):
+            'Not traced. test_status_colours_are_never_painted_on_a_chart_mark '
+            'says a status colour never lands on a chart mark, which may mean '
+            'these cannot meet -- but that guard is about usage, not distance.',
+        _pair('--accent-strong', '--series-d'):
+            'Not traced.',
+        _pair('--warn', '--series-b'):
+            'Not traced. A status red against Model B\'s ochre.',
+        _pair('--accent', '--accent-strong'):
+            'Intended. A colour and its own darker variant, used for the hover '
+            'and pressed states OF THE SAME control -- they are never the two '
+            'things a reader has to tell apart.',
+        _pair('--accent', '--series-a'):
+            'The residual the .model-chip comment argues at length: the dot is '
+            'an 8px circle, the tick a 15px badge at 10% opacity, and neither '
+            'is identified by hue in copy. Permitted as a floor case only.',
+    },
+}
+
+
+@pytest.mark.parametrize('theme', ['dark', 'light'])
+def test_the_meaning_token_scan_is_not_blind(theme):
+    """The companion every "every X must Y" assertion in this repo needs.
+
+    A scan that silently returns nothing satisfies the sweep below perfectly
+    and proves not one thing, and it fails OPEN -- it looks like a pass. So
+    name specifics it has to find, and specifics it must not.
+    """
+    found = meaning_tokens(theme)
+    for required in ('--accent', '--accent-strong', '--good', '--warn',
+                     '--series-a', '--series-b', '--series-c', '--series-d'):
+        assert required in found, (
+            f'{required} is missing from the {theme} meaning-token scan, so '
+            'the pair sweep below is running over a smaller palette than the '
+            'page has')
+    assert not [n for n in found if re.fullmatch(r'--n\d+', n)], (
+        'the neutral ramp leaked into the meaning tokens; surfaces and text '
+        'steps carry no identity and would swamp the sweep with pairs nobody '
+        'needs to tell apart')
+
+
+def close_pairs(tokens):
+    """Every pair in a palette that sits under CVD_TARGET, as frozensets."""
+    return {_pair(na, nb)
+            for (na, ha), (nb, hb) in combinations(sorted(tokens.items()), 2)
+            if min(delta_e(ha, hb, k) for k in MACHADO) < CVD_TARGET}
+
+
+def undocumented_pairs(tokens, accepted):
+    """Close pairs with no entry explaining them."""
+    return close_pairs(tokens) - set(accepted)
+
+
+def stale_entries(tokens, accepted):
+    """Accepted entries that no longer describe this palette."""
+    out = []
+    for pair in accepted:
+        a, b = sorted(pair)
+        if a not in tokens or b not in tokens:
+            out.append((a, b, 'token no longer exists'))
+            continue
+        d = min(delta_e(tokens[a], tokens[b], k) for k in MACHADO)
+        if d >= CVD_TARGET:
+            out.append((a, b, f'now {d:.1f}, at or above CVD_TARGET'))
+    return out
+
+
+# A palette with one deliberate collision, used to keep both branches of the
+# two rules above alive. Today's real palette has every close pair accepted and
+# no stale entries, so running them over the page alone exercises exactly one
+# side of each -- and two mutations that gutted them SURVIVED the corpus on
+# 2026-09-16 for precisely that reason. This is the repo's own prescription:
+# state the rule as a function, then check it twice.
+SYNTHETIC = {
+    '--alpha': '#1F5ED6',
+    '--beta': '#2060D8',    # a hair from --alpha: close under any vision
+    '--gamma': '#C97F2E',   # an ochre, far from both
+}
+
+
+def test_a_new_collision_is_reported_when_nothing_explains_it():
+    assert undocumented_pairs(SYNTHETIC, {}) == {_pair('--alpha', '--beta')}
+
+
+def test_a_collision_with_an_entry_against_it_is_not_reported():
+    accepted = {_pair('--alpha', '--beta'): 'deliberate variant pair'}
+    assert undocumented_pairs(SYNTHETIC, accepted) == set()
+
+
+def test_an_entry_for_a_pair_that_is_far_apart_is_reported_stale():
+    accepted = {_pair('--alpha', '--gamma'): 'an excuse nothing needs'}
+    assert [e[:2] for e in stale_entries(SYNTHETIC, accepted)] == [('--alpha', '--gamma')]
+
+
+def test_an_entry_naming_a_token_that_is_gone_is_reported_stale():
+    accepted = {_pair('--alpha', '--deleted'): 'names a token nothing defines'}
+    assert [e[:2] for e in stale_entries(SYNTHETIC, accepted)] == [('--alpha', '--deleted')]
+
+
+def test_a_live_entry_is_not_reported_stale():
+    accepted = {_pair('--alpha', '--beta'): 'deliberate variant pair'}
+    assert stale_entries(SYNTHETIC, accepted) == []
+
+
+@pytest.mark.parametrize('theme', ['dark', 'light'])
+def test_every_close_pair_is_one_we_have_written_down(theme):
+    """No colour pair may quietly become indistinguishable.
+
+    Every pair under CVD_TARGET has to appear in ACCEPTED_CLOSE with a reason.
+    Adding a token that collides with an existing one, or re-stepping one into
+    another, fails here rather than shipping -- which is what the two-pair
+    table in src/verify_model_colours.py could not do.
+    """
+    tokens = meaning_tokens(theme)
+    close = close_pairs(tokens)
+    accepted = set(ACCEPTED_CLOSE[theme])
+    unexpected = undocumented_pairs(tokens, accepted)
+    assert not unexpected, (
+        f'{theme}: colour pairs under CVD_TARGET that nobody has written '
+        f'down: {sorted(tuple(sorted(p)) for p in unexpected)}. Either '
+        'separate them or add them to ACCEPTED_CLOSE with a reason that says '
+        'why a reader can still tell them apart.')
+    # EQUALITY, not containment. A subset check passes when the sweep finds
+    # FEWER pairs than it should -- drop the CVD simulation here and the close
+    # set collapses to a handful, every one of them already accepted, and this
+    # guard goes quietly green while measuring the wrong thing. Fails open,
+    # which is the expensive direction. The other test below gives a better
+    # message for a pair that was genuinely separated; this catches the scan
+    # itself losing its teeth.
+    missing = accepted - close
+    assert not missing, (
+        f'{theme}: pairs are listed in ACCEPTED_CLOSE but the sweep no longer '
+        f'finds them close: {sorted(tuple(sorted(p)) for p in missing)}. '
+        'Either the palette changed -- delete the entry -- or this sweep has '
+        'stopped measuring what it claims to.')
+
+
+@pytest.mark.parametrize('theme', ['dark', 'light'])
+def test_the_accepted_list_has_no_entries_that_stopped_being_close(theme):
+    """The other direction, and the one that rots silently.
+
+    A pair that has been separated leaves its excuse behind, and the next
+    reader takes the list as a description of the palette. An entry that no
+    longer describes anything is removed, not kept "just in case".
+    """
+    stale = stale_entries(meaning_tokens(theme), ACCEPTED_CLOSE[theme])
+    assert not stale, (
+        f'{theme}: ACCEPTED_CLOSE entries that no longer describe the '
+        f'palette: {stale}. Delete them -- a list of excuses for pairs that '
+        'are fine is how the next reader mis-reads the real ones.')
+
+
 @pytest.mark.parametrize('theme', ['dark', 'light'])
 def test_reliability_diagram_trio_separates_under_every_pairing(theme):
     """Model A, Model B and the market are drawn as overlapping dots on one

@@ -1,0 +1,41 @@
+{
+  "target": "tests/test_dashboard_charts.py",
+  "tests": "tests/test_dashboard_charts.py",
+  "cases": [
+    {
+      "id": "colour-sweep-scan-goes-blind",
+      "why": "the meaning-token scan is narrowed to a hex length the palette does not use, so it returns an empty dict. Every pair-based assertion below then iterates nothing and passes perfectly, which is the fails-open shape: a broken scan looks exactly like a clean palette. This is the same defect the rebuild-bridge writer scan had, and the only reason it was caught there was a companion naming specifics the scan must find.",
+      "find": "            re.findall(r'(--[a-z0-9-]+)\\s*:\\s*(#[0-9A-Fa-f]{6})\\b', block)",
+      "replace": "            re.findall(r'(--[a-z0-9-]+)\\s*:\\s*(#[0-9A-Fa-f]{8})\\b', block)",
+      "expect_caught_by": "test_the_meaning_token_scan_is_not_blind"
+    },
+    {
+      "id": "colour-sweep-lets-the-neutral-ramp-in",
+      "why": "the neutral filter is dropped, so --n0 through --n8 join the sweep. Adjacent steps of a grey ramp are close by construction, so the sweep fills with pairs nobody needs to tell apart and the real findings are buried in noise -- the guard that cries wolf, which earns an allowlist entry and then gets ignored.",
+      "find": "            if not re.fullmatch(r'--n\\d+', name)}",
+      "replace": "            }",
+      "expect_caught_by": "test_the_meaning_token_scan_is_not_blind"
+    },
+    {
+      "id": "colour-sweep-stops-simulating-colour-blindness",
+      "why": "the sweep measures normal vision instead of the worst red-green case. The close set collapses to a couple of pairs, every one of them already in ACCEPTED_CLOSE, so a containment check would go green while the guard measures the wrong thing entirely -- and the two defects it exists to hold, both of which separate fine under normal vision, would vanish from it. Caught only by the equality half of the assertion.",
+      "find": "            if min(delta_e(ha, hb, k) for k in MACHADO) < CVD_TARGET}",
+      "replace": "            if delta_e(ha, hb) < CVD_TARGET}",
+      "expect_caught_by": "test_every_close_pair_is_one_we_have_written_down"
+    },
+    {
+      "id": "colour-sweep-accepts-whatever-it-finds",
+      "why": "the unexpected-pairs assertion is turned into a no-op by comparing the close set against itself. A new token that collides with an existing one then ships silently, which is precisely what the two-pair table in verify_model_colours.py did for --accent against --series-d.",
+      "find": "    return close_pairs(tokens) - set(accepted)",
+      "replace": "    return close_pairs(tokens) - close_pairs(tokens)",
+      "expect_caught_by": "test_a_new_collision_is_reported_when_nothing_explains_it"
+    },
+    {
+      "id": "colour-sweep-keeps-excuses-for-pairs-that-are-fine",
+      "why": "the staleness check stops comparing against the floor, so an ACCEPTED_CLOSE entry survives after its pair has been separated. The list then reads as a description of the palette while describing a palette that no longer exists, and the next reader discounts the real entries next to it.",
+      "find": "        if d >= CVD_TARGET:\n            out.append((a, b, f'now {d:.1f}, at or above CVD_TARGET'))",
+      "replace": "        if False:\n            out.append((a, b, f'now {d:.1f}, at or above CVD_TARGET'))",
+      "expect_caught_by": "test_an_entry_for_a_pair_that_is_far_apart_is_reported_stale"
+    }
+  ]
+}
