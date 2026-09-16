@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-16 (#76 merged; colour work is next)
+Last updated: 2026-09-16 (#76 merged, #77 open and awaiting Booth)
 
 ---
 
@@ -15,26 +15,27 @@ Last updated: 2026-09-16 (#76 merged; colour work is next)
 files, 191 cases, all CAUGHT — from `python tests/mutation/runner.py` with no
 `--id`, whose scope is every case.
 
-**No open PRs.** #76 merged (sort control: edge flip, frozen button width,
-shorter labels; Booth 9 CONFIRMED / 0 discrepancies / 4 UNVERIFIABLE, all four
-being pixel figures its sandbox had no browser for). Two of those four were
-afterwards confirmed on markys through the built-in browser at 430 and 390:
-`--lbx-fit` 218px, all six options 218, no list past the viewport. #75 closed.
+**#77 is open and is the only branch**, awaiting Booth. It widens the colour
+verifier from a two-pair table to every meaning-carrying token pair and fixes
+nothing; its own suite figure is 1255 passing, 1 skipped at `69eea27`, and
+the full corpus there is 196 cases, all CAUGHT. #76 merged. #75 closed.
 
 **Stage:** 8, 8b and 8c complete. Stage 9's component pass is done; colour is
 what remains, and those are accessibility defects. There is no Stage 11 —
 `src/dashboard_template.html`'s model-colour comment says the re-step is
 "Stage 11 work in docs/context.md", and that pointer has never been true.
 
-**Next action: widen `src/verify_model_colours.py` from its two-pair table to
-every meaning-carrying token pair, both themes, normal and CVD.** It is the
-guard that would have caught the finding below, and it tells us the real shape
-of the palette problem before anyone picks a colour.
+**Next action: trace the five pairs in `ACCEPTED_CLOSE` that say "not traced".**
+Whether each pair is ever on screen together decides how many of them are real
+defects and how many are pairs that can never meet. It is DOM work, not colour
+maths, and it has to happen before anyone picks a replacement colour — Booth
+caught a false co-occurrence claim about a neighbouring pair on #60.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
+| #77, the colour sweep | Open | Booth's audit, then Mark to merge |
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a real phone | Not done | Only a device proves the zoom is gone |
 | Week 2 grading | Tue 2026-09-22 | Watch that the page rebuilds itself |
@@ -43,15 +44,13 @@ of the palette problem before anyone picks a colour.
 
 ## Queued, in order
 
-1. **Widen the colour verifier to the whole class.** Two-pair table today. See
-   the four colour findings in CLAUDE.md for what it missed and why.
-2. **`--accent` vs `--series-d`, light, OKLab CVD 1.3**, and **`--accent-strong`
-   vs `--series-a`, dark, 2.8 CVD and 2.9 NORMAL.** The two worst token pairs,
-   both unrecorded until 2026-09-16. Quote OKLab, not CIEDE2000 — the two
-   rulers disagree about ranking, see CLAUDE.md. Before proposing a fix, trace
-   whether each pair actually co-occurs; Booth caught a false co-occurrence
-   claim about a neighbouring pair on #60. `--good` vs `--warn` also collapses
-   under CVD and is NOT a defect: both surfaces carry the word.
+1. **Trace the five "not traced" pairs** in `ACCEPTED_CLOSE`. Each entry either
+   becomes a defect with a reason or an entry saying the two can never meet.
+2. **Separate the two known collisions:** `--accent` vs `--series-d` in light
+   (OKLab CVD 1.3) and `--accent-strong` vs `--series-a` in dark (2.8 CVD, 2.9
+   NORMAL). Quote OKLab, never CIEDE2000 — the rulers disagree about ranking,
+   see CLAUDE.md. `--good` vs `--warn` is NOT one of these: it collapses under
+   CVD and both graded surfaces carry the word.
 3. **`teamColor()`'s `#8A93A8` fallback**, wrong in light mode, and the same
    literal in `.week-select`'s chevron data-URI — two sites, one change.
    `tests/test_listbox.py` has the inline-SVG `currentColor` pattern to copy.

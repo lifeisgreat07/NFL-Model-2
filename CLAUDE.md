@@ -868,6 +868,43 @@ under compaction pressure, so its length is a cost paid on every session.
 
 ## Traps that have actually bitten
 
+- **A MISSING WEBFONT DOES NOT SHIFT A MEASUREMENT, IT CAN FLIP THE ANSWER.**
+  The first reproduction of the Week Board sort defect ran from a `file://`
+  copy in the cloud sandbox, where Google Fonts is blocked, and found **no
+  defect at all**: the open list landed 9px inside the right edge. Same commit,
+  same 390px viewport, same script — the fallback face is narrower, so the
+  list, whose width is set by its longest option, simply fit. Fetching the
+  eight woff2 files on `markys`, staging them in and serving the page over
+  localhost reproduced it immediately at 41px of overflow. The existing entries
+  here say a rendered figure is a sum of text widths and is not portable
+  between machines; this is the stronger form. **A layout defect measured in
+  the wrong typeface can be absent rather than merely different, and absence
+  reads as "I checked and it was fine".** Any render measurement states which
+  face it was taken in, and a reproduction that finds nothing in an environment
+  missing the webfont has found nothing about the page.
+- **`document.fonts.check()` answers "is anything still pending", not "is this
+  font loaded".** With no `@font-face` at all it returns **true**, because
+  nothing is pending. It was used as the assertion gating three measurement
+  scripts before that was noticed, which means those asserts proved nothing for
+  as long as they existed. What actually distinguishes the two environments is
+  the numbers themselves — 218px with the webfont against 205px without — or
+  `[...document.fonts]`, which is empty when no face is declared. **A readiness
+  check that is vacuously true when the thing is absent is worse than no check,
+  because it is written in the place a reader looks for the check.**
+- **AN ALLOWLIST THAT COVERS EVERYTHING MAKES ITS OWN INTERESTING BRANCH
+  UNREACHABLE.** Two mutations against the new colour-pair guard SURVIVED the
+  corpus: one gutted "report a pair nobody wrote down", the other gutted
+  "report an entry that stopped being true". Both survived because today's
+  palette reaches neither branch — every close pair is already accepted and no
+  entry is stale — so the assertions ran over empty sets and passed whatever
+  the code did. This is the same shape as the edge flip the day before, and the
+  same shape as `check_scoped_test_counts` skipping a module that does not
+  exist. The tell is structural and can be seen before writing the test:
+  **if the guard's failure message can only be produced by data the repository
+  does not currently contain, the guard needs synthetic inputs, not a better
+  assertion.** Both rules are now plain functions checked twice, over the real
+  palette and over a synthetic one carrying a deliberate collision.
+
 - **A figure nobody can trace to a command is the worst kind of wrong, because
   it reads as evidence.** PR #67's body claimed the pre-PR tap target was
   `163x62`. It was `163x41`. Booth measured it against the exact commit the
