@@ -1,0 +1,48 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_listbox.py",
+  "cases": [
+    {
+      "id": "sort-labels-take-the-prefix-back",
+      "why": "the six sort options regain a \"Sort: \" prefix. It reads as harmless copy and costs 65px on the one row that cannot afford it: measured at 430px, the button goes 183px on the default label and 248px on the longest against 398px of row, which is enough to push it off the stepper's line and, at 390px and below, onto a third line. A copy edit that is really a layout change.",
+      "find": "        <option value=\"chronological\">First Game to Last</option>",
+      "replace": "        <option value=\"chronological\">Sort: First Game to Last</option>",
+      "expect_caught_by": "test_the_sort_labels_carry_no_redundant_prefix"
+    },
+    {
+      "id": "sort-control-stops-asking-for-a-frozen-width",
+      "why": "the data-lbx-fit opt-in is dropped from the markup. fitWidest() returns immediately, --lbx-fit is never set, .lbx-btn falls back to its 160px floor and sizes to its label again -- and every visual check on the default option still passes, because the default is the short one. The row only starts moving once a reader picks a longer sort, which is the state no screenshot is taken in.",
+      "find": " aria-label=\"Sort\" data-lbx-fit=\"widest\">",
+      "replace": " aria-label=\"Sort\">",
+      "expect_caught_by": "test_the_sort_control_asks_to_be_frozen_at_its_widest_label"
+    },
+    {
+      "id": "frozen-width-becomes-a-literal",
+      "why": "the measured width is written into the stylesheet as a number. It is right today and wrong the first time anyone edits a label, with nothing to recompute it -- the number-in-prose failure moved into CSS. It is also precisely the 160px-minimum-as-a-literal that Stage 8 exists to remove, reintroduced by the component built to replace it.",
+      "find": "    min-width:var(--lbx-fit, 160px); text-align:left;",
+      "replace": "    min-width:218px; text-align:left;",
+      "expect_caught_by": "test_the_frozen_width_is_a_variable_with_the_floor_as_its_fallback"
+    },
+    {
+      "id": "width-is-frozen-in-the-fallback-typeface",
+      "why": "the second measuring pass is deleted, so the width is whatever the fallback face measured before Plus Jakarta Sans arrived: 205px against the webfont's 218px, measured in Chromium on the built page. The button is then 13px too narrow for its own longest label for the life of the session. This is the trap the whole change came out of -- a fallback font also hid the original overflow entirely, so the first run of the reproduction said there was no defect.",
+      "find": "  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitWidest);",
+      "replace": "",
+      "expect_caught_by": "test_the_width_is_measured_again_once_the_webfont_has_landed"
+    },
+    {
+      "id": "width-is-measured-by-wearing-every-label",
+      "why": "fitWidest() measures by setting selectedIndex six times instead of using a detached clone. Each one dispatches change, which is what the Week Board listens to, so the page re-renders every game card six times on load to answer a question about text width. The measurement is correct and the cost is invisible -- there is no wrong pixel to see, only a slower first paint.",
+      "find": "    const probe = btn.cloneNode(true);",
+      "replace": "    const probe = btn; sel.selectedIndex = sel.selectedIndex;",
+      "expect_caught_by": "test_the_width_is_measured_on_a_clone_rather_than_by_wearing_each_label"
+    },
+    {
+      "id": "frozen-width-applies-to-every-listbox",
+      "why": "the opt-in check is removed from fitWidest(), so #teamdive-select is frozen at the width of the longest team name as well. Nothing breaks and nothing is tested for it, which is the point: this PR silently changes a control on another page, and a reviewer reading the description would have no reason to look there.",
+      "find": "    if(sel.dataset.lbxFit !== 'widest') return;",
+      "replace": "",
+      "expect_caught_by": "test_the_width_is_measured_on_a_clone_rather_than_by_wearing_each_label"
+    }
+  ]
+}

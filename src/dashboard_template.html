@@ -375,7 +375,15 @@
     background:var(--surface); border:1px solid var(--border); color:var(--text);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12); font-weight:500;
     padding:var(--s2) var(--s3); border-radius:var(--r-md); cursor:pointer;
-    min-width:160px; text-align:left;
+    /* 160px is the floor, not the width. A control that opts in with
+       data-lbx-fit="widest" gets --lbx-fit set to the width it would have
+       while wearing its longest label, so choosing an option can never move
+       the row around it -- measured at 430px before this: the Week Board's
+       sort button ran 183px on the default label and 248px on the longest,
+       enough to push it off the stepper's line and down beside Print / PDF.
+       The value is computed from the labels rather than written here, because
+       a literal would be wrong the first time anyone edits an option. */
+    min-width:var(--lbx-fit, 160px); text-align:left;
     transition:border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease);
   }
   .lbx-value{flex:1;}
@@ -404,6 +412,16 @@
     background:var(--surface); border:1px solid var(--border-strong);
     border-radius:var(--r-md); padding:var(--s1); margin:0; list-style:none;
   }
+  /* Edge flip. The list is as wide as its longest option (.lbx-opt is nowrap),
+     which has nothing to do with how wide the button is or how much room is
+     left beside it -- so a control sitting near the right edge opens a list
+     that runs off the viewport and the document scrolls sideways. Measured at
+     a 390px mobile viewport on `main` at 0451149: the list ran to x=431
+     against a 390px client width and documentElement.scrollWidth went 390 to
+     431 the moment it opened. Anchoring the right edge instead of the left is
+     the whole fix; openList() decides which, because whether it is needed
+     depends on where the flex row happened to put the control. */
+  .lbx-list--flip{left:auto; right:0;}
   .lbx-list[hidden]{display:none;}
   .lbx-opt{
     font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12);
@@ -1317,13 +1335,20 @@
            built, so a no-script reader keeps a working control. The list is
            built entirely by script; hiding this in the markup the way the week
            stepper does would leave nothing here at all. -->
-      <select id="sort-select" class="week-select" aria-label="Sort">
-        <option value="chronological">Sort: First Game to Last</option>
-        <option value="confidence">Sort: Most Confident First</option>
-        <option value="confidence_asc">Sort: Closest Games First</option>
-        <option value="disagreement">Sort: Biggest Model Disagreement</option>
-        <option value="spread">Sort: Biggest Spread First</option>
-        <option value="alpha">Sort: Alphabetical (Home Team)</option>
+      <!-- The labels carry no "Sort: " prefix. It cost 65px of a 398px row at
+           430px and said nothing the aria-label, the chevron and the control's
+           position were not already saying. data-lbx-fit="widest" then freezes
+           the button at its longest label so the row cannot rearrange itself
+           when someone changes the sort. Opt-in rather than automatic, because
+           #teamdive-select is the other consumer of enhanceSelect() and this
+           change is not about that page. -->
+      <select id="sort-select" class="week-select" aria-label="Sort" data-lbx-fit="widest">
+        <option value="chronological">First Game to Last</option>
+        <option value="confidence">Most Confident First</option>
+        <option value="confidence_asc">Closest Games First</option>
+        <option value="disagreement">Biggest Model Disagreement</option>
+        <option value="spread">Biggest Spread First</option>
+        <option value="alpha">Alphabetical (Home Team)</option>
       </select>
       <a id="picks-pdf-link" class="pdf-link" href="#" download
          title="Printable PDF of this week's picks, ordered by confidence">
@@ -2089,7 +2114,32 @@ function wireWeekStepper(prefix){
 }
 
 /* ---------- Listbox ----------
-   Replaces a native <select> as the VISIBLE control, for the reason recorded
+
+   Which edge an open list hangs from, as a plain function over numbers,
+   because after this change NOTHING ON THE PAGE REACHES THE FLIP. Shortening
+   the sort labels narrowed the button by 30px and the list with it; measured
+   across 21 viewport widths from 320 to 520, on both listboxes, the flip
+   never engages and no list leaves the viewport. That is the "deleting the
+   only input that reaches a branch silently untests that branch" shape -- the
+   rule still has to be right for the next control or the next long option,
+   and a test over today's markup can no longer prove it.
+
+   So it is stated once, here, and checked twice, which is what that trap
+   entry prescribes: tests/test_listbox_edge_flip.py runs this function over a
+   table of synthetic geometries that keeps every branch alive, and the
+   rendered check asserts the property it exists to protect -- no list past
+   the viewport -- over whatever the page actually contains today.
+
+   It returns a word rather than a boolean so the two reasons NOT to flip --
+   it already fits, and flipping would push it off the other edge -- cannot be
+   read as the same answer by accident. */
+function lbxFlipDecision(listLeft, listWidth, anchorRight, viewportWidth){
+  if(listLeft + listWidth <= viewportWidth) return 'as-is';
+  if(anchorRight - listWidth < 0) return 'as-is';
+  return 'flip';
+}
+
+/* Replaces a native <select> as the VISIBLE control, for the reason recorded
    on .lbx in the stylesheet: `appearance:none` restyles the closed box and
    leaves the iOS system wheel exactly where it was.
 
@@ -2184,12 +2234,66 @@ function enhanceSelect(sel){
     li.scrollIntoView({block: 'nearest'});
   }
 
+  /* Freeze the button at the width of its longest label, for a control that
+     asks for it with data-lbx-fit="widest".
+
+     It measures a detached clone rather than wearing each label in turn,
+     because changing sel.selectedIndex dispatches change, and the Week Board's
+     change listener re-renders every game card -- six full re-renders on load
+     to answer a question about text width.
+
+     It runs TWICE, and the second run is the one that matters. The first
+     happens before the webfont has arrived, so it measures the fallback face;
+     everything about this defect is a sum of text widths, and a width frozen
+     in the wrong typeface is the same class of wrong as the figure that
+     started this. Measured here in Chromium: the widest label is 218px with
+     Plus Jakarta Sans loaded and does not agree with the fallback. */
+  function fitWidest(){
+    if(sel.dataset.lbxFit !== 'widest') return;
+    const probe = btn.cloneNode(true);
+    probe.removeAttribute('id');
+    probe.setAttribute('aria-hidden', 'true');
+    probe.style.cssText = 'position:absolute; left:-9999px; top:0;'
+                        + ' visibility:hidden; min-width:0; width:max-content;';
+    document.body.appendChild(probe);
+    const slot = probe.querySelector('.lbx-value');
+    let widest = 0;
+    [...sel.options].forEach(o => {
+      slot.textContent = o.textContent;
+      widest = Math.max(widest, probe.getBoundingClientRect().width);
+    });
+    probe.remove();
+    if(widest) wrap.style.setProperty('--lbx-fit', Math.ceil(widest) + 'px');
+  }
+
+  /* Which edge the open list hangs from. Called only while the list is
+     visible, because a [hidden] element is display:none and every rectangle
+     it reports is zero -- measuring before unhiding gives right===0, which is
+     never greater than clientWidth, so the flip would silently never happen
+     and the control would look exactly as it does today.
+
+     It flips back if flipping is worse. A list wider than the room to the
+     left of the button's right edge would leave the viewport on the other
+     side, and "fixed one edge by breaking the other" is a shape this repo has
+     met before. Reverting is correct rather than clever: the pre-existing
+     overflow is the lesser defect, and it is the one already recorded. */
+  function placeList(){
+    list.classList.remove('lbx-list--flip');
+    const r = list.getBoundingClientRect();
+    const anchor = wrap.getBoundingClientRect();
+    if(lbxFlipDecision(r.left, r.width, anchor.right,
+                       document.documentElement.clientWidth) === 'flip'){
+      list.classList.add('lbx-list--flip');
+    }
+  }
+
   function openList(){
     if(open || btn.disabled) return;
     build();
     open = true;
     list.hidden = false;
     btn.setAttribute('aria-expanded', 'true');
+    placeList();
     setActive(sel.selectedIndex === -1 ? 0 : sel.selectedIndex);
     list.focus();
   }
@@ -2254,11 +2358,21 @@ function enhanceSelect(sel){
       case 'End':       e.preventDefault(); setActive(n - 1); break;
       case 'Enter':     e.preventDefault(); choose(active); break;
       /* Space is BOTH "select" and a character, and which one it is depends on
-         whether a search is in flight. Every option here starts "Sort: ", so a
-         space that always selected would make type-ahead reach nothing past
-         the first word -- measured: typing "sort: b" chose option 0 and closed
-         the list instead of finding "Sort: Biggest Model Disagreement". Inside
-         the window it extends the search; outside it, it selects. */
+         whether a search is in flight. Two options share a first word --
+         "Biggest Model Disagreement" and "Biggest Spread First" -- so the
+         space is the keystroke that tells them apart and type-ahead cannot
+         reach the second without it. Measured on the built page: typing
+         "biggest s" walks the active option to "Biggest Spread First" with
+         the list still open and nothing chosen; with the Space arm made
+         unconditional, the space instead chose "Biggest Model Disagreement"
+         and closed the list. Inside the window it extends the search; outside
+         it, it selects.
+
+         This example was re-measured when the "Sort: " prefix was dropped. It
+         previously read "typing 'sort: b' chose option 0", which described a
+         shared prefix that no longer exists -- and the behaviour it defends
+         survives the copy change, which is why the arm is unchanged and only
+         the sentence moved. */
       case ' ':
         e.preventDefault();
         if(typing()) typeAhead(' '); else choose(active);
@@ -2283,7 +2397,12 @@ function enhanceSelect(sel){
   sel.addEventListener('change', sync);
 
   build();
-  return {refresh: build};
+  fitWidest();
+  /* The second pass. document.fonts.ready settles after the webfont swaps in,
+     and refresh() re-runs it too, because a control whose options arrive at
+     runtime has a different longest label than the one it was built with. */
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitWidest);
+  return {refresh: () => { build(); fitWidest(); }};
 }
 
 const OVERFLOW_PAGES = ['teamdive','method','roadmap','modellab','datasources','reliability','compare','glossary'];
