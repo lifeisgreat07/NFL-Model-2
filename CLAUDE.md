@@ -152,35 +152,51 @@ casually.
   ~48k plays a season. Keep the pin; revisit only when something actually needs
   pandas 2.x, and regenerate every published figure as part of that work rather
   than discovering the shift afterwards.
-- **The colour floor this project actually adopted is 8, not 15, and the queue
-  entry was written against the wrong one.** The four `--series` tokens came
-  out of the dataviz validator's gates (OKLCH lightness band, chroma floor,
-  CVD, contrast) at a >=8 CIEDE2000 floor, and `tests/test_dashboard_charts.py`
-  enforces every one of them. The token block records that Stage 8's >=15 mock
-  palette "fails six of these assertions when measured". So >=15 is the number
-  the design record and the dataviz rules quote, >=8 is the number the shipped
-  tokens were validated at, and any sentence about a pair "failing the floor"
-  is ambiguous until it says which. Decide that before re-stepping anything.
-- **`--accent` and `--series-d` are 1.58 dE00 apart in light mode under
-  red-green CVD** (18.9 under normal vision; dark mode is fine at 27.4 / 15.1).
-  Measured 2026-09-16 with `src/verify_model_colours.py`'s own distances. That
-  is worse than the residual the template comment documents at length, worse
-  than every team pair but two, and it fails even the >=8 floor by a wide
-  margin. `--series-d` is My Picks and `--accent` marks the pick tick, so
-  whether the two co-occur is the same DOM question Booth caught a false
-  answer to on #60 — do not assert either way without tracing it.
-- **Re-stepping `--accent` to clear 15 is impossible in light mode.** Searched
-  the whole blue range 195-265 degrees per theme, requiring dE00 >= 15 against
-  all four series plus 4.5:1 on surface and 3:1 on background: dark has 3,585
-  candidates, light has **zero**. At a floor of 8 light has 6,160, but the
-  nearest is 7.4 dE00 from the shipped accent — a different brand colour, not
-  a re-step. The plan recorded in the template comment ("re-stepping this token
-  pair so it clears 15") cannot be executed as written.
+- **THERE ARE TWO RULERS IN THIS REPOSITORY AND THEY ARE NOT INTERCHANGEABLE.**
+  `tests/test_dashboard_charts.py` measures **OKLab distance x100**, with
+  `CVD_TARGET = 8.0` and `NORMAL_FLOOR = 15.0`. `src/verify_model_colours.py`
+  and `src/verify_matchup_cvd.py` measure **CIEDE2000**. The 8 and the 15 are
+  OKLab numbers; quoting a CIEDE2000 figure against them compares two different
+  objects, which is the failure this file's own `verify_model_colours` docstring
+  was written to prevent — and the first version of this entry did exactly
+  that, on 2026-09-16, and had to be rewritten. The two rulers genuinely
+  disagree about ranking, not just scale: `--good` vs `--series-c` in light is
+  4.3 OKLab and 12.7 CIEDE2000. **Say which metric, every time.**
+- **The worst token pair on the page is `--accent` vs `--series-d` in light
+  mode: OKLab CVD 1.3** (normal 15.1; dark is fine). Measured 2026-09-16 by
+  sweeping every meaning-carrying token pair in both themes with
+  `test_dashboard_charts.py`'s own `delta_e`. `--series-d` is My Picks and
+  `--accent` marks the pick tick, so whether they co-occur is the same DOM
+  question Booth caught a false answer to on #60 — do not assert either way
+  without tracing it.
+- **`--accent-strong` vs `--series-a` in dark is 2.8 under CVD and 2.9 under
+  NORMAL vision.** Two colours nearly nobody can tell apart, for any reader,
+  not just a CVD one. Arguably a worse finding than the pair above, and it
+  appears in no comment or guard.
+- **`--good` vs `--warn` collapse under CVD (4.5 dark, 4.3 light) and that is
+  NOT a defect.** Checked rather than assumed: the graded tag renders the word
+  "Correct" or "Missed", and Team Deep-Dive's `mark()` renders the word
+  "correct". Colour is redundant to text on both, which is exactly the
+  secondary encoding the floor exists to require. A red/green pass-fail pair is
+  the most obvious-looking colour-blindness defect there is, and this one was
+  already handled — an audit finding is a hypothesis, not a defect.
 - **`src/verify_model_colours.py` checks a hand-written table of two pairs.**
-  That is why the `--accent`/`--series-d` collapse went unrecorded: the pairs
-  in it are the ones that were in front of whoever wrote it. Same shape as the
-  bridging guard #74 widened. Enumerate the class — every token that can carry
-  meaning against every other, both themes, normal and CVD.
+  That is why the `--accent`/`--series-d` and `--accent-strong`/`--series-a`
+  collisions went unrecorded: the pairs in it are the ones that were in front
+  of whoever wrote it. Same shape as the bridging guard #74 widened. Enumerate
+  the class — every meaning-carrying token against every other, both themes,
+  normal and CVD. Note what the existing chart guards do and do not cover:
+  they gate series NEIGHBOURS (a-b, b-c, c-d) and `--series-d` against
+  `--good`, so a-to-d and anything involving `--accent-strong` was never in
+  scope.
+- **Re-stepping `--accent` to clear 15 is impossible in light mode.** Searched
+  the whole blue range 195-265 degrees per theme, requiring CIEDE2000 >= 15
+  against all four series plus 4.5:1 on surface and 3:1 on background: dark has
+  3,585 candidates, light has **zero**. (CIEDE2000, so re-run it in OKLab
+  before acting on it — see the two-rulers entry above.) The plan recorded in
+  the template comment, "re-stepping this token pair so it clears 15", cannot
+  be executed as written, and that comment also defers the work to a "Stage 11"
+  that has never existed.
 - **An audit finding is a hypothesis, not a defect.** Four of Stage 2's seven
   queued items were not the item as written. SOS was computing correctly and
   the season had not started — acting on the audit would have deleted a working

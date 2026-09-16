@@ -38,26 +38,28 @@ of the palette problem before anyone picks a colour.
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a real phone | Not done | Only a device proves the zoom is gone |
 | Week 2 grading | Tue 2026-09-22 | Watch that the page rebuilds itself |
-| Which colour floor governs | Undecided | Mark. 8 is what shipped, 15 is what the design record quotes |
+| Which colour floor governs | Answered | OKLab: CVD_TARGET 8, NORMAL_FLOOR 15, both in test_dashboard_charts.py |
 | ATL's week 2 starter | Unresolved | Not ours — predictions are write-once |
 
 ## Queued, in order
 
 1. **Widen the colour verifier to the whole class.** Two-pair table today. See
    the four colour findings in CLAUDE.md for what it missed and why.
-2. **`--accent` vs `--series-d`, light mode, 1.58 dE00 under CVD.** The worst
-   pair on the page and unrecorded until 2026-09-16. Before proposing a fix,
-   trace whether the two actually co-occur — Booth caught a false co-occurrence
-   claim about the neighbouring pair on #60.
+2. **`--accent` vs `--series-d`, light, OKLab CVD 1.3**, and **`--accent-strong`
+   vs `--series-a`, dark, 2.8 CVD and 2.9 NORMAL.** The two worst token pairs,
+   both unrecorded until 2026-09-16. Quote OKLab, not CIEDE2000 — the two
+   rulers disagree about ranking, see CLAUDE.md. Before proposing a fix, trace
+   whether each pair actually co-occurs; Booth caught a false co-occurrence
+   claim about a neighbouring pair on #60. `--good` vs `--warn` also collapses
+   under CVD and is NOT a defect: both surfaces carry the word.
 3. **`teamColor()`'s `#8A93A8` fallback**, wrong in light mode, and the same
    literal in `.week-select`'s chevron data-URI — two sites, one change.
    `tests/test_listbox.py` has the inline-SVG `currentColor` pattern to copy.
-4. **`matchupColors`.** Verified with `python src/verify_matchup_cvd.py`: 60 of
-   496 distinct team pairs under dE00 15, 9 under 5, worst ARI/PHI 0.18. Note
-   20 pairs sit within 1 dE00 of the floor, so the count is unstable by one or
-   two between honest runs. Stage 8's rule says team identity is a logo, never
-   a colour — retiring these bars may delete the problem rather than tune it,
-   and Mark wanted that decided by looking.
+4. **`matchupColors`.** `python src/verify_matchup_cvd.py` (CIEDE2000): 60 of
+   496 team pairs under 15, 9 under 5, worst ARI/PHI 0.18 — and 20 sit within
+   1 of the floor, so the count moves by one or two between honest runs. Stage
+   8 says team identity is a logo, never a colour, so retiring these bars may
+   delete the problem rather than tune it. Mark wanted that decided by looking.
 5. **`log_line_snapshot` writes nulls instead of skipping.**
    `src/weekly_update.py` appends a row when the spread is NaN. That produced
    #75's all-null file and will again on any run made days ahead of a week.
