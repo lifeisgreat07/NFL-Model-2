@@ -4,21 +4,21 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-16 (#76 merged, #77 audited SAFE TO MERGE, not merged)
+Last updated: 2026-09-16 (#76 and #77 both merged; no open PRs)
 
 ---
 
 ## Right now
 
-**Suite:** 1229 passing, 1 skipped — `python -m pytest -q` on `main` at
-`89dabf1`, HEAD level with origin. Re-run before quoting it. Corpus: 35 case
-files, 191 cases, all CAUGHT — from `python tests/mutation/runner.py` with no
+**Suite:** 1255 passing, 1 skipped — `python -m pytest -q` on `main` at
+`4d153e1`, HEAD level with origin. Re-run before quoting it. Corpus: 36 case
+files, 196 cases, all CAUGHT — from `python tests/mutation/runner.py` with no
 `--id`, whose scope is every case.
 
-**#77 is open, audited SAFE TO MERGE, and is the only branch.** It widens the
-colour verifier to every meaning-carrying token pair and fixes nothing. Booth:
-7 CONFIRMED, 1 DISCREPANCY (prose miscount, corrected here), 1 UNVERIFIABLE.
-Its own suite is 1255 passing, 1 skipped at `69eea27`; corpus 196, all CAUGHT.
+**No open PRs and no branches but `main`.** #77 merged: the colour verifier now
+sweeps every meaning-carrying token pair and fixes nothing it finds. Booth gave
+it 7 CONFIRMED, 1 DISCREPANCY (a five-for-six in the body, corrected before the
+merge) and 1 UNVERIFIABLE. #76 merged earlier; #75 closed.
 
 **Stage:** 8, 8b and 8c complete. Stage 9's component pass is done; colour is
 what remains, and those are accessibility defects. There is no Stage 11 —
@@ -35,7 +35,6 @@ caught a false co-occurrence claim about a neighbouring pair on #60.
 
 | What | State | Waiting on |
 |---|---|---|
-| #77, the colour sweep | Audited, clean | Mark to merge; body has a five-for-six to fix |
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a real phone | Not done | Only a device proves the zoom is gone |
 | Week 2 grading | Tue 2026-09-22 | Watch that the page rebuilds itself |
