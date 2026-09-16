@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_listbox_edge_flip.py",
+  "cases": [
+    {
+      "id": "flip-rule-treats-a-flush-edge-as-overflow",
+      "why": "the boundary opens up: a list whose right edge lands exactly on the viewport's is treated as overflowing and flips. Nothing looks broken and nothing overflows -- the list simply jumps to the other side of its control for no reason a reader can see, on whichever width happens to produce a flush fit. An off-by-one in a placement rule is invisible in the diff and only appears on one viewport width in a hundred.",
+      "find": "  if(listLeft + listWidth <= viewportWidth) return 'as-is';",
+      "replace": "  if(listLeft + listWidth < viewportWidth) return 'as-is';",
+      "expect_caught_by": "test_the_rule_answers_correctly_over_geometries_the_page_cannot_reach"
+    },
+    {
+      "id": "flip-rule-stops-checking-whether-flipping-is-worse",
+      "why": "the revert is deleted, so a list wider than the room to the left of its anchor flips off the LEFT edge instead of the right. This is the fix-one-edge-by-breaking-the-other shape, and it is worse than the defect it replaces: content leaves the viewport on the side a left-to-right reader starts from, and the scroll needed to reach it goes in the direction the page does not offer.",
+      "find": "  if(anchorRight - listWidth < 0) return 'as-is';\n  return 'flip';",
+      "replace": "  return 'flip';",
+      "expect_caught_by": "test_the_rule_answers_correctly_over_geometries_the_page_cannot_reach"
+    },
+    {
+      "id": "flip-is-decided-before-the-list-is-visible",
+      "why": "placeList() runs one line earlier, while the list is still hidden. A [hidden] element is display:none and reports a zero rectangle, so right is 0, 0 is never greater than any viewport, and the decision is always 'as-is'. The fix is then present, unit-tested, documented and completely inert -- the same shape as the collector that was written, tested, mutation-covered and had never run.",
+      "find": "    list.hidden = false;\n    btn.setAttribute('aria-expanded', 'true');\n    placeList();",
+      "replace": "    placeList();\n    list.hidden = false;\n    btn.setAttribute('aria-expanded', 'true');",
+      "expect_caught_by": "test_the_flip_is_measured_after_the_list_is_visible"
+    },
+    {
+      "id": "flip-class-pins-both-edges-instead-of-moving",
+      "why": "the flip rule sets right:0 without releasing left. .lbx-list already sets left:0, so the box ends up pinned on both sides and STRETCHES from the control's left edge to its right rather than moving -- the overflow is unchanged and the list is now a different shape while open. A rule that adds a property without removing the one it replaces is the most ordinary CSS mistake there is and it survives every source read.",
+      "find": "  .lbx-list--flip{left:auto; right:0;}",
+      "replace": "  .lbx-list--flip{right:0;}",
+      "expect_caught_by": "test_the_flip_class_moves_both_edges"
+    },
+    {
+      "id": "place-list-decides-for-itself-instead-of-asking-the-rule",
+      "why": "placeList() inlines the comparison again and stops calling lbxFlipDecision. The page behaves identically today, which is exactly the problem: the rule becomes an orphan that tests/test_listbox_edge_flip.py goes on checking in full while the page it is supposed to govern has its own copy. The next correction lands on one of the two.",
+      "find": "    if(lbxFlipDecision(r.left, r.width, anchor.right,\n                       document.documentElement.clientWidth) === 'flip'){",
+      "replace": "    if(r.left + r.width > document.documentElement.clientWidth){",
+      "expect_caught_by": "test_place_list_consults_the_rule_rather_than_reimplementing_it"
+    }
+  ]
+}

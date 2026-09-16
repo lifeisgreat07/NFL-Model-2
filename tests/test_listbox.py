@@ -171,12 +171,19 @@ def test_role_listbox_and_role_option_are_both_set(body):
 def test_space_extends_a_search_in_flight_rather_than_selecting(body):
     """The bug that only appeared by running it.
 
-    Every option on this control begins "Sort: ", so a Space that always
-    selected made type-ahead unable to reach past the first word: typing
-    "sort: b" chose option 0 and closed the list instead of finding "Sort:
-    Biggest Model Disagreement". Space has to be a character while a search is
-    in flight and a selection otherwise. No source-reading found this and no
-    accessibility checklist names it; it came out of driving the control.
+    Two options share a first word -- "Biggest Model Disagreement" and
+    "Biggest Spread First" -- so the space is the keystroke that tells them
+    apart. Measured on the built page: typing "biggest s" walks the active
+    option to "Biggest Spread First" with the list open and nothing chosen;
+    with the Space arm made unconditional the space chose "Biggest Model
+    Disagreement" and closed the list. Space has to be a character while a
+    search is in flight and a selection otherwise. No source-reading found
+    this and no accessibility checklist names it; it came out of driving the
+    control.
+
+    The example was re-measured when the "Sort: " prefix was dropped from the
+    labels. It used to rest on every option sharing that prefix. The prefix is
+    gone; the requirement is not, because two options still share a word.
     """
     m = re.search(r"case ' ':(.*?)break;", body, re.S)
     assert m, "the listbox no longer handles Space at all"
@@ -184,7 +191,8 @@ def test_space_extends_a_search_in_flight_rather_than_selecting(body):
     assert 'typing()' in arm, (
         'the Space arm no longer consults whether a type-ahead search is in '
         'flight, so typing a space selects instead of extending the search. '
-        'Every option here starts "Sort: ".')
+        '"Biggest Model Disagreement" and "Biggest Spread First" share a '
+        'first word, so the space is what tells them apart.')
     assert 'choose(' in arm, (
         'Space no longer selects when no search is in flight, which is the '
         'behaviour a listbox is required to have')
@@ -439,3 +447,101 @@ def test_the_listbox_handle_is_kept_and_is_the_one_refreshed(teamdive):
         f'the handle is stored as {handle} but nothing calls '
         f'{handle}.refresh(), so the stored handle is decoration and the '
         'listbox and the select can disagree')
+
+
+# ---------------------------------------------------------------------------
+# The button's width, which is a layout property of the row around it.
+#
+# Measured at a 430px mobile-emulated viewport before this: the Week Board's
+# sort button ran 183px wearing "Sort: First Game to Last" and 248px wearing
+# "Sort: Biggest Model Disagreement", on a row with 398px of content width.
+# The row therefore rearranged itself when the reader changed the sort -- at
+# 430 the control dropped off the stepper's line and down beside Print / PDF,
+# and at 390 and below it went to three lines. Two changes answer it: the
+# labels lost a "Sort: " prefix that said nothing the aria-label and the
+# chevron did not, and the button is now frozen at the width of its longest
+# label. Measured after: 218px for all six options at 390 and at 430, two
+# lines at both, and no horizontal overflow with the list open or closed.
+# ---------------------------------------------------------------------------
+
+
+def test_the_sort_labels_carry_no_redundant_prefix(source):
+    """The copy half of the width fix.
+
+    Worth a guard rather than a comment because it is the kind of edit a
+    future session makes back without knowing it cost 65px of a 398px row.
+    """
+    m = re.search(r'<select id="sort-select"[^>]*>(.*?)</select>', source, re.S)
+    assert m, 'the sort select is gone'
+    labels = re.findall(r'<option value="[a-z_]+">([^<]+)</option>', m.group(1))
+    assert len(labels) >= 6, f'expected the six sort options, found {labels}'
+    offenders = [label for label in labels if label.lower().startswith('sort:')]
+    assert not offenders, (
+        f'{offenders} carry a "Sort: " prefix again. It costs width on the '
+        'one row that cannot afford it, and the aria-label, the chevron and '
+        "the control's position already say what it is.")
+
+
+def test_the_sort_control_asks_to_be_frozen_at_its_widest_label(source):
+    """Opt-in, and the opt-in has to still be on the element.
+
+    #teamdive-select is the other consumer of enhanceSelect() and this was
+    never a change to that page, so the behaviour is requested per control
+    rather than applied to all of them. A missing attribute is silent: the
+    button goes back to sizing itself and nothing fails.
+    """
+    m = re.search(r'<select id="sort-select"[^>]*>', source)
+    assert m, 'the sort select is gone'
+    assert 'data-lbx-fit="widest"' in m.group(0), (
+        'the sort control no longer asks for a frozen width, so choosing a '
+        'longer option moves the filter row around again')
+
+
+def test_the_frozen_width_is_a_variable_with_the_floor_as_its_fallback(source):
+    """min-width:var(--lbx-fit, 160px), not a literal.
+
+    A hardcoded pixel width would be Stage 8 unpicking itself and would be
+    wrong the first time anyone edits a label. The fallback matters
+    separately: a control that does not opt in, or a page with no JavaScript,
+    must keep the 160px floor rather than collapsing to its content.
+    """
+    m = re.search(r'\.lbx-btn\{(.*?)\n  \}', source, re.S)
+    assert m, '.lbx-btn is gone from the stylesheet'
+    rule = m.group(1).replace(' ', '')
+    assert 'min-width:var(--lbx-fit,160px)' in rule, (
+        '.lbx-btn no longer takes its minimum from --lbx-fit with the 160px '
+        'floor as the fallback')
+
+
+def test_the_width_is_measured_on_a_clone_rather_than_by_wearing_each_label(body):
+    """Six changes of selectedIndex would be six full board re-renders.
+
+    sel.dispatchEvent('change') is what the Week Board listens to, so the
+    obvious implementation -- try each option, read the width -- re-renders
+    every game card six times on load to answer a question about text width.
+    """
+    m = re.search(r'function fitWidest\(\)\{(.*?)\n  \}', body, re.S)
+    assert m, 'fitWidest() is gone, so the button sizes itself again'
+    fn = m.group(1)
+    assert 'cloneNode' in fn, (
+        'fitWidest() no longer measures a detached clone')
+    assert 'selectedIndex' not in fn, (
+        'fitWidest() sets selectedIndex, which dispatches change and re-renders '
+        'the whole board once per option just to measure text')
+    assert "dataset.lbxFit !== 'widest'" in fn, (
+        'fitWidest() no longer checks the opt-in, so it now freezes every '
+        'listbox on the page including the Team Deep-Dive one')
+
+
+def test_the_width_is_measured_again_once_the_webfont_has_landed(body):
+    """The trap this entire change came out of.
+
+    Every number here is a sum of text widths. The first pass runs before
+    Plus Jakarta Sans has arrived and measures the fallback face: 205px
+    against the webfont's 218px, measured in Chromium on the built page. A
+    width frozen in the wrong typeface is the same class of wrong as a figure
+    quoted from the wrong command.
+    """
+    assert 'document.fonts.ready.then(fitWidest)' in body, (
+        'the width is no longer re-measured after the webfont loads, so it is '
+        'frozen at whatever the fallback face happened to measure')

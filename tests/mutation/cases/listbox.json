@@ -19,8 +19,8 @@
     {
       "id": "listbox-select-is-hidden-in-the-markup",
       "why": "the select ships visually-hidden, which is the tidy-up a reader makes on seeing enhanceSelect hide it anyway -- and it matches what the week stepper's markup does, so it looks like consistency. With JavaScript off there is then no sort control on the page at all, because unlike the stepper's arrows this list does not exist until a script builds it. Nothing errors and the rendered page is identical for everyone else.",
-      "find": "      <select id=\"sort-select\" class=\"week-select\" aria-label=\"Sort\">",
-      "replace": "      <select id=\"sort-select\" class=\"week-select visually-hidden\" aria-label=\"Sort\">",
+      "find": "      <select id=\"sort-select\" class=\"week-select\" aria-label=\"Sort\" data-lbx-fit=\"widest\">",
+      "replace": "      <select id=\"sort-select\" class=\"week-select visually-hidden\" aria-label=\"Sort\" data-lbx-fit=\"widest\">",
       "expect_caught_by": "test_the_native_select_is_hidden_by_script_not_by_markup"
     },
     {
@@ -32,7 +32,7 @@
     },
     {
       "id": "listbox-space-always-selects",
-      "why": "the Space arm stops asking whether a search is in flight. This is the defect that shipped in the first working build and that no amount of source reading found: every option begins \"Sort: \", so the first space typed selects whatever is under the cursor and closes the list. Type-ahead can never reach past the first word. Measured before the fix: typing \"sort: b\" chose option 0 instead of finding \"Sort: Biggest Model Disagreement\".",
+      "why": "the Space arm stops asking whether a search is in flight. This is the defect that shipped in the first working build and that no amount of source reading found: the first space typed selects whatever is under the cursor and closes the list, so type-ahead can never reach an option past its first word. Re-measured on the built page after the \"Sort: \" prefix was dropped, because the original example rested on a shared prefix that no longer exists: typing \"biggest s\" walks the active option to \"Biggest Spread First\" as shipped, and with this mutation applied the space chooses \"Biggest Model Disagreement\" and closes the list instead.",
       "find": "        if(typing()) typeAhead(' '); else choose(active);",
       "replace": "        choose(active);",
       "expect_caught_by": "test_space_extends_a_search_in_flight_rather_than_selecting"

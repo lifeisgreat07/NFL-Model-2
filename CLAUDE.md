@@ -47,7 +47,9 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1184 passing** (1 skipped) on `main` at `a60bcb9` (2026-09-15, after PR #74). Run it before quoting
+Suite: **1229 passing** (1 skipped) — `python -m pytest -q` at `604862f` on the
+sort-control branch, with HEAD pushed, which is the order that makes
+the figure reproducible. It reaches `main` with that PR. Run it before quoting
 it — this line read 174 for about a day after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 

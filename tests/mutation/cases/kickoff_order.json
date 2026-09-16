@@ -12,8 +12,8 @@
     {
       "id": "kickoff-dropdown-disagrees-with-the-actual-sort",
       "why": "the options are reordered so the browser shows 'Most Confident First' as selected over a board that is sorted by kickoff. Nothing connects the two -- currentSort is JavaScript, the shown option is whichever <option> is first in the markup -- so this is a page lying about itself with every test green, which is this repository's most expensive failure shape. A reader who trusts the control and re-picks the sort they are already looking at gets no change and concludes the control is broken.",
-      "find": "        <option value=\"chronological\">Sort: First Game to Last</option>\n        <option value=\"confidence\">Sort: Most Confident First</option>",
-      "replace": "        <option value=\"confidence\">Sort: Most Confident First</option>\n        <option value=\"chronological\">Sort: First Game to Last</option>",
+      "find": "        <option value=\"chronological\">First Game to Last</option>\n        <option value=\"confidence\">Most Confident First</option>",
+      "replace": "        <option value=\"confidence\">Most Confident First</option>\n        <option value=\"chronological\">First Game to Last</option>",
       "expect_caught_by": "test_the_dropdown_and_the_initial_sort_cannot_disagree"
     },
     {
