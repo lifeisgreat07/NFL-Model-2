@@ -47,9 +47,11 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1229 passing** (1 skipped) — `python -m pytest -q` at `604862f` on the
-sort-control branch, with HEAD pushed, which is the order that makes
-the figure reproducible. It reaches `main` with that PR. Run it before quoting
+Suite: **1229 passing** (1 skipped) — `python -m pytest -q` on `main` at
+`89dabf1`, with HEAD level with origin, which is the order that makes the
+figure reproducible: one test skips while HEAD is not on a remote branch, so
+the same tree reports a different pair of numbers with work unpushed. Run it
+before quoting
 it — this line read 174 for about a day after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
@@ -150,6 +152,35 @@ casually.
   ~48k plays a season. Keep the pin; revisit only when something actually needs
   pandas 2.x, and regenerate every published figure as part of that work rather
   than discovering the shift afterwards.
+- **The colour floor this project actually adopted is 8, not 15, and the queue
+  entry was written against the wrong one.** The four `--series` tokens came
+  out of the dataviz validator's gates (OKLCH lightness band, chroma floor,
+  CVD, contrast) at a >=8 CIEDE2000 floor, and `tests/test_dashboard_charts.py`
+  enforces every one of them. The token block records that Stage 8's >=15 mock
+  palette "fails six of these assertions when measured". So >=15 is the number
+  the design record and the dataviz rules quote, >=8 is the number the shipped
+  tokens were validated at, and any sentence about a pair "failing the floor"
+  is ambiguous until it says which. Decide that before re-stepping anything.
+- **`--accent` and `--series-d` are 1.58 dE00 apart in light mode under
+  red-green CVD** (18.9 under normal vision; dark mode is fine at 27.4 / 15.1).
+  Measured 2026-09-16 with `src/verify_model_colours.py`'s own distances. That
+  is worse than the residual the template comment documents at length, worse
+  than every team pair but two, and it fails even the >=8 floor by a wide
+  margin. `--series-d` is My Picks and `--accent` marks the pick tick, so
+  whether the two co-occur is the same DOM question Booth caught a false
+  answer to on #60 — do not assert either way without tracing it.
+- **Re-stepping `--accent` to clear 15 is impossible in light mode.** Searched
+  the whole blue range 195-265 degrees per theme, requiring dE00 >= 15 against
+  all four series plus 4.5:1 on surface and 3:1 on background: dark has 3,585
+  candidates, light has **zero**. At a floor of 8 light has 6,160, but the
+  nearest is 7.4 dE00 from the shipped accent — a different brand colour, not
+  a re-step. The plan recorded in the template comment ("re-stepping this token
+  pair so it clears 15") cannot be executed as written.
+- **`src/verify_model_colours.py` checks a hand-written table of two pairs.**
+  That is why the `--accent`/`--series-d` collapse went unrecorded: the pairs
+  in it are the ones that were in front of whoever wrote it. Same shape as the
+  bridging guard #74 widened. Enumerate the class — every token that can carry
+  meaning against every other, both themes, normal and CVD.
 - **An audit finding is a hypothesis, not a defect.** Four of Stage 2's seven
   queued items were not the item as written. SOS was computing correctly and
   the season had not started — acting on the audit would have deleted a working
