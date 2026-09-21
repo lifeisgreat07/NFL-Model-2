@@ -47,8 +47,8 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1305 passing** (1 skipped) — `python -m pytest -q` on `main` at
-`e1152f8`, with HEAD level with origin, which is the order that makes the
+Suite: **1324 passing** (1 skipped) — `python -m pytest -q` on `main` at
+`355d6b6`, with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Run it
 before quoting
@@ -1303,6 +1303,19 @@ under compaction pressure, so its length is a cost paid on every session.
   never in the foreground; and after ANY interrupted mutation run, check
   `git status` before believing a test result. A `git checkout -- <one file>`
   is the right repair once the diff is confirmed to be only the mutation.
+  **SECOND VARIANT, found by Booth on itself on #81: nothing else may read
+  the working tree while the corpus is running.** It started the runner in
+  the background and ran the full suite alongside it, and the suite caught a
+  file mid-swap — `its anchor matches 0 time(s)` for the case in flight, plus
+  four unrelated failures in a module the runner had not touched. Nothing was
+  interrupted and the restore worked; `git status` was clean afterwards. The
+  first variant is a runner that died and left a mutation applied, and the
+  repair is to restore. This one leaves nothing to repair and produces a red
+  suite whose failures point at innocent files, which is the more expensive
+  shape because there is no residue to find afterwards. Backgrounding the
+  runner is still right; running anything else against the tree while it
+  works is not. Booth wrote its own error into the report rather than
+  re-running quietly, which is the only reason it is recorded here.
 - **Anything under a Booth fixture tree must be excluded from pytest
   collection.** `tests/booth_fixtures/conftest.py` sets
   `collect_ignore_glob = ['*']` for exactly this. A fixture is a deliberately

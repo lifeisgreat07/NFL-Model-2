@@ -4,36 +4,41 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-21 (#79 and #80 merged; the colour gradings are decided)
+Last updated: 2026-09-21 (#79, #80 and #81 merged; the colour work is decided)
 
 ---
 
 ## Right now
 
-**Suite:** 1305 passing, 1 skipped — `python -m pytest -q` on `main` at
-`e1152f8`, HEAD level with origin, which is the order that makes the figure
-reproducible. Corpus: 208 cases, all CAUGHT, from
+**Suite:** 1324 passing, 1 skipped — `python -m pytest -q` on `main` at
+`355d6b6`, HEAD level with origin, which is the order that makes the figure
+reproducible. Corpus: 212 cases, all CAUGHT, from
 `python tests/mutation/runner.py` with no `--id`, whose scope is every case.
+Nothing else may read the tree while that runs — see CLAUDE.md's traps.
 
-**#80 merged**: both disputed colour pairs graded ACCEPTED, each pinned by the
-fact it rests on. Booth: 13 CONFIRMED, 0 discrepancies, 1 UNVERIFIABLE, SAFE
-TO MERGE — and its header agreed with its own verdict block for the first
-time in eleven reports.
+**No open PRs and no branches but `main`.** #80 merged (both disputed colour
+pairs ACCEPTED and pinned) and #81 merged before the Tuesday run it was
+racing — an unpriced game is now skipped rather than written as a null that
+blocks the same-day capture. Booth was SAFE TO MERGE on both, and on #81 it
+reproduced the defect itself in a worktree at the parent commit.
 
-**One PR open, #81**, audited and ready. Stage 9's colour work is unblocked
-and its two biggest questions are now settled; what remains is the Net Rating
-diverging pair and the confidence / flagged / "model was wrong" language.
+**Stage 9's colour work is decided.** The two closest token pairs are graded
+and pinned; the Week Board's team-colour split bar stays exactly as shipped
+(Mark, 2026-09-21, after four alternatives were rendered side by side — the
+accepted cost and what it keeps alive are in CLAUDE.md; do not re-open).
+What remains in the stage is the Net Rating diverging pair and the
+confidence / flagged / "model was wrong" language.
 
-**The split-bar question is decided: the bars stay as shipped.** Mark's call
-2026-09-21, after four alternatives were rendered side by side on real games
-in both themes and under CVD simulation. The measured cost is accepted
-knowingly and written up in CLAUDE.md; `teamColor()`, `TEAM_COLOR`,
-`CONTRAST_THRESHOLD` and the `#8A93A8` literal all stay. Do not re-open it.
+**Next action: make a Booth run that posts nothing fail.** Queue item 1, and
+nobody's decision to make — #80's first run reported Success with no comment
+and looked exactly like a clean pass. Note before starting: this edits
+`.github/workflows/booth-pr-audit.yml`, so Booth structurally cannot audit
+that PR and will skip with a success status. It ships on a test and an
+argument the way #30 did, and the live evidence is the NEXT PR's audit.
 
-**Next action: merge #81 before the Tuesday run.** Booth: 7 CONFIRMED, 0
-discrepancies, 0 unverifiable, SAFE TO MERGE. The scheduled workflow writes
-`data/line_history/` straight to `main`, so an unmerged fix is a week of dead
-rows if week 4's lines are not posted when it runs.
+**Watch tomorrow's Tuesday run**, the first since #81: Week 2 grades, the
+page should rebuild itself, and `data/line_history/` should gain real
+spreads rather than nulls for any unpriced game.
 
 ## Open work, and what each is waiting on
 
