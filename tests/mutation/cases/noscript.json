@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_noscript_note.py",
+  "cases": [
+    {
+      "id": "noscript-note-is-deleted",
+      "why": "the note goes. It is the tidy-up that looks free, because with scripts on the rendered page is byte-identical and every other test stays green -- this is markup nobody with a working browser ever sees. What it costs is the only explanation a stranger with a script blocker gets: the dashboard renders #page-ratings with a header row and no data, and nothing says why. The anchor deliberately spans the whole block, so a future copy edit breaks it and test_every_anchor_still_matches_exactly_once says so rather than letting the case rot into a no-op.",
+      "find": "  <noscript>\n    <div class=\"onboarding-banner\">\n      <div class=\"onboarding-content\">\n        <h4>This page needs JavaScript turned on</h4>\n        <p class=\"shared-note\">Everything here &mdash; the ratings table, the game cards, the charts, and the menu down the left &mdash; is put together by your browser after the page arrives. With JavaScript switched off you get this message and an empty page, and the menu buttons will not take you anywhere. Switch it on for this site and the dashboard appears.</p>\n      </div>\n    </div>\n  </noscript>\n",
+      "replace": "",
+      "expect_caught_by": "test_the_page_explains_itself_with_scripts_off"
+    },
+    {
+      "id": "noscript-note-loses-its-words",
+      "why": "the note keeps its tag and loses its sentence -- what a copy edit looks like when it goes wrong, or a placeholder somebody meant to come back to. The existence check above is perfectly happy and so is the placement check. A <noscript> that says nothing is worse than none, because it occupies the place a reader looks for the explanation.",
+      "find": "        <p class=\"shared-note\">Everything here &mdash; the ratings table, the game cards, the charts, and the menu down the left &mdash; is put together by your browser after the page arrives. With JavaScript switched off you get this message and an empty page, and the menu buttons will not take you anywhere. Switch it on for this site and the dashboard appears.</p>",
+      "replace": "        <p class=\"shared-note\">Sorry.</p>",
+      "expect_caught_by": "test_the_note_says_what_is_wrong_and_how_to_fix_it"
+    },
+    {
+      "id": "noscript-note-ends-up-inside-a-page",
+      "why": "a page section appears ahead of the note, which is all it takes: the note is no longer before every section. With scripts off a reader cannot change which section is active, so a note that is not ahead of all of them is visible only by luck. Nothing errors, the page with scripts on is unchanged, and the note looks present in every diff -- the step-that-runs-with-nothing-consuming-it shape, applied to the one element whose entire value is where it sits. Anchored on <main> rather than on the note, so a copy edit cannot silently disarm it.",
+      "find": "<main id=\"main-content\" tabindex=\"-1\">\n",
+      "replace": "<main id=\"main-content\" tabindex=\"-1\">\n  <section class=\"page\" id=\"page-ghost\"></section>\n",
+      "expect_caught_by": "test_the_note_comes_before_every_page_section"
+    }
+  ]
+}

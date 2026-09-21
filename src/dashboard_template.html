@@ -1229,6 +1229,27 @@
 
 <main id="main-content" tabindex="-1">
 
+  <!-- Outside every .page section ON PURPOSE, and first inside <main>. With
+       scripts off exactly one section is active -- #page-ratings, the one the
+       markup ships active -- and nothing can change that: every nav control is
+       an inert <button> with no href, and there is no :target rule and no
+       anchor pointing at a page. A note placed inside a section would
+       therefore be visible only if that section happened to be the active one,
+       which is the same unreachability this note exists to explain. Guarded by
+       tests/test_noscript_note.py, which fails if anything comes before it.
+
+       Reuses .onboarding-banner rather than adding a class: every value in it
+       is already on the page, so this introduces nothing for Stage 10 to
+       unpick. -->
+  <noscript>
+    <div class="onboarding-banner">
+      <div class="onboarding-content">
+        <h4>This page needs JavaScript turned on</h4>
+        <p class="shared-note">Everything here &mdash; the ratings table, the game cards, the charts, and the menu down the left &mdash; is put together by your browser after the page arrives. With JavaScript switched off you get this message and an empty page, and the menu buttons will not take you anywhere. Switch it on for this site and the dashboard appears.</p>
+      </div>
+    </div>
+  </noscript>
+
   <!-- POWER RATINGS -->
   <section class="page active" id="page-ratings">
     <div class="page-head">
