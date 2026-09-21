@@ -252,20 +252,27 @@ ACCEPTED_CLOSE = {
             '"correct" -- so colour is redundant to text, which is the '
             'secondary encoding the floor exists to require.',
         _pair('--accent-strong', '--series-a'):
-            'KNOWN DEFECT, queued. 2.8 under CVD and 2.9 under NORMAL vision, '
-            'so this one is not a colour-vision problem, it is two colours '
-            'almost nobody can tell apart. Below NORMAL_FLOOR, which the '
-            'comment on that constant says nothing excuses. '
-            'TRACED while the six untraced entries were being traced, and the '
-            'answer complicates the grading rather than settling it: these two '
-            'never appear on a page together either, for the same reason as '
-            '--accent-strong/--series-d. So nobody can hold them side by side '
-            '-- but the argument for fixing this one was never side-by-side '
-            'confusion, it is that a page claiming colour has exactly four '
-            'jobs has two of them wearing the same blue on different screens. '
-            'That is a judgement about the design\'s own claim, not an '
-            'accessibility failure, and it is Mark\'s to make. Left graded as '
-            'it was until he does.',
+            'ACCEPTED 2026-09-21 by Mark, after the pair was rendered side by '
+            'side in both themes under normal, protan and deutan vision. '
+            'Re-derived with this file\'s own delta_e: 2.85 under CVD, 2.87 '
+            'under NORMAL vision -- the closest pair in the dark palette of '
+            '28, and the striking half is the normal-vision figure, because '
+            'this is not a colour-vision problem at all. '
+            'TRACED: they CANNOT MEET. --accent-strong has one consumer, '
+            '.srs-bar-fill, on Power Ratings and Team Deep-Dive; --series-a '
+            'has two, the SERIES a entry and .model-chip.a, which between '
+            'them reach Week Board, Season Accuracy, Model Lab and '
+            'Methodology. The two page sets do not intersect. '
+            'The argument for fixing it anyway was that a page claiming '
+            'colour has four jobs has two of them wearing one blue on '
+            'different screens -- a judgement about the design\'s own claim, '
+            'not an accessibility failure. Judged not worth re-stepping a '
+            'token no reader can hold against the other. '
+            'WHAT MAKES THE ACCEPTANCE SAFE IS GUARDED, not assumed: the '
+            'verdict is true only while neither token grows a new home, so '
+            'SOLE_CONSUMER pins --accent-strong and TRACED_CONSUMER_SET pins '
+            '--series-a. If either fires, this entry is out of date -- '
+            're-trace before editing it.',
         _pair('--series-a', '--series-d'):
             'TRACED: they co-occur, on Season Accuracy, in the trend chart\'s '
             'legend row and on the plot. Not a defect on the same grounds as '
@@ -290,21 +297,34 @@ ACCEPTED_CLOSE = {
     },
     'light': {
         _pair('--accent', '--series-d'):
-            'KNOWN DEFECT, queued, and the worst pair on the page: 1.3 under '
-            'CVD against 15.1 under normal vision, so it is invisible to '
-            'anyone checking with full colour vision. --series-d is My Picks '
-            'and --accent marks the pick tick. '
-            'TRACED, and the trace narrows it sharply. The collision this '
-            'entry describes -- the pick tick against the My Picks series -- '
-            'CANNOT HAPPEN: the tick renders on Week Board and My Picks Log, '
-            'and --series-d renders only on Season Accuracy. The one page '
-            'painting both is Season Accuracy, where --accent is the sidebar '
-            'brand mark and its pulse dot, roughly 280px from the chart and '
-            'never a thing a reader compares to a series. So the measurement '
-            'stands and the story under it does not. Still graded as it was, '
-            'because the same design-claim argument applies as to '
-            '--accent-strong/--series-a above; what has changed is that '
-            'nobody should fix this expecting to fix a pick tick.',
+            'ACCEPTED 2026-09-21 by Mark, after the pair was rendered side by '
+            'side under normal, protan and deutan vision. The worst pair in '
+            'either palette: 1.26 under CVD against 15.08 under normal '
+            'vision, so it clears the floor for a full-colour reader and '
+            'collapses entirely for a deuteranope -- the exact reverse of '
+            '--accent-strong/--series-a, which is why filing the two together '
+            'hid what each one was. '
+            'TRACED, and the trace both narrows it and contradicts the '
+            'original story. The collision this entry used to describe -- the '
+            'pick tick against the My Picks series -- CANNOT HAPPEN: the tick '
+            'renders on Week Board and My Picks Log, --series-d only on '
+            'Season Accuracy. But the pair is NOT a cannot-meet: re-traced '
+            '2026-09-21 with the chart seeded, Season Accuracy paints both. '
+            'What separates them there is REGION, not page -- all 18 --accent '
+            'hits on that page are sidebar chrome and both --series-d hits '
+            'are chart marks, so no accent instance reaches the page body at '
+            'all. '
+            'Accepted on the same ground as --good/--warn: the series carries '
+            'a diamond marker and the only dashed stroke (6,4) on the plot, '
+            'plus a labelled legend entry, so colour is the fourth encoding '
+            'of that line and not the first. A reader never has to tell a '
+            'sidebar from a series by hue. '
+            'NOT covered by a consumer guard, deliberately: these two DO '
+            'share a screen, so there is no cannot-meet premise to pin. The '
+            'acceptance rests on the secondary encoding, which '
+            'test_every_series_carries_a_distinct_shape_and_picks_is_the_'
+            'only_dashed_one holds -- written for this grading, because '
+            'grepping for an existing guard found none.',
         _pair('--good', '--warn'):
             'NOT a defect, for the reason given in the dark block above.',
         _pair('--good', '--series-c'):
@@ -584,6 +604,125 @@ def test_a_commented_out_consumer_does_not_break_the_premise():
                            '.srs-bar-fill') is None, (
         'a commented-out consumer was counted as present, so retiring a rule '
         'by commenting it out would read as a second live consumer')
+
+
+#: SOLE_CONSUMER above holds one half of --accent-strong/--series-a's
+#: "cannot meet", and only one half: it pins --accent-strong to .srs-bar-fill.
+#: The other half is that --series-a never reaches the two pages that element
+#: renders on, and THAT is true only while --series-a keeps the two homes the
+#: 2026-09-21 trace found it in. It cannot use SOLE_CONSUMER, which requires
+#: exactly one consumer; the generalisation is the same rule over a named set.
+#:
+#: Why a set and not a count: a count alone passes when one consumer is
+#: deleted and another added, which is exactly the edit that would move a
+#: token onto a new page. Enumerate the class -- the lesson the bridging guard
+#: was widened for -- rather than asserting how big it is.
+TRACED_CONSUMER_SET = {
+    '--series-a': ('.model-chip.a', "label:'Model A'"),
+}
+
+
+def consumer_set_problem(src, token, anchors):
+    """None when the token still has exactly the consumers the trace found.
+
+    A plain function checked twice, over the real template and over synthetic
+    sources, for the reason premise_problem is: on today's page only the
+    "it holds" branch is reachable, and a rule whose failure message needs
+    data the repository does not contain needs synthetic inputs.
+    """
+    lines = consumer_lines(src, token)
+    if len(lines) != len(anchors):
+        return (f'{len(lines)} consumers, not the {len(anchors)} this verdict '
+                f'was traced against: {lines}')
+    missing = [a for a in anchors if not any(a in ln for ln in lines)]
+    if missing:
+        return f'these traced consumers are gone or moved: {missing}; found {lines}'
+    return None
+
+
+@pytest.mark.parametrize('token,anchors', sorted(TRACED_CONSUMER_SET.items()))
+def test_the_other_half_of_the_cannot_meet_verdict_also_still_holds(
+        token, anchors):
+    problem = consumer_set_problem(TEMPLATE.read_text(), token, anchors)
+    assert problem is None, (
+        f'{token}: {problem}. ACCEPTED_CLOSE grades '
+        '--accent-strong/--series-a as tolerable because the two never reach '
+        'one page, and that rests on this token keeping the homes it was '
+        'traced in. Re-run python src/verify_token_cooccurrence.py against a '
+        'fresh build and rewrite the entry from what it prints -- do not edit '
+        'this guard to match the new shape.')
+
+
+#: A --series-a that grew a third home, and one whose chip rule was renamed.
+#: Today's template has exactly the two traced consumers, so running the rule
+#: over the page alone exercises one branch.
+SERIES_A_THIRD_HOME = """
+  .model-chip.a{--chip:var(--series-a);}
+  .hero-number{color:var(--series-a);}
+  a:      {label:'Model A',  color:'var(--series-a)', shape:'circle',   dash:''},
+"""
+
+SERIES_A_RENAMED_HOME = """
+  .model-pill.a{--chip:var(--series-a);}
+  a:      {label:'Model A',  color:'var(--series-a)', shape:'circle',   dash:''},
+"""
+
+
+def test_a_third_home_breaks_the_other_half():
+    problem = consumer_set_problem(SERIES_A_THIRD_HOME, '--series-a',
+                                   TRACED_CONSUMER_SET['--series-a'])
+    assert problem is not None and '3 consumers' in problem, problem
+
+
+def test_a_renamed_home_breaks_the_other_half():
+    problem = consumer_set_problem(SERIES_A_RENAMED_HOME, '--series-a',
+                                   TRACED_CONSUMER_SET['--series-a'])
+    assert problem is not None and 'gone or moved' in problem, problem
+
+
+def _series_entries():
+    """The four SERIES entries as {key: {'shape':..., 'dash':...}}."""
+    src = TEMPLATE.read_text()
+    block = src[src.index('const SERIES = {'):src.index('/* Marker path for a series shape')]
+    out = {}
+    for m in re.finditer(
+            r"(\w+):\s*\{[^}]*?shape:\s*'([^']*)'[^}]*?dash:\s*'([^']*)'", block):
+        out[m.group(1)] = {'shape': m.group(2), 'dash': m.group(3)}
+    return out
+
+
+def test_every_series_carries_a_distinct_shape_and_picks_is_the_only_dashed_one():
+    """The ground --accent/--series-d is accepted on, held rather than assumed.
+
+    That pair is the closest in either palette -- 1.26 under deuteranopia --
+    and it is tolerable only because the My Picks line is identified by a
+    diamond marker, a dashed stroke and a labelled legend entry before colour
+    is consulted at all. Delete the shape or the dash and the ACCEPTED_CLOSE
+    entry for it silently stops being true, with every colour check still
+    green, because nothing in the palette moved.
+
+    Written after grepping for a guard and finding none: the first draft of
+    that entry cited a test of this name that did not exist.
+    """
+    entries = _series_entries()
+    assert len(entries) == 4, (
+        f'expected four SERIES entries, parsed {len(entries)}: {entries}. The '
+        'matcher has drifted -- a scan that finds nothing satisfies every '
+        'assertion below it.')
+    shapeless = [k for k, v in entries.items() if not v['shape']]
+    assert not shapeless, (
+        f'these series carry no shape: {shapeless}. Colour is then the only '
+        'thing distinguishing them, which is what the close pairs in '
+        'ACCEPTED_CLOSE are excused on the absence of.')
+    shapes = [v['shape'] for v in entries.values()]
+    assert len(set(shapes)) == len(shapes), (
+        f'two series share a marker shape: {shapes}. The shape is the '
+        'encoding that survives when the hues do not.')
+    dashed = sorted(k for k, v in entries.items() if v['dash'])
+    assert dashed == ['picks'], (
+        f'the dashed series are {dashed}, not just My Picks. The ACCEPTED_CLOSE '
+        'entry for --accent/--series-d rests on My Picks being the only dashed '
+        'stroke on the plot; a second one takes that distinction away.')
 
 
 @pytest.mark.parametrize('theme', ['dark', 'light'])
