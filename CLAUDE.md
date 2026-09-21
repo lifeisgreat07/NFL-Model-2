@@ -846,6 +846,15 @@ under compaction pressure, so its length is a cost paid on every session.
   -- but nothing in the repo edits a PR body with it.) A PR description can
   be corrected only by the user in the web UI, so get the description right
   when opening it.
+- **A file-bridge commit can report success and leave the old content in
+  place.** Writing an edited file from the sandbox to the same destination
+  path twice in a row wrote the FIRST version both times, with a `written`
+  result each time. Caught only because a guard on `docs/context.md` failed
+  twice with byte-identical output, including an unchanged line count,
+  which is not what an edited file does. Staging under a new filename
+  worked. **Verify the destination rather than the return value**, and read
+  two identical failure messages from a file you just changed as evidence
+  that you did not change it.
 - `cmd` mangles multi-line `python -c` strings, and **PowerShell has no
   heredocs** — `git commit -F <file>` with a written message file, and script
   files instead of inline `-c`, are the reliable forms.
@@ -1700,3 +1709,45 @@ under compaction pressure, so its length is a cost paid on every session.
   in the corpus is that case. Note the asymmetry that makes this expensive:
   a broken scan fails OPEN and looks like a pass, while a broken assertion
   fails closed and gets fixed the same minute.
+- **A SWEEP OVER LIVE DATA ANSWERS FOR TODAY'S DATA, AND "NOTHING FOUND"
+  LOOKS IDENTICAL TO "NEVER HAPPENS."** Tracing the six untraced
+  `ACCEPTED_CLOSE` pairs meant asking which colours are ever on screen at
+  once. The first sweep was clean, complete, and said `--series-d` appears on
+  no page at all — so three pairs could "never meet". Every part of that was
+  false. The Season Accuracy trend chart short-circuits below two graded
+  weeks, and in September there is one; its My Picks series is computed from
+  `localStorage`, which a fresh browser profile does not have. The sweep was
+  measuring a page that structurally could not draw the thing being looked
+  for. This is the same family as the webfont entry above — an environment
+  missing a precondition finds nothing and the absence reads as a checked
+  result — but the precondition here is **the date**, which no amount of
+  re-running fixes and which nothing in the output mentions. The tell is
+  available before the sweep: ask what has to be TRUE for the thing you are
+  looking for to render, and check each of those separately. What the
+  verifier does now is seed the state and refuse to report unless the chart
+  actually drew. Note the second-order fact that fell out of it and is worth
+  more than the trace: the chart's legend renders all four series swatches
+  regardless of whether the picks line has data, so the pair goes from
+  unreachable to on-screen-for-every-visitor the moment a second week grades.
+  A "cannot happen" that expires on a known date is not a cannot-happen.
+- **SCOPE A CO-OCCURRENCE QUESTION TO THE SCREEN, NOT TO THE COMPONENT YOU
+  WERE THINKING ABOUT.** The same sweep walked `section.page.active` — the
+  page body — because the question was phrased as "which page paints this".
+  The sidebar, the header and the bottom nav are on screen on every page, and
+  the active nav button and the brand mark both wear `--accent`. Restricted
+  to the body, the sweep reported that `--accent` and `--series-d` never meet;
+  widened to `body`, they meet on Season Accuracy. Both runs were correct
+  about what they measured. This is the wider-command trap inverted — a
+  command NARROWER than the sentence — and it is the more dangerous direction,
+  because a narrow scan produces the reassuring answer. Ask what the reader
+  can see, then pick the selector.
+- **A selector that matches nothing is the cheapest way to get a confident
+  wrong answer, and it happened twice in one afternoon.** The first sweep
+  queried `section.page-section.active`; the class is `.page`. An intermediate
+  run mutated the page's data after a reload and never re-rendered, so the
+  page scanned empty. Both returned tidy "NO PAGE" verdicts for pairs that
+  genuinely co-occur. Neither was caught by reading the code; both were caught
+  by a vacuity guard written before the run — one that printed the section
+  classes it did find, one that asserted the chart had drawn. **Write the
+  vacuity guard before the first run, not after the first surprise**, because
+  the run without one does not look like a failure.
