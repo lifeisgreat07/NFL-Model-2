@@ -15,13 +15,11 @@ Last updated: 2026-09-21 (#79 merged; queue item 1 closed)
 reproducible. Corpus: 203 cases, all CAUGHT, from
 `python tests/mutation/runner.py` with no `--id`, whose scope is every case.
 
-**No open PRs and no branches but `main`.** #79 merged: the no-script note,
-its guard and three mutation cases. Booth's verdict block read 7 CONFIRMED,
-0 discrepancies, 1 UNVERIFIABLE — no browser in that runner — and SAFE TO
-MERGE. Two defects were in the report itself, neither affecting the verdict
-and both now in CLAUDE.md's traps: the prose header disagreed with its own
-block, the tenth report to do so, and it quoted "204 passed" for an anchor
-test that reports 203.
+**No open PRs and no branches but `main`.** #79 merged; Booth: 7 CONFIRMED,
+0 discrepancies, 1 UNVERIFIABLE (no browser), SAFE TO MERGE. Two defects were
+in the report itself, neither affecting the verdict and both in CLAUDE.md's
+traps: the tenth header/block mismatch, and "204 passed" for a test that
+reports 203.
 
 **Queue item 1 is closed.** The `#8A93A8` chevron is dead, not wrong in light
 mode; the reader the two markup-visible selects were kept for cannot reach
@@ -32,15 +30,16 @@ what remains.
 
 **Next action: decide whether `--accent-strong`/`--series-a` and
 `--accent`/`--series-d` are still defects.** Mark's call, not a measurement,
-and the rest of Stage 9's colour work waits on it. Both were queued on
-distance alone, and neither pair can be on screen together — each token has
-one consumer, on pages the other never reaches. What is left is the design's
-claim about itself: colour has four jobs, two of them wearing near-identical
-blues on different screens. If that is a defect, `--accent` cannot be
-re-stepped in light mode (searched, zero candidates), so the fix comes from
-the other side of the pair. It expires: the Season Accuracy legend paints all
-four series swatches once a second week grades, so `--accent`/`--series-d`
-stops being a pair that cannot meet on Tue 2026-09-22.
+and the rest of Stage 9's colour work waits on it. **Corrected 2026-09-21:
+this file said neither pair can be on screen together, which dropped the
+qualifier the 09-20 trace turned on.** `--accent-strong`/`--series-a` do
+never share a page; `--accent`/`--series-d` DO share Season Accuracy and
+separate by region — 18 accent hits there, all chrome, against 2 series-d
+chart marks. Distances re-derived on the suite's own ruler: pair one 2.85 CVD
+/ 2.87 normal (dark), under the floor for every reader; pair two 15.08 normal
+/ 1.26 deutan (light), and each is the closest pair in its theme. `--accent`
+cannot be re-stepped in light mode, so any fix comes from the other side.
+Rendered side by side for the call; reasoning in `memory/2026-09-21.md`.
 
 ## Open work, and what each is waiting on
 
