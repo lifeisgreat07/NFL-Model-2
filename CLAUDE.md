@@ -204,6 +204,19 @@ casually.
   worked at all: a missing file returned `{}` in silence while the roadmap
   listed it Done. Read the code and render the page before believing a queued
   finding.
+  **Sharpened 2026-09-20, after two more in one session: the dangerous queued
+  item states a MEASUREMENT and a MECHANISM, and only the measurement ever
+  gets checked.** `--accent`/`--series-d` really is 1.3 apart under CVD, and
+  the story attached — that the pick tick collides with the My Picks series —
+  was false, because those two never share a page. `.week-select`'s chevron
+  really is a dark-theme grey baked into a data-URI, and the story — that it
+  is therefore wrong in light mode — was false, because every element wearing
+  that class is clipped to 1x1 in the rendered page. Both numbers survived
+  scrutiny; both mechanisms died on first contact with the page, and the
+  second had two guards and a mutation case defending its reasoning. The tell
+  is grammatical: a queued item whose sentence turns on "so", "which means" or
+  "and therefore" has a mechanism in it, and the mechanism is the half nobody
+  measured. Check that clause before doing the work it implies.
 
 ### Stage 1 - Recurring status checks (first every session, don't dwell)
 
