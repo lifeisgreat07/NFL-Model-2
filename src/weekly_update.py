@@ -258,7 +258,29 @@ def log_line_snapshot(season, week, week_games):
     """Append today's spread for each game in this week to a running
     archive. Building this over the season is how we'll eventually have
     real line-movement data to backtest against, without needing to buy
-    historical odds data we don't have access to."""
+    historical odds data we don't have access to.
+
+    A GAME WITH NO SPREAD POSTED YET IS SKIPPED, NOT WRITTEN AS NULL, and the
+    reason is not tidiness. A null row costs more than the noise it adds,
+    because `already_logged_today` below is built from whatever is on disk for
+    today: write a null for a game this morning and that game is a duplicate
+    for the rest of the day, so when the line is posted this afternoon the run
+    that would have captured it skips instead. Reproduced 2026-09-21 -- two
+    games, a morning run with no lines, an afternoon run with real ones, and
+    the archive ends the day holding two nulls and no spreads. The old code
+    then printed "already captured today -- skipped duplicate", which names a
+    cause that is not the cause and sends the reader looking for a duplicate
+    that does not exist.
+
+    This is the repository's own rule about absent inputs, applied where the
+    data is built rather than downstream: 2026 week 3's snapshot was 16 rows
+    of nulls (PR #75, closed rather than merged), and the scheduled weekly
+    workflow writes this archive straight to `main`, so nothing but this
+    function stands between an early run and a week of dead rows.
+
+    Nothing is lost by skipping. The archive is for line MOVEMENT, a null
+    carries no spread to compare, and "when did this line first appear" is
+    still answerable from the earliest captured_date for that game."""
     path = LINE_HISTORY_DIR / f'{season}_week{week}_lines.json'
     existing = []
     if path.exists():
@@ -269,22 +291,46 @@ def log_line_snapshot(season, week, week_games):
     already_logged_today = {(e['home'], e['away']) for e in existing if e['captured_date'] == today_str}
 
     added = 0
+    no_line_yet = 0
     for _, g in week_games.iterrows():
         key = (g['home_team'], g['away_team'])
         if key in already_logged_today:
             continue  # don't duplicate if this script runs more than once same day
         spread = g.get('spread_line', None)
+        if pd.isna(spread):
+            # Skipped, not written as null -- see the docstring. Leaving this
+            # game out of the file is also what leaves it out of
+            # already_logged_today on the next run today, which is the half
+            # that matters.
+            no_line_yet += 1
+            continue
         existing.append({
             'captured_date': today_str,
             'home': g['home_team'], 'away': g['away_team'],
-            'spread_line': spread if pd.notna(spread) else None,
+            # float() is intent, not a fix: numpy.float64 subclasses float
+            # and json.dump already handles it, so this changes nothing and
+            # is deliberately not guarded. tests/test_line_snapshot.py says
+            # so, because a test over it could not fail.
+            'spread_line': float(spread),
         })
         added += 1
 
+    # Three outcomes, three messages. They used to collapse into two, so a run
+    # that captured nothing because no line existed yet reported a duplicate
+    # -- a cause that was not the cause, which this repository has now been
+    # bitten by in four separate tools.
     if added:
         with open(path, 'w') as f:
             json.dump(existing, f, indent=2)
-        print(f"Logged {added} line snapshot(s) for {season} week {week} (captured {today_str}).")
+        msg = f"Logged {added} line snapshot(s) for {season} week {week} (captured {today_str})."
+        if no_line_yet:
+            msg += f" {no_line_yet} game(s) had no spread posted yet and were skipped."
+        print(msg)
+    elif no_line_yet:
+        print(f"No line snapshots written for {season} week {week}: "
+              f"{no_line_yet} game(s) have no spread posted yet. Nothing was "
+              f"recorded for {today_str}, so a later run today can still "
+              f"capture them.")
     else:
         print(f"Line snapshots for {season} week {week} already captured today -- skipped duplicate.")
 
