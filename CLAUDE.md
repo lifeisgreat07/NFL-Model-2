@@ -1092,6 +1092,25 @@ under compaction pressure, so its length is a cost paid on every session.
   `src/tune_qb_shrink_k.py` had already noticed and written it down, which fixed
   nothing, because a note is not a check. `tests/test_readme_accuracy.py` is now
   the check.
+- **A GUARD CAN PRESCRIBE A REMEDY ITS OWN CODE REJECTS, AND THE READER WILL
+  TRY THE REMEDY.** `check_visual_claims_have_artifacts` fails with "attach
+  it, or state it as a process note rather than proof". There is no
+  process-note path in the function: it passes on no keyword, or on an
+  attachment, and nothing else. A body that did exactly what the message asked
+  failed anyway on 2026-09-21. This is the "comment claims more than the code
+  delivers" family with the claim moved into the failure message, which is
+  worse, because a failure message is read at the moment someone is looking
+  for the fix and is trusted more than a comment. **Whatever remedy a
+  message names must be a branch in the function, or the message must not
+  name it.**
+  The same check failed for a second reason worth separating. `VISUAL_CLAIM_RE`
+  matched the word "screenshot" **inside the disclaimer**, so disclosing
+  honestly is what tripped it; and it does not match "rendered ... and read on
+  screen", so deleting the word made the same body pass as "no visual claim
+  made" while the claim was still there. Too narrow and too wide at once —
+  the `p*` glob shape — and the reassuring direction is the silent one. A
+  keyword matcher that gates on wording will eventually grade the disclaimer
+  instead of the claim.
 - **A guard whose rule names a forbidden string will match its own docstring.**
   Third occurrence this session. Exclude the file that states the rule, and say
   so in a comment — the alternative is describing the banned string obliquely
