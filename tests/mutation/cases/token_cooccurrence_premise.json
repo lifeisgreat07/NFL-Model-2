@@ -29,6 +29,20 @@
       "find": "    src = re.sub(r'/\\*.*?\\*/', '', src, flags=re.S)",
       "replace": "    src = re.sub(r'/\\*never\\*/', '', src, flags=re.S)",
       "expect_caught_by": "test_a_commented_out_consumer_does_not_break_the_premise"
+    },
+    {
+      "id": "other-half-stops-counting-homes",
+      "why": "the count check in consumer_set_problem is gutted, so --series-a can grow a third home while ACCEPTED_CLOSE goes on grading --accent-strong/--series-a as a pair that never meets. That grading is what this guard exists for: put --series-a on Power Ratings and the two tokens share a screen at 2.85 apart, with nothing in the suite saying so and every colour check still green, because no colour moved.",
+      "find": "    if len(lines) != len(anchors):\n        return (f'{len(lines)} consumers, not the {len(anchors)} this verdict '\n                f'was traced against: {lines}')",
+      "replace": "    if False:\n        return (f'{len(lines)} consumers, not the {len(anchors)} this verdict '\n                f'was traced against: {lines}')",
+      "expect_caught_by": "test_a_third_home_breaks_the_other_half"
+    },
+    {
+      "id": "other-half-stops-checking-which-homes",
+      "why": "the set check is gutted, leaving only the count. That passes the one edit most likely to move a token onto a new page -- deleting one consumer and adding another, which keeps the count identical while changing entirely where the token renders. It is the reason this guard enumerates the class instead of asserting how big it is, and the same shape as a guard that names one file when it meant a class of files.",
+      "find": "    missing = [a for a in anchors if not any(a in ln for ln in lines)]\n    if missing:",
+      "replace": "    missing = []\n    if missing:",
+      "expect_caught_by": "test_a_renamed_home_breaks_the_other_half"
     }
   ]
 }

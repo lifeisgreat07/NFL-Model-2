@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_dashboard_charts.py",
+  "cases": [
+    {
+      "id": "a-series-loses-its-marker-shape",
+      "why": "Model B's shape is emptied. Every colour check stays green because no colour moved, and the chart still draws -- it just draws one series with nothing but hue to identify it. That is the encoding --accent/--series-d is ACCEPTED on: at 1.26 apart under deuteranopia the My Picks line is told apart by its diamond, its dash and its label before colour is consulted, and the moment a series is hue-only that reasoning no longer describes the page.",
+      "find": "  b:      {label:'Model B',  color:'var(--series-b)', shape:'square',   dash:''},",
+      "replace": "  b:      {label:'Model B',  color:'var(--series-b)', shape:'',   dash:''},",
+      "expect_caught_by": "test_every_series_carries_a_distinct_shape_and_picks_is_the_only_dashed_one"
+    },
+    {
+      "id": "two-series-share-one-marker-shape",
+      "why": "the market takes Model A's circle. Subtler than deleting a shape: every series still HAS one, so a guard that only asked whether a shape exists is satisfied, and the legend still renders four rows. Two of them are now a circle in two blues, which is precisely the failure the shape encoding exists to prevent -- and on the reliability diagram those two overlap on one plot.",
+      "find": "  market: {label:'Market',   color:'var(--series-c)', shape:'triangle', dash:''},",
+      "replace": "  market: {label:'Market',   color:'var(--series-c)', shape:'circle', dash:''},",
+      "expect_caught_by": "test_every_series_carries_a_distinct_shape_and_picks_is_the_only_dashed_one"
+    },
+    {
+      "id": "a-second-series-goes-dashed",
+      "why": "Model B picks up a dash too. It reads as a harmless styling choice and takes away a distinction nothing else replaces: the ACCEPTED_CLOSE entry for --accent/--series-d says in as many words that My Picks is the ONLY dashed stroke on the plot, so a second dashed line falsifies a written verdict rather than merely looking different. Nothing errors and no colour check notices.",
+      "find": "  b:      {label:'Model B',  color:'var(--series-b)', shape:'square',   dash:''},",
+      "replace": "  b:      {label:'Model B',  color:'var(--series-b)', shape:'square',   dash:'4,3'},",
+      "expect_caught_by": "test_every_series_carries_a_distinct_shape_and_picks_is_the_only_dashed_one"
+    }
+  ]
+}

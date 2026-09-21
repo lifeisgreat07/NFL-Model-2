@@ -162,17 +162,28 @@ casually.
   that, on 2026-09-16, and had to be rewritten. The two rulers genuinely
   disagree about ranking, not just scale: `--good` vs `--series-c` in light is
   4.3 OKLab and 12.7 CIEDE2000. **Say which metric, every time.**
-- **The worst token pair on the page is `--accent` vs `--series-d` in light
-  mode: OKLab CVD 1.3** (normal 15.1; dark is fine). Measured 2026-09-16 by
-  sweeping every meaning-carrying token pair in both themes with
-  `test_dashboard_charts.py`'s own `delta_e`. `--series-d` is My Picks and
-  `--accent` marks the pick tick, so whether they co-occur is the same DOM
-  question Booth caught a false answer to on #60 — do not assert either way
-  without tracing it.
-- **`--accent-strong` vs `--series-a` in dark is 2.8 under CVD and 2.9 under
-  NORMAL vision.** Two colours nearly nobody can tell apart, for any reader,
-  not just a CVD one. Arguably a worse finding than the pair above, and it
-  appears in no comment or guard.
+- **The two closest token pairs are DECIDED, and the decision is recorded in
+  `ACCEPTED_CLOSE` rather than here.** `--accent`/`--series-d` in light is
+  1.26 under CVD against 15.08 normal; `--accent-strong`/`--series-a` in dark
+  is 2.85 under CVD against 2.87 normal. Each is the closest pair in its own
+  theme of 28, and both are closer than `--good`/`--warn`, which was already
+  accepted. Mark accepted both on 2026-09-21 after seeing them rendered side
+  by side in both themes under normal, protan and deutan vision.
+  **What matters for future work is that they are opposite shapes and were
+  filed together as one item, which hid it.** The first clears the normal
+  floor and collapses only under deuteranopia. The second is 2.87 under
+  NORMAL vision — not a colour-vision finding at all, a pair nobody can tell
+  apart — and is tolerable only because the two tokens never reach one page.
+  Two numbers in one queue entry are not one finding.
+- **Each acceptance is pinned by the thing it actually rests on, not by the
+  colour figures.** `--accent-strong`/`--series-a` rests on a page-disjointness
+  that holds only while neither token moves, so `SOLE_CONSUMER` pins
+  `--accent-strong` and `TRACED_CONSUMER_SET` pins `--series-a`.
+  `--accent`/`--series-d` rests on the series' shape and dash, so
+  `test_every_series_carries_a_distinct_shape_and_picks_is_the_only_dashed_one`
+  holds those. That last guard was written because grepping for an existing
+  one found none *after* a draft entry had already cited it by name — the
+  fifth time here that "surely something checks this" was wrong.
 - **`--good` vs `--warn` collapse under CVD (4.5 dark, 4.3 light) and that is
   NOT a defect.** Checked rather than assumed: the graded tag renders the word
   "Correct" or "Missed", and Team Deep-Dive's `mark()` renders the word
