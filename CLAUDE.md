@@ -47,8 +47,8 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1255 passing** (1 skipped) — `python -m pytest -q` on `main` at
-`4d153e1`, with HEAD level with origin, which is the order that makes the
+Suite: **1273 passing** (1 skipped) — `python -m pytest -q` on `main` at
+`f36d68b`, with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Run it
 before quoting
