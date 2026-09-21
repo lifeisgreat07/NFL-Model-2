@@ -227,8 +227,23 @@ def _pair(a, b):
 #: Shrinking this list is the definition of done for Stage 9's colour work --
 #: the same arrangement as the plain-language allowlist, which landed holding
 #: every violation of the day and was emptied one rewrite at a time.
-#: "not traced" means exactly that: nobody has checked whether the two are ever
-#: on screen together. It is not a judgement that they are fine.
+#: Every entry here now says whether the two are ever on screen together,
+#: because six of them used to say "Not traced" and a reader cannot tell an
+#: untraced pair from a tolerated one. The tracing is not done by reading:
+#: `python src/verify_token_cooccurrence.py` renders the built page and prints
+#: which pages paint each token, and every co-occurrence claim below is read
+#: off that table. It needs a browser, so it is a standalone verifier rather
+#: than a suite test -- but the PREMISE under the two "cannot meet" verdicts is
+#: checked here, by
+#: test_the_cannot_meet_verdicts_rest_on_a_premise_that_still_holds, because
+#: those verdicts die the moment a token grows a second consumer.
+#:
+#: One thing that sweep has to be told, and the reason a casual trace gets this
+#: wrong: the Season Accuracy chart carrying all four series does not draw in
+#: an ordinary September visit. It needs two graded weeks and the My Picks
+#: series needs stored picks, so a fresh profile finds --series-d nowhere and
+#: reports three pairs as "never together" -- a fact about the fixture wearing
+#: the shape of a fact about the page.
 ACCEPTED_CLOSE = {
     'dark': {
         _pair('--good', '--warn'):
@@ -240,35 +255,74 @@ ACCEPTED_CLOSE = {
             'KNOWN DEFECT, queued. 2.8 under CVD and 2.9 under NORMAL vision, '
             'so this one is not a colour-vision problem, it is two colours '
             'almost nobody can tell apart. Below NORMAL_FLOOR, which the '
-            'comment on that constant says nothing excuses.',
+            'comment on that constant says nothing excuses. '
+            'TRACED while the six untraced entries were being traced, and the '
+            'answer complicates the grading rather than settling it: these two '
+            'never appear on a page together either, for the same reason as '
+            '--accent-strong/--series-d. So nobody can hold them side by side '
+            '-- but the argument for fixing this one was never side-by-side '
+            'confusion, it is that a page claiming colour has exactly four '
+            'jobs has two of them wearing the same blue on different screens. '
+            'That is a judgement about the design\'s own claim, not an '
+            'accessibility failure, and it is Mark\'s to make. Left graded as '
+            'it was until he does.',
         _pair('--series-a', '--series-d'):
-            'Not traced. Model A and My Picks are not neighbours in palette '
-            'order, so test_line_chart_quartet_separates_between_neighbours '
-            'never covered them; whether both are ever drawn on one chart is '
-            'the open question.',
+            'TRACED: they co-occur, on Season Accuracy, in the trend chart\'s '
+            'legend row and on the plot. Not a defect on the same grounds as '
+            '--good/--warn above: the legend draws a circle and a diamond '
+            'each followed by its own text label, the four lines carry direct '
+            'end-labels, and My Picks is the only dashed one (6,4). Colour is '
+            'the fourth encoding here, not the first.',
         _pair('--warn', '--series-b'):
-            'Not traced. A status red against Model B\'s ochre.',
+            'TRACED: they co-occur, on Model Lab and Methodology. Model Lab '
+            'puts a "REJECT" conf-tag on the same page as the reliability '
+            'diagram\'s Model B squares; Methodology puts .gap-num beside '
+            '.model-chip.b, which prints "Model B (market-blended)". Every '
+            'instance of both carries its own word, so not a defect.',
         _pair('--accent-strong', '--series-d'):
-            'Not traced.',
+            'TRACED: they CANNOT MEET. --accent-strong has one consumer, '
+            '.srs-bar-fill, which renders only on Power Ratings and Team '
+            'Deep-Dive; --series-d has one consumer, the picks entry of '
+            'SERIES, which renders only in Season Accuracy\'s trend chart. No '
+            'page paints both. Kept rather than deleted because the sweep '
+            'still finds the pair close, and the entry records WHY that is '
+            'tolerable rather than leaving the next reader to re-trace it.',
     },
     'light': {
         _pair('--accent', '--series-d'):
             'KNOWN DEFECT, queued, and the worst pair on the page: 1.3 under '
             'CVD against 15.1 under normal vision, so it is invisible to '
             'anyone checking with full colour vision. --series-d is My Picks '
-            'and --accent marks the pick tick. Whether they co-occur is '
-            'untraced, and Booth caught a false co-occurrence claim about the '
-            'neighbouring pair on #60 -- do not assert it either way.',
+            'and --accent marks the pick tick. '
+            'TRACED, and the trace narrows it sharply. The collision this '
+            'entry describes -- the pick tick against the My Picks series -- '
+            'CANNOT HAPPEN: the tick renders on Week Board and My Picks Log, '
+            'and --series-d renders only on Season Accuracy. The one page '
+            'painting both is Season Accuracy, where --accent is the sidebar '
+            'brand mark and its pulse dot, roughly 280px from the chart and '
+            'never a thing a reader compares to a series. So the measurement '
+            'stands and the story under it does not. Still graded as it was, '
+            'because the same design-claim argument applies as to '
+            '--accent-strong/--series-a above; what has changed is that '
+            'nobody should fix this expecting to fix a pick tick.',
         _pair('--good', '--warn'):
             'NOT a defect, for the reason given in the dark block above.',
         _pair('--good', '--series-c'):
-            'Not traced. test_status_colours_are_never_painted_on_a_chart_mark '
-            'says a status colour never lands on a chart mark, which may mean '
-            'these cannot meet -- but that guard is about usage, not distance.',
+            'TRACED: they co-occur, on Model Lab, where the "ACCEPT" conf-tag '
+            'shares a page with the reliability diagram\'s Market triangles. '
+            'The old note hoped '
+            'test_status_colours_are_never_painted_on_a_chart_mark might mean '
+            'they cannot meet; it does not. That guard says a status colour '
+            'is never painted ON a mark, which is a rule about what a mark '
+            'wears, not about what else is on the page. Not a defect -- the '
+            'tag prints its verdict and the mark is a labelled triangle.',
         _pair('--accent-strong', '--series-d'):
-            'Not traced.',
+            'TRACED: they CANNOT MEET, for the reason given in the dark block '
+            'above. The consumer sets are the same in both themes.',
         _pair('--warn', '--series-b'):
-            'Not traced. A status red against Model B\'s ochre.',
+            'TRACED: they co-occur, on Model Lab and Methodology, exactly as '
+            'in the dark block above and for the same reason -- which pages '
+            'paint a token does not depend on the theme.',
         _pair('--accent', '--accent-strong'):
             'Intended. A colour and its own darker variant, used for the hover '
             'and pressed states OF THE SAME control -- they are never the two '
@@ -411,6 +465,125 @@ def test_the_accepted_list_has_no_entries_that_stopped_being_close(theme):
         f'{theme}: ACCEPTED_CLOSE entries that no longer describe the '
         f'palette: {stale}. Delete them -- a list of excuses for pairs that '
         'are fine is how the next reader mis-reads the real ones.')
+
+
+#: The two "cannot meet" verdicts in ACCEPTED_CLOSE are not claims about
+#: colour, they are claims about WHERE a token is consumed -- and both hold
+#: only because each of these tokens has exactly one consumer in the template.
+#: Give --accent-strong a second home, or draw the picks series anywhere but
+#: the trend chart, and the verdict silently stops being true while the entry
+#: goes on asserting it. So the premise is guarded even though the trace that
+#: produced the verdict needs a browser and cannot run here.
+SOLE_CONSUMER = {
+    '--accent-strong': '.srs-bar-fill',
+    '--series-d': 'picks:',
+}
+
+
+def _strip_comments(src):
+    """Comments out, because a guard that reads the source FILE counts
+    commented-out markup as present -- twice now, in this repo."""
+    src = re.sub(r'/\*.*?\*/', '', src, flags=re.S)
+    return re.sub(r'<!--.*?-->', '', src, flags=re.S)
+
+
+def consumer_lines(src, token):
+    """Every line that USES the token, comments stripped.
+
+    A definition (`--series-d:#7D24D3`) is not a use and never matches,
+    because a use is spelled var(--token).
+    """
+    needle = f'var({token})'
+    return [ln.strip() for ln in _strip_comments(src).splitlines()
+            if needle in ln]
+
+
+def premise_problem(src, token, anchor):
+    """None when the "cannot meet" premise holds for this token, else why not.
+
+    A plain function rather than a bare assertion, and then checked twice --
+    over the real template and over synthetic sources below -- because on
+    today's page every branch but "the premise holds" is unreachable. A rule
+    whose failure message can only be produced by data the repository does not
+    contain needs synthetic inputs, not a better assertion.
+    """
+    lines = consumer_lines(src, token)
+    if len(lines) != 1:
+        return f'{len(lines)} consumers, not one: {lines}'
+    if anchor not in lines[0]:
+        return f'its one consumer is no longer {anchor}: {lines[0]}'
+    return None
+
+
+@pytest.mark.parametrize('token,anchor', sorted(SOLE_CONSUMER.items()))
+def test_the_cannot_meet_verdicts_rest_on_a_premise_that_still_holds(
+        token, anchor):
+    problem = premise_problem(TEMPLATE.read_text(), token, anchor)
+    assert problem is None, (
+        f'{token}: {problem}. ACCEPTED_CLOSE says a pair involving {token} '
+        "'CANNOT MEET', and that verdict was derived from it having exactly "
+        'one consumer, in the place named above. Re-run '
+        'python src/verify_token_cooccurrence.py against a fresh build and '
+        'rewrite the entry from what it prints -- do not edit this guard to '
+        'match the new shape.')
+
+
+def test_the_consumer_scan_is_not_blind():
+    """The companion every "every X must Y" assertion here needs.
+
+    consumer_lines returning [] satisfies nothing above -- the length check
+    would fail -- but it would fail for the WRONG REASON, reporting a moved
+    consumer when the truth is a scan that stopped matching. Name a token
+    with several consumers and require they are found.
+    """
+    src = TEMPLATE.read_text()
+    many = consumer_lines(src, '--good')
+    assert len(many) > 3, (
+        'the consumer scan found almost no uses of --good, which is painted '
+        f'on status surfaces all over the page: {many}. The scan is broken, '
+        'not the palette.')
+
+
+#: A template with a deliberate second consumer and a deliberate commented-out
+#: one. Today's real template has exactly one live consumer of each guarded
+#: token and no commented-out ones, so running the rules over the page alone
+#: exercises one branch of each -- the arrangement that let two mutations
+#: survive the corpus on 2026-09-16.
+SYNTHETIC_TEMPLATE = """
+  .srs-bar-fill{background:linear-gradient(90deg, var(--accent), var(--accent-strong));}
+  .sneaky-badge{color:var(--accent-strong);}
+  /* .retired{color:var(--accent-strong);} */
+  <!-- <div style="color:var(--accent-strong)"></div> -->
+"""
+
+
+MOVED_TEMPLATE = """
+  .some-other-thing{color:var(--accent-strong);}
+"""
+
+ONLY_COMMENTED_OUT = """
+  .srs-bar-fill{background:var(--accent-strong);}
+  /* .retired{color:var(--accent-strong);} */
+"""
+
+
+def test_a_second_consumer_breaks_the_premise():
+    problem = premise_problem(SYNTHETIC_TEMPLATE, '--accent-strong',
+                              '.srs-bar-fill')
+    assert problem is not None and '2 consumers' in problem, problem
+
+
+def test_a_moved_consumer_breaks_the_premise():
+    problem = premise_problem(MOVED_TEMPLATE, '--accent-strong',
+                              '.srs-bar-fill')
+    assert problem is not None and 'no longer' in problem, problem
+
+
+def test_a_commented_out_consumer_does_not_break_the_premise():
+    assert premise_problem(ONLY_COMMENTED_OUT, '--accent-strong',
+                           '.srs-bar-fill') is None, (
+        'a commented-out consumer was counted as present, so retiring a rule '
+        'by commenting it out would read as a second live consumer')
 
 
 @pytest.mark.parametrize('theme', ['dark', 'light'])

@@ -1,0 +1,34 @@
+{
+  "target": "tests/test_dashboard_charts.py",
+  "tests": "tests/test_dashboard_charts.py",
+  "cases": [
+    {
+      "id": "premise-scan-goes-blind",
+      "why": "consumer_lines is narrowed to a spelling the template never uses, so it returns [] for every token. The premise guard then reports '0 consumers, not one', which reads as a consumer having MOVED and sends the reader to re-trace a page that has not changed -- the same shape as a tool reading one number out of a multi-number summary and inventing a cause for the difference. Caught only by the companion that names a token whose uses must be found.",
+      "find": "    needle = f'var({token})'",
+      "replace": "    needle = f'var( {token} )'",
+      "expect_caught_by": "test_the_consumer_scan_is_not_blind"
+    },
+    {
+      "id": "premise-stops-counting-consumers",
+      "why": "the count check is gutted, so a token can grow a second home while ACCEPTED_CLOSE goes on asserting the pair CANNOT MEET. That verdict is the whole reason this guard exists: give --accent-strong a second consumer on the Season Accuracy page and the two tokens are suddenly on one screen, with nothing in the suite saying so.",
+      "find": "    if len(lines) != 1:\n        return f'{len(lines)} consumers, not one: {lines}'",
+      "replace": "    if False:\n        return f'{len(lines)} consumers, not one: {lines}'",
+      "expect_caught_by": "test_a_second_consumer_breaks_the_premise"
+    },
+    {
+      "id": "premise-stops-checking-where-the-consumer-is",
+      "why": "the anchor check is gutted, so the one consumer may move anywhere and the premise still reads as holding. A single consumer is not enough on its own -- the verdict names WHICH element, because .srs-bar-fill is what confines --accent-strong to Power Ratings and Team Deep-Dive. Move that declaration onto a shared component and the count stays at one while the verdict quietly stops being true.",
+      "find": "    if anchor not in lines[0]:\n        return f'its one consumer is no longer {anchor}: {lines[0]}'",
+      "replace": "    if False:\n        return f'its one consumer is no longer {anchor}: {lines[0]}'",
+      "expect_caught_by": "test_a_moved_consumer_breaks_the_premise"
+    },
+    {
+      "id": "premise-counts-commented-out-markup",
+      "why": "comment stripping is dropped, so a rule retired by commenting it out still counts as a live consumer. The guard then fails on a template that is perfectly fine, and the obvious repair is to edit the guard -- which is how a real second consumer gets waved through later. Two guards in this repo have already counted commented-out markup as present.",
+      "find": "    src = re.sub(r'/\\*.*?\\*/', '', src, flags=re.S)",
+      "replace": "    src = re.sub(r'/\\*never\\*/', '', src, flags=re.S)",
+      "expect_caught_by": "test_a_commented_out_consumer_does_not_break_the_premise"
+    }
+  ]
+}
