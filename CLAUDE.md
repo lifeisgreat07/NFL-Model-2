@@ -1345,6 +1345,19 @@ under compaction pressure, so its length is a cost paid on every session.
   checking it. **Mutation-test every new guard**, and check WHICH assertion
   caught the mutation — if it is not the one you intended, the intended guard is
   still untested.
+  **Sixth, 2026-09-21, and it is not a guard:** `matchupColors`' comment said
+  the push separates close pairs "while keeping each team's real hue (so it
+  still reads as that team)". Measured, it renders Cincinnati's `#FB4F14` as
+  `#C43E10`. So the shape is not confined to guards — any comment stating what
+  the code achieves is the same liability, and a comment about COLOUR is
+  cheaper to check than most: run the values.
+  **A near-seventh the same day, caught before shipping and worth more than
+  the six:** a test asserting a stored spread is a plain JSON number cannot
+  fail, because `numpy.float64` subclasses `float` and `json.dump` serialises
+  both. It was deleted rather than shipped, and `tests/test_line_snapshot.py`
+  records why so nobody adds it back. **Before writing a guard, ask what input
+  would make it go red.** If you cannot name one, it is decoration in the
+  place a reader looks for protection.
 - **A stale `.pyc` makes a mutation harness lie.** Several mutations preserve
   file size (`2.4` → `2.5`, `2026` → `2126`), and bytecode invalidation keys on
   size plus a one-second-granularity mtime. Written milliseconds apart, Python
