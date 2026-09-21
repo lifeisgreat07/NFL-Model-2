@@ -18,7 +18,7 @@
     },
     {
       "id": "listbox-select-is-hidden-in-the-markup",
-      "why": "the select ships visually-hidden, which is the tidy-up a reader makes on seeing enhanceSelect hide it anyway -- and it matches what the week stepper's markup does, so it looks like consistency. With JavaScript off there is then no sort control on the page at all, because unlike the stepper's arrows this list does not exist until a script builds it. Nothing errors and the rendered page is identical for everyone else.",
+      "why": "the select ships visually-hidden, which is the tidy-up a reader makes on seeing enhanceSelect hide it anyway -- and it matches what the week stepper's markup does, so it looks like consistency. What it costs is ordering: the select is then hidden before the listbox that replaces it is built, so a script that dies in between leaves the Week Board with no sort control instead of a working native one. Nothing errors and the rendered page is identical for everyone else. CORRECTED 2026-09-21: this entry used to say the loss was a no-script reader's only control. That reader cannot reach this page -- with scripts off only #page-ratings is active and every nav control is an inert <button> -- so the honest cost is the ordering property, not reach.",
       "find": "      <select id=\"sort-select\" class=\"week-select\" aria-label=\"Sort\" data-lbx-fit=\"widest\">",
       "replace": "      <select id=\"sort-select\" class=\"week-select visually-hidden\" aria-label=\"Sort\" data-lbx-fit=\"widest\">",
       "expect_caught_by": "test_the_native_select_is_hidden_by_script_not_by_markup"
@@ -46,7 +46,7 @@
     },
     {
       "id": "listbox-chevron-gets-a-baked-in-hex",
-      "why": "the chevron stops inheriting and takes .week-select's exact stroke colour. In dark mode it is indistinguishable from correct. In light mode it is a dark-theme grey on a white surface -- the same defect, from the same literal, that teamColor()'s fallback has and that Stage 11 has queued as an accessibility item.",
+      "why": "the chevron stops inheriting and takes .week-select's exact stroke colour. In dark mode it is indistinguishable from correct. In light mode it is a dark-theme grey on a white surface, on the one chevron anybody actually sees. CORRECTED 2026-09-21 on two counts: .week-select's own chevron is not a live instance of this defect, because every element wearing that class is clipped to 1x1 and it never paints; and the deferral to \"Stage 11\" named a stage that has never existed in this project. teamColor()'s fallback is the real sibling, and it is queued under Stage 9.",
       "find": "<svg class=\"lbx-chevron\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"`",
       "replace": "<svg class=\"lbx-chevron\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#8A93A8\"`",
       "expect_caught_by": "test_the_chevron_inherits_its_colour"
@@ -88,7 +88,7 @@
     },
     {
       "id": "teamdive-select-is-hidden-in-the-markup",
-      "why": "the same tidy-up as the sort-select case above, applied to the select that needs it even more: this one has no options in the markup either, so with JavaScript off a no-script reader gets an empty hidden control and a page with no way to choose a team at all. Identical rendered page for everyone else.",
+      "why": "the same tidy-up as the sort-select case above, applied to the select that needs it even more: this one has no options in the markup either, so hiding it there hides it before either its options or its listbox exist. Identical rendered page for everyone else. CORRECTED 2026-09-21 alongside the sort-select entry, which this used to lean on: the cost is the ordering property, not a no-script reader, who cannot reach this page at all.",
       "find": "      <select id=\"teamdive-select\" class=\"week-select\" aria-label=\"Team\"></select>",
       "replace": "      <select id=\"teamdive-select\" class=\"week-select visually-hidden\" aria-label=\"Team\"></select>",
       "expect_caught_by": "test_the_team_select_ships_visible_like_the_sort_select"

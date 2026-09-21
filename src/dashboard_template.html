@@ -392,9 +392,21 @@
     transition:transform var(--dur-base) var(--ease);
   }
   /* currentColor, not a hardcoded stroke in a data-URI. .week-select's chevron
-     is `%238A93A8`, which is a dark-theme grey baked into a URL and therefore
-     wrong in light mode -- the same literal as teamColor()'s fallback. A
-     chevron that inherits cannot have that defect. */
+     is `%238A93A8`, a dark-theme grey baked into a URL -- the same literal as
+     teamColor()'s fallback.
+
+     This comment said "and therefore wrong in light mode" until 2026-09-21.
+     Corrected rather than deleted: that chevron never paints in EITHER theme.
+     All four elements wearing .week-select are clipped to 1x1 by
+     .visually-hidden -- #week-select and #picks-week-select in the markup,
+     #sort-select and #teamdive-select by enhanceSelect(). Rendered and
+     measured on all four, each on its own active page. Without a browser the
+     same mechanism is held by tests/test_week_stepper.py (the two hidden in
+     markup) and tests/test_listbox.py (the two hidden by script).
+
+     So the reason to inherit here is not that the other one is broken. It is
+     that this chevron is the one a reader sees, and a literal in it would be
+     the real version of a defect the dead one only looks like. */
   /* :hover for this component lives in the @media (hover: hover) block with
      every other hover rule -- a bare :hover sticks after a tap on a touch
      device, which is the "button stays highlighted after you tap it" symptom
@@ -1331,10 +1343,18 @@
         </button>
       </div>
       <select id="week-select" class="week-select visually-hidden" aria-label="Week"></select>
-      <!-- Ships VISIBLE and is hidden by enhanceSelect() once the listbox is
-           built, so a no-script reader keeps a working control. The list is
-           built entirely by script; hiding this in the markup the way the week
-           stepper does would leave nothing here at all. -->
+      <!-- #sort-select below ships VISIBLE and enhanceSelect() adds
+           visually-hidden once the listbox is built, so the select is never
+           hidden unless the control replacing it already exists. That
+           ordering is the whole reason, and it is not the reason recorded
+           here until 2026-09-21: this comment used to say the visible select
+           kept a working control for a no-script reader, and it also sat
+           directly under a select that ships hidden, so it read as describing
+           the wrong element. Both corrected. With scripts off only
+           #page-ratings is active, every nav control is an inert <button>
+           with no href, and there is no :target rule and no anchor reaching a
+           page -- so the Week Board cannot be opened at all and nothing on it
+           serves that reader. Measured on the built page 2026-09-21. -->
       <!-- The labels carry no "Sort: " prefix. It cost 65px of a 398px row at
            430px and said nothing the aria-label, the chevron and the control's
            position were not already saying. data-lbx-fit="widest" then freezes
@@ -1395,7 +1415,10 @@
            identical job looked like two different controls depending on the
            tab -- and on a phone one of them was the iOS system wheel while the
            other was a pair of arrows. The <select> stays as the single source
-           of truth and the no-script fallback, exactly as on the Board. -->
+           of truth -- it owns the selected week and the arrows write through
+           it -- exactly as on the Board. It is NOT a no-script fallback, as
+           this said until 2026-09-21: it ships visually-hidden, and with
+           scripts off this page cannot be reached anyway. -->
       <div class="week-step" id="picks-week-step">
         <button type="button" class="week-step-btn" id="picks-week-prev" aria-label="Previous week">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -2156,12 +2179,24 @@ function lbxFlipDecision(listLeft, listWidth, anchorRight, viewportWidth){
    for exactly that case: a select whose options arrive after enhancement.
 
    PROGRESSIVE ENHANCEMENT, and this is where it departs from the week
-   stepper. That control hardcodes `visually-hidden` in the markup, which is
-   safe there because its arrows are static markup that exist without
-   JavaScript. This list is built entirely by script, so hiding the select in
-   the markup would leave a no-script reader with no control at all. The class
-   is therefore applied HERE, after the list is successfully built, and the
-   select ships visible. */
+   stepper. That control hardcodes `visually-hidden` in the markup; this list
+   is built entirely by script, so the class is applied HERE, after the list
+   is successfully built, and the select ships visible.
+
+   What that buys is ORDERING, not reach. The select cannot be hidden unless
+   the control replacing it already exists, so a script that dies between
+   rendering the page and reaching this call leaves a working native select
+   rather than nothing at all.
+
+   It is NOT, as this comment said until 2026-09-21, that a no-script reader
+   would otherwise have no control. That reader never gets here: with scripts
+   off only #page-ratings is active, every nav control is an inert <button>,
+   and there is no :target rule and no anchor reaching a page. Both selects
+   that ship visible sit on pages nobody can reach -- a <noscript> note may
+   explain that to them, but it does not make the pages reachable, so do not
+   read one as having changed this. The guard is kept
+   anyway -- hidden by script rather than by markup is still the right
+   default -- with the honest reason attached. */
 function enhanceSelect(sel){
   if(!sel || sel.dataset.lbx === 'on') return null;
 

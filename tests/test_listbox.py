@@ -94,18 +94,29 @@ def test_the_select_still_owns_the_value(body):
 def test_the_native_select_is_hidden_by_script_not_by_markup(source, body):
     """Progressive enhancement, and the one place this departs from the stepper.
 
-    The week stepper hardcodes `visually-hidden` on its select, which is safe
-    there because its arrows are static markup that exist without JavaScript.
-    This list is built entirely by script. Hiding the select in the markup
-    would leave a no-script reader with no control at all, so the class is
-    applied after the list is successfully built.
+    The week stepper hardcodes `visually-hidden` on its select; this list is
+    built entirely by script, so the class is applied after the list is
+    successfully built and the select ships visible.
+
+    What that buys is ORDERING, not reach. The select cannot be hidden unless
+    the control replacing it exists, so a script that dies between rendering
+    the page and reaching the enhanceSelect call leaves a working native
+    select instead of nothing.
+
+    Until 2026-09-21 this docstring gave the reason as a no-script reader who
+    would otherwise have no control. Checked on the built page, and false:
+    with scripts off only #page-ratings is active, every nav control is an
+    inert <button> with no href, and there is no :target rule or anchor
+    reaching a page, so this select's page cannot be opened at all. The guard
+    is kept -- hidden by script rather than by markup is still the right
+    default -- with the honest reason attached.
     """
     m = re.search(r'<select id="sort-select"[^>]*>', source)
     assert m, 'the sort select is gone entirely'
     assert 'visually-hidden' not in m.group(0), (
-        f'{m.group(0)} hides the select in the markup. With JavaScript off '
-        'that leaves no sort control on the page at all -- the listbox that '
-        'replaces it does not exist until a script builds it.')
+        f'{m.group(0)} hides the select in the markup, so it is hidden before '
+        'the listbox that replaces it is built. Hide it in enhanceSelect, '
+        'after the list exists, so the two can never be out of step.')
     assert "classList.add('visually-hidden')" in body, (
         'enhanceSelect no longer hides the select it replaced, so the page '
         'shows two sort controls doing the same job -- and on a phone one of '
@@ -225,12 +236,18 @@ def test_the_listbox_styles_use_tokens_for_spacing_type_and_radius(source):
 
 
 def test_the_chevron_inherits_its_colour(source):
-    """The defect .week-select's chevron has, not repeated here.
+    """The defect .week-select's chevron would have if anyone could see it.
 
-    That control paints its arrow with `stroke='%238A93A8'` inside a data-URI
-    -- a dark-theme grey baked into a URL, and therefore wrong in light mode.
-    It is the same literal as teamColor()'s fallback. A chevron drawn as inline
-    SVG with currentColor cannot have that defect in any theme.
+    That control declares its arrow with `stroke='%238A93A8'` inside a
+    data-URI -- a dark-theme grey baked into a URL, the same literal as
+    teamColor()'s fallback. Until 2026-09-21 this docstring called it wrong in
+    light mode. It cannot be: every element wearing .week-select is clipped to
+    1x1 by .visually-hidden, so that chevron paints in no theme at all.
+
+    The rule still belongs here, and only here. This chevron is the one a
+    reader actually sees, so a hardcoded hex in it would be the live version
+    of a defect the dead one merely resembles. Drawn as inline SVG with
+    currentColor, it cannot acquire one.
     """
     # Anchored on `class="`, not on the bare class name. The first draft of
     # this matcher was r'lbx-chevron.*?</svg>', which found the CSS RULE
@@ -250,7 +267,8 @@ def test_the_chevron_inherits_its_colour(source):
         'the listbox chevron no longer inherits its colour')
     assert not re.search(r'%23[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{6}', m.group(0)), (
         'the listbox chevron has a hardcoded hex, which is how .week-select '
-        'ended up with a dark-theme grey that is wrong in light mode')
+        'ended up with a dark-theme grey baked into a data-URI -- harmless '
+        'there only because that control never paints, and not harmless here')
 
 
 # ---------------------------------------------------------------------------
@@ -401,7 +419,7 @@ def test_the_team_select_ships_visible_like_the_sort_select(source):
     assert 'visually-hidden' not in m.group(0), (
         f'{m.group(0)} hides the select in the markup. Its options are '
         'written by script and the listbox that replaces it is built by '
-        'script, so with JavaScript off this leaves no team control at all.')
+        'script, so hiding it here hides it before either one exists.')
 
 
 def test_the_team_select_carries_an_accessible_name(source):

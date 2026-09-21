@@ -724,9 +724,12 @@ tokens chosen to reduce a count are a tidier mess.
 **A point of view on colour**, not only the removal of ambiguity. The
 corrective work: retire the 33 hardcoded team-brand hex values driving
 probability bars in favour of `--series` tokens — `teamColor()` falls back to the
-literal `#8A93A8` (the old dark `--chalk-dim`, retired in `007cebe`), so it is
-wrong in light mode -- and that same literal is baked into `.week-select`'s
-chevron data-URI, a second site nothing had recorded, and red-vs-blue
+literal `#8A93A8` (the old dark `--chalk-dim`, retired in `007cebe`), which is
+wrong in light mode wherever it is reached, and is reached only for an
+abbreviation outside the 32 in `TEAM_COLOR`; that same literal is baked into
+`.week-select`'s chevron data-URI, where it is DEAD rather than wrong —
+corrected 2026-09-21, every element wearing that class is clipped to 1x1 and
+the chevron paints in no theme — and red-vs-blue
 bars read as bad-vs-good rather than as two teams. Disambiguate amber -- DONE
 by Stage 8b (`c90a222`): `--amber` is gone, brand, active nav, sorted column
 and the flagged card all wear `--accent`, which is a blue, and the only ochre

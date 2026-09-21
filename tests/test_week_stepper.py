@@ -57,7 +57,10 @@ def test_the_visible_control_is_never_the_native_select(prefix, source):
     """The actual user-visible fix, and the thing most likely to be undone.
 
     A native <select> is what iOS renders as the system wheel. Both pages keep
-    one -- it owns the selection and is the no-script fallback -- but it must
+    one because it owns the selection and the arrows write through it. Until
+    2026-09-21 this also called it the no-script fallback, which it is not:
+    it ships visually-hidden, and with scripts off neither of these pages can
+    be reached. It must
     stay visually-hidden, with the arrows as the control anyone sees. Dropping
     `visually-hidden` in a tidy-up gives the page two week controls side by
     side, and puts the wheel back on the phone.
