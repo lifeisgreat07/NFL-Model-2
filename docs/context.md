@@ -15,23 +15,25 @@ Last updated: 2026-09-21 (#79 and #80 merged; the colour gradings are decided)
 reproducible. Corpus: 208 cases, all CAUGHT, from
 `python tests/mutation/runner.py` with no `--id`, whose scope is every case.
 
-**No open PRs and no branches but `main`.** #80 merged: both disputed colour
-pairs graded ACCEPTED, each pinned by the fact it rests on. Booth: 13
-CONFIRMED, 0 discrepancies, 1 UNVERIFIABLE, SAFE TO MERGE — and its header
-agreed with its own verdict block for the first time in eleven reports.
+**#80 merged**: both disputed colour pairs graded ACCEPTED, each pinned by the
+fact it rests on. Booth: 13 CONFIRMED, 0 discrepancies, 1 UNVERIFIABLE, SAFE
+TO MERGE — and its header agreed with its own verdict block for the first
+time in eleven reports.
 
-**Stage 9's colour work is unblocked.** The decision that was holding it is
-made; what remains is `matchupColors`, the Net Rating diverging pair, and the
-confidence / flagged / "model was wrong" language.
+**One PR open, #81**, audited and ready. Stage 9's colour work is unblocked
+and its two biggest questions are now settled; what remains is the Net Rating
+diverging pair and the confidence / flagged / "model was wrong" language.
 
-**Next action: decide whether the Week Board's team-colour split bar survives
-at all.** It is a deletion question before it is a colour one. Stage 8 says
-team identity is a logo and never a colour; `matchupColors` is the only
-consumer of `teamColor()`, whose fallback is now the last live site of the
-`#8A93A8` literal. If the bars go, queue items 1 and 2 go with them and 60 of
-496 close team pairs stop being anyone's problem. Mark wanted this decided by
-looking, and the side-by-side treatment built for the token pairs on
-2026-09-21 applies directly.
+**The split-bar question is decided: the bars stay as shipped.** Mark's call
+2026-09-21, after four alternatives were rendered side by side on real games
+in both themes and under CVD simulation. The measured cost is accepted
+knowingly and written up in CLAUDE.md; `teamColor()`, `TEAM_COLOR`,
+`CONTRAST_THRESHOLD` and the `#8A93A8` literal all stay. Do not re-open it.
+
+**Next action: merge #81 before the Tuesday run.** Booth: 7 CONFIRMED, 0
+discrepancies, 0 unverifiable, SAFE TO MERGE. The scheduled workflow writes
+`data/line_history/` straight to `main`, so an unmerged fix is a week of dead
+rows if week 4's lines are not posted when it runs.
 
 ## Open work, and what each is waiting on
 
@@ -45,15 +47,12 @@ looking, and the side-by-side treatment built for the token pairs on
 
 ## Queued, in order
 
-1. **`matchupColors`, and `teamColor()`'s fallback with it.**
-   `python src/verify_matchup_cvd.py` (CIEDE2000): 60 of 496 team pairs under
-   15, 9 under 5, worst ARI/PHI 0.18. See the next action above — retiring the
-   bars may delete the problem rather than tune it.
-2. **`log_line_snapshot` writes nulls instead of skipping.**
-   `src/weekly_update.py` appends a row when the spread is NaN — #75's
-   all-null file, recurring on any run made days ahead of a week. The first
-   item here with a real trigger and no decision in front of it, and Week 2
-   grades tomorrow.
+1. **Booth can report Success and post nothing.** The fix is a step asserting
+   a comment exists for the head SHA. Ships on a test and an argument, the
+   way #30 did, because Booth structurally cannot audit its own workflow file.
+2. **Stage 9's remaining colour work**: the Net Rating bar's diverging pair
+   through the dataviz validator in both themes, and deciding what confidence,
+   a flagged game and "the model was wrong" each look like.
 3. **`.game-card` overflows the viewport below 352px**, 340px card against a
    296px content box at 320. Stage 10's mobile pass.
 4. **Six preflight and README guard gaps**, one confirmed by Booth on #78 and
@@ -61,6 +60,9 @@ looking, and the side-by-side treatment built for the token pairs on
    written up in CLAUDE.md's traps.
 5. **Stage 10**, then **Stage 6's broadcast channel**; Stage 7's text-only
    items are unblocked, visual ones wait for 10.
+
+*Retired 2026-09-21, not done: `matchupColors` and `teamColor()`'s fallback.
+Decided and kept — see "Right now" above and CLAUDE.md.*
 
 ## Known and deliberately not fixed
 
@@ -71,3 +73,4 @@ looking, and the side-by-side treatment built for the token pairs on
 - **Nothing on the page reaches the listbox edge flip**; kept and checked over synthetic geometries.
 - **A human approval leaves no artifact in the repo.** Booth marked the #80 acceptance UNVERIFIABLE for that reason and was right to; `memory/2026-09-21.md` is what it points at.
 - **The co-occurrence trace, and the no-JS findings, are re-derivable only where a browser exists.** No CI job here has one. In both the premise is guarded in the suite and the finding itself is not; accepted.
+- **60 of 496 team pairs sit under the CIEDE2000 floor on the Week Board's split bar, and that is accepted.** Decided 2026-09-21 after looking at the alternatives. `src/verify_matchup_cvd.py` still reports it; nothing guards the figure from growing, which is the one loose end if the palette is ever edited.

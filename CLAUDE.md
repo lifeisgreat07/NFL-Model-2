@@ -184,6 +184,23 @@ casually.
   holds those. That last guard was written because grepping for an existing
   one found none *after* a draft entry had already cited it by name — the
   fifth time here that "surely something checks this" was wrong.
+- **The Week Board's team-colour split bar is DECIDED AND KEPT.** Mark's
+  call, 2026-09-21, after the alternatives were rendered side by side on real
+  games in both themes and under protan and deutan simulation: a neutral
+  two-step bar, an accent fill, no bar, and a hybrid keeping team colour
+  except on colliding pairs. All four declined. The bars are wanted on the
+  board as part of how the dashboard looks, and the measured cost is accepted
+  knowingly — 60 of 496 distinct team pairs under CIEDE2000 15 (9 under 5,
+  worst ARI/PHI 0.18), 103 of 992 as ordered matchups, and on the real week 2
+  slate 3 of 16 games pushed with 1 still under the floor afterwards.
+  **So `teamColor()`, `TEAM_COLOR`, `CONTRAST_THRESHOLD` and the `#8A93A8`
+  fallback all stay, and that literal stays live.** Everything above about it
+  being reachable only for an abbreviation outside the 32 remains true; what
+  has changed is that it is no longer queued for removal. Do not re-open this
+  as a colour defect. The one thing worth knowing if it is ever revisited:
+  the push does not preserve team colour — it renders Cincinnati's `#FB4F14`
+  as `#C43E10` — and `src/dashboard_template.html`'s comment said otherwise
+  until this decision corrected it.
 - **`--good` vs `--warn` collapse under CVD (4.5 dark, 4.3 light) and that is
   NOT a defect.** Checked rather than assumed: the graded tag renders the word
   "Correct" or "Missed", and Team Deep-Dive's `mark()` renders the word

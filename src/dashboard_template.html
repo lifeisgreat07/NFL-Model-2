@@ -1989,8 +1989,40 @@ function teamColor(abbr){ return TEAM_COLOR[abbr] || '#8A93A8'; }
 // has many teams sharing red/blue as a primary color (Chiefs/Bucs/Patriots,
 // several blues), so two SPECIFIC teams can still land close together.
 // Rather than trying to hand-solve every possible pair, detect low-contrast
-// pairings at render time and push them apart while keeping each team's
-// real hue (so it still reads as "that team," just more separated).
+// pairings at render time and push them apart.
+//
+// THIS COMMENT USED TO END "while keeping each team's real hue (so it still
+// reads as 'that team,' just more separated)". Measured 2026-09-21 and that
+// is not what happens: on the closest pairing of the real 2026 week 2 slate
+// the push renders Cincinnati's #FB4F14 as #C43E10 and Houston's #C8102E as
+// #D4445C -- an orange gone brown and a deep red gone pink, neither of which
+// is the team's colour. The separation is real; the "still reads as that
+// team" half was the comment claiming more than the code delivers, which is
+// the shape this repository has now shipped six times. Corrected, not
+// deleted.
+//
+// DECIDED 2026-09-21 by Mark: KEEP THIS AS IT IS. The alternatives were
+// rendered side by side on real games in both themes and under protan and
+// deutan simulation -- a neutral two-step bar, an accent fill, no bar at
+// all, and a hybrid keeping team colour except on colliding pairs -- and all
+// four were declined. The team-colour bars are wanted on the board as part
+// of how the dashboard looks, and the cost below is accepted knowingly.
+//
+// The accepted cost, measured with src/verify_matchup_cvd.py (CIEDE2000, NOT
+// the OKLab ruler tests/test_dashboard_charts.py gates on):
+//   - 60 of 496 distinct team pairs sit under 15, 9 under 5, worst ARI/PHI
+//     at 0.18; as ordered matchups it is 103 of 992.
+//   - On the real 2026 week 2 slate, 3 of 16 games trip this function and
+//     1 of 16 (CIN@HOU) is still under 15 after being pushed -- so the net
+//     does not always succeed.
+//   - Identity is not carried by colour alone in any case: every bar sits
+//     between a logo, an abbreviation and a percentage.
+//
+// Consequences for anyone reading the queue: teamColor(), TEAM_COLOR,
+// CONTRAST_THRESHOLD and the #8A93A8 fallback all STAY. That literal remains
+// live in this file, reached only for an abbreviation outside the 32 in
+// TEAM_COLOR. Do not re-open this as a colour defect; it was measured,
+// looked at, and decided.
 function hexToRgb(hex){
   const h = hex.replace('#','');
   return [parseInt(h.substr(0,2),16), parseInt(h.substr(2,2),16), parseInt(h.substr(4,2),16)];
