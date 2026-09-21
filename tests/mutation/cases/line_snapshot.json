@@ -1,0 +1,34 @@
+{
+  "target": "src/weekly_update.py",
+  "tests": "tests/test_line_snapshot.py",
+  "cases": [
+    {
+      "id": "line-snapshot-writes-nulls-again",
+      "why": "the skip is disabled, which is the behaviour that shipped until 2026-09-21 and produced 2026 week 3's sixteen rows of nulls. The visible cost is noise; the real one is that a null row carries today's date, so already_logged_today treats that game as done and the afternoon run -- the one where the line finally exists -- skips it. weekly_update never rewrites a past capture, so that day's line is gone. The scheduled workflow writes this archive straight to main, with no PR and no reviewer in between.",
+      "find": "        if pd.isna(spread):",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_game_with_no_spread_yet_is_not_written"
+    },
+    {
+      "id": "line-snapshot-counts-a-skip-as-a-capture",
+      "why": "the skip increments the wrong counter, so a week with no lines posted takes the `added` branch: the file is written with nothing new in it and the run reports 'Logged N line snapshot(s)'. Nothing errors and the archive is not corrupted -- it is a run that says it captured a line it did not have, which is worse than the null rows, because a null at least shows up in the file as an absence.",
+      "find": "            no_line_yet += 1\n            continue",
+      "replace": "            added += 1\n            continue",
+      "expect_caught_by": "test_each_outcome_says_which_one_it_was"
+    },
+    {
+      "id": "line-snapshot-message-collapses-to-duplicate",
+      "why": "the no-line branch is unreachable, so a run that wrote nothing because no spread exists yet falls through to the duplicate message. This is the original defect's second half: 'already captured today -- skipped duplicate' names a cause that is not the cause and sends whoever reads the log looking for a duplicate that was never there. The archive is correct; only the account of it is wrong, which is the family this repository has been bitten by in four separate tools.",
+      "find": "    elif no_line_yet:",
+      "replace": "    elif False:",
+      "expect_caught_by": "test_each_outcome_says_which_one_it_was"
+    },
+    {
+      "id": "line-snapshot-loses-its-same-day-dedupe",
+      "why": "the duplicate guard is gutted. Skipping unpriced games sits directly next to this check and shares its data, so the edit that adds the skip is the edit most likely to disturb it -- and the symptom is silent: every manual dispatch on a day the workflow already ran doubles that day's rows, and a line-movement series computed later reads repeated identical captures as a line that did not move.",
+      "find": "        if key in already_logged_today:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_real_spread_is_still_deduplicated_within_the_day"
+    }
+  ]
+}
