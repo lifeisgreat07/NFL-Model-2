@@ -47,8 +47,8 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1286 passing** (1 skipped) — `python -m pytest -q` on `main` at
-`db79fc7`, with HEAD level with origin, which is the order that makes the
+Suite: **1305 passing** (1 skipped) — `python -m pytest -q` on `main` at
+`e1152f8`, with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Run it
 before quoting
@@ -1091,6 +1091,21 @@ under compaction pressure, so its length is a cost paid on every session.
   report was favourable.** The workflow exits 0 whenever the audit completes.
   The verdict is in the comment text. PR #45's third audit was green in Actions
   and read NEEDS HUMAN REVIEW with four discrepancies.
+  **AND THE STRONGER FORM, 2026-09-21: a green checkmark can mean Booth posted
+  NOTHING AT ALL.** PR #80's first run reported Success and left no comment.
+  The workflow asserts nothing about its own deliverable, so a run that
+  produces no report is indistinguishable in the Checks tab from one that
+  produces a clean one — the reassuring direction, silently.
+  **The tell was the duration, not the absence.** It ran 3m55s against a range
+  of 5m14s to 13m11s across the previous 24 runs, and the body asked for a
+  full corpus run that takes about four minutes on its own, so it cannot have
+  done the work. The Actions run list shows durations without signing in, and
+  comparing against that range is the cheapest way to tell "audited and quiet"
+  from "did not audit". Re-running the same commit, description and workflow
+  produced a full 14-claim audit, so nothing about the PR caused it; the logs
+  were never read, so the cause is still unknown and the usage theory is a
+  theory. The durable point is not the cause: **the one thing that workflow
+  exists to produce is the one thing it does not check it produced.**
 - **The `edited` trigger on `booth-pr-audit.yml` fires for the PR description
   only, and its `if:` guard additionally requires `github.event.changes.body`.**
   Editing a *comment* in the thread raises `issue_comment`, which that workflow
@@ -1244,11 +1259,11 @@ under compaction pressure, so its length is a cost paid on every session.
 - `home_margin` exists in the feature table for ATS work and must never enter a
   feature list — it is the scoreline being predicted.
 - **Booth's audit sandbox can check out a file one commit behind its own HEAD.**
-  Flagged in two separate audits (PRs #28 and #29), so it is the environment
-  rather than a one-off. `git status` shows `CLAUDE.md` modified, the on-disk
+  Flagged in three separate audits (PRs #28, #29 and #80), so it is the
+  environment rather than a one-off. `git status` shows `CLAUDE.md` modified, the on-disk
   md5 matches `HEAD~1`, and `git reflog` records no second checkout — the
   working tree is simply not what HEAD says it is. Booth handled it correctly
-  both times, verifying against the commit object (`git show HEAD:CLAUDE.md`,
+  every time, verifying against the commit object (`git show HEAD:CLAUDE.md`,
   `git grep <rev>`) and saying so in the report. Consequence for a reader: a
   plain `git grep` run in that sandbox can disagree with a claim that is true
   of the commit. This is NOT a regression and NOT something a PR caused; do not
