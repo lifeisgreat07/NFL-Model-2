@@ -47,8 +47,8 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1273 passing** (1 skipped) — `python -m pytest -q` on `main` at
-`f36d68b`, with HEAD level with origin, which is the order that makes the
+Suite: **1286 passing** (1 skipped) — `python -m pytest -q` on `main` at
+`db79fc7`, with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Run it
 before quoting
@@ -1092,6 +1092,19 @@ under compaction pressure, so its length is a cost paid on every session.
   `src/tune_qb_shrink_k.py` had already noticed and written it down, which fixed
   nothing, because a note is not a check. `tests/test_readme_accuracy.py` is now
   the check.
+- **THE AUDITOR PRODUCES UNTRACEABLE FIGURES TOO, AND NOTHING AUDITS THE
+  AUDIT.** #79's report was thorough and correct — 0 discrepancies, every
+  command re-executed — and inside the claim it was confirming it wrote that
+  `test_every_anchor_still_matches_exactly_once` passes for "204 parametrized
+  cases (`204 passed`)". It is 203, on that commit, with 38 case files; the
+  whole module is 619 tests, so 204 is not a wider-scope figure either. It is
+  the untraceable-number defect this repository built Booth to catch,
+  committed by Booth, in the sentence doing the catching. The conclusion was
+  still right, which is exactly why it is easy to pass along.
+  **A Booth report is evidence, not an oracle: check the figures inside it
+  the way it checks the figures inside a PR body.** Two of the last two
+  audits have now needed that — this one, and the header/block mismatch
+  below — and neither was caught by any mechanical check on the report.
 - **A GUARD CAN PRESCRIBE A REMEDY ITS OWN CODE REJECTS, AND THE READER WILL
   TRY THE REMEDY.** `check_visual_claims_have_artifacts` fails with "attach
   it, or state it as a process note rather than proof". There is no

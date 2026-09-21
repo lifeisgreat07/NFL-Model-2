@@ -4,25 +4,28 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-21 (queue item 1 closed; #79 open)
+Last updated: 2026-09-21 (#79 merged; queue item 1 closed)
 
 ---
 
 ## Right now
 
-**Suite:** 1273 passing, 1 skipped — `python -m pytest -q` on `main` at
-`294b9fe`, HEAD level with origin, which is the order that makes the figure
-reproducible. Corpus: 200 cases on `main`, all CAUGHT, from
+**Suite:** 1286 passing, 1 skipped — `python -m pytest -q` on `main` at
+`db79fc7`, HEAD level with origin, which is the order that makes the figure
+reproducible. Corpus: 203 cases, all CAUGHT, from
 `python tests/mutation/runner.py` with no `--id`, whose scope is every case.
-Both figures are higher on #79's branch.
 
-**One PR open, #79**, the no-script note. Unaudited. Nothing new should start
-until Booth comes back on it.
+**No open PRs and no branches but `main`.** #79 merged: the no-script note,
+its guard and three mutation cases. Booth's verdict block read 7 CONFIRMED,
+0 discrepancies, 1 UNVERIFIABLE — no browser in that runner — and SAFE TO
+MERGE. Two defects were in the report itself, neither affecting the verdict
+and both now in CLAUDE.md's traps: the prose header disagreed with its own
+block, the tenth report to do so, and it quoted "204 passed" for an anchor
+test that reports 203.
 
-**Queue item 1 is closed**, on `main` at `294b9fe`. Both premises were
-re-executed before anything was edited and both held. The `#8A93A8` chevron is
-dead, not wrong in light mode; the reader the two markup-visible selects were
-kept for cannot reach either page. Method in `memory/2026-09-21.md`.
+**Queue item 1 is closed.** The `#8A93A8` chevron is dead, not wrong in light
+mode; the reader the two markup-visible selects were kept for cannot reach
+either page. Method in `memory/2026-09-21.md`.
 
 **Stage:** 8, 8b and 8c complete. Stage 9's component pass is done; colour is
 what remains.
@@ -35,16 +38,14 @@ one consumer, on pages the other never reaches. What is left is the design's
 claim about itself: colour has four jobs, two of them wearing near-identical
 blues on different screens. If that is a defect, `--accent` cannot be
 re-stepped in light mode (searched, zero candidates), so the fix comes from
-the other side of the pair. It has a deadline: the Season Accuracy legend
-paints all four series swatches once a second week grades, so
-`--accent`/`--series-d` stops being a pair that cannot meet on Tue 2026-09-22.
+the other side of the pair. It expires: the Season Accuracy legend paints all
+four series swatches once a second week grades, so `--accent`/`--series-d`
+stops being a pair that cannot meet on Tue 2026-09-22.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| #79 | Open, unaudited | Booth |
-| CLAUDE.md's `Suite:` line | Low by 13 once #79 merges | Bump WITH the merge. Not on the branch: a second commit there needs a description edit only Mark can make. `src/session_start.py` reprints it beside a real run, so it self-detects next session |
 | The two KNOWN DEFECT gradings | Traced, ungraded | Mark. See above |
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a phone | Not done | Only a device proves the zoom is gone |
@@ -68,14 +69,14 @@ paints all four series swatches once a second week grades, so
 4. **`.game-card` overflows the viewport below 352px**, 340px card against a
    296px content box at 320. Stage 10's mobile pass.
 5. **Six preflight and README guard gaps**, one confirmed by Booth on #78 and
-   two found on 2026-09-21 in `check_visual_claims_have_artifacts`. Both new
-   ones are written up in CLAUDE.md's traps.
+   two found on 2026-09-21 in `check_visual_claims_have_artifacts`. All are
+   written up in CLAUDE.md's traps.
 6. **Stage 10**, then **Stage 6's broadcast channel**; Stage 7's text-only
    items are unblocked, visual ones wait for 10.
 
 ## Known and deliberately not fixed
 
-- **A Booth header can disagree with its verdict block**, logged by `cross_check()`, nine reports deep. Should it fail?
+- **A Booth header can disagree with its verdict block**, logged by `cross_check()`, ten reports deep. Should it fail? It has cost nothing yet only because both times the discrepancy count was zero either way.
 - **`check_scoped_test_counts` skips a count for a module that does not exist** — a DELETED module passes silently.
 - **Only the wrap-up gate and session-start recompute CLAUDE.md's `Suite:` line.** Both manual, accepted.
 - **The README says "cases" where its guard counts FILES.** Bumping the number is forced by any new case file; fixing the wording moves the guard's own regex.
