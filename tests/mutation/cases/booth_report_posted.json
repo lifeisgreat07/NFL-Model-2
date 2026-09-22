@@ -1,0 +1,55 @@
+{
+  "target": "src/booth_report_posted.py",
+  "tests": "tests/test_booth_report_posted.py",
+  "cases": [
+    {
+      "id": "report-check-loses-its-time-floor",
+      "why": "an edited re-audit shares its head SHA with the audit before it, so without the floor the first report on a commit satisfies every later run on it and a silent re-audit reads as a pass",
+      "find": "\n        and _parse_time(c['created_at']) >= floor\n",
+      "replace": "\n",
+      "expect_caught_by": "test_a_report_from_the_previous_run_does_not_count"
+    },
+    {
+      "id": "report-check-accepts-a-human-comment",
+      "why": "a person quoting a report, or a Scout session commenting under Mark's login as on PR #82, satisfies the check on Booth's behalf",
+      "find": "if (c.get('user') or {}).get('type') == 'Bot'\n        and ",
+      "replace": "if ",
+      "expect_caught_by": "test_a_person_quoting_a_report_does_not_count"
+    },
+    {
+      "id": "report-check-accepts-any-sha-prefix",
+      "why": "a one-character head matches one commit in sixteen, so a report for the wrong commit passes by chance",
+      "find": "MIN_SHA_PREFIX = 7",
+      "replace": "MIN_SHA_PREFIX = 1",
+      "expect_caught_by": "test_head_matching"
+    },
+    {
+      "id": "report-check-matches-a-substring-not-a-prefix",
+      "why": "a SHA fragment from the middle of the audited commit is taken as naming it",
+      "find": "head_sha.lower().startswith(block_head)",
+      "replace": "block_head in head_sha.lower()",
+      "expect_caught_by": "test_head_matching"
+    },
+    {
+      "id": "report-check-passes-a-report-with-no-verdict-block",
+      "why": "a report the agent log cannot count is accepted as a report, so the record silently misses an audit that the Checks tab calls green",
+      "find": "            problems.append(f\"{c.get('html_url', c.get('id'))}: no booth-verdict block\")\n            continue",
+      "replace": "            return True, 'report posted'",
+      "expect_caught_by": "test_a_bot_comment_with_no_verdict_block_fails"
+    },
+    {
+      "id": "report-check-reads-only-the-first-page",
+      "why": "on a PR long enough to need a second page of comments -- the long-running ones where a missed report is likeliest -- the report is never seen",
+      "find": "    while pos < len(text):\n        chunk, end",
+      "replace": "    while pos < 1:\n        chunk, end",
+      "expect_caught_by": "test_paginated_output_is_read_across_pages"
+    },
+    {
+      "id": "report-check-accepts-a-short-audited-sha",
+      "why": "a workflow that records a short SHA makes the prefix rule meaningless, and nothing says so",
+      "find": "if len(head_sha) < 40:",
+      "replace": "if len(head_sha) < 7:",
+      "expect_caught_by": "test_a_truncated_head_sha_is_refused"
+    }
+  ]
+}

@@ -1123,6 +1123,12 @@ under compaction pressure, so its length is a cost paid on every session.
   were never read, so the cause is still unknown and the usage theory is a
   theory. The durable point is not the cause: **the one thing that workflow
   exists to produce is the one thing it does not check it produced.**
+  Now it does: the job's last step runs `src/booth_report_posted.py`, which
+  fails unless a bot comment posted during THIS run carries a verdict block
+  naming the commit this run checked out. Consequence worth knowing: a PR
+  that edits `booth-pr-audit.yml` itself now goes RED rather than green,
+  because the action skips on it and nothing gets posted -- that is the
+  check telling the truth, not a regression.
 - **The `edited` trigger on `booth-pr-audit.yml` fires for the PR description
   only, and its `if:` guard additionally requires `github.event.changes.body`.**
   Editing a *comment* in the thread raises `issue_comment`, which that workflow

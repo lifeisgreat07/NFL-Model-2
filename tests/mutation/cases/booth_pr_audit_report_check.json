@@ -1,0 +1,41 @@
+{
+  "target": ".github/workflows/booth-pr-audit.yml",
+  "tests": "tests/test_booth_report_posted.py",
+  "cases": [
+    {
+      "id": "audit-report-check-cannot-fail",
+      "why": "the check step is allowed to fail without failing the job, so a run that posted nothing is green again -- PR #80's first run, restored",
+      "find": "        env:\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          PR: ",
+      "replace": "        continue-on-error: true\n        env:\n          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n          PR: ",
+      "expect_caught_by": "test_the_check_runs_after_booth"
+    },
+    {
+      "id": "audit-report-check-exit-code-swallowed",
+      "why": "the checker runs and prints FAIL, and the step still exits 0",
+      "find": "\"${{ steps.audited.outputs.started }}\"",
+      "replace": "\"${{ steps.audited.outputs.started }}\" || true",
+      "expect_caught_by": "test_the_check_runs_after_booth"
+    },
+    {
+      "id": "audit-report-check-first-page-only",
+      "why": "without --paginate a report past the first 30 comments is invisible and the check fails a run that did post",
+      "find": "/comments\" --paginate >",
+      "replace": "/comments\" >",
+      "expect_caught_by": "test_the_check_runs_after_booth"
+    },
+    {
+      "id": "audit-sha-read-after-booth",
+      "why": "HEAD is read after the audit, when Booth may have checked out another commit, so the check looks for a report on a commit this run never audited",
+      "find": "\"${{ steps.audited.outputs.sha }}\"",
+      "replace": "\"$(git rev-parse HEAD)\"",
+      "expect_caught_by": "test_sha_and_start_time_are_recorded_before_booth_and_used_by_the_check"
+    },
+    {
+      "id": "audit-checker-run-from-the-tree-booth-left",
+      "why": "the checker runs from whatever checkout Booth left behind -- an older commit without the script, or a file mid-mutation",
+      "find": "python \"$RUNNER_TEMP/booth-check/booth_report_posted.py\"",
+      "replace": "python src/booth_report_posted.py",
+      "expect_caught_by": "test_the_checker_is_copied_out_before_booth_touches_the_tree"
+    }
+  ]
+}

@@ -101,6 +101,22 @@ jobs:
         # rule, broken inside the thing that enforces it.
         run: pip install -r requirements.txt -r requirements-dev.txt
 
+      - name: Record what this run is about to audit
+        # Taken BEFORE Booth runs, for the check after it. Booth builds
+        # worktrees and may check out other commits mid-audit, so HEAD read
+        # afterwards can name a commit this run never audited; and an
+        # `edited` re-audit shares its head SHA with the audit before it, so
+        # the start time is what separates this run's report from the last.
+        # The checker is copied out now for the same reason: the tree Booth
+        # leaves behind may be an older commit, or a mutation mid-swap, and
+        # the check must not depend on what the audit did to the checkout.
+        id: audited
+        run: |
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "started=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+          mkdir -p "$RUNNER_TEMP/booth-check"
+          cp src/booth_report_posted.py src/booth_verdict.py "$RUNNER_TEMP/booth-check/"
+
       - name: Run Booth
         uses: anthropics/claude-code-action@v1
         env:
@@ -152,3 +168,19 @@ jobs:
           claude_args: |
             --max-turns 120
             --allowedTools "Bash,Read,Glob,Grep"
+
+      - name: Fail if Booth posted no report
+        # The action exits 0 whether or not Booth ever reached `gh pr
+        # comment`. PR #80's first run did exactly that -- Success, 3m55s,
+        # no comment -- and looked identical to a clean audit in the Checks
+        # tab. A green run must mean a report exists: a bot comment, posted
+        # during this run, whose booth-verdict block names the audited
+        # commit. src/booth_report_posted.py holds the rules and says which
+        # one failed; tests/test_booth_report_posted.py holds both halves.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number || inputs.pr_number }}
+        run: |
+          gh api "repos/${{ github.repository }}/issues/$PR/comments" --paginate > "$RUNNER_TEMP/booth-comments.json"
+          python "$RUNNER_TEMP/booth-check/booth_report_posted.py" "$RUNNER_TEMP/booth-comments.json" \
+            "${{ steps.audited.outputs.sha }}" "${{ steps.audited.outputs.started }}"
