@@ -16,7 +16,9 @@
     "model_a_home_win_prob": 0.7536,
     "model_b_home_win_prob": 0.6837,
     "market_prob_home": 0.7486,
-    "context_notes": [],
+    "context_notes": [
+      "ATL has named Michael Penix Jr. the Week 3 starter over Cooper Rush (2026-09-22 reporting). The model's QB rating reflects Rush, last week's dropback leader -- a stale signal. Verify manually."
+    ],
     "why": {
       "off_matchup": 0.0424,
       "def_matchup": 0.0494,
@@ -70,7 +72,9 @@
     "model_a_home_win_prob": 0.4691,
     "model_b_home_win_prob": 0.3588,
     "market_prob_home": 0.3883,
-    "context_notes": [],
+    "context_notes": [
+      "CLE has been widely reported as considering benching Deshaun Watson (Week 2 starter) for Shedeur Sanders, but no official confirmation as of this report. If Sanders starts, the model's QB rating (built on Watson, last week's dropback leader) would be stale. Unconfirmed -- watch the team's Friday/Saturday injury and inactive lists."
+    ],
     "why": {
       "off_matchup": -0.1357,
       "def_matchup": -0.0212,
@@ -205,7 +209,9 @@
     "model_a_home_win_prob": 0.467,
     "model_b_home_win_prob": 0.5455,
     "market_prob_home": 0.6539,
-    "context_notes": [],
+    "context_notes": [
+      "NYG's Jaxson Dart (MCL sprain, Week 2) is expected to miss this game; Jameis Winston is set to start. The model's QB rating reflects Dart, last week's dropback leader -- a stale signal. Verify manually."
+    ],
     "why": {
       "off_matchup": -0.0636,
       "def_matchup": 0.1241,
@@ -259,7 +265,9 @@
     "model_a_home_win_prob": 0.5647,
     "model_b_home_win_prob": 0.274,
     "market_prob_home": 0.2188,
-    "context_notes": [],
+    "context_notes": [
+      "WAS's Jayden Daniels (dislocated elbow, Week 2) is out; Marcus Mariota is confirmed to start against Seattle. The model's QB rating reflects Daniels, last week's dropback leader -- a stale signal. Verify manually."
+    ],
     "why": {
       "off_matchup": 0.0682,
       "def_matchup": 0.0658,
@@ -313,7 +321,9 @@
     "model_a_home_win_prob": 0.5756,
     "model_b_home_win_prob": 0.4574,
     "market_prob_home": 0.4322,
-    "context_notes": [],
+    "context_notes": [
+      "MIN's Kyler Murray (concussion, Week 1) has cleared protocol and reclaims the starting job. The model's QB rating reflects Carson Wentz, who started Week 2 in Murray's absence and was therefore last week's dropback leader -- a stale signal. Verify manually."
+    ],
     "why": {
       "off_matchup": 0.0779,
       "def_matchup": 0.0496,
@@ -421,7 +431,9 @@
     "model_a_home_win_prob": 0.5268,
     "model_b_home_win_prob": 0.3882,
     "market_prob_home": 0.3669,
-    "context_notes": [],
+    "context_notes": [
+      "CHI's Caleb Williams (hamstring) is 'week to week' and considered unlikely to practice; Chicago has not ruled him out for the extra rest of Monday night, but Tyson Bagent is the likely starter if Williams can't go. The model's QB rating reflects Williams, last week's dropback leader. Unconfirmed -- watch the Friday injury report."
+    ],
     "why": {
       "off_matchup": 0.057,
       "def_matchup": -0.0061,
