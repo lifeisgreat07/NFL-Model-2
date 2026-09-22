@@ -1,0 +1,27 @@
+{
+  "target": "src/stage5_data.py",
+  "tests": "tests/test_stage5_registry.py",
+  "cases": [
+    {
+      "id": "stage5-lagged-spec-sees-this-game",
+      "why": "the 'what live does' spec reads this game's dropback leader instead of last game's, so H1's incumbent silently becomes the oracle and the comparison measures nothing",
+      "find": "    tg['lagged_qb'] = prev_leader",
+      "replace": "    tg['lagged_qb'] = tg['season_leader']",
+      "expect_caught_by": "test_the_three_quarterback_specs_mean_what_they_say"
+    },
+    {
+      "id": "stage5-moneyline-not-devigged-symmetrically",
+      "why": "the underdog's price is converted with the favourite's formula, so the market input is biased toward whichever side has the minus sign",
+      "find": "    return np.where(ml < 0, neg, pos)",
+      "replace": "    return np.where(ml < 0, neg, neg)",
+      "expect_caught_by": "test_moneyline_devig_by_hand"
+    },
+    {
+      "id": "stage5-rating-refit-drops-recency",
+      "why": "the generalised ridge fit loses its recency weights, so every rating variant is compared against an incumbent it no longer resembles and the parity claim is false",
+      "find": "        w = 0.5 ** ((cutoff - g[idx]) / RECENCY_HALF_LIFE) * base_w[idx]",
+      "replace": "        w = base_w[idx]",
+      "expect_caught_by": "test_fit_ratings_is_the_production_fit_when_nothing_is_changed"
+    }
+  ]
+}
