@@ -763,11 +763,57 @@
     color:var(--text-2); letter-spacing:.03em; margin-bottom:2px;}
   .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--text-2); margin-top:8px;}
 
-  .accuracy-cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px; margin-bottom:20px;}
-  .accuracy-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:20px;}
-  .accuracy-card .label{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); margin-bottom:8px;}
-  .accuracy-card .value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:32px;}
-  .accuracy-card .sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2); margin-top:4px;}
+  /* ---------- The season scoreboard ----------
+     Stage 10's one deliberate "stop and look" moment, chosen by Mark on
+     2026-09-23 from three rendered candidates (a league ladder on Power
+     Ratings and four headline numbers on the Week Board were declined).
+
+     It replaced four equal cards -- My Picks, Model A, Model B, Market --
+     which made the reader do the comparison the page exists to make. Now the
+     page opens on the answer in words, then the race that backs it. The
+     verdict is honest in both directions: today the market leads, and the
+     page says so first.
+
+     Colour is Job 1, series identity, and each row also carries its series
+     shape, so the race reads without colour. Bars run 0 to 100 on one
+     shared track, with the 50% coin-flip line marked -- the fair baseline
+     for "picked the winner" -- rather than a truncated axis that would make
+     one game look like a landslide. */
+  .scoreboard{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+    padding:var(--s7) var(--s7) var(--s6); margin-bottom:var(--s5);}
+  .scoreboard-eyebrow{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); font-weight:600;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--text-2);}
+  .scoreboard-verdict{font-family:'Plus Jakarta Sans', sans-serif; font-size:40px; font-weight:800; line-height:1.1;
+    letter-spacing:-.01em; color:var(--text); margin:var(--s2) 0 var(--s5);}
+  .score-row{display:grid; grid-template-columns:120px 1fr 150px; gap:var(--s4); align-items:center; padding:var(--s2) 0;}
+  .score-name{display:flex; align-items:center; gap:var(--s2); font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:600; color:var(--text);}
+  .score-mark{width:9px; height:9px; flex-shrink:0; background:var(--series);}
+  .score-mark.dot{border-radius:var(--r-full);}
+  .score-mark.tri{background:none; width:0; height:0; border-left:5px solid transparent;
+    border-right:5px solid transparent; border-bottom:9px solid var(--series);}
+  .score-mark.diamond{width:8px; height:8px; transform:rotate(45deg);}
+  .score-track{position:relative; height:14px; background:var(--border); border-radius:var(--r-full);}
+  .score-fill{position:absolute; top:0; bottom:0; left:0; border-radius:inherit; background:var(--series);}
+  .score-coin{position:absolute; left:50%; top:-6px; bottom:-6px; width:1px; background:var(--text-2); opacity:.6;}
+  .score-figure{text-align:right; font-family:'Plus Jakarta Sans', sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .score-pct{font-size:var(--fs-24); font-weight:800; color:var(--text);}
+  .score-count{font-size:var(--fs-12); color:var(--text-2); margin-left:var(--s1);}
+  .score-axis{display:grid; grid-template-columns:120px 1fr 150px; gap:var(--s4); font-size:var(--fs-11);
+    color:var(--text-2); margin-top:var(--s1);}
+  .score-axis-track{position:relative; height:14px;}
+  .score-axis-track span{position:absolute; top:0; white-space:nowrap;}
+  .score-axis-track .coin{left:50%; transform:translateX(-50%);}
+  .score-axis-track .full{right:0;}
+  .score-foot{margin-top:var(--s5); font-size:var(--fs-13); color:var(--text-2);}
+  @media (max-width:640px){
+    .scoreboard{padding:var(--s5) var(--s4);}
+    .scoreboard-verdict{font-size:28px;}
+    .score-row{grid-template-columns:1fr auto; gap:var(--s2) var(--s3);}
+    .score-track{grid-column:1 / -1; order:3;}
+    .score-axis{grid-template-columns:1fr;}
+    .score-axis > span:first-child, .score-axis > span:last-child{display:none;}
+  }
   /* ---------- Reliability diagram ---------- */
   .rel-wrap{display:flex; gap:26px; flex-wrap:wrap; align-items:flex-start;}
   /* min-width is min(300px, 100%) for the game grid's reason: on a 320px
@@ -818,8 +864,9 @@
      340px is not a guess: it is the floor the study measured against and the
      width the card was required to hold together at.
 
-     Same idiom as .accuracy-cards, .agent-stats and .roadmap-grid, so the
-     page has one way of doing this rather than four.
+     Same idiom as .agent-stats and .roadmap-grid (and .accuracy-cards,
+     until Stage 10's scoreboard replaced it), so the page has one way of
+     doing this.
 
      align-items was `start`, and the reason given was that cards carry
      different amounts of text, so stretching them to a common height would
@@ -4501,6 +4548,44 @@ function initReliabilityDiagram(){
   });
 }
 
+/* The scoreboard's sentence. A pure function of the three records, so the
+   harness in tests/test_scoreboard.py can run it over ties, leads and
+   unequal game counts without a page. Ranked by games right, not by the
+   rounded percentage, because two records that differ by one game can
+   print the same percentage. */
+function scoreboardVerdict(rows){
+  const sorted = [...rows].sort((a, b) => b.correct - a.correct);
+  const top = sorted[0], gap = top.correct - sorted[1].correct;
+  const sameGames = rows.every(r => r.n === rows[0].n);
+  const lead = top.subject;
+  if(!sameGames) return `${lead} has the best record so far.`;
+  if(gap > 0) return `${lead} leads by ${gap} game${gap === 1 ? '' : 's'}.`;
+  const level = sorted.filter(r => r.correct === top.correct);
+  if(level.length === rows.length) return 'All three are level so far.';
+  const names = level.map((r, i) => i === 0 ? r.subject : r.subject.replace(/^The /, 'the '));
+  return `${names.join(' and ')} are level at the top.`;
+}
+function scoreboardHtml(o, mine){
+  const rows = [
+    {name: 'Market', subject: 'The betting market', series: 'var(--series-c)', shape: 'tri', ...o.market},
+    {name: 'Model B', subject: 'Model B', series: 'var(--series-b)', shape: 'sq', ...o.model_b},
+    {name: 'Model A', subject: 'Model A', series: 'var(--series-a)', shape: 'dot', ...o.model_a},
+  ];
+  const race = [...rows].sort((a, b) => b.correct - a.correct);
+  if(mine) race.push({name: 'My picks', series: 'var(--series-d)', shape: 'diamond', ...mine});
+  const row = r => `<div class="score-row">
+      <div class="score-name"><span class="score-mark ${r.shape}" style="--series:${r.series}" aria-hidden="true"></span>${r.name}</div>
+      <div class="score-track" aria-hidden="true"><div class="score-fill" style="--series:${r.series}; width:${r.pct}%"></div><div class="score-coin"></div></div>
+      <div class="score-figure"><span class="score-pct">${r.pct.toFixed(1)}%</span><span class="score-count">${r.correct} of ${r.n}</span></div>
+    </div>`;
+  return `<div class="scoreboard" role="region" aria-label="Season scoreboard">
+    <div class="scoreboard-eyebrow">Picked the winner &middot; ${rows[0].n} games graded</div>
+    <div class="scoreboard-verdict">${scoreboardVerdict(rows)}</div>
+    ${race.map(row).join('')}
+    <div class="score-axis" aria-hidden="true"><span></span><div class="score-axis-track"><span class="coin">50% &middot; a coin flip</span><span class="full">100%</span></div><span></span></div>
+    ${mine ? '' : '<div class="score-foot">Pick some games on the Week Board to join this race.</div>'}
+  </div>`;
+}
 function renderAccuracy(){
   const el = document.getElementById('accuracy-content');
   if(!accuracy.overall){
@@ -4536,13 +4621,7 @@ function renderAccuracy(){
   const myTotal = myWins + myLosses;
   const myPct = myTotal > 0 ? Math.round(1000*myWins/myTotal)/10 : null;
 
-  const cardsHtml = `
-    <div class="accuracy-cards">
-      <div class="accuracy-card"><div class="label">My Picks</div><div class="value">${myTotal > 0 ? myPct + '%' : '—'}</div><div class="sub">${myTotal > 0 ? `${myWins}-${myLosses} graded` : 'Pick some games on the Week Board to start your record'}</div></div>
-      <div class="accuracy-card"><div class="label">Model A</div><div class="value">${o.model_a.pct ?? '—'}%</div><div class="sub">${o.model_a.correct}/${o.model_a.n} correct</div></div>
-      <div class="accuracy-card"><div class="label">Model B</div><div class="value">${o.model_b.pct ?? '—'}%</div><div class="sub">${o.model_b.correct}/${o.model_b.n} correct</div></div>
-      <div class="accuracy-card"><div class="label">Market</div><div class="value">${o.market.pct ?? '—'}%</div><div class="sub">${o.market.correct}/${o.market.n} correct</div></div>
-    </div>`;
+  const cardsHtml = scoreboardHtml(o, myTotal > 0 ? {correct: myWins, n: myTotal, pct: myPct} : null);
 
   const cumulativeChartHtml = buildCumulativeTrendChart();
 

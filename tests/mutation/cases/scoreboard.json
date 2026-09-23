@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_scoreboard.py",
+  "cases": [
+    {
+      "id": "scoreboard-says-leads-by-zero",
+      "why": "a gap of zero is treated as a lead, so a tie at the top prints 'leads by 0 games' -- a headline that picks a winner the numbers did not.",
+      "find": "  if(gap > 0) return `${lead} leads by",
+      "replace": "  if(gap >= 0) return `${lead} leads by",
+      "expect_caught_by": "test_a_shared_lead_says_level_not_leads"
+    },
+    {
+      "id": "scoreboard-loses-the-singular",
+      "why": "a one-game lead reads 'leads by 1 games', in the largest type on the page.",
+      "find": "game${gap === 1 ? '' : 's'}.`;",
+      "replace": "games.`;",
+      "expect_caught_by": "test_a_one_game_lead_is_singular"
+    },
+    {
+      "id": "scoreboard-bars-measured-from-fifty",
+      "why": "the bars start at the coin-flip line instead of zero, so 68.8% against 71.9% draws a bar 14% shorter than the leader's instead of 4% -- the gap of one game, more than tripled.",
+      "find": "--series:${r.series}; width:${r.pct}%",
+      "replace": "--series:${r.series}; width:${(r.pct - 50) * 2}%",
+      "expect_caught_by": "test_bars_start_at_zero_with_the_coin_flip_marked"
+    },
+    {
+      "id": "scoreboard-margin-over-different-games",
+      "why": "the equal-count check goes, so records over different sets of games get a margin in games, which is not a like-for-like difference.",
+      "find": "  if(!sameGames) return `${lead} has the best record so far.`;\n",
+      "replace": "",
+      "expect_caught_by": "test_unequal_game_counts_do_not_get_a_game_margin"
+    },
+    {
+      "id": "scoreboard-rows-share-a-shape",
+      "why": "Model B's row takes Model A's dot, so the two rows are told apart by colour alone -- the one thing a series mark must never rely on.",
+      "find": "series: 'var(--series-b)', shape: 'sq'",
+      "replace": "series: 'var(--series-b)', shape: 'dot'",
+      "expect_caught_by": "test_every_row_carries_its_series_colour_and_shape"
+    }
+  ]
+}
