@@ -811,8 +811,8 @@ meant all five at once.
 - Model Lab's hand-written version timeline was a second copy of
   `VERSION_HISTORY` and is gone.
 
-**Still open in this stage, deliberately deferred to Stage 10's component
-pass:** one button component. There are twelve button classes styled one by
+**Deferred to Stage 10's component pass, and done there:** one button
+component. There are twelve button classes styled one by
 one. A keyboard sweep on 2026-09-22 found every focusable control on all
 nine pages taking a visible ring. The reliability points use their halo
 instead, and the next-week buttons are disabled on the latest week, which is
@@ -838,7 +838,7 @@ after the last merges** — mobile pass, components (button, page header, nav
 labels, onboarding banner), table system, page states, the standout moments,
 then the audit re-run.
 
-**Mobile pass: done on branch `stage10-mobile`.** Two hard pixel floors wider
+**Mobile pass: merged, #89.** Two hard pixel floors wider
 than a 320px phone's 296px content box (the card grid's 340px track, the
 reliability plot's 300px) are `min(Npx, 100%)`. The sidebar hands over at
 1079px, not 820, and full team names drop at 1180. The template's
@@ -852,6 +852,29 @@ text), and "the ratings table
 clipping mid-column at 430px" is a table scrolling inside its own box, which
 every phone table does. The fix for that is the table system's scroll-edge
 affordance, not a layout change.
+
+**Components: done on branch `stage10-components`.** Decided with Mark on
+2026-09-23, from rendered side-by-sides:
+
+- **The sidebar is grouped by the question a visitor is asking** -- This
+  Week, Your Picks, Track Record, How It Was Built -- replacing two groups
+  both called "Model Output".
+- **Every page header is eyebrow, title, one-line description.** The
+  eyebrow is the page's sidebar group, in `--text-2`, not the accent (the
+  accent means "active"). On a phone it is the only place that names the
+  section. `tests/test_page_header.py` holds header and sidebar to each
+  other. The Week Board's welcome box sits below the title.
+- **One button component: `.btn`, `.btn-chip`, `.btn-link`, `.btn-icon`.**
+  Look and behaviour are separate: the older class beside each
+  (`.filter-btn`, `.why-toggle` ...) is a hook for script and tests and
+  carries no visuals. That is the root fix for #68 -- the filter pill's
+  look was worn by six buttons that were not filters, and a handler
+  selected by that look. Only real filters wear `.filter-btn` now, and a
+  test says so. Navigation buttons, `.pick-btn`, `.lbx-btn` and
+  `.dive-game-head` stay their own controls; the component comment says
+  why for each.
+- **Model Lab's header typed the model version** and said 2.4 through the
+  2.5 release. It is written from `modelVersion` now.
 
 **The moments that make someone stop.** A dashboard that is merely consistent
 is invisible. Decide where this one is allowed to be striking — an entry
