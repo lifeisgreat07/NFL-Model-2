@@ -876,7 +876,7 @@ affordance, not a layout change.
 - **Model Lab's header typed the model version** and said 2.4 through the
   2.5 release. It is written from `modelVersion` now.
 
-**Table system: done on branch `stage10-tables`.** A table either fits its
+**Table system: merged, #91.** A table either fits its
 box or scrolls, and `fitTables()` measures which rather than guessing from
 the viewport. A fitting table's wrapper is `overflow:clip` and its header
 sticks to the window; a scrolling one draws a soft edge on the side with
@@ -888,6 +888,21 @@ when a sticky cell moves. Only sortable headers look clickable, and they
 now take focus, sort on Enter and Space, and report `aria-sort`. Prose had
 been wearing `td.num` and was set flush right; it is not any more.
 `tests/test_table_system.py` holds each premise.
+
+**Page states: done on branch `stage10-states`.** Every "nothing to show"
+goes through `stateHtml()` in one of four kinds: waiting (nothing yet, and
+normal), filtered (a control hides everything; it carries the button that
+undoes it), missing (the build lacks something it needs), note (a line
+beside content that is showing). **The one that matters is missing vs
+waiting**: before, a build that lost its team history drew the same dashed
+box as a quiet pre-season week, which is the flattering misreading. Missing
+is solid with a heavier left rule, not `--warn` (the graded colours mean a
+scored pick only). **There is no loading state, on purpose**: every page's
+data is written into the HTML at build time and nothing is fetched, and
+`test_the_page_fetches_nothing` says a loading state is owed the day that
+changes. The SOS note folded into the system. The shared-picks and
+onboarding banners did not: they are notices with actions about a mode,
+not states of missing data, and they already share one component.
 
 **The moments that make someone stop.** A dashboard that is merely consistent
 is invisible. Decide where this one is allowed to be striking — an entry
