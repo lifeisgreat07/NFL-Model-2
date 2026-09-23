@@ -19,8 +19,8 @@
     {
       "id": "card-header-quiet-variant-inherits-flex",
       "why": "the variant loses its display override and inherits .matchup-header's flex layout, whose 8px gap turns the words into flex items. 'NE at SEA' gets wider on My Picks with nobody deciding to -- a visual change riding along inside a refactor whose whole claim is that appearance did not move. Measured before and after precisely so this cannot happen quietly.",
-      "find": ".matchup-header.quiet{display:block; font-weight:400; font-size:11px;",
-      "replace": ".matchup-header.quiet{font-weight:400; font-size:11px;",
+      "find": ".matchup-header.quiet{display:block; font-weight:400; font-size:var(--fs-11);",
+      "replace": ".matchup-header.quiet{font-weight:400; font-size:var(--fs-11);",
       "expect_caught_by": "test_the_quiet_variant_keeps_its_own_box_model"
     },
     {
