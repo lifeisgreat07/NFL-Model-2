@@ -384,7 +384,7 @@ def test_the_no_data_branch_empties_the_listbox_too(teamdive):
     team, which is the "correct arithmetic on absent data" failure in its
     presentational form: nothing errors and the page lies.
     """
-    branch = re.search(r'No team history data available yet.*?return;', teamdive, re.S)
+    branch = re.search(r'No team history in this build.*?return;', teamdive, re.S)
     assert branch, 'the no-data branch of renderTeamDive is gone'
     assert re.search(r'refresh\(\)', branch.group(0)), (
         'the no-data branch empties the select without refreshing the '

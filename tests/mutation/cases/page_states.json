@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_page_states.py",
+  "cases": [
+    {
+      "id": "missing-version-history-reads-as-not-yet",
+      "why": "the changelog's no-data branch uses the calm 'waiting' kind, so a build that lost its version list looks like a page that simply has nothing yet -- the flattering reading of a broken page.",
+      "find": "stateHtml('missing', 'No version history in this build'",
+      "replace": "stateHtml('waiting', 'No version history in this build'",
+      "expect_caught_by": "test_each_branch_uses_the_kind_it_was_decided_to"
+    },
+    {
+      "id": "filtered-state-loses-its-undo",
+      "why": "the Week Board filter hides every game and the page says so with no way back but finding the filter row again -- a dead end the state exists to prevent.",
+      "find": "      {label: 'Show all games', onclick: \"document.querySelector('#filter-row [data-filter=all]').click()\"});",
+      "replace": "      null);",
+      "expect_caught_by": "test_a_filtered_state_offers_its_undo"
+    },
+    {
+      "id": "missing-looks-like-waiting",
+      "why": "the missing kind goes back to the dashed border every other state wears, so a broken build and a quiet week are drawn the same.",
+      "find": ".state--missing{border-style:solid;",
+      "replace": ".state--missing{border-style:dashed;",
+      "expect_caught_by": "test_the_kinds_that_must_look_different_do"
+    },
+    {
+      "id": "sos-note-back-on-the-old-class",
+      "why": "the SOS note returns to .table-note, a second way of saying 'nothing here' beside the component that replaced it.",
+      "find": "<div id=\"sos-empty-note\" class=\"state state--note\"",
+      "replace": "<div id=\"sos-empty-note\" class=\"table-note\"",
+      "expect_caught_by": "test_the_old_state_classes_are_retired"
+    },
+    {
+      "id": "page-starts-fetching-without-a-loading-state",
+      "why": "the page loads something after it is built, and there is still no loading state -- the premise the Page states comment rests on stops being true.",
+      "find": "const STATE_KINDS = [",
+      "replace": "fetch('data/agent_log.json');\nconst STATE_KINDS = [",
+      "expect_caught_by": "test_the_page_fetches_nothing"
+    }
+  ]
+}
