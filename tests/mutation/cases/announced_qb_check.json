@@ -3,25 +3,39 @@
   "tests": "tests/test_announced_qb_check.py",
   "cases": [
     {
-      "id": "announced-qb-absent-reads-as-different",
-      "why": "an announcement nflverse has not published yet is treated as a different starter, so every early-week pick carries a false warning and the note stops meaning anything",
-      "find": "        if announced_id and model_id and announced_id != model_id:",
-      "replace": "        if model_id and announced_id != model_id:",
-      "expect_caught_by": "test_an_announcement_not_published_yet_is_absent_not_different"
+      "id": "starter-override-loses-to-the-schedule",
+      "why": "a sourced correction written because the schedule is wrong is ignored whenever the schedule lists anyone, which is exactly the case it exists for (week 3 2026 still listed Dart and Daniels after both were ruled out)",
+      "find": "        if team in overrides:\n            o = overrides[team]",
+      "replace": "        if team in overrides and not ann_id:\n            o = overrides[team]",
+      "expect_caught_by": "test_an_override_beats_the_schedule_and_cites_its_source"
     },
     {
-      "id": "announced-qb-notes-dropped",
-      "why": "the mismatch is detected and the note built, then discarded, so the game the model is most likely wrong about looks like every other game",
-      "find": "        context_notes = context_notes + qb_notes",
-      "replace": "        context_notes = context_notes",
-      "expect_caught_by": "test_main_calls_it_for_every_game_and_writes_both_halves"
+      "id": "starter-change-flag-ignores-the-new-starter",
+      "why": "the pick is made with the new starter but the change flag still reads last week's, so the model is told nothing changed on exactly the games where something did",
+      "find": "            changed = int(bool(last_id) and chosen_id != last_id)",
+      "replace": "            changed = int(last_changed.get(team, 0))",
+      "expect_caught_by": "test_a_different_listed_starter_is_what_the_pick_uses_and_is_flagged_as_a_change"
     },
     {
-      "id": "announced-qb-fields-never-written",
-      "why": "the announced starters are never saved, and predictions are write-once, so the 2026 forward test of H1 has nothing to score and the gap is discovered only after the season",
-      "find": "            **qb_fields,\n",
-      "replace": "",
-      "expect_caught_by": "test_main_calls_it_for_every_game_and_writes_both_halves"
+      "id": "starter-fallback-is-silent",
+      "why": "when no starter is listed yet the pick quietly uses last game's quarterback, which is the old behaviour with the warning removed -- the reader cannot tell a checked pick from a guessed one",
+      "find": "            if last_id:\n                notes.append(f\"{team}: no starter has been listed yet",
+      "replace": "            if False:\n                notes.append(f\"{team}: no starter has been listed yet",
+      "expect_caught_by": "test_nothing_listed_falls_back_to_last_game_says_so_and_keeps_the_old_flag"
+    },
+    {
+      "id": "starter-override-needs-no-source",
+      "why": "an override with no link is accepted, so a claim about who plays can enter a locked pick with nothing a reader could check",
+      "find": "        if not str(e['source']).startswith(('http://', 'https://')):",
+      "replace": "        if False:",
+      "expect_caught_by": "test_an_untrustworthy_override_fails_the_run"
+    },
+    {
+      "id": "starter-pick-rated-off-last-game",
+      "why": "everything is resolved and recorded, then the rating is taken from last game's quarterback anyway -- the file says one player and the probability uses another",
+      "find": "            home_qb_rating = qb['trailing_rating'](home_qb_id, qb_cutoff)",
+      "replace": "            home_qb_rating = qb['trailing_rating'](current_starters_idx.loc[home, 'passer_player_id'], qb_cutoff)",
+      "expect_caught_by": "test_main_predicts_with_the_resolved_starter_and_records_it"
     }
   ]
 }

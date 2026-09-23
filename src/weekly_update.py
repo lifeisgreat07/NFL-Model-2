@@ -33,6 +33,7 @@ Run manually: python weekly_update.py --season 2026 --week 2
 """
 import argparse
 import json
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -357,51 +358,114 @@ def build_qb_change_lookup(qb, seasons):
     return starters.set_index(['season', 'week', 'posteam'])['qb_changed'].to_dict()
 
 
-def announced_qb_check(game, starters_idx):
-    """Record the schedule's announced starters beside the model's, and say so when they differ.
+QB_OVERRIDE_DIR = Path(__file__).parent.parent / 'data' / 'qb_overrides'
+GSIS_ID = re.compile(r'^00-\d{7}$')
 
-    The model's QB inputs come from each team's LAST game (the most-dropbacks
-    passer). nflverse publishes an announced starter per game on the
-    schedule (home_qb_id / away_qb_id). Stage 5's H1 found the live model
-    loses most of its ground on the games where those two disagree, but at
-    the 99.5% level its budget requires the gain from switching was
-    INCONCLUSIVE, so this does NOT change what the model uses. It does two
-    things instead:
 
-      * writes both into the prediction, which is write-once, so the 2026
-        forward test can score H1 on what was actually knowable on the
-        Tuesday each pick was locked, rather than on a schedule re-read
-        after the season when every starter is known;
-      * adds a context note on any game where they differ, which is where
-        the pick is least trustworthy.
+class QBOverrideError(ValueError):
+    """A QB override file exists but cannot be trusted. Never raised for a missing file."""
 
-    An announced starter that is missing (not published yet) is recorded as
-    None and produces no note. Absent is not "different".
-    Returns (fields, notes).
+
+def load_qb_overrides(season, week, directory=None):
+    """Sourced starter corrections for one week, keyed by team.
+
+    data/qb_overrides/<season>_week<week>.json, a list of
+    {"team", "player_id", "player_name", "source"}. It exists for the case
+    the schedule gets wrong: on 2026-09-22 nflverse still listed Jaxson Dart
+    (NYG) and Jayden Daniels (WAS) for week 3 after both were ruled out. A
+    person or the routine's research step writes it, with a link, before the
+    run that locks the week.
+
+    A missing file means no overrides. A malformed one FAILS the run: an
+    override is a claim about who plays, and a claim with no source or no
+    valid player id is not something to predict on quietly.
     """
-    fields, notes = {}, []
+    path = Path(directory or QB_OVERRIDE_DIR) / f'{season}_week{week}.json'
+    if not path.exists():
+        return {}
+    with open(path, encoding='utf-8') as f:
+        entries = json.load(f)
+    if not isinstance(entries, list):
+        raise QBOverrideError(f"{path.name}: expected a list of overrides")
+    out = {}
+    for e in entries:
+        missing = [k for k in ('team', 'player_id', 'player_name', 'source') if not e.get(k)]
+        if missing:
+            raise QBOverrideError(f"{path.name}: override {e!r} is missing {missing}")
+        if not GSIS_ID.match(e['player_id']):
+            raise QBOverrideError(f"{path.name}: {e['player_id']!r} is not a GSIS id (00-0000000)")
+        if not str(e['source']).startswith(('http://', 'https://')):
+            raise QBOverrideError(f"{path.name}: {e['team']}'s source must be a link, got {e['source']!r}")
+        if e['team'] in out:
+            raise QBOverrideError(f"{path.name}: two overrides for {e['team']}")
+        out[e['team']] = e
+    return out
+
+
+def resolve_starters(game, starters_idx, last_changed, overrides=None):
+    """Which quarterback each side is predicted with, and why.
+
+    Precedence, decided 2026-09-22 after Stage 5's H1 (see
+    experiments/stage5/README.md):
+
+      1. a sourced override (load_qb_overrides) -- late injury news;
+      2. the schedule's announced starter (home_qb_id / away_qb_id);
+      3. the team's last starter (most dropbacks in its last game), which is
+         what the live model used for everything before this change.
+
+    The published backtest rates each game's own starter, which scores the
+    same as the announced one (Stage 5 Q0). Rungs 1 and 2 are what make the
+    live pick describe the model the page publishes; rung 3 is the old
+    behaviour, kept only for when nothing better exists yet, and it says so.
+
+    qb_change follows the same logic as the backtest's flag ("this game's
+    starter differs from the last one"): chosen starter != last starter.
+    On rung 3 there is no new information, so it keeps the old live flag.
+
+    Returns (per_side, fields, notes). per_side[side] = (player_id, changed).
+    """
+    overrides = overrides or {}
+    per_side, fields, notes = {}, {}, []
     for side in ('home', 'away'):
         team = game.get(f'{side}_team')
-        announced_id = game.get(f'{side}_qb_id')
-        announced_name = game.get(f'{side}_qb_name')
-        announced_id = announced_id if isinstance(announced_id, str) and announced_id else None
-        announced_name = announced_name if isinstance(announced_name, str) and announced_name else None
+        ann_id, ann_name = _clean(game.get(f'{side}_qb_id')), _clean(game.get(f'{side}_qb_name'))
         if team in starters_idx.index:
-            model_id = starters_idx.loc[team, 'passer_player_id']
-            model_name = starters_idx.loc[team, 'passer_player_name']
+            last_id = starters_idx.loc[team, 'passer_player_id']
+            last_name = starters_idx.loc[team, 'passer_player_name']
         else:
-            model_id, model_name = None, None
-        fields[f'model_{side}_qb_id'] = model_id
-        fields[f'model_{side}_qb'] = model_name
-        fields[f'announced_{side}_qb_id'] = announced_id
-        fields[f'announced_{side}_qb'] = announced_name
-        if announced_id and model_id and announced_id != model_id:
-            notes.append(
-                f"{team}: the model rates {model_name}, who started {team}'s last game, "
-                f"but the published schedule lists {announced_name} as the starter. "
-                f"This pick may be off."
-            )
-    return fields, notes
+            last_id, last_name = None, None
+
+        if team in overrides:
+            o = overrides[team]
+            chosen_id, chosen_name, basis = o['player_id'], o['player_name'], 'override'
+            notes.append(f"{team}: {chosen_name} is expected to start ({o['source']}), "
+                         f"so the pick uses {chosen_name}.")
+        elif ann_id:
+            chosen_id, chosen_name, basis = ann_id, ann_name, 'announced'
+            if last_id and ann_id != last_id:
+                notes.append(f"{team}: the pick uses {ann_name}, the listed starter, "
+                             f"not {last_name}, who started {team}'s last game.")
+        else:
+            chosen_id, chosen_name, basis = last_id, last_name, 'last_game'
+            if last_id:
+                notes.append(f"{team}: no starter has been listed yet, so the pick uses "
+                             f"{last_name}, who started {team}'s last game.")
+
+        if basis == 'last_game':
+            changed = int(last_changed.get(team, 0))
+        else:
+            changed = int(bool(last_id) and chosen_id != last_id)
+        per_side[side] = (chosen_id, changed)
+        fields.update({
+            f'{side}_qb_id': chosen_id, f'{side}_qb': chosen_name, f'{side}_qb_basis': basis,
+            f'announced_{side}_qb_id': ann_id, f'announced_{side}_qb': ann_name,
+            f'last_game_{side}_qb_id': last_id, f'last_game_{side}_qb': last_name,
+        })
+    return per_side, fields, notes
+
+
+def _clean(value):
+    return value if isinstance(value, str) and value else None
 
 
 def main(season, week):
@@ -516,6 +580,10 @@ def main(season, week):
         print("WARNING: schedule data has no 'gameday' column -- can't check how far out "
               "this week is. Proceeding anyway, but this safety check isn't active.")
 
+    qb_overrides = load_qb_overrides(season, week)
+    if qb_overrides:
+        print(f"  QB overrides for week {week}: " + ", ".join(
+            f"{t} -> {o['player_name']}" for t, o in sorted(qb_overrides.items())))
     predictions = []
     for _, g in week_games.iterrows():
         home, away = g['home_team'], g['away_team']
@@ -527,16 +595,16 @@ def main(season, week):
         off_matchup = h_off - a_def
         def_matchup = a_off - h_def
 
-        if home in current_starters_idx.index and away in current_starters_idx.index:
-            home_qb_id = current_starters_idx.loc[home, 'passer_player_id']
-            away_qb_id = current_starters_idx.loc[away, 'passer_player_id']
+        per_side, qb_fields, context_notes = resolve_starters(
+            g, current_starters_idx, current_qb_changed, qb_overrides)
+        (home_qb_id, home_qb_changed), (away_qb_id, away_qb_changed) = per_side['home'], per_side['away']
+        if home_qb_id and away_qb_id:
             home_qb_rating = qb['trailing_rating'](home_qb_id, qb_cutoff)
             away_qb_rating = qb['trailing_rating'](away_qb_id, qb_cutoff)
             qb_matchup = home_qb_rating - away_qb_rating
-            context_notes = []
         else:
             qb_matchup = 0.0
-            context_notes = ["No known starter found -- QB feature defaulted to neutral (0). Verify manually."]
+            context_notes.append("No known starter found -- QB feature defaulted to neutral (0). Verify manually.")
 
         # OL continuity was removed from the live model at v2.1 (Stage 6 OL
         # Model V2 pass) after two independent negative tests -- Stage 1's
@@ -547,8 +615,6 @@ def main(season, week):
         # job an entire upstream data source. See the comment in main() above
         # the QB-change lookup for the full reasoning.
 
-        home_qb_changed = current_qb_changed.get(home, 0)
-        away_qb_changed = current_qb_changed.get(away, 0)
         qb_change_diff = home_qb_changed - away_qb_changed
 
         prob_a = model_a.predict_proba([[off_matchup, def_matchup, qb_matchup, qb_change_diff]])[0][1]
@@ -590,9 +656,6 @@ def main(season, week):
         gameday = g.get('gameday')
         gametime = g.get('gametime')
         weekday = g.get('weekday')
-
-        qb_fields, qb_notes = announced_qb_check(g, current_starters_idx)
-        context_notes = context_notes + qb_notes
 
         predictions.append({
             'season': season, 'week': week, 'home': home, 'away': away,
