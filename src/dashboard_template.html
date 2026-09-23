@@ -213,6 +213,13 @@
 
   .page-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:14px;
     margin-bottom:28px; padding-bottom:20px; border-bottom:1px solid var(--border);}
+  /* The shared page header: eyebrow (the page's sidebar group), title, one
+     line of description, and an optional badge on the right. Every page
+     has all three text parts; tests/test_page_header.py holds that. The
+     eyebrow is --text-2, not the accent: the accent means "active", and a
+     label naming a section is not an emphasis. */
+  .page-eyebrow{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); font-weight:600;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--text-2); margin-bottom:var(--s2);}
   .page-head h2{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:34px; letter-spacing:.005em;}
   .page-head .desc{color:var(--text-2); font-size:13.5px; margin-top:5px; max-width:560px; line-height:1.55;}
   .badge{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; letter-spacing:.05em; padding:6px 11px; border-radius:20px;
@@ -1287,16 +1294,21 @@
     <div class="brand-sub">NFL Pick'em Model</div>
   </div>
   <nav class="side-nav" aria-label="Main navigation">
-    <div class="nav-group-label">Model Output</div>
+    <!-- Grouped by the question a visitor is asking (Mark, 2026-09-23).
+         Each group label is also the eyebrow above the title of every page
+         in it, so on a phone, where this sidebar is hidden, the page still
+         says which part of the site it belongs to. Held to each other by
+         tests/test_page_header.py. -->
+    <div class="nav-group-label">This Week</div>
     <button class="nav-btn active" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Power Ratings</button>
     <button class="nav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Week Board</button>
+    <button class="nav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Team Deep-Dive</button>
     <div class="nav-group-label">Your Picks</div>
     <button class="nav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>My Picks Log</button>
+    <div class="nav-group-label">Track Record</div>
     <button class="nav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg>Season Accuracy</button>
-    <div class="nav-group-label">Model Output</div>
-    <button class="nav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Team Deep-Dive</button>
     <button class="nav-btn" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg>Model Lab</button>
-    <div class="nav-group-label">Reference</div>
+    <div class="nav-group-label">How It Was Built</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="changelog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 21v-5h5"/></svg>What&#39;s Changed</button>
     <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>Checking the AI&#39;s work</button>
@@ -1337,7 +1349,9 @@
   <section class="page active" id="page-ratings">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">This Week</div>
         <h2>Power Ratings</h2>
+        <div class="desc">Every team ranked by how much better or worse it plays than an average team, rebuilt each week from real game data.</div>
       </div>
     </div>
     <div class="filter-row">
@@ -1386,6 +1400,34 @@
 
   <!-- WEEK BOARD -->
   <section class="page" id="page-board">
+    <!-- No standing caption and no count badge. (Stage 10 added the one-line
+         .desc every page header carries. It says what the page is for; it
+         does not explain Model A and Model B, which is what the caption
+         below was, so the reasoning still holds.)
+
+         This block is STATIC markup, not a JS template literal - a ${...}
+         comment here renders as visible text on the page.
+
+         The caption explained Model A vs Model B on every visit, permanently,
+         to a reader who needs it once - and the onboarding banner directly
+         below says the same thing and can be dismissed, which is what "explain
+         this once" is supposed to look like. Two explanations of the same two
+         models, one of them undismissable, is the redundancy the owner named.
+
+         The badge said "16 games" beside a grid of sixteen game cards. A count
+         is worth showing when counting is hard; here the answer is on screen.
+         #board-badge is kept as a hidden hook because renderGames writes to it
+         and the empty state ("No games") still has to go somewhere. -->
+    <div class="page-head">
+      <div>
+        <div class="page-eyebrow">This Week</div>
+        <h2>Week Board</h2>
+        <div class="desc">This week&#39;s games, what each model picks, and why.</div>
+      </div>
+      <div class="badge" id="board-badge" aria-live="polite" hidden></div>
+    </div>
+    <!-- Below the title, not above it (Stage 10). Above, a first visit
+         met a box of six bullets before it met the name of the page. -->
     <div id="onboarding-banner" class="onboarding-banner" style="display:none;">
       <div class="onboarding-content">
         <h4>New here? Quick orientation.</h4>
@@ -1399,27 +1441,6 @@
         </ul>
         <button class="btn" onclick="dismissOnboarding()">Got it</button>
       </div>
-    </div>
-    <!-- No standing caption and no count badge.
-
-         This block is STATIC markup, not a JS template literal - a ${...}
-         comment here renders as visible text on the page.
-
-         The caption explained Model A vs Model B on every visit, permanently,
-         to a reader who needs it once - and the onboarding banner directly
-         above says the same thing and can be dismissed, which is what "explain
-         this once" is supposed to look like. Two explanations of the same two
-         models, one of them undismissable, is the redundancy the owner named.
-
-         The badge said "16 games" beside a grid of sixteen game cards. A count
-         is worth showing when counting is hard; here the answer is on screen.
-         #board-badge is kept as a hidden hook because renderGames writes to it
-         and the empty state ("No games") still has to go somewhere. -->
-    <div class="page-head">
-      <div>
-        <h2>Week Board</h2>
-      </div>
-      <div class="badge" id="board-badge" aria-live="polite" hidden></div>
     </div>
     <div id="week-glance"></div>
     <div class="filter-row">
@@ -1495,6 +1516,7 @@
   <section class="page" id="page-picks">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">Your Picks</div>
         <h2>My Picks Log</h2>
         <div class="desc">Tap your actual pick for each game in the selected week. Saved locally on this device only -- not real-time synced across devices (this is a static site with no backend), but you can export your picks and import them on another device.</div>
       </div>
@@ -1546,6 +1568,7 @@
   <section class="page" id="page-accuracy">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">Track Record</div>
         <h2>Season Accuracy</h2>
         <div class="desc">Every saved prediction, graded against real results after the fact. Built from graded weeks only — nothing here is projected or estimated.</div>
       </div>
@@ -1557,6 +1580,7 @@
   <section class="page" id="page-teamdive">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">This Week</div>
         <h2>Team Deep-Dive</h2>
         <div class="desc">Net rating over time -- 2020-2025 season-end snapshots (real history, replayed as if we had been predicting it at the time), then week-by-week as the 2026 season is actually played.</div>
       </div>
@@ -1576,8 +1600,9 @@
   <section class="page" id="page-modellab">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">Track Record</div>
         <h2>Model Lab</h2>
-        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--text)">2.4</b>, last updated 2026-09-04.</div>
+        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b id="modellab-version" style="color:var(--text)">&mdash;</b>.</div>
       </div>
     </div>
     <!-- Filled by buildReliabilityDiagram(). Empty when data/calibration.json
@@ -1652,7 +1677,11 @@
   <!-- METHODOLOGY -->
   <section class="page" id="page-method">
     <div class="page-head">
-      <div><h2>Methodology</h2><div class="desc">How the model works, how it stacks up against other ways of picking games, where its data comes from, and what every word on this page means.</div></div>
+      <div>
+        <div class="page-eyebrow">How It Was Built</div>
+        <h2>Methodology</h2>
+        <div class="desc">How the model works, how it stacks up against other ways of picking games, where its data comes from, and what every word on this page means.</div>
+      </div>
     </div>
     <nav class="page-jump" aria-label="Sections on this page">
       <a href="#part-method">How the model works</a>
@@ -1919,6 +1948,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
   <section class="page" id="page-changelog">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">How It Was Built</div>
         <h2>What&#39;s Changed</h2>
         <div class="desc">Every version of the model, what got built around it, and what we tried that did not work. The version list is generated from <code>config.py</code> rather than written out by hand, and reversals are kept: a history that quietly deletes the decisions that were later undone is just marketing.</div>
       </div>
@@ -1968,6 +1998,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
   <section class="page" id="page-reliability">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">How It Was Built</div>
         <h2>Checking the AI&#39;s work</h2>
         <div class="desc">This project is built almost entirely by delegating real engineering work to an AI agent ("Scout" -- Claude Code, doing the research, coding, and PRs throughout this project). That's genuinely useful, and it also fails in specific, real ways. This page documents what actually went wrong here, not what could theoretically go wrong in the abstract.</div>
       </div>
@@ -2043,6 +2074,15 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 const agentLog = __AGENT_LOG_JSON__;
 const versionHistory = __VERSION_HISTORY_JSON__;
 const modelVersion = __MODEL_VERSION__;
+/* Model Lab's header used to TYPE the version: "2.4, last updated
+   2026-09-04" sat there through the 2.5 release. It is written from the
+   same two values the changelog reads, so it cannot drift again. */
+(function(){
+  const el = document.getElementById('modellab-version');
+  if(!el) return;
+  const cur = versionHistory.find(v => v.version === modelVersion);
+  el.textContent = modelVersion + (cur && cur.date ? ', released ' + cur.date : '');
+})();
 const teams = __TEAMS_JSON__;
 const playoffMeta = __PLAYOFF_META_JSON__;
 
