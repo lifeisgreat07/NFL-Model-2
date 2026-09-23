@@ -154,10 +154,29 @@ jobs:
             far more useful than an exhausted run that posts nothing at all.
             The first attempt at this workflow died exactly that way.
 
+            THIS RUN ENDS THE MOMENT YOU STOP CALLING TOOLS. There is no later
+            turn in which a background job finishes and you come back to it.
+            If you start something long in the background -- the mutation
+            corpus takes several minutes -- stay in the loop and poll it
+            (for example `sleep 60; tail -3 <its log>` in a Bash call) until it
+            has finished, then post. Never end your turn to "wait". Posting
+            the report with `gh pr comment` is the last tool call you make,
+            and a run that ends before it has posted nothing at all.
+
             Use the exact report structure the protocol specifies. Do not
             merge, close, approve or modify the pull request -- the protocol
             ends your job at the report, and this workflow has read-only
             access to repository contents regardless.
+          # "THIS RUN ENDS THE MOMENT YOU STOP CALLING TOOLS" was added after
+          # #94 (2026-09-23): two runs in a row posted nothing, and the Run
+          # Booth log showed subtype "success", is_error false, 43 of 120
+          # turns, 171s, no permission denials. Booth did not fail; it
+          # stopped. The prompt told it to run the corpus, the corpus takes
+          # minutes, and an agent that ends its turn to wait for a background
+          # job has ended the run. That is the likeliest reading, not a
+          # proven one -- the action hides the transcript -- and #80's and
+          # #84's silent runs had the same short-and-successful shape.
+          #
           # 120, not the 30 this shipped with. The first run reached 30 turns
           # in 3m47s against a 20-minute timeout and was killed mid-audit, so
           # the cap -- picked for cost control before anyone knew what an audit
