@@ -11,7 +11,7 @@ Last updated: 2026-09-23 (Stage 10 complete; Booth-prompt PR open)
 ## Right now
 
 **Suite:** 1813 passing, 1 skipped — `python -m pytest -q` on `main` at
-`c0be43e`, HEAD level with origin.
+`027cad6`, HEAD level with origin.
 
 **Stage 10 is complete** (#89 to #94, all merged 2026-09-23). The audit
 re-run scored 28/40 against the original 15; CLAUDE.md's Stage 10 section
