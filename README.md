@@ -38,7 +38,7 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, 49 case files, one per subject under test)
+  (`tests/mutation/`, 51 case files, one per subject under test)
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
@@ -133,8 +133,13 @@ current Claude Code docs, code.claude.com/docs/en/routines):
      schedule, and set it up.
    - Or on the web at `claude.ai/code/routines` -> New routine, for more
      control (you can see all fields before creating).
-4. **Set the trigger to "schedule," weekly, timed for after Monday Night
-   Football completes** (e.g. Tuesday 6 AM ET during the season).
+4. **Set the trigger to "schedule," weekly, timed for Thursday before the
+   first game** (e.g. Thursday noon ET during the season), so injury news
+   from the week's practices has landed. Grading last week can run any time
+   after Monday Night Football. The repository's own scheduled workflow
+   does both: Tuesday grades, Thursday locks, and a week with an earlier
+   game (Thanksgiving) locks on Tuesday (`decide_lock` in
+   `src/weekly_update.py`).
 5. **Make sure the routine's cloud environment has network access
    enabled** -- it needs to reach nflverse's GitHub-hosted data and do web
    research for injury/QB news. This is a setting on the routine's

@@ -1,0 +1,13 @@
+{
+  "target": ".github/workflows/weekly-update.yml",
+  "tests": "tests/test_pick_lock_time.py",
+  "cases": [
+    {
+      "id": "lock-schedule-thursday-run-deleted",
+      "why": "the Thursday cron goes and SCHEDULED_RUNS_UTC still expects it. Every Tuesday run then holds the week for a run that never comes, and nothing locks before kickoff all season -- with a green Actions history, because holding is a success.",
+      "find": "    - cron: '0 16 * * 4'\n",
+      "replace": "",
+      "expect_caught_by": "test_the_workflow_schedule_is_the_one_decide_lock_assumes"
+    }
+  ]
+}
