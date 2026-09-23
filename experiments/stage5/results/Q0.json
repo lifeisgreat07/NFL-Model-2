@@ -1,0 +1,124 @@
+{
+  "id": "Q0",
+  "registry_entry": {
+    "id": "Q0",
+    "kind": "measurement",
+    "title": "How much of the published backtest rests on knowing who actually played quarterback",
+    "question": "Model A and Model B scored with oracle QB inputs (most dropbacks in the game, as published) against the same models with the pregame-knowable schedule starter, over all four backtest seasons.",
+    "candidate": {
+      "qb_spec": "oracle",
+      "ratings": "base"
+    },
+    "incumbent": {
+      "qb_spec": "sched",
+      "ratings": "base"
+    },
+    "seasons": [
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "spends_slot": false,
+    "expected": "oracle scores better; the gap is the part of the published figures that no pregame model can reach",
+    "consequence": "Whatever the size, every later comparison uses a pregame-knowable QB spec on both sides."
+  },
+  "code_commit": "54a6744554e53afe86acc85ffa11b5c7c8b06127",
+  "ci_level_confirmatory": 0.995,
+  "model_a": {
+    "n_games": 1087,
+    "log_loss_candidate": 0.6498122099650889,
+    "log_loss_incumbent": 0.6517835197359845,
+    "brier_candidate": 0.22860320109747892,
+    "brier_incumbent": 0.22934865578812477,
+    "accuracy_candidate": 0.6274149034038639,
+    "accuracy_incumbent": 0.6310947562097516,
+    "log_loss_diff": -0.0019713097708954934,
+    "log_loss_ci": [
+      -0.009930161728248012,
+      0.00600203450283757
+    ],
+    "log_loss_ci_95": [
+      -0.0075828197739026045,
+      0.0036231246755104194
+    ],
+    "log_loss_ci_analytic_95": [
+      -0.007489495362904806,
+      0.003546875821113819
+    ],
+    "brier_diff": -0.0007454546906458661,
+    "brier_ci": [
+      -0.0043835502179489574,
+      0.0028949881931022436
+    ],
+    "ci_level": 0.995,
+    "seasons": [
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "candidate_features": [
+      "base_off_matchup",
+      "base_def_matchup",
+      "oracle_qb_matchup",
+      "oracle_qb_change_diff"
+    ],
+    "incumbent_features": [
+      "base_off_matchup",
+      "base_def_matchup",
+      "sched_qb_matchup",
+      "sched_qb_change_diff"
+    ]
+  },
+  "model_b": {
+    "n_games": 1087,
+    "log_loss_candidate": 0.6062088177820452,
+    "log_loss_incumbent": 0.6066012975269284,
+    "brier_candidate": 0.2094705325574273,
+    "brier_incumbent": 0.20964254204404836,
+    "accuracy_candidate": 0.6826126954921803,
+    "accuracy_incumbent": 0.6835326586936522,
+    "log_loss_diff": -0.00039247974488322703,
+    "log_loss_ci": [
+      -0.004283215222087124,
+      0.0034908789538954307
+    ],
+    "log_loss_ci_95": [
+      -0.003090382496318418,
+      0.002304278748380064
+    ],
+    "log_loss_ci_analytic_95": [
+      -0.0030929220547403283,
+      0.0023079625649738743
+    ],
+    "brier_diff": -0.00017200948662105138,
+    "brier_ci": [
+      -0.0019274043285152003,
+      0.0015501443615446677
+    ],
+    "ci_level": 0.995,
+    "seasons": [
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "candidate_features": [
+      "base_off_matchup",
+      "base_def_matchup",
+      "oracle_qb_matchup",
+      "oracle_qb_change_diff",
+      "spread_line"
+    ],
+    "incumbent_features": [
+      "base_off_matchup",
+      "base_def_matchup",
+      "sched_qb_matchup",
+      "sched_qb_change_diff",
+      "spread_line"
+    ]
+  },
+  "decision": "NO MEASURABLE GAP",
+  "reached_confirmation": false
+}

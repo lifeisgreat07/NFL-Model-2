@@ -1,0 +1,48 @@
+{
+  "target": "src/stage5_eval.py",
+  "tests": "tests/test_stage5_registry.py",
+  "cases": [
+    {
+      "id": "stage5-forward-holdout-unguarded",
+      "why": "the 2026 season can be scored by the harness, so a holdout that is only protected by nobody looking stops being protected the first time someone runs the wrong season list",
+      "find": "touched = [s for s in seasons if s >= forbidden]",
+      "replace": "touched = []",
+      "expect_caught_by": "test_the_forward_holdout_is_refused"
+    },
+    {
+      "id": "stage5-accept-without-excluding-zero",
+      "why": "an interval that reaches past zero is labelled ACCEPT, which is the exact claim the whole bootstrap exists to stop",
+      "find": "    if hi < 0:\n        return 'ACCEPT'",
+      "replace": "    if hi < 0.01:\n        return 'ACCEPT'",
+      "expect_caught_by": "test_labels"
+    },
+    {
+      "id": "stage5-screen-passes-a-tie",
+      "why": "a candidate no better than the incumbent on validation still reaches confirmation, spending a slot on a question the screen already answered",
+      "find": "    if validation['log_loss_diff'] >= 0:",
+      "replace": "    if validation['log_loss_diff'] > 0:",
+      "expect_caught_by": "test_a_candidate_that_fails_the_screen_is_not_advanced"
+    },
+    {
+      "id": "stage5-walk-forward-trains-on-the-test-week",
+      "why": "each week's model is fitted on that week's own games, so every Stage 5 number is scored on data the model has already seen, and every candidate looks better than it is",
+      "find": "((d['season'] == season) & (d['week'] < w))",
+      "replace": "((d['season'] == season) & (d['week'] <= w))",
+      "expect_caught_by": "test_walk_forward_never_trains_on_the_week_it_predicts"
+    },
+    {
+      "id": "stage5-confirmatory-level-ignores-the-budget",
+      "why": "every confirmatory interval drops to 95% however many questions the family asks, which turns ten tests into a search that is expected to 'find' something by chance",
+      "find": "return 1.0 - p['alpha'] / p['budget_m']",
+      "replace": "return 1.0 - p['alpha']",
+      "expect_caught_by": "test_the_confirmatory_level_is_bonferroni_over_the_budget"
+    },
+    {
+      "id": "stage5-bootstrap-sign-flipped",
+      "why": "the difference is taken incumbent-minus-candidate, so a worse candidate reads as an ACCEPT and a better one as a REJECT, with every number in the result file looking plausible",
+      "find": "d_ll, d_br = ll_c - ll_i, br_c - br_i",
+      "replace": "d_ll, d_br = ll_i - ll_c, br_i - br_c",
+      "expect_caught_by": "test_the_bootstrap_points_the_right_way"
+    }
+  ]
+}
