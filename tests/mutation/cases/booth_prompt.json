@@ -1,0 +1,20 @@
+{
+  "target": ".github/workflows/booth-pr-audit.yml",
+  "tests": "tests/test_booth_prompt.py",
+  "cases": [
+    {
+      "id": "booth-prompt-loses-the-stop-warning",
+      "why": "the paragraph telling Booth that the run ends when it stops calling tools is removed, and the next audit that starts the corpus in the background can end its turn to wait and post nothing -- #94, twice.",
+      "find": "            THIS RUN ENDS THE MOMENT YOU STOP CALLING TOOLS. There is no later\n",
+      "replace": "",
+      "expect_caught_by": "test_the_prompt_says_the_run_ends_when_tool_calls_stop"
+    },
+    {
+      "id": "booth-stop-warning-moved-into-a-comment",
+      "why": "the warning survives only as a YAML comment beside the prompt, where it reads as documentation to a human and reaches Booth not at all.",
+      "find": "            THIS RUN ENDS THE MOMENT YOU STOP CALLING TOOLS. There is no later\n",
+      "replace": "          # THIS RUN ENDS THE MOMENT YOU STOP CALLING TOOLS. There is no later\n",
+      "expect_caught_by": "test_the_prompt_says_the_run_ends_when_tool_calls_stop"
+    }
+  ]
+}
