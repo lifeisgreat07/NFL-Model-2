@@ -22,6 +22,14 @@ The durable shape: **a handler's selector must agree with the data it reads.**
 This one reads `btn.dataset.filter`, so it must select `[data-filter]`. A
 selector matching a shared style class is matching appearance, and appearance
 is the thing most likely to be reused somewhere the behaviour makes no sense.
+
+STAGE 10 (2026-09-23) removed the cause as well as the symptom. The button
+component split look from behaviour: `.btn-chip` is now the pill LOOK, worn
+by the three filters and by Model Lab's series toggles, and `.filter-btn` is
+a hook worn only by real filters. The six actions wear `.btn`. So the hazard
+this file describes has moved rather than vanished -- a shared pill look
+still exists, it is just called `.btn-chip` -- and the vacuity guard below
+follows it there.
 """
 import re
 from pathlib import Path
@@ -80,24 +88,40 @@ def test_the_handler_selects_on_the_attribute_it_reads(handler):
             'join the Week Board filter group.')
 
 
-def test_there_really_are_filter_buttons_that_are_not_filters(source):
+def _elements_wearing(source, cls):
+    return re.findall(
+        r'<(?:button|a)[^>]*class="[^"]*\b' + re.escape(cls) + r'\b[^"]*"[^>]*>', source)
+
+
+def test_there_really_are_pills_that_are_not_filters(source):
     """Keeps the guard above meaningful rather than vacuously true.
 
-    If every `.filter-btn` on the page ever became a real filter, the scoping
-    rule would still pass while protecting nothing, and the next person to add
-    a non-filter pill would inherit a guard that had quietly stopped meaning
-    anything. Assert the hazard still exists; if it genuinely does not, this
-    test failing is the prompt to re-read whether the scoping is still needed.
+    Until Stage 10 the shared pill look was `.filter-btn` itself, worn by six
+    buttons that were not filters. It is now `.btn-chip`, and the non-filters
+    wearing it are Model Lab's series toggles. If that ever stops being true
+    the scoping rule would still pass while protecting nothing, so assert the
+    hazard still exists; if it genuinely does not, this failing is the prompt
+    to re-read whether the scoping is still needed.
     """
-    pills = re.findall(r'<(?:button|a)[^>]*class="[^"]*\bfilter-btn\b[^"]*"[^>]*>',
-                       source)
-    assert pills, 'no .filter-btn elements found at all -- re-anchor this guard'
+    pills = _elements_wearing(source, 'btn-chip')
+    assert pills, 'no .btn-chip elements found at all -- re-anchor this guard'
 
     non_filters = [p for p in pills if 'data-filter=' not in p]
     assert non_filters, (
-        'every .filter-btn now carries data-filter, so the scoping guard above '
+        'every .btn-chip now carries data-filter, so the scoping guard above '
         'protects nothing. Either a non-filter pill was removed (fine -- '
         'reconsider this file) or the class was renamed (re-anchor it).')
+
+
+def test_only_real_filters_wear_the_filter_hook(source):
+    """`.filter-btn` is a behaviour hook now, not a look. An action button
+    wearing it is the #68 defect waiting for the next unscoped selector."""
+    hooks = _elements_wearing(source, 'filter-btn')
+    assert len(hooks) >= 3, f'expected the three Week Board filters, found {len(hooks)}'
+    strays = [h for h in hooks if 'data-filter=' not in h]
+    assert not strays, (
+        f'.filter-btn is worn by buttons that are not filters: {strays}. '
+        'Give an action .btn; .filter-btn is only for data-filter pills.')
 
 
 def test_no_data_filter_button_lives_outside_the_filter_row(source):

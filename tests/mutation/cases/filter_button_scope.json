@@ -26,9 +26,16 @@
     {
       "id": "a-data-filter-button-escapes-the-filter-row",
       "why": "a fourth filter is added to My Picks by copying the markup, which is the natural way to add one. It wears data-filter and the active style, so it looks exactly like a working filter -- and the handler is scoped to #filter-row, so nothing wires it. A control that renders, invites a click and is inert: the same shape as the stepper that was never wired, and invisible to any test that only counts filters.",
-      "find": "      <button class=\"filter-btn\" onclick=\"copyShareLink(this)\">Copy Share Link</button>",
-      "replace": "      <button class=\"filter-btn\" data-filter=\"flagged\">Flagged Only</button>\n      <button class=\"filter-btn\" onclick=\"copyShareLink(this)\">Copy Share Link</button>",
+      "find": "      <button class=\"btn\" onclick=\"copyShareLink(this)\">Copy Share Link</button>",
+      "replace": "      <button class=\"btn btn-chip filter-btn\" data-filter=\"flagged\">Flagged Only</button>\n      <button class=\"btn\" onclick=\"copyShareLink(this)\">Copy Share Link</button>",
       "expect_caught_by": "test_no_data_filter_button_lives_outside_the_filter_row"
+    },
+    {
+      "id": "an-action-wears-the-filter-hook-again",
+      "why": "Export My Picks goes back to wearing .filter-btn, the way six actions did before Stage 10. Today's handler is scoped by attribute so nothing breaks yet -- which is exactly why it would go unnoticed until the next selector someone writes against the class.",
+      "find": "<button class=\"btn\" onclick=\"exportMyPicks()\">",
+      "replace": "<button class=\"btn filter-btn\" onclick=\"exportMyPicks()\">",
+      "expect_caught_by": "test_only_real_filters_wear_the_filter_hook"
     }
   ]
 }
