@@ -38,7 +38,7 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, 46 cases, one file per subject under test)
+  (`tests/mutation/`, 47 cases, one file per subject under test)
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
@@ -142,12 +142,16 @@ current Claude Code docs, code.claude.com/docs/en/routines):
 6. **Give it real, unattended-safe instructions** -- routines run with no
    permission prompts mid-run, so be explicit. Suggested prompt:
 
-> Run `python src/weekly_update.py --season 2026 --week {current_week}` to
-> generate this week's predictions. Before finalizing, web-search for any
-> starting QB changes, injuries, or coaching news for each team playing
-> this week that might contradict the script's assumed starter (which is
-> just "who had the most dropbacks last week" -- a lagging signal). Add a
-> flag note to any game where you find a meaningful discrepancy. Then run
+> First, web-search for starting-QB news (injuries, benchings, returns)
+> for every team playing this week. The script uses the starter listed on
+> nflverse's schedule, which can lag the news: on 2026-09-22 it still
+> listed two starters who had already been ruled out. For every team
+> where the listed starter is wrong, write an entry in
+> `data/qb_overrides/2026_week{current_week}.json`: a list of
+> `{"team", "player_id", "player_name", "source"}`, where `player_id`
+> is the GSIS id (00-0000000) and `source` is a link. An entry without a
+> link or a valid id fails the run on purpose. Then run
+> `python src/weekly_update.py --season 2026 --week {current_week}`, and
 > `python src/grade_predictions.py` for last week if not already graded.
 
 > Regenerate the dashboard with `python src/generate_dashboard.py` so the
