@@ -35,6 +35,7 @@ import argparse
 import json
 import re
 import sys
+from collections import namedtuple
 from datetime import date
 from pathlib import Path
 import pandas as pd
@@ -59,6 +60,31 @@ from config import TRAIN_SEASONS, MODEL_VERSION
 # injury/line data. 7 days keeps predictions close to kickoff without
 # being so tight that a routine running a day late misses the window.
 LOCKIN_WINDOW_DAYS = 7
+
+# WHEN a week locks, decided by Mark 2026-09-22: Thursday, before Thursday
+# night's kickoff, not Tuesday morning. Tuesday locked before most injury
+# news, so a sourced QB override (load_qb_overrides) only helped if it
+# existed two days before anyone had practised -- which worked against v2.5,
+# a change whose whole point is better QB information at lock time.
+#
+# The scheduled workflow runs on Tuesday (grading, ratings, line snapshot)
+# and on Thursday. A run locks the week when the first game still to be
+# played kicks off before the NEXT scheduled run plus LOCK_SLACK; otherwise
+# it holds and leaves the lock to that run. So an ordinary week locks on
+# Thursday, and a week with an earlier game locks on Tuesday by itself:
+# Thanksgiving's 12:30 ET kickoff is 90 minutes after the Thursday run,
+# inside the slack, and a Wednesday game is before it outright.
+#
+# (weekday with Monday = 0, hour, minute), UTC. These MUST match the `cron:`
+# lines in .github/workflows/weekly-update.yml -- the decision is only right
+# if it knows when the next run is -- and tests/test_pick_lock_time.py
+# compares the two.
+SCHEDULED_RUNS_UTC = ((1, 11, 0), (3, 16, 0))  # Tuesday 11:00, Thursday 16:00
+# Scheduled Actions runs start late, sometimes by an hour. Four hours is
+# wide enough to send Thanksgiving to Tuesday and narrow enough that an
+# ordinary Thursday night game (eight or nine hours after the Thursday run)
+# still waits for Thursday.
+LOCK_SLACK = pd.Timedelta(hours=4)
 
 PRED_DIR = Path(__file__).parent.parent / 'predictions'
 PRED_DIR.mkdir(exist_ok=True)
@@ -468,6 +494,78 @@ def _clean(value):
     return value if isinstance(value, str) and value else None
 
 
+def kickoff_utc(game):
+    """A game's kickoff as a UTC timestamp, or None with no gameday.
+
+    gametime is EASTERN (see the record builder in main()), and ET is EDT or
+    EST depending on the date, so it is localised rather than offset by a
+    fixed four or five hours. A missing time counts as the START of that
+    day, Eastern: the earliest the game could be, which is the safe
+    direction for both uses in decide_lock -- it locks earlier, and it
+    treats the game as started sooner rather than later.
+    """
+    day = game.get('gameday')
+    if day is None or (not isinstance(day, str) and pd.isna(day)):
+        return None
+    t = game.get('gametime')
+    t = t if isinstance(t, str) and t else '00:00'
+    local = pd.Timestamp(f"{pd.Timestamp(day).date()} {t}")
+    return local.tz_localize('America/New_York').tz_convert('UTC')
+
+
+def next_scheduled_run(now, runs=SCHEDULED_RUNS_UTC):
+    """The first scheduled run strictly after `now` (UTC)."""
+    now = pd.Timestamp(now).tz_convert('UTC')
+    times = []
+    for weekday, hour, minute in runs:
+        day = now.normalize() + pd.Timedelta(days=(weekday - now.weekday()) % 7)
+        t = day + pd.Timedelta(hours=hour, minutes=minute)
+        if t <= now:
+            t += pd.Timedelta(days=7)
+        times.append(t)
+    return min(times)
+
+
+LockDecision = namedtuple('LockDecision', 'lock started first_kickoff next_run')
+
+
+def decide_lock(week_games, now, runs=SCHEDULED_RUNS_UTC, slack=LOCK_SLACK):
+    """Whether this run locks the week, and which games it is too late for.
+
+    lock          -- True when the first game still to come kicks off before
+                     the next scheduled run plus `slack`.
+    started       -- (away, home) for every game that has already kicked
+                     off. Those are never predicted: a pick saved after
+                     kickoff is not a prediction, and the Methodology page
+                     says every pick is locked before kickoff. On a
+                     Tuesday lock this was ~61 hours of margin and could
+                     not happen; on a Thursday lock it is ~8, so a late or
+                     failed Thursday run followed by a manual one can meet it.
+    first_kickoff -- the earliest kickoff among games not yet started.
+    next_run      -- when the next scheduled run is.
+
+    A week with no known kickoff at all locks, as it did before this rule
+    existed: there is nothing to hold for, and main() already warns.
+    """
+    now = pd.Timestamp(now).tz_convert('UTC')
+    next_run = next_scheduled_run(now, runs)
+    started, upcoming = [], []
+    for _, g in week_games.iterrows():
+        k = kickoff_utc(g)
+        if k is None:
+            continue
+        if k <= now:
+            started.append((g['away_team'], g['home_team']))
+        else:
+            upcoming.append(k)
+    if not upcoming:
+        # Every known game has started (lock=False, main() fails the run),
+        # or no game has a known kickoff (lock=True, the old behaviour).
+        return LockDecision(not started, started, None, next_run)
+    first = min(upcoming)
+    return LockDecision(first < next_run + slack, started, first, next_run)
+
+
 def main(season, week):
     print(f"=== Weekly update: {season} Week {week} ===")
 
@@ -580,6 +678,26 @@ def main(season, week):
         print("WARNING: schedule data has no 'gameday' column -- can't check how far out "
               "this week is. Proceeding anyway, but this safety check isn't active.")
 
+    # Inside the window is not the same as time to lock. See SCHEDULED_RUNS_UTC.
+    decision = decide_lock(week_games, pd.Timestamp.now(tz='UTC'))
+    if decision.started and not decision.lock:
+        raise SystemExit(
+            f"ERROR: every game in {season} week {week} has already kicked off and "
+            f"nothing was ever locked for it. A pick saved now would not be a "
+            f"prediction, so none is saved. The scheduled runs missed this week: "
+            f"check the Actions history. This week can only be skipped by hand.")
+    if not decision.lock:
+        print(f"Holding {season} week {week}: its first game kicks off "
+              f"{decision.first_kickoff:%a %Y-%m-%d %H:%M} UTC, after the next scheduled "
+              f"run ({decision.next_run:%a %Y-%m-%d %H:%M} UTC), which will lock it with "
+              f"whatever QB news has landed by then. Nothing saved.")
+        return
+    started = set(decision.started)
+    for away, home in decision.started:
+        print(f"WARNING: {away}@{home} has already kicked off and gets NO pick. The run "
+              f"that should have locked it did not; a pick saved after kickoff is not a "
+              f"prediction.")
+
     qb_overrides = load_qb_overrides(season, week)
     if qb_overrides:
         print(f"  QB overrides for week {week}: " + ", ".join(
@@ -587,6 +705,8 @@ def main(season, week):
     predictions = []
     for _, g in week_games.iterrows():
         home, away = g['home_team'], g['away_team']
+        if (away, home) in started:
+            continue
         if home not in current_team_ratings or away not in current_team_ratings:
             print(f"  Skipping {away}@{home}: no team rating available")
             continue

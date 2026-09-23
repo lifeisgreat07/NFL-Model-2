@@ -1,0 +1,55 @@
+{
+  "target": "src/weekly_update.py",
+  "tests": "tests/test_pick_lock_time.py",
+  "cases": [
+    {
+      "id": "lock-time-locks-on-every-run",
+      "why": "the hold is gone, so the Tuesday run locks the week again -- the behaviour Mark decided against on 2026-09-22. Nothing errors and every pick is still saved before kickoff; the only cost is that no QB override written after Tuesday morning can reach the pick, which is the whole point of v2.5.",
+      "find": "    return LockDecision(first < next_run + slack, started, first, next_run)",
+      "replace": "    return LockDecision(True, started, first, next_run)",
+      "expect_caught_by": "test_tuesday_holds_an_ordinary_week_for_thursday"
+    },
+    {
+      "id": "lock-time-loses-its-slack",
+      "why": "Thanksgiving's first kickoff is 90 minutes after the Thursday run is due, so without the slack the Tuesday run holds it and a scheduled run that starts late -- ordinary for Actions -- locks an early game after kickoff, or loses it.",
+      "find": "    return LockDecision(first < next_run + slack, started, first, next_run)",
+      "replace": "    return LockDecision(first < next_run, started, first, next_run)",
+      "expect_caught_by": "test_thanksgiving_locks_on_tuesday_by_itself"
+    },
+    {
+      "id": "lock-time-never-reports-a-started-game",
+      "why": "a game that has already kicked off is treated as upcoming, so a manual run after a missed Thursday lock saves a pick for Thursday night's game after it started -- and the Methodology page says every pick is locked before kickoff.",
+      "find": "        if k <= now:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_run_after_a_kickoff_locks_the_rest_and_names_what_it_missed"
+    },
+    {
+      "id": "lock-time-fixed-eastern-offset",
+      "why": "Eastern becomes a fixed UTC-4, which is right until 1 Nov 2026 and an hour wrong for the rest of the season, including every Thursday night game after the clock change.",
+      "find": "    return local.tz_localize('America/New_York').tz_convert('UTC')",
+      "replace": "    return (local + pd.Timedelta(hours=4)).tz_localize('UTC')",
+      "expect_caught_by": "test_kickoff_is_localised_not_offset"
+    },
+    {
+      "id": "lock-time-picks-the-furthest-run",
+      "why": "the next run becomes the latest candidate instead of the earliest, so a Tuesday run believes the next run is next Tuesday and locks every week -- the hold silently disappears without touching the rule that reads it.",
+      "find": "    return min(times)",
+      "replace": "    return max(times)",
+      "expect_caught_by": "test_tuesday_holds_an_ordinary_week_for_thursday"
+    },
+    {
+      "id": "lock-time-missing-time-counts-as-late",
+      "why": "a game with no listed time counts as 23:59 instead of the start of its day -- the unsafe direction for both decisions: a run holds a week it should lock, and treats a game as not started when it may have.",
+      "find": "    t = t if isinstance(t, str) and t else '00:00'",
+      "replace": "    t = t if isinstance(t, str) and t else '23:59'",
+      "expect_caught_by": "test_a_missing_time_counts_as_the_start_of_the_day"
+    },
+    {
+      "id": "lock-time-main-predicts-started-games",
+      "why": "decide_lock reports the started game correctly and main() predicts it anyway. Every unit test of the rule stays green; only the structural check sees it.",
+      "find": "        if (away, home) in started:\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_the_lock_step_skips_games_that_have_started"
+    }
+  ]
+}

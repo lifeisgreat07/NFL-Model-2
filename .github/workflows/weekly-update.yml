@@ -1,18 +1,26 @@
 name: Weekly update
 
 # Runs the actual weekly pipeline unattended during the season: generates
-# next week's predictions (once within the 7-day lock-in window), grades
+# next week's predictions (on the run that locks them -- see Schedule), grades
 # any completed weeks, and regenerates the dashboard. This is the
 # scheduled trigger the project was designed around from the start (see
 # README's "Automating this with Claude Code Routines" section) but never
 # had -- without it, nothing runs unless someone does it by hand.
 #
-# Schedule: Tuesday mornings, after Monday Night Football has finished
-# and results are final. 11:00 UTC = 6:00/7:00 AM Eastern depending on
-# DST, matching the README's suggested "Tuesday 6 AM ET" cadence.
+# Schedule: twice a week.
+#   Tuesday 11:00 UTC -- after Monday Night Football is final. Grades the
+#     week, refreshes ratings and the line archive. It locks next week only
+#     if a game comes too early for Thursday (Thanksgiving, a Wednesday game).
+#   Thursday 16:00 UTC (noon ET in EDT, 11 AM in EST) -- locks the week
+#     before Thursday night's kickoff, after Wednesday's injury reports, so
+#     a QB override written by then is used. Decided by Mark 2026-09-22.
+# Which run locks is decided in src/weekly_update.py (decide_lock), from
+# SCHEDULED_RUNS_UTC. That constant must match these two lines, and
+# tests/test_pick_lock_time.py checks that it does.
 on:
   schedule:
     - cron: '0 11 * * 2'
+    - cron: '0 16 * * 4'
   workflow_dispatch: {}
 
 permissions:
@@ -48,7 +56,11 @@ jobs:
       - name: Generate/lock in this week's predictions
         run: python src/weekly_update.py --season ${{ steps.season.outputs.season }}
 
+      # `!cancelled()` on this step and the commit: the step above fails the
+      # job on purpose when a whole week kicked off with nothing locked, and
+      # that must not also stop last week's grades from landing.
       - name: Grade any completed weeks
+        if: ${{ !cancelled() }}
         run: |
           shopt -s nullglob
           for f in predictions/*_week*.json; do
@@ -85,6 +97,7 @@ jobs:
       # Untracking the artifacts removed the problem the pruner solved, so the
       # pruner was deleted rather than left as a step that always does nothing.
       - name: Commit and push changes
+        if: ${{ !cancelled() }}
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Weekly update: predictions and grading"
