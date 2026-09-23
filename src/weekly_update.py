@@ -357,6 +357,53 @@ def build_qb_change_lookup(qb, seasons):
     return starters.set_index(['season', 'week', 'posteam'])['qb_changed'].to_dict()
 
 
+def announced_qb_check(game, starters_idx):
+    """Record the schedule's announced starters beside the model's, and say so when they differ.
+
+    The model's QB inputs come from each team's LAST game (the most-dropbacks
+    passer). nflverse publishes an announced starter per game on the
+    schedule (home_qb_id / away_qb_id). Stage 5's H1 found the live model
+    loses most of its ground on the games where those two disagree, but at
+    the 99.5% level its budget requires the gain from switching was
+    INCONCLUSIVE, so this does NOT change what the model uses. It does two
+    things instead:
+
+      * writes both into the prediction, which is write-once, so the 2026
+        forward test can score H1 on what was actually knowable on the
+        Tuesday each pick was locked, rather than on a schedule re-read
+        after the season when every starter is known;
+      * adds a context note on any game where they differ, which is where
+        the pick is least trustworthy.
+
+    An announced starter that is missing (not published yet) is recorded as
+    None and produces no note. Absent is not "different".
+    Returns (fields, notes).
+    """
+    fields, notes = {}, []
+    for side in ('home', 'away'):
+        team = game.get(f'{side}_team')
+        announced_id = game.get(f'{side}_qb_id')
+        announced_name = game.get(f'{side}_qb_name')
+        announced_id = announced_id if isinstance(announced_id, str) and announced_id else None
+        announced_name = announced_name if isinstance(announced_name, str) and announced_name else None
+        if team in starters_idx.index:
+            model_id = starters_idx.loc[team, 'passer_player_id']
+            model_name = starters_idx.loc[team, 'passer_player_name']
+        else:
+            model_id, model_name = None, None
+        fields[f'model_{side}_qb_id'] = model_id
+        fields[f'model_{side}_qb'] = model_name
+        fields[f'announced_{side}_qb_id'] = announced_id
+        fields[f'announced_{side}_qb'] = announced_name
+        if announced_id and model_id and announced_id != model_id:
+            notes.append(
+                f"{team}: the model rates {model_name}, who started {team}'s last game, "
+                f"but the published schedule lists {announced_name} as the starter. "
+                f"This pick may be off."
+            )
+    return fields, notes
+
+
 def main(season, week):
     print(f"=== Weekly update: {season} Week {week} ===")
 
@@ -544,6 +591,9 @@ def main(season, week):
         gametime = g.get('gametime')
         weekday = g.get('weekday')
 
+        qb_fields, qb_notes = announced_qb_check(g, current_starters_idx)
+        context_notes = context_notes + qb_notes
+
         predictions.append({
             'season': season, 'week': week, 'home': home, 'away': away,
             'gameday': str(gameday) if pd.notna(gameday) else None,
@@ -566,6 +616,7 @@ def main(season, week):
             # empty, which the dashboard displays honestly as "no notes yet"
             # rather than fabricating something.
             'why': why,
+            **qb_fields,
         })
 
     # Confidence ranking: sort this week's games by how far each pick is

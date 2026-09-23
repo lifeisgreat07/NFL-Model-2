@@ -1,0 +1,27 @@
+{
+  "target": "src/weekly_update.py",
+  "tests": "tests/test_announced_qb_check.py",
+  "cases": [
+    {
+      "id": "announced-qb-absent-reads-as-different",
+      "why": "an announcement nflverse has not published yet is treated as a different starter, so every early-week pick carries a false warning and the note stops meaning anything",
+      "find": "        if announced_id and model_id and announced_id != model_id:",
+      "replace": "        if model_id and announced_id != model_id:",
+      "expect_caught_by": "test_an_announcement_not_published_yet_is_absent_not_different"
+    },
+    {
+      "id": "announced-qb-notes-dropped",
+      "why": "the mismatch is detected and the note built, then discarded, so the game the model is most likely wrong about looks like every other game",
+      "find": "        context_notes = context_notes + qb_notes",
+      "replace": "        context_notes = context_notes",
+      "expect_caught_by": "test_main_calls_it_for_every_game_and_writes_both_halves"
+    },
+    {
+      "id": "announced-qb-fields-never-written",
+      "why": "the announced starters are never saved, and predictions are write-once, so the 2026 forward test of H1 has nothing to score and the gap is discovered only after the season",
+      "find": "            **qb_fields,\n",
+      "replace": "",
+      "expect_caught_by": "test_main_calls_it_for_every_game_and_writes_both_halves"
+    }
+  ]
+}
