@@ -1,68 +1,61 @@
+
 # Where everything stands
 
 **Read this first, every session. It is the only file rewritten every time.**
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-22 (#82 and #83 merged; Stage 5 answered in #84)
+Last updated: 2026-09-22 (#84, #85, #86 merged; Stage 9 open as #87)
 
 ---
 
 ## Right now
 
-**Suite:** 1383 passing, 1 skipped — `python -m pytest -q` on `main` at
-`4e0f1fd`, HEAD level with origin. Corpus on `main`: 224 cases, all CAUGHT,
-from `python tests/mutation/runner.py` on the #83 branch before it merged.
-Nothing else may read the tree while that runs — see CLAUDE.md's traps.
+**Suite:** 1578 passing, 1 skipped — `python -m pytest -q` on `main` at
+`180f8d7`, HEAD level with origin. The latest full corpus run is on #87's
+branch: 260 cases, all CAUGHT, at `bf21c29`. Nothing else may read the tree
+while the corpus runs — see CLAUDE.md's traps.
 
-**Open: PR #84 (Stage 5).** Its Booth run went RED because Booth posted
-nothing. That is #83's new step catching a real silent audit on its first live
-run: Booth ran 5m08s, the action exited 0, and there was no comment. A re-run
-is needed. The logs need a signed-in browser, so the cause is still unknown.
+**Open: PR #87 (Stage 9).** Red and green now mean only a scored pick right
+or wrong; the Net Rating bar is a neutral fill; `--accent-strong` is retired.
+Preflight passed. Waiting on Booth.
 
-**Stage 5 accepted nothing.** Ten questions were registered before any was
-answered. None cleared the 99.5% bar the ten-slot budget sets, and four slots
-are spent. The one signal (H1) is about the live pipeline: it rates last
-game's quarterback, while the published backtest effectively rates the
-announced starter. Switching is INCONCLUSIVE at 99.5%, so it waits on Mark.
+**Live model is v2.5.** Each pick is rated with the expected starter: a
+sourced override in `data/qb_overrides/` first, then the schedule's listed
+starter, then last game's QB. Chosen on methodology grounds; Stage 5's H1 was
+INCONCLUSIVE, so the 2026 forward test is what scores it.
 
-**Pushed, no PR yet: branch `announced-qb-capture`.** It records the
-announced and model starters in every pick, and notes when they differ.
-Nothing the model computes changes. Open it after #84 merges: both branches
-bump the README case count, so opening now guarantees a conflict.
-
-**Next action: get #84 re-audited.** Mark re-runs the Booth job on #84 and,
-while signed in, reads why the first run posted nothing.
+**Next action: Mark decides when the weekly run locks picks.** It locks on
+Tuesday at 11:00 UTC, before most injury news, so an override only helps if
+it lands before then.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| PR #84, Stage 5 | Open, Booth red (posted nothing) | A re-run, and the log read |
-| announced-qb-capture | Pushed, no PR | #84 merging first (README count) |
-| Live model on announced starter | Decision | Mark: switch on methodology grounds, like weekly refit, or wait for the 2026 forward test |
+| PR #87, Stage 9 | Open, preflight green | Booth |
+| Pick lock time | Decision | Mark: keep Tuesday 11:00 UTC, or lock later in the week |
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a phone | Not done | Only a device proves the zoom is gone |
 
 ## Queued, in order
 
-1. **Stage 9's remaining colour work**: the Net Rating bar's diverging pair
-   through the dataviz validator in both themes, and deciding what confidence,
-   a flagged game and "the model was wrong" each look like.
-2. **`.game-card` overflows the viewport below 352px**, 340px card against a
-   296px content box at 320. Stage 10's mobile pass.
-3. **Six preflight and README guard gaps**, one confirmed by Booth on #78 and
-   two found on 2026-09-21 in `check_visual_claims_have_artifacts`. All are
-   written up in CLAUDE.md's traps.
-4. **Stage 10**, then **Stage 6's broadcast channel**; Stage 7's text-only
-   items are unblocked, visual ones wait for 10.
+1. **Stage 10**: the mobile pass (`.game-card` overflows below 352px, a
+   340px card against a 296px content box at 320) and the button component,
+   moved here from Stage 9. The focus sweep is already done.
+2. **Stage 7**: text-only items are unblocked; visual ones wait for 10.
+3. **Stage 4**.
+4. **Stage 6's broadcast channel**.
+
+Merge one branch at a time: every branch that adds a mutation case file
+moves the README count, so two open at once always conflict.
 
 ## Known and deliberately not fixed
 
 - **A Booth header can disagree with its verdict block**, logged by `cross_check()`, ten of the last eleven reports. Should it fail? It has cost nothing yet only because the discrepancy count was zero either way.
 - **`check_scoped_test_counts` skips a count for a module that does not exist** — a DELETED module passes silently.
 - **Only the wrap-up gate and session-start recompute CLAUDE.md's `Suite:` line.** Both manual, accepted.
-- **The README says "cases" where its guard counts FILES.** Bumping the number is forced by any new case file; fixing the wording moves the guard's own regex.
+- **Preflight checks commits and suite counts, not every number in prose.** #86 merged with "a merge" for two, and #87's draft said "nine" above a list of seven. Read the body against `git log` before opening.
 - **Nothing on the page reaches the listbox edge flip**; kept and checked over synthetic geometries.
 - **A human approval leaves no artifact in the repo.** Booth marked the #80 acceptance UNVERIFIABLE for that reason and was right to; `memory/2026-09-21.md` is what it points at.
 - **The co-occurrence trace, and the no-JS findings, are re-derivable only where a browser exists.** No CI job here has one. In both the premise is guarded in the suite and the finding itself is not; accepted.
