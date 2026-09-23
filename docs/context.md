@@ -5,20 +5,21 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-22 (#84, #85, #86 merged; Stage 9 open as #87)
+Last updated: 2026-09-22 (#84 to #87 merged; nothing open)
 
 ---
 
 ## Right now
 
-**Suite:** 1578 passing, 1 skipped — `python -m pytest -q` on `main` at
-`180f8d7`, HEAD level with origin. The latest full corpus run is on #87's
-branch: 260 cases, all CAUGHT, at `bf21c29`. Nothing else may read the tree
+**Suite:** 1604 passing, 1 skipped — `python -m pytest -q` on `main` at
+`2ab17ee`, HEAD level with origin. The latest full corpus run was #87's head
+before it merged: 260 cases, all CAUGHT, at `bf21c29`; Booth re-ran it and
+matched. Nothing else may read the tree
 while the corpus runs — see CLAUDE.md's traps.
 
-**Open: PR #87 (Stage 9).** Red and green now mean only a scored pick right
-or wrong; the Net Rating bar is a neutral fill; `--accent-strong` is retired.
-Preflight passed. Waiting on Booth.
+**No PR is open.** Stage 9 merged as #87: red and green mean only a scored
+pick right or wrong, the Net Rating bar is a neutral fill, and
+`--accent-strong` is retired. `tests/test_graded_colour_scope.py` holds it.
 
 **Live model is v2.5.** Each pick is rated with the expected starter: a
 sourced override in `data/qb_overrides/` first, then the schedule's listed
@@ -33,7 +34,6 @@ it lands before then.
 
 | What | State | Waiting on |
 |---|---|---|
-| PR #87, Stage 9 | Open, preflight green | Booth |
 | Pick lock time | Decision | Mark: keep Tuesday 11:00 UTC, or lock later in the week |
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a phone | Not done | Only a device proves the zoom is gone |
