@@ -1,0 +1,27 @@
+{
+  "target": "experiments/stage5/README.md",
+  "tests": "tests/test_stage5_published_numbers.py",
+  "cases": [
+    {
+      "id": "stage5-readme-upgrades-a-label",
+      "why": "an INCONCLUSIVE result is written up as ACCEPT in the one place a reader looks, while the result file still says otherwise",
+      "find": "| H1 | announced starter instead of last week's QB | INCONCLUSIVE |",
+      "replace": "| H1 | announced starter instead of last week's QB | ACCEPT |",
+      "expect_caught_by": "test_each_row_matches_its_result_file"
+    },
+    {
+      "id": "stage5-readme-miscounts-the-budget",
+      "why": "the spent-slot count is understated, which is the one figure that says how strict every later test has to be",
+      "find": "Four of the ten confirmatory slots are spent",
+      "replace": "Three of the ten confirmatory slots are spent",
+      "expect_caught_by": "test_the_slot_count_is_the_files"
+    },
+    {
+      "id": "stage5-readme-flatters-the-mechanism",
+      "why": "the headline log-loss gap on mismatched-quarterback games is inflated in prose, with nothing in residuals.json saying so",
+      "find": "live Model A's mean log loss is 0.696",
+      "replace": "live Model A's mean log loss is 0.716",
+      "expect_caught_by": "test_the_narrative_figures_come_from_the_residuals_and_the_kalman_fit"
+    }
+  ]
+}

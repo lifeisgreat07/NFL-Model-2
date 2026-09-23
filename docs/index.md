@@ -50,6 +50,8 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | `src/stage5_eval.py` | Walk-forward, paired bootstrap, the screen, the budget, and the forward-holdout refusal. |
 | `src/stage5_data.py` | The game table: incumbent features plus every registered variant, including the three quarterback specs. |
 | `src/kalman_ratings.py` | State-space team ratings (H7). |
+| `src/stage5_residuals.py` | Descriptive only: where the live Model A loses log loss, by pre-chosen slice. Writes `experiments/stage5/residuals.json`. |
+| `tests/test_stage5_published_numbers.py` | Every figure in `experiments/stage5/README.md` against the file it came from. |
 | `tests/test_stage5_registry.py` | Registration before answer, labels recomputed, budget held, and the harness's own rules. |
 
 ## The dashboard
