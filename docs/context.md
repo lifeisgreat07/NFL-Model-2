@@ -4,31 +4,25 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-23 (Stage 10: #89 to #93 merged, #94 open)
+Last updated: 2026-09-23 (Stage 10 complete; Booth-prompt PR open)
 
 ---
 
 ## Right now
 
-**Suite:** 1790 passing, 1 skipped — `python -m pytest -q` on `main` at `073a859`, HEAD level with origin.
+**Suite:** 1813 passing, 1 skipped — `python -m pytest -q` on `main` at
+`c0be43e`, HEAD level with origin.
 
-**Stage 10 is one PR from done.** Merged today, one at a time: #89 mobile
-pass, #90 components, #91 table system, #92 page states, #93 the Season
-Accuracy scoreboard. Open: **#94, type and spacing onto the Stage 8
-scales** (`stage10-scale`, worktree `E:\nfl-cache\wt-scale`). Mark approved
-its before/after renders. Suite, preflight and the full corpus are green at
-`aa0ac27`.
+**Stage 10 is complete** (#89 to #94, all merged 2026-09-23). The audit
+re-run scored 28/40 against the original 15; CLAUDE.md's Stage 10 section
+records it and what each PR decided.
 
-**#94 is blocked on Booth posting nothing.** Two runs in a row: Run Booth
-reported success after 4m05s and 3m08s, then #83's "posted no report" step
-failed the job. The cause is in the Run Booth step's log, which needs a
-signed-in browser; guesses are a usage limit or the size of the diff (every
-CSS line changed). **Next action: read that log.** A limit means re-run
-later; a diff-size problem means splitting type from spacing.
-
-**Once #94 merges, Stage 10 is complete:** its CLAUDE.md commit carries the
-audit score (28/40, from 15) and corrects the Stage 8 sentence claiming the
-token block satisfied the audit's foundations.
+**Open: #95, Booth's prompt says the run ends when it stops calling
+tools.** #94's audit posted nothing twice; the log showed Booth finishing
+cleanly early, most likely after ending its turn to wait for a background
+corpus run. Its own Booth check is red by design (the action skips a PR
+that edits its workflow). **Next action: Mark merges it**, then the next
+few audits show whether it worked.
 
 **The weekly job locks picks on Thursday** (#88). QB overrides are due by
 Thursday 16:00 UTC, in `data/qb_overrides/`. Live model is v2.5.
@@ -37,17 +31,17 @@ Thursday 16:00 UTC, in `data/qb_overrides/`. Live model is v2.5.
 
 | What | State | Waiting on |
 |---|---|---|
-| #94, type and spacing | Open, Booth posts nothing | The Run Booth log, then a re-run or a split |
+| #95, Booth prompt | Open, Booth red by design | Mark to merge |
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a phone | Not done | Only a device proves the zoom is gone |
 
 ## Queued, in order
 
-1. **Stage 10**: #94.
-2. **Stage 7**: text-only items are unblocked; the visual ones (screenshots,
-   the architecture diagram's UI layer) can start once #94 is in.
-3. **Stage 4**.
-4. **Stage 6's broadcast channel**.
+1. **Stage 7**: the portfolio write-ups. Text-only items were already
+   unblocked; the visual ones (screenshots, the architecture diagram's UI
+   layer, the lessons-learned page) are unblocked now that Stage 10 is in.
+2. **Stage 4**: automation and monitoring.
+3. **Stage 6's broadcast channel**.
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict.
