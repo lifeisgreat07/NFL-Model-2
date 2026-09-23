@@ -22,7 +22,10 @@ runs:** a report posted every time is the evidence it worked; another
 silent run means the cause was something else, and the Run Booth step log
 (signed-in browser) is where to look.
 
-**Next action: start Stage 7**, text items first.
+**Next action: start Stage 7**, text items first. **Ask Mark first:** do
+the case studies and the lessons-learned page live on the dashboard
+(inside "Checking the AI's work"), as documents in the repo, or both? It
+decides what gets built.
 
 **The weekly job locks picks on Thursday** (#88). QB overrides are due by
 Thursday 16:00 UTC, in `data/qb_overrides/`. Live model is v2.5.
