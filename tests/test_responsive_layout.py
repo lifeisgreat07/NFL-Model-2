@@ -57,11 +57,18 @@ def media_blocks(src):
 def phone_content_box(src):
     """The content width on the narrowest phone: viewport minus <main>'s
     horizontal padding in the narrowest max-width query that sets it."""
+    # The gutter is written as a spacing token since Stage 10 put spacing on
+    # the scale, so resolve var(--sN) through :root rather than expect px.
+    root = re.search(r':root\s*\{(.*?)\n\s*\}', src, re.S)
+    tokens = dict(re.findall(r'(--s\d)\s*:\s*(\d+)px', root.group(1))) if root else {}
+    length = r'(\d+px|var\(--s\d\))'
+    def px(v):
+        return int(v[:-2]) if v.endswith('px') else int(tokens[v[4:-1]])
     candidates = []
     for width, body in media_blocks(strip_comments(src)):
-        m = re.search(r'(?<![\w-])main\s*\{[^}]*padding\s*:\s*(\d+)px\s+(\d+)px', body)
+        m = re.search(r'(?<![\w-])main\s*\{[^}]*padding\s*:\s*' + length + r'\s+' + length, body)
         if m:
-            candidates.append((width, int(m.group(2))))
+            candidates.append((width, px(m.group(2))))
     assert candidates, "found no <main> padding inside any max-width query"
     _, gutter = min(candidates)
     return NARROWEST_PHONE - 2 * gutter
