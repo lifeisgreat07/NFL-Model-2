@@ -845,7 +845,10 @@ reliability plot's 300px) are `min(Npx, 100%)`. The sidebar hands over at
 Breakpoints comment lists every viewport breakpoint and
 `tests/test_responsive_layout.py` holds it to the media queries. **Two
 queued items were not what they said:** bottom-nav clearance already worked
-(23-43px on every page at 320, 390 and 430), and "the ratings table
+(the last content ends above the nav on every page at 320, 390 and 430 --
+23-43px on `markys`, 18.5-42.2px in Booth's sandbox on #89, because the gap
+is `<main>`'s bottom padding minus the nav's height and that height is
+text), and "the ratings table
 clipping mid-column at 430px" is a table scrolling inside its own box, which
 every phone table does. The fix for that is the table system's scroll-edge
 affordance, not a layout change.

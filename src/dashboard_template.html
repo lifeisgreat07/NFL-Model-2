@@ -677,9 +677,12 @@
   .rel-plot{flex:1 1 420px; min-width:min(300px, 100%); max-width:520px; position:relative;}
   /* Capped so the explanatory prose keeps a readable measure instead of
      stretching to whatever width the panel happens to have. */
-  /* A 430px basis, not 300: the Brier table beside the plot is 429px wide,
-     and a narrower basis let the pair sit side by side with the table's
-     last column clipped behind its scroller. With this basis the two only
+  /* A 430px basis, not 300: the Brier table beside the plot needs 429px
+     before its scroller starts clipping it (the wrapper's scrollWidth when
+     squeezed, measured in the webfont; given room, the table stretches to
+     fill the column, so its rendered width is wider -- Booth read 438 on
+     #89). A narrower basis let the pair sit side by side with the table's
+     last column clipped. With this basis the two only
      share a row when the table fits; otherwise the side wraps below. */
   .rel-side{flex:1 1 430px; min-width:240px; max-width:440px;}
   /* Series toggles. One row, above the chart. The dot in each is the series'
