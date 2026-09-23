@@ -1438,7 +1438,19 @@ under compaction pressure, so its length is a cost paid on every session.
   `compare_pandas_versions.py` checks it before reading any metric).
 - `home_margin` exists in the feature table for ATS work and must never enter a
   feature list — it is the scoreline being predicted.
-- **Booth's audit sandbox can check out a file one commit behind its own HEAD.**
+- **Booth's sandbox has main's CLAUDE.md, not the PR's -- ON PURPOSE.**
+  EXPLAINED 2026-09-23 from #94's Run Booth log: the Claude Code action
+  prints "Restoring .claude, .mcp.json, .claude.json, ... CLAUDE.md,
+  CLAUDE.local.md ... from origin/main (PR head is untrusted)". It swaps in
+  main's copy of every file that could steer the agent, so a PR cannot
+  rewrite its own auditor's instructions. So a PR that edits CLAUDE.md is
+  always audited with main's CLAUDE.md on disk, and must be checked with
+  `git show HEAD:CLAUDE.md`, which is what Booth's reports on this have
+  done. The
+  entry below was written before the cause was known and is kept as the
+  record of how it looked from inside.
+  ORIGINAL ENTRY -- **Booth's audit sandbox can check out a file one commit
+  behind its own HEAD.**
   Flagged in three separate audits (PRs #28, #29 and #80), so it is the
   environment rather than a one-off. `git status` shows `CLAUDE.md` modified, the on-disk
   md5 matches `HEAD~1`, and `git reflog` records no second checkout — the
