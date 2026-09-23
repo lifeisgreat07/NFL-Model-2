@@ -889,7 +889,7 @@ now take focus, sort on Enter and Space, and report `aria-sort`. Prose had
 been wearing `td.num` and was set flush right; it is not any more.
 `tests/test_table_system.py` holds each premise.
 
-**Page states: done on branch `stage10-states`.** Every "nothing to show"
+**Page states: merged, #92.** Every "nothing to show"
 goes through `stateHtml()` in one of four kinds: waiting (nothing yet, and
 normal), filtered (a control hides everything; it carries the button that
 undoes it), missing (the build lacks something it needs), note (a line
@@ -903,6 +903,23 @@ data is written into the HTML at build time and nothing is fetched, and
 changes. The SOS note folded into the system. The shared-picks and
 onboarding banners did not: they are notices with actions about a mode,
 not states of missing data, and they already share one component.
+
+**The moment: done on branch `stage10-moments`.** Mark chose ONE of three
+rendered candidates on 2026-09-23: Season Accuracy opens on a scoreboard --
+a verdict sentence ("The betting market leads by 1 game.") over a race of
+Market, Model B, Model A and, once there are graded picks, My picks.
+Declined, so not to be re-proposed without a new reason: a league ladder of
+all 32 teams above Power Ratings (it repeats the table's bars) and four
+headline numbers above the Week Board. Bars run from a true zero with the
+50% coin-flip line marked, never from 50%. The verdict is a pure function
+executed under node in `tests/test_scoreboard.py`, because generated
+headline prose over signed or tied numbers is where this repo has shipped a
+wrong sentence before.
+
+**Team Deep-Dive's week-by-week room: decided NOT to act (2026-09-23).** By
+week 18 the list is about 24 rows, roughly the Power Ratings table's
+height. It is a question about data that does not exist yet; look again in
+December if it actually reads badly.
 
 **The moments that make someone stop.** A dashboard that is merely consistent
 is invisible. Decide where this one is allowed to be striking — an entry

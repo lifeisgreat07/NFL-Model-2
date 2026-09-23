@@ -122,6 +122,10 @@ RENDERERS = {
     'trackRecordHtml': 'board',
     'showUndoToast': 'picks',
     'renderAccuracy': 'accuracy',
+    # Stage 10's season scoreboard and its verdict sentence, both drawn only
+    # at the top of Season Accuracy.
+    'scoreboardVerdict': 'accuracy',
+    'scoreboardHtml': 'accuracy',
     'buildCalibrationChart': 'accuracy',
     # Added when the trend chart gained a not-enough-data message. It used to
     # return '' in that case and so rendered no prose at all; the moment it
