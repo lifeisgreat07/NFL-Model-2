@@ -1,0 +1,75 @@
+{
+  "id": "H2",
+  "registry_entry": {
+    "id": "H2",
+    "kind": "hypothesis",
+    "title": "Read the market from the moneyline instead of the spread",
+    "question": "Model B with the de-vigged moneyline logit in place of spread_line.",
+    "candidate": {
+      "qb_spec": "INCUMBENT",
+      "ratings": "base",
+      "market": "ml_logit"
+    },
+    "incumbent": {
+      "qb_spec": "INCUMBENT",
+      "ratings": "base",
+      "market": "spread_line"
+    },
+    "decision_model": "model_b",
+    "spends_slot": true,
+    "expected": "candidate better: a moneyline is a probability; a spread is a margin passed through a fitted slope"
+  },
+  "code_commit": "54a6744554e53afe86acc85ffa11b5c7c8b06127",
+  "ci_level_confirmatory": 0.995,
+  "incumbent_qb_spec": "lagged",
+  "incumbent_market": "spread_line",
+  "validation": {
+    "n_games": 543,
+    "log_loss_candidate": 0.6257095374320899,
+    "log_loss_incumbent": 0.6227684910119364,
+    "brier_candidate": 0.21760900761502347,
+    "brier_incumbent": 0.21639832224913366,
+    "accuracy_candidate": 0.6777163904235728,
+    "accuracy_incumbent": 0.6795580110497238,
+    "log_loss_diff": 0.0029410464201534915,
+    "log_loss_ci": [
+      3.3073650893812454e-05,
+      0.00583474013504527
+    ],
+    "log_loss_ci_95": [
+      3.3073650893812454e-05,
+      0.00583474013504527
+    ],
+    "log_loss_ci_analytic_95": [
+      -6.963637136596541e-06,
+      0.00588905647744358
+    ],
+    "brier_diff": 0.0012106853658898557,
+    "brier_ci": [
+      -8.24609900874817e-05,
+      0.0024722556436979435
+    ],
+    "ci_level": 0.95,
+    "seasons": [
+      2022,
+      2023
+    ],
+    "candidate_features": [
+      "base_off_matchup",
+      "base_def_matchup",
+      "lagged_qb_matchup",
+      "lagged_qb_change_diff",
+      "ml_logit"
+    ],
+    "incumbent_features": [
+      "base_off_matchup",
+      "base_def_matchup",
+      "lagged_qb_matchup",
+      "lagged_qb_change_diff",
+      "spread_line"
+    ]
+  },
+  "confirmation": null,
+  "reached_confirmation": false,
+  "decision": "NOT ADVANCED"
+}

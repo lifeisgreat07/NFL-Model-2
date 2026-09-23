@@ -40,6 +40,20 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | `src/weekly_update.py` | The weekly routine: predictions, grading, playoff odds. |
 | `src/calibration.py` | Backtest calibration. Run deliberately, not per build; takes minutes. |
 
+## Stage 5: model experiments
+
+| Path | What it does |
+|---|---|
+| `experiments/stage5/registry.json` | Every question Stage 5 asks, the rule that decides it, and the confirmatory budget. Committed before any answer. |
+| `experiments/stage5/results/` | One file per answered question, with the numbers the label rests on. |
+| `src/stage5_run.py` | `build` makes the feature table (and proves it matches production); `run <id>` answers one registered question. |
+| `src/stage5_eval.py` | Walk-forward, paired bootstrap, the screen, the budget, and the forward-holdout refusal. |
+| `src/stage5_data.py` | The game table: incumbent features plus every registered variant, including the three quarterback specs. |
+| `src/kalman_ratings.py` | State-space team ratings (H7). |
+| `src/stage5_residuals.py` | Descriptive only: where the live Model A loses log loss, by pre-chosen slice. Writes `experiments/stage5/residuals.json`. |
+| `tests/test_stage5_published_numbers.py` | Every figure in `experiments/stage5/README.md` against the file it came from. |
+| `tests/test_stage5_registry.py` | Registration before answer, labels recomputed, budget held, and the harness's own rules. |
+
 ## The dashboard
 
 | Path | What it does |

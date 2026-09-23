@@ -1,0 +1,13 @@
+{
+  "target": "src/kalman_ratings.py",
+  "tests": "tests/test_stage5_registry.py",
+  "cases": [
+    {
+      "id": "kalman-rating-absorbs-its-own-week",
+      "why": "the rating recorded for a week is overwritten with the state AFTER that week's games are absorbed, so every H7 feature carries the result of the game it is predicting. It would win H7 by a mile and be worthless live.",
+      "find": "            P = 0.5 * (P + P.T)\n        return loglik, out",
+      "replace": "            P = 0.5 * (P + P.T)\n            if record:\n                out[(season, week)] = {t: (x[i], x[nt + i]) for t, i in self.ti.items()}\n        return loglik, out",
+      "expect_caught_by": "test_kalman_ratings_for_a_week_do_not_see_that_week"
+    }
+  ]
+}
