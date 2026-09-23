@@ -44,6 +44,25 @@ def _git(*args):
     return r.stdout.strip()
 
 
+def parse_summary(stdout):
+    """(passed, failed + errors) from pytest's final summary line, or (None, 0).
+
+    pytest prints "N passed" beside "M failed", so reading only the passed
+    count reported a RED suite as a stale number and sent the reader to edit
+    CLAUDE.md instead of the failing test. scout_preflight.py was fixed for
+    this in 9c3e320; this file carried the same defect until 2026-09-22.
+    Only the LAST summary line is read, because -q output also lists failing
+    test ids, and a test named after a count must not be taken for one.
+    """
+    lines = [l for l in stdout.splitlines() if re.search(r'\b\d+ (?:passed|failed|errors?)\b', l)]
+    if not lines:
+        return None, 0
+    last = lines[-1]
+    passed = re.search(r'\b(\d+) passed\b', last)
+    broken = sum(int(n) for n in re.findall(r'\b(\d+) (?:failed|errors?)\b', last))
+    return (int(passed.group(1)) if passed else 0), broken
+
+
 def check_suite_count():
     """The number in CLAUDE.md must match a real run, not a remembered one."""
     text = DOC.read_text(encoding='utf-8')
@@ -57,12 +76,15 @@ def check_suite_count():
         [sys.executable, '-B', '-m', 'pytest', '-q'],
         cwd=REPO, capture_output=True, text=True,
     )
-    got = re.search(r'(\d+) passed', run.stdout)
-    if not got:
+    actual, broken = parse_summary(run.stdout)
+    if actual is None:
         return Check('suite count', False,
                      'could not run the suite; a count that cannot be '
                      'verified must not be published\n' + run.stdout[-400:])
-    actual = int(got.group(1))
+    if broken:
+        return Check('suite count', False,
+                     'the suite is RED: {} failed or errored beside {} passed. '
+                     'Fix the failures; do not touch the count.'.format(broken, actual))
     if actual != claimed:
         return Check('suite count', False,
                      'CLAUDE.md says {} passing, a real run gives {}. '

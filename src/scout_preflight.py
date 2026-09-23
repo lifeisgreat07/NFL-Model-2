@@ -67,15 +67,65 @@ SUITE_BROKEN_RE = re.compile(r'\b(\d+)\s+(?:failed|errors?)\b')
 #
 # So the rule is: do not write one. Put verification numbers in the PR body,
 # where something re-checks them.
-COMMIT_SUITE_COUNT_RE = re.compile(r'\b\d{2,}\s+(?:passed|passing)\b', re.I)
+#
+# Widened 2026-09-22. It matched suite-shaped counts only, so PR #68 put "147
+# individual cases" into a commit message and nothing fired (the real figure
+# was 151). The class is ANY verification count: tests, cases, mutations and
+# the runner's verdict words. Up to two words may sit between the number and
+# the noun ("147 individual cases", "13 mutation cases").
+COMMIT_SUITE_COUNT_RE = re.compile(
+    r'\b\d{2,}\s+(?:[A-Za-z-]+\s+){0,2}?'
+    r'(?:passed|passing|tests?|cases?|mutations?|CAUGHT|SURVIVED|collected)\b', re.I)
 
 # Phrases that assert somebody looked at rendered output. Deliberately narrow:
 # the point is to catch a claim of visual verification, not any mention of a
 # picture.
+#
+# Widened 2026-09-22 after it was found too narrow and too wide at once
+# (CLAUDE.md traps, 2026-09-21): it missed "rendered the page ... and read on
+# screen", which IS a claim, and it fired on "screenshot" inside a sentence
+# saying no screenshot was attached, which is not. The width is fixed here;
+# the disclaimer half is fixed in visual_claim(), which judges a SENTENCE.
 VISUAL_CLAIM_RE = re.compile(
     r'\b(screenshots?|rendered it|verified in both themes|'
-    r'verified visually|looked at the page|both themes at \d+px)\b',
+    r'verified visually|looked at (?:it|the page|the card|the board)|'
+    r'both themes at \d+px|rendered\b[^.\n]{0,80}\b(?:read|looked|checked|on screen)|'
+    r'on screen|by eye)\b',
     re.IGNORECASE)
+
+# A sentence that DISCLOSES rather than claims. "Process note" is the label
+# the failure message below tells authors to use, so it must be a branch here
+# -- the 2026-09-21 trap was a message prescribing a remedy the function
+# rejected. A negation before the visual phrase reads as a disclosure too:
+# "nobody has looked at the page" is the opposite of a claim.
+PROCESS_NOTE_RE = re.compile(r'^\W*process note\b', re.IGNORECASE)
+NEGATION_RE = re.compile(
+    r"\b(?:no|not|never|nobody|no one|without|unverified|hasn't|haven't|wasn't|isn't|cannot|can't)\b",
+    re.IGNORECASE)
+# A negation AFTER the phrase is only a disclosure in this one shape; "checked
+# on screen that it does not overflow" is a claim with a "not" in it.
+UNATTACHED_RE = re.compile(r'\b(?:not attached|unattached|not been attached)\b', re.IGNORECASE)
+VISUAL_SENTENCE_SPLIT_RE = re.compile(r'(?<=[.!?])\s+|\n+')
+
+
+def visual_claim(text):
+    """The first sentence asserting a visual check, or None.
+
+    Returns the matched phrase. A sentence labelled "Process note", or one
+    whose visual phrase is preceded by a negation, is a disclosure and is
+    skipped -- so disclosing honestly can no longer trip the check, and
+    deleting the word "screenshot" from a real claim no longer passes it.
+    """
+    for sentence in VISUAL_SENTENCE_SPLIT_RE.split(text):
+        m = VISUAL_CLAIM_RE.search(sentence)
+        if not m:
+            continue
+        if PROCESS_NOTE_RE.search(sentence.lstrip('-*| ')):
+            continue
+        if NEGATION_RE.search(sentence[:m.start()]) or UNATTACHED_RE.search(sentence):
+            continue
+        return m.group(0)
+    return None
 
 # Markdown image, an HTML img tag, or a GitHub user-attachment URL.
 ATTACHMENT_RE = re.compile(
@@ -110,12 +160,26 @@ BLOCKQUOTE_RE = re.compile(r'^\s*>.*$', re.MULTILINE)
 # is frequently a real assertion (this repo's PR bodies put verification tables
 # in them), so exempting rows would blind the check where it is most needed.
 # Bounded and newline-free so an unpaired quote cannot swallow the document.
-QUOTED_SPAN_RE = re.compile(r'"[^"\n]{0,400}"|“[^”\n]{0,400}”')
+#
+# Single quotes and inline code were added 2026-09-22, closing a queued gap:
+# `Booth said '125 passed'` and "Booth's report said `125 passed`" both failed
+# the test-count check as a claim, while the double-quoted form passed. A
+# single quote is only an opener when no word character precedes it and only a
+# closer when none follows, so the apostrophe in "Booth's" is left alone.
+# Inline code is stripped ONLY when it holds a pytest-style count: the
+# scoped-count check below needs `tests/test_x.py` names that sit in
+# backticks, and stripping every code span would blind it.
+QUOTED_SPAN_RE = re.compile(
+    r'"[^"\n]{0,400}"|“[^”\n]{0,400}”|‘[^’\n]{0,400}’'
+    r"|(?<!\w)'[^'\n]{1,400}'(?!\w)")
+CODE_COUNT_SPAN_RE = re.compile(
+    r'`[^`\n]*\b\d+\s+(?:passed|failed|errors?|skipped|collected|CAUGHT|SURVIVED)\b[^`\n]*`')
 
 
 def strip_quotations(body):
     """Remove quoted regions so only the body's own assertions are checked."""
-    return QUOTED_SPAN_RE.sub('', BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body)))
+    body = BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body))
+    return QUOTED_SPAN_RE.sub('', CODE_COUNT_SPAN_RE.sub('', body))
 
 
 class Finding:
@@ -348,22 +412,46 @@ def check_visual_claims_have_artifacts(claims, full_body=None, ui_files=None):
     a guess about wording rather than a fact about the change.
     """
     full_body = full_body if full_body is not None else claims
-    claim = VISUAL_CLAIM_RE.search(claims)
+    claim = visual_claim(claims)
     if not claim:
-        return Finding('visual evidence', True, "no visual claim made")
+        return Finding('visual evidence', True,
+                       "no visual claim made (process notes and negated "
+                       "sentences are disclosures, not claims)")
     if not ui_files:
         return Finding('visual evidence', True,
-                       f"visual wording present ({claim.group(0)!r}) but the "
+                       f"visual wording present ({claim!r}) but the "
                        f"diff changes no .html/.css/.svg, so there is nothing "
                        f"to screenshot -- read as discussion, not a claim")
     if ATTACHMENT_RE.search(full_body):
         return Finding('visual evidence', True,
-                       f"visual claim ({claim.group(0)!r}) has an attachment")
+                       f"visual claim ({claim!r}) has an attachment")
     return Finding('visual evidence', False,
-                   f"the body claims visual verification ({claim.group(0)!r}) "
+                   f"the body claims visual verification ({claim!r}) "
                    f"but attaches no image. An unattached screenshot is not "
-                   f"evidence -- attach it, or state it as a process note "
-                   f"rather than proof.")
+                   f"evidence -- attach it, or begin the sentence with "
+                   f"'Process note:' so it reads as a disclosure rather "
+                   f"than proof.")
+
+
+# A mutation run scoped by a GLOB. Case ids are chosen for readability, not as
+# a namespace, so `--id "p*"` is not a selector for anything: on #72 it pulled
+# 38 unrelated cases and missed 7 of the 11 that mattered, and the body quoted
+# the result as coverage. The glob characters are the tell; a single exact id
+# is fine, and so is the full corpus with no --id at all.
+MUTATION_GLOB_RE = re.compile(r'runner\.py\b[^\n]*?--id[ =]+["\']?([^\s"\'`]*[*?\[][^\s"\'`]*)')
+
+
+def check_mutation_count_scope(body):
+    """A mutation figure must come from the full corpus or named ids, never a glob."""
+    globs = MUTATION_GLOB_RE.findall(body)
+    if globs:
+        return Finding('mutation scope', False,
+                       f"the body quotes a mutation run selected by a glob "
+                       f"({', '.join(repr(g) for g in globs)}). A glob over case "
+                       f"ids is too wide and too narrow at once (#72). Quote "
+                       f"`python tests/mutation/runner.py` with no --id, whose "
+                       f"scope is every case, or name the ids and run each.")
+    return Finding('mutation scope', True, "no mutation figure from an --id glob")
 
 
 # A count of tests attributed to a NAMED test module: "`tests/test_x.py` -- 8
@@ -478,6 +566,11 @@ def preflight(body, base='origin/main', skip_tests=False, head='HEAD'):
         check_scoped_test_counts(claims, skip_tests),
         check_scope_disclosed(claims, commits),
         check_visual_claims_have_artifacts(claims, body, ui_files),
+        # Not the quote-stripped text: the natural way to write a glob is
+        # `--id "p*"`, and stripping the double-quoted "p*" would hide the one
+        # thing this check looks for. Fenced blocks and blockquotes still count
+        # as quotation, so history can be quoted there.
+        check_mutation_count_scope(BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body))),
         # Not skipped by --skip-tests. That flag exists so CI does not re-run
         # the suite a second job already ran; this check reads git log and
         # costs nothing, and it is the one whose subject cannot be fixed after

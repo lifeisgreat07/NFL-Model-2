@@ -1,0 +1,93 @@
+{
+  "target": "src/scout_preflight.py",
+  "tests": "tests/test_guard_gaps.py",
+  "cases": [
+    {
+      "id": "gap-single-quotes-read-as-claims",
+      "why": "a past count quoted in single quotes is read as the body's own claim again, so explaining history fails the test-count check",
+      "find": "    r\"|(?<!\\w)'[^'\\n]{1,400}'(?!\\w)\")",
+      "replace": "    )",
+      "expect_caught_by": "test_a_quoted_past_count_is_not_a_claim"
+    },
+    {
+      "id": "gap-apostrophe-opens-a-quote",
+      "why": "an apostrophe counts as an opening quote, so \"Booth's run ... the teams' notes\" swallows the real claim between them and a wrong count walks through",
+      "find": "    r\"|(?<!\\w)'[^'\\n]{1,400}'(?!\\w)\")",
+      "replace": "    r\"|'[^'\\n]{1,400}'(?!\\w)\")",
+      "expect_caught_by": "test_an_apostrophe_is_not_a_quote_mark"
+    },
+    {
+      "id": "gap-code-span-counts-read-as-claims",
+      "why": "pytest output quoted in inline code is read as a claim again",
+      "find": "    return QUOTED_SPAN_RE.sub('', CODE_COUNT_SPAN_RE.sub('', body))",
+      "replace": "    return QUOTED_SPAN_RE.sub('', body)",
+      "expect_caught_by": "test_a_quoted_past_count_is_not_a_claim"
+    },
+    {
+      "id": "gap-commit-count-needs-adjacent-noun",
+      "why": "\"147 individual cases\" walks through again, which is PR #68's exact sentence",
+      "find": "    r'\\b\\d{2,}\\s+(?:[A-Za-z-]+\\s+){0,2}?'",
+      "replace": "    r'\\b\\d{2,}\\s+(?:[A-Za-z-]+\\s+){0}?'",
+      "expect_caught_by": "test_verification_counts_in_a_commit_message_are_caught"
+    },
+    {
+      "id": "gap-glob-mutation-count-passes",
+      "why": "a mutation figure from an --id glob passes, which is #72's figure: too wide and too narrow at once",
+      "find": "    if globs:\n        return Finding('mutation scope', False,",
+      "replace": "    if False:\n        return Finding('mutation scope', False,",
+      "expect_caught_by": "test_a_mutation_figure_from_a_glob_fails"
+    },
+    {
+      "id": "gap-glob-check-runs-on-stripped-text",
+      "why": "the scope check runs over quote-stripped text, where --id \"p*\" has already lost its \"p*\", so the check is present and can never fire",
+      "find": "        check_mutation_count_scope(BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body))),",
+      "replace": "        check_mutation_count_scope(claims),",
+      "expect_caught_by": "test_preflight_runs_the_scope_check_on_text_where_the_glob_is_still_visible"
+    },
+    {
+      "id": "gap-process-note-branch-removed",
+      "why": "the failure message prescribes a process note and the function rejects one again -- the 2026-09-21 trap exactly",
+      "find": "        if PROCESS_NOTE_RE.search(sentence.lstrip('-*| ')):\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_the_remedy_the_failure_names_is_a_branch_that_passes"
+    },
+    {
+      "id": "gap-negated-visual-sentence-is-a-claim",
+      "why": "\"nobody has looked at the page\" reads as a claim of looking, so disclosing honestly is what fails",
+      "find": "        if NEGATION_RE.search(sentence[:m.start()]) or UNATTACHED_RE.search(sentence):",
+      "replace": "        if UNATTACHED_RE.search(sentence):",
+      "expect_caught_by": "test_disclosures_are_not_claims"
+    },
+    {
+      "id": "gap-visual-regex-narrow-again",
+      "why": "a claim written as \"on screen\" rather than \"screenshot\" passes as no claim at all",
+      "find": "    r'on screen|by eye)\\b',",
+      "replace": "    r'by eye)\\b',",
+      "expect_caught_by": "test_real_visual_claims_are_seen"
+    },
+    {
+      "id": "gap-wrapup-ignores-failures",
+      "target": "src/session_wrapup.py",
+      "why": "a red suite is reported as a stale count again, sending the reader to edit CLAUDE.md instead of the failing test",
+      "find": "    if broken:\n        return Check('suite count', False,",
+      "replace": "    if False:\n        return Check('suite count', False,",
+      "expect_caught_by": "test_the_wrapup_uses_the_parser"
+    },
+    {
+      "id": "gap-wrapup-reads-every-line",
+      "target": "src/session_wrapup.py",
+      "why": "a count inside a failure message is summed as if it were the summary, so one red test can read as twelve",
+      "find": "    last = lines[-1]",
+      "replace": "    last = '\\n'.join(lines)",
+      "expect_caught_by": "test_the_wrapup_reads_failures_from_the_final_summary_only"
+    },
+    {
+      "id": "gap-runner-keeps-only-the-last-id",
+      "target": "tests/mutation/runner.py",
+      "why": "three ids on one command run one case and print all caught, the 2026-09-21 defect",
+      "find": "    return [c for c in corpus if any(fnmatch.fnmatch(c['id'], p) for p in patterns)]",
+      "replace": "    return [c for c in corpus if fnmatch.fnmatch(c['id'], patterns[-1])]",
+      "expect_caught_by": "test_every_id_given_is_run_once_in_corpus_order"
+    }
+  ]
+}
