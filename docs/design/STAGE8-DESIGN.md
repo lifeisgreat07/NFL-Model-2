@@ -96,6 +96,10 @@ zero times in `src/dashboard_template.html`.
 }
 ```
 
+**`--accent-strong` above is historical.** It was retired on 2026-09-22 (Stage
+9) together with its one consumer, the Net Rating bar's gradient. The bar is
+now the neutral `--text-3`. CLAUDE.md, under Stage 9, has the reasoning.
+
 **The series lines above are the shipped values, not the mocks'.** The mocks
 carried `--series-a/-b/-m/-p` at `#A78BF7 / #7EDDE8 / #D9AE45 / #D0699C` (dark)
 and `#6D3BC7 / #0E7C84 / #8C6410 / #731847` (light). The port kept the

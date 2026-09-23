@@ -1,0 +1,48 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_graded_colour_scope.py",
+  "cases": [
+    {
+      "id": "graded-green-on-a-built-pill",
+      "why": "the 'Built' pill on What's Changed goes back to the success green, so green means 'shipped' as well as 'this pick was right'",
+      "find": ".status-done{background:transparent;",
+      "replace": ".status-done{background:var(--good-dim);",
+      "expect_caught_by": "test_graded_colours_appear_only_on_scored_picks"
+    },
+    {
+      "id": "graded-colour-on-a-rating-trend",
+      "why": "a rating moving up is painted as 'correct', which is a claim about a pick nobody made",
+      "find": ".trend-arrow.up, .trend-arrow.down{color:var(--text-2);}",
+      "replace": ".trend-arrow.up{color:var(--good);} .trend-arrow.down{color:var(--warn);}",
+      "expect_caught_by": "test_graded_colours_appear_only_on_scored_picks"
+    },
+    {
+      "id": "graded-colour-on-a-team-result",
+      "why": "a team's W is painted as the model being right, on the one page that shows both side by side",
+      "find": ".dive-result.won{color:var(--text);}",
+      "replace": ".dive-result.won{color:var(--good);}",
+      "expect_caught_by": "test_graded_colours_appear_only_on_scored_picks"
+    },
+    {
+      "id": "toss-up-tag-back-on-the-accent",
+      "why": "the toss-up tag on a game card, and every decision pill on Model Lab, go back to the accent -- the colour of the model's lean, on the one tag that says the model has none",
+      "find": "  .tag-neutral{background:var(--border); color:var(--text-2);}",
+      "replace": "  .tag-neutral{background:var(--accent-soft); color:var(--accent);}",
+      "expect_caught_by": "test_the_neutral_pill_is_neutral"
+    },
+    {
+      "id": "net-rating-bar-back-on-the-accent",
+      "why": "every team's Net Rating bar wears the colour that means 'the model's lean', so the accent stops meaning anything on Power Ratings",
+      "find": ".srs-bar-fill{position:absolute; top:0; bottom:0; background:var(--text-3);",
+      "replace": ".srs-bar-fill{position:absolute; top:0; bottom:0; background:var(--accent);",
+      "expect_caught_by": "test_the_net_rating_fill_is_the_neutral_text_3"
+    },
+    {
+      "id": "net-rating-fill-loses-contrast",
+      "why": "the neutral step the Net Rating bar wears is darkened until the bar all but disappears into the dark track, below the 3:1 a graphical object needs",
+      "find": "--n5:#4A5260; --n6:#7D8794;",
+      "replace": "--n5:#4A5260; --n6:#2E343D;",
+      "expect_caught_by": "test_the_net_rating_fill_clears_3_to_1_against_surface_and_track"
+    }
+  ]
+}
