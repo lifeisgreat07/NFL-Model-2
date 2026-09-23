@@ -1,0 +1,162 @@
+{
+  "family": "stage5",
+  "registered": "2026-09-22",
+  "protocol": {
+    "validation_seasons": [2022, 2023],
+    "confirmation_seasons": [2024, 2025],
+    "forward_holdout_season": 2026,
+    "primary_metric": "log_loss",
+    "secondary_metric": "brier",
+    "screen": "A candidate advances to confirmation only if its validation log loss is lower than the incumbent's (point estimate).",
+    "decision": "On the confirmation seasons: ACCEPT if the paired-bootstrap interval for (candidate - incumbent) log loss lies entirely below zero; REJECT if entirely above; otherwise INCONCLUSIVE.",
+    "alpha": 0.05,
+    "budget_m": 10,
+    "budget_rule": "Every candidate that reaches confirmation spends one slot, whatever its outcome. Each confirmatory interval is at level 1 - alpha/budget_m (99.5%). Asking an eleventh confirmatory question requires a new registration that raises budget_m, which tightens every later interval.",
+    "n_resamples": 5000,
+    "seed": 20260922,
+    "walk_forward": "Weekly refit, train on every game strictly earlier (from 2020), predict the week. Candidate and incumbent are scored on the same games; each trains on its own complete rows.",
+    "forward_test": "Anything ACCEPTED is re-scored on the 2026 season after it ends, with no refitting of anything chosen here. stage5_eval.guard_seasons refuses 2026 until then."
+  },
+  "incumbent_rule": "INCUMBENT means the qb_spec the family has settled on when the test runs: sched if H1 is ACCEPTED, otherwise lagged. Q0 is reported either way.",
+  "disclosures": [
+    "Before this file was written, a probe measured how often three definitions of a team's quarterback agree across 2020-2025 team-games (schedule starter vs first dropback 98.3%, schedule starter vs most dropbacks 96.0%, first vs most 97.3%) and confirmed the schedule carries moneylines and rest days with no missing values in 2020-2025. No outcome, probability or model metric was computed.",
+    "Reading src/weekly_update.py while planning showed that the backtest's QB features come from the player with the most dropbacks IN the game being predicted, while the live pipeline uses the previous game's leader. That observation is why Q0 and H1 exist; it was made from the code, not from any result.",
+    "The confirmation seasons 2024-2025 have been used to confirm earlier decisions in this project (QB shrinkage, weekly refit, the pandas experiment). They are not a fresh holdout. The 2026 forward test is the only untouched evaluation, which is why it is registered here rather than improvised later."
+  ],
+  "hypotheses": [
+    {
+      "id": "Q0",
+      "kind": "measurement",
+      "title": "How much of the published backtest rests on knowing who actually played quarterback",
+      "question": "Model A and Model B scored with oracle QB inputs (most dropbacks in the game, as published) against the same models with the pregame-knowable schedule starter, over all four backtest seasons.",
+      "candidate": {"qb_spec": "oracle", "ratings": "base"},
+      "incumbent": {"qb_spec": "sched", "ratings": "base"},
+      "seasons": [2022, 2023, 2024, 2025],
+      "spends_slot": false,
+      "expected": "oracle scores better; the gap is the part of the published figures that no pregame model can reach",
+      "consequence": "Whatever the size, every later comparison uses a pregame-knowable QB spec on both sides."
+    },
+    {
+      "id": "H1",
+      "kind": "hypothesis",
+      "title": "Use the announced starter instead of last week's quarterback",
+      "question": "Model A with the schedule starter and schedule-based change flag, against Model A with the lagged starter and the live change flag -- what the live pipeline does today.",
+      "candidate": {"qb_spec": "sched", "ratings": "base"},
+      "incumbent": {"qb_spec": "lagged", "ratings": "base"},
+      "decision_model": "model_a",
+      "also_report": ["model_b"],
+      "spends_slot": true,
+      "expected": "candidate better",
+      "note": "The historical schedule starter is who actually started. Live, nflverse publishes a probable starter before kickoff that is occasionally wrong (week 3 2026 lists Jayden Daniels for WAS). So this is an upper bound on what the live feed gives; the QB-starter agent exists to close that gap."
+    },
+    {
+      "id": "H2",
+      "kind": "hypothesis",
+      "title": "Read the market from the moneyline instead of the spread",
+      "question": "Model B with the de-vigged moneyline logit in place of spread_line.",
+      "candidate": {"qb_spec": "INCUMBENT", "ratings": "base", "market": "ml_logit"},
+      "incumbent": {"qb_spec": "INCUMBENT", "ratings": "base", "market": "spread_line"},
+      "decision_model": "model_b",
+      "spends_slot": true,
+      "expected": "candidate better: a moneyline is a probability; a spread is a margin passed through a fitted slope"
+    },
+    {
+      "id": "H3",
+      "kind": "hypothesis",
+      "title": "Add success-rate ratings",
+      "question": "Model A plus sr_off_matchup and sr_def_matchup: the same ridge fit on success (EPA > 0) instead of EPA.",
+      "candidate": {"qb_spec": "INCUMBENT", "ratings": "base", "extra": ["sr_off_matchup", "sr_def_matchup"]},
+      "incumbent": {"qb_spec": "INCUMBENT", "ratings": "base"},
+      "decision_model": "model_a",
+      "spends_slot": "if advanced",
+      "expected": "candidate better"
+    },
+    {
+      "id": "H4",
+      "kind": "hypothesis",
+      "title": "Down-weight plays in decided games",
+      "question": "Model A with ratings fitted with weight 0.25 on plays whose win probability is outside [0.10, 0.90], replacing the base ratings.",
+      "candidate": {"qb_spec": "INCUMBENT", "ratings": "gt"},
+      "incumbent": {"qb_spec": "INCUMBENT", "ratings": "base"},
+      "parameters": {"wp_band": [0.10, 0.90], "outside_weight": 0.25},
+      "decision_model": "model_a",
+      "spends_slot": "if advanced",
+      "expected": "candidate better"
+    },
+    {
+      "id": "H5",
+      "kind": "hypothesis",
+      "title": "Rate passing and rushing separately",
+      "question": "Model A with pass and rush ratings (four matchup features) replacing the base pair.",
+      "candidate": {"qb_spec": "INCUMBENT", "ratings": "pass", "extra": ["rush_off_matchup", "rush_def_matchup"]},
+      "incumbent": {"qb_spec": "INCUMBENT", "ratings": "base"},
+      "decision_model": "model_a",
+      "spends_slot": "if advanced",
+      "expected": "candidate better, mostly from the pass pair"
+    },
+    {
+      "id": "H6",
+      "kind": "hypothesis",
+      "title": "Rate teams on early downs only",
+      "question": "Model A with ratings fitted on first and second down plays only, replacing the base pair.",
+      "candidate": {"qb_spec": "INCUMBENT", "ratings": "ed"},
+      "incumbent": {"qb_spec": "INCUMBENT", "ratings": "base"},
+      "decision_model": "model_a",
+      "spends_slot": "if advanced",
+      "expected": "uncertain; early-down efficiency is more stable but throws away third-down plays"
+    },
+    {
+      "id": "H7",
+      "kind": "hypothesis",
+      "title": "State-space ratings with a fitted preseason carry-over",
+      "question": "Model A with Kalman-filter ratings (src/kalman_ratings.py) replacing the ridge pair. Hyperparameters fitted by marginal likelihood of EPA on 2020-2021 only.",
+      "candidate": {"qb_spec": "INCUMBENT", "ratings": "kalman"},
+      "incumbent": {"qb_spec": "INCUMBENT", "ratings": "base"},
+      "parameters": {"fit_through_season": 2021, "mu_q": 1e-05},
+      "decision_model": "model_a",
+      "spends_slot": "if advanced",
+      "expected": "candidate better, concentrated early in seasons (stated, not to be tested as a subgroup)"
+    },
+    {
+      "id": "H8",
+      "kind": "hypothesis",
+      "title": "Rest advantage",
+      "question": "Model A plus rest_diff = home rest days minus away rest days, clipped to [-7, 7].",
+      "candidate": {"qb_spec": "INCUMBENT", "ratings": "base", "extra": ["rest_diff"]},
+      "incumbent": {"qb_spec": "INCUMBENT", "ratings": "base"},
+      "parameters": {"rest_cap": 7},
+      "decision_model": "model_a",
+      "spends_slot": "if advanced",
+      "expected": "small; possibly nothing"
+    },
+    {
+      "id": "H9",
+      "kind": "deferred",
+      "title": "Weather and wind",
+      "status": "DEFERRED",
+      "reason": "Wind has no symmetric effect on which team wins; its only plausible effect is shrinking the stronger team's edge, which needs an interaction term chosen by looking at data. Registering one now would be fishing with extra steps. Deferred until there is a stated mechanism."
+    },
+    {
+      "id": "H10",
+      "kind": "hypothesis",
+      "title": "A learned blend of Model A and the market",
+      "question": "Model C: logistic regression on [Model A's out-of-sample logit, the market input], each training row's Model A logit taken from the walk-forward prediction made for that week. Against Model B with the same inputs and market.",
+      "candidate": {"model": "stack"},
+      "incumbent": {"model": "model_b"},
+      "decision_model": "stack",
+      "spends_slot": "if advanced",
+      "expected": "no better than Model B -- a REJECT or INCONCLUSIVE would be the publishable answer the Stage 5 list asked for"
+    },
+    {
+      "id": "H11",
+      "kind": "hypothesis",
+      "title": "Every accepted change together",
+      "question": "The combined Model A built from whatever H3-H8 ACCEPTED, against the incumbent Model A. Only run if at least two of H3-H8 were accepted.",
+      "candidate": {"model": "combined"},
+      "incumbent": {"qb_spec": "INCUMBENT", "ratings": "base"},
+      "decision_model": "model_a",
+      "spends_slot": "if run",
+      "expected": "candidate better"
+    }
+  ]
+}

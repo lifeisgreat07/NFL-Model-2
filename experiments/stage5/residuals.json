@@ -1,0 +1,53 @@
+{
+  "code_commit": "54a6744554e53afe86acc85ffa11b5c7c8b06127",
+  "seasons": [
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "n_games": 1087,
+  "note": "Descriptive only. Mean per-game log loss by slice; no interval, no decision.",
+  "slices": {
+    "all games": {
+      "n_games": 1087,
+      "log_loss_lagged": 0.6643233147904122,
+      "log_loss_sched": 0.6517835197359845,
+      "log_loss_oracle": 0.6498122099650889,
+      "log_loss_model_b_lagged": 0.6101473428743837,
+      "log_loss_market": 0.607422226064426
+    },
+    "lagged QB differs from announced starter (either side)": {
+      "n_games": 262,
+      "log_loss_lagged": 0.6958092768525218,
+      "log_loss_sched": 0.6536579967172084,
+      "log_loss_oracle": 0.6543002936207623,
+      "log_loss_model_b_lagged": 0.6040455620287545,
+      "log_loss_market": 0.5965301759740742
+    },
+    "lagged QB matches announced starter (both sides)": {
+      "n_games": 825,
+      "log_loss_lagged": 0.6543241365355361,
+      "log_loss_sched": 0.6511882312886138,
+      "log_loss_oracle": 0.648386903398075,
+      "log_loss_model_b_lagged": 0.6120851205489954,
+      "log_loss_market": 0.6108812771234226
+    },
+    "weeks 1-4": {
+      "n_games": 256,
+      "log_loss_lagged": 0.6629041530732712,
+      "log_loss_sched": 0.6527429023049665,
+      "log_loss_oracle": 0.6576565812067369,
+      "log_loss_model_b_lagged": 0.6351171220805454,
+      "log_loss_market": 0.636016763989701
+    },
+    "weeks 5-18": {
+      "n_games": 831,
+      "log_loss_lagged": 0.664760505403635,
+      "log_loss_sched": 0.6514879698711717,
+      "log_loss_oracle": 0.647395652759479,
+      "log_loss_model_b_lagged": 0.6024550883896936,
+      "log_loss_market": 0.5986133190742089
+    }
+  }
+}
