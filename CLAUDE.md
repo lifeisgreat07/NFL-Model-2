@@ -853,7 +853,7 @@ clipping mid-column at 430px" is a table scrolling inside its own box, which
 every phone table does. The fix for that is the table system's scroll-edge
 affordance, not a layout change.
 
-**Components: done on branch `stage10-components`.** Decided with Mark on
+**Components: merged, #90.** Decided with Mark on
 2026-09-23, from rendered side-by-sides:
 
 - **The sidebar is grouped by the question a visitor is asking** -- This
@@ -875,6 +875,19 @@ affordance, not a layout change.
   why for each.
 - **Model Lab's header typed the model version** and said 2.4 through the
   2.5 release. It is written from `modelVersion` now.
+
+**Table system: done on branch `stage10-tables`.** A table either fits its
+box or scrolls, and `fitTables()` measures which rather than guessing from
+the viewport. A fitting table's wrapper is `overflow:clip` and its header
+sticks to the window; a scrolling one draws a soft edge on the side with
+more columns. The two cannot both hold: a sticky header needs no scroll
+container above it, and a wide table needs one. The scrolling state is the
+default, so without JavaScript a table loses its sticky header, never a
+column. Borders are `separate`, because a collapsed border stays behind
+when a sticky cell moves. Only sortable headers look clickable, and they
+now take focus, sort on Enter and Space, and report `aria-sort`. Prose had
+been wearing `td.num` and was set flush right; it is not any more.
+`tests/test_table_system.py` holds each premise.
 
 **The moments that make someone stop.** A dashboard that is merely consistent
 is invisible. Decide where this one is allowed to be striking — an entry
