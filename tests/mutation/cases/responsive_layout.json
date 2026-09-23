@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_responsive_layout.py",
+  "cases": [
+    {
+      "id": "card-grid-floor-back-to-340",
+      "why": "the Week Board and My Picks card grid goes back to a bare 340px track minimum, and a 320px phone scrolls sideways by 32px on both pages again.",
+      "find": "minmax(min(340px, 100%), 1fr)",
+      "replace": "minmax(340px, 1fr)",
+      "expect_caught_by": "test_no_hard_width_floor_wider_than_a_phone"
+    },
+    {
+      "id": "reliability-plot-floor-back-to-300",
+      "why": "Model Lab's reliability plot gets its 300px floor back, and on a 320px phone its right edge and the 100% tick go off the screen.",
+      "find": "min-width:min(300px, 100%)",
+      "replace": "min-width:300px",
+      "expect_caught_by": "test_no_hard_width_floor_wider_than_a_phone"
+    },
+    {
+      "id": "toast-lift-drifts-from-the-nav",
+      "why": "the undo toast lifts at a different width from the one where the bottom nav appears, so between the two it floats over nothing or sits behind the bar. 1180 is a documented breakpoint, so only the pairing is wrong.",
+      "find": "@media (max-width:1079px){ .undo-toast",
+      "replace": "@media (max-width:1180px){ .undo-toast",
+      "expect_caught_by": "test_the_toast_lifts_exactly_where_the_bottom_nav_appears"
+    },
+    {
+      "id": "undocumented-breakpoint",
+      "why": "the small-phone query moves to 414px and the Breakpoints comment still says 400, so the one place listing what changes where is wrong.",
+      "find": "@media (max-width:400px){",
+      "replace": "@media (max-width:414px){",
+      "expect_caught_by": "test_every_breakpoint_is_documented_and_every_documented_one_exists"
+    },
+    {
+      "id": "team-names-return-under-the-bottom-nav",
+      "why": "the full team names drop only at 640px, so from 641 to 1079 the bottom-nav layout carries them and the ratings table clips its right-hand columns. 640 is documented, so only the ordering is wrong.",
+      "find": "@media (max-width:1180px){\n    .team-full",
+      "replace": "@media (max-width:640px){\n    .team-full",
+      "expect_caught_by": "test_full_team_names_are_gone_wherever_the_bottom_nav_is"
+    }
+  ]
+}

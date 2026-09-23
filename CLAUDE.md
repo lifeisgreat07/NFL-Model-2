@@ -833,6 +833,23 @@ render paths.
 
 ### Stage 10 - Layout, tables & responsiveness
 
+**Order, agreed with Mark 2026-09-23: one PR at a time, each cut from `main`
+after the last merges** — mobile pass, components (button, page header, nav
+labels, onboarding banner), table system, page states, the standout moments,
+then the audit re-run.
+
+**Mobile pass: done on branch `stage10-mobile`.** Two hard pixel floors wider
+than a 320px phone's 296px content box (the card grid's 340px track, the
+reliability plot's 300px) are `min(Npx, 100%)`. The sidebar hands over at
+1079px, not 820, and full team names drop at 1180. The template's
+Breakpoints comment lists every viewport breakpoint and
+`tests/test_responsive_layout.py` holds it to the media queries. **Two
+queued items were not what they said:** bottom-nav clearance already worked
+(23-43px on every page at 320, 390 and 430), and "the ratings table
+clipping mid-column at 430px" is a table scrolling inside its own box, which
+every phone table does. The fix for that is the table system's scroll-edge
+affordance, not a layout change.
+
 **The moments that make someone stop.** A dashboard that is merely consistent
 is invisible. Decide where this one is allowed to be striking — an entry
 moment, a hero number, a chart that is genuinely worth looking at — and build
