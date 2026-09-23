@@ -1036,21 +1036,49 @@
   .flag-note.open{display:block; animation:fade var(--dur-slow) var(--ease);}
   .flag-note b{color:var(--text); font-weight:600;}
 
-  .empty-state{padding:48px 24px; text-align:center; color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px;
-    background:var(--surface); border:1px dashed var(--border); border-radius:var(--r-md);}
+  /* ---------- Page states ----------
+     One component for "there is nothing to show here", in the three kinds
+     that mean different things to a reader and must not look alike
+     (Stage 10). Every one is written by stateHtml() in the script, except
+     the SOS note, which ships in the markup.
 
-  /* A modifier, not a change to .empty-state. Everywhere else that class
-     carries one short line, and centring one line is right. Season Accuracy's
-     empty state is two paragraphs and is the entire page until the first week
-     is played, so it gets a reading measure and a left edge: centred prose
-     gives the eye no fixed point to return to at the start of each line, and
-     the cost grows with every line. Heading stays centred as a title. */
-  .empty-state.empty-readable{max-width:60ch; margin:0 auto; text-align:left;
-    font-size:13px; line-height:1.65;}
-  .empty-state.empty-readable h3{text-align:center; font-size:15px;
-    color:var(--text); margin:0 0 14px;}
-  .empty-state.empty-readable p{margin:0 0 12px;}
-  .empty-state.empty-readable p:last-child{margin-bottom:0;}
+       waiting   nothing YET, and that is normal: no games played, no picks
+                 saved for a week that has not locked. Dashed, because it is
+                 a space that will fill.
+       filtered  the data is there and a control is hiding all of it. Always
+                 carries the action that undoes the control.
+       missing   something that should be in the build is not: a data file
+                 absent, a workflow that never ran. Solid, with a heavier left
+                 rule, so it cannot be read as the calm "not yet" -- which is
+                 the more flattering of the two and the one a broken page
+                 would otherwise borrow. Not --warn: the graded colours mean a
+                 scored pick and nothing else.
+       note      a line of explanation beside content that IS showing, e.g.
+                 why a column is blank. Left-aligned, compact.
+
+     There is no loading state, deliberately: every page's data is written
+     into the HTML when it is built, and nothing is fetched afterwards, so a
+     spinner would be decoration. The brand mark's tumble covers the one
+     real wait, the entrance. */
+  .state{padding:var(--s7) var(--s6); text-align:center; color:var(--text-2);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); line-height:var(--lh-body);
+    background:var(--surface); border:1px dashed var(--border); border-radius:var(--r-md);}
+  .state-title{display:block; font-size:var(--fs-14); font-weight:600; color:var(--text); margin-bottom:var(--s1);}
+  .state p{margin:0 auto; max-width:60ch;}
+  .state .btn{margin-top:var(--s3);}
+  .state--missing{border-style:solid; border-left:3px solid var(--border-strong);}
+  .state--note{padding:var(--s3) var(--s4); text-align:left; border-style:solid; max-width:680px;
+    font-size:var(--fs-13); margin:2px 0 14px;}
+  .state--note .state-title{display:inline; font-size:inherit; margin:0;}
+  .state--after{margin-top:var(--s4);}
+  /* Season Accuracy's is two paragraphs and is the whole page until the
+     first week is played, so it gets a reading measure and a left edge:
+     centred prose gives the eye no fixed point to return to at the start of
+     each line. The title stays centred. */
+  .state--readable{max-width:60ch; margin:0 auto; text-align:left; line-height:1.65;}
+  .state--readable .state-title{text-align:center; margin-bottom:var(--s3);}
+  .state--readable p{margin:0 0 var(--s3);}
+  .state--readable p:last-child{margin-bottom:0;}
 
   /* ---------- Team Deep-Dive: game drill-down ----------
      Reuses .why-panel / .why-row from the week board rather than restating
@@ -1106,8 +1134,6 @@
   .method-block{background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--border-strong); border-radius:var(--r-md); padding:24px 26px; margin-bottom:16px;}
   /* Explanatory note sitting under a table, for the case where a column is
      legitimately empty and would otherwise read as broken. */
-  .table-note{color:var(--text-2); font-size:12.5px; line-height:1.55; margin:2px 0 14px; padding:12px 14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); max-width:680px;}
-  .table-note b{color:var(--text); font-weight:600;}
   .method-block h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:17px; letter-spacing:.01em; margin-bottom:13px; color:var(--text); display:flex; align-items:center; gap:9px;}
   .method-block h3::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--text-2); flex-shrink:0;}
   .method-block p, .method-block li{font-size:13.5px; line-height:1.68; color:var(--text-2);}
@@ -1409,8 +1435,8 @@
          data -- the reader meets the empty column long before the sentence
          explaining it. Only rendered while SOS is genuinely empty, so in-season
          it costs nothing. -->
-    <div id="sos-empty-note" class="table-note" style="display:none;">
-      <b>SOS is blank because no games have been played yet this season.</b>
+    <div id="sos-empty-note" class="state state--note" role="status" style="display:none;">
+      <b class="state-title">SOS is blank because no games have been played yet this season.</b>
       Strength of schedule is the average current net rating of the opponents a
       team has actually faced, so it has nothing to average until Week 1 is in
       the books. It fills in on its own from the first completed week onward.
@@ -2122,6 +2148,21 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 const agentLog = __AGENT_LOG_JSON__;
 const versionHistory = __VERSION_HISTORY_JSON__;
 const modelVersion = __MODEL_VERSION__;
+/* Every "nothing to show" on the page goes through here. See the Page states
+   block in the stylesheet for what each kind means. `paras` is one string or
+   a list of paragraphs; `action` is {label, onclick} and is required for
+   'filtered', because a filter that hides everything must say how to undo
+   itself. */
+const STATE_KINDS = ['waiting', 'filtered', 'missing', 'note'];
+function stateHtml(kind, title, paras, action, extra){
+  if(!STATE_KINDS.includes(kind)) throw new Error('unknown page state: ' + kind);
+  if(kind === 'filtered' && !action) throw new Error('a filtered state needs its undo action');
+  const body = (Array.isArray(paras) ? paras : [paras]).filter(Boolean)
+    .map(t => kind === 'note' ? ' ' + t : `<p>${t}</p>`).join('');
+  const titleEl = kind === 'note' ? `<b class="state-title">${title}</b>` : `<span class="state-title">${title}</span>`;
+  const btn = action ? `<button class="btn" onclick="${action.onclick}">${action.label}</button>` : '';
+  return `<div class="state state--${kind}${extra ? ' ' + extra : ''}" role="status">${titleEl}${body}${btn}</div>`;
+}
 /* Marks each table wrapper .fits when its table is no wider than its box.
    See the Tables block in the stylesheet for what that switches. Runs on
    load, on resize, once the webfont lands (text widths are what decide it),
@@ -3185,7 +3226,8 @@ function renderGames(){
   }
 
   if(!weekData || gamesList.length === 0){
-    grid.innerHTML = `<div class="empty-state">No predictions saved for this week yet.</div>`;
+    grid.innerHTML = stateHtml('waiting', 'No picks for this week yet',
+      'The model saves its picks for a week before that week&#39;s first kickoff. They appear here as soon as they are saved.');
     return;
   }
 
@@ -3198,7 +3240,9 @@ function renderGames(){
   });
 
   if(filtered.length === 0){
-    grid.innerHTML = `<div class="empty-state">No games match this filter.</div>`;
+    grid.innerHTML = stateHtml('filtered', 'No games match this filter',
+      'Every game this week is still here; this filter just hides all of them.',
+      {label: 'Show all games', onclick: "document.querySelector('#filter-row [data-filter=all]').click()"});
     return;
   }
 
@@ -3792,7 +3836,8 @@ function renderPicksGrid(){
   grid.classList.toggle('picks-readonly', !!sharedPicksView);
 
   if(!weekData || gamesList.length === 0){
-    grid.innerHTML = `<div class="empty-state">No games to pick for this week yet.</div>`;
+    grid.innerHTML = stateHtml('waiting', 'No games to pick for this week yet',
+      'Games appear here once the model has saved its picks for the week.');
     badge.textContent = '—';
     return;
   }
@@ -4463,16 +4508,14 @@ function renderAccuracy(){
     // it is written for a reader, not for whoever runs the scripts. The old
     // copy said "Run grade_predictions.py after a week's games finish", which
     // tells a visitor nothing except that something is missing.
-    el.innerHTML = `<div class="empty-state empty-readable">
-      <h3>Nothing to score yet</h3>
-      <p>Every pick on this site is saved before kickoff and checked against the
+    el.innerHTML = stateHtml('waiting', 'Nothing to score yet', [
+      `Every pick on this site is saved before kickoff and checked against the
       real result afterwards. No games have been played and graded yet, so there
       is no record to show — and a record built from anything other than
-      already-saved picks would not be worth showing.</p>
-      <p>This page fills in on its own the day after the first week's games
+      already-saved picks would not be worth showing.`,
+      `This page fills in on its own the day after the first week's games
       finish: how often each model was right, how that changes week to week, and
-      whether the confidence numbers turn out to be honest.</p>
-    </div>`;
+      whether the confidence numbers turn out to be honest.`], null, 'state--readable');
     return;
   }
   const o = accuracy.overall;
@@ -4582,7 +4625,8 @@ function renderTeamDive(){
   const badge = document.getElementById('teamdive-badge');
 
   if(!teamHistory || !teamHistory.names || Object.keys(teamHistory.names).length === 0){
-    content.innerHTML = `<div class="empty-state">No team history data available yet.</div>`;
+    content.innerHTML = stateHtml('missing', 'No team history in this build',
+      'This page is drawn from a team history file, and the page was built without one. Nothing here is wrong with any team; the file is what is missing.');
     select.innerHTML = '';
     // Without this the button keeps naming whatever team it last rendered,
     // sitting directly above a message saying there is no data. sync() turns
@@ -4616,7 +4660,8 @@ function renderTeamDive(){
   badge.textContent = `${points.length} data point${points.length===1?'':'s'}`;
 
   if(points.length === 0){
-    content.innerHTML = `<div class="empty-state">No history for this team yet.</div>`;
+    content.innerHTML = stateHtml('waiting', `No history for ${team} yet`,
+      'This team has no rated seasons or weeks on record so far.');
     return;
   }
 
@@ -4704,12 +4749,10 @@ function renderTeamGames(team){
     // Distinct from "no history": the ratings chart above is backtested and
     // goes back to 2020, while saved per-game predictions only start when the
     // weekly routine does. An empty list here is normal, not broken.
-    return `<div class="table-note" style="margin-top:16px;">
-      <b>No saved predictions for ${team} yet.</b>
-      The rating history above is replayed from past seasons; this list only covers weeks the
+    return stateHtml('note', `No saved predictions for ${team} yet.`,
+      `The rating history above is replayed from past seasons; this list only covers weeks the
       live weekly run has actually saved predictions for, so it fills in from
-      the first run of the season onward.
-    </div>`;
+      the first run of the season onward.`, null, 'state--after');
   }
 
   const graded = games.filter(g => g.won !== null);
@@ -4799,12 +4842,11 @@ function renderAgentLog(){
   // ran and found nothing", and the page must not let the reader read the
   // second from the first -- it is the more flattering of the two.
   if(!agentLog || !agentLog.summary){
-    el.innerHTML = `<div class="method-block">
-      <h3>The record has not been collected yet</h3>
-      <p>The audits below were written by hand. The automatic tally of every
+    el.innerHTML = stateHtml('missing', 'The record has not been collected yet',
+      `The audits below were written by hand. The automatic tally of every
       audit this project's verifier has run is produced by a workflow that has
       not been run yet, so rather than show an empty scoreboard this section
-      says so.</p></div>`;
+      says so.`);
     return;
   }
   const s = agentLog.summary;
@@ -4846,7 +4888,8 @@ function renderChangelog(){
   if(!content) return;
 
   if(!versionHistory || !versionHistory.length){
-    content.innerHTML = `<div class="empty-state">No version history recorded in config.py.</div>`;
+    content.innerHTML = stateHtml('missing', 'No version history in this build',
+      'The list of model versions is read from the project&#39;s settings file when the page is built, and this build found none.');
     if(badge) badge.textContent = '—';
     return;
   }
