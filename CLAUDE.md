@@ -193,10 +193,16 @@ casually.
   NORMAL vision — not a colour-vision finding at all, a pair nobody can tell
   apart — and is tolerable only because the two tokens never reach one page.
   Two numbers in one queue entry are not one finding.
+  **Superseded 2026-09-22 (Stage 9): `--accent-strong` is RETIRED.** Its one
+  consumer was the Net Rating bar, which now wears neutral `--text-3`. So the
+  second pair no longer exists, along with every other `ACCEPTED_CLOSE` entry
+  naming that token, four in all. The first pair stands as accepted.
 - **Each acceptance is pinned by the thing it actually rests on, not by the
-  colour figures.** `--accent-strong`/`--series-a` rests on a page-disjointness
-  that holds only while neither token moves, so `SOLE_CONSUMER` pins
-  `--accent-strong` and `TRACED_CONSUMER_SET` pins `--series-a`.
+  colour figures.** `--accent-strong`/`--series-a` rested on a page-disjointness
+  that held only while neither token moved, and two consumer guards pinned it
+  until the token was retired in Stage 9. The consumer-premise rules stay in
+  `tests/test_dashboard_charts.py`, checked over synthetic templates, for the
+  next verdict that rests on WHERE a token is used.
   `--accent`/`--series-d` rests on the series' shape and dash, so
   `test_every_series_carries_a_distinct_shape_and_picks_is_the_only_dashed_one`
   holds those. That last guard was written because grepping for an existing
@@ -782,6 +788,37 @@ and the flagged card all wear `--accent`, which is a blue, and the only ochre
 left is `--series-b`, Model B's chart series. When this was written amber
 meant all five at once.
 
+**Stage 9's colour work is DONE (2026-09-22).** Decided, and held by
+`tests/test_graded_colour_scope.py`:
+
+- **The graded pair means one thing.** `--good`/`--warn` appear ONLY where a
+  scored pick was right or wrong: the graded tag, the pick badge, the streak,
+  and Team Deep-Dive's tick and cross. Nine other uses went to the neutral
+  ramp: decision pills, the "Built" pill, gap numbers, a team's W/L, rating
+  trend arrows, Model Lab's "Current." dot, and the incident labels. The
+  guard compares the full consumer set against that list.
+- **The Net Rating sign is not a hue.** The fill is neutral `--text-3` on both
+  sides of zero. The zero line and the bar's direction already carry the
+  sign. A diverging pair would be a fifth colour job, and its warm pole would
+  read as "wrong". Contrast is 3:1 or better on both surface and track, in
+  both themes, and is recomputed in the test. `--accent-strong` retired with
+  it.
+- **Confidence has no hue**: it is the bar's length and the number. **A
+  flagged game** is the `--accent` left border. **The neutral pill is
+  neutral**: `.tag-neutral` used to wear the accent, so every decision label,
+  and the card's toss-up tag, carried the colour of the model's lean.
+- Model Lab's hand-written version timeline was a second copy of
+  `VERSION_HISTORY` and is gone.
+
+**Still open in this stage, deliberately deferred to Stage 10's component
+pass:** one button component. There are twelve button classes styled one by
+one. A keyboard sweep on 2026-09-22 found every focusable control on all
+nine pages taking a visible ring. The reliability points use their halo
+instead, and the next-week buttons are disabled on the latest week, which is
+correct. So the focus pass needs no separate work. The two `.game-card` headers were
+unified in #64.
+
+The original brief, kept for the reasoning:
 Beyond that: the Net Rating bar was deliberately left amber in Stage 2 with a
 note saying sign-encoding belongs here. A diverging pair with a neutral
 midpoint is the `dataviz` answer; run it through the validator in both themes

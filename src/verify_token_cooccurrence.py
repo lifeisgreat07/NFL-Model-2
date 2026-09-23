@@ -12,9 +12,10 @@ read off one table instead of being re-derived by hand per pair.
 NEEDS A BROWSER. Playwright is not installed on the Windows dev machine and no
 CI job here has one, so this is a standalone verifier like
 `src/verify_matchup_cvd.py` -- run where a browser exists, quote the output.
-What the suite CAN check without a browser is the premise underneath the two
-"cannot meet" verdicts: see
-`test_the_cannot_meet_verdicts_rest_on_a_premise_that_still_holds`.
+What the suite CAN check without a browser is a premise that rests on WHERE a
+token is consumed; no current ACCEPTED_CLOSE verdict needs one since Stage 9
+retired --accent-strong, but the rule and its synthetic checks remain in
+`tests/test_dashboard_charts.py` for the next one.
 
 Two things this script does that a naive version gets wrong, both of which
 produced confident wrong answers while it was being written:

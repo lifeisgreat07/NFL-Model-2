@@ -251,28 +251,6 @@ ACCEPTED_CLOSE = {
             'tag prints "Correct"/"Missed" and Team Deep-Dive\'s mark() prints '
             '"correct" -- so colour is redundant to text, which is the '
             'secondary encoding the floor exists to require.',
-        _pair('--accent-strong', '--series-a'):
-            'ACCEPTED 2026-09-21 by Mark, after the pair was rendered side by '
-            'side in both themes under normal, protan and deutan vision. '
-            'Re-derived with this file\'s own delta_e: 2.85 under CVD, 2.87 '
-            'under NORMAL vision -- the closest pair in the dark palette of '
-            '28, and the striking half is the normal-vision figure, because '
-            'this is not a colour-vision problem at all. '
-            'TRACED: they CANNOT MEET. --accent-strong has one consumer, '
-            '.srs-bar-fill, on Power Ratings and Team Deep-Dive; --series-a '
-            'has two, the SERIES a entry and .model-chip.a, which between '
-            'them reach Week Board, Season Accuracy, Model Lab and '
-            'Methodology. The two page sets do not intersect. '
-            'The argument for fixing it anyway was that a page claiming '
-            'colour has four jobs has two of them wearing one blue on '
-            'different screens -- a judgement about the design\'s own claim, '
-            'not an accessibility failure. Judged not worth re-stepping a '
-            'token no reader can hold against the other. '
-            'WHAT MAKES THE ACCEPTANCE SAFE IS GUARDED, not assumed: the '
-            'verdict is true only while neither token grows a new home, so '
-            'SOLE_CONSUMER pins --accent-strong and TRACED_CONSUMER_SET pins '
-            '--series-a. If either fires, this entry is out of date -- '
-            're-trace before editing it.',
         _pair('--series-a', '--series-d'):
             'TRACED: they co-occur, on Season Accuracy, in the trend chart\'s '
             'legend row and on the plot. Not a defect on the same grounds as '
@@ -281,19 +259,17 @@ ACCEPTED_CLOSE = {
             'end-labels, and My Picks is the only dashed one (6,4). Colour is '
             'the fourth encoding here, not the first.',
         _pair('--warn', '--series-b'):
-            'TRACED: they co-occur, on Model Lab and Methodology. Model Lab '
-            'puts a "REJECT" conf-tag on the same page as the reliability '
-            'diagram\'s Model B squares; Methodology puts .gap-num beside '
-            '.model-chip.b, which prints "Model B (market-blended)". Every '
-            'instance of both carries its own word, so not a defect.',
-        _pair('--accent-strong', '--series-d'):
-            'TRACED: they CANNOT MEET. --accent-strong has one consumer, '
-            '.srs-bar-fill, which renders only on Power Ratings and Team '
-            'Deep-Dive; --series-d has one consumer, the picks entry of '
-            'SERIES, which renders only in Season Accuracy\'s trend chart. No '
-            'page paints both. Kept rather than deleted because the sweep '
-            'still finds the pair close, and the entry records WHY that is '
-            'tolerable rather than leaving the next reader to re-trace it.',
+            'RE-TRACED 2026-09-22 after Stage 9 moved every non-graded use of '
+            'the status colours to the neutral ramp. Before it, these met on '
+            'Model Lab (a REJECT pill beside Model B squares) and Methodology '
+            '(.gap-num beside the Model B chip); neither consumer wears --warn '
+            'any more, and the default-view sweep finds --warn on no page. It '
+            'is now reached only by a SCORED pick: the graded tag and pick '
+            'badge on the Board and My Picks when a finished week is shown, '
+            'and the loss cell on My Picks. The Board also carries the Model B '
+            'chip, so the two CAN share a screen there -- and every --warn '
+            'instance prints its word ("Missed", "wrong") or is a cell with a '
+            'week label, and the chip prints "Model B". Not a defect.',
     },
     'light': {
         _pair('--accent', '--series-d'):
@@ -302,8 +278,8 @@ ACCEPTED_CLOSE = {
             'either palette: 1.26 under CVD against 15.08 under normal '
             'vision, so it clears the floor for a full-colour reader and '
             'collapses entirely for a deuteranope -- the exact reverse of '
-            '--accent-strong/--series-a, which is why filing the two together '
-            'hid what each one was. '
+            '--accent-strong/--series-a (retired with that token in Stage 9), '
+            'which is why filing the two together hid what each one was. '
             'TRACED, and the trace both narrows it and contradicts the '
             'original story. The collision this entry used to describe -- the '
             'pick tick against the My Picks series -- CANNOT HAPPEN: the tick '
@@ -328,25 +304,17 @@ ACCEPTED_CLOSE = {
         _pair('--good', '--warn'):
             'NOT a defect, for the reason given in the dark block above.',
         _pair('--good', '--series-c'):
-            'TRACED: they co-occur, on Model Lab, where the "ACCEPT" conf-tag '
-            'shares a page with the reliability diagram\'s Market triangles. '
-            'The old note hoped '
-            'test_status_colours_are_never_painted_on_a_chart_mark might mean '
-            'they cannot meet; it does not. That guard says a status colour '
-            'is never painted ON a mark, which is a rule about what a mark '
-            'wears, not about what else is on the page. Not a defect -- the '
-            'tag prints its verdict and the mark is a labelled triangle.',
-        _pair('--accent-strong', '--series-d'):
-            'TRACED: they CANNOT MEET, for the reason given in the dark block '
-            'above. The consumer sets are the same in both themes.',
+            'RE-TRACED 2026-09-22 after Stage 9. The old co-occurrence was the '
+            'ACCEPT pill on Model Lab beside the Market triangles; that pill is '
+            'neutral now, and the default-view sweep finds --good only on My '
+            'Picks (the win cell) while --series-c paints only Season Accuracy '
+            'and Model Lab. Kept rather than deleted because a scored week can '
+            'still put a "Correct" tag on a page that later grows a Market '
+            'mark, and the entry says why that would be tolerable: the tag '
+            'prints its verdict and the mark is a labelled triangle.',
         _pair('--warn', '--series-b'):
-            'TRACED: they co-occur, on Model Lab and Methodology, exactly as '
-            'in the dark block above and for the same reason -- which pages '
+            'RE-TRACED 2026-09-22: as in the dark block above -- which pages '
             'paint a token does not depend on the theme.',
-        _pair('--accent', '--accent-strong'):
-            'Intended. A colour and its own darker variant, used for the hover '
-            'and pressed states OF THE SAME control -- they are never the two '
-            'things a reader has to tell apart.',
         _pair('--accent', '--series-a'):
             'The residual the .model-chip comment argues at length: the dot is '
             'an 8px circle, the tick a 15px badge at 10% opacity, and neither '
@@ -364,7 +332,7 @@ def test_the_meaning_token_scan_is_not_blind(theme):
     name specifics it has to find, and specifics it must not.
     """
     found = meaning_tokens(theme)
-    for required in ('--accent', '--accent-strong', '--good', '--warn',
+    for required in ('--accent', '--good', '--warn',
                      '--series-a', '--series-b', '--series-c', '--series-d'):
         assert required in found, (
             f'{required} is missing from the {theme} meaning-token scan, so '
@@ -487,17 +455,14 @@ def test_the_accepted_list_has_no_entries_that_stopped_being_close(theme):
         'are fine is how the next reader mis-reads the real ones.')
 
 
-#: The two "cannot meet" verdicts in ACCEPTED_CLOSE are not claims about
-#: colour, they are claims about WHERE a token is consumed -- and both hold
-#: only because each of these tokens has exactly one consumer in the template.
-#: Give --accent-strong a second home, or draw the picks series anywhere but
-#: the trend chart, and the verdict silently stops being true while the entry
-#: goes on asserting it. So the premise is guarded even though the trace that
-#: produced the verdict needs a browser and cannot run here.
-SOLE_CONSUMER = {
-    '--accent-strong': '.srs-bar-fill',
-    '--series-d': 'picks:',
-}
+#: CANNOT-MEET PREMISES. Two ACCEPTED_CLOSE verdicts used to rest on WHERE a
+#: token was consumed rather than on its colour: --accent-strong against
+#: --series-a and --series-d "cannot meet" because --accent-strong's one
+#: consumer was the Net Rating bar. Stage 9 (2026-09-22) retired
+#: --accent-strong outright, so both verdicts -- and the pinned-consumer
+#: guards that held them, SOLE_CONSUMER and TRACED_CONSUMER_SET -- are gone
+#: with it. The rules below stay, checked over synthetic templates, for the
+#: next verdict that rests on a consumer rather than on a colour.
 
 
 def _strip_comments(src):
@@ -533,19 +498,6 @@ def premise_problem(src, token, anchor):
     if anchor not in lines[0]:
         return f'its one consumer is no longer {anchor}: {lines[0]}'
     return None
-
-
-@pytest.mark.parametrize('token,anchor', sorted(SOLE_CONSUMER.items()))
-def test_the_cannot_meet_verdicts_rest_on_a_premise_that_still_holds(
-        token, anchor):
-    problem = premise_problem(TEMPLATE.read_text(), token, anchor)
-    assert problem is None, (
-        f'{token}: {problem}. ACCEPTED_CLOSE says a pair involving {token} '
-        "'CANNOT MEET', and that verdict was derived from it having exactly "
-        'one consumer, in the place named above. Re-run '
-        'python src/verify_token_cooccurrence.py against a fresh build and '
-        'rewrite the entry from what it prints -- do not edit this guard to '
-        'match the new shape.')
 
 
 def test_the_consumer_scan_is_not_blind():
@@ -606,22 +558,6 @@ def test_a_commented_out_consumer_does_not_break_the_premise():
         'by commenting it out would read as a second live consumer')
 
 
-#: SOLE_CONSUMER above holds one half of --accent-strong/--series-a's
-#: "cannot meet", and only one half: it pins --accent-strong to .srs-bar-fill.
-#: The other half is that --series-a never reaches the two pages that element
-#: renders on, and THAT is true only while --series-a keeps the two homes the
-#: 2026-09-21 trace found it in. It cannot use SOLE_CONSUMER, which requires
-#: exactly one consumer; the generalisation is the same rule over a named set.
-#:
-#: Why a set and not a count: a count alone passes when one consumer is
-#: deleted and another added, which is exactly the edit that would move a
-#: token onto a new page. Enumerate the class -- the lesson the bridging guard
-#: was widened for -- rather than asserting how big it is.
-TRACED_CONSUMER_SET = {
-    '--series-a': ('.model-chip.a', "label:'Model A'"),
-}
-
-
 def consumer_set_problem(src, token, anchors):
     """None when the token still has exactly the consumers the trace found.
 
@@ -640,22 +576,11 @@ def consumer_set_problem(src, token, anchors):
     return None
 
 
-@pytest.mark.parametrize('token,anchors', sorted(TRACED_CONSUMER_SET.items()))
-def test_the_other_half_of_the_cannot_meet_verdict_also_still_holds(
-        token, anchors):
-    problem = consumer_set_problem(TEMPLATE.read_text(), token, anchors)
-    assert problem is None, (
-        f'{token}: {problem}. ACCEPTED_CLOSE grades '
-        '--accent-strong/--series-a as tolerable because the two never reach '
-        'one page, and that rests on this token keeping the homes it was '
-        'traced in. Re-run python src/verify_token_cooccurrence.py against a '
-        'fresh build and rewrite the entry from what it prints -- do not edit '
-        'this guard to match the new shape.')
-
-
 #: A --series-a that grew a third home, and one whose chip rule was renamed.
 #: Today's template has exactly the two traced consumers, so running the rule
 #: over the page alone exercises one branch.
+SERIES_A_TRACED = ('.model-chip.a', "label:'Model A'")
+
 SERIES_A_THIRD_HOME = """
   .model-chip.a{--chip:var(--series-a);}
   .hero-number{color:var(--series-a);}
@@ -670,13 +595,13 @@ SERIES_A_RENAMED_HOME = """
 
 def test_a_third_home_breaks_the_other_half():
     problem = consumer_set_problem(SERIES_A_THIRD_HOME, '--series-a',
-                                   TRACED_CONSUMER_SET['--series-a'])
+                                   SERIES_A_TRACED)
     assert problem is not None and '3 consumers' in problem, problem
 
 
 def test_a_renamed_home_breaks_the_other_half():
     problem = consumer_set_problem(SERIES_A_RENAMED_HOME, '--series-a',
-                                   TRACED_CONSUMER_SET['--series-a'])
+                                   SERIES_A_TRACED)
     assert problem is not None and 'gone or moved' in problem, problem
 
 

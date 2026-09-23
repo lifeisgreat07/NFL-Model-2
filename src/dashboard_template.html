@@ -18,8 +18,11 @@
      Colour has exactly four jobs and nothing else gets a hue:
        1. structure            -> the neutral ramp, via semantic aliases
        2. the model's lean / the active thing -> --accent (one blue)
-       3. a graded outcome     -> --good / --warn, only once a thing has
-                                  been evaluated
+       3. a graded outcome     -> --good / --warn, and ONLY for a pick
+                                  that has been scored: was a prediction right.
+                                  Not a decision label, not a team's win or
+                                  loss, not "current", not "improving".
+                                  tests/test_graded_colour_scope.py holds it.
        4. chart series identity-> --series-a/b/c/d, keyed to the ENTITY
 
      The compatibility aliases that carried the old token names through the
@@ -38,7 +41,11 @@
     --text:var(--n8); --text-2:var(--n7); --text-3:var(--n6); --text-disabled:var(--n5);
 
     /* Job 2 — ONE accent */
-    --accent:#7FA8F5; --accent-strong:#5C8CE8;
+    /* --accent-strong was retired 2026-09-22 (Stage 9). Its one consumer
+       was the Net Rating bar, which now wears the neutral ramp (below), and a
+       token with no consumer is a colour pair the sweep has to keep excusing
+       -- it was the closest pair in the dark palette against --series-a. */
+    --accent:#7FA8F5;
     --accent-soft:rgba(127,168,245,.14); --accent-ring:rgba(127,168,245,.45);
 
     /* Job 3 — a graded outcome, only once the thing has been evaluated.
@@ -103,7 +110,7 @@
     --n0:#F3F4F6; --n1:#FFFFFF; --n2:#F7F8FA; --n3:#E4E7EB; --n4:#CBD1D9;
     --n5:#A3ABB6; --n6:#626C7B; --n7:#4A5260; --n8:#14181E;
 
-    --accent:#1F5ED6; --accent-strong:#174BB0;
+    --accent:#1F5ED6;
     --accent-soft:rgba(31,94,214,.10); --accent-ring:rgba(31,94,214,.35);
 
     /* --good darkened from #1E7F5F: 5.08:1 on its own tint over white */
@@ -228,8 +235,9 @@
   td.rank{font-family:'Plus Jakarta Sans', sans-serif; color:var(--text-2); width:36px;}
   .team-cell{display:flex; align-items:center; gap:9px;}
   .trend-arrow{font-size:10px; margin-left:4px;}
-  .trend-arrow.up{color:var(--good);}
-  .trend-arrow.down{color:var(--warn);}
+  /* The glyph carries the direction. Green/red here read as right/wrong
+     about a rating moving, which is not a scored pick. */
+  .trend-arrow.up, .trend-arrow.down{color:var(--text-2);}
   .streak-row{display:flex; align-items:center; gap:14px; margin-bottom:18px; flex-wrap:wrap;}
   .streak-cells{display:flex; gap:3px;}
   .streak-cell{width:14px; height:14px; border-radius:3px; background:var(--border);}
@@ -258,16 +266,7 @@
   .glance-label{display:block; font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); margin-bottom:6px;}
   .glance-value{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:20px; color:var(--text);}
   .glance-sub{display:block; font-size:11px; color:var(--text-2); margin-top:3px;}
-  .version-timeline{display:flex; flex-direction:column; gap:0;}
-  .version-item{display:flex; gap:16px; position:relative; padding-bottom:20px;}
-  .version-item:last-child{padding-bottom:0;}
-  .version-item:not(:last-child)::before{content:''; position:absolute; left:5px; top:16px; bottom:0; width:2px; background:var(--border);}
-  .version-dot{width:12px; height:12px; border-radius:50%; background:var(--border); border:2px solid var(--border-strong); flex-shrink:0; margin-top:3px; z-index:1;}
-  .version-dot.current{background:var(--good); border-color:var(--good);}
-  .version-content{flex:1;}
-  .version-tag{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:13px; color:var(--text); margin-right:10px;}
-  .version-date{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2);}
-  .version-content p{font-size:12.5px; color:var(--text-2); margin-top:4px; line-height:1.5;}
+  
   /* --accent, not --series-a: the banner is the active thing, not a series. */
   .onboarding-banner{background:var(--surface-2); border:1px solid var(--accent); border-radius:var(--r-md); padding:18px 22px; margin-bottom:18px;}
   .onboarding-content h4{font-family:'Plus Jakarta Sans', sans-serif; font-size:14px; margin-bottom:9px; color:var(--text);}
@@ -312,7 +311,7 @@
   .dive-value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:13.5px; width:62px; text-align:right; flex-shrink:0;}
   .net-value{font-family:'Plus Jakarta Sans', sans-serif; text-align:right; justify-self:end; white-space:nowrap;}
   .srs-bar-track{position:relative; width:90px; height:6px; background:var(--border); border-radius:3px; overflow:hidden;}
-  .srs-bar-fill{position:absolute; top:0; bottom:0; background:linear-gradient(90deg, var(--accent), var(--accent-strong)); border-radius:3px;}
+  .srs-bar-fill{position:absolute; top:0; bottom:0; background:var(--text-3); border-radius:3px;}
 
   /* Diverging variant. These bars encode a SIGNED value whose zero is the
      middle of the track, and until now that zero was invisible: a small
@@ -321,9 +320,17 @@
      defeats the point of having a bar. Deliberately NOT applied to the
      probability bars, which are 0-100% magnitude bars anchored at the left
      edge and has no meaningful centre to mark.
-     Colour is left alone here on purpose: encoding the sign by hue is a real
-     improvement but it belongs with the rest of the palette work, where it
-     can be run through the validator in both themes rather than eyeballed. */
+     THE SIGN IS NOT A HUE, decided in Stage 9 (2026-09-22). The fill is the
+     neutral --text-3 on both sides of zero: the zero line and the bar's
+     direction already say which side a team is on, and the number prints
+     beside it. A diverging hue pair would be a fifth colour job, and its
+     warm pole would read as "wrong" on a page where red means exactly that
+     for a scored pick -- a team rated below average has not been wrong about
+     anything. Contrast of the fill, WCAG 1.4.11 needs 3:1 for a graphical
+     object: dark 5.03 on --surface and 4.07 on the track, light 5.32 and
+     4.29, recomputed from the hex in tests/test_graded_colour_scope.py.
+     It used to be an --accent gradient, which spent the "model's lean" colour
+     on every team in the table. */
   .srs-bar-track.diverging{overflow:visible;}
   .srs-bar-track.diverging::before{content:''; position:absolute; left:50%; top:-3px; bottom:-3px;
     width:1px; margin-left:-.5px; background:var(--text-2); opacity:.5; z-index:2;}
@@ -846,10 +853,15 @@
      `.game-kickoff` would have believed it. */
   .game-confidence{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; color:var(--text-2); letter-spacing:.03em;}
   .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; letter-spacing:.06em; text-transform:uppercase; padding:4px 10px; border-radius:20px;}
-  .tag-good{background:var(--good-dim); color:var(--good);}
-  .tag-warn{background:var(--warn-dim); color:var(--warn);}
+  /* .tag-good / .tag-warn retired (Stage 9): an ACCEPT or a REJECT is a
+     decision about an experiment, not a scored pick, and the pill already
+     prints the word. Every decision now wears .tag-neutral. */
   /* --accent, not --series-a: a neutral status tag is not a chart series. */
-  .tag-neutral{background:var(--accent-soft); color:var(--accent);}
+  /* The neutral pill, and it is now actually neutral (Stage 9). It wore
+     --accent-soft, so every decision label, and the toss-up tag on a game
+     card, was painted in the colour that means "the model's lean" -- and a
+     toss-up is precisely the absence of one. Same values as .status-planned. */
+  .tag-neutral{background:var(--border); color:var(--text-2);}
 
   .model-row{display:grid; grid-template-columns:56px 1fr; align-items:center; gap:12px; margin-bottom:10px;}
   .model-row:last-of-type{margin-bottom:0;}
@@ -958,8 +970,9 @@
   .dive-game-prob{color:var(--text); font-weight:600;}
   .dive-game-res{text-align:right;}
   .dive-result{font-weight:700; font-size:13px;}
-  .dive-result.won{color:var(--good);}
-  .dive-result.lost{color:var(--warn);}
+  /* W / L is the TEAM's result, not the model's. Neutral; the letter says it. */
+  .dive-result.won{color:var(--text);}
+  .dive-result.lost{color:var(--text-2);}
   .dive-pending{color:var(--text-2); font-size:11.5px;}
   .dive-game .why-panel{padding:0 14px 14px;}
   .dive-why-head{font-size:12.5px; color:var(--text-2); margin-bottom:4px;}
@@ -1009,7 +1022,7 @@
   .metrics-table .highlight{color:var(--accent);}
   .gap-item{display:flex; gap:11px; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px;}
   .gap-item:last-child{border-bottom:none;}
-  .gap-num{font-family:'Plus Jakarta Sans', sans-serif; color:var(--warn); flex-shrink:0;}
+  .gap-num{font-family:'Plus Jakarta Sans', sans-serif; color:var(--text-3); flex-shrink:0;}
 
   .section-title{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:15px;
     margin:30px 0 4px; padding-top:22px; border-top:1px solid var(--border);}
@@ -1049,7 +1062,10 @@
     padding:4px 9px; border-radius:20px; display:inline-block; margin-bottom:11px;}
   .status-planned{background:var(--border); color:var(--text-2);}
   .status-next{background:var(--accent-soft); color:var(--accent);}
-  .status-done{background:var(--good-dim); color:var(--good);}
+  /* Shipped vs not kept is told apart by FORM now, not by the graded green:
+     shipped is an outlined pill in primary text, not-kept the filled grey
+     .status-planned. The word on each still says which (Stage 9). */
+  .status-done{background:transparent; color:var(--text); border:1px solid var(--border-strong);}
   .roadmap-card h4{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:16px; margin-bottom:7px;}
   .roadmap-card p{font-size:12.5px; color:var(--text-2); line-height:1.55;}
   .add-idea{border:1px dashed var(--border); background:transparent; display:flex; align-items:center; justify-content:center;
@@ -1506,66 +1522,63 @@
       <table>
         <thead><tr><th>Experiment</th><th>Result</th><th>Decision</th></tr></thead>
         <tbody>
-          <tr><td>QB feature (trailing EPA/dropback)</td><td class="num">Accuracy 60.0% to 62.6%, biggest single gain of the project</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
-          <tr><td>Ridge alpha tuning (200 -&gt; 15)</td><td class="num">Real backtest sweep across 1-1600, found interior optimum</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
-          <tr><td>Recency half-life tuning (6/10/16)</td><td class="num">16 games won on log loss</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
-          <tr><td>Rest days, weather, travel distance, altitude</td><td class="num">All flat or worse across every framing tested</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Divisional games, trap/look-ahead games, blowout letdown</td><td class="num">No real signal beyond existing team-strength features</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Gradient boosting vs. logistic regression</td><td class="num">+0.83pt accuracy but AUC drops 0.670&rarr;0.654; bootstrap CI included zero</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>QB feature (trailing EPA/dropback)</td><td class="num">Accuracy 60.0% to 62.6%, biggest single gain of the project</td><td><span class="conf-tag tag-neutral">ACCEPT</span></td></tr>
+          <tr><td>Ridge alpha tuning (200 -&gt; 15)</td><td class="num">Real backtest sweep across 1-1600, found interior optimum</td><td><span class="conf-tag tag-neutral">ACCEPT</span></td></tr>
+          <tr><td>Recency half-life tuning (6/10/16)</td><td class="num">16 games won on log loss</td><td><span class="conf-tag tag-neutral">ACCEPT</span></td></tr>
+          <tr><td>Rest days, weather, travel distance, altitude</td><td class="num">All flat or worse across every framing tested</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Divisional games, trap/look-ahead games, blowout letdown</td><td class="num">No real signal beyond existing team-strength features</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Gradient boosting vs. logistic regression</td><td class="num">+0.83pt accuracy but AUC drops 0.670&rarr;0.654; bootstrap CI included zero</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
           <tr><td>QB Shrinkage Re-tune (k=96, then k=128)</td><td class="num">Investigation, not a clean win: the original k=8-&gt;96 decision didn't reproduce once OL removal + weekly refit changed the model underneath it (a real shrinkage-target leak was also found and fixed along the way, see ratings_engine.py). A fresh retune under the fixed, current config picked k=128 on validation, but on confirmatory data k=8 won 3 of 4 metrics (accuracy, Brier, AUC) against k=128, which only edged log loss -- bootstrap CI included zero either way. Reverted to k=8, the current live default.</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
-          <tr><td>QB quality-differential change signal</td><td class="num">Identical to no-signal-at-all; binary flag clearly better</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Team-specific home-field advantage</td><td class="num">Split-half reliability 0.078 -- mostly noise, not a real trait</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Pass/rush-split matchup features</td><td class="num">Worse on every metric; 0.947 correlation with existing aggregate</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>All 9 rejected features combined, regularized</td><td class="num">No C value beat baseline even with proper scaling</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>O-line continuity</td><td class="num">Bootstrap CI included zero; later beaten by "no OL feature" on confirmatory test</td><td><span class="conf-tag tag-warn">REMOVED (was live)</span></td></tr>
-          <tr><td>Coaching changes (5 framings)</td><td class="num">Every variant tied or underperformed baseline</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Early-season extra shrinkage</td><td class="num">Real gap confirmed (61.7% vs 65.9%) but fix didn't close it</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Weekly-refitting backtest methodology</td><td class="num">Tied-or-better on every metric, free, more methodologically correct</td><td><span class="conf-tag tag-good">ACCEPT</span></td></tr>
-          <tr><td>Platt scaling / isotonic calibration</td><td class="num">Platt worse on every metric; isotonic's log loss broke (0.64&rarr;1.00) from overconfident extremes</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>QB quality-differential change signal</td><td class="num">Identical to no-signal-at-all; binary flag clearly better</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Team-specific home-field advantage</td><td class="num">Split-half reliability 0.078 -- mostly noise, not a real trait</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Pass/rush-split matchup features</td><td class="num">Worse on every metric; 0.947 correlation with existing aggregate</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>All 9 rejected features combined, regularized</td><td class="num">No C value beat baseline even with proper scaling</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>O-line continuity</td><td class="num">Bootstrap CI included zero; later beaten by "no OL feature" on confirmatory test</td><td><span class="conf-tag tag-neutral">REMOVED (was live)</span></td></tr>
+          <tr><td>Coaching changes (5 framings)</td><td class="num">Every variant tied or underperformed baseline</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Early-season extra shrinkage</td><td class="num">Real gap confirmed (61.7% vs 65.9%) but fix didn't close it</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Weekly-refitting backtest methodology</td><td class="num">Tied-or-better on every metric, free, more methodologically correct</td><td><span class="conf-tag tag-neutral">ACCEPT</span></td></tr>
+          <tr><td>Platt scaling / isotonic calibration</td><td class="num">Platt worse on every metric; isotonic's log loss broke (0.64&rarr;1.00) from overconfident extremes</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
           <tr><td>Player availability / injury model</td><td class="num">Re-confirmed 2026-08-25 via nflverse's own status page: "no 2025 data, no ETA." Still genuinely blocked, not just stale.</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
-          <tr><td>Dynamic Model A/B weighting by disagreement magnitude</td><td class="num">High-disagreement bucket's B-edge is real (bootstrap CI excludes zero), but B already wins in every bucket -- no dynamic scheme beat simply always using Model B on confirmatory data</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Margin-of-victory modeling (regression -&gt; sign -&gt; winner)</td><td class="num">-1.56pt vs. current classifier; CI [-3.13, +0.09] nearly significant negative. Regression's MSE objective isn't aligned with getting the sign right on close games -- broke 50 previously-correct calls to fix only 33</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Snap-share "key player disruption" signal (Objective 3 follow-up)</td><td class="num">INVALIDATED, not rejected -- used this-week's own snap percentage as a feature, which is only knowable after that week's game is played. Confirmed via direct correlation with the very outcome it claimed to predict. A real mistake, caught before shipping. Depends on Objective 2 (blocked) to do legitimately.</td><td><span class="conf-tag tag-warn">LEAKAGE -- INVALIDATED</span></td></tr>
-          <tr><td>CPOE-based QB rating (alone and blended with EPA)</td><td class="num">CPOE-only clearly worse on every metric; EPA+CPOE blend just flat/redundant. CPOE is stable but a weaker predictor of wins than EPA specifically</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Rookie-specific QB shrinkage (hierarchical refinement of k=96)</td><td class="num">+0.92pt on validation looked promising, reversed to -0.74pt on true confirmatory test (CI includes zero). A real example of why validation-then-confirm matters</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Nonlinear architectures (GBM, Random Forest)</td><td class="num">RF's +0.55pt accuracy edge not significant (CI [-2.57,+3.68]) and comes with worse log loss/Brier/AUC -- same pattern GBM showed in the first cycle. XGBoost/LightGBM untestable, no network access to install</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Dynamic Model A/B weighting by disagreement magnitude</td><td class="num">High-disagreement bucket's B-edge is real (bootstrap CI excludes zero), but B already wins in every bucket -- no dynamic scheme beat simply always using Model B on confirmatory data</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Margin-of-victory modeling (regression -&gt; sign -&gt; winner)</td><td class="num">-1.56pt vs. current classifier; CI [-3.13, +0.09] nearly significant negative. Regression's MSE objective isn't aligned with getting the sign right on close games -- broke 50 previously-correct calls to fix only 33</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Snap-share "key player disruption" signal (Objective 3 follow-up)</td><td class="num">INVALIDATED, not rejected -- used this-week's own snap percentage as a feature, which is only knowable after that week's game is played. Confirmed via direct correlation with the very outcome it claimed to predict. A real mistake, caught before shipping. Depends on Objective 2 (blocked) to do legitimately.</td><td><span class="conf-tag tag-neutral">LEAKAGE -- INVALIDATED</span></td></tr>
+          <tr><td>CPOE-based QB rating (alone and blended with EPA)</td><td class="num">CPOE-only clearly worse on every metric; EPA+CPOE blend just flat/redundant. CPOE is stable but a weaker predictor of wins than EPA specifically</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Rookie-specific QB shrinkage (hierarchical refinement of k=96)</td><td class="num">+0.92pt on validation looked promising, reversed to -0.74pt on true confirmatory test (CI includes zero). A real example of why validation-then-confirm matters</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Nonlinear architectures (GBM, Random Forest)</td><td class="num">RF's +0.55pt accuracy edge not significant (CI [-2.57,+3.68]) and comes with worse log loss/Brier/AUC -- same pattern GBM showed in the first cycle. XGBoost/LightGBM untestable, no network access to install</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
           <tr><td>Early-season weakness diagnosis</td><td class="num">Not a broad phenomenon -- concentrated in early-season QB changes specifically (48.0% accuracy, n=25) vs. 62.8% for early-season games without a QB change. Real mechanism found, targeted fix not yet built</td><td><span class="conf-tag tag-neutral">DIAGNOSED</span></td></tr>
           <tr><td>Early-season QB-change interaction term</td><td class="num">+0.37pt confirmatory, CI [-0.37,+1.10] includes zero. Real mechanism behind it but only 25 games -- genuinely can't distinguish from noise yet</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
-          <tr><td>Schedule-strength trajectory (next-3-games opponent difficulty)</td><td class="num">+0.18pt, CI [-1.65,+2.02], validation negative. Different mechanism from the earlier-rejected single-game trap-game test, same null result</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Referee/officiating crew tendencies</td><td class="num">Split-half reliability 0.252 (real, better than team home-field's 0.078) but translates to zero predictive value once shrunk properly -- flat across every metric</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>Schedule-strength trajectory (next-3-games opponent difficulty)</td><td class="num">+0.18pt, CI [-1.65,+2.02], validation negative. Different mechanism from the earlier-rejected single-game trap-game test, same null result</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Referee/officiating crew tendencies</td><td class="num">Split-half reliability 0.252 (real, better than team home-field's 0.078) but translates to zero predictive value once shrunk properly -- flat across every metric</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
           <tr><td>weekly_rosters as an injury-data alternative</td><td class="num">Confirmed NOT gameday active/inactive status via real player history checks (static ACT/INA over many weeks, not game-to-game). No inactives-list loader exists anywhere in nflreadpy -- Objective 2/3 blocker confirmed structural, not just stale data</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
-          <tr><td>FTN charting QB-fault-rate (sacks/INTs attributable to the QB)</td><td class="num">Completely flat -- identical to baseline on every metric. EPA already captures the cost of a bad play regardless of whose fault it was</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>FTN charting QB-fault-rate (sacks/INTs attributable to the QB)</td><td class="num">Completely flat -- identical to baseline on every metric. EPA already captures the cost of a bad play regardless of whose fault it was</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
           <tr><td>Total (over/under) line as a Model B input</td><td class="num">Small, mixed-direction result -- accuracy nudges up slightly but log loss/Brier/AUC move marginally worse. CI [-0.37,+0.74], includes zero</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
-          <tr><td>QB-change x spread interaction (re-tested under current leak-fixed code)</td><td class="num">Ties baseline exactly on confirmatory accuracy -- re-confirms the earlier rejection still holds after the leak fix and shrinkage revert</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Off_matchup x spread interaction</td><td class="num">Clean null -- identical confirmatory accuracy to baseline</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Stacking ensemble (Model A probability + market probability as a 2-input meta-model)</td><td class="num">Collapses to being statistically identical to market alone -- the meta-model discounts Model A's weaker signal almost entirely. Current flat 5-feature Model B beats it on every confirmatory metric (CI [-1.10,+0.55], not significant, but consistently negative)</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
+          <tr><td>QB-change x spread interaction (re-tested under current leak-fixed code)</td><td class="num">Ties baseline exactly on confirmatory accuracy -- re-confirms the earlier rejection still holds after the leak fix and shrinkage revert</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Off_matchup x spread interaction</td><td class="num">Clean null -- identical confirmatory accuracy to baseline</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Stacking ensemble (Model A probability + market probability as a 2-input meta-model)</td><td class="num">Collapses to being statistically identical to market alone -- the meta-model discounts Model A's weaker signal almost entirely. Current flat 5-feature Model B beats it on every confirmatory metric (CI [-1.10,+0.55], not significant, but consistently negative)</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
           <tr><td>Market efficiency trend across seasons (2022-2025)</td><td class="num">No real trend -- market's edge over Model A bounces from +1.1pt to +9.9pt with no consistent direction, tracking Model A's own year-to-year variance rather than any change in the market itself</td><td><span class="conf-tag tag-neutral">NO PATTERN</span></td></tr>
           <tr><td>First-half vs. second-half season market efficiency</td><td class="num">Market's edge narrows slightly (+5.5 to +4.2) as the season progresses, but this tracks Model A's own known early-season weakness rather than revealing anything new about the market's own behavior</td><td><span class="conf-tag tag-neutral">NOT A NEW FINDING</span></td></tr>
-          <tr><td>Market accuracy vs. travel distance</td><td class="num">No pattern across distance buckets (64-70% range, no trend), and the largest-distance bucket has only 23 games -- too small to trust on its own</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Season-boundary-specific recency half-life</td><td class="num">Tested extra discounting (0.85, 0.7, 0.5) for plays crossing a season boundary, on top of normal recency decay. Every level was flat-or-worse than baseline on every metric, both splits, with a clean monotonic pattern -- stronger discount, worse performance. A team's true strength doesn't reset at a season boundary the way this assumed</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Referee crew x team-penalty-rate interaction</td><td class="num">A narrower framing than the earlier referee-tendency test: does a specific crew's penalty-calling rate interact with how penalty-prone the teams are? CI [-1.10,+0.74], includes zero, worse on validation too</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Systematic narrow-edge search (12 partitions)</td><td class="num">Scanned disagreement magnitude, spread size, QB-change presence, home favorite/underdog, and model confidence for ANY subset where Model A beats the market. Best candidate was +0.74pt with CI [-2.60,+4.09] -- and with 12 comparisons tested, one weak positive is exactly what noise produces. No defensible narrow edge exists</td><td><span class="conf-tag tag-warn">REJECT</span></td></tr>
-          <tr><td>Model A's low-confidence games are genuinely unreliable</td><td class="num"><b style="color:var(--text)">Re-derived from scratch 2026-09-06 and it holds.</b> Across the 343 of 1,087 backtested games where Model A's own probability sits within 0.05 of a coin flip, Model A hits <b style="color:var(--text)">52.48%</b> while the market hits <b style="color:var(--text)">64.14%</b> on those same games &mdash; a &minus;11.66pt gap, CI [&minus;18.37, &minus;5.25], which excludes zero. This row previously carried 52.5% / 64.4% / &minus;11.95pt with no script anywhere in the repository that produced them; Booth flagged that as UNVERIFIABLE while auditing PR #18, and it was right to. <code>src/verify_low_confidence_finding.py</code> now regenerates the whole thing, and the original figures agreed to within 0.3pt &mdash; a gap consistent with the cross-platform accuracy sensitivity documented below, since this claim is stated in accuracy. Model A's uncertainty is trustworthy: when it says it doesn't know, it really doesn't</td><td><span class="conf-tag tag-good">CONFIRMED FINDING</span></td></tr>
+          <tr><td>Market accuracy vs. travel distance</td><td class="num">No pattern across distance buckets (64-70% range, no trend), and the largest-distance bucket has only 23 games -- too small to trust on its own</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Season-boundary-specific recency half-life</td><td class="num">Tested extra discounting (0.85, 0.7, 0.5) for plays crossing a season boundary, on top of normal recency decay. Every level was flat-or-worse than baseline on every metric, both splits, with a clean monotonic pattern -- stronger discount, worse performance. A team's true strength doesn't reset at a season boundary the way this assumed</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Referee crew x team-penalty-rate interaction</td><td class="num">A narrower framing than the earlier referee-tendency test: does a specific crew's penalty-calling rate interact with how penalty-prone the teams are? CI [-1.10,+0.74], includes zero, worse on validation too</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Systematic narrow-edge search (12 partitions)</td><td class="num">Scanned disagreement magnitude, spread size, QB-change presence, home favorite/underdog, and model confidence for ANY subset where Model A beats the market. Best candidate was +0.74pt with CI [-2.60,+4.09] -- and with 12 comparisons tested, one weak positive is exactly what noise produces. No defensible narrow edge exists</td><td><span class="conf-tag tag-neutral">REJECT</span></td></tr>
+          <tr><td>Model A's low-confidence games are genuinely unreliable</td><td class="num"><b style="color:var(--text)">Re-derived from scratch 2026-09-06 and it holds.</b> Across the 343 of 1,087 backtested games where Model A's own probability sits within 0.05 of a coin flip, Model A hits <b style="color:var(--text)">52.48%</b> while the market hits <b style="color:var(--text)">64.14%</b> on those same games &mdash; a &minus;11.66pt gap, CI [&minus;18.37, &minus;5.25], which excludes zero. This row previously carried 52.5% / 64.4% / &minus;11.95pt with no script anywhere in the repository that produced them; Booth flagged that as UNVERIFIABLE while auditing PR #18, and it was right to. <code>src/verify_low_confidence_finding.py</code> now regenerates the whole thing, and the original figures agreed to within 0.3pt &mdash; a gap consistent with the cross-platform accuracy sensitivity documented below, since this claim is stated in accuracy. Model A's uncertainty is trustworthy: when it says it doesn't know, it really doesn't</td><td><span class="conf-tag tag-neutral">CONFIRMED FINDING</span></td></tr>
           <tr><td>Line-movement archive (infrastructure check)</td><td class="num">Confirmed working end-to-end -- real movement captured (CLE@TB moved a full point, JAX@DEN a half point). But only 2 of 32 games moved at all across consecutive days, so a meaningful predictive test needs many more weeks of accumulation, not a forced test on n=2</td><td><span class="conf-tag tag-neutral">DEFERRED</span></td></tr>
-          <tr><td>Against-the-spread evaluation (would this have made money?)</td><td class="num">The betting question, asked for the first time on 2026-09-05. Model B outputs a win probability, not a margin, so it cannot make an ATS pick directly &mdash; and margin-of-victory modelling is already rejected above. The well-posed version is a different target on the same features: fit the weekly-refit walk-forward on <i>home covered</i> instead of <i>home won</i>. Result over 1,058 games: 51.61% against the spread, 95% CI [48.58%, 54.63%]. The interval contains 50%, and it does not reach the 52.38% needed to break even at &minus;110. Three controls (always home, always away, always the favourite) all landed at exactly 50.00%, confirming the cover arithmetic, and the spread-to-margin correlation (+0.455) is asserted at runtime so an inverted sign convention cannot silently flip the result. Bootstrap and Wilson intervals agree to 0.02pt. Deliberately no subgroup search: the earlier 12-partition narrow-edge hunt already showed what that produces on noise</td><td><span class="conf-tag tag-warn">REJECT &mdash; NO ATS EDGE</span></td></tr>
+          <tr><td>Against-the-spread evaluation (would this have made money?)</td><td class="num">The betting question, asked for the first time on 2026-09-05. Model B outputs a win probability, not a margin, so it cannot make an ATS pick directly &mdash; and margin-of-victory modelling is already rejected above. The well-posed version is a different target on the same features: fit the weekly-refit walk-forward on <i>home covered</i> instead of <i>home won</i>. Result over 1,058 games: 51.61% against the spread, 95% CI [48.58%, 54.63%]. The interval contains 50%, and it does not reach the 52.38% needed to break even at &minus;110. Three controls (always home, always away, always the favourite) all landed at exactly 50.00%, confirming the cover arithmetic, and the spread-to-margin correlation (+0.455) is asserted at runtime so an inverted sign convention cannot silently flip the result. Bootstrap and Wilson intervals agree to 0.02pt. Deliberately no subgroup search: the earlier 12-partition narrow-edge hunt already showed what that produces on noise</td><td><span class="conf-tag tag-neutral">REJECT &mdash; NO ATS EDGE</span></td></tr>
           <tr><td>Model B vs. market, paired bootstrap on the calibration gaps</td><td class="num">The reliability diagram showed Model B with more resolution than the market (0.039321 vs 0.038180) and worse reliability (0.001697 vs 0.001334). A 5,000-resample paired bootstrap over the same 1,087 games says neither gap is real: Brier &minus;0.000622 CI [&minus;0.002395, +0.001141], log loss &minus;0.001189 CI [&minus;0.005156, +0.002832], reliability +0.000362 CI [&minus;0.002010, +0.003052], resolution +0.001141 CI [&minus;0.002196, +0.004597]. All four include zero. The chart's apparent split between "sharper" and "worse calibrated" was noise, and the panel has been rewritten to say so. Cross-checked against a closed-form paired standard error on Brier, which agrees to 3e-5</td><td><span class="conf-tag tag-neutral">INCONCLUSIVE</span></td></tr>
-          <tr><td>Model B beats Model A on proper scoring rules (not just accuracy)</td><td class="num">Same paired bootstrap, Model B vs Model A: Brier &minus;0.019133 CI [&minus;0.025838, &minus;0.012687], log loss &minus;0.043603 CI [&minus;0.058621, &minus;0.029231], resolution +0.016814 CI [+0.008990, +0.024819] &mdash; three intervals clearly excluding zero. The project's existing claim for the spread's value rested on 68.2% vs 62.8% accuracy, and accuracy has since been shown to move by a full game between platforms on identical code. This is the same conclusion resting on metrics that survived that finding. Reliability alone is inconclusive (CI [&minus;0.005963, +0.002452]): the spread makes Model B sharper, not better calibrated</td><td><span class="conf-tag tag-good">CONFIRMED FINDING</span></td></tr>
-          <tr><td>The market genuinely beats Model A (now with intervals)</td><td class="num">Model A vs market, signed so a positive number means Model A is worse: Brier +0.018511 CI [+0.011496, +0.025553], log loss +0.042414 CI [+0.026992, +0.058291], resolution &minus;0.015674 CI [&minus;0.024072, &minus;0.007423]. "We do not beat the market" has been this project's headline honest finding from the start; this is the first time it has been stated with confidence intervals rather than a raw accuracy gap. The market's edge is resolution &mdash; it separates games better &mdash; not calibration, where the two are indistinguishable</td><td><span class="conf-tag tag-good">CONFIRMED FINDING</span></td></tr>
-          <tr><td>Backtest accuracy is not reproducible across platforms</td><td class="num">The same commit and the same 1599-game dataset, run on a GitHub Actions Linux runner and on a local Windows machine, disagree: Model A 0.6283 vs 0.6274, Model B 0.6817 vs 0.6826 -- gaps of exactly one to two games out of ~1087. Each machine is perfectly deterministic when re-run (byte-identical across every metric), so this is a difference between platforms, not run-to-run noise; almost certainly floating-point/BLAS. Log loss, Brier and AUC agree to four decimals across those same two runs. Accuracy is a threshold metric -- it only records which side of 0.5 a probability lands on -- so perturbations around 1e-6 flip games sitting near a coin flip while every calibration metric holds steady. Practical consequence: "Model B adds zero accuracy over the raw spread" is true on Linux and false on Windows, by one game. That claim has to be stated as <i>indistinguishable</i>, and accuracy alone cannot carry a result at this sample size</td><td><span class="conf-tag tag-good">CONFIRMED FINDING</span></td></tr>
+          <tr><td>Model B beats Model A on proper scoring rules (not just accuracy)</td><td class="num">Same paired bootstrap, Model B vs Model A: Brier &minus;0.019133 CI [&minus;0.025838, &minus;0.012687], log loss &minus;0.043603 CI [&minus;0.058621, &minus;0.029231], resolution +0.016814 CI [+0.008990, +0.024819] &mdash; three intervals clearly excluding zero. The project's existing claim for the spread's value rested on 68.2% vs 62.8% accuracy, and accuracy has since been shown to move by a full game between platforms on identical code. This is the same conclusion resting on metrics that survived that finding. Reliability alone is inconclusive (CI [&minus;0.005963, +0.002452]): the spread makes Model B sharper, not better calibrated</td><td><span class="conf-tag tag-neutral">CONFIRMED FINDING</span></td></tr>
+          <tr><td>The market genuinely beats Model A (now with intervals)</td><td class="num">Model A vs market, signed so a positive number means Model A is worse: Brier +0.018511 CI [+0.011496, +0.025553], log loss +0.042414 CI [+0.026992, +0.058291], resolution &minus;0.015674 CI [&minus;0.024072, &minus;0.007423]. "We do not beat the market" has been this project's headline honest finding from the start; this is the first time it has been stated with confidence intervals rather than a raw accuracy gap. The market's edge is resolution &mdash; it separates games better &mdash; not calibration, where the two are indistinguishable</td><td><span class="conf-tag tag-neutral">CONFIRMED FINDING</span></td></tr>
+          <tr><td>Backtest accuracy is not reproducible across platforms</td><td class="num">The same commit and the same 1599-game dataset, run on a GitHub Actions Linux runner and on a local Windows machine, disagree: Model A 0.6283 vs 0.6274, Model B 0.6817 vs 0.6826 -- gaps of exactly one to two games out of ~1087. Each machine is perfectly deterministic when re-run (byte-identical across every metric), so this is a difference between platforms, not run-to-run noise; almost certainly floating-point/BLAS. Log loss, Brier and AUC agree to four decimals across those same two runs. Accuracy is a threshold metric -- it only records which side of 0.5 a probability lands on -- so perturbations around 1e-6 flip games sitting near a coin flip while every calibration metric holds steady. Practical consequence: "Model B adds zero accuracy over the raw spread" is true on Linux and false on Windows, by one game. That claim has to be stated as <i>indistinguishable</i>, and accuracy alone cannot carry a result at this sample size</td><td><span class="conf-tag tag-neutral">CONFIRMED FINDING</span></td></tr>
         </tbody>
       </table>
     </div>
+    <!-- Model Lab used to carry its own hand-written version timeline, a
+         second copy of config.VERSION_HISTORY that nothing kept in step: it
+         would have gone on marking v2.4 "Current." after the model moved on,
+         in the success green reserved for a scored pick. What's Changed
+         renders the real list from config.py. -->
     <div class="method-block" style="margin-top:16px;">
       <h3>Version History</h3>
-      <div class="version-timeline">
-        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v1.0</span><span class="version-date">2026-08-17</span><p>Initial 3-feature model: opponent-adjusted offense, defense, QB rating.</p></div></div>
-        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v1.1</span><span class="version-date">2026-08-17</span><p>Added O-line continuity and QB-change detection (5 features).</p></div></div>
-        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.0</span><span class="version-date">2026-08-24</span><p>QB shrinkage constant retuned (k=8 &rarr; k=96) via proper validation/test split.</p></div></div>
-        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.1</span><span class="version-date">2026-08-24</span><p>O-line continuity removed after two independent negative tests (4 features: off, def, qb, qb-change).</p></div></div>
-        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.2</span><span class="version-date">2026-08-24</span><p>Backtest methodology switched to weekly refitting, matching what the live pipeline already did in production.</p></div></div>
-        <div class="version-item"><div class="version-dot"></div><div class="version-content"><span class="version-tag">v2.3</span><span class="version-date">2026-08-31</span><p>Fixed a real leak in the QB rating's shrinkage target (was a global average, not cutoff-scoped -- see ratings_engine.py); re-tuned QB_SHRINK_K 96 -&gt; 128 via a real, committed, reproducible script (tune_qb_shrink_k.py), superseding the prior retune whose own numbers couldn't be reproduced from this repo.</p></div></div>
-        <div class="version-item"><div class="version-dot current"></div><div class="version-content"><span class="version-tag">v2.4</span><span class="version-date">2026-08-31</span><p>QB shrinkage investigation: the fresh k=128 retune turned out inconsistent on its own confirmatory data (k=8 won 3 of 4 metrics). Reverted to k=8 as the defensible default. <b style="color:var(--good);">Current.</b></p></div></div>
-      </div>
+      <p>Every model version, and what changed in it, is on the What's Changed page.</p>
     </div>
   </section>
 
@@ -1909,22 +1922,22 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h3>Incident 1 -- False Claim About Repository State</h3>
-      <p><b style="color:var(--warn)">Claim made:</b> Scout stated that a specific pull request "hasn't actually been merged yet," contradicting an earlier confirmation that it had been.</p>
-      <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> Rather than accept either statement, a direct screenshot of the actual PR page was requested. It showed a purple "Merged" badge -- the PR genuinely was merged. Scout's later claim was the false one.</p>
+      <p><b style="color:var(--text)">Claim made:</b> Scout stated that a specific pull request "hasn't actually been merged yet," contradicting an earlier confirmation that it had been.</p>
+      <p style="margin-top:8px;"><b style="color:var(--text);">How it was caught:</b> Rather than accept either statement, a direct screenshot of the actual PR page was requested. It showed a purple "Merged" badge -- the PR genuinely was merged. Scout's later claim was the false one.</p>
       <p style="margin-top:8px;"><b style="color:var(--text);">Why it matters:</b> This was a claim about objective, checkable repo state -- not a judgment call or a probabilistic model output. It still came out wrong. Ground truth (a real screenshot) resolved it in seconds; trusting the more recent-sounding claim would not have.</p>
     </div>
 
     <div class="method-block">
       <h3>Incident 2 -- An Unreproducible Result</h3>
-      <p><b style="color:var(--warn)">Claim made:</b> An earlier tuning decision (a model hyperparameter, retuned from 8 to 96) was recorded on this dashboard as a resolved ACCEPT, with specific supporting accuracy numbers.</p>
-      <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> When the same comparison was re-run from the actual current codebase, months later, the original numbers could not be reproduced under any configuration tried -- not with the original methodology, not with the current one. The result had been evaluated against a version of the model that no longer existed, and nothing had gone back to re-check it after later, independently-correct changes altered what it was really being compared against.</p>
+      <p><b style="color:var(--text)">Claim made:</b> An earlier tuning decision (a model hyperparameter, retuned from 8 to 96) was recorded on this dashboard as a resolved ACCEPT, with specific supporting accuracy numbers.</p>
+      <p style="margin-top:8px;"><b style="color:var(--text);">How it was caught:</b> When the same comparison was re-run from the actual current codebase, months later, the original numbers could not be reproduced under any configuration tried -- not with the original methodology, not with the current one. The result had been evaluated against a version of the model that no longer existed, and nothing had gone back to re-check it after later, independently-correct changes altered what it was really being compared against.</p>
       <p style="margin-top:8px;"><b style="color:var(--text);">Why it matters:</b> Nobody fabricated this -- each individual step was reasonable at the time. The failure was in never re-verifying an old claim against the current state of the system. See Model Lab's "QB Shrinkage Re-tune" entry for the full resolution (re-tested fresh, found genuinely inconclusive, reverted to the simpler original default).</p>
     </div>
 
     <div class="method-block">
       <h3>Incident 3 -- A Test Suite That Wasn't Actually Testing Anything</h3>
-      <p><b style="color:var(--warn)">Claim made:</b> A leak-free test suite existed on the main branch, implying the codebase's leak-free properties were being actively verified.</p>
-      <p style="margin-top:8px;"><b style="color:var(--good);">How it was caught:</b> When actually executed (not just confirmed to exist), 4 of its 5 tests failed immediately with an import error -- the file's own path configuration pointed at a directory that didn't exist -- and the fifth silently skipped. The suite had never successfully run a single real check.</p>
+      <p><b style="color:var(--text)">Claim made:</b> A leak-free test suite existed on the main branch, implying the codebase's leak-free properties were being actively verified.</p>
+      <p style="margin-top:8px;"><b style="color:var(--text);">How it was caught:</b> When actually executed (not just confirmed to exist), 4 of its 5 tests failed immediately with an import error -- the file's own path configuration pointed at a directory that didn't exist -- and the fifth silently skipped. The suite had never successfully run a single real check.</p>
       <p style="margin-top:8px;"><b style="color:var(--text);">Why it matters:</b> A test file's presence in the repo is not evidence it works. This is arguably the most important lesson on this page: a verification system that isn't itself verified provides false confidence, which is worse than no verification system at all.</p>
     </div>
 
