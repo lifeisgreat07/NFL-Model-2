@@ -43,12 +43,12 @@ the engineering. Public repo, so anything committed is read by strangers.
 
 ## Current state (update this when it changes)
 
-Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
+Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1604 passing** (1 skipped) — `python -m pytest -q` on `main` at
-`2ab17ee`, with HEAD level with origin, which is the order that makes the
+Suite: **1646 passing** (1 skipped) — `python -m pytest -q` on `main` at
+`b01342b`, with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Run it
 before quoting
@@ -63,8 +63,9 @@ reads like a deleted section rather than an edited sentence.
 **Stages 1, 2, 3 and 7.5 are complete. Stage 7.6's repository half is done.
 Stage 8, 8b and 8c are all complete; its decisions live in
 `docs/design/STAGE8-DESIGN.md` and its specification is the pair of mocks
-beside that file. Stage 9 is under way -- see `docs/context.md`, which is
-rewritten every session and is the only place current status belongs.**
+beside that file. Stage 9 is complete (#87, 2026-09-22; its button
+component moved to Stage 10). Stage 10 is under way -- see `docs/context.md`,
+which is rewritten every session and is the only place current status belongs.**
 
 One habit from that stage is worth keeping whatever you work on: every numeric
 claim about colour or geometry was re-derived before being believed — contrast

@@ -4,54 +4,46 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-23 (#88 open, Booth SAFE TO MERGE)
+Last updated: 2026-09-23 (#88 merged, Stage 10 started)
 
 ---
 
 ## Right now
 
-**Suite:** 1604 passing, 1 skipped — `python -m pytest -q` on `main`, HEAD
-level with origin. #88's branch runs 1646 passed, 1 skipped at `f432d19`,
-and its full corpus run was 268 cases, all CAUGHT; Booth re-ran both and
-matched. Nothing else may read the tree while the corpus runs — see
-CLAUDE.md's traps.
+**Suite:** 1646 passing, 1 skipped — `python -m pytest -q` on `main` at
+`b01342b`, HEAD level with origin. Nothing else may read the tree while the
+mutation corpus runs — see CLAUDE.md's traps.
 
-**PR #88 is open: picks lock on Thursday, not Tuesday.** Mark decided this on
-2026-09-22. The weekly workflow runs Tuesday 11:00 UTC (grading, ratings,
-line archive) and Thursday 16:00 UTC. `decide_lock` in `src/weekly_update.py`
-locks the week when its first game comes before the next scheduled run plus
-four hours, so an ordinary week locks Thursday, and weeks 1 and 12 of 2026
-(both open on a Wednesday) lock Tuesday. A game already kicked off never
-gets a pick. Booth: 9 of 9 claims confirmed, SAFE TO MERGE. It independently
-re-ran the lock rule against the real 2026 schedule.
+**#88 is merged: picks lock on Thursday.** The weekly workflow runs Tuesday
+11:00 UTC (grading, ratings, line archive) and Thursday 16:00 UTC.
+`decide_lock` in `src/weekly_update.py` locks the week when its first game
+comes before the next scheduled run plus four hours, so an ordinary week
+locks Thursday, and weeks 1 and 12 of 2026 lock Tuesday. Week 4 is the first
+to lock on Thursday, 1 Oct.
 
-**Next action: Mark merges #88 before Tuesday 29 Sep, 11:00 UTC.** Merged
-before then, week 4 locks on Thursday 1 Oct. Merged later, week 4 still
-locks on Tuesday under the old workflow. The merge moves `main` to the
-branch's suite figure, so the CLAUDE.md `Suite:` line needs updating in the
-same session.
-
-**Once #88 is in, QB overrides are due by Thursday 16:00 UTC** (noon ET until
-1 Nov, 11 AM after), in `data/qb_overrides/`.
+**QB overrides are due by Thursday 16:00 UTC** (noon ET until 1 Nov, 11 AM
+after), in `data/qb_overrides/`.
 
 **Live model is v2.5.** Each pick is rated with the expected starter: a
 sourced override first, then the schedule's listed starter, then last
 game's QB.
 
+**Stage 10 is under way, one PR at a time (Mark, 2026-09-23).** Each PR is
+cut from `main` only after the previous one merges. The order: mobile pass,
+components (button, page header, nav labels, onboarding banner), table
+system, page states, the standout moments, then the design-audit re-run.
+
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| #88, Thursday lock | Audited, SAFE TO MERGE | Mark to merge, before Tue 29 Sep 11:00 UTC |
+| Stage 10 | Mobile pass first | Nothing: in progress |
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a phone | Not done | Only a device proves the zoom is gone |
 
 ## Queued, in order
 
-1. **Stage 10**, after #88 merges (one branch at a time): the mobile pass
-   (`.game-card` overflows below 352px, a 340px card against a 296px content
-   box at 320) and the button component, moved here from Stage 9. The focus
-   sweep is already done.
+1. **Stage 10**, in the order above.
 2. **Stage 7**: text-only items are unblocked; visual ones wait for 10.
 3. **Stage 4**.
 4. **Stage 6's broadcast channel**.
