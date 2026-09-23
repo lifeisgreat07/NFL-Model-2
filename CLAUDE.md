@@ -1234,6 +1234,13 @@ under compaction pressure, so its length is a cost paid on every session.
   the `p*` glob shape — and the reassuring direction is the silent one. A
   keyword matcher that gates on wording will eventually grade the disclaimer
   instead of the claim.
+  *(Both halves fixed 2026-09-22, in `tests/test_guard_gaps.py`. The check
+  now judges a sentence: one starting "Process note", or with a negation
+  before the visual phrase, is a disclosure, and the regex also catches "on
+  screen". A negation AFTER the phrase is not treated as a disclosure, except
+  in the form "not attached", because "checked on screen that it does not
+  overflow" is a claim. That boundary is a judgement, and it is written down
+  so nobody has to guess it.)*
 - **A guard whose rule names a forbidden string will match its own docstring.**
   Third occurrence this session. Exclude the file that states the rule, and say
   so in a comment — the alternative is describing the banned string obliquely
@@ -1624,7 +1631,9 @@ under compaction pressure, so its length is a cost paid on every session.
   that way and Booth caught it after the fact; the real figure was 151. A
   commit message is the one artifact that cannot be corrected without
   invalidating every Booth report against its SHA, so the narrowness is the
-  live gap, not the absence of a check.
+  live gap, not the absence of a check. *(Widened 2026-09-22 to any
+  verification count, with up to two words between the number and the noun,
+  so "147 individual cases" is caught.)*
 - **A wrap-up check that greps this file for a literal string is disabled by
   rewording that string, and says the line is MISSING.** `session_wrapup.py`
   matches `Suite:\s*\*\*([0-9,]+)\s+passing\*\*`. Writing
@@ -1709,7 +1718,8 @@ under compaction pressure, so its length is a cost paid on every session.
   you expect before reading anything off it.**
 - **`scout_preflight.py` read only the PASSED count too, so a RED suite was
   reported as a stale number. FIXED in `9c3e320` (`SUITE_BROKEN_RE`, and the
-  subprocess encoding pinned). `session_wrapup.py` still has the defect.** An entry above records this for
+  subprocess encoding pinned). `session_wrapup.py` was fixed on 2026-09-22
+  (`parse_summary`, which reads only the final summary line).** An entry above records this for
   `session_wrapup.py`; on 2026-09-12 it turned up in a second tool, where it is
   worse, because the message preflight prints is the PR #21 stale-figure text —
   "the body claims [876] passing but a real run at HEAD gives 875" — which

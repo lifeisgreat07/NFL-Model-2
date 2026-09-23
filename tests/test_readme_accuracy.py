@@ -135,12 +135,16 @@ def test_the_workflow_count_it_states_is_the_real_one():
 
 
 def test_the_mutation_case_count_it_states_is_the_real_one():
-    m = re.search(r'`tests/mutation/`,\s*(\d+)\s*cases', TEXT)
+    # It says "case files" because that is what this counts. Until 2026-09-22
+    # the README said "N cases" while this counted FILES (one per subject,
+    # each holding several cases), so every new case file forced a bump of a
+    # number that meant something else.
+    m = re.search(r'`tests/mutation/`,\s*(\d+)\s*case files', TEXT)
     assert m, "README.md no longer states a mutation case count in the expected format"
     claimed = int(m.group(1))
     real = len(list((REPO / 'tests' / 'mutation' / 'cases').glob('*.json')))
     assert claimed == real, (
-        f"README.md claims {claimed} mutation cases; tests/mutation/cases/ holds {real}")
+        f"README.md claims {claimed} mutation case files; tests/mutation/cases/ holds {real}")
 
 
 def test_the_dashboard_link_matches_the_one_verification_md_uses():

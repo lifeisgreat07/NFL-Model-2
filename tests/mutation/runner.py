@@ -128,17 +128,27 @@ def run_case(case):
             'detail': f"caught by {intended}"}
 
 
-def main():
+def select_cases(corpus, patterns):
+    """Every case matching ANY of the patterns, in corpus order, each once."""
+    return [c for c in corpus if any(fnmatch.fnmatch(c['id'], p) for p in patterns)]
+
+
+def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[1])
-    ap.add_argument('--id', default='*',
-                    help="glob over case ids (default: all)")
+    # action='append': repeating --id used to keep only the LAST one and still
+    # print "All N mutations caught", so three ids given on one command ran one
+    # case and reported success (found 2026-09-21). Every --id now counts, and
+    # the header says which ones ran.
+    ap.add_argument('--id', action='append', default=None,
+                    help="glob over case ids; repeat to select several (default: all)")
     ap.add_argument('--list', action='store_true',
                     help="list matching cases and exit without running them")
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
-    cases = [c for c in load_corpus() if fnmatch.fnmatch(c['id'], args.id)]
+    patterns = args.id or ['*']
+    cases = select_cases(load_corpus(), patterns)
     if not cases:
-        print(f"no cases match {args.id!r}")
+        print(f"no cases match {patterns!r}")
         return 1
 
     if args.list:
@@ -148,8 +158,9 @@ def main():
         print(f"\n{len(cases)} case(s).")
         return 0
 
-    print(f"Running {len(cases)} mutation(s). Each breaks the source on "
-          f"purpose and must be caught by the test it names.\n")
+    scope = "the full corpus" if patterns == ['*'] else "--id " + " --id ".join(patterns)
+    print(f"Running {len(cases)} mutation(s) selected by {scope}. Each breaks the "
+          f"source on purpose and must be caught by the test it names.\n")
 
     results = []
     for i, case in enumerate(cases, 1):
