@@ -1,0 +1,62 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_table_system.py",
+  "cases": [
+    {
+      "id": "fitting-table-wrapper-becomes-a-scroller",
+      "why": "overflow:hidden looks like the same thing as clip and is not: it makes the wrapper a scroll container, the header then sticks to a box that never scrolls, and the sticky header silently stops working on every table.",
+      "find": ".table-wrap.fits{overflow:clip;",
+      "replace": ".table-wrap.fits{overflow:hidden;",
+      "expect_caught_by": "test_a_fitting_table_clips_rather_than_scrolls"
+    },
+    {
+      "id": "stuck-header-under-the-zero-line",
+      "why": "the stuck header drops back to z-index 1 and the Net Rating zero line of whichever row is scrolling underneath pokes up through it -- the defect the first render showed.",
+      "find": "position:sticky; top:0; z-index:3;",
+      "replace": "position:sticky; top:0; z-index:1;",
+      "expect_caught_by": "test_the_stuck_header_sits_above_the_net_rating_zero_line"
+    },
+    {
+      "id": "metrics-tables-collapse-borders-again",
+      "why": "eleven of the thirteen tables go back to border-collapse:collapse, and their stuck header rows lose their bottom rule as they move.",
+      "find": ".metrics-table{width:100%; border-collapse:separate; border-spacing:0;",
+      "replace": ".metrics-table{width:100%; border-collapse:collapse;",
+      "expect_caught_by": "test_tables_do_not_collapse_borders"
+    },
+    {
+      "id": "every-header-looks-clickable-again",
+      "why": "the pointer goes back on every header of every table, so eleven tables that do not sort look as though they do.",
+      "find": "white-space:nowrap; transition:color var(--dur-base) var(--ease);}\n  /* z-index 3",
+      "replace": "white-space:nowrap; cursor:pointer; transition:color var(--dur-base) var(--ease);}\n  /* z-index 3",
+      "expect_caught_by": "test_only_sortable_headers_look_clickable"
+    },
+    {
+      "id": "offense-header-unreachable-by-keyboard",
+      "why": "the Offense header sorts on click and cannot be reached with Tab, which is how every sort header was before Stage 10.",
+      "find": "<th data-key=\"off\" tabindex=\"0\" aria-sort=\"none\"",
+      "replace": "<th data-key=\"off\" aria-sort=\"none\"",
+      "expect_caught_by": "test_sortable_headers_are_announced_and_reachable"
+    },
+    {
+      "id": "sort-handler-ignores-the-keyboard",
+      "why": "the header takes focus but Enter and Space do nothing: a control a keyboard can reach and not operate.",
+      "find": "    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); sortBy(); }\n",
+      "replace": "",
+      "expect_caught_by": "test_the_sort_handler_takes_a_keyboard_and_reports_its_state"
+    },
+    {
+      "id": "an-inline-overflow-unsticks-a-table",
+      "why": "Model Lab's experiments table gets back the inline overflow-x:auto it carried before Stage 10, which beats .fits and leaves its 46 rows without a sticky header.",
+      "find": "<div id=\"reliability-diagram\"></div>\n    <div class=\"table-wrap\">",
+      "replace": "<div id=\"reliability-diagram\"></div>\n    <div class=\"table-wrap\" style=\"overflow-x:auto;\">",
+      "expect_caught_by": "test_no_wrapper_overrides_its_overflow_inline"
+    },
+    {
+      "id": "a-glossary-definition-goes-flush-right",
+      "why": "one Methodology glossary definition gets td.num back and is set flush right again, the way all 30 of Methodology's prose cells and Model Lab's 46 result cells were before Stage 10.",
+      "find": "<td>Model A's features plus the current Vegas point spread</td>",
+      "replace": "<td class=\"num\">Model A's features plus the current Vegas point spread</td>",
+      "expect_caught_by": "test_figure_cells_hold_figures"
+    }
+  ]
+}
