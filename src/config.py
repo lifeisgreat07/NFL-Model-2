@@ -79,9 +79,27 @@ MIN_PLAYS_FOR_RATING = 200
 # renumbered twice, so on a public page they would read as the CURRENT Stage 2
 # and mean something entirely different. The dates and the substance are the
 # durable part; the stage labels were not.
-MODEL_VERSION = "2.4"
+MODEL_VERSION = "2.5"
 
 VERSION_HISTORY = [
+    {
+        'version': '2.5',
+        'date': '2026-09-22',
+        'headline': 'Weekly picks now use the listed starting quarterback',
+        'detail': (
+            "The weekly picks used to rate each team's quarterback from its "
+            "last game, so a starter hurt last week was still in the pick. "
+            "They now use the quarterback expected to start: a sourced "
+            "correction if one exists, otherwise the starter the published "
+            "schedule lists, and last game's quarterback only when nobody has "
+            "been listed yet. The model itself is unchanged, and so are the "
+            "published backtest numbers, which were always scored with the "
+            "real starter. The test run to check it did not clear its "
+            "statistical bar (experiments/stage5 in the repository), so this "
+            "ships because it is the right method, the same reason weekly "
+            "refitting did in v2.2."
+        ),
+    },
     {
         'version': '2.4',
         'date': '2026-08-31',

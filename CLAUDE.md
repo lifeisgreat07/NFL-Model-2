@@ -148,8 +148,12 @@ casually.
   starter. The live pipeline uses LAST game's QB. On the roughly one game in
   four where those differ, live Model A's log loss is far worse, but
   switching was INCONCLUSIVE at 99.5% (H1). So the page describes a model
-  with better QB information than the one making the picks. Whether to
-  switch on methodology grounds, as weekly refit was, is Mark's call.
+  with better QB information than the one making the picks. **Mark switched
+  it on methodology grounds on 2026-09-22 (v2.5), as weekly refit was.** The
+  order is a sourced override file, then the schedule's listed starter,
+  then last game's QB with a note. The schedule is not enough on its own:
+  on the day week 3 locked it still listed Dart and Daniels, both ruled out.
+  The 2026 forward test scores this change.
 - **There is no ATS edge.** 51.61%, CI [48.58%, 54.63%] — contains 50% and does
   not reach the 52.38% break-even. The betting question was asked properly and
   answered negatively. Do not re-open it without new data.
