@@ -141,7 +141,7 @@ def test_only_the_week_board_emits_the_pinned_toggle(css):
     .why-toggle at all, so the rule has nothing to select there. Pinned here
     because the previous explanation sounded just as plausible and was wrong.
     """
-    emitters = [m.start() for m in re.finditer(r'class="why-toggle"', css)]
+    emitters = [m.start() for m in re.finditer(r'class="[^"]*\bwhy-toggle\b[^"]*"', css)]
     assert len(emitters) == 1, (
         f"expected exactly one place to emit a .why-toggle button, found "
         f"{len(emitters)}. If My Picks now emits one too, it lands in a "

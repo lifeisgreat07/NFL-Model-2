@@ -201,12 +201,9 @@
   .sidebar-foot{margin-top:auto; padding:16px 22px 0; border-top:1px solid var(--border);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:10px; color:var(--text-2); line-height:1.7;}
   .foot-freshness{display:inline-block; margin-top:4px; opacity:0.75;}
-  .theme-toggle{
-    display:flex; align-items:center; gap:8px; width:100%;
-    background:transparent; border:1px solid var(--border); border-radius:8px;
-    padding:8px 12px; margin-bottom:12px; cursor:pointer;
-    color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; transition:border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease);}
-  .theme-toggle svg{width:14px; height:14px; flex-shrink:0;}
+  /* .btn.theme-toggle, not .theme-toggle: this rule sits above the button
+     component in source order, so at equal specificity .btn's colour won. */
+  .btn.theme-toggle{margin-bottom:var(--s3); color:var(--text-2); font-weight:500;}
 
   /* ---------- Main ---------- */
   main{flex:1; padding:34px 42px 60px; max-width:1220px; min-width:0;}
@@ -216,6 +213,13 @@
 
   .page-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:14px;
     margin-bottom:28px; padding-bottom:20px; border-bottom:1px solid var(--border);}
+  /* The shared page header: eyebrow (the page's sidebar group), title, one
+     line of description, and an optional badge on the right. Every page
+     has all three text parts; tests/test_page_header.py holds that. The
+     eyebrow is --text-2, not the accent: the accent means "active", and a
+     label naming a section is not an emphasis. */
+  .page-eyebrow{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); font-weight:600;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--text-2); margin-bottom:var(--s2);}
   .page-head h2{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:34px; letter-spacing:.005em;}
   .page-head .desc{color:var(--text-2); font-size:13.5px; margin-top:5px; max-width:560px; line-height:1.55;}
   .badge{font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; letter-spacing:.05em; padding:6px 11px; border-radius:20px;
@@ -357,6 +361,68 @@
   }
   .week-select:focus{outline:1px solid var(--accent);}
 
+  /* ---------- Buttons ----------
+     One component, four variants. Before Stage 10 every button class was
+     styled on its own, and the cost was not only tidiness: the
+     filter pill's look was reused on six buttons that were not filters,
+     and the Week Board's filter handler selected by that look -- which is
+     how Export My Picks got painted as an active filter (#68). So LOOK and
+     BEHAVIOUR are now separate: .btn* says how a button looks, and the
+     older class beside it (.filter-btn, .why-toggle, .rel-toggle ...) stays
+     only as the hook script and tests select on, carrying no visuals.
+
+       .btn       an action: bordered, on the surface. Print / PDF, Export,
+                  Import, Copy Share Link, Got it, the shared-picks buttons,
+                  the theme toggle (.btn-block makes it full width).
+       .btn-chip  a pill in a group. .active marks the one chosen filter
+                  (the accent, because it is the active thing); aria-pressed
+                  marks an on/off series toggle (neutral, because a series
+                  being shown is not an emphasis).
+       .btn-link  inline text that opens something: "+ the numbers behind
+                  this", "+ view context", Undo.
+       .btn-icon  a bare square icon button: the week stepper's arrows.
+
+     Deliberately NOT variants, because each is a different control rather
+     than a differently dressed button: the sidebar and bottom-nav buttons
+     (navigation), .pick-btn (the choice itself, with a logo), .lbx-btn (a
+     listbox trigger, which shares .btn's box so the control row reads as
+     one row), and .dive-game-head (a table row that discloses).
+
+     Every value is a token. :hover lives in the (hover: hover) block at the
+     end of the stylesheet with every other hover rule, and the press is the
+     one global `button:active` rule. */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12); font-weight:600;
+    line-height:var(--lh-tight); padding:var(--s2) var(--s3); border-radius:var(--r-md);
+    cursor:pointer; text-decoration:none; white-space:nowrap;
+    transition:background-color var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease), opacity var(--dur-base) var(--ease);
+  }
+  .btn svg{width:14px; height:14px; flex-shrink:0;}
+  .btn[hidden]{display:none;}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .btn:disabled{color:var(--text-disabled); border-color:var(--border); cursor:default;}
+  .btn-block{display:flex; width:100%; justify-content:flex-start;}
+  .btn-chip{
+    border-radius:var(--r-full); color:var(--text-2); font-size:var(--fs-11); font-weight:500;
+    letter-spacing:.04em; padding:var(--s2) var(--s3);
+  }
+  .btn-chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent);}
+  .btn-chip[aria-pressed="true"]{color:var(--text); border-color:var(--border-strong);}
+  .btn-chip[aria-pressed="false"]{opacity:.45;}
+  .btn-link{
+    background:none; border:none; padding:0; border-radius:var(--r-sm);
+    color:var(--text-2); font-size:var(--fs-11); font-weight:400; letter-spacing:.04em;
+    text-decoration:underline; text-underline-offset:3px;
+  }
+  .btn-icon{
+    width:28px; height:28px; padding:0; background:none; border:none;
+    border-radius:var(--r-sm); color:var(--text-2);
+  }
+  .btn-icon svg{width:15px; height:15px;}
+  .btn-icon:disabled{color:var(--text-disabled);}
+
   /* ---------- Listbox ----------
      The replacement for a native <select> as the VISIBLE control. Not a
      restyle: `appearance:none` on .week-select above changes the closed box
@@ -364,10 +430,11 @@
      complaint. The only way to stop the system wheel is to stop using a
      native select as the thing anyone sees.
 
-     This is also Stage 9's "one button component with real variants and
-     states". Building the button separately from the listbox would write the
-     same hover/focus/press/disabled behaviour twice, so .lbx-btn IS that
-     component and the list is what it opens.
+     Stage 9 called .lbx-btn "the one button component". Stage 10 built that
+     component (.btn, above) and .lbx-btn keeps its own rules because it is
+     a listbox trigger with an expanded state and a chevron -- but its box
+     (border, surface, radius, padding, type) matches .btn's value for value,
+     so Print / PDF and the sort control read as one row.
 
      Elevation is a border, not a shadow: the open list floats over content
      with --border-strong and no box-shadow, so --shadow-overlay keeps the
@@ -465,12 +532,6 @@
      row reads as one row of controls rather than a stepper beside a form. */
   .week-step{display:inline-flex; align-items:center; gap:2px; background:var(--surface);
     border:1px solid var(--border); border-radius:var(--r-md); padding:3px;}
-  .week-step-btn{display:inline-flex; align-items:center; justify-content:center;
-    width:28px; height:28px; padding:0; background:none; border:none; border-radius:6px;
-    color:var(--text-2); cursor:pointer;
-    transition:background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);}
-  .week-step-btn svg{width:15px; height:15px;}
-  .week-step-btn:disabled{color:var(--text-disabled); cursor:default;}
   .week-step-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; font-weight:600;
     color:var(--text); padding:0 8px; white-space:nowrap; font-variant-numeric:tabular-nums;}
   /* Kept in the DOM and out of sight: still focusable, still announced, still
@@ -492,14 +553,6 @@
   /* Print/PDF download. Sized to match .week-select so the control row reads
      as one group; hidden entirely when no PDF exists for the selected week
      rather than offering a link that would 404. */
-  .pdf-link{
-    display:inline-flex; align-items:center; gap:7px;
-    background:var(--surface); border:1px solid var(--border); color:var(--text);
-    font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; font-weight:600;
-    padding:9px 14px; border-radius:8px; cursor:pointer; text-decoration:none; transition:border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease);}
-  .pdf-link svg{width:14px; height:14px;}
-  .pdf-link:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
-  .pdf-link[hidden]{display:none;}
   .team-search{
     background:var(--surface); border:1px solid var(--border); color:var(--text);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:12px; padding:9px 14px; border-radius:8px;
@@ -516,10 +569,9 @@
     pointer-events:none;
   }
   .undo-toast.visible{transform:translateX(-50%) translateY(0); opacity:1; pointer-events:auto;}
-  .undo-btn{
-    background:transparent; border:none; color:var(--accent); font-weight:700;
-    font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px; cursor:pointer; padding:0;
-  }
+  /* Undo is the toast's one action, so it wears the accent and drops the
+     underline a .btn-link carries when it sits in running text. */
+  .undo-toast .btn-link{color:var(--accent); font-weight:700; font-size:var(--fs-12); text-decoration:none;}
   @media (max-width:1079px){ .undo-toast{bottom:calc(90px + var(--safe-bottom, 0px));} }
 
   /* --accent, not --series-a. A confidence badge is not a chart series; it is
@@ -593,8 +645,7 @@
     background:var(--chip); flex:none; transform:translateY(-1px);}
   .model-chip.a{--chip:var(--series-a);}
   .model-chip.b{--chip:var(--series-b);}
-  .why-toggle{background:none; border:none; color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px;
-    letter-spacing:.04em; cursor:pointer; padding:0; margin-top:11px; text-decoration:underline; text-underline-offset:3px;}
+  .why-toggle, .toggle-flag{margin-top:11px;}
   /* The grid stretches cards in a row to a common height, and
      `margin-top:auto` sends whatever slack that creates above this button, so
      it sits on the card's bottom edge and lines up across the row. padding-top
@@ -689,13 +740,6 @@
      own colour, so the control says which line it governs without a label
      that only repeats the button text. */
   .rel-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
-  .rel-toggle{display:inline-flex; align-items:center; gap:7px; background:var(--surface);
-    border:1px solid var(--border); color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif;
-    font-size:11.5px; font-weight:600; padding:6px 13px; border-radius:20px; cursor:pointer;
-    transition:border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease), opacity var(--dur-base) var(--ease);}
-  .rel-toggle[aria-pressed="false"]{opacity:.45;}
-  .rel-toggle[aria-pressed="true"]{color:var(--text); border-color:var(--border-strong);}
-  .rel-toggle:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
   /* Hover/focus readout. Positioned over the plot, never over the cursor, and
      pointer-events:none so it can't steal the next hover. */
   .rel-tip{position:absolute; pointer-events:none; opacity:0; transition:opacity var(--dur-fast) var(--ease);
@@ -714,11 +758,6 @@
   .rel-stat .v{font-variant-numeric:tabular-nums; color:var(--text-2);}
   .rel-prov{font-size:10.5px; color:var(--text-2); margin-top:12px; line-height:1.6;}
   .rel-table summary{cursor:pointer; font-size:12px; color:var(--text-2); padding:6px 0; transition:color var(--dur-fast) var(--ease);}
-  .filter-btn{background:var(--surface); border:1px solid var(--border); color:var(--text-2);
-    font-family:'Plus Jakarta Sans', sans-serif; font-size:11px; letter-spacing:.04em; padding:8px 14px; border-radius:20px;
-    cursor:pointer; transition:background-color var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease), transform var(--dur-fast) var(--ease);}
-  
-  .filter-btn.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent);}
 
   /* A grid, which the name promised and the rule did not: this was
      `display:flex; flex-direction:column`, a single-column stack that forced
@@ -948,8 +987,6 @@
   .flag-note{margin-top:11px; font-size:12.5px; color:var(--text-2); line-height:1.5; display:none;}
   .flag-note.open{display:block; animation:fade var(--dur-slow) var(--ease);}
   .flag-note b{color:var(--text); font-weight:600;}
-  .toggle-flag{background:none; border:none; color:var(--text-3); font-family:'Plus Jakarta Sans', sans-serif; font-size:10.5px;
-    letter-spacing:.04em; cursor:pointer; padding:0; margin-top:11px; text-decoration:underline; text-underline-offset:3px;}
 
   .empty-state{padding:48px 24px; text-align:center; color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:12.5px;
     background:var(--surface); border:1px dashed var(--border); border-radius:var(--r-md);}
@@ -1204,20 +1241,20 @@
   @media (hover: hover){
     .nav-btn:hover{background:var(--surface-2); color:var(--text);}
     .nav-btn.disabled:hover{background:transparent; color:var(--text-2);}
-    .theme-toggle:hover{border-color:var(--border-strong); color:var(--text);}
     thead th:hover{color:var(--accent);}
     tbody tr:hover{background:var(--surface-2);}
-    .pdf-link:hover{border-color:var(--accent); color:var(--accent);}
     .pick-btn:hover{border-color:var(--accent);}
     .rel-table summary:hover{color:var(--text);}
-    .filter-btn:hover{border-color:var(--accent); color:var(--text);}
+    .btn:hover:not(:disabled){border-color:var(--accent); color:var(--text);}
+    .btn-chip[aria-pressed="false"]:hover{opacity:.75;}
+    .btn-link:hover{color:var(--text);}
+    .btn-icon:hover:not(:disabled){background:var(--surface-2);}
     .lbx-btn:hover{border-color:var(--accent); color:var(--text);}
     .lbx-opt:hover{background:var(--surface-2); color:var(--text);}
     .game-card:hover{border-color:var(--border-strong);}
     .dive-game-head:hover{background:var(--border);}
     .page-jump a:hover{color:var(--text); border-color:var(--border-strong);}
     .roadmap-card:hover{border-color:var(--border-strong);}
-    .week-step-btn:hover:not(:disabled){background:var(--surface-2); color:var(--text);}
   }
 </style>
 </head>
@@ -1257,22 +1294,27 @@
     <div class="brand-sub">NFL Pick'em Model</div>
   </div>
   <nav class="side-nav" aria-label="Main navigation">
-    <div class="nav-group-label">Model Output</div>
+    <!-- Grouped by the question a visitor is asking (Mark, 2026-09-23).
+         Each group label is also the eyebrow above the title of every page
+         in it, so on a phone, where this sidebar is hidden, the page still
+         says which part of the site it belongs to. Held to each other by
+         tests/test_page_header.py. -->
+    <div class="nav-group-label">This Week</div>
     <button class="nav-btn active" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Power Ratings</button>
     <button class="nav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Week Board</button>
+    <button class="nav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Team Deep-Dive</button>
     <div class="nav-group-label">Your Picks</div>
     <button class="nav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>My Picks Log</button>
+    <div class="nav-group-label">Track Record</div>
     <button class="nav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg>Season Accuracy</button>
-    <div class="nav-group-label">Model Output</div>
-    <button class="nav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Team Deep-Dive</button>
     <button class="nav-btn" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg>Model Lab</button>
-    <div class="nav-group-label">Reference</div>
+    <div class="nav-group-label">How It Was Built</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="changelog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 21v-5h5"/></svg>What&#39;s Changed</button>
     <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>Checking the AI&#39;s work</button>
   </nav>
   <div class="sidebar-foot">
-    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark theme">
+    <button id="theme-toggle" class="btn btn-block theme-toggle" aria-label="Toggle light and dark theme">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
       <span id="theme-toggle-label">Light mode</span>
     </button>
@@ -1307,7 +1349,9 @@
   <section class="page active" id="page-ratings">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">This Week</div>
         <h2>Power Ratings</h2>
+        <div class="desc">Every team ranked by how much better or worse it plays than an average team, rebuilt each week from real game data.</div>
       </div>
     </div>
     <div class="filter-row">
@@ -1356,6 +1400,34 @@
 
   <!-- WEEK BOARD -->
   <section class="page" id="page-board">
+    <!-- No standing caption and no count badge. (Stage 10 added the one-line
+         .desc every page header carries. It says what the page is for; it
+         does not explain Model A and Model B, which is what the caption
+         below was, so the reasoning still holds.)
+
+         This block is STATIC markup, not a JS template literal - a ${...}
+         comment here renders as visible text on the page.
+
+         The caption explained Model A vs Model B on every visit, permanently,
+         to a reader who needs it once - and the onboarding banner directly
+         below says the same thing and can be dismissed, which is what "explain
+         this once" is supposed to look like. Two explanations of the same two
+         models, one of them undismissable, is the redundancy the owner named.
+
+         The badge said "16 games" beside a grid of sixteen game cards. A count
+         is worth showing when counting is hard; here the answer is on screen.
+         #board-badge is kept as a hidden hook because renderGames writes to it
+         and the empty state ("No games") still has to go somewhere. -->
+    <div class="page-head">
+      <div>
+        <div class="page-eyebrow">This Week</div>
+        <h2>Week Board</h2>
+        <div class="desc">This week&#39;s games, what each model picks, and why.</div>
+      </div>
+      <div class="badge" id="board-badge" aria-live="polite" hidden></div>
+    </div>
+    <!-- Below the title, not above it (Stage 10). Above, a first visit
+         met a box of six bullets before it met the name of the page. -->
     <div id="onboarding-banner" class="onboarding-banner" style="display:none;">
       <div class="onboarding-content">
         <h4>New here? Quick orientation.</h4>
@@ -1367,29 +1439,8 @@
           <li>Tap "the numbers behind this" on any game to check that sentence against the exact figures it came from.</li>
           <li>Check <b>Model Lab</b> for the full, honest research history -- including everything that didn't work.</li>
         </ul>
-        <button class="filter-btn" onclick="dismissOnboarding()">Got it</button>
+        <button class="btn" onclick="dismissOnboarding()">Got it</button>
       </div>
-    </div>
-    <!-- No standing caption and no count badge.
-
-         This block is STATIC markup, not a JS template literal - a ${...}
-         comment here renders as visible text on the page.
-
-         The caption explained Model A vs Model B on every visit, permanently,
-         to a reader who needs it once - and the onboarding banner directly
-         above says the same thing and can be dismissed, which is what "explain
-         this once" is supposed to look like. Two explanations of the same two
-         models, one of them undismissable, is the redundancy the owner named.
-
-         The badge said "16 games" beside a grid of sixteen game cards. A count
-         is worth showing when counting is hard; here the answer is on screen.
-         #board-badge is kept as a hidden hook because renderGames writes to it
-         and the empty state ("No games") still has to go somewhere. -->
-    <div class="page-head">
-      <div>
-        <h2>Week Board</h2>
-      </div>
-      <div class="badge" id="board-badge" aria-live="polite" hidden></div>
     </div>
     <div id="week-glance"></div>
     <div class="filter-row">
@@ -1408,11 +1459,11 @@
            existed, and it would sit above a board that already prints each
            game's own kickoff. One date per game, stated where the game is. -->
       <div class="week-step" id="week-step">
-        <button type="button" class="week-step-btn" id="week-prev" aria-label="Previous week">
+        <button type="button" class="btn btn-icon week-step-btn" id="week-prev" aria-label="Previous week">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
         <span class="week-step-label" id="week-step-label" aria-live="polite"></span>
-        <button type="button" class="week-step-btn" id="week-next" aria-label="Next week">
+        <button type="button" class="btn btn-icon week-step-btn" id="week-next" aria-label="Next week">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       </div>
@@ -1444,7 +1495,7 @@
         <option value="spread">Biggest Spread First</option>
         <option value="alpha">Alphabetical (Home Team)</option>
       </select>
-      <a id="picks-pdf-link" class="pdf-link" href="#" download
+      <a id="picks-pdf-link" class="btn pdf-link" href="#" download
          title="Printable PDF of this week's picks, ordered by confidence">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
              stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1454,9 +1505,9 @@
       </a>
     </div>
     <div class="filter-row" id="filter-row">
-      <button class="filter-btn active" data-filter="all">All Games</button>
-      <button class="filter-btn" data-filter="divergent">Model Disagreement</button>
-      <button class="filter-btn" data-filter="flagged">Flagged Only</button>
+      <button class="btn btn-chip filter-btn active" data-filter="all">All Games</button>
+      <button class="btn btn-chip filter-btn" data-filter="divergent">Model Disagreement</button>
+      <button class="btn btn-chip filter-btn" data-filter="flagged">Flagged Only</button>
     </div>
     <div class="game-grid" id="game-grid"></div>
   </section>
@@ -1465,6 +1516,7 @@
   <section class="page" id="page-picks">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">Your Picks</div>
         <h2>My Picks Log</h2>
         <div class="desc">Tap your actual pick for each game in the selected week. Saved locally on this device only -- not real-time synced across devices (this is a static site with no backend), but you can export your picks and import them on another device.</div>
       </div>
@@ -1478,8 +1530,8 @@
         <h4 id="shared-picks-title">Viewing someone else's picks</h4>
         <p id="shared-picks-note" class="shared-note"></p>
         <div class="shared-actions">
-          <button class="filter-btn" onclick="importSharedPicks()">Copy these into my log</button>
-          <button class="filter-btn" onclick="exitSharedPicks()">Back to my picks</button>
+          <button class="btn" onclick="importSharedPicks()">Copy these into my log</button>
+          <button class="btn" onclick="exitSharedPicks()">Back to my picks</button>
         </div>
       </div>
     </div>
@@ -1494,18 +1546,18 @@
            this said until 2026-09-21: it ships visually-hidden, and with
            scripts off this page cannot be reached anyway. -->
       <div class="week-step" id="picks-week-step">
-        <button type="button" class="week-step-btn" id="picks-week-prev" aria-label="Previous week">
+        <button type="button" class="btn btn-icon week-step-btn" id="picks-week-prev" aria-label="Previous week">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </button>
         <span class="week-step-label" id="picks-week-step-label" aria-live="polite"></span>
-        <button type="button" class="week-step-btn" id="picks-week-next" aria-label="Next week">
+        <button type="button" class="btn btn-icon week-step-btn" id="picks-week-next" aria-label="Next week">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       </div>
       <select id="picks-week-select" class="week-select visually-hidden" aria-label="Week"></select>
-      <button class="filter-btn" onclick="copyShareLink(this)">Copy Share Link</button>
-      <button class="filter-btn" onclick="exportMyPicks()">Export My Picks</button>
-      <button class="filter-btn" onclick="document.getElementById('picks-import-input').click()">Import My Picks</button>
+      <button class="btn" onclick="copyShareLink(this)">Copy Share Link</button>
+      <button class="btn" onclick="exportMyPicks()">Export My Picks</button>
+      <button class="btn" onclick="document.getElementById('picks-import-input').click()">Import My Picks</button>
       <input type="file" id="picks-import-input" accept=".json" style="display:none;" onchange="if(this.files[0]) importMyPicks(this.files[0])">
     </div>
     <div id="picks-streak-strip"></div>
@@ -1516,6 +1568,7 @@
   <section class="page" id="page-accuracy">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">Track Record</div>
         <h2>Season Accuracy</h2>
         <div class="desc">Every saved prediction, graded against real results after the fact. Built from graded weeks only — nothing here is projected or estimated.</div>
       </div>
@@ -1527,6 +1580,7 @@
   <section class="page" id="page-teamdive">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">This Week</div>
         <h2>Team Deep-Dive</h2>
         <div class="desc">Net rating over time -- 2020-2025 season-end snapshots (real history, replayed as if we had been predicting it at the time), then week-by-week as the 2026 season is actually played.</div>
       </div>
@@ -1546,8 +1600,9 @@
   <section class="page" id="page-modellab">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">Track Record</div>
         <h2>Model Lab</h2>
-        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b style="color:var(--text)">2.4</b>, last updated 2026-09-04.</div>
+        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b id="modellab-version" style="color:var(--text)">&mdash;</b>.</div>
       </div>
     </div>
     <!-- Filled by buildReliabilityDiagram(). Empty when data/calibration.json
@@ -1622,7 +1677,11 @@
   <!-- METHODOLOGY -->
   <section class="page" id="page-method">
     <div class="page-head">
-      <div><h2>Methodology</h2><div class="desc">How the model works, how it stacks up against other ways of picking games, where its data comes from, and what every word on this page means.</div></div>
+      <div>
+        <div class="page-eyebrow">How It Was Built</div>
+        <h2>Methodology</h2>
+        <div class="desc">How the model works, how it stacks up against other ways of picking games, where its data comes from, and what every word on this page means.</div>
+      </div>
     </div>
     <nav class="page-jump" aria-label="Sections on this page">
       <a href="#part-method">How the model works</a>
@@ -1889,6 +1948,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
   <section class="page" id="page-changelog">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">How It Was Built</div>
         <h2>What&#39;s Changed</h2>
         <div class="desc">Every version of the model, what got built around it, and what we tried that did not work. The version list is generated from <code>config.py</code> rather than written out by hand, and reversals are kept: a history that quietly deletes the decisions that were later undone is just marketing.</div>
       </div>
@@ -1938,6 +1998,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
   <section class="page" id="page-reliability">
     <div class="page-head">
       <div>
+        <div class="page-eyebrow">How It Was Built</div>
         <h2>Checking the AI&#39;s work</h2>
         <div class="desc">This project is built almost entirely by delegating real engineering work to an AI agent ("Scout" -- Claude Code, doing the research, coding, and PRs throughout this project). That's genuinely useful, and it also fails in specific, real ways. This page documents what actually went wrong here, not what could theoretically go wrong in the abstract.</div>
       </div>
@@ -2013,6 +2074,15 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 const agentLog = __AGENT_LOG_JSON__;
 const versionHistory = __VERSION_HISTORY_JSON__;
 const modelVersion = __MODEL_VERSION__;
+/* Model Lab's header used to TYPE the version: "2.4, last updated
+   2026-09-04" sat there through the 2.5 release. It is written from the
+   same two values the changelog reads, so it cannot drift again. */
+(function(){
+  const el = document.getElementById('modellab-version');
+  if(!el) return;
+  const cur = versionHistory.find(v => v.version === modelVersion);
+  el.textContent = modelVersion + (cur && cur.date ? ', released ' + cur.date : '');
+})();
 const teams = __TEAMS_JSON__;
 const playoffMeta = __PLAYOFF_META_JSON__;
 
@@ -3110,7 +3180,7 @@ function renderGames(){
     const whyHtml = g.why ? `
       ${whySentence(g)}
       ${whyMarketSentence(g)}
-      <button class="why-toggle" data-why="${idSafe}">+ the numbers behind this</button>
+      <button class="btn btn-link why-toggle" data-why="${idSafe}">+ the numbers behind this</button>
       <div class="why-panel" id="why-${idSafe}">
         ${whyRow('Offense edge', g.why.off_matchup)}
         ${whyRow('Defense edge', g.why.def_matchup)}
@@ -3164,7 +3234,7 @@ function renderGames(){
       <div class="market-ref">Vegas line: <b>${spreadText}</b></div>
       ${trackRecordHtml(g.mktB_home, 'card')}
       ${whyHtml}
-      ${(g.notes && g.notes.length) ? `<button class="toggle-flag" data-idx="${idSafe}">+ view context (${g.notes.length})</button>
+      ${(g.notes && g.notes.length) ? `<button class="btn btn-link toggle-flag" data-idx="${idSafe}">+ view context (${g.notes.length})</button>
       <div class="flag-note" id="flag-${idSafe}">
         <b>Context:</b>
         <ul style="margin:6px 0 0 18px; padding:0;">
@@ -3725,7 +3795,7 @@ function showUndoToast(){
     toast.className = 'undo-toast';
     document.body.appendChild(toast);
   }
-  toast.innerHTML = `<span>Pick saved</span><button class="undo-btn" id="undo-action">Undo</button>`;
+  toast.innerHTML = `<span>Pick saved</span><button class="btn btn-link undo-btn" id="undo-action">Undo</button>`;
   toast.classList.add('visible');
   document.getElementById('undo-action').onclick = ()=>{
     if(!lastPickChange) return;
@@ -4173,7 +4243,7 @@ function buildReliabilityDiagram(){
   // and colour-blindness at every one of the 30 points rather than at three.
   const filters = RELIABILITY_SERIES.map(([modelKey, seriesKey])=>{
     const s = SERIES[seriesKey];
-    return `<button class="rel-toggle" data-model="${modelKey}" aria-pressed="true">
+    return `<button class="btn btn-chip rel-toggle" data-model="${modelKey}" aria-pressed="true">
       <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">${markerPath(s.shape, 6, 6, 4.5)} fill="${s.color}"/></svg>${s.label}</button>`;
   }).join('');
 

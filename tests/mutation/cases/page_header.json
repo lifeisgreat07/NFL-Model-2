@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_page_header.py",
+  "cases": [
+    {
+      "id": "two-sidebar-groups-share-a-name-again",
+      "why": "the defect Stage 10 fixed: a second group heading repeats the first, so the sidebar's own headings stop meaning anything and two pages' eyebrows claim the same section.",
+      "find": "<div class=\"nav-group-label\">Track Record</div>",
+      "replace": "<div class=\"nav-group-label\">This Week</div>",
+      "expect_caught_by": "test_every_page_header_agrees_with_the_sidebar"
+    },
+    {
+      "id": "eyebrow-names-the-wrong-section",
+      "why": "Season Accuracy's eyebrow says Your Picks while its nav button sits under Track Record -- the header and the sidebar now disagree about where the page lives, and on a phone only the wrong one is visible.",
+      "find": "<div class=\"page-eyebrow\">Track Record</div>\n        <h2>Season Accuracy</h2>",
+      "replace": "<div class=\"page-eyebrow\">Your Picks</div>\n        <h2>Season Accuracy</h2>",
+      "expect_caught_by": "test_every_page_header_agrees_with_the_sidebar"
+    },
+    {
+      "id": "week-board-loses-its-description",
+      "why": "the Week Board header goes back to a bare title, the way it and Power Ratings were before the shared header.",
+      "find": "        <div class=\"desc\">This week&#39;s games, what each model picks, and why.</div>\n",
+      "replace": "",
+      "expect_caught_by": "test_every_page_header_agrees_with_the_sidebar"
+    },
+    {
+      "id": "a-box-lands-above-the-page-title",
+      "why": "something is placed above the Week Board's title again -- which is where the six-bullet welcome box sat, so a first visit met it before the name of the page.",
+      "find": "<section class=\"page\" id=\"page-board\">",
+      "replace": "<section class=\"page\" id=\"page-board\">\n    <div class=\"onboarding-banner\"><h4>New here? Quick orientation.</h4></div>",
+      "expect_caught_by": "test_every_page_header_agrees_with_the_sidebar"
+    },
+    {
+      "id": "model-lab-types-the-version-again",
+      "why": "the version is written into Model Lab's header by hand, which is how it said 2.4 through the whole 2.5 release.",
+      "find": "<b id=\"modellab-version\" style=\"color:var(--text)\">&mdash;</b>",
+      "replace": "<b id=\"modellab-version\" style=\"color:var(--text)\">2.5</b>",
+      "expect_caught_by": "test_model_lab_does_not_type_the_model_version"
+    }
+  ]
+}
