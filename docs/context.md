@@ -4,25 +4,25 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-23 (Stage 10 complete; Booth-prompt PR open)
+Last updated: 2026-09-23 (Stage 10 complete, #95 merged, nothing open)
 
 ---
 
 ## Right now
 
-**Suite:** 1813 passing, 1 skipped — `python -m pytest -q` on `main` at
-`027cad6`, HEAD level with origin.
+**Suite:** 1823 passing, 1 skipped — `python -m pytest -q` on `main` at
+`5245c31`, HEAD level with origin.
 
-**Stage 10 is complete** (#89 to #94, all merged 2026-09-23). The audit
-re-run scored 28/40 against the original 15; CLAUDE.md's Stage 10 section
-records it and what each PR decided.
+**Stage 10 is complete** (#89 to #94). The audit re-run scored 28/40
+against the original 15.
 
-**Open: #95, Booth's prompt says the run ends when it stops calling
-tools.** #94's audit posted nothing twice; the log showed Booth finishing
-cleanly early, most likely after ending its turn to wait for a background
-corpus run. Its own Booth check is red by design (the action skips a PR
-that edits its workflow). **Next action: Mark merges it**, then the next
-few audits show whether it worked.
+**#95 is merged: Booth's prompt says its run ends when it stops calling
+tools.** It answers #94's two silent audits. **Watch the next few Booth
+runs:** a report posted every time is the evidence it worked; another
+silent run means the cause was something else, and the Run Booth step log
+(signed-in browser) is where to look.
+
+**Next action: start Stage 7**, text items first.
 
 **The weekly job locks picks on Thursday** (#88). QB overrides are due by
 Thursday 16:00 UTC, in `data/qb_overrides/`. Live model is v2.5.
@@ -31,17 +31,17 @@ Thursday 16:00 UTC, in `data/qb_overrides/`. Live model is v2.5.
 
 | What | State | Waiting on |
 |---|---|---|
-| #95, Booth prompt | Open, Booth red by design | Mark to merge |
+| Nothing open on GitHub | -- | -- |
 | The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
 | Confirming #73 on a phone | Not done | Only a device proves the zoom is gone |
 
 ## Queued, in order
 
-1. **Stage 7**: the portfolio write-ups. Text-only items were already
-   unblocked; the visual ones (screenshots, the architecture diagram's UI
-   layer, the lessons-learned page) are unblocked now that Stage 10 is in.
+1. **Stage 7**: the portfolio write-ups. Text items first; the visual ones
+   (screenshots, the architecture diagram's UI layer, the lessons-learned
+   page) are unblocked now that Stage 10 is in.
 2. **Stage 4**: automation and monitoring.
-3. **Stage 6's broadcast channel**.
+3. **Stage 6**, each item with a hypothesis stated before any data is pulled.
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict.
