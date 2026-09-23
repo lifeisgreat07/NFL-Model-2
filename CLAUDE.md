@@ -47,8 +47,8 @@ Model v2.4. `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1324 passing** (1 skipped) — `python -m pytest -q` on `main` at
-`355d6b6`, with HEAD level with origin, which is the order that makes the
+Suite: **1383 passing** (1 skipped) — `python -m pytest -q` on `main` at
+`4e0f1fd`, with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Run it
 before quoting
@@ -136,6 +136,20 @@ casually.
   intervals. Two real findings did survive: Model B genuinely beats Model A on
   proper scoring rules, and the market genuinely beats Model A. The dashboard
   says all three.
+- **Stage 5 accepted nothing (PR #84, 2026-09-22), and the rating engine is
+  not the bottleneck.** Ten questions were pre-registered with a budget of
+  ten confirmatory slots at 99.5%. Success rate, garbage-time weighting,
+  pass/rush splits, early downs, rest, a Kalman filter and a learned
+  A-plus-market blend all failed the validation screen or came back
+  INCONCLUSIVE. Do not re-run any of them without a new registration and a
+  stated reason why the answer would differ. **The one signal is about the
+  pipeline, not the model.** The published backtest takes each game's QB
+  from that game's own box score, which scores the same as the announced
+  starter. The live pipeline uses LAST game's QB. On the roughly one game in
+  four where those differ, live Model A's log loss is far worse, but
+  switching was INCONCLUSIVE at 99.5% (H1). So the page describes a model
+  with better QB information than the one making the picks. Whether to
+  switch on methodology grounds, as weekly refit was, is Mark's call.
 - **There is no ATS edge.** 51.61%, CI [48.58%, 54.63%] — contains 50% and does
   not reach the 52.38% break-even. The betting question was asked properly and
   answered negatively. Do not re-open it without new data.
@@ -1129,6 +1143,12 @@ under compaction pressure, so its length is a cost paid on every session.
   that edits `booth-pr-audit.yml` itself now goes RED rather than green,
   because the action skips on it and nothing gets posted -- that is the
   check telling the truth, not a regression.
+  **Its first live run caught the real thing.** PR #84's audit on
+  2026-09-23 ran Booth for 5m08s, the action exited 0, and no comment was
+  posted. The step failed the job, which would have shown green a day
+  earlier. The duration was inside the old 5-13 minute "normal" range, so
+  the duration tell from #80 would NOT have caught it. That tell was a
+  heuristic, and this check is the actual control.
 - **The `edited` trigger on `booth-pr-audit.yml` fires for the PR description
   only, and its `if:` guard additionally requires `github.event.changes.body`.**
   Editing a *comment* in the thread raises `issue_comment`, which that workflow
