@@ -750,7 +750,15 @@ A great many tests assert on it -- several on colour tokens and exact strings. T
 colour assertion as a question, not as something to update to match: those
 tests encode earlier decisions that were themselves argued for.
 
-**The audit's foundations list is now satisfied by the token block** — spacing
+**CORRECTED 2026-09-23: the token block DEFINED the audit's foundations; it did
+not satisfy them.** This sentence said "now satisfied by the token block"
+for two weeks while the page used the type scale 10 times against 106
+hand-typed font sizes, and the spacing scale 17 times against 232 literal
+values -- the rendered page still showed 21 distinct font sizes, the
+original audit's own count. Stage 10's scale PR moved the page onto both
+scales and `tests/test_type_and_spacing_scale.py` now holds it there. **A
+token that nothing uses is a proposal, not a system: count the consumers
+before writing that a scale is adopted.** What the block provides -- spacing
 scale, type scale, tabular figures, radius tokens, a motion system of three
 durations and one easing, `prefers-reduced-motion`, and elevation-as-border
 with `--shadow-overlay` reserved for the single `.overlay` component. It is
@@ -904,7 +912,7 @@ changes. The SOS note folded into the system. The shared-picks and
 onboarding banners did not: they are notices with actions about a mode,
 not states of missing data, and they already share one component.
 
-**The moment: done on branch `stage10-moments`.** Mark chose ONE of three
+**The moment: merged, #93.** Mark chose ONE of three
 rendered candidates on 2026-09-23: Season Accuracy opens on a scoreboard --
 a verdict sentence ("The betting market leads by 1 game.") over a race of
 Market, Model B, Model A and, once there are graded picks, My picks.
@@ -920,6 +928,22 @@ wrong sentence before.
 week 18 the list is about 24 rows, roughly the Power Ratings table's
 height. It is a question about data that does not exist yet; look again in
 December if it actually reads badly.
+
+**Type and spacing on the scales: done on branch `stage10-scale`.** Every
+font-size is a `--fs` step and every padding, margin and gap a `--s` step,
+snapped to the nearest (ties to the larger); Mark approved before/after
+renders of every page in both themes. Literal on purpose: 1-2px hairlines,
+`calc()` safe-area terms, `<main>`'s 60px page end. SVG chart labels keep
+their attributes, because they are in viewBox units that scale with the
+chart.
+
+**Audit re-run at the end of Stage 10 (2026-09-23): 28/40, from 15/40.**
+Scored with `dashboard-design-audit` on the build with every Stage 10
+branch applied, before the scale work: hierarchy 4, spacing 2, colour 4,
+typography 2, data-viz 4, states 4, responsiveness 4, consistency 4. The
+two 2s are the finding the scale PR then fixed; the score is recorded as
+measured rather than re-scored after the fix, so the number is the one a
+command produced.
 
 **The moments that make someone stop.** A dashboard that is merely consistent
 is invisible. Decide where this one is allowed to be striking — an entry
@@ -1064,6 +1088,16 @@ under compaction pressure, so its length is a cost paid on every session.
   an unattached screenshot UNVERIFIABLE.
 
 ## Traps that have actually bitten
+
+- **`index.html` in a working tree is rewritten by the test suite and by
+  mutation runs, so it can be a MUTATED build.** Several tests call the
+  generator, which writes the repo's `index.html`; during a mutation run
+  that happens with a mutation applied, and the restore puts the template
+  back but not the page. On 2026-09-23 a render of the scale branch showed
+  "ATL   at   GB" spread wide on My Picks: the page had been built during
+  `card-header-quiet-variant-inherits-flex`, with `display:block` removed.
+  The template was fine. **Regenerate immediately before staging a page to
+  look at it, and never render straight after a mutation run.**
 
 - **A MISSING WEBFONT DOES NOT SHIFT A MEASUREMENT, IT CAN FLIP THE ANSWER.**
   The first reproduction of the Week Board sort defect ran from a `file://`
