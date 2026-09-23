@@ -64,8 +64,9 @@ reads like a deleted section rather than an edited sentence.
 Stage 8, 8b and 8c are all complete; its decisions live in
 `docs/design/STAGE8-DESIGN.md` and its specification is the pair of mocks
 beside that file. Stage 9 is complete (#87, 2026-09-22; its button
-component moved to Stage 10). Stage 10 is under way -- see `docs/context.md`,
-which is rewritten every session and is the only place current status belongs.**
+component moved to Stage 10). Stage 10 is complete (#89 to #94, 2026-09-23). What is next is in
+`docs/context.md`, which is rewritten every session and is the only place
+current status belongs.**
 
 One habit from that stage is worth keeping whatever you work on: every numeric
 claim about colour or geometry was re-derived before being believed — contrast
@@ -752,10 +753,17 @@ tests encode earlier decisions that were themselves argued for.
 
 **CORRECTED 2026-09-23: the token block DEFINED the audit's foundations; it did
 not satisfy them.** This sentence said "now satisfied by the token block"
-for two weeks while the page used the type scale 10 times against 106
-hand-typed font sizes, and the spacing scale 17 times against 232 literal
-values -- the rendered page still showed 21 distinct font sizes, the
-original audit's own count. Stage 10's scale PR moved the page onto both
+from Stage 8b until 2026-09-23, while the template carried 105 hand-typed
+font sizes against 15 uses of the type scale, and 263 literal spacing
+lengths against 41 uses of the spacing tokens -- counted at `073a859` with
+`literal_font_sizes` and `literal_spacing` from
+`tests/test_type_and_spacing_scale.py`. Booth's own recount on #94 got the
+same first three, and 40 token uses counting only spacing properties. The
+rendered page still showed 21 distinct font sizes, the original audit's own
+count. (The figures first written here, 106/10 and 232/17, came from quick
+greps on another commit with no command beside them; Booth could not
+reproduce them, which is this file's number trap, committed while
+correcting a claim.) Stage 10's scale PR moved the page onto both
 scales and `tests/test_type_and_spacing_scale.py` now holds it there. **A
 token that nothing uses is a proposal, not a system: count the consumers
 before writing that a scale is adopted.** What the block provides -- spacing
@@ -839,7 +847,7 @@ Also: one button component with real variants and states; a focus and keyboard
 pass paired with `design:accessibility-review`; unify the two `.game-card`
 render paths.
 
-### Stage 10 - Layout, tables & responsiveness
+### Stage 10 - Layout, tables & responsiveness  <- COMPLETE (2026-09-23)
 
 **Order, agreed with Mark 2026-09-23: one PR at a time, each cut from `main`
 after the last merges** — mobile pass, components (button, page header, nav
@@ -929,7 +937,7 @@ week 18 the list is about 24 rows, roughly the Power Ratings table's
 height. It is a question about data that does not exist yet; look again in
 December if it actually reads badly.
 
-**Type and spacing on the scales: done on branch `stage10-scale`.** Every
+**Type and spacing on the scales: merged, #94.** Every
 font-size is a `--fs` step and every padding, margin and gap a `--s` step,
 snapped to the nearest (ties to the larger); Mark approved before/after
 renders of every page in both themes. Literal on purpose: 1-2px hairlines,

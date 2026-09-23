@@ -4,9 +4,11 @@ The page on its type and spacing scales (Stage 10, 2026-09-23).
 Stage 8 defined an eight-step type scale (--fs-11 ... --fs-32) and a 4px
 spacing scale (--s1 ... --s9), and CLAUDE.md recorded the audit's
 foundations list as "satisfied by the token block". It was not. The
-Stage 10 audit re-run counted 106 literal font sizes against 10 uses of the
-scale, 232 literal spacing declarations against 17, and 21 distinct font
-sizes on the rendered page -- the count the original audit had flagged.
+template at 073a859, the last commit before this rule, carried 105
+literal font sizes against 15 uses of the type scale and 263 literal
+spacing lengths against 41 uses of the spacing tokens (counted with
+literal_font_sizes and literal_spacing below), and the rendered page showed
+21 distinct font sizes -- the count the original audit had flagged.
 A token block that nothing uses is a proposal, not a system.
 
 So the rule is stated about the whole template, outside comments: a
