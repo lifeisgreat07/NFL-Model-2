@@ -78,6 +78,14 @@ notes elsewhere still describe them as files you can open in the repository.
 | `src/session_start.py` | Orientation: branch state, branch list, what `docs/context.md` claims vs what git knows, suite count vs the documented one. Never gates. |
 | `src/session_wrapup.py` | End-of-session checks. Mechanical ones plus a by-hand list. This one gates. |
 
+## Case studies (Stage 7)
+
+| Path | What it does |
+|---|---|
+| `docs/case-studies/` | One write-up per real problem, for a technical reader. `README.md` there is the index. |
+| `src/measure_qb_leak.py` | Measures what the QB rating leak did to the backtest, on today's code. Writes `data/qb_leak_effect.json`. |
+| `tests/test_case_studies.py` | Cards on "Checking the AI's work" against the files; every cited commit and quoted figure against its commit; measured figures against their data file. |
+
 ## The tests worth knowing about
 
 | Path | What it guards |

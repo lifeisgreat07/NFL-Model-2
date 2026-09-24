@@ -1,0 +1,66 @@
+{
+  "target": "docs/case-studies/qb-rating-leak.md",
+  "tests": "tests/test_case_studies.py",
+  "cases": [
+    {
+      "id": "case-study-card-loses-its-slug",
+      "target": "src/dashboard_template.html",
+      "why": "the card on the page stops naming the case study it summarises, so the page and docs/case-studies/ disagree about which stories exist and nothing links them.",
+      "find": "data-case-study=\"qb-rating-leak\"",
+      "replace": "data-case-study=\"qb-leak\"",
+      "expect_caught_by": "test_every_case_study_has_a_card_and_every_card_a_case_study"
+    },
+    {
+      "id": "case-study-card-links-somewhere-else",
+      "target": "src/dashboard_template.html",
+      "why": "the card still exists and still reads as a working link, but it opens the index instead of its own case study -- the failure only the one reader who clicks it would see.",
+      "find": "blob/main/docs/case-studies/qb-rating-leak.md\"",
+      "replace": "blob/main/docs/case-studies/README.md\"",
+      "expect_caught_by": "test_every_card_links_to_its_own_case_study"
+    },
+    {
+      "id": "case-study-index-forgets-a-case-study",
+      "target": "docs/case-studies/README.md",
+      "why": "the index links a file that does not exist, so a reader arriving from the repository cannot find the case study the page links to.",
+      "find": "](qb-rating-leak.md)",
+      "replace": "](qb-leak.md)",
+      "expect_caught_by": "test_the_index_lists_every_case_study"
+    },
+    {
+      "id": "leak-case-study-figure-drifts-from-its-data",
+      "why": "a measured figure in the case study stops matching data/qb_leak_effect.json -- the prose-drifts-from-its-artifact failure every published number here is guarded against.",
+      "find": "| Picks that change side | 3 | 1 |",
+      "replace": "| Picks that change side | 2 | 1 |",
+      "expect_caught_by": "test_the_leak_figures_match_the_file_they_came_from"
+    },
+    {
+      "id": "leak-case-study-quotes-a-figure-without-its-commit",
+      "why": "a figure quoted from history loses the commit it came from, so nothing can check it and it reads as evidence with no source.",
+      "find": "includes zero (`a86c470`).",
+      "replace": "includes zero.",
+      "expect_caught_by": "test_a_figure_quoted_from_a_commit_is_in_that_commit"
+    },
+    {
+      "id": "leak-case-study-cites-a-commit-that-does-not-exist",
+      "why": "a cited commit is mistyped, and a reader who looks it up finds nothing -- a citation that cannot be followed is not one.",
+      "find": "`6e676e0`",
+      "replace": "`6e676e1`",
+      "expect_caught_by": "test_every_commit_a_case_study_cites_exists"
+    },
+    {
+      "id": "leak-case-study-stops-naming-its-machine",
+      "why": "the sentence saying which environment produced the table goes, and the pick counts read as portable facts again -- the gap Booth found on #96, where one of its two Linux re-runs flipped one fewer pick per model.",
+      "find": "table came from Windows, Python 3.11.9, with the library versions recorded in",
+      "replace": "table came from one run, with the library versions recorded in",
+      "expect_caught_by": "test_the_case_study_names_the_machine_its_table_came_from"
+    },
+    {
+      "id": "verification-md-points-at-a-removed-incident",
+      "target": "VERIFICATION.md",
+      "why": "VERIFICATION.md sends readers to an incident the page no longer carries -- what happened to its 'Incident 3' pointer when that story became a case study.",
+      "find": "for exactly this failure mode occurring for real.)",
+      "replace": "Incident 3, for exactly this failure mode occurring for real.)",
+      "expect_caught_by": "test_verification_md_names_only_incidents_the_page_still_has"
+    }
+  ]
+}
