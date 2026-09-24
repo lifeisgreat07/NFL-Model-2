@@ -226,11 +226,11 @@ def test_every_interval_includes_zero_is_what_the_data_says():
 
 
 def test_the_case_study_names_the_machine_its_table_came_from():
-    """The table's pick counts and last digits are specific to one machine:
-    Booth's Linux re-run of #96 got one fewer pick changing side for each
-    model. So the case study must name the machine the JSON says produced it,
-    and a re-run on another machine that rewrites the JSON makes this fail
-    until the sentence is rewritten with it."""
+    """The table's pick counts and last digits belong to one run: of Booth's
+    two Linux re-runs on #96, one matched it and one had a pick fewer per
+    model. So the case study must name the environment the JSON says produced
+    the table, and a re-run that rewrites the JSON makes this fail until the
+    sentence is rewritten with it."""
     prov = json.loads(LEAK_DATA.read_text(encoding='utf-8'))['provenance']
     text = LEAK_DOC.read_text(encoding='utf-8')
     named = f"{prov['system']}, Python {prov['python']}"

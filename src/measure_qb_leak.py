@@ -104,12 +104,15 @@ def build_both_tables():
 
 
 def provenance():
-    """Where the numbers came from. The pick counts and the last digits of
-    every score move between machines -- the same commit and data already
-    disagree by one to two games between a Linux runner and Windows -- and
-    Booth's re-run of #96 on Linux showed this file is no exception. So the
-    file says which machine it describes, the way calibration.json does, and
-    the case study names that machine beside the table."""
+    """Where the numbers came from, the way calibration.json records it.
+
+    A RECORD, NOT AN EXPLANATION. Booth re-ran this script twice on Linux
+    while auditing #96: one run matched the Windows file in every figure the
+    case study prints, the other had one fewer pick changing side per model.
+    Nothing found says what separated those two runs, and it may be nothing
+    this block records -- the second audit found its library versions matching the ones
+    recorded here, and the first run predates this block. So matching versions do
+    not promise a matching table; only the verdict has held in every run."""
     import importlib.metadata as md
     import platform
 

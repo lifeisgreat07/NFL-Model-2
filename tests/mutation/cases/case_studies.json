@@ -49,9 +49,9 @@
     },
     {
       "id": "leak-case-study-stops-naming-its-machine",
-      "why": "the sentence saying which machine produced the table goes, and the pick counts read as portable facts again -- the exact gap Booth found on #96, where a Linux re-run flipped one fewer pick per model.",
-      "find": "**These figures come from one machine:** Windows, Python 3.11.9, with the",
-      "replace": "**These figures come from one machine,** with the",
+      "why": "the sentence saying which environment produced the table goes, and the pick counts read as portable facts again -- the gap Booth found on #96, where one of its two Linux re-runs flipped one fewer pick per model.",
+      "find": "table came from Windows, Python 3.11.9, with the library versions recorded in",
+      "replace": "table came from one run, with the library versions recorded in",
       "expect_caught_by": "test_the_case_study_names_the_machine_its_table_came_from"
     },
     {

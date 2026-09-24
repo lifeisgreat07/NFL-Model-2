@@ -91,20 +91,23 @@ number means the leak made the model look better than it was.
 | Brier difference, 95% interval | -0.000080 [-0.000191, +0.000035] | +0.000012 [-0.000018, +0.000043] |
 | Log loss difference, 95% interval | -0.000158 [-0.000405, +0.000098] | +0.000030 [-0.000039, +0.000100] |
 
-**These figures come from one machine:** Windows, Python 3.11.9, with the
-library versions recorded in the JSON's `provenance`. They are not portable
-to the last digit. This project has already found that the same commit and
-data disagree by one or two games between a Linux runner and Windows, and
-this table does too.
-[Booth's re-run on #96](https://github.com/lifeisgreat07/NFL-Model-2/pull/96#issuecomment-5817859494),
-on Linux, had one fewer pick changing side for each model and different last
-digits in every score. The verdict held on both machines.
+**How far these figures travel.** The script has been run three times. This
+table came from Windows, Python 3.11.9, with the library versions recorded in
+the JSON's `provenance`. Booth re-ran it twice on Linux while auditing #96.
+[The second re-run](https://github.com/lifeisgreat07/NFL-Model-2/pull/96#issuecomment-5818270878)
+matched this table in every figure it shows.
+[The first](https://github.com/lifeisgreat07/NFL-Model-2/pull/96#issuecomment-5817859494)
+had one fewer pick changing side for each model and different last digits in
+every score. Why is not known: that run came before the script recorded its
+environment, so nothing says what was different about it. The verdict held in
+all three runs. Read the pick counts and last digits as this run's, and the
+verdict as the result.
 
 Every interval includes zero. The leak nudged Model A's scores slightly in its
 own favour and Model B's slightly against, and neither nudge can be told apart
 from noise at this sample size. Accuracy is left out of the table on purpose:
-a few games changing side out of 1087 is the same size as that
-machine-to-machine wobble.
+a few games changing side out of 1087 is the size of move that already
+separates two runs of the same code.
 
 That is a reasonable result, and it does not make the fix unimportant. The
 backtest's claim is that every prediction used only what was known at the
