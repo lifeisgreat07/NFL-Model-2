@@ -2136,7 +2136,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h3>Why This Page Exists</h3>
       <p>An AI agent confidently stating something false -- about a result, about the state of a codebase, about whether a test actually passed -- is a real, well-documented failure mode, not a hypothetical. The honest mitigation isn't "use a smarter model" or "ask it to double-check itself" (the same failure mode that produced the wrong claim can just as easily produce a confident re-confirmation of it). The mitigation that actually worked here, every time, was <b style="color:var(--text)">external, mechanical verification</b> -- demanding the real command output, the real screenshot, the real re-run, rather than accepting a description of one.</p>
-      <p style="margin-top:var(--s3);">Below are the three real incidents from this project where that discipline caught something that would otherwise have shipped wrong.</p>
+      <p style="margin-top:var(--s3);">Below is one real incident where that discipline caught something that would otherwise have shipped wrong, and then the longer case studies.</p>
     </div>
 
     <div class="method-block">
@@ -2146,18 +2146,18 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <p style="margin-top:var(--s2);"><b style="color:var(--text);">Why it matters:</b> This was a claim about objective, checkable repo state -- not a judgment call or a probabilistic model output. It still came out wrong. Ground truth (a real screenshot) resolved it in seconds; trusting the more recent-sounding claim would not have.</p>
     </div>
 
-    <div class="method-block">
-      <h3>Incident 2 -- An Unreproducible Result</h3>
-      <p><b style="color:var(--text)">Claim made:</b> An earlier tuning decision (a model hyperparameter, retuned from 8 to 96) was recorded on this dashboard as a resolved ACCEPT, with specific supporting accuracy numbers.</p>
-      <p style="margin-top:var(--s2);"><b style="color:var(--text);">How it was caught:</b> When the same comparison was re-run from the actual current codebase, months later, the original numbers could not be reproduced under any configuration tried -- not with the original methodology, not with the current one. The result had been evaluated against a version of the model that no longer existed, and nothing had gone back to re-check it after later, independently-correct changes altered what it was really being compared against.</p>
-      <p style="margin-top:var(--s2);"><b style="color:var(--text);">Why it matters:</b> Nobody fabricated this -- each individual step was reasonable at the time. The failure was in never re-verifying an old claim against the current state of the system. See Model Lab's "QB Shrinkage Re-tune" entry for the full resolution (re-tested fresh, found genuinely inconclusive, reverted to the simpler original default).</p>
-    </div>
-
-    <div class="method-block">
-      <h3>Incident 3 -- A Test Suite That Wasn't Actually Testing Anything</h3>
-      <p><b style="color:var(--text)">Claim made:</b> A leak-free test suite existed on the main branch, implying the codebase's leak-free properties were being actively verified.</p>
-      <p style="margin-top:var(--s2);"><b style="color:var(--text);">How it was caught:</b> When actually executed (not just confirmed to exist), 4 of its 5 tests failed immediately with an import error -- the file's own path configuration pointed at a directory that didn't exist -- and the fifth silently skipped. The suite had never successfully run a single real check.</p>
-      <p style="margin-top:var(--s2);"><b style="color:var(--text);">Why it matters:</b> A test file's presence in the repo is not evidence it works. This is arguably the most important lesson on this page: a verification system that isn't itself verified provides false confidence, which is worse than no verification system at all.</p>
+    <!-- One card per file in docs/case-studies/. The full write-up lives in
+         the repository, for a technical reader; this is the short version,
+         so there is one copy of each story, not two. tests/test_case_studies.py
+         holds the cards and the files to each other. The QB-leak card
+         replaces what were Incidents 2 and 3 here: both were that afternoon. -->
+    <div class="method-block" id="case-studies">
+      <h3>Case Studies</h3>
+      <p>The longer stories. Each one is written up in full in the project&#39;s repository, where every number can be checked. This is the short version.</p>
+      <div class="case-study" data-case-study="qb-rating-leak" style="margin-top:var(--s3);">
+        <p><b style="color:var(--text)">The QB rating that could see the future.</b> A test built to prove the quarterback ratings only used past games failed on its first run: a 2022 prediction was quietly using 2023 to 2025. Fixing it turned up two worse problems the same afternoon. The project&#39;s own leak-free tests had never actually run, and an earlier tuning result could not be repeated, so it was undone. Measured afterwards, the leak itself barely moved the results.</p>
+        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/qb-rating-leak.md" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
+      </div>
     </div>
 
     <div class="method-block">

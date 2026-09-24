@@ -23,8 +23,8 @@ Concretely:
   re-run, from the current code, with the actual numbers, is.
 - A test file existing in the repository is not evidence it works.
   Existence and passing are different claims -- verify both, separately.
-  (See [AI Reliability](https://lifeisgreat07.github.io/NFL-Model-2/),
-  Incident 3, for exactly this failure mode occurring for real.)
+  (See the [QB rating leak case study](docs/case-studies/qb-rating-leak.md)
+  for exactly this failure mode occurring for real.)
 - **A screenshot that is not attached is not evidence.** "Verified in both
   themes" describes a process; the images are the artifact. Booth marked the
   same visual claim UNVERIFIABLE three times on PR #21 because the screenshots

@@ -119,12 +119,22 @@ def test_the_page_says_so_when_the_log_has_not_been_collected():
 
 
 def test_the_hand_written_incidents_survived_the_rebuild():
-    """The three incidents are the part a reader learns from, and the same
-    mistake as the Roadmap was available here: replace a hand-written page
-    with a live one and lose the writing."""
+    """The incidents are the part a reader learns from, and the same mistake
+    as the Roadmap was available here: replace a hand-written page with a
+    live one and lose the writing.
+
+    Incidents 2 and 3 moved in Stage 7 into the QB-leak case study -- both
+    happened the afternoon that case study describes -- and the page carries
+    a card linking to it. So the writing is checked where it now lives, not
+    deleted from the check."""
     page = _page()
-    for phrase in ('Incident 1', 'Incident 2', 'Incident 3', 'The Actual Rule'):
+    for phrase in ('Incident 1', 'Case Studies', 'data-case-study="qb-rating-leak"',
+                   'The Actual Rule'):
         assert phrase in page, f"{phrase!r} was lost in the rebuild"
+    doc = (REPO_ROOT / 'docs' / 'case-studies' / 'qb-rating-leak.md').read_text(encoding='utf-8')
+    for phrase in ('Nothing in the repository could reproduce its numbers',  # was Incident 2
+                   'had never checked anything'):                           # was Incident 3
+        assert phrase in doc, f"the case study no longer carries {phrase!r}"
 
 
 def test_the_page_is_named_in_plain_english_everywhere():
