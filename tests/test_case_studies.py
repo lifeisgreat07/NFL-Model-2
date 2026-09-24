@@ -176,6 +176,17 @@ QUOTED = [
     ('booth-first-audit.md', '| Gap | -11.95 | -11.66 |', '639e09a', 'Gap -11.95 -11.66'),
     ('booth-first-audit.md', '| 95% interval | [-18.37, -5.53] | [-18.37, -5.25] |', '639e09a',
      '95% CI [-18.37,-5.53] [-18.37,-5.25]'),
+    ('stage2-corrections.md', 'an em-dash for all 32 teams', '9e4ec47', 'an em-dash for all 32 teams'),
+    ('stage2-corrections.md', 'games_played 0 and games_remaining 272', '9e4ec47',
+     'games_played 0 and games_remaining 272'),
+    ('stage2-corrections.md', 'up to 0.00125, 25x that threshold', 'f71e39c',
+     'AUC moves up to 0.00125, 25x that threshold'),
+    ('stage2-corrections.md', 'four of seven queued items were misdiagnosed', '69c3b18',
+     'four of seven queued items were misdiagnosed'),
+    ('stage2-corrections.md', '16 mostly-PRODUCT milestones, and only about 3 overlap', '0d6c8e1',
+     '16 mostly-PRODUCT milestones, and only about 3 overlap'),
+    ('stage2-corrections.md', "six of the nine it picked up weren't filters", '8d46f82',
+     'Nine elements wear it and three are filters'),
 ]
 
 

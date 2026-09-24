@@ -63,6 +63,14 @@
       "expect_caught_by": "test_a_figure_quoted_from_a_commit_is_in_that_commit"
     },
     {
+      "id": "stage2-case-study-misquotes-its-audit",
+      "target": "docs/case-studies/stage2-corrections.md",
+      "why": "the Stage 2 case study's evidence that SOS was preseason drifts from the commit it quotes (9e4ec47) -- a figure that reads as proof and no longer matches its source.",
+      "find": "games_played 0 and games_remaining 272",
+      "replace": "games_played 0 and games_remaining 256",
+      "expect_caught_by": "test_a_figure_quoted_from_a_commit_is_in_that_commit"
+    },
+    {
       "id": "verification-md-points-at-a-removed-incident",
       "target": "VERIFICATION.md",
       "why": "VERIFICATION.md sends readers to an incident the page no longer carries -- what happened to its 'Incident 3' pointer when that story became a case study.",
