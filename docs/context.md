@@ -35,11 +35,9 @@ caught the planted defect. On `main` the suite now has no standing skip.
 
 | What | State | Waiting on |
 |---|---|---|
-| #98, rest of Stage 7 | Open | Booth, then Mark |
+| The regression head fix and fixture body | Open PR | Booth, then Mark |
 | Confirming #73 on a phone | Not done | Only a device proves the zoom is gone |
-| Regression workflow records the wrong head | Found on the first run | Stage 4: pass the audit job's `head` output to the record job instead of re-assembling |
-| Fixture claim 1 flagged the description | Unread | Booth's report is the run's downloadable artifact; read it, then decide if the fixture holds a second defect |
-| The weekly routine's prompt is stale | Found, not changed | Mark. The scheduled Claude routine still says "based on last week's dropback leader", "regenerate dashboard.html" and runs Tuesday; since v2.5 and #88 none of that matches |
+| The weekly routine's prompt is stale | New prompt written (QB news only, via PR, Mon and Wed 22:00 UTC) | Mark pastes it in: the routine was created outside an agent session, so an agent cannot edit it |
 | Leak table splits two ways on Linux | Recorded in the QB case study | Nothing, unless it is ever worth finding the cause |
 
 ## Queued, in order

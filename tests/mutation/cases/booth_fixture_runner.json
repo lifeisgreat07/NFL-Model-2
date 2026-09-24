@@ -5,8 +5,8 @@
     {
       "id": "runner-trusts-the-stored-flag",
       "why": "check_one returns the baseline's recorded `satisfied` instead of re-deriving it. A fixture whose expectation was later edited keeps reporting the old pass, so the corpus stays green for a question nobody is asking any more -- the exact rot a recorded baseline is most prone to.",
-      "find": "    ok, why = loader.satisfied_by(meta, baseline.get('verdict'))\n    return ok, why",
-      "replace": "    return baseline.get('satisfied'), baseline.get('explanation', '')",
+      "find": "    ok, why = loader.satisfied_by(meta, baseline.get('verdict'))\n    if ok and not head_matches(baseline.get(",
+      "replace": "    return baseline.get('satisfied'), baseline.get('explanation', '')\n    if ok and not head_matches(baseline.get(",
       "expect_caught_by": "test_a_baseline_is_rechecked_not_trusted"
     },
     {
@@ -36,6 +36,42 @@
       "find": "Close with the machine-readable booth-verdict block the protocol specifies.",
       "replace": "Close with a summary of what you found.",
       "expect_caught_by": "test_the_prompt_names_the_head_and_the_body"
+    },
+    {
+      "id": "runner-record-ignores-the-verdict-head",
+      "why": "record() stops comparing the head Booth reports with the head being recorded, so a verdict about one commit records as a pass for another.",
+      "find": "    if ok and not head_matches(head_sha, verdict):\n        ok, why = False, _head_mismatch(head_sha, verdict)\n",
+      "replace": "",
+      "expect_caught_by": "test_a_verdict_about_another_commit_is_not_a_pass"
+    },
+    {
+      "id": "runner-recheck-ignores-the-verdict-head",
+      "why": "check_one() re-derives the answer from the verdict but skips the head, so a baseline naming a commit Booth never audited keeps passing on every suite run.",
+      "find": "    if ok and not head_matches(baseline.get('fixture_head'), baseline.get('verdict')):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_baseline_whose_heads_disagree_fails_the_recheck"
+    },
+    {
+      "id": "runner-head-match-accepts-a-short-head",
+      "why": "a head under seven characters, or none at all, counts as a match -- the one-commit-in-sixteen hole booth_report_posted.py closes for the live audit, reopened here, and a missing head ties the result to nothing.",
+      "find": "    if len(short) < MIN_SHA_PREFIX:\n        return False",
+      "replace": "    if len(short) < MIN_SHA_PREFIX:\n        return True",
+      "expect_caught_by": "test_head_matching"
+    },
+    {
+      "id": "runner-record-head-is-ignored",
+      "why": "`record --head` is parsed but the runner re-assembles anyway and records the new assembly's head -- the CI bug moved into the runner.",
+      "find": "    if args.cmd == 'record' and args.head:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_record_with_a_head_does_not_reassemble"
+    },
+    {
+      "id": "fixture-body-miscounts-its-commits",
+      "target": "tests/booth_fixtures/fixed-everywhere/body.md",
+      "why": "the fixture's description states a commit count the assembled branch does not have, giving Booth a second, unplanted discrepancy -- the fixture stops isolating the one defect it names.",
+      "find": "One commit. `notes.md`",
+      "replace": "Two commits. `notes.md`",
+      "expect_caught_by": "test_the_description_counts_the_commits_the_fixture_has"
     }
   ]
 }

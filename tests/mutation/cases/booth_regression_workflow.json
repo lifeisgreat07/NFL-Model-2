@@ -36,6 +36,13 @@
       "find": "            ${{ steps.prompt.outputs.text }}",
       "replace": "            This is a REGRESSION FIXTURE, not a live pull request.",
       "expect_caught_by": "test_the_prompt_is_generated_not_restated"
+    },
+    {
+      "id": "regression-record-job-reassembles",
+      "why": "the record job stops passing the audited head and re-assembles the fixture instead, so the baseline names fresh commits Booth never saw -- what the first run did, recording dad39d0 for an audit of 9d2d81e.",
+      "find": "            --report booth-report.md --head \"$AUDITED_HEAD\" | tee record.log",
+      "replace": "            --report booth-report.md --out .fixture-run/ci | tee record.log",
+      "expect_caught_by": "test_the_baseline_records_the_commit_booth_audited"
     }
   ]
 }

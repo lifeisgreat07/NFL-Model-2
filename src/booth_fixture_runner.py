@@ -3,7 +3,7 @@ Execute a Booth regression fixture, and record what Booth said about it.
 
     python src/booth_fixture_runner.py assemble fixed-everywhere
     python src/booth_fixture_runner.py prompt   fixed-everywhere
-    python src/booth_fixture_runner.py record   fixed-everywhere --report r.md
+    python src/booth_fixture_runner.py record   fixed-everywhere --report r.md [--head SHA]
     python src/booth_fixture_runner.py check
 
 A fixture (tests/booth_fixtures/<id>/) is a miniature pull request containing a
@@ -46,6 +46,7 @@ sys.path.insert(0, str(REPO / 'src'))
 sys.path.insert(0, str(REPO / 'tests' / 'booth_fixtures'))
 
 import booth_verdict as bv  # noqa: E402
+from booth_report_posted import MIN_SHA_PREFIX  # noqa: E402
 import loader  # noqa: E402
 
 BASELINE = 'baseline.json'
@@ -177,6 +178,8 @@ def record(meta, report_text, head_sha=None):
     """
     verdict = bv.extract(report_text)
     ok, why = loader.satisfied_by(meta, verdict)
+    if ok and not head_matches(head_sha, verdict):
+        ok, why = False, _head_mismatch(head_sha, verdict)
     payload = {
         'fixture': meta['id'],
         'recorded_utc': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
@@ -191,6 +194,32 @@ def record(meta, report_text, head_sha=None):
     baseline_path(meta).write_text(
         json.dumps(payload, indent=2) + '\n', encoding='utf-8')
     return ok, why
+
+
+def head_matches(head_sha, verdict):
+    """True when the commit Booth says it audited is the one being recorded.
+
+    Booth reports a short SHA; the runner knows the full one. A baseline whose
+    two heads disagree records a result against a commit Booth never saw --
+    which is what the first recorded run did, because the workflow's record
+    job re-assembled the fixture and got fresh commit hashes. A missing head on
+    either side is a mismatch, not a pass: nothing would then tie the verdict
+    to the fixture it claims to be about.
+    """
+    booth = str((verdict or {}).get('head') or '').strip().lower()
+    ours = str(head_sha or '').strip().lower()
+    short, full = sorted((booth, ours), key=len)
+    # The same floor booth_report_posted.py uses for the live audit: a prefix
+    # shorter than seven characters matches too many commits to identify one.
+    if len(short) < MIN_SHA_PREFIX:
+        return False
+    return full.startswith(short)
+
+
+def _head_mismatch(head_sha, verdict):
+    return ('the baseline names head {!r} but Booth audited {!r}; the result '
+            'is not tied to the commit it claims to be about'.format(
+                head_sha, (verdict or {}).get('head')))
 
 
 def load_baseline(meta):
@@ -213,6 +242,9 @@ def check_one(meta):
     if baseline is None:
         return None, 'no baseline recorded yet'
     ok, why = loader.satisfied_by(meta, baseline.get('verdict'))
+    if ok and not head_matches(baseline.get('fixture_head'), baseline.get('verdict')):
+        return False, _head_mismatch(baseline.get('fixture_head'),
+                                     baseline.get('verdict'))
     return ok, why
 
 
@@ -228,6 +260,11 @@ def main(argv=None):
         if name == 'record':
             p.add_argument('--report', required=True,
                            help="file holding Booth's report")
+            p.add_argument('--head', default=None,
+                           help='the commit Booth audited. The CI record job '
+                                'passes the audit job\'s head here; without '
+                                'it the fixture is re-assembled, which makes '
+                                'NEW commits with different hashes')
     sub.add_parser('check')
 
     args = ap.parse_args(argv)
@@ -252,6 +289,13 @@ def main(argv=None):
     out = Path(args.out) if getattr(args, 'out', None) else \
         REPO / '.fixture-run' / meta['id']
 
+    if args.cmd == 'record' and args.head:
+        # Record against the commit Booth actually audited. Assembling here
+        # would build a second repository whose commits carry new timestamps
+        # and so new hashes: the first CI run recorded dad39d0 for an audit
+        # of 9d2d81e that way.
+        return _record_and_report(meta, args.report, args.head)
+
     base, head = assemble(meta, out)
 
     if args.cmd == 'prompt':
@@ -271,7 +315,11 @@ def main(argv=None):
             meta.get('seeded_defect', {}).get('explanation', '(none declared)')))
         return 0
 
-    ok, why = record(meta, Path(args.report).read_text(encoding='utf-8'), head)
+    return _record_and_report(meta, args.report, head)
+
+
+def _record_and_report(meta, report_path, head):
+    ok, why = record(meta, Path(report_path).read_text(encoding='utf-8'), head)
     print('{}: {}'.format('SATISFIED' if ok else 'NOT SATISFIED', why))
     print('baseline written to {}'.format(baseline_path(meta)))
     return 0 if ok else 1

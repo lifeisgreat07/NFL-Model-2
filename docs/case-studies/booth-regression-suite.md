@@ -89,20 +89,25 @@ the overall verdict was "DO NOT MERGE -- DISCREPANCIES FOUND". The answer
 key was checked against the verdict, not against Booth's opinion of how it
 did.
 
-The run also turned up two things about the suite, neither resolved yet:
+The run also turned up two problems in the suite itself. Both are now fixed.
 
 - **A second finding the fixture didn't plant.** Claim 1 came back as a
   DISCREPANCY implicating the pull request's description. The fixture was
-  designed to hold exactly one defect, so that is either a second,
-  unplanned one, or Booth reading the planted one from another angle.
-  Booth's full report is kept as the run's download on GitHub and hasn't
-  been read for this write-up.
-- **The baseline names a commit Booth never saw.** The verdict says Booth
-  audited 9d2d81e, and the baseline records the fixture's head as
-  dad39d0. The throwaway repository is built once in the job that runs
+  meant to hold exactly one defect, but its description opened with "Two
+  commits." while the runner builds one commit over main. That is a real
+  second discrepancy, and the most likely thing claim 1 found. The
+  description now says "One commit.", and a test checks that any commit
+  count a fixture's description states matches the branch the runner
+  builds.
+- **The baseline named a commit Booth never saw.** The verdict says Booth
+  audited 9d2d81e, but the baseline recorded the fixture's head as
+  dad39d0. The throwaway repository was built once in the job that runs
   Booth and again in the job that records the result, and each build makes
-  new commits with new hashes. The fix is to pass the first job's hash to
-  the second, which the workflow already exposes and doesn't use.
+  new commits with new hashes. The record job now takes the first job's
+  hash instead of rebuilding, and a baseline whose head doesn't match the
+  verdict's no longer counts as a pass. The recorded baseline was corrected
+  by hand to 9d2d81e, with a note saying why; the run's log shows that
+  hash in both the assembly step and the prompt.
 
 ## The injection test
 

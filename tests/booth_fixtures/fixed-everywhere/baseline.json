@@ -1,7 +1,9 @@
 {
   "fixture": "fixed-everywhere",
   "recorded_utc": "2026-09-24T17:48:38Z",
-  "fixture_head": "dad39d0faae7a495cf282b9d17f961ee8b485a9a",
+  "fixture_head": "9d2d81e",
+  "fixture_head_corrected": "Corrected by hand on 2026-09-24. The record job re-assembled the fixture and wrote the new assembly's head, dad39d0faae7a495cf282b9d17f961ee8b485a9a, which Booth never saw. Booth audited 9d2d81e: the audit job's assemble step printed 'head fixture-pr  9d2d81e' and the prompt said 'Use 9d2d81e as the head' (run 36036544840). Only the short form was logged. The verdict is unchanged.",
+  "body_at_record": "The fixture's body.md said 'Two commits.' when this was recorded; it now says 'One commit.', which is what assemble() builds.",
   "assertion": "file-locus",
   "satisfied": true,
   "explanation": "claim(s) [4, 6, 7] raised a DISCREPANCY implicating test_guard.py",

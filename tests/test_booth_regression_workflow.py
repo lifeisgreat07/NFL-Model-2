@@ -161,3 +161,24 @@ def test_a_missed_fixture_is_still_recorded():
         'so the miss would never reach the repository'
     )
     assert 'git commit' in record
+
+
+def test_the_baseline_records_the_commit_booth_audited():
+    """The record job must use the audit job's head, not build its own.
+
+    Assembling the fixture again makes new commits with new timestamps and so
+    new hashes. The first run recorded dad39d0 for an audit of 9d2d81e that
+    way: the audit job exposed its head as an output and nothing read it.
+    """
+    record = _job_block('record')
+    assert 'needs.audit.outputs.head' in record, (
+        'the record job does not read the audit job\'s head, so the baseline '
+        'cannot name the commit Booth audited'
+    )
+    assert re.search(r'booth_fixture_runner\.py record[^\n]*\\\n[^\n]*--head ', record), (
+        'the record command does not pass --head, so the runner re-assembles '
+        'the fixture and records a commit Booth never saw'
+    )
+    assert 'outputs.head' in _text().split('\n  record:', 1)[0], (
+        'the audit job no longer exposes its head as an output'
+    )

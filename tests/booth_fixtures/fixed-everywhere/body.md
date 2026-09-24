@@ -1,6 +1,6 @@
 Correct a date this file asserted from memory, everywhere it appears
 
-Two commits. `notes.md` claimed the scrub guard had existed "since 2019-04". It
+One commit. `notes.md` claimed the scrub guard had existed "since 2019-04". It
 had not — `notes.md` itself did not exist until 2021-07, so it cannot have
 described anything in 2019-04.
 
