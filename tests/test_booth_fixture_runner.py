@@ -247,11 +247,11 @@ def test_a_baseline_is_rechecked_not_trusted(tmp_path):
     meta['assertion'] = 'file-locus'
     meta['expect_discrepancy_implicating'] = 'original.py'
     verdict = json.dumps({
-        'pr': 0, 'head': 'a',
+        'pr': 0, 'head': 'abc1234',
         'claims': [{'id': 1, 'verdict': 'DISCREPANCY',
                     'implicates': ['original.py']}],
         'overall': 'NEEDS HUMAN REVIEW'})
-    ok, _ = runner.record(meta, _report(verdict), 'a')
+    ok, _ = runner.record(meta, _report(verdict), FULL_HEAD)
     assert ok
 
     # The expectation moves; the stored flag still says true.
