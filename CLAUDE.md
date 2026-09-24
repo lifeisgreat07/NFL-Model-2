@@ -63,7 +63,7 @@ that literal, and rewording it to `**N passing, 1 skipped**` did not make the
 check complain about the wording — it reported the line as *missing*, which
 reads like a deleted section rather than an edited sentence.
 
-**Stages 1, 2, 3 and 7.5 are complete. Stage 7.6's repository half is done.
+**Stages 2, 3 and 7.5 are complete; Stage 1 was retired 2026-09-24. Stage 7.6's repository half is done.
 Stage 8, 8b and 8c are all complete; its decisions live in
 `docs/design/STAGE8-DESIGN.md` and its specification is the pair of mocks
 beside that file. Stage 9 is complete (#87, 2026-09-22; its button
@@ -275,17 +275,6 @@ casually.
   "and therefore" has a mechanism in it, and the mechanism is the half nobody
   measured. Check that clause before doing the work it implies.
 
-### Stage 1 - Recurring status checks (first every session, don't dwell)
-
-Injury/roster data is CLOSED, not blocked - settled on VALUE, not
-availability, so stop re-checking nflverse for it. Ensemble contingency is
-blocked solely on another independently-useful model existing. ESPN QBR stops
-at 2023, quick re-check only. Public betting % has no free source; reverse
-line movement is blocked downstream of it. Line-movement accumulation is
-confirmed working and needs many more weeks before a real predictive test -
-do not force one on a small sample. Closing-line backtest stays deferred on
-that same accumulation.
-
 ### Stage 2 - Deferred UX & repo hygiene  <- COMPLETE (2026-09-06)
 
 Shipped as PRs #21-#24. See "Findings that still constrain the work" above; the four
@@ -384,9 +373,26 @@ REJECT.
 
 Next Gen Stats via nflreadpy, the most promising untapped source already in the
 stack; participation/personnel grouping; referee crew assignments, cheap and
-testable; multi-book line dispersion, accumulation-gated under Stage 1 rather
-than a new build. Each item needs a stated hypothesis BEFORE the data is
+testable; multi-book line dispersion, gated on the line
+accumulation below rather than a new build. Each item needs a stated hypothesis BEFORE the data is
 pulled, or it is fishing.
+
+**Line movement and the closing-line backtest (moved here when Stage 1 was
+retired, 2026-09-24).** Line snapshots accumulate on every weekly run and are
+confirmed working. Do not test anything on them before the 2026 regular
+season ends: that is the trigger for the first line-movement test and the
+closing-line backtest, each with its hypothesis written down first. A test on
+a few weeks of snapshots is the small-sample result this project refuses to
+publish.
+
+**Closed sources -- do not re-check.** Stage 1 used to re-check these every
+session; it was retired on 2026-09-24 because none of them has a future here.
+Injury/roster data as a model feature: closed on value, not availability
+(showing team news on a page is a separate question, see Stage 7). ESPN QBR:
+abandoned upstream, ends at 2023 (re-confirmed 2026-09-24: no 2024 or 2025
+rows, and nflreadpy has no loader). Public betting percentages: no free
+source, so reverse line movement is out too. An ensemble needs a second
+independently useful model, and Stage 5 accepted none.
 
 ### Stage 7 - Portfolio polish
 
@@ -577,7 +583,7 @@ every other guard in this repo.
 - Weekly team news on Team Deep Dive — injuries, trades, firings, releases,
   scraped and summarised briefly. This is a new external data source with
   staleness, rate-limit and reliability concerns; Stage 6 in nature, and it
-  must not gate the visual work. NOTE for a future session: Stage 1 records
+  must not gate the visual work. NOTE for a future session: Stage 6 records
   injury DATA as closed, but that decision was about model features. Displaying
   team news is a different question and is not foreclosed by it.
 
