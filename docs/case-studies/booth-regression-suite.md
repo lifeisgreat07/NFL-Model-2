@@ -5,11 +5,10 @@ The Booth regression suite was built on 2026-09-07 to close that gap: small,
 fake pull requests with a defect planted in them, where the right answer is
 known in advance, so "does Booth still catch this?" becomes a question with
 a checkable answer. The format, the runner, the integrity checks and the
-workflow were all built and tested that day. What hasn't happened, as of
-this write-up, is the one thing the suite exists for: no fixture baseline
-has ever been recorded, so Booth has never actually been scored against a
-fixture. This case study describes what was built, and why the missing run
-matters more than anything that was built.
+workflow were all built and tested that day. Then nobody ran it for
+seventeen days. The first run happened on 2026-09-24, because writing this
+case study turned up that it never had. Booth caught the planted defect.
+The run also turned up two loose ends in the suite itself.
 
 ## Why a verifier needs its own tests
 
@@ -57,26 +56,53 @@ format turned out to be wrong.
   can only read the repository. Recording the result needs write access, so
   it happens in a separate job that never runs a model.
 
-## What hasn't happened
+## Seventeen days without a run
 
-No fixture has a `baseline.json`. The baseline has never been recorded, so
-the suite has not yet scored Booth on anything. The workflow that runs a
-fixture had no runs on GitHub when this was written. The project's plan
-described the loop as complete, and said one fixture was enough because "one
-proves the mechanism". That is true of a fixture that has been run. A
-fixture that has never run proves only that its files are well formed.
+Until 2026-09-24 no fixture had a recorded result, and the workflow that
+runs one had no runs on GitHub. The project's plan described the loop as
+complete, and said one fixture was enough because "one proves the
+mechanism". That is true of a fixture that has been run. A fixture that has
+never run proves only that its files are well formed.
 
-The test suite has been saying so on every run. On `main` its one skipped
-test is the baseline check in `tests/test_booth_fixture_runner.py`, which
-skips with the reason "fixed-everywhere: no baseline recorded yet". A skip
-reads as routine, so the one line that reported the gap is the easiest line
-in the output to stop reading.
+The test suite had been saying so on every run. On `main` its one skipped
+test was the baseline check in `tests/test_booth_fixture_runner.py`,
+skipping with the reason "fixed-everywhere: no baseline recorded yet". A
+skip reads as routine, so the one line that reported the gap was the easiest
+line in the output to stop reading.
 
 This is the same shape as one of the project's most-cited lessons. In
 Stage 3, the component that collects Booth's reports for the dashboard was
 written, tested and mutation-covered, and had never run: nothing called it.
-Here the pieces are called correctly and tested. The missing step is a
+Here the pieces were called correctly and tested. The missing step was a
 person deciding to spend the run.
+
+## The first run
+
+Mark started it by hand on 2026-09-24. The result is committed as
+`tests/booth_fixtures/fixed-everywhere/baseline.json` (`f7b4fff`), and every
+ordinary test run now re-checks it for free.
+
+**Booth caught it.** Three of its claims came back as a DISCREPANCY
+implicating the file the defect was planted in. The recorded explanation is
+"claim(s) [4, 6, 7] raised a DISCREPANCY implicating test_guard.py", and
+the overall verdict was "DO NOT MERGE -- DISCREPANCIES FOUND". The answer
+key was checked against the verdict, not against Booth's opinion of how it
+did.
+
+The run also turned up two things about the suite, neither resolved yet:
+
+- **A second finding the fixture didn't plant.** Claim 1 came back as a
+  DISCREPANCY implicating the pull request's description. The fixture was
+  designed to hold exactly one defect, so that is either a second,
+  unplanned one, or Booth reading the planted one from another angle.
+  Booth's full report is kept as the run's download on GitHub and hasn't
+  been read for this write-up.
+- **The baseline names a commit Booth never saw.** The verdict says Booth
+  audited 9d2d81e, and the baseline records the fixture's head as
+  dad39d0. The throwaway repository is built once in the job that runs
+  Booth and again in the job that records the result, and each build makes
+  new commits with new hashes. The fix is to pass the first job's hash to
+  the second, which the workflow already exposes and doesn't use.
 
 ## The injection test
 
@@ -98,5 +124,6 @@ the answer key would be a verdict that is not SAFE TO MERGE, in the weaker
    answer key lives in the fixture, not in Booth's report.
 3. **Guard the planted defect as carefully as the check.** A fixture whose
    defect has quietly gone passes forever.
-4. **Built and tested is not the same as run.** The most careful machinery
-   in this project for testing the tester has not yet tested it.
+4. **Built and tested is not the same as run.** The suite was complete for
+   seventeen days before it tested anything, and the first run found two
+   things the tests around it had not.

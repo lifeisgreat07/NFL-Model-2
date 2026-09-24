@@ -71,12 +71,12 @@
       "expect_caught_by": "test_a_figure_quoted_from_a_commit_is_in_that_commit"
     },
     {
-      "id": "regression-suite-case-study-loses-its-never-run-sentence",
+      "id": "regression-suite-case-study-misreports-the-run",
       "target": "docs/case-studies/booth-regression-suite.md",
-      "why": "the sentence admitting no fixture has ever been scored goes, and the case study reads as if the suite had proved something -- the machinery counted as the result.",
-      "find": "No fixture has a `baseline.json`.",
-      "replace": "Every fixture is ready to run.",
-      "expect_caught_by": "test_the_never_run_claim_is_still_true"
+      "why": "the case study says Booth missed the planted defect when the recorded baseline says it caught it -- a result reported against the file that holds it.",
+      "find": "**Booth caught it.**",
+      "replace": "**Booth missed it.**",
+      "expect_caught_by": "test_the_case_study_reports_what_each_recorded_baseline_says"
     },
     {
       "id": "lesson-cites-a-trap-that-was-renamed",

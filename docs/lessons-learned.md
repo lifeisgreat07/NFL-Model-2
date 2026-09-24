@@ -68,8 +68,9 @@ session rather than for a reader.
 
 9. **Built and tested is not the same as run.** A component was written,
    tested and mutation-covered, and nothing ever called it. The Booth
-   regression suite is built and tested and has never scored Booth. Both
-   looked finished from inside the test suite.
+   regression suite sat complete for seventeen days before it scored Booth
+   once, and that first run found two problems in the suite. Both looked
+   finished from inside the test suite.
    *From: [Testing the tester](case-studies/booth-regression-suite.md).*
 
 ## Failure modes

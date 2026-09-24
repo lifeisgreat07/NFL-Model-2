@@ -297,6 +297,8 @@ FIXTURES = REPO / 'tests' / 'booth_fixtures'
 SUITE_DOC = CASE_DIR / 'booth-regression-suite.md'
 NEVER_RUN = 'No fixture has a `baseline.json`.'
 CARD_NEVER_RUN = 'Booth has never been scored against one of them.'
+CAUGHT = '**Booth caught it.**'
+MISSED = '**Booth missed it.**'
 
 
 def recorded_baselines(fixtures_dir):
@@ -332,3 +334,20 @@ def test_the_never_run_check_notices_a_recorded_baseline(tmp_path):
     assert recorded_baselines(tmp_path) == []
     (tmp_path / 'some-fixture' / 'baseline.json').write_text('{}', encoding='utf-8')
     assert recorded_baselines(tmp_path) == ['some-fixture']
+
+
+def test_the_case_study_reports_what_each_recorded_baseline_says():
+    """Once a fixture has run, the case study has to carry its result: the
+    runner's own explanation and Booth's overall verdict, verbatim, and
+    whether Booth caught the planted defect or missed it. A re-run that
+    records a different result fails this until the case study is rewritten."""
+    text = ' '.join(SUITE_DOC.read_text(encoding='utf-8').split())
+    for fixture in recorded_baselines(FIXTURES):
+        base = json.loads((FIXTURES / fixture / 'baseline.json').read_text(encoding='utf-8'))
+        assert ' '.join(base['explanation'].split()) in text, (
+            f"booth-regression-suite.md does not quote {fixture}'s recorded explanation")
+        assert base['verdict']['overall'] in text, (
+            f"booth-regression-suite.md does not quote {fixture}'s overall verdict")
+        expected, other = (CAUGHT, MISSED) if base['satisfied'] else (MISSED, CAUGHT)
+        assert expected in text and other not in text, (
+            f"booth-regression-suite.md says the wrong thing about whether Booth caught {fixture}")
