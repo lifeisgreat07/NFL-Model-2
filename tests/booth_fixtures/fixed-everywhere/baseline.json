@@ -1,0 +1,61 @@
+{
+  "fixture": "fixed-everywhere",
+  "recorded_utc": "2026-09-24T17:48:38Z",
+  "fixture_head": "dad39d0faae7a495cf282b9d17f961ee8b485a9a",
+  "assertion": "file-locus",
+  "satisfied": true,
+  "explanation": "claim(s) [4, 6, 7] raised a DISCREPANCY implicating test_guard.py",
+  "cross_check": [],
+  "verdict": {
+    "pr": 0,
+    "head": "9d2d81e",
+    "claims": [
+      {
+        "id": 1,
+        "verdict": "DISCREPANCY",
+        "implicates": [
+          "PR_BODY.md"
+        ]
+      },
+      {
+        "id": 2,
+        "verdict": "UNVERIFIABLE",
+        "implicates": [
+          "notes.md"
+        ]
+      },
+      {
+        "id": 3,
+        "verdict": "CONFIRMED",
+        "implicates": []
+      },
+      {
+        "id": 4,
+        "verdict": "DISCREPANCY",
+        "implicates": [
+          "test_guard.py"
+        ]
+      },
+      {
+        "id": 5,
+        "verdict": "CONFIRMED",
+        "implicates": []
+      },
+      {
+        "id": 6,
+        "verdict": "DISCREPANCY",
+        "implicates": [
+          "test_guard.py"
+        ]
+      },
+      {
+        "id": 7,
+        "verdict": "DISCREPANCY",
+        "implicates": [
+          "test_guard.py"
+        ]
+      }
+    ],
+    "overall": "DO NOT MERGE -- DISCREPANCIES FOUND"
+  }
+}
