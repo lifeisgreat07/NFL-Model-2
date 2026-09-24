@@ -79,6 +79,15 @@
       "expect_caught_by": "test_the_never_run_claim_is_still_true"
     },
     {
+      "id": "lesson-cites-a-trap-that-was-renamed",
+      "target": "docs/lessons-learned.md",
+      "tests": "tests/test_lessons_learned.py",
+      "why": "a lesson names a CLAUDE.md trap entry by a phrase CLAUDE.md does not contain, so its evidence pointer goes nowhere and the lesson becomes an assertion.",
+      "find": "*From: `CLAUDE.md`, \"the auditor produces untraceable figures too\".*",
+      "replace": "*From: `CLAUDE.md`, \"the auditor is never wrong\".*",
+      "expect_caught_by": "test_every_trap_it_cites_is_still_in_claude_md"
+    },
+    {
       "id": "verification-md-points-at-a-removed-incident",
       "target": "VERIFICATION.md",
       "why": "VERIFICATION.md sends readers to an incident the page no longer carries -- what happened to its 'Incident 3' pointer when that story became a case study.",
