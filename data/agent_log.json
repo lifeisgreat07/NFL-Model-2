@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-09-23T18:50:43Z",
+  "generated_utc": "2026-09-24T17:10:59Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 119,
-    "audits_superseded": 44,
-    "pull_requests_audited": 75,
+    "audits_total": 123,
+    "audits_superseded": 47,
+    "pull_requests_audited": 76,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 760,
+    "claims_checked": 773,
     "discrepancies_found": 24,
-    "unverifiable": 55,
+    "unverifiable": 56,
     "pull_requests_with_a_discrepancy": 15,
     "reports_disagreeing_with_themselves": 13
   },
@@ -2221,6 +2221,87 @@
       "inconsistencies": [
         "block reports discrepancies but an unqualified SAFE TO MERGE"
       ],
+      "superseded": false
+    },
+    {
+      "pr": 96,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/96#issuecomment-5817859494",
+      "posted_utc": "2026-09-24T16:16:03Z",
+      "head": "99eb38e",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 12,
+      "confirmed": 10,
+      "discrepancies": 1,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "data/qb_leak_effect.json",
+        "docs/case-studies/qb-rating-leak.md",
+        "src/measure_qb_leak.py"
+      ],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 96,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/96#issuecomment-5818270878",
+      "posted_utc": "2026-09-24T16:42:59Z",
+      "head": "47c4755",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 15,
+      "confirmed": 13,
+      "discrepancies": 1,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "data/qb_leak_effect.json",
+        "docs/case-studies/qb-rating-leak.md",
+        "src/measure_qb_leak.py"
+      ],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 96,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/96#issuecomment-5818451988",
+      "posted_utc": "2026-09-24T16:54:56Z",
+      "head": "94ca416",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 15,
+      "confirmed": 12,
+      "discrepancies": 1,
+      "unverifiable": 2,
+      "overall": "SAFE TO MERGE",
+      "implicated": [
+        "docs/case-studies/qb-rating-leak.md",
+        "src/measure_qb_leak.py"
+      ],
+      "inconsistencies": [
+        "block reports discrepancies but an unqualified SAFE TO MERGE"
+      ],
+      "superseded": true
+    },
+    {
+      "pr": 96,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/96#issuecomment-5818635784",
+      "posted_utc": "2026-09-24T17:07:47Z",
+      "head": "94ca416",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 13,
+      "confirmed": 12,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
       "superseded": false
     }
   ]
