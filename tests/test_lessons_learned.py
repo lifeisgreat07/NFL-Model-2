@@ -1,4 +1,4 @@
-"""docs/lessons-learned.md: every pointer in it still points at something.
+"""docs/lessons-learned.md and docs/architecture.md: every pointer still points.
 
 Each lesson ends with where it came from: a case study, a repository path,
 or a trap entry in CLAUDE.md named by a phrase from its title. Those are the
@@ -12,6 +12,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 DOC = REPO / 'docs' / 'lessons-learned.md'
+ARCH = REPO / 'docs' / 'architecture.md'
 CLAUDE = REPO / 'CLAUDE.md'
 TEMPLATE = REPO / 'src' / 'dashboard_template.html'
 LINK = 'https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/lessons-learned.md'
@@ -75,3 +76,25 @@ def test_the_trap_check_notices_a_renamed_entry():
 def test_the_page_links_to_it():
     page = re.sub(r'<!--.*?-->', '', TEMPLATE.read_text(encoding='utf-8'), flags=re.S)
     assert f'href="{LINK}"' in page, "Checking the AI's work no longer links to lessons-learned.md"
+
+
+# --- docs/architecture.md: the table names the file behind every box -------
+
+def test_every_path_in_the_architecture_table_exists():
+    text = ARCH.read_text(encoding='utf-8')
+    found = paths(text)
+    assert len(found) >= 10, "the path matcher found almost nothing in architecture.md"
+    dead = [p for p in found if not (REPO / p).exists()]
+    assert not dead, f"architecture.md names paths that do not exist: {dead}"
+
+
+def test_every_workflow_is_on_the_architecture_page_or_deliberately_not():
+    """A new workflow is a new box. The regression and backtest workflows are
+    manual and described under the boxes they serve, so they are listed here
+    as known omissions rather than silently skipped."""
+    text = ARCH.read_text(encoding='utf-8')
+    omitted = {'booth-regression.yml', 'run-backtest.yml'}
+    for wf in sorted((REPO / '.github' / 'workflows').glob('*.yml')):
+        if wf.name in omitted:
+            continue
+        assert f'.github/workflows/{wf.name}' in text, f"{wf.name} is not on the architecture page"
