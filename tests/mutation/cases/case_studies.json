@@ -71,6 +71,14 @@
       "expect_caught_by": "test_a_figure_quoted_from_a_commit_is_in_that_commit"
     },
     {
+      "id": "regression-suite-case-study-loses-its-never-run-sentence",
+      "target": "docs/case-studies/booth-regression-suite.md",
+      "why": "the sentence admitting no fixture has ever been scored goes, and the case study reads as if the suite had proved something -- the machinery counted as the result.",
+      "find": "No fixture has a `baseline.json`.",
+      "replace": "Every fixture is ready to run.",
+      "expect_caught_by": "test_the_never_run_claim_is_still_true"
+    },
+    {
       "id": "verification-md-points-at-a-removed-incident",
       "target": "VERIFICATION.md",
       "why": "VERIFICATION.md sends readers to an incident the page no longer carries -- what happened to its 'Incident 3' pointer when that story became a case study.",
