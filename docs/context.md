@@ -4,47 +4,48 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-23 (Stage 10 complete, #95 merged, nothing open)
+Last updated: 2026-09-24 (#96 and #97 merged, #98 open, Stage 7.6 done)
 
 ---
 
 ## Right now
 
-**Suite:** 1823 passing, 1 skipped — `python -m pytest -q` on `main` at
-`5245c31`, HEAD level with origin.
+**Suite:** 1877 passing, none skipped — `python -m pytest -q` on `main` at
+`f7b4fff`, HEAD level with origin.
 
-**Stage 10 is complete** (#89 to #94). The audit re-run scored 28/40
-against the original 15.
+**#98 is open: the rest of Stage 7.** Stage 2 corrections case study,
+Booth regression suite write-up, the lessons-learned page,
+the architecture diagram, and the README rewrite with images. Waiting on
+Booth, then Mark. **Merging #98 finishes Stage 7.**
 
-**#95 is merged: Booth's prompt says its run ends when it stops calling
-tools.** It answers #94's two silent audits. **Watch the next few Booth
-runs:** a report posted every time is the evidence it worked; another
-silent run means the cause was something else, and the Run Booth step log
-(signed-in browser) is where to look.
+**Next action once #98 merges: start Stage 4**, beginning with the two
+loose ends below that are Stage 4 in nature (the regression workflow's
+recorded head, and the stale weekly routine prompt).
 
-**Next action: start Stage 7**, text items first. **Ask Mark first:** do
-the case studies and the lessons-learned page live on the dashboard
-(inside "Checking the AI's work"), as documents in the repo, or both? It
-decides what gets built.
+**Stage 7.6 is done.** The repo's About panel carries Mark's description
+and seven topics, set 2026-09-24 in a signed-in browser.
 
-**The weekly job locks picks on Thursday** (#88). QB overrides are due by
-Thursday 16:00 UTC, in `data/qb_overrides/`. Live model is v2.5.
+**#95 held.** Every Booth run on #96, #97 and #98 so far posted a report
+(one on #96 was cancelled by design when a newer run started).
+
+**The Booth regression suite has run once** (`f7b4fff`, 2026-09-24): Booth
+caught the planted defect. On `main` the suite now has no standing skip.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| Nothing open on GitHub | -- | -- |
-| The repo's About panel | Empty | Mark. Repo settings; wording in CLAUDE.md |
+| #98, rest of Stage 7 | Open | Booth, then Mark |
 | Confirming #73 on a phone | Not done | Only a device proves the zoom is gone |
+| Regression workflow records the wrong head | Found on the first run | Stage 4: pass the audit job's `head` output to the record job instead of re-assembling |
+| Fixture claim 1 flagged the description | Unread | Booth's report is the run's downloadable artifact; read it, then decide if the fixture holds a second defect |
+| The weekly routine's prompt is stale | Found, not changed | Mark. The scheduled Claude routine still says "based on last week's dropback leader", "regenerate dashboard.html" and runs Tuesday; since v2.5 and #88 none of that matches |
+| Leak table splits two ways on Linux | Recorded in the QB case study | Nothing, unless it is ever worth finding the cause |
 
 ## Queued, in order
 
-1. **Stage 7**: the portfolio write-ups. Text items first; the visual ones
-   (screenshots, the architecture diagram's UI layer, the lessons-learned
-   page) are unblocked now that Stage 10 is in.
-2. **Stage 4**: automation and monitoring.
-3. **Stage 6**, each item with a hypothesis stated before any data is pulled.
+1. **Stage 4**: automation and monitoring.
+2. **Stage 6**, each item with a hypothesis stated before any data is pulled.
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict.

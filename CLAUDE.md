@@ -47,10 +47,13 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1823 passing** (1 skipped) — `python -m pytest -q` on `main` at
-`5245c31`, with HEAD level with origin, which is the order that makes the
+Suite: **1877 passing** (none skipped) — `python -m pytest -q` on `main` at
+`f7b4fff`, with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
-the same tree reports a different pair of numbers with work unpushed. Run it
+the same tree reports a different pair of numbers with work unpushed. Until
+2026-09-24 `main` also carried a standing skip that was NOT that one: the
+Booth fixture baseline check, skipping because no fixture had ever run. A
+recorded baseline removed it, so `main` now reports no skips at all. Run it
 before quoting
 it — this line read 174 for about a day after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
@@ -387,6 +390,16 @@ pulled, or it is fishing.
 
 ### Stage 7 - Portfolio polish
 
+**Where the write-ups live, decided with Mark 2026-09-24: both, one source.**
+The full text is in `docs/case-studies/` (and `docs/lessons-learned.md`),
+for a technical reader who can check every figure. "Checking the AI's
+work" carries a short plain card for each that links to it. Two full copies
+would drift, which is the failure this repository keeps paying for, and
+`tests/test_case_studies.py` holds cards and files to each other. A
+figure in a case study is either measured (held to its data file) or
+quoted from a commit (held to that commit). #96 and #97 shipped the first
+two; the rest is one PR (#98) because Mark could not merge between items.
+
 README rewrite for a cold technical reader; architecture diagram; case study of
 the QB rating leak; public "lessons learned" page; write-up of the Booth
 regression suite and injection test. Add a case study of Booth's first audit -
@@ -593,10 +606,12 @@ Three items, none of which touch the dashboard:
    `METHODOLOGY.md` that has never existed here.
    `tests/test_readme_accuracy.py` now holds the page to its own claims.
 
-**Items 1 and 2 are still open, and cannot be done from here.** They are repository settings, not
-files: no `gh` CLI is installed on the Windows machine and the GitKraken MCP
-exposes no repo-settings tool. They are a two-minute job for Mark in the GitHub
-UI (Code tab → the gear beside "About").
+**Items 1 and 2 are DONE (2026-09-24).** Set in the built-in browser once Mark
+had signed it in to GitHub: his description word for word, and all seven
+topics, each checked against the repository first. The website field was
+left empty because it was not asked for. From here the only route to repo
+settings is that signed-in browser: there is still no `gh` CLI and no
+settings tool in the GitKraken MCP.
 
 Note the overlap: Stage 7 already carries "README rewrite for a cold technical
 reader". That is the same file. #46 put the recruiter section on top and fixed
@@ -1066,6 +1081,14 @@ under compaction pressure, so its length is a cost paid on every session.
   -- but nothing in the repo edits a PR body with it.) A PR description can
   be corrected only by the user in the web UI, so get the description right
   when opening it.
+- **THE FILE BRIDGE CORRUPTS BINARY FILES.** Three PNGs committed from the
+  sandbox to `markys` with `device_commit_files` each arrived about 4.5%
+  larger, with a different MD5, and the call reported success. Carriage
+  returns were added to the bytes, which is harmless to text and fatal to an
+  image. What worked: base64-encode in the sandbox, commit the text, decode
+  on `markys` with a short script, and compare the MD5 to the sandbox copy.
+  Staging the other way (device to sandbox) was not seen to do this, but
+  check a hash before trusting a binary either way.
 - **A file-bridge commit can report success and leave the old content in
   place.** Writing an edited file from the sandbox to the same destination
   path twice in a row wrote the FIRST version both times, with a `written`
