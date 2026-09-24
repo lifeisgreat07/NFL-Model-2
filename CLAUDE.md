@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1962 passing** (none skipped) — `python -m pytest -q` on
-`regression-head-and-stage1` (#99) at `335bf0a`, with HEAD level with origin, which is the order that makes the
+Suite: **1962 passing** (none skipped) — `python -m pytest -q` on `main` at
+`d9a97ec` (#99 merged), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -70,6 +70,19 @@ beside that file. Stage 9 is complete (#87, 2026-09-22; its button
 component moved to Stage 10). Stage 10 is complete (#89 to #94, 2026-09-23). What is next is in
 `docs/context.md`, which is rewritten every session and is the only place
 current status belongs.**
+
+**What runs unattended, and who owns what (settled 2026-09-24).** The
+GitHub **Weekly update** workflow owns predictions, grading and the data
+commit: Tuesday 11:00 and Thursday 16:00 UTC. Its commit triggers the Pages
+rebuild. Mark's Claude routine, **"Weekly QB override research"**
+(`trig_01CG1y9jfmcNQXnu8Hc9SL5K`, Mon and Wed 22:00 UTC), only researches
+starting-QB news and opens a PR with a sourced
+`data/qb_overrides/<season>_week<N>.json`. It never runs the weekly
+scripts, and it must never be given them back: two writers of saved picks
+is two ways to break a lock. The routine was created through the HTTP API,
+so **an agent cannot edit it**. `update_trigger` refuses; Mark edits it at
+claude.ai/code/routines. README's "Automating this with Claude Code
+Routines" section describes the same split.
 
 One habit from that stage is worth keeping whatever you work on: every numeric
 claim about colour or geometry was re-derived before being believed — contrast
@@ -350,7 +363,7 @@ remaining in this stage moves the thing a visitor sees.
 
 **Parked by Mark on 2026-09-24, partway through.** Nothing from it is on
 `main`. The unfinished draft is a local, unpushed branch `stage4-draft` on
-`markys`, one commit over #99's branch: `src/data_quality.py` wired into
+`markys`, one commit on top of #99's last commit (`01fc97d`, now on main): `src/data_quality.py` wired into
 `weekly_update.main()` before fitting, with tests; a play-by-play cache in
 `data_loader.load_plays` behind `NFL_PBP_CACHE`, with tests; and untested
 first drafts of `src/schema_check.py`, `src/alerts.py` and `src/canary.py`.

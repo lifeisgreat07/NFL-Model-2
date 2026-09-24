@@ -4,40 +4,42 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-24 (#98 merged, #99 open, Stage 1 retired, Stage 4 parked)
+Last updated: 2026-09-24, end of session (#99 merged, Stage 1 retired, Stage 4 parked)
 
 ---
 
 ## Right now
 
-**Suite:** 1962 passing, none skipped — `python -m pytest -q` on
-`regression-head-and-stage1` (#99) at `335bf0a`, HEAD level with origin.
+**Suite:** 1962 passing, none skipped — `python -m pytest -q` on `main` at
+`d9a97ec`, HEAD level with origin.
 
-**Next action: get #99 merged.** It retires Stage 1 and fixes the two
-problems the first Booth regression run found (the baseline's head, and the
-fixture's "Two commits." description). Waiting on Booth, then Mark.
+**Next action: whatever Mark picks next.** Nothing is open. The queue is
+Stage 4, resumed from `stage4-draft`, then Stage 6.
 
-**Stage 7 is complete** (#96, #97, #98). **Stage 1 is retired** (in #99):
-its live item, line accumulation and the closing-line backtest, moved to
-Stage 6 with the end of the 2026 regular season as the trigger.
+**Done today:**
+- Stage 7 finished (#96, #97, #98).
+- #99 merged: Stage 1 retired, and the two fixes from the regression suite's
+  first run. Baselines now record the commit Booth audited, and the
+  fixture's description matches the one commit it builds.
+- The weekly Claude routine replaced by "Weekly QB override research".
 
 **Stage 4 is parked** by Mark, mid-build. The draft is the local, unpushed
-branch `stage4-draft` on `markys`; CLAUDE.md's Stage 4 section says what is
+branch `stage4-draft` on `markys`. CLAUDE.md's Stage 4 section says what is
 in it and the decisions already made.
 
-**The weekly Claude routine is replaced.** Mark saved it on 2026-09-24 as
-"Weekly QB override research": QB news only, sourced override file, via a
-PR, Mon and Wed 22:00 UTC. It never grades or rebuilds; the Weekly update
-workflow owns that. On a normal week, merge its PR before Thursday's
-16:00 UTC lock.
+**The weekly Claude routine** is "Weekly QB override research": QB news
+only, sourced override file, via a PR, Mon and Wed 22:00 UTC. It never
+grades or rebuilds; the Weekly update workflow owns that. On a normal week,
+merge its PR before Thursday's 16:00 UTC lock. Its first run is
+Mon 2026-09-28.
 
-**#95 held.** Every Booth run on #96 to #98 posted a report.
+**#95 held.** Every Booth run on #96 to #99 that was not cancelled by a newer push posted a report.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| #99, Stage 1 retirement and the regression fixes | Open | Booth, then Mark |
+| The first run of the new QB routine | Due Mon 2026-09-28 | Check that it opened a PR, or said in one line that none was needed |
 | Confirming #73 on a phone | Not done | Only a device proves the zoom is gone |
 | Which claim Booth's fixture claim 1 was | Inferred as the "Two commits." line | Reading that run's report artifact, if it is ever worth it |
 | Leak table splits two ways on Linux | Recorded in the QB case study | Nothing, unless it is ever worth finding the cause |

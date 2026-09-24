@@ -176,59 +176,60 @@ python -m pytest
 
 ## Automating this with Claude Code Routines
 
-This is designed to run unattended on a schedule. Setup (verified against
-current Claude Code docs, code.claude.com/docs/en/routines):
+The weekly pipeline itself needs no Claude at all. The repository's
+**Weekly update** workflow (`.github/workflows/weekly-update.yml`) runs on
+GitHub every Tuesday 11:00 UTC and Thursday 16:00 UTC. It grades finished
+weeks, refreshes the ratings, playoff odds and line archive, and locks the
+next week's picks at the right run: Thursday usually, and Tuesday for a
+week with an earlier game (Thanksgiving, a Wednesday game). See
+`decide_lock` in `src/weekly_update.py`. Its data commit then triggers the
+site rebuild.
+
+What a routine adds is the one thing a script can't do: read the news.
+Picks use the starter listed on nflverse's schedule, and that list can lag
+the news. On 2026-09-22 it still listed two starters who had already been
+ruled out. A sourced override in `data/qb_overrides/<season>_week<N>.json`
+takes precedence over it.
+
+Setup (verified against current Claude Code docs,
+code.claude.com/docs/en/routines):
 
 1. **Push this repo to GitHub.** Routines clone from GitHub on every run.
 2. **Connect GitHub to Claude Code**, if you haven't already: run
    `/web-setup` inside Claude Code (this is separate from installing the
    GitHub App -- both are required for the routine to actually trigger).
-3. **Create the routine.** Either:
-   - In Claude Code CLI: type `/schedule` and describe the task in plain
-     language (see prompt below) -- Claude will ask what repo, what
-     schedule, and set it up.
-   - Or on the web at `claude.ai/code/routines` -> New routine, for more
-     control (you can see all fields before creating).
-4. **Set the trigger to "schedule," weekly, timed for Thursday before the
-   first game** (e.g. Thursday noon ET during the season), so injury news
-   from the week's practices has landed. Grading last week can run any time
-   after Monday Night Football. The repository's own scheduled workflow
-   does both: Tuesday grades, Thursday locks, and a week with an earlier
-   game (Thanksgiving) locks on Tuesday (`decide_lock` in
-   `src/weekly_update.py`).
+3. **Create the routine** on the web at `claude.ai/code/routines` -> New
+   routine, or with `/schedule` in the Claude Code CLI.
+4. **Schedule it Monday and Wednesday evening** (`0 22 * * 1,3`, UTC), so
+   a PR is waiting before each scheduled lock: Wednesday's before
+   Thursday's, Monday's before a Tuesday lock.
 5. **Make sure the routine's cloud environment has network access
-   enabled** -- it needs to reach nflverse's GitHub-hosted data and do web
-   research for injury/QB news. This is a setting on the routine's
-   environment, not on by default for every environment type.
-6. **Give it real, unattended-safe instructions** -- routines run with no
-   permission prompts mid-run, so be explicit. Suggested prompt:
+   enabled** -- it needs nflverse's GitHub-hosted data and web search for
+   QB news. This is a setting on the routine's environment.
+6. **Give it narrow, unattended-safe instructions.** The routine this repo
+   runs, "Weekly QB override research", is told to:
+   - find the next week to predict with `determine_next_week`;
+   - web-search starting-QB news for every team playing that week;
+   - record a team only when a credible source says the listed starter
+     won't start, or names another starter;
+   - write the override file as a list of
+     `{"team", "player_id", "player_name", "source"}`, where `player_id`
+     is the GSIS id (00-0000000) and `source` is a link, and validate it
+     with `load_qb_overrides`;
+   - open a PR titled "QB overrides: <season> week N", or stop with one
+     line if nothing needs overriding.
 
-> First, web-search for starting-QB news (injuries, benchings, returns)
-> for every team playing this week. The script uses the starter listed on
-> nflverse's schedule, which can lag the news: on 2026-09-22 it still
-> listed two starters who had already been ruled out. For every team
-> where the listed starter is wrong, write an entry in
-> `data/qb_overrides/2026_week{current_week}.json`: a list of
-> `{"team", "player_id", "player_name", "source"}`, where `player_id`
-> is the GSIS id (00-0000000) and `source` is a link. An entry without a
-> link or a valid id fails the run on purpose. Then run
-> `python src/weekly_update.py --season 2026 --week {current_week}`, and
-> `python src/grade_predictions.py` for last week if not already graded.
-
-> Regenerate the dashboard with `python src/generate_dashboard.py` so the
-> new predictions, flags, and updated accuracy record are picked up. Open
-> a PR with all changes -- do not push directly to main.
-
-7. **Review each week's PR before merging**, at least at first -- per
-   Anthropic's own guidance, unattended agent runs should produce a
-   reviewable draft for anything not fully reversible, and "this is what
-   I'm picking for a paid competition" qualifies.
+   It must NOT run `src/weekly_update.py`, `src/grade_predictions.py` or
+   `src/generate_dashboard.py`. The workflow owns those, and a second writer of
+   saved predictions would be a second way to break a lock.
+7. **Merge the override PR before the lock.** On a normal week, that means
+   before Thursday 16:00 UTC. An override merged after the lock changes
+   nothing, because a locked week is final.
 
 ## What this does NOT automate yet
 - Confirming genuinely uncertain starting QB situations (e.g. a team
-  benching its starter) -- the routine prompt above asks Claude to
-  web-search for this each run, but treat it as a flag to double check,
-  not a guarantee.
+  benching its starter) -- the routine above researches them and opens a
+  PR, but a person still decides whether to merge it.
 - Hyperparameters (alpha, half-life, QB shrinkage) are NOT re-tuned
   automatically each week -- they're fit once via backtest and left fixed
   in `src/config.py`. Re-running the full backtest sweep weekly would be
