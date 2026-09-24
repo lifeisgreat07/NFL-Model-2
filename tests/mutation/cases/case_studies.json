@@ -49,10 +49,18 @@
     },
     {
       "id": "leak-case-study-stops-naming-its-machine",
-      "why": "the sentence saying which environment produced the table goes, and the pick counts read as portable facts again -- the gap Booth found on #96, where one of its two Linux re-runs flipped one fewer pick per model.",
+      "why": "the sentence saying which environment produced the table goes, and the pick counts read as portable facts again -- the gap Booth found on #96, where two of its four Linux re-runs flipped one fewer pick per model.",
       "find": "table came from Windows, Python 3.11.9, with the library versions recorded in",
       "replace": "table came from one run, with the library versions recorded in",
       "expect_caught_by": "test_the_case_study_names_the_machine_its_table_came_from"
+    },
+    {
+      "id": "booth-case-study-rederived-figure-drifts",
+      "target": "docs/case-studies/booth-first-audit.md",
+      "why": "a figure in the Booth case study's published-against-re-derived table stops matching the commit it was quoted from (639e09a) -- the unbacked-number failure the case study is about, committed inside it.",
+      "find": "| Model A accuracy | 52.50 | 52.48 |",
+      "replace": "| Model A accuracy | 52.50 | 52.84 |",
+      "expect_caught_by": "test_a_figure_quoted_from_a_commit_is_in_that_commit"
     },
     {
       "id": "verification-md-points-at-a-removed-incident",

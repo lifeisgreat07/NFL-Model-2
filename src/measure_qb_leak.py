@@ -106,13 +106,13 @@ def build_both_tables():
 def provenance():
     """Where the numbers came from, the way calibration.json records it.
 
-    A RECORD, NOT AN EXPLANATION. Booth re-ran this script twice on Linux
-    while auditing #96: one run matched the Windows file in every figure the
-    case study prints, the other had one fewer pick changing side per model.
-    Nothing found says what separated those two runs, and it may be nothing
-    this block records -- the second audit found its library versions matching the ones
-    recorded here, and the first run predates this block. So matching versions do
-    not promise a matching table; only the verdict has held in every run."""
+    A RECORD, NOT AN EXPLANATION. Booth re-ran this script on Linux in each
+    of its four audits of #96. Two matched the Windows file in every figure
+    the case study prints; the other two agreed with each other on one fewer
+    pick changing side per model. Audits on both sides reported the library
+    versions recorded here, so matching versions do not promise a matching
+    table. Nothing found says what separates the two groups. Only the verdict
+    has held in every run."""
     import importlib.metadata as md
     import platform
 

@@ -153,13 +153,29 @@ def test_every_commit_a_case_study_cites_exists():
 # is quoted from, the same figure as that commit prints it). The last column
 # exists because a commit and a prose sentence rarely spell a number the same
 # way ("4 of 5 of its tests" against "4 of 5 tests failed"). Whitespace is
-# collapsed on the commit side, because a commit message wraps wherever its
-# line ran out.
+# collapsed on both sides, because prose and commit messages both wrap
+# wherever a line runs out.
 QUOTED = [
     ('qb-rating-leak.md', '-0.3995 to 95.87', 'ec30887', '-0.3995 to 95.87'),
     ('qb-rating-leak.md', '4 of 5 of its tests', '8a0899f', '4 of 5 tests failed'),
     ('qb-rating-leak.md', '[-1.65, +1.29]', 'a86c470', '[-1.65, +1.29]'),
     ('qb-rating-leak.md', 'k=8 won 3 of 4', '870f636', 'k=8 wins 3 of 4 metrics'),
+    # 2617375 carries these inside a diff, where a YAML comment wraps between
+    # "30 turns" and "in 3m47s", so each half is checked on its own.
+    ('booth-first-audit.md', 'capped Booth at 30 turns', '2617375', '--max-turns 30'),
+    ('booth-first-audit.md', '30 turns in 3m47s, against a 20-minute timeout', '2617375',
+     'in 3m47s against a 20-minute timeout'),
+    ('booth-first-audit.md', 'which has never contained pytest', '40feabc',
+     'which has never contained pytest'),
+    ('booth-first-audit.md', 'found those numbers in exactly two places', '639e09a',
+     'found those numbers in exactly two places'),
+    ('booth-first-audit.md', '| Model A accuracy | 52.50 | 52.48 |', '639e09a',
+     'Model A accuracy 52.50 52.48'),
+    ('booth-first-audit.md', '| Market accuracy | 64.40 | 64.14 |', '639e09a',
+     'Market accuracy 64.40 64.14'),
+    ('booth-first-audit.md', '| Gap | -11.95 | -11.66 |', '639e09a', 'Gap -11.95 -11.66'),
+    ('booth-first-audit.md', '| 95% interval | [-18.37, -5.53] | [-18.37, -5.25] |', '639e09a',
+     '95% CI [-18.37,-5.53] [-18.37,-5.25]'),
 ]
 
 
@@ -168,7 +184,8 @@ QUOTED = [
                          ids=[f'{q[0]}:{q[2]}' for q in QUOTED])
 def test_a_figure_quoted_from_a_commit_is_in_that_commit(doc, as_printed, sha, in_commit):
     text = (CASE_DIR / doc).read_text(encoding='utf-8')
-    assert as_printed in text, f"{doc} no longer prints {as_printed!r}"
+    # Collapsed on this side too: prose wraps wherever its line runs out.
+    assert as_printed in ' '.join(text.split()), f"{doc} no longer prints {as_printed!r}"
     assert f'`{sha}`' in text, f"{doc} quotes {as_printed!r} but no longer cites `{sha}`"
     commit = _commit_text(sha)
     assert commit is not None, f"{sha} does not exist"
@@ -227,7 +244,7 @@ def test_every_interval_includes_zero_is_what_the_data_says():
 
 def test_the_case_study_names_the_machine_its_table_came_from():
     """The table's pick counts and last digits belong to one run: of Booth's
-    two Linux re-runs on #96, one matched it and one had a pick fewer per
+    four Linux re-runs on #96, two matched it and two had a pick fewer per
     model. So the case study must name the environment the JSON says produced
     the table, and a re-run that rewrites the JSON makes this fail until the
     sentence is rewritten with it."""

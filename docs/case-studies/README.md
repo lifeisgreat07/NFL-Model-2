@@ -8,6 +8,7 @@ is one copy of each story, not two.
 | Case study | In one line |
 |---|---|
 | [The QB rating that could see the future](qb-rating-leak.md) | A leak-free claim that was false, a test suite that had never run, and a tuning result nobody could reproduce, all found in one afternoon. |
+| [The verifier's first week](booth-first-audit.md) | The checking agent's first run said nothing, and its first report found a flaw in its own setup and a "confirmed" result nothing could reproduce. |
 
 Every figure in a case study has something that recomputes it.
 `tests/test_case_studies.py` checks that each case study has a card on the
