@@ -176,6 +176,19 @@ QUOTED = [
     ('booth-first-audit.md', '| Gap | -11.95 | -11.66 |', '639e09a', 'Gap -11.95 -11.66'),
     ('booth-first-audit.md', '| 95% interval | [-18.37, -5.53] | [-18.37, -5.25] |', '639e09a',
      '95% CI [-18.37,-5.53] [-18.37,-5.25]'),
+    ('booth-regression-suite.md', 'Deliberately one and not six', 'f07411b',
+     'Deliberately one and not six'),
+    ('stage2-corrections.md', 'an em-dash for all 32 teams', '9e4ec47', 'an em-dash for all 32 teams'),
+    ('stage2-corrections.md', 'games_played 0 and games_remaining 272', '9e4ec47',
+     'games_played 0 and games_remaining 272'),
+    ('stage2-corrections.md', 'up to 0.00125, 25x that threshold', 'f71e39c',
+     'AUC moves up to 0.00125, 25x that threshold'),
+    ('stage2-corrections.md', 'four of seven queued items were misdiagnosed', '69c3b18',
+     'four of seven queued items were misdiagnosed'),
+    ('stage2-corrections.md', '16 mostly-PRODUCT milestones, and only about 3 overlap', '0d6c8e1',
+     '16 mostly-PRODUCT milestones, and only about 3 overlap'),
+    ('stage2-corrections.md', "six of the nine it picked up weren't filters", '8d46f82',
+     'Nine elements wear it and three are filters'),
 ]
 
 
@@ -276,3 +289,65 @@ def test_the_measuring_script_names_the_commit_the_case_study_cites():
     src = (REPO / 'src' / 'measure_qb_leak.py').read_text(encoding='utf-8')
     data = json.loads(LEAK_DATA.read_text(encoding='utf-8'))
     assert f"FIX_COMMIT = '{data['fix_commit']}'" in src
+
+
+# --- the regression-suite case study's "never run" claim ---------------------
+
+FIXTURES = REPO / 'tests' / 'booth_fixtures'
+SUITE_DOC = CASE_DIR / 'booth-regression-suite.md'
+NEVER_RUN = 'No fixture has a `baseline.json`.'
+CARD_NEVER_RUN = 'Booth has never been scored against one of them.'
+CAUGHT = '**Booth caught it.**'
+MISSED = '**Booth missed it.**'
+
+
+def recorded_baselines(fixtures_dir):
+    """Every fixture directory holding a recorded Booth result."""
+    return sorted(p.parent.name for p in fixtures_dir.glob('*/baseline.json'))
+
+
+def test_there_are_fixtures_to_speak_of():
+    """Vacuity guard: the claim below is about the fixtures in this directory,
+    and an empty or moved directory would make "none recorded" trivially true."""
+    assert (FIXTURES / 'fixed-everywhere' / 'fixture.json').exists()
+
+
+def test_the_never_run_claim_is_still_true():
+    """The case study says no fixture has been scored. The day a baseline is
+    recorded that sentence becomes false, and this makes the case study get
+    rewritten with the result instead of going quietly stale."""
+    none_recorded = not recorded_baselines(FIXTURES)
+    text = SUITE_DOC.read_text(encoding='utf-8')
+    assert (NEVER_RUN in text) == none_recorded, (
+        "booth-regression-suite.md's never-run sentence disagrees with the "
+        f"recorded baselines: {recorded_baselines(FIXTURES)}")
+    # The page card says it too, in plainer words, and would lie the same way.
+    page = strip_comments(TEMPLATE.read_text(encoding='utf-8'))
+    assert (CARD_NEVER_RUN in page) == none_recorded, (
+        "the regression-suite card on the page disagrees with the recorded baselines")
+
+
+def test_the_never_run_check_notices_a_recorded_baseline(tmp_path):
+    """Over a synthetic fixtures directory, so the failing branch is reachable
+    before any real baseline exists."""
+    (tmp_path / 'some-fixture').mkdir()
+    assert recorded_baselines(tmp_path) == []
+    (tmp_path / 'some-fixture' / 'baseline.json').write_text('{}', encoding='utf-8')
+    assert recorded_baselines(tmp_path) == ['some-fixture']
+
+
+def test_the_case_study_reports_what_each_recorded_baseline_says():
+    """Once a fixture has run, the case study has to carry its result: the
+    runner's own explanation and Booth's overall verdict, verbatim, and
+    whether Booth caught the planted defect or missed it. A re-run that
+    records a different result fails this until the case study is rewritten."""
+    text = ' '.join(SUITE_DOC.read_text(encoding='utf-8').split())
+    for fixture in recorded_baselines(FIXTURES):
+        base = json.loads((FIXTURES / fixture / 'baseline.json').read_text(encoding='utf-8'))
+        assert ' '.join(base['explanation'].split()) in text, (
+            f"booth-regression-suite.md does not quote {fixture}'s recorded explanation")
+        assert base['verdict']['overall'] in text, (
+            f"booth-regression-suite.md does not quote {fixture}'s overall verdict")
+        expected, other = (CAUGHT, MISSED) if base['satisfied'] else (MISSED, CAUGHT)
+        assert expected in text and other not in text, (
+            f"booth-regression-suite.md says the wrong thing about whether Booth caught {fixture}")

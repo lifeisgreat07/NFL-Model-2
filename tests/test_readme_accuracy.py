@@ -67,7 +67,9 @@ def _layout_paths():
         if not indented:
             prefix = token if token.endswith('/') else ''
         if token.endswith('/'):
-            found.append(token)
+            # A directory indented under another, like case-studies/ under
+            # docs/, is a path inside it, the same as a file would be.
+            found.append(prefix + token if indented else token)
         elif _looks_like_a_path(token):
             found.append(prefix + token)
     assert found, "the repo layout block parsed to nothing; the parser is broken, not the README"
@@ -160,6 +162,87 @@ def test_the_dashboard_link_matches_the_one_verification_md_uses():
     assert readme == verification, (
         f"README.md and VERIFICATION.md point at different dashboards: "
         f"{sorted(readme)} vs {sorted(verification)}")
+
+
+# --- Stage 7: the model section and the results table ----------------------
+
+TEMPLATE = REPO / 'src' / 'dashboard_template.html'
+
+# README row label -> Methodology row label. The README uses shorter names;
+# the numbers must be identical.
+RESULT_ROWS = {
+    'Coin flip': 'Coin flip',
+    'Home team always wins': 'Home team always wins',
+    'Model A (football only)': 'Model A -- live, 4 features, weekly refit',
+    'Vegas market alone': 'Vegas market alone',
+    'Model B (+ market)': 'Model B -- live, 4 features + market, weekly refit',
+}
+
+
+def readme_results(text):
+    """{label: [cells]} from the README's results table."""
+    rows = {}
+    for line in text.splitlines():
+        cells = [c.strip() for c in line.strip().strip('|').split('|')]
+        if cells and cells[0] in RESULT_ROWS:
+            rows[cells[0]] = cells[1:]
+    return rows
+
+
+def methodology_results(html):
+    """{label: [cells]} from the Methodology page's backtest table."""
+    block = re.search(r'Backtest Results .*?<tbody>(.*?)</tbody>', html, re.S)
+    assert block, "the Methodology backtest table was not found; the matcher is broken"
+    rows = {}
+    for tr in re.findall(r'<tr>(.*?)</tr>', block.group(1), re.S):
+        cells = [re.sub(r'<[^>]+>', '', c).strip() for c in re.findall(r'<td[^>]*>(.*?)</td>', tr, re.S)]
+        rows[cells[0]] = cells[1:]
+    return rows
+
+
+def test_the_results_table_matches_the_methodology_page():
+    """The README's first table went stale once already: from 2026-08-17 it
+    showed figures from before the QB leak fix and the shrinkage revert,
+    while the dashboard had moved on. It is now held to the page's table,
+    which is the published source."""
+    readme = readme_results(TEXT)
+    page = methodology_results(TEMPLATE.read_text(encoding='utf-8'))
+    assert set(readme) == set(RESULT_ROWS), f"README results rows found: {sorted(readme)}"
+    for mine, theirs in RESULT_ROWS.items():
+        assert theirs in page, f"the Methodology table has no row {theirs!r}"
+        assert readme[mine] == page[theirs], (
+            f"README row {mine!r} says {readme[mine]}, Methodology says {page[theirs]}")
+
+
+def test_the_table_check_notices_a_drifted_figure():
+    """Synthetic, so the failing branch stays reachable while the two agree."""
+    moved = TEXT.replace('| Model A (football only) | 62.8% |', '| Model A (football only) | 62.6% |')
+    assert moved != TEXT, "the synthetic edit found nothing to change"
+    page = methodology_results(TEMPLATE.read_text(encoding='utf-8'))
+    assert readme_results(moved)['Model A (football only)'] != page[RESULT_ROWS['Model A (football only)']]
+
+
+def test_the_model_version_it_names_is_the_live_one():
+    sys.path.insert(0, str(REPO / 'src'))
+    from config import MODEL_VERSION
+    m = re.search(r'## Current model \(v([\d.]+)\)', TEXT)
+    assert m, "README.md no longer names the model version in its section heading"
+    assert m.group(1) == MODEL_VERSION, f"README says v{m.group(1)}, config says {MODEL_VERSION}"
+
+
+def test_the_case_study_count_it_states_is_the_real_one():
+    m = re.search(r'\*\*Case studies of what went wrong.*?\*\* (\w+)\s+write-ups', TEXT, re.S)
+    assert m, "README.md no longer states a case-study count in the expected format"
+    claimed = WORDS.get(m.group(1).lower())
+    real = len([p for p in (REPO / 'docs' / 'case-studies').glob('*.md') if p.name != 'README.md'])
+    assert claimed == real, f"README.md claims {m.group(1)} case studies; docs/case-studies/ holds {real}"
+
+
+def test_every_image_it_shows_exists():
+    images = re.findall(r'!\[[^\]]*\]\(([^)]+)\)', TEXT)
+    assert images, "README.md shows no images; the matcher may be broken"
+    missing = [i for i in images if not (REPO / i).exists()]
+    assert not missing, f"README.md shows images that are not in the repository: {missing}"
 
 
 if __name__ == '__main__':

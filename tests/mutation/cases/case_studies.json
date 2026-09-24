@@ -63,6 +63,31 @@
       "expect_caught_by": "test_a_figure_quoted_from_a_commit_is_in_that_commit"
     },
     {
+      "id": "stage2-case-study-misquotes-its-audit",
+      "target": "docs/case-studies/stage2-corrections.md",
+      "why": "the Stage 2 case study's evidence that SOS was preseason drifts from the commit it quotes (9e4ec47) -- a figure that reads as proof and no longer matches its source.",
+      "find": "games_played 0 and games_remaining 272",
+      "replace": "games_played 0 and games_remaining 256",
+      "expect_caught_by": "test_a_figure_quoted_from_a_commit_is_in_that_commit"
+    },
+    {
+      "id": "regression-suite-case-study-misreports-the-run",
+      "target": "docs/case-studies/booth-regression-suite.md",
+      "why": "the case study says Booth missed the planted defect when the recorded baseline says it caught it -- a result reported against the file that holds it.",
+      "find": "**Booth caught it.**",
+      "replace": "**Booth missed it.**",
+      "expect_caught_by": "test_the_case_study_reports_what_each_recorded_baseline_says"
+    },
+    {
+      "id": "lesson-cites-a-trap-that-was-renamed",
+      "target": "docs/lessons-learned.md",
+      "tests": "tests/test_lessons_learned.py",
+      "why": "a lesson names a CLAUDE.md trap entry by a phrase CLAUDE.md does not contain, so its evidence pointer goes nowhere and the lesson becomes an assertion.",
+      "find": "*From: `CLAUDE.md`, \"the auditor produces untraceable figures too\".*",
+      "replace": "*From: `CLAUDE.md`, \"the auditor is never wrong\".*",
+      "expect_caught_by": "test_every_trap_it_cites_is_still_in_claude_md"
+    },
+    {
       "id": "verification-md-points-at-a-removed-incident",
       "target": "VERIFICATION.md",
       "why": "VERIFICATION.md sends readers to an incident the page no longer carries -- what happened to its 'Incident 3' pointer when that story became a case study.",

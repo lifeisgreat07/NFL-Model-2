@@ -1,0 +1,61 @@
+{
+  "target": "README.md",
+  "tests": "tests/test_readme_accuracy.py",
+  "cases": [
+    {
+      "id": "readme-results-table-drifts-from-methodology",
+      "why": "the README's results table moves away from the Methodology table it copies -- how it sat on pre-leak-fix figures from 2026-08-17 until Stage 7.",
+      "find": "| Model A (football only) | 62.8% |",
+      "replace": "| Model A (football only) | 62.6% |",
+      "expect_caught_by": "test_the_results_table_matches_the_methodology_page"
+    },
+    {
+      "id": "readme-names-an-old-model-version",
+      "why": "the model section's heading keeps naming a version after the model has moved on -- it said v2 through v2.5.",
+      "find": "## Current model (v2.5)",
+      "replace": "## Current model (v2.4)",
+      "expect_caught_by": "test_the_model_version_it_names_is_the_live_one"
+    },
+    {
+      "id": "readme-case-study-count-goes-stale",
+      "why": "the recruiter overview's case-study count stops matching docs/case-studies/, the next time one is added or folded.",
+      "find": "**Case studies of what went wrong, and a list of what it taught.** Four",
+      "replace": "**Case studies of what went wrong, and a list of what it taught.** Five",
+      "expect_caught_by": "test_the_case_study_count_it_states_is_the_real_one"
+    },
+    {
+      "id": "readme-shows-an-image-that-is-not-there",
+      "why": "the first thing a visitor sees becomes a broken image.",
+      "find": "docs/images/week-board.png)",
+      "replace": "docs/images/week-board-old.png)",
+      "expect_caught_by": "test_every_image_it_shows_exists"
+    },
+    {
+      "id": "architecture-names-a-file-that-moved",
+      "target": "docs/architecture.md",
+      "tests": "tests/test_lessons_learned.py",
+      "why": "a box on the architecture page names a file that is not there, so the one table meant to answer 'which file is this' answers wrongly.",
+      "find": "`src/grade_predictions.py` | Same workflow",
+      "replace": "`src/grade.py` | Same workflow",
+      "expect_caught_by": "test_every_path_in_the_architecture_table_exists"
+    },
+    {
+      "id": "architecture-drops-a-workflow",
+      "target": "docs/architecture.md",
+      "tests": "tests/test_lessons_learned.py",
+      "why": "a workflow that runs on every pull request disappears from the page that is supposed to show the whole system.",
+      "find": "`src/scout_preflight.py`, `.github/workflows/scout-preflight.yml`",
+      "replace": "`src/scout_preflight.py`",
+      "expect_caught_by": "test_every_workflow_is_on_the_architecture_page_or_deliberately_not"
+    },
+    {
+      "id": "lesson-points-at-a-missing-path",
+      "target": "docs/lessons-learned.md",
+      "tests": "tests/test_lessons_learned.py",
+      "why": "a lesson's evidence names a file that does not exist, so it reads as sourced and is not.",
+      "find": "`experiments/stage5/registry.json`",
+      "replace": "`experiments/stage5/register.json`",
+      "expect_caught_by": "test_every_path_exists"
+    }
+  ]
+}

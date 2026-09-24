@@ -9,6 +9,8 @@ is one copy of each story, not two.
 |---|---|
 | [The QB rating that could see the future](qb-rating-leak.md) | A leak-free claim that was false, a test suite that had never run, and a tuning result nobody could reproduce, all found in one afternoon. |
 | [The verifier's first week](booth-first-audit.md) | The checking agent's first run said nothing, and its first report found a flaw in its own setup and a "confirmed" result nothing could reproduce. |
+| [When the to-do list was wrong](stage2-corrections.md) | A "broken" column that was only preseason, a "done" page that had never worked, and a summary count that didn't survive being checked. |
+| [Testing the tester](booth-regression-suite.md) | The regression suite for the checking agent: how it avoids fooling itself, why it sat unrun for seventeen days, and what its first run found. |
 
 Every figure in a case study has something that recomputes it.
 `tests/test_case_studies.py` checks that each case study has a card on the
