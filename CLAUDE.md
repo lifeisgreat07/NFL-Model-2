@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1877 passing** (none skipped) — `python -m pytest -q` on `main` at
-`f7b4fff`, with HEAD level with origin, which is the order that makes the
+Suite: **1962 passing** (none skipped) — `python -m pytest -q` on
+`regression-head-and-stage1` (#99) at `335bf0a`, with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -63,7 +63,7 @@ that literal, and rewording it to `**N passing, 1 skipped**` did not make the
 check complain about the wording — it reported the line as *missing*, which
 reads like a deleted section rather than an edited sentence.
 
-**Stages 1, 2, 3 and 7.5 are complete. Stage 7.6's repository half is done.
+**Stages 2, 3 and 7.5 are complete; Stage 1 was retired 2026-09-24. Stage 7.6's repository half is done.
 Stage 8, 8b and 8c are all complete; its decisions live in
 `docs/design/STAGE8-DESIGN.md` and its specification is the pair of mocks
 beside that file. Stage 9 is complete (#87, 2026-09-22; its button
@@ -275,17 +275,6 @@ casually.
   "and therefore" has a mechanism in it, and the mechanism is the half nobody
   measured. Check that clause before doing the work it implies.
 
-### Stage 1 - Recurring status checks (first every session, don't dwell)
-
-Injury/roster data is CLOSED, not blocked - settled on VALUE, not
-availability, so stop re-checking nflverse for it. Ensemble contingency is
-blocked solely on another independently-useful model existing. ESPN QBR stops
-at 2023, quick re-check only. Public betting % has no free source; reverse
-line movement is blocked downstream of it. Line-movement accumulation is
-confirmed working and needs many more weeks before a real predictive test -
-do not force one on a small sample. Closing-line backtest stays deferred on
-that same accumulation.
-
 ### Stage 2 - Deferred UX & repo hygiene  <- COMPLETE (2026-09-06)
 
 Shipped as PRs #21-#24. See "Findings that still constrain the work" above; the four
@@ -357,7 +346,35 @@ The reason for stopping: seven PRs on 2026-09-07 all landed on agent
 infrastructure, and the dashboard has not been touched since Stage 2. Nothing
 remaining in this stage moves the thing a visitor sees.
 
-### Stage 4 - Automation & monitoring
+### Stage 4 - Automation & monitoring  <- PARKED MID-BUILD (2026-09-24)
+
+**Parked by Mark on 2026-09-24, partway through.** Nothing from it is on
+`main`. The unfinished draft is a local, unpushed branch `stage4-draft` on
+`markys`, one commit over #99's branch: `src/data_quality.py` wired into
+`weekly_update.main()` before fitting, with tests; a play-by-play cache in
+`data_loader.load_plays` behind `NFL_PBP_CACHE`, with tests; and untested
+first drafts of `src/schema_check.py`, `src/alerts.py` and `src/canary.py`.
+No workflows, no schema snapshot, no mutation cases yet. Treat it as a
+draft to read, not as work to trust.
+
+Decisions already made for it, so they are not re-litigated:
+- Drift opens or comments on an **issue**, not a PR: drift has no code
+  change to propose, so a PR would be empty.
+- **Booth alerts go in their own workflow** triggered by `workflow_run` on
+  "Booth PR audit". A PR that edits `booth-pr-audit.yml` cannot be audited
+  by Booth, so changing that file would sink the audit of whatever PR
+  carried it.
+- One issue per problem, matched on exact title among open issues, so a
+  nightly failure makes one issue with comments, not one issue a night.
+- Data-quality ERRORs stop the weekly run, so they are kept to what would
+  corrupt a pick anyway. A missing latest week of play-by-play is only a
+  warning, because the Tuesday run can land before nflverse has Monday night.
+  An empty (unpublished) schedule is a warning too, or every spring run fails.
+- The schema snapshot is column NAMES only; dtypes vary with the pandas
+  version doing the conversion.
+- The play-by-play cache is the lowest-value item, flagged to Mark and kept
+  only because he asked for all nine.
+
 
 Data-quality checks on every weekly run; play-by-play cache layer; alerts on
 upstream nflverse schema changes; auto-open a PR when check_drift.py detects
@@ -384,9 +401,26 @@ REJECT.
 
 Next Gen Stats via nflreadpy, the most promising untapped source already in the
 stack; participation/personnel grouping; referee crew assignments, cheap and
-testable; multi-book line dispersion, accumulation-gated under Stage 1 rather
-than a new build. Each item needs a stated hypothesis BEFORE the data is
+testable; multi-book line dispersion, gated on the line
+accumulation below rather than a new build. Each item needs a stated hypothesis BEFORE the data is
 pulled, or it is fishing.
+
+**Line movement and the closing-line backtest (moved here when Stage 1 was
+retired, 2026-09-24).** Line snapshots accumulate on every weekly run and are
+confirmed working. Do not test anything on them before the 2026 regular
+season ends: that is the trigger for the first line-movement test and the
+closing-line backtest, each with its hypothesis written down first. A test on
+a few weeks of snapshots is the small-sample result this project refuses to
+publish.
+
+**Closed sources -- do not re-check.** Stage 1 used to re-check these every
+session; it was retired on 2026-09-24 because none of them has a future here.
+Injury/roster data as a model feature: closed on value, not availability
+(showing team news on a page is a separate question, see Stage 7). ESPN QBR:
+abandoned upstream, ends at 2023 (re-confirmed 2026-09-24: no 2024 or 2025
+rows, and nflreadpy has no loader). Public betting percentages: no free
+source, so reverse line movement is out too. An ensemble needs a second
+independently useful model, and Stage 5 accepted none.
 
 ### Stage 7 - Portfolio polish
 
@@ -577,7 +611,7 @@ every other guard in this repo.
 - Weekly team news on Team Deep Dive — injuries, trades, firings, releases,
   scraped and summarised briefly. This is a new external data source with
   staleness, rate-limit and reliability concerns; Stage 6 in nature, and it
-  must not gate the visual work. NOTE for a future session: Stage 1 records
+  must not gate the visual work. NOTE for a future session: Stage 6 records
   injury DATA as closed, but that decision was about model features. Displaying
   team news is a different question and is not foreclosed by it.
 
@@ -1098,6 +1132,21 @@ under compaction pressure, so its length is a cost paid on every session.
   worked. **Verify the destination rather than the return value**, and read
   two identical failure messages from a file you just changed as evidence
   that you did not change it.
+- **The file bridge will not write `.github/` or `.git/`.** `device_commit_files`
+  rejects both as protected paths. For a workflow change, commit a `git diff`
+  of it to the repo root as a scratch `.patch`, `git apply` it on `markys`,
+  delete the patch, and compare `git hash-object` on both sides. Commit
+  messages go through the gitignored `.commit-msg.txt`, not `.git/`.
+- **The mutation corpus edits the working tree in place, and is now slow.**
+  On 2026-09-24 a full run on `markys` reached 104 of 328 cases in about 17
+  minutes, on pace for close to an hour, not the six minutes recorded
+  earlier. While it runs, do not run pytest, `git add`, or a
+  second corpus run in the same checkout: a suite run during it failed a
+  test for a mutation that was live at that moment. Killing it mid-case
+  leaves that case's file mutated (`src/scout_preflight.py` and
+  `tests/test_dashboard_charts.py` both were), so run `git status` and
+  restore after any interrupted run. Naming the ids a change touches, each
+  run with `--id`, is the form preflight accepts when the full run won't fit.
 - `cmd` mangles multi-line `python -c` strings, and **PowerShell has no
   heredocs** — `git commit -F <file>` with a written message file, and script
   files instead of inline `-c`, are the reliable forms.

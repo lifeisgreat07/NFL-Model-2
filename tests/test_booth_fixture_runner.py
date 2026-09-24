@@ -187,15 +187,20 @@ def _satisfying_verdict(meta):
                        'overall': 'NEEDS HUMAN REVIEW'}, indent=2)
 
 
+#: The full SHA of the commit the synthetic verdicts above say they audited
+#: (they report the short form, `abc1234`, as Booth does).
+FULL_HEAD = 'abc1234' + '0' * 33
+
+
 def test_record_writes_a_baseline_and_reports_satisfied(tmp_path, monkeypatch):
     meta = dict(FIXTURES[0])
     meta['_path'] = tmp_path
-    ok, why = runner.record(meta, _report(_satisfying_verdict(meta)), 'deadbee')
+    ok, why = runner.record(meta, _report(_satisfying_verdict(meta)), FULL_HEAD)
     assert ok, why
     saved = json.loads((tmp_path / 'baseline.json').read_text(encoding='utf-8'))
     assert saved['fixture'] == meta['id']
     assert saved['satisfied'] is True
-    assert saved['fixture_head'] == 'deadbee'
+    assert saved['fixture_head'] == FULL_HEAD
     assert saved['verdict']['claims'][0]['verdict'] == 'DISCREPANCY'
 
 
@@ -242,11 +247,11 @@ def test_a_baseline_is_rechecked_not_trusted(tmp_path):
     meta['assertion'] = 'file-locus'
     meta['expect_discrepancy_implicating'] = 'original.py'
     verdict = json.dumps({
-        'pr': 0, 'head': 'a',
+        'pr': 0, 'head': 'abc1234',
         'claims': [{'id': 1, 'verdict': 'DISCREPANCY',
                     'implicates': ['original.py']}],
         'overall': 'NEEDS HUMAN REVIEW'})
-    ok, _ = runner.record(meta, _report(verdict), 'a')
+    ok, _ = runner.record(meta, _report(verdict), FULL_HEAD)
     assert ok
 
     # The expectation moves; the stored flag still says true.
@@ -272,3 +277,101 @@ def test_every_recorded_baseline_still_satisfies_its_fixture(meta):
     if ok is None:
         pytest.skip('{}: {}'.format(meta['id'], why))
     assert ok, '{}: {}'.format(meta['id'], why)
+
+
+# --- the commit a baseline is about ----------------------------------------
+
+def test_a_verdict_about_another_commit_is_not_a_pass(tmp_path):
+    """The first CI run recorded head dad39d0 for an audit of 9d2d81e.
+
+    The record job re-assembled the fixture, and a fresh assembly makes fresh
+    commits with fresh hashes. A result is only about the commit Booth
+    audited, so a verdict naming a different head must not record as
+    satisfied -- and must still be written, so the mismatch is on the record.
+    """
+    meta = dict(FIXTURES[0])
+    meta['_path'] = tmp_path
+    ok, why = runner.record(meta, _report(_satisfying_verdict(meta)), 'deadbee' * 5)
+    assert not ok
+    assert 'Booth audited' in why
+    saved = json.loads((tmp_path / 'baseline.json').read_text(encoding='utf-8'))
+    assert saved['satisfied'] is False
+
+
+def test_a_baseline_whose_heads_disagree_fails_the_recheck(tmp_path):
+    """check_one re-derives from the verdict, so it must re-check the head too."""
+    meta = dict(FIXTURES[0])
+    meta['_path'] = tmp_path
+    ok, why = runner.record(meta, _report(_satisfying_verdict(meta)), FULL_HEAD)
+    assert ok, why
+    path = tmp_path / 'baseline.json'
+    saved = json.loads(path.read_text(encoding='utf-8'))
+    saved['fixture_head'] = 'dad39d0' + '0' * 33
+    path.write_text(json.dumps(saved), encoding='utf-8')
+    rechecked, why = runner.check_one(meta)
+    assert rechecked is False
+    assert 'Booth audited' in why
+
+
+@pytest.mark.parametrize('booth, ours, expected', [
+    ('abc1234', 'abc1234' + '0' * 33, True),
+    ('ABC1234', 'abc1234' + '0' * 33, True),
+    ('abc1235', 'abc1234' + '0' * 33, False),
+    ('', 'abc1234', False),
+    ('abc1234', None, False),
+    # Under seven characters a prefix matches too many commits to name one.
+    ('abc12', 'abc1234' + '0' * 33, False),
+    # The corrected fixed-everywhere baseline stores the short form Booth
+    # reported, so a short recorded head must still match a full one.
+    ('abc1234' + '0' * 33, 'abc1234', True),
+])
+def test_head_matching(booth, ours, expected):
+    assert runner.head_matches(ours, {'head': booth}) is expected
+
+
+def test_record_with_a_head_does_not_reassemble(tmp_path, monkeypatch):
+    """`record --head` is what the CI record job uses. It must record that
+    head, not build a second repository and record the new one's."""
+    meta = FIXTURES[0]
+
+    def _no_assembly(*_a, **_k):
+        raise AssertionError('record --head re-assembled the fixture')
+
+    monkeypatch.setattr(runner, 'assemble', _no_assembly)
+    monkeypatch.setattr(runner, 'baseline_path', lambda m: tmp_path / 'baseline.json')
+    report = tmp_path / 'r.md'
+    report.write_text(_report(_satisfying_verdict(meta)), encoding='utf-8')
+    code = runner.main(['record', meta['id'], '--report', str(report),
+                        '--head', FULL_HEAD])
+    saved = json.loads((tmp_path / 'baseline.json').read_text(encoding='utf-8'))
+    assert saved['fixture_head'] == FULL_HEAD
+    assert code == 0
+
+
+# --- the description has to describe the fixture ----------------------------
+
+_COUNT_WORDS = {'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5}
+
+
+@pytest.mark.parametrize('meta', FIXTURES, ids=IDS)
+def test_the_description_counts_the_commits_the_fixture_has(meta, tmp_path):
+    """A fixture must hold exactly the defect it names.
+
+    fixed-everywhere's description said "Two commits." while assemble() builds
+    one commit over main: an unplanted discrepancy sitting beside the planted
+    one (the first run's claim 1 came back as a DISCREPANCY implicating
+    PR_BODY.md). A body that states a commit count must state the one the
+    assembled branch has.
+    """
+    import re
+    stated = re.findall(r'\b(one|two|three|four|five|\d+) commits?\b',
+                        loader.body(meta), flags=re.IGNORECASE)
+    if not stated:
+        pytest.skip('{} states no commit count'.format(meta['id']))
+    runner.assemble(meta, tmp_path / 'r')
+    actual = len(_git(tmp_path / 'r', 'rev-list', 'main..fixture-pr').split())
+    for word in stated:
+        n = int(word) if word.isdigit() else _COUNT_WORDS[word.lower()]
+        assert n == actual, (
+            '{}: the description says {} commit(s); the assembled branch has '
+            '{}'.format(meta['id'], word, actual))

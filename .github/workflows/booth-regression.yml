@@ -144,10 +144,17 @@ jobs:
         # A missed fixture that never reaches the repository is invisible until
         # someone spends another audit rediscovering it. The final step below
         # re-reads record.log and fails the run, after the commit.
+        #
+        # --head is the commit the audit job assembled and Booth audited.
+        # Re-assembling here instead builds new commits with new hashes, and
+        # the first run recorded dad39d0 for an audit of 9d2d81e that way.
         continue-on-error: true
+        env:
+          AUDITED_HEAD: ${{ needs.audit.outputs.head }}
         run: |
+          test -n "$AUDITED_HEAD" || { echo "the audit job exposed no head"; exit 1; }
           python src/booth_fixture_runner.py record "${{ inputs.fixture }}" \
-            --report booth-report.md --out .fixture-run/ci | tee record.log
+            --report booth-report.md --head "$AUDITED_HEAD" | tee record.log
           # Deliberately NOT capturing $? here: after a pipe it is tee's exit
           # status, not the runner's, so it would always be 0 -- a value that
           # looks like a signal and never was one. record.log is the signal.
@@ -175,7 +182,8 @@ jobs:
         run: |
           cat record.log >> "$GITHUB_STEP_SUMMARY"
           grep -q '^SATISFIED' record.log || {
-            echo "Booth did NOT catch the seeded defect in ${{ inputs.fixture }}."
-            echo "The baseline is committed so the miss is on the record."
+            echo "The fixture ${{ inputs.fixture }} is NOT satisfied: Booth missed the"
+            echo "seeded defect, or its verdict names a different commit. record.log"
+            echo "says which. The baseline is committed so the result is on the record."
             exit 1
           }
