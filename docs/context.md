@@ -4,45 +4,47 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-24 (#96 and #97 merged, #98 open, Stage 7.6 done)
+Last updated: 2026-09-24 (#98 merged, #99 open, Stage 1 retired, Stage 4 parked)
 
 ---
 
 ## Right now
 
-**Suite:** 1877 passing, none skipped — `python -m pytest -q` on `main` at
-`f7b4fff`, HEAD level with origin.
+**Suite:** 1962 passing, none skipped — `python -m pytest -q` on
+`regression-head-and-stage1` (#99) at `335bf0a`, HEAD level with origin.
 
-**#98 is open: the rest of Stage 7.** Stage 2 corrections case study,
-Booth regression suite write-up, the lessons-learned page,
-the architecture diagram, and the README rewrite with images. Waiting on
-Booth, then Mark. **Merging #98 finishes Stage 7.**
+**Next action: get #99 merged.** It retires Stage 1 and fixes the two
+problems the first Booth regression run found (the baseline's head, and the
+fixture's "Two commits." description). Waiting on Booth, then Mark.
 
-**Next action once #98 merges: start Stage 4**, beginning with the two
-loose ends below that are Stage 4 in nature (the regression workflow's
-recorded head, and the stale weekly routine prompt).
+**Stage 7 is complete** (#96, #97, #98). **Stage 1 is retired** (in #99):
+its live item, line accumulation and the closing-line backtest, moved to
+Stage 6 with the end of the 2026 regular season as the trigger.
 
-**Stage 7.6 is done.** The repo's About panel carries Mark's description
-and seven topics, set 2026-09-24 in a signed-in browser.
+**Stage 4 is parked** by Mark, mid-build. The draft is the local, unpushed
+branch `stage4-draft` on `markys`; CLAUDE.md's Stage 4 section says what is
+in it and the decisions already made.
 
-**#95 held.** Every Booth run on #96, #97 and #98 so far posted a report
-(one on #96 was cancelled by design when a newer run started).
+**The weekly Claude routine is replaced.** Mark saved it on 2026-09-24 as
+"Weekly QB override research": QB news only, sourced override file, via a
+PR, Mon and Wed 22:00 UTC. It never grades or rebuilds; the Weekly update
+workflow owns that. On a normal week, merge its PR before Thursday's
+16:00 UTC lock.
 
-**The Booth regression suite has run once** (`f7b4fff`, 2026-09-24): Booth
-caught the planted defect. On `main` the suite now has no standing skip.
+**#95 held.** Every Booth run on #96 to #98 posted a report.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| The regression head fix and fixture body | Open PR | Booth, then Mark |
+| #99, Stage 1 retirement and the regression fixes | Open | Booth, then Mark |
 | Confirming #73 on a phone | Not done | Only a device proves the zoom is gone |
-| The weekly routine's prompt is stale | New prompt written (QB news only, via PR, Mon and Wed 22:00 UTC) | Mark pastes it in: the routine was created outside an agent session, so an agent cannot edit it |
+| Which claim Booth's fixture claim 1 was | Inferred as the "Two commits." line | Reading that run's report artifact, if it is ever worth it |
 | Leak table splits two ways on Linux | Recorded in the QB case study | Nothing, unless it is ever worth finding the cause |
 
 ## Queued, in order
 
-1. **Stage 4**: automation and monitoring.
+1. **Stage 4**, resumed from `stage4-draft` when Mark says so.
 2. **Stage 6**, each item with a hypothesis stated before any data is pulled.
 
 Merge one branch at a time: every branch that adds a mutation case file
