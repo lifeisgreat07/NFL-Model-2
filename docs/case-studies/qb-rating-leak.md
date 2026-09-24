@@ -80,7 +80,7 @@ once and builds the feature table twice. The only difference is which
 `trailing_rating` function the builder gets: today's, or the pre-fix one
 copied exactly from `ec30887`'s parent. It refuses to report unless every
 non-QB column is identical between the two tables and both runs score the
-same games. Results are in `data/qb_leak_effect.json`, measured at `5a290d2`
+same games. Results are in `data/qb_leak_effect.json`, measured at `99eb38e`
 over 1087 games, 2022-2025. Differences are leaky minus fixed, so a negative
 number means the leak made the model look better than it was.
 
@@ -91,11 +91,20 @@ number means the leak made the model look better than it was.
 | Brier difference, 95% interval | -0.000080 [-0.000191, +0.000035] | +0.000012 [-0.000018, +0.000043] |
 | Log loss difference, 95% interval | -0.000158 [-0.000405, +0.000098] | +0.000030 [-0.000039, +0.000100] |
 
+**These figures come from one machine:** Windows, Python 3.11.9, with the
+library versions recorded in the JSON's `provenance`. They are not portable
+to the last digit. This project has already found that the same commit and
+data disagree by one or two games between a Linux runner and Windows, and
+this table does too.
+[Booth's re-run on #96](https://github.com/lifeisgreat07/NFL-Model-2/pull/96#issuecomment-5817859494),
+on Linux, had one fewer pick changing side for each model and different last
+digits in every score. The verdict held on both machines.
+
 Every interval includes zero. The leak nudged Model A's scores slightly in its
 own favour and Model B's slightly against, and neither nudge can be told apart
 from noise at this sample size. Accuracy is left out of the table on purpose:
-three games changing side out of 1087 is close to the one or two games the
-same code and data already move by between a Linux runner and Windows.
+a few games changing side out of 1087 is the same size as that
+machine-to-machine wobble.
 
 That is a reasonable result, and it does not make the fix unimportant. The
 backtest's claim is that every prediction used only what was known at the

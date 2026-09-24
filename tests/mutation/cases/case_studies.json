@@ -48,6 +48,13 @@
       "expect_caught_by": "test_every_commit_a_case_study_cites_exists"
     },
     {
+      "id": "leak-case-study-stops-naming-its-machine",
+      "why": "the sentence saying which machine produced the table goes, and the pick counts read as portable facts again -- the exact gap Booth found on #96, where a Linux re-run flipped one fewer pick per model.",
+      "find": "**These figures come from one machine:** Windows, Python 3.11.9, with the",
+      "replace": "**These figures come from one machine,** with the",
+      "expect_caught_by": "test_the_case_study_names_the_machine_its_table_came_from"
+    },
+    {
       "id": "verification-md-points-at-a-removed-incident",
       "target": "VERIFICATION.md",
       "why": "VERIFICATION.md sends readers to an incident the page no longer carries -- what happened to its 'Incident 3' pointer when that story became a case study.",

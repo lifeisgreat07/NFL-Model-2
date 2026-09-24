@@ -225,6 +225,18 @@ def test_every_interval_includes_zero_is_what_the_data_says():
         "the case study's verdict sentence disagrees with qb_leak_effect.json")
 
 
+def test_the_case_study_names_the_machine_its_table_came_from():
+    """The table's pick counts and last digits are specific to one machine:
+    Booth's Linux re-run of #96 got one fewer pick changing side for each
+    model. So the case study must name the machine the JSON says produced it,
+    and a re-run on another machine that rewrites the JSON makes this fail
+    until the sentence is rewritten with it."""
+    prov = json.loads(LEAK_DATA.read_text(encoding='utf-8'))['provenance']
+    text = LEAK_DOC.read_text(encoding='utf-8')
+    named = f"{prov['system']}, Python {prov['python']}"
+    assert named in text, f"qb-rating-leak.md does not say its table came from {named!r}"
+
+
 def test_the_figure_check_fails_on_a_figure_that_moved():
     """Over a synthetic payload, so the failing branch stays reachable however
     the real file reads: one changed figure must produce one missing line."""

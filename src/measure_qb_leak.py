@@ -103,6 +103,32 @@ def build_both_tables():
     return tables
 
 
+def provenance():
+    """Where the numbers came from. The pick counts and the last digits of
+    every score move between machines -- the same commit and data already
+    disagree by one to two games between a Linux runner and Windows -- and
+    Booth's re-run of #96 on Linux showed this file is no exception. So the
+    file says which machine it describes, the way calibration.json does, and
+    the case study names that machine beside the table."""
+    import importlib.metadata as md
+    import platform
+
+    def ver(pkg):
+        try:
+            return md.version(pkg)
+        except Exception:
+            return 'absent'
+
+    return {
+        'system': platform.system(),
+        'platform': platform.platform(),
+        'python': platform.python_version(),
+        'numpy': ver('numpy'),
+        'pandas': ver('pandas'),
+        'scikit-learn': ver('scikit-learn'),
+    }
+
+
 def head_sha():
     try:
         return subprocess.run(['git', 'rev-parse', '--short', 'HEAD'], capture_output=True,
@@ -140,6 +166,7 @@ def main():
     payload = {
         'fix_commit': FIX_COMMIT,
         'measured_at': head_sha(),
+        'provenance': provenance(),
         'model_version': MODEL_VERSION,
         'qb_shrink_k': QB_SHRINK_K,
         'backtest_seasons': BACKTEST_SEASONS,

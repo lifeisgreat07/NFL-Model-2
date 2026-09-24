@@ -1,6 +1,14 @@
 {
   "fix_commit": "ec30887",
-  "measured_at": "5a290d2",
+  "measured_at": "99eb38e",
+  "provenance": {
+    "system": "Windows",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.9",
+    "numpy": "1.26.4",
+    "pandas": "1.5.3",
+    "scikit-learn": "1.9.0"
+  },
   "model_version": "2.5",
   "qb_shrink_k": 8,
   "backtest_seasons": [
