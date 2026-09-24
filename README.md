@@ -1,10 +1,16 @@
 # NFL Pick'em Model
 
 A real, backtested win-probability model for weekly NFL picks. Not a
-heuristic -- trained and validated on 294,989 real plays from nflverse
-(2020-2025), with honest, run backtest numbers.
+heuristic -- trained and validated on nflverse play-by-play for 2020-2025,
+with backtest numbers that were actually run.
 
 **Live dashboard: https://lifeisgreat07.github.io/NFL-Model-2/**
+
+![The Week Board: each game's win probability from Model A and Model B, with the betting line](docs/images/week-board.png)
+
+*Screenshots in this README were taken on 2026-09-24. Team logos load from
+a CDN the rendering machine could not reach, so they are missing from the
+images; the live page shows them.*
 
 ## For recruiters -- project overview
 
@@ -20,7 +26,7 @@ What it is meant to demonstrate, and where to look:
 - **A model that beats its baselines and admits where it doesn't.** The
   table below is a 2022-2025 holdout, 1,087 games, never trained on the
   season it is evaluated against. The football-only model beats
-  home-team-always-wins by 8 points. It does *not* beat the betting
+  home-team-always-wins by about 8 points. It does *not* beat the betting
   market, and the README says so rather than quietly omitting the
   comparison. See `src/backtest.py` and `src/ratings_engine.py`.
 - **Leak-free by construction, and tested for it.** Every rating a
@@ -47,37 +53,87 @@ What it is meant to demonstrate, and where to look:
   agent-activity log, a pre-flight check on every pull request description,
   and both halves of the Booth audit.
 
+- **Case studies of what went wrong, and a list of what it taught.** Four
+  write-ups in `docs/case-studies/`, each a real problem, how it was found
+  and what it cost, with every figure held to its source by a test. The
+  lessons across all of them are in `docs/lessons-learned.md`.
+
 If you have five minutes: open the live dashboard, read its **Methodology**
 page, then read `VERIFICATION.md`. Those three cover what the model does,
-how it was validated, and how the work on it is checked.
+how it was validated, and how the work on it is checked. For how the pieces
+fit together, `docs/architecture.md` has the whole system on one diagram.
 
-## Current model (v2)
+## Current model (v2.5)
 - Opponent-adjusted team ratings: two-way fixed-effects ridge regression
   on play-level EPA, recency-weighted (16-game half-life), alpha=15
   (tuned via backtest -- see `src/config.py` for justification of every
   constant).
-- Per-QB rating: leak-free trailing EPA/dropback for that week's actual
-  starter, shrunk toward league average for small samples.
+- Per-QB rating: leak-free trailing EPA/dropback, shrunk toward league
+  average for small samples. Live picks use the quarterback expected to
+  start: a sourced override if one has been filed, otherwise the
+  schedule's listed starter, otherwise last game's quarterback with a
+  note. The backtest uses each game's actual starter.
+- Four features, each a difference between the two teams: offence,
+  defence, quarterback, and a term for a change of quarterback, fed to a
+  logistic regression refit every week. The model outputs a win probability, never a margin.
 - Two models shown side by side: **Model A** (football-only) and
-  **Model B** (blended with the current Vegas spread).
+  **Model B** (Model A plus the current betting spread).
 
-Real backtest results (2022-2025 holdout, 1,087 games, never trained on
-the season it's evaluated against):
+Backtest results (2022-2025 holdout, 1,087 games, refit every week on
+strictly earlier games, never trained on the season being evaluated). The
+same table is on the dashboard's **Methodology** page, and
+`tests/test_readme_accuracy.py` fails if the two disagree:
 
-| Model | Accuracy | Log Loss | AUC |
-|---|---|---|---|
-| Coin flip | 50.0% | 0.693 | 0.500 |
-| Home team always wins | 54.6% | - | - |
-| Model A (football + QB) | 62.6% | 0.655 | 0.662 |
-| Vegas market alone | 68.1% | 0.607 | 0.724 |
-| Model B (+ market) | 68.3% | 0.608 | 0.726 |
+| Model | Accuracy | Log Loss | Brier | AUC |
+|---|---|---|---|---|
+| Coin flip | 50.0% | 0.693 | 0.250 | 0.500 |
+| Home team always wins | 54.6% | - | - | - |
+| Model A (football only) | 62.8% | 0.650 | 0.229 | 0.670 |
+| Vegas market alone | 68.2% | 0.607 | 0.210 | 0.725 |
+| Model B (+ market) | 68.2% | 0.606 | 0.209 | 0.727 |
+
+This season's live record, graded after each week, is on the dashboard's
+Season Accuracy page:
+
+![Season Accuracy: the betting market, Model B and Model A, racing on games actually graded this season](docs/images/season-accuracy.png)
+
+Judge the backtest on log loss, Brier and AUC. The same code and data can differ
+by a game or two out of 1,087 between machines, so accuracy alone can't
+separate models this close; Model B and the market are statistically tied.
 
 The full methodology write-up lives on the dashboard's **Methodology**
 page rather than in a separate file, so that the explanation and the
 numbers it explains are regenerated from the same data in the same step.
 
+## How the work is checked
+
+Most of this repository was written by an AI agent, and the setup around
+it assumes the agent will sometimes be confidently wrong.
+
+- **Scout** does the work and opens every pull request.
+  `src/scout_preflight.py` checks the description against the repository
+  before anyone reads it: suite counts, whether every commit is
+  mentioned, figures quoted from a wider command than the sentence claims.
+- **Booth** is a second agent that starts cold on every pull request,
+  re-executes each claim in the description, and posts a report with a
+  machine-readable verdict. It has read-only access and cannot merge.
+  The workflow fails if Booth posts nothing (`src/booth_report_posted.py`).
+- **The test suite** includes guards on the project's own documentation:
+  numbers quoted in prose are tied to the files they came from, and the
+  mutation corpus proves each guard fails when the thing it protects
+  breaks.
+- **Every audit is public.** The dashboard's "Checking the AI's work" page
+  counts Booth's reports live from `data/agent_log.json`, and links the
+  case studies.
+
+![Checking the AI's work: Booth's audit record and the case studies](docs/images/checking-the-ai.png)
+
 ## Repo layout
 ```
+docs/
+  architecture.md       -- the whole system on one diagram
+  case-studies/         -- write-ups of real problems and how they were found
+  lessons-learned.md    -- what it all taught, each lesson with its source
 src/
   config.py             -- every tuned constant, with the backtest that justified it
   data_loader.py        -- pulls fresh nflverse data automatically (no manual CSVs)

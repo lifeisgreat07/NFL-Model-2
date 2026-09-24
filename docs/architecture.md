@@ -5,7 +5,7 @@ a change gets checked, and how the page is built. The diagram is the whole
 system on one screen; the table under it names the file behind each box.
 
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph DATA["Data"]
     NFL["nflverse play-by-play<br/>and schedules"]
     OVR["QB override files"]
