@@ -1,0 +1,35 @@
+{
+  "target": "src/data_loader.py",
+  "tests": "tests/test_pbp_cache.py",
+  "cases": [
+    {
+      "id": "pbp-cache-keeps-the-current-season",
+      "why": "the season in progress is cached like a finished one. The canary would read week 1's play-by-play all season and never see a later week go missing, which is the thing it is there to notice.",
+      "find": "        finished = season < current",
+      "replace": "        finished = season <= current",
+      "expect_caught_by": "test_the_current_season_is_never_cached"
+    },
+    {
+      "id": "pbp-cache-path-taken-without-the-variable",
+      "why": "the cached path is taken whether or not the variable is set. Every local run and every test would change how it reads play-by-play without anyone asking it to.",
+      "find": "        if cache is None or not available:",
+      "replace": "        if not available:",
+      "expect_caught_by": "test_without_the_variable_nothing_is_cached"
+    },
+    {
+      "id": "pbp-cache-stacks-seasons-strictly",
+      "why": "separately fetched seasons are stacked strictly instead of the way nflreadpy stacks them. A column only one season has, or a type that differs between seasons, would then break or change the frame, and the cache would change the ratings.",
+      "find": "    return pl.concat(frames, how='diagonal_relaxed')",
+      "replace": "    return pl.concat(frames, how='vertical')",
+      "expect_caught_by": "test_cached_and_uncached_give_the_same_frame"
+    },
+    {
+      "id": "pbp-cache-reaches-the-weekly-run",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the weekly run starts reading cached play-by-play. The run that makes picks must always fetch fresh, so a stale cache can cost a canary night at worst, never a pick.",
+      "find": "      - name: Generate/lock in this week's predictions\n",
+      "replace": "      - name: Generate/lock in this week's predictions\n        env:\n          NFL_PBP_CACHE: .pbp-cache\n",
+      "expect_caught_by": "test_only_the_canary_uses_the_cache"
+    }
+  ]
+}
