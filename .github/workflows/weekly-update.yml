@@ -25,6 +25,7 @@ on:
 
 permissions:
   contents: write
+  # For the alert step at the end, which opens an issue when the run fails.
   # For src/drift_alert.py, which opens an issue when the drift check flags.
   issues: write
 
@@ -55,8 +56,12 @@ jobs:
           fi
           echo "season=$year" >> "$GITHUB_OUTPUT"
 
+      # The log is kept for the run summary below. `shell: bash` is not
+      # decoration: only an explicit bash shell runs with pipefail, and without
+      # it `tee` would report success for a run that failed on purpose.
       - name: Generate/lock in this week's predictions
-        run: python src/weekly_update.py --season ${{ steps.season.outputs.season }}
+        shell: bash
+        run: python src/weekly_update.py --season ${{ steps.season.outputs.season }} 2>&1 | tee weekly-update.log
 
       # `!cancelled()` on this step and the commit: the step above fails the
       # job on purpose when a whole week kicked off with nothing locked, and
@@ -85,6 +90,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: python src/drift_alert.py --report drift-report.txt
+
+      # Before the commit, because it reads `git status` to see which
+      # prediction and result files this run wrote. Goes on the run's page;
+      # weekly-summary.md also feeds the alert below. Neither file is committed.
+      - name: Summarise the run
+        if: ${{ !cancelled() }}
+        run: |
+          python src/weekly_summary.py --season ${{ steps.season.outputs.season }} \
+            --log weekly-update.log --drift drift-report.txt \
+            --out weekly-summary.md >> "$GITHUB_STEP_SUMMARY"
 
       # This workflow no longer builds or commits the dashboard. It commits the
       # DATA it produces, and "Deploy dashboard to Pages" turns that into the
@@ -115,3 +130,25 @@ jobs:
         with:
           commit_message: "Weekly update: predictions and grading"
           file_pattern: 'predictions/** results/** data/**'
+
+      # Last, so it sees a failure in any step above, the commit included. A
+      # failed Thursday run leaves that night's game unpicked unless someone
+      # dispatches the workflow by hand the same day, so it has to reach Mark
+      # while there is still time. One issue, commented on by later failures.
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          {
+            if [ -s weekly-summary.md ]; then cat weekly-summary.md; else echo "The run failed before it could be summarised."; fi
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            echo "Last lines of the log:"
+            echo '```'
+            tail -n 30 weekly-update.log 2>/dev/null || echo "(no log)"
+            echo '```'
+          } > alert-body.md
+          python src/alerts.py --title "Weekly update failed" --body-file alert-body.md

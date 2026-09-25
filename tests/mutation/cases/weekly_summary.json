@@ -1,0 +1,50 @@
+{
+  "target": "src/weekly_summary.py",
+  "tests": "tests/test_weekly_summary.py",
+  "cases": [
+    {
+      "id": "weekly-summary-optional-inputs-crash",
+      "why": "the None check before Path() is removed. The bare command, with no --log or --drift, crashes on Path(None) -- the defect Booth found on #105.",
+      "find": "    if not path:\n        return ''\n    p = Path(path)",
+      "replace": "    p = Path(path)",
+      "expect_caught_by": "test_the_bare_command_runs_without_a_log_or_a_drift_report"
+    },
+    {
+      "id": "weekly-summary-counts-ungraded-games",
+      "why": "games with no result yet count toward each model's record. A week three games into play would read 'Model A 2/16', which is the 'correct arithmetic on absent data' failure this repo has already shipped once.",
+      "find": "    done = [r for r in rows if r.get('actual_home_win') is not None]",
+      "replace": "    done = list(rows)",
+      "expect_caught_by": "test_grading_counts_only_games_with_a_result"
+    },
+    {
+      "id": "weekly-summary-unrun-check-reads-clean",
+      "why": "a run that stopped before the data-quality checks reports 'No findings'. The summary would call the data clean on exactly the run where nothing checked it.",
+      "find": "    if not ran:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_check_that_never_ran_is_not_reported_as_clean"
+    },
+    {
+      "id": "weekly-summary-drops-run-warnings",
+      "why": "the run's own WARNING lines are dropped. A game that kicked off before the lock and got no pick would go unmentioned.",
+      "find": "        elif line.startswith('WARNING'):\n            warnings.append(line)",
+      "replace": "        elif False:\n            warnings.append(line)",
+      "expect_caught_by": "test_data_quality_findings_and_run_warnings_are_listed"
+    },
+    {
+      "id": "weekly-summary-lock-loses-its-exit-code",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the lock step loses its explicit bash shell. The default shell has no pipefail, so `| tee` would report success for a run that failed on purpose, and the failure alert would never fire.",
+      "find": "      - name: Generate/lock in this week's predictions\n        shell: bash\n",
+      "replace": "      - name: Generate/lock in this week's predictions\n",
+      "expect_caught_by": "test_the_lock_step_keeps_its_exit_code_through_tee"
+    },
+    {
+      "id": "weekly-summary-alert-never-fires",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the failure alert is switched off. A failed Thursday run would sit in the Actions tab while that night's game went unpicked.",
+      "find": "      - name: Raise an alert\n        if: failure()",
+      "replace": "      - name: Raise an alert\n        if: false",
+      "expect_caught_by": "test_a_failed_run_raises_the_alert_last"
+    }
+  ]
+}
