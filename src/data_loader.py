@@ -33,6 +33,8 @@ column usage, not assumed.
 
 Install: pip install nflreadpy   (or: pip install nfl_data_py, if reverting)
 """
+from pathlib import Path
+
 import pandas as pd
 from config import TRAIN_SEASONS
 
@@ -75,11 +77,60 @@ def load_plays(seasons=None):
         if skipped:
             print(f"  Skipping season(s) {skipped}: not started yet per nflverse "
                   f"(no play-by-play data exists) -- current season is {current}.")
-        df = nfl.load_pbp(available)
-        return df.to_pandas()
+        cache = pbp_cache_dir()
+        if cache is None or not available:
+            df = nfl.load_pbp(available)
+            return df.to_pandas()
+        return _load_pbp_cached(nfl, available, current, cache).to_pandas()
     else:
         import nfl_data_py as nfl
         return nfl.import_pbp_data(seasons, downcast=True)
+
+
+#: Directory for cached play-by-play, or unset for no cache. Only the nightly
+#: canary sets it (.github/workflows/nightly-canary.yml), because it loads
+#: seven seasons every night. The weekly run deliberately does NOT: the run
+#: that makes picks fetches everything fresh, so a stale or damaged cache can
+#: cost a canary night at worst, never a pick. Unset, every call fetches from
+#: nflverse exactly as it did before the cache existed.
+PBP_CACHE_ENV = 'NFL_PBP_CACHE'
+
+
+def pbp_cache_dir():
+    import os
+    value = os.environ.get(PBP_CACHE_ENV, '').strip()
+    return Path(value) if value else None
+
+
+def _load_pbp_cached(nfl, seasons, current, cache):
+    """Play-by-play with finished seasons read from disk.
+
+    Only seasons BEFORE nflverse's current one are cached: a finished season
+    stops changing, the current one changes every week and is always fetched.
+    nflverse does occasionally correct an old season, so the canary's cache
+    key rolls over monthly rather than trusting a file forever.
+
+    Seasons are fetched one at a time so each can be cached on its own, then
+    stacked the way nflreadpy stacks a multi-season request: diagonally, with
+    relaxed types, in the order asked for. tests/test_pbp_cache.py checks the
+    cached and uncached paths return the same frame.
+    """
+    import polars as pl
+    cache.mkdir(parents=True, exist_ok=True)
+    frames = []
+    for season in seasons:
+        path = cache / f'pbp_{season}.parquet'
+        finished = season < current
+        if finished and path.is_file():
+            print(f"  play-by-play {season}: from cache ({path})")
+            frames.append(pl.read_parquet(path))
+            continue
+        df = nfl.load_pbp([season])
+        if finished:
+            df.write_parquet(path)
+            print(f"  play-by-play {season}: fetched and cached")
+        frames.append(df)
+    return pl.concat(frames, how='diagonal_relaxed')
 
 
 def load_schedule(season):

@@ -38,7 +38,23 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # Finished seasons of play-by-play, kept between nights. The key rolls
+      # over each month, because nflverse does occasionally correct an old
+      # season. The current season is never cached (src/data_loader.py).
+      # The weekly run does not use this cache on purpose: the run that makes
+      # picks always fetches fresh.
+      - name: Month key for the play-by-play cache
+        id: month
+        run: echo "key=$(date -u +%Y-%m)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: .pbp-cache
+          key: pbp-${{ steps.month.outputs.key }}
+
       - name: Run the canary
+        env:
+          NFL_PBP_CACHE: .pbp-cache
         run: python src/canary.py --report canary-report.md
 
       - name: Raise an alert
