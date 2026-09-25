@@ -1,0 +1,44 @@
+{
+  "target": "src/drift_alert.py",
+  "tests": "tests/test_drift_alert.py",
+  "cases": [
+    {
+      "id": "drift-alert-silent-on-a-flag",
+      "why": "a flag raises nothing. check_drift.py would be back where it was before Stage 4: a check that runs and that nobody sees.",
+      "find": "    if code != 1:\n        return 0",
+      "replace": "    if True:\n        return 0",
+      "expect_caught_by": "test_a_flag_opens_the_drift_issue_with_the_output_and_the_caution"
+    },
+    {
+      "id": "drift-alert-fails-the-run",
+      "why": "a flag fails the step. The job would go red on a question for a person, and a later step keyed to success() would stop running.",
+      "find": "    print(f'drift alert {action}: {ref}')\n    return 0",
+      "replace": "    print(f'drift alert {action}: {ref}')\n    return 1",
+      "expect_caught_by": "test_a_flag_never_fails_the_weekly_run"
+    },
+    {
+      "id": "drift-workflow-never-runs-it",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the weekly run stops calling the drift check. Every test of the module would still pass, and nothing would run it.",
+      "find": "        run: python src/drift_alert.py --report drift-report.txt",
+      "replace": "        run: echo skipped",
+      "expect_caught_by": "test_the_weekly_run_checks_drift_after_grading_and_before_committing"
+    },
+    {
+      "id": "drift-workflow-skipped-after-a-failed-lock",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the drift step runs only on success. When the lock step fails on purpose, grading still lands and drift would go unchecked on exactly the week something went wrong.",
+      "find": "      - name: Check for model drift\n        if: ${{ !cancelled() }}",
+      "replace": "      - name: Check for model drift\n        if: ${{ success() }}",
+      "expect_caught_by": "test_the_drift_step_survives_a_failed_lock_like_the_grading_does"
+    },
+    {
+      "id": "drift-workflow-cannot-open-issues",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the workflow loses issues: write. The alert call would fail with a 403 on the one night it matters.",
+      "find": "  # For src/drift_alert.py, which opens an issue when the drift check flags.\n  issues: write\n",
+      "replace": "",
+      "expect_caught_by": "test_the_workflow_may_open_issues"
+    }
+  ]
+}
