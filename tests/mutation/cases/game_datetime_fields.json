@@ -28,8 +28,8 @@
       "id": "game-datetime-required-columns-drift",
       "target": "src/data_loader.py",
       "why": "one of the two copies of REQUIRED_SCHEDULE_COLS loses a column. The lists are what verify_data_source_fallback checks both sources against, so a name dropped from one of them means the fallback can stop supplying it with nothing complaining -- and the symptom is a game card quietly losing its kickoff, months later, at the moment the fallback is actually needed. A comment asking the next person to keep the copies in step would not catch this; a note is not a check.",
-      "find": "                               'gametime', 'weekday']",
-      "replace": "                               'weekday']",
+      "find": "                          'gametime', 'weekday']",
+      "replace": "                          'weekday']",
       "expect_caught_by": "test_the_two_required_column_lists_agree"
     }
   ]

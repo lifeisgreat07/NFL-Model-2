@@ -1,0 +1,98 @@
+{
+  "target": "src/data_quality.py",
+  "tests": "tests/test_data_quality.py",
+  "cases": [
+    {
+      "id": "dq-missing-schedule-column-ignored",
+      "why": "the required-column check stops looking. A schedule that lost gametime would then flow into the weekly run, and the cards would lose their kickoff with nothing saying why.",
+      "find": "    missing = [c for c in REQUIRED_SCHEDULE_COLS if c not in sched.columns]",
+      "replace": "    missing = []",
+      "expect_caught_by": "test_a_missing_schedule_column_is_an_error"
+    },
+    {
+      "id": "dq-game-count-stops-the-run",
+      "why": "the game count goes back to being an ERROR. Decided against with Mark on 2026-09-24: an odd count corrupts no single pick, and an ERROR on a locking run costs the whole week its picks.",
+      "find": "        report.warnings.append(\n            f'{season} schedule lists {len(reg)} regular-season games; '",
+      "replace": "        report.errors.append(\n            f'{season} schedule lists {len(reg)} regular-season games; '",
+      "expect_caught_by": "test_a_short_season_is_only_a_warning"
+    },
+    {
+      "id": "dq-duplicate-game-passes",
+      "why": "a game listed twice goes unreported. The model would predict and grade it twice, and the season's record would count it twice.",
+      "find": "    if len(dupes):",
+      "replace": "    if False and len(dupes):",
+      "expect_caught_by": "test_a_game_listed_twice_is_an_error"
+    },
+    {
+      "id": "dq-placeholder-rows-count-as-duplicates",
+      "why": "playoff placeholder rows with no teams are compared as games. Two of them look identical, so every January run would stop on a 'duplicate' that is not a game at all.",
+      "find": "    named = sched.dropna(subset=key)",
+      "replace": "    named = sched",
+      "expect_caught_by": "test_placeholder_rows_are_not_duplicates"
+    },
+    {
+      "id": "dq-unknown-team-passes",
+      "why": "a team abbreviation the model has never seen goes unreported. After a rename, that team's games would be rated from no history at all.",
+      "find": "    unknown = sorted(teams - NFL_TEAMS)",
+      "replace": "    unknown = []",
+      "expect_caught_by": "test_an_unknown_team_is_an_error"
+    },
+    {
+      "id": "dq-one-sided-score-passes",
+      "why": "a game with a score on one side only goes unreported. Grading would read it as finished and score a result that does not exist.",
+      "find": "    half = sched[sched['home_score'].isna() != sched['away_score'].isna()]",
+      "replace": "    half = sched.iloc[0:0]",
+      "expect_caught_by": "test_a_score_on_one_side_only_is_an_error"
+    },
+    {
+      "id": "dq-empty-schedule-stops-the-run",
+      "why": "an unpublished schedule becomes an ERROR, which would turn every spring run red.",
+      "find": "        report.warnings.append(f'{season} schedule has no rows yet')",
+      "replace": "        report.errors.append(f'{season} schedule has no rows yet')",
+      "expect_caught_by": "test_an_unpublished_schedule_is_a_warning_not_a_failure"
+    },
+    {
+      "id": "dq-missing-plays-column-ignored",
+      "why": "the play-by-play required-column check stops looking. The ratings would be built from whatever columns were left.",
+      "find": "    missing = [c for c in REQUIRED_PBP_COLS if c not in raw.columns]",
+      "replace": "    missing = []",
+      "expect_caught_by": "test_a_missing_plays_column_is_an_error"
+    },
+    {
+      "id": "dq-every-missing-week-is-lenient",
+      "why": "the latest-week leniency spreads to every week. An older week with no plays would become a warning, and every rating after it would be built without it.",
+      "find": "        if week == latest:",
+      "replace": "        if True:",
+      "expect_caught_by": "test_an_older_completed_week_with_no_plays_is_an_error"
+    },
+    {
+      "id": "dq-latest-missing-week-stops-the-run",
+      "why": "the latest completed week with no plays becomes an ERROR. A Tuesday run that lands before nflverse has Monday night would then fail and cost the week.",
+      "find": "        if week == latest:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_the_latest_completed_week_with_no_plays_is_only_a_warning"
+    },
+    {
+      "id": "dq-missing-epa-unreported",
+      "why": "the missing-EPA threshold is raised past anything reachable. Team ratings rest on EPA, and a season arriving without it would go unremarked.",
+      "find": "            if share > 0.05:",
+      "replace": "            if share > 1.0:",
+      "expect_caught_by": "test_plays_with_no_epa_are_a_warning"
+    },
+    {
+      "id": "dq-enforce-never-stops",
+      "why": "enforce prints the errors and carries on. The findings would be in the log, and the picks would be made from the data anyway.",
+      "find": "    if not report.ok:\n        raise DataQualityError(",
+      "replace": "    if False:\n        raise DataQualityError(",
+      "expect_caught_by": "test_enforce_stops_the_run_on_an_error_and_prints_it_first"
+    },
+    {
+      "id": "dq-weekly-run-never-checks",
+      "target": "src/weekly_update.py",
+      "why": "the call in weekly_update.main() is removed. Every rule in the module would still pass its tests and check nothing, because nothing would call it.",
+      "find": "    enforce_data_quality(raw, schedules_by_season[season], season)",
+      "replace": "    pass",
+      "expect_caught_by": "test_the_weekly_run_enforces_the_checks_before_fitting"
+    }
+  ]
+}

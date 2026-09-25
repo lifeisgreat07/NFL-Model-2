@@ -44,6 +44,7 @@ from sklearn.linear_model import LogisticRegression
 
 sys.path.insert(0, str(Path(__file__).parent))
 from data_loader import load_plays, load_schedule
+from data_quality import enforce as enforce_data_quality
 # Only get_continuity is imported: build_historical_features still accepts an
 # ol_lookup so backtest.py can run its "[reference only] + OL continuity"
 # comparison. The live weekly path no longer builds one -- see main().
@@ -600,6 +601,13 @@ def main(season, week):
 
     print("Loading schedules (scores + lines) for training history...")
     schedules_by_season = {s: load_schedule(s) for s in seasons_needed}
+
+    # Before anything is fitted: a bad week caught after the fits is
+    # already inside the picks. Errors stop the run; warnings are printed and
+    # carried into the weekly summary. See src/data_quality.py for which is
+    # which and why.
+    print("Checking data quality...")
+    enforce_data_quality(raw, schedules_by_season[season], season)
 
     print("Constructing historical training features...")
     hist = build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_week,
