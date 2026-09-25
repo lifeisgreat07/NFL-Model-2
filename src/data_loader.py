@@ -38,6 +38,22 @@ from config import TRAIN_SEASONS
 
 USE_NFLREADPY = True  # flip to False to revert to nfl_data_py -- see docstring
 
+# Every column this project's code depends on, compiled by grepping the real
+# usage in ratings_engine.py, weekly_update.py and ol_continuity.py. Module
+# level since Stage 4: __main__ below checks them before a loader flip, and
+# src/data_quality.py checks them on every weekly run.
+REQUIRED_PBP_COLS = ['posteam', 'defteam', 'epa', 'pass', 'rush', 'season_type',
+                     'week', 'season', 'qb_dropback', 'qb_epa',
+                     'passer_player_id', 'passer_player_name']
+# gametime and weekday joined this list when the Week Board started needing a
+# kickoff: they are read in weekly_update.main() exactly like gameday, so the
+# fallback has to supply them or the cards lose their start time silently.
+REQUIRED_SCHEDULE_COLS = ['home_team', 'away_team', 'home_score', 'away_score',
+                          'spread_line', 'week', 'season', 'gameday',
+                          'gametime', 'weekday']
+REQUIRED_SNAP_COLS = ['team', 'season', 'week', 'position', 'offense_snaps',
+                      'pfr_player_id', 'game_type']
+
 
 def load_plays(seasons=None):
     """Fetch play-by-play for the given seasons (defaults to TRAIN_SEASONS).
@@ -101,20 +117,8 @@ if __name__ == '__main__':
     # Real verification, not a vague smoke test -- checks every column
     # this project's actual code depends on, compiled by grepping the
     # real usage in ratings_engine.py, weekly_update.py, ol_continuity.py.
-    # Run this BEFORE trusting USE_NFLREADPY=True in production.
-    REQUIRED_PBP_COLS = ['posteam', 'defteam', 'epa', 'pass', 'rush', 'season_type',
-                          'week', 'season', 'qb_dropback', 'qb_epa',
-                          'passer_player_id', 'passer_player_name']
-    # gametime and weekday joined this list when the Week Board started
-    # needing a kickoff: they are read in weekly_update.main() exactly like
-    # gameday, so the fallback has to supply them or the cards lose their
-    # start time silently.
-    REQUIRED_SCHEDULE_COLS = ['home_team', 'away_team', 'home_score', 'away_score',
-                               'spread_line', 'week', 'season', 'gameday',
-                               'gametime', 'weekday']
-    REQUIRED_SNAP_COLS = ['team', 'season', 'week', 'position', 'offense_snaps',
-                           'pfr_player_id', 'game_type']
-
+    # Run this BEFORE trusting USE_NFLREADPY=True in production. The column
+    # lists are at module level now; see the comment above them.
     def check(df, required, label):
         missing = [c for c in required if c not in df.columns]
         if missing:
