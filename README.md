@@ -44,15 +44,16 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, 63 case files, one per subject under test)
+  (`tests/mutation/`, 65 case files, one per subject under test)
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
-- **Nine CI workflows** in `.github/workflows/` cover the test suite, the
+- **Ten CI workflows** in `.github/workflows/` cover the test suite, the
   weekly data pull, the backtest, the Pages build-and-deploy, the
   agent-activity log, a pre-flight check on every pull request description,
-  both halves of the Booth audit, and an issue raised when a Booth audit
-  fails.
+  both halves of the Booth audit, an issue raised when a Booth audit
+  fails, and a nightly canary that runs the weekly data path and raises an
+  issue when it breaks.
 
 - **Case studies of what went wrong, and a list of what it taught.** Four
   write-ups in `docs/case-studies/`, each a real problem, how it was found

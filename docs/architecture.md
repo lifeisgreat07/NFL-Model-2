@@ -16,6 +16,7 @@ flowchart TB
     RATE["team and QB ratings"]
     WEEK["weekly update:<br/>features, Model A and B,<br/>playoff odds, line snapshot"]
     GRADE["grading"]
+    CANARY["nightly canary:<br/>the weekly data path,<br/>nothing written"]
   end
 
   subgraph STORE["Committed data"]
@@ -46,6 +47,8 @@ flowchart TB
 
   NFL --> LOAD --> RATE --> WEEK
   OVR --> WEEK
+  LOAD --> CANARY
+  CANARY -. a failed night .-> ALERT
   WEEK --> PRED
   WEEK --> DJ
   PRED --> GRADE --> RES
@@ -72,13 +75,14 @@ flowchart TB
 | weekly update | `src/weekly_update.py` | `.github/workflows/weekly-update.yml`, on a schedule (Tuesday and Thursday) and by hand. Picks lock on Thursday. |
 | QB override files | `src/weekly_update.py` (`load_qb_overrides`) | Read by the weekly update from a folder under data, when a sourced note says who is actually starting. None has been filed yet, so the folder does not exist in the repository. |
 | grading | `src/grade_predictions.py` | Same workflow, once a week's games are played. |
+| nightly canary | `src/canary.py`, `src/schema_check.py`, `.github/workflows/nightly-canary.yml` | 06:00 UTC every night. Loads what the weekly run loads, runs the data-quality checks, and compares nflverse's columns with `data/nflverse_schema.json`. Writes nothing; a failure goes to the alert. |
 | backtest, calibration, bootstrap, experiments | `src/backtest.py`, `src/calibration.py`, `src/bootstrap_brier_gap.py`, `src/stage5_run.py` | By hand, when a question needs them. Results are committed under `data/` and `experiments/`, and tests tie published numbers to them. |
 | Scout | a Claude Code session | Opens every pull request. Production code goes through review; documentation can go straight to `main`. |
 | pre-flight | `src/scout_preflight.py`, `.github/workflows/scout-preflight.yml` | Every pull request. Checks the description against the repository. |
 | test suite | `tests/`, `.github/workflows/run-tests.yml` | Every pull request. Includes a committed mutation corpus in `tests/mutation/`. |
 | Booth | `.github/workflows/booth-pr-audit.yml`, `BOOTH_PROTOCOL.md` | Every pull request, and again when its description is edited. Read-only; fails the run if no report was posted (`src/booth_report_posted.py`). |
 | audit log collector | `src/collect_agent_log.py`, `.github/workflows/collect-agent-log.yml` | Every push to `main`. Writes `data/agent_log.json`, which the dashboard counts live. |
-| alert | `src/alerts.py`, `src/booth_alert.py`, `.github/workflows/booth-alert.yml` | After every Booth audit run. A failed or timed-out audit opens an issue for that PR, or comments on the one already open. |
+| alert | `src/alerts.py`, `src/booth_alert.py`, `.github/workflows/booth-alert.yml` | After every Booth audit run, and from the nightly canary. A failed or timed-out audit, or a failed night, opens an issue, or comments on the one already open. |
 | page generator | `src/generate_dashboard.py` | `.github/workflows/deploy-pages.yml`, when the inputs change or another workflow commits data. |
 | one HTML template | `src/dashboard_template.html` | Vanilla JavaScript, no framework, no build step. |
 

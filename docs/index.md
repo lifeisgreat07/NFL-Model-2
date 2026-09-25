@@ -107,6 +107,7 @@ notes elsewhere still describe them as files you can open in the repository.
 |---|---|
 | `.github/workflows/booth-pr-audit.yml` | Every PR open, push and description edit. |
 | `.github/workflows/booth-alert.yml` | After every Booth audit run. A failed or timed-out audit becomes an issue (`src/booth_alert.py`, `src/alerts.py`); cancelled and successful runs raise nothing. |
+| `.github/workflows/nightly-canary.yml` | 06:00 UTC every night, and by hand. Runs the weekly data path without writing anything (`src/canary.py`): the loads, the data-quality checks, and nflverse's columns against `data/nflverse_schema.json` (`src/schema_check.py`). A failure opens or comments on the issue "Nightly canary failing". |
 | `.github/workflows/weekly-update.yml` | The weekly routine. Commits predictions, results and data — **not** the dashboard, which the Pages deploy below rebuilds from that push. |
 | `.github/workflows/booth-regression.yml` | Manual dispatch only. |
 | `.github/workflows/run-tests.yml` | The suite, on push and PR. |
