@@ -32,6 +32,7 @@ on:
           - backtest
           - tune_qb_shrink_k
           - check_drift
+          - reproducibility_audit
       notes:
         description: 'Why this run? (recorded in the run summary)'
         required: false
@@ -117,5 +118,6 @@ jobs:
           path: |
             results/*.csv
             results/*.log
+            results/*.json
           if-no-files-found: warn
           retention-days: 90

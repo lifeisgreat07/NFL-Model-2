@@ -1,0 +1,34 @@
+{
+  "target": "src/reproducibility_audit.py",
+  "tests": "tests/test_reproducibility_audit.py",
+  "cases": [
+    {
+      "id": "repro-proper-score-tolerance-loosened",
+      "why": "log loss, Brier and AUC may differ in the fourth decimal and still pass. The confirmed cross-platform finding is agreement to four decimals, so a looser mark would pass real drift in the published figures.",
+      "find": "PROPER_SCORE_TOL = 5e-5",
+      "replace": "PROPER_SCORE_TOL = 5e-4",
+      "expect_caught_by": "test_proper_scores_must_match_to_four_decimals"
+    },
+    {
+      "id": "repro-accuracy-allowance-widened",
+      "why": "accuracy may move three games. The allowance is the two-game cross-platform finding, and every game past it is a real difference being waved through.",
+      "find": "ACCURACY_GAMES = 2",
+      "replace": "ACCURACY_GAMES = 3",
+      "expect_caught_by": "test_accuracy_may_move_two_games_and_no_more"
+    },
+    {
+      "id": "repro-game-count-ignored",
+      "why": "a different number of games no longer fails the comparison. Metrics that agree over a different set of games prove nothing about the published ones.",
+      "find": "    same_n = published.get('n') == reproduced.get('n')",
+      "replace": "    same_n = True",
+      "expect_caught_by": "test_a_different_game_count_fails_every_row"
+    },
+    {
+      "id": "repro-determinism-ignored",
+      "why": "two runs that disagree can still be called reproduced, as long as the first one happened to match.",
+      "find": "if all(r['ok'] for r in rows) and all(determinism.values()) else",
+      "replace": "if all(r['ok'] for r in rows) else",
+      "expect_caught_by": "test_two_runs_that_differ_are_not_reproduced"
+    }
+  ]
+}
