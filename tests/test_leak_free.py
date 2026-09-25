@@ -266,5 +266,93 @@ def test_get_continuity_exact_match_and_default():
     assert get_continuity(lookup, "BBB", 2023, 3, default=0) == 0
 
 
+# ============================================================
+# Stage 4: the two places a leak could enter AFTER the ratings.
+# The tests above prove each rating is built only from earlier weeks.
+# These prove the next two links honour that: the feature table reads the
+# rating for the game's own week and no other, and the walk-forward
+# backtest never trains on the week it is predicting. Same method:
+# change the future, and prove the past did not move.
+# ============================================================
+
+def _walk_forward_hist(seed=7):
+    rng = np.random.default_rng(seed)
+    rows = []
+    for season in (2020, 2021, 2022):
+        for week in range(1, 7):
+            for _ in range(16):
+                f1, f2 = rng.normal(size=2)
+                rows.append({'season': season, 'week': week, 'f1': f1, 'f2': f2,
+                             'home_win': int(f1 + rng.normal() > 0)})
+    return pd.DataFrame(rows)
+
+
+def test_backtest_never_trains_on_the_week_it_predicts():
+    """Flip every outcome from 2022 week 4 on. Predictions for weeks 1-4 must
+    not move: week 4's model is fitted on weeks before 4 only. Weeks 5-6
+    must move, or the test has proved nothing about the refit."""
+    from backtest import backtest
+
+    hist = _walk_forward_hist()
+    _, _, before = backtest(hist, ['f1', 'f2'], [2022], return_raw=True)
+    future = (hist['season'] == 2022) & (hist['week'] >= 4)
+    flipped = hist.copy()
+    flipped.loc[future, 'home_win'] = 1 - flipped.loc[future, 'home_win']
+    _, _, after = backtest(flipped, ['f1', 'f2'], [2022], return_raw=True)
+
+    upto = int(((hist['season'] == 2022) & (hist['week'] <= 4)).sum())
+    np.testing.assert_array_equal(before[:upto], after[:upto])
+    assert not np.array_equal(before[upto:], after[upto:]), (
+        'changing weeks 4-6 moved nothing after week 4, so the refit never used them at all')
+
+
+def _feature_inputs():
+    week_keys = [(2025, 1), (2025, 2), (2025, 3)]
+    week_to_idx = {k: i for i, k in enumerate(week_keys)}
+    ratings = {k: {'AAA': (0.1 * i, 0.02 * i), 'BBB': (0.03 * i, 0.05 * i)}
+               for i, k in enumerate(week_keys)}
+    calls = []
+
+    def starters(season, week):
+        return pd.DataFrame({'season': [season] * 2, 'week': [week] * 2,
+                             'posteam': ['AAA', 'BBB'], 'passer_player_id': ['qa', 'qb']})
+
+    def trailing(pid, cutoff):
+        calls.append((pid, cutoff))
+        return {'qa': 0.1, 'qb': 0.0}[pid] * (cutoff + 1)
+
+    qb = {'identify_starters': starters, 'trailing_rating': trailing, 'week_to_idx': week_to_idx}
+    sched = pd.DataFrame([{'season': 2025, 'week': w, 'home_team': 'AAA', 'away_team': 'BBB',
+                           'home_score': 20, 'away_score': 10, 'spread_line': 3.0}
+                          for w in (1, 2, 3)])
+    return week_keys, week_to_idx, ratings, qb, {2025: sched}, calls
+
+
+def test_historical_features_read_the_games_own_week_and_no_other():
+    """Each game's row must use the ratings keyed to its own week (whose
+    cutoff the tests above prove excludes that week) and ask for QB ratings
+    at its own week's cutoff. Changing a later week's ratings must leave
+    earlier rows exactly as they were."""
+    from weekly_update import build_historical_features
+
+    week_keys, week_to_idx, ratings, qb, scheds, calls = _feature_inputs()
+    base = build_historical_features(None, week_keys, week_to_idx, ratings, qb, scheds)
+    assert len(base) == 3
+    assert sorted(set(c for _, c in calls)) == [0, 1, 2]
+    for week, cutoff in ((1, 0), (2, 1), (3, 2)):
+        row = base[base['week'] == week].iloc[0]
+        assert row['qb_matchup'] == pytest.approx(0.1 * (cutoff + 1)), (
+            f'week {week} asked for QB ratings at a cutoff other than its own')
+
+    later = dict(ratings)
+    later[(2025, 3)] = {'AAA': (9.0, 9.0), 'BBB': (-9.0, -9.0)}
+    after = build_historical_features(None, week_keys, week_to_idx, later, qb, scheds)
+    earlier = base['week'] < 3
+    pd.testing.assert_frame_equal(base[earlier].reset_index(drop=True),
+                                  after[after['week'] < 3].reset_index(drop=True))
+    assert not base[~earlier].reset_index(drop=True).equals(
+        after[after['week'] == 3].reset_index(drop=True)), 'week 3 did not read week 3 ratings at all'
+
+
 if __name__ == '__main__':
     sys.exit(pytest.main([__file__, '-v']))

@@ -1,0 +1,164 @@
+{
+  "generated_utc": "2026-09-25T02:22:22Z",
+  "provenance": {
+    "commit": "da026145b52233ac0d0d4a6db59395081006c5fc",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.9",
+    "numpy": "1.26.4",
+    "pandas": "1.5.3",
+    "scikit-learn": "1.9.0"
+  },
+  "published_file": "data/calibration.json",
+  "published_generated_at": "2026-09-04 16:47 UTC",
+  "published_provenance": {
+    "platform": "Windows-10-10.0.26200-SP0",
+    "python": "3.11.9",
+    "numpy": "1.26.4",
+    "pandas": "1.5.3",
+    "scikit-learn": "1.9.0"
+  },
+  "determinism": {
+    "model_a": true,
+    "model_b": true,
+    "market": true
+  },
+  "comparisons": [
+    {
+      "model": "model_a",
+      "metric": "n",
+      "published": 1087,
+      "reproduced": 1087,
+      "tolerance": 0,
+      "ok": true
+    },
+    {
+      "model": "model_a",
+      "metric": "log_loss",
+      "published": 0.649812209965089,
+      "reproduced": 0.649812209965089,
+      "tolerance": 5e-05,
+      "ok": true
+    },
+    {
+      "model": "model_a",
+      "metric": "brier",
+      "published": 0.22860320109747892,
+      "reproduced": 0.22860320109747892,
+      "tolerance": 5e-05,
+      "ok": true
+    },
+    {
+      "model": "model_a",
+      "metric": "auc",
+      "published": 0.6701189996654628,
+      "reproduced": 0.6701189996654628,
+      "tolerance": 5e-05,
+      "ok": true
+    },
+    {
+      "model": "model_a",
+      "metric": "accuracy",
+      "published": 0.6274149034038639,
+      "reproduced": 0.6274149034038639,
+      "tolerance": 0.0018399264029438822,
+      "ok": true
+    },
+    {
+      "model": "model_a",
+      "metric": "config.BACKTEST_ACCURACY",
+      "published": 0.628,
+      "reproduced": 0.6274149034038639,
+      "tolerance": 0.0023399264029438822,
+      "ok": true
+    },
+    {
+      "model": "model_b",
+      "metric": "n",
+      "published": 1087,
+      "reproduced": 1087,
+      "tolerance": 0,
+      "ok": true
+    },
+    {
+      "model": "model_b",
+      "metric": "log_loss",
+      "published": 0.6062088177820173,
+      "reproduced": 0.6062088177820173,
+      "tolerance": 5e-05,
+      "ok": true
+    },
+    {
+      "model": "model_b",
+      "metric": "brier",
+      "published": 0.20947053255741319,
+      "reproduced": 0.20947053255741319,
+      "tolerance": 5e-05,
+      "ok": true
+    },
+    {
+      "model": "model_b",
+      "metric": "auc",
+      "published": 0.7269493619897455,
+      "reproduced": 0.7269493619897455,
+      "tolerance": 5e-05,
+      "ok": true
+    },
+    {
+      "model": "model_b",
+      "metric": "accuracy",
+      "published": 0.6826126954921803,
+      "reproduced": 0.6826126954921803,
+      "tolerance": 0.0018399264029438822,
+      "ok": true
+    },
+    {
+      "model": "model_b",
+      "metric": "config.BACKTEST_ACCURACY",
+      "published": 0.682,
+      "reproduced": 0.6826126954921803,
+      "tolerance": 0.0023399264029438822,
+      "ok": true
+    },
+    {
+      "model": "market",
+      "metric": "n",
+      "published": 1087,
+      "reproduced": 1087,
+      "tolerance": 0,
+      "ok": true
+    },
+    {
+      "model": "market",
+      "metric": "log_loss",
+      "published": 0.6073980523603624,
+      "reproduced": 0.6073980523603624,
+      "tolerance": 5e-05,
+      "ok": true
+    },
+    {
+      "model": "market",
+      "metric": "brier",
+      "published": 0.21009216466097622,
+      "reproduced": 0.21009216466097622,
+      "tolerance": 5e-05,
+      "ok": true
+    },
+    {
+      "model": "market",
+      "metric": "auc",
+      "published": 0.7246332038423988,
+      "reproduced": 0.7246332038423988,
+      "tolerance": 5e-05,
+      "ok": true
+    },
+    {
+      "model": "market",
+      "metric": "accuracy",
+      "published": 0.6816927322907084,
+      "reproduced": 0.6816927322907084,
+      "tolerance": 0.0018399264029438822,
+      "ok": true
+    }
+  ],
+  "verdict": "REPRODUCED"
+}
