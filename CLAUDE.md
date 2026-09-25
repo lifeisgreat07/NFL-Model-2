@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **1962 passing** (none skipped) — `python -m pytest -q` on `main` at
-`d9a97ec` (#99 merged), with HEAD level with origin, which is the order that makes the
+Suite: **2275 passing** (none skipped) — `python -m pytest -q` on `main` at
+`aef3a2b` (#107 merged), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -63,7 +63,7 @@ that literal, and rewording it to `**N passing, 1 skipped**` did not make the
 check complain about the wording — it reported the line as *missing*, which
 reads like a deleted section rather than an edited sentence.
 
-**Stages 2, 3 and 7.5 are complete; Stage 1 was retired 2026-09-24. Stage 7.6's repository half is done.
+**Stages 2, 3 and 7.5 are complete; Stage 1 was retired 2026-09-24. Stage 4 is complete (#100 to #107, 2026-09-24). Stage 7.6's repository half is done.
 Stage 8, 8b and 8c are all complete; its decisions live in
 `docs/design/STAGE8-DESIGN.md` and its specification is the pair of mocks
 beside that file. Stage 9 is complete (#87, 2026-09-22; its button
@@ -84,7 +84,15 @@ so **an agent cannot edit it**. `update_trigger` refuses; Mark edits it at
 claude.ai/code/routines. README's "Automating this with Claude Code
 Routines" section describes the same split.
 
-One habit from that stage is worth keeping whatever you work on: every numeric
+**Since Stage 4, nothing unattended fails silently.** The **Nightly canary**
+(06:00 UTC) runs the weekly data path and writes nothing. The Weekly update
+runs the drift check and writes a run summary. A failed canary night, a
+failed weekly run, a drift flag and a failed Booth audit each open or
+comment on a GitHub issue (`src/alerts.py`). The Pages build refuses a page
+whose data is missing (`src/check_build.py`). Stage 4's section below keeps
+the decisions.
+
+One habit from Stage 8 is worth keeping whatever you work on: every numeric
 claim about colour or geometry was re-derived before being believed — contrast
 by recomputing WCAG luminance from the hex values, colour-blind separation by
 running the Machado 2009 matrices and CIEDE2000, layout by rendering in
@@ -359,46 +367,52 @@ The reason for stopping: seven PRs on 2026-09-07 all landed on agent
 infrastructure, and the dashboard has not been touched since Stage 2. Nothing
 remaining in this stage moves the thing a visitor sees.
 
-### Stage 4 - Automation & monitoring  <- PARKED MID-BUILD (2026-09-24)
+### Stage 4 - Automation & monitoring  <- COMPLETE (2026-09-24)
 
-**Parked by Mark on 2026-09-24, partway through.** Nothing from it is on
-`main`. The unfinished draft is a local, unpushed branch `stage4-draft` on
-`markys`, one commit on top of #99's last commit (`01fc97d`, now on main): `src/data_quality.py` wired into
-`weekly_update.main()` before fitting, with tests; a play-by-play cache in
-`data_loader.load_plays` behind `NFL_PBP_CACHE`, with tests; and untested
-first drafts of `src/schema_check.py`, `src/alerts.py` and `src/canary.py`.
-No workflows, no schema snapshot, no mutation cases yet. Treat it as a
-draft to read, not as work to trust.
+All nine items shipped the same evening, one PR at a time, each merged only
+after Booth said SAFE TO MERGE with no discrepancies (Mark allowed Scout to
+merge on that condition for this run): #100 data-quality checks, #101 Booth
+alerts, #102 nightly canary and schema snapshot, #103 build-output smoke
+check, #104 drift to an issue, #105 weekly summary and failure alert, #106
+reproducibility audit and leak-free tests, #107 play-by-play cache. Which
+file does what is in `docs/architecture.md`; this section keeps the
+decisions, so they are not re-litigated.
 
-Decisions already made for it, so they are not re-litigated:
-- Drift opens or comments on an **issue**, not a PR: drift has no code
-  change to propose, so a PR would be empty.
-- **Booth alerts go in their own workflow** triggered by `workflow_run` on
-  "Booth PR audit". A PR that edits `booth-pr-audit.yml` cannot be audited
-  by Booth, so changing that file would sink the audit of whatever PR
-  carried it.
-- One issue per problem, matched on exact title among open issues, so a
-  nightly failure makes one issue with comments, not one issue a night.
-- Data-quality ERRORs stop the weekly run, so they are kept to what would
-  corrupt a pick anyway. A missing latest week of play-by-play is only a
-  warning, because the Tuesday run can land before nflverse has Monday night.
-  An empty (unpublished) schedule is a warning too, or every spring run fails.
-- The schema snapshot is column NAMES only; dtypes vary with the pandas
-  version doing the conversion.
-- The play-by-play cache is the lowest-value item, flagged to Mark and kept
-  only because he asked for all nine.
+- **Every alert is a GitHub issue, one per problem**, matched on exact title
+  among OPEN issues (`src/alerts.py`). Closing an issue is how a person says
+  "handled"; the next failure opens a fresh one. Titles in use: "Booth audit
+  failed: PR #N", "Nightly canary failing", "Model drift detected", "Weekly
+  update failed".
+- **Booth alerts are their own workflow** (`booth-alert.yml`, `workflow_run`
+  on "Booth PR audit"), because the Claude Code action will not run on a PR
+  whose `booth-pr-audit.yml` differs from main's. `cancelled` raises nothing:
+  it is a newer push superseding an older audit.
+- **Data-quality ERRORs stop the weekly run, so they are kept to what would
+  corrupt a pick.** The 272-game count is a WARNING (Mark, 2026-09-24): a
+  dry run found 2022 lists 271, the cancelled Buffalo-Cincinnati game, so an
+  ERROR would have stopped every run of a season shaped like that. The
+  latest completed week missing play-by-play, and an unpublished schedule,
+  are warnings for the same reason.
+- **Drift opens an issue and never fails the run.** The check is on
+  accuracy, which cannot carry a result here, so the issue says to compare
+  log loss and Brier before acting.
+- **The weekly summary reads only what the run left** (git status, the log,
+  drift-report.txt), so it cannot disagree with the run. The lock step's
+  `shell: bash` is load-bearing: it is what gives `| tee` pipefail.
+- **The schema snapshot is column names only**; dtypes vary with the pandas
+  version. Refresh it on purpose with `python src/schema_check.py --season
+  <year> --update` after looking at what changed.
+- **The play-by-play cache is the canary's alone.** The run that makes picks
+  always fetches fresh; a test holds that. It was the lowest-value item and
+  was kept because Mark asked for all nine.
+- **The reproducibility audit re-runs by hand or from Run backtest**, never
+  in the suite (it needs nflverse). Its committed record is tied to
+  `data/calibration.json`, so regenerating calibration means re-running it.
 
-
-Data-quality checks on every weekly run; play-by-play cache layer; alerts on
-upstream nflverse schema changes; auto-open a PR when check_drift.py detects
-real drift; nightly canary against the last completed week, which would have
-caught the nflreadpy offseason crash days early; automated weekly summary;
-reproducibility audit and expanded leak-free coverage. Also the alert and
-communication layer for Booth, now that autonomous operation is confirmed.
-
-Add: a **build-output smoke check**. The Team Deep-Dive page rendered empty for
-months because a missing file returned `{}` quietly. A check that every page's
-data payload is non-empty after a build would have caught it the same day.
+Not yet seen live, because each needs a real event: the Booth alert (a
+failed audit), the canary's alert (a failed night), the drift issue (a
+flag), the weekly summary (the next weekly run) and its failure alert.
+`docs/context.md` lists what to check and when.
 
 ### Stage 5 - Model depth, real hypotheses only
 
@@ -1102,7 +1116,15 @@ under compaction pressure, so its length is a cost paid on every session.
 - Real clone lives on the user's Windows PC `markys` at `E:\NFL-Model-2`
   (E: drive deliberately — C: is short on space). Desktop Commander and
   GitKraken MCP plugins are available there; run tests and heavy backtests on
-  that machine, not in the cloud sandbox, which has no nflverse network access.
+  that machine. **Booth's audit runner is NOT the cloud sandbox, and it does
+  reach nflverse**: on #100, #102 and #106 it loaded live play-by-play, and
+  on #106 it re-ran the whole reproducibility audit. On #107 it still wrote
+  "no nflverse network access, per CLAUDE.md", quoting the old wording of
+  this line instead of testing it. Test network access before claiming it
+  is missing, in either place.
+- **If Desktop Commander's tools vanish mid-session** while
+  `get_device_info` lists `desktop-commander` as announced, `RefreshMcpTools`
+  brings them back (2026-09-24). GitKraken stayed connected throughout.
 - The cloud sandbox clone is scratch. It cannot push — the repo is not in the
   session's authorised set. Commits and pushes happen on `markys`.
 - **Playwright lives in the cloud sandbox, not on `markys`.** For screenshots:
@@ -1181,6 +1203,24 @@ under compaction pressure, so its length is a cost paid on every session.
   an unattached screenshot UNVERIFIABLE.
 
 ## Traps that have actually bitten
+
+- **QUOTE THE COMMAND YOU RAN, NOT A SHORTER ONE.** #105's body said
+  `python src/weekly_summary.py --season 2026` printed the summary. The run
+  behind that sentence had passed `--log` and `--drift`; the bare command
+  crashed on `Path(None)`, and Booth found it by running the sentence
+  verbatim. The flags left out of the quote were exactly where the bug
+  was. Copy the command from the terminal, never retype it from memory.
+  Same evening: a refused write to `.commit-msg.txt` left the previous
+  message in place, and the commit went up carrying it. **Read `git log -1`
+  after every commit made from a message file.**
+- **A TEST THAT SLICES "FROM HERE TO A LANDMARK" GROWS WHEN SOMETHING IS
+  INSERTED BETWEEN THEM.** The drift step's guard read the workflow from the
+  drift step down to the commit step. When the summary step was added in
+  between, its own `if: ${{ !cancelled() }}` satisfied the assertion, and
+  `drift-workflow-skipped-after-a-failed-lock` SURVIVED. Nothing about the
+  drift step had changed. Bound a slice by the structure's own delimiter
+  (the next `- name:`), not by a later landmark, and re-run a file's
+  mutation cases whenever another branch adds to that file.
 
 - **`index.html` in a working tree is rewritten by the test suite and by
   mutation runs, so it can be a MUTATED build.** Several tests call the
