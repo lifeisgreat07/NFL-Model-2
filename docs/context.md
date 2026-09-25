@@ -37,7 +37,6 @@ UTC lock. Its first run is Mon 2026-09-28.
 | First weekly summary | Due Tue 2026-09-29 11:00 UTC | Open the run's page and check the summary reads right |
 | First run of the new QB routine | Due Mon 2026-09-28 | Check it opened a PR, or said in one line that none was needed |
 | Booth alert, drift issue, failure alerts | Live, never fired | Each needs a real event; when one opens an issue, check it reads right |
-| Confirming #73 on a phone | Not done | Only a device proves the zoom is gone |
 | Which claim Booth's fixture claim 1 was | Inferred as the "Two commits." line | Reading that run's report artifact, if it is ever worth it |
 | Leak table splits two ways on Linux | Recorded in the QB case study | Nothing, unless it is ever worth finding the cause |
 
