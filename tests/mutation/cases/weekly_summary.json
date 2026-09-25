@@ -3,6 +3,13 @@
   "tests": "tests/test_weekly_summary.py",
   "cases": [
     {
+      "id": "weekly-summary-optional-inputs-crash",
+      "why": "the None check before Path() is removed. The bare command, with no --log or --drift, crashes on Path(None) -- the defect Booth found on #105.",
+      "find": "    if not path:\n        return ''\n    p = Path(path)",
+      "replace": "    p = Path(path)",
+      "expect_caught_by": "test_the_bare_command_runs_without_a_log_or_a_drift_report"
+    },
+    {
       "id": "weekly-summary-counts-ungraded-games",
       "why": "games with no result yet count toward each model's record. A week three games into play would read 'Model A 2/16', which is the 'correct arithmetic on absent data' failure this repo has already shipped once.",
       "find": "    done = [r for r in rows if r.get('actual_home_win') is not None]",

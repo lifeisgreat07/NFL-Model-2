@@ -112,8 +112,13 @@ def summarise(season, changed, log_text, drift_text, read_json):
 
 
 def _read(path):
+    """The file's text, or '' when no path was given or the file is absent.
+    The None check comes first: Path(None) raises, and --log and --drift are
+    optional (Booth found this on #105, from the bare command)."""
+    if not path:
+        return ''
     p = Path(path)
-    return p.read_text(encoding='utf-8') if path and p.is_file() else ''
+    return p.read_text(encoding='utf-8') if p.is_file() else ''
 
 
 def main(argv=None, changed=None):

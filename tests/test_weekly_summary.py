@@ -94,6 +94,16 @@ def test_changed_paths_reads_git_status_and_normalises_slashes():
     assert got == ['predictions/2026_week4.json', 'results/2026_week3_graded.json']
 
 
+def test_the_bare_command_runs_without_a_log_or_a_drift_report(capsys):
+    """--log and --drift are optional. The first version crashed on
+    Path(None) when either was left off; Booth found it on #105 by running
+    the command exactly as the PR body quoted it."""
+    assert ws.main(['--season', '2026'], changed=[]) == 0
+    out = capsys.readouterr().out
+    assert '- No week was locked on this run' in out
+    assert 'The checks did not run' in out and 'The drift check did not run' in out
+
+
 # --- the workflow ------------------------------------------------------------
 
 def _text():
