@@ -99,6 +99,14 @@ jobs:
       - name: Build the dashboard
         run: python src/generate_dashboard.py
 
+      # A placeholder filled with NOTHING passes the placeholder check below:
+      # Team Deep-Dive shipped empty for months that way, from a loader that
+      # returned {} in silence. This reads every data payload out of the built
+      # page and fails the build if one the page needs is missing or empty,
+      # so the last good page stays published instead.
+      - name: Check every page has its data
+        run: python src/check_build.py index.html
+
       # The site is exactly three things: the page, the printable picks it links
       # to, and .nojekyll (without which Pages runs the output through Jekyll,
       # which strips files and directories beginning with an underscore).
