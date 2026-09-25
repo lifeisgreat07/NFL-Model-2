@@ -1,0 +1,34 @@
+{
+  "target": "src/alerts.py",
+  "tests": "tests/test_alerts.py",
+  "cases": [
+    {
+      "id": "alerts-title-matches-on-prefix",
+      "why": "the title match loosens to a prefix. 'Booth audit failed: PR #10' would then land as a comment on PR #100's issue, and PR #10's failure would never get an issue of its own.",
+      "find": "        if issue.get('title') == title:",
+      "replace": "        if issue.get('title', '').startswith(title):",
+      "expect_caught_by": "test_the_title_match_is_exact"
+    },
+    {
+      "id": "alerts-searches-closed-issues",
+      "why": "the search includes closed issues. Closing an issue is how a person says 'handled', so every later failure would be filed as a comment on a closed issue nobody is watching.",
+      "find": "'--state', 'open'",
+      "replace": "'--state', 'all'",
+      "expect_caught_by": "test_only_open_issues_are_searched"
+    },
+    {
+      "id": "alerts-always-opens-a-new-issue",
+      "why": "an open issue with the same title is ignored. A canary failing every night for a week would open seven issues, which is how alert fatigue starts.",
+      "find": "    if number is not None:\n        _gh(['issue', 'comment'",
+      "replace": "    if False:\n        _gh(['issue', 'comment'",
+      "expect_caught_by": "test_an_open_issue_with_the_same_title_gets_a_comment_not_a_twin"
+    },
+    {
+      "id": "alerts-gh-failure-swallowed",
+      "why": "a failed gh call is treated as success. The alert step would go green having raised nothing, which is the silent failure this module exists to end, one level up.",
+      "find": "    if r.returncode:\n        raise RuntimeError",
+      "replace": "    if False:\n        raise RuntimeError",
+      "expect_caught_by": "test_a_failing_gh_call_raises_rather_than_passing_quietly"
+    }
+  ]
+}

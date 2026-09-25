@@ -1,0 +1,44 @@
+{
+  "target": "src/booth_alert.py",
+  "tests": "tests/test_booth_alert.py",
+  "cases": [
+    {
+      "id": "booth-alert-fires-on-cancelled",
+      "why": "every ending but success becomes an alert. A cancelled run is a newer push superseding an older audit, which happens on most PRs, so the issues would become noise and be ignored.",
+      "find": "    if conclusion not in ALERT_CONCLUSIONS:",
+      "replace": "    if conclusion in (None, 'success'):",
+      "expect_caught_by": "test_every_other_ending_is_quiet"
+    },
+    {
+      "id": "booth-alert-dispatch-misnamed",
+      "why": "a dispatched run with no PR in its event is named 'PR #0'. Every dispatched failure would pile onto one issue about a PR that does not exist.",
+      "find": "        return prs[0]['number']\n    return None",
+      "replace": "        return prs[0]['number']\n    return 0",
+      "expect_caught_by": "test_a_dispatched_run_is_named_by_its_commit"
+    },
+    {
+      "id": "booth-alert-workflow-drops-timed-out",
+      "target": ".github/workflows/booth-alert.yml",
+      "why": "the job's gate stops admitting timed-out runs. The script would still alert on them, but it would never be started for one, so an audit that hung would be silent.",
+      "find": " || github.event.workflow_run.conclusion == 'timed_out'",
+      "replace": "",
+      "expect_caught_by": "test_the_job_runs_on_exactly_the_conclusions_the_script_alerts_on"
+    },
+    {
+      "id": "booth-alert-workflow-trigger-misnamed",
+      "target": ".github/workflows/booth-alert.yml",
+      "why": "the trigger names a workflow that does not exist. workflow_run matches on name, so the alert would simply never run, with no error anywhere.",
+      "find": "    workflows: [\"Booth PR audit\"]",
+      "replace": "    workflows: [\"Booth audit\"]",
+      "expect_caught_by": "test_the_trigger_names_the_audit_workflow_exactly"
+    },
+    {
+      "id": "booth-alert-workflow-broad-permissions",
+      "target": ".github/workflows/booth-alert.yml",
+      "why": "the job is given write access to the repository's contents. It needs to open issues and nothing else.",
+      "find": "permissions:\n  issues: write",
+      "replace": "permissions:\n  issues: write\n  contents: write",
+      "expect_caught_by": "test_it_asks_for_issue_permission_and_nothing_else"
+    }
+  ]
+}

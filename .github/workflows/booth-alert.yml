@@ -1,0 +1,40 @@
+name: Booth alert
+
+# Turns a failed Booth audit into a GitHub issue, so it reaches Mark instead of
+# waiting in the Actions tab. src/booth_alert.py decides what counts as a
+# failure and writes the issue; src/alerts.py opens it, or comments on the one
+# already open for that PR.
+#
+# A separate workflow on purpose: the Claude Code action will not run on a PR
+# whose copy of booth-pr-audit.yml differs from main's, so an alert step added
+# there would sink the audit of the PR that carried it.
+#
+# The name below must match `name:` in booth-pr-audit.yml exactly. A rename
+# there breaks this trigger silently, with no run and no error, which is why
+# tests/test_booth_alert.py compares the two.
+#
+# workflow_run fires only from the copy of this file on the default branch,
+# so it cannot be exercised on a PR; it starts working once merged.
+on:
+  workflow_run:
+    workflows: ["Booth PR audit"]
+    types: [completed]
+
+permissions:
+  issues: write
+
+jobs:
+  alert:
+    if: github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out'
+    runs-on: ubuntu-latest
+    steps:
+      # Checks out main, not the PR. Nothing from the audited branch runs here.
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Open or update the alert issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python src/booth_alert.py "$GITHUB_EVENT_PATH"
