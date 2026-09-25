@@ -1,0 +1,57 @@
+{
+  "target": "src/canary.py",
+  "tests": "tests/test_canary.py",
+  "cases": [
+    {
+      "id": "canary-crash-escapes",
+      "why": "a crashing step escapes instead of being recorded. One dead loader would end the run, and the report would say nothing about the steps after it -- or not be written at all.",
+      "find": "        except Exception as exc:  # the crash is the finding",
+      "replace": "        except ZeroDivisionError as exc:  # the crash is the finding",
+      "expect_caught_by": "test_a_crashing_step_is_an_error_and_the_rest_still_run"
+    },
+    {
+      "id": "canary-drops-step-findings",
+      "why": "a step's findings are counted in the notes but never reach the report. The canary would say '1 error(s)' and still exit 0.",
+      "find": "            report.extend(result)",
+      "replace": "            pass",
+      "expect_caught_by": "test_findings_from_every_step_are_collected"
+    },
+    {
+      "id": "canary-fails-on-warnings",
+      "why": "a warning fails the canary. The latest week missing play-by-play is normal on some nights, so the issue would open for nothing and be ignored.",
+      "find": "    return 0 if report.ok else 1",
+      "replace": "    return 0 if not report.lines() else 1",
+      "expect_caught_by": "test_warnings_alone_do_not_fail_the_canary"
+    },
+    {
+      "id": "canary-never-fails",
+      "why": "the exit code stops following the errors. The workflow's alert step runs on failure(), so nothing would ever be raised.",
+      "find": "    return 0 if report.ok else 1",
+      "replace": "    return 0",
+      "expect_caught_by": "test_an_error_fails_the_canary_and_the_report_says_so"
+    },
+    {
+      "id": "canary-january-is-next-season",
+      "why": "January is treated as the new calendar year's season. Every playoff-month canary would check a season with no schedule.",
+      "find": "    return now.year - 1 if now.month <= 2 else now.year",
+      "replace": "    return now.year",
+      "expect_caught_by": "test_january_belongs_to_last_season"
+    },
+    {
+      "id": "canary-workflow-never-alerts",
+      "target": ".github/workflows/nightly-canary.yml",
+      "why": "the alert step is switched off. The canary would fail in the Actions tab, which is the silence it exists to end.",
+      "find": "        if: failure()",
+      "replace": "        if: false",
+      "expect_caught_by": "test_a_failure_raises_the_alert"
+    },
+    {
+      "id": "canary-workflow-can-write",
+      "target": ".github/workflows/nightly-canary.yml",
+      "why": "the canary is given write access to the repository. It must never be able to touch a pick, a lock or a grade.",
+      "find": "  contents: read",
+      "replace": "  contents: write",
+      "expect_caught_by": "test_it_can_open_issues_and_cannot_write_the_repository"
+    }
+  ]
+}

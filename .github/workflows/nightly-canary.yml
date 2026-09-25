@@ -1,0 +1,59 @@
+name: Nightly canary
+
+# Runs the weekly job's data path every night, so an upstream break shows up
+# the day it happens instead of on the next locking run. The case it exists
+# for: in the 2026 offseason nflreadpy started rejecting play-by-play for a
+# season it did not consider current, and the weekly run crashed on it (#6).
+#
+# src/canary.py loads what the weekly run loads, runs the data-quality checks
+# and compares nflverse's columns with data/nflverse_schema.json. It writes
+# nothing to the repository: no predictions, no grades, no commit. So it
+# cannot touch a lock.
+#
+# On a failure, src/alerts.py opens the issue "Nightly canary failing", or
+# comments on it if it is already open. One issue for a run of bad nights,
+# not one a night; closing it says "handled".
+#
+# 06:00 UTC: after nflverse's nightly rebuild, and clear of the weekly runs
+# at 11:00 Tuesday and 16:00 Thursday.
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the canary
+        run: python src/canary.py --report canary-report.md
+
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          # A canary that crashed before writing its report still gets an
+          # alert: the step above failing is the finding.
+          if [ ! -s canary-report.md ]; then
+            printf 'The canary failed before writing a report. See %s\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > canary-report.md
+          else
+            printf '\nRun: %s\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> canary-report.md
+          fi
+          python src/alerts.py --title "Nightly canary failing" --body-file canary-report.md

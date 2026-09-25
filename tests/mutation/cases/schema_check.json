@@ -1,0 +1,34 @@
+{
+  "target": "src/schema_check.py",
+  "tests": "tests/test_schema_check.py",
+  "cases": [
+    {
+      "id": "schema-required-loss-unreported",
+      "why": "a column the model reads can vanish with no error. That is the KeyError deep in a Thursday run this check exists to get ahead of.",
+      "find": "        gone_required = [c for c in REQUIRED[name] if c not in now]",
+      "replace": "        gone_required = []",
+      "expect_caught_by": "test_losing_a_column_the_model_reads_is_an_error"
+    },
+    {
+      "id": "schema-required-loss-reported-twice",
+      "why": "a lost required column is reported as an error and again as a harmless loss. The warning line would contradict the error above it.",
+      "find": "        removed = sorted(before - now - set(gone_required))",
+      "replace": "        removed = sorted(before - now)",
+      "expect_caught_by": "test_losing_a_column_the_model_reads_is_an_error"
+    },
+    {
+      "id": "schema-additions-unreported",
+      "why": "new columns pass unremarked. They are the earliest sign that an nflverse release changed something.",
+      "find": "        if added:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_other_changes_are_warnings"
+    },
+    {
+      "id": "schema-missing-snapshot-silent",
+      "why": "an empty snapshot reads as 'no changes'. The check would compare against nothing and report a clean night.",
+      "find": "            report.warnings.append(f'the snapshot has no {LABEL[name]} columns to compare with')",
+      "replace": "            pass",
+      "expect_caught_by": "test_an_empty_snapshot_is_said_out_loud"
+    }
+  ]
+}
