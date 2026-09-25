@@ -25,6 +25,8 @@ on:
 
 permissions:
   contents: write
+  # For src/drift_alert.py, which opens an issue when the drift check flags.
+  issues: write
 
 jobs:
   weekly-update:
@@ -72,6 +74,17 @@ jobs:
               python src/grade_predictions.py --season "$season" --week "$week"
             fi
           done
+
+      # After grading, so it sees this week's results. An issue when the drift
+      # check flags; never a failed run, because drift is a question for a
+      # person and stopping the run would cost picks. drift-report.txt is not
+      # committed: the commit below takes predictions/, results/ and data/ only.
+      - name: Check for model drift
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python src/drift_alert.py --report drift-report.txt
 
       # This workflow no longer builds or commits the dashboard. It commits the
       # DATA it produces, and "Deploy dashboard to Pages" turns that into the
