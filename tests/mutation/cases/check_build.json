@@ -1,0 +1,56 @@
+{
+  "target": "src/check_build.py",
+  "tests": "tests/test_check_build.py",
+  "cases": [
+    {
+      "id": "check-build-team-history-rows-unchecked",
+      "why": "a team whose history is an empty list passes. That is the Team Deep-Dive failure this check was written for, one team at a time instead of all 32.",
+      "find": "         and all(v['timeline'][t] for t in NFL_TEAMS),",
+      "replace": "         and True,",
+      "expect_caught_by": "test_each_empty_payload_is_an_error"
+    },
+    {
+      "id": "check-build-empty-weeks-allowed",
+      "why": "a page with no saved weeks passes. The Week Board and My Picks would publish empty.",
+      "find": "    need('weeks', lambda v: isinstance(v, dict) and len(v) > 0,",
+      "replace": "    need('weeks', lambda v: isinstance(v, dict),",
+      "expect_caught_by": "test_each_empty_payload_is_an_error"
+    },
+    {
+      "id": "check-build-latest-week-unchecked",
+      "why": "a latest week that is not among the saved weeks passes. The board would open on a week that does not exist.",
+      "find": "    need('latestWeekKey', lambda v: v in ok.get('weeks', {}),",
+      "replace": "    need('latestWeekKey', lambda v: True,",
+      "expect_caught_by": "test_each_empty_payload_is_an_error"
+    },
+    {
+      "id": "check-build-missing-payload-ignored",
+      "why": "a payload absent from the page is skipped instead of reported. A renamed JavaScript constant would take its page's data with it, silently.",
+      "find": "        if name not in data:\n            report.errors.append",
+      "replace": "        if False:\n            report.errors.append",
+      "expect_caught_by": "test_a_payload_missing_from_the_page_is_an_error"
+    },
+    {
+      "id": "check-build-placeholder-ignored",
+      "why": "unfilled placeholders pass. The workflow has its own grep for them, but this module claims to check them too, and a claim with no test behind it is decoration.",
+      "find": "    if left:\n        report.errors.append",
+      "replace": "    if False:\n        report.errors.append",
+      "expect_caught_by": "test_an_unfilled_placeholder_is_an_error"
+    },
+    {
+      "id": "check-build-no-pdfs-blocks-publishing",
+      "why": "missing picks sheets become an error. The generator skips PDFs on purpose when reportlab is unavailable, and the page hides the control, so this would block an honest page.",
+      "find": "        report.warnings.append('no printable picks sheets",
+      "replace": "        report.errors.append('no printable picks sheets",
+      "expect_caught_by": "test_no_picks_sheets_is_only_a_warning"
+    },
+    {
+      "id": "check-build-pages-never-runs-it",
+      "target": ".github/workflows/deploy-pages.yml",
+      "why": "the Pages build stops calling the check. Every rule would still pass its tests and guard nothing, because nothing would run it before publishing.",
+      "find": "        run: python src/check_build.py index.html",
+      "replace": "        run: echo skipped",
+      "expect_caught_by": "test_pages_checks_the_build_before_uploading_it"
+    }
+  ]
+}

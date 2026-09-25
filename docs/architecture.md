@@ -83,7 +83,7 @@ flowchart TB
 | Booth | `.github/workflows/booth-pr-audit.yml`, `BOOTH_PROTOCOL.md` | Every pull request, and again when its description is edited. Read-only; fails the run if no report was posted (`src/booth_report_posted.py`). |
 | audit log collector | `src/collect_agent_log.py`, `.github/workflows/collect-agent-log.yml` | Every push to `main`. Writes `data/agent_log.json`, which the dashboard counts live. |
 | alert | `src/alerts.py`, `src/booth_alert.py`, `.github/workflows/booth-alert.yml` | After every Booth audit run, and from the nightly canary. A failed or timed-out audit, or a failed night, opens an issue, or comments on the one already open. |
-| page generator | `src/generate_dashboard.py` | `.github/workflows/deploy-pages.yml`, when the inputs change or another workflow commits data. |
+| page generator | `src/generate_dashboard.py`, checked by `src/check_build.py` | `.github/workflows/deploy-pages.yml`, when the inputs change or another workflow commits data. The build is refused if any page's data payload is missing or empty. |
 | one HTML template | `src/dashboard_template.html` | Vanilla JavaScript, no framework, no build step. |
 
 ## Decisions the diagram rests on
