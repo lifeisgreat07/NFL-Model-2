@@ -34,6 +34,7 @@ flowchart TB
     TESTS["test suite"]
     BOOTH["Booth: re-runs every claim,<br/>read-only, posts a report"]
     LOG["audit log collector"]
+    ALERT["alert: a GitHub issue,<br/>one per problem"]
   end
 
   subgraph UI["Dashboard"]
@@ -54,6 +55,7 @@ flowchart TB
   SCOUT --> TESTS
   SCOUT --> BOOTH
   BOOTH --> LOG --> DJ
+  BOOTH -. a failed audit .-> ALERT
 
   PRED --> GEN
   RES --> GEN
@@ -76,6 +78,7 @@ flowchart TB
 | test suite | `tests/`, `.github/workflows/run-tests.yml` | Every pull request. Includes a committed mutation corpus in `tests/mutation/`. |
 | Booth | `.github/workflows/booth-pr-audit.yml`, `BOOTH_PROTOCOL.md` | Every pull request, and again when its description is edited. Read-only; fails the run if no report was posted (`src/booth_report_posted.py`). |
 | audit log collector | `src/collect_agent_log.py`, `.github/workflows/collect-agent-log.yml` | Every push to `main`. Writes `data/agent_log.json`, which the dashboard counts live. |
+| alert | `src/alerts.py`, `src/booth_alert.py`, `.github/workflows/booth-alert.yml` | After every Booth audit run. A failed or timed-out audit opens an issue for that PR, or comments on the one already open. |
 | page generator | `src/generate_dashboard.py` | `.github/workflows/deploy-pages.yml`, when the inputs change or another workflow commits data. |
 | one HTML template | `src/dashboard_template.html` | Vanilla JavaScript, no framework, no build step. |
 
