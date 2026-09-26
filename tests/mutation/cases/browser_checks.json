@@ -1,0 +1,74 @@
+{
+  "target": ".github/workflows/browser-checks.yml",
+  "tests": "tests/test_browser_checks.py",
+  "cases": [
+    {
+      "id": "browser-checks-skip-the-self-test",
+      "why": "the step that proves every rule can fail is replaced by a no-op. The job still goes green on a real page -- which is exactly what it would do if a rule had gone blind, so green stops meaning anything.",
+      "find": "        run: python tests/browser/check_page.py --self-test --axe node_modules/axe-core/axe.min.js --tmp \"$RUNNER_TEMP\"",
+      "replace": "        run: echo self-test skipped",
+      "expect_caught_by": "test_the_workflow_builds_then_proves_the_rules_then_checks_the_page"
+    },
+    {
+      "id": "browser-checks-drop-axe-from-the-real-check",
+      "why": "the real check runs without --axe, so the axe rule is skipped on the page while the self-test still proves axe works on its fixture -- a green job with no accessibility scan in it.",
+      "find": "        run: python tests/browser/check_page.py index.html --axe node_modules/axe-core/axe.min.js",
+      "replace": "        run: python tests/browser/check_page.py index.html",
+      "expect_caught_by": "test_axe_core_reaches_both_the_self_test_and_the_check"
+    },
+    {
+      "id": "browser-checks-unpin-playwright",
+      "why": "Playwright floats to whatever is newest, so a browser update can change what 'no findings' means on a day nobody changed anything.",
+      "find": "          pip install playwright==1.56.0",
+      "replace": "          pip install playwright",
+      "expect_caught_by": "test_the_tools_are_pinned"
+    },
+    {
+      "id": "browser-checks-ignore-asset-changes",
+      "why": "a pull request that changes only the self-hosted font no longer runs the checks, though a changed font is a changed page -- the font check is the one most likely to catch it.",
+      "find": "      - 'src/**'\n      - 'assets/**'\n      - 'data/**'",
+      "replace": "      - 'src/**'\n      - 'data/**'",
+      "expect_caught_by": "test_it_runs_on_changes_to_what_the_page_is_built_from"
+    },
+    {
+      "id": "checker-drops-the-phone-widths",
+      "target": "tests/browser/check_page.py",
+      "why": "the checker runs two widths instead of six, and the 360px phone -- where the reliability points were smallest -- is not one of them.",
+      "find": "WIDTHS = (360, 390, 768, 1024, 1280, 1440)",
+      "replace": "WIDTHS = (390, 1280)",
+      "expect_caught_by": "test_the_checker_covers_six_widths_and_both_network_conditions"
+    },
+    {
+      "id": "checker-only-runs-offline",
+      "target": "tests/browser/check_page.py",
+      "why": "the network-allowed pass goes, so the layout with ESPN's logos actually loaded is never checked -- and a loaded logo is what changes the card's size.",
+      "find": "        for network in (False, True):",
+      "replace": "        for network in (False,):",
+      "expect_caught_by": "test_the_checker_covers_six_widths_and_both_network_conditions"
+    },
+    {
+      "id": "checker-target-floor-lowered",
+      "target": "tests/browser/check_page.py",
+      "why": "the target floor drops to 20px, which quietly passes the 21-22px reliability points this check was built to catch.",
+      "find": "TARGET_MIN = 24",
+      "replace": "TARGET_MIN = 20",
+      "expect_caught_by": "test_the_thresholds_are_what_the_rules_say"
+    },
+    {
+      "id": "checker-font-fixture-renamed-away",
+      "target": "tests/browser/check_page.py",
+      "why": "the font rule's fixture is renamed, so the self-test no longer proves the font rule can fail while still printing 'every rule caught its fixture'.",
+      "find": "    'font': dict(",
+      "replace": "    'typeface': dict(",
+      "expect_caught_by": "test_every_rule_has_a_fixture_that_breaks_it"
+    },
+    {
+      "id": "checker-font-trusts-fonts-check",
+      "target": "tests/browser/check_page.py",
+      "why": "the font rule leans on document.fonts.check(), which answers true when nothing is pending -- including when no face was ever declared. CLAUDE.md records it gating three measurement scripts that proved nothing.",
+      "find": "  await document.fonts.ready;\n  await document.fonts.load(\"700 16px 'Plus Jakarta Sans'\");",
+      "replace": "  await document.fonts.ready;\n  if (document.fonts.check(\"16px 'Plus Jakarta Sans'\")) return {loaded: true, withFace: 2, fallback: 1};\n  await document.fonts.load(\"700 16px 'Plus Jakarta Sans'\");",
+      "expect_caught_by": "test_the_font_is_judged_by_measured_width"
+    }
+  ]
+}
