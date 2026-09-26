@@ -1,0 +1,55 @@
+{
+  "target": "src/stage6_data.py",
+  "tests": "tests/test_stage6_data.py",
+  "cases": [
+    {
+      "id": "stage6-trailing-sees-its-own-week",
+      "why": "a game's own week reaches its trailing inputs, so N1 predicts a quarterback's game partly from that game and every screen figure is flattered",
+      "find": "m = g < cutoff",
+      "replace": "m = g <= cutoff",
+      "expect_caught_by": "test_a_weeks_own_data_never_reaches_its_value"
+    },
+    {
+      "id": "stage6-league-mean-includes-the-cutoff-week",
+      "why": "the shrinkage target includes the week being predicted, the exact leak build_qb_ratings was fixed for in ec30887",
+      "find": "i = min(cutoff, self.n_weeks) - 1",
+      "replace": "i = min(cutoff + 1, self.n_weeks) - 1",
+      "expect_caught_by": "test_no_history_is_the_league_mean_as_of_the_cutoff"
+    },
+    {
+      "id": "stage6-screen-ignores-its-interval",
+      "why": "N1 passes on a point estimate alone, so noise that happens to favour Next Gen Stats opens N2 and spends a slot",
+      "find": "return 'PASS' if mse_diff < 0 and ci_95[1] < 0 else 'FAIL'",
+      "replace": "return 'PASS' if mse_diff < 0 else 'FAIL'",
+      "expect_caught_by": "test_the_screen_rule_is_the_registered_one"
+    },
+    {
+      "id": "stage6-ngs-keeps-season-totals",
+      "why": "Next Gen Stats' season-total rows (week 0) are kept as if they were a week, so a whole season's numbers, including games after the cutoff, reach every trailing value",
+      "find": "(df['week'] > 0)",
+      "replace": "(df['week'] >= 0)",
+      "expect_caught_by": "test_load_ngs_drops_season_totals_and_the_postseason"
+    },
+    {
+      "id": "stage6-wls-drops-the-weights",
+      "why": "the fit treats a 15-dropback game like a 50-dropback one, which is not the registered weighted least squares",
+      "find": "sw = np.sqrt(w)",
+      "replace": "sw = np.ones_like(w)",
+      "expect_caught_by": "test_wls_recovers_known_coefficients_and_uses_the_weights"
+    },
+    {
+      "id": "stage6-bootstrap-sign-flipped",
+      "why": "the resampled difference is control minus candidate, so a worse candidate would PASS the screen",
+      "find": "w * ((y - p_a) ** 2 - (y - p_b) ** 2)",
+      "replace": "w * ((y - p_b) ** 2 - (y - p_a) ** 2)",
+      "expect_caught_by": "test_the_cluster_bootstrap_points_the_right_way"
+    },
+    {
+      "id": "stage6-qb-game-threshold-off-by-one",
+      "why": "a 15-dropback game is dropped although the registry's qb_game includes it",
+      "find": "g = g[g['count'] >= min_dropbacks]",
+      "replace": "g = g[g['count'] > min_dropbacks]",
+      "expect_caught_by": "test_qb_games_keeps_only_games_with_enough_dropbacks"
+    }
+  ]
+}

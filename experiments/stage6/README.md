@@ -36,3 +36,31 @@ change when they are.
 commit with the same wording, that every stored label is the one its numbers give, that
 a question whose precondition failed has no result, that the budget is not overspent,
 and that nothing touches the 2026 season.
+
+## Results (2026-09-26)
+
+Registered in `60d6729`. `results/` holds one file per answer; the figures below are
+checked against it by `tests/test_stage6_published_numbers.py`.
+
+| id | question | result | the number it rests on |
+|---|---|---|---|
+| N1 | Next Gen Stats vs play-by-play, next-game QB EPA | FAIL | candidate minus control MSE +0.00026 [−0.00036, +0.00090] |
+| N2 | Next Gen Stats feature in Model A | not run: N1 failed | — |
+| N3 | Next Gen Stats vs play-by-play CPOE in Model A | not run: N1 failed | — |
+| A1 | published before the Tuesday run | not checked: nothing was accepted | — |
+| N4 | rushing and receiving | DEFERRED | — |
+
+**Next Gen Stats did not help.** Fitted on 2,632 quarterback games from 2017–2021 and
+scored on 1,101 from 2022–2023, adding the four Next Gen Stats numbers made the
+predictions slightly worse, not better: weighted mean squared error 0.08028 against
+0.08001 without them. The 95% interval runs from better to worse, so there is no real
+difference either way, and the registered rule needs a clear improvement. None of
+Stage 6's five slots were spent.
+
+**Play-by-play CPOE added nothing either** (control minus base +0.0000044), which is not
+a registered test but is worth knowing: a quarterback's recent EPA per dropback already
+carries what completion percentage over expected says about his next game.
+
+What this does not say: that Next Gen Stats is useless. It says these four passing
+numbers, averaged the way the model averages everything else, do not predict next week
+beyond what the model already knows. That is the question that was registered.

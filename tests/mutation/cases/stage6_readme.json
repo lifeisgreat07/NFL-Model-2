@@ -1,0 +1,34 @@
+{
+  "target": "experiments/stage6/README.md",
+  "tests": "tests/test_stage6_published_numbers.py",
+  "cases": [
+    {
+      "id": "stage6-readme-upgrades-the-screen",
+      "why": "a failed screen is written up as a pass in the one place a reader looks, while the result file still says FAIL",
+      "find": "| N1 | Next Gen Stats vs play-by-play, next-game QB EPA | FAIL |",
+      "replace": "| N1 | Next Gen Stats vs play-by-play, next-game QB EPA | PASS |",
+      "expect_caught_by": "test_each_row_matches_its_result_file"
+    },
+    {
+      "id": "stage6-readme-flatters-the-candidate",
+      "why": "the candidate's error is printed lower than the control's, turning 'slightly worse' into a gain nothing in N1.json supports",
+      "find": "error 0.08028 against",
+      "replace": "error 0.07998 against",
+      "expect_caught_by": "test_the_narrative_figures_come_from_n1"
+    },
+    {
+      "id": "stage6-readme-claims-a-spent-slot",
+      "why": "the README says a slot was spent when none was, which misstates how strict every later Stage 6 test has to be",
+      "find": "None of\nStage 6's five slots were spent.",
+      "replace": "One of\nStage 6's five slots was spent.",
+      "expect_caught_by": "test_the_slot_sentence_is_the_files"
+    },
+    {
+      "id": "stage6-readme-excuses-an-unrun-question-falsely",
+      "why": "N2 is said to be unrun because N1 failed; if N1 had passed that sentence would hide a question someone skipped",
+      "find": "| N2 | Next Gen Stats feature in Model A | not run: N1 failed |",
+      "replace": "| N2 | Next Gen Stats feature in Model A | DEFERRED |",
+      "expect_caught_by": "test_each_row_matches_its_result_file"
+    }
+  ]
+}
