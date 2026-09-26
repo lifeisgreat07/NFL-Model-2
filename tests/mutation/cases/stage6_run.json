@@ -1,0 +1,27 @@
+{
+  "target": "src/stage6_run.py",
+  "tests": "tests/test_stage6_data.py",
+  "cases": [
+    {
+      "id": "stage6-matchup-is-away-minus-home",
+      "why": "the Next Gen Stats feature is signed toward the away team while every other matchup feature is signed toward home, so the model fits it with the wrong sign's meaning",
+      "find": "wide['home'] - wide['away']",
+      "replace": "wide['away'] - wide['home']",
+      "expect_caught_by": "test_the_matchup_feature_is_home_minus_away"
+    },
+    {
+      "id": "stage6-precondition-ignored",
+      "why": "N3 can be run after N2 failed, the second look the registered order exists to prevent",
+      "find": "        if got != needed:\n            return",
+      "replace": "        if False:\n            return",
+      "expect_caught_by": "test_a_question_whose_precondition_failed_is_refused"
+    },
+    {
+      "id": "stage6-fit-runs-into-validation",
+      "why": "N1 is fitted on a validation season and then scored on it",
+      "find": "FIT_SEASONS = [2017, 2018, 2019, 2020, 2021]",
+      "replace": "FIT_SEASONS = [2017, 2018, 2019, 2020, 2021, 2022]",
+      "expect_caught_by": "test_the_fit_seasons_end_before_validation_and_the_loader_before_the_holdout"
+    }
+  ]
+}

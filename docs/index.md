@@ -61,6 +61,9 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | `experiments/stage6/registry.json` | Every question Stage 6 asks (Next Gen Stats first), the order they may be asked in, and one confirmatory budget for the stage. Committed before any Next Gen Stats data was loaded. |
 | `experiments/stage6/README.md` | The questions in plain words, and why the budget is five. |
 | `tests/test_stage6_registry.py` | Registration before answer, labels recomputed, preconditions held, budget fixed and not overspent. |
+| `src/stage6_run.py` | `build` loads play-by-play and Next Gen Stats and makes the inputs (and proves the game table matches production); `run <id>` answers one registered question. |
+| `src/stage6_data.py` | Trailing values in the production QB rating's shape, qb_games, the N1 feature sets, weighted least squares, the cluster bootstrap and the screen rule. |
+| `tests/test_stage6_data.py` | Trailing values against the production QB rating, no week reaching its own inputs, and the screen's arithmetic. |
 
 ## The dashboard
 
