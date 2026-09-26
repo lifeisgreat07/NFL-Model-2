@@ -1,0 +1,20 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_hidden_select_tab_order.py",
+  "cases": [
+    {
+      "id": "hidden-week-select-back-in-tab-order",
+      "why": "the Week Board's hidden week select takes focus again. Tab lands on a 1x1 clipped box; the focus ring is drawn around nothing a person can see, and the next press seems to skip a stop.",
+      "find": "<select id=\"week-select\" class=\"week-select visually-hidden\" aria-label=\"Week\" tabindex=\"-1\">",
+      "replace": "<select id=\"week-select\" class=\"week-select visually-hidden\" aria-label=\"Week\">",
+      "expect_caught_by": "test_every_select_hidden_in_the_markup_is_out_of_the_tab_order"
+    },
+    {
+      "id": "enhanced-select-back-in-tab-order",
+      "why": "enhanceSelect hides the sort and team selects but stops taking them out of the Tab order, so the same invisible stop appears beside every listbox.",
+      "find": "  sel.setAttribute('tabindex', '-1');",
+      "replace": "",
+      "expect_caught_by": "test_the_selects_hidden_by_script_are_taken_out_too"
+    }
+  ]
+}
