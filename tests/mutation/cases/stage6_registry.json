@@ -1,0 +1,41 @@
+{
+  "target": "experiments/stage6/registry.json",
+  "tests": "tests/test_stage6_registry.py",
+  "cases": [
+    {
+      "id": "stage6-budget-loosened",
+      "why": "the family's budget is cut to one slot, so every confirmatory interval drops to 95% and the stage can ask several questions at the strictness meant for one",
+      "find": "\"budget_m\": 5,",
+      "replace": "\"budget_m\": 1,",
+      "expect_caught_by": "test_the_confirmatory_level_is_bonferroni_over_the_budget"
+    },
+    {
+      "id": "stage6-validation-overlaps-confirmation",
+      "why": "a confirmation season is also a validation season, so a candidate is screened on the data that then confirms it",
+      "find": "\"validation_seasons\": [2022, 2023],",
+      "replace": "\"validation_seasons\": [2022, 2024],",
+      "expect_caught_by": "test_the_seasons_do_not_overlap_and_the_holdout_is_last"
+    },
+    {
+      "id": "stage6-n3-requires-a-later-question",
+      "why": "N3's precondition points at a question registered after it, so the order that stops a second look after a failed N2 no longer says anything",
+      "find": "\"requires\": {\"N2\": \"ACCEPT\"},",
+      "replace": "\"requires\": {\"A1\": \"ACCEPT\"},",
+      "expect_caught_by": "test_every_precondition_names_an_earlier_registered_question"
+    },
+    {
+      "id": "stage6-screen-spends-a-slot",
+      "why": "the N1 screen is marked as spending a slot, which is either an overspend waiting to happen or a screen that has become a test",
+      "find": "\"spends_slot\": false,\n      \"freezes\"",
+      "replace": "\"spends_slot\": \"if advanced\",\n      \"freezes\"",
+      "expect_caught_by": "test_ids_are_unique_and_kinds_known"
+    },
+    {
+      "id": "stage6-holdout-moved-a-year",
+      "why": "the forward holdout moves to 2027, so 2026 becomes a season Stage 6 may score -- the one evaluation nobody has looked at stops being protected",
+      "find": "\"forward_holdout_season\": 2026,",
+      "replace": "\"forward_holdout_season\": 2027,",
+      "expect_caught_by": "test_the_seasons_are_stage5s"
+    }
+  ]
+}
