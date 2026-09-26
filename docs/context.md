@@ -4,45 +4,52 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-24, end of session (Stage 4 complete, #100 to #107 merged)
+Last updated: 2026-09-26, end of session (Stage 6's Next Gen Stats item answered, #108 and #109 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 2275 passing, none skipped — `python -m pytest -q` on `main` at
-`aef3a2b`, HEAD level with origin.
+**Suite:** 2377 passing, none skipped — `python -m pytest -q` on `main` at
+`a6b48e8`, HEAD level with origin.
 
-**Next action: check that the first nightly canary passed** (06:00 UTC
-2026-09-25, "Nightly canary" in the Actions tab). If it failed, the issue
-"Nightly canary failing" says why. Then Stage 6, when Mark picks it up.
+**Next action: Mark's UX/UI audit prompt.** He has a long one ready and chose
+to wait until Next Gen Stats was finished. Take it in, write it down in this
+file before acting on it, and agree the order with him against the rest of
+Stage 6.
 
-**Done today:** Stage 4, all nine items, one PR at a time, each merged after
-Booth said SAFE TO MERGE with no discrepancies: #100 data-quality checks,
-#101 Booth alerts, #102 nightly canary and schema snapshot, #103 build-output
-smoke check, #104 drift to an issue, #105 weekly summary and failure alert,
-#106 reproducibility audit and leak-free tests, #107 play-by-play cache for
-the canary. Stage 7 finished earlier (#96 to #99).
+**Done today:** Next Gen Stats, one PR at a time, each merged after Booth
+said SAFE TO MERGE with no discrepancies. #108 registered the questions
+before any data was loaded (`experiments/stage6/registry.json`: one budget of
+five slots, 99% intervals, for all of Stage 6). #109 answered N1: FAIL. Four
+Next Gen Stats passing numbers did not predict a quarterback's next game
+beyond his recent EPA plus play-by-play CPOE, so N2 and N3 were never run
+and no slot is spent. Booth re-ran the build and N1 from raw data on its own
+runner and got the same figures.
 
-**The weekly Claude routine** is "Weekly QB override research": QB news
-only, sourced override file, via a PR, Mon and Wed 22:00 UTC. It never
-grades or rebuilds. On a normal week, merge its PR before Thursday's 16:00
-UTC lock. Its first run is Mon 2026-09-28.
+**Stage 4's first live runs:** the Nightly canary passed on 2026-09-25 and
+2026-09-26, and the `pbp-2026-09` cache was saved on the first night and read
+on the second. Both runs started 4.5 to 5 hours after their 06:00 UTC cron,
+which is GitHub's scheduler, not the workflow. No alert issue has opened.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| First nightly canary | Due 06:00 UTC 2026-09-25 | Check it passed, and that its cache step saved `.pbp-cache` |
+| First run of the QB routine | Due Mon 2026-09-28 22:00 UTC | Check it opened a PR, or said in one line that none was needed |
 | First weekly summary | Due Tue 2026-09-29 11:00 UTC | Open the run's page and check the summary reads right |
-| First run of the new QB routine | Due Mon 2026-09-28 | Check it opened a PR, or said in one line that none was needed |
+| Scheduled-run delay | Canary ran ~5 h late twice | Watch Thursday 2026-10-01's 16:00 UTC lock run; a 5 h delay still locks before the Thursday kickoff |
 | Booth alert, drift issue, failure alerts | Live, never fired | Each needs a real event; when one opens an issue, check it reads right |
 | Which claim Booth's fixture claim 1 was | Inferred as the "Two commits." line | Reading that run's report artifact, if it is ever worth it |
 | Leak table splits two ways on Linux | Recorded in the QB case study | Nothing, unless it is ever worth finding the cause |
 
 ## Queued, in order
 
-1. **Stage 6**, each item with a hypothesis stated before any data is pulled.
+1. **Mark's UX/UI audit prompt**, once he sends it.
+2. **The rest of Stage 6**: referee crews, then personnel groupings, each
+   registered into `experiments/stage6/registry.json` before any data is
+   pulled, under the same five-slot budget (none spent yet). Line movement
+   waits for the end of the 2026 regular season.
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict.
