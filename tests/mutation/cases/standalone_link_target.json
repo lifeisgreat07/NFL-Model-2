@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_standalone_link_target.py",
+  "cases": [
+    {
+      "id": "standalone-link-loses-its-floor",
+      "why": "the class keeps its name and loses its height, so every 'Read the case study' link is back to 16-18px -- and the markup still says link-standalone, so a check that looked only for the class would pass.",
+      "find": "  .link-standalone{display:inline-flex; align-items:center; min-height:24px;}",
+      "replace": "  .link-standalone{display:inline-flex; align-items:center;}",
+      "expect_caught_by": "test_the_class_gives_a_24px_target"
+    },
+    {
+      "id": "standalone-link-min-height-on-an-inline-box",
+      "why": "the display goes, and min-height on an inline box does nothing at all. The CSS still reads 24px, which is the trap: a declaration that is present and has no effect.",
+      "find": "  .link-standalone{display:inline-flex; align-items:center; min-height:24px;}",
+      "replace": "  .link-standalone{min-height:24px;}",
+      "expect_caught_by": "test_the_class_gives_a_24px_target"
+    },
+    {
+      "id": "standalone-link-one-card-misses-the-class",
+      "why": "one card's link is written without the class -- the ordinary result of copying an older card -- and that one link is a small target again among four that are fine.",
+      "find": "docs/lessons-learned.md\" class=\"link-standalone\" target=\"_blank\"",
+      "replace": "docs/lessons-learned.md\" target=\"_blank\"",
+      "expect_caught_by": "test_every_standalone_link_wears_the_target_class"
+    }
+  ]
+}

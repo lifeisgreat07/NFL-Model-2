@@ -309,6 +309,12 @@
     outline:2px solid var(--accent); outline-offset:2px;
   }
   main:focus-visible{outline:none;}
+  /* A link that stands alone on its line ("Read the case study") is a target
+     of its own, so it gets WCAG 2.5.8's 24px minimum (Stage 12; the five on
+     "Checking the AI's work" measured 16px in the fallback face and 18px in
+     Plus Jakarta Sans). A link inside a sentence keeps the text's line height:
+     2.5.8 exempts inline targets, and a taller box would push the lines apart. */
+  .link-standalone{display:inline-flex; align-items:center; min-height:24px;}
   .glance-row{display:flex; gap:var(--s3); flex-wrap:wrap; margin-bottom:var(--s5);}
   .glance-item{
     background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
@@ -2176,26 +2182,26 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <p>The longer stories. Each one is written up in full in the project&#39;s repository, where every number can be checked. This is the short version.</p>
       <div class="case-study" data-case-study="qb-rating-leak" style="margin-top:var(--s3);">
         <p><b style="color:var(--text)">The QB rating that could see the future.</b> A test built to prove the quarterback ratings only used past games failed on its first run: a 2022 prediction was quietly using 2023 to 2025. Fixing it turned up two worse problems the same afternoon. The project&#39;s own leak-free tests had never actually run, and an earlier tuning result could not be repeated, so it was undone. Measured afterwards, the leak itself barely moved the results.</p>
-        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/qb-rating-leak.md" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
+        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/qb-rating-leak.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
       </div>
       <div class="case-study" data-case-study="booth-first-audit" style="margin-top:var(--s4);">
         <p><b style="color:var(--text)">The checker&#39;s first week.</b> Booth is the second AI on this project. It writes nothing; it re-runs what the first one claims. Its very first run ran out of time and said nothing at all. Its first real report found a hole in its own setup, and a result marked &quot;confirmed&quot; on this dashboard that nothing in the project could reproduce. That result was rebuilt from scratch and held up. A checker that can quietly say nothing took three more fixes to close.</p>
-        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/booth-first-audit.md" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
+        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/booth-first-audit.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
       </div>
       <div class="case-study" data-case-study="stage2-corrections" style="margin-top:var(--s4);">
         <p><b style="color:var(--text)">When the to-do list was wrong.</b> Two of the jobs on an early to-do list were wrong about what they described. A column marked &quot;broken&quot; was only blank because the season hadn&#39;t started, and removing it would have thrown away something that worked. A page marked &quot;done&quot; had never shown anything at all. Since then this project treats every queued problem as a guess to check before doing the work it asks for.</p>
-        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/stage2-corrections.md" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
+        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/stage2-corrections.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
       </div>
       <div class="case-study" data-case-study="booth-regression-suite" style="margin-top:var(--s4);">
         <p><b style="color:var(--text)">Testing the tester.</b> Booth checks the other AI&#39;s work, but something has to check Booth. Its tests are small fake changes with a mistake planted in them, where the right answer is known in advance, so a missed mistake shows up as a failure. The tests were ready for seventeen days before anyone ran one. When one finally ran, Booth caught the planted mistake, and the run turned up two small problems in the test setup itself, both since fixed.</p>
-        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/booth-regression-suite.md" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
+        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/booth-regression-suite.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
       </div>
     </div>
 
     <div class="method-block" id="lessons-learned">
       <h3>What This Project Learned</h3>
       <p>The short version of everything above, and of what went wrong along the way: check a claim by doing it again rather than by reading it, treat a problem on the to-do list as a guess until it is confirmed, and never trust a number that nothing can recompute. The full list gives each lesson with where it came from.</p>
-      <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/lessons-learned.md" target="_blank" rel="noopener" style="color:var(--accent);">Read the lessons</a></p>
+      <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/lessons-learned.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the lessons</a></p>
     </div>
 
     <div class="method-block">
