@@ -54,6 +54,14 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | `tests/test_stage5_published_numbers.py` | Every figure in `experiments/stage5/README.md` against the file it came from. |
 | `tests/test_stage5_registry.py` | Registration before answer, labels recomputed, budget held, and the harness's own rules. |
 
+## Stage 6: new data sources
+
+| Path | What it does |
+|---|---|
+| `experiments/stage6/registry.json` | Every question Stage 6 asks (Next Gen Stats first), the order they may be asked in, and one confirmatory budget for the stage. Committed before any Next Gen Stats data was loaded. |
+| `experiments/stage6/README.md` | The questions in plain words, and why the budget is five. |
+| `tests/test_stage6_registry.py` | Registration before answer, labels recomputed, preconditions held, budget fixed and not overspent. |
+
 ## The dashboard
 
 | Path | What it does |

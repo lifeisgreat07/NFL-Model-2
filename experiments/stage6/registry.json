@@ -1,0 +1,88 @@
+{
+  "family": "stage6",
+  "registered": "2026-09-26",
+  "protocol": {
+    "validation_seasons": [2022, 2023],
+    "confirmation_seasons": [2024, 2025],
+    "forward_holdout_season": 2026,
+    "primary_metric": "log_loss",
+    "secondary_metric": "brier",
+    "screen": "A model candidate advances to confirmation only if its validation log loss is lower than its incumbent's (point estimate).",
+    "decision": "On the confirmation seasons: ACCEPT if the paired-bootstrap interval for (candidate - incumbent) log loss lies entirely below zero; REJECT if entirely above; otherwise INCONCLUSIVE.",
+    "alpha": 0.05,
+    "budget_m": 5,
+    "budget_rule": "One budget for the whole of Stage 6 (Next Gen Stats now; referee crews and personnel groupings when they are registered). Every candidate that reaches confirmation spends one slot, whatever its outcome. Each confirmatory interval is at level 1 - alpha/budget_m (99%). budget_m is fixed here and does not change when later items are registered; entries are added in later commits and an existing entry is never edited.",
+    "n_resamples": 5000,
+    "seed": 20260926,
+    "walk_forward": "The Stage 5 machinery, unchanged (src/stage5_eval.py): weekly refit, train on every game strictly earlier (from 2020), predict the week. Candidate and incumbent are scored on the same games; each trains on its own complete rows.",
+    "incumbent": "Model A as it ships in v2.5: base team ratings plus the announced-starter quarterback features, stage5_data.feature_set(spec='sched'). v2.5 switched the live pipeline to the announced starter on methodology grounds (H1 was INCONCLUSIVE), so the Stage 5 rule that would have kept the lagged starter no longer describes what ships.",
+    "forward_test": "Anything ACCEPTED is re-scored on the 2026 season after it ends, with no refitting of anything chosen here. The harness refuses 2026 until then."
+  },
+  "definitions": {
+    "trailing": "For a player and a week, a weighted mean over his regular-season weeks strictly before that week: weight = volume in that week x 0.5 ** (weeks back / config.RECENCY_HALF_LIFE), weeks counted over every regular-season week with play-by-play from 2016 on. Shrunk toward the league mean as of the same cutoff with a pseudo-count of config.QB_SHRINK_K, exactly the shape of ratings_engine.build_qb_ratings' trailing_rating. A player with no earlier weeks gets the league mean as of the cutoff. Volume is dropbacks for EPA, pass attempts for the rest.",
+    "qb_game": "A regular-season game in which a passer has at least 15 dropbacks with a non-missing qb_epa. Its target is his mean qb_epa per dropback in that game, weighted by those dropbacks.",
+    "trailing_epa": "The production QB rating, ratings_engine.build_qb_ratings(...)['trailing_rating'], over play-by-play from 2016.",
+    "trailing_cpoe": "Trailing mean of the play-by-play column cpoe (nflfastR's own completion model, already in every season this project loads) over pass attempts where it is present.",
+    "trailing_ngs": "Trailing means of four Next Gen Stats passing columns, weekly regular-season rows only (the season-total rows are dropped), joined on player_gsis_id = passer_player_id: completion_percentage_above_expectation, avg_time_to_throw, aggressiveness, avg_intended_air_yards. Column names are from the nflreadr Next Gen Stats data dictionary; if the loaded file spells one differently, the result file records the mapping, which is not a change of question."
+  },
+  "disclosures": [
+    "Before this file was written, no Next Gen Stats data had been loaded in this project. Two things were looked at: the signature and docstring of nflreadpy.load_nextgen_stats (seasons from 2016; stat types passing, rushing, receiving), and the column list in data/nflverse_schema.json, which shows cpoe is already present in play-by-play. No value from either source was read.",
+    "The design reads src/ratings_engine.py: the QB rating is a recency-weighted mean of qb_epa per dropback, shrunk toward the league mean with a pseudo-count of QB_SHRINK_K = 8 dropbacks. Eight dropbacks is less than one game, so replacing the shrinkage TARGET with a Next Gen Stats prediction would change almost nothing; the question below adds a second quarterback feature instead. That reasoning comes from the code, not from any result.",
+    "The confirmation seasons 2024-2025 have confirmed earlier decisions here (QB shrinkage, weekly refit, the pandas experiment, all of Stage 5). They are not a fresh holdout. The 2026 forward test is the only untouched evaluation.",
+    "Stage 5 found the team ratings close to what this data supports and the quarterback as the one place with signal. Expectation, stated before any data: a small effect or none."
+  ],
+  "hypotheses": [
+    {
+      "id": "N1",
+      "kind": "screen",
+      "title": "Do Next Gen Stats passing numbers say something about a quarterback's next game that play-by-play does not?",
+      "question": "Predict each qb_game's target from trailing values known before it. Three weighted least-squares fits with an intercept, weights = the game's dropbacks, fitted on qb_games in 2017-2021 and scored on qb_games in 2022-2023: base = [trailing_epa]; control = base + [trailing_cpoe]; candidate = control + the four trailing_ngs columns.",
+      "metric": "dropback-weighted mean squared error on 2022-2023",
+      "rule": "PASS if candidate minus control MSE is below zero and the upper end of its 95% cluster-bootstrap interval (clusters = passer-season, n_resamples and seed from the protocol) is below zero. Otherwise FAIL, and Stage 6 asks nothing more of Next Gen Stats. Control minus base is reported, not decided.",
+      "spends_slot": false,
+      "freezes": "The candidate and control fits (their coefficients, fitted on 2017-2021 only) are frozen by this step and used unchanged by N2 and N3.",
+      "expected": "a small improvement at most"
+    },
+    {
+      "id": "N2",
+      "kind": "hypothesis",
+      "requires": {"N1": "PASS"},
+      "title": "Add a Next Gen Stats quarterback feature to Model A",
+      "question": "Model A plus ngs_qb_matchup, against Model A as it ships. ngs_qb_matchup = the frozen N1 candidate fit's prediction for the home team's announced starter minus the same for the away team's, every input as of the game's cutoff.",
+      "candidate": {"qb_spec": "sched", "ratings": "base", "extra": ["ngs_qb_matchup"]},
+      "incumbent": {"qb_spec": "sched", "ratings": "base"},
+      "decision_model": "model_a",
+      "also_report": ["model_b"],
+      "spends_slot": "if advanced",
+      "expected": "candidate better, most on games with a new or little-used starter (stated, not to be tested as a subgroup)"
+    },
+    {
+      "id": "N3",
+      "kind": "hypothesis",
+      "requires": {"N2": "ACCEPT"},
+      "title": "Is it Next Gen Stats, or would the play-by-play CPOE we already have do the same?",
+      "question": "Model A plus ngs_qb_matchup, against Model A plus cpoe_qb_matchup, where cpoe_qb_matchup is built the same way from the frozen N1 CONTROL fit. Run only if N2 is ACCEPTED.",
+      "candidate": {"qb_spec": "sched", "ratings": "base", "extra": ["ngs_qb_matchup"]},
+      "incumbent": {"qb_spec": "sched", "ratings": "base", "extra": ["cpoe_qb_matchup"]},
+      "decision_model": "model_a",
+      "spends_slot": "if advanced",
+      "expected": "uncertain",
+      "consequence": "Next Gen Stats joins the live model only if N2 and N3 are both ACCEPTED and A1 holds. If N2 is accepted and N3 is not, the finding is that the gain does not need a new data source, and adding play-by-play CPOE to the model is a separate question for its own registration."
+    },
+    {
+      "id": "A1",
+      "kind": "measurement",
+      "title": "Is last week's Next Gen Stats data there in time for the Tuesday run?",
+      "question": "On two consecutive Tuesdays of the 2026 season, is every week-(w-1) regular-season passing row present in load_nextgen_stats by the Weekly update's 11:00 UTC run?",
+      "spends_slot": false,
+      "consequence": "Checked only if N2 and N3 are both ACCEPTED. If it fails, the accepted feature is DEFERRED: a model the live pipeline cannot feed would repeat Stage 5's finding, a published backtest describing a better model than the one making the picks."
+    },
+    {
+      "id": "N4",
+      "kind": "deferred",
+      "title": "Next Gen Stats rushing and receiving",
+      "status": "DEFERRED",
+      "reason": "No stated mechanism. Stage 5's separate pass and rush ratings (H5) moved validation log loss by +0.0001, so team rushing detail has shown nothing, and the quarterback is where the model's weight is. Registering rushing yards over expected or receiver separation now would be adding columns to see what sticks."
+    }
+  ]
+}
