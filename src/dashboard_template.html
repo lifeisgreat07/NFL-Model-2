@@ -8,12 +8,6 @@
 <meta name="apple-mobile-web-app-title" content="Pick'em Board">
 <meta name="theme-color" content="#0B0E15">
 <title>Pick'em Model — Command Board</title>
-<!-- Plus Jakarta Sans, self-hosted (Stage 12): four files from assets/fonts/,
-     inlined as data URIs by src/generate_dashboard.py's font_faces_css(). No
-     request to a font host; the licence travels in assets/fonts/OFL.txt. -->
-<style id="font-faces">
-__FONT_FACES__
-</style>
 <style>
   /* =====================================================================
      TOKEN LAYER — Stage 8. Decisions and the verified numbers are in
@@ -1394,6 +1388,15 @@ __FONT_FACES__
     .page-jump a:hover{color:var(--text); border-color:var(--border-strong);}
     .roadmap-card:hover{border-color:var(--border-strong);}
   }
+</style>
+<!-- Plus Jakarta Sans, self-hosted (Stage 12): four files from assets/fonts/,
+     inlined as data URIs by src/generate_dashboard.py's font_faces_css(). No
+     request to a font host; the licence travels in assets/fonts/OFL.txt.
+     A block of its own AFTER the main stylesheet on purpose: several guards
+     read "the stylesheet" as the first <style> element, and @font-face rules
+     apply wherever they sit. -->
+<style id="font-faces">
+__FONT_FACES__
 </style>
 </head>
 <body class="is-entering">
