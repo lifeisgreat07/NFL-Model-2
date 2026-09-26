@@ -344,10 +344,6 @@
   /* Read-only while viewing someone else's picks: the buttons still show the
      selection, but tapping one must not silently start editing their log. */
   .picks-readonly .pick-btn{cursor:default; opacity:.92;}
-  .implied-margin{padding-top:var(--s3); margin-top:var(--s2); border-top:1px solid var(--border); font-size:var(--fs-12);}
-  .implied-margin-label{color:var(--text-2); margin-right:var(--s2);}
-  .implied-margin-value{font-weight:600; color:var(--text); margin-right:var(--s2);}
-  .implied-margin-note{color:var(--text-2); font-size:var(--fs-11); font-style:italic;}
   .team-logo{width:22px; height:22px; object-fit:contain; flex-shrink:0;}
   .tele-team{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); line-height:1;
     display:flex; flex-direction:column; align-items:center; gap:var(--s1);}
@@ -3033,21 +3029,6 @@ function pickBadge(picked, graded, correct){
     + `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">${state === 'incorrect' ? cross : tick}</svg></span>`;
 }
 
-// Presentation-only: translates a win probability into an illustrative
-// point margin, using the exact inverse of the same sigmoid relationship
-// (prob = 1/(1+e^(-spread/5.5))) already used elsewhere in this project to
-// convert spreads to probabilities. This is NOT a separately-trained
-// margin model -- that idea was tested as an actual predictor and
-// rejected (see Model Lab). This is purely a display translation of a
-// probability we already trust, kept mathematically consistent with the
-// rest of the pipeline rather than inventing a new conversion.
-function impliedMargin(homeWinProbPct){
-  const p = homeWinProbPct/100;
-  if(p<=0.001 || p>=0.999) return null;
-  const spread = 5.5 * Math.log(p/(1-p));
-  return spread;
-}
-
 /* Turns the model's own numbers into a football sentence.
 
    g.why holds what the football-only model actually used: each feature's
@@ -3403,14 +3384,13 @@ function renderGames(){
     const gradedTag = g.graded
       ? `<span class="graded-tag ${g.model_b_correct ?? g.model_a_correct ? 'correct':'incorrect'}">${(g.model_b_correct ?? g.model_a_correct) ? 'Correct' : 'Missed'}</span>`
       : '';
-    const marginProb = (g.mktB_home !== undefined && g.mktB_home !== null) ? g.mktB_home : g.fbA_home;
-    const margin = impliedMargin(marginProb);
-    const marginHtml = margin !== null ? `
-      <div class="implied-margin">
-        <span class="implied-margin-label">Illustrative margin</span>
-        <span class="implied-margin-value">${margin>=0?g.home:g.away} by ~${Math.abs(margin).toFixed(1)}</span>
-        <span class="implied-margin-note">(derived from the win probability above -- not a separately modeled prediction)</span>
-      </div>` : '';
+    // RETIRED in Stage 11: an "Illustrative margin" row ("KC by ~10.1")
+    // used to sit in the panel below, a point margin back-solved from the
+    // win probability. Margin modelling was tested as a predictor and
+    // REJECTED (Model Lab), so the page was showing a number of the kind the
+    // project had decided not to trust, and at card size its "~" read as a
+    // minus. The Vegas line above is the real point margin on the card.
+    // tests/test_no_illustrative_margin.py keeps it from coming back.
 
     // The sentence sits on the card, not behind the toggle. A reason nobody
     // expands is a reason nobody reads, and "why is this team favoured" was
@@ -3425,7 +3405,6 @@ function renderGames(){
         ${whyRow('Defense edge', g.why.def_matchup)}
         ${whyRow('QB edge', g.why.qb_matchup)}
         ${(g.why.ol_continuity !== undefined) ? whyRow('O-line continuity', g.why.ol_continuity) : ''}
-        ${marginHtml}
         ${trackRecordHtml(g.mktB_home, 'panel')}
       </div>` : '';
     const kickoff = kickoffLabel(g);
