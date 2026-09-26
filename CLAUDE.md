@@ -1416,6 +1416,35 @@ under compaction pressure, so its length is a cost paid on every session.
   is still a **process note**, never attached evidence — Booth is right to mark
   an unattached screenshot UNVERIFIABLE.
 
+- **The PR loop, as run on 2026-09-26 (#108, #109).** Mark allows merging only when
+  he says so in the session's opening prompt, and only on Booth's SAFE TO MERGE with
+  no discrepancies. The mechanics, all on `markys`:
+  1. Branch from fresh `main` (`git pull --ff-only`, `git checkout -b <branch>`).
+  2. Commit (message from a file; read `git log -1` after), push, then run the full
+     suite and quote it; run each new mutation case with `--id` and check
+     `git status` is clean afterwards.
+  3. Write the PR body to a file and run `python -B src/scout_preflight.py <body>
+     --base main` after `git fetch origin main:main`. The scope check wants each
+     commit's short SHA or subject named in the body.
+  4. Open the PR with GitKraken's `pull_request_create`.
+  5. Read Booth without `gh`: the repo is public, so
+     `https://api.github.com/repos/lifeisgreat07/NFL-Model-2/issues/<N>/comments`
+     and `.../actions/runs?head_sha=<sha>` need no token (Python `urllib` on
+     `markys`; the cloud sandbox's proxy refuses this repo). An audit takes about
+     5 to 10 minutes. Wait for the "Booth PR audit" run to finish, not just the
+     comment, and read every claim, not only the verdict.
+  6. Merge locally so the history matches earlier merges: `git checkout main`,
+     `git pull --ff-only`, `git merge --no-ff <branch> -m "Merge pull request #<N>
+     from lifeisgreat07/<branch>" -m "<PR title>"`, `git push origin main`, then
+     `git push origin --delete <branch>` and `git branch -d <branch>`. GitHub marks
+     the PR merged within a minute. A push can be refused because the audit-log
+     collector committed in between; `git pull --rebase origin main` and push again.
+  7. Documentation-only changes (CLAUDE.md, `docs/`, `memory/`) go straight to
+     `main`, no PR.
+  An UNVERIFIABLE claim that is expected (a draft never committed, a machine Booth
+  cannot reach) does not block a merge; a DISCREPANCY always does, and is fixed with
+  a new commit, never an amend.
+
 ## Traps that have actually bitten
 
 - **QUOTE THE COMMAND YOU RAN, NOT A SHORTER ONE.** #105's body said
