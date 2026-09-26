@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-09-26T20:38:58Z",
+  "generated_utc": "2026-09-26T21:19:21Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 143,
-    "audits_superseded": 49,
-    "pull_requests_audited": 94,
+    "audits_total": 145,
+    "audits_superseded": 50,
+    "pull_requests_audited": 95,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 973,
+    "claims_checked": 982,
     "discrepancies_found": 24,
-    "unverifiable": 72,
+    "unverifiable": 73,
     "pull_requests_with_a_discrepancy": 15,
     "reports_disagreeing_with_themselves": 15
   },
@@ -2651,6 +2651,46 @@
         "prose says Confirmed: 7, block has 6",
         "prose says Unverifiable: 1, block has 2"
       ],
+      "superseded": false
+    },
+    {
+      "pr": 115,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/115#issuecomment-5849781529",
+      "posted_utc": "2026-09-26T20:51:51Z",
+      "head": "f3ac0a4",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 13,
+      "confirmed": 11,
+      "discrepancies": 1,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [
+        "tests/mutation/cases/game_datetime_fields.json",
+        "tests/mutation/cases/team_dive.json"
+      ],
+      "inconsistencies": [
+        "prose has no 'Unverifiable:' line to check against",
+        "block reports discrepancies but an unqualified SAFE TO MERGE"
+      ],
+      "superseded": true
+    },
+    {
+      "pr": 115,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/115#issuecomment-5849956177",
+      "posted_utc": "2026-09-26T21:16:30Z",
+      "head": "f3ac0a4",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 9,
+      "confirmed": 8,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
       "superseded": false
     }
   ]
