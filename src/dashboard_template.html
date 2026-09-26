@@ -268,6 +268,10 @@
       var(--surface);
   }
   .table-wrap.fits{overflow:clip; background:var(--surface);}
+  /* A wrapper that scrolls is a Tab stop (setScrollStop), so it shows
+     where focus is like every other stop on the page. The ring sits just
+     inside the border, where no ancestor's overflow can clip it. */
+  [data-scroll-stop]:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
   table{width:100%; border-collapse:separate; border-spacing:0;}
   thead th{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.08em; text-transform:uppercase;
     color:var(--text-2); text-align:left; padding:var(--s3) var(--s4); border-bottom:1px solid var(--border);
@@ -1765,7 +1769,7 @@ __FONT_FACES__
          run src/calibration.py -- the section omits itself rather than
          rendering an empty axis. -->
     <div id="reliability-diagram"></div>
-    <div class="table-wrap">
+    <div class="table-wrap" data-scroll-label="Experiment log">
       <table>
         <thead><tr><th>Experiment</th><th>Result</th><th>Decision</th></tr></thead>
         <tbody>
@@ -2272,8 +2276,71 @@ function fitTables(){
   document.querySelectorAll('.table-wrap').forEach(w=>{
     const t = w.querySelector('table');
     if(!t || !w.clientWidth) return;
-    w.classList.toggle('fits', t.offsetWidth <= w.clientWidth);
+    const fits = t.offsetWidth <= w.clientWidth;
+    w.classList.toggle('fits', fits);
+    setScrollStop(w, !fits);
   });
+  document.querySelectorAll('.formula').forEach(f=>{
+    if(!f.clientWidth) return;
+    setScrollStop(f, f.scrollWidth > f.clientWidth);
+  });
+}
+/* A box that scrolls sideways has to be reachable from the keyboard, or a
+   keyboard user sees a table's first columns and never the rest (WCAG
+   2.1.1). axe's scrollable-region-focusable found five such boxes at 390px
+   the first time the browser checks ran in CI (Stage 12): the wide tables
+   on Accuracy, Model Lab and Method, and the ridge formula. None holds a
+   control of its own, so nothing in them could take focus.
+
+   So a box that scrolls joins the Tab order as a named region, and once
+   focused the arrow keys scroll it. A box that fits leaves the Tab order
+   again: a stop that does nothing when you land on it is noise. Only what
+   this function added is removed -- data-scroll-stop lists it -- so a
+   tabindex, role or label written into the markup survives the box
+   fitting. */
+/* The region is named, in order of preference: by data-scroll-label, for a
+   box whose nearest heading belongs to something else (Model Lab's
+   experiment log comes straight after the reliability diagram's section);
+   by the table's caption; or by the heading of the section it sits in --
+   the nearest h2-h4 that is an earlier sibling of the box or of one of its
+   ancestors, looking no further out than its page. Only siblings count, not
+   headings buried inside them: on Accuracy the calibration table follows a
+   nested note whose own heading is "Not enough games yet to check", and
+   that is a message, not the table's name. */
+function headingBefore(el){
+  for(let node = el; node && !node.matches('.page'); node = node.parentElement){
+    for(let sib = node.previousElementSibling; sib; sib = sib.previousElementSibling){
+      if(sib.matches('h2, h3, h4')) return sib;
+    }
+  }
+  return null;
+}
+function scrollStopLabel(el){
+  const given = el.getAttribute('data-scroll-label');
+  const heading = given ? null : (el.querySelector('caption') || headingBefore(el));
+  const name = given || (heading ? heading.textContent.trim().replace(/\s+/g, ' ') : '');
+  const what = el.classList.contains('formula') ? 'Formula' : 'Table';
+  return (name ? `${what}: ${name}` : what) + ', scrolls sideways';
+}
+/* A box holding a control of its own is already reachable: Tab lands on
+   the control and the browser scrolls it into view (the Power Ratings
+   table's sortable headers do exactly that). A second stop there would be
+   one more press for nothing. */
+const FOCUSABLE_INSIDE = 'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+const SCROLL_STOP_ATTRS = {tabindex: () => '0', role: () => 'region', 'aria-label': scrollStopLabel};
+function setScrollStop(el, scrolls){
+  const marked = el.hasAttribute('data-scroll-stop');
+  const added = marked ? el.getAttribute('data-scroll-stop').split(' ').filter(Boolean) : [];
+  if(scrolls && !el.querySelector(FOCUSABLE_INSIDE)){
+    for(const [name, value] of Object.entries(SCROLL_STOP_ATTRS)){
+      if(added.includes(name)) el.setAttribute(name, value(el));
+      else if(!el.hasAttribute(name)){ el.setAttribute(name, value(el)); added.push(name); }
+    }
+    el.setAttribute('data-scroll-stop', added.join(' '));
+  } else if(marked){
+    added.forEach(name => el.removeAttribute(name));
+    el.removeAttribute('data-scroll-stop');
+  }
 }
 (function(){
   let queued = false;
