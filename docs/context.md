@@ -13,10 +13,9 @@ Last updated: 2026-09-26, end of session (Stage 6's Next Gen Stats item answered
 **Suite:** 2377 passing, none skipped — `python -m pytest -q` on `main` at
 `a6b48e8`, HEAD level with origin.
 
-**Next action: Mark's UX/UI audit prompt.** He has a long one ready and chose
-to wait until Next Gen Stats was finished. Take it in, write it down in this
-file before acting on it, and agree the order with him against the rest of
-Stage 6.
+**Next action: Stage 11's first item, lock My Picks at kickoff.** The plan for
+Stages 11 to 22 is in CLAUDE.md, from `docs/design/UX-REVIEW-2026-09-26.md`
+(Mark's audit prompt, answered 2026-09-26: 76/100 today, about 95 after Stage 21).
 
 **Done today:** Next Gen Stats, one PR at a time, each merged after Booth
 said SAFE TO MERGE with no discrepancies. #108 registered the questions
@@ -26,6 +25,8 @@ Next Gen Stats passing numbers did not predict a quarterback's next game
 beyond his recent EPA plus play-by-play CPOE, so N2 and N3 were never run
 and no slot is spent. Booth re-ran the build and N1 from raw data on its own
 runner and got the same figures.
+Later the same day: the UX/UI review, and Stages 11 to 22 planned with Mark,
+team news included (Stage 16; nflverse's injury reports carry 2026).
 
 **Stage 4's first live runs:** the Nightly canary passed on 2026-09-25 and
 2026-09-26, and the `pbp-2026-09` cache was saved on the first night and read
@@ -45,11 +46,15 @@ which is GitHub's scheduler, not the workflow. No alert issue has opened.
 
 ## Queued, in order
 
-1. **Mark's UX/UI audit prompt**, once he sends it.
-2. **The rest of Stage 6**: referee crews, then personnel groupings, each
-   registered into `experiments/stage6/registry.json` before any data is
-   pulled, under the same five-slot budget (none spent yet). Line movement
-   waits for the end of the 2026 regular season.
+1. **Stages 11 to 22**, in order, one PR at a time: integrity and access; self-hosted
+   assets and browser CI; landing and links; one meaning per number; weekend
+   refresh; team news; Week Board card v2; Model Lab rebuilt; team pages; testing
+   with five people; the week-5 extras; beyond 95.
+2. **The rest of Stage 6** (referee crews, personnel) after Stage 18, registered
+   into `experiments/stage6/registry.json` first. None of the five slots is spent.
+
+Open decisions for Mark, each made from a render when its stage starts: net rating
+per 100 plays (Stage 14); the team-colour bars on the new card (Stage 17).
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict.

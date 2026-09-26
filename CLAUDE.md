@@ -442,6 +442,10 @@ slot was spent. `experiments/stage6/README.md` has the figures. Do not re-open i
 without a new registration and a reason the answer would differ. Referee crews
 and personnel groupings register into the same file, under the same budget.
 
+**When the rest of Stage 6 runs (decided 2026-09-26):** after Stage 18, so its answers
+land in the generated Model Lab instead of being hand-copied into it. Line movement
+still waits for the end of the 2026 regular season.
+
 **Line movement and the closing-line backtest (moved here when Stage 1 was
 retired, 2026-09-24).** Line snapshots accumulate on every weekly run and are
 confirmed working. Do not test anything on them before the 2026 regular
@@ -453,7 +457,9 @@ publish.
 **Closed sources -- do not re-check.** Stage 1 used to re-check these every
 session; it was retired on 2026-09-24 because none of them has a future here.
 Injury/roster data as a model feature: closed on value, not availability
-(showing team news on a page is a separate question, see Stage 7). ESPN QBR:
+(showing team news on a page is a separate question, see Stage 7). Checked 2026-09-26: `nflreadpy.load_injuries` now
+carries 2026 (weeks 1-3, all 32 teams), so Stage 16's team-news display can be
+automated. ESPN QBR:
 abandoned upstream, ends at 2023 (re-confirmed 2026-09-24: no 2024 or 2025
 rows, and nflreadpy has no loader). Public betting percentages: no free
 source, so reverse line movement is out too. An ensemble needs a second
@@ -1068,6 +1074,160 @@ deliberately left for this stage.
 
 Finish with a `dashboard-design-audit` re-run and record the score against the
 starting 15/40.
+
+## Stages 11 to 22: the road from 76 to about 95 (planned 2026-09-26)
+
+Planned with Mark on 2026-09-26 from `docs/design/UX-REVIEW-2026-09-26.md`, which
+scores the dashboard 76/100 and says why, labels every proposal from his audit
+prompt, and lists what not to build. Read it before starting any of these. The
+order is by dependency: integrity first, then the safety net, then what the big
+redesigns rest on (numbers, fresher data, team news), then the redesigns, then
+testing with people, then polish. One item, one PR, wait for Booth, as always.
+
+The estimates are the review's own rubric, not a measurement: 76 today, about 95
+after Stage 21. Stage 21 re-runs `dashboard-design-audit` so the claim rests on
+a command. 100 is not a target: the last points need a backend, and the static
+single-file site is part of what this project demonstrates.
+
+### Stage 11 - Integrity and access
+
+The two places the page can currently say something untrue or unreachable, then
+the small wording fixes. **First task: lock My Picks at kickoff** -- buttons
+disabled from `gameday` + `gametime_et`, each pick stored with the time it was
+made, Season Accuracy counting only picks made before kickoff and saying how
+many it left out (legacy picks with no time are kept, marked unverified, not
+counted). Measured 2026-09-26: writing every graded winner into
+`nfl_pickem_my_picks` shows "My picks 100.0%, 32 of 32". Then: the closed
+`#bnav-more-sheet` made `inert` (at 1440 px the 19th Tab press lands on its
+invisible "Team Deep-Dive" button); `+ view context` toggles at least 24 px tall
+(13 px at 390); "Confidence #n · k pts" renamed "Pick'em rank n (k points)";
+"Illustrative margin" retired (margin modelling was REJECTED, and its `~` reads
+as a minus); the sidebar footer's build internals ("2026_week3", "week(s)
+saved") replaced by one plain provenance line generated from config.
+
+### Stage 12 - Self-hosted assets and browser checks in CI
+
+The safety net goes in before the big UI work. Self-host the Plus Jakarta Sans
+files and the 32 team logos (today the page depends on Google and ESPN at load,
+and a render without the font can find nothing -- see the webfont traps). Then
+a CI job driving Playwright on the built page at 360, 390, 768, 1024, 1280 and
+1440: no horizontal overflow, no focusable element off-screen or hidden, touch
+targets at least 24 px, axe-core with no serious or critical violations on all
+nine pages, and a byte budget on the built HTML. Font loading is asserted from
+measured widths, never `document.fonts.check()`. No pixel-diff screenshots.
+
+### Stage 13 - Landing and links
+
+The Week Board becomes the default page and first in both navs (the bottom nav
+becomes Board, Ratings, Picks, Accuracy, More). The orientation banner becomes
+three lines with a "How to read this" link, dismissed per device, and on a
+phone sits after the first games (measured: the first card starts at 914 px on
+an 844 px screen). An "Updated" time moves into the Week Board header. Hash
+routes for pages, weeks, teams and experiments, coexisting with `#picks=`
+share links; the routing is new code (STAGE8-DESIGN.md calls `openTeam` and
+`openWeek` stubs "already wired", but neither exists in the template -- correct
+that sentence in the same PR). A meta description and one static Open Graph
+image.
+
+### Stage 14 - One meaning per number
+
+Formatter functions (`fmtProb`, `fmtPP`, `fmtRating`, `fmtInterval`,
+`fmtPoints`) with a test banning bare `pt`/`pts` outside pick'em points. Net
+rating shown as points per 100 plays (`+14.9`, not `+0.149`), a display-only
+rescaling held to the data by a test. **Open decision for Mark:** confirm the
+per-100-plays display from a rendered before/after. Accuracy-led claims in Model
+Lab and Methodology restated on log loss and Brier.
+
+### Stage 15 - Weekend refresh and game status
+
+A light scheduled run between the Thursday lock and Tuesday's grading that
+updates game status, final scores and the latest line, and never touches saved
+picks. **Two writers of picks is two ways to break a lock** (2026-09-24), so it
+writes only status, scores and lines, and a test holds it off `predictions/`.
+Cards gain a status: upcoming, played and awaiting Tuesday's grading, or final
+with the score. It also gives Stage 16 its refresh cadence.
+
+### Stage 16 - Team news
+
+Mark wants this clear and concise, not information overload. **The data
+exists:** checked 2026-09-26, `nflreadpy.load_injuries` carries 2026 weeks 1-3
+for all 32 teams with `report_status` Out / Doubtful / Questionable, and
+`load_depth_charts` and `load_rosters_weekly` carry 2026 too. (Injury data as a
+MODEL feature stays closed on value; this is display, which Stage 7.5 already
+said is a separate question.) Two tiers:
+
+- **Automated, from nflverse:** starters (from the depth chart) listed Out or
+  Doubtful on the official report, and the announced starting quarterback with
+  a change flagged. Questionable players are a count, not a list.
+- **Sourced by hand, rarely:** coach firings and trades, through the weekly
+  QB-research routine's PR with a source link per item. That routine was made
+  through the HTTP API, so only Mark can edit its prompt.
+
+Display rules, to keep it short: the Week Board card gets at most one line and
+only when a starter on either side is Out or Doubtful, or the quarterback
+changed; Team Deep-Dive gets a "This week" block of at most five items, each
+dated with its source. Items expire with the week. The plain-language guard
+applies. Data file first (with a hypothesis about what a reader needs from it
+written in the PR), then Team Deep-Dive, then the card line in Stage 17.
+
+### Stage 17 - Week Board card v2
+
+One decision per card. A single probability line from away team to home team
+with Model A ●, Model B ■ and Market ▲ (the shapes Season Accuracy already
+uses); Model B's number as the headline, for the team it favours; the market
+as a probability, not only a spread; the announced quarterbacks named (the
+saved predictions gain the resolved starter names -- a data-output change,
+reviewed as production code); Stage 15's status; Stage 16's one news line; no
+HIGH/LOW confidence words. **Open decision for Mark:** the team-colour split
+bars kept on 2026-09-21 -- keep them as the line's end caps, or keep the bars
+and put the line beneath -- chosen from rendered side-by-sides in both themes
+and under protan and deutan simulation, as that decision was. `[` and `]` step
+weeks on desktop.
+
+### Stage 18 - Model Lab rebuilt from the experiment records
+
+Generated from a data file, not 46 hand-written rows: Stage 5 and 6 read from
+`experiments/*/results/`, the older rows moved in once, verbatim. Five
+decisions as the project defines them plus a leakage flag (the page uses 11
+labels today); filter chips with counts; the proper scoring rule and an
+interval glyph first in each result; cards on a phone; the reliability diagram
+below the experiments with "How to read this". Every figure held to its source
+file by a test.
+
+### Stage 19 - Team pages
+
+Power Ratings: a "biggest movers" line and the rank change as a number.
+Team Deep-Dive: offence and defence over time beside net (the generator carries
+net only today, `{label, net}` -- a data-file change, not a model change),
+headings on its games table, and a sensible default team (the linked one, else
+the top-rated) instead of Arizona. Season Accuracy: week labels on the trend
+chart, separated end labels, and a log-loss row once 50 games are graded.
+
+### Stage 20 - Testing with real people
+
+Five people -- a recruiter, a football fan, a data person, someone on a phone,
+someone using a keyboard or screen reader -- each given the same three tasks
+("who does the model like this week and how sure is it", "is the model any
+good", "what did the team news say about your team"). Findings written into
+`docs/design/` and turned into items, not acted on from memory. This is the only
+step that turns the review's estimates into evidence, and it decides what
+Stage 22 actually contains.
+
+### Stage 21 - Once the season has data (not before week 5)
+
+Gated by the calendar, not the order: derived insights, three kinds only (rank
+moves of three or more places, model-vs-market gaps of ten points or more, games
+both models put within five points of 50%), each generated from data with its
+threshold in a test; sparklines on Power Ratings once four 2026 weeks exist;
+then the `dashboard-design-audit` re-run, recorded against 15/40 and 28/40.
+
+### Stage 22 - Beyond 95
+
+Only what Stage 20 shows people notice: installable on a phone (manifest and a
+service worker, offline); a manual screen-reader pass; a data-table alternative
+for every chart; and the template split, only if the template passes 7,000
+lines, with a build that inlines the parts back into one file and a test that
+the built page is byte-identical before and after.
 
 ## Ending a session
 
