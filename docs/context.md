@@ -4,20 +4,29 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-26, end of session (Stage 6's Next Gen Stats item answered, #108 and #109 merged)
+Last updated: 2026-09-26, evening session in progress (Stage 11 complete, #110 to #115 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 2377 passing, none skipped — `python -m pytest -q` on `main` at
-`a6b48e8`, HEAD level with origin.
+**Suite:** 2505 passing, none skipped — `python -m pytest -q` on `main` at
+`2e8efce`, HEAD level with origin.
 
-**Next action: Stage 11's first item, lock My Picks at kickoff.** The plan for
-Stages 11 to 22 is in CLAUDE.md, from `docs/design/UX-REVIEW-2026-09-26.md`
-(Mark's audit prompt, answered 2026-09-26: 76/100 today, about 95 after Stage 21).
+**Next action: Stage 12's first item, self-host the font** (inlined into the built
+page at build time). Mark approved exactly four files on 2026-09-26 (latin and
+latin-ext, 73,692 bytes); they are downloaded, with hashes, in
+`E:\nfl-session-archive\fonts\` on markys (outside the repo). Logos stay
+hot-linked (his decision). CLAUDE.md's Stage 12 section has the three PRs.
 
-**Done today:** Next Gen Stats, one PR at a time, each merged after Booth
+**Done this evening: all of Stage 11**, one PR at a time, each merged on SAFE TO
+MERGE with no discrepancies: #110 kickoff lock, #111 More sheet inert, #112 24px
+text toggles, #113 pick'em rank wording, #114 illustrative margin retired, #115
+sidebar provenance line. #113 was closed unmerged by a failed chained merge and
+reopened (CLAUDE.md trap); #115 needed Mark's hand edit of its description after
+Booth's one discrepancy, then re-audited clean.
+
+**Earlier the same day:** Next Gen Stats, one PR at a time, each merged after Booth
 said SAFE TO MERGE with no discrepancies. #108 registered the questions
 before any data was loaded (`experiments/stage6/registry.json`: one budget of
 five slots, 99% intervals, for all of Stage 6). #109 answered N1: FAIL. Four

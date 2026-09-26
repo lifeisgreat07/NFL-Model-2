@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **2377 passing** (none skipped) — `python -m pytest -q` on `main` at
-`a6b48e8` (#109 merged), with HEAD level with origin, which is the order that makes the
+Suite: **2505 passing** (none skipped) — `python -m pytest -q` on `main` at
+`2e8efce` (#115 merged), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -1089,8 +1089,30 @@ after Stage 21. Stage 21 re-runs `dashboard-design-audit` so the claim rests on
 a command. 100 is not a target: the last points need a backend, and the static
 single-file site is part of what this project demonstrates.
 
-### Stage 11 - Integrity and access
+### Stage 11 - Integrity and access  <- COMPLETE (2026-09-26, #110 to #115)
 
+All six items shipped one PR at a time, each merged on Booth's SAFE TO MERGE with
+no discrepancies. Decisions worth keeping, so they are not re-litigated:
+
+- **The kickoff lock (#110) is honesty, not security.** Pick times live in the
+  visitor's browser (`nfl_pickem_pick_times`). A pick counts only if its time is
+  before kickoff; untimed picks are kept, shown and not counted, and the page says
+  how many it left out. The kickoff instant is `Date.UTC` from the Eastern fields
+  plus the US daylight-saving rule -- never a `Date` parsed from the Eastern
+  string -- and `tests/test_my_picks_kickoff_lock.py` runs it under two TZ values.
+  **An untimed pick on a game not yet kicked off is stamped "now" on render**
+  (it is in storage now, so it was made by now); a locked game is never stamped.
+  **Shared weeks are not scored**: a link carries no times. Carrying times in
+  share links was left out on purpose (a time in a URL is as editable).
+- **`tallyMyPicks` is the only tally** behind the badge, streak, trend line and
+  scoreboard race. Four hand loops were four places to forget the lock.
+- **`.btn-link` has `min-height:24px` (#112)**, on the component, not one control.
+- **"Pick'em rank n (k points)" (#113)** via `pickemRankLabel`; the PDF's
+  `Rank`/`Pts` headers were left for Stage 14, which owns every `pt`/`pts`.
+- **The footer is `provenance_line()` in `src/generate_dashboard.py` (#115)**,
+  from `MODEL_VERSION`, `min(TRAIN_SEASONS)` and the clock in UTC.
+
+The original plan, kept for the reasoning:
 The two places the page can currently say something untrue or unreachable, then
 the small wording fixes. **First task: lock My Picks at kickoff** -- buttons
 disabled from `gameday` + `gametime_et`, each pick stored with the time it was
@@ -1107,6 +1129,19 @@ saved") replaced by one plain provenance line generated from config.
 
 ### Stage 12 - Self-hosted assets and browser checks in CI
 
+**Decided with Mark 2026-09-26, before starting:** self-host FOUR font files only
+-- Plus Jakarta Sans latin and latin-ext, the variable normal face (400-800) and
+italic 500, 73,692 bytes from fonts.gstatic.com, SIL Open Font License. The
+vietnamese and cyrillic-ext subsets are dropped. **The 32 team logos are NOT
+self-hosted**: they are NFL trademarks and copying them into a public repo would
+redistribute them. They stay hot-linked from ESPN, the page already falls back to
+the abbreviation, and the CI job proves every card and pick button still works
+with ESPN blocked. Three PRs: the font (inlined into the built page at build
+time, so the site stays one file); 24px targets for the six text links on
+"Checking the AI's work" (16px in the fallback face, 18px with the webfont,
+measured 2026-09-26); then the Playwright job.
+
+The original plan, kept for the reasoning:
 The safety net goes in before the big UI work. Self-host the Plus Jakarta Sans
 files and the 32 team logos (today the page depends on Google and ESPN at load,
 and a render without the font can find nothing -- see the webfont traps). Then
@@ -1437,7 +1472,10 @@ under compaction pressure, so its length is a cost paid on every session.
      `git pull --ff-only`, `git merge --no-ff <branch> -m "Merge pull request #<N>
      from lifeisgreat07/<branch>" -m "<PR title>"`, `git push origin main`, then
      `git push origin --delete <branch>` and `git branch -d <branch>`. GitHub marks
-     the PR merged within a minute. A push can be refused because the audit-log
+     the PR merged within a minute. **Since 2026-09-26 this runs as one script
+     that stops at the first failed step** (see the chained-merge trap below):
+     the message comes from a file, and the branch is deleted only after the
+     GitHub API reports the PR merged. A push can be refused because the audit-log
      collector committed in between; `git pull --rebase origin main` and push again.
   7. Documentation-only changes (CLAUDE.md, `docs/`, `memory/`) go straight to
      `main`, no PR.
@@ -1446,6 +1484,25 @@ under compaction pressure, so its length is a cost paid on every session.
   a new commit, never an amend.
 
 ## Traps that have actually bitten
+
+- **A CHAINED MERGE COMMAND KEEPS GOING AFTER THE MERGE FAILS, AND DELETING THE
+  BRANCH CLOSES THE PR UNMERGED.** 2026-09-26, #113: the merge was one
+  PowerShell line, `git merge ... -m "..."` then push, then
+  `git push origin --delete <branch>`. The PR title had double quotes in it,
+  PowerShell split the `-m` argument, and `git merge` failed ("not something we
+  can merge"). The line went on anyway: `push main` said everything was up to
+  date, and the delete removed the remote branch, so GitHub closed #113
+  unmerged. Recovered by pushing the branch back at the audited SHA and
+  reopening the PR (the built-in browser is signed in to GitHub). Reopening
+  re-runs Booth, which agreed. **Merge through
+  `E:\nfl-session-archive\merge_pr.ps1` or its equivalent**: the message comes
+  from a file (`git merge -F`), every step checks `$LASTEXITCODE` before the
+  next, and no branch is deleted until the API says the PR is merged. Note
+  `$ErrorActionPreference = 'Stop'` is the wrong fix: git writes progress to
+  stderr, so it stops the first `git checkout`.
+  Same session, the older trap came back: a `.commit-msg.txt` write refused
+  because the file existed, and the commit reused the old message. Write it with
+  an explicit rewrite, then read `git log -1` every time.
 
 - **QUOTE THE COMMAND YOU RAN, NOT A SHORTER ONE.** #105's body said
   `python src/weekly_summary.py --season 2026` printed the summary. The run
