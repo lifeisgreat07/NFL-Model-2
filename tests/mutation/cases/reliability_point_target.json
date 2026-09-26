@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_reliability_point_target.py",
+  "cases": [
+    {
+      "id": "rel-halo-ignores-the-rendered-width",
+      "why": "the radius goes back to a fixed 11 units, which is 22 CSS px only when the chart happens to render at 470px wide -- right on one laptop, under 24 on every phone.",
+      "find": "  return Math.max(REL_HALO_BASE_R, (minPx / 2) * (viewBoxWidth / renderedWidth));",
+      "replace": "  return REL_HALO_BASE_R;",
+      "expect_caught_by": "test_the_halo_is_at_least_24_css_px_at_every_rendered_width"
+    },
+    {
+      "id": "rel-halo-shrinks-on-a-wide-chart",
+      "why": "max becomes min, so on a wide chart the halo shrinks below the size it has always had, and on a narrow one it stays too small -- wrong in both directions while the code still reads as a clamp.",
+      "find": "  return Math.max(REL_HALO_BASE_R, (minPx / 2) * (viewBoxWidth / renderedWidth));",
+      "replace": "  return Math.min(REL_HALO_BASE_R, (minPx / 2) * (viewBoxWidth / renderedWidth));",
+      "expect_caught_by": "test_the_halo_never_shrinks_below_its_old_size"
+    },
+    {
+      "id": "rel-halo-never-resized",
+      "why": "the halos are sized once, at load, while Model Lab is hidden and the chart measures 0 wide -- so they keep the base radius for good, and opening the page changes nothing.",
+      "find": "  if(window.ResizeObserver && svgEl) new ResizeObserver(sizeRelHalos).observe(svgEl);",
+      "replace": "",
+      "expect_caught_by": "test_the_halos_are_sized_on_mount_and_on_every_resize"
+    },
+    {
+      "id": "rel-halo-rounded-to-nearest",
+      "why": "the radius is rounded to the nearest hundredth instead of up, which can leave a halo at 23.99px -- under the line by an amount nobody would see and a checker would.",
+      "find": "    const rUp = (Math.ceil(r * 100) / 100).toFixed(2);",
+      "replace": "    const rUp = (Math.round(r * 100) / 100).toFixed(2);",
+      "expect_caught_by": "test_the_halos_are_sized_on_mount_and_on_every_resize"
+    }
+  ]
+}

@@ -4579,6 +4579,20 @@ function buildCalibrationChart(){
 const RELIABILITY_SERIES = [['model_a','a'], ['model_b','b'], ['market','market']];
 let relVisible = {model_a:true, model_b:true, market:true};
 
+/* ---------- Reliability points: a 24px target at every width (Stage 12) ----------
+   Each point's transparent halo is its hit target. It was r=11, 22 units in
+   the chart's 470-unit viewBox, and the chart scales with its container, so
+   the target was 22 CSS px only when the chart rendered at exactly 470px:
+   the browser checker measured 21-22px at 360, 390, 1024 and 1280 wide,
+   under WCAG 2.5.8's 24. The radius is now worked out from the rendered
+   width so the halo is never under 24 CSS px across, and never smaller than
+   it was. Pure, so the suite can execute it; applied by sizeRelHalos(). */
+const REL_HALO_BASE_R = 11;
+function relHaloRadius(renderedWidth, viewBoxWidth, minPx){
+  if(!(renderedWidth > 0) || !(viewBoxWidth > 0)) return REL_HALO_BASE_R;  // hidden page: nothing to size yet
+  return Math.max(REL_HALO_BASE_R, (minPx / 2) * (viewBoxWidth / renderedWidth));
+}
+
 function buildReliabilityDiagram(){
   if(!calibration || !calibration.models) return '';
 
@@ -4626,7 +4640,7 @@ function buildReliabilityDiagram(){
                  aria-label="${s.label}, ${b.label} bin: stated ${b.mean_predicted} percent, observed ${b.observed} percent, ${b.n} games"
                  data-tip="${tip.replace(/"/g,'&quot;')}" data-cx="${cx.toFixed(1)}" data-cy="${cy.toFixed(1)}">
         ${bar}
-        <circle class="rel-halo" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="11" fill="transparent" stroke="none" opacity="0"/>
+        <circle class="rel-halo" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${REL_HALO_BASE_R}" fill="transparent" stroke="none" opacity="0"/>
         ${marker}
       </g>`;
     }).join('');
@@ -4749,6 +4763,21 @@ function initReliabilityDiagram(){
     tip.style.top = top + 'px';
   }
   function hide(){ tip.classList.remove('on'); }
+
+  // Size the halos now and whenever the chart's width changes -- including
+  // the moment Model Lab opens, when the chart goes from 0 wide to its real
+  // width. Without ResizeObserver, a window resize is the fallback.
+  const svgEl = plot.querySelector('svg');
+  function sizeRelHalos(){
+    if(!svgEl) return;
+    const r = relHaloRadius(svgEl.getBoundingClientRect().width, svgEl.viewBox.baseVal.width, 24);
+    // Rounded UP: rounding to nearest could leave a halo at 23.99px.
+    const rUp = (Math.ceil(r * 100) / 100).toFixed(2);
+    svgEl.querySelectorAll('.rel-halo').forEach(c => c.setAttribute('r', rUp));
+  }
+  sizeRelHalos();
+  if(window.ResizeObserver && svgEl) new ResizeObserver(sizeRelHalos).observe(svgEl);
+  else window.addEventListener('resize', sizeRelHalos);
 
   plot.querySelectorAll('.rel-point').forEach(el=>{
     el.addEventListener('mouseenter', ()=>show(el));
