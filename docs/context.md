@@ -4,27 +4,24 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-26, evening session in progress (Stage 11 complete, #110 to #115 merged)
+Last updated: 2026-09-26, evening session in progress (Stages 11 and 12 complete, #110 to #122 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 2505 passing, none skipped — `python -m pytest -q` on `main` at
-`2e8efce`, HEAD level with origin.
+**Suite:** 2656 passing, none skipped — `python -m pytest -q` on `main` at
+`5c89b81`, HEAD level with origin.
 
-**Next action: Stage 12's first item, self-host the font** (inlined into the built
-page at build time). Mark approved exactly four files on 2026-09-26 (latin and
-latin-ext, 73,692 bytes); they are downloaded, with hashes, in
-`E:\nfl-session-archive\fonts\` on markys (outside the repo). Logos stay
-hot-linked (his decision). CLAUDE.md's Stage 12 section has the three PRs.
+**Next action: Stage 13, Landing and links** (CLAUDE.md's Stage 13 section):
+Week Board as the default page and first in both navs; the three-line orientation
+banner; "Updated" in the Week Board header; hash routes; meta description and one
+Open Graph image. One PR per item.
 
-**Done this evening: all of Stage 11**, one PR at a time, each merged on SAFE TO
-MERGE with no discrepancies: #110 kickoff lock, #111 More sheet inert, #112 24px
-text toggles, #113 pick'em rank wording, #114 illustrative margin retired, #115
-sidebar provenance line. #113 was closed unmerged by a failed chained merge and
-reopened (CLAUDE.md trap); #115 needed Mark's hand edit of its description after
-Booth's one discrepancy, then re-audited clean.
+**Done this evening: Stages 11 (#110 to #115) and 12 (#116 to #122).** The
+Browser checks workflow (Playwright + axe-core, `tests/browser/check_page.py`)
+now runs on every PR touching the page and is green on `main`. Details, and
+Booth's figure slips, are in `memory/2026-09-26.md`.
 
 **Earlier the same day:** Next Gen Stats, one PR at a time, each merged after Booth
 said SAFE TO MERGE with no discrepancies. #108 registered the questions
@@ -80,6 +77,7 @@ moves the README count, so two open at once always conflict.
 - **Preflight checks commits and suite counts, not every number in prose.** Read the body against `git log` before opening.
 - **Nothing on the page reaches the listbox edge flip**; kept and checked over synthetic geometries.
 - **A human approval leaves no artifact in the repo.** `memory/` is what records it.
-- **The co-occurrence trace, and the no-JS findings, are re-derivable only where a browser exists.** No CI job here has one; the premise is guarded in the suite and the finding is not.
+- **The co-occurrence trace, and the no-JS findings, are re-derivable only where a browser exists.** Browser checks (#120) now has one, but runs only `tests/browser/check_page.py`; these two are still guarded as premises in the suite, not re-derived.
+- **Browser checks does not click.** States reached only by interaction (a switched-off series, an opened team dive, shared-picks mode) are covered by static tests, not by the browser run. #122 found the off-series contrast failure by reading, not by the checker.
 - **60 of 496 team pairs sit under the CIEDE2000 floor on the Week Board's split bar, accepted 2026-09-21.** `src/verify_matchup_cvd.py` still reports it.
 - **The Booth report check cannot tell WHY a run posted nothing.** Since #101 a failed audit at least opens an issue.

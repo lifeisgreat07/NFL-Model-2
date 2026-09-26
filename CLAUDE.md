@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **2505 passing** (none skipped) — `python -m pytest -q` on `main` at
-`2e8efce` (#115 merged), with HEAD level with origin, which is the order that makes the
+Suite: **2656 passing** (none skipped) — `python -m pytest -q` on `main` at
+`5c89b81` (#120 merged), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -67,7 +67,8 @@ reads like a deleted section rather than an edited sentence.
 Stage 8, 8b and 8c are all complete; its decisions live in
 `docs/design/STAGE8-DESIGN.md` and its specification is the pair of mocks
 beside that file. Stage 9 is complete (#87, 2026-09-22; its button
-component moved to Stage 10). Stage 10 is complete (#89 to #94, 2026-09-23). What is next is in
+component moved to Stage 10). Stage 10 is complete (#89 to #94, 2026-09-23). Stage 11
+is complete (#110 to #115) and Stage 12 is complete (#116 to #122), both 2026-09-26. What is next is in
 `docs/context.md`, which is rewritten every session and is the only place
 current status belongs.**
 
@@ -1127,7 +1128,33 @@ invisible "Team Deep-Dive" button); `+ view context` toggles at least 24 px tall
 as a minus); the sidebar footer's build internals ("2026_week3", "week(s)
 saved") replaced by one plain provenance line generated from config.
 
-### Stage 12 - Self-hosted assets and browser checks in CI
+### Stage 12 - Self-hosted assets and browser checks in CI  <- COMPLETE (2026-09-26, #116 to #122)
+
+Seven PRs, each merged on a Booth SAFE TO MERGE with no discrepancies (#120 only
+after two DO NOT MERGE audits of its description, first for not saying its own
+check was red, then for a future-tense sentence -- see the last bullet): the font
+(#116), 24px standalone links (#117), and the Playwright job (#120) -- plus four
+page defects the checker found, each fixed in its own PR before the job could go
+green: focus on a 1x1 hidden week select (#118) and 21-22px reliability points
+(#119) found from the sandbox; sideways-scrolling boxes with no keyboard way in
+(#121) and text dimmed with opacity (#122) found by axe on #120's first CI run.
+Decisions worth keeping:
+
+- **The checker proves itself first.** `--self-test` runs every rule against a
+  fixture built to break it; the workflow fails if any rule cannot fail.
+- **axe runs only in CI**: the sandbox proxy refuses axe-core, so a sandbox run
+  of `check_page.py` is every rule except axe. Say so in any PR note. Booth CAN
+  install both, and did, reproducing CI node-for-node.
+- **A box that scrolls sideways is a named Tab stop only while it scrolls and
+  only if it holds no control of its own** (`setScrollStop`, #121);
+  `data-scroll-stop` records what was added so fitting removes exactly that.
+- **No text is dimmed with opacity** (#122). `tests/test_no_dimmed_text.py`
+  lists every partial opacity with why it holds no text. axe cannot judge text
+  on the sidebar's gradient ("needs review", not a violation), so a token-level
+  contrast sweep found two failures axe never reported.
+- **A future-tense sentence about a PR that does not exist yet is a Booth
+  DISCREPANCY** (#120's second audit): "is fixed in a second PR" was read as a
+  present claim. Write "will be fixed" or wait until it exists.
 
 **Decided with Mark 2026-09-26, before starting:** self-host FOUR font files only
 -- Plus Jakarta Sans latin and latin-ext, the variable normal face (400-800) and
@@ -1424,7 +1451,10 @@ under compaction pressure, so its length is a cost paid on every session.
 - **The mutation corpus edits the working tree in place, and is now slow.**
   On 2026-09-24 a full run on `markys` reached 104 of 328 cases in about 17
   minutes, on pace for close to an hour, not the six minutes recorded
-  earlier. While it runs, do not run pytest, `git add`, or a
+  earlier. 328 was the size THEN: on 2026-09-26 after #120 it is 470 cases
+  in 88 files, so a full run is well over an hour. Count before estimating
+  (`sum(len(cases))` over `tests/mutation/cases/*.json`); Booth's #115 audit
+  quoted the 328 as current. While it runs, do not run pytest, `git add`, or a
   second corpus run in the same checkout: a suite run during it failed a
   test for a mutation that was live at that moment. Killing it mid-case
   leaves that case's file mutated (`src/scout_preflight.py` and
