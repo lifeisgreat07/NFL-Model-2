@@ -1,0 +1,98 @@
+{
+  "id": "N1",
+  "registry_entry": {
+    "id": "N1",
+    "kind": "screen",
+    "title": "Do Next Gen Stats passing numbers say something about a quarterback's next game that play-by-play does not?",
+    "question": "Predict each qb_game's target from trailing values known before it. Three weighted least-squares fits with an intercept, weights = the game's dropbacks, fitted on qb_games in 2017-2021 and scored on qb_games in 2022-2023: base = [trailing_epa]; control = base + [trailing_cpoe]; candidate = control + the four trailing_ngs columns.",
+    "metric": "dropback-weighted mean squared error on 2022-2023",
+    "rule": "PASS if candidate minus control MSE is below zero and the upper end of its 95% cluster-bootstrap interval (clusters = passer-season, n_resamples and seed from the protocol) is below zero. Otherwise FAIL, and Stage 6 asks nothing more of Next Gen Stats. Control minus base is reported, not decided.",
+    "spends_slot": false,
+    "freezes": "The candidate and control fits (their coefficients, fitted on 2017-2021 only) are frozen by this step and used unchanged by N2 and N3.",
+    "expected": "a small improvement at most"
+  },
+  "code_commit": "4abce29174e1b86f67d96062de5ab1f6f689ce5d",
+  "ci_level_confirmatory": 0.99,
+  "ngs_column_map": {},
+  "build": {
+    "unmatched_ngs_weeks": [],
+    "ngs_rows_reg_weekly": 5285,
+    "ngs_seasons": [
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "qb_games": 4831,
+    "model_games": 1615,
+    "parity_rows": 1599,
+    "starter_rows_missing_id": 0,
+    "ngs_column_map": {}
+  },
+  "fit": {
+    "seasons": [
+      2017,
+      2018,
+      2019,
+      2020,
+      2021
+    ],
+    "n_qb_games": 2632,
+    "coefficients": {
+      "base": {
+        "intercept": 0.01024866474308902,
+        "trailing_epa": 0.6412382655459586
+      },
+      "control": {
+        "intercept": 0.01030590178496791,
+        "trailing_epa": 0.639441623773761,
+        "trailing_cpoe": 8.974600194977533e-05
+      },
+      "candidate": {
+        "intercept": -0.04634122046398322,
+        "trailing_epa": 0.6014679095344232,
+        "trailing_cpoe": 0.00637897616566937,
+        "trailing_completion_percentage_above_expectation": -0.007686957633834894,
+        "trailing_avg_time_to_throw": 0.02596643597110978,
+        "trailing_aggressiveness": -0.000976760618923267,
+        "trailing_avg_intended_air_yards": 0.0004913591327341815
+      }
+    }
+  },
+  "validation": {
+    "seasons": [
+      2022,
+      2023
+    ],
+    "n_qb_games": 1101,
+    "n_clusters": 134,
+    "mse": {
+      "base": 0.08000720995365496,
+      "control": 0.08001161736402353,
+      "candidate": 0.08027607528121597
+    },
+    "share_of_games_whose_passer_is_never_in_ngs": 0.0
+  },
+  "candidate_minus_control": {
+    "mse_diff": 0.0002644579171924427,
+    "mse_ci_95": [
+      -0.0003618290290135153,
+      0.0009043053198184447
+    ]
+  },
+  "control_minus_base": {
+    "mse_diff": 4.407410368570397e-06,
+    "mse_ci_95": [
+      -3.1593484725887883e-06,
+      1.162654479675921e-05
+    ]
+  },
+  "decision": "FAIL",
+  "reached_confirmation": false
+}

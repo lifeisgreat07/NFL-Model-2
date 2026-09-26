@@ -432,6 +432,16 @@ testable; multi-book line dispersion, gated on the line
 accumulation below rather than a new build. Each item needs a stated hypothesis BEFORE the data is
 pulled, or it is fishing.
 
+**Next Gen Stats: answered 2026-09-26, nothing accepted.** Registered in
+`experiments/stage6/registry.json` (#108) before any of it was loaded, with one
+budget of five confirmatory slots (99% intervals) for the whole of Stage 6. The
+N1 screen FAILED: four passing numbers (completion over expected, time to throw,
+aggressiveness, intended air yards) did not predict a quarterback's next game
+beyond his recent EPA plus play-by-play CPOE, so N2 and N3 were never run and no
+slot was spent. `experiments/stage6/README.md` has the figures. Do not re-open it
+without a new registration and a reason the answer would differ. Referee crews
+and personnel groupings register into the same file, under the same budget.
+
 **Line movement and the closing-line backtest (moved here when Stage 1 was
 retired, 2026-09-24).** Line snapshots accumulate on every weekly run and are
 confirmed working. Do not test anything on them before the 2026 regular
