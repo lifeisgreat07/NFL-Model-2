@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_text_toggle_target.py",
+  "cases": [
+    {
+      "id": "text-toggle-loses-its-floor",
+      "why": "the component's minimum height goes, and every text toggle shrinks back to the height of an 11px line. On a phone '+ view context' becomes a 13px strip to hit with a thumb, and nothing on the page looks broken.",
+      "find": "border-radius:var(--r-sm); min-height:24px;",
+      "replace": "border-radius:var(--r-sm);",
+      "expect_caught_by": "test_the_text_toggle_component_is_at_least_24px_tall"
+    },
+    {
+      "id": "context-toggle-drops-the-component",
+      "why": "the context toggle is written as a plain .btn with its hook class, so it inherits the bordered action style's box but not the text toggle's floor -- the kind of one-word edit a restyle makes.",
+      "find": "<button class=\"btn btn-link toggle-flag\"",
+      "replace": "<button class=\"btn toggle-flag\"",
+      "expect_caught_by": "test_every_text_toggle_wears_the_component"
+    },
+    {
+      "id": "context-toggle-capped-by-a-later-rule",
+      "why": "a more specific rule caps the toggle's height, which wins over the component's floor for that one control. The component rule still reads 24px, so reading the component alone would say this is fine.",
+      "find": "  .why-toggle, .toggle-flag{margin-top:var(--s3);}",
+      "replace": "  .why-toggle, .toggle-flag{margin-top:var(--s3); max-height:14px;}",
+      "expect_caught_by": "test_nothing_caps_a_text_toggle_below_the_floor"
+    }
+  ]
+}

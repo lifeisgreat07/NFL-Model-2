@@ -459,8 +459,14 @@
   .btn-chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent);}
   .btn-chip[aria-pressed="true"]{color:var(--text); border-color:var(--border-strong);}
   .btn-chip[aria-pressed="false"]{opacity:.45;}
+  /* min-height is the WCAG 2.5.8 minimum target (24 CSS px). With no
+     padding, a text toggle was only as tall as its 11px line: "+ view
+     context" measured 13px at 390 wide (Stage 11, UX-REVIEW-2026-09-26).
+     On the component rather than on .toggle-flag, so every text toggle --
+     the why-toggle, the context toggle, Undo -- clears it, and the next one
+     added does too. .btn is already inline-flex and centres the text. */
   .btn-link{
-    background:none; border:none; padding:0; border-radius:var(--r-sm);
+    background:none; border:none; padding:0; border-radius:var(--r-sm); min-height:24px;
     color:var(--text-2); font-size:var(--fs-11); font-weight:400; letter-spacing:.04em;
     text-decoration:underline; text-underline-offset:3px;
   }
