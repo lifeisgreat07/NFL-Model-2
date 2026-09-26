@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_more_sheet_inert.py",
+  "cases": [
+    {
+      "id": "more-sheet-starts-reachable",
+      "why": "the closed sheet loses `inert` in the markup, so until someone opens and closes it once, its five buttons are back in the Tab order -- on a desktop, where it never opens, that is forever. Focus disappears off the bottom of the screen for five presses and nothing on the page shows it.",
+      "find": "<div id=\"bnav-more-sheet\" class=\"bnav-more-sheet\" inert>",
+      "replace": "<div id=\"bnav-more-sheet\" class=\"bnav-more-sheet\">",
+      "expect_caught_by": "test_the_sheet_starts_inert_in_the_markup"
+    },
+    {
+      "id": "more-sheet-close-leaves-it-reachable",
+      "why": "closing the sheet no longer makes it inert again, so the first open-and-close on a phone puts the hidden buttons back in the Tab order and the screen reader's list for the rest of the visit.",
+      "find": "  sheet.inert = !open;",
+      "replace": "  sheet.inert = false;",
+      "expect_caught_by": "test_closing_the_sheet_makes_it_inert_again"
+    },
+    {
+      "id": "more-sheet-toggled-around-the-one-function",
+      "why": "the More button toggles the class directly again, as it did before, so the sheet slides open while still inert -- visible, and not one of its buttons can be reached or pressed.",
+      "find": "    setMoreSheetOpen(!document.getElementById('bnav-more-sheet').classList.contains('open'));",
+      "replace": "    document.getElementById('bnav-more-sheet').classList.toggle('open');",
+      "expect_caught_by": "test_only_one_function_opens_or_closes_the_sheet"
+    }
+  ]
+}

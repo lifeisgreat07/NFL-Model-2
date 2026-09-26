@@ -2209,7 +2209,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <button class="bnav-btn" id="bnav-more-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span class="bnav-label">More</span></button>
   </div>
 </nav>
-<div id="bnav-more-sheet" class="bnav-more-sheet">
+<div id="bnav-more-sheet" class="bnav-more-sheet" inert>
   <div class="bnav-more-sheet-inner">
     <button class="bnav-more-item" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Team Deep-Dive</span></button>
     <button class="bnav-more-item" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span>Methodology</span></button>
@@ -2816,15 +2816,27 @@ document.querySelectorAll('[data-page]').forEach(btn=>{
   btn.addEventListener('click', ()=> setActivePage(btn.dataset.page));
 });
 
-function closeMoreSheet(){
+/* The More sheet is always in the page: closed, it is only moved below the
+   screen with a transform. Without `inert` its five buttons stayed in the
+   Tab order and in the accessibility tree -- at 1440x900 the 19th Tab press
+   focused "Team Deep-Dive" at top 917, on a sheet that never opens at that
+   width (Stage 11; measured in docs/design/UX-REVIEW-2026-09-26.md). The
+   markup starts inert, and this is the ONE place that opens or closes the
+   sheet, so the class and the attribute cannot disagree. */
+function setMoreSheetOpen(open){
   const sheet = document.getElementById('bnav-more-sheet');
-  if(sheet) sheet.classList.remove('open');
+  if(!sheet) return;
+  sheet.classList.toggle('open', open);
+  sheet.inert = !open;
+}
+function closeMoreSheet(){
+  setMoreSheetOpen(false);
 }
 const moreBtn = document.getElementById('bnav-more-btn');
 if(moreBtn){
   moreBtn.addEventListener('click', (e)=>{
     e.stopPropagation();
-    document.getElementById('bnav-more-sheet').classList.toggle('open');
+    setMoreSheetOpen(!document.getElementById('bnav-more-sheet').classList.contains('open'));
   });
 }
 document.addEventListener('click', (e)=>{
