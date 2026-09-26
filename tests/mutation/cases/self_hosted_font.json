@@ -1,0 +1,35 @@
+{
+  "target": "src/generate_dashboard.py",
+  "tests": "tests/test_self_hosted_font.py",
+  "cases": [
+    {
+      "id": "font-hash-check-skipped",
+      "why": "the build stops checking each font against its recorded hash. A file damaged in transit -- the file bridge has already done this to PNGs -- is inlined anyway, and a browser answers a bad font by silently using the fallback, so the page looks almost right and every later measurement is taken in the wrong face.",
+      "find": "        if digest != f['sha256']:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_damaged_font_stops_the_build"
+    },
+    {
+      "id": "font-normal-face-declares-one-weight",
+      "why": "the variable file is declared as weight 400 only, so every 600, 700 and 800 on the page is synthesised bold by the browser -- smeared, wider, and measured differently from the real face, while still being 'Plus Jakarta Sans' to anyone who inspects the element.",
+      "find": "        weight = '400 800' if f['style'] == 'normal' else '500'",
+      "replace": "        weight = '400' if f['style'] == 'normal' else '500'",
+      "expect_caught_by": "test_the_normal_face_covers_every_weight_the_page_uses"
+    },
+    {
+      "id": "font-unicode-range-dropped",
+      "why": "the unicode-range goes, so the latin and latin-ext files both claim every character and the browser picks whichever was declared last for all text -- here the smaller latin-ext subset, which lacks most basic letters.",
+      "find": "            f\"unicode-range:{f['unicode_range']};}}\")",
+      "replace": "            \"}\")",
+      "expect_caught_by": "test_each_file_becomes_one_rule_carrying_exactly_its_bytes"
+    },
+    {
+      "id": "font-google-link-comes-back",
+      "target": "src/dashboard_template.html",
+      "why": "the Google Fonts stylesheet is linked again beside the inlined faces. Nothing looks different, which is the point: the page quietly goes back to asking a third party for its face on every load.",
+      "find": "<style id=\"font-faces\">",
+      "replace": "<link href=\"https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap\" rel=\"stylesheet\">\n<style id=\"font-faces\">",
+      "expect_caught_by": "test_the_page_asks_no_font_host_for_anything"
+    }
+  ]
+}

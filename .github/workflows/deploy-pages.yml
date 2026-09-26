@@ -38,6 +38,9 @@ on:
       - 'data/**'
       - 'predictions/**'
       - 'results/**'
+      # The self-hosted font (Stage 12) is inlined into the page at build
+      # time, so a changed font file is a changed page.
+      - 'assets/**'
       - '.github/workflows/deploy-pages.yml'
 
   # EVERY workflow that commits something in the paths above must also be
