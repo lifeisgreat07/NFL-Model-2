@@ -1,0 +1,27 @@
+{
+  "target": "src/generate_dashboard.py",
+  "tests": "tests/test_sidebar_provenance.py",
+  "cases": [
+    {
+      "id": "provenance-first-season-typed-in",
+      "why": "the first season is typed into the generator instead of read from config. It is right today and silently wrong the day TRAIN_SEASONS moves, which is the exact drift a line 'generated from config' exists to rule out.",
+      "find": "    first = min(train_seasons)",
+      "replace": "    first = 2020",
+      "expect_caught_by": "test_the_line_reads_as_a_sentence"
+    },
+    {
+      "id": "provenance-loses-its-time-zone",
+      "why": "the time is printed without UTC. A reader in New York reads 19:11 as their own evening, four hours off, and nothing on the page says otherwise.",
+      "find": "             f\"{now.strftime('%H:%M')} UTC\")",
+      "replace": "             f\"{now.strftime('%H:%M')}\")",
+      "expect_caught_by": "test_the_line_reads_as_a_sentence"
+    },
+    {
+      "id": "provenance-footer-gets-the-internals-back",
+      "why": "the old footer is restored beside the new line -- the file-name week key and the '(s)' plural back on every page, with the provenance line still present so a check for it alone would pass.",
+      "find": "    foot_html = provenance_line(datetime.now(timezone.utc))",
+      "replace": "    foot_html = provenance_line(datetime.now(timezone.utc)) + f\"<br>{len(weeks_js)} week(s) saved<br>Latest: {latest_label}\"",
+      "expect_caught_by": "test_the_page_footer_is_the_provenance_line_and_nothing_else"
+    }
+  ]
+}
