@@ -19,7 +19,7 @@ from pathlib import Path
 # own directory, so this still resolves when the module is imported by a test
 # rather than run as a script.
 sys.path.insert(0, str(Path(__file__).parent))
-from config import MODEL_VERSION, VERSION_HISTORY
+from config import MODEL_VERSION, TRAIN_SEASONS, VERSION_HISTORY
 
 # generate_picks_pdf is imported lazily, inside the PDF loop in main() --
 # NOT here. It pulls in reportlab, and a module-level import would mean a
@@ -371,6 +371,30 @@ def load_team_history():
     return {'names': names, 'timeline': timeline}
 
 
+MONTHS = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
+
+
+def provenance_line(now, model_version=MODEL_VERSION, train_seasons=TRAIN_SEASONS):
+    """The sidebar footer: one plain line saying what made the page and when.
+
+    Stage 11. It used to read "Trained on: current nflfastR history / 3
+    week(s) saved / Latest: 2026_week3 / Data as of ..." -- a file-name
+    week key, a "(s)" plural and a data project's name, which is the build
+    talking to itself rather than to a reader. Every part of this line
+    comes from config or the clock, so it cannot drift from what built the
+    page: the model version, the first season the model learns from (the
+    live run also learns from the current season's finished games, hence
+    "since"), and when the page was built, read from the clock in UTC and
+    labelled so, because a time whose zone is not stated is not a time.
+    """
+    first = min(train_seasons)
+    stamp = (f"{MONTHS[now.month - 1]} {now.day}, {now.year}, "
+             f"{now.strftime('%H:%M')} UTC")
+    return (f"Model {model_version}, built from NFL play-by-play since {first}. "
+            f"<span class='foot-freshness'>Updated {stamp}.</span>")
+
+
 def main():
     print("Loading current ratings...")
     ratings = load_current_ratings()
@@ -450,11 +474,7 @@ def main():
     print("Loading team history...")
     team_history_js = load_team_history()
 
-    generated_at = datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')
-    if not all_preds:
-        foot_html = f"Trained on: current nflfastR history<br>{len(ratings)} teams rated<br>No predictions saved yet<br><span class='foot-freshness'>Data as of {generated_at}</span>"
-    else:
-        foot_html = f"Trained on: current nflfastR history<br>{len(weeks_js)} week(s) saved<br>Latest: {latest_label}<br><span class='foot-freshness'>Data as of {generated_at}</span>"
+    foot_html = provenance_line(datetime.now(timezone.utc))
 
     with open(TEMPLATE_PATH) as f:
         template = f.read()
