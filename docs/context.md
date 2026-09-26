@@ -55,6 +55,8 @@ which is GitHub's scheduler, not the workflow. No alert issue has opened.
 
 Open decisions for Mark, each made from a render when its stage starts: net rating
 per 100 plays (Stage 14); the team-colour bars on the new card (Stage 17).
+TV channel per game added to Stage 15 (from ESPN's scoreboard, with the checks
+that keep a wrong channel off the page) and shown on the card in Stage 17.
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict.

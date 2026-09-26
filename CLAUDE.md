@@ -1147,6 +1147,50 @@ writes only status, scores and lines, and a test holds it off `predictions/`.
 Cards gain a status: upcoming, played and awaiting Tuesday's grading, or final
 with the score. It also gives Stage 16 its refresh cadence.
 
+**TV channel per game (added 2026-09-26).** nflverse's schedule has no broadcast
+column (all 46 checked). ESPN's public scoreboard does, per game
+(`site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=N&dates=2026`,
+`competitions[0].broadcasts[].names`), and it was reachable from `markys` on
+2026-09-26 with all 16 week-4 games carrying a network. It is undocumented, so
+accuracy cannot be assumed; it has to be earned and then watched. Nothing can
+guarantee a third party is right, so the guarantee this stage makes is narrower
+and checkable: **the page never shows a channel that failed a check, and every
+channel it shows can be traced to where and when it was read.**
+
+1. **Exact join, then a cross-check.** Match on nflverse's `espn` game id, never on
+   team names or dates, and then require ESPN's two teams and kickoff to agree with
+   the nflverse row. Any disagreement drops that game's channel and is reported.
+2. **A closed list of networks.** CBS, FOX, NBC, ESPN, ABC, NFL Network, Prime
+   Video, Netflix, YouTube, Peacock, ESPN+. A name outside it is not shown until a
+   person adds it to the list in a reviewed PR.
+3. **Slot rules as warnings.** Thursday night is normally Prime Video, Sunday night
+   NBC, Monday night ESPN or ABC, Sunday afternoon CBS or FOX. A game breaking its
+   slot's rule is shown only if it is on a list of known exceptions (holiday games,
+   international games, streaming exclusives) and is otherwise held back and
+   reported. The exceptions list is data with a source per entry.
+4. **Provenance.** Each saved channel carries the URL it came from and the time it
+   was read. Every fetch is kept, so a change between fetches (a flexed Sunday night
+   game) is visible in the weekly summary as "changed from X to Y", never a silent
+   overwrite.
+5. **Measured before it ships.** Weeks 1 to 4 of 2026 compared, game by game,
+   with the league's own published schedule, and the result written into the PR:
+   how many matched, and what each mismatch was. It ships only with zero unexplained
+   mismatches.
+6. **Watched after it ships.** The nightly canary fetches the feed and checks its
+   shape; a missing field or an empty week opens "Nightly canary failing", like any
+   other upstream break. A missing or failed channel is a WARNING, never an error:
+   no pick waits on a TV listing.
+7. **Honest display.** The card shows the network name and nothing it cannot back:
+   Sunday afternoon CBS and FOX games are regional, and the feed does not say where,
+   so one line on the page says so rather than implying every viewer gets that game.
+   Stage 17 puts it on the card; before then it is data only.
+
+Tests, each with a mutation case: a mismatched team or kickoff drops the channel;
+an unlisted network is held back; a slot-rule break without an exception is held
+back; a changed channel is reported as a change; the refresh never writes
+`predictions/`. The reachability of the feed from GitHub's runners is the first
+thing checked, before any code is written.
+
 ### Stage 16 - Team news
 
 Mark wants this clear and concise, not information overload. **The data
@@ -1177,8 +1221,8 @@ with Model A ●, Model B ■ and Market ▲ (the shapes Season Accuracy already
 uses); Model B's number as the headline, for the team it favours; the market
 as a probability, not only a spread; the announced quarterbacks named (the
 saved predictions gain the resolved starter names -- a data-output change,
-reviewed as production code); Stage 15's status; Stage 16's one news line; no
-HIGH/LOW confidence words. **Open decision for Mark:** the team-colour split
+reviewed as production code); Stage 15's status and TV channel; Stage 16's one news
+line; no HIGH/LOW confidence words. **Open decision for Mark:** the team-colour split
 bars kept on 2026-09-21 -- keep them as the line's end caps, or keep the bars
 and put the line beneath -- chosen from rendered side-by-sides in both themes
 and under protan and deutan simulation, as that decision was. `[` and `]` step
