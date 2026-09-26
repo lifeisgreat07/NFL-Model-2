@@ -589,9 +589,17 @@
     border:1px solid var(--border); border-radius:var(--r-md); padding:var(--s1);}
   .week-step-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); font-weight:600;
     color:var(--text); padding:0 var(--s2); white-space:nowrap; font-variant-numeric:tabular-nums;}
-  /* Kept in the DOM and out of sight: still focusable, still announced, still
-     the element that owns which week is selected. display:none would remove it
-     from the accessibility tree along with the picture. */
+  /* Kept in the DOM and out of sight: still announced, still the element that
+     owns which week is selected. display:none would remove it from the
+     accessibility tree along with the picture.
+     NOT in the Tab order (Stage 12). This said "still focusable" until then,
+     and it was: Tab landed on a 1x1 clipped select on the Week Board and My
+     Picks at every width, so a keyboard user's focus vanished for one stop
+     (found by the browser checks). Every select hidden here now carries
+     tabindex="-1" -- the two week selects in the markup, the sort and team
+     selects from enhanceSelect(), which already did -- and the visible
+     control beside each (the week stepper, the listbox button) is the one
+     that takes focus. tests/test_hidden_select_tab_order.py holds it. */
   /* min-width/min-height:0 are load-bearing, not tidy-up. `width:1px` is a
      request and `min-width` is a floor, and the floor wins: every select
      hidden here also wears .week-select, which sets `min-width:160px`, so
@@ -1614,7 +1622,7 @@ __FONT_FACES__
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       </div>
-      <select id="week-select" class="week-select visually-hidden" aria-label="Week"></select>
+      <select id="week-select" class="week-select visually-hidden" aria-label="Week" tabindex="-1"></select>
       <!-- #sort-select below ships VISIBLE and enhanceSelect() adds
            visually-hidden once the listbox is built, so the select is never
            hidden unless the control replacing it already exists. That
@@ -1701,7 +1709,7 @@ __FONT_FACES__
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
       </div>
-      <select id="picks-week-select" class="week-select visually-hidden" aria-label="Week"></select>
+      <select id="picks-week-select" class="week-select visually-hidden" aria-label="Week" tabindex="-1"></select>
       <button class="btn" onclick="copyShareLink(this)">Copy Share Link</button>
       <button class="btn" onclick="exportMyPicks()">Export My Picks</button>
       <button class="btn" onclick="document.getElementById('picks-import-input').click()">Import My Picks</button>

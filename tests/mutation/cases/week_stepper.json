@@ -5,8 +5,8 @@
     {
       "id": "stepper-picks-select-becomes-visible-again",
       "why": "My Picks' native select loses visually-hidden, which is the change a tidy-up makes when it sees a hidden control and assumes it is dead markup. The page then has TWO week controls side by side doing the same job, and on a phone the visible one opens the iOS system wheel -- which is the complaint this change exists to answer. Nothing errors, nothing looks broken in a desktop screenshot, and the regression is only visible on the device that had the problem.",
-      "find": "      <select id=\"picks-week-select\" class=\"week-select visually-hidden\" aria-label=\"Week\"></select>",
-      "replace": "      <select id=\"picks-week-select\" class=\"week-select\" aria-label=\"Week\"></select>",
+      "find": "      <select id=\"picks-week-select\" class=\"week-select visually-hidden\" aria-label=\"Week\" tabindex=\"-1\"></select>",
+      "replace": "      <select id=\"picks-week-select\" class=\"week-select\" aria-label=\"Week\" tabindex=\"-1\"></select>",
       "expect_caught_by": "test_the_visible_control_is_never_the_native_select"
     },
     {
