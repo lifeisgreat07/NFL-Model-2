@@ -3283,6 +3283,21 @@ function kickoffKey(g){
   return g.gameday ? `${g.gameday}T${g.gametime_et || '00:00'}` : null;
 }
 
+/* ---------- Pick'em rank, in words (Stage 11) ----------
+   Was "Confidence #6 · 11 pts". Two problems with it: "Confidence #6"
+   reads as a confidence LEVEL of 6 rather than the sixth-most-confident
+   game, and elsewhere on this site "pt" means percentage points (Model
+   Lab's gaps), so the abbreviation meant two different things. This is the
+   game's place in a confidence pool and the points it is worth there, so
+   it says that. Returns '' when the week carries neither field (weeks saved
+   before ranking existed), rendering nothing rather than a placeholder. */
+function pickemRankLabel(g){
+  const rank = g.confidence_rank, points = g.confidence_points;
+  const pointsWords = points ? `${points} point${points === 1 ? '' : 's'}` : '';
+  if(rank) return `Pick'em rank ${rank}` + (pointsWords ? ` (${pointsWords})` : '');
+  return pointsWords ? `Worth ${pointsWords} in pick'em` : '';
+}
+
 function byConfidence(a, b){
   return (a.confidence_rank ?? 999) - (b.confidence_rank ?? 999);
 }
@@ -3418,7 +3433,7 @@ function renderGames(){
       ${matchupHeader(g)}
       ${kickoff ? `<div class="card-kickoff">${kickoff}</div>` : ''}
       <div class="game-top">
-        <span class="game-confidence">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}${g.confidence_points ? ` · ${g.confidence_points} pts` : ''}</span>
+        <span class="game-confidence">${pickemRankLabel(g)}</span>
         <div class="tag-row" style="display:flex; gap:var(--s2); align-items:center;">
           ${gradedTag}
           ${/* The badge says WHETHER the models disagree, not by how much. It

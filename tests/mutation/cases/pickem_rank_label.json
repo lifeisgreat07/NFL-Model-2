@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_pickem_rank_label.py",
+  "cases": [
+    {
+      "id": "pickem-label-loses-the-singular",
+      "why": "the last-ranked game reads '(1 points)'. It appears on exactly one card a week, the least interesting one, which is why nobody would report it.",
+      "find": "  const pointsWords = points ? `${points} point${points === 1 ? '' : 's'}` : '';",
+      "replace": "  const pointsWords = points ? `${points} points` : '';",
+      "expect_caught_by": "test_one_point_is_singular"
+    },
+    {
+      "id": "pickem-label-invents-a-rank",
+      "why": "a week saved before ranking existed gets a placeholder instead of nothing -- a claim about the game nobody made, indistinguishable on the card from a real rank.",
+      "find": "  return pointsWords ? `Worth ${pointsWords} in pick'em` : '';",
+      "replace": "  return pointsWords ? `Worth ${pointsWords} in pick'em` : 'Unranked';",
+      "expect_caught_by": "test_a_missing_field_is_left_out_not_invented"
+    },
+    {
+      "id": "pickem-label-card-reverts-to-confidence-hash",
+      "why": "the card goes back to printing its own 'Confidence #n · k pts' inline, beside a helper nothing calls any more. Both read correctly in the diff; only the page shows which one won.",
+      "find": "<span class=\"game-confidence\">${pickemRankLabel(g)}</span>",
+      "replace": "<span class=\"game-confidence\">${g.confidence_rank ? `Confidence #${g.confidence_rank}` : ''}${g.confidence_points ? ` · ${g.confidence_points} pts` : ''}</span>",
+      "expect_caught_by": "test_the_card_uses_the_label_and_the_old_wording_is_gone"
+    }
+  ]
+}
