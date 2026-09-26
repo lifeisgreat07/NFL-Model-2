@@ -187,7 +187,7 @@
   .brand h1{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:var(--fs-24); letter-spacing:.01em; line-height:.98;}
   .brand-sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);}
   nav.side-nav{display:flex; flex-direction:column; gap:2px; padding:0 var(--s3);}
-  .nav-group-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.13em; text-transform:uppercase; color:var(--text-2); padding:var(--s4) var(--s3) var(--s2); opacity:.7;}
+  .nav-group-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.13em; text-transform:uppercase; color:var(--text-2); padding:var(--s4) var(--s3) var(--s2);}
   .nav-btn{
     display:flex; align-items:center; gap:var(--s3); background:transparent; border:none; color:var(--text-2);
     font-family:'Plus Jakarta Sans'; font-weight:600; font-size:var(--fs-14); text-align:left; padding:var(--s3) var(--s3); border-radius:8px;
@@ -199,7 +199,7 @@
   .nav-btn.disabled{opacity:.38; cursor:default;}
   .sidebar-foot{margin-top:auto; padding:var(--s4) var(--s6) 0; border-top:1px solid var(--border);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); line-height:1.7;}
-  .foot-freshness{display:inline-block; margin-top:var(--s1); opacity:0.75;}
+  .foot-freshness{display:inline-block; margin-top:var(--s1);}
   /* .btn.theme-toggle, not .theme-toggle: this rule sits above the button
      component in source order, so at equal specificity .btn's colour won. */
   .btn.theme-toggle{margin-bottom:var(--s3); color:var(--text-2); font-weight:500;}
@@ -268,6 +268,10 @@
       var(--surface);
   }
   .table-wrap.fits{overflow:clip; background:var(--surface);}
+  /* A wrapper that scrolls is a Tab stop (setScrollStop), so it shows
+     where focus is like every other stop on the page. The ring sits just
+     inside the border, where no ancestor's overflow can clip it. */
+  [data-scroll-stop]:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
   table{width:100%; border-collapse:separate; border-spacing:0;}
   thead th{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.08em; text-transform:uppercase;
     color:var(--text-2); text-align:left; padding:var(--s3) var(--s4); border-bottom:1px solid var(--border);
@@ -348,7 +352,7 @@
   .shared-actions{display:flex; gap:var(--s2); flex-wrap:wrap;}
   /* Read-only while viewing someone else's picks: the buttons still show the
      selection, but tapping one must not silently start editing their log. */
-  .picks-readonly .pick-btn{cursor:default; opacity:.92;}
+  .picks-readonly .pick-btn{cursor:default;}
   .team-logo{width:22px; height:22px; object-fit:contain; flex-shrink:0;}
   .tele-team{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); line-height:1;
     display:flex; flex-direction:column; align-items:center; gap:var(--s1);}
@@ -459,7 +463,15 @@
   }
   .btn-chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent);}
   .btn-chip[aria-pressed="true"]{color:var(--text); border-color:var(--border-strong);}
-  .btn-chip[aria-pressed="false"]{opacity:.45;}
+  /* A series switched off says so with its border and its marker, never by
+     fading its words: at opacity .45 the label was under 3:1 against the
+     card in both themes, and an "off" toggle is still a control someone has
+     to read to switch it back on (WCAG 1.4.3). Same rule for all small
+     text: dim it with the neutral ramp, which the contrast sums cover, not
+     with opacity, which they do not (Stage 12; see
+     tests/test_no_dimmed_text.py). */
+  .btn-chip[aria-pressed="false"]{border-style:dashed; border-color:var(--border-strong);}
+  .btn-chip[aria-pressed="false"] svg{opacity:.35;}
   /* min-height is the WCAG 2.5.8 minimum target (24 CSS px). With no
      padding, a text toggle was only as tall as its 11px line: "+ view
      context" measured 13px at 390 wide (Stage 11, UX-REVIEW-2026-09-26).
@@ -975,7 +987,7 @@
   .track-record.warn{border-left:3px solid var(--accent);}
   .track-record.thin{color:var(--text-2); font-style:italic;}
   .track-coin{color:var(--accent); font-weight:600;}
-  .track-note{display:block; margin-top:var(--s1); font-size:var(--fs-11); opacity:.85;}
+  .track-note{display:block; margin-top:var(--s1); font-size:var(--fs-11);}
   /* flex column so the toggle can pin to the bottom edge. The grid stretches
      every card in a row to the row's height; without this the slack lands
      after the last element as an unexplained gap, which reads as a mistake.
@@ -1176,7 +1188,7 @@
   .dive-pending{color:var(--text-2); font-size:var(--fs-12);}
   .dive-game .why-panel{padding:0 var(--s4) var(--s4);}
   .dive-why-head{font-size:var(--fs-13); color:var(--text-2); margin-bottom:var(--s1);}
-  .dive-why-note{font-size:var(--fs-11); color:var(--text-2); opacity:.85; margin-bottom:var(--s3);}
+  .dive-why-note{font-size:var(--fs-11); color:var(--text-2); margin-bottom:var(--s3);}
   .dive-tick{color:var(--good); font-weight:600;}
   .dive-cross{color:var(--warn); font-weight:600;}
   @media (max-width:640px){
@@ -1234,7 +1246,7 @@
   .agent-stat{background:var(--border); border:1px solid var(--border); border-radius:var(--r-md); padding:var(--s4);}
   .agent-stat-n{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-24); line-height:1.1;}
   .agent-stat-l{font-size:var(--fs-12); color:var(--text-2); margin-top:var(--s1); line-height:1.4;}
-  .agent-stat-note{font-size:var(--fs-11); color:var(--text-2); opacity:.8; margin-top:var(--s2); line-height:1.4;}
+  .agent-stat-note{font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2); line-height:1.4;}
 
   /* Jump links for Methodology, which is now four pages in one. Long
      enough that arriving at the top with no idea what is below it is its
@@ -1392,7 +1404,7 @@
     .pick-btn:hover:not(:disabled){border-color:var(--accent);}
     .rel-table summary:hover{color:var(--text);}
     .btn:hover:not(:disabled){border-color:var(--accent); color:var(--text);}
-    .btn-chip[aria-pressed="false"]:hover{opacity:.75;}
+    .btn-chip[aria-pressed="false"]:hover svg{opacity:.7;}
     .btn-link:hover{color:var(--text);}
     .btn-icon:hover:not(:disabled){background:var(--surface-2);}
     .lbx-btn:hover{border-color:var(--accent); color:var(--text);}
@@ -1765,7 +1777,7 @@ __FONT_FACES__
          run src/calibration.py -- the section omits itself rather than
          rendering an empty axis. -->
     <div id="reliability-diagram"></div>
-    <div class="table-wrap">
+    <div class="table-wrap" data-scroll-label="Experiment log">
       <table>
         <thead><tr><th>Experiment</th><th>Result</th><th>Decision</th></tr></thead>
         <tbody>
@@ -2272,8 +2284,71 @@ function fitTables(){
   document.querySelectorAll('.table-wrap').forEach(w=>{
     const t = w.querySelector('table');
     if(!t || !w.clientWidth) return;
-    w.classList.toggle('fits', t.offsetWidth <= w.clientWidth);
+    const fits = t.offsetWidth <= w.clientWidth;
+    w.classList.toggle('fits', fits);
+    setScrollStop(w, !fits);
   });
+  document.querySelectorAll('.formula').forEach(f=>{
+    if(!f.clientWidth) return;
+    setScrollStop(f, f.scrollWidth > f.clientWidth);
+  });
+}
+/* A box that scrolls sideways has to be reachable from the keyboard, or a
+   keyboard user sees a table's first columns and never the rest (WCAG
+   2.1.1). axe's scrollable-region-focusable found five such boxes at 390px
+   the first time the browser checks ran in CI (Stage 12): the wide tables
+   on Accuracy, Model Lab and Method, and the ridge formula. None holds a
+   control of its own, so nothing in them could take focus.
+
+   So a box that scrolls joins the Tab order as a named region, and once
+   focused the arrow keys scroll it. A box that fits leaves the Tab order
+   again: a stop that does nothing when you land on it is noise. Only what
+   this function added is removed -- data-scroll-stop lists it -- so a
+   tabindex, role or label written into the markup survives the box
+   fitting. */
+/* The region is named, in order of preference: by data-scroll-label, for a
+   box whose nearest heading belongs to something else (Model Lab's
+   experiment log comes straight after the reliability diagram's section);
+   by the table's caption; or by the heading of the section it sits in --
+   the nearest h2-h4 that is an earlier sibling of the box or of one of its
+   ancestors, looking no further out than its page. Only siblings count, not
+   headings buried inside them: on Accuracy the calibration table follows a
+   nested note whose own heading is "Not enough games yet to check", and
+   that is a message, not the table's name. */
+function headingBefore(el){
+  for(let node = el; node && !node.matches('.page'); node = node.parentElement){
+    for(let sib = node.previousElementSibling; sib; sib = sib.previousElementSibling){
+      if(sib.matches('h2, h3, h4')) return sib;
+    }
+  }
+  return null;
+}
+function scrollStopLabel(el){
+  const given = el.getAttribute('data-scroll-label');
+  const heading = given ? null : (el.querySelector('caption') || headingBefore(el));
+  const name = given || (heading ? heading.textContent.trim().replace(/\s+/g, ' ') : '');
+  const what = el.classList.contains('formula') ? 'Formula' : 'Table';
+  return (name ? `${what}: ${name}` : what) + ', scrolls sideways';
+}
+/* A box holding a control of its own is already reachable: Tab lands on
+   the control and the browser scrolls it into view (the Power Ratings
+   table's sortable headers do exactly that). A second stop there would be
+   one more press for nothing. */
+const FOCUSABLE_INSIDE = 'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+const SCROLL_STOP_ATTRS = {tabindex: () => '0', role: () => 'region', 'aria-label': scrollStopLabel};
+function setScrollStop(el, scrolls){
+  const marked = el.hasAttribute('data-scroll-stop');
+  const added = marked ? el.getAttribute('data-scroll-stop').split(' ').filter(Boolean) : [];
+  if(scrolls && !el.querySelector(FOCUSABLE_INSIDE)){
+    for(const [name, value] of Object.entries(SCROLL_STOP_ATTRS)){
+      if(added.includes(name)) el.setAttribute(name, value(el));
+      else if(!el.hasAttribute(name)){ el.setAttribute(name, value(el)); added.push(name); }
+    }
+    el.setAttribute('data-scroll-stop', added.join(' '));
+  } else if(marked){
+    added.forEach(name => el.removeAttribute(name));
+    el.removeAttribute('data-scroll-stop');
+  }
 }
 (function(){
   let queued = false;

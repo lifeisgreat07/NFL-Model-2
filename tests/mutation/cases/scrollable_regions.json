@@ -1,0 +1,62 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_scrollable_regions.py",
+  "cases": [
+    {
+      "id": "scroll-stop-tables-not-marked",
+      "why": "fitTables stops calling setScrollStop for table wrappers, so a wide table on a phone scrolls sideways with no way in from the keyboard -- the five axe findings come back.",
+      "find": "    setScrollStop(w, !fits);\n",
+      "replace": "",
+      "expect_caught_by": "test_fit_tables_marks_every_box_that_scrolls"
+    },
+    {
+      "id": "scroll-stop-formula-not-marked",
+      "why": "the formula block is left out, so the ridge formula on Method scrolls with nothing to focus -- one of the five boxes axe found.",
+      "find": "    setScrollStop(f, f.scrollWidth > f.clientWidth);\n",
+      "replace": "",
+      "expect_caught_by": "test_fit_tables_marks_every_box_that_scrolls"
+    },
+    {
+      "id": "scroll-stop-kept-when-it-fits",
+      "why": "a box that fits keeps its tabindex, so after a rotate to landscape every table is a Tab stop that does nothing when you land on it.",
+      "find": "  } else if(marked){",
+      "replace": "  } else if(false){",
+      "expect_caught_by": "test_a_box_that_fits_leaves_the_tab_order"
+    },
+    {
+      "id": "scroll-stop-strips-markup-attributes",
+      "why": "fitting removes every attribute the function could have added, including a role, label or tabindex the markup set itself.",
+      "find": "    added.forEach(name => el.removeAttribute(name));",
+      "replace": "    Object.keys(SCROLL_STOP_ATTRS).forEach(name => el.removeAttribute(name));",
+      "expect_caught_by": "test_markup_attributes_survive_the_box_fitting"
+    },
+    {
+      "id": "scroll-stop-ignores-inner-controls",
+      "why": "a box whose own controls already reach every column (the Power Ratings headers) gets a second, pointless Tab stop in front of them.",
+      "find": "  if(scrolls && !el.querySelector(FOCUSABLE_INSIDE)){",
+      "replace": "  if(scrolls){",
+      "expect_caught_by": "test_a_box_with_its_own_control_gets_no_extra_stop"
+    },
+    {
+      "id": "scroll-stop-name-from-nested-heading",
+      "why": "the name search looks inside earlier siblings, so the Accuracy calibration table is announced as 'Not enough games yet to check' -- the heading of a note, not of the table.",
+      "find": "      if(sib.matches('h2, h3, h4')) return sib;",
+      "replace": "      const hd = sib.matches('h2, h3, h4') ? sib : [...sib.querySelectorAll('h2, h3, h4')].pop(); if(hd) return hd;",
+      "expect_caught_by": "test_a_heading_inside_a_nested_note_is_not_the_name"
+    },
+    {
+      "id": "scroll-stop-given-label-ignored",
+      "why": "data-scroll-label is ignored, so Model Lab's experiment log is announced under the reliability diagram's heading.",
+      "find": "  const given = el.getAttribute('data-scroll-label');",
+      "replace": "  const given = null;",
+      "expect_caught_by": "test_an_explicit_label_wins"
+    },
+    {
+      "id": "scroll-stop-no-focus-ring",
+      "why": "the focus ring is dropped, so Tab lands on a table with nothing on screen to say so (WCAG 2.4.7).",
+      "find": "  [data-scroll-stop]:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}",
+      "replace": "",
+      "expect_caught_by": "test_a_scroll_stop_shows_focus"
+    }
+  ]
+}

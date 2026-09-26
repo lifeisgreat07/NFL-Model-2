@@ -1,16 +1,16 @@
 {
-  "generated_utc": "2026-09-26T22:34:01Z",
+  "generated_utc": "2026-09-26T23:14:13Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 149,
+    "audits_total": 151,
     "audits_superseded": 50,
-    "pull_requests_audited": 99,
+    "pull_requests_audited": 101,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 1032,
-    "discrepancies_found": 24,
-    "unverifiable": 77,
-    "pull_requests_with_a_discrepancy": 15,
-    "reports_disagreeing_with_themselves": 16
+    "claims_checked": 1060,
+    "discrepancies_found": 25,
+    "unverifiable": 78,
+    "pull_requests_with_a_discrepancy": 16,
+    "reports_disagreeing_with_themselves": 17
   },
   "audits": [
     {
@@ -2762,6 +2762,47 @@
       "overall": "SAFE TO MERGE",
       "implicated": [],
       "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 120,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/120#issuecomment-5850617597",
+      "posted_utc": "2026-09-26T22:49:29Z",
+      "head": "114d152",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 11,
+      "confirmed": 10,
+      "discrepancies": 1,
+      "unverifiable": 0,
+      "overall": "DO NOT MERGE -- DISCREPANCIES FOUND",
+      "implicated": [
+        ".github/workflows/browser-checks.yml",
+        "src/dashboard_template.html",
+        "tests/browser/check_page.py"
+      ],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 121,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/121#issuecomment-5850781907",
+      "posted_utc": "2026-09-26T23:12:03Z",
+      "head": "a9bc049",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 17,
+      "confirmed": 16,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [
+        "prose says Confirmed: 15, block has 16",
+        "prose says Unverifiable: 2, block has 1"
+      ],
       "superseded": false
     }
   ]

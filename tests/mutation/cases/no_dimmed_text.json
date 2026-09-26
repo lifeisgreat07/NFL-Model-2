@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_no_dimmed_text.py",
+  "cases": [
+    {
+      "id": "stat-note-dimmed-again",
+      "why": "the Booth scoreboard's note goes back to opacity .8, about 4.0:1 on its card in the light theme -- the axe finding that failed #120's first run.",
+      "find": "  .agent-stat-note{font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2); line-height:1.4;}",
+      "replace": "  .agent-stat-note{font-size:var(--fs-11); color:var(--text-2); opacity:.8; margin-top:var(--s2); line-height:1.4;}",
+      "expect_caught_by": "test_every_partial_opacity_is_on_something_without_text"
+    },
+    {
+      "id": "sidebar-freshness-dimmed-again",
+      "why": "the sidebar's 'Updated ...' line goes back to opacity .75, under 4.5:1 in the light theme and behind a gradient where axe only says 'needs review'.",
+      "find": "  .foot-freshness{display:inline-block; margin-top:var(--s1);}",
+      "replace": "  .foot-freshness{display:inline-block; margin-top:var(--s1); opacity:0.75;}",
+      "expect_caught_by": "test_the_rules_that_dimmed_text_no_longer_do"
+    },
+    {
+      "id": "off-series-label-faded-again",
+      "why": "a switched-off series toggle fades its whole label to .45 again, under 3:1 in both themes, in a state only a click reaches.",
+      "find": "  .btn-chip[aria-pressed=\"false\"]{border-style:dashed; border-color:var(--border-strong);}",
+      "replace": "  .btn-chip[aria-pressed=\"false\"]{opacity:.45;}",
+      "expect_caught_by": "test_a_switched_off_series_still_says_so"
+    },
+    {
+      "id": "not-text-list-goes-stale",
+      "why": "the Net Rating zero line stops using opacity but stays listed, so the list of exceptions slowly stops describing the page.",
+      "find": "    width:1px; margin-left:-.5px; background:var(--text-2); opacity:.5; z-index:2;}",
+      "replace": "    width:1px; margin-left:-.5px; background:var(--text-2); z-index:2;}",
+      "expect_caught_by": "test_the_list_holds_nothing_stale"
+    }
+  ]
+}
