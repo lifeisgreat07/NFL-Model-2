@@ -1,0 +1,82 @@
+name: Browser checks
+
+# Stage 12. Drives Chromium over the BUILT dashboard -- every page, at 360,
+# 390, 768, 1024, 1280 and 1440, with the network blocked and allowed -- and
+# fails on sideways overflow, a Tab stop nobody can see, a control under
+# 24px, a serious or critical axe-core finding, the self-hosted font not
+# rendering, a page error, or a page over its byte budget. The rules and the
+# reasons for each are in tests/browser/check_page.py.
+#
+# Its first run against the real page, before this workflow existed, found
+# two defects that no other check could see: focus landing on a 1x1 hidden
+# select (#118) and reliability points under 24px (#119). That is the case
+# for running it on every change to what the page is built from.
+#
+# The checker proves itself first. --self-test runs every rule against a page
+# built to break it and fails unless the rule reports it, so a rule that has
+# quietly stopped being able to fail cannot go green here.
+#
+# No pixel-diff screenshots, deliberately (CLAUDE.md, Stage 12): they fail on
+# font hinting and antialiasing, and a check that cries wolf gets ignored.
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'assets/**'
+      - 'data/**'
+      - 'predictions/**'
+      - 'results/**'
+      - 'tests/browser/**'
+      - 'requirements.txt'
+      - '.github/workflows/browser-checks.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'assets/**'
+      - 'tests/browser/**'
+      - '.github/workflows/browser-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # Versions pinned: the checker was written and proven against these,
+      # and a browser that changes under it would change what "no findings"
+      # means without anyone deciding it should.
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install playwright==1.56.0
+          python -m playwright install --with-deps chromium
+
+      - name: Set up Node (for axe-core only)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch axe-core
+        run: npm install --no-save --no-package-lock axe-core@4.13.0
+
+      - name: Build the dashboard
+        run: python src/generate_dashboard.py
+
+      - name: Prove every rule can fail
+        run: python tests/browser/check_page.py --self-test --axe node_modules/axe-core/axe.min.js --tmp "$RUNNER_TEMP"
+
+      - name: Check the built page
+        run: python tests/browser/check_page.py index.html --axe node_modules/axe-core/axe.min.js
