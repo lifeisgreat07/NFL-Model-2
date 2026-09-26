@@ -44,7 +44,7 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, 81 case files, one per subject under test)
+  (`tests/mutation/`, 82 case files, one per subject under test)
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
@@ -151,6 +151,7 @@ src/
 predictions/            -- one JSON file per week, saved BEFORE kickoff, never edited
 results/                -- graded predictions, builds the season accuracy record
 data/                   -- generated inputs the dashboard reads
+assets/fonts/           -- the self-hosted Plus Jakarta Sans files and their licence
 tests/                  -- the suite, plus tests/mutation/ (tests for the tests)
 .github/workflows/      -- CI: tests, weekly update, backtest, dashboard, Booth
 ```
