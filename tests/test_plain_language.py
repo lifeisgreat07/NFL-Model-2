@@ -114,6 +114,8 @@ RENDERERS = {
     'renderPicksStreak': 'picks',
     # The pick tile: a logo above the team abbreviation. My Picks only.
     'pickButton': 'picks',
+    # The line under a card locked at kickoff (Stage 11). My Picks only.
+    'pickLockHtml': 'picks',
     # WAS 'picks' until the track-record block was removed from that card. It
     # now renders only on the Week Board -- once on the card and once inside
     # the why-panel -- so the old mapping had stopped describing anything.

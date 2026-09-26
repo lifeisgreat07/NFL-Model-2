@@ -762,6 +762,16 @@
   .card-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
     color:var(--text-2); letter-spacing:.03em; margin-bottom:2px;}
   .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);}
+  /* A locked card (Stage 11). The chosen side keeps its fill so the pick
+     stays readable; the other side drops to the secondary text colour, not
+     an opacity, so its abbreviation keeps a known contrast. The lock line is
+     painted by paintPickCard and is empty, so not drawn, on an open game. */
+  .pick-btn:disabled{cursor:default;}
+  .pick-btn:disabled:not(.selected){color:var(--text-2);}
+  .pick-lock{display:flex; align-items:flex-start; gap:var(--s2); font-family:'Plus Jakarta Sans', sans-serif;
+    font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);}
+  .pick-lock:empty{display:none;}
+  .lock-icon{flex:none; margin-top:1px;}
 
   /* ---------- The season scoreboard ----------
      Stage 10's one deliberate "stop and look" moment, chosen by Mark on
@@ -1364,7 +1374,7 @@
     .nav-btn.disabled:hover{background:transparent; color:var(--text-2);}
     thead th[aria-sort]:hover{color:var(--accent);}
     tbody tr:hover{background:var(--surface-2);}
-    .pick-btn:hover{border-color:var(--accent);}
+    .pick-btn:hover:not(:disabled){border-color:var(--accent);}
     .rel-table summary:hover{color:var(--text);}
     .btn:hover:not(:disabled){border-color:var(--accent); color:var(--text);}
     .btn-chip[aria-pressed="false"]:hover{opacity:.75;}
@@ -3192,8 +3202,11 @@ function renderWeekGlance(gamesList){
    rather than leaving a broken-image glyph -- the logos come from a third
    party and the tile has to survive that host being unreachable, which is why
    the abbreviation is the text and not the picture. */
-function pickButton(team, pick){
-  return `<button class="pick-btn ${pick===team?'selected':''}" data-team="${team}">`
+function pickButton(team, pick, locked){
+  // `locked` is emitted here so the first frame is right; paintPickCard
+  // re-derives it on every path, the same way it re-derives `selected`.
+  return `<button class="pick-btn ${pick===team?'selected':''}" data-team="${team}"`
+    + (locked ? ` disabled aria-label="${team}, locked at kickoff"` : '') + `>`
     + `<img class="pick-logo" src="${teamLogo(team)}" alt="" loading="lazy" onerror="this.style.display='none'">`
     + `<span class="pick-abbr">${team}</span>`
     + `</button>`;
@@ -3533,9 +3546,132 @@ function dismissOnboarding(){
   if(el && !dismissed) el.style.display = 'block';
 })();
 
+/* ---------- Picks lock at kickoff (Stage 11) ----------
+   Before this, a pick could be made after the result was known and the
+   Season Accuracy race counted it: writing every graded winner into storage
+   put "My picks 100.0%, 32 of 32" on the page (measured 2026-09-26). On a
+   dashboard whose whole claim is that its numbers are true, that was the one
+   number a visitor could make false by clicking.
+
+   Three rules, all here as plain functions so the suite can execute them:
+     1. A game's buttons lock at its kickoff, or once it is graded.
+     2. Every pick is stored with the time it was made (PICK_TIMES_KEY).
+     3. A graded pick is COUNTED only if its time is before kickoff. A pick
+        with no time -- everything saved before this existed, and anything
+        arriving through a share link, which carries no times -- is kept and
+        shown, but not counted, and the page says how many it left out.
+
+   This is honesty on a static site, not security: the times live in the
+   visitor's own browser and a determined person can edit them. What it
+   removes is the accidental and the casual case, and the page no longer
+   counts a pick it knows was made late.
+
+   The kickoff is an INSTANT here, unlike kickoffKey above, because it is
+   compared with the visitor's clock. It is built with Date.UTC from the
+   Eastern wall-clock fields plus the US daylight-saving rule, never with
+   `new Date("2026-09-13T13:00")`, which would read an Eastern time in the
+   visitor's zone and lock a Los Angeles visitor three hours late. */
+function easternOffsetHours(y, m, d, hh){
+  // US rule since 2007: daylight time (UTC-4) from 02:00 on the second
+  // Sunday of March to 02:00 on the first Sunday of November, else UTC-5.
+  const firstSunday = mon => 1 + (7 - new Date(Date.UTC(y, mon - 1, 1)).getUTCDay()) % 7;
+  const key = m * 10000 + d * 100 + hh;
+  const start = 3 * 10000 + (firstSunday(3) + 7) * 100 + 2;
+  const end = 11 * 10000 + firstSunday(11) * 100 + 2;
+  return (key >= start && key < end) ? 4 : 5;
+}
+
+function kickoffInstant(g){
+  // null means "kickoff unknown", which never locks on time alone. A day
+  // with no time locks from the start of that day: early rather than late.
+  if(!g || !g.gameday) return null;
+  const p = g.gameday.split('-').map(Number);
+  const t = (g.gametime_et || '00:00').split(':').map(Number);
+  if(p.length !== 3 || p.some(isNaN) || t.some(isNaN)) return null;
+  const off = easternOffsetHours(p[0], p[1], p[2], t[0]);
+  return Date.UTC(p[0], p[1] - 1, p[2], t[0] + off, t[1] || 0);
+}
+
+function isPickLocked(g, nowMs){
+  if(g && g.graded) return true;
+  const k = kickoffInstant(g);
+  return k !== null && nowMs >= k;
+}
+
+// 'counted', 'late' (made at or after kickoff) or 'untimed' (no time, or a
+// game whose kickoff is unknown, so the time cannot be checked against it).
+function pickVerdict(pickedAt, g){
+  const t = pickedAt ? Date.parse(pickedAt) : NaN;
+  const k = kickoffInstant(g);
+  if(isNaN(t) || k === null) return 'untimed';
+  return t < k ? 'counted' : 'late';
+}
+
+// The one tally behind every record on the page: the My Picks badge, the
+// streak strip, the trend line and the scoreboard race. Four hand-written
+// loops did this before, which is four places to forget the lock.
+function tallyMyPicks(picks, times, keys, weekMap){
+  const r = {wins: 0, losses: 0, late: 0, untimed: 0};
+  keys.forEach(k => {
+    ((weekMap[k] && weekMap[k].games) || []).forEach(g => {
+      const pid = k + '|' + g.home + '|' + g.away;
+      const pick = picks[pid];
+      if(!pick || !g.graded || g.actual_home_win === null || g.actual_home_win === undefined) return;
+      const v = pickVerdict(times[pid], g);
+      if(v !== 'counted'){ r[v]++; return; }
+      if(pick === (g.actual_home_win ? g.home : g.away)) r.wins++; else r.losses++;
+    });
+  });
+  return r;
+}
+
+function leftOutSentence(t){
+  const n = t.late + t.untimed;
+  if(!n) return '';
+  const parts = [];
+  if(t.late) parts.push(`${t.late} made after kickoff`);
+  if(t.untimed) parts.push(`${t.untimed} with no record of when ${t.untimed === 1 ? 'it was' : 'they were'} made`);
+  return `${n} of your graded picks ${n === 1 ? 'is' : 'are'} not counted: ${parts.join(', ')}.`;
+}
+
+// A stored time means "made no later than this". A pick with no time whose
+// game has NOT kicked off can be stamped with now truthfully: it is sitting
+// in storage now, so it was made by now, and now is before kickoff. That is
+// what keeps a pick saved before this change, or copied in from a share link
+// for a game still to come, from being thrown out. A game already locked is
+// never stamped -- there, now proves nothing about before kickoff.
+function stampUnlockedPicks(picks, times, gameOf, nowMs){
+  let stamped = 0;
+  Object.keys(picks).forEach(pid => {
+    if(times[pid]) return;
+    const g = gameOf(pid);
+    if(!g || kickoffInstant(g) === null || isPickLocked(g, nowMs)) return;
+    times[pid] = new Date(nowMs).toISOString();
+    stamped++;
+  });
+  return stamped;
+}
+/* ---------- end of the picks lock ---------- */
+
 /* ---------- My Picks Log (localStorage, this device only) ---------- */
 let currentPicksWeek = latestWeekKey;
 const PICKS_STORAGE_KEY = 'nfl_pickem_my_picks';
+const PICK_TIMES_KEY = 'nfl_pickem_pick_times';
+
+function loadPickTimes(){
+  try{ return JSON.parse(localStorage.getItem(PICK_TIMES_KEY) || '{}'); }
+  catch(e){ return {}; }
+}
+function savePickTimes(times){
+  try{ localStorage.setItem(PICK_TIMES_KEY, JSON.stringify(times)); }
+  catch(e){ console.warn('Could not save pick times locally', e); }
+}
+
+// Find the game a pick id names, so a handler can ask whether it is locked.
+function gameForPid(pid){
+  const [k, home, away] = pid.split('|');
+  return ((weeks[k] && weeks[k].games) || []).find(g => g.home === home && g.away === away) || null;
+}
 
 function loadMyPicks(){
   try{ return JSON.parse(localStorage.getItem(PICKS_STORAGE_KEY) || '{}'); }
@@ -3731,7 +3867,13 @@ function importSharedPicks(){
       + `Cancel = keep your own and only fill in the games you have not picked.`);
   }
   const merged = overwrite ? {...existing, ...incoming} : {...incoming, ...existing};
+  // A link carries no pick times. Wherever a pick CHANGED, the old time
+  // belongs to the old pick and goes with it; games still to come are
+  // re-stamped on the next render, locked ones stay uncounted.
+  const times = loadPickTimes();
+  Object.keys(merged).forEach(k => { if(existing[k] !== merged[k]) delete times[k]; });
   saveMyPicks(merged);
+  savePickTimes(times);
   exitSharedPicks();
   alert('Shared picks copied into your log.');
 }
@@ -3752,7 +3894,7 @@ function readSharedPicksFromUrl(){
 
 function exportMyPicks(){
   const picks = loadMyPicks();
-  const payload = { exported: new Date().toISOString(), picks };
+  const payload = { exported: new Date().toISOString(), picks, pick_times: loadPickTimes() };
   const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -3772,7 +3914,17 @@ function importMyPicks(file){
       // Merge rather than overwrite -- imported picks fill in gaps, but don't
       // silently clobber picks already made on this device for the same game.
       const merged = {...incoming, ...existing};
+      // Times travel with the picks they belong to: an imported pick keeps
+      // the time in the file (older exports have none), a kept pick keeps
+      // its own. A pick is never paired with another pick's time.
+      const times = loadPickTimes();
+      const incomingTimes = (payload && typeof payload.pick_times === 'object' && payload.pick_times) || {};
+      Object.keys(merged).forEach(k => {
+        if(existing[k] !== undefined) return;
+        if(incomingTimes[k]) times[k] = incomingTimes[k]; else delete times[k];
+      });
       saveMyPicks(merged);
+      savePickTimes(times);
       alert(`Imported ${Object.keys(incoming).length} picks (existing picks on this device were kept where they overlap).`);
       renderPicksGrid();
     } catch(err){
@@ -3794,14 +3946,33 @@ function importMyPicks(file){
 function paintPickCard(group, pick){
   if(!group) return;
   const modelBPick = group.dataset.modelB;
+  // The lock is re-read from the clock on every paint, so a page left open
+  // across a kickoff locks the card the next time anything touches it.
+  const game = gameForPid(group.dataset.pid);
+  const locked = !sharedPicksView && isPickLocked(game, Date.now());
   group.querySelectorAll('.pick-btn').forEach(btn=>{
     btn.classList.toggle('selected', btn.dataset.team === pick);
     // The button is a control with a persistent on/off state, so it says so
     // rather than relying on a colour a screen reader cannot see.
     btn.setAttribute('aria-pressed', btn.dataset.team === pick ? 'true' : 'false');
+    btn.disabled = locked;
+    if(locked) btn.setAttribute('aria-label', `${btn.dataset.team}, locked at kickoff`);
+    else btn.removeAttribute('aria-label');
   });
   const agrees = group.parentElement && group.parentElement.querySelector('.pick-agrees');
   if(agrees) agrees.textContent = pickAgreesText(pick, modelBPick);
+  const status = group.parentElement && group.parentElement.querySelector('.pick-lock');
+  if(status) status.innerHTML = locked ? pickLockHtml(pick, pickVerdict(loadPickTimes()[group.dataset.pid], game)) : '';
+}
+
+/* What a locked card says under its buttons. Only a pick that will NOT be
+   counted gets more than the lock itself, and it says why in plain words. */
+const LOCK_ICON = '<svg class="lock-icon" viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" focusable="false"><path d="M4.5 7V5a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="7" width="10" height="7" rx="1.5" fill="currentColor"/></svg>';
+function pickLockHtml(pick, verdict){
+  let why = '';
+  if(pick && verdict === 'late') why = ' This pick was made after kickoff, so it is not counted.';
+  else if(pick && verdict === 'untimed') why = ' There is no record of when this pick was made, so it is not counted.';
+  return `${LOCK_ICON}<span>Locked at kickoff.${why}</span>`;
 }
 
 /* Whose picks are being described changes the pronoun, and that is the only
@@ -3820,40 +3991,25 @@ function pickAgreesText(pick, modelBPick){
    finger, so redrawing them costs nothing the user can feel. */
 function refreshPickTotals(myPicks){
   const badge = document.getElementById('picks-record-badge');
-  let wins=0, losses=0;
-  weekKeysSorted.forEach(k=>{
-    (weeks[k].games||[]).forEach(g=>{
-      const pid = k+'|'+g.home+'|'+g.away;
-      const pick = myPicks[pid];
-      if(pick && g.graded && g.actual_home_win !== null){
-        const actualWinner = g.actual_home_win ? g.home : g.away;
-        if(pick === actualWinner) wins++; else losses++;
-      }
-    });
-  });
-  // In shared view the only picks in hand are the one week that was shared,
-  // so the badge must not read as a season record -- it would be understating
-  // whatever the sharer's real record is.
+  // A share link carries no pick times, so a shared week is never scored:
+  // anyone can build a link after the results are in.
+  const times = sharedPicksView ? {} : loadPickTimes();
+  const t = tallyMyPicks(myPicks, times, weekKeysSorted, weeks);
+  const wins = t.wins, losses = t.losses, left = t.late + t.untimed;
   if(badge) badge.textContent = sharedPicksView
-    ? ((wins+losses)>0 ? `${wins}-${losses} on this shared week` : 'Shared week not graded yet')
-    : ((wins+losses)>0 ? `${wins}-${losses} on graded picks` : 'No graded picks yet');
+    ? 'Shared picks are not scored'
+    : ((wins+losses)>0 ? `${wins}-${losses} on graded picks` : 'No graded picks yet')
+      + (left ? ` (${left} not counted)` : '');
 
-  renderPicksStreak(myPicks);
+  renderPicksStreak(myPicks, times);
 }
 
-function renderPicksStreak(myPicks){
+function renderPicksStreak(myPicks, times){
   const container = document.getElementById('picks-streak-strip');
   const weekRecords = []; // {label, wins, losses, status}
   weekKeysSorted.forEach(k=>{
-    let wins=0, losses=0;
-    (weeks[k].games||[]).forEach(g=>{
-      const pid = k+'|'+g.home+'|'+g.away;
-      const pick = myPicks[pid];
-      if(pick && g.graded && g.actual_home_win !== null){
-        const actualWinner = g.actual_home_win ? g.home : g.away;
-        if(pick === actualWinner) wins++; else losses++;
-      }
-    });
+    // Counted picks only, through the same tally as the badge above it.
+    const {wins, losses} = tallyMyPicks(myPicks, times, [k], weeks);
     const total = wins+losses;
     let status = 'none';
     if(total>0) status = wins>losses ? 'win' : (losses>wins ? 'loss' : 'even');
@@ -3907,20 +4063,27 @@ function renderPicksGrid(){
     return;
   }
 
+  if(!sharedPicksView){
+    const times = loadPickTimes();
+    if(stampUnlockedPicks(myPicks, times, gameForPid, Date.now())) savePickTimes(times);
+  }
   refreshPickTotals(myPicks);
 
+  const now = Date.now();
   grid.innerHTML = gamesList.map(g=>{
     const pid = currentPicksWeek+'|'+g.home+'|'+g.away;
     const pick = myPicks[pid];
     const modelBPick = g.mktB_home >= 50 ? g.home : g.away;
     const kickoff = kickoffLabel(g);
+    const locked = !sharedPicksView && isPickLocked(g, now);
     return `<div class="game-card">
       ${matchupHeader(g, 'quiet')}
       ${kickoff ? `<div class="card-kickoff">${kickoff}</div>` : ''}
       <div class="pick-buttons" data-pid="${pid}" data-model-b="${modelBPick}">
-        ${pickButton(g.away, pick)}
-        ${pickButton(g.home, pick)}
+        ${pickButton(g.away, pick, locked)}
+        ${pickButton(g.home, pick, locked)}
       </div>
+      <div class="pick-lock"></div>
       <div class="pick-agrees"></div>
     </div>`;
   }).join('');
@@ -3944,18 +4107,24 @@ function renderPicksGrid(){
     const pid = group.dataset.pid;
     group.querySelectorAll('.pick-btn').forEach(btn=>{
       btn.addEventListener('click', ()=>{
-        const picks = loadMyPicks();
-        const previous = picks[pid];
+        // Checked here as well as by `disabled`: a page left open across a
+        // kickoff still has live buttons until something repaints the card.
+        if(isPickLocked(gameForPid(pid), Date.now())){
+          paintPickCard(group, loadMyPicks()[pid]);
+          return;
+        }
+        const picks = loadMyPicks(), times = loadPickTimes();
+        const previous = picks[pid], previousAt = times[pid];
         const clicked = btn.dataset.team;
         // Clicking your already-selected pick clears it, rather than being
         // a no-op -- otherwise there's no way to un-pick a game at all.
         if(previous === clicked){
-          delete picks[pid];
+          delete picks[pid]; delete times[pid];
         } else {
-          picks[pid] = clicked;
+          picks[pid] = clicked; times[pid] = new Date().toISOString();
         }
-        lastPickChange = {pid, previous};
-        saveMyPicks(picks);
+        lastPickChange = {pid, previous, previousAt};
+        saveMyPicks(picks); savePickTimes(times);
         // NOT renderPicksGrid(). That replaces the whole grid through
         // innerHTML, which destroys the button being tapped along with every
         // other card -- and on iOS the page jumps to the top when the element
@@ -3993,13 +4162,21 @@ function showUndoToast(){
   toast.classList.add('visible');
   document.getElementById('undo-action').onclick = ()=>{
     if(!lastPickChange) return;
-    const picks = loadMyPicks();
+    // Undo is a pick too: after kickoff it would be a late change.
+    if(isPickLocked(gameForPid(lastPickChange.pid), Date.now())){
+      lastPickChange = null;
+      toast.classList.remove('visible');
+      return;
+    }
+    const picks = loadMyPicks(), times = loadPickTimes();
     if(lastPickChange.previous === undefined){
       delete picks[lastPickChange.pid];
     } else {
       picks[lastPickChange.pid] = lastPickChange.previous;
     }
-    saveMyPicks(picks);
+    if(lastPickChange.previousAt === undefined) delete times[lastPickChange.pid];
+    else times[lastPickChange.pid] = lastPickChange.previousAt;
+    saveMyPicks(picks); savePickTimes(times);
     const pid = lastPickChange.pid;
     lastPickChange = null;
     toast.classList.remove('visible');
@@ -4217,7 +4394,7 @@ function buildCumulativeTrendChart(){
           : 'Only one week has been graded so far. A trend line needs at least two, so this chart appears once the second week is in — a single point drawn as a line would suggest a direction that has not been measured.'}</p>
     </div>`;
   }
-  const myPicks = loadMyPicks();
+  const myPicks = loadMyPicks(), pickTimes = loadPickTimes();
 
   let cA=0, nA=0, cB=0, nB=0, cM=0, nM=0, cP=0, nP=0;
   const points = accuracy.weeks.map(w=>{
@@ -4226,14 +4403,9 @@ function buildCumulativeTrendChart(){
     cM += w.market_correct; nM += w.market_n;
     const weekKey = Object.keys(weeks).find(k=>weeks[k].season===w.season && weeks[k].week===w.week);
     if(weekKey){
-      (weeks[weekKey].games || []).forEach(g=>{
-        const pid = weekKey+'|'+g.home+'|'+g.away;
-        const pick = myPicks[pid];
-        if(pick && g.graded && g.actual_home_win !== null){
-          const actualWinner = g.actual_home_win ? g.home : g.away;
-          nP++; if(pick===actualWinner) cP++;
-        }
-      });
+      // Counted picks only -- the same tally as the scoreboard above it.
+      const t = tallyMyPicks(myPicks, pickTimes, [weekKey], weeks);
+      cP += t.wins; nP += t.wins + t.losses;
     }
     return {
       label: `${w.season} Wk${w.week}`,
@@ -4583,7 +4755,7 @@ function scoreboardVerdict(rows){
   const names = level.map((r, i) => i === 0 ? r.subject : r.subject.replace(/^The /, 'the '));
   return `${names.join(' and ')} are level at the top.`;
 }
-function scoreboardHtml(o, mine){
+function scoreboardHtml(o, mine, leftOut){
   const rows = [
     {name: 'Market', subject: 'The betting market', series: 'var(--series-c)', shape: 'tri', ...o.market},
     {name: 'Model B', subject: 'Model B', series: 'var(--series-b)', shape: 'sq', ...o.model_b},
@@ -4602,6 +4774,7 @@ function scoreboardHtml(o, mine){
     ${race.map(row).join('')}
     <div class="score-axis" aria-hidden="true"><span></span><div class="score-axis-track"><span class="coin">50% &middot; a coin flip</span><span class="full">100%</span></div><span></span></div>
     ${mine ? '' : '<div class="score-foot">Pick some games on the Week Board to join this race.</div>'}
+    ${leftOut ? `<div class="score-foot">${leftOut} Only picks made before kickoff are counted.</div>` : ''}
   </div>`;
 }
 function renderAccuracy(){
@@ -4623,23 +4796,14 @@ function renderAccuracy(){
   }
   const o = accuracy.overall;
 
-  // My Picks record: compare localStorage picks against every graded week's actual outcome
-  const myPicks = loadMyPicks();
-  let myWins = 0, myLosses = 0;
-  weekKeysSorted.forEach(k=>{
-    (weeks[k].games||[]).forEach(g=>{
-      const pid = k+'|'+g.home+'|'+g.away;
-      const pick = myPicks[pid];
-      if(pick && g.graded && g.actual_home_win !== null){
-        const actualWinner = g.actual_home_win ? g.home : g.away;
-        if(pick === actualWinner) myWins++; else myLosses++;
-      }
-    });
-  });
-  const myTotal = myWins + myLosses;
+  // My Picks record: only picks made before their game's kickoff are in the
+  // race, and the page says how many it left out.
+  const mineTally = tallyMyPicks(loadMyPicks(), loadPickTimes(), weekKeysSorted, weeks);
+  const myWins = mineTally.wins, myTotal = mineTally.wins + mineTally.losses;
   const myPct = myTotal > 0 ? Math.round(1000*myWins/myTotal)/10 : null;
 
-  const cardsHtml = scoreboardHtml(o, myTotal > 0 ? {correct: myWins, n: myTotal, pct: myPct} : null);
+  const cardsHtml = scoreboardHtml(o, myTotal > 0 ? {correct: myWins, n: myTotal, pct: myPct} : null,
+                                   leftOutSentence(mineTally));
 
   const cumulativeChartHtml = buildCumulativeTrendChart();
 
