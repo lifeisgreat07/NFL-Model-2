@@ -1,0 +1,55 @@
+{
+  "target": "src/tv_channels.py",
+  "tests": "tests/test_tv_channels.py",
+  "cases": [
+    {
+      "id": "tv-skips-the-team-cross-check",
+      "why": "the elias join is trusted alone, so an id collision or a page error shows one game's channel on another game's card.",
+      "find": "    if (away, home) != (row['away_team'], row['home_team']):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_team_disagreement_holds_the_channel_back"
+    },
+    {
+      "id": "tv-skips-the-kickoff-cross-check",
+      "why": "a kickoff that disagrees with nflverse -- a moved game, a wrong week -- no longer holds the channel back.",
+      "find": "    if kickoff is None or kickoff != row['kickoff']:",
+      "replace": "    if kickoff is None:",
+      "expect_caught_by": "test_a_kickoff_disagreement_holds_the_channel_back"
+    },
+    {
+      "id": "tv-exception-excuses-any-network",
+      "why": "an exception is matched on the game alone, so a game flexed to another network keeps being shown under an exception written for the old one.",
+      "find": "        excused = {e['network'] for e in exceptions if e.get('elias') == eid}",
+      "replace": "        excused = set(NETWORKS.values()) if any(e.get('elias') == eid for e in exceptions) else set()",
+      "expect_caught_by": "test_an_exception_excuses_its_own_network_only"
+    },
+    {
+      "id": "tv-change-overwritten-silently",
+      "why": "a flexed game's new network replaces the old one with no record, which is the silent overwrite the plan forbids.",
+      "find": "        if old is not None and old != r['networks']:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_change_between_reads_is_recorded_not_overwritten"
+    },
+    {
+      "id": "tv-exception-needs-no-source",
+      "why": "an exception with no source loads, so a channel can be excused by a claim nobody can check.",
+      "find": "        if missing or not str(e['source']).startswith('https://'):",
+      "replace": "        if False:",
+      "expect_caught_by": "test_an_exception_without_a_source_or_with_an_unlisted_network_is_refused"
+    },
+    {
+      "id": "tv-slot-judged-in-utc",
+      "why": "the slot is read off the UTC clock, so every Thursday-night game (00:15 UTC Friday) falls outside the Thursday rule.",
+      "find": "    t = pd.Timestamp(kickoff_utc).tz_convert(EASTERN)",
+      "replace": "    t = pd.Timestamp(kickoff_utc).tz_convert('UTC')",
+      "expect_caught_by": "test_each_ruled_slot_is_judged_in_eastern_time"
+    },
+    {
+      "id": "tv-shows-every-listed-network",
+      "why": "the whole listed set is shown, so a simulcast the league's page claims and the broadcaster does not carry -- ABC on week 4's Falcons at Saints -- reaches the card.",
+      "find": "        record['networks'] = shown[:1]",
+      "replace": "        record['networks'] = shown",
+      "expect_caught_by": "test_a_simulcast_shows_its_first_network_only"
+    }
+  ]
+}
