@@ -17,6 +17,8 @@ it writes is kept:
   3. the data-quality checks the weekly run enforces (src/data_quality.py)
   4. today's columns against the committed snapshot (src/schema_check.py)
   5. work out the next week to predict, as the weekly run does
+  6. read that week's page on nfl.com, the TV-channel source (Stage 15),
+     and check its shape (check_schedule_page below)
 
 A step that raises is recorded as an error and the rest still run, so one
 report says everything that is wrong tonight. Exit 1 on any error; the
@@ -92,11 +94,55 @@ def default_steps():
 
     def next_week(state):
         from weekly_update import determine_next_week
-        return f"next week to predict: {determine_next_week(state['season'])}"
+        state['next_week'] = determine_next_week(state['season'])
+        return f"next week to predict: {state['next_week']}"
+
+    def nfl_schedule(state):
+        import nfl_schedule_probe as probe
+        week = state.get('next_week')
+        if week is None:
+            return 'skipped: the next week is not known'
+        if week > LAST_REGULAR_WEEK:
+            return f'skipped: week {week} is past the regular season'
+        return check_schedule_page(probe.fetch(week, state['season']), state['season'], week)
 
     return [('load play-by-play', plays), ('load schedule', schedule),
             ('data quality', quality), ('schema', schema),
-            ('next week', next_week)]
+            ('next week', next_week), ('nfl.com schedule', nfl_schedule)]
+
+
+#: nfl.com's by-week pages are regular-season weeks; the playoffs are not.
+LAST_REGULAR_WEEK = 18
+
+#: What a game on nfl.com's page cannot lack without the FEED having changed.
+#: The rest (a kickoff, a network, a territory) can be missing for a real
+#: reason -- week 18's kickoffs are not set until late December -- so those
+#: are warnings: a missing or failed channel never fails the canary.
+SHAPE = ('elias id', 'two teams')
+
+
+def check_schedule_page(page, season, week):
+    """The canary's view of one nfl.com week (Stage 15, item 6). ERRORS mean
+    the feed changed: no games in the payload, a game missing its id or its
+    teams, or a game from another week. WARNINGS are a game missing its
+    kickoff, territory or network, which the TV code already holds back."""
+    from nfl_schedule_probe import check_game, elias_id, extract_games
+    report = Report()
+    games = extract_games(page)
+    if not games:
+        report.errors.append(f'nfl.com week {week}: no games in the page payload -- '
+                             f'the page or its embedded data has changed')
+        return report
+    for g in games:
+        missing = check_game(g, season, week)
+        name = elias_id(g) or g.get('id', '?')
+        hard = [m for m in missing if m in SHAPE or m.startswith('this week')]
+        soft = [m for m in missing if m not in hard]
+        if hard:
+            report.errors.append(f'nfl.com week {week}, game {name}: missing {", ".join(hard)}')
+        if soft:
+            report.warnings.append(f'nfl.com week {week}, game {name}: missing {", ".join(soft)}')
+    return report
 
 
 def render(season, report, notes):

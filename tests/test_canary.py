@@ -73,7 +73,7 @@ def test_january_belongs_to_last_season():
 def test_the_default_steps_are_the_weekly_data_path():
     names = [name for name, _ in canary.default_steps()]
     assert names == ['load play-by-play', 'load schedule', 'data quality',
-                     'schema', 'next week']
+                     'schema', 'next week', 'nfl.com schedule']
 
 
 # --- the workflow ------------------------------------------------------------
