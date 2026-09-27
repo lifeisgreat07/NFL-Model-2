@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_scoring_rule_claims.py",
+  "cases": [
+    {
+      "id": "b-vs-a-back-on-accuracy",
+      "why": "Methodology argues Model B's superiority from accuracy again, the metric the same page says moved a full game between platforms.",
+      "find": "Model B beats Model A on the proper scoring rules this project judges by: <b data-claim=\"b-vs-a\" style=\"color:var(--text)\">log loss 0.606 against 0.650, and Brier 0.209 against 0.229</b>",
+      "replace": "Model B consistently outperforms Model A: <b style=\"color:var(--text)\">68.2% vs. 62.8% accuracy</b>",
+      "expect_caught_by": "test_b_versus_a_leads_with_log_loss_and_brier_from_the_table"
+    },
+    {
+      "id": "b-vs-a-log-loss-drifts",
+      "why": "the prose keeps an old log loss after the table moved, so the page gives two numbers for one fact.",
+      "find": "log loss 0.606 against 0.650, and Brier",
+      "replace": "log loss 0.604 against 0.650, and Brier",
+      "expect_caught_by": "test_b_versus_a_leads_with_log_loss_and_brier_from_the_table"
+    },
+    {
+      "id": "b-vs-a-interval-drifts",
+      "why": "Methodology's interval stops matching the bootstrap Model Lab records, so the two pages disagree about how sure the result is.",
+      "find": "(log loss &minus;0.044, 95% interval &minus;0.059 to &minus;0.029;",
+      "replace": "(log loss &minus;0.044, 95% interval &minus;0.069 to &minus;0.029;",
+      "expect_caught_by": "test_b_versus_a_intervals_are_model_labs"
+    },
+    {
+      "id": "a-vs-market-number-drifts",
+      "why": "the market's log loss in the sentence is not the table's, in the one sentence a sceptical reader checks first.",
+      "find": "Model A's log loss is 0.650 against the market's 0.607</span>",
+      "replace": "Model A's log loss is 0.650 against the market's 0.597</span>",
+      "expect_caught_by": "test_a_versus_the_market_leads_with_log_loss"
+    },
+    {
+      "id": "standing-row-back-on-accuracy",
+      "why": "'Where This Model Stands' judges the market comparison on raw accuracy again.",
+      "find": "<tr><td>Model A against the market (log loss, Brier)</td><td>Behind on both.",
+      "replace": "<tr><td>Raw accuracy vs. market</td><td>Behind.",
+      "expect_caught_by": "test_the_standing_table_compares_on_scoring_rules"
+    }
+  ]
+}
