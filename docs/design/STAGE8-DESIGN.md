@@ -246,10 +246,14 @@ milliseconds and buys total predictability: every view is a pure function of
 `state`, with no reconciliation code to get wrong. The two rules that make it
 safe are above. Revisit only if a view needs sub-100ms live updates.
 
-**Navigation stubs are already wired:** `openTeam(abbr)` from every team row
-(an `<a>`, keyboard-reachable, inheriting the base focus ring) and
-`openWeek(n)` from every Season Accuracy week row. Both are one function body
-away from real routing.
+**Navigation (corrected 2026-09-26, Stage 13):** this paragraph used to say
+`openTeam(abbr)` and `openWeek(n)` stubs were already wired from every team row
+and every Season Accuracy week row. Neither function ever existed in the
+template; the claim came from the mock, not the page, and was found by the
+fact-checking agent in the 2026-09-26 UX review. Stage 13 added hash routes
+instead (`#team/KC`, `#board/2026_week2`, one per page, and
+`#modellab/<experiment>`), read by `parseRoute()` in the template. Team rows
+and week rows do not link to them yet.
 
 ## What the port has to face
 
