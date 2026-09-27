@@ -7,8 +7,9 @@ name: Weekend refresh
 # data/game_status/, from nflverse's schedule.
 #
 # TWO WRITERS OF PICKS IS TWO WAYS TO BREAK A LOCK (2026-09-24). This commits
-# data/game_status/** and data/tv/** (TV channels, src/tv_channels.py) and
-# nothing else; "Weekly update" stays the only writer
+# data/game_status/**, data/tv/** (TV channels, src/tv_channels.py) and
+# data/team_news/** (src/team_news.py) and nothing else; "Weekly update"
+# stays the only writer
 # of predictions/, results/ and the line archive. tests/test_weekend_refresh.py
 # holds the file_pattern to that one directory.
 #
@@ -66,11 +67,20 @@ jobs:
           python src/tv_channels.py --pending 2>&1 | tee tv-channels.log
           { echo '### TV channels'; echo '```'; cat tv-channels.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
+      # Team news (Stage 16) for the same weeks, so a starter ruled out on
+      # Friday is on the page before Sunday. continue-on-error, like TV.
+      - name: Read team news
+        continue-on-error: true
+        shell: bash
+        run: |
+          python src/team_news.py --pending 2>&1 | tee team-news.log
+          { echo '### Team news'; echo '```'; cat team-news.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Weekend refresh: game status, scores, lines and TV channels"
-          file_pattern: 'data/game_status/** data/tv/**'
+          commit_message: "Weekend refresh: game status, scores, lines, TV channels and team news"
+          file_pattern: 'data/game_status/** data/tv/** data/team_news/**'
 
       - name: Raise an alert
         if: failure()

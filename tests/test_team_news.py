@@ -10,6 +10,7 @@ Run with: pytest tests/test_team_news.py -v
 """
 import json
 import math
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,6 +21,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 
 import team_news as tn  # noqa: E402
+
+WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
+WEEKEND = ROOT / '.github' / 'workflows' / 'weekend-refresh.yml'
 
 NOW = datetime(2026, 10, 2, 12, tzinfo=timezone.utc)
 
@@ -127,3 +131,42 @@ def test_nothing_pending_loads_nothing(tmp_path, capsys):
     assert tn.main(['--pending'], now=NOW, load=load, pred_dir=tmp_path, results_dir=tmp_path,
                    news_dir=tmp_path / 'news') == 0
     assert 'no team news to read' in capsys.readouterr().out
+
+
+def _steps(path):
+    """({step name: its text}, [step names in order]), each step bounded by the next `- name:`."""
+    text = path.read_text(encoding='utf-8')
+    out = {}
+    for part in re.split(r'\n(?=      - name: )', text):
+        m = re.match(r'\s*- name: (.+)', part)
+        if m:
+            out[m.group(1).strip()] = part
+    return out, [m.group(1).strip() for m in re.finditer(r'\n      - name: (.+)', text)]
+
+
+def test_both_workflows_read_team_news_and_cannot_fail_on_it():
+    for path in (WEEKLY, WEEKEND):
+        steps, _ = _steps(path)
+        step = steps.get('Read team news')
+        assert step, f'{path.name} has no "Read team news" step'
+        assert 'python src/team_news.py --pending' in step
+        assert re.search(r'^\s+continue-on-error: true\s*$', step, re.M), (
+            f'{path.name}: without continue-on-error a failed injury read fails the run -- '
+            f'and in Weekly update that run is the one that locks the picks')
+        assert 'shell: bash' in step, 'without bash there is no pipefail under | tee'
+
+
+def test_the_weekly_run_reads_team_news_after_it_locks_and_before_it_commits():
+    steps, order = _steps(WEEKLY)
+    i = order.index('Read team news')
+    assert order.index("Generate/lock in this week's predictions") < i < order.index('Commit and push changes'), (
+        'before the lock, the week just locked is not yet pending and goes into Thursday night with no news')
+    assert i > order.index('Summarise the run'), 'the summary reads git status for predictions and results'
+    assert '${{ !cancelled() }}' in steps['Read team news']
+
+
+def test_the_refresh_reads_team_news_before_it_commits_it():
+    steps, order = _steps(WEEKEND)
+    assert order.index('Read team news') < order.index('Commit and push changes')
+    assert 'data/team_news/**' in steps['Commit and push changes'], (
+        'the refresh reads team news and then does not commit it, so Friday\'s ruling never reaches the page')

@@ -114,6 +114,19 @@ jobs:
           python src/tv_channels.py --pending 2>&1 | tee tv-channels.log
           { echo '### TV channels'; echo '```'; cat tv-channels.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
+      # Team news (Stage 16, src/team_news.py) for the same weeks: starters
+      # out or doubtful, and the quarterback each saved pick was made with.
+      # Thursday's lock is when the week's injury report is out. Same rules as
+      # the TV step: after the summary, before the commit, and continue-on-error,
+      # because team news must never cost a pick.
+      - name: Read team news
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          python src/team_news.py --pending 2>&1 | tee team-news.log
+          { echo '### Team news'; echo '```'; cat team-news.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
       # This workflow no longer builds or commits the dashboard. It commits the
       # DATA it produces, and "Deploy dashboard to Pages" turns that into the
       # published page.
