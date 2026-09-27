@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-26, evening session ended (Stages 11 to 14 complete, #110 to #130 merged, #131 open)
+Last updated: 2026-09-27, afternoon session (ESPN refused from Actions, #131 closed; nfl.com being probed)
 
 ---
 
@@ -13,19 +13,16 @@ Last updated: 2026-09-26, evening session ended (Stages 11 to 14 complete, #110 
 **Suite:** 2830 passing, none skipped — `python -m pytest -q` on `main` at
 `36fbc01`, HEAD level with origin.
 
-**IN FLIGHT: #131 is OPEN (branch `stage15-espn-probe`, head `1b4201e`), the
-last thing running when the session ended.** Stage 15's first item: an "ESPN
-probe" workflow that reads ESPN's scoreboard (weeks 1-4 of 2026) from a GitHub
-runner. On markys the probe passed (16/16 complete each week); **on GitHub's
-runner the ESPN probe check FAILED** (Mark saw it, 2026-09-26 ~23:25 ET). Nobody
-has read the failing log or Booth's audit yet. Next action: open the PR's
-"ESPN probe" job log and find out why -- unreachable from Actions (blocked, 403,
-timeout) or a shape problem -- and read Booth. If ESPN cannot be reached from
-GitHub's runners, the TV-channel plan (CLAUDE.md Stage 15) needs a rethink with
-Mark before any code; say so rather than working around it. Items 2 and 3 of
-Stage 15 (weekend refresh, card status) do not depend on ESPN.
+**ESPN refuses GitHub's runners: HTTP 403 on every week, so #131 was CLOSED
+unmerged (2026-09-27) and its branch deleted.** Mark chose option B: probe
+another automatic source. The candidate is the league's own
+`www.nfl.com/schedules/2026/by-week/week-N`, whose embedded game data carries
+networks, a NATIONAL/REGIONAL territory and an `elias` id equal to nflverse's
+`old_game_id` -- CLAUDE.md Stage 15 has the detail and the traps. Next action:
+a probe PR that reads that page from a GitHub runner. Items 2 and 3 of Stage 15
+(weekend refresh, card status) do not depend on the TV source.
 
-**Done this evening: Stages 11 (#110 to #115), 12 (#116 to #122), 13 (#123
+**Done 2026-09-26, evening: Stages 11 (#110 to #115), 12 (#116 to #122), 13 (#123
 to #127) and 14 (#128 to #130).** The
 Browser checks workflow (Playwright + axe-core, `tests/browser/check_page.py`)
 now runs on every PR touching the page and is green on `main`. Details, and
@@ -35,10 +32,11 @@ Booth's figure slips, are in `memory/2026-09-26.md`.
 answered FAIL (#108, #109; no Stage 6 slot spent), the UX/UI review, and Stages
 11 to 22 planned with Mark.
 
-**Stage 4's first live runs:** the Nightly canary passed on 2026-09-25 and
-2026-09-26, and the `pbp-2026-09` cache was saved on the first night and read
-on the second. Both runs started 4.5 to 5 hours after their 06:00 UTC cron,
-which is GitHub's scheduler, not the workflow. No alert issue has opened.
+**Stage 4's first live runs:** the Nightly canary passed on 2026-09-25,
+2026-09-26 and 2026-09-27, and the `pbp-2026-09` cache was saved on the first
+night and read on the second. All three started 4.5 to 5 hours after their
+06:00 UTC cron (10:56, 10:36, 11:09 UTC), which is GitHub's scheduler, not the
+workflow. No alert issue has opened (checked 2026-09-27 via the issues API).
 
 ## Open work, and what each is waiting on
 
@@ -46,7 +44,7 @@ which is GitHub's scheduler, not the workflow. No alert issue has opened.
 |---|---|---|
 | First run of the QB routine | Due Mon 2026-09-28 22:00 UTC | Check it opened a PR, or said in one line that none was needed |
 | First weekly summary | Due Tue 2026-09-29 11:00 UTC | Open the run's page and check the summary reads right |
-| Scheduled-run delay | Canary ran ~5 h late twice | Watch Thursday 2026-10-01's 16:00 UTC lock run; a 5 h delay still locks before the Thursday kickoff |
+| Scheduled-run delay | Canary ran 4.5-5 h late three times | Watch Thursday 2026-10-01's 16:00 UTC lock run; a 5 h delay still locks before the Thursday kickoff |
 | Booth alert, drift issue, failure alerts | Live, never fired | Each needs a real event; when one opens an issue, check it reads right |
 | Which claim Booth's fixture claim 1 was | Inferred as the "Two commits." line | Reading that run's report artifact, if it is ever worth it |
 | Leak table splits two ways on Linux | Recorded in the QB case study | Nothing, unless it is ever worth finding the cause |

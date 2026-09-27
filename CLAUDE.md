@@ -1229,13 +1229,36 @@ play) merged. Only formatters with a caller were added; `fmtProb`, `fmtPP` and
 was wrong -- one anchored on an edited line. Run the cases that name a test you
 edited, or do not say they are unaffected.
 
-### Stage 15 - Weekend refresh and game status  <- IN PROGRESS (#131 open)
+### Stage 15 - Weekend refresh and game status  <- IN PROGRESS (TV source being probed)
 
-**2026-09-26, end of session:** #131 adds `src/espn_probe.py` and a PR-run
-"ESPN probe" workflow. It passed on markys (weeks 1-4, 16/16 complete) and
-FAILED on GitHub's runner; the cause is not yet read. Read that job log before
-anything else in this stage. If Actions cannot reach ESPN, the TV-channel plan
-below needs Mark's decision before any code.
+**ESPN is REFUSED from GitHub's runners (read 2026-09-27; #131 closed
+unmerged).** #131's probe got `HTTP Error 403: Forbidden` on all four weeks
+in under a second on the Actions runner; Booth reproduced the 403 from its
+own environment with a browser-style User-Agent; markys gets 200 and 16/16
+complete. So ESPN blocks datacenter addresses, not the request. **Do not
+route around it** (headers, proxies, another ESPN host): Mark ruled that out.
+Options put to Mark 2026-09-27: A a sourced season file cross-checked from
+markys, B probe another automatic source, C drop the channel, D a
+self-hosted runner (not recommended: a public repo's PRs could run code on
+markys). **Mark chose B**, and #131 was closed rather than merged because
+a probe of a feed nothing will use is a check that is red by design.
+**The candidate is the league's own page**,
+`www.nfl.com/schedules/2026/by-week/week-N`. Its server-rendered HTML embeds
+structured game data (a Next.js payload, not a documented API): per game,
+`broadcastInfo.homeNetworkChannels`, a `territory` of NATIONAL or REGIONAL,
+the kickoff in UTC, both teams, and `externalIds` carrying `gsis` and
+`elias` ids. **The join key is `elias` = nflverse `old_game_id`**: equal on
+all 32 games of weeks 1 and 4 (`nflreadpy.load_schedules([2026])` on
+markys, 2026-09-27). NOT `gsis`: nflverse leaves it blank until a game is
+played (NaN on every week-4 row). Fetched on markys and parsed 2026-09-27: 16 of 16 games
+carrying a network, for each of weeks 1 and 4. Sports Media Watch's hand-kept NFL TV schedule, read
+the same day, names the same first network for all 16 week-4 games (it
+omits ABC's Monday simulcast, which nfl.com lists). **Trap:** nfl.com's `ways-to-watch/by-week/week-4` page
+served a different slate (apparently last season's) on the same day, so the
+URL is part of the check, not a detail. Whether Actions can reach nfl.com is
+the next probe's question; nothing depends on it until that is answered.
+The TV plan below still stands with the source swapped, subject to that
+answer.
 
 A light scheduled run between the Thursday lock and Tuesday's grading that
 updates game status, final scores and the latest line, and never touches saved
