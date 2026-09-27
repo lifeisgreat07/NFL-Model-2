@@ -1,0 +1,48 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_units.py",
+  "cases": [
+    {
+      "id": "units-pt-back-in-model-lab",
+      "why": "one accuracy gap in Model Lab goes back to '+0.83pt', one character from a point spread on the same page.",
+      "find": "+0.83&nbsp;pp accuracy but AUC drops",
+      "replace": "+0.83pt accuracy but AUC drops",
+      "expect_caught_by": "test_no_bare_pt_or_pts_in_the_markup"
+    },
+    {
+      "id": "units-pts-in-script-text",
+      "why": "the formatter writes 'pts', so every betting-line sentence carries the abbreviation this stage removed.",
+      "find": "  return `${text} point${v === 1 ? '' : 's'}`;",
+      "replace": "  return `${text} pts`;",
+      "expect_caught_by": "test_no_bare_pt_or_pts_in_script_text"
+    },
+    {
+      "id": "units-points-keep-a-zero",
+      "why": "whole-number spreads keep their '.0', so the card reads 'favourites by 3.0 points'.",
+      "find": "  const text = Number.isInteger(v) ? String(v) : v.toFixed(1);",
+      "replace": "  const text = v.toFixed(1);",
+      "expect_caught_by": "test_a_spread_is_written_with_its_unit"
+    },
+    {
+      "id": "units-one-points",
+      "why": "a one-point spread reads 'favourites by 1 points'.",
+      "find": "  return `${text} point${v === 1 ? '' : 's'}`;",
+      "replace": "  return `${text} points`;",
+      "expect_caught_by": "test_one_point_is_singular_and_rounding_is_to_a_tenth"
+    },
+    {
+      "id": "units-pp-undefined",
+      "why": "the glossary loses its pp row, so a reader meets '-2.39 pp' with nothing on the page saying what pp is.",
+      "find": "          <tr><td>Percentage points (pp)</td>",
+      "replace": "          <tr><td>Percentage gap</td>",
+      "expect_caught_by": "test_percentage_points_are_written_pp_and_defined"
+    },
+    {
+      "id": "units-line-sentence-bare-number",
+      "why": "the betting-line sentence goes back to a bare number with no unit: 'favourites by 6.5'.",
+      "find": "  const by = fmtPoints(Math.abs(g.spread));",
+      "replace": "  const by = Math.abs(g.spread).toFixed(1);",
+      "expect_caught_by": "test_the_betting_line_sentence_uses_the_formatter"
+    }
+  ]
+}

@@ -96,13 +96,13 @@ def test_no_contributions_produces_no_sentence(out):
 
 def test_positive_spread_means_the_home_team_is_favoured(out):
     assert out['market_agree_home'] == \
-        'The betting line agrees, making SEA favourites by 3.5.', \
+        'The betting line agrees, making SEA favourites by 3.5 points.', \
         out['market_agree_home']
 
 
 def test_negative_spread_means_the_away_team_is_favoured(out):
     assert out['market_agree_away'] == \
-        'The betting line agrees, making DEN favourites by 3.0.', \
+        'The betting line agrees, making DEN favourites by 3 points.', \
         out['market_agree_away']
 
 
@@ -111,7 +111,7 @@ def test_the_real_card_that_was_reported_backwards(out):
     the home side. Disagreement, and the line's favourite is LAC. Shipped as
     'agrees, making ARI favourites by 10.5' until the page was looked at."""
     assert out['market_disagree_home_favoured'] == \
-        'The betting line disagrees, making LAC favourites by 10.5.', \
+        'The betting line disagrees, making LAC favourites by 10.5 points.', \
         out['market_disagree_home_favoured']
 
 
