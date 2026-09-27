@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **2656 passing** (none skipped) — `python -m pytest -q` on `main` at
-`5c89b81` (#120 merged), with HEAD level with origin, which is the order that makes the
+Suite: **2830 passing** (none skipped) — `python -m pytest -q` on `main` at
+`36fbc01` (#130 merged), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -1204,7 +1204,13 @@ share links; the routing is new code (STAGE8-DESIGN.md calls `openTeam` and
 that sentence in the same PR). A meta description and one static Open Graph
 image.
 
-### Stage 14 - One meaning per number
+### Stage 14 - One meaning per number  <- COMPLETE (2026-09-26, #128 to #130)
+
+#130 restated Methodology's two accuracy-led comparisons (B vs A, A vs the
+market) on log loss and Brier with Model Lab's intervals, every figure held to
+the page's own tables by `tests/test_scoring_rule_claims.py`. Model Lab's 46
+hand-written rows were left for Stage 18, which regenerates them with the
+scoring rule leading (Mark told of the scope 2026-09-26).
 
 Formatter functions (`fmtProb`, `fmtPP`, `fmtRating`, `fmtInterval`,
 `fmtPoints`) with a test banning bare `pt`/`pts` outside pick'em points. Net

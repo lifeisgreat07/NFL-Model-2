@@ -4,21 +4,21 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-26, evening session in progress (Stages 11 to 13 complete, #110 to #127 merged)
+Last updated: 2026-09-26, evening session in progress (Stages 11 to 14 complete, #110 to #130 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 2656 passing, none skipped — `python -m pytest -q` on `main` at
-`5c89b81`, HEAD level with origin.
+**Suite:** 2830 passing, none skipped — `python -m pytest -q` on `main` at
+`36fbc01`, HEAD level with origin.
 
-**Next action: Stage 14, One meaning per number** (CLAUDE.md's Stage 14
-section). Mark chose per 100 plays for net rating from a render (2026-09-26).
-One PR per item.
+**Next action: Stage 15, Weekend refresh and game status** (CLAUDE.md's Stage 15
+section). Its TV-channel part starts by checking ESPN's scoreboard is reachable
+from GitHub's runners, before any code. One PR per item.
 
-**Done this evening: Stages 11 (#110 to #115), 12 (#116 to #122) and 13 (#123
-to #127).** The
+**Done this evening: Stages 11 (#110 to #115), 12 (#116 to #122), 13 (#123
+to #127) and 14 (#128 to #130).** The
 Browser checks workflow (Playwright + axe-core, `tests/browser/check_page.py`)
 now runs on every PR touching the page and is green on `main`. Details, and
 Booth's figure slips, are in `memory/2026-09-26.md`.
