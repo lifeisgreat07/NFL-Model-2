@@ -59,11 +59,14 @@ on:
   # dispatched a build by hand. The same defect as the collector's, in a second
   # workflow, invisible because the guard named only the first one.
   #
+  # "Weekend refresh" (Stage 15) writes data/game_status/** between the
+  # Thursday lock and Tuesday's grading, with the same default GITHUB_TOKEN.
+  #
   # Guarded by tests/test_generated_data_reaches_the_page.py, which now
   # enumerates the writers rather than listing them, so a third one is covered
   # without anyone remembering to come back here.
   workflow_run:
-    workflows: ["Collect Booth's audit log", "Weekly update"]
+    workflows: ["Collect Booth's audit log", "Weekly update", "Weekend refresh"]
     types: [completed]
 
   workflow_dispatch:
