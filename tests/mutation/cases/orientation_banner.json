@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_orientation_banner.py",
+  "cases": [
+    {
+      "id": "orientation-fourth-line-shown",
+      "why": "a fourth explanation creeps back out of the disclosure onto the banner, which is how three lines became six bullets the first time.",
+      "find": "          <li>Tap &ldquo;the numbers behind this&rdquo; on any game to see where its sentence came from.</li>\n        </ul>",
+      "replace": "          <li>Tap &ldquo;the numbers behind this&rdquo; on any game to see where its sentence came from.</li>\n          <li>Check <b>Model Lab</b> for the full research history.</li>\n        </ul>",
+      "expect_caught_by": "test_three_lines_show_and_the_rest_waits_behind_how_to_read_this"
+    },
+    {
+      "id": "orientation-phone-slot-ignored",
+      "why": "the banner never moves on a phone, so the page opens on 280px of instructions above the games again.",
+      "find": "  return isPhone && cardCount >= ORIENTATION_AFTER ? ORIENTATION_AFTER : null;",
+      "replace": "  return null;",
+      "expect_caught_by": "test_on_a_phone_the_banner_goes_after_the_first_two_cards"
+    },
+    {
+      "id": "orientation-slot-past-the-last-card",
+      "why": "the fewer-than-two guard goes, so a week with one game asks for the banner after a second card that does not exist and the placement throws.",
+      "find": "  return isPhone && cardCount >= ORIENTATION_AFTER ? ORIENTATION_AFTER : null;",
+      "replace": "  return isPhone ? ORIENTATION_AFTER : null;",
+      "expect_caught_by": "test_with_too_few_cards_or_a_wider_screen_it_stays_home"
+    },
+    {
+      "id": "orientation-lost-on-rerender",
+      "why": "nothing re-places the banner after renderGames() rewrites the grid, so on a phone the first change of week, sort or filter deletes it.",
+      "find": "  new MutationObserver(placeOrientation).observe(grid, {childList:true});\n",
+      "replace": "",
+      "expect_caught_by": "test_every_rewrite_of_the_grid_and_every_breakpoint_crossing_re_places_it"
+    },
+    {
+      "id": "orientation-toggle-too-small",
+      "why": "the 'How to read this' toggle drops to its 13px line height, under the 24px target every other text toggle clears.",
+      "find": "  .onboarding-more summary{display:inline-flex; align-items:center; min-height:24px; cursor:pointer;",
+      "replace": "  .onboarding-more summary{display:inline-flex; align-items:center; cursor:pointer;",
+      "expect_caught_by": "test_the_disclosure_is_a_24px_control_that_shows_its_state"
+    }
+  ]
+}
