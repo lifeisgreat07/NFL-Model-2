@@ -166,9 +166,10 @@ def _text(path):
 
 def test_the_workflow_commits_game_status_and_nothing_else():
     patterns = re.findall(r"^\s*file_pattern:\s*'([^']*)'", _text(WORKFLOW), re.M)
-    assert patterns == ['data/game_status/**'], (
-        f'the weekend refresh commits {patterns}; it may commit data/game_status/** only -- '
-        f'a second writer of predictions/ or results/ is a second way to break a lock')
+    assert patterns == ['data/game_status/** data/tv/**'], (
+        f'the weekend refresh commits {patterns}; it may commit data/game_status/** and '
+        f'data/tv/** only -- a second writer of predictions/ or results/ is a second way '
+        f'to break a lock')
     assert 'git add' not in _text(WORKFLOW)
 
 
