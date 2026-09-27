@@ -44,12 +44,13 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, 96 case files, one per subject under test)
+  (`tests/mutation/`, 97 case files, one per subject under test)
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
-- **Twelve CI workflows** in `.github/workflows/` cover the test suite, the
-  weekly data pull, the backtest, the Pages build-and-deploy, the
+- **Thirteen CI workflows** in `.github/workflows/` cover the test suite, the
+  weekly data pull, a weekend refresh of game status and scores that never
+  touches a saved pick, the backtest, the Pages build-and-deploy, the
   agent-activity log, a pre-flight check on every pull request description,
   both halves of the Booth audit, an issue raised when a Booth audit
   fails, a nightly canary that runs the weekly data path and raises an

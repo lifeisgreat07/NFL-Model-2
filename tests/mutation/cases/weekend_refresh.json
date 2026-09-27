@@ -1,0 +1,41 @@
+{
+  "target": "src/weekend_refresh.py",
+  "tests": "tests/test_weekend_refresh.py",
+  "cases": [
+    {
+      "id": "refresh-calls-one-score-final",
+      "why": "a game with one score in is called final, so a card would show a final score with half of it missing.",
+      "find": "    if _score(row.get('home_score')) is not None and _score(row.get('away_score')) is not None:",
+      "replace": "    if _score(row.get('home_score')) is not None or _score(row.get('away_score')) is not None:",
+      "expect_caught_by": "test_one_score_is_not_a_final"
+    },
+    {
+      "id": "refresh-never-marks-a-game-started",
+      "why": "a game already under way reads as upcoming until its final score lands, which is the gap this job exists to close.",
+      "find": "    if kickoff is not None and kickoff <= pd.Timestamp(now).tz_convert('UTC'):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_kicked_off_game_without_a_final_score_has_started"
+    },
+    {
+      "id": "refresh-shows-a-score-before-the-final",
+      "why": "a partial score from a game not yet final is written out as if it were the result.",
+      "find": "            'away_score': _score(row.get('away_score')) if final else None,",
+      "replace": "            'away_score': _score(row.get('away_score')),",
+      "expect_caught_by": "test_a_week_carries_scores_only_when_final_and_follows_the_picks"
+    },
+    {
+      "id": "refresh-skips-a-week-graded-before-it-was-played",
+      "why": "a week whose graded file exists but is empty -- graded on Tuesday before it was played -- is treated as done, so its games never refresh.",
+      "find": "        if _count(graded) < _count(f):",
+      "replace": "        if not graded.exists():",
+      "expect_caught_by": "test_only_weeks_with_fewer_grades_than_picks_are_refreshed"
+    },
+    {
+      "id": "refresh-rewrites-an-unchanged-snapshot",
+      "why": "every quiet run rewrites the file for a new read_at, commits it, and rebuilds the page for nothing.",
+      "find": "            if json.load(f).get('games') == games:\n                return False\n",
+      "replace": "            json.load(f)\n",
+      "expect_caught_by": "test_an_unchanged_snapshot_is_not_rewritten"
+    }
+  ]
+}

@@ -5,15 +5,22 @@
     {
       "id": "rebuild-bridge-drops-weekly-update",
       "why": "the exact state main was in on 2026-09-15, and it cost a week of the dashboard being wrong in the first week anyone could have noticed. The Tuesday run graded Week 1 and locked in Week 2 at 11:05 UTC, committed all of it with the default GITHUB_TOKEN, and no build followed: the page served 04:30 UTC data with no Week 2 in either week control. Nothing failed, because the paths trigger LOOKS like it covers this and a GITHUB_TOKEN push cannot fire it. This is the case that says the widened guard is load-bearing rather than decorative -- revert this one line and the suite must go red.",
-      "find": "    workflows: [\"Collect Booth's audit log\", \"Weekly update\"]",
-      "replace": "    workflows: [\"Collect Booth's audit log\"]",
+      "find": "    workflows: [\"Collect Booth's audit log\", \"Weekly update\", \"Weekend refresh\"]",
+      "replace": "    workflows: [\"Collect Booth's audit log\", \"Weekend refresh\"]",
       "expect_caught_by": "test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder"
     },
     {
       "id": "rebuild-bridge-misnames-weekly-update",
       "why": "GitHub matches workflow_run on the DISPLAY name, exactly, and a near-miss fails open: no run, no error, no annotation anywhere. A lowercase w is the most plausible way this breaks, because nothing about the YAML looks wrong and the reader's eye reads the words rather than the case. The guard has to compare against the `name:` field rather than eyeball the list, and this proves it does.",
-      "find": "\"Collect Booth's audit log\", \"Weekly update\"]",
-      "replace": "\"Collect Booth's audit log\", \"weekly update\"]",
+      "find": "\"Collect Booth's audit log\", \"Weekly update\", ",
+      "replace": "\"Collect Booth's audit log\", \"weekly update\", ",
+      "expect_caught_by": "test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder"
+    },
+    {
+      "id": "rebuild-bridge-drops-weekend-refresh",
+      "why": "the third writer, added in Stage 15. The weekend refresh commits data/game_status/** with the default GITHUB_TOKEN, so without this entry a Sunday score lands in the repository and never reaches the page -- the 2026-09-15 defect a third time. The guard enumerates writers rather than naming them, and this proves it found this one.",
+      "find": ", \"Weekend refresh\"]",
+      "replace": "]",
       "expect_caught_by": "test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder"
     },
     {

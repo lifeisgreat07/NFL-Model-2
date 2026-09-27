@@ -1,0 +1,82 @@
+name: Weekend refresh
+
+# Stage 15. Between Thursday's lock and Tuesday's grading the page learned
+# nothing: a game played on Sunday read as upcoming until the weekly run
+# graded it. src/weekend_refresh.py writes a snapshot per locked, not yet
+# fully graded week -- status, final scores, the latest line -- to
+# data/game_status/, from nflverse's schedule.
+#
+# TWO WRITERS OF PICKS IS TWO WAYS TO BREAK A LOCK (2026-09-24). This commits
+# data/game_status/** and nothing else; "Weekly update" stays the only writer
+# of predictions/, results/ and the line archive. tests/test_weekend_refresh.py
+# holds the file_pattern to that one directory.
+#
+# Schedule (UTC). Odd minutes, in case the queue for the top of the hour is
+# why the nightly canary's 06:00 runs have started 4.5 to 5 hours late
+# (2026-09-25 to 27); that cause is a guess, not a finding.
+#   Friday 05:17  -- after Thursday night's game
+#   Sunday 21:47  -- after the early Sunday games
+#   Monday 05:37  -- after the late games and Sunday night
+# Monday night's game is left to Tuesday's grading. None of these can meet
+# the weekly runs (Tuesday 11:00, Thursday 16:00) even five hours late.
+#
+# Its commit is made with the default GITHUB_TOKEN, which cannot trigger
+# another workflow, so "Deploy dashboard to Pages" names this workflow in its
+# workflow_run list. Renaming it here breaks that handoff silently.
+on:
+  schedule:
+    - cron: '17 5 * * 5'
+    - cron: '47 21 * * 0'
+    - cron: '37 5 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  # For the alert step: a failed refresh opens an issue, like every other
+  # unattended job since Stage 4.
+  issues: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Refresh game status, scores and lines
+        shell: bash
+        run: python src/weekend_refresh.py 2>&1 | tee weekend-refresh.log
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Weekend refresh: game status, scores and lines"
+          file_pattern: 'data/game_status/**'
+
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          {
+            echo "The weekend refresh failed, so the page still shows the last snapshot."
+            echo "No pick is affected: this job never writes predictions/ or results/."
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            echo "Last lines of the log:"
+            echo '```'
+            tail -n 30 weekend-refresh.log 2>/dev/null || echo "(no log)"
+            echo '```'
+          } > alert-body.md
+          python src/alerts.py --title "Weekend refresh failed" --body-file alert-body.md
