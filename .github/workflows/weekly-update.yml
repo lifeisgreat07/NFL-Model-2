@@ -101,6 +101,19 @@ jobs:
             --log weekly-update.log --drift drift-report.txt \
             --out weekly-summary.md >> "$GITHUB_STEP_SUMMARY"
 
+      # TV channels (Stage 15, src/tv_channels.py) for every locked week not
+      # yet graded -- after the Thursday lock, so the week just locked has its
+      # channels before Thursday night's game. After the summary, which reads
+      # `git status` for predictions and results. continue-on-error: a TV
+      # listing must never cost a pick, and a held-back channel is a warning.
+      - name: Read TV channels
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        shell: bash
+        run: |
+          python src/tv_channels.py --pending 2>&1 | tee tv-channels.log
+          { echo '### TV channels'; echo '```'; cat tv-channels.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
       # This workflow no longer builds or commits the dashboard. It commits the
       # DATA it produces, and "Deploy dashboard to Pages" turns that into the
       # published page.

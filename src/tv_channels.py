@@ -44,7 +44,17 @@ The checks, in the order the plan numbers them:
 A missing or held-back channel is a warning, never an error: no pick waits
 on a TV listing.
 
+WHEN IT RUNS. With --pending it reads every locked week not yet fully graded
+-- the weeks whose cards are on the board -- chosen by the same rule as the
+weekend refresh. Two workflows run it that way: "Weekly update", after the
+Tuesday grading and the Thursday lock, so a locked week has its channels
+before Thursday night; and "Weekend refresh", so a flexed game is caught
+before it airs. Both mark the step continue-on-error: a failure here can
+never cost a pick or a refresh. Their schedules cannot meet (tested in
+tests/test_weekend_refresh.py), so the two never write a week at once.
+
 Run by hand: python src/tv_channels.py --season 2026 --weeks 1 2 3 4
+Run as the workflows do: python src/tv_channels.py --pending
 """
 import argparse
 import json
@@ -226,13 +236,24 @@ def load_exceptions(path=EXCEPTIONS):
     return entries
 
 
-def main(argv=None, now=None, load=None, fetch_page=fetch, tv_dir=TV_DIR):
+def main(argv=None, now=None, load=None, fetch_page=fetch, tv_dir=TV_DIR,
+         pred_dir=ROOT / 'predictions', results_dir=ROOT / 'results'):
     ap = argparse.ArgumentParser()
-    ap.add_argument('--season', type=int, required=True)
-    ap.add_argument('--weeks', type=int, nargs='+', required=True)
+    ap.add_argument('--season', type=int, default=None)
+    which = ap.add_mutually_exclusive_group(required=True)
+    which.add_argument('--weeks', type=int, nargs='+')
+    which.add_argument('--pending', action='store_true',
+                       help='every locked week not yet fully graded')
     args = ap.parse_args(argv)
     now = now or datetime.now(timezone.utc)
     read_at = now.strftime('%Y-%m-%dT%H:%M:%SZ')
+    from weekend_refresh import current_season, weeks_to_refresh
+    args.season = args.season or current_season(now)
+    if args.pending:
+        args.weeks = weeks_to_refresh(args.season, pred_dir, results_dir)
+        if not args.weeks:
+            print(f'{args.season}: no locked week is waiting on grading; no channels to read.')
+            return 0
     exceptions = load_exceptions(tv_dir / 'exceptions.json')
     if load is None:
         from data_loader import load_schedule as load
