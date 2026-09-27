@@ -1,0 +1,48 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_per_100_plays.py",
+  "cases": [
+    {
+      "id": "per100-factor-slips",
+      "why": "the factor becomes 10, so BUF reads +1.5 and every rating is a tenth of what the page says it is, with nothing looking broken.",
+      "find": "function ratingScale(){ return 100; }",
+      "replace": "function ratingScale(){ return 10; }",
+      "expect_caught_by": "test_the_ratings_mark_saw_read_as_he_chose"
+    },
+    {
+      "id": "per100-signed-zero",
+      "why": "zero takes a plus sign, so an exactly average team reads +0.0 -- a direction on a number that has none.",
+      "find": "  return v > 0 ? '+' + v.toFixed(1) : v.toFixed(1);",
+      "replace": "  return v >= 0 ? '+' + v.toFixed(1) : v.toFixed(1);",
+      "expect_caught_by": "test_zero_has_no_sign"
+    },
+    {
+      "id": "per100-truncates",
+      "why": "the value is truncated instead of rounded, so +0.1495 shows as +14.9 and -0.0519 as -5.1 -- off by up to a tenth, always toward zero.",
+      "find": "  const v = Math.round(epaPerPlay * ratingScale() * 10) / 10;",
+      "replace": "  const v = Math.trunc(epaPerPlay * ratingScale() * 10) / 10;",
+      "expect_caught_by": "test_every_display_is_the_data_times_100_to_a_tenth"
+    },
+    {
+      "id": "per100-defense-left-per-play",
+      "why": "the Defense column stays per play beside an Offense column per 100 plays: +0.005 next to +15.4 in the same row.",
+      "find": "      <td class=\"num\">${fmtRating(t.def)}</td>",
+      "replace": "      <td class=\"num\">${t.def>=0?'+':''}${t.def.toFixed(3)}</td>",
+      "expect_caught_by": "test_power_ratings_and_team_dive_show_every_rating_through_it"
+    },
+    {
+      "id": "per100-team-dive-left-per-play",
+      "why": "Team Deep-Dive keeps showing the same net rating per play, so Buffalo is +14.9 on one page and +0.149 on the next.",
+      "find": "      <span class=\"dive-value\">${fmtRating(p.net)}</span>",
+      "replace": "      <span class=\"dive-value\">${p.net>=0?'+':''}${p.net.toFixed(3)}</span>",
+      "expect_caught_by": "test_power_ratings_and_team_dive_show_every_rating_through_it"
+    },
+    {
+      "id": "per100-scale-left-per-play",
+      "why": "the bar's scale keeps its per-play value, so the header reads -0.17 ... +0.17 above bars labelled +14.9.",
+      "find": "function fmtRatingScale(epaPerPlay){\n  return String(Math.round(Math.abs(epaPerPlay) * ratingScale()));",
+      "replace": "function fmtRatingScale(epaPerPlay){\n  return Math.abs(epaPerPlay).toFixed(2);",
+      "expect_caught_by": "test_the_bar_scale_is_a_whole_number_in_the_same_units"
+    }
+  ]
+}
