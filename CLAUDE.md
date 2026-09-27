@@ -1214,6 +1214,15 @@ rendered side-by-side: per 100 plays** (BUF +14.9, offense +15.4, SOS +5.1,
 bar scale ±17) on Power Ratings' net, offense, defense and SOS. Accuracy-led claims in Model
 Lab and Methodology restated on log loss and Brier.
 
+**Progress (2026-09-26):** #128 (accuracy gaps as "pp", spreads via `fmtPoints`,
+a test banning bare pt/pts) and #129 (per 100 plays via `fmtRating`, on Power
+Ratings and Team Deep-Dive; the card's `whyRow` figures deliberately left per
+play) merged. Only formatters with a caller were added; `fmtProb`, `fmtPP` and
+`fmtInterval` wait for one. **Lesson from #129's first audit (a DISCREPANCY):**
+"these case files are not affected, so they were not run" is a claim, and it
+was wrong -- one anchored on an edited line. Run the cases that name a test you
+edited, or do not say they are unaffected.
+
 ### Stage 15 - Weekend refresh and game status
 
 A light scheduled run between the Thursday lock and Tuesday's grading that
