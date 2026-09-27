@@ -1180,7 +1180,18 @@ targets at least 24 px, axe-core with no serious or critical violations on all
 nine pages, and a byte budget on the built HTML. Font loading is asserted from
 measured widths, never `document.fonts.check()`. No pixel-diff screenshots.
 
-### Stage 13 - Landing and links
+### Stage 13 - Landing and links  <- COMPLETE (2026-09-26, #123 to #127)
+
+Five PRs, each merged on Booth's SAFE TO MERGE with no discrepancies: the Week
+Board opens first (#123); the orientation banner is three lines plus a native
+"How to read this" disclosure, placed after the second card on a phone by
+`placeOrientation()` (#124); "Updated" moved to the Week Board header (#125);
+hash routes `#board[/week]`, `#team/XX`, `#modellab/<slug>` and one per page,
+pushState on a page change and replaceState on a week or team change, share
+links never read as routes (#126); a meta description and a static Open Graph
+card, `assets/og/og-card.png`, copied to the site root by deploy-pages (#127;
+Mark approved the card 2026-09-26). Team rows and week rows do not link to
+the routes yet.
 
 The Week Board becomes the default page and first in both navs (the bottom nav
 becomes Board, Ratings, Picks, Accuracy, More). The orientation banner becomes
@@ -1198,8 +1209,9 @@ image.
 Formatter functions (`fmtProb`, `fmtPP`, `fmtRating`, `fmtInterval`,
 `fmtPoints`) with a test banning bare `pt`/`pts` outside pick'em points. Net
 rating shown as points per 100 plays (`+14.9`, not `+0.149`), a display-only
-rescaling held to the data by a test. **Open decision for Mark:** confirm the
-per-100-plays display from a rendered before/after. Accuracy-led claims in Model
+rescaling held to the data by a test. **Decided by Mark 2026-09-26 from a
+rendered side-by-side: per 100 plays** (BUF +14.9, offense +15.4, SOS +5.1,
+bar scale ±17) on Power Ratings' net, offense, defense and SOS. Accuracy-led claims in Model
 Lab and Methodology restated on log loss and Brier.
 
 ### Stage 15 - Weekend refresh and game status

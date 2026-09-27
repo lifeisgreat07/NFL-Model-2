@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-26, evening session in progress (Stages 11 and 12 complete, #110 to #122 merged)
+Last updated: 2026-09-26, evening session in progress (Stages 11 to 13 complete, #110 to #127 merged)
 
 ---
 
@@ -13,12 +13,12 @@ Last updated: 2026-09-26, evening session in progress (Stages 11 and 12 complete
 **Suite:** 2656 passing, none skipped — `python -m pytest -q` on `main` at
 `5c89b81`, HEAD level with origin.
 
-**Next action: Stage 13, Landing and links** (CLAUDE.md's Stage 13 section):
-Week Board as the default page and first in both navs; the three-line orientation
-banner; "Updated" in the Week Board header; hash routes; meta description and one
-Open Graph image. One PR per item.
+**Next action: Stage 14, One meaning per number** (CLAUDE.md's Stage 14
+section). Mark chose per 100 plays for net rating from a render (2026-09-26).
+One PR per item.
 
-**Done this evening: Stages 11 (#110 to #115) and 12 (#116 to #122).** The
+**Done this evening: Stages 11 (#110 to #115), 12 (#116 to #122) and 13 (#123
+to #127).** The
 Browser checks workflow (Playwright + axe-core, `tests/browser/check_page.py`)
 now runs on every PR touching the page and is green on `main`. Details, and
 Booth's figure slips, are in `memory/2026-09-26.md`.
@@ -59,8 +59,9 @@ which is GitHub's scheduler, not the workflow. No alert issue has opened.
 2. **The rest of Stage 6** (referee crews, personnel) after Stage 18, registered
    into `experiments/stage6/registry.json` first. None of the five slots is spent.
 
-Open decisions for Mark, each made from a render when its stage starts: net rating
-per 100 plays (Stage 14); the team-colour bars on the new card (Stage 17).
+Open decision for Mark, made from a render when its stage starts: the
+team-colour bars on the new card (Stage 17). (Per 100 plays for Stage 14:
+decided 2026-09-26.)
 TV channel per game added to Stage 15 (from ESPN's scoreboard, with the checks
 that keep a wrong channel off the page) and shown on the card in Stage 17.
 
