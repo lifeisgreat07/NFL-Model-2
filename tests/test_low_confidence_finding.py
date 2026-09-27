@@ -16,6 +16,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from page_source import page_source  # Model Lab's rows are rendered in at build time
 
 REPO_ROOT = Path(__file__).parent.parent
 TEMPLATE = REPO_ROOT / 'src' / 'dashboard_template.html'
@@ -54,7 +55,7 @@ def test_the_page_quotes_the_reproduced_figures_not_the_old_ones(result):
     cleanly, because the other copy still satisfied it. Requiring both means a
     half-revert, which leaves the page quietly contradicting itself, fails
     here instead of shipping."""
-    page = TEMPLATE.read_text()
+    page = page_source()
     r = result['reproduced']
     for value in (f"{r['model_a_accuracy']:.2f}",
                   f"{r['market_accuracy']:.2f}",
@@ -69,7 +70,7 @@ def test_the_page_quotes_the_reproduced_figures_not_the_old_ones(result):
 
 def test_the_page_names_the_script_that_produces_the_numbers(result):
     """A figure whose origin isn't stated is how this happened the first time."""
-    page = TEMPLATE.read_text()
+    page = page_source()
     assert 'verify_low_confidence_finding.py' in page, (
         "the page states the finding without naming what regenerates it")
 
@@ -78,7 +79,7 @@ def test_the_band_on_the_page_matches_the_band_that_was_measured(result):
     """'Within 0.05 of 50%' is the definition of the slice. If the script's
     band ever changes, the prose describing it has to change with it."""
     assert result['band'] == 0.05
-    page = TEMPLATE.read_text()
+    page = page_source()
     assert 'within 0.05 of a coin flip' in page
 
 
@@ -103,7 +104,7 @@ def test_the_superseded_figures_survive_only_as_history():
     test said exactly that and failed on the honest disclosure it was meant to
     protect. The rule is that wherever they appear, they must be marked as
     superseded."""
-    page = TEMPLATE.read_text()
+    page = page_source()
 
     for stale in re.finditer(r'(?:-|&minus;)11\.95pt', page):
         window = page[max(0, stale.start() - 200):stale.start()]

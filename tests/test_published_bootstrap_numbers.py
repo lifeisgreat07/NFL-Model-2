@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 import pytest
+from page_source import page_source  # Model Lab's rows are rendered in at build time
 
 REPO_ROOT = Path(__file__).parent.parent
 TEMPLATE = REPO_ROOT / 'src' / 'dashboard_template.html'
@@ -67,12 +68,12 @@ def known_intervals(results):
 def test_the_page_quotes_at_least_one_interval():
     """If the prose stops citing intervals entirely, this whole file would
     pass vacuously while the page silently loses its evidence."""
-    found = CI_RE.findall(TEMPLATE.read_text())
+    found = CI_RE.findall(page_source())
     assert len(found) >= 6, f"only {len(found)} intervals quoted on the page"
 
 
 def test_every_quoted_interval_is_a_real_result(known_intervals):
-    for lo_s, hi_s in CI_RE.findall(TEMPLATE.read_text()):
+    for lo_s, hi_s in CI_RE.findall(page_source()):
         pair = (round(_value(lo_s), 6), round(_value(hi_s), 6))
         assert pair in known_intervals, (
             f"the dashboard quotes CI [{lo_s}, {hi_s}], which is not in "
@@ -88,7 +89,7 @@ def test_the_page_does_not_call_an_inconclusive_gap_a_finding(results):
     version happens to be there."""
     metrics = results['comparisons']['model_b_vs_market']['metrics']
     any_real = any(m['excludes_zero'] for m in metrics.values())
-    page = TEMPLATE.read_text()
+    page = page_source()
     if not any_real:
         assert 'the lead did not survive' in page, (
             "Model B vs the market is inconclusive on every metric, but the "

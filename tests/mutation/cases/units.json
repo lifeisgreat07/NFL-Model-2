@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "units-pt-back-in-model-lab",
+      "target": "experiments/legacy/rows.json",
       "why": "one accuracy gap in Model Lab goes back to '+0.83pt', one character from a point spread on the same page.",
       "find": "+0.83&nbsp;pp accuracy but AUC drops",
       "replace": "+0.83pt accuracy but AUC drops",

@@ -1,0 +1,41 @@
+{
+  "target": "src/generate_dashboard.py",
+  "tests": "tests/test_model_lab_page.py",
+  "cases": [
+    {
+      "id": "lab-page-hides-the-first-label",
+      "why": "a row mapped onto the five decisions stops saying what it was first called, so the mapping becomes silent.",
+      "find": "        if e['label'] != e['decision']:\n            cell += f'<span class=\"lab-first\">First labelled {e[\"label\"]}</span>'",
+      "replace": "        if False:\n            cell += f'<span class=\"lab-first\">First labelled {e[\"label\"]}</span>'",
+      "expect_caught_by": "test_each_row_shows_its_decision_and_any_first_label"
+    },
+    {
+      "id": "lab-page-drops-the-leakage-flag",
+      "why": "the one result invalidated by leakage reads like any other deferred question.",
+      "find": "        if e['leakage']:\n            cell += ' <span class=\"conf-tag tag-neutral\">LEAKAGE</span>'",
+      "replace": "        if False:\n            cell += ' <span class=\"conf-tag tag-neutral\">LEAKAGE</span>'",
+      "expect_caught_by": "test_only_the_leakage_row_carries_the_flag"
+    },
+    {
+      "id": "lab-page-loses-the-sign",
+      "why": "a difference that favours the new idea is printed without its minus, so it reads as one that hurt.",
+      "find": "    return ('&minus;' if x < 0 else '+') + s",
+      "replace": "    return '+' + s",
+      "expect_caught_by": "test_every_figure_a_registered_row_prints_is_its_files"
+    },
+    {
+      "id": "lab-page-says-confirmation-for-a-screen",
+      "why": "a question that stopped at the validation screen is described as confirmed on the later seasons.",
+      "find": "            'validation': f\"validation screen {_seasons(h['seasons'])}; it did not go on to confirmation\",",
+      "replace": "            'validation': f\"confirmation seasons {_seasons(h['seasons'])}\",",
+      "expect_caught_by": "test_a_row_says_which_step_its_figure_is_from"
+    },
+    {
+      "id": "lab-page-rewrites-a-moved-row",
+      "why": "a moved row's result is re-escaped on the way to the page, so its entities show as text.",
+      "find": "            name, result = e['experiment'], e['result']",
+      "replace": "            name, result = e['experiment'], html_escape(e['result'])",
+      "expect_caught_by": "test_a_moved_row_reaches_the_page_unchanged"
+    }
+  ]
+}

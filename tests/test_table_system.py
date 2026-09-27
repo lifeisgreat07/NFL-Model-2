@@ -26,6 +26,7 @@ import re
 from pathlib import Path
 
 import pytest
+from page_source import page_source  # Model Lab's rows are rendered in at build time
 
 TEMPLATE = Path(__file__).parent.parent / 'src' / 'dashboard_template.html'
 
@@ -76,7 +77,7 @@ def header_problems(src):
 
 @pytest.fixture(scope='module')
 def src():
-    return TEMPLATE.read_text(encoding='utf-8')
+    return page_source()
 
 
 @pytest.fixture(scope='module')

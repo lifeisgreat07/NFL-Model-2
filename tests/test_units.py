@@ -20,6 +20,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
+from page_source import page_source  # Model Lab's rows are rendered in at build time
 
 TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html'
 NODE = shutil.which('node')
@@ -29,7 +30,7 @@ CASES = [6, 6.5, 1, 0.96, 10.5, -3, 3.04, 0]
 
 @pytest.fixture(scope='module')
 def src():
-    return TEMPLATE.read_text(encoding='utf-8')
+    return page_source()
 
 
 def markup_text(src):

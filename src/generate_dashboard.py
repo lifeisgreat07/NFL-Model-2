@@ -11,6 +11,7 @@ breakdown that weekly_update.py now computes per game.
 import base64
 import hashlib
 import json
+from html import escape as _escape
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -171,6 +172,68 @@ def load_game_status(status_dir=STATUS_DIR):
             snapshot = json.load(sf)
         out[parsed] = {(g['home'], g['away']): g for g in snapshot.get('games', [])}
     return out
+
+
+def html_escape(text):
+    """Text into markup. Quotes are left alone: nothing here goes into an attribute."""
+    return _escape(text, quote=False)
+
+
+def _signed(x, places=4):
+    """+0.0021 / &minus;0.0109, the way Model Lab's rows already write signs."""
+    s = f'{abs(x):.{places}f}'
+    return ('&minus;' if x < 0 else '+') + s
+
+
+def _seasons(seasons):
+    return f'{seasons[0]}&ndash;{seasons[-1]}' if len(seasons) > 1 else str(seasons[0])
+
+
+def _registered_result(e):
+    """The Result cell for a pre-registered answer, from its file's own figures."""
+    h = e['headline']
+    if h is None:
+        body = html_escape(e.get('reason') or 'Deferred.')
+    else:
+        where = {
+            'confirmation': f"confirmation seasons {_seasons(h['seasons'])}",
+            'validation': f"validation screen {_seasons(h['seasons'])}; it did not go on to confirmation",
+            'measurement': f"all of {_seasons(h['seasons'])}",
+            'screen': f"screen on {_seasons(h['seasons'])}",
+        }[h['step']]
+        model = f"{h['model']}, " if h['model'] else ''
+        metric = h['metric'] if h['metric'] == 'log loss' else f"{h['metric']} of {html_escape(h['of'])}"
+        if not model:
+            metric = metric[:1].upper() + metric[1:]
+        body = (f"{model}{metric} {_signed(h['diff'])} "
+                f"CI [{_signed(h['ci'][0])}, {_signed(h['ci'][1])}] at {h['ci_level'] * 100:g}%, "
+                f"{where}, {h['n']:,} {h['n_of']}. A negative difference favours the new idea.")
+    return (f"{body}<span class=\"lab-src\">Pre-registered, {e['stage']} {e['id']} "
+            f"&middot; <code>{e['source']}</code></span>")
+
+
+def render_model_lab_rows(entries):
+    """Model Lab's table rows (Stage 18), rendered into the page at build time
+    so the table exists without JavaScript and every #modellab/<slug> link
+    still finds its row.
+
+    A moved row's first two cells are its stored HTML, unchanged. The third is
+    the decision; when the row was first labelled something else, that label
+    follows it, so the mapping onto the five decisions is visible, not
+    silent."""
+    rows = []
+    for e in entries:
+        if e['stage'] is None:
+            name, result = e['experiment'], e['result']
+        else:
+            name, result = html_escape(e['title']), _registered_result(e)
+        cell = f'<span class="conf-tag tag-neutral">{e["decision"]}</span>'
+        if e['leakage']:
+            cell += ' <span class="conf-tag tag-neutral">LEAKAGE</span>'
+        if e['label'] != e['decision']:
+            cell += f'<span class="lab-first">First labelled {e["label"]}</span>'
+        rows.append(f'<tr><td>{name}</td><td>{result}</td><td>{cell}</td></tr>')
+    return '\n          '.join(rows)
 
 
 def load_team_news(news_dir=NEWS_DIR):
@@ -622,6 +685,9 @@ def main():
     html = html.replace('__SIDEBAR_FOOT__', foot_html)
     html = html.replace('__BOARD_UPDATED__', updated_html)
     html = html.replace('__FONT_FACES__', font_faces_css())
+    # Model Lab's rows, from the experiment records (Stage 18, src/model_lab.py).
+    from model_lab import entries as model_lab_entries
+    html = html.replace('__MODEL_LAB_ROWS__', render_model_lab_rows(model_lab_entries()))
 
     with open(OUTPUT_PATH, 'w') as f:
         f.write(html)
