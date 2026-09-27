@@ -1,0 +1,55 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_hash_routes.py",
+  "cases": [
+    {
+      "id": "route-reads-share-links",
+      "why": "the share-link guard goes. A bare '#picks=...' still fails the page check by luck, but a share payload after a route-shaped head ('#board/...&picks=...', which readSharedPicksFromUrl also accepts) reads as the Week Board and switches pages under the shared view.",
+      "find": "  if(/(^|&)picks=/.test(raw)) return null;\n",
+      "replace": "",
+      "expect_caught_by": "test_share_links_and_page_anchors_are_not_routes"
+    },
+    {
+      "id": "route-bounces-unknown-hashes",
+      "why": "any hash that is not a route opens the Week Board, so clicking a Methodology jump link (#part-method) throws the reader off the page they are reading.",
+      "find": "  if(!ROUTE_PAGES.includes(head)) return null;",
+      "replace": "  if(!ROUTE_PAGES.includes(head)) return {page:'board'};",
+      "expect_caught_by": "test_share_links_and_page_anchors_are_not_routes"
+    },
+    {
+      "id": "route-trusts-any-team",
+      "why": "an unknown team is passed through, so #team/ZZZ sets the team select to a value it has no option for and the page shows an empty or stale team.",
+      "find": "  if(head === 'team') return known.teams.includes(arg) ? {page:'teamdive', team:arg} : {page:'teamdive'};",
+      "replace": "  if(head === 'team') return {page:'teamdive', team:arg};",
+      "expect_caught_by": "test_an_unknown_week_team_or_row_opens_the_page_without_it"
+    },
+    {
+      "id": "route-hash-drops-the-week",
+      "why": "the address written for a board week leaves the week out, so a copied link to week 2 opens on the latest week.",
+      "find": "  if(r.page === 'board' && r.week) return '#board/' + encodeURIComponent(r.week);",
+      "replace": "  if(r.page === 'board' && r.week) return '#board';",
+      "expect_caught_by": "test_route_hash_writes_what_parse_route_reads"
+    },
+    {
+      "id": "route-page-change-replaces-history",
+      "why": "a page change replaces the history entry instead of adding one, so Back leaves the site instead of returning to the previous page.",
+      "find": "  if(location.pathname + location.search + location.hash !== url) history.pushState(null, '', url);",
+      "replace": "  if(location.pathname + location.search + location.hash !== url) history.replaceState(null, '', url);",
+      "expect_caught_by": "test_the_navs_record_the_page_in_the_address"
+    },
+    {
+      "id": "route-not-read-on-load",
+      "why": "a link with a route in it opens on the Week Board anyway, which is every shared address doing nothing.",
+      "find": "  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown));\n",
+      "replace": "",
+      "expect_caught_by": "test_back_forward_and_a_pasted_address_are_followed"
+    },
+    {
+      "id": "route-pages-miss-a-page",
+      "why": "a page is left out of ROUTE_PAGES, so its nav button records an address that opens nothing when followed.",
+      "find": "const ROUTE_PAGES = ['board','ratings','teamdive','picks','accuracy','modellab','method','changelog','reliability'];",
+      "replace": "const ROUTE_PAGES = ['board','ratings','teamdive','picks','accuracy','modellab','method','changelog'];",
+      "expect_caught_by": "test_every_page_a_nav_control_opens_has_a_route"
+    }
+  ]
+}

@@ -283,6 +283,8 @@
   thead th[aria-sort]{cursor:pointer; user-select:none;}
   thead th[aria-sort]:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
   thead th.sorted{color:var(--accent);}
+  /* The row a #modellab/<slug> link points at (Stage 13 hash routes). */
+  tr.route-target td{background:var(--accent-soft);}
   tbody td{padding:var(--s3) var(--s4); border-bottom:1px solid var(--border); font-size:var(--fs-14);}
   tbody tr{transition:background var(--dur-fast) var(--ease);}
   tbody tr:last-child td{border-bottom:none;}
@@ -2948,7 +2950,9 @@ function setActivePage(pageId){
   window.scrollTo({top:0, behavior:'auto'});
 }
 document.querySelectorAll('[data-page]').forEach(btn=>{
-  btn.addEventListener('click', ()=> setActivePage(btn.dataset.page));
+  // goToPage (Hash routes, at the end of this script) switches the page AND
+  // records it in the address, so the back button and a copied link work.
+  btn.addEventListener('click', ()=> goToPage(btn.dataset.page));
 });
 
 /* The More sheet is always in the page: closed, it is only moved below the
@@ -5389,6 +5393,132 @@ function renderChangelog(){
 }
 renderAgentLog();
 renderChangelog();
+
+/* ---------- Hash routes (Stage 13) ----------
+   Every page, a Week Board week, a team and a Model Lab experiment have an
+   address, so a link can point at one and the back button steps between
+   pages:
+
+     #board               the Week Board, latest week
+     #board/2026_week2    the Week Board at that week
+     #team/KC             Team Deep-Dive on that team
+     #modellab/<slug>     Model Lab, scrolled to that experiment's row
+     #ratings, #picks, #accuracy, #teamdive, #modellab, #method,
+     #changelog, #reliability
+
+   They coexist with share links: anything carrying `picks=` belongs to
+   readSharedPicksFromUrl() and is never read as a route, and while a shared
+   view is up the address is left alone. A hash that is not a route -- the
+   Methodology page's own jump links (#part-method) are the live case -- is
+   ignored rather than bounced to a page. A route naming a week, team or
+   experiment that does not exist opens the page without it.
+
+   A page change adds a history entry (pushState); a week or team change
+   inside a page replaces the current one, so stepping through eight weeks
+   does not cost eight presses of Back. Nothing writes a hash at load: an
+   address with none still opens on the Week Board.
+
+   parseRoute and routeHash are pure, so the suite runs them under node. */
+const ROUTE_PAGES = ['board','ratings','teamdive','picks','accuracy','modellab','method','changelog','reliability'];
+function parseRoute(hash, known){
+  const raw = String(hash || '').replace(/^#/, '');
+  if(/(^|&)picks=/.test(raw)) return null;
+  if(raw === '') return {page:'board'};
+  const slash = raw.indexOf('/');
+  const head = slash === -1 ? raw : raw.slice(0, slash);
+  let arg = slash === -1 ? '' : raw.slice(slash + 1);
+  try{ arg = decodeURIComponent(arg); }catch(e){ arg = ''; }
+  if(head === 'team') return known.teams.includes(arg) ? {page:'teamdive', team:arg} : {page:'teamdive'};
+  if(!ROUTE_PAGES.includes(head)) return null;
+  if(head === 'board' && known.weeks.includes(arg)) return {page:'board', week:arg};
+  if(head === 'modellab' && known.experiments.includes(arg)) return {page:'modellab', experiment:arg};
+  return {page:head};
+}
+function routeHash(r){
+  if(r.page === 'teamdive' && r.team) return '#team/' + encodeURIComponent(r.team);
+  if(r.page === 'board' && r.week) return '#board/' + encodeURIComponent(r.week);
+  if(r.page === 'modellab' && r.experiment) return '#modellab/' + encodeURIComponent(r.experiment);
+  return '#' + r.page;
+}
+function experimentSlug(text){
+  return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+    .slice(0, 48).replace(/-+$/, '');
+}
+
+/* Model Lab's experiment rows are static markup with no ids; each gets one
+   from its first cell, made unique if two names slug alike. */
+const routeKnown = (function(){
+  const experiments = [];
+  document.querySelectorAll('#page-modellab .table-wrap[data-scroll-label="Experiment log"] tbody tr').forEach(tr=>{
+    const first = tr.querySelector('td');
+    if(!first) return;
+    let slug = experimentSlug(first.textContent), n = 2;
+    while(experiments.includes(slug)) slug = experimentSlug(first.textContent) + '-' + n++;
+    experiments.push(slug);
+    tr.id = 'exp-' + slug;
+  });
+  const teams = (teamHistory && teamHistory.names) ? Object.keys(teamHistory.names) : [];
+  return {weeks: weekKeysSorted.slice(), teams, experiments};
+})();
+
+function currentRoute(page){
+  if(page === 'board') return {page, week: currentBoardWeek !== latestWeekKey ? currentBoardWeek : undefined};
+  if(page === 'teamdive'){
+    const s = document.getElementById('teamdive-select');
+    return {page, team: (s && s.value) || undefined};
+  }
+  return {page};
+}
+function inSharedView(){ return /[#&]picks=/.test(location.hash || ''); }
+function routeUrl(r){ return location.pathname + location.search + routeHash(r); }
+
+function goToPage(page){
+  setActivePage(page);
+  if(inSharedView()) return;
+  const url = routeUrl(currentRoute(page));
+  if(location.pathname + location.search + location.hash !== url) history.pushState(null, '', url);
+}
+function replaceRoute(page){
+  const active = document.querySelector('.page.active');
+  if(inSharedView() || !active || active.id !== 'page-' + page) return;
+  history.replaceState(null, '', routeUrl(currentRoute(page)));
+}
+
+function applyRoute(r){
+  if(!r || !document.getElementById('page-' + r.page)) return;
+  const active = document.querySelector('.page.active');
+  if(!active || active.id !== 'page-' + r.page) setActivePage(r.page);
+  if(r.page === 'board'){
+    const s = document.getElementById('week-select');
+    const want = r.week || latestWeekKey;
+    if(s && want && s.value !== want){ s.value = want; s.dispatchEvent(new Event('change')); }
+  }
+  if(r.team){
+    const s = document.getElementById('teamdive-select');
+    if(s && s.value !== r.team){ s.value = r.team; s.dispatchEvent(new Event('change')); }
+  }
+  document.querySelectorAll('tr.route-target').forEach(tr => tr.classList.remove('route-target'));
+  if(r.experiment){
+    const row = document.getElementById('exp-' + r.experiment);
+    if(row){
+      row.classList.add('route-target');
+      row.setAttribute('tabindex', '-1');
+      row.scrollIntoView({block:'center'});
+      row.focus({preventScroll:true});
+    }
+  }
+}
+
+(function wireRoutes(){
+  const week = document.getElementById('week-select');
+  if(week) week.addEventListener('change', ()=> replaceRoute('board'));
+  const team = document.getElementById('teamdive-select');
+  if(team) team.addEventListener('change', ()=> replaceRoute('teamdive'));
+  // popstate covers Back and Forward, and a fragment typed or pasted into the
+  // address bar of an open tab.
+  window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown)));
+  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown));
+})();
 </script>
 </body>
 </html>
