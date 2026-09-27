@@ -37,7 +37,9 @@ NOT_TEXT = {
     '.tele-marker': "the telestrator's midline",
 }
 # Rules that dimmed text before Stage 12 and must not again.
-WERE_DIMMED = ['.agent-stat-note', '.nav-group-label', '.foot-freshness',
+# (.foot-freshness was one too; Stage 13 removed the rule when the "Updated"
+# line moved to the Week Board header as .board-updated.)
+WERE_DIMMED = ['.agent-stat-note', '.nav-group-label',
                '.btn-chip[aria-pressed="false"]', '.track-note', '.dive-why-note',
                '.picks-readonly .pick-btn']
 

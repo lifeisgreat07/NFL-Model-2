@@ -199,7 +199,6 @@
   .nav-btn.disabled{opacity:.38; cursor:default;}
   .sidebar-foot{margin-top:auto; padding:var(--s4) var(--s6) 0; border-top:1px solid var(--border);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); line-height:1.7;}
-  .foot-freshness{display:inline-block; margin-top:var(--s1);}
   /* .btn.theme-toggle, not .theme-toggle: this rule sits above the button
      component in source order, so at equal specificity .btn's colour won. */
   .btn.theme-toggle{margin-bottom:var(--s3); color:var(--text-2); font-weight:500;}
@@ -221,6 +220,7 @@
     letter-spacing:.12em; text-transform:uppercase; color:var(--text-2); margin-bottom:var(--s2);}
   .page-head h2{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:var(--fs-32); letter-spacing:.005em;}
   .page-head .desc{color:var(--text-2); font-size:var(--fs-14); margin-top:var(--s1); max-width:560px; line-height:1.55;}
+  .board-updated{color:var(--text-2); font-size:var(--fs-12); margin-top:var(--s1);}
   .badge{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.05em; padding:var(--s2) var(--s3); border-radius:20px;
     background:var(--surface-2); color:var(--text-2); border:1px solid var(--border); white-space:nowrap;}
 
@@ -1605,6 +1605,10 @@ __FONT_FACES__
         <div class="page-eyebrow">This Week</div>
         <h2>Week Board</h2>
         <div class="desc">This week&#39;s games, what each model picks, and why.</div>
+        <!-- When the page was built, written by generate_dashboard.py's
+             updated_line() (Stage 13). It lived in the sidebar footer, which
+             is hidden below 1080px, so phones and tablets never saw it. -->
+        <div class="board-updated">__BOARD_UPDATED__</div>
       </div>
       <div class="badge" id="board-badge" aria-live="polite" hidden></div>
     </div>
