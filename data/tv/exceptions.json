@@ -1,0 +1,29 @@
+{
+  "about": "Games allowed a network their slot's rule would hold back (src/tv_channels.py, Stage 15). Each entry names ONE game by its elias id (= nflverse old_game_id), the network it is excused for, why, and a source a person can open. An exception is for that network only: a game flexed to another network is checked again. Add entries in a reviewed PR, never by hand on main.",
+  "exceptions": [
+    {"elias": "2026090900", "game": "NE at SEA, week 1", "network": "NBC",
+     "reason": "NFL Kickoff Game, played on a Wednesday; no slot rule covers Wednesday night.",
+     "source": "https://www.nbcuniversal.com/article/nbc-sports-opens-nfl-season-patriots-seahawks-super-bowl-rematch-nfl-kickoff-game"},
+    {"elias": "2026091100", "game": "SF at LA, week 1 (Melbourne)", "network": "Netflix",
+     "reason": "International game in Melbourne, streamed on Netflix; breaks the Thursday-night Prime Video rule.",
+     "source": "https://fbschedules.com/nfl-schedule-release-2026-nine-international-games-set/"},
+    {"elias": "2026100400", "game": "IND at WAS, week 4 (London)", "network": "NFL Network",
+     "reason": "International game, 9:30 AM Eastern; no slot rule covers Sunday morning.",
+     "source": "https://fbschedules.com/nfl-schedule-release-2026-nine-international-games-set/"},
+    {"elias": "2026101100", "game": "PHI at JAX, week 5 (London)", "network": "NFL Network",
+     "reason": "International game, 9:30 AM Eastern; no slot rule covers Sunday morning.",
+     "source": "https://fbschedules.com/nfl-schedule-release-2026-nine-international-games-set/"},
+    {"elias": "2026101800", "game": "HOU at JAX, week 6 (London)", "network": "NFL Network",
+     "reason": "International game, 9:30 AM Eastern; no slot rule covers Sunday morning.",
+     "source": "https://fbschedules.com/nfl-schedule-release-2026-nine-international-games-set/"},
+    {"elias": "2026102500", "game": "PIT at NO, week 7 (Paris)", "network": "NFL Network",
+     "reason": "International game, 9:30 AM Eastern; no slot rule covers Sunday morning.",
+     "source": "https://fbschedules.com/nfl-schedule-release-2026-nine-international-games-set/"},
+    {"elias": "2026110800", "game": "CIN at ATL, week 9 (Madrid)", "network": "NFL Network",
+     "reason": "International game, 9:30 AM Eastern; no slot rule covers Sunday morning.",
+     "source": "https://fbschedules.com/nfl-schedule-release-2026-nine-international-games-set/"},
+    {"elias": "2026111500", "game": "NE at DET, week 10 (Munich)", "network": "FOX",
+     "reason": "International game, 9:30 AM Eastern; no slot rule covers Sunday morning.",
+     "source": "https://fbschedules.com/nfl-schedule-release-2026-nine-international-games-set/"}
+  ]
+}
