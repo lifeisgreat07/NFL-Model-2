@@ -414,24 +414,36 @@ MONTHS = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
 
 
-def provenance_line(now, model_version=MODEL_VERSION, train_seasons=TRAIN_SEASONS):
-    """The sidebar footer: one plain line saying what made the page and when.
+def provenance_line(model_version=MODEL_VERSION, train_seasons=TRAIN_SEASONS):
+    """The sidebar footer: one plain line saying what made the page.
 
     Stage 11. It used to read "Trained on: current nflfastR history / 3
     week(s) saved / Latest: 2026_week3 / Data as of ..." -- a file-name
     week key, a "(s)" plural and a data project's name, which is the build
     talking to itself rather than to a reader. Every part of this line
-    comes from config or the clock, so it cannot drift from what built the
-    page: the model version, the first season the model learns from (the
-    live run also learns from the current season's finished games, hence
-    "since"), and when the page was built, read from the clock in UTC and
-    labelled so, because a time whose zone is not stated is not a time.
+    comes from config, so it cannot drift from what built the page: the
+    model version and the first season the model learns from (the live run
+    also learns from the current season's finished games, hence "since").
+
+    Until Stage 13 it also carried "Updated ...". The sidebar is hidden
+    below 1080px, so on every phone and tablet the page never said when it
+    was built. That half is updated_line(), in the Week Board's header.
     """
     first = min(train_seasons)
+    return f"Model {model_version}, built from NFL play-by-play since {first}."
+
+
+def updated_line(now):
+    """When the page was built, for the Week Board's header (Stage 13).
+
+    Read from the clock in UTC and labelled so, because a time whose zone
+    is not stated is not a time. Carried in a <time> element so the
+    instant is machine-readable as well as printed.
+    """
     stamp = (f"{MONTHS[now.month - 1]} {now.day}, {now.year}, "
              f"{now.strftime('%H:%M')} UTC")
-    return (f"Model {model_version}, built from NFL play-by-play since {first}. "
-            f"<span class='foot-freshness'>Updated {stamp}.</span>")
+    iso = now.strftime('%Y-%m-%dT%H:%MZ')
+    return f'<time datetime="{iso}">Updated {stamp}.</time>'
 
 
 def main():
@@ -513,7 +525,8 @@ def main():
     print("Loading team history...")
     team_history_js = load_team_history()
 
-    foot_html = provenance_line(datetime.now(timezone.utc))
+    foot_html = provenance_line()
+    updated_html = updated_line(datetime.now(timezone.utc))
 
     with open(TEMPLATE_PATH) as f:
         template = f.read()
@@ -542,6 +555,7 @@ def main():
     html = html.replace('__VERSION_HISTORY_JSON__', json.dumps(VERSION_HISTORY, indent=2))
     html = html.replace('__MODEL_VERSION__', json.dumps(MODEL_VERSION))
     html = html.replace('__SIDEBAR_FOOT__', foot_html)
+    html = html.replace('__BOARD_UPDATED__', updated_html)
     html = html.replace('__FONT_FACES__', font_faces_css())
 
     with open(OUTPUT_PATH, 'w') as f:

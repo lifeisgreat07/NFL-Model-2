@@ -10,11 +10,11 @@
       "expect_caught_by": "test_every_partial_opacity_is_on_something_without_text"
     },
     {
-      "id": "sidebar-freshness-dimmed-again",
-      "why": "the sidebar's 'Updated ...' line goes back to opacity .75, under 4.5:1 in the light theme and behind a gradient where axe only says 'needs review'.",
-      "find": "  .foot-freshness{display:inline-block; margin-top:var(--s1);}",
-      "replace": "  .foot-freshness{display:inline-block; margin-top:var(--s1); opacity:0.75;}",
-      "expect_caught_by": "test_the_rules_that_dimmed_text_no_longer_do"
+      "id": "updated-line-dimmed-again",
+      "why": "the 'Updated ...' line, now in the Week Board's header (Stage 13), is faded to .75 the way it was in the sidebar, under 4.5:1 in the light theme.",
+      "find": "  .board-updated{color:var(--text-2); font-size:var(--fs-12); margin-top:var(--s1);}",
+      "replace": "  .board-updated{color:var(--text-2); font-size:var(--fs-12); margin-top:var(--s1); opacity:.75;}",
+      "expect_caught_by": "test_every_partial_opacity_is_on_something_without_text"
     },
     {
       "id": "off-series-label-faded-again",

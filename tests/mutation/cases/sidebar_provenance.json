@@ -14,14 +14,28 @@
       "why": "the time is printed without UTC. A reader in New York reads 19:11 as their own evening, four hours off, and nothing on the page says otherwise.",
       "find": "             f\"{now.strftime('%H:%M')} UTC\")",
       "replace": "             f\"{now.strftime('%H:%M')}\")",
-      "expect_caught_by": "test_the_line_reads_as_a_sentence"
+      "expect_caught_by": "test_the_updated_line_names_its_time_zone"
     },
     {
       "id": "provenance-footer-gets-the-internals-back",
       "why": "the old footer is restored beside the new line -- the file-name week key and the '(s)' plural back on every page, with the provenance line still present so a check for it alone would pass.",
-      "find": "    foot_html = provenance_line(datetime.now(timezone.utc))",
-      "replace": "    foot_html = provenance_line(datetime.now(timezone.utc)) + f\"<br>{len(weeks_js)} week(s) saved<br>Latest: {latest_label}\"",
+      "find": "    foot_html = provenance_line()",
+      "replace": "    foot_html = provenance_line() + f\"<br>{len(weeks_js)} week(s) saved<br>Latest: {latest_label}\"",
       "expect_caught_by": "test_the_page_footer_is_the_provenance_line_and_nothing_else"
+    },
+    {
+      "id": "updated-line-filled-with-nothing",
+      "why": "the header's placeholder is filled with an empty string, which check_build cannot see (no placeholder is left), so the page says nowhere when it was built.",
+      "find": "    html = html.replace('__BOARD_UPDATED__', updated_html)",
+      "replace": "    html = html.replace('__BOARD_UPDATED__', '')",
+      "expect_caught_by": "test_the_build_time_is_in_the_week_board_header"
+    },
+    {
+      "id": "updated-line-loses-its-machine-time",
+      "why": "the <time> element loses its datetime, so the instant is only printed text and nothing reading the page can tell when it was built without parsing English.",
+      "find": "    return f'<time datetime=\"{iso}\">Updated {stamp}.</time>'",
+      "replace": "    return f'<time>Updated {stamp}.</time>'",
+      "expect_caught_by": "test_the_updated_line_names_its_time_zone"
     }
   ]
 }

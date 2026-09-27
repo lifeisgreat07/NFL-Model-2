@@ -1,13 +1,18 @@
-"""The sidebar footer is one plain provenance line, generated from config.
+"""The sidebar footer says what made the page; the Week Board says when.
 
 Stage 11 (CLAUDE.md, "Stage 11 - Integrity and access"). The footer read
 "Trained on: current nflfastR history / 3 week(s) saved / Latest: 2026_week3
 / Data as of ...": a file-name week key, a "(s)" plural and a data project's
-name -- the build talking to itself. It now reads, for example, "Model 2.5,
-built from NFL play-by-play since 2020. Updated Sep 26, 2026, 19:11 UTC."
+name -- the build talking to itself. It became one line, for example "Model
+2.5, built from NFL play-by-play since 2020. Updated Sep 26, 2026, 19:11 UTC."
 
-Every part comes from config or the clock, so the line cannot drift from
-what built the page; these tests hold it to both.
+Stage 13 moved the "Updated" half into the Week Board's header: the sidebar
+is hidden below 1080px, so no phone or tablet ever saw when the page was
+built. The footer now reads "Model 2.5, built from NFL play-by-play since
+2020." and the header "Updated Sep 26, 2026, 19:11 UTC.", in a <time>.
+
+Every part comes from config or the clock, so neither can drift from what
+built the page; these tests hold them to both.
 
 Run with: pytest tests/test_sidebar_provenance.py -v
 """
@@ -25,42 +30,68 @@ import config  # noqa: E402
 import generate_dashboard as gd  # noqa: E402
 
 WHEN = datetime(2026, 9, 26, 19, 11, tzinfo=timezone.utc)
+TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
 
 
 def _text(html):
     return re.sub(r'<[^>]+>', '', html)
 
 
+def _code():
+    src = (ROOT / 'src' / 'generate_dashboard.py').read_text(encoding='utf-8')
+    code = re.sub(r'(?s)""".*?"""', '', src)
+    return re.sub(r'(?m)#.*$', '', code)
+
+
 def test_the_line_reads_as_a_sentence():
     # Unordered, and not starting at today's 2020, so a first season typed
     # into the generator -- or read off the list's first entry -- is caught.
-    line = gd.provenance_line(WHEN, model_version='9.1', train_seasons=[2021, 2018, 2025])
-    assert _text(line) == ('Model 9.1, built from NFL play-by-play since 2018. '
-                           'Updated Sep 26, 2026, 19:11 UTC.')
+    line = gd.provenance_line(model_version='9.1', train_seasons=[2021, 2018, 2025])
+    assert _text(line) == 'Model 9.1, built from NFL play-by-play since 2018.'
 
 
 def test_it_is_one_line():
-    assert '<br' not in gd.provenance_line(WHEN).lower()
+    assert '<br' not in gd.provenance_line().lower()
 
 
 def test_the_version_and_first_season_come_from_config():
     """The defaults are config's, not copies typed into the generator."""
-    text = _text(gd.provenance_line(WHEN))
+    text = _text(gd.provenance_line())
     assert f'Model {config.MODEL_VERSION},' in text
     assert f'since {min(config.TRAIN_SEASONS)}.' in text
 
 
+def test_the_updated_line_names_its_time_zone():
+    line = gd.updated_line(WHEN)
+    assert _text(line) == 'Updated Sep 26, 2026, 19:11 UTC.'
+    assert '<time datetime="2026-09-26T19:11Z">' in line, 'the instant is not machine-readable'
+
+
 def test_a_morning_build_keeps_its_leading_zero():
     early = datetime(2026, 1, 4, 6, 5, tzinfo=timezone.utc)
-    assert 'Updated Jan 4, 2026, 06:05 UTC.' in _text(gd.provenance_line(early))
+    assert 'Updated Jan 4, 2026, 06:05 UTC.' in _text(gd.updated_line(early))
+    assert 'datetime="2026-01-04T06:05Z"' in gd.updated_line(early)
 
 
 def test_the_page_footer_is_the_provenance_line_and_nothing_else():
-    src = (ROOT / 'src' / 'generate_dashboard.py').read_text(encoding='utf-8')
-    code = re.sub(r'(?s)""".*?"""', '', src)
-    code = re.sub(r'(?m)#.*$', '', code)
+    code = _code()
     assigned = re.findall(r'foot_html\s*=\s*(.+)', code)
-    assert assigned == ['provenance_line(datetime.now(timezone.utc))'], (
+    assert assigned == ['provenance_line()'], (
         f'the sidebar footer is no longer just the provenance line: {assigned}')
     for internal in ('Trained on', 'week(s)', 'Latest:', 'nflfastR history'):
         assert internal not in code, f'build internals are back in the generator: {internal!r}'
+    assert 'Updated' not in _text(gd.provenance_line()), (
+        'the build time is back in the sidebar, which no phone or tablet shows')
+
+
+def test_the_build_time_is_in_the_week_board_header():
+    code = _code()
+    assert re.findall(r'updated_html\s*=\s*(.+)', code) == ['updated_line(datetime.now(timezone.utc))']
+    assert "html.replace('__BOARD_UPDATED__', updated_html)" in code
+    src = TEMPLATE.read_text(encoding='utf-8')
+    board = re.search(r'<section class="page[^"]*" id="page-board">(.*?)</section>', src, re.S)
+    assert board, 'the Week Board section is no longer findable'
+    head = re.search(r'<div class="page-head">(.*?)\n    </div>', board.group(1), re.S)
+    assert head and '__BOARD_UPDATED__' in head.group(1), (
+        "the build time is not in the Week Board's header")
+    assert src.count('__BOARD_UPDATED__') == 1
