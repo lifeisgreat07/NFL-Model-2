@@ -1111,7 +1111,9 @@ no discrepancies. Decisions worth keeping, so they are not re-litigated:
 - **"Pick'em rank n (k points)" (#113)** via `pickemRankLabel`; the PDF's
   `Rank`/`Pts` headers were left for Stage 14, which owns every `pt`/`pts`.
 - **The footer is `provenance_line()` in `src/generate_dashboard.py` (#115)**,
-  from `MODEL_VERSION`, `min(TRAIN_SEASONS)` and the clock in UTC.
+  from `MODEL_VERSION` and `min(TRAIN_SEASONS)`. Its "Updated ... UTC" half
+  moved to the Week Board header in Stage 13 (#125, `updated_line()`), because
+  the sidebar is hidden below 1080px and no phone ever saw it.
 
 The original plan, kept for the reasoning:
 The two places the page can currently say something untrue or unreachable, then
