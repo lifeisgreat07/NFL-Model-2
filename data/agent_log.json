@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-09-27T02:09:40Z",
+  "generated_utc": "2026-09-27T02:47:48Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 160,
-    "audits_superseded": 52,
-    "pull_requests_audited": 108,
+    "audits_total": 162,
+    "audits_superseded": 53,
+    "pull_requests_audited": 109,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 1166,
+    "claims_checked": 1185,
     "discrepancies_found": 24,
-    "unverifiable": 85,
+    "unverifiable": 86,
     "pull_requests_with_a_discrepancy": 15,
     "reports_disagreeing_with_themselves": 18
   },
@@ -2958,6 +2958,46 @@
       "confirmed": 15,
       "discrepancies": 0,
       "unverifiable": 0,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 129,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/129#issuecomment-5851979847",
+      "posted_utc": "2026-09-27T02:30:55Z",
+      "head": "3e6f92e",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 15,
+      "confirmed": 13,
+      "discrepancies": 1,
+      "unverifiable": 1,
+      "overall": "DO NOT MERGE -- DISCREPANCIES FOUND",
+      "implicated": [
+        "src/dashboard_template.html",
+        "tests/mutation/cases/playoff_odds_column_markup.json"
+      ],
+      "inconsistencies": [
+        "prose says Confirmed: 14, block has 13",
+        "prose says Unverifiable: 0, block has 1"
+      ],
+      "superseded": true
+    },
+    {
+      "pr": 129,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/129#issuecomment-5852066266",
+      "posted_utc": "2026-09-27T02:46:53Z",
+      "head": "3e6f92e",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 19,
+      "confirmed": 18,
+      "discrepancies": 0,
+      "unverifiable": 1,
       "overall": "SAFE TO MERGE",
       "implicated": [],
       "inconsistencies": [],
