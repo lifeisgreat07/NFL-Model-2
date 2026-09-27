@@ -38,6 +38,7 @@ DATA_DIR = ROOT / 'data'
 PRED_DIR = ROOT / 'predictions'
 DIST_DIR = ROOT / 'dist'
 RESULTS_DIR = ROOT / 'results'
+STATUS_DIR = DATA_DIR / 'game_status'
 TEMPLATE_PATH = ROOT / 'src' / 'dashboard_template.html'
 OUTPUT_PATH = ROOT / 'index.html'  # served as the default page by GitHub Pages
 
@@ -148,10 +149,35 @@ def load_all_graded():
     return out
 
 
-def build_games_js(preds, graded_lookup_by_key):
+def load_game_status(status_dir=STATUS_DIR):
+    """{(season, week): {(home, away): entry}} from the weekend refresh's
+    snapshots (src/weekend_refresh.py, Stage 15): each game's status, and its
+    score once final.
+
+    A week with no snapshot is simply absent, and the card then shows its
+    kickoff and nothing else -- weeks graded before the refresh existed never
+    get one. Absent stays absent: nothing here invents a status."""
+    out = {}
+    if not status_dir.exists():
+        print(f"  NOTE: {status_dir} absent -- no weekend refresh has run yet, "
+              f"so cards show kickoff times only.")
+        return out
+    for f in status_dir.glob('*_week*.json'):
+        parsed = parse_week_stem(f.stem)
+        if parsed is None:
+            continue
+        with open(f) as sf:
+            snapshot = json.load(sf)
+        out[parsed] = {(g['home'], g['away']): g for g in snapshot.get('games', [])}
+    return out
+
+
+def build_games_js(preds, graded_lookup_by_key, status_by_key=None):
     """Convert one week's saved predictions into the dashboard's game-card
     JS format, joining in graded results (actual outcome, correctness) if
-    that week has already been graded."""
+    that week has already been graded, and the weekend refresh's status and
+    score if a snapshot exists."""
+    status_by_key = status_by_key or {}
     games = []
     for p in preds:
         model_a = p.get('model_a_home_win_prob')
@@ -160,6 +186,7 @@ def build_games_js(preds, graded_lookup_by_key):
         model_b = p.get('model_b_home_win_prob')
         key = (p['home'], p['away'])
         graded = graded_lookup_by_key.get(key)
+        status = status_by_key.get(key) or {}
 
         notes = p.get('context_notes') or []
         # Backward compat with predictions saved before this change (single qb_note field)
@@ -190,6 +217,11 @@ def build_games_js(preds, graded_lookup_by_key):
             'actual_home_win': graded.get('actual_home_win') if graded else None,
             'model_a_correct': graded.get('model_a_correct') if graded else None,
             'model_b_correct': graded.get('model_b_correct') if graded else None,
+            # From the weekend refresh (Stage 15). None when this week has no
+            # snapshot, and the scores are None until the game is final.
+            'status': status.get('status'),
+            'away_score': status.get('away_score'),
+            'home_score': status.get('home_score'),
         })
     return games
 
@@ -461,6 +493,7 @@ def main():
     print("Loading all saved predictions...")
     all_preds = load_all_predictions()
     all_graded = load_all_graded()
+    all_status = load_game_status()
 
     weeks_js = {}
     for key, preds in sorted(all_preds.items()):
@@ -469,7 +502,7 @@ def main():
         graded_lookup = {(g['home'], g['away']): g for g in graded}
         weeks_js[f"{season}_week{week}"] = {
             'season': season, 'week': week,
-            'games': build_games_js(preds, graded_lookup),
+            'games': build_games_js(preds, graded_lookup, all_status.get(key)),
         }
 
     latest_key = max(all_preds.keys()) if all_preds else None
