@@ -136,6 +136,8 @@ RENDERERS = {
     'buildCumulativeTrendChart': 'accuracy',
     'renderTeamDive': 'teamdive',
     'renderTeamGames': 'teamdive',
+    'renderTeamNews': 'teamdive',
+    'teamNewsItems': 'teamdive',
     # Model Lab: its reliability diagram is a technical chart on a technical
     # page. Verified by where the container lives (`#reliability-diagram`
     # sits inside `id="page-modellab"`), not by the function's name.

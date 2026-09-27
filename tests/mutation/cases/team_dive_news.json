@@ -1,0 +1,56 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_team_dive_news.py",
+  "cases": [
+    {
+      "id": "dive-news-shows-the-oldest-week",
+      "why": "the block reads the first week with news instead of the newest, so last week's injuries sit on the page as this week's.",
+      "find": "  return keys.length ? keys[keys.length - 1] : null;",
+      "replace": "  return keys.length ? keys[0] : null;",
+      "expect_caught_by": "test_the_block_shows_the_newest_week_that_has_news"
+    },
+    {
+      "id": "dive-news-unpublished-reads-as-healthy",
+      "why": "a week whose report is not out yet falls through to the published branch and reads 'No starters listed', which a reader takes for 'nobody hurt'.",
+      "find": "  if(entry.injury_report === 'not yet published'){",
+      "replace": "  if(entry.injury_report === 'not yet published' && false){",
+      "expect_caught_by": "test_an_unpublished_report_never_reads_as_nobody_hurt"
+    },
+    {
+      "id": "dive-news-hides-an-injured-pick-qb",
+      "why": "a pick made with a quarterback now listed out reads 'the same starter as last game', two lines above his name under Out.",
+      "find": "    const listed = (entry.out || []).some(p => p.name === qb.name) ? 'out'",
+      "replace": "    const listed = false ? 'out'",
+      "expect_caught_by": "test_a_pick_made_with_a_quarterback_now_listed_out_says_so_on_its_own_line"
+    },
+    {
+      "id": "dive-news-lists-questionable-players",
+      "why": "the questionable count is dropped, so a starter who may not play goes unmentioned.",
+      "find": "    if(q) items.push(",
+      "replace": "    if(false) items.push(",
+      "expect_caught_by": "test_questionable_starters_are_a_count_not_a_list"
+    },
+    {
+      "id": "dive-news-dated-in-utc",
+      "why": "the read date is shown in UTC, so a Sunday-evening read says Monday.",
+      "find": "timeZone:'America/New_York', weekday:'short'",
+      "replace": "timeZone:'UTC', weekday:'short'",
+      "expect_caught_by": "test_every_line_carries_its_source_and_the_date_it_was_read_in_new_york"
+    },
+    {
+      "id": "dive-news-name-not-escaped",
+      "why": "a name is written into the page as markup rather than text.",
+      "find": "<span class=\"dive-news-text\">${esc(it.text)}</span>",
+      "replace": "<span class=\"dive-news-text\">${it.text}</span>",
+      "expect_caught_by": "test_names_are_escaped"
+    },
+    {
+      "id": "dive-news-never-expires",
+      "target": "src/generate_dashboard.py",
+      "why": "a graded week's news stays on the page, so last week's injuries read as current until the next week locks.",
+      "find": "    if news is None or len(graded) >= len(preds):",
+      "replace": "    if news is None:",
+      "expect_caught_by": "test_news_expires_once_every_pick_in_its_week_is_graded"
+    }
+  ]
+}

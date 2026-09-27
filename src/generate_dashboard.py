@@ -39,6 +39,7 @@ PRED_DIR = ROOT / 'predictions'
 DIST_DIR = ROOT / 'dist'
 RESULTS_DIR = ROOT / 'results'
 STATUS_DIR = DATA_DIR / 'game_status'
+NEWS_DIR = DATA_DIR / 'team_news'
 TEMPLATE_PATH = ROOT / 'src' / 'dashboard_template.html'
 OUTPUT_PATH = ROOT / 'index.html'  # served as the default page by GitHub Pages
 
@@ -170,6 +171,33 @@ def load_game_status(status_dir=STATUS_DIR):
             snapshot = json.load(sf)
         out[parsed] = {(g['home'], g['away']): g for g in snapshot.get('games', [])}
     return out
+
+
+def load_team_news(news_dir=NEWS_DIR):
+    """{(season, week): {'read_at', 'teams'}} from src/team_news.py's week
+    files (Stage 16). Absent folder, absent news: nothing is invented."""
+    out = {}
+    if not news_dir.exists():
+        print(f"  NOTE: {news_dir} absent -- team news has not been read yet, "
+              f"so Team Deep-Dive shows no news.")
+        return out
+    for f in news_dir.glob('*_week*.json'):
+        parsed = parse_week_stem(f.stem)
+        if parsed is None:
+            continue
+        with open(f, encoding='utf-8') as nf:
+            body = json.load(nf)
+        out[parsed] = {'read_at': body.get('read_at'), 'teams': body.get('teams') or {}}
+    return out
+
+
+def week_news(preds, graded, news):
+    """The week's news while the week is still being played, else None.
+    Items expire with their week: once every pick is graded the news is left
+    out of the page, though its file stays in the repository."""
+    if news is None or len(graded) >= len(preds):
+        return None
+    return news
 
 
 def build_games_js(preds, graded_lookup_by_key, status_by_key=None):
@@ -494,6 +522,7 @@ def main():
     all_preds = load_all_predictions()
     all_graded = load_all_graded()
     all_status = load_game_status()
+    all_news = load_team_news()
 
     weeks_js = {}
     for key, preds in sorted(all_preds.items()):
@@ -504,6 +533,9 @@ def main():
             'season': season, 'week': week,
             'games': build_games_js(preds, graded_lookup, all_status.get(key)),
         }
+        news = week_news(preds, graded, all_news.get(key))
+        if news is not None:
+            weeks_js[f"{season}_week{week}"]['news'] = news
 
     latest_key = max(all_preds.keys()) if all_preds else None
     latest_label = f"{latest_key[0]}_week{latest_key[1]}" if latest_key else None
