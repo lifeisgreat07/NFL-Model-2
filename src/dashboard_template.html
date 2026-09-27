@@ -1206,6 +1206,19 @@
   .state--readable p{margin:0 0 var(--s3);}
   .state--readable p:last-child{margin-bottom:0;}
 
+  /* ---------- Team Deep-Dive: this week's team news (Stage 16) ----------
+     At most five short lines, each with where it came from and when. Neutral
+     colours throughout: an injury is news, not a verdict on the pick. */
+  .dive-news{margin-bottom:var(--s5);}
+  .dive-news-title{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); color:var(--text); margin-bottom:var(--s1);}
+  .dive-news-sub{font-size:var(--fs-13); color:var(--text-2); margin-bottom:var(--s3);}
+  .dive-news-list{list-style:none; margin:0; padding:var(--s2) var(--s4);}
+  .dive-news-item{padding:var(--s2) 0; border-bottom:1px solid var(--border);}
+  .dive-news-item:last-child{border-bottom:none;}
+  .dive-news-text{font-size:var(--fs-14); color:var(--text); line-height:1.5;}
+  .dive-news-text b{font-weight:600;}
+  .dive-news-src{display:block; font-size:var(--fs-12); color:var(--text-2); margin-top:2px;}
+
   /* ---------- Team Deep-Dive: game drill-down ----------
      Reuses .why-panel / .why-row from the week board rather than restating
      them, so the expanded breakdown looks the same in both places. */
@@ -5237,9 +5250,102 @@ function renderTeamDive(){
     </div>`;
   }).join('');
 
-  content.innerHTML = `<div class="table-wrap" style="padding:var(--s5) var(--s5);">${rowsHtml}</div>`
+  content.innerHTML = renderTeamNews(team)
+    + `<div class="table-wrap" style="padding:var(--s5) var(--s5);">${rowsHtml}</div>`
     + renderTeamGames(team);
   wireTeamGameToggles();
+}
+
+/* ---------- Team Deep-Dive: this week's team news (Stage 16) ----------
+
+   src/team_news.py writes, per locked week not yet graded, each team's
+   starters listed Out or Doubtful, a count of those Questionable, and the
+   quarterback the saved pick was made with. generate_dashboard.py attaches
+   that to weeks[k].news only while the week is still being played, so an item
+   expires with its week without anything here checking dates.
+
+   Short on purpose (CLAUDE.md Stage 16): one line per kind of news, never
+   more than five, each with its source and date. ABSENT IS NOT HEALTHY: a
+   report not yet out says so, and never renders as "nobody hurt". */
+function newsWeekKey(){
+  const keys = weekKeysSorted.filter(k => weeks[k].news && weeks[k].news.teams);
+  return keys.length ? keys[keys.length - 1] : null;
+}
+
+function newsDate(iso){
+  if(!iso) return null;
+  const d = new Date(iso);
+  if(isNaN(d)) return null;
+  return d.toLocaleDateString('en-US', {timeZone:'America/New_York', weekday:'short', month:'short', day:'numeric'});
+}
+
+// [{text, source}] for one team's entry, most important first. Plain text;
+// the renderer escapes it.
+function teamNewsItems(entry, week, readAt){
+  const items = [];
+  const read = newsDate(readAt);
+  const report = `Official injury report, via nflverse${read ? ` · read ${read}` : ''}`;
+  const people = list => list.map(p => {
+    const bits = [p.position, p.injury ? p.injury.toLowerCase() : null].filter(Boolean);
+    return bits.length ? `${p.name} (${bits.join(', ')})` : p.name;
+  }).join(', ');
+
+  const qb = entry.qb;
+  if(qb && qb.name){
+    // The pick's quarterback on the injury report is the one line that
+    // changes how far to trust the pick, so it replaces the usual QB line
+    // rather than sitting two lines below it looking unrelated.
+    const listed = (entry.out || []).some(p => p.name === qb.name) ? 'out'
+      : (entry.doubtful || []).some(p => p.name === qb.name) ? 'doubtful' : null;
+    items.push({
+      text: listed
+        ? `The model's pick was made with ${qb.name} at quarterback, and he is listed as ${listed}.`
+        : qb.changed_from
+        ? `New starting quarterback: ${qb.name}, in place of ${qb.changed_from}.`
+        : `Quarterback: ${qb.name}, the same starter as last game.`,
+      source: `The quarterback the model's week ${week} pick was made with`,
+    });
+  }
+
+  if(entry.injury_report === 'not yet published'){
+    items.push({text: `The week ${week} injury report is not out yet, so there is no injury news.`, source: report});
+  } else if(entry.injury_report !== 'published'){
+    items.push({text: `Starters could not be checked: there is no depth chart for this team.`,
+                source: `nflverse depth charts${read ? ` · read ${read}` : ''}`});
+  } else {
+    const out = entry.out || [], doubtful = entry.doubtful || [];
+    const q = entry.questionable_starters || 0;
+    if(out.length) items.push({text: `Out: ${people(out)}.`, source: report});
+    if(doubtful.length) items.push({text: `Doubtful: ${people(doubtful)}.`, source: report});
+    if(q) items.push({text: `${q} starter${q === 1 ? '' : 's'} listed as questionable.`, source: report});
+    if(!out.length && !doubtful.length && !q){
+      items.push({text: 'No starters listed as out, doubtful or questionable.', source: report});
+    }
+  }
+  return items;
+}
+
+function renderTeamNews(team){
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const key = newsWeekKey();
+  const head = sub => `<div class="dive-news"><h3 class="dive-news-title">This week</h3>
+    <div class="dive-news-sub">${sub}</div>`;
+  if(!key){
+    return head(`No team news right now. It appears once a week's picks are locked,
+      and goes when that week has been graded.`) + `</div>`;
+  }
+  const w = weeks[key];
+  const entry = w.news.teams[team];
+  const game = (w.games || []).find(g => g.home === team || g.away === team);
+  if(!entry || !game){
+    return head(`${esc(team)} have no game in week ${w.week}.`) + `</div>`;
+  }
+  const where = game.home === team ? `vs ${esc(game.away)}` : `@ ${esc(game.home)}`;
+  const rows = teamNewsItems(entry, w.week, w.news.read_at).map(it =>
+    `<li class="dive-news-item"><span class="dive-news-text">${esc(it.text)}</span>
+      <span class="dive-news-src">${esc(it.source)}</span></li>`).join('');
+  return head(`Week ${w.week}, ${where}. Starters only; backups are left out to keep this short.`)
+    + `<div class="table-wrap"><ul class="dive-news-list">${rows}</ul></div></div>`;
 }
 
 /* ---------- Team Deep-Dive: game drill-down ----------
