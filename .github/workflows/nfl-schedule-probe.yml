@@ -1,0 +1,40 @@
+name: nfl.com schedule probe
+
+# Stage 15. ESPN's scoreboard answers GitHub's runners with HTTP 403 (#131,
+# closed 2026-09-27), so the next candidate for TV channels is the league's
+# own by-week schedule page. This answers the question that comes before any
+# code: can GitHub's runners read it, and does every game carry an elias id,
+# a kickoff, two teams, a territory, a network, and the week that was asked
+# for? src/nfl_schedule_probe.py reads weeks 1-4 of 2026, prints what it
+# found, writes nothing, and exits non-zero if any week is unreachable or any
+# game is incomplete.
+#
+# It runs on pull requests that touch it, so its answer is on the PR's own
+# checks, and by hand. It is not scheduled: the nightly canary is where a
+# feed that later breaks will be watched, once something depends on it.
+
+on:
+  pull_request:
+    paths:
+      - 'src/nfl_schedule_probe.py'
+      - '.github/workflows/nfl-schedule-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Read nfl.com's schedule, weeks 1-4 of 2026
+        run: python src/nfl_schedule_probe.py --weeks 1 2 3 4 --season 2026

@@ -1,0 +1,41 @@
+{
+  "target": "src/nfl_schedule_probe.py",
+  "tests": "tests/test_nfl_schedule_probe.py",
+  "cases": [
+    {
+      "id": "schedule-probe-ignores-networks",
+      "why": "a game with no network passes, so the probe calls the page usable for TV channels when some games carry none.",
+      "find": "    if not [n for n in info.get('homeNetworkChannels') or [] if n]:\n        missing.append('network')\n",
+      "replace": "",
+      "expect_caught_by": "test_each_missing_field_is_named"
+    },
+    {
+      "id": "schedule-probe-accepts-another-week",
+      "why": "a page that answers with another week's or season's slate is counted as this week's -- what nfl.com's ways-to-watch page did on 2026-09-27.",
+      "find": "    if (game.get('season'), game.get('week'), game.get('seasonType')) != (season, week, 'REG'):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_game_from_another_week_is_not_this_weeks_game"
+    },
+    {
+      "id": "schedule-probe-counts-a-game-twice",
+      "why": "the payload repeats game objects; without the seen-set a week of 16 reads as more, and a count check downstream is satisfied by duplicates.",
+      "find": "        if 'broadcastInfo' in obj and 'homeTeam' in obj and obj['id'] not in seen:",
+      "replace": "        if 'broadcastInfo' in obj and 'homeTeam' in obj:",
+      "expect_caught_by": "test_games_are_read_from_the_payload_once_each_across_pushes"
+    },
+    {
+      "id": "schedule-probe-passes-an-empty-week",
+      "why": "a week that comes back with no games is reported as fine, which is what a moved page or a changed payload looks like.",
+      "find": "        if games == 0 or problems:",
+      "replace": "        if problems:",
+      "expect_caught_by": "test_an_empty_or_unreachable_week_fails_the_run"
+    },
+    {
+      "id": "schedule-probe-shrugs-off-unreachable",
+      "why": "an unreachable week is printed but does not fail the run, so the workflow goes green on a runner that cannot reach nfl.com -- the one thing it exists to find out.",
+      "find": "            print(f'week {week}: UNREACHABLE ({type(exc).__name__}: {exc})')\n            ok = False\n",
+      "replace": "            print(f'week {week}: UNREACHABLE ({type(exc).__name__}: {exc})')\n",
+      "expect_caught_by": "test_an_empty_or_unreachable_week_fails_the_run"
+    }
+  ]
+}
