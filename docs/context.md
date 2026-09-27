@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-26, evening session in progress (Stages 11 to 14 complete, #110 to #130 merged)
+Last updated: 2026-09-26, evening session ended (Stages 11 to 14 complete, #110 to #130 merged, #131 open)
 
 ---
 
@@ -13,9 +13,17 @@ Last updated: 2026-09-26, evening session in progress (Stages 11 to 14 complete,
 **Suite:** 2830 passing, none skipped — `python -m pytest -q` on `main` at
 `36fbc01`, HEAD level with origin.
 
-**Next action: Stage 15, Weekend refresh and game status** (CLAUDE.md's Stage 15
-section). Its TV-channel part starts by checking ESPN's scoreboard is reachable
-from GitHub's runners, before any code. One PR per item.
+**IN FLIGHT: #131 is OPEN (branch `stage15-espn-probe`, head `1b4201e`), the
+last thing running when the session ended.** Stage 15's first item: an "ESPN
+probe" workflow that reads ESPN's scoreboard (weeks 1-4 of 2026) from a GitHub
+runner. On markys the probe passed (16/16 complete each week); **on GitHub's
+runner the ESPN probe check FAILED** (Mark saw it, 2026-09-26 ~23:25 ET). Nobody
+has read the failing log or Booth's audit yet. Next action: open the PR's
+"ESPN probe" job log and find out why -- unreachable from Actions (blocked, 403,
+timeout) or a shape problem -- and read Booth. If ESPN cannot be reached from
+GitHub's runners, the TV-channel plan (CLAUDE.md Stage 15) needs a rethink with
+Mark before any code; say so rather than working around it. Items 2 and 3 of
+Stage 15 (weekend refresh, card status) do not depend on ESPN.
 
 **Done this evening: Stages 11 (#110 to #115), 12 (#116 to #122), 13 (#123
 to #127) and 14 (#128 to #130).** The
@@ -23,16 +31,9 @@ Browser checks workflow (Playwright + axe-core, `tests/browser/check_page.py`)
 now runs on every PR touching the page and is green on `main`. Details, and
 Booth's figure slips, are in `memory/2026-09-26.md`.
 
-**Earlier the same day:** Next Gen Stats, one PR at a time, each merged after Booth
-said SAFE TO MERGE with no discrepancies. #108 registered the questions
-before any data was loaded (`experiments/stage6/registry.json`: one budget of
-five slots, 99% intervals, for all of Stage 6). #109 answered N1: FAIL. Four
-Next Gen Stats passing numbers did not predict a quarterback's next game
-beyond his recent EPA plus play-by-play CPOE, so N2 and N3 were never run
-and no slot is spent. Booth re-ran the build and N1 from raw data on its own
-runner and got the same figures.
-Later the same day: the UX/UI review, and Stages 11 to 22 planned with Mark,
-team news included (Stage 16; nflverse's injury reports carry 2026).
+**Earlier the same day** (details in `memory/2026-09-26.md`): Next Gen Stats N1
+answered FAIL (#108, #109; no Stage 6 slot spent), the UX/UI review, and Stages
+11 to 22 planned with Mark.
 
 **Stage 4's first live runs:** the Nightly canary passed on 2026-09-25 and
 2026-09-26, and the `pbp-2026-09` cache was saved on the first night and read

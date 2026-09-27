@@ -1229,7 +1229,13 @@ play) merged. Only formatters with a caller were added; `fmtProb`, `fmtPP` and
 was wrong -- one anchored on an edited line. Run the cases that name a test you
 edited, or do not say they are unaffected.
 
-### Stage 15 - Weekend refresh and game status
+### Stage 15 - Weekend refresh and game status  <- IN PROGRESS (#131 open)
+
+**2026-09-26, end of session:** #131 adds `src/espn_probe.py` and a PR-run
+"ESPN probe" workflow. It passed on markys (weeks 1-4, 16/16 complete) and
+FAILED on GitHub's runner; the cause is not yet read. Read that job log before
+anything else in this stage. If Actions cannot reach ESPN, the TV-channel plan
+below needs Mark's decision before any code.
 
 A light scheduled run between the Thursday lock and Tuesday's grading that
 updates game status, final scores and the latest line, and never touches saved
