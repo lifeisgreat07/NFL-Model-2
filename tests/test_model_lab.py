@@ -9,8 +9,8 @@ the one in its file.
 
 Run with: pytest tests/test_model_lab.py -v
 """
+import hashlib
 import json
-import re
 import sys
 from pathlib import Path
 
@@ -21,7 +21,6 @@ sys.path.insert(0, str(ROOT / 'src'))
 
 import model_lab as ml  # noqa: E402
 
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
 FIVE = {'ACCEPT', 'REJECT', 'INCONCLUSIVE', 'DEFERRED', 'CONFIRMED FINDING'}
 
 
@@ -30,19 +29,20 @@ def entries():
     return ml.entries()
 
 
-def _template_rows():
-    t = TEMPLATE.read_text(encoding='utf-8')
-    start = t.index('<section class="page" id="page-modellab">')
-    body = t[t.index('<tbody>', start) + 7:t.index('</tbody>', start)]
-    rows = re.findall(r'<tr><td>(.*?)</td><td>(.*?)</td><td><span class="conf-tag [^"]*">(.*?)</span></td></tr>',
-                      body, re.S)
-    assert len(rows) == body.count('<tr>'), 'a row the pattern cannot read -- re-anchor this guard'
-    return rows
+#: sha256 of the moved rows' experiment, result and label, as moved in on
+#: 2026-09-27 (PR #141, checked then against the template they came from).
+#: They were moved once and are not edited: a change here is a change to the
+#: published record, and has to be made on purpose, with this figure.
+MOVED_ROWS_SHA256 = 'b910e3cdb3411c9d824671387d2452ff87ef1156be5abcc79acd3c3cb91664e4'
 
 
-def test_the_moved_rows_are_the_pages_rows_verbatim_and_in_order():
-    legacy = json.loads(ml.LEGACY.read_text(encoding='utf-8'))['rows']
-    assert [(r['experiment'], r['result'], r['label']) for r in legacy] == _template_rows()
+def test_the_moved_rows_are_as_they_were_moved():
+    rows = json.loads(ml.LEGACY.read_text(encoding='utf-8'))['rows']
+    blob = json.dumps([[r['experiment'], r['result'], r['label']] for r in rows], ensure_ascii=False)
+    assert len(rows) == 46
+    assert hashlib.sha256(blob.encode('utf-8')).hexdigest() == MOVED_ROWS_SHA256, (
+        'a moved Model Lab row has been edited. They were moved in verbatim once; if the '
+        'edit is deliberate, say why in the commit and update MOVED_ROWS_SHA256')
 
 
 def test_every_entry_carries_one_of_the_five_decisions(entries):
