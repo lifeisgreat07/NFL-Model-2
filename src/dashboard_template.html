@@ -300,6 +300,9 @@
   thead th[aria-sort]{cursor:pointer; user-select:none;}
   thead th[aria-sort]:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
   thead th.sorted{color:var(--accent);}
+  /* Model Lab's decision chips (Stage 18): the count is the table's own. */
+  .lab-filter .chip-n{margin-left:var(--s1); font-variant-numeric:tabular-nums; color:var(--text-2);}
+  .lab-filter.active .chip-n{color:inherit;}
   /* Model Lab (Stage 18): the label a row was first given, under the decision
      it maps to, and where a registered answer's figures come from. */
   .lab-first,.lab-src{display:block; margin-top:var(--s1); font-size:var(--fs-12); color:var(--text-2);}
@@ -1856,6 +1859,11 @@ __FONT_FACES__
          run src/calibration.py -- the section omits itself rather than
          rendering an empty axis. -->
     <div id="reliability-diagram"></div>
+    <!-- Filled by wireLabFilters() from the rows below, so its counts are the
+         table's own. Stays hidden without JavaScript, when a filter could not
+         work (Stage 18). -->
+    <div class="filter-row" id="lab-filter-row" role="group" aria-label="Show experiments by decision" hidden></div>
+    <p class="visually-hidden" id="lab-filter-status" aria-live="polite"></p>
     <div class="table-wrap" data-scroll-label="Experiment log">
       <table>
         <thead><tr><th>Experiment</th><th>Result</th><th>Decision</th></tr></thead>
@@ -5599,6 +5607,63 @@ function experimentSlug(text){
     .slice(0, 48).replace(/-+$/, '');
 }
 
+/* ---------- Model Lab: filter by decision (Stage 18) ----------
+   One chip per decision the table actually holds, in a fixed order, each
+   with its count, plus All and the leakage flag. Counted from the rendered
+   rows rather than carried separately, so a chip can never promise rows the
+   table does not have. A row's decision is its first tag; the leakage flag
+   is a second tag reading LEAKAGE. */
+const LAB_DECISIONS = ['ACCEPT', 'CONFIRMED FINDING', 'INCONCLUSIVE', 'REJECT', 'DEFERRED'];
+
+function labChips(rows){
+  const chips = [{key:'all', label:'All', n: rows.length}];
+  LAB_DECISIONS.forEach(d => {
+    const n = rows.filter(r => r.decision === d).length;
+    if(n) chips.push({key: d, label: d.charAt(0) + d.slice(1).toLowerCase(), n});
+  });
+  const leak = rows.filter(r => r.leakage).length;
+  if(leak) chips.push({key:'leakage', label:'Leakage', n: leak});
+  return chips;
+}
+
+function labRowMatches(row, key){
+  return key === 'all' || (key === 'leakage' ? row.leakage : row.decision === key);
+}
+
+let labShowAll = null;
+
+(function wireLabFilters(){
+  const bar = document.getElementById('lab-filter-row');
+  const status = document.getElementById('lab-filter-status');
+  const trs = Array.from(document.querySelectorAll(
+    '#page-modellab .table-wrap[data-scroll-label="Experiment log"] tbody tr'));
+  if(!bar || !trs.length) return;
+  const rows = trs.map(tr => {
+    const tags = Array.from(tr.querySelectorAll('td:last-child .conf-tag')).map(s => s.textContent.trim());
+    return {tr, decision: tags[0], leakage: tags.includes('LEAKAGE')};
+  });
+  const chips = labChips(rows);
+  bar.innerHTML = chips.map(c =>
+    `<button type="button" class="btn btn-chip lab-filter${c.key === 'all' ? ' active' : ''}" data-decision="${c.key}"` +
+    `${c.key === 'all' ? ' aria-current="true"' : ''}>${c.label}<span class="chip-n">${c.n}</span></button>`).join('');
+  bar.hidden = false;
+  function show(key){
+    let shown = 0;
+    rows.forEach(r => { const on = labRowMatches(r, key); r.tr.hidden = !on; if(on) shown++; });
+    bar.querySelectorAll('.lab-filter').forEach(b => {
+      const on = b.dataset.decision === key;
+      b.classList.toggle('active', on);
+      if(on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+    });
+    if(status) status.textContent = `Showing ${shown} of ${rows.length} experiments.`;
+  }
+  bar.addEventListener('click', e => {
+    const b = e.target.closest('.lab-filter');
+    if(b) show(b.dataset.decision);
+  });
+  labShowAll = () => show('all');
+})();
+
 /* Model Lab's experiment rows are static markup with no ids; each gets one
    from its first cell, made unique if two names slug alike. */
 const routeKnown = (function(){
@@ -5654,6 +5719,9 @@ function applyRoute(r){
   document.querySelectorAll('tr.route-target').forEach(tr => tr.classList.remove('route-target'));
   if(r.experiment){
     const row = document.getElementById('exp-' + r.experiment);
+    // A link to a row the decision filter is hiding clears the filter
+    // first, or it would scroll to nothing.
+    if(row && row.hidden && labShowAll) labShowAll();
     if(row){
       row.classList.add('route-target');
       row.setAttribute('tabindex', '-1');

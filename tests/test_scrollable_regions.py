@@ -110,5 +110,9 @@ def test_a_scroll_stop_shows_focus(source):
 
 
 def test_the_experiment_log_carries_its_name(source):
-    assert re.search(r'<div id="reliability-diagram"></div>\s*<div class="table-wrap" '
-                     r'data-scroll-label="Experiment log">', source)
+    # Anchored on Model Lab's section rather than on what sits right before
+    # the table: the decision chips (Stage 18) came in between, and the next
+    # item moves the reliability diagram below it.
+    section = source[source.index('<section class="page" id="page-modellab">'):]
+    section = section[:section.index('</section>')]
+    assert section.count('<div class="table-wrap" data-scroll-label="Experiment log">') == 1

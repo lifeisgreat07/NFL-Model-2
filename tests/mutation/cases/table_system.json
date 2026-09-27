@@ -47,8 +47,8 @@
     {
       "id": "an-inline-overflow-unsticks-a-table",
       "why": "Model Lab's experiments table gets back the inline overflow-x:auto it carried before Stage 10, which beats .fits and leaves its 46 rows without a sticky header.",
-      "find": "<div id=\"reliability-diagram\"></div>\n    <div class=\"table-wrap\" data-scroll-label=\"Experiment log\">",
-      "replace": "<div id=\"reliability-diagram\"></div>\n    <div class=\"table-wrap\" data-scroll-label=\"Experiment log\" style=\"overflow-x:auto;\">",
+      "find": "    <div class=\"table-wrap\" data-scroll-label=\"Experiment log\">",
+      "replace": "    <div class=\"table-wrap\" data-scroll-label=\"Experiment log\" style=\"overflow-x:auto;\">",
       "expect_caught_by": "test_no_wrapper_overrides_its_overflow_inline"
     },
     {
