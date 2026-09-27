@@ -1,0 +1,41 @@
+{
+  "target": "src/team_news.py",
+  "tests": "tests/test_team_news.py",
+  "cases": [
+    {
+      "id": "news-counts-backups-as-starters",
+      "why": "every depth-chart rank is a starter, so a third receiver's knee reaches the card as news -- the information overload Mark asked this stage to avoid.",
+      "find": "    rank1 = latest[latest['pos_rank'].astype(str) == '1']",
+      "replace": "    rank1 = latest",
+      "expect_caught_by": "test_starters_are_rank_one_on_offense_and_defense_plus_kickers"
+    },
+    {
+      "id": "news-reads-an-old-depth-chart",
+      "why": "every snapshot counts, so a player demoted weeks ago is still called a starter.",
+      "find": "    latest = depth[depth['dt'] == depth.groupby('team')['dt'].transform('max')]",
+      "replace": "    latest = depth",
+      "expect_caught_by": "test_only_the_latest_depth_chart_counts"
+    },
+    {
+      "id": "news-unpublished-report-reads-as-healthy",
+      "why": "a week with no report yet is written as empty Out and Doubtful lists, which a reader takes for 'nobody hurt'.",
+      "find": "    published = bool(len(injuries[injuries['week'] == week]))",
+      "replace": "    published = True",
+      "expect_caught_by": "test_an_unpublished_report_is_never_an_empty_one"
+    },
+    {
+      "id": "news-flags-every-qb-as-changed",
+      "why": "the change test compares the wrong ids, so every quarterback is called new and the flag stops meaning anything.",
+      "find": "    changed = bool(last_id) and bool(chosen_id) and last_id != chosen_id",
+      "replace": "    changed = bool(last_id) and bool(chosen_id)",
+      "expect_caught_by": "test_the_quarterback_is_the_picks_own_and_a_change_is_flagged"
+    },
+    {
+      "id": "news-writes-nan",
+      "why": "a missing injury description is written as NaN, which is not JSON and breaks whatever reads the file.",
+      "find": "                 'injury': _text(r['report_primary_injury'])}",
+      "replace": "                 'injury': r['report_primary_injury']}",
+      "expect_caught_by": "test_a_missing_injury_is_null_not_nan"
+    }
+  ]
+}
