@@ -942,9 +942,9 @@ def test_the_net_rating_axis_is_read_from_the_league_not_hardcoded():
     assert '<span class="ax-min"></span>' in page and '<span class="ax-max"></span>' in page, (
         "the axis endpoints are not empty in the markup, which means they are "
         "baked into the HTML rather than filled from the data")
-    assert "axMin.textContent = '−' + maxAbs.toFixed(2)" in page, (
+    assert "axMin.textContent = '−' + fmtRatingScale(maxAbs)" in page, (
         "the axis minimum is no longer derived from maxAbs")
-    assert "axMax.textContent = '+' + maxAbs.toFixed(2)" in page, (
+    assert "axMax.textContent = '+' + fmtRatingScale(maxAbs)" in page, (
         "the axis maximum is no longer derived from maxAbs")
 
 

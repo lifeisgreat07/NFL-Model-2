@@ -1552,7 +1552,7 @@ __FONT_FACES__
       <div>
         <div class="page-eyebrow">This Week</div>
         <h2>Power Ratings</h2>
-        <div class="desc">Every team ranked by how much better or worse it plays than an average team, rebuilt each week from real game data.</div>
+        <div class="desc">Every team ranked by how much better or worse it plays than an average team, in expected points per 100 plays, rebuilt each week from real game data.</div>
       </div>
     </div>
     <div class="filter-row">
@@ -3060,8 +3060,8 @@ function renderRatings(){
   const axMin = document.querySelector('#ratings-table .ax-min');
   const axMax = document.querySelector('#ratings-table .ax-max');
   if(axMin && axMax){
-    axMin.textContent = '−' + maxAbs.toFixed(2);
-    axMax.textContent = '+' + maxAbs.toFixed(2);
+    axMin.textContent = '−' + fmtRatingScale(maxAbs);
+    axMax.textContent = '+' + fmtRatingScale(maxAbs);
   }
 
   const body = document.getElementById('ratings-body');
@@ -3082,21 +3082,21 @@ function renderRatings(){
       const delta = points[points.length-1].net - points[points.length-2].net;
       if(Math.abs(delta) >= 0.003){
         const up = delta > 0;
-        trendHtml = `<span class="trend-arrow ${up?'up':'down'}" title="${up?'+':''}${delta.toFixed(3)} vs previous">${up?'&#9650;':'&#9660;'}</span>`;
+        trendHtml = `<span class="trend-arrow ${up?'up':'down'}" title="${fmtRating(delta)} per 100 plays vs the previous rating">${up?'&#9650;':'&#9660;'}</span>`;
       }
     }
     return `<tr>
       <td class="rank">${i+1}</td>
       <td><div class="team-cell"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span>${trendHtml}</div></td>
       <td class="num"><div class="net-cell-inner">
-        <div class="srs-bar-track diverging" title="${t.net>=0?'+':''}${t.net.toFixed(3)} net rating; league scale ±${maxAbs.toFixed(2)}, centre line is zero"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
-        <span class="net-value">${t.net>=0?'+':''}${t.net.toFixed(3)}</span>
+        <div class="srs-bar-track diverging" title="${fmtRating(t.net)} per 100 plays; league scale ±${fmtRatingScale(maxAbs)}, centre line is zero"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
+        <span class="net-value">${fmtRating(t.net)}</span>
       </div></td>
-      <td class="num">${t.off>=0?'+':''}${t.off.toFixed(3)}</td>
-      <td class="num">${t.def>=0?'+':''}${t.def.toFixed(3)}</td>
+      <td class="num">${fmtRating(t.off)}</td>
+      <td class="num">${fmtRating(t.def)}</td>
       <td class="num">${(t.sos===null||t.sos===undefined)
         ? '<span title="No games played yet, so there are no opponents to average.">—</span>'
-        : (t.sos>=0?'+':'')+t.sos.toFixed(3)}</td>
+        : fmtRating(t.sos)}</td>
       <td class="num">${(t.playoff===null||t.playoff===undefined)
         ? '<span title="This team was not in the simulation.">—</span>'
         : t.playoff.toFixed(1)+'%'}</td>
@@ -3307,6 +3307,28 @@ function fmtPoints(n){
   const v = Math.round(Math.abs(n) * 10) / 10;
   const text = Number.isInteger(v) ? String(v) : v.toFixed(1);
   return `${text} point${v === 1 ? '' : 's'}`;
+}
+
+/* A rating, shown per 100 plays (Stage 14; Mark chose it from a rendered
+   side-by-side on 2026-09-26). The model and the data stay in EPA per play
+   -- BUF +0.149 -- and only the display is rescaled: +14.9 expected points
+   better than an average team over 100 plays. One decimal, a sign on
+   anything that is not zero, and a rating that rounds to zero shows as 0.0
+   rather than -0.0. ratingScale() is the one place the factor lives -- a
+   function, not a const, because renderRatings() runs at load from higher
+   up this script, where a const declared here would still be in its
+   temporal dead zone. tests/test_per_100_plays.py holds the display to the
+   data. */
+function ratingScale(){ return 100; }
+function fmtRating(epaPerPlay){
+  const v = Math.round(epaPerPlay * ratingScale() * 10) / 10;
+  // No branch for zero: Math.round gives -0 for a small negative, and
+  // (-0).toFixed(1) is "0.0", so a rating that rounds to zero is unsigned.
+  return v > 0 ? '+' + v.toFixed(1) : v.toFixed(1);
+}
+/* A bar's scale, in the same units, to the nearest whole number. */
+function fmtRatingScale(epaPerPlay){
+  return String(Math.round(Math.abs(epaPerPlay) * ratingScale()));
 }
 
 function whyRow(label, val){
@@ -5182,8 +5204,8 @@ function renderTeamDive(){
     const isLive = p.label.includes('Wk');
     return `<div class="dive-row">
       <span class="dive-label ${isLive?'live':''}">${p.label}</span>
-      <div class="srs-bar-track diverging" style="width:140px;" title="${p.net>=0?'+':''}${p.net.toFixed(3)} net rating; scale ±${maxAbs.toFixed(2)} across this team's own history, centre line is zero"><div class="srs-bar-fill" style="left:${p.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
-      <span class="dive-value">${p.net>=0?'+':''}${p.net.toFixed(3)}</span>
+      <div class="srs-bar-track diverging" style="width:140px;" title="${fmtRating(p.net)} per 100 plays; scale ±${fmtRatingScale(maxAbs)} across this team's own history, centre line is zero"><div class="srs-bar-fill" style="left:${p.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
+      <span class="dive-value">${fmtRating(p.net)}</span>
     </div>`;
   }).join('');
 
