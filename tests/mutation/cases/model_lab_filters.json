@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_model_lab_filters.py",
+  "cases": [
+    {
+      "id": "lab-chip-shows-an-empty-decision",
+      "why": "a decision with no rows still gets a chip, which filters the table down to nothing.",
+      "find": "    if(n) chips.push({key: d, label: d.charAt(0) + d.slice(1).toLowerCase(), n});",
+      "replace": "    chips.push({key: d, label: d.charAt(0) + d.slice(1).toLowerCase(), n});",
+      "expect_caught_by": "test_a_decision_the_table_does_not_hold_gets_no_chip"
+    },
+    {
+      "id": "lab-leakage-chip-shows-every-deferred-row",
+      "why": "the leakage chip matches on the decision, so it shows every deferred question as if each were invalidated.",
+      "find": "  return key === 'all' || (key === 'leakage' ? row.leakage : row.decision === key);",
+      "replace": "  return key === 'all' || (key === 'leakage' ? row.decision === 'DEFERRED' : row.decision === key);",
+      "expect_caught_by": "test_a_chip_shows_exactly_its_rows"
+    },
+    {
+      "id": "lab-all-chip-miscounts",
+      "why": "the All chip counts the rows of one decision, so it promises fewer experiments than the table has.",
+      "find": "  const chips = [{key:'all', label:'All', n: rows.length}];",
+      "replace": "  const chips = [{key:'all', label:'All', n: rows.filter(r => r.decision === 'REJECT').length}];",
+      "expect_caught_by": "test_each_chip_carries_the_count_of_its_rows_in_a_fixed_order"
+    },
+    {
+      "id": "lab-link-lands-on-a-hidden-row",
+      "why": "a link to an experiment the filter is hiding scrolls to a row that is not there.",
+      "find": "    if(row && row.hidden && labShowAll) labShowAll();\n",
+      "replace": "",
+      "expect_caught_by": "test_a_link_to_a_filtered_out_row_clears_the_filter"
+    },
+    {
+      "id": "lab-chips-show-without-script",
+      "why": "the chip row shows with JavaScript off, as an empty band where filters would be.",
+      "find": "<div class=\"filter-row\" id=\"lab-filter-row\" role=\"group\" aria-label=\"Show experiments by decision\" hidden></div>",
+      "replace": "<div class=\"filter-row\" id=\"lab-filter-row\" role=\"group\" aria-label=\"Show experiments by decision\"></div>",
+      "expect_caught_by": "test_the_chip_row_is_hidden_until_the_script_can_make_it_work"
+    }
+  ]
+}
