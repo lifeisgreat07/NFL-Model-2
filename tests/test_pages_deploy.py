@@ -68,11 +68,12 @@ def test_a_page_that_did_not_build_is_refused(lines):
         "nothing checks that the built index.html is non-empty")
 
 
-@pytest.mark.parametrize('needed', ['index.html', '.nojekyll', 'dist'])
+@pytest.mark.parametrize('needed', ['index.html', '.nojekyll', 'dist', 'assets/og/og-card.png _site/og-card.png'])
 def test_the_artifact_contains_what_the_site_needs(lines, needed):
-    """The deployed site is exactly three things. .nojekyll is the one people
-    forget: without it Pages runs the output through Jekyll, which drops files
-    and directories whose names begin with an underscore."""
+    """The deployed site is exactly four things (the Open Graph image joined
+    in Stage 13). .nojekyll is the one people forget: without it Pages runs
+    the output through Jekyll, which drops files and directories whose names
+    begin with an underscore."""
     body = '\n'.join(lines)
     assembly = re.search(r'Assemble the site(.*?)(?=\n      - name:)', body, re.S)
     assert assembly, "no 'Assemble the site' step to check"

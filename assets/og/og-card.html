@@ -1,0 +1,35 @@
+<!doctype html>
+<!-- The source of assets/og/og-card.png, the page's one Open Graph image (Stage 13).
+     To remake it: open this file in Chromium at a 1200x630 viewport and take a
+     screenshot of the viewport, then check tests/test_meta_and_og.py still passes.
+     Colours are the dark theme's tokens (--bg, --text, --text-2, --border,
+     --accent, --series-a, --series-b); no team logos, which are NFL trademarks. -->
+<html><head><meta charset="utf-8"><style>
+@font-face{font-family:PJS;src:url(../fonts/plus-jakarta-sans-latin-normal.woff2) format('woff2');font-weight:400 800;}
+html,body{margin:0;width:1200px;height:630px;}
+body{background:#0B0D10;color:#E6E9ED;font-family:PJS,sans-serif;position:relative;overflow:hidden;}
+.frame{position:absolute;inset:0;padding:72px 84px;display:flex;flex-direction:column;justify-content:space-between;}
+.eyebrow{font-size:22px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#AEB6C0;}
+h1{font-size:84px;font-weight:800;line-height:1.02;margin:18px 0 0;letter-spacing:-.01em;}
+p{font-size:32px;line-height:1.35;color:#AEB6C0;max-width:900px;margin:28px 0 0;}
+.foot{display:flex;align-items:center;gap:28px;font-size:24px;color:#AEB6C0;}
+.chip{display:inline-flex;align-items:center;gap:12px;font-weight:700;color:#E6E9ED;}
+.dot{width:16px;height:16px;border-radius:50%;}
+.sq{width:16px;height:16px;border-radius:3px;}
+.rule{position:absolute;left:84px;right:84px;bottom:150px;height:2px;background:#232830;}
+.bar{position:absolute;left:0;top:0;bottom:0;width:10px;background:#7FA8F5;}
+</style></head><body>
+<div class="bar"></div>
+<div class="frame">
+  <div>
+    <div class="eyebrow">NFL · weekly picks</div>
+    <h1>The Pick'em Model</h1>
+    <p>Weekly game picks from two models, graded in public, with every experiment logged &mdash; including the ones that failed.</p>
+  </div>
+  <div class="foot">
+    <span class="chip"><span class="dot" style="background:#5283E0"></span>Model A &middot; football only</span>
+    <span class="chip"><span class="sq" style="background:#C97F2E"></span>Model B &middot; plus the Vegas spread</span>
+  </div>
+</div>
+<div class="rule"></div>
+</body></html>

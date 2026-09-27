@@ -8,6 +8,23 @@
 <meta name="apple-mobile-web-app-title" content="Pick'em Board">
 <meta name="theme-color" content="#0B0E15">
 <title>Pick'em Model — Command Board</title>
+<!-- What a search result and a link preview show (Stage 13). The description
+     is under 160 characters so a search result does not cut it off. The
+     Open Graph image is static -- assets/og/og-card.png, made from
+     assets/og/og-card.html -- and deploy-pages.yml copies it to the site
+     root; og:image and og:url are absolute because link-preview crawlers do
+     not resolve relative ones. tests/test_meta_and_og.py holds all of it. -->
+<meta name="description" content="Weekly NFL picks from two models, one football-only and one with the Vegas spread, graded in public, with every experiment logged, failures included.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Pick'em Model">
+<meta property="og:title" content="The Pick'em Model">
+<meta property="og:description" content="Weekly NFL picks from two models, one football-only and one with the Vegas spread, graded in public, with every experiment logged, failures included.">
+<meta property="og:url" content="https://lifeisgreat07.github.io/NFL-Model-2/">
+<meta property="og:image" content="https://lifeisgreat07.github.io/NFL-Model-2/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Pick'em Model: weekly game picks from two models, graded in public, with every experiment logged, including the ones that failed.">
+<meta name="twitter:card" content="summary_large_image">
 <style>
   /* =====================================================================
      TOKEN LAYER — Stage 8. Decisions and the verified numbers are in

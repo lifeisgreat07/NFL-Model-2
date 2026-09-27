@@ -110,8 +110,9 @@ jobs:
       - name: Check every page has its data
         run: python src/check_build.py index.html
 
-      # The site is exactly three things: the page, the printable picks it links
-      # to, and .nojekyll (without which Pages runs the output through Jekyll,
+      # The site is exactly four things: the page, the printable picks it links
+      # to, its Open Graph image (Stage 13), and .nojekyll (without which Pages
+      # runs the output through Jekyll,
       # which strips files and directories beginning with an underscore).
       # Assembled into a clean directory rather than uploading the repo, so what
       # ships is only what the site needs -- no source, no tests, no data files.
@@ -120,6 +121,9 @@ jobs:
           mkdir -p _site
           cp index.html _site/
           cp .nojekyll _site/
+          # The page's Open Graph image (Stage 13). og:image names it at the
+          # site root, so it is copied there, not under assets/.
+          cp assets/og/og-card.png _site/og-card.png
           if [ -d dist ]; then cp -r dist _site/; fi
           echo "--- what will be published ---"
           find _site -type f | sort
