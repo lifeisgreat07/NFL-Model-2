@@ -26,8 +26,8 @@
     {
       "id": "a-box-lands-above-the-page-title",
       "why": "something is placed above the Week Board's title again -- which is where the six-bullet welcome box sat, so a first visit met it before the name of the page.",
-      "find": "<section class=\"page\" id=\"page-board\">",
-      "replace": "<section class=\"page\" id=\"page-board\">\n    <div class=\"onboarding-banner\"><h4>New here? Quick orientation.</h4></div>",
+      "find": "<section class=\"page active\" id=\"page-board\">",
+      "replace": "<section class=\"page active\" id=\"page-board\">\n    <div class=\"onboarding-banner\"><h4>New here? Quick orientation.</h4></div>",
       "expect_caught_by": "test_every_page_header_agrees_with_the_sidebar"
     },
     {

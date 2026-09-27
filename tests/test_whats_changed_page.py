@@ -96,8 +96,9 @@ def test_every_nav_on_the_page_agrees_on_which_pages_exist():
     page = _page()
     targets = set(re.findall(r'data-page="([a-z0-9_-]+)"', page))
     # `class="page active"` on the default section, so match the class list
-    # loosely. Pinning it to `class="page"` silently drops Power Ratings from
-    # the known-pages set and reports the site's own home tab as broken.
+    # loosely. Pinning it to `class="page"` silently drops the default page
+    # (Power Ratings until Stage 13, the Week Board since) from the known-pages
+    # set and reports the site's own home tab as broken.
     sections = set(re.findall(r'<section class="page[^"]*" id="page-([a-z0-9_-]+)"', page))
 
     assert targets, "no navigation controls found at all; this matcher has drifted"

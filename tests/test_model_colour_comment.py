@@ -205,7 +205,7 @@ def test_the_two_marks_really_are_in_the_same_section():
     """
     src = TEMPLATE.read_text(encoding='utf-8')
     board = re.search(
-        r'<section class="page" id="page-board">(.*?)</section>', src, re.S)
+        r'<section class="page[^"]*" id="page-board">(.*?)</section>', src, re.S)
     assert board, 'the Week Board section is no longer findable'
     body = board.group(1)
     assert 'class="model-chip' in body, (
