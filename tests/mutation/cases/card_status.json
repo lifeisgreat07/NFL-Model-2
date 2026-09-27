@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_card_status.py",
+  "cases": [
+    {
+      "id": "card-status-drops-a-zero-score",
+      "why": "a truthiness check reads a score of 0 as missing, so a shutout never shows as final.",
+      "find": "  const hasScore = g.away_score !== null && g.away_score !== undefined\n    && g.home_score !== null && g.home_score !== undefined;",
+      "replace": "  const hasScore = g.away_score && g.home_score;",
+      "expect_caught_by": "test_a_shutout_score_of_zero_is_still_a_score"
+    },
+    {
+      "id": "card-status-contradicts-the-graded-tag",
+      "why": "a snapshot taken before grading still says the game has started, so a graded card reads 'final score not in yet' beside 'Correct'.",
+      "find": "  if(g.status === 'started' && !g.graded) return",
+      "replace": "  if(g.status === 'started') return",
+      "expect_caught_by": "test_a_stale_snapshot_never_contradicts_the_graded_tag"
+    },
+    {
+      "id": "card-status-flips-the-score",
+      "why": "home score first under an away-first matchup header reads as the other team winning.",
+      "find": "    const score = `Final: ${g.away} ${g.away_score}, ${g.home} ${g.home_score}`;",
+      "replace": "    const score = `Final: ${g.away} ${g.home_score}, ${g.home} ${g.away_score}`;",
+      "expect_caught_by": "test_a_final_score_is_away_first_like_the_card"
+    },
+    {
+      "id": "card-status-replaces-the-kickoff",
+      "why": "the status line takes the kickoff line's place, so a board sorted by kickoff no longer shows the kickoff it is sorted by.",
+      "find": "      ${kickoff ? `<div class=\"card-kickoff\">${kickoff}</div>` : ''}\n      ${statusLine ? `<div class=\"card-status\">${statusLine}</div>` : ''}",
+      "replace": "      ${statusLine ? `<div class=\"card-status\">${statusLine}</div>` : (kickoff ? `<div class=\"card-kickoff\">${kickoff}</div>` : '')}",
+      "expect_caught_by": "test_the_line_sits_under_the_kickoff_and_never_replaces_it"
+    }
+  ]
+}

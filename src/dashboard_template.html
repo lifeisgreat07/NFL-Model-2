@@ -822,6 +822,14 @@
      always the page nobody was looking at. */
   .card-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
     color:var(--text-2); letter-spacing:.03em; margin-bottom:2px;}
+  /* Where the game stands between the Thursday lock and Tuesday's grading
+     (Stage 15), from the weekend refresh. Under the kickoff line, never in
+     place of it: the board is sorted by kickoff, and a sort key that leaves
+     the card is CLAUDE.md's invisible-sort-key trap. Neutral text, not a
+     graded colour: a final score is not a verdict on the pick until the
+     week is graded, and the graded tag already carries that verdict. */
+  .card-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
+    color:var(--text-1); letter-spacing:.03em; margin-bottom:2px;}
   .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);}
   /* A locked card (Stage 11). The chosen side keeps its fill so the pick
      stays readable; the other side drops to the secondary text colour, not
@@ -3454,6 +3462,24 @@ function kickoffLabel(g){
   return `${day}${date} · ${hour12}:${hm[1]} ${suffix} ET`;
 }
 
+/* ---------- Where a game stands (Stage 15) ----------
+   One line from the weekend refresh's snapshot, or '' for no line at all.
+   "final" needs both scores; a snapshot can go stale after grading (Monday
+   night's game is still "upcoming" in Monday morning's snapshot when
+   Tuesday grades it), so a graded game says nothing here unless the
+   snapshot has its final score -- the graded tag already says how the pick
+   did, and "score not in yet" beside it would contradict it. */
+function cardStatusLine(g){
+  const hasScore = g.away_score !== null && g.away_score !== undefined
+    && g.home_score !== null && g.home_score !== undefined;
+  if(g.status === 'final' && hasScore){
+    const score = `Final: ${g.away} ${g.away_score}, ${g.home} ${g.home_score}`;
+    return g.graded ? score : `${score} · picks graded on Tuesday`;
+  }
+  if(g.status === 'started' && !g.graded) return 'Kicked off · final score not in yet';
+  return '';
+}
+
 function kickoffKey(g){
   return g.gameday ? `${g.gameday}T${g.gametime_et || '00:00'}` : null;
 }
@@ -3602,9 +3628,11 @@ function renderGames(){
         ${trackRecordHtml(g.mktB_home, 'panel')}
       </div>` : '';
     const kickoff = kickoffLabel(g);
+    const statusLine = cardStatusLine(g);
     return `<div class="game-card ${g.flag?'has-flag':''}">
       ${matchupHeader(g)}
       ${kickoff ? `<div class="card-kickoff">${kickoff}</div>` : ''}
+      ${statusLine ? `<div class="card-status">${statusLine}</div>` : ''}
       <div class="game-top">
         <span class="game-confidence">${pickemRankLabel(g)}</span>
         <div class="tag-row" style="display:flex; gap:var(--s2); align-items:center;">
