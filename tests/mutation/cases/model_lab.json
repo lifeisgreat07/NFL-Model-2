@@ -1,0 +1,48 @@
+{
+  "target": "src/model_lab.py",
+  "tests": "tests/test_model_lab.py",
+  "cases": [
+    {
+      "id": "lab-not-advanced-reads-as-accepted",
+      "why": "a question that failed its validation screen is shown as accepted.",
+      "find": "    'NOT ADVANCED': 'REJECT',",
+      "replace": "    'NOT ADVANCED': 'ACCEPT',",
+      "expect_caught_by": "test_a_registered_label_maps_as_the_rule_says"
+    },
+    {
+      "id": "lab-reports-the-screen-not-confirmation",
+      "why": "every result is reported from its validation screen, so a question that went on to confirmation shows the easier, 95% number.",
+      "find": "    step = 'confirmation' if result.get('confirmation') else 'validation'",
+      "replace": "    step = 'validation'",
+      "expect_caught_by": "test_a_question_that_reached_confirmation_is_reported_from_confirmation"
+    },
+    {
+      "id": "lab-drops-deferred-questions",
+      "why": "a registered question that was deliberately deferred has no result file, so it vanishes from the record.",
+      "find": "            elif entry.get('status') == 'DEFERRED':",
+      "replace": "            elif False:",
+      "expect_caught_by": "test_every_deferred_registry_entry_is_shown_with_its_reason"
+    },
+    {
+      "id": "lab-guesses-an-unmapped-label",
+      "why": "a label nobody has mapped falls through to a default instead of stopping the build.",
+      "find": "                if label not in RESULT_DECISION:\n                    raise ValueError(f'{_rel(path)}: no decision is mapped for {label!r}')\n                out.append({'id': entry['id'], 'stage': _stage_name(stage),\n                            'title': entry['title'], 'question': entry.get('question'),\n                            'label': label, 'decision': RESULT_DECISION[label],",
+      "replace": "                out.append({'id': entry['id'], 'stage': _stage_name(stage),\n                            'title': entry['title'], 'question': entry.get('question'),\n                            'label': label, 'decision': RESULT_DECISION.get(label, 'INCONCLUSIVE'),",
+      "expect_caught_by": "test_an_unmapped_label_is_an_error_not_a_guess"
+    },
+    {
+      "id": "lab-oldest-stage-first",
+      "why": "Stage 5 is listed above Stage 6, so the newest answer sits furthest down.",
+      "find": "key=lambda s: int(s.split()[-1]), reverse=True)",
+      "replace": "key=lambda s: int(s.split()[-1]), reverse=False)",
+      "expect_caught_by": "test_newest_stage_first_then_the_moved_rows_in_page_order"
+    },
+    {
+      "id": "lab-loses-the-moved-rows",
+      "why": "the 46 rows from before Stage 18 are left out of the record.",
+      "find": "    return ordered + legacy_entries(legacy)",
+      "replace": "    return ordered",
+      "expect_caught_by": "test_newest_stage_first_then_the_moved_rows_in_page_order"
+    }
+  ]
+}

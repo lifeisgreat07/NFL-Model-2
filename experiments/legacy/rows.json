@@ -1,0 +1,374 @@
+{
+  "about": "The Model Lab's rows as they stood before Stage 18, moved here once, verbatim: 'experiment', 'result' and 'label' are the page's own HTML, character for character. 'decision' is the label mapped onto the project's five decisions, and 'leakage' marks the one result invalidated by leakage. Stage 5 onward is read from experiments/*/results/ instead, never added here.",
+  "moved_from": "src/dashboard_template.html, Model Lab table, 2026-09-27",
+  "rows": [
+    {
+      "id": "L01",
+      "experiment": "QB feature (trailing EPA/dropback)",
+      "result": "Accuracy 60.0% to 62.6%, biggest single gain of the project",
+      "label": "ACCEPT",
+      "decision": "ACCEPT",
+      "leakage": false
+    },
+    {
+      "id": "L02",
+      "experiment": "Ridge alpha tuning (200 -&gt; 15)",
+      "result": "Real backtest sweep across 1-1600, found interior optimum",
+      "label": "ACCEPT",
+      "decision": "ACCEPT",
+      "leakage": false
+    },
+    {
+      "id": "L03",
+      "experiment": "Recency half-life tuning (6/10/16)",
+      "result": "16 games won on log loss",
+      "label": "ACCEPT",
+      "decision": "ACCEPT",
+      "leakage": false
+    },
+    {
+      "id": "L04",
+      "experiment": "Rest days, weather, travel distance, altitude",
+      "result": "All flat or worse across every framing tested",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L05",
+      "experiment": "Divisional games, trap/look-ahead games, blowout letdown",
+      "result": "No real signal beyond existing team-strength features",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L06",
+      "experiment": "Gradient boosting vs. logistic regression",
+      "result": "+0.83&nbsp;pp accuracy but AUC drops 0.670&rarr;0.654; bootstrap CI included zero",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L07",
+      "experiment": "QB Shrinkage Re-tune (k=96, then k=128)",
+      "result": "Investigation, not a clean win: the original k=8-&gt;96 decision didn't reproduce once OL removal + weekly refit changed the model underneath it (a real shrinkage-target leak was also found and fixed along the way, see ratings_engine.py). A fresh retune under the fixed, current config picked k=128 on validation, but on confirmatory data k=8 won 3 of 4 metrics (accuracy, Brier, AUC) against k=128, which only edged log loss -- bootstrap CI included zero either way. Reverted to k=8, the current live default.",
+      "label": "INCONCLUSIVE",
+      "decision": "INCONCLUSIVE",
+      "leakage": false
+    },
+    {
+      "id": "L08",
+      "experiment": "QB quality-differential change signal",
+      "result": "Identical to no-signal-at-all; binary flag clearly better",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L09",
+      "experiment": "Team-specific home-field advantage",
+      "result": "Split-half reliability 0.078 -- mostly noise, not a real trait",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L10",
+      "experiment": "Pass/rush-split matchup features",
+      "result": "Worse on every metric; 0.947 correlation with existing aggregate",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L11",
+      "experiment": "All 9 rejected features combined, regularized",
+      "result": "No C value beat baseline even with proper scaling",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L12",
+      "experiment": "O-line continuity",
+      "result": "Bootstrap CI included zero; later beaten by \"no OL feature\" on confirmatory test",
+      "label": "REMOVED (was live)",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L13",
+      "experiment": "Coaching changes (5 framings)",
+      "result": "Every variant tied or underperformed baseline",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L14",
+      "experiment": "Early-season extra shrinkage",
+      "result": "Real gap confirmed (61.7% vs 65.9%) but fix didn't close it",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L15",
+      "experiment": "Weekly-refitting backtest methodology",
+      "result": "Tied-or-better on every metric, free, more methodologically correct",
+      "label": "ACCEPT",
+      "decision": "ACCEPT",
+      "leakage": false
+    },
+    {
+      "id": "L16",
+      "experiment": "Platt scaling / isotonic calibration",
+      "result": "Platt worse on every metric; isotonic's log loss broke (0.64&rarr;1.00) from overconfident extremes",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L17",
+      "experiment": "Player availability / injury model",
+      "result": "Re-confirmed 2026-08-25 via nflverse's own status page: \"no 2025 data, no ETA.\" Still genuinely blocked, not just stale.",
+      "label": "DEFERRED",
+      "decision": "DEFERRED",
+      "leakage": false
+    },
+    {
+      "id": "L18",
+      "experiment": "Dynamic Model A/B weighting by disagreement magnitude",
+      "result": "High-disagreement bucket's B-edge is real (bootstrap CI excludes zero), but B already wins in every bucket -- no dynamic scheme beat simply always using Model B on confirmatory data",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L19",
+      "experiment": "Margin-of-victory modeling (regression -&gt; sign -&gt; winner)",
+      "result": "-1.56&nbsp;pp vs. current classifier; CI [-3.13, +0.09] nearly significant negative. Regression's MSE objective isn't aligned with getting the sign right on close games -- broke 50 previously-correct calls to fix only 33",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L20",
+      "experiment": "Snap-share \"key player disruption\" signal (Objective 3 follow-up)",
+      "result": "INVALIDATED, not rejected -- used this-week's own snap percentage as a feature, which is only knowable after that week's game is played. Confirmed via direct correlation with the very outcome it claimed to predict. A real mistake, caught before shipping. Depends on Objective 2 (blocked) to do legitimately.",
+      "label": "LEAKAGE -- INVALIDATED",
+      "decision": "DEFERRED",
+      "leakage": true
+    },
+    {
+      "id": "L21",
+      "experiment": "CPOE-based QB rating (alone and blended with EPA)",
+      "result": "CPOE-only clearly worse on every metric; EPA+CPOE blend just flat/redundant. CPOE is stable but a weaker predictor of wins than EPA specifically",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L22",
+      "experiment": "Rookie-specific QB shrinkage (hierarchical refinement of k=96)",
+      "result": "+0.92&nbsp;pp on validation looked promising, reversed to -0.74&nbsp;pp on true confirmatory test (CI includes zero). A real example of why validation-then-confirm matters",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L23",
+      "experiment": "Nonlinear architectures (GBM, Random Forest)",
+      "result": "RF's +0.55&nbsp;pp accuracy edge not significant (CI [-2.57,+3.68]) and comes with worse log loss/Brier/AUC -- same pattern GBM showed in the first cycle. XGBoost/LightGBM untestable, no network access to install",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L24",
+      "experiment": "Early-season weakness diagnosis",
+      "result": "Not a broad phenomenon -- concentrated in early-season QB changes specifically (48.0% accuracy, n=25) vs. 62.8% for early-season games without a QB change. Real mechanism found, targeted fix not yet built",
+      "label": "DIAGNOSED",
+      "decision": "INCONCLUSIVE",
+      "leakage": false
+    },
+    {
+      "id": "L25",
+      "experiment": "Early-season QB-change interaction term",
+      "result": "+0.37&nbsp;pp confirmatory, CI [-0.37,+1.10] includes zero. Real mechanism behind it but only 25 games -- genuinely can't distinguish from noise yet",
+      "label": "INCONCLUSIVE",
+      "decision": "INCONCLUSIVE",
+      "leakage": false
+    },
+    {
+      "id": "L26",
+      "experiment": "Schedule-strength trajectory (next-3-games opponent difficulty)",
+      "result": "+0.18&nbsp;pp, CI [-1.65,+2.02], validation negative. Different mechanism from the earlier-rejected single-game trap-game test, same null result",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L27",
+      "experiment": "Referee/officiating crew tendencies",
+      "result": "Split-half reliability 0.252 (real, better than team home-field's 0.078) but translates to zero predictive value once shrunk properly -- flat across every metric",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L28",
+      "experiment": "weekly_rosters as an injury-data alternative",
+      "result": "Confirmed NOT gameday active/inactive status via real player history checks (static ACT/INA over many weeks, not game-to-game). No inactives-list loader exists anywhere in nflreadpy -- Objective 2/3 blocker confirmed structural, not just stale data",
+      "label": "DEFERRED",
+      "decision": "DEFERRED",
+      "leakage": false
+    },
+    {
+      "id": "L29",
+      "experiment": "FTN charting QB-fault-rate (sacks/INTs attributable to the QB)",
+      "result": "Completely flat -- identical to baseline on every metric. EPA already captures the cost of a bad play regardless of whose fault it was",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L30",
+      "experiment": "Total (over/under) line as a Model B input",
+      "result": "Small, mixed-direction result -- accuracy nudges up slightly but log loss/Brier/AUC move marginally worse. CI [-0.37,+0.74], includes zero",
+      "label": "INCONCLUSIVE",
+      "decision": "INCONCLUSIVE",
+      "leakage": false
+    },
+    {
+      "id": "L31",
+      "experiment": "QB-change x spread interaction (re-tested under current leak-fixed code)",
+      "result": "Ties baseline exactly on confirmatory accuracy -- re-confirms the earlier rejection still holds after the leak fix and shrinkage revert",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L32",
+      "experiment": "Off_matchup x spread interaction",
+      "result": "Clean null -- identical confirmatory accuracy to baseline",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L33",
+      "experiment": "Stacking ensemble (Model A probability + market probability as a 2-input meta-model)",
+      "result": "Collapses to being statistically identical to market alone -- the meta-model discounts Model A's weaker signal almost entirely. Current flat 5-feature Model B beats it on every confirmatory metric (CI [-1.10,+0.55], not significant, but consistently negative)",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L34",
+      "experiment": "Market efficiency trend across seasons (2022-2025)",
+      "result": "No real trend -- market's edge over Model A bounces from +1.1&nbsp;pp to +9.9&nbsp;pp with no consistent direction, tracking Model A's own year-to-year variance rather than any change in the market itself",
+      "label": "NO PATTERN",
+      "decision": "INCONCLUSIVE",
+      "leakage": false
+    },
+    {
+      "id": "L35",
+      "experiment": "First-half vs. second-half season market efficiency",
+      "result": "Market's edge narrows slightly (+5.5 to +4.2) as the season progresses, but this tracks Model A's own known early-season weakness rather than revealing anything new about the market's own behavior",
+      "label": "NOT A NEW FINDING",
+      "decision": "INCONCLUSIVE",
+      "leakage": false
+    },
+    {
+      "id": "L36",
+      "experiment": "Market accuracy vs. travel distance",
+      "result": "No pattern across distance buckets (64-70% range, no trend), and the largest-distance bucket has only 23 games -- too small to trust on its own",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L37",
+      "experiment": "Season-boundary-specific recency half-life",
+      "result": "Tested extra discounting (0.85, 0.7, 0.5) for plays crossing a season boundary, on top of normal recency decay. Every level was flat-or-worse than baseline on every metric, both splits, with a clean monotonic pattern -- stronger discount, worse performance. A team's true strength doesn't reset at a season boundary the way this assumed",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L38",
+      "experiment": "Referee crew x team-penalty-rate interaction",
+      "result": "A narrower framing than the earlier referee-tendency test: does a specific crew's penalty-calling rate interact with how penalty-prone the teams are? CI [-1.10,+0.74], includes zero, worse on validation too",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L39",
+      "experiment": "Systematic narrow-edge search (12 partitions)",
+      "result": "Scanned disagreement magnitude, spread size, QB-change presence, home favorite/underdog, and model confidence for ANY subset where Model A beats the market. Best candidate was +0.74&nbsp;pp with CI [-2.60,+4.09] -- and with 12 comparisons tested, one weak positive is exactly what noise produces. No defensible narrow edge exists",
+      "label": "REJECT",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L40",
+      "experiment": "Model A's low-confidence games are genuinely unreliable",
+      "result": "<b style=\"color:var(--text)\">Re-derived from scratch 2026-09-06 and it holds.</b> Across the 343 of 1,087 backtested games where Model A's own probability sits within 0.05 of a coin flip, Model A hits <b style=\"color:var(--text)\">52.48%</b> while the market hits <b style=\"color:var(--text)\">64.14%</b> on those same games &mdash; a &minus;11.66&nbsp;pp gap, CI [&minus;18.37, &minus;5.25], which excludes zero. This row previously carried 52.5% / 64.4% / &minus;11.95&nbsp;pp with no script anywhere in the repository that produced them; Booth flagged that as UNVERIFIABLE while auditing PR #18, and it was right to. <code>src/verify_low_confidence_finding.py</code> now regenerates the whole thing, and the original figures agreed to within 0.3&nbsp;pp &mdash; a gap consistent with the cross-platform accuracy sensitivity documented below, since this claim is stated in accuracy. Model A's uncertainty is trustworthy: when it says it doesn't know, it really doesn't",
+      "label": "CONFIRMED FINDING",
+      "decision": "CONFIRMED FINDING",
+      "leakage": false
+    },
+    {
+      "id": "L41",
+      "experiment": "Line-movement archive (infrastructure check)",
+      "result": "Confirmed working end-to-end -- real movement captured (CLE@TB moved a full point, JAX@DEN a half point). But only 2 of 32 games moved at all across consecutive days, so a meaningful predictive test needs many more weeks of accumulation, not a forced test on n=2",
+      "label": "DEFERRED",
+      "decision": "DEFERRED",
+      "leakage": false
+    },
+    {
+      "id": "L42",
+      "experiment": "Against-the-spread evaluation (would this have made money?)",
+      "result": "The betting question, asked for the first time on 2026-09-05. Model B outputs a win probability, not a margin, so it cannot make an ATS pick directly &mdash; and margin-of-victory modelling is already rejected above. The well-posed version is a different target on the same features: fit the weekly-refit walk-forward on <i>home covered</i> instead of <i>home won</i>. Result over 1,058 games: 51.61% against the spread, 95% CI [48.58%, 54.63%]. The interval contains 50%, and it does not reach the 52.38% needed to break even at &minus;110. Three controls (always home, always away, always the favourite) all landed at exactly 50.00%, confirming the cover arithmetic, and the spread-to-margin correlation (+0.455) is asserted at runtime so an inverted sign convention cannot silently flip the result. Bootstrap and Wilson intervals agree to 0.02&nbsp;pp. Deliberately no subgroup search: the earlier 12-partition narrow-edge hunt already showed what that produces on noise",
+      "label": "REJECT &mdash; NO ATS EDGE",
+      "decision": "REJECT",
+      "leakage": false
+    },
+    {
+      "id": "L43",
+      "experiment": "Model B vs. market, paired bootstrap on the calibration gaps",
+      "result": "The reliability diagram showed Model B with more resolution than the market (0.039321 vs 0.038180) and worse reliability (0.001697 vs 0.001334). A 5,000-resample paired bootstrap over the same 1,087 games says neither gap is real: Brier &minus;0.000622 CI [&minus;0.002395, +0.001141], log loss &minus;0.001189 CI [&minus;0.005156, +0.002832], reliability +0.000362 CI [&minus;0.002010, +0.003052], resolution +0.001141 CI [&minus;0.002196, +0.004597]. All four include zero. The chart's apparent split between \"sharper\" and \"worse calibrated\" was noise, and the panel has been rewritten to say so. Cross-checked against a closed-form paired standard error on Brier, which agrees to 3e-5",
+      "label": "INCONCLUSIVE",
+      "decision": "INCONCLUSIVE",
+      "leakage": false
+    },
+    {
+      "id": "L44",
+      "experiment": "Model B beats Model A on proper scoring rules (not just accuracy)",
+      "result": "Same paired bootstrap, Model B vs Model A: Brier &minus;0.019133 CI [&minus;0.025838, &minus;0.012687], log loss &minus;0.043603 CI [&minus;0.058621, &minus;0.029231], resolution +0.016814 CI [+0.008990, +0.024819] &mdash; three intervals clearly excluding zero. The project's existing claim for the spread's value rested on 68.2% vs 62.8% accuracy, and accuracy has since been shown to move by a full game between platforms on identical code. This is the same conclusion resting on metrics that survived that finding. Reliability alone is inconclusive (CI [&minus;0.005963, +0.002452]): the spread makes Model B sharper, not better calibrated",
+      "label": "CONFIRMED FINDING",
+      "decision": "CONFIRMED FINDING",
+      "leakage": false
+    },
+    {
+      "id": "L45",
+      "experiment": "The market genuinely beats Model A (now with intervals)",
+      "result": "Model A vs market, signed so a positive number means Model A is worse: Brier +0.018511 CI [+0.011496, +0.025553], log loss +0.042414 CI [+0.026992, +0.058291], resolution &minus;0.015674 CI [&minus;0.024072, &minus;0.007423]. \"We do not beat the market\" has been this project's headline honest finding from the start; this is the first time it has been stated with confidence intervals rather than a raw accuracy gap. The market's edge is resolution &mdash; it separates games better &mdash; not calibration, where the two are indistinguishable",
+      "label": "CONFIRMED FINDING",
+      "decision": "CONFIRMED FINDING",
+      "leakage": false
+    },
+    {
+      "id": "L46",
+      "experiment": "Backtest accuracy is not reproducible across platforms",
+      "result": "The same commit and the same 1599-game dataset, run on a GitHub Actions Linux runner and on a local Windows machine, disagree: Model A 0.6283 vs 0.6274, Model B 0.6817 vs 0.6826 -- gaps of exactly one to two games out of ~1087. Each machine is perfectly deterministic when re-run (byte-identical across every metric), so this is a difference between platforms, not run-to-run noise; almost certainly floating-point/BLAS. Log loss, Brier and AUC agree to four decimals across those same two runs. Accuracy is a threshold metric -- it only records which side of 0.5 a probability lands on -- so perturbations around 1e-6 flip games sitting near a coin flip while every calibration metric holds steady. Practical consequence: \"Model B adds zero accuracy over the raw spread\" is true on Linux and false on Windows, by one game. That claim has to be stated as <i>indistinguishable</i>, and accuracy alone cannot carry a result at this sample size",
+      "label": "CONFIRMED FINDING",
+      "decision": "CONFIRMED FINDING",
+      "leakage": false
+    }
+  ]
+}
