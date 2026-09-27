@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **2830 passing** (none skipped) — `python -m pytest -q` on `main` at
-`36fbc01` (#130 merged), with HEAD level with origin, which is the order that makes the
+Suite: **3015 passing** (none skipped) — `python -m pytest -q` on `main` at
+`1c27a2d` (#137 merged) plus the 2026-09-27 docs, with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -1229,7 +1229,35 @@ play) merged. Only formatters with a caller were added; `fmtProb`, `fmtPP` and
 was wrong -- one anchored on an edited line. Run the cases that name a test you
 edited, or do not say they are unaffected.
 
-### Stage 15 - Weekend refresh and game status  <- IN PROGRESS (TV source being probed)
+### Stage 15 - Weekend refresh and game status  <- COMPLETE (2026-09-27, #132 to #137; display is Stage 17)
+
+**Shipped, each merged on Booth's SAFE TO MERGE with no discrepancies:** #132
+the nfl.com probe (a runner reads it, 16/16 each of weeks 1-4); #133 the
+weekend refresh (`src/weekend_refresh.py`, snapshots to a status folder under
+data, Friday 05:17, Sunday 21:47 and Monday 05:37 UTC); #134 the card status
+line under the kickoff; #135 the TV checks (`src/tv_channels.py`,
+`data/tv/exceptions.json`); #136 TV read with `--pending` by both the weekly
+update and the weekend refresh, continue-on-error in both; #137 the canary
+checks next week's nfl.com page. Decisions worth keeping:
+
+- **One network per game, the first nfl.com lists.** Measured against ESPN's
+  own scoreboard from markys, weeks 1-4: the first-listed network matched all
+  64 games, while the full list claimed an ABC simulcast for week 4's Falcons
+  at Saints that ABC's own schedule does not carry. The rest is kept as
+  `listed`, never shown.
+- **Alternate and Spanish-language feeds** (Telemundo, Universo, ESPN
+  Deportes, ESPN2, FOX Deportes) are known and silently not shown; any other
+  unlisted name is reported. **A slot no rule covers needs a sourced
+  exception**, the same as a rule break. Thanksgiving, Black Friday,
+  Christmas and Saturday games need entries before their weeks or they are
+  held back and reported (a warning, never an error).
+- **Canary: a changed feed is an error, a missing kickoff or network a
+  warning** -- week 18's kickoffs are not set until late December.
+- **A graded card says nothing from a stale snapshot.** Monday morning's
+  snapshot still calls Monday night's game upcoming when Tuesday grades it.
+- The Stage 17 display still owes the plan's item 7: the network name only,
+  and one line saying Sunday-afternoon CBS and FOX games are regional (the
+  data carries `territory`).
 
 **ESPN is REFUSED from GitHub's runners (read 2026-09-27; #131 closed
 unmerged).** #131's probe got `HTTP Error 403: Forbidden` on all four weeks
@@ -1572,6 +1600,20 @@ under compaction pressure, so its length is a cost paid on every session.
   a new commit, never an amend.
 
 ## Traps that have actually bitten
+
+- **WINDOWS PYTHON HAS NO TIME-ZONE DATABASE.** `ZoneInfo('America/New_York')`
+  raises `ZoneInfoNotFoundError` on markys and passes on Linux CI, so a test
+  can be green in CI and crash the tool locally, or the reverse. Convert
+  through pandas (`pd.Timestamp(...).tz_convert('America/New_York')`), as
+  `src/weekly_update.py` and `src/tv_channels.py` do. Found 2026-09-27.
+- **GITHUB'S ANONYMOUS API IS 60 CALLS AN HOUR, AND POLLING SPENDS IT.** A
+  poll that listed every job of every run for a PR burned it in minutes on
+  2026-09-27, and `E:\nfl-session-archive\merge_pr.ps1` then stopped at its merged check -- the safe
+  direction, branch not deleted. Poll only the comments, and check
+  the API's rate-limit endpoint (free) first. The merged check now falls back to the PR's
+  HTML page, and its first draft matched ANOTHER PR's "Merged" badge in
+  #131's timeline and called a closed PR merged: read the page's first
+  `"state"` field and treat anything else as not merged.
 
 - **A CHAINED MERGE COMMAND KEEPS GOING AFTER THE MERGE FAILS, AND DELETING THE
   BRANCH CLOSES THE PR UNMERGED.** 2026-09-26, #113: the merge was one

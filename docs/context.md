@@ -4,23 +4,25 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-27, afternoon session (ESPN refused from Actions, #131 closed; nfl.com being probed)
+Last updated: 2026-09-27, afternoon session (Stage 15 complete, #132 to #137 merged; Stage 16 next)
 
 ---
 
 ## Right now
 
-**Suite:** 2830 passing, none skipped — `python -m pytest -q` on `main` at
-`36fbc01`, HEAD level with origin.
+**Suite:** 3015 passing, none skipped — `python -m pytest -q` on `main` at
+`1c27a2d` (#137 merged) plus the 2026-09-27 docs, HEAD level with origin.
 
-**ESPN refuses GitHub's runners: HTTP 403 on every week, so #131 was CLOSED
-unmerged (2026-09-27) and its branch deleted.** Mark chose option B: probe
-another automatic source. The candidate is the league's own
-`www.nfl.com/schedules/2026/by-week/week-N`, whose embedded game data carries
-networks, a NATIONAL/REGIONAL territory and an `elias` id equal to nflverse's
-`old_game_id` -- CLAUDE.md Stage 15 has the detail and the traps. Next action:
-a probe PR that reads that page from a GitHub runner. Items 2 and 3 of Stage 15
-(weekend refresh, card status) do not depend on the TV source.
+**Stage 15 is complete: #132 to #137 merged 2026-09-27, each on Booth's SAFE
+TO MERGE with no discrepancies.** ESPN refuses GitHub's runners (#131, closed),
+so TV channels come from the league's own by-week schedule page, checked
+before shown and matched against ESPN for weeks 1-4 (64 of 64). The weekend
+refresh writes status, scores and lines; cards show a status line; TV is read
+by the weekly update and the weekend refresh; the canary watches the page.
+Details and decisions: CLAUDE.md Stage 15 and `memory/2026-09-27.md`.
+**Next action: Stage 16's data file** (starters Out or Doubtful from the
+injury report and the latest depth chart; the QB change read from the saved
+pick's own `*_qb` fields, which v2.5 predictions carry).
 
 **Done 2026-09-26, evening: Stages 11 (#110 to #115), 12 (#116 to #122), 13 (#123
 to #127) and 14 (#128 to #130).** The
@@ -42,6 +44,8 @@ workflow. No alert issue has opened (checked 2026-09-27 via the issues API).
 
 | What | State | Waiting on |
 |---|---|---|
+| First weekend refresh (#133, #136) | Due Sun 2026-09-27 21:47 UTC | Check it committed the status and TV folders under data and that the page rebuilt |
+| TV exceptions for holiday and Saturday games | Weeks 12, 15, 16 have games no slot rule covers | Sourced entries in `data/tv/exceptions.json` before those weeks, or they are held back |
 | First run of the QB routine | Due Mon 2026-09-28 22:00 UTC | Check it opened a PR, or said in one line that none was needed |
 | First weekly summary | Due Tue 2026-09-29 11:00 UTC | Open the run's page and check the summary reads right |
 | Scheduled-run delay | Canary ran 4.5-5 h late three times | Watch Thursday 2026-10-01's 16:00 UTC lock run; a 5 h delay still locks before the Thursday kickoff |
