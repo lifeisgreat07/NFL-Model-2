@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_board_first.py",
+  "cases": [
+    {
+      "id": "ratings-ships-active-again",
+      "why": "Power Ratings ships active alongside the board, so the page opens with two sections competing for the screen and the ratings table first in reading order.",
+      "find": "<section class=\"page\" id=\"page-ratings\">",
+      "replace": "<section class=\"page active\" id=\"page-ratings\">",
+      "expect_caught_by": "test_the_week_board_is_the_only_section_that_ships_active"
+    },
+    {
+      "id": "board-ships-hidden",
+      "why": "the board no longer ships active, so a visitor lands on nothing at all until they tap a tab.",
+      "find": "<section class=\"page active\" id=\"page-board\">",
+      "replace": "<section class=\"page\" id=\"page-board\">",
+      "expect_caught_by": "test_the_week_board_is_the_only_section_that_ships_active"
+    },
+    {
+      "id": "sidebar-ratings-first-again",
+      "why": "the sidebar opens with Power Ratings highlighted while the Week Board is the page on screen, so the nav says you are somewhere you are not.",
+      "find": "<button class=\"nav-btn active\" data-page=\"board\">",
+      "replace": "<button class=\"nav-btn\" data-page=\"board\">",
+      "expect_caught_by": "test_the_board_is_first_and_active_in_the_sidebar"
+    },
+    {
+      "id": "bottom-nav-board-not-active",
+      "why": "on a phone the Board tab is not highlighted on first load, so nothing in the bottom bar says which page this is.",
+      "find": "<button class=\"bnav-btn active\" data-page=\"board\">",
+      "replace": "<button class=\"bnav-btn\" data-page=\"board\">",
+      "expect_caught_by": "test_the_bottom_nav_reads_board_ratings_picks_accuracy_more"
+    },
+    {
+      "id": "load-switches-to-ratings",
+      "why": "a script switches to Power Ratings once the page has loaded, undoing the markup's choice after the first paint.",
+      "find": "document.querySelectorAll('[data-page]').forEach(btn=>{\n  btn.addEventListener('click', ()=> setActivePage(btn.dataset.page));\n});",
+      "replace": "document.querySelectorAll('[data-page]').forEach(btn=>{\n  btn.addEventListener('click', ()=> setActivePage(btn.dataset.page));\n});\nsetActivePage('ratings');",
+      "expect_caught_by": "test_nothing_at_load_switches_away_from_the_board"
+    }
+  ]
+}

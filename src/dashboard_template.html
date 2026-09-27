@@ -1467,8 +1467,8 @@ __FONT_FACES__
          says which part of the site it belongs to. Held to each other by
          tests/test_page_header.py. -->
     <div class="nav-group-label">This Week</div>
-    <button class="nav-btn active" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Power Ratings</button>
-    <button class="nav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Week Board</button>
+    <button class="nav-btn active" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Week Board</button>
+    <button class="nav-btn" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Power Ratings</button>
     <button class="nav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Team Deep-Dive</button>
     <div class="nav-group-label">Your Picks</div>
     <button class="nav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>My Picks Log</button>
@@ -1492,8 +1492,8 @@ __FONT_FACES__
 <main id="main-content" tabindex="-1">
 
   <!-- Outside every .page section ON PURPOSE, and first inside <main>. With
-       scripts off exactly one section is active -- #page-ratings, the one the
-       markup ships active -- and nothing can change that: every nav control is
+       scripts off exactly one section is active -- #page-board, the one the
+       markup ships active since Stage 13 -- and nothing can change that: every nav control is
        an inert <button> with no href, and there is no :target rule and no
        anchor pointing at a page. A note placed inside a section would
        therefore be visible only if that section happened to be the active one,
@@ -1513,7 +1513,7 @@ __FONT_FACES__
   </noscript>
 
   <!-- POWER RATINGS -->
-  <section class="page active" id="page-ratings">
+  <section class="page" id="page-ratings">
     <div class="page-head">
       <div>
         <div class="page-eyebrow">This Week</div>
@@ -1566,7 +1566,7 @@ __FONT_FACES__
   </section>
 
   <!-- WEEK BOARD -->
-  <section class="page" id="page-board">
+  <section class="page active" id="page-board">
     <!-- No standing caption and no count badge. (Stage 10 added the one-line
          .desc every page header carries. It says what the page is for; it
          does not explain Model A and Model B, which is what the caption
@@ -1642,11 +1642,12 @@ __FONT_FACES__
            here until 2026-09-21: this comment used to say the visible select
            kept a working control for a no-script reader, and it also sat
            directly under a select that ships hidden, so it read as describing
-           the wrong element. Both corrected. With scripts off only
-           #page-ratings is active, every nav control is an inert <button>
-           with no href, and there is no :target rule and no anchor reaching a
-           page -- so the Week Board cannot be opened at all and nothing on it
-           serves that reader. Measured on the built page 2026-09-21. -->
+           the wrong element. Both corrected. Since Stage 13 the Week Board is
+           the page the markup ships active, so with scripts off a reader DOES
+           land here and sees this select -- a native control whose change
+           nothing listens to, since the cards it would sort are built by
+           script too. The <noscript> note at the top of <main> is what tells
+           that reader why; the select does not pretend to work for them. -->
       <!-- The labels carry no "Sort: " prefix. It cost 65px of a 398px row at
            430px and said nothing the aria-label, the chevron and the control's
            position were not already saying. data-lbx-fit="widest" then freezes
@@ -2238,8 +2239,8 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
 <nav class="bottom-nav" aria-label="Mobile navigation">
   <div class="bottom-nav-row">
-    <button class="bnav-btn active" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span class="bnav-label">Ratings</span></button>
-    <button class="bnav-btn" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span class="bnav-label">Board</span></button>
+    <button class="bnav-btn active" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span class="bnav-label">Board</span></button>
+    <button class="bnav-btn" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span class="bnav-label">Ratings</span></button>
     <button class="bnav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="bnav-label">Picks</span></button>
     <button class="bnav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg><span class="bnav-label">Accuracy</span></button>
     <button class="bnav-btn" id="bnav-more-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span class="bnav-label">More</span></button>
@@ -2651,12 +2652,13 @@ function lbxFlipDecision(listLeft, listWidth, anchorRight, viewportWidth){
    rather than nothing at all.
 
    It is NOT, as this comment said until 2026-09-21, that a no-script reader
-   would otherwise have no control. That reader never gets here: with scripts
-   off only #page-ratings is active, every nav control is an inert <button>,
-   and there is no :target rule and no anchor reaching a page. Both selects
-   that ship visible sit on pages nobody can reach -- a <noscript> note may
-   explain that to them, but it does not make the pages reachable, so do not
-   read one as having changed this. The guard is kept
+   would otherwise have no control. With scripts off only #page-board is
+   active (since Stage 13), every nav control is an inert <button>, and there
+   is no :target rule and no anchor reaching another page. So #sort-select,
+   on the board, is seen by that reader but sorts nothing (the cards are
+   script-built as well), and #teamdive-select sits on a page nobody can
+   reach. The <noscript> note explains the page to them; it does not make
+   either select work, so do not read it as having changed this. The guard is kept
    anyway -- hidden by script rather than by markup is still the right
    default -- with the honest reason attached. */
 function enhanceSelect(sel){
