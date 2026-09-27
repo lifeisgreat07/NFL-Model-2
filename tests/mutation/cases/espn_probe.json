@@ -1,0 +1,34 @@
+{
+  "target": "src/espn_probe.py",
+  "tests": "tests/test_espn_probe.py",
+  "cases": [
+    {
+      "id": "probe-ignores-broadcasts",
+      "why": "a game with no network passes, so the probe calls the feed usable for TV channels when some games carry none.",
+      "find": "    if not names:\n        missing.append('broadcast')\n",
+      "replace": "",
+      "expect_caught_by": "test_each_missing_field_is_named"
+    },
+    {
+      "id": "probe-accepts-two-home-teams",
+      "why": "only the count of teams is checked, so a game listed with two home sides passes -- and the later join needs to know which side is home.",
+      "find": "    if len([t for t in teams if t]) != 2 or sides != ['away', 'home']:",
+      "replace": "    if len([t for t in teams if t]) != 2:",
+      "expect_caught_by": "test_two_teams_must_be_one_home_one_away"
+    },
+    {
+      "id": "probe-passes-an-empty-week",
+      "why": "a week that comes back with no games at all is reported as fine, which is what a changed URL or a season rollover looks like.",
+      "find": "        if games == 0 or problems:",
+      "replace": "        if problems:",
+      "expect_caught_by": "test_an_empty_or_unreachable_week_fails_the_run"
+    },
+    {
+      "id": "probe-shrugs-off-unreachable",
+      "why": "an unreachable week is printed but does not fail the run, so the workflow goes green on a runner that cannot reach ESPN at all -- the one thing it exists to find out.",
+      "find": "            print(f'week {week}: UNREACHABLE ({type(exc).__name__}: {exc})')\n            ok = False\n",
+      "replace": "            print(f'week {week}: UNREACHABLE ({type(exc).__name__}: {exc})')\n",
+      "expect_caught_by": "test_an_empty_or_unreachable_week_fails_the_run"
+    }
+  ]
+}

@@ -123,6 +123,7 @@ notes elsewhere still describe them as files you can open in the repository.
 | `.github/workflows/booth-regression.yml` | Manual dispatch only. |
 | `.github/workflows/run-tests.yml` | The suite, on push and PR. |
 | `.github/workflows/browser-checks.yml` | PRs touching the page's inputs, and pushes to main. Builds the page and runs `tests/browser/check_page.py` over every page at six widths in Chromium, after `--self-test` proves each rule can fail. Playwright and axe-core are installed in the runner, pinned, and never committed. |
+| `.github/workflows/espn-probe.yml` | PRs touching it, and by hand. Runs `src/espn_probe.py`: can GitHub's runners read ESPN's scoreboard, and is every game complete? Writes nothing. |
 | `.github/workflows/collect-agent-log.yml` | Manual dispatch, and pushes to main, to record what the agents actually did. |
 | `.github/workflows/run-backtest.yml` | The backtest, deliberately not on every push. |
 | `.github/workflows/scout-preflight.yml` | Every PR open, push and description edit. Runs `src/scout_preflight.py` against the PR description so a wrong count is caught before Booth spends an audit on it. It existed as a manual tool from PR #26 and nothing ran it; the defect it was built to catch then shipped four more times. Also re-checks on `synchronize`, because a rebase can falsify a number nobody retyped. |

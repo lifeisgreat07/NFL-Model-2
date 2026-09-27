@@ -1,0 +1,39 @@
+name: ESPN probe
+
+# Stage 15. The TV-channel data would come from ESPN's undocumented public
+# scoreboard. It was reachable from markys on 2026-09-26; this answers the
+# question the plan says comes before any code: can GitHub's runners reach it,
+# and does every game carry an id, a kickoff, two teams, a status and a
+# network? src/espn_probe.py reads weeks 1-4 of 2026, prints what it found,
+# writes nothing, and exits non-zero if any week is unreachable or any game
+# is incomplete.
+#
+# It runs on pull requests that touch it, so its answer is on the PR's own
+# checks, and by hand. It is not scheduled: the nightly canary is where a
+# feed that later breaks will be watched, once something depends on it.
+
+on:
+  pull_request:
+    paths:
+      - 'src/espn_probe.py'
+      - '.github/workflows/espn-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Read ESPN's scoreboard, weeks 1-4 of 2026
+        run: python src/espn_probe.py --weeks 1 2 3 4 --season 2026
