@@ -1,7 +1,8 @@
 """Every reliability-diagram point has a hit target of at least 24 CSS px.
 
 Stage 12 (CLAUDE.md). Model Lab's reliability points are keyboard- and
-pointer-reachable (<g class="rel-point" tabindex="0">), and each one's hit
+pointer-reachable (<g class="rel-point">, one Tab stop for the chart since
+Stage 26 -- see tests/test_reliability_focus_group.py), and each one's hit
 target is a transparent halo. The halo was r=11 in the chart's 470-unit
 viewBox and the chart scales with its container, so it was 22 CSS px across
 only at exactly 470px rendered: the browser checker built for Stage 12
