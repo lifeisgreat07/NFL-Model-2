@@ -32,6 +32,7 @@ commit exactly. Asked Mark whether it was him; no answer yet.
 | Stage 19 log-loss row | Written and tested, not opened | Mark: plain wording, or an exception to the plain-language guard for "log loss" |
 | Stage 19 Power Ratings movers + rank change | Not started | Mark: does the arrow follow rank or rating? |
 | Stage 19 Team Deep-Dive offence/defence | Not started | Mark: phone layout, and a "lower is better" note for defence |
+| Stage 6 referee crews and personnel | Registration drafted (R1 screen, R2, A2; personnel DEFERRED), sent to Mark, not committed: registry entries are append-only | Mark's approval, then commit the entries before any data is loaded |
 | First run of the QB routine | Due Mon 2026-09-28 22:00 UTC | Check it opened a PR, or said in one line that none was needed |
 | First weekly summary | Due Tue 2026-09-29 11:00 UTC | Open the run's page and check the summary reads right |
 | Thursday lock run | Due Thu 2026-10-01 16:00 UTC | Check it started, locked before kickoff, and its push survived; week 4 is the first card with quarterback names and channels |
@@ -42,7 +43,7 @@ commit exactly. Asked Mark whether it was him; no answer yet.
 ## Queued, in order
 
 1. **Stage 19** remaining, once Mark answers: the log-loss row, Power Ratings movers and rank change, Team Deep-Dive offence/defence.
-2. **The rest of Stage 6** (referee crews, personnel), pre-registered before any data is pulled.
+2. **The rest of Stage 6** (referee crews, personnel): commit the registration once Mark approves the draft, then run R1.
 3. **Stages 20 to 22**: 20 needs five real testers; 21 waits for week 5; 22 comes from 20.
 
 Merge one branch at a time: every branch that adds a mutation case file
