@@ -8,9 +8,9 @@ with backtest numbers that were actually run.
 
 ![The Week Board: each game's win probability from Model A and Model B, with the betting line](docs/images/week-board.png)
 
-*Screenshots in this README were taken on 2026-09-24. Team logos load from
-a CDN the rendering machine could not reach, so they are missing from the
-images; the live page shows them.*
+*Screenshots in this README were taken on 2026-09-28, in the dark theme at
+1280x800. The live page loads team logos from ESPN's CDN; for these images
+the same logo files were served locally.*
 
 ## For recruiters -- project overview
 
