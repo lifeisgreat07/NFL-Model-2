@@ -9,7 +9,11 @@ them: a question must be registered, must not already have an answer, and
 must have its precondition ("requires") met by a stored result. Model
 comparisons (N2, N3) go through Stage 5's own walk-forward and bootstrap
 (src/stage5_eval.py, src/stage5_run.compare_on), against the Stage 6
-registry's budget. N1 is a screen and is scored by stage6_data's rule.
+registry's budget. N1 is a screen and is scored by stage6_data's rule. R1,
+the referee screen, loads its own inputs (it needs no build) and is scored by
+stage6_referee's rule:
+
+    python src/stage6_run.py run R1       # -> experiments/stage6/results/R1.json
 
 The game table is Stage 5's, built by stage5_data.build_games with only the
 base ratings, and it must pass Stage 5's parity check against the production
@@ -28,6 +32,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import stage5_data as sd  # noqa: E402
 import stage5_eval as se  # noqa: E402
 import stage6_data as s6  # noqa: E402
+import stage6_referee as rf  # noqa: E402
 from stage5_run import compare_on, git_head, parity_check  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -147,6 +152,37 @@ def run_n1(entry, reg):
     return out
 
 
+# -------------------------------------------------------------------- R1
+
+def run_r1(entry, reg):
+    """Loads its own inputs (schedule and three play-by-play columns, 2016-2023)."""
+    p = reg['protocol']
+    se.guard_seasons(rf.R1_SEASONS, reg)
+    sched = pd.concat([sd.load_schedule(s) for s in rf.R1_SEASONS], ignore_index=True)
+    games = rf.named_referee_games(sched)
+    pbp = s6.load_pbp(rf.R1_SEASONS, rf.PBP_COLUMNS)
+    games, counts = rf.penalty_differential(pbp, games)
+    t = rf.window_means(games)
+    x, y, w = t['mean_early'], t['mean_late'], t['weight']
+    r = float(rf.weighted_corr(x, y, w))
+    bs = rf.bootstrap_corr(x, y, w, p['n_resamples'], p['seed'])
+    defined = bs[~np.isnan(bs)]
+    ci = list(se.interval(defined, 0.95))
+    out = {
+        'inputs': {'seasons': rf.R1_SEASONS, 'games_scored': int(len(games)), **counts,
+                   'mean_differential': float(games['differential'].mean())},
+        'referees': {ref: {'mean_early': float(row.mean_early), 'games_early': int(row.count_early),
+                           'mean_late': float(row.mean_late), 'games_late': int(row.count_late),
+                           'weight': int(row.weight)}
+                     for ref, row in t.iterrows()},
+        'persistence': {'n_referees': int(len(t)), 'weighted_corr': r, 'corr_ci_95': ci,
+                        'undefined_resamples': int(len(bs) - len(defined))},
+    }
+    out['decision'] = rf.r1_label(ci)
+    out['reached_confirmation'] = False
+    return out
+
+
 # ---------------------------------------------------------------- N2, N3
 
 def add_matchup(games, starters, beta, cols, name):
@@ -214,11 +250,15 @@ def run(hid):
     why = unmet_precondition(entry, results)
     if why:
         raise SystemExit(why)
-    info = json.loads((CACHE / 'build_info.json').read_text())
-    body = run_n1(entry, reg) if hid == 'N1' else run_model(entry, reg, results)
+    if hid == 'R1':
+        ngs = {}
+        body = run_r1(entry, reg)
+    else:
+        info = json.loads((CACHE / 'build_info.json').read_text())
+        ngs = {'ngs_column_map': info['ngs_column_map'], 'build': info}
+        body = run_n1(entry, reg) if hid == 'N1' else run_model(entry, reg, results)
     out = {'id': hid, 'registry_entry': entry, 'code_commit': git_head(),
-           'ci_level_confirmatory': se.confirmatory_level(reg),
-           'ngs_column_map': info['ngs_column_map'], 'build': info, **body}
+           'ci_level_confirmatory': se.confirmatory_level(reg), **ngs, **body}
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     path = RESULTS_DIR / f'{hid}.json'
     path.write_text(json.dumps(out, indent=2, default=float) + '\n', encoding='utf-8')
