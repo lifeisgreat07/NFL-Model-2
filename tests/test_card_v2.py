@@ -71,10 +71,21 @@ def test_a_side_is_named_by_the_half_of_the_line_it_falls_in():
     assert got[3] is None
 
 
+def test_the_threshold_clears_a_marker_on_the_narrowest_line():
+    """176px is the narrowest line measured (a 360px screen); a 12px marker
+    is 6.8 points of it, so markers further apart than CARD_NEAR share a lane
+    without touching."""
+    near = float(re.search(r'const CARD_NEAR = ([\d.]+);', src()).group(1))
+    size = float(re.search(r'class="card-mk"[^`]*width="(\d+)"', src()).group(1))
+    assert near >= size / 176 * 100
+
+
 def test_markers_that_would_touch_take_fixed_lanes():
     lanes = run('cardLanes({b: 68.4, a: 75.4, market: 74.9})')
     assert lanes == {'b': 0, 'a': 1, 'market': -1}, 'the market goes above, Model A below'
-    assert run('cardLanes({b: 74.3, a: 64.8, market: 78.1})') == {'b': 0, 'a': 0, 'market': 0}
+    # 3.8 points apart: close enough to touch on a phone, so the market moves up.
+    assert run('cardLanes({b: 74.3, a: 64.8, market: 78.1})') == {'b': 0, 'a': 0, 'market': -1}
+    assert run('cardLanes({b: 60, a: 70, market: 80})') == {'b': 0, 'a': 0, 'market': 0}
     assert run('cardLanes({b: 70, a: 60, market: null})') == {'b': 0, 'a': 0}
 
 

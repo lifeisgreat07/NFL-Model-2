@@ -1174,9 +1174,9 @@
   /* A faint inner outline, so a pale team colour (LV's silver, NO's gold)
      still has an edge on the light theme's white card. */
   .card-scale .tele-bar{box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--text) 18%, transparent);}
-  .card-line{position:relative; height:32px;}
+  .card-line{position:relative; height:40px;}
   .card-line::before{content:""; position:absolute; left:0; right:0; top:50%; height:2px; margin-top:-1px; background:var(--border-strong);}
-  .card-mid{position:absolute; left:50%; top:5px; bottom:5px; width:1px; background:var(--text-2);}
+  .card-mid{position:absolute; left:50%; top:8px; bottom:8px; width:1px; background:var(--text-2);}
   .card-mid-label{position:absolute; left:50%; bottom:-10px; transform:translateX(-50%); font-size:var(--fs-11); color:var(--text-2);}
   .card-mk{position:absolute; transform:translate(-50%,-50%); overflow:visible;
     filter:drop-shadow(0 0 1px var(--surface)) drop-shadow(0 0 1px var(--surface));}
@@ -3443,8 +3443,12 @@ function cardSide(pHome, g){
   return pHome >= 50 ? {team: g.home, pct: pHome} : {team: g.away, pct: 100 - pHome};
 }
 
-/* Markers closer than CARD_NEAR points would hide one another. When they
-   would, each takes a FIXED lane -- the Market above the line, Model B on it,
+/* Markers closer than CARD_NEAR points would hide one another. 7 is measured,
+   not picked: the narrowest line (176px, at a 360px screen) gives a 12px
+   marker 6.8 points of the scale, so two markers 7 points apart on the same
+   lane cannot touch at any supported width. (The first cut used 3 points and
+   9px lanes; measured on the built page, markers overlapped on 11 of week 3's
+   16 cards at 1280px and 14 at 390px.) When they would, each takes a FIXED lane -- the Market above the line, Model B on it,
    Model A below -- so the same series always moves the same way and a reader
    learns it once. A marker with no neighbour stays on the line. */
 /* The card's series, in the same colours and shapes as SERIES below. A copy
@@ -3458,7 +3462,7 @@ const CARD_SERIES = {
   market: {label:'Market',  color:'var(--series-c)', shape:'triangle'},
 };
 
-const CARD_NEAR = 3;
+const CARD_NEAR = 7;
 const CARD_LANE = {market: -1, b: 0, a: 1};
 
 function cardLanes(vals){
@@ -3498,8 +3502,9 @@ function cardProbHtml(g, awayC, homeC){
   const mark = k => {
     if(vals[k] === null || vals[k] === undefined) return '';
     const s = CARD_SERIES[k];
-    return `<svg class="card-mk" style="left:${vals[k]}%; top:calc(50% + ${lanes[k] * 9}px)" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">`
-      + `${markerPath(s.shape, 7, 7, 5)} fill="${s.color}"/></svg>`;
+    // 12px markers on 12px lanes: a laned marker clears its neighbour.
+    return `<svg class="card-mk" style="left:${vals[k]}%; top:calc(50% + ${lanes[k] * 12}px)" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">`
+      + `${markerPath(s.shape, 6, 6, 4.5)} fill="${s.color}"/></svg>`;
   };
   const key = (k, side) => {
     const s = CARD_SERIES[k];

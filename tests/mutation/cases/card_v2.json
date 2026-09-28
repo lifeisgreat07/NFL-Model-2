@@ -51,6 +51,13 @@
       "find": "            'mkt_home': (round(p['market_prob_home'] * 100, 1)\n                         if p.get('market_prob_home') is not None else None),",
       "replace": "            'mkt_home': None,",
       "expect_caught_by": "test_the_market_probability_reaches_the_page"
+    },
+    {
+      "id": "card-threshold-too-tight",
+      "why": "markers 3 points apart share a lane, and on a phone-width line a 12px marker covers 6.8 points, so they overlap.",
+      "find": "const CARD_NEAR = 7;",
+      "replace": "const CARD_NEAR = 3;",
+      "expect_caught_by": "test_the_threshold_clears_a_marker_on_the_narrowest_line"
     }
   ]
 }
