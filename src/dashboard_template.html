@@ -848,9 +848,12 @@
      place of it: the board is sorted by kickoff, and a sort key that leaves
      the card is CLAUDE.md's invisible-sort-key trap. Neutral text, not a
      graded colour: a final score is not a verdict on the pick until the
-     week is graded, and the graded tag already carries that verdict. */
+     week is graded, and the graded tag already carries that verdict.
+     --text, the colour it renders in today: it named --text-1, which is
+     declared nowhere, so the declaration was dropped and the line inherited
+     --text from body (tests/test_css_tokens_defined.py). */
   .card-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
-    color:var(--text-1); letter-spacing:.03em; margin-bottom:2px;}
+    color:var(--text); letter-spacing:.03em; margin-bottom:2px;}
   /* Where to watch (Stage 17): the network name and nothing else, inside
      the kickoff line because it answers the same question -- when and where.
      A border, not a fill or a hue: elevation is a border here, and colour is
