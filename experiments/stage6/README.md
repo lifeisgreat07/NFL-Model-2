@@ -23,12 +23,29 @@ Next Gen Stats first, in order, each only if the one before it allows:
 
 Rushing and receiving Next Gen Stats are deferred with the reason written down.
 
+Referees and personnel, registered 2026-09-28, before any referee or penalty value was
+read:
+
+- **R1, a screen.** Do referees flag home and away teams differently in a way that
+  lasts? Each game's penalty yards against the away team minus those against the home
+  team, averaged per referee over 2016–2020 and again over 2021–2023, correlated across
+  referees with enough games in both. It spends no slot. If the interval does not sit
+  above zero, Stage 6 asks nothing more of referees. It reads nothing from 2024 on.
+- **R2.** Model A plus the referee's earlier home edge, shrunk toward the league average,
+  against Model A as it ships. Only if R1 passes.
+- **A2.** Whether the referee is named in the schedule before the Thursday lock. Checked
+  only if R2 is accepted.
+- **P1, personnel groupings: deferred.** No mechanism that reaches a result beyond what
+  the ratings already measure, and recent-season data has not been checked.
+
+The expectation, written before any data: R1 fails.
+
 ## The budget
 
 Five confirmatory slots for all of Stage 6, so each confirmatory interval is 99% rather
-than 95%. Next Gen Stats can spend at most two (N2 and N3). Referee crews and personnel
-groupings are added to the same file later, under the same budget; `budget_m` does not
-change when they are.
+than 95%. Next Gen Stats can spend at most two (N2 and N3), referees at most one (R2).
+Personnel groupings, if ever registered, go into the same file under the same budget;
+`budget_m` does not change when they are.
 
 ## What keeps this honest
 

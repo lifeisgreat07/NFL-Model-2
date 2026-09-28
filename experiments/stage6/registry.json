@@ -83,6 +83,62 @@
       "title": "Next Gen Stats rushing and receiving",
       "status": "DEFERRED",
       "reason": "No stated mechanism. Stage 5's separate pass and rush ratings (H5) moved validation log loss by +0.0001, so team rushing detail has shown nothing, and the quarterback is where the model's weight is. Registering rushing yards over expected or receiver separation now would be adding columns to see what sticks."
+    },
+    {
+      "id": "R1",
+      "kind": "screen",
+      "title": "Do referees flag home and away teams differently, in a way that lasts from one period to the next?",
+      "question": "For every regular-season game from 2016 to 2023 whose schedule row names a referee, the penalty differential is the penalty yards recorded against the away team minus those against the home team (play-by-play penalty == 1, penalty_team, penalty_yards). For each referee with at least 40 such games in 2016-2020 and at least 24 in 2021-2023, take his mean differential in each window. Correlate the two means across those referees, each weighted by the smaller of his two game counts.",
+      "metric": "weighted correlation between a referee's 2016-2020 and 2021-2023 mean penalty differential",
+      "rule": "PASS if the lower end of the 95% bootstrap interval (resampling referees; n_resamples and seed from the protocol) is above zero. Otherwise FAIL, and Stage 6 asks nothing more of referees.",
+      "spends_slot": false,
+      "disclosures": [
+        "Before this entry was written no referee or penalty value had been read. Looked at: the column names in data/nflverse_schema.json (the schedule has referee; play-by-play has penalty, penalty_team, penalty_yards), and nflreadpy's loader signatures, printed without loading any data.",
+        "The schedule names the head referee, not the crew, and crews are reshuffled between seasons. The screen asks about the referee because that is the only name the data carries.",
+        "The screen stops at 2023, so it reads nothing from the confirmation seasons."
+      ],
+      "expected": "weak persistence or none: referees are graded and crews rotated, and whatever home edge officiating gives is league-wide and already inside Model A's home-field term"
+    },
+    {
+      "id": "R2",
+      "kind": "hypothesis",
+      "requires": {
+        "R1": "PASS"
+      },
+      "title": "Add the referee's home edge to Model A",
+      "question": "Model A plus ref_home_edge, against Model A as it ships. ref_home_edge = the game's referee's mean penalty differential (as R1 defines it) over his regular-season games strictly before this one, from 2016, shrunk toward the league mean as of the same cutoff with a pseudo-count of 16 games (about one season). A referee with no earlier games gets the league mean; a game with no named referee gets the league mean.",
+      "candidate": {
+        "qb_spec": "sched",
+        "ratings": "base",
+        "extra": [
+          "ref_home_edge"
+        ]
+      },
+      "incumbent": {
+        "qb_spec": "sched",
+        "ratings": "base"
+      },
+      "decision_model": "model_a",
+      "also_report": [
+        "model_b"
+      ],
+      "spends_slot": "if advanced",
+      "expected": "no improvement, or one too small to clear a 99% interval"
+    },
+    {
+      "id": "A2",
+      "kind": "measurement",
+      "title": "Is the referee known before the Thursday lock?",
+      "question": "On two consecutive weeks of the 2026 season, does the schedule's referee column name a referee for every week-w game when the Weekly update's Thursday 16:00 UTC lock run reads it?",
+      "spends_slot": false,
+      "consequence": "Checked only if R2 is ACCEPTED. If it fails, the accepted feature is DEFERRED: the picks lock on Thursday, and a feature missing at the lock would make the page describe a better model than the one making the picks."
+    },
+    {
+      "id": "P1",
+      "kind": "deferred",
+      "title": "Personnel groupings",
+      "status": "DEFERRED",
+      "reason": "No mechanism that reaches a win probability. Which personnel a team uses describes its style, and the ratings already measure how well that style works; nothing here says why the grouping would predict a result beyond that. Whether participation data exists for recent seasons has also not been checked. Registering it now would be adding a column to see what sticks."
     }
   ]
 }
