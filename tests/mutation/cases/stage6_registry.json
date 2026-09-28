@@ -36,6 +36,14 @@
       "find": "\"forward_holdout_season\": 2026,",
       "replace": "\"forward_holdout_season\": 2027,",
       "expect_caught_by": "test_the_seasons_are_stage5s"
+    },
+    {
+      "id": "stage6-r1-label-read-from-the-upper-end",
+      "why": "the check that R1's stored label is the one its numbers give reads the interval's upper end, so it no longer computes the registered rule and would bless a PASS the rule forbids",
+      "target": "tests/test_stage6_registry.py",
+      "find": "return 'PASS' if res['persistence']['corr_ci_95'][0] > 0 else 'FAIL'",
+      "replace": "return 'PASS' if res['persistence']['corr_ci_95'][1] > 0 else 'FAIL'",
+      "expect_caught_by": "test_every_stored_decision_is_the_one_its_numbers_give"
     }
   ]
 }

@@ -76,7 +76,17 @@ def headline(result):
     measurement over all four seasons, reported for Model A. N1 is scored on
     mean squared error of a quarterback's next game, with a cluster-bootstrap
     interval. A difference is always candidate minus incumbent, so a negative
-    number favours the candidate."""
+    number favours the candidate. R1 is the exception: a correlation across
+    referees, which only an interval wholly above zero passes, so it carries
+    its own note in place of that sentence."""
+    if 'persistence' in result:
+        block = result['persistence']
+        return {'metric': 'weighted correlation',
+                'of': "a referee's home/away penalty gap, from one period to the next",
+                'diff': block['weighted_corr'], 'ci': block['corr_ci_95'], 'ci_level': 0.95,
+                'seasons': result['inputs']['seasons'], 'n': block['n_referees'], 'n_of': 'referees',
+                'step': 'screen', 'model': None,
+                'note': 'The screen needed the whole interval above zero.'}
     if 'candidate_minus_control' in result:
         block, val = result['candidate_minus_control'], result['validation']
         return {'metric': 'mean squared error', 'of': "a quarterback's next-game EPA per dropback",

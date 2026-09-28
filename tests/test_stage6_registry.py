@@ -136,6 +136,9 @@ def test_budget_m_has_not_moved_since_the_family_was_registered():
 def recompute(res):
     """The label a result's own numbers give, by the registry's rule for its kind."""
     kind = res['registry_entry']['kind']
+    if kind == 'screen' and res['id'] == 'R1':
+        # a correlation across referees: PASS only if its interval's lower end is above zero
+        return 'PASS' if res['persistence']['corr_ci_95'][0] > 0 else 'FAIL'
     if kind == 'screen':
         diff = res['candidate_minus_control']
         return 'PASS' if diff['mse_diff'] < 0 and diff['mse_ci_95'][1] < 0 else 'FAIL'

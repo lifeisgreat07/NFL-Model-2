@@ -1,0 +1,112 @@
+{
+  "target": "src/stage6_referee.py",
+  "tests": "tests/test_stage6_referee.py",
+  "cases": [
+    {
+      "id": "referee-differential-is-home-minus-away",
+      "why": "the differential is signed toward the home team, so a referee who flags the away team more reads as one who flags the home team more",
+      "find": "d = yards.where(against_away, 0.0) - yards.where(against_home, 0.0)",
+      "replace": "d = yards.where(against_home, 0.0) - yards.where(against_away, 0.0)",
+      "expect_caught_by": "test_the_differential_is_away_minus_home"
+    },
+    {
+      "id": "referee-non-penalty-rows-counted",
+      "why": "yards on rows that are not penalties (a play's own yardage fields left in penalty_yards) are counted against a team",
+      "find": "p = pbp[(pbp['penalty'] == 1) & ",
+      "replace": "p = pbp[(pbp['penalty'] > -1) & ",
+      "expect_caught_by": "test_rows_that_are_not_penalties_or_name_neither_team_do_not_count"
+    },
+    {
+      "id": "referee-teams-from-the-schedule",
+      "why": "home and away come from the schedule, whose OAK and SD are not play-by-play's LV and LAC, so every penalty on the relocated teams in those seasons is silently dropped (the first R1 run did this)",
+      "find": "p = pbp[(pbp['penalty'] == 1) & pbp['game_id'].isin(kept['game_id'])]",
+      "replace": "p = pbp[pbp['penalty'] == 1].drop(columns=['home_team', 'away_team']).merge(kept[['game_id', 'home_team', 'away_team']], on='game_id')",
+      "expect_caught_by": "test_a_relocated_team_is_matched_in_play_by_plays_own_spelling"
+    },
+    {
+      "id": "referee-missing-game-scored-zero",
+      "why": "a game whose play-by-play was never loaded counts as a game with no penalties, pulling every referee's mean toward zero",
+      "find": "kept = games[games['game_id'].isin(loaded)].copy()",
+      "replace": "kept = games.copy()",
+      "expect_caught_by": "test_a_game_without_play_by_play_is_dropped_not_scored_zero"
+    },
+    {
+      "id": "referee-postseason-counted",
+      "why": "playoff games, which the registry excludes, enter the referee means",
+      "find": "s = sched[sched['game_type'] == 'REG']",
+      "replace": "s = sched",
+      "expect_caught_by": "test_only_regular_season_games_that_name_a_referee_count"
+    },
+    {
+      "id": "referee-reads-a-confirmation-season",
+      "why": "the screen reads 2024, a confirmation season the registration promised it would not touch",
+      "find": "R1_SEASONS = list(range(2016, 2024))",
+      "replace": "R1_SEASONS = list(range(2016, 2025))",
+      "expect_caught_by": "test_the_screen_reads_no_season_after_2023"
+    },
+    {
+      "id": "referee-name-spacing-splits-a-referee",
+      "why": "one referee whose name is spaced differently in two seasons becomes two referees, each short of the minimum",
+      "find": "ref = s['referee'].astype('string').str.split().str.join(' ')",
+      "replace": "ref = s['referee'].astype('string').str.strip()",
+      "expect_caught_by": "test_a_referees_name_is_one_name_however_it_is_spaced"
+    },
+    {
+      "id": "referee-early-minimum-lowered",
+      "why": "a referee with 39 games in 2016-2020 counts, one fewer than registered",
+      "find": "MIN_EARLY = 40 ",
+      "replace": "MIN_EARLY = 39 ",
+      "expect_caught_by": "test_a_referee_needs_forty_early_and_twenty_four_late_games"
+    },
+    {
+      "id": "referee-late-minimum-lowered",
+      "why": "a referee with 23 games in 2021-2023 counts, one fewer than registered",
+      "find": "MIN_LATE = 24 ",
+      "replace": "MIN_LATE = 23 ",
+      "expect_caught_by": "test_a_referee_needs_forty_early_and_twenty_four_late_games"
+    },
+    {
+      "id": "referee-weight-is-the-larger-count",
+      "why": "a referee with many early games and few late ones is weighted as if both means were well measured",
+      "find": "t['weight'] = np.minimum(",
+      "replace": "t['weight'] = np.maximum(",
+      "expect_caught_by": "test_each_referee_is_weighted_by_his_smaller_count"
+    },
+    {
+      "id": "referee-correlation-ignores-weights",
+      "why": "the correlation weights every referee equally, not by the smaller of his game counts",
+      "find": "w = w / w.sum(axis=-1, keepdims=True)",
+      "replace": "w = np.ones_like(w) / w.shape[-1]",
+      "expect_caught_by": "test_the_weights_matter"
+    },
+    {
+      "id": "referee-undefined-correlation-is-zero",
+      "why": "a resample with no spread is scored as zero correlation instead of undefined, dragging the interval toward zero",
+      "find": "return np.where((vx > 0) & (vy > 0), r, np.nan)",
+      "replace": "return np.nan_to_num(r)",
+      "expect_caught_by": "test_no_spread_is_undefined_not_zero"
+    },
+    {
+      "id": "referee-rule-allows-zero",
+      "why": "an interval that touches zero passes, when the registered rule needs its lower end above zero",
+      "find": "return 'PASS' if ci_95[0] > 0 else 'FAIL'",
+      "replace": "return 'PASS' if ci_95[0] >= 0 else 'FAIL'",
+      "expect_caught_by": "test_the_rule_is_the_registered_one"
+    },
+    {
+      "id": "referee-rule-reads-the-upper-end",
+      "why": "the screen passes whenever the interval reaches above zero, which almost any interval does",
+      "find": "return 'PASS' if ci_95[0] > 0 else 'FAIL'",
+      "replace": "return 'PASS' if ci_95[1] > 0 else 'FAIL'",
+      "expect_caught_by": "test_the_rule_is_the_registered_one"
+    },
+    {
+      "id": "referee-run-reads-the-ngs-build",
+      "why": "R1 goes through the Next Gen Stats build's cache, so it cannot run without an unrelated build and its result carries that build's description",
+      "target": "src/stage6_run.py",
+      "find": "    if hid == 'R1':\n        ngs = {}",
+      "replace": "    if hid == 'R9':\n        ngs = {}",
+      "expect_caught_by": "test_run_r1_loads_only_2016_to_2023_and_scores_by_the_rule"
+    }
+  ]
+}

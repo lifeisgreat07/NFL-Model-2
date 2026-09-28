@@ -317,7 +317,8 @@ def _registered_result(e):
             metric = metric[:1].upper() + metric[1:]
         body = (f"{model}{metric} {_signed(h['diff'])} "
                 f"CI [{_signed(h['ci'][0])}, {_signed(h['ci'][1])}] at {h['ci_level'] * 100:g}%, "
-                f"{where}, {h['n']:,} {h['n_of']}. A negative difference favours the new idea.")
+                f"{where}, {h['n']:,} {h['n_of']}. "
+                f"{h.get('note', 'A negative difference favours the new idea.')}")
         body = f'<span class="lab-lead">{interval_glyph(h)}</span>{body}'
     return (f"{body}<span class=\"lab-src\">Pre-registered, {e['stage']} {e['id']} "
             f"&middot; <code>{e['source']}</code></span>")

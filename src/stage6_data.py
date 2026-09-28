@@ -43,8 +43,8 @@ PBP_COLUMNS = ['season', 'week', 'season_type', 'posteam', 'defteam', 'epa', 'pa
 
 # ------------------------------------------------------------------ loading
 
-def load_pbp(seasons):
-    """Play-by-play for many seasons, only the columns Stage 6 reads.
+def load_pbp(seasons, columns=PBP_COLUMNS):
+    """Play-by-play for many seasons, only the columns a Stage 6 question reads.
 
     One season at a time, so ten seasons of all 370-odd columns are never
     held in memory at once. Uses data_loader's cache when NFL_PBP_CACHE is set.
@@ -63,7 +63,7 @@ def load_pbp(seasons):
             if path is not None and s < nfl.get_current_season():
                 cache.mkdir(parents=True, exist_ok=True)
                 df.write_parquet(path)
-        frames.append(df.select([c for c in PBP_COLUMNS if c in df.columns]).to_pandas())
+        frames.append(df.select([c for c in columns if c in df.columns]).to_pandas())
     return pd.concat(frames, ignore_index=True)
 
 
