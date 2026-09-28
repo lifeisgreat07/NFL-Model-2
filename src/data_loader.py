@@ -53,6 +53,15 @@ REQUIRED_PBP_COLS = ['posteam', 'defteam', 'epa', 'pass', 'rush', 'season_type',
 REQUIRED_SCHEDULE_COLS = ['home_team', 'away_team', 'home_score', 'away_score',
                           'spread_line', 'week', 'season', 'gameday',
                           'gametime', 'weekday']
+# The announced starters (Stage 25, from the 2026-09-28 audit). The live pick
+# reads them (weekly_update.resolve_starters): without them every pick falls
+# back to last game's quarterback, silently. They are NOT in the required list
+# above, because a missing required column is an ERROR and an error on a
+# locking run costs the whole week its picks (decided with Mark 2026-09-24 for
+# the game count); a pick on last game's quarterback is worse but not wrong.
+# data_quality.check_schedule warns instead, and the warning reaches the
+# weekly summary.
+QB_SCHEDULE_COLS = ['home_qb_id', 'away_qb_id', 'home_qb_name', 'away_qb_name']
 REQUIRED_SNAP_COLS = ['team', 'season', 'week', 'position', 'offense_snaps',
                       'pfr_player_id', 'game_type']
 

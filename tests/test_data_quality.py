@@ -38,6 +38,8 @@ def schedule(completed_through=0):
                 'away_score': 17.0 if done else np.nan,
                 'spread_line': -3.0, 'gameday': '2026-09-13',
                 'gametime': '13:00', 'weekday': 'Sunday',
+                'home_qb_id': '00-0000001', 'away_qb_id': '00-0000002',
+                'home_qb_name': 'Home QB', 'away_qb_name': 'Away QB',
             })
     return pd.DataFrame(rows)
 
@@ -72,6 +74,36 @@ def test_enforce_passes_clean_data_and_says_so():
 def test_a_missing_schedule_column_is_an_error():
     report = dq.check_schedule(schedule().drop(columns=['gametime']), SEASON)
     assert any('gametime' in e for e in report.errors)
+
+
+def test_no_announced_starters_is_a_warning_not_an_error():
+    """Stage 25 item 3. Without these columns every live pick silently
+    rates last game's quarterback. A warning, because an error on a locking
+    run would cost the week its picks altogether."""
+    report = dq.check_schedule(schedule().drop(columns=['home_qb_id']), SEASON)
+    assert report.errors == []
+    assert any("home_qb_id" in w and "last game's quarterback" in w for w in report.warnings)
+
+
+def test_a_next_week_with_no_starter_listed_is_a_warning():
+    s = schedule(completed_through=3)
+    s.loc[s['week'] == 4, ['home_qb_id', 'away_qb_id']] = None
+    report = dq.check_schedule(s, SEASON)
+    assert report.errors == []
+    assert any('week 4 lists no starting quarterback' in w for w in report.warnings)
+
+
+def test_one_listed_starter_in_the_next_week_is_enough():
+    s = schedule(completed_through=3)
+    s.loc[s['week'] == 4, ['home_qb_id', 'away_qb_id']] = None
+    s.loc[s.index[s['week'] == 4][0], 'home_qb_id'] = '00-0000009'
+    assert dq.check_schedule(s, SEASON).warnings == []
+
+
+def test_the_starter_columns_are_not_required():
+    """The decision above, held: a required column's absence is an ERROR."""
+    from data_loader import QB_SCHEDULE_COLS, REQUIRED_SCHEDULE_COLS
+    assert not set(QB_SCHEDULE_COLS) & set(REQUIRED_SCHEDULE_COLS)
 
 
 def test_a_short_season_is_only_a_warning():
