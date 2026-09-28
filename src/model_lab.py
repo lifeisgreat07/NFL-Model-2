@@ -82,7 +82,7 @@ def headline(result):
     if 'persistence' in result:
         block = result['persistence']
         return {'metric': 'weighted correlation',
-                'of': "a referee's home/away penalty gap, 2016–2020 against 2021–2023",
+                'of': "a referee's home/away penalty gap, from one period to the next",
                 'diff': block['weighted_corr'], 'ci': block['corr_ci_95'], 'ci_level': 0.95,
                 'seasons': result['inputs']['seasons'], 'n': block['n_referees'], 'n_of': 'referees',
                 'step': 'screen', 'model': None,
