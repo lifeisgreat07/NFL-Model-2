@@ -97,21 +97,51 @@ def rendered():
     return out
 
 
+LOGO = ('<span class="matchup-team"><img class="matchup-logo" '
+        'src="https://a.espncdn.com/i/teamlogos/nfl/500/{code}.png" alt="" loading="lazy" '
+        'onerror="this.style.display=\'none\'">{team}</span>')
+
+
 def test_the_helper_renders_both_teams_and_the_separator(rendered):
+    """Stage 17 put a 20px logo beside each team on the Week Board's title."""
     assert rendered['board'] == (
-        '<div class="matchup-header">NE <span class="at-symbol">at</span> SEA</div>'), (
+        '<div class="matchup-header">' + LOGO.format(code='ne', team='NE')
+        + ' <span class="at-symbol">at</span> ' + LOGO.format(code='sea', team='SEA') + '</div>'), (
         'the Week Board title changed shape. If that was intended, it is now '
         'one edit rather than two -- which is the point -- but it is still a '
         'visible change and belongs in the description.')
 
 
-def test_the_variant_adds_a_class_and_changes_nothing_else(rendered):
+def test_the_variant_adds_a_class_and_drops_only_the_logos(rendered):
     """A variant that could alter the text would reintroduce the defect in a
-    subtler form: one construction site producing two different sentences."""
+    subtler form: one construction site producing two different sentences.
+    Since Stage 17 the quiet variant also leaves the logos out -- My Picks'
+    pick buttons carry them -- and that is the only other difference."""
     assert rendered['picks'] == (
         '<div class="matchup-header quiet">NE <span class="at-symbol">at</span> SEA</div>')
-    assert rendered['picks'].replace(' quiet', '') == rendered['board'], (
-        'the quiet variant changes more than the class list')
+    board_text = re.sub(r'<span class="matchup-team"><img [^>]*>(\w+)</span>', r'\1', rendered['board'])
+    assert rendered['picks'].replace(' quiet', '') == board_text, (
+        'the quiet variant changes more than the class list and the logos')
+
+
+def test_a_logo_is_decorative_and_falls_back_to_the_name(rendered):
+    """alt="" because the abbreviation beside it is the name; a screen reader
+    would otherwise read every team twice. onerror hides a logo ESPN will not
+    serve, leaving the abbreviation -- the fallback every other logo here has,
+    and what the browser-checks job relies on with ESPN blocked."""
+    imgs = re.findall(r'<img [^>]*>', rendered['board'])
+    assert len(imgs) == 2
+    for img in imgs:
+        assert ' alt=""' in img, img
+        assert 'onerror="this.style.display=\'none\'"' in img, img
+
+
+def test_the_logo_is_twenty_pixels(source):
+    """The size the Stage 8 restyle set for logos returning to the core UI."""
+    m = re.search(r'\.matchup-logo\{([^}]*)\}', source)
+    assert m, '.matchup-logo has no rule'
+    rule = m.group(1).replace(' ', '')
+    assert 'width:20px' in rule and 'height:20px' in rule, rule
 
 
 def test_no_variant_leaves_the_class_list_clean(rendered):

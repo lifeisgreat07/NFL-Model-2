@@ -33,8 +33,8 @@
     {
       "id": "picks-card-logo-becomes-the-accessible-name",
       "why": "the logo gains alt text, so a screen reader announces the team twice -- once from the image and once from the abbreviation beside it. The visual card is unchanged, which is exactly why this kind of regression ships: it is invisible to everyone who is not using the assistive technology it breaks.",
-      "find": "src=\"${teamLogo(team)}\" alt=\"\" loading=\"lazy\"",
-      "replace": "src=\"${teamLogo(team)}\" alt=\"${team} logo\" loading=\"lazy\"",
+      "find": "class=\"pick-logo\" src=\"${teamLogo(team)}\" alt=\"\" loading=\"lazy\"",
+      "replace": "class=\"pick-logo\" src=\"${teamLogo(team)}\" alt=\"${team} logo\" loading=\"lazy\"",
       "expect_caught_by": "test_the_logo_is_decorative_and_the_abbreviation_is_the_text"
     },
     {

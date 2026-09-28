@@ -27,6 +27,18 @@ if (i === -1 || j === -1 || j <= i) {
 }
 eval(tpl.slice(i, j));
 
+// The logo URL comes from teamLogo() and its ESPN_CODE table, which sit
+// earlier in the script (Stage 17 put logos in the Week Board's header).
+for (const [name, re] of [['ESPN_CODE', /const ESPN_CODE = \{[\s\S]*?\r?\n\};/],
+                          ['teamLogo', /function teamLogo\([\s\S]*?\r?\n\}/]]) {
+  const m = tpl.match(re);
+  if (!m) {
+    console.log(JSON.stringify({fatal: `could not extract ${name} -- this harness is testing nothing`}));
+    process.exit(0);
+  }
+  eval(m[0].replace(/^const /, 'var '));
+}
+
 const g = {away: 'NE', home: 'SEA'};
 console.log(JSON.stringify({
   board: matchupHeader(g),
