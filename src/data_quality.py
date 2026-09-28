@@ -33,7 +33,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from data_loader import REQUIRED_PBP_COLS, REQUIRED_SCHEDULE_COLS  # noqa: E402
+from data_loader import QB_SCHEDULE_COLS, REQUIRED_PBP_COLS, REQUIRED_SCHEDULE_COLS  # noqa: E402
 
 #: The 32 franchises under the abbreviations nflverse uses for current
 #: seasons. Older seasons use OAK/SD/STL; the checks below only look at the
@@ -130,7 +130,28 @@ def check_schedule(sched, season):
         pairs = sorted(f"wk{int(r.week)} {r.away_team}@{r.home_team}"
                        for r in half.itertuples())
         report.errors.append(f'{season} schedule has a score on one side only: {pairs}')
+
+    report.warnings.extend(announced_starter_warnings(sched, season))
     return report
+
+
+def announced_starter_warnings(sched, season):
+    """WARNINGS, not errors (see QB_SCHEDULE_COLS in data_loader.py): the
+    live pick reads the schedule's announced starters, and without them it
+    rates every team on last game's quarterback with nothing else saying so."""
+    missing = [c for c in QB_SCHEDULE_COLS if c not in sched.columns]
+    if missing:
+        return [f'{season} schedule has no {missing}: every live pick falls back '
+                f"to last game's quarterback"]
+    unplayed = sched[sched['home_score'].isna() & sched['week'].notna()]
+    if not len(unplayed):
+        return []
+    week = int(unplayed['week'].min())
+    nxt = unplayed[unplayed['week'] == week]
+    if nxt[['home_qb_id', 'away_qb_id']].isna().all().all():
+        return [f'{season} week {week} lists no starting quarterback for any game: '
+                f"its picks fall back to last game's quarterback unless overridden"]
+    return []
 
 
 def check_plays(raw, sched, season):

@@ -93,6 +93,35 @@
       "find": "    enforce_data_quality(raw, schedules_by_season[season], season)",
       "replace": "    pass",
       "expect_caught_by": "test_the_weekly_run_enforces_the_checks_before_fitting"
+    },
+    {
+      "id": "dq-starter-warnings-never-reported",
+      "why": "the announced-starter warnings are computed and never added to the report, so a schedule with no starters sends every pick to last game's quarterback with nothing said",
+      "find": "    report.warnings.extend(announced_starter_warnings(sched, season))",
+      "replace": "    pass",
+      "expect_caught_by": "test_no_announced_starters_is_a_warning_not_an_error"
+    },
+    {
+      "id": "dq-next-week-without-starters-passes",
+      "why": "a next week with no starter listed for any game passes silently",
+      "find": "    if nxt[['home_qb_id', 'away_qb_id']].isna().all().all():",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_next_week_with_no_starter_listed_is_a_warning"
+    },
+    {
+      "id": "dq-one-missing-starter-warns-for-the-week",
+      "why": "one unlisted starter warns as if the whole week had none, so an ordinary Tuesday (a team yet to name its starter) reads like a broken feed",
+      "find": "    if nxt[['home_qb_id', 'away_qb_id']].isna().all().all():",
+      "replace": "    if nxt[['home_qb_id', 'away_qb_id']].isna().any().any():",
+      "expect_caught_by": "test_one_listed_starter_in_the_next_week_is_enough"
+    },
+    {
+      "id": "dq-starter-columns-made-required",
+      "target": "src/data_loader.py",
+      "why": "the starter columns join the required list, so their absence becomes an ERROR and a locking run loses the whole week's picks instead of falling back to last game's quarterback",
+      "find": "                          'gametime', 'weekday']",
+      "replace": "                          'gametime', 'weekday', 'home_qb_id']",
+      "expect_caught_by": "test_the_starter_columns_are_not_required"
     }
   ]
 }
