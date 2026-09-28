@@ -55,6 +55,13 @@
       "find": "    if n < MIN_GAMES_TO_TEST:",
       "replace": "    if n < 0:",
       "expect_caught_by": "test_below_the_minimum_sample_nothing_is_flagged"
+    },
+    {
+      "id": "grading-a-tie-as-an-away-win",
+      "why": "a tie goes back to being graded as an away win, so every home pick on a game nobody won scores wrong and every away pick right",
+      "find": "        if r['home_score'] == r['away_score']:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_tie_is_graded_with_no_winner_and_no_pick_scored"
     }
   ]
 }

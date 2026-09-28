@@ -4,8 +4,8 @@ The 2026-09-28 audit, confirmed: `src/grade_predictions.py` and
 `check_drift.one_proportion_z_test` had no tests of their own. Grading is
 what turns a saved pick into the season's record, and the drift test is
 what raises "Model drift detected". These pin the behaviour they have
-today. How a TIE is graded is not pinned here: that is a change of
-behaviour (Stage 25 item 1), and it gets its own PR and its own test.
+today. A TIE was graded as an away win until Stage 25 item 1; its test is
+at the end of the grading section.
 """
 import json
 import math
@@ -90,6 +90,21 @@ def test_grading_the_same_week_twice_writes_the_same_file(week):
     rows = [{'home_team': 'GB', 'away_team': 'ATL', 'home_score': 27, 'away_score': 20},
             {'home_team': 'MIA', 'away_team': 'KC', 'home_score': 24, 'away_score': 17}]
     assert week(rows) == week(rows)
+
+
+def test_a_tie_is_graded_with_no_winner_and_no_pick_scored(week):
+    """Stage 25 item 1. Before, 20-20 made actual_home_win 0: every home
+    pick scored wrong and every away pick right, for a game nobody won."""
+    graded = week([
+        {'home_team': 'GB', 'away_team': 'ATL', 'home_score': 20, 'away_score': 20},
+        {'home_team': 'MIA', 'away_team': 'KC', 'home_score': 24, 'away_score': 17},
+    ])
+    by = {g['home']: g for g in graded}
+    tie = by['GB']
+    assert tie['result'] == 'tie'
+    assert (tie['actual_home_win'], tie['market_correct'],
+            tie['model_a_correct'], tie['model_b_correct']) == (None, None, None, None)
+    assert 'result' not in by['MIA'] and by['MIA']['actual_home_win'] == 1
 
 
 def test_graded_correct_edges():

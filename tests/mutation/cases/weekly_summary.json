@@ -45,6 +45,13 @@
       "find": "      - name: Raise an alert\n        if: failure()",
       "replace": "      - name: Raise an alert\n        if: false",
       "expect_caught_by": "test_a_failed_run_raises_the_alert_last"
+    },
+    {
+      "id": "summary-counts-a-tie-as-ungraded",
+      "why": "a graded tie is left out of the graded count, so the summary says fewer games were graded than the results file holds",
+      "find": "            if r.get('actual_home_win') is not None or r.get('result') == 'tie']",
+      "replace": "            if r.get('actual_home_win') is not None]",
+      "expect_caught_by": "test_a_tie_counts_as_graded_but_scores_no_pick"
     }
   ]
 }
