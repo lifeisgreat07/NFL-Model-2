@@ -28,7 +28,42 @@
       "why": "the variant starts altering the separator as well as the class list. One construction site producing two different sentences is the original defect in a subtler and harder-to-spot form: the count guard still passes, the call-site guard still passes, and the two pages disagree again. Only executing the function catches it.",
       "find": "<span class=\"at-symbol\">at</span>",
       "replace": "<span class=\"at-symbol\">${variant ? '@' : 'at'}</span>",
-      "expect_caught_by": "test_the_variant_adds_a_class_and_changes_nothing_else"
+      "expect_caught_by": "test_the_variant_adds_a_class_and_drops_only_the_logos"
+    },
+    {
+      "id": "card-header-logos-on-my-picks",
+      "why": "My Picks' quiet title gains logos too, doubling the ones its pick buttons already carry.",
+      "find": "  const logo = !variant;",
+      "replace": "  const logo = true;",
+      "expect_caught_by": "test_the_variant_adds_a_class_and_drops_only_the_logos"
+    },
+    {
+      "id": "card-header-logos-dropped",
+      "why": "the Week Board's title loses its logos again, which is the gap Mark noticed on 2026-09-28.",
+      "find": "  const logo = !variant;",
+      "replace": "  const logo = false;",
+      "expect_caught_by": "test_the_helper_renders_both_teams_and_the_separator"
+    },
+    {
+      "id": "card-header-logo-named-twice",
+      "why": "the logo carries the team as alt text, so a screen reader reads every team twice.",
+      "find": "alt=\"\" loading=\"lazy\" onerror=\"this.style.display='none'\">${team}</span>`",
+      "replace": "alt=\"${team}\" loading=\"lazy\" onerror=\"this.style.display='none'\">${team}</span>`",
+      "expect_caught_by": "test_a_logo_is_decorative_and_falls_back_to_the_name"
+    },
+    {
+      "id": "card-header-logo-no-fallback",
+      "why": "a logo ESPN will not serve stays on the card as a broken-image mark instead of hiding.",
+      "find": "alt=\"\" loading=\"lazy\" onerror=\"this.style.display='none'\">${team}</span>`",
+      "replace": "alt=\"\" loading=\"lazy\">${team}</span>`",
+      "expect_caught_by": "test_a_logo_is_decorative_and_falls_back_to_the_name"
+    },
+    {
+      "id": "card-header-logo-oversized",
+      "why": "the header's logos grow past the 20px the restyle set, and outweigh the abbreviations beside them.",
+      "find": "  .matchup-logo{width:20px; height:20px;",
+      "replace": "  .matchup-logo{width:32px; height:32px;",
+      "expect_caught_by": "test_the_logo_is_twenty_pixels"
     }
   ]
 }

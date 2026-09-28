@@ -1098,6 +1098,8 @@
   .game-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--s3); margin-bottom:var(--s4);}
   .matchup-header{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); margin-bottom:var(--s3); display:flex; align-items:center; gap:var(--s2); flex-wrap:wrap;}
   .at-symbol{color:var(--text-2); font-weight:500;}
+  .matchup-team{display:inline-flex; align-items:center; gap:var(--s2);}
+  .matchup-logo{width:20px; height:20px; object-fit:contain; flex-shrink:0;}
   /* My Picks' variant. These values are not a new design choice -- they are
      what .game-top > .game-confidence produced there, measured on the rendered
      page before the two render paths were merged into one helper: 11px,
@@ -3605,7 +3607,22 @@ function cardProbHtml(g, awayC, homeC){
 }
 
 function matchupHeader(g, variant){
-  return `<div class="matchup-header${variant ? ' ' + variant : ''}">${g.away} <span class="at-symbol">at</span> ${g.home}</div>`;
+  const logo = !variant;
+  return `<div class="matchup-header${variant ? ' ' + variant : ''}">${matchupTeam(g.away, logo)} <span class="at-symbol">at</span> ${matchupTeam(g.home, logo)}</div>`;
+}
+
+/* Logos back on the Week Board's header (Stage 17), 20px beside each team --
+   the size the Stage 8 restyle set for their return. Decorative, alt="",
+   because the abbreviation beside each logo is the name, and a screen reader
+   would otherwise read every team twice. onerror hides a logo ESPN will not
+   serve and leaves the abbreviation: the same fallback as every other logo
+   here, and the reason the logos are hot-linked rather than copied into the
+   repository (CLAUDE.md Stage 12). My Picks' quiet header stays text: its
+   pick buttons already carry the logos. */
+function matchupTeam(team, withLogo){
+  return withLogo
+    ? `<span class="matchup-team"><img class="matchup-logo" src="${teamLogo(team)}" alt="" loading="lazy" onerror="this.style.display='none'">${team}</span>`
+    : team;
 }
 
 /* ---------- Kickoff order ----------
