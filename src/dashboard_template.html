@@ -1469,7 +1469,7 @@
   .bnav-more-item.active svg{color:var(--accent);}
 
   /* ---------- Breakpoints ----------
-     Four, each named for what changes at it rather than for a device:
+     Five, each named for what changes at it rather than for a device:
        1180px  the Power Ratings table drops the full team names while the
                sidebar is still up (the abbreviation stays). In the webfont
                the names stop fitting at about 1155; 1180 leaves room for
@@ -1479,6 +1479,9 @@
                and the ratings table clipped behind its scroller even
                without the full names. The toast lift further up keys on
                this same width.
+        767px  Model Lab's experiment log turns its rows into cards (Stage
+               18). Its three columns of prose first fit side by side at
+               655px, so 640 would leave them scrolling sideways.
         640px  components stack (Team Deep-Dive game rows, changelog).
         400px  the small-phone tightening below.
      Measured by rendering, not by arithmetic -- the range is in the Stage 10
