@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_disclosure_aria.py",
+  "cases": [
+    {
+      "id": "why-toggle-loses-its-state",
+      "why": "the numbers button stops saying it is a disclosure, so a screen reader hears a button with no open or closed state (the 2026-09-28 audit)",
+      "find": "data-why=\"${idSafe}\" aria-expanded=\"false\" aria-controls=\"why-${idSafe}\">",
+      "replace": "data-why=\"${idSafe}\">",
+      "expect_caught_by": "test_each_button_starts_closed_and_names_its_panel"
+    },
+    {
+      "id": "context-toggle-names-the-wrong-panel",
+      "why": "aria-controls points at an id no panel has, so assistive technology cannot find what the button opens",
+      "find": "aria-controls=\"flag-${idSafe}\"",
+      "replace": "aria-controls=\"context-${idSafe}\"",
+      "expect_caught_by": "test_each_button_starts_closed_and_names_its_panel"
+    },
+    {
+      "id": "context-toggle-state-never-updates",
+      "why": "the context panel opens but aria-expanded stays false, so the button announces closed while the notes are showing",
+      "find": "      btn.setAttribute('aria-expanded', note.classList.toggle('open') ? 'true' : 'false');",
+      "replace": "      note.classList.toggle('open');",
+      "expect_caught_by": "test_each_click_sets_the_state_from_the_panel"
+    }
+  ]
+}
