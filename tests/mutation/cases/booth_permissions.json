@@ -23,6 +23,21 @@
       "find": "          github_token: ${{ secrets.GITHUB_TOKEN }}\n          prompt: |\n            ${{ steps.prompt.outputs.text }}",
       "replace": "          prompt: |\n            ${{ steps.prompt.outputs.text }}",
       "expect_caught_by": "test_every_model_step_is_handed_the_workflow_token"
+    },
+    {
+      "id": "booth-audit-workflow-gains-contents-write",
+      "why": "the audit workflow's own token gets write access to the code, so handing Booth GITHUB_TOKEN stops meaning Booth cannot push",
+      "find": "\npermissions:\n  contents: read\n",
+      "replace": "\npermissions:\n  contents: write\n",
+      "expect_caught_by": "test_the_audit_workflow_grants_contents_read_only"
+    },
+    {
+      "id": "booth-regression-drops-out-of-the-scan",
+      "target": ".github/workflows/booth-regression.yml",
+      "why": "the regression workflow reaches the action by another spelling, so the scan no longer lists it and every guard in this file silently stops covering it",
+      "find": "        uses: anthropics/claude-code-action@v1",
+      "replace": "        uses: Anthropics/Claude-Code-Action@v1",
+      "expect_caught_by": "test_the_scan_finds_both_booth_workflows"
     }
   ]
 }
