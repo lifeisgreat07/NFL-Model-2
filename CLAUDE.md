@@ -1514,6 +1514,121 @@ for every chart; and the template split, only if the template passes 7,000
 lines, with a build that inlines the parts back into one file and a test that
 the built page is byte-identical before and after.
 
+## Stages 23 to 29: the 2026-09-28 audit (planned 2026-09-28)
+
+From an outside audit (Fable 5.1) of `main` at `a89a6ef`. Every finding was
+checked against the code before it became an item; the verdict table (what was
+CONFIRMED and how, what was WRONG) and the audit's own text are in the session
+archive on markys (audits). **Mark approved this plan 2026-09-28.** He agreed
+with every pushback below, and said he is willing to weaken the methodology
+where that makes the project stronger overall -- so the items marked "discuss"
+are NOT refused, they are discussed with him when reached. One item, one PR, as
+always; each numbered item below is one PR.
+
+**Corrections to the audit, so they are not re-litigated:**
+- Every real Booth audit comment is posted by `claude[bot]` (the Claude app),
+  not `github-actions[bot]`. A collector filter on `github-actions[bot]` would
+  drop every audit.
+- Post-lock lines are NOT lost: the weekend refresh saves the latest
+  `spread_line` for every locked, ungraded week (Friday, Sunday, Monday).
+- Booth already runs each PR's scoped mutation cases in CI; only the full
+  corpus never runs there.
+- `OVERFLOW_PAGES` also OMITS `changelog`, so the More button is not
+  highlighted on What's Changed -- a live bug the audit filed as hygiene.
+
+**Order: 23 now; 24's skipped-week marker and deploy gate before a lock is
+missed; 25 in the gaps; 26 before Stage 20's testers; 21 when week 5 lands;
+27 as filler; 28 after the regular season (beside line movement); 29 last,
+then 22.**
+
+### Stage 23 - Page security and Booth's read-only claim
+1. One `safe_json()` for every JSON fill in the generator, so no string can
+   close the page's script element; an injection test over the built page.
+2. The agent-log collector keeps only comments by the Booth bot account
+   (waits on item 5, because changing Booth's token changes the author).
+3. Validate each `implicates` entry and the verdict `head` in the collector.
+4. Escape the Power Ratings search text and the card context notes.
+5. Booth's token. Mark checks what the Claude GitHub App may do on the repo.
+   Then either run Booth on `GITHUB_TOKEN` and drop `id-token: write`, or
+   correct README, VERIFICATION.md and the workflow comment. Any tool
+   allowlist must keep pip, node and npx: Booth renders pages.
+
+### Stage 24 - Weekly pipeline resilience and CI coverage
+1. Pages builds after a failed weekly run (not only a successful one) and
+   lets `src/check_build.py` decide. The job still fails and still opens its
+   issue (Stage 4's design).
+2. A skipped-week marker that `determine_next_week` counts and the build
+   ignores, so one missed lock does not stall every later week; first tests
+   for `determine_next_week`.
+3. A week input on the weekly workflow's manual run.
+4. Never save an empty week.
+5. The test workflow runs on push to `main` and on every path, installs the
+   pinned dev requirements, and installs node.
+6. One concurrency group shared by the weekly and weekend runs.
+7. `timeout-minutes` on the seven workflows without one.
+8. Write-once JSON written atomically (tmp file then replace).
+9. First tests for grading and for the drift z-test.
+
+### Stage 25 - Small correctness fixes
+1. A tie is graded as a tie: no winner, no correct/wrong.
+2. README's holdout sentence says what the weekly refit does, held by the
+   README test.
+3. The QB columns become required schedule columns, with a warning.
+4. The More button's page list: the five real More pages.
+5. One HTML escaper in the template; one spelling of Offense and Defense.
+6. Methodology: how the live market probability is computed, and that the
+   live pick reads Thursday's line (docs only).
+7. `.python-version`.
+8. Discuss: `encoding='utf-8'` on the generator's reads and writes
+   (`docs/context.md` lists it as known and not fixed).
+
+### Stage 26 - What a visitor sees (before Stage 20)
+1. A final but ungraded card stops saying "to win" and shows a neutral
+   provisional result -- without bringing back "graded on Tuesday", which Mark
+   removed on 2026-09-28.
+2. A page change sets the title, moves focus and marks `aria-current`.
+3. Phone: an h1, the theme toggle and the provenance line, decided from
+   rendered side-by-sides.
+4. Chart text readable on a phone (render first; the audit's 4-6px is
+   arithmetic).
+5. Team rows and week rows link to their routes. The bottom nav stays as
+   Stage 13 set it unless Mark reopens it.
+6. to 9. `aria-expanded` on the two disclosure toggles; `scope` on table
+   headers; the trend and calibration charts labelled or hidden; one
+   chip-state convention (four PRs).
+10. The reliability points as one focusable group.
+11. The built page loses the agent log's unused `audits`, its JSON
+    indentation and its comments; the byte budget is then set from a fresh
+    measurement with headroom.
+
+### Stage 27 - Supply chain and guards in CI
+1. SHA-pin the Claude Code action and the auto-commit action, then checkout
+   and setup-python.
+2. A nightly mutation slice chosen by a date seed, CAUGHT counts in the run
+   summary.
+3. ruff with pyflakes rules only, after one run to see what it finds.
+4. Discuss: Dependabot (it opens several PRs at once, each audited).
+
+### Stage 28 - After the forward test (after the regular season)
+Discuss each before starting. Splitting `weekly_update.main`; an offline
+synthetic two-season fixture; one model spec shared by the live pipeline and
+the backtest (not the research scripts, which are the record of registered
+experiments); a registered experiment on regularisation and feature scaling;
+a registered question on a fitted market forecast against the hand-picked
+curve; drift on log loss (reopens a recorded decision); playoff games out of
+the season simulation.
+
+### Stage 29 - Front door (last)
+One product name and a favicon (Mark picks); a LICENSE (Mark picks); README
+"what is unusual here" and a correct "Running the tests"; the Website field
+and version tags; the audit-log collector off every push; a short
+CONTRIBUTING and PR template; the noreply email for future commits (no
+history rewrite); CLAUDE.md split into rules plus traps and history.
+
+**Not planned (Mark agreed):** packaging `src/` into subfolders, converting
+`print` to logging, routing owner-only dispatch inputs through `env:`, and
+scrubbing markys from this file.
+
 ## Ending a session
 
 Run this every time, before the session closes:

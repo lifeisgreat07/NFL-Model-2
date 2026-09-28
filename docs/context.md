@@ -40,8 +40,12 @@ logos (`35cfb6d`, docs only). Details: `memory/2026-09-28.md`.
 
 ## Queued, in order
 
-1. **Stages 20 to 22**: 20 needs five real testers; 21 waits for week 5; 22 comes from 20.
-2. **Line movement and the closing-line backtest**: not before the 2026 regular season ends.
+1. **Stages 23 to 29, from the 2026-09-28 audit** (approved by Mark the same
+   day; items and order in CLAUDE.md). Stage 23 first, starting with its
+   item 1 (one escaping helper for every JSON fill).
+2. **Stages 20 to 22**: 20 needs five real testers and comes after Stage 26;
+   21 waits for week 5; 22 comes from 20.
+3. **Line movement and the closing-line backtest**: not before the 2026 regular season ends, beside Stage 28.
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict. Describe a
