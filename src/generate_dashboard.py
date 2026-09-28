@@ -41,6 +41,7 @@ DIST_DIR = ROOT / 'dist'
 RESULTS_DIR = ROOT / 'results'
 STATUS_DIR = DATA_DIR / 'game_status'
 NEWS_DIR = DATA_DIR / 'team_news'
+TV_DIR = DATA_DIR / 'tv'
 TEMPLATE_PATH = ROOT / 'src' / 'dashboard_template.html'
 OUTPUT_PATH = ROOT / 'index.html'  # served as the default page by GitHub Pages
 
@@ -174,6 +175,26 @@ def load_game_status(status_dir=STATUS_DIR):
     return out
 
 
+def load_tv(tv_dir=TV_DIR):
+    """{(season, week): {(home, away): record}} from src/tv_channels.py's
+    week files (Stage 15). `exceptions.json` shares the folder and is not a
+    week; the `*_week*.json` pattern does not match it. A game whose channel failed a
+    check has an empty `networks` list in its record, and the card then
+    shows no channel: nothing here second-guesses the checks."""
+    out = {}
+    if not tv_dir.exists():
+        return out
+    for f in tv_dir.glob('*_week*.json'):
+        parsed = parse_week_stem(f.stem)
+        if parsed is None:
+            continue
+        with open(f, encoding='utf-8') as tf:
+            body = json.load(tf)
+        out[parsed] = {(r['home'], r['away']): r for r in body.get('games', [])
+                       if r.get('home') and r.get('away')}
+    return out
+
+
 def html_escape(text):
     """Text into markup. Quotes are left alone: nothing here goes into an attribute."""
     return _escape(text, quote=False)
@@ -263,12 +284,13 @@ def week_news(preds, graded, news):
     return news
 
 
-def build_games_js(preds, graded_lookup_by_key, status_by_key=None):
+def build_games_js(preds, graded_lookup_by_key, status_by_key=None, tv_by_key=None):
     """Convert one week's saved predictions into the dashboard's game-card
     JS format, joining in graded results (actual outcome, correctness) if
-    that week has already been graded, and the weekend refresh's status and
-    score if a snapshot exists."""
+    that week has already been graded, the weekend refresh's status and
+    score if a snapshot exists, and the checked TV channel if one was read."""
     status_by_key = status_by_key or {}
+    tv_by_key = tv_by_key or {}
     games = []
     for p in preds:
         model_a = p.get('model_a_home_win_prob')
@@ -278,6 +300,10 @@ def build_games_js(preds, graded_lookup_by_key, status_by_key=None):
         key = (p['home'], p['away'])
         graded = graded_lookup_by_key.get(key)
         status = status_by_key.get(key) or {}
+        tv = tv_by_key.get(key) or {}
+        # ONE network, the first the record shows; an empty list means the
+        # channel failed a check and is held back (src/tv_channels.py).
+        network = (tv.get('networks') or [None])[0]
 
         notes = p.get('context_notes') or []
         # Backward compat with predictions saved before this change (single qb_note field)
@@ -318,6 +344,17 @@ def build_games_js(preds, graded_lookup_by_key, status_by_key=None):
             'status': status.get('status'),
             'away_score': status.get('away_score'),
             'home_score': status.get('home_score'),
+            # Stage 17: where to watch, and whether that channel is regional
+            # (Sunday-afternoon CBS and FOX games air in some markets only;
+            # the page says so in one line rather than on every card).
+            'tv': network,
+            'tv_regional': bool(network) and tv.get('territory') == 'REGIONAL',
+            # The quarterbacks the pick was made with (saved since v2.5, so
+            # None for every week locked before it) and why each was chosen:
+            # 'override', 'announced', or 'last_game' when no starter had
+            # been listed and the pick fell back to last game's.
+            'away_qb': p.get('away_qb'), 'home_qb': p.get('home_qb'),
+            'away_qb_basis': p.get('away_qb_basis'), 'home_qb_basis': p.get('home_qb_basis'),
         })
     return games
 
@@ -591,6 +628,7 @@ def main():
     all_graded = load_all_graded()
     all_status = load_game_status()
     all_news = load_team_news()
+    all_tv = load_tv()
 
     weeks_js = {}
     for key, preds in sorted(all_preds.items()):
@@ -599,7 +637,7 @@ def main():
         graded_lookup = {(g['home'], g['away']): g for g in graded}
         weeks_js[f"{season}_week{week}"] = {
             'season': season, 'week': week,
-            'games': build_games_js(preds, graded_lookup, all_status.get(key)),
+            'games': build_games_js(preds, graded_lookup, all_status.get(key), all_tv.get(key)),
         }
         news = week_news(preds, graded, all_news.get(key))
         if news is not None:
