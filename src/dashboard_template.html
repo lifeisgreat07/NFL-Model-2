@@ -393,18 +393,20 @@
      keyboard and says whether it is open with no script. 24px tall like
      every other text control (WCAG 2.5.8). */
   .onboarding-more{margin:0 0 var(--s3);}
-  .onboarding-more summary{display:inline-flex; align-items:center; min-height:24px; cursor:pointer;
+  /* Model Lab's reliability diagram uses the same disclosure (Stage 18). */
+  .rel-how{margin:var(--s3) 0;}
+  .onboarding-more summary, .rel-how summary{display:inline-flex; align-items:center; min-height:24px; cursor:pointer;
     font-size:var(--fs-13); font-weight:600; color:var(--text); text-decoration:underline; text-underline-offset:3px;}
   /* The [ and ] keys named in "How to read this" (Stage 17). The page's own
      face, not the browser's monospace default, so the text keeps the webfont. */
   .onboarding-more kbd{font-family:inherit; font-size:.95em; padding:0 var(--s1);
     border:1px solid var(--border-strong); border-radius:var(--r-sm);}
-  .onboarding-more summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:var(--r-sm);}
+  .onboarding-more summary:focus-visible, .rel-how summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:var(--r-sm);}
   /* inline-flex drops the built-in triangle, so the state is drawn the way
      the page's other text toggles draw it: "+" closed, "−" open. */
-  .onboarding-more summary::-webkit-details-marker{display:none;}
-  .onboarding-more summary::before{content:'+\00a0';}
-  .onboarding-more[open] summary::before{content:'\2212\00a0';}
+  .onboarding-more summary::-webkit-details-marker, .rel-how summary::-webkit-details-marker{display:none;}
+  .onboarding-more summary::before, .rel-how summary::before{content:'+\00a0';}
+  .onboarding-more[open] summary::before, .rel-how[open] summary::before{content:'\2212\00a0';}
   .onboarding-more ul{margin-top:var(--s2);}
   /* On a phone the banner sits among the cards (placeOrientation). */
   .game-grid > .onboarding-banner{grid-column:1 / -1; margin:0;}
@@ -1926,11 +1928,6 @@ __FONT_FACES__
         <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b id="modellab-version" style="color:var(--text)">&mdash;</b>.</div>
       </div>
     </div>
-    <!-- Filled by buildReliabilityDiagram(). Empty when data/calibration.json
-         is absent, which is the correct state for a checkout that has never
-         run src/calibration.py -- the section omits itself rather than
-         rendering an empty axis. -->
-    <div id="reliability-diagram"></div>
     <!-- Filled by wireLabFilters() from the rows below, so its counts are the
          table's own. Stays hidden without JavaScript, when a filter could not
          work (Stage 18). -->
@@ -1948,6 +1945,14 @@ __FONT_FACES__
         </tbody>
       </table>
     </div>
+    <!-- Filled by buildReliabilityDiagram(). Empty when data/calibration.json
+         is absent, which is the correct state for a checkout that has never
+         run src/calibration.py -- the section omits itself rather than
+         rendering an empty axis. Below the experiments since Stage 18: the
+         page opened on the diagram and its paragraphs of explanation before
+         the first experiment. The explanation is now behind "How to read
+         this"; the findings stay in view. -->
+    <div id="reliability-diagram"></div>
     <!-- Model Lab used to carry its own hand-written version timeline, a
          second copy of config.VERSION_HISTORY that nothing kept in step: it
          would have gone on marking v2.4 "Current." after the model moved on,
@@ -5202,7 +5207,11 @@ function buildReliabilityDiagram(){
 
   return `<div class="method-block">
     <h3>Reliability Diagram &mdash; Are the Probabilities Honest?</h3>
-    <p style="margin-bottom:var(--s4);">Accuracy only asks whether we picked the right side. This asks something harder: when a model says <b style="color:var(--text)">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games; the vertical bar is its 95% Wilson interval. The dashed diagonal is perfect calibration &mdash; and a mark whose bar crosses that line is <i>consistent</i> with being perfectly calibrated, however far the mark itself sits from it.</p>
+    <p style="margin-bottom:var(--s3);">When a model says <b style="color:var(--text)">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games, with its 95% interval.</p>
+    <details class="rel-how">
+      <summary>How to read this</summary>
+      <p style="margin:var(--s2) 0 var(--s4);">Accuracy only asks whether we picked the right side; this asks something harder. The vertical bar on each mark is its 95% Wilson interval. The dashed diagonal is perfect calibration &mdash; and a mark whose bar crosses that line is <i>consistent</i> with being perfectly calibrated, however far the mark itself sits from it.</p>
+    </details>
     <div class="rel-filters">${filters}</div>
     <div class="rel-wrap">
       <div class="rel-plot">
@@ -5223,9 +5232,12 @@ function buildReliabilityDiagram(){
           <span class="v" style="font-size:var(--fs-11); letter-spacing:.06em; text-transform:uppercase;" title="How far the bins sit from the base rate. Higher is better; 0 means the model says nothing.">Resol. &uarr;</span>
         </div>
         ${statRows}
-        <p style="font-size:var(--fs-12); margin-top:var(--s3);">Brier = reliability &minus; resolution + uncertainty (Murphy, 1973). <b style="color:var(--text)">Reliability</b> is miscalibration: lower is better. <b style="color:var(--text)">Resolution</b> is how far the model dares to move away from the base rate: higher is better. A model that always predicts the ${base}% base rate scores a perfect 0 on reliability and a useless 0 on resolution &mdash; which is exactly why accuracy alone can't tell those two apart. Uncertainty (${calibration.models.model_a ? calibration.models.model_a.decomposition.uncertainty.toFixed(6) : '--'}) belongs to the games, not to any model.</p>
+        <details class="rel-how">
+          <summary>What these numbers mean</summary>
+          <p style="font-size:var(--fs-12); margin-top:var(--s3);">Brier = reliability &minus; resolution + uncertainty (Murphy, 1973). <b style="color:var(--text)">Reliability</b> is miscalibration: lower is better. <b style="color:var(--text)">Resolution</b> is how far the model dares to move away from the base rate: higher is better. A model that always predicts the ${base}% base rate scores a perfect 0 on reliability and a useless 0 on resolution &mdash; which is exactly why accuracy alone can't tell those two apart. Uncertainty (${calibration.models.model_a ? calibration.models.model_a.decomposition.uncertainty.toFixed(6) : '--'}) belongs to the games, not to any model.</p>
+        </details>
         <p style="font-size:var(--fs-12); margin-top:var(--s3);">Model B's numbers look better than the market's on resolution and worse on reliability, and until 2026-09-05 this panel called that "a lead, not a claim" because nothing had tested it. It has now been tested, with a 5,000-resample paired bootstrap, and <b style="color:var(--text)">the lead did not survive</b>: every one of the four gaps against the market has a 95% interval that includes zero. Brier &minus;0.000622, CI [&minus;0.002395, +0.001141]. Resolution +0.001141, CI [&minus;0.002196, +0.004597]. At 1,087 games those differences are indistinguishable from noise, so the honest reading of this chart is that <b style="color:var(--text)">Model B and the market are calibrated about equally well</b> &mdash; not that one edges the other.</p>
-        <p style="font-size:var(--fs-12); margin-top:var(--s3);">The same test did find two things that hold. Against <b style="color:var(--text)">Model A</b>, Model B is genuinely better &mdash; Brier &minus;0.019133, CI [&minus;0.025838, &minus;0.012687], and resolution +0.016814, CI [+0.008990, +0.024819] &mdash; which is the first version of "the spread helps" that rests on proper scoring rules rather than on accuracy, a metric this project has already shown moves by a whole game between platforms. And the market genuinely beats Model A: Brier +0.018511, CI [+0.011496, +0.025553]. See <b style="color:var(--text)">Model Lab</b> for all three, and <code>src/bootstrap_brier_gap.py</code> for the method.</p>
+        <p style="font-size:var(--fs-12); margin-top:var(--s3);">The same test did find two things that hold. Against <b style="color:var(--text)">Model A</b>, Model B is genuinely better &mdash; Brier &minus;0.019133, CI [&minus;0.025838, &minus;0.012687], and resolution +0.016814, CI [+0.008990, +0.024819] &mdash; which is the first version of "the spread helps" that rests on proper scoring rules rather than on accuracy, a metric this project has already shown moves by a whole game between platforms. And the market genuinely beats Model A: Brier +0.018511, CI [+0.011496, +0.025553]. See <b style="color:var(--text)">the experiment log above</b> for all three, and <code>src/bootstrap_brier_gap.py</code> for the method.</p>
         <details class="rel-table" style="margin-top:var(--s3);">
           <summary>Show the numbers as a table</summary>
           <div class="table-wrap" style="margin-top:var(--s2);"><table class="metrics-table">
