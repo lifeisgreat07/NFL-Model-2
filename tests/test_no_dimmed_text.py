@@ -34,7 +34,6 @@ NOT_TEXT = {
     '.btn-chip[aria-pressed="false"]:hover svg': 'the same marker on hover',
     '.score-coin': "the scoreboard's 50% line",
     '.tele-bar-seg': 'an empty bar segment',
-    '.tele-marker': "the telestrator's midline",
 }
 # Rules that dimmed text before Stage 12 and must not again.
 # (.foot-freshness was one too; Stage 13 removed the rule when the "Updated"
