@@ -76,6 +76,22 @@ jobs:
           python src/team_news.py --pending 2>&1 | tee team-news.log
           { echo '### Team news'; echo '```'; cat team-news.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
+      # CATCH UP WITH MAIN BEFORE COMMITTING (2026-09-27). The first scheduled
+      # weekend refresh read everything correctly and then lost it: a pull
+      # request merged into main in the minute between this job's checkout and
+      # its push, the push was refused as non-fast-forward, and nothing was
+      # saved (run 36360495917, issue #145). The scheduler starts these jobs
+      # hours late, so "nobody merges at 21:47" protects nothing. This leaves a
+      # window of seconds, not the whole job. --autostash carries this run's
+      # uncommitted data files across the rebase, and stashing makes a commit,
+      # so the bot's identity is set for this one command.
+      - name: Catch up with main
+        shell: bash
+        run: |
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              pull --rebase --autostash origin main
+
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:

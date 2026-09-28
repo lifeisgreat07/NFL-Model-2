@@ -36,6 +36,30 @@
       "find": "            if json.load(f).get('games') == games:\n                return False\n",
       "replace": "            json.load(f)\n",
       "expect_caught_by": "test_an_unchanged_snapshot_is_not_rewritten"
+    },
+    {
+      "id": "refresh-pushes-without-catching-up",
+      "target": ".github/workflows/weekend-refresh.yml",
+      "why": "the refresh commits straight onto the commit it checked out, so any merge during the run makes its push fail and the snapshot is lost (run 36360495917).",
+      "find": "      - name: Catch up with main\n        shell: bash\n",
+      "replace": "      - name: Tidy the tree\n        shell: bash\n",
+      "expect_caught_by": "test_the_commit_catches_up_with_main_first"
+    },
+    {
+      "id": "lock-run-catch-up-refuses-dirty-tree",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the weekly run's catch-up rebases without --autostash, which refuses a tree holding this run's new picks, so the lock run fails before it saves them.",
+      "find": "              pull --rebase --autostash origin main\n",
+      "replace": "              pull --rebase origin main\n",
+      "expect_caught_by": "test_the_commit_catches_up_with_main_first"
+    },
+    {
+      "id": "lock-run-catch-up-skipped-after-a-failure",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "a failed summary step skips the catch-up, so the picks commit meets the old race again on the one run that must save them.",
+      "find": "      - name: Catch up with main\n        if: ${{ !cancelled() }}\n",
+      "replace": "      - name: Catch up with main\n",
+      "expect_caught_by": "test_the_lock_run_catches_up_even_after_a_failed_step"
     }
   ]
 }
