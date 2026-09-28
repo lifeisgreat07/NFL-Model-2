@@ -1,0 +1,13 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_css_tokens_defined.py",
+  "cases": [
+    {
+      "id": "css-token-undeclared-comes-back",
+      "why": "the status line names --text-1 again, a token declared nowhere, so its colour rule is dropped and it silently inherits.",
+      "find": "    color:var(--text); letter-spacing:.03em; margin-bottom:2px;}",
+      "replace": "    color:var(--text-1); letter-spacing:.03em; margin-bottom:2px;}",
+      "expect_caught_by": "test_every_token_the_template_uses_is_declared"
+    }
+  ]
+}
