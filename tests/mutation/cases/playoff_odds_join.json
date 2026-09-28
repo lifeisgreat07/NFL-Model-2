@@ -54,8 +54,8 @@
     {
       "id": "generator-still-writes-the-old-placeholder",
       "why": "the generator and the template disagree on the placeholder name, so the substitution never fires and the literal __PLAYOFF_META_JSON__ string ships to the reader",
-      "find": "    html = html.replace('__PLAYOFF_META_JSON__', json.dumps(",
-      "replace": "    html = html.replace('__PLAYOFF_ODDS_JSON__', json.dumps(",
+      "find": "    html = html.replace('__PLAYOFF_META_JSON__', safe_json(",
+      "replace": "    html = html.replace('__PLAYOFF_ODDS_JSON__', safe_json(",
       "expect_caught_by": "test_the_old_whole_file_placeholder_is_gone_from_both_sides"
     }
   ]
