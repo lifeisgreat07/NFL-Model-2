@@ -29,6 +29,13 @@
       "find": "        uses: actions/setup-node@v4",
       "replace": "        uses: actions/setup-python@v5",
       "expect_caught_by": "test_it_installs_node"
+    },
+    {
+      "id": "run-tests-loses-its-timeout",
+      "why": "the job has no timeout-minutes, so a hung test holds a runner for GitHub's six-hour default instead of failing in twenty minutes",
+      "find": "    timeout-minutes: 20",
+      "replace": "    # no timeout",
+      "expect_caught_by": "test_it_has_a_timeout"
     }
   ]
 }
