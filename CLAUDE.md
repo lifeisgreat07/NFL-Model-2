@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **3495 passing** (none skipped) — `python -m pytest -q` on `main` at
-`e95d312` (#159 merged), with HEAD level with origin, which is the order that makes the
+Suite: **3623 passing** (none skipped) — `python -m pytest -q` on `main` at
+`de218ad` (#162 merged), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -1434,27 +1434,35 @@ interval glyph first in each result; cards on a phone; the reliability diagram
 below the experiments with "How to read this". Every figure held to its source
 file by a test.
 
-### Stage 19 - Team pages  <- IN PROGRESS (#157 to #159 merged)
+### Stage 19 - Team pages  <- COMPLETE (2026-09-28, #157 to #162)
 
 **Shipped:** #157 Team Deep-Dive opens on Power Ratings' rank 1
 (`teamDiveDefault()`), a `#team/` link still wins; #158 headings on its games
 list (aria-hidden; each row names its numbers through `.visually-hidden`), and
 phone rows put the result on the opponent's line; #159 the accuracy trend's
-week labels and end-labels placed together by `spreadLabels()`.
-**Decided by Mark, 2026-09-28:** Season Accuracy's score row uses plain
-wording, with no exception to `tests/test_plain_language.py` (the technical
-name lives on Methodology); Power Ratings' arrow follows RANK once the rank
-change is a number; on phones Team Deep-Dive puts offence and defence on a
-second small line, and defence carries "lower is better" (it is points
-allowed).
+week labels and end-labels placed together by `spreadLabels()`; #160 "How
+sure, and how right" on Season Accuracy; #161 Power Ratings' rank change and
+biggest-moves line; #162 offense and defense beside net on Team Deep-Dive.
 
-
-Power Ratings: a "biggest movers" line and the rank change as a number.
-Team Deep-Dive: offence and defence over time beside net (the generator carries
-net only today, `{label, net}` -- a data-file change, not a model change),
-headings on its games table, and a sensible default team (the linked one, else
-the top-rated) instead of Arizona. Season Accuracy: week labels on the trend
-chart, separated end labels, and a log-loss row once 50 games are graded.
+**Decisions, so they are not re-opened:**
+- **Season Accuracy's score is log loss in plain words** (Mark): no exception
+  to `tests/test_plain_language.py`; Methodology's glossary names the term.
+  It is a block under the scoreboard, not a row in it, so the "picked the
+  winner" verdict keeps one meaning. Absent below 50 graded games
+  (`FORECAST_SCORE_MIN_GAMES`), paired over the games all three forecasts
+  priced, probabilities clamped away from 0 and 1.
+- **Power Ratings' arrow follows RANK** (Mark): places moved since the
+  previous weekly update, from `previous_ranks()` over the season's live
+  history. It refuses (shows nothing) with one week, a partial previous
+  week, or a latest week that is not the ratings snapshot, and
+  `test_the_committed_ratings_are_the_latest_history_week` holds that
+  premise. `with_rank_change()` is a separate step because
+  `tests/test_playoff_odds_column.py` reads the `build_teams_js` call as
+  written.
+- **Team Deep-Dive's offense and defense** ride on every timeline point;
+  one note above the rows says net is offense minus defense and that for
+  defense lower is better (Mark). On a phone the pair takes a second line
+  and the bar gives up width so net stays on the first.
 
 ### Stage 20 - Testing with real people
 

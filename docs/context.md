@@ -4,25 +4,24 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-28, morning session (Stage 19 answers in; #148 explained)
+Last updated: 2026-09-28, morning session (Stage 19 complete; Stage 6 registration open as #163)
 
 ---
 
 ## Right now
 
-**Suite:** 3495 passing, none skipped — `python -m pytest -q` on `main` at
-`e95d312` (#159 merged), HEAD level with origin.
+**Suite:** 3623 passing, none skipped — `python -m pytest -q` on `main` at
+`de218ad` (#162 merged), HEAD level with origin.
 
-**Next action: build the Season Accuracy score row** (Mark answered all
-three Stage 19 questions on 2026-09-28: plain wording, the arrow follows
-rank, offence/defence on a second small line on phones with "lower is
-better" for defence). Then Power Ratings, then Team Deep-Dive, then the
-Stage 6 registration, which Mark leaves to Scout's judgement but wants to
-see before it is committed.
+**Next action: merge #163 on Booth's SAFE TO MERGE, then run R1** (the
+referee screen), as its own PR. That PR must also teach `recompute()` in
+`tests/test_stage6_registry.py` R1's correlation rule: today it derives a
+screen's label from N1's error-difference fields.
 
-**Done overnight:** #148 to #159 — Stage 17 complete, Stage 18 complete,
-and Stage 19's default team, games-list headings and accuracy-trend labels.
-Details and traps: `memory/2026-09-28.md`.
+**Done this morning:** #160 "How sure, and how right" on Season Accuracy,
+#161 Power Ratings' rank change and biggest moves, #162 offense and defense
+on Team Deep-Dive — Stage 19 complete. #163 registers R1, R2, A2 and P1.
+Details: `memory/2026-09-28.md`.
 
 **#148 is explained:** the overnight session merged it itself. Desktop
 Commander's own call history on markys (in the user profile, not the repo)
@@ -35,10 +34,10 @@ confirmed it was not him.
 
 | What | State | Waiting on |
 |---|---|---|
-| Stage 19 score row on Season Accuracy | Being rebuilt: the overnight draft lived only in that session's sandbox and was lost | Nothing: plain wording, decided 2026-09-28 |
-| Stage 19 Power Ratings movers + rank change | Not started | Nothing: the arrow follows rank |
-| Stage 19 Team Deep-Dive offence/defence | Not started | Nothing: a second small line on phones, "lower is better" on defence |
-| Stage 6 referee crews and personnel | The overnight draft was lost with that sandbox; to be redrafted | Scout drafts, Mark sees it before the append-only registry entries are committed |
+| #163 Stage 6 referee registration | Open; suite 3623, 9 scoped mutations CAUGHT | Booth, then merge |
+| R1, the referee screen | Registered in #163, not run | #163 merged; the run is its own PR |
+| Season Accuracy's forecast score | Merged (#160) but not on the page yet | 50 graded games: after week 4 at the earliest |
+| README screenshots | Mark asked, 2026-09-28 | Stage 19 is done; Stage 6's R1 next, then replace them |
 | First run of the QB routine | Due Mon 2026-09-28 22:00 UTC | Check it opened a PR, or said in one line that none was needed |
 | First weekly summary | Due Tue 2026-09-29 11:00 UTC | Open the run's page and check the summary reads right |
 | Thursday lock run | Due Thu 2026-10-01 16:00 UTC | Check it started, locked before kickoff, and its push survived; week 4 is the first card with quarterback names and channels |
@@ -49,10 +48,9 @@ confirmed it was not him.
 
 ## Queued, in order
 
-1. **Stage 19** remaining, unblocked: the Season Accuracy score row, Power Ratings movers and rank change, Team Deep-Dive offence/defence.
-2. **The rest of Stage 6** (referee crews, personnel): redraft the registration, show Mark, commit it, then run R1.
-3. **README screenshots** (Mark, 2026-09-28): replace them once 1 and 2 have landed.
-4. **Stages 20 to 22**: 20 needs five real testers; 21 waits for week 5; 22 comes from 20.
+1. **Stage 6, referees**: merge #163, then run R1 as its own PR. R2 and A2 only if R1 passes; the stated expectation is that it fails.
+2. **README screenshots** (Mark, 2026-09-28): replace them once 1 has landed. Binary files cross the bridge base64-encoded with an MD5 check.
+3. **Stages 20 to 22**: 20 needs five real testers; 21 waits for week 5; 22 comes from 20.
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict. Don't merge
