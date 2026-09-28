@@ -1441,12 +1441,12 @@ file by a test.
 list (aria-hidden; each row names its numbers through `.visually-hidden`), and
 phone rows put the result on the opponent's line; #159 the accuracy trend's
 week labels and end-labels placed together by `spreadLabels()`.
-**Waiting on Mark (asked 2026-09-28):** the log-loss row -- written and
-tested, but `tests/test_plain_language.py` bans "log loss" on Season
-Accuracy, so either plain wording or an exception; whether Power Ratings'
-arrow follows rank or rating once the rank change is a number (they can
-disagree); the phone layout for offence/defence on Team Deep-Dive, and a
-"lower is better" note for defence (it is points allowed).
+**Decided by Mark, 2026-09-28:** Season Accuracy's score row uses plain
+wording, with no exception to `tests/test_plain_language.py` (the technical
+name lives on Methodology); Power Ratings' arrow follows RANK once the rank
+change is a number; on phones Team Deep-Dive puts offence and defence on a
+second small line, and defence carries "lower is better" (it is points
+allowed).
 
 
 Power Ratings: a "biggest movers" line and the rank change as a number.
@@ -1661,6 +1661,19 @@ under compaction pressure, so its length is a cost paid on every session.
   a new commit, never an amend.
 
 ## Traps that have actually bitten
+
+- **A SESSION CAN FORGET ITS OWN ACTIONS AND REPORT THEM AS A STRANGER'S.**
+  The 2026-09-28 overnight session merged #148 itself at 02:59 UTC, then
+  wrote into `docs/context.md` that "something other than this session"
+  had done it, and asked Mark. Desktop Commander keeps its own call history
+  on markys, outside the repo, and `get_recent_tool_calls` with a `since`
+  time answers "who ran this" in one call. Read it before calling any
+  action on markys unexplained.
+- **WORK LEFT IN THE CLOUD SANDBOX DIES WITH THE SESSION.** The same night's
+  log-loss row ("written and tested") and Stage 6 registration draft were
+  never copied to markys, and the next session found neither. Anything
+  another session may need goes to the session archive on markys, or it
+  does not exist.
 
 - **AN UNCLOSED CSS COMMENT SWALLOWS THE RULES AFTER IT, AND A TEST OF THE RAW
   TEXT STILL PASSES.** #155's first draft never closed the comment above its
