@@ -1,0 +1,27 @@
+{
+  "target": "src/weekly_update.py",
+  "tests": "tests/test_empty_week.py",
+  "cases": [
+    {
+      "id": "empty-week-saved-anyway",
+      "why": "an empty list passes the check, so a week whose every game was skipped is saved as [] for good and the season moves past it",
+      "find": "    if not predictions:\n        raise SystemExit(",
+      "replace": "    if predictions is None:\n        raise SystemExit(",
+      "expect_caught_by": "test_an_empty_week_fails_the_run"
+    },
+    {
+      "id": "empty-week-check-never-called",
+      "why": "main() stops calling the check, so it exists and guards nothing",
+      "find": "        refuse_an_empty_week(predictions, season, week)\n",
+      "replace": "",
+      "expect_caught_by": "test_main_checks_before_it_writes_and_only_when_it_writes"
+    },
+    {
+      "id": "empty-week-check-after-the-write",
+      "why": "the check moves after the write, so the empty file is already on disk, permanent, when the run fails",
+      "find": "        refuse_an_empty_week(predictions, season, week)\n        # Atomic: this file can never be overwritten, so a half-written one\n        # would be permanent (Stage 24).\n        write_json_atomic(out_path, predictions, indent=2)\n",
+      "replace": "        # Atomic: this file can never be overwritten, so a half-written one\n        # would be permanent (Stage 24).\n        write_json_atomic(out_path, predictions, indent=2)\n        refuse_an_empty_week(predictions, season, week)\n",
+      "expect_caught_by": "test_main_checks_before_it_writes_and_only_when_it_writes"
+    }
+  ]
+}
