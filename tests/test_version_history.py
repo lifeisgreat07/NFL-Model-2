@@ -138,9 +138,11 @@ def test_release_notes_are_escaped_before_they_reach_the_page():
     """This text comes out of a hand-edited Python file. An unescaped '<' in a
     release note would break the page that note is describing."""
     tpl = TEMPLATE.read_text(encoding='utf-8')
-    assert 'function clEscape(' in tpl, "the changelog escape helper is gone"
+    # The changelog's own clEscape() became the template's one escapeHtml()
+    # in Stage 25.
+    assert 'function escapeHtml(' in tpl, "the template's escape helper is gone"
     for field in ('version', 'date', 'headline', 'detail'):
-        assert f'clEscape(v.{field})' in tpl, (
+        assert f'escapeHtml(v.{field})' in tpl, (
             f"the changelog interpolates v.{field} without escaping it")
 
 

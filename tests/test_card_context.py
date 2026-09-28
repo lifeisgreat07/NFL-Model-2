@@ -44,7 +44,7 @@ def run(expr):
     if not NODE:
         pytest.skip('node not available')
     s = src()
-    js = ''.join(fn(s, f) for f in ('cardEsc', 'cardTvPill', 'boardTvNote', 'cardQbLine',
+    js = ''.join(fn(s, f) for f in ('escapeHtml', 'cardTvPill', 'boardTvNote', 'cardQbLine',
                                      'cardNewsTeam', 'cardNewsLine'))
     r = subprocess.run([NODE, '-e', js + f'\nprocess.stdout.write(JSON.stringify({expr}));'],
                        capture_output=True, encoding='utf-8')

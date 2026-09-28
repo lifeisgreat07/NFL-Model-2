@@ -3817,26 +3817,29 @@ function cardStatusLine(g){
    Once a game is final or graded, "where to watch" and "who is hurt" are
    history, so the channel and the news go; the quarterbacks stay, because
    they are part of the pick. */
-function cardEsc(s){
+/* The one HTML escaper. Until Stage 25 there were three identical
+   copies: this one under another name, one for What's Changed and
+   one local to renderTeamNews. */
+function escapeHtml(s){
   return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 }
 
 /* Two strings that reached innerHTML as written, until Stage 23 (the
    2026-09-28 audit): what a reader types into the Power Ratings search, and
    the context notes on a card, which come from sourced web reports. Each
-   now goes through cardEsc(), and each is a function of its own so
+   now goes through escapeHtml(), and each is a function of its own so
    tests/test_template_sinks.py can run it in node. */
 function ratingsNoMatchRow(q){
-  return `<tr><td colspan="7" style="text-align:center; padding:var(--s6); color:var(--text-2);">No teams match "${cardEsc(q)}"</td></tr>`;
+  return `<tr><td colspan="7" style="text-align:center; padding:var(--s6); color:var(--text-2);">No teams match "${escapeHtml(q)}"</td></tr>`;
 }
 
 function contextNotesHtml(notes){
-  return notes.map(n=>`<li style="margin-bottom:var(--s1);">${cardEsc(n)}</li>`).join('');
+  return notes.map(n=>`<li style="margin-bottom:var(--s1);">${escapeHtml(n)}</li>`).join('');
 }
 
 function cardTvPill(g){
   if(!g.tv || g.graded || g.status === 'final') return '';
-  return `<span class="tv-pill"><span class="visually-hidden">On TV: </span>${cardEsc(g.tv)}</span>`;
+  return `<span class="tv-pill"><span class="visually-hidden">On TV: </span>${escapeHtml(g.tv)}</span>`;
 }
 
 /* Sunday-afternoon CBS and FOX games are regional: nfl.com says so
@@ -3850,7 +3853,7 @@ function boardTvNote(games){
 function cardQbLine(g){
   if(!g.away_qb && !g.home_qb) return '';
   const side = (team, name, basis) => !name ? `${team} none on record`
-    : `${team} <b>${cardEsc(name)}</b>`
+    : `${team} <b>${escapeHtml(name)}</b>`
       + (basis === 'last_game' ? ' (assumed: last game&#39;s starter)' : '');
   return `Quarterbacks: ${side(g.away, g.away_qb, g.away_qb_basis)} · ${side(g.home, g.home_qb, g.home_qb_basis)}`;
 }
@@ -3880,7 +3883,7 @@ function cardNewsTeam(team, entry){
 function cardNewsLine(g, news){
   if(!news || !news.teams || g.graded || g.status === 'final') return '';
   const parts = [g.away, g.home].map(t => cardNewsTeam(t, news.teams[t])).filter(Boolean);
-  return parts.length ? `<b>Team news</b> ${parts.map(cardEsc).join(' · ')}` : '';
+  return parts.length ? `<b>Team news</b> ${parts.map(escapeHtml).join(' · ')}` : '';
 }
 
 function kickoffKey(g){
@@ -5791,7 +5794,6 @@ function teamNewsItems(entry, week, readAt){
 }
 
 function renderTeamNews(team){
-  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const key = newsWeekKey();
   const head = sub => `<div class="dive-news"><h3 class="dive-news-title">This week</h3>
     <div class="dive-news-sub">${sub}</div>`;
@@ -5803,12 +5805,12 @@ function renderTeamNews(team){
   const entry = w.news.teams[team];
   const game = (w.games || []).find(g => g.home === team || g.away === team);
   if(!entry || !game){
-    return head(`${esc(team)} have no game in week ${w.week}.`) + `</div>`;
+    return head(`${escapeHtml(team)} have no game in week ${w.week}.`) + `</div>`;
   }
-  const where = game.home === team ? `vs ${esc(game.away)}` : `@ ${esc(game.home)}`;
+  const where = game.home === team ? `vs ${escapeHtml(game.away)}` : `@ ${escapeHtml(game.home)}`;
   const rows = teamNewsItems(entry, w.week, w.news.read_at).map(it =>
-    `<li class="dive-news-item"><span class="dive-news-text">${esc(it.text)}</span>
-      <span class="dive-news-src">${esc(it.source)}</span></li>`).join('');
+    `<li class="dive-news-item"><span class="dive-news-text">${escapeHtml(it.text)}</span>
+      <span class="dive-news-src">${escapeHtml(it.source)}</span></li>`).join('');
   return head(`Week ${w.week}, ${where}. Starters only; backups are left out to keep this short.`)
     + `<div class="table-wrap"><ul class="dive-news-list">${rows}</ul></div></div>`;
 }
@@ -5872,7 +5874,7 @@ function teamGamesFor(team){
   return out;
 }
 
-const WHY_LABELS = {off_matchup: 'Offence', def_matchup: 'Defence',
+const WHY_LABELS = {off_matchup: 'Offense', def_matchup: 'Defense',
                     qb_matchup: 'QB', qb_change: 'QB change'};
 
 function renderTeamGames(team){
@@ -5966,12 +5968,9 @@ function wireTeamGameToggles(){
 renderTeamDive();
 
 /* ---------- Changelog ---------- */
-// Escaped rather than interpolated raw: this text comes out of config.py,
+// Escaped (escapeHtml) rather than interpolated raw: this text comes out of config.py,
 // which is a source file people edit by hand, and an unescaped '<' in a
 // release note would silently break the page it is describing.
-function clEscape(s){
-  return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-}
 
 /* ---------- Booth's audit log (Checking the AI's work) ---------- */
 function renderAgentLog(){
@@ -6043,13 +6042,13 @@ function renderChangelog(){
     const isCurrent = v.version === modelVersion;
     return `<div class="cl-entry">
       <div class="cl-meta">
-        <span class="cl-version">v${clEscape(v.version)}</span>
-        <span class="cl-date">${clEscape(v.date)}</span>
+        <span class="cl-version">v${escapeHtml(v.version)}</span>
+        <span class="cl-date">${escapeHtml(v.date)}</span>
         ${isCurrent ? '<span class="cl-current">Running now</span>' : ''}
       </div>
       <div>
-        <div class="cl-headline">${clEscape(v.headline)}</div>
-        <div class="cl-detail">${clEscape(v.detail)}</div>
+        <div class="cl-headline">${escapeHtml(v.headline)}</div>
+        <div class="cl-detail">${escapeHtml(v.detail)}</div>
       </div>
     </div>`;
   }).join('') + `</div>`;

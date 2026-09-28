@@ -40,7 +40,7 @@ def run_js(body):
         pytest.skip('node not available')
     src = TEMPLATE.read_text(encoding='utf-8')
     js = ''.join(function_source(src, n) for n in
-                 ('newsWeekKey', 'newsDate', 'teamNewsItems', 'renderTeamNews')) + body
+                 ('escapeHtml', 'newsWeekKey', 'newsDate', 'teamNewsItems', 'renderTeamNews')) + body
     # utf-8 explicitly: the source line carries a middle dot, and Windows would
     # otherwise decode node's output as cp1252.
     r = subprocess.run([NODE, '-e', js], capture_output=True, encoding='utf-8')

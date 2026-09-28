@@ -40,7 +40,7 @@
     {
       "id": "dive-news-name-not-escaped",
       "why": "a name is written into the page as markup rather than text.",
-      "find": "<span class=\"dive-news-text\">${esc(it.text)}</span>",
+      "find": "<span class=\"dive-news-text\">${escapeHtml(it.text)}</span>",
       "replace": "<span class=\"dive-news-text\">${it.text}</span>",
       "expect_caught_by": "test_names_are_escaped"
     },

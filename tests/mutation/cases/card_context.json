@@ -71,8 +71,8 @@
     {
       "id": "news-quiet-game-gets-a-label",
       "why": "a game with nothing to report still draws 'Team news' and nothing after it.",
-      "find": "  return parts.length ? `<b>Team news</b> ${parts.map(cardEsc).join(' \u00b7 ')}` : '';",
-      "replace": "  return `<b>Team news</b> ${parts.map(cardEsc).join(' \u00b7 ')}`;",
+      "find": "  return parts.length ? `<b>Team news</b> ${parts.map(escapeHtml).join(' \u00b7 ')}` : '';",
+      "replace": "  return `<b>Team news</b> ${parts.map(escapeHtml).join(' \u00b7 ')}`;",
       "expect_caught_by": "test_no_news_is_no_line"
     },
     {
@@ -85,7 +85,7 @@
     {
       "id": "news-names-not-escaped",
       "why": "a name from the injury report is written into the page as markup.",
-      "find": "${parts.map(cardEsc).join(' \u00b7 ')}` : '';",
+      "find": "${parts.map(escapeHtml).join(' \u00b7 ')}` : '';",
       "replace": "${parts.join(' \u00b7 ')}` : '';",
       "expect_caught_by": "test_names_are_escaped"
     }

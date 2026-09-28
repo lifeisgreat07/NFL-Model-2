@@ -5,14 +5,14 @@
     {
       "id": "search-text-reaches-innerhtml-unescaped",
       "why": "the Power Ratings no-match row echoes the typed search as written, so markup typed into the box runs in the reader's own page (self-XSS, the 2026-09-28 audit)",
-      "find": "No teams match \"${cardEsc(q)}\"",
+      "find": "No teams match \"${escapeHtml(q)}\"",
       "replace": "No teams match \"${q}\"",
       "expect_caught_by": "test_the_search_text_is_escaped_in_the_no_match_row"
     },
     {
       "id": "context-note-reaches-innerhtml-unescaped",
       "why": "a card's context notes come from sourced web reports saved with the pick; written into innerHTML as they are, a note carrying markup becomes markup on every visitor's page",
-      "find": "<li style=\"margin-bottom:var(--s1);\">${cardEsc(n)}</li>",
+      "find": "<li style=\"margin-bottom:var(--s1);\">${escapeHtml(n)}</li>",
       "replace": "<li style=\"margin-bottom:var(--s1);\">${n}</li>",
       "expect_caught_by": "test_context_notes_are_escaped_one_item_each"
     },
