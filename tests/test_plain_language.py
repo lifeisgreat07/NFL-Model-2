@@ -79,6 +79,8 @@ RENDERERS = {
     'whySentence': 'board',
     'whyMarketSentence': 'board',
     'pickBadge': 'board',
+    'cardProbHtml': 'board',
+    'cardDisagreement': 'board',
     'lineFor': 'board',
     'whyRow': 'board',
     'populateWeekSelect': 'board',
