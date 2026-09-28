@@ -4,72 +4,54 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-27, afternoon session (Stage 15 complete, #132 to #137 merged; Stage 16 next)
+Last updated: 2026-09-27, evening session (Stage 16 complete; Stages 17 and 18 under way; #138 to #147 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 3015 passing, none skipped — `python -m pytest -q` on `main` at
-`1c27a2d` (#137 merged) plus the 2026-09-27 docs, HEAD level with origin.
+**Suite:** 3220 passing, none skipped — `python -m pytest -q` on `main` at
+`c4532da` (#146 merged) plus the evening docs, HEAD level with origin.
 
-**Stage 15 is complete: #132 to #137 merged 2026-09-27, each on Booth's SAFE
-TO MERGE with no discrepancies.** ESPN refuses GitHub's runners (#131, closed),
-so TV channels come from the league's own by-week schedule page, checked
-before shown and matched against ESPN for weeks 1-4 (64 of 64). The weekend
-refresh writes status, scores and lines; cards show a status line; TV is read
-by the weekly update and the weekend refresh; the canary watches the page.
-Details and decisions: CLAUDE.md Stage 15 and `memory/2026-09-27.md`.
-**Next action: Stage 16's data file** (starters Out or Doubtful from the
-injury report and the latest depth chart; the QB change read from the saved
-pick's own `*_qb` fields, which v2.5 predictions carry).
+**Next action: Stage 17's next item**, the TV pill, announced QB names and
+the one-line team news on the card (#146, the card body, merged on a clean
+fourth audit). Check the Monday 05:37 UTC weekend refresh first (table below).
 
-**Done 2026-09-26, evening: Stages 11 (#110 to #115), 12 (#116 to #122), 13 (#123
-to #127) and 14 (#128 to #130).** The
-Browser checks workflow (Playwright + axe-core, `tests/browser/check_page.py`)
-now runs on every PR touching the page and is green on `main`. Details, and
-Booth's figure slips, are in `memory/2026-09-26.md`.
+**Done today:** Stage 15 (#132 to #137), Stage 16 (#138 to #140), Stage 18's
+first three items (#141 to #143), and #147, a fix found by the first live
+weekend refresh: its push lost a race with a merge, so both committing
+workflows now rebase onto main just before committing. Mark chose the card
+design ("B refined") from rendered side-by-sides. Details, decisions and traps:
+`memory/2026-09-27.md` and CLAUDE.md Stages 16 to 18.
 
-**Earlier the same day** (details in `memory/2026-09-26.md`): Next Gen Stats N1
-answered FAIL (#108, #109; no Stage 6 slot spent), the UX/UI review, and Stages
-11 to 22 planned with Mark.
-
-**Stage 4's first live runs:** the Nightly canary passed on 2026-09-25,
-2026-09-26 and 2026-09-27, and the `pbp-2026-09` cache was saved on the first
-night and read on the second. All three started 4.5 to 5 hours after their
-06:00 UTC cron (10:56, 10:36, 11:09 UTC), which is GitHub's scheduler, not the
-workflow. No alert issue has opened (checked 2026-09-27 via the issues API).
+**Stage 4's live runs:** the Nightly canary passed 2026-09-25, -26 and -27,
+each starting 4.5 to 5 hours after its 06:00 UTC cron. The first weekend
+refresh started 2h12m late and failed on the race above (issue #145, open).
+Issue #144 is the Booth alert from #143's first audit, since superseded by a
+clean re-audit; both can be closed by hand.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| First weekend refresh (#133, #136) | Due Sun 2026-09-27 21:47 UTC | Check it committed the status and TV folders under data and that the page rebuilt |
-| TV exceptions for holiday and Saturday games | Weeks 12, 15, 16 have games no slot rule covers | Sourced entries in `data/tv/exceptions.json` before those weeks, or they are held back |
+| Weekend refresh with the catch-up step | Next run Mon 2026-09-28 05:37 UTC | Check it committed week 3's status, TV and news, and the page rebuilt; then close #145 |
 | First run of the QB routine | Due Mon 2026-09-28 22:00 UTC | Check it opened a PR, or said in one line that none was needed |
-| First weekly summary | Due Tue 2026-09-29 11:00 UTC | Open the run's page and check the summary reads right |
-| Scheduled-run delay | Canary ran 4.5-5 h late three times | Watch Thursday 2026-10-01's 16:00 UTC lock run; a 5 h delay still locks before the Thursday kickoff |
-| Booth alert, drift issue, failure alerts | Live, never fired | Each needs a real event; when one opens an issue, check it reads right |
-| Which claim Booth's fixture claim 1 was | Inferred as the "Two commits." line | Reading that run's report artifact, if it is ever worth it |
-| Leak table splits two ways on Linux | Recorded in the QB case study | Nothing, unless it is ever worth finding the cause |
+| First weekly summary | Due Tue 2026-09-29 11:00 UTC | Open the run's page and check the summary reads right (it now also reads TV and team news) |
+| Thursday lock run | Due Thu 2026-10-01 16:00 UTC | Check it started, locked before kickoff, and its push survived (the catch-up step's first test under load) |
+| TV exceptions for holiday and Saturday games | Weeks 12, 15, 16 | Sourced entries in `data/tv/exceptions.json` before those weeks |
+| Model Lab mappings | My calls, in #141 | Mark may overrule any (listed in `experiments/legacy/README.md`) |
+| Booth alert, drift issue, failure alerts | Two have now fired and read right (#144, #145) | The drift issue still needs a real event |
 
 ## Queued, in order
 
-1. **Stages 11 to 22**, in order, one PR at a time: integrity and access; self-hosted
-   assets and browser CI; landing and links; one meaning per number; weekend
-   refresh; team news; Week Board card v2; Model Lab rebuilt; team pages; testing
-   with five people; the week-5 extras; beyond 95.
-2. **The rest of Stage 6** (referee crews, personnel) after Stage 18, registered
-   into `experiments/stage6/registry.json` first. None of the five slots is spent.
-
-Open decision for Mark, made from a render when its stage starts: the
-team-colour bars on the new card (Stage 17). (Per 100 plays for Stage 14:
-decided 2026-09-26.)
-TV channel per game added to Stage 15 (from ESPN's scoreboard, with the checks
-that keep a wrong channel off the page) and shown on the card in Stage 17.
+1. **Stage 17** remaining items, one PR each (CLAUDE.md Stage 17).
+2. **Stage 18** remaining: result-first layout with an interval glyph, cards on a phone, the reliability diagram below with "How to read this".
+3. **Stages 19 to 22**, and the rest of Stage 6 (referee crews, personnel) after Stage 18.
 
 Merge one branch at a time: every branch that adds a mutation case file
-moves the README count, so two open at once always conflict.
+moves the README count, so two open at once always conflict. Don't merge
+while a scheduled run is in flight if it can be avoided; the catch-up step
+narrows the race, it does not close it.
 
 ## Known and deliberately not fixed
 

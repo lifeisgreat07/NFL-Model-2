@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **3015 passing** (none skipped) — `python -m pytest -q` on `main` at
-`1c27a2d` (#137 merged) plus the 2026-09-27 docs, with HEAD level with origin, which is the order that makes the
+Suite: **3220 passing** (none skipped) — `python -m pytest -q` on `main` at
+`c4532da` (#146 merged) plus the 2026-09-27 evening docs, with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -1339,7 +1339,15 @@ back; a changed channel is reported as a change; the refresh never writes
 `predictions/`. The reachability of the feed from GitHub's runners is the first
 thing checked, before any code is written.
 
-### Stage 16 - Team news
+### Stage 16 - Team news  <- COMPLETE (2026-09-27, #138 to #140; the card line is built in Stage 17)
+
+**Shipped:** #138 `src/team_news.py` writes one file per locked, ungraded week
+(starters Out or Doubtful by name, Questionable as a count, the pick's own
+quarterback); #139 both scheduled workflows run it with `--pending`,
+continue-on-error; #140 Team Deep-Dive's "This week" block, at most five
+sourced, dated lines, gone once the week is graded. When the pick's
+quarterback is himself listed Out or Doubtful, that replaces the QB line.
+
 
 Mark wants this clear and concise, not information overload. **The data
 exists:** checked 2026-09-26, `nflreadpy.load_injuries` carries 2026 weeks 1-3
@@ -1362,7 +1370,21 @@ dated with its source. Items expire with the week. The plain-language guard
 applies. Data file first (with a hypothesis about what a reader needs from it
 written in the PR), then Team Deep-Dive, then the card line in Stage 17.
 
-### Stage 17 - Week Board card v2
+### Stage 17 - Week Board card v2  <- IN PROGRESS (card body merged, #146)
+
+**Decided 2026-09-27 from rendered side-by-sides: "B refined".** Keep the
+team-colour bar split by Model B, team names at its ends; one probability line
+beneath on the same scale, marked at 50%; Model A circle, Model B square,
+Market triangle; markers closer than 7 points take fixed lanes (market above,
+B on the line, A below; 7 is measured: a 12px marker is 6.8 points of the
+narrowest 176px line); key ordered B, Market, A; a disagreement line only when
+Model A picks the other team; one screen-reader sentence. Mark noted he had
+grown used to the old card and accepted the new one as more readable.
+**Still to build, one PR each:** the TV pill, announced QB names and the
+one-line team news; label the "why" sentence as Model A's reasoning (under a
+Model B headline it can name the other team); `[` / `]` week keys; no HIGH/LOW
+words; drop the now-unused `.model-row` / `.tele-team` CSS.
+
 
 One decision per card. A single probability line from away team to home team
 with Model A ●, Model B ■ and Market ▲ (the shapes Season Accuracy already
@@ -1376,7 +1398,17 @@ and put the line beneath -- chosen from rendered side-by-sides in both themes
 and under protan and deutan simulation, as that decision was. `[` and `]` step
 weeks on desktop.
 
-### Stage 18 - Model Lab rebuilt from the experiment records
+### Stage 18 - Model Lab rebuilt from the experiment records  <- IN PROGRESS (#141 to #143 merged)
+
+**Shipped:** #141 `src/model_lab.py` over `experiments/stage*/results/` plus
+the 46 old rows moved once, verbatim, to `experiments/legacy/rows.json` (frozen
+by sha256 in `tests/test_model_lab.py`); #142 the table rendered at build time
+by `render_model_lab_rows` (tests that read Model Lab copy use
+`tests/page_source.py`); #143 decision chips with counts. Mappings onto the
+five decisions are my calls, listed in `experiments/legacy/README.md`, for
+Mark to overrule. **Left:** result-first layout with an interval glyph, cards
+on a phone, the reliability diagram below with "How to read this".
+
 
 Generated from a data file, not 46 hand-written rows: Stage 5 and 6 read from
 `experiments/*/results/`, the older rows moved in once, verbatim. Five
@@ -1600,6 +1632,24 @@ under compaction pressure, so its length is a cost paid on every session.
   a new commit, never an amend.
 
 ## Traps that have actually bitten
+
+- **A SCHEDULED RUN RACES EVERY MERGE.** The first weekend refresh (run
+  36360495917) read everything and saved nothing: #143 merged between its
+  checkout and its push, and the push was refused (issue #145). The scheduler
+  starts jobs hours late, so "not at cron time" protects nothing. Since #147
+  both committing workflows rebase onto main (`--autostash`) just before the
+  commit. The window is now seconds, not closed.
+- **SAY HOW A MUTATION SCOPE WAS COUNTED.** Booth twice read "every case file
+  whose target names a changed file" as top-level targets only, and missed
+  files counted through per-case targets (`case_studies.json`,
+  `self_hosted_font.json`). Name those files in the body, as #146 and #147 do;
+  a small script in the session archive (one-off-scripts, cases_rule_check) prints why each file counts.
+- **A RENDERED COUNT NEEDS ITS CUTOFF, AND CARDS ARE NOT PAIRS.** #146 quoted
+  11 and 14 overlapping cards; at the half-pixel cutoff it was 12 and 13 (the
+  11 used 2px, the 14 counted pairs). State the threshold and what is counted.
+- **RE-SENDING A FILE TO THE SAME PATH ON MARKYS CAN LEAVE THE OLD ONE.** Once
+  on 2026-09-27 the hash did not change. Use a fresh folder or name per
+  revision and compare hashes before copying into the repo.
 
 - **WINDOWS PYTHON HAS NO TIME-ZONE DATABASE.** `ZoneInfo('America/New_York')`
   raises `ZoneInfoNotFoundError` on markys and passes on Linux CI, so a test
