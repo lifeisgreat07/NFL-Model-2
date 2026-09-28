@@ -1,12 +1,12 @@
 {
-  "generated_utc": "2026-09-28T06:07:42Z",
+  "generated_utc": "2026-09-28T06:50:11Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 188,
-    "audits_superseded": 57,
-    "pull_requests_audited": 131,
+    "audits_total": 190,
+    "audits_superseded": 58,
+    "pull_requests_audited": 132,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 1451,
+    "claims_checked": 1463,
     "discrepancies_found": 24,
     "unverifiable": 103,
     "pull_requests_with_a_discrepancy": 15,
@@ -3460,6 +3460,45 @@
         "prose says Claims checked: 16, block has 17",
         "prose says Confirmed: 14, block has 15"
       ],
+      "superseded": false
+    },
+    {
+      "pr": 154,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/154#issuecomment-5864714977",
+      "posted_utc": "2026-09-28T06:33:17Z",
+      "head": "f17903f",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 11,
+      "confirmed": 10,
+      "discrepancies": 1,
+      "unverifiable": 0,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "tests/mutation/cases/case_studies.json",
+        "tests/mutation/cases/game_datetime_fields.json",
+        "tests/mutation/cases/plain_language.json",
+        "tests/mutation/cases/units.json"
+      ],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 154,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/154#issuecomment-5864868601",
+      "posted_utc": "2026-09-28T06:45:12Z",
+      "head": "f17903f",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 12,
+      "confirmed": 12,
+      "discrepancies": 0,
+      "unverifiable": 0,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
       "superseded": false
     }
   ]
