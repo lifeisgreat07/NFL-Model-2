@@ -1,0 +1,57 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_dive_off_def.py",
+  "cases": [
+    {
+      "id": "dive-split-drops-the-live-weeks",
+      "target": "src/generate_dashboard.py",
+      "why": "the live weekly points stop carrying offense and defense, so 2026's rows -- the ones a reader most wants -- lose the split while the season-end rows keep it.",
+      "find": "                timeline[team].append({'label': f\"{season} Wk{p['week']}\", 'net': p['net'],\n                                       'off': p.get('off'), 'def': p.get('def')})\n",
+      "replace": "                timeline[team].append({'label': f\"{season} Wk{p['week']}\", 'net': p['net']})\n",
+      "expect_caught_by": "test_every_history_point_carries_offense_and_defense"
+    },
+    {
+      "id": "dive-split-swaps-offense-and-defense",
+      "target": "src/generate_dashboard.py",
+      "why": "the season-end points take offense from the defense field and defense from the offense field, so a great defense reads as a great offense and the note 'net is offense minus defense' stops being true.",
+      "find": "'off': p.get('off'), 'def': p.get('def')})\n\n    # Layer in",
+      "replace": "'off': p.get('def'), 'def': p.get('off')})\n\n    # Layer in",
+      "expect_caught_by": "test_net_is_offense_minus_defense"
+    },
+    {
+      "id": "dive-split-prints-raw-per-play",
+      "why": "offense is printed as the raw per-play number, 0.154 beside a net of +15.4, two units in one row.",
+      "find": "<span>Offense ${fmtRating(p.off)}</span>",
+      "replace": "<span>Offense ${p.off.toFixed(3)}</span>",
+      "expect_caught_by": "test_both_are_shown_in_the_rating_units"
+    },
+    {
+      "id": "dive-split-loses-lower-is-better",
+      "why": "defense no longer says lower is better, so +5.0 on defense reads as good when it is five points worse than average.",
+      "find": "<span title=\"Expected points allowed: lower is better\">Defense",
+      "replace": "<span>Defense",
+      "expect_caught_by": "test_defense_says_lower_is_better"
+    },
+    {
+      "id": "dive-split-half-drawn",
+      "why": "a point with offense but no defense draws the pair anyway, printing 'Defense' beside nothing, which reads as a missing number or a zero.",
+      "find": "  if(typeof p.off !== 'number' || typeof p.def !== 'number') return '';\n",
+      "replace": "  if(typeof p.off !== 'number') return '';\n",
+      "expect_caught_by": "test_a_point_without_both_draws_nothing"
+    },
+    {
+      "id": "dive-split-never-drawn",
+      "why": "the rows stop calling the function, so the data reaches the page and nothing shows it.",
+      "find": "      <span class=\"dive-value\">${fmtRating(p.net)}</span>\n      ${diveSplitHtml(p)}\n",
+      "replace": "      <span class=\"dive-value\">${fmtRating(p.net)}</span>\n",
+      "expect_caught_by": "test_every_row_draws_it"
+    },
+    {
+      "id": "dive-split-bar-keeps-its-width-on-phones",
+      "why": "the bar keeps its fixed 140px on a phone, so with wrapping on the net value drops to a line of its own and every row is three lines at 375px.",
+      "find": "    .dive-row .srs-bar-track{flex:1 1 0; min-width:48px;}\n",
+      "replace": "",
+      "expect_caught_by": "test_on_a_phone_the_pair_takes_its_own_line"
+    }
+  ]
+}
