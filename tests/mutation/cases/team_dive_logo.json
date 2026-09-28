@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_team_dive_logo.py",
+  "cases": [
+    {
+      "id": "dive-team-header-not-drawn",
+      "why": "the page stops drawing the team's logo and name, so the only thing saying whose page this is goes back to the picker button.",
+      "find": "  content.innerHTML = diveTeamHtml(team, teamHistory.names[team]) + renderTeamNews(team)",
+      "replace": "  content.innerHTML = renderTeamNews(team)",
+      "expect_caught_by": "test_the_team_comes_first_on_the_page"
+    },
+    {
+      "id": "dive-logo-named-twice",
+      "why": "the logo carries the team as alt text beside the name, so a screen reader reads the team twice.",
+      "find": "<img class=\"dive-logo\" src=\"${teamLogo(team)}\" alt=\"\"",
+      "replace": "<img class=\"dive-logo\" src=\"${teamLogo(team)}\" alt=\"${name}\"",
+      "expect_caught_by": "test_the_logo_is_decorative_and_a_missing_one_leaves_the_name"
+    },
+    {
+      "id": "dive-team-with-no-name-shows-nothing",
+      "why": "a team the history file has no name for shows 'undefined' instead of its abbreviation.",
+      "find": "<span class=\"dive-team-name\">${name || team}</span>",
+      "replace": "<span class=\"dive-team-name\">${name}</span>",
+      "expect_caught_by": "test_a_team_with_no_name_on_file_shows_its_abbreviation"
+    },
+    {
+      "id": "dive-logo-shrunk",
+      "why": "the logo shrinks to the size of the table's row logos and stops reading as the page's identity.",
+      "find": "  .dive-logo{width:48px; height:48px;",
+      "replace": "  .dive-logo{width:22px; height:22px;",
+      "expect_caught_by": "test_the_logo_is_large_enough_to_identify_the_page"
+    }
+  ]
+}

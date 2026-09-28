@@ -155,6 +155,7 @@ RENDERERS = {
     'renderTeamDive': 'teamdive',
     # Stage 19's offense/defense line beside each history row.
     'diveSplitHtml': 'teamdive',
+    'diveTeamHtml': 'teamdive',
     'renderTeamGames': 'teamdive',
     'renderTeamNews': 'teamdive',
     'teamNewsItems': 'teamdive',
