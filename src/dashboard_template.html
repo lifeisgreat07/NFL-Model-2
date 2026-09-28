@@ -399,10 +399,6 @@
      selection, but tapping one must not silently start editing their log. */
   .picks-readonly .pick-btn{cursor:default;}
   .team-logo{width:22px; height:22px; object-fit:contain; flex-shrink:0;}
-  .tele-team{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); line-height:1;
-    display:flex; flex-direction:column; align-items:center; gap:var(--s1);}
-  .tele-team.right{align-items:flex-end;}
-  .tele-logo{width:20px; height:20px; object-fit:contain;}
   .team-abbr{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); width:38px;}
   .team-full{color:var(--text-2); font-size:var(--fs-13);}
   .net-cell-inner{display:grid; grid-template-columns:90px 62px; align-items:center; column-gap:var(--s3); justify-content:center;}
@@ -1050,7 +1046,12 @@
      Before this, the narrow treatments below were gated on a viewport media
      query, which is correct for a stack and wrong for a grid: in a grid the
      viewport is wide while each card is 340px, so a card would have taken
-     desktop internals inside a phone-width box. */
+     desktop internals inside a phone-width box.
+     Since Stage 17 no @container rule is keyed to it: the only one sized the
+     per-model rows that card v2 (#146) replaced, and it went with them. The
+     declaration is kept, not removed, because inline-size containment changes
+     how the card itself is sized, so taking it out is a layout change of its
+     own rather than a clean-up. */
   .game-card{container-type:inline-size; container-name:card;}
   /* Historical track record for a pick's confidence band. Recessive by
      default -- it is context, not the headline -- but gains a left rule and
@@ -1082,7 +1083,8 @@
      with stretch removed from both sides so each card reports its natural
      height, every card is exactly 8px taller. One pair is responsible --
      .model-row's 10px bottom margin meeting .market-ref's 12px top margin,
-     which used to collapse to 12 and now sums to 22.
+     which used to collapse to 12 and now sums to 22. (A record of the card as
+     it was measured then: .model-row left the card with Stage 17's #146.)
 
      8px on a ~362px card is accepted rather than tuned away, because it is
      uniform across all sixteen cards and therefore costs nothing in the thing
@@ -1133,22 +1135,11 @@
      toss-up is precisely the absence of one. Same values as .status-planned. */
   .tag-neutral{background:var(--border); color:var(--text-2);}
 
-  .model-row{display:grid; grid-template-columns:56px 1fr; align-items:center; gap:var(--s3); margin-bottom:var(--s3);}
-  .model-row:last-of-type{margin-bottom:0;}
-  .model-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.05em; text-transform:uppercase; color:var(--text-2);}
-  .model-label.a{color:var(--text);} .model-label.b{color:var(--text);}
-  .tele{display:grid; grid-template-columns:60px 1fr 60px; align-items:center; gap:var(--s3);}
-  .tele-team .pct{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:500; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s1);}
-  .tele-team.right{text-align:right;}
-  /* Which side a model leans toward is carried by WEIGHT, not hue -- with 32
-     real team colours spanning nearly every hue, any fixed colour risks reading
-     as "that's just this team's colour" instead of meaning anything. Weight is
-     also the only encoding that can express "no pick": inside the even band
-     neither side is bolded, which a colour cannot say. The badge names the
-     picked side from the start, in --accent; it switches to the graded pair
-     only once the game has been played, because a colour meaning "correct"
-     must never sit on a game that has not happened. */
-  .tele-team.winner{font-weight:800;}
+  /* The badge names the picked side from the start, in --accent; it switches
+     to the graded pair only once the game has been played, because a colour
+     meaning "correct" must never sit on a game that has not happened. (The
+     two per-model rows this sat beside, .model-row and .tele-team, went with
+     Stage 17's card body, #146; their rules were removed in Stage 17.) */
   .pick-badge{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px;
     border-radius:50%; margin-bottom:var(--s1); flex-shrink:0; box-sizing:border-box;}
   /* Job 2, not Job 3: this marks the model's pick on a game nobody has played.
@@ -1195,7 +1186,6 @@
      covered this sentence, only the two above it. One does now. */
   .tele-bar-seg:first-child{border-radius:5px 0 0 5px; border-right:2px solid var(--surface);}
   .tele-bar-seg:last-child{border-radius:0 5px 5px 0;}
-  .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--text); opacity:.55; left:50%; z-index:2;}
 
   /* ---------- Card v2: headline, Model B's bar, one probability line (Stage 17) ---------- */
   .card-hl{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-20); margin:var(--s2) 0 var(--s3);}
@@ -1485,20 +1475,6 @@
     main{padding:var(--s4) var(--s3) calc(84px + var(--safe-bottom));}
   }
 
-  /* The card's narrow treatment, keyed to the CARD rather than the viewport.
-     These three rules used to live in the bottom-nav viewport media query above
-     (820px at the time, 1079px now),
-     which was right while the cards were a full-width stack -- card width and
-     viewport width moved together. In a grid they no longer do: at 1440px the
-     viewport is wide and every card is ~360px, so a viewport rule would leave
-     desktop internals in a phone-width box, and a phone would get the narrow
-     treatment on a card that is nearly full-bleed and has room to spare.
-     Asking the card its own width is the only thing that is true in both. */
-  @container card (max-width: 380px){
-    .tele{grid-template-columns:50px 1fr 50px; gap:var(--s2);}
-    .tele-team{font-size:var(--fs-14);}
-    .model-row{grid-template-columns:48px 1fr; gap:var(--s2);}
-  }
 
   /* The one press gesture, on everything clickable. Three different scale
      values used to be scattered across three components. */

@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_retired_card_css.py",
+  "cases": [
+    {
+      "id": "retired-card-rule-returns",
+      "why": "a rule for the retired per-model rows comes back, styling nothing on the page.",
+      "find": "  .tele-bar{position:relative;",
+      "replace": "  .tele-team{font-weight:700;}\n  .tele-bar{position:relative;",
+      "expect_caught_by": "test_no_rule_styles_a_retired_class"
+    },
+    {
+      "id": "retired-card-class-worn-again",
+      "why": "card markup wears a retired class that no rule styles any more.",
+      "find": "          <div class=\"tele-bar\">",
+      "replace": "          <div class=\"tele-bar tele\">",
+      "expect_caught_by": "test_nothing_wears_a_retired_class"
+    },
+    {
+      "id": "card-bar-rule-swept-with-the-dead-ones",
+      "why": "the clean-up also takes .tele-bar, which card v2 still draws its bar with.",
+      "find": "  .tele-bar{position:relative;",
+      "replace": "  .tele-barx{position:relative;",
+      "expect_caught_by": "test_the_bar_classes_card_v2_uses_are_still_styled"
+    }
+  ]
+}
