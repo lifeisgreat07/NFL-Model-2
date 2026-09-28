@@ -300,6 +300,23 @@ def determine_next_week(season, pred_dir=None, skipped_dir=None):
     # handled in main() by exiting cleanly when a week has zero games.
 
 
+def refuse_an_empty_week(predictions, season, week):
+    """Fail the run rather than save a week with no picks (Stage 24).
+
+    A saved week can never be overwritten, so an empty file -- every game
+    skipped for a missing team rating, say -- would stand as that week's
+    picks for good, and determine_next_week would move past it. Failing
+    instead saves nothing, opens the run's issue (Stage 4), and leaves the
+    week to the next run, which can still lock whatever has not kicked off.
+    """
+    if not predictions:
+        raise SystemExit(
+            f"ERROR: {season} week {week} produced no picks, so nothing is saved. "
+            f"A saved week can never be replaced, and an empty one would stand "
+            f"as the week's picks. The log above says why each game was skipped; "
+            f"fix that and run again before kickoff.")
+
+
 def record_skipped_week(season, week, reason, now, skipped_dir=None):
     """Write predictions/skipped/<season>_week<N>.json and return its path.
 
@@ -875,6 +892,7 @@ def main(season, week):
     if out_path.exists():
         print(f"WARNING: {out_path} already exists -- NOT overwriting (predictions are permanent once saved).")
     else:
+        refuse_an_empty_week(predictions, season, week)
         # Atomic: this file can never be overwritten, so a half-written one
         # would be permanent (Stage 24).
         write_json_atomic(out_path, predictions, indent=2)
