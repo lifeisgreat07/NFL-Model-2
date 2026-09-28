@@ -36,6 +36,51 @@
       "find": "            name, result = e['experiment'], e['result']",
       "replace": "            name, result = e['experiment'], html_escape(e['result'])",
       "expect_caught_by": "test_a_moved_row_reaches_the_page_unchanged"
+    },
+    {
+      "id": "lab-glyph-says-includes-when-it-excludes",
+      "tests": "tests/test_model_lab_glyph.py",
+      "target": "src/generate_dashboard.py",
+      "why": "the text equivalent tells a screen-reader user an interval clear of zero includes it, the opposite of what the decision rests on.",
+      "find": "    zero = 'includes zero' if lo <= 0 <= hi else 'excludes zero'",
+      "replace": "    zero = 'includes zero'",
+      "expect_caught_by": "test_an_interval_clear_of_zero_says_so"
+    },
+    {
+      "id": "lab-glyph-scale-not-centred-on-zero",
+      "tests": "tests/test_model_lab_glyph.py",
+      "target": "src/generate_dashboard.py",
+      "why": "the scale starts at the interval's low end instead of being symmetric about zero, so the zero line wanders and a glance misreads which side of zero the interval sits.",
+      "find": "        return round(pad + (v + span) / (2 * span) * (width - 2 * pad), 1)",
+      "replace": "        return round(pad + (v - lo) / (2 * span) * (width - 2 * pad), 1)",
+      "expect_caught_by": "test_the_scale_is_symmetric_about_zero"
+    },
+    {
+      "id": "lab-glyph-bound-rounds-to-zero",
+      "tests": "tests/test_model_lab_glyph.py",
+      "target": "src/generate_dashboard.py",
+      "why": "H2's lower bound prints as +0.0000 beside the words 'excludes zero'.",
+      "find": "    while places < 8 and x != 0 and round(abs(x), places) == 0:\n        places += 1\n",
+      "replace": "",
+      "expect_caught_by": "test_a_bound_that_rounds_to_zero_gets_the_decimals_it_needs"
+    },
+    {
+      "id": "lab-glyph-literal-minus",
+      "tests": "tests/test_model_lab_glyph.py",
+      "target": "src/generate_dashboard.py",
+      "why": "a non-ASCII sign goes into the page, which generate_dashboard.py writes in the platform's encoding. A literal U+2212 crashes the build on Windows before any test runs; an en dash, which cp1252 can encode, builds everywhere, so this case reaches the guard on every platform.",
+      "find": "    return ('&minus;' if x < 0 else '+') + f'{abs(x):.{places}f}'",
+      "replace": "    return ('\u2013' if x < 0 else '+') + f'{abs(x):.{places}f}'",
+      "expect_caught_by": "test_the_text_equivalent_is_ascii"
+    },
+    {
+      "id": "lab-glyph-not-drawn",
+      "tests": "tests/test_model_lab_glyph.py",
+      "target": "src/generate_dashboard.py",
+      "why": "the registered results go back to opening with the sentence, with no interval drawn.",
+      "find": "        body = f'<span class=\"lab-lead\">{interval_glyph(h)}</span>{body}'\n",
+      "replace": "",
+      "expect_caught_by": "test_every_registered_result_leads_with_its_own_interval"
     }
   ]
 }

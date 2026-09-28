@@ -210,8 +210,48 @@ def _seasons(seasons):
     return f'{seasons[0]}&ndash;{seasons[-1]}' if len(seasons) > 1 else str(seasons[0])
 
 
+def _plain_signed(x, places=4):
+    """-0.0109 as the text a screen reader is given: a real minus sign,
+    written as &minus; because the page is written in the platform's default
+    encoding, and on Windows (cp1252) a literal U+2212 crashes the build. A
+    non-zero bound that would print as 0.0000 gets the decimals it needs, so
+    "+0.0000 to +0.0058, excludes zero" never reads as a contradiction."""
+    while places < 8 and x != 0 and round(abs(x), places) == 0:
+        places += 1
+    return ('&minus;' if x < 0 else '+') + f'{abs(x):.{places}f}'
+
+
+def interval_glyph(h, width=96, height=14, pad=5):
+    """A result's interval drawn against zero (Stage 18): a line from the low
+    to the high end with a tick at each, a dot at the difference, and a
+    vertical line at zero. What it shows is the one thing the decision rests
+    on -- whether the interval includes zero -- so it is drawn on each row's
+    OWN scale, symmetric about zero, and glyphs on different rows are not
+    comparable in length. The figures are in the sentence beside it.
+
+    role="img" with a text equivalent (UX review, Model Lab):
+    "-0.0109, interval -0.0319 to +0.0096, includes zero"."""
+    lo, hi, d = h['ci'][0], h['ci'][1], h['diff']
+    span = max(abs(lo), abs(hi), abs(d)) or 1.0
+
+    def x(v):
+        return round(pad + (v + span) / (2 * span) * (width - 2 * pad), 1)
+
+    mid = height / 2
+    zero = 'includes zero' if lo <= 0 <= hi else 'excludes zero'
+    label = f"{_plain_signed(d)}, interval {_plain_signed(lo)} to {_plain_signed(hi)}, {zero}"
+    return (f'<svg class="lab-ci" role="img" aria-label="{label}" viewBox="0 0 {width} {height}" '
+            f'width="{width}" height="{height}">'
+            f'<line class="lab-ci-zero" x1="{x(0)}" y1="0" x2="{x(0)}" y2="{height}"/>'
+            f'<line class="lab-ci-range" x1="{x(lo)}" y1="{mid}" x2="{x(hi)}" y2="{mid}"/>'
+            f'<line class="lab-ci-range" x1="{x(lo)}" y1="{mid - 4}" x2="{x(lo)}" y2="{mid + 4}"/>'
+            f'<line class="lab-ci-range" x1="{x(hi)}" y1="{mid - 4}" x2="{x(hi)}" y2="{mid + 4}"/>'
+            f'<circle class="lab-ci-point" cx="{x(d)}" cy="{mid}" r="3"/></svg>')
+
+
 def _registered_result(e):
-    """The Result cell for a pre-registered answer, from its file's own figures."""
+    """The Result cell for a pre-registered answer, from its file's own
+    figures, leading with its interval drawn against zero (Stage 18)."""
     h = e['headline']
     if h is None:
         body = html_escape(e.get('reason') or 'Deferred.')
@@ -229,6 +269,7 @@ def _registered_result(e):
         body = (f"{model}{metric} {_signed(h['diff'])} "
                 f"CI [{_signed(h['ci'][0])}, {_signed(h['ci'][1])}] at {h['ci_level'] * 100:g}%, "
                 f"{where}, {h['n']:,} {h['n_of']}. A negative difference favours the new idea.")
+        body = f'<span class="lab-lead">{interval_glyph(h)}</span>{body}'
     return (f"{body}<span class=\"lab-src\">Pre-registered, {e['stage']} {e['id']} "
             f"&middot; <code>{e['source']}</code></span>")
 
