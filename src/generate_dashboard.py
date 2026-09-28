@@ -299,6 +299,11 @@ def build_games_js(preds, graded_lookup_by_key, status_by_key=None):
             'spread': p.get('spread_line'),
             'fbA_home': round(model_a * 100, 1),
             'mktB_home': round((model_b if model_b is not None else model_a) * 100, 1),
+            # The market's own win probability (Stage 17: the card shows the
+            # market as a probability, not only as a spread). None when the
+            # pick was saved without one; the card then omits the market mark.
+            'mkt_home': (round(p['market_prob_home'] * 100, 1)
+                         if p.get('market_prob_home') is not None else None),
             'flag': " ".join(notes),
             'notes': notes,
             'confidence_rank': p.get('confidence_rank'),

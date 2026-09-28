@@ -1162,6 +1162,31 @@
   .tele-bar-seg:last-child{border-radius:0 5px 5px 0;}
   .tele-marker{position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--text); opacity:.55; left:50%; z-index:2;}
 
+  /* ---------- Card v2: headline, Model B's bar, one probability line (Stage 17) ---------- */
+  .card-hl{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-20); margin:var(--s2) 0 var(--s3);}
+  .card-hl b{font-weight:800;}
+  .card-hl-label{font-size:var(--fs-11); letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); margin-right:var(--s1);}
+  .card-hl-to{font-size:var(--fs-13); color:var(--text-2);}
+  .card-viz{display:grid; grid-template-columns:auto 1fr auto; gap:var(--s3); align-items:start;}
+  .card-end{display:inline-flex; align-items:center; gap:var(--s1); font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:700; font-size:var(--fs-13); line-height:9px; color:var(--text-2);}
+  .card-end .pick-badge{margin-bottom:0;}
+  /* A faint inner outline, so a pale team colour (LV's silver, NO's gold)
+     still has an edge on the light theme's white card. */
+  .card-scale .tele-bar{box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--text) 18%, transparent);}
+  .card-line{position:relative; height:32px;}
+  .card-line::before{content:""; position:absolute; left:0; right:0; top:50%; height:2px; margin-top:-1px; background:var(--border-strong);}
+  .card-mid{position:absolute; left:50%; top:5px; bottom:5px; width:1px; background:var(--text-2);}
+  .card-mid-label{position:absolute; left:50%; bottom:-10px; transform:translateX(-50%); font-size:var(--fs-11); color:var(--text-2);}
+  .card-mk{position:absolute; transform:translate(-50%,-50%); overflow:visible;
+    filter:drop-shadow(0 0 1px var(--surface)) drop-shadow(0 0 1px var(--surface));}
+  .card-keys{display:flex; flex-wrap:wrap; gap:var(--s1) var(--s4); margin-top:var(--s4);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12); color:var(--text-2);}
+  .card-key{display:inline-flex; align-items:center; gap:var(--s1); white-space:nowrap;}
+  .card-key b{color:var(--text); font-weight:600;}
+  .card-disagree{margin-top:var(--s3); padding:var(--s2) var(--s3); border-radius:var(--r-md);
+    background:var(--surface-2); border:1px solid var(--border); font-size:var(--fs-12); color:var(--text);}
+
   .market-ref{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s3); padding-top:var(--s3); border-top:1px dashed var(--border);}
   .market-ref b{color:var(--text);}
 
@@ -1675,13 +1700,13 @@ __FONT_FACES__
         <h4>New here? Three things to know.</h4>
         <ul>
           <li><span class="model-chip a">Model A</span> uses football data only; <span class="model-chip b">Model B</span> adds the Vegas spread.</li>
-          <li>A tick is a model&#39;s pick. When the game ends it turns green if right, or a red cross if wrong.</li>
+          <li>A tick beside a team is Model B&#39;s pick. When the game ends it turns green if right, or a red cross if wrong.</li>
           <li>Tap &ldquo;the numbers behind this&rdquo; on any game to see where its sentence came from.</li>
         </ul>
         <details class="onboarding-more">
           <summary>How to read this</summary>
           <ul>
-            <li>The bolder team name is the one that model leans toward. On games too close to call, neither side is bolded: the model has not picked anybody.</li>
+            <li>The coloured bar is split by Model B&#39;s chance for each team. The line under it marks all three: the square is Model B, the triangle is the betting market, the circle is Model A. The mark in the middle is 50%, a coin flip. When Model B is too close to call, the card says so instead of picking a team.</li>
             <li>Each game says in a sentence why that team is ahead. It will often be the quarterback matchup, because that is what moves this model most; a sentence that repeats across a week is the model showing through, not a stuck template.</li>
             <li><b>Model A</b> is built from team ratings and quarterback performance, with no market data. <b>Model B</b> is Model A plus the current Vegas spread.</li>
             <li><b>Model Lab</b> has the full research history, including everything that didn&#39;t work.</li>
@@ -3397,6 +3422,111 @@ function pickButton(team, pick, locked){
     + `</button>`;
 }
 
+/* ---------- The card's probability line (Stage 17, card v2) ----------
+   Mark chose "B refined" on 2026-09-27 from rendered side-by-sides (dark,
+   light, deutan): the team-colour bar is kept and shows Model B's split; the
+   three probabilities sit on ONE line beneath it, on the same scale, with the
+   shapes Season Accuracy uses (Model A circle, Model B square, Market
+   triangle). Model B is the headline because it is the better model on
+   proper scoring rules (Model Lab); the market is shown as a probability,
+   not only as a spread.
+
+   Everything is stored as the HOME side's percentage; a side is named by
+   which half of the line it falls in. Within CARD_EVEN_BAND points of 50 a
+   series has picked nobody, and the card says so rather than bolding a team
+   on a 50.4 / 49.6 split. */
+const CARD_EVEN_BAND = 2;
+
+function cardSide(pHome, g){
+  if(pHome === null || pHome === undefined) return null;
+  if(Math.abs(pHome - 50) < CARD_EVEN_BAND) return {team: null, pct: Math.max(pHome, 100 - pHome)};
+  return pHome >= 50 ? {team: g.home, pct: pHome} : {team: g.away, pct: 100 - pHome};
+}
+
+/* Markers closer than CARD_NEAR points would hide one another. When they
+   would, each takes a FIXED lane -- the Market above the line, Model B on it,
+   Model A below -- so the same series always moves the same way and a reader
+   learns it once. A marker with no neighbour stays on the line. */
+/* The card's series, in the same colours and shapes as SERIES below. A copy
+   rather than a reference: SERIES is declared further down the script than
+   the Week Board's first render, and reading a const before its line throws
+   (it did, in the first render of this card). tests/test_card_v2.py holds
+   the two to each other. */
+const CARD_SERIES = {
+  a:      {label:'Model A', color:'var(--series-a)', shape:'circle'},
+  b:      {label:'Model B', color:'var(--series-b)', shape:'square'},
+  market: {label:'Market',  color:'var(--series-c)', shape:'triangle'},
+};
+
+const CARD_NEAR = 3;
+const CARD_LANE = {market: -1, b: 0, a: 1};
+
+function cardLanes(vals){
+  const keys = Object.keys(vals).filter(k => vals[k] !== null && vals[k] !== undefined);
+  const out = {};
+  keys.forEach(k => {
+    const crowded = keys.some(o => o !== k && Math.abs(vals[o] - vals[k]) < CARD_NEAR);
+    out[k] = crowded ? CARD_LANE[k] : 0;
+  });
+  return out;
+}
+
+function cardSideText(s){
+  return s.team ? `${s.team} ${Math.round(s.pct)}%` : `even (${Math.round(s.pct)}%)`;
+}
+
+/* The one sentence a screen reader hears for the whole visual. */
+function cardAria(g){
+  const b = cardSide(g.mktB_home, g), a = cardSide(g.fbA_home, g), m = cardSide(g.mkt_home, g);
+  return [`Model B ${cardSideText(b)}`, m ? `Market ${cardSideText(m)}` : null,
+          `Model A ${cardSideText(a)}`].filter(Boolean).join('. ') + '.';
+}
+
+/* Named only when Model A picks the OTHER team from Model B -- not when one
+   of them calls it even, which is not a disagreement about who wins. */
+function cardDisagreement(g){
+  const a = cardSide(g.fbA_home, g), b = cardSide(g.mktB_home, g), m = cardSide(g.mkt_home, g);
+  if(!a.team || !b.team || a.team === b.team) return '';
+  const withB = m && m.team === b.team ? 'Model B and the market pick' : 'Model B picks';
+  return `Model A picks <b>${a.team}</b>; ${withB} <b>${b.team}</b>.`;
+}
+
+function cardProbHtml(g, awayC, homeC){
+  const b = cardSide(g.mktB_home, g), a = cardSide(g.fbA_home, g), m = cardSide(g.mkt_home, g);
+  const vals = {b: g.mktB_home, a: g.fbA_home, market: g.mkt_home};
+  const lanes = cardLanes(vals);
+  const mark = k => {
+    if(vals[k] === null || vals[k] === undefined) return '';
+    const s = CARD_SERIES[k];
+    return `<svg class="card-mk" style="left:${vals[k]}%; top:calc(50% + ${lanes[k] * 9}px)" width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">`
+      + `${markerPath(s.shape, 7, 7, 5)} fill="${s.color}"/></svg>`;
+  };
+  const key = (k, side) => {
+    const s = CARD_SERIES[k];
+    return `<span class="card-key"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">${markerPath(s.shape, 7, 7, 5)} fill="${s.color}"/></svg>`
+      + `${s.label} <b>${cardSideText(side)}</b></span>`;
+  };
+  const bPicksAway = b.team === g.away, bPicksHome = b.team === g.home;
+  const headline = b.team
+    ? `<span class="card-hl-label">Model B</span> <b>${b.team} ${Math.round(b.pct)}%</b> <span class="card-hl-to">to win</span>`
+    : `<span class="card-hl-label">Model B</span> <b>Too close to call</b>`;
+  const disagree = cardDisagreement(g);
+  return `<div class="card-hl">${headline}</div>
+      <div class="card-viz" role="img" aria-label="${cardAria(g)}">
+        <span class="card-end">${pickBadge(bPicksAway, g.graded, g.model_b_correct)}${g.away}</span>
+        <div class="card-scale">
+          <div class="tele-bar">
+            <div class="tele-bar-seg" style="width:${100-g.mktB_home}%; background:${awayC};"></div>
+            <div class="tele-bar-seg" style="width:${g.mktB_home}%; background:${homeC};"></div>
+          </div>
+          <div class="card-line"><span class="card-mid"></span><span class="card-mid-label">50%</span>${mark('a')}${mark('market')}${mark('b')}</div>
+        </div>
+        <span class="card-end">${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${g.home}</span>
+      </div>
+      <div class="card-keys">${key('b', b)}${m ? key('market', m) : ''}${key('a', a)}</div>
+      ${disagree ? `<div class="card-disagree">${disagree}</div>` : ''}`;
+}
+
 function matchupHeader(g, variant){
   return `<div class="matchup-header${variant ? ' ' + variant : ''}">${g.away} <span class="at-symbol">at</span> ${g.home}</div>`;
 }
@@ -3631,30 +3761,7 @@ function renderGames(){
             tossUp ? 'Toss-up' : (diverge >= 12 ? 'Models split' : 'Models agree')}</span>
         </div>
       </div>
-      <div class="model-row">
-        <span class="model-label a">MODEL A</span>
-        <div class="tele">
-          <div class="tele-team ${aAwayWin?'winner':''}">${pickBadge(aAwayWin, g.graded, g.model_a_correct)}<img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.fbA_home).toFixed(1)}%</span></div>
-          <div class="tele-bar">
-            <div class="tele-bar-seg" style="width:${100-g.fbA_home}%; background:${awayC};"></div>
-            <div class="tele-bar-seg" style="width:${g.fbA_home}%; background:${homeC};"></div>
-            <div class="tele-marker"></div>
-          </div>
-          <div class="tele-team right ${aHomeWin?'winner':''}">${pickBadge(aHomeWin, g.graded, g.model_a_correct)}<img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.fbA_home.toFixed(1)}%</span></div>
-        </div>
-      </div>
-      <div class="model-row">
-        <span class="model-label b">MODEL B</span>
-        <div class="tele">
-          <div class="tele-team ${bAwayWin?'winner':''}">${pickBadge(bAwayWin, g.graded, g.model_b_correct)}<img class="tele-logo" src="${teamLogo(g.away)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.away}<span class="pct">${(100-g.mktB_home).toFixed(1)}%</span></div>
-          <div class="tele-bar">
-            <div class="tele-bar-seg" style="width:${100-g.mktB_home}%; background:${awayC};"></div>
-            <div class="tele-bar-seg" style="width:${g.mktB_home}%; background:${homeC};"></div>
-            <div class="tele-marker"></div>
-          </div>
-          <div class="tele-team right ${bHomeWin?'winner':''}">${pickBadge(bHomeWin, g.graded, g.model_b_correct)}<img class="tele-logo" src="${teamLogo(g.home)}" alt="" loading="lazy" onerror="this.style.display='none'">${g.home}<span class="pct">${g.mktB_home.toFixed(1)}%</span></div>
-        </div>
-      </div>
+      ${cardProbHtml(g, awayC, homeC)}
       <div class="market-ref">Vegas line: <b>${spreadText}</b></div>
       ${trackRecordHtml(g.mktB_home, 'card')}
       ${whyHtml}

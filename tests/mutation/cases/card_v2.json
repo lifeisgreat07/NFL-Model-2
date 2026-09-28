@@ -1,0 +1,56 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_card_v2.py",
+  "cases": [
+    {
+      "id": "card-lanes-never-dodge",
+      "why": "markers that would touch all stay on the line, so at ATL@GB the circle hides under the triangle.",
+      "find": "    out[k] = crowded ? CARD_LANE[k] : 0;",
+      "replace": "    out[k] = 0;",
+      "expect_caught_by": "test_markers_that_would_touch_take_fixed_lanes"
+    },
+    {
+      "id": "card-lanes-share-a-side",
+      "why": "the market dodges below instead of above, into Model A's lane, so the two still overlap.",
+      "find": "const CARD_LANE = {market: -1, b: 0, a: 1};",
+      "replace": "const CARD_LANE = {market: 1, b: 0, a: 1};",
+      "expect_caught_by": "test_markers_that_would_touch_take_fixed_lanes"
+    },
+    {
+      "id": "card-even-call-reads-as-disagreement",
+      "why": "a model calling the game even is reported as picking the other team.",
+      "find": "  if(!a.team || !b.team || a.team === b.team) return '';",
+      "replace": "  if(a.team === b.team) return '';",
+      "expect_caught_by": "test_disagreement_is_named_only_when_model_a_picks_the_other_team"
+    },
+    {
+      "id": "card-headline-from-model-a",
+      "why": "the headline and bar follow Model A, the weaker model, instead of Model B.",
+      "find": "  const b = cardSide(g.mktB_home, g), a = cardSide(g.fbA_home, g), m = cardSide(g.mkt_home, g);\n  const vals",
+      "replace": "  const b = cardSide(g.fbA_home, g), a = cardSide(g.mktB_home, g), m = cardSide(g.mkt_home, g);\n  const vals",
+      "expect_caught_by": "test_the_card_leads_with_model_b_and_keys_b_market_a_in_that_order"
+    },
+    {
+      "id": "card-picks-inside-the-even-band",
+      "why": "a 50.8% call is headlined as a pick.",
+      "find": "  if(Math.abs(pHome - 50) < CARD_EVEN_BAND) return {team: null, pct: Math.max(pHome, 100 - pHome)};",
+      "replace": "  if(false) return {team: null, pct: Math.max(pHome, 100 - pHome)};",
+      "expect_caught_by": "test_too_close_to_call_is_said_rather_than_picked"
+    },
+    {
+      "id": "card-market-colour-drifts",
+      "why": "the card's market triangle takes a different colour from Season Accuracy's.",
+      "find": "  market: {label:'Market',  color:'var(--series-c)', shape:'triangle'},",
+      "replace": "  market: {label:'Market',  color:'var(--series-d)', shape:'triangle'},",
+      "expect_caught_by": "test_the_cards_series_are_season_accuracys"
+    },
+    {
+      "id": "card-market-probability-dropped",
+      "target": "src/generate_dashboard.py",
+      "why": "the market's probability never reaches the page, so the card shows it only as a spread.",
+      "find": "            'mkt_home': (round(p['market_prob_home'] * 100, 1)\n                         if p.get('market_prob_home') is not None else None),",
+      "replace": "            'mkt_home': None,",
+      "expect_caught_by": "test_the_market_probability_reaches_the_page"
+    }
+  ]
+}
