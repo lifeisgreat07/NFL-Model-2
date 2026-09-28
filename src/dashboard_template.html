@@ -5474,6 +5474,18 @@ renderAccuracy();
    rather than assumed: the no-data branch runs BEFORE anything is enhanced. */
 let teamDiveListbox = null;
 
+/* The team Team Deep-Dive opens on when no #team/<code> link names one
+   (Stage 19): the top of Power Ratings, by the rank Python computed for that
+   table. It used to be the first option alphabetically -- Arizona, whatever
+   Arizona's season. A link still wins: applyRoute() sets the select after
+   this. With no rank 1, or a rank 1 the history file has no name for, it
+   falls back to that first option, so the page never opens on nothing. */
+function teamDiveDefault(names, ratedTeams){
+  const top = (ratedTeams || []).find(t => t.rank === 1);
+  if(top && Object.prototype.hasOwnProperty.call(names, top.team)) return top.team;
+  return Object.keys(names).sort((a, b) => names[a].localeCompare(names[b]))[0];
+}
+
 function renderTeamDive(){
   const select = document.getElementById('teamdive-select');
   const content = document.getElementById('teamdive-content');
@@ -5494,6 +5506,8 @@ function renderTeamDive(){
   if(select.options.length === 0){
     const sortedTeams = Object.keys(teamHistory.names).sort((a,b)=>teamHistory.names[a].localeCompare(teamHistory.names[b]));
     select.innerHTML = sortedTeams.map(t=>`<option value="${t}">${teamHistory.names[t]} (${t})</option>`).join('');
+    // Before the listbox is built, so its button names the same team.
+    select.value = teamDiveDefault(teamHistory.names, teams);
     select.addEventListener('change', renderTeamDive);
     /* AFTER the change listener, never before -- the same ordering the Week
        Board's call site documents, and for the same reason. enhanceSelect
