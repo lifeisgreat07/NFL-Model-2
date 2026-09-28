@@ -1166,11 +1166,11 @@
     display:flex; flex-direction:column;
     transition:border-color var(--dur-base) var(--ease);}
   .game-card.has-flag{border-left:3px solid var(--accent);}
-  .game-top{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--s3); margin-bottom:var(--s4);}
+  /* The tags alone since the pick'em rank left this row (2026-09-28); they
+     keep the right-hand place they had beside it. */
+  .game-top{display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:var(--s3); margin-bottom:var(--s4);}
   .matchup-header{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); margin-bottom:var(--s3); display:flex; align-items:center; gap:var(--s2); flex-wrap:wrap;}
   .at-symbol{color:var(--text-2); font-weight:500;}
-  .matchup-team{display:inline-flex; align-items:center; gap:var(--s2);}
-  .matchup-logo{width:20px; height:20px; object-fit:contain; flex-shrink:0;}
   /* My Picks' variant. These values are not a new design choice -- they are
      what .game-top > .game-confidence produced there, measured on the rendered
      page before the two render paths were merged into one helper: 11px,
@@ -1184,12 +1184,6 @@
      "NE at SEA" without anyone deciding to. */
   .matchup-header.quiet{display:block; font-weight:400; font-size:var(--fs-11);
     color:var(--text-2); letter-spacing:.03em; margin-bottom:var(--s4);}
-  /* WAS .game-kickoff, which held a confidence rank and never a kickoff. The
-     name was flagged in this file as a collision waiting to happen, and the
-     collision arrived the moment a real kickoff went on the card. Renamed
-     rather than worked around, because the next person to read
-     `.game-kickoff` would have believed it. */
-  .game-confidence{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); letter-spacing:.03em;}
   .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.06em; text-transform:uppercase; padding:var(--s1) var(--s3); border-radius:20px;}
   /* .tag-good / .tag-warn retired (Stage 9): an ACCEPT or a REJECT is a
      decision about an experiment, not a scored pick, and the pill already
@@ -1262,6 +1256,14 @@
   .card-end{display:inline-flex; align-items:center; gap:var(--s1); font-family:'Plus Jakarta Sans', sans-serif;
     font-weight:700; font-size:var(--fs-13); line-height:9px; color:var(--text-2);}
   .card-end .pick-badge{margin-bottom:0;}
+  /* 20px logo on a 9px line: the negative margin keeps the row as tall as the
+     bar it sits beside, so the logo does not push the bar down. */
+  .card-end-team{display:inline-flex; align-items:center; gap:var(--s1);}
+  .card-end-logo{width:20px; height:20px; object-fit:contain; flex-shrink:0; margin:calc(-1 * var(--s1)) 0;}
+  @media (max-width:767px){
+    .card-end-team{flex-direction:column; gap:var(--s1);}
+    .card-end-logo{margin:calc(-1 * var(--s1)) 0 0;}
+  }
   /* A faint inner outline, so a pale team colour (LV's silver, NO's gold)
      still has an edge on the light theme's white card. */
   .card-scale .tele-bar{box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--text) 18%, transparent);}
@@ -3688,7 +3690,7 @@ function cardProbHtml(g, awayC, homeC){
   const disagree = cardDisagreement(g);
   return `<div class="card-hl">${headline}</div>
       <div class="card-viz" role="img" aria-label="${cardAria(g)}">
-        <span class="card-end">${pickBadge(bPicksAway, g.graded, g.model_b_correct)}${g.away}</span>
+        <span class="card-end">${pickBadge(bPicksAway, g.graded, g.model_b_correct)}${barTeam(g.away)}</span>
         <div class="card-scale">
           <div class="tele-bar">
             <div class="tele-bar-seg" style="width:${100-g.mktB_home}%; background:${awayC};"></div>
@@ -3696,29 +3698,29 @@ function cardProbHtml(g, awayC, homeC){
           </div>
           <div class="card-line"><span class="card-mid"></span><span class="card-mid-label">50%</span>${mark('a')}${mark('market')}${mark('b')}</div>
         </div>
-        <span class="card-end">${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${g.home}</span>
+        <span class="card-end">${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${barTeam(g.home)}</span>
       </div>
       <div class="card-keys">${key('b', b)}${m ? key('market', m) : ''}${key('a', a)}</div>
       ${disagree ? `<div class="card-disagree">${disagree}</div>` : ''}`;
 }
 
 function matchupHeader(g, variant){
-  const logo = !variant;
-  return `<div class="matchup-header${variant ? ' ' + variant : ''}">${matchupTeam(g.away, logo)} <span class="at-symbol">at</span> ${matchupTeam(g.home, logo)}</div>`;
+  return `<div class="matchup-header${variant ? ' ' + variant : ''}">${g.away} <span class="at-symbol">at</span> ${g.home}</div>`;
 }
 
-/* Logos back on the Week Board's header (Stage 17), 20px beside each team --
-   the size the Stage 8 restyle set for their return. Decorative, alt="",
-   because the abbreviation beside each logo is the name, and a screen reader
-   would otherwise read every team twice. onerror hides a logo ESPN will not
-   serve and leaves the abbreviation: the same fallback as every other logo
-   here, and the reason the logos are hot-linked rather than copied into the
-   repository (CLAUDE.md Stage 12). My Picks' quiet header stays text: its
-   pick buttons already carry the logos. */
-function matchupTeam(team, withLogo){
-  return withLogo
-    ? `<span class="matchup-team"><img class="matchup-logo" src="${teamLogo(team)}" alt="" loading="lazy" onerror="this.style.display='none'">${team}</span>`
-    : team;
+/* The Week Board's logos sit at the two ends of Model B's bar, beside each
+   team's abbreviation (Mark, 2026-09-28: he preferred them there to the
+   header Stage 17 put them in). 20px, the size the Stage 8 restyle set for
+   logos in the core UI. Decorative, alt="", because the abbreviation beside
+   each logo is the name, and a screen reader would otherwise read every team
+   twice. onerror hides a logo ESPN will not serve and leaves the
+   abbreviation: the same fallback as every other logo here, and the reason
+   the logos are hot-linked rather than copied into the repository (CLAUDE.md
+   Stage 12). On a phone the logo stacks above the abbreviation, so the ends
+   are no wider than the abbreviation alone and the probability line keeps
+   the width CARD_NEAR was measured on. */
+function barTeam(team){
+  return `<span class="card-end-team"><img class="card-end-logo" src="${teamLogo(team)}" alt="" loading="lazy" onerror="this.style.display='none'">${team}</span>`;
 }
 
 /* ---------- Kickoff order ----------
@@ -3776,10 +3778,10 @@ function kickoffLabel(g){
 function cardStatusLine(g){
   const hasScore = g.away_score !== null && g.away_score !== undefined
     && g.home_score !== null && g.home_score !== undefined;
-  if(g.status === 'final' && hasScore){
-    const score = `Final: ${g.away} ${g.away_score}, ${g.home} ${g.home_score}`;
-    return g.graded ? score : `${score} · picks graded on Tuesday`;
-  }
+  // Just the score. Until 2026-09-28 an ungraded final also said when the
+  // picks would be graded; Mark called that redundant, and the graded tag
+  // says it once it happens.
+  if(g.status === 'final' && hasScore) return `Final: ${g.away} ${g.away_score}, ${g.home} ${g.home_score}`;
   if(g.status === 'started' && !g.graded) return 'Kicked off · final score not in yet';
   return '';
 }
@@ -3850,21 +3852,6 @@ function cardNewsLine(g, news){
 
 function kickoffKey(g){
   return g.gameday ? `${g.gameday}T${g.gametime_et || '00:00'}` : null;
-}
-
-/* ---------- Pick'em rank, in words (Stage 11) ----------
-   Was "Confidence #6 · 11 pts". Two problems with it: "Confidence #6"
-   reads as a confidence LEVEL of 6 rather than the sixth-most-confident
-   game, and elsewhere on this site "pt" means percentage points (Model
-   Lab's gaps), so the abbreviation meant two different things. This is the
-   game's place in a confidence pool and the points it is worth there, so
-   it says that. Returns '' when the week carries neither field (weeks saved
-   before ranking existed), rendering nothing rather than a placeholder. */
-function pickemRankLabel(g){
-  const rank = g.confidence_rank, points = g.confidence_points;
-  const pointsWords = points ? `${points} point${points === 1 ? '' : 's'}` : '';
-  if(rank) return `Pick'em rank ${rank}` + (pointsWords ? ` (${pointsWords})` : '');
-  return pointsWords ? `Worth ${pointsWords} in pick'em` : '';
 }
 
 function byConfidence(a, b){
@@ -4009,7 +3996,6 @@ function renderGames(){
       ${kickoff || tvPill ? `<div class="card-kickoff">${kickoff}${tvPill}</div>` : ''}
       ${statusLine ? `<div class="card-status">${statusLine}</div>` : ''}
       <div class="game-top">
-        <span class="game-confidence">${pickemRankLabel(g)}</span>
         <div class="tag-row" style="display:flex; gap:var(--s2); align-items:center;">
           ${gradedTag}
           ${/* The badge says WHETHER the models disagree, not by how much. It

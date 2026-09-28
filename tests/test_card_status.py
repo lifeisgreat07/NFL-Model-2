@@ -68,13 +68,16 @@ def test_a_final_score_is_away_first_like_the_card(lines):
     assert lines['final_graded'] == 'Final: ATL 35, GB 14'
 
 
-def test_an_ungraded_final_says_the_picks_are_graded_on_tuesday(lines):
-    assert lines['final_ungraded'] == 'Final: ATL 35, GB 14 · picks graded on Tuesday'
+def test_an_ungraded_final_is_just_the_score(lines):
+    """It said "· picks graded on Tuesday" too until 2026-09-28, when Mark
+    called that redundant; the graded tag says it once grading happens."""
+    assert lines['final_ungraded'] == 'Final: ATL 35, GB 14'
+    assert '· picks graded on Tuesday' not in template()
 
 
 def test_a_shutout_score_of_zero_is_still_a_score(lines):
     """0 is falsy in JavaScript; a truthiness check would drop a real final."""
-    assert lines['final_zero'] == 'Final: ATL 0, GB 3 · picks graded on Tuesday'
+    assert lines['final_zero'] == 'Final: ATL 0, GB 3'
 
 
 def test_half_a_score_is_not_a_final(lines):

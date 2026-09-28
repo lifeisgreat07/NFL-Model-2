@@ -28,7 +28,7 @@ if (i === -1 || j === -1 || j <= i) {
 eval(tpl.slice(i, j));
 
 // The logo URL comes from teamLogo() and its ESPN_CODE table, which sit
-// earlier in the script (Stage 17 put logos in the Week Board's header).
+// earlier in the script; barTeam() (defined after matchupHeader) uses them.
 for (const [name, re] of [['ESPN_CODE', /const ESPN_CODE = \{[\s\S]*?\r?\n\};/],
                           ['teamLogo', /function teamLogo\([\s\S]*?\r?\n\}/]]) {
   const m = tpl.match(re);
@@ -45,5 +45,7 @@ console.log(JSON.stringify({
   picks: matchupHeader(g, 'quiet'),
   // A variant must not be able to smuggle in a second class list.
   undefinedVariant: matchupHeader(g, undefined),
-  emptyVariant: matchupHeader(g, '')
+  emptyVariant: matchupHeader(g, ''),
+  // The Week Board's logos, at the ends of Model B's bar since 2026-09-28.
+  bar: barTeam('NE')
 }));

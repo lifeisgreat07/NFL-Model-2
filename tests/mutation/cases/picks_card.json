@@ -50,13 +50,6 @@
       "find": "      ${kickoff || tvPill ? `<div class=\"card-kickoff\">${kickoff}${tvPill}</div>` : ''}\n      ${statusLine ?",
       "replace": "      ${statusLine ?",
       "expect_caught_by": "test_the_week_board_card_shows_the_kickoff_it_is_sorted_by"
-    },
-    {
-      "id": "confidence-span-goes-back-to-being-called-a-kickoff",
-      "why": "the confidence rank's class reverts to .game-kickoff, which is what it was called for months while holding no kickoff at all. With a real .card-kickoff now on the same card, two differently-named elements would both claim to be the kickoff and the wrong one holds the pick'em rank ('Pick'em rank 7 (10 points)' since Stage 11). Purely a naming defect, which is exactly why it would survive review: nothing renders differently.",
-      "find": "        <span class=\"game-confidence\">",
-      "replace": "        <span class=\"game-kickoff\">",
-      "expect_caught_by": "test_nothing_is_still_called_a_kickoff_that_is_not_one"
     }
   ]
 }

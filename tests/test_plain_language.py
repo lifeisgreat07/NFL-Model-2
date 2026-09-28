@@ -114,8 +114,8 @@ RENDERERS = {
     # rules to the same text. Said plainly rather than left as an apparent
     # coverage gap.
     'matchupHeader': 'board',
-    # The team and its logo inside that title (Stage 17); same page, same reason.
-    'matchupTeam': 'board',
+    # A team's logo and abbreviation at each end of Model B's bar; same page.
+    'barTeam': 'board',
     # Stage 10's page-state helper. It renders onto most pages, and its own
     # literals are markup with no prose: every word a reader sees is passed in
     # by a call site, and those call sites sit inside the render functions

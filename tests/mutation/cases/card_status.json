@@ -19,8 +19,8 @@
     {
       "id": "card-status-flips-the-score",
       "why": "home score first under an away-first matchup header reads as the other team winning.",
-      "find": "    const score = `Final: ${g.away} ${g.away_score}, ${g.home} ${g.home_score}`;",
-      "replace": "    const score = `Final: ${g.away} ${g.home_score}, ${g.home} ${g.away_score}`;",
+      "find": "return `Final: ${g.away} ${g.away_score}, ${g.home} ${g.home_score}`;",
+      "replace": "return `Final: ${g.away} ${g.home_score}, ${g.home} ${g.away_score}`;",
       "expect_caught_by": "test_a_final_score_is_away_first_like_the_card"
     },
     {

@@ -28,21 +28,21 @@
       "why": "the variant starts altering the separator as well as the class list. One construction site producing two different sentences is the original defect in a subtler and harder-to-spot form: the count guard still passes, the call-site guard still passes, and the two pages disagree again. Only executing the function catches it.",
       "find": "<span class=\"at-symbol\">at</span>",
       "replace": "<span class=\"at-symbol\">${variant ? '@' : 'at'}</span>",
-      "expect_caught_by": "test_the_variant_adds_a_class_and_drops_only_the_logos"
+      "expect_caught_by": "test_the_variant_adds_a_class_and_nothing_else"
     },
     {
-      "id": "card-header-logos-on-my-picks",
-      "why": "My Picks' quiet title gains logos too, doubling the ones its pick buttons already carry.",
-      "find": "  const logo = !variant;",
-      "replace": "  const logo = true;",
-      "expect_caught_by": "test_the_variant_adds_a_class_and_drops_only_the_logos"
-    },
-    {
-      "id": "card-header-logos-dropped",
-      "why": "the Week Board's title loses its logos again, which is the gap Mark noticed on 2026-09-28.",
-      "find": "  const logo = !variant;",
-      "replace": "  const logo = false;",
+      "id": "card-header-logos-back-in-the-title",
+      "why": "the logos go back into the title as well as the bar, so every team shows its logo twice on one card.",
+      "find": "  return `<div class=\"matchup-header${variant ? ' ' + variant : ''}\">${g.away} <span class=\"at-symbol\">at</span> ${g.home}</div>`;",
+      "replace": "  return `<div class=\"matchup-header${variant ? ' ' + variant : ''}\">${barTeam(g.away)} <span class=\"at-symbol\">at</span> ${barTeam(g.home)}</div>`;",
       "expect_caught_by": "test_the_helper_renders_both_teams_and_the_separator"
+    },
+    {
+      "id": "card-bar-home-end-loses-its-logo",
+      "why": "the home end of the bar goes back to a bare abbreviation, so one side of the card has a logo and the other does not.",
+      "find": "${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${barTeam(g.home)}</span>",
+      "replace": "${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${g.home}</span>",
+      "expect_caught_by": "test_the_bar_ends_carry_the_logo_beside_the_abbreviation"
     },
     {
       "id": "card-header-logo-named-twice",
@@ -60,10 +60,17 @@
     },
     {
       "id": "card-header-logo-oversized",
-      "why": "the header's logos grow past the 20px the restyle set, and outweigh the abbreviations beside them.",
-      "find": "  .matchup-logo{width:20px; height:20px;",
-      "replace": "  .matchup-logo{width:32px; height:32px;",
+      "why": "the bar's logos grow past the 20px the restyle set, and outweigh the abbreviations beside them.",
+      "find": "  .card-end-logo{width:20px; height:20px;",
+      "replace": "  .card-end-logo{width:32px; height:32px;",
       "expect_caught_by": "test_the_logo_is_twenty_pixels"
+    },
+    {
+      "id": "card-bar-logo-side-by-side-on-phones",
+      "why": "on a phone the logo sits beside the abbreviation instead of above it, and the probability line narrows below the width its marker spacing was measured on.",
+      "find": "    .card-end-team{flex-direction:column; gap:var(--s1);}",
+      "replace": "    .card-end-team{gap:var(--s1);}",
+      "expect_caught_by": "test_on_a_phone_the_logo_stacks_above_the_abbreviation"
     }
   ]
 }
