@@ -68,9 +68,9 @@ def test_a_referees_name_is_one_name_however_it_is_spaced():
 
 def test_the_differential_is_away_minus_home():
     pbp = pd.DataFrame([
-        {'game_id': 'g1', 'penalty': 1, 'penalty_team': 'AWY', 'penalty_yards': 15},
-        {'game_id': 'g1', 'penalty': 1, 'penalty_team': 'HOM', 'penalty_yards': 5},
-        {'game_id': 'g1', 'penalty': 1, 'penalty_team': 'AWY', 'penalty_yards': 10},
+        {'game_id': 'g1', 'home_team': 'HOM', 'away_team': 'AWY', 'penalty': 1, 'penalty_team': 'AWY', 'penalty_yards': 15},
+        {'game_id': 'g1', 'home_team': 'HOM', 'away_team': 'AWY', 'penalty': 1, 'penalty_team': 'HOM', 'penalty_yards': 5},
+        {'game_id': 'g1', 'home_team': 'HOM', 'away_team': 'AWY', 'penalty': 1, 'penalty_team': 'AWY', 'penalty_yards': 10},
     ])
     games, _ = rf.penalty_differential(pbp, rf.named_referee_games(one_game()))
     assert games['differential'].tolist() == [20.0]
@@ -78,9 +78,9 @@ def test_the_differential_is_away_minus_home():
 
 def test_rows_that_are_not_penalties_or_name_neither_team_do_not_count():
     pbp = pd.DataFrame([
-        {'game_id': 'g1', 'penalty': 0, 'penalty_team': 'AWY', 'penalty_yards': 15},
-        {'game_id': 'g1', 'penalty': 1, 'penalty_team': None, 'penalty_yards': 5},
-        {'game_id': 'g1', 'penalty': 1, 'penalty_team': 'HOM', 'penalty_yards': 5},
+        {'game_id': 'g1', 'home_team': 'HOM', 'away_team': 'AWY', 'penalty': 0, 'penalty_team': 'AWY', 'penalty_yards': 15},
+        {'game_id': 'g1', 'home_team': 'HOM', 'away_team': 'AWY', 'penalty': 1, 'penalty_team': None, 'penalty_yards': 5},
+        {'game_id': 'g1', 'home_team': 'HOM', 'away_team': 'AWY', 'penalty': 1, 'penalty_team': 'HOM', 'penalty_yards': 5},
     ])
     games, counts = rf.penalty_differential(pbp, rf.named_referee_games(one_game()))
     assert games['differential'].tolist() == [-5.0]
@@ -92,11 +92,26 @@ def test_a_game_without_play_by_play_is_dropped_not_scored_zero():
         {'game_id': 'g1', 'season': 2018, 'home_team': 'H', 'away_team': 'A', 'referee': 'R'},
         {'game_id': 'g2', 'season': 2018, 'home_team': 'H', 'away_team': 'A', 'referee': 'R'},
     ]))
-    pbp = pd.DataFrame([{'game_id': 'g1', 'penalty': 0, 'penalty_team': None, 'penalty_yards': None}])
+    pbp = pd.DataFrame([{'game_id': 'g1', 'home_team': 'H', 'away_team': 'A', 'penalty': 0,
+                         'penalty_team': None, 'penalty_yards': None}])
     games, counts = rf.penalty_differential(pbp, s)
     assert games['game_id'].tolist() == ['g1']
     assert games['differential'].tolist() == [0.0]   # loaded, no penalties: a real zero
     assert counts['games_without_play_by_play'] == 1
+
+
+def test_a_relocated_team_is_matched_in_play_by_plays_own_spelling():
+    # the schedule calls the 2018 Raiders OAK; play-by-play, and so penalty_team, calls them LV
+    s = rf.named_referee_games(one_game(home_team='OAK', away_team='DEN'))
+    pbp = pd.DataFrame([
+        {'game_id': 'g1', 'home_team': 'LV', 'away_team': 'DEN', 'penalty': 1,
+         'penalty_team': 'LV', 'penalty_yards': 15},
+        {'game_id': 'g1', 'home_team': 'LV', 'away_team': 'DEN', 'penalty': 1,
+         'penalty_team': 'DEN', 'penalty_yards': 5},
+    ])
+    games, counts = rf.penalty_differential(pbp, s)
+    assert games['differential'].tolist() == [-10.0]
+    assert counts['penalty_rows_on_neither_team'] == 0
 
 
 # ------------------------------------------------------------ the windows
@@ -178,9 +193,9 @@ def synthetic_inputs(persistent):
                 gid = f'g{n}'
                 sched.append({'game_id': gid, 'game_type': 'REG', 'season': season,
                               'home_team': 'HOM', 'away_team': 'AWY', 'referee': ref})
-                pbp.append({'game_id': gid, 'season': season, 'season_type': 'REG', 'penalty': 1,
+                pbp.append({'game_id': gid, 'season': season, 'season_type': 'REG', 'home_team': 'HOM', 'away_team': 'AWY', 'penalty': 1,
                             'penalty_team': 'AWY', 'penalty_yards': 30 + e + rng.normal(scale=3.0)})
-                pbp.append({'game_id': gid, 'season': season, 'season_type': 'REG', 'penalty': 1,
+                pbp.append({'game_id': gid, 'season': season, 'season_type': 'REG', 'home_team': 'HOM', 'away_team': 'AWY', 'penalty': 1,
                             'penalty_team': 'HOM', 'penalty_yards': 30.0})
     return pd.DataFrame(sched), pd.DataFrame(pbp)
 
@@ -193,7 +208,7 @@ def test_run_r1_loads_only_2016_to_2023_and_scores_by_the_rule(monkeypatch, tmp_
 
     def load_pbp(seasons, columns):
         asked.extend(seasons)
-        assert set(columns) >= {'penalty', 'penalty_team', 'penalty_yards'}
+        assert set(columns) >= {'home_team', 'away_team', 'penalty', 'penalty_team', 'penalty_yards'}
         return pbp[pbp['season'].isin(seasons)]
     monkeypatch.setattr(s6r.s6, 'load_pbp', load_pbp)
     monkeypatch.setattr(s6r, 'RESULTS_DIR', tmp_path)

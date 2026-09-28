@@ -25,7 +25,8 @@ EARLY = (2016, 2020)
 LATE = (2021, 2023)
 MIN_EARLY = 40                          # registry: "at least 40 such games in 2016-2020"
 MIN_LATE = 24                           # registry: "at least 24 in 2021-2023"
-PBP_COLUMNS = ['game_id', 'season', 'season_type', 'penalty', 'penalty_team', 'penalty_yards']
+PBP_COLUMNS = ['game_id', 'season', 'season_type', 'home_team', 'away_team',
+               'penalty', 'penalty_team', 'penalty_yards']
 
 
 def named_referee_games(sched):
@@ -43,10 +44,16 @@ def penalty_differential(pbp, games):
 
     A game whose play-by-play was not loaded is dropped rather than scored
     zero; a loaded game with no penalty rows is a real zero.
+
+    Home and away are play-by-play's own, not the schedule's: penalty_team
+    uses play-by-play's abbreviations, and the two sources spell relocated
+    teams differently (the schedule's OAK and SD are play-by-play's LV and
+    LAC in those seasons), so matching against the schedule drops every
+    penalty on those teams.
     """
     loaded = set(pbp['game_id'])
     kept = games[games['game_id'].isin(loaded)].copy()
-    p = pbp[pbp['penalty'] == 1].merge(kept[['game_id', 'home_team', 'away_team']], on='game_id')
+    p = pbp[(pbp['penalty'] == 1) & pbp['game_id'].isin(kept['game_id'])]
     yards = p['penalty_yards'].astype(float)
     missing_yards = int(yards.isna().sum())
     yards = yards.fillna(0.0)

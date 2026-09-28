@@ -12,9 +12,16 @@
     {
       "id": "referee-non-penalty-rows-counted",
       "why": "yards on rows that are not penalties (a play's own yardage fields left in penalty_yards) are counted against a team",
-      "find": "p = pbp[pbp['penalty'] == 1].merge(",
-      "replace": "p = pbp.merge(",
+      "find": "p = pbp[(pbp['penalty'] == 1) & ",
+      "replace": "p = pbp[(pbp['penalty'] > -1) & ",
       "expect_caught_by": "test_rows_that_are_not_penalties_or_name_neither_team_do_not_count"
+    },
+    {
+      "id": "referee-teams-from-the-schedule",
+      "why": "home and away come from the schedule, whose OAK and SD are not play-by-play's LV and LAC, so every penalty on the relocated teams in those seasons is silently dropped (the first R1 run did this)",
+      "find": "p = pbp[(pbp['penalty'] == 1) & pbp['game_id'].isin(kept['game_id'])]",
+      "replace": "p = pbp[pbp['penalty'] == 1].drop(columns=['home_team', 'away_team']).merge(kept[['game_id', 'home_team', 'away_team']], on='game_id')",
+      "expect_caught_by": "test_a_relocated_team_is_matched_in_play_by_plays_own_spelling"
     },
     {
       "id": "referee-missing-game-scored-zero",
