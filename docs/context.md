@@ -4,22 +4,23 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-28, evening session (the Fable 5.1 audit planned as Stages 23 to 29; #169 to #172 merged)
+Last updated: 2026-09-28, night session (#173 to #177 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 3810 passing, none skipped — `python -m pytest -q` on `main` at
-`bb85c51` (after #171 and #172), HEAD level with origin.
+**Suite:** 3922 passing, none skipped — `python -B -m pytest -q -p no:cacheprovider`
+on `main` at `b8947b5` (after #177), HEAD level with origin.
 
 **Next action: check the QB routine's first run** (Mon 2026-09-28 22:00 UTC):
 it should have opened a PR (audit it like any other), or said in one line
-that none was needed. Then open the next prepared PR, worktree s24c (run-tests
-on every PR and push to main): rebase on origin/main, README to 122 case files,
-push, suite, scope, preflight, open. Then s24g, s24f; s23e waits on Mark's
-answer (merge without Booth's audit?). Tuesday's weekly summary is 11:00 UTC.
-No PR is open.
+that none was needed. Then open the prepared branches one at a time, each
+rebased with the next README case-file count (127 for the first that adds a
+file): s23b (Stage 23 item 2, collector keeps only Booth's accounts; adds no
+case file), s24t (Stage 24 item 7, timeouts), s24e (Stage 24 item 4, never
+save an empty week). Worktrees under the session archive. Tuesday's weekly
+summary is 11:00 UTC. Booth now posts as `github-actions[bot]`.
 
 **Done today:** Stage 19 (#160 to #162); Stage 6 closed — referees registered
 (#163) and R1 FAILED (#164, correlation +0.18, interval −0.28 to +0.65; a
@@ -45,13 +46,11 @@ logos (`35cfb6d`, docs only). Details: `memory/2026-09-28.md`.
 ## Queued, in order
 
 1. **Stages 23 to 29, from the 2026-09-28 audit** (approved by Mark the same
-   day; items and order in CLAUDE.md). Stage 23: items 1 and 4 merged
-   (#169, #170); item 3 dropped; item 5 confirmed and prepared, waiting on
-   Mark's answer about merging it without Booth (the action will not audit
-   its own workflow). Stage 24: items 2 and 1 merged (#171, #172); 3 and 6
-   skipped (reasons in CLAUDE.md). Prepared in worktrees under the session
-   archive: 24.5 run-tests everywhere, 24.8 atomic writes, 24.9 grading and
-   drift tests. One PR open at a time.
+   day; items and order in CLAUDE.md). Stage 23: items 1, 4, 5 and 6
+   merged (#169, #170, #176, #177); item 3 dropped; item 2 prepared. Stage
+   24: items 1, 2, 5, 8 and 9 merged (#172, #171, #173, #174, #175); 3 and
+   6 skipped (reasons in CLAUDE.md); 4 and 7 prepared. Then Stages 25 to 27.
+   One PR open at a time.
 2. **Stages 20 to 22**: 20 needs five real testers and comes after Stage 26;
    21 waits for week 5; 22 comes from 20.
 3. **Line movement and the closing-line backtest**: not before the 2026 regular season ends, beside Stage 28.

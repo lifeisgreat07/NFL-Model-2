@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **3810 passing** (none skipped) — `python -m pytest -q` on `main` at
-`bb85c51` (after #171 and #172), with HEAD level with origin, which is the order that makes the
+Suite: **3922 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+`b8947b5` (after #177), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -1542,16 +1542,18 @@ missed; 25 in the gaps; 26 before Stage 20's testers; 21 when week 5 lands;
 then 22.**
 
 ### Stage 23 - Page security and Booth's read-only claim
-**Progress:** item 1 merged (#169), item 4 merged (#170), each SAFE TO
-MERGE with 0 discrepancies. **Item 3 DROPPED (Mark, 2026-09-28):** the
+**Progress:** item 1 merged (#169), item 4 merged (#170), item 5 merged
+(#176), each SAFE TO MERGE with 0 discrepancies. #176 was expected to go
+unaudited (the action used to refuse a PR editing its own workflow) and was
+not: on `GITHUB_TOKEN` Booth ran on it and posted as `github-actions[bot]`.
+So Mark added item 6, merged (#177). Item 2 is prepared on a branch. **Item 3 DROPPED (Mark, 2026-09-28):** the
 audit's pattern would reject four `implicates` values Booth has really
 written ("PR #62 description" and the like), the same parser gates the Booth
 job, and after #169 the page escapes everything anyway. **Item 5 CONFIRMED
 (Mark read the app's settings, 2026-09-28):** the Claude GitHub App holds
 read and write on code, workflows and pull requests, so Booth could push.
-Fix prepared (run Booth on `GITHUB_TOKEN`, drop `id-token: write`); asked
-Mark whether that one PR may merge without Booth's audit, since the action
-refuses to run on a PR editing its own workflow.
+Mark agreed it could merge without Booth's audit; that turned out moot, as
+above.
 1. One `safe_json()` for every JSON fill in the generator, so no string can
    close the page's script element; an injection test over the built page.
 2. The agent-log collector keeps only comments by the Booth bot account
@@ -1562,12 +1564,17 @@ refuses to run on a PR editing its own workflow.
    Then either run Booth on `GITHUB_TOKEN` and drop `id-token: write`, or
    correct README, VERIFICATION.md and the workflow comment. Any tool
    allowlist must keep pip, node and npx: Booth renders pages.
+6. (Added 2026-09-28 after #176.) Scout preflight fails a PR that changes
+   `booth-pr-audit.yml` or `BOOTH_PROTOCOL.md` unless its body has a line
+   beginning "Human review required:". Booth reads both from the PR's own
+   checkout, so its verdict on such a PR is not independent.
 
 ### Stage 24 - Weekly pipeline resilience and CI coverage
 **Progress:** item 2 merged (#171: `predictions/skipped/`, a folder so no
 reader of `predictions/*_week*.json` can mistake a skip for picks); item 1
 merged (#172, narrower than the audit: only a failed Weekly update
-rebuilds, a failed collector still does not). **Item 3 skipped**: #171 makes
+rebuilds, a failed collector still does not); items 5, 8 and 9 merged
+(#173, #174, #175); items 4 and 7 prepared on branches. **Item 3 skipped**: #171 makes
 a manual week input mostly redundant. **Item 6 skipped**: GitHub cancels a
 PENDING run when a newer one queues in the same concurrency group, so a
 group shared by the weekly and weekend runs could cancel a pending weekly
@@ -1846,6 +1853,13 @@ under compaction pressure, so its length is a cost paid on every session.
   (whole) and Booth derived 345, a DISCREPANCY until the description said
   both. State "run whole" and both counts; the scope checker script in the
   session archive on markys (one-off-scripts) prints them.
+  **That script was wrong until 2026-09-28 (#176).** For a file matched at
+  the top level it counted EVERY case as case-by-case, including cases
+  whose own target overrides to an unchanged file (`readme_and_docs.json`
+  holds several). #173, #174 and #175 said 12, 34 and 14 case by case; the
+  fixed script, run against `main` after #176, gives 9, 31 and 11. Booth confirmed all three (twice without
+  re-deriving, once saying no override applied) and caught it on #176.
+  Fixed in the script; the merged bodies are left as they are.
 - **POWERSHELL `.Split('.json')` SPLITS ON CHARACTERS, NOT THE STRING.** A
   scope list built that way ran the wrong case files; use `-replace`. And a
   stop script that matches `run...ps1` also matches its own name
@@ -2361,6 +2375,12 @@ under compaction pressure, so its length is a cost paid on every session.
   bug. Consequence: after changing `booth-pr-audit.yml` on `main`, any open PR
   must merge `main` in before Booth will audit it, and "re-run the job" does not
   help, because a re-run replays the original workflow definition.
+  **NO LONGER TRUE SINCE #176 (2026-09-28).** The refusal belonged to the
+  path where the action fetched the Claude app's token over OIDC. Handed
+  `GITHUB_TOKEN`, it ran on #176, a PR editing its own workflow, and posted
+  as `github-actions[bot]`. So a PR can now change Booth's prompt and be
+  audited by the change; Stage 23 item 6 makes preflight demand a
+  human-review line on any such PR.
 - **The mutation runner's restore does not survive the process being killed.**
   It restores in a `finally`, which covers exceptions but not a hard kill. The
   Desktop Commander bridge cuts a command off at ~60 seconds and a full corpus
