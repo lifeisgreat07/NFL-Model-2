@@ -3,8 +3,10 @@
 Below 768px the experiment table's rows become cards: the same markup and
 reading order (name, result, decision), with only the boxes changed, so a
 screen reader hears what it heard before and nothing scrolls sideways. The
-breakpoint is measured, not the page's usual 640px: the table still scrolled
-sideways by 15px at 640 and first fitted at 655.
+breakpoint is measured, not the page's usual 640px: the table still scrolls
+sideways at 640 and first fits at about 651 to 655px. The exact figure depends
+on text rendering (two Chromium runs measured 651 and 655), so the guard holds
+the breakpoint to the higher of the two.
 
 Run with: pytest tests/test_model_lab_cards.py -v
 """
@@ -39,7 +41,7 @@ def rule(body, selector):
 
 def test_the_cards_start_below_the_width_the_table_first_fits():
     width, _ = block()
-    assert width >= 655, f"at {width}px the table still scrolls sideways (measured: fits from 655px)"
+    assert width >= 655, f"at {width}px the table can still scroll sideways (measured: fits from about 651 to 655px)"
 
 
 def test_rows_become_cards_only_in_the_experiment_log():

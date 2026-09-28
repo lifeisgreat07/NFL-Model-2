@@ -86,7 +86,7 @@
       "id": "lab-cards-at-the-usual-640",
       "target": "src/dashboard_template.html",
       "tests": "tests/test_model_lab_cards.py",
-      "why": "the cards start at the page's usual 640px, and between 641 and 654px the table still scrolls sideways (measured: it first fits at 655).",
+      "why": "the cards start at the page's usual 640px, and just above 640px the table still scrolls sideways (measured: it first fits at about 651 to 655px).",
       "find": "  @media (max-width:767px){\n    #page-modellab .table-wrap[data-scroll-label=\"Experiment log\"] :is(",
       "replace": "  @media (max-width:640px){\n    #page-modellab .table-wrap[data-scroll-label=\"Experiment log\"] :is(",
       "expect_caught_by": "test_the_cards_start_below_the_width_the_table_first_fits"
@@ -123,8 +123,8 @@
       "target": "src/dashboard_template.html",
       "tests": "tests/test_model_lab_cards.py",
       "why": "the comment above the card rules loses its close, so the whole @media block is inside a comment and a phone gets the sideways-scrolling table again.",
-      "find": "first fitted at 655. */\n  @media (max-width:767px){",
-      "replace": "first fitted at 655.\n  @media (max-width:767px){",
+      "find": "measured 651 and 655. */\n  @media (max-width:767px){",
+      "replace": "measured 651 and 655.\n  @media (max-width:767px){",
       "expect_caught_by": "test_the_card_rules_are_live_css_not_a_comment"
     }
   ]

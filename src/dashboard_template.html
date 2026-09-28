@@ -323,8 +323,10 @@
      is kept for assistive technology and hidden from sight, since each card's
      three parts are self-evident. A filtered-out row stays hidden: the
      display rule below would otherwise override the hidden attribute.
-     767px, not the page's usual 640: measured on the built page, the table
-     still scrolled sideways by 15px at 640 and first fitted at 655. */
+     767px, not the page's usual 640: on the built page the table still
+     scrolls sideways at 640 and first fits at about 651 to 655px. The exact
+     figure depends on the machine's text rendering; two Chromium runs
+     measured 651 and 655. */
   @media (max-width:767px){
     #page-modellab .table-wrap[data-scroll-label="Experiment log"] :is(table, tbody, tr, td){display:block; width:auto;}
     #page-modellab .table-wrap[data-scroll-label="Experiment log"] thead{position:absolute; width:1px; height:1px;
@@ -1481,7 +1483,8 @@
                this same width.
         767px  Model Lab's experiment log turns its rows into cards (Stage
                18). Its three columns of prose first fit side by side at
-               655px, so 640 would leave them scrolling sideways.
+               about 651 to 655px, so 640 would leave them scrolling
+               sideways.
         640px  components stack (Team Deep-Dive game rows, changelog).
         400px  the small-phone tightening below.
      Measured by rendering, not by arithmetic -- the range is in the Stage 10
