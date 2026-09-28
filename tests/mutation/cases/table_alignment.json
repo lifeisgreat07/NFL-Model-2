@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_table_alignment.py",
+  "cases": [
+    {
+      "id": "ablation-headers-left-of-their-numbers",
+      "why": "the ablation table's number headers lose class=\"num\" and sit left while their values sit right, the misalignment Mark reported on 2026-09-28.",
+      "find": "<th class=\"num\">Accuracy change</th>",
+      "replace": "<th>Accuracy change</th>",
+      "expect_caught_by": "test_a_number_column_is_a_number_column_from_header_to_last_row"
+    },
+    {
+      "id": "number-header-rule-left-aligned",
+      "why": "th.num keeps its class but not its alignment, so every number header drifts left of its column again.",
+      "find": "  .metrics-table th.num{text-align:right;}",
+      "replace": "  .metrics-table th.num{text-align:left;}",
+      "expect_caught_by": "test_a_number_header_is_right_aligned_like_its_numbers"
+    },
+    {
+      "id": "research-table-word-marked-as-number",
+      "why": "a word in the research-only table is marked as a number again and sits right of the rest of its column.",
+      "find": "<tr><td>Officials</td><td>Rejected</td></tr>",
+      "replace": "<tr><td>Officials</td><td class=\"num\">Rejected</td></tr>",
+      "expect_caught_by": "test_a_number_column_is_a_number_column_from_header_to_last_row"
+    }
+  ]
+}

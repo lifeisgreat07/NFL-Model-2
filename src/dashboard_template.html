@@ -1421,6 +1421,10 @@
   .metrics-table th{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); text-transform:uppercase; letter-spacing:.06em;
     color:var(--text-2); text-align:left; padding:var(--s2) var(--s3); border-bottom:1px solid var(--border);}
   .metrics-table td{padding:var(--s2) var(--s3); border-bottom:1px solid var(--border); font-family:'Plus Jakarta Sans', sans-serif; color:var(--text);}
+  /* A number column's header sits over its numbers: td.num is right-aligned,
+     so its th is too (the ablation table's headers sat left of their values
+     until 2026-09-28). */
+  .metrics-table th.num{text-align:right;}
   .metrics-table tr:last-child td{border-bottom:none;}
   .metrics-table .highlight{color:var(--accent);}
   .gap-item{display:flex; gap:var(--s3); padding:var(--s3) 0; border-bottom:1px solid var(--border); font-size:var(--fs-13);}
@@ -2087,7 +2091,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <h4>Which Features Actually Do the Work</h4>
       <p>Most of this project's research has tested whether <i>adding</i> something helps. A formal ablation pass asks the opposite question: remove each existing feature one at a time, fully retrain, and measure what actually breaks. That's how you find out where a model's predictive power really lives, rather than assuming every feature is pulling its weight.</p>
       <div class="table-wrap" style="margin-top:var(--s3);"><table class="metrics-table">
-        <thead><tr><th>Feature removed</th><th>Accuracy change</th><th>95% CI</th></tr></thead>
+        <thead><tr><th>Feature removed</th><th class="num">Accuracy change</th><th class="num">95% CI</th></tr></thead>
         <tbody>
           <tr><td>QB matchup</td><td class="num">-2.39&nbsp;pp</td><td class="num">[-5.15, +0.37]</td></tr>
           <tr><td>QB change</td><td class="num">-0.55&nbsp;pp</td><td class="num">[-1.93, +0.83]</td></tr>
@@ -2188,9 +2192,9 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="table-wrap"><table class="metrics-table">
         <thead><tr><th>Dataset</th><th>What happened</th></tr></thead>
         <tbody>
-          <tr><td>Officials</td><td class="num">Rejected</td></tr>
-          <tr><td>FTN charting</td><td class="num">Rejected</td></tr>
-          <tr><td>Trades</td><td class="num">Rejected</td></tr>
+          <tr><td>Officials</td><td>Rejected</td></tr>
+          <tr><td>FTN charting</td><td>Rejected</td></tr>
+          <tr><td>Trades</td><td>Rejected</td></tr>
           <tr><td>Rosters (weekly)</td><td>Not suitable -- confirmed not gameday active/inactive status</td></tr>
           <tr><td>Participation</td><td>Not suitable -- same limitation as snap counts, also doesn't update during the season</td></tr>
           <tr><td>ESPN QBR</td><td>Alternative QB quality metric -- Source confirmed abandoned, stops at 2023</td></tr>
