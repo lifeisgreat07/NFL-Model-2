@@ -24,8 +24,9 @@ a number typed in by hand.
 What it is meant to demonstrate, and where to look:
 
 - **A model that beats its baselines and admits where it doesn't.** The
-  table below is a 2022-2025 holdout, 1,087 games, never trained on the
-  season it is evaluated against. The football-only model beats
+  table below is 1,087 games from 2022-2025, each predicted by a model
+  trained only on games played before it, refit every week as the live
+  system is. The football-only model beats
   home-team-always-wins by about 8 points. It does *not* beat the betting
   market, and the README says so rather than quietly omitting the
   comparison. See `src/backtest.py` and `src/ratings_engine.py`.
@@ -86,8 +87,9 @@ fit together, `docs/architecture.md` has the whole system on one diagram.
 - Two models shown side by side: **Model A** (football-only) and
   **Model B** (Model A plus the current betting spread).
 
-Backtest results (2022-2025 holdout, 1,087 games, refit every week on
-strictly earlier games, never trained on the season being evaluated). The
+Backtest results (2022-2025, 1,087 games, refit every week on strictly
+earlier games, which include the earlier weeks of the season being
+evaluated). The
 same table is on the dashboard's **Methodology** page, and
 `tests/test_readme_accuracy.py` fails if the two disagree:
 
