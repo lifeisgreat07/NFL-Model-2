@@ -100,3 +100,25 @@ def test_a_correlation_is_not_read_as_a_difference():
     assert 'favours the new idea' not in by_id['R1']
     assert 'The screen needed the whole interval above zero.' in by_id['R1']
     assert 'A negative difference favours the new idea.' in by_id['N1']
+
+
+def test_every_glyph_sits_in_the_same_frame():
+    """Each row's interval is on its own scale, so without a frame the bare
+    lines read as graphs of different sizes in different places (Mark,
+    2026-09-28). Every glyph now draws one frame, the same size, first; only
+    the interval inside it moves, and zero is always its centre."""
+    entries = ml.entries()
+    rows = ROW.findall(gd.render_model_lab_rows(entries))
+    frames = set()
+    for e, (_, result, _) in zip(entries, rows):
+        if not (e['stage'] and e['headline']):
+            continue
+        svg = re.search(r'<svg class="lab-ci".*?</svg>', result).group(0)
+        first = re.search(r'<svg[^>]*>(<[a-z]+[^>]*>)', svg).group(1)
+        assert first.startswith('<rect class="lab-ci-frame"'), (e['id'], 'the frame must be drawn first, under the interval')
+        frames.add(first)
+        assert parts(svg)[0] == pytest.approx(48.0), e['id']
+    assert len(frames) == 1, frames
+    src = (ROOT / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+    rule = re.search(r'\.lab-ci-frame\{([^}]*)\}', src)
+    assert rule and 'stroke:var(--border)' in rule.group(1).replace(' ', ''), 'the frame has no visible edge'

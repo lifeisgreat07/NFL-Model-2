@@ -307,12 +307,20 @@
      it maps to, and where a registered answer's figures come from. */
   .lab-first,.lab-src{display:block; margin-top:var(--s1); font-size:var(--fs-12); color:var(--text-2);}
   .lab-src code{font-size:var(--fs-12);}
+  /* A row's decision pills: one wrapping row with a gap, and a pill never
+     breaks inside itself ("CONFIRMED FINDING" did, and DEFERRED stacked on
+     LEAKAGE with no space between them, until 2026-09-28). */
+  .lab-tags{display:flex; flex-wrap:wrap; gap:var(--s1);}
+  .lab-tags .conf-tag{white-space:nowrap;}
   /* A registered result leads with its interval drawn against zero (Stage 18):
      generate_dashboard.interval_glyph(). The zero line is dashed so it reads
      as a reference, not as part of the interval; every stroke is on the
      neutral ramp, because a result is not a graded pick. */
   .lab-lead{display:block; margin-bottom:var(--s1);}
   .lab-ci{display:block; overflow:visible;}
+  /* The frame every row's glyph shares (2026-09-28), so the graphs are one
+     size in one place and only the interval inside moves. */
+  .lab-ci-frame{fill:var(--bg); stroke:var(--border);}
   .lab-ci-zero{stroke:var(--text-2); stroke-width:1; stroke-dasharray:2 2;}
   .lab-ci-range{stroke:var(--text-2); stroke-width:1.5;}
   .lab-ci-point{fill:var(--text);}

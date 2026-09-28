@@ -12,9 +12,41 @@
     {
       "id": "lab-page-drops-the-leakage-flag",
       "why": "the one result invalidated by leakage reads like any other deferred question.",
-      "find": "        if e['leakage']:\n            cell += ' <span class=\"conf-tag tag-neutral\">LEAKAGE</span>'",
-      "replace": "        if False:\n            cell += ' <span class=\"conf-tag tag-neutral\">LEAKAGE</span>'",
+      "find": "        if e['leakage']:\n            cell += '<span class=\"conf-tag tag-neutral\">LEAKAGE</span>'",
+      "replace": "        if False:\n            cell += '<span class=\"conf-tag tag-neutral\">LEAKAGE</span>'",
       "expect_caught_by": "test_only_the_leakage_row_carries_the_flag"
+    },
+    {
+      "id": "lab-page-leakage-pill-outside-the-row",
+      "why": "the LEAKAGE pill lands after the pill row closes, so it stacks under DEFERRED again instead of sitting beside it.",
+      "find": "            cell += '<span class=\"conf-tag tag-neutral\">LEAKAGE</span>'\n        cell += '</span>'",
+      "replace": "            cell += '</span><span class=\"conf-tag tag-neutral\">LEAKAGE</span>'\n        cell += '' if e['leakage'] else '</span>'",
+      "expect_caught_by": "test_a_rows_pills_share_one_row_and_never_break_inside"
+    },
+    {
+      "id": "lab-page-pill-breaks-inside",
+      "tests": "tests/test_model_lab_page.py",
+      "target": "src/dashboard_template.html",
+      "why": "a pill may break inside itself again, so CONFIRMED FINDING splits over two lines of one pill.",
+      "find": "  .lab-tags .conf-tag{white-space:nowrap;}",
+      "replace": "  .lab-tags .conf-tag{}",
+      "expect_caught_by": "test_a_rows_pills_share_one_row_and_never_break_inside"
+    },
+    {
+      "id": "lab-glyph-frame-dropped",
+      "tests": "tests/test_model_lab_glyph.py",
+      "why": "the glyphs lose their shared frame, and rows with different intervals look like graphs of different sizes in different places.",
+      "find": "            f'<rect class=\"lab-ci-frame\" x=\"0.5\" y=\"0.5\" width=\"{width - 1}\" height=\"{height - 1}\" rx=\"3\"/>'\n",
+      "replace": "",
+      "expect_caught_by": "test_every_glyph_sits_in_the_same_frame"
+    },
+    {
+      "id": "lab-glyph-frame-sized-by-its-interval",
+      "tests": "tests/test_model_lab_glyph.py",
+      "why": "the frame shrinks to fit each row's interval, so the frames themselves differ in size from row to row.",
+      "find": "width=\"{width - 1}\" height=\"{height - 1}\" rx=\"3\"/>'",
+      "replace": "width=\"{round(x(hi) - x(lo), 1)}\" height=\"{height - 1}\" rx=\"3\"/>'",
+      "expect_caught_by": "test_every_glyph_sits_in_the_same_frame"
     },
     {
       "id": "lab-page-loses-the-sign",
