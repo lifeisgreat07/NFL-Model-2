@@ -81,6 +81,51 @@
       "find": "        body = f'<span class=\"lab-lead\">{interval_glyph(h)}</span>{body}'\n",
       "replace": "",
       "expect_caught_by": "test_every_registered_result_leads_with_its_own_interval"
+    },
+    {
+      "id": "lab-cards-at-the-usual-640",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_cards.py",
+      "why": "the cards start at the page's usual 640px, and between 641 and 654px the table still scrolls sideways (measured: it first fits at 655).",
+      "find": "  @media (max-width:767px){\n    #page-modellab .table-wrap[data-scroll-label=\"Experiment log\"] :is(",
+      "replace": "  @media (max-width:640px){\n    #page-modellab .table-wrap[data-scroll-label=\"Experiment log\"] :is(",
+      "expect_caught_by": "test_the_cards_start_below_the_width_the_table_first_fits"
+    },
+    {
+      "id": "lab-cards-filter-stops-hiding",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_cards.py",
+      "why": "the card rule's display:block overrides the hidden attribute, so the decision filter hides nothing on a phone.",
+      "find": "    #page-modellab .table-wrap[data-scroll-label=\"Experiment log\"] tr[hidden]{display:none;}\n",
+      "replace": "",
+      "expect_caught_by": "test_a_filtered_out_card_stays_hidden"
+    },
+    {
+      "id": "lab-cards-header-removed-for-everyone",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_cards.py",
+      "why": "the header row is display:none, which takes the column names from assistive technology too, not only from sight.",
+      "find": "    #page-modellab .table-wrap[data-scroll-label=\"Experiment log\"] thead{position:absolute; width:1px; height:1px;\n      overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap;}",
+      "replace": "    #page-modellab .table-wrap[data-scroll-label=\"Experiment log\"] thead{display:none;}",
+      "expect_caught_by": "test_the_header_row_is_hidden_from_sight_not_from_assistive_technology"
+    },
+    {
+      "id": "lab-cards-rule-escapes-the-log",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_cards.py",
+      "why": "a card rule loses its scope and bolds the first cell of every table on a phone, including the reliability diagram's.",
+      "find": "    #page-modellab .table-wrap[data-scroll-label=\"Experiment log\"] td:first-child{font-weight:700;}",
+      "replace": "    td:first-child{font-weight:700;}",
+      "expect_caught_by": "test_rows_become_cards_only_in_the_experiment_log"
+    },
+    {
+      "id": "lab-cards-comment-left-open",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_cards.py",
+      "why": "the comment above the card rules loses its close, so the whole @media block is inside a comment and a phone gets the sideways-scrolling table again.",
+      "find": "first fitted at 655. */\n  @media (max-width:767px){",
+      "replace": "first fitted at 655.\n  @media (max-width:767px){",
+      "expect_caught_by": "test_the_card_rules_are_live_css_not_a_comment"
     }
   ]
 }
