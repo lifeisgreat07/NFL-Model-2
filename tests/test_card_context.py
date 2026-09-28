@@ -109,6 +109,9 @@ def test_a_held_back_channel_never_reaches_the_page():
     assert held[0]['tv'] is None and held[0]['tv_regional'] is False
     shown = gd.build_games_js([PRED], {}, {}, {('GB', 'ATL'): _tv_record(['FOX'], 'REGIONAL')})
     assert shown[0]['tv'] == 'FOX' and shown[0]['tv_regional'] is True
+    national = gd.build_games_js([PRED], {}, {}, {('GB', 'ATL'): _tv_record(['NBC'], 'NATIONAL')})
+    assert national[0]['tv'] == 'NBC' and national[0]['tv_regional'] is False, (
+        'a national game is not regional just because it has a channel')
     assert gd.build_games_js([PRED], {})[0]['tv'] is None, 'no file, no channel'
 
 
@@ -138,7 +141,7 @@ def test_quarterbacks_are_away_first_like_the_card():
 
 def test_a_fallback_quarterback_is_said_to_be_assumed():
     line = run(f'cardQbLine({j(dict(QBS, home_qb_basis="last_game"))})')
-    assert line.endswith("GB <b>Jordan Love</b> (assumed: none listed yet, so last game&#39;s starter)")
+    assert line.endswith("GB <b>Jordan Love</b> (assumed: last game&#39;s starter)")
     assert 'assumed' not in line.split('·')[0], 'only the side that fell back says so'
 
 

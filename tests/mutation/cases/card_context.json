@@ -42,7 +42,7 @@
     {
       "id": "qb-fallback-not-said",
       "why": "a quarterback the pick only assumed from last game reads as the announced starter.",
-      "find": "      + (basis === 'last_game' ? ' (assumed: none listed yet, so last game&#39;s starter)' : '');",
+      "find": "      + (basis === 'last_game' ? ' (assumed: last game&#39;s starter)' : '');",
       "replace": "      + '';",
       "expect_caught_by": "test_a_fallback_quarterback_is_said_to_be_assumed"
     },

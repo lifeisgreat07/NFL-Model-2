@@ -3648,7 +3648,7 @@ function cardQbLine(g){
   if(!g.away_qb && !g.home_qb) return '';
   const side = (team, name, basis) => !name ? `${team} none on record`
     : `${team} <b>${cardEsc(name)}</b>`
-      + (basis === 'last_game' ? ' (assumed: none listed yet, so last game&#39;s starter)' : '');
+      + (basis === 'last_game' ? ' (assumed: last game&#39;s starter)' : '');
   return `Quarterbacks: ${side(g.away, g.away_qb, g.away_qb_basis)} · ${side(g.home, g.home_qb, g.home_qb_basis)}`;
 }
 
