@@ -10,8 +10,8 @@ Last updated: 2026-09-28, afternoon session (Stage 6 closed; Mark's page review 
 
 ## Right now
 
-**Suite:** 3769 passing, none skipped — `python -m pytest -q` on `main` at
-`bfa4d5e` (after #169), HEAD level with origin.
+**Suite:** 3782 passing, none skipped — `python -m pytest -q` on `main` at
+`5c7f7f6` (after #170), HEAD level with origin.
 
 **Next action: check the QB routine's first run** (Mon 2026-09-28 22:00 UTC):
 it should have opened a PR, or said in one line that none was needed. Then
@@ -41,9 +41,11 @@ logos (`35cfb6d`, docs only). Details: `memory/2026-09-28.md`.
 ## Queued, in order
 
 1. **Stages 23 to 29, from the 2026-09-28 audit** (approved by Mark the same
-   day; items and order in CLAUDE.md). Stage 23 item 1 merged (#169). Next:
-   item 4 (the two template sinks), then item 3 (collector validation).
-   Items 2 and 5 wait on Mark checking what the Claude GitHub App may do.
+   day; items and order in CLAUDE.md). Stage 23 items 1 and 4 merged (#169,
+   #170); item 3 proposed dropped (Mark to confirm). Items 2 and 5 wait on
+   Mark checking what the Claude GitHub App may do. Now Stage 24: the
+   skipped-week marker, then the Pages build after a failed weekly run
+   (both prepared in worktrees under the session archive).
 2. **Stages 20 to 22**: 20 needs five real testers and comes after Stage 26;
    21 waits for week 5; 22 comes from 20.
 3. **Line movement and the closing-line backtest**: not before the 2026 regular season ends, beside Stage 28.

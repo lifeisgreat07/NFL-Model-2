@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **3769 passing** (none skipped) — `python -m pytest -q` on `main` at
-`bfa4d5e` (after #169), with HEAD level with origin, which is the order that makes the
+Suite: **3782 passing** (none skipped) — `python -m pytest -q` on `main` at
+`5c7f7f6` (after #170), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -1542,7 +1542,11 @@ missed; 25 in the gaps; 26 before Stage 20's testers; 21 when week 5 lands;
 then 22.**
 
 ### Stage 23 - Page security and Booth's read-only claim
-**Progress:** item 1 merged (#169, SAFE TO MERGE, 0 discrepancies).
+**Progress:** item 1 merged (#169), item 4 merged (#170), each SAFE TO
+MERGE with 0 discrepancies. Item 3 proposed dropped (put to Mark
+2026-09-28): the audit's pattern would reject four `implicates` values Booth
+has really written ("PR #62 description" and the like), the same parser
+gates the Booth job, and after #169 the page escapes everything anyway.
 1. One `safe_json()` for every JSON fill in the generator, so no string can
    close the page's script element; an injection test over the built page.
 2. The agent-log collector keeps only comments by the Booth bot account
