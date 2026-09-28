@@ -551,6 +551,27 @@ def _clean(value):
     return value if isinstance(value, str) and value else None
 
 
+def starter_warning(week_games, overrides, season, week):
+    """A WARNING line when a week about to be LOCKED has no announced starter
+    and no override for any team, else None (Stage 25, after #184).
+
+    Called only on the path that saves picks. #184 first put this in the
+    data-quality step, which runs on every weekly run, so a Tuesday run
+    holding next week before nflverse had listed its starters would have
+    warned about a week it was not picking. Here it fires only when every
+    pick is about to be rated on last game's quarterback."""
+    teams = set(week_games['home_team']) | set(week_games['away_team'])
+    if teams & set(overrides or {}):
+        return None
+    for side in ('home', 'away'):
+        col = f'{side}_qb_id'
+        if col in week_games.columns and any(_clean(v) for v in week_games[col]):
+            return None
+    return (f"WARNING: {season} week {week} is being locked with no announced starting "
+            f"quarterback and no override for any team, so every pick uses last game's "
+            f"quarterback.")
+
+
 def kickoff_utc(game):
     """A game's kickoff as a UTC timestamp, or None with no gameday.
 
@@ -774,6 +795,9 @@ def main(season, week):
     if qb_overrides:
         print(f"  QB overrides for week {week}: " + ", ".join(
             f"{t} -> {o['player_name']}" for t, o in sorted(qb_overrides.items())))
+    no_starters = starter_warning(week_games, qb_overrides, season, week)
+    if no_starters:
+        print(no_starters)
     predictions = []
     for _, g in week_games.iterrows():
         home, away = g['home_team'], g['away_team']

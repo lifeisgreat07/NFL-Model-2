@@ -137,20 +137,18 @@ def check_schedule(sched, season):
 
 def announced_starter_warnings(sched, season):
     """WARNINGS, not errors (see QB_SCHEDULE_COLS in data_loader.py): the
-    live pick reads the schedule's announced starters, and without them it
-    rates every team on last game's quarterback with nothing else saying so."""
+    live pick reads the schedule's announced starters, and without the
+    columns it rates every team on last game's quarterback with nothing else
+    saying so.
+
+    Only the columns' absence is checked here, because this step runs on
+    every weekly run. Whether the week being LOCKED lists any starter is
+    weekly_update.starter_warning's job: a Tuesday run holding next week
+    before nflverse has listed its starters is normal, not a finding."""
     missing = [c for c in QB_SCHEDULE_COLS if c not in sched.columns]
     if missing:
         return [f'{season} schedule has no {missing}: every live pick falls back '
                 f"to last game's quarterback"]
-    unplayed = sched[sched['home_score'].isna() & sched['week'].notna()]
-    if not len(unplayed):
-        return []
-    week = int(unplayed['week'].min())
-    nxt = unplayed[unplayed['week'] == week]
-    if nxt[['home_qb_id', 'away_qb_id']].isna().all().all():
-        return [f'{season} week {week} lists no starting quarterback for any game: '
-                f"its picks fall back to last game's quarterback unless overridden"]
     return []
 
 
