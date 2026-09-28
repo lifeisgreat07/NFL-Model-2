@@ -5136,7 +5136,7 @@ function buildCumulativeTrendChart(){
     <h3>Cumulative Accuracy Trend</h3>
     <p style="margin-bottom:var(--s3);">Running accuracy as the season progresses -- not week-by-week noise, but how each approach has performed overall up to that point.</p>
     <div style="font-size:var(--fs-11); color:var(--text-2); margin-bottom:var(--s2);">${legend}</div>
-    <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:680px;">
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:680px;" role="img" aria-label="Line chart of running accuracy by week for Model A, Model B, the market and, once you have made picks, yours. Each week's own figures are in the Week by week table below.">
       ${gridLines.join('')}
       ${lineFor('a','a')}
       ${lineFor('b','b')}
@@ -5185,7 +5185,7 @@ function buildCalibrationChart(){
 
   return `
     <div style="display:flex; align-items:flex-start; gap:var(--s5); flex-wrap:wrap; margin-bottom:var(--s4);">
-      <svg viewBox="0 0 ${S} ${S}" style="width:260px; height:260px; flex-shrink:0;">
+      <svg viewBox="0 0 ${S} ${S}" style="width:260px; height:260px; flex-shrink:0;" role="img" aria-label="Calibration chart: each confidence bucket's average predicted chance against how often those picks were right. The same buckets are in the table below.">
         <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${pad}" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="4,3"/>
         <line x1="${pad}" y1="${S-pad}" x2="${pad}" y2="${pad}" stroke="var(--border)" stroke-width="1"/>
         <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${S-pad}" stroke="var(--border)" stroke-width="1"/>
