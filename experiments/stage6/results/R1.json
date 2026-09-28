@@ -1,0 +1,136 @@
+{
+  "id": "R1",
+  "registry_entry": {
+    "id": "R1",
+    "kind": "screen",
+    "title": "Do referees flag home and away teams differently, in a way that lasts from one period to the next?",
+    "question": "For every regular-season game from 2016 to 2023 whose schedule row names a referee, the penalty differential is the penalty yards recorded against the away team minus those against the home team (play-by-play penalty == 1, penalty_team, penalty_yards). For each referee with at least 40 such games in 2016-2020 and at least 24 in 2021-2023, take his mean differential in each window. Correlate the two means across those referees, each weighted by the smaller of his two game counts.",
+    "metric": "weighted correlation between a referee's 2016-2020 and 2021-2023 mean penalty differential",
+    "rule": "PASS if the lower end of the 95% bootstrap interval (resampling referees; n_resamples and seed from the protocol) is above zero. Otherwise FAIL, and Stage 6 asks nothing more of referees.",
+    "spends_slot": false,
+    "disclosures": [
+      "Before this entry was written no referee or penalty value had been read. Looked at: the column names in data/nflverse_schema.json (the schedule has referee; play-by-play has penalty, penalty_team, penalty_yards), and nflreadpy's loader signatures, printed without loading any data.",
+      "The schedule names the head referee, not the crew, and crews are reshuffled between seasons. The screen asks about the referee because that is the only name the data carries.",
+      "The screen stops at 2023, so it reads nothing from the confirmation seasons."
+    ],
+    "expected": "weak persistence or none: referees are graded and crews rotated, and whatever home edge officiating gives is league-wide and already inside Model A's home-field term"
+  },
+  "code_commit": "98d9a72e7320019a5252037c4e0a57f673ca1cbd",
+  "ci_level_confirmatory": 0.99,
+  "inputs": {
+    "seasons": [
+      2016,
+      2017,
+      2018,
+      2019,
+      2020,
+      2021,
+      2022,
+      2023
+    ],
+    "games_scored": 2094,
+    "games_naming_a_referee": 2094,
+    "games_without_play_by_play": 0,
+    "penalty_rows": 25951,
+    "penalty_rows_missing_yards": 0,
+    "penalty_rows_on_neither_team": 0,
+    "mean_differential": 3.7406876790830945
+  },
+  "referees": {
+    "Alex Kemp": {
+      "mean_early": 5.608695652173913,
+      "games_early": 46,
+      "mean_late": 17.270833333333332,
+      "games_late": 48,
+      "weight": 46
+    },
+    "Bill Vinovich": {
+      "mean_early": 2.88,
+      "games_early": 75,
+      "mean_late": 1.7916666666666667,
+      "games_late": 48,
+      "weight": 48
+    },
+    "Brad Allen": {
+      "mean_early": 4.276315789473684,
+      "games_early": 76,
+      "mean_late": 11.106382978723405,
+      "games_late": 47,
+      "weight": 47
+    },
+    "Carl Cheffers": {
+      "mean_early": 0.0,
+      "games_early": 76,
+      "mean_late": -0.9574468085106383,
+      "games_late": 47,
+      "weight": 47
+    },
+    "Clay Martin": {
+      "mean_early": -4.642857142857143,
+      "games_early": 42,
+      "mean_late": 1.5416666666666667,
+      "games_late": 48,
+      "weight": 42
+    },
+    "Clete Blakeman": {
+      "mean_early": 3.8684210526315788,
+      "games_early": 76,
+      "mean_late": 0.1875,
+      "games_late": 48,
+      "weight": 48
+    },
+    "Craig Wrolstad": {
+      "mean_early": 5.934210526315789,
+      "games_early": 76,
+      "mean_late": 3.1666666666666665,
+      "games_late": 48,
+      "weight": 48
+    },
+    "Jerome Boger": {
+      "mean_early": 7.131578947368421,
+      "games_early": 76,
+      "mean_late": 1.90625,
+      "games_late": 32,
+      "weight": 32
+    },
+    "John Hussey": {
+      "mean_early": 7.818181818181818,
+      "games_early": 77,
+      "mean_late": 1.5416666666666667,
+      "games_late": 48,
+      "weight": 48
+    },
+    "Ron Torbert": {
+      "mean_early": -6.488888888888889,
+      "games_early": 45,
+      "mean_late": -2.0416666666666665,
+      "games_late": 48,
+      "weight": 45
+    },
+    "Shawn Hochuli": {
+      "mean_early": 12.954545454545455,
+      "games_early": 44,
+      "mean_late": 1.9791666666666667,
+      "games_late": 48,
+      "weight": 44
+    },
+    "Shawn Smith": {
+      "mean_early": 9.377777777777778,
+      "games_early": 45,
+      "mean_late": -2.4468085106382977,
+      "games_late": 47,
+      "weight": 45
+    }
+  },
+  "persistence": {
+    "n_referees": 12,
+    "weighted_corr": 0.17926905207178856,
+    "corr_ci_95": [
+      -0.2781793014397838,
+      0.6455523026091031
+    ],
+    "undefined_resamples": 0
+  },
+  "decision": "FAIL",
+  "reached_confirmation": false
+}

@@ -28,7 +28,7 @@ def result(hid):
 def table_rows():
     rows = []
     for line in README.read_text(encoding='utf-8').splitlines():
-        m = re.match(r'^\| ([NA]\d+) \|(.*)\|\s*$', line)
+        m = re.match(r'^\| ([NARP]\d+) \|(.*)\|\s*$', line)
         if m:
             rows.append((m.group(1), [c.strip() for c in m.group(2).split('|')]))
     return rows
@@ -40,17 +40,19 @@ def signed(x, places):
 
 def test_the_table_is_there():
     ids = [r[0] for r in table_rows()]
-    assert ids == ['N1', 'N2', 'N3', 'A1', 'N4'], ids
+    assert ids == ['N1', 'N2', 'N3', 'A1', 'N4', 'R1', 'R2', 'A2', 'P1'], ids
 
 
 @pytest.mark.parametrize('hid, cells', table_rows())
 def test_each_row_matches_its_result_file(hid, cells):
     r = result(hid)
     if r is None:
-        if cells[1].startswith('not run: N1 failed'):
-            assert result('N1')['decision'] == 'FAIL'
+        m = re.match(r'not run: ([NR]\d+) failed', cells[1])
+        if m:
+            assert result(m.group(1))['decision'] == 'FAIL', cells[1]
         elif cells[1].startswith('not checked: nothing was accepted'):
-            assert not any((result(h) or {}).get('decision') == 'ACCEPT' for h in ('N2', 'N3'))
+            guarded = {'A1': ('N2', 'N3'), 'A2': ('R2',)}[hid]
+            assert not any((result(h) or {}).get('decision') == 'ACCEPT' for h in guarded)
         else:
             assert cells[1] == 'DEFERRED', (hid, cells)
             kinds = {h['id']: h['kind'] for h in
@@ -63,6 +65,23 @@ def test_each_row_matches_its_result_file(hid, cells):
         lo, hi = d['mse_ci_95']
         assert cells[2] == (f"candidate minus control MSE {signed(d['mse_diff'], 5)} "
                             f"[{signed(lo, 5)}, {signed(hi, 5)}]"), cells[2]
+    if hid == 'R1':
+        d = r['persistence']
+        lo, hi = d['corr_ci_95']
+        assert cells[2] == (f"weighted correlation {signed(d['weighted_corr'], 2)} "
+                            f"[{signed(lo, 2)}, {signed(hi, 2)}], {d['n_referees']} referees"), cells[2]
+
+
+def test_the_referee_narrative_comes_from_r1():
+    text = README.read_text(encoding='utf-8')
+    r = result('R1')
+    d = r['persistence']
+    lo, hi = d['corr_ci_95']
+    assert f"Over {r['inputs']['games_scored']:,}\nregular-season games" in text
+    assert f"{d['n_referees']} referees had at least 40 games" in text
+    assert f"is {signed(d['weighted_corr'], 2)}, and its 95% interval runs from {signed(lo, 2)} to {signed(hi, 2)}." \
+        in text.replace('\n', ' ')
+    assert f"flagged for {r['inputs']['mean_differential']:.1f} more penalty yards" in text
 
 
 def test_the_narrative_figures_come_from_n1():

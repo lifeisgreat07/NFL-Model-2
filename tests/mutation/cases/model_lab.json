@@ -43,6 +43,13 @@
       "find": "    return ordered + legacy_entries(legacy)",
       "replace": "    return ordered",
       "expect_caught_by": "test_newest_stage_first_then_the_moved_rows_in_page_order"
+    },
+    {
+      "id": "lab-r1-shows-another-figure",
+      "why": "R1's headline carries the first-period mean gap instead of the correlation its decision rests on.",
+      "find": "'diff': block['weighted_corr'], 'ci': block['corr_ci_95'],",
+      "replace": "'diff': result['inputs']['mean_differential'], 'ci': block['corr_ci_95'],",
+      "expect_caught_by": "test_every_headline_figure_is_the_one_in_its_file"
     }
   ]
 }

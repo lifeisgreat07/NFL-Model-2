@@ -29,6 +29,27 @@
       "find": "| N2 | Next Gen Stats feature in Model A | not run: N1 failed |",
       "replace": "| N2 | Next Gen Stats feature in Model A | DEFERRED |",
       "expect_caught_by": "test_each_row_matches_its_result_file"
+    },
+    {
+      "id": "stage6-readme-upgrades-the-referee-screen",
+      "why": "the referee screen is written up as a pass, which would license R2, while R1.json says FAIL",
+      "find": "| R1 | a referee's home/away penalty gap, one period to the next | FAIL |",
+      "replace": "| R1 | a referee's home/away penalty gap, one period to the next | PASS |",
+      "expect_caught_by": "test_each_row_matches_its_result_file"
+    },
+    {
+      "id": "stage6-readme-hides-the-unrun-referee-feature",
+      "why": "R2 is written up as deferred by choice, when it was not run because R1 failed and the registry still asks it",
+      "find": "| R2 | the referee's home edge in Model A | not run: R1 failed |",
+      "replace": "| R2 | the referee's home edge in Model A | DEFERRED |",
+      "expect_caught_by": "test_each_row_matches_its_result_file"
+    },
+    {
+      "id": "stage6-readme-strengthens-the-referee-correlation",
+      "why": "the narrative prints a stronger persistence than R1.json holds",
+      "find": "is +0.18, and its 95% interval",
+      "replace": "is +0.38, and its 95% interval",
+      "expect_caught_by": "test_the_referee_narrative_comes_from_r1"
     }
   ]
 }

@@ -38,6 +38,15 @@
       "expect_caught_by": "test_a_moved_row_reaches_the_page_unchanged"
     },
     {
+      "id": "lab-correlation-read-as-a-difference",
+      "tests": "tests/test_model_lab_glyph.py",
+      "target": "src/generate_dashboard.py",
+      "why": "R1's correlation is followed by 'a negative difference favours the new idea', which reads a correlation backwards.",
+      "find": "                f\"{h.get('note', 'A negative difference favours the new idea.')}\")",
+      "replace": "                f\"A negative difference favours the new idea.\")",
+      "expect_caught_by": "test_a_correlation_is_not_read_as_a_difference"
+    },
+    {
       "id": "lab-glyph-says-includes-when-it-excludes",
       "tests": "tests/test_model_lab_glyph.py",
       "target": "src/generate_dashboard.py",

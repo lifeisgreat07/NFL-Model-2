@@ -86,7 +86,7 @@ def test_every_result_file_is_an_entry_once_and_nothing_unasked_is(entries):
     sourced = sorted(e['source'] for e in entries if e['source'].split('/')[-2] == 'results')
     assert sourced == files
     ids = {e['id'] for e in entries if e['stage']}
-    for not_asked in ('H11', 'N2', 'N3', 'A1'):
+    for not_asked in ('H11', 'N2', 'N3', 'A1', 'R2', 'A2'):
         assert not_asked not in ids, f'{not_asked} was never run; it has no decision to show'
 
 
@@ -105,7 +105,11 @@ def test_every_headline_figure_is_the_one_in_its_file(entries):
         if not h:
             continue
         r = json.loads((ROOT / e['source']).read_text(encoding='utf-8'))
-        if h['step'] == 'screen':
+        if h['step'] == 'screen' and 'persistence' in r:
+            block = r['persistence']
+            assert (h['diff'], h['ci'], h['ci_level'], h['n']) == (
+                block['weighted_corr'], block['corr_ci_95'], 0.95, block['n_referees'])
+        elif h['step'] == 'screen':
             block = r['candidate_minus_control']
             assert (h['diff'], h['ci'], h['ci_level']) == (block['mse_diff'], block['mse_ci_95'], 0.95)
         elif h['step'] == 'measurement':

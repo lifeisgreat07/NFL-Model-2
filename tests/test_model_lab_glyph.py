@@ -88,3 +88,15 @@ def test_every_registered_result_leads_with_its_own_interval():
             assert gd._plain_signed(v) in label, (e['id'], v)
         drawn += 1
     assert drawn >= 11
+
+
+def test_a_correlation_is_not_read_as_a_difference():
+    """R1 is a correlation across referees; a positive one is the finding it
+    looked for. The sentence every other row ends with ("a negative difference
+    favours the new idea") would read it backwards."""
+    entries = ml.entries()
+    rows = ROW.findall(gd.render_model_lab_rows(entries))
+    by_id = {e['id']: result for e, (_, result, _) in zip(entries, rows) if e['stage']}
+    assert 'favours the new idea' not in by_id['R1']
+    assert 'The screen needed the whole interval above zero.' in by_id['R1']
+    assert 'A negative difference favours the new idea.' in by_id['N1']

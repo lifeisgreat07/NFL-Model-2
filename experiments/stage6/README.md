@@ -66,6 +66,12 @@ checked against it by `tests/test_stage6_published_numbers.py`.
 | N3 | Next Gen Stats vs play-by-play CPOE in Model A | not run: N1 failed | — |
 | A1 | published before the Tuesday run | not checked: nothing was accepted | — |
 | N4 | rushing and receiving | DEFERRED | — |
+| R1 | a referee's home/away penalty gap, one period to the next | FAIL | weighted correlation +0.18 [−0.28, +0.65], 12 referees |
+| R2 | the referee's home edge in Model A | not run: R1 failed | — |
+| A2 | referee named before the Thursday lock | not checked: nothing was accepted | — |
+| P1 | personnel groupings | DEFERRED | — |
+
+The referee rows were registered later, in `3cee1df`, and answered on 2026-09-28.
 
 **Next Gen Stats did not help.** Fitted on 2,632 quarterback games from 2017–2021 and
 scored on 1,101 from 2022–2023, adding the four Next Gen Stats numbers made the
@@ -81,3 +87,20 @@ carries what completion percentage over expected says about his next game.
 What this does not say: that Next Gen Stats is useless. It says these four passing
 numbers, averaged the way the model averages everything else, do not predict next week
 beyond what the model already knows. That is the question that was registered.
+
+**Referees do not carry a home edge from one period to the next.** Over 2,094
+regular-season games from 2016–2023, 12 referees had at least 40 games in 2016–2020 and
+24 in 2021–2023. The correlation between a referee's home/away penalty-yard gap in the
+first period and in the second is +0.18, and its 95% interval runs from −0.28 to +0.65.
+The rule needed the whole interval above zero, so Stage 6 asks nothing more of referees
+and R2 is not run. Away teams are flagged for 3.7 more penalty yards a game than home
+teams across the league, but that edge belongs to every game, and Model A's home-field
+term already carries it.
+
+**The first R1 run had a bug, and it was not kept.** It matched each penalty's team
+against the schedule's home and away abbreviations. The schedule calls the 2016–2019
+Raiders OAK and the 2016 Chargers SD, while play-by-play calls them LV and LAC, so 606
+penalties (2.3%) on those teams were dropped. The run's own count of penalties on
+neither team exposed it. The code now takes home and away from play-by-play, a test and
+a mutation case hold that, and R1 was run again. The first run also came out FAIL
+(correlation −0.09 [−0.60, +0.57]); its output is kept outside the repository.
