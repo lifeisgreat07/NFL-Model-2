@@ -218,8 +218,9 @@ def test_nothing_is_still_called_a_kickoff_that_is_not_one(source):
     """.game-kickoff held a confidence rank. The name was a booby trap.
 
     It was documented as one in this file for a fortnight before a real
-    kickoff arrived and collided with it. Renamed to .game-confidence; this
-    test is what stops the old name being reintroduced by muscle memory.
+    kickoff arrived and collided with it. Renamed to .game-confidence, which
+    left the card on 2026-09-28 with the pick'em rank it held; this test is
+    what stops the old name being reintroduced by muscle memory.
     """
     assert '.game-kickoff{' not in source, (
         'a .game-kickoff rule is back in the stylesheet. The name still '
@@ -227,6 +228,5 @@ def test_nothing_is_still_called_a_kickoff_that_is_not_one(source):
         'the note that predicted the collision both say what it used to be -- '
         'so this checks the stylesheet and the markup, not the whole file.')
     assert 'class="game-kickoff"' not in source, (
-        '.game-kickoff is back. It never held a kickoff -- it holds the '
-        'confidence rank, and is called .game-confidence for that reason.')
-    assert 'class="game-confidence"' in source
+        '.game-kickoff is back. It never held a kickoff; the kickoff line is '
+        '.card-kickoff.')
