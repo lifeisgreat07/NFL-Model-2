@@ -144,6 +144,8 @@ RENDERERS = {
     # started explaining itself in words, its copy became reader-facing and
     # this guard caught that on the same change that introduced it.
     'buildCumulativeTrendChart': 'accuracy',
+    # The trend chart's end-labels, placed once every line is drawn (Stage 19).
+    'endLabels': 'accuracy',
     'renderTeamDive': 'teamdive',
     'renderTeamGames': 'teamdive',
     'renderTeamNews': 'teamdive',

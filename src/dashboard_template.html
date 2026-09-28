@@ -4946,6 +4946,25 @@ function seriesLegend(keys){
 }
 
 /* ---------- Season Accuracy ---------- */
+/* End-labels for a line chart (Stage 19): given where each line ends, where
+   to put its label so no two are closer than `gap` and the block stays within
+   [lo, hi]. Labels keep their lines' order; a label moves only as far as it
+   has to. Returns the positions in the input's order. */
+const TREND_LABEL_GAP = 14;
+function spreadLabels(ys, gap, lo, hi){
+  const order = ys.map((v, i) => ({v, i})).sort((a, b) => a.v - b.v || a.i - b.i);
+  const out = order.map(o => Math.min(Math.max(o.v, lo), hi));
+  for(let k = 1; k < out.length; k++) out[k] = Math.max(out[k], out[k-1] + gap);
+  const over = out.length ? out[out.length-1] - hi : 0;
+  if(over > 0){
+    for(let k = 0; k < out.length; k++) out[k] -= over;
+    for(let k = out.length - 2; k >= 0; k--) out[k] = Math.min(out[k], out[k+1] - gap);
+  }
+  const res = new Array(ys.length);
+  order.forEach((o, k) => { res[o.i] = out[k]; });
+  return res;
+}
+
 function buildCumulativeTrendChart(){
   // Two points, not one. A trend needs somewhere to go, and a single graded
   // week drew either nothing (every series short-circuits at valid.length < 2)
@@ -4996,25 +5015,35 @@ function buildCumulativeTrendChart(){
   const yMax = Math.min(100, Math.max(...allVals, 60) + 5);
   const y = v => padT + (1-(v-yMin)/(yMax-yMin))*(H-padT-padB);
 
-  // Series drawn in fixed order with a direct end-label. Labels are nudged
-  // apart only when two lines finish within a few pixels of each other --
-  // moving a label always costs a little honesty about where its line ends,
-  // so it is done only where they would otherwise overprint.
-  const labelSlots = [];
+  // Series drawn in fixed order, each with a direct end-label. The labels
+  // are placed together once every line is known (Stage 19): sorted by where
+  // their lines end and spread to a minimum gap, the block moved back inside
+  // the plot if spreading pushed it out. Nudging one label at a time, in draw
+  // order and always downwards, left two labels overprinting whenever two
+  // lines ended together.
+  const ends = [];
   function lineFor(key, seriesKey){
     const s = SERIES[seriesKey];
     const valid = points.map((p,i)=>({i, v:p[key]})).filter(d=>d.v!==null);
     if(valid.length < 2) return '';
     const d = valid.map((d,idx)=>`${idx===0?'M':'L'}${x(d.i).toFixed(1)},${y(d.v).toFixed(1)}`).join(' ');
     const last = valid[valid.length-1];
-    let ly = y(last.v);
-    while(labelSlots.some(v=>Math.abs(v-ly) < 11)) ly += 11;
-    labelSlots.push(ly);
+    ends.push({x: x(last.i), y: y(last.v), label: s.label});
     const dash = s.dash ? ` stroke-dasharray="${s.dash}"` : '';
     return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"${dash}/>
-      ${markerPath(s.shape, x(last.i), y(last.v), 4.5)} fill="${s.color}" stroke="var(--surface)" stroke-width="2"/>
-      <text x="${(x(last.i)+9).toFixed(1)}" y="${(ly+3.5).toFixed(1)}" font-size="10" font-weight="600" fill="var(--text-2)">${s.label}</text>`;
+      ${markerPath(s.shape, x(last.i), y(last.v), 4.5)} fill="${s.color}" stroke="var(--surface)" stroke-width="2"/>`;
   }
+  function endLabels(){
+    const placed = spreadLabels(ends.map(e => e.y), TREND_LABEL_GAP, padT + 4, H - padB);
+    return ends.map((e, k) =>
+      `<text x="${(e.x+9).toFixed(1)}" y="${(placed[k]+3.5).toFixed(1)}" font-size="10" font-weight="600" fill="var(--text-2)">${e.label}</text>`).join('');
+  }
+
+  // The weeks under the x-axis. A season's weeks as "Wk 1"; the season
+  // itself only when the points span more than one.
+  const oneSeason = new Set(accuracy.weeks.map(w => w.season)).size === 1;
+  const weekTicks = accuracy.weeks.map((w, i) =>
+    `<text x="${x(i).toFixed(1)}" y="${(H - padB + 16).toFixed(1)}" text-anchor="middle" font-size="9" fill="var(--text-2)">${oneSeason ? '' : w.season + ' '}Wk ${w.week}</text>`).join('');
 
   const gridLines = [];
   for(let gv = Math.ceil(yMin/10)*10; gv <= yMax; gv += 10){
@@ -5034,6 +5063,8 @@ function buildCumulativeTrendChart(){
       ${lineFor('b','b')}
       ${lineFor('m','market')}
       ${lineFor('p','picks')}
+      ${endLabels()}
+      ${weekTicks}
     </svg>
   </div>`;
 }
