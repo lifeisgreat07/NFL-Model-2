@@ -1,0 +1,20 @@
+{
+  "target": ".github/workflows/deploy-pages.yml",
+  "tests": "tests/test_generated_data_reaches_the_page.py",
+  "cases": [
+    {
+      "id": "failed-weekly-update-skips-the-build-again",
+      "why": "the Weekly update clause asks for success instead of failure, so a run that failed on purpose after committing last week's grades leaves them off the page until some other build happens (the 2026-09-28 audit's finding)",
+      "find": "          && github.event.workflow_run.conclusion == 'failure')",
+      "replace": "          && github.event.workflow_run.conclusion == 'success')",
+      "expect_caught_by": "test_a_failed_weekly_update_still_rebuilds_the_page"
+    },
+    {
+      "id": "failed-weekly-clause-names-the-wrong-workflow",
+      "why": "the clause names a workflow that is not the Weekly update; GitHub matches on the display name, so it never fires and nothing says so",
+      "find": "      || (github.event.workflow_run.name == 'Weekly update'",
+      "replace": "      || (github.event.workflow_run.name == 'Weekend refresh'",
+      "expect_caught_by": "test_a_failed_weekly_update_still_rebuilds_the_page"
+    }
+  ]
+}
