@@ -47,6 +47,26 @@ def test_a_failed_write_leaves_an_existing_file_as_it_was(tmp_path):
     assert target.read_text(encoding='utf-8') == '{"kept": true}'
 
 
+def test_a_failed_swap_removes_its_temporary_file(tmp_path, monkeypatch):
+    """The two tests above fail inside json.dumps, before the temporary file
+    exists, so they cannot see whether it is cleaned up. Here the temporary
+    file is written in full and the swap itself fails, as a full disk or a
+    locked target would make it: the target keeps its old text and the
+    temporary file is gone."""
+    import atomic_write
+    target = tmp_path / 'record.json'
+    target.write_text('{"kept": true}', encoding='utf-8')
+
+    def refuse(src, dst):
+        raise OSError('swap refused')
+    monkeypatch.setattr(atomic_write.os, 'replace', refuse)
+    with pytest.raises(OSError):
+        write_json_atomic(target, {'new': 1})
+    assert target.read_text(encoding='utf-8') == '{"kept": true}'
+    assert sorted(p.name for p in tmp_path.iterdir()) == ['record.json'], (
+        'a failed swap left its temporary file beside the target')
+
+
 def test_the_write_once_files_use_it():
     src = (ROOT / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
     save = re.search(r"out_path = PRED_DIR / f'\{season\}_week\{week\}\.json'(.*?)print\(f\"Saved", src, re.S)

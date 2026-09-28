@@ -17,6 +17,13 @@
       "expect_caught_by": "test_it_writes_what_json_dumps_would"
     },
     {
+      "id": "atomic-write-leaves-its-temporary-file",
+      "why": "a swap that fails leaves the .tmp file beside the target, a stray half of a save that nothing ever cleans up",
+      "find": "        if tmp.exists():\n            tmp.unlink()",
+      "replace": "        pass",
+      "expect_caught_by": "test_a_failed_swap_removes_its_temporary_file"
+    },
+    {
       "id": "picks-saved-straight-into-the-target-again",
       "target": "src/weekly_update.py",
       "why": "the week of picks goes back to a direct write, so a run killed mid-write leaves a truncated file nothing may replace",
