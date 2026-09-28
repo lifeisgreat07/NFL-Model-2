@@ -248,3 +248,19 @@ def test_every_image_it_shows_exists():
 
 if __name__ == '__main__':
     sys.exit(pytest.main([__file__, '-v']))
+
+
+def test_it_describes_the_backtest_the_code_runs():
+    """Stage 25 item 2. README said the backtest was 'never trained on the
+    season being evaluated'; backtest() refits every week on strictly earlier
+    games, which include the earlier weeks of that season. The README now
+    says so, and this ties the sentence to the default it describes."""
+    import inspect
+    sys.path.insert(0, str(REPO / 'src'))
+    import backtest
+    default = inspect.signature(backtest.backtest).parameters['refit_every_n_weeks'].default
+    assert default == 1, f'backtest() now refits every {default} weeks -- update README'
+    flat = ' '.join(TEXT.split())
+    assert 'never trained on the season' not in flat
+    assert 'which include the earlier weeks of the season being evaluated' in flat
+    assert 'refit every week as the live system is' in flat

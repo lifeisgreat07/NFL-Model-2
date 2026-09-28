@@ -56,6 +56,21 @@
       "find": "`experiments/stage5/registry.json`",
       "replace": "`experiments/stage5/register.json`",
       "expect_caught_by": "test_every_path_exists"
+    },
+    {
+      "id": "readme-says-never-trained-on-the-season-again",
+      "why": "the README goes back to saying the backtest never trained on the season it scores, while backtest() refits on that season's earlier weeks (the 2026-09-28 audit)",
+      "find": "earlier games, which include the earlier weeks of the season being",
+      "replace": "earlier games, never trained on the season being",
+      "expect_caught_by": "test_it_describes_the_backtest_the_code_runs"
+    },
+    {
+      "id": "backtest-default-stops-refitting-weekly",
+      "target": "src/backtest.py",
+      "why": "the backtest's default goes back to one fit per season, so the README's 'refit every week' no longer describes the table",
+      "find": "def backtest(hist, features, test_seasons, refit_every_n_weeks=1, return_raw=False):",
+      "replace": "def backtest(hist, features, test_seasons, refit_every_n_weeks=None, return_raw=False):",
+      "expect_caught_by": "test_it_describes_the_backtest_the_code_runs"
     }
   ]
 }
