@@ -249,6 +249,26 @@ def html_escape(text):
     return _escape(text, quote=False)
 
 
+def safe_json(obj, **kwargs):
+    """JSON that can sit inside the page's <script> element without ending it.
+
+    Every data fill lands between <script> and </script>, and the HTML parser
+    ends a script at the first `</script` it meets -- inside a JS string or
+    not. json.dumps leaves `<` alone, so any string reaching the page could
+    close the script and start markup: an audit comment on GitHub (the
+    collector accepts a report from any account), a context note from the
+    web, a player name from nflverse. Stage 23, from the 2026-09-28 audit,
+    which reproduced it through the agent log.
+
+    Every `<` becomes the JSON escape `\\u003c`, not only `</`. `<!--` inside a
+    script also changes how the parser reads the rest of it, and a JSON `<`
+    only ever appears inside a string, where `\\u003c` means the same
+    character to JSON.parse and to JavaScript. json.dumps already escapes
+    every non-ASCII character, U+2028 and U+2029 included.
+    """
+    return json.dumps(obj, **kwargs).replace('<', '\\u003c')
+
+
 def _signed(x, places=4):
     """+0.0021 / &minus;0.0109, the way Model Lab's rows already write signs."""
     s = f'{abs(x):.{places}f}'
@@ -879,29 +899,33 @@ def main():
     with open(TEMPLATE_PATH) as f:
         template = f.read()
 
-    html = template.replace('__TEAMS_JSON__', json.dumps(teams_js, indent=2))
+    # Every fill below lands inside a <script> element, so every one goes
+    # through safe_json(): a `</script` in any string would end the script
+    # (Stage 23). tests/test_safe_json_fills.py finds the placeholders by
+    # reading the template's script elements, so a new one is covered.
+    html = template.replace('__TEAMS_JSON__', safe_json(teams_js, indent=2))
     # Only the run's own metadata: the per-team odds now travel inside
     # teams_js so the Power Ratings table can sort by them.
-    html = html.replace('__PLAYOFF_META_JSON__', json.dumps(
+    html = html.replace('__PLAYOFF_META_JSON__', safe_json(
         {k: (playoff_odds or {}).get(k) for k in
          ('n_simulations', 'games_played', 'games_remaining', 'season')},
         indent=2))
-    html = html.replace('__WEEKS_JSON__', json.dumps(weeks_js, indent=2))
-    html = html.replace('__LATEST_WEEK__', json.dumps(latest_label))
-    html = html.replace('__PICKS_PDFS_JSON__', json.dumps(pdf_weeks))
-    html = html.replace('__ACCURACY_JSON__', json.dumps(accuracy_js, indent=2))
-    html = html.replace('__CALIBRATION_JSON__', json.dumps(calibration_js, indent=2))
-    html = html.replace('__TEAM_HISTORY_JSON__', json.dumps(team_history_js, indent=2))
+    html = html.replace('__WEEKS_JSON__', safe_json(weeks_js, indent=2))
+    html = html.replace('__LATEST_WEEK__', safe_json(latest_label))
+    html = html.replace('__PICKS_PDFS_JSON__', safe_json(pdf_weeks))
+    html = html.replace('__ACCURACY_JSON__', safe_json(accuracy_js, indent=2))
+    html = html.replace('__CALIBRATION_JSON__', safe_json(calibration_js, indent=2))
+    html = html.replace('__TEAM_HISTORY_JSON__', safe_json(team_history_js, indent=2))
     # null, not {}, when the collector has never run. The page distinguishes
     # "no audits recorded yet" from "audits recorded, none of them found
     # anything" -- those are opposite claims about the verifier, and an empty
     # object would let the page make the flattering one by accident.
-    html = html.replace('__AGENT_LOG_JSON__', json.dumps(agent_log, indent=2))
+    html = html.replace('__AGENT_LOG_JSON__', safe_json(agent_log, indent=2))
     # The Changelog page is rendered from config.VERSION_HISTORY, so the
     # release notes on the site and the constant the model actually runs under
     # cannot drift apart -- they are the same object.
-    html = html.replace('__VERSION_HISTORY_JSON__', json.dumps(VERSION_HISTORY, indent=2))
-    html = html.replace('__MODEL_VERSION__', json.dumps(MODEL_VERSION))
+    html = html.replace('__VERSION_HISTORY_JSON__', safe_json(VERSION_HISTORY, indent=2))
+    html = html.replace('__MODEL_VERSION__', safe_json(MODEL_VERSION))
     html = html.replace('__SIDEBAR_FOOT__', foot_html)
     html = html.replace('__BOARD_UPDATED__', updated_html)
     html = html.replace('__FONT_FACES__', font_faces_css())

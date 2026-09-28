@@ -1,0 +1,20 @@
+{
+  "target": "src/generate_dashboard.py",
+  "tests": "tests/test_safe_json_fills.py",
+  "cases": [
+    {
+      "id": "safe-json-escapes-nothing",
+      "why": "the helper stops escaping `<`, so a `</script>` in any string reaching the page ends the page's script element and whatever follows it is markup (the 2026-09-28 audit's reproduction, through the agent log)",
+      "find": "    return json.dumps(obj, **kwargs).replace('<', '\\\\u003c')",
+      "replace": "    return json.dumps(obj, **kwargs)",
+      "expect_caught_by": "test_safe_json_leaves_no_angle_bracket_and_round_trips"
+    },
+    {
+      "id": "agent-log-fill-bypasses-safe-json",
+      "why": "the one fill an outsider can reach -- Booth's audit log, collected from GitHub comments -- goes back to plain json.dumps, which is exactly the shape that shipped before Stage 23",
+      "find": "    html = html.replace('__AGENT_LOG_JSON__', safe_json(agent_log, indent=2))",
+      "replace": "    html = html.replace('__AGENT_LOG_JSON__', json.dumps(agent_log, indent=2))",
+      "expect_caught_by": "test_every_fill_inside_a_script_goes_through_safe_json"
+    }
+  ]
+}
