@@ -1,0 +1,20 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_more_button_pages.py",
+  "cases": [
+    {
+      "id": "more-button-misses-whats-changed-again",
+      "why": "What's Changed drops out of the list, so on a phone that page shows no active tab (the 2026-09-28 audit's finding)",
+      "find": "const OVERFLOW_PAGES = ['teamdive','method','changelog','modellab','reliability'];",
+      "replace": "const OVERFLOW_PAGES = ['teamdive','method','modellab','reliability'];",
+      "expect_caught_by": "test_the_more_button_list_is_the_sheet"
+    },
+    {
+      "id": "more-button-names-a-folded-page",
+      "why": "a page that no longer exists is listed, which is how the list rotted the first time",
+      "find": "const OVERFLOW_PAGES = ['teamdive','method','changelog','modellab','reliability'];",
+      "replace": "const OVERFLOW_PAGES = ['teamdive','method','changelog','modellab','reliability','glossary'];",
+      "expect_caught_by": "test_every_listed_page_exists"
+    }
+  ]
+}
