@@ -307,6 +307,15 @@
      it maps to, and where a registered answer's figures come from. */
   .lab-first,.lab-src{display:block; margin-top:var(--s1); font-size:var(--fs-12); color:var(--text-2);}
   .lab-src code{font-size:var(--fs-12);}
+  /* A registered result leads with its interval drawn against zero (Stage 18):
+     generate_dashboard.interval_glyph(). The zero line is dashed so it reads
+     as a reference, not as part of the interval; every stroke is on the
+     neutral ramp, because a result is not a graded pick. */
+  .lab-lead{display:block; margin-bottom:var(--s1);}
+  .lab-ci{display:block; overflow:visible;}
+  .lab-ci-zero{stroke:var(--text-2); stroke-width:1; stroke-dasharray:2 2;}
+  .lab-ci-range{stroke:var(--text-2); stroke-width:1.5;}
+  .lab-ci-point{fill:var(--text);}
   /* The row a #modellab/<slug> link points at (Stage 13 hash routes). */
   tr.route-target td{background:var(--accent-soft);}
   tbody td{padding:var(--s3) var(--s4); border-bottom:1px solid var(--border); font-size:var(--fs-14);}
