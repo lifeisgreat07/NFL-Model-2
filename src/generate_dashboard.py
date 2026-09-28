@@ -278,6 +278,11 @@ def interval_glyph(h, width=96, height=14, pad=5):
     OWN scale, symmetric about zero, and glyphs on different rows are not
     comparable in length. The figures are in the sentence beside it.
 
+    Every glyph draws the same visible frame first, so each row's graph is
+    one size, in one place, with zero at its centre, and only the interval
+    inside it moves (Mark, 2026-09-28: the bare lines looked like graphs of
+    different sizes in different places).
+
     role="img" with a text equivalent (UX review, Model Lab):
     "-0.0109, interval -0.0319 to +0.0096, includes zero"."""
     lo, hi, d = h['ci'][0], h['ci'][1], h['diff']
@@ -291,6 +296,7 @@ def interval_glyph(h, width=96, height=14, pad=5):
     label = f"{_plain_signed(d)}, interval {_plain_signed(lo)} to {_plain_signed(hi)}, {zero}"
     return (f'<svg class="lab-ci" role="img" aria-label="{label}" viewBox="0 0 {width} {height}" '
             f'width="{width}" height="{height}">'
+            f'<rect class="lab-ci-frame" x="0.5" y="0.5" width="{width - 1}" height="{height - 1}" rx="3"/>'
             f'<line class="lab-ci-zero" x1="{x(0)}" y1="0" x2="{x(0)}" y2="{height}"/>'
             f'<line class="lab-ci-range" x1="{x(lo)}" y1="{mid}" x2="{x(hi)}" y2="{mid}"/>'
             f'<line class="lab-ci-range" x1="{x(lo)}" y1="{mid - 4}" x2="{x(lo)}" y2="{mid + 4}"/>'
@@ -339,9 +345,13 @@ def render_model_lab_rows(entries):
             name, result = e['experiment'], e['result']
         else:
             name, result = html_escape(e['title']), _registered_result(e)
-        cell = f'<span class="conf-tag tag-neutral">{e["decision"]}</span>'
+        # The pills sit in one wrapping row with a gap and never break inside
+        # themselves: "CONFIRMED FINDING" split across two lines of one pill,
+        # and DEFERRED and LEAKAGE stacked touching (Mark, 2026-09-28).
+        cell = f'<span class="lab-tags"><span class="conf-tag tag-neutral">{e["decision"]}</span>'
         if e['leakage']:
-            cell += ' <span class="conf-tag tag-neutral">LEAKAGE</span>'
+            cell += '<span class="conf-tag tag-neutral">LEAKAGE</span>'
+        cell += '</span>'
         if e['label'] != e['decision']:
             cell += f'<span class="lab-first">First labelled {e["label"]}</span>'
         rows.append(f'<tr><td>{name}</td><td>{result}</td><td>{cell}</td></tr>')

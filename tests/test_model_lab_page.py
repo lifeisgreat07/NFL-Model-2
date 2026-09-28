@@ -66,12 +66,27 @@ def test_a_moved_row_reaches_the_page_unchanged(entries, rows):
 
 def test_each_row_shows_its_decision_and_any_first_label(entries, rows):
     for e, (_, _, cell) in zip(entries, rows):
-        assert cell.startswith(f'<span class="conf-tag tag-neutral">{e["decision"]}</span>')
+        assert cell.startswith(f'<span class="lab-tags"><span class="conf-tag tag-neutral">{e["decision"]}</span>')
         first = f'<span class="lab-first">First labelled {e["label"]}</span>'
         if e['label'] != e['decision']:
             assert first in cell, (e['id'], 'a mapped label must stay visible beside its decision')
         else:
             assert 'lab-first' not in cell
+
+
+def test_a_rows_pills_share_one_row_and_never_break_inside(entries, rows):
+    """"CONFIRMED FINDING" broke across two lines of one pill, and DEFERRED
+    sat on LEAKAGE with nothing between them (Mark, 2026-09-28)."""
+    src = (ROOT / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+    tags = re.search(r'\.lab-tags\{([^}]*)\}', src)
+    assert tags and 'display:flex' in tags.group(1).replace(' ', '') and 'gap:' in tags.group(1)
+    pill = re.search(r'\.lab-tags \.conf-tag\{([^}]*)\}', src)
+    assert pill and 'white-space:nowrap' in pill.group(1).replace(' ', '')
+    for e, (_, _, cell) in zip(entries, rows):
+        pills = re.fullmatch(r'<span class="lab-tags">((?:<span class="conf-tag tag-neutral">[A-Z ]+</span>)+)</span>'
+                             r'(?:<span class="lab-first">[^<]*</span>)?', cell)
+        assert pills, (e['id'], 'every pill must sit inside the one pill row', cell)
+        assert pills.group(1).count('conf-tag') == (2 if e['leakage'] else 1), e['id']
 
 
 def test_only_the_leakage_row_carries_the_flag(entries, rows):
