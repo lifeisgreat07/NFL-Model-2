@@ -5426,10 +5426,13 @@ function scoreboardHtml(o, mine, leftOut){
    term. Lowest first, because lower is better. */
 function forecastScoreHtml(s){
   if(!s) return '';
+  // Shape before series, unlike scoreboardHtml's rows: mutation cases anchor
+  // on that function's exact text, and a second copy of it here made one of
+  // them match twice.
   const rows = [
-    {name: 'Market', series: 'var(--series-c)', shape: 'tri', score: s.market},
-    {name: 'Model B', series: 'var(--series-b)', shape: 'sq', score: s.model_b},
-    {name: 'Model A', series: 'var(--series-a)', shape: 'dot', score: s.model_a},
+    {name: 'Market', shape: 'tri', series: 'var(--series-c)', score: s.market},
+    {name: 'Model B', shape: 'sq', series: 'var(--series-b)', score: s.model_b},
+    {name: 'Model A', shape: 'dot', series: 'var(--series-a)', score: s.model_a},
   ].sort((a, b) => a.score - b.score);
   const body = rows.map(r => `<tr><td><span class="score-mark ${r.shape}" style="--series:${r.series}" aria-hidden="true"></span>${r.name}</td><td class="num">${r.score.toFixed(3)}</td></tr>`).join('');
   return `
