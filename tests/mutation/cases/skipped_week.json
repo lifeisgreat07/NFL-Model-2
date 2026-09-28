@@ -12,8 +12,8 @@
     {
       "id": "skip-record-is-rewritten",
       "why": "a second refusal of the same week rewrites its record, so the time and reason of the first -- the one that says when the lock was missed -- are lost",
-      "find": "    if not path.exists():\n        with open(path, 'w', encoding='utf-8') as f:\n            json.dump({'season': season, 'week': week, 'reason': reason,",
-      "replace": "    if True:\n        with open(path, 'w', encoding='utf-8') as f:\n            json.dump({'season': season, 'week': week, 'reason': reason,",
+      "find": "    if not path.exists():\n        write_json_atomic(path, {'season': season, 'week': week, 'reason': reason,",
+      "replace": "    if True:\n        write_json_atomic(path, {'season': season, 'week': week, 'reason': reason,",
       "expect_caught_by": "test_a_record_is_write_once"
     },
     {
