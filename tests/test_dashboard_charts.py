@@ -776,9 +776,12 @@ def test_generated_page_carries_the_real_calibration_data():
     if not CALIBRATION.exists():
         pytest.skip("data/calibration.json absent -- run src/calibration.py")
     html = (REPO_ROOT / 'index.html').read_text()
-    m = re.search(r'const calibration = (\{.*?\n\});\n', html, re.S)
+    # Parsed from where it starts, as the browser would: the fill is compact
+    # JSON on one line since Stage 26, so there is no closing brace on a line
+    # of its own to anchor a pattern to.
+    m = re.search(r'const calibration = ', html)
     assert m, "const calibration = ... not found in the generated page"
-    embedded = json.loads(m.group(1))
+    embedded, _ = json.JSONDecoder().raw_decode(html, m.end())
     on_disk = json.loads(CALIBRATION.read_text())
     assert embedded == on_disk, "the page's calibration data differs from data/calibration.json"
     for name, model in embedded['models'].items():

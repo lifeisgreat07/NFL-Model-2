@@ -42,14 +42,18 @@ TARGET_MIN = 24
 AXE_WIDTHS = (390, 1280)    # one phone, one desktop: axe is slow and
                             # layout rarely changes what it finds
 FAIL_IMPACTS = ('serious', 'critical')
-# Measured 2026-09-26 at 3900c0c, LF line endings: the page is 586,012 bytes,
-# of which the inlined font block is 99,641, and each saved week adds 9-12KB
-# (weeks 1-3: 8,984 / 8,955 / 11,866 bytes of JSON). About 19 more weeks
-# through the playoffs puts the page near 815KB by February. The budget is
-# that plus room for the audit log and a few features: exceeding it should
-# mean something grew that nobody meant to grow. Moving it is a decision with
-# a reason in the commit, not a reflex.
-BYTE_BUDGET = 1_000_000
+# Measured 2026-09-28 on markys after Stage 26 item 11 (the built page drops
+# the template's comments, the agent log's per-audit records and its JSON
+# indentation), LF line endings: the page is 437,659 bytes, down from 749,502,
+# of which the inlined font block is about 98,000. Each saved week now adds
+# 8.5-16KB of compact JSON (weeks 1-3: 8,568 / 8,539 / 16,325; week 3 carries
+# context notes). About 19 more weeks through the playoffs at 12KB puts the
+# page near 665KB by February, and near 745KB if every week is as heavy as
+# week 3. The budget is that plus room for a feature or two: exceeding it
+# should mean something grew that nobody meant to grow. Moving it is a
+# decision with a reason in the commit, not a reflex. (It was 1,000,000
+# before Stage 26, set against the page with comments and indentation.)
+BYTE_BUDGET = 800_000
 TAB_CAP = 400
 
 PAGE_IDS_JS = "[...document.querySelectorAll('section.page')].map(s => s.id.replace(/^page-/, ''))"

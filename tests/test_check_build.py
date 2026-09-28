@@ -26,7 +26,7 @@ PAGES = REPO / '.github' / 'workflows' / 'deploy-pages.yml'
 
 def good():
     return {
-        'agentLog': {'audits': [{'pr': 1}]},
+        'agentLog': {'generated_utc': 't', 'summary': {'audits_total': 1}},
         'versionHistory': [{'version': '2.5'}],
         'modelVersion': '2.5',
         'teams': [{'team': t} for t in TEAMS],

@@ -24,6 +24,7 @@ from pathlib import Path
 # rather than run as a script.
 sys.path.insert(0, str(Path(__file__).parent))
 from config import MODEL_VERSION, TRAIN_SEASONS, VERSION_HISTORY
+from page_comments import strip_page_comments
 
 # generate_picks_pdf is imported lazily, inside the PDF loop in main() --
 # NOT here. It pulls in reportlab, and a module-level import would mean a
@@ -146,6 +147,17 @@ def load_agent_log():
         return json.load(f)
 
 
+def agent_log_for_page(log):
+    """The part of Booth's audit log the page reads: the summary and when it
+    was collected. The per-audit records (`audits`) were most of the log and
+    nothing on the page reads them; they stay in data/agent_log.json.
+    None stays None -- the page says the log has not been collected yet.
+    Stage 26 item 11."""
+    if log is None:
+        return None
+    return {k: log.get(k) for k in ('generated_utc', 'summary')}
+
+
 def load_calibration():
     """Backtest-derived calibration written by src/calibration.py.
 
@@ -247,6 +259,12 @@ def load_tv(tv_dir=TV_DIR):
 def html_escape(text):
     """Text into markup. Quotes are left alone: nothing here goes into an attribute."""
     return _escape(text, quote=False)
+
+
+# The data fills are written without indentation or spaces after separators:
+# nobody reads the built page's JSON by eye, and indentation was a large
+# share of its bytes (Stage 26 item 11). data/*.json keep their own layout.
+COMPACT = {'separators': (',', ':')}
 
 
 def safe_json(obj, **kwargs):
@@ -898,33 +916,38 @@ def main():
 
     with open(TEMPLATE_PATH, encoding='utf-8') as f:
         template = f.read()
+    # The template's comments stay in the template for whoever reads it; the
+    # page a visitor downloads does not carry them (Stage 26 item 11,
+    # src/page_comments.py). Stripped before the fills, so no data string is
+    # ever put through the lexer.
+    template = strip_page_comments(template)
 
     # Every fill below lands inside a <script> element, so every one goes
     # through safe_json(): a `</script` in any string would end the script
     # (Stage 23). tests/test_safe_json_fills.py finds the placeholders by
     # reading the template's script elements, so a new one is covered.
-    html = template.replace('__TEAMS_JSON__', safe_json(teams_js, indent=2))
+    html = template.replace('__TEAMS_JSON__', safe_json(teams_js, **COMPACT))
     # Only the run's own metadata: the per-team odds now travel inside
     # teams_js so the Power Ratings table can sort by them.
     html = html.replace('__PLAYOFF_META_JSON__', safe_json(
         {k: (playoff_odds or {}).get(k) for k in
          ('n_simulations', 'games_played', 'games_remaining', 'season')},
-        indent=2))
-    html = html.replace('__WEEKS_JSON__', safe_json(weeks_js, indent=2))
+        **COMPACT))
+    html = html.replace('__WEEKS_JSON__', safe_json(weeks_js, **COMPACT))
     html = html.replace('__LATEST_WEEK__', safe_json(latest_label))
     html = html.replace('__PICKS_PDFS_JSON__', safe_json(pdf_weeks))
-    html = html.replace('__ACCURACY_JSON__', safe_json(accuracy_js, indent=2))
-    html = html.replace('__CALIBRATION_JSON__', safe_json(calibration_js, indent=2))
-    html = html.replace('__TEAM_HISTORY_JSON__', safe_json(team_history_js, indent=2))
+    html = html.replace('__ACCURACY_JSON__', safe_json(accuracy_js, **COMPACT))
+    html = html.replace('__CALIBRATION_JSON__', safe_json(calibration_js, **COMPACT))
+    html = html.replace('__TEAM_HISTORY_JSON__', safe_json(team_history_js, **COMPACT))
     # null, not {}, when the collector has never run. The page distinguishes
     # "no audits recorded yet" from "audits recorded, none of them found
     # anything" -- those are opposite claims about the verifier, and an empty
     # object would let the page make the flattering one by accident.
-    html = html.replace('__AGENT_LOG_JSON__', safe_json(agent_log, indent=2))
+    html = html.replace('__AGENT_LOG_JSON__', safe_json(agent_log_for_page(agent_log), **COMPACT))
     # The Changelog page is rendered from config.VERSION_HISTORY, so the
     # release notes on the site and the constant the model actually runs under
     # cannot drift apart -- they are the same object.
-    html = html.replace('__VERSION_HISTORY_JSON__', safe_json(VERSION_HISTORY, indent=2))
+    html = html.replace('__VERSION_HISTORY_JSON__', safe_json(VERSION_HISTORY, **COMPACT))
     html = html.replace('__MODEL_VERSION__', safe_json(MODEL_VERSION))
     html = html.replace('__SIDEBAR_FOOT__', foot_html)
     html = html.replace('__BOARD_UPDATED__', updated_html)

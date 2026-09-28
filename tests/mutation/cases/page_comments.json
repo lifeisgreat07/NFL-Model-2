@@ -1,0 +1,65 @@
+{
+  "target": "src/page_comments.py",
+  "tests": "tests/test_page_comments.py",
+  "cases": [
+    {
+      "id": "template-escape-not-honoured",
+      "why": "an escaped backtick ends the template early, so the rest of the template is lexed as code and a `//` in its text is cut as a comment. The real template has no escaped backtick today, so the build stays green and only this case would notice.",
+      "find": "            if c == '\\\\':\n                j += 2\n                continue\n            if c == '`':\n                return j + 1, False",
+      "replace": "            if c == '`':\n                return j + 1, False",
+      "expect_caught_by": "test_an_escaped_backtick_does_not_end_a_template"
+    },
+    {
+      "id": "regex-character-class-ignored",
+      "why": "a `/` inside [...] ends the regex, so /[/'\"]/ is cut short and its quote opens a string that swallows the code after it. The real template has no such class today; the build stays green.",
+      "find": "                if d == '[':\n                    in_class = True",
+      "replace": "                if False:\n                    in_class = True",
+      "expect_caught_by": "test_a_slash_inside_a_regex_character_class_does_not_end_it"
+    },
+    {
+      "id": "multi-line-block-comment-joins-its-lines",
+      "why": "a block comment that held a line break is replaced by a space, so `return a /* ...\\n... */ b` becomes `return a b`: automatic semicolon insertion no longer ends the return after `a`, and the code means something else without any syntax error.",
+      "find": "                raise StripError('unterminated block comment')\n            out.append(_cut(src[i:j]) if '\\n' in src[i:j] else CUT + ' ')",
+      "replace": "                raise StripError('unterminated block comment')\n            out.append(CUT + ' ')",
+      "expect_caught_by": "test_a_block_comment_across_lines_keeps_the_line_break"
+    },
+    {
+      "id": "blank-lines-dropped-wholesale",
+      "why": "dropping every blank line rather than only the lines a removal emptied rewrites the inside of template literals and <pre> blocks, which were blank on purpose. The page still loads, so only the text changes.",
+      "find": "            if not (CUT in ln and not ln.replace(CUT, '').strip())]",
+      "replace": "            if ln.replace(CUT, '').strip()]",
+      "expect_caught_by": "test_blank_lines_and_trailing_spaces_that_were_there_stay"
+    },
+    {
+      "id": "tag-named-in-a-comment-read-as-a-tag",
+      "why": "the bug the first version had. Without matching HTML comments first, the prose `the first <style> element` inside a comment starts a style block that runs to the next </style>; the comment is then lexed as CSS and survives into the page.",
+      "find": "_BLOCK = re.compile(r'(<!--.*?-->)|(<script",
+      "replace": "_BLOCK = re.compile(r'(<!--(?!)-->)|(<script",
+      "expect_caught_by": "test_a_tag_named_inside_an_html_comment_is_not_a_tag"
+    },
+    {
+      "id": "page-carries-the-whole-agent-log-again",
+      "target": "src/generate_dashboard.py",
+      "why": "the per-audit records go back onto the page: about a hundred kilobytes a visitor downloads that nothing on the page reads, and growing with every audit.",
+      "find": "    return {k: log.get(k) for k in ('generated_utc', 'summary')}",
+      "replace": "    return log",
+      "expect_caught_by": "test_the_page_carries_only_the_agent_log_it_reads"
+    },
+    {
+      "id": "build-stops-stripping",
+      "target": "src/generate_dashboard.py",
+      "why": "the stripper exists and passes its own tests, and the build no longer calls it. Every lexer test stays green while the page ships its comments again.",
+      "find": "    template = strip_page_comments(template)\n",
+      "replace": "",
+      "expect_caught_by": "test_the_build_strips_the_template_before_filling_it"
+    },
+    {
+      "id": "a-data-fill-indented-again",
+      "target": "src/generate_dashboard.py",
+      "why": "one fill goes back to indent=2, the largest single source of bytes in the data after the audit records.",
+      "find": "safe_json(weeks_js, **COMPACT)",
+      "replace": "safe_json(weeks_js, indent=2)",
+      "expect_caught_by": "test_every_data_fill_is_compact"
+    }
+  ]
+}
