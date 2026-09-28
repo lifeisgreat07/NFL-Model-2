@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **3220 passing** (none skipped) — `python -m pytest -q` on `main` at
-`c4532da` (#146 merged) plus the 2026-09-27 evening docs, with HEAD level with origin, which is the order that makes the
+Suite: **3289 passing** (none skipped) — `python -m pytest -q` on `main` at
+`657871a` (#149 merged) plus the 2026-09-28 docs, with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -1370,7 +1370,7 @@ dated with its source. Items expire with the week. The plain-language guard
 applies. Data file first (with a hypothesis about what a reader needs from it
 written in the PR), then Team Deep-Dive, then the card line in Stage 17.
 
-### Stage 17 - Week Board card v2  <- IN PROGRESS (card body merged, #146)
+### Stage 17 - Week Board card v2  <- IN PROGRESS (#146, #148, #149 merged)
 
 **Decided 2026-09-27 from rendered side-by-sides: "B refined".** Keep the
 team-colour bar split by Model B, team names at its ends; one probability line
@@ -1380,10 +1380,18 @@ B on the line, A below; 7 is measured: a 12px marker is 6.8 points of the
 narrowest 176px line); key ordered B, Market, A; a disagreement line only when
 Model A picks the other team; one screen-reader sentence. Mark noted he had
 grown used to the old card and accepted the new one as more readable.
-**Still to build, one PR each:** the TV pill, announced QB names and the
-one-line team news; label the "why" sentence as Model A's reasoning (under a
-Model B headline it can name the other team); `[` / `]` week keys; no HIGH/LOW
-words; drop the now-unused `.model-row` / `.tele-team` CSS.
+**Shipped 2026-09-28:** #148 the channel pill in the kickoff line, one
+regional line above the grid (only when a shown card carries a REGIONAL
+channel), the quarterbacks the pick was made with ("(assumed: last game's
+starter)" on a `last_game` side), and one labelled team-news line (the pick's
+own QB on the report first, then "new QB", then starters out or doubtful by
+name up to two and counted beyond). The channel and the news leave the card
+once its game is final or graded; the quarterbacks stay, because they are part
+of the pick. #149 "Model A's reasoning" above the why sentence, class
+`.why-by` (NOT `.why-label`, which the numbers panel's rows already wear).
+Weeks 1 to 3 were saved under v2.4, so week 4 is the first card with names.
+**Still to build, one PR each:** `[` / `]` week keys; no HIGH/LOW words; drop
+the now-unused `.model-row` / `.tele-team` CSS.
 
 
 One decision per card. A single probability line from away team to home team
@@ -1633,6 +1641,16 @@ under compaction pressure, so its length is a cost paid on every session.
 
 ## Traps that have actually bitten
 
+- **A NEW CSS CLASS NAME CAN ALREADY BE TAKEN.** #149's first commit named its
+  label `.why-label`; `whyRow()` already used that class for the numbers
+  panel's rows, and the new rule restyled them (uppercase, 11px, a 12px top
+  margin). No test failed. Counting the class on the built page found it: 64
+  on 16 cards. `git grep` a class name before introducing it, and count it on
+  the rendered page after.
+- **KILLING A MUTATION RUN MEANS KILLING ITS WRAPPER TOO.** Stopping only the
+  pytest child let the wrapper script carry on to the next case. Stop the
+  wrapper, then the runner, then pytest; `git status` after, and restore the
+  one mutated file only once the diff is confirmed to be just the mutation.
 - **A SCHEDULED RUN RACES EVERY MERGE.** The first weekend refresh (run
   36360495917) read everything and saved nothing: #143 merged between its
   checkout and its push, and the push was refused (issue #145). The scheduler
