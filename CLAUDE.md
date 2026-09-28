@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **3623 passing** (none skipped) — `python -m pytest -q` on `main` at
-`de218ad` (#162 merged), with HEAD level with origin, which is the order that makes the
+Suite: **3755 passing** (none skipped) — `python -m pytest -q` on `main` at
+`35cfb6d` (README screenshots, after #168), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -425,7 +425,7 @@ ratings, indefinitely parked with the injury data closed; learned blend weight
 between Models A and B - if an ensemble doesn't beat both, that's a publishable
 REJECT.
 
-### Stage 6 - New data sources
+### Stage 6 - New data sources  <- COMPLETE (2026-09-28, #108, #163, #164; line movement waits for season end)
 
 Next Gen Stats via nflreadpy, the most promising untapped source already in the
 stack; participation/personnel grouping; referee crew assignments, cheap and
@@ -440,8 +440,17 @@ N1 screen FAILED: four passing numbers (completion over expected, time to throw,
 aggressiveness, intended air yards) did not predict a quarterback's next game
 beyond his recent EPA plus play-by-play CPOE, so N2 and N3 were never run and no
 slot was spent. `experiments/stage6/README.md` has the figures. Do not re-open it
-without a new registration and a reason the answer would differ. Referee crews
-and personnel groupings register into the same file, under the same budget.
+without a new registration and a reason the answer would differ.
+
+**Referees: answered 2026-09-28, nothing accepted.** Registered in #163 before
+any referee or penalty value was read (R1 screen, R2 feature, A2 lock check;
+personnel groupings P1 DEFERRED with the reason written down). R1 FAILED in
+#164: across the 12 referees with 40+ games in 2016-2020 and 24+ in 2021-2023,
+the weighted correlation of a referee's home/away penalty-yard gap between the
+two periods is +0.18, 95% interval -0.28 to +0.65. R2 and A2 were never run; no
+slot was spent. The first R1 run was discarded for a join bug and disclosed
+(the schedule's OAK/SD are play-by-play's LV/LAC; home and away now come from
+play-by-play). Stage 6 spent none of its five slots.
 
 **When the rest of Stage 6 runs (decided 2026-09-26):** after Stage 18, so its answers
 land in the generated Model Lab instead of being hand-copied into it. Line movement
@@ -1464,6 +1473,21 @@ biggest-moves line; #162 offense and defense beside net on Team Deep-Dive.
   defense lower is better (Mark). On a phone the pair takes a second line
   and the bar gives up width so net stays on the first.
 
+**Mark's page review, 2026-09-28 afternoon (#165 to #168), decided:**
+- Week Board: logos at the two ends of Model B's bar, not the title (on a
+  phone they stack above the abbreviation); no "picks graded on Tuesday";
+  no "Pick'em rank N (M points)" line. The rank still drives the
+  "most confident" sort.
+- Methodology: a number column's header is right-aligned over it
+  (`th.num`); `tests/test_table_alignment.py` checks every static table.
+- Model Lab: every interval graph sits in one shared frame, zero centred,
+  still on its own row's scale (Mark chose this over one shared scale);
+  decision pills never break inside themselves.
+- Team Deep-Dive: the team's 48px logo and full name head the page.
+- TV channels show only while a game is unplayed, by design; week 4's appear
+  after Thursday's lock run.
+- README screenshots retaken 2026-09-28 with logos served locally.
+
 ### Stage 20 - Testing with real people
 
 Five people -- a recruiter, a football fan, a data person, someone on a phone,
@@ -1682,6 +1706,19 @@ under compaction pressure, so its length is a cost paid on every session.
   never copied to markys, and the next session found neither. Anything
   another session may need goes to the session archive on markys, or it
   does not exist.
+- **BOOTH COUNTS A MUTATION SCOPE CASE BY CASE.** A case file pulled in only
+  because some of its cases override target/tests to a changed file: the
+  runs here run it whole, Booth counts only those cases. #165 claimed 382
+  (whole) and Booth derived 345, a DISCREPANCY until the description said
+  both. State "run whole" and both counts; `cases_rule_check.py` in the
+  session archive prints them.
+- **POWERSHELL `.Split('.json')` SPLITS ON CHARACTERS, NOT THE STRING.** A
+  scope list built that way ran the wrong case files; use `-replace`. And a
+  stop script that matches `run...ps1` also matches its own name
+  (`kill_runs.ps1`) and kills itself: anchor on the path separator.
+- **A PIXEL WIDTH MEASURED IN THE LOCAL BROWSER IS THIS MACHINE'S.** #165
+  said 174px; Booth's runner measured 176px on both builds. Say "on this
+  machine", or leave the figure out.
 
 - **AN UNCLOSED CSS COMMENT SWALLOWS THE RULES AFTER IT, AND A TEST OF THE RAW
   TEXT STILL PASSES.** #155's first draft never closed the comment above its
