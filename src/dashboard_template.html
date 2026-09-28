@@ -1259,10 +1259,10 @@
   /* 20px logo on a 9px line: the negative margin keeps the row as tall as the
      bar it sits beside, so the logo does not push the bar down. */
   .card-end-team{display:inline-flex; align-items:center; gap:var(--s1);}
-  .card-end-logo{width:20px; height:20px; object-fit:contain; flex-shrink:0; margin:-6px 0;}
+  .card-end-logo{width:20px; height:20px; object-fit:contain; flex-shrink:0; margin:calc(-1 * var(--s1)) 0;}
   @media (max-width:767px){
     .card-end-team{flex-direction:column; gap:var(--s1);}
-    .card-end-logo{margin:-6px 0 0;}
+    .card-end-logo{margin:calc(-1 * var(--s1)) 0 0;}
   }
   /* A faint inner outline, so a pale team colour (LV's silver, NO's gold)
      still has an edge on the light theme's white card. */
