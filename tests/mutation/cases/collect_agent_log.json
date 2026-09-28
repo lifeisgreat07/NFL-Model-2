@@ -36,6 +36,35 @@
       "find": "        newest = max(indices, key=lambda i: (rows[i]['posted_utc'] or '', i))",
       "replace": "        newest = indices[-1]",
       "expect_caught_by": "test_supersession_does_not_depend_on_input_order"
+    },
+    {
+      "id": "agentlog-any-author-counts",
+      "why": "the author check is dropped, so a comment from any account that copies Booth's heading and a SAFE TO MERGE block becomes a row on the page (the 2026-09-28 audit's finding)",
+      "find": "    return bool(AUDIT_RE.search(body)) and author(comment) in BOOTH_ACCOUNTS",
+      "replace": "    return bool(AUDIT_RE.search(body))",
+      "expect_caught_by": "test_a_copied_heading_from_anyone_else_is_not_an_audit"
+    },
+    {
+      "id": "agentlog-drops-booth-on-the-workflow-token",
+      "why": "only claude[bot] is accepted, so every report Booth posts on GITHUB_TOKEN (as github-actions[bot]) is silently left out of the log",
+      "find": "BOOTH_ACCOUNTS = frozenset({'claude[bot]', 'github-actions[bot]'})",
+      "replace": "BOOTH_ACCOUNTS = frozenset({'claude[bot]'})",
+      "expect_caught_by": "test_a_report_from_booth_on_the_workflow_token_is_an_audit"
+    },
+    {
+      "id": "agentlog-missing-author-assumed-booth",
+      "why": "a comment with no author recorded is assumed to be Booth's, so a collector fed the old shape counts every copied heading again",
+      "find": "    return (comment.get('user') or {}).get('login')",
+      "replace": "    return (comment.get('user') or {}).get('login', 'claude[bot]')",
+      "expect_caught_by": "test_a_comment_with_no_author_is_not_an_audit"
+    },
+    {
+      "id": "agentlog-workflow-drops-the-author",
+      "target": ".github/workflows/collect-agent-log.yml",
+      "why": "the workflow's jq stops passing each comment's login, so no comment has an author and the log collects nothing",
+      "find": "{body, html_url, created_at, user: {login: .user.login}}",
+      "replace": "{body, html_url, created_at}",
+      "expect_caught_by": "test_the_workflow_passes_each_comment_author_to_the_collector"
     }
   ]
 }

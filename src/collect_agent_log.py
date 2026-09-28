@@ -31,6 +31,10 @@ this repository to quietly flatter yourself with.
    are not failures and not omissions; they are older, and the log says so
    rather than silently reporting zero findings for them.
 
+Only Booth's own accounts count (BOOTH_ACCOUNTS below). That is not a
+selection of audits, which rule 1 forbids; it is the definition of one, so a
+comment that merely copies Booth's heading cannot put a row on the page.
+
 The counts come from the verdict block, never from the prose summary -- the
 block is what src/booth_verdict.py can validate, and cross_check() catches a
 report whose two halves disagree.
@@ -65,9 +69,26 @@ def _pr_number(comment):
     return int(m.group(1)) if m else None
 
 
+#: The accounts Booth posts as. Every audit before Stage 23 was posted by
+#: claude[bot] (the Claude GitHub App's token); since Booth runs on the
+#: workflow's own GITHUB_TOKEN its reports come from github-actions[bot].
+#: Anyone can post a comment opening with Booth's heading, and before this a
+#: comment from any account became a row on the page (the 2026-09-28 audit).
+BOOTH_ACCOUNTS = frozenset({'claude[bot]', 'github-actions[bot]'})
+
+
+def author(comment):
+    """The login a comment was posted by, or None when the input carries none."""
+    return (comment.get('user') or {}).get('login')
+
+
 def is_audit(comment):
+    """A comment is an audit only if it has Booth's heading AND was posted by
+    one of Booth's accounts. A comment with no author recorded is not one:
+    failing closed here means a collector fed the wrong shape logs nothing,
+    which the page reports, rather than logging anyone."""
     body = comment.get('body') or ''
-    return bool(AUDIT_RE.search(body))
+    return bool(AUDIT_RE.search(body)) and author(comment) in BOOTH_ACCOUNTS
 
 
 def parse_audit(comment):
