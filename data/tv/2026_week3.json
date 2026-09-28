@@ -1,0 +1,265 @@
+{
+  "reads": [
+    "2026-09-28T11:56:35Z"
+  ],
+  "changes": [],
+  "games": [
+    {
+      "elias": "2026092400",
+      "networks": [
+        "Prime Video"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "ATL",
+      "home": "GB",
+      "territory": "NATIONAL",
+      "listed": [
+        "Prime Video"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092700",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LAC",
+      "home": "BUF",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092701",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CAR",
+      "home": "CLE",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092702",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NYJ",
+      "home": "DET",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092703",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "HOU",
+      "home": "IND",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092704",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NE",
+      "home": "JAX",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092705",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "KC",
+      "home": "MIA",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092706",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "TEN",
+      "home": "NYG",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092707",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CIN",
+      "home": "PIT",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092708",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "SEA",
+      "home": "WAS",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092709",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "ARI",
+      "home": "SF",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092710",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "MIN",
+      "home": "TB",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092711",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "BAL",
+      "home": "DAL",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092712",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LV",
+      "home": "NO",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092713",
+      "networks": [
+        "NBC"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LA",
+      "home": "DEN",
+      "territory": "NATIONAL",
+      "listed": [
+        "NBC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    },
+    {
+      "elias": "2026092800",
+      "networks": [
+        "ESPN"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "PHI",
+      "home": "CHI",
+      "territory": "NATIONAL",
+      "listed": [
+        "ESPN",
+        "ABC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-3",
+      "read_at": "2026-09-28T11:56:35Z"
+    }
+  ]
+}

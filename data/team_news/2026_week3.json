@@ -1,0 +1,417 @@
+{
+  "season": 2026,
+  "week": 3,
+  "read_at": "2026-09-28T11:56:38Z",
+  "sources": {
+    "injuries": "nflverse injury report, via nflreadpy.load_injuries",
+    "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
+    "depth_chart_snapshot": "2026-09-28T06:01:42Z"
+  },
+  "teams": {
+    "GB": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "ATL": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Samson Ebukam",
+          "position": "DE",
+          "injury": "Hamstring"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "BUF": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "T.J. Sanders",
+          "position": "DE",
+          "injury": "Illness"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 2
+    },
+    "LAC": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Charlie Kolar",
+          "position": "TE",
+          "injury": "Forearm"
+        },
+        {
+          "name": "Elijah Molden",
+          "position": "S",
+          "injury": "Hamstring"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "CLE": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Teven Jenkins",
+          "position": "G",
+          "injury": "Back"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 2
+    },
+    "CAR": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Devin Lloyd",
+          "position": "LB",
+          "injury": "Calf"
+        },
+        {
+          "name": "Nick Scott",
+          "position": "S",
+          "injury": "Rib"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "DET": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "NYJ": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Francisco Mauigoa",
+          "position": "LB",
+          "injury": "Quadricep"
+        },
+        {
+          "name": "Minkah Fitzpatrick",
+          "position": "S",
+          "injury": "Groin"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "IND": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "HOU": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Nico Collins",
+          "position": "WR",
+          "injury": "Hamstring"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "JAX": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "NE": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Dre'Mont Jones",
+          "position": "LB",
+          "injury": "Shoulder"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "MIA": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "KC": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Josh Simmons",
+          "position": "T",
+          "injury": "Back"
+        }
+      ],
+      "doubtful": [
+        {
+          "name": "Chamarri Conner",
+          "position": "S",
+          "injury": "Knee"
+        }
+      ],
+      "questionable_starters": 0
+    },
+    "NYG": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 3
+    },
+    "TEN": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "PIT": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 3
+    },
+    "CIN": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "WAS": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Chig Okonkwo",
+          "position": "TE",
+          "injury": "Hamstring"
+        },
+        {
+          "name": "Frankie Luvu",
+          "position": "LB",
+          "injury": "Groin"
+        },
+        {
+          "name": "Jayden Daniels",
+          "position": "QB",
+          "injury": "Elbow"
+        },
+        {
+          "name": "Nick Cross",
+          "position": "S",
+          "injury": "Illness"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "SEA": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Julian Love",
+          "position": "S",
+          "injury": "Calf"
+        },
+        {
+          "name": "Ty Okada",
+          "position": "S",
+          "injury": "Hamstring"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "SF": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Nick Bosa",
+          "position": "DE",
+          "injury": "Knee"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "ARI": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 2
+    },
+    "TB": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Josiah Trotter",
+          "position": "LB",
+          "injury": "Shoulder"
+        },
+        {
+          "name": "Rueben Bain Jr.",
+          "position": "LB",
+          "injury": "Groin"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "MIN": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Brett Thorson",
+          "position": "P",
+          "injury": "Hamstring"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "DAL": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Cobie Durant",
+          "position": "CB",
+          "injury": "Hamstring"
+        },
+        {
+          "name": "DeMarvion Overshown",
+          "position": "LB",
+          "injury": "Hamstring"
+        },
+        {
+          "name": "Malik Hooker",
+          "position": "S",
+          "injury": "Forearm"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "BAL": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Ronnie Stanley",
+          "position": "T",
+          "injury": "Toe"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    },
+    "NO": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "LV": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Treydan Stukes",
+          "position": "S",
+          "injury": "Concussion"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 2
+    },
+    "DEN": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "LA": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [
+        {
+          "name": "Kamren Kinchens",
+          "position": "S",
+          "injury": "Hamstring"
+        },
+        {
+          "name": "Puka Nacua",
+          "position": "WR",
+          "injury": "Hip"
+        }
+      ],
+      "questionable_starters": 1
+    },
+    "CHI": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Caleb Williams",
+          "position": "QB",
+          "injury": "Hamstring"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "PHI": {
+      "qb": null,
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Dallas Goedert",
+          "position": "TE",
+          "injury": "Knee"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 1
+    }
+  }
+}
