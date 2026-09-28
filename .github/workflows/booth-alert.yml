@@ -27,6 +27,7 @@ jobs:
   alert:
     if: github.event.workflow_run.conclusion == 'failure' || github.event.workflow_run.conclusion == 'timed_out'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       # Checks out main, not the PR. Nothing from the audited branch runs here.
       - uses: actions/checkout@v4

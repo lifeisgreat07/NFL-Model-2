@@ -53,6 +53,7 @@ permissions:
 jobs:
   preflight:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Check out the PR head
         uses: actions/checkout@v4
