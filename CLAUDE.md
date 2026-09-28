@@ -1710,8 +1710,8 @@ under compaction pressure, so its length is a cost paid on every session.
   because some of its cases override target/tests to a changed file: the
   runs here run it whole, Booth counts only those cases. #165 claimed 382
   (whole) and Booth derived 345, a DISCREPANCY until the description said
-  both. State "run whole" and both counts; `cases_rule_check.py` in the
-  session archive prints them.
+  both. State "run whole" and both counts; the scope checker script in the
+  session archive on markys (one-off-scripts) prints them.
 - **POWERSHELL `.Split('.json')` SPLITS ON CHARACTERS, NOT THE STRING.** A
   scope list built that way ran the wrong case files; use `-replace`. And a
   stop script that matches `run...ps1` also matches its own name
