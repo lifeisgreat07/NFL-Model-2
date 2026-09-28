@@ -14,7 +14,7 @@ Last updated: 2026-09-28, overnight session (Stages 17 and 18 complete; Stage 19
 `e95d312` (#159 merged), HEAD level with origin.
 
 **Next action: read Mark's answers** to the three Stage 19 questions and the
-weekend-refresh question (table below), then build what they unblock.
+Stage 6 draft registration (table below), then build what they unblock.
 
 **Done this session:** #148 to #159 — Stage 17 complete, Stage 18 complete,
 and Stage 19's default team, games-list headings and accuracy-trend labels.
@@ -28,7 +28,6 @@ commit exactly. Asked Mark whether it was him; no answer yet.
 
 | What | State | Waiting on |
 |---|---|---|
-| Weekend refresh | Monday 05:37 UTC run never started; Sunday's failed at its push (#145) | Mark: dispatch by hand, or wait for Fri 05:17 UTC. Close #145 and #144 once a run commits cleanly |
 | Stage 19 log-loss row | Written and tested, not opened | Mark: plain wording, or an exception to the plain-language guard for "log loss" |
 | Stage 19 Power Ratings movers + rank change | Not started | Mark: does the arrow follow rank or rating? |
 | Stage 19 Team Deep-Dive offence/defence | Not started | Mark: phone layout, and a "lower is better" note for defence |
@@ -38,7 +37,8 @@ commit exactly. Asked Mark whether it was him; no answer yet.
 | Thursday lock run | Due Thu 2026-10-01 16:00 UTC | Check it started, locked before kickoff, and its push survived; week 4 is the first card with quarterback names and channels |
 | TV exceptions for holiday and Saturday games | Weeks 12, 15, 16 | Sourced entries in `data/tv/exceptions.json` before those weeks |
 | Model Lab mappings | My calls, in #141 | Mark may overrule any (listed in `experiments/legacy/README.md`) |
-| Booth alert, drift issue, failure alerts | Two have fired and read right (#144, #145) | The drift issue still needs a real event |
+| Booth alert, drift issue, failure alerts | Two have fired, read right and are closed (#144, #145) | The drift issue still needs a real event |
+| #147's catch-up step under a race | Ran on Monday's refresh (11:56 UTC, `1aa74e8`), but main had not moved, so it caught up on nothing | A refresh or weekly run during which main moves |
 
 ## Queued, in order
 
