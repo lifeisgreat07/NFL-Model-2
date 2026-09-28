@@ -3268,7 +3268,7 @@ function renderRatings(){
 
   const body = document.getElementById('ratings-body');
   if(visible.length === 0){
-    body.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:var(--s6); color:var(--text-2);">No teams match "${q}"</td></tr>`;
+    body.innerHTML = ratingsNoMatchRow(q);
     return;
   }
   body.innerHTML = visible.map((t)=>{
@@ -3817,6 +3817,19 @@ function cardEsc(s){
   return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 }
 
+/* Two strings that reached innerHTML as written, until Stage 23 (the
+   2026-09-28 audit): what a reader types into the Power Ratings search, and
+   the context notes on a card, which come from sourced web reports. Each
+   now goes through cardEsc(), and each is a function of its own so
+   tests/test_template_sinks.py can run it in node. */
+function ratingsNoMatchRow(q){
+  return `<tr><td colspan="7" style="text-align:center; padding:var(--s6); color:var(--text-2);">No teams match "${cardEsc(q)}"</td></tr>`;
+}
+
+function contextNotesHtml(notes){
+  return notes.map(n=>`<li style="margin-bottom:var(--s1);">${cardEsc(n)}</li>`).join('');
+}
+
 function cardTvPill(g){
   if(!g.tv || g.graded || g.status === 'final') return '';
   return `<span class="tv-pill"><span class="visually-hidden">On TV: </span>${cardEsc(g.tv)}</span>`;
@@ -4034,7 +4047,7 @@ function renderGames(){
       <div class="flag-note" id="flag-${idSafe}">
         <b>Context:</b>
         <ul style="margin:var(--s2) 0 0 var(--s5); padding:0;">
-          ${g.notes.map(n=>`<li style="margin-bottom:var(--s1);">${n}</li>`).join('')}
+          ${contextNotesHtml(g.notes)}
         </ul>
       </div>` : ''}
     </div>`;
