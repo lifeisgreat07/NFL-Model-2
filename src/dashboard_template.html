@@ -459,6 +459,10 @@
   .team-full{color:var(--text-2); font-size:var(--fs-13);}
   .net-cell-inner{display:grid; grid-template-columns:90px 62px; align-items:center; column-gap:var(--s3); justify-content:center;}
   .dive-row{display:flex; align-items:center; gap:var(--s4); padding:var(--s2) 0; border-bottom:1px solid var(--border);}
+  /* The team being viewed, logo and name, above the page's content (2026-09-28). */
+  .dive-team{display:flex; align-items:center; gap:var(--s3); margin:0 0 var(--s4);}
+  .dive-logo{width:48px; height:48px; object-fit:contain; flex-shrink:0;}
+  .dive-team-name{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-20); color:var(--text);}
   .dive-row:last-child{border-bottom:none;}
   .dive-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); color:var(--text-2); width:80px; flex-shrink:0;}
   .dive-label.live{color:var(--accent);}
@@ -5675,10 +5679,20 @@ function renderTeamDive(){
     ? `<p class="dive-note">Net is offense minus defense. Defense counts expected points allowed, so for defense lower is better.</p>`
     : '';
 
-  content.innerHTML = renderTeamNews(team)
+  content.innerHTML = diveTeamHtml(team, teamHistory.names[team]) + renderTeamNews(team)
     + `<div class="table-wrap" style="padding:var(--s5) var(--s5);">${splitNote}${rowsHtml}</div>`
     + renderTeamGames(team);
   wireTeamGameToggles();
+}
+
+/* Which team the page is showing, as a logo and the full name above
+   everything else (Mark, 2026-09-28: it re-establishes whose page this is).
+   The logo is decorative, alt="", because the name beside it is the text; a
+   logo ESPN will not serve hides and leaves the name, the fallback every
+   logo here has. */
+function diveTeamHtml(team, name){
+  return `<div class="dive-team"><img class="dive-logo" src="${teamLogo(team)}" alt="" loading="lazy" onerror="this.style.display='none'">`
+    + `<span class="dive-team-name">${name || team}</span></div>`;
 }
 
 /* Offense and defense beside a Team Deep-Dive row's net (Stage 19), in the
