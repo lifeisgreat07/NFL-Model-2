@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **3289 passing** (none skipped) — `python -m pytest -q` on `main` at
-`657871a` (#149 merged) plus the 2026-09-28 docs, with HEAD level with origin, which is the order that makes the
+Suite: **3495 passing** (none skipped) — `python -m pytest -q` on `main` at
+`e95d312` (#159 merged), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -1370,7 +1370,7 @@ dated with its source. Items expire with the week. The plain-language guard
 applies. Data file first (with a hypothesis about what a reader needs from it
 written in the PR), then Team Deep-Dive, then the card line in Stage 17.
 
-### Stage 17 - Week Board card v2  <- IN PROGRESS (#146, #148, #149 merged)
+### Stage 17 - Week Board card v2  <- COMPLETE (2026-09-28, #146, #148 to #153)
 
 **Decided 2026-09-27 from rendered side-by-sides: "B refined".** Keep the
 team-colour bar split by Model B, team names at its ends; one probability line
@@ -1390,8 +1390,10 @@ once its game is final or graded; the quarterbacks stay, because they are part
 of the pick. #149 "Model A's reasoning" above the why sentence, class
 `.why-by` (NOT `.why-label`, which the numbers panel's rows already wear).
 Weeks 1 to 3 were saved under v2.4, so week 4 is the first card with names.
-**Still to build, one PR each:** `[` / `]` week keys; no HIGH/LOW words; drop
-the now-unused `.model-row` / `.tele-team` CSS.
+#150 `[` / `]` step weeks on desktop; #151 team logos back on the matchup
+header (20px); #152 `.card-status` names `--text` and
+`tests/test_css_tokens_defined.py` guards every `var(--x)`; #153 the retired
+rows' CSS removed. "No HIGH/LOW words" needed nothing: the card had none.
 
 
 One decision per card. A single probability line from away team to home team
@@ -1406,7 +1408,7 @@ and put the line beneath -- chosen from rendered side-by-sides in both themes
 and under protan and deutan simulation, as that decision was. `[` and `]` step
 weeks on desktop.
 
-### Stage 18 - Model Lab rebuilt from the experiment records  <- IN PROGRESS (#141 to #143 merged)
+### Stage 18 - Model Lab rebuilt from the experiment records  <- COMPLETE (2026-09-28, #141 to #143, #154 to #156)
 
 **Shipped:** #141 `src/model_lab.py` over `experiments/stage*/results/` plus
 the 46 old rows moved once, verbatim, to `experiments/legacy/rows.json` (frozen
@@ -1414,8 +1416,14 @@ by sha256 in `tests/test_model_lab.py`); #142 the table rendered at build time
 by `render_model_lab_rows` (tests that read Model Lab copy use
 `tests/page_source.py`); #143 decision chips with counts. Mappings onto the
 five decisions are my calls, listed in `experiments/legacy/README.md`, for
-Mark to overrule. **Left:** result-first layout with an interval glyph, cards
-on a phone, the reliability diagram below with "How to read this".
+Mark to overrule. #154 each registered result opens with `interval_glyph()`,
+its interval drawn against zero (`&minus;` in the text equivalent: the
+generator writes `index.html` without `encoding=`, and a literal U+2212 crashes
+the build under cp1252). #155 the experiment log is cards below 768px (the
+table first fits at about 651-655px; the figure depends on text rendering).
+#156 the reliability diagram follows the experiment log; its explanation is
+behind "How to read this" and the Brier definition behind "What these numbers
+mean", while the bootstrap findings stay in view (they are results).
 
 
 Generated from a data file, not 46 hand-written rows: Stage 5 and 6 read from
@@ -1426,7 +1434,20 @@ interval glyph first in each result; cards on a phone; the reliability diagram
 below the experiments with "How to read this". Every figure held to its source
 file by a test.
 
-### Stage 19 - Team pages
+### Stage 19 - Team pages  <- IN PROGRESS (#157 to #159 merged)
+
+**Shipped:** #157 Team Deep-Dive opens on Power Ratings' rank 1
+(`teamDiveDefault()`), a `#team/` link still wins; #158 headings on its games
+list (aria-hidden; each row names its numbers through `.visually-hidden`), and
+phone rows put the result on the opponent's line; #159 the accuracy trend's
+week labels and end-labels placed together by `spreadLabels()`.
+**Waiting on Mark (asked 2026-09-28):** the log-loss row -- written and
+tested, but `tests/test_plain_language.py` bans "log loss" on Season
+Accuracy, so either plain wording or an exception; whether Power Ratings'
+arrow follows rank or rating once the rank change is a number (they can
+disagree); the phone layout for offence/defence on Team Deep-Dive, and a
+"lower is better" note for defence (it is points allowed).
+
 
 Power Ratings: a "biggest movers" line and the rank change as a number.
 Team Deep-Dive: offence and defence over time beside net (the generator carries
@@ -1640,6 +1661,22 @@ under compaction pressure, so its length is a cost paid on every session.
   a new commit, never an amend.
 
 ## Traps that have actually bitten
+
+- **AN UNCLOSED CSS COMMENT SWALLOWS THE RULES AFTER IT, AND A TEST OF THE RAW
+  TEXT STILL PASSES.** #155's first draft never closed the comment above its
+  `@media` block, so the phone cards did nothing; every test read the rules
+  from the template's text and passed. Rendering found it. A CSS guard reads
+  the stylesheet with comments blanked out.
+- **A SELECTOR ADDED TO AN EXISTING RULE CAN BREAK A TEST THAT READS THAT RULE
+  BY NAME.** #156 grouped `.rel-how summary` onto `.onboarding-more summary`;
+  `tests/test_orientation_banner.py` and a mutation anchor read
+  `.onboarding-more summary{` literally and failed. Give a new component its
+  own rules, or `git grep` the selector in `tests/` first.
+- **PIXEL FIGURES DO NOT TRAVEL BETWEEN ENVIRONMENTS.** Booth's Chromium put
+  the same build's text a few pixels, and on a long prose page hundreds of
+  pixels, away from this session's (#155, #156). Say which environment
+  measured a figure, give a range when two disagree, and never write one
+  machine's pixel as a constant in code.
 
 - **A NEW CSS CLASS NAME CAN ALREADY BE TAKEN.** #149's first commit named its
   label `.why-label`; `whyRow()` already used that class for the numbers
