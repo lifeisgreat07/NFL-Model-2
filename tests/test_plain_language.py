@@ -90,6 +90,8 @@ RENDERERS = {
     'cardTvPill': 'board',
     'cardQbLine': 'board',
     'cardNewsLine': 'board',
+    'ratingsNoMatchRow': 'ratings',
+    'contextNotesHtml': 'board',
     'lineFor': 'board',
     'whyRow': 'board',
     'populateWeekSelect': 'board',
