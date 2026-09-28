@@ -44,6 +44,7 @@ from sklearn.linear_model import LogisticRegression
 
 sys.path.insert(0, str(Path(__file__).parent))
 from data_loader import load_plays, load_schedule
+from atomic_write import write_json_atomic
 from data_quality import enforce as enforce_data_quality
 # Only get_continuity is imported: build_historical_features still accepts an
 # ol_lookup so backtest.py can run its "[reference only] + OL continuity"
@@ -310,11 +311,9 @@ def record_skipped_week(season, week, reason, now, skipped_dir=None):
     skipped_dir.mkdir(parents=True, exist_ok=True)
     path = skipped_dir / f'{season}_week{week}.json'
     if not path.exists():
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump({'season': season, 'week': week, 'reason': reason,
-                       'recorded_utc': pd.Timestamp(now).tz_convert('UTC').isoformat()},
-                      f, indent=2)
-            f.write('\n')
+        write_json_atomic(path, {'season': season, 'week': week, 'reason': reason,
+                                 'recorded_utc': pd.Timestamp(now).tz_convert('UTC').isoformat()},
+                          trailing_newline=True, indent=2)
     return path
 
 
@@ -876,8 +875,9 @@ def main(season, week):
     if out_path.exists():
         print(f"WARNING: {out_path} already exists -- NOT overwriting (predictions are permanent once saved).")
     else:
-        with open(out_path, 'w') as f:
-            json.dump(predictions, f, indent=2)
+        # Atomic: this file can never be overwritten, so a half-written one
+        # would be permanent (Stage 24).
+        write_json_atomic(out_path, predictions, indent=2)
         print(f"Saved {len(predictions)} predictions to {out_path}")
         for p in predictions:
             print(f"  {p['away']} @ {p['home']}: Model A home={p['model_a_home_win_prob']:.1%}"

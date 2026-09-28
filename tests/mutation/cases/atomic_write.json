@@ -1,0 +1,28 @@
+{
+  "target": "src/atomic_write.py",
+  "tests": "tests/test_atomic_write.py",
+  "cases": [
+    {
+      "id": "atomic-write-truncates-the-target-first",
+      "why": "the target is emptied before the new text is known, so a write that fails leaves an empty file -- which, for a week of picks, the write-once rule then protects forever",
+      "find": "    text = json.dumps(obj, **dump_kwargs)",
+      "replace": "    path.write_text('', encoding='utf-8')\n    text = json.dumps(obj, **dump_kwargs)",
+      "expect_caught_by": "test_a_failed_write_leaves_nothing_behind"
+    },
+    {
+      "id": "atomic-write-never-moves-the-file-into-place",
+      "why": "the temporary file is written but never swapped in, so every save silently writes nothing",
+      "find": "        os.replace(tmp, path)",
+      "replace": "        pass",
+      "expect_caught_by": "test_it_writes_what_json_dumps_would"
+    },
+    {
+      "id": "picks-saved-straight-into-the-target-again",
+      "target": "src/weekly_update.py",
+      "why": "the week of picks goes back to a direct write, so a run killed mid-write leaves a truncated file nothing may replace",
+      "find": "        write_json_atomic(out_path, predictions, indent=2)",
+      "replace": "        open(out_path, 'w').write(json.dumps(predictions, indent=2))",
+      "expect_caught_by": "test_the_write_once_files_use_it"
+    }
+  ]
+}
