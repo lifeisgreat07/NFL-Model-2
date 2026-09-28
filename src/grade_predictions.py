@@ -46,6 +46,16 @@ def main(season, week):
             print(f"  {p['away']}@{p['home']}: result not yet available, skipping")
             continue
         r = row.iloc[0]
+        if r['home_score'] == r['away_score']:
+            # A tie has no winner, so no pick on it is right or wrong (Stage
+            # 25). It used to be graded as an away win, which scored every
+            # home pick wrong and every away pick right. It is still recorded,
+            # marked, with nulls a reader already treats as "no result to score".
+            p['result'] = 'tie'
+            p['actual_home_win'] = None
+            p['market_correct'] = p['model_a_correct'] = p['model_b_correct'] = None
+            graded.append(p)
+            continue
         actual_home_win = int(r['home_score'] > r['away_score'])
         p['actual_home_win'] = actual_home_win
         p['market_correct'] = graded_correct(p.get('market_prob_home'), actual_home_win)

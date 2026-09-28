@@ -60,6 +60,14 @@ def test_grading_counts_only_games_with_a_result():
     assert '3 of 16 games graded. Model A 2/3, Model B 2/3, Market 0/3' in text
 
 
+def test_a_tie_counts_as_graded_but_scores_no_pick():
+    """Stage 25 item 1: a tie has a result, so it is graded, and nulls for
+    every pick, so it adds to no model's count."""
+    tie = {**game(None), 'result': 'tie'}
+    line = ws.graded_line(2026, 3, [game(1), tie, game(None)])
+    assert line == '- 2026 week 3: 2 of 3 games graded. Model A 1/1, Model B 1/1, Market 0/1'
+
+
 def test_a_week_with_nothing_graded_says_so():
     line = ws.graded_line(2026, 5, [game(None)] * 16)
     assert line == '- 2026 week 5: none of 16 games graded yet'

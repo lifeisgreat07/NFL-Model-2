@@ -46,8 +46,10 @@ def changed_paths(run=subprocess.run, repo=REPO):
 
 def graded_line(season, week, rows):
     """One line per graded week. A game with no result yet is not graded;
-    null stays null rather than counting as wrong."""
-    done = [r for r in rows if r.get('actual_home_win') is not None]
+    null stays null rather than counting as wrong. A tie is graded (it has
+    a result) but no pick on it is scored."""
+    done = [r for r in rows
+            if r.get('actual_home_win') is not None or r.get('result') == 'tie']
     if not done:
         return f'- {season} week {week}: none of {len(rows)} games graded yet'
     parts = []
