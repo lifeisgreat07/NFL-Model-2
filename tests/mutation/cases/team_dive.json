@@ -59,6 +59,46 @@
       "find": "        print(f\"  WARNING: {static_path} not found",
       "replace": "        print(f\"  {static_path} not found",
       "expect_caught_by": "test_a_missing_history_file_is_reported_loudly"
+    },
+    {
+      "id": "dive-default-back-to-arizona",
+      "tests": "tests/test_team_dive_default.py",
+      "why": "the first render stops setting the default, so the page opens on the first option alphabetically again: Arizona, whatever Arizona's season.",
+      "find": "    // Before the listbox is built, so its button names the same team.\n    select.value = teamDiveDefault(teamHistory.names, teams);\n",
+      "replace": "",
+      "expect_caught_by": "test_the_first_render_sets_the_default_before_building_the_listbox"
+    },
+    {
+      "id": "dive-default-by-file-order",
+      "tests": "tests/test_team_dive_default.py",
+      "why": "the default takes the first team in the ratings file instead of rank 1, which is right only while the file happens to be sorted.",
+      "find": "  const top = (ratedTeams || []).find(t => t.rank === 1);",
+      "replace": "  const top = (ratedTeams || [])[0];",
+      "expect_caught_by": "test_the_page_opens_on_rank_one"
+    },
+    {
+      "id": "dive-default-without-history",
+      "tests": "tests/test_team_dive_default.py",
+      "why": "a rank 1 with no entry in the history file is chosen anyway, and the page opens on a team it has nothing to show for.",
+      "find": "  if(top && Object.prototype.hasOwnProperty.call(names, top.team)) return top.team;",
+      "replace": "  if(top) return top.team;",
+      "expect_caught_by": "test_without_a_usable_rank_one_it_falls_back_to_the_first_team_alphabetically"
+    },
+    {
+      "id": "dive-default-fallback-by-code",
+      "tests": "tests/test_team_dive_default.py",
+      "why": "the fallback sorts by team code while the options sort by name, so the page opens on a team other than the first one in its own list.",
+      "find": "  return Object.keys(names).sort((a, b) => names[a].localeCompare(names[b]))[0];",
+      "replace": "  return Object.keys(names).sort()[0];",
+      "expect_caught_by": "test_the_fallback_sorts_by_name_like_the_options_do"
+    },
+    {
+      "id": "dive-default-after-the-listbox",
+      "tests": "tests/test_team_dive_default.py",
+      "why": "the default is set after the listbox is built, so its button names one team while the page below shows another.",
+      "find": "    // Before the listbox is built, so its button names the same team.\n    select.value = teamDiveDefault(teamHistory.names, teams);\n    select.addEventListener('change', renderTeamDive);\n    /* AFTER the change listener, never before -- the same ordering the Week\n       Board's call site documents, and for the same reason. enhanceSelect\n       writes back by dispatching change on the select, so a listbox built\n       first would dispatch into a listener that does not exist yet: the\n       button would update, the list would close, and the page below it would\n       go on showing the previous team, with every source-reading test green.\n\n       `|| teamDiveListbox` because enhanceSelect returns null for a select it\n       has already enhanced. Nothing re-enters this branch today, since the\n       sentinel above is the option count and teamHistory does not change\n       after load -- but assigning that null would silently discard a working\n       handle, and the symptom would be a listbox that stops refreshing. */\n    teamDiveListbox = enhanceSelect(select) || teamDiveListbox;\n",
+      "replace": "    select.addEventListener('change', renderTeamDive);\n    /* AFTER the change listener, never before -- the same ordering the Week\n       Board's call site documents, and for the same reason. enhanceSelect\n       writes back by dispatching change on the select, so a listbox built\n       first would dispatch into a listener that does not exist yet: the\n       button would update, the list would close, and the page below it would\n       go on showing the previous team, with every source-reading test green.\n\n       `|| teamDiveListbox` because enhanceSelect returns null for a select it\n       has already enhanced. Nothing re-enters this branch today, since the\n       sentinel above is the option count and teamHistory does not change\n       after load -- but assigning that null would silently discard a working\n       handle, and the symptom would be a listbox that stops refreshing. */\n    teamDiveListbox = enhanceSelect(select) || teamDiveListbox;\n    select.value = teamDiveDefault(teamHistory.names, teams);\n",
+      "expect_caught_by": "test_the_first_render_sets_the_default_before_building_the_listbox"
     }
   ]
 }
