@@ -25,6 +25,7 @@ only executing it proves the sentence is true.
 """
 
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -117,6 +118,38 @@ def test_the_real_card_that_was_reported_backwards(out):
 
 def test_no_line_produces_no_claim_about_the_line(out):
     assert out['market_absent'] == ''
+
+
+# --- whose reasoning it is (Stage 17) ---
+
+def test_the_sentence_is_labelled_as_model_as_reasoning(out):
+    """The card's headline is Model B's; this sentence is Model A's, and on a
+    card where they disagree it names the other team. The label comes first
+    and is its own element, and the sentence under it is unchanged."""
+    assert re.match(r'<div class="[\w-]+">Model A&#39;s reasoning</div><p class="why-words">',
+                    out['labelled']), out['labelled']
+    assert 'KC are ahead here almost entirely on the quarterback matchup.' in out['labelled']
+
+
+def test_no_sentence_means_no_label(out):
+    """A label over nothing would claim a reason that is not there."""
+    assert out['labelled_no_why'] == ''
+
+
+def test_the_labels_class_is_its_own():
+    """The first draft reused .why-label, which already styles the row labels
+    in the numbers panel, so its new rule restyled those rows as well. Nothing
+    else in the template may carry the label's class."""
+    tpl = (REPO_ROOT / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+    fn = tpl[tpl.index('function whyLabelled('):]
+    cls = re.search(r'<div class="([\w-]+)">Model A', fn).group(1)
+    assert tpl.count(f'class="{cls}"') == 1, f'.{cls} is shared with other markup'
+
+
+def test_the_board_draws_the_labelled_sentence():
+    tpl = (REPO_ROOT / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+    body = tpl[tpl.index('function renderGames('):tpl.index('function renderPicksGrid(')]
+    assert '${whyLabelled(g)}' in body and '${whySentence(g)}' not in body
 
 
 if __name__ == '__main__':

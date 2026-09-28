@@ -35,7 +35,8 @@ if (i === -1 || j === -1 || j <= i) {
   process.exit(0);
 }
 const src = tpl.slice(i, j);
-for (const needed of ['function whySentence', 'function whyMarketSentence', 'function whyParts']) {
+for (const needed of ['function whySentence', 'function whyMarketSentence', 'function whyParts',
+                      'function whyLabelled']) {
   if (!src.includes(needed)) {
     console.log(JSON.stringify({fatal: `extracted block has no ${needed}()`}));
     process.exit(0);
@@ -102,6 +103,11 @@ const cases = {
 
   // No contributions recorded: say nothing rather than invent a reason.
   no_why: strip(whySentence({home: 'KC', away: 'DEN', fbA_home: 60.0, why: null})),
+
+  // Stage 17: the sentence carries a label saying it is Model A's. Raw markup,
+  // not stripped, so the test can see the label is its own element.
+  labelled: whyLabelled({home: 'KC', away: 'DEN', fbA_home: 78.0, why: QB_HEAVY}),
+  labelled_no_why: whyLabelled({home: 'KC', away: 'DEN', fbA_home: 60.0, why: null}),
 };
 
 console.log(JSON.stringify(cases, null, 2));

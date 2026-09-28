@@ -789,6 +789,16 @@
      worth reading after the percentages, so it must not look like a caption. */
   .why-words{margin:var(--s3) 0 0; font-size:var(--fs-13); line-height:1.55; color:var(--text);}
   .why-words.dim{color:var(--text-2); font-size:var(--fs-12);}
+  /* Whose reasoning the sentence is (Stage 17). The card's headline is Model
+     B's, but the sentence is built from Model A's own contributions, so on a
+     card where the two disagree it names the other team. The label is the
+     headline's own small-caps style, so the two read as a pair. Its own
+     class, not .why-label: that one styles the row labels inside the
+     numbers panel, and sharing it restyled those rows too (caught by
+     counting the class on the rendered page, 64 on 16 cards). */
+  .why-by{margin-top:var(--s3); font-size:var(--fs-11); letter-spacing:.06em;
+    text-transform:uppercase; color:var(--text-2);}
+  .why-by + .why-words{margin-top:var(--s1);}
   .why-panel .why-words{margin-top:0; margin-bottom:var(--s3);}
 
   .why-panel{display:none; margin-top:var(--s3); padding-top:var(--s3); border-top:1px dashed var(--border);}
@@ -1723,7 +1733,7 @@ __FONT_FACES__
           <summary>How to read this</summary>
           <ul>
             <li>The coloured bar is split by Model B&#39;s chance for each team. The line under it marks all three: the square is Model B, the triangle is the betting market, the circle is Model A. The mark in the middle is 50%, a coin flip. When Model B is too close to call, the card says so instead of picking a team.</li>
-            <li>Each game says in a sentence why that team is ahead. It will often be the quarterback matchup, because that is what moves this model most; a sentence that repeats across a week is the model showing through, not a stuck template.</li>
+            <li>Each game says in a sentence why Model A has that team ahead. It will often be the quarterback matchup, because that is what moves this model most; a sentence that repeats across a week is the model showing through, not a stuck template.</li>
             <li><b>Model A</b> is built from team ratings and quarterback performance, with no market data. <b>Model B</b> is Model A plus the current Vegas spread.</li>
             <li><b>Model Lab</b> has the full research history, including everything that didn&#39;t work.</li>
           </ul>
@@ -3326,6 +3336,18 @@ function whyMarketSentence(g){
     : `<p class="why-words dim">The betting line disagrees, making ${lineFav} favourites by ${by}.</p>`;
 }
 
+/* The sentence under a label saying whose it is (Stage 17). whySentence() is
+   Model A's reasoning -- it reads g.why, which holds the football-only
+   model's contributions, and names Model A's favourite -- while the card's
+   headline is Model B's. Where they disagree (KC@MIA, week 3: Model B KC 86%,
+   Model A MIA 57%) an unlabelled "MIA are ahead here..." sits under "KC 86%
+   to win" and reads as a contradiction. The label goes only where there is a
+   sentence to label. */
+function whyLabelled(g){
+  const words = whySentence(g);
+  return words ? `<div class="why-by">Model A&#39;s reasoning</div>${words}` : '';
+}
+
 /* ---------- Units (Stage 14: one meaning per number) ----------
    "Points" on this page means football points and nothing else: a spread,
    a margin, a pick'em value. A gap between two percentages is "pp"
@@ -3822,7 +3844,7 @@ function renderGames(){
     // the whole point of the item -- the numbers stay behind the toggle for
     // anyone who wants to check the sentence against them.
     const whyHtml = g.why ? `
-      ${whySentence(g)}
+      ${whyLabelled(g)}
       ${whyMarketSentence(g)}
       <button class="btn btn-link why-toggle" data-why="${idSafe}">+ the numbers behind this</button>
       <div class="why-panel" id="why-${idSafe}">

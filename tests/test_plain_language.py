@@ -78,6 +78,8 @@ RENDERERS = {
     'renderWeekGlance': 'board',
     'whySentence': 'board',
     'whyMarketSentence': 'board',
+    # The label naming whose reasoning the sentence is (Stage 17).
+    'whyLabelled': 'board',
     'pickBadge': 'board',
     'cardProbHtml': 'board',
     'cardDisagreement': 'board',
