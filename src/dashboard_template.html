@@ -349,6 +349,11 @@
   /* The glyph carries the direction. Green/red here read as right/wrong
      about a rating moving, which is not a scored pick. */
   .trend-arrow.up, .trend-arrow.down{color:var(--text-2);}
+  /* The number beside it (Stage 19) is tabular so a column of moves lines up. */
+  .trend-arrow{font-variant-numeric:tabular-nums; white-space:nowrap;}
+  /* Power Ratings' biggest-moves line. No display rule: the element uses
+     the hidden attribute, and a display value here would override it. */
+  .movers-line{margin:0 0 var(--s3); color:var(--text); font-size:var(--fs-14);}
   .streak-row{display:flex; align-items:center; gap:var(--s4); margin-bottom:var(--s5); flex-wrap:wrap;}
   .streak-cells{display:flex; gap:var(--s1);}
   .streak-cell{width:14px; height:14px; border-radius:3px; background:var(--border);}
@@ -1682,6 +1687,9 @@ __FONT_FACES__
         <div class="desc">Every team ranked by how much better or worse it plays than an average team, in expected points per 100 plays, rebuilt each week from real game data.</div>
       </div>
     </div>
+    <!-- Stage 19: filled by moversSentence(); stays hidden until there is a
+         previous weekly ranking to compare with. -->
+    <p id="ratings-movers" class="movers-line" hidden></p>
     <div class="filter-row">
       <input type="search" id="ratings-search" class="team-search" placeholder="Search teams..." aria-label="Search teams by name or abbreviation">
     </div>
@@ -3128,8 +3136,45 @@ document.addEventListener('click', (e)=>{
 });
 
 /* ---------- Power Ratings ---------- */
+/* Places a team moved since the previous weekly update (Stage 19). The arrow
+   follows RANK, not rating (Mark, 2026-09-28): a team can gain rating and
+   still lose places when others gain more, and an arrow disagreeing with the
+   number beside it is exactly what a reader would notice. null (no previous
+   ranking) prints nothing; 0 (did not move) prints only a hidden "no change"
+   so a screen reader is not left guessing. */
+function rankMoveHtml(change){
+  if(change === null || change === undefined) return '';
+  if(change === 0) return '<span class="visually-hidden">, no change in rank</span>';
+  const up = change > 0, n = Math.abs(change);
+  const words = `${up ? 'up' : 'down'} ${n} place${n === 1 ? '' : 's'} since the last update`;
+  return `<span class="trend-arrow ${up?'up':'down'}" title="${words[0].toUpperCase() + words.slice(1)}"><span aria-hidden="true">${up?'&#9650;':'&#9660;'}${n}</span><span class="visually-hidden">, ${words}</span></span>`;
+}
+/* The one line above the table naming the biggest rise and the biggest fall
+   (Stage 19). League-wide, not the searched view. Ties are named together,
+   two at most and then counted, so a week where five teams rose three places
+   does not print a paragraph. */
+function moversSentence(teams){
+  const moved = teams.filter(t => typeof t.rank_change === 'number');
+  if(!moved.length) return '';
+  const changes = moved.map(t => t.rank_change);
+  const most = Math.max(...changes), least = Math.min(...changes);
+  if(most <= 0 && least >= 0) return 'No team changed places since the last update.';
+  const named = v => moved.filter(t => t.rank_change === v).map(t => t.name).sort();
+  const list = a => a.length <= 2 ? a.join(' and ') : `${a.slice(0, 2).join(', ')} and ${a.length - 2} more`;
+  const places = n => `${n} place${n === 1 ? '' : 's'}`;
+  const parts = [];
+  if(most > 0) parts.push(`${list(named(most))} up ${places(most)}`);
+  if(least < 0) parts.push(`${list(named(least))} down ${places(-least)}`);
+  return `Biggest moves since the last update: ${parts.join('; ')}.`;
+}
 let sortKey = 'net', sortDir = -1;
 function renderRatings(){
+  const movers = document.getElementById('ratings-movers');
+  if(movers){
+    const line = moversSentence(teams);
+    movers.textContent = line;
+    movers.hidden = !line;
+  }
   const sorted = [...teams].sort((a,b)=>{
     if(sortKey==='team') return a.team.localeCompare(b.team)*sortDir;
     const av = (a[sortKey]===null||a[sortKey]===undefined) ? -Infinity : a[sortKey];
@@ -3196,19 +3241,10 @@ function renderRatings(){
   body.innerHTML = visible.map((t)=>{
     const i = t._rank - 1;
     const width = (Math.abs(t.net)/maxAbs)*100;
-    // Trend: compare this team's own most recent two data points (not a
-    // full-league rank recompute, which would need every team's value at
-    // the exact same past week -- this is simpler and still shows real
-    // direction of movement).
-    const points = (teamHistory && teamHistory.timeline && teamHistory.timeline[t.team]) || [];
-    let trendHtml = '';
-    if(points.length >= 2){
-      const delta = points[points.length-1].net - points[points.length-2].net;
-      if(Math.abs(delta) >= 0.003){
-        const up = delta > 0;
-        trendHtml = `<span class="trend-arrow ${up?'up':'down'}" title="${fmtRating(delta)} per 100 plays vs the previous rating">${up?'&#9650;':'&#9660;'}</span>`;
-      }
-    }
+    // Places moved since the previous weekly update, computed in Python
+    // (previous_ranks) so it agrees with the # column. Stage 19 replaced a
+    // rating-delta arrow here: the arrow now follows RANK.
+    const trendHtml = rankMoveHtml(t.rank_change);
     return `<tr>
       <td class="rank">${i+1}</td>
       <td><div class="team-cell"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span>${trendHtml}</div></td>

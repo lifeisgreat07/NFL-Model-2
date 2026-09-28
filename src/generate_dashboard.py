@@ -588,6 +588,70 @@ def build_teams_js(ratings, playoff_odds=None):
              'playoff': odds.get(r['team'])} for r in ratings]
 
 
+def with_rank_change(teams_js, previous_rank):
+    """Add `rank_change` to each Power Ratings row (Stage 19): places moved
+    since the previous weekly update, positive up the table, against the
+    ranks previous_ranks() returns. None when there is no previous ranking,
+    never 0, because 0 is a real answer -- "did not move" -- and the page
+    prints the two differently."""
+    def change(t):
+        if not previous_rank or t['team'] not in previous_rank:
+            return None
+        return previous_rank[t['team']] - t['rank']
+    return [{**t, 'rank_change': change(t)} for t in teams_js]
+
+
+def previous_ranks(ratings, live_history):
+    """Each team's Power Ratings rank at the weekly update before this one.
+
+    `live_history` is one season's data/team_history_<season>.json: every
+    weekly run appends a point for all 32 teams, byes included
+    (weekly_update.append_live_history). The current ranking is the
+    `ratings` snapshot, which the same run writes; so the latest history week
+    must BE that snapshot, and the one before it is the previous ranking.
+
+    Returns None -- and the page shows no movement -- when that cannot be
+    said honestly: fewer than two weeks; a team missing from the previous
+    week (a partial ranking is not a league rank); or a latest week that does
+    not match the snapshot, which would mean comparing against the wrong
+    week. That last case prints why, because a silent None there would look
+    like a quiet week rather than a broken input.
+    """
+    weeks = sorted({p['week'] for pts in live_history.values() for p in pts})
+    if len(weeks) < 2:
+        return None
+    latest, prev = weeks[-1], weeks[-2]
+
+    def nets_at(week):
+        out = {}
+        for team, pts in live_history.items():
+            for p in pts:
+                if p['week'] == week:
+                    out[team] = p['net']
+        return out
+
+    teams = {r['team'] for r in ratings}
+    now = nets_at(latest)
+    if any(r['team'] not in now or abs(now[r['team']] - r['net']) > 1e-9 for r in ratings):
+        print(f"  WARNING: data/current_ratings.json does not match week {latest} of the "
+              f"live team history, so Power Ratings shows no rank change this build.")
+        return None
+    before = nets_at(prev)
+    if set(before) != teams:
+        return None
+    order = sorted(before, key=lambda t: (-before[t], t))
+    return {t: i + 1 for i, t in enumerate(order)}
+
+
+def load_latest_live_history():
+    """The newest data/team_history_<season>.json, or {} if there is none."""
+    live_files = sorted(DATA_DIR.glob('team_history_*.json'))
+    if not live_files:
+        return {}
+    with open(live_files[-1]) as f:
+        return json.load(f)
+
+
 def load_team_history():
     """Merges static historical season-end ratings (2020-2025, computed
     once from real backtested data) with any live in-season weekly data
@@ -715,6 +779,9 @@ def main():
     # column on Power Ratings now, and the table sorts by reading the value
     # off the team object.
     teams_js = build_teams_js(ratings, playoff_odds)
+    # A step of its own rather than a third argument above:
+    # tests/test_playoff_odds_column.py reads that call as written.
+    teams_js = with_rank_change(teams_js, previous_ranks(ratings, load_latest_live_history()))
 
     print("Loading all saved predictions...")
     all_preds = load_all_predictions()
