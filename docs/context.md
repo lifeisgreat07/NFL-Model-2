@@ -4,18 +4,22 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-28, afternoon session (Stage 6 closed; Mark's page review built and merged)
+Last updated: 2026-09-28, evening session (the Fable 5.1 audit planned as Stages 23 to 29; #169 to #172 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 3782 passing, none skipped — `python -m pytest -q` on `main` at
-`5c7f7f6` (after #170), HEAD level with origin.
+**Suite:** 3810 passing, none skipped — `python -m pytest -q` on `main` at
+`bb85c51` (after #171 and #172), HEAD level with origin.
 
 **Next action: check the QB routine's first run** (Mon 2026-09-28 22:00 UTC):
-it should have opened a PR, or said in one line that none was needed. Then
-Tuesday's weekly summary (11:00 UTC). No PR is open.
+it should have opened a PR (audit it like any other), or said in one line
+that none was needed. Then open the next prepared PR, worktree s24c (run-tests
+on every PR and push to main): rebase on origin/main, README to 122 case files,
+push, suite, scope, preflight, open. Then s24g, s24f; s23e waits on Mark's
+answer (merge without Booth's audit?). Tuesday's weekly summary is 11:00 UTC.
+No PR is open.
 
 **Done today:** Stage 19 (#160 to #162); Stage 6 closed — referees registered
 (#163) and R1 FAILED (#164, correlation +0.18, interval −0.28 to +0.65; a
