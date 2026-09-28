@@ -1,15 +1,15 @@
 {
-  "generated_utc": "2026-09-28T01:23:34Z",
+  "generated_utc": "2026-09-28T01:54:55Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 180,
-    "audits_superseded": 55,
+    "audits_total": 182,
+    "audits_superseded": 57,
     "pull_requests_audited": 125,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 1378,
-    "discrepancies_found": 25,
-    "unverifiable": 97,
-    "pull_requests_with_a_discrepancy": 16,
+    "claims_checked": 1374,
+    "discrepancies_found": 24,
+    "unverifiable": 95,
+    "pull_requests_with_a_discrepancy": 15,
     "reports_disagreeing_with_themselves": 20
   },
   "audits": [
@@ -3302,7 +3302,7 @@
         "PR description"
       ],
       "inconsistencies": [],
-      "superseded": false
+      "superseded": true
     },
     {
       "pr": 147,
@@ -3314,6 +3314,42 @@
       "block_error": null,
       "claims": 9,
       "confirmed": 9,
+      "discrepancies": 0,
+      "unverifiable": 0,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 146,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/146#issuecomment-5861768891",
+      "posted_utc": "2026-09-28T01:35:02Z",
+      "head": "eba8923",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 13,
+      "confirmed": 12,
+      "discrepancies": 1,
+      "unverifiable": 0,
+      "overall": "DO NOT MERGE -- DISCREPANCIES FOUND",
+      "implicated": [
+        "PR description"
+      ],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 146,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/146#issuecomment-5861897136",
+      "posted_utc": "2026-09-28T01:51:31Z",
+      "head": "eba8923",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 10,
+      "confirmed": 10,
       "discrepancies": 0,
       "unverifiable": 0,
       "overall": "SAFE TO MERGE",
