@@ -41,11 +41,13 @@ logos (`35cfb6d`, docs only). Details: `memory/2026-09-28.md`.
 ## Queued, in order
 
 1. **Stages 23 to 29, from the 2026-09-28 audit** (approved by Mark the same
-   day; items and order in CLAUDE.md). Stage 23 items 1 and 4 merged (#169,
-   #170); item 3 proposed dropped (Mark to confirm). Items 2 and 5 wait on
-   Mark checking what the Claude GitHub App may do. Now Stage 24: the
-   skipped-week marker, then the Pages build after a failed weekly run
-   (both prepared in worktrees under the session archive).
+   day; items and order in CLAUDE.md). Stage 23: items 1 and 4 merged
+   (#169, #170); item 3 dropped; item 5 confirmed and prepared, waiting on
+   Mark's answer about merging it without Booth (the action will not audit
+   its own workflow). Stage 24: items 2 and 1 merged (#171, #172); 3 and 6
+   skipped (reasons in CLAUDE.md). Prepared in worktrees under the session
+   archive: 24.5 run-tests everywhere, 24.8 atomic writes, 24.9 grading and
+   drift tests. One PR open at a time.
 2. **Stages 20 to 22**: 20 needs five real testers and comes after Stage 26;
    21 waits for week 5; 22 comes from 20.
 3. **Line movement and the closing-line backtest**: not before the 2026 regular season ends, beside Stage 28.

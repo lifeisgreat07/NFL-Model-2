@@ -1543,10 +1543,15 @@ then 22.**
 
 ### Stage 23 - Page security and Booth's read-only claim
 **Progress:** item 1 merged (#169), item 4 merged (#170), each SAFE TO
-MERGE with 0 discrepancies. Item 3 proposed dropped (put to Mark
-2026-09-28): the audit's pattern would reject four `implicates` values Booth
-has really written ("PR #62 description" and the like), the same parser
-gates the Booth job, and after #169 the page escapes everything anyway.
+MERGE with 0 discrepancies. **Item 3 DROPPED (Mark, 2026-09-28):** the
+audit's pattern would reject four `implicates` values Booth has really
+written ("PR #62 description" and the like), the same parser gates the Booth
+job, and after #169 the page escapes everything anyway. **Item 5 CONFIRMED
+(Mark read the app's settings, 2026-09-28):** the Claude GitHub App holds
+read and write on code, workflows and pull requests, so Booth could push.
+Fix prepared (run Booth on `GITHUB_TOKEN`, drop `id-token: write`); asked
+Mark whether that one PR may merge without Booth's audit, since the action
+refuses to run on a PR editing its own workflow.
 1. One `safe_json()` for every JSON fill in the generator, so no string can
    close the page's script element; an injection test over the built page.
 2. The agent-log collector keeps only comments by the Booth bot account
@@ -1559,6 +1564,15 @@ gates the Booth job, and after #169 the page escapes everything anyway.
    allowlist must keep pip, node and npx: Booth renders pages.
 
 ### Stage 24 - Weekly pipeline resilience and CI coverage
+**Progress:** item 2 merged (#171: `predictions/skipped/`, a folder so no
+reader of `predictions/*_week*.json` can mistake a skip for picks); item 1
+merged (#172, narrower than the audit: only a failed Weekly update
+rebuilds, a failed collector still does not). **Item 3 skipped**: #171 makes
+a manual week input mostly redundant. **Item 6 skipped**: GitHub cancels a
+PENDING run when a newer one queues in the same concurrency group, so a
+group shared by the weekly and weekend runs could cancel a pending weekly
+lock run -- worse than the race it prevents, which #147 already narrows to
+seconds.
 1. Pages builds after a failed weekly run (not only a successful one) and
    lets `src/check_build.py` decide. The job still fails and still opens its
    issue (Stage 4's design).
