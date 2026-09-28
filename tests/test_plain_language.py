@@ -138,6 +138,9 @@ RENDERERS = {
     # at the top of Season Accuracy.
     'scoreboardVerdict': 'accuracy',
     'scoreboardHtml': 'accuracy',
+    # Stage 19's "How sure, and how right" block. Its whole reason for plain
+    # wording is that this map puts it on a page where "log loss" is banned.
+    'forecastScoreHtml': 'accuracy',
     'buildCalibrationChart': 'accuracy',
     # Added when the trend chart gained a not-enough-data message. It used to
     # return '' in that case and so rendered no prose at all; the moment it

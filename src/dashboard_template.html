@@ -951,6 +951,9 @@
   .score-mark.tri{background:none; width:0; height:0; border-left:5px solid transparent;
     border-right:5px solid transparent; border-bottom:9px solid var(--series);}
   .score-mark.diamond{width:8px; height:8px; transform:rotate(45deg);}
+  /* The same marks in "How sure, and how right"'s table cells (Stage 19),
+     where they sit inline beside the name instead of in a flex row. */
+  .forecast-score .score-mark{display:inline-block; margin-right:var(--s2); vertical-align:middle;}
   .score-track{position:relative; height:14px; background:var(--border); border-radius:var(--r-full);}
   .score-fill{position:absolute; top:0; bottom:0; left:0; border-radius:inherit; background:var(--series);}
   .score-coin{position:absolute; left:50%; top:-6px; bottom:-6px; width:1px; background:var(--text-2); opacity:.6;}
@@ -2206,7 +2209,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="table-wrap"><table class="metrics-table">
         <thead><tr><th>Term</th><th>What it means</th></tr></thead>
         <tbody>
-          <tr><td>Log loss</td><td>Penalizes confident wrong predictions heavily. Lower is better. A model that says 95% and is wrong is punished far more than one that said 55%</td></tr>
+          <tr><td>Log loss</td><td>Penalizes confident wrong predictions heavily. Lower is better. A model that says 95% and is wrong is punished far more than one that said 55%. Season Accuracy's "How sure, and how right" score is this, averaged over the season's graded games</td></tr>
           <tr><td>Brier score</td><td>Average squared difference between predicted probability and what actually happened. Lower is better. Similar spirit to log loss, less harsh on confident misses</td></tr>
           <tr><td>AUC</td><td>How well the model ranks games from most to least likely home win. 0.5 is random, 1.0 is perfect. Measures ordering ability, not calibration</td></tr>
           <tr><td>Calibration</td><td>Whether stated confidence matches reality -- do games predicted at 70% actually win about 70% of the time?</td></tr>
@@ -5415,6 +5418,31 @@ function scoreboardHtml(o, mine, leftOut){
     ${leftOut ? `<div class="score-foot">${leftOut} Only picks made before kickoff are counted.</div>` : ''}
   </div>`;
 }
+/* Season Accuracy's second score (Stage 19): how sure each forecast was, not
+   only whether it picked the winner. The numbers are Python's average log
+   loss over the games all three forecasts priced (build_forecast_score), and
+   null below 50 graded games -- null renders nothing. The words stay plain on
+   purpose (Mark, 2026-09-28); Methodology's glossary names the technical
+   term. Lowest first, because lower is better. */
+function forecastScoreHtml(s){
+  if(!s) return '';
+  const rows = [
+    {name: 'Market', series: 'var(--series-c)', shape: 'tri', score: s.market},
+    {name: 'Model B', series: 'var(--series-b)', shape: 'sq', score: s.model_b},
+    {name: 'Model A', series: 'var(--series-a)', shape: 'dot', score: s.model_a},
+  ].sort((a, b) => a.score - b.score);
+  const body = rows.map(r => `<tr><td><span class="score-mark ${r.shape}" style="--series:${r.series}" aria-hidden="true"></span>${r.name}</td><td class="num">${r.score.toFixed(3)}</td></tr>`).join('');
+  return `
+    <div class="method-block forecast-score">
+      <h3>How sure, and how right</h3>
+      <p>Picking the winner is only half of it. This score also weighs how sure each forecast was: a pick made at 90% that loses costs far more than one made at 55%. <b style="color:var(--text)">Lower is better.</b> Calling every game 50&ndash;50 scores ${s.coin_flip.toFixed(3)}, whatever happens.</p>
+      <div class="table-wrap"><table class="metrics-table">
+        <thead><tr><th>Forecast</th><th>Score</th></tr></thead>
+        <tbody>${body}</tbody>
+      </table></div>
+      <p style="font-size:var(--fs-12); color:var(--text-2); margin-top:var(--s2);">Over the ${s.n} games all three had a number for. The Methodology page explains how it is worked out.</p>
+    </div>`;
+}
 function renderAccuracy(){
   const el = document.getElementById('accuracy-content');
   if(!accuracy.overall){
@@ -5492,7 +5520,7 @@ function renderAccuracy(){
       ${calibFootnote}
     </div>`;
 
-  el.innerHTML = cardsHtml + cumulativeChartHtml + weeklyHtml + calibHtml;
+  el.innerHTML = cardsHtml + forecastScoreHtml(accuracy.forecast_score) + cumulativeChartHtml + weeklyHtml + calibHtml;
 }
 renderAccuracy();
 
