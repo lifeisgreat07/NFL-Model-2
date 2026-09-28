@@ -1,0 +1,34 @@
+{
+  "target": ".github/workflows/run-tests.yml",
+  "tests": "tests/test_run_tests_workflow.py",
+  "cases": [
+    {
+      "id": "run-tests-path-filter-returns",
+      "why": "the pull-request trigger gets a path filter again, so a change to documentation or a workflow skips the very tests that read it (the 2026-09-28 audit's finding)",
+      "find": "  pull_request:",
+      "replace": "  pull_request:\n    paths: ['src/**', 'tests/**']",
+      "expect_caught_by": "test_it_runs_on_every_pull_request_with_no_path_filter"
+    },
+    {
+      "id": "run-tests-stops-running-on-main",
+      "why": "the push trigger no longer names main, so documentation committed straight to main is never tested",
+      "find": "    branches: [main]",
+      "replace": "    branches: [release]",
+      "expect_caught_by": "test_it_runs_on_every_push_to_main"
+    },
+    {
+      "id": "run-tests-installs-an-unpinned-pytest",
+      "why": "the job installs whatever pytest is newest instead of requirements-dev.txt's pin, so the version that checked one PR and the next can differ with nothing recording it",
+      "find": "        run: pip install -r requirements.txt -r requirements-dev.txt",
+      "replace": "        run: pip install -r requirements.txt pytest",
+      "expect_caught_by": "test_it_installs_the_pinned_test_requirements"
+    },
+    {
+      "id": "run-tests-without-node",
+      "why": "node is not installed, so every test that runs template code in node skips green instead of running",
+      "find": "        uses: actions/setup-node@v4",
+      "replace": "        uses: actions/setup-python@v5",
+      "expect_caught_by": "test_it_installs_node"
+    }
+  ]
+}
