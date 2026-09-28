@@ -122,6 +122,7 @@ jobs:
     needs: audit
     if: ${{ inputs.record_baseline }}
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
 

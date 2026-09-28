@@ -32,6 +32,7 @@ permissions:
 jobs:
   weekly-update:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
