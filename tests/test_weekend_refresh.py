@@ -206,3 +206,40 @@ def test_the_page_build_runs_after_it():
     name = re.search(r'^name:\s*(.+?)\s*$', _text(WORKFLOW), re.M).group(1)
     listed = re.search(r'workflow_run:\s*\n\s*workflows:\s*\[(.*?)\]', _text(BUILDER), re.S).group(1)
     assert name in [n.strip().strip('"\'') for n in listed.split(',')]
+
+
+WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
+
+
+def _step_blocks(path):
+    """[(name, text)] for each step, in order."""
+    text = _text(path)
+    parts = re.split(r'\n(?=      - name: )', text)
+    out = []
+    for part in parts:
+        m = re.match(r'\s*- name: (.+)', part)
+        if m:
+            out.append((m.group(1).strip(), part))
+    return out
+
+
+@pytest.mark.parametrize('path', [WORKFLOW, WEEKLY], ids=['weekend-refresh', 'weekly-update'])
+def test_the_commit_catches_up_with_main_first(path):
+    """Run 36360495917 read everything and saved nothing: a merge landed between
+    its checkout and its push, and the push was refused. The commit step must
+    be preceded, immediately, by a rebase onto main that carries the run's
+    uncommitted files across."""
+    steps = _step_blocks(path)
+    names = [n for n, _ in steps]
+    i = names.index('Commit and push changes')
+    assert names[i - 1] == 'Catch up with main', f'{path.name}: nothing catches up with main before the commit'
+    body = steps[i - 1][1]
+    assert 'pull --rebase --autostash origin main' in body, 'without --autostash the rebase refuses a dirty tree'
+    assert "user.email=" in body and "user.name=" in body, 'autostash makes a commit, and the runner has no identity'
+
+
+def test_the_lock_run_catches_up_even_after_a_failed_step():
+    """The weekly commit step runs unless cancelled, so a failed summary still
+    saves the picks; its catch-up must run under the same condition."""
+    steps = dict(_step_blocks(WEEKLY))
+    assert '${{ !cancelled() }}' in steps['Catch up with main']
