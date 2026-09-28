@@ -792,10 +792,13 @@
   /* Whose reasoning the sentence is (Stage 17). The card's headline is Model
      B's, but the sentence is built from Model A's own contributions, so on a
      card where the two disagree it names the other team. The label is the
-     headline's own small-caps style, so the two read as a pair. */
-  .why-label{margin-top:var(--s3); font-size:var(--fs-11); letter-spacing:.06em;
+     headline's own small-caps style, so the two read as a pair. Its own
+     class, not .why-label: that one styles the row labels inside the
+     numbers panel, and sharing it restyled those rows too (caught by
+     counting the class on the rendered page, 64 on 16 cards). */
+  .why-by{margin-top:var(--s3); font-size:var(--fs-11); letter-spacing:.06em;
     text-transform:uppercase; color:var(--text-2);}
-  .why-label + .why-words{margin-top:var(--s1);}
+  .why-by + .why-words{margin-top:var(--s1);}
   .why-panel .why-words{margin-top:0; margin-bottom:var(--s3);}
 
   .why-panel{display:none; margin-top:var(--s3); padding-top:var(--s3); border-top:1px dashed var(--border);}
@@ -3342,7 +3345,7 @@ function whyMarketSentence(g){
    sentence to label. */
 function whyLabelled(g){
   const words = whySentence(g);
-  return words ? `<div class="why-label">Model A&#39;s reasoning</div>${words}` : '';
+  return words ? `<div class="why-by">Model A&#39;s reasoning</div>${words}` : '';
 }
 
 /* ---------- Units (Stage 14: one meaning per number) ----------

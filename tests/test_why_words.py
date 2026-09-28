@@ -25,6 +25,7 @@ only executing it proves the sentence is true.
 """
 
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -125,14 +126,24 @@ def test_the_sentence_is_labelled_as_model_as_reasoning(out):
     """The card's headline is Model B's; this sentence is Model A's, and on a
     card where they disagree it names the other team. The label comes first
     and is its own element, and the sentence under it is unchanged."""
-    assert out['labelled'].startswith("<div class=\"why-label\">Model A&#39;s reasoning</div>"), (
-        out['labelled'])
+    assert re.match(r'<div class="[\w-]+">Model A&#39;s reasoning</div><p class="why-words">',
+                    out['labelled']), out['labelled']
     assert 'KC are ahead here almost entirely on the quarterback matchup.' in out['labelled']
 
 
 def test_no_sentence_means_no_label(out):
     """A label over nothing would claim a reason that is not there."""
     assert out['labelled_no_why'] == ''
+
+
+def test_the_labels_class_is_its_own():
+    """The first draft reused .why-label, which already styles the row labels
+    in the numbers panel, so its new rule restyled those rows as well. Nothing
+    else in the template may carry the label's class."""
+    tpl = (REPO_ROOT / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+    fn = tpl[tpl.index('function whyLabelled('):]
+    cls = re.search(r'<div class="([\w-]+)">Model A', fn).group(1)
+    assert tpl.count(f'class="{cls}"') == 1, f'.{cls} is shared with other markup'
 
 
 def test_the_board_draws_the_labelled_sentence():
