@@ -11,6 +11,7 @@ breakdown that weekly_update.py now computes per game.
 import base64
 import hashlib
 import json
+import math
 from html import escape as _escape
 import sys
 from datetime import datetime, timezone
@@ -52,6 +53,54 @@ OUTPUT_PATH = ROOT / 'index.html'  # served as the default page by GitHub Pages
 # statistical confidence. Buckets under it are kept and flagged, never
 # silently dropped.
 MIN_CALIBRATION_BUCKET_N = 20
+
+# Season Accuracy's second score (Stage 19): the average log loss of each
+# forecast's probability for what actually happened. The page calls it
+# "How sure, and how right" -- "log loss" is banned there by
+# tests/test_plain_language.py, and Mark chose plain wording over an
+# exception (2026-09-28). 50 games is the floor CLAUDE.md's Stage 19 plan
+# set: below it one confident miss moves the score more than the models
+# differ, so the block is absent rather than shown as a finding.
+FORECAST_SCORE_MIN_GAMES = 50
+# A probability of exactly 0 or 1 for the side that lost would score
+# infinity. No stored probability is that extreme today; the clamp means one
+# never could take the page down.
+FORECAST_SCORE_EPS = 1e-6
+FORECAST_SOURCES = (('model_a', 'model_a_home_win_prob'),
+                    ('model_b', 'model_b_home_win_prob'),
+                    ('market', 'market_prob_home'))
+
+
+def build_forecast_score(all_games):
+    """Mean log loss per forecast, over the games ALL THREE have a number for.
+
+    Paired on purpose: a game only one forecast priced would let the three
+    scores be averages over different games, and the smaller set is not the
+    same test (backtest()'s dropna trap in CLAUDE.md, in page form). A tie,
+    or a game with no result, has no winner to score and is left out.
+    Returns None below FORECAST_SCORE_MIN_GAMES.
+    """
+    losses = {name: [] for name, _ in FORECAST_SOURCES}
+    for g in all_games:
+        actual = g.get('actual_home_win')
+        if actual not in (0, 1):
+            continue
+        probs = [g.get(key) for _, key in FORECAST_SOURCES]
+        if any(not isinstance(p, (int, float)) for p in probs):
+            continue
+        for (name, _), p in zip(FORECAST_SOURCES, probs):
+            p_actual = p if actual == 1 else 1 - p
+            p_actual = min(max(p_actual, FORECAST_SCORE_EPS), 1 - FORECAST_SCORE_EPS)
+            losses[name].append(-math.log(p_actual))
+    n = len(losses['model_a'])
+    if n < FORECAST_SCORE_MIN_GAMES:
+        return None
+    return {
+        'n': n,
+        # What calling every game 50-50 scores, whatever happens: ln 2.
+        'coin_flip': round(math.log(2), 3),
+        **{name: round(sum(v) / n, 3) for name, v in losses.items()},
+    }
 
 
 def load_current_ratings():
@@ -410,7 +459,7 @@ def build_accuracy_summary(all_graded):
             all_games.append({**g, 'season': season, 'week': week})
 
     if not all_games:
-        return {'weeks': [], 'overall': None, 'calibration': []}
+        return {'weeks': [], 'overall': None, 'calibration': [], 'forecast_score': None}
 
     weekly = []
     for (season, week), graded in sorted(all_graded.items()):
@@ -496,6 +545,9 @@ def build_accuracy_summary(all_graded):
         'min_bucket_n': MIN_CALIBRATION_BUCKET_N,
         # True when nothing in the live calibration panel is worth plotting.
         'calibration_underpowered': all(c['underpowered'] for c in calibration) if calibration else True,
+        # None until FORECAST_SCORE_MIN_GAMES paired games are graded; the
+        # page renders nothing for None.
+        'forecast_score': build_forecast_score(all_games),
     }
 
 

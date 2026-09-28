@@ -1,0 +1,72 @@
+{
+  "target": "src/generate_dashboard.py",
+  "tests": "tests/test_forecast_score.py",
+  "cases": [
+    {
+      "id": "forecast-score-shown-from-the-first-game",
+      "why": "the 50-game floor goes, so a score built on a week or two of games reaches the page, where one confident miss outweighs everything the three forecasts differ by.",
+      "find": "    if n < FORECAST_SCORE_MIN_GAMES:\n        return None\n",
+      "replace": "",
+      "expect_caught_by": "test_nothing_is_shown_below_fifty_games"
+    },
+    {
+      "id": "forecast-score-always-scores-the-home-side",
+      "why": "every forecast is scored on the home team's probability whoever won, so an away win forecast at 80% is charged as an 80% miss -- a sign slip that reads exactly as well as the truth.",
+      "find": "p_actual = p if actual == 1 else 1 - p",
+      "replace": "p_actual = p",
+      "expect_caught_by": "test_each_forecast_is_scored_on_the_side_that_happened"
+    },
+    {
+      "id": "forecast-score-games-not-paired",
+      "why": "a game only some forecasts priced is scored for those that did, so the three scores are averages over different games and the forecast missing a hard game looks better for missing it.",
+      "find": "        if any(not isinstance(p, (int, float)) for p in probs):\n            continue\n        for (name, _), p in zip(FORECAST_SOURCES, probs):\n",
+      "replace": "        for (name, _), p in zip(FORECAST_SOURCES, probs):\n            if not isinstance(p, (int, float)):\n                continue\n",
+      "expect_caught_by": "test_all_three_are_scored_over_the_same_games"
+    },
+    {
+      "id": "forecast-score-scores-a-tie",
+      "why": "a tie is scored as if the home team won, charging every forecast for a result that did not happen.",
+      "find": "        if actual not in (0, 1):\n            continue\n",
+      "replace": "        if actual is None:\n            continue\n",
+      "expect_caught_by": "test_a_game_without_a_winner_is_left_out"
+    },
+    {
+      "id": "forecast-score-loses-its-clamp",
+      "why": "a certain forecast that lost is scored at probability 0, and math.log(0) raises, so one extreme stored probability stops the whole dashboard build.",
+      "find": "            p_actual = min(max(p_actual, FORECAST_SCORE_EPS), 1 - FORECAST_SCORE_EPS)\n",
+      "replace": "            p_actual = min(max(p_actual, 0.0), 1.0)\n",
+      "expect_caught_by": "test_a_certain_forecast_that_lost_still_gets_a_finite_score"
+    },
+    {
+      "id": "forecast-score-coin-flip-is-a-guess",
+      "why": "the coin-flip reference the page prints stops being what a 50-50 forecast actually scores.",
+      "find": "'coin_flip': round(math.log(2), 3),",
+      "replace": "'coin_flip': 0.7,",
+      "expect_caught_by": "test_the_coin_flip_reference_is_what_fifty_fifty_scores"
+    },
+    {
+      "id": "forecast-score-renders-with-no-score",
+      "target": "src/dashboard_template.html",
+      "why": "the page draws the block before 50 games are graded, and a null score throws inside it, taking the rest of Season Accuracy with it.",
+      "find": "function forecastScoreHtml(s){\n  if(!s) return '';\n",
+      "replace": "function forecastScoreHtml(s){\n",
+      "expect_caught_by": "test_no_score_renders_nothing"
+    },
+    {
+      "id": "forecast-score-ranked-worst-first",
+      "target": "src/dashboard_template.html",
+      "why": "the table leads with the worst score, the opposite of the 'lower is better' sentence above it.",
+      "find": "].sort((a, b) => a.score - b.score);",
+      "replace": "].sort((a, b) => b.score - a.score);",
+      "expect_caught_by": "test_best_score_is_listed_first"
+    },
+    {
+      "id": "forecast-score-never-drawn",
+      "target": "src/dashboard_template.html",
+      "why": "the function exists and passes its own tests, but Season Accuracy never calls it -- the score is computed every week and shown nowhere.",
+      "find": "  el.innerHTML = cardsHtml + forecastScoreHtml(accuracy.forecast_score) + cumulativeChartHtml",
+      "replace": "  el.innerHTML = cardsHtml + cumulativeChartHtml",
+      "expect_caught_by": "test_the_accuracy_page_draws_it_under_the_scoreboard"
+    }
+  ]
+}
