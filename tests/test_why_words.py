@@ -119,5 +119,27 @@ def test_no_line_produces_no_claim_about_the_line(out):
     assert out['market_absent'] == ''
 
 
+# --- whose reasoning it is (Stage 17) ---
+
+def test_the_sentence_is_labelled_as_model_as_reasoning(out):
+    """The card's headline is Model B's; this sentence is Model A's, and on a
+    card where they disagree it names the other team. The label comes first
+    and is its own element, and the sentence under it is unchanged."""
+    assert out['labelled'].startswith("<div class=\"why-label\">Model A&#39;s reasoning</div>"), (
+        out['labelled'])
+    assert 'KC are ahead here almost entirely on the quarterback matchup.' in out['labelled']
+
+
+def test_no_sentence_means_no_label(out):
+    """A label over nothing would claim a reason that is not there."""
+    assert out['labelled_no_why'] == ''
+
+
+def test_the_board_draws_the_labelled_sentence():
+    tpl = (REPO_ROOT / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+    body = tpl[tpl.index('function renderGames('):tpl.index('function renderPicksGrid(')]
+    assert '${whyLabelled(g)}' in body and '${whySentence(g)}' not in body
+
+
 if __name__ == '__main__':
     sys.exit(pytest.main([__file__, '-v']))
