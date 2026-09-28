@@ -26,8 +26,8 @@
     {
       "id": "card-status-replaces-the-kickoff",
       "why": "the status line takes the kickoff line's place, so a board sorted by kickoff no longer shows the kickoff it is sorted by.",
-      "find": "      ${kickoff ? `<div class=\"card-kickoff\">${kickoff}</div>` : ''}\n      ${statusLine ? `<div class=\"card-status\">${statusLine}</div>` : ''}",
-      "replace": "      ${statusLine ? `<div class=\"card-status\">${statusLine}</div>` : (kickoff ? `<div class=\"card-kickoff\">${kickoff}</div>` : '')}",
+      "find": "      ${kickoff || tvPill ? `<div class=\"card-kickoff\">${kickoff}${tvPill}</div>` : ''}\n      ${statusLine ? `<div class=\"card-status\">${statusLine}</div>` : ''}",
+      "replace": "      ${statusLine ? `<div class=\"card-status\">${statusLine}</div>` : (kickoff || tvPill ? `<div class=\"card-kickoff\">${kickoff}${tvPill}</div>` : '')}",
       "expect_caught_by": "test_the_line_sits_under_the_kickoff_and_never_replaces_it"
     }
   ]

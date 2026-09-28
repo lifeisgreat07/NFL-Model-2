@@ -47,7 +47,7 @@
     {
       "id": "board-card-loses-the-kickoff-it-is-sorted-by",
       "why": "the Week Board card stops printing its kickoff while renderGames still SORTS by kickoff. This is the defect that actually shipped in the first cut of this branch and was caught by looking at the page, not by the suite: the board was reordered by a fact it never displayed, so the cards appeared in an order with no visible explanation. Nothing errors, every test about My Picks still passes, and the only symptom is a reader asking why the games are in that order.",
-      "find": "      ${kickoff ? `<div class=\"card-kickoff\">${kickoff}</div>` : ''}\n      ${statusLine ?",
+      "find": "      ${kickoff || tvPill ? `<div class=\"card-kickoff\">${kickoff}${tvPill}</div>` : ''}\n      ${statusLine ?",
       "replace": "      ${statusLine ?",
       "expect_caught_by": "test_the_week_board_card_shows_the_kickoff_it_is_sorted_by"
     },

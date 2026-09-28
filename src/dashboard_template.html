@@ -837,6 +837,22 @@
      week is graded, and the graded tag already carries that verdict. */
   .card-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
     color:var(--text-1); letter-spacing:.03em; margin-bottom:2px;}
+  /* Where to watch (Stage 17): the network name and nothing else, inside
+     the kickoff line because it answers the same question -- when and where.
+     A border, not a fill or a hue: elevation is a border here, and colour is
+     kept for graded results. The words "On TV:" are for a screen reader. */
+  .tv-pill{display:inline-block; margin-left:var(--s2); padding:0 var(--s2);
+    border:1px solid var(--border-strong); border-radius:var(--r-sm);
+    color:var(--text); font-weight:600; letter-spacing:.02em; line-height:1.5;}
+  /* The quarterbacks the pick was made with, and the one-line team news.
+     Same size and tone as the Vegas line above them: context for the pick,
+     not part of it. Team news is plain text, never a warning colour: an
+     injury is news, not a verdict on the pick (the Team Deep-Dive block's
+     rule, kept here). */
+  .card-qbs, .card-news{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
+    color:var(--text-2); margin-top:var(--s2); line-height:1.5;}
+  .card-qbs b, .card-news b{color:var(--text); font-weight:600;}
+  .board-note{font-size:var(--fs-12); color:var(--text-2); margin:0 0 var(--s3);}
   .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);}
   /* A locked card (Stage 11). The chosen side keeps its fill so the pick
      stays readable; the other side drops to the secondary text colour, not
@@ -1783,6 +1799,7 @@ __FONT_FACES__
       <button class="btn btn-chip filter-btn" data-filter="divergent">Model Disagreement</button>
       <button class="btn btn-chip filter-btn" data-filter="flagged">Flagged Only</button>
     </div>
+    <p class="board-note" id="board-tv-note" hidden>CBS and FOX games on Sunday afternoon are regional: which one your local channel shows depends on where you live.</p>
     <div class="game-grid" id="game-grid"></div>
   </section>
 
@@ -3599,6 +3616,70 @@ function cardStatusLine(g){
   return '';
 }
 
+/* ---------- Where to watch, the quarterbacks, team news (Stage 17) ----------
+   Three small facts, each from a file that was checked before it got here:
+   the channel from src/tv_channels.py (one network, only one that passed
+   its checks), the quarterbacks from the saved pick itself (so the card
+   cannot name a different one from the model's), and the news from
+   src/team_news.py. Each returns '' when it has nothing to say, and nothing
+   is drawn -- a blank line or "no news" would be a claim nobody made.
+
+   Once a game is final or graded, "where to watch" and "who is hurt" are
+   history, so the channel and the news go; the quarterbacks stay, because
+   they are part of the pick. */
+function cardEsc(s){
+  return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+function cardTvPill(g){
+  if(!g.tv || g.graded || g.status === 'final') return '';
+  return `<span class="tv-pill"><span class="visually-hidden">On TV: </span>${cardEsc(g.tv)}</span>`;
+}
+
+/* Sunday-afternoon CBS and FOX games are regional: nfl.com says so
+   (territory REGIONAL) but not where, so one line on the page says so once,
+   rather than every card implying every viewer gets that game. Only when a
+   card on screen carries such a channel. */
+function boardTvNote(games){
+  return games.some(g => cardTvPill(g) !== '' && g.tv_regional);
+}
+
+function cardQbLine(g){
+  if(!g.away_qb && !g.home_qb) return '';
+  const side = (team, name, basis) => !name ? `${team} none on record`
+    : `${team} <b>${cardEsc(name)}</b>`
+      + (basis === 'last_game' ? ' (assumed: none listed yet, so last game&#39;s starter)' : '');
+  return `Quarterbacks: ${side(g.away, g.away_qb, g.away_qb_basis)} · ${side(g.home, g.home_qb, g.home_qb_basis)}`;
+}
+
+// One team's news, or null. The pick's own quarterback on the injury report
+// comes first, because it is the item that changes how far to trust the pick;
+// then a new starter; then other starters out or doubtful, by name up to two
+// and as a count beyond that, so the line stays one line. Questionable
+// players are left to Team Deep-Dive.
+function cardNewsTeam(team, entry){
+  if(!entry) return null;
+  const published = entry.injury_report === 'published';
+  const out = published ? (entry.out || []) : [], doubtful = published ? (entry.doubtful || []) : [];
+  const qb = entry.qb && entry.qb.name ? entry.qb : null;
+  const bits = [];
+  const qbListed = !qb ? null : out.some(p => p.name === qb.name) ? 'out'
+    : doubtful.some(p => p.name === qb.name) ? 'doubtful' : null;
+  if(qbListed) bits.push(`QB ${qb.name} ${qbListed}`);
+  else if(qb && qb.changed_from) bits.push(`new QB`);
+  const others = out.map(p => [p.name, 'out']).concat(doubtful.map(p => [p.name, 'doubtful']))
+    .filter(([name]) => !qb || name !== qb.name);
+  if(others.length > 2) bits.push(`${others.length} starters out or doubtful`);
+  else others.forEach(([name, status]) => bits.push(`${name} ${status}`));
+  return bits.length ? `${team}: ${bits.join(', ')}` : null;
+}
+
+function cardNewsLine(g, news){
+  if(!news || !news.teams || g.graded || g.status === 'final') return '';
+  const parts = [g.away, g.home].map(t => cardNewsTeam(t, news.teams[t])).filter(Boolean);
+  return parts.length ? `<b>Team news</b> ${parts.map(cardEsc).join(' · ')}` : '';
+}
+
 function kickoffKey(g){
   return g.gameday ? `${g.gameday}T${g.gametime_et || '00:00'}` : null;
 }
@@ -3645,6 +3726,8 @@ function renderGames(){
   badge.textContent = gamesList.length ? '' : 'No games';
   badge.hidden = gamesList.length > 0;
   renderWeekGlance(gamesList);
+  const tvNote = document.getElementById('board-tv-note');
+  if(tvNote) tvNote.hidden = true;
 
   const pdfLink = document.getElementById('picks-pdf-link');
   if(pdfLink){
@@ -3703,6 +3786,9 @@ function renderGames(){
     return 0;
   });
 
+  if(tvNote) tvNote.hidden = !boardTvNote(sorted);
+  const news = weekData.news;
+
   grid.innerHTML = sorted.map(g=>{
     const diverge = Math.abs(g.fbA_home - g.mktB_home);
     // Within EVEN_BAND points of 50 the model has not picked anybody, and
@@ -3747,10 +3833,12 @@ function renderGames(){
         ${trackRecordHtml(g.mktB_home, 'panel')}
       </div>` : '';
     const kickoff = kickoffLabel(g);
+    const tvPill = cardTvPill(g);
     const statusLine = cardStatusLine(g);
+    const qbLine = cardQbLine(g), newsLine = cardNewsLine(g, news);
     return `<div class="game-card ${g.flag?'has-flag':''}">
       ${matchupHeader(g)}
-      ${kickoff ? `<div class="card-kickoff">${kickoff}</div>` : ''}
+      ${kickoff || tvPill ? `<div class="card-kickoff">${kickoff}${tvPill}</div>` : ''}
       ${statusLine ? `<div class="card-status">${statusLine}</div>` : ''}
       <div class="game-top">
         <span class="game-confidence">${pickemRankLabel(g)}</span>
@@ -3768,6 +3856,8 @@ function renderGames(){
       </div>
       ${cardProbHtml(g, awayC, homeC)}
       <div class="market-ref">Vegas line: <b>${spreadText}</b></div>
+      ${qbLine ? `<div class="card-qbs">${qbLine}</div>` : ''}
+      ${newsLine ? `<div class="card-news">${newsLine}</div>` : ''}
       ${trackRecordHtml(g.mktB_home, 'card')}
       ${whyHtml}
       ${(g.notes && g.notes.length) ? `<button class="btn btn-link toggle-flag" data-idx="${idSafe}">+ view context (${g.notes.length})</button>
