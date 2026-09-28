@@ -1,0 +1,34 @@
+{
+  "target": "src/weekly_update.py",
+  "tests": "tests/test_starter_warning.py",
+  "cases": [
+    {
+      "id": "starter-warning-ignores-overrides",
+      "why": "a sourced override no longer counts, so a week the QB routine has covered still warns as if nothing were known",
+      "find": "    if teams & set(overrides or {}):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_an_override_is_enough"
+    },
+    {
+      "id": "starter-warning-wants-every-starter",
+      "why": "one unlisted starter is enough to warn, so an ordinary week with a team yet to name its starter reads like a broken feed",
+      "find": "        if col in week_games.columns and any(_clean(v) for v in week_games[col]):",
+      "replace": "        if col in week_games.columns and all(_clean(v) for v in week_games[col]):",
+      "expect_caught_by": "test_one_listed_starter_is_enough"
+    },
+    {
+      "id": "starter-warning-counts-blank-ids",
+      "why": "an empty-string id counts as a listed starter, so a feed that blanks the column passes silently",
+      "find": "        if col in week_games.columns and any(_clean(v) for v in week_games[col]):",
+      "replace": "        if col in week_games.columns and any(v is not None for v in week_games[col]):",
+      "expect_caught_by": "test_empty_strings_are_not_a_listed_starter"
+    },
+    {
+      "id": "starter-warning-never-printed",
+      "why": "main() stops calling the check, so a week locked on last game's quarterbacks says nothing",
+      "find": "    no_starters = starter_warning(week_games, qb_overrides, season, week)\n    if no_starters:\n        print(no_starters)\n",
+      "replace": "",
+      "expect_caught_by": "test_it_runs_only_on_the_path_that_locks"
+    }
+  ]
+}

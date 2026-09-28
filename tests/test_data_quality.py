@@ -85,19 +85,14 @@ def test_no_announced_starters_is_a_warning_not_an_error():
     assert any("home_qb_id" in w and "last game's quarterback" in w for w in report.warnings)
 
 
-def test_a_next_week_with_no_starter_listed_is_a_warning():
+def test_a_next_week_with_no_starter_listed_is_not_a_finding_here():
+    """Every weekly run checks data quality, including a Tuesday run that
+    only holds next week. Next week not listing its starters yet is normal
+    then; weekly_update.starter_warning speaks up only when locking."""
     s = schedule(completed_through=3)
     s.loc[s['week'] == 4, ['home_qb_id', 'away_qb_id']] = None
     report = dq.check_schedule(s, SEASON)
-    assert report.errors == []
-    assert any('week 4 lists no starting quarterback' in w for w in report.warnings)
-
-
-def test_one_listed_starter_in_the_next_week_is_enough():
-    s = schedule(completed_through=3)
-    s.loc[s['week'] == 4, ['home_qb_id', 'away_qb_id']] = None
-    s.loc[s.index[s['week'] == 4][0], 'home_qb_id'] = '00-0000009'
-    assert dq.check_schedule(s, SEASON).warnings == []
+    assert report.errors == [] and report.warnings == []
 
 
 def test_the_starter_columns_are_not_required():
