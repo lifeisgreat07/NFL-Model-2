@@ -126,6 +126,69 @@
       "find": "measured 651 and 655. */\n  @media (max-width:767px){",
       "replace": "measured 651 and 655.\n  @media (max-width:767px){",
       "expect_caught_by": "test_the_card_rules_are_live_css_not_a_comment"
+    },
+    {
+      "id": "lab-diagram-back-above-the-log",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_diagram_below.py",
+      "why": "the diagram is drawn above the experiments again, so the page opens on a chart and its explanation before the first experiment.",
+      "find": "    <!-- Filled by wireLabFilters()",
+      "replace": "    <div id=\"reliability-diagram\"></div>\n    <!-- Filled by wireLabFilters()",
+      "expect_caught_by": "test_the_diagram_follows_the_experiment_log"
+    },
+    {
+      "id": "lab-diagram-lead-hidden-too",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_diagram_below.py",
+      "why": "the one-line lead goes behind \"How to read this\" with the explanation, so nothing says what the chart is until it is opened.",
+      "find": "    <p style=\"margin-bottom:var(--s3);\">When a model says <b style=\"color:var(--text)\">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games, with its 95% interval.</p>\n    <details class=\"rel-how\">\n      <summary>How to read this</summary>\n",
+      "replace": "    <details class=\"rel-how\">\n      <summary>How to read this</summary>\n    <p style=\"margin-bottom:var(--s3);\">When a model says <b style=\"color:var(--text)\">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games, with its 95% interval.</p>\n",
+      "expect_caught_by": "test_how_to_read_this_holds_the_explanation"
+    },
+    {
+      "id": "lab-diagram-brier-definition-in-view",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_diagram_below.py",
+      "why": "the Brier definition loses its disclosure label, so it is no longer behind \"What these numbers mean\".",
+      "find": "<summary>What these numbers mean</summary>",
+      "replace": "<summary>More</summary>",
+      "expect_caught_by": "test_the_brier_definition_is_behind_a_disclosure"
+    },
+    {
+      "id": "lab-diagram-findings-hidden",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_diagram_below.py",
+      "why": "the Brier disclosure loses its close, so it swallows the bootstrap findings, which are results and must stay in view.",
+      "find": "        </details>\n        <p style=\"font-size:var(--fs-12); margin-top:var(--s3);\">Model B's numbers",
+      "replace": "        <p style=\"font-size:var(--fs-12); margin-top:var(--s3);\">Model B's numbers",
+      "expect_caught_by": "test_the_findings_stay_in_view"
+    },
+    {
+      "id": "lab-diagram-see-model-lab-again",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_diagram_below.py",
+      "why": "the diagram tells a reader already on Model Lab to see Model Lab.",
+      "find": "See <b style=\"color:var(--text)\">the experiment log above</b> for all three",
+      "replace": "See <b style=\"color:var(--text)\">Model Lab</b> for all three",
+      "expect_caught_by": "test_the_diagram_points_at_the_log_not_at_its_own_page"
+    },
+    {
+      "id": "lab-diagram-toggle-under-24px",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_diagram_below.py",
+      "why": "the disclosure toggle drops out of the shared summary rule and falls under WCAG 2.5.8's 24px.",
+      "find": ".onboarding-more summary, .rel-how summary{display:inline-flex;",
+      "replace": ".onboarding-more summary{display:inline-flex;",
+      "expect_caught_by": "test_the_disclosure_looks_and_focuses_like_the_other_how_to_read_this"
+    },
+    {
+      "id": "lab-diagram-toggle-loses-focus-ring",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_model_lab_diagram_below.py",
+      "why": "the disclosure toggle loses the page's focus ring.",
+      "find": ".onboarding-more summary:focus-visible, .rel-how summary:focus-visible{",
+      "replace": ".onboarding-more summary:focus-visible{",
+      "expect_caught_by": "test_the_disclosure_looks_and_focuses_like_the_other_how_to_read_this"
     }
   ]
 }
