@@ -1,0 +1,21 @@
+{
+  "target": ".python-version",
+  "tests": "tests/test_python_version.py",
+  "cases": [
+    {
+      "id": "python-version-file-drifts-from-the-workflows",
+      "why": "the file names a Python no workflow uses, so a local environment built from it is not the one CI tests",
+      "find": "3.11",
+      "replace": "3.12",
+      "expect_caught_by": "test_every_workflow_sets_up_that_version"
+    },
+    {
+      "id": "a-workflow-sets-up-another-python",
+      "target": ".github/workflows/run-tests.yml",
+      "why": "the test workflow moves to a Python the repo does not name, so the suite's green says nothing about the version everyone else runs",
+      "find": "          python-version: '3.11'",
+      "replace": "          python-version: '3.12'",
+      "expect_caught_by": "test_every_workflow_sets_up_that_version"
+    }
+  ]
+}
