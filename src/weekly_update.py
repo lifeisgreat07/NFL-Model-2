@@ -89,6 +89,12 @@ LOCK_SLACK = pd.Timedelta(hours=4)
 
 PRED_DIR = Path(__file__).parent.parent / 'predictions'
 PRED_DIR.mkdir(exist_ok=True)
+# A week that kicked off with nothing ever locked is recorded here, one small
+# file per week, so determine_next_week() moves past it (Stage 24). A folder,
+# not a new file shape in predictions/: every reader of saved picks globs
+# predictions/*_week*.json without recursing, so none of them can mistake a
+# skip for a week of picks.
+SKIPPED_DIR = PRED_DIR / 'skipped'
 DATA_DIR = Path(__file__).parent.parent / 'data'
 DATA_DIR.mkdir(exist_ok=True)
 
@@ -250,22 +256,37 @@ def build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_wee
     return pd.DataFrame(rows)
 
 
-def determine_next_week(season):
+def _week_numbers(folder, season):
+    """Week numbers of `<season>_week<N>.json` files directly in `folder`."""
+    weeks = []
+    for f in folder.glob(f'{season}_week*.json'):
+        try:
+            weeks.append(int(f.stem.split('_week')[1]))
+        except (IndexError, ValueError):
+            continue
+    return weeks
+
+
+def determine_next_week(season, pred_dir=None, skipped_dir=None):
     """If --week isn't given, figure out the right week automatically:
     one past whatever week was most recently saved for this season.
     Starts at week 1 if nothing's been saved yet. This is what lets the
     routine run unattended all season without a manually-edited week
-    number in its prompt."""
-    existing = list(PRED_DIR.glob(f'{season}_week*.json'))
-    weeks_done = []
-    for f in existing:
-        try:
-            weeks_done.append(int(f.stem.split('_week')[1]))
-        except (IndexError, ValueError):
-            continue
-    if weeks_done:
-        next_week = max(weeks_done) + 1
-        print(f"Most recent saved week for {season}: {max(weeks_done)}. Using week {next_week}.")
+    number in its prompt.
+
+    A week recorded as skipped (every game kicked off with nothing locked,
+    see record_skipped_week) counts as done. Before Stage 24 it did not, so
+    one missed lock made every later run ask for that same week again, and
+    refuse, for the rest of the season."""
+    pred_dir = PRED_DIR if pred_dir is None else pred_dir
+    skipped_dir = SKIPPED_DIR if skipped_dir is None else skipped_dir
+    weeks_done = _week_numbers(pred_dir, season)
+    skipped = _week_numbers(skipped_dir, season)
+    if weeks_done or skipped:
+        latest = max(weeks_done + skipped)
+        next_week = latest + 1
+        how = 'skipped' if latest not in weeks_done else 'saved'
+        print(f"Most recent {how} week for {season}: {latest}. Using week {next_week}.")
         return next_week
     print(f"No predictions saved yet for {season}. Starting at week 1.")
     return 1
@@ -276,6 +297,25 @@ def determine_next_week(season):
     # straight through the playoffs with no special-casing needed. The one
     # real edge case -- running this again after the Super Bowl -- is
     # handled in main() by exiting cleanly when a week has zero games.
+
+
+def record_skipped_week(season, week, reason, now, skipped_dir=None):
+    """Write predictions/skipped/<season>_week<N>.json and return its path.
+
+    Called only when every game of a week has kicked off with nothing ever
+    locked: no pick for it can be a prediction any more, so the week is done,
+    and saying so is what lets the next run move on. Write-once like a week
+    of picks: an existing record is left exactly as it is."""
+    skipped_dir = SKIPPED_DIR if skipped_dir is None else skipped_dir
+    skipped_dir.mkdir(parents=True, exist_ok=True)
+    path = skipped_dir / f'{season}_week{week}.json'
+    if not path.exists():
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump({'season': season, 'week': week, 'reason': reason,
+                       'recorded_utc': pd.Timestamp(now).tz_convert('UTC').isoformat()},
+                      f, indent=2)
+            f.write('\n')
+    return path
 
 
 LINE_HISTORY_DIR = Path(__file__).parent.parent / 'data' / 'line_history'
@@ -689,11 +729,19 @@ def main(season, week):
     # Inside the window is not the same as time to lock. See SCHEDULED_RUNS_UTC.
     decision = decide_lock(week_games, pd.Timestamp.now(tz='UTC'))
     if decision.started and not decision.lock:
+        # Still a failure -- the run fails and opens its issue (Stage 4) --
+        # but the week is recorded as skipped first, so the next run moves
+        # on to the week after instead of refusing this one forever.
+        skipped = record_skipped_week(
+            season, week, 'every game kicked off with nothing locked',
+            pd.Timestamp.now(tz='UTC'))
         raise SystemExit(
             f"ERROR: every game in {season} week {week} has already kicked off and "
             f"nothing was ever locked for it. A pick saved now would not be a "
             f"prediction, so none is saved. The scheduled runs missed this week: "
-            f"check the Actions history. This week can only be skipped by hand.")
+            f"check the Actions history. Recorded as skipped in "
+            f"predictions/skipped/{skipped.name}, so the next run moves on to "
+            f"week {week + 1}.")
     if not decision.lock:
         print(f"Holding {season} week {week}: its first game kicks off "
               f"{decision.first_kickoff:%a %Y-%m-%d %H:%M} UTC, after the next scheduled "
