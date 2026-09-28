@@ -1,4 +1,4 @@
-"""Text reaching innerHTML goes through cardEsc() (Stage 23 item 4).
+"""Text reaching innerHTML goes through escapeHtml() (Stage 23 item 4).
 
 The 2026-09-28 audit found two places the template put a string into
 innerHTML as written: the Power Ratings "No teams match" row, which echoes
@@ -39,7 +39,7 @@ def run(expr):
     if not NODE:
         pytest.skip('node not available')
     s = src()
-    js = ''.join(fn(s, f) for f in ('cardEsc', 'ratingsNoMatchRow', 'contextNotesHtml'))
+    js = ''.join(fn(s, f) for f in ('escapeHtml', 'ratingsNoMatchRow', 'contextNotesHtml'))
     r = subprocess.run([NODE, '-e', js + f'\nprocess.stdout.write(JSON.stringify({expr}));'],
                        capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr

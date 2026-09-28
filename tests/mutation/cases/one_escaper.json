@@ -1,0 +1,20 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_one_escaper.py",
+  "cases": [
+    {
+      "id": "a-second-escaper-comes-back",
+      "why": "renderTeamNews grows its own escaper again, so a fix to escapeHtml would miss the team news",
+      "find": "function renderTeamNews(team){\n",
+      "replace": "function renderTeamNews(team){\n  const esc = s => String(s).replace(/[&<>\"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]));\n",
+      "expect_caught_by": "test_there_is_one_escaper"
+    },
+    {
+      "id": "why-panel-spells-offence-again",
+      "why": "the Why panel says Offence while Power Ratings says Offense, two spellings of one thing on one page",
+      "find": "{off_matchup: 'Offense', def_matchup: 'Defense',",
+      "replace": "{off_matchup: 'Offence', def_matchup: 'Defence',",
+      "expect_caught_by": "test_the_page_spells_offense_and_defense_one_way"
+    }
+  ]
+}
