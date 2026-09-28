@@ -178,7 +178,7 @@ def load_game_status(status_dir=STATUS_DIR):
 def load_tv(tv_dir=TV_DIR):
     """{(season, week): {(home, away): record}} from src/tv_channels.py's
     week files (Stage 15). `exceptions.json` shares the folder and is not a
-    week, so the stem parser passes over it. A game whose channel failed a
+    week; the `*_week*.json` pattern does not match it. A game whose channel failed a
     check has an empty `networks` list in its record, and the card then
     shows no channel: nothing here second-guesses the checks."""
     out = {}
