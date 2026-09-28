@@ -1,0 +1,44 @@
+{
+  "target": "src/grade_predictions.py",
+  "tests": "tests/test_grading_and_drift.py",
+  "cases": [
+    {
+      "id": "grading-scores-an-unplayed-game",
+      "why": "a game with no score yet is graded anyway, so a partial week records results for games that have not been played",
+      "find": "        if len(row) == 0 or pd.isna(row.iloc[0].get('home_score')):",
+      "replace": "        if len(row) == 0:",
+      "expect_caught_by": "test_a_partial_week_grades_only_the_games_with_a_result"
+    },
+    {
+      "id": "grading-drops-the-even-call-from-home",
+      "why": "an exactly-50% forecast stops counting as the home pick, so the grade no longer matches the side the card showed",
+      "find": "    return int((prob >= 0.5) == bool(actual_home_win))",
+      "replace": "    return int((prob > 0.5) == bool(actual_home_win))",
+      "expect_caught_by": "test_graded_correct_edges"
+    },
+    {
+      "id": "drift-flags-overperformance-too",
+      "target": "src/check_drift.py",
+      "why": "the drift check flags a model for doing significantly BETTER than the backtest, so a good week opens 'Model drift detected'",
+      "find": "    is_significant_and_worse = z <= -SIGNIFICANCE_Z",
+      "replace": "    is_significant_and_worse = abs(z) >= SIGNIFICANCE_Z",
+      "expect_caught_by": "test_only_underperformance_is_flagged"
+    },
+    {
+      "id": "drift-counts-backtest-seasons-as-live",
+      "target": "src/check_drift.py",
+      "why": "graded backtest seasons are read as live results, so the check compares the backtest with itself and cannot see real drift",
+      "find": "        if season in BACKTEST_SEASONS:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_live_results_leave_out_the_backtest_seasons"
+    },
+    {
+      "id": "drift-tests-a-tiny-sample",
+      "target": "src/check_drift.py",
+      "why": "the minimum sample is ignored, so two bad games in week 1 can raise a drift issue",
+      "find": "    if n < MIN_GAMES_TO_TEST:",
+      "replace": "    if n < 0:",
+      "expect_caught_by": "test_below_the_minimum_sample_nothing_is_flagged"
+    }
+  ]
+}
