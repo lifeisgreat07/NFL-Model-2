@@ -455,6 +455,21 @@
   .dive-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); color:var(--text-2); width:80px; flex-shrink:0;}
   .dive-label.live{color:var(--accent);}
   .dive-value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:var(--fs-14); width:62px; text-align:right; flex-shrink:0;}
+  /* Stage 19: offense and defense beside net, smaller and quieter than it. */
+  .dive-split{display:flex; gap:var(--s3); font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12);
+    color:var(--text-2); font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .dive-note{font-size:var(--fs-12); color:var(--text-2); margin:0 0 var(--s3);}
+  /* On a phone the pair takes a second small line, lined up under the bar
+     (Mark, 2026-09-28). After the rules above on purpose: the earlier
+     767px block would lose to them on source order. */
+  @media (max-width:767px){
+    .dive-row{flex-wrap:wrap; row-gap:var(--s1);}
+    /* The bar gives up width so the net value stays on the first line:
+       with wrapping on, its fixed 140px pushed the value down too, three
+       lines a row at 375px. flex-basis 0 overrides the inline width. */
+    .dive-row .srs-bar-track{flex:1 1 0; min-width:48px;}
+    .dive-split{flex-basis:100%; padding-left:calc(80px + var(--s4));}
+  }
   .net-value{font-family:'Plus Jakarta Sans', sans-serif; text-align:right; justify-self:end; white-space:nowrap;}
   .srs-bar-track{position:relative; width:90px; height:6px; background:var(--border); border-radius:3px; overflow:hidden;}
   .srs-bar-fill{position:absolute; top:0; bottom:0; background:var(--text-3); border-radius:3px;}
@@ -5653,13 +5668,28 @@ function renderTeamDive(){
       <span class="dive-label ${isLive?'live':''}">${p.label}</span>
       <div class="srs-bar-track diverging" style="width:140px;" title="${fmtRating(p.net)} per 100 plays; scale ±${fmtRatingScale(maxAbs)} across this team's own history, centre line is zero"><div class="srs-bar-fill" style="left:${p.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
       <span class="dive-value">${fmtRating(p.net)}</span>
+      ${diveSplitHtml(p)}
     </div>`;
   }).join('');
+  // Said once above the rows, not in every row: defense is the one number
+  // on the page that runs backwards (Mark, 2026-09-28).
+  const splitNote = points.some(p => diveSplitHtml(p))
+    ? `<p class="dive-note">Net is offense minus defense. Defense counts expected points allowed, so for defense lower is better.</p>`
+    : '';
 
   content.innerHTML = renderTeamNews(team)
-    + `<div class="table-wrap" style="padding:var(--s5) var(--s5);">${rowsHtml}</div>`
+    + `<div class="table-wrap" style="padding:var(--s5) var(--s5);">${splitNote}${rowsHtml}</div>`
     + renderTeamGames(team);
   wireTeamGameToggles();
+}
+
+/* Offense and defense beside a Team Deep-Dive row's net (Stage 19), in the
+   same per-100-plays units through the same formatter. Nothing unless both
+   are numbers -- a history point can carry net alone. On a phone the pair
+   drops to a second small line under the row (CSS, below 768px). */
+function diveSplitHtml(p){
+  if(typeof p.off !== 'number' || typeof p.def !== 'number') return '';
+  return `<span class="dive-split"><span>Offense ${fmtRating(p.off)}</span><span title="Expected points allowed: lower is better">Defense ${fmtRating(p.def)}</span></span>`;
 }
 
 /* ---------- Team Deep-Dive: this week's team news (Stage 16) ----------

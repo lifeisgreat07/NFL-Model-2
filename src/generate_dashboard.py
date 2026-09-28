@@ -676,9 +676,14 @@ def load_team_history():
     history = static_data.get('history', {})
 
     timeline = {team: [] for team in names}
+    # Offense and defense ride along with net (Stage 19): Team Deep-Dive shows
+    # all three, and both history files already carry them. .get(), because a
+    # point without them is still a net rating worth drawing; the page shows
+    # the split only when both are numbers.
     for team, points in history.items():
         for p in sorted(points, key=lambda x: x['season']):
-            timeline.setdefault(team, []).append({'label': str(p['season']), 'net': p['net']})
+            timeline.setdefault(team, []).append({'label': str(p['season']), 'net': p['net'],
+                                                  'off': p.get('off'), 'def': p.get('def')})
 
     # Layer in any live current-season files (data/team_history_2026.json etc.),
     # sorted by season so multiple seasons of live data would stack correctly.
@@ -690,7 +695,8 @@ def load_team_history():
         for team, points in live_data.items():
             timeline.setdefault(team, [])
             for p in sorted(points, key=lambda x: x['week']):
-                timeline[team].append({'label': f"{season} Wk{p['week']}", 'net': p['net']})
+                timeline[team].append({'label': f"{season} Wk{p['week']}", 'net': p['net'],
+                                       'off': p.get('off'), 'def': p.get('def')})
 
     return {'names': names, 'timeline': timeline}
 

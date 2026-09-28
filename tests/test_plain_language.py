@@ -153,6 +153,8 @@ RENDERERS = {
     # The trend chart's end-labels, placed once every line is drawn (Stage 19).
     'endLabels': 'accuracy',
     'renderTeamDive': 'teamdive',
+    # Stage 19's offense/defense line beside each history row.
+    'diveSplitHtml': 'teamdive',
     'renderTeamGames': 'teamdive',
     'renderTeamNews': 'teamdive',
     'teamNewsItems': 'teamdive',
