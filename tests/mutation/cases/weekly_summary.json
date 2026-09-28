@@ -12,7 +12,7 @@
     {
       "id": "weekly-summary-counts-ungraded-games",
       "why": "games with no result yet count toward each model's record. A week three games into play would read 'Model A 2/16', which is the 'correct arithmetic on absent data' failure this repo has already shipped once.",
-      "find": "    done = [r for r in rows if r.get('actual_home_win') is not None]",
+      "find": "    done = [r for r in rows\n            if r.get('actual_home_win') is not None or r.get('result') == 'tie']",
       "replace": "    done = list(rows)",
       "expect_caught_by": "test_grading_counts_only_games_with_a_result"
     },
