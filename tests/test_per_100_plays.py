@@ -71,8 +71,11 @@ def test_the_bar_scale_is_a_whole_number_in_the_same_units(run):
 
 def test_power_ratings_and_team_dive_show_every_rating_through_it(src):
     ratings = re.search(r'function renderRatings\(\)\{.*?\n\}\n', src, re.S).group(0)
+    # The old trend arrow's tooltip ('${fmtRating(delta)} per 100 plays') left
+    # this list in Stage 19: the arrow now shows places moved, not a rating
+    # change, so there is no rating in it to format.
     for cell in ('${fmtRating(t.net)}', '${fmtRating(t.off)}', '${fmtRating(t.def)}', 'fmtRating(t.sos)',
-                 '${fmtRating(delta)} per 100 plays', 'fmtRatingScale(maxAbs)'):
+                 'fmtRatingScale(maxAbs)'):
         assert cell in ratings, f'Power Ratings no longer shows {cell} through the formatter'
     assert '.toFixed(3)' not in ratings, 'a rating in Power Ratings is still printed per play'
     dive = re.search(r'function renderTeamDive\(\)\{.*?\n\}\n', src, re.S).group(0)

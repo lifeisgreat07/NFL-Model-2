@@ -74,6 +74,9 @@ TECHNICAL_PAGES = {'method', 'modellab', 'changelog', 'reliability'}
 # than silently escaping the scan.
 RENDERERS = {
     'renderRatings': 'ratings',
+    # Stage 19's rank change beside each team and the biggest-moves line.
+    'rankMoveHtml': 'ratings',
+    'moversSentence': 'ratings',
     'renderGames': 'board',
     'renderWeekGlance': 'board',
     'whySentence': 'board',
