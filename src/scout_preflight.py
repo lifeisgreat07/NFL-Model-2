@@ -554,6 +554,38 @@ def check_scoped_test_counts(body, skip_tests):
                    "no test-module count in the body disagrees with collection")
 
 
+# Files that tell Booth what to do. Booth's workflow checks out the PR's head
+# and its prompt says to read BOOTH_PROTOCOL.md "in this repository", so a PR
+# editing either one is audited by its own edited instructions. Until Stage 23
+# the Claude Code action refused to run on a PR whose copy of its workflow
+# differed from main's; that refusal belonged to the app-token path, and on
+# GITHUB_TOKEN it ran (PR #176). The protocol file was never covered. So a PR
+# that changes either is not audited independently, and must say so.
+AUDITOR_FILES = ('.github/workflows/booth-pr-audit.yml', 'BOOTH_PROTOCOL.md')
+HUMAN_REVIEW_RE = re.compile(r'(?im)^\W*human review required:')
+
+
+def changed_files(base, head='HEAD'):
+    return _git('diff', '--name-only', f'{base}...{head}').splitlines()
+
+
+def check_auditor_edits_need_a_human(body, changed):
+    """A PR that edits Booth's instructions is audited by its own edits, so a
+    Booth SAFE TO MERGE on it is not independent. It must carry a line
+    starting 'Human review required:' so nobody merges it on Booth alone."""
+    touched = sorted(set(changed) & set(AUDITOR_FILES))
+    if not touched:
+        return Finding('auditor edits', True, "the diff does not change Booth's instructions")
+    if HUMAN_REVIEW_RE.search(body):
+        return Finding('auditor edits', True,
+                       f"changes {', '.join(touched)} and says a human must review it")
+    return Finding('auditor edits', False,
+                   f"this PR changes {', '.join(touched)}, which Booth reads to "
+                   f"audit this very PR, so its verdict is not independent. Add a "
+                   f"line beginning 'Human review required:' saying what changed "
+                   f"in Booth's instructions, so the merge is a human decision.")
+
+
 def preflight(body, base='origin/main', skip_tests=False, head='HEAD'):
     commits = branch_commits(base, head)
     # Assertions are checked against quotation-stripped text; the attachment
@@ -576,6 +608,8 @@ def preflight(body, base='origin/main', skip_tests=False, head='HEAD'):
         # costs nothing, and it is the one whose subject cannot be fixed after
         # the fact -- so it is precisely the check that must run everywhere.
         check_no_suite_count_in_a_commit_message(base, head),
+        # Also not skipped by --skip-tests, for the same reason: it reads git.
+        check_auditor_edits_need_a_human(body, changed_files(base, head)),
     ], commits
 
 
