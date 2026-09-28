@@ -106,9 +106,13 @@ def test_no_games_or_no_spread_gives_no_verdict():
 
 
 def test_the_z_score_is_the_standard_one():
-    z, flagged = cd.one_proportion_z_test(40, 100, 0.6)
-    assert math.isclose(z, (0.40 - 0.60) / math.sqrt(0.6 * 0.4 / 100))
-    assert flagged, 'a z of about -4.1 is well past the threshold'
+    # 30 of 100 against 0.6: the standard error comes from the EXPECTED
+    # proportion (0.6 * 0.4), which differs here from the observed one
+    # (0.3 * 0.7), so using the wrong one changes z. (40 of 100 would not
+    # tell them apart: 0.4 * 0.6 is 0.6 * 0.4.)
+    z, flagged = cd.one_proportion_z_test(30, 100, 0.6)
+    assert math.isclose(z, (0.30 - 0.60) / math.sqrt(0.6 * 0.4 / 100))
+    assert flagged, 'a z of about -6.1 is well past the threshold'
 
 
 def test_only_underperformance_is_flagged():
@@ -116,12 +120,15 @@ def test_only_underperformance_is_flagged():
     assert z > cd.SIGNIFICANCE_Z and not flagged
 
 
-def test_the_threshold_is_inclusive_at_minus_one_point_nine_six():
-    n, p = 10_000, 0.5
-    se = math.sqrt(p * (1 - p) / n)
-    observed = round((p - cd.SIGNIFICANCE_Z * se) * n)  # just at or past the line
-    z, flagged = cd.one_proportion_z_test(observed, n, p)
-    assert flagged == (z <= -cd.SIGNIFICANCE_Z)
+def test_a_z_exactly_on_the_threshold_is_flagged(monkeypatch):
+    """No whole number of games lands z exactly on -1.96, so the threshold is
+    moved onto a z the test has computed: then 'on the line' is exact, and a
+    strict < instead of <= goes red here."""
+    z, _ = cd.one_proportion_z_test(40, 100, 0.5)
+    monkeypatch.setattr(cd, 'SIGNIFICANCE_Z', -z)
+    assert cd.one_proportion_z_test(40, 100, 0.5) == (z, True)
+    monkeypatch.setattr(cd, 'SIGNIFICANCE_Z', -z + 1e-9)
+    assert cd.one_proportion_z_test(40, 100, 0.5) == (z, False)
 
 
 def test_below_the_minimum_sample_nothing_is_flagged(capsys):

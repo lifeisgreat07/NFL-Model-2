@@ -25,6 +25,22 @@
       "expect_caught_by": "test_only_underperformance_is_flagged"
     },
     {
+      "id": "drift-threshold-becomes-strict",
+      "target": "src/check_drift.py",
+      "why": "a z exactly on the threshold stops counting as significant; the rule today is 'at or below -1.96', and this quietly moves the boundary",
+      "find": "    is_significant_and_worse = z <= -SIGNIFICANCE_Z",
+      "replace": "    is_significant_and_worse = z < -SIGNIFICANCE_Z",
+      "expect_caught_by": "test_a_z_exactly_on_the_threshold_is_flagged"
+    },
+    {
+      "id": "drift-standard-error-from-the-observed-rate",
+      "target": "src/check_drift.py",
+      "why": "the standard error is taken from the observed rate instead of the expected one, which is no longer the one-sample test under the null the docstring names, and moves z whenever the two rates are not mirror images",
+      "find": "    se = math.sqrt(expected_p * (1 - expected_p) / n)",
+      "replace": "    se = math.sqrt(observed_p * (1 - observed_p) / n)",
+      "expect_caught_by": "test_the_z_score_is_the_standard_one"
+    },
+    {
       "id": "drift-counts-backtest-seasons-as-live",
       "target": "src/check_drift.py",
       "why": "graded backtest seasons are read as live results, so the check compares the backtest with itself and cannot see real drift",
