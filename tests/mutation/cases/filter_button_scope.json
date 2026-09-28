@@ -12,8 +12,8 @@
     {
       "id": "filter-handler-fixed-on-the-attach-side-only",
       "why": "the half-fix, and the one a reviewer is most likely to wave through. The handler is attached only to real filters, so clicking Export My Picks no longer runs it -- but the CLEAR selector inside still reaches every pill on the page, so clicking a genuine filter now strips .active from buttons on My Picks and the onboarding banner as a side effect. The visible symptom moves rather than going away, and the diff looks like the fix.",
-      "find": "    document.querySelectorAll('#filter-row .filter-btn[data-filter]').forEach(b=>b.classList.remove('active'));",
-      "replace": "    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));",
+      "find": "    document.querySelectorAll('#filter-row .filter-btn[data-filter]').forEach(b=>{",
+      "replace": "    document.querySelectorAll('.filter-btn').forEach(b=>{",
       "expect_caught_by": "test_the_handler_selects_on_the_attribute_it_reads"
     },
     {

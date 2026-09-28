@@ -30,8 +30,8 @@ NOT_TEXT = {
     '.nav-btn svg': 'the sidebar icon beside the label, not the label',
     '.nav-btn.disabled': 'a disabled control; WCAG 1.4.3 exempts inactive UI',
     '.srs-bar-track.diverging::before': "the Net Rating bar's zero line",
-    '.btn-chip[aria-pressed="false"] svg': "a switched-off series' marker, not its label",
-    '.btn-chip[aria-pressed="false"]:hover svg': 'the same marker on hover',
+    '.btn-chip.btn-toggle[aria-pressed="false"] svg': "a switched-off series' marker, not its label",
+    '.btn-chip.btn-toggle[aria-pressed="false"]:hover svg': 'the same marker on hover',
     '.score-coin': "the scoreboard's 50% line",
     '.tele-bar-seg': 'an empty bar segment',
 }
@@ -39,7 +39,7 @@ NOT_TEXT = {
 # (.foot-freshness was one too; Stage 13 removed the rule when the "Updated"
 # line moved to the Week Board header as .board-updated.)
 WERE_DIMMED = ['.agent-stat-note', '.nav-group-label',
-               '.btn-chip[aria-pressed="false"]', '.track-note', '.dive-why-note',
+               '.btn-chip.btn-toggle[aria-pressed="false"]', '.track-note', '.dive-why-note',
                '.picks-readonly .pick-btn']
 
 
@@ -88,6 +88,6 @@ def test_the_rules_that_dimmed_text_no_longer_do(rules):
 
 def test_a_switched_off_series_still_says_so(rules):
     """Losing the fade must not lose the state: the border goes dashed."""
-    bodies = [b for s, b in rules if s == '.btn-chip[aria-pressed="false"]']
+    bodies = [b for s, b in rules if s == '.btn-chip.btn-toggle[aria-pressed="false"]']
     assert any(re.search(r'border-style\s*:\s*dashed', b) for b in bodies), (
         'a switched-off series toggle no longer looks different from a switched-on one')
