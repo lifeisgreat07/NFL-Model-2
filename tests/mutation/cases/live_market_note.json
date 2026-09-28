@@ -1,0 +1,28 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_live_market_note.py",
+  "cases": [
+    {
+      "id": "live-market-note-states-the-wrong-constant",
+      "why": "the Methodology note names a constant the code does not use, so the one sentence explaining the live market's number is wrong about it",
+      "find": "e<sup>&minus;spread / 5.5</sup>",
+      "replace": "e<sup>&minus;spread / 6</sup>",
+      "expect_caught_by": "test_the_note_names_the_constant_the_code_uses"
+    },
+    {
+      "id": "live-market-constant-changes-without-the-note",
+      "target": "src/weekly_update.py",
+      "why": "the live market's constant changes and the Methodology note still describes the old curve",
+      "find": "    return 1 / (1 + np.exp(-home_spread / 5.5))",
+      "replace": "    return 1 / (1 + np.exp(-home_spread / 6.0))",
+      "expect_caught_by": "test_the_note_names_the_constant_the_code_uses"
+    },
+    {
+      "id": "live-market-note-hides-that-it-is-hand-picked",
+      "why": "the note stops saying the curve was chosen by hand, which is the part a reader comparing it with the fitted row needs",
+      "find": "with the 5.5 chosen by hand rather than fitted",
+      "replace": "with the 5.5 as the scale",
+      "expect_caught_by": "test_the_note_says_which_line_and_that_it_is_not_fitted"
+    }
+  ]
+}
