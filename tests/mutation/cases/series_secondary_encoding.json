@@ -22,6 +22,54 @@
       "find": "  b:      {label:'Model B',  color:'var(--series-b)', shape:'square',   dash:''},",
       "replace": "  b:      {label:'Model B',  color:'var(--series-b)', shape:'square',   dash:'4,3'},",
       "expect_caught_by": "test_every_series_carries_a_distinct_shape_and_picks_is_the_only_dashed_one"
+    },
+    {
+      "id": "trend-labels-gap-under-text-height",
+      "tests": "tests/test_accuracy_trend_labels.py",
+      "why": "the gap drops back to 11, less than a label's own height, and two lines ending together overprint their labels again.",
+      "find": "const TREND_LABEL_GAP = 14;",
+      "replace": "const TREND_LABEL_GAP = 11;",
+      "expect_caught_by": "test_the_gap_clears_the_label_text"
+    },
+    {
+      "id": "trend-labels-not-spread",
+      "tests": "tests/test_accuracy_trend_labels.py",
+      "why": "each label is drawn at its own line's end, so labels for lines that end together sit on top of each other.",
+      "find": "  for(let k = 1; k < out.length; k++) out[k] = Math.max(out[k], out[k-1] + gap);\n",
+      "replace": "",
+      "expect_caught_by": "test_lines_ending_together_get_labels_a_full_gap_apart"
+    },
+    {
+      "id": "trend-labels-run-off-the-floor",
+      "tests": "tests/test_accuracy_trend_labels.py",
+      "why": "labels pushed down past the plot's floor are left there, below the axis and over the week labels.",
+      "find": "  if(over > 0){",
+      "replace": "  if(false){",
+      "expect_caught_by": "test_labels_pushed_past_the_floor_come_back_inside_the_plot"
+    },
+    {
+      "id": "trend-labels-lose-their-order",
+      "tests": "tests/test_accuracy_trend_labels.py",
+      "why": "the labels come back in sorted order, not their lines' order, so each label names another line.",
+      "find": "  order.forEach((o, k) => { res[o.i] = out[k]; });",
+      "replace": "  order.forEach((o, k) => { res[k] = out[k]; });",
+      "expect_caught_by": "test_labels_keep_their_lines_order"
+    },
+    {
+      "id": "trend-labels-drawn-before-every-line",
+      "tests": "tests/test_accuracy_trend_labels.py",
+      "why": "the labels are placed before the last line is drawn, so My Picks' line gets no label at all.",
+      "find": "      ${lineFor('p','picks')}\n      ${endLabels()}\n",
+      "replace": "      ${endLabels()}\n      ${lineFor('p','picks')}\n",
+      "expect_caught_by": "test_the_chart_places_its_labels_together_after_every_line"
+    },
+    {
+      "id": "trend-no-week-labels",
+      "tests": "tests/test_accuracy_trend_labels.py",
+      "why": "the x-axis loses its week labels, and nothing on the chart says which point is which week.",
+      "find": "      ${weekTicks}\n",
+      "replace": "",
+      "expect_caught_by": "test_every_graded_week_is_labelled_on_the_x_axis"
     }
   ]
 }
