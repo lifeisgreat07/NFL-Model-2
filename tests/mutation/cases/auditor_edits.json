@@ -1,0 +1,34 @@
+{
+  "target": "src/scout_preflight.py",
+  "tests": "tests/test_auditor_edits.py",
+  "cases": [
+    {
+      "id": "auditor-edit-passes-without-the-line",
+      "why": "a PR editing Booth's instructions passes preflight with no human-review line, so its self-audited SAFE TO MERGE reads as independent",
+      "find": "    if HUMAN_REVIEW_RE.search(body):",
+      "replace": "    if True:",
+      "expect_caught_by": "test_editing_booths_workflow_without_the_line_fails"
+    },
+    {
+      "id": "auditor-files-forget-the-protocol",
+      "why": "the protocol file is no longer watched, so the easier way to steer Booth -- editing what its prompt tells it to read -- walks past the check",
+      "find": "AUDITOR_FILES = ('.github/workflows/booth-pr-audit.yml', 'BOOTH_PROTOCOL.md')",
+      "replace": "AUDITOR_FILES = ('.github/workflows/booth-pr-audit.yml',)",
+      "expect_caught_by": "test_editing_the_protocol_without_the_line_fails"
+    },
+    {
+      "id": "human-review-line-matched-anywhere",
+      "why": "the phrase counts anywhere in the body, so a sentence discussing the rule satisfies it",
+      "find": "HUMAN_REVIEW_RE = re.compile(r'(?im)^\\W*human review required:')",
+      "replace": "HUMAN_REVIEW_RE = re.compile(r'(?i)human review required:')",
+      "expect_caught_by": "test_the_phrase_mid_sentence_is_not_the_line"
+    },
+    {
+      "id": "preflight-never-runs-the-auditor-check",
+      "why": "the check exists but preflight does not call it, so it guards nothing",
+      "find": "        check_auditor_edits_need_a_human(body, changed_files(base, head)),\n",
+      "replace": "",
+      "expect_caught_by": "test_preflight_runs_it_on_the_branch_diff"
+    }
+  ]
+}
