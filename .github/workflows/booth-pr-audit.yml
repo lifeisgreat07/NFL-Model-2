@@ -25,6 +25,16 @@ name: Booth PR audit
 # the report and that merging is a human decision, so `contents: read` means it
 # structurally cannot push, merge or modify the branch even if instructed to.
 # It can only comment.
+#
+# That sentence was FALSE until Stage 23 (the 2026-09-28 audit): with
+# `id-token: write` and no `github_token` input, the Claude Code action
+# exchanged OIDC for the Claude GitHub App's installation token, which on
+# this repository has read AND WRITE access to code, workflows and pull
+# requests, and it installed that token for Booth. `contents: read` limited
+# only GITHUB_TOKEN, which Booth was not using (its reports were posted by
+# claude[bot]). Now the action is handed GITHUB_TOKEN explicitly and the
+# workflow cannot mint an OIDC token at all, so the grant below is the whole
+# of what Booth holds. tests/test_booth_permissions.py holds both halves.
 
 on:
   pull_request:
@@ -48,7 +58,6 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  id-token: write
 
 # A new push supersedes the audit in flight. Without this, a branch pushed
 # three times in a minute runs Booth three times and bills all three against
@@ -125,6 +134,10 @@ jobs:
           # Subscription auth, not an API key: runs bill against the Claude
           # subscription rather than metered API credits.
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # The repository's own token, held to this workflow's permissions
+          # above. Without it the action fetches the Claude app's token,
+          # which can write (see the header of this file).
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             You are Booth. Read BOOTH_PROTOCOL.md in this repository and follow
             its procedure exactly for pull request #${{ github.event.pull_request.number || inputs.pr_number }}.

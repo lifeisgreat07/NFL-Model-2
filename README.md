@@ -44,7 +44,7 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, 124 case files, one per subject under test)
+  (`tests/mutation/`, 125 case files, one per subject under test)
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
@@ -123,7 +123,9 @@ it assumes the agent will sometimes be confidently wrong.
   mentioned, figures quoted from a wider command than the sentence claims.
 - **Booth** is a second agent that starts cold on every pull request,
   re-executes each claim in the description, and posts a report with a
-  machine-readable verdict. It has read-only access and cannot merge.
+  machine-readable verdict. It runs on the workflow's own read-only token,
+  so it cannot push or merge (until 2026-09-28 it ran on an app token that
+  could; `tests/test_booth_permissions.py` now holds that shut).
   The workflow fails if Booth posts nothing (`src/booth_report_posted.py`).
 - **The test suite** includes guards on the project's own documentation:
   numbers quoted in prose are tied to the files they came from, and the
