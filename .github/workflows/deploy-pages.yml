@@ -86,9 +86,17 @@ jobs:
   build:
     # workflow_run fires on completion, not on success. A failed collector run
     # wrote no new data, so building on it just republishes the same site.
+    # A failed Weekly update is different (Stage 24, from the 2026-09-28
+    # audit): its grading and commit steps run under !cancelled(), so a run
+    # that fails on purpose -- a week kicked off with nothing locked -- can
+    # still commit last week's grades, and those must reach the page. The
+    # build's own data check (src/check_build.py) still refuses a page with
+    # missing data.
     if: >-
       github.event_name != 'workflow_run'
       || github.event.workflow_run.conclusion == 'success'
+      || (github.event.workflow_run.name == 'Weekly update'
+          && github.event.workflow_run.conclusion == 'failure')
     runs-on: ubuntu-latest
     steps:
       - name: Check out repo

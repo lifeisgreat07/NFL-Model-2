@@ -125,6 +125,26 @@ def test_the_builder_ignores_a_failed_collector_run():
         'entirely, which is the larger half of what this workflow is for')
 
 
+def test_a_failed_weekly_update_still_rebuilds_the_page():
+    """Stage 24, from the 2026-09-28 audit. The Weekly update fails ON PURPOSE
+    when a week kicked off with nothing locked, and its grading and commit
+    steps run under !cancelled(), so that failed run can commit last week's
+    grades. A success-only gate left those grades off the page until some
+    other build happened. Only the Weekly update gets this: a failed collector
+    run still wrote nothing."""
+    text = _text(BUILDER)
+    weekly = _workflow_name(WORKFLOWS / 'weekly-update.yml')
+    gate = re.search(r"\n    if: >-\n(.*?)\n    runs-on:", text, re.S)
+    assert gate, "the build job's if: block is not findable -- re-anchor this guard"
+    clause = re.search(r"workflow_run\.name == '([^']+)'\s*&&\s*"
+                       r"github\.event\.workflow_run\.conclusion == 'failure'", gate.group(1))
+    assert clause, ("the build job skips a failed Weekly update, so grades that run "
+                    "committed before failing never reach the page")
+    assert clause.group(1) == weekly, (
+        f"the gate names {clause.group(1)!r} but weekly-update.yml is called {weekly!r}; "
+        "GitHub matches the display name, so the clause would never fire")
+
+
 def test_the_reason_is_written_down_where_the_trigger_is():
     """This one is deliberately about a comment, and it is worth a test.
 
