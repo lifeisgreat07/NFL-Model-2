@@ -1,0 +1,27 @@
+{
+  "target": "src/weekly_update.py",
+  "tests": "tests/test_skipped_week.py",
+  "cases": [
+    {
+      "id": "next-week-ignores-recorded-skips",
+      "why": "determine_next_week goes back to counting saved picks only, so one missed lock makes every later run ask for the same week and refuse it for the rest of the season (the 2026-09-28 audit's finding)",
+      "find": "    skipped = _week_numbers(skipped_dir, season)",
+      "replace": "    skipped = []",
+      "expect_caught_by": "test_a_recorded_skip_counts_as_done"
+    },
+    {
+      "id": "skip-record-is-rewritten",
+      "why": "a second refusal of the same week rewrites its record, so the time and reason of the first -- the one that says when the lock was missed -- are lost",
+      "find": "    if not path.exists():\n        with open(path, 'w', encoding='utf-8') as f:\n            json.dump({'season': season, 'week': week, 'reason': reason,",
+      "replace": "    if True:\n        with open(path, 'w', encoding='utf-8') as f:\n            json.dump({'season': season, 'week': week, 'reason': reason,",
+      "expect_caught_by": "test_a_record_is_write_once"
+    },
+    {
+      "id": "main-refuses-without-recording-the-skip",
+      "why": "main() fails on the unlocked week without writing the record, so determine_next_week has nothing to count and the season stalls on that week exactly as before",
+      "find": "        skipped = record_skipped_week(\n            season, week, 'every game kicked off with nothing locked',\n            pd.Timestamp.now(tz='UTC'))",
+      "replace": "        skipped = SKIPPED_DIR / f'{season}_week{week}.json'",
+      "expect_caught_by": "test_main_records_the_skip_before_it_fails"
+    }
+  ]
+}
