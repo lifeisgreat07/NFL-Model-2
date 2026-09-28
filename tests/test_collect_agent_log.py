@@ -23,7 +23,7 @@ def _block(claims, overall='SAFE TO MERGE', head='abc1234', pr=1):
 
 
 def _audit(pr, when, claims=None, overall='SAFE TO MERGE', head='abc1234',
-           block=True, body_extra=''):
+           block=True, body_extra='', login='claude[bot]'):
     body = '## Booth Audit: PR #{}\n\n'.format(pr)
     if head:
         body += 'Head commit audited: `{}`\n'.format(head)
@@ -37,6 +37,7 @@ def _audit(pr, when, claims=None, overall='SAFE TO MERGE', head='abc1234',
         'body': body,
         'html_url': 'https://github.com/o/r/pull/{}#issuecomment-{}'.format(pr, when),
         'created_at': when,
+        'user': {'login': login},
     }
 
 
@@ -56,6 +57,42 @@ def test_ordinary_comments_are_not_audits():
 
 def test_a_booth_report_is_an_audit():
     assert cal.is_audit(_audit(7, '2026-09-07T10:00:00Z', CONFIRMED))
+
+
+# --- only Booth's accounts (Stage 23) -----------------------------------------
+
+def test_a_report_from_booth_on_the_workflow_token_is_an_audit():
+    """Since Booth runs on GITHUB_TOKEN its reports are posted by
+    github-actions[bot]; claude[bot] posted every one before that."""
+    assert cal.is_audit(_audit(7, '2026-09-29T10:00:00Z', CONFIRMED,
+                               login='github-actions[bot]'))
+    assert cal.is_audit(_audit(7, '2026-09-07T10:00:00Z', CONFIRMED,
+                               login='claude[bot]'))
+
+
+def test_a_copied_heading_from_anyone_else_is_not_an_audit():
+    """Anyone can post a comment that opens with Booth's heading. Before
+    Stage 23 such a comment became a row on the page, SAFE TO MERGE and all."""
+    forged = _audit(7, '2026-09-29T10:00:00Z', CONFIRMED, login='someone')
+    assert not cal.is_audit(forged)
+    real = _audit(8, '2026-09-29T10:00:00Z', CONFIRMED)
+    assert [r['pr'] for r in cal.build([forged, real])['audits']] == [8]
+
+
+def test_a_comment_with_no_author_is_not_an_audit():
+    c = _audit(7, '2026-09-29T10:00:00Z', CONFIRMED)
+    del c['user']
+    assert not cal.is_audit(c)
+
+
+def test_the_workflow_passes_each_comment_author_to_the_collector():
+    """The workflow's jq decides which fields reach the collector. Without the
+    login, every comment has no author and the log is empty."""
+    wf = (Path(__file__).parent.parent / '.github' / 'workflows' /
+          'collect-agent-log.yml').read_text(encoding='utf-8')
+    jq = [l for l in wf.splitlines() if '--jq' in l]
+    assert len(jq) == 1, jq
+    assert 'user: {login: .user.login}' in jq[0], jq[0]
 
 
 # --- nothing is dropped -----------------------------------------------------

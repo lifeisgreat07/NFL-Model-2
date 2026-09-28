@@ -65,10 +65,12 @@ jobs:
         # --paginate because the audits already run to several pages, and a
         # silently truncated first page would understate the record rather
         # than fail -- the failure mode this log exists to avoid.
+        # user.login is kept because the collector counts a comment only if
+        # Booth's own account posted it (Stage 23); without it, nothing counts.
         run: |
           gh api --paginate \
             "/repos/${{ github.repository }}/issues/comments?per_page=100" \
-            --jq '[.[] | {body, html_url, created_at}]' \
+            --jq '[.[] | {body, html_url, created_at, user: {login: .user.login}}]' \
             | python -c "import json,sys; pages=[json.loads(l) for l in sys.stdin if l.strip()]; json.dump([c for p in pages for c in p], open('comments.json','w'))"
           python -c "import json; print('fetched', len(json.load(open('comments.json'))), 'comments')"
 
