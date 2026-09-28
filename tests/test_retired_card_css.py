@@ -39,6 +39,11 @@ def test_nothing_wears_a_retired_class():
 
 
 def test_the_bar_classes_card_v2_uses_are_still_styled():
+    """The rule whose selector IS the class, at the start of a line. A bare
+    substring check passed with `.tele-bar` deleted, because
+    `.card-scale .tele-bar{...}` contains the same text (the mutation corpus
+    found that on this PR's first run)."""
     src = TEMPLATE.read_text(encoding='utf-8')
-    for name in ('.tele-bar{', '.tele-bar-seg{'):
-        assert name in src, f'{name} is gone, and card v2 draws its bar with it'
+    for name in ('tele-bar', 'tele-bar-seg'):
+        assert re.search(r'(?m)^[ \t]*\.' + re.escape(name) + r'\{', src), (
+            f'.{name} has no rule of its own, and card v2 draws its bar with it')
