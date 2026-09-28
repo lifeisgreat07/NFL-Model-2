@@ -1336,6 +1336,14 @@
   .dive-game-line,.dive-game-prob{text-align:right; font-variant-numeric:tabular-nums; color:var(--text-2);}
   .dive-game-prob{color:var(--text); font-weight:600;}
   .dive-game-res{text-align:right;}
+  /* The games list's column headings (Stage 19). The rows are buttons, not
+     table rows, so this is a heading row drawn on the same grid, hidden from
+     assistive technology; each row says the same words to a screen reader
+     through its .visually-hidden labels instead. */
+  .dive-games-head{display:grid; grid-template-columns:104px 1fr 62px 66px 96px; gap:var(--s3);
+    padding:var(--s2) var(--s4); border-bottom:1px solid var(--border);
+    font-size:var(--fs-11); font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2);}
+  .dive-games-head .dgh-line, .dive-games-head .dgh-prob, .dive-games-head .dgh-res{text-align:right;}
   .dive-result{font-weight:700; font-size:var(--fs-13);}
   /* W / L is the TEAM's result, not the model's. Neutral; the letter says it. */
   .dive-result.won{color:var(--text);}
@@ -1347,9 +1355,14 @@
   .dive-tick{color:var(--good); font-weight:600;}
   .dive-cross{color:var(--warn); font-weight:600;}
   @media (max-width:640px){
-    .dive-game-head{grid-template-columns:1fr auto; gap:var(--s1) var(--s3);}
+    /* Week on its own line, then opponent, Model B and result on one row.
+       Was 1fr auto, which sent the result to a third line under the
+       opponent, right-aligned in the wide column. */
+    .dive-game-head{grid-template-columns:1fr 66px 96px; gap:var(--s1) var(--s3);}
     .dive-game-week{grid-column:1 / -1;}
     .dive-game-line{display:none;}
+    .dive-games-head{grid-template-columns:1fr 66px 96px;}
+    .dive-games-head .dgh-week, .dive-games-head .dgh-line{display:none;}
   }
 
   /* ---------- Changelog ---------- */
@@ -5749,9 +5762,9 @@ function renderTeamGames(team){
       <button class="dive-game-head" aria-expanded="false" data-toggle="${i}">
         <span class="dive-game-week">${g.label}</span>
         <span class="dive-game-opp">${g.isHome ? 'vs' : '@'} ${g.opponent}</span>
-        <span class="dive-game-line">${lineText}</span>
-        <span class="dive-game-prob" title="Model B win probability for ${team}">${pct(g.probB)}</span>
-        <span class="dive-game-res">${result}</span>
+        <span class="dive-game-line"><span class="visually-hidden">Line </span>${lineText}</span>
+        <span class="dive-game-prob" title="Model B win probability for ${team}"><span class="visually-hidden">Model B </span>${pct(g.probB)}</span>
+        <span class="dive-game-res"><span class="visually-hidden">Result </span>${result}</span>
       </button>
       <div class="why-panel" id="dive-why-${i}">
         <div class="dive-why-head">
@@ -5767,7 +5780,14 @@ function renderTeamGames(team){
   return `<div class="dive-games">
     <h3 class="dive-games-title">Games</h3>
     ${summary}
-    <div class="table-wrap">${rows}</div>
+    <div class="table-wrap">
+      <div class="dive-games-head" aria-hidden="true">
+        <span class="dgh-week">Week</span><span class="dgh-opp">Opponent</span>
+        <span class="dgh-line">Line</span><span class="dgh-prob" title="Model B win probability for ${team}">Model B</span>
+        <span class="dgh-res">Result</span>
+      </div>
+      ${rows}
+    </div>
   </div>`;
 }
 

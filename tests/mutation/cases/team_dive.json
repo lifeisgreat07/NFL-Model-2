@@ -99,6 +99,62 @@
       "find": "    // Before the listbox is built, so its button names the same team.\n    select.value = teamDiveDefault(teamHistory.names, teams);\n    select.addEventListener('change', renderTeamDive);\n    /* AFTER the change listener, never before -- the same ordering the Week\n       Board's call site documents, and for the same reason. enhanceSelect\n       writes back by dispatching change on the select, so a listbox built\n       first would dispatch into a listener that does not exist yet: the\n       button would update, the list would close, and the page below it would\n       go on showing the previous team, with every source-reading test green.\n\n       `|| teamDiveListbox` because enhanceSelect returns null for a select it\n       has already enhanced. Nothing re-enters this branch today, since the\n       sentinel above is the option count and teamHistory does not change\n       after load -- but assigning that null would silently discard a working\n       handle, and the symptom would be a listbox that stops refreshing. */\n    teamDiveListbox = enhanceSelect(select) || teamDiveListbox;\n",
       "replace": "    select.addEventListener('change', renderTeamDive);\n    /* AFTER the change listener, never before -- the same ordering the Week\n       Board's call site documents, and for the same reason. enhanceSelect\n       writes back by dispatching change on the select, so a listbox built\n       first would dispatch into a listener that does not exist yet: the\n       button would update, the list would close, and the page below it would\n       go on showing the previous team, with every source-reading test green.\n\n       `|| teamDiveListbox` because enhanceSelect returns null for a select it\n       has already enhanced. Nothing re-enters this branch today, since the\n       sentinel above is the option count and teamHistory does not change\n       after load -- but assigning that null would silently discard a working\n       handle, and the symptom would be a listbox that stops refreshing. */\n    teamDiveListbox = enhanceSelect(select) || teamDiveListbox;\n    select.value = teamDiveDefault(teamHistory.names, teams);\n",
       "expect_caught_by": "test_the_first_render_sets_the_default_before_building_the_listbox"
+    },
+    {
+      "id": "dive-games-head-exposed",
+      "tests": "tests/test_team_dive_games_head.py",
+      "why": "the heading row loses aria-hidden, so a screen reader reads five column names that belong to nothing, before rows that already name their own numbers.",
+      "find": "<div class=\"dive-games-head\" aria-hidden=\"true\">",
+      "replace": "<div class=\"dive-games-head\">",
+      "expect_caught_by": "test_the_heading_row_names_the_five_columns_in_order"
+    },
+    {
+      "id": "dive-games-head-columns-swapped",
+      "tests": "tests/test_team_dive_games_head.py",
+      "why": "the Line and Model B headings swap, so -3 sits under Model B and 64.9% under Line.",
+      "find": "<span class=\"dgh-line\">Line</span><span class=\"dgh-prob\" title=\"Model B win probability for ${team}\">Model B</span>",
+      "replace": "<span class=\"dgh-line\">Model B</span><span class=\"dgh-prob\" title=\"Model B win probability for ${team}\">Line</span>",
+      "expect_caught_by": "test_the_heading_row_names_the_five_columns_in_order"
+    },
+    {
+      "id": "dive-games-head-below-rows",
+      "tests": "tests/test_team_dive_games_head.py",
+      "why": "the heading row is drawn after the games it names.",
+      "find": "      <div class=\"dive-games-head\" aria-hidden=\"true\">\n        <span class=\"dgh-week\">Week</span><span class=\"dgh-opp\">Opponent</span>\n        <span class=\"dgh-line\">Line</span><span class=\"dgh-prob\" title=\"Model B win probability for ${team}\">Model B</span>\n        <span class=\"dgh-res\">Result</span>\n      </div>\n      ${rows}\n",
+      "replace": "      ${rows}\n      <div class=\"dive-games-head\" aria-hidden=\"true\">\n        <span class=\"dgh-week\">Week</span><span class=\"dgh-opp\">Opponent</span>\n        <span class=\"dgh-line\">Line</span><span class=\"dgh-prob\" title=\"Model B win probability for ${team}\">Model B</span>\n        <span class=\"dgh-res\">Result</span>\n      </div>\n",
+      "expect_caught_by": "test_the_heading_row_comes_before_the_rows_inside_the_list"
+    },
+    {
+      "id": "dive-games-head-wide-drift",
+      "tests": "tests/test_team_dive_games_head.py",
+      "why": "the heading's result column is narrower than the rows', so on a wide screen Model B and Result sit off their numbers.",
+      "find": "  .dive-games-head{display:grid; grid-template-columns:104px 1fr 62px 66px 96px; gap:var(--s3);",
+      "replace": "  .dive-games-head{display:grid; grid-template-columns:104px 1fr 62px 66px 80px; gap:var(--s3);",
+      "expect_caught_by": "test_heading_and_rows_share_their_columns_on_a_wide_screen"
+    },
+    {
+      "id": "dive-games-phone-rows-two-columns",
+      "tests": "tests/test_team_dive_games_head.py",
+      "why": "the phone rows go back to two columns, which puts the result on a third line under the opponent.",
+      "find": "    .dive-game-head{grid-template-columns:1fr 66px 96px; gap:var(--s1) var(--s3);}",
+      "replace": "    .dive-game-head{grid-template-columns:1fr auto; gap:var(--s1) var(--s3);}",
+      "expect_caught_by": "test_heading_and_rows_share_their_columns_on_a_phone"
+    },
+    {
+      "id": "dive-games-phone-head-keeps-week",
+      "tests": "tests/test_team_dive_games_head.py",
+      "why": "on a phone the heading still names Week and Line, columns the rows no longer show, and every heading after them lands one column off.",
+      "find": "    .dive-games-head .dgh-week, .dive-games-head .dgh-line{display:none;}\n",
+      "replace": "",
+      "expect_caught_by": "test_heading_and_rows_share_their_columns_on_a_phone"
+    },
+    {
+      "id": "dive-games-row-prob-unnamed",
+      "tests": "tests/test_team_dive_games_head.py",
+      "why": "a screen reader hears 64.9% with nothing saying it is Model B's probability.",
+      "find": "<span class=\"visually-hidden\">Model B </span>",
+      "replace": "",
+      "expect_caught_by": "test_each_row_names_its_numbers_to_a_screen_reader"
     }
   ]
 }
