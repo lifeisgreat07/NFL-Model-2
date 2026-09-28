@@ -1,0 +1,48 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_week_keys.py",
+  "cases": [
+    {
+      "id": "week-keys-swapped",
+      "why": "[ steps forward and ] back, the opposite of every reader's expectation and of the arrows beside them.",
+      "find": "  return `${prefix}-${e.key === '[' ? 'prev' : 'next'}`;",
+      "replace": "  return `${prefix}-${e.key === ']' ? 'prev' : 'next'}`;",
+      "expect_caught_by": "test_open_bracket_goes_back_and_close_bracket_goes_on"
+    },
+    {
+      "id": "week-keys-miss-my-picks",
+      "why": "the keys work on the Week Board only, though My Picks has the same stepper.",
+      "find": "  const prefix = pageId === 'board' ? 'week' : pageId === 'picks' ? 'picks-week' : null;",
+      "replace": "  const prefix = pageId === 'board' ? 'week' : null;",
+      "expect_caught_by": "test_both_steppers_answer_and_no_other_page_does"
+    },
+    {
+      "id": "week-keys-take-browser-shortcuts",
+      "why": "Ctrl+[ or Cmd+[ (the browser's back, on some systems) also steps the week.",
+      "find": "  if(e.ctrlKey || e.metaKey || e.altKey || e.defaultPrevented) return null;",
+      "replace": "  if(e.defaultPrevented) return null;",
+      "expect_caught_by": "test_modified_keys_are_left_to_the_browser"
+    },
+    {
+      "id": "week-keys-steal-typing",
+      "why": "a [ typed into a field or the sort list's type-ahead changes the week instead.",
+      "find": "  if(t && t.closest && t.closest('input, textarea, select, [contenteditable=\"true\"], [role=\"listbox\"]')) return null;\n",
+      "replace": "",
+      "expect_caught_by": "test_keys_typed_into_a_control_do_nothing"
+    },
+    {
+      "id": "week-keys-not-wired",
+      "why": "the listener finds the button and never presses it, so the keys do nothing.",
+      "find": "  e.preventDefault();\n  btn.click();\n});",
+      "replace": "  e.preventDefault();\n});",
+      "expect_caught_by": "test_the_key_presses_the_steppers_own_button"
+    },
+    {
+      "id": "week-keys-unannounced",
+      "why": "a screen reader is never told the Week Board's previous-week button has a key.",
+      "find": "id=\"week-prev\" aria-label=\"Previous week\" aria-keyshortcuts=\"[\">",
+      "replace": "id=\"week-prev\" aria-label=\"Previous week\">",
+      "expect_caught_by": "test_the_buttons_announce_their_keys"
+    }
+  ]
+}
