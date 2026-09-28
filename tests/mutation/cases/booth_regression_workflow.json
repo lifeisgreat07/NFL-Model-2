@@ -12,8 +12,8 @@
     {
       "id": "regression-booth-gains-write-access",
       "why": "the auditing job gets write access, so the model that produces a verdict could also commit it. This is the failure the entire Scout/Booth separation exists to prevent.",
-      "find": "    permissions:\n      contents: read\n      id-token: write",
-      "replace": "    permissions:\n      contents: write\n      id-token: write",
+      "find": "    permissions:\n      contents: read\n    outputs:",
+      "replace": "    permissions:\n      contents: write\n    outputs:",
       "expect_caught_by": "test_the_auditing_job_cannot_write_to_the_repository"
     },
     {

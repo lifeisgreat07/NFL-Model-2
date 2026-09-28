@@ -1,0 +1,28 @@
+{
+  "target": ".github/workflows/booth-pr-audit.yml",
+  "tests": "tests/test_booth_permissions.py",
+  "cases": [
+    {
+      "id": "booth-can-mint-an-oidc-token-again",
+      "why": "id-token: write comes back, which with no github_token lets the Claude Code action fetch the Claude app's installation token -- write access to code, workflows and pull requests -- for Booth (the 2026-09-28 audit)",
+      "find": "  contents: read\n  pull-requests: write\n",
+      "replace": "  contents: read\n  pull-requests: write\n  id-token: write\n",
+      "expect_caught_by": "test_no_workflow_that_runs_the_model_can_mint_an_oidc_token"
+    },
+    {
+      "id": "booth-audit-step-loses-the-workflow-token",
+      "why": "the audit step stops passing GITHUB_TOKEN, so the action falls back to the Claude app token and the workflow's contents: read no longer describes what Booth holds",
+      "find": "          github_token: ${{ secrets.GITHUB_TOKEN }}\n          prompt: |\n            You are Booth.",
+      "replace": "          prompt: |\n            You are Booth.",
+      "expect_caught_by": "test_every_model_step_is_handed_the_workflow_token"
+    },
+    {
+      "id": "booth-regression-step-loses-the-workflow-token",
+      "target": ".github/workflows/booth-regression.yml",
+      "why": "the fixture run's Booth step stops passing GITHUB_TOKEN, so it runs on the Claude app token -- the second workflow, which a guard naming only the audit workflow would miss",
+      "find": "          github_token: ${{ secrets.GITHUB_TOKEN }}\n          prompt: |\n            ${{ steps.prompt.outputs.text }}",
+      "replace": "          prompt: |\n            ${{ steps.prompt.outputs.text }}",
+      "expect_caught_by": "test_every_model_step_is_handed_the_workflow_token"
+    }
+  ]
+}
