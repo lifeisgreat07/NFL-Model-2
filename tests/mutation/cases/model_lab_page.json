@@ -176,9 +176,9 @@
       "id": "lab-diagram-toggle-under-24px",
       "target": "src/dashboard_template.html",
       "tests": "tests/test_model_lab_diagram_below.py",
-      "why": "the disclosure toggle drops out of the shared summary rule and falls under WCAG 2.5.8's 24px.",
-      "find": ".onboarding-more summary, .rel-how summary{display:inline-flex;",
-      "replace": ".onboarding-more summary{display:inline-flex;",
+      "why": "the disclosure toggle loses its minimum height and falls to its 13px line, under WCAG 2.5.8's 24px.",
+      "find": ".rel-how summary{display:inline-flex; align-items:center; min-height:24px; cursor:pointer;",
+      "replace": ".rel-how summary{display:inline-flex; align-items:center; cursor:pointer;",
       "expect_caught_by": "test_the_disclosure_looks_and_focuses_like_the_other_how_to_read_this"
     },
     {
@@ -186,8 +186,8 @@
       "target": "src/dashboard_template.html",
       "tests": "tests/test_model_lab_diagram_below.py",
       "why": "the disclosure toggle loses the page's focus ring.",
-      "find": ".onboarding-more summary:focus-visible, .rel-how summary:focus-visible{",
-      "replace": ".onboarding-more summary:focus-visible{",
+      "find": ".rel-how summary:focus-visible{outline:2px solid var(--accent);",
+      "replace": ".rel-how summary:focus-visible{outline:none;",
       "expect_caught_by": "test_the_disclosure_looks_and_focuses_like_the_other_how_to_read_this"
     }
   ]
