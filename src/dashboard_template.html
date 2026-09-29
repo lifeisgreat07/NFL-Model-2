@@ -5147,6 +5147,21 @@ function spreadLabels(ys, gap, lo, hi){
   return res;
 }
 
+/* Charts drawn for a phone (Stage 26 item 4, from the 2026-09-28 audit).
+   The trend and reliability charts were drawn 680 and 470 units wide and
+   shrunk to fit, so on a 375px phone their text came out 4px and 6px tall.
+   Below 640px (the page's phone width, as ORIENTATION_PHONE) each is drawn
+   at about the width it will have, with its text sized for that width, so it
+   renders at 11-12px. Mark chose this from rendered side-by-sides on
+   2026-09-28, with the trend chart's names at the line ends dropped on a
+   phone: the legend above it names every line, by colour and by the marker
+   shape each line ends in. Decided once, when the chart is built; a phone
+   turned sideways keeps the chart it loaded with, which still scales. */
+const CHART_PHONE = '(max-width:640px)';
+function chartIsPhone(){
+  return !!(window.matchMedia && window.matchMedia(CHART_PHONE).matches);
+}
+
 function buildCumulativeTrendChart(){
   // Two points, not one. A trend needs somewhere to go, and a single graded
   // week drew either nothing (every series short-circuits at valid.length < 2)
@@ -5189,7 +5204,10 @@ function buildCumulativeTrendChart(){
   // padR leaves room for the direct end-labels: four series is inside the
   // "<= 4 series are also direct-labeled" rule, so identity never rests on
   // colour alone even for a reader who skips the legend.
-  const W=680, H=220, padL=36, padR=74, padT=14, padB=28;
+  const phone = chartIsPhone();
+  const W = phone ? 300 : 680, H = phone ? 230 : 220, padL = phone ? 34 : 36, padR = phone ? 20 : 74;
+  const padT=14, padB=28;
+  const fsTick = phone ? 11 : 9, fsName = phone ? 12 : 10;
   const n = points.length;
   const x = i => n<=1 ? padL : padL + (i/(n-1))*(W-padL-padR);
   const allVals = points.flatMap(p=>[p.a,p.b,p.m,p.p]).filter(v=>v!==null);
@@ -5216,21 +5234,22 @@ function buildCumulativeTrendChart(){
       ${markerPath(s.shape, x(last.i), y(last.v), 4.5)} fill="${s.color}" stroke="var(--surface)" stroke-width="2"/>`;
   }
   function endLabels(){
+    if(phone) return '';   // the legend names the lines on a phone
     const placed = spreadLabels(ends.map(e => e.y), TREND_LABEL_GAP, padT + 4, H - padB);
     return ends.map((e, k) =>
-      `<text x="${(e.x+9).toFixed(1)}" y="${(placed[k]+3.5).toFixed(1)}" font-size="10" font-weight="600" fill="var(--text-2)">${e.label}</text>`).join('');
+      `<text x="${(e.x+9).toFixed(1)}" y="${(placed[k]+3.5).toFixed(1)}" font-size="${fsName}" font-weight="600" fill="var(--text-2)">${e.label}</text>`).join('');
   }
 
   // The weeks under the x-axis. A season's weeks as "Wk 1"; the season
   // itself only when the points span more than one.
   const oneSeason = new Set(accuracy.weeks.map(w => w.season)).size === 1;
   const weekTicks = accuracy.weeks.map((w, i) =>
-    `<text x="${x(i).toFixed(1)}" y="${(H - padB + 16).toFixed(1)}" text-anchor="middle" font-size="9" fill="var(--text-2)">${oneSeason ? '' : w.season + ' '}Wk ${w.week}</text>`).join('');
+    `<text x="${x(i).toFixed(1)}" y="${(H - padB + 16).toFixed(1)}" text-anchor="middle" font-size="${fsTick}" fill="var(--text-2)">${oneSeason ? '' : w.season + ' '}Wk ${w.week}</text>`).join('');
 
   const gridLines = [];
   for(let gv = Math.ceil(yMin/10)*10; gv <= yMax; gv += 10){
     gridLines.push(`<line x1="${padL}" y1="${y(gv).toFixed(1)}" x2="${W-padR}" y2="${y(gv).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>
-      <text x="${padL-6}" y="${(y(gv)+3).toFixed(1)}" text-anchor="end" font-size="9" fill="var(--text-2)">${gv}%</text>`);
+      <text x="${padL-6}" y="${(y(gv)+3).toFixed(1)}" text-anchor="end" font-size="${fsTick}" fill="var(--text-2)">${gv}%</text>`);
   }
 
   const legend = seriesLegend(['a','b','market','picks']);
@@ -5239,7 +5258,7 @@ function buildCumulativeTrendChart(){
     <h3>Cumulative Accuracy Trend</h3>
     <p style="margin-bottom:var(--s3);">Running accuracy as the season progresses -- not week-by-week noise, but how each approach has performed overall up to that point.</p>
     <div style="font-size:var(--fs-11); color:var(--text-2); margin-bottom:var(--s2);">${legend}</div>
-    <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:680px;" role="img" aria-label="Line chart of running accuracy by week for Model A, Model B, the market and, once you have made picks, yours. Each week's own figures are in the Week by week table below.">
+    <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:${W}px;" role="img" aria-label="Line chart of running accuracy by week for Model A, Model B, the market and, once you have made picks, yours. Each week's own figures are in the Week by week table below.">
       ${gridLines.join('')}
       ${lineFor('a','a')}
       ${lineFor('b','b')}
@@ -5346,16 +5365,19 @@ function relHaloRadius(renderedWidth, viewBoxWidth, minPx){
 function buildReliabilityDiagram(){
   if(!calibration || !calibration.models) return '';
 
-  const W=470, padL=48, padR=16, padT=14, PLOT=390;
-  const H = padT + PLOT + 40;
+  const phone = chartIsPhone();
+  const W = phone ? 300 : 470, padL = phone ? 52 : 48, padR = phone ? 18 : 16, padT = 14;
+  const PLOT = W - padL - padR;
+  const H = padT + PLOT + (phone ? 44 : 40);
+  const fs = phone ? {tick: 11, note: 11, axis: 12} : {tick: 10, note: 9.5, axis: 10.5};
   const x = v => padL + (v/100)*PLOT;
   const y = v => padT + (1 - v/100)*PLOT;
 
   const grid = [0,25,50,75,100].map(g=>`
     <line x1="${x(g).toFixed(1)}" y1="${padT}" x2="${x(g).toFixed(1)}" y2="${(padT+PLOT).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>
     <line x1="${padL}" y1="${y(g).toFixed(1)}" x2="${(padL+PLOT).toFixed(1)}" y2="${y(g).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>
-    <text x="${x(g).toFixed(1)}" y="${(padT+PLOT+16).toFixed(1)}" font-size="10" fill="var(--text-2)" text-anchor="middle">${g}%</text>
-    <text x="${(padL-8).toFixed(1)}" y="${(y(g)+3.5).toFixed(1)}" font-size="10" fill="var(--text-2)" text-anchor="end">${g}%</text>`).join('');
+    <text x="${x(g).toFixed(1)}" y="${(padT+PLOT+16).toFixed(1)}" font-size="${fs.tick}" fill="var(--text-2)" text-anchor="middle">${g}%</text>
+    <text x="${(padL-8).toFixed(1)}" y="${(y(g)+3.5).toFixed(1)}" font-size="${fs.tick}" fill="var(--text-2)" text-anchor="end">${g}%</text>`).join('');
 
   // Marks are drawn series by series in fixed order so overlaps stack the same
   // way on every render -- a chart whose z-order shuffles between loads is a
@@ -5457,10 +5479,10 @@ function buildReliabilityDiagram(){
         <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto;" role="group" aria-label="Reliability diagram: stated probability against observed win rate. One Tab stop; arrow keys move between points, Home and End go to the first and last.">
           ${grid}
           <line x1="${x(0).toFixed(1)}" y1="${y(0).toFixed(1)}" x2="${x(100).toFixed(1)}" y2="${y(100).toFixed(1)}" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="5,4"/>
-          <text x="${(x(100)-4).toFixed(1)}" y="${(y(100)+14).toFixed(1)}" font-size="9.5" fill="var(--text-2)" text-anchor="end">perfect calibration</text>
+          <text x="${(x(100)-4).toFixed(1)}" y="${(y(100)+14).toFixed(1)}" font-size="${fs.note}" fill="var(--text-2)" text-anchor="end">perfect calibration</text>
           ${marks}
-          <text x="${(padL+PLOT/2).toFixed(1)}" y="${(padT+PLOT+34).toFixed(1)}" font-size="10.5" fill="var(--text-2)" text-anchor="middle">Probability the model stated</text>
-          <text x="12" y="${(padT+PLOT/2).toFixed(1)}" font-size="10.5" fill="var(--text-2)" text-anchor="middle" transform="rotate(-90 12 ${(padT+PLOT/2).toFixed(1)})">How often it actually happened</text>
+          <text x="${(padL+PLOT/2).toFixed(1)}" y="${(padT+PLOT+34).toFixed(1)}" font-size="${fs.axis}" fill="var(--text-2)" text-anchor="middle">Probability the model stated</text>
+          <text x="12" y="${(padT+PLOT/2).toFixed(1)}" font-size="${fs.axis}" fill="var(--text-2)" text-anchor="middle" transform="rotate(-90 12 ${(padT+PLOT/2).toFixed(1)})">How often it actually happened</text>
         </svg>
         <div class="rel-tip" id="rel-tip"></div>
       </div>

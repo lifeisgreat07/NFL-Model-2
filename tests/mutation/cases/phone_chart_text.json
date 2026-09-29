@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_phone_chart_text.py",
+  "cases": [
+    {
+      "id": "trend-chart-phone-width-too-wide",
+      "why": "the phone drawing goes back to a wide viewBox, so the chart is shrunk to fit again and its 11-unit text renders at about 7px on a 375px phone",
+      "find": "const W = phone ? 300 : 680, H = phone ? 230 : 220,",
+      "replace": "const W = phone ? 480 : 680, H = phone ? 230 : 220,",
+      "expect_caught_by": "test_the_trend_chart_is_drawn_for_the_phone_with_readable_text"
+    },
+    {
+      "id": "trend-chart-keeps-a-fixed-text-size",
+      "why": "one label keeps its desktop size inside the phone drawing, the half-done version of this change: the week ticks read, the axis does not",
+      "find": "text-anchor=\"end\" font-size=\"${fsTick}\" fill=\"var(--text-2)\">${gv}%</text>`",
+      "replace": "text-anchor=\"end\" font-size=\"9\" fill=\"var(--text-2)\">${gv}%</text>`",
+      "expect_caught_by": "test_the_trend_chart_is_drawn_for_the_phone_with_readable_text"
+    },
+    {
+      "id": "trend-names-drawn-on-a-phone",
+      "why": "the names at the line ends come back on a phone, where the narrow drawing has no room for them beside the lines, and the legend above already names every line",
+      "find": "    if(phone) return '';   // the legend names the lines on a phone\n",
+      "replace": "",
+      "expect_caught_by": "test_the_trend_chart_drops_the_line_names_on_a_phone_only"
+    },
+    {
+      "id": "reliability-text-too-small-on-a-phone",
+      "why": "the diagram's phone text sizes go back to the desktop ones, which render under 11px at the phone drawing's width",
+      "find": "const fs = phone ? {tick: 11, note: 11, axis: 12}",
+      "replace": "const fs = phone ? {tick: 10, note: 9.5, axis: 10.5}",
+      "expect_caught_by": "test_the_reliability_diagram_is_drawn_for_the_phone_with_readable_text"
+    },
+    {
+      "id": "chart-phone-width-drifts-from-the-page",
+      "why": "the charts decide a phone at a different width from the rest of the page, so between the two widths the page lays out for a phone and draws the charts for a desktop",
+      "find": "const CHART_PHONE = '(max-width:640px)';",
+      "replace": "const CHART_PHONE = '(max-width:480px)';",
+      "expect_caught_by": "test_the_phone_width_is_the_pages_phone_width"
+    }
+  ]
+}
