@@ -5367,7 +5367,9 @@ function buildReliabilityDiagram(){
 
   const phone = chartIsPhone();
   const W = phone ? 300 : 470, padL = phone ? 52 : 48, padR = phone ? 18 : 16, padT = 14;
-  const PLOT = W - padL - padR;
+  // The desktop plot stays 390, as it was before the phone drawing (it leaves
+  // 16 spare units at the right); only the phone plot fills its width.
+  const PLOT = phone ? W - padL - padR : 390;
   const H = padT + PLOT + (phone ? 44 : 40);
   const fs = phone ? {tick: 11, note: 11, axis: 12} : {tick: 10, note: 9.5, axis: 10.5};
   const x = v => padL + (v/100)*PLOT;

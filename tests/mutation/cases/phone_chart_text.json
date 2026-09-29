@@ -36,6 +36,13 @@
       "find": "const CHART_PHONE = '(max-width:640px)';",
       "replace": "const CHART_PHONE = '(max-width:480px)';",
       "expect_caught_by": "test_the_phone_width_is_the_pages_phone_width"
+    },
+    {
+      "id": "reliability-desktop-plot-grows",
+      "why": "the desktop plot is derived from the width like the phone one, so it grows from 390 to 406 units and the desktop diagram draws about 4% taller than it did (#201's first version)",
+      "find": "const PLOT = phone ? W - padL - padR : 390;",
+      "replace": "const PLOT = W - padL - padR;",
+      "expect_caught_by": "test_the_reliability_diagram_is_drawn_as_before_on_a_desktop"
     }
   ]
 }

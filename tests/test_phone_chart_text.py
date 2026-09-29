@@ -60,4 +60,13 @@ def test_the_reliability_diagram_is_drawn_for_the_phone_with_readable_text():
     for size in map(float, fs.groups()):
         assert size * PHONE_RENDERED_PX / w >= MIN_PX
     assert not re.search(r'font-size="[\d.]+"', body), 'a fixed text size is left in the reliability diagram'
-    assert 'const PLOT = W - padL - padR;' in body
+    assert 'const PLOT = phone ? W - padL - padR : 390;' in body
+
+
+def test_the_reliability_diagram_is_drawn_as_before_on_a_desktop():
+    # Its first version derived the desktop plot from W too, growing it from
+    # 390 to 406 units and the diagram about 4% taller; Booth caught it on #201.
+    body = fn('buildReliabilityDiagram')
+    assert 'const PLOT = phone ? W - padL - padR : 390;' in body
+    assert 'const H = padT + PLOT + (phone ? 44 : 40);' in body
+    assert ': {tick: 10, note: 9.5, axis: 10.5};' in body
