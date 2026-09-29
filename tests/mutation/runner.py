@@ -73,11 +73,16 @@ def _clear_bytecode():
 def _run_tests(test_path):
     """Returns (returncode, set of failed test names, raw stdout)."""
     _clear_bytecode()
-    env = {**os.environ, 'PYTHONDONTWRITEBYTECODE': '1'}
+    # UTF-8 both ways, whatever the machine's locale. The child writes its
+    # report in UTF-8 (PYTHONIOENCODING) and this side reads it as UTF-8.
+    # Reading in the locale codec crashed the runner on markys (cp1252) at
+    # byte 0x90 in one case's failure text, and a crash there reports nothing
+    # about the case; errors='replace' keeps a stray byte from ever doing so.
+    env = {**os.environ, 'PYTHONDONTWRITEBYTECODE': '1', 'PYTHONIOENCODING': 'utf-8'}
     proc = subprocess.run(
         [sys.executable, '-B', '-m', 'pytest', test_path, '-q', '--no-header',
          '-p', 'no:cacheprovider'],
-        cwd=REPO_ROOT, capture_output=True, text=True, env=env)
+        cwd=REPO_ROOT, capture_output=True, text=True, encoding='utf-8', errors='replace', env=env)
     failed = set()
     for line in proc.stdout.splitlines():
         # pytest -q short summary: "FAILED tests/x.py::test_name - detail"

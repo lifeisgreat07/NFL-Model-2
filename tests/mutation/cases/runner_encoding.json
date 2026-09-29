@@ -1,0 +1,20 @@
+{
+  "target": "tests/mutation/runner.py",
+  "tests": "tests/test_runner_encoding.py",
+  "cases": [
+    {
+      "id": "runner-reads-in-the-locale-codec-again",
+      "why": "the report is decoded in the machine's codec again: fine on Linux CI, a crash on markys (cp1252) the next time a failure message carries a byte cp1252 cannot map, and the case goes unreported",
+      "find": "text=True, encoding='utf-8', errors='replace', env=env)",
+      "replace": "text=True, env=env)",
+      "expect_caught_by": "test_the_child_is_asked_for_utf8_and_read_as_utf8"
+    },
+    {
+      "id": "runner-stops-asking-the-child-for-utf8",
+      "why": "this side decodes UTF-8 but the child writes in its own codec; on a cp1252 machine an en dash arrives as one byte that UTF-8 turns into a replacement character, and the report no longer says what it said",
+      "find": "'PYTHONDONTWRITEBYTECODE': '1', 'PYTHONIOENCODING': 'utf-8'}",
+      "replace": "'PYTHONDONTWRITEBYTECODE': '1'}",
+      "expect_caught_by": "test_the_child_is_asked_for_utf8_and_read_as_utf8"
+    }
+  ]
+}
