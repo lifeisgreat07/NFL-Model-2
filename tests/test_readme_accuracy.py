@@ -264,3 +264,20 @@ def test_it_describes_the_backtest_the_code_runs():
     assert 'never trained on the season' not in flat
     assert 'which include the earlier weeks of the season being evaluated' in flat
     assert 'refit every week as the live system is' in flat
+
+
+def test_running_the_tests_says_what_the_suite_needs():
+    """Stage 29, from the 2026-09-28 audit. "Running the tests" said to
+    install requirements-dev.txt alone, which does not install pandas or
+    anything else the suite imports, and said nothing of node, without which
+    every test that runs the page's JavaScript skips. It now installs both
+    requirement files, runs the linter CI runs, and names the Python and
+    node versions -- each held here to the file that decides it."""
+    flat = ' '.join(TEXT.split())
+    assert 'pip install -r requirements.txt -r requirements-dev.txt' in TEXT
+    assert 'ruff check .' in TEXT, "README no longer runs the linter run-tests.yml runs"
+    python = (REPO / '.python-version').read_text(encoding='utf-8').strip()
+    assert f'needs Python {python}' in flat, f"README's Python version is not .python-version's {python}"
+    workflow = (REPO / '.github' / 'workflows' / 'run-tests.yml').read_text(encoding='utf-8')
+    node = re.search(r"node-version:\s*'(\d+)'", workflow).group(1)
+    assert f'node {node}' in flat, f"README's node version is not run-tests.yml's {node}"

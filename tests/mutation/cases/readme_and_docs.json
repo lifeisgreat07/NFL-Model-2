@@ -71,6 +71,20 @@
       "find": "def backtest(hist, features, test_seasons, refit_every_n_weeks=1, return_raw=False):",
       "replace": "def backtest(hist, features, test_seasons, refit_every_n_weeks=None, return_raw=False):",
       "expect_caught_by": "test_it_describes_the_backtest_the_code_runs"
+    },
+    {
+      "id": "readme-tests-install-dev-requirements-only",
+      "why": "the README's test instructions go back to installing requirements-dev.txt alone, which leaves out every package the suite imports.",
+      "find": "pip install -r requirements.txt -r requirements-dev.txt\nruff check .",
+      "replace": "pip install -r requirements-dev.txt\nruff check .",
+      "expect_caught_by": "test_running_the_tests_says_what_the_suite_needs"
+    },
+    {
+      "id": "readme-tests-python-version-drifts",
+      "why": "the README names a Python version .python-version does not, so a reader sets up an interpreter the pinned libraries have no wheels for.",
+      "find": "Running the tests needs Python 3.11",
+      "replace": "Running the tests needs Python 3.12",
+      "expect_caught_by": "test_running_the_tests_says_what_the_suite_needs"
     }
   ]
 }

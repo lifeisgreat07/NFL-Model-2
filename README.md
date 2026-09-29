@@ -37,6 +37,16 @@ What it is meant to demonstrate, and where to look:
 - **Tuned constants with the experiment attached.** `src/config.py`
   carries every hyperparameter next to the backtest that justified it,
   so no number in the model is there because it looked about right.
+- **Experiments registered before they are run.** Each proposed change
+  to the model is written into `experiments/stage5/registry.json` or
+  `experiments/stage6/registry.json` first, with its question, its
+  metric, its decision rule and the seasons it will be judged on, so a
+  result cannot be reframed after it is seen. A rejected change stays on
+  the record, and the dashboard's Model Lab page lists it with the rest.
+- **A backtest that is re-run, not remembered.** `src/reproducibility_audit.py`
+  re-runs the published backtest from the current code and checks log
+  loss, Brier and AUC against the published figures to four decimals; its
+  latest record is `data/reproducibility_audit.json`.
 - **AI-assisted development with an independent verifier.** Work is done
   in a "Scout" role and audited by a separate "Booth" role that shares no
   context with it, runs in CI on every pull request, and must re-execute
@@ -180,10 +190,19 @@ python src/grade_predictions.py --season 2026 --week 2
 python src/generate_dashboard.py
 ```
 
-Running the tests:
+Running the tests needs Python 3.11 (as `.python-version` says) and, for
+the tests that run the dashboard's own JavaScript, node 20; without node
+those tests skip rather than fail. From the repository root:
 ```bash
-pip install -r requirements-dev.txt
+pip install -r requirements.txt -r requirements-dev.txt
+ruff check .
 python -m pytest
+```
+The mutation corpus runs separately, one case at a time or a sample of
+it; a full run takes well over an hour:
+```bash
+python tests/mutation/runner.py --id <case id>
+python tests/mutation/runner.py --sample 30 --seed 20260929
 ```
 
 ## Automating this with Claude Code Routines
