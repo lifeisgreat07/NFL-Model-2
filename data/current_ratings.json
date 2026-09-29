@@ -2,289 +2,289 @@
   {
     "team": "BUF",
     "name": "Buffalo Bills",
-    "off": 0.1538,
-    "def": 0.0048,
-    "net": 0.1491,
-    "sos": 0.0512,
-    "games_played": 2
+    "off": 0.1429,
+    "def": 0.0028,
+    "net": 0.1401,
+    "sos": 0.0365,
+    "games_played": 3
   },
   {
     "team": "LA",
     "name": "LA Rams",
-    "off": 0.0851,
-    "def": -0.0508,
-    "net": 0.1358,
-    "sos": 0.0019,
-    "games_played": 2
+    "off": 0.079,
+    "def": -0.0482,
+    "net": 0.1272,
+    "sos": 0.0182,
+    "games_played": 3
   },
   {
     "team": "BAL",
     "name": "Baltimore Ravens",
-    "off": 0.0932,
-    "def": -0.0142,
-    "net": 0.1073,
-    "sos": -0.0239,
-    "games_played": 2
+    "off": 0.0909,
+    "def": -0.0116,
+    "net": 0.1025,
+    "sos": -0.0339,
+    "games_played": 3
   },
   {
     "team": "SEA",
     "name": "Seattle Seahawks",
-    "off": 0.0168,
-    "def": -0.0887,
-    "net": 0.1055,
-    "sos": 0.0051,
-    "games_played": 2
+    "off": 0.0074,
+    "def": -0.0878,
+    "net": 0.0953,
+    "sos": -0.0276,
+    "games_played": 3
   },
   {
     "team": "SF",
     "name": "San Francisco 49ers",
-    "off": 0.1061,
-    "def": 0.0188,
-    "net": 0.0873,
-    "sos": 0.0306,
-    "games_played": 2
-  },
-  {
-    "team": "PHI",
-    "name": "Philadelphia Eagles",
-    "off": 0.0193,
-    "def": -0.0635,
-    "net": 0.0829,
-    "sos": -0.1202,
-    "games_played": 2
+    "off": 0.1165,
+    "def": 0.0268,
+    "net": 0.0897,
+    "sos": -0.0024,
+    "games_played": 3
   },
   {
     "team": "DET",
     "name": "Detroit Lions",
-    "off": 0.0893,
-    "def": 0.0066,
-    "net": 0.0827,
-    "sos": 0.0615,
-    "games_played": 2
-  },
-  {
-    "team": "GB",
-    "name": "Green Bay Packers",
-    "off": 0.0785,
-    "def": 0.0051,
-    "net": 0.0734,
-    "sos": -0.0501,
-    "games_played": 2
-  },
-  {
-    "team": "MIN",
-    "name": "Minnesota Vikings",
-    "off": -0.0503,
-    "def": -0.1133,
-    "net": 0.0631,
-    "sos": 0.0454,
-    "games_played": 2
+    "off": 0.091,
+    "def": 0.0172,
+    "net": 0.0739,
+    "sos": -0.0198,
+    "games_played": 3
   },
   {
     "team": "KC",
     "name": "Kansas City Chiefs",
-    "off": 0.0455,
-    "def": -0.0123,
-    "net": 0.0578,
-    "sos": 0.01,
-    "games_played": 2
+    "off": 0.0505,
+    "def": -0.019,
+    "net": 0.0695,
+    "sos": -0.0156,
+    "games_played": 3
   },
   {
-    "team": "NE",
-    "name": "New England Patriots",
-    "off": 0.0264,
-    "def": -0.0304,
-    "net": 0.0568,
-    "sos": 0.0488,
-    "games_played": 2
+    "team": "PHI",
+    "name": "Philadelphia Eagles",
+    "off": 0.0101,
+    "def": -0.0553,
+    "net": 0.0653,
+    "sos": -0.0656,
+    "games_played": 3
+  },
+  {
+    "team": "MIN",
+    "name": "Minnesota Vikings",
+    "off": -0.0638,
+    "def": -0.1234,
+    "net": 0.0597,
+    "sos": 0.0299,
+    "games_played": 3
   },
   {
     "team": "DEN",
     "name": "Denver Broncos",
-    "off": 0.0003,
-    "def": -0.0415,
-    "net": 0.0419,
-    "sos": 0.0398,
-    "games_played": 2
+    "off": 0.006,
+    "def": -0.0476,
+    "net": 0.0536,
+    "sos": 0.0804,
+    "games_played": 3
+  },
+  {
+    "team": "GB",
+    "name": "Green Bay Packers",
+    "off": 0.0758,
+    "def": 0.0224,
+    "net": 0.0534,
+    "sos": -0.0486,
+    "games_played": 3
   },
   {
     "team": "JAX",
     "name": "Jacksonville Jaguars",
-    "off": 0.0179,
-    "def": -0.0039,
-    "net": 0.0218,
-    "sos": -0.0265,
-    "games_played": 2
+    "off": 0.0274,
+    "def": -0.0172,
+    "net": 0.0446,
+    "sos": -0.0002,
+    "games_played": 3
+  },
+  {
+    "team": "NE",
+    "name": "New England Patriots",
+    "off": 0.0134,
+    "def": -0.022,
+    "net": 0.0354,
+    "sos": 0.0429,
+    "games_played": 3
+  },
+  {
+    "team": "CHI",
+    "name": "Chicago Bears",
+    "off": 0.0329,
+    "def": 0.0015,
+    "net": 0.0313,
+    "sos": 0.0067,
+    "games_played": 3
   },
   {
     "team": "HOU",
     "name": "Houston Texans",
     "off": -0.0553,
-    "def": -0.0749,
-    "net": 0.0197,
-    "sos": 0.0689,
-    "games_played": 2
-  },
-  {
-    "team": "CHI",
-    "name": "Chicago Bears",
-    "off": 0.0294,
-    "def": 0.012,
-    "net": 0.0173,
-    "sos": -0.019,
-    "games_played": 2
-  },
-  {
-    "team": "TB",
-    "name": "Tampa Bay Buccaneers",
-    "off": 0.0137,
-    "def": 0.0087,
-    "net": 0.0049,
-    "sos": -0.053,
-    "games_played": 2
+    "def": -0.0787,
+    "net": 0.0234,
+    "sos": 0.0377,
+    "games_played": 3
   },
   {
     "team": "LAC",
     "name": "LA Chargers",
-    "off": -0.0315,
-    "def": -0.0326,
-    "net": 0.0012,
-    "sos": -0.087,
-    "games_played": 2
+    "off": -0.0327,
+    "def": -0.0447,
+    "net": 0.0121,
+    "sos": -0.0066,
+    "games_played": 3
   },
   {
-    "team": "PIT",
-    "name": "Pittsburgh Steelers",
-    "off": -0.0323,
-    "def": -0.0243,
-    "net": -0.008,
-    "sos": -0.0032,
-    "games_played": 2
+    "team": "TB",
+    "name": "Tampa Bay Buccaneers",
+    "off": 0.001,
+    "def": -0.0041,
+    "net": 0.0051,
+    "sos": -0.0132,
+    "games_played": 3
   },
   {
     "team": "CIN",
     "name": "Cincinnati Bengals",
-    "off": 0.0417,
-    "def": 0.0529,
+    "off": 0.0498,
+    "def": 0.0592,
+    "net": -0.0094,
+    "sos": 0.0058,
+    "games_played": 3
+  },
+  {
+    "team": "PIT",
+    "name": "Pittsburgh Steelers",
+    "off": -0.0274,
+    "def": -0.0161,
     "net": -0.0113,
-    "sos": 0.0123,
-    "games_played": 2
+    "sos": -0.0067,
+    "games_played": 3
   },
   {
     "team": "IND",
     "name": "Indianapolis Colts",
-    "off": 0.0088,
-    "def": 0.0306,
-    "net": -0.0218,
-    "sos": 0.0826,
-    "games_played": 2
+    "off": 0.0083,
+    "def": 0.026,
+    "net": -0.0176,
+    "sos": 0.0652,
+    "games_played": 3
   },
   {
     "team": "NO",
     "name": "New Orleans Saints",
     "off": -0.066,
-    "def": -0.0399,
-    "net": -0.0261,
-    "sos": 0.095,
-    "games_played": 2
+    "def": -0.0259,
+    "net": -0.0402,
+    "sos": 0.0227,
+    "games_played": 3
   },
   {
     "team": "DAL",
     "name": "Dallas Cowboys",
-    "off": 0.0445,
-    "def": 0.0909,
-    "net": -0.0463,
-    "sos": -0.0781,
-    "games_played": 2
-  },
-  {
-    "team": "ARI",
-    "name": "Arizona Cardinals",
-    "off": 0.0016,
-    "def": 0.0481,
-    "net": -0.0465,
-    "sos": 0.0533,
-    "games_played": 2
+    "off": 0.0482,
+    "def": 0.0922,
+    "net": -0.0439,
+    "sos": -0.0176,
+    "games_played": 3
   },
   {
     "team": "ATL",
     "name": "Atlanta Falcons",
-    "off": -0.0538,
-    "def": 0.0094,
-    "net": -0.0631,
-    "sos": -0.0545,
-    "games_played": 2
+    "off": -0.0384,
+    "def": 0.0076,
+    "net": -0.046,
+    "sos": -0.0209,
+    "games_played": 3
+  },
+  {
+    "team": "ARI",
+    "name": "Arizona Cardinals",
+    "off": 0.0071,
+    "def": 0.0586,
+    "net": -0.0515,
+    "sos": 0.0657,
+    "games_played": 3
   },
   {
     "team": "WAS",
     "name": "Washington Commanders",
-    "off": 0.0224,
-    "def": 0.0951,
-    "net": -0.0727,
-    "sos": 0.0183,
-    "games_played": 2
+    "off": 0.0226,
+    "def": 0.0892,
+    "net": -0.0666,
+    "sos": 0.0389,
+    "games_played": 3
   },
   {
     "team": "MIA",
     "name": "Miami Dolphins",
-    "off": -0.0334,
-    "def": 0.0412,
-    "net": -0.0746,
-    "sos": -0.0201,
-    "games_played": 2
+    "off": -0.0396,
+    "def": 0.0431,
+    "net": -0.0828,
+    "sos": 0.0169,
+    "games_played": 3
   },
   {
     "team": "NYG",
     "name": "NY Giants",
-    "off": -0.026,
-    "def": 0.0575,
-    "net": -0.0835,
-    "sos": 0.0448,
-    "games_played": 2
+    "off": -0.0364,
+    "def": 0.0524,
+    "net": -0.0888,
+    "sos": -0.0261,
+    "games_played": 3
   },
   {
     "team": "CLE",
     "name": "Cleveland Browns",
-    "off": -0.1635,
-    "def": -0.0687,
-    "net": -0.0948,
-    "sos": 0.0134,
-    "games_played": 2
+    "off": -0.16,
+    "def": -0.0703,
+    "net": -0.0897,
+    "sos": -0.0184,
+    "games_played": 3
   },
   {
     "team": "CAR",
     "name": "Carolina Panthers",
-    "off": -0.0434,
-    "def": 0.0576,
-    "net": -0.101,
-    "sos": -0.0229,
-    "games_played": 2
+    "off": -0.0439,
+    "def": 0.0609,
+    "net": -0.1048,
+    "sos": -0.0348,
+    "games_played": 3
   },
   {
     "team": "LV",
     "name": "Las Vegas Raiders",
-    "off": -0.1395,
-    "def": -0.0121,
-    "net": -0.1274,
-    "sos": -0.0367,
-    "games_played": 2
+    "off": -0.1214,
+    "def": -0.013,
+    "net": -0.1084,
+    "sos": -0.037,
+    "games_played": 3
   },
   {
     "team": "NYJ",
     "name": "NY Jets",
-    "off": -0.109,
-    "def": 0.0543,
-    "net": -0.1634,
-    "sos": -0.0472,
-    "games_played": 2
+    "off": -0.1015,
+    "def": 0.058,
+    "net": -0.1595,
+    "sos": -0.0115,
+    "games_played": 3
   },
   {
     "team": "TEN",
     "name": "Tennessee Titans",
-    "off": -0.0902,
-    "def": 0.0776,
-    "net": -0.1678,
-    "sos": -0.0403,
-    "games_played": 2
+    "off": -0.0945,
+    "def": 0.0671,
+    "net": -0.1616,
+    "sos": -0.061,
+    "games_played": 3
   }
 ]
