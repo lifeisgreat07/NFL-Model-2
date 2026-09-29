@@ -1,0 +1,50 @@
+{
+  "target": "tests/mutation/runner.py",
+  "tests": "tests/test_nightly_mutation.py",
+  "cases": [
+    {
+      "id": "slice-sampled-in-load-order",
+      "why": "the slice is drawn from the cases in the order the files loaded, so the same seed picks different cases on a machine that lists the directory in another order, and a night's failure cannot be re-run by hand",
+      "find": "    ids = sorted(c['id'] for c in cases)",
+      "replace": "    ids = [c['id'] for c in cases]",
+      "expect_caught_by": "test_the_slice_does_not_depend_on_the_order_the_files_loaded_in"
+    },
+    {
+      "id": "slice-ignores-the-seed",
+      "why": "the seed is taken and not used, so every night runs the same thirty cases and the rest of the corpus is never run again -- the failure this workflow exists to prevent, with a green run every morning",
+      "find": "    chosen = set(random.Random(seed).sample(ids, min(n, len(ids))))",
+      "replace": "    chosen = set(random.Random(0).sample(ids, min(n, len(ids))))",
+      "expect_caught_by": "test_another_night_picks_another_slice"
+    },
+    {
+      "id": "sample-without-a-seed-allowed",
+      "why": "a slice with no seed is a slice nobody can reproduce: a failure in it is a report with no way to re-run it",
+      "find": "    if (args.sample is None) != (args.seed is None):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_sample_without_a_seed_is_refused"
+    },
+    {
+      "id": "summary-drops-the-failures",
+      "why": "the run summary shows the table without the list of cases that were not caught, so a red night says how many and not which",
+      "find": "        lines += [f'- `{c[\"id\"]}`: {r[\"status\"]}' for c, r in bad]",
+      "replace": "        pass",
+      "expect_caught_by": "test_the_summary_counts_every_status"
+    },
+    {
+      "id": "nightly-seed-fixed",
+      "target": ".github/workflows/nightly-mutation.yml",
+      "why": "the workflow passes a constant seed, so the same slice runs every night",
+      "find": "          seed=\"$(date -u +%Y%m%d)\"",
+      "replace": "          seed=\"1\"",
+      "expect_caught_by": "test_the_workflow_runs_nightly_with_the_date_as_the_seed"
+    },
+    {
+      "id": "nightly-summary-not-written",
+      "target": ".github/workflows/nightly-mutation.yml",
+      "why": "the counts go only to the log, which nobody opens on a green run",
+      "find": " --summary \"$GITHUB_STEP_SUMMARY\"",
+      "replace": "",
+      "expect_caught_by": "test_the_workflow_runs_nightly_with_the_date_as_the_seed"
+    }
+  ]
+}
