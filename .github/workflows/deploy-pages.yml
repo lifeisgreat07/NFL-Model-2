@@ -122,8 +122,9 @@ jobs:
       - name: Check every page has its data
         run: python src/check_build.py index.html
 
-      # The site is exactly four things: the page, the printable picks it links
-      # to, its Open Graph image (Stage 13), and .nojekyll (without which Pages
+      # The site is exactly five things: the page, the printable picks it links
+      # to, its Open Graph image (Stage 13), its favicon (Stage 29), and
+      # .nojekyll (without which Pages
       # runs the output through Jekyll,
       # which strips files and directories beginning with an underscore).
       # Assembled into a clean directory rather than uploading the repo, so what
