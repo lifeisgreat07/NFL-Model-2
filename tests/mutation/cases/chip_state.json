@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_chip_state.py",
+  "cases": [
+    {
+      "id": "board-filter-click-moves-only-the-look",
+      "why": "the state this item added, dropped from the handler. The markup still says All Games is pressed, so the page loads right and every static check passes; after one click the highlighted chip and the one a screen reader calls pressed are different chips, which is worse than no state at all.",
+      "find": "      b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');\n",
+      "replace": "",
+      "expect_caught_by": "test_each_filter_click_updates_aria_pressed"
+    },
+    {
+      "id": "lab-filter-goes-back-to-aria-current",
+      "why": "Model Lab's chips return to the convention they had before: aria-current says 'this is the current item in a set of links', which is not what a filter toggle is, and leaves the page with two ways of saying the same thing.",
+      "find": "      b.setAttribute('aria-pressed', on ? 'true' : 'false');",
+      "replace": "      b.setAttribute('aria-current', on ? 'true' : 'false');",
+      "expect_caught_by": "test_every_chip_carries_aria_pressed_and_none_aria_current"
+    },
+    {
+      "id": "a-board-filter-ships-without-state",
+      "why": "a filter chip added or copied without the attribute: it looks exactly like its neighbours and is silent to a screen reader until the first click, and only then if the handler reaches it.",
+      "find": "<button class=\"btn btn-chip filter-btn\" data-filter=\"flagged\" aria-pressed=\"false\">",
+      "replace": "<button class=\"btn btn-chip filter-btn\" data-filter=\"flagged\">",
+      "expect_caught_by": "test_every_chip_carries_aria_pressed_and_none_aria_current"
+    },
+    {
+      "id": "series-look-keyed-on-the-state-alone",
+      "why": "the trap this item walked into and back out of. Before, only series toggles carried aria-pressed, so a bare .btn-chip[aria-pressed=\"false\"] rule was safe; now every unchosen filter chip carries it too, and that rule turns Model Disagreement and Flagged Only dashed on page load. Nothing throws and the tests about state all pass.",
+      "find": ".btn-chip.btn-toggle[aria-pressed=\"false\"]{border-style:dashed;",
+      "replace": ".btn-chip[aria-pressed=\"false\"]{border-style:dashed;",
+      "expect_caught_by": "test_the_series_look_is_keyed_on_btn_toggle_not_on_the_state"
+    }
+  ]
+}

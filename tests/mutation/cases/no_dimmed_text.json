@@ -19,8 +19,8 @@
     {
       "id": "off-series-label-faded-again",
       "why": "a switched-off series toggle fades its whole label to .45 again, under 3:1 in both themes, in a state only a click reaches.",
-      "find": "  .btn-chip[aria-pressed=\"false\"]{border-style:dashed; border-color:var(--border-strong);}",
-      "replace": "  .btn-chip[aria-pressed=\"false\"]{opacity:.45;}",
+      "find": "  .btn-chip.btn-toggle[aria-pressed=\"false\"]{border-style:dashed; border-color:var(--border-strong);}",
+      "replace": "  .btn-chip.btn-toggle[aria-pressed=\"false\"]{opacity:.45;}",
       "expect_caught_by": "test_a_switched_off_series_still_says_so"
     },
     {

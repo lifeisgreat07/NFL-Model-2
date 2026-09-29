@@ -543,10 +543,13 @@
        .btn       an action: bordered, on the surface. Print / PDF, Export,
                   Import, Copy Share Link, Got it, the shared-picks buttons,
                   the theme toggle (.btn-block makes it full width).
-       .btn-chip  a pill in a group. .active marks the one chosen filter
-                  (the accent, because it is the active thing); aria-pressed
-                  marks an on/off series toggle (neutral, because a series
-                  being shown is not an emphasis).
+       .btn-chip  a pill in a group. Every chip carries aria-pressed, the
+                  state a screen reader hears (Stage 26: filters used
+                  .active alone, and Model Lab's used aria-current). The
+                  look differs by kind: .active marks the one chosen filter
+                  (the accent, because it is the active thing), and
+                  .btn-toggle (on the series toggles) an on/off series toggle
+                  (neutral, because a series being shown is not an emphasis).
        .btn-link  inline text that opens something: "+ the numbers behind
                   this", "+ view context", Undo.
        .btn-icon  a bare square icon button: the week stepper's arrows.
@@ -578,7 +581,7 @@
     letter-spacing:.04em; padding:var(--s2) var(--s3);
   }
   .btn-chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent);}
-  .btn-chip[aria-pressed="true"]{color:var(--text); border-color:var(--border-strong);}
+  .btn-chip.btn-toggle[aria-pressed="true"]{color:var(--text); border-color:var(--border-strong);}
   /* A series switched off says so with its border and its marker, never by
      fading its words: at opacity .45 the label was under 3:1 against the
      card in both themes, and an "off" toggle is still a control someone has
@@ -586,8 +589,8 @@
      text: dim it with the neutral ramp, which the contrast sums cover, not
      with opacity, which they do not (Stage 12; see
      tests/test_no_dimmed_text.py). */
-  .btn-chip[aria-pressed="false"]{border-style:dashed; border-color:var(--border-strong);}
-  .btn-chip[aria-pressed="false"] svg{opacity:.35;}
+  .btn-chip.btn-toggle[aria-pressed="false"]{border-style:dashed; border-color:var(--border-strong);}
+  .btn-chip.btn-toggle[aria-pressed="false"] svg{opacity:.35;}
   /* min-height is the WCAG 2.5.8 minimum target (24 CSS px). With no
      padding, a text toggle was only as tall as its 11px line: "+ view
      context" measured 13px at 390 wide (Stage 11, UX-REVIEW-2026-09-26).
@@ -1603,7 +1606,7 @@
     .pick-btn:hover:not(:disabled){border-color:var(--accent);}
     .rel-table summary:hover{color:var(--text);}
     .btn:hover:not(:disabled){border-color:var(--accent); color:var(--text);}
-    .btn-chip[aria-pressed="false"]:hover svg{opacity:.7;}
+    .btn-chip.btn-toggle[aria-pressed="false"]:hover svg{opacity:.7;}
     .btn-link:hover{color:var(--text);}
     .btn-icon:hover:not(:disabled){background:var(--surface-2);}
     .lbx-btn:hover{border-color:var(--accent); color:var(--text);}
@@ -1895,9 +1898,9 @@ __FONT_FACES__
       </a>
     </div>
     <div class="filter-row" id="filter-row">
-      <button class="btn btn-chip filter-btn active" data-filter="all">All Games</button>
-      <button class="btn btn-chip filter-btn" data-filter="divergent">Model Disagreement</button>
-      <button class="btn btn-chip filter-btn" data-filter="flagged">Flagged Only</button>
+      <button class="btn btn-chip filter-btn active" data-filter="all" aria-pressed="true">All Games</button>
+      <button class="btn btn-chip filter-btn" data-filter="divergent" aria-pressed="false">Model Disagreement</button>
+      <button class="btn btn-chip filter-btn" data-filter="flagged" aria-pressed="false">Flagged Only</button>
     </div>
     <p class="board-note" id="board-tv-note" hidden>CBS and FOX games on Sunday afternoon are regional: which one your local channel shows depends on where you live.</p>
     <div class="game-grid" id="game-grid"></div>
@@ -4094,8 +4097,12 @@ function renderGames(){
    Select the buttons that have the attribute this handler reads. */
 document.querySelectorAll('#filter-row .filter-btn[data-filter]').forEach(btn=>{
   btn.addEventListener('click', ()=>{
-    document.querySelectorAll('#filter-row .filter-btn[data-filter]').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
+    // .active is the look; aria-pressed is the state a screen reader hears
+    // (Stage 26: every chip on the page says which one is on the same way).
+    document.querySelectorAll('#filter-row .filter-btn[data-filter]').forEach(b=>{
+      b.classList.toggle('active', b === btn);
+      b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+    });
     currentFilter = btn.dataset.filter;
     renderGames();
   });
@@ -5304,7 +5311,7 @@ function buildReliabilityDiagram(){
   // and colour-blindness at every one of the 30 points rather than at three.
   const filters = RELIABILITY_SERIES.map(([modelKey, seriesKey])=>{
     const s = SERIES[seriesKey];
-    return `<button class="btn btn-chip rel-toggle" data-model="${modelKey}" aria-pressed="true">
+    return `<button class="btn btn-chip btn-toggle rel-toggle" data-model="${modelKey}" aria-pressed="true">
       <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">${markerPath(s.shape, 6, 6, 4.5)} fill="${s.color}"/></svg>${s.label}</button>`;
   }).join('');
 
@@ -6148,7 +6155,7 @@ let labShowAll = null;
   const chips = labChips(rows);
   bar.innerHTML = chips.map(c =>
     `<button type="button" class="btn btn-chip lab-filter${c.key === 'all' ? ' active' : ''}" data-decision="${c.key}"` +
-    `${c.key === 'all' ? ' aria-current="true"' : ''}>${c.label}<span class="chip-n">${c.n}</span></button>`).join('');
+    ` aria-pressed="${c.key === 'all' ? 'true' : 'false'}">${c.label}<span class="chip-n">${c.n}</span></button>`).join('');
   bar.hidden = false;
   function show(key){
     let shown = 0;
@@ -6156,7 +6163,7 @@ let labShowAll = null;
     bar.querySelectorAll('.lab-filter').forEach(b => {
       const on = b.dataset.decision === key;
       b.classList.toggle('active', on);
-      if(on) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
     });
     if(status) status.textContent = `Showing ${shown} of ${rows.length} experiments.`;
   }
