@@ -35,7 +35,7 @@ the engineering. Public repo, so anything committed is read by strangers.
   printed on the page, or argued from in a comment, must exist in the artifact
   it came from.
 - **Mutation-test every new guard.** Write the failure it is meant to catch and
-  confirm it catches it. See the traps section — this has bitten repeatedly, and
+  confirm it catches it. See `docs/traps.md` — this has bitten repeatedly, and
   the mutation harness itself has lied twice.
 - **Render it and look at it.** Three separate bugs on 2026-09-06 were invisible
   in the code and obvious in a screenshot. A UI change is not verified until
@@ -83,8 +83,8 @@ Routines" section describes the same split.
 runs the drift check and writes a run summary. A failed canary night, a
 failed weekly run, a drift flag and a failed Booth audit each open or
 comment on a GitHub issue (`src/alerts.py`). The Pages build refuses a page
-whose data is missing (`src/check_build.py`). Stage 4's section below keeps
-the decisions.
+whose data is missing (`src/check_build.py`). Stage 4's section in
+`docs/stage-history.md` keeps the decisions.
 
 One habit from Stage 8 is worth keeping whatever you work on: every numeric
 claim about colour or geometry was re-derived before being believed — contrast
@@ -98,7 +98,10 @@ three of Fable's, and two of mine. Reading your own CSS back is not verification
 **Current state now lives in `docs/context.md`. Read that first — it is
 rewritten every session and this section is not.** `docs/index.md` maps where
 everything is; `memory/` records what each session decided and why. This file
-keeps what stays true for months: methodology, stage plans, and the traps below.
+keeps what stays true for months: methodology, the findings that constrain
+the work, the environment and the PR loop. The traps are in `docs/traps.md`;
+every stage, finished or planned, is in `docs/stage-history.md`, and the
+open ones are indexed under "Open stages" below.
 
 **Which branches are open, and what each waits on, is in
 `docs/context.md` — that file is rewritten every session and this one is not.**
@@ -262,6 +265,17 @@ casually.
   "and therefore" has a mechanism in it, and the mechanism is the half nobody
   measured. Check that clause before doing the work it implies.
 
+## Open stages
+
+The full text of every stage, finished or planned, is in
+`docs/stage-history.md`. Numbers are frozen. What is next this week is in
+`docs/context.md`.
+
+- **Stage 20 - Testing with real people**: needs five real testers.
+- **Stage 21 - Once the season has data**: not before week 5.
+- **Stage 22 - Beyond 95**: comes out of Stage 20.
+- **Stage 28 - After the forward test**: after the regular season.
+
 ## Ending a session
 
 Run this every time, before the session closes:
@@ -289,8 +303,10 @@ is a file nobody rewrote); and a `memory/` file named for today. It exits
 non-zero if any of the five that can fail do.
 
 **What `tests/test_claude_md_freshness.py` checks**, free, on every commit:
-that every repository path and every test name this file mentions still
-exists, and that the stage headings are unique and in order. A moved file
+that every repository path and every test name this file, `docs/traps.md`
+and `docs/stage-history.md` mention still exists; that the stage headings
+are unique and in order; that no stage section is written back into this
+file; and that this file stays under 450 lines. A moved file
 leaves a silently wrong pointer; a guard named here and absent from the suite
 reads as protection that is present. Note it deliberately skips the stage
 sections -- those name work that does not exist yet, and checking a plan the
@@ -311,7 +327,7 @@ prompts -- the wording below is `BY_HAND` in `src/session_wrapup.py`:
 
 **Then re-read this file as if you had never seen it.** Not skimmed -- read.
 Ask of each paragraph whether it changes a decision. If it only records what
-happened, it belongs in a Stage 7 write-up instead. This document is read
+happened, it belongs in `docs/stage-history.md` or `memory/` instead. This document is read
 under compaction pressure, so its length is a cost paid on every session.
 
 ## Environment and workflow
@@ -347,7 +363,7 @@ under compaction pressure, so its length is a cost paid on every session.
 - **`.github/` is writable from `markys`.** Editing a workflow and pushing it to
   a feature branch both work, tested rather than assumed. Not verified: pushing
   `.github/` straight to `main`. The restriction that IS real is the Claude Code
-  action's own, listed under traps.
+  action's own, listed in `docs/traps.md`.
   General lesson, and the second stale belief this file carried: an inherited
   "you can't do X" with no recorded test behind it is a hypothesis. Spend the
   thirty seconds testing it before building a manual process around it.
@@ -362,6 +378,11 @@ under compaction pressure, so its length is a cost paid on every session.
   of it to the repo root as a scratch `.patch`, `git apply` it on `markys`,
   delete the patch, and compare `git hash-object` on both sides. Commit
   messages go through the gitignored `.commit-msg.txt`, not `.git/`.
+- **The file bridge and the mutation corpus have traps of their own**: a
+  binary corrupted in transit, a write that reports success and keeps the
+  old content, a full corpus run of over an hour that must not share the
+  checkout. Read "Environment traps" in `docs/traps.md` before moving a
+  file or starting a run.
 - `cmd` mangles multi-line `python -c` strings, and **PowerShell has no
   heredocs** — `git commit -F <file>` with a written message file, and script
   files instead of inline `-c`, are the reliable forms.
@@ -404,7 +425,7 @@ under compaction pressure, so its length is a cost paid on every session.
      from lifeisgreat07/<branch>" -m "<PR title>"`, `git push origin main`, then
      `git push origin --delete <branch>` and `git branch -d <branch>`. GitHub marks
      the PR merged within a minute. **Since 2026-09-26 this runs as one script
-     that stops at the first failed step** (see the chained-merge trap below):
+     that stops at the first failed step** (see the chained-merge trap in `docs/traps.md`):
      the message comes from a file, and the branch is deleted only after the
      GitHub API reports the PR merged. A push can be refused because the audit-log
      collector committed in between; `git pull --rebase origin main` and push again.

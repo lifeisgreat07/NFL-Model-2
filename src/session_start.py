@@ -168,7 +168,8 @@ def print_context():
     It is capped at 70 non-blank lines by tests/test_workflow_docs.py for
     exactly this reason: it is meant to fit on a screen, so a reading list that
     points at a one-screen file is a pointless extra step. CLAUDE.md is not
-    printed -- it is ~900 lines and mostly durable, so it is read on demand.
+    printed -- it is ~430 lines and mostly durable, so it is read on demand,
+    and so are docs/traps.md and docs/stage-history.md.
 
     This prints the file rather than summarising it. A summary here would be a
     second copy of the current state, drifting from the first, which is the
@@ -215,9 +216,10 @@ def main(argv=None):
     print_context()
 
     section('Read next')
-    print('  CLAUDE.md      methodology, stage plans, traps. ~900 lines, so it')
-    print('                 is pointed at rather than printed -- but READ IT,')
-    print('                 the traps section is where the expensive lessons are.')
+    print('  CLAUDE.md      methodology, environment, the PR loop. ~430 lines,')
+    print('                 pointed at rather than printed -- but READ IT.')
+    print('  docs/traps.md  where the expensive lessons are; read it before a PR,')
+    print('                 a measurement or a mutation run.')
     print('  docs/index.md  only if you need to find something')
     print('  memory/        only to answer "why did we decide that"')
     print('\n  Pull-request state is NOT shown above: there is no gh CLI here, and')

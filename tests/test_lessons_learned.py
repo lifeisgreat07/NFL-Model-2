@@ -1,10 +1,15 @@
 """docs/lessons-learned.md and docs/architecture.md: every pointer still points.
 
 Each lesson ends with where it came from: a case study, a repository path,
-or a trap entry in CLAUDE.md named by a phrase from its title. Those are the
-lesson's evidence, and a pointer that has gone dead turns a sourced lesson
-into an assertion. A renamed trap or a moved file is exactly the kind of
-change nothing else would notice here.
+or an entry in `docs/traps.md` or `CLAUDE.md` named by a phrase from its
+title. Those are the lesson's evidence, and a pointer that has gone dead turns
+a sourced lesson into an assertion. A renamed trap or a moved file is exactly
+the kind of change nothing else would notice here.
+
+Each phrase is looked up in the document its citation names, not in either:
+since the Stage 29 split the traps and the rules live in different files, and
+a phrase that moved between them without its citation moving is a pointer to
+the wrong place.
 """
 
 import re
@@ -13,7 +18,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 DOC = REPO / 'docs' / 'lessons-learned.md'
 ARCH = REPO / 'docs' / 'architecture.md'
-CLAUDE = REPO / 'CLAUDE.md'
+CITED = {'CLAUDE.md': REPO / 'CLAUDE.md', 'docs/traps.md': REPO / 'docs' / 'traps.md'}
 TEMPLATE = REPO / 'src' / 'dashboard_template.html'
 LINK = 'https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/lessons-learned.md'
 
@@ -28,12 +33,23 @@ def paths(text):
     return [p for p in re.findall(r'`([\w./-]+)`', text) if '/' in p or p.endswith('.md')]
 
 
-def trap_phrases(text):
-    """The quoted phrase after each `CLAUDE.md`, naming a trap entry."""
+def cited_phrases(text):
+    """(document, phrase) for each quoted phrase after a cited document.
+
+    A citation runs from the backticked document name to the next backtick or
+    the closing `*`, so `CLAUDE.md`, "a"; `docs/traps.md`, "b" is two
+    citations in one line, each checked against its own file.
+    """
     found = []
-    for line in re.findall(r'`CLAUDE\.md`,([^*]*)', text, flags=re.S):
-        found += re.findall(r'"([^"]+)"', line)
+    names = '|'.join(re.escape(n) for n in CITED)
+    for doc, tail in re.findall(r'`(' + names + r')`,([^*`]*)', text, flags=re.S):
+        found += [(doc, p) for p in re.findall(r'"([^"]+)"', tail)]
     return found
+
+
+def trap_phrases(text):
+    """The phrases alone, for the vacuity guard."""
+    return [p for _, p in cited_phrases(text)]
 
 
 def missing_phrases(phrases, claude_text):
@@ -61,10 +77,21 @@ def test_every_path_exists():
     assert not dead, f"lessons-learned.md names paths that do not exist: {dead}"
 
 
-def test_every_trap_it_cites_is_still_in_claude_md():
+def test_every_trap_it_cites_is_still_where_it_says():
     text = DOC.read_text(encoding='utf-8')
-    missing = missing_phrases(trap_phrases(text), CLAUDE.read_text(encoding='utf-8'))
-    assert not missing, f"CLAUDE.md no longer has the trap entries these name: {missing}"
+    missing = []
+    for doc, path in CITED.items():
+        phrases = [p for d, p in cited_phrases(text) if d == doc]
+        missing += [f"{doc}: {p}" for p in
+                    missing_phrases(phrases, path.read_text(encoding='utf-8'))]
+    assert not missing, f"these cited entries are not in the document they cite: {missing}"
+
+
+def test_both_cited_documents_are_actually_cited():
+    """Vacuity guard for the split: if every citation pointed at one file, the
+    lookup in the other would run over nothing and pass."""
+    docs = {d for d, _ in cited_phrases(DOC.read_text(encoding='utf-8'))}
+    assert docs == set(CITED), f"lessons-learned.md cites only {sorted(docs)}"
 
 
 def test_the_trap_check_notices_a_renamed_entry():

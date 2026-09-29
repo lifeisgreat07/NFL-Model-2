@@ -16,12 +16,15 @@ in the parts that changed fastest.
 |---|---|---|
 | `docs/context.md` | What is true TODAY: open branches, the next action | Every session |
 | `docs/index.md` | This map | When structure changes |
-| `CLAUDE.md` | What stays true for months: methodology, stage plans, traps | When a rule or plan changes |
+| `CLAUDE.md` | What stays true for months: methodology, findings, environment, the PR loop | When a rule changes |
+| `docs/traps.md` | Every trap that has actually bitten, and the durable shape of each | When something surprises a session |
+| `docs/stage-history.md` | Every stage, finished or planned, under its frozen number | When a stage is planned or finished |
 | `memory/` | One file per session: what happened and why | Appended, never edited |
 
 **Session start:** `python src/session_start.py` — it computes the state rather
 than restating it, and cross-checks what `docs/context.md` claims against git.
-Then read `docs/context.md`, then CLAUDE.md. Reach for `memory/` only to answer
+Then read `docs/context.md`, then CLAUDE.md, then `docs/traps.md` before a
+PR, a measurement or a mutation run. Reach for `memory/` only to answer
 "why did we decide that".
 
 **Session end:** `python src/session_wrapup.py`, then rewrite `docs/context.md`
@@ -97,7 +100,7 @@ notes elsewhere still describe them as files you can open in the repository.
 | `src/measure_qb_leak.py` | Measures what the QB rating leak did to the backtest, on today's code. Writes `data/qb_leak_effect.json`. |
 | `docs/architecture.md` | The whole system on one diagram, with the file behind each box. |
 | `docs/lessons-learned.md` | The lessons across all of it, each pointing at where it came from. Linked from "Checking the AI's work". |
-| `tests/test_lessons_learned.py` | Every link, path and `CLAUDE.md` trap the lessons cite still exists. |
+| `tests/test_lessons_learned.py` | Every link, path and trap the lessons cite still exists, in the document each citation names. |
 | `tests/test_case_studies.py` | Cards on "Checking the AI's work" against the files; every cited commit and quoted figure against its commit; measured figures against their data file. |
 
 ## The tests worth knowing about
@@ -105,7 +108,7 @@ notes elsewhere still describe them as files you can open in the repository.
 | Path | What it guards |
 |---|---|
 | `tests/mutation/` | The mutation corpus. `python tests/mutation/runner.py` — a case must name the test it expects to catch it. |
-| `tests/test_claude_md_freshness.py` | Every path CLAUDE.md names exists; stage headings are ordered and unique. |
+| `tests/test_claude_md_freshness.py` | Every path and test CLAUDE.md, `docs/traps.md` and `docs/stage-history.md` name exists; stage headings are ordered and unique; CLAUDE.md holds no stage section, points at both files and stays under 450 lines. |
 | `tests/test_plain_language.py` | Statistics vocabulary stays off the reader-facing pages. Reads the JavaScript, not just the markup. |
 | `tests/test_workflow_docs.py` | These four documents stay honest — see it for what "honest" means here. |
 | `tests/test_readme_accuracy.py` | README.md may not name a path that is not there, and its stated counts are compared against what they count. |

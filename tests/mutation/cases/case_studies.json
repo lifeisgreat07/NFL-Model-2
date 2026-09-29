@@ -82,10 +82,19 @@
       "id": "lesson-cites-a-trap-that-was-renamed",
       "target": "docs/lessons-learned.md",
       "tests": "tests/test_lessons_learned.py",
-      "why": "a lesson names a CLAUDE.md trap entry by a phrase CLAUDE.md does not contain, so its evidence pointer goes nowhere and the lesson becomes an assertion.",
-      "find": "*From: `CLAUDE.md`, \"the auditor produces untraceable figures too\".*",
-      "replace": "*From: `CLAUDE.md`, \"the auditor is never wrong\".*",
-      "expect_caught_by": "test_every_trap_it_cites_is_still_in_claude_md"
+      "why": "a lesson names a trap entry by a phrase docs/traps.md does not contain, so its evidence pointer goes nowhere and the lesson becomes an assertion.",
+      "find": "*From: `docs/traps.md`, \"the auditor produces untraceable figures too\".*",
+      "replace": "*From: `docs/traps.md`, \"the auditor is never wrong\".*",
+      "expect_caught_by": "test_every_trap_it_cites_is_still_where_it_says"
+    },
+    {
+      "id": "lesson-cites-a-trap-in-the-wrong-document",
+      "target": "docs/lessons-learned.md",
+      "tests": "tests/test_lessons_learned.py",
+      "why": "the phrase is real but lives in docs/traps.md, and the citation still names CLAUDE.md -- the exact shape the Stage 29 split could leave behind. A lookup in either file would pass it; the lookup in the cited file does not.",
+      "find": "*From: `docs/traps.md`, \"an allowlist that covers everything makes its own interesting branch unreachable\".*",
+      "replace": "*From: `CLAUDE.md`, \"an allowlist that covers everything makes its own interesting branch unreachable\".*",
+      "expect_caught_by": "test_every_trap_it_cites_is_still_where_it_says"
     },
     {
       "id": "verification-md-points-at-a-removed-incident",

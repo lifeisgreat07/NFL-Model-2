@@ -58,8 +58,14 @@ def test_it_reads_the_documented_suite_count_from_claude_md(output):
 
 
 def test_it_points_at_the_reading_order(output):
-    for doc in ('docs/context.md', 'CLAUDE.md', 'docs/index.md', 'memory/'):
-        assert doc in output, f"the reading order no longer mentions {doc}"
+    """Read in the "Read next" list only. The whole output also carries
+    docs/context.md verbatim, so any document that file happens to mention
+    would satisfy a whole-output search with the list itself gone."""
+    assert 'Read next' in output, "the output no longer has a 'Read next' list"
+    reading = output.split('Read next', 1)[1]
+    for doc in ('CLAUDE.md', 'docs/traps.md', 'docs/index.md', 'memory/'):
+        assert doc in reading, f"the reading order no longer mentions {doc}"
+    assert 'docs/context.md' in output, "the output never mentions docs/context.md"
 
 
 def test_it_prints_the_context_file_rather_than_pointing_at_it(output):
@@ -81,9 +87,9 @@ def test_it_prints_the_context_file_rather_than_pointing_at_it(output):
 
 
 def test_it_does_not_print_claude_md_in_full(output):
-    """The other half of that decision. CLAUDE.md is ~900 lines and mostly
+    """The other half of that decision. CLAUDE.md is ~430 lines and mostly
     durable; dumping it every session would bury the twenty lines that changed
-    under the eight hundred that did not."""
+    under the four hundred that did not."""
     claude = (REPO / 'CLAUDE.md').read_text(encoding='utf-8')
     long_lines = [l.strip() for l in claude.splitlines() if len(l.strip()) > 60]
     hits = sum(1 for l in long_lines[:200] if l in output)
