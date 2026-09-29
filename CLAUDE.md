@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **3922 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-`b8947b5` (after #177), with HEAD level with origin, which is the order that makes the
+Suite: **4278 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+`d7ac3b1` (after #201), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -1615,7 +1615,7 @@ the old rule "avoid literal non-ASCII in generated text" no longer applies.
    (`docs/context.md` lists it as known and not fixed).
 
 ### Stage 26 - What a visitor sees (before Stage 20)
-**Progress (2026-09-29, early):** merged: 6 #191, 7 #192, 8 #193, 9 #194,
+**Done (2026-09-29).** Merged: 6 #191, 7 #192, 8 #193, 9 #194,
 10 #195, 11 #196 (the built page drops the template's comments, the agent
 log's per-audit records and its JSON indentation: about 750KB to 438KB; the
 browser checker's byte budget is 800,000), 1 #197 (a final, ungraded card
@@ -1627,7 +1627,9 @@ decided by Mark on 2026-09-28 from rendered side-by-sides (artifacts "Phone
 Header Options" and "Phone Chart Text"): 3 is a sticky top bar below 1080px
 with the h1 and a theme button, and the provenance line at the foot of the
 page; 4 draws the trend and reliability charts 300 units wide below 640px,
-with the trend chart's line-end names dropped there (on a branch, next).
+with the trend chart's line-end names dropped there: 4 #201 (Booth caught its
+first version growing the desktop reliability plot from 390 to 406 units;
+fixed, with a test and a mutation case holding the desktop drawing).
 1. A final but ungraded card stops saying "to win" and shows a neutral
    provisional result -- without bringing back "graded on Tuesday", which Mark
    removed on 2026-09-28.
@@ -1647,8 +1649,10 @@ with the trend chart's line-end names dropped there (on a branch, next).
     measurement with headroom.
 
 ### Stage 27 - Supply chain and guards in CI
-**Progress (2026-09-28 night):** items 1, 2 and 3 committed on branches
-(s27a, s27b, s27c). Item 1 pins claude-code-action, git-auto-commit-action,
+**Progress (2026-09-29, early):** items 1, 2 and 3 committed on branches
+(s27a, s27b, s27c). Item 2's branch is rebased (README at 146 case files),
+pushed, and through its suite and mutation scope; its PR is not opened yet
+(`docs/context.md` has the details). Item 1 pins claude-code-action, git-auto-commit-action,
 checkout and setup-python to the commits their major tags pointed at that
 day; it edits `booth-pr-audit.yml`, so its PR carries "Human review
 required:" and waits for Mark. Item 3's first ruff run found 22 (14 unused
@@ -1864,6 +1868,27 @@ under compaction pressure, so its length is a cost paid on every session.
 
 ## Traps that have actually bitten
 
+- **"Desktop unchanged" needs the desktop numbers diffed, not a desktop
+  look.** #201's first version made the reliability diagram's plot size
+  come from its width at every width, not only on a phone, so the desktop
+  plot grew from 390 to 406 units. The browser check at 1280px compared
+  widths and text sizes and passed; Booth found it by diffing the base's
+  constants against the PR's. When a change branches on a width, compare
+  every desktop-side value with `main` before writing "unchanged", and
+  hold the desktop values in a test as well as the phone ones.
+- **`| Select -First N` on a PowerShell script's output stops the script.**
+  Piping `prep_pr.ps1` through `Select-Object -First 12` ended it once 12
+  lines had printed: the push had happened, but the background suite and
+  mutation run never started, and nothing said so. Redirect a script's
+  output to a file and read the file (`*> file`), or re-run only the tail
+  (`start_run.ps1` in the session archive).
+- **A helper's leftover message file became a docs commit's message.**
+  `merge_pr.ps1` wrote `.commit-msg.txt` into the main checkout and left it
+  there; the next docs commit, whose own write of that file was refused,
+  used it, so `7ebf8b6` (a docs update) is titled "Merge pull request #200"
+  on `main`. Not rewritten, since `main` is shared. `merge_pr.ps1` now
+  deletes the file after merging. Check a commit's subject with
+  `git log -1` before pushing it.
 - **A SESSION CAN FORGET ITS OWN ACTIONS AND REPORT THEM AS A STRANGER'S.**
   The 2026-09-28 overnight session merged #148 itself at 02:59 UTC, then
   wrote into `docs/context.md` that "something other than this session"
