@@ -103,6 +103,13 @@
       "find": "must carry a line beginning \"Human review required:\",",
       "replace": "must carry a line beginning \"Needs human review:\",",
       "expect_caught_by": "test_the_human_review_line_is_the_one_preflight_checks"
+    },
+    {
+      "id": "readme-licence-drifts-from-license-file",
+      "why": "the README names a different licence from the LICENSE file, so a reader is told they may do something the licence does not grant, or the reverse.",
+      "find": "are under the MIT licence",
+      "replace": "are under the Apache 2.0 licence",
+      "expect_caught_by": "test_the_licence_is_the_one_the_readme_names"
     }
   ]
 }
