@@ -41,12 +41,16 @@ Usage:
     python tests/mutation/runner.py              # every case
     python tests/mutation/runner.py --id sos-*   # a subset, glob on id
     python tests/mutation/runner.py --list       # names only, runs nothing
+    python tests/mutation/runner.py --sample 30 --seed 20260929
+                                                 # a reproducible slice
+                                                 # (the nightly workflow)
 
 Exit 0 only if every case is caught by the test it names.
 """
 import argparse
 import fnmatch
 import os
+import random
 import subprocess
 import sys
 from pathlib import Path
@@ -133,6 +137,32 @@ def select_cases(corpus, patterns):
     return [c for c in corpus if any(fnmatch.fnmatch(c['id'], p) for p in patterns)]
 
 
+def sample_cases(cases, n, seed):
+    """n of the cases, chosen by the seed, in corpus order (Stage 27 item 2).
+
+    The same seed over the same corpus always picks the same cases, so a
+    nightly run's slice can be re-run by hand from the seed in its summary.
+    Sorted by id before sampling, so the choice does not depend on the order
+    the case files happen to load in."""
+    ids = sorted(c['id'] for c in cases)
+    chosen = set(random.Random(seed).sample(ids, min(n, len(ids))))
+    return [c for c in cases if c['id'] in chosen]
+
+
+def summary_markdown(results, scope):
+    """The counts as a Markdown block for a CI run summary."""
+    lines = [f'### Mutation slice: {scope}', '',
+             '| Status | Cases |', '|---|---|']
+    for status in (CAUGHT, SURVIVED, WRONG_GUARD, BAD_ANCHOR):
+        lines.append(f'| {status} | {sum(1 for _, r in results if r["status"] == status)} |')
+    bad = [(c, r) for c, r in results if r['status'] != CAUGHT]
+    if bad:
+        lines += ['', 'Not caught as the corpus claims:', '']
+        lines += [f'- `{c["id"]}`: {r["status"]}' for c, r in bad]
+    lines += ['', 'Cases run: ' + ', '.join(f'`{c["id"]}`' for c, _ in results), '']
+    return '\n'.join(lines)
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[1])
     # action='append': repeating --id used to keep only the LAST one and still
@@ -143,13 +173,23 @@ def main(argv=None):
                     help="glob over case ids; repeat to select several (default: all)")
     ap.add_argument('--list', action='store_true',
                     help="list matching cases and exit without running them")
+    ap.add_argument('--sample', type=int, default=None,
+                    help="run only this many of the matching cases, chosen by --seed")
+    ap.add_argument('--seed', type=int, default=None,
+                    help="seed for --sample (the nightly workflow passes the UTC date)")
+    ap.add_argument('--summary', default=None,
+                    help="append a Markdown table of the counts to this file")
     args = ap.parse_args(argv)
+    if (args.sample is None) != (args.seed is None):
+        ap.error('--sample and --seed go together: a slice nobody can re-run is not evidence')
 
     patterns = args.id or ['*']
     cases = select_cases(load_corpus(), patterns)
     if not cases:
         print(f"no cases match {patterns!r}")
         return 1
+    if args.sample is not None:
+        cases = sample_cases(cases, args.sample, args.seed)
 
     if args.list:
         for c in cases:
@@ -159,6 +199,8 @@ def main(argv=None):
         return 0
 
     scope = "the full corpus" if patterns == ['*'] else "--id " + " --id ".join(patterns)
+    if args.sample is not None:
+        scope = f"--sample {args.sample} --seed {args.seed} over {scope}"
     print(f"Running {len(cases)} mutation(s) selected by {scope}. Each breaks the "
           f"source on purpose and must be caught by the test it names.\n")
 
@@ -171,6 +213,9 @@ def main(argv=None):
         print(f"        {r['status']}: {r['detail']}\n", flush=True)
 
     bad = [(c, r) for c, r in results if r['status'] != CAUGHT]
+    if args.summary:
+        with open(args.summary, 'a', encoding='utf-8') as f:
+            f.write(summary_markdown(results, scope))
     print('-' * 68)
     for status in (CAUGHT, SURVIVED, WRONG_GUARD, BAD_ANCHOR):
         n = sum(1 for _, r in results if r['status'] == status)

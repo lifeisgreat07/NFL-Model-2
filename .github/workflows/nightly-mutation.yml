@@ -1,0 +1,55 @@
+name: Nightly mutation slice
+# Stage 27 item 2, from the 2026-09-28 audit. The mutation corpus is run by
+# hand, case file by case file, only for what a PR touches. A guard that a
+# later change quietly weakened, in a file that PR did not touch, stays
+# "caught" in the last table that mentioned it and is never run again.
+#
+# So every night a slice of the whole corpus runs: 30 cases, chosen by a
+# seed that is the UTC date (YYYYMMDD). Each night's draw is independent, so
+# with about 820 cases a given case comes up about once a month on average,
+# some much later; this is a sampler, not a rotation through the corpus.
+# Any one night is reproducible by hand with the seed from its run summary:
+#   python tests/mutation/runner.py --sample 30 --seed <seed>
+# The counts by status go into the run summary. Anything but CAUGHT fails
+# the job, and a failed scheduled run is emailed to the repository owner.
+#
+# It writes nothing to the repository. 06:30 UTC: after the canary at 06:00,
+# and clear of the weekly runs at 11:00 Tuesday and 16:00 Thursday.
+# tests/test_nightly_mutation.py holds each of these.
+
+on:
+  schedule:
+    - cron: '30 6 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  slice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+        with:
+          # The same full history run-tests.yml fetches: some guards read
+          # git history, and under a shallow clone they skip or misfire.
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Set up node
+        # Guards that run template code in node skip without it, and a
+        # skipped guard lets its mutation survive.
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: Run tonight's slice
+        run: |
+          seed="$(date -u +%Y%m%d)"
+          python tests/mutation/runner.py --sample 30 --seed "$seed" --summary "$GITHUB_STEP_SUMMARY"
