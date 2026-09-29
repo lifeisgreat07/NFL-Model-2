@@ -1,0 +1,13 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_th_scope.py",
+  "cases": [
+    {
+      "id": "a-column-header-loses-its-scope",
+      "why": "the Accuracy change header drops scope, so a screen reader moving through that table stops announcing which column a number belongs to (the 2026-09-28 audit)",
+      "find": "<th scope=\"col\" class=\"num\">Accuracy change</th>",
+      "replace": "<th class=\"num\">Accuracy change</th>",
+      "expect_caught_by": "test_every_header_is_in_a_thead_and_scoped_to_its_column"
+    }
+  ]
+}

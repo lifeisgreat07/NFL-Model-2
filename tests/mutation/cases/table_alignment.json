@@ -5,8 +5,8 @@
     {
       "id": "ablation-headers-left-of-their-numbers",
       "why": "the ablation table's number headers lose class=\"num\" and sit left while their values sit right, the misalignment Mark reported on 2026-09-28.",
-      "find": "<th class=\"num\">Accuracy change</th>",
-      "replace": "<th>Accuracy change</th>",
+      "find": "<th scope=\"col\" class=\"num\">Accuracy change</th>",
+      "replace": "<th scope=\"col\">Accuracy change</th>",
       "expect_caught_by": "test_a_number_column_is_a_number_column_from_header_to_last_row"
     },
     {

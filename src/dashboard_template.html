@@ -1740,9 +1740,9 @@ __FONT_FACES__
       <table id="ratings-table">
         <thead>
           <tr>
-            <th data-key="rank">#</th>
-            <th data-key="team" tabindex="0" aria-sort="none">Team</th>
-            <th data-key="net" class="sorted" style="text-align:center;" tabindex="0" aria-sort="descending">
+            <th scope="col" data-key="rank">#</th>
+            <th scope="col" data-key="team" tabindex="0" aria-sort="none">Team</th>
+            <th scope="col" data-key="net" class="sorted" style="text-align:center;" tabindex="0" aria-sort="descending">
               <div class="net-head">
                 <span>Net Rating</span>
                 <!-- Endpoints filled in from the live data, not hardcoded: the
@@ -1756,10 +1756,10 @@ __FONT_FACES__
                 </div>
               </div>
             </th>
-            <th data-key="off" tabindex="0" aria-sort="none" style="text-align:right;">Offense</th>
-            <th data-key="def" tabindex="0" aria-sort="none" style="text-align:right;">Defense</th>
-            <th data-key="sos" style="text-align:right;" title="Strength of schedule: the average current net rating of the opponents a team has actually played so far. Blank until games have been played." tabindex="0" aria-sort="none">SOS</th>
-            <th data-key="playoff" style="text-align:right;" title="How often this team reached the playoffs across the simulated seasons." tabindex="0" aria-sort="none">Playoff Odds</th>
+            <th scope="col" data-key="off" tabindex="0" aria-sort="none" style="text-align:right;">Offense</th>
+            <th scope="col" data-key="def" tabindex="0" aria-sort="none" style="text-align:right;">Defense</th>
+            <th scope="col" data-key="sos" style="text-align:right;" title="Strength of schedule: the average current net rating of the opponents a team has actually played so far. Blank until games have been played." tabindex="0" aria-sort="none">SOS</th>
+            <th scope="col" data-key="playoff" style="text-align:right;" title="How often this team reached the playoffs across the simulated seasons." tabindex="0" aria-sort="none">Playoff Odds</th>
           </tr>
         </thead>
         <tbody id="ratings-body"></tbody>
@@ -2003,7 +2003,7 @@ __FONT_FACES__
     <p class="visually-hidden" id="lab-filter-status" aria-live="polite"></p>
     <div class="table-wrap" data-scroll-label="Experiment log">
       <table>
-        <thead><tr><th>Experiment</th><th>Result</th><th>Decision</th></tr></thead>
+        <thead><tr><th scope="col">Experiment</th><th scope="col">Result</th><th scope="col">Decision</th></tr></thead>
         <tbody>
           <!-- Rendered at build time by generate_dashboard.render_model_lab_rows()
                from src/model_lab.py: every pre-registered answer in experiments/,
@@ -2077,7 +2077,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <h4>Backtest Results — Chronological, Weekly-Refitting Walk-Forward</h4>
       <p>Trained only on strictly earlier data, refit every week within the test season (not just once per season) -- validated 2026-08 (Stage 9) to match what the live model actually does: weekly_update.py always trains on all real completed games available up to "now," every single run. Evaluated on 2022-2025 (1,087 games):</p>
       <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Model</th><th>Accuracy</th><th>Log Loss</th><th>Brier</th><th>AUC</th></tr></thead>
+        <thead><tr><th scope="col">Model</th><th scope="col">Accuracy</th><th scope="col">Log Loss</th><th scope="col">Brier</th><th scope="col">AUC</th></tr></thead>
         <tbody>
           <tr><td>Coin flip</td><td>50.0%</td><td>0.693</td><td>0.250</td><td>0.500</td></tr>
           <tr><td>Home team always wins</td><td>54.6%</td><td>-</td><td>-</td><td>-</td></tr>
@@ -2104,7 +2104,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <h4>Which Features Actually Do the Work</h4>
       <p>Most of this project's research has tested whether <i>adding</i> something helps. A formal ablation pass asks the opposite question: remove each existing feature one at a time, fully retrain, and measure what actually breaks. That's how you find out where a model's predictive power really lives, rather than assuming every feature is pulling its weight.</p>
       <div class="table-wrap" style="margin-top:var(--s3);"><table class="metrics-table">
-        <thead><tr><th>Feature removed</th><th class="num">Accuracy change</th><th class="num">95% CI</th></tr></thead>
+        <thead><tr><th scope="col">Feature removed</th><th scope="col" class="num">Accuracy change</th><th scope="col" class="num">95% CI</th></tr></thead>
         <tbody>
           <tr><td>QB matchup</td><td class="num">-2.39&nbsp;pp</td><td class="num">[-5.15, +0.37]</td></tr>
           <tr><td>QB change</td><td class="num">-0.55&nbsp;pp</td><td class="num">[-1.93, +0.83]</td></tr>
@@ -2166,7 +2166,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h4>Where This Model Stands</h4>
       <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Dimension</th><th>How this project does</th></tr></thead>
+        <thead><tr><th scope="col">Dimension</th><th scope="col">How this project does</th></tr></thead>
         <tbody>
           <tr><td>Model A against the market (log loss, Brier)</td><td>Behind on both. The market is a genuinely hard benchmark and this doesn't clear it</td></tr>
           <tr><td>Football-only, no market data</td><td>Reasonable -- log loss 0.650 on held-out games against 0.693 for a coin flip, and roughly 63% right against the ~54% you'd get by always picking home teams</td></tr>
@@ -2190,7 +2190,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h4>In Production (used every single weekly run)</h4>
       <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Dataset</th><th>Used For</th></tr></thead>
+        <thead><tr><th scope="col">Dataset</th><th scope="col">Used For</th></tr></thead>
         <tbody>
           <tr><td>Play-by-play</td><td>Team ratings (ridge regression), per-QB trailing EPA</td></tr>
           <tr><td>Schedules</td><td>Game results, spread/total lines, home/away, current-week matchups</td></tr>
@@ -2203,7 +2203,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h4>Research-Only (fetched to test a specific idea, never part of live predictions)</h4>
       <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Dataset</th><th>What happened</th></tr></thead>
+        <thead><tr><th scope="col">Dataset</th><th scope="col">What happened</th></tr></thead>
         <tbody>
           <tr><td>Officials</td><td>Rejected</td></tr>
           <tr><td>FTN charting</td><td>Rejected</td></tr>
@@ -2227,7 +2227,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h4>Model &amp; Prediction Terms</h4>
       <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <thead><tr><th scope="col">Term</th><th scope="col">What it means</th></tr></thead>
         <tbody>
           <tr><td>EPA (Expected Points Added)</td><td>How much a single play changed a team's expected points on that drive. A 40-yard gain has high positive EPA; a sack has negative EPA. Summed up, it's a better measure of team quality than raw yards</td></tr>
           <tr><td>Model A</td><td>The football-only model -- team ratings, QB performance, QB changes. Uses no betting market data at all</td></tr>
@@ -2249,7 +2249,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h4>Evaluation Terms</h4>
       <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <thead><tr><th scope="col">Term</th><th scope="col">What it means</th></tr></thead>
         <tbody>
           <tr><td>Log loss</td><td>Penalizes confident wrong predictions heavily. Lower is better. A model that says 95% and is wrong is punished far more than one that said 55%. Season Accuracy's "How sure, and how right" score is this, averaged over the season's graded games</td></tr>
           <tr><td>Brier score</td><td>Average squared difference between predicted probability and what actually happened. Lower is better. Similar spirit to log loss, less harsh on confident misses</td></tr>
@@ -2266,7 +2266,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h4>Betting Terms</h4>
       <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Term</th><th>What it means</th></tr></thead>
+        <thead><tr><th scope="col">Term</th><th scope="col">What it means</th></tr></thead>
         <tbody>
           <tr><td>Point spread</td><td>The margin the favorite is expected to win by. A -7 favorite is expected to win by 7</td></tr>
           <tr><td>Over/under (total)</td><td>The combined score both teams are expected to reach</td></tr>
@@ -5375,7 +5375,7 @@ function buildReliabilityDiagram(){
         <details class="rel-table" style="margin-top:var(--s3);">
           <summary>Show the numbers as a table</summary>
           <div class="table-wrap" style="margin-top:var(--s2);"><table class="metrics-table">
-            <thead><tr><th>Series</th><th>Bin</th><th>Games</th><th>Stated</th><th>Observed</th><th>95% interval</th></tr></thead>
+            <thead><tr><th scope="col">Series</th><th scope="col">Bin</th><th scope="col">Games</th><th scope="col">Stated</th><th scope="col">Observed</th><th scope="col">95% interval</th></tr></thead>
             <tbody>${tableRows}</tbody>
           </table></div>
           <p style="font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);">* Fewer than ${calibration.min_bin_n} games in the bin &mdash; shown for completeness, drawn hollow on the chart, and not a measurement.</p>
@@ -5516,7 +5516,7 @@ function forecastScoreHtml(s){
       <h3>How sure, and how right</h3>
       <p>Picking the winner is only half of it. This score also weighs how sure each forecast was: a pick made at 90% that loses costs far more than one made at 55%. <b style="color:var(--text)">Lower is better.</b> Calling every game 50&ndash;50 scores ${s.coin_flip.toFixed(3)}, whatever happens.</p>
       <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Forecast</th><th>Score</th></tr></thead>
+        <thead><tr><th scope="col">Forecast</th><th scope="col">Score</th></tr></thead>
         <tbody>${body}</tbody>
       </table></div>
       <p style="font-size:var(--fs-12); color:var(--text-2); margin-top:var(--s2);">Over the ${s.n} games all three had a number for. The Methodology page explains how it is worked out.</p>
@@ -5567,7 +5567,7 @@ function renderAccuracy(){
       <h3>Week by week</h3>
       ${weeklyRows
         ? `<div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Week</th><th>Model A</th><th>Model B</th><th>Market</th></tr></thead>
+        <thead><tr><th scope="col">Week</th><th scope="col">Model A</th><th scope="col">Model B</th><th scope="col">Market</th></tr></thead>
         <tbody>${weeklyRows}</tbody>
       </table></div>`
         : `<p>Nothing graded yet. Each week appears here the day after its games are played.</p>`}
@@ -5593,7 +5593,7 @@ function renderAccuracy(){
       <p>Does a game we picked at, say, 65% confidence actually win about 65% of the time? Compares the average predicted probability in each confidence bucket to how often the pick was actually right.</p>
       ${calibChartHtml}
       <div class="table-wrap"><table class="metrics-table">
-        <thead><tr><th>Confidence Bucket</th><th>Games</th><th>Avg Predicted</th><th>Actual Correct Rate</th></tr></thead>
+        <thead><tr><th scope="col">Confidence Bucket</th><th scope="col">Games</th><th scope="col">Avg Predicted</th><th scope="col">Actual Correct Rate</th></tr></thead>
         <tbody>${calibRows || '<tr><td colspan="4">Not enough graded games yet.</td></tr>'}</tbody>
       </table></div>
       ${calibFootnote}

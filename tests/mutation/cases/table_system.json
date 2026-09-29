@@ -33,8 +33,8 @@
     {
       "id": "offense-header-unreachable-by-keyboard",
       "why": "the Offense header sorts on click and cannot be reached with Tab, which is how every sort header was before Stage 10.",
-      "find": "<th data-key=\"off\" tabindex=\"0\" aria-sort=\"none\"",
-      "replace": "<th data-key=\"off\" aria-sort=\"none\"",
+      "find": "<th scope=\"col\" data-key=\"off\" tabindex=\"0\" aria-sort=\"none\"",
+      "replace": "<th scope=\"col\" data-key=\"off\" aria-sort=\"none\"",
       "expect_caught_by": "test_sortable_headers_are_announced_and_reachable"
     },
     {

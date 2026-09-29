@@ -12,8 +12,8 @@
     {
       "id": "header-is-a-label-not-a-control",
       "why": "the Playoff Odds header loses its sort key, so the column renders and refuses to sort -- the exact half-working state that joining the value onto the team object exists to prevent",
-      "find": "<th data-key=\"playoff\" style=\"text-align:right;\"",
-      "replace": "<th style=\"text-align:right;\"",
+      "find": "<th scope=\"col\" data-key=\"playoff\" style=\"text-align:right;\"",
+      "replace": "<th scope=\"col\" style=\"text-align:right;\"",
       "expect_caught_by": "test_the_column_header_carries_the_sort_key"
     },
     {
