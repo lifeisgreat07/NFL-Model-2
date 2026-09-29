@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-29, evening (#202 to #213 merged; Stage 27 done; Stage 29 nearly done)
+Last updated: 2026-09-29, late evening (#202 to #213 merged; Stage 27 done; Stage 29 nearly done; nothing open)
 
 ---
 
@@ -18,7 +18,9 @@ before about 17:30 UTC is normal). Confirm it started, locked week 4
 before the 00:15 UTC Friday kickoff, replaced the Tuesday preview on the
 Week Board, and its push survived. Week 4 is the first locked card with
 quarterback names and TV channels. If it has not started by 20:00 UTC,
-start "Weekly update" by hand from the Actions tab.
+start "Weekly update" by hand from the Actions tab. The 2026-09-29
+session scheduled this check for Thursday 17:00 UTC (1pm ET); a fresh
+session that picks it up first should do the same check.
 
 Then, in this order:
 1. **CLAUDE.md split** (the last Stage 29 item): rules into CLAUDE.md
