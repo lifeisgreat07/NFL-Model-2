@@ -5,8 +5,24 @@
     {
       "id": "lock-schedule-thursday-run-deleted",
       "why": "the Thursday cron goes and SCHEDULED_RUNS_UTC still expects it. Every Tuesday run then holds the week for a run that never comes, and nothing locks before kickoff all season -- with a green Actions history, because holding is a success.",
-      "find": "    - cron: '0 16 * * 4'\n",
+      "find": "    - cron: '0 11 * * 4'\n",
       "replace": "",
+      "expect_caught_by": "test_the_workflow_schedule_is_the_one_decide_lock_assumes"
+    },
+    {
+      "id": "lock-slack-back-to-four-hours",
+      "target": "src/weekly_update.py",
+      "tests": "tests/test_pick_lock_time.py",
+      "why": "the slack goes back under the delays scheduled runs have really had. Thanksgiving week is then held for a Thursday run due six and a half hours before its first kickoff, which a run as late as 2026-09-28's would reach at kickoff -- and the week's early games go unpicked.",
+      "find": "LOCK_SLACK = pd.Timedelta(hours=8)\n",
+      "replace": "LOCK_SLACK = pd.Timedelta(hours=4)\n",
+      "expect_caught_by": "test_thanksgiving_locks_on_tuesday_by_itself"
+    },
+    {
+      "id": "lock-schedule-thursday-back-to-16",
+      "why": "the Thursday cron goes back to 16:00 and SCHEDULED_RUNS_UTC stays at 11:00. decide_lock then plans for a run five hours earlier than the real one, and a Tuesday run can hold a week that the real Thursday run reaches too late.",
+      "find": "    - cron: '0 11 * * 4'\n",
+      "replace": "    - cron: '0 16 * * 4'\n",
       "expect_caught_by": "test_the_workflow_schedule_is_the_one_decide_lock_assumes"
     }
   ]

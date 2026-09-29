@@ -57,42 +57,54 @@ def test_tuesday_holds_an_ordinary_week_for_thursday():
         "That is the old behaviour Mark decided against on 2026-09-22: it "
         "locks before Wednesday's injury reports, so no QB override written "
         "after Tuesday morning can reach the pick.")
-    assert d.next_run == utc('2026-09-24 16:00')
+    assert d.next_run == utc('2026-09-24 11:00')
     assert d.started == []
 
 
 def test_thursday_locks_it_before_kickoff():
-    d = wu.decide_lock(WEEK3, utc('2026-09-24 16:12'))
+    d = wu.decide_lock(WEEK3, utc('2026-09-24 11:12'))
     assert d.lock is True, "the Thursday run did not lock the week"
     assert d.first_kickoff == utc('2026-09-25 00:15')
     assert d.started == []
 
 
 def test_a_late_thursday_run_still_locks():
-    """Scheduled Actions start late. Three hours late is still in time."""
-    assert wu.decide_lock(WEEK3, utc('2026-09-24 19:05')).lock is True
+    """Scheduled Actions start late: every scheduled run here from
+    2026-09-24 started 3.5 to 6.5 hours late. The worst seen, 6h35m, is
+    still in time, with about seven hours to spare before kickoff."""
+    assert wu.decide_lock(WEEK3, utc('2026-09-24 17:35')).lock is True
+
+
+def test_the_slack_covers_the_worst_delay_seen():
+    """LOCK_SLACK is how late a scheduled run is assumed it may start. If it
+    is shorter than a delay that has really happened, a week whose first
+    game falls inside that gap (Thanksgiving) is held for a Thursday run
+    that can start at or after kickoff."""
+    worst_seen = pd.Timedelta(hours=6, minutes=35)   # nightly canary, 2026-09-28
+    assert wu.LOCK_SLACK > worst_seen, wu.LOCK_SLACK
 
 
 def test_a_manual_run_before_the_thursday_run_leaves_it_to_that_run():
-    d = wu.decide_lock(WEEK3, utc('2026-09-24 14:00'))
+    d = wu.decide_lock(WEEK3, utc('2026-09-24 09:00'))
     assert d.lock is False
-    assert d.next_run == utc('2026-09-24 16:00')
+    assert d.next_run == utc('2026-09-24 11:00')
 
 
 # --- weeks a calendar rule gets wrong ---------------------------------------
 
 def test_thanksgiving_locks_on_tuesday_by_itself():
-    """12:30 ET on 26 Nov 2026 is 17:30 UTC (EST): 90 minutes after the
-    Thursday run is due. A run that late is ordinary for Actions, so the
-    Tuesday run takes it -- this is what LOCK_SLACK is for."""
+    """12:30 ET on 26 Nov 2026 is 17:30 UTC (EST): six and a half hours
+    after the Thursday run is due. Scheduled runs here have started that
+    late (6h35m on 2026-09-28), so the Tuesday run takes it -- this is what
+    LOCK_SLACK is for."""
     thanksgiving = week(('CHI', 'DET', '2026-11-26', '12:30'),
                         ('NYG', 'DAL', '2026-11-26', '16:30'),
                         ('LV', 'KC', '2026-11-26', '20:20'),
                         ('ATL', 'NO', '2026-11-29', '13:00'))
     d = wu.decide_lock(thanksgiving, utc('2026-11-24 11:05'))
     assert d.lock is True, (
-        "Thanksgiving week waited for Thursday, leaving an early kickoff 90 "
-        "minutes after a scheduled run that can easily start later than that")
+        "Thanksgiving week waited for Thursday, leaving an early kickoff six "
+        "and a half hours after a scheduled run that has started later than that")
     assert d.first_kickoff == utc('2026-11-26 17:30')
 
 
@@ -109,21 +121,22 @@ def test_a_saturday_first_week_locks_on_thursday():
     wk18 = week(('CLE', 'CIN', '2027-01-09', '16:30'),
                 ('NYJ', 'BUF', '2027-01-10', '13:00'))
     assert wu.decide_lock(wk18, utc('2027-01-05 11:03')).lock is False
-    assert wu.decide_lock(wk18, utc('2027-01-07 16:04')).lock is True
+    assert wu.decide_lock(wk18, utc('2027-01-07 11:04')).lock is True
 
 
 def test_a_sunday_only_week_locks_on_thursday():
     """A Super Bowl, or any week whose first game is Sunday. The next run
     after Thursday is Tuesday, after every game -- so Thursday must lock.
     A fixed 'lock within N hours of kickoff' horizon cannot do this and
-    also hold an ordinary week on Tuesday: Thursday 16:00 to a Sunday 09:30
-    ET London kickoff is 69.5 hours, longer than Tuesday to Thursday night."""
+    also hold an ordinary week on Tuesday: Thursday 11:00 UTC to a Sunday
+    09:30 ET London kickoff is 74.5 hours, longer than Tuesday to Thursday
+    night."""
     sb = week(('SF', 'KC', '2027-02-14', '18:30'))
     assert wu.decide_lock(sb, utc('2027-02-09 11:01')).lock is False
-    assert wu.decide_lock(sb, utc('2027-02-11 16:01')).lock is True
+    assert wu.decide_lock(sb, utc('2027-02-11 11:01')).lock is True
     london = week(('NYJ', 'MIN', '2026-10-11', '09:30'),
                   ('DAL', 'PHI', '2026-10-11', '13:00'))
-    assert wu.decide_lock(london, utc('2026-10-08 16:03')).lock is True
+    assert wu.decide_lock(london, utc('2026-10-08 11:03')).lock is True
 
 
 # --- clock change and kickoff arithmetic ------------------------------------
@@ -143,7 +156,7 @@ def test_an_est_thursday_night_still_waits_for_thursday():
     est = week(('GB', 'MIN', '2026-11-05', '20:15'),
                ('DEN', 'LV', '2026-11-08', '16:05'))
     assert wu.decide_lock(est, utc('2026-11-03 11:04')).lock is False
-    assert wu.decide_lock(est, utc('2026-11-05 16:04')).lock is True
+    assert wu.decide_lock(est, utc('2026-11-05 11:04')).lock is True
 
 
 def test_a_missing_time_counts_as_the_start_of_the_day():

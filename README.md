@@ -190,7 +190,7 @@ python -m pytest
 
 The weekly pipeline itself needs no Claude at all. The repository's
 **Weekly update** workflow (`.github/workflows/weekly-update.yml`) runs on
-GitHub every Tuesday 11:00 UTC and Thursday 16:00 UTC. It grades finished
+GitHub every Tuesday and Thursday at 11:00 UTC. It grades finished
 weeks, refreshes the ratings, playoff odds and line archive, and locks the
 next week's picks at the right run: Thursday usually, and Tuesday for a
 week with an earlier game (Thanksgiving, a Wednesday game). See
@@ -235,7 +235,7 @@ code.claude.com/docs/en/routines):
    `src/generate_dashboard.py`. The workflow owns those, and a second writer of
    saved predictions would be a second way to break a lock.
 7. **Merge the override PR before the lock.** On a normal week, that means
-   before Thursday 16:00 UTC. An override merged after the lock changes
+   before Thursday 11:00 UTC. An override merged after the lock changes
    nothing, because a locked week is final.
 
 ## What this does NOT automate yet

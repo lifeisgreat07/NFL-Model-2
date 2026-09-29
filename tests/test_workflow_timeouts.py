@@ -46,7 +46,7 @@ def test_every_job_has_a_timeout():
 
 
 def test_the_weekly_lock_run_fails_well_inside_a_thursday():
-    """The Thursday run starts at 16:00 UTC and locks the Thursday night game
+    """The Thursday run starts at 11:00 UTC and locks the Thursday night game
     (Thanksgiving's early games are locked on Tuesday). A timeout is only
     useful if a failed run leaves time to dispatch it again before kickoff,
     so it is held to an hour at most."""

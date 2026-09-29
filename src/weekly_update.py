@@ -74,19 +74,26 @@ LOCKIN_WINDOW_DAYS = 7
 # played kicks off before the NEXT scheduled run plus LOCK_SLACK; otherwise
 # it holds and leaves the lock to that run. So an ordinary week locks on
 # Thursday, and a week with an earlier game locks on Tuesday by itself:
-# Thanksgiving's 12:30 ET kickoff is 90 minutes after the Thursday run,
-# inside the slack, and a Wednesday game is before it outright.
+# Thanksgiving's 12:30 ET kickoff is six and a half hours after the Thursday
+# run, inside the slack, and a Wednesday game is before it outright.
 #
 # (weekday with Monday = 0, hour, minute), UTC. These MUST match the `cron:`
 # lines in .github/workflows/weekly-update.yml -- the decision is only right
 # if it knows when the next run is -- and tests/test_pick_lock_time.py
 # compares the two.
-SCHEDULED_RUNS_UTC = ((1, 11, 0), (3, 16, 0))  # Tuesday 11:00, Thursday 16:00
-# Scheduled Actions runs start late, sometimes by an hour. Four hours is
-# wide enough to send Thanksgiving to Tuesday and narrow enough that an
-# ordinary Thursday night game (eight or nine hours after the Thursday run)
-# still waits for Thursday.
-LOCK_SLACK = pd.Timedelta(hours=4)
+#
+# Thursday moved from 16:00 to 11:00 on 2026-09-29 (Mark): from 2026-09-24
+# every scheduled run in this repository started 3.5 to 6.5 hours late,
+# off-the-hour minutes included (the 2026-09-24 Thursday run at 19:34, this
+# Tuesday's at 16:41). At 16:00 a 6.5-hour delay leaves under two hours
+# before a Thursday night kickoff; at 11:00 it leaves about seven.
+SCHEDULED_RUNS_UTC = ((1, 11, 0), (3, 11, 0))  # Tuesday 11:00, Thursday 11:00
+# The slack is how late a scheduled run is assumed it may start. Eight hours
+# covers the worst delay seen (6h35m, 2026-09-28) and so sends Thanksgiving
+# (17:30 UTC in EST, 6.5 hours after the Thursday run) to Tuesday, while an
+# ordinary Thursday night game (13 to 14 hours after the Thursday run) still
+# waits for Thursday.
+LOCK_SLACK = pd.Timedelta(hours=8)
 
 PRED_DIR = Path(__file__).parent.parent / 'predictions'
 PRED_DIR.mkdir(exist_ok=True)

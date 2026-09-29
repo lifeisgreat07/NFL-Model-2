@@ -14,8 +14,9 @@ name: Nightly canary
 # comments on it if it is already open. One issue for a run of bad nights,
 # not one a night; closing it says "handled".
 #
-# 06:00 UTC: after nflverse's nightly rebuild, and clear of the weekly runs
-# at 11:00 Tuesday and 16:00 Thursday.
+# 06:00 UTC: after nflverse's nightly rebuild, and five hours before the
+# weekly runs at 11:00 Tuesday and Thursday. Started late, it can overlap
+# them; it only reads, so that costs nothing.
 on:
   schedule:
     - cron: '0 6 * * *'

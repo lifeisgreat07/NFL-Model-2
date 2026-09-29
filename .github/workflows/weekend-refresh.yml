@@ -20,7 +20,7 @@ name: Weekend refresh
 #   Sunday 21:47  -- after the early Sunday games
 #   Monday 05:37  -- after the late games and Sunday night
 # Monday night's game is left to Tuesday's grading. None of these can meet
-# the weekly runs (Tuesday 11:00, Thursday 16:00) even five hours late.
+# the weekly runs (Tuesday 11:00, Thursday 11:00) even five hours late.
 #
 # Its commit is made with the default GITHUB_TOKEN, which cannot trigger
 # another workflow, so "Deploy dashboard to Pages" names this workflow in its

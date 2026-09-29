@@ -74,7 +74,7 @@ current status belongs.**
 
 **What runs unattended, and who owns what (settled 2026-09-24).** The
 GitHub **Weekly update** workflow owns predictions, grading and the data
-commit: Tuesday 11:00 and Thursday 16:00 UTC. Its commit triggers the Pages
+commit: Tuesday 11:00 and Thursday 11:00 UTC. Its commit triggers the Pages
 rebuild. Mark's Claude routine, **"Weekly QB override research"**
 (`trig_01CG1y9jfmcNQXnu8Hc9SL5K`, Mon and Wed 22:00 UTC), only researches
 starting-QB news and opens a PR with a sourced
