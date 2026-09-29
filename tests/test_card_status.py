@@ -54,7 +54,7 @@ def function_source(src, name):
 def lines():
     if not NODE:
         pytest.skip('node not available')
-    js = function_source(template(), 'cardStatusLine') + \
+    js = function_source(template(), 'gameHasScore') + function_source(template(), 'cardStatusLine') + \
         f'\nconst C={json.dumps(CASES)};const o={{}};for(const k in C)o[k]=cardStatusLine(C[k]);' \
         'process.stdout.write(JSON.stringify(o));'
     # utf-8 explicitly: the line carries a middle dot, and Windows would

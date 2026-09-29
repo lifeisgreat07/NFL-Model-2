@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_final_ungraded_card.py",
+  "cases": [
+    {
+      "id": "provisional-winner-reversed",
+      "why": "the comparison is flipped, so every finished card names the loser as the winner; nothing throws and the sentence reads naturally either way",
+      "find": "  return `${g.away_score > g.home_score ? g.away : g.home} won`;",
+      "replace": "  return `${g.away_score < g.home_score ? g.away : g.home} won`;",
+      "expect_caught_by": "test_the_result_is_named_by_who_won"
+    },
+    {
+      "id": "graded-cards-go-provisional-too",
+      "why": "a graded card also says 'picked ... won' beside its right-or-wrong tag, so the two say the same thing twice after Tuesday, the redundancy Mark removed on 2026-09-28",
+      "find": "  if(g.status !== 'final' || g.graded || !gameHasScore(g)) return '';",
+      "replace": "  if(g.status !== 'final' || !gameHasScore(g)) return '';",
+      "expect_caught_by": "test_only_an_ungraded_final_with_both_scores_is_provisional"
+    },
+    {
+      "id": "tie-named-as-home-win",
+      "why": "a tie falls through to the comparison and is reported as the home team winning",
+      "find": "  if(g.away_score === g.home_score) return 'a tie';\n",
+      "replace": "",
+      "expect_caught_by": "test_the_result_is_named_by_who_won"
+    },
+    {
+      "id": "finished-card-still-says-to-win",
+      "why": "the headline ignores the provisional state and keeps saying 'to win' after the game is over, the exact wording the audit flagged",
+      "find": "  const after = done ? `<span class=\"card-hl-to\">&middot; ${done}</span>` : '<span class=\"card-hl-to\">to win</span>';",
+      "replace": "  const after = '<span class=\"card-hl-to\">to win</span>';",
+      "expect_caught_by": "test_an_ungraded_final_says_picked_and_the_result_not_to_win"
+    }
+  ]
+}

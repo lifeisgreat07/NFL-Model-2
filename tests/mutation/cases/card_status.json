@@ -5,8 +5,8 @@
     {
       "id": "card-status-drops-a-zero-score",
       "why": "a truthiness check reads a score of 0 as missing, so a shutout never shows as final.",
-      "find": "  const hasScore = g.away_score !== null && g.away_score !== undefined\n    && g.home_score !== null && g.home_score !== undefined;",
-      "replace": "  const hasScore = g.away_score && g.home_score;",
+      "find": "  return g.away_score !== null && g.away_score !== undefined\n    && g.home_score !== null && g.home_score !== undefined;",
+      "replace": "  return g.away_score && g.home_score;",
       "expect_caught_by": "test_a_shutout_score_of_zero_is_still_a_score"
     },
     {
