@@ -1,0 +1,41 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_page_change.py",
+  "cases": [
+    {
+      "id": "nav-current-set-and-never-cleared",
+      "why": "the new page's buttons are marked current and the old page's keep the mark, so after three page changes a screen reader hears four nav buttons each called the current page",
+      "find": "    if(on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');",
+      "replace": "    if(on) b.setAttribute('aria-current', 'page');",
+      "expect_caught_by": "test_every_nav_button_is_marked_or_cleared_on_a_change"
+    },
+    {
+      "id": "board-not-current-at-load",
+      "why": "the board's sidebar button starts without the mark, so until the first page change nothing in the nav says which page is showing",
+      "find": "<button class=\"nav-btn active\" data-page=\"board\" aria-current=\"page\">",
+      "replace": "<button class=\"nav-btn active\" data-page=\"board\">",
+      "expect_caught_by": "test_the_board_starts_marked_as_the_current_page"
+    },
+    {
+      "id": "title-never-changes",
+      "why": "the tab says Command Board on every page again, and a reader switching tabs or reading history cannot tell the pages apart",
+      "find": "  document.title = (pageId === 'board' || !heading) ? BASE_TITLE\n",
+      "replace": "  void (pageId === 'board' || !heading) ? BASE_TITLE\n",
+      "expect_caught_by": "test_the_title_names_the_page_by_its_heading"
+    },
+    {
+      "id": "focus-stays-on-the-nav-button",
+      "why": "the page is swapped under a screen reader's cursor and nothing is announced; the reader has to hunt back up the page for the content that changed",
+      "find": "    heading.focus({preventScroll:true});",
+      "replace": "    heading.scrollIntoView();",
+      "expect_caught_by": "test_focus_moves_only_when_asked"
+    },
+    {
+      "id": "back-button-does-not-move-focus",
+      "why": "a nav click moves focus to the new page but Back and Forward do not, so the same page change is announced one way and silent the other",
+      "find": "  window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown), {focus:true}));",
+      "replace": "  window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown)));",
+      "expect_caught_by": "test_a_nav_click_and_back_ask_for_focus_and_the_first_paint_does_not"
+    }
+  ]
+}

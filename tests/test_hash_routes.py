@@ -143,7 +143,7 @@ def test_a_week_or_team_change_replaces_rather_than_adds(src):
 
 def test_back_forward_and_a_pasted_address_are_followed(src):
     code = re.search(r'\(function wireRoutes\(\)\{.*?\n\}\)\(\);', src, re.S).group(0)
-    assert "window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown)));" in code
+    assert "window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown), {focus:true}));" in code
     assert 'if(location.hash) applyRoute(parseRoute(location.hash, routeKnown));' in code, (
         'a link with a route in it no longer opens that route on load')
 
