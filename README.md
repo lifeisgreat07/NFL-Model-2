@@ -268,3 +268,11 @@ code.claude.com/docs/en/routines):
 - The model does not beat the betting market on its own. Model B only
   matches it, within noise. Treating Model A as an edge against a market
   price would be a misreading of the table above.
+
+## Licence
+
+The code and writing in this repository are under the MIT licence
+([LICENSE](LICENSE)). It does not cover what the project reads from
+elsewhere: nflverse's data, the team logos loaded from ESPN, and the
+self-hosted Plus Jakarta Sans font (its own licence is
+`assets/fonts/OFL.txt`) stay under their own terms.

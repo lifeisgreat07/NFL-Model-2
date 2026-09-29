@@ -281,3 +281,16 @@ def test_running_the_tests_says_what_the_suite_needs():
     workflow = (REPO / '.github' / 'workflows' / 'run-tests.yml').read_text(encoding='utf-8')
     node = re.search(r"node-version:\s*'(\d+)'", workflow).group(1)
     assert f'node {node}' in flat, f"README's node version is not run-tests.yml's {node}"
+
+
+def test_the_licence_is_the_one_the_readme_names():
+    """Stage 29: Mark chose MIT (2026-09-29). The README's Licence section and
+    the LICENSE file must agree, and the section must keep saying what the
+    licence does not cover."""
+    licence = (REPO / 'LICENSE').read_text(encoding='utf-8')
+    assert licence.startswith('MIT License'), 'LICENSE is not the MIT licence'
+    assert 'Permission is hereby granted, free of charge' in licence
+    flat = ' '.join(TEXT.split())
+    assert 'under the MIT licence ([LICENSE](LICENSE))' in flat
+    assert "nflverse's data, the team logos loaded from ESPN" in flat
+
