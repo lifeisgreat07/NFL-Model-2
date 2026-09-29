@@ -18,3 +18,8 @@
 # Install both:  pip install -r requirements.txt -r requirements-dev.txt
 
 pytest==9.1.1
+
+# The linter run-tests.yml runs, pyflakes rules only (ruff.toml; Stage 27).
+# Pinned for the same reason: a new ruff release can add findings to a rule,
+# and a PR should not go red because the linter changed under it.
+ruff==0.16.9

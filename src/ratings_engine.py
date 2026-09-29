@@ -6,7 +6,6 @@ backtest -- see the dashboard's Methodology page, and README.md, for the
 real, run numbers. (There has never been a METHODOLOGY.md in this repo;
 three files pointed at one anyway. See src/tune_qb_shrink_k.py.)
 """
-import pandas as pd
 import numpy as np
 from sklearn.linear_model import Ridge
 from config import RIDGE_ALPHA, RECENCY_HALF_LIFE, QB_SHRINK_K, MIN_PLAYS_FOR_RATING

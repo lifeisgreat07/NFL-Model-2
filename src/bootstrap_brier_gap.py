@@ -256,7 +256,7 @@ def main():
     print("\nRunning one aligned walk-forward for all three models...")
     keys, y_true, probs, coverage = walk_forward_aligned(hist)
 
-    print(f"\nRow coverage (games each model could evaluate on its own):")
+    print("\nRow coverage (games each model could evaluate on its own):")
     for name in MODELS:
         print(f"  {name:<10}{coverage[name]}")
     print(f"  {'common':<10}{coverage['common']}   <- games usable by all three")

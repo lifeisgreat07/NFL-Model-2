@@ -33,9 +33,7 @@ Run with: pytest tests/test_dashboard_charts.py -v
 import json
 import math
 import re
-import subprocess
 import sys
-import tempfile
 from itertools import combinations
 from pathlib import Path
 

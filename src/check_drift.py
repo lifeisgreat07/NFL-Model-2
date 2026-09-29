@@ -85,8 +85,8 @@ def check_model(records, key, expected_p, label):
     print(f"  z-score: {z:.2f}" if z is not None else "  z-score: undefined")
     if flagged:
         print(f"  *** DRIFT WARNING: live accuracy is significantly below the backtest baseline (z={z:.2f}, threshold={-SIGNIFICANCE_Z}) ***")
-        print(f"  This does not automatically mean something is broken -- real variance happens -- but it's")
-        print(f"  a large enough, unlikely-by-chance gap that it's worth a real look, not just noting and moving on.")
+        print("  This does not automatically mean something is broken -- real variance happens -- but it's")
+        print("  a large enough, unlikely-by-chance gap that it's worth a real look, not just noting and moving on.")
     else:
         print("  No significant drift detected.")
     return flagged

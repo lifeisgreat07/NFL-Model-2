@@ -22,7 +22,6 @@ inheriting the heading's flex layout.
 import re
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 import pytest

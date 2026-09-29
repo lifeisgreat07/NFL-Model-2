@@ -18,7 +18,6 @@ PASS only if the interval's lower end is above zero. Nothing here reads a
 season after 2023.
 """
 import numpy as np
-import pandas as pd
 
 R1_SEASONS = list(range(2016, 2024))    # registry: "from 2016 to 2023"
 EARLY = (2016, 2020)

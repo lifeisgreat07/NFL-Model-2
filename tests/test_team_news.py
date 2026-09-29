@@ -9,7 +9,6 @@ no network call.
 Run with: pytest tests/test_team_news.py -v
 """
 import json
-import math
 import re
 import sys
 from datetime import datetime, timezone

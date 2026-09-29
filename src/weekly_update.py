@@ -234,7 +234,6 @@ def build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_wee
             hk, ak = (g['season'], g['week'], g['home_team']), (g['season'], g['week'], g['away_team'])
             if hk not in starters_idx.index or ak not in starters_idx.index:
                 continue
-            cutoff = week_to_idx[key] if key in week_to_idx else qb['week_to_idx'].get(key)
             qb_cutoff = qb['week_to_idx'].get(key)
             if qb_cutoff is None:
                 continue

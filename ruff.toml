@@ -1,0 +1,9 @@
+# Stage 27 item 3, from the 2026-09-28 audit: ruff with the pyflakes rules
+# only -- names that are undefined, imported and unused, assigned and never
+# read, f-strings with nothing to format. Those are mistakes, not style; no
+# style rule is on, so nothing here asks for a reformat. The first run found
+# 22 (14 unused imports, 7 empty f-strings, one dead variable), fixed in the
+# same PR. run-tests.yml runs `ruff check .` on every PR and push to main;
+# ruff's version is pinned in requirements-dev.txt.
+[lint]
+select = ["F"]

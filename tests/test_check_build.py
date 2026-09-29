@@ -8,7 +8,6 @@ over synthetic pages broken in exactly the way each rule names.
 Run with: pytest tests/test_check_build.py -v
 """
 import json
-import re
 import sys
 from pathlib import Path
 

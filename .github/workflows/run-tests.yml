@@ -56,5 +56,9 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: Lint (pyflakes rules only)
+        # ruff.toml selects the F rules: undefined names, unused imports and
+        # variables, empty f-strings. Mistakes, not style (Stage 27 item 3).
+        run: ruff check .
       - name: Run leak-free test suite
         run: python -m pytest tests/ -v

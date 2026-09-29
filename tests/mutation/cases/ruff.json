@@ -1,0 +1,29 @@
+{
+  "target": "ruff.toml",
+  "tests": "tests/test_ruff.py",
+  "cases": [
+    {
+      "id": "ruff-selects-style-rules",
+      "why": "the default rule set comes back with the pycodestyle errors, and the next PR goes red on line lengths nobody asked about",
+      "find": "select = [\"F\"]",
+      "replace": "select = [\"E\", \"F\"]",
+      "expect_caught_by": "test_the_config_selects_the_pyflakes_rules_and_nothing_else"
+    },
+    {
+      "id": "ruff-unpinned",
+      "target": "requirements-dev.txt",
+      "why": "a new ruff release can add findings to a rule, so the same commit passes one day and fails the next",
+      "find": "ruff==0.16.9",
+      "replace": "ruff",
+      "expect_caught_by": "test_ruff_is_pinned_with_the_test_requirements"
+    },
+    {
+      "id": "lint-step-dropped",
+      "target": ".github/workflows/run-tests.yml",
+      "why": "the config and the pin stay and nothing runs them, so the lint is a file that describes a check",
+      "find": "        run: ruff check .\n",
+      "replace": "        run: echo skipped\n",
+      "expect_caught_by": "test_the_test_workflow_lints_the_whole_repository_before_the_tests"
+    }
+  ]
+}
