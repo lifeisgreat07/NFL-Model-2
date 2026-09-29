@@ -4016,7 +4016,7 @@ function renderGames(){
     const whyHtml = g.why ? `
       ${whyLabelled(g)}
       ${whyMarketSentence(g)}
-      <button class="btn btn-link why-toggle" data-why="${idSafe}">+ the numbers behind this</button>
+      <button class="btn btn-link why-toggle" data-why="${idSafe}" aria-expanded="false" aria-controls="why-${idSafe}">+ the numbers behind this</button>
       <div class="why-panel" id="why-${idSafe}">
         ${whyRow('Offense edge', g.why.off_matchup)}
         ${whyRow('Defense edge', g.why.def_matchup)}
@@ -4051,7 +4051,7 @@ function renderGames(){
       ${newsLine ? `<div class="card-news">${newsLine}</div>` : ''}
       ${trackRecordHtml(g.mktB_home, 'card')}
       ${whyHtml}
-      ${(g.notes && g.notes.length) ? `<button class="btn btn-link toggle-flag" data-idx="${idSafe}">+ view context (${g.notes.length})</button>
+      ${(g.notes && g.notes.length) ? `<button class="btn btn-link toggle-flag" data-idx="${idSafe}" aria-expanded="false" aria-controls="flag-${idSafe}">+ view context (${g.notes.length})</button>
       <div class="flag-note" id="flag-${idSafe}">
         <b>Context:</b>
         <ul style="margin:var(--s2) 0 0 var(--s5); padding:0;">
@@ -4065,7 +4065,9 @@ function renderGames(){
     const originalLabel = btn.textContent;
     btn.addEventListener('click', ()=>{
       const note = document.getElementById('flag-'+btn.dataset.idx);
-      note.classList.toggle('open');
+      // aria-expanded follows the panel, as .dive-game-head's does (Stage 26):
+      // the + / − in the label is not announced as a state.
+      btn.setAttribute('aria-expanded', note.classList.toggle('open') ? 'true' : 'false');
       btn.textContent = note.classList.contains('open')
         ? originalLabel.replace('+ view', '− hide')
         : originalLabel;
@@ -4074,7 +4076,7 @@ function renderGames(){
   document.querySelectorAll('.why-toggle').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const panel = document.getElementById('why-'+btn.dataset.why);
-      panel.classList.toggle('open');
+      btn.setAttribute('aria-expanded', panel.classList.toggle('open') ? 'true' : 'false');
       btn.textContent = panel.classList.contains('open') ? '− hide the numbers' : '+ the numbers behind this';
     });
   });
