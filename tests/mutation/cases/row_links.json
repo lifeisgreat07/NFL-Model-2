@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_row_links.py",
+  "cases": [
+    {
+      "id": "team-link-built-by-hand",
+      "why": "the team link writes its own address instead of asking routeHash, so the day the team route changes shape every Power Ratings link points at a page that opens nothing",
+      "find": "<a class=\"row-link\" href=\"${routeHash({page:'teamdive', team:t.team})}\">",
+      "replace": "<a class=\"row-link\" href=\"#teamdive/${t.team}\">",
+      "expect_caught_by": "test_each_team_name_links_to_its_deep_dive"
+    },
+    {
+      "id": "week-link-for-a-week-with-no-board",
+      "why": "a graded week the page has no board for still gets a link, which parseRoute answers by opening the latest week instead: a link that goes somewhere else than it says",
+      "find": "    return weekKeysSorted.includes(key)\n",
+      "replace": "    return true\n",
+      "expect_caught_by": "test_each_graded_week_links_to_its_board_only_when_the_board_exists"
+    },
+    {
+      "id": "row-links-turn-blue",
+      "why": "the links take the browser's default colour, and Power Ratings becomes a column of blue underlined names",
+      "find": "min-height:24px; color:inherit; text-decoration:none;}",
+      "replace": "min-height:24px;}",
+      "expect_caught_by": "test_the_links_keep_the_tables_look_and_the_target_size"
+    },
+    {
+      "id": "row-links-below-target-size",
+      "why": "the link shrinks to its text, about 20px tall, under the 24px the page holds every target to",
+      "find": ".row-link{display:inline-flex; align-items:center; gap:var(--s2); min-height:24px;",
+      "replace": ".row-link{display:inline-flex; align-items:center; gap:var(--s2);",
+      "expect_caught_by": "test_the_links_keep_the_tables_look_and_the_target_size"
+    }
+  ]
+}

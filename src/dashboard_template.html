@@ -353,6 +353,12 @@
   td.num{font-family:'Plus Jakarta Sans', sans-serif; text-align:right;}
   td.rank{font-family:'Plus Jakarta Sans', sans-serif; color:var(--text-2); width:36px;}
   .team-cell{display:flex; align-items:center; gap:var(--s2);}
+/* A row's name is a link to that row's own page (Stage 26 item 5): a team
+   to its Deep-Dive, a graded week to its board. It keeps the table's text
+   colour, so the table does not turn into a column of blue, and underlines
+   on hover (in the hover block below); 24px tall at least, the page's
+   target size. */
+.row-link{display:inline-flex; align-items:center; gap:var(--s2); min-height:24px; color:inherit; text-decoration:none;}
   .trend-arrow{font-size:var(--fs-11); margin-left:var(--s1);}
   /* The glyph carries the direction. Green/red here read as right/wrong
      about a rating moving, which is not a scored pick. */
@@ -1599,6 +1605,7 @@
      these were defined.
      --------------------------------------------------------------- */
   @media (hover: hover){
+    .row-link:hover .team-abbr, .row-link.week-link:hover{text-decoration:underline;}
     .nav-btn:hover{background:var(--surface-2); color:var(--text);}
     .nav-btn.disabled:hover{background:transparent; color:var(--text-2);}
     thead th[aria-sort]:hover{color:var(--accent);}
@@ -3313,7 +3320,7 @@ function renderRatings(){
     const trendHtml = rankMoveHtml(t.rank_change);
     return `<tr>
       <td class="rank">${i+1}</td>
-      <td><div class="team-cell"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span>${trendHtml}</div></td>
+      <td><div class="team-cell"><a class="row-link" href="${routeHash({page:'teamdive', team:t.team})}"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span></a>${trendHtml}</div></td>
       <td class="num"><div class="net-cell-inner">
         <div class="srs-bar-track diverging" title="${fmtRating(t.net)} per 100 plays; league scale ±${fmtRatingScale(maxAbs)}, centre line is zero"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
         <span class="net-value">${fmtRating(t.net)}</span>
@@ -5633,9 +5640,17 @@ function renderAccuracy(){
 
   const cumulativeChartHtml = buildCumulativeTrendChart();
 
+  // Each week names its own board when that week is saved (Stage 26 item 5);
+  // a week the page has no board for stays plain text rather than a link to
+  // a route that would open something else.
+  const weekCell = w => {
+    const key = `${w.season}_week${w.week}`, label = `${w.season} Wk ${w.week}`;
+    return weekKeysSorted.includes(key)
+      ? `<a class="row-link week-link" href="${routeHash({page:'board', week:key})}">${label}</a>` : label;
+  };
   const weeklyRows = accuracy.weeks.map(w=>`
     <tr>
-      <td>${w.season} Wk ${w.week}</td>
+      <td>${weekCell(w)}</td>
       <td class="num">${w.model_a_correct}/${w.model_a_n}</td>
       <td class="num">${w.model_b_correct}/${w.model_b_n}</td>
       <td class="num">${w.market_correct}/${w.market_n}</td>
