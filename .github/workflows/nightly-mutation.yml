@@ -14,7 +14,8 @@ name: Nightly mutation slice
 # the job, and a failed scheduled run is emailed to the repository owner.
 #
 # It writes nothing to the repository. 06:30 UTC: after the canary at 06:00,
-# and clear of the weekly runs at 11:00 Tuesday and 16:00 Thursday.
+# and before the weekly runs at 11:00 Tuesday and Thursday. Started late it
+# can overlap them; it only reads, so that costs nothing.
 # tests/test_nightly_mutation.py holds each of these.
 
 on:
