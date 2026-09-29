@@ -99,7 +99,9 @@ def check(html):
          'is empty')
     need('calibration', lambda v: isinstance(v, dict) and v.get('models'),
          'is missing (the reliability diagram would be omitted)')
-    need('agentLog', lambda v: isinstance(v, dict) and isinstance(v.get('audits'), list),
+    # The page carries the summary only (Stage 26 item 11): the per-audit
+    # records stay in data/agent_log.json, where nothing on the page read them.
+    need('agentLog', lambda v: isinstance(v, dict) and isinstance(v.get('summary'), dict),
          "is missing (Checking the AI's work would say no audits were ever recorded)")
 
     if 'picksPdfs' in ok and not ok['picksPdfs']:

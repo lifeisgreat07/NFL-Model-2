@@ -320,7 +320,7 @@ def test_the_meta_block_carries_the_run_details_and_not_the_teams():
     'teams' crept back in, every team's odds would ship twice and the two
     copies could disagree."""
     src = Path(gd.__file__).read_text(encoding='utf-8')
-    block = re.search(r'__PLAYOFF_META_JSON__.*?indent=2\)', src, re.S)
+    block = re.search(r'__PLAYOFF_META_JSON__.*?\*\*COMPACT\)\)', src, re.S)
     assert block, "the meta injection has changed shape"
     keys = set(re.findall(r"'(\w+)'", block.group(0)))
     assert 'n_simulations' in keys and 'games_played' in keys
@@ -341,9 +341,12 @@ def test_the_built_page_actually_carries_a_playoff_value_per_team():
     built = Path(__file__).resolve().parents[1] / 'index.html'
     if not built.exists():
         pytest.skip('index.html has not been generated in this checkout')
-    blob = re.search(r'const teams = (\[.*?\n\]);', built.read_text(encoding='utf-8'), re.S)
+    # Parsed from where it starts: the fill is one line of compact JSON since
+    # Stage 26, so a pattern ending at a `]` on its own line finds nothing.
+    text = built.read_text(encoding='utf-8')
+    blob = re.search(r'const teams = ', text)
     assert blob, "could not find the injected teams array in the built page"
-    teams = json.loads(blob.group(1))
+    teams, _ = json.JSONDecoder().raw_decode(text, blob.end())
     assert teams, "the built page has no teams"
     assert all('playoff' in t for t in teams), (
         "some teams reached the page without a playoff key, so their cells "

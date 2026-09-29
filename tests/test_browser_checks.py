@@ -92,7 +92,9 @@ def test_the_thresholds_are_what_the_rules_say(checker):
     assert constant(tree, 'TARGET_MIN') == 24
     assert set(constant(tree, 'FAIL_IMPACTS')) == {'serious', 'critical'}
     budget = constant(tree, 'BYTE_BUDGET')
-    assert isinstance(budget, int) and 600_000 < budget <= 1_000_000, (
+    # Stage 26 item 11 set it to 800,000 from a fresh measurement; the upper
+    # bound is that figure, so raising it means changing this test as well.
+    assert isinstance(budget, int) and 600_000 < budget <= 800_000, (
         f'BYTE_BUDGET is {budget}; moving it is a decision with a reason, not a reflex')
 
 
