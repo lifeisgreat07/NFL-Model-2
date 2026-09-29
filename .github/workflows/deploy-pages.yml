@@ -136,6 +136,10 @@ jobs:
           # The page's Open Graph image (Stage 13). og:image names it at the
           # site root, so it is copied there, not under assets/.
           cp assets/og/og-card.png _site/og-card.png
+          # The favicon (Stage 29), at the path the page's <link rel="icon">
+          # names, which is also where it sits in a checkout.
+          mkdir -p _site/assets
+          cp assets/favicon.svg _site/assets/favicon.svg
           if [ -d dist ]; then cp -r dist _site/; fi
           echo "--- what will be published ---"
           find _site -type f | sort
