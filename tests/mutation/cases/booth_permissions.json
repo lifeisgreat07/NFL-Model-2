@@ -35,8 +35,8 @@
       "id": "booth-regression-drops-out-of-the-scan",
       "target": ".github/workflows/booth-regression.yml",
       "why": "the regression workflow reaches the action by another spelling, so the scan no longer lists it and every guard in this file silently stops covering it",
-      "find": "        uses: anthropics/claude-code-action@v1",
-      "replace": "        uses: Anthropics/Claude-Code-Action@v1",
+      "find": "        uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829",
+      "replace": "        uses: Anthropics/Claude-Code-Action@8ce9314fa9a404564fa7e954cd84f25bcba2b829",
       "expect_caught_by": "test_the_scan_finds_both_booth_workflows"
     }
   ]
