@@ -5,8 +5,10 @@ name: Nightly mutation slice
 # "caught" in the last table that mentioned it and is never run again.
 #
 # So every night a slice of the whole corpus runs: 30 cases, chosen by a
-# seed that is the UTC date (YYYYMMDD). Over a few weeks every case comes up;
-# any one night is reproducible by hand with the seed from its run summary:
+# seed that is the UTC date (YYYYMMDD). Each night's draw is independent, so
+# with about 820 cases a given case comes up about once a month on average,
+# some much later; this is a sampler, not a rotation through the corpus.
+# Any one night is reproducible by hand with the seed from its run summary:
 #   python tests/mutation/runner.py --sample 30 --seed <seed>
 # The counts by status go into the run summary. Anything but CAUGHT fails
 # the job, and a failed scheduled run is emailed to the repository owner.
