@@ -19,15 +19,15 @@
     {
       "id": "sidebar-ratings-first-again",
       "why": "the sidebar opens with Power Ratings highlighted while the Week Board is the page on screen, so the nav says you are somewhere you are not.",
-      "find": "<button class=\"nav-btn active\" data-page=\"board\">",
-      "replace": "<button class=\"nav-btn\" data-page=\"board\">",
+      "find": "<button class=\"nav-btn active\" data-page=\"board\" aria-current=\"page\">",
+      "replace": "<button class=\"nav-btn\" data-page=\"board\" aria-current=\"page\">",
       "expect_caught_by": "test_the_board_is_first_and_active_in_the_sidebar"
     },
     {
       "id": "bottom-nav-board-not-active",
       "why": "on a phone the Board tab is not highlighted on first load, so nothing in the bottom bar says which page this is.",
-      "find": "<button class=\"bnav-btn active\" data-page=\"board\">",
-      "replace": "<button class=\"bnav-btn\" data-page=\"board\">",
+      "find": "<button class=\"bnav-btn active\" data-page=\"board\" aria-current=\"page\">",
+      "replace": "<button class=\"bnav-btn\" data-page=\"board\" aria-current=\"page\">",
       "expect_caught_by": "test_the_bottom_nav_reads_board_ratings_picks_accuracy_more"
     },
     {

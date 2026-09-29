@@ -1669,7 +1669,7 @@ __FONT_FACES__
          says which part of the site it belongs to. Held to each other by
          tests/test_page_header.py. -->
     <div class="nav-group-label">This Week</div>
-    <button class="nav-btn active" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Week Board</button>
+    <button class="nav-btn active" data-page="board" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Week Board</button>
     <button class="nav-btn" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Power Ratings</button>
     <button class="nav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Team Deep-Dive</button>
     <div class="nav-group-label">Your Picks</div>
@@ -2434,7 +2434,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
 <nav class="bottom-nav" aria-label="Mobile navigation">
   <div class="bottom-nav-row">
-    <button class="bnav-btn active" data-page="board"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span class="bnav-label">Board</span></button>
+    <button class="bnav-btn active" data-page="board" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span class="bnav-label">Board</span></button>
     <button class="bnav-btn" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span class="bnav-label">Ratings</span></button>
     <button class="bnav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="bnav-label">Picks</span></button>
     <button class="bnav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg><span class="bnav-label">Accuracy</span></button>
@@ -3132,13 +3132,38 @@ function enhanceSelect(sel){
    Changed (the 2026-09-28 audit); tests/test_more_button_pages.py holds it
    equal to the sheet's own buttons. */
 const OVERFLOW_PAGES = ['teamdive','method','changelog','modellab','reliability'];
-function setActivePage(pageId){
-  document.querySelectorAll('[data-page]').forEach(b=>b.classList.toggle('active', b.dataset.page===pageId));
+/* A page change says so three ways (Stage 26 item 2, from the 2026-09-28
+   audit). Until then only the look changed: the tab kept "Command Board" as
+   its title on every page, focus stayed on the nav button, so a screen
+   reader heard nothing of the new page, and the chosen nav button was
+   marked only by .active. Now the nav buttons for the page carry
+   aria-current="page", the document title names the page by its heading,
+   and a change the reader asked for (a nav click, Back or Forward) moves
+   focus to that heading. The first paint moves no focus: a page opened
+   from a link starts where a page normally starts. */
+const BASE_TITLE = document.title;
+function pageHeading(pageId){
+  const page = document.getElementById('page-' + pageId);
+  return page && (page.querySelector('.page-head h2') || page.querySelector('h2'));
+}
+function setActivePage(pageId, opts){
+  document.querySelectorAll('[data-page]').forEach(b=>{
+    const on = b.dataset.page === pageId;
+    b.classList.toggle('active', on);
+    if(on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active', p.id==='page-'+pageId));
   const moreBtn = document.getElementById('bnav-more-btn');
   if(moreBtn) moreBtn.classList.toggle('active', OVERFLOW_PAGES.includes(pageId));
   closeMoreSheet();
   window.scrollTo({top:0, behavior:'auto'});
+  const heading = pageHeading(pageId);
+  document.title = (pageId === 'board' || !heading) ? BASE_TITLE
+    : `${heading.textContent.trim()} — Pick'em Model`;
+  if(opts && opts.focus && heading){
+    heading.setAttribute('tabindex', '-1');
+    heading.focus({preventScroll:true});
+  }
 }
 document.querySelectorAll('[data-page]').forEach(btn=>{
   // goToPage (Hash routes, at the end of this script) switches the page AND
@@ -6251,7 +6276,7 @@ function inSharedView(){ return /[#&]picks=/.test(location.hash || ''); }
 function routeUrl(r){ return location.pathname + location.search + routeHash(r); }
 
 function goToPage(page){
-  setActivePage(page);
+  setActivePage(page, {focus:true});
   if(inSharedView()) return;
   const url = routeUrl(currentRoute(page));
   if(location.pathname + location.search + location.hash !== url) history.pushState(null, '', url);
@@ -6262,10 +6287,10 @@ function replaceRoute(page){
   history.replaceState(null, '', routeUrl(currentRoute(page)));
 }
 
-function applyRoute(r){
+function applyRoute(r, opts){
   if(!r || !document.getElementById('page-' + r.page)) return;
   const active = document.querySelector('.page.active');
-  if(!active || active.id !== 'page-' + r.page) setActivePage(r.page);
+  if(!active || active.id !== 'page-' + r.page) setActivePage(r.page, opts);
   if(r.page === 'board'){
     const s = document.getElementById('week-select');
     const want = r.week || latestWeekKey;
@@ -6297,7 +6322,7 @@ function applyRoute(r){
   if(team) team.addEventListener('change', ()=> replaceRoute('teamdive'));
   // popstate covers Back and Forward, and a fragment typed or pasted into the
   // address bar of an open tab.
-  window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown)));
+  window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown), {focus:true}));
   if(location.hash) applyRoute(parseRoute(location.hash, routeKnown));
 })();
 </script>

@@ -38,7 +38,7 @@ def sidebar_groups(src):
     assert nav, 'the sidebar <nav class="side-nav"> is gone -- re-anchor this guard'
     groups = []
     for m in re.finditer(r'<div class="nav-group-label">(.*?)</div>|'
-                         r'<button class="nav-btn[^"]*" data-page="([^"]+)">(.*?)</button>',
+                         r'<button class="nav-btn[^"]*" data-page="([^"]+)"[^>]*>(.*?)</button>',
                          nav.group(1), re.S):
         if m.group(1) is not None:
             groups.append((text(m.group(1)), []))
