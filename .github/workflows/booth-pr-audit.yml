@@ -127,7 +127,7 @@ jobs:
           cp src/booth_report_posted.py src/booth_verdict.py "$RUNNER_TEMP/booth-check/"
 
       - name: Run Booth
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829 # v1.0.236
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

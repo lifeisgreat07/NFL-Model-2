@@ -31,7 +31,8 @@ def model_workflows():
 
 def action_steps(t):
     """Each `uses: anthropics/claude-code-action` step, up to the next step."""
-    return re.findall(rf'uses: {re.escape(ACTION)}@\S+\n(.*?)(?=\n      - |\Z)', t, re.S)
+    # `@\S+[^\n]*`: the ref, then the version comment a pinned SHA carries.
+    return re.findall(rf'uses: {re.escape(ACTION)}@\S+[^\n]*\n(.*?)(?=\n      - |\Z)', t, re.S)
 
 
 def test_the_scan_finds_both_booth_workflows():

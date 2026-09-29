@@ -1,0 +1,37 @@
+{
+  "target": ".github/workflows/booth-pr-audit.yml",
+  "tests": "tests/test_action_pins.py",
+  "cases": [
+    {
+      "id": "booth-back-on-a-movable-tag",
+      "why": "the audit workflow goes back to @v1: whoever can move that tag decides what code reads every PR with this repository's token, and nothing in a diff here would show the change",
+      "find": "uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829 # v1.0.236",
+      "replace": "uses: anthropics/claude-code-action@v1",
+      "expect_caught_by": "test_each_is_pinned_to_a_full_commit_sha"
+    },
+    {
+      "id": "auto-commit-pinned-to-a-short-sha",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "a seven-character SHA looks pinned and is not a full commit id; GitHub resolves only full SHAs as immutable",
+      "find": "uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0",
+      "replace": "uses: stefanzweifel/git-auto-commit-action@b863ae1 # v5.2.0",
+      "expect_caught_by": "test_each_is_pinned_to_a_full_commit_sha"
+    },
+    {
+      "id": "a-pin-without-its-version",
+      "target": ".github/workflows/collect-agent-log.yml",
+      "why": "the SHA is right but nothing says which release it is, so the next update has to look it up, and a reader cannot tell a current pin from a two-year-old one",
+      "find": "uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0",
+      "replace": "uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403",
+      "expect_caught_by": "test_each_pin_says_which_release_it_is"
+    },
+    {
+      "id": "an-update-that-stopped-halfway",
+      "target": ".github/workflows/weekend-refresh.yml",
+      "why": "one workflow moves to a different commit of the action and the others do not, so the same step behaves differently depending on which workflow ran it",
+      "find": "uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0",
+      "replace": "uses: stefanzweifel/git-auto-commit-action@0000000000000000000000000000000000000000 # v5.0.0",
+      "expect_caught_by": "test_one_action_is_pinned_to_one_sha_everywhere"
+    }
+  ]
+}

@@ -93,7 +93,7 @@ jobs:
               pull --rebase --autostash origin main
 
       - name: Commit and push changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
         with:
           commit_message: "Weekend refresh: game status, scores, lines, TV channels and team news"
           file_pattern: 'data/game_status/** data/tv/** data/team_news/**'
