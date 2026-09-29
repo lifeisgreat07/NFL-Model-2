@@ -5,9 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Pick'em Board">
+<meta name="apple-mobile-web-app-title" content="Pick'em Model">
 <meta name="theme-color" content="#0B0E15">
-<title>Pick'em Model — Command Board</title>
+<!-- One product name everywhere (Stage 29; Mark, 2026-09-29): Pick'em
+     Model. The tab reads "<page> — Pick'em Model" on every page, this one
+     included. tests/test_product_name.py holds it. -->
+<title>Week Board — Pick'em Model</title>
 <!-- The favicon (Stage 29): assets/favicon.svg, published at the same path by
      deploy-pages.yml, so it works on the site and from a local checkout.
      tests/test_favicon.py holds the link, the file and the copy step. -->
@@ -1687,7 +1690,7 @@ __FONT_FACES__
   <div class="brand">
     <div class="brand-mark"><span class="pulse"></span>Season 2026</div>
     <div class="brand-row">
-      <svg class="brand-ball" viewBox="0 0 20 20" role="img" aria-label="NFL Pick'em Model">
+      <svg class="brand-ball" viewBox="0 0 20 20" role="img" aria-label="Pick'em Model">
         <g class="spin"><g transform="rotate(-28 10 10)">
           <ellipse class="ball" cx="10" cy="10" rx="8.6" ry="5.2"/>
           <line class="lace" x1="5.6" y1="10" x2="14.4" y2="10"/>
@@ -1697,9 +1700,9 @@ __FONT_FACES__
           <line class="lace" x1="13" y1="8.1" x2="13" y2="11.9"/>
         </g></g>
       </svg>
-      <h1>COMMAND<br>BOARD</h1>
+      <h1>PICK'EM<br>MODEL</h1>
     </div>
-    <div class="brand-sub">NFL Pick'em Model</div>
+    <div class="brand-sub">Weekly NFL picks, graded</div>
   </div>
   <nav class="side-nav" aria-label="Main navigation">
     <!-- Grouped by the question a visitor is asking (Mark, 2026-09-23).
@@ -1745,7 +1748,7 @@ __FONT_FACES__
           <line class="lace" x1="13" y1="8.1" x2="13" y2="11.9"/>
         </g></g>
       </svg>
-  <h1>Command Board <span class="topbar-sub">NFL Pick'em Model</span></h1>
+  <h1>Pick'em Model <span class="topbar-sub">Weekly NFL picks, graded</span></h1>
   <button type="button" class="topbar-theme" aria-label="Toggle light and dark theme">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
   </button>
@@ -3206,7 +3209,7 @@ function enhanceSelect(sel){
    equal to the sheet's own buttons. */
 const OVERFLOW_PAGES = ['teamdive','method','changelog','modellab','reliability'];
 /* A page change says so three ways (Stage 26 item 2, from the 2026-09-28
-   audit). Until then only the look changed: the tab kept "Command Board" as
+   audit). Until then only the look changed: the tab kept the product name as
    its title on every page, focus stayed on the nav button, so a screen
    reader heard nothing of the new page, and the chosen nav button was
    marked only by .active. Now the nav buttons for the page carry
