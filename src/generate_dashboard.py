@@ -110,7 +110,7 @@ def load_current_ratings():
             f"{path} not found. Run weekly_update.py first -- it writes this "
             f"file as part of building current team ratings."
         )
-    with open(path) as f:
+    with open(path, encoding='utf-8') as f:
         return json.load(f)
 
 
@@ -122,7 +122,7 @@ def load_playoff_odds():
     path = DATA_DIR / 'playoff_odds.json'
     if not path.exists():
         return None
-    with open(path) as f:
+    with open(path, encoding='utf-8') as f:
         return json.load(f)
 
 
@@ -142,7 +142,7 @@ def load_agent_log():
               "log workflow. The reliability page will say so rather than "
               "render an empty section.")
         return None
-    with open(path) as f:
+    with open(path, encoding='utf-8') as f:
         return json.load(f)
 
 
@@ -163,7 +163,7 @@ def load_calibration():
     path = DATA_DIR / 'calibration.json'
     if not path.exists():
         return None
-    with open(path) as f:
+    with open(path, encoding='utf-8') as f:
         return json.load(f)
 
 
@@ -183,7 +183,7 @@ def load_all_predictions():
         parsed = parse_week_stem(f.stem)
         if parsed is None:
             continue
-        with open(f) as pf:
+        with open(f, encoding='utf-8') as pf:
             out[parsed] = json.load(pf)
     return out
 
@@ -196,7 +196,7 @@ def load_all_graded():
         parsed = parse_week_stem(stem)
         if parsed is None:
             continue
-        with open(f) as gf:
+        with open(f, encoding='utf-8') as gf:
             out[parsed] = json.load(gf)
     return out
 
@@ -218,7 +218,7 @@ def load_game_status(status_dir=STATUS_DIR):
         parsed = parse_week_stem(f.stem)
         if parsed is None:
             continue
-        with open(f) as sf:
+        with open(f, encoding='utf-8') as sf:
             snapshot = json.load(sf)
         out[parsed] = {(g['home'], g['away']): g for g in snapshot.get('games', [])}
     return out
@@ -679,7 +679,7 @@ def load_latest_live_history():
     live_files = sorted(DATA_DIR.glob('team_history_*.json'))
     if not live_files:
         return {}
-    with open(live_files[-1]) as f:
+    with open(live_files[-1], encoding='utf-8') as f:
         return json.load(f)
 
 
@@ -701,7 +701,7 @@ def load_team_history():
               f"will render empty. This file is committed; if it is missing, "
               f"something moved it.")
         return {}
-    with open(static_path) as f:
+    with open(static_path, encoding='utf-8') as f:
         static_data = json.load(f)
     names = static_data.get('names', {})
     history = static_data.get('history', {})
@@ -721,7 +721,7 @@ def load_team_history():
     live_files = sorted(DATA_DIR.glob('team_history_*.json'))
     for f in live_files:
         season = f.stem.replace('team_history_', '')
-        with open(f) as lf:
+        with open(f, encoding='utf-8') as lf:
             live_data = json.load(lf)
         for team, points in live_data.items():
             timeline.setdefault(team, [])
@@ -896,7 +896,7 @@ def main():
     foot_html = provenance_line()
     updated_html = updated_line(datetime.now(timezone.utc))
 
-    with open(TEMPLATE_PATH) as f:
+    with open(TEMPLATE_PATH, encoding='utf-8') as f:
         template = f.read()
 
     # Every fill below lands inside a <script> element, so every one goes
@@ -933,7 +933,7 @@ def main():
     from model_lab import entries as model_lab_entries
     html = html.replace('__MODEL_LAB_ROWS__', render_model_lab_rows(model_lab_entries()))
 
-    with open(OUTPUT_PATH, 'w') as f:
+    with open(OUTPUT_PATH, 'w', encoding='utf-8') as f:
         f.write(html)
     print(f"Wrote {OUTPUT_PATH}")
 
