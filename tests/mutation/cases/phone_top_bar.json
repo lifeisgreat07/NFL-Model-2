@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_phone_top_bar.py",
+  "cases": [
+    {
+      "id": "top-bar-shows-on-desktop-too",
+      "why": "the bar is visible at every width, so a desktop reader sees two titles and two theme buttons, and the page has two h1 elements in its accessibility tree",
+      "find": "  .topbar, .page-prov{display:none;}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_bar_and_the_line_are_hidden_at_desktop_widths"
+    },
+    {
+      "id": "top-bar-theme-button-inert",
+      "why": "the bar's button renders and does nothing: only the sidebar's button is wired, and the sidebar is hidden on the phone where the bar's button is the only one",
+      "find": "document.querySelectorAll('#theme-toggle, .topbar-theme').forEach(btn => btn.addEventListener('click'",
+      "replace": "document.querySelectorAll('#theme-toggle').forEach(btn => btn.addEventListener('click'",
+      "expect_caught_by": "test_both_theme_buttons_toggle_the_theme"
+    },
+    {
+      "id": "top-bar-scrolls-away",
+      "why": "the bar scrolls off with the page, so the title and the theme button are gone as soon as a phone reader scrolls a card",
+      "find": "position:sticky; top:0; z-index:40;",
+      "replace": "z-index:40;",
+      "expect_caught_by": "test_the_bar_is_a_real_target_and_stays_put"
+    },
+    {
+      "id": "provenance-line-left-empty",
+      "why": "the line's placeholder is dropped, so the phone's page foot is an empty rule and the page again never says what built it",
+      "find": "  <p class=\"page-prov\">__SIDEBAR_FOOT__</p>\n",
+      "replace": "  <p class=\"page-prov\"></p>\n",
+      "expect_caught_by": "test_the_provenance_line_ends_main_and_is_filled_by_the_build"
+    }
+  ]
+}
