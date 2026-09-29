@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **4278 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-`d7ac3b1` (after #201), with HEAD level with origin, which is the order that makes the
+Suite: **4389 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+`e545aed` (after #207), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -75,7 +75,9 @@ current status belongs.**
 **What runs unattended, and who owns what (settled 2026-09-24).** The
 GitHub **Weekly update** workflow owns predictions, grading and the data
 commit: Tuesday 11:00 and Thursday 11:00 UTC. Its commit triggers the Pages
-rebuild. Mark's Claude routine, **"Weekly QB override research"**
+rebuild. A run that holds the week (usually Tuesday) saves a labelled
+preview to `predictions/preview/` (#204, Mark's "an update both on Tuesday
+and Thursday"); only the locked picks are ever graded. Mark's Claude routine, **"Weekly QB override research"**
 (`trig_01CG1y9jfmcNQXnu8Hc9SL5K`, Mon and Wed 22:00 UTC), only researches
 starting-QB news and opens a PR with a sourced
 `data/qb_overrides/<season>_week<N>.json`. It never runs the weekly
@@ -1649,17 +1651,16 @@ fixed, with a test and a mutation case holding the desktop drawing).
     measurement with headroom.
 
 ### Stage 27 - Supply chain and guards in CI
-**Progress (2026-09-29, early):** items 1, 2 and 3 committed on branches
-(s27a, s27b, s27c). Item 2's branch is rebased (README at 146 case files),
-pushed, and through its suite and mutation scope; its PR is not opened yet
-(`docs/context.md` has the details). Item 1 pins claude-code-action, git-auto-commit-action,
-checkout and setup-python to the commits their major tags pointed at that
-day; it edits `booth-pr-audit.yml`, so its PR carries "Human review
-required:" and waits for Mark. Item 3's first ruff run found 22 (14 unused
-imports, 7 empty f-strings, one dead variable), all fixed in the same PR.
-Item 4: Mark said skip Dependabot (2026-09-28), so nothing moves the pins
-from item 1 but a person; bump one by hand, with its tag in the comment,
-when an action's release matters.
+**Progress (2026-09-29, afternoon):** item 2 merged (#202; its first run,
+started by hand, caught 30 of 30), item 3 merged (#206: `ruff check .` runs
+in `run-tests.yml`, so every branch must pass it), and the runner's UTF-8
+fix merged (#207; `PYTHONUTF8=1` is no longer needed for the runner on
+markys). Item 1 is #208 (pins; edits `booth-pr-audit.yml`, so it carries
+"Human review required:"): Booth found 0 discrepancies and checked every SHA
+against its tag; it waits for Mark's explicit OK. Item 4: Mark said skip
+Dependabot (2026-09-28), so nothing moves the pins but a person; bump one by
+hand, with its release in the comment, when an action's release matters.
+`setup-node`, cache, artifact and Pages actions stay on tags.
 1. SHA-pin the Claude Code action and the auto-commit action, then checkout
    and setup-python.
 2. A nightly mutation slice chosen by a date seed, CAUGHT counts in the run
@@ -1683,6 +1684,17 @@ One product name and a favicon (Mark picks); a LICENSE (Mark picks); README
 and version tags; the audit-log collector off every push; a short
 CONTRIBUTING and PR template; the noreply email for future commits (no
 history rewrite); CLAUDE.md split into rules plus traps and history.
+**Progress (2026-09-29):** the name, favicon and LICENSE options went to
+Mark as the artifact "Front Door Options" (recommended: "Pick'em Model",
+favicon B = the sidebar football on a dark tile, MIT); waiting on his picks.
+Branches ready, not yet PRs: `s29-readme-front` (Running the tests + two
+recruiter bullets) and `s29-contributing` (stacked on it). The noreply
+email is set as markys's repo-local `user.email` (done, no PR). The Website
+field and version tags change Mark's GitHub settings and published tags, so
+they wait for him. Collector off every push: pushed back (it commits only
+when a new Booth report exists, once per merged PR however it is
+triggered; only a daily schedule would cut commits, at the cost of a day's
+lag); Mark to choose.
 
 **Not planned (Mark agreed):** packaging `src/` into subfolders, converting
 `print` to logging, routing owner-only dispatch inputs through `env:`, and
@@ -1751,6 +1763,10 @@ under compaction pressure, so its length is a cost paid on every session.
   "no nflverse network access, per CLAUDE.md", quoting the old wording of
   this line instead of testing it. Test network access before claiming it
   is missing, in either place.
+- **Commits on markys use the noreply address** (repo-local `user.email`
+  = `317783519+lifeisgreat07@users.noreply.github.com`, set 2026-09-29,
+  Stage 29). History before that date carries the personal address and is
+  deliberately not rewritten.
 - **If Desktop Commander's tools vanish mid-session** while
   `get_device_info` lists `desktop-commander` as announced, `RefreshMcpTools`
   brings them back (2026-09-24). GitKraken stayed connected throughout.
@@ -1868,6 +1884,40 @@ under compaction pressure, so its length is a cost paid on every session.
 
 ## Traps that have actually bitten
 
+- **Scheduled Actions runs here start 3.5 to 6.5 hours late (since
+  2026-09-24),** off-the-hour minutes included: canary up to 6h35m, the
+  2026-09-24 Thursday lock at 19:34 for a 16:00 cron. Moving the minute does
+  not help; only the start time does. So the Thursday lock is 11:00 UTC and
+  `LOCK_SLACK` is 8h (#203). Nothing time-critical may sit within about 8
+  hours after a cron, and "it hasn't run yet" is normal until then. Pull
+  `created_at` for every schedule run from the API before concluding a run
+  failed.
+- **Evidence from before a rebase is evidence Booth cannot check.** #206's
+  mutation run was quoted from a commit a rebase then replaced; Booth could
+  not see that commit and said NEEDS HUMAN REVIEW. Stacking branches makes
+  this certain. Run the suite and the mutation scope at the exact head you
+  open, after the last rebase. If a figure must change after opening, edit
+  the description: Booth re-audits on `edited`.
+- **Run the full suite before starting a long mutation run.** `run_wt.ps1`
+  runs the suite and then the mutation scope whatever the suite said. #205's
+  first 45-minute run was void: ten tests had failed on an undefined
+  function before it began, visible in the suite file from minute one.
+- **A new `memory/` file needs its row in `memory/README.md` in the same
+  commit.** `tests/test_workflow_docs.py` fails otherwise; `0c8574e` left `main`
+  red for a few minutes on 2026-09-29. Run the suite before pushing a docs
+  commit too.
+- **GitHub can take many minutes to mark a locally merged PR merged.** #205
+  showed open for about 15 minutes after its merge commit was on `main`;
+  the next push to `main` seemed to wake it. `merge_pr.ps1` stops before
+  deleting the branch, which is right: wait and re-check with the archive's pr_merged.py,
+  never press Merge in the UI (it would add a second merge commit).
+- **The device bridge drops a call after 60 seconds.** `Start-Sleep 120`
+  in one call failed. Poll in steps under a minute; background anything
+  longer with `Start-Process`.
+- **`merge_pr.ps1` stops at "delete local branch" when a session-archive
+  worktree has the branch checked out.** Remove the worktree first
+  (`git worktree remove --force`; stop any `http.server` serving from it,
+  which holds the folder open), then `git branch -d`.
 - **"Desktop unchanged" needs the desktop numbers diffed, not a desktop
   look.** #201's first version made the reliability diagram's plot size
   come from its width at every width, not only on a phone, so the desktop
