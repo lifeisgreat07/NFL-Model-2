@@ -5290,7 +5290,9 @@ function buildReliabilityDiagram(){
       ].join('<br>');
       // A transparent halo makes the hit target larger than the mark, which
       // matters most for the thin bins nobody can click precisely.
-      return `<g class="rel-point" tabindex="0" role="img"
+      // tabindex -1 on every point: initReliabilityDiagram hands the one Tab
+      // stop to a single point (roving tabindex, Stage 26).
+      return `<g class="rel-point" tabindex="-1" role="img"
                  aria-label="${s.label}, ${b.label} bin: stated ${b.mean_predicted} percent, observed ${b.observed} percent, ${b.n} games"
                  data-tip="${tip.replace(/"/g,'&quot;')}" data-cx="${cx.toFixed(1)}" data-cy="${cy.toFixed(1)}">
         ${bar}
@@ -5356,7 +5358,7 @@ function buildReliabilityDiagram(){
     <div class="rel-filters">${filters}</div>
     <div class="rel-wrap">
       <div class="rel-plot">
-        <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto;" role="group" aria-label="Reliability diagram: stated probability against observed win rate">
+        <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto;" role="group" aria-label="Reliability diagram: stated probability against observed win rate. One Tab stop; arrow keys move between points, Home and End go to the first and last.">
           ${grid}
           <line x1="${x(0).toFixed(1)}" y1="${y(0).toFixed(1)}" x2="${x(100).toFixed(1)}" y2="${y(100).toFixed(1)}" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="5,4"/>
           <text x="${(x(100)-4).toFixed(1)}" y="${(y(100)+14).toFixed(1)}" font-size="9.5" fill="var(--text-2)" text-anchor="end">perfect calibration</text>
@@ -5440,11 +5442,34 @@ function initReliabilityDiagram(){
   if(window.ResizeObserver && svgEl) new ResizeObserver(sizeRelHalos).observe(svgEl);
   else window.addEventListener('resize', sizeRelHalos);
 
-  plot.querySelectorAll('.rel-point').forEach(el=>{
+  // One Tab stop for the whole chart (Stage 26 item 10). Each of the thirty
+  // points used to be its own Tab stop, so reaching the table below meant
+  // thirty presses through marks a keyboard reader may not want. Roving
+  // tabindex: exactly one visible point holds tabindex 0 and is the way in;
+  // the arrow keys move through the visible points in drawing order (series
+  // by series, bin by bin), Home and End jump to the ends, and a point in a
+  // series switched off is skipped and never keeps the Tab stop.
+  const points = [...plot.querySelectorAll('.rel-point')];
+  const visiblePoints = () => points.filter(p => p.closest('.rel-series').style.display !== 'none');
+  function setRoving(el){ points.forEach(p => p.setAttribute('tabindex', p === el ? '0' : '-1')); }
+  if(points.length) setRoving(points[0]);
+
+  points.forEach(el=>{
     el.addEventListener('mouseenter', ()=>show(el));
-    el.addEventListener('focus', ()=>show(el));
+    el.addEventListener('focus', ()=>{ setRoving(el); show(el); });
     el.addEventListener('mouseleave', hide);
     el.addEventListener('blur', hide);
+    el.addEventListener('keydown', e=>{
+      const vis = visiblePoints(), i = vis.indexOf(el);
+      let next = null;
+      if(e.key === 'ArrowRight' || e.key === 'ArrowDown') next = vis[Math.min(i + 1, vis.length - 1)];
+      else if(e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = vis[Math.max(i - 1, 0)];
+      else if(e.key === 'Home') next = vis[0];
+      else if(e.key === 'End') next = vis[vis.length - 1];
+      if(!next) return;
+      e.preventDefault();
+      next.focus();   // the focus handler moves the Tab stop with it
+    });
   });
 
   document.querySelectorAll('.rel-toggle').forEach(btn=>{
@@ -5457,6 +5482,10 @@ function initReliabilityDiagram(){
       btn.setAttribute('aria-pressed', String(relVisible[key]));
       const g = document.querySelector(`.rel-series[data-model="${key}"]`);
       if(g) g.style.display = relVisible[key] ? '' : 'none';
+      // The Tab stop never stays on a hidden point, or the chart drops out
+      // of the Tab order the moment its series is switched off.
+      const holder = points.find(p => p.getAttribute('tabindex') === '0');
+      if(!holder || !visiblePoints().includes(holder)) setRoving(visiblePoints()[0]);
       hide();
     });
   });
