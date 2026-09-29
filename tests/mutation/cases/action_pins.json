@@ -30,8 +30,24 @@
       "target": ".github/workflows/weekend-refresh.yml",
       "why": "one workflow moves to a different commit of the action and the others do not, so the same step behaves differently depending on which workflow ran it",
       "find": "uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0",
-      "replace": "uses: stefanzweifel/git-auto-commit-action@0000000000000000000000000000000000000000 # v5.0.0",
-      "expect_caught_by": "test_one_action_is_pinned_to_one_sha_everywhere"
+      "replace": "uses: stefanzweifel/git-auto-commit-action@0000000000000000000000000000000000000000 # v5.1.0",
+      "expect_caught_by": "test_one_major_of_an_action_is_one_sha_everywhere"
+    },
+    {
+      "id": "checkout-back-on-a-movable-tag",
+      "target": ".github/workflows/deploy-pages.yml",
+      "why": "the job that publishes the site checks out with @v4 again: the first step of the job, with its token in reach, is whatever that tag points at today",
+      "find": "uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0",
+      "replace": "uses: actions/checkout@v4",
+      "expect_caught_by": "test_each_is_pinned_to_a_full_commit_sha"
+    },
+    {
+      "id": "a-workflow-drops-out-of-the-count",
+      "target": ".github/workflows/run-tests.yml",
+      "why": "setup-python is reached by another spelling the scan does not match, so one use goes unchecked and the pins guard says nothing about it",
+      "find": "uses: actions/setup-python@",
+      "replace": "uses: ./actions/setup-python@",
+      "expect_caught_by": "test_the_scan_finds_every_use_of_the_pinned_actions"
     }
   ]
 }
