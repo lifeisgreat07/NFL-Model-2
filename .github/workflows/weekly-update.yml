@@ -11,16 +11,19 @@ name: Weekly update
 #   Tuesday 11:00 UTC -- after Monday Night Football is final. Grades the
 #     week, refreshes ratings and the line archive. It locks next week only
 #     if a game comes too early for Thursday (Thanksgiving, a Wednesday game).
-#   Thursday 16:00 UTC (noon ET in EDT, 11 AM in EST) -- locks the week
+#   Thursday 11:00 UTC (7 AM ET in EDT, 6 AM in EST) -- locks the week
 #     before Thursday night's kickoff, after Wednesday's injury reports, so
-#     a QB override written by then is used. Decided by Mark 2026-09-22.
+#     a QB override merged by then is used. Thursday decided by Mark
+#     2026-09-22; moved from 16:00 to 11:00 on 2026-09-29 because scheduled
+#     runs here had been starting 3.5 to 6.5 hours late, which at 16:00
+#     left under two hours before kickoff (see SCHEDULED_RUNS_UTC).
 # Which run locks is decided in src/weekly_update.py (decide_lock), from
 # SCHEDULED_RUNS_UTC. That constant must match these two lines, and
 # tests/test_pick_lock_time.py checks that it does.
 on:
   schedule:
     - cron: '0 11 * * 2'
-    - cron: '0 16 * * 4'
+    - cron: '0 11 * * 4'
   workflow_dispatch: {}
 
 permissions:
