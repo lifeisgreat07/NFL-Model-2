@@ -4,30 +4,31 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-28, late night (#178 to #190 merged)
+Last updated: 2026-09-29, early (#178 to #198 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 4056 passing, none skipped — `python -B -m pytest -q -p no:cacheprovider`
-on `main` at `03ca571` (after #190), HEAD level with origin.
+**Suite:** 4219 passing, none skipped, at `baaa994` (#198's head, merged as
+`77c1386` with only bot commits beside it on main).
 
-**Next action:** Stage 26 item 6 (disclosure buttons, s26a) is the open PR;
-merge it on Booth SAFE TO MERGE, then open the next prepared branch, each
-rebased with the next README case-file count: s26b (item 7, `scope` on table
-headers), s26c (item 8, chart labels; the calibration chart does not draw
-yet, too few games), s26d (item 9, chip state), s26e (item 10, reliability
-points one Tab stop), s26f (item 11, page bytes: 741,803 to 435,749, budget
-800,000), s27b (27.2, nightly mutation slice), s27c (27.3, ruff), and s27a
-(27.1, action pins) last: it edits Booth's workflow, so it needs Mark's
-review. Worktrees under the session archive. Tuesday's weekly summary is
-11:00 UTC; Thursday's lock run 16:00 UTC.
+**Next action: #199** (Stage 26 item 5, row links) is open. Booth said NEEDS
+HUMAN REVIEW twice with no discrepancy (only the full mutation run and the
+browser check unverified, as on #191 to #198, which it passed); Mark was
+asked to merge or review it. Then open the prepared branches one at a time,
+each rebased with the next README case-file count (144 for the next): s26j
+(26.3, phone top bar), s26k (26.4, phone charts), s27b (27.2, nightly
+mutation slice), s27c (27.3, ruff), srun (the mutation runner reads UTF-8),
+and s27a (27.1, action pins) last: it edits Booth's workflow, so it needs
+Mark's review. Rebase can surface tests merged since a branch was cut
+(#198 and #199 each needed a small follow-up commit): run the full suite
+before the mutation run. Tuesday's weekly summary is 11:00 UTC; Thursday's
+lock run 16:00 UTC.
 
-**Done tonight:** Stage 23 finished (#178, the collector keeps only Booth's
-two accounts: 220 audits logged). Stage 24 finished (#180 timeouts, #181
-never save an empty week). Stage 25 finished (#182 to #190). The QB
-routine's first run opened #179 (TB: Jalon Daniels), audited and merged.
+**Done tonight:** Stages 23, 24 and 25 finished (#178 to #190). Stage 26:
+#191 to #198 merged. The QB routine's first run opened #179 (TB: Jalon
+Daniels), audited and merged.
 
 ## Open work, and what each is waiting on
 
@@ -44,9 +45,9 @@ routine's first run opened #179 (TB: Jalon Daniels), audited and merged.
 ## Queued, in order
 
 1. **Stages 23 to 29, from the 2026-09-28 audit** (approved by Mark the same
-   day; items and order in CLAUDE.md). Stages 23, 24 and 25 done. Stage 26
-   items 6 to 11 and Stage 27 items 1 to 3 prepared on branches; Stage 26
-   items 1 to 5 and Stage 27 item 4 (Dependabot, Mark's call) not started.
+   day; items and order in CLAUDE.md). Stages 23, 24 and 25 done. Stage 26:
+   items 1, 2 and 6 to 11 merged, 5 open (#199), 3 and 4 on branches. Stage
+   27 items 1 to 3 on branches; item 4 (Dependabot) is Mark's call.
    One PR open at a time.
 2. **Stages 20 to 22**: 20 needs five real testers and comes after Stage 26;
    21 waits for week 5; 22 comes from 20.

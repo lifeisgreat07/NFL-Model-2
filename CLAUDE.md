@@ -1615,10 +1615,19 @@ the old rule "avoid literal non-ASCII in generated text" no longer applies.
    (`docs/context.md` lists it as known and not fixed).
 
 ### Stage 26 - What a visitor sees (before Stage 20)
-**Progress (2026-09-28 night):** items 6 to 11 are committed on branches
-(worktrees s26a to s26f under the session archive), each render-checked on
-markys, opened one at a time: 6 is open first. Items 1 to 5 not started (3
-and 4 need rendered side-by-sides for Mark).
+**Progress (2026-09-29, early):** merged: 6 #191, 7 #192, 8 #193, 9 #194,
+10 #195, 11 #196 (the built page drops the template's comments, the agent
+log's per-audit records and its JSON indentation: about 750KB to 438KB; the
+browser checker's byte budget is 800,000), 1 #197 (a final, ungraded card
+reads "Model B picked GB 68% · ATL won"), 2 #198 (a page change sets the
+title, `aria-current="page"` on the nav, and focus on the page heading). 5
+is #199 (Booth said NEEDS HUMAN REVIEW twice with no discrepancy; waiting for
+Mark). 3 and 4 were decided by Mark on 2026-09-28 from rendered
+side-by-sides (artifacts "Phone Header Options" and "Phone Chart Text"): 3 is
+a sticky top bar below 1080px with the h1 and a theme button, and the
+provenance line at the foot of the page; 4 draws the trend and reliability
+charts 300 units wide below 640px, with the trend chart's line-end names
+dropped there. Both are committed on branches.
 1. A final but ungraded card stops saying "to win" and shows a neutral
    provisional result -- without bringing back "graded on Tuesday", which Mark
    removed on 2026-09-28.
