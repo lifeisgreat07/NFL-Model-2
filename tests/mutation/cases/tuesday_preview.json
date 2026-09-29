@@ -1,0 +1,59 @@
+{
+  "target": "src/weekly_update.py",
+  "tests": "tests/test_tuesday_preview.py",
+  "cases": [
+    {
+      "id": "preview-pick-not-marked",
+      "why": "a saved preview pick no longer says it is one. Anything that reads the file on its own -- a script, a later reader, a person -- sees a pick indistinguishable from a locked one.",
+      "find": "    rows = [{**p, 'preview': True, 'previewed_utc': stamp} for p in predictions]\n",
+      "replace": "    rows = [{**p, 'previewed_utc': stamp} for p in predictions]\n",
+      "expect_caught_by": "test_a_preview_is_saved_marked_and_stamped"
+    },
+    {
+      "id": "preview-falls-through-to-the-lock",
+      "why": "the holding run saves its preview and carries on into the locked save, so Tuesday writes the week's write-once picks two days before the injury news the Thursday lock exists for.",
+      "find": "                  f\"predictions/preview/{path.name} (not locked, never graded)\")\n        return\n",
+      "replace": "                  f\"predictions/preview/{path.name} (not locked, never graded)\")\n",
+      "expect_caught_by": "test_a_holding_run_saves_a_preview_instead_of_returning_early"
+    },
+    {
+      "id": "preview-starter-warning-on-tuesday",
+      "why": "the missing-starter warning runs on the preview too. On a Tuesday nflverse has usually not listed next week's starters, so every Tuesday summary would warn -- the false alarm #186 removed.",
+      "find": "    no_starters = None if preview else starter_warning(",
+      "replace": "    no_starters = starter_warning(",
+      "expect_caught_by": "test_the_starter_warning_still_fires_only_at_lock_time"
+    },
+    {
+      "id": "preview-page-shows-a-preview-for-a-locked-week",
+      "target": "src/generate_dashboard.py",
+      "why": "the page loads Tuesday's preview for a week Thursday already locked, and the preview's key replaces the locked week's in the board data: the page shows picks that can still change in place of the ones that are graded.",
+      "find": "        if parsed is None or parsed in locked:\n",
+      "replace": "        if parsed is None:\n",
+      "expect_caught_by": "test_the_page_ignores_a_preview_once_its_week_is_locked"
+    },
+    {
+      "id": "preview-summary-says-locked",
+      "target": "src/weekly_summary.py",
+      "why": "the run summary reports a preview as a lock, so the Tuesday summary says week N was locked when nothing was.",
+      "find": "        lines.append(f'- Previewed {s} week {w}: {len(read_json(p))} games '\n",
+      "replace": "        lines.append(f'- Locked {s} week {w}: {len(read_json(p))} games '\n",
+      "expect_caught_by": "test_the_summary_says_previewed_not_locked"
+    },
+    {
+      "id": "preview-week-label-unmarked",
+      "target": "src/dashboard_template.html",
+      "why": "the week stepper names a preview week like a locked one, so a reader stepping back to it later cannot tell the picks were never final.",
+      "find": "  return `${w.season} · Week ${w.week}${w.preview ? ' (preview)' : ''}`;\n",
+      "replace": "  return `${w.season} · Week ${w.week}`;\n",
+      "expect_caught_by": "test_a_preview_week_is_labelled_in_the_week_stepper"
+    },
+    {
+      "id": "preview-note-never-shown",
+      "target": "src/dashboard_template.html",
+      "why": "the note above a preview week's cards stays hidden, so its picks read as the week's picks.",
+      "find": "    previewNote.hidden = !isPreview;\n",
+      "replace": "    previewNote.hidden = true;\n",
+      "expect_caught_by": "test_the_board_shows_the_preview_note_only_for_a_preview_week"
+    }
+  ]
+}

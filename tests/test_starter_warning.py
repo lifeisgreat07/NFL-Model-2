@@ -46,12 +46,15 @@ def test_empty_strings_are_not_a_listed_starter():
 
 
 def test_it_runs_only_on_the_path_that_locks():
-    """After the hold returns and before the picks are built: a Tuesday
-    run that holds the week never reaches it."""
+    """After the lock decision and before the picks are built, and skipped
+    by name on a run that holds the week. A holding run used to return
+    before reaching it; since the Tuesday preview (2026-09-29) it builds
+    picks too, so the skip is now explicit."""
     src = (ROOT / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
     main = src[src.index('def main(season, week):'):]
-    hold = main.index('Nothing saved.")\n        return')
-    call = main.index('no_starters = starter_warning(week_games, qb_overrides, season, week)')
+    hold = main.index('preview = not decision.lock')
+    call = main.index('no_starters = None if preview else '
+                      'starter_warning(week_games, qb_overrides, season, week)')
     build = main.index('    predictions = []')
     assert hold < call < build
     assert 'print(no_starters)' in main[call:build]

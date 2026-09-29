@@ -960,6 +960,11 @@
     color:var(--text-2); margin-top:var(--s2); line-height:1.5;}
   .card-qbs b, .card-news b{color:var(--text); font-weight:600;}
   .board-note{font-size:var(--fs-12); color:var(--text-2); margin:0 0 var(--s3);}
+  /* A preview week (Tuesday's picks before Thursday's lock) says so above the
+     cards, in body text rather than the note size, with a rule down the side:
+     it changes how every number below it should be read. */
+  .board-preview-note{font-size:var(--fs-14); color:var(--text); padding:var(--s2) var(--s3);
+    border-left:3px solid var(--border-strong);}
   .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);}
   /* A locked card (Stage 11). The chosen side keeps its fill so the pick
      stays readable; the other side drops to the secondary text colour, not
@@ -1953,6 +1958,7 @@ __FONT_FACES__
       <button class="btn btn-chip filter-btn" data-filter="divergent" aria-pressed="false">Model Disagreement</button>
       <button class="btn btn-chip filter-btn" data-filter="flagged" aria-pressed="false">Flagged Only</button>
     </div>
+    <p class="board-note board-preview-note" id="board-preview-note" role="note" hidden></p>
     <p class="board-note" id="board-tv-note" hidden>CBS and FOX games on Sunday afternoon are regional: which one your local channel shows depends on where you live.</p>
     <div class="game-grid" id="game-grid"></div>
   </section>
@@ -2199,6 +2205,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
         <li>Refit Model A and Model B themselves (not just the underlying ratings) on all real completed games available -- confirmed 2026-08 to already match the weekly-refitting approach validated as the correct backtest methodology</li>
         <li>Web-search for QB/injury news that might contradict the assumed starter</li>
         <li>Generate both models' predictions, save before kickoff (never overwritten)</li>
+        <li>On a run that is not yet the lock (usually Tuesday), save the same picks as a labelled preview instead. A preview can change at each run until the lock and is never graded or counted</li>
         <li>Grade the previous week's saved predictions against actual results</li>
         <li>Regenerate this dashboard</li>
       </ol>
@@ -2794,7 +2801,17 @@ const brandMark = (function(){
 
 function weekLabel(key){
   const w = weeks[key];
-  return `${w.season} · Week ${w.week}`;
+  return `${w.season} · Week ${w.week}${w.preview ? ' (preview)' : ''}`;
+}
+
+// "Tue Sep 29, 16:41 UTC" from a preview's ISO stamp. UTC, like the page's
+// "Updated" line, so the two can be compared at a glance.
+function previewWhen(iso){
+  const d = iso ? new Date(iso) : null;
+  if(!d || isNaN(d)) return 'the last run';
+  const day = d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', timeZone:'UTC'});
+  const hm = d.toISOString().slice(11, 16);
+  return `${day.replace(',', '')}, ${hm} UTC`;
 }
 
 /* ---------- Week stepper ----------
@@ -4020,6 +4037,19 @@ function renderGames(){
   renderWeekGlance(gamesList);
   const tvNote = document.getElementById('board-tv-note');
   if(tvNote) tvNote.hidden = true;
+  // Tuesday's picks for a week Thursday has not locked yet. Said above the
+  // cards, not only in the week label, because it changes how every number
+  // below it reads: these can move, and none of them is ever graded.
+  const previewNote = document.getElementById('board-preview-note');
+  if(previewNote){
+    const isPreview = !!(weekData && weekData.preview);
+    previewNote.hidden = !isPreview;
+    previewNote.textContent = isPreview
+      ? `Preview: these are the models' picks as of ${previewWhen(weekData.previewed_utc)}. ` +
+        `They can still change. The picks lock before the week's first kickoff ` +
+        `(usually Thursday), and only locked picks are graded.`
+      : '';
+  }
 
   const pdfLink = document.getElementById('picks-pdf-link');
   if(pdfLink){

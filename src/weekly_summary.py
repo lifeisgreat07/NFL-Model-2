@@ -30,6 +30,9 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 PRED_RE = re.compile(r'predictions/(\d+)_week(\d+)\.json$')
+# A preview sits one folder down, so PRED_RE never matches it and a preview
+# is never reported as a lock.
+PREVIEW_RE = re.compile(r'predictions/preview/(\d+)_week(\d+)\.json$')
 GRADED_RE = re.compile(r'results/(\d+)_week(\d+)_graded\.json$')
 MODELS = (('Model A', 'model_a_correct'), ('Model B', 'model_b_correct'),
           ('Market', 'market_correct'))
@@ -86,6 +89,11 @@ def summarise(season, changed, log_text, drift_text, read_json):
             lines.append(f'- Locked {s} week {w}: {len(read_json(p))} games')
     else:
         lines.append('- No week was locked on this run')
+    previewed = [(int(m.group(1)), int(m.group(2)), p) for p in changed
+                 for m in [PREVIEW_RE.search(p)] if m]
+    for s, w, p in previewed:
+        lines.append(f'- Previewed {s} week {w}: {len(read_json(p))} games '
+                     f'(not locked, never graded; the locking run replaces it)')
 
     graded = [(int(m.group(1)), int(m.group(2)), p) for p in changed
               for m in [GRADED_RE.search(p)] if m]
