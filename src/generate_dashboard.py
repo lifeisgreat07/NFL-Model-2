@@ -200,6 +200,26 @@ def load_all_predictions():
     return out
 
 
+def load_previews(preview_dir=None, locked=()):
+    """{(season, week): [picks]} for every preview whose week is NOT locked.
+
+    predictions/preview/ holds what a holding run (Tuesday, usually) would
+    pick if the week locked then (src/weekly_update.save_preview). The
+    moment the week is locked its preview is ignored here, so the page can
+    never show a preview beside, or instead of, a lock."""
+    preview_dir = PRED_DIR / 'preview' if preview_dir is None else preview_dir
+    out = {}
+    if not preview_dir.exists():
+        return out
+    for f in preview_dir.glob('*_week*.json'):
+        parsed = parse_week_stem(f.stem)
+        if parsed is None or parsed in locked:
+            continue
+        with open(f, encoding='utf-8') as pf:
+            out[parsed] = json.load(pf)
+    return out
+
+
 def load_all_graded():
     """Returns {(season, week): [graded predictions...]} for every graded week."""
     out = {}
@@ -858,7 +878,21 @@ def main():
         if news is not None:
             weeks_js[f"{season}_week{week}"]['news'] = news
 
-    latest_key = max(all_preds.keys()) if all_preds else None
+    # A preview is a week of its own on the board, flagged so the page labels
+    # it and never grades it. No graded lookup, status, TV or news: those are
+    # read for locked weeks only. No PDF either (the loop below reads
+    # all_preds), since a printed sheet outlives the preview it came from.
+    previews = load_previews(locked=set(all_preds))
+    for key, preds in sorted(previews.items()):
+        season, week = key
+        weeks_js[f"{season}_week{week}"] = {
+            'season': season, 'week': week, 'preview': True,
+            'previewed_utc': preds[0].get('previewed_utc') if preds else None,
+            'games': build_games_js(preds, {}),
+        }
+
+    shown = set(all_preds) | set(previews)
+    latest_key = max(shown) if shown else None
     latest_label = f"{latest_key[0]}_week{latest_key[1]}" if latest_key else None
 
     # Printable picks PDFs, one per saved week. Generated here rather than

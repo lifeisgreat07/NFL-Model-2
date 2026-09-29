@@ -103,6 +103,14 @@ PRED_DIR.mkdir(exist_ok=True)
 # predictions/*_week*.json without recursing, so none of them can mistake a
 # skip for a week of picks.
 SKIPPED_DIR = PRED_DIR / 'skipped'
+# A run that HOLDS a week (Tuesday, usually) saves what the models would pick
+# today here, as a preview (Mark, 2026-09-29: "an update both on Tuesday and
+# Thursday"). A folder for the same reason as skipped/: grading, the season
+# record and determine_next_week all glob predictions/*_week*.json without
+# recursing, so a preview can never be graded, counted or taken for a lock.
+# Unlike a locked week it is overwritten by every later holding run; the
+# locked file that Thursday writes is what the page shows from then on.
+PREVIEW_DIR = PRED_DIR / 'preview'
 DATA_DIR = Path(__file__).parent.parent / 'data'
 DATA_DIR.mkdir(exist_ok=True)
 
@@ -338,6 +346,29 @@ def record_skipped_week(season, week, reason, now, skipped_dir=None):
         write_json_atomic(path, {'season': season, 'week': week, 'reason': reason,
                                  'recorded_utc': pd.Timestamp(now).tz_convert('UTC').isoformat()},
                           trailing_newline=True, indent=2)
+    return path
+
+
+def save_preview(predictions, season, week, now, preview_dir=None):
+    """Write predictions/preview/<season>_week<N>.json and return its path,
+    or None when there is nothing to show.
+
+    What the models would pick if the week locked now. Each pick carries
+    `preview: True` and the time it was made, so nothing that reads the file
+    on its own can mistake it for a locked pick. Overwritten on purpose (a
+    preview is only as good as its latest run) and written atomically, since
+    the page reads it. An empty preview is skipped rather than failing the
+    run: unlike a lock, nothing is lost -- the locking run still comes."""
+    if not predictions:
+        print(f"WARNING: {season} week {week} produced no picks to preview; "
+              f"no preview saved.")
+        return None
+    preview_dir = PREVIEW_DIR if preview_dir is None else preview_dir
+    preview_dir.mkdir(parents=True, exist_ok=True)
+    stamp = pd.Timestamp(now).tz_convert('UTC').isoformat()
+    rows = [{**p, 'preview': True, 'previewed_utc': stamp} for p in predictions]
+    path = preview_dir / f'{season}_week{week}.json'
+    write_json_atomic(path, rows, indent=2)
     return path
 
 
@@ -786,12 +817,15 @@ def main(season, week):
             f"check the Actions history. Recorded as skipped in "
             f"predictions/skipped/{skipped.name}, so the next run moves on to "
             f"week {week + 1}.")
-    if not decision.lock:
+    # Holding is not the same as saying nothing: the picks as they stand are
+    # built the same way and saved as a preview (PREVIEW_DIR), never as a lock.
+    preview = not decision.lock
+    if preview:
         print(f"Holding {season} week {week}: its first game kicks off "
               f"{decision.first_kickoff:%a %Y-%m-%d %H:%M} UTC, after the next scheduled "
               f"run ({decision.next_run:%a %Y-%m-%d %H:%M} UTC), which will lock it with "
-              f"whatever QB news has landed by then. Nothing saved.")
-        return
+              f"whatever QB news has landed by then. Saving a preview only; "
+              f"nothing is locked.")
     started = set(decision.started)
     for away, home in decision.started:
         print(f"WARNING: {away}@{home} has already kicked off and gets NO pick. The run "
@@ -802,7 +836,9 @@ def main(season, week):
     if qb_overrides:
         print(f"  QB overrides for week {week}: " + ", ".join(
             f"{t} -> {o['player_name']}" for t, o in sorted(qb_overrides.items())))
-    no_starters = starter_warning(week_games, qb_overrides, season, week)
+    # Lock time only (#186): on a Tuesday preview nflverse has usually not
+    # listed next week's starters yet, so the warning would fire every week.
+    no_starters = None if preview else starter_warning(week_games, qb_overrides, season, week)
     if no_starters:
         print(no_starters)
     predictions = []
@@ -918,6 +954,13 @@ def main(season, week):
     for i, p in enumerate(ranked):
         p['confidence_rank'] = i + 1
         p['confidence_points'] = n - i
+
+    if preview:
+        path = save_preview(predictions, season, week, pd.Timestamp.now(tz='UTC'))
+        if path is not None:
+            print(f"Saved a preview of {len(predictions)} picks to "
+                  f"predictions/preview/{path.name} (not locked, never graded)")
+        return
 
     out_path = PRED_DIR / f'{season}_week{week}.json'
     if out_path.exists():

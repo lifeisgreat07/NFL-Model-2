@@ -26,7 +26,7 @@
     {
       "id": "starter-warning-never-printed",
       "why": "main() stops calling the check, so a week locked on last game's quarterbacks says nothing",
-      "find": "    no_starters = starter_warning(week_games, qb_overrides, season, week)\n    if no_starters:\n        print(no_starters)\n",
+      "find": "    no_starters = None if preview else starter_warning(week_games, qb_overrides, season, week)\n    if no_starters:\n        print(no_starters)\n",
       "replace": "",
       "expect_caught_by": "test_it_runs_only_on_the_path_that_locks"
     }
