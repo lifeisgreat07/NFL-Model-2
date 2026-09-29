@@ -1546,7 +1546,7 @@ then 22.**
 (#176), each SAFE TO MERGE with 0 discrepancies. #176 was expected to go
 unaudited (the action used to refuse a PR editing its own workflow) and was
 not: on `GITHUB_TOKEN` Booth ran on it and posted as `github-actions[bot]`.
-So Mark added item 6, merged (#177). Item 2 is prepared on a branch. **Item 3 DROPPED (Mark, 2026-09-28):** the
+So Mark added item 6, merged (#177). Item 2 merged (#178). **Stage 23 is done.** **Item 3 DROPPED (Mark, 2026-09-28):** the
 audit's pattern would reject four `implicates` values Booth has really
 written ("PR #62 description" and the like), the same parser gates the Booth
 job, and after #169 the page escapes everything anyway. **Item 5 CONFIRMED
@@ -1574,7 +1574,7 @@ above.
 reader of `predictions/*_week*.json` can mistake a skip for picks); item 1
 merged (#172, narrower than the audit: only a failed Weekly update
 rebuilds, a failed collector still does not); items 5, 8 and 9 merged
-(#173, #174, #175); items 4 and 7 prepared on branches. **Item 3 skipped**: #171 makes
+(#173, #174, #175); item 7 merged (#180), item 4 merged (#181). **Stage 24 is done.** **Item 3 skipped**: #171 makes
 a manual week input mostly redundant. **Item 6 skipped**: GitHub cancels a
 PENDING run when a newer one queues in the same concurrency group, so a
 group shared by the weekly and weekend runs could cancel a pending weekly
@@ -1596,6 +1596,12 @@ seconds.
 9. First tests for grading and for the drift z-test.
 
 ### Stage 25 - Small correctness fixes
+**Progress: done.** Item 1 #182, item 2 #183, item 3 #184 and #186 (#184
+warned about next week's missing QB columns on every run; Mark saw it would
+fire falsely on a Tuesday hold run, so #186 moved the warning to lock time),
+item 4 #185, item 5 #187, item 6 #188, item 7 #189, item 8 #190 (agreed by
+Mark). Since #190 the generator reads and writes UTF-8 on every platform, so
+the old rule "avoid literal non-ASCII in generated text" no longer applies.
 1. A tie is graded as a tie: no winner, no correct/wrong.
 2. README's holdout sentence says what the weekly refit does, held by the
    README test.
@@ -1609,6 +1615,10 @@ seconds.
    (`docs/context.md` lists it as known and not fixed).
 
 ### Stage 26 - What a visitor sees (before Stage 20)
+**Progress (2026-09-28 night):** items 6 to 11 are committed on branches
+(worktrees s26a to s26f under the session archive), each render-checked on
+markys, opened one at a time: 6 is open first. Items 1 to 5 not started (3
+and 4 need rendered side-by-sides for Mark).
 1. A final but ungraded card stops saying "to win" and shows a neutral
    provisional result -- without bringing back "graded on Tuesday", which Mark
    removed on 2026-09-28.
@@ -1628,6 +1638,13 @@ seconds.
     measurement with headroom.
 
 ### Stage 27 - Supply chain and guards in CI
+**Progress (2026-09-28 night):** items 1, 2 and 3 committed on branches
+(s27a, s27b, s27c). Item 1 pins claude-code-action, git-auto-commit-action,
+checkout and setup-python to the commits their major tags pointed at that
+day; it edits `booth-pr-audit.yml`, so its PR carries "Human review
+required:" and waits for Mark. Item 3's first ruff run found 22 (14 unused
+imports, 7 empty f-strings, one dead variable), all fixed in the same PR.
+Item 4 is Mark's call.
 1. SHA-pin the Claude Code action and the auto-commit action, then checkout
    and setup-python.
 2. A nightly mutation slice chosen by a date seed, CAUGHT counts in the run

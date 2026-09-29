@@ -4,37 +4,35 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-28, night session (#173 to #177 merged)
+Last updated: 2026-09-28, late night (#178 to #190 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 3922 passing, none skipped — `python -B -m pytest -q -p no:cacheprovider`
-on `main` at `b8947b5` (after #177), HEAD level with origin.
+**Suite:** 4056 passing, none skipped — `python -B -m pytest -q -p no:cacheprovider`
+on `main` at `03ca571` (after #190), HEAD level with origin.
 
-**Next action: check the QB routine's first run** (Mon 2026-09-28 22:00 UTC):
-it should have opened a PR (audit it like any other), or said in one line
-that none was needed. Then open the prepared branches one at a time, each
-rebased with the next README case-file count (127 for the first that adds a
-file): s23b (Stage 23 item 2, collector keeps only Booth's accounts; adds no
-case file), s24t (Stage 24 item 7, timeouts), s24e (Stage 24 item 4, never
-save an empty week). Worktrees under the session archive. Tuesday's weekly
-summary is 11:00 UTC. Booth now posts as `github-actions[bot]`.
+**Next action:** Stage 26 item 6 (disclosure buttons, s26a) is the open PR;
+merge it on Booth SAFE TO MERGE, then open the next prepared branch, each
+rebased with the next README case-file count: s26b (item 7, `scope` on table
+headers), s26c (item 8, chart labels; the calibration chart does not draw
+yet, too few games), s26d (item 9, chip state), s26e (item 10, reliability
+points one Tab stop), s26f (item 11, page bytes: 741,803 to 435,749, budget
+800,000), s27b (27.2, nightly mutation slice), s27c (27.3, ruff), and s27a
+(27.1, action pins) last: it edits Booth's workflow, so it needs Mark's
+review. Worktrees under the session archive. Tuesday's weekly summary is
+11:00 UTC; Thursday's lock run 16:00 UTC.
 
-**Done today:** Stage 19 (#160 to #162); Stage 6 closed — referees registered
-(#163) and R1 FAILED (#164, correlation +0.18, interval −0.28 to +0.65; a
-first run with a team-abbreviation join bug was discarded and disclosed).
-Mark's page review: #165 Week Board card (logos at the bar's ends, two
-redundant lines gone), #166 Methodology table alignment, #167 Model Lab frames
-and one-line pills, #168 Team Deep-Dive logo. README screenshots retaken with
-logos (`35cfb6d`, docs only). Details: `memory/2026-09-28.md`.
+**Done tonight:** Stage 23 finished (#178, the collector keeps only Booth's
+two accounts: 220 audits logged). Stage 24 finished (#180 timeouts, #181
+never save an empty week). Stage 25 finished (#182 to #190). The QB
+routine's first run opened #179 (TB: Jalon Daniels), audited and merged.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| First run of the QB routine | Due Mon 2026-09-28 22:00 UTC | Check it opened a PR, or said in one line that none was needed |
 | First weekly summary | Due Tue 2026-09-29 11:00 UTC | Open the run's page and check the summary reads right |
 | Thursday lock run | Due Thu 2026-10-01 16:00 UTC | Check it started, locked before kickoff, and its push survived; week 4 is the first card with quarterback names and TV channels |
 | Season Accuracy's forecast score | Merged (#160), not on the page yet | 50 graded games: after week 4 at the earliest |
@@ -46,10 +44,9 @@ logos (`35cfb6d`, docs only). Details: `memory/2026-09-28.md`.
 ## Queued, in order
 
 1. **Stages 23 to 29, from the 2026-09-28 audit** (approved by Mark the same
-   day; items and order in CLAUDE.md). Stage 23: items 1, 4, 5 and 6
-   merged (#169, #170, #176, #177); item 3 dropped; item 2 prepared. Stage
-   24: items 1, 2, 5, 8 and 9 merged (#172, #171, #173, #174, #175); 3 and
-   6 skipped (reasons in CLAUDE.md); 4 and 7 prepared. Then Stages 25 to 27.
+   day; items and order in CLAUDE.md). Stages 23, 24 and 25 done. Stage 26
+   items 6 to 11 and Stage 27 items 1 to 3 prepared on branches; Stage 26
+   items 1 to 5 and Stage 27 item 4 (Dependabot, Mark's call) not started.
    One PR open at a time.
 2. **Stages 20 to 22**: 20 needs five real testers and comes after Stage 26;
    21 waits for week 5; 22 comes from 20.
@@ -65,7 +62,6 @@ counts (CLAUDE.md trap, #165).
 - **The drift check is on accuracy**, which cannot carry a result at this sample size. Its issue says so and points at log loss and Brier.
 - **A failed Thursday run leaves Thursday night's game unpicked** unless someone dispatches the workflow by hand that day. Since #105 the failure opens an issue.
 - **A Booth header can disagree with its verdict block**, logged by `cross_check()`. It has cost nothing yet.
-- **The generator writes `index.html` without `encoding=`**, so a non-cp1252 character in generated text crashes the Windows build or breaks UTF-8 readers (#164's en dash). Avoid literal non-ASCII in generated text.
 - **Season Accuracy's trend end-labels**: where Model A and Model B end on the same value the labels stack beside one marker (seen in the README screenshot). Not yet looked at.
 - **`tests/browser/check_page.py` flaked in Booth's environment** on 2 of 7 runs (#156 audit), unrelated to the change.
 - **`check_scoped_test_counts` skips a count for a module that does not exist** — a DELETED module passes silently.
