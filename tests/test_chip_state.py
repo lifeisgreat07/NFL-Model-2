@@ -30,7 +30,10 @@ def test_every_chip_carries_aria_pressed_and_none_aria_current():
     for t in chip_tags():
         assert 'aria-pressed="' in t, f'a chip without aria-pressed: {t[:120]}'
         assert 'aria-current' not in t, f'a chip still uses aria-current: {t[:120]}'
-    assert "setAttribute('aria-current'" not in TEMPLATE
+    # aria-current="page" on the nav buttons is navigation, where it belongs
+    # (Stage 26 item 2); any other aria-current a script sets is a chip.
+    assert not re.search(r"setAttribute\('aria-current', (?!'page'\))", TEMPLATE), (
+        'a script sets aria-current to something other than "page"')
 
 
 def test_each_filter_click_updates_aria_pressed():
