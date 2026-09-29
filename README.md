@@ -1,4 +1,4 @@
-# NFL Pick'em Model
+# Pick'em Model
 
 A real, backtested win-probability model for weekly NFL picks. Not a
 heuristic -- trained and validated on nflverse play-by-play for 2020-2025,
@@ -55,7 +55,7 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, 152 case files, one per subject under test)
+  (`tests/mutation/`, 153 case files, one per subject under test)
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.

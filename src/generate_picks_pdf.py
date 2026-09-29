@@ -180,12 +180,12 @@ def render_picks_pdf(
         str(out_path), pagesize=letter,
         leftMargin=0.55 * inch, rightMargin=0.55 * inch,
         topMargin=0.55 * inch, bottomMargin=0.5 * inch,
-        title=f"NFL Pick'em {season} Week {week}",
+        title=f"Pick'em Model {season} Week {week}",
         author=f"NFL-Model-2 v{model_version}",
     )
 
     story: list[Any] = [
-        Paragraph(f"NFL Pick'em &mdash; {season} Week {week}", title_style),
+        Paragraph(f"Pick'em Model &mdash; {season} Week {week}", title_style),
         Paragraph(
             f"{len(rows)} games &nbsp;|&nbsp; model v{model_version} "
             f"&nbsp;|&nbsp; generated {generated_on.isoformat()}",

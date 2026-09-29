@@ -38,7 +38,7 @@ def test_the_bar_and_the_line_are_hidden_at_desktop_widths():
 def test_the_bar_holds_the_h1_and_a_theme_button_before_main():
     bar = re.search(r'<header class="topbar">(.*?)</header>\s*<main id="main-content"', TEMPLATE, re.S)
     assert bar, 'the top bar is not directly before <main>'
-    assert re.search(r'<h1>Command Board <span class="topbar-sub">NFL Pick\'em Model</span></h1>', bar.group(1))
+    assert re.search(r'<h1>Pick\'em Model <span class="topbar-sub">Weekly NFL picks, graded</span></h1>', bar.group(1))
     assert '<button type="button" class="topbar-theme" aria-label="Toggle light and dark theme">' in bar.group(1)
     assert '<svg class="brand-ball" viewBox="0 0 20 20" aria-hidden="true">' in bar.group(1), (
         'the ball in the bar should be decoration; the h1 names the site')

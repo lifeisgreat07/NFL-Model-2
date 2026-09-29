@@ -1,0 +1,28 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_product_name.py",
+  "cases": [
+    {
+      "id": "product-name-sidebar-goes-back",
+      "why": "the sidebar says COMMAND BOARD again, a second name for the same site beside the tab's Pick'em Model.",
+      "find": "<h1>PICK'EM<br>MODEL</h1>",
+      "replace": "<h1>COMMAND<br>BOARD</h1>",
+      "expect_caught_by": "test_the_tab_the_sidebar_and_the_phone_bar_say_the_name"
+    },
+    {
+      "id": "product-name-tab-goes-back",
+      "why": "the Week Board's tab title goes back to naming the old Command Board.",
+      "find": "<title>Week Board — Pick'em Model</title>",
+      "replace": "<title>Pick'em Model — Command Board</title>",
+      "expect_caught_by": "test_the_tab_the_sidebar_and_the_phone_bar_say_the_name"
+    },
+    {
+      "id": "product-name-pdf-goes-back",
+      "target": "src/generate_picks_pdf.py",
+      "why": "the printed picks sheet carries the old name, so a sheet on a fridge names a different site from the one it came from.",
+      "find": "Paragraph(f\"Pick'em Model &mdash; {season} Week {week}\", title_style)",
+      "replace": "Paragraph(f\"NFL Pick'em &mdash; {season} Week {week}\", title_style)",
+      "expect_caught_by": "test_the_readme_and_the_printed_sheet_say_the_name"
+    }
+  ]
+}
