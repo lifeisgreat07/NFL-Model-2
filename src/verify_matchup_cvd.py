@@ -201,7 +201,7 @@ def report():
     under15 = [x for x in ordered if x[2] < 15]
     under5 = [x for x in ordered if x[2] < 5]
 
-    print(f"UNIT A -- ordered matchups (away, home), every game a card can show")
+    print("UNIT A -- ordered matchups (away, home), every game a card can show")
     print(f"  total          : {len(ordered)}")
     print(f"  dE00 < 15      : {len(under15)}  ({len(under15) / len(ordered) * 100:.1f}%)")
     print(f"  dE00 < 5       : {len(under5)}\n")
@@ -213,7 +213,7 @@ def report():
         for a, b in unordered for k in MACHADO]
     u15 = [x for x in each if x[3] < 15]
     u5 = [x for x in each if x[3] < 5]
-    print(f"UNIT B -- unordered pairs x 2 CVD types (Booth's reading; same total)")
+    print("UNIT B -- unordered pairs x 2 CVD types (Booth's reading; same total)")
     print(f"  total          : {len(each)}")
     print(f"  dE00 < 15      : {len(u15)}  ({len(u15) / len(each) * 100:.1f}%)")
     print(f"  dE00 < 5       : {len(u5)}\n")
@@ -235,13 +235,13 @@ def report():
     # because its denominator is 496 and can be confused with nothing else.
     p15 = sorted(d for d in best.values() if d < 15)
     p5 = [d for d in best.values() if d < 5]
-    print(f"\nUNIT C -- distinct team pairs, worst case over ordering and CVD type")
+    print("\nUNIT C -- distinct team pairs, worst case over ordering and CVD type")
     print(f"  total          : {len(best)}")
     print(f"  dE00 < 15      : {len(p15)}  ({len(p15) / len(best) * 100:.1f}%)")
     print(f"  dE00 < 5       : {len(p5)}")
 
     near = sorted((d for d in best.values() if 14.0 < d < 16.0))
-    print(f"\npairs within 1 dE00 of the 15 floor (why two honest runs can differ by one):")
+    print("\npairs within 1 dE00 of the 15 floor (why two honest runs can differ by one):")
     print("  " + ", ".join(f"{d:.2f}" for d in near) or "  none")
     return len(best), len(p15), len(p5)
 

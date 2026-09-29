@@ -17,7 +17,6 @@ control and does not touch what iOS opens when you tap it; the only way to stop
 the system wheel is to stop using a native select as the visible control.
 """
 import re
-import sys
 from pathlib import Path
 
 import pytest

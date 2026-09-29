@@ -15,7 +15,6 @@ which is the state it ships in today and will stay in until the workflow runs.
 
 import json
 import re
-import subprocess
 import sys
 from pathlib import Path
 

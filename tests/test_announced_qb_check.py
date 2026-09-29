@@ -13,7 +13,6 @@ of this change (recording the listed starter); the guards below cover both.
 Run with: pytest tests/test_announced_qb_check.py -v
 """
 import json
-import re
 import sys
 from pathlib import Path
 

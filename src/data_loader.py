@@ -35,7 +35,6 @@ Install: pip install nflreadpy   (or: pip install nfl_data_py, if reverting)
 """
 from pathlib import Path
 
-import pandas as pd
 from config import TRAIN_SEASONS
 
 USE_NFLREADPY = True  # flip to False to revert to nfl_data_py -- see docstring

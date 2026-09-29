@@ -10,7 +10,6 @@ was written to correct.
 
 Run with: pytest tests/test_calibration.py -v
 """
-import math
 import sys
 from pathlib import Path
 
