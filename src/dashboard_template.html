@@ -3691,6 +3691,19 @@ function cardDisagreement(g){
   return `Model A picks <b>${a.team}</b>; ${withB} <b>${b.team}</b>.`;
 }
 
+/* A game that is over but not graded yet (Stage 26 item 1, from the
+   2026-09-28 audit). The card went on saying "GB 68% to win" after the final
+   whistle. Now it says what Model B picked and who won, in the headline's
+   own neutral grey: no right or wrong, which is the graded tag's to say once
+   grading runs, and no word on when grading happens, which Mark removed on
+   2026-09-28 as redundant. The score is the weekend refresh's, so it is
+   stated as a result, not scored. Returns '' for any other state. */
+function cardProvisional(g){
+  if(g.status !== 'final' || g.graded || !gameHasScore(g)) return '';
+  if(g.away_score === g.home_score) return 'a tie';
+  return `${g.away_score > g.home_score ? g.away : g.home} won`;
+}
+
 function cardProbHtml(g, awayC, homeC){
   const b = cardSide(g.mktB_home, g), a = cardSide(g.fbA_home, g), m = cardSide(g.mkt_home, g);
   const vals = {b: g.mktB_home, a: g.fbA_home, market: g.mkt_home};
@@ -3708,9 +3721,11 @@ function cardProbHtml(g, awayC, homeC){
       + `${s.label} <b>${cardSideText(side)}</b></span>`;
   };
   const bPicksAway = b.team === g.away, bPicksHome = b.team === g.home;
+  const done = cardProvisional(g);
+  const after = done ? `<span class="card-hl-to">&middot; ${done}</span>` : '<span class="card-hl-to">to win</span>';
   const headline = b.team
-    ? `<span class="card-hl-label">Model B</span> <b>${b.team} ${Math.round(b.pct)}%</b> <span class="card-hl-to">to win</span>`
-    : `<span class="card-hl-label">Model B</span> <b>Too close to call</b>`;
+    ? `<span class="card-hl-label">Model B${done ? ' picked' : ''}</span> <b>${b.team} ${Math.round(b.pct)}%</b> ${after}`
+    : `<span class="card-hl-label">Model B</span> <b>Too close to call</b>${done ? ` <span class="card-hl-to">&middot; ${done}</span>` : ''}`;
   const disagree = cardDisagreement(g);
   return `<div class="card-hl">${headline}</div>
       <div class="card-viz" role="img" aria-label="${cardAria(g)}">
@@ -3799,9 +3814,14 @@ function kickoffLabel(g){
    Tuesday grades it), so a graded game says nothing here unless the
    snapshot has its final score -- the graded tag already says how the pick
    did, and "score not in yet" beside it would contradict it. */
-function cardStatusLine(g){
-  const hasScore = g.away_score !== null && g.away_score !== undefined
+/* Both scores are in. Compared with null, not by truth: 0 is a real score. */
+function gameHasScore(g){
+  return g.away_score !== null && g.away_score !== undefined
     && g.home_score !== null && g.home_score !== undefined;
+}
+
+function cardStatusLine(g){
+  const hasScore = gameHasScore(g);
   // Just the score. Until 2026-09-28 an ungraded final also said when the
   // picks would be graded; Mark called that redundant, and the graded tag
   // says it once it happens.

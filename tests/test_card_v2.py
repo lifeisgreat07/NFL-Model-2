@@ -50,8 +50,8 @@ def run(expr):
     js = ''.join(const(s, c) for c in ('CARD_EVEN_BAND', 'CARD_SERIES', 'CARD_NEAR', 'CARD_LANE',
                                        'ESPN_CODE'))
     js += ''.join(fn(s, f) for f in ('cardSide', 'cardLanes', 'cardSideText', 'cardAria',
-                                     'cardDisagreement', 'cardProbHtml', 'pickBadge', 'markerPath',
-                                     'teamLogo', 'barTeam'))
+                                     'cardDisagreement', 'gameHasScore', 'cardProvisional', 'cardProbHtml', 'pickBadge',
+                                     'markerPath', 'teamLogo', 'barTeam'))
     r = subprocess.run([NODE, '-e', js + f'\nprocess.stdout.write(JSON.stringify({expr}));'],
                        capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr
