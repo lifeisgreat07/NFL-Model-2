@@ -1620,14 +1620,14 @@ the old rule "avoid literal non-ASCII in generated text" no longer applies.
 log's per-audit records and its JSON indentation: about 750KB to 438KB; the
 browser checker's byte budget is 800,000), 1 #197 (a final, ungraded card
 reads "Model B picked GB 68% · ATL won"), 2 #198 (a page change sets the
-title, `aria-current="page"` on the nav, and focus on the page heading). 5
-is #199 (Booth said NEEDS HUMAN REVIEW twice with no discrepancy; waiting for
-Mark). 3 and 4 were decided by Mark on 2026-09-28 from rendered
-side-by-sides (artifacts "Phone Header Options" and "Phone Chart Text"): 3 is
-a sticky top bar below 1080px with the h1 and a theme button, and the
-provenance line at the foot of the page; 4 draws the trend and reliability
-charts 300 units wide below 640px, with the trend chart's line-end names
-dropped there. Both are committed on branches.
+title, `aria-current="page"` on the nav, and focus on the page heading), 5
+#199 (team and week rows link to their routes; Booth said NEEDS HUMAN REVIEW
+twice with no discrepancy and Mark approved the merge), 3 #200. 3 and 4 were
+decided by Mark on 2026-09-28 from rendered side-by-sides (artifacts "Phone
+Header Options" and "Phone Chart Text"): 3 is a sticky top bar below 1080px
+with the h1 and a theme button, and the provenance line at the foot of the
+page; 4 draws the trend and reliability charts 300 units wide below 640px,
+with the trend chart's line-end names dropped there (on a branch, next).
 1. A final but ungraded card stops saying "to win" and shows a neutral
    provisional result -- without bringing back "graded on Tuesday", which Mark
    removed on 2026-09-28.
@@ -1653,13 +1653,16 @@ checkout and setup-python to the commits their major tags pointed at that
 day; it edits `booth-pr-audit.yml`, so its PR carries "Human review
 required:" and waits for Mark. Item 3's first ruff run found 22 (14 unused
 imports, 7 empty f-strings, one dead variable), all fixed in the same PR.
-Item 4 is Mark's call.
+Item 4: Mark said skip Dependabot (2026-09-28), so nothing moves the pins
+from item 1 but a person; bump one by hand, with its tag in the comment,
+when an action's release matters.
 1. SHA-pin the Claude Code action and the auto-commit action, then checkout
    and setup-python.
 2. A nightly mutation slice chosen by a date seed, CAUGHT counts in the run
    summary.
 3. ruff with pyflakes rules only, after one run to see what it finds.
 4. Discuss: Dependabot (it opens several PRs at once, each audited).
+   Decided: skip (Mark, 2026-09-28).
 
 ### Stage 28 - After the forward test (after the regular season)
 Discuss each before starting. Splitting `weekly_update.main`; an offline

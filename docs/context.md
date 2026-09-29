@@ -4,31 +4,31 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-29, early (#178 to #198 merged)
+Last updated: 2026-09-29, early (#178 to #200 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 4219 passing, none skipped, at `baaa994` (#198's head, merged as
-`77c1386` with only bot commits beside it on main).
+**Suite:** 4254 passing, none skipped, at `7a1bd8a` (#200's head, merged as
+`2e5f6ee` with only bot commits beside it on main).
 
-**Next action: #199** (Stage 26 item 5, row links) is open. Booth said NEEDS
-HUMAN REVIEW twice with no discrepancy (only the full mutation run and the
-browser check unverified, as on #191 to #198, which it passed); Mark was
-asked to merge or review it. Then open the prepared branches one at a time,
-each rebased with the next README case-file count (144 for the next): s26j
-(26.3, phone top bar), s26k (26.4, phone charts), s27b (27.2, nightly
-mutation slice), s27c (27.3, ruff), srun (the mutation runner reads UTF-8),
-and s27a (27.1, action pins) last: it edits Booth's workflow, so it needs
-Mark's review. Rebase can surface tests merged since a branch was cut
-(#198 and #199 each needed a small follow-up commit): run the full suite
-before the mutation run. Tuesday's weekly summary is 11:00 UTC; Thursday's
-lock run 16:00 UTC.
+**Next action: s26k** (Stage 26 item 4, phone charts), rebased with README
+at 145 case files and in its suite and mutation run; open it when both are
+clean. Then the prepared branches one at a time, each rebased with the next
+README case-file count: s27b (27.2, nightly mutation slice), s27c (27.3,
+ruff; later branches must then pass `ruff check .`), srun (the mutation
+runner reads UTF-8), and s27a (27.1, action pins) last: it edits Booth's
+workflow, so it needs Mark's review, and the pin counts in
+its new test move by one checkout and one setup-python once
+the nightly workflow is on main. Rebase can surface tests merged since a
+branch was cut: run the full suite before the mutation run. Tuesday's weekly
+summary is 11:00 UTC; Thursday's lock run 16:00 UTC.
 
 **Done tonight:** Stages 23, 24 and 25 finished (#178 to #190). Stage 26:
-#191 to #198 merged. The QB routine's first run opened #179 (TB: Jalon
-Daniels), audited and merged.
+#191 to #200 merged (all but item 4). Stage 27 item 4: Mark said skip
+Dependabot. The QB routine's first run opened #179 (TB: Jalon Daniels),
+audited and merged.
 
 ## Open work, and what each is waiting on
 
@@ -46,8 +46,8 @@ Daniels), audited and merged.
 
 1. **Stages 23 to 29, from the 2026-09-28 audit** (approved by Mark the same
    day; items and order in CLAUDE.md). Stages 23, 24 and 25 done. Stage 26:
-   items 1, 2 and 6 to 11 merged, 5 open (#199), 3 and 4 on branches. Stage
-   27 items 1 to 3 on branches; item 4 (Dependabot) is Mark's call.
+   all merged but item 4 (on a branch, next). Stage 27 items 1 to 3 on
+   branches; item 4 (Dependabot) skipped by Mark.
    One PR open at a time.
 2. **Stages 20 to 22**: 20 needs five real testers and comes after Stage 26;
    21 waits for week 5; 22 comes from 20.
