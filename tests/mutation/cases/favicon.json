@@ -1,0 +1,29 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_favicon.py",
+  "cases": [
+    {
+      "id": "favicon-link-dropped",
+      "why": "the page stops linking its icon and every tab shows the browser's blank page again.",
+      "find": "<link rel=\"icon\" href=\"assets/favicon.svg\" type=\"image/svg+xml\">",
+      "replace": "",
+      "expect_caught_by": "test_the_page_links_one_svg_icon_in_its_head"
+    },
+    {
+      "id": "favicon-not-deployed",
+      "target": ".github/workflows/deploy-pages.yml",
+      "why": "the deploy stops copying the icon, so the live page links a file that is not published and the tab shows the blank page.",
+      "find": "          cp assets/favicon.svg _site/assets/favicon.svg\n",
+      "replace": "",
+      "expect_caught_by": "test_the_deploy_publishes_the_icon_where_the_link_points"
+    },
+    {
+      "id": "favicon-loses-its-tile",
+      "target": "assets/favicon.svg",
+      "why": "the dark tile goes, and the pale ball all but vanishes on a light browser tab at 16 pixels, the reason option B was chosen over A.",
+      "find": "<rect width=\"32\" height=\"32\" rx=\"7\" fill=\"#0B0D10\"/>",
+      "replace": "",
+      "expect_caught_by": "test_the_icon_is_a_square_svg_with_a_dark_tile_and_the_accent_ball"
+    }
+  ]
+}
