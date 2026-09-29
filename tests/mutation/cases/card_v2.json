@@ -19,8 +19,8 @@
     {
       "id": "card-even-call-reads-as-disagreement",
       "why": "a model calling the game even is reported as picking the other team.",
-      "find": "  if(!a.team || !b.team || a.team === b.team) return '';",
-      "replace": "  if(a.team === b.team) return '';",
+      "find": "  return !!(a && b && a.team && b.team && a.team !== b.team);",
+      "replace": "  return !!(a && b && a.team !== b.team);",
       "expect_caught_by": "test_disagreement_is_named_only_when_model_a_picks_the_other_team"
     },
     {

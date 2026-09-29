@@ -3776,11 +3776,24 @@ function cardAria(g){
           `Model A ${cardSideText(a)}`].filter(Boolean).join('. ') + '.';
 }
 
+/* Whether the two models pick different teams: the one test behind the
+   card's "Models split" badge, its "Model A picks X; Model B picks Y" line
+   and the Model Disagreement filter. The badge and the filter used to test
+   a 12-point gap instead, so a card could say "Models agree" above a line
+   saying the models picked different teams (TEN@NYG, 2026 week 3: Model A
+   TEN 53%, Model B NYG 55%) -- and 12 points apart on the same team read
+   as a split. A model within CARD_EVEN_BAND of 50 has picked nobody, which
+   is not a disagreement about who wins. */
+function modelsSplit(g){
+  const a = cardSide(g.fbA_home, g), b = cardSide(g.mktB_home, g);
+  return !!(a && b && a.team && b.team && a.team !== b.team);
+}
+
 /* Named only when Model A picks the OTHER team from Model B -- not when one
    of them calls it even, which is not a disagreement about who wins. */
 function cardDisagreement(g){
+  if(!modelsSplit(g)) return '';
   const a = cardSide(g.fbA_home, g), b = cardSide(g.mktB_home, g), m = cardSide(g.mkt_home, g);
-  if(!a.team || !b.team || a.team === b.team) return '';
   const withB = m && m.team === b.team ? 'Model B and the market pick' : 'Model B picks';
   return `Model A picks <b>${a.team}</b>; ${withB} <b>${b.team}</b>.`;
 }
@@ -4068,10 +4081,11 @@ function renderGames(){
   }
 
   const filtered = gamesList.filter(g=>{
-    const diverge = Math.abs(g.fbA_home - g.mktB_home);
     if(currentFilter==='all') return true;
     if(currentFilter==='flagged') return !!g.flag;
-    if(currentFilter==='divergent') return diverge >= 12;
+    // The badge's own test, so the filter shows exactly the cards that say
+    // "Models split" (see modelsSplit).
+    if(currentFilter==='divergent') return modelsSplit(g);
     return true;
   });
 
@@ -4112,7 +4126,6 @@ function renderGames(){
   const news = weekData.news;
 
   grid.innerHTML = sorted.map(g=>{
-    const diverge = Math.abs(g.fbA_home - g.mktB_home);
     // Within EVEN_BAND points of 50 the model has not picked anybody, and
     // bolding one side of a 50.4/49.6 split states a confidence it does not have.
     const EVEN_BAND = 2;
@@ -4172,7 +4185,7 @@ function renderGames(){
                 call is worth flagging on its own, because "the models agree"
                 on a 50/50 game means they agree they do not know. */''}
           <span class="conf-tag ${tossUp ? 'tag-neutral' : ''}">${
-            tossUp ? 'Toss-up' : (diverge >= 12 ? 'Models split' : 'Models agree')}</span>
+            tossUp ? 'Toss-up' : (modelsSplit(g) ? 'Models split' : 'Models agree')}</span>
         </div>
       </div>
       ${cardProbHtml(g, awayC, homeC)}
