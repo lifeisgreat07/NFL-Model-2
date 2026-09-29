@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **4389 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-`e545aed` (after #207), with HEAD level with origin, which is the order that makes the
+Suite: **4460 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+`743305e` (after #213), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -1655,9 +1655,10 @@ fixed, with a test and a mutation case holding the desktop drawing).
 started by hand, caught 30 of 30), item 3 merged (#206: `ruff check .` runs
 in `run-tests.yml`, so every branch must pass it), and the runner's UTF-8
 fix merged (#207; `PYTHONUTF8=1` is no longer needed for the runner on
-markys). Item 1 is #208 (pins; edits `booth-pr-audit.yml`, so it carries
-"Human review required:"): Booth found 0 discrepancies and checked every SHA
-against its tag; it waits for Mark's explicit OK. Item 4: Mark said skip
+markys). Item 1 merged (#208, on Mark's explicit OK). **Stage 27 is done.**
+Booth's claude-code-action stays pinned to v1.0.236: the `v1` tag moved to
+v1.0.237 at 19:30 UTC on 2026-09-29, mid-review, and the pin was kept on
+the release Booth had been running. Item 4: Mark said skip
 Dependabot (2026-09-28), so nothing moves the pins but a person; bump one by
 hand, with its release in the comment, when an action's release matters.
 `setup-node`, cache, artifact and Pages actions stay on tags.
@@ -1684,17 +1685,18 @@ One product name and a favicon (Mark picks); a LICENSE (Mark picks); README
 and version tags; the audit-log collector off every push; a short
 CONTRIBUTING and PR template; the noreply email for future commits (no
 history rewrite); CLAUDE.md split into rules plus traps and history.
-**Progress (2026-09-29):** the name, favicon and LICENSE options went to
-Mark as the artifact "Front Door Options" (recommended: "Pick'em Model",
-favicon B = the sidebar football on a dark tile, MIT); waiting on his picks.
-Branches ready, not yet PRs: `s29-readme-front` (Running the tests + two
-recruiter bullets) and `s29-contributing` (stacked on it). The noreply
-email is set as markys's repo-local `user.email` (done, no PR). The Website
-field and version tags change Mark's GitHub settings and published tags, so
-they wait for him. Collector off every push: pushed back (it commits only
-when a new Booth report exists, once per merged PR however it is
-triggered; only a daily schedule would cut commits, at the cost of a day's
-lag); Mark to choose.
+**Progress (2026-09-29):** README "Running the tests" and two recruiter
+bullets (#209); CONTRIBUTING and PR template (#210); MIT LICENSE (#211,
+Mark's pick); favicon B, the sidebar football on a dark tile (#212, Mark's
+pick); one product name, "Pick'em Model" (Mark's pick after he first
+floated "NFL Analysis Tool": #213). The link preview and share image
+keep "The Pick'em Model"; the repository keeps "NFL-Model-2". The noreply
+email is markys's repo-local `user.email` (done, no PR). **Decided, not
+done:** the audit-log collector stays on every push (Mark agreed with the
+pushback: it commits only when a new Booth report exists, once per merged
+PR however it is triggered). **Left:** the Website field and version tags
+(Mark: "later"; they change his GitHub settings and published tags), and
+CLAUDE.md split into rules plus traps and history (its own session).
 
 **Not planned (Mark agreed):** packaging `src/` into subfolders, converting
 `print` to logging, routing owner-only dispatch inputs through `env:`, and
@@ -1883,6 +1885,17 @@ under compaction pressure, so its length is a cost paid on every session.
   a new commit, never an amend.
 
 ## Traps that have actually bitten
+
+- **An upstream tag can move while a PR is in review.** #208 said every
+  pinned action's major tag "still points at the same commit today"; at
+  19:30 UTC Anthropic moved claude-code-action's `v1` to v1.0.237, and
+  Booth's re-audit called the sentence a discrepancy. A claim about someone
+  else's repository is true only at the moment it was checked: say when.
+- **Desktop Commander's `write_file` wrote a `.svg` as six bytes of
+  binary.** It treats some extensions as images. Write SVG (and anything
+  not plain text by extension) with a short Python script, and check the
+  file parses. Separately, `--` is illegal inside an XML comment, so a CSS
+  token name like `--n0` in an SVG comment breaks the file.
 
 - **Scheduled Actions runs here start 3.5 to 6.5 hours late (since
   2026-09-24),** off-the-hour minutes included: canary up to 6h35m, the
