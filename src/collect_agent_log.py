@@ -69,17 +69,12 @@ def _pr_number(comment):
     return int(m.group(1)) if m else None
 
 
-#: The accounts Booth posts as. Every audit before Stage 23 was posted by
-#: claude[bot] (the Claude GitHub App's token); since Booth runs on the
-#: workflow's own GITHUB_TOKEN its reports come from github-actions[bot].
-#: Anyone can post a comment opening with Booth's heading, and before this a
-#: comment from any account became a row on the page (the 2026-09-28 audit).
-BOOTH_ACCOUNTS = frozenset({'claude[bot]', 'github-actions[bot]'})
-
-
-def author(comment):
-    """The login a comment was posted by, or None when the input carries none."""
-    return (comment.get('user') or {}).get('login')
+#: The accounts Booth posts as, and how a comment's author is read. Both live
+#: in booth_verdict.py, which the audit workflow copies out of the checkout
+#: alongside the report check; see the note there. Before the 2026-09-28
+#: audit a comment from any account became a row on the page.
+BOOTH_ACCOUNTS = bv.BOOTH_ACCOUNTS
+author = bv.author
 
 
 def is_audit(comment):

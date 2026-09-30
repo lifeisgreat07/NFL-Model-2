@@ -90,6 +90,22 @@ def test_a_person_quoting_a_report_does_not_count():
     assert not ok
 
 
+def test_another_apps_bot_does_not_count():
+    """Stage 30 item 5. Any bot used to count; a report-shaped comment from
+    some other app's bot during the run would have passed as Booth's."""
+    other = comment(report(), kind='Bot', login='dependabot[bot]')
+    ok, message = check([other], SHA, STARTED)
+    assert not ok and 'NO report' in message
+
+
+def test_both_of_booths_accounts_count():
+    """The Claude app posted every report before Stage 23; the workflow's own
+    token posts them since. Both must still be read as Booth."""
+    for login in ('claude[bot]', 'github-actions[bot]'):
+        ok, message = check([comment(report(), login=login)], SHA, STARTED)
+        assert ok, f'{login}: {message}'
+
+
 def test_a_report_for_a_different_commit_fails_and_says_which():
     ok, message = check([comment(report(head=OTHER[:7]))], SHA, STARTED)
     assert not ok
@@ -229,3 +245,53 @@ def test_the_checker_is_copied_out_before_booth_touches_the_tree():
     assert '$RUNNER_TEMP/booth-check/booth_report_posted.py' in check_body, (
         "the check runs the script from the working tree Booth left behind"
     )
+
+
+# --- the check runs from a copy, outside the checkout -------------------------
+
+def copied_modules(workflow_text):
+    """The src/ files booth-pr-audit.yml copies into $RUNNER_TEMP/booth-check."""
+    import re
+    m = re.search(r'^\s*cp ((?:src/\S+\.py\s+)+)"\$RUNNER_TEMP/booth-check/"', workflow_text, re.M)
+    assert m, 'the copy into booth-check is gone from booth-pr-audit.yml -- re-anchor this guard'
+    return [p.split('/')[-1][:-3] for p in m.group(1).split()]
+
+
+def local_imports(source, candidates):
+    """Top-level names a module imports that are modules in src/."""
+    import ast
+    names = set()
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Import):
+            names |= {a.name.split('.')[0] for a in node.names}
+        elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
+            names.add(node.module.split('.')[0])
+    return names & candidates
+
+
+def test_the_copied_check_imports_only_what_is_copied():
+    """Stage 30 item 5, found on PR #219 itself. The workflow copies the report
+    check and its one helper out of the checkout before Booth runs, so the
+    audit cannot edit the check that judges it. A new import of another src/
+    module passed every test here -- they run inside the checkout -- and failed
+    only in CI, where the copy stands alone: "Fail if Booth posted no report"
+    went red on a run whose report was sitting on the PR."""
+    root = Path(__file__).resolve().parents[1]
+    wf = (root / '.github' / 'workflows' / 'booth-pr-audit.yml').read_text(encoding='utf-8')
+    copied = copied_modules(wf)
+    assert 'booth_report_posted' in copied and len(copied) >= 2, f'copied: {copied}'
+    src_modules = {p.stem for p in (root / 'src').glob('*.py')}
+    stray = {}
+    for mod in copied:
+        imported = local_imports((root / 'src' / f'{mod}.py').read_text(encoding='utf-8'), src_modules)
+        missing = imported - set(copied)
+        if missing:
+            stray[mod] = sorted(missing)
+    assert not stray, (f'modules copied into booth-check import src/ modules that are not copied: '
+                       f'{stray}. Add them to the cp line, or keep the import out of these files.')
+
+
+def test_the_import_check_sees_an_import():
+    """Synthetic, so the failing branch is reachable while the real files are clean."""
+    src = 'import json\nfrom collect_agent_log import BOOTH_ACCOUNTS\nimport booth_verdict as bv\n'
+    assert local_imports(src, {'collect_agent_log', 'booth_verdict', 'x'}) == {'collect_agent_log', 'booth_verdict'}

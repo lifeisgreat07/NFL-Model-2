@@ -101,11 +101,14 @@ flowchart TB
   HTML when it is built, and the page makes no network requests for data.
   That is why it can run on GitHub Pages from a scheduled job, and why a
   stranger reading the repository sees no runtime dependencies.
-- **Booth can't write.** Its job runs on the workflow's own read-only token,
-  so it can report but never change what it audits. Merging stays a human
-  decision. (Until 2026-09-28 the Claude Code action gave it the Claude
-  app's token, which can write; `tests/test_booth_permissions.py` keeps it
-  on the read-only one.)
+- **Booth can't push.** Its job runs on the workflow's own token with
+  read-only access to the code, so it can never change the branch it
+  audits. It can comment on pull requests, which is how it reports, and the
+  same permission would let it edit a PR's description; that is accepted
+  and visible in the PR's edit history. Merging stays a human decision.
+  (Until 2026-09-28 the Claude Code action gave it the Claude app's token,
+  which can write code; `tests/test_booth_permissions.py` keeps it on the
+  workflow's own.)
 - **Generated files aren't committed.** `index.html` is built by the deploy
   workflow, not checked in, so branches that touch the template don't
   collide with builds on `main`.
