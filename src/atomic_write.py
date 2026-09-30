@@ -7,9 +7,17 @@ job) would leave a truncated file that nothing is allowed to replace, and the
 Pages build refuses a week it cannot read. Here the text is produced in full
 first, written to a temporary file beside the target, and only then moved
 into place with os.replace, which is atomic on one filesystem.
+
+Stage 30 item 8, from the 2026-09-29 re-audit: the temporary file used to be
+the fixed name <name>.tmp. A run killed between writing it and the swap left
+that file in a committed folder (predictions/), where the workflow's
+`predictions/**` pattern would commit it, and two writers to one target
+shared one temporary name. It is now a unique name from tempfile.mkstemp in
+the same folder, and `*.tmp` is gitignored.
 """
 import json
 import os
+import tempfile
 from pathlib import Path
 
 
@@ -21,9 +29,10 @@ def write_json_atomic(path, obj, trailing_newline=False, **dump_kwargs):
     """
     path = Path(path)
     text = json.dumps(obj, **dump_kwargs) + ('\n' if trailing_newline else '')
-    tmp = path.with_name(path.name + '.tmp')
+    fd, tmp_name = tempfile.mkstemp(dir=path.parent, prefix=path.name + '.', suffix='.tmp')
+    tmp = Path(tmp_name)
     try:
-        with open(tmp, 'w', encoding='utf-8') as f:
+        with os.fdopen(fd, 'w', encoding='utf-8') as f:
             f.write(text)
             f.flush()
             os.fsync(f.fileno())

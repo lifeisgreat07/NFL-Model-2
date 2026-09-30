@@ -76,3 +76,34 @@ def test_the_write_once_files_use_it():
     skip = re.search(r'def record_skipped_week\(.*?\n    return path', src, re.S)
     assert skip and 'write_json_atomic(path' in skip.group(0), (
         'the skipped-week record is written straight into the target again')
+
+
+def test_each_write_gets_its_own_temporary_file_beside_the_target(tmp_path, monkeypatch):
+    """Stage 30 item 8. The temporary name was the fixed <name>.tmp, which
+    two writers to one target would share. It must be unique per write, in
+    the target's own folder (os.replace cannot cross filesystems), and named
+    after the target so a leftover says what it was for."""
+    import atomic_write
+    seen = []
+    real = atomic_write.os.replace
+
+    def spy(src, dst):
+        seen.append(Path(src))
+        return real(src, dst)
+    monkeypatch.setattr(atomic_write.os, 'replace', spy)
+    target = tmp_path / 'record.json'
+    write_json_atomic(target, {'a': 1})
+    write_json_atomic(target, {'a': 2})
+    assert len(seen) == 2 and seen[0] != seen[1], f'one temporary name reused: {seen}'
+    for tmp in seen:
+        assert tmp.parent == tmp_path, tmp
+        assert tmp.name.startswith('record.json.') and tmp.name.endswith('.tmp'), tmp.name
+    assert sorted(p.name for p in tmp_path.iterdir()) == ['record.json']
+
+
+def test_a_leftover_temporary_file_is_never_committed():
+    """A run killed before the swap leaves its temporary file in the
+    target's folder -- for picks, predictions/, which the weekly workflow
+    commits with a predictions/** pattern."""
+    lines = (ROOT / '.gitignore').read_text(encoding='utf-8').splitlines()
+    assert '*.tmp' in [line.strip() for line in lines], '*.tmp is not gitignored'
