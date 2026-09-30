@@ -52,6 +52,20 @@
       "find": "            if r.get('actual_home_win') is not None or r.get('result') == 'tie']",
       "replace": "            if r.get('actual_home_win') is not None]",
       "expect_caught_by": "test_a_tie_counts_as_graded_but_scores_no_pick"
+    },
+    {
+      "id": "summary-reads-a-deleted-preview",
+      "why": "a deleted file counts as changed again, so the lock run that deletes the week's tracked preview tries to read it and the summary step fails: the defect the third audit reproduced the day before the first lock on #237's code",
+      "find": "    return sorted(p for code, p in _status(run, repo) if 'D' not in code)",
+      "replace": "    return sorted(p for code, p in _status(run, repo))",
+      "expect_caught_by": "test_the_lock_run_that_deletes_its_preview_is_summarised"
+    },
+    {
+      "id": "summary-drops-the-removed-preview-line",
+      "why": "the deleted preview goes unmentioned, so the run page no longer says the Tuesday preview was replaced by the lock",
+      "find": "            lines.append(f'- Preview for {m.group(1)} week {m.group(2)} removed: the week locked')",
+      "replace": "            pass",
+      "expect_caught_by": "test_the_lock_run_that_deletes_its_preview_is_summarised"
     }
   ]
 }

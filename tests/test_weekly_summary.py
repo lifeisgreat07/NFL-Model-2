@@ -3,11 +3,15 @@ src/weekly_summary.py and the summary and alert steps of the Weekly update
 workflow.
 
 The summary is built from synthetic changed-file lists, logs and result
-rows, so it runs without a real weekly run or git state.
+rows, so it runs without a real weekly run or git state. One test is the
+exception: a lock that deletes its tracked preview is replayed in a real
+throwaway repository, because what git reports for a deletion is the point.
 
 Run with: pytest tests/test_weekly_summary.py -v
 """
+import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -102,11 +106,56 @@ def test_changed_paths_reads_git_status_and_normalises_slashes():
     assert got == ['predictions/2026_week4.json', 'results/2026_week3_graded.json']
 
 
+def test_a_deleted_file_is_removed_not_changed():
+    """Both porcelain spellings of a deletion: unstaged (' D') and staged ('D ')."""
+    class Done:
+        stdout = (' D predictions/preview/2026_week4.json\n'
+                  'D  predictions/preview/2026_week5.json\n'
+                  '?? predictions/2026_week4.json\n')
+
+    run = lambda *a, **k: Done()  # noqa: E731
+    assert ws.changed_paths(run=run) == ['predictions/2026_week4.json']
+    assert ws.removed_paths(run=run) == ['predictions/preview/2026_week4.json',
+                                         'predictions/preview/2026_week5.json']
+
+
+def test_the_lock_run_that_deletes_its_preview_is_summarised(tmp_path):
+    """The third audit's repro, in a real repository: a tracked preview,
+    deleted by the lock (save_week), with the locked file written beside it.
+    Before Stage 35 the summary read the deleted preview and raised
+    FileNotFoundError, which failed the Weekly update's summary step on the
+    first lock run after #237."""
+    def git(*args):
+        subprocess.run(['git', *args], cwd=tmp_path, check=True, capture_output=True)
+
+    git('init', '-q')
+    git('config', 'user.email', 'test@example.com')
+    git('config', 'user.name', 'test')
+    preview = tmp_path / 'predictions' / 'preview' / '2026_week4.json'
+    preview.parent.mkdir(parents=True)
+    preview.write_text('[{"home": "KC"}]', encoding='utf-8')
+    git('add', '-A')
+    git('commit', '-q', '-m', 'the Tuesday preview')
+    preview.unlink()
+    (tmp_path / 'predictions' / '2026_week4.json').write_text(
+        '[{"home": "KC"}, {"home": "BUF"}]', encoding='utf-8')
+
+    changed = ws.changed_paths(repo=tmp_path)
+    removed = ws.removed_paths(repo=tmp_path)
+    text = ws.summarise(2026, changed, '', '',
+                        lambda p: json.loads((tmp_path / p).read_text(encoding='utf-8')),
+                        removed)
+    assert '- Locked 2026 week 4: 2 games' in text
+    assert '- Preview for 2026 week 4 removed: the week locked' in text
+    assert text.count('week 4') == 2, text
+    assert 'Previewed' not in text
+
+
 def test_the_bare_command_runs_without_a_log_or_a_drift_report(capsys):
     """--log and --drift are optional. The first version crashed on
     Path(None) when either was left off; Booth found it on #105 by running
     the command exactly as the PR body quoted it."""
-    assert ws.main(['--season', '2026'], changed=[]) == 0
+    assert ws.main(['--season', '2026'], changed=[], removed=[]) == 0
     out = capsys.readouterr().out
     assert '- No week was locked on this run' in out
     assert 'The checks did not run' in out and 'The drift check did not run' in out
