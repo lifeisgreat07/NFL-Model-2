@@ -134,7 +134,7 @@ def test_the_page_ignores_a_preview_once_its_week_is_locked(tmp_path):
 
 def test_the_build_marks_a_preview_week_and_leaves_it_ungraded():
     src = inspect.getsource(gd.main)
-    assert re.search(r"load_previews\(locked=set\(all_preds\)\)", src)
+    assert re.search(r"load_previews\(locked=set\(all_preds\) \| skipped_weeks\(\)\)", src)
     assert re.search(r"'preview': True,", src)
     assert re.search(r"build_games_js\(preds, \{\}\)", src), (
         "a preview week is built with a graded lookup; it must never be graded")
@@ -178,4 +178,5 @@ def test_the_board_shows_the_preview_note_only_for_a_preview_week():
     assert re.search(r'<p class="board-note board-preview-note" id="board-preview-note" role="note" hidden>', t)
     body = function_source(t, 'renderGames')
     assert re.search(r'previewNote\.hidden = !isPreview;', body)
-    assert 'only locked picks are graded' in body
+    # The note's wording is executed in tests/test_preview_after_kickoff.py.
+    assert 'previewNoteText(weekData, Date.now())' in body

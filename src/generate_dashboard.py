@@ -220,6 +220,18 @@ def load_previews(preview_dir=None, locked=()):
     return out
 
 
+def skipped_weeks(skipped_dir=None):
+    """{(season, week)} for every week recorded in predictions/skipped/: every
+    game kicked off with nothing locked (weekly_update.record_skipped_week).
+    Such a week is over, so a preview left from its Tuesday run is not shown
+    as if it were still coming (Stage 30 item 3)."""
+    skipped_dir = PRED_DIR / 'skipped' if skipped_dir is None else skipped_dir
+    if not skipped_dir.exists():
+        return set()
+    return {w for w in (parse_week_stem(f.stem) for f in skipped_dir.glob('*_week*.json'))
+            if w is not None}
+
+
 def load_all_graded():
     """Returns {(season, week): [graded predictions...]} for every graded week."""
     out = {}
@@ -887,7 +899,7 @@ def main():
     # it and never grades it. No graded lookup, status, TV or news: those are
     # read for locked weeks only. No PDF either (the loop below reads
     # all_preds), since a printed sheet outlives the preview it came from.
-    previews = load_previews(locked=set(all_preds))
+    previews = load_previews(locked=set(all_preds) | skipped_weeks())
     for key, preds in sorted(previews.items()):
         season, week = key
         weeks_js[f"{season}_week{week}"] = {
