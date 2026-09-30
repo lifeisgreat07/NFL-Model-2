@@ -14,9 +14,11 @@ reads (ratings, odds, calibration, team history, news, TV) is the real data.
 The saved weeks are copied from the repository, which keeps them for good,
 so the pages are the same on every run:
 
-  states_tie.html      the latest locked week, graded, with its first game
-                       a tie: graded as grade_predictions grades one, and
-                       final at 20-20 in the weekend refresh's snapshot.
+  states_tie.html      the latest GRADED week, with its first game a tie:
+                       graded as grade_predictions grades one, and final
+                       at 20-20 in the weekend refresh's snapshot. Weeks
+                       locked after it are left out, so it is the week the
+                       board opens on, and exactly one card reads "Tie".
   states_preview.html  after the locked weeks, a week recorded as skipped,
                        with the preview its Tuesday run left (which the page
                        must not show), then a preview whose games all kicked
@@ -34,6 +36,8 @@ import argparse
 import copy
 import json
 import re
+import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -109,19 +113,42 @@ def write(path, obj):
     path.write_text(json.dumps(obj), encoding='utf-8')
 
 
+def tie_week(weeks):
+    """The week the tie goes in: the latest week with a graded file.
+
+    Until Stage 35 it was the latest LOCKED week, graded or not, and from each
+    Thursday lock to the Tuesday grading that week has no graded file. The
+    builder then graded the raw picks, every one of the 16 cards came out
+    graded with no verdict, and every one read "Tie" -- a page no real week
+    can produce, while the JSON check here counted the one tie it had written
+    and passed. The third audit reproduced it: 16 of 16 without the graded
+    file, 1 of 16 with it."""
+    graded = [k for k, (_, g, _) in weeks.items() if g]
+    if not graded:
+        raise StateMissing('no saved week is graded yet, so there is no real grade to put a tie in')
+    return max(graded)
+
+
 def lay_out(work, weeks, state):
     """Write the saved weeks, and the state's own files, under `work`.
     Returns what the state must show: for 'tie' the tied game, for
-    'preview' the skipped week and the stale preview's week."""
+    'preview' the skipped week and the stale preview's week.
+
+    The tie state stops at the week holding the tie: later weeks, locked but
+    not graded yet, are left out, so the tie week is the latest week and the
+    one the board opens on, as it is on a real Tuesday after grading."""
     pred, results, status = work / 'predictions', work / 'results', work / 'game_status'
     for d in (pred, results, status):
         d.mkdir(parents=True, exist_ok=True)
+    if state == 'tie':
+        tied_week = tie_week(weeks)
+        weeks = {k: v for k, v in weeks.items() if k <= tied_week}
     latest = max(weeks)
     for (season, week), (picks, graded, snap) in weeks.items():
         stem = f'{season}_week{week}'
         write(pred / f'{stem}.json', picks)
-        if (season, week) == latest and state == 'tie':
-            graded, snap, tied = with_a_tie(graded or picks, snap, season, week)
+        if state == 'tie' and (season, week) == tied_week:
+            graded, snap, tied = with_a_tie(graded, snap, season, week)
         if graded is not None:
             write(results / f'{stem}_graded.json', graded)
         if snap is not None:
@@ -147,6 +174,27 @@ def weeks_json(html):
     return json.JSONDecoder().raw_decode(html, m.end())[0]
 
 
+def rendered_tie_tags(html):
+    """How many cards on the built page the page's own gradedTagHtml tags
+    "Tie", over every week the page holds. Run in node from the built file,
+    not the template, so it measures what ships. The script goes in on stdin:
+    the page's weeks are far past Windows' command-line limit."""
+    node = shutil.which('node')
+    if not node:
+        raise StateMissing('node is needed to render the graded tags, and it is not on PATH')
+    m = re.search(r'function gradedTagHtml\(.*?\n\}\n', html, re.S)
+    if not m:
+        raise StateMissing('the built page has no gradedTagHtml -- re-anchor this')
+    js = (m.group(0) + f'const W={json.dumps(weeks_json(html))};let n=0;'
+          'for(const k in W)for(const g of W[k].games)'
+          'if(gradedTagHtml(g).includes(\'class="graded-tag tie"\'))n++;'
+          'process.stdout.write(String(n));')
+    r = subprocess.run([node, '-'], input=js, capture_output=True, text=True, encoding='utf-8')
+    if r.returncode != 0:
+        raise StateMissing(f'gradedTagHtml threw: {r.stderr[-400:]}')
+    return int(r.stdout)
+
+
 def check(state, html, expect):
     weeks = weeks_json(html)
     if state == 'tie':
@@ -155,6 +203,9 @@ def check(state, html, expect):
                  if (g['home'], g['away']) == (home, away) and g.get('result') == 'tie']
         if not games:
             raise StateMissing('the tie page has no tied game in it')
+        tags = rendered_tie_tags(html)
+        if tags != 1:
+            raise StateMissing(f'the tie page renders {tags} "Tie" tags; a real week with one tie renders one')
     else:
         skipped, stale = expect
         labels = {f'{s}_week{w}' for s, w in (skipped, stale)}

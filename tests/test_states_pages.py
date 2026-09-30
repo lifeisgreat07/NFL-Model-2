@@ -7,6 +7,7 @@ file holds that it still does, and that CI checks what it builds.
 Run with: pytest tests/test_states_pages.py -v
 """
 import importlib.util
+import json
 import re
 from pathlib import Path
 
@@ -55,6 +56,34 @@ def test_the_tie_page_carries_a_tied_final(built):
     assert tie['model_a_correct'] is None and tie['model_b_correct'] is None
 
 
+def test_the_tie_page_renders_exactly_one_tie_tag(built):
+    """What a reader sees, not what the JSON holds: the page's own
+    gradedTagHtml, run over every card. The JSON check above counted one tie
+    while the board showed sixteen (Stage 35, the third audit)."""
+    builder, out, missing = built
+    assert missing is None, missing
+    assert builder.rendered_tie_tags((out / 'states_tie.html').read_text(encoding='utf-8')) == 1
+
+
+def test_a_locked_week_not_graded_yet_does_not_take_the_tie(tmp_path):
+    """From each Thursday lock to Tuesday's grading, the latest locked week
+    has no graded file. Replayed here with the saved weeks plus one newer
+    week that is locked and ungraded: the tie must go in the latest GRADED
+    week, the newer week must be left off the page, and one card must read
+    "Tie". Before Stage 35 the builder graded the newer week's raw picks
+    and all sixteen of its cards read "Tie"."""
+    builder = load_builder()
+    weeks = builder.saved_weeks()
+    graded_latest = max(k for k, (_, g, _) in weeks.items() if g)
+    newest = max(weeks)
+    locked = (newest[0], newest[1] + 1)
+    weeks[locked] = (weeks[newest][0], None, None)
+    page = builder.build(tmp_path, 'tie', weeks).read_text(encoding='utf-8')
+    shown = {builder.parse_week(k) for k in builder.weeks_json(page)}
+    assert locked not in shown and max(shown) == graded_latest, sorted(shown)
+    assert builder.rendered_tie_tags(page) == 1
+
+
 def test_the_preview_page_shows_the_stale_preview_and_hides_the_skipped_week(built):
     builder, out, missing = built
     assert missing is None, missing
@@ -79,6 +108,22 @@ def test_a_page_without_its_state_fails_the_build():
         builder.check('tie', page, ('GB', 'ATL'))
     with pytest.raises(builder.StateMissing, match='must show only the stale preview'):
         builder.check('preview', page, ((2026, 4), (2026, 5)))
+
+
+def test_a_tie_page_with_more_than_one_tie_tag_fails_the_build():
+    """The rendered check can fail: two graded cards with no verdict, the
+    shape the old builder produced sixteen of."""
+    builder = load_builder()
+    fn = ("function gradedTagHtml(g){\n  if(!g.graded) return '';\n"
+          "  const verdict = g.model_b_correct ?? g.model_a_correct;\n"
+          "  if(g.result === 'tie' || verdict === null || verdict === undefined)\n"
+          "    return `<span class=\"graded-tag tie\">Tie</span>`;\n  return '';\n}\n")
+    games = [{'home': 'GB', 'away': 'ATL', 'graded': True, 'result': 'tie'},
+             {'home': 'KC', 'away': 'BUF', 'graded': True, 'result': None,
+              'model_a_correct': None, 'model_b_correct': None}]
+    page = (fn + 'const weeks = ' + json.dumps({'2026_week3': {'season': 2026, 'week': 3, 'games': games}}) + ';')
+    with pytest.raises(builder.StateMissing, match='renders 2 "Tie" tags'):
+        builder.check('tie', page, ('GB', 'ATL'))
 
 
 def test_ci_builds_the_states_pages_and_checks_each_one():

@@ -30,6 +30,27 @@
       "find": "          for page in states_tie.html states_preview.html; do\n",
       "replace": "          for page in; do\n",
       "expect_caught_by": "test_ci_builds_the_states_pages_and_checks_each_one"
+    },
+    {
+      "id": "states-tie-in-an-ungraded-week",
+      "why": "the tie goes back in the latest week whatever its grading, so from a Thursday lock to Tuesday's grading it lands in a week with no graded file. The old builder graded the raw picks there and all sixteen cards read Tie; with the graded-week rule gone the build now fails outright on that window instead of laying out the state.",
+      "find": "    graded = [k for k, (_, g, _) in weeks.items() if g]\n",
+      "replace": "    graded = list(weeks)\n",
+      "expect_caught_by": "test_a_locked_week_not_graded_yet_does_not_take_the_tie"
+    },
+    {
+      "id": "states-tie-keeps-later-weeks",
+      "why": "weeks locked after the tie week stay on the tie page, so the board opens on an ungraded week and the tied card is not what the browser checks lay out.",
+      "find": "        weeks = {k: v for k, v in weeks.items() if k <= tied_week}\n",
+      "replace": "",
+      "expect_caught_by": "test_a_locked_week_not_graded_yet_does_not_take_the_tie"
+    },
+    {
+      "id": "states-tie-tags-never-counted",
+      "why": "the rendered check is switched off, so a tie page whose board shows sixteen Tie tags passes on the one tie its JSON holds: the defect the third audit found.",
+      "find": "        if tags != 1:\n",
+      "replace": "        if False:\n",
+      "expect_caught_by": "test_a_tie_page_with_more_than_one_tie_tag_fails_the_build"
     }
   ]
 }
