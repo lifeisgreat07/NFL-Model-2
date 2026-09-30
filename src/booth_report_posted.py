@@ -43,8 +43,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from booth_verdict import VerdictError, extract  # noqa: E402
-from collect_agent_log import BOOTH_ACCOUNTS, author  # noqa: E402
+from booth_verdict import BOOTH_ACCOUNTS, VerdictError, author, extract  # noqa: E402
 
 MIN_SHA_PREFIX = 7
 

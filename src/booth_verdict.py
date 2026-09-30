@@ -29,6 +29,26 @@ has already been bitten by.
 import json
 import re
 
+#: The accounts Booth posts as. Every audit before Stage 23 was posted by
+#: claude[bot] (the Claude GitHub App's token); since Booth runs on the
+#: workflow's own GITHUB_TOKEN its reports come from github-actions[bot].
+#: Anyone can post a comment opening with Booth's heading, so a report is
+#: Booth's only when one of these posted it (the 2026-09-28 audit).
+#:
+#: Defined HERE, not in collect_agent_log.py, because booth-pr-audit.yml
+#: copies this module and booth_report_posted.py -- and nothing else -- out
+#: of the checkout before Booth runs, so the report check cannot be edited by
+#: the audit it checks. Importing the list from anywhere else broke that
+#: step on PR #219 (Stage 30 item 5); tests/test_booth_report_posted.py now
+#: fails if a copied module imports something that is not copied.
+BOOTH_ACCOUNTS = frozenset({'claude[bot]', 'github-actions[bot]'})
+
+
+def author(comment):
+    """The login a comment was posted by, or None when the input carries none."""
+    return (comment.get('user') or {}).get('login')
+
+
 VERDICTS = ('CONFIRMED', 'DISCREPANCY', 'UNVERIFIABLE')
 OVERALLS = (
     'SAFE TO MERGE',
