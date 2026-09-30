@@ -1,0 +1,35 @@
+{
+  "target": "tests/browser/build_states.py",
+  "tests": "tests/test_states_pages.py",
+  "cases": [
+    {
+      "id": "states-tie-never-tied",
+      "why": "the builder stops marking the game a tie, so the tie page is an ordinary graded week and the tied card is never laid out in CI.",
+      "find": "    first['result'] = 'tie'\n",
+      "replace": "",
+      "expect_caught_by": "test_the_tie_page_carries_a_tied_final"
+    },
+    {
+      "id": "states-skip-never-recorded",
+      "why": "the builder stops recording the skipped week, so its leftover preview is shown and the page checks a skipped week that is not there.",
+      "find": "    write(pred / 'skipped' / f'{season}_week{skipped[1]}.json',\n          {'season': season, 'week': skipped[1], 'recorded_utc': '2026-09-28T11:00:00Z'})\n",
+      "replace": "",
+      "expect_caught_by": "test_the_preview_page_shows_the_stale_preview_and_hides_the_skipped_week"
+    },
+    {
+      "id": "states-check-cannot-fail",
+      "why": "the builder's own check is emptied, so a page without its state is handed to the browser checks as if it had one.",
+      "find": "def check(state, html, expect):\n    weeks = weeks_json(html)\n",
+      "replace": "def check(state, html, expect):\n    return\n    weeks = weeks_json(html)\n",
+      "expect_caught_by": "test_a_page_without_its_state_fails_the_build"
+    },
+    {
+      "id": "states-pages-not-checked-in-ci",
+      "target": ".github/workflows/browser-checks.yml",
+      "why": "the workflow stops running the browser checks on the states pages, so they are built and never looked at.",
+      "find": "          for page in states_tie.html states_preview.html; do\n",
+      "replace": "          for page in; do\n",
+      "expect_caught_by": "test_ci_builds_the_states_pages_and_checks_each_one"
+    }
+  ]
+}
