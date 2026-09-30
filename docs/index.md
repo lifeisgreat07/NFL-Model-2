@@ -42,6 +42,8 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | `src/ratings_engine.py` | Opponent-adjusted ridge ratings and QB ratings. |
 | `src/weekly_update.py` | The weekly routine: predictions, grading, playoff odds. |
 | `src/calibration.py` | Backtest calibration. Run deliberately, not per build; takes minutes. |
+| `src/compare_data_sources.py` | Run by hand before flipping `USE_NFLREADPY` in `src/data_loader.py`: checks the two loaders agree on values (the loader's own `__main__` checks the columns). Not dead, though the 2026-09-29 re-audit read it so. |
+| `src/backfill_game_dates.py` | Run by hand: adds the schedule's `gameday`, `gametime_et` and `weekday` to prediction files saved before those fields existed, never changing an existing key; `--check` writes nothing. `tests/test_game_datetime_fields.py` names it as the repair when a file lacks them. |
 
 ## Stage 5: model experiments
 
