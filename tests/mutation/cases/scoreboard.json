@@ -19,8 +19,8 @@
     {
       "id": "scoreboard-bars-measured-from-fifty",
       "why": "the bars start at the coin-flip line instead of zero, so 68.8% against 71.9% draws a bar 14% shorter than the leader's instead of 4% -- the gap of one game, more than tripled.",
-      "find": "--series:${r.series}; width:${r.pct}%",
-      "replace": "--series:${r.series}; width:${(r.pct - 50) * 2}%",
+      "find": "--series:${r.series}; width:${r.pct ?? 0}%",
+      "replace": "--series:${r.series}; width:${((r.pct ?? 0) - 50) * 2}%",
       "expect_caught_by": "test_bars_start_at_zero_with_the_coin_flip_marked"
     },
     {
