@@ -67,6 +67,33 @@
       "find": "{body, html_url, created_at, user: {login: .user.login}}",
       "replace": "{body, html_url, created_at}",
       "expect_caught_by": "test_the_workflow_passes_each_comment_author_to_the_collector"
+    },
+    {
+      "id": "agentlog-workflow-runs-for-unmerged-prs",
+      "tests": "tests/test_agent_log_page.py",
+      "target": ".github/workflows/collect-agent-log.yml",
+      "why": "the merged check is dropped, so every pull request closed without merging starts a run -- the extra bot commits Stage 34 item 28 set out to stop.",
+      "find": "github.event.pull_request.merged == true",
+      "replace": "true",
+      "expect_caught_by": "test_the_collector_runs_when_a_pull_request_merges_and_only_then"
+    },
+    {
+      "id": "agentlog-workflow-checks-out-the-pr-head",
+      "tests": "tests/test_agent_log_page.py",
+      "target": ".github/workflows/collect-agent-log.yml",
+      "why": "the job, which holds contents: write and is started by a pull request event, checks out the pull request's head instead of main.",
+      "find": "          ref: main",
+      "replace": "          ref: ${{ github.event.pull_request.head.sha }}",
+      "expect_caught_by": "test_the_collector_checks_out_main_never_the_pull_request"
+    },
+    {
+      "id": "agentlog-workflow-push-trigger-back",
+      "tests": "tests/test_agent_log_page.py",
+      "target": ".github/workflows/collect-agent-log.yml",
+      "why": "push comes back as a trigger. The workflow writes with a push, and the paths-ignore that used to stop the loop is gone.",
+      "find": "  workflow_dispatch:",
+      "replace": "  workflow_dispatch:\n  push:\n    branches: [main]",
+      "expect_caught_by": "test_the_collector_workflow_cannot_retrigger_itself"
     }
   ]
 }

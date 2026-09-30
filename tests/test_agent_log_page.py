@@ -68,13 +68,45 @@ def test_the_collector_workflow_is_not_a_pwn_request():
         "contents: write")
 
 
+def _yaml(path=None):
+    """The workflow with comment lines stripped (see the test above)."""
+    return '\n'.join(l for l in (path or WORKFLOW).read_text(encoding='utf-8').splitlines()
+                     if not l.lstrip().startswith('#'))
+
+
 def test_the_collector_workflow_cannot_retrigger_itself():
-    """It writes data/agent_log.json; a push to main is its own trigger. The
-    path exclusion is the safeguard that does not depend on GitHub's
-    token-push rule continuing to exist."""
-    text = WORKFLOW.read_text(encoding='utf-8')
-    assert 'paths-ignore' in text and 'data/agent_log.json' in text.split('paths-ignore')[1][:300], (
-        "the workflow does not exclude its own output from its trigger")
+    """It writes data/agent_log.json with a push to main. Since Stage 34
+    item 28 push is not one of its triggers at all, so that commit cannot
+    start it again whatever GitHub's token-push rule does. Until then a
+    paths-ignore on its own output was the safeguard."""
+    on = re.search(r'^on:\n(.*?)^\S', _yaml() + '\nend', re.S | re.M)
+    assert on, 'the workflow has no on: block -- re-anchor this guard'
+    assert not re.search(r'^\s+push:', on.group(1), re.M), (
+        'the collector is triggered by a push again, and it writes with a push')
+
+
+def test_the_collector_runs_when_a_pull_request_merges_and_only_then():
+    """Stage 34 item 28 (Mark, 2026-09-29): one run per merged pull request,
+    not one per push to main. A closed pull request that was not merged has
+    no audit worth recording, and the job must say so, or every abandoned
+    branch adds a bot commit."""
+    text = _yaml()
+    assert re.search(r'pull_request:\s*\n\s+types: \[closed\]', text), (
+        'the collector no longer runs when a pull request closes')
+    assert 'github.event.pull_request.merged == true' in text, (
+        'the collector runs for pull requests closed without merging')
+    assert 'workflow_dispatch:' in text, 'the manual catch-up run is gone'
+
+
+def test_the_collector_checks_out_main_never_the_pull_request():
+    """It holds contents: write and is started by a pull request event. Its
+    checkout must be main: the merged state, never the pull request's head,
+    which is where a stranger's code would come from."""
+    text = _yaml()
+    checkout = re.search(r'uses: actions/checkout@\S+.*?\n(\s+with:\n(?:\s{10}.*\n)+)', text + '\n')
+    assert checkout, 'no checkout step found -- re-anchor this guard'
+    assert re.search(r'^\s+ref: main$', checkout.group(1), re.M), checkout.group(1)
+    assert 'pull_request.head' not in text
 
 
 def test_the_generator_loads_and_injects_the_log():

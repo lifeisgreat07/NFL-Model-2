@@ -13,26 +13,29 @@ name: Collect Booth's audit log
 # Writing data/agent_log.json pushes to main under data/**, which is one of the
 # paths Auto-regenerate dashboard watches -- so the page updates itself from
 # here without this workflow knowing anything about index.html.
-# Triggered by the push that every merge produces, NOT by pull_request_target.
-# pull_request_target runs with the base repository's permissions and can be
-# started from a fork; combined with `contents: write` on a public repo that is
-# the pwn-request shape, and it would be one careless "check out the PR head"
-# away from letting a stranger's code run with a write token. A push to main is
-# the same signal with none of that exposure.
+# Triggered when a pull request into main is closed, and run only if it was
+# merged (Stage 34 item 28, Mark's call on 2026-09-29). It used to run on every
+# push to main, so every push after a new Booth comment -- a weekly data
+# commit, a docs commit -- produced one more bot commit: about 280 of the
+# repository's first ~1,130 commits were this workflow's. An audit belongs to a
+# pull request, so the pull request's merge is the moment to record it. Manual
+# dispatch stays for a catch-up run.
 #
-# The loop this could otherwise create -- write data/agent_log.json, which is a
-# push to main, which runs this again -- is stopped twice over: the paths below
-# ignore this workflow's own output, and GitHub does not start new runs from a
-# push made with the default GITHUB_TOKEN. Same belt-and-braces as
-# Auto-regenerate dashboard, for the same reason.
+# `pull_request`, NOT `pull_request_target`. pull_request_target runs with the
+# base repository's permissions and can be started from a fork; combined with
+# `contents: write` on a public repo that is the pwn-request shape, one careless
+# "check out the PR head" away from letting a stranger's code run with a write
+# token. Under `pull_request` a fork's run gets a read-only token, and the job
+# below checks out main, never the pull request's head.
+#
+# It cannot retrigger itself: its own commit is a push, and push is not a
+# trigger here any more. (GitHub also starts no run from a push made with the
+# default GITHUB_TOKEN; this no longer depends on that.)
 on:
   workflow_dispatch:
-  push:
+  pull_request:
+    types: [closed]
     branches: [main]
-    paths-ignore:
-      - 'data/agent_log.json'
-      - 'index.html'
-      - 'dist/**'
 
 # Read the comments, write the one data file. Nothing else.
 permissions:
@@ -46,6 +49,8 @@ concurrency:
 
 jobs:
   collect:
+    # A closed pull request that was not merged has nothing to record.
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
