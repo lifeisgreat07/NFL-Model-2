@@ -1,0 +1,41 @@
+{
+  "target": "src/weekly_update.py",
+  "tests": "tests/test_weekly_update_end_to_end.py",
+  "cases": [
+    {
+      "id": "e2e-picks-a-game-after-kickoff",
+      "why": "a game the lock decision reports as started is predicted anyway, so a pick saved after kickoff reaches the record as if it were a prediction.",
+      "find": "if (away, home) in started:",
+      "replace": "if False and (away, home) in started:",
+      "expect_caught_by": "test_a_game_that_already_kicked_off_gets_no_pick"
+    },
+    {
+      "id": "e2e-overwrites-a-locked-week",
+      "why": "a second run writes over a week that is already saved, so a locked pick stops being permanent.",
+      "find": "if out_path.exists():",
+      "replace": "if False:",
+      "expect_caught_by": "test_a_second_run_never_overwrites_a_locked_week"
+    },
+    {
+      "id": "e2e-locks-a-week-it-should-hold",
+      "why": "a Tuesday run locks a week the Thursday run was meant to lock, before the week's quarterback news has landed.",
+      "find": "preview = not decision.lock",
+      "replace": "preview = False",
+      "expect_caught_by": "test_a_week_after_the_next_scheduled_run_is_previewed_not_locked"
+    },
+    {
+      "id": "e2e-pick-drops-its-model-version",
+      "why": "a saved pick no longer says which model made it, and a saved pick is permanent, so every week from then on is unattributable.",
+      "find": "'model_version': MODEL_VERSION,",
+      "replace": "",
+      "expect_caught_by": "test_a_week_inside_the_lock_saves_every_game_with_the_full_schema"
+    },
+    {
+      "id": "e2e-override-ignored",
+      "why": "a sourced override is read but not used, so the pick is made with the listed starter who has been ruled out -- the case the override file exists for.",
+      "find": "if team in overrides:",
+      "replace": "if False:",
+      "expect_caught_by": "test_a_sourced_override_replaces_the_listed_starter"
+    }
+  ]
+}
