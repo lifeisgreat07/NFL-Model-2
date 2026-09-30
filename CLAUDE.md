@@ -335,8 +335,9 @@ under compaction pressure, so its length is a cost paid on every session.
 
 ## Environment and workflow
 
-- Real clone lives on the user's Windows PC `markys` at `E:\NFL-Model-2`
-  (E: drive deliberately — C: is short on space). Desktop Commander and
+- The real clone lives on Mark's Windows PC (the local Windows machine; its
+  name and the clone's path are in the gitignored `CLAUDE.local.md` at the
+  clone's root, with the session archive's location). Desktop Commander and
   GitKraken MCP plugins are available there; run tests and heavy backtests on
   that machine. **Booth's audit runner is NOT the cloud sandbox, and it does
   reach nflverse**: on #100, #102 and #106 it loaded live play-by-play, and
@@ -344,7 +345,7 @@ under compaction pressure, so its length is a cost paid on every session.
   "no nflverse network access, per CLAUDE.md", quoting the old wording of
   this line instead of testing it. Test network access before claiming it
   is missing, in either place.
-- **Commits on markys use the noreply address** (repo-local `user.email`
+- **Commits on the local Windows machine use the noreply address** (repo-local `user.email`
   = `317783519+lifeisgreat07@users.noreply.github.com`, set 2026-09-29,
   Stage 29). History before that date carries the personal address and is
   deliberately not rewritten.
@@ -352,9 +353,9 @@ under compaction pressure, so its length is a cost paid on every session.
   `get_device_info` lists `desktop-commander` as announced, `RefreshMcpTools`
   brings them back (2026-09-24). GitKraken stayed connected throughout.
 - The cloud sandbox clone is scratch. It cannot push — the repo is not in the
-  session's authorised set. Commits and pushes happen on `markys`.
-- **Playwright lives in the cloud sandbox, not on `markys`.** For screenshots:
-  regenerate `index.html` on `markys`, stage it into the sandbox, and drive
+  session's authorised set. Commits and pushes happen on the local Windows machine.
+- **Playwright lives in the cloud sandbox, not on the local Windows machine.** For screenshots:
+  regenerate `index.html` on the local Windows machine, stage it into the sandbox, and drive
   Chromium there. This is the only practical way to actually look at the page.
 - The full backtest takes ~42 seconds. It is not the expensive step people
   assume; run it when a question needs it.
@@ -363,14 +364,14 @@ under compaction pressure, so its length is a cost paid on every session.
 - **One item, one PR.** Booth flagged a PR bundling three undisclosed features:
   a reviewer approving on the description alone approves more than they think.
   If a branch grows past its title, either split it or rewrite the description.
-- **`.github/` is writable from `markys`.** Editing a workflow and pushing it to
+- **`.github/` is writable from the local Windows machine.** Editing a workflow and pushing it to
   a feature branch both work, tested rather than assumed. Not verified: pushing
   `.github/` straight to `main`. The restriction that IS real is the Claude Code
   action's own, listed in `docs/traps.md`.
   General lesson, and the second stale belief this file carried: an inherited
   "you can't do X" with no recorded test behind it is a hypothesis. Spend the
   thirty seconds testing it before building a manual process around it.
-- No `gh` CLI on `markys`, and no PR-body-edit tool in the MCP set: GitKraken
+- No `gh` CLI on the local Windows machine, and no PR-body-edit tool in the MCP set: GitKraken
   exposes `pull_request_create`, not update. (`gh` does exist inside the
   Actions runners -- Booth's workflow calls `gh pr view` and `gh pr comment`
   -- but nothing in the repo edits a PR body with it.) A PR description can
@@ -378,7 +379,7 @@ under compaction pressure, so its length is a cost paid on every session.
   when opening it.
 - **The file bridge will not write `.github/` or `.git/`.** `device_commit_files`
   rejects both as protected paths. For a workflow change, commit a `git diff`
-  of it to the repo root as a scratch `.patch`, `git apply` it on `markys`,
+  of it to the repo root as a scratch `.patch`, `git apply` it on the local Windows machine,
   delete the patch, and compare `git hash-object` on both sides. Commit
   messages go through the gitignored `.commit-msg.txt`, not `.git/`.
 - **The file bridge and the mutation corpus have traps of their own**: a
@@ -408,7 +409,7 @@ under compaction pressure, so its length is a cost paid on every session.
 
 - **The PR loop, as run on 2026-09-26 (#108, #109).** Mark allows merging only when
   he says so in the session's opening prompt, and only on Booth's SAFE TO MERGE with
-  no discrepancies. The mechanics, all on `markys`:
+  no discrepancies. The mechanics, all on the local Windows machine:
   1. Branch from fresh `main` (`git pull --ff-only`, `git checkout -b <branch>`).
   2. Commit (message from a file; read `git log -1` after), push, then run the full
      suite and quote it; run each new mutation case with `--id` and check
@@ -420,7 +421,7 @@ under compaction pressure, so its length is a cost paid on every session.
   5. Read Booth without `gh`: the repo is public, so
      `https://api.github.com/repos/lifeisgreat07/NFL-Model-2/issues/<N>/comments`
      and `.../actions/runs?head_sha=<sha>` need no token (Python `urllib` on
-     `markys`; the cloud sandbox's proxy refuses this repo). An audit takes about
+     the local Windows machine; the cloud sandbox's proxy refuses this repo). An audit takes about
      5 to 10 minutes. Wait for the "Booth PR audit" run to finish, not just the
      comment, and read every claim, not only the verdict.
   6. Merge locally so the history matches earlier merges: `git checkout main`,

@@ -35,3 +35,4 @@ results/*_run.log
 # never a src/dist/ or similar further down.
 /index.html
 /dist/
+CLAUDE.local.md 

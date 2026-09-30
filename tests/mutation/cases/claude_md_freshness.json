@@ -65,6 +65,24 @@
       "expect_caught_by": "test_it_points_at_the_reading_order"
     },
     {
+      "id": "handoff-names-a-local-path",
+      "target": "docs/traps.md",
+      "tests": "tests/test_workflow_docs.py",
+      "why": "a local drive path goes back into a public document -- how the scrubbed ones got there in the first place, one helpful \"the script is at\" at a time.",
+      "find": "the session archive's `merge_pr.ps1` then stopped",
+      "replace": "`D:\\work\\merge_pr.ps1` then stopped",
+      "expect_caught_by": "test_public_documents_name_no_local_machine"
+    },
+    {
+      "id": "local-details-check-stops-hashing",
+      "target": "tests/test_workflow_docs.py",
+      "tests": "tests/test_workflow_docs.py",
+      "why": "the machine-name half of the check compares against nothing, so it passes every document whatever they say. Every real document is clean, so only the synthetic test can see this.",
+      "find": "hexdigest() in name_hashes:",
+      "replace": "hexdigest() in ():",
+      "expect_caught_by": "test_the_local_details_check_can_fire"
+    },
+    {
       "id": "handoff-grows-back",
       "why": "sixty lines land in CLAUDE.md. Length is what the split was for, and it grows one reasonable paragraph at a time.",
       "find": "## Environment and workflow",

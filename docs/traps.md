@@ -11,11 +11,11 @@ the methodology or a stage now means `CLAUDE.md` or
 Moved from CLAUDE.md's "Environment and workflow" list.
 
 - **THE FILE BRIDGE CORRUPTS BINARY FILES.** Three PNGs committed from the
-  sandbox to `markys` with `device_commit_files` each arrived about 4.5%
+  sandbox to the local Windows machine with `device_commit_files` each arrived about 4.5%
   larger, with a different MD5, and the call reported success. Carriage
   returns were added to the bytes, which is harmless to text and fatal to an
   image. What worked: base64-encode in the sandbox, commit the text, decode
-  on `markys` with a short script, and compare the MD5 to the sandbox copy.
+  on the local Windows machine with a short script, and compare the MD5 to the sandbox copy.
   Staging the other way (device to sandbox) was not seen to do this, but
   check a hash before trusting a binary either way.
 - **A file-bridge commit can report success and leave the old content in
@@ -28,7 +28,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   two identical failure messages from a file you just changed as evidence
   that you did not change it.
 - **The mutation corpus edits the working tree in place, and is now slow.**
-  On 2026-09-24 a full run on `markys` reached 104 of 328 cases in about 17
+  On 2026-09-24 a full run on the local Windows machine reached 104 of 328 cases in about 17
   minutes, on pace for close to an hour, not the six minutes recorded
   earlier. 328 was the size THEN: on 2026-09-26 after #120 it is 470 cases
   in 88 files, so a full run is well over an hour. Count before estimating
@@ -113,20 +113,20 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   The 2026-09-28 overnight session merged #148 itself at 02:59 UTC, then
   wrote into `docs/context.md` that "something other than this session"
   had done it, and asked Mark. Desktop Commander keeps its own call history
-  on markys, outside the repo, and `get_recent_tool_calls` with a `since`
+  on the local Windows machine, outside the repo, and `get_recent_tool_calls` with a `since`
   time answers "who ran this" in one call. Read it before calling any
-  action on markys unexplained.
+  action on the local Windows machine unexplained.
 - **WORK LEFT IN THE CLOUD SANDBOX DIES WITH THE SESSION.** The same night's
   log-loss row ("written and tested") and Stage 6 registration draft were
-  never copied to markys, and the next session found neither. Anything
-  another session may need goes to the session archive on markys, or it
+  never copied to the local Windows machine, and the next session found neither. Anything
+  another session may need goes to the session archive on the local Windows machine, or it
   does not exist.
 - **BOOTH COUNTS A MUTATION SCOPE CASE BY CASE.** A case file pulled in only
   because some of its cases override target/tests to a changed file: the
   runs here run it whole, Booth counts only those cases. #165 claimed 382
   (whole) and Booth derived 345, a DISCREPANCY until the description said
   both. State "run whole" and both counts; the scope checker script in the
-  session archive on markys (one-off-scripts) prints them.
+  session archive on the local Windows machine (one-off-scripts) prints them.
   **That script was wrong until 2026-09-28 (#176).** For a file matched at
   the top level it counted EVERY case as case-by-case, including cases
   whose own target overrides to an unchanged file (`readme_and_docs.json`
@@ -182,18 +182,18 @@ Moved from CLAUDE.md's "Environment and workflow" list.
 - **A RENDERED COUNT NEEDS ITS CUTOFF, AND CARDS ARE NOT PAIRS.** #146 quoted
   11 and 14 overlapping cards; at the half-pixel cutoff it was 12 and 13 (the
   11 used 2px, the 14 counted pairs). State the threshold and what is counted.
-- **RE-SENDING A FILE TO THE SAME PATH ON MARKYS CAN LEAVE THE OLD ONE.** Once
+- **RE-SENDING A FILE TO THE SAME PATH ON THE LOCAL MACHINE CAN LEAVE THE OLD ONE.** Once
   on 2026-09-27 the hash did not change. Use a fresh folder or name per
   revision and compare hashes before copying into the repo.
 
 - **WINDOWS PYTHON HAS NO TIME-ZONE DATABASE.** `ZoneInfo('America/New_York')`
-  raises `ZoneInfoNotFoundError` on markys and passes on Linux CI, so a test
+  raises `ZoneInfoNotFoundError` on the local Windows machine and passes on Linux CI, so a test
   can be green in CI and crash the tool locally, or the reverse. Convert
   through pandas (`pd.Timestamp(...).tz_convert('America/New_York')`), as
   `src/weekly_update.py` and `src/tv_channels.py` do. Found 2026-09-27.
 - **GITHUB'S ANONYMOUS API IS 60 CALLS AN HOUR, AND POLLING SPENDS IT.** A
   poll that listed every job of every run for a PR burned it in minutes on
-  2026-09-27, and `E:\nfl-session-archive\merge_pr.ps1` then stopped at its merged check -- the safe
+  2026-09-27, and the session archive's `merge_pr.ps1` then stopped at its merged check -- the safe
   direction, branch not deleted. Poll only the comments, and check
   the API's rate-limit endpoint (free) first. The merged check now falls back to the PR's
   HTML page, and its first draft matched ANOTHER PR's "Merged" badge in
@@ -210,7 +210,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   unmerged. Recovered by pushing the branch back at the audited SHA and
   reopening the PR (the built-in browser is signed in to GitHub). Reopening
   re-runs Booth, which agreed. **Merge through
-  `E:\nfl-session-archive\merge_pr.ps1` or its equivalent**: the message comes
+  the session archive's `merge_pr.ps1` or its equivalent**: the message comes
   from a file (`git merge -F`), every step checks `$LASTEXITCODE` before the
   next, and no branch is deleted until the API says the PR is merged. Note
   `$ErrorActionPreference = 'Stop'` is the wrong fix: git writes progress to
@@ -253,7 +253,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   defect at all**: the open list landed 9px inside the right edge. Same commit,
   same 390px viewport, same script — the fallback face is narrower, so the
   list, whose width is set by its longest option, simply fit. Fetching the
-  eight woff2 files on `markys`, staging them in and serving the page over
+  eight woff2 files on the local Windows machine, staging them in and serving the page over
   localhost reproduced it immediately at 41px of overflow. The existing entries
   here say a rendered figure is a sum of text widths and is not portable
   between machines; this is the stronger form. **A layout defect measured in
