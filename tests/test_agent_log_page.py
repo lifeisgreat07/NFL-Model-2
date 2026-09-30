@@ -194,5 +194,16 @@ def test_the_numbers_shown_are_the_ones_the_collector_produces():
         f"render as undefined: {sorted(missing)}")
 
 
+def test_the_collector_pushes_its_commit_to_main():
+    """On a pull_request run git-auto-commit-action pushes to github.head_ref
+    unless told otherwise: the merged pull request's branch, already deleted.
+    The first run after #232 (Stage 34 item 28) failed at exactly that step,
+    so the commit step must name main."""
+    text = _yaml()
+    step = re.search(r'uses: stefanzweifel/git-auto-commit-action@[^\n]*\n\s+with:\n((?:\s{10}.*\n?)+)', text)
+    assert step, 'no auto-commit step found -- re-anchor this guard'
+    assert re.search(r'^\s+branch: main$', step.group(1), re.M), step.group(1)
+
+
 if __name__ == '__main__':
     sys.exit(pytest.main([__file__, '-v']))

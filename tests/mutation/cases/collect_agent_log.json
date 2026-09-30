@@ -94,6 +94,15 @@
       "find": "  workflow_dispatch:",
       "replace": "  workflow_dispatch:\n  push:\n    branches: [main]",
       "expect_caught_by": "test_the_collector_workflow_cannot_retrigger_itself"
+    },
+    {
+      "id": "agentlog-workflow-pushes-to-the-pr-branch",
+      "target": ".github/workflows/collect-agent-log.yml",
+      "tests": "tests/test_agent_log_page.py",
+      "why": "the commit step loses branch: main, so on a pull_request run it pushes to the merged pull request's deleted branch and fails -- the first run after #232.",
+      "find": "          branch: main",
+      "replace": "",
+      "expect_caught_by": "test_the_collector_pushes_its_commit_to_main"
     }
   ]
 }
