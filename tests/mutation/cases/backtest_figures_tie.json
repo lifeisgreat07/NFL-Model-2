@@ -1,0 +1,45 @@
+{
+  "target": "data/calibration.json",
+  "tests": "tests/test_backtest_figures_tie.py",
+  "cases": [
+    {
+      "id": "calibration-from-an-unexplained-older-model",
+      "why": "the backtest file claims an older model than the last one checked, so a release in between (2.4) changed the model without the backtest being re-run or the gap being explained.",
+      "find": "\"model_version\": \"2.4\",",
+      "replace": "\"model_version\": \"2.3\",",
+      "expect_caught_by": "test_every_release_since_the_backtest_left_it_unchanged"
+    },
+    {
+      "id": "bootstrap-from-a-different-run",
+      "target": "data/bootstrap_brier_gap.json",
+      "why": "the bootstrap interval says it came from a different model than the calibration file beside it, so the page would quote an interval and a table from two different backtests.",
+      "find": "\"model_version\": \"2.4\",",
+      "replace": "\"model_version\": \"2.5\",",
+      "expect_caught_by": "test_the_two_backtest_files_come_from_the_same_run"
+    },
+    {
+      "id": "methodology-log-loss-a-digit-off",
+      "target": "src/dashboard_template.html",
+      "why": "the Methodology page prints a Model B log loss the backtest never produced; README's table, held to the page, would copy it.",
+      "find": "<td class=\"highlight\">0.606</td>",
+      "replace": "<td class=\"highlight\">0.605</td>",
+      "expect_caught_by": "test_the_methodology_table_prints_the_backtest_file"
+    },
+    {
+      "id": "methodology-accuracy-three-games-off",
+      "target": "src/dashboard_template.html",
+      "why": "Model A's printed accuracy is further from the backtest than rounding plus two games, the most a different machine can move it.",
+      "find": "<td class=\"highlight\">62.8%</td>",
+      "replace": "<td class=\"highlight\">63.1%</td>",
+      "expect_caught_by": "test_the_methodology_table_prints_the_backtest_file"
+    },
+    {
+      "id": "methodology-game-count-drifts",
+      "target": "src/dashboard_template.html",
+      "why": "the sentence above the table names a game count the backtest did not score.",
+      "find": "Evaluated on 2022-2025 (1,087 games)",
+      "replace": "Evaluated on 2022-2025 (1,086 games)",
+      "expect_caught_by": "test_the_table_names_the_seasons_and_games_the_backtest_used"
+    }
+  ]
+}
