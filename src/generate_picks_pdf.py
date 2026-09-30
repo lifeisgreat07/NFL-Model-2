@@ -45,7 +45,7 @@ from reportlab.platypus import (Paragraph, SimpleDocTemplate, Spacer, Table,
                                 TableStyle)
 
 REPO_ROOT = Path(__file__).parent.parent
-PRED_DIR = REPO_ROOT / 'predictions'
+from paths import PRED_DIR  # noqa: E402  (src/paths.py, Stage 32 item 15)
 
 # Only ASCII and the built-in Helvetica family are used anywhere in this
 # file. ReportLab's base-14 fonts have no glyphs for things like check-box

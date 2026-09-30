@@ -36,17 +36,11 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-ROOT = Path(__file__).parent.parent
-PRED_DIR = ROOT / 'predictions'
-RESULTS_DIR = ROOT / 'results'
-STATUS_DIR = ROOT / 'data' / 'game_status'
+# The folders and the season rule are defined once, in src/paths.py
+# (Stage 32 item 15). team_news and tv_channels import current_season from
+# here, so the name stays.
+from paths import PRED_DIR, RESULTS_DIR, STATUS_DIR, current_season  # noqa: E402,F401
 SOURCE = 'nflverse schedule, via nflreadpy.load_schedules'
-
-
-def current_season(today):
-    """January and February still belong to the season that kicked off the
-    year before (the playoffs); the weekly workflow decides the same way."""
-    return today.year - 1 if today.month <= 2 else today.year
 
 
 def _count(path):

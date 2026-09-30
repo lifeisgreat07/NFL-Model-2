@@ -1,0 +1,44 @@
+{
+  "target": "src/paths.py",
+  "tests": "tests/test_paths.py",
+  "cases": [
+    {
+      "id": "paths-week-rule-reads-a-suffixed-name",
+      "why": "the one week rule starts reading '2026_week3_graded' as week 3, so every caller that relied on such a name being skipped reads a file it never used to.",
+      "find": "        season_str, week_str = stem.split('_week')",
+      "replace": "        season_str, week_str = stem.removesuffix('_graded').split('_week')",
+      "expect_caught_by": "test_a_week_is_read_from_a_file_name_the_way_it_always_was"
+    },
+    {
+      "id": "paths-february-starts-the-new-season",
+      "why": "the season rolls over a month early, so the February Super Bowl week is run as next season's.",
+      "find": "    return now.year - 1 if now.month <= 2 else now.year",
+      "replace": "    return now.year - 1 if now.month <= 1 else now.year",
+      "expect_caught_by": "test_january_and_february_belong_to_last_season"
+    },
+    {
+      "id": "paths-weekly-update-keeps-its-own-folder",
+      "target": "src/weekly_update.py",
+      "why": "weekly_update defines its own predictions folder again, a second copy that can drift from the one every other module reads.",
+      "find": "PRED_DIR.mkdir(exist_ok=True)",
+      "replace": "PRED_DIR = Path(__file__).parent.parent / 'predictions'\nPRED_DIR.mkdir(exist_ok=True)",
+      "expect_caught_by": "test_each_module_name_is_bound_to_the_one_definition"
+    },
+    {
+      "id": "paths-season-rule-back-in-bash",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the weekly workflow works the season out in bash again, a third copy of the rule that the tests of paths.current_season never see.",
+      "find": "          season=$(python src/paths.py --current-season)",
+      "replace": "          season=$(date -u +%Y)",
+      "expect_caught_by": "test_the_workflow_asks_paths_for_the_season"
+    },
+    {
+      "id": "paths-data-quality-keeps-its-own-teams",
+      "target": "src/data_quality.py",
+      "why": "data_quality holds its own team list again, which can disagree with the names the dashboard shows.",
+      "find": "from paths import NFL_TEAMS  # noqa: E402",
+      "replace": "NFL_TEAMS = frozenset(['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 'LA', 'LAC', 'LV', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PHI', 'PIT', 'SEA', 'SF', 'TB', 'TEN', 'WAS'])",
+      "expect_caught_by": "test_each_module_name_is_bound_to_the_one_definition"
+    }
+  ]
+}

@@ -37,8 +37,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 ROOT = Path(__file__).parent.parent
 NEWS_DIR = ROOT / 'data' / 'team_news'
-PRED_DIR = ROOT / 'predictions'
-RESULTS_DIR = ROOT / 'results'
+from paths import PRED_DIR, RESULTS_DIR  # noqa: E402  (src/paths.py, Stage 32 item 15)
 KICKING = ('PK', 'P')
 SOURCES = {'injuries': 'nflverse injury report, via nflreadpy.load_injuries',
            'depth_chart': 'nflverse depth charts, via nflreadpy.load_depth_charts'}

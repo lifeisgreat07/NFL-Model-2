@@ -12,11 +12,9 @@ performance to show.
 """
 import argparse
 import json
-from pathlib import Path
 import pandas as pd
 
-PRED_DIR = Path(__file__).parent.parent / 'predictions'
-RESULTS_DIR = Path(__file__).parent.parent / 'results'
+from paths import PRED_DIR, RESULTS_DIR  # noqa: E402  (src/paths.py, Stage 32 item 15)
 RESULTS_DIR.mkdir(exist_ok=True)
 
 

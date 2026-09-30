@@ -49,7 +49,7 @@ from weekly_update import build_historical_features, build_qb_change_lookup  # n
 from bootstrap_brier_gap import (METRICS, N_RESAMPLES, SEED, metric_set,  # noqa: E402
                                  paired_bootstrap, summarise, walk_forward_aligned)
 
-DATA_DIR = Path(__file__).parent.parent / 'data'
+from paths import DATA_DIR  # noqa: E402  (src/paths.py, Stage 32 item 15)
 OUT = DATA_DIR / 'qb_leak_effect.json'
 
 # The commit that fixed the leak. The case study cites it; the test checks the
