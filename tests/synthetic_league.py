@@ -11,7 +11,10 @@ docstrings). This builds the inputs instead.
 Eight real team abbreviations (data_quality rejects any it does not know),
 two seasons:
 
-  PRIOR  (2025): weeks 1-7, a full round robin, all played.
+  PRIOR  (2025): weeks 1-21, the round robin three times over, all played.
+                 Three, because backtest.py will not fit on fewer than 50
+                 games with ratings, and a week has none until 200 plays
+                 precede it.
   TARGET (2026): weeks 1-4 played; week 5 is the one under test, its
                  kickoffs set by the caller relative to `now`; weeks 6-7
                  are in the future.
@@ -28,7 +31,7 @@ import pandas as pd
 
 TEAMS = ['BUF', 'MIA', 'NE', 'NYJ', 'KC', 'DEN', 'LV', 'LAC']
 PRIOR, TARGET = 2025, 2026
-PRIOR_WEEKS, PLAYED_WEEKS, TARGET_WEEK, LAST_WEEK = 7, 4, 5, 7
+PRIOR_WEEKS, PLAYED_WEEKS, TARGET_WEEK, LAST_WEEK = 21, 4, 5, 7
 PLAYS_PER_SIDE = 10
 STRENGTH = {t: (0.25 - 0.07 * i, -0.15 + 0.04 * ((i * 3) % 8)) for i, t in enumerate(TEAMS)}
 QB = {t: (f'00-00{i + 10:05d}', f'Q.Back{i}') for i, t in enumerate(TEAMS)}
@@ -99,7 +102,7 @@ def build(now, target_offsets, seed=20260929):
 
     for week in range(1, PRIOR_WEEKS + 1):
         kick = now - pd.Timedelta(weeks=60 - week)
-        for home, away in round_robin(week):
+        for home, away in round_robin((week - 1) % 7 + 1):
             add_game(PRIOR, week, home, away, kick, played=True)
     for week in range(1, LAST_WEEK + 1):
         for k, (home, away) in enumerate(round_robin(week)):
@@ -115,6 +118,17 @@ def build(now, target_offsets, seed=20260929):
     sched = pd.DataFrame(games)
     schedules = {s: sched[sched['season'] == s].reset_index(drop=True) for s in (PRIOR, TARGET)}
     return pd.DataFrame(plays), schedules
+
+
+def play_week(schedules, week, scores):
+    """A copy of `schedules` with TARGET `week` played: scores[k] is
+    (home, away) for the k-th game of round_robin(week)."""
+    sched = schedules[TARGET].copy()
+    for (home, away), (hs, as_) in zip(round_robin(week), scores):
+        at = (sched['week'] == week) & (sched['home_team'] == home) & (sched['away_team'] == away)
+        assert at.sum() == 1, (week, home, away)
+        sched.loc[at, ['home_score', 'away_score']] = [float(hs), float(as_)]
+    return {**schedules, TARGET: sched}
 
 
 def empty_schedule():
