@@ -43,6 +43,18 @@ Moved from CLAUDE.md's "Environment and workflow" list.
 
 ## Traps that have actually bitten
 
+- **A documentation commit goes straight to `main`, and the suite reads the
+  documentation.** `21515bc` (2026-09-30) ran only the CLAUDE.md freshness
+  test before pushing; `test_context_stays_short_enough_to_actually_read`
+  caps `docs/context.md` at 70 non-blank lines, it had grown to 74, and
+  `main`'s Run tests went red. Every pull request's merge then inherited the
+  failure, so #251 showed a red check its own diff did not cause. Run the
+  whole suite before pushing a docs commit, as for code.
+- **Editing template text moves mutation anchors that quote it.** #251
+  changed `width:${r.pct}%` to `width:${r.pct ?? 0}%`, the exact text an
+  existing case found; only the full suite's anchor test saw it, after the
+  branch was pushed. Run `tests/test_mutation_corpus.py` after any template
+  edit, before the long mutation scope.
 - **An exception inside a test fixture hides the test from the mutation
   runner.** The runner counts `FAILED` lines. A fixture that raises reports
   its tests as `ERROR`, and a `SystemExit` raised in one stops pytest before
