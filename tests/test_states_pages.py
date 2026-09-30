@@ -25,19 +25,28 @@ def load_builder():
 
 @pytest.fixture(scope='module')
 def built(tmp_path_factory):
+    """(builder, folder, None) -- or the reason, if a page came out without
+    its state. Not raised here: an error in a fixture would take every test
+    down as an error, and none of them would say which state was missing."""
     builder = load_builder()
     out = tmp_path_factory.mktemp('states')
-    builder.main(['--out', str(out)])
-    return builder, out
+    try:
+        builder.main(['--out', str(out)])
+        missing = None
+    except builder.StateMissing as e:
+        missing = str(e)
+    return builder, out, missing
 
 
 def test_both_pages_are_built(built):
-    builder, out = built
+    builder, out, missing = built
+    assert missing is None, missing
     assert sorted(p.name for p in out.glob('*.html')) == sorted(builder.PAGES)
 
 
 def test_the_tie_page_carries_a_tied_final(built):
-    builder, out = built
+    builder, out, missing = built
+    assert missing is None, missing
     weeks = builder.weeks_json((out / 'states_tie.html').read_text(encoding='utf-8'))
     ties = [g for w in weeks.values() for g in w['games'] if g.get('result') == 'tie']
     assert len(ties) == 1, ties
@@ -47,7 +56,8 @@ def test_the_tie_page_carries_a_tied_final(built):
 
 
 def test_the_preview_page_shows_the_stale_preview_and_hides_the_skipped_week(built):
-    builder, out = built
+    builder, out, missing = built
+    assert missing is None, missing
     weeks = builder.weeks_json((out / 'states_preview.html').read_text(encoding='utf-8'))
     previews = {k: w for k, w in weeks.items() if w.get('preview')}
     assert len(previews) == 1, sorted(previews)
@@ -65,9 +75,9 @@ def test_a_page_without_its_state_fails_the_build():
     """Synthetic, so the builder's own check stays able to fail."""
     builder = load_builder()
     page = 'const weeks = {"2026_week3": {"season": 2026, "week": 3, "games": [{"home": "GB", "away": "ATL", "result": null}]}};'
-    with pytest.raises(SystemExit, match='no tied game'):
+    with pytest.raises(builder.StateMissing, match='no tied game'):
         builder.check('tie', page, ('GB', 'ATL'))
-    with pytest.raises(SystemExit, match='must show only the stale preview'):
+    with pytest.raises(builder.StateMissing, match='must show only the stale preview'):
         builder.check('preview', page, ((2026, 4), (2026, 5)))
 
 

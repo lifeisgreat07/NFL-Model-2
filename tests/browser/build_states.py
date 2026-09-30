@@ -45,6 +45,10 @@ import generate_dashboard as gd  # noqa: E402
 from paths import PRED_DIR, RESULTS_DIR, STATUS_DIR, parse_week  # noqa: E402
 
 PAGES = ('states_tie.html', 'states_preview.html')
+
+
+class StateMissing(Exception):
+    """A built page does not hold the state it was built for."""
 TIE_SCORE = 20
 # The kickoffs of the preview that never locked. Fixed and in the past, so
 # the page is past kickoff on every run without reading a clock here.
@@ -139,7 +143,7 @@ def weeks_json(html):
     """The page's weeks, read back out of the built file."""
     m = re.search(r'\bconst weeks = ', html)
     if not m:
-        raise SystemExit('build_states: the built page has no weeks object -- re-anchor this')
+        raise StateMissing('the built page has no weeks object -- re-anchor this')
     return json.JSONDecoder().raw_decode(html, m.end())[0]
 
 
@@ -150,16 +154,16 @@ def check(state, html, expect):
         games = [g for w in weeks.values() for g in w['games']
                  if (g['home'], g['away']) == (home, away) and g.get('result') == 'tie']
         if not games:
-            raise SystemExit('build_states: the tie page has no tied game in it')
+            raise StateMissing('the tie page has no tied game in it')
     else:
         skipped, stale = expect
         labels = {f'{s}_week{w}' for s, w in (skipped, stale)}
         shown = labels & set(weeks)
         if shown != {f'{stale[0]}_week{stale[1]}'}:
-            raise SystemExit(f'build_states: the preview page shows {sorted(shown)}; '
+            raise StateMissing(f'the preview page shows {sorted(shown)}; '
                              f'it must show only the stale preview, never the skipped week')
         if not weeks[f'{stale[0]}_week{stale[1]}'].get('preview'):
-            raise SystemExit('build_states: the stale preview is not marked a preview')
+            raise StateMissing('the stale preview is not marked a preview')
 
 
 def build(out, state, weeks):
@@ -196,4 +200,7 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except StateMissing as e:
+        raise SystemExit(f'build_states: {e}')
