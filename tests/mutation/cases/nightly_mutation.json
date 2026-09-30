@@ -45,6 +45,31 @@
       "find": " --summary \"$GITHUB_STEP_SUMMARY\"",
       "replace": "",
       "expect_caught_by": "test_the_workflow_runs_nightly_with_the_date_as_the_seed"
+    },
+    {
+      "id": "nightly-failure-files-under-the-canary",
+      "target": ".github/workflows/nightly-mutation.yml",
+      "why": "a failed night is filed under another job's issue title, so a mutation survivor reads as a data outage and the one-issue-per-problem rule merges two problems (Stage 30 item 7).",
+      "find": "--title \"Nightly mutation slice failing\"",
+      "replace": "--title \"Nightly canary failing\"",
+      "expect_caught_by": "test_a_failed_night_opens_its_own_issue"
+    },
+    {
+      "id": "nightly-gets-contents-write",
+      "target": ".github/workflows/nightly-mutation.yml",
+      "why": "the job that only reads the corpus is handed write access to the repository along with the issue permission it needed.",
+      "find": "  contents: read",
+      "replace": "  contents: write",
+      "expect_caught_by": "test_the_workflow_cannot_write_to_the_repository"
+    },
+    {
+      "id": "nightly-alert-step-removed",
+      "target": ".github/workflows/nightly-mutation.yml",
+      "tests": "tests/test_alerts.py",
+      "why": "the alert step loses its failure() guard and never runs on the night it matters: a scheduled job failing with only a red run, which is what Stage 4 ended everywhere else (Stage 30 item 7).",
+      "find": "        if: failure()",
+      "replace": "        if: false",
+      "expect_caught_by": "test_every_scheduled_workflow_opens_an_issue_when_it_fails"
     }
   ]
 }
