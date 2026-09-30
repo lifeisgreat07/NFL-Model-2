@@ -804,6 +804,16 @@ def main(season, week):
 
     # Inside the window is not the same as time to lock. See SCHEDULED_RUNS_UTC.
     decision = decide_lock(week_games, pd.Timestamp.now(tz='UTC'))
+    # A week already locked is finished business, whatever the clock says
+    # now (Stage 30 item 4). Without this, `--week N` run after every game
+    # of a LOCKED week had kicked off fell into the branch below and wrote a
+    # skip record beside the saved picks -- a week both locked and skipped --
+    # and failed the run.
+    locked_path = PRED_DIR / f'{season}_week{week}.json'
+    if decision.started and not decision.lock and locked_path.exists():
+        print(f"{season} week {week} is already locked in predictions/{locked_path.name}, "
+              f"and every game has kicked off. Nothing to do.")
+        return
     if decision.started and not decision.lock:
         # Still a failure -- the run fails and opens its issue (Stage 4) --
         # but the week is recorded as skipped first, so the next run moves
