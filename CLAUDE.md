@@ -279,6 +279,8 @@ The full text of every stage, finished or planned, is in
 - **Stages 30 to 34 - the 2026-09-29 re-audit (78/100)**: 30 regressions and
   residuals, 31 maintainability, 32 code quality, 33 architecture and model
   engineering, 34 front door. Order and rules at the top of that section.
+- **Stage 35 - the 2026-09-30 third audit (83/100)**: its new fixes; the rest
+  of its plan is the Stage 32 to 34 queue. Status and decisions in its section.
 
 ## Ending a session
 
