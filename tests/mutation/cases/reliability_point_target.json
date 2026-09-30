@@ -19,8 +19,8 @@
     {
       "id": "rel-halo-never-resized",
       "why": "the halos are sized once, at load, while Model Lab is hidden and the chart measures 0 wide -- so they keep the base radius for good, and opening the page changes nothing.",
-      "find": "  if(window.ResizeObserver && svgEl) new ResizeObserver(sizeRelHalos).observe(svgEl);",
-      "replace": "",
+      "find": "new ResizeObserver(sizeRelHalos).observe(svgEl);",
+      "replace": "{}",
       "expect_caught_by": "test_the_halos_are_sized_on_mount_and_on_every_resize"
     },
     {

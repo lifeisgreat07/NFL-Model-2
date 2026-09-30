@@ -43,7 +43,8 @@
       "why": "the betting-line sentence goes back to a bare number with no unit: 'favourites by 6.5'.",
       "find": "  const by = fmtPoints(Math.abs(g.spread));",
       "replace": "  const by = Math.abs(g.spread).toFixed(1);",
-      "expect_caught_by": "test_the_betting_line_sentence_uses_the_formatter"
+      "tests": "tests/test_why_words.py",
+      "expect_caught_by": "test_positive_spread_means_the_home_team_is_favoured"
     }
   ]
 }

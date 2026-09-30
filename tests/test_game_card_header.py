@@ -120,12 +120,12 @@ def test_the_variant_adds_a_class_and_nothing_else(rendered):
         'the quiet variant changes more than the class list')
 
 
-def test_the_bar_ends_carry_the_logo_beside_the_abbreviation(rendered, source):
-    """Each end of the bar is the logo, then the abbreviation, and the board's
-    card draws both ends through barTeam()."""
+def test_the_bar_ends_carry_the_logo_beside_the_abbreviation(rendered):
+    """Each end of the bar is the logo, then the abbreviation. That the card
+    draws both ends through barTeam() is executed in test_card_v2.py
+    (test_both_bar_ends_carry_their_team), which replaced a text check here
+    (Stage 31 item 12)."""
     assert rendered['bar'] == ('<span class="card-end-team">' + LOGO.format(code='ne') + 'NE</span>')
-    for side in ('away', 'home'):
-        assert '${barTeam(g.' + side + ')}</span>' in source, side
 
 
 def test_a_logo_is_decorative_and_falls_back_to_the_name(rendered):

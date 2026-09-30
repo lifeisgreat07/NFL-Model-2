@@ -93,8 +93,3 @@ def test_one_point_is_singular_and_rounding_is_to_a_tenth(points):
     assert points['3.04'] == '3 points'
     assert points['0'] == '0 points'
 
-
-def test_the_betting_line_sentence_uses_the_formatter(src):
-    body = src.replace('\r\n', '\n')
-    assert 'const by = fmtPoints(Math.abs(g.spread));' in body
-    assert body.count('favourites by ${by}.') == 2, 'one of the two betting-line sentences lost its unit'

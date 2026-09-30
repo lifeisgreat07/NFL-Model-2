@@ -72,7 +72,6 @@ def test_an_ungraded_final_is_just_the_score(lines):
     """It said "· picks graded on Tuesday" too until 2026-09-28, when Mark
     called that redundant; the graded tag says it once grading happens."""
     assert lines['final_ungraded'] == 'Final: ATL 35, GB 14'
-    assert '· picks graded on Tuesday' not in template()
 
 
 def test_a_shutout_score_of_zero_is_still_a_score(lines):

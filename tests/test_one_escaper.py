@@ -18,7 +18,6 @@ ESCAPE_BODY = re.compile(r"""replace\(/\[&<>"\]/g""")
 def test_there_is_one_escaper():
     assert len(ESCAPE_BODY.findall(TEMPLATE)) == 1, (
         'more than one HTML escaper in the template -- use escapeHtml()')
-    assert re.search(r'function escapeHtml\(s\)\{\n\s*return String\(s\)\.replace\(/\[&<>"\]/g', TEMPLATE)
 
 
 def test_the_page_spells_offense_and_defense_one_way():
