@@ -32,7 +32,8 @@
     },
     {
       "id": "canary-january-is-next-season",
-      "why": "January is treated as the new calendar year's season. Every playoff-month canary would check a season with no schedule.",
+      "target": "src/paths.py",
+      "why": "January is treated as the new calendar year's season. Every playoff-month canary would check a season with no schedule. The rule lives in src/paths.py since Stage 32 item 15; the canary imports it.",
       "find": "    return now.year - 1 if now.month <= 2 else now.year",
       "replace": "    return now.year",
       "expect_caught_by": "test_january_belongs_to_last_season"
