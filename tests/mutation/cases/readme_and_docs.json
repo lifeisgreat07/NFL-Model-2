@@ -110,6 +110,33 @@
       "find": "are under the MIT licence",
       "replace": "are under the Apache 2.0 licence",
       "expect_caught_by": "test_the_licence_is_the_one_the_readme_names"
+    },
+    {
+      "id": "task-lint-drifts-from-ci",
+      "target": "tasks.py",
+      "tests": "tests/test_tasks.py",
+      "why": "the lint task checks less than CI does, so `tasks.py check` is green on a branch run-tests.yml will fail -- a fifteenth spelling of a command, the thing the runner exists to end (Stage 31 item 13).",
+      "find": "             lambda a: [['ruff', 'check', '.']]),",
+      "replace": "             lambda a: [['ruff', 'check', 'src']]),",
+      "expect_caught_by": "test_lint_is_what_run_tests_runs"
+    },
+    {
+      "id": "task-keeps-going-after-a-failure",
+      "target": "tasks.py",
+      "tests": "tests/test_tasks.py",
+      "why": "a failing step does not stop the task, so `check` runs the suite after lint failed and exits with the suite's code -- green output over a red lint (Stage 31 item 13).",
+      "find": "        if code:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_the_first_failure_stops_the_task_with_its_code"
+    },
+    {
+      "id": "task-slice-size-drifts-from-nightly",
+      "target": "tasks.py",
+      "tests": "tests/test_tasks.py",
+      "why": "the slice task draws a different number of cases from the nightly job, so replaying a night's seed by hand runs a different slice from the one that failed (Stage 31 item 13).",
+      "find": "'--sample', '30',",
+      "replace": "'--sample', '20',",
+      "expect_caught_by": "test_the_mutation_slice_is_the_nightly_slice"
     }
   ]
 }
