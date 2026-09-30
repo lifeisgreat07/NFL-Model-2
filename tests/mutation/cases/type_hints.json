@@ -1,0 +1,29 @@
+{
+  "target": "src/ratings_engine.py",
+  "tests": "tests/test_type_hints.py",
+  "cases": [
+    {
+      "id": "hints-ratings-return-dropped",
+      "why": "build_team_ratings loses its return type, the one function whose result changes shape (one week's ratings, or every week's) with its argument.",
+      "find": "                       upto_cutoff_i: int | None = None) -> Ratings | dict[WeekKey, Ratings] | None:",
+      "replace": "                       upto_cutoff_i: int | None = None):",
+      "expect_caught_by": "test_every_public_function_is_annotated"
+    },
+    {
+      "id": "hints-loader-parameter-dropped",
+      "target": "src/data_loader.py",
+      "why": "load_schedule's season goes back to an unannotated parameter.",
+      "find": "def load_schedule(season: int) -> pd.DataFrame:",
+      "replace": "def load_schedule(season) -> pd.DataFrame:",
+      "expect_caught_by": "test_every_public_function_is_annotated"
+    },
+    {
+      "id": "hints-evaluated-at-import",
+      "target": "src/data_loader.py",
+      "why": "the future import goes, so every hint is evaluated when the module loads, and pandas, imported only for type checking, is not defined then.",
+      "find": "from __future__ import annotations\n",
+      "replace": "",
+      "expect_caught_by": "test_the_hints_are_never_evaluated"
+    }
+  ]
+}

@@ -33,9 +33,16 @@ column usage, not assumed.
 
 Install: pip install nflreadpy   (or: pip install nfl_data_py, if reverting)
 """
+from __future__ import annotations
+
+from collections.abc import Iterable
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from config import TRAIN_SEASONS
+
+if TYPE_CHECKING:
+    import pandas as pd
 
 USE_NFLREADPY = True  # flip to False to revert to nfl_data_py -- see docstring
 
@@ -65,7 +72,7 @@ REQUIRED_SNAP_COLS = ['team', 'season', 'week', 'position', 'offense_snaps',
                       'pfr_player_id', 'game_type']
 
 
-def load_plays(seasons=None):
+def load_plays(seasons: Iterable[int] | None = None) -> pd.DataFrame:
     """Fetch play-by-play for the given seasons (defaults to TRAIN_SEASONS).
     Returns the raw nflverse play-by-play dataframe, regular season only
     pre-filtered is NOT done here -- callers filter as needed."""
@@ -104,7 +111,7 @@ def load_plays(seasons=None):
 PBP_CACHE_ENV = 'NFL_PBP_CACHE'
 
 
-def pbp_cache_dir():
+def pbp_cache_dir() -> Path | None:
     import os
     value = os.environ.get(PBP_CACHE_ENV, '').strip()
     return Path(value) if value else None
@@ -141,7 +148,7 @@ def _load_pbp_cached(nfl, seasons, current, cache):
     return pl.concat(frames, how='diagonal_relaxed')
 
 
-def load_schedule(season):
+def load_schedule(season: int) -> pd.DataFrame:
     """Fetch the full schedule (with spread_line etc.) for a season,
     including future/unplayed games -- this is how we get next week's
     matchups and current lines without hardcoding them."""
@@ -154,7 +161,7 @@ def load_schedule(season):
         return nfl.import_schedules([season])
 
 
-def load_snap_counts(seasons=None):
+def load_snap_counts(seasons: Iterable[int] | None = None) -> pd.DataFrame:
     """Fetch player-level snap counts (with position) for the given
     seasons -- used for the O-line continuity feature. Same nflverse
     source as play-by-play, no auth needed."""

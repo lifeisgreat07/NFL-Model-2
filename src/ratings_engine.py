@@ -6,12 +6,25 @@ backtest -- see the dashboard's Methodology page, and README.md, for the
 real, run numbers. (There has never been a METHODOLOGY.md in this repo;
 three files pointed at one anyway. See src/tune_qb_shrink_k.py.)
 """
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
 import numpy as np
 from sklearn.linear_model import Ridge
 from config import RIDGE_ALPHA, RECENCY_HALF_LIFE, QB_SHRINK_K, MIN_PLAYS_FOR_RATING
 
+if TYPE_CHECKING:
+    import pandas as pd
 
-def prep_plays(raw_pbp):
+#: (season, week), in play-by-play order.
+WeekKey = tuple[int, int]
+#: team -> (offence rating, defence rating); higher offence is better,
+#: higher defence means the team allows more.
+Ratings = dict[str, tuple[float, float]]
+
+
+def prep_plays(raw_pbp: pd.DataFrame) -> tuple[pd.DataFrame, list[WeekKey], dict[WeekKey, int]]:
     """Filter to regular-season pass/rush plays with valid EPA, and assign
     a sequential global-week index used for recency weighting."""
     reg = raw_pbp[raw_pbp['season_type'] == 'REG'].copy()
@@ -25,7 +38,8 @@ def prep_plays(raw_pbp):
     return plays, week_keys, week_to_idx
 
 
-def build_team_ratings(plays, week_keys, upto_cutoff_i=None):
+def build_team_ratings(plays: pd.DataFrame, week_keys: list[WeekKey],
+                       upto_cutoff_i: int | None = None) -> Ratings | dict[WeekKey, Ratings] | None:
     """Two-way fixed-effects ridge regression of play EPA on offense/defense
     team dummies, recency-weighted. If upto_cutoff_i is None, computes a
     rating for every historical week (for backtesting); otherwise computes
@@ -68,7 +82,7 @@ def build_team_ratings(plays, week_keys, upto_cutoff_i=None):
     return ratings_by_week
 
 
-def build_qb_ratings(raw_pbp):
+def build_qb_ratings(raw_pbp: pd.DataFrame) -> dict[str, Any]:
     """Per-player trailing EPA/dropback, leak-free, recency-weighted,
     shrunk toward league average for small samples. Returns
     (qb_plays_df, week_to_idx, league_avg_qb_epa) plus a helper function."""
