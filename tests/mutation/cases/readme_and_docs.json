@@ -12,7 +12,7 @@
     {
       "id": "readme-results-table-drifts-from-methodology",
       "why": "the README's results table moves away from the Methodology table it copies -- how it sat on pre-leak-fix figures from 2026-08-17 until Stage 7.",
-      "find": "| Model A (football only) | 62.8% |",
+      "find": "| Model A (football only) | 62.7% |",
       "replace": "| Model A (football only) | 62.6% |",
       "expect_caught_by": "test_the_results_table_matches_the_methodology_page"
     },

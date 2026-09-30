@@ -13,10 +13,13 @@ list and say why. Nothing else in the suite noticed the gap between 2.4 and
 The Methodology page's backtest table is held to data/calibration.json, and
 README's table is held to the page by test_readme_accuracy.py, so both
 published tables now trace back to the file. Log loss, Brier and AUC must be
-the file's figures to the three decimals printed. Accuracy may sit within its
-one printed decimal plus two games, the allowance reproducibility_audit.py
-uses, because accuracy can move a game or two between machines (README,
-"Judge the backtest on log loss").
+the file's figures to the three decimals printed, and accuracy the file's
+figure to the one decimal printed. Until 2026-09-29 accuracy was allowed
+rounding plus two games, the allowance reproducibility_audit.py uses for a
+re-run on another machine, and the page used it: it printed 62.8% and 68.2%
+where the file says 62.74% and 68.26%. Mark chose to print the file's own
+figures, so the page is now held to them exactly. The machine allowance
+still belongs where machines differ, in the reproducibility audit.
 
 data/reproducibility_audit.json carries no model version; it is tied to
 calibration.json by generated_at in test_reproducibility_audit.py.
@@ -33,7 +36,6 @@ import pytest
 REPO = Path(__file__).parent.parent
 sys.path.insert(0, str(REPO / 'src'))
 
-import reproducibility_audit as ra  # noqa: E402
 from config import VERSION_HISTORY  # noqa: E402
 
 CALIBRATION = 'data/calibration.json'
@@ -89,10 +91,9 @@ def mismatches(cells, metrics, model):
              for name, key, shown in (('log loss', 'log_loss', log_loss),
                                       ('Brier', 'brier', brier), ('AUC', 'auc', auc))
              if shown != f"{metrics[key]:.3f}"]
-    printed = float(accuracy.rstrip('%')) / 100
-    if not ra.compare_baseline(model, printed, metrics['accuracy'], metrics['n'])['ok']:
-        wrong.append(f"accuracy prints {accuracy}, the file says {metrics['accuracy']:.4f}, "
-                     "more than rounding plus two games apart")
+    if accuracy != f"{100 * metrics['accuracy']:.1f}%":
+        wrong.append(f"accuracy prints {accuracy}, the file says "
+                     f"{100 * metrics['accuracy']:.1f}%")
     return wrong
 
 
@@ -162,11 +163,12 @@ def test_the_table_names_the_seasons_and_games_the_backtest_used():
 
 def test_a_drifted_figure_is_caught():
     """Synthetic: the comparison has to fail on a figure a digit off and on an
-    accuracy three games off, or the tests above prove nothing."""
+    accuracy one game off, or the tests above prove nothing."""
     metrics = load(CALIBRATION)['models']['model_a']['metrics']
     good = [f"{100 * metrics['accuracy']:.1f}%", f"{metrics['log_loss']:.3f}",
             f"{metrics['brier']:.3f}", f"{metrics['auc']:.3f}"]
     assert mismatches(good, metrics, 'model_a') == []
     assert mismatches([good[0], '0.651', good[2], good[3]], metrics, 'model_a')
-    three_off = metrics['accuracy'] + 3 / metrics['n'] + 0.001
-    assert mismatches([f"{100 * three_off:.1f}%"] + good[1:], metrics, 'model_a')
+    one_off = metrics['accuracy'] + 1 / metrics['n']
+    assert f"{100 * one_off:.1f}%" != good[0], "one game does not move the printed figure here"
+    assert mismatches([f"{100 * one_off:.1f}%"] + good[1:], metrics, 'model_a')

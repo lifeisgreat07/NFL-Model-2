@@ -26,11 +26,11 @@
       "expect_caught_by": "test_the_methodology_table_prints_the_backtest_file"
     },
     {
-      "id": "methodology-accuracy-three-games-off",
+      "id": "methodology-accuracy-one-game-off",
       "target": "src/dashboard_template.html",
-      "why": "Model A's printed accuracy is further from the backtest than rounding plus two games, the most a different machine can move it.",
-      "find": "<td class=\"highlight\">62.8%</td>",
-      "replace": "<td class=\"highlight\">63.1%</td>",
+      "why": "Model A's printed accuracy goes back to 62.8%, one game from the file's 62.74%. It is inside the machine allowance, and it is still not the figure the file holds, which is what the page is meant to print.",
+      "find": "<td class=\"highlight\">62.7%</td>",
+      "replace": "<td class=\"highlight\">62.8%</td>",
       "expect_caught_by": "test_the_methodology_table_prints_the_backtest_file"
     },
     {

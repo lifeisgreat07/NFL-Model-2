@@ -217,7 +217,7 @@ def test_the_results_table_matches_the_methodology_page():
 
 def test_the_table_check_notices_a_drifted_figure():
     """Synthetic, so the failing branch stays reachable while the two agree."""
-    moved = TEXT.replace('| Model A (football only) | 62.8% |', '| Model A (football only) | 62.6% |')
+    moved = TEXT.replace('| Model A (football only) | 62.7% |', '| Model A (football only) | 62.6% |')
     assert moved != TEXT, "the synthetic edit found nothing to change"
     page = methodology_results(TEMPLATE.read_text(encoding='utf-8'))
     assert readme_results(moved)['Model A (football only)'] != page[RESULT_ROWS['Model A (football only)']]
