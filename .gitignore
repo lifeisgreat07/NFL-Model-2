@@ -36,3 +36,8 @@ results/*_run.log
 /index.html
 /dist/
 CLAUDE.local.md 
+
+# A temporary file src/atomic_write.py writes beside its target and swaps in.
+# A run killed before the swap leaves one behind, sometimes in a committed
+# folder; it must never be committed (Stage 30 item 8).
+*.tmp

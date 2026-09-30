@@ -30,6 +30,21 @@
       "find": "        write_json_atomic(out_path, predictions, indent=2)",
       "replace": "        open(out_path, 'w').write(json.dumps(predictions, indent=2))",
       "expect_caught_by": "test_the_write_once_files_use_it"
+    },
+    {
+      "id": "atomic-write-fixed-temporary-name",
+      "why": "the temporary file goes back to the fixed <name>.tmp, shared by any two writers to one target and left under a known name in a committed folder when a run is killed before the swap (Stage 30 item 8).",
+      "find": "    fd, tmp_name = tempfile.mkstemp(dir=path.parent, prefix=path.name + '.', suffix='.tmp')",
+      "replace": "    tmp_name = str(path.with_name(path.name + '.tmp'))\n    fd = os.open(tmp_name, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)",
+      "expect_caught_by": "test_each_write_gets_its_own_temporary_file_beside_the_target"
+    },
+    {
+      "id": "atomic-write-leftovers-committable",
+      "target": ".gitignore",
+      "why": "*.tmp is no longer ignored, so the temporary file a killed run leaves in predictions/ is committed by the weekly workflow's predictions/** pattern.",
+      "find": "*.tmp",
+      "replace": "",
+      "expect_caught_by": "test_a_leftover_temporary_file_is_never_committed"
     }
   ]
 }
