@@ -53,6 +53,25 @@ def test_the_files_it_watches_exist():
         assert (ROOT / rel).exists(), f'{rel} does not exist -- update AUDITOR_FILES'
 
 
-def test_preflight_runs_it_on_the_branch_diff():
+def test_preflight_runs_it_on_the_branch_diff_and_the_stripped_body():
     src = inspect.getsource(pf.preflight)
-    assert 'check_auditor_edits_need_a_human(body, changed_files(base, head))' in src
+    assert 'check_auditor_edits_need_a_human(claims, changed_files(base, head))' in src
+
+
+def test_a_line_quoted_in_a_code_fence_is_not_the_line():
+    """Stage 30 item 6. Quoting the rule in a fenced block is not declaring
+    it; preflight hands this check the quotation-stripped body, so the line
+    inside the fence is gone before the check reads it."""
+    body = ('Stage 30 item 6.\n\n```\n' + LINE + '```\n')
+    assert check(body, ['BOOTH_PROTOCOL.md']).ok, 'fixture: the raw body does satisfy it'
+    assert not check(pf.strip_quotations(body), ['BOOTH_PROTOCOL.md']).ok
+
+
+def test_a_renamed_auditor_file_is_listed_under_its_old_name(monkeypatch):
+    """Stage 30 item 6. With rename detection on, `git diff --name-only`
+    lists only the new name, so renaming booth-pr-audit.yml slipped past."""
+    calls = []
+    monkeypatch.setattr(pf, '_git', lambda *a: calls.append(a) or '')
+    pf.changed_files('main')
+    assert calls and '--no-renames' in calls[0], (
+        'changed_files lets git collapse a rename into its new name')
