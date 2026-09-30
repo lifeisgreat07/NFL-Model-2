@@ -141,6 +141,8 @@ jobs:
           # names, which is also where it sits in a checkout.
           mkdir -p _site/assets
           cp assets/favicon.svg _site/assets/favicon.svg
+          # The home-screen icon (Stage 34 item 31), beside it.
+          cp assets/apple-touch-icon.png _site/assets/apple-touch-icon.png
           if [ -d dist ]; then cp -r dist _site/; fi
           echo "--- what will be published ---"
           find _site -type f | sort
