@@ -80,3 +80,18 @@ jobs:
 
       - name: Check the built page
         run: python tests/browser/check_page.py index.html --axe node_modules/axe-core/axe.min.js
+
+      # Stage 34 item 30: the states no real week is in yet -- a tied game, a
+      # week recorded as skipped, a preview whose kickoff passed with no lock.
+      # tests/browser/build_states.py builds them from the saved weeks with
+      # the real generator, checks each page holds its state, and they are
+      # then checked exactly like the real page. tests/test_states_pages.py
+      # holds these two steps.
+      - name: Build the states pages
+        run: python tests/browser/build_states.py --out "$RUNNER_TEMP/states"
+
+      - name: Check the states pages
+        run: |
+          for page in states_tie.html states_preview.html; do
+            python tests/browser/check_page.py "$RUNNER_TEMP/states/$page" --axe node_modules/axe-core/axe.min.js
+          done
