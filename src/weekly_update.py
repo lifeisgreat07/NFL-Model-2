@@ -51,7 +51,7 @@ from data_quality import enforce as enforce_data_quality
 # comparison. The live weekly path no longer builds one -- see main().
 from ol_continuity import get_continuity
 from ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
-from simulate_season import fit_simple_win_model, simulate_season
+from simulate_season import fit_simple_win_model, regular_season, simulate_season
 from config import TRAIN_SEASONS, MODEL_VERSION
 
 # Don't save (lock in) predictions more than this many days before the
@@ -170,11 +170,12 @@ def save_playoff_odds(current_team_ratings, season_schedule, hist, season, n_sim
     try:
         model = fit_simple_win_model(hist)
         results = simulate_season(current_team_ratings, season_schedule, model, n_sim=n_sim)
-        played_count = season_schedule.dropna(subset=['home_score', 'away_score']).shape[0]
+        reg = regular_season(season_schedule)
+        played_count = reg.dropna(subset=['home_score', 'away_score']).shape[0]
         payload = {
             'season': season,
             'games_played': int(played_count),
-            'games_remaining': int(len(season_schedule) - played_count),
+            'games_remaining': int(len(reg) - played_count),
             'n_simulations': n_sim,
             'teams': results.to_dict(orient='records'),
         }

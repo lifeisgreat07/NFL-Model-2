@@ -35,6 +35,19 @@ CONF_DIVS = {'AFC': [d for d in DIVISIONS if d.startswith('AFC')],
              'NFC': [d for d in DIVISIONS if d.startswith('NFC')]}
 
 
+def regular_season(schedule):
+    """The regular-season rows of a schedule. nflverse lists playoff games
+    in the same frame, with game_type 'WC', 'DIV', 'CON' or 'SB' and no score
+    until they are played. Counted as regular-season games, a finished
+    playoff game adds a win, and an unplayed one is simulated as if it were
+    week 19 (Stage 33, found building the synthetic-league tests in #228).
+    A schedule without the column is taken as regular season only, as
+    before."""
+    if 'game_type' not in schedule.columns:
+        return schedule
+    return schedule[schedule['game_type'] == 'REG']
+
+
 def fit_simple_win_model(hist):
     """Fits the 2-feature (off/def only) model used for future, QB-unknown
     games, from the same real historical data the rest of the pipeline
@@ -55,6 +68,7 @@ def simulate_season(current_team_ratings, season_schedule, simple_model, n_sim=1
     simple_model: fitted 2-feature LogisticRegression from fit_simple_win_model.
     Returns a dataframe: team, division, playoff_pct, division_win_pct.
     """
+    season_schedule = regular_season(season_schedule)
     coef_off, coef_def = simple_model.coef_[0]
     intercept = simple_model.intercept_[0]
 

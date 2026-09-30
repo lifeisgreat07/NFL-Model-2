@@ -1,0 +1,28 @@
+{
+  "target": "src/simulate_season.py",
+  "tests": "tests/test_simulate_season.py",
+  "cases": [
+    {
+      "id": "simulation-plays-the-playoffs",
+      "why": "simulate_season takes the whole schedule again, so from January an unplayed playoff game is simulated as a week-19 regular-season game and a finished one adds a win.",
+      "find": "    season_schedule = regular_season(season_schedule)",
+      "replace": "",
+      "expect_caught_by": "test_playoff_rows_change_nothing_in_the_simulation"
+    },
+    {
+      "id": "regular-season-keeps-everything",
+      "why": "regular_season stops filtering, so every caller that relies on it counts playoff games.",
+      "find": "    return schedule[schedule['game_type'] == 'REG']",
+      "replace": "    return schedule",
+      "expect_caught_by": "test_regular_season_keeps_a_schedule_without_the_column"
+    },
+    {
+      "id": "odds-file-counts-playoff-games",
+      "target": "src/weekly_update.py",
+      "why": "the playoff-odds file's games played and remaining count playoff rows, so the page's 'N games remaining' is wrong from January.",
+      "find": "        reg = regular_season(season_schedule)",
+      "replace": "        reg = season_schedule",
+      "expect_caught_by": "test_the_odds_file_counts_regular_season_games_only"
+    }
+  ]
+}
