@@ -4,13 +4,14 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-30, early morning ET (overnight run: #237 to #248 merged; nothing open)
+Last updated: 2026-09-30, afternoon ET (third audit, 83/100: Stage 35; #249 and #250 merged)
 
 ---
 
 ## Right now
 
 **Suite:** 4925 passing, none skipped, on `main` at `e9d8406` (after #248).
+Not re-run on `main` since #249 and #250; the wrap-up recomputes it.
 
 **Next action: check Thursday's lock run** (2026-10-01, cron 11:00 UTC;
 scheduled runs have been starting up to 6.5 hours late, so "not run yet"
@@ -20,20 +21,29 @@ in the same commit (new since #237), replaced the preview on the Week
 Board, and its push survived. It is the first lock run on the code merged
 overnight: `src/paths.py` (the workflow's season step now calls it), the
 split `weekly_update.main`, the logging handler and the type hints. Its log
-should read exactly as week 3's did. If it has not started by 20:00 UTC,
-start "Weekly update" by hand from the Actions tab. A scheduled check
-(`trig_01HuuuPeAXBor9w6hPcxqVLP`) runs this at Thursday 17:00 UTC.
+should read exactly as week 3's did, and its run summary should include
+"- Preview for 2026 week 4 removed: the week locked" (#249: without it the
+summary step crashed on the deleted preview). If it has not started by
+20:00 UTC, start "Weekly update" by hand from the Actions tab. A scheduled
+check (`trig_01HuuuPeAXBor9w6hPcxqVLP`) runs this at Thursday 17:00 UTC.
+
+Stage 35 (the third audit's fixes, `docs/stage-history.md`): items 1 and
+1b done (#249, #250); item 2 (the tie state and the scoreboard's tie edges)
+on branch `s35-tie-state`; item 3(c) (tooling and top-bar remnants) next;
+items 3(a) (drift baseline from `data/calibration.json`, the rule
+reworded) and 3(b) (pipeline remnants) wait for the lock.
 
 Then, after the lock is seen to run, in this order:
-1. **Stage 32 item 14, package `src/`** (Mark: yes, after the lock). One
+1. **Stage 35 items 3(a) and 3(b).**
+2. **Stage 32 item 14, package `src/`** (Mark: yes, after the lock). One
    mechanical PR, proven by the reproducibility audit and a byte-identical page.
-2. **Ruff `I` and `UP`** (item 18's tail): one dry run, then one mechanical PR.
-3. **Stage 33 item 23** (line snapshots for every locked, ungraded week): it
+3. **Ruff `I` and `UP`** (item 18's tail): one dry run, then one mechanical PR.
+4. **Stage 33 item 23** (line snapshots for every locked, ungraded week): it
    changes what the weekly run writes, so not before a lock.
-4. **Stage 33 items 21, 22, 24**: each is a registration before it is code.
+5. **Stage 33 items 21, 22, 24**: each is a registration before it is code.
    Write the registration, show Mark, then run.
-5. **Stage 33 item 26** (template inliner) last in its stage; then Stage 34
-   item 32 (real testers, re-audit).
+6. **Stage 33 item 26** (template inliner) when the next page-sized feature
+   starts; then Stage 34 item 32 (real testers, the fourth audit).
 
 ## Open work, and what each is waiting on
 
