@@ -21,6 +21,10 @@ in the parts that changed fastest.
 | `docs/stage-history.md` | Every stage, finished or planned, under its frozen number | When a stage is planned or finished |
 | `memory/` | One file per session: what happened and why | Appended, never edited |
 
+**Every command in one place:** `python tasks.py` lists the tasks (test,
+lint, build, browser checks, the mutation slice, the wrap-up), each held
+to the workflow it copies by `tests/test_tasks.py`.
+
 **Session start:** `python src/session_start.py` — it computes the state rather
 than restating it, and cross-checks what `docs/context.md` claims against git.
 Then read `docs/context.md`, then CLAUDE.md, then `docs/traps.md` before a

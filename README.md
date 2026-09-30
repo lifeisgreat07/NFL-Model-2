@@ -204,6 +204,10 @@ it; a full run takes well over an hour:
 python tests/mutation/runner.py --id <case id>
 python tests/mutation/runner.py --sample 30 --seed 20260929
 ```
+Every one of these, and the page build, the browser checks and the
+end-of-session gate, is also a task in `tasks.py`, which runs exactly what CI
+runs (`tests/test_tasks.py` holds each task to its workflow). `python
+tasks.py` lists them; `python tasks.py check` is lint plus the suite.
 
 ## Automating this with Claude Code Routines
 
