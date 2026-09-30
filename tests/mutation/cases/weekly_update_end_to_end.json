@@ -36,6 +36,13 @@
       "find": "if team in overrides:",
       "replace": "if False:",
       "expect_caught_by": "test_a_sourced_override_replaces_the_listed_starter"
+    },
+    {
+      "id": "e2e-locked-week-recorded-as-skipped",
+      "why": "a locked week run again by hand after kickoff falls into the skip branch again: a skip record beside the saved picks, and a failed run (Stage 30 item 4).",
+      "find": "    if decision.started and not decision.lock and locked_path.exists():",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_locked_week_run_again_after_kickoff_is_left_alone"
     }
   ]
 }

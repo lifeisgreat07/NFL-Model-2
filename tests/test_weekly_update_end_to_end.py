@@ -202,6 +202,18 @@ def test_a_week_that_all_kicked_off_unlocked_fails_and_is_skipped(run, tmp_path)
     assert f'week{league.TARGET_WEEK}' in skip.name
 
 
+def test_a_locked_week_run_again_after_kickoff_is_left_alone(run, tmp_path):
+    """Stage 30 item 4. A week that is already locked, run again by hand
+    (`--week N`) after every game has kicked off, used to fall into the
+    skip branch: a skip record beside the saved picks, and a failed run."""
+    run([H, 2 * H, 3 * H, 4 * H])
+    first = locked(tmp_path).read_bytes()
+    out, _ = run([-4 * H, -3 * H, -2 * H, -H])
+    assert 'already locked' in out
+    assert locked(tmp_path).read_bytes() == first
+    assert not list((tmp_path / 'predictions' / 'skipped').glob('*.json'))
+
+
 def test_a_week_outside_the_lock_in_window_saves_nothing(run):
     far = pd.Timedelta(days=10)
     out, tmp = run([far, far + H, far + 2 * H, far + 3 * H])
