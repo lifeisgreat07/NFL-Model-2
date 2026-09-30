@@ -223,19 +223,44 @@ def _step_blocks(path):
     return out
 
 
-@pytest.mark.parametrize('path', [WORKFLOW, WEEKLY], ids=['weekend-refresh', 'weekly-update'])
+AUTO_COMMIT = 'stefanzweifel/git-auto-commit-action@'
+WORKFLOWS_DIR = ROOT / '.github' / 'workflows'
+
+
+def _pushers():
+    """Every workflow with a git-auto-commit step, found rather than listed.
+    Until Stage 35 this test named two workflows by hand, and the third one
+    that pushes main unattended, collect-agent-log.yml, had no catch-up; the
+    third audit found it. booth-regression.yml also pushes, with a plain
+    `git push` it runs itself, and is deliberately outside this rule: it is
+    started by hand, pushes the ref it was dispatched on, and commits before
+    pushing, so a refused push is a red run in front of the person who
+    started it, not a silent loss."""
+    return sorted(p for p in WORKFLOWS_DIR.glob('*.yml')
+                  if AUTO_COMMIT in p.read_text(encoding='utf-8'))
+
+
+def test_every_unattended_pusher_is_found():
+    """The discovery must find at least the three known pushers, or the rule
+    below could pass by checking nothing."""
+    names = {p.name for p in _pushers()}
+    assert {'weekend-refresh.yml', 'weekly-update.yml', 'collect-agent-log.yml'} <= names, names
+
+
+@pytest.mark.parametrize('path', _pushers(), ids=lambda p: p.stem)
 def test_the_commit_catches_up_with_main_first(path):
     """Run 36360495917 read everything and saved nothing: a merge landed between
-    its checkout and its push, and the push was refused. The commit step must
+    its checkout and its push, and the push was refused. Every commit step must
     be preceded, immediately, by a rebase onto main that carries the run's
     uncommitted files across."""
     steps = _step_blocks(path)
-    names = [n for n, _ in steps]
-    i = names.index('Commit and push changes')
-    assert names[i - 1] == 'Catch up with main', f'{path.name}: nothing catches up with main before the commit'
-    body = steps[i - 1][1]
-    assert 'pull --rebase --autostash origin main' in body, 'without --autostash the rebase refuses a dirty tree'
-    assert "user.email=" in body and "user.name=" in body, 'autostash makes a commit, and the runner has no identity'
+    commits = [i for i, (_, body) in enumerate(steps) if AUTO_COMMIT in body]
+    assert commits, f'{path.name}: no commit step found'
+    for i in commits:
+        name, body = steps[i - 1]
+        assert name == 'Catch up with main', f'{path.name}: nothing catches up with main before {steps[i][0]!r}'
+        assert 'pull --rebase --autostash origin main' in body, 'without --autostash the rebase refuses a dirty tree'
+        assert "user.email=" in body and "user.name=" in body, 'autostash makes a commit, and the runner has no identity'
 
 
 def test_the_lock_run_catches_up_even_after_a_failed_step():
