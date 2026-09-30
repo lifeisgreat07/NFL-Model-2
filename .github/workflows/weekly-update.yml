@@ -51,15 +51,14 @@ jobs:
 
       - name: Determine current NFL season
         id: season
+        # The rule (Jan/Feb still belong to the season that kicked off the
+        # previous calendar year) lives once, in src/paths.py; this used to be
+        # a third copy of it in bash (Stage 32 item 15).
+        # Assigned first, so a failure fails the step (bash -e) instead of
+        # writing an empty season.
         run: |
-          year=$(date -u +%Y)
-          month=$(date -u +%m)
-          # Jan/Feb still belong to the season that kicked off the
-          # previous calendar year (playoffs/Super Bowl).
-          if [ "$month" -le 2 ]; then
-            year=$((year - 1))
-          fi
-          echo "season=$year" >> "$GITHUB_OUTPUT"
+          season=$(python src/paths.py --current-season)
+          echo "season=$season" >> "$GITHUB_OUTPUT"
 
       # The log is kept for the run summary below. `shell: bash` is not
       # decoration: only an explicit bash shell runs with pipefail, and without

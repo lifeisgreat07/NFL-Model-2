@@ -38,12 +38,9 @@ from data_loader import QB_SCHEDULE_COLS, REQUIRED_PBP_COLS, REQUIRED_SCHEDULE_C
 #: The 32 franchises under the abbreviations nflverse uses for current
 #: seasons. Older seasons use OAK/SD/STL; the checks below only look at the
 #: target season's schedule, so those never appear here.
-NFL_TEAMS = frozenset({
-    'ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN',
-    'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 'LA', 'LAC', 'LV', 'MIA',
-    'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PHI', 'PIT', 'SEA', 'SF', 'TB',
-    'TEN', 'WAS',
-})
+# One list, in src/paths.py (Stage 32 item 15), shared with the names the
+# dashboard shows.
+from paths import NFL_TEAMS  # noqa: E402
 
 #: Regular-season games since the 17-game schedule began in 2021.
 REG_GAMES_SINCE_2021 = 272

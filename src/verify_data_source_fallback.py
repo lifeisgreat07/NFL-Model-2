@@ -46,7 +46,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).parent))
 import data_loader
 
-DATA_DIR = Path(__file__).parent.parent / 'data'
+from paths import DATA_DIR  # noqa: E402  (src/paths.py, Stage 32 item 15)
 
 # The season and week the 2026-08 migration used for its own value comparison.
 # Reusing it deliberately: if the two sources agreed here then and disagree

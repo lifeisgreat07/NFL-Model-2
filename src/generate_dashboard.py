@@ -36,12 +36,12 @@ from page_comments import strip_page_comments
 # with the PDF feature on 2026-09-04, not a deliberate choice.
 # Guarded by tests/test_weekly_pipeline.py.
 
-ROOT = Path(__file__).parent.parent
-DATA_DIR = ROOT / 'data'
-PRED_DIR = ROOT / 'predictions'
+# The shared locations, and the one rule for reading a week out of a file
+# name (src/paths.py, Stage 32 item 15). parse_week_stem keeps its name here
+# because tests and callers use it.
+from paths import ROOT, DATA_DIR, PRED_DIR, RESULTS_DIR, STATUS_DIR  # noqa: E402
+from paths import parse_week as parse_week_stem  # noqa: E402
 DIST_DIR = ROOT / 'dist'
-RESULTS_DIR = ROOT / 'results'
-STATUS_DIR = DATA_DIR / 'game_status'
 NEWS_DIR = DATA_DIR / 'team_news'
 TV_DIR = DATA_DIR / 'tv'
 TEMPLATE_PATH = ROOT / 'src' / 'dashboard_template.html'
@@ -177,15 +177,6 @@ def load_calibration():
         return None
     with open(path, encoding='utf-8') as f:
         return json.load(f)
-
-
-def parse_week_stem(stem):
-    """'2026_week1' -> (2026, 1). Returns None if it doesn't match."""
-    try:
-        season_str, week_str = stem.split('_week')
-        return int(season_str), int(week_str)
-    except ValueError:
-        return None
 
 
 def load_all_predictions():

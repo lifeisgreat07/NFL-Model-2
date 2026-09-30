@@ -50,7 +50,7 @@ from config import TRAIN_SEASONS, BACKTEST_SEASONS, MODEL_VERSION
 from weekly_update import build_historical_features, build_qb_change_lookup
 from backtest import backtest
 
-DATA_DIR = Path(__file__).parent.parent / 'data'
+from paths import DATA_DIR  # noqa: E402  (src/paths.py, Stage 32 item 15)
 
 # Bin edges over predicted home-win probability. Wider in the tails because
 # there are simply fewer games out there -- equal-width bins would leave the

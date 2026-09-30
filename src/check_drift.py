@@ -18,12 +18,9 @@ Exit code 1 = statistically significant underperformance detected.
 """
 import json
 import math
-import re
-from pathlib import Path
 
 from config import BACKTEST_ACCURACY, BACKTEST_SEASONS
-
-RESULTS_DIR = Path(__file__).parent.parent / 'results'
+from paths import RESULTS_DIR, parse_week  # src/paths.py, Stage 32 item 15
 MIN_GAMES_TO_TEST = 30  # below this, any gap could easily just be noise
 SIGNIFICANCE_Z = 1.96  # two-sided 95% -- consistent with the CIs used everywhere else in this project
 
@@ -36,10 +33,10 @@ def load_live_results():
     if not RESULTS_DIR.exists():
         return records
     for path in RESULTS_DIR.glob('*_graded.json'):
-        m = re.match(r'(\d+)_week(\d+)_graded\.json', path.name)
-        if not m:
+        parsed = parse_week(path.stem.removesuffix('_graded'))
+        if parsed is None:
             continue
-        season = int(m.group(1))
+        season = parsed[0]
         if season in BACKTEST_SEASONS:
             continue  # this is backtest-period data, not live monitoring data
         with open(path) as f:

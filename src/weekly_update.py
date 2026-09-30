@@ -95,14 +95,15 @@ SCHEDULED_RUNS_UTC = ((1, 11, 0), (3, 11, 0))  # Tuesday 11:00, Thursday 11:00
 # waits for Thursday.
 LOCK_SLACK = pd.Timedelta(hours=8)
 
-PRED_DIR = Path(__file__).parent.parent / 'predictions'
+# The folders are defined once, in src/paths.py (Stage 32 item 15); the
+# reasons each exists stay here, beside the code that writes them.
+from paths import DATA_DIR, PRED_DIR, PREVIEW_DIR, SKIPPED_DIR, TEAM_NAMES  # noqa: E402
 PRED_DIR.mkdir(exist_ok=True)
 # A week that kicked off with nothing ever locked is recorded here, one small
 # file per week, so determine_next_week() moves past it (Stage 24). A folder,
 # not a new file shape in predictions/: every reader of saved picks globs
 # predictions/*_week*.json without recursing, so none of them can mistake a
-# skip for a week of picks.
-SKIPPED_DIR = PRED_DIR / 'skipped'
+# skip for a week of picks. (SKIPPED_DIR)
 # A run that HOLDS a week (Tuesday, usually) saves what the models would pick
 # today here, as a preview (Mark, 2026-09-29: "an update both on Tuesday and
 # Thursday"). A folder for the same reason as skipped/: grading, the season
@@ -110,20 +111,9 @@ SKIPPED_DIR = PRED_DIR / 'skipped'
 # recursing, so a preview can never be graded, counted or taken for a lock.
 # Unlike a locked week it is overwritten by every later holding run; the
 # locked file that Thursday writes is what the page shows from then on.
-PREVIEW_DIR = PRED_DIR / 'preview'
-DATA_DIR = Path(__file__).parent.parent / 'data'
+# (PREVIEW_DIR)
 DATA_DIR.mkdir(exist_ok=True)
 
-TEAM_NAMES = {
-    'ARI':'Arizona Cardinals','ATL':'Atlanta Falcons','BAL':'Baltimore Ravens','BUF':'Buffalo Bills',
-    'CAR':'Carolina Panthers','CHI':'Chicago Bears','CIN':'Cincinnati Bengals','CLE':'Cleveland Browns',
-    'DAL':'Dallas Cowboys','DEN':'Denver Broncos','DET':'Detroit Lions','GB':'Green Bay Packers',
-    'HOU':'Houston Texans','IND':'Indianapolis Colts','JAX':'Jacksonville Jaguars','KC':'Kansas City Chiefs',
-    'LA':'LA Rams','LAC':'LA Chargers','LV':'Las Vegas Raiders','MIA':'Miami Dolphins','MIN':'Minnesota Vikings',
-    'NE':'New England Patriots','NO':'New Orleans Saints','NYG':'NY Giants','NYJ':'NY Jets',
-    'PHI':'Philadelphia Eagles','PIT':'Pittsburgh Steelers','SEA':'Seattle Seahawks','SF':'San Francisco 49ers',
-    'TB':'Tampa Bay Buccaneers','TEN':'Tennessee Titans','WAS':'Washington Commanders',
-}
 
 
 def save_current_ratings(team_ratings, season_schedule=None):

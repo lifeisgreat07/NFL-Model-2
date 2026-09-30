@@ -35,7 +35,7 @@ import sys
 from pathlib import Path
 
 REPO = Path(__file__).parent.parent
-PRED_DIR = REPO / 'predictions'
+from paths import PRED_DIR  # noqa: E402  (src/paths.py, Stage 32 item 15)
 
 FIELDS = ('gameday', 'gametime_et', 'weekday')
 

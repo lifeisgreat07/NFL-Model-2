@@ -29,20 +29,12 @@ workflow turns that into an issue (src/alerts.py).
 import argparse
 import sys
 import traceback
-from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from data_quality import Report  # noqa: E402
-
-
-def current_season(now=None):
-    """The season the weekly workflow would run for. Its bash does the same:
-    January and February still belong to the season that kicked off the
-    previous year."""
-    now = now or datetime.now(timezone.utc)
-    return now.year - 1 if now.month <= 2 else now.year
+from paths import current_season  # noqa: E402  (src/paths.py, Stage 32 item 15)
 
 
 def run(season, steps=None):
