@@ -1,0 +1,49 @@
+{
+  "target": "src/runlog.py",
+  "tests": "tests/test_runlog.py",
+  "cases": [
+    {
+      "id": "runlog-keeps-the-first-stdout",
+      "why": "the handler keeps the stream it was made with, so a run whose stdout is swapped after import (pytest's capture, a redirected run) writes its log to the old one.",
+      "find": "    @property\n    def stream(self):\n        return sys.stdout\n\n    @stream.setter\n    def stream(self, _value):\n        # StreamHandler.__init__ assigns a stream; there is nothing to keep.\n        pass\n",
+      "replace": "    def __init__(self):\n        super().__init__(sys.stdout)\n",
+      "expect_caught_by": "test_the_stream_is_whatever_stdout_is_when_the_line_is_written"
+    },
+    {
+      "id": "runlog-lines-carry-their-level",
+      "why": "each line gains its level name, so every line weekly_summary.py parses changes.",
+      "find": "logging.Formatter('%(message)s')",
+      "replace": "logging.Formatter('%(levelname)s %(message)s')",
+      "expect_caught_by": "test_a_line_is_the_bare_message_and_a_newline"
+    },
+    {
+      "id": "runlog-write-error-swallowed",
+      "why": "a line that cannot be written is reported to stderr and dropped, where print failed the run.",
+      "find": "    def handleError(self, record):\n        raise\n",
+      "replace": "",
+      "expect_caught_by": "test_a_line_that_cannot_be_written_fails_like_print"
+    },
+    {
+      "id": "runlog-passes-lines-to-the-root",
+      "why": "lines go on to the root logger too, and print twice wherever the root has a handler.",
+      "find": "    log.propagate = False\n",
+      "replace": "",
+      "expect_caught_by": "test_nothing_reaches_the_root_logger"
+    },
+    {
+      "id": "runlog-a-handler-per-import",
+      "why": "every call adds a handler, so a module imported twice prints each line twice.",
+      "find": "    if not any(isinstance(h, _StdoutHandler) for h in log.handlers):\n        handler = _StdoutHandler()\n        handler.setFormatter(logging.Formatter('%(message)s'))\n        log.addHandler(handler)\n",
+      "replace": "    handler = _StdoutHandler()\n    handler.setFormatter(logging.Formatter('%(message)s'))\n    log.addHandler(handler)\n",
+      "expect_caught_by": "test_asking_twice_adds_no_second_handler"
+    },
+    {
+      "id": "runlog-grading-prints-again",
+      "target": "src/grade_predictions.py",
+      "why": "a converted module goes back to print for one line, which no level or redirect then reaches.",
+      "find": "    log.info(f\"Saved to {out_path}\")",
+      "replace": "    print(f\"Saved to {out_path}\")",
+      "expect_caught_by": "test_the_converted_modules_log_and_never_print"
+    }
+  ]
+}

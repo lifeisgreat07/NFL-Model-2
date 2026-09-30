@@ -40,6 +40,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 # (Stage 32 item 15). team_news and tv_channels import current_season from
 # here, so the name stays.
 from paths import PRED_DIR, RESULTS_DIR, STATUS_DIR, current_season  # noqa: E402,F401
+from runlog import get_logger  # noqa: E402  (Stage 32 item 17)
+log = get_logger(__name__)
 SOURCE = 'nflverse schedule, via nflreadpy.load_schedules'
 
 
@@ -136,7 +138,7 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
     season = args.season or current_season(now)
     weeks = weeks_to_refresh(season, pred_dir, results_dir)
     if not weeks:
-        print(f'{season}: no locked week is waiting on grading; nothing to refresh.')
+        log.info(f'{season}: no locked week is waiting on grading; nothing to refresh.')
         return 0
     if load is None:
         from data_loader import load_schedule as load
@@ -150,10 +152,10 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
         games, missing = build_week(preds, rows, now)
         counts = {s: sum(g['status'] == s for g in games) for s in ('final', 'started', 'upcoming')}
         wrote = write_week(season, week, games, now, status_dir)
-        print(f"{season} week {week}: {counts['final']} final, {counts['started']} started, "
+        log.info(f"{season} week {week}: {counts['final']} final, {counts['started']} started, "
               f"{counts['upcoming']} upcoming -- {'written' if wrote else 'unchanged, not rewritten'}")
         for away, home in missing:
-            print(f'  WARNING: {away} at {home} is in the picks but not in the schedule; left out')
+            log.warning(f'  WARNING: {away} at {home} is in the picks but not in the schedule; left out')
     return 0
 
 

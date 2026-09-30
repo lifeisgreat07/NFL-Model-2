@@ -21,6 +21,8 @@ import math
 
 from config import BACKTEST_ACCURACY, BACKTEST_SEASONS
 from paths import RESULTS_DIR, parse_week  # src/paths.py, Stage 32 item 15
+from runlog import get_logger  # noqa: E402  (Stage 32 item 17)
+log = get_logger(__name__)
 MIN_GAMES_TO_TEST = 30  # below this, any gap could easily just be noise
 SIGNIFICANCE_Z = 1.96  # two-sided 95% -- consistent with the CIs used everywhere else in this project
 
@@ -65,41 +67,41 @@ def check_model(records, key, expected_p, label):
     n = len(graded)
     correct = sum(r[key] for r in graded)
 
-    print(f"\n{label}:")
-    print(f"  Live games graded: {n}")
+    log.info(f"\n{label}:")
+    log.info(f"  Live games graded: {n}")
     if n == 0:
-        print("  No live results yet -- nothing to check.")
+        log.info("  No live results yet -- nothing to check.")
         return False
     observed_p = correct / n
-    print(f"  Observed accuracy: {correct}/{n} = {observed_p*100:.1f}%")
-    print(f"  Backtest baseline: {expected_p*100:.1f}%")
+    log.info(f"  Observed accuracy: {correct}/{n} = {observed_p*100:.1f}%")
+    log.info(f"  Backtest baseline: {expected_p*100:.1f}%")
 
     if n < MIN_GAMES_TO_TEST:
-        print(f"  Below {MIN_GAMES_TO_TEST} games -- too early to test statistically, watching only.")
+        log.info(f"  Below {MIN_GAMES_TO_TEST} games -- too early to test statistically, watching only.")
         return False
 
     z, flagged = one_proportion_z_test(correct, n, expected_p)
-    print(f"  z-score: {z:.2f}" if z is not None else "  z-score: undefined")
+    log.info(f"  z-score: {z:.2f}" if z is not None else "  z-score: undefined")
     if flagged:
-        print(f"  *** DRIFT WARNING: live accuracy is significantly below the backtest baseline (z={z:.2f}, threshold={-SIGNIFICANCE_Z}) ***")
-        print("  This does not automatically mean something is broken -- real variance happens -- but it's")
-        print("  a large enough, unlikely-by-chance gap that it's worth a real look, not just noting and moving on.")
+        log.warning(f"  *** DRIFT WARNING: live accuracy is significantly below the backtest baseline (z={z:.2f}, threshold={-SIGNIFICANCE_Z}) ***")
+        log.info("  This does not automatically mean something is broken -- real variance happens -- but it's")
+        log.info("  a large enough, unlikely-by-chance gap that it's worth a real look, not just noting and moving on.")
     else:
-        print("  No significant drift detected.")
+        log.info("  No significant drift detected.")
     return flagged
 
 
 def main():
     records = load_live_results()
-    print(f"Loaded {len(records)} live (non-backtest-season) graded predictions.")
+    log.info(f"Loaded {len(records)} live (non-backtest-season) graded predictions.")
 
     flagged_a = check_model(records, 'model_a_correct', BACKTEST_ACCURACY['model_a'], 'Model A')
     flagged_b = check_model(records, 'model_b_correct', BACKTEST_ACCURACY['model_b'], 'Model B')
 
     if flagged_a or flagged_b:
-        print("\n=== DRIFT CHECK: WARNING FLAGGED ===")
+        log.info("\n=== DRIFT CHECK: WARNING FLAGGED ===")
         return 1
-    print("\n=== DRIFT CHECK: OK ===")
+    log.info("\n=== DRIFT CHECK: OK ===")
     return 0
 
 
