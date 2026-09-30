@@ -84,8 +84,9 @@ def build_team_ratings(plays: pd.DataFrame, week_keys: list[WeekKey],
 
 def build_qb_ratings(raw_pbp: pd.DataFrame) -> dict[str, Any]:
     """Per-player trailing EPA/dropback, leak-free, recency-weighted,
-    shrunk toward league average for small samples. Returns
-    (qb_plays_df, week_to_idx, league_avg_qb_epa) plus a helper function."""
+    shrunk toward league average for small samples. Returns a dict:
+    'plays', 'week_keys', 'week_to_idx', 'league_avg', and two helpers,
+    'trailing_rating' and 'identify_starters'."""
     usecols = ['season', 'week', 'season_type', 'posteam', 'qb_dropback',
                'qb_epa', 'passer_player_id', 'passer_player_name']
     df = raw_pbp[[c for c in usecols if c in raw_pbp.columns]].copy()

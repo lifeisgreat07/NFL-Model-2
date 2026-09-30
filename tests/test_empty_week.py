@@ -30,7 +30,7 @@ def test_main_checks_before_it_writes_and_only_when_it_writes():
     the existing-file branch, a manual re-run of a saved week would fail
     instead of warning; after the write, it would guard nothing."""
     src = (ROOT / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
-    main = src[src.index('def main(season, week):'):]
+    main = src[src.index('def main(season'):]
     save = main[main.index("    if out_path.exists():"):]
     other, saving = save.split('\n    else:\n', 1)
     assert 'refuse_an_empty_week' not in other

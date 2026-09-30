@@ -123,7 +123,7 @@ def test_two_overrides_for_one_team_fail(tmp_path):
 
 def _main_source():
     src = (ROOT / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
-    return src[src.index('def main(season, week):'):]
+    return src[src.index('def main(season'):]
 
 
 def test_main_predicts_with_the_resolved_starter_and_records_it():

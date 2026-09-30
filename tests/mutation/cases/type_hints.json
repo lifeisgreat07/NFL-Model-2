@@ -24,6 +24,30 @@
       "find": "from __future__ import annotations\n",
       "replace": "",
       "expect_caught_by": "test_the_hints_are_never_evaluated"
+    },
+    {
+      "id": "hints-weekly-step-return-dropped",
+      "target": "src/weekly_update.py",
+      "why": "plan_week loses its return type, the step whose None means the run stops.",
+      "find": "def plan_week(season: int, week: int) -> Plan | None:",
+      "replace": "def plan_week(season: int, week: int):",
+      "expect_caught_by": "test_every_public_function_is_annotated"
+    },
+    {
+      "id": "hints-grading-parameter-dropped",
+      "target": "src/grade_predictions.py",
+      "why": "graded_correct's probability goes back to an unannotated parameter.",
+      "find": "def graded_correct(prob: float | None, actual_home_win: int | None) -> int | None:",
+      "replace": "def graded_correct(prob, actual_home_win: int | None) -> int | None:",
+      "expect_caught_by": "test_every_public_function_is_annotated"
+    },
+    {
+      "id": "hints-dashboard-evaluated-at-import",
+      "target": "src/generate_dashboard.py",
+      "why": "the generator's future import goes, so its hints are evaluated when it loads.",
+      "find": "from __future__ import annotations\n",
+      "replace": "",
+      "expect_caught_by": "test_the_hints_are_never_evaluated"
     }
   ]
 }

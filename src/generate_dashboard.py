@@ -8,6 +8,11 @@ browsing, aggregates all graded results into a real season accuracy record
 and calibration table, and passes through confidence ranking + why-
 breakdown that weekly_update.py now computes per game.
 """
+from __future__ import annotations
+
+from collections.abc import Collection, Sequence
+from typing import Any
+
 import base64
 import hashlib
 import json
@@ -47,6 +52,13 @@ TV_DIR = DATA_DIR / 'tv'
 TEMPLATE_PATH = ROOT / 'src' / 'dashboard_template.html'
 OUTPUT_PATH = ROOT / 'index.html'  # served as the default page by GitHub Pages
 
+#: (season, week).
+WeekKey = tuple[int, int]
+#: One saved pick, as read from predictions/ or results/.
+Pick = dict[str, Any]
+#: One game card, as the page's weeks object carries it.
+Game = dict[str, Any]
+
 # Minimum games in a live calibration bucket before its "actual rate" is
 # treated as meaning anything. 20 is a judgement call, not a derived value:
 # at n=20 the 95% interval on a rate is still roughly +/-20 points, so this
@@ -72,7 +84,7 @@ FORECAST_SOURCES = (('model_a', 'model_a_home_win_prob'),
                     ('market', 'market_prob_home'))
 
 
-def build_forecast_score(all_games):
+def build_forecast_score(all_games: list[Game]) -> dict[str, Any] | None:
     """Mean log loss per forecast, over the games ALL THREE have a number for.
 
     Paired on purpose: a game only one forecast priced would let the three
@@ -104,7 +116,7 @@ def build_forecast_score(all_games):
     }
 
 
-def load_current_ratings():
+def load_current_ratings() -> list[dict[str, Any]]:
     path = DATA_DIR / 'current_ratings.json'
     if not path.exists():
         raise FileNotFoundError(
@@ -115,7 +127,7 @@ def load_current_ratings():
         return json.load(f)
 
 
-def load_playoff_odds():
+def load_playoff_odds() -> dict[str, Any] | None:
     """Unlike load_current_ratings, this is deliberately tolerant of a
     missing file -- weekly_update.py's save_playoff_odds() can fail soft
     (simulation is a non-critical feature), so the dashboard must not
@@ -127,7 +139,7 @@ def load_playoff_odds():
         return json.load(f)
 
 
-def load_agent_log():
+def load_agent_log() -> dict[str, Any] | None:
     """Booth's audit history, written by .github/workflows/collect-agent-log.yml.
 
     Absent until that workflow has run, so a missing file is a normal state and
@@ -147,7 +159,7 @@ def load_agent_log():
         return json.load(f)
 
 
-def agent_log_for_page(log):
+def agent_log_for_page(log: dict[str, Any] | None) -> dict[str, Any] | None:
     """The part of Booth's audit log the page reads: the summary and when it
     was collected. The per-audit records (`audits`) were most of the log and
     nothing on the page reads them; they stay in data/agent_log.json.
@@ -158,7 +170,7 @@ def agent_log_for_page(log):
     return {k: log.get(k) for k in ('generated_utc', 'summary')}
 
 
-def load_calibration():
+def load_calibration() -> dict[str, Any] | None:
     """Backtest-derived calibration written by src/calibration.py.
 
     Tolerant of a missing file for the same reason as playoff odds, but for a
@@ -179,7 +191,7 @@ def load_calibration():
         return json.load(f)
 
 
-def load_all_predictions():
+def load_all_predictions() -> dict[WeekKey, list[Pick]]:
     """Returns {(season, week): [predictions...]} for every saved week."""
     out = {}
     for f in PRED_DIR.glob('*_week*.json'):
@@ -191,7 +203,8 @@ def load_all_predictions():
     return out
 
 
-def load_previews(preview_dir=None, locked=()):
+def load_previews(preview_dir: Path | None = None,
+                  locked: Collection[WeekKey] = ()) -> dict[WeekKey, list[Pick]]:
     """{(season, week): [picks]} for every preview whose week is NOT locked.
 
     predictions/preview/ holds what a holding run (Tuesday, usually) would
@@ -211,7 +224,7 @@ def load_previews(preview_dir=None, locked=()):
     return out
 
 
-def skipped_weeks(skipped_dir=None):
+def skipped_weeks(skipped_dir: Path | None = None) -> set[WeekKey]:
     """{(season, week)} for every week recorded in predictions/skipped/: every
     game kicked off with nothing locked (weekly_update.record_skipped_week).
     Such a week is over, so a preview left from its Tuesday run is not shown
@@ -223,7 +236,7 @@ def skipped_weeks(skipped_dir=None):
             if w is not None}
 
 
-def load_all_graded():
+def load_all_graded() -> dict[WeekKey, list[Pick]]:
     """Returns {(season, week): [graded predictions...]} for every graded week."""
     out = {}
     for f in RESULTS_DIR.glob('*_week*_graded.json'):
@@ -236,7 +249,7 @@ def load_all_graded():
     return out
 
 
-def load_game_status(status_dir=STATUS_DIR):
+def load_game_status(status_dir: Path = STATUS_DIR) -> dict[WeekKey, dict[tuple[str, str], dict]]:
     """{(season, week): {(home, away): entry}} from the weekend refresh's
     snapshots (src/weekend_refresh.py, Stage 15): each game's status, and its
     score once final.
@@ -259,7 +272,7 @@ def load_game_status(status_dir=STATUS_DIR):
     return out
 
 
-def load_tv(tv_dir=TV_DIR):
+def load_tv(tv_dir: Path = TV_DIR) -> dict[WeekKey, dict[tuple[str, str], dict]]:
     """{(season, week): {(home, away): record}} from src/tv_channels.py's
     week files (Stage 15). `exceptions.json` shares the folder and is not a
     week; the `*_week*.json` pattern does not match it. A game whose channel failed a
@@ -279,7 +292,7 @@ def load_tv(tv_dir=TV_DIR):
     return out
 
 
-def html_escape(text):
+def html_escape(text: str) -> str:
     """Text into markup. Quotes are left alone: nothing here goes into an attribute."""
     return _escape(text, quote=False)
 
@@ -290,7 +303,7 @@ def html_escape(text):
 COMPACT = {'separators': (',', ':')}
 
 
-def safe_json(obj, **kwargs):
+def safe_json(obj: Any, **kwargs: Any) -> str:
     """JSON that can sit inside the page's <script> element without ending it.
 
     Every data fill lands between <script> and </script>, and the HTML parser
@@ -331,7 +344,7 @@ def _plain_signed(x, places=4):
     return ('&minus;' if x < 0 else '+') + f'{abs(x):.{places}f}'
 
 
-def interval_glyph(h, width=96, height=14, pad=5):
+def interval_glyph(h: dict[str, Any], width: int = 96, height: int = 14, pad: int = 5) -> str:
     """A result's interval drawn against zero (Stage 18): a line from the low
     to the high end with a tick at each, a dot at the difference, and a
     vertical line at zero. What it shows is the one thing the decision rests
@@ -391,7 +404,7 @@ def _registered_result(e):
             f"&middot; <code>{e['source']}</code></span>")
 
 
-def render_model_lab_rows(entries):
+def render_model_lab_rows(entries: list[dict[str, Any]]) -> str:
     """Model Lab's table rows (Stage 18), rendered into the page at build time
     so the table exists without JavaScript and every #modellab/<slug> link
     still finds its row.
@@ -419,7 +432,7 @@ def render_model_lab_rows(entries):
     return '\n          '.join(rows)
 
 
-def load_team_news(news_dir=NEWS_DIR):
+def load_team_news(news_dir: Path = NEWS_DIR) -> dict[WeekKey, dict[str, Any]]:
     """{(season, week): {'read_at', 'teams'}} from src/team_news.py's week
     files (Stage 16). Absent folder, absent news: nothing is invented."""
     out = {}
@@ -437,7 +450,7 @@ def load_team_news(news_dir=NEWS_DIR):
     return out
 
 
-def week_news(preds, graded, news):
+def week_news(preds: list[Pick], graded: list[Pick], news: dict[str, Any] | None) -> dict[str, Any] | None:
     """The week's news while the week is still being played, else None.
     Items expire with their week: once every pick is graded the news is left
     out of the page, though its file stays in the repository."""
@@ -446,7 +459,9 @@ def week_news(preds, graded, news):
     return news
 
 
-def build_games_js(preds, graded_lookup_by_key, status_by_key=None, tv_by_key=None):
+def build_games_js(preds: list[Pick], graded_lookup_by_key: dict[tuple[str, str], Pick],
+                   status_by_key: dict[tuple[str, str], dict] | None = None,
+                   tv_by_key: dict[tuple[str, str], dict] | None = None) -> list[Game]:
     """Convert one week's saved predictions into the dashboard's game-card
     JS format, joining in graded results (actual outcome, correctness) if
     that week has already been graded, the weekend refresh's status and
@@ -526,7 +541,7 @@ def build_games_js(preds, graded_lookup_by_key, status_by_key=None, tv_by_key=No
     return games
 
 
-def build_accuracy_summary(all_graded):
+def build_accuracy_summary(all_graded: dict[WeekKey, list[Pick]]) -> dict[str, Any]:
     """Aggregate every graded week into a season-level record + a
     per-week trend + calibration buckets (predicted probability vs
     actual win rate), using Model B (or Model A as fallback) per game."""
@@ -628,7 +643,8 @@ def build_accuracy_summary(all_graded):
     }
 
 
-def build_teams_js(ratings, playoff_odds=None):
+def build_teams_js(ratings: list[dict[str, Any]],
+                   playoff_odds: dict[str, Any] | None = None) -> list[dict[str, Any]]:
     """Team rows for the Power Ratings table.
 
     Playoff odds are joined here rather than looked up in the browser so the
@@ -665,7 +681,8 @@ def build_teams_js(ratings, playoff_odds=None):
              'playoff': odds.get(r['team'])} for r in ratings]
 
 
-def with_rank_change(teams_js, previous_rank):
+def with_rank_change(teams_js: list[dict[str, Any]],
+                     previous_rank: dict[str, int] | None) -> list[dict[str, Any]]:
     """Add `rank_change` to each Power Ratings row (Stage 19): places moved
     since the previous weekly update, positive up the table, against the
     ranks previous_ranks() returns. None when there is no previous ranking,
@@ -678,7 +695,7 @@ def with_rank_change(teams_js, previous_rank):
     return [{**t, 'rank_change': change(t)} for t in teams_js]
 
 
-def previous_ranks(ratings, live_history):
+def previous_ranks(ratings: list[dict[str, Any]], live_history: dict[str, Any]) -> dict[str, int] | None:
     """Each team's Power Ratings rank at the weekly update before this one.
 
     `live_history` is one season's data/team_history_<season>.json: every
@@ -720,7 +737,7 @@ def previous_ranks(ratings, live_history):
     return {t: i + 1 for i, t in enumerate(order)}
 
 
-def load_latest_live_history():
+def load_latest_live_history() -> dict[str, Any]:
     """The newest data/team_history_<season>.json, or {} if there is none."""
     live_files = sorted(DATA_DIR.glob('team_history_*.json'))
     if not live_files:
@@ -729,7 +746,7 @@ def load_latest_live_history():
         return json.load(f)
 
 
-def load_team_history():
+def load_team_history() -> dict[str, Any]:
     """Merges static historical season-end ratings (2020-2025, computed
     once from real backtested data) with any live in-season weekly data
     that weekly_update.py has been appending since -- building a single
@@ -781,7 +798,7 @@ def load_team_history():
 FONT_DIR = Path(__file__).resolve().parent.parent / 'assets' / 'fonts'
 
 
-def font_faces_css(font_dir=FONT_DIR):
+def font_faces_css(font_dir: Path = FONT_DIR) -> str:
     """@font-face rules for the self-hosted Plus Jakarta Sans, as data URIs.
 
     Stage 12. The page used to load the face from Google Fonts at runtime, so
@@ -819,7 +836,8 @@ MONTHS = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
 
 
-def provenance_line(model_version=MODEL_VERSION, train_seasons=TRAIN_SEASONS):
+def provenance_line(model_version: str = MODEL_VERSION,
+                    train_seasons: Sequence[int] = TRAIN_SEASONS) -> str:
     """The sidebar footer: one plain line saying what made the page.
 
     Stage 11. It used to read "Trained on: current nflfastR history / 3
@@ -838,7 +856,7 @@ def provenance_line(model_version=MODEL_VERSION, train_seasons=TRAIN_SEASONS):
     return f"Model {model_version}, built from NFL play-by-play since {first}."
 
 
-def updated_line(now):
+def updated_line(now: datetime) -> str:
     """When the page was built, for the Week Board's header (Stage 13).
 
     Read from the clock in UTC and labelled so, because a time whose zone
@@ -851,7 +869,7 @@ def updated_line(now):
     return f'<time datetime="{iso}">Updated {stamp}.</time>'
 
 
-def main():
+def main() -> None:
     print("Loading current ratings...")
     ratings = load_current_ratings()
 
