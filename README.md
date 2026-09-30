@@ -107,9 +107,9 @@ same table is on the dashboard's **Methodology** page, and
 |---|---|---|---|---|
 | Coin flip | 50.0% | 0.693 | 0.250 | 0.500 |
 | Home team always wins | 54.6% | - | - | - |
-| Model A (football only) | 62.8% | 0.650 | 0.229 | 0.670 |
+| Model A (football only) | 62.7% | 0.650 | 0.229 | 0.670 |
 | Vegas market alone | 68.2% | 0.607 | 0.210 | 0.725 |
-| Model B (+ market) | 68.2% | 0.606 | 0.209 | 0.727 |
+| Model B (+ market) | 68.3% | 0.606 | 0.209 | 0.727 |
 
 This season's live record, graded after each week, is on the dashboard's
 Season Accuracy page:
