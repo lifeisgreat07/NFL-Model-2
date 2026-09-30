@@ -51,7 +51,7 @@ def test_it_runs_only_on_the_path_that_locks():
     before reaching it; since the Tuesday preview (2026-09-29) it builds
     picks too, so the skip is now explicit."""
     src = (ROOT / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
-    main = src[src.index('def main(season, week):'):]
+    main = src[src.index('def main(season'):]
     hold = main.index('preview = not decision.lock')
     call = main.index('no_starters = None if preview else '
                       'starter_warning(week_games, qb_overrides, season, week)')

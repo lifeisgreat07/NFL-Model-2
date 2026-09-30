@@ -31,6 +31,10 @@ not just this script):
 
 Run manually: python weekly_update.py --season 2026 --week 2
 """
+from __future__ import annotations
+
+from typing import Any
+
 import argparse
 import json
 import re
@@ -100,6 +104,10 @@ LOCK_SLACK = pd.Timedelta(hours=8)
 from paths import DATA_DIR, PRED_DIR, PREVIEW_DIR, SKIPPED_DIR, TEAM_NAMES  # noqa: E402
 from runlog import get_logger  # noqa: E402  (Stage 32 item 17)
 log = get_logger(__name__)
+
+from ratings_engine import Ratings, WeekKey  # noqa: E402  (the aliases, for hints)
+#: One saved pick, as written to predictions/<season>_week<N>.json.
+Pick = dict[str, Any]
 PRED_DIR.mkdir(exist_ok=True)
 # A week that kicked off with nothing ever locked is recorded here, one small
 # file per week, so determine_next_week() moves past it (Stage 24). A folder,
@@ -118,7 +126,7 @@ DATA_DIR.mkdir(exist_ok=True)
 
 
 
-def save_current_ratings(team_ratings, season_schedule=None):
+def save_current_ratings(team_ratings: Ratings, season_schedule: pd.DataFrame | None = None) -> None:
     """Write the current team ratings snapshot to data/current_ratings.json
     so generate_dashboard.py can display them without recomputing (which
     would mean re-pulling all play-by-play data a second time).
@@ -154,7 +162,8 @@ def save_current_ratings(team_ratings, season_schedule=None):
     log.info(f"Saved {len(rows)} team ratings to data/current_ratings.json")
 
 
-def save_playoff_odds(current_team_ratings, season_schedule, hist, season, n_sim=10000):
+def save_playoff_odds(current_team_ratings: Ratings, season_schedule: pd.DataFrame, hist: pd.DataFrame,
+                      season: int, n_sim: int = 10000) -> None:
     """Runs the Monte Carlo season simulation and writes results to
     data/playoff_odds.json. See simulate_season.py for the real,
     explicitly-stated limitations of this projection (static ratings,
@@ -178,7 +187,7 @@ def save_playoff_odds(current_team_ratings, season_schedule, hist, season, n_sim
         log.warning(f"  WARNING: playoff simulation failed ({e}) -- data/playoff_odds.json not updated this run.")
 
 
-def append_live_history(team_ratings, season, week):
+def append_live_history(team_ratings: Ratings, season: int, week: int) -> None:
     """Append this week's ratings to a running per-season file, building a
     real in-season trend for the Team Deep-Dive page as the season
     progresses. Unlike current_ratings.json (a snapshot, overwritten each
@@ -198,13 +207,18 @@ def append_live_history(team_ratings, season, week):
     log.info(f"Appended week {week} to data/team_history_{season}.json")
 
 
-def market_prob(home_spread):
+def market_prob(home_spread: float) -> float:
     """Simple market-implied probability from a home spread (+ = home favored)."""
     return 1 / (1 + np.exp(-home_spread / 5.5))
 
 
-def build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_week,
-                                qb, schedules_by_season, ol_lookup=None, qb_change_lookup=None):
+def build_historical_features(plays: pd.DataFrame, week_keys: list[WeekKey],
+                              week_to_idx: dict[WeekKey, int],
+                              team_ratings_by_week: dict[WeekKey, Ratings], qb: dict[str, Any],
+                              schedules_by_season: dict[int, pd.DataFrame],
+                              ol_lookup: dict | None = None,
+                              qb_change_lookup: dict[tuple[int, int, str], int] | None = None,
+                              ) -> pd.DataFrame:
     """Construct the training dataset: one row per historical game with
     real, leak-free matchup features and the actual outcome. ol_lookup is
     optional (from ol_continuity.compute_ol_continuity_lookup) -- if not
@@ -275,7 +289,7 @@ def _week_numbers(folder, season):
     return weeks
 
 
-def determine_next_week(season, pred_dir=None, skipped_dir=None):
+def determine_next_week(season: int, pred_dir: Path | None = None, skipped_dir: Path | None = None) -> int:
     """If --week isn't given, figure out the right week automatically:
     one past whatever week was most recently saved for this season.
     Starts at week 1 if nothing's been saved yet. This is what lets the
@@ -307,7 +321,7 @@ def determine_next_week(season, pred_dir=None, skipped_dir=None):
     # handled in main() by exiting cleanly when a week has zero games.
 
 
-def refuse_an_empty_week(predictions, season, week):
+def refuse_an_empty_week(predictions: list[Pick], season: int, week: int) -> None:
     """Fail the run rather than save a week with no picks (Stage 24).
 
     A saved week can never be overwritten, so an empty file -- every game
@@ -324,7 +338,8 @@ def refuse_an_empty_week(predictions, season, week):
             f"fix that and run again before kickoff.")
 
 
-def record_skipped_week(season, week, reason, now, skipped_dir=None):
+def record_skipped_week(season: int, week: int, reason: str, now: pd.Timestamp,
+                        skipped_dir: Path | None = None) -> Path:
     """Write predictions/skipped/<season>_week<N>.json and return its path.
 
     Called only when every game of a week has kicked off with nothing ever
@@ -341,7 +356,8 @@ def record_skipped_week(season, week, reason, now, skipped_dir=None):
     return path
 
 
-def save_preview(predictions, season, week, now, preview_dir=None):
+def save_preview(predictions: list[Pick], season: int, week: int, now: pd.Timestamp,
+                 preview_dir: Path | None = None) -> Path | None:
     """Write predictions/preview/<season>_week<N>.json and return its path,
     or None when there is nothing to show.
 
@@ -368,7 +384,7 @@ LINE_HISTORY_DIR = Path(__file__).parent.parent / 'data' / 'line_history'
 LINE_HISTORY_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def log_line_snapshot(season, week, week_games):
+def log_line_snapshot(season: int, week: int, week_games: pd.DataFrame) -> None:
     """Append today's spread for each game in this week to a running
     archive. Building this over the season is how we'll eventually have
     real line-movement data to backtest against, without needing to buy
@@ -449,7 +465,7 @@ def log_line_snapshot(season, week, week_games):
         log.info(f"Line snapshots for {season} week {week} already captured today -- skipped duplicate.")
 
 
-def build_qb_change_lookup(qb, seasons):
+def build_qb_change_lookup(qb: dict[str, Any], seasons: list[int]) -> dict[tuple[int, int, str], int]:
     """Leak-free 'did this team change starting QB since last week' flag.
     Validated via backtest (2026-08-19): a real, clean improvement --
     accuracy +0.46pt, log loss/Brier/AUC all meaningfully better too,
@@ -479,7 +495,7 @@ class QBOverrideError(ValueError):
     """A QB override file exists but cannot be trusted. Never raised for a missing file."""
 
 
-def load_qb_overrides(season, week, directory=None):
+def load_qb_overrides(season: int, week: int, directory: Path | str | None = None) -> dict[str, dict]:
     """Sourced starter corrections for one week, keyed by team.
 
     data/qb_overrides/<season>_week<week>.json, a list of
@@ -515,7 +531,9 @@ def load_qb_overrides(season, week, directory=None):
     return out
 
 
-def resolve_starters(game, starters_idx, last_changed, overrides=None):
+def resolve_starters(game: pd.Series, starters_idx: pd.DataFrame, last_changed: dict[str, int],
+                     overrides: dict[str, dict] | None = None,
+                     ) -> tuple[dict[str, tuple[str | None, int]], dict[str, Any], list[str]]:
     """Which quarterback each side is predicted with, and why.
 
     Precedence, decided 2026-09-22 after Stage 5's H1 (see
@@ -581,7 +599,8 @@ def _clean(value):
     return value if isinstance(value, str) and value else None
 
 
-def starter_warning(week_games, overrides, season, week):
+def starter_warning(week_games: pd.DataFrame, overrides: dict[str, dict], season: int,
+                    week: int) -> str | None:
     """A WARNING line when a week about to be LOCKED has no announced starter
     and no override for any team, else None (Stage 25, after #184).
 
@@ -602,7 +621,7 @@ def starter_warning(week_games, overrides, season, week):
             f"quarterback.")
 
 
-def kickoff_utc(game):
+def kickoff_utc(game: pd.Series) -> pd.Timestamp | None:
     """A game's kickoff as a UTC timestamp, or None with no gameday.
 
     gametime is EASTERN (see the record builder in main()), and ET is EDT or
@@ -621,7 +640,8 @@ def kickoff_utc(game):
     return local.tz_localize('America/New_York').tz_convert('UTC')
 
 
-def next_scheduled_run(now, runs=SCHEDULED_RUNS_UTC):
+def next_scheduled_run(now: pd.Timestamp, runs: tuple[tuple[int, int, int], ...] = SCHEDULED_RUNS_UTC,
+                       ) -> pd.Timestamp:
     """The first scheduled run strictly after `now` (UTC)."""
     now = pd.Timestamp(now).tz_convert('UTC')
     times = []
@@ -637,7 +657,9 @@ def next_scheduled_run(now, runs=SCHEDULED_RUNS_UTC):
 LockDecision = namedtuple('LockDecision', 'lock started first_kickoff next_run')
 
 
-def decide_lock(week_games, now, runs=SCHEDULED_RUNS_UTC, slack=LOCK_SLACK):
+def decide_lock(week_games: pd.DataFrame, now: pd.Timestamp,
+                runs: tuple[tuple[int, int, int], ...] = SCHEDULED_RUNS_UTC,
+                slack: pd.Timedelta = LOCK_SLACK) -> LockDecision:
     """Whether this run locks the week, and which games it is too late for.
 
     lock          -- True when the first game still to come kicks off before
@@ -676,7 +698,7 @@ def decide_lock(week_games, now, runs=SCHEDULED_RUNS_UTC, slack=LOCK_SLACK):
     return LockDecision(first < next_run + slack, started, first, next_run)
 
 
-def main(season, week):
+def main(season: int, week: int) -> None:
     """One weekly run: read and check the data, fit the two models, refresh
     the current ratings and odds, decide what this run may do with the
     target week, then predict it and save the picks or a preview.
@@ -704,7 +726,7 @@ Current = namedtuple('Current', 'team_ratings qb_cutoff starters_idx qb_changed'
 Plan = namedtuple('Plan', 'week_games started preview qb_overrides')
 
 
-def load_inputs(season):
+def load_inputs(season: int) -> Inputs:
     """Step 1: every input the fits need, checked before anything is fitted."""
     log.info("Loading play-by-play data...")
     seasons_needed = sorted(set(TRAIN_SEASONS) | {season})
@@ -755,7 +777,7 @@ def load_inputs(season):
                   schedules_by_season, hist)
 
 
-def fit_models(hist):
+def fit_models(hist: pd.DataFrame) -> tuple[LogisticRegression, LogisticRegression]:
     """Step 2: Model A (football only) and Model B (+ the market's spread)."""
     log.info("Fitting Model A (football-only) and Model B (+ market)...")
     model_a = LogisticRegression(max_iter=1000)
@@ -767,7 +789,7 @@ def fit_models(hist):
     return model_a, model_b
 
 
-def refresh_current_state(inputs, season):
+def refresh_current_state(inputs: Inputs, season: int) -> Current:
     """Step 3: the ratings as of right now, written for the page (ratings,
     playoff odds, this season's history), and each team's current starter."""
     plays, week_keys = inputs.plays, inputs.week_keys
@@ -804,7 +826,7 @@ def refresh_current_state(inputs, season):
     return Current(current_team_ratings, qb_cutoff, current_starters_idx, current_qb_changed)
 
 
-def plan_week(season, week):
+def plan_week(season: int, week: int) -> Plan | None:
     """Step 4: what this run may do with the target week. None when there
     is nothing to do (no games, too early, already locked and started);
     raises SystemExit when every game kicked off with nothing locked;
@@ -895,7 +917,9 @@ def plan_week(season, week):
     return Plan(week_games, started, preview, qb_overrides)
 
 
-def predict_week(week_games, started, current, qb, models, qb_overrides, season, week):
+def predict_week(week_games: pd.DataFrame, started: set[tuple[str, str]], current: Current,
+                 qb: dict[str, Any], models: tuple[LogisticRegression, LogisticRegression],
+                 qb_overrides: dict[str, dict], season: int, week: int) -> list[Pick]:
     """Step 5: one pick per game not yet started, ranked by confidence."""
     model_a, model_b = models
     current_team_ratings, qb_cutoff = current.team_ratings, current.qb_cutoff
@@ -1016,7 +1040,7 @@ def predict_week(week_games, started, current, qb, models, qb_overrides, season,
     return predictions
 
 
-def save_week(predictions, season, week, preview):
+def save_week(predictions: list[Pick], season: int, week: int, preview: bool) -> None:
     """Step 6: a preview, or the week's picks, which are permanent once saved."""
     if preview:
         path = save_preview(predictions, season, week, pd.Timestamp.now(tz='UTC'))

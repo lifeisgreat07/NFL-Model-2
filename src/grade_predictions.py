@@ -10,6 +10,8 @@ the original version only checked market_correct, which meant the
 "Season Accuracy Tracker" would have had nothing of our own model's
 performance to show.
 """
+from __future__ import annotations
+
 import argparse
 import json
 import pandas as pd
@@ -20,13 +22,13 @@ log = get_logger(__name__)
 RESULTS_DIR.mkdir(exist_ok=True)
 
 
-def graded_correct(prob, actual_home_win):
+def graded_correct(prob: float | None, actual_home_win: int | None) -> int | None:
     if prob is None:
         return None
     return int((prob >= 0.5) == bool(actual_home_win))
 
 
-def main(season, week):
+def main(season: int, week: int) -> None:
     from data_loader import load_schedule
     pred_path = PRED_DIR / f'{season}_week{week}.json'
     if not pred_path.exists():

@@ -44,7 +44,7 @@ def _main_source():
     item 16 split main into load_inputs, fit_models, refresh_current_state,
     plan_week, predict_week and save_week)."""
     src = (Path(__file__).resolve().parents[1] / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
-    return src[src.index('def main(season, week):'):src.index("if __name__ == '__main__':")]
+    return src[src.index('def main(season'):src.index("if __name__ == '__main__':")]
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 

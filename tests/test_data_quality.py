@@ -210,6 +210,6 @@ def test_the_weekly_run_enforces_the_checks_before_fitting():
     """A check nothing calls checks nothing. It has to run before the models
     are fitted, or a bad week is already inside the picks when it fires."""
     src = (Path(__file__).parent.parent / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
-    main = src[src.index('def main(season, week):'):]
+    main = src[src.index('def main(season'):]
     assert 'enforce_data_quality(' in main
     assert main.index('enforce_data_quality(') < main.index('model_a.fit(')
