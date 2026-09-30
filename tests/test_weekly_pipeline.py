@@ -30,7 +30,6 @@ What these tests pin down:
 
 Run with: pytest tests/test_weekly_pipeline.py -v
 """
-import inspect
 import io
 import sys
 import tokenize
@@ -38,6 +37,14 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+
+
+def _main_source():
+    """main() and the steps it calls, which follow it in the file (Stage 32
+    item 16 split main into load_inputs, fit_models, refresh_current_state,
+    plan_week, predict_week and save_week)."""
+    src = (Path(__file__).resolve().parents[1] / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
+    return src[src.index('def main(season, week):'):src.index("if __name__ == '__main__':")]
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
@@ -75,9 +82,8 @@ def test_weekly_main_does_not_load_snap_counts():
     """Structural guard, not a behavioural one: main() needs six seasons of
     real play-by-play to run, so this asserts on its source instead. It
     exists to stop the dependency being reintroduced by accident."""
-    import weekly_update
 
-    src = _code_only(inspect.getsource(weekly_update.main))
+    src = _code_only(_main_source())
 
     for forbidden in ('load_snap_counts', 'compute_ol_continuity_lookup',
                       'get_most_recent_continuity'):
@@ -90,9 +96,8 @@ def test_weekly_main_does_not_load_snap_counts():
 
 def test_saved_predictions_no_longer_carry_ol_continuity_diff():
     """The saved-prediction dict should not write a field nothing reads."""
-    import weekly_update
 
-    src = _code_only(inspect.getsource(weekly_update.main))
+    src = _code_only(_main_source())
     assert "'ol_continuity_diff'" not in src, (
         "main() still writes ol_continuity_diff into saved predictions"
     )
@@ -105,9 +110,8 @@ def test_neither_fitted_model_uses_ol_continuity():
     """If ol_continuity_diff ever becomes a real model input again, dropping
     it from the live path would silently change predictions. Pin the
     assumption that makes the removal safe."""
-    import weekly_update
 
-    src = _code_only(inspect.getsource(weekly_update.main))
+    src = _code_only(_main_source())
 
     fit_lines = [ln for ln in src.splitlines() if '.fit(' in ln]
     assert fit_lines, "expected to find model .fit( calls in main()"

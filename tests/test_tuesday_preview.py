@@ -32,6 +32,14 @@ import generate_dashboard as gd  # noqa: E402
 import weekly_summary as ws  # noqa: E402
 import weekly_update as wu  # noqa: E402
 
+
+def _main_source():
+    """main() and the steps it calls, which follow it in the file (Stage 32
+    item 16 split main into load_inputs, fit_models, refresh_current_state,
+    plan_week, predict_week and save_week)."""
+    src = (Path(__file__).resolve().parents[1] / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
+    return src[src.index('def main(season, week):'):src.index("if __name__ == '__main__':")]
+
 NODE = shutil.which('node')
 NOW = pd.Timestamp('2026-09-29 16:41', tz='UTC')
 PICKS = [{'season': 2026, 'week': 4, 'home': 'KC', 'away': 'LV',
@@ -84,7 +92,7 @@ def test_a_preview_does_not_move_the_next_week_on(tmp_path):
 # --- the run: holding saves a preview, locking never does --------------------
 
 def main_source():
-    return inspect.getsource(wu.main)
+    return _main_source()
 
 
 def test_a_holding_run_saves_a_preview_instead_of_returning_early():
