@@ -29,6 +29,14 @@ sys.path.insert(0, str(ROOT / 'src'))
 
 import weekly_update as wu  # noqa: E402
 
+
+def _main_source():
+    """main() and the steps it calls, which follow it in the file (Stage 32
+    item 16 split main into load_inputs, fit_models, refresh_current_state,
+    plan_week, predict_week and save_week)."""
+    src = (Path(__file__).resolve().parents[1] / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
+    return src[src.index('def main(season, week):'):src.index("if __name__ == '__main__':")]
+
 WORKFLOW = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
 
 
@@ -224,7 +232,6 @@ def test_the_workflow_schedule_is_the_one_decide_lock_assumes():
 def test_the_lock_step_skips_games_that_have_started():
     """Structural: main() needs the network. decide_lock can report a started
     game correctly and main() can still predict it; this stops that."""
-    import inspect
-    src = inspect.getsource(wu.main)
+    src = _main_source()
     assert re.search(r"if \(away, home\) in started:\s*\n\s*continue", src), (
         "main() no longer skips games decide_lock reported as started")

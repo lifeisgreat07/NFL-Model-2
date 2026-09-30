@@ -36,6 +36,14 @@ import sys
 import tokenize
 from pathlib import Path
 
+
+def _main_source():
+    """main() and the steps it calls, which follow it in the file (Stage 32
+    item 16 split main into load_inputs, fit_models, refresh_current_state,
+    plan_week, predict_week and save_week)."""
+    src = (Path(__file__).resolve().parents[1] / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
+    return src[src.index('def main(season, week):'):src.index("if __name__ == '__main__':")]
+
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'src'))
 
@@ -67,9 +75,8 @@ def test_the_record_builder_writes_all_three_schedule_fields():
     """Structural, because main() needs six seasons of real play-by-play and
     a network round trip to run. The behavioural half is covered downstream
     by the build_games_js tests; this one stops the write being dropped."""
-    import weekly_update
 
-    src = _code_only(inspect.getsource(weekly_update.main))
+    src = _code_only(_main_source())
     for field in FIELDS:
         assert re.search(r"'%s'\s*:" % field, src), (
             f"weekly_update.main() no longer writes {field!r} into the "

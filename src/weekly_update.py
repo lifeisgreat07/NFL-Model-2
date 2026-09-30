@@ -675,8 +675,35 @@ def decide_lock(week_games, now, runs=SCHEDULED_RUNS_UTC, slack=LOCK_SLACK):
 
 
 def main(season, week):
+    """One weekly run: read and check the data, fit the two models, refresh
+    the current ratings and odds, decide what this run may do with the
+    target week, then predict it and save the picks or a preview.
+
+    Each step is its own function below, in the order it runs (Stage 32
+    item 16, which split a 300-line main). What is printed, and in what
+    order, is unchanged: src/weekly_summary.py reads this log.
+    tests/test_weekly_update_end_to_end.py runs the whole of it."""
     print(f"=== Weekly update: {season} Week {week} ===")
 
+    inputs = load_inputs(season)
+    model_a, model_b = fit_models(inputs.hist)
+    current = refresh_current_state(inputs, season)
+    plan = plan_week(season, week)
+    if plan is None:
+        return
+    predictions = predict_week(plan.week_games, plan.started, current, inputs.qb,
+                               (model_a, model_b), plan.qb_overrides, season, week)
+    save_week(predictions, season, week, plan.preview)
+
+
+Inputs = namedtuple('Inputs', 'raw plays week_keys week_to_idx qb qb_change_lookup '
+                              'schedules_by_season hist')
+Current = namedtuple('Current', 'team_ratings qb_cutoff starters_idx qb_changed')
+Plan = namedtuple('Plan', 'week_games started preview qb_overrides')
+
+
+def load_inputs(season):
+    """Step 1: every input the fits need, checked before anything is fitted."""
     print("Loading play-by-play data...")
     seasons_needed = sorted(set(TRAIN_SEASONS) | {season})
     raw = load_plays(seasons_needed)
@@ -722,7 +749,12 @@ def main(season, week):
     print(f"  {len(hist)} historical games with complete features")
     if len(hist) < 100:
         print("WARNING: very little historical training data -- predictions below may be unreliable.")
+    return Inputs(raw, plays, week_keys, week_to_idx, qb, qb_change_lookup,
+                  schedules_by_season, hist)
 
+
+def fit_models(hist):
+    """Step 2: Model A (football only) and Model B (+ the market's spread)."""
     print("Fitting Model A (football-only) and Model B (+ market)...")
     model_a = LogisticRegression(max_iter=1000)
     model_a.fit(hist[['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff']].values, hist['home_win'].values)
@@ -730,7 +762,14 @@ def main(season, week):
     hist_b = hist.dropna(subset=['spread_line'])
     model_b = LogisticRegression(max_iter=1000)
     model_b.fit(hist_b[['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff', 'spread_line']].values, hist_b['home_win'].values)
+    return model_a, model_b
 
+
+def refresh_current_state(inputs, season):
+    """Step 3: the ratings as of right now, written for the page (ratings,
+    playoff odds, this season's history), and each team's current starter."""
+    plays, week_keys = inputs.plays, inputs.week_keys
+    qb, hist, schedules_by_season = inputs.qb, inputs.hist, inputs.schedules_by_season
     print("Building current ('as of right now') team + QB ratings...")
     cutoff_i = len(week_keys)
     current_team_ratings = build_team_ratings(plays, week_keys, upto_cutoff_i=cutoff_i)
@@ -760,7 +799,15 @@ def main(season, week):
             current_qb_changed[team] = int(last_two[0] != last_two[1])
         else:
             current_qb_changed[team] = 0
+    return Current(current_team_ratings, qb_cutoff, current_starters_idx, current_qb_changed)
 
+
+def plan_week(season, week):
+    """Step 4: what this run may do with the target week. None when there
+    is nothing to do (no games, too early, already locked and started);
+    raises SystemExit when every game kicked off with nothing locked;
+    otherwise the games still to pick, those already started, whether this
+    run holds (a preview) or locks, and any sourced QB overrides."""
     print("Loading target week's schedule + current lines...")
     sched = load_schedule(season)
     week_games = sched[sched['week'] == week]
@@ -843,6 +890,14 @@ def main(season, week):
     no_starters = None if preview else starter_warning(week_games, qb_overrides, season, week)
     if no_starters:
         print(no_starters)
+    return Plan(week_games, started, preview, qb_overrides)
+
+
+def predict_week(week_games, started, current, qb, models, qb_overrides, season, week):
+    """Step 5: one pick per game not yet started, ranked by confidence."""
+    model_a, model_b = models
+    current_team_ratings, qb_cutoff = current.team_ratings, current.qb_cutoff
+    current_starters_idx, current_qb_changed = current.starters_idx, current.qb_changed
     predictions = []
     for _, g in week_games.iterrows():
         home, away = g['home_team'], g['away_team']
@@ -873,8 +928,8 @@ def main(season, week):
         # feature" beating both raw and smoothed versions. It was kept here
         # afterwards as saved-but-unused data; that stopped 2026-09-04, since
         # nothing ever read the saved value and producing it cost the weekly
-        # job an entire upstream data source. See the comment in main() above
-        # the QB-change lookup for the full reasoning.
+        # job an entire upstream data source. See the comment in load_inputs()
+        # above the QB-change lookup for the full reasoning.
 
         qb_change_diff = home_qb_changed - away_qb_changed
 
@@ -956,7 +1011,11 @@ def main(season, week):
     for i, p in enumerate(ranked):
         p['confidence_rank'] = i + 1
         p['confidence_points'] = n - i
+    return predictions
 
+
+def save_week(predictions, season, week, preview):
+    """Step 6: a preview, or the week's picks, which are permanent once saved."""
     if preview:
         path = save_preview(predictions, season, week, pd.Timestamp.now(tz='UTC'))
         if path is not None:
