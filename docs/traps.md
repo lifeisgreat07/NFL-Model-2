@@ -43,6 +43,44 @@ Moved from CLAUDE.md's "Environment and workflow" list.
 
 ## Traps that have actually bitten
 
+- **A check that runs from a copy needs its imports checked against the
+  copy.** `booth-pr-audit.yml` copies `booth_report_posted.py` and
+  `booth_verdict.py`, and nothing else, out of the checkout before Booth
+  runs, so the audit cannot edit the check that judges it. #219's first
+  commit imported Booth's account list from `collect_agent_log.py`. Every
+  test passed, because tests run inside the checkout; in CI "Fail if Booth
+  posted no report" went red on a run whose report was sitting on the PR.
+  The list moved into `booth_verdict.py`, and
+  `tests/test_booth_report_posted.py` now reads the workflow's `cp` line and
+  fails if a copied module imports a `src/` module that is not copied.
+- **Moving a definition between files moves its mutation anchors.** The same
+  PR's fix left two `collect_agent_log.json` cases anchored on text that had
+  moved (BAD-ANCHOR, and two red anchor tests). Run the case files of every
+  file a move touches, source and destination, before pushing it.
+- **Run the whole suite before committing, not the tests you think are
+  affected.** The hygiene branch added `referrerpolicy` to the logo tag and
+  ran four test files; three node-harness tests elsewhere compare the
+  rendered tag exactly, and the suite at the head of a long mutation run was
+  red. The session archive's pr_verify.py now stops before the mutation
+  run when the suite is not green.
+- **`set /p` in cmd reads at most 1023 characters, and an unquoted comma
+  list through `Start-Process` into a `.bat` splits on the commas.** A
+  79-file scope list was cut to "...scor" and the run died on a missing
+  file; another run silently covered only its first case file. Pass long
+  lists to a Python driver (the session archive's pr_verify.py), never
+  through cmd variables.
+- **A reply can answer an earlier ask; match it by its send time.** Mark's
+  "Comment updated" was sent at 20:36 local and answered the #216 fix; it
+  reached the session after the #219 request, was read as #219's, and he was
+  told his edit had not saved. The API had the facts all along: #216's body
+  had changed, #219's had not yet. Before acting on a short reply, check its
+  timestamp against the asks it could answer, and read the PR's `body` from
+  the API (the new head's SHA in it) before waiting on a re-audit.
+- **A multi-line mutation anchor fails on a working file with mixed line
+  endings.** Desktop Commander's edit and append wrote LF lines into a CRLF
+  workflow file; an anchor spanning two lines matched in one place and not
+  another. Anchor on a single line.
+
 - **An upstream tag can move while a PR is in review.** #208 said every
   pinned action's major tag "still points at the same commit today"; at
   19:30 UTC Anthropic moved claude-code-action's `v1` to v1.0.237, and

@@ -1488,6 +1488,19 @@ scheduled runs start up to 6.5 hours late and a pipeline mistake merged just
 before a lock costs a week's picks. Then items 10, 11, 14 and 15, then 16 to
 19, then 20 to 25, then 12 and 26 together, then Stage 34.
 
+**Progress (2026-09-29, night):** item 10's split (#214) and path scrub
+(#215); item 2 sticky headers (#216); item 6 preflight gate (#217); item 7
+nightly alert (#218); item 5 (#219: Booth's accounts, and Mark chose true
+sentences over narrowing Booth's tools); item 9 hygiene open as #221. Item
+9's `env:` inputs: declined again by Mark. Item 11: no module was dead
+(pushback, branch s31-module-purposes). Items 13 and 19 ready on branches
+s31-task-runner and s32-env-and-rules; the issue text fix on
+s30-booth-alert-wording. Item 27: tags v2.2 to v2.5 pushed, Website field
+set by Mark; v2.0 and v2.1 predate the repository. Items 14 and 17 reverse
+2026-09-28 declines and wait on Mark. Every deviation from the audit is
+logged, with its reason, in Mark's "Audit Response Log" doc for the next
+auditor.
+
 ### Stage 30 - Regressions and residuals from Stages 23 to 27
 
 1. A tie renders as "Missed" with a red cross: `graded` is true for a tie whose
