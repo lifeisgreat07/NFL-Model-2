@@ -39,6 +39,15 @@
       "find": "from paths import NFL_TEAMS  # noqa: E402",
       "replace": "NFL_TEAMS = frozenset(['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 'LA', 'LAC', 'LV', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PHI', 'PIT', 'SEA', 'SF', 'TB', 'TEN', 'WAS'])",
       "expect_caught_by": "test_each_module_name_is_bound_to_the_one_definition"
+    },
+    {
+      "id": "weekend-refresh-splits-the-stem-again",
+      "target": "src/weekend_refresh.py",
+      "tests": "tests/test_paths.py",
+      "why": "weeks_to_refresh goes back to splitting the stem itself, a fifth copy of the week rule beside paths.parse_week: the shape #241 missed twice.",
+      "find": "        key = parse_week(f.stem)\n        if key is None:\n            continue\n        week = key[1]\n",
+      "replace": "        try:\n            week = int(f.stem.split('_week')[1])\n        except (IndexError, ValueError):\n            continue\n",
+      "expect_caught_by": "test_no_module_defines_its_own_copy_again"
     }
   ]
 }

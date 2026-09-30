@@ -123,8 +123,8 @@
       "target": "tasks.py",
       "tests": "tests/test_tasks.py",
       "why": "the lint task checks less than CI does, so `tasks.py check` is green on a branch run-tests.yml will fail -- a fifteenth spelling of a command, the thing the runner exists to end (Stage 31 item 13).",
-      "find": "             lambda a: [['ruff', 'check', '.']]),",
-      "replace": "             lambda a: [['ruff', 'check', 'src']]),",
+      "find": "             lambda a: [['ruff', 'check', '.'], TYPES]),",
+      "replace": "             lambda a: [['ruff', 'check', 'src'], TYPES]),",
       "expect_caught_by": "test_lint_is_what_run_tests_runs"
     },
     {
@@ -162,6 +162,15 @@
       "find": "        if value not in ('|', '>', '|-', '>-'):\n            out.append(value)\n            continue\n",
       "replace": "        if value not in ('|', '>', '|-', '>-'):\n            out.append(value)\n        continue\n",
       "expect_caught_by": "test_runs_reads_multi_line_steps"
+    },
+    {
+      "id": "type-check-dropped-from-ci",
+      "target": ".github/workflows/run-tests.yml",
+      "tests": "tests/test_tasks.py",
+      "why": "run-tests.yml stops running mypy, so tasks.py's lint gates on a check CI never runs, and a type error reaches main green.",
+      "find": "        run: python -m mypy --ignore-missing-imports src/weekly_update.py src/ratings_engine.py\n",
+      "replace": "        run: echo skipped\n",
+      "expect_caught_by": "test_lint_is_what_run_tests_runs"
     }
   ]
 }

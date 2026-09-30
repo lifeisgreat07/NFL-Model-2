@@ -30,6 +30,8 @@ AXE = 'node_modules/axe-core/axe.min.js'
 # built here is ever staged. The page names are build_states.PAGES.
 STATES = Path(tempfile.gettempdir()) / 'nfl-model-states'
 STATE_PAGES = ('states_tie.html', 'states_preview.html')
+# The type check run-tests.yml runs (Stage 35).
+TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/weekly_update.py', 'src/ratings_engine.py']
 
 
 def _slice_seed(argv):
@@ -46,10 +48,10 @@ def _axe():
 TASKS = {
     'test': ('the whole suite, as CLAUDE.md\'s Suite line quotes it',
              lambda a: [[PY, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider']]),
-    'lint': ('ruff, as run-tests.yml runs it',
-             lambda a: [['ruff', 'check', '.']]),
-    'check': ('lint, then the suite: the two things run-tests.yml runs',
-              lambda a: [['ruff', 'check', '.'],
+    'lint': ('ruff, then mypy over the weekly run\'s two core modules, as run-tests.yml runs them',
+             lambda a: [['ruff', 'check', '.'], TYPES]),
+    'check': ('lint, then the suite: the three things run-tests.yml runs',
+              lambda a: [['ruff', 'check', '.'], TYPES,
                          [PY, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider']]),
     'build': ('build index.html from the data on disk (deploy-pages.yml does this)',
               lambda a: [[PY, 'src/generate_dashboard.py']]),

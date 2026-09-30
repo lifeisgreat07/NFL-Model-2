@@ -39,7 +39,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 # The folders and the season rule are defined once, in src/paths.py
 # (Stage 32 item 15). team_news and tv_channels import current_season from
 # here, so the name stays.
-from paths import PRED_DIR, RESULTS_DIR, STATUS_DIR, current_season  # noqa: E402,F401
+from paths import PRED_DIR, RESULTS_DIR, STATUS_DIR, current_season, parse_week  # noqa: E402,F401
 from runlog import get_logger  # noqa: E402  (Stage 32 item 17)
 log = get_logger(__name__)
 SOURCE = 'nflverse schedule, via nflreadpy.load_schedules'
@@ -58,10 +58,10 @@ def weeks_to_refresh(season, pred_dir=PRED_DIR, results_dir=RESULTS_DIR):
     file, so it is still unfinished."""
     weeks = []
     for f in pred_dir.glob(f'{season}_week*.json'):
-        try:
-            week = int(f.stem.split('_week')[1])
-        except (IndexError, ValueError):
+        key = parse_week(f.stem)
+        if key is None:
             continue
+        week = key[1]
         graded = results_dir / f'{season}_week{week}_graded.json'
         if _count(graded) < _count(f):
             weeks.append(week)

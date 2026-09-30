@@ -60,5 +60,12 @@ jobs:
         # ruff.toml selects the F rules: undefined names, unused imports and
         # variables, empty f-strings. Mistakes, not style (Stage 27 item 3).
         run: ruff check .
+      - name: Type check (the two modules the weekly run is built on)
+        # Stage 35, from the third audit: build_team_ratings' one union
+        # return type made every caller a type error, so nothing was
+        # checked. With @overloads it is clean, and checking it found the
+        # live ratings could be None with nothing stopping the writers
+        # (weekly_update.current_ratings now does). Gating, since clean.
+        run: python -m mypy --ignore-missing-imports src/weekly_update.py src/ratings_engine.py
       - name: Run leak-free test suite
         run: python -m pytest tests/ -v

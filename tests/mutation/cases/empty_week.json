@@ -22,6 +22,33 @@
       "find": "        refuse_an_empty_week(predictions, season, week)\n        # Atomic: this file can never be overwritten, so a half-written one\n        # would be permanent (Stage 24).\n        write_json_atomic(out_path, predictions, indent=2)\n",
       "replace": "        # Atomic: this file can never be overwritten, so a half-written one\n        # would be permanent (Stage 24).\n        write_json_atomic(out_path, predictions, indent=2)\n        refuse_an_empty_week(predictions, season, week)\n",
       "expect_caught_by": "test_main_checks_before_it_writes_and_only_when_it_writes"
+    },
+    {
+      "id": "live-ratings-none-reaches-the-writers",
+      "target": "src/weekly_update.py",
+      "tests": "tests/test_current_ratings.py",
+      "why": "the None check goes, so a run with too few plays hands None to save_current_ratings, which crashes mid-run with an error that says nothing about plays.",
+      "find": "    if ratings is None:\n        raise SystemExit(",
+      "replace": "    if False:\n        raise SystemExit(",
+      "expect_caught_by": "test_too_few_plays_stop_the_run_before_anything_is_written"
+    },
+    {
+      "id": "live-ratings-built-around-the-guard",
+      "target": "src/weekly_update.py",
+      "tests": "tests/test_current_ratings.py",
+      "why": "refresh_current_state builds its ratings directly again, so the guard exists but the live run never passes through it.",
+      "find": "    current_team_ratings = current_ratings(plays, week_keys)\n",
+      "replace": "    current_team_ratings = build_team_ratings(plays, week_keys, upto_cutoff_i=len(week_keys))\n",
+      "expect_caught_by": "test_the_live_run_uses_it"
+    },
+    {
+      "id": "team-ratings-overload-dropped",
+      "target": "src/ratings_engine.py",
+      "tests": "tests/test_type_check.py",
+      "why": "the live call's @overload goes, so every live caller is typed as the three-way union again and the type check reports the writers taking a possible week dict: the state the third audit found, where nothing was checked because everything failed.",
+      "find": "@overload\ndef build_team_ratings(plays: pd.DataFrame, week_keys: list[WeekKey],\n                       upto_cutoff_i: int) -> Ratings | None: ...\n",
+      "replace": "",
+      "expect_caught_by": "test_the_weekly_modules_type_check"
     }
   ]
 }

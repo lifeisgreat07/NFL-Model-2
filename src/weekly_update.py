@@ -52,11 +52,11 @@ from atomic_write import write_json_atomic
 from data_quality import enforce as enforce_data_quality
 # Only get_continuity is imported: build_historical_features still accepts an
 # ol_lookup so backtest.py can run its "[reference only] + OL continuity"
-# comparison. The live weekly path no longer builds one -- see main().
+# comparison. The live weekly path no longer builds one -- see load_inputs().
 from ol_continuity import get_continuity
 from ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
 from simulate_season import fit_simple_win_model, regular_season, simulate_season
-from config import TRAIN_SEASONS, MODEL_VERSION
+from config import TRAIN_SEASONS, MODEL_VERSION, MIN_PLAYS_FOR_RATING
 
 # Don't save (lock in) predictions more than this many days before the
 # earliest game in the target week. Prevents exactly the failure mode we
@@ -101,7 +101,7 @@ LOCK_SLACK = pd.Timedelta(hours=8)
 
 # The folders are defined once, in src/paths.py (Stage 32 item 15); the
 # reasons each exists stay here, beside the code that writes them.
-from paths import DATA_DIR, PRED_DIR, PREVIEW_DIR, SKIPPED_DIR, TEAM_NAMES  # noqa: E402
+from paths import DATA_DIR, PRED_DIR, PREVIEW_DIR, SKIPPED_DIR, TEAM_NAMES, parse_week  # noqa: E402
 from runlog import get_logger  # noqa: E402  (Stage 32 item 17)
 log = get_logger(__name__)
 
@@ -137,7 +137,7 @@ def save_current_ratings(team_ratings: Ratings, season_schedule: pd.DataFrame | 
     our best up-to-date read on each opponent, the standard convention for
     "how tough is this team's real slate," not their rating at the time
     they were played)."""
-    rows = []
+    rows: list[dict[str, Any]] = []
     for team, (off, deff) in team_ratings.items():
         rows.append({
             'team': team, 'name': TEAM_NAMES.get(team, team),
@@ -146,7 +146,7 @@ def save_current_ratings(team_ratings: Ratings, season_schedule: pd.DataFrame | 
 
     if season_schedule is not None:
         played = season_schedule.dropna(subset=['home_score', 'away_score'])
-        opponents = {}
+        opponents: dict[str, list[str]] = {}
         for _, g in played.iterrows():
             opponents.setdefault(g['home_team'], []).append(g['away_team'])
             opponents.setdefault(g['away_team'], []).append(g['home_team'])
@@ -282,10 +282,9 @@ def _week_numbers(folder, season):
     """Week numbers of `<season>_week<N>.json` files directly in `folder`."""
     weeks = []
     for f in folder.glob(f'{season}_week*.json'):
-        try:
-            weeks.append(int(f.stem.split('_week')[1]))
-        except (IndexError, ValueError):
-            continue
+        key = parse_week(f.stem)
+        if key is not None:
+            weeks.append(key[1])
     return weeks
 
 
@@ -318,7 +317,7 @@ def determine_next_week(season: int, pred_dir: Path | None = None, skipped_dir: 
     # divisional 20, conf champ 21, Super Bowl 22). So max+1 naturally walks
     # straight through the playoffs with no special-casing needed. The one
     # real edge case -- running this again after the Super Bowl -- is
-    # handled in main() by exiting cleanly when a week has zero games.
+    # handled in plan_week() by exiting cleanly when a week has zero games.
 
 
 def refuse_an_empty_week(predictions: list[Pick], season: int, week: int) -> None:
@@ -624,7 +623,7 @@ def starter_warning(week_games: pd.DataFrame, overrides: dict[str, dict], season
 def kickoff_utc(game: pd.Series) -> pd.Timestamp | None:
     """A game's kickoff as a UTC timestamp, or None with no gameday.
 
-    gametime is EASTERN (see the record builder in main()), and ET is EDT or
+    gametime is EASTERN (see the record builder in predict_week()), and ET is EDT or
     EST depending on the date, so it is localised rather than offset by a
     fixed four or five hours. A missing time counts as the START of that
     day, Eastern: the earliest the game could be, which is the safe
@@ -677,7 +676,7 @@ def decide_lock(week_games: pd.DataFrame, now: pd.Timestamp,
     next_run      -- when the next scheduled run is.
 
     A week with no known kickoff at all locks, as it did before this rule
-    existed: there is nothing to hold for, and main() already warns.
+    existed: there is nothing to hold for, and plan_week() already warns.
     """
     now = pd.Timestamp(now).tz_convert('UTC')
     next_run = next_scheduled_run(now, runs)
@@ -691,7 +690,7 @@ def decide_lock(week_games: pd.DataFrame, now: pd.Timestamp,
         else:
             upcoming.append(k)
     if not upcoming:
-        # Every known game has started (lock=False, main() fails the run),
+        # Every known game has started (lock=False, plan_week() fails the run),
         # or no game has a known kickoff (lock=True, the old behaviour).
         return LockDecision(not started, started, None, next_run)
     first = min(upcoming)
@@ -789,14 +788,30 @@ def fit_models(hist: pd.DataFrame) -> tuple[LogisticRegression, LogisticRegressi
     return model_a, model_b
 
 
+def current_ratings(plays: pd.DataFrame, week_keys: list[WeekKey]) -> Ratings:
+    """The ratings as of right now: one fit over every play loaded.
+
+    build_team_ratings returns None when fewer than MIN_PLAYS_FOR_RATING
+    plays come before the cutoff. The live run loads six seasons, so that
+    cannot happen today; but nothing enforced it, and if it ever did, the
+    three writers below would each have crashed on None mid-run. It fails
+    here instead, before anything is written, saying why (Stage 35, found
+    when the third audit's overloads let mypy see the None)."""
+    ratings = build_team_ratings(plays, week_keys, upto_cutoff_i=len(week_keys))
+    if ratings is None:
+        raise SystemExit(
+            f"ERROR: fewer than {MIN_PLAYS_FOR_RATING} plays are loaded, too few to rate "
+            f"any team. Nothing was written. Check the play-by-play load above.")
+    return ratings
+
+
 def refresh_current_state(inputs: Inputs, season: int) -> Current:
     """Step 3: the ratings as of right now, written for the page (ratings,
     playoff odds, this season's history), and each team's current starter."""
     plays, week_keys = inputs.plays, inputs.week_keys
     qb, hist, schedules_by_season = inputs.qb, inputs.hist, inputs.schedules_by_season
     log.info("Building current ('as of right now') team + QB ratings...")
-    cutoff_i = len(week_keys)
-    current_team_ratings = build_team_ratings(plays, week_keys, upto_cutoff_i=cutoff_i)
+    current_team_ratings = current_ratings(plays, week_keys)
     save_current_ratings(current_team_ratings, season_schedule=schedules_by_season.get(season))
     save_playoff_odds(current_team_ratings, schedules_by_season.get(season), hist, season)
     current_season_weeks = [w for (s, w) in week_keys if s == season]
@@ -839,7 +854,7 @@ def plan_week(season: int, week: int) -> Plan | None:
     if len(week_games) == 0:
         log.info(f"No games found for {season} week {week} -- likely means the season "
               f"(including playoffs) is over. Nothing to predict. Exiting cleanly.")
-        return
+        return None
 
     # Line-movement archive: log today's spread for every game in the target
     # week, EVERY time this runs -- including the weeks before the lock-in
@@ -859,7 +874,7 @@ def plan_week(season: int, week: int) -> Plan | None:
                       f"({days_until} days away). That's more than the {LOCKIN_WINDOW_DAYS}-day "
                       f"lock-in window -- too early for injury/QB info to be reliable. "
                       f"Skipping this run without saving anything. Re-run closer to kickoff.")
-                return
+                return None
     else:
         log.warning("WARNING: schedule data has no 'gameday' column -- can't check how far out "
               "this week is. Proceeding anyway, but this safety check isn't active.")
@@ -875,7 +890,7 @@ def plan_week(season: int, week: int) -> Plan | None:
     if decision.started and not decision.lock and locked_path.exists():
         log.info(f"{season} week {week} is already locked in predictions/{locked_path.name}, "
               f"and every game has kicked off. Nothing to do.")
-        return
+        return None
     if decision.started and not decision.lock:
         # Still a failure -- the run fails and opens its issue (Stage 4) --
         # but the week is recorded as skipped first, so the next run moves
