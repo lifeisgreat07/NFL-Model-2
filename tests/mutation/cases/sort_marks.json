@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_sort_marks.py",
+  "cases": [
+    {
+      "id": "sort-mark-read-aloud",
+      "why": "the at-rest mark loses its empty alt text, so a screen reader announces 'up down arrow' on every sortable header on top of the sort state aria-sort already gives it.",
+      "find": "content:'\\2195'; content:'\\2195' / '';",
+      "replace": "content:'\\2195';",
+      "expect_caught_by": "test_every_mark_is_silent_to_a_screen_reader"
+    },
+    {
+      "id": "sort-mark-ascending-looks-unsorted",
+      "why": "a column sorted ascending draws the same up-down mark as the unsorted ones, so nothing on screen says which column the table is sorted by.",
+      "find": "content:'\\25B2'; content:'\\25B2' / '';",
+      "replace": "content:'\\2195'; content:'\\2195' / '';",
+      "expect_caught_by": "test_each_sort_state_draws_its_own_mark"
+    },
+    {
+      "id": "rank-header-made-a-control",
+      "why": "'#' becomes a sortable control again. Sorting by the net-rating rank only repeats Net Rating, and it would now draw a sort mark it cannot honour.",
+      "find": "<th scope=\"col\" data-key=\"rank\">#</th>",
+      "replace": "<th scope=\"col\" data-key=\"rank\" tabindex=\"0\" aria-sort=\"none\">#</th>",
+      "expect_caught_by": "test_the_rank_column_is_not_a_control"
+    }
+  ]
+}

@@ -315,6 +315,25 @@
      through the stuck header -- found in the first render, not by reading. */
   .table-wrap.fits thead th{position:sticky; top:0; z-index:3; background:var(--surface);}
   thead th[aria-sort]{cursor:pointer; user-select:none;}
+  /* The sort mark (Stage 34 item 29, chosen by Mark 2026-09-29 from rendered
+     options). At rest every header looked alike, so nothing said which ones
+     sort; "#" is the net-rating rank and deliberately does not. A header
+     that sorts carries an up-down mark in --text-3 (the neutral ramp, not opacity:
+     tests/test_no_dimmed_text.py), and the sorted one an arrow
+     for its direction. The mark is drawn from aria-sort, so it cannot
+     disagree with what a screen reader is told, and its alt text is empty
+     (the `/ ''`) so it is not read out as "up down arrow" on top of that.
+     Net Rating's header holds a scale under its label, so its mark goes on
+     the label, not after the scale. */
+  thead th[aria-sort]:not(:has(.net-head))::after,
+  thead th[aria-sort] .net-head > span:first-child::after{
+    content:'\2195'; content:'\2195' / ''; margin-left:var(--s1); color:var(--text-3);}
+  thead th[aria-sort=descending]:not(:has(.net-head))::after,
+  thead th[aria-sort=descending] .net-head > span:first-child::after{
+    content:'\25BC'; content:'\25BC' / ''; color:inherit; font-size:.8em;}
+  thead th[aria-sort=ascending]:not(:has(.net-head))::after,
+  thead th[aria-sort=ascending] .net-head > span:first-child::after{
+    content:'\25B2'; content:'\25B2' / ''; color:inherit; font-size:.8em;}
   thead th[aria-sort]:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
   thead th.sorted{color:var(--accent);}
   /* Model Lab's decision chips (Stage 18): the count is the table's own. */

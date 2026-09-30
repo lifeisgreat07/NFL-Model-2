@@ -111,6 +111,30 @@
       "find": "        s = await page.evaluate(STICKY_JS)",
       "replace": "        s = None",
       "expect_caught_by": "test_the_sticky_rule_runs_on_every_page_and_reads_what_is_drawn"
+    },
+    {
+      "id": "checker-sortmark-fixture-renamed-away",
+      "target": "tests/browser/check_page.py",
+      "why": "the sortmark rule's fixture is renamed, so the self-test no longer proves the rule can fail while still printing 'every rule caught its fixture'.",
+      "find": "    'sortmark': dict(",
+      "replace": "    'sortmark_off': dict(",
+      "expect_caught_by": "test_every_rule_has_a_fixture_that_breaks_it"
+    },
+    {
+      "id": "checker-sortmark-reads-only-the-header",
+      "target": "tests/browser/check_page.py",
+      "why": "the rule reads only the header's own ::after. Net Rating's mark is on its label inside the header, so the rule would report the one header that is right as missing its mark, and a real miss there would read as a false alarm.",
+      "find": "  const mark = th => [th, ...th.querySelectorAll('*')]",
+      "replace": "  const mark = th => [th]",
+      "expect_caught_by": "test_the_sortmark_rule_runs_on_every_page_and_reads_what_is_drawn"
+    },
+    {
+      "id": "checker-sortmark-never-called",
+      "target": "tests/browser/check_page.py",
+      "why": "the rule is defined and has a fixture, and is never run on the real page: the self-test goes on passing while the page check checks nothing.",
+      "find": "        for m in await page.evaluate(SORTMARK_JS):",
+      "replace": "        for m in []:",
+      "expect_caught_by": "test_the_sortmark_rule_runs_on_every_page_and_reads_what_is_drawn"
     }
   ]
 }
