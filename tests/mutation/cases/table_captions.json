@@ -1,0 +1,34 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_table_captions.py",
+  "cases": [
+    {
+      "id": "ratings-table-loses-its-caption",
+      "why": "the Power Ratings table, the one a visitor sorts, is announced as an unnamed table again.",
+      "find": "<table id=\"ratings-table\"><caption class=\"visually-hidden\">Power ratings for every team</caption>",
+      "replace": "<table id=\"ratings-table\">",
+      "expect_caught_by": "test_every_table_opens_with_a_caption"
+    },
+    {
+      "id": "built-table-loses-its-caption",
+      "why": "a table the page builds in JavaScript (Season Accuracy's week-by-week record) has no caption; the check has to read template strings, not only markup.",
+      "find": "<caption class=\"visually-hidden\">Correct picks by week for each model</caption>",
+      "replace": "",
+      "expect_caught_by": "test_every_table_opens_with_a_caption"
+    },
+    {
+      "id": "glossary-captions-collide",
+      "why": "two of the three glossary tables, which share a header row, get the same caption, so a listener cannot tell them apart.",
+      "find": "<caption class=\"visually-hidden\">Betting terms</caption>",
+      "replace": "<caption class=\"visually-hidden\">Evaluation terms</caption>",
+      "expect_caught_by": "test_no_two_tables_share_a_caption"
+    },
+    {
+      "id": "hiding-rule-stops-hiding",
+      "why": "the .visually-hidden rule stops taking the element out of the layout, so all fourteen captions show as second titles over tables that already have headings.",
+      "find": ".visually-hidden{position:absolute;",
+      "replace": ".visually-hidden{position:static;",
+      "expect_caught_by": "test_the_hiding_rule_the_captions_use_exists"
+    }
+  ]
+}

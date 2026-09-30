@@ -1795,7 +1795,7 @@ __FONT_FACES__
       the books. It fills in on its own from the first completed week onward.
     </div>
     <div class="table-wrap">
-      <table id="ratings-table">
+      <table id="ratings-table"><caption class="visually-hidden">Power ratings for every team</caption>
         <thead>
           <tr>
             <th scope="col" data-key="rank">#</th>
@@ -2061,7 +2061,7 @@ __FONT_FACES__
     <div class="filter-row" id="lab-filter-row" role="group" aria-label="Show experiments by decision" hidden></div>
     <p class="visually-hidden" id="lab-filter-status" aria-live="polite"></p>
     <div class="table-wrap" data-scroll-label="Experiment log">
-      <table>
+      <table><caption class="visually-hidden">Model Lab experiment log</caption>
         <thead><tr><th scope="col">Experiment</th><th scope="col">Result</th><th scope="col">Decision</th></tr></thead>
         <tbody>
           <!-- Rendered at build time by generate_dashboard.render_model_lab_rows()
@@ -2135,7 +2135,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h4>Backtest Results — Chronological, Weekly-Refitting Walk-Forward</h4>
       <p>Trained only on strictly earlier data, refit every week within the test season (not just once per season) -- validated 2026-08 (Stage 9) to match what the live model actually does: weekly_update.py always trains on all real completed games available up to "now," every single run. Evaluated on 2022-2025 (1,087 games):</p>
-      <div class="table-wrap"><table class="metrics-table">
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Backtest results for each model</caption>
         <thead><tr><th scope="col">Model</th><th scope="col">Accuracy</th><th scope="col">Log Loss</th><th scope="col">Brier</th><th scope="col">AUC</th></tr></thead>
         <tbody>
           <tr><td>Coin flip</td><td>50.0%</td><td>0.693</td><td>0.250</td><td>0.500</td></tr>
@@ -2162,7 +2162,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h4>Which Features Actually Do the Work</h4>
       <p>Most of this project's research has tested whether <i>adding</i> something helps. A formal ablation pass asks the opposite question: remove each existing feature one at a time, fully retrain, and measure what actually breaks. That's how you find out where a model's predictive power really lives, rather than assuming every feature is pulling its weight.</p>
-      <div class="table-wrap" style="margin-top:var(--s3);"><table class="metrics-table">
+      <div class="table-wrap" style="margin-top:var(--s3);"><table class="metrics-table"><caption class="visually-hidden">Accuracy change when each feature is removed</caption>
         <thead><tr><th scope="col">Feature removed</th><th scope="col" class="num">Accuracy change</th><th scope="col" class="num">95% CI</th></tr></thead>
         <tbody>
           <tr><td>QB matchup</td><td class="num">-2.39&nbsp;pp</td><td class="num">[-5.15, +0.37]</td></tr>
@@ -2225,7 +2225,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h4>Where This Model Stands</h4>
-      <div class="table-wrap"><table class="metrics-table">
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Where this model stands</caption>
         <thead><tr><th scope="col">Dimension</th><th scope="col">How this project does</th></tr></thead>
         <tbody>
           <tr><td>Model A against the market (log loss, Brier)</td><td>Behind on both. The market is a genuinely hard benchmark and this doesn't clear it</td></tr>
@@ -2249,7 +2249,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <p class="part-lead">Every dataset this project touches, honestly labelled.</p>
     <div class="method-block">
       <h4>In Production (used every single weekly run)</h4>
-      <div class="table-wrap"><table class="metrics-table">
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Datasets used in production</caption>
         <thead><tr><th scope="col">Dataset</th><th scope="col">Used For</th></tr></thead>
         <tbody>
           <tr><td>Play-by-play</td><td>Team ratings (ridge regression), per-QB trailing EPA</td></tr>
@@ -2262,7 +2262,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h4>Research-Only (fetched to test a specific idea, never part of live predictions)</h4>
-      <div class="table-wrap"><table class="metrics-table">
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Research-only datasets</caption>
         <thead><tr><th scope="col">Dataset</th><th scope="col">What happened</th></tr></thead>
         <tbody>
           <tr><td>Officials</td><td>Rejected</td></tr>
@@ -2286,7 +2286,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h4>Model &amp; Prediction Terms</h4>
-      <div class="table-wrap"><table class="metrics-table">
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Model and prediction terms</caption>
         <thead><tr><th scope="col">Term</th><th scope="col">What it means</th></tr></thead>
         <tbody>
           <tr><td>EPA (Expected Points Added)</td><td>How much a single play changed a team's expected points on that drive. A 40-yard gain has high positive EPA; a sack has negative EPA. Summed up, it's a better measure of team quality than raw yards</td></tr>
@@ -2308,7 +2308,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h4>Evaluation Terms</h4>
-      <div class="table-wrap"><table class="metrics-table">
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Evaluation terms</caption>
         <thead><tr><th scope="col">Term</th><th scope="col">What it means</th></tr></thead>
         <tbody>
           <tr><td>Log loss</td><td>Penalizes confident wrong predictions heavily. Lower is better. A model that says 95% and is wrong is punished far more than one that said 55%. Season Accuracy's "How sure, and how right" score is this, averaged over the season's graded games</td></tr>
@@ -2325,7 +2325,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h4>Betting Terms</h4>
-      <div class="table-wrap"><table class="metrics-table">
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Betting terms</caption>
         <thead><tr><th scope="col">Term</th><th scope="col">What it means</th></tr></thead>
         <tbody>
           <tr><td>Point spread</td><td>The margin the favorite is expected to win by. A -7 favorite is expected to win by 7</td></tr>
@@ -5556,7 +5556,7 @@ function buildReliabilityDiagram(){
         <p style="font-size:var(--fs-12); margin-top:var(--s3);">The same test did find two things that hold. Against <b style="color:var(--text)">Model A</b>, Model B is genuinely better &mdash; Brier &minus;0.019133, CI [&minus;0.025838, &minus;0.012687], and resolution +0.016814, CI [+0.008990, +0.024819] &mdash; which is the first version of "the spread helps" that rests on proper scoring rules rather than on accuracy, a metric this project has already shown moves by a whole game between platforms. And the market genuinely beats Model A: Brier +0.018511, CI [+0.011496, +0.025553]. See <b style="color:var(--text)">the experiment log above</b> for all three, and <code>src/bootstrap_brier_gap.py</code> for the method.</p>
         <details class="rel-table" style="margin-top:var(--s3);">
           <summary>Show the numbers as a table</summary>
-          <div class="table-wrap" style="margin-top:var(--s2);"><table class="metrics-table">
+          <div class="table-wrap" style="margin-top:var(--s2);"><table class="metrics-table"><caption class="visually-hidden">Backtest calibration by probability bin, with 95% intervals</caption>
             <thead><tr><th scope="col">Series</th><th scope="col">Bin</th><th scope="col">Games</th><th scope="col">Stated</th><th scope="col">Observed</th><th scope="col">95% interval</th></tr></thead>
             <tbody>${tableRows}</tbody>
           </table></div>
@@ -5724,7 +5724,7 @@ function forecastScoreHtml(s){
     <div class="method-block forecast-score">
       <h3>How sure, and how right</h3>
       <p>Picking the winner is only half of it. This score also weighs how sure each forecast was: a pick made at 90% that loses costs far more than one made at 55%. <b style="color:var(--text)">Lower is better.</b> Calling every game 50&ndash;50 scores ${s.coin_flip.toFixed(3)}, whatever happens.</p>
-      <div class="table-wrap"><table class="metrics-table">
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Forecast score for each forecast; lower is better</caption>
         <thead><tr><th scope="col">Forecast</th><th scope="col">Score</th></tr></thead>
         <tbody>${body}</tbody>
       </table></div>
@@ -5783,7 +5783,7 @@ function renderAccuracy(){
     <div class="method-block">
       <h3>Week by week</h3>
       ${weeklyRows
-        ? `<div class="table-wrap"><table class="metrics-table">
+        ? `<div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Correct picks by week for each model</caption>
         <thead><tr><th scope="col">Week</th><th scope="col">Model A</th><th scope="col">Model B</th><th scope="col">Market</th></tr></thead>
         <tbody>${weeklyRows}</tbody>
       </table></div>`
@@ -5809,7 +5809,7 @@ function renderAccuracy(){
       <h3>Are these percentages honest?</h3>
       <p>Does a game we picked at, say, 65% confidence actually win about 65% of the time? Compares the average predicted probability in each confidence bucket to how often the pick was actually right.</p>
       ${calibChartHtml}
-      <div class="table-wrap"><table class="metrics-table">
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Stated confidence against how often the pick was right, by bucket</caption>
         <thead><tr><th scope="col">Confidence Bucket</th><th scope="col">Games</th><th scope="col">Avg Predicted</th><th scope="col">Actual Correct Rate</th></tr></thead>
         <tbody>${calibRows || '<tr><td colspan="4">Not enough graded games yet.</td></tr>'}</tbody>
       </table></div>
