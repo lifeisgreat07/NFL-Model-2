@@ -919,6 +919,11 @@
   .graded-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); padding:var(--s1) var(--s3); border-radius:20px;}
   .graded-tag.correct{background:var(--good-dim); color:var(--good);}
   .graded-tag.incorrect{background:var(--warn-dim); color:var(--warn);}
+  /* A tie is neither: it was graded, and no model can be right or wrong
+     about a game with no winner (Stage 30 item 1). Neutral, never --good or
+     --warn, which are graded outcomes. */
+  .graded-tag.tie{background:var(--surface-2); color:var(--text-2); border:1px solid var(--border);}
+  .dive-result.tie{color:var(--text-2);}
 
   .pick-buttons{display:flex; gap:var(--s2); margin-top:var(--s4);}
   .pick-btn{flex:1; background:transparent; border:1.5px solid var(--border); color:var(--text);
@@ -3487,7 +3492,10 @@ function populateWeekSelect(selectEl, onChange, initial){
    appear on a game that has not happened. Bold weight beside the badge carries
    the same information for anyone who cannot separate the two hues. */
 function pickBadge(picked, graded, correct){
-  if(!picked) return `<span class="pick-badge placeholder"></span>`;
+  // A graded game with no verdict is a tie (Stage 30 item 1): no badge, since
+  // a tick or a cross would each claim a result the game did not have.
+  if(!picked || (graded && (correct === null || correct === undefined)))
+    return `<span class="pick-badge placeholder"></span>`;
   const tick = '<path d="M20 6L9 17l-5-5"/>';
   const cross = '<path d="M6 6l12 12M18 6L6 18"/>';
   const state = !graded ? 'picked' : (correct ? 'correct' : 'incorrect');
@@ -3495,6 +3503,18 @@ function pickBadge(picked, graded, correct){
     : (correct ? 'this model was right' : 'this model was wrong');
   return `<span class="pick-badge ${state}" title="${label}">`
     + `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">${state === 'incorrect' ? cross : tick}</svg></span>`;
+}
+
+/* The graded tag on a card: Model B's verdict (Model A's when B had no
+   pick), or "Tie" for a graded game with no winner. Until Stage 30 item 1 a
+   tie fell through `?? ... ? 'correct' : 'incorrect'` to "Missed" with the
+   warn colour, because null is falsy. */
+function gradedTagHtml(g){
+  if(!g.graded) return '';
+  const verdict = g.model_b_correct ?? g.model_a_correct;
+  if(g.result === 'tie' || verdict === null || verdict === undefined)
+    return `<span class="graded-tag tie">Tie</span>`;
+  return `<span class="graded-tag ${verdict ? 'correct' : 'incorrect'}">${verdict ? 'Correct' : 'Missed'}</span>`;
 }
 
 /* Turns the model's own numbers into a football sentence.
@@ -4159,9 +4179,7 @@ function renderGames(){
     const spreadText = (g.spread===null || g.spread===undefined) ? "No line available"
       : g.spread === 0 ? "PK"
       : (g.spread>0 ? `${g.home} -${g.spread}` : `${g.away} -${Math.abs(g.spread)}`);
-    const gradedTag = g.graded
-      ? `<span class="graded-tag ${g.model_b_correct ?? g.model_a_correct ? 'correct':'incorrect'}">${(g.model_b_correct ?? g.model_a_correct) ? 'Correct' : 'Missed'}</span>`
-      : '';
+    const gradedTag = gradedTagHtml(g);
     // RETIRED in Stage 11: an "Illustrative margin" row ("KC by ~10.1")
     // used to sit in the panel below, a point margin back-solved from the
     // win probability. Margin modelling was tested as a predictor and
@@ -6096,6 +6114,9 @@ function teamGamesFor(team){
         // that is false.
         won: (g.graded && g.actual_home_win !== null && g.actual_home_win !== undefined)
               ? (isHome ? !!g.actual_home_win : !g.actual_home_win) : null,
+        // A graded game with no winner: Team Deep-Dive says "Tie", not "not
+        // yet played" (Stage 30 item 1).
+        tie: !!g.graded && g.result === 'tie',
         // Normalised to real booleans here, at the boundary, because the
         // graded files store 1/0 rather than true/false. A downstream
         // `=== true` against a 1 is quietly false, which showed up as
@@ -6116,6 +6137,32 @@ function teamGamesFor(team){
 const WHY_LABELS = {off_matchup: 'Offense', def_matchup: 'Defense',
                     qb_matchup: 'QB', qb_change: 'QB change'};
 
+/* One game's result on Team Deep-Dive: W, L, T for a tie, or "not yet
+   played". A tie used to read as unplayed because its won is null. */
+function diveResultHtml(g){
+  if(g.tie) return `<span class="dive-result tie">T</span>`;
+  if(g.won === null) return `<span class="dive-pending">not yet played</span>`;
+  return `<span class="dive-result ${g.won?'won':'lost'}">${g.won?'W':'L'}</span>`;
+}
+
+/* The line above a team's games: its record over graded games, with ties
+   as a third figure (W-L-T), and how many each model called. A tie has no
+   winner, so it is in the record but not in either model's count. */
+function diveSummaryHtml(team, games){
+  const decided = games.filter(g => g.won !== null);
+  const wins = decided.filter(g => g.won).length;
+  const ties = games.filter(g => g.tie).length;
+  const n = decided.length + ties;
+  if(!n) return `<div class="dive-games-summary">None of these games have been graded yet,
+       so there is no record to report.</div>`;
+  const aRight = decided.filter(g => g.modelACorrect === true).length;
+  const bRight = decided.filter(g => g.modelBCorrect === true).length;
+  return `<div class="dive-games-summary">${team} are <b>${wins}-${decided.length-wins}${ties ? '-' + ties : ''}</b>
+       across ${n} graded game${n===1?'':'s'} &middot;
+       Model A called ${aRight} of ${decided.length} &middot;
+       Model B called ${bRight} of ${decided.length}</div>`;
+}
+
 function renderTeamGames(team){
   const games = teamGamesFor(team);
   if(games.length === 0){
@@ -6128,26 +6175,13 @@ function renderTeamGames(team){
       the first run of the season onward.`, null, 'state--after');
   }
 
-  const graded = games.filter(g => g.won !== null);
-  const wins = graded.filter(g => g.won).length;
-  const aRight = graded.filter(g => g.modelACorrect === true).length;
-  const bRight = graded.filter(g => g.modelBCorrect === true).length;
-
-  const summary = graded.length
-    ? `<div class="dive-games-summary">${team} are <b>${wins}-${graded.length-wins}</b>
-       across ${graded.length} graded game${graded.length===1?'':'s'} &middot;
-       Model A called ${aRight} of ${graded.length} &middot;
-       Model B called ${bRight} of ${graded.length}</div>`
-    : `<div class="dive-games-summary">None of these games have been graded yet,
-       so there is no record to report.</div>`;
+  const summary = diveSummaryHtml(team, games);
 
   const rows = games.map((g, i) => {
     const pct = p => p===null ? '—' : `${p.toFixed(1)}%`;
     const lineText = g.line===null ? '—'
       : (g.line > 0 ? `-${g.line}` : (g.line < 0 ? `+${Math.abs(g.line)}` : 'PK'));
-    const result = g.won === null
-      ? `<span class="dive-pending">not yet played</span>`
-      : `<span class="dive-result ${g.won?'won':'lost'}">${g.won?'W':'L'}</span>`;
+    const result = diveResultHtml(g);
     const mark = c => c === true ? '<span class="dive-tick">correct</span>'
       : c === false ? '<span class="dive-cross">wrong</span>' : '';
 

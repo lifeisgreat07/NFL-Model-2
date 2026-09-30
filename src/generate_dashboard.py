@@ -495,6 +495,11 @@ def build_games_js(preds, graded_lookup_by_key, status_by_key=None, tv_by_key=No
             'confidence_points': p.get('confidence_points'),
             'why': p.get('why'),
             'graded': graded is not None,
+            # 'tie' for a tied game, None otherwise (Stage 30 item 1). A tie is
+            # graded -- it was checked against the result -- but has no winner,
+            # so every *_correct below is None. Without this the card could
+            # not tell a tie from a miss and drew a red cross.
+            'result': graded.get('result') if graded else None,
             'actual_home_win': graded.get('actual_home_win') if graded else None,
             'model_a_correct': graded.get('model_a_correct') if graded else None,
             'model_b_correct': graded.get('model_b_correct') if graded else None,
