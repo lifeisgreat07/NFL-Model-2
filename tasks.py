@@ -18,12 +18,18 @@ task with that command's exit code.
 """
 import subprocess
 import sys
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 PY = sys.executable
 AXE = 'node_modules/axe-core/axe.min.js'
+# Where browser-check builds the states pages (a tie, a skipped week, a stale
+# preview). Outside the checkout, like CI's $RUNNER_TEMP/states, so nothing
+# built here is ever staged. The page names are build_states.PAGES.
+STATES = Path(tempfile.gettempdir()) / 'nfl-model-states'
+STATE_PAGES = ('states_tie.html', 'states_preview.html')
 
 
 def _slice_seed(argv):
@@ -47,11 +53,15 @@ TASKS = {
                          [PY, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider']]),
     'build': ('build index.html from the data on disk (deploy-pages.yml does this)',
               lambda a: [[PY, 'src/generate_dashboard.py']]),
-    'browser-check': ('build, prove every browser rule can fail, then check the page '
-                      '(needs Playwright; axe-core is used when node_modules has it)',
+    'browser-check': ('build, prove every browser rule can fail, check the page, then build '
+                      'and check the states pages (needs Playwright and node; axe-core is '
+                      'used when node_modules has it)',
                       lambda a: [[PY, 'src/generate_dashboard.py'],
                                  [PY, 'tests/browser/check_page.py', '--self-test', *_axe()],
-                                 [PY, 'tests/browser/check_page.py', 'index.html', *_axe()]]),
+                                 [PY, 'tests/browser/check_page.py', 'index.html', *_axe()],
+                                 [PY, 'tests/browser/build_states.py', '--out', str(STATES)],
+                                 *[[PY, 'tests/browser/check_page.py', str(STATES / page), *_axe()]
+                                   for page in STATE_PAGES]]),
     'mutation-slice': ('30 mutation cases chosen by a date seed, as the nightly job runs '
                        '(--seed YYYYMMDD to replay a night)',
                        lambda a: [[PY, '-B', 'tests/mutation/runner.py', '--sample', '30',

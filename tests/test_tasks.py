@@ -9,6 +9,7 @@ Nothing here runs a real command: main() takes the function that would.
 
 Run with: pytest tests/test_tasks.py -v
 """
+import importlib.util
 import re
 import sys
 from pathlib import Path
@@ -29,7 +30,35 @@ def commands(name, extra=()):
 
 
 def runs(workflow):
-    return re.findall(r'(?m)^\s*run:\s*(.+)$', (WF / workflow).read_text(encoding='utf-8'))
+    """Every command line the workflow's `run:` steps execute, one per logical
+    line: a single-line `run: cmd`, and each line of a `run: |` block with its
+    backslash continuations joined. Until Stage 35 this read only the
+    single-line form, so it could not see any multi-line step, and
+    browser-check could miss the states steps without a test noticing."""
+    out = []
+    lines = (WF / workflow).read_text(encoding='utf-8').splitlines()
+    i = 0
+    while i < len(lines):
+        m = re.match(r'^(\s*)(?:- )?run:\s*(.*)$', lines[i])
+        i += 1
+        if not m:
+            continue
+        indent, value = len(m.group(1)), m.group(2).strip()
+        if value not in ('|', '>', '|-', '>-'):
+            out.append(value)
+            continue
+        block = []
+        while i < len(lines) and (not lines[i].strip() or len(lines[i]) - len(lines[i].lstrip()) > indent):
+            block.append(lines[i].strip())
+            i += 1
+        joined = []
+        for line in block:
+            if joined and joined[-1].endswith('\\'):
+                joined[-1] = joined[-1][:-1].rstrip() + ' ' + line
+            elif line:
+                joined.append(line)
+        out += joined
+    return out
 
 
 def test_lint_is_what_run_tests_runs():
@@ -60,16 +89,45 @@ def test_build_is_what_the_pages_workflow_runs():
 
 
 def test_browser_check_runs_what_the_workflow_runs_in_the_same_order():
-    got = commands('browser-check')
-    wf = [r for r in runs('browser-checks.yml') if 'generate_dashboard' in r or 'check_page.py' in r]
-    assert [c.split(' --axe')[0] for c in got] == [
+    """The task runs the workflow's steps in its order, the states pages
+    included (Stage 34 item 30 added them to CI and not to the task; the third
+    audit found it). The task's states folder stands where the workflow says
+    "$RUNNER_TEMP/states", and the workflow's shell loop over the pages is the
+    task's one command per page."""
+    got = [c.split(' --axe')[0].replace(str(tasks.STATES), '$RUNNER_TEMP/states').replace('\\', '/')
+           for c in commands('browser-check')]
+    assert got == [
         'python src/generate_dashboard.py',
         'python tests/browser/check_page.py --self-test',
-        'python tests/browser/check_page.py index.html']
+        'python tests/browser/check_page.py index.html',
+        'python tests/browser/build_states.py --out $RUNNER_TEMP/states',
+        *[f'python tests/browser/check_page.py $RUNNER_TEMP/states/{p}' for p in tasks.STATE_PAGES]]
+    wf = [r.replace('"', '') for r in runs('browser-checks.yml')
+          if any(k in r for k in ('generate_dashboard', 'check_page.py', 'build_states', 'for page in'))]
     assert [w.split(' --axe')[0] for w in wf] == [
         'python src/generate_dashboard.py',
         'python tests/browser/check_page.py --self-test',
-        'python tests/browser/check_page.py index.html']
+        'python tests/browser/check_page.py index.html',
+        'python tests/browser/build_states.py --out $RUNNER_TEMP/states',
+        f'for page in {" ".join(tasks.STATE_PAGES)}; do',
+        'python tests/browser/check_page.py $RUNNER_TEMP/states/$page']
+
+
+def test_the_task_builds_the_pages_build_states_writes():
+    """tasks.py keeps no dependency on the test tree, so it names the pages
+    itself; this holds its list to build_states.PAGES."""
+    spec = importlib.util.spec_from_file_location('build_states', ROOT / 'tests' / 'browser' / 'build_states.py')
+    builder = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(builder)
+    assert tuple(tasks.STATE_PAGES) == tuple(builder.PAGES)
+
+
+def test_runs_reads_multi_line_steps():
+    """A `run: |` block and its backslash continuations are read, not skipped:
+    the weekly summary step is only reachable that way."""
+    got = runs('weekly-update.yml')
+    assert any(r.startswith('python src/weekly_summary.py --season') and '--out weekly-summary.md' in r
+               for r in got), got
 
 
 def test_the_mutation_slice_is_the_nightly_slice():
