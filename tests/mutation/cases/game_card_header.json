@@ -47,15 +47,15 @@
     {
       "id": "card-header-logo-named-twice",
       "why": "the logo carries the team as alt text, so a screen reader reads every team twice.",
-      "find": "alt=\"\" loading=\"lazy\" onerror=\"this.style.display='none'\">${team}</span>`",
-      "replace": "alt=\"${team}\" loading=\"lazy\" onerror=\"this.style.display='none'\">${team}</span>`",
+      "find": "alt=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer\" onerror=\"this.style.display='none'\">${team}</span>`",
+      "replace": "alt=\"${team}\" loading=\"lazy\" referrerpolicy=\"no-referrer\" onerror=\"this.style.display='none'\">${team}</span>`",
       "expect_caught_by": "test_a_logo_is_decorative_and_falls_back_to_the_name"
     },
     {
       "id": "card-header-logo-no-fallback",
       "why": "a logo ESPN will not serve stays on the card as a broken-image mark instead of hiding.",
-      "find": "alt=\"\" loading=\"lazy\" onerror=\"this.style.display='none'\">${team}</span>`",
-      "replace": "alt=\"\" loading=\"lazy\">${team}</span>`",
+      "find": "alt=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer\" onerror=\"this.style.display='none'\">${team}</span>`",
+      "replace": "alt=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer\">${team}</span>`",
       "expect_caught_by": "test_a_logo_is_decorative_and_falls_back_to_the_name"
     },
     {

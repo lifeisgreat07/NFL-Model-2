@@ -411,14 +411,6 @@
      Plus Jakarta Sans). A link inside a sentence keeps the text's line height:
      2.5.8 exempts inline targets, and a taller box would push the lines apart. */
   .link-standalone{display:inline-flex; align-items:center; min-height:24px;}
-  .glance-row{display:flex; gap:var(--s3); flex-wrap:wrap; margin-bottom:var(--s5);}
-  .glance-item{
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
-    padding:var(--s4) var(--s5); min-width:140px; flex:1;
-  }
-  .glance-label{display:block; font-size:var(--fs-11); letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); margin-bottom:var(--s2);}
-  .glance-value{display:block; font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-20); color:var(--text);}
-  .glance-sub{display:block; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s1);}
   
   /* --accent, not --series-a: the banner is the active thing, not a series. */
   .onboarding-banner{background:var(--surface-2); border:1px solid var(--accent); border-radius:var(--r-md); padding:var(--s5) var(--s6); margin-bottom:var(--s5);}
@@ -790,13 +782,6 @@
      underline a .btn-link carries when it sits in running text. */
   .undo-toast .btn-link{color:var(--accent); font-weight:700; font-size:var(--fs-12); text-decoration:none;}
   @media (max-width:1079px){ .undo-toast{bottom:calc(90px + var(--safe-bottom, 0px));} }
-
-  /* --accent, not --series-a. A confidence badge is not a chart series; it is
-     the active/emphasised thing, which is Job 2. See the note on .model-chip. */
-  .confidence-badge{
-    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.05em; padding:var(--s1) var(--s3); border-radius:20px;
-    background:var(--accent-soft); color:var(--accent); white-space:nowrap;
-  }
 
   /* ---------- Naming a model in prose ----------
      A model's identity is a COLOURED MARK beside its name, never the name in
@@ -1511,15 +1496,12 @@
   .roadmap-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.06em; text-transform:uppercase;
     padding:var(--s1) var(--s2); border-radius:20px; display:inline-block; margin-bottom:var(--s3);}
   .status-planned{background:var(--border); color:var(--text-2);}
-  .status-next{background:var(--accent-soft); color:var(--accent);}
   /* Shipped vs not kept is told apart by FORM now, not by the graded green:
      shipped is an outlined pill in primary text, not-kept the filled grey
      .status-planned. The word on each still says which (Stage 9). */
   .status-done{background:transparent; color:var(--text); border:1px solid var(--border-strong);}
   .roadmap-card h4{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:var(--fs-16); margin-bottom:var(--s2);}
   .roadmap-card p{font-size:var(--fs-13); color:var(--text-2); line-height:1.55;}
-  .add-idea{border:1px dashed var(--border); background:transparent; display:flex; align-items:center; justify-content:center;
-    min-height:100px; border-radius:var(--r-md); color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12); text-align:center; padding:var(--s4);}
 
   /* ---------- Mobile bottom nav ---------- */
   .bottom-nav{
@@ -2497,7 +2479,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h3>The Actual Rule</h3>
-      <p>Formalized in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/VERIFICATION.md" target="_blank" style="color:var(--accent);">VERIFICATION.md</a>: any claim about test results, repo state, or reproducibility must be backed by real, re-executed command output -- not a summary of one. See also <b style="color:var(--text)">Booth</b>, a dedicated verification role built specifically to audit Scout's work against this rule.</p>
+      <p>Formalized in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/VERIFICATION.md" target="_blank" rel="noopener" style="color:var(--accent);">VERIFICATION.md</a>: any claim about test results, repo state, or reproducibility must be backed by real, re-executed command output -- not a summary of one. See also <b style="color:var(--text)">Booth</b>, a dedicated verification role built specifically to audit Scout's work against this rule.</p>
     </div>
   </section>
 
@@ -3399,7 +3381,7 @@ function renderRatings(){
     const trendHtml = rankMoveHtml(t.rank_change);
     return `<tr>
       <td class="rank">${i+1}</td>
-      <td><div class="team-cell"><a class="row-link" href="${routeHash({page:'teamdive', team:t.team})}"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span></a>${trendHtml}</div></td>
+      <td><div class="team-cell"><a class="row-link" href="${routeHash({page:'teamdive', team:t.team})}"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span></a>${trendHtml}</div></td>
       <td class="num"><div class="net-cell-inner">
         <div class="srs-bar-track diverging" title="${fmtRating(t.net)} per 100 plays; league scale ±${fmtRatingScale(maxAbs)}, centre line is zero"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
         <span class="net-value">${fmtRating(t.net)}</span>
@@ -3724,7 +3706,7 @@ function pickButton(team, pick, locked){
   // re-derives it on every path, the same way it re-derives `selected`.
   return `<button class="pick-btn ${pick===team?'selected':''}" data-team="${team}"`
     + (locked ? ` disabled aria-label="${team}, locked at kickoff"` : '') + `>`
-    + `<img class="pick-logo" src="${teamLogo(team)}" alt="" loading="lazy" onerror="this.style.display='none'">`
+    + `<img class="pick-logo" src="${teamLogo(team)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">`
     + `<span class="pick-abbr">${team}</span>`
     + `</button>`;
 }
@@ -3883,7 +3865,7 @@ function matchupHeader(g, variant){
    are no wider than the abbreviation alone and the probability line keeps
    the width CARD_NEAR was measured on. */
 function barTeam(team){
-  return `<span class="card-end-team"><img class="card-end-logo" src="${teamLogo(team)}" alt="" loading="lazy" onerror="this.style.display='none'">${team}</span>`;
+  return `<span class="card-end-team"><img class="card-end-logo" src="${teamLogo(team)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">${team}</span>`;
 }
 
 /* ---------- Kickoff order ----------
@@ -5949,7 +5931,7 @@ function renderTeamDive(){
    logo ESPN will not serve hides and leaves the name, the fallback every
    logo here has. */
 function diveTeamHtml(team, name){
-  return `<div class="dive-team"><img class="dive-logo" src="${teamLogo(team)}" alt="" loading="lazy" onerror="this.style.display='none'">`
+  return `<div class="dive-team"><img class="dive-logo" src="${teamLogo(team)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">`
     + `<span class="dive-team-name">${name || team}</span></div>`;
 }
 
