@@ -47,8 +47,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 Canonical `BACKTEST_ACCURACY` moves only on a deliberate re-run.
 
-Suite: **4925 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-`e9d8406` (after #248), with HEAD level with origin, which is the order that makes the
+Suite: **4975 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+`ba32eeb` (after #252), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the

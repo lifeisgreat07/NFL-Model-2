@@ -1307,3 +1307,13 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   classes it did find, one that asserted the chart had drawn. **Write the
   vacuity guard before the first run, not after the first surprise**, because
   the run without one does not look like a failure.
+- **Desktop Commander refuses to overwrite a file when no `mode` is given,
+  and a command chained after it runs on the OLD file.** `write_file` on an
+  existing path without `mode: 'rewrite'` returns "Write rejected" and
+  changes nothing. Twice on 2026-09-30 the next call went ahead regardless:
+  a commit took a stale `.commit-msg.txt` (the branch was re-pushed), and a
+  conflict resolver ran its previous version and resolved nothing. **Pass
+  `mode` on every write to a path that may exist, and read the write's
+  result before the call that uses the file.** The same day's other
+  surprise: this checkout is CRLF, so a regex over conflict markers written
+  for `\n` matches nothing; match `\r?\n`.
