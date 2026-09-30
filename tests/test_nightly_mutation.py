@@ -69,10 +69,19 @@ def test_the_workflow_runs_nightly_with_the_date_as_the_seed():
 
 
 def test_the_workflow_cannot_write_to_the_repository():
+    """It may open an issue (Stage 30 item 7) and nothing else."""
     wf = WORKFLOW.read_text(encoding='utf-8')
     block = re.search(r'\npermissions:\n((?:  .*\n)+)', wf)
-    assert block and block.group(1).strip() == 'contents: read'
+    assert block and set(block.group(1).split('\n')) - {''} == {'  contents: read', '  issues: write'}
     assert 'git push' not in wf and 'auto-commit' not in wf
+
+
+def test_a_failed_night_opens_its_own_issue():
+    """Stage 30 item 7: its own title, so a bad night is not filed under the
+    canary's issue, and a replay line with the night's seed."""
+    wf = WORKFLOW.read_text(encoding='utf-8')
+    assert 'python src/alerts.py --title "Nightly mutation slice failing"' in wf
+    assert '--sample 30 --seed %s' in wf, 'the issue does not say how to replay the night'
 
 
 def test_the_workflow_installs_node_for_the_guards_that_need_it():

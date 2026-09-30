@@ -81,8 +81,9 @@ Routines" section describes the same split.
 **Since Stage 4, nothing unattended fails silently.** The **Nightly canary**
 (06:00 UTC) runs the weekly data path and writes nothing. The Weekly update
 runs the drift check and writes a run summary. A failed canary night, a
-failed weekly run, a drift flag and a failed Booth audit each open or
-comment on a GitHub issue (`src/alerts.py`). The Pages build refuses a page
+failed weekly run, a drift flag, a failed Booth audit and a failed nightly
+mutation slice each open or comment on a GitHub issue (`src/alerts.py`);
+`tests/test_alerts.py` fails any scheduled workflow that does not. The Pages build refuses a page
 whose data is missing (`src/check_build.py`). Stage 4's section in
 `docs/stage-history.md` keeps the decisions.
 

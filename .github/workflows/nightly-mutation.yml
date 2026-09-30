@@ -6,12 +6,17 @@ name: Nightly mutation slice
 #
 # So every night a slice of the whole corpus runs: 30 cases, chosen by a
 # seed that is the UTC date (YYYYMMDD). Each night's draw is independent, so
-# with about 820 cases a given case comes up about once a month on average,
-# some much later; this is a sampler, not a rotation through the corpus.
+# a given case comes up on average once every (corpus size / 30) nights --
+# no count here, because the corpus grows with every PR and a number in this
+# comment was stale within a day (Stage 30 item 7). Some cases come up much
+# later; this is a sampler, not a rotation through the corpus.
 # Any one night is reproducible by hand with the seed from its run summary:
 #   python tests/mutation/runner.py --sample 30 --seed <seed>
 # The counts by status go into the run summary. Anything but CAUGHT fails
-# the job, and a failed scheduled run is emailed to the repository owner.
+# the job, and a failed job opens the issue "Nightly mutation slice failing"
+# through src/alerts.py, or comments on it if it is already open -- the same
+# one-issue-per-problem rule as every other unattended job since Stage 4.
+# Until Stage 30 item 7 a failure was only a red run and an email.
 #
 # It writes nothing to the repository. 06:30 UTC: after the canary at 06:00,
 # and before the weekly runs at 11:00 Tuesday and Thursday. Started late it
@@ -25,6 +30,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   slice:
@@ -54,3 +60,16 @@ jobs:
         run: |
           seed="$(date -u +%Y%m%d)"
           python tests/mutation/runner.py --sample 30 --seed "$seed" --summary "$GITHUB_STEP_SUMMARY"
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          # The table of statuses is in the run summary; the issue says where
+          # it is and how to replay the night. A failure before the slice ran
+          # (a broken install) gets the same issue: the job failing is the
+          # finding.
+          printf 'The nightly mutation slice failed (seed %s).\n\nRun: %s\n\nReplay: python tests/mutation/runner.py --sample 30 --seed %s\n' \
+            "$(date -u +%Y%m%d)" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "$(date -u +%Y%m%d)" > slice-report.md
+          python src/alerts.py --title "Nightly mutation slice failing" --body-file slice-report.md

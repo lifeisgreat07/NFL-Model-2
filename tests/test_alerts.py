@@ -89,3 +89,42 @@ def test_an_empty_body_is_refused(tmp_path, capsys):
     body.write_text('   \n', encoding='utf-8')
     assert alerts.main(['--title', 't', '--body-file', str(body)]) == 1
     assert 'empty body' in capsys.readouterr().err
+
+
+# --- every scheduled job raises one ------------------------------------------
+
+WORKFLOWS = Path(__file__).parent.parent / '.github' / 'workflows'
+
+
+def scheduled_workflows(folder=WORKFLOWS):
+    return sorted(p for p in folder.glob('*.yml')
+                  if 'schedule:' in p.read_text(encoding='utf-8'))
+
+
+def raises_an_alert_on_failure(text):
+    """A step guarded by failure() that runs src/alerts.py."""
+    steps = text.split('\n      - ')
+    return any('if: failure()' in s and 'src/alerts.py' in s for s in steps)
+
+
+def test_every_scheduled_workflow_opens_an_issue_when_it_fails():
+    """Stage 30 item 7. Stage 4's rule is that nothing unattended fails
+    silently, and it was written into each workflow by hand -- so the nightly
+    mutation slice, added in Stage 27, failed with only a red run and an
+    email. Enumerate the class: anything on a schedule must alert."""
+    found = scheduled_workflows()
+    assert len(found) >= 4, f'the scan found only {[p.name for p in found]}'
+    silent = [p.name for p in found if not raises_an_alert_on_failure(p.read_text(encoding='utf-8'))]
+    assert not silent, f'scheduled workflows that fail silently: {silent}'
+
+
+def test_the_alert_check_can_tell_a_silent_workflow():
+    """Synthetic, so the failing branch stays reachable while every real
+    workflow alerts."""
+    good = ("steps:\n      - name: run\n        run: x\n"
+            "      - name: alert\n        if: failure()\n        run: python src/alerts.py --title t\n")
+    silent = "steps:\n      - name: run\n        run: x\n"
+    unguarded = "steps:\n      - name: alert\n        run: python src/alerts.py --title t\n"
+    assert raises_an_alert_on_failure(good)
+    assert not raises_an_alert_on_failure(silent)
+    assert not raises_an_alert_on_failure(unguarded)
