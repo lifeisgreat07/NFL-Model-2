@@ -91,7 +91,8 @@
       "why": "the scoreboard stops printing how many picks it left out, so a visitor whose record shrank sees a smaller number with no reason given.",
       "find": "    ${leftOut ? `<div class=\"score-foot\">${leftOut} Only picks made before kickoff are counted.</div>` : ''}",
       "replace": "",
-      "expect_caught_by": "test_the_scoreboard_says_what_it_left_out"
+      "expect_caught_by": "test_the_left_out_sentence_is_printed",
+      "tests": "tests/test_scoreboard.py"
     }
   ]
 }

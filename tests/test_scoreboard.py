@@ -90,26 +90,85 @@ def test_the_four_cards_are_gone():
     assert not re.search(r'\.accuracy-cards?\s*\{', src)
 
 
-def test_bars_start_at_zero_with_the_coin_flip_marked():
-    body = function_source(template(), 'scoreboardHtml')
-    assert re.search(r'width:\$\{r\.pct\}%', body), (
-        'the bar width is no longer the percentage itself -- a bar measured '
-        'from 50% turns a one-game gap into a landslide')
+# scoreboardHtml run in node (Stage 31 item 12 moved these from text checks
+# of its source): once with the visitor's own picks and a left-out sentence,
+# once with neither. Percentages are chosen so no two rows share one.
+BOARD_O = {'market': {'correct': 23, 'n': 32, 'pct': 71.9},
+           'model_b': {'correct': 22, 'n': 32, 'pct': 68.8},
+           'model_a': {'correct': 20, 'n': 32, 'pct': 62.5}}
+BOARD_MINE = {'correct': 5, 'n': 9, 'pct': 55.6}
+BOARD_LEFT = 'Two picks made after kickoff are left out.'
+ROW = re.compile(r'<span class="score-mark (\w+)" style="--series:var\(--series-(\w)\)"[^>]*></span>([^<]+)</div>'
+                 r'\s*<div class="score-track"[^>]*><div class="score-fill" style="--series:var\(--series-\w\); '
+                 r'width:([^%"]*)%"')
+
+
+@pytest.fixture(scope='module')
+def boards():
+    """{'mine': html, 'none': html} from scoreboardHtml itself, or {'error':
+    stderr} if it threw. Not asserted here: a failing fixture errors every
+    test that uses it, and none of them would then report which rule broke."""
+    if not NODE:
+        pytest.skip('node not available')
+    src = template()
+    js = (function_source(src, 'scoreboardVerdict') + function_source(src, 'scoreboardHtml') +
+          f'const O={json.dumps(BOARD_O)};'
+          f'process.stdout.write(JSON.stringify({{mine: scoreboardHtml(O, {json.dumps(BOARD_MINE)}, '
+          f'{json.dumps(BOARD_LEFT)}), none: scoreboardHtml(O, null, "")}}));')
+    r = subprocess.run([NODE, '-e', js], capture_output=True, text=True, encoding='utf-8')
+    if r.returncode != 0:
+        return {'error': r.stderr[-800:]}
+    return json.loads(r.stdout)
+
+
+def ran(boards):
+    assert 'error' not in boards, f"scoreboardHtml threw: {boards['error']}"
+    return boards
+
+
+def rows_of(html):
+    """[(name, shape, series letter, bar width as written)] in the order
+    drawn. The width stays text: a row with no record draws 'undefined'."""
+    return [(name, shape, series, width) for shape, series, name, width in ROW.findall(html)]
+
+
+def test_bars_start_at_zero_with_the_coin_flip_marked(boards):
+    """Each bar's width is its record's percentage: measured from zero. A bar
+    that started at the 50% coin-flip line would turn a one-game gap into a
+    landslide."""
+    ran(boards)
+    got = {name: width for name, _, _, width in rows_of(boards['mine'])}
+    assert got == {'Market': '71.9', 'Model B': '68.8', 'Model A': '62.5', 'My picks': '55.6'}, got
     css = template()
     assert re.search(r'\.score-coin\{[^}]*left:50%', css), 'the coin-flip line has moved off 50%'
 
 
-def test_every_row_carries_its_series_colour_and_shape():
+def test_every_row_carries_its_series_colour_and_shape(boards):
     """Colour is series identity (Job 1) and is never alone: each row also
     carries its series' shape, and no two rows share one."""
-    body = function_source(template(), 'scoreboardHtml')
-    rows = re.findall(r"series: 'var\(--series-(\w)\)', shape: '(\w+)'", body)
-    assert sorted(s for s, _ in rows) == ['a', 'b', 'c', 'd'], rows
-    shapes = [sh for _, sh in rows]
+    ran(boards)
+    rows = rows_of(boards['mine'])
+    assert sorted(series for _, _, series, _ in rows) == ['a', 'b', 'c', 'd'], rows
+    shapes = [shape for _, shape, _, _ in rows]
     assert len(set(shapes)) == len(shapes), f'two rows share a shape: {shapes}'
 
 
-def test_my_picks_joins_only_with_picks():
-    body = function_source(template(), 'scoreboardHtml')
-    assert re.search(r"if\(mine\) race\.push\(", body)
-    assert "mine ? '' : '<div class=\"score-foot\">" in body
+def test_my_picks_joins_only_with_picks(boards):
+    """With picks, the visitor's row joins the race, last; without, it is
+    absent and the board invites them to pick instead."""
+    ran(boards)
+    with_picks, without = rows_of(boards['mine']), rows_of(boards['none'])
+    assert [r[0] for r in with_picks][-1] == 'My picks', with_picks
+    assert 'My picks' not in [r[0] for r in without], without
+    assert len(without) == 3, without
+    invite = 'Pick some games on the Week Board to join this race.'
+    assert invite in boards['none'] and invite not in boards['mine']
+
+
+def test_the_left_out_sentence_is_printed(boards):
+    """renderAccuracy hands the scoreboard a sentence saying which picks it
+    left out (tests/test_my_picks_kickoff_lock.py holds that wiring); the
+    board must print it, and print nothing when there is nothing to say."""
+    ran(boards)
+    assert f'{BOARD_LEFT} Only picks made before kickoff are counted.' in boards['mine']
+    assert 'Only picks made before kickoff' not in boards['none']

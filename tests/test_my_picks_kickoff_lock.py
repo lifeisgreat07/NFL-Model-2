@@ -238,8 +238,9 @@ def test_every_record_on_the_page_goes_through_the_one_tally(source):
 def test_the_scoreboard_says_what_it_left_out(source):
     body = function_body(source, 'renderAccuracy')
     assert 'leftOutSentence(' in body, 'Season Accuracy no longer says what it left out'
-    board = function_body(source, 'scoreboardHtml')
-    assert '${leftOut}' in board, 'the scoreboard takes the sentence and never prints it'
+    # That the scoreboard prints it is executed in tests/test_scoreboard.py
+    # (test_the_left_out_sentence_is_printed), which replaced a text check
+    # here (Stage 31 item 12).
 
 
 def test_a_locked_card_is_disabled_and_says_so(source):
