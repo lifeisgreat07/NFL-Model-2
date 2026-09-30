@@ -64,6 +64,17 @@ KC_MIA = {'away': 'KC', 'home': 'MIA', 'fbA_home': 57.4, 'mktB_home': 13.8, 'mkt
 LAC_BUF = {'away': 'LAC', 'home': 'BUF', 'fbA_home': 64.8, 'mktB_home': 74.3, 'mkt_home': 78.1}
 
 
+def test_both_bar_ends_carry_their_team():
+    """Executed: the card draws each end of the bar through barTeam(), logo
+    then abbreviation. A bare abbreviation on either end fails here (Stage 31
+    item 12 moved this from a text check in test_game_card_header.py)."""
+    html = run(f'cardProbHtml({json.dumps(dict(ATL_GB, graded=False))}, "#a00", "#fb1")')
+    ends = re.findall(r'<span class="card-end-team">.*?</span>', html)
+    assert len(ends) == 2, ends
+    assert ends[0].endswith('ATL</span>') and ends[1].endswith('GB</span>'), ends
+    assert all('<img' in e for e in ends), 'an end of the bar lost its logo'
+
+
 def test_a_side_is_named_by_the_half_of_the_line_it_falls_in():
     got = run(f'[cardSide(68.4, {json.dumps(ATL_GB)}), cardSide(13.8, {json.dumps(KC_MIA)}), '
               f'cardSide(51.0, {json.dumps(ATL_GB)}), cardSide(null, {json.dumps(ATL_GB)})]')

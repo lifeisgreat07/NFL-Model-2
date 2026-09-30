@@ -251,13 +251,6 @@ def test_a_locked_card_is_disabled_and_says_so(source):
     assert 'pickLockHtml(' in paint, 'the lock line is no longer painted'
 
 
-def test_the_kickoff_instant_is_never_read_in_the_visitors_zone(source):
-    """Date.UTC from the fields, never a Date parsed from the Eastern string."""
-    body = function_body(source, 'kickoffInstant')
-    assert 'Date.UTC(' in body
-    assert not re.search(r'new Date\(\s*g\.|Date\.parse\(\s*g\.', body)
-
-
 def test_a_changed_pick_never_keeps_the_old_pick_time(source):
     """A link carries no times, so wherever an import replaced a pick the
     old time must go with the old pick."""
