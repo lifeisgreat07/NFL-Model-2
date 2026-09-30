@@ -3,6 +3,13 @@
   "tests": "tests/test_readme_accuracy.py",
   "cases": [
     {
+      "id": "readme-settings-table-misnames-a-variable",
+      "why": "the settings table names a variable the code does not read, so the one the Stage 6 runner does read is undocumented again -- the state the 2026-09-29 re-audit found (Stage 32 item 19).",
+      "find": "| `STAGE6_CACHE` |",
+      "replace": "| `STAGE6_DIR` |",
+      "expect_caught_by": "test_every_environment_variable_the_code_reads_is_documented"
+    },
+    {
       "id": "readme-results-table-drifts-from-methodology",
       "why": "the README's results table moves away from the Methodology table it copies -- how it sat on pre-leak-fix figures from 2026-08-17 until Stage 7.",
       "find": "| Model A (football only) | 62.8% |",

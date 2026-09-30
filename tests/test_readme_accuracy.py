@@ -294,3 +294,34 @@ def test_the_licence_is_the_one_the_readme_names():
     assert 'under the MIT licence ([LICENSE](LICENSE))' in flat
     assert "nflverse's data, the team logos loaded from ESPN" in flat
 
+
+
+ENV_READ_RE = re.compile(r"""os\.environ\.get\(\s*['"]([A-Z][A-Z0-9_]+)['"]""")
+ENV_CONST_RE = re.compile(r"""^[A-Z_]*_ENV\s*=\s*['"]([A-Z][A-Z0-9_]+)['"]""", re.M)
+
+
+def env_vars_read(sources):
+    """Every environment variable a module reads by name, directly or through
+    a module-level `*_ENV = 'NAME'` constant."""
+    found = set()
+    for text in sources:
+        found |= set(ENV_READ_RE.findall(text)) | set(ENV_CONST_RE.findall(text))
+    return found
+
+
+def test_every_environment_variable_the_code_reads_is_documented():
+    """Stage 32 item 19, from the 2026-09-29 re-audit: the variables were
+    known only to the code that read them. Enumerated from src/, so the next
+    one fails here instead of waiting for someone to notice."""
+    sources = [p.read_text(encoding='utf-8') for p in (REPO / 'src').glob('*.py')]
+    found = env_vars_read(sources)
+    assert len(found) >= 3, f'the scan found only {sorted(found)}; it has gone blind'
+    missing = sorted(v for v in found if f'`{v}`' not in TEXT)
+    assert not missing, f"README's settings table does not name {missing}"
+
+
+def test_the_environment_scan_sees_both_spellings():
+    """Synthetic, so both branches of the scan stay exercised."""
+    got = env_vars_read(["x = os.environ.get('ALPHA_DIR', '')",
+                         "BETA_ENV = 'BETA_CACHE'\nvalue = os.environ.get(BETA_ENV)"])
+    assert got == {'ALPHA_DIR', 'BETA_CACHE'}
