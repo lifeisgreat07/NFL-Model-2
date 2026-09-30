@@ -1,0 +1,13 @@
+{
+  "target": "src/compare_data_sources.py",
+  "tests": "tests/test_compare_data_sources.py",
+  "cases": [
+    {
+      "id": "compare-sources-runs-at-import",
+      "why": "the comparison runs whenever the module is imported again -- two season fetches for anyone who imports it, and a crash without network -- which is the state the 2026-09-29 re-audit read as a dead module.",
+      "find": "if __name__ == '__main__':",
+      "replace": "if True:",
+      "expect_caught_by": "test_importing_it_fetches_nothing"
+    }
+  ]
+}
