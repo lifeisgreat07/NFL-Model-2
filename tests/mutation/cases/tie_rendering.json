@@ -1,0 +1,42 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_tie_rendering.py",
+  "cases": [
+    {
+      "id": "tie-tagged-missed-again",
+      "why": "the graded tag loses its tie branch, so a tied game reads 'Missed' in the warn colour -- the Stage 30 item 1 defect.",
+      "find": "  if(g.result === 'tie' || verdict === null || verdict === undefined)",
+      "replace": "  if(false)",
+      "expect_caught_by": "test_a_tie_is_tagged_tie_not_missed"
+    },
+    {
+      "id": "tie-draws-a-red-cross",
+      "why": "pickBadge treats a graded game with no verdict as wrong and draws the red cross on a tie.",
+      "find": "  if(!picked || (graded && (correct === null || correct === undefined)))",
+      "replace": "  if(!picked)",
+      "expect_caught_by": "test_a_tie_draws_neither_a_tick_nor_a_cross"
+    },
+    {
+      "id": "tie-not-yet-played-on-team-dive",
+      "why": "Team Deep-Dive stops recognising a tie and calls a finished, graded game 'not yet played'.",
+      "find": "  if(g.tie) return `<span class=\"dive-result tie\">T</span>`;",
+      "replace": "",
+      "expect_caught_by": "test_team_dive_calls_a_tie_a_tie"
+    },
+    {
+      "id": "tie-left-out-of-the-graded-count",
+      "why": "the Deep-Dive record shows W-L-T but says it covers only the decided games, so the three figures do not add up to the count beside them.",
+      "find": "  const n = decided.length + ties;",
+      "replace": "  const n = decided.length;",
+      "expect_caught_by": "test_team_dive_record_has_ties_as_a_third_figure_and_no_model_scores_them"
+    },
+    {
+      "id": "tie-result-never-reaches-the-page",
+      "target": "src/generate_dashboard.py",
+      "why": "build_games_js stops carrying the graded file's result, so the page cannot tell a tie from anything else.",
+      "find": "            'result': graded.get('result') if graded else None,",
+      "replace": "",
+      "expect_caught_by": "test_the_page_data_carries_the_result"
+    }
+  ]
+}
