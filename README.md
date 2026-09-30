@@ -190,6 +190,34 @@ python src/grade_predictions.py --season 2026 --week 2
 python src/generate_dashboard.py
 ```
 
+### Settings and the rules the code enforces
+
+Three environment variables, all optional:
+
+| Variable | What it does | Who sets it |
+|---|---|---|
+| `NFL_PBP_CACHE` | A folder for finished seasons of play-by-play, read from disk instead of refetched. The current season is always fetched. | Only the nightly canary. The weekly run never does: the run that makes picks always fetches fresh. |
+| `STAGE5_CACHE` | Where the Stage 5 experiment runner keeps its game table. Defaults to nfl-cache/stage5 beside the repository folder. | Anyone re-running a registered Stage 5 question. |
+| `STAGE6_CACHE` | The same for the Stage 6 data-source runner (nfl-cache/stage6). | Anyone re-running Stage 6. |
+
+Four rules that live in the code rather than in any one document:
+
+- **A saved prediction is permanent.** `src/weekly_update.py` will not
+  overwrite `predictions/<season>_week<N>.json`; it warns and writes nothing. That
+  refusal is what makes "saved before kickoff" a claim anyone can check.
+- **The next week is worked out, not configured.** With no `--week`, the run
+  takes one past the latest week saved or recorded as skipped, which is how
+  it walks through the playoffs unattended.
+- **The test suite and mutation runs rewrite `index.html`.** Several tests
+  build the page, and a mutation run can build it with a mutation applied, so
+  rebuild it (`python src/generate_dashboard.py`) right before looking at it.
+- **CLAUDE.md's `Suite: **N passing**` line is read by software.**
+  `src/session_wrapup.py` and `src/session_start.py` parse that exact shape;
+  reword it and they report the line missing.
+
+`tests/test_readme_accuracy.py` fails if the code reads an environment
+variable this table does not name.
+
 Running the tests needs Python 3.11 (as `.python-version` says) and, for
 the tests that run the dashboard's own JavaScript, node 20; without node
 those tests skip rather than fail. From the repository root:
