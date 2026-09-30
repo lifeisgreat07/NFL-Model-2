@@ -3,6 +3,13 @@
   "tests": "tests/test_booth_report_posted.py",
   "cases": [
     {
+      "id": "report-check-accepts-any-bot",
+      "why": "any bot's comment counts again, so a verdict-shaped comment from another app during the run passes as Booth's report (Stage 30 item 5).",
+      "find": "        if author(c) in BOOTH_ACCOUNTS",
+      "replace": "        if (c.get('user') or {}).get('type') == 'Bot'",
+      "expect_caught_by": "test_another_apps_bot_does_not_count"
+    },
+    {
       "id": "report-check-loses-its-time-floor",
       "why": "an edited re-audit shares its head SHA with the audit before it, so without the floor the first report on a commit satisfies every later run on it and a silent re-audit reads as a pass",
       "find": "\n        and _parse_time(c['created_at']) >= floor\n",
@@ -12,8 +19,8 @@
     {
       "id": "report-check-accepts-a-human-comment",
       "why": "a person quoting a report, or a Scout session commenting under Mark's login as on PR #82, satisfies the check on Booth's behalf",
-      "find": "if (c.get('user') or {}).get('type') == 'Bot'\n        and ",
-      "replace": "if ",
+      "find": "        if author(c) in BOOTH_ACCOUNTS",
+      "replace": "        if author(c) in BOOTH_ACCOUNTS | {'lifeisgreat07'}",
       "expect_caught_by": "test_a_person_quoting_a_report_does_not_count"
     },
     {

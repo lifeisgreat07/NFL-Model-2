@@ -44,6 +44,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from booth_verdict import VerdictError, extract  # noqa: E402
+from collect_agent_log import BOOTH_ACCOUNTS, author  # noqa: E402
 
 MIN_SHA_PREFIX = 7
 
@@ -84,9 +85,13 @@ def check(comments, head_sha, started_at):
         return False, f"head SHA {head_sha!r} is not a full SHA; the workflow must record `git rev-parse HEAD`"
     floor = _parse_time(started_at)
 
+    # Booth's own accounts, not any bot: another app's bot comment posted
+    # during the run (a dependency bot, a CI reporter) carrying a verdict-
+    # shaped block would otherwise count as Booth's report (Stage 30 item 5,
+    # the 2026-09-29 re-audit). The same list the collector uses.
     candidates = [
         c for c in comments
-        if (c.get('user') or {}).get('type') == 'Bot'
+        if author(c) in BOOTH_ACCOUNTS
         and _parse_time(c['created_at']) >= floor
     ]
     if not candidates:

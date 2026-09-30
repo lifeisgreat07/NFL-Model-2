@@ -24,9 +24,16 @@ name: Booth PR audit
 # Permissions are deliberately narrow. The protocol says Booth's job ends at
 # the report and that merging is a human decision, so `contents: read` means it
 # structurally cannot push, merge or modify the branch even if instructed to.
-# It can only comment.
+# It can comment on AND EDIT pull requests: `pull-requests: write` is what
+# posting the report needs, and with that token in an unrestricted Bash tool
+# it could also change a PR's title or description. It has never done so;
+# the description's edit history on GitHub would show it, and an edit to the
+# description re-runs this audit. Narrowing Bash to a list of commands was
+# considered and declined (Mark, 2026-09-29, Stage 30 item 5): the audits
+# use grep, wc, comm, sha256sum and whatever else a claim needs, and a
+# narrower list would turn those checks into UNVERIFIABLE.
 #
-# That sentence was FALSE until Stage 23 (the 2026-09-28 audit): with
+# The `contents: read` sentence above was FALSE until Stage 23 (the 2026-09-28 audit): with
 # `id-token: write` and no `github_token` input, the Claude Code action
 # exchanged OIDC for the Claude GitHub App's installation token, which on
 # this repository has read AND WRITE access to code, workflows and pull
