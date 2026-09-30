@@ -25,7 +25,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / '.github' / 'workflows' / 'browser-checks.yml'
 CHECKER = ROOT / 'tests' / 'browser' / 'check_page.py'
-RULES = ('overflow', 'focus', 'target', 'axe', 'font', 'error')
+RULES = ('overflow', 'focus', 'target', 'axe', 'font', 'error', 'sticky')
 
 
 @pytest.fixture(scope='module')
@@ -123,3 +123,18 @@ def test_the_font_is_judged_by_measured_width(checker):
     assert font, 'FONT_JS is gone -- re-anchor this guard'
     assert 'measureText' in font.group(1)
     assert 'fonts.check' not in font.group(1)
+
+
+def test_the_sticky_rule_runs_on_every_page_and_reads_what_is_drawn(checker):
+    """Stage 30 item 2. The top bar hid every sticky table header below
+    1080px while each header's own rectangle was exactly where it belonged,
+    so the rule must ask what is DRAWN there (elementFromPoint), not where
+    the header is -- and it must actually be called for each page."""
+    src, _ = checker
+    sticky = re.search(r'STICKY_JS = """(.*?)"""', src, re.S)
+    assert sticky, 'STICKY_JS is gone -- re-anchor this guard'
+    assert 'elementFromPoint' in sticky.group(1), (
+        'the sticky rule no longer asks what is drawn over the header')
+    loop = re.search(r'for pid in ids:(.*?)problems, stops = await tab_walk', src, re.S)
+    assert loop and 'page.evaluate(STICKY_JS)' in loop.group(1), (
+        'the sticky rule is not run for each page')

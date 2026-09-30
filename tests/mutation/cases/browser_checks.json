@@ -69,6 +69,48 @@
       "find": "  await document.fonts.ready;\n  await document.fonts.load(\"700 16px 'Plus Jakarta Sans'\");",
       "replace": "  await document.fonts.ready;\n  if (document.fonts.check(\"16px 'Plus Jakarta Sans'\")) return {loaded: true, withFace: 2, fallback: 1};\n  await document.fonts.load(\"700 16px 'Plus Jakarta Sans'\");",
       "expect_caught_by": "test_the_font_is_judged_by_measured_width"
+    },
+    {
+      "id": "sticky-header-back-under-the-bar",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_sticky_header_offset.py",
+      "why": "the fitting table header goes back to top:0 below 1080px, under the sticky top bar -- the Stage 30 item 2 defect, which nothing but a render showed for as long as it shipped.",
+      "find": ".table-wrap.fits thead th{top:var(--topbar-h, 0px);}",
+      "replace": ".table-wrap.fits thead th{top:0;}",
+      "expect_caught_by": "test_under_1080_the_header_sticks_below_the_bar"
+    },
+    {
+      "id": "topbar-height-measured-once",
+      "target": "src/dashboard_template.html",
+      "tests": "tests/test_sticky_header_offset.py",
+      "why": "the bar's height is read once at load and never again, so when the title wraps or the safe area changes the headers stick a few pixels under the bar -- a partial return of the defect on exactly the phones least likely to be tested.",
+      "find": "  if(typeof ResizeObserver === 'function') new ResizeObserver(write).observe(bar);",
+      "replace": "",
+      "expect_caught_by": "test_the_page_writes_the_bar_height_it_reads"
+    },
+    {
+      "id": "checker-sticky-fixture-renamed-away",
+      "target": "tests/browser/check_page.py",
+      "why": "the sticky rule's fixture is renamed, so the self-test no longer proves the rule can fail while still printing 'every rule caught its fixture'.",
+      "find": "    'sticky': dict(",
+      "replace": "    'stuck': dict(",
+      "expect_caught_by": "test_every_rule_has_a_fixture_that_breaks_it"
+    },
+    {
+      "id": "checker-sticky-reads-the-rectangle",
+      "target": "tests/browser/check_page.py",
+      "why": "the sticky rule stops asking what is drawn and trusts the header itself. The header's rectangle was exactly where it belonged the whole time the bar covered it, so this version passes the defect.",
+      "find": "const hit = document.elementFromPoint(r.left + Math.min(10, r.width / 2), r.top + r.height / 2);",
+      "replace": "const hit = th;",
+      "expect_caught_by": "test_the_sticky_rule_runs_on_every_page_and_reads_what_is_drawn"
+    },
+    {
+      "id": "checker-sticky-never-called",
+      "target": "tests/browser/check_page.py",
+      "why": "the rule is defined and has a fixture, and is never run on the real page: the self-test goes on passing while the page check checks nothing.",
+      "find": "        s = await page.evaluate(STICKY_JS)",
+      "replace": "        s = None",
+      "expect_caught_by": "test_the_sticky_rule_runs_on_every_page_and_reads_what_is_drawn"
     }
   ]
 }
