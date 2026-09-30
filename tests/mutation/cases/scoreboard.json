@@ -36,6 +36,13 @@
       "find": "series: 'var(--series-b)', shape: 'sq'",
       "replace": "series: 'var(--series-b)', shape: 'dot'",
       "expect_caught_by": "test_every_row_carries_its_series_colour_and_shape"
+    },
+    {
+      "id": "scoreboard-my-picks-always-joins",
+      "why": "the visitor's row is drawn whether or not they have picked anything, as an empty 'My picks' bar beside the models.",
+      "find": "  if(mine) race.push(",
+      "replace": "  race.push(",
+      "expect_caught_by": "test_my_picks_joins_only_with_picks"
     }
   ]
 }
