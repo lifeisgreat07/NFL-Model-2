@@ -98,7 +98,7 @@ def rendered():
 
 
 LOGO = ('<img class="card-end-logo" src="https://a.espncdn.com/i/teamlogos/nfl/500/{code}.png" '
-        'alt="" loading="lazy" onerror="this.style.display=\'none\'">')
+        'alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">')
 
 
 def test_the_helper_renders_both_teams_and_the_separator(rendered):

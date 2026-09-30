@@ -109,7 +109,7 @@ def test_the_kickoff_label_does_not_build_a_date(source):
 def test_the_pick_button_is_a_logo_above_the_abbreviation(built):
     assert built['buttonUnpicked'] == (
         '<button class="pick-btn " data-team="NE">'
-        '<img class="pick-logo" src="LOGO:NE" alt="" loading="lazy" '
+        '<img class="pick-logo" src="LOGO:NE" alt="" loading="lazy" referrerpolicy="no-referrer" '
         'onerror="this.style.display=\'none\'">'
         '<span class="pick-abbr">NE</span>'
         '</button>')

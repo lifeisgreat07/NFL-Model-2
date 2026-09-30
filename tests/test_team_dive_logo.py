@@ -41,7 +41,7 @@ def run(expr):
 def test_the_page_names_its_team_with_logo_and_full_name():
     html = run('diveTeamHtml("KC", "Kansas City Chiefs")')
     assert html == ('<div class="dive-team"><img class="dive-logo" '
-                    'src="https://a.espncdn.com/i/teamlogos/nfl/500/kc.png" alt="" loading="lazy" '
+                    'src="https://a.espncdn.com/i/teamlogos/nfl/500/kc.png" alt="" loading="lazy" referrerpolicy="no-referrer" '
                     'onerror="this.style.display=\'none\'"><span class="dive-team-name">Kansas City Chiefs</span></div>')
 
 
