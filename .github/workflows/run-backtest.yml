@@ -13,9 +13,10 @@ name: Run backtest / tuning
 # someone asks for it.
 #
 # Deliberately does NOT commit its output. results/backtest_metrics.csv and
-# the qb_shrink_k CSVs feed decisions about canonical numbers (see the
-# BACKTEST_ACCURACY comment in src/config.py, which says that value moves
-# only on a real, intentional re-run). Auto-committing would let a routine
+# the qb_shrink_k CSVs feed decisions about canonical numbers (see
+# CALIBRATION in src/check_drift.py: the drift baseline is the committed
+# data/calibration.json, and it moves only on a real, intentional re-run).
+# Auto-committing would let a routine
 # run silently redefine the baseline that drift monitoring compares against.
 # Output is uploaded as a build artifact instead; promoting any of it into
 # the repo is a separate, deliberate commit by a human.

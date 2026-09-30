@@ -62,6 +62,42 @@
       "find": "        if r['home_score'] == r['away_score']:",
       "replace": "        if False:",
       "expect_caught_by": "test_a_tie_is_graded_with_no_winner_and_no_pick_scored"
+    },
+    {
+      "id": "drift-baseline-back-to-a-literal",
+      "target": "src/check_drift.py",
+      "tests": "tests/test_grading_and_drift.py",
+      "why": "the baseline is a typed-in copy again, the old literal's values, so the drift report quotes numbers printed nowhere else and nothing ties them to the backtest: the defect the third audit found.",
+      "find": "    models = json.loads(Path(CALIBRATION if path is None else path).read_text(encoding='utf-8'))['models']\n    return {model: models[model]['metrics'] for model, _, _ in WATCHED}",
+      "replace": "    return {'model_a': {'accuracy': 0.628, 'n': 1087}, 'model_b': {'accuracy': 0.682, 'n': 1087}}",
+      "expect_caught_by": "test_the_baseline_is_the_published_backtest"
+    },
+    {
+      "id": "drift-main-ignores-the-baseline-file",
+      "target": "src/check_drift.py",
+      "tests": "tests/test_grading_and_drift.py",
+      "why": "main() compares with a fixed number instead of the file's accuracy, so regenerating the backtest would never move the drift check.",
+      "find": "    flagged = [check_model(records, key, baseline[model]['accuracy'], label)",
+      "replace": "    flagged = [check_model(records, key, 0.65, label)",
+      "expect_caught_by": "test_main_compares_live_accuracy_with_the_file"
+    },
+    {
+      "id": "drift-missing-baseline-fails-the-run",
+      "target": "src/check_drift.py",
+      "tests": "tests/test_grading_and_drift.py",
+      "why": "an unreadable baseline file raises out of main(), so the Weekly update's drift step goes red and the run fails, against drift_alert's promise that drift never fails a run.",
+      "find": "    except (OSError, ValueError, KeyError) as e:",
+      "replace": "    except ZeroDivisionError as e:",
+      "expect_caught_by": "test_a_missing_baseline_is_reported_and_does_not_fail_the_run"
+    },
+    {
+      "id": "drift-missing-baseline-reads-clean",
+      "target": "src/check_drift.py",
+      "tests": "tests/test_grading_and_drift.py",
+      "why": "a check that could not run reports OK, so the run summary calls drift clean on the one run where nothing was compared.",
+      "find": "        log.info(\"\\n=== DRIFT CHECK: NOT RUN (no backtest baseline) ===\")",
+      "replace": "        log.info(\"\\n=== DRIFT CHECK: OK ===\")",
+      "expect_caught_by": "test_a_missing_baseline_is_reported_and_does_not_fail_the_run"
     }
   ]
 }
