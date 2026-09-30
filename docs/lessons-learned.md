@@ -3,7 +3,7 @@
 What this project learned about building software with AI agents, taken
 from what actually went wrong here. Each lesson says where it came from.
 The [case studies](case-studies/README.md) tell the longer stories, and
-`CLAUDE.md`'s trap list holds the full record, written for the next working
+`docs/traps.md` holds the full record, written for the next working
 session rather than for a reader.
 
 ## Checking claims
@@ -26,7 +26,7 @@ session rather than for a reader.
    miscounted figures into its own reports, including in the sentence doing
    the catching. Read the numbers in a verification report the way it reads
    the numbers in a pull request.
-   *From: `CLAUDE.md`, "the auditor produces untraceable figures too".*
+   *From: `docs/traps.md`, "the auditor produces untraceable figures too".*
 
 ## Numbers
 
@@ -35,14 +35,14 @@ session rather than for a reader.
    count from three test files quoted as one, a wide band quoted as a narrow
    one. Writing the command next to the number makes the mismatch visible
    while it is still cheap to fix.
-   *From: `CLAUDE.md`, "a real number from a command whose scope is not the sentence's scope".*
+   *From: `docs/traps.md`, "a real number from a command whose scope is not the sentence's scope".*
 
 5. **A number in prose needs something that recomputes it.** Numbers that
    were right when written went wrong when the code moved underneath them.
    The ones with a test tied to their source were caught within minutes.
    The ones with nothing behind them stayed wrong until someone happened to
    look.
-   *From: `CLAUDE.md`, "a number that was correct when written, falsified by the base moving".*
+   *From: `docs/traps.md`, "a number that was correct when written, falsified by the base moving".*
 
 6. **Some results don't travel between machines.** The same code and data
    can disagree by a game or two out of about 1,100 between computers, while
@@ -57,14 +57,14 @@ session rather than for a reader.
    and again. The fix is a committed mutation corpus: each case breaks the
    code in one known way and names the test that must catch it. A break
    caught by the wrong test still leaves the intended one untested.
-   *From: `CLAUDE.md`, "a guard whose comment claims more than its code delivers"; `tests/mutation/`.*
+   *From: `docs/traps.md`, "a guard whose comment claims more than its code delivers"; `tests/mutation/`.*
 
 8. **If today's data can't reach a guard's failure branch, feed it made-up
    data that can.** Guards that only ran over the real data passed while
    checking nothing, because nothing in the data could make them fail. The
    rule now runs twice: once over the real data and once over a synthetic
    case built to fail.
-   *From: `CLAUDE.md`, "an allowlist that covers everything makes its own interesting branch unreachable".*
+   *From: `docs/traps.md`, "an allowlist that covers everything makes its own interesting branch unreachable".*
 
 9. **Built and tested is not the same as run.** A component was written,
    tested and mutation-covered, and nothing ever called it. The Booth
@@ -92,7 +92,7 @@ session rather than for a reader.
     the code and obvious on screen. A missing webfont can do more than shift
     a measurement: one layout bug disappeared entirely in the narrower
     fallback font.
-    *From: `CLAUDE.md`, "Render it and look at it" and "a missing webfont does not shift a measurement".*
+    *From: `CLAUDE.md`, "Render it and look at it"; `docs/traps.md`, "a missing webfont does not shift a measurement".*
 
 ## Method
 
