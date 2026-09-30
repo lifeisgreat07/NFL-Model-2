@@ -1501,6 +1501,16 @@ set by Mark; v2.0 and v2.1 predate the repository. Items 14 and 17 reverse
 logged, with its reason, in Mark's "Audit Response Log" doc for the next
 auditor.
 
+**Progress (2026-09-30, overnight, Mark asleep):** #237 item 3, #238 the
+simulation's regular-season filter (Stage 33, from item 20's fixture), #239
+and #248 item 12 (batches A to D; the one-third target is not reached on
+purpose, see the Audit Response Log), #240 and #246 item 18's hints, #241
+item 15, #242 item 31 (icon; og card kept, Mark's earlier decision), #243
+item 16, #244 item 17, #245 item 30, #247 the runner's UTF-8 mode (ends the
+Windows-only WRONG-GUARD). Stages 30 and 31 are done. Left, after Thursday's
+lock: item 14, ruff `I`/`UP` (item 18's tail), item 23; then items 21, 22
+and 24 as registrations first; then 26 and 32.
+
 ### Stage 30 - Regressions and residuals from Stages 23 to 27
 
 1. A tie renders as "Missed" with a red cross: `graded` is true for a tie whose

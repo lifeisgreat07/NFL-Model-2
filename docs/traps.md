@@ -43,6 +43,29 @@ Moved from CLAUDE.md's "Environment and workflow" list.
 
 ## Traps that have actually bitten
 
+- **An exception inside a test fixture hides the test from the mutation
+  runner.** The runner counts `FAILED` lines. A fixture that raises reports
+  its tests as `ERROR`, and a `SystemExit` raised in one stops pytest before
+  it reports anything, so both read WRONG-GUARD with "Failures: none
+  reported" (#245's states builder, #248's scoreboard harness). A fixture
+  that builds or runs something should record the failure and let each test
+  assert on it; a builder a test calls should raise its own exception, and
+  only its command line should turn that into an exit code.
+- **A test of an environment variable inherits it from whoever runs the
+  test.** #247's check that the mutation runner sets `PYTHONUTF8` SURVIVED
+  its own mutation at first: the outer runner had already set the variable
+  for the process running the test. Clear it with `monkeypatch.delenv` first.
+- **A mutation can be equivalent without looking it.** #245's case removed
+  the fixed past kickoffs from a synthetic stale preview; the week it copied
+  had past kickoffs too, so nothing could catch it. Before writing a case,
+  say what input would differ, and check the input actually differs.
+- **Moving a function moves the mutation anchors that name it, even across
+  modules.** #241 moved `current_season` from `src/canary.py` to `src/paths.py`; the
+  canary's case still targeted `src/canary.py`, and only the full suite's anchor
+  test saw it. Grep the case files for every moved definition's text.
+- **PowerShell's `>` writes UTF-16.** A `git diff > x.patch` made that way
+  fails `git apply` with "No valid patches in input". Use
+  `git diff --output=x.patch`.
 - **A check that runs from a copy needs its imports checked against the
   copy.** `booth-pr-audit.yml` copies `booth_report_posted.py` and
   `booth_verdict.py`, and nothing else, out of the checkout before Booth
