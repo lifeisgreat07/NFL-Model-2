@@ -43,6 +43,27 @@
       "find": "  if(mine) race.push(",
       "replace": "  race.push(",
       "expect_caught_by": "test_my_picks_joins_only_with_picks"
+    },
+    {
+      "id": "scoreboard-eyebrow-counts-decided-games",
+      "why": "the eyebrow goes back to the market row's n, which leaves out ties, so on a tie week it says one game fewer was graded than the calibration text does.",
+      "find": "Picked the winner &middot; ${nGraded} game${nGraded === 1 ? '' : 's'} graded",
+      "replace": "Picked the winner &middot; ${rows[0].n} games graded",
+      "expect_caught_by": "test_the_eyebrow_counts_every_graded_game_a_tie_included"
+    },
+    {
+      "id": "scoreboard-pct-null-throws",
+      "why": "the null guard goes, so a season whose graded games are all ties calls toFixed on null and the Season Accuracy page does not render.",
+      "find": "${r.pct == null ? '&ndash;' : `${r.pct.toFixed(1)}%`}",
+      "replace": "${r.pct.toFixed(1)}%",
+      "expect_caught_by": "test_a_board_of_only_ties_renders_without_a_record"
+    },
+    {
+      "id": "scoreboard-no-record-called-level",
+      "why": "with no decided game the verdict falls through to 'All three are level so far', which reads as three equal records where there are none.",
+      "find": "  if(rows.every(r => r.n === 0)) return 'No graded game has a winner yet.';\n",
+      "replace": "",
+      "expect_caught_by": "test_a_board_of_only_ties_renders_without_a_record"
     }
   ]
 }

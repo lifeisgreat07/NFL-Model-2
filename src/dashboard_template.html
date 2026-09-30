@@ -5727,6 +5727,9 @@ function initReliabilityDiagram(){
    rounded percentage, because two records that differ by one game can
    print the same percentage. */
 function scoreboardVerdict(rows){
+  // Every graded game so far a tie: no record exists yet, and "level" would
+  // read as three equal records rather than none (Stage 35).
+  if(rows.every(r => r.n === 0)) return 'No graded game has a winner yet.';
   const sorted = [...rows].sort((a, b) => b.correct - a.correct);
   const top = sorted[0], gap = top.correct - sorted[1].correct;
   const sameGames = rows.every(r => r.n === rows[0].n);
@@ -5738,7 +5741,16 @@ function scoreboardVerdict(rows){
   const names = level.map((r, i) => i === 0 ? r.subject : r.subject.replace(/^The /, 'the '));
   return `${names.join(' and ')} are level at the top.`;
 }
-function scoreboardHtml(o, mine, leftOut){
+/* nGraded is accuracy.n_graded: every game checked against a result, a tie
+   included. The rule, since Stage 30 item 1 (tests/test_tie_rendering.py):
+   a tie is GRADED -- it has a result -- but DECIDES nothing, so it counts in
+   n_graded and in no row's record. Until Stage 35 the eyebrow printed the
+   market row's n here, which leaves ties out (and any game saved without a
+   market price), so a tie put it one below the calibration text's count of
+   graded games. Each row's "N of M" is that row's own decided games.
+   A row's pct is null when it has decided nothing yet -- every graded game
+   a tie -- and then draws no bar and a dash, never r.pct.toFixed on null. */
+function scoreboardHtml(o, mine, leftOut, nGraded){
   const rows = [
     {name: 'Market', subject: 'The betting market', series: 'var(--series-c)', shape: 'tri', ...o.market},
     {name: 'Model B', subject: 'Model B', series: 'var(--series-b)', shape: 'sq', ...o.model_b},
@@ -5748,11 +5760,11 @@ function scoreboardHtml(o, mine, leftOut){
   if(mine) race.push({name: 'My picks', series: 'var(--series-d)', shape: 'diamond', ...mine});
   const row = r => `<div class="score-row">
       <div class="score-name"><span class="score-mark ${r.shape}" style="--series:${r.series}" aria-hidden="true"></span>${r.name}</div>
-      <div class="score-track" aria-hidden="true"><div class="score-fill" style="--series:${r.series}; width:${r.pct}%"></div><div class="score-coin"></div></div>
-      <div class="score-figure"><span class="score-pct">${r.pct.toFixed(1)}%</span><span class="score-count">${r.correct} of ${r.n}</span></div>
+      <div class="score-track" aria-hidden="true"><div class="score-fill" style="--series:${r.series}; width:${r.pct ?? 0}%"></div><div class="score-coin"></div></div>
+      <div class="score-figure"><span class="score-pct">${r.pct == null ? '&ndash;' : `${r.pct.toFixed(1)}%`}</span><span class="score-count">${r.correct} of ${r.n}</span></div>
     </div>`;
   return `<div class="scoreboard" role="region" aria-label="Season scoreboard">
-    <div class="scoreboard-eyebrow">Picked the winner &middot; ${rows[0].n} games graded</div>
+    <div class="scoreboard-eyebrow">Picked the winner &middot; ${nGraded} game${nGraded === 1 ? '' : 's'} graded</div>
     <div class="scoreboard-verdict">${scoreboardVerdict(rows)}</div>
     ${race.map(row).join('')}
     <div class="score-axis" aria-hidden="true"><span></span><div class="score-axis-track"><span class="coin">50% &middot; a coin flip</span><span class="full">100%</span></div><span></span></div>
@@ -5814,7 +5826,7 @@ function renderAccuracy(){
   const myPct = myTotal > 0 ? Math.round(1000*myWins/myTotal)/10 : null;
 
   const cardsHtml = scoreboardHtml(o, myTotal > 0 ? {correct: myWins, n: myTotal, pct: myPct} : null,
-                                   leftOutSentence(mineTally));
+                                   leftOutSentence(mineTally), accuracy.n_graded);
 
   const cumulativeChartHtml = buildCumulativeTrendChart();
 

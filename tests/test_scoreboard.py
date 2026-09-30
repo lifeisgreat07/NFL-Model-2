@@ -98,6 +98,12 @@ BOARD_O = {'market': {'correct': 23, 'n': 32, 'pct': 71.9},
            'model_a': {'correct': 20, 'n': 32, 'pct': 62.5}}
 BOARD_MINE = {'correct': 5, 'n': 9, 'pct': 55.6}
 BOARD_LEFT = 'Two picks made after kickoff are left out.'
+# One more game graded than any row decided: a tie, which is graded and
+# decides nothing (the rule in tests/test_tie_rendering.py).
+BOARD_GRADED = 33
+# Every graded game a tie: each row has decided nothing, so pct is null,
+# exactly as build_accuracy_js's totals() writes it when n is 0.
+BOARD_ALL_TIES = {k: {'correct': 0, 'n': 0, 'pct': None} for k in ('market', 'model_b', 'model_a')}
 ROW = re.compile(r'<span class="score-mark (\w+)" style="--series:var\(--series-(\w)\)"[^>]*></span>([^<]+)</div>'
                  r'\s*<div class="score-track"[^>]*><div class="score-fill" style="--series:var\(--series-\w\); '
                  r'width:([^%"]*)%"')
@@ -105,7 +111,7 @@ ROW = re.compile(r'<span class="score-mark (\w+)" style="--series:var\(--series-
 
 @pytest.fixture(scope='module')
 def boards():
-    """{'mine': html, 'none': html} from scoreboardHtml itself, or {'error':
+    """{'mine': html, 'none': html, 'ties': html} from scoreboardHtml itself, or {'error':
     stderr} if it threw. Not asserted here: a failing fixture errors every
     test that uses it, and none of them would then report which rule broke."""
     if not NODE:
@@ -114,7 +120,8 @@ def boards():
     js = (function_source(src, 'scoreboardVerdict') + function_source(src, 'scoreboardHtml') +
           f'const O={json.dumps(BOARD_O)};'
           f'process.stdout.write(JSON.stringify({{mine: scoreboardHtml(O, {json.dumps(BOARD_MINE)}, '
-          f'{json.dumps(BOARD_LEFT)}), none: scoreboardHtml(O, null, "")}}));')
+          f'{json.dumps(BOARD_LEFT)}, {BOARD_GRADED}), none: scoreboardHtml(O, null, "", {BOARD_GRADED}), '
+          f'ties: scoreboardHtml({json.dumps(BOARD_ALL_TIES)}, null, "", 2)}}));')
     r = subprocess.run([NODE, '-e', js], capture_output=True, text=True, encoding='utf-8')
     if r.returncode != 0:
         return {'error': r.stderr[-800:]}
@@ -172,3 +179,27 @@ def test_the_left_out_sentence_is_printed(boards):
     ran(boards)
     assert f'{BOARD_LEFT} Only picks made before kickoff are counted.' in boards['mine']
     assert 'Only picks made before kickoff' not in boards['none']
+
+
+
+def test_the_eyebrow_counts_every_graded_game_a_tie_included(boards):
+    """The eyebrow says how many games were graded, which by the recorded rule
+    includes a tie. It printed the market row's n until Stage 35, one short on
+    a tie week and disagreeing with the calibration text's accuracy.n_graded."""
+    ran(boards)
+    assert f'Picked the winner &middot; {BOARD_GRADED} games graded' in boards['none']
+    assert 'Picked the winner &middot; 32 games' not in boards['none']
+
+
+def test_a_board_of_only_ties_renders_without_a_record(boards):
+    """Every graded game a tie: no row has decided a game, pct is null, and the
+    board must still render -- no bar, a dash, "0 of 0", and a verdict that
+    does not call three empty records "level". r.pct.toFixed(1) on null threw
+    and took the whole Season Accuracy page down with it."""
+    ran(boards)
+    html = boards['ties']
+    assert {w for *_, w in rows_of(html)} == {'0'}, rows_of(html)
+    assert html.count('<span class="score-pct">&ndash;</span>') == 3, html
+    assert html.count('0 of 0') == 3
+    assert 'No graded game has a winner yet.' in html and 'level' not in html
+    assert 'Picked the winner &middot; 2 games graded' in html
