@@ -94,3 +94,7 @@ jobs:
         with:
           commit_message: "Collect Booth's audit log"
           file_pattern: 'data/agent_log.json'
+          # Required on a pull_request run: the action's default branch is
+          # github.head_ref, the pull request's own branch, which the merge
+          # script has already deleted. The first run after #232 failed here.
+          branch: main
