@@ -60,6 +60,22 @@
       "find": "      - name: Catch up with main\n        if: ${{ !cancelled() }}\n",
       "replace": "      - name: Catch up with main\n",
       "expect_caught_by": "test_the_lock_run_catches_up_even_after_a_failed_step"
+    },
+    {
+      "id": "collector-pushes-without-catching-up",
+      "target": ".github/workflows/collect-agent-log.yml",
+      "why": "the audit-log collector commits straight onto the main it checked out at the merge, so a scheduled data push landing while it fetches comments makes its push fail as non-fast-forward, red until the next merge: the gap the third audit found.",
+      "find": "      - name: Catch up with main\n        shell: bash\n        run: |\n          git -c user.name='github-actions[bot]' \\\n              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \\\n              pull --rebase --autostash origin main\n\n      - name: Commit the log if it changed",
+      "replace": "      - name: Commit the log if it changed",
+      "expect_caught_by": "test_the_commit_catches_up_with_main_first"
+    },
+    {
+      "id": "pusher-rule-back-to-a-hand-list",
+      "target": "tests/test_weekend_refresh.py",
+      "why": "the rule names its workflows by hand again, the shape that let the collector ship without a catch-up: a pusher left off the list is never checked.",
+      "find": "    return sorted(p for p in WORKFLOWS_DIR.glob('*.yml')\n                  if AUTO_COMMIT in p.read_text(encoding='utf-8'))",
+      "replace": "    return [WORKFLOW, WEEKLY]",
+      "expect_caught_by": "test_every_unattended_pusher_is_found"
     }
   ]
 }

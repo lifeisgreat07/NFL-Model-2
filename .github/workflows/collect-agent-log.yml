@@ -89,6 +89,20 @@ jobs:
       - name: Remove the raw comment dump
         run: rm -f comments.json
 
+      # Catch up with main before committing, as the Weekly update and the
+      # Weekend refresh do (issue #145). This job checks out main at the merge
+      # and fetches every comment, which takes long enough for a scheduled
+      # data push to land in between; the push below would then be refused as
+      # non-fast-forward and stay red until the next merge (the third audit,
+      # 2026-09-30). --autostash carries the uncommitted agent_log.json across
+      # the rebase, and stashing makes a commit, hence the identity.
+      - name: Catch up with main
+        shell: bash
+        run: |
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              pull --rebase --autostash origin main
+
       - name: Commit the log if it changed
         uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
         with:
