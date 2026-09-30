@@ -1613,6 +1613,16 @@
     .bottom-nav{display:block;}
     table{font-size:var(--fs-13);}
     thead th{padding:var(--s3) var(--s3);}
+    /* Below 1080px the top bar is sticky at top:0 and sits over the page
+       (z-index 40), so a fitting table's sticky header, also at top:0,
+       stuck UNDER it and was never seen (the 2026-09-29 re-audit, Stage 30
+       item 2; rendered at 390 and 900 before fixing). .table-wrap.fits is
+       overflow:clip, which is not a scroll container, so the header sticks
+       to the viewport, not to its wrapper. It now sticks under the bar.
+       --topbar-h is the bar's measured height, written by initTopbarHeight():
+       the height varies with the safe area and with the title wrapping, so
+       a fixed figure here would be wrong on some phone. */
+    .table-wrap.fits thead th{top:var(--topbar-h, 0px);}
     tbody td{padding:var(--s3) var(--s3);}
   }
   @media (max-width:400px){
@@ -4299,6 +4309,17 @@ function updateThemeLabel(){
     try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
     updateThemeLabel();
   }));
+})();
+// The top bar's height, for the sticky table headers that stick below it
+// under 1080px (Stage 30 item 2). Measured, not assumed: the bar grows with
+// the safe area and when its title wraps. 0 when the bar is not shown.
+(function initTopbarHeight(){
+  const bar = document.querySelector('.topbar');
+  if(!bar) return;
+  const write = () => document.documentElement.style.setProperty('--topbar-h', bar.offsetHeight + 'px');
+  write();
+  if(typeof ResizeObserver === 'function') new ResizeObserver(write).observe(bar);
+  window.addEventListener('resize', write);
 })();
 function dismissOnboarding(){
   try{ localStorage.setItem(ONBOARDING_KEY, '1'); }catch(e){}

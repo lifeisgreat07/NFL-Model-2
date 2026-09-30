@@ -13,6 +13,9 @@ and fails on what a static read of the template cannot see:
              never from document.fonts.check() (CLAUDE.md: that returns
              true when nothing is pending, which proves nothing)
   error      the page throws
+  sticky     a fitting table's sticky header, scrolled past, is covered by
+             something else (the top bar hid every one below 1080px until
+             Stage 30 item 2)
   budget     index.html is over its byte budget
 
 Every run is made twice: once with all network blocked -- the site must work
@@ -116,6 +119,31 @@ FONT_JS = """async () => {
 }"""
 
 
+# Scroll past the first fitting table on the page and ask what is actually
+# drawn where its header should be. Reading the header's rectangle is not
+# enough: the header was exactly where it belonged, under a sticky top bar
+# that painted over it. elementFromPoint is what a reader sees.
+STICKY_JS = """() => {
+  const w = [...document.querySelectorAll('section.page.active .table-wrap.fits')]
+    .find(x => x.offsetParent && x.querySelector('thead th'));
+  if (!w) return null;
+  const th = w.querySelector('thead th');
+  if (getComputedStyle(th).position !== 'sticky' || !th.getClientRects().length) return null;
+  // Model Lab's table becomes cards on a phone and its thead is visually
+  // hidden (absolute and clipped) for screen readers: nothing to see stuck.
+  if (getComputedStyle(th.closest('thead')).position === 'absolute') return null;
+  const box = w.getBoundingClientRect();
+  if (box.height < 3 * th.offsetHeight) return null;       // too short to scroll past
+  window.scrollTo(0, box.top + window.scrollY + Math.min(200, box.height / 2));
+  const r = th.getBoundingClientRect();
+  const hit = document.elementFromPoint(r.left + Math.min(10, r.width / 2), r.top + r.height / 2);
+  const ok = !!hit && hit.closest('thead') === th.closest('thead');
+  const what = hit ? (hit.getAttribute('class') || hit.tagName.toLowerCase()) : 'nothing';
+  window.scrollTo(0, 0);
+  return ok ? null : `a fitting table's header, scrolled past, is under "${what}" at y=${Math.round(r.top)}`;
+}"""
+
+
 def rel_diff(a, b):
     return abs(a - b) / max(a, b, 1e-9)
 
@@ -170,6 +198,9 @@ async def check_one(browser, url, width, network, axe_src, report):
             report.append(f"{where}: overflow: {o}")
         for t in await page.evaluate(TARGETS_JS, TARGET_MIN):
             report.append(f"{where}: target: {t}")
+        s = await page.evaluate(STICKY_JS)
+        if s:
+            report.append(f"{where}: sticky: {s}")
         problems, stops = await tab_walk(page)
         stops_total += stops
         report.extend(f"{where}: focus: {p}" for p in problems)
@@ -230,6 +261,19 @@ FIXTURES = {
     'axe': dict(body='<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">', expect='axe'),
     'font': dict(body='<p>No self-hosted face here.</p>', expect='font'),
     'error': dict(body='<p>ok</p>', script='throw new Error("boom")', expect='page error'),
+    # The real defect's shape (Stage 30 item 2): a sticky bar over the page
+    # and a fitting table's sticky header at the same top:0, under it. The
+    # table is long on purpose: this shell has no viewport meta, so phone
+    # emulation lays it out 980px wide and scaled, and a shorter page fits
+    # without scrolling -- the rule then never scrolls past the header and
+    # the fixture proves nothing (found on its first run: MISSED).
+    'sticky': dict(css='.bar{position:sticky;top:0;z-index:40;height:60px;background:#fff}'
+                       '.table-wrap.fits{overflow:clip}'
+                       '.table-wrap.fits thead th{position:sticky;top:0;z-index:3;background:#eee}',
+                   body='<div class="bar">bar</div><div class="table-wrap fits"><table>'
+                        '<thead><tr><th>Head</th></tr></thead><tbody>'
+                        + '<tr><td>row</td></tr>' * 400 + '</tbody></table></div>',
+                   expect='sticky'),
 }
 
 
