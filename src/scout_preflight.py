@@ -566,7 +566,11 @@ HUMAN_REVIEW_RE = re.compile(r'(?im)^\W*human review required:')
 
 
 def changed_files(base, head='HEAD'):
-    return _git('diff', '--name-only', f'{base}...{head}').splitlines()
+    # --no-renames: a rename is listed as its deletion AND its addition. With
+    # rename detection on, renaming booth-pr-audit.yml listed only the new
+    # name, and the auditor-edits check below watched nothing it knew
+    # (Stage 30 item 6, the 2026-09-29 re-audit).
+    return _git('diff', '--name-only', '--no-renames', f'{base}...{head}').splitlines()
 
 
 def check_auditor_edits_need_a_human(body, changed):
@@ -609,7 +613,11 @@ def preflight(body, base='origin/main', skip_tests=False, head='HEAD'):
         # the fact -- so it is precisely the check that must run everywhere.
         check_no_suite_count_in_a_commit_message(base, head),
         # Also not skipped by --skip-tests, for the same reason: it reads git.
-        check_auditor_edits_need_a_human(body, changed_files(base, head)),
+        # The quotation-stripped text, like its siblings: on the raw body a
+        # 'Human review required:' line inside a code fence or a blockquote
+        # -- quoting the rule, not declaring it -- satisfied the check
+        # (Stage 30 item 6, the 2026-09-29 re-audit).
+        check_auditor_edits_need_a_human(claims, changed_files(base, head)),
     ], commits
 
 

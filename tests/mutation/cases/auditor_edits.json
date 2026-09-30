@@ -26,9 +26,23 @@
     {
       "id": "preflight-never-runs-the-auditor-check",
       "why": "the check exists but preflight does not call it, so it guards nothing",
-      "find": "        check_auditor_edits_need_a_human(body, changed_files(base, head)),\n",
+      "find": "        check_auditor_edits_need_a_human(claims, changed_files(base, head)),\n",
       "replace": "",
-      "expect_caught_by": "test_preflight_runs_it_on_the_branch_diff"
+      "expect_caught_by": "test_preflight_runs_it_on_the_branch_diff_and_the_stripped_body"
+    },
+    {
+      "id": "auditor-check-reads-the-raw-body",
+      "why": "the check goes back to the raw description, so a 'Human review required:' line quoted inside a code fence -- the rule being discussed, not declared -- lets a PR that edits Booth's instructions through on Booth's own verdict (Stage 30 item 6).",
+      "find": "check_auditor_edits_need_a_human(claims, changed_files(base, head)),",
+      "replace": "check_auditor_edits_need_a_human(body, changed_files(base, head)),",
+      "expect_caught_by": "test_preflight_runs_it_on_the_branch_diff_and_the_stripped_body"
+    },
+    {
+      "id": "auditor-check-lets-git-fold-renames",
+      "why": "rename detection comes back, so renaming booth-pr-audit.yml lists only its new name and the check sees no auditor file at all (Stage 30 item 6).",
+      "find": "_git('diff', '--name-only', '--no-renames', f'{base}...{head}')",
+      "replace": "_git('diff', '--name-only', f'{base}...{head}')",
+      "expect_caught_by": "test_a_renamed_auditor_file_is_listed_under_its_old_name"
     }
   ]
 }
