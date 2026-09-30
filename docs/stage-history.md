@@ -1454,3 +1454,160 @@ CLAUDE.md split into rules plus traps and history (its own session).
 **Not planned (Mark agreed):** packaging `src/` into subfolders, converting
 `print` to logging, routing owner-only dispatch inputs through `env:`, and
 scrubbing markys from this file.
+
+
+## Stages 30 to 34: the 2026-09-29 re-audit (planned 2026-09-29)
+
+Two independent senior audits have scored the repository: 71/100 on
+2026-09-28 at `a89a6ef`, and 78/100 on 2026-09-29 at `61ada9d`, after #169
+to #213. The rubric has 18 weighted categories. Code quality (70),
+architecture (75) and maintainability (66) carry a fifth of the weight and
+have barely moved, so the next points are there. The ceiling for a one-file
+static site with no backend is about 90 to 92, so passing 90 means finishing
+every stage below. Each stage boundary is a safe place to stop. The item
+numbers are the audit's and run across the stages.
+
+Rules for all five stages, on top of the PR loop in CLAUDE.md:
+- Every line number in the audit was read at `61ada9d`. Find each place again
+  before editing it.
+- An audit finding is a hypothesis: check the mechanism in the code first.
+- Any PR that moves Python code must be proven behaviour-identical: run
+  `python src/reproducibility_audit.py` before and after and show the
+  metrics match bit for bit, then build the page before and after and diff
+  the two `index.html` files (byte-identical unless the PR says why not).
+- No framework, chart library, backend or build step that changes the
+  one-file deployment. No re-opening a REJECTED Model Lab row. No re-tuning
+  half-life, alpha or QB shrinkage. No new regex-over-template test where a
+  node harness can run the function instead.
+
+Order (Mark said "whatever you think is best", 2026-09-29): Stage 30's items
+that do not touch the weekly pipeline (2, 5, 6, 7, 9) first. Its pipeline
+items (1, 3, 4, 8) wait until the Thursday lock has been seen to run, because
+scheduled runs start up to 6.5 hours late and a pipeline mistake merged just
+before a lock costs a week's picks. Then items 10, 11, 14 and 15, then 16 to
+19, then 20 to 25, then 12 and 26 together, then Stage 34.
+
+### Stage 30 - Regressions and residuals from Stages 23 to 27
+
+1. A tie renders as "Missed" with a red cross: `graded` is true for a tie whose
+   `*_correct` are all null, and both the card tag and `pickBadge` fall
+   through to incorrect. Team Deep-Dive calls the game "not yet played". Fix:
+   carry `result` into `build_games_js`; show a neutral "Tie" tag and no
+   badge when the game is graded but `correct` is null; Team Deep-Dive says
+   "Tie". Add a node test and a mutation case. Decide whether `n_graded`
+   counts a tie, and write the decision down.
+2. Below 1080px the sticky top bar (z-index 40) covers every sticky table
+   header (`top:0`, z-index 3). `.table-wrap.fits` is `overflow:clip`, which
+   is not a scroll container, so the headers stick to the viewport. Fix: in
+   the under-1080 block, offset the header by the bar's height (a
+   `--topbar-h` written by a ResizeObserver, since the bar's height depends
+   on the safe area and on wrapping). Add "scroll past a fitting table at 390
+   and 900" to `tests/browser/check_page.py`.
+3. Previews outlive their week: `load_previews` skips locked weeks but not
+   skipped ones, and nothing deletes a preview when the lock is written. Fix:
+   pass the skipped set too; `save_week` deletes the week's preview (the
+   workflow's `predictions/**` pattern stages the deletion); a preview whose
+   first kickoff has passed says the lock run did not happen.
+4. `record_skipped_week` can fire on an already-locked week through `--week N`,
+   because the skip branch runs before the check for an existing file.
+   Reorder; test.
+5. Booth leftovers: `booth_report_posted.py` accepts any bot account (use
+   `BOOTH_ACCOUNTS`); the workflow header and `docs/architecture.md` say Booth
+   "can only comment", but it can also edit the PR it audits. Either narrow
+   its allowed tools or rewrite the two sentences. Mark's call.
+6. Preflight's "Human review required:" gate reads the raw body, so a line
+   inside a code fence satisfies it, and its diff misses a renamed Booth
+   workflow. Use the quotation-stripped claims text and `--no-renames`.
+7. The nightly mutation slice fails silently: on failure, open an issue
+   through `src/alerts.py` like every other unattended job, and replace
+   "about 820 cases" with a computed figure or drop it.
+8. `src/atomic_write.py` writes a fixed `<name>.tmp` in a committed folder:
+   use a unique temporary name in the same folder, and ignore `*.tmp`.
+9. Hygiene, one PR: `referrerpolicy="no-referrer"` on the logo images;
+   `rel="noopener"` wherever `target="_blank"` lacks it; workflow inputs
+   through `env:` in `booth-regression.yml` and `run-backtest.yml`; stale
+   comments in `weekly_update.py` and `weekly-update.yml`; dead CSS
+   (`.glance-*`, `.confidence-badge`, `.status-next`, `.add-idea`).
+
+### Stage 31 - Maintainability
+
+10. The CLAUDE.md split. DONE in #214 (2026-09-29): 3,079 lines became the
+    rules (436), `docs/traps.md` and this file. Its second half, taking the
+    machine name and local paths out of the public documents, is a separate
+    PR (Mark's pick): machine specifics go to a gitignored `CLAUDE.local.md`.
+11. Delete dead modules: `src/compare_data_sources.py`,
+    `src/stage5_residuals.py`, `src/backfill_game_dates.py`, after checking
+    every document and test for mentions.
+12. Retire the regex-over-template tests that a node harness already covers by
+    running the same function. Use the corpus's WRONG-GUARD reports to find
+    them; run the affected case files whole and quote both counts. Target: at
+    least a third fewer, with every mutation case still CAUGHT.
+13. One task runner (a `Makefile` or `tasks.py`) with test, lint, build,
+    browser-check, mutation-slice, mutation-all and wrapup; README's "Running
+    the tests" points at it.
+
+### Stage 32 - Code quality and developer experience
+
+14. Package `src/` into `pipeline/`, `research/` and `agents/` in ONE
+    mechanical PR with no logic change. Replace the `sys.path.insert` lines
+    with a `pyproject.toml` that makes `src` importable; update every
+    `python src/x.py` in the workflows and `conftest.py`. Prove it with the
+    reproducibility audit and a byte-identical page.
+15. One `paths.py`: the root, the data folders, one `parse_week()` for the
+    four copies, one `current_season()` for the two Python copies and the
+    shell copy, one team list.
+16. Break `weekly_update.main` into `load_inputs()`, `fit_models()`,
+    `predict_week()` and `save_week()`. `weekly_summary.py` parses the printed
+    output, so either keep every printed line identical or, better, have the
+    run write a JSON record that the summary reads.
+17. `logging` in the pipeline modules, with a default format that keeps
+    `weekly_summary.py` fed. Research and agent scripts may keep `print`.
+18. Type hints on the public functions of the five pipeline modules (not a
+    whole-repo sweep); ruff rule sets `I` and `UP` after one dry run.
+19. One README section on the environment variables and the rules only the
+    code knows today: predictions are write-once; the next week comes from
+    the last saved one; the suite and mutation runs rewrite `index.html`; the
+    `Suite: **N passing**` literal is an interface.
+
+### Stage 33 - Architecture and model engineering
+
+20. A synthetic two-season fixture so the weekly update, grading, backtest,
+    drift check, season simulation and weekend refresh run end to end offline
+    in under two seconds, with the prediction-file schema asserted. The
+    season simulation has no tests today and no regular-season filter.
+21. One `MODEL_SPECS` and `walk_forward(spec)` shared by the live pipeline and
+    the backtest. Make `C` and `penalty` explicit at today's values, then
+    REGISTER experiments on `penalty=None` and a `StandardScaler` pipeline,
+    each ending as a Model Lab row whatever it shows.
+22. REGISTER a question on a fitted market curve against the hand-picked
+    `spread/5.5`; if the fitted one is at least as good, store its
+    probability in each prediction so the log-loss race compares like with
+    like.
+23. Line snapshots on every scheduled run for every locked, ungraded week, so
+    the closing-line backtest (Stage 28) has its data.
+24. Drift on log loss against a lagged-QB baseline, reopening the recorded
+    decision with Stage 5's H1 evidence as the reason.
+25. Tests tying the `model_version` in the calibration, bootstrap and
+    reproducibility files to `MODEL_VERSION`, with an explicit "backtest
+    unchanged since 2.4" allowance, and tying the README and Methodology
+    backtest table to the calibration file.
+26. A template inliner: parts under `src/dashboard/` joined by the generator
+    into the same one file, with a helper so existing text-anchored tests keep
+    working. Byte-identical output. LAST in the stage, after item 12.
+
+### Stage 34 - Front door and the last points
+
+27. Tags `v2.0` to `v2.5` from `VERSION_HISTORY`, a GitHub Release each, and
+    the Website field. Mark's say-so; he said "later" on 2026-09-29.
+28. Put the collector-on-merge alternative to Mark with its numbers, and accept
+    his answer (he chose to keep it on every push on 2026-09-29).
+29. A `<caption>` on every data table; the Power Ratings `#` header either
+    sortable or styled unlike the sortable ones.
+30. A committed synthetic "states" week that the browser checks render on
+    every CI run: a tie, a skipped week, a stale preview.
+31. Redraw the share image with the final name; a PNG favicon and Apple touch
+    icon made in the cloud sandbox and moved as base64 (the file bridge
+    corrupts binaries).
+32. Then Stage 20's five real-person tests, and the re-audit: re-run
+    `dashboard-design-audit` and the same senior audit prompt against the new
+    `main`, so the score rests on a command and an independent read.

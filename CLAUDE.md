@@ -275,6 +275,9 @@ The full text of every stage, finished or planned, is in
 - **Stage 21 - Once the season has data**: not before week 5.
 - **Stage 22 - Beyond 95**: comes out of Stage 20.
 - **Stage 28 - After the forward test**: after the regular season.
+- **Stages 30 to 34 - the 2026-09-29 re-audit (78/100)**: 30 regressions and
+  residuals, 31 maintainability, 32 code quality, 33 architecture and model
+  engineering, 34 front door. Order and rules at the top of that section.
 
 ## Ending a session
 
