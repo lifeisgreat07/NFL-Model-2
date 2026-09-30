@@ -4,14 +4,14 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-30, afternoon ET (third audit, 83/100: Stage 35; #249 and #250 merged)
+Last updated: 2026-09-30, afternoon ET (third audit, 83/100: Stage 35; #249 to #252 merged)
 
 ---
 
 ## Right now
 
-**Suite:** 4925 passing, none skipped, on `main` at `e9d8406` (after #248).
-Not re-run on `main` since #249 and #250; the wrap-up recomputes it.
+**Suite:** 4975 passing, none skipped, on `main` at `ba32eeb` (after #252; the
+same tree #252 was run at, rebased on #251).
 
 **Next action: check Thursday's lock run** (2026-10-01, cron 11:00 UTC; runs
 start up to 6.5 hours late, so "not run yet" before ~17:30 UTC is normal).
@@ -23,10 +23,11 @@ did, and its summary should say "Preview for 2026 week 4 removed" (#249). Not
 started by 20:00 UTC: start "Weekly update" by hand. A scheduled check
 (`trig_01HuuuPeAXBor9w6hPcxqVLP`) runs this at Thursday 17:00 UTC.
 
-Stage 35 (`docs/stage-history.md`): 1 and 1b done (#249, #250); 2 open as
-#251; 3(c) on `s35-tooling-remnants`; 3(a) `s35-drift-baseline` and 3(b)
-`s35-pipeline-remnants` wait for the lock. Then, after the lock, in order:
-1. **Stage 35 items 3(a) and 3(b).**
+Stage 35 (`docs/stage-history.md`): 1, 1b, 2 and 3(c) done (#249 to #252).
+3(b) `s35-pipeline-remnants` and 3(a) `s35-drift-baseline` are rebased on
+`ba32eeb` and wait for the lock. Then, after the lock, in order:
+1. **Stage 35 items 3(b) then 3(a)**: rebase, suite and scope at the head
+   opened, one PR each. They do not conflict with each other.
 2. **Stage 32 item 14, package `src/`** (Mark: after the lock), proven by the
    reproducibility audit and a byte-identical page.
 3. **Ruff `I` and `UP`** (item 18's tail): one dry run, then one PR.
