@@ -12,10 +12,16 @@ in the under-1080 block, and the page writes the variable it reads.
 
 Run with: pytest tests/test_sticky_header_offset.py -v
 """
+import json
 import re
+import shutil
+import subprocess
 from pathlib import Path
 
+import pytest
+
 TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html'
+NODE = shutil.which('node')
 
 
 def _css():
@@ -53,14 +59,36 @@ def test_under_1080_the_header_sticks_below_the_bar():
 
 
 def test_the_page_writes_the_bar_height_it_reads():
+    """initTopbarHeight run in node against a fake bar and a fake
+    ResizeObserver (Stage 35: this was a regex over its source). It must
+    write --topbar-h from offsetHeight at load, write it again when the
+    observer fires, and observe the BORDER box: offsetHeight is the border
+    box, and the default content box does not fire when only the padding
+    changes -- which is how the safe area (--safe-top) reaches the bar."""
+    if not NODE:
+        pytest.skip('node not available')
     text = TEMPLATE.read_text(encoding='utf-8')
-    fn = re.search(r'\(function initTopbarHeight\(\)\{(.*?)\n\}\)\(\);', text, re.S)
+    fn = re.search(r'\(function initTopbarHeight\(\)\{.*?\n\}\)\(\);', text, re.S)
     assert fn, 'initTopbarHeight() is gone or no longer runs at load'
-    body = fn.group(1)
-    assert "setProperty('--topbar-h'" in body, 'nothing writes --topbar-h'
-    assert 'offsetHeight' in body, '--topbar-h is no longer the measured height'
-    assert 'ResizeObserver' in body, (
-        'the height is measured once only; it changes when the title wraps')
+    js = ("const written=[];let cb=null,opts=null;"
+          "const bar={offsetHeight:52};"
+          "const document={querySelector:s=>s==='.topbar'?bar:null,"
+          "documentElement:{style:{setProperty:(k,v)=>written.push([k,v])}}};"
+          "const window={addEventListener:()=>{}};"
+          "class ResizeObserver{constructor(f){cb=f;}observe(el,o){opts=o===undefined?null:o;"
+          "if(el!==bar)throw new Error('observes the wrong element');}}"
+          + fn.group(0) +
+          "bar.offsetHeight=64;if(cb)cb();"
+          "process.stdout.write(JSON.stringify({written,opts,observed:cb!==null}));")
+    r = subprocess.run([NODE, '-'], input=js, capture_output=True, text=True, encoding='utf-8')
+    assert r.returncode == 0, r.stderr
+    got = json.loads(r.stdout)
+    assert got['written'][0] == ['--topbar-h', '52px'], '--topbar-h is not the measured height at load'
+    assert got['observed'], 'the height is measured once only; it changes when the title wraps'
+    assert got['written'][-1] == ['--topbar-h', '64px'], 'a resize does not rewrite --topbar-h'
+    assert got['opts'] == {'box': 'border-box'}, (
+        f"the observer watches {got['opts'] or 'the content box'}; a padding-only change "
+        '(the safe area) would not fire it')
 
 
 def test_the_media_block_reader_finds_the_block():

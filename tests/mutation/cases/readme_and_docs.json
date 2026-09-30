@@ -144,6 +144,24 @@
       "find": "'--sample', '30',",
       "replace": "'--sample', '20',",
       "expect_caught_by": "test_the_mutation_slice_is_the_nightly_slice"
+    },
+    {
+      "id": "browser-check-skips-the-states-pages",
+      "target": "tasks.py",
+      "tests": "tests/test_tasks.py",
+      "why": "the task stops building and checking the states pages, so a local browser check passes on a page CI would fail on a tie or a stale preview: the gap the third audit found.",
+      "find": "                                 [PY, 'tests/browser/build_states.py', '--out', str(STATES)],\n                                 *[[PY, 'tests/browser/check_page.py', str(STATES / page), *_axe()]\n                                   for page in STATE_PAGES]]),",
+      "replace": "                                 ]),",
+      "expect_caught_by": "test_browser_check_runs_what_the_workflow_runs_in_the_same_order"
+    },
+    {
+      "id": "runs-reads-single-line-steps-only",
+      "target": "tests/test_tasks.py",
+      "tests": "tests/test_tasks.py",
+      "why": "the workflow reader goes back to single-line `run:` values, so every multi-line step is invisible to the tests that hold tasks.py to CI, and a task can drop one unnoticed.",
+      "find": "        if value not in ('|', '>', '|-', '>-'):\n            out.append(value)\n            continue\n",
+      "replace": "        if value not in ('|', '>', '|-', '>-'):\n            out.append(value)\n        continue\n",
+      "expect_caught_by": "test_runs_reads_multi_line_steps"
     }
   ]
 }

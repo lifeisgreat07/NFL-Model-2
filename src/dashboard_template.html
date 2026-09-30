@@ -4352,12 +4352,15 @@ function updateThemeLabel(){
 // The top bar's height, for the sticky table headers that stick below it
 // under 1080px (Stage 30 item 2). Measured, not assumed: the bar grows with
 // the safe area and when its title wraps. 0 when the bar is not shown.
+// offsetHeight is the BORDER box, so the observer watches the border box:
+// the default content box does not fire when only the padding changes, and
+// the safe area reaches the bar as padding (--safe-top). Stage 35.
 (function initTopbarHeight(){
   const bar = document.querySelector('.topbar');
   if(!bar) return;
   const write = () => document.documentElement.style.setProperty('--topbar-h', bar.offsetHeight + 'px');
   write();
-  if(typeof ResizeObserver === 'function') new ResizeObserver(write).observe(bar);
+  if(typeof ResizeObserver === 'function') new ResizeObserver(write).observe(bar, {box: 'border-box'});
   window.addEventListener('resize', write);
 })();
 function dismissOnboarding(){
