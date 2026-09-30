@@ -1,0 +1,45 @@
+{
+  "target": "src/grade_predictions.py",
+  "tests": "tests/test_pipeline_chain_end_to_end.py",
+  "cases": [
+    {
+      "id": "chain-tie-graded-as-an-away-win",
+      "why": "a tied game is graded again as an away win, which scores every home pick on it wrong and every away pick right -- the Stage 25 defect.",
+      "find": "if r['home_score'] == r['away_score']:",
+      "replace": "if False:",
+      "expect_caught_by": "test_the_locked_picks_are_graded_on_the_side_each_model_favoured"
+    },
+    {
+      "id": "chain-backtest-trains-on-the-week-it-scores",
+      "target": "src/backtest.py",
+      "why": "each weekly refit includes the week it is about to score, so the published backtest is fitted on its own answers.",
+      "find": "((d2['season'] == test_season) & (d2['week'] < w))",
+      "replace": "((d2['season'] == test_season) & (d2['week'] <= w))",
+      "expect_caught_by": "test_the_backtest_never_trains_on_the_week_it_scores"
+    },
+    {
+      "id": "chain-simulation-drops-division-winners",
+      "target": "src/simulate_season.py",
+      "why": "division winners stop counting as playoff teams, so each conference sends three teams instead of seven and every division winner's playoff odds read low.",
+      "find": "for t in div_winners + wildcards:",
+      "replace": "for t in wildcards:",
+      "expect_caught_by": "test_the_simulation_holds_its_invariants_on_the_fixture"
+    },
+    {
+      "id": "chain-drift-reads-nothing",
+      "target": "src/check_drift.py",
+      "why": "the drift check skips every graded file as if it were backtest data, so it reports OK on no games forever.",
+      "find": "if season in BACKTEST_SEASONS:",
+      "replace": "if True:",
+      "expect_caught_by": "test_the_drift_check_reads_the_graded_week_and_leaves_out_the_tie"
+    },
+    {
+      "id": "chain-refresh-never-lets-go",
+      "target": "src/weekend_refresh.py",
+      "why": "a week already graded is still treated as waiting, so the weekend job re-reads and rewrites it every run for the rest of the season.",
+      "find": "if _count(graded) < _count(f):",
+      "replace": "if True:",
+      "expect_caught_by": "test_a_graded_week_leaves_nothing_for_the_weekend_refresh"
+    }
+  ]
+}
