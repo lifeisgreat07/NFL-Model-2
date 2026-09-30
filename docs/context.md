@@ -36,6 +36,9 @@ Stage 35 (`docs/stage-history.md`): 1, 1b, 2 and 3(c) done (#249 to #252).
 6. **Stage 33 item 26** when the next page-sized feature starts; then Stage
    34 item 32 (real testers, the fourth audit).
 
+Only MERGES wait for the lock: the registrations (documents) and a ready
+`src/` branch (item 14, unmerged) can be prepared before it.
+
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
