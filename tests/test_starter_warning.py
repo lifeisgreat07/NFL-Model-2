@@ -57,4 +57,4 @@ def test_it_runs_only_on_the_path_that_locks():
                       'starter_warning(week_games, qb_overrides, season, week)')
     build = main.index('    predictions = []')
     assert hold < call < build
-    assert 'print(no_starters)' in main[call:build]
+    assert 'log.warning(no_starters)' in main[call:build]

@@ -69,7 +69,7 @@ def test_a_failed_swap_removes_its_temporary_file(tmp_path, monkeypatch):
 
 def test_the_write_once_files_use_it():
     src = (ROOT / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
-    save = re.search(r"out_path = PRED_DIR / f'\{season\}_week\{week\}\.json'(.*?)print\(f\"Saved", src, re.S)
+    save = re.search(r"out_path = PRED_DIR / f'\{season\}_week\{week\}\.json'(.*?)log\.info\(f\"Saved", src, re.S)
     assert save, "the picks save in main() is not findable -- re-anchor this guard"
     assert 'write_json_atomic(out_path' in save.group(1), (
         'the week of picks is written straight into the target again')

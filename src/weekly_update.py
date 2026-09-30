@@ -98,6 +98,8 @@ LOCK_SLACK = pd.Timedelta(hours=8)
 # The folders are defined once, in src/paths.py (Stage 32 item 15); the
 # reasons each exists stay here, beside the code that writes them.
 from paths import DATA_DIR, PRED_DIR, PREVIEW_DIR, SKIPPED_DIR, TEAM_NAMES  # noqa: E402
+from runlog import get_logger  # noqa: E402  (Stage 32 item 17)
+log = get_logger(__name__)
 PRED_DIR.mkdir(exist_ok=True)
 # A week that kicked off with nothing ever locked is recorded here, one small
 # file per week, so determine_next_week() moves past it (Stage 24). A folder,
@@ -149,7 +151,7 @@ def save_current_ratings(team_ratings, season_schedule=None):
     rows.sort(key=lambda r: -r['net'])
     with open(DATA_DIR / 'current_ratings.json', 'w') as f:
         json.dump(rows, f, indent=2)
-    print(f"Saved {len(rows)} team ratings to data/current_ratings.json")
+    log.info(f"Saved {len(rows)} team ratings to data/current_ratings.json")
 
 
 def save_playoff_odds(current_team_ratings, season_schedule, hist, season, n_sim=10000):
@@ -171,9 +173,9 @@ def save_playoff_odds(current_team_ratings, season_schedule, hist, season, n_sim
         }
         with open(DATA_DIR / 'playoff_odds.json', 'w') as f:
             json.dump(payload, f, indent=2)
-        print(f"Saved playoff odds ({n_sim} simulations, {played_count} games already decided) to data/playoff_odds.json")
+        log.info(f"Saved playoff odds ({n_sim} simulations, {played_count} games already decided) to data/playoff_odds.json")
     except Exception as e:
-        print(f"  WARNING: playoff simulation failed ({e}) -- data/playoff_odds.json not updated this run.")
+        log.warning(f"  WARNING: playoff simulation failed ({e}) -- data/playoff_odds.json not updated this run.")
 
 
 def append_live_history(team_ratings, season, week):
@@ -193,7 +195,7 @@ def append_live_history(team_ratings, season, week):
             existing[team].append({'week': week, 'net': round(off-deff, 4), 'off': round(off,4), 'def': round(deff,4)})
     with open(path, 'w') as f:
         json.dump(existing, f, indent=2)
-    print(f"Appended week {week} to data/team_history_{season}.json")
+    log.info(f"Appended week {week} to data/team_history_{season}.json")
 
 
 def market_prob(home_spread):
@@ -292,9 +294,9 @@ def determine_next_week(season, pred_dir=None, skipped_dir=None):
         latest = max(weeks_done + skipped)
         next_week = latest + 1
         how = 'skipped' if latest not in weeks_done else 'saved'
-        print(f"Most recent {how} week for {season}: {latest}. Using week {next_week}.")
+        log.info(f"Most recent {how} week for {season}: {latest}. Using week {next_week}.")
         return next_week
-    print(f"No predictions saved yet for {season}. Starting at week 1.")
+    log.info(f"No predictions saved yet for {season}. Starting at week 1.")
     return 1
     # Playoff numbering note (resolved -- verified against real nflverse data
     # and official docs): weeks do NOT reset after the regular season. They
@@ -350,7 +352,7 @@ def save_preview(predictions, season, week, now, preview_dir=None):
     the page reads it. An empty preview is skipped rather than failing the
     run: unlike a lock, nothing is lost -- the locking run still comes."""
     if not predictions:
-        print(f"WARNING: {season} week {week} produced no picks to preview; "
+        log.warning(f"WARNING: {season} week {week} produced no picks to preview; "
               f"no preview saved.")
         return None
     preview_dir = PREVIEW_DIR if preview_dir is None else preview_dir
@@ -437,14 +439,14 @@ def log_line_snapshot(season, week, week_games):
         msg = f"Logged {added} line snapshot(s) for {season} week {week} (captured {today_str})."
         if no_line_yet:
             msg += f" {no_line_yet} game(s) had no spread posted yet and were skipped."
-        print(msg)
+        log.info(msg)
     elif no_line_yet:
-        print(f"No line snapshots written for {season} week {week}: "
+        log.info(f"No line snapshots written for {season} week {week}: "
               f"{no_line_yet} game(s) have no spread posted yet. Nothing was "
               f"recorded for {today_str}, so a later run today can still "
               f"capture them.")
     else:
-        print(f"Line snapshots for {season} week {week} already captured today -- skipped duplicate.")
+        log.info(f"Line snapshots for {season} week {week} already captured today -- skipped duplicate.")
 
 
 def build_qb_change_lookup(qb, seasons):
@@ -683,7 +685,7 @@ def main(season, week):
     item 16, which split a 300-line main). What is printed, and in what
     order, is unchanged: src/weekly_summary.py reads this log.
     tests/test_weekly_update_end_to_end.py runs the whole of it."""
-    print(f"=== Weekly update: {season} Week {week} ===")
+    log.info(f"=== Weekly update: {season} Week {week} ===")
 
     inputs = load_inputs(season)
     model_a, model_b = fit_models(inputs.hist)
@@ -704,15 +706,15 @@ Plan = namedtuple('Plan', 'week_games started preview qb_overrides')
 
 def load_inputs(season):
     """Step 1: every input the fits need, checked before anything is fitted."""
-    print("Loading play-by-play data...")
+    log.info("Loading play-by-play data...")
     seasons_needed = sorted(set(TRAIN_SEASONS) | {season})
     raw = load_plays(seasons_needed)
     plays, week_keys, week_to_idx = prep_plays(raw)
 
-    print("Building historical team ratings for every past week (leak-free)...")
+    log.info("Building historical team ratings for every past week (leak-free)...")
     team_ratings_by_week = build_team_ratings(plays, week_keys, upto_cutoff_i=None)
 
-    print("Building QB ratings...")
+    log.info("Building QB ratings...")
     qb = build_qb_ratings(raw)
 
     # No snap-count load here on purpose. O-line continuity came out of the
@@ -729,33 +731,33 @@ def load_inputs(season):
     # revisiting OL continuity later depends on this field being stored.
     # Guarded by tests/test_weekly_pipeline.py.
 
-    print("Building QB-change (backup detection) lookup...")
+    log.info("Building QB-change (backup detection) lookup...")
     qb_change_lookup = build_qb_change_lookup(qb, seasons_needed)
-    print(f"  Detected {sum(qb_change_lookup.values())} QB changes across {len(qb_change_lookup)} team-weeks")
+    log.info(f"  Detected {sum(qb_change_lookup.values())} QB changes across {len(qb_change_lookup)} team-weeks")
 
-    print("Loading schedules (scores + lines) for training history...")
+    log.info("Loading schedules (scores + lines) for training history...")
     schedules_by_season = {s: load_schedule(s) for s in seasons_needed}
 
     # Before anything is fitted: a bad week caught after the fits is
     # already inside the picks. Errors stop the run; warnings are printed and
     # carried into the weekly summary. See src/data_quality.py for which is
     # which and why.
-    print("Checking data quality...")
+    log.info("Checking data quality...")
     enforce_data_quality(raw, schedules_by_season[season], season)
 
-    print("Constructing historical training features...")
+    log.info("Constructing historical training features...")
     hist = build_historical_features(plays, week_keys, week_to_idx, team_ratings_by_week,
                                        qb, schedules_by_season, ol_lookup=None, qb_change_lookup=qb_change_lookup)
-    print(f"  {len(hist)} historical games with complete features")
+    log.info(f"  {len(hist)} historical games with complete features")
     if len(hist) < 100:
-        print("WARNING: very little historical training data -- predictions below may be unreliable.")
+        log.warning("WARNING: very little historical training data -- predictions below may be unreliable.")
     return Inputs(raw, plays, week_keys, week_to_idx, qb, qb_change_lookup,
                   schedules_by_season, hist)
 
 
 def fit_models(hist):
     """Step 2: Model A (football only) and Model B (+ the market's spread)."""
-    print("Fitting Model A (football-only) and Model B (+ market)...")
+    log.info("Fitting Model A (football-only) and Model B (+ market)...")
     model_a = LogisticRegression(max_iter=1000)
     model_a.fit(hist[['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff']].values, hist['home_win'].values)
 
@@ -770,7 +772,7 @@ def refresh_current_state(inputs, season):
     playoff odds, this season's history), and each team's current starter."""
     plays, week_keys = inputs.plays, inputs.week_keys
     qb, hist, schedules_by_season = inputs.qb, inputs.hist, inputs.schedules_by_season
-    print("Building current ('as of right now') team + QB ratings...")
+    log.info("Building current ('as of right now') team + QB ratings...")
     cutoff_i = len(week_keys)
     current_team_ratings = build_team_ratings(plays, week_keys, upto_cutoff_i=cutoff_i)
     save_current_ratings(current_team_ratings, season_schedule=schedules_by_season.get(season))
@@ -780,7 +782,7 @@ def refresh_current_state(inputs, season):
         last_completed_week = max(current_season_weeks)
         append_live_history(current_team_ratings, season, last_completed_week)
     else:
-        print(f"No completed weeks yet for {season} -- skipping live history entry "
+        log.info(f"No completed weeks yet for {season} -- skipping live history entry "
               f"(these ratings reflect prior-season data, not a real {season} week).")
     qb_cutoff = len(qb['week_keys'])
     # fallback starter source: most recent season with any starter data
@@ -808,12 +810,12 @@ def plan_week(season, week):
     raises SystemExit when every game kicked off with nothing locked;
     otherwise the games still to pick, those already started, whether this
     run holds (a preview) or locks, and any sourced QB overrides."""
-    print("Loading target week's schedule + current lines...")
+    log.info("Loading target week's schedule + current lines...")
     sched = load_schedule(season)
     week_games = sched[sched['week'] == week]
 
     if len(week_games) == 0:
-        print(f"No games found for {season} week {week} -- likely means the season "
+        log.info(f"No games found for {season} week {week} -- likely means the season "
               f"(including playoffs) is over. Nothing to predict. Exiting cleanly.")
         return
 
@@ -831,13 +833,13 @@ def plan_week(season, week):
         if pd.notna(earliest):
             days_until = (earliest.date() - date.today()).days
             if days_until > LOCKIN_WINDOW_DAYS:
-                print(f"Earliest game in {season} week {week} is {earliest.date()} "
+                log.info(f"Earliest game in {season} week {week} is {earliest.date()} "
                       f"({days_until} days away). That's more than the {LOCKIN_WINDOW_DAYS}-day "
                       f"lock-in window -- too early for injury/QB info to be reliable. "
                       f"Skipping this run without saving anything. Re-run closer to kickoff.")
                 return
     else:
-        print("WARNING: schedule data has no 'gameday' column -- can't check how far out "
+        log.warning("WARNING: schedule data has no 'gameday' column -- can't check how far out "
               "this week is. Proceeding anyway, but this safety check isn't active.")
 
     # Inside the window is not the same as time to lock. See SCHEDULED_RUNS_UTC.
@@ -849,7 +851,7 @@ def plan_week(season, week):
     # and failed the run.
     locked_path = PRED_DIR / f'{season}_week{week}.json'
     if decision.started and not decision.lock and locked_path.exists():
-        print(f"{season} week {week} is already locked in predictions/{locked_path.name}, "
+        log.info(f"{season} week {week} is already locked in predictions/{locked_path.name}, "
               f"and every game has kicked off. Nothing to do.")
         return
     if decision.started and not decision.lock:
@@ -870,26 +872,26 @@ def plan_week(season, week):
     # built the same way and saved as a preview (PREVIEW_DIR), never as a lock.
     preview = not decision.lock
     if preview:
-        print(f"Holding {season} week {week}: its first game kicks off "
+        log.info(f"Holding {season} week {week}: its first game kicks off "
               f"{decision.first_kickoff:%a %Y-%m-%d %H:%M} UTC, after the next scheduled "
               f"run ({decision.next_run:%a %Y-%m-%d %H:%M} UTC), which will lock it with "
               f"whatever QB news has landed by then. Saving a preview only; "
               f"nothing is locked.")
     started = set(decision.started)
     for away, home in decision.started:
-        print(f"WARNING: {away}@{home} has already kicked off and gets NO pick. The run "
+        log.warning(f"WARNING: {away}@{home} has already kicked off and gets NO pick. The run "
               f"that should have locked it did not; a pick saved after kickoff is not a "
               f"prediction.")
 
     qb_overrides = load_qb_overrides(season, week)
     if qb_overrides:
-        print(f"  QB overrides for week {week}: " + ", ".join(
+        log.info(f"  QB overrides for week {week}: " + ", ".join(
             f"{t} -> {o['player_name']}" for t, o in sorted(qb_overrides.items())))
     # Lock time only (#186): on a Tuesday preview nflverse has usually not
     # listed next week's starters yet, so the warning would fire every week.
     no_starters = None if preview else starter_warning(week_games, qb_overrides, season, week)
     if no_starters:
-        print(no_starters)
+        log.warning(no_starters)
     return Plan(week_games, started, preview, qb_overrides)
 
 
@@ -904,7 +906,7 @@ def predict_week(week_games, started, current, qb, models, qb_overrides, season,
         if (away, home) in started:
             continue
         if home not in current_team_ratings or away not in current_team_ratings:
-            print(f"  Skipping {away}@{home}: no team rating available")
+            log.info(f"  Skipping {away}@{home}: no team rating available")
             continue
         h_off, h_def = current_team_ratings[home]
         a_off, a_def = current_team_ratings[away]
@@ -1019,13 +1021,13 @@ def save_week(predictions, season, week, preview):
     if preview:
         path = save_preview(predictions, season, week, pd.Timestamp.now(tz='UTC'))
         if path is not None:
-            print(f"Saved a preview of {len(predictions)} picks to "
+            log.info(f"Saved a preview of {len(predictions)} picks to "
                   f"predictions/preview/{path.name} (not locked, never graded)")
         return
 
     out_path = PRED_DIR / f'{season}_week{week}.json'
     if out_path.exists():
-        print(f"WARNING: {out_path} already exists -- NOT overwriting (predictions are permanent once saved).")
+        log.warning(f"WARNING: {out_path} already exists -- NOT overwriting (predictions are permanent once saved).")
     else:
         refuse_an_empty_week(predictions, season, week)
         # Atomic: this file can never be overwritten, so a half-written one
@@ -1038,15 +1040,15 @@ def save_week(predictions, season, week, preview):
         stale = PREVIEW_DIR / f'{season}_week{week}.json'
         if stale.exists():
             stale.unlink()
-            print(f"Removed predictions/preview/{stale.name}: the week is locked now.")
-        print(f"Saved {len(predictions)} predictions to {out_path}")
+            log.info(f"Removed predictions/preview/{stale.name}: the week is locked now.")
+        log.info(f"Saved {len(predictions)} predictions to {out_path}")
         for p in predictions:
-            print(f"  {p['away']} @ {p['home']}: Model A home={p['model_a_home_win_prob']:.1%}"
+            log.info(f"  {p['away']} @ {p['home']}: Model A home={p['model_a_home_win_prob']:.1%}"
                   + (f", Model B home={p['model_b_home_win_prob']:.1%}" if p['model_b_home_win_prob'] else "")
                   + (f"  [notes: {'; '.join(p['context_notes'])}]" if p['context_notes'] else ""))
 
-    print("\nNOTE: run grade_predictions.py separately once this week's games complete.")
-    print("NOTE: this script does not regenerate dashboard.html yet -- see generate_dashboard.py.")
+    log.info("\nNOTE: run grade_predictions.py separately once this week's games complete.")
+    log.info("NOTE: this script does not regenerate dashboard.html yet -- see generate_dashboard.py.")
 
 
 if __name__ == '__main__':

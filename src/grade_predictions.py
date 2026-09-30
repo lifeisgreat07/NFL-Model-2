@@ -15,6 +15,8 @@ import json
 import pandas as pd
 
 from paths import PRED_DIR, RESULTS_DIR  # noqa: E402  (src/paths.py, Stage 32 item 15)
+from runlog import get_logger  # noqa: E402  (Stage 32 item 17)
+log = get_logger(__name__)
 RESULTS_DIR.mkdir(exist_ok=True)
 
 
@@ -28,7 +30,7 @@ def main(season, week):
     from data_loader import load_schedule
     pred_path = PRED_DIR / f'{season}_week{week}.json'
     if not pred_path.exists():
-        print(f"No saved predictions found at {pred_path} -- nothing to grade.")
+        log.info(f"No saved predictions found at {pred_path} -- nothing to grade.")
         return
 
     with open(pred_path) as f:
@@ -41,7 +43,7 @@ def main(season, week):
     for p in preds:
         row = week_results[(week_results['home_team'] == p['home']) & (week_results['away_team'] == p['away'])]
         if len(row) == 0 or pd.isna(row.iloc[0].get('home_score')):
-            print(f"  {p['away']}@{p['home']}: result not yet available, skipping")
+            log.info(f"  {p['away']}@{p['home']}: result not yet available, skipping")
             continue
         r = row.iloc[0]
         if r['home_score'] == r['away_score']:
@@ -70,11 +72,11 @@ def main(season, week):
         def summarize(key):
             vals = [g[key] for g in graded if g.get(key) is not None]
             return f"{sum(vals)}/{len(vals)}" if vals else "n/a"
-        print(f"Graded {n} games.")
-        print(f"  Model A: {summarize('model_a_correct')} correct")
-        print(f"  Model B: {summarize('model_b_correct')} correct")
-        print(f"  Market:  {summarize('market_correct')} correct")
-    print(f"Saved to {out_path}")
+        log.info(f"Graded {n} games.")
+        log.info(f"  Model A: {summarize('model_a_correct')} correct")
+        log.info(f"  Model B: {summarize('model_b_correct')} correct")
+        log.info(f"  Market:  {summarize('market_correct')} correct")
+    log.info(f"Saved to {out_path}")
 
 
 if __name__ == '__main__':
