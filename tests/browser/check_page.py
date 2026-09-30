@@ -16,6 +16,9 @@ and fails on what a static read of the template cannot see:
   sticky     a fitting table's sticky header, scrolled past, is covered by
              something else (the top bar hid every one below 1080px until
              Stage 30 item 2)
+  sortmark   in a table that sorts, a header that sorts shows no sort mark,
+             a header that does not sort shows one, or the sorted header's
+             mark looks like the rest (Stage 34 item 29)
   budget     index.html is over its byte budget
 
 Every run is made twice: once with all network blocked -- the site must work
@@ -172,6 +175,35 @@ async def tab_walk(page):
     return problems, len(seen)
 
 
+# What each header of a sortable table actually draws after itself. Read
+# from the computed ::after of the header and everything inside it (Net
+# Rating's mark sits on its label, not after its scale), so this checks the
+# mark a reader sees, not the CSS that is meant to draw it.
+SORTMARK_JS = """() => {
+  const mark = th => [th, ...th.querySelectorAll('*')]
+    .map(el => getComputedStyle(el, '::after').content)
+    .find(c => c && c !== 'none' && c !== 'normal') || null;
+  const out = [];
+  for (const table of document.querySelectorAll('section.page.active table')) {
+    const ths = [...table.querySelectorAll('thead th')];
+    if (!ths.some(th => th.hasAttribute('aria-sort'))) continue;
+    const rest = new Set();
+    for (const th of ths) {
+      const m = mark(th), sorts = th.hasAttribute('aria-sort');
+      const name = (th.textContent || '').trim().split(/\\s+/)[0] || '(empty)';
+      if (sorts && !m) out.push(`"${name}" sorts but shows no sort mark`);
+      if (!sorts && m) out.push(`"${name}" does not sort but shows a sort mark (${m})`);
+      if (sorts && m && th.getAttribute('aria-sort') === 'none') rest.add(m);
+    }
+    for (const th of ths.filter(t => ['ascending', 'descending'].includes(t.getAttribute('aria-sort')))) {
+      const m = mark(th);
+      if (m && rest.has(m)) out.push(`the sorted header draws the same mark as the unsorted ones (${m})`);
+    }
+  }
+  return out;
+}"""
+
+
 async def check_one(browser, url, width, network, axe_src, report):
     mobile = width < MOBILE_BELOW
     ctx = await browser.new_context(viewport={'width': width, 'height': HEIGHT},
@@ -201,6 +233,8 @@ async def check_one(browser, url, width, network, axe_src, report):
         s = await page.evaluate(STICKY_JS)
         if s:
             report.append(f"{where}: sticky: {s}")
+        for m in await page.evaluate(SORTMARK_JS):
+            report.append(f"{where}: sortmark: {m}")
         problems, stops = await tab_walk(page)
         stops_total += stops
         report.extend(f"{where}: focus: {p}" for p in problems)
@@ -274,6 +308,12 @@ FIXTURES = {
                         '<thead><tr><th>Head</th></tr></thead><tbody>'
                         + '<tr><td>row</td></tr>' * 400 + '</tbody></table></div>',
                    expect='sticky'),
+    # The shape before Stage 34 item 29: headers that sort and one that does
+    # not ("#"), all drawn alike, with nothing after any of them.
+    'sortmark': dict(body='<table><thead><tr><th>#</th><th aria-sort="none">Team</th>'
+                          '<th aria-sort="descending">Net</th></tr></thead>'
+                          '<tbody><tr><td>1</td><td>A</td><td>2</td></tr></tbody></table>',
+                     expect='sortmark'),
 }
 
 

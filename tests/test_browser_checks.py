@@ -25,7 +25,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / '.github' / 'workflows' / 'browser-checks.yml'
 CHECKER = ROOT / 'tests' / 'browser' / 'check_page.py'
-RULES = ('overflow', 'focus', 'target', 'axe', 'font', 'error', 'sticky')
+RULES = ('overflow', 'focus', 'target', 'axe', 'font', 'error', 'sticky', 'sortmark')
 
 
 @pytest.fixture(scope='module')
@@ -138,3 +138,20 @@ def test_the_sticky_rule_runs_on_every_page_and_reads_what_is_drawn(checker):
     loop = re.search(r'for pid in ids:(.*?)problems, stops = await tab_walk', src, re.S)
     assert loop and 'page.evaluate(STICKY_JS)' in loop.group(1), (
         'the sticky rule is not run for each page')
+
+
+def test_the_sortmark_rule_runs_on_every_page_and_reads_what_is_drawn(checker):
+    """Stage 34 item 29. A header that sorts has to show it and one that
+    does not ("#") must not, judged by the ::after the browser computes for
+    the header and everything in it -- not by whether the CSS rule exists --
+    and the rule must be called for each page."""
+    src, _ = checker
+    rule = re.search(r'SORTMARK_JS = """(.*?)"""', src, re.S)
+    assert rule, 'SORTMARK_JS is gone -- re-anchor this guard'
+    assert "getComputedStyle(el, '::after')" in rule.group(1), (
+        'the sortmark rule no longer reads what is drawn after the header')
+    assert "querySelectorAll('*')" in rule.group(1), (
+        "the sortmark rule no longer looks inside the header, where Net Rating's mark is")
+    loop = re.search(r'for pid in ids:(.*?)problems, stops = await tab_walk', src, re.S)
+    assert loop and 'page.evaluate(SORTMARK_JS)' in loop.group(1), (
+        'the sortmark rule is not run for each page')
