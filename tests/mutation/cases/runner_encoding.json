@@ -15,6 +15,13 @@
       "find": "'PYTHONDONTWRITEBYTECODE': '1', 'PYTHONIOENCODING': 'utf-8'}",
       "replace": "'PYTHONDONTWRITEBYTECODE': '1'}",
       "expect_caught_by": "test_the_child_is_asked_for_utf8_and_read_as_utf8"
+    },
+    {
+      "id": "runner-child-in-the-locale-codec",
+      "why": "the child opens files in the machine's codec again, so on Windows a case that drops an encoding= is caught by the conftest build crashing first and reported WRONG-GUARD there only",
+      "find": "{**os.environ, 'PYTHONUTF8': '1', ",
+      "replace": "{**os.environ, ",
+      "expect_caught_by": "test_the_child_runs_in_utf8_mode"
     }
   ]
 }

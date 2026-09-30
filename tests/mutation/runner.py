@@ -78,7 +78,15 @@ def _run_tests(test_path):
     # Reading in the locale codec crashed the runner on markys (cp1252) at
     # byte 0x90 in one case's failure text, and a crash there reports nothing
     # about the case; errors='replace' keeps a stray byte from ever doing so.
-    env = {**os.environ, 'PYTHONDONTWRITEBYTECODE': '1', 'PYTHONIOENCODING': 'utf-8'}
+    #
+    # And the child runs in Python's UTF-8 mode (PYTHONUTF8), so a file opened
+    # without an encoding is UTF-8 there, as on the Linux runners. Without it
+    # a case whose mutation drops an encoding= (generator_encoding.json) was
+    # caught on Windows by the conftest build crashing on cp1252 before the
+    # test it names could run, and was reported WRONG-GUARD there only. The
+    # encoding guards are source scans, which hold on every machine; a plain
+    # suite run on Windows still builds the page in the locale's codec.
+    env = {**os.environ, 'PYTHONUTF8': '1', 'PYTHONDONTWRITEBYTECODE': '1', 'PYTHONIOENCODING': 'utf-8'}
     proc = subprocess.run(
         [sys.executable, '-B', '-m', 'pytest', test_path, '-q', '--no-header',
          '-p', 'no:cacheprovider'],
