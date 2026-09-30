@@ -15,6 +15,12 @@
      deploy-pages.yml, so it works on the site and from a local checkout.
      tests/test_favicon.py holds the link, the file and the copy step. -->
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<!-- The home-screen icon (Stage 34 item 31): iOS takes a PNG, not the SVG,
+     and without one it uses a shrunken screenshot of the page. It is
+     favicon.svg rendered at 180x180 on a full-bleed dark tile (iOS rounds
+     the corners itself and fills transparent ones with black). To remake it,
+     render assets/favicon.svg at that size in Chromium on #0B0D10. -->
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <!-- What a search result and a link preview show (Stage 13). The description
      is under 160 characters so a search result does not cut it off. The
      Open Graph image is static -- assets/og/og-card.png, made from

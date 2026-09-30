@@ -24,6 +24,21 @@
       "find": "<rect width=\"32\" height=\"32\" rx=\"7\" fill=\"#0B0D10\"/>",
       "replace": "",
       "expect_caught_by": "test_the_icon_is_a_square_svg_with_a_dark_tile_and_the_accent_ball"
+    },
+    {
+      "id": "touch-icon-link-dropped",
+      "why": "the page stops linking its home-screen icon, and an iPhone saving the site shows a shrunken screenshot instead.",
+      "find": "<link rel=\"apple-touch-icon\" href=\"assets/apple-touch-icon.png\">",
+      "replace": "",
+      "expect_caught_by": "test_the_page_links_one_home_screen_icon"
+    },
+    {
+      "id": "touch-icon-not-deployed",
+      "target": ".github/workflows/deploy-pages.yml",
+      "why": "the deploy stops copying the home-screen icon, so the live page links a file that is not published.",
+      "find": "          cp assets/apple-touch-icon.png _site/assets/apple-touch-icon.png\n",
+      "replace": "",
+      "expect_caught_by": "test_the_deploy_publishes_the_home_screen_icon_where_the_link_points"
     }
   ]
 }
