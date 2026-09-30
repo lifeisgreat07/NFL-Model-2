@@ -2837,6 +2837,24 @@ function previewWhen(iso){
   return `${day.replace(',', '')}, ${hm} UTC`;
 }
 
+/* The note above a preview week's cards. Before the week's first kickoff
+   it says the picks can still change and lock before that kickoff. After
+   it -- a preview still showing then means no run locked the week -- it
+   says so, instead of promising a lock that can no longer happen (Stage 30
+   item 3). kickoffInstant is the My Picks lock's own reading of a kickoff. */
+function previewNoteText(weekData, nowMs){
+  if(!weekData || !weekData.preview) return '';
+  const kicks = (weekData.games || []).map(kickoffInstant).filter(k => k !== null);
+  const first = kicks.length ? Math.min(...kicks) : null;
+  const when = previewWhen(weekData.previewed_utc);
+  if(first !== null && nowMs >= first)
+    return `Preview from ${when}: the week's first game has kicked off and these picks ` +
+      `were never locked, so the lock run did not happen. None of them will be graded.`;
+  return `Preview: these are the models' picks as of ${when}. ` +
+    `They can still change. The picks lock before the week's first kickoff ` +
+    `(usually Thursday), and only locked picks are graded.`;
+}
+
 /* ---------- Week stepper ----------
    The hidden <select> owns the selection; these only move it and then read it
    back. Two controls writing the same state independently is how they drift,
@@ -4095,11 +4113,7 @@ function renderGames(){
   if(previewNote){
     const isPreview = !!(weekData && weekData.preview);
     previewNote.hidden = !isPreview;
-    previewNote.textContent = isPreview
-      ? `Preview: these are the models' picks as of ${previewWhen(weekData.previewed_utc)}. ` +
-        `They can still change. The picks lock before the week's first kickoff ` +
-        `(usually Thursday), and only locked picks are graded.`
-      : '';
+    previewNote.textContent = previewNoteText(weekData, Date.now());
   }
 
   const pdfLink = document.getElementById('picks-pdf-link');

@@ -1,0 +1,37 @@
+{
+  "target": "src/dashboard_template.html",
+  "tests": "tests/test_preview_after_kickoff.py",
+  "cases": [
+    {
+      "id": "preview-promises-a-lock-after-kickoff",
+      "why": "a preview still showing after the week's first kickoff goes back to promising the picks lock before that kickoff, which can no longer happen.",
+      "find": "  if(first !== null && nowMs >= first)",
+      "replace": "  if(false)",
+      "expect_caught_by": "test_after_the_first_kickoff_the_preview_says_the_lock_did_not_happen"
+    },
+    {
+      "id": "preview-survives-the-lock",
+      "target": "src/weekly_update.py",
+      "why": "locking a week leaves its Tuesday preview in predictions/preview/ for good.",
+      "find": "            stale.unlink()",
+      "replace": "            pass",
+      "expect_caught_by": "test_locking_a_week_deletes_its_preview"
+    },
+    {
+      "id": "skipped-week-preview-shown",
+      "target": "src/generate_dashboard.py",
+      "why": "the build stops leaving out a skipped week's preview, so a week that was never locked shows its Tuesday picks as if they were still coming.",
+      "find": "    previews = load_previews(locked=set(all_preds) | skipped_weeks())",
+      "replace": "    previews = load_previews(locked=set(all_preds))",
+      "expect_caught_by": "test_the_build_leaves_out_skipped_weeks_previews"
+    },
+    {
+      "id": "skipped-weeks-read-as-none",
+      "target": "src/generate_dashboard.py",
+      "why": "skipped_weeks stops reading predictions/skipped/, so every skipped week's preview is shown again.",
+      "find": "    return {w for w in (parse_week_stem(f.stem) for f in skipped_dir.glob('*_week*.json'))",
+      "replace": "    return {w for w in (parse_week_stem(f.stem) for f in skipped_dir.glob('*_none*.json'))",
+      "expect_caught_by": "test_a_skipped_weeks_preview_is_not_shown"
+    }
+  ]
+}

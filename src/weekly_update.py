@@ -981,6 +981,14 @@ def main(season, week):
         # Atomic: this file can never be overwritten, so a half-written one
         # would be permanent (Stage 24).
         write_json_atomic(out_path, predictions, indent=2)
+        # The week's Tuesday preview is superseded the moment it locks
+        # (Stage 30 item 3). The page already ignores a locked week's
+        # preview; deleting it keeps a stale file out of predictions/, and
+        # the workflow's predictions/** pattern stages the deletion.
+        stale = PREVIEW_DIR / f'{season}_week{week}.json'
+        if stale.exists():
+            stale.unlink()
+            print(f"Removed predictions/preview/{stale.name}: the week is locked now.")
         print(f"Saved {len(predictions)} predictions to {out_path}")
         for p in predictions:
             print(f"  {p['away']} @ {p['home']}: Model A home={p['model_a_home_win_prob']:.1%}"
