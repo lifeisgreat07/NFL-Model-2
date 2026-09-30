@@ -40,3 +40,25 @@ def test_the_child_is_asked_for_utf8_and_read_as_utf8():
     kw = {k.arg: getattr(k.value, 'value', None) for k in call.keywords}
     assert kw.get('encoding') == 'utf-8' and kw.get('errors') == 'replace', kw
     assert "'PYTHONIOENCODING': 'utf-8'" in ast.get_source_segment(src, fn)
+
+
+UTF8_MODE_FIXTURE = '''
+import sys
+def test_the_child_is_in_utf8_mode():
+    assert sys.flags.utf8_mode == 1
+'''
+
+
+def test_the_child_runs_in_utf8_mode(tmp_path, monkeypatch):
+    """A file opened without an encoding is UTF-8 in the child on every
+    machine, as on CI, so a case's result does not depend on the locale.
+    Without it, generator-writes-the-page-in-the-local-encoding read
+    WRONG-GUARD on Windows only: the conftest build crashed on cp1252
+    before the source scan it names could run."""
+    # Not inherited from whoever runs this test: the mutation runner sets
+    # it for its own child, which would hide a runner that stopped setting it.
+    monkeypatch.delenv('PYTHONUTF8', raising=False)
+    f = tmp_path / 'test_utf8_mode_fixture.py'
+    f.write_text(UTF8_MODE_FIXTURE, encoding='utf-8')
+    code, failed, out = runner._run_tests(str(f))
+    assert code == 0, out[-500:]
