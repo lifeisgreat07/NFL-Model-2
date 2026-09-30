@@ -2,7 +2,8 @@ name: Weekly update
 
 # Runs the actual weekly pipeline unattended during the season: generates
 # next week's predictions (on the run that locks them -- see Schedule), grades
-# any completed weeks, and regenerates the dashboard. This is the
+# any completed weeks, and commits the data, which triggers the Pages
+# rebuild (deploy-pages.yml builds the dashboard; this job does not). This is the
 # scheduled trigger the project was designed around from the start (see
 # README's "Automating this with Claude Code Routines" section) but never
 # had -- without it, nothing runs unless someone does it by hand.

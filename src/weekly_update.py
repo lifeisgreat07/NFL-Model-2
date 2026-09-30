@@ -654,8 +654,10 @@ def decide_lock(week_games, now, runs=SCHEDULED_RUNS_UTC, slack=LOCK_SLACK):
                      kickoff is not a prediction, and the Methodology page
                      says every pick is locked before kickoff. On a
                      Tuesday lock this was ~61 hours of margin and could
-                     not happen; on a Thursday lock it is ~8, so a late or
-                     failed Thursday run followed by a manual one can meet it.
+                     not happen; on a Thursday lock it is about 13 (11:00
+                     UTC to a 00:15 UTC Friday kickoff), and runs here start
+                     up to 6.5 hours late, so a late or failed Thursday run
+                     followed by a manual one can meet it.
     first_kickoff -- the earliest kickoff among games not yet started.
     next_run      -- when the next scheduled run is.
 

@@ -22,6 +22,22 @@
       "find": "docs/lessons-learned.md\" class=\"link-standalone\" target=\"_blank\"",
       "replace": "docs/lessons-learned.md\" target=\"_blank\"",
       "expect_caught_by": "test_every_standalone_link_wears_the_target_class"
+    },
+    {
+      "id": "new-tab-link-loses-noopener",
+      "tests": "tests/test_outbound_hygiene.py",
+      "why": "the VERIFICATION.md link goes back to opening a new tab with no rel, the one link of six the re-audit found that way (Stage 30 item 9).",
+      "find": "/VERIFICATION.md\" target=\"_blank\" rel=\"noopener\" style=",
+      "replace": "/VERIFICATION.md\" target=\"_blank\" style=",
+      "expect_caught_by": "test_every_new_tab_link_is_noopener"
+    },
+    {
+      "id": "one-logo-image-sends-its-referrer",
+      "tests": "tests/test_outbound_hygiene.py",
+      "why": "one of the four logo images drops referrerpolicy -- the ordinary result of adding a fifth by copying an old one -- and ESPN is told which page asked (Stage 30 item 9).",
+      "find": "<img class=\"dive-logo\" src=\"${teamLogo(team)}\" alt=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer\"",
+      "replace": "<img class=\"dive-logo\" src=\"${teamLogo(team)}\" alt=\"\" loading=\"lazy\"",
+      "expect_caught_by": "test_every_logo_image_sends_no_referrer"
     }
   ]
 }
