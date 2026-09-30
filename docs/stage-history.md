@@ -719,7 +719,7 @@ Breakpoints comment lists every viewport breakpoint and
 `tests/test_responsive_layout.py` holds it to the media queries. **Two
 queued items were not what they said:** bottom-nav clearance already worked
 (the last content ends above the nav on every page at 320, 390 and 430 --
-23-43px on `markys`, 18.5-42.2px in Booth's sandbox on #89, because the gap
+23-43px on the local Windows machine, 18.5-42.2px in Booth's sandbox on #89, because the gap
 is `<main>`'s bottom padding minus the nav's height and that height is
 text), and "the ratings table
 clipping mid-column at 430px" is a table scrolling inside its own box, which
@@ -1005,7 +1005,7 @@ update and the weekend refresh, continue-on-error in both; #137 the canary
 checks next week's nfl.com page. Decisions worth keeping:
 
 - **One network per game, the first nfl.com lists.** Measured against ESPN's
-  own scoreboard from markys, weeks 1-4: the first-listed network matched all
+  own scoreboard from the local Windows machine, weeks 1-4: the first-listed network matched all
   64 games, while the full list claimed an ABC simulcast for week 4's Falcons
   at Saints that ABC's own schedule does not carry. The rest is kept as
   `listed`, never shown.
@@ -1026,13 +1026,13 @@ checks next week's nfl.com page. Decisions worth keeping:
 **ESPN is REFUSED from GitHub's runners (read 2026-09-27; #131 closed
 unmerged).** #131's probe got `HTTP Error 403: Forbidden` on all four weeks
 in under a second on the Actions runner; Booth reproduced the 403 from its
-own environment with a browser-style User-Agent; markys gets 200 and 16/16
+own environment with a browser-style User-Agent; the local Windows machine gets 200 and 16/16
 complete. So ESPN blocks datacenter addresses, not the request. **Do not
 route around it** (headers, proxies, another ESPN host): Mark ruled that out.
 Options put to Mark 2026-09-27: A a sourced season file cross-checked from
-markys, B probe another automatic source, C drop the channel, D a
+the local Windows machine, B probe another automatic source, C drop the channel, D a
 self-hosted runner (not recommended: a public repo's PRs could run code on
-markys). **Mark chose B**, and #131 was closed rather than merged because
+the local Windows machine). **Mark chose B**, and #131 was closed rather than merged because
 a probe of a feed nothing will use is a check that is red by design.
 **The candidate is the league's own page**,
 `www.nfl.com/schedules/2026/by-week/week-N`. Its server-rendered HTML embeds
@@ -1041,8 +1041,8 @@ structured game data (a Next.js payload, not a documented API): per game,
 the kickoff in UTC, both teams, and `externalIds` carrying `gsis` and
 `elias` ids. **The join key is `elias` = nflverse `old_game_id`**: equal on
 all 32 games of weeks 1 and 4 (`nflreadpy.load_schedules([2026])` on
-markys, 2026-09-27). NOT `gsis`: nflverse leaves it blank until a game is
-played (NaN on every week-4 row). Fetched on markys and parsed 2026-09-27: 16 of 16 games
+the local Windows machine, 2026-09-27). NOT `gsis`: nflverse leaves it blank until a game is
+played (NaN on every week-4 row). Fetched on the local Windows machine and parsed 2026-09-27: 16 of 16 games
 carrying a network, for each of weeks 1 and 4. Sports Media Watch's hand-kept NFL TV schedule, read
 the same day, names the same first network for all 16 week-4 games (it
 omits ABC's Monday simulcast, which nfl.com lists). **Trap:** nfl.com's `ways-to-watch/by-week/week-4` page
@@ -1062,7 +1062,7 @@ with the score. It also gives Stage 16 its refresh cadence.
 **TV channel per game (added 2026-09-26).** nflverse's schedule has no broadcast
 column (all 46 checked). ESPN's public scoreboard does, per game
 (`site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=N&dates=2026`,
-`competitions[0].broadcasts[].names`), and it was reachable from `markys` on
+`competitions[0].broadcasts[].names`), and it was reachable from the local Windows machine on
 2026-09-26 with all 16 week-4 games carrying a network. It is undocumented, so
 accuracy cannot be assumed; it has to be earned and then watched. Nothing can
 guarantee a third party is right, so the guarantee this stage makes is narrower
@@ -1274,7 +1274,7 @@ the built page is byte-identical before and after.
 From an outside audit (Fable 5.1) of `main` at `a89a6ef`. Every finding was
 checked against the code before it became an item; the verdict table (what was
 CONFIRMED and how, what was WRONG) and the audit's own text are in the session
-archive on markys (audits). **Mark approved this plan 2026-09-28.** He agreed
+archive on the local Windows machine (audits). **Mark approved this plan 2026-09-28.** He agreed
 with every pushback below, and said he is willing to weaken the methodology
 where that makes the project stronger overall -- so the items marked "discuss"
 are NOT refused, they are discussed with him when reached. One item, one PR, as
@@ -1408,7 +1408,7 @@ fixed, with a test and a mutation case holding the desktop drawing).
 started by hand, caught 30 of 30), item 3 merged (#206: `ruff check .` runs
 in `run-tests.yml`, so every branch must pass it), and the runner's UTF-8
 fix merged (#207; `PYTHONUTF8=1` is no longer needed for the runner on
-markys). Item 1 merged (#208, on Mark's explicit OK). **Stage 27 is done.**
+the local Windows machine). Item 1 merged (#208, on Mark's explicit OK). **Stage 27 is done.**
 Booth's claude-code-action stays pinned to v1.0.236: the `v1` tag moved to
 v1.0.237 at 19:30 UTC on 2026-09-29, mid-review, and the pin was kept on
 the release Booth had been running. Item 4: Mark said skip
@@ -1444,7 +1444,7 @@ Mark's pick); favicon B, the sidebar football on a dark tile (#212, Mark's
 pick); one product name, "Pick'em Model" (Mark's pick after he first
 floated "NFL Analysis Tool": #213). The link preview and share image
 keep "The Pick'em Model"; the repository keeps "NFL-Model-2". The noreply
-email is markys's repo-local `user.email` (done, no PR). **Decided, not
+email is the local machine's repo-local `user.email` (done, no PR). **Decided, not
 done:** the audit-log collector stays on every push (Mark agreed with the
 pushback: it commits only when a new Booth report exists, once per merged
 PR however it is triggered). **Left:** the Website field and version tags
@@ -1453,7 +1453,8 @@ CLAUDE.md split into rules plus traps and history (its own session).
 
 **Not planned (Mark agreed):** packaging `src/` into subfolders, converting
 `print` to logging, routing owner-only dispatch inputs through `env:`, and
-scrubbing markys from this file.
+scrubbing the machine name from this file. (Reversed 2026-09-29: Mark
+chose to do it after the re-audit; Stage 31 item 10.)
 
 
 ## Stages 30 to 34: the 2026-09-29 re-audit (planned 2026-09-29)

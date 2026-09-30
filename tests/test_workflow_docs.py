@@ -132,5 +132,48 @@ def test_claude_md_points_at_the_context_file():
         "existing ritual would never learn where the current state lives")
 
 
+#: The public documents that describe how the project is worked on. Mark's
+#: machine name and his local paths belong in the gitignored CLAUDE.local.md,
+#: not in these (Stage 31 item 10, 2026-09-29).
+PUBLIC_DOCS = ['CLAUDE.md', 'docs/traps.md', 'docs/stage-history.md',
+               'docs/context.md', 'docs/index.md', 'README.md']
+
+#: SHA-256 of the machine's name, lower-cased. Stored as a hash so that the
+#: guard keeping the name out of the public documents does not publish it.
+LOCAL_NAME_SHA256 = {'c759a9ce6b0a835e8f596b027dd208d77bb491a9a88817327e158dede920df8e'}
+
+DRIVE_PATH_RE = re.compile(r'\b[A-Za-z]:\\')
+
+
+def local_details(text, name_hashes=LOCAL_NAME_SHA256):
+    """Every drive-letter path, and every word whose hash is the machine's name."""
+    import hashlib
+    found = DRIVE_PATH_RE.findall(text)
+    for word in set(re.findall(r"[A-Za-z0-9_-]+", text)):
+        if hashlib.sha256(word.lower().encode('utf-8')).hexdigest() in name_hashes:
+            found.append('<the machine name>')
+    return found
+
+
+@pytest.mark.parametrize('name', PUBLIC_DOCS)
+def test_public_documents_name_no_local_machine(name):
+    text = (REPO / name).read_text(encoding='utf-8')
+    found = local_details(text)
+    assert not found, (
+        f"{name} names the local machine or a local path ({sorted(set(found))}). "
+        f"Say 'the local Windows machine' or 'the session archive', and keep the "
+        f"specifics in the gitignored CLAUDE.local.md")
+
+
+def test_the_local_details_check_can_fire():
+    """Synthetic, so both branches stay reachable while every real document is
+    clean -- a check over clean data that nothing ever made fire proves nothing."""
+    import hashlib
+    fake = {hashlib.sha256(b'boxname').hexdigest()}
+    assert local_details('ran on BoxName today', fake) == ['<the machine name>']
+    assert local_details('see E:\\repo\\x.py', fake) == ['E:\\']
+    assert local_details('ran on the local Windows machine', fake) == []
+
+
 if __name__ == '__main__':
     sys.exit(pytest.main([__file__, '-v']))

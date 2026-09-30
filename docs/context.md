@@ -67,7 +67,7 @@ rebase, and describe the scope as run whole with both counts.
 
 - **Scheduled runs start hours late** (3.5 to 6.5h since 2026-09-24). Absorbed by the 11:00 Thursday lock and 8h slack, not fixed; GitHub's queue is not ours.
 - **Preview cards have no TV channel or team-news line**: those steps read locked weeks only (#204).
-- **No PNG favicon or Apple touch icon** (#212): no renderer on markys, and the bridge corrupts binaries.
+- **No PNG favicon or Apple touch icon** (#212): no renderer on the local Windows machine, and the bridge corrupts binaries.
 - **The link preview and share image say "The Pick'em Model"** (#213): the same name with an article; the PNG was not redrawn.
 - **The drift check is on accuracy**, which cannot carry a result at this sample size. Its issue says so and points at log loss and Brier.
 - **A failed Thursday run leaves Thursday night's game unpicked** unless someone dispatches the workflow by hand that day. Since #105 the failure opens an issue.
