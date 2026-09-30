@@ -37,13 +37,29 @@ MODELS = (('Model A', 'model_a_correct'), ('Model B', 'model_b_correct'),
           ('Market', 'market_correct'))
 
 
-def changed_paths(run=subprocess.run, repo=REPO):
-    """Paths under predictions/ and results/ that this run created or
-    modified, from `git status --porcelain`."""
+def _status(run=subprocess.run, repo=REPO):
+    """(status code, path) for each entry under predictions/ and results/
+    in `git status --porcelain`."""
     out = run(['git', 'status', '--porcelain', '--untracked-files=all', '--',
                'predictions', 'results'], cwd=repo, capture_output=True,
               text=True, check=True).stdout
-    return sorted(line[3:].strip().replace('\\', '/') for line in out.splitlines() if line.strip())
+    return [(line[:2], line[3:].strip().replace('\\', '/'))
+            for line in out.splitlines() if line.strip()]
+
+
+def changed_paths(run=subprocess.run, repo=REPO):
+    """Paths under predictions/ and results/ that this run created or
+    modified, from `git status --porcelain`. A deleted file is not among
+    them: there is nothing left to read. The lock run deletes the week's
+    tracked preview (save_week, Stage 30 item 3), and until Stage 35 this
+    returned that path, so the summary tried to read it and crashed. The
+    third audit found it the day before the first lock on that code."""
+    return sorted(p for code, p in _status(run, repo) if 'D' not in code)
+
+
+def removed_paths(run=subprocess.run, repo=REPO):
+    """Paths under predictions/ and results/ that this run deleted."""
+    return sorted(p for code, p in _status(run, repo) if 'D' in code)
 
 
 def graded_line(season, week, rows):
@@ -77,7 +93,7 @@ def log_findings(log_text):
     return dq, warnings, ran
 
 
-def summarise(season, changed, log_text, drift_text, read_json):
+def summarise(season, changed, log_text, drift_text, read_json, removed=()):
     lines = [f'## Weekly update, {season} season', '']
 
     locked = [(int(m.group(1)), int(m.group(2)), p) for p in changed
@@ -93,6 +109,10 @@ def summarise(season, changed, log_text, drift_text, read_json):
     for s, w, p in previewed:
         lines.append(f'- Previewed {s} week {w}: {len(read_json(p))} games '
                      f'(not locked, never graded; the locking run replaces it)')
+    for p in removed:
+        m = PREVIEW_RE.search(p)
+        if m:
+            lines.append(f'- Preview for {m.group(1)} week {m.group(2)} removed: the week locked')
 
     graded = [(int(m.group(1)), int(m.group(2)), p) for p in changed
               for m in [GRADED_RE.search(p)] if m]
@@ -130,7 +150,7 @@ def _read(path):
     return p.read_text(encoding='utf-8') if p.is_file() else ''
 
 
-def main(argv=None, changed=None):
+def main(argv=None, changed=None, removed=None):
     ap = argparse.ArgumentParser(description='Summarise a Weekly update run.')
     ap.add_argument('--season', type=int, required=True)
     ap.add_argument('--log', default=None)
@@ -138,8 +158,10 @@ def main(argv=None, changed=None):
     ap.add_argument('--out', default=None, help='also write the summary here')
     args = ap.parse_args(argv)
     changed = changed_paths() if changed is None else changed
+    removed = removed_paths() if removed is None else removed
     text = summarise(args.season, changed, _read(args.log), _read(args.drift),
-                     lambda p: json.loads((REPO / p).read_text(encoding='utf-8')))
+                     lambda p: json.loads((REPO / p).read_text(encoding='utf-8')),
+                     removed)
     print(text, end='')
     if args.out:
         Path(args.out).write_text(text, encoding='utf-8')
