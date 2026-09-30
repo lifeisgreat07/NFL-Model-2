@@ -84,6 +84,7 @@ RENDERERS = {
     # The label naming whose reasoning the sentence is (Stage 17).
     'whyLabelled': 'board',
     'pickBadge': 'board',
+    'gradedTagHtml': 'board',
     'cardProbHtml': 'board',
     'cardDisagreement': 'board',
     # Stage 17's channel, quarterback and team-news lines on the card.
@@ -159,6 +160,8 @@ RENDERERS = {
     'diveSplitHtml': 'teamdive',
     'diveTeamHtml': 'teamdive',
     'renderTeamGames': 'teamdive',
+    'diveResultHtml': 'teamdive',
+    'diveSummaryHtml': 'teamdive',
     'renderTeamNews': 'teamdive',
     'teamNewsItems': 'teamdive',
     'wireLabFilters': 'modellab',
