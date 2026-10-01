@@ -17,9 +17,9 @@ file the dashboard's reliability diagram and Model Lab figures come from):
      games out of the sample, for the reason recorded in the same finding.
      The game count must match exactly: a different n means a different set
      of games, and every other comparison is then meaningless.
-  3. config.BACKTEST_ACCURACY, the baseline the drift check compares live
-     results with. It is stored to three decimals, so it must sit within
-     rounding plus two games of the reproduced accuracy.
+  (Until Stage 35 a third check compared config.BACKTEST_ACCURACY, the drift
+  check's stored baseline. The drift check now reads data/calibration.json,
+  which check 2 already covers; see audit().)
 
 It writes what it found, with the commit and the library versions, and exits
 1 if anything failed. It needs nflverse and six seasons of play-by-play, so
@@ -69,19 +69,15 @@ def compare(model, published, reproduced):
     return rows
 
 
-def compare_baseline(model, stored, reproduced_accuracy, n):
-    """config.BACKTEST_ACCURACY is stored to three decimals: rounding (0.0005)
-    plus the same two-game allowance."""
-    tol = 0.0005 + (ACCURACY_GAMES / n if n else 0)
-    ok = stored is not None and abs(stored - reproduced_accuracy) <= tol + 1e-12
-    return {'model': model, 'metric': 'config.BACKTEST_ACCURACY', 'published': stored,
-            'reproduced': reproduced_accuracy, 'tolerance': tol, 'ok': bool(ok)}
-
-
-def audit(published, run_backtest, baseline):
+def audit(published, run_backtest):
     """published: data/calibration.json's `models`. run_backtest(name) ->
     (metrics, y_true, y_prob) for that model; called twice per model.
-    baseline: config.BACKTEST_ACCURACY. Returns (rows, determinism)."""
+    Returns (rows, determinism).
+
+    Until Stage 35 this also compared config.BACKTEST_ACCURACY, the drift
+    check's own stored baseline, with the reproduced accuracy. The drift
+    check now reads its baseline from data/calibration.json, which the
+    accuracy row above already compares, so that row would repeat it."""
     rows, determinism = [], {}
     for model, entry in published.items():
         first = run_backtest(model)
@@ -89,8 +85,6 @@ def audit(published, run_backtest, baseline):
         same = (list(first[1]) == list(second[1])) and (list(first[2]) == list(second[2]))
         determinism[model] = bool(same)
         rows += compare(model, entry['metrics'], first[0])
-        if model in baseline:
-            rows.append(compare_baseline(model, baseline[model], first[0]['accuracy'], first[0]['n']))
     return rows, determinism
 
 
@@ -121,14 +115,13 @@ def main(argv=None):
 
     from backtest import backtest
     from calibration import MODELS, build_hist
-    from config import BACKTEST_ACCURACY, BACKTEST_SEASONS
+    from config import BACKTEST_SEASONS
 
     published = json.loads(PUBLISHED.read_text(encoding='utf-8'))
     hist = build_hist()
     rows, determinism = audit(
         published['models'],
-        lambda name: backtest(hist, MODELS[name], BACKTEST_SEASONS, return_raw=True),
-        BACKTEST_ACCURACY)
+        lambda name: backtest(hist, MODELS[name], BACKTEST_SEASONS, return_raw=True))
     result = {
         'generated_utc': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'provenance': _provenance(),

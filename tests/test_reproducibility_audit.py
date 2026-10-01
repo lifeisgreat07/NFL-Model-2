@@ -50,24 +50,19 @@ def test_a_different_game_count_fails_every_row():
     assert not any(rows.values())
 
 
-def test_the_stored_baseline_allows_rounding_plus_two_games():
-    ok = ra.compare_baseline('model_a', 0.628, 0.628 - 0.0005 - 2 / N, N)
-    bad = ra.compare_baseline('model_a', 0.628, 0.628 - 0.0005 - 3 / N, N)
-    assert ok['ok'] and not bad['ok']
-
-
 def test_two_runs_that_differ_are_not_reproduced():
     runs = iter([({**PUB}, [1, 0], [0.6, 0.4]), ({**PUB}, [1, 0], [0.6, 0.41])])
-    rows, det = ra.audit({'model_a': {'metrics': PUB}}, lambda _m: next(runs), {})
+    rows, det = ra.audit({'model_a': {'metrics': PUB}}, lambda _m: next(runs))
     assert det == {'model_a': False}
     assert ra.verdict(rows, det) == 'NOT REPRODUCED'
 
 
 def test_identical_runs_that_match_are_reproduced():
     rows, det = ra.audit({'model_a': {'metrics': PUB}},
-                         lambda _m: ({**PUB}, [1, 0], [0.6, 0.4]), {'model_a': 0.627})
+                         lambda _m: ({**PUB}, [1, 0], [0.6, 0.4]))
     assert det == {'model_a': True} and ra.verdict(rows, det) == 'REPRODUCED'
-    assert any(r['metric'] == 'config.BACKTEST_ACCURACY' for r in rows)
+    assert {r['metric'] for r in rows} == {'n', 'accuracy', *ra.PROPER_SCORES}, (
+        'the audit compares something other than the published file again')
 
 
 # --- the committed record ----------------------------------------------------
@@ -91,6 +86,9 @@ def test_the_committed_record_is_about_the_published_file_as_it_is_now():
     cal = json.loads(CALIBRATION.read_text(encoding='utf-8'))
     assert rec['published_generated_at'] == cal['generated_at']
     for row in rec['comparisons']:
+        # Written by the audit before Stage 35, which also compared the
+        # drift check's old stored baseline; the next run writes none.
+        # The record stays as that run wrote it.
         if row['metric'] == 'config.BACKTEST_ACCURACY':
             continue
         assert row['published'] == cal['models'][row['model']]['metrics'][row['metric']], row

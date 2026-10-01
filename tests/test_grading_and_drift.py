@@ -158,3 +158,46 @@ def test_live_results_leave_out_the_backtest_seasons(tmp_path, monkeypatch):
     (tmp_path / '2026_week1_graded.json').write_text('[{"x": 2}]', encoding='utf-8')
     monkeypatch.setattr(cd, 'RESULTS_DIR', tmp_path)
     assert cd.load_live_results() == [{'x': 2}]
+
+
+# --- the baseline (Stage 35) --------------------------------------------------
+
+def test_the_baseline_is_the_published_backtest():
+    """The drift check compares with the numbers the page and README print:
+    data/calibration.json, not a copy of them. The old literal was one game
+    off each way (0.628 and 0.682 against 682 and 742 of 1087)."""
+    cal = json.loads((ROOT / 'data' / 'calibration.json').read_text(encoding='utf-8'))['models']
+    got = cd.backtest_baseline()
+    assert set(got) == {'model_a', 'model_b'}
+    for model in got:
+        assert got[model] == cal[model]['metrics']
+        assert got[model]['n'] == 1087
+
+
+def test_main_compares_live_accuracy_with_the_file(tmp_path, monkeypatch, capsys):
+    """main() reads accuracy from the baseline file, so a file saying 90%
+    is what the printed baseline says."""
+    cal = tmp_path / 'calibration.json'
+    cal.write_text(json.dumps({'models': {m: {'metrics': {'accuracy': 0.9, 'n': 1087}}
+                                          for m in ('model_a', 'model_b')}}), encoding='utf-8')
+    monkeypatch.setattr(cd, 'CALIBRATION', cal)
+    monkeypatch.setattr(cd, 'RESULTS_DIR', tmp_path)
+    (tmp_path / '2026_week1_graded.json').write_text(
+        json.dumps([{'model_a_correct': 1, 'model_b_correct': 1}]), encoding='utf-8')
+    assert cd.main() == 0
+    out = capsys.readouterr().out
+    assert out.count('Backtest baseline: 90.0%') == 2, out
+
+
+def test_a_missing_baseline_is_reported_and_does_not_fail_the_run(tmp_path, monkeypatch, capsys):
+    """drift_alert.py promises the drift check never fails the weekly run, and
+    a check that did not run must not read as clean: the verdict line says
+    NOT RUN, which the run summary carries (weekly_summary reads the last
+    'DRIFT CHECK:' line), with a WARNING line it also lists."""
+    monkeypatch.setattr(cd, 'CALIBRATION', tmp_path / 'absent.json')
+    monkeypatch.setattr(cd, 'RESULTS_DIR', tmp_path)
+    assert cd.main() == 0
+    out = capsys.readouterr().out
+    assert 'DRIFT CHECK: NOT RUN (no backtest baseline)' in out
+    assert 'DRIFT CHECK: OK' not in out
+    assert 'WARNING: no backtest baseline in absent.json' in out

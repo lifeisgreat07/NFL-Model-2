@@ -175,12 +175,7 @@ VERSION_HISTORY = [
 TRAIN_SEASONS = [2020, 2021, 2022, 2023, 2024, 2025]
 BACKTEST_SEASONS = [2022, 2023, 2024, 2025]
 
-# Canonical backtest accuracy, current (leak-fixed, k=8) code, n=1087 games
-# across BACKTEST_SEASONS. This is the reference point drift monitoring
-# compares real, live 2026+ results against -- deliberately a fixed,
-# documented value rather than something recomputed live each week, so the
-# comparison target doesn't silently move along with whatever's being
-# checked against it. Update this only when a real, intentional backtest
-# re-run changes the canonical number (and note it in the changelog above
-# when you do), not automatically.
-BACKTEST_ACCURACY = {'model_a': 0.628, 'model_b': 0.682}
+# The drift check's baseline is not stored here. Until Stage 35 it was a
+# literal, BACKTEST_ACCURACY, one game off each way from the published
+# backtest; it is now read from the committed backtest artifact,
+# data/calibration.json, by check_drift.backtest_baseline(), which says why.

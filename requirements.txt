@@ -5,7 +5,7 @@
 # and the same commit re-run in three months could resolve different library
 # versions and produce different results, with nothing in the repo recording
 # which versions produced which numbers. These are the versions the suite and
-# the reproduced BACKTEST_ACCURACY baseline were last verified against.
+# the reproduced backtest baseline (data/calibration.json) were last verified against.
 #
 # NOTE on pandas/numpy being 1.x: nfl_data_py requires "pandas <2.0" and
 # "numpy <2.0", so it -- not a deliberate choice -- is what holds this project
@@ -42,7 +42,7 @@
 #
 # No conclusion on the dashboard changes -- every shift is far inside the
 # published bootstrap intervals. But every published FIGURE would move in the
-# 3rd-4th decimal, the canonical BACKTEST_ACCURACY baseline would shift, and
+# 3rd-4th decimal, the canonical backtest baseline would shift, and
 # drift monitoring compares against it. That is a real migration with a real
 # cost, and the benefit side has never been stated: nothing in this project
 # currently needs pandas 2.x. Revisit when something does, or when 1.5.3 going
