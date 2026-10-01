@@ -43,8 +43,9 @@ import numpy as np
 import pandas as pd
 
 from src.pipeline import data_loader
-
-from src.pipeline.paths import DATA_DIR  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+from src.pipeline.paths import (
+    DATA_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+)
 
 # The season and week the 2026-08 migration used for its own value comparison.
 # Reusing it deliberately: if the two sources agreed here then and disagree

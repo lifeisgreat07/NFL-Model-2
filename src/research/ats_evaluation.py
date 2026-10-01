@@ -46,9 +46,10 @@ import numpy as np
 from sklearn.linear_model import LogisticRegression
 
 from src.pipeline.config import BACKTEST_SEASONS, MODEL_VERSION
+from src.pipeline.paths import (
+    DATA_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+)
 from src.research.calibration import build_hist, wilson_interval
-
-from src.pipeline.paths import DATA_DIR  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
 
 FOOTBALL = ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff']
 # The spread is included: the question is whether the football features add

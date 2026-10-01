@@ -42,7 +42,7 @@ def _job_block(name):
     """The lines of one job, by indentation rather than by parsing YAML."""
     lines = _text().splitlines()
     start = next(
-        (i for i, l in enumerate(lines) if re.match(r'^  {}:\s*$'.format(name), l)),
+        (i for i, l in enumerate(lines) if re.match(rf'^  {name}:\s*$', l)),
         None,
     )
     if start is None:
@@ -67,10 +67,10 @@ def test_it_is_dispatch_only():
     assert 'workflow_dispatch' in on_block
     for forbidden in ('pull_request', 'push:', 'schedule'):
         assert forbidden not in on_block, (
-            'booth-regression.yml triggers on {!r}. Every fixture run costs '
+            f'booth-regression.yml triggers on {forbidden!r}. Every fixture run costs '
             'subscription usage, so this workflow is manual by design; an '
             'automatic trigger would spend it per event and the first symptom '
-            'would be a usage limit, not a failure.'.format(forbidden)
+            'would be a usage limit, not a failure.'
         )
 
 

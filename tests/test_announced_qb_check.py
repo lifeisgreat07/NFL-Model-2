@@ -21,7 +21,11 @@ import pytest
 
 ROOT = Path(__file__).parent.parent
 
-from src.pipeline.weekly_update import QBOverrideError, load_qb_overrides, resolve_starters  # noqa: E402
+from src.pipeline.weekly_update import (  # noqa: E402
+    QBOverrideError,
+    load_qb_overrides,
+    resolve_starters,
+)
 
 LAST = pd.DataFrame([
     {'posteam': 'NYG', 'passer_player_id': '00-0000001', 'passer_player_name': 'J.Winston'},

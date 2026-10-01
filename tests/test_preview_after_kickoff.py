@@ -32,8 +32,9 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.pipeline import generate_dashboard as gd  # noqa: E402
 import synthetic_league as league  # noqa: E402
+
+from src.pipeline import generate_dashboard as gd  # noqa: E402
 from src.pipeline import weekly_update as wu  # noqa: E402
 
 NODE = shutil.which('node')

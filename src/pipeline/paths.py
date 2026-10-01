@@ -27,7 +27,7 @@ where it is: it maps nfl.com's full names to abbreviations, a translation
 table for one source rather than a list of teams.
 """
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).parents[2]
@@ -60,7 +60,7 @@ def current_season(now=None):
     """The NFL season a date belongs to. January and February still belong
     to the season that kicked off the year before (the playoffs and the
     Super Bowl)."""
-    now = now or datetime.now(timezone.utc)
+    now = now or datetime.now(UTC)
     return now.year - 1 if now.month <= 2 else now.year
 
 

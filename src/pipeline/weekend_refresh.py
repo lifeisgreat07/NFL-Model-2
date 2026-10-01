@@ -29,16 +29,22 @@ Run with: python -m src.pipeline.weekend_refresh [--season 2026]
 import argparse
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pandas as pd
-
 
 # The folders and the season rule are defined once, in src/pipeline/paths.py
 # (Stage 32 item 15). team_news and tv_channels import current_season from
 # here, so the name stays.
-from src.pipeline.paths import PRED_DIR, RESULTS_DIR, STATUS_DIR, current_season, parse_week  # noqa: E402,F401
+from src.pipeline.paths import (  # noqa: E402,F401
+    PRED_DIR,
+    RESULTS_DIR,
+    STATUS_DIR,
+    current_season,
+    parse_week,
+)
 from src.pipeline.runlog import get_logger  # noqa: E402  (Stage 32 item 17)
+
 log = get_logger(__name__)
 SOURCE = 'nflverse schedule, via nflreadpy.load_schedules'
 
@@ -132,7 +138,7 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
     ap = argparse.ArgumentParser()
     ap.add_argument('--season', type=int, default=None)
     args = ap.parse_args(argv)
-    now = now or datetime.now(timezone.utc)
+    now = now or datetime.now(UTC)
     season = args.season or current_season(now)
     weeks = weeks_to_refresh(season, pred_dir, results_dir)
     if not weeks:

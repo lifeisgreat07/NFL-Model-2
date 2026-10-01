@@ -10,16 +10,15 @@ breakdown that weekly_update.py now computes per game.
 """
 from __future__ import annotations
 
-from collections.abc import Collection, Sequence
-from typing import Any
-
 import base64
 import hashlib
 import json
 import math
+from collections.abc import Collection, Sequence
+from datetime import UTC, datetime
 from html import escape as _escape
-from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 # config is a pure-constants module with no third-party imports, so unlike
 # generate_picks_pdf below there is nothing here for a module-level import to
@@ -38,12 +37,18 @@ from src.pipeline.page_comments import strip_page_comments
 # rendering library it doesn't otherwise need was a regression introduced
 # with the PDF feature on 2026-09-04, not a deliberate choice.
 # Guarded by tests/test_weekly_pipeline.py.
-
 # The shared locations, and the one rule for reading a week out of a file
 # name (src/pipeline/paths.py, Stage 32 item 15). parse_week_stem keeps its name here
 # because tests and callers use it.
-from src.pipeline.paths import ROOT, DATA_DIR, PRED_DIR, RESULTS_DIR, STATUS_DIR  # noqa: E402
+from src.pipeline.paths import (  # noqa: E402
+    DATA_DIR,
+    PRED_DIR,
+    RESULTS_DIR,
+    ROOT,
+    STATUS_DIR,
+)
 from src.pipeline.paths import parse_week as parse_week_stem  # noqa: E402
+
 DIST_DIR = ROOT / 'dist'
 NEWS_DIR = DATA_DIR / 'team_news'
 TV_DIR = DATA_DIR / 'tv'
@@ -970,7 +975,7 @@ def main() -> None:
     team_history_js = load_team_history()
 
     foot_html = provenance_line()
-    updated_html = updated_line(datetime.now(timezone.utc))
+    updated_html = updated_line(datetime.now(UTC))
 
     with open(TEMPLATE_PATH, encoding='utf-8') as f:
         template = f.read()

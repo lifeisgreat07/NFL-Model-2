@@ -32,7 +32,6 @@ import re
 import sys
 from pathlib import Path
 
-
 from src.pipeline.data_quality import NFL_TEAMS, Report  # noqa: E402
 
 #: The page's JavaScript names for what generate_dashboard.main() writes.

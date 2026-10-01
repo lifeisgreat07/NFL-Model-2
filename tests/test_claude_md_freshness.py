@@ -65,7 +65,7 @@ ILLUSTRATIVE = {
 def _text(name='CLAUDE.md'):
     path = DOCS[name]
     if not path.is_file():
-        pytest.skip('{} not present in this checkout'.format(name))
+        pytest.skip(f'{name} not present in this checkout')
     return path.read_text(encoding='utf-8')
 
 
@@ -95,8 +95,8 @@ def test_the_document_exists_and_is_substantial(name):
     """Guard against every check below passing vacuously on an empty file."""
     t = _text(name)
     assert len(t) > 5000, (
-        '{} is {} chars -- too short to be the real document, so every '
-        'assertion below would pass while checking nothing'.format(name, len(t))
+        f'{name} is {len(t)} chars -- too short to be the real document, so every '
+        'assertion below would pass while checking nothing'
     )
 
 
@@ -105,9 +105,9 @@ def test_the_present_tense_sections_are_not_empty(name):
     """If the stage-stripping ever eats a whole file, say so loudly."""
     stripped = _present_tense_only(_text(name))
     assert len(stripped) > 2000, (
-        'after removing stage sections only {} chars of {} remain; the '
+        f'after removing stage sections only {len(stripped)} chars of {name} remain; the '
         'section boundaries have moved and this file is no longer checking '
-        'anything'.format(len(stripped), name)
+        'anything'
     )
 
 
@@ -153,7 +153,7 @@ def test_every_test_name_it_names_exists(name):
     """
     named = set(re.findall(r'\btest_[a-z0-9_]+\b', _present_tense_only(_text(name))))
     if not named:
-        pytest.skip('{} names no tests outside the stage plan'.format(name))
+        pytest.skip(f'{name} names no tests outside the stage plan')
 
     # Filenames as well as contents. A module named tests/test_x.py rarely
     # contains the string "test_x" anywhere inside it, so citing a whole guard
@@ -222,10 +222,10 @@ def test_the_stage_list_is_ordered_and_unique():
     nums = [float(h) for h in heads]
     assert nums, 'docs/stage-history.md has no "### Stage N" headings'
     dupes = sorted({n for n in nums if nums.count(n) > 1})
-    assert not dupes, 'a stage number appears twice: {}'.format(dupes)
+    assert not dupes, f'a stage number appears twice: {dupes}'
     assert nums == sorted(nums), (
-        'stage headings are out of reading order: {}\nNumbers are frozen, but '
-        'they must still appear in ascending order.'.format(nums)
+        f'stage headings are out of reading order: {nums}\nNumbers are frozen, but '
+        'they must still appear in ascending order.'
     )
 
 
@@ -237,8 +237,8 @@ def test_claude_md_holds_no_stage_sections():
     the stage history only."""
     stray = re.findall(r'^### Stage [0-9].*$', _text('CLAUDE.md'), re.M)
     assert not stray, (
-        'CLAUDE.md has stage section(s) again: {}\nStage sections live in '
-        'docs/stage-history.md; CLAUDE.md keeps a one-line index.'.format(stray)
+        f'CLAUDE.md has stage section(s) again: {stray}\nStage sections live in '
+        'docs/stage-history.md; CLAUDE.md keeps a one-line index.'
     )
 
 
@@ -255,9 +255,9 @@ def test_claude_md_points_at_the_traps_and_the_stage_history():
     assert m, 'CLAUDE.md has no "### Start here" section to hold the pointers'
     start = m.group(1)
     for target in ('docs/traps.md', 'docs/stage-history.md'):
-        assert '`{}`'.format(target) in start, (
-            'CLAUDE.md\'s "Start here" never names `{}`, so a session reading '
-            'it cold would not learn that file exists'.format(target))
+        assert f'`{target}`' in start, (
+            f'CLAUDE.md\'s "Start here" never names `{target}`, so a session reading '
+            'it cold would not learn that file exists')
 
 
 def test_claude_md_stays_short_enough_to_read_cold():
@@ -266,6 +266,6 @@ def test_claude_md_stays_short_enough_to_read_cold():
     and anything current to docs/context.md."""
     n = len(_text('CLAUDE.md').splitlines())
     assert n <= MAX_CLAUDE_MD_LINES, (
-        'CLAUDE.md is {} lines, over {}. Move history to '
+        f'CLAUDE.md is {n} lines, over {MAX_CLAUDE_MD_LINES}. Move history to '
         'docs/stage-history.md, traps to docs/traps.md, and current state to '
-        'docs/context.md.'.format(n, MAX_CLAUDE_MD_LINES))
+        'docs/context.md.')

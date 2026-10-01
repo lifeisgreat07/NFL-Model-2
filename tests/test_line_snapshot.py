@@ -35,7 +35,6 @@ import json
 import pandas as pd
 import pytest
 
-
 from src.pipeline import weekly_update as wu  # noqa: E402
 
 

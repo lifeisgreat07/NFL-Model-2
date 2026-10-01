@@ -43,7 +43,7 @@ import argparse
 import json
 import re
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 REPO = Path(__file__).parents[2]
@@ -180,7 +180,7 @@ def build(comments):
     rows.sort(key=lambda r: (r['posted_utc'] or '', r['pr'] or 0))
     mark_superseded(rows)
     return {
-        'generated_utc': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'generated_utc': datetime.now(UTC).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'note': (
             'Every audit Booth has posted. Superseded runs are kept and '
             'flagged rather than deleted -- only the newest audit per pull '
@@ -213,7 +213,7 @@ def main(argv=None):
     print('{} claims re-executed, {} discrepancies on {} pull requests'.format(
         s['claims_checked'], s['discrepancies_found'],
         s['pull_requests_with_a_discrepancy']))
-    print('written to {}'.format(args.out))
+    print(f'written to {args.out}')
     return 0
 
 

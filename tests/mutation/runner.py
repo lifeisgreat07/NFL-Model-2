@@ -56,7 +56,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from corpus import REPO_ROOT, load_corpus, anchor_occurrences, CorpusError
+from corpus import REPO_ROOT, CorpusError, anchor_occurrences, load_corpus
 
 CAUGHT, SURVIVED, WRONG_GUARD, BAD_ANCHOR = 'CAUGHT', 'SURVIVED', 'WRONG-GUARD', 'BAD-ANCHOR'
 

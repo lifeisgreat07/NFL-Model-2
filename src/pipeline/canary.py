@@ -30,9 +30,10 @@ import argparse
 import traceback
 from pathlib import Path
 
-
 from src.pipeline.data_quality import Report  # noqa: E402
-from src.pipeline.paths import current_season  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+from src.pipeline.paths import (
+    current_season,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+)
 
 
 def run(season, steps=None):
@@ -57,10 +58,9 @@ def run(season, steps=None):
 
 
 def default_steps():
+    from src.pipeline import data_quality, schema_check
     from src.pipeline.config import TRAIN_SEASONS
     from src.pipeline.data_loader import load_plays, load_schedule
-    from src.pipeline import data_quality
-    from src.pipeline import schema_check
 
     def plays(state):
         seasons = sorted(set(TRAIN_SEASONS) | {state['season']})

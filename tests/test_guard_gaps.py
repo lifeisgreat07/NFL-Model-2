@@ -29,10 +29,10 @@ import pytest
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT / 'tests' / 'mutation'))
 
-from src.agents import scout_preflight as pf  # noqa: E402
-from src.agents import session_wrapup as sw  # noqa: E402
 import runner  # noqa: E402
 
+from src.agents import scout_preflight as pf  # noqa: E402
+from src.agents import session_wrapup as sw  # noqa: E402
 
 # ------------------------------------------------------------ 1. quotations
 

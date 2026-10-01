@@ -28,7 +28,6 @@ import json
 import sys
 from pathlib import Path
 
-
 ALERT_CONCLUSIONS = ('failure', 'timed_out')
 
 

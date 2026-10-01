@@ -10,7 +10,7 @@ Run with: pytest tests/test_team_news.py -v
 """
 import json
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
@@ -22,7 +22,7 @@ from src.pipeline import team_news as tn  # noqa: E402
 WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
 WEEKEND = ROOT / '.github' / 'workflows' / 'weekend-refresh.yml'
 
-NOW = datetime(2026, 10, 2, 12, tzinfo=timezone.utc)
+NOW = datetime(2026, 10, 2, 12, tzinfo=UTC)
 
 
 def depth(*rows, dt='2026-10-01T12:00:00Z'):

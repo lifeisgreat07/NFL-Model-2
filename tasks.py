@@ -19,7 +19,7 @@ task with that command's exit code.
 import subprocess
 import sys
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -37,7 +37,7 @@ TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/pipeline/weekly_upda
 def _slice_seed(argv):
     if '--seed' in argv:
         return argv[argv.index('--seed') + 1]
-    return datetime.now(timezone.utc).strftime('%Y%m%d')
+    return datetime.now(UTC).strftime('%Y%m%d')
 
 
 def _axe():

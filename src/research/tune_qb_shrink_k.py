@@ -33,12 +33,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from src.pipeline.data_loader import load_plays, load_schedule, load_snap_counts
-from src.pipeline.ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
 from src.pipeline import ratings_engine
 from src.pipeline.config import TRAIN_SEASONS
-from src.pipeline.weekly_update import build_historical_features, build_qb_change_lookup
+from src.pipeline.data_loader import load_plays, load_schedule, load_snap_counts
 from src.pipeline.ol_continuity import compute_ol_continuity_lookup
+from src.pipeline.ratings_engine import build_qb_ratings, build_team_ratings, prep_plays
+from src.pipeline.weekly_update import build_historical_features, build_qb_change_lookup
 from src.research.backtest import backtest
 
 VALIDATION_SEASONS = [2022, 2023]

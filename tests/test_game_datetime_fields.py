@@ -28,8 +28,8 @@ Two things these tests exist to hold:
     because a fixture cannot go stale in the way a shipped file can.
 """
 import ast
-import io
 import inspect
+import io
 import json
 import re
 import tokenize
@@ -93,8 +93,7 @@ def test_the_kickoff_field_carries_its_timezone_in_its_name():
     records are built. The source COLUMN is still called gametime; this is
     about the key those modules write.
     """
-    from src.pipeline import generate_dashboard
-    from src.pipeline import weekly_update
+    from src.pipeline import generate_dashboard, weekly_update
 
     for module in (weekly_update, generate_dashboard):
         src = _code_only(inspect.getsource(module))

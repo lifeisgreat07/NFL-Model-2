@@ -18,7 +18,11 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 
 from src.research.ats_evaluation import (  # noqa: E402
-    BREAK_EVEN, add_ats_columns, assess, bootstrap_rate, hit_rate,
+    BREAK_EVEN,
+    add_ats_columns,
+    assess,
+    bootstrap_rate,
+    hit_rate,
 )
 
 

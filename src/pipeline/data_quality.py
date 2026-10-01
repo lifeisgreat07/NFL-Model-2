@@ -29,8 +29,11 @@ Run standalone: python -m src.pipeline.data_quality --season 2026
 import argparse
 from dataclasses import dataclass, field
 
-
-from src.pipeline.data_loader import QB_SCHEDULE_COLS, REQUIRED_PBP_COLS, REQUIRED_SCHEDULE_COLS  # noqa: E402
+from src.pipeline.data_loader import (  # noqa: E402
+    QB_SCHEDULE_COLS,
+    REQUIRED_PBP_COLS,
+    REQUIRED_SCHEDULE_COLS,
+)
 
 #: The 32 franchises under the abbreviations nflverse uses for current
 #: seasons. Older seasons use OAK/SD/STL; the checks below only look at the

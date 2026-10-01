@@ -27,7 +27,7 @@ import argparse
 import re
 import subprocess
 import sys
-from datetime import datetime, date
+from datetime import date, datetime
 from pathlib import Path
 
 REPO = Path(__file__).parents[2]
@@ -56,22 +56,21 @@ def section(title):
 def repo_state():
     section('Repository')
     branch = _git('rev-parse', '--abbrev-ref', 'HEAD')
-    print('  branch          {}'.format(branch))
+    print(f'  branch          {branch}')
 
     dirty = _git('status', '--porcelain')
     print('  working tree    {}'.format(
-        'clean' if not dirty else '{} uncommitted file(s) -- read these before '
-        'you start, they are the last session\'s unfinished thought'.format(
-            len(dirty.splitlines()))))
+        'clean' if not dirty else f'{len(dirty.splitlines())} uncommitted file(s) -- read these before '
+        'you start, they are the last session\'s unfinished thought'))
     if dirty:
         for line in dirty.splitlines()[:10]:
             print('                  ' + line)
 
     upstream = _git('rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{u}')
     if upstream:
-        ahead = _git('rev-list', '--count', '{}..HEAD'.format(upstream))
-        behind = _git('rev-list', '--count', 'HEAD..{}'.format(upstream))
-        print('  vs {:<13} {} ahead, {} behind'.format(upstream, ahead, behind))
+        ahead = _git('rev-list', '--count', f'{upstream}..HEAD')
+        behind = _git('rev-list', '--count', f'HEAD..{upstream}')
+        print(f'  vs {upstream:<13} {ahead} ahead, {behind} behind')
     else:
         print('  upstream        none -- commits here exist only on this machine')
     return branch
@@ -89,7 +88,7 @@ def branches():
         if name == 'main':
             continue
         state = 'merged into main -- safe to delete' if name in merged else 'NOT merged'
-        print('  {:<38} {}'.format(name, state))
+        print(f'  {name:<38} {state}')
 
 
 def context_file():
@@ -111,8 +110,8 @@ def context_file():
         age = (date.today() - stamped).days
         note = ''
         if age > CONTEXT_STALE_DAYS:
-            note = '  <- {} days old; treat every claim in it as unverified'.format(age)
-        print('  last updated    {} ({} day(s) ago){}'.format(stamped, age, note))
+            note = f'  <- {age} days old; treat every claim in it as unverified'
+        print(f'  last updated    {stamped} ({age} day(s) ago){note}')
     else:
         print('  last updated    NO STAMP')
 
@@ -132,13 +131,13 @@ def context_file():
                 state = 'still open'
             else:
                 state = 'GONE -- no such branch locally or on origin'
-            print('    {:<38} {}'.format(name, state))
+            print(f'    {name:<38} {state}')
 
     unmentioned = sorted((local | remote) - named - {'main', 'HEAD'})
     if unmentioned:
         print('  open branches it does NOT mention:')
         for name in unmentioned:
-            print('    {}'.format(name))
+            print(f'    {name}')
 
 
 def suite(skip):
@@ -156,7 +155,7 @@ def suite(skip):
     if not got:
         print('  a real run      COULD NOT RUN -- fix this before trusting anything')
         return
-    print('  a real run      {}'.format(got.group(1)))
+    print(f'  a real run      {got.group(1)}')
     if claimed and claimed.group(1).replace(',', '') != got.group(1):
         print('  MISMATCH. The documented figure is wrong; correct it now rather '
               'than carrying it through the session.')

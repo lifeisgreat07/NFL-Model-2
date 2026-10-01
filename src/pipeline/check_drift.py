@@ -21,8 +21,13 @@ import math
 from pathlib import Path
 
 from src.pipeline.config import BACKTEST_SEASONS
-from src.pipeline.paths import DATA_DIR, RESULTS_DIR, parse_week  # src/pipeline/paths.py, Stage 32 item 15
+from src.pipeline.paths import (  # src/pipeline/paths.py, Stage 32 item 15
+    DATA_DIR,
+    RESULTS_DIR,
+    parse_week,
+)
 from src.pipeline.runlog import get_logger  # noqa: E402  (Stage 32 item 17)
+
 log = get_logger(__name__)
 MIN_GAMES_TO_TEST = 30  # below this, any gap could easily just be noise
 SIGNIFICANCE_Z = 1.96  # two-sided 95% -- consistent with the CIs used everywhere else in this project

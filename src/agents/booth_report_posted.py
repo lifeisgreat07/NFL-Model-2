@@ -39,10 +39,15 @@ Exit 0 with a one-line confirmation, or 1 with the reason.
 """
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
-from src.agents.booth_verdict import BOOTH_ACCOUNTS, VerdictError, author, extract  # noqa: E402
+from src.agents.booth_verdict import (  # noqa: E402
+    BOOTH_ACCOUNTS,
+    VerdictError,
+    author,
+    extract,
+)
 
 MIN_SHA_PREFIX = 7
 
@@ -69,7 +74,7 @@ def load_comments(text):
 
 
 def _parse_time(value):
-    return datetime.fromisoformat(value.replace('Z', '+00:00')).astimezone(timezone.utc)
+    return datetime.fromisoformat(value.replace('Z', '+00:00')).astimezone(UTC)
 
 
 def head_matches(block_head, head_sha):

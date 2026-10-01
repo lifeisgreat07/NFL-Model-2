@@ -32,20 +32,22 @@ Usage:
 """
 import argparse
 import json
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
-from typing import Any, Optional, Sequence
+from typing import Any
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
-from reportlab.platypus import (Paragraph, SimpleDocTemplate, Spacer, Table,
-                                TableStyle)
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 REPO_ROOT = Path(__file__).parents[2]
-from src.pipeline.paths import PRED_DIR  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+from src.pipeline.paths import (
+    PRED_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+)
 
 # Only ASCII and the built-in Helvetica family are used anywhere in this
 # file. ReportLab's base-14 fonts have no glyphs for things like check-box
@@ -64,10 +66,10 @@ class PickRow:
     away: str
     home: str
     pick: str
-    spread: Optional[float]
-    model_a: Optional[float]
-    model_b: Optional[float]
-    market: Optional[float]
+    spread: float | None
+    model_a: float | None
+    model_b: float | None
+    market: float | None
     notes: Sequence[str]
 
     @property
@@ -134,14 +136,14 @@ def build_picks_rows(preds: Sequence[dict]) -> list[PickRow]:
     return rows
 
 
-def _pct(value: Optional[float]) -> str:
+def _pct(value: float | None) -> str:
     """Home-win probability as a percentage string, or a dash when absent.
     Absent is a real case (Model B needs a spread, which isn't always
     posted yet), and printing a dash is more honest than printing 0%."""
     return '--' if value is None else f"{value * 100:.1f}%"
 
 
-def _spread(value: Optional[float]) -> str:
+def _spread(value: float | None) -> str:
     """Spread as posted, from the home team's perspective, sign included so
     the direction is unambiguous on paper."""
     if value is None:
@@ -155,7 +157,7 @@ def render_picks_pdf(
     week: int,
     model_version: str,
     out_path: Path,
-    generated_on: Optional[date] = None,
+    generated_on: date | None = None,
 ) -> Path:
     """Render the rows to a letter-size PDF at out_path."""
     out_path = Path(out_path)

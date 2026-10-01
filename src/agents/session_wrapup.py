@@ -83,15 +83,15 @@ def check_suite_count():
                      'verified must not be published\n' + run.stdout[-400:])
     if broken:
         return Check('suite count', False,
-                     'the suite is RED: {} failed or errored beside {} passed. '
-                     'Fix the failures; do not touch the count.'.format(broken, actual))
+                     f'the suite is RED: {broken} failed or errored beside {actual} passed. '
+                     'Fix the failures; do not touch the count.')
     if actual != claimed:
         return Check('suite count', False,
-                     'CLAUDE.md says {} passing, a real run gives {}. '
+                     f'CLAUDE.md says {claimed} passing, a real run gives {actual}. '
                      'Fix the file before the next session inherits '
-                     'it.'.format(claimed, actual))
+                     'it.')
     return Check('suite count', True,
-                 'CLAUDE.md and a real run both say {}'.format(actual))
+                 f'CLAUDE.md and a real run both say {actual}')
 
 
 def check_tree_clean():
@@ -118,16 +118,16 @@ def check_nothing_unpushed():
         if on_remote:
             first = on_remote.splitlines()[0].strip()
             return Check('unpushed work', True,
-                         'detached HEAD, but this commit is on {} -- nothing '
-                         'is unpushed'.format(first))
+                         f'detached HEAD, but this commit is on {first} -- nothing '
+                         'is unpushed')
         return Check('unpushed work', False,
-                     "branch {!r} has no upstream and this commit is on no "
-                     "remote branch; it exists only on this machine".format(branch))
+                     f"branch {branch!r} has no upstream and this commit is on no "
+                     "remote branch; it exists only on this machine")
     ahead = _git('rev-list', '--count', '@{u}..HEAD')
     if ahead and ahead != '0':
         return Check('unpushed work', False,
-                     '{} commit(s) on {} are not pushed'.format(ahead, branch))
-    return Check('unpushed work', True, '{} is level with {}'.format(branch, upstream))
+                     f'{ahead} commit(s) on {branch} are not pushed')
+    return Check('unpushed work', True, f'{branch} is level with {upstream}')
 
 
 def check_branch_state():
@@ -136,8 +136,8 @@ def check_branch_state():
     if branch == 'main':
         return Check('branch', True, 'on main')
     return Check('branch', True,
-                 'on {} -- make sure CLAUDE.md says what this branch is '
-                 'for and whether its PR is open'.format(branch))
+                 f'on {branch} -- make sure CLAUDE.md says what this branch is '
+                 'for and whether its PR is open')
 
 
 def check_context_is_current():
@@ -173,16 +173,16 @@ def check_context_is_current():
     accepted = {today.isoformat(), (today + timedelta(days=1)).isoformat()}
     if m.group(1) not in accepted:
         return Check('context file', False,
-                     'docs/context.md was last updated {}, not today ({}). '
+                     f'docs/context.md was last updated {m.group(1)}, not today ({today.isoformat()}). '
                      'Rewrite it: open branches, what each waits on, and the '
                      'single next action.\nEXPECTED at the start of a session '
                      '-- this check is a to-do, not a regression. Tomorrow is '
                      'accepted (the agent writes on UTC, this runs on the '
                      'machine); yesterday is not, because a context file that '
                      'is "nearly current" is the thing that gets believed and '
-                     'is wrong.'.format(m.group(1), today.isoformat()))
+                     'is wrong.')
     return Check('context file', True,
-                 'stamped {}'.format(m.group(1)))
+                 f'stamped {m.group(1)}')
 
 
 def check_session_memory_written():
@@ -201,10 +201,10 @@ def check_session_memory_written():
                     for p in memory.glob(stamp.isoformat() + '*.md'))
     if not todays:
         return Check('session memory', False,
-                     'no memory/{}.md yet. Four headings: Shipped, Decided '
+                     f'no memory/{today.isoformat()}.md yet. Four headings: Shipped, Decided '
                      '(with the reasoning), Surprised us, Left open.\n'
                      'EXPECTED at the start of a session -- a to-do, not a '
-                     'regression.'.format(today.isoformat()))
+                     'regression.')
     return Check('session memory', True,
                  'wrote {}'.format(', '.join(p.name for p in todays)))
 
@@ -243,12 +243,12 @@ def main():
 
     print('\nBy hand -- nothing below can be checked mechanically:')
     for i, q in enumerate(BY_HAND, 1):
-        print('  {}. {}'.format(i, q))
+        print(f'  {i}. {q}')
 
     print()
     if failed:
-        print('{} mechanical check(s) failed. The next session reads CLAUDE.md '
-              'cold and believes it.'.format(failed))
+        print(f'{failed} mechanical check(s) failed. The next session reads CLAUDE.md '
+              'cold and believes it.')
         return 1
     print('Mechanical checks pass. The by-hand list is the real work.')
     return 0

@@ -11,7 +11,6 @@ Run with: pytest tests/test_booth_verdict.py -v
 
 import pytest
 
-
 from src.agents import booth_verdict as bv  # noqa: E402
 
 

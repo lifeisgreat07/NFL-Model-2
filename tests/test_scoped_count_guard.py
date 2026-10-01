@@ -35,7 +35,11 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 
 from src.agents.scout_preflight import (  # noqa: E402
-    SCOPED_COUNT_PHRASINGS, SCOPED_COUNT_RE, check_scoped_test_counts, collected_count)
+    SCOPED_COUNT_PHRASINGS,
+    SCOPED_COUNT_RE,
+    check_scoped_test_counts,
+    collected_count,
+)
 
 # PR #54's sentence, as Booth found it, said:
 #

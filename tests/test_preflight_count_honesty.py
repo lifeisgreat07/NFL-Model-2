@@ -22,7 +22,6 @@ ROOT = Path(__file__).resolve().parents[1]
 
 from src.agents import scout_preflight as sp  # noqa: E402
 
-
 # --- a red suite must not be described as a stale figure ---
 
 def test_a_red_suite_is_reported_as_red(monkeypatch):

@@ -12,7 +12,13 @@ from typing import TYPE_CHECKING, Any, overload
 
 import numpy as np
 from sklearn.linear_model import Ridge
-from src.pipeline.config import RIDGE_ALPHA, RECENCY_HALF_LIFE, QB_SHRINK_K, MIN_PLAYS_FOR_RATING
+
+from src.pipeline.config import (
+    MIN_PLAYS_FOR_RATING,
+    QB_SHRINK_K,
+    RECENCY_HALF_LIFE,
+    RIDGE_ALPHA,
+)
 
 if TYPE_CHECKING:
     import pandas as pd

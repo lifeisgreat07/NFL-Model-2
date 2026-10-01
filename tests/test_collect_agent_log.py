@@ -11,7 +11,6 @@ Run with: pytest tests/test_collect_agent_log.py -v
 import json
 from pathlib import Path
 
-
 from src.agents import collect_agent_log as cal  # noqa: E402
 
 
@@ -22,18 +21,17 @@ def _block(claims, overall='SAFE TO MERGE', head='abc1234', pr=1):
 
 def _audit(pr, when, claims=None, overall='SAFE TO MERGE', head='abc1234',
            block=True, body_extra='', login='claude[bot]'):
-    body = '## Booth Audit: PR #{}\n\n'.format(pr)
+    body = f'## Booth Audit: PR #{pr}\n\n'
     if head:
-        body += 'Head commit audited: `{}`\n'.format(head)
-    body += '\nClaims checked: {}\n'.format(len(claims or []))
-    body += '\n### Overall verdict\n{}\n'.format(overall)
+        body += f'Head commit audited: `{head}`\n'
+    body += f'\nClaims checked: {len(claims or [])}\n'
+    body += f'\n### Overall verdict\n{overall}\n'
     body += body_extra
     if block:
-        body += '\n```booth-verdict\n{}\n```\n'.format(
-            _block(claims or [], overall, head, pr))
+        body += f'\n```booth-verdict\n{_block(claims or [], overall, head, pr)}\n```\n'
     return {
         'body': body,
-        'html_url': 'https://github.com/o/r/pull/{}#issuecomment-{}'.format(pr, when),
+        'html_url': f'https://github.com/o/r/pull/{pr}#issuecomment-{when}',
         'created_at': when,
         'user': {'login': login},
     }
