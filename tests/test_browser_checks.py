@@ -18,6 +18,8 @@ Run with: pytest tests/test_browser_checks.py -v
 """
 import ast
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -155,3 +157,15 @@ def test_the_sortmark_rule_runs_on_every_page_and_reads_what_is_drawn(checker):
     loop = re.search(r'for pid in ids:(.*?)problems, stops = await tab_walk', src, re.S)
     assert loop and 'page.evaluate(SORTMARK_JS)' in loop.group(1), (
         'the sortmark rule is not run for each page')
+
+def test_the_states_builder_runs_by_path():
+    """browser-checks.yml and tasks.py run tests/browser/build_states.py by
+    path, so Python puts tests/browser/ on sys.path, not the root, and its
+    `from src.pipeline import ...` resolves only because the script puts the
+    root there itself. The suite imports the module under pytest, where the
+    root is always on the path, so only a run by path sees it fail (#255's
+    first Browser checks run did, in CI). --help imports the module and
+    builds nothing."""
+    r = subprocess.run([sys.executable, str(ROOT / 'tests' / 'browser' / 'build_states.py'), '--help'],
+                       capture_output=True, text=True, cwd=str(ROOT / 'tests'))
+    assert r.returncode == 0, r.stderr[-800:]

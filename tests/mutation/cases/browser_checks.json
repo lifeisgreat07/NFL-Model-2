@@ -3,6 +3,14 @@
   "tests": "tests/test_browser_checks.py",
   "cases": [
     {
+      "id": "states-builder-loses-the-root",
+      "target": "tests/browser/build_states.py",
+      "why": "the script runs by path in CI, where only its own folder is on sys.path; without the root its package imports fail and the states pages are never built, while every pytest run, which has the root, stays green",
+      "find": "sys.path.insert(0, str(ROOT))\n",
+      "replace": "",
+      "expect_caught_by": "test_the_states_builder_runs_by_path"
+    },
+    {
       "id": "browser-checks-skip-the-self-test",
       "why": "the step that proves every rule can fail is replaced by a no-op. The job still goes green on a real page -- which is exactly what it would do if a rule had gone blind, so green stops meaning anything.",
       "find": "        run: python tests/browser/check_page.py --self-test --axe node_modules/axe-core/axe.min.js --tmp \"$RUNNER_TEMP\"",
