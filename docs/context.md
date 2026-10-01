@@ -39,7 +39,7 @@ Then, in order:
 
 | What | State | Waiting on |
 |---|---|---|
-| #255 packages | Open, whole corpus 977/977 at `bf51a9e` | Mark: the routine edit, then his merge |
+| #255 packages | Open at `ebbc172`: whole corpus 977/977 at `bf51a9e`, then a fix for the states builder run by path (26/26) | Its description still describes `bf51a9e`: the updated text is in the session archive (pkg, body14-v3); then Booth on the head, the routine edit, Mark's merge |
 | QB override routine prompt | `sys.path` imports; names the old lock time | Mark edits it at claude.ai/code/routines |
 | claude-code-action pin | On v1.0.236 | A hand bump when a release matters |
 | Season Accuracy's forecast score | Merged (#160), not on the page yet | 50 graded games: after week 4 at the earliest |
