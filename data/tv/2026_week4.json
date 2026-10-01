@@ -1,0 +1,264 @@
+{
+  "reads": [
+    "2026-10-01T17:20:52Z"
+  ],
+  "changes": [],
+  "games": [
+    {
+      "elias": "2026100100",
+      "networks": [
+        "Prime Video"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "PIT",
+      "home": "CLE",
+      "territory": "NATIONAL",
+      "listed": [
+        "Prime Video"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100400",
+      "networks": [
+        "NFL Network"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "IND",
+      "home": "WAS",
+      "territory": "NATIONAL",
+      "listed": [
+        "NFL Network"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100401",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "TEN",
+      "home": "BAL",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100402",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NE",
+      "home": "BUF",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100403",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NYJ",
+      "home": "CHI",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100404",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "JAX",
+      "home": "CIN",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100405",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "DAL",
+      "home": "HOU",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100406",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "ARI",
+      "home": "NYG",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100407",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LA",
+      "home": "PHI",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100408",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "GB",
+      "home": "TB",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100409",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "MIA",
+      "home": "MIN",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100410",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "KC",
+      "home": "LV",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100411",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LAC",
+      "home": "SEA",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100412",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "DEN",
+      "home": "SF",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100413",
+      "networks": [
+        "NBC"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "DET",
+      "home": "CAR",
+      "territory": "NATIONAL",
+      "listed": [
+        "NBC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    },
+    {
+      "elias": "2026100500",
+      "networks": [
+        "ESPN"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "ATL",
+      "home": "NO",
+      "territory": "NATIONAL",
+      "listed": [
+        "ESPN"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-4",
+      "read_at": "2026-10-01T17:20:52Z"
+    }
+  ]
+}

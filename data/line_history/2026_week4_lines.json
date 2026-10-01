@@ -190,5 +190,101 @@
     "home": "NO",
     "away": "ATL",
     "spread_line": 3.0
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "CLE",
+    "away": "PIT",
+    "spread_line": -2.5
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "WAS",
+    "away": "IND",
+    "spread_line": -3.5
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "BAL",
+    "away": "TEN",
+    "spread_line": 11.5
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "BUF",
+    "away": "NE",
+    "spread_line": 6.5
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "CHI",
+    "away": "NYJ",
+    "spread_line": 3.5
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "CIN",
+    "away": "JAX",
+    "spread_line": 2.5
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "HOU",
+    "away": "DAL",
+    "spread_line": 3.0
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "NYG",
+    "away": "ARI",
+    "spread_line": -2.5
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "PHI",
+    "away": "LA",
+    "spread_line": -3.0
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "TB",
+    "away": "GB",
+    "spread_line": -3.5
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "MIN",
+    "away": "MIA",
+    "spread_line": 10.5
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "LV",
+    "away": "KC",
+    "spread_line": -4.5
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "SEA",
+    "away": "LAC",
+    "spread_line": 7.0
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "SF",
+    "away": "DEN",
+    "spread_line": 3.0
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "CAR",
+    "away": "DET",
+    "spread_line": -3.5
+  },
+  {
+    "captured_date": "2026-10-01",
+    "home": "NO",
+    "away": "ATL",
+    "spread_line": 2.5
   }
 ]

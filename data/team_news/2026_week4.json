@@ -1,0 +1,370 @@
+{
+  "season": 2026,
+  "week": 4,
+  "read_at": "2026-10-01T17:20:54Z",
+  "sources": {
+    "injuries": "nflverse injury report, via nflreadpy.load_injuries",
+    "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
+    "depth_chart_snapshot": "2026-10-01T14:25:58Z"
+  },
+  "teams": {
+    "CLE": {
+      "qb": {
+        "name": "Deshaun Watson",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "PIT": {
+      "qb": {
+        "name": "Aaron Rodgers",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "WAS": {
+      "qb": {
+        "name": "Jayden Daniels",
+        "basis": "announced",
+        "changed_from": "M.Mariota"
+      },
+      "injury_report": "published",
+      "out": [
+        {
+          "name": "Nick Cross",
+          "position": "S",
+          "injury": "Illness"
+        }
+      ],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "IND": {
+      "qb": {
+        "name": "Daniel Jones",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "BAL": {
+      "qb": {
+        "name": "Lamar Jackson",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "TEN": {
+      "qb": {
+        "name": "Cam Ward",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "BUF": {
+      "qb": {
+        "name": "Josh Allen",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "NE": {
+      "qb": {
+        "name": "Drake Maye",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "CHI": {
+      "qb": {
+        "name": "Case Keenum",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "NYJ": {
+      "qb": {
+        "name": "Geno Smith",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "CIN": {
+      "qb": {
+        "name": "Joe Burrow",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "JAX": {
+      "qb": {
+        "name": "Trevor Lawrence",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "HOU": {
+      "qb": {
+        "name": "C.J. Stroud",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "DAL": {
+      "qb": {
+        "name": "Dak Prescott",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "NYG": {
+      "qb": {
+        "name": "Jameis Winston",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "ARI": {
+      "qb": {
+        "name": "Jacoby Brissett",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "PHI": {
+      "qb": {
+        "name": "Jalen Hurts",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "LA": {
+      "qb": {
+        "name": "Matthew Stafford",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "TB": {
+      "qb": {
+        "name": "Jalon Daniels",
+        "basis": "override",
+        "changed_from": "B.Mayfield"
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "GB": {
+      "qb": {
+        "name": "Jordan Love",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "MIN": {
+      "qb": {
+        "name": "Kyler Murray",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "MIA": {
+      "qb": {
+        "name": "Malik Willis",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "LV": {
+      "qb": {
+        "name": "Kirk Cousins",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "KC": {
+      "qb": {
+        "name": "Patrick Mahomes",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "SEA": {
+      "qb": {
+        "name": "Drew Lock",
+        "basis": "announced",
+        "changed_from": "S.Darnold"
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "LAC": {
+      "qb": {
+        "name": "Justin Herbert",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "SF": {
+      "qb": {
+        "name": "Brock Purdy",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "DEN": {
+      "qb": {
+        "name": "Bo Nix",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "CAR": {
+      "qb": {
+        "name": "Bryce Young",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "DET": {
+      "qb": {
+        "name": "Jared Goff",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "NO": {
+      "qb": {
+        "name": "Tyler Shough",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    },
+    "ATL": {
+      "qb": {
+        "name": "Michael Penix Jr.",
+        "basis": "announced",
+        "changed_from": null
+      },
+      "injury_report": "published",
+      "out": [],
+      "doubtful": [],
+      "questionable_starters": 0
+    }
+  }
+}
