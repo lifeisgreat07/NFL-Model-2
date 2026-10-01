@@ -90,6 +90,9 @@ COPIES = [
     (r'^(PRED_DIR|RESULTS_DIR|DATA_DIR|PREVIEW_DIR|SKIPPED_DIR|STATUS_DIR)\s*=', 'a data folder'),
     (r'^def current_season\(', 'the season rule'),
     (r'^def parse_week(_stem)?\(', 'the week-in-a-file-name rule'),
+    # Inline, too: weekend_refresh and weekly_update each still split the
+    # stem themselves after #241 (the third audit found both). Stage 35.
+    (r"\.split\(['\"]_week['\"]\)", 'the week-in-a-file-name rule, inline'),
     (r'^(NFL_TEAMS|TEAM_NAMES)\s*=', 'the team list'),
 ]
 

@@ -23,3 +23,7 @@ pytest==9.1.1
 # Pinned for the same reason: a new ruff release can add findings to a rule,
 # and a PR should not go red because the linter changed under it.
 ruff==0.16.9
+
+# The type check run-tests.yml runs over the weekly run's two core modules
+# (Stage 35). Pinned for ruff's reason: a new mypy release can add errors.
+mypy==2.3.1

@@ -8,7 +8,7 @@ three files pointed at one anyway. See src/tune_qb_shrink_k.py.)
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, overload
 
 import numpy as np
 from sklearn.linear_model import Ridge
@@ -38,6 +38,16 @@ def prep_plays(raw_pbp: pd.DataFrame) -> tuple[pd.DataFrame, list[WeekKey], dict
     return plays, week_keys, week_to_idx
 
 
+# What the call returns depends on upto_cutoff_i, so the one annotation below
+# (a union of all three) made every caller a type error: the backtest
+# indexes the result by week, the live run reads it as one Ratings. These
+# say which call returns which (Stage 35, from the third audit).
+@overload
+def build_team_ratings(plays: pd.DataFrame, week_keys: list[WeekKey],
+                       upto_cutoff_i: None = None) -> dict[WeekKey, Ratings]: ...
+@overload
+def build_team_ratings(plays: pd.DataFrame, week_keys: list[WeekKey],
+                       upto_cutoff_i: int) -> Ratings | None: ...
 def build_team_ratings(plays: pd.DataFrame, week_keys: list[WeekKey],
                        upto_cutoff_i: int | None = None) -> Ratings | dict[WeekKey, Ratings] | None:
     """Two-way fixed-effects ridge regression of play EPA on offense/defense

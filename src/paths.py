@@ -13,7 +13,14 @@ worked these out for itself:
 - the 32 teams, as TEAM_NAMES in weekly_update and NFL_TEAMS in
   data_quality.
 
-Each now has one definition here. The modules keep their own names for them
+Each now has one definition here, with one deliberate exception:
+weekly_summary's regexes stay. They match paths in `git status` output
+(`predictions/preview/2026_week4.json`), a different input from a file
+stem, and they also tell a lock from a preview from a grade by folder.
+Two inline splits of a stem were missed in #241 and moved here in Stage 35
+(weekend_refresh.weeks_to_refresh, weekly_update._week_numbers);
+tests/test_paths.py's COPIES now finds an inline split as well as a def.
+The modules keep their own names for them
 (weekly_update.PRED_DIR, data_quality.NFL_TEAMS, ...), bound to these, so
 nothing that reads or patches those names changes. tv_channels.TEAMS stays
 where it is: it maps nfl.com's full names to abbreviations, a translation

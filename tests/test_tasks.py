@@ -61,13 +61,25 @@ def runs(workflow):
     return out
 
 
+TYPES = 'python -m mypy --ignore-missing-imports src/weekly_update.py src/ratings_engine.py'
+
+
 def test_lint_is_what_run_tests_runs():
-    assert commands('lint') == ['ruff check .']
-    assert 'ruff check .' in runs('run-tests.yml')
+    assert commands('lint') == ['ruff check .', TYPES]
+    wf = runs('run-tests.yml')
+    assert 'ruff check .' in wf and TYPES in wf
+    assert wf.index('ruff check .') < wf.index(TYPES)
 
 
 def test_check_is_lint_then_the_suite():
-    assert commands('check') == ['ruff check .', commands('test')[0]]
+    assert commands('check') == ['ruff check .', TYPES, commands('test')[0]]
+
+
+def test_mypy_is_pinned_like_ruff():
+    """run-tests.yml installs requirements-dev.txt; an unpinned mypy could
+    turn a PR red because the checker changed under it."""
+    dev = (ROOT / 'requirements-dev.txt').read_text(encoding='utf-8')
+    assert re.search(r'(?m)^mypy==\d+\.\d+\.\d+$', dev), 'mypy is not pinned in requirements-dev.txt'
 
 
 def test_the_suite_command_is_claude_mds_and_collects_what_the_gate_does():
