@@ -1317,3 +1317,11 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   result before the call that uses the file.** The same day's other
   surprise: this checkout is CRLF, so a regex over conflict markers written
   for `\n` matches nothing; match `\r?\n`.
+- **A document that names a file the pipeline deletes turns `main` red the
+  moment the pipeline runs.** `docs/context.md` named the week 4 preview
+  while asking for it to be checked; the lock deleted it as designed
+  (#237), and the path guard in `tests/test_workflow_docs.py` failed on
+  `main` with no commit by anyone. Found only because 3(b)'s suite ran
+  after the lock. **Describe a file the pipeline will delete in words, not
+  as a backticked path**, and run the suite on `main` after any scheduled
+  run that writes or deletes tracked files before building on it.

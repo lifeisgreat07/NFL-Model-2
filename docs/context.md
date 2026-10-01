@@ -4,48 +4,40 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-09-30, afternoon ET (third audit, 83/100: Stage 35; #249 to #252 merged)
+Last updated: 2026-10-01, afternoon ET (week 4 locked; Stage 35's after-lock queue under way)
 
 ---
 
 ## Right now
 
-**Suite:** 4975 passing, none skipped, on `main` at `ba32eeb` (after #252; the
-same tree #252 was run at, rebased on #251).
+**Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked
+figure. `main` is at the week 4 lock commit `c80cb28` plus docs.
 
-**Next action: check Thursday's lock run** (2026-10-01, cron 11:00 UTC; runs
-start up to 6.5 hours late, so "not run yet" before ~17:30 UTC is normal).
-Confirm it locked week 4 before the 00:15 UTC Friday kickoff, deleted
-`predictions/preview/2026_week4.json` in the same commit, and pushed. It is
-the first lock on the overnight code (`src/paths.py`, the split
-`weekly_update.main`, logging, type hints): its log should read as week 3's
-did, and its summary should say "Preview for 2026 week 4 removed" (#249). Not
-started by 20:00 UTC: start "Weekly update" by hand. A scheduled check
-(`trig_01HuuuPeAXBor9w6hPcxqVLP`) runs this at Thursday 17:00 UTC.
+**Week 4 locked** on Thursday's scheduled run (17:19 UTC, `c80cb28`): the
+preview went in the same commit, the summary said "Preview for 2026 week 4
+removed", no alert, Pages green. The overnight pipeline code has now locked
+a week. TB's pick used the #179 override (Jalon Daniels).
 
-Stage 35 (`docs/stage-history.md`): 1, 1b, 2 and 3(c) done (#249 to #252).
-3(b) `s35-pipeline-remnants` and 3(a) `s35-drift-baseline` are rebased on
-`ba32eeb` and wait for the lock. Then, after the lock, in order:
-1. **Stage 35 items 3(b) then 3(a)**: rebase, suite and scope at the head
-   opened, one PR each. They do not conflict with each other.
-2. **Stage 32 item 14, package `src/`** (Mark: after the lock), proven by the
-   reproducibility audit and a byte-identical page.
+**Next action: Stage 35 item 3(b)** (`s35-pipeline-remnants`, rebased on the
+lock): suite and scope at the head opened, PR, Booth, merge. Then, in order:
+1. **3(a)** `s35-drift-baseline`, the same way.
+2. **Stage 32 item 14, package `src/`**: branch `s32-packages`, built by
+   two scripts in the session archive (pkgmove, fixups), rebuilt on `main` after
+   3(a). Before it merges Mark edits his QB routine's three `sys.path`
+   commands to `from src.pipeline...` (agents cannot edit that routine).
 3. **Ruff `I` and `UP`** (item 18's tail): one dry run, then one PR.
 4. **Stage 33 item 23** (line snapshots for every locked, ungraded week).
-5. **Stage 33 items 21, 22, 24**: registrations shown to Mark before code.
+5. **Stage 33 items 21, 22, 24**: drafts with Mark (R3's switching rule,
+   R4's baseline); committed as a Stage 33 registry under experiments/
+   before anything runs.
 6. **Stage 33 item 26** when the next page-sized feature starts; then Stage
    34 item 32 (real testers, the fourth audit).
-
-Only MERGES wait for the lock: the registrations (documents) and a ready
-`src/` branch (item 14, unmerged) can be prepared before it.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| Thursday lock run | Due Thu 2026-10-01 11:00 UTC | Check as above |
-| QB overrides | Must be merged by 11:00 UTC Thursday | Mark, Wednesday evening |
-| QB override routine prompt | Still names the old lock time | Mark edits it at claude.ai/code/routines (agents cannot) |
+| QB override routine prompt | Names the old lock time and `sys.path` imports | Mark edits it at claude.ai/code/routines before item 14 merges |
 | claude-code-action pin | On v1.0.236 | A hand bump when a release matters |
 | Season Accuracy's forecast score | Merged (#160), not on the page yet | 50 graded games: after week 4 at the earliest |
 | TV exceptions for holiday and Saturday games | Weeks 12, 15, 16 | Sourced entries in `data/tv/exceptions.json` before those weeks |
@@ -54,7 +46,7 @@ Only MERGES wait for the lock: the registrations (documents) and a ready
 
 ## Queued, in order
 
-1. The five after-lock items above.
+1. The after-lock items above.
 2. **Stages 20 to 22**: 20 needs five real testers; 21 waits for week 5; 22 comes from 20.
 3. **Stage 28** and the closing-line backtest: after the regular season.
 
