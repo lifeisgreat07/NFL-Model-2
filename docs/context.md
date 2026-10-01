@@ -4,44 +4,47 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-01, afternoon ET (week 4 locked; Stage 35's after-lock queue under way)
+Last updated: 2026-10-01, evening ET (week 4 locked; #253 and #254 merged; #255 open)
 
 ---
 
 ## Right now
 
 **Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked
-figure. `main` is at the week 4 lock commit `c80cb28` plus docs.
+figure. Week 4 locked on Thursday's scheduled run (`c80cb28`), cleanly.
 
-**Week 4 locked** on Thursday's scheduled run (17:19 UTC, `c80cb28`): the
-preview went in the same commit, the summary said "Preview for 2026 week 4
-removed", no alert, Pages green. The overnight pipeline code has now locked
-a week. TB's pick used the #179 override (Jalon Daniels).
-
-**Next action: Stage 35 item 3(b)** (`s35-pipeline-remnants`, rebased on the
-lock): suite and scope at the head opened, PR, Booth, merge. Then, in order:
-1. **3(a)** `s35-drift-baseline`, the same way.
-2. **Stage 32 item 14, package `src/`**: branch `s32-packages`, built by
-   two scripts in the session archive (pkgmove, fixups), rebuilt on `main` after
-   3(a). Before it merges Mark edits his QB routine's three `sys.path`
-   commands to `from src.pipeline...` (agents cannot edit that routine).
-3. **Ruff `I` and `UP`** (item 18's tail): one dry run, then one PR.
-4. **Stage 33 item 23** (line snapshots for every locked, ungraded week).
-5. **Stage 33 items 21, 22, 24**: drafts with Mark (R3's switching rule,
+**Next action: #255 (Stage 32 item 14, package `src/`)** is open and waits
+on Mark twice: its body says "Human review required" (it edits
+the Booth workflow), and his QB routine's three `sys.path.insert(0,'src')`
+commands must become `from src.pipeline...` before it merges (agents cannot
+edit the routine; it next runs Monday 22:00 UTC). On his word: merge with
+`merge_pr.ps1`. If `main` moves first, rebuild the branch from the session
+archive's pkg scripts (build_branch) and rerun suite and whole corpus.
+Then, in order:
+1. **Ruff `I` and `UP`**: built and green as `s32-ruff-i-up` (worktree
+   nfl-wt/ruff), stacked on #255. Rebase after #255, then suite and scope.
+   UP031 stays off (regexes with braces), target py311.
+2. **Stage 33 item 23** needs Mark's decision first: weekly runs never see
+   a locked, ungraded week except at its own lock, so closing lines can only
+   come from the weekend refresh, which the 2026-09-24 decision keeps away
+   from `data/line_history/`. Recommendation: let it append there for
+   locked, ungraded weeks only (picks stay single-writer).
+3. **Stage 33 items 21, 22, 24**: drafts with Mark (R3's switching rule,
    R4's baseline); committed as a Stage 33 registry under experiments/
    before anything runs.
-6. **Stage 33 item 26** when the next page-sized feature starts; then Stage
+4. **Stage 33 item 26** when the next page-sized feature starts; then Stage
    34 item 32 (real testers, the fourth audit).
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| QB override routine prompt | Names the old lock time and `sys.path` imports | Mark edits it at claude.ai/code/routines before item 14 merges |
+| #255 packages | Open, whole corpus 977/977 at `bf51a9e` | Mark: the routine edit, then his merge |
+| QB override routine prompt | `sys.path` imports; names the old lock time | Mark edits it at claude.ai/code/routines |
 | claude-code-action pin | On v1.0.236 | A hand bump when a release matters |
 | Season Accuracy's forecast score | Merged (#160), not on the page yet | 50 graded games: after week 4 at the earliest |
 | TV exceptions for holiday and Saturday games | Weeks 12, 15, 16 | Sourced entries in `data/tv/exceptions.json` before those weeks |
-| Audit Response Log | Updated 2026-09-30 | Fable, for the next audit |
+| Audit Response Log | Updated 2026-10-01 | Fable, for the next audit |
 | Drift issue | Never fired on a real event | A real event |
 
 ## Queued, in order
@@ -61,7 +64,7 @@ case files (Booth cannot reproduce a count whose selection it cannot see).
 - **Scheduled runs start hours late** (3.5 to 6.5h since 2026-09-24). Absorbed by the 11:00 Thursday lock and 8h slack, not fixed; GitHub's queue is not ours.
 - **Preview cards have no TV channel or team-news line**: those steps read locked weeks only (#204).
 - **The link preview and share image say "The Pick'em Model"**: Mark's decision, recorded in `test_product_name`; the re-audit's redraw was declined (#242).
-- **The drift check is on accuracy**, which cannot carry a result at this sample size. Stage 33 item 24 is the fix, as a registration.
+- **The drift check is on accuracy** (baseline now read from `data/calibration.json`, #254), which cannot carry a result at this sample size. Stage 33 item 24 is the fix, as a registration.
 - **A failed Thursday run leaves Thursday night's game unpicked** unless someone dispatches the workflow by hand that day. Since #105 the failure opens an issue.
 - **Mutation runs quote a count Booth cannot always rerun**: a large scope is UNVERIFIABLE in the audit by design; list the files so the selection is at least checkable.
 - **A Booth header can disagree with its verdict block**, logged by `cross_check()`. It has cost nothing yet.

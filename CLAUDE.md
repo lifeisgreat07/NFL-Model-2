@@ -48,8 +48,8 @@ Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BAC
 The drift check's baseline is the committed `data/calibration.json` (Stage 35;
 it was a literal, `BACKTEST_ACCURACY`), and moves only on a deliberate re-run.
 
-Suite: **4975 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-`ba32eeb` (after #252), with HEAD level with origin, which is the order that makes the
+Suite: **5011 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+`09c2929` (after #254), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the

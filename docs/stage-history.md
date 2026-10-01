@@ -1681,7 +1681,7 @@ mutation claim names its case files.
    `accuracy.n_graded`, the calibration text's count. Branch
    `s35-tie-state`.
 3. Stage 32 remnants, split by whether the weekly run executes them:
-   (a) the stored drift baseline, (b) the pipeline remnants (five stale
+   (a) the stored drift baseline (#254), (b) the pipeline remnants (#253) (five stale
    `main()` comments, `@overload` on `build_team_ratings`, `return None`
    in `plan_week`, advisory mypy, the two `split('_week')` callers), both
    after the lock; (c) the rest (`tasks.py browser-check` and
@@ -1704,7 +1704,7 @@ mutation claim names its case files.
    artifact, never a live recomputation, and moves only when that file is
    deliberately regenerated). Stage 33 item 24 needs the same reader for
    a log-loss baseline, which the file already carries.
-4. Watch Thursday's lock run (2026-10-01): started, locked week 4 before
+4. DONE 2026-10-01 (run 36898525753, `c80cb28`). Watch Thursday's lock run (2026-10-01): started, locked week 4 before
    the 00:15 UTC Friday kickoff, deleted the preview in the same commit,
    wrote its summary with the new "Preview for 2026 week 4 removed" line,
    and pushed.
