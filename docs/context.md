@@ -39,7 +39,7 @@ Then, in order:
 
 | What | State | Waiting on |
 |---|---|---|
-| #255 packages | Open at `ebbc172`: whole corpus 977/977 at `bf51a9e`, then a fix for the states builder run by path (26/26) | Its description still describes `bf51a9e`: the updated text is in the session archive (pkg, body14-v3); then Booth on the head, the routine edit, Mark's merge |
+| #255 packages | Open at `ebbc172`, description current. Booth: NEEDS HUMAN REVIEW, 6 confirmed, 2 expected UNVERIFIABLE (the whole corpus; the routine), no discrepancy | Mark: his routine edit, then his say-so to merge (it edits the Booth workflow) |
 | QB override routine prompt | `sys.path` imports; names the old lock time | Mark edits it at claude.ai/code/routines |
 | claude-code-action pin | On v1.0.236 | A hand bump when a release matters |
 | Season Accuracy's forecast score | Merged (#160), not on the page yet | 50 graded games: after week 4 at the earliest |
@@ -75,4 +75,5 @@ case files (Booth cannot reproduce a count whose selection it cannot see).
 - **A human approval leaves no artifact in the repo.** `memory/` is what records it.
 - **Browser checks does not click.** Interaction-only states are covered by static tests; since #245 the tie, skipped-week and stale-preview states are built and checked.
 - **60 of 496 team pairs sit under the CIEDE2000 floor on the Week Board's split bar, accepted 2026-09-21.**
+- **Booth's runner reports an uncommitted CLAUDE.md edit** after its mutation runs (#254, #255). It stashes it and audits the committed head; cause not yet looked at.
 - **The Booth report check cannot tell WHY a run posted nothing.** Since #101 a failed audit at least opens an issue.
