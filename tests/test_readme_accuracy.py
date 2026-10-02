@@ -255,6 +255,7 @@ def test_it_describes_the_backtest_the_code_runs():
     games, which include the earlier weeks of that season. The README now
     says so, and this ties the sentence to the default it describes."""
     import inspect
+
     from src.research import backtest
     default = inspect.signature(backtest.backtest).parameters['refit_every_n_weeks'].default
     assert default == 1, f'backtest() now refits every {default} weeks -- update README'

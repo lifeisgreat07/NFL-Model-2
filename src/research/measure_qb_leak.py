@@ -38,15 +38,36 @@ import subprocess
 
 import numpy as np
 
-from src.pipeline.config import (BACKTEST_SEASONS, MODEL_VERSION, QB_SHRINK_K,  # noqa: E402
-                    RECENCY_HALF_LIFE, TRAIN_SEASONS)
+from src.pipeline.config import (  # noqa: E402
+    BACKTEST_SEASONS,
+    MODEL_VERSION,
+    QB_SHRINK_K,
+    RECENCY_HALF_LIFE,
+    TRAIN_SEASONS,
+)
 from src.pipeline.data_loader import load_plays, load_schedule  # noqa: E402
-from src.pipeline.ratings_engine import build_qb_ratings, build_team_ratings, prep_plays  # noqa: E402
-from src.pipeline.weekly_update import build_historical_features, build_qb_change_lookup  # noqa: E402
-from src.research.bootstrap_brier_gap import (METRICS, N_RESAMPLES, SEED, metric_set,  # noqa: E402
-                                 paired_bootstrap, summarise, walk_forward_aligned)
+from src.pipeline.paths import (
+    DATA_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+)
+from src.pipeline.ratings_engine import (  # noqa: E402
+    build_qb_ratings,
+    build_team_ratings,
+    prep_plays,
+)
+from src.pipeline.weekly_update import (  # noqa: E402
+    build_historical_features,
+    build_qb_change_lookup,
+)
+from src.research.bootstrap_brier_gap import (  # noqa: E402
+    METRICS,
+    N_RESAMPLES,
+    SEED,
+    metric_set,
+    paired_bootstrap,
+    summarise,
+    walk_forward_aligned,
+)
 
-from src.pipeline.paths import DATA_DIR  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
 OUT = DATA_DIR / 'qb_leak_effect.json'
 
 # The commit that fixed the leak. The case study cites it; the test checks the

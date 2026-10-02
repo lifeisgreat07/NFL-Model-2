@@ -13,16 +13,20 @@ matching what weekly_update.py actually does.
 Usage: python -m src.research.backtest
 """
 from pathlib import Path
-import pandas as pd
-import numpy as np
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, log_loss, brier_score_loss, roc_auc_score
 
+import numpy as np
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, brier_score_loss, log_loss, roc_auc_score
+
+from src.pipeline.config import BACKTEST_SEASONS, TRAIN_SEASONS
 from src.pipeline.data_loader import load_plays, load_schedule, load_snap_counts
-from src.pipeline.ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
-from src.pipeline.config import TRAIN_SEASONS, BACKTEST_SEASONS
-from src.pipeline.weekly_update import build_historical_features, build_qb_change_lookup  # reuse the same feature logic
 from src.pipeline.ol_continuity import compute_ol_continuity_lookup
+from src.pipeline.ratings_engine import build_qb_ratings, build_team_ratings, prep_plays
+from src.pipeline.weekly_update import (  # reuse the same feature logic
+    build_historical_features,
+    build_qb_change_lookup,
+)
 
 
 def backtest(hist, features, test_seasons, refit_every_n_weeks=1, return_raw=False):

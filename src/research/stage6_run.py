@@ -58,7 +58,11 @@ def stored_results():
 # ------------------------------------------------------------------ build
 
 def build():
-    from src.pipeline.ratings_engine import build_qb_ratings, build_team_ratings, prep_plays
+    from src.pipeline.ratings_engine import (
+        build_qb_ratings,
+        build_team_ratings,
+        prep_plays,
+    )
     reg = registry()
     se.guard_seasons(list(range(s6.PBP_FROM, LAST_SEASON + 1)), reg)
     seasons = list(range(s6.PBP_FROM, LAST_SEASON + 1))

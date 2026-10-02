@@ -56,9 +56,10 @@ jobs:
           node-version: '20'
       - name: Install dependencies
         run: pip install -r requirements.txt -r requirements-dev.txt
-      - name: Lint (pyflakes rules only)
+      - name: Lint (pyflakes, import order, upgrades; see ruff.toml)
         # ruff.toml selects the F rules: undefined names, unused imports and
-        # variables, empty f-strings. Mistakes, not style (Stage 27 item 3).
+        # variables, empty f-strings -- mistakes, not style (Stage 27 item 3)
+        # -- and I and UP, auto-fixed (Stage 32 item 18). No line lengths.
         run: ruff check .
       - name: Type check (the two modules the weekly run is built on)
         # Stage 35, from the third audit: build_team_ratings' one union

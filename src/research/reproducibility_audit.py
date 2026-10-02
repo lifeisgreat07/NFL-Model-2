@@ -33,9 +33,8 @@ import argparse
 import json
 import platform
 import subprocess
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-
 
 REPO = Path(__file__).resolve().parents[2]
 PUBLISHED = REPO / 'data' / 'calibration.json'
@@ -111,9 +110,9 @@ def main(argv=None):
     ap.add_argument('--out', default=str(REPO / 'results' / 'reproducibility_audit.json'))
     args = ap.parse_args(argv)
 
+    from src.pipeline.config import BACKTEST_SEASONS
     from src.research.backtest import backtest
     from src.research.calibration import MODELS, build_hist
-    from src.pipeline.config import BACKTEST_SEASONS
 
     published = json.loads(PUBLISHED.read_text(encoding='utf-8'))
     hist = build_hist()
@@ -121,7 +120,7 @@ def main(argv=None):
         published['models'],
         lambda name: backtest(hist, MODELS[name], BACKTEST_SEASONS, return_raw=True))
     result = {
-        'generated_utc': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'generated_utc': datetime.now(UTC).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'provenance': _provenance(),
         'published_file': 'data/calibration.json',
         'published_generated_at': published.get('generated_at'),

@@ -18,9 +18,9 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
+from src.pipeline.ratings_engine import build_qb_ratings  # noqa: E402
 from src.research import stage6_data as s6  # noqa: E402
 from src.research import stage6_run as s6r  # noqa: E402
-from src.pipeline.ratings_engine import build_qb_ratings  # noqa: E402
 
 
 def synthetic_plays(seed=0, seasons=(2016, 2017), weeks=6):
@@ -140,8 +140,8 @@ def test_weekly_ngs_reports_weeks_the_index_does_not_know():
 
 
 def test_load_ngs_drops_season_totals_and_the_postseason(monkeypatch):
-    import polars as pl
     import nflreadpy
+    import polars as pl
     cols = {c: [1.0, 2.0, 3.0] for c in s6.NGS_COLUMNS}
     frame = pl.DataFrame({'season': [2016] * 3, 'week': [0, 1, 19], 'season_type': ['REG', 'REG', 'POST'],
                           'player_gsis_id': ['A'] * 3, 'attempts': [500, 30, 40], **cols})
@@ -151,8 +151,8 @@ def test_load_ngs_drops_season_totals_and_the_postseason(monkeypatch):
 
 
 def test_load_ngs_refuses_a_file_without_a_registered_column(monkeypatch):
-    import polars as pl
     import nflreadpy
+    import polars as pl
     frame = pl.DataFrame({'season': [2016], 'week': [1], 'season_type': ['REG'], 'player_gsis_id': ['A'],
                           'attempts': [30], 'aggressiveness': [1.0]})
     monkeypatch.setattr(nflreadpy, 'load_nextgen_stats', lambda seasons, stat_type: frame)

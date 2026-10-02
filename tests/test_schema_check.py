@@ -9,7 +9,10 @@ from pathlib import Path
 REPO = Path(__file__).parent.parent
 
 from src.pipeline import schema_check as sc  # noqa: E402
-from src.pipeline.data_loader import REQUIRED_PBP_COLS, REQUIRED_SCHEDULE_COLS  # noqa: E402
+from src.pipeline.data_loader import (  # noqa: E402
+    REQUIRED_PBP_COLS,
+    REQUIRED_SCHEDULE_COLS,
+)
 
 BASE = {'pbp': sorted(REQUIRED_PBP_COLS + ['air_yards', 'wind']),
         'schedule': sorted(REQUIRED_SCHEDULE_COLS + ['roof'])}

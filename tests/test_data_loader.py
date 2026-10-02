@@ -24,7 +24,6 @@ import pandas as pd
 import pytest
 
 
-
 class _FakePolarsDF:
     """Stand-in for the polars DataFrame nflreadpy actually returns --
     data_loader.py only ever calls .to_pandas() on the result, so that's

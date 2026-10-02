@@ -66,8 +66,8 @@ def parity_check(games):
 
 
 def build():
-    from src.research.kalman_ratings import fit_and_run
     from src.pipeline.ratings_engine import prep_plays
+    from src.research.kalman_ratings import fit_and_run
     raw, sched = sd.load_inputs()
     plays, week_keys, _ = prep_plays(raw)
     registry = se.load_registry()

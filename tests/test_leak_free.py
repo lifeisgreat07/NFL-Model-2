@@ -33,7 +33,6 @@ import pandas as pd
 import pytest
 
 
-
 # ============================================================
 # Test 1: QB-change detection never uses a future week's starter
 # to determine whether THIS week represents a change.
@@ -111,8 +110,8 @@ def test_team_ratings_cutoff_excludes_current_week():
     move at all -- a stronger check than "the rating still looks
     reasonable," since even a real leak can produce a plausible-looking
     number."""
-    from src.pipeline.ratings_engine import build_team_ratings
     from src.pipeline.config import MIN_PLAYS_FOR_RATING
+    from src.pipeline.ratings_engine import build_team_ratings
 
     rng = np.random.default_rng(42)
     plays, week_keys = _synthetic_team_plays(rng, n_week0=260, n_week1=40)

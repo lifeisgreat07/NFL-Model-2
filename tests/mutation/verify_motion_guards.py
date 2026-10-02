@@ -21,7 +21,10 @@ touched, restored from it after every mutant, and the final line compares the
 bytes. If this script is interrupted mid-run, `git checkout
 src/pipeline/dashboard_template.html` puts it back.
 """
-import shutil, subprocess, sys, tempfile
+import shutil
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]

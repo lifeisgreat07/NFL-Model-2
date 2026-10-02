@@ -30,13 +30,16 @@ each file is one week.
 import argparse
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-
 
 ROOT = Path(__file__).parents[2]
 NEWS_DIR = ROOT / 'data' / 'team_news'
-from src.pipeline.paths import PRED_DIR, RESULTS_DIR  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+from src.pipeline.paths import (  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+    PRED_DIR,
+    RESULTS_DIR,
+)
+
 KICKING = ('PK', 'P')
 SOURCES = {'injuries': 'nflverse injury report, via nflreadpy.load_injuries',
            'depth_chart': 'nflverse depth charts, via nflreadpy.load_depth_charts'}
@@ -130,7 +133,7 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
     which.add_argument('--weeks', type=int, nargs='+')
     which.add_argument('--pending', action='store_true')
     args = ap.parse_args(argv)
-    now = now or datetime.now(timezone.utc)
+    now = now or datetime.now(UTC)
     from src.pipeline.weekend_refresh import current_season, weeks_to_refresh
     season = args.season or current_season(now)
     weeks = weeks_to_refresh(season, pred_dir, results_dir) if args.pending else args.weeks

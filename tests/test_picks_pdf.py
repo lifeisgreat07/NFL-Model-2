@@ -29,7 +29,6 @@ from pathlib import Path
 
 import pytest
 
-
 REPO_ROOT = Path(__file__).parent.parent
 REAL_WEEK_FILE = REPO_ROOT / "predictions" / "2026_week1.json"
 

@@ -38,15 +38,16 @@ import json
 import shutil
 import subprocess
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 REPO = Path(__file__).parents[2]
 sys.path.insert(0, str(REPO / 'tests' / 'booth_fixtures'))
 
+import loader  # noqa: E402
+
 from src.agents import booth_verdict as bv  # noqa: E402
 from src.agents.booth_report_posted import MIN_SHA_PREFIX  # noqa: E402
-import loader  # noqa: E402
 
 BASELINE = 'baseline.json'
 
@@ -181,7 +182,7 @@ def record(meta, report_text, head_sha=None):
         ok, why = False, _head_mismatch(head_sha, verdict)
     payload = {
         'fixture': meta['id'],
-        'recorded_utc': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'recorded_utc': datetime.now(UTC).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'fixture_head': head_sha,
         'assertion': meta['assertion'],
         'satisfied': ok,
@@ -278,8 +279,8 @@ def main(argv=None):
             failed += ok is False
         print()
         if failed:
-            print('{} fixture(s) recorded a verdict that does not satisfy '
-                  'their expectation.'.format(failed))
+            print(f'{failed} fixture(s) recorded a verdict that does not satisfy '
+                  'their expectation.')
             return 1
         print('Every recorded baseline still satisfies its fixture.')
         return 0
@@ -307,8 +308,8 @@ def main(argv=None):
 
     if args.cmd == 'assemble':
         print('assembled {} at {}'.format(meta['id'], out))
-        print('  base main        {}'.format(base[:7]))
-        print('  head fixture-pr  {}'.format(head[:7]))
+        print(f'  base main        {base[:7]}')
+        print(f'  head fixture-pr  {head[:7]}')
         print('  description      PR_BODY.md')
         print('\nseeded defect: {}'.format(
             meta.get('seeded_defect', {}).get('explanation', '(none declared)')))
@@ -320,7 +321,7 @@ def main(argv=None):
 def _record_and_report(meta, report_path, head):
     ok, why = record(meta, Path(report_path).read_text(encoding='utf-8'), head)
     print('{}: {}'.format('SATISFIED' if ok else 'NOT SATISFIED', why))
-    print('baseline written to {}'.format(baseline_path(meta)))
+    print(f'baseline written to {baseline_path(meta)}')
     return 0 if ok else 1
 
 

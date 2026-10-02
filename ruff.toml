@@ -1,9 +1,18 @@
 # Stage 27 item 3, from the 2026-09-28 audit: ruff with the pyflakes rules
-# only -- names that are undefined, imported and unused, assigned and never
-# read, f-strings with nothing to format. Those are mistakes, not style; no
-# style rule is on, so nothing here asks for a reformat. The first run found
-# 22 (14 unused imports, 7 empty f-strings, one dead variable), fixed in the
-# same PR. run-tests.yml runs `ruff check .` on every PR and push to main;
-# ruff's version is pinned in requirements-dev.txt.
+# -- names that are undefined, imported and unused, assigned and never read,
+# f-strings with nothing to format. Those are mistakes, not style. The first
+# run found 22 (14 unused imports, 7 empty f-strings, one dead variable),
+# fixed in the same PR. run-tests.yml runs `ruff check .` on every PR and
+# push to main; ruff's version is pinned in requirements-dev.txt.
+#
+# Stage 32 item 18's tail, from the 2026-09-29 re-audit: `I` (import order)
+# and `UP` (syntax the project's Python already has), applied in one
+# mechanical PR after a dry run. Both are auto-fixed, so they cost nobody a
+# hand reformat. UP031 is off: the seven percent-formats it flags are all
+# regular expressions holding literal braces (`[^;}]`, `{`), which .format()
+# or an f-string would have to double, making the pattern harder to read.
+target-version = "py311"
+
 [lint]
-select = ["F"]
+select = ["F", "I", "UP"]
+ignore = ["UP031"]

@@ -59,12 +59,17 @@ Run as the workflows do: python -m src.pipeline.tv_channels --pending
 import argparse
 import json
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
 
-from src.pipeline.nfl_schedule_probe import URL, elias_id, extract_games, fetch  # noqa: E402
+from src.pipeline.nfl_schedule_probe import (  # noqa: E402
+    URL,
+    elias_id,
+    extract_games,
+    fetch,
+)
 
 ROOT = Path(__file__).parents[2]
 TV_DIR = ROOT / 'data' / 'tv'
@@ -133,7 +138,7 @@ def networks_of(game):
 
 
 def _kickoff(value):
-    return datetime.fromisoformat(str(value).replace('Z', '+00:00')).astimezone(timezone.utc)
+    return datetime.fromisoformat(str(value).replace('Z', '+00:00')).astimezone(UTC)
 
 
 def check_game(game, row, exceptions):
@@ -184,7 +189,7 @@ def nflverse_rows(schedule, week):
         rows[str(r['old_game_id'])] = {
             'old_game_id': str(r['old_game_id']), 'away_team': r['away_team'],
             'home_team': r['home_team'],
-            'kickoff': None if k is None else k.to_pydatetime().astimezone(timezone.utc),
+            'kickoff': None if k is None else k.to_pydatetime().astimezone(UTC),
         }
     return rows
 
@@ -244,7 +249,7 @@ def main(argv=None, now=None, load=None, fetch_page=fetch, tv_dir=TV_DIR,
     which.add_argument('--pending', action='store_true',
                        help='every locked week not yet fully graded')
     args = ap.parse_args(argv)
-    now = now or datetime.now(timezone.utc)
+    now = now or datetime.now(UTC)
     read_at = now.strftime('%Y-%m-%dT%H:%M:%SZ')
     from src.pipeline.weekend_refresh import current_season, weeks_to_refresh
     args.season = args.season or current_season(now)

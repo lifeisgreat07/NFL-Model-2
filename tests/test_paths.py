@@ -12,7 +12,7 @@ Run with: pytest tests/test_paths.py -v
 import re
 import subprocess
 import sys
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import pytest
@@ -32,8 +32,8 @@ def test_a_week_is_read_from_a_file_name_the_way_it_always_was(stem, expected):
 
 
 @pytest.mark.parametrize('when,season', [
-    (datetime(2027, 1, 20, tzinfo=timezone.utc), 2026), (datetime(2027, 2, 28, tzinfo=timezone.utc), 2026),
-    (datetime(2027, 3, 1, tzinfo=timezone.utc), 2027), (datetime(2026, 9, 30, tzinfo=timezone.utc), 2026),
+    (datetime(2027, 1, 20, tzinfo=UTC), 2026), (datetime(2027, 2, 28, tzinfo=UTC), 2026),
+    (datetime(2027, 3, 1, tzinfo=UTC), 2027), (datetime(2026, 9, 30, tzinfo=UTC), 2026),
     (date(2026, 12, 31), 2026),
 ])
 def test_january_and_february_belong_to_last_season(when, season):
@@ -53,21 +53,22 @@ def test_the_workflow_asks_paths_for_the_season():
 
 
 def test_there_are_32_teams_and_every_team_table_agrees():
-    from src.pipeline import simulate_season
-    from src.pipeline import tv_channels
+    from src.pipeline import simulate_season, tv_channels
     assert len(paths.NFL_TEAMS) == 32 and paths.NFL_TEAMS == frozenset(paths.TEAM_NAMES)
     assert set(simulate_season.TEAM_DIV) == paths.NFL_TEAMS
     assert set(tv_channels.TEAMS.values()) == paths.NFL_TEAMS
 
 
 def test_each_module_name_is_bound_to_the_one_definition():
-    from src.pipeline import canary
-    from src.pipeline import check_drift
-    from src.pipeline import data_quality
-    from src.pipeline import generate_dashboard
-    from src.pipeline import grade_predictions
-    from src.pipeline import weekend_refresh
-    from src.pipeline import weekly_update
+    from src.pipeline import (
+        canary,
+        check_drift,
+        data_quality,
+        generate_dashboard,
+        grade_predictions,
+        weekend_refresh,
+        weekly_update,
+    )
     bound = {
         (weekly_update, 'PRED_DIR'): paths.PRED_DIR, (weekly_update, 'PREVIEW_DIR'): paths.PREVIEW_DIR,
         (weekly_update, 'SKIPPED_DIR'): paths.SKIPPED_DIR, (weekly_update, 'DATA_DIR'): paths.DATA_DIR,

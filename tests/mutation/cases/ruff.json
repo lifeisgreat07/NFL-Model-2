@@ -5,9 +5,23 @@
     {
       "id": "ruff-selects-style-rules",
       "why": "the default rule set comes back with the pycodestyle errors, and the next PR goes red on line lengths nobody asked about",
-      "find": "select = [\"F\"]",
-      "replace": "select = [\"E\", \"F\"]",
-      "expect_caught_by": "test_the_config_selects_the_pyflakes_rules_and_nothing_else"
+      "find": "select = [\"F\", \"I\", \"UP\"]",
+      "replace": "select = [\"E\", \"F\", \"I\", \"UP\"]",
+      "expect_caught_by": "test_the_config_selects_the_agreed_rules_and_nothing_else"
+    },
+    {
+      "id": "ruff-switches-off-a-rule-nobody-explained",
+      "why": "an ignore list grows by one entry to quiet a finding, and the check it names stops checking with no reason written anywhere",
+      "find": "ignore = [\"UP031\"]",
+      "replace": "ignore = [\"UP031\", \"F401\"]",
+      "expect_caught_by": "test_the_config_selects_the_agreed_rules_and_nothing_else"
+    },
+    {
+      "id": "ruff-targets-another-python",
+      "why": "UP upgrades code to the newest syntax its target allows; aimed past the runtime it writes code the runtime cannot import, aimed below it the upgrades quietly stop",
+      "find": "target-version = \"py311\"",
+      "replace": "target-version = \"py39\"",
+      "expect_caught_by": "test_the_upgrades_target_the_python_the_project_runs"
     },
     {
       "id": "ruff-unpinned",

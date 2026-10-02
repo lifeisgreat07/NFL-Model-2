@@ -41,10 +41,11 @@ import json
 import numpy as np
 
 from src.pipeline.config import BACKTEST_SEASONS, MODEL_VERSION
-from src.research.calibration import build_hist
+from src.pipeline.paths import (
+    DATA_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+)
 from src.research.bootstrap_brier_gap import walk_forward_aligned
-
-from src.pipeline.paths import DATA_DIR  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+from src.research.calibration import build_hist
 
 # The slice as the dashboard describes it: Model A's OWN probability within
 # 0.05 of a coin flip. Note this is defined by Model A's confidence, not the

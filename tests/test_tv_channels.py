@@ -11,7 +11,7 @@ Run with: pytest tests/test_tv_channels.py -v
 """
 import copy
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 from src.pipeline import tv_channels as tv  # noqa: E402
 
-UTC = timezone.utc
+UTC = UTC
 
 
 def utc(*args):

@@ -27,7 +27,6 @@ import io
 from contextlib import redirect_stdout
 from pathlib import Path
 
-
 TITLE = 'Model drift detected'
 CAUTION = ('This check is on accuracy, which cannot carry a result at this '
            'sample size (see CLAUDE.md, Non-negotiable methodology). Before '

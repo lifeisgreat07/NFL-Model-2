@@ -11,7 +11,7 @@ Run with: pytest tests/test_tv_schedule.py -v
 """
 import json
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
@@ -22,7 +22,7 @@ from src.pipeline import tv_channels as tv  # noqa: E402
 
 WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
 WEEKEND = ROOT / '.github' / 'workflows' / 'weekend-refresh.yml'
-NOW = datetime(2026, 9, 27, 20, tzinfo=timezone.utc)
+NOW = datetime(2026, 9, 27, 20, tzinfo=UTC)
 
 
 def _write(path, obj):

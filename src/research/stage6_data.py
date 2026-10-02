@@ -47,6 +47,7 @@ def load_pbp(seasons, columns=PBP_COLUMNS):
     held in memory at once. Uses data_loader's cache when NFL_PBP_CACHE is set.
     """
     import nflreadpy as nfl
+
     from src.pipeline.data_loader import pbp_cache_dir
     cache = pbp_cache_dir()
     frames = []

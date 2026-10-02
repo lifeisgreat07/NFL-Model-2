@@ -26,8 +26,9 @@ import pytest
 REPO = Path(__file__).parent.parent
 sys.path.insert(0, str(REPO / 'tests' / 'booth_fixtures'))
 
-from src.agents import booth_fixture_runner as runner  # noqa: E402
 import loader  # noqa: E402
+
+from src.agents import booth_fixture_runner as runner  # noqa: E402
 
 FIXTURES = loader.load_all()
 IDS = [m['id'] for m in FIXTURES]
@@ -142,9 +143,9 @@ def test_the_default_output_directory_is_hidden_from_pytest():
     default = runner.REPO / '.fixture-run' / meta['id']
     rel = default.relative_to(runner.REPO)
     assert any(part.startswith('.') for part in rel.parts), (
-        'the default assemble target is {}, which pytest will collect from. '
+        f'the default assemble target is {rel}, which pytest will collect from. '
         'An assembled fixture carries its own test files; they would join '
-        'this suite.'.format(rel)
+        'this suite.'
     )
 
 
@@ -169,11 +170,10 @@ def _report(verdict_json, discrepancies=1, confirmed=0, overall='NEEDS HUMAN REV
         '## Booth Audit: PR #0\n\n'
         'Head commit audited: `abc1234`\n'
         'Description read at: 2026-09-07T00:00:00Z\n\n'
-        'Claims checked: {}\nConfirmed: {}\nDiscrepancies: {}\nUnverifiable: 0\n\n'
-        '### Overall verdict\n{}\n\n'
-        '```booth-verdict\n{}\n```\n'
-    ).format(confirmed + discrepancies, confirmed, discrepancies, overall,
-             verdict_json)
+        f'Claims checked: {confirmed + discrepancies}\nConfirmed: {confirmed}\nDiscrepancies: {discrepancies}\nUnverifiable: 0\n\n'
+        f'### Overall verdict\n{overall}\n\n'
+        f'```booth-verdict\n{verdict_json}\n```\n'
+    )
 
 
 def _satisfying_verdict(meta):

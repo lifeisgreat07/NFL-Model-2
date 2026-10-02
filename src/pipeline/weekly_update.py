@@ -33,28 +33,33 @@ Run manually: python weekly_update.py --season 2026 --week 2
 """
 from __future__ import annotations
 
-from typing import Any
-
 import argparse
 import json
 import re
 from collections import namedtuple
 from datetime import date
 from pathlib import Path
-import pandas as pd
+from typing import Any
+
 import numpy as np
+import pandas as pd
 from sklearn.linear_model import LogisticRegression
 
-from src.pipeline.data_loader import load_plays, load_schedule
 from src.pipeline.atomic_write import write_json_atomic
+from src.pipeline.config import MIN_PLAYS_FOR_RATING, MODEL_VERSION, TRAIN_SEASONS
+from src.pipeline.data_loader import load_plays, load_schedule
 from src.pipeline.data_quality import enforce as enforce_data_quality
+
 # Only get_continuity is imported: build_historical_features still accepts an
 # ol_lookup so backtest.py can run its "[reference only] + OL continuity"
 # comparison. The live weekly path no longer builds one -- see load_inputs().
 from src.pipeline.ol_continuity import get_continuity
-from src.pipeline.ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
-from src.pipeline.simulate_season import fit_simple_win_model, regular_season, simulate_season
-from src.pipeline.config import TRAIN_SEASONS, MODEL_VERSION, MIN_PLAYS_FOR_RATING
+from src.pipeline.ratings_engine import build_qb_ratings, build_team_ratings, prep_plays
+from src.pipeline.simulate_season import (
+    fit_simple_win_model,
+    regular_season,
+    simulate_season,
+)
 
 # Don't save (lock in) predictions more than this many days before the
 # earliest game in the target week. Prevents exactly the failure mode we
@@ -99,11 +104,23 @@ LOCK_SLACK = pd.Timedelta(hours=8)
 
 # The folders are defined once, in src/pipeline/paths.py (Stage 32 item 15); the
 # reasons each exists stay here, beside the code that writes them.
-from src.pipeline.paths import DATA_DIR, PRED_DIR, PREVIEW_DIR, SKIPPED_DIR, TEAM_NAMES, parse_week  # noqa: E402
+from src.pipeline.paths import (  # noqa: E402
+    DATA_DIR,
+    PRED_DIR,
+    PREVIEW_DIR,
+    SKIPPED_DIR,
+    TEAM_NAMES,
+    parse_week,
+)
 from src.pipeline.runlog import get_logger  # noqa: E402  (Stage 32 item 17)
+
 log = get_logger(__name__)
 
-from src.pipeline.ratings_engine import Ratings, WeekKey  # noqa: E402  (the aliases, for hints)
+from src.pipeline.ratings_engine import (  # noqa: E402  (the aliases, for hints)
+    Ratings,
+    WeekKey,
+)
+
 #: One saved pick, as written to predictions/<season>_week<N>.json.
 Pick = dict[str, Any]
 PRED_DIR.mkdir(exist_ok=True)

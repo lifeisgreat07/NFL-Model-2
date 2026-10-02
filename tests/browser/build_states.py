@@ -48,7 +48,12 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
 from src.pipeline import generate_dashboard as gd  # noqa: E402
-from src.pipeline.paths import PRED_DIR, RESULTS_DIR, STATUS_DIR, parse_week  # noqa: E402
+from src.pipeline.paths import (  # noqa: E402
+    PRED_DIR,
+    RESULTS_DIR,
+    STATUS_DIR,
+    parse_week,
+)
 
 PAGES = ('states_tie.html', 'states_preview.html')
 

@@ -9,7 +9,7 @@ writes nothing to the repository.
 Run with: pytest tests/test_canary.py -v
 """
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 REPO = Path(__file__).parent.parent
@@ -64,8 +64,8 @@ def test_an_error_fails_the_canary_and_the_report_says_so(monkeypatch, tmp_path)
 
 
 def test_january_belongs_to_last_season():
-    assert canary.current_season(datetime(2027, 1, 20, tzinfo=timezone.utc)) == 2026
-    assert canary.current_season(datetime(2026, 9, 24, tzinfo=timezone.utc)) == 2026
+    assert canary.current_season(datetime(2027, 1, 20, tzinfo=UTC)) == 2026
+    assert canary.current_season(datetime(2026, 9, 24, tzinfo=UTC)) == 2026
 
 
 def test_the_default_steps_are_the_weekly_data_path():

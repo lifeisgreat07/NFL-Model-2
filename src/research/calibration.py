@@ -38,16 +38,18 @@ Usage: python -m src.research.calibration
 """
 import json
 import math
+from datetime import UTC
 
 import numpy as np
 
+from src.pipeline.config import BACKTEST_SEASONS, MODEL_VERSION, TRAIN_SEASONS
 from src.pipeline.data_loader import load_plays, load_schedule
-from src.pipeline.ratings_engine import prep_plays, build_team_ratings, build_qb_ratings
-from src.pipeline.config import TRAIN_SEASONS, BACKTEST_SEASONS, MODEL_VERSION
+from src.pipeline.paths import (
+    DATA_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+)
+from src.pipeline.ratings_engine import build_qb_ratings, build_team_ratings, prep_plays
 from src.pipeline.weekly_update import build_historical_features, build_qb_change_lookup
 from src.research.backtest import backtest
-
-from src.pipeline.paths import DATA_DIR  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
 
 # Bin edges over predicted home-win probability. Wider in the tails because
 # there are simply fewer games out there -- equal-width bins would leave the
@@ -185,9 +187,9 @@ def main():
     # nothing about where it came from cannot be checked later. Records the
     # machine, the interpreter and the exact versions of the libraries that
     # do the arithmetic.
-    import platform
     import importlib.metadata as _md
-    from datetime import datetime, timezone
+    import platform
+    from datetime import datetime
 
     def _ver(pkg):
         try:
@@ -196,7 +198,7 @@ def main():
             return 'absent'
 
     payload = {
-        'generated_at': datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC'),
+        'generated_at': datetime.now(UTC).strftime('%Y-%m-%d %H:%M UTC'),
         'provenance': {
             'platform': platform.platform(),
             'python': platform.python_version(),

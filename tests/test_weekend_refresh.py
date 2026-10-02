@@ -12,7 +12,7 @@ Run with: pytest tests/test_weekend_refresh.py -v
 import hashlib
 import json
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
@@ -28,7 +28,7 @@ BUILDER = ROOT / '.github' / 'workflows' / 'deploy-pages.yml'
 
 # Sunday 2026-10-04, 18:00 UTC: the early games (1:00 PM ET, 17:00 UTC) have
 # kicked off, the late ones (4:25 PM ET) have not.
-SUNDAY = datetime(2026, 10, 4, 18, 0, tzinfo=timezone.utc)
+SUNDAY = datetime(2026, 10, 4, 18, 0, tzinfo=UTC)
 
 
 def row(away, home, gameday='2026-10-04', gametime='13:00', away_score=None,
@@ -104,7 +104,7 @@ def test_an_unchanged_snapshot_is_not_rewritten(tmp_path):
               'home_score': None, 'spread_line': -3.0}]
     assert wr.write_week(2026, 4, games, SUNDAY, tmp_path) is True
     first = (tmp_path / '2026_week4.json').read_text(encoding='utf-8')
-    later = datetime(2026, 10, 5, 5, 37, tzinfo=timezone.utc)
+    later = datetime(2026, 10, 5, 5, 37, tzinfo=UTC)
     assert wr.write_week(2026, 4, games, later, tmp_path) is False
     assert (tmp_path / '2026_week4.json').read_text(encoding='utf-8') == first
     changed = [dict(games[0], status='final', away_score=20, home_score=17)]

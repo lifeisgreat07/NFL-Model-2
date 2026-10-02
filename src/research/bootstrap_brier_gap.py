@@ -58,14 +58,16 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import brier_score_loss, log_loss
 
 from src.pipeline.config import BACKTEST_SEASONS, MODEL_VERSION
+from src.pipeline.paths import (
+    DATA_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+)
+
 # build_hist and brier_decomposition are imported, never reimplemented: the
 # feature table must be the same one calibration.py used, and the
 # decomposition under test must be the one that produced the published
 # numbers. A second copy of either would let this script agree with itself
 # while disagreeing with the dashboard.
 from src.research.calibration import brier_decomposition, build_hist
-
-from src.pipeline.paths import DATA_DIR  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
 
 FOOTBALL = ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff']
 MODELS = {

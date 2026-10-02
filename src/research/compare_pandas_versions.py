@@ -67,7 +67,9 @@ import sys
 
 import pandas as pd
 
-from src.pipeline.paths import DATA_DIR  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+from src.pipeline.paths import (
+    DATA_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+)
 
 # The metrics that carry a result here. Accuracy is reported but deliberately
 # does not decide anything -- at n=1087 it cannot distinguish a real change

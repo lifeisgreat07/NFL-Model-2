@@ -17,16 +17,15 @@ built the page; these tests hold them to both.
 Run with: pytest tests/test_sidebar_provenance.py -v
 """
 import re
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-
 
 ROOT = Path(__file__).resolve().parents[1]
 
 from src.pipeline import config  # noqa: E402
 from src.pipeline import generate_dashboard as gd  # noqa: E402
 
-WHEN = datetime(2026, 9, 26, 19, 11, tzinfo=timezone.utc)
+WHEN = datetime(2026, 9, 26, 19, 11, tzinfo=UTC)
 TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 
 
@@ -65,7 +64,7 @@ def test_the_updated_line_names_its_time_zone():
 
 
 def test_a_morning_build_keeps_its_leading_zero():
-    early = datetime(2026, 1, 4, 6, 5, tzinfo=timezone.utc)
+    early = datetime(2026, 1, 4, 6, 5, tzinfo=UTC)
     assert 'Updated Jan 4, 2026, 06:05 UTC.' in _text(gd.updated_line(early))
     assert 'datetime="2026-01-04T06:05Z"' in gd.updated_line(early)
 
@@ -83,7 +82,7 @@ def test_the_page_footer_is_the_provenance_line_and_nothing_else():
 
 def test_the_build_time_is_in_the_week_board_header():
     code = _code()
-    assert re.findall(r'updated_html\s*=\s*(.+)', code) == ['updated_line(datetime.now(timezone.utc))']
+    assert re.findall(r'updated_html\s*=\s*(.+)', code) == ['updated_line(datetime.now(UTC))']
     assert "html.replace('__BOARD_UPDATED__', updated_html)" in code
     src = TEMPLATE.read_text(encoding='utf-8')
     board = re.search(r'<section class="page[^"]*" id="page-board">(.*?)</section>', src, re.S)

@@ -36,10 +36,10 @@ Every choice the number depends on is named here rather than left to the reader:
 
 Run: python -m src.research.verify_matchup_cvd
 """
-from itertools import permutations, combinations
 import math
 import re
 import sys
+from itertools import combinations, permutations
 from pathlib import Path
 
 TEMPLATE = Path(__file__).resolve().parent.parent / 'pipeline' / 'dashboard_template.html'
@@ -240,7 +240,7 @@ def report():
     print(f"  dE00 < 15      : {len(p15)}  ({len(p15) / len(best) * 100:.1f}%)")
     print(f"  dE00 < 5       : {len(p5)}")
 
-    near = sorted((d for d in best.values() if 14.0 < d < 16.0))
+    near = sorted(d for d in best.values() if 14.0 < d < 16.0)
     print("\npairs within 1 dE00 of the 15 floor (why two honest runs can differ by one):")
     print("  " + ", ".join(f"{d:.2f}" for d in near) or "  none")
     return len(best), len(p15), len(p5)
