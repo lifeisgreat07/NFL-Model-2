@@ -1,15 +1,15 @@
 {
-  "generated_utc": "2026-10-02T03:41:04Z",
+  "generated_utc": "2026-10-02T04:28:36Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 311,
-    "audits_superseded": 79,
-    "pull_requests_audited": 232,
+    "audits_total": 313,
+    "audits_superseded": 80,
+    "pull_requests_audited": 233,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 2181,
-    "discrepancies_found": 24,
-    "unverifiable": 182,
-    "pull_requests_with_a_discrepancy": 15,
+    "claims_checked": 2189,
+    "discrepancies_found": 25,
+    "unverifiable": 183,
+    "pull_requests_with_a_discrepancy": 16,
     "reports_disagreeing_with_themselves": 27
   },
   "audits": [
@@ -5618,6 +5618,44 @@
       "unverifiable": 1,
       "overall": "NEEDS HUMAN REVIEW",
       "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 256,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/256#issuecomment-5945443053",
+      "posted_utc": "2026-10-02T04:09:40Z",
+      "head": "6ea20f6",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 8,
+      "confirmed": 7,
+      "discrepancies": 1,
+      "unverifiable": 0,
+      "overall": "DO NOT MERGE -- DISCREPANCIES FOUND",
+      "implicated": [
+        "ruff.toml"
+      ],
+      "inconsistencies": [],
+      "superseded": true
+    },
+    {
+      "pr": 256,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/256#issuecomment-5945528837",
+      "posted_utc": "2026-10-02T04:19:21Z",
+      "head": "6ea20f6",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 8,
+      "confirmed": 6,
+      "discrepancies": 1,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "results/reproducibility_audit.json"
+      ],
       "inconsistencies": [],
       "superseded": false
     }
