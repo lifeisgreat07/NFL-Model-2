@@ -1,0 +1,100 @@
+{
+  "id": "R3",
+  "registry_entry": {
+    "id": "R3",
+    "item": "22",
+    "kind": "hypothesis",
+    "title": "The market's curve: fitted against hand-picked",
+    "question": "On the market's own probabilities: a walk-forward fitted LogisticRegression on spread_line alone, against the fixed curve 1 / (1 + exp(-spread / 5.5)) that the live pipeline uses today.",
+    "candidate": {
+      "market_curve": "fitted_logistic_on_spread_line"
+    },
+    "incumbent": {
+      "market_curve": "fixed_slope_5.5"
+    },
+    "decision_model": "market",
+    "spends_slot": true,
+    "decision_rule": "NON-INFERIORITY, margin +0.002 (Mark, 2026-10-01). Switch to the fitted curve if the upper end of the 98.33% interval on (fitted - fixed) log loss is below +0.002. Do not switch if the lower end is above 0. Otherwise INCONCLUSIVE: the fixed curve stays and the page says so.",
+    "margin": 0.002,
+    "precedence": "AMENDED 2026-10-02, before any result (Mark): the two rules above overlap on an interval wholly inside (0, +0.002), measurably worse but by less than the margin. Do-not-switch wins: a measurably worse curve never switches. Labels: lower end above 0 is REJECT; otherwise upper end below the margin is NON-INFERIOR (switch); otherwise INCONCLUSIVE.",
+    "why_non_inferiority": "The reason to switch is like-for-like: the page's live log-loss race compares two fitted models against a curve no data chose. The fitted curve need only be no worse. The margin is about a fifth of H1's confirmation difference (-0.0109, experiments/stage5/results/H1.json).",
+    "if_switched": "Each prediction stores market_prob_home_fitted beside the existing market_prob_home, and saved picks are never rewritten. Grading and the log-loss race read the fitted value from the week the switch starts. Weeks already locked keep their stored value.",
+    "expected": "The fitted slope lands near 5.5 and the difference is inside the margin."
+  },
+  "validation": {
+    "n_games": 543,
+    "log_loss_candidate": 0.6172435467848846,
+    "log_loss_incumbent": 0.6174086948691677,
+    "brier_candidate": 0.21424890338226854,
+    "brier_incumbent": 0.21433140478246257,
+    "accuracy_candidate": 0.6795580110497238,
+    "accuracy_incumbent": 0.6721915285451197,
+    "log_loss_diff": -0.00016514808428322555,
+    "log_loss_ci": [
+      -0.010320209004790947,
+      0.009652560970008037
+    ],
+    "log_loss_ci_95": [
+      -0.010320209004790947,
+      0.009652560970008037
+    ],
+    "log_loss_ci_analytic_95": [
+      -0.010517836149744983,
+      0.010187539981178533
+    ],
+    "brier_diff": -8.250140019399828e-05,
+    "brier_ci": [
+      -0.004014216070577048,
+      0.003818823209215418
+    ],
+    "ci_level": 0.95,
+    "seasons": [
+      2022,
+      2023
+    ]
+  },
+  "confirmation": {
+    "n_games": 544,
+    "log_loss_candidate": 0.5975706562711794,
+    "log_loss_incumbent": 0.596720446099306,
+    "brier_candidate": 0.2059430670035098,
+    "brier_incumbent": 0.205825281659141,
+    "accuracy_candidate": 0.6838235294117647,
+    "accuracy_incumbent": 0.6838235294117647,
+    "log_loss_diff": 0.0008502101718734267,
+    "log_loss_ci": [
+      -0.008371687007231907,
+      0.009822660749288595
+    ],
+    "log_loss_ci_95": [
+      -0.0066955353640706745,
+      0.008233742113547162
+    ],
+    "log_loss_ci_analytic_95": [
+      -0.00672611788128172,
+      0.008426538225028573
+    ],
+    "brier_diff": 0.00011778534436883691,
+    "brier_ci": [
+      -0.003411560487552923,
+      0.0035988894041175407
+    ],
+    "ci_level": 0.9833333333333333,
+    "seasons": [
+      2024,
+      2025
+    ]
+  },
+  "reached_confirmation": true,
+  "decision": "INCONCLUSIVE",
+  "provenance": {
+    "commit": "6a3257cb3e88bf17ee30b5c829064fe025b8e015",
+    "generated_utc": "2026-10-02T16:10:07Z",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 33 Stepping 2, AuthenticAMD",
+    "python": "3.11.9",
+    "numpy": "1.26.4",
+    "pandas": "1.5.3",
+    "scikit-learn": "1.9.0"
+  }
+}
