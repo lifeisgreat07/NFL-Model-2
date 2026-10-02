@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "leak-backtest-trains-on-the-week-it-predicts",
+      "target": "src/pipeline/model_specs.py",
       "why": "the walk-forward refit includes the week being predicted. Every backtest figure on the page would then be scored by a model that had seen the answers, and nothing else in the suite would notice.",
       "find": "((d2['season'] == test_season) & (d2['week'] < w))",
       "replace": "((d2['season'] == test_season) & (d2['week'] <= w))",

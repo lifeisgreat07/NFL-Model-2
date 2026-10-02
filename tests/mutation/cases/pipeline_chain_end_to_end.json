@@ -11,7 +11,7 @@
     },
     {
       "id": "chain-backtest-trains-on-the-week-it-scores",
-      "target": "src/research/backtest.py",
+      "target": "src/pipeline/model_specs.py",
       "why": "each weekly refit includes the week it is about to score, so the published backtest is fitted on its own answers.",
       "find": "((d2['season'] == test_season) & (d2['week'] < w))",
       "replace": "((d2['season'] == test_season) & (d2['week'] <= w))",
