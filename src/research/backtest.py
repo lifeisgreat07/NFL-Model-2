@@ -16,11 +16,17 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, brier_score_loss, log_loss, roc_auc_score
 
 from src.pipeline.config import BACKTEST_SEASONS, TRAIN_SEASONS
 from src.pipeline.data_loader import load_plays, load_schedule, load_snap_counts
+from src.pipeline.model_specs import (
+    MARKET_FEATURES,
+    MODEL_A_FEATURES,
+    MODEL_B_FEATURES,
+    ModelSpec,
+    walk_forward,
+)
 from src.pipeline.ol_continuity import compute_ol_continuity_lookup
 from src.pipeline.ratings_engine import build_qb_ratings, build_team_ratings, prep_plays
 from src.pipeline.weekly_update import (  # reuse the same feature logic
@@ -47,44 +53,15 @@ def backtest(hist, features, test_seasons, refit_every_n_weeks=1, return_raw=Fal
 
     Pass refit_every_n_weeks=None to restore the old season-level-only
     behavior for comparison.
+
+    Since Stage 33 item 21 the loop itself is `walk_forward` in
+    src/pipeline/model_specs.py, shared with the live fit. `features` is a
+    list of columns (fitted as the published incumbent, C=1.0 with an L2
+    penalty) or a ModelSpec, for a candidate with other settings.
     """
-    hist = hist.sort_values(['season', 'week'])
-    all_true, all_prob = [], []
-    for test_season in test_seasons:
-        d2 = hist.dropna(subset=list(features) + ['home_win'])
-        season_weeks = sorted(d2[d2['season'] == test_season]['week'].unique())
-        if not season_weeks:
-            continue
-        if refit_every_n_weeks is None:
-            train = d2[d2['season'] < test_season]
-            test = d2[d2['season'] == test_season]
-            if len(train) < 50 or len(test) == 0:
-                continue
-            m = LogisticRegression(max_iter=1000)
-            m.fit(train[list(features)].values, train['home_win'].values)
-            probs = m.predict_proba(test[list(features)].values)[:, 1]
-            all_true.extend(test['home_win'].values)
-            all_prob.extend(probs)
-        else:
-            last_refit_week = None
-            model = None
-            for w in season_weeks:
-                if last_refit_week is None or (w - last_refit_week) >= refit_every_n_weeks:
-                    train = d2[(d2['season'] < test_season) | ((d2['season'] == test_season) & (d2['week'] < w))]
-                    if len(train) < 50:
-                        continue
-                    model = LogisticRegression(max_iter=1000)
-                    model.fit(train[list(features)].values, train['home_win'].values)
-                    last_refit_week = w
-                if model is None:
-                    continue
-                test_w = d2[(d2['season'] == test_season) & (d2['week'] == w)]
-                if len(test_w) == 0:
-                    continue
-                probs = model.predict_proba(test_w[list(features)].values)[:, 1]
-                all_true.extend(test_w['home_win'].values)
-                all_prob.extend(probs)
-    all_true, all_prob = np.array(all_true), np.array(all_prob)
+    spec = features if isinstance(features, ModelSpec) else ModelSpec(tuple(features))
+    scored, all_prob = walk_forward(spec, hist, test_seasons, refit_every_n_weeks=refit_every_n_weeks)
+    all_true = np.array(scored['home_win'].values)
     pred = (all_prob >= 0.5).astype(int)
     metrics = {
         'n': len(all_true),
@@ -116,10 +93,10 @@ def main():
     results = {}
     for name, features in [
         ('Football-only (off+def+qb)', ['off_matchup', 'def_matchup', 'qb_matchup']),
-        ('LIVE MODEL A (off+def+qb+qbchange)', ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff']),
+        ('LIVE MODEL A (off+def+qb+qbchange)', list(MODEL_A_FEATURES)),
         ('[reference only] + OL continuity', ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff', 'ol_continuity_diff']),
-        ('Market alone', ['spread_line']),
-        ('LIVE MODEL B (+ market)', ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff', 'spread_line']),
+        ('Market alone', list(MARKET_FEATURES)),
+        ('LIVE MODEL B (+ market)', list(MODEL_B_FEATURES)),
         ('[reference only] + OL + market', ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff', 'ol_continuity_diff', 'spread_line']),
     ]:
         m = backtest(hist, features, BACKTEST_SEASONS)

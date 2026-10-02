@@ -1,0 +1,64 @@
+{
+  "target": "src/pipeline/model_specs.py",
+  "tests": "tests/test_model_specs.py",
+  "cases": [
+    {
+      "id": "specs-incumbent-c-moves",
+      "why": "the published specs' C drifts from 1.0, so the live picks and every backtest figure come from a different fit than the one published, with no warning anywhere",
+      "find": "    C: float | None = 1.0",
+      "replace": "    C: float | None = 0.5",
+      "expect_caught_by": "test_the_published_specs_are_the_old_default_fit_written_out"
+    },
+    {
+      "id": "specs-l2-spelled-with-deprecated-penalty",
+      "why": "the L2 fit is spelled with the `penalty` argument scikit-learn 1.9 deprecates: same numbers today, a FutureWarning on every weekly fit, and an error on the 1.10 upgrade",
+      "find": "LogisticRegression(max_iter=self.max_iter, C=self.C, l1_ratio=0.0)",
+      "replace": "LogisticRegression(max_iter=self.max_iter, C=self.C, penalty='l2')",
+      "expect_caught_by": "test_fitting_any_registered_setting_warns_about_nothing"
+    },
+    {
+      "id": "specs-unpenalised-is-silently-l2",
+      "why": "R1's candidate, penalty=None, is fitted with the incumbent's L2 penalty, so R1 compares the incumbent with itself and reports no difference",
+      "find": "            model = LogisticRegression(max_iter=self.max_iter, C=np.inf)",
+      "replace": "            model = LogisticRegression(max_iter=self.max_iter, C=1.0, l1_ratio=0.0)",
+      "expect_caught_by": "test_an_unpenalised_spec_is_sklearns_unpenalised_fit"
+    },
+    {
+      "id": "specs-scaler-dropped",
+      "why": "R2's StandardScaler is never put in front of the model, so R2 scores the unscaled incumbent against itself",
+      "find": "        if self.scaler == 'standard':\n            return make_pipeline(StandardScaler(), model)",
+      "replace": "        if False:\n            return make_pipeline(StandardScaler(), model)",
+      "expect_caught_by": "test_a_scaled_spec_fits_its_scaler_on_the_training_rows"
+    },
+    {
+      "id": "specs-unpenalised-accepts-a-c",
+      "why": "an unpenalised spec accepts a C it ignores, so a registry entry that set one would read as tuned when nothing was",
+      "find": "        if self.penalty is None and self.C is not None:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_spec_refuses_settings_it_cannot_mean"
+    },
+    {
+      "id": "specs-model-a-order-swapped",
+      "why": "Model A's features change order in the spec while predict_week still builds rows in the old order, so the live model reads offence as defence and every 'why' breakdown is mislabelled",
+      "find": "MODEL_A_FEATURES = ('off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff')",
+      "replace": "MODEL_A_FEATURES = ('def_matchup', 'off_matchup', 'qb_matchup', 'qb_change_diff')",
+      "expect_caught_by": "test_model_a_features_are_in_the_order_predict_week_builds_them"
+    },
+    {
+      "id": "specs-live-b-trains-on-missing-lines-as-zero",
+      "target": "src/pipeline/weekly_update.py",
+      "why": "the live fit gives Model B a zero spread for games with no line instead of leaving them out, so the live Model B is no longer the model the backtest scores",
+      "find": "MODEL_SPECS['model_b'].fit(hist)",
+      "replace": "MODEL_SPECS['model_b'].fit(hist.fillna({'spread_line': 0.0}))",
+      "expect_caught_by": "test_the_live_fit_is_the_spec_fit"
+    },
+    {
+      "id": "specs-backtest-ignores-a-candidate",
+      "target": "src/research/backtest.py",
+      "why": "backtest() given a candidate ModelSpec scores the incumbent on its features instead, so every Stage 33 question would compare the incumbent with itself",
+      "find": "    spec = features if isinstance(features, ModelSpec) else ModelSpec(tuple(features))",
+      "replace": "    spec = ModelSpec(tuple(features.features if isinstance(features, ModelSpec) else features))",
+      "expect_caught_by": "test_the_backtest_is_walk_forward_of_the_spec"
+    }
+  ]
+}

@@ -111,14 +111,16 @@ def main(argv=None):
     args = ap.parse_args(argv)
 
     from src.pipeline.config import BACKTEST_SEASONS
+    from src.pipeline.model_specs import MODEL_SPECS
     from src.research.backtest import backtest
-    from src.research.calibration import MODELS, build_hist
+    from src.research.calibration import build_hist
 
     published = json.loads(PUBLISHED.read_text(encoding='utf-8'))
     hist = build_hist()
+    # The specs the live pipeline fits (Stage 33 item 21), not a copy of them.
     rows, determinism = audit(
         published['models'],
-        lambda name: backtest(hist, MODELS[name], BACKTEST_SEASONS, return_raw=True))
+        lambda name: backtest(hist, MODEL_SPECS[name], BACKTEST_SEASONS, return_raw=True))
     result = {
         'generated_utc': datetime.now(UTC).strftime('%Y-%m-%dT%H:%M:%SZ'),
         'provenance': _provenance(),

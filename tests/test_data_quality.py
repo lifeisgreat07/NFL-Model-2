@@ -209,4 +209,6 @@ def test_the_weekly_run_enforces_the_checks_before_fitting():
     src = (Path(__file__).parent.parent / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
     main = src[src.index('def main(season'):]
     assert 'enforce_data_quality(' in main
-    assert main.index('enforce_data_quality(') < main.index('model_a.fit(')
+    # Since Stage 33 item 21 the fit is MODEL_SPECS['model_a'].fit(...),
+    # inside fit_models, which main() reaches after load_inputs().
+    assert main.index('enforce_data_quality(') < main.index("MODEL_SPECS['model_a'].fit(")

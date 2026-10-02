@@ -49,6 +49,7 @@ from src.pipeline.atomic_write import write_json_atomic
 from src.pipeline.config import MIN_PLAYS_FOR_RATING, MODEL_VERSION, TRAIN_SEASONS
 from src.pipeline.data_loader import load_plays, load_schedule
 from src.pipeline.data_quality import enforce as enforce_data_quality
+from src.pipeline.model_specs import MODEL_SPECS
 
 # Only get_continuity is imported: build_historical_features still accepts an
 # ol_lookup so backtest.py can run its "[reference only] + OL continuity"
@@ -792,15 +793,14 @@ def load_inputs(season: int) -> Inputs:
 
 
 def fit_models(hist: pd.DataFrame) -> tuple[LogisticRegression, LogisticRegression]:
-    """Step 2: Model A (football only) and Model B (+ the market's spread)."""
-    log.info("Fitting Model A (football-only) and Model B (+ market)...")
-    model_a = LogisticRegression(max_iter=1000)
-    model_a.fit(hist[['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff']].values, hist['home_win'].values)
+    """Step 2: Model A (football only) and Model B (+ the market's spread).
 
-    hist_b = hist.dropna(subset=['spread_line'])
-    model_b = LogisticRegression(max_iter=1000)
-    model_b.fit(hist_b[['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff', 'spread_line']].values, hist_b['home_win'].values)
-    return model_a, model_b
+    Fitted from MODEL_SPECS (src/pipeline/model_specs.py), the same specs
+    the backtest scores, on every game with all of that model's features.
+    predict_week builds each model's row in MODEL_A_FEATURES order, and its
+    "why" breakdown names the coefficients in that order too."""
+    log.info("Fitting Model A (football-only) and Model B (+ market)...")
+    return MODEL_SPECS['model_a'].fit(hist), MODEL_SPECS['model_b'].fit(hist)
 
 
 def current_ratings(plays: pd.DataFrame, week_keys: list[WeekKey]) -> Ratings:

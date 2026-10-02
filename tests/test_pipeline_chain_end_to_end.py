@@ -35,6 +35,7 @@ import synthetic_league as league  # noqa: E402
 from src.pipeline import check_drift as cd  # noqa: E402
 from src.pipeline import data_loader  # noqa: E402
 from src.pipeline import grade_predictions as gp  # noqa: E402
+from src.pipeline import model_specs as ms  # noqa: E402
 from src.pipeline import simulate_season as ss  # noqa: E402
 from src.pipeline import weekend_refresh as wr  # noqa: E402
 from src.pipeline import weekly_update as wu  # noqa: E402
@@ -171,16 +172,18 @@ def test_the_backtest_scores_every_target_game_it_has_features_for(history):
 
 
 def test_the_backtest_never_trains_on_the_week_it_scores(history, monkeypatch):
-    """Walk-forward: every fit for week w sees only games before it."""
+    """Walk-forward: every fit for week w sees only games before it. The
+    estimator is built in src/pipeline/model_specs.py since Stage 33 item
+    21, so that is where the spy goes."""
     hist, _ = history
     seen = []
-    real = bt.LogisticRegression
+    real = ms.LogisticRegression
 
     class Spy(real):
         def fit(self, X, y, *a, **k):
             seen.append(len(X))
             return super().fit(X, y, *a, **k)
-    monkeypatch.setattr(bt, 'LogisticRegression', Spy)
+    monkeypatch.setattr(ms, 'LogisticRegression', Spy)
     bt.backtest(hist, FEATURES, [S])
     d2 = hist.dropna(subset=FEATURES + ['home_win'])
     before = [len(d2[(d2['season'] < S) | ((d2['season'] == S) & (d2['week'] < w))])

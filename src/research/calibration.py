@@ -44,6 +44,7 @@ import numpy as np
 
 from src.pipeline.config import BACKTEST_SEASONS, MODEL_VERSION, TRAIN_SEASONS
 from src.pipeline.data_loader import load_plays, load_schedule
+from src.pipeline.model_specs import MODEL_SPECS
 from src.pipeline.paths import (
     DATA_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
 )
@@ -62,11 +63,9 @@ BIN_EDGES = [0.0, 0.20, 0.30, 0.40, 0.45, 0.50, 0.55, 0.60, 0.70, 0.80, 1.0]
 # handful of games measured something.
 MIN_BIN_N = 25
 
-MODELS = {
-    'model_a': ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff'],
-    'model_b': ['off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff', 'spread_line'],
-    'market': ['spread_line'],
-}
+# The published models' feature lists, from the one place both the live
+# pipeline and the backtest fit them (Stage 33 item 21).
+MODELS = {name: list(spec.features) for name, spec in MODEL_SPECS.items()}
 
 
 def wilson_interval(successes, n, z=1.96):
