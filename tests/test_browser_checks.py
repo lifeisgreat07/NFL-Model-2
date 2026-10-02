@@ -53,7 +53,7 @@ def step_runs(workflow):
 
 def test_the_workflow_builds_then_proves_the_rules_then_checks_the_page(workflow):
     runs = step_runs(workflow)
-    build = next(i for i, r in enumerate(runs) if 'generate_dashboard.py' in r)
+    build = next(i for i, r in enumerate(runs) if 'src.pipeline.generate_dashboard' in r)
     selftest = next(i for i, r in enumerate(runs) if 'check_page.py --self-test' in r)
     check = next(i for i, r in enumerate(runs) if 'check_page.py index.html' in r)
     assert build < selftest < check, (

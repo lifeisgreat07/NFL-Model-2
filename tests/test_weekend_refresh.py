@@ -195,7 +195,7 @@ def test_its_runs_cannot_meet_the_weekly_runs_even_five_hours_late():
 
 def test_a_failed_refresh_raises_an_alert():
     text = _text(WORKFLOW)
-    assert re.search(r"if: failure\(\)[\s\S]*?alerts\.py --title \"Weekend refresh failed\"", text)
+    assert re.search(r"if: failure\(\)[\s\S]*?src\.pipeline\.alerts --title \"Weekend refresh failed\"", text)
     assert re.search(r'permissions:[\s\S]*?issues: write', text)
     assert 'shell: bash' in text, 'without bash there is no pipefail, and | tee hides a failed refresh'
 

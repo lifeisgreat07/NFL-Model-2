@@ -26,13 +26,13 @@ def no_fetching(monkeypatch):
         raise AssertionError('compare_data_sources fetched data at import')
     for name in ('load_schedule', 'load_plays', 'load_snap_counts'):
         monkeypatch.setattr(data_loader, name, refuse)
-    sys.modules.pop('compare_data_sources', None)
+    sys.modules.pop('src.research.compare_data_sources', None)
     yield
-    sys.modules.pop('compare_data_sources', None)
+    sys.modules.pop('src.research.compare_data_sources', None)
 
 
 def test_importing_it_fetches_nothing(no_fetching):
-    mod = importlib.import_module('compare_data_sources')
+    mod = importlib.import_module('src.research.compare_data_sources')
     assert callable(mod.main)
 
 

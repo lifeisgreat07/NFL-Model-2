@@ -130,8 +130,9 @@ jobs:
         run: |
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "started=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
-          mkdir -p "$RUNNER_TEMP/booth-check"
-          cp src/agents/booth_report_posted.py src/agents/booth_verdict.py "$RUNNER_TEMP/booth-check/"
+          mkdir -p "$RUNNER_TEMP/booth-check/src/agents"
+          cp src/__init__.py "$RUNNER_TEMP/booth-check/src/"
+          cp src/agents/booth_report_posted.py src/agents/booth_verdict.py src/agents/__init__.py "$RUNNER_TEMP/booth-check/src/agents/"
 
       - name: Run Booth
         uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829 # v1.0.236
@@ -221,5 +222,6 @@ jobs:
           PR: ${{ github.event.pull_request.number || inputs.pr_number }}
         run: |
           gh api "repos/${{ github.repository }}/issues/$PR/comments" --paginate > "$RUNNER_TEMP/booth-comments.json"
-          python "$RUNNER_TEMP/booth-check/booth_report_posted.py" "$RUNNER_TEMP/booth-comments.json" \
+          cd "$RUNNER_TEMP/booth-check"
+          python -m src.agents.booth_report_posted "$RUNNER_TEMP/booth-comments.json" \
             "${{ steps.audited.outputs.sha }}" "${{ steps.audited.outputs.started }}"

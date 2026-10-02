@@ -206,7 +206,7 @@ def test_the_scan_finds_the_steps_it_is_about():
 def test_the_check_runs_after_booth():
     steps = _steps()
     booth = _index(steps, lambda n, b: 'anthropics/claude-code-action' in b, 'runs Booth')
-    check_step = _index(steps, lambda n, b: 'booth_report_posted.py' in b and 'gh api' in b,
+    check_step = _index(steps, lambda n, b: 'booth_report_posted' in b and 'gh api' in b,
                         'checks for a report')
     assert check_step > booth, "the report check runs before Booth has had a chance to post"
     body = steps[check_step][1]
@@ -228,7 +228,7 @@ def test_sha_and_start_time_are_recorded_before_booth_and_used_by_the_check():
     )
     record_body = steps[record][1]
     assert 'id: audited' in record_body and 'started=' in record_body
-    check_body = next(b for n, b in steps if 'booth_report_posted.py' in b and 'gh api' in b)
+    check_body = next(b for n, b in steps if 'booth_report_posted' in b and 'gh api' in b)
     assert 'steps.audited.outputs.sha' in check_body
     assert 'steps.audited.outputs.started' in check_body
 
@@ -239,8 +239,8 @@ def test_the_checker_is_copied_out_before_booth_touches_the_tree():
     copy = _index(steps, lambda n, b: 'cp src/agents/booth_report_posted.py' in b, 'copies the checker out')
     assert copy < booth
     assert 'src/agents/booth_verdict.py' in steps[copy][1], "the checker imports booth_verdict; copy both"
-    check_body = next(b for n, b in steps if 'booth_report_posted.py' in b and 'gh api' in b)
-    assert '$RUNNER_TEMP/booth-check/booth_report_posted.py' in check_body, (
+    check_body = next(b for n, b in steps if 'booth_report_posted' in b and 'gh api' in b)
+    assert 'cd "$RUNNER_TEMP/booth-check"' in check_body and '-m src.agents.booth_report_posted' in check_body, (
         "the check runs the script from the working tree Booth left behind"
     )
 
@@ -248,22 +248,30 @@ def test_the_checker_is_copied_out_before_booth_touches_the_tree():
 # --- the check runs from a copy, outside the checkout -------------------------
 
 def copied_modules(workflow_text):
-    """The src/ files booth-pr-audit.yml copies into $RUNNER_TEMP/booth-check."""
+    """The src/agents/ modules booth-pr-audit.yml copies into $RUNNER_TEMP/booth-check."""
     import re
-    m = re.search(r'^\s*cp ((?:src/\S+\.py\s+)+)"\$RUNNER_TEMP/booth-check/"', workflow_text, re.M)
+    m = re.search(r'^\s*cp ((?:src/agents/\S+\.py\s+)+)"\$RUNNER_TEMP/booth-check/src/agents/"', workflow_text, re.M)
     assert m, 'the copy into booth-check is gone from booth-pr-audit.yml -- re-anchor this guard'
-    return [p.split('/')[-1][:-3] for p in m.group(1).split()]
+    return [p.split('/')[-1][:-3] for p in m.group(1).split() if not p.endswith('__init__.py')]
 
 
 def local_imports(source, candidates):
-    """Top-level names a module imports that are modules in src/."""
+    """The modules of src/ a module imports, by module name.
+
+    `from src.agents.booth_verdict import x` and `from src.agents import
+    booth_verdict` both name booth_verdict; a bare `import booth_verdict` is
+    still counted, so an import written the old way is seen too."""
     import ast
     names = set()
     for node in ast.walk(ast.parse(source)):
         if isinstance(node, ast.Import):
-            names |= {a.name.split('.')[0] for a in node.names}
+            names |= {a.name.split('.')[-1] for a in node.names}
         elif isinstance(node, ast.ImportFrom) and node.module and node.level == 0:
-            names.add(node.module.split('.')[0])
+            parts = node.module.split('.')
+            if parts[0] == 'src' and len(parts) == 2:
+                names |= {a.name for a in node.names}
+            else:
+                names.add(parts[-1] if parts[0] == 'src' else parts[0])
     return names & candidates
 
 
@@ -278,10 +286,10 @@ def test_the_copied_check_imports_only_what_is_copied():
     wf = (root / '.github' / 'workflows' / 'booth-pr-audit.yml').read_text(encoding='utf-8')
     copied = copied_modules(wf)
     assert 'booth_report_posted' in copied and len(copied) >= 2, f'copied: {copied}'
-    src_modules = {p.stem for p in (root / 'src').glob('*.py')}
+    src_modules = {p.stem for p in (root / 'src').glob('*/*.py')} - {'__init__'}
     stray = {}
     for mod in copied:
-        imported = local_imports((root / 'src' / f'{mod}.py').read_text(encoding='utf-8'), src_modules)
+        imported = local_imports((root / 'src' / 'agents' / f'{mod}.py').read_text(encoding='utf-8'), src_modules)
         missing = imported - set(copied)
         if missing:
             stray[mod] = sorted(missing)
@@ -292,4 +300,6 @@ def test_the_copied_check_imports_only_what_is_copied():
 def test_the_import_check_sees_an_import():
     """Synthetic, so the failing branch is reachable while the real files are clean."""
     src = 'import json\nfrom collect_agent_log import BOOTH_ACCOUNTS\nimport booth_verdict as bv\n'
+    assert local_imports(src, {'collect_agent_log', 'booth_verdict', 'x'}) == {'collect_agent_log', 'booth_verdict'}
+    src = 'from src.agents.collect_agent_log import BOOTH_ACCOUNTS\nfrom src.agents import booth_verdict as bv\n'
     assert local_imports(src, {'collect_agent_log', 'booth_verdict', 'x'}) == {'collect_agent_log', 'booth_verdict'}

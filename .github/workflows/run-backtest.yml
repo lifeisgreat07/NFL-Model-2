@@ -70,7 +70,7 @@ jobs:
             echo ""
             echo "| field | value |"
             echo "| --- | --- |"
-            echo "| script | \`src/${{ inputs.script }}.py\` |"
+            echo "| script | \`${{ inputs.script }}\` |"
             echo "| commit | \`${{ github.sha }}\` |"
             echo "| requested by | @${{ github.actor }} |"
             echo "| notes | ${{ inputs.notes || '_none given_' }} |"
@@ -95,7 +95,11 @@ jobs:
         run: |
           mkdir -p results
           set -o pipefail
-          python "src/${{ inputs.script }}.py" 2>&1 | tee "results/${{ inputs.script }}_run.log"
+          case "${{ inputs.script }}" in
+            check_drift) package=pipeline ;;
+            *) package=research ;;
+          esac
+          python -m "src.$package.${{ inputs.script }}" 2>&1 | tee "results/${{ inputs.script }}_run.log"
 
       - name: Add output to run summary
         # Runs even on failure so a crashed run still shows its tail in the

@@ -47,8 +47,8 @@ def test_the_workflow_asks_paths_for_the_season():
     assert step, 'the season step is not findable -- re-anchor this guard'
     assert 'season=$(python -m src.pipeline.paths --current-season)' in step.group(1)
     assert 'date -u' not in step.group(1), 'the bash copy of the season rule is back'
-    r = subprocess.run([sys.executable, str(SRC / 'paths.py'), '--current-season'],
-                       capture_output=True, text=True)
+    r = subprocess.run([sys.executable, '-m', 'src.pipeline.paths', '--current-season'],
+                       capture_output=True, text=True, cwd=str(ROOT))
     assert r.returncode == 0 and r.stdout.strip() == str(paths.current_season())
 
 
@@ -114,7 +114,7 @@ def copies(sources):
 
 
 def test_no_module_defines_its_own_copy_again():
-    sources = {p.name: p.read_text(encoding='utf-8') for p in SRC.glob('*.py')}
+    sources = {p.name: p.read_text(encoding='utf-8') for p in SRC.glob('*/*.py')}
     assert len(sources) > 30, 'src/ was not read -- the matcher is broken'
     assert not copies(sources)
 

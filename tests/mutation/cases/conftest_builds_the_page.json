@@ -5,7 +5,7 @@
     {
       "id": "conftest-stops-building-the-page",
       "why": "the load-bearing case. index.html is untracked, and seven tests SKIP rather than fail when it is absent -- so a conftest that stops building does not turn the suite red, it turns seven guards into green skips and the suite reports MORE passes than before. Two weaker versions of the guard let this mutation survive: an existence check (a stale file from an earlier run satisfies it) and an mtime-within-one-second check (two pytest runs back to back satisfy it, which is precisely what this corpus does). The guard now compares the artifact's mtime before and after the build.",
-      "find": "        [sys.executable, str(GENERATOR)],",
+      "find": "        [sys.executable, '-m', GENERATOR_MODULE],",
       "replace": "        [sys.executable, '-c', 'pass'],",
       "expect_caught_by": "test_the_session_built_this_artifact"
     },

@@ -100,9 +100,9 @@ def scheduled_workflows(folder=WORKFLOWS):
 
 
 def raises_an_alert_on_failure(text):
-    """A step guarded by failure() that runs src/pipeline/alerts.py."""
+    """A step guarded by failure() that runs src.pipeline.alerts."""
     steps = text.split('\n      - ')
-    return any('if: failure()' in s and 'src/pipeline/alerts.py' in s for s in steps)
+    return any('if: failure()' in s and 'src.pipeline.alerts' in s for s in steps)
 
 
 def test_every_scheduled_workflow_opens_an_issue_when_it_fails():

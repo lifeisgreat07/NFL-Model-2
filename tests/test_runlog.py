@@ -8,6 +8,7 @@ whatever sys.stdout is at that moment, and fail the way print failed.
 
 Run with: pytest tests/test_runlog.py -v
 """
+import importlib
 import io
 import re
 import sys
@@ -91,12 +92,12 @@ def test_a_line_that_cannot_be_written_fails_like_print(monkeypatch):
 
 @pytest.mark.parametrize('name', LOGGED)
 def test_the_converted_modules_log_and_never_print(name):
-    code = re.sub(r'(?m)#.*$', '', (ROOT / 'src' / f'{name}.py').read_text(encoding='utf-8'))
+    code = re.sub(r'(?m)#.*$', '', next((ROOT / 'src').glob(f'*/{name}.py')).read_text(encoding='utf-8'))
     assert not re.search(r'(?<![\w.])print\(', code), f'{name} prints again'
     assert re.search(r'(?m)^log = get_logger\(__name__\)$', code), f'{name} has no logger'
 
 
 @pytest.mark.parametrize('name', LOGGED)
 def test_the_converted_modules_are_bound_to_the_one_handler(name):
-    module = __import__(name)
+    module = importlib.import_module(f'src.pipeline.{name}')
     assert any(isinstance(h, runlog._StdoutHandler) for h in module.log.handlers)

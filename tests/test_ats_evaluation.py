@@ -178,9 +178,10 @@ def test_no_model_trains_on_home_margin():
     checked = 0
     for name in ('backtest.py', 'calibration.py', 'ats_evaluation.py',
                  'weekly_update.py', 'bootstrap_brier_gap.py'):
-        path = REPO_ROOT / 'src' / name
-        if not path.exists():
+        found = list((REPO_ROOT / 'src').glob(f'*/{name}'))
+        if not found:
             continue
+        path = found[0]
         tree = ast.parse(path.read_text())
         for node in tree.body:                       # module level only
             if not isinstance(node, ast.Assign):

@@ -46,6 +46,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent
 GENERATOR = ROOT / 'src' / 'pipeline' / 'generate_dashboard.py'
+GENERATOR_MODULE = 'src.pipeline.generate_dashboard'
 
 #: Attribute the build stamps onto pytest's config object. The guard reads it
 #: through the built-in `pytestconfig` fixture, so it needs no cooperation from
@@ -77,7 +78,7 @@ def written_at(path):
 def build_the_dashboard():
     """Run the real generator. Returns the CompletedProcess; raises nothing."""
     return subprocess.run(
-        [sys.executable, str(GENERATOR)],
+        [sys.executable, '-m', GENERATOR_MODULE],
         cwd=str(ROOT), capture_output=True, text=True)
 
 

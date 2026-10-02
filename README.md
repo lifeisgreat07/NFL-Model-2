@@ -155,16 +155,18 @@ docs/
   architecture.md       -- the whole system on one diagram
   case-studies/         -- write-ups of real problems and how they were found
   lessons-learned.md    -- what it all taught, each lesson with its source
-src/
+src/pipeline/           -- what the scheduled workflows and the page build run
   config.py             -- every tuned constant, with the backtest that justified it
   data_loader.py        -- pulls fresh nflverse data automatically (no manual CSVs)
   ratings_engine.py     -- team + QB rating computation (leak-free, recency-weighted)
   weekly_update.py      -- main entrypoint: generates next week's predictions
   grade_predictions.py  -- grades a completed week against actual results
-  backtest.py           -- the holdout backtest behind the table above
-  calibration.py        -- reliability of the stated probabilities
   generate_dashboard.py -- builds index.html from the template plus data/
   dashboard_template.html -- the dashboard's markup, with data injected at build
+src/research/           -- run by hand: backtests, experiments, re-derived figures
+  backtest.py           -- the holdout backtest behind the table above
+  calibration.py        -- reliability of the stated probabilities
+src/agents/             -- Booth, Scout and the session gates
   scout_preflight.py    -- checks a branch against the project's own rules
   session_wrapup.py     -- end-of-session checks (suite count, unpushed work, docs)
 predictions/            -- one JSON file per week, saved BEFORE kickoff, never edited

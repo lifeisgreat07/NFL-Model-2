@@ -120,7 +120,7 @@ def test_the_probe_writes_nothing():
 
 def test_the_workflow_runs_it_on_its_own_pull_requests():
     wf = WORKFLOW.read_text(encoding='utf-8')
-    assert re.search(r"pull_request:\s*\n\s*paths:\s*\n\s*- 'src/nfl_schedule_probe\.py'", wf), (
+    assert re.search(r"pull_request:\s*\n\s*paths:\s*\n\s*- 'src/pipeline/nfl_schedule_probe\.py'", wf), (
         'the probe no longer runs on the pull requests that change it, so its answer is not on the PR')
     assert 'python -m src.pipeline.nfl_schedule_probe --weeks 1 2 3 4 --season 2026' in wf
     assert re.search(r'permissions:\s*\n\s*contents: read', wf)
