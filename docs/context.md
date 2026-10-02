@@ -4,52 +4,48 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-01, evening ET (week 4 locked; #253 and #254 merged; #255 open)
+Last updated: 2026-10-02, early morning ET (#255, #256, #257 merged; Stage 33 registered)
 
 ---
 
 ## Right now
 
 **Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked
-figure. Week 4 locked on Thursday's scheduled run (`c80cb28`), cleanly.
+figure. `src/` is packaged: run modules with `python -m src.<package>.<module>`.
 
-**Next action: #255 (Stage 32 item 14, package `src/`)** is open and waits
-on Mark twice: its body says "Human review required" (it edits
-the Booth workflow), and his QB routine's three `sys.path.insert(0,'src')`
-commands must become `from src.pipeline...` before it merges (agents cannot
-edit the routine; it next runs Monday 22:00 UTC). On his word: merge with
-`merge_pr.ps1`. If `main` moves first, rebuild the branch from the session
-archive's pkg scripts (build_branch) and rerun suite and whole corpus.
-Then, in order:
-1. **Ruff `I` and `UP`**: built and green as `s32-ruff-i-up` (worktree
-   nfl-wt/ruff), stacked on #255. Rebase after #255, then suite and scope.
-   UP031 stays off (regexes with braces), target py311.
-2. **Stage 33 item 23** needs Mark's decision first: weekly runs never see
-   a locked, ungraded week except at its own lock, so closing lines can only
-   come from the weekend refresh, which the 2026-09-24 decision keeps away
-   from `data/line_history/`. Recommendation: let it append there for
-   locked, ungraded weeks only (picks stay single-writer).
-3. **Stage 33 items 21, 22, 24**: drafts with Mark (R3's switching rule,
-   R4's baseline); committed as a Stage 33 registry under experiments/
-   before anything runs.
-4. **Stage 33 item 26** when the next page-sized feature starts; then Stage
-   34 item 32 (real testers, the fourth audit).
+**Next action: Stage 33 item 21's groundwork**, one PR: `MODEL_SPECS` and
+`walk_forward(spec)` shared by the live pipeline and the backtest, with
+`C=1.0, penalty='l2'` written out, proven by a byte-identical page and the
+reproducibility audit run on the local Windows machine (GitHub runners flip,
+see traps). The registry (`experiments/stage33/registry.json`, `8ddbcec`)
+requires it before any of R1 to R4 runs. Then, in order:
+1. **A Stage 33 registry test** like `tests/test_stage5_registry.py`
+   (registered before answered; labels recomputed; budget 3), before R1 has
+   a result.
+2. **R1, R2, R3** (98.33% intervals; R3 non-inferiority +0.002), each a
+   Model Lab row; then **R4**, the drift check on log loss against 0.6518.
+3. **Booth prompt line**: the CLAUDE.md restore on PRs is expected (edits
+   the Booth workflow, so Mark reviews). **Audit provenance**: record the
+   runner's CPU.
+4. **Check after the weekend**: Friday's weekend refresh appended week 4
+   lines (#257); Monday 22:00 UTC the QB routine runs on the new imports;
+   Tuesday's Weekly update under `python -m`.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| #255 packages | Open at `ebbc172`, description current. Booth: NEEDS HUMAN REVIEW, 6 confirmed, 2 expected UNVERIFIABLE (the whole corpus; the routine), no discrepancy | Mark: his routine edit, then his say-so to merge (it edits the Booth workflow) |
-| QB override routine prompt | `sys.path` imports; names the old lock time | Mark edits it at claude.ai/code/routines |
+| Stage 33 R1 to R4 | Registered (`8ddbcec`), not run | Item 21's groundwork PR, then a registry test |
+| QB override routine prompt | Edited by Mark 2026-10-02 to `from src.pipeline...`; read back | Its first run, Monday 22:00 UTC |
 | claude-code-action pin | On v1.0.236 | A hand bump when a release matters |
 | Season Accuracy's forecast score | Merged (#160), not on the page yet | 50 graded games: after week 4 at the earliest |
 | TV exceptions for holiday and Saturday games | Weeks 12, 15, 16 | Sourced entries in `data/tv/exceptions.json` before those weeks |
-| Audit Response Log | Updated 2026-10-01 | Fable, for the next audit |
+| Audit Response Log | Updated 2026-10-02 | Fable, for the next audit |
 | Drift issue | Never fired on a real event | A real event |
 
 ## Queued, in order
 
-1. The after-lock items above.
+1. The Stage 33 items above.
 2. **Stages 20 to 22**: 20 needs five real testers; 21 waits for week 5; 22 comes from 20.
 3. **Stage 28** and the closing-line backtest: after the regular season.
 
