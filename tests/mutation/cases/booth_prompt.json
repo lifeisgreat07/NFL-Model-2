@@ -15,6 +15,20 @@
       "find": "            THIS RUN ENDS THE MOMENT YOU STOP CALLING TOOLS. There is no later\n",
       "replace": "          # THIS RUN ENDS THE MOMENT YOU STOP CALLING TOOLS. There is no later\n",
       "expect_caught_by": "test_the_prompt_says_the_run_ends_when_tool_calls_stop"
+    },
+    {
+      "id": "booth-prompt-calls-the-restore-a-finding",
+      "why": "the prompt tells Booth to report the restored CLAUDE.md, so every PR that edits CLAUDE.md gets a discrepancy for a file the action itself put there",
+      "find": "            mutation and not a discrepancy. Stash it, audit the committed",
+      "replace": "            mutation. Report it as a discrepancy, then audit the committed",
+      "expect_caught_by": "test_the_prompt_says_the_claude_md_restore_is_expected"
+    },
+    {
+      "id": "booth-prompt-restore-line-softened",
+      "why": "the restore warning is reworded into a passing remark, so the fact Booth misread on #254 and #255 is no longer one it is told plainly",
+      "find": "            EXPECT CLAUDE.md TO SHOW AS MODIFIED when the PR edits it. Before",
+      "replace": "            CLAUDE.md may differ when the PR edits it. Before",
+      "expect_caught_by": "test_the_prompt_says_the_claude_md_restore_is_expected"
     }
   ]
 }
