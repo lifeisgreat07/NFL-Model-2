@@ -77,8 +77,8 @@
       "target": "src/pipeline/check_drift.py",
       "tests": "tests/test_grading_and_drift.py",
       "why": "main() compares with a fixed number instead of the file's accuracy, so regenerating the backtest would never move the drift check.",
-      "find": "    flagged = [check_model(records, key, baseline[model]['accuracy'], label)",
-      "replace": "    flagged = [check_model(records, key, 0.65, label)",
+      "find": "        check_model(records, key, baseline[model]['accuracy'], label)",
+      "replace": "        check_model(records, key, 0.65, label)",
       "expect_caught_by": "test_main_compares_live_accuracy_with_the_file"
     },
     {

@@ -1,14 +1,25 @@
 """
-Model drift monitoring -- compares real, live prediction accuracy against
-the canonical backtest baseline (data/calibration.json; see CALIBRATION below), and flags when
-the gap is large enough to be a real statistical signal rather than
-small-sample noise.
+Model drift monitoring -- compares live Model A's log loss with its
+backtest baseline (data/drift_baseline.json), and flags when the gap is
+large enough to be a real statistical signal rather than small-sample
+noise. Live accuracy against data/calibration.json is still printed for
+both models, as information.
+
+Since Stage 33 R4 (experiments/stage33/registry.json) the flag is on LOG
+LOSS. It was on accuracy, which this project's own methodology says cannot
+carry a result at this sample size. The rule, registered before any 2026
+log loss was computed for it: over every graded live Model A game with a
+winner, flag when the lower end of a one-sided 95% bootstrap interval of
+the mean per-game log loss is above the baseline, and not before 30 games.
+The baseline is the 2022-2025 backtest with the schedule's listed starter
+(0.6518), the closest backtest to what v2.5 runs; the lagged-QB figure
+(0.6643) is printed beside it.
 
 Why this exists: this project has found three real, silent bugs this
 season (a leak in QB rating shrinkage, an unreproducible hyperparameter
 decision, and a production pipeline with no scheduled trigger at all) --
 all found by someone manually digging in, not by anything automated. This
-script is meant to catch the next one earlier: if live accuracy quietly
+script is meant to catch the next one earlier: if live performance quietly
 diverges from what the backtest promised, that's worth a flag before it
 becomes a months-old mystery.
 
@@ -19,6 +30,8 @@ Exit code 1 = statistically significant underperformance detected.
 import json
 import math
 from pathlib import Path
+
+import numpy as np
 
 from src.pipeline.config import BACKTEST_SEASONS
 from src.pipeline.paths import (  # src/pipeline/paths.py, Stage 32 item 15
@@ -41,11 +54,79 @@ SIGNIFICANCE_Z = 1.96  # two-sided 95% -- consistent with the CIs used everywher
 # Until Stage 35 this was config.BACKTEST_ACCURACY, a literal typed in with
 # the first upload: 0.628 and 0.682, one game off each way from the file's
 # 682 and 742 of 1087, so the drift report quoted a baseline printed nowhere
-# else. Stage 33 item 24 reads log loss from the same file.
+# else. Since Stage 33 R4 this accuracy baseline is printed as information;
+# the flag's log-loss baseline is DRIFT_BASELINE below.
 CALIBRATION = DATA_DIR / 'calibration.json'
 #: (model in calibration.json, graded-row key, label) for each model watched.
 WATCHED = (('model_a', 'model_a_correct', 'Model A'),
            ('model_b', 'model_b_correct', 'Model B'))
+
+#: Stage 33 R4's log-loss baseline and rule, committed, never recomputed
+#: from live results. tests/test_check_drift_log_loss.py ties it to the
+#: registry and to experiments/stage5/residuals.json.
+DRIFT_BASELINE = DATA_DIR / 'drift_baseline.json'
+#: The live probability the log loss is scored on, and the outcome.
+LOG_LOSS_PROB = 'model_a_home_win_prob'
+EPS = 1e-15
+
+
+def log_loss_baseline(path: Path | None = None) -> dict:
+    """R4's committed baseline and rule. Raises OSError, ValueError or
+    KeyError when the file is missing, unreadable or incomplete."""
+    spec = json.loads(Path(DRIFT_BASELINE if path is None else path).read_text(encoding='utf-8'))
+    for key in ('baseline', 'printed_beside', 'rule'):
+        spec[key]  # noqa: B018 -- a KeyError here is the "incomplete" case
+    return spec
+
+
+def per_game_log_loss(records, prob_key=LOG_LOSS_PROB):
+    """Per-game log loss of every graded game with a winner. A tie has no
+    winner (actual_home_win None) and decides nothing, as in grading."""
+    out = []
+    for r in records:
+        y, p = r.get('actual_home_win'), r.get(prob_key)
+        if y not in (0, 1) or p is None:
+            continue
+        p = min(max(float(p), EPS), 1 - EPS)
+        out.append(-math.log(p) if y == 1 else -math.log(1 - p))
+    return out
+
+
+def log_loss_lower_bound(losses, rule):
+    """The lower end of a one-sided bootstrap interval of the mean, at the
+    rule's level, resampled with the rule's own seed so a rerun is identical."""
+    arr = np.asarray(losses, dtype=float)
+    rng = np.random.default_rng(rule['seed'])
+    idx = rng.integers(0, len(arr), size=(rule['n_resamples'], len(arr)))
+    return float(np.percentile(arr[idx].mean(axis=1), (1 - rule['one_sided_level']) * 100))
+
+
+def check_log_loss(records, spec, label='Model A'):
+    """R4: the check that decides the flag. True when it flags."""
+    losses = per_game_log_loss(records)
+    base, beside, rule = spec['baseline'], spec['printed_beside'], spec['rule']
+    log.info(f"\n{label}, log loss (decides the flag; Stage 33 R4):")
+    log.info(f"  Live games scored: {len(losses)}")
+    if not losses:
+        log.info("  No live results with a winner yet -- nothing to check.")
+        return False
+    mean = sum(losses) / len(losses)
+    log.info(f"  Observed log loss: {mean:.4f}")
+    log.info(f"  Baseline: {base['value']:.4f} ({base['label']}); "
+             f"for reference, {beside['value']:.4f} ({beside['label']})")
+    if len(losses) < rule['min_games']:
+        log.info(f"  Below {rule['min_games']} games -- too early to test statistically, watching only.")
+        return False
+    lower = log_loss_lower_bound(losses, rule)
+    log.info(f"  One-sided {rule['one_sided_level']:.0%} lower bound: {lower:.4f}")
+    if lower > base['value']:
+        log.warning(f"  *** DRIFT WARNING: live log loss is significantly above the backtest baseline "
+                    f"(lower bound {lower:.4f} > {base['value']:.4f}) ***")
+        log.info("  This does not automatically mean something is broken -- real variance happens -- but it's")
+        log.info("  a large enough, unlikely-by-chance gap that it's worth a real look, not just noting and moving on.")
+        return True
+    log.info("  No significant drift detected.")
+    return False
 
 
 def backtest_baseline(path: Path | None = None) -> dict[str, dict]:
@@ -112,11 +193,12 @@ def check_model(records, key, expected_p, label):
     z, flagged = one_proportion_z_test(correct, n, expected_p)
     log.info(f"  z-score: {z:.2f}" if z is not None else "  z-score: undefined")
     if flagged:
-        log.warning(f"  *** DRIFT WARNING: live accuracy is significantly below the backtest baseline (z={z:.2f}, threshold={-SIGNIFICANCE_Z}) ***")
-        log.info("  This does not automatically mean something is broken -- real variance happens -- but it's")
-        log.info("  a large enough, unlikely-by-chance gap that it's worth a real look, not just noting and moving on.")
+        # Information only since Stage 33 R4: printed, never the flag.
+        log.info(f"  Accuracy is significantly below the backtest baseline (z={z:.2f}, "
+                 f"threshold={-SIGNIFICANCE_Z}). Information only: accuracy cannot carry a result "
+                 "at this sample size, and the flag is on log loss.")
     else:
-        log.info("  No significant drift detected.")
+        log.info("  No significant accuracy gap.")
     return flagged
 
 
@@ -130,16 +212,18 @@ def main():
     # carries that line and the warning.
     try:
         baseline = backtest_baseline()
+        spec = log_loss_baseline()
     except (OSError, ValueError, KeyError) as e:
-        log.warning(f"WARNING: no backtest baseline in {CALIBRATION.name} "
+        log.warning(f"WARNING: no backtest baseline in {CALIBRATION.name} or {DRIFT_BASELINE.name} "
                     f"({type(e).__name__}: {e}); drift not checked.")
         log.info("\n=== DRIFT CHECK: NOT RUN (no backtest baseline) ===")
         return 0
 
-    flagged = [check_model(records, key, baseline[model]['accuracy'], label)
-               for model, key, label in WATCHED]
+    log.info("\nAccuracy, for information (the flag is on log loss below):")
+    for model, key, label in WATCHED:
+        check_model(records, key, baseline[model]['accuracy'], label)
 
-    if any(flagged):
+    if check_log_loss(records, spec):
         log.info("\n=== DRIFT CHECK: WARNING FLAGGED ===")
         return 1
     log.info("\n=== DRIFT CHECK: OK ===")

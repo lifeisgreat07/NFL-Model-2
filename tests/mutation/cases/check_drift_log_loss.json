@@ -1,0 +1,49 @@
+{
+  "target": "src/pipeline/check_drift.py",
+  "tests": "tests/test_check_drift_log_loss.py",
+  "cases": [
+    {
+      "id": "drift-accuracy-flags-again",
+      "why": "an accuracy gap opens the drift issue again, the test R4 demoted because accuracy cannot carry a result at this sample size",
+      "find": "    if check_log_loss(records, spec):",
+      "replace": "    if check_log_loss(records, spec) or check_model(records, 'model_a_correct', baseline['model_a']['accuracy'], 'Model A'):",
+      "expect_caught_by": "test_accuracy_below_its_baseline_no_longer_flags"
+    },
+    {
+      "id": "drift-on-the-line-flags",
+      "why": "a lower bound exactly on the baseline flags; the registered rule says above",
+      "find": "    if lower > base['value']:",
+      "replace": "    if lower >= base['value']:",
+      "expect_caught_by": "test_a_lower_bound_exactly_on_the_baseline_does_not_flag"
+    },
+    {
+      "id": "drift-tie-scored-as-an-away-win",
+      "why": "a tied game is scored as if the away team won, so every tie adds a home-pick loss the grading itself refuses to count",
+      "find": "        if y not in (0, 1) or p is None:",
+      "replace": "        if p is None:",
+      "expect_caught_by": "test_per_game_log_loss_by_hand_and_a_tie_decides_nothing"
+    },
+    {
+      "id": "drift-flags-before-thirty-games",
+      "why": "the minimum sample is ignored, so a bad first week opens a drift issue on a handful of games",
+      "find": "    if len(losses) < rule['min_games']:",
+      "replace": "    if len(losses) < 3:",
+      "expect_caught_by": "test_below_thirty_games_nothing_flags_however_bad"
+    },
+    {
+      "id": "drift-bound-from-the-wrong-tail",
+      "why": "the bound is taken from the upper tail, so the check flags whenever the mean is anywhere near the baseline",
+      "find": "    return float(np.percentile(arr[idx].mean(axis=1), (1 - rule['one_sided_level']) * 100))",
+      "replace": "    return float(np.percentile(arr[idx].mean(axis=1), rule['one_sided_level'] * 100))",
+      "expect_caught_by": "test_the_lower_bound_is_the_rule_s_own_bootstrap"
+    },
+    {
+      "id": "drift-log-loss-baseline-retyped",
+      "target": "data/drift_baseline.json",
+      "why": "the committed baseline is retyped as a rounded figure, so the flag compares against a number the registry and its source file do not hold",
+      "find": "    \"value\": 0.6517835197359845",
+      "replace": "    \"value\": 0.6518",
+      "expect_caught_by": "test_the_baseline_file_is_the_registered_one"
+    }
+  ]
+}

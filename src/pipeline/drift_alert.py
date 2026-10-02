@@ -2,8 +2,9 @@
 Run the drift check after grading, and open an issue when it flags.
 
 src/pipeline/check_drift.py has existed since before Stage 3 and nothing ran it. It
-compares live accuracy with the backtest baseline and exits 1 when the gap
-is too large to be small-sample noise (one-sided z-test, 30 games minimum).
+compares live Model A's log loss with its backtest baseline and exits 1
+when the gap is too large to be small-sample noise (a one-sided bootstrap
+bound, 30 games minimum; on accuracy and a z-test until Stage 33 R4).
 A flag nobody sees is the same as no check, so the Weekly update workflow
 runs this after grading and, on a flag, opens the issue "Model drift
 detected", or comments on it if it is already open.
@@ -15,10 +16,12 @@ It never fails the weekly run. Drift is a question for a person, and the
 run's job is to lock and grade; stopping it would cost picks and answer
 nothing. The drift output is also written to --report for the run summary.
 
-A caution the issue carries, because this project's own methodology says
-it: the check is on ACCURACY, which cannot carry a result at this sample
-size. A flag is a reason to look at log loss and Brier on the same games,
-not a verdict.
+A caution the issue carries. Since Stage 33 R4 the flag is on Model A's
+LOG LOSS against a committed backtest baseline (data/drift_baseline.json),
+not on accuracy, which this project's own methodology says cannot carry a
+result at this sample size. A flag is still a reason to look, not a
+verdict: a one-sided 95% test re-run every week on a growing sample will
+sometimes fire by chance.
 
     python -m src.pipeline.drift_alert [--report drift-report.txt]
 """
@@ -28,9 +31,11 @@ from contextlib import redirect_stdout
 from pathlib import Path
 
 TITLE = 'Model drift detected'
-CAUTION = ('This check is on accuracy, which cannot carry a result at this '
-           'sample size (see CLAUDE.md, Non-negotiable methodology). Before '
-           'acting, compare log loss and Brier on the same live games.')
+CAUTION = ("This flag is on Model A's log loss against the 2022-2025 backtest "
+           '(Stage 33 R4, experiments/stage33/registry.json); accuracy is printed '
+           'above for information only. A one-sided 95% test, re-run every '
+           'week on a growing sample, will sometimes flag by chance: read the '
+           'per-game losses before acting.')
 
 
 def run_check(check):
