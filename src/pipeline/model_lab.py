@@ -49,6 +49,10 @@ RESULT_DECISION = {
     # result counts only when its interval excludes zero, so this is not a
     # confirmed finding of "no gap" -- it is a gap too small to measure.
     'NO MEASURABLE GAP': 'INCONCLUSIVE',
+    # Stage 33's R3 (experiments/stage33/registry.json): the fitted market
+    # curve is no worse than the hand-picked one by more than the margin, and
+    # not measurably worse at all, so the registered rule switches to it.
+    'NON-INFERIOR': 'ACCEPT',
 }
 
 

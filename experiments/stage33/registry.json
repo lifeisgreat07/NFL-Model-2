@@ -20,6 +20,10 @@
   "forward_test": "Anything ACCEPTED or switched is re-scored on the 2026 season after it ends, with no refitting of anything chosen here. The harness refuses 2026 until then.",
   "model_lab": "Every question ends as a Model Lab row, whatever it shows."
  },
+ "amendments": [
+  {"date": "2026-10-02", "by": "Mark", "entry": "R3", "before_any_result": true, "change": "Added 'margin' (the decision rule's +0.002, as a number) and 'precedence' (the overlap of the switch and do-not-switch rules resolved: do-not-switch wins)."},
+  {"date": "2026-10-02", "by": "Claude, disclosed in PR #258", "entry": "prerequisite", "before_any_result": true, "change": "No edit to the text. scikit-learn 1.9.0 deprecates the 'penalty' argument, so the shared specs spell penalty='l2' as l1_ratio=0.0 and penalty=None as C=inf; tests/test_model_specs.py holds both bit-equal to the deprecated spelling."}
+ ],
  "prerequisite": "Stage 33 item 21's MODEL_SPECS and walk_forward(spec), shared by the live pipeline and the backtest, with C=1.0 and penalty='l2' written out (today's sklearn defaults), shown behaviour-identical by the reproducibility audit and a byte-identical page before any question here runs.",
  "disclosures": [
   "2024-2025 have confirmed earlier decisions in this project (QB shrinkage, weekly refit, the pandas experiment, Stage 5). They are not a fresh holdout; the 2026 forward test is.",
@@ -66,6 +70,8 @@
    "decision_model": "market",
    "spends_slot": true,
    "decision_rule": "NON-INFERIORITY, margin +0.002 (Mark, 2026-10-01). Switch to the fitted curve if the upper end of the 98.33% interval on (fitted - fixed) log loss is below +0.002. Do not switch if the lower end is above 0. Otherwise INCONCLUSIVE: the fixed curve stays and the page says so.",
+   "margin": 0.002,
+   "precedence": "AMENDED 2026-10-02, before any result (Mark): the two rules above overlap on an interval wholly inside (0, +0.002), measurably worse but by less than the margin. Do-not-switch wins: a measurably worse curve never switches. Labels: lower end above 0 is REJECT; otherwise upper end below the margin is NON-INFERIOR (switch); otherwise INCONCLUSIVE.",
    "why_non_inferiority": "The reason to switch is like-for-like: the page's live log-loss race compares two fitted models against a curve no data chose. The fitted curve need only be no worse. The margin is about a fifth of H1's confirmation difference (-0.0109, experiments/stage5/results/H1.json).",
    "if_switched": "Each prediction stores market_prob_home_fitted beside the existing market_prob_home, and saved picks are never rewritten. Grading and the log-loss race read the fitted value from the week the switch starts. Weeks already locked keep their stored value.",
    "expected": "The fitted slope lands near 5.5 and the difference is inside the margin."

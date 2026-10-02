@@ -1,0 +1,78 @@
+{
+  "target": "src/research/stage33_eval.py",
+  "tests": "tests/test_stage33_registry.py",
+  "cases": [
+    {
+      "id": "s33-overlap-switches",
+      "why": "an interval wholly inside (0, +0.002) switches to the fitted curve: measurably worse, yet accepted, the opposite of Mark's 2026-10-02 precedence",
+      "find": "    if lo > 0:",
+      "replace": "    if lo > 0 and hi >= margin:",
+      "expect_caught_by": "test_r3_labels_follow_the_amended_rule"
+    },
+    {
+      "id": "s33-margin-not-strict",
+      "why": "an upper end exactly at the margin counts as inside it; the registry says below",
+      "find": "    if hi < margin:",
+      "replace": "    if hi <= margin:",
+      "expect_caught_by": "test_r3_labels_follow_the_amended_rule"
+    },
+    {
+      "id": "s33-r3-screened-like-the-others",
+      "why": "R3 is held to the validation screen, so a fitted curve slightly worse on validation is never asked the non-inferiority question it was registered to answer",
+      "find": "    return 'margin' in h or validation['log_loss_diff'] < 0",
+      "replace": "    return validation['log_loss_diff'] < 0",
+      "expect_caught_by": "test_r3_goes_to_confirmation_whatever_validation_shows"
+    },
+    {
+      "id": "s33-level-ignores-the-budget",
+      "why": "confirmatory intervals at 95% instead of 98.33%: three questions, each tested as if it were the only one",
+      "find": "    return 1.0 - p['alpha'] / p['budget_m']",
+      "replace": "    return 1.0 - p['alpha']",
+      "expect_caught_by": "test_the_confirmatory_level_is_bonferroni_over_the_budget"
+    },
+    {
+      "id": "s33-holdout-season-allowed",
+      "why": "2026 itself is no longer refused, so a question could be tuned on the season meant to test it",
+      "find": "    touched = [s for s in seasons if s >= forbidden]",
+      "replace": "    touched = [s for s in seasons if s > forbidden]",
+      "expect_caught_by": "test_the_forward_holdout_is_refused"
+    },
+    {
+      "id": "s33-incumbent-substitution-allowed",
+      "why": "a registry incumbent that is not the published spec is scored anyway, answering a question about a model nobody runs",
+      "find": "        if spec_from(h['incumbent']) != published:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_run_on_synthetic_games_is_a_result_the_rules_accept"
+    },
+    {
+      "id": "s33-r3-incumbent-is-another-curve",
+      "why": "R3's incumbent is a curve the live pipeline does not use, so the comparison is against nothing that ships",
+      "find": "    return market_prob(spread_line)",
+      "replace": "    return market_prob(spread_line * 5.5 / 6.0)",
+      "expect_caught_by": "test_r3_scores_the_published_market_model_against_the_live_curve"
+    },
+    {
+      "id": "s33-screen-passes-a-tie",
+      "why": "a candidate exactly level with the incumbent on validation goes on to spend a confirmatory slot; the screen requires lower",
+      "find": "    if validation['log_loss_diff'] >= 0:",
+      "replace": "    if validation['log_loss_diff'] > 0:",
+      "expect_caught_by": "test_r1_and_r2_are_screened_on_validation"
+    },
+    {
+      "id": "s33-non-inferior-shown-as-inconclusive",
+      "target": "src/pipeline/model_lab.py",
+      "why": "R3's switch shows on Model Lab as INCONCLUSIVE, so the page says the fixed curve stayed when the registered rule replaced it",
+      "find": "    'NON-INFERIOR': 'ACCEPT',",
+      "replace": "    'NON-INFERIOR': 'INCONCLUSIVE',",
+      "expect_caught_by": "test_every_label_this_family_can_produce_has_a_model_lab_decision"
+    },
+    {
+      "id": "s33-r4-baseline-retyped",
+      "target": "experiments/stage33/registry.json",
+      "why": "R4's baseline is retyped as a rounded figure, so the drift rule flags against a number its source file does not hold",
+      "find": "    \"value\": 0.6517835197359845,",
+      "replace": "    \"value\": 0.6518,",
+      "expect_caught_by": "test_r4_baseline_is_the_figure_in_its_source_file"
+    }
+  ]
+}
