@@ -4,7 +4,7 @@
   "cases": [
     {
       "id": "case-study-card-loses-its-slug",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "the card on the page stops naming the case study it summarises, so the page and docs/case-studies/ disagree about which stories exist and nothing links them.",
       "find": "data-case-study=\"qb-rating-leak\"",
       "replace": "data-case-study=\"qb-leak\"",
@@ -12,7 +12,7 @@
     },
     {
       "id": "case-study-card-links-somewhere-else",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "the card still exists and still reads as a working link, but it opens the index instead of its own case study -- the failure only the one reader who clicks it would see.",
       "find": "blob/main/docs/case-studies/qb-rating-leak.md\"",
       "replace": "blob/main/docs/case-studies/README.md\"",

@@ -1,5 +1,5 @@
 {
-  "target": "src/collect_agent_log.py",
+  "target": "src/agents/collect_agent_log.py",
   "tests": "tests/test_collect_agent_log.py",
   "cases": [
     {
@@ -46,7 +46,7 @@
     },
     {
       "id": "agentlog-drops-booth-on-the-workflow-token",
-      "target": "src/booth_verdict.py",
+      "target": "src/agents/booth_verdict.py",
       "why": "only claude[bot] is accepted, so every report Booth posts on GITHUB_TOKEN (as github-actions[bot]) is silently left out of the log. The list lives in booth_verdict.py since #219, because the audit workflow copies that module out of the checkout",
       "find": "BOOTH_ACCOUNTS = frozenset({'claude[bot]', 'github-actions[bot]'})",
       "replace": "BOOTH_ACCOUNTS = frozenset({'claude[bot]'})",
@@ -54,7 +54,7 @@
     },
     {
       "id": "agentlog-missing-author-assumed-booth",
-      "target": "src/booth_verdict.py",
+      "target": "src/agents/booth_verdict.py",
       "why": "a comment with no author recorded is assumed to be Booth's, so a collector fed the old shape counts every copied heading again",
       "find": "    return (comment.get('user') or {}).get('login')",
       "replace": "    return (comment.get('user') or {}).get('login', 'claude[bot]')",

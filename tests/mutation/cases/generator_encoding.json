@@ -1,5 +1,5 @@
 {
-  "target": "src/generate_dashboard.py",
+  "target": "src/pipeline/generate_dashboard.py",
   "tests": "tests/test_generator_encoding.py",
   "cases": [
     {

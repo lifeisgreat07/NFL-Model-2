@@ -33,9 +33,8 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-from scout_preflight import (  # noqa: E402
+from src.agents.scout_preflight import (  # noqa: E402
     SCOPED_COUNT_PHRASINGS, SCOPED_COUNT_RE, check_scoped_test_counts, collected_count)
 
 # PR #54's sentence, as Booth found it, said:

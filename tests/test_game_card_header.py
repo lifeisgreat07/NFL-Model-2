@@ -27,7 +27,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 HARNESS = Path(__file__).parent / 'matchup_header_harness.js'
 NODE = shutil.which('node')
 
@@ -55,7 +55,7 @@ def test_both_render_paths_use_the_helper(source):
     """Naming the coverage rather than asserting a protection exists.
 
     "The title is built in one place" is satisfied by a helper nobody calls.
-    This repository has shipped exactly that -- src/collect_agent_log.py was
+    This repository has shipped exactly that -- src/agents/collect_agent_log.py was
     written, tested and never invoked -- so the two call sites are enumerated
     here instead of trusted.
     """

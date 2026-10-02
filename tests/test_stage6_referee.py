@@ -10,7 +10,6 @@ lower end is above zero. Each test below holds one of those words.
 Run with: pytest tests/test_stage6_referee.py -v
 """
 import json
-import sys
 from pathlib import Path
 
 import numpy as np
@@ -18,10 +17,9 @@ import pandas as pd
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-import stage6_referee as rf  # noqa: E402
-import stage6_run as s6r  # noqa: E402
+from src.research import stage6_referee as rf  # noqa: E402
+from src.research import stage6_run as s6r  # noqa: E402
 
 
 def sched_rows(rows):

@@ -1,20 +1,18 @@
 """
-src/booth_alert.py and .github/workflows/booth-alert.yml: a failed Booth
+src/agents/booth_alert.py and .github/workflows/booth-alert.yml: a failed Booth
 audit becomes an issue, and nothing else does.
 
 Run with: pytest tests/test_booth_alert.py -v
 """
 import json
 import re
-import sys
 from pathlib import Path
 
 import pytest
 
 REPO = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO / 'src'))
 
-import booth_alert  # noqa: E402
+from src.agents import booth_alert  # noqa: E402
 
 WORKFLOW = REPO / '.github' / 'workflows' / 'booth-alert.yml'
 AUDIT = REPO / '.github' / 'workflows' / 'booth-pr-audit.yml'
@@ -96,5 +94,5 @@ def test_it_asks_for_issue_permission_and_nothing_else():
 
 def test_it_runs_the_script_with_the_event_payload():
     text = _text(WORKFLOW)
-    assert 'python src/booth_alert.py "$GITHUB_EVENT_PATH"' in text
+    assert 'python -m src.agents.booth_alert "$GITHUB_EVENT_PATH"' in text
     assert 'GH_TOKEN' in text

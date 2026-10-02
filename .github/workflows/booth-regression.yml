@@ -6,7 +6,7 @@ name: Booth regression fixture
 # subscription rather than a metered API key, so a run costs no money -- but it
 # does cost usage, and usage is the real constraint here. The whole design of
 # tests/booth_fixtures exists so that asking the expensive question is rare and
-# re-checking the answer is free: src/booth_fixture_runner.py's `check`, and
+# re-checking the answer is free: src/agents/booth_fixture_runner.py's `check`, and
 # tests/test_booth_fixture_runner.py, re-verify every recorded baseline on
 # every ordinary suite run at no cost. Never dispatch this to learn something a
 # committed baseline already records.
@@ -64,7 +64,7 @@ jobs:
         id: assemble
         run: |
           set -euo pipefail
-          python src/booth_fixture_runner.py assemble "${{ inputs.fixture }}" \
+          python -m src.agents.booth_fixture_runner assemble "${{ inputs.fixture }}" \
             --out .fixture-run/ci
           echo "head=$(git -C .fixture-run/ci rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
@@ -76,7 +76,7 @@ jobs:
         # that comment warns about.
         run: |
           set -euo pipefail
-          python src/booth_fixture_runner.py prompt "${{ inputs.fixture }}" \
+          python -m src.agents.booth_fixture_runner prompt "${{ inputs.fixture }}" \
             --out .fixture-run/ci > prompt.txt
           {
             echo 'text<<PROMPT_EOF'
@@ -156,7 +156,7 @@ jobs:
           AUDITED_HEAD: ${{ needs.audit.outputs.head }}
         run: |
           test -n "$AUDITED_HEAD" || { echo "the audit job exposed no head"; exit 1; }
-          python src/booth_fixture_runner.py record "${{ inputs.fixture }}" \
+          python -m src.agents.booth_fixture_runner record "${{ inputs.fixture }}" \
             --report booth-report.md --head "$AUDITED_HEAD" | tee record.log
           # Deliberately NOT capturing $? here: after a pipe it is tee's exit
           # status, not the runner's, so it would always be 0 -- a value that

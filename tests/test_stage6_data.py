@@ -10,7 +10,6 @@ registered one, and the matchup feature is home minus away.
 
 Run with: pytest tests/test_stage6_data.py -v
 """
-import sys
 from pathlib import Path
 
 import numpy as np
@@ -18,11 +17,10 @@ import pandas as pd
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-import stage6_data as s6  # noqa: E402
-import stage6_run as s6r  # noqa: E402
-from ratings_engine import build_qb_ratings  # noqa: E402
+from src.research import stage6_data as s6  # noqa: E402
+from src.research import stage6_run as s6r  # noqa: E402
+from src.pipeline.ratings_engine import build_qb_ratings  # noqa: E402
 
 
 def synthetic_plays(seed=0, seasons=(2016, 2017), weeks=6):

@@ -1,5 +1,5 @@
 {
-  "target": "src/paths.py",
+  "target": "src/pipeline/paths.py",
   "tests": "tests/test_paths.py",
   "cases": [
     {
@@ -18,7 +18,7 @@
     },
     {
       "id": "paths-weekly-update-keeps-its-own-folder",
-      "target": "src/weekly_update.py",
+      "target": "src/pipeline/weekly_update.py",
       "why": "weekly_update defines its own predictions folder again, a second copy that can drift from the one every other module reads.",
       "find": "PRED_DIR.mkdir(exist_ok=True)",
       "replace": "PRED_DIR = Path(__file__).parent.parent / 'predictions'\nPRED_DIR.mkdir(exist_ok=True)",
@@ -28,21 +28,21 @@
       "id": "paths-season-rule-back-in-bash",
       "target": ".github/workflows/weekly-update.yml",
       "why": "the weekly workflow works the season out in bash again, a third copy of the rule that the tests of paths.current_season never see.",
-      "find": "          season=$(python src/paths.py --current-season)",
+      "find": "          season=$(python -m src.pipeline.paths --current-season)",
       "replace": "          season=$(date -u +%Y)",
       "expect_caught_by": "test_the_workflow_asks_paths_for_the_season"
     },
     {
       "id": "paths-data-quality-keeps-its-own-teams",
-      "target": "src/data_quality.py",
+      "target": "src/pipeline/data_quality.py",
       "why": "data_quality holds its own team list again, which can disagree with the names the dashboard shows.",
-      "find": "from paths import NFL_TEAMS  # noqa: E402",
+      "find": "from src.pipeline.paths import NFL_TEAMS  # noqa: E402",
       "replace": "NFL_TEAMS = frozenset(['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 'LA', 'LAC', 'LV', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PHI', 'PIT', 'SEA', 'SF', 'TB', 'TEN', 'WAS'])",
       "expect_caught_by": "test_each_module_name_is_bound_to_the_one_definition"
     },
     {
       "id": "weekend-refresh-splits-the-stem-again",
-      "target": "src/weekend_refresh.py",
+      "target": "src/pipeline/weekend_refresh.py",
       "tests": "tests/test_paths.py",
       "why": "weeks_to_refresh goes back to splitting the stem itself, a fifth copy of the week rule beside paths.parse_week: the shape #241 missed twice.",
       "find": "        key = parse_week(f.stem)\n        if key is None:\n            continue\n        week = key[1]\n",

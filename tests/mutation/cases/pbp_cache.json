@@ -1,5 +1,5 @@
 {
-  "target": "src/data_loader.py",
+  "target": "src/pipeline/data_loader.py",
   "tests": "tests/test_pbp_cache.py",
   "cases": [
     {

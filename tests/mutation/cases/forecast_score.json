@@ -1,5 +1,5 @@
 {
-  "target": "src/generate_dashboard.py",
+  "target": "src/pipeline/generate_dashboard.py",
   "tests": "tests/test_forecast_score.py",
   "cases": [
     {
@@ -46,7 +46,7 @@
     },
     {
       "id": "forecast-score-renders-with-no-score",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "the page draws the block before 50 games are graded, and a null score throws inside it, taking the rest of Season Accuracy with it.",
       "find": "function forecastScoreHtml(s){\n  if(!s) return '';\n",
       "replace": "function forecastScoreHtml(s){\n",
@@ -54,7 +54,7 @@
     },
     {
       "id": "forecast-score-ranked-worst-first",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "the table leads with the worst score, the opposite of the 'lower is better' sentence above it.",
       "find": "].sort((a, b) => a.score - b.score);",
       "replace": "].sort((a, b) => b.score - a.score);",
@@ -62,7 +62,7 @@
     },
     {
       "id": "forecast-score-never-drawn",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "the function exists and passes its own tests, but Season Accuracy never calls it -- the score is computed every week and shown nowhere.",
       "find": "  el.innerHTML = cardsHtml + forecastScoreHtml(accuracy.forecast_score) + cumulativeChartHtml",
       "replace": "  el.innerHTML = cardsHtml + cumulativeChartHtml",

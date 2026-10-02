@@ -1,5 +1,5 @@
 """
-The play-by-play cache in src/data_loader.py.
+The play-by-play cache in src/pipeline/data_loader.py.
 
 Three properties, each one a way a cache goes wrong quietly:
 
@@ -29,9 +29,8 @@ import pytest
 
 pl = pytest.importorskip('polars')
 
-sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
-import data_loader  # noqa: E402
+from src.pipeline import data_loader  # noqa: E402
 
 
 def _season_frame(season):

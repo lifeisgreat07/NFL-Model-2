@@ -18,7 +18,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 
 USE = re.compile(r'var\(\s*(--[\w-]+)\s*(,)?')
 DECLARE = re.compile(r'(--[\w-]+)\s*:')

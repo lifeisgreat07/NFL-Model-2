@@ -29,12 +29,12 @@ What it is meant to demonstrate, and where to look:
   system is. The football-only model beats
   home-team-always-wins by about 8 points. It does *not* beat the betting
   market, and the README says so rather than quietly omitting the
-  comparison. See `src/backtest.py` and `src/ratings_engine.py`.
+  comparison. See `src/research/backtest.py` and `src/pipeline/ratings_engine.py`.
 - **Leak-free by construction, and tested for it.** Every rating a
   prediction uses is computed from data available before that game
   kicked off. `tests/test_leak_free.py` fails the build if a future
   observation ever reaches a past prediction.
-- **Tuned constants with the experiment attached.** `src/config.py`
+- **Tuned constants with the experiment attached.** `src/pipeline/config.py`
   carries every hyperparameter next to the backtest that justified it,
   so no number in the model is there because it looked about right.
 - **Experiments registered before they are run.** Each proposed change
@@ -43,7 +43,7 @@ What it is meant to demonstrate, and where to look:
   metric, its decision rule and the seasons it will be judged on, so a
   result cannot be reframed after it is seen. A rejected change stays on
   the record, and the dashboard's Model Lab page lists it with the rest.
-- **A backtest that is re-run, not remembered.** `src/reproducibility_audit.py`
+- **A backtest that is re-run, not remembered.** `src/research/reproducibility_audit.py`
   re-runs the published backtest from the current code and checks log
   loss, Brier and AUC against the published figures to four decimals; its
   latest record is `data/reproducibility_audit.json`.
@@ -84,7 +84,7 @@ fit together, `docs/architecture.md` has the whole system on one diagram.
 ## Current model (v2.5)
 - Opponent-adjusted team ratings: two-way fixed-effects ridge regression
   on play-level EPA, recency-weighted (16-game half-life), alpha=15
-  (tuned via backtest -- see `src/config.py` for justification of every
+  (tuned via backtest -- see `src/pipeline/config.py` for justification of every
   constant).
 - Per-QB rating: leak-free trailing EPA/dropback, shrunk toward league
   average for small samples. Live picks use the quarterback expected to
@@ -130,7 +130,7 @@ Most of this repository was written by an AI agent, and the setup around
 it assumes the agent will sometimes be confidently wrong.
 
 - **Scout** does the work and opens every pull request.
-  `src/scout_preflight.py` checks the description against the repository
+  `src/agents/scout_preflight.py` checks the description against the repository
   before anyone reads it: suite counts, whether every commit is
   mentioned, figures quoted from a wider command than the sentence claims.
 - **Booth** is a second agent that starts cold on every pull request,
@@ -138,7 +138,7 @@ it assumes the agent will sometimes be confidently wrong.
   machine-readable verdict. It runs on the workflow's own read-only token,
   so it cannot push or merge (until 2026-09-28 it ran on an app token that
   could; `tests/test_booth_permissions.py` now holds that shut).
-  The workflow fails if Booth posts nothing (`src/booth_report_posted.py`).
+  The workflow fails if Booth posts nothing (`src/agents/booth_report_posted.py`).
 - **The test suite** includes guards on the project's own documentation:
   numbers quoted in prose are tied to the files they came from, and the
   mutation corpus proves each guard fails when the thing it protects
@@ -155,16 +155,18 @@ docs/
   architecture.md       -- the whole system on one diagram
   case-studies/         -- write-ups of real problems and how they were found
   lessons-learned.md    -- what it all taught, each lesson with its source
-src/
+src/pipeline/           -- what the scheduled workflows and the page build run
   config.py             -- every tuned constant, with the backtest that justified it
   data_loader.py        -- pulls fresh nflverse data automatically (no manual CSVs)
   ratings_engine.py     -- team + QB rating computation (leak-free, recency-weighted)
   weekly_update.py      -- main entrypoint: generates next week's predictions
   grade_predictions.py  -- grades a completed week against actual results
-  backtest.py           -- the holdout backtest behind the table above
-  calibration.py        -- reliability of the stated probabilities
   generate_dashboard.py -- builds index.html from the template plus data/
   dashboard_template.html -- the dashboard's markup, with data injected at build
+src/research/           -- run by hand: backtests, experiments, re-derived figures
+  backtest.py           -- the holdout backtest behind the table above
+  calibration.py        -- reliability of the stated probabilities
+src/agents/             -- Booth, Scout and the session gates
   scout_preflight.py    -- checks a branch against the project's own rules
   session_wrapup.py     -- end-of-session checks (suite count, unpushed work, docs)
 predictions/            -- one JSON file per week, saved BEFORE kickoff, never edited
@@ -176,18 +178,18 @@ tests/                  -- the suite, plus tests/mutation/ (tests for the tests)
 ```
 
 `index.html` and `dist/` are **build outputs and are not in the repository.**
-Both are produced by `src/generate_dashboard.py`; GitHub Pages publishes them
+Both are produced by `src/pipeline/generate_dashboard.py`; GitHub Pages publishes them
 from a CI build, and the test suite builds them itself via the root
 `conftest.py`. To see the dashboard locally, run the generator.
 
 ## Manual usage
 ```bash
 pip install -r requirements.txt
-python src/weekly_update.py --season 2026 --week 2
+python -m src.pipeline.weekly_update --season 2026 --week 2
 # ... after that week's games finish ...
-python src/grade_predictions.py --season 2026 --week 2
+python -m src.pipeline.grade_predictions --season 2026 --week 2
 # rebuild the dashboard from whatever is in data/ and results/
-python src/generate_dashboard.py
+python -m src.pipeline.generate_dashboard
 ```
 
 ### Settings and the rules the code enforces
@@ -202,7 +204,7 @@ Three environment variables, all optional:
 
 Four rules that live in the code rather than in any one document:
 
-- **A saved prediction is permanent.** `src/weekly_update.py` will not
+- **A saved prediction is permanent.** `src/pipeline/weekly_update.py` will not
   overwrite `predictions/<season>_week<N>.json`; it warns and writes nothing. That
   refusal is what makes "saved before kickoff" a claim anyone can check.
 - **The next week is worked out, not configured.** With no `--week`, the run
@@ -210,9 +212,9 @@ Four rules that live in the code rather than in any one document:
   it walks through the playoffs unattended.
 - **The test suite and mutation runs rewrite `index.html`.** Several tests
   build the page, and a mutation run can build it with a mutation applied, so
-  rebuild it (`python src/generate_dashboard.py`) right before looking at it.
+  rebuild it (`python -m src.pipeline.generate_dashboard`) right before looking at it.
 - **CLAUDE.md's `Suite: **N passing**` line is read by software.**
-  `src/session_wrapup.py` and `src/session_start.py` parse that exact shape;
+  `src/agents/session_wrapup.py` and `src/agents/session_start.py` parse that exact shape;
   reword it and they report the line missing.
 
 `tests/test_readme_accuracy.py` fails if the code reads an environment
@@ -245,7 +247,7 @@ GitHub every Tuesday and Thursday at 11:00 UTC. It grades finished
 weeks, refreshes the ratings, playoff odds and line archive, and locks the
 next week's picks at the right run: Thursday usually, and Tuesday for a
 week with an earlier game (Thanksgiving, a Wednesday game). See
-`decide_lock` in `src/weekly_update.py`. Its data commit then triggers the
+`decide_lock` in `src/pipeline/weekly_update.py`. Its data commit then triggers the
 site rebuild.
 
 What a routine adds is the one thing a script can't do: read the news.
@@ -282,8 +284,8 @@ code.claude.com/docs/en/routines):
    - open a PR titled "QB overrides: <season> week N", or stop with one
      line if nothing needs overriding.
 
-   It must NOT run `src/weekly_update.py`, `src/grade_predictions.py` or
-   `src/generate_dashboard.py`. The workflow owns those, and a second writer of
+   It must NOT run `src/pipeline/weekly_update.py`, `src/pipeline/grade_predictions.py` or
+   `src/pipeline/generate_dashboard.py`. The workflow owns those, and a second writer of
    saved predictions would be a second way to break a lock.
 7. **Merge the override PR before the lock.** On a normal week, that means
    before Thursday 11:00 UTC. An override merged after the lock changes
@@ -295,7 +297,7 @@ code.claude.com/docs/en/routines):
   PR, but a person still decides whether to merge it.
 - Hyperparameters (alpha, half-life, QB shrinkage) are NOT re-tuned
   automatically each week -- they're fit once via backtest and left fixed
-  in `src/config.py`. Re-running the full backtest sweep weekly would be
+  in `src/pipeline/config.py`. Re-running the full backtest sweep weekly would be
   needlessly expensive; do it manually every few weeks or once per season.
 - The model does not beat the betting market on its own. Model B only
   matches it, within noise. Treating Model A as an edge against a market

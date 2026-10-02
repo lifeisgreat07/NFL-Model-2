@@ -24,7 +24,6 @@ Run with: pytest tests/test_stage5_registry.py -v
 """
 import json
 import subprocess
-import sys
 from pathlib import Path
 
 import numpy as np
@@ -32,11 +31,10 @@ import pandas as pd
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-import stage5_eval as se  # noqa: E402
-import stage5_data as sd  # noqa: E402
-from kalman_ratings import KalmanRatings  # noqa: E402
+from src.research import stage5_eval as se  # noqa: E402
+from src.research import stage5_data as sd  # noqa: E402
+from src.research.kalman_ratings import KalmanRatings  # noqa: E402
 
 REGISTRY = REPO_ROOT / 'experiments' / 'stage5' / 'registry.json'
 RESULTS = REPO_ROOT / 'experiments' / 'stage5' / 'results'
@@ -304,7 +302,7 @@ def test_kalman_ratings_for_a_week_do_not_see_that_week():
 
 
 def test_fit_ratings_is_the_production_fit_when_nothing_is_changed():
-    from ratings_engine import build_team_ratings
+    from src.pipeline.ratings_engine import build_team_ratings
     rng = np.random.default_rng(3)
     teams = ['A', 'B', 'C', 'D']
     rows = []

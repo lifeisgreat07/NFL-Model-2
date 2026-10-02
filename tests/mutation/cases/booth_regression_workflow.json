@@ -32,7 +32,7 @@
     },
     {
       "id": "regression-prompt-pasted-into-yaml",
-      "why": "the prompt is restated in the workflow instead of generated from src/booth_fixture_runner.py, so the two drift with nothing failing -- invisible until a fixture starts behaving differently for no apparent reason",
+      "why": "the prompt is restated in the workflow instead of generated from src/agents/booth_fixture_runner.py, so the two drift with nothing failing -- invisible until a fixture starts behaving differently for no apparent reason",
       "find": "            ${{ steps.prompt.outputs.text }}",
       "replace": "            This is a REGRESSION FIXTURE, not a live pull request.",
       "expect_caught_by": "test_the_prompt_is_generated_not_restated"

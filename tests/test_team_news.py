@@ -1,6 +1,6 @@
 """Team news names the starters who will not play, and the pick's own QB (Stage 16).
 
-src/team_news.py keeps only what a reader needs to judge a pick: starters Out
+src/pipeline/team_news.py keeps only what a reader needs to judge a pick: starters Out
 or Doubtful by name, starters Questionable as a count, and the quarterback
 the pick was made with. An unpublished report is never an empty one. The
 injury report and depth chart are synthetic frames here, so the suite makes
@@ -10,16 +10,14 @@ Run with: pytest tests/test_team_news.py -v
 """
 import json
 import re
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import team_news as tn  # noqa: E402
+from src.pipeline import team_news as tn  # noqa: E402
 
 WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
 WEEKEND = ROOT / '.github' / 'workflows' / 'weekend-refresh.yml'
@@ -148,7 +146,7 @@ def test_both_workflows_read_team_news_and_cannot_fail_on_it():
         steps, _ = _steps(path)
         step = steps.get('Read team news')
         assert step, f'{path.name} has no "Read team news" step'
-        assert 'python src/team_news.py --pending' in step
+        assert 'python -m src.pipeline.team_news --pending' in step
         assert re.search(r'^\s+continue-on-error: true\s*$', step, re.M), (
             f'{path.name}: without continue-on-error a failed injury read fails the run -- '
             f'and in Weekly update that run is the one that locks the picks')

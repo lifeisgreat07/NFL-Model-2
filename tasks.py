@@ -31,7 +31,7 @@ AXE = 'node_modules/axe-core/axe.min.js'
 STATES = Path(tempfile.gettempdir()) / 'nfl-model-states'
 STATE_PAGES = ('states_tie.html', 'states_preview.html')
 # The type check run-tests.yml runs (Stage 35).
-TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/weekly_update.py', 'src/ratings_engine.py']
+TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/pipeline/weekly_update.py', 'src/pipeline/ratings_engine.py']
 
 
 def _slice_seed(argv):
@@ -54,11 +54,11 @@ TASKS = {
               lambda a: [['ruff', 'check', '.'], TYPES,
                          [PY, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider']]),
     'build': ('build index.html from the data on disk (deploy-pages.yml does this)',
-              lambda a: [[PY, 'src/generate_dashboard.py']]),
+              lambda a: [[PY, '-m', 'src.pipeline.generate_dashboard']]),
     'browser-check': ('build, prove every browser rule can fail, check the page, then build '
                       'and check the states pages (needs Playwright and node; axe-core is '
                       'used when node_modules has it)',
-                      lambda a: [[PY, 'src/generate_dashboard.py'],
+                      lambda a: [[PY, '-m', 'src.pipeline.generate_dashboard'],
                                  [PY, 'tests/browser/check_page.py', '--self-test', *_axe()],
                                  [PY, 'tests/browser/check_page.py', 'index.html', *_axe()],
                                  [PY, 'tests/browser/build_states.py', '--out', str(STATES)],
@@ -71,7 +71,7 @@ TASKS = {
     'mutation-all': ('every mutation case; well over an hour, and nothing else may use '
                      'the checkout while it runs',
                      lambda a: [[PY, '-B', 'tests/mutation/runner.py']]),
-    'wrapup': ('the end-of-session gate', lambda a: [[PY, 'src/session_wrapup.py']]),
+    'wrapup': ('the end-of-session gate', lambda a: [[PY, '-m', 'src.agents.session_wrapup']]),
 }
 
 

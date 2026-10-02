@@ -16,7 +16,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 IMAGE = ROOT / 'assets' / 'og' / 'og-card.png'
 SOURCE = ROOT / 'assets' / 'og' / 'og-card.html'
 DEPLOY = ROOT / '.github' / 'workflows' / 'deploy-pages.yml'

@@ -1,5 +1,5 @@
 {
-  "target": "src/tv_channels.py",
+  "target": "src/pipeline/tv_channels.py",
   "tests": "tests/test_tv_schedule.py",
   "cases": [
     {
@@ -13,8 +13,8 @@
       "id": "tv-step-can-fail-the-lock-run",
       "target": ".github/workflows/weekly-update.yml",
       "why": "the TV step loses continue-on-error in the run that locks picks, so an unreachable nfl.com fails Thursday's lock run.",
-      "find": "        continue-on-error: true\n        shell: bash\n        run: |\n          python src/tv_channels.py --pending",
-      "replace": "        shell: bash\n        run: |\n          python src/tv_channels.py --pending",
+      "find": "        continue-on-error: true\n        shell: bash\n        run: |\n          python -m src.pipeline.tv_channels --pending",
+      "replace": "        shell: bash\n        run: |\n          python -m src.pipeline.tv_channels --pending",
       "expect_caught_by": "test_both_workflows_read_channels_and_cannot_fail_on_them"
     },
     {
@@ -22,7 +22,7 @@
       "target": ".github/workflows/weekly-update.yml",
       "why": "reading channels before the lock means Thursday's newly locked week is not yet pending, so it goes into Thursday night with no channels.",
       "find": "      - name: Generate/lock in this week's predictions",
-      "replace": "      - name: Read TV channels\n        if: ${{ !cancelled() }}\n        continue-on-error: true\n        shell: bash\n        run: python src/tv_channels.py --pending\n\n      - name: Generate/lock in this week's predictions",
+      "replace": "      - name: Read TV channels\n        if: ${{ !cancelled() }}\n        continue-on-error: true\n        shell: bash\n        run: python -m src.pipeline.tv_channels --pending\n\n      - name: Generate/lock in this week's predictions",
       "expect_caught_by": "test_the_weekly_run_reads_channels_after_it_locks_and_before_it_commits"
     }
   ]

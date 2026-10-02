@@ -1,5 +1,5 @@
 """
-Tests for src/bootstrap_brier_gap.py.
+Tests for src/research/bootstrap_brier_gap.py.
 
 These cover the statistics only -- no play-by-play, no network. The expensive
 half (one aligned walk-forward over six seasons) is exercised by running the
@@ -24,9 +24,8 @@ import numpy as np
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-from bootstrap_brier_gap import (  # noqa: E402
+from src.research.bootstrap_brier_gap import (  # noqa: E402
     METRICS, metric_set, paired_bootstrap, summarise,
 )
 

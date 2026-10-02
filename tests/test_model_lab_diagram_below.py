@@ -12,7 +12,7 @@ Run with: pytest tests/test_model_lab_diagram_below.py -v
 import re
 from pathlib import Path
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
 
 
 def source():

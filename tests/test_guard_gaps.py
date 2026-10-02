@@ -27,11 +27,10 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(ROOT / 'src'))
 sys.path.insert(0, str(ROOT / 'tests' / 'mutation'))
 
-import scout_preflight as pf  # noqa: E402
-import session_wrapup as sw  # noqa: E402
+from src.agents import scout_preflight as pf  # noqa: E402
+from src.agents import session_wrapup as sw  # noqa: E402
 import runner  # noqa: E402
 
 
@@ -113,7 +112,7 @@ def test_a_mutation_figure_from_a_glob_fails(body, ok):
 
 
 def test_preflight_runs_the_scope_check_on_text_where_the_glob_is_still_visible():
-    src = (ROOT / 'src' / 'scout_preflight.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'agents' / 'scout_preflight.py').read_text(encoding='utf-8')
     body = src[src.index('def preflight('):]
     assert "check_mutation_count_scope(BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body)))" in body, (
         "run over the quote-stripped text, the double-quoted glob is removed before it is looked for"
@@ -146,11 +145,11 @@ def test_disclosures_are_not_claims(sentence):
 
 def test_the_remedy_the_failure_names_is_a_branch_that_passes():
     claim = "I rendered the page and read the card on screen."
-    failed = pf.check_visual_claims_have_artifacts(claim, claim, ['src/dashboard_template.html'])
+    failed = pf.check_visual_claims_have_artifacts(claim, claim, ['src/pipeline/dashboard_template.html'])
     assert not failed.ok
     assert 'Process note:' in failed.detail
     remedied = "Process note: " + claim
-    assert pf.check_visual_claims_have_artifacts(remedied, remedied, ['src/dashboard_template.html']).ok
+    assert pf.check_visual_claims_have_artifacts(remedied, remedied, ['src/pipeline/dashboard_template.html']).ok
 
 
 # -------------------------------------------------------- 7. wrap-up count
@@ -167,7 +166,7 @@ def test_the_wrapup_reads_failures_from_the_final_summary_only(stdout, expected)
 
 
 def test_the_wrapup_uses_the_parser():
-    src = (ROOT / 'src' / 'session_wrapup.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'agents' / 'session_wrapup.py').read_text(encoding='utf-8')
     body = src[src.index('def check_suite_count('):]
     assert 'parse_summary(run.stdout)' in body and 'if broken:' in body
 

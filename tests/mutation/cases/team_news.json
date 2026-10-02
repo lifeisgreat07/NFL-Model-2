@@ -1,5 +1,5 @@
 {
-  "target": "src/team_news.py",
+  "target": "src/pipeline/team_news.py",
   "tests": "tests/test_team_news.py",
   "cases": [
     {
@@ -41,8 +41,8 @@
       "id": "news-step-can-fail-the-lock-run",
       "target": ".github/workflows/weekly-update.yml",
       "why": "the team news step loses continue-on-error in the run that locks picks, so an nflverse injury outage fails Thursday's lock run.",
-      "find": "        continue-on-error: true\n        shell: bash\n        run: |\n          python src/team_news.py --pending",
-      "replace": "        shell: bash\n        run: |\n          python src/team_news.py --pending",
+      "find": "        continue-on-error: true\n        shell: bash\n        run: |\n          python -m src.pipeline.team_news --pending",
+      "replace": "        shell: bash\n        run: |\n          python -m src.pipeline.team_news --pending",
       "expect_caught_by": "test_both_workflows_read_team_news_and_cannot_fail_on_it"
     },
     {
@@ -50,7 +50,7 @@
       "target": ".github/workflows/weekly-update.yml",
       "why": "reading team news before the lock means Thursday's newly locked week is not yet pending, so it goes into Thursday night with no news.",
       "find": "      - name: Generate/lock in this week's predictions",
-      "replace": "      - name: Read team news\n        if: ${{ !cancelled() }}\n        continue-on-error: true\n        shell: bash\n        run: python src/team_news.py --pending\n\n      - name: Generate/lock in this week's predictions",
+      "replace": "      - name: Read team news\n        if: ${{ !cancelled() }}\n        continue-on-error: true\n        shell: bash\n        run: python -m src.pipeline.team_news --pending\n\n      - name: Generate/lock in this week's predictions",
       "expect_caught_by": "test_the_weekly_run_reads_team_news_after_it_locks_and_before_it_commits"
     },
     {

@@ -1,6 +1,6 @@
 """"Checking the AI's work" -- the page that shows what the verifier caught.
 
-Stage 3 built `src/collect_agent_log.py` and tested it. Stage 7.5 was meant to
+Stage 3 built `src/agents/collect_agent_log.py` and tested it. Stage 7.5 was meant to
 rebuild this page around its output. The gap nobody had noticed: THE COLLECTOR
 HAD NEVER RUN. It was committed, covered by tests and mutations, and
 `data/agent_log.json` did not exist -- nothing invoked it, and
@@ -21,11 +21,10 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-import generate_dashboard as gd  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
 
-TEMPLATE = REPO_ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 WORKFLOW = REPO_ROOT / '.github' / 'workflows' / 'collect-agent-log.yml'
 
 
@@ -41,10 +40,10 @@ def test_something_actually_runs_the_collector():
     """The defect this file exists for. `collect_agent_log.py` was committed,
     tested and mutation-covered, and nothing on earth invoked it."""
     assert WORKFLOW.exists(), (
-        "no workflow runs src/collect_agent_log.py, so data/agent_log.json is "
+        "no workflow runs src/agents/collect_agent_log.py, so data/agent_log.json is "
         "never produced and the page it feeds has nothing to render")
     text = WORKFLOW.read_text(encoding='utf-8')
-    assert 'src/collect_agent_log.py' in text
+    assert 'src/agents/collect_agent_log.py' in text
     assert 'data/agent_log.json' in text, "the workflow never commits its output"
 
 
@@ -186,7 +185,7 @@ def test_the_numbers_shown_are_the_ones_the_collector_produces():
     render = re.search(r'function renderAgentLog\(\)\{.*?\n\}', page, re.S)
     assert render, "renderAgentLog is gone"
     used = set(re.findall(r's\.([a-z_]+)', render.group(0)))
-    produced = set(re.findall(r"'([a-z_]+)':", (REPO_ROOT / 'src' / 'collect_agent_log.py')
+    produced = set(re.findall(r"'([a-z_]+)':", (REPO_ROOT / 'src' / 'agents' / 'collect_agent_log.py')
                               .read_text(encoding='utf-8').split('def summarise')[1]))
     missing = used - produced
     assert not missing, (

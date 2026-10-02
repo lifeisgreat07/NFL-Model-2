@@ -23,7 +23,7 @@ import pytest
 
 REPO = Path(__file__).resolve().parents[1]
 CASE_DIR = REPO / 'docs' / 'case-studies'
-TEMPLATE = REPO / 'src' / 'dashboard_template.html'
+TEMPLATE = REPO / 'src' / 'pipeline' / 'dashboard_template.html'
 VERIFICATION = REPO / 'VERIFICATION.md'
 BLOB = 'https://github.com/lifeisgreat07/NFL-Model-2/blob/main/'
 
@@ -286,7 +286,7 @@ def test_the_verdict_check_notices_a_real_difference():
 
 
 def test_the_measuring_script_names_the_commit_the_case_study_cites():
-    src = (REPO / 'src' / 'measure_qb_leak.py').read_text(encoding='utf-8')
+    src = (REPO / 'src' / 'research' / 'measure_qb_leak.py').read_text(encoding='utf-8')
     data = json.loads(LEAK_DATA.read_text(encoding='utf-8'))
     assert f"FIX_COMMIT = '{data['fix_commit']}'" in src
 

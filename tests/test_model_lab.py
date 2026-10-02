@@ -1,6 +1,6 @@
 """The Model Lab's records, held to where they came from (Stage 18).
 
-src/model_lab.py builds one list from two sources: the 46 rows the page
+src/pipeline/model_lab.py builds one list from two sources: the 46 rows the page
 carried before Stage 18, moved into experiments/legacy/rows.json once and
 verbatim, and every pre-registered answer in experiments/*/results/. These
 tests check the move lost nothing, that every entry carries one of the
@@ -11,15 +11,13 @@ Run with: pytest tests/test_model_lab.py -v
 """
 import hashlib
 import json
-import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import model_lab as ml  # noqa: E402
+from src.pipeline import model_lab as ml  # noqa: E402
 
 FIVE = {'ACCEPT', 'REJECT', 'INCONCLUSIVE', 'DEFERRED', 'CONFIRMED FINDING'}
 

@@ -13,7 +13,7 @@ Run with: pytest tests/test_table_captions.py -v
 import re
 from pathlib import Path
 
-TEMPLATE = Path(__file__).parent.parent / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).parent.parent / 'src' / 'pipeline' / 'dashboard_template.html'
 TABLE = re.compile(r'<table\b[^>]*>')
 CAPTION = re.compile(r'\s*<caption class="visually-hidden">([^<]+)</caption>')
 

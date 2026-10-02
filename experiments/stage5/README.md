@@ -12,7 +12,7 @@ Each `results/<id>.json` records:
 - the commit it was run at;
 - the numbers: log loss, Brier and accuracy for both sides, and the paired-bootstrap
   interval on the log-loss difference;
-- the label, which `src/stage5_eval.py` computes from those numbers.
+- the label, which `src/research/stage5_eval.py` computes from those numbers.
 
 A negative difference favours the candidate.
 
@@ -33,8 +33,8 @@ is why each confirmatory interval is 99.5% rather than 95%.
 ## Running it
 
 ```
-python src/stage5_run.py build      # feature table + parity check against production
-python src/stage5_run.py run H1     # answer one registered question
+python -m src.research.stage5_run build      # feature table + parity check against production
+python -m src.research.stage5_run run H1     # answer one registered question
 ```
 
 `build` refuses to save unless the harness's copy of the published feature table matches

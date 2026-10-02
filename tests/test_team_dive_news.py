@@ -1,6 +1,6 @@
 """Team Deep-Dive's "This week" block: short, sourced, and honest (Stage 16).
 
-src/team_news.py writes each locked week's team news; generate_dashboard.py
+src/pipeline/team_news.py writes each locked week's team news; generate_dashboard.py
 attaches it to weeks[k].news while the week is still being played; the
 template's teamNewsItems() and renderTeamNews() turn it into at most five
 lines, each with its source and date. The lines are generated prose over data
@@ -14,16 +14,14 @@ import json
 import re
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
-sys.path.insert(0, str(ROOT / 'src'))
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 
-import generate_dashboard as gd  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
 
 NODE = shutil.which('node')
 READ = '2026-09-28T02:00:00Z'   # Sunday 22:00 in New York, Monday in UTC

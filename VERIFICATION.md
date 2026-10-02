@@ -60,7 +60,7 @@ an agent remembering to follow it:
   existing. Check the repo's current branch protection settings before
   assuming this is already enforced as a hard gate; if it isn't yet, the
   workflow still gives real, visible signal, it just isn't unbypassable.
-- **Scout pre-flight** (`src/scout_preflight.py`): run against a PR
+- **Scout pre-flight** (`src/agents/scout_preflight.py`): run against a PR
   description *before* the PR is opened. It checks the claims whose truth is
   mechanically decidable -- that a quoted test count matches a real run at
   HEAD, that a multi-commit branch enumerates its commits so a reviewer knows

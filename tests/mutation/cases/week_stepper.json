@@ -1,5 +1,5 @@
 {
-  "target": "src/dashboard_template.html",
+  "target": "src/pipeline/dashboard_template.html",
   "tests": "tests/test_week_stepper.py",
   "cases": [
     {
@@ -18,7 +18,7 @@
     },
     {
       "id": "stepper-on-picks-is-never-wired",
-      "why": "the markup exists and nothing attaches behaviour to it. Two arrows render, are enabled, invite a click and do nothing at all -- a control that is present and inert, which reads to a user as a broken page rather than a missing feature. This is the written-tested-never-called shape that Stage 3 closed with when src/collect_agent_log.py ran nowhere behind a green suite.",
+      "why": "the markup exists and nothing attaches behaviour to it. Two arrows render, are enabled, invite a click and do nothing at all -- a control that is present and inert, which reads to a user as a broken page rather than a missing feature. This is the written-tested-never-called shape that Stage 3 closed with when src/agents/collect_agent_log.py ran nowhere behind a green suite.",
       "find": "wireWeekStepper('picks-week');",
       "replace": "",
       "expect_caught_by": "test_both_pages_actually_wire_their_stepper"

@@ -1,5 +1,5 @@
 {
-  "target": "src/scout_preflight.py",
+  "target": "src/agents/scout_preflight.py",
   "tests": "tests/test_preflight_count_honesty.py",
   "cases": [
     {
@@ -32,7 +32,7 @@
     },
     {
       "id": "preflight-commit-count-check-is-not-wired-in",
-      "why": "the check is written, tested and never called -- the shape Stage 3 closed with, where src/collect_agent_log.py was fully tested and had never run. A check absent from preflight()'s list is invisible: the tool prints the checks it ran, so nothing says the missing one is missing, and CI goes green because it always did.",
+      "why": "the check is written, tested and never called -- the shape Stage 3 closed with, where src/agents/collect_agent_log.py was fully tested and had never run. A check absent from preflight()'s list is invisible: the tool prints the checks it ran, so nothing says the missing one is missing, and CI goes green because it always did.",
       "find": "        check_no_suite_count_in_a_commit_message(base, head),",
       "replace": "",
       "expect_caught_by": "test_the_commit_message_check_survives_skip_tests"

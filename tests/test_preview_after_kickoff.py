@@ -29,13 +29,12 @@ import pandas as pd
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
-sys.path.insert(0, str(ROOT / 'src'))
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 sys.path.insert(0, str(Path(__file__).parent))
 
-import generate_dashboard as gd  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
 import synthetic_league as league  # noqa: E402
-import weekly_update as wu  # noqa: E402
+from src.pipeline import weekly_update as wu  # noqa: E402
 
 NODE = shutil.which('node')
 H = pd.Timedelta(hours=1)
@@ -94,7 +93,7 @@ def test_a_skipped_weeks_preview_is_not_shown(tmp_path):
 
 def test_the_build_leaves_out_skipped_weeks_previews():
     """Wiring: main() has to pass the skipped weeks with the locked ones."""
-    src = (ROOT / 'src' / 'generate_dashboard.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'pipeline' / 'generate_dashboard.py').read_text(encoding='utf-8')
     assert 'load_previews(locked=set(all_preds) | skipped_weeks())' in src
 
 

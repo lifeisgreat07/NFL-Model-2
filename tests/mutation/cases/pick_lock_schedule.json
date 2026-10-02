@@ -11,7 +11,7 @@
     },
     {
       "id": "lock-slack-back-to-four-hours",
-      "target": "src/weekly_update.py",
+      "target": "src/pipeline/weekly_update.py",
       "tests": "tests/test_pick_lock_time.py",
       "why": "the slack goes back under the delays scheduled runs have really had. Thanksgiving week is then held for a Thursday run due six and a half hours before its first kickoff, which a run as late as 2026-09-28's would reach at kickoff -- and the week's early games go unpicked.",
       "find": "LOCK_SLACK = pd.Timedelta(hours=8)\n",

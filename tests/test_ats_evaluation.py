@@ -1,5 +1,5 @@
 """
-Tests for src/ats_evaluation.py, plus a guard on the shared column it needed.
+Tests for src/research/ats_evaluation.py, plus a guard on the shared column it needed.
 
 The cover rule is one subtraction, and getting it backwards would produce a
 confident, completely inverted result that still looks like a plausible hit
@@ -16,9 +16,8 @@ import pandas as pd
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-from ats_evaluation import (  # noqa: E402
+from src.research.ats_evaluation import (  # noqa: E402
     BREAK_EVEN, add_ats_columns, assess, bootstrap_rate, hit_rate,
 )
 
@@ -143,7 +142,7 @@ def test_home_margin_was_added_without_disturbing_the_feature_columns():
     the live weekly path. Adding home_margin must not change what any model
     trains on -- this reads the row literal itself rather than trusting that
     an additive edit stayed additive."""
-    src = (REPO_ROOT / 'src' / 'weekly_update.py').read_text()
+    src = (REPO_ROOT / 'src' / 'pipeline' / 'weekly_update.py').read_text()
     tree = ast.parse(src)
     fn = next(n for n in ast.walk(tree)
               if isinstance(n, ast.FunctionDef) and n.name == 'build_historical_features')
@@ -179,9 +178,10 @@ def test_no_model_trains_on_home_margin():
     checked = 0
     for name in ('backtest.py', 'calibration.py', 'ats_evaluation.py',
                  'weekly_update.py', 'bootstrap_brier_gap.py'):
-        path = REPO_ROOT / 'src' / name
-        if not path.exists():
+        found = list((REPO_ROOT / 'src').glob(f'*/{name}'))
+        if not found:
             continue
+        path = found[0]
         tree = ast.parse(path.read_text())
         for node in tree.body:                       # module level only
             if not isinstance(node, ast.Assign):
@@ -209,7 +209,7 @@ def _results():
     import json
     p = REPO_ROOT / 'data' / 'ats_evaluation.json'
     if not p.exists():
-        pytest.skip("data/ats_evaluation.json absent -- run src/ats_evaluation.py")
+        pytest.skip("data/ats_evaluation.json absent -- run src/research/ats_evaluation.py")
     return json.loads(p.read_text())
 
 
@@ -218,7 +218,7 @@ def test_the_page_quotes_the_real_ats_numbers():
     the dashboard have to be the ones in the results file."""
     d = _results()
     r = d['results']['model']
-    page = (REPO_ROOT / 'src' / 'dashboard_template.html').read_text()
+    page = (REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text()
     for value in (f"{r['rate']*100:.2f}%",
                   f"{r['ci_lo']*100:.2f}%",
                   f"{r['ci_hi']*100:.2f}%"):
@@ -232,7 +232,7 @@ def test_the_page_does_not_claim_an_ats_edge_that_the_data_denies():
     the interval never supported."""
     d = _results()
     r = d['results']['model']
-    page = (REPO_ROOT / 'src' / 'dashboard_template.html').read_text()
+    page = (REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text()
     if not r['beats_break_even']:
         assert 'would not have made money' in page, (
             "the ATS result does not clear break-even, but the page no longer "

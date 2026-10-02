@@ -31,7 +31,7 @@ python -m pytest
   fine; one a reviewer has to find is not.
 
 Every pull request is checked twice before a person reads it: Scout
-pre-flight (`src/scout_preflight.py`) checks the description against the
+pre-flight (`src/agents/scout_preflight.py`) checks the description against the
 branch, and Booth, a second agent that shares no context with the author,
 re-runs the claims and posts a report ([BOOTH_PROTOCOL.md](BOOTH_PROTOCOL.md)).
 A pull request that changes `.github/workflows/booth-pr-audit.yml` or

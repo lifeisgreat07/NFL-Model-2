@@ -43,10 +43,12 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'src'))
+# Run as a script (browser-checks.yml, tasks.py), so the root is not on the
+# path the way it is under pytest or `python -m`.
+sys.path.insert(0, str(ROOT))
 
-import generate_dashboard as gd  # noqa: E402
-from paths import PRED_DIR, RESULTS_DIR, STATUS_DIR, parse_week  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
+from src.pipeline.paths import PRED_DIR, RESULTS_DIR, STATUS_DIR, parse_week  # noqa: E402
 
 PAGES = ('states_tie.html', 'states_preview.html')
 

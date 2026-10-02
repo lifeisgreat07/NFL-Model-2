@@ -43,10 +43,9 @@ def _main_source():
     """main() and the steps it calls, which follow it in the file (Stage 32
     item 16 split main into load_inputs, fit_models, refresh_current_state,
     plan_week, predict_week and save_week)."""
-    src = (Path(__file__).resolve().parents[1] / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
     return src[src.index('def main(season'):src.index("if __name__ == '__main__':")]
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 
 def _code_only(src: str) -> str:
@@ -162,7 +161,7 @@ def _minimal_inputs(ol_lookup):
 def test_build_historical_features_still_honours_ol_lookup():
     """backtest.py's '[reference only] + OL continuity' rows depend on this.
     A real lookup must produce a real, non-zero difference."""
-    from weekly_update import build_historical_features
+    from src.pipeline.weekly_update import build_historical_features
 
     ol_lookup = {('AAA', 2024, 2): 0.8, ('BBB', 2024, 2): 0.2}
     hist = build_historical_features(**_minimal_inputs(ol_lookup))
@@ -174,7 +173,7 @@ def test_build_historical_features_still_honours_ol_lookup():
 def test_build_historical_features_defaults_ol_to_zero_without_lookup():
     """And with no lookup it must stay neutral rather than blowing up --
     this is the path the live weekly job now takes."""
-    from weekly_update import build_historical_features
+    from src.pipeline.weekly_update import build_historical_features
 
     hist = build_historical_features(**_minimal_inputs(None))
 
@@ -200,7 +199,7 @@ def test_generate_dashboard_does_not_import_pdf_module_at_top_level():
     """
     import ast
 
-    src_path = Path(__file__).parent.parent / "src" / "generate_dashboard.py"
+    src_path = Path(__file__).parent.parent / "src" / "pipeline" / "generate_dashboard.py"
     tree = ast.parse(src_path.read_text(encoding="utf-8"))
 
     offenders = []

@@ -19,7 +19,7 @@ from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
 
 
 @pytest.fixture(scope='module')

@@ -8,10 +8,10 @@ results/backtest_metrics.csv
 results/qb_shrink_k_*.csv
 results/*_run.log
 
-# Throwaway repos built by src/booth_fixture_runner.py.
+# Throwaway repos built by src/agents/booth_fixture_runner.py.
 .fixture-run/
 
-# Scratch PR description. src/scout_preflight.py takes a body_file, so the
+# Scratch PR description. src/agents/scout_preflight.py takes a body_file, so the
 # body gets written to disk before every PR; this is the conventional name for
 # it. It is a draft of a GitHub artifact, not a repository artifact -- and the
 # repo has already been bitten once by treating those two as the same thing
@@ -21,7 +21,7 @@ results/*_run.log
 # Scratch commit message; PowerShell has no heredocs, so git commit -F needs a file.
 .commit-msg.txt
 
-# Build outputs. Both are produced by src/generate_dashboard.py and were
+# Build outputs. Both are produced by src/pipeline/generate_dashboard.py and were
 # tracked until Stage 8c phase 2. Tracking a generated file meant every branch
 # that touched the template collided with whatever CI had regenerated on main
 # -- five conflicts in one day across three branches -- and neither file has a
@@ -37,7 +37,7 @@ results/*_run.log
 /dist/
 CLAUDE.local.md 
 
-# A temporary file src/atomic_write.py writes beside its target and swaps in.
+# A temporary file src/pipeline/atomic_write.py writes beside its target and swaps in.
 # A run killed before the swap leaves one behind, sometimes in a committed
 # folder; it must never be committed (Stage 30 item 8).
 *.tmp

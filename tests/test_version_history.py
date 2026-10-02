@@ -23,11 +23,10 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-from config import MODEL_VERSION, VERSION_HISTORY
+from src.pipeline.config import MODEL_VERSION, VERSION_HISTORY
 
-TEMPLATE = REPO_ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 GENERATED = REPO_ROOT / 'index.html'
 REQUIRED = ('version', 'date', 'headline', 'detail')
 
@@ -105,7 +104,7 @@ def test_the_page_carries_the_real_history_not_a_hand_written_copy():
     generated from config.py, this fails -- which is the moment the release
     notes and the model become free to disagree."""
     if not GENERATED.exists():
-        pytest.skip("index.html absent -- run src/generate_dashboard.py")
+        pytest.skip("index.html absent -- run src/pipeline/generate_dashboard.py")
     page = GENERATED.read_text(encoding='utf-8')
 
     for e in VERSION_HISTORY:

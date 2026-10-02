@@ -1,5 +1,5 @@
 {
-  "target": "src/drift_alert.py",
+  "target": "src/pipeline/drift_alert.py",
   "tests": "tests/test_drift_alert.py",
   "cases": [
     {
@@ -20,7 +20,7 @@
       "id": "drift-workflow-never-runs-it",
       "target": ".github/workflows/weekly-update.yml",
       "why": "the weekly run stops calling the drift check. Every test of the module would still pass, and nothing would run it.",
-      "find": "        run: python src/drift_alert.py --report drift-report.txt",
+      "find": "        run: python -m src.pipeline.drift_alert --report drift-report.txt",
       "replace": "        run: echo skipped",
       "expect_caught_by": "test_the_weekly_run_checks_drift_after_grading_and_before_committing"
     },
@@ -36,7 +36,7 @@
       "id": "drift-workflow-cannot-open-issues",
       "target": ".github/workflows/weekly-update.yml",
       "why": "the workflow loses issues: write. The alert call would fail with a 403 on the one night it matters.",
-      "find": "  # For src/drift_alert.py, which opens an issue when the drift check flags.\n  issues: write\n",
+      "find": "  # For src/pipeline/drift_alert.py, which opens an issue when the drift check flags.\n  issues: write\n",
       "replace": "",
       "expect_caught_by": "test_the_workflow_may_open_issues"
     }

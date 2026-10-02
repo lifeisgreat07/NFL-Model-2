@@ -1,5 +1,5 @@
 """
-Tests for src/booth_verdict.py -- the parser for Booth's machine-readable block.
+Tests for src/agents/booth_verdict.py -- the parser for Booth's machine-readable block.
 
 The regression suite this parser exists for will rest entirely on it, so the
 cases here are mostly about the ways it could quietly say the wrong thing:
@@ -8,14 +8,11 @@ missing one, or a block that disagrees with the prose above it passing anyway.
 
 Run with: pytest tests/test_booth_verdict.py -v
 """
-import sys
-from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
-import booth_verdict as bv  # noqa: E402
+from src.agents import booth_verdict as bv  # noqa: E402
 
 
 def _report(block, checked=2, confirmed=1, discrepancies=1, unverifiable=0,

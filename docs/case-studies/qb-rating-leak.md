@@ -60,12 +60,12 @@ dashboard as ACCEPT. Nothing in the repository could reproduce its numbers.
 Two changes since had altered what it was being compared against: a feature
 was removed, and the backtest switched to refitting weekly. (The leak was
 checked separately and was not the cause.) So a real script,
-`src/tune_qb_shrink_k.py`, was committed and run: tune on 2022-2023 only,
+`src/research/tune_qb_shrink_k.py`, was committed and run: tune on 2022-2023 only,
 confirm on 2024-2025. It picked k=128, and on the confirmation seasons the
 paired bootstrap interval was [-1.65, +1.29] points of accuracy, which
 includes zero (`a86c470`). Looked at across metrics, k=8 won 3 of 4
 (`870f636`). So the constant went back to 8, the dashboard row changed from
-ACCEPT to INCONCLUSIVE, and `src/config.py` keeps the whole history above
+ACCEPT to INCONCLUSIVE, and `src/pipeline/config.py` keeps the whole history above
 the constant rather than only its latest value.
 
 ## How much did the leak matter?
@@ -75,7 +75,7 @@ one pull request (#5), so the leak's own effect was never separated out. The
 Methodology page has called it "a real (small) leak" since `8a0899f`, with no
 number behind the word.
 
-`src/measure_qb_leak.py` separates it, on today's code. It loads the data
+`src/research/measure_qb_leak.py` separates it, on today's code. It loads the data
 once and builds the feature table twice. The only difference is which
 `trailing_rating` function the builder gets: today's, or the pre-fix one
 copied exactly from `ec30887`'s parent. It refuses to report unless every
@@ -119,7 +119,7 @@ does not measurably move the scores.
 
 - The test that caught it is still in the suite:
   `test_qb_rating_cutoff_excludes_current_week` in `tests/test_leak_free.py`.
-- `src/tune_qb_shrink_k.py` stayed committed, so the tuning can be re-run
+- `src/research/tune_qb_shrink_k.py` stayed committed, so the tuning can be re-run
   instead of trusted.
 - Two days later `VERIFICATION.md` was committed (`ea965a6`), stating the rule
   that the suite not running was the clearest example of: a test file

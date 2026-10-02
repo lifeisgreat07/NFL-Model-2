@@ -30,7 +30,7 @@ from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).parent.parent / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).parent.parent / 'src' / 'pipeline' / 'dashboard_template.html'
 NARROWEST_PHONE = 320
 
 

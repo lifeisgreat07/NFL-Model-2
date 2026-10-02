@@ -2,7 +2,7 @@
 
 Booth's audit of PR #45 found the gate and the guard disagreeing:
 tests/test_workflow_docs.py allowed docs/context.md's stamp to sit one day in
-the future, while src/session_wrapup.py's check_context_is_current() demanded
+the future, while src/agents/session_wrapup.py's check_context_is_current() demanded
 an exact string match against today. Its words: "merging this PR today ships a
 session-end gate that will fail on its own author's branch."
 
@@ -38,9 +38,8 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO / 'src'))
 
-import session_wrapup  # noqa: E402
+from src.agents import session_wrapup  # noqa: E402
 
 TODAY = date.today()
 YESTERDAY = TODAY - timedelta(days=1)
@@ -104,9 +103,9 @@ def test_the_gate_and_the_pytest_guard_do_not_disagree_about_tomorrow():
         "tests/test_workflow_docs.py no longer bounds the stamp to one day "
         "ahead; this test's premise is gone and the pair needs re-reading "
         "together rather than one of them being quietly widened")
-    gate = (REPO / 'src' / 'session_wrapup.py').read_text(encoding='utf-8')
+    gate = (REPO / 'src' / 'agents' / 'session_wrapup.py').read_text(encoding='utf-8')
     assert 'timedelta(days=1)' in gate, (
-        "src/session_wrapup.py no longer grants the one-day forward slack the "
+        "src/agents/session_wrapup.py no longer grants the one-day forward slack the "
         "pytest guard grants. That is the exact disagreement Booth found on "
         "PR #45")
 

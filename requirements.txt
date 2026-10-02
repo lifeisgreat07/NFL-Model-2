@@ -19,14 +19,14 @@
 # parts, and the answer is to KEEP the pin for now.
 #
 # 1. Is the revert path real, or is nfl_data_py cruft?
-#    src/verify_data_source_fallback.py executes it rather than assuming.
+#    src/research/verify_data_source_fallback.py executes it rather than assuming.
 #    It imports, all three loaders work, every column this project depends on
 #    is present, and it agrees with nflreadpy exactly on 2025 week 10 -- 14
 #    games, zero differences in scores or spread lines. A REAL fallback. So
 #    the pin is buying a working revert path, not nothing.
 #
 # 2. Does the pandas version move the model?
-#    src/compare_pandas_versions.py, results in data/pandas_version_experiment.json.
+#    src/research/compare_pandas_versions.py, results in data/pandas_version_experiment.json.
 #    Pre-declared hypothesis: log loss, Brier and AUC agree to four decimals
 #    across the major version, which is the tolerance this project's own
 #    Linux-vs-Windows finding established. REFUTED. Both environments are

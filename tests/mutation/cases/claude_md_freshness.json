@@ -37,7 +37,7 @@
     {
       "id": "handoff-path-rots-in-the-rules",
       "why": "the same rot as handoff-path-rots, in the file that kept the rules. Before the split one anchor covered one file; after it, a path check that silently stopped reading CLAUDE.md would pass every other case here.",
-      "find": "comment on a GitHub issue (`src/alerts.py`)",
+      "find": "comment on a GitHub issue (`src/pipeline/alerts.py`)",
       "replace": "comment on a GitHub issue (`src/alert.py`)",
       "expect_caught_by": "test_every_repository_path_it_names_exists"
     },
@@ -57,7 +57,7 @@
     },
     {
       "id": "session-start-stops-naming-the-traps",
-      "target": "src/session_start.py",
+      "target": "src/agents/session_start.py",
       "tests": "tests/test_session_start.py",
       "why": "the first command of every session stops naming docs/traps.md. Before the split its reading list said the traps were in CLAUDE.md, which was enough; after it, a reading list that names only CLAUDE.md sends a session past the file where the expensive lessons are.",
       "find": "print('  docs/traps.md  where the expensive lessons are; read it before a PR,')",

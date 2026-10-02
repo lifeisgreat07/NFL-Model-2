@@ -24,7 +24,7 @@ import pytest
 from page_source import page_source  # Model Lab's rows are rendered in at build time
 
 REPO_ROOT = Path(__file__).parent.parent
-TEMPLATE = REPO_ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 RESULTS = REPO_ROOT / 'data' / 'bootstrap_brier_gap.json'
 
 # The page writes negatives as the HTML entity and positives with a sign, e.g.
@@ -49,7 +49,7 @@ def _value(text):
 @pytest.fixture(scope='module')
 def results():
     if not RESULTS.exists():
-        pytest.skip("data/bootstrap_brier_gap.json absent -- run src/bootstrap_brier_gap.py")
+        pytest.skip("data/bootstrap_brier_gap.json absent -- run src/research/bootstrap_brier_gap.py")
     return json.loads(RESULTS.read_text())
 
 

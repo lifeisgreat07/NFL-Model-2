@@ -1,13 +1,14 @@
 """
-The pipeline logs through src/runlog.py, and what it writes is exactly what
+The pipeline logs through src/pipeline/runlog.py, and what it writes is exactly what
 print() wrote (Stage 32 item 17).
 
-src/weekly_summary.py parses the weekly run's log, so a changed line is a
+src/pipeline/weekly_summary.py parses the weekly run's log, so a changed line is a
 broken summary. The handler must write the bare message and a newline, to
 whatever sys.stdout is at that moment, and fail the way print failed.
 
 Run with: pytest tests/test_runlog.py -v
 """
+import importlib
 import io
 import re
 import sys
@@ -16,9 +17,8 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import runlog  # noqa: E402
+from src.pipeline import runlog  # noqa: E402
 
 #: The modules converted from print(). A module joins when it is converted.
 LOGGED = ['weekly_update', 'grade_predictions', 'weekend_refresh', 'check_drift']
@@ -92,12 +92,12 @@ def test_a_line_that_cannot_be_written_fails_like_print(monkeypatch):
 
 @pytest.mark.parametrize('name', LOGGED)
 def test_the_converted_modules_log_and_never_print(name):
-    code = re.sub(r'(?m)#.*$', '', (ROOT / 'src' / f'{name}.py').read_text(encoding='utf-8'))
+    code = re.sub(r'(?m)#.*$', '', next((ROOT / 'src').glob(f'*/{name}.py')).read_text(encoding='utf-8'))
     assert not re.search(r'(?<![\w.])print\(', code), f'{name} prints again'
     assert re.search(r'(?m)^log = get_logger\(__name__\)$', code), f'{name} has no logger'
 
 
 @pytest.mark.parametrize('name', LOGGED)
 def test_the_converted_modules_are_bound_to_the_one_handler(name):
-    module = __import__(name)
+    module = importlib.import_module(f'src.pipeline.{name}')
     assert any(isinstance(h, runlog._StdoutHandler) for h in module.log.handlers)

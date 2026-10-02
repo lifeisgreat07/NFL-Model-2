@@ -1,7 +1,7 @@
 """Model Lab's table is built from the experiment records (Stage 18).
 
 generate_dashboard.render_model_lab_rows() writes one row per entry that
-src/model_lab.py builds, into the template's placeholder, at build time -- so
+src/pipeline/model_lab.py builds, into the template's placeholder, at build time -- so
 the table is there without JavaScript and every #modellab/<slug> link still
 finds its row. These tests check nothing is typed into the template any
 more, that a moved row reaches the page unchanged, that each row shows its
@@ -12,18 +12,16 @@ Run with: pytest tests/test_model_lab_page.py -v
 """
 import html
 import re
-import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import generate_dashboard as gd  # noqa: E402
-import model_lab as ml  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
+from src.pipeline import model_lab as ml  # noqa: E402
 
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 ROW = re.compile(r'<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>', re.S)
 
 
@@ -48,7 +46,7 @@ def test_no_experiment_row_is_typed_into_the_template():
 
 
 def test_the_build_fills_the_placeholder():
-    src = (ROOT / 'src' / 'generate_dashboard.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'pipeline' / 'generate_dashboard.py').read_text(encoding='utf-8')
     assert "html.replace('__MODEL_LAB_ROWS__', render_model_lab_rows(model_lab_entries()))" in src
 
 
@@ -77,7 +75,7 @@ def test_each_row_shows_its_decision_and_any_first_label(entries, rows):
 def test_a_rows_pills_share_one_row_and_never_break_inside(entries, rows):
     """"CONFIRMED FINDING" broke across two lines of one pill, and DEFERRED
     sat on LEAKAGE with nothing between them (Mark, 2026-09-28)."""
-    src = (ROOT / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
     tags = re.search(r'\.lab-tags\{([^}]*)\}', src)
     assert tags and 'display:flex' in tags.group(1).replace(' ', '') and 'gap:' in tags.group(1)
     pill = re.search(r'\.lab-tags \.conf-tag\{([^}]*)\}', src)

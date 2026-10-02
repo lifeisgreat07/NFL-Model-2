@@ -1,5 +1,5 @@
 {
-  "target": "src/dashboard_template.html",
+  "target": "src/pipeline/dashboard_template.html",
   "tests": "tests/test_card_context.py",
   "cases": [
     {
@@ -18,7 +18,7 @@
     },
     {
       "id": "tv-held-back-channel-shown",
-      "target": "src/generate_dashboard.py",
+      "target": "src/pipeline/generate_dashboard.py",
       "why": "the card reads nfl.com's raw list instead of the checked networks, so a channel that failed a check reaches the page.",
       "find": "        network = (tv.get('networks') or [None])[0]",
       "replace": "        network = (tv.get('listed') or [None])[0]",
@@ -26,7 +26,7 @@
     },
     {
       "id": "tv-regional-flag-ignores-territory",
-      "target": "src/generate_dashboard.py",
+      "target": "src/pipeline/generate_dashboard.py",
       "why": "every shown channel is flagged regional, so the regional line appears on a national-only week.",
       "find": "            'tv_regional': bool(network) and tv.get('territory') == 'REGIONAL',",
       "replace": "            'tv_regional': bool(network),",
@@ -48,7 +48,7 @@
     },
     {
       "id": "qb-names-dropped",
-      "target": "src/generate_dashboard.py",
+      "target": "src/pipeline/generate_dashboard.py",
       "why": "the saved quarterbacks never reach the page, so the card never names them.",
       "find": "            'away_qb': p.get('away_qb'), 'home_qb': p.get('home_qb'),",
       "replace": "            'away_qb': None, 'home_qb': None,",

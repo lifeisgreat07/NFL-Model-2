@@ -13,7 +13,6 @@ of this change (recording the listed starter); the guards below cover both.
 Run with: pytest tests/test_announced_qb_check.py -v
 """
 import json
-import sys
 from pathlib import Path
 
 import numpy as np
@@ -21,9 +20,8 @@ import pandas as pd
 import pytest
 
 ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(ROOT / 'src'))
 
-from weekly_update import QBOverrideError, load_qb_overrides, resolve_starters  # noqa: E402
+from src.pipeline.weekly_update import QBOverrideError, load_qb_overrides, resolve_starters  # noqa: E402
 
 LAST = pd.DataFrame([
     {'posteam': 'NYG', 'passer_player_id': '00-0000001', 'passer_player_name': 'J.Winston'},
@@ -122,7 +120,7 @@ def test_two_overrides_for_one_team_fail(tmp_path):
 # -------------------------------------------------------------------- wiring
 
 def _main_source():
-    src = (ROOT / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
     return src[src.index('def main(season'):]
 
 

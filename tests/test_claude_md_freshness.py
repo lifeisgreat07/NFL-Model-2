@@ -30,7 +30,7 @@ prose reasonably says `prune_build_churn.py` rather than
 
 What this deliberately does NOT check is the suite count: a test that runs the
 suite from inside the suite cannot terminate. That lives in
-src/session_wrapup.py, which runs once at the end of a session.
+src/agents/session_wrapup.py, which runs once at the end of a session.
 
 Run with: pytest tests/test_claude_md_freshness.py -v
 """

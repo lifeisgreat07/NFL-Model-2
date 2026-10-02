@@ -43,7 +43,7 @@ the engineering. Public repo, so anything committed is read by strangers.
 
 ## Current state (update this when it changes)
 
-Model v2.5 (`MODEL_VERSION` in `src/config.py`). `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
+Model v2.5 (`MODEL_VERSION` in `src/pipeline/config.py`). `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 The drift check's baseline is the committed `data/calibration.json` (Stage 35;
 it was a literal, `BACKTEST_ACCURACY`), and moves only on a deliberate re-run.
@@ -59,7 +59,7 @@ before quoting
 it — this line read 174 for about a day after it stopped being true, and a stale
 figure here is the first thing a fresh session anchors on.
 
-Keep the shape `Suite: **N passing**` exactly. `src/session_wrapup.py` greps for
+Keep the shape `Suite: **N passing**` exactly. `src/agents/session_wrapup.py` greps for
 that literal, and rewording it to `**N passing, 1 skipped**` did not make the
 check complain about the wording — it reported the line as *missing*, which
 reads like a deleted section rather than an edited sentence.
@@ -83,9 +83,9 @@ Routines" section describes the same split.
 (06:00 UTC) runs the weekly data path and writes nothing. The Weekly update
 runs the drift check and writes a run summary. A failed canary night, a
 failed weekly run, a drift flag, a failed Booth audit and a failed nightly
-mutation slice each open or comment on a GitHub issue (`src/alerts.py`);
+mutation slice each open or comment on a GitHub issue (`src/pipeline/alerts.py`);
 `tests/test_alerts.py` fails any scheduled workflow that does not. The Pages build refuses a page
-whose data is missing (`src/check_build.py`). Stage 4's section in
+whose data is missing (`src/pipeline/check_build.py`). Stage 4's section in
 `docs/stage-history.md` keeps the decisions.
 
 One habit from Stage 8 is worth keeping whatever you work on: every numeric
@@ -169,8 +169,8 @@ casually.
   than discovering the shift afterwards.
 - **THERE ARE TWO RULERS IN THIS REPOSITORY AND THEY ARE NOT INTERCHANGEABLE.**
   `tests/test_dashboard_charts.py` measures **OKLab distance x100**, with
-  `CVD_TARGET = 8.0` and `NORMAL_FLOOR = 15.0`. `src/verify_model_colours.py`
-  and `src/verify_matchup_cvd.py` measure **CIEDE2000**. The 8 and the 15 are
+  `CVD_TARGET = 8.0` and `NORMAL_FLOOR = 15.0`. `src/research/verify_model_colours.py`
+  and `src/research/verify_matchup_cvd.py` measure **CIEDE2000**. The 8 and the 15 are
   OKLab numbers; quoting a CIEDE2000 figure against them compares two different
   objects, which is the failure this file's own `verify_model_colours` docstring
   was written to prevent — and the first version of this entry did exactly
@@ -220,7 +220,7 @@ casually.
   has changed is that it is no longer queued for removal. Do not re-open this
   as a colour defect. The one thing worth knowing if it is ever revisited:
   the push does not preserve team colour — it renders Cincinnati's `#FB4F14`
-  as `#C43E10` — and `src/dashboard_template.html`'s comment said otherwise
+  as `#C43E10` — and `src/pipeline/dashboard_template.html`'s comment said otherwise
   until this decision corrected it.
 - **`--good` vs `--warn` collapse under CVD (4.5 dark, 4.3 light) and that is
   NOT a defect.** Checked rather than assumed: the graded tag renders the word
@@ -229,7 +229,7 @@ casually.
   secondary encoding the floor exists to require. A red/green pass-fail pair is
   the most obvious-looking colour-blindness defect there is, and this one was
   already handled — an audit finding is a hypothesis, not a defect.
-- **`src/verify_model_colours.py` checks a hand-written table of two pairs.**
+- **`src/research/verify_model_colours.py` checks a hand-written table of two pairs.**
   That is why the `--accent`/`--series-d` and `--accent-strong`/`--series-a`
   collisions went unrecorded: the pairs in it are the ones that were in front
   of whoever wrote it. Same shape as the bridging guard #74 widened. Enumerate
@@ -288,7 +288,7 @@ The full text of every stage, finished or planned, is in
 Run this every time, before the session closes:
 
 ```
-python src/session_wrapup.py
+python -m src.agents.session_wrapup
 ```
 
 A session ends when usage runs out or attention moves, not when the work
@@ -320,7 +320,7 @@ sections -- those name work that does not exist yet, and checking a plan the
 same way you check a description is wrong.
 
 **What neither can check, and matters most.** The script prints these as
-prompts -- the wording below is `BY_HAND` in `src/session_wrapup.py`:
+prompts -- the wording below is `BY_HAND` in `src/agents/session_wrapup.py`:
 
 - Does `docs/context.md` name the single next action, not a list of five?
 - Is every PR opened this session either merged, or in `docs/context.md`
@@ -418,7 +418,7 @@ under compaction pressure, so its length is a cost paid on every session.
   2. Commit (message from a file; read `git log -1` after), push, then run the full
      suite and quote it; run each new mutation case with `--id` and check
      `git status` is clean afterwards.
-  3. Write the PR body to a file and run `python -B src/scout_preflight.py <body>
+  3. Write the PR body to a file and run `python -B -m src.agents.scout_preflight <body>
      --base main` after `git fetch origin main:main`. The scope check wants each
      commit's short SHA or subject named in the body.
   4. Open the PR with GitKraken's `pull_request_create`.

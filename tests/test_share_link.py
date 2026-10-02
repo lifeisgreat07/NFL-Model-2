@@ -32,7 +32,7 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 HARNESS = Path(__file__).parent / 'share_link_harness.js'
-TEMPLATE = REPO_ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 
 NODE = shutil.which('node')
 pytestmark = pytest.mark.skipif(

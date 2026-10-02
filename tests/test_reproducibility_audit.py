@@ -1,5 +1,5 @@
 """
-src/reproducibility_audit.py: the pass mark, checked on synthetic numbers,
+src/research/reproducibility_audit.py: the pass mark, checked on synthetic numbers,
 and the committed record held to the published file.
 
 The audit itself needs nflverse and six seasons of play-by-play, so it is
@@ -10,15 +10,13 @@ still describes the data/calibration.json the page is built from.
 Run with: pytest tests/test_reproducibility_audit.py -v
 """
 import json
-import sys
 from pathlib import Path
 
 import pytest
 
 REPO = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO / 'src'))
 
-import reproducibility_audit as ra  # noqa: E402
+from src.research import reproducibility_audit as ra  # noqa: E402
 
 N = 1087
 PUB = {'n': N, 'accuracy': 0.6274, 'log_loss': 0.649812, 'brier': 0.228603, 'auc': 0.670119}

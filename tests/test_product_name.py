@@ -23,7 +23,7 @@ def read(rel):
 
 
 def test_the_tab_the_sidebar_and_the_phone_bar_say_the_name():
-    t = read('src/dashboard_template.html')
+    t = read('src/pipeline/dashboard_template.html')
     assert f'<title>Week Board \u2014 {NAME}</title>' in t
     assert "`${heading.textContent.trim()} \u2014 Pick'em Model`" in t, (
         'the other pages no longer end their tab title with the name')
@@ -34,13 +34,13 @@ def test_the_tab_the_sidebar_and_the_phone_bar_say_the_name():
 
 def test_the_readme_and_the_printed_sheet_say_the_name():
     assert read('README.md').splitlines()[0] == f'# {NAME}'
-    pdf = read('src/generate_picks_pdf.py')
+    pdf = read('src/pipeline/generate_picks_pdf.py')
     assert f'title=f"{NAME} {{season}} Week {{week}}"' in pdf
     assert f'Paragraph(f"{NAME} &mdash; {{season}} Week {{week}}"' in pdf
 
 
 def test_no_retired_name_is_left_where_a_reader_sees_it():
-    for rel in ('src/dashboard_template.html', 'README.md', 'src/generate_picks_pdf.py'):
+    for rel in ('src/pipeline/dashboard_template.html', 'README.md', 'src/pipeline/generate_picks_pdf.py'):
         text = read(rel)
         left = [n for n in RETIRED if re.search(re.escape(n), text)]
         assert not left, f'{rel} still says {left}'

@@ -3,6 +3,14 @@
   "tests": "tests/test_browser_checks.py",
   "cases": [
     {
+      "id": "states-builder-loses-the-root",
+      "target": "tests/browser/build_states.py",
+      "why": "the script runs by path in CI, where only its own folder is on sys.path; without the root its package imports fail and the states pages are never built, while every pytest run, which has the root, stays green",
+      "find": "sys.path.insert(0, str(ROOT))\n",
+      "replace": "",
+      "expect_caught_by": "test_the_states_builder_runs_by_path"
+    },
+    {
       "id": "browser-checks-skip-the-self-test",
       "why": "the step that proves every rule can fail is replaced by a no-op. The job still goes green on a real page -- which is exactly what it would do if a rule had gone blind, so green stops meaning anything.",
       "find": "        run: python tests/browser/check_page.py --self-test --axe node_modules/axe-core/axe.min.js --tmp \"$RUNNER_TEMP\"",
@@ -72,7 +80,7 @@
     },
     {
       "id": "sticky-header-back-under-the-bar",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "tests": "tests/test_sticky_header_offset.py",
       "why": "the fitting table header goes back to top:0 below 1080px, under the sticky top bar -- the Stage 30 item 2 defect, which nothing but a render showed for as long as it shipped.",
       "find": ".table-wrap.fits thead th{top:var(--topbar-h, 0px);}",
@@ -81,7 +89,7 @@
     },
     {
       "id": "topbar-height-measured-once",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "tests": "tests/test_sticky_header_offset.py",
       "why": "the bar's height is read once at load and never again, so when the title wraps or the safe area changes the headers stick a few pixels under the bar -- a partial return of the defect on exactly the phones least likely to be tested.",
       "find": "  if(typeof ResizeObserver === 'function') new ResizeObserver(write).observe(bar, {box: 'border-box'});",
@@ -138,7 +146,7 @@
     },
     {
       "id": "topbar-observes-the-content-box",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "tests": "tests/test_sticky_header_offset.py",
       "why": "the observer goes back to the default content box, so a change to the bar's padding alone -- which is how the safe area reaches it -- no longer rewrites --topbar-h, and the headers stick a few pixels under the bar on exactly the phones with a notch.",
       "find": "new ResizeObserver(write).observe(bar, {box: 'border-box'});",

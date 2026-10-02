@@ -1,5 +1,5 @@
 {
-  "target": "src/dashboard_template.html",
+  "target": "src/pipeline/dashboard_template.html",
   "tests": "tests/test_team_dive_news.py",
   "cases": [
     {
@@ -46,7 +46,7 @@
     },
     {
       "id": "dive-news-never-expires",
-      "target": "src/generate_dashboard.py",
+      "target": "src/pipeline/generate_dashboard.py",
       "why": "a graded week's news stays on the page, so last week's injuries read as current until the next week locks.",
       "find": "    if news is None or len(graded) >= len(preds):",
       "replace": "    if news is None:",

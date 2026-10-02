@@ -19,7 +19,7 @@ Run with: pytest tests/test_sort_marks.py -v
 import re
 from pathlib import Path
 
-TEMPLATE = Path(__file__).parent.parent / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).parent.parent / 'src' / 'pipeline' / 'dashboard_template.html'
 GLYPH = {'none': r'\2195', 'descending': r'\25BC', 'ascending': r'\25B2'}
 
 

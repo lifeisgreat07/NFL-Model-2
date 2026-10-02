@@ -1,0 +1,16 @@
+# Stage 32 item 14, from the 2026-09-29 re-audit. The code is one package,
+# `src`, in three parts: src/pipeline (what the scheduled workflows and the
+# page build run), src/research (run by hand: backtests, experiments, the
+# scripts that re-derive a published figure) and src/agents (Booth, Scout and
+# the session gates). Every import names its package -- `from src.pipeline
+# import config` -- so no module edits sys.path to find another.
+#
+# Nothing is installed. A module runs from the repository root with
+# `python -m src.pipeline.weekly_update`, and Python finds `src` because the
+# root is the working directory. pytest is given the same root here, rather
+# than relying on where the root conftest.py happens to sit.
+#
+# Ruff keeps its own settings in ruff.toml, which it reads before this file.
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

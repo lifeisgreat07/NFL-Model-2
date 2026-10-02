@@ -19,11 +19,10 @@ from pathlib import Path
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 
-import generate_dashboard as gd  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
 
 
 def _ratings(*teams):

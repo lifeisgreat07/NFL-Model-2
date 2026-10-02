@@ -1,7 +1,7 @@
 name: Collect Booth's audit log
 
 # Turns Booth's audit comments into data/agent_log.json, which the dashboard
-# renders. Until this existed the collector had never run: src/collect_agent_log.py
+# renders. Until this existed the collector had never run: src/agents/collect_agent_log.py
 # was committed and tested, data/agent_log.json had never been written, and the
 # page that was supposed to show this work was three hand-written incidents.
 #
@@ -81,7 +81,7 @@ jobs:
           python -c "import json; print('fetched', len(json.load(open('comments.json'))), 'comments')"
 
       - name: Build data/agent_log.json
-        run: python src/collect_agent_log.py --comments comments.json
+        run: python -m src.agents.collect_agent_log --comments comments.json
 
       - name: Show what was collected
         run: python -c "import json; d=json.load(open('data/agent_log.json')); print(json.dumps(d.get('summary', {}), indent=2))"

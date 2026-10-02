@@ -2,13 +2,13 @@ name: Weekend refresh
 
 # Stage 15. Between Thursday's lock and Tuesday's grading the page learned
 # nothing: a game played on Sunday read as upcoming until the weekly run
-# graded it. src/weekend_refresh.py writes a snapshot per locked, not yet
+# graded it. src/pipeline/weekend_refresh.py writes a snapshot per locked, not yet
 # fully graded week -- status, final scores, the latest line -- to
 # data/game_status/, from nflverse's schedule.
 #
 # TWO WRITERS OF PICKS IS TWO WAYS TO BREAK A LOCK (2026-09-24). This commits
-# data/game_status/**, data/tv/** (TV channels, src/tv_channels.py) and
-# data/team_news/** (src/team_news.py) and nothing else; "Weekly update"
+# data/game_status/**, data/tv/** (TV channels, src/pipeline/tv_channels.py) and
+# data/team_news/** (src/pipeline/team_news.py) and nothing else; "Weekly update"
 # stays the only writer
 # of predictions/, results/ and the line archive. tests/test_weekend_refresh.py
 # holds the file_pattern to that one directory.
@@ -56,7 +56,7 @@ jobs:
 
       - name: Refresh game status, scores and lines
         shell: bash
-        run: python src/weekend_refresh.py 2>&1 | tee weekend-refresh.log
+        run: python -m src.pipeline.weekend_refresh 2>&1 | tee weekend-refresh.log
 
       # TV channels (Stage 15) for the same weeks, so a flexed game is seen
       # before it airs. continue-on-error: a TV listing never fails the refresh.
@@ -64,7 +64,7 @@ jobs:
         continue-on-error: true
         shell: bash
         run: |
-          python src/tv_channels.py --pending 2>&1 | tee tv-channels.log
+          python -m src.pipeline.tv_channels --pending 2>&1 | tee tv-channels.log
           { echo '### TV channels'; echo '```'; cat tv-channels.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
       # Team news (Stage 16) for the same weeks, so a starter ruled out on
@@ -73,7 +73,7 @@ jobs:
         continue-on-error: true
         shell: bash
         run: |
-          python src/team_news.py --pending 2>&1 | tee team-news.log
+          python -m src.pipeline.team_news --pending 2>&1 | tee team-news.log
           { echo '### Team news'; echo '```'; cat team-news.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
       # CATCH UP WITH MAIN BEFORE COMMITTING (2026-09-27). The first scheduled
@@ -115,4 +115,4 @@ jobs:
             tail -n 30 weekend-refresh.log 2>/dev/null || echo "(no log)"
             echo '```'
           } > alert-body.md
-          python src/alerts.py --title "Weekend refresh failed" --body-file alert-body.md
+          python -m src.pipeline.alerts --title "Weekend refresh failed" --body-file alert-body.md

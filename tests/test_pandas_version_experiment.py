@@ -37,7 +37,7 @@ REQUIREMENTS = REPO_ROOT / 'requirements.txt'
 def result():
     if not RESULTS.exists():
         pytest.skip("data/pandas_version_experiment.json absent -- run "
-                    "src/compare_pandas_versions.py")
+                    "src/research/compare_pandas_versions.py")
     return json.loads(RESULTS.read_text())
 
 
@@ -45,7 +45,7 @@ def result():
 def fallback():
     if not FALLBACK.exists():
         pytest.skip("data/data_source_fallback.json absent -- run "
-                    "src/verify_data_source_fallback.py")
+                    "src/research/verify_data_source_fallback.py")
     return json.loads(FALLBACK.read_text())
 
 

@@ -1,5 +1,5 @@
 """
-src/drift_alert.py and its step in the Weekly update workflow.
+src/pipeline/drift_alert.py and its step in the Weekly update workflow.
 
 The drift check itself is replaced by a stub returning a chosen exit code,
 and the alert by a recorder, so nothing here reads results/ or reaches
@@ -8,13 +8,11 @@ GitHub.
 Run with: pytest tests/test_drift_alert.py -v
 """
 import re
-import sys
 from pathlib import Path
 
 REPO = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO / 'src'))
 
-import drift_alert  # noqa: E402
+from src.pipeline import drift_alert  # noqa: E402
 
 WEEKLY = REPO / '.github' / 'workflows' / 'weekly-update.yml'
 
@@ -75,8 +73,8 @@ def _text():
 
 def test_the_weekly_run_checks_drift_after_grading_and_before_committing():
     text = _text()
-    grade = text.index('python src/grade_predictions.py')
-    drift = text.index('run: python src/drift_alert.py')
+    grade = text.index('python -m src.pipeline.grade_predictions')
+    drift = text.index('run: python -m src.pipeline.drift_alert')
     commit = text.index('- name: Commit and push changes')
     assert grade < drift < commit
 

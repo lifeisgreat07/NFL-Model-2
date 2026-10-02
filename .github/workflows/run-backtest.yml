@@ -14,7 +14,7 @@ name: Run backtest / tuning
 #
 # Deliberately does NOT commit its output. results/backtest_metrics.csv and
 # the qb_shrink_k CSVs feed decisions about canonical numbers (see
-# CALIBRATION in src/check_drift.py: the drift baseline is the committed
+# CALIBRATION in src/pipeline/check_drift.py: the drift baseline is the committed
 # data/calibration.json, and it moves only on a real, intentional re-run).
 # Auto-committing would let a routine
 # run silently redefine the baseline that drift monitoring compares against.
@@ -70,7 +70,7 @@ jobs:
             echo ""
             echo "| field | value |"
             echo "| --- | --- |"
-            echo "| script | \`src/${{ inputs.script }}.py\` |"
+            echo "| script | \`${{ inputs.script }}\` |"
             echo "| commit | \`${{ github.sha }}\` |"
             echo "| requested by | @${{ github.actor }} |"
             echo "| notes | ${{ inputs.notes || '_none given_' }} |"
@@ -78,7 +78,7 @@ jobs:
             echo "Config values this run used:"
             echo ""
             echo '```'
-            grep -E '^[A-Z_]+ *=' src/config.py
+            grep -E '^[A-Z_]+ *=' src/pipeline/config.py
             echo '```'
             echo ""
             echo "<details><summary>Installed package versions</summary>"
@@ -95,7 +95,11 @@ jobs:
         run: |
           mkdir -p results
           set -o pipefail
-          python "src/${{ inputs.script }}.py" 2>&1 | tee "results/${{ inputs.script }}_run.log"
+          case "${{ inputs.script }}" in
+            check_drift) package=pipeline ;;
+            *) package=research ;;
+          esac
+          python -m "src.$package.${{ inputs.script }}" 2>&1 | tee "results/${{ inputs.script }}_run.log"
 
       - name: Add output to run summary
         # Runs even on failure so a crashed run still shows its tail in the

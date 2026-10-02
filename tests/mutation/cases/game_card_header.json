@@ -1,5 +1,5 @@
 {
-  "target": "src/dashboard_template.html",
+  "target": "src/pipeline/dashboard_template.html",
   "tests": "tests/test_game_card_header.py",
   "cases": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "id": "card-header-picks-stops-calling-the-helper",
-      "why": "My Picks drops its call, so the helper exists, is tested, and is used by one page. A guard that says 'the title is built in one place' is satisfied by a helper nobody calls -- which is the shape Stage 3 closed with, when src/collect_agent_log.py was written, mutation-covered and had never run. Coverage has to be enumerated, not asserted.",
+      "why": "My Picks drops its call, so the helper exists, is tested, and is used by one page. A guard that says 'the title is built in one place' is satisfied by a helper nobody calls -- which is the shape Stage 3 closed with, when src/agents/collect_agent_log.py was written, mutation-covered and had never run. Coverage has to be enumerated, not asserted.",
       "find": "      ${matchupHeader(g, 'quiet')}",
       "replace": "      <div class=\"picks-title\">${g.away} at ${g.home}</div>",
       "expect_caught_by": "test_both_render_paths_use_the_helper"

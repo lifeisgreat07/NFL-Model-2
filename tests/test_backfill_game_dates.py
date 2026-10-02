@@ -1,7 +1,7 @@
 """The backfill may only add, and the suite proves it rather than trusting it.
 
 `predictions/` is write-once by design, and that refusal is what makes "saved
-before kickoff" a claim anyone can trust. src/backfill_game_dates.py bends it
+before kickoff" a claim anyone can trust. src/research/backfill_game_dates.py bends it
 under a narrow exception -- three schedule facts, not model outputs -- and an
 exception defended only by a docstring is an exception that widens.
 
@@ -14,13 +14,11 @@ The schedule loader is injected. The suite has no network, and a backfill that
 could only be tested by reaching nflverse would not be tested at all.
 """
 import json
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import backfill_game_dates as bf  # noqa: E402
+from src.research import backfill_game_dates as bf  # noqa: E402
 
 
 def fake_loader(rows):

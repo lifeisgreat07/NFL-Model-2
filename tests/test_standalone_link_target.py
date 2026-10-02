@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
 STANDALONE = re.compile(r'<p\b[^>]*>\s*(<a\b[^>]*>)[^<]*</a>\s*</p>')
 
 

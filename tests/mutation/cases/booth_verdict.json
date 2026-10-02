@@ -1,5 +1,5 @@
 {
-  "target": "src/booth_verdict.py",
+  "target": "src/agents/booth_verdict.py",
   "tests": "tests/test_booth_verdict.py",
   "cases": [
     {

@@ -31,15 +31,12 @@ check that nflreadpy ever returns a NaN spread -- that is upstream, and the
 week-3 file is the evidence it does.
 """
 import json
-import sys
-from pathlib import Path
 
 import pandas as pd
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-import weekly_update as wu  # noqa: E402
+from src.pipeline import weekly_update as wu  # noqa: E402
 
 
 @pytest.fixture

@@ -12,7 +12,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const TEMPLATE = path.join(__dirname, '..', 'src', 'dashboard_template.html');
+const TEMPLATE = path.join(__dirname, '..', 'src', 'pipeline', 'dashboard_template.html');
 const tpl = fs.readFileSync(TEMPLATE, 'utf8');
 
 const START = 'const SHARE_VERSION';

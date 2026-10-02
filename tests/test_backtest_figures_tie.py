@@ -28,19 +28,17 @@ Run with: pytest tests/test_backtest_figures_tie.py -v
 """
 import json
 import re
-import sys
 from pathlib import Path
 
 import pytest
 
 REPO = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO / 'src'))
 
-from config import VERSION_HISTORY  # noqa: E402
+from src.pipeline.config import VERSION_HISTORY  # noqa: E402
 
 CALIBRATION = 'data/calibration.json'
 BOOTSTRAP = 'data/bootstrap_brier_gap.json'
-TEMPLATE = REPO / 'src' / 'dashboard_template.html'
+TEMPLATE = REPO / 'src' / 'pipeline' / 'dashboard_template.html'
 
 # Releases after the backtest files were written that did not change what
 # the backtest scores. Re-running the backtest under a newer version empties
@@ -107,8 +105,8 @@ def test_every_release_since_the_backtest_left_it_unchanged(rel):
     missing = unexplained(version, VERSION_HISTORY, BACKTEST_UNCHANGED)
     assert not missing, (
         f"{rel} is from model {version}, but {missing} came after it and is not in "
-        "BACKTEST_UNCHANGED. Re-run the backtest (src/calibration.py, "
-        "src/bootstrap_brier_gap.py, src/reproducibility_audit.py), or add the "
+        "BACKTEST_UNCHANGED. Re-run the backtest (src/research/calibration.py, "
+        "src/research/bootstrap_brier_gap.py, src/research/reproducibility_audit.py), or add the "
         "release to the allowance with the reason its numbers did not move.")
 
 

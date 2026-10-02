@@ -8,13 +8,11 @@ preflight now fails such a PR unless its body has a line beginning
 'Human review required:'.
 """
 import inspect
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import scout_preflight as pf  # noqa: E402
+from src.agents import scout_preflight as pf  # noqa: E402
 
 LINE = "Human review required: this changes how Booth reads the diff.\n"
 
@@ -24,7 +22,7 @@ def check(body, changed):
 
 
 def test_a_pr_not_touching_booths_instructions_passes():
-    assert check('', ['src/weekly_update.py', 'README.md']).ok
+    assert check('', ['src/pipeline/weekly_update.py', 'README.md']).ok
 
 
 def test_editing_booths_workflow_without_the_line_fails():

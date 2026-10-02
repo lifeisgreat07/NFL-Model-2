@@ -22,7 +22,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 
 PREFIXES = ('week', 'picks-week')
 
@@ -99,7 +99,7 @@ def test_both_pages_actually_wire_their_stepper(prefix, source):
     """A stepper nobody wires is markup: arrows that render and do nothing.
 
     This repository has shipped the written-tested-never-called shape before --
-    src/collect_agent_log.py ran nowhere for weeks with a full suite behind it
+    src/agents/collect_agent_log.py ran nowhere for weeks with a full suite behind it
     -- so the call sites are enumerated rather than assumed to follow from the
     markup existing.
     """

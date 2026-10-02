@@ -15,14 +15,13 @@ the code.
 
 Run with: pytest tests/test_type_hints.py -v
 """
+import importlib
 import inspect
-import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
 ANNOTATED = ['ratings_engine', 'data_loader', 'weekly_update', 'grade_predictions',
              'generate_dashboard']
@@ -45,7 +44,7 @@ def missing_hints(module):
 
 @pytest.mark.parametrize('name', ANNOTATED)
 def test_every_public_function_is_annotated(name):
-    module = __import__(name)
+    module = importlib.import_module(f'src.pipeline.{name}')
     assert not missing_hints(module), f'{name}: {missing_hints(module)}'
 
 
@@ -53,7 +52,7 @@ def test_every_public_function_is_annotated(name):
 def test_the_hints_are_never_evaluated(name):
     """PEP 563: with the future import every hint stays a string, so an
     import used only in a hint (pandas under TYPE_CHECKING) costs nothing."""
-    text = (ROOT / 'src' / f'{name}.py').read_text(encoding='utf-8')
+    text = next((ROOT / 'src').glob(f'*/{name}.py')).read_text(encoding='utf-8')
     assert 'from __future__ import annotations' in text
 
 

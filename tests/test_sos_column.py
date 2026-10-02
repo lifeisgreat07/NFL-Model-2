@@ -32,11 +32,10 @@ import pandas as pd
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-import weekly_update
+from src.pipeline import weekly_update
 
-TEMPLATE = REPO_ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 LIVE_RATINGS = REPO_ROOT / 'data' / 'current_ratings.json'
 
 # Three teams with deliberately distinct net ratings, so a wrong pairing shows

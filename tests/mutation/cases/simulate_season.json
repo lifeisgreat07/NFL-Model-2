@@ -1,5 +1,5 @@
 {
-  "target": "src/simulate_season.py",
+  "target": "src/pipeline/simulate_season.py",
   "tests": "tests/test_simulate_season.py",
   "cases": [
     {
@@ -18,7 +18,7 @@
     },
     {
       "id": "odds-file-counts-playoff-games",
-      "target": "src/weekly_update.py",
+      "target": "src/pipeline/weekly_update.py",
       "why": "the playoff-odds file's games played and remaining count playoff rows, so the page's 'N games remaining' is wrong from January.",
       "find": "        reg = regular_season(season_schedule)",
       "replace": "        reg = season_schedule",

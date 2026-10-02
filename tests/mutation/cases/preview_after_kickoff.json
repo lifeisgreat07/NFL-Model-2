@@ -1,5 +1,5 @@
 {
-  "target": "src/dashboard_template.html",
+  "target": "src/pipeline/dashboard_template.html",
   "tests": "tests/test_preview_after_kickoff.py",
   "cases": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "id": "preview-survives-the-lock",
-      "target": "src/weekly_update.py",
+      "target": "src/pipeline/weekly_update.py",
       "why": "locking a week leaves its Tuesday preview in predictions/preview/ for good.",
       "find": "            stale.unlink()",
       "replace": "            pass",
@@ -19,7 +19,7 @@
     },
     {
       "id": "skipped-week-preview-shown",
-      "target": "src/generate_dashboard.py",
+      "target": "src/pipeline/generate_dashboard.py",
       "why": "the build stops leaving out a skipped week's preview, so a week that was never locked shows its Tuesday picks as if they were still coming.",
       "find": "    previews = load_previews(locked=set(all_preds) | skipped_weeks())",
       "replace": "    previews = load_previews(locked=set(all_preds))",
@@ -27,7 +27,7 @@
     },
     {
       "id": "skipped-weeks-read-as-none",
-      "target": "src/generate_dashboard.py",
+      "target": "src/pipeline/generate_dashboard.py",
       "why": "skipped_weeks stops reading predictions/skipped/, so every skipped week's preview is shown again.",
       "find": "    return {w for w in (parse_week_stem(f.stem) for f in skipped_dir.glob('*_week*.json'))",
       "replace": "    return {w for w in (parse_week_stem(f.stem) for f in skipped_dir.glob('*_none*.json'))",

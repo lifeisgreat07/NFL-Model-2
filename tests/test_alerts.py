@@ -1,5 +1,5 @@
 """
-src/alerts.py: one issue per problem, opened once and commented on after.
+src/pipeline/alerts.py: one issue per problem, opened once and commented on after.
 
 `gh` is replaced by a recorder, so nothing here reaches GitHub. What is
 checked is the conversation the module has with `gh`: which commands it
@@ -8,15 +8,13 @@ runs, in which order, and what it refuses to do.
 Run with: pytest tests/test_alerts.py -v
 """
 import json
-import sys
 from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
-import alerts  # noqa: E402
+from src.pipeline import alerts  # noqa: E402
 
 
 class FakeGh:
@@ -102,9 +100,9 @@ def scheduled_workflows(folder=WORKFLOWS):
 
 
 def raises_an_alert_on_failure(text):
-    """A step guarded by failure() that runs src/alerts.py."""
+    """A step guarded by failure() that runs src.pipeline.alerts."""
     steps = text.split('\n      - ')
-    return any('if: failure()' in s and 'src/alerts.py' in s for s in steps)
+    return any('if: failure()' in s and 'src.pipeline.alerts' in s for s in steps)
 
 
 def test_every_scheduled_workflow_opens_an_issue_when_it_fails():
@@ -122,9 +120,9 @@ def test_the_alert_check_can_tell_a_silent_workflow():
     """Synthetic, so the failing branch stays reachable while every real
     workflow alerts."""
     good = ("steps:\n      - name: run\n        run: x\n"
-            "      - name: alert\n        if: failure()\n        run: python src/alerts.py --title t\n")
+            "      - name: alert\n        if: failure()\n        run: python -m src.pipeline.alerts --title t\n")
     silent = "steps:\n      - name: run\n        run: x\n"
-    unguarded = "steps:\n      - name: alert\n        run: python src/alerts.py --title t\n"
+    unguarded = "steps:\n      - name: alert\n        run: python -m src.pipeline.alerts --title t\n"
     assert raises_an_alert_on_failure(good)
     assert not raises_an_alert_on_failure(silent)
     assert not raises_an_alert_on_failure(unguarded)

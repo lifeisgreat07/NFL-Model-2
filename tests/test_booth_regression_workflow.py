@@ -118,12 +118,12 @@ def test_only_the_audit_job_runs_the_model():
 def test_the_prompt_is_generated_not_restated():
     """One source of truth, the same choice booth-pr-audit.yml makes.
 
-    A prompt copied into YAML drifts from src/booth_fixture_runner.py without
+    A prompt copied into YAML drifts from src/agents/booth_fixture_runner.py without
     anything failing, and the drift is invisible until a fixture starts
     behaving differently for no apparent reason.
     """
     text = _text()
-    assert 'booth_fixture_runner.py prompt' in text, (
+    assert 'booth_fixture_runner prompt' in text, (
         'the workflow does not generate the prompt from the runner'
     )
     # A distinctive line from the runner's PROMPT constant. If it appears
@@ -175,7 +175,7 @@ def test_the_baseline_records_the_commit_booth_audited():
         'the record job does not read the audit job\'s head, so the baseline '
         'cannot name the commit Booth audited'
     )
-    assert re.search(r'booth_fixture_runner\.py record[^\n]*\\\n[^\n]*--head ', record), (
+    assert re.search(r'booth_fixture_runner record[^\n]*\\\n[^\n]*--head ', record), (
         'the record command does not pass --head, so the runner re-assembles '
         'the fixture and records a commit Booth never saw'
     )

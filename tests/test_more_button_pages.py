@@ -11,7 +11,7 @@ import json
 import re
 from pathlib import Path
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
 
 
 def overflow_pages(src):

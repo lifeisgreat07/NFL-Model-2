@@ -66,6 +66,6 @@ jobs:
         # checked. With @overloads it is clean, and checking it found the
         # live ratings could be None with nothing stopping the writers
         # (weekly_update.current_ratings now does). Gating, since clean.
-        run: python -m mypy --ignore-missing-imports src/weekly_update.py src/ratings_engine.py
+        run: python -m mypy --ignore-missing-imports src/pipeline/weekly_update.py src/pipeline/ratings_engine.py
       - name: Run leak-free test suite
         run: python -m pytest tests/ -v

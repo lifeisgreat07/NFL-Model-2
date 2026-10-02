@@ -18,7 +18,7 @@ name: Weekly update
 #     2026-09-22; moved from 16:00 to 11:00 on 2026-09-29 because scheduled
 #     runs here had been starting 3.5 to 6.5 hours late, which at 16:00
 #     left under two hours before kickoff (see SCHEDULED_RUNS_UTC).
-# Which run locks is decided in src/weekly_update.py (decide_lock), from
+# Which run locks is decided in src/pipeline/weekly_update.py (decide_lock), from
 # SCHEDULED_RUNS_UTC. That constant must match these two lines, and
 # tests/test_pick_lock_time.py checks that it does.
 on:
@@ -30,7 +30,7 @@ on:
 permissions:
   contents: write
   # For the alert step at the end, which opens an issue when the run fails.
-  # For src/drift_alert.py, which opens an issue when the drift check flags.
+  # For src/pipeline/drift_alert.py, which opens an issue when the drift check flags.
   issues: write
 
 jobs:
@@ -52,12 +52,12 @@ jobs:
       - name: Determine current NFL season
         id: season
         # The rule (Jan/Feb still belong to the season that kicked off the
-        # previous calendar year) lives once, in src/paths.py; this used to be
+        # previous calendar year) lives once, in src/pipeline/paths.py; this used to be
         # a third copy of it in bash (Stage 32 item 15).
         # Assigned first, so a failure fails the step (bash -e) instead of
         # writing an empty season.
         run: |
-          season=$(python src/paths.py --current-season)
+          season=$(python -m src.pipeline.paths --current-season)
           echo "season=$season" >> "$GITHUB_OUTPUT"
 
       # The log is kept for the run summary below. `shell: bash` is not
@@ -65,7 +65,7 @@ jobs:
       # it `tee` would report success for a run that failed on purpose.
       - name: Generate/lock in this week's predictions
         shell: bash
-        run: python src/weekly_update.py --season ${{ steps.season.outputs.season }} 2>&1 | tee weekly-update.log
+        run: python -m src.pipeline.weekly_update --season ${{ steps.season.outputs.season }} 2>&1 | tee weekly-update.log
 
       # `!cancelled()` on this step and the commit: the step above fails the
       # job on purpose when a whole week kicked off with nothing locked, and
@@ -80,7 +80,7 @@ jobs:
               season="${BASH_REMATCH[1]}"
               week="${BASH_REMATCH[2]}"
               echo "Grading $season week $week..."
-              python src/grade_predictions.py --season "$season" --week "$week"
+              python -m src.pipeline.grade_predictions --season "$season" --week "$week"
             fi
           done
 
@@ -93,7 +93,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: python src/drift_alert.py --report drift-report.txt
+        run: python -m src.pipeline.drift_alert --report drift-report.txt
 
       # Before the commit, because it reads `git status` to see which
       # prediction and result files this run wrote. Goes on the run's page;
@@ -101,11 +101,11 @@ jobs:
       - name: Summarise the run
         if: ${{ !cancelled() }}
         run: |
-          python src/weekly_summary.py --season ${{ steps.season.outputs.season }} \
+          python -m src.pipeline.weekly_summary --season ${{ steps.season.outputs.season }} \
             --log weekly-update.log --drift drift-report.txt \
             --out weekly-summary.md >> "$GITHUB_STEP_SUMMARY"
 
-      # TV channels (Stage 15, src/tv_channels.py) for every locked week not
+      # TV channels (Stage 15, src/pipeline/tv_channels.py) for every locked week not
       # yet graded -- after the Thursday lock, so the week just locked has its
       # channels before Thursday night's game. After the summary, which reads
       # `git status` for predictions and results. continue-on-error: a TV
@@ -115,10 +115,10 @@ jobs:
         continue-on-error: true
         shell: bash
         run: |
-          python src/tv_channels.py --pending 2>&1 | tee tv-channels.log
+          python -m src.pipeline.tv_channels --pending 2>&1 | tee tv-channels.log
           { echo '### TV channels'; echo '```'; cat tv-channels.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
-      # Team news (Stage 16, src/team_news.py) for the same weeks: starters
+      # Team news (Stage 16, src/pipeline/team_news.py) for the same weeks: starters
       # out or doubtful, and the quarterback each saved pick was made with.
       # Thursday's lock is when the week's injury report is out. Same rules as
       # the TV step: after the summary, before the commit, and continue-on-error,
@@ -128,7 +128,7 @@ jobs:
         continue-on-error: true
         shell: bash
         run: |
-          python src/team_news.py --pending 2>&1 | tee team-news.log
+          python -m src.pipeline.team_news --pending 2>&1 | tee team-news.log
           { echo '### Team news'; echo '```'; cat team-news.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
       # CATCH UP WITH MAIN BEFORE COMMITTING (2026-09-27). The first scheduled
@@ -198,4 +198,4 @@ jobs:
             tail -n 30 weekly-update.log 2>/dev/null || echo "(no log)"
             echo '```'
           } > alert-body.md
-          python src/alerts.py --title "Weekly update failed" --body-file alert-body.md
+          python -m src.pipeline.alerts --title "Weekly update failed" --body-file alert-body.md

@@ -14,12 +14,10 @@ browser for the PR; held here by source, as the suite has no browser.
 Run with: pytest tests/test_row_links.py -v
 """
 import re
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = (ROOT / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
-sys.path.insert(0, str(ROOT / 'src'))
+TEMPLATE = (ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
 
 
 def test_each_team_name_links_to_its_deep_dive():
@@ -40,7 +38,7 @@ def test_each_graded_week_links_to_its_board_only_when_the_board_exists():
 
 
 def test_the_week_key_is_the_one_the_saved_weeks_use():
-    import generate_dashboard as gd
+    from src.pipeline import generate_dashboard as gd
     assert gd.parse_week_stem('2026_week3') == (2026, 3), (
         'the saved-week key format changed, so the week links point at nothing')
 

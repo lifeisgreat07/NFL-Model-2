@@ -72,7 +72,7 @@ bins, so they couldn't even be read off an existing file. A CONFIRMED FINDING
 on the live page had nothing behind it.
 
 The next PR, #19, rebuilt it from scratch as a committed script,
-`src/verify_low_confidence_finding.py`. It holds:
+`src/research/verify_low_confidence_finding.py`. It holds:
 
 | | Published | Re-derived |
 |---|---|---|

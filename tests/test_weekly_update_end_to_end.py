@@ -27,12 +27,11 @@ import pandas as pd
 import pytest
 
 REPO = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO / 'src'))
 sys.path.insert(0, str(Path(__file__).parent))
 
 import synthetic_league as league  # noqa: E402
-import weekly_update as wu  # noqa: E402
-from config import MODEL_VERSION  # noqa: E402
+from src.pipeline import weekly_update as wu  # noqa: E402
+from src.pipeline.config import MODEL_VERSION  # noqa: E402
 
 H = pd.Timedelta(hours=1)
 

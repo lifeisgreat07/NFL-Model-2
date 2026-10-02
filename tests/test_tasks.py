@@ -61,7 +61,7 @@ def runs(workflow):
     return out
 
 
-TYPES = 'python -m mypy --ignore-missing-imports src/weekly_update.py src/ratings_engine.py'
+TYPES = 'python -m mypy --ignore-missing-imports src/pipeline/weekly_update.py src/pipeline/ratings_engine.py'
 
 
 def test_lint_is_what_run_tests_runs():
@@ -90,14 +90,14 @@ def test_the_suite_command_is_claude_mds_and_collects_what_the_gate_does():
     and a gate that stopped running the same pytest would fail here."""
     claude = (ROOT / 'CLAUDE.md').read_text(encoding='utf-8')
     assert '`python -B -m pytest -q -p no:cacheprovider`' in claude
-    wrapup = (ROOT / 'src' / 'session_wrapup.py').read_text(encoding='utf-8')
+    wrapup = (ROOT / 'src' / 'agents' / 'session_wrapup.py').read_text(encoding='utf-8')
     assert "[sys.executable, '-B', '-m', 'pytest', '-q'" in wrapup
     assert commands('test') == ['python -B -m pytest -q -p no:cacheprovider']
 
 
 def test_build_is_what_the_pages_workflow_runs():
-    assert commands('build') == ['python src/generate_dashboard.py']
-    assert 'python src/generate_dashboard.py' in runs('deploy-pages.yml')
+    assert commands('build') == ['python -m src.pipeline.generate_dashboard']
+    assert 'python -m src.pipeline.generate_dashboard' in runs('deploy-pages.yml')
 
 
 def test_browser_check_runs_what_the_workflow_runs_in_the_same_order():
@@ -109,7 +109,7 @@ def test_browser_check_runs_what_the_workflow_runs_in_the_same_order():
     got = [c.split(' --axe')[0].replace(str(tasks.STATES), '$RUNNER_TEMP/states').replace('\\', '/')
            for c in commands('browser-check')]
     assert got == [
-        'python src/generate_dashboard.py',
+        'python -m src.pipeline.generate_dashboard',
         'python tests/browser/check_page.py --self-test',
         'python tests/browser/check_page.py index.html',
         'python tests/browser/build_states.py --out $RUNNER_TEMP/states',
@@ -117,7 +117,7 @@ def test_browser_check_runs_what_the_workflow_runs_in_the_same_order():
     wf = [r.replace('"', '') for r in runs('browser-checks.yml')
           if any(k in r for k in ('generate_dashboard', 'check_page.py', 'build_states', 'for page in'))]
     assert [w.split(' --axe')[0] for w in wf] == [
-        'python src/generate_dashboard.py',
+        'python -m src.pipeline.generate_dashboard',
         'python tests/browser/check_page.py --self-test',
         'python tests/browser/check_page.py index.html',
         'python tests/browser/build_states.py --out $RUNNER_TEMP/states',
@@ -138,7 +138,7 @@ def test_runs_reads_multi_line_steps():
     """A `run: |` block and its backslash continuations are read, not skipped:
     the weekly summary step is only reachable that way."""
     got = runs('weekly-update.yml')
-    assert any(r.startswith('python src/weekly_summary.py --season') and '--out weekly-summary.md' in r
+    assert any(r.startswith('python -m src.pipeline.weekly_summary --season') and '--out weekly-summary.md' in r
                for r in got), got
 
 

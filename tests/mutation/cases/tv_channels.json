@@ -1,5 +1,5 @@
 {
-  "target": "src/tv_channels.py",
+  "target": "src/pipeline/tv_channels.py",
   "tests": "tests/test_tv_channels.py",
   "cases": [
     {

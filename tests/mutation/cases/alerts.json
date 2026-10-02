@@ -1,5 +1,5 @@
 {
-  "target": "src/alerts.py",
+  "target": "src/pipeline/alerts.py",
   "tests": "tests/test_alerts.py",
   "cases": [
     {

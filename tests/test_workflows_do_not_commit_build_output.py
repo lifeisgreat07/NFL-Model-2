@@ -71,7 +71,7 @@ def test_no_workflow_commits_the_build_outputs(path):
                 f'{path.name} commits {forbidden!r}:\n    {line.strip()}\n'
                 'index.html and dist/ are build outputs and are untracked '
                 '(Stage 8c phase 2). Committing them restores the conflict '
-                'tax: every branch touching src/dashboard_template.html then '
+                'tax: every branch touching src/pipeline/dashboard_template.html then '
                 'collides with whatever CI regenerated on main. The page is '
                 'published by .github/workflows/deploy-pages.yml, which builds '
                 'the site into an artifact and holds `contents: read` so it '

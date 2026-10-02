@@ -1,5 +1,5 @@
 {
-  "target": "src/weekend_refresh.py",
+  "target": "src/pipeline/weekend_refresh.py",
   "tests": "tests/test_weekend_refresh.py",
   "cases": [
     {

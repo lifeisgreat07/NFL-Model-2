@@ -1,6 +1,6 @@
 """TV channels are read on a schedule, and can never cost a pick (Stage 15).
 
-src/tv_channels.py --pending reads every locked week not yet fully graded.
+src/pipeline/tv_channels.py --pending reads every locked week not yet fully graded.
 "Weekly update" runs it after the Tuesday grading and the Thursday lock, and
 "Weekend refresh" runs it before the weekend's games; both with
 continue-on-error, because a TV listing must never fail the run that makes
@@ -11,16 +11,14 @@ Run with: pytest tests/test_tv_schedule.py -v
 """
 import json
 import re
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import tv_channels as tv  # noqa: E402
+from src.pipeline import tv_channels as tv  # noqa: E402
 
 WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
 WEEKEND = ROOT / '.github' / 'workflows' / 'weekend-refresh.yml'
@@ -83,7 +81,7 @@ def test_both_workflows_read_channels_and_cannot_fail_on_them():
         steps, _ = _steps(path)
         step = steps.get('Read TV channels')
         assert step, f'{path.name} has no "Read TV channels" step'
-        assert 'python src/tv_channels.py --pending' in step
+        assert 'python -m src.pipeline.tv_channels --pending' in step
         assert re.search(r'^\s+continue-on-error: true\s*$', step, re.M), (
             f'{path.name}: without continue-on-error a failed TV read fails the run -- '
             f'and in Weekly update that run is the one that locks the picks')

@@ -16,7 +16,7 @@ tests hold the source, since the suite has no browser.
 import re
 from pathlib import Path
 
-TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
 
 
 def set_active_page():

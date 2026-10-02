@@ -20,7 +20,7 @@ from pathlib import Path
 import pytest
 from page_source import page_source  # Model Lab's rows are rendered in at build time
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
 
 
 def num(s):
