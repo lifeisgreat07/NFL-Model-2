@@ -50,6 +50,20 @@
       "find": "'diff': block['weighted_corr'], 'ci': block['corr_ci_95'],",
       "replace": "'diff': result['inputs']['mean_differential'], 'ci': block['corr_ci_95'],",
       "expect_caught_by": "test_every_headline_figure_is_the_one_in_its_file"
+    },
+    {
+      "id": "lab-non-inferiority-row-reads-as-superiority",
+      "why": "Stage 33's R3 row drops its margin and prints the usual 'a negative difference favours the new idea', so a curve adopted on non-inferiority reads as if it had beaten the old one",
+      "find": "    if 'margin' in entry:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_non_inferiority_row_states_its_margin_not_the_zero_bar"
+    },
+    {
+      "id": "lab-market-row-names-no-model",
+      "why": "R3's row names no model, so a comparison of two market curves reads as a comparison of nothing in particular",
+      "find": "'model': {'model_a': 'Model A', 'model_b': 'Model B', 'market': 'The market'}.get(model)}",
+      "replace": "'model': {'model_a': 'Model A', 'model_b': 'Model B'}.get(model)}",
+      "expect_caught_by": "test_a_non_inferiority_row_states_its_margin_not_the_zero_bar"
     }
   ]
 }
