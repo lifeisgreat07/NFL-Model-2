@@ -43,6 +43,32 @@ Moved from CLAUDE.md's "Environment and workflow" list.
 
 ## Traps that have actually bitten
 
+- **scikit-learn 1.9 deprecates `LogisticRegression(penalty=...)`.** Passing
+  `penalty='l2'` or `penalty=None` raises a FutureWarning on every fit
+  (removed in 1.10), and `get_params()` reports `penalty='deprecated'`. L2
+  is `l1_ratio=0.0` with `C`; unpenalised is `C=np.inf`, bit-identical to
+  `penalty=None` (`tests/test_model_specs.py`). Found 2026-10-02 writing
+  `MODEL_SPECS`, whose registry text said `penalty='l2'`.
+- **`:g` prints a Bonferroni level to six figures.** 1 - 0.05/3 rendered as
+  "at 98.3333%" on every Stage 33 Model Lab row; Stage 5's 99.5% had never
+  shown it. Seen only by rendering the page (#260). Round a printed level
+  to two decimals before `:g`.
+- **The browser pane serves a cached localhost page.** After regenerating
+  `index.html`, the reload showed the old "98.3333%" while the file on disk
+  said "98.33%". Load it with a query string (`index.html?v=<sha>`).
+- **Model Lab ids repeat across stages.** Stage 6 and Stage 33 both have an
+  R1 and an R2. The page writes "Stage 33 R1"; the tests matched by id alone
+  and one asserted "R2 has no result" (Stage 6's). Match on (stage, id).
+- **PowerShell 5's `Set-Content -Encoding utf8` and `Out-File -Encoding
+  utf8` write a BOM.** A `.py` rewritten that way began EF BB BF. Write with
+  `[IO.File]::WriteAllText(path, text, (New-Object System.Text.UTF8Encoding $false))`.
+- **PowerShell mangles `^{tree}`** in `git rev-parse <sha>^{tree}`. Use
+  `git show -s --format=%T <sha>`.
+- **A count in a commit message fails scout-preflight even when the body
+  discloses it.** Its advice ("if pushed, disclose") still leaves a red
+  check. Keep counts out of commit messages; if one slips into a pushed
+  commit that no PR or Booth report names yet, reword it and compare tree
+  hashes, as #261 did.
 - **The reproducibility audit passes or fails on GitHub depending on
   which runner you get.** On 2026-10-02, two dispatches of
   `run-backtest.yml` (`reproducibility_audit`) on the same commit

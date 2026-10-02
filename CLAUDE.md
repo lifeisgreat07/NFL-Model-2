@@ -45,11 +45,11 @@ the engineering. Public repo, so anything committed is read by strangers.
 
 Model v2.5 (`MODEL_VERSION` in `src/pipeline/config.py`). `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
-The drift check's baseline is the committed `data/calibration.json` (Stage 35;
-it was a literal, `BACKTEST_ACCURACY`), and moves only on a deliberate re-run.
+The drift check flags on Model A's log loss against the committed
+`data/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
 
-Suite: **5032 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-`2448ef4` (after #257), with HEAD level with origin, which is the order that makes the
+Suite: **5182 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+`b6f7efe` (after #262), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -151,6 +151,9 @@ casually.
   then last game's QB with a note. The schedule is not enough on its own:
   on the day week 3 locked it still listed Dart and Daniels, both ruled out.
   The 2026 forward test scores this change.
+- **Stage 33 accepted nothing either (#260, 2026-10-02).** Unpenalised Model
+  A, standardised features and a fitted market curve were all INCONCLUSIVE
+  at 98.33%; the budget is spent. Re-asking any needs a new registration.
 - **There is no ATS edge.** 51.61%, CI [48.58%, 54.63%] — contains 50% and does
   not reach the 52.38% break-even. The betting question was asked properly and
   answered negatively. Do not re-open it without new data.

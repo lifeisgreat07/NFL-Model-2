@@ -1603,14 +1603,23 @@ and 24 as registrations first; then 26 and 32.
     the backtest. Make `C` and `penalty` explicit at today's values, then
     REGISTER experiments on `penalty=None` and a `StandardScaler` pipeline,
     each ending as a Model Lab row whatever it shows.
+    DONE 2026-10-02: `MODEL_SPECS` and `walk_forward(spec)` in #258, proven
+    byte-identical; R1 (penalty=None) and R2 (StandardScaler) answered in
+    #260, both INCONCLUSIVE at 98.33% on 2024-2025.
 22. REGISTER a question on a fitted market curve against the hand-picked
     `spread/5.5`; if the fitted one is at least as good, store its
     probability in each prediction so the log-loss race compares like with
     like.
+    DONE 2026-10-02 as R3 in #260: INCONCLUSIVE under non-inferiority
+    (+0.00085 [-0.00837, +0.00982], margin +0.002), so the fixed curve stays.
 23. Line snapshots on every scheduled run for every locked, ungraded week, so
     the closing-line backtest (Stage 28) has its data.
+    DONE in #257, by the weekend refresh (Mark's decision). Its first run,
+    `6632b14` on 2026-10-02, appended week 4's lines and nothing else.
 24. Drift on log loss against a lagged-QB baseline, reopening the recorded
     decision with Stage 5's H1 evidence as the reason.
+    DONE 2026-10-02 as R4 in #261, against the schedule-starter baseline
+    (0.6518, Mark's choice) with the lagged 0.6643 printed beside it.
 25. Tests tying the `model_version` in the calibration, bootstrap and
     reproducibility files to `MODEL_VERSION`, with an explicit "backtest
     unchanged since 2.4" allowance, and tying the README and Methodology
