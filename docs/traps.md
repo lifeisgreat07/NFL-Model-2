@@ -43,6 +43,52 @@ Moved from CLAUDE.md's "Environment and workflow" list.
 
 ## Traps that have actually bitten
 
+- **The reproducibility audit passes or fails on GitHub depending on
+  which runner you get.** On 2026-10-02, two dispatches of
+  `run-backtest.yml` (`reproducibility_audit`) on the same commit
+  (`0e590c0`), seconds apart, with identical package versions from the
+  install log and the same `ubuntu-24.04` image: one REPRODUCED bit for bit,
+  the other gave Model A log loss 0.6499472 against the published
+  0.6498122 (Brier and AUC also outside the 5e-5 tolerance), and Model B
+  moved in the sixth decimal. The market row was bit-identical on both, and
+  each run's two passes agreed with each other. So the result depends on the
+  machine, not the code or the data, and the likeliest cause is the CPU's
+  SIMD width changing float sums over the ~48k plays a season (the same
+  aggregation the pandas finding localised). That is a hypothesis: the runner
+  CPU was not recorded. Booth's two audits of #256 hit one machine each, so
+  the same claim was CONFIRMED once and a DISCREPANCY ten minutes later.
+  Until the audit records the CPU, a NOT REPRODUCED on GitHub alone is not
+  evidence against a PR. Rerun it, or run it on the local Windows machine,
+  which has reproduced exactly every time.
+- **On a pull request, Booth runs under `main`'s CLAUDE.md, not the
+  PR's, by design.** claude-code-action restores a fixed list of paths
+  from the PR's base branch before Claude starts (the .claude folder,
+  the MCP and Claude JSON configs, .gitmodules, .ripgreprc, CLAUDE.md,
+  CLAUDE.local.md and the .husky folder), so a PR cannot rewrite the instructions
+  it is audited under. That is why Booth's runner reported an uncommitted
+  CLAUDE.md edit after its mutation runs on #254 and #255: the "edit" was
+  `main`'s copy over the PR's. It is not a leftover mutation. Stashing it
+  and auditing the committed head is the right response. With it present,
+  any test that reads CLAUDE.md measures `main`'s file against the PR's
+  tree (#255's freshness test failed on old `src/*.py` paths that way).
+  Found 2026-10-01 in the action's own security documentation
+  (github.com/anthropics/claude-code-action, docs folder, security page).
+- **Do not commit to `main` while a rebuilt branch waits to merge.** #255
+  was rebuilt on `main`, then the Stage 33 registry went to `main`
+  (`8ddbcec`), and the branch had to be rebuilt again and its suite rerun.
+  A docs or registry commit that waits an hour costs nothing.
+- **A mutation scope built from each file's `target` and `tests` misses
+  cases.** `tests` is a list in some case files and a single string in
+  others, and a case can override its file's `target` (the workflow cases
+  in `weekend_refresh.json`). The first selection for the Ruff PR found 305
+  cases; counting both forms and the per-case overrides found 547.
+  Normalise `tests` to a list and read every case's own `target` and
+  `tests` before deciding a file is out of scope.
+- **`tests/test_wrapup_date_slack.py` fails across midnight.** It takes
+  `TODAY = date.today()` at import, and the gate it checks reads
+  `date.today()` again when it runs. A suite started at 23:59 that reaches
+  the test after midnight fails both `day0` cases with "not today". Rerun
+  it. The durable fix is for the test to pass its own date into the check.
 - **A documentation commit goes straight to `main`, and the suite reads the
   documentation.** `21515bc` (2026-09-30) ran only the CLAUDE.md freshness
   test before pushing; `test_context_stays_short_enough_to_actually_read`

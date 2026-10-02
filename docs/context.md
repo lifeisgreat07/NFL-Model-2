@@ -75,5 +75,6 @@ case files (Booth cannot reproduce a count whose selection it cannot see).
 - **A human approval leaves no artifact in the repo.** `memory/` is what records it.
 - **Browser checks does not click.** Interaction-only states are covered by static tests; since #245 the tie, skipped-week and stale-preview states are built and checked.
 - **60 of 496 team pairs sit under the CIEDE2000 floor on the Week Board's split bar, accepted 2026-09-21.**
-- **Booth's runner reports an uncommitted CLAUDE.md edit** after its mutation runs (#254, #255). It stashes it and audits the committed head; cause not yet looked at.
+- **Booth's runner shows CLAUDE.md modified on every PR that edits it**: claude-code-action restores it from `main` before Booth starts, by design (traps). Stashing it is right.
+- **The reproducibility audit flips between GitHub runners** (same commit, same packages: one REPRODUCED, one Model A log loss 0.64995 against 0.64981). Machine-dependent; traps. Local Windows reproduces exactly.
 - **The Booth report check cannot tell WHY a run posted nothing.** Since #101 a failed audit at least opens an issue.
