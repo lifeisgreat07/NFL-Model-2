@@ -57,8 +57,8 @@
       "id": "news-refresh-reads-but-never-commits",
       "target": ".github/workflows/weekend-refresh.yml",
       "why": "the refresh reads team news and leaves it out of the commit, so a starter ruled out on Friday never reaches the page before Sunday.",
-      "find": "file_pattern: 'data/game_status/** data/tv/** data/team_news/**'",
-      "replace": "file_pattern: 'data/game_status/** data/tv/**'",
+      "find": "file_pattern: 'data/game_status/** data/line_history/** data/tv/** data/team_news/**'",
+      "replace": "file_pattern: 'data/game_status/** data/line_history/** data/tv/**'",
       "expect_caught_by": "test_the_refresh_reads_team_news_before_it_commits_it"
     }
   ]

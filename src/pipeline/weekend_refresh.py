@@ -14,10 +14,22 @@ data/game_status/<season>_week<N>.json, read from nflverse's schedule:
 
 TWO WRITERS OF PICKS IS TWO WAYS TO BREAK A LOCK (decided 2026-09-24). This
 reads predictions/ and results/ only to learn which weeks are locked and not
-yet fully graded, and writes nothing but data/game_status/. The weekly run
-stays the only writer of picks, grades and the line archive
-(data/line_history/, which it appends on its own schedule). The weekend
-workflow's commit is limited to data/game_status/**, and tests hold both.
+yet fully graded. It never writes either: the weekly run stays the only
+writer of picks and grades. The weekend workflow's commit is limited to
+data/game_status/**, data/line_history/**, data/tv/** and data/team_news/**,
+and tests hold that list exactly.
+
+LINE SNAPSHOTS FOR LOCKED WEEKS (Stage 33 item 23, Mark, 2026-10-01). The
+weekly run sees a week's lines only before it locks, so on its own the line
+archive stops at the lock and the closing line the Stage 28 backtest needs
+is never captured. So for every locked, ungraded week, this also appends
+the schedule's current spreads to data/line_history/ -- through the weekly
+run's own log_line_snapshot, so there is one format and one de-duplication
+rule (one capture per game per day, a game with no spread skipped). It
+appends and never rewrites a past capture, and it touches no week that is
+not locked. Two writers of the archive are safe where two writers of picks
+are not: an archive row is a dated observation, nothing reads it to make a
+pick, and the two workflows' schedules cannot meet (a test holds that).
 
 Only the games in the saved predictions are reported: the snapshot describes
 the games the page shows. A predicted game the schedule no longer lists is
@@ -134,7 +146,7 @@ def write_week(season, week, games, now, status_dir=STATUS_DIR):
 
 
 def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_DIR,
-         status_dir=STATUS_DIR):
+         status_dir=STATUS_DIR, snapshot=None):
     ap = argparse.ArgumentParser()
     ap.add_argument('--season', type=int, default=None)
     args = ap.parse_args(argv)
@@ -147,6 +159,8 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
     if load is None:
         from src.pipeline.data_loader import load_schedule as load
     sched = load(season)
+    if snapshot is None:
+        from src.pipeline.weekly_update import log_line_snapshot as snapshot
     for week in weeks:
         with open(pred_dir / f'{season}_week{week}.json') as f:
             preds = json.load(f)
@@ -160,6 +174,9 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
               f"{counts['upcoming']} upcoming -- {'written' if wrote else 'unchanged, not rewritten'}")
         for away, home in missing:
             log.warning(f'  WARNING: {away} at {home} is in the picks but not in the schedule; left out')
+        # Item 23: the line archive for a locked week (see the docstring).
+        # `weeks` holds locked, ungraded weeks only, so no other week is touched.
+        snapshot(season, week, rows)
     return 0
 
 

@@ -76,6 +76,28 @@
       "find": "    return sorted(p for p in WORKFLOWS_DIR.glob('*.yml')\n                  if AUTO_COMMIT in p.read_text(encoding='utf-8'))",
       "replace": "    return [WORKFLOW, WEEKLY]",
       "expect_caught_by": "test_every_unattended_pusher_is_found"
+    },
+    {
+      "id": "refresh-takes-no-line-snapshot",
+      "why": "the weekend refresh stops appending lines for locked weeks, which is item 23 undone: the weekly run sees a week's lines only before it locks, so the archive stops at the lock and the closing line the Stage 28 backtest needs is never captured. Nothing fails at run time; the archive just goes quiet after Thursday.",
+      "find": "        snapshot(season, week, rows)\n",
+      "replace": "",
+      "expect_caught_by": "test_line_snapshots_go_to_the_locked_weeks_only_with_their_own_games"
+    },
+    {
+      "id": "refresh-snapshots-weeks-that-are-not-locked",
+      "why": "the snapshot is handed the whole season's schedule instead of the locked week's rows, so every run appends lines for weeks nobody has picked yet, under the locked week's file name -- a second writer of pre-lock lines the weekly run already owns, and rows filed under the wrong week.",
+      "find": "        snapshot(season, week, rows)\n",
+      "replace": "        snapshot(season, week, sched)\n",
+      "expect_caught_by": "test_line_snapshots_go_to_the_locked_weeks_only_with_their_own_games"
+    },
+    {
+      "id": "refresh-takes-line-snapshots-it-never-commits",
+      "target": ".github/workflows/weekend-refresh.yml",
+      "why": "the workflow's commit drops data/line_history/**, so the refresh appends the snapshots in the runner and the runner throws them away. Every run reports success, and the archive on main never changes -- the shape of a guard that looks present.",
+      "find": "          file_pattern: 'data/game_status/** data/line_history/** data/tv/** data/team_news/**'\n",
+      "replace": "          file_pattern: 'data/game_status/** data/tv/** data/team_news/**'\n",
+      "expect_caught_by": "test_the_workflow_commits_its_four_folders_and_nothing_else"
     }
   ]
 }
