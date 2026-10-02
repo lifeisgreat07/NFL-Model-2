@@ -105,11 +105,21 @@ def headline(result):
                 'step': 'measurement', 'model': 'Model A'}
     step = 'confirmation' if result.get('confirmation') else 'validation'
     block = result[step]
-    model = result.get('registry_entry', {}).get('decision_model')
-    return {'metric': 'log loss', 'of': 'game winners', 'diff': block['log_loss_diff'],
-            'ci': block['log_loss_ci'], 'ci_level': block['ci_level'],
-            'seasons': block['seasons'], 'n': block['n_games'], 'n_of': 'games',
-            'step': step, 'model': {'model_a': 'Model A', 'model_b': 'Model B'}.get(model)}
+    entry = result.get('registry_entry', {})
+    model = entry.get('decision_model')
+    out = {'metric': 'log loss', 'of': 'game winners', 'diff': block['log_loss_diff'],
+           'ci': block['log_loss_ci'], 'ci_level': block['ci_level'],
+           'seasons': block['seasons'], 'n': block['n_games'], 'n_of': 'games',
+           'step': step,
+           'model': {'model_a': 'Model A', 'model_b': 'Model B', 'market': 'The market'}.get(model)}
+    if 'margin' in entry:
+        # Stage 33's R3 is a non-inferiority question: "below zero" is not its
+        # bar, so the row says what is (registry.json, amended 2026-10-02).
+        m = entry['margin']
+        out['note'] = (f'Non-inferiority, margin +{m:g}: the new idea is adopted if the upper end is '
+                       f'below +{m:g} and the lower end is not above zero. A negative difference '
+                       'favours the new idea.')
+    return out
 
 
 def result_entries(experiments=EXPERIMENTS):

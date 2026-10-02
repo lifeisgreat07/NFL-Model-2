@@ -108,7 +108,10 @@ def test_every_figure_a_registered_row_prints_is_its_files(entries, rows):
         diff, lo, hi, level, n = m.groups()
         assert abs(_number(diff) - h['diff']) <= 5e-5
         assert abs(_number(lo) - h['ci'][0]) <= 5e-5 and abs(_number(hi) - h['ci'][1]) <= 5e-5
-        assert float(level) == pytest.approx(h['ci_level'] * 100)
+        # At most two decimals: Stage 33's 1 - 0.05/3 printed as "98.3333%"
+        # under a bare :g until 2026-10-02.
+        assert float(level) == pytest.approx(h['ci_level'] * 100, abs=0.005)
+        assert len(level.partition('.')[2]) <= 2, (e['id'], level)
         assert int(n.replace(',', '')) == h['n']
         assert f"<code>{e['source']}</code>" in result
         checked += 1

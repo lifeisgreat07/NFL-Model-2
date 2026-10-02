@@ -230,6 +230,13 @@
       "find": ".rel-how summary:focus-visible{outline:2px solid var(--accent);",
       "replace": ".rel-how summary:focus-visible{outline:none;",
       "expect_caught_by": "test_the_disclosure_looks_and_focuses_like_the_other_how_to_read_this"
+    },
+    {
+      "id": "lab-page-prints-the-level-to-six-figures",
+      "why": "the interval level goes back to a bare :g, so Stage 33's 1 - 0.05/3 prints as '98.3333%' on every one of its rows (seen in the rendered page on 2026-10-02)",
+      "find": "at {round(h['ci_level'] * 100, 2):g}%, ",
+      "replace": "at {h['ci_level'] * 100:g}%, ",
+      "expect_caught_by": "test_every_figure_a_registered_row_prints_is_its_files"
     }
   ]
 }

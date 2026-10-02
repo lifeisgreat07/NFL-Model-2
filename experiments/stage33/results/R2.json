@@ -1,0 +1,173 @@
+{
+  "id": "R2",
+  "registry_entry": {
+    "id": "R2",
+    "item": "21b",
+    "kind": "hypothesis",
+    "title": "Standardised features",
+    "question": "Model A as StandardScaler then LogisticRegression(C=1.0, penalty='l2'), against today's unscaled fit. The scaler is fitted inside each walk-forward refit on that refit's training rows only.",
+    "candidate": {
+      "model": "model_a",
+      "scaler": "standard",
+      "penalty": "l2",
+      "C": 1.0
+    },
+    "incumbent": {
+      "model": "model_a",
+      "scaler": null,
+      "penalty": "l2",
+      "C": 1.0
+    },
+    "decision_model": "model_a",
+    "also_report": [
+      "model_b"
+    ],
+    "spends_slot": true,
+    "why": "The L2 penalty is not scale-invariant. The measured standard deviations differ by a factor of 4.99, so today's fit shrinks the four features unequally. Scaling makes the penalty treat them alike.",
+    "expected": "Small; direction unknown."
+  },
+  "validation": {
+    "n_games": 543,
+    "log_loss_candidate": 0.6582131063714628,
+    "log_loss_incumbent": 0.6583407135519505,
+    "brier_candidate": 0.23252471452132398,
+    "brier_incumbent": 0.23273964756873017,
+    "accuracy_candidate": 0.6187845303867403,
+    "accuracy_incumbent": 0.6187845303867403,
+    "log_loss_diff": -0.00012760718048761708,
+    "log_loss_ci": [
+      -0.0026001215687174377,
+      0.0024981787419792525
+    ],
+    "log_loss_ci_95": [
+      -0.0026001215687174377,
+      0.0024981787419792525
+    ],
+    "log_loss_ci_analytic_95": [
+      -0.0026511020561401206,
+      0.0023958876951648863
+    ],
+    "brier_diff": -0.00021493304740617824,
+    "brier_ci": [
+      -0.0012461436025701616,
+      0.000890295581382812
+    ],
+    "ci_level": 0.95,
+    "seasons": [
+      2022,
+      2023
+    ]
+  },
+  "confirmation": {
+    "n_games": 544,
+    "log_loss_candidate": 0.6405143529496345,
+    "log_loss_incumbent": 0.6412993837745268,
+    "brier_candidate": 0.22402708254129583,
+    "brier_incumbent": 0.22447435838812335,
+    "accuracy_candidate": 0.6433823529411765,
+    "accuracy_incumbent": 0.6360294117647058,
+    "log_loss_diff": -0.0007850308248923158,
+    "log_loss_ci": [
+      -0.003377601618078501,
+      0.0018575613208093745
+    ],
+    "log_loss_ci_95": [
+      -0.0028901736280649046,
+      0.0014362693748183506
+    ],
+    "log_loss_ci_analytic_95": [
+      -0.002916973058383049,
+      0.0013469114085984174
+    ],
+    "brier_diff": -0.0004472758468275293,
+    "brier_ci": [
+      -0.001575891233992259,
+      0.0006904594957150182
+    ],
+    "ci_level": 0.9833333333333333,
+    "seasons": [
+      2024,
+      2025
+    ]
+  },
+  "reached_confirmation": true,
+  "decision": "INCONCLUSIVE",
+  "also_report": {
+    "model_b": {
+      "validation": {
+        "n_games": 543,
+        "log_loss_candidate": 0.6161041614776408,
+        "log_loss_incumbent": 0.6161610439116845,
+        "brier_candidate": 0.21356795966438208,
+        "brier_incumbent": 0.2136957749436237,
+        "accuracy_candidate": 0.6869244935543278,
+        "accuracy_incumbent": 0.6813996316758748,
+        "log_loss_diff": -5.688243404369422e-05,
+        "log_loss_ci": [
+          -0.002665599582196395,
+          0.0025989460873699927
+        ],
+        "log_loss_ci_95": [
+          -0.002665599582196395,
+          0.0025989460873699927
+        ],
+        "log_loss_ci_analytic_95": [
+          -0.002725737909632574,
+          0.0026119730415451858
+        ],
+        "brier_diff": -0.00012781527924164547,
+        "brier_ci": [
+          -0.0013117759427669904,
+          0.0010762167631525074
+        ],
+        "ci_level": 0.95,
+        "seasons": [
+          2022,
+          2023
+        ]
+      },
+      "confirmation": {
+        "n_games": 544,
+        "log_loss_candidate": 0.5972411955983583,
+        "log_loss_incumbent": 0.5962748861856765,
+        "brier_candidate": 0.20556899931133585,
+        "brier_incumbent": 0.20525305716088316,
+        "accuracy_candidate": 0.6819852941176471,
+        "accuracy_incumbent": 0.6838235294117647,
+        "log_loss_diff": 0.0009663094126817198,
+        "log_loss_ci": [
+          -0.0024453328564710357,
+          0.00435195301472274
+        ],
+        "log_loss_ci_95": [
+          -0.0017846985320554031,
+          0.003785057357548177
+        ],
+        "log_loss_ci_analytic_95": [
+          -0.0017598366512315694,
+          0.003692455476595009
+        ],
+        "brier_diff": 0.00031594215045267977,
+        "brier_ci": [
+          -0.0011407360806162212,
+          0.001775155980132877
+        ],
+        "ci_level": 0.9833333333333333,
+        "seasons": [
+          2024,
+          2025
+        ]
+      }
+    }
+  },
+  "provenance": {
+    "commit": "afdb2de2fc6ac1801404e67471f880487693dbfb",
+    "generated_utc": "2026-10-02T16:08:54Z",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 33 Stepping 2, AuthenticAMD",
+    "python": "3.11.9",
+    "numpy": "1.26.4",
+    "pandas": "1.5.3",
+    "scikit-learn": "1.9.0"
+  }
+}

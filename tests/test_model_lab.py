@@ -83,16 +83,21 @@ def test_every_result_file_is_an_entry_once_and_nothing_unasked_is(entries):
     files = sorted(p.relative_to(ROOT).as_posix() for p in ROOT.glob('experiments/stage*/results/*.json'))
     sourced = sorted(e['source'] for e in entries if e['source'].split('/')[-2] == 'results')
     assert sourced == files
-    ids = {e['id'] for e in entries if e['stage']}
-    for not_asked in ('H11', 'N2', 'N3', 'A1', 'R2', 'A2'):
+    # Keyed by stage as well as id: Stage 33 reuses R1 and R2, which Stage 6
+    # also registered, and Stage 6's R2 was never run.
+    ids = {(e['stage'], e['id']) for e in entries if e['stage']}
+    for not_asked in (('Stage 5', 'H11'), ('Stage 6', 'N2'), ('Stage 6', 'N3'), ('Stage 6', 'A1'),
+                      ('Stage 6', 'R2'), ('Stage 6', 'A2')):
         assert not_asked not in ids, f'{not_asked} was never run; it has no decision to show'
+    assert len(ids) == len([e for e in entries if e['stage']]), 'two entries share a stage and an id'
 
 
 def test_every_deferred_registry_entry_is_shown_with_its_reason(entries):
     for registry in ROOT.glob('experiments/stage*/registry.json'):
+        stage = ml._stage_name(registry.parent)
         for h in json.loads(registry.read_text(encoding='utf-8'))['hypotheses']:
             if h.get('status') == 'DEFERRED':
-                e = next(x for x in entries if x['id'] == h['id'])
+                e = next(x for x in entries if (x['stage'], x['id']) == (stage, h['id']))
                 assert e['decision'] == 'DEFERRED' and e['reason'] == h['reason']
 
 
@@ -124,9 +129,9 @@ def test_every_headline_figure_is_the_one_in_its_file(entries):
 
 
 def test_a_question_that_reached_confirmation_is_reported_from_confirmation(entries):
-    h1 = next(e for e in entries if e['id'] == 'H1')['headline']
+    h1 = next(e for e in entries if (e['stage'], e['id']) == ('Stage 5', 'H1'))['headline']
     assert h1['step'] == 'confirmation' and h1['ci_level'] == 0.995
-    h2 = next(e for e in entries if e['id'] == 'H2')['headline']
+    h2 = next(e for e in entries if (e['stage'], e['id']) == ('Stage 5', 'H2'))['headline']
     assert h2['step'] == 'validation' and h2['ci_level'] == 0.95
 
 
@@ -146,3 +151,17 @@ def test_newest_stage_first_then_the_moved_rows_in_page_order(entries):
     numbered = [int(s.split()[-1]) for s in stages[:first_legacy]]
     assert numbered == sorted(numbered, reverse=True)
     assert [e['id'] for e in entries[first_legacy:]] == [f'L{i:02d}' for i in range(1, 47)]
+
+
+def test_a_non_inferiority_row_states_its_margin_not_the_zero_bar():
+    """Stage 33's R3 is adopted on non-inferiority, not on an interval below
+    zero. Its row must say so, or the page reads like a superiority test."""
+    block = {'log_loss_diff': 0.0004, 'log_loss_ci': [-0.0007, 0.0015], 'ci_level': 0.9833,
+             'seasons': [2024, 2025], 'n_games': 540}
+    ni = ml.headline({'registry_entry': {'decision_model': 'market', 'margin': 0.002},
+                      'validation': block, 'confirmation': block})
+    assert ni['model'] == 'The market'
+    assert 'Non-inferiority, margin +0.002' in ni['note'] and 'below +0.002' in ni['note']
+    plain = ml.headline({'registry_entry': {'decision_model': 'model_a'},
+                         'validation': block, 'confirmation': block})
+    assert plain['model'] == 'Model A' and 'note' not in plain
