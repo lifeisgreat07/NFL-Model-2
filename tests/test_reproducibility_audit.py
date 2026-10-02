@@ -91,3 +91,24 @@ def test_the_committed_record_is_about_the_published_file_as_it_is_now():
             continue
         assert row['published'] == cal['models'][row['model']]['metrics'][row['metric']], row
     assert {r['model'] for r in rec['comparisons']} == set(cal['models'])
+
+
+# --- provenance: which CPU ran it --------------------------------------------
+
+def test_the_cpu_is_read_by_name_from_cpuinfo(tmp_path):
+    """GitHub's Linux runners report only "x86_64" through platform; the model
+    name is in /proc/cpuinfo, and it is what tells two runners apart."""
+    info = tmp_path / 'cpuinfo'
+    info.write_text('processor\t: 0\nvendor_id\t: AuthenticAMD\n'
+                    'model name\t: AMD EPYC 7763 64-Core Processor\nflags\t\t: fpu\n', encoding='utf-8')
+    assert ra.cpu_model(info) == 'AMD EPYC 7763 64-Core Processor'
+
+
+def test_without_cpuinfo_the_cpu_falls_back_to_platform(tmp_path, monkeypatch):
+    monkeypatch.setattr(ra.platform, 'processor', lambda: 'Intel64 Family 6 Model 85')
+    assert ra.cpu_model(tmp_path / 'absent') == 'Intel64 Family 6 Model 85'
+
+
+def test_every_audit_record_says_which_cpu_ran_it():
+    prov = ra._provenance()
+    assert prov.get('cpu'), 'an audit record that cannot tie a flip to the hardware it ran on'
