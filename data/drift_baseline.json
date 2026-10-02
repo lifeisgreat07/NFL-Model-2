@@ -9,7 +9,7 @@
   },
   "printed_beside": {
     "name": "lagged_qb",
-    "label": "the same backtest with last game's quarterback (the pre-v2.5 pipeline)",
+    "label": "the same backtest with last game's quarterback, as before v2.5",
     "value": 0.6643233147904122
   },
   "source": "experiments/stage5/residuals.json, slice 'all games', log_loss_sched and log_loss_lagged (1,087 games, 2022-2025)",
