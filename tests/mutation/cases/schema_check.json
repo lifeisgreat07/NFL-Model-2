@@ -1,5 +1,5 @@
 {
-  "target": "src/schema_check.py",
+  "target": "src/pipeline/schema_check.py",
   "tests": "tests/test_schema_check.py",
   "cases": [
     {

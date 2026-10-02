@@ -25,13 +25,13 @@ in the parts that changed fastest.
 lint, build, browser checks, the mutation slice, the wrap-up), each held
 to the workflow it copies by `tests/test_tasks.py`.
 
-**Session start:** `python src/session_start.py` — it computes the state rather
+**Session start:** `python -m src.agents.session_start` — it computes the state rather
 than restating it, and cross-checks what `docs/context.md` claims against git.
 Then read `docs/context.md`, then CLAUDE.md, then `docs/traps.md` before a
 PR, a measurement or a mutation run. Reach for `memory/` only to answer
 "why did we decide that".
 
-**Session end:** `python src/session_wrapup.py`, then rewrite `docs/context.md`
+**Session end:** `python -m src.agents.session_wrapup`, then rewrite `docs/context.md`
 and add a `memory/` entry.
 
 Neither script fetches pull-request state — there is no `gh` CLI on this
@@ -42,12 +42,12 @@ project is built to avoid. Check open PRs on GitHub yourself.
 
 | Path | What it does |
 |---|---|
-| `src/config.py` | Constants and `VERSION_HISTORY`. The changelog page renders from this object, so the page cannot drift from the constant. |
-| `src/ratings_engine.py` | Opponent-adjusted ridge ratings and QB ratings. |
-| `src/weekly_update.py` | The weekly routine: predictions, grading, playoff odds. |
-| `src/calibration.py` | Backtest calibration. Run deliberately, not per build; takes minutes. |
-| `src/compare_data_sources.py` | Run by hand before flipping `USE_NFLREADPY` in `src/data_loader.py`: checks the two loaders agree on values (the loader's own `__main__` checks the columns). Not dead, though the 2026-09-29 re-audit read it so. |
-| `src/backfill_game_dates.py` | Run by hand: adds the schedule's `gameday`, `gametime_et` and `weekday` to prediction files saved before those fields existed, never changing an existing key; `--check` writes nothing. `tests/test_game_datetime_fields.py` names it as the repair when a file lacks them. |
+| `src/pipeline/config.py` | Constants and `VERSION_HISTORY`. The changelog page renders from this object, so the page cannot drift from the constant. |
+| `src/pipeline/ratings_engine.py` | Opponent-adjusted ridge ratings and QB ratings. |
+| `src/pipeline/weekly_update.py` | The weekly routine: predictions, grading, playoff odds. |
+| `src/research/calibration.py` | Backtest calibration. Run deliberately, not per build; takes minutes. |
+| `src/research/compare_data_sources.py` | Run by hand before flipping `USE_NFLREADPY` in `src/pipeline/data_loader.py`: checks the two loaders agree on values (the loader's own `__main__` checks the columns). Not dead, though the 2026-09-29 re-audit read it so. |
+| `src/research/backfill_game_dates.py` | Run by hand: adds the schedule's `gameday`, `gametime_et` and `weekday` to prediction files saved before those fields existed, never changing an existing key; `--check` writes nothing. `tests/test_game_datetime_fields.py` names it as the repair when a file lacks them. |
 
 ## Stage 5: model experiments
 
@@ -55,11 +55,11 @@ project is built to avoid. Check open PRs on GitHub yourself.
 |---|---|
 | `experiments/stage5/registry.json` | Every question Stage 5 asks, the rule that decides it, and the confirmatory budget. Committed before any answer. |
 | `experiments/stage5/results/` | One file per answered question, with the numbers the label rests on. |
-| `src/stage5_run.py` | `build` makes the feature table (and proves it matches production); `run <id>` answers one registered question. |
-| `src/stage5_eval.py` | Walk-forward, paired bootstrap, the screen, the budget, and the forward-holdout refusal. |
-| `src/stage5_data.py` | The game table: incumbent features plus every registered variant, including the three quarterback specs. |
-| `src/kalman_ratings.py` | State-space team ratings (H7). |
-| `src/stage5_residuals.py` | Descriptive only: where the live Model A loses log loss, by pre-chosen slice. Writes `experiments/stage5/residuals.json`. |
+| `src/research/stage5_run.py` | `build` makes the feature table (and proves it matches production); `run <id>` answers one registered question. |
+| `src/research/stage5_eval.py` | Walk-forward, paired bootstrap, the screen, the budget, and the forward-holdout refusal. |
+| `src/research/stage5_data.py` | The game table: incumbent features plus every registered variant, including the three quarterback specs. |
+| `src/research/kalman_ratings.py` | State-space team ratings (H7). |
+| `src/research/stage5_residuals.py` | Descriptive only: where the live Model A loses log loss, by pre-chosen slice. Writes `experiments/stage5/residuals.json`. |
 | `tests/test_stage5_published_numbers.py` | Every figure in `experiments/stage5/README.md` against the file it came from. |
 | `tests/test_stage5_registry.py` | Registration before answer, labels recomputed, budget held, and the harness's own rules. |
 
@@ -70,20 +70,20 @@ project is built to avoid. Check open PRs on GitHub yourself.
 | `experiments/stage6/registry.json` | Every question Stage 6 asks (Next Gen Stats first), the order they may be asked in, and one confirmatory budget for the stage. Committed before any Next Gen Stats data was loaded. |
 | `experiments/stage6/README.md` | The questions in plain words, and why the budget is five. |
 | `tests/test_stage6_registry.py` | Registration before answer, labels recomputed, preconditions held, budget fixed and not overspent. |
-| `src/stage6_run.py` | `build` loads play-by-play and Next Gen Stats and makes the inputs (and proves the game table matches production); `run <id>` answers one registered question. |
-| `src/stage6_data.py` | Trailing values in the production QB rating's shape, qb_games, the N1 feature sets, weighted least squares, the cluster bootstrap and the screen rule. |
+| `src/research/stage6_run.py` | `build` loads play-by-play and Next Gen Stats and makes the inputs (and proves the game table matches production); `run <id>` answers one registered question. |
+| `src/research/stage6_data.py` | Trailing values in the production QB rating's shape, qb_games, the N1 feature sets, weighted least squares, the cluster bootstrap and the screen rule. |
 | `tests/test_stage6_data.py` | Trailing values against the production QB rating, no week reaching its own inputs, and the screen's arithmetic. |
 
 ## The dashboard
 
 | Path | What it does |
 |---|---|
-| `src/dashboard_template.html` | The whole site: markup, CSS and render functions in one file. Placeholders like `__TEAMS_JSON__` are swapped at build time. |
-| `src/generate_dashboard.py` | Reads `data/`, fills the placeholders, writes `index.html`. |
+| `src/pipeline/dashboard_template.html` | The whole site: markup, CSS and render functions in one file. Placeholders like `__TEAMS_JSON__` are swapped at build time. |
+| `src/pipeline/generate_dashboard.py` | Reads `data/`, fills the placeholders, writes `index.html`. |
 | `conftest.py` | Repository root. Builds the page once per test session, because roughly a dozen tests read it and seven of them *skip* rather than fail when it is absent. |
 
 `index.html` and `dist/` are build outputs and are **not tracked**. Pages
-publishes them from a CI build; run `src/generate_dashboard.py` to see them
+publishes them from a CI build; run `src/pipeline/generate_dashboard.py` to see them
 locally. They were committed until Stage 8c phase 2, which is why several
 notes elsewhere still describe them as files you can open in the repository.
 
@@ -91,19 +91,19 @@ notes elsewhere still describe them as files you can open in the repository.
 
 | Path | What it does |
 |---|---|
-| `src/scout_preflight.py` | Checks a PR description against reality before it opens. |
-| `src/booth_verdict.py` | Parses the machine-readable verdict block out of a Booth report. |
-| `src/booth_fixture_runner.py` | Runs deliberately-bad PRs that Booth must catch. |
-| `src/collect_agent_log.py` | Turns Booth's audit comments into the data the reliability page renders. |
-| `src/session_start.py` | Orientation: branch state, branch list, what `docs/context.md` claims vs what git knows, suite count vs the documented one. Never gates. |
-| `src/session_wrapup.py` | End-of-session checks. Mechanical ones plus a by-hand list. This one gates. |
+| `src/agents/scout_preflight.py` | Checks a PR description against reality before it opens. |
+| `src/agents/booth_verdict.py` | Parses the machine-readable verdict block out of a Booth report. |
+| `src/agents/booth_fixture_runner.py` | Runs deliberately-bad PRs that Booth must catch. |
+| `src/agents/collect_agent_log.py` | Turns Booth's audit comments into the data the reliability page renders. |
+| `src/agents/session_start.py` | Orientation: branch state, branch list, what `docs/context.md` claims vs what git knows, suite count vs the documented one. Never gates. |
+| `src/agents/session_wrapup.py` | End-of-session checks. Mechanical ones plus a by-hand list. This one gates. |
 
 ## Case studies (Stage 7)
 
 | Path | What it does |
 |---|---|
 | `docs/case-studies/` | One write-up per real problem, for a technical reader. `README.md` there is the index. |
-| `src/measure_qb_leak.py` | Measures what the QB rating leak did to the backtest, on today's code. Writes `data/qb_leak_effect.json`. |
+| `src/research/measure_qb_leak.py` | Measures what the QB rating leak did to the backtest, on today's code. Writes `data/qb_leak_effect.json`. |
 | `docs/architecture.md` | The whole system on one diagram, with the file behind each box. |
 | `docs/lessons-learned.md` | The lessons across all of it, each pointing at where it came from. Linked from "Checking the AI's work". |
 | `tests/test_lessons_learned.py` | Every link, path and trap the lessons cite still exists, in the document each citation names. |
@@ -126,16 +126,16 @@ notes elsewhere still describe them as files you can open in the repository.
 | Path | When it runs |
 |---|---|
 | `.github/workflows/booth-pr-audit.yml` | Every PR open, push and description edit. |
-| `.github/workflows/booth-alert.yml` | After every Booth audit run. A failed or timed-out audit becomes an issue (`src/booth_alert.py`, `src/alerts.py`); cancelled and successful runs raise nothing. |
-| `.github/workflows/nightly-canary.yml` | 06:00 UTC every night, and by hand. Runs the weekly data path without writing anything (`src/canary.py`): the loads, the data-quality checks, nflverse's columns against `data/nflverse_schema.json` (`src/schema_check.py`), and the shape of next week's nfl.com schedule page, the TV-channel source. A failure opens or comments on the issue "Nightly canary failing". |
+| `.github/workflows/booth-alert.yml` | After every Booth audit run. A failed or timed-out audit becomes an issue (`src/agents/booth_alert.py`, `src/pipeline/alerts.py`); cancelled and successful runs raise nothing. |
+| `.github/workflows/nightly-canary.yml` | 06:00 UTC every night, and by hand. Runs the weekly data path without writing anything (`src/pipeline/canary.py`): the loads, the data-quality checks, nflverse's columns against `data/nflverse_schema.json` (`src/pipeline/schema_check.py`), and the shape of next week's nfl.com schedule page, the TV-channel source. A failure opens or comments on the issue "Nightly canary failing". |
 | `.github/workflows/nightly-mutation.yml` | 06:30 UTC every night, and by hand. Runs 30 cases of the mutation corpus chosen by a seed that is the UTC date (`tests/mutation/runner.py --sample 30 --seed YYYYMMDD`), and writes the counts by status to the run's summary. Anything not caught by the test it names fails the run. Writes nothing to the repository. |
-| `.github/workflows/weekly-update.yml` | The weekly routine. After grading it runs the drift check (`src/drift_alert.py`), which opens the issue "Model drift detected" on a flag and never fails the run. Writes a summary to the run's page (`src/weekly_summary.py`), then reads TV channels and team news in steps that cannot fail the run, and a failed run opens the issue "Weekly update failed". Commits predictions, results and data, after rebasing onto main so a merge during the run cannot make the push fail — **not** the dashboard, which the Pages deploy below rebuilds from that push. |
-| `.github/workflows/weekend-refresh.yml` | Friday 05:17, Sunday 21:47 and Monday 05:37 UTC, and by hand. Runs `src/weekend_refresh.py`, which writes game status, final scores and the latest line for each locked, not yet fully graded week to `data/game_status/`, and commits that directory only -- never a pick or a grade. It then reads TV channels (`src/tv_channels.py --pending`) and team news (`src/team_news.py --pending`) and commits their week files too, each in a step that cannot fail the run. It rebases onto main just before committing, so a merge during the run cannot lose its snapshot. A failure opens the issue "Weekend refresh failed". |
+| `.github/workflows/weekly-update.yml` | The weekly routine. After grading it runs the drift check (`src/pipeline/drift_alert.py`), which opens the issue "Model drift detected" on a flag and never fails the run. Writes a summary to the run's page (`src/pipeline/weekly_summary.py`), then reads TV channels and team news in steps that cannot fail the run, and a failed run opens the issue "Weekly update failed". Commits predictions, results and data, after rebasing onto main so a merge during the run cannot make the push fail — **not** the dashboard, which the Pages deploy below rebuilds from that push. |
+| `.github/workflows/weekend-refresh.yml` | Friday 05:17, Sunday 21:47 and Monday 05:37 UTC, and by hand. Runs `src/pipeline/weekend_refresh.py`, which writes game status, final scores and the latest line for each locked, not yet fully graded week to `data/game_status/`, and commits that directory only -- never a pick or a grade. It then reads TV channels (`src/pipeline/tv_channels.py --pending`) and team news (`src/pipeline/team_news.py --pending`) and commits their week files too, each in a step that cannot fail the run. It rebases onto main just before committing, so a merge during the run cannot lose its snapshot. A failure opens the issue "Weekend refresh failed". |
 | `.github/workflows/booth-regression.yml` | Manual dispatch only. |
 | `.github/workflows/run-tests.yml` | The suite, on push and PR. |
 | `.github/workflows/browser-checks.yml` | PRs touching the page's inputs, and pushes to main. Builds the page and runs `tests/browser/check_page.py` over every page at six widths in Chromium, after `--self-test` proves each rule can fail. Playwright and axe-core are installed in the runner, pinned, and never committed. |
-| `.github/workflows/nfl-schedule-probe.yml` | PRs touching it, and by hand. Runs `src/nfl_schedule_probe.py`: can GitHub's runners read nfl.com's by-week schedule, and is every game complete and from the week asked for? Writes nothing. |
+| `.github/workflows/nfl-schedule-probe.yml` | PRs touching it, and by hand. Runs `src/pipeline/nfl_schedule_probe.py`: can GitHub's runners read nfl.com's by-week schedule, and is every game complete and from the week asked for? Writes nothing. |
 | `.github/workflows/collect-agent-log.yml` | Manual dispatch, and each pull request merged into main, to record what the agents actually did. |
 | `.github/workflows/run-backtest.yml` | The backtest, deliberately not on every push. |
-| `.github/workflows/scout-preflight.yml` | Every PR open, push and description edit. Runs `src/scout_preflight.py` against the PR description so a wrong count is caught before Booth spends an audit on it. It existed as a manual tool from PR #26 and nothing ran it; the defect it was built to catch then shipped four more times. Also re-checks on `synchronize`, because a rebase can falsify a number nobody retyped. |
-| `.github/workflows/deploy-pages.yml` | Push to main touching `src/`, `data/`, `predictions/`, `results/`, `assets/` (the self-hosted font, inlined at build) — **and** after `.github/workflows/collect-agent-log.yml` finishes, because a commit pushed by another workflow's GITHUB_TOKEN cannot trigger a workflow on its own — plus manual dispatch. The **only** builder of the published site, and it refuses to publish a page whose data is missing or empty (`src/check_build.py`). `index.html` and `dist/` are untracked, so there is no committed copy to serve; it does not commit anything, and `contents: read` means it cannot. |
+| `.github/workflows/scout-preflight.yml` | Every PR open, push and description edit. Runs `src/agents/scout_preflight.py` against the PR description so a wrong count is caught before Booth spends an audit on it. It existed as a manual tool from PR #26 and nothing ran it; the defect it was built to catch then shipped four more times. Also re-checks on `synchronize`, because a rebase can falsify a number nobody retyped. |
+| `.github/workflows/deploy-pages.yml` | Push to main touching `src/`, `data/`, `predictions/`, `results/`, `assets/` (the self-hosted font, inlined at build) — **and** after `.github/workflows/collect-agent-log.yml` finishes, because a commit pushed by another workflow's GITHUB_TOKEN cannot trigger a workflow on its own — plus manual dispatch. The **only** builder of the published site, and it refuses to publish a page whose data is missing or empty (`src/pipeline/check_build.py`). `index.html` and `dist/` are untracked, so there is no committed copy to serve; it does not commit anything, and `contents: read` means it cannot. |

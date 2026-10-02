@@ -1,17 +1,15 @@
 """
-src/schema_check.py: today's nflverse columns against the committed snapshot.
+src/pipeline/schema_check.py: today's nflverse columns against the committed snapshot.
 
 Run with: pytest tests/test_schema_check.py -v
 """
 import json
-import sys
 from pathlib import Path
 
 REPO = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO / 'src'))
 
-import schema_check as sc  # noqa: E402
-from data_loader import REQUIRED_PBP_COLS, REQUIRED_SCHEDULE_COLS  # noqa: E402
+from src.pipeline import schema_check as sc  # noqa: E402
+from src.pipeline.data_loader import REQUIRED_PBP_COLS, REQUIRED_SCHEDULE_COLS  # noqa: E402
 
 BASE = {'pbp': sorted(REQUIRED_PBP_COLS + ['air_yards', 'wind']),
         'schedule': sorted(REQUIRED_SCHEDULE_COLS + ['roof'])}

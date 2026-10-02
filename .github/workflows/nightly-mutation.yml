@@ -14,7 +14,7 @@ name: Nightly mutation slice
 #   python tests/mutation/runner.py --sample 30 --seed <seed>
 # The counts by status go into the run summary. Anything but CAUGHT fails
 # the job, and a failed job opens the issue "Nightly mutation slice failing"
-# through src/alerts.py, or comments on it if it is already open -- the same
+# through src/pipeline/alerts.py, or comments on it if it is already open -- the same
 # one-issue-per-problem rule as every other unattended job since Stage 4.
 # Until Stage 30 item 7 a failure was only a red run and an email.
 #
@@ -72,4 +72,4 @@ jobs:
           # finding.
           printf 'The nightly mutation slice failed (seed %s).\n\nRun: %s\n\nReplay: python tests/mutation/runner.py --sample 30 --seed %s\n' \
             "$(date -u +%Y%m%d)" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "$(date -u +%Y%m%d)" > slice-report.md
-          python src/alerts.py --title "Nightly mutation slice failing" --body-file slice-report.md
+          python -m src.pipeline.alerts --title "Nightly mutation slice failing" --body-file slice-report.md

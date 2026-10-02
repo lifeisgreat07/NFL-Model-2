@@ -38,15 +38,13 @@ import json
 import re
 import shutil
 import subprocess
-import sys
 import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import generate_dashboard as gd  # noqa: E402
-from paths import PRED_DIR, RESULTS_DIR, STATUS_DIR, parse_week  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
+from src.pipeline.paths import PRED_DIR, RESULTS_DIR, STATUS_DIR, parse_week  # noqa: E402
 
 PAGES = ('states_tie.html', 'states_preview.html')
 

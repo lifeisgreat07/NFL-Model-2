@@ -34,7 +34,7 @@
       "id": "audit-checker-run-from-the-tree-booth-left",
       "why": "the checker runs from whatever checkout Booth left behind -- an older commit without the script, or a file mid-mutation",
       "find": "python \"$RUNNER_TEMP/booth-check/booth_report_posted.py\"",
-      "replace": "python src/booth_report_posted.py",
+      "replace": "python -m src.agents.booth_report_posted",
       "expect_caught_by": "test_the_checker_is_copied_out_before_booth_touches_the_tree"
     }
   ]

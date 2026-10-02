@@ -1,5 +1,5 @@
 """
-src/weekly_summary.py and the summary and alert steps of the Weekly update
+src/pipeline/weekly_summary.py and the summary and alert steps of the Weekly update
 workflow.
 
 The summary is built from synthetic changed-file lists, logs and result
@@ -12,13 +12,11 @@ Run with: pytest tests/test_weekly_summary.py -v
 import json
 import re
 import subprocess
-import sys
 from pathlib import Path
 
 REPO = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO / 'src'))
 
-import weekly_summary as ws  # noqa: E402
+from src.pipeline import weekly_summary as ws  # noqa: E402
 
 WEEKLY = REPO / '.github' / 'workflows' / 'weekly-update.yml'
 

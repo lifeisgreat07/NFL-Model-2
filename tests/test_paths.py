@@ -1,5 +1,5 @@
 """
-src/paths.py: one definition of the shared locations, the week in a file
+src/pipeline/paths.py: one definition of the shared locations, the week in a file
 name, the current season and the 32 teams (Stage 32 item 15).
 
 The point of the file is that there is ONE of each, so the tests check that
@@ -19,9 +19,8 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / 'src'
-sys.path.insert(0, str(SRC))
 
-import paths  # noqa: E402
+from src.pipeline import paths  # noqa: E402
 
 
 @pytest.mark.parametrize('stem,expected', [
@@ -46,7 +45,7 @@ def test_the_workflow_asks_paths_for_the_season():
     wf = (ROOT / '.github' / 'workflows' / 'weekly-update.yml').read_text(encoding='utf-8')
     step = re.search(r'- name: Determine current NFL season\n(.*?)\n\n', wf, re.S)
     assert step, 'the season step is not findable -- re-anchor this guard'
-    assert 'season=$(python src/paths.py --current-season)' in step.group(1)
+    assert 'season=$(python -m src.pipeline.paths --current-season)' in step.group(1)
     assert 'date -u' not in step.group(1), 'the bash copy of the season rule is back'
     r = subprocess.run([sys.executable, str(SRC / 'paths.py'), '--current-season'],
                        capture_output=True, text=True)
@@ -54,21 +53,21 @@ def test_the_workflow_asks_paths_for_the_season():
 
 
 def test_there_are_32_teams_and_every_team_table_agrees():
-    import simulate_season
-    import tv_channels
+    from src.pipeline import simulate_season
+    from src.pipeline import tv_channels
     assert len(paths.NFL_TEAMS) == 32 and paths.NFL_TEAMS == frozenset(paths.TEAM_NAMES)
     assert set(simulate_season.TEAM_DIV) == paths.NFL_TEAMS
     assert set(tv_channels.TEAMS.values()) == paths.NFL_TEAMS
 
 
 def test_each_module_name_is_bound_to_the_one_definition():
-    import canary
-    import check_drift
-    import data_quality
-    import generate_dashboard
-    import grade_predictions
-    import weekend_refresh
-    import weekly_update
+    from src.pipeline import canary
+    from src.pipeline import check_drift
+    from src.pipeline import data_quality
+    from src.pipeline import generate_dashboard
+    from src.pipeline import grade_predictions
+    from src.pipeline import weekend_refresh
+    from src.pipeline import weekly_update
     bound = {
         (weekly_update, 'PRED_DIR'): paths.PRED_DIR, (weekly_update, 'PREVIEW_DIR'): paths.PREVIEW_DIR,
         (weekly_update, 'SKIPPED_DIR'): paths.SKIPPED_DIR, (weekly_update, 'DATA_DIR'): paths.DATA_DIR,

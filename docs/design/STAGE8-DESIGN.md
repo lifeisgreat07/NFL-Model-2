@@ -45,7 +45,7 @@ the page, because image errors do not bubble.
 **Elevation is a border, not a shadow.** `--shadow-overlay` has exactly two
 consumers in the shipped template: `.undo-toast` and `.rel-tip`. This line said
 one, the `.overlay` component -- `.overlay` was a mock-only element and appears
-zero times in `src/dashboard_template.html`.
+zero times in `src/pipeline/dashboard_template.html`.
 
 ## The token block, verbatim
 
@@ -107,7 +107,7 @@ pre-Stage-8 chart palette on purpose: those four came out of the dataviz
 validator and `tests/test_dashboard_charts.py` enforces its gates (OKLCH
 lightness band, chroma floor, CVD simulation, contrast), and the mock palette
 fails six of those assertions when measured. The reasoning is the token
-comment in `src/dashboard_template.html`; this file records the decision.
+comment in `src/pipeline/dashboard_template.html`; this file records the decision.
 
 Series shapes and dashes, which carry identity when the colour cannot, as
 `SERIES` in the template defines them: Model A circle, Model B square, Market
@@ -257,7 +257,7 @@ and week rows do not link to them yet.
 
 ## What the port has to face
 
-`src/dashboard_template.html` is 3,250 lines / 224KB and covers nine pages;
+`src/pipeline/dashboard_template.html` is 3,250 lines / 224KB and covers nine pages;
 the mocks cover two. Roughly 704 tests assert against the template, several of
 them on colour tokens and on exact strings (`tests/test_dashboard_charts.py`,
 `tests/test_plain_language.py`, `tests/test_share_link.py`,

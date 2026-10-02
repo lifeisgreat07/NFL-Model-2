@@ -4,7 +4,7 @@ The queued entry for this work said a week carries only season, week and
 games and that no game has a date, kickoff or channel. Half of that was
 wrong, and checking cost one query: load_schedules returns 46 columns,
 gameday/gametime/weekday are all present with no nulls across 2025 and 2026,
-and src/data_loader.py does not subset columns -- so all three were already
+and src/pipeline/data_loader.py does not subset columns -- so all three were already
 in scope at the line in weekly_update.main() that builds a prediction and
 were simply never written down. This change writes them down.
 
@@ -32,7 +32,6 @@ import io
 import inspect
 import json
 import re
-import sys
 import tokenize
 from pathlib import Path
 
@@ -41,11 +40,10 @@ def _main_source():
     """main() and the steps it calls, which follow it in the file (Stage 32
     item 16 split main into load_inputs, fit_models, refresh_current_state,
     plan_week, predict_week and save_week)."""
-    src = (Path(__file__).resolve().parents[1] / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
     return src[src.index('def main(season'):src.index("if __name__ == '__main__':")]
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
 FIELDS = ('gameday', 'gametime_et', 'weekday')
 
@@ -95,8 +93,8 @@ def test_the_kickoff_field_carries_its_timezone_in_its_name():
     records are built. The source COLUMN is still called gametime; this is
     about the key those modules write.
     """
-    import generate_dashboard
-    import weekly_update
+    from src.pipeline import generate_dashboard
+    from src.pipeline import weekly_update
 
     for module in (weekly_update, generate_dashboard):
         src = _code_only(inspect.getsource(module))
@@ -111,7 +109,7 @@ def test_the_kickoff_field_carries_its_timezone_in_its_name():
 
 def test_the_game_payload_carries_them_through():
     """The behavioural half: a saved record reaches the card with its date."""
-    import generate_dashboard
+    from src.pipeline import generate_dashboard
 
     pred = {'home': 'GB', 'away': 'ATL', 'model_a_home_win_prob': 0.61,
             'model_b_home_win_prob': 0.58, 'spread_line': 7.5,
@@ -136,7 +134,7 @@ def test_a_week_saved_without_these_fields_still_renders():
     permanent. Its failure message said: either the write-once rule was broken
     or this test is guarding the wrong file, find out which before changing
     the assertion. The rule was bent, on purpose, with the reasoning recorded
-    in src/backfill_game_dates.py -- these three are schedule facts rather
+    in src/research/backfill_game_dates.py -- these three are schedule facts rather
     than model outputs, and they became the Week Board's default sort key, so
     leaving the only saved week unsorted to protect a rule about model outputs
     was the wrong trade.
@@ -148,7 +146,7 @@ def test_a_week_saved_without_these_fields_still_renders():
     weaker example than a real file, and the test below is the compensation:
     it pins what the real file is supposed to look like now.
     """
-    import generate_dashboard
+    from src.pipeline import generate_dashboard
 
     legacy = {'home': 'SEA', 'away': 'NE', 'model_a_home_win_prob': 0.44,
               'model_b_home_win_prob': 0.60, 'spread_line': 3.5,
@@ -183,7 +181,7 @@ def test_every_saved_week_now_carries_its_dates():
             for field in ('gameday', 'gametime_et'):
                 assert rec.get(field), (
                     f"{path.name}: {rec['away']}@{rec['home']} has no "
-                    f"{field}. Run `python src/backfill_game_dates.py` -- and "
+                    f"{field}. Run `python -m src.research.backfill_game_dates` -- and "
                     "if it reports the record as unmatched, that is a finding "
                     "about the schedule, not a formatting problem.")
 
@@ -214,9 +212,9 @@ def test_the_two_required_column_lists_agree():
     verify_data_source_fallback checks every name in this list against both
     sources when it is run for real.
     """
-    loader = _required_schedule_cols_from(ROOT / 'src' / 'data_loader.py')
+    loader = _required_schedule_cols_from(ROOT / 'src' / 'pipeline' / 'data_loader.py')
     fallback = _required_schedule_cols_from(
-        ROOT / 'src' / 'verify_data_source_fallback.py')
+        ROOT / 'src' / 'research' / 'verify_data_source_fallback.py')
 
     assert sorted(loader) == sorted(fallback), (
         'the two REQUIRED_SCHEDULE_COLS lists have drifted: '

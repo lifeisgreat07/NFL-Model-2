@@ -2,7 +2,7 @@
 // setScrollStop) against a small fake DOM, because they are pure DOM
 // bookkeeping: which attributes a box gets when it scrolls, which it loses
 // when it fits, and what it is called. The code under test is read from
-// src/dashboard_template.html and passed in on stdin by
+// src/pipeline/dashboard_template.html and passed in on stdin by
 // tests/test_scrollable_regions.py; nothing here is a copy of it.
 'use strict';
 

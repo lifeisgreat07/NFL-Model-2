@@ -1,5 +1,5 @@
 {
-  "target": "src/booth_alert.py",
+  "target": "src/agents/booth_alert.py",
   "tests": "tests/test_booth_alert.py",
   "cases": [
     {

@@ -72,7 +72,7 @@
     },
     {
       "id": "sticky-header-back-under-the-bar",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "tests": "tests/test_sticky_header_offset.py",
       "why": "the fitting table header goes back to top:0 below 1080px, under the sticky top bar -- the Stage 30 item 2 defect, which nothing but a render showed for as long as it shipped.",
       "find": ".table-wrap.fits thead th{top:var(--topbar-h, 0px);}",
@@ -81,7 +81,7 @@
     },
     {
       "id": "topbar-height-measured-once",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "tests": "tests/test_sticky_header_offset.py",
       "why": "the bar's height is read once at load and never again, so when the title wraps or the safe area changes the headers stick a few pixels under the bar -- a partial return of the defect on exactly the phones least likely to be tested.",
       "find": "  if(typeof ResizeObserver === 'function') new ResizeObserver(write).observe(bar, {box: 'border-box'});",
@@ -138,7 +138,7 @@
     },
     {
       "id": "topbar-observes-the-content-box",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "tests": "tests/test_sticky_header_offset.py",
       "why": "the observer goes back to the default content box, so a change to the bar's padding alone -- which is how the safe area reaches it -- no longer rewrites --topbar-h, and the headers stick a few pixels under the bar on exactly the phones with a notch.",
       "find": "new ResizeObserver(write).observe(bar, {box: 'border-box'});",

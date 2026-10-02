@@ -1,6 +1,6 @@
 """First tests for grading and for the drift check (Stage 24 item 9).
 
-The 2026-09-28 audit, confirmed: `src/grade_predictions.py` and
+The 2026-09-28 audit, confirmed: `src/pipeline/grade_predictions.py` and
 `check_drift.one_proportion_z_test` had no tests of their own. Grading is
 what turns a saved pick into the season's record, and the drift test is
 what raises "Model drift detected". These pin the behaviour they have
@@ -9,18 +9,16 @@ at the end of the grading section.
 """
 import json
 import math
-import sys
 from pathlib import Path
 
 import pandas as pd
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import check_drift as cd  # noqa: E402
-import data_loader  # noqa: E402
-import grade_predictions as gp  # noqa: E402
+from src.pipeline import check_drift as cd  # noqa: E402
+from src.pipeline import data_loader  # noqa: E402
+from src.pipeline import grade_predictions as gp  # noqa: E402
 
 PICKS = [
     {'home': 'GB', 'away': 'ATL', 'market_prob_home': 0.70,

@@ -24,15 +24,13 @@ Run with: pytest tests/test_stage6_registry.py -v
 """
 import json
 import subprocess
-import sys
 from pathlib import Path
 
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-import stage5_eval as se  # noqa: E402
+from src.research import stage5_eval as se  # noqa: E402
 
 REGISTRY = REPO_ROOT / 'experiments' / 'stage6' / 'registry.json'
 RESULTS = REPO_ROOT / 'experiments' / 'stage6' / 'results'

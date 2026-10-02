@@ -40,7 +40,7 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-TEMPLATE = REPO_ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 CALIBRATION = REPO_ROOT / 'data' / 'calibration.json'
 
 # Thresholds, from the data-viz checks. CVD_TARGET is the pass mark for the
@@ -228,7 +228,7 @@ def _pair(a, b):
 #: Every entry here now says whether the two are ever on screen together,
 #: because six of them used to say "Not traced" and a reader cannot tell an
 #: untraced pair from a tolerated one. The tracing is not done by reading:
-#: `python src/verify_token_cooccurrence.py` renders the built page and prints
+#: `python -m src.research.verify_token_cooccurrence` renders the built page and prints
 #: which pages paint each token, and every co-occurrence claim below is read
 #: off that table. It needs a browser, so it is a standalone verifier rather
 #: than a suite test -- but the PREMISE under the two "cannot meet" verdicts is
@@ -412,7 +412,7 @@ def test_every_close_pair_is_one_we_have_written_down(theme):
     Every pair under CVD_TARGET has to appear in ACCEPTED_CLOSE with a reason.
     Adding a token that collides with an existing one, or re-stepping one into
     another, fails here rather than shipping -- which is what the two-pair
-    table in src/verify_model_colours.py could not do.
+    table in src/research/verify_model_colours.py could not do.
     """
     tokens = meaning_tokens(theme)
     close = close_pairs(tokens)
@@ -772,7 +772,7 @@ def test_generated_page_carries_the_real_calibration_data():
     the page -- the reliability diagram is only as honest as the file behind
     it, and a truncated or stale injection would still draw a plausible chart."""
     if not CALIBRATION.exists():
-        pytest.skip("data/calibration.json absent -- run src/calibration.py")
+        pytest.skip("data/calibration.json absent -- run src/research/calibration.py")
     html = (REPO_ROOT / 'index.html').read_text()
     # Parsed from where it starts, as the browser would: the fill is compact
     # JSON on one line since Stage 26, so there is no closing brace on a line
@@ -802,12 +802,12 @@ def test_underpowered_bins_are_flagged_not_hidden():
 
 
 def test_dashboard_still_builds_without_calibration_json(tmp_path):
-    """A fresh clone has never run src/calibration.py, which needs six seasons
+    """A fresh clone has never run src/research/calibration.py, which needs six seasons
     of play-by-play and several minutes. The dashboard must still build, and
     the diagram must omit itself rather than render an empty axis."""
     import importlib.util
     spec = importlib.util.spec_from_file_location(
-        "gen_dash_probe", REPO_ROOT / 'src' / 'generate_dashboard.py')
+        "gen_dash_probe", REPO_ROOT / 'src' / 'pipeline' / 'generate_dashboard.py')
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
 

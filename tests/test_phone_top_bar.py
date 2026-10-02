@@ -9,12 +9,10 @@ its own, so exactly one h1 is ever rendered. Checked in a browser at 375
 and 1280 for the PR; held here by source, as the suite has no browser.
 """
 import re
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = (ROOT / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
-sys.path.insert(0, str(ROOT / 'src'))
+TEMPLATE = (ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
 
 
 def css():
@@ -57,5 +55,5 @@ def test_the_bar_is_a_real_target_and_stays_put():
 
 def test_the_provenance_line_ends_main_and_is_filled_by_the_build():
     assert re.search(r'<p class="page-prov">__SIDEBAR_FOOT__</p>\n</main>', TEMPLATE.replace('\r\n', '\n'))
-    import generate_dashboard as gd
+    from src.pipeline import generate_dashboard as gd
     assert 'built from NFL play-by-play since' in gd.provenance_line()

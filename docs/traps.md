@@ -36,7 +36,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   quoted the 328 as current. While it runs, do not run pytest, `git add`, or a
   second corpus run in the same checkout: a suite run during it failed a
   test for a mutation that was live at that moment. Killing it mid-case
-  leaves that case's file mutated (`src/scout_preflight.py` and
+  leaves that case's file mutated (`src/agents/scout_preflight.py` and
   `tests/test_dashboard_charts.py` both were), so run `git status` and
   restore after any interrupted run. Naming the ids a change touches, each
   run with `--id`, is the form preflight accepts when the full run won't fit.
@@ -72,8 +72,8 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   had past kickoffs too, so nothing could catch it. Before writing a case,
   say what input would differ, and check the input actually differs.
 - **Moving a function moves the mutation anchors that name it, even across
-  modules.** #241 moved `current_season` from `src/canary.py` to `src/paths.py`; the
-  canary's case still targeted `src/canary.py`, and only the full suite's anchor
+  modules.** #241 moved `current_season` from `src/pipeline/canary.py` to `src/pipeline/paths.py`; the
+  canary's case still targeted `src/pipeline/canary.py`, and only the full suite's anchor
   test saw it. Grep the case files for every moved definition's text.
 - **PowerShell's `>` writes UTF-16.** A `git diff > x.patch` made that way
   fails `git apply` with "No valid patches in input". Use
@@ -263,7 +263,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   raises `ZoneInfoNotFoundError` on the local Windows machine and passes on Linux CI, so a test
   can be green in CI and crash the tool locally, or the reverse. Convert
   through pandas (`pd.Timestamp(...).tz_convert('America/New_York')`), as
-  `src/weekly_update.py` and `src/tv_channels.py` do. Found 2026-09-27.
+  `src/pipeline/weekly_update.py` and `src/pipeline/tv_channels.py` do. Found 2026-09-27.
 - **GITHUB'S ANONYMOUS API IS 60 CALLS AN HOUR, AND POLLING SPENDS IT.** A
   poll that listed every job of every run for a PR burned it in minutes on
   2026-09-27, and the session archive's `merge_pr.ps1` then stopped at its merged check -- the safe
@@ -293,7 +293,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   an explicit rewrite, then read `git log -1` every time.
 
 - **QUOTE THE COMMAND YOU RAN, NOT A SHORTER ONE.** #105's body said
-  `python src/weekly_summary.py --season 2026` printed the summary. The run
+  `python -m src.pipeline.weekly_summary --season 2026` printed the summary. The run
   behind that sentence had passed `--log` and `--drift`; the bare command
   crashed on `Path(None)`, and Booth found it by running the sentence
   verbatim. The flags left out of the quote were exactly where the bug
@@ -396,7 +396,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   proves each `find` string still RESOLVES — it never runs the mutation. A case
   can therefore anchor cleanly and still be caught by the wrong guard, or by
   nothing. After merging two branches that had both edited
-  `src/dashboard_template.html`, all 147 cases were run individually (147/147
+  `src/pipeline/dashboard_template.html`, all 147 cases were run individually (147/147
   CAUGHT) precisely because clean auto-merge only means no two edits touched the
   same *lines*.
 - **Booth's environment is not the same from run to run.** #67's audit drove
@@ -522,7 +522,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   were never read, so the cause is still unknown and the usage theory is a
   theory. The durable point is not the cause: **the one thing that workflow
   exists to produce is the one thing it does not check it produced.**
-  Now it does: the job's last step runs `src/booth_report_posted.py`, which
+  Now it does: the job's last step runs `src/agents/booth_report_posted.py`, which
   fails unless a bot comment posted during THIS run carries a verdict block
   naming the commit this run checked out. Consequence worth knowing: a PR
   that edits `booth-pr-audit.yml` itself now goes RED rather than green,
@@ -543,7 +543,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
 - **A document can point at a file that has never existed, for months.**
   `METHODOLOGY.md` was cited by the README's fifth line and two `src/`
   docstrings; `git log --all --diff-filter=A -- METHODOLOGY.md` returns nothing.
-  `src/tune_qb_shrink_k.py` had already noticed and written it down, which fixed
+  `src/research/tune_qb_shrink_k.py` had already noticed and written it down, which fixed
   nothing, because a note is not a check. `tests/test_readme_accuracy.py` is now
   the check.
 - **THE AUDITOR PRODUCES UNTRACEABLE FIGURES TOO, AND NOTHING AUDITS THE
@@ -733,7 +733,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   Desktop Commander bridge cuts a command off at ~60 seconds and a full corpus
   run takes longer, so a run started in the foreground gets killed partway and
   leaves whatever case was in flight applied to the working tree. On
-  2026-09-07 that left `src/scout_preflight.py` mutated and the next suite run
+  2026-09-07 that left `src/agents/scout_preflight.py` mutated and the next suite run
   reported 8 unrelated failures. Two rules: run the corpus as
   `python tests/mutation/runner.py > <file> 2>&1` and read the file afterwards,
   never in the foreground; and after ANY interrupted mutation run, check
@@ -939,7 +939,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   failing: **never quote a count from a multi-file pytest run.** Collect each
   file on its own.
 
-  `check_scoped_test_counts` in `src/scout_preflight.py` closes the one variant
+  `check_scoped_test_counts` in `src/agents/scout_preflight.py` closes the one variant
   that is mechanically decidable — a count attributed to a named test module is
   checked by collecting that module. `tests/test_scoped_count_guard.py` holds
   #54's failing sentence, so the guard cannot rot silently — re-anchored to
@@ -971,7 +971,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
 
   - README's counts are guarded by `tests/test_readme_accuracy.py` -> the
     stale count failed loudly in CI within minutes of #59 merging.
-  - This file's suite line is guarded by `src/session_wrapup.py` -> caught.
+  - This file's suite line is guarded by `src/agents/session_wrapup.py` -> caught.
   - The dE00 figures in the template's model-colour comment are guarded by a
     verifier plus its own mutation cases (PR #60) -> caught.
   - The `Suite:` trailers in commit messages are guarded by **nothing, and
@@ -1105,8 +1105,8 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   sides with the block. Real, and worth knowing. The first draft of this entry
   then said the counts had "nothing recomputing either" and prescribed "a check
   in the parser: assert the header tallies match the block." **Both halves were
-  false.** `cross_check()` in `src/booth_verdict.py` already does exactly that,
-  `src/collect_agent_log.py` already prefers the block over the prose and says
+  false.** `cross_check()` in `src/agents/booth_verdict.py` already does exactly that,
+  `src/agents/collect_agent_log.py` already prefers the block over the prose and says
   so in its own module docstring, `tests/test_collect_agent_log.py` has
   `test_a_report_disagreeing_with_itself_is_counted`, and the log had already
   recorded this very audit with the two sentences spelled out:

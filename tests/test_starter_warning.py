@@ -7,15 +7,13 @@ Tuesday run merely holding next week, before nflverse had listed its
 starters, would have warned about a week it was not picking. The check
 now lives on the path that saves picks.
 """
-import sys
 from pathlib import Path
 
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import weekly_update as wu  # noqa: E402
+from src.pipeline import weekly_update as wu  # noqa: E402
 
 
 def week(listed=False):
@@ -50,7 +48,7 @@ def test_it_runs_only_on_the_path_that_locks():
     by name on a run that holds the week. A holding run used to return
     before reaching it; since the Tuesday preview (2026-09-29) it builds
     picks too, so the skip is now explicit."""
-    src = (ROOT / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
     main = src[src.index('def main(season'):]
     hold = main.index('preview = not decision.lock')
     call = main.index('no_starters = None if preview else '

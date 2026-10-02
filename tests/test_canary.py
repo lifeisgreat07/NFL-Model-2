@@ -1,5 +1,5 @@
 """
-src/canary.py and .github/workflows/nightly-canary.yml.
+src/pipeline/canary.py and .github/workflows/nightly-canary.yml.
 
 The steps are injected, so the error paths run with no network. What is
 checked: one broken step does not hide the others, a crash is a finding,
@@ -9,15 +9,13 @@ writes nothing to the repository.
 Run with: pytest tests/test_canary.py -v
 """
 import re
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 REPO = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO / 'src'))
 
-import canary  # noqa: E402
-from data_quality import Report  # noqa: E402
+from src.pipeline import canary  # noqa: E402
+from src.pipeline.data_quality import Report  # noqa: E402
 
 WORKFLOW = REPO / '.github' / 'workflows' / 'nightly-canary.yml'
 

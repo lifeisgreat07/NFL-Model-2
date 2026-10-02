@@ -1,5 +1,5 @@
 """
-src/check_build.py: the built page carries every payload its pages need.
+src/pipeline/check_build.py: the built page carries every payload its pages need.
 
 Checked twice, per this repo's rule for guards whose failing branch today's
 data cannot reach: once over the real built page, which must pass, and once
@@ -8,16 +8,14 @@ over synthetic pages broken in exactly the way each rule names.
 Run with: pytest tests/test_check_build.py -v
 """
 import json
-import sys
 from pathlib import Path
 
 import pytest
 
 REPO = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO / 'src'))
 
-import check_build as cb  # noqa: E402
-from data_quality import NFL_TEAMS  # noqa: E402
+from src.pipeline import check_build as cb  # noqa: E402
+from src.pipeline.data_quality import NFL_TEAMS  # noqa: E402
 
 TEAMS = sorted(NFL_TEAMS)
 PAGES = REPO / '.github' / 'workflows' / 'deploy-pages.yml'
@@ -120,7 +118,7 @@ def test_pages_checks_the_build_before_uploading_it():
     """A check that runs after the upload, or not at all, publishes the
     broken page anyway."""
     text = PAGES.read_text(encoding='utf-8')
-    build = text.index('run: python src/generate_dashboard.py')
-    check = text.index('run: python src/check_build.py index.html')
+    build = text.index('run: python -m src.pipeline.generate_dashboard')
+    check = text.index('run: python -m src.pipeline.check_build index.html')
     upload = text.index('uses: actions/upload-pages-artifact')
     assert build < check < upload

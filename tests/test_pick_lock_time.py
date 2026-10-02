@@ -18,23 +18,21 @@ illustrative, not the real fixtures. Kickoffs are ET, as the schedule's
 `gametime` is.
 """
 import re
-import sys
 from pathlib import Path
 
 import pandas as pd
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import weekly_update as wu  # noqa: E402
+from src.pipeline import weekly_update as wu  # noqa: E402
 
 
 def _main_source():
     """main() and the steps it calls, which follow it in the file (Stage 32
     item 16 split main into load_inputs, fit_models, refresh_current_state,
     plan_week, predict_week and save_week)."""
-    src = (Path(__file__).resolve().parents[1] / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
     return src[src.index('def main(season'):src.index("if __name__ == '__main__':")]
 
 WORKFLOW = ROOT / '.github' / 'workflows' / 'weekly-update.yml'

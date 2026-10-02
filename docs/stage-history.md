@@ -32,7 +32,7 @@ and `tests/test_readme_accuracy.py` holds it to its own claims. Its browser
 half — the repo description and topics — is still Mark's to do in the GitHub UI.
 
 **Stage 3 closed with the finding it exists to prevent.**
-`src/collect_agent_log.py` was written and tested in Stage 3 and had **never
+`src/agents/collect_agent_log.py` was written and tested in Stage 3 and had **never
 run** — nothing invoked it, its data file did not exist, and the generator had
 never heard of it. Tested, mutation-covered, and dead. PR #47 connected it. Then
 it ran and the page still said "The record has not been collected yet", because
@@ -61,7 +61,7 @@ assumes an audit finding is accurate.
 ### Stage 3 - Agent development  <- COMPLETE
 
 **Built and merged:** Scout pre-flight, which checks a PR description against
-reality before it opens (`src/scout_preflight.py`, #26). A committed mutation
+reality before it opens (`src/agents/scout_preflight.py`, #26). A committed mutation
 corpus, so mutation tables are a command rather than a throwaway script
 (`tests/mutation/`, #27). A test that every regenerating workflow prunes build
 churn (#28). Booth reports that record the head SHA and body read-time, and a
@@ -71,7 +71,7 @@ rewritten description is re-audited at all (#30) -- demonstrated live on PR
 second audit on its own. #30 shipped on a mutation test and an argument
 because Booth structurally cannot audit its own workflow file, so that
 live run is the evidence it could not produce for itself. A machine-readable
-`booth-verdict` block plus the parser that reads it (`src/booth_verdict.py`,
+`booth-verdict` block plus the parser that reads it (`src/agents/booth_verdict.py`,
 #31). The regression-fixture format and its integrity checks (#32).
 
 **Two Booth defects were found and fixed on 2026-09-07**, both invisible to any
@@ -83,7 +83,7 @@ text already replaced. Fixed in #30 and #29 respectively.
 
 **Remaining, in the order agreed on 2026-09-07:**
 
-1. **The fixture runner — BUILT** (`src/booth_fixture_runner.py`).
+1. **The fixture runner — BUILT** (`src/agents/booth_fixture_runner.py`).
    `assemble` builds a throwaway git repo from a fixture's `base/` and `head/`
    as two real commits, because Booth's procedure runs git commands and a
    patch file could not answer them. `prompt` renders the instructions.
@@ -135,7 +135,7 @@ file does what is in `docs/architecture.md`; this section keeps the
 decisions, so they are not re-litigated.
 
 - **Every alert is a GitHub issue, one per problem**, matched on exact title
-  among OPEN issues (`src/alerts.py`). Closing an issue is how a person says
+  among OPEN issues (`src/pipeline/alerts.py`). Closing an issue is how a person says
   "handled"; the next failure opens a fresh one. Titles in use: "Booth audit
   failed: PR #N", "Nightly canary failing", "Model drift detected", "Weekly
   update failed".
@@ -156,7 +156,7 @@ decisions, so they are not re-litigated.
   drift-report.txt), so it cannot disagree with the run. The lock step's
   `shell: bash` is load-bearing: it is what gives `| tee` pipefail.
 - **The schema snapshot is column names only**; dtypes vary with the pandas
-  version. Refresh it on purpose with `python src/schema_check.py --season
+  version. Refresh it on purpose with `python -m src.pipeline.schema_check --season
   <year> --update` after looking at what changed.
 - **The play-by-play cache is the canary's alone.** The run that makes picks
   always fetches fresh; a test holds that. It was the lowest-value item and
@@ -602,7 +602,7 @@ the graded colours may appear only after a game has been scored, because a
 colour meaning "correct" on a game that has not happened makes the page lie.
 
 **Stage 8b, the port, is DONE** — it lifted that block into
-`src/dashboard_template.html` and restyling page by page. The template was
+`src/pipeline/dashboard_template.html` and restyling page by page. The template was
 3,250 lines across nine pages at `b5d6bb9`; the design was proven against two.
 A great many tests assert on it -- several on colour tokens and exact strings. Treat a failing
 colour assertion as a question, not as something to update to match: those
@@ -638,7 +638,7 @@ all; an elevation pass so the six shadow tokens are actually used.
 
 **`--shadow-overlay` has TWO consumers, not one.** `docs/design/STAGE8-DESIGN.md`
 says one, the `.overlay` component -- but `.overlay` appears zero times in
-`src/dashboard_template.html`; it was a mock-only element. The real consumers
+`src/pipeline/dashboard_template.html`; it was a mock-only element. The real consumers
 are `.undo-toast` and `.rel-tip`, which is what the token comment in the
 template says. Corrected here rather than in only one of the two documents.
 
@@ -874,7 +874,7 @@ no discrepancies. Decisions worth keeping, so they are not re-litigated:
 - **`.btn-link` has `min-height:24px` (#112)**, on the component, not one control.
 - **"Pick'em rank n (k points)" (#113)** via `pickemRankLabel`; the PDF's
   `Rank`/`Pts` headers were left for Stage 14, which owns every `pt`/`pts`.
-- **The footer is `provenance_line()` in `src/generate_dashboard.py` (#115)**,
+- **The footer is `provenance_line()` in `src/pipeline/generate_dashboard.py` (#115)**,
   from `MODEL_VERSION` and `min(TRAIN_SEASONS)`. Its "Updated ... UTC" half
   moved to the Week Board header in Stage 13 (#125, `updated_line()`), because
   the sidebar is hidden below 1080px and no phone ever saw it.
@@ -997,9 +997,9 @@ edited, or do not say they are unaffected.
 
 **Shipped, each merged on Booth's SAFE TO MERGE with no discrepancies:** #132
 the nfl.com probe (a runner reads it, 16/16 each of weeks 1-4); #133 the
-weekend refresh (`src/weekend_refresh.py`, snapshots to a status folder under
+weekend refresh (`src/pipeline/weekend_refresh.py`, snapshots to a status folder under
 data, Friday 05:17, Sunday 21:47 and Monday 05:37 UTC); #134 the card status
-line under the kickoff; #135 the TV checks (`src/tv_channels.py`,
+line under the kickoff; #135 the TV checks (`src/pipeline/tv_channels.py`,
 `data/tv/exceptions.json`); #136 TV read with `--pending` by both the weekly
 update and the weekend refresh, continue-on-error in both; #137 the canary
 checks next week's nfl.com page. Decisions worth keeping:
@@ -1105,7 +1105,7 @@ thing checked, before any code is written.
 
 ### Stage 16 - Team news  <- COMPLETE (2026-09-27, #138 to #140; the card line is built in Stage 17)
 
-**Shipped:** #138 `src/team_news.py` writes one file per locked, ungraded week
+**Shipped:** #138 `src/pipeline/team_news.py` writes one file per locked, ungraded week
 (starters Out or Doubtful by name, Questionable as a count, the pick's own
 quarterback); #139 both scheduled workflows run it with `--pending`,
 continue-on-error; #140 Team Deep-Dive's "This week" block, at most five
@@ -1174,7 +1174,7 @@ weeks on desktop.
 
 ### Stage 18 - Model Lab rebuilt from the experiment records  <- COMPLETE (2026-09-28, #141 to #143, #154 to #156)
 
-**Shipped:** #141 `src/model_lab.py` over `experiments/stage*/results/` plus
+**Shipped:** #141 `src/pipeline/model_lab.py` over `experiments/stage*/results/` plus
 the 46 old rows moved once, verbatim, to `experiments/legacy/rows.json` (frozen
 by sha256 in `tests/test_model_lab.py`); #142 the table rendered at build time
 by `render_model_lab_rows` (tests that read Model Lab copy use
@@ -1336,7 +1336,7 @@ group shared by the weekly and weekend runs could cancel a pending weekly
 lock run -- worse than the race it prevents, which #147 already narrows to
 seconds.
 1. Pages builds after a failed weekly run (not only a successful one) and
-   lets `src/check_build.py` decide. The job still fails and still opens its
+   lets `src/pipeline/check_build.py` decide. The job still fails and still opens its
    issue (Stage 4's design).
 2. A skipped-week marker that `determine_next_week` counts and the build
    ignores, so one missed lock does not stall every later week; first tests
@@ -1473,7 +1473,7 @@ Rules for all five stages, on top of the PR loop in CLAUDE.md:
   before editing it.
 - An audit finding is a hypothesis: check the mechanism in the code first.
 - Any PR that moves Python code must be proven behaviour-identical: run
-  `python src/reproducibility_audit.py` before and after and show the
+  `python -m src.research.reproducibility_audit` before and after and show the
   metrics match bit for bit, then build the page before and after and diff
   the two `index.html` files (byte-identical unless the PR says why not).
 - No framework, chart library, backend or build step that changes the
@@ -1543,9 +1543,9 @@ and 24 as registrations first; then 26 and 32.
    inside a code fence satisfies it, and its diff misses a renamed Booth
    workflow. Use the quotation-stripped claims text and `--no-renames`.
 7. The nightly mutation slice fails silently: on failure, open an issue
-   through `src/alerts.py` like every other unattended job, and replace
+   through `src/pipeline/alerts.py` like every other unattended job, and replace
    "about 820 cases" with a computed figure or drop it.
-8. `src/atomic_write.py` writes a fixed `<name>.tmp` in a committed folder:
+8. `src/pipeline/atomic_write.py` writes a fixed `<name>.tmp` in a committed folder:
    use a unique temporary name in the same folder, and ignore `*.tmp`.
 9. Hygiene, one PR: `referrerpolicy="no-referrer"` on the logo images;
    `rel="noopener"` wherever `target="_blank"` lacks it; workflow inputs
@@ -1559,8 +1559,8 @@ and 24 as registrations first; then 26 and 32.
     rules (436), `docs/traps.md` and this file. Its second half, taking the
     machine name and local paths out of the public documents, is a separate
     PR (Mark's pick): machine specifics go to a gitignored `CLAUDE.local.md`.
-11. Delete dead modules: `src/compare_data_sources.py`,
-    `src/stage5_residuals.py`, `src/backfill_game_dates.py`, after checking
+11. Delete dead modules: `src/research/compare_data_sources.py`,
+    `src/research/stage5_residuals.py`, `src/research/backfill_game_dates.py`, after checking
     every document and test for mentions.
 12. Retire the regex-over-template tests that a node harness already covers by
     running the same function. Use the corpus's WRONG-GUARD reports to find
@@ -1647,7 +1647,7 @@ in Stages 32 to 34. Stage numbers stay frozen at 35.
 Checked against the Response Log before planning. One finding re-raised a
 logged decision in part: `weekly_summary`'s regexes, left alone in item 15
 because they read git paths, not file stems. The new reason it gave is real
-(`src/paths.py`'s docstring claims all four copies were unified), so the
+(`src/pipeline/paths.py`'s docstring claims all four copies were unified), so the
 docstring is fixed and the regexes stay. The audit's after-lock queue
 dropped ruff `I` and `UP` (item 18's tail); kept.
 
@@ -1697,7 +1697,7 @@ mutation claim names its case files.
    "fixed, documented, not automatically recomputed" -- guards against a
    baseline computed from LIVE data. `calibration.json` is not live: one
    commit in its history, rewritten only by a deliberate
-   `src/calibration.py` run, and already tied to model releases by
+   `src/research/calibration.py` run, and already tied to model releases by
    `tests/test_backtest_figures_tie.py`. So the drift check reads its
    baseline from `calibration.json` and the literal goes; the rule is
    reworded to what it protects (the baseline is the committed backtest

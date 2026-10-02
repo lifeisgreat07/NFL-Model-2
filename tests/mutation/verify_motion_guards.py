@@ -7,7 +7,7 @@ settles which it is: it injects eight defects one at a time and asserts that
 the right test goes red for each.
 
 Run it by hand -- it is deliberately NOT collected by pytest, because it
-writes to `src/dashboard_template.html`:
+writes to `src/pipeline/dashboard_template.html`:
 
     python tests/mutation/verify_motion_guards.py
 
@@ -19,13 +19,13 @@ that finding it should not have needed a browser.
 The template is copied to a backup outside the repo before anything is
 touched, restored from it after every mutant, and the final line compares the
 bytes. If this script is interrupted mid-run, `git checkout
-src/dashboard_template.html` puts it back.
+src/pipeline/dashboard_template.html` puts it back.
 """
 import shutil, subprocess, sys, tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-T = ROOT / 'src' / 'dashboard_template.html'
+T = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 BAK = Path(tempfile.gettempdir()) / 'motion_guard_template.bak'
 shutil.copyfile(T, BAK)
 

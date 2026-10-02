@@ -1,7 +1,7 @@
 """The built page drops the template's comments and nothing else (Stage 26
 item 11).
 
-src/page_comments.py strips `<!-- -->`, CSS `/* */` and JS `//` and `/* */`
+src/pipeline/page_comments.py strips `<!-- -->`, CSS `/* */` and JS `//` and `/* */`
 comments from the template before the build fills it. A stripper that gets
 a string, a template literal or a regex wrong eats code up to the next `*/`
 or end of line, and the page breaks for a visitor.
@@ -23,17 +23,15 @@ import json
 import re
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
-import generate_dashboard as gd  # noqa: E402
-import page_comments as pc  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
+from src.pipeline import page_comments as pc  # noqa: E402
 
-TEMPLATE = (ROOT / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+TEMPLATE = (ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
 NODE = shutil.which('node')
 
 
@@ -198,7 +196,7 @@ def test_the_line_check_can_fail():
 # ---- what the build does with it ----------------------------------------------
 
 def test_the_build_strips_the_template_before_filling_it():
-    src = (ROOT / 'src' / 'generate_dashboard.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'pipeline' / 'generate_dashboard.py').read_text(encoding='utf-8')
     read = src.index('template = f.read()')
     strip = src.index('template = strip_page_comments(template)')
     fill = src.index("html = template.replace(")
@@ -214,6 +212,6 @@ def test_the_page_carries_only_the_agent_log_it_reads():
 
 
 def test_every_data_fill_is_compact():
-    src = (ROOT / 'src' / 'generate_dashboard.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'pipeline' / 'generate_dashboard.py').read_text(encoding='utf-8')
     assert 'indent=' not in src, 'a data fill is indented again'
     assert json.dumps({'a': [1, 2]}, **gd.COMPACT) == '{"a":[1,2]}'

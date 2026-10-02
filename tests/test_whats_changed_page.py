@@ -23,11 +23,10 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-import config  # noqa: E402
+from src.pipeline import config  # noqa: E402
 
-TEMPLATE = REPO_ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 
 
 def _page():

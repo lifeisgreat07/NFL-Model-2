@@ -14,7 +14,7 @@ name: Run backtest / tuning
 #
 # Deliberately does NOT commit its output. results/backtest_metrics.csv and
 # the qb_shrink_k CSVs feed decisions about canonical numbers (see
-# CALIBRATION in src/check_drift.py: the drift baseline is the committed
+# CALIBRATION in src/pipeline/check_drift.py: the drift baseline is the committed
 # data/calibration.json, and it moves only on a real, intentional re-run).
 # Auto-committing would let a routine
 # run silently redefine the baseline that drift monitoring compares against.
@@ -78,7 +78,7 @@ jobs:
             echo "Config values this run used:"
             echo ""
             echo '```'
-            grep -E '^[A-Z_]+ *=' src/config.py
+            grep -E '^[A-Z_]+ *=' src/pipeline/config.py
             echo '```'
             echo ""
             echo "<details><summary>Installed package versions</summary>"

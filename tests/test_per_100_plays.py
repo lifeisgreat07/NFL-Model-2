@@ -17,7 +17,7 @@ from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
 NODE = shutil.which('node')
 FIXED = [0.149, 0.154, 0.005, 0.051, -0.051, -0.0004, 0.0004, 0, -0.12, 0.1705, -0.00049]
 rng = random.Random(14)

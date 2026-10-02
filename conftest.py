@@ -45,7 +45,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent
-GENERATOR = ROOT / 'src' / 'generate_dashboard.py'
+GENERATOR = ROOT / 'src' / 'pipeline' / 'generate_dashboard.py'
 
 #: Attribute the build stamps onto pytest's config object. The guard reads it
 #: through the built-in `pytestconfig` fixture, so it needs no cooperation from
@@ -93,7 +93,7 @@ def built_dashboard(pytestconfig):
     result = build_the_dashboard()
     if result.returncode != 0:
         raise pytest.UsageError(
-            'src/generate_dashboard.py failed, so the tests that read the '
+            'src/pipeline/generate_dashboard.py failed, so the tests that read the '
             'generated page would be measuring a stale or missing artifact.\n'
             f'exit {result.returncode}\n'
             f'stdout:\n{result.stdout[-2000:]}\n'

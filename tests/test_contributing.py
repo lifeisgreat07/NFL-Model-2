@@ -9,13 +9,11 @@ tell an author to write is the exact prefix Scout pre-flight looks for.
 Run with: pytest tests/test_contributing.py -v
 """
 import re
-import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 CONTRIBUTING = REPO / 'CONTRIBUTING.md'
 TEMPLATE = REPO / '.github' / 'pull_request_template.md'
-sys.path.insert(0, str(REPO / 'src'))
 
 
 def text(p):
@@ -38,7 +36,7 @@ def test_the_setup_commands_are_the_readmes():
 
 
 def test_the_human_review_line_is_the_one_preflight_checks():
-    src = text(REPO / 'src' / 'scout_preflight.py')
+    src = text(REPO / 'src' / 'agents' / 'scout_preflight.py')
     assert 'Human review required:' in src, 'scout_preflight no longer looks for the line -- re-anchor'
     assert '"Human review required:"' in text(CONTRIBUTING)
     assert '"Human review required:"' in text(TEMPLATE)

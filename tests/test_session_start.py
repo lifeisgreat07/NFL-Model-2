@@ -1,4 +1,4 @@
-"""`src/session_start.py` -- the orientation tool, and its one honesty rule.
+"""`src/agents/session_start.py` -- the orientation tool, and its one honesty rule.
 
 It exists because every staleness failure here has been a derivable fact typed
 by hand. So the thing worth guarding is not its formatting, it is the promise
@@ -16,7 +16,7 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).resolve().parents[1]
-SCRIPT = REPO / 'src' / 'session_start.py'
+SCRIPT = REPO / 'src' / 'agents' / 'session_start.py'
 
 
 @pytest.fixture(scope='module')
@@ -27,7 +27,7 @@ def output():
     # as cp1252 and this end decoded it the same way, so every line carrying
     # one came back mangled and the comparison below failed -- but ONLY when
     # the suite was itself a subprocess of another Python process, which is
-    # exactly how src/scout_preflight.py runs it. Run directly the suite was
+    # exactly how src/agents/scout_preflight.py runs it. Run directly the suite was
     # green, so the red was invisible where anyone would look for it, and
     # preflight reported the resulting count as a STALE FIGURE rather than as
     # a failure. Two defects, one root cause; this is the root cause.
@@ -134,7 +134,7 @@ def test_the_wrapup_survives_a_detached_head_that_is_actually_pushed():
     Verified against this repository's own history rather than a fixture: any
     commit already on a remote branch must not be reported as unpushed.
     """
-    src = (REPO / 'src' / 'session_wrapup.py').read_text(encoding='utf-8')
+    src = (REPO / 'src' / 'agents' / 'session_wrapup.py').read_text(encoding='utf-8')
     assert "'branch', '-r', '--contains'" in src, (
         "check_nothing_unpushed no longer asks whether the commit is on a "
         "remote branch, so a detached checkout is reported as unpushed again")
@@ -150,8 +150,7 @@ def test_the_wrapup_survives_a_detached_head_that_is_actually_pushed():
     # from inside the suite is the recursion its own docstring warns about --
     # it runs pytest, which runs this test, which runs it again. The first
     # draft of this test did exactly that and had to be killed.
-    sys.path.insert(0, str(REPO / 'src'))
-    import session_wrapup
+    from src.agents import session_wrapup
     result = session_wrapup.check_nothing_unpushed()
     assert result.ok, (
         f"HEAD is on {on_remote.splitlines()[0].strip()} yet check_nothing_unpushed "
@@ -167,7 +166,7 @@ def test_the_date_checks_say_they_are_expected_at_session_start():
     The failure text now says which kind of failure it is. A check that cannot
     be told apart from a regression will eventually be ignored like one.
     """
-    src = (REPO / 'src' / 'session_wrapup.py').read_text(encoding='utf-8')
+    src = (REPO / 'src' / 'agents' / 'session_wrapup.py').read_text(encoding='utf-8')
     assert src.count('EXPECTED at the start of a session') >= 2, (
         "the date-based checks no longer explain that failing at session start "
         "is the mechanism working rather than something being broken")
@@ -178,7 +177,7 @@ def test_the_wrapup_and_start_scripts_read_the_same_count_line():
     differently, one could pass while the other failed on the same file --
     which is worse than either being wrong on its own."""
     start = SCRIPT.read_text(encoding='utf-8')
-    wrap = (REPO / 'src' / 'session_wrapup.py').read_text(encoding='utf-8')
+    wrap = (REPO / 'src' / 'agents' / 'session_wrapup.py').read_text(encoding='utf-8')
     pattern = r"COUNT_RE = re\.compile\((r'[^']+')\)"
     a = re.search(pattern, start)
     b = re.search(pattern, wrap)

@@ -23,7 +23,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 
 
 @pytest.fixture(scope='module')
@@ -127,7 +127,7 @@ def test_the_listbox_is_actually_wired_and_wired_late_enough(source):
     """A control nobody calls is markup, and order decides whether it works.
 
     This repo has shipped the written-tested-never-called shape before:
-    src/collect_agent_log.py ran nowhere for weeks behind a full suite. The
+    src/agents/collect_agent_log.py ran nowhere for weeks behind a full suite. The
     ordering half is subtler -- enhanceSelect writes back by dispatching
     change, so building it before the change listener exists produces a
     control whose clicks reach nothing while looking perfectly correct.
@@ -319,7 +319,7 @@ def test_the_team_select_is_enhanced_at_all(teamdive):
     """Otherwise this page is the one still showing the iOS system wheel.
 
     The written-tested-never-called shape has shipped here before
-    (src/collect_agent_log.py ran nowhere for weeks behind a full suite), and
+    (src/agents/collect_agent_log.py ran nowhere for weeks behind a full suite), and
     a shared function with one caller is the same shape wearing a better name.
     """
     assert 'enhanceSelect(' in teamdive, (

@@ -16,13 +16,11 @@ the code.
 Run with: pytest tests/test_type_hints.py -v
 """
 import inspect
-import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
 ANNOTATED = ['ratings_engine', 'data_loader', 'weekly_update', 'grade_predictions',
              'generate_dashboard']

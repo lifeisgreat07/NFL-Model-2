@@ -1,5 +1,5 @@
 {
-  "target": "src/runlog.py",
+  "target": "src/pipeline/runlog.py",
   "tests": "tests/test_runlog.py",
   "cases": [
     {
@@ -39,7 +39,7 @@
     },
     {
       "id": "runlog-grading-prints-again",
-      "target": "src/grade_predictions.py",
+      "target": "src/pipeline/grade_predictions.py",
       "why": "a converted module goes back to print for one line, which no level or redirect then reaches.",
       "find": "    log.info(f\"Saved to {out_path}\")",
       "replace": "    print(f\"Saved to {out_path}\")",

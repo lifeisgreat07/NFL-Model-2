@@ -131,7 +131,7 @@ jobs:
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "started=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
           mkdir -p "$RUNNER_TEMP/booth-check"
-          cp src/booth_report_posted.py src/booth_verdict.py "$RUNNER_TEMP/booth-check/"
+          cp src/agents/booth_report_posted.py src/agents/booth_verdict.py "$RUNNER_TEMP/booth-check/"
 
       - name: Run Booth
         uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829 # v1.0.236
@@ -214,7 +214,7 @@ jobs:
         # no comment -- and looked identical to a clean audit in the Checks
         # tab. A green run must mean a report exists: a bot comment, posted
         # during this run, whose booth-verdict block names the audited
-        # commit. src/booth_report_posted.py holds the rules and says which
+        # commit. src/agents/booth_report_posted.py holds the rules and says which
         # one failed; tests/test_booth_report_posted.py holds both halves.
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

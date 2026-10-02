@@ -1,8 +1,8 @@
 """
-The pipeline logs through src/runlog.py, and what it writes is exactly what
+The pipeline logs through src/pipeline/runlog.py, and what it writes is exactly what
 print() wrote (Stage 32 item 17).
 
-src/weekly_summary.py parses the weekly run's log, so a changed line is a
+src/pipeline/weekly_summary.py parses the weekly run's log, so a changed line is a
 broken summary. The handler must write the bare message and a newline, to
 whatever sys.stdout is at that moment, and fail the way print failed.
 
@@ -16,9 +16,8 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import runlog  # noqa: E402
+from src.pipeline import runlog  # noqa: E402
 
 #: The modules converted from print(). A module joins when it is converted.
 LOGGED = ['weekly_update', 'grade_predictions', 'weekend_refresh', 'check_drift']

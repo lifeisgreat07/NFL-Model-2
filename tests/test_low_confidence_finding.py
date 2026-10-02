@@ -19,7 +19,7 @@ import pytest
 from page_source import page_source  # Model Lab's rows are rendered in at build time
 
 REPO_ROOT = Path(__file__).parent.parent
-TEMPLATE = REPO_ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 RESULTS = REPO_ROOT / 'data' / 'low_confidence_finding.json'
 
 
@@ -27,7 +27,7 @@ RESULTS = REPO_ROOT / 'data' / 'low_confidence_finding.json'
 def result():
     if not RESULTS.exists():
         pytest.skip("data/low_confidence_finding.json absent -- run "
-                    "src/verify_low_confidence_finding.py")
+                    "src/research/verify_low_confidence_finding.py")
     return json.loads(RESULTS.read_text())
 
 

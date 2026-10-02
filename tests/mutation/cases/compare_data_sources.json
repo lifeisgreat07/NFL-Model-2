@@ -1,5 +1,5 @@
 {
-  "target": "src/compare_data_sources.py",
+  "target": "src/research/compare_data_sources.py",
   "tests": "tests/test_compare_data_sources.py",
   "cases": [
     {

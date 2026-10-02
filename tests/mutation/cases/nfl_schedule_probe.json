@@ -1,5 +1,5 @@
 {
-  "target": "src/nfl_schedule_probe.py",
+  "target": "src/pipeline/nfl_schedule_probe.py",
   "tests": "tests/test_nfl_schedule_probe.py",
   "cases": [
     {

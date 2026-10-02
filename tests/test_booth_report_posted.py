@@ -1,7 +1,7 @@
 """
 A Booth run that posts nothing must fail. Two halves, both here.
 
-The RULES live in src/booth_report_posted.py and are checked over synthetic
+The RULES live in src/agents/booth_report_posted.py and are checked over synthetic
 comment lists, because the interesting branches -- "posted nothing", "posted
 for the wrong commit", "a stale report from the previous run" -- are states
 no real PR is in when the suite runs. (CLAUDE.md: if a guard's failure can only
@@ -20,15 +20,13 @@ are most of the evidence. The rest is the next PR's run.
 Run with: pytest tests/test_booth_report_posted.py -v
 """
 import json
-import sys
 from pathlib import Path
 
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-from booth_report_posted import check, head_matches, load_comments, main  # noqa: E402
+from src.agents.booth_report_posted import check, head_matches, load_comments, main  # noqa: E402
 
 WORKFLOW = REPO_ROOT / '.github' / 'workflows' / 'booth-pr-audit.yml'
 
@@ -238,9 +236,9 @@ def test_sha_and_start_time_are_recorded_before_booth_and_used_by_the_check():
 def test_the_checker_is_copied_out_before_booth_touches_the_tree():
     steps = _steps()
     booth = _index(steps, lambda n, b: 'anthropics/claude-code-action' in b, 'runs Booth')
-    copy = _index(steps, lambda n, b: 'cp src/booth_report_posted.py' in b, 'copies the checker out')
+    copy = _index(steps, lambda n, b: 'cp src/agents/booth_report_posted.py' in b, 'copies the checker out')
     assert copy < booth
-    assert 'src/booth_verdict.py' in steps[copy][1], "the checker imports booth_verdict; copy both"
+    assert 'src/agents/booth_verdict.py' in steps[copy][1], "the checker imports booth_verdict; copy both"
     check_body = next(b for n, b in steps if 'booth_report_posted.py' in b and 'gh api' in b)
     assert '$RUNNER_TEMP/booth-check/booth_report_posted.py' in check_body, (
         "the check runs the script from the working tree Booth left behind"

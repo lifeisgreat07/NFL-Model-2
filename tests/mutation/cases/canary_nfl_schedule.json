@@ -1,5 +1,5 @@
 {
-  "target": "src/canary.py",
+  "target": "src/pipeline/canary.py",
   "tests": "tests/test_canary_nfl_schedule.py",
   "cases": [
     {

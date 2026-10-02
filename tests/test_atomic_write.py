@@ -4,20 +4,18 @@ A saved week of picks can never be overwritten (weekly_update.py refuses),
 so a file half-written by a killed run would stay broken for good. Before
 this, both write-once files -- the week's picks and the skipped-week record
 -- were written with open(path, 'w') and json.dump straight into the target.
-Now src/atomic_write.py produces the whole text first, writes it beside the
+Now src/pipeline/atomic_write.py produces the whole text first, writes it beside the
 target and swaps it in with os.replace.
 """
 import json
 import re
-import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-from atomic_write import write_json_atomic  # noqa: E402
+from src.pipeline.atomic_write import write_json_atomic  # noqa: E402
 
 
 def test_it_writes_what_json_dumps_would(tmp_path):
@@ -53,7 +51,7 @@ def test_a_failed_swap_removes_its_temporary_file(tmp_path, monkeypatch):
     file is written in full and the swap itself fails, as a full disk or a
     locked target would make it: the target keeps its old text and the
     temporary file is gone."""
-    import atomic_write
+    from src.pipeline import atomic_write
     target = tmp_path / 'record.json'
     target.write_text('{"kept": true}', encoding='utf-8')
 
@@ -68,7 +66,7 @@ def test_a_failed_swap_removes_its_temporary_file(tmp_path, monkeypatch):
 
 
 def test_the_write_once_files_use_it():
-    src = (ROOT / 'src' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
     save = re.search(r"out_path = PRED_DIR / f'\{season\}_week\{week\}\.json'(.*?)log\.info\(f\"Saved", src, re.S)
     assert save, "the picks save in main() is not findable -- re-anchor this guard"
     assert 'write_json_atomic(out_path' in save.group(1), (
@@ -83,7 +81,7 @@ def test_each_write_gets_its_own_temporary_file_beside_the_target(tmp_path, monk
     two writers to one target would share. It must be unique per write, in
     the target's own folder (os.replace cannot cross filesystems), and named
     after the target so a leftover says what it was for."""
-    import atomic_write
+    from src.pipeline import atomic_write
     seen = []
     real = atomic_write.os.replace
 

@@ -1,5 +1,5 @@
 {
-  "target": "src/scout_preflight.py",
+  "target": "src/agents/scout_preflight.py",
   "tests": "tests/test_scout_preflight.py",
   "cases": [
     {

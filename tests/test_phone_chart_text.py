@@ -12,7 +12,7 @@ held here by source and by the arithmetic that makes the rule true.
 import re
 from pathlib import Path
 
-TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
 PHONE_RENDERED_PX = 300   # the chart's width on a 375px phone, measured 299
 MIN_PX = 11
 

@@ -118,7 +118,7 @@ def test_only_the_audit_job_runs_the_model():
 def test_the_prompt_is_generated_not_restated():
     """One source of truth, the same choice booth-pr-audit.yml makes.
 
-    A prompt copied into YAML drifts from src/booth_fixture_runner.py without
+    A prompt copied into YAML drifts from src/agents/booth_fixture_runner.py without
     anything failing, and the drift is invisible until a fixture starts
     behaving differently for no apparent reason.
     """

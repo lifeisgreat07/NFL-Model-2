@@ -20,7 +20,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 NODE = shutil.which('node')
 
 # Home-side percentages, as the page stores them.

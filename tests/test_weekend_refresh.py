@@ -1,6 +1,6 @@
 """The weekend refresh reports status, scores and lines, and never touches a pick.
 
-Stage 15 (CLAUDE.md). src/weekend_refresh.py writes data/game_status/ between
+Stage 15 (CLAUDE.md). src/pipeline/weekend_refresh.py writes data/game_status/ between
 the Thursday lock and Tuesday's grading. These tests hold what it decides for
 a game, which weeks it refreshes, that an unchanged snapshot is not rewritten,
 that it writes nothing outside data/game_status/, and the workflow that runs
@@ -12,7 +12,6 @@ Run with: pytest tests/test_weekend_refresh.py -v
 import hashlib
 import json
 import re
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -20,9 +19,8 @@ import pandas as pd
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import weekend_refresh as wr  # noqa: E402
+from src.pipeline import weekend_refresh as wr  # noqa: E402
 
 WORKFLOW = ROOT / '.github' / 'workflows' / 'weekend-refresh.yml'
 WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
@@ -154,7 +152,7 @@ def test_the_season_rolls_over_after_february(today, season):
 
 
 def test_the_source_writes_only_under_game_status():
-    src = (ROOT / 'src' / 'weekend_refresh.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'pipeline' / 'weekend_refresh.py').read_text(encoding='utf-8')
     code = re.sub(r'(?s)""".*?"""', '', src)
     assert code.count("open(path, 'w')") == 1 and 'write_text' not in code
     assert "path = status_dir /" in code

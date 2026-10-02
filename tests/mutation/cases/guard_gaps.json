@@ -1,5 +1,5 @@
 {
-  "target": "src/scout_preflight.py",
+  "target": "src/agents/scout_preflight.py",
   "tests": "tests/test_guard_gaps.py",
   "cases": [
     {
@@ -67,7 +67,7 @@
     },
     {
       "id": "gap-wrapup-ignores-failures",
-      "target": "src/session_wrapup.py",
+      "target": "src/agents/session_wrapup.py",
       "why": "a red suite is reported as a stale count again, sending the reader to edit CLAUDE.md instead of the failing test",
       "find": "    if broken:\n        return Check('suite count', False,",
       "replace": "    if False:\n        return Check('suite count', False,",
@@ -75,7 +75,7 @@
     },
     {
       "id": "gap-wrapup-reads-every-line",
-      "target": "src/session_wrapup.py",
+      "target": "src/agents/session_wrapup.py",
       "why": "a count inside a failure message is summed as if it were the summary, so one red test can read as twelve",
       "find": "    last = lines[-1]",
       "replace": "    last = '\\n'.join(lines)",

@@ -93,7 +93,7 @@ def test_context_states_when_it_was_last_updated():
     # and the machine running the tests is on US local time; on the evening
     # this was written they read 09-09 and 09-08 respectively. A stamp one day
     # ahead is a timezone, not a lie. The repository's clock is the machine's,
-    # because src/session_wrapup.py runs there.
+    # because src/agents/session_wrapup.py runs there.
     assert (stamped - date.today()).days <= 1, (
         f"docs/context.md claims it was updated {stamped}, more than a day in "
         f"the future — that is not a timezone, that is a wrong date")
@@ -103,7 +103,7 @@ def test_the_suite_count_is_stated_in_exactly_one_place():
     """The specific drift that started all of this. CLAUDE.md carried a suite
     count that read 174 for three days after it stopped being true, and later
     597 against a real 628. Two documents each carrying the number is two
-    chances to be wrong; `src/session_wrapup.py` checks CLAUDE.md's against a
+    chances to be wrong; `src/agents/session_wrapup.py` checks CLAUDE.md's against a
     real run, so that is the copy that stays."""
     pattern = re.compile(r'\*\*(\d[\d,]*) passing\*\*')
     ctx = pattern.findall(CONTEXT.read_text(encoding='utf-8'))

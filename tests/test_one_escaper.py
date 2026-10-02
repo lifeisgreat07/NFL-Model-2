@@ -9,7 +9,7 @@ wanting; two spellings on one page read as two different things.
 import re
 from pathlib import Path
 
-TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
 
 # The body every copy shared: replacing & < > " with entities.
 ESCAPE_BODY = re.compile(r"""replace\(/\[&<>"\]/g""")

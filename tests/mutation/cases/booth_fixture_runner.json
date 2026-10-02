@@ -1,5 +1,5 @@
 {
-  "target": "src/booth_fixture_runner.py",
+  "target": "src/agents/booth_fixture_runner.py",
   "tests": "tests/test_booth_fixture_runner.py",
   "cases": [
     {

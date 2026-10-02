@@ -1,8 +1,8 @@
 name: Booth alert
 
 # Turns a failed Booth audit into a GitHub issue, so it reaches Mark instead of
-# waiting in the Actions tab. src/booth_alert.py decides what counts as a
-# failure and writes the issue; src/alerts.py opens it, or comments on the one
+# waiting in the Actions tab. src/agents/booth_alert.py decides what counts as a
+# failure and writes the issue; src/pipeline/alerts.py opens it, or comments on the one
 # already open for that PR.
 #
 # A separate workflow on purpose: the Claude Code action will not run on a PR
@@ -38,4 +38,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: python src/booth_alert.py "$GITHUB_EVENT_PATH"
+        run: python -m src.agents.booth_alert "$GITHUB_EVENT_PATH"

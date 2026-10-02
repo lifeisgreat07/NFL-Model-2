@@ -1,5 +1,5 @@
 {
-  "target": "src/dashboard_template.html",
+  "target": "src/pipeline/dashboard_template.html",
   "tests": "tests/test_card_v2.py",
   "cases": [
     {
@@ -46,7 +46,7 @@
     },
     {
       "id": "card-market-probability-dropped",
-      "target": "src/generate_dashboard.py",
+      "target": "src/pipeline/generate_dashboard.py",
       "why": "the market's probability never reaches the page, so the card shows it only as a spread.",
       "find": "            'mkt_home': (round(p['market_prob_home'] * 100, 1)\n                         if p.get('market_prob_home') is not None else None),",
       "replace": "            'mkt_home': None,",

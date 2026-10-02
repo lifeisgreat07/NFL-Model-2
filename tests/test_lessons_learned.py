@@ -19,7 +19,7 @@ REPO = Path(__file__).resolve().parents[1]
 DOC = REPO / 'docs' / 'lessons-learned.md'
 ARCH = REPO / 'docs' / 'architecture.md'
 CITED = {'CLAUDE.md': REPO / 'CLAUDE.md', 'docs/traps.md': REPO / 'docs' / 'traps.md'}
-TEMPLATE = REPO / 'src' / 'dashboard_template.html'
+TEMPLATE = REPO / 'src' / 'pipeline' / 'dashboard_template.html'
 LINK = 'https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/lessons-learned.md'
 
 

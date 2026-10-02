@@ -1,5 +1,5 @@
 {
-  "target": "src/weekly_update.py",
+  "target": "src/pipeline/weekly_update.py",
   "tests": "tests/test_pick_lock_time.py",
   "cases": [
     {

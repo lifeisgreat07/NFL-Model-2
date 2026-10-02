@@ -3,7 +3,7 @@ name: Scout pre-flight
 # Checks the PR DESCRIPTION against reality, automatically, on every PR.
 #
 # Why this workflow exists, stated plainly because the answer is embarrassing:
-# src/scout_preflight.py has existed since PR #26 and is a MANUAL tool. Nothing
+# src/agents/scout_preflight.py has existed since PR #26 and is a MANUAL tool. Nothing
 # ran it. On 2026-09-10 the same defect it was built to catch -- a number that
 # is real output from a command whose scope is not the sentence's scope --
 # shipped four more times, on PRs #51, #52, #54 and #56. CLAUDE.md documents the
@@ -94,5 +94,5 @@ jobs:
         # are NOT skipped by that flag -- collection is a parse, and those are
         # the ones that keep going wrong.
         run: |
-          python src/scout_preflight.py .pr-body.md \
+          python -m src.agents.scout_preflight .pr-body.md \
             --base "refs/remotes/origin/$BASE" --skip-tests

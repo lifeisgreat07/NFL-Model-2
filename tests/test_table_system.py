@@ -28,7 +28,7 @@ from pathlib import Path
 import pytest
 from page_source import page_source  # Model Lab's rows are rendered in at build time
 
-TEMPLATE = Path(__file__).parent.parent / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).parent.parent / 'src' / 'pipeline' / 'dashboard_template.html'
 
 
 def strip_css_comments(src):

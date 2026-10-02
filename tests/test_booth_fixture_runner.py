@@ -1,5 +1,5 @@
 """
-Tests for src/booth_fixture_runner.py, and the free re-check of every baseline.
+Tests for src/agents/booth_fixture_runner.py, and the free re-check of every baseline.
 
 Two jobs. The first is ordinary: does the runner assemble a fixture into a
 repo that faithfully models the pull request it describes. The second is the
@@ -24,10 +24,9 @@ from pathlib import Path
 import pytest
 
 REPO = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO / 'src'))
 sys.path.insert(0, str(REPO / 'tests' / 'booth_fixtures'))
 
-import booth_fixture_runner as runner  # noqa: E402
+from src.agents import booth_fixture_runner as runner  # noqa: E402
 import loader  # noqa: E402
 
 FIXTURES = loader.load_all()

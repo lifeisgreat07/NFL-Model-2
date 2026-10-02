@@ -1,5 +1,5 @@
 """
-Tests for src/collect_agent_log.py.
+Tests for src/agents/collect_agent_log.py.
 
 A log of your own verifier is the easiest artifact in this repository to
 quietly flatter yourself with, so most of these are about what the collector
@@ -9,12 +9,10 @@ findings for a report it could not parse.
 Run with: pytest tests/test_collect_agent_log.py -v
 """
 import json
-import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
-import collect_agent_log as cal  # noqa: E402
+from src.agents import collect_agent_log as cal  # noqa: E402
 
 
 def _block(claims, overall='SAFE TO MERGE', head='abc1234', pr=1):

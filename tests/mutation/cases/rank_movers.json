@@ -1,5 +1,5 @@
 {
-  "target": "src/generate_dashboard.py",
+  "target": "src/pipeline/generate_dashboard.py",
   "tests": "tests/test_rank_movers.py",
   "cases": [
     {
@@ -53,7 +53,7 @@
     },
     {
       "id": "rank-move-arrow-follows-nothing",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "the arrow's direction is fixed up, so a team that fell shows an up arrow beside 'down 1 place' -- the disagreement between arrow and number Mark chose rank to avoid.",
       "find": "  const up = change > 0, n = Math.abs(change);\n",
       "replace": "  const up = true, n = Math.abs(change);\n",
@@ -61,7 +61,7 @@
     },
     {
       "id": "rank-move-zero-draws-an-arrow",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "a team that did not move gets a down arrow and 'down 0 places'.",
       "find": "  if(change === 0) return '<span class=\"visually-hidden\">, no change in rank</span>';\n",
       "replace": "",
@@ -69,7 +69,7 @@
     },
     {
       "id": "movers-loses-the-singular",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "a one-place move reads 'up 1 places'.",
       "find": "  const places = n => `${n} place${n === 1 ? '' : 's'}`;\n",
       "replace": "  const places = n => `${n} places`;\n",
@@ -77,7 +77,7 @@
     },
     {
       "id": "movers-names-every-tie",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "every tied team is named, so a week where five teams rose three places prints a list instead of a line.",
       "find": "  const list = a => a.length <= 2 ? a.join(' and ') : `${a.slice(0, 2).join(', ')} and ${a.length - 2} more`;\n",
       "replace": "  const list = a => a.join(' and ');\n",
@@ -85,7 +85,7 @@
     },
     {
       "id": "movers-invents-a-fall",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "a week with no fall still prints a 'down' clause, naming a team that held its place as having moved down 0 places.",
       "find": "  if(least < 0) parts.push(",
       "replace": "  if(least <= 0) parts.push(",
@@ -93,7 +93,7 @@
     },
     {
       "id": "movers-speaks-with-no-history",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "with nothing to compare against, the line still appears and says no team moved, a claim about a comparison that was never made.",
       "find": "  if(!moved.length) return '';\n",
       "replace": "",
@@ -101,7 +101,7 @@
     },
     {
       "id": "movers-counts-only-the-searched-view",
-      "target": "src/dashboard_template.html",
+      "target": "src/pipeline/dashboard_template.html",
       "why": "the line is built from the rows on screen, so searching for one team makes it the league's 'biggest move'.",
       "find": "    const line = moversSentence(teams);\n",
       "replace": "    const line = moversSentence([...teams].slice(0, 1));\n",

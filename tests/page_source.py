@@ -2,23 +2,21 @@
 
 Model Lab's rows stopped being typed into the template in Stage 18:
 generate_dashboard.render_model_lab_rows() writes them in at build time from
-src/model_lab.py. A test that holds a figure in those rows to its data file
+src/pipeline/model_lab.py. A test that holds a figure in those rows to its data file
 has to read what the page will actually carry, so it reads this rather than
 the raw template -- which now holds only the placeholder, and against which a
 "this figure appears on the page" check would pass or fail for the wrong
 reason.
 """
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
-sys.path.insert(0, str(ROOT / 'src'))
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 
 
 def model_lab_rows():
-    import generate_dashboard as gd
-    import model_lab as ml
+    from src.pipeline import generate_dashboard as gd
+    from src.pipeline import model_lab as ml
     return gd.render_model_lab_rows(ml.entries())
 
 

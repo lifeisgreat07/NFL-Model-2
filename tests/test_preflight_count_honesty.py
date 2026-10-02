@@ -16,13 +16,11 @@ discrepancies across PR #60's audits were counts in commit messages that were
 correct when written and were falsified by the base moving. The only possible
 guard is before the commit exists.
 """
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import scout_preflight as sp  # noqa: E402
+from src.agents import scout_preflight as sp  # noqa: E402
 
 
 # --- a red suite must not be described as a stale figure ---

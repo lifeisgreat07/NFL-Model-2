@@ -27,12 +27,11 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import generate_dashboard as gd  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
 
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
-GENERATOR = ROOT / 'src' / 'generate_dashboard.py'
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+GENERATOR = ROOT / 'src' / 'pipeline' / 'generate_dashboard.py'
 PAYLOAD = '</script><img src=x onerror=alert(1)><!--<script>'
 
 

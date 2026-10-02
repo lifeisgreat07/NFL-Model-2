@@ -1,6 +1,6 @@
 """A TV channel reaches the page only after it passes every check (Stage 15).
 
-src/tv_channels.py reads nfl.com's by-week schedule and decides, per game,
+src/pipeline/tv_channels.py reads nfl.com's by-week schedule and decides, per game,
 which networks may be shown. These tests hold each check the plan numbers --
 the exact join and cross-check, the closed network list, the slot rules and
 their sourced exceptions, provenance and change history -- over synthetic
@@ -11,7 +11,6 @@ Run with: pytest tests/test_tv_channels.py -v
 """
 import copy
 import json
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -19,9 +18,8 @@ import pandas as pd
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import tv_channels as tv  # noqa: E402
+from src.pipeline import tv_channels as tv  # noqa: E402
 
 UTC = timezone.utc
 

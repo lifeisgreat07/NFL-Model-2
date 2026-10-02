@@ -8,13 +8,11 @@ describes, so changing the constant without the sentence fails here.
 """
 import inspect
 import re
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-TEMPLATE = (ROOT / 'src' / 'dashboard_template.html').read_text(encoding='utf-8')
+TEMPLATE = (ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
 
 
 def note():
@@ -24,7 +22,7 @@ def note():
 
 
 def test_the_note_names_the_constant_the_code_uses():
-    import weekly_update
+    from src.pipeline import weekly_update
     src = inspect.getsource(weekly_update.market_prob)
     m = re.search(r'home_spread\s*/\s*([\d.]+)', src)
     assert m, 'market_prob no longer divides the spread by a constant -- rewrite the note'

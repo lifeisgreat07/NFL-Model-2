@@ -1,7 +1,7 @@
 """
 Guards the Scout pre-flight, including against the PR it was written for.
 
-Every check in src/scout_preflight.py exists because Booth caught the failure
+Every check in src/agents/scout_preflight.py exists because Booth caught the failure
 on a real PR in this repository. So the load-bearing test here is not a unit
 test at all -- it is a replay: PR #21's original description, against PR #21's
 actual commit range, must produce the same two findings Booth produced, at the
@@ -27,9 +27,8 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO_ROOT / 'src'))
 
-import scout_preflight as pf
+from src.agents import scout_preflight as pf
 
 # PR #21's real range. base = the workflow-fix commit it branched from;
 # head = its final commit, before the merge.
@@ -251,7 +250,7 @@ def test_merge_commits_are_not_counted_as_undisclosed_features():
 ])
 def test_a_visual_claim_without_an_attachment_fails(claim):
     f = pf.check_visual_claims_have_artifacts(
-        claim, ui_files=['src/dashboard_template.html'])
+        claim, ui_files=['src/pipeline/dashboard_template.html'])
     assert not f.ok, f"{claim!r} was not treated as a visual claim"
 
 
@@ -281,7 +280,7 @@ def test_a_ui_pr_making_the_same_claim_still_fails():
     the page, and the check fires."""
     f = pf.check_visual_claims_have_artifacts(
         "Booth flagged the missing screenshots three times.",
-        ui_files=['src/dashboard_template.html'])
+        ui_files=['src/pipeline/dashboard_template.html'])
     assert not f.ok
 
 
@@ -333,7 +332,7 @@ def test_the_tool_exits_nonzero_when_a_check_fails(tmp_path):
             f"history and needs three non-merge commits to do it")
     base = shas[-1]
     r = subprocess.run(
-        [sys.executable, str(REPO_ROOT / 'src' / 'scout_preflight.py'),
+        [sys.executable, str(REPO_ROOT / 'src' / 'agents' / 'scout_preflight.py'),
          str(body), '--skip-tests', '--base', base],
         cwd=REPO_ROOT, capture_output=True, text=True)
     assert r.returncode != 0, (

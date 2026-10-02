@@ -1,5 +1,5 @@
 {
-  "target": "src/stage5_data.py",
+  "target": "src/research/stage5_data.py",
   "tests": "tests/test_stage5_registry.py",
   "cases": [
     {

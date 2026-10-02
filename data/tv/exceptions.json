@@ -1,5 +1,5 @@
 {
-  "about": "Games allowed a network their slot's rule would hold back (src/tv_channels.py, Stage 15). Each entry names ONE game by its elias id (= nflverse old_game_id), the network it is excused for, why, and a source a person can open. An exception is for that network only: a game flexed to another network is checked again. Add entries in a reviewed PR, never by hand on main.",
+  "about": "Games allowed a network their slot's rule would hold back (src/pipeline/tv_channels.py, Stage 15). Each entry names ONE game by its elias id (= nflverse old_game_id), the network it is excused for, why, and a source a person can open. An exception is for that network only: a game flexed to another network is checked again. Add entries in a reviewed PR, never by hand on main.",
   "exceptions": [
     {"elias": "2026090900", "game": "NE at SEA, week 1", "network": "NBC",
      "reason": "NFL Kickoff Game, played on a Wednesday; no slot rule covers Wednesday night.",

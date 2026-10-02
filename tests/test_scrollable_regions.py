@@ -23,7 +23,7 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 HARNESS = ROOT / 'tests' / 'scroll_stop_harness.js'
 NODE = shutil.which('node')
 ADDED = {'tabindex': '0', 'role': 'region'}

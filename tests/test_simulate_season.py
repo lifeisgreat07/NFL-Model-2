@@ -17,17 +17,15 @@ identical. The weekly job's odds file must count only regular-season games.
 Run with: pytest tests/test_simulate_season.py -v
 """
 import json
-import sys
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import simulate_season as ss  # noqa: E402
-import weekly_update as wu  # noqa: E402
+from src.pipeline import simulate_season as ss  # noqa: E402
+from src.pipeline import weekly_update as wu  # noqa: E402
 
 AFC_EAST = ['BUF', 'MIA', 'NE', 'NYJ']
 

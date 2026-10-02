@@ -1,5 +1,5 @@
 {
-  "target": "src/check_build.py",
+  "target": "src/pipeline/check_build.py",
   "tests": "tests/test_check_build.py",
   "cases": [
     {
@@ -48,7 +48,7 @@
       "id": "check-build-pages-never-runs-it",
       "target": ".github/workflows/deploy-pages.yml",
       "why": "the Pages build stops calling the check. Every rule would still pass its tests and guard nothing, because nothing would run it before publishing.",
-      "find": "        run: python src/check_build.py index.html",
+      "find": "        run: python -m src.pipeline.check_build index.html",
       "replace": "        run: echo skipped",
       "expect_caught_by": "test_pages_checks_the_build_before_uploading_it"
     }

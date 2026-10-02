@@ -1,7 +1,7 @@
 # The Model Lab's rows from before Stage 18
 
 `rows.json` holds the 46 rows the Model Lab page carried before Stage 18, moved
-here once, on 2026-09-27, from the table in `src/dashboard_template.html`. The
+here once, on 2026-09-27, from the table in `src/pipeline/dashboard_template.html`. The
 experiment, result and label fields are the page's own HTML, character for
 character. They predate pre-registration and have no result files of their own,
 so this is the record for them.
@@ -21,5 +21,5 @@ given stays beside its decision, so the mapping can be checked:
 | REJECT — NO ATS EDGE | REJECT | the interval contains 50% and misses break-even |
 
 Nothing new is added here. From Stage 5 on, every answer is a file in
-`experiments/<stage>/results/`, and `src/model_lab.py` reads those directly.
+`experiments/<stage>/results/`, and `src/pipeline/model_lab.py` reads those directly.
 `tests/test_model_lab.py` checks the move and the mapping.

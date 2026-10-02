@@ -1,7 +1,7 @@
 """The nightly canary watches nfl.com's schedule page (Stage 15, item 6).
 
 The TV-channel data comes from nfl.com's by-week page, an undocumented
-payload that can change without notice. src/canary.py checks the shape of
+payload that can change without notice. src/pipeline/canary.py checks the shape of
 the next week's page every night: a changed feed is an ERROR and opens
 "Nightly canary failing"; a game missing its kickoff or network is a
 WARNING, because the TV code already holds that channel back and week 18's
@@ -12,13 +12,11 @@ Run with: pytest tests/test_canary_nfl_schedule.py -v
 """
 import copy
 import json
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import canary  # noqa: E402
+from src.pipeline import canary  # noqa: E402
 
 GOOD = {
     'id': 'g1', 'time': '2026-10-02T00:15:00Z', 'season': 2026, 'week': 4, 'seasonType': 'REG',
@@ -77,7 +75,7 @@ def _step():
 
 
 def test_the_step_checks_the_next_week_to_predict(monkeypatch):
-    import nfl_schedule_probe
+    from src.pipeline import nfl_schedule_probe
     asked = []
     def fetch(week, season):
         asked.append((week, season))
@@ -88,7 +86,7 @@ def test_the_step_checks_the_next_week_to_predict(monkeypatch):
 
 
 def test_the_step_skips_the_playoffs_and_an_unknown_week(monkeypatch):
-    import nfl_schedule_probe
+    from src.pipeline import nfl_schedule_probe
     def fetch(week, season):
         raise AssertionError('nothing may be fetched')
     monkeypatch.setattr(nfl_schedule_probe, 'fetch', fetch)
@@ -97,7 +95,7 @@ def test_the_step_skips_the_playoffs_and_an_unknown_week(monkeypatch):
 
 
 def test_an_unreachable_page_fails_the_canary(monkeypatch):
-    import nfl_schedule_probe
+    from src.pipeline import nfl_schedule_probe
     def fetch(week, season):
         raise OSError('HTTP Error 403: Forbidden')
     monkeypatch.setattr(nfl_schedule_probe, 'fetch', fetch)

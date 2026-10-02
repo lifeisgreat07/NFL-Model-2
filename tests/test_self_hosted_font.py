@@ -17,18 +17,16 @@ import base64
 import hashlib
 import json
 import re
-import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import generate_dashboard as gd  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
 
 FONT_DIR = ROOT / 'assets' / 'fonts'
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 APPROVED = {  # file -> bytes, as approved and downloaded 2026-09-26
     'plus-jakarta-sans-latin-normal.woff2': 27348,
     'plus-jakarta-sans-latin-ext-normal.woff2': 21728,

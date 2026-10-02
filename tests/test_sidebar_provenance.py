@@ -17,19 +17,17 @@ built the page; these tests hold them to both.
 Run with: pytest tests/test_sidebar_provenance.py -v
 """
 import re
-import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'src'))
 
-import config  # noqa: E402
-import generate_dashboard as gd  # noqa: E402
+from src.pipeline import config  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
 
 WHEN = datetime(2026, 9, 26, 19, 11, tzinfo=timezone.utc)
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 
 
 def _text(html):
@@ -37,7 +35,7 @@ def _text(html):
 
 
 def _code():
-    src = (ROOT / 'src' / 'generate_dashboard.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'pipeline' / 'generate_dashboard.py').read_text(encoding='utf-8')
     code = re.sub(r'(?s)""".*?"""', '', src)
     return re.sub(r'(?m)#.*$', '', code)
 

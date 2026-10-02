@@ -28,18 +28,17 @@ import pandas as pd
 import pytest
 
 REPO = Path(__file__).parent.parent
-sys.path.insert(0, str(REPO / 'src'))
 sys.path.insert(0, str(Path(__file__).parent))
 
-import backtest as bt  # noqa: E402
-import check_drift as cd  # noqa: E402
-import data_loader  # noqa: E402
-import grade_predictions as gp  # noqa: E402
-import simulate_season as ss  # noqa: E402
+from src.research import backtest as bt  # noqa: E402
+from src.pipeline import check_drift as cd  # noqa: E402
+from src.pipeline import data_loader  # noqa: E402
+from src.pipeline import grade_predictions as gp  # noqa: E402
+from src.pipeline import simulate_season as ss  # noqa: E402
 import synthetic_league as league  # noqa: E402
-import weekend_refresh as wr  # noqa: E402
-import weekly_update as wu  # noqa: E402
-from ratings_engine import build_qb_ratings, build_team_ratings, prep_plays  # noqa: E402
+from src.pipeline import weekend_refresh as wr  # noqa: E402
+from src.pipeline import weekly_update as wu  # noqa: E402
+from src.pipeline.ratings_engine import build_qb_ratings, build_team_ratings, prep_plays  # noqa: E402
 
 H = pd.Timedelta(hours=1)
 S, W = league.TARGET, league.TARGET_WEEK

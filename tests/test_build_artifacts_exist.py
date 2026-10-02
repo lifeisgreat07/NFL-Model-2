@@ -64,7 +64,7 @@ def test_the_session_built_this_artifact(relative, pytestconfig):
 
     assert (ROOT / relative).exists(), (
         f'{relative} is missing even though the build reported success -- '
-        'src/generate_dashboard.py is no longer writing it where the tests '
+        'src/pipeline/generate_dashboard.py is no longer writing it where the tests '
         'look.')
 
     before, after = stamps['before'][relative], stamps['after'][relative]
@@ -95,7 +95,7 @@ def test_the_root_conftest_is_where_the_tests_expect_it():
         'build has to happen before ANY test collects.')
     text = conftest.read_text(encoding='utf-8')
     assert 'generate_dashboard.py' in text, (
-        'the root conftest no longer names src/generate_dashboard.py, so it '
+        'the root conftest no longer names src/pipeline/generate_dashboard.py, so it '
         'is probably no longer building the page')
     assert 'autouse=True' in text, (
         'the build fixture must be autouse -- the tests that need it are the '

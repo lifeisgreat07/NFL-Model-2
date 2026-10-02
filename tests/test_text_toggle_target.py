@@ -20,7 +20,7 @@ from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'dashboard_template.html'
+TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
 FLOOR = 24
 # The hooks each text toggle is selected by (CLAUDE.md, Stage 10: look and
 # behaviour are separate, and these older classes carry the behaviour).

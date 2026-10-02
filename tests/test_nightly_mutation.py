@@ -80,7 +80,7 @@ def test_a_failed_night_opens_its_own_issue():
     """Stage 30 item 7: its own title, so a bad night is not filed under the
     canary's issue, and a replay line with the night's seed."""
     wf = WORKFLOW.read_text(encoding='utf-8')
-    assert 'python src/alerts.py --title "Nightly mutation slice failing"' in wf
+    assert 'python -m src.pipeline.alerts --title "Nightly mutation slice failing"' in wf
     assert '--sample 30 --seed %s' in wf, 'the issue does not say how to replay the night'
 
 

@@ -7,16 +7,13 @@ after it crash on None. The third audit's @overloads let mypy see this.
 
 Run with: pytest tests/test_current_ratings.py -v
 """
-import sys
-from pathlib import Path
 
 import pandas as pd
 import pytest
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'src'))
 
-import weekly_update as wu  # noqa: E402
-from config import MIN_PLAYS_FOR_RATING  # noqa: E402
+from src.pipeline import weekly_update as wu  # noqa: E402
+from src.pipeline.config import MIN_PLAYS_FOR_RATING  # noqa: E402
 
 
 def plays(n):

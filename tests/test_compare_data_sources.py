@@ -1,4 +1,4 @@
-"""src/compare_data_sources.py does its work when run, and nothing when imported.
+"""src/research/compare_data_sources.py does its work when run, and nothing when imported.
 
 It is the value-level half of the USE_NFLREADPY revert check (data_loader.py
 checks the columns). Until Stage 31 it ran at import -- two full fetches of
@@ -16,9 +16,8 @@ from pathlib import Path
 import pytest
 
 SRC = Path(__file__).resolve().parents[1] / 'src'
-sys.path.insert(0, str(SRC))
 
-import data_loader  # noqa: E402
+from src.pipeline import data_loader  # noqa: E402
 
 
 @pytest.fixture

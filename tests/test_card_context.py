@@ -1,8 +1,8 @@
 """The Week Board card's channel, quarterbacks and team-news line (Stage 17).
 
 Three small facts on the card, each from a file checked before it got here:
-the TV channel from src/tv_channels.py, the quarterbacks from the saved pick,
-the news from src/team_news.py. The rules they are held to are the plan's
+the TV channel from src/pipeline/tv_channels.py, the quarterbacks from the saved pick,
+the news from src/pipeline/team_news.py. The rules they are held to are the plan's
 (CLAUDE.md Stages 15 to 17): the network name only, and one line on the page
 saying Sunday-afternoon CBS and FOX games are regional; the quarterbacks the
 pick was made with, saying so when one was only assumed; at most one news
@@ -16,16 +16,14 @@ import json
 import re
 import shutil
 import subprocess
-import sys
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'dashboard_template.html'
-sys.path.insert(0, str(ROOT / 'src'))
+TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 
-import generate_dashboard as gd  # noqa: E402
+from src.pipeline import generate_dashboard as gd  # noqa: E402
 
 NODE = shutil.which('node')
 
@@ -103,7 +101,7 @@ PRED = {'away': 'ATL', 'home': 'GB', 'model_a_home_win_prob': 0.75,
 
 
 def test_a_held_back_channel_never_reaches_the_page():
-    """src/tv_channels.py leaves `networks` empty when a channel fails a check
+    """src/pipeline/tv_channels.py leaves `networks` empty when a channel fails a check
     and keeps what nfl.com listed under `listed`, for provenance only."""
     held = gd.build_games_js([PRED], {}, {}, {('GB', 'ATL'): _tv_record([], listed=['FOX'])})
     assert held[0]['tv'] is None and held[0]['tv_regional'] is False
