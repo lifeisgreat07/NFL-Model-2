@@ -7,11 +7,14 @@ name: Weekend refresh
 # data/game_status/, from nflverse's schedule.
 #
 # TWO WRITERS OF PICKS IS TWO WAYS TO BREAK A LOCK (2026-09-24). This commits
-# data/game_status/**, data/tv/** (TV channels, src/pipeline/tv_channels.py) and
-# data/team_news/** (src/pipeline/team_news.py) and nothing else; "Weekly update"
-# stays the only writer
-# of predictions/, results/ and the line archive. tests/test_weekend_refresh.py
-# holds the file_pattern to that one directory.
+# data/game_status/**, data/line_history/** (line snapshots for locked weeks,
+# Stage 33 item 23, 2026-10-01), data/tv/** (TV channels,
+# src/pipeline/tv_channels.py) and data/team_news/** (src/pipeline/team_news.py)
+# and nothing else; "Weekly update" stays the only writer of predictions/ and
+# results/. The line archive has two appenders, which is safe: a row is a
+# dated observation nothing reads to make a pick, and the schedules below
+# cannot meet. tests/test_weekend_refresh.py holds the file_pattern to exactly
+# those four folders.
 #
 # Schedule (UTC). Odd minutes, in case the queue for the top of the hour is
 # why the nightly canary's 06:00 runs have started 4.5 to 5 hours late
@@ -96,7 +99,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
         with:
           commit_message: "Weekend refresh: game status, scores, lines, TV channels and team news"
-          file_pattern: 'data/game_status/** data/tv/** data/team_news/**'
+          file_pattern: 'data/game_status/** data/line_history/** data/tv/** data/team_news/**'
 
       - name: Raise an alert
         if: failure()

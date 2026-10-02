@@ -119,21 +119,54 @@ def _digest(folder):
             for p in sorted(folder.rglob('*')) if p.is_file()}
 
 
-def test_a_run_writes_game_status_and_nothing_else(tmp_path, capsys):
-    """Two writers of picks is two ways to break a lock (2026-09-24)."""
+def _locked_week_four(tmp_path):
     preds, results, status = tmp_path / 'predictions', tmp_path / 'results', tmp_path / 'status'
     _write(preds / '2026_week4.json', [pick('PIT', 'CLE'), pick('NE', 'BUF')])
     _write(results / '2026_week3_graded.json', [])
-    before = _digest(tmp_path)
     load = lambda season: sched(row('PIT', 'CLE', gameday='2026-10-01', gametime='20:15',
-                                    away_score=20, home_score=17), row('NE', 'BUF'),
-                                row('X', 'Y', week=5))
+                                    away_score=20, home_score=17, spread=-2.5),
+                                row('NE', 'BUF', spread=6.0),
+                                row('X', 'Y', week=5, spread=1.0))
+    return preds, results, status, load
+
+
+def test_a_run_writes_game_status_and_line_history_and_nothing_else(tmp_path, capsys, monkeypatch):
+    """Two writers of picks is two ways to break a lock (2026-09-24). Since
+    Stage 33 item 23 (2026-10-01) a run also appends the locked week's lines,
+    through the weekly run's own log_line_snapshot, which is used here for
+    real with only its folder moved."""
+    from src.pipeline import weekly_update as wu
+    monkeypatch.setattr(wu, 'LINE_HISTORY_DIR', tmp_path / 'line_history')
+    (tmp_path / 'line_history').mkdir()
+    preds, results, status, load = _locked_week_four(tmp_path)
+    before = _digest(tmp_path)
     assert wr.main(['--season', '2026'], now=SUNDAY, load=load, pred_dir=preds,
                    results_dir=results, status_dir=status) == 0
     after = _digest(tmp_path)
-    assert {k: v for k, v in after.items() if not k.startswith('status/')} == before
-    assert sorted(k for k in after if k.startswith('status/')) == ['status/2026_week4.json']
+    new = ('status/', 'line_history/')
+    assert {k: v for k, v in after.items() if not k.startswith(new)} == before
+    assert sorted(k for k in after if k.startswith(new)) == [
+        'line_history/2026_week4_lines.json', 'status/2026_week4.json']
     assert '1 final, 1 started, 0 upcoming -- written' in capsys.readouterr().out
+    lines = json.loads((tmp_path / 'line_history' / '2026_week4_lines.json').read_text(encoding='utf-8'))
+    assert sorted((e['away'], e['home'], e['spread_line']) for e in lines) == [
+        ('NE', 'BUF', 6.0), ('PIT', 'CLE', -2.5)]
+
+
+def test_line_snapshots_go_to_the_locked_weeks_only_with_their_own_games(tmp_path):
+    """Item 23's whole contract in one place: one call per locked, ungraded
+    week, carrying that week's schedule rows and no other week's. Week 5 is
+    in the schedule but has no saved picks, so it is not locked; week 3 is
+    locked and fully graded, so it is finished."""
+    preds, results, status, load = _locked_week_four(tmp_path)
+    _write(preds / '2026_week3.json', [pick('A', 'B')])
+    _write(results / '2026_week3_graded.json', [{'graded': True}])
+    calls = []
+    assert wr.main(['--season', '2026'], now=SUNDAY, load=load, pred_dir=preds,
+                   results_dir=results, status_dir=status,
+                   snapshot=lambda season, week, rows: calls.append(
+                       (season, week, sorted(zip(rows['away_team'], rows['home_team']))))) == 0
+    assert calls == [(2026, 4, [('NE', 'BUF'), ('PIT', 'CLE')])]
 
 
 def test_nothing_to_refresh_loads_nothing(tmp_path, capsys):
@@ -162,12 +195,13 @@ def _text(path):
     return path.read_text(encoding='utf-8')
 
 
-def test_the_workflow_commits_game_status_and_nothing_else():
+def test_the_workflow_commits_its_four_folders_and_nothing_else():
     patterns = re.findall(r"^\s*file_pattern:\s*'([^']*)'", _text(WORKFLOW), re.M)
-    assert patterns == ['data/game_status/** data/tv/** data/team_news/**'], (
+    assert patterns == ['data/game_status/** data/line_history/** data/tv/** data/team_news/**'], (
         f'the weekend refresh commits {patterns}; it may commit data/game_status/**, '
-        f'data/tv/** and data/team_news/** only -- a second writer of predictions/ or '
-        f'results/ is a second way to break a lock')
+        f'data/line_history/** (item 23), data/tv/** and data/team_news/** only -- a '
+        f'second writer of predictions/ or results/ is a second way to break a lock, and '
+        f'without data/line_history/** the snapshots it takes are never committed')
     assert 'git add' not in _text(WORKFLOW)
 
 
