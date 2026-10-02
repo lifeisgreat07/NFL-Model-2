@@ -1,0 +1,96 @@
+{
+ "family": "stage33",
+ "registered": "2026-10-02",
+ "approved_by": "Mark, 2026-10-01 evening ET: R3 non-inferiority with the +0.002 margin; R4 baseline (b), the schedule starter, on Claude's recommendation, with (a) printed beside it.",
+ "protocol": {
+  "validation_seasons": [2022, 2023],
+  "confirmation_seasons": [2024, 2025],
+  "forward_holdout_season": 2026,
+  "primary_metric": "log_loss",
+  "secondary_metric": "brier",
+  "accuracy": "Reported, never decides.",
+  "screen": "A candidate advances to confirmation only if its validation log loss is lower than the incumbent's (point estimate). R3 is the exception: it is a like-for-like question, so it goes to confirmation whatever validation shows, and validation is reported.",
+  "decision": "On the confirmation seasons: ACCEPT if the paired-bootstrap interval for (candidate - incumbent) log loss lies entirely below zero; REJECT if entirely above; otherwise INCONCLUSIVE and the incumbent stays. R3 uses its own non-inferiority rule, written in its entry.",
+  "alpha": 0.05,
+  "budget_m": 3,
+  "budget_rule": "R1, R2 and R3 are the confirmatory slots. A slot is spent by reaching confirmation, whatever the outcome. Each confirmatory interval is at level 1 - alpha/budget_m (98.33%). A fourth confirmatory question needs a new registration that raises budget_m.",
+  "n_resamples": 5000,
+  "seed": 20261001,
+  "walk_forward": "Exactly as published: weekly refit, train on every game strictly earlier (from 2020), predict the week. Candidate and incumbent are scored on the same games.",
+  "forward_test": "Anything ACCEPTED or switched is re-scored on the 2026 season after it ends, with no refitting of anything chosen here. The harness refuses 2026 until then.",
+  "model_lab": "Every question ends as a Model Lab row, whatever it shows."
+ },
+ "prerequisite": "Stage 33 item 21's MODEL_SPECS and walk_forward(spec), shared by the live pipeline and the backtest, with C=1.0 and penalty='l2' written out (today's sklearn defaults), shown behaviour-identical by the reproducibility audit and a byte-identical page before any question here runs.",
+ "disclosures": [
+  "2024-2025 have confirmed earlier decisions in this project (QB shrinkage, weekly refit, the pandas experiment, Stage 5). They are not a fresh holdout; the 2026 forward test is.",
+  "Before this file was committed, the scales of Model A's four live features were measured over 2020-2025 (1,599 complete rows, inputs only; no outcome, probability or model metric was computed): standard deviations off_matchup 0.0895, def_matchup 0.0897, qb_matchup 0.2003, qb_change_diff 0.4466, a ratio of 4.99 between the largest and smallest. Script: the session archive's stage33/feature_scales.py, run at 63b81eb.",
+  "That measurement changed R1's stated expectation before registration. The draft expected no measurable difference because C=1.0 'barely shrinks'. With two features at a standard deviation near 0.09, their coefficients have to be large, and an L2 penalty on large coefficients is not negligible. The expectation is now written as unknown in size. The decision rule did not change.",
+  "R4 reopens the recorded decision that the drift check is on accuracy, for the reason that decision itself gave: accuracy cannot carry a result at this sample size."
+ ],
+ "hypotheses": [
+  {
+   "id": "R1",
+   "item": "21a",
+   "kind": "hypothesis",
+   "title": "Model A without regularisation",
+   "question": "Model A fitted with penalty=None against Model A at C=1.0, penalty='l2', on the four live features, walk-forward as published.",
+   "candidate": {"model": "model_a", "penalty": null},
+   "incumbent": {"model": "model_a", "penalty": "l2", "C": 1.0},
+   "decision_model": "model_a",
+   "also_report": ["model_b"],
+   "spends_slot": true,
+   "expected": "Unknown in size. Unregularised fits give the two small-scale features (sd about 0.09) larger coefficients; whether that helps or hurts log loss out of sample is the question."
+  },
+  {
+   "id": "R2",
+   "item": "21b",
+   "kind": "hypothesis",
+   "title": "Standardised features",
+   "question": "Model A as StandardScaler then LogisticRegression(C=1.0, penalty='l2'), against today's unscaled fit. The scaler is fitted inside each walk-forward refit on that refit's training rows only.",
+   "candidate": {"model": "model_a", "scaler": "standard", "penalty": "l2", "C": 1.0},
+   "incumbent": {"model": "model_a", "scaler": null, "penalty": "l2", "C": 1.0},
+   "decision_model": "model_a",
+   "also_report": ["model_b"],
+   "spends_slot": true,
+   "why": "The L2 penalty is not scale-invariant. The measured standard deviations differ by a factor of 4.99, so today's fit shrinks the four features unequally. Scaling makes the penalty treat them alike.",
+   "expected": "Small; direction unknown."
+  },
+  {
+   "id": "R3",
+   "item": "22",
+   "kind": "hypothesis",
+   "title": "The market's curve: fitted against hand-picked",
+   "question": "On the market's own probabilities: a walk-forward fitted LogisticRegression on spread_line alone, against the fixed curve 1 / (1 + exp(-spread / 5.5)) that the live pipeline uses today.",
+   "candidate": {"market_curve": "fitted_logistic_on_spread_line"},
+   "incumbent": {"market_curve": "fixed_slope_5.5"},
+   "decision_model": "market",
+   "spends_slot": true,
+   "decision_rule": "NON-INFERIORITY, margin +0.002 (Mark, 2026-10-01). Switch to the fitted curve if the upper end of the 98.33% interval on (fitted - fixed) log loss is below +0.002. Do not switch if the lower end is above 0. Otherwise INCONCLUSIVE: the fixed curve stays and the page says so.",
+   "why_non_inferiority": "The reason to switch is like-for-like: the page's live log-loss race compares two fitted models against a curve no data chose. The fitted curve need only be no worse. The margin is about a fifth of H1's confirmation difference (-0.0109, experiments/stage5/results/H1.json).",
+   "if_switched": "Each prediction stores market_prob_home_fitted beside the existing market_prob_home, and saved picks are never rewritten. Grading and the log-loss race read the fitted value from the week the switch starts. Weeks already locked keep their stored value.",
+   "expected": "The fitted slope lands near 5.5 and the difference is inside the margin."
+  },
+  {
+   "id": "R4",
+   "item": "24",
+   "kind": "monitoring_rule",
+   "title": "Drift on log loss",
+   "question": "Replace the drift check's accuracy test with a log-loss rule over all graded live Model A games, 2026 on.",
+   "spends_slot": false,
+   "baseline": {
+    "chosen": "schedule_starter",
+    "value": 0.6517835197359845,
+    "printed_beside": {"name": "lagged_qb", "value": 0.6643233147904122},
+    "source": "experiments/stage5/residuals.json, slice 'all games', log_loss_sched and log_loss_lagged (1,087 games, 2022-2025)",
+    "reason": "v2.5 takes a sourced override, then the schedule's listed starter, then the lagged QB. The schedule starter is the closest backtest figure to what actually runs. The lagged baseline would flag only a model doing worse than the pre-v2.5 pipeline.",
+    "storage": "Written to a committed file that the drift check reads, not read from the descriptive residuals file."
+   },
+   "rule": "Flag when the lower end of a one-sided 95% bootstrap interval of mean per-game log loss is above the baseline. Not before 30 graded games, as today. The accuracy test stays printed, demoted to information.",
+   "registered_before": "Any 2026 log loss computed for this purpose. The page already shows season numbers; the threshold is not chosen after looking at them."
+  }
+ ],
+ "not_in_this_registration": [
+  "Stage 33 item 26, and anything that re-tunes the recency half-life, ridge alpha or QB shrinkage.",
+  "Any slicing of 2026 results."
+ ]
+}
