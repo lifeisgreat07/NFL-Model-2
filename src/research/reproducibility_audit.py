@@ -100,9 +100,29 @@ def _provenance():
                                 text=True, check=True).stdout.strip()
     except Exception:
         commit = None
-    return {'commit': commit, 'platform': platform.platform(),
+    return {'commit': commit, 'platform': platform.platform(), 'cpu': cpu_model(),
             'python': platform.python_version(), 'numpy': ver('numpy'),
             'pandas': ver('pandas'), 'scikit-learn': ver('sklearn')}
+
+
+def cpu_model(cpuinfo='/proc/cpuinfo'):
+    """The machine's CPU, by name.
+
+    On one commit with one set of packages, two GitHub runners disagreed:
+    one REPRODUCED, one put Model A's log loss at 0.6499472 against
+    0.6498122 (docs/traps.md). Each run's two passes agreed and the local
+    Windows machine always reproduces exactly, so the likeliest cause is the
+    CPU underneath the float sums, and until now the record did not say
+    which CPU it ran on. platform.processor() names it on Windows but says
+    only "x86_64" on Linux, where /proc/cpuinfo has the model name."""
+    try:
+        with open(cpuinfo, encoding='utf-8') as f:
+            for line in f:
+                if line.lower().startswith('model name'):
+                    return line.split(':', 1)[1].strip()
+    except OSError:
+        pass
+    return platform.processor() or platform.machine() or None
 
 
 def main(argv=None):

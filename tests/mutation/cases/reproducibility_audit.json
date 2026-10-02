@@ -29,6 +29,20 @@
       "find": "if all(r['ok'] for r in rows) and all(determinism.values()) else",
       "replace": "if all(r['ok'] for r in rows) else",
       "expect_caught_by": "test_two_runs_that_differ_are_not_reproduced"
+    },
+    {
+      "id": "repro-cpu-is-only-the-architecture",
+      "why": "the CPU is taken from platform.processor() alone, which on a GitHub Linux runner says 'x86_64' for every machine, so two runners that disagree look identical in their records",
+      "find": "                if line.lower().startswith('model name'):",
+      "replace": "                if False:",
+      "expect_caught_by": "test_the_cpu_is_read_by_name_from_cpuinfo"
+    },
+    {
+      "id": "repro-record-names-no-cpu",
+      "why": "the audit record stops saying which CPU ran it, and the runner-dependent flip goes back to being untraceable",
+      "find": "    return {'commit': commit, 'platform': platform.platform(), 'cpu': cpu_model(),",
+      "replace": "    return {'commit': commit, 'platform': platform.platform(),",
+      "expect_caught_by": "test_every_audit_record_says_which_cpu_ran_it"
     }
   ]
 }
