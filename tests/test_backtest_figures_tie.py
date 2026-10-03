@@ -24,6 +24,15 @@ still belongs where machines differ, in the reproducibility audit.
 data/reproducibility_audit.json carries no model version; it is tied to
 calibration.json by generated_at in test_reproducibility_audit.py.
 
+The version check covers every file under data/ that names both a
+model_version and the backtest_seasons it scored, found by looking rather
+than listed by hand. Until 2026-10-03 it named calibration.json and
+bootstrap_brier_gap.json only, so ats_evaluation.json (the ATS finding) and
+low_confidence_finding.json, both from model 2.4 as well, could have been
+left behind by a release that re-ran the other two. KNOWN_BACKTEST_FILES is
+a floor under the search, so a search that stops finding files fails
+instead of passing on nothing.
+
 Run with: pytest tests/test_backtest_figures_tie.py -v
 """
 import json
@@ -57,6 +66,31 @@ PAGE_ROWS = {
 
 def load(rel):
     return json.loads((REPO / rel).read_text(encoding='utf-8'))
+
+
+def backtest_files(root):
+    """Every JSON file under root/data that records the model version and
+    the backtest seasons it was scored on, as repo-relative paths."""
+    found = []
+    for path in sorted((root / 'data').rglob('*.json')):
+        try:
+            doc = json.loads(path.read_text(encoding='utf-8'))
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            continue
+        if isinstance(doc, dict) and 'model_version' in doc and 'backtest_seasons' in doc:
+            found.append(path.relative_to(root).as_posix())
+    return found
+
+
+# Files the search must find. A floor, not the list: anything else that
+# carries both keys is checked too.
+KNOWN_BACKTEST_FILES = {
+    CALIBRATION,
+    BOOTSTRAP,
+    'data/ats_evaluation.json',
+    'data/low_confidence_finding.json',
+}
+BACKTEST_FILES = backtest_files(REPO)
 
 
 def version_key(v):
@@ -97,7 +131,14 @@ def mismatches(cells, metrics, model):
 
 # --- the model version -------------------------------------------------------
 
-@pytest.mark.parametrize('rel', [CALIBRATION, BOOTSTRAP])
+def test_the_search_finds_every_known_backtest_file():
+    missing = KNOWN_BACKTEST_FILES - set(BACKTEST_FILES)
+    assert not missing, (
+        f"the search for backtest files under data/ did not find {sorted(missing)}; "
+        "either the search is broken or a file lost its model_version/backtest_seasons")
+
+
+@pytest.mark.parametrize('rel', BACKTEST_FILES)
 def test_every_release_since_the_backtest_left_it_unchanged(rel):
     version = load(rel)['model_version']
     assert version in {e['version'] for e in VERSION_HISTORY}, (
@@ -105,8 +146,8 @@ def test_every_release_since_the_backtest_left_it_unchanged(rel):
     missing = unexplained(version, VERSION_HISTORY, BACKTEST_UNCHANGED)
     assert not missing, (
         f"{rel} is from model {version}, but {missing} came after it and is not in "
-        "BACKTEST_UNCHANGED. Re-run the backtest (src/research/calibration.py, "
-        "src/research/bootstrap_brier_gap.py, src/research/reproducibility_audit.py), or add the "
+        "BACKTEST_UNCHANGED. Re-run the script under src/research/ that writes it (for "
+        "calibration.json also src/research/reproducibility_audit.py), or add the "
         "release to the allowance with the reason its numbers did not move.")
 
 
@@ -118,8 +159,9 @@ def test_the_two_backtest_files_come_from_the_same_run():
 
 def test_the_allowance_names_only_releases_newer_than_the_backtest():
     """Once the backtest is re-run, an old allowance would excuse nothing and
-    mislead the next reader, so it has to go."""
-    version = load(CALIBRATION)['model_version']
+    mislead the next reader, so it has to go. Measured against the OLDEST
+    backtest file: an entry stays while any file still needs it."""
+    version = min((load(rel)['model_version'] for rel in BACKTEST_FILES), key=version_key)
     released = {e['version'] for e in VERSION_HISTORY}
     for v in BACKTEST_UNCHANGED:
         assert v in released, f"BACKTEST_UNCHANGED names {v}, which was never released"
@@ -133,6 +175,18 @@ def test_a_release_the_allowance_does_not_cover_is_caught():
     history = [{'version': '2.6'}] + list(VERSION_HISTORY)
     assert unexplained('2.4', history, BACKTEST_UNCHANGED) == ['2.6']
     assert unexplained('2.4', VERSION_HISTORY, {}) == ['2.5']
+
+
+def test_the_search_skips_files_without_both_keys(tmp_path):
+    """Synthetic: only a file naming both keys counts as a backtest file."""
+    data = tmp_path / 'data' / 'sub'
+    data.mkdir(parents=True)
+    (data / 'both.json').write_text('{"model_version": "2.4", "backtest_seasons": [2022]}',
+                                    encoding='utf-8')
+    (data / 'version_only.json').write_text('{"model_version": "2.4"}', encoding='utf-8')
+    (data / 'a_list.json').write_text('[1, 2]', encoding='utf-8')
+    (data / 'broken.json').write_text('{', encoding='utf-8')
+    assert backtest_files(tmp_path) == ['data/sub/both.json']
 
 
 # --- the published table -----------------------------------------------------
