@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-02, afternoon ET (#258 to #262 merged; Stage 33 R1 to R4 answered)
+Last updated: 2026-10-03, afternoon ET (#263 to #265 merged; Stage 33 finished)
 
 ---
 
@@ -12,41 +12,40 @@ Last updated: 2026-10-02, afternoon ET (#258 to #262 merged; Stage 33 R1 to R4 a
 
 **Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked
 figure. `src/` is packaged: run modules with `python -m src.<package>.<module>`.
+The dashboard template is parts under `src/dashboard/`, joined by
+`src/pipeline/template_parts.py`. Read it with `read_template()`, never one
+part as the page (traps).
 
-**Next action: Stage 33 item 25**, one PR. Tests tie the `model_version` in
-the calibration, bootstrap and reproducibility files to `MODEL_VERSION`, with
-an explicit "backtest unchanged since 2.4" allowance, and tie the README and
-Methodology backtest tables to `data/calibration.json`.
+**Next action: check Tuesday's Weekly update** (read-only). It runs
+2026-10-06 at 11:00 UTC, usually hours late. It is the first Weekly update
+on `MODEL_SPECS`, on the log-loss drift check (#261) and on the template
+parts (#265). Its summary should read `DRIFT CHECK: OK`, its drift report
+should have a "Model A, log loss" section, and Pages should deploy. Check the
+Monday 22:00 UTC QB routine's run (its first on the `src.pipeline` imports)
+at the same time.
 
-**Before it, check the unattended runs** (read-only):
-1. Monday 22:00 UTC: the QB routine's first run on the `src.pipeline` imports.
-2. Tuesday 11:00 UTC: the first Weekly update on `MODEL_SPECS` and on the
-   log-loss drift check (#261). Its summary should read `DRIFT CHECK: OK`,
-   and its drift report should have a "Model A, log loss" section.
-3. Whether the Booth prompt PR (the restored CLAUDE.md is expected) has
-   Mark's review. Booth skips a PR that edits its own workflow.
-
-**Stage 33 has answered all four questions.** R1, R2 and R3 are INCONCLUSIVE
-and the budget of three is spent; R4 is live. A fifth model question needs a
-new registration.
+**Stage 33 is finished.** Every item is done or answered. A further model
+question needs a new registration.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| Booth prompt line: the restored CLAUDE.md is expected | PR open, branch `s33-booth-restore` | Mark's review |
 | QB override routine | Prompt edited by Mark 2026-10-02 to `src.pipeline` | Its first run, Monday 22:00 UTC |
 | Log-loss drift check (R4) | Merged #261; first real run OK on 48 games | Tuesday's Weekly update |
+| Template parts (#265) | Merged; page byte-identical locally and on Booth's runner | Tuesday's scheduled build |
 | claude-code-action pin | On v1.0.236 | A hand bump when a release matters |
 | Season Accuracy's forecast score | Merged (#160), not on the page yet | 50 graded games: after week 4 at the earliest |
 | TV exceptions for holiday and Saturday games | Weeks 12, 15, 16 | Sourced entries in `data/tv/exceptions.json` before those weeks |
-| Audit Response Log | Updated 2026-10-02 afternoon | Fable, for the next audit |
+| Audit Response Log | Updated 2026-10-03 | Fable, for the next audit |
 
 ## Queued, in order
 
-1. **Stage 33 items 25, 20 and 26** (26 last, by the audit's own order).
-2. **Stages 20 to 22**: 20 needs five real testers; 21 waits for week 5; 22 comes from 20.
-3. **Stage 28** and the closing-line backtest: after the regular season.
+1. **Stage 21** once week 5 is graded (Tuesday 2026-10-13 at the earliest).
+2. **Stage 34 item 32**: Stage 20's five real-person tests (Mark finds the
+   testers) and the fourth audit (Mark's call on when).
+3. **Stage 22** comes from 20; **Stage 28** and the closing-line backtest
+   after the regular season.
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict. Run the suite
@@ -72,6 +71,6 @@ the body discloses it.
 - **A human approval leaves no artifact in the repo.** `memory/` is what records it.
 - **Browser checks does not click.** Interaction-only states are covered by static tests; since #245 the tie, skipped-week and stale-preview states are built and checked.
 - **60 of 496 team pairs sit under the CIEDE2000 floor on the Week Board's split bar, accepted 2026-09-21.**
-- **Booth's runner shows CLAUDE.md modified on every PR that edits it**: claude-code-action restores it from `main` before Booth starts, by design (traps). Stashing it is right; the open Booth prompt PR tells Booth so.
+- **Booth's runner shows CLAUDE.md modified on every PR that edits it**: claude-code-action restores it from `main` before Booth starts, by design (traps). Stashing it is right; Booth's prompt says so since #263, and #265's audit did exactly that.
 - **The reproducibility audit flips between GitHub runners** (same commit, same packages). Machine-dependent; traps. Local Windows reproduces exactly. Since #262 each record names its CPU, so the next flip can be tied to hardware.
 - **The Booth report check cannot tell WHY a run posted nothing.** Since #101 a failed audit at least opens an issue.

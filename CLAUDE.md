@@ -48,8 +48,8 @@ Model v2.5 (`MODEL_VERSION` in `src/pipeline/config.py`). `TRAIN_SEASONS` 2020-2
 The drift check flags on Model A's log loss against the committed
 `data/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
 
-Suite: **5182 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-`b6f7efe` (after #262), with HEAD level with origin, which is the order that makes the
+Suite: **5262 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+`0309353` (after #265), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -282,7 +282,8 @@ The full text of every stage, finished or planned, is in
 - **Stage 28 - After the forward test**: after the regular season.
 - **Stages 30 to 34 - the 2026-09-29 re-audit (78/100)**: 30 regressions and
   residuals, 31 maintainability, 32 code quality, 33 architecture and model
-  engineering, 34 front door. Order and rules at the top of that section.
+  engineering (finished 2026-10-03), 34 front door. Order and rules at the
+  top of that section.
 - **Stage 35 - the 2026-09-30 third audit (83/100)**: its new fixes; the rest
   of its plan is the Stage 32 to 34 queue. Status and decisions in its section.
 

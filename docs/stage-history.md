@@ -1599,6 +1599,10 @@ and 24 as registrations first; then 26 and 32.
     drift check, season simulation and weekend refresh run end to end offline
     in under two seconds, with the prediction-file schema asserted. The
     season simulation has no tests today and no regular-season filter.
+    DONE 2026-09-29 in #228 (`tests/synthetic_league.py`) plus
+    `tests/test_pipeline_chain_end_to_end.py`; the regular-season filter in
+    #238. Not marked here until 2026-10-03, so the 10-02 handoff still
+    listed it as open; re-checked then: 18 passed, slowest test 1.02s.
 21. One `MODEL_SPECS` and `walk_forward(spec)` shared by the live pipeline and
     the backtest. Make `C` and `penalty` explicit at today's values, then
     REGISTER experiments on `penalty=None` and a `StandardScaler` pipeline,
@@ -1624,9 +1628,25 @@ and 24 as registrations first; then 26 and 32.
     reproducibility files to `MODEL_VERSION`, with an explicit "backtest
     unchanged since 2.4" allowance, and tying the README and Methodology
     backtest table to the calibration file.
+    DONE 2026-09-29 in #226 (`tests/test_backtest_figures_tie.py`; the
+    reproducibility record is tied by `generated_at`), unmarked here until
+    2026-10-03. Widened in #264 (2026-10-03): the version check searches
+    `data/` for every file with `model_version` and `backtest_seasons`
+    instead of naming two, which brought in `ats_evaluation.json` and
+    `low_confidence_finding.json`.
 26. A template inliner: parts under `src/dashboard/` joined by the generator
     into the same one file, with a helper so existing text-anchored tests keep
     working. Byte-identical output. LAST in the stage, after item 12.
+    DONE 2026-10-03 in #265, now rather than "when the next page-sized
+    feature starts" (Mark's call). `src/dashboard/page.html` includes
+    `styles.css`, `body.html` and `app.js`; `src/pipeline/template_parts.py`
+    joins them and `tests/template_source.js` is the JavaScript twin. The
+    joined text and the built page were byte-identical to main's; every
+    mutation case on the old file was retargeted to its part, 536/536
+    CAUGHT. `app.js` is still one large part: splitting the script further
+    would be new work, not this item.
+
+**Stage 33 is finished (2026-10-03).** Every item is done or answered.
 
 ### Stage 34 - Front door and the last points
 
@@ -1721,4 +1741,5 @@ mutation claim names its case files.
 Then, in order: Stage 32 item 14 (packages), ruff `I`/`UP`, Stage 33 item
 23 (line snapshots), items 21, 22 and 24 as registrations shown to Mark
 first, item 26 when the next page-sized feature starts, then Stage 20 and
-the fourth audit.
+the fourth audit. (Item 26 went in early, on 2026-10-03, by Mark's call:
+#265.)

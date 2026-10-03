@@ -40,9 +40,30 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   `tests/test_dashboard_charts.py` both were), so run `git status` and
   restore after any interrupted run. Naming the ids a change touches, each
   run with `--id`, is the form preflight accepts when the full run won't fit.
+- **Parallel corpus runs give wrong answers, even in separate worktrees.**
+  On 2026-10-03, four runners in four worktrees reported 20 WRONG-GUARDs
+  with "Failures: none reported". The same case run alone was CAUGHT; run
+  one at a time, all 536 were. Started DETACHED, each runner's pytest
+  children also opened a console window apiece, and Mark restarted the PC
+  thinking something was wrong. Run ONE runner, from a hidden console
+  (`Start-Process -WindowStyle Hidden`, many `--id` in one call), so its
+  children share that console. Sequential, about 45 cases a minute here.
 
 ## Traps that have actually bitten
 
+- **A handoff can carry finished work as open.** Stage 33 items 20 and 25
+  shipped on 2026-09-29, but `docs/stage-history.md` never marked them
+  DONE, so the 10-02 handoff and the next opening prompt listed both as
+  "next". Before starting a queued item, `git log --oneline --grep "item
+  <N>"` and grep for its test; mark an item DONE in the stage section in
+  the same session it merges.
+- **The dashboard template is parts now (#265).** Read it with
+  `read_template()` (Python), `JOINED_TEMPLATE.read_text()` where a test
+  held its Path, or `tests/template_source.js` (harnesses). Never open a
+  part and treat it as the page: the stylesheet guards read the first
+  `<style>` and the script guards the last `<script>` of the JOINED text.
+  A mutation case targets the part holding its anchor; an anchor that
+  spans a cut has to be rewritten against `src/dashboard/page.html`.
 - **scikit-learn 1.9 deprecates `LogisticRegression(penalty=...)`.** Passing
   `penalty='l2'` or `penalty=None` raises a FutureWarning on every fit
   (removed in 1.10), and `get_params()` reports `penalty='deprecated'`. L2
