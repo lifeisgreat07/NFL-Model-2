@@ -154,6 +154,15 @@ jobs:
             its dependencies are installed, so you can run its test suite and
             git commands directly.
 
+            EXPECT CLAUDE.md TO SHOW AS MODIFIED when the PR edits it. Before
+            you start, the action that runs you restores CLAUDE.md (and its
+            other configuration paths) from the PR's base branch, by design,
+            so a PR cannot rewrite the instructions it is audited under.
+            `git status` then shows the base branch's copy as an uncommitted
+            change. It is not the author's uncommitted work, not a leftover
+            mutation and not a discrepancy. Stash it, audit the committed
+            head, and do not report it as a finding.
+
             Read the PR's description and diff with:
               gh pr view ${{ github.event.pull_request.number || inputs.pr_number }} --json title,body
               gh pr diff ${{ github.event.pull_request.number || inputs.pr_number }}

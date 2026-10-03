@@ -64,3 +64,15 @@ def test_the_block_reader_is_not_blind():
     assert 'You are Booth.' in prompt
     assert 'claude_args' not in prompt, 'the prompt block ran past its end'
     assert '# 120, not the 30' not in prompt
+
+
+def test_the_prompt_says_the_claude_md_restore_is_expected():
+    """claude-code-action restores CLAUDE.md from the base branch before Booth
+    starts (docs/traps.md). On #254 and #255 Booth read the result as
+    an uncommitted edit; the prompt now says what it is, inside the block
+    Booth receives."""
+    prompt = prompt_block(WORKFLOW.read_text(encoding='utf-8'))
+    flat = ' '.join(prompt.split())
+    assert 'EXPECT CLAUDE.md TO SHOW AS MODIFIED' in flat
+    assert 'restores CLAUDE.md' in flat and 'from the PR\'s base branch' in flat
+    assert 'not a discrepancy' in flat and 'Stash it' in flat
