@@ -40,6 +40,46 @@
       "find": "Evaluated on 2022-2025 (1,087 games)",
       "replace": "Evaluated on 2022-2025 (1,086 games)",
       "expect_caught_by": "test_the_table_names_the_seasons_and_games_the_backtest_used"
+    },
+    {
+      "id": "ats-finding-from-an-unexplained-older-model",
+      "target": "data/ats_evaluation.json",
+      "why": "the ATS finding claims a model older than any release the allowance explains, the case the version check could not see while it named two files by hand.",
+      "find": "\"model_version\": \"2.4\",",
+      "replace": "\"model_version\": \"2.3\",",
+      "expect_caught_by": "test_every_release_since_the_backtest_left_it_unchanged"
+    },
+    {
+      "id": "low-confidence-finding-from-an-unexplained-older-model",
+      "target": "data/low_confidence_finding.json",
+      "why": "the low-confidence finding claims a model older than any release the allowance explains, unseen while the check named two files by hand.",
+      "find": "\"model_version\": \"2.4\",",
+      "replace": "\"model_version\": \"2.3\",",
+      "expect_caught_by": "test_every_release_since_the_backtest_left_it_unchanged"
+    },
+    {
+      "id": "backtest-search-narrowed-to-one-file",
+      "target": "tests/test_backtest_figures_tie.py",
+      "why": "the search finds only calibration.json, so every other backtest file drops out of the version check and the check still passes on what is left.",
+      "find": "rglob('*.json')",
+      "replace": "rglob('calibration.json')",
+      "expect_caught_by": "test_the_search_finds_every_known_backtest_file"
+    },
+    {
+      "id": "backtest-search-takes-any-versioned-file",
+      "target": "tests/test_backtest_figures_tie.py",
+      "why": "the search counts a file that names a model version but no backtest seasons, so a file that was never a backtest is held to the backtest's allowance.",
+      "find": "if isinstance(doc, dict) and 'model_version' in doc and 'backtest_seasons' in doc:",
+      "replace": "if isinstance(doc, dict) and 'model_version' in doc:",
+      "expect_caught_by": "test_the_search_skips_files_without_both_keys"
+    },
+    {
+      "id": "allowance-measured-against-the-newest-file",
+      "target": "tests/test_backtest_figures_tie.py",
+      "why": "the allowance is judged against the newest backtest file, so an entry an older file still depends on is called stale and deleting it would break that file's check.",
+      "find": "version = min((load(rel)['model_version'] for rel in BACKTEST_FILES), key=version_key)",
+      "replace": "version = max((load(rel)['model_version'] for rel in BACKTEST_FILES), key=version_key)",
+      "expect_caught_by": "test_the_allowance_names_only_releases_newer_than_the_backtest"
     }
   ]
 }
