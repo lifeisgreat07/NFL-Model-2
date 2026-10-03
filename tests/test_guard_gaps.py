@@ -145,11 +145,11 @@ def test_disclosures_are_not_claims(sentence):
 
 def test_the_remedy_the_failure_names_is_a_branch_that_passes():
     claim = "I rendered the page and read the card on screen."
-    failed = pf.check_visual_claims_have_artifacts(claim, claim, ['src/pipeline/dashboard_template.html'])
+    failed = pf.check_visual_claims_have_artifacts(claim, claim, ['src/dashboard/body.html'])
     assert not failed.ok
     assert 'Process note:' in failed.detail
     remedied = "Process note: " + claim
-    assert pf.check_visual_claims_have_artifacts(remedied, remedied, ['src/pipeline/dashboard_template.html']).ok
+    assert pf.check_visual_claims_have_artifacts(remedied, remedied, ['src/dashboard/body.html']).ok
 
 
 # -------------------------------------------------------- 7. wrap-up count

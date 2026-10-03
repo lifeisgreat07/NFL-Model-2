@@ -20,8 +20,9 @@ ROOT = Path(__file__).resolve().parents[1]
 
 from src.pipeline import generate_dashboard as gd  # noqa: E402
 from src.pipeline import model_lab as ml  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE, read_template  # noqa: E402
 
-TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 ROW = re.compile(r'<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>', re.S)
 
 
@@ -75,7 +76,7 @@ def test_each_row_shows_its_decision_and_any_first_label(entries, rows):
 def test_a_rows_pills_share_one_row_and_never_break_inside(entries, rows):
     """"CONFIRMED FINDING" broke across two lines of one pill, and DEFERRED
     sat on LEAKAGE with nothing between them (Mark, 2026-09-28)."""
-    src = (ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+    src = read_template()
     tags = re.search(r'\.lab-tags\{([^}]*)\}', src)
     assert tags and 'display:flex' in tags.group(1).replace(' ', '') and 'gap:' in tags.group(1)
     pill = re.search(r'\.lab-tags \.conf-tag\{([^}]*)\}', src)

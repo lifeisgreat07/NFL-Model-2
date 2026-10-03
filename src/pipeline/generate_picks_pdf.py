@@ -14,7 +14,7 @@ truth:
 
   1. The pick side is derived exactly the way the dashboard derives it --
      Model B's probability when present, Model A's otherwise, home if that
-     probability is >= 0.5. That rule lives in dashboard_template.html
+     probability is >= 0.5. That rule lives in src/dashboard/app.js
      (the `mktB_home >= 50 ? home : away` line) and generate_dashboard.py's
      build_games_js. If this file disagreed with those, the printed sheet
      and the website would recommend different teams, which is the worst

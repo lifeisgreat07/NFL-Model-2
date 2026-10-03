@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/body.html",
   "tests": "tests/test_page_header.py",
   "cases": [
     {

@@ -25,7 +25,7 @@
     },
     {
       "id": "font-google-link-comes-back",
-      "target": "src/pipeline/dashboard_template.html",
+      "target": "src/dashboard/page.html",
       "why": "the Google Fonts stylesheet is linked again beside the inlined faces. Nothing looks different, which is the point: the page quietly goes back to asking a third party for its face on every load.",
       "find": "<style id=\"font-faces\">",
       "replace": "<link href=\"https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap\" rel=\"stylesheet\">\n<style id=\"font-faces\">",

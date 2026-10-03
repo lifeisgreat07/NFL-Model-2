@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/body.html",
   "tests": "tests/test_board_first.py",
   "cases": [
     {
@@ -32,6 +32,7 @@
     },
     {
       "id": "load-switches-to-ratings",
+      "target": "src/dashboard/app.js",
       "why": "a script switches to Power Ratings once the page has loaded, undoing the markup's choice after the first paint.",
       "find": "  btn.addEventListener('click', ()=> goToPage(btn.dataset.page));\n});",
       "replace": "  btn.addEventListener('click', ()=> goToPage(btn.dataset.page));\n});\nsetActivePage('ratings');",

@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/styles.css",
   "tests": "tests/test_phone_top_bar.py",
   "cases": [
     {
@@ -11,6 +11,7 @@
     },
     {
       "id": "top-bar-theme-button-inert",
+      "target": "src/dashboard/app.js",
       "why": "the bar's button renders and does nothing: only the sidebar's button is wired, and the sidebar is hidden on the phone where the bar's button is the only one",
       "find": "document.querySelectorAll('#theme-toggle, .topbar-theme').forEach(btn => btn.addEventListener('click'",
       "replace": "document.querySelectorAll('#theme-toggle').forEach(btn => btn.addEventListener('click'",
@@ -25,6 +26,7 @@
     },
     {
       "id": "provenance-line-left-empty",
+      "target": "src/dashboard/body.html",
       "why": "the line's placeholder is dropped, so the phone's page foot is an empty rule and the page again never says what built it",
       "find": "  <p class=\"page-prov\">__SIDEBAR_FOOT__</p>\n",
       "replace": "  <p class=\"page-prov\"></p>\n",

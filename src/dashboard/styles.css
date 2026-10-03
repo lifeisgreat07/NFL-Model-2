@@ -1,0 +1,1641 @@
+  /* =====================================================================
+     TOKEN LAYER — Stage 8. Decisions and the verified numbers are in
+     docs/design/STAGE8-DESIGN.md; change a value only after re-running the
+     arithmetic there.
+
+     Colour has exactly four jobs and nothing else gets a hue:
+       1. structure            -> the neutral ramp, via semantic aliases
+       2. the model's lean / the active thing -> --accent (one blue)
+       3. a graded outcome     -> --good / --warn, and ONLY for a pick
+                                  that has been scored: was a prediction right.
+                                  Not a decision label, not a team's win or
+                                  loss, not "current", not "improving".
+                                  tests/test_graded_colour_scope.py holds it.
+       4. chart series identity-> --series-a/b/c/d, keyed to the ENTITY
+
+     The compatibility aliases that carried the old token names through the
+     first pass are gone: every call site now names a token in this block
+     directly. --good / --warn keep their old names on purpose (see below).
+     ===================================================================== */
+  :root{
+    color-scheme: dark;
+
+    /* Neutral ramp — cool, slightly blue-grey so white numerals read crisp */
+    --n0:#0B0D10; --n1:#121519; --n2:#181C22; --n3:#232830; --n4:#2F3641;
+    --n5:#4A5260; --n6:#7D8794; --n7:#AEB6C0; --n8:#E6E9ED;
+
+    --bg:var(--n0); --surface:var(--n1); --surface-2:var(--n2);
+    --border:var(--n3); --border-strong:var(--n4);
+    --text:var(--n8); --text-2:var(--n7); --text-3:var(--n6); --text-disabled:var(--n5);
+
+    /* Job 2 — ONE accent */
+    /* --accent-strong was retired 2026-09-22 (Stage 9). Its one consumer
+       was the Net Rating bar, which now wears the neutral ramp (below), and a
+       token with no consumer is a colour pair the sweep has to keep excusing
+       -- it was the closest pair in the dark palette against --series-a. */
+    --accent:#7FA8F5;
+    --accent-soft:rgba(127,168,245,.14); --accent-ring:rgba(127,168,245,.45);
+
+    /* Job 3 — a graded outcome, only once the thing has been evaluated.
+       --good / --warn keep their names AND their literal hex because
+       tests/test_dashboard_charts.py reads them out of this block with a
+       hex regex; --graded-* are the names the design record uses and are
+       aliased onto them so the two can never drift apart. */
+    --good:#4FAE8A; --good-dim:rgba(79,174,138,.14);
+    --warn:#D46C6C; --warn-dim:rgba(212,108,108,.14);
+    --graded-correct:var(--good); --graded-correct-soft:var(--good-dim);
+    --graded-wrong:var(--warn);   --graded-wrong-soft:var(--warn-dim);
+
+    /* Job 4 — chart series identity. DELIBERATELY UNCHANGED by Stage 8.
+       These four came out of the dataviz skill's validator (OKLCH lightness
+       band, chroma floor, CVD simulation, contrast) and tests/test_dashboard_charts.py
+       enforces every one of those gates. The Stage 8 mock palette was validated
+       on a different axis — CIEDE2000 under Machado at a >=15 floor, stricter
+       than the >=8 here — but was never checked against the band or the chroma
+       floor, and fails six of these assertions when measured. Keeping these.
+       What Stage 8 DOES add is the part that is independent of hue: a fixed
+       shape and dash per entity, so identity survives greyscale and
+       forced-colours. Slot order is unchanged: a = Model A, b = Model B,
+       c = Market, d = My Picks. */
+    --series-a:#5283E0; --series-b:#C97F2E; --series-c:#C94893; --series-d:#9A4CF6;
+
+    /* Spacing — 4px grid */
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:20px;
+    --s6:24px; --s7:32px; --s8:40px; --s9:48px;
+
+    /* Radius */
+    --r-sm:4px; --r-md:8px; --r-lg:12px; --r-full:999px;
+
+    /* Type */
+    --fs-11:11px; --fs-12:12px; --fs-13:13px; --fs-14:14px;
+    --fs-16:16px; --fs-20:20px; --fs-24:24px; --fs-32:32px;
+    --lh-tight:1.15; --lh-body:1.45; --track-label:.06em;
+    --logo:20px;
+
+    /* Motion — the whole dashboard's feel is these four values.
+       prefers-reduced-motion collapses the durations to 0ms in one block
+       below, so the reduced-motion path cannot drift out of sync. */
+    --dur-fast:80ms; --dur-base:160ms; --dur-slow:240ms;
+    --ease:cubic-bezier(.2,.7,.2,1);
+    --press:translateY(1px);
+
+    /* Elevation is a border, not a shadow. --shadow-overlay is the only
+       ELEVATION shadow and has exactly two consumers, both of which genuinely
+       float above the page: the undo toast and the reliability tooltip.
+       Everything else is separated from the surface behind it by a 1px border.
+       One other box-shadow exists on the page and is deliberate: the live-season
+       dot in the brand mark carries a same-colour glow (0 0 8px, no offset),
+       which is an emphasis effect on a status indicator rather than elevation. */
+    --shadow-overlay: 0 12px 32px rgba(0,0,0,.5);
+    --z-nav:10; --z-overlay:20;
+
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-top: env(safe-area-inset-top, 0px);
+  }
+
+  [data-theme="light"]{
+    color-scheme: light;
+    --n0:#F3F4F6; --n1:#FFFFFF; --n2:#F7F8FA; --n3:#E4E7EB; --n4:#CBD1D9;
+    --n5:#A3ABB6; --n6:#626C7B; --n7:#4A5260; --n8:#14181E;
+
+    --accent:#1F5ED6;
+    --accent-soft:rgba(31,94,214,.10); --accent-ring:rgba(31,94,214,.35);
+
+    /* --good darkened from #1E7F5F: 5.08:1 on its own tint over white */
+    --good:#187052; --good-dim:rgba(24,112,82,.12);
+    --warn:#B94343; --warn-dim:rgba(185,67,67,.10);
+
+    --series-a:#4C75C3; --series-b:#B26A0C; --series-c:#893365; --series-d:#7D24D3;
+
+    --shadow-overlay: 0 12px 32px rgba(20,24,30,.14);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    :root{ --dur-fast:0ms; --dur-base:0ms; --dur-slow:0ms; }
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{-webkit-tap-highlight-color:transparent;}
+  body{
+    background: var(--bg);
+    color:var(--text); font-family:'Plus Jakarta Sans', sans-serif; min-height:100vh; display:flex;
+    -webkit-font-smoothing:antialiased;
+    padding-top:var(--safe-top);
+  }
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+  ::selection{background:var(--accent-soft); color:var(--accent);}
+
+  /* ---------- Desktop sidebar ---------- */
+  .sidebar{
+    width:236px; flex-shrink:0; background:linear-gradient(180deg, var(--surface), var(--bg) 140%);
+    border-right:1px solid var(--border); display:flex; flex-direction:column;
+    padding:var(--s6) 0; position:sticky; top:0; height:100vh;
+  }
+  .brand{padding:0 var(--s6) var(--s6); border-bottom:1px solid var(--border); margin-bottom:var(--s4);}
+  .brand-mark{display:flex; align-items:center; gap:var(--s2); font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
+    letter-spacing:.18em; color:var(--accent); text-transform:uppercase;}
+  .brand-mark .pulse{width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent);}
+  /* ---------- The football ----------
+     Still by default. It settles once on first paint, nudges under the
+     pointer, and tumbles only while a week is loading. Designed in Stage 8 and
+     never ported until now.
+
+     Precedence must be hover < entrance < loading: a load has to beat a hover,
+     or the spinner freezes the moment the pointer rests on the mark. The Stage
+     8 design got that from SOURCE ORDER, with all three selectors at equal
+     (0,4,0) specificity.
+
+     That cannot work here, and the reason is worth stating so nobody "fixes"
+     it back. This file requires every :hover rule to live in one
+     @media (hover:hover) block near the END of the stylesheet, which is later
+     than these -- so on equal specificity the hover would win, which is exactly
+     the bug. The two rules below therefore qualify with `body`, making them
+     (0,4,1) against the hover's (0,4,0), and precedence stops depending on
+     which block a rule happens to sit in.
+
+     The equal-specificity trap is real: during the design phase a hover rule
+     written as four classes silently beat a three-class .is-loading rule and
+     froze the tumble under the pointer. Same bug, different cause. */
+  .brand-row{display:flex; align-items:center; gap:var(--s3); margin-top:var(--s2);}
+  .brand-ball{width:26px; height:26px; flex:none; display:block; overflow:visible;}
+  .brand-ball .ball{fill:none; stroke:var(--text); stroke-width:1.4;}
+  .brand-ball .lace{stroke:var(--text); stroke-width:1.2; stroke-linecap:round;}
+  .brand-ball .spin{transform-origin:10px 10px; transform-box:view-box;}
+  @keyframes bm-settle{0%{transform:rotate(-160deg) scale(.85)} 100%{transform:rotate(0deg) scale(1)}}
+  @keyframes bm-nudge{0%{transform:rotate(0deg)} 45%{transform:rotate(-14deg)} 100%{transform:rotate(0deg)}}
+  @keyframes bm-tumble{from{transform:rotate(0deg)} to{transform:rotate(360deg)}}
+  body.is-entering .brand .brand-ball .spin{animation:bm-settle 480ms var(--ease) both;}
+  body.is-loading  .brand .brand-ball .spin{animation:bm-tumble 700ms linear infinite;}
+  /* Reduced motion: no spin at all, so "busy" needs a non-motion cue. The mark
+     drops to --text-3 while loading; aria-busy carries it for assistive tech. */
+  @media (prefers-reduced-motion:reduce){
+    .brand-ball .spin{animation:none !important;}
+    .is-loading .brand-ball .ball, .is-loading .brand-ball .lace{stroke:var(--text-3);}
+  }
+  .brand h1{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:var(--fs-24); letter-spacing:.01em; line-height:.98;}
+  .brand-sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);}
+  nav.side-nav{display:flex; flex-direction:column; gap:2px; padding:0 var(--s3);}
+  .nav-group-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.13em; text-transform:uppercase; color:var(--text-2); padding:var(--s4) var(--s3) var(--s2);}
+  .nav-btn{
+    display:flex; align-items:center; gap:var(--s3); background:transparent; border:none; color:var(--text-2);
+    font-family:'Plus Jakarta Sans'; font-weight:600; font-size:var(--fs-14); text-align:left; padding:var(--s3) var(--s3); border-radius:8px;
+    cursor:pointer; transition:background var(--dur-base) var(--ease), color var(--dur-base) var(--ease), transform var(--dur-fast) var(--ease); width:100%;
+  }
+  
+  .nav-btn.active{background:var(--accent-soft); color:var(--accent);}
+  .nav-btn svg{width:16px; height:16px; flex-shrink:0; opacity:.85;}
+  .nav-btn.disabled{opacity:.38; cursor:default;}
+  .sidebar-foot{margin-top:auto; padding:var(--s4) var(--s6) 0; border-top:1px solid var(--border);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); line-height:1.7;}
+  /* .btn.theme-toggle, not .theme-toggle: this rule sits above the button
+     component in source order, so at equal specificity .btn's colour won. */
+  .btn.theme-toggle{margin-bottom:var(--s3); color:var(--text-2); font-weight:500;}
+
+  /* ---------- Top bar and page foot, below 1080px (Stage 26 item 3) ----------
+     The sidebar holds the page's h1, the theme toggle and the provenance line,
+     and it is hidden below 1080px, so a phone had none of the three. Mark
+     picked this treatment on 2026-09-28 from rendered side-by-sides (a top
+     bar; the More sheet; the foot of each page): a slim bar above every page
+     with the ball, the h1 and a theme button, and the provenance line at the
+     foot of the page. The bar stays put while the page scrolls and reaches
+     up under the phone's status-bar inset so nothing scrolls behind it. */
+  .topbar, .page-prov{display:none;}
+
+  /* ---------- Main ---------- */
+  main{flex:1; padding:var(--s7) var(--s8) 60px; max-width:1220px; min-width:0;}
+  .page{display:none;}
+  .page.active{display:block; animation:fade var(--dur-slow) var(--ease);}
+  @keyframes fade{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;}}
+
+  .page-head{display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:var(--s4);
+    margin-bottom:var(--s7); padding-bottom:var(--s5); border-bottom:1px solid var(--border);}
+  /* The shared page header: eyebrow (the page's sidebar group), title, one
+     line of description, and an optional badge on the right. Every page
+     has all three text parts; tests/test_page_header.py holds that. The
+     eyebrow is --text-2, not the accent: the accent means "active", and a
+     label naming a section is not an emphasis. */
+  .page-eyebrow{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); font-weight:600;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--text-2); margin-bottom:var(--s2);}
+  .page-head h2{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:var(--fs-32); letter-spacing:.005em;}
+  .page-head .desc{color:var(--text-2); font-size:var(--fs-14); margin-top:var(--s1); max-width:560px; line-height:1.55;}
+  .board-updated{color:var(--text-2); font-size:var(--fs-12); margin-top:var(--s1);}
+  .badge{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.05em; padding:var(--s2) var(--s3); border-radius:20px;
+    background:var(--surface-2); color:var(--text-2); border:1px solid var(--border); white-space:nowrap;}
+
+  /* ---------- Tables ----------
+     One system for every table on the page (Stage 10).
+
+     A table either FITS its box or it does not, and which one is measured,
+     not guessed from the viewport: fitTables() compares each table's width
+     with its wrapper's and marks the wrapper .fits.
+
+       fits      overflow:clip, which rounds the corners without making the
+                 wrapper a scroll container -- so the header row can stick
+                 to the top of the window as a long table scrolls past.
+       does not  overflow-x:auto, and the wrapper's background draws a soft
+                 edge on whichever side still has columns to scroll to. That
+                 edge is the fix for "the ratings table clips mid-column":
+                 it was never clipped, it scrolled with nothing to say so.
+
+     The default, before any script runs, is the scrolling one. A page
+     without JavaScript therefore loses the sticky header, never a column.
+
+     Both needs pull on the same property. A header can only stick to the
+     window if no ancestor is a scroll container, and a table wider than its
+     box needs its wrapper to BE one. So the header sticks only where the
+     table fits, which is every table from 768px up and none of the wide
+     ones on a phone.
+
+     border-collapse is `separate` with no spacing, which looks identical:
+     under `collapse` a sticky cell's border stays behind in the table while
+     the cell moves, and the stuck header loses its bottom rule.
+
+     A header is a control only when it sorts. It then carries aria-sort,
+     takes focus, and alone gets the pointer and the hover colour; before
+     this every header on every table looked clickable, and the one table
+     that sorts could not be sorted from a keyboard. */
+  .table-wrap{
+    --table-edge:color-mix(in srgb, var(--text) 16%, transparent);
+    border:1px solid var(--border); border-radius:var(--r-md);
+    overflow-x:auto; overflow-y:hidden;
+    background:
+      linear-gradient(to right, var(--surface) 40%, transparent) left center / 32px 100% no-repeat local,
+      linear-gradient(to left, var(--surface) 40%, transparent) right center / 32px 100% no-repeat local,
+      linear-gradient(to right, var(--table-edge), transparent) left center / 12px 100% no-repeat scroll,
+      linear-gradient(to left, var(--table-edge), transparent) right center / 12px 100% no-repeat scroll,
+      var(--surface);
+  }
+  .table-wrap.fits{overflow:clip; background:var(--surface);}
+  /* A wrapper that scrolls is a Tab stop (setScrollStop), so it shows
+     where focus is like every other stop on the page. The ring sits just
+     inside the border, where no ancestor's overflow can clip it. */
+  [data-scroll-stop]:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
+  table{width:100%; border-collapse:separate; border-spacing:0;}
+  thead th{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.08em; text-transform:uppercase;
+    color:var(--text-2); text-align:left; padding:var(--s3) var(--s4); border-bottom:1px solid var(--border);
+    white-space:nowrap; transition:color var(--dur-base) var(--ease);}
+  /* z-index 3, above the Net Rating zero line (z-index 2, a ::before on each
+     bar track). At 1 the zero line of the row scrolling underneath poked up
+     through the stuck header -- found in the first render, not by reading. */
+  .table-wrap.fits thead th{position:sticky; top:0; z-index:3; background:var(--surface);}
+  thead th[aria-sort]{cursor:pointer; user-select:none;}
+  /* The sort mark (Stage 34 item 29, chosen by Mark 2026-09-29 from rendered
+     options). At rest every header looked alike, so nothing said which ones
+     sort; "#" is the net-rating rank and deliberately does not. A header
+     that sorts carries an up-down mark in --text-3 (the neutral ramp, not opacity:
+     tests/test_no_dimmed_text.py), and the sorted one an arrow
+     for its direction. The mark is drawn from aria-sort, so it cannot
+     disagree with what a screen reader is told, and its alt text is empty
+     (the `/ ''`) so it is not read out as "up down arrow" on top of that.
+     Net Rating's header holds a scale under its label, so its mark goes on
+     the label, not after the scale. */
+  thead th[aria-sort]:not(:has(.net-head))::after,
+  thead th[aria-sort] .net-head > span:first-child::after{
+    content:'\2195'; content:'\2195' / ''; margin-left:var(--s1); color:var(--text-3);}
+  thead th[aria-sort=descending]:not(:has(.net-head))::after,
+  thead th[aria-sort=descending] .net-head > span:first-child::after{
+    content:'\25BC'; content:'\25BC' / ''; color:inherit; font-size:.8em;}
+  thead th[aria-sort=ascending]:not(:has(.net-head))::after,
+  thead th[aria-sort=ascending] .net-head > span:first-child::after{
+    content:'\25B2'; content:'\25B2' / ''; color:inherit; font-size:.8em;}
+  thead th[aria-sort]:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}
+  thead th.sorted{color:var(--accent);}
+  /* Model Lab's decision chips (Stage 18): the count is the table's own. */
+  .lab-filter .chip-n{margin-left:var(--s1); font-variant-numeric:tabular-nums; color:var(--text-2);}
+  .lab-filter.active .chip-n{color:inherit;}
+  /* Model Lab (Stage 18): the label a row was first given, under the decision
+     it maps to, and where a registered answer's figures come from. */
+  .lab-first,.lab-src{display:block; margin-top:var(--s1); font-size:var(--fs-12); color:var(--text-2);}
+  .lab-src code{font-size:var(--fs-12);}
+  /* A row's decision pills: one wrapping row with a gap, and a pill never
+     breaks inside itself ("CONFIRMED FINDING" did, and DEFERRED stacked on
+     LEAKAGE with no space between them, until 2026-09-28). */
+  .lab-tags{display:flex; flex-wrap:wrap; gap:var(--s1);}
+  .lab-tags .conf-tag{white-space:nowrap;}
+  /* A registered result leads with its interval drawn against zero (Stage 18):
+     generate_dashboard.interval_glyph(). The zero line is dashed so it reads
+     as a reference, not as part of the interval; every stroke is on the
+     neutral ramp, because a result is not a graded pick. */
+  .lab-lead{display:block; margin-bottom:var(--s1);}
+  .lab-ci{display:block; overflow:visible;}
+  /* The frame every row's glyph shares (2026-09-28), so the graphs are one
+     size in one place and only the interval inside moves. */
+  .lab-ci-frame{fill:var(--bg); stroke:var(--border);}
+  .lab-ci-zero{stroke:var(--text-2); stroke-width:1; stroke-dasharray:2 2;}
+  .lab-ci-range{stroke:var(--text-2); stroke-width:1.5;}
+  .lab-ci-point{fill:var(--text);}
+  /* On a phone each experiment is a card, not a table row (Stage 18): three
+     columns of prose at 390px meant scrolling sideways through every result.
+     Same markup, same reading order -- name, result, decision -- so a screen
+     reader hears what it heard before; only the boxes change. The header row
+     is kept for assistive technology and hidden from sight, since each card's
+     three parts are self-evident. A filtered-out row stays hidden: the
+     display rule below would otherwise override the hidden attribute.
+     767px, not the page's usual 640: on the built page the table still
+     scrolls sideways at 640 and first fits at about 651 to 655px. The exact
+     figure depends on the machine's text rendering; two Chromium runs
+     measured 651 and 655. */
+  @media (max-width:767px){
+    #page-modellab .table-wrap[data-scroll-label="Experiment log"] :is(table, tbody, tr, td){display:block; width:auto;}
+    #page-modellab .table-wrap[data-scroll-label="Experiment log"] thead{position:absolute; width:1px; height:1px;
+      overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap;}
+    #page-modellab .table-wrap[data-scroll-label="Experiment log"] tr{border:1px solid var(--border);
+      border-radius:var(--r-md); padding:var(--s3) var(--s4); margin:0 0 var(--s3);}
+    #page-modellab .table-wrap[data-scroll-label="Experiment log"] tr[hidden]{display:none;}
+    #page-modellab .table-wrap[data-scroll-label="Experiment log"] td{padding:var(--s1) 0; border-bottom:none;}
+    #page-modellab .table-wrap[data-scroll-label="Experiment log"] td:first-child{font-weight:700;}
+  }
+  /* The row a #modellab/<slug> link points at (Stage 13 hash routes). */
+  tr.route-target td{background:var(--accent-soft);}
+  tbody td{padding:var(--s3) var(--s4); border-bottom:1px solid var(--border); font-size:var(--fs-14);}
+  tbody tr{transition:background var(--dur-fast) var(--ease);}
+  tbody tr:last-child td{border-bottom:none;}
+  td.num{font-family:'Plus Jakarta Sans', sans-serif; text-align:right;}
+  td.rank{font-family:'Plus Jakarta Sans', sans-serif; color:var(--text-2); width:36px;}
+  .team-cell{display:flex; align-items:center; gap:var(--s2);}
+/* A row's name is a link to that row's own page (Stage 26 item 5): a team
+   to its Deep-Dive, a graded week to its board. It keeps the table's text
+   colour, so the table does not turn into a column of blue, and underlines
+   on hover (in the hover block below); 24px tall at least, the page's
+   target size. */
+.row-link{display:inline-flex; align-items:center; gap:var(--s2); min-height:24px; color:inherit; text-decoration:none;}
+  .trend-arrow{font-size:var(--fs-11); margin-left:var(--s1);}
+  /* The glyph carries the direction. Green/red here read as right/wrong
+     about a rating moving, which is not a scored pick. */
+  .trend-arrow.up, .trend-arrow.down{color:var(--text-2);}
+  /* The number beside it (Stage 19) is tabular so a column of moves lines up. */
+  .trend-arrow{font-variant-numeric:tabular-nums; white-space:nowrap;}
+  /* Power Ratings' biggest-moves line. No display rule: the element uses
+     the hidden attribute, and a display value here would override it. */
+  .movers-line{margin:0 0 var(--s3); color:var(--text); font-size:var(--fs-14);}
+  .streak-row{display:flex; align-items:center; gap:var(--s4); margin-bottom:var(--s5); flex-wrap:wrap;}
+  .streak-cells{display:flex; gap:var(--s1);}
+  .streak-cell{width:14px; height:14px; border-radius:3px; background:var(--border);}
+  .streak-cell.win{background:var(--good);}
+  .streak-cell.loss{background:var(--warn);}
+  .streak-cell.even{background:var(--text-2);}
+  .streak-label{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:var(--fs-12); padding:var(--s1) var(--s3); border-radius:20px;}
+  .streak-label.win{background:var(--good-dim); color:var(--good);}
+  .streak-label.loss{background:var(--warn-dim); color:var(--warn);}
+  .skip-link{
+    position:absolute; top:-40px; left:8px; z-index:200;
+    background:var(--accent); color:var(--bg); padding:var(--s3) var(--s4); border-radius:8px;
+    font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-13);
+    text-decoration:none; transition:top var(--dur-base) var(--ease);
+  }
+  .skip-link:focus{top:8px;}
+  a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+  main:focus-visible{outline:none;}
+  /* A link that stands alone on its line ("Read the case study") is a target
+     of its own, so it gets WCAG 2.5.8's 24px minimum (Stage 12; the five on
+     "Checking the AI's work" measured 16px in the fallback face and 18px in
+     Plus Jakarta Sans). A link inside a sentence keeps the text's line height:
+     2.5.8 exempts inline targets, and a taller box would push the lines apart. */
+  .link-standalone{display:inline-flex; align-items:center; min-height:24px;}
+  
+  /* --accent, not --series-a: the banner is the active thing, not a series. */
+  .onboarding-banner{background:var(--surface-2); border:1px solid var(--accent); border-radius:var(--r-md); padding:var(--s5) var(--s6); margin-bottom:var(--s5);}
+  .onboarding-content h4{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-14); margin-bottom:var(--s2); color:var(--text);}
+  .onboarding-content ul{margin:0 0 var(--s3) var(--s5); padding:0;}
+  .onboarding-content li{font-size:var(--fs-13); color:var(--text-2); line-height:1.6; margin-bottom:var(--s1);}
+  /* "How to read this" (Stage 13): a native disclosure, so it opens from the
+     keyboard and says whether it is open with no script. 24px tall like
+     every other text control (WCAG 2.5.8). */
+  .onboarding-more{margin:0 0 var(--s3);}
+  .onboarding-more summary{display:inline-flex; align-items:center; min-height:24px; cursor:pointer;
+    font-size:var(--fs-13); font-weight:600; color:var(--text); text-decoration:underline; text-underline-offset:3px;}
+  /* The [ and ] keys named in "How to read this" (Stage 17). The page's own
+     face, not the browser's monospace default, so the text keeps the webfont. */
+  .onboarding-more kbd{font-family:inherit; font-size:.95em; padding:0 var(--s1);
+    border:1px solid var(--border-strong); border-radius:var(--r-sm);}
+  .onboarding-more summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:var(--r-sm);}
+  /* inline-flex drops the built-in triangle, so the state is drawn the way
+     the page's other text toggles draw it: "+" closed, "−" open. */
+  .onboarding-more summary::-webkit-details-marker{display:none;}
+  .onboarding-more summary::before{content:'+\00a0';}
+  .onboarding-more[open] summary::before{content:'\2212\00a0';}
+  .onboarding-more ul{margin-top:var(--s2);}
+  /* Model Lab's reliability diagram uses the same disclosure (Stage 18):
+     the same 24px text toggle, plus and minus markers, and focus ring. Its
+     own rules, not a second selector on .onboarding-more's, so those stay
+     as tests/test_orientation_banner.py reads them.
+     tests/test_model_lab_diagram_below.py checks the height, the focus ring
+     and the open marker here. */
+  .rel-how{margin:var(--s3) 0;}
+  .rel-how summary{display:inline-flex; align-items:center; min-height:24px; cursor:pointer;
+    font-size:var(--fs-13); font-weight:600; color:var(--text); text-decoration:underline; text-underline-offset:3px;}
+  .rel-how summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:var(--r-sm);}
+  .rel-how summary::-webkit-details-marker{display:none;}
+  .rel-how summary::before{content:'+\00a0';}
+  .rel-how[open] summary::before{content:'\2212\00a0';}
+  /* On a phone the banner sits among the cards (placeOrientation). */
+  .game-grid > .onboarding-banner{grid-column:1 / -1; margin:0;}
+  /* Shared-picks view. Borrows the onboarding banner wholesale and changes one
+     property, so this adds a line rather than a block.
+
+     It used to differ by HUE: the onboarding banner was --series-a and this was
+     --accent. Two problems with that. The comment claimed "amber, not blue"
+     while --accent is #7FA8F5, a blue -- so the stated distinction had not been
+     true for some time. And --series-a was a chart-series token being spent on
+     a banner border, which is what this commit is removing everywhere.
+
+     Both banners are --accent now, so the difference is the BORDER STYLE
+     rather than a fifth hue: dashed reads as provisional, which is exactly what
+     "these picks are not yours" means. Colour has four jobs and "someone else's
+     data" is not one of them; inventing a hue for it is how a palette stops
+     meaning anything. The banner's own text says the rest. */
+  .shared-banner{border-style:dashed;}
+  .shared-note{font-size:var(--fs-13); color:var(--text-2); line-height:1.6; margin-bottom:var(--s3);}
+  .shared-actions{display:flex; gap:var(--s2); flex-wrap:wrap;}
+  /* Read-only while viewing someone else's picks: the buttons still show the
+     selection, but tapping one must not silently start editing their log. */
+  .picks-readonly .pick-btn{cursor:default;}
+  .team-logo{width:22px; height:22px; object-fit:contain; flex-shrink:0;}
+  .team-abbr{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); width:38px;}
+  .team-full{color:var(--text-2); font-size:var(--fs-13);}
+  .net-cell-inner{display:grid; grid-template-columns:90px 62px; align-items:center; column-gap:var(--s3); justify-content:center;}
+  .dive-row{display:flex; align-items:center; gap:var(--s4); padding:var(--s2) 0; border-bottom:1px solid var(--border);}
+  /* The team being viewed, logo and name, above the page's content (2026-09-28). */
+  .dive-team{display:flex; align-items:center; gap:var(--s3); margin:0 0 var(--s4);}
+  .dive-logo{width:48px; height:48px; object-fit:contain; flex-shrink:0;}
+  .dive-team-name{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-20); color:var(--text);}
+  .dive-row:last-child{border-bottom:none;}
+  .dive-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); color:var(--text-2); width:80px; flex-shrink:0;}
+  .dive-label.live{color:var(--accent);}
+  .dive-value{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:var(--fs-14); width:62px; text-align:right; flex-shrink:0;}
+  /* Stage 19: offense and defense beside net, smaller and quieter than it. */
+  .dive-split{display:flex; gap:var(--s3); font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12);
+    color:var(--text-2); font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .dive-note{font-size:var(--fs-12); color:var(--text-2); margin:0 0 var(--s3);}
+  /* On a phone the pair takes a second small line, lined up under the bar
+     (Mark, 2026-09-28). After the rules above on purpose: the earlier
+     767px block would lose to them on source order. */
+  @media (max-width:767px){
+    .dive-row{flex-wrap:wrap; row-gap:var(--s1);}
+    /* The bar gives up width so the net value stays on the first line:
+       with wrapping on, its fixed 140px pushed the value down too, three
+       lines a row at 375px. flex-basis 0 overrides the inline width. */
+    .dive-row .srs-bar-track{flex:1 1 0; min-width:48px;}
+    .dive-split{flex-basis:100%; padding-left:calc(80px + var(--s4));}
+  }
+  .net-value{font-family:'Plus Jakarta Sans', sans-serif; text-align:right; justify-self:end; white-space:nowrap;}
+  .srs-bar-track{position:relative; width:90px; height:6px; background:var(--border); border-radius:3px; overflow:hidden;}
+  .srs-bar-fill{position:absolute; top:0; bottom:0; background:var(--text-3); border-radius:3px;}
+
+  /* Diverging variant. These bars encode a SIGNED value whose zero is the
+     middle of the track, and until now that zero was invisible: a small
+     positive and a small negative both rendered as a short bar near the
+     centre, distinguishable only by reading the number beside it -- which
+     defeats the point of having a bar. Deliberately NOT applied to the
+     probability bars, which are 0-100% magnitude bars anchored at the left
+     edge and has no meaningful centre to mark.
+     THE SIGN IS NOT A HUE, decided in Stage 9 (2026-09-22). The fill is the
+     neutral --text-3 on both sides of zero: the zero line and the bar's
+     direction already say which side a team is on, and the number prints
+     beside it. A diverging hue pair would be a fifth colour job, and its
+     warm pole would read as "wrong" on a page where red means exactly that
+     for a scored pick -- a team rated below average has not been wrong about
+     anything. Contrast of the fill, WCAG 1.4.11 needs 3:1 for a graphical
+     object: dark 5.03 on --surface and 4.07 on the track, light 5.32 and
+     4.29, recomputed from the hex in tests/test_graded_colour_scope.py.
+     It used to be an --accent gradient, which spent the "model's lean" colour
+     on every team in the table. */
+  .srs-bar-track.diverging{overflow:visible;}
+  .srs-bar-track.diverging::before{content:''; position:absolute; left:50%; top:-3px; bottom:-3px;
+    width:1px; margin-left:-.5px; background:var(--text-2); opacity:.5; z-index:2;}
+
+  /* Printed domain for the Net Rating column. The bars are normalised to the
+     league's largest absolute rating, so a full-width bar does not mean "1.0"
+     or "the maximum possible" -- it means "the biggest in the league today".
+     Without the endpoints on the page that is unknowable. */
+  .net-head{display:flex; flex-direction:column; align-items:center; gap:var(--s1);}
+  .net-head-row{display:grid; grid-template-columns:90px 62px; column-gap:var(--s3); justify-content:center;}
+  .net-axis{position:relative; width:90px; display:flex; justify-content:space-between; align-items:center;
+    font-size:var(--fs-11); letter-spacing:0; text-transform:none; font-weight:500; color:var(--text-2); font-variant-numeric:tabular-nums;}
+  .net-axis .ax-zero{position:absolute; left:50%; transform:translateX(-50%);}
+  thead th.sorted .net-axis{color:var(--text-2);}
+
+  /* ---------- Week board ---------- */
+  .filter-row{display:flex; gap:var(--s2); margin-bottom:var(--s5); flex-wrap:wrap; align-items:center;}
+  .week-select{
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12); padding:var(--s2) var(--s4); border-radius:8px;
+    cursor:pointer; appearance:none; -webkit-appearance:none; min-width:160px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238A93A8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 10px center; background-size:16px; padding-right:var(--s7);
+  }
+  .week-select:focus{outline:1px solid var(--accent);}
+
+  /* ---------- Buttons ----------
+     One component, four variants. Before Stage 10 every button class was
+     styled on its own, and the cost was not only tidiness: the
+     filter pill's look was reused on six buttons that were not filters,
+     and the Week Board's filter handler selected by that look -- which is
+     how Export My Picks got painted as an active filter (#68). So LOOK and
+     BEHAVIOUR are now separate: .btn* says how a button looks, and the
+     older class beside it (.filter-btn, .why-toggle, .rel-toggle ...) stays
+     only as the hook script and tests select on, carrying no visuals.
+
+       .btn       an action: bordered, on the surface. Print / PDF, Export,
+                  Import, Copy Share Link, Got it, the shared-picks buttons,
+                  the theme toggle (.btn-block makes it full width).
+       .btn-chip  a pill in a group. Every chip carries aria-pressed, the
+                  state a screen reader hears (Stage 26: filters used
+                  .active alone, and Model Lab's used aria-current). The
+                  look differs by kind: .active marks the one chosen filter
+                  (the accent, because it is the active thing), and
+                  .btn-toggle (on the series toggles) an on/off series toggle
+                  (neutral, because a series being shown is not an emphasis).
+       .btn-link  inline text that opens something: "+ the numbers behind
+                  this", "+ view context", Undo.
+       .btn-icon  a bare square icon button: the week stepper's arrows.
+
+     Deliberately NOT variants, because each is a different control rather
+     than a differently dressed button: the sidebar and bottom-nav buttons
+     (navigation), .pick-btn (the choice itself, with a logo), .lbx-btn (a
+     listbox trigger, which shares .btn's box so the control row reads as
+     one row), and .dive-game-head (a table row that discloses).
+
+     Every value is a token. :hover lives in the (hover: hover) block at the
+     end of the stylesheet with every other hover rule, and the press is the
+     one global `button:active` rule. */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:var(--s2);
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12); font-weight:600;
+    line-height:var(--lh-tight); padding:var(--s2) var(--s3); border-radius:var(--r-md);
+    cursor:pointer; text-decoration:none; white-space:nowrap;
+    transition:background-color var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease), opacity var(--dur-base) var(--ease);
+  }
+  .btn svg{width:14px; height:14px; flex-shrink:0;}
+  .btn[hidden]{display:none;}
+  .btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .btn:disabled{color:var(--text-disabled); border-color:var(--border); cursor:default;}
+  .btn-block{display:flex; width:100%; justify-content:flex-start;}
+  .btn-chip{
+    border-radius:var(--r-full); color:var(--text-2); font-size:var(--fs-11); font-weight:500;
+    letter-spacing:.04em; padding:var(--s2) var(--s3);
+  }
+  .btn-chip.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent);}
+  .btn-chip.btn-toggle[aria-pressed="true"]{color:var(--text); border-color:var(--border-strong);}
+  /* A series switched off says so with its border and its marker, never by
+     fading its words: at opacity .45 the label was under 3:1 against the
+     card in both themes, and an "off" toggle is still a control someone has
+     to read to switch it back on (WCAG 1.4.3). Same rule for all small
+     text: dim it with the neutral ramp, which the contrast sums cover, not
+     with opacity, which they do not (Stage 12; see
+     tests/test_no_dimmed_text.py). */
+  .btn-chip.btn-toggle[aria-pressed="false"]{border-style:dashed; border-color:var(--border-strong);}
+  .btn-chip.btn-toggle[aria-pressed="false"] svg{opacity:.35;}
+  /* min-height is the WCAG 2.5.8 minimum target (24 CSS px). With no
+     padding, a text toggle was only as tall as its 11px line: "+ view
+     context" measured 13px at 390 wide (Stage 11, UX-REVIEW-2026-09-26).
+     On the component rather than on .toggle-flag, so every text toggle --
+     the why-toggle, the context toggle, Undo -- clears it, and the next one
+     added does too. .btn is already inline-flex and centres the text. */
+  .btn-link{
+    background:none; border:none; padding:0; border-radius:var(--r-sm); min-height:24px;
+    color:var(--text-2); font-size:var(--fs-11); font-weight:400; letter-spacing:.04em;
+    text-decoration:underline; text-underline-offset:3px;
+  }
+  .btn-icon{
+    width:28px; height:28px; padding:0; background:none; border:none;
+    border-radius:var(--r-sm); color:var(--text-2);
+  }
+  .btn-icon svg{width:15px; height:15px;}
+  .btn-icon:disabled{color:var(--text-disabled);}
+
+  /* ---------- Listbox ----------
+     The replacement for a native <select> as the VISIBLE control. Not a
+     restyle: `appearance:none` on .week-select above changes the closed box
+     and does nothing to the picker iOS opens on tap, which is the whole
+     complaint. The only way to stop the system wheel is to stop using a
+     native select as the thing anyone sees.
+
+     Stage 9 called .lbx-btn "the one button component". Stage 10 built that
+     component (.btn, above) and .lbx-btn keeps its own rules because it is
+     a listbox trigger with an expanded state and a chevron -- but its box
+     (border, surface, radius, padding, type) matches .btn's value for value,
+     so Print / PDF and the sort control read as one row.
+
+     Elevation is a border, not a shadow: the open list floats over content
+     with --border-strong and no box-shadow, so --shadow-overlay keeps the
+     consumer count docs/design/STAGE8-DESIGN.md states for it.
+
+     Every value here is a token. The control it replaces carried 12px, 9px
+     14px, 8px and a 160px minimum as literals, which is what Stage 8 exists
+     to stop. */
+  .lbx{position:relative; display:inline-block;}
+  .lbx-btn{
+    display:inline-flex; align-items:center; gap:var(--s2);
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12); font-weight:500;
+    padding:var(--s2) var(--s3); border-radius:var(--r-md); cursor:pointer;
+    /* 160px is the floor, not the width. A control that opts in with
+       data-lbx-fit="widest" gets --lbx-fit set to the width it would have
+       while wearing its longest label, so choosing an option can never move
+       the row around it -- measured at 430px before this: the Week Board's
+       sort button ran 183px on the default label and 248px on the longest,
+       enough to push it off the stepper's line and down beside Print / PDF.
+       The value is computed from the labels rather than written here, because
+       a literal would be wrong the first time anyone edits an option. */
+    min-width:var(--lbx-fit, 160px); text-align:left;
+    transition:border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease);
+  }
+  .lbx-value{flex:1;}
+  .lbx-btn .lbx-chevron{
+    width:16px; height:16px; flex-shrink:0; color:var(--text-3);
+    transition:transform var(--dur-base) var(--ease);
+  }
+  /* currentColor, not a hardcoded stroke in a data-URI. .week-select's chevron
+     is `%238A93A8`, a dark-theme grey baked into a URL -- the same literal as
+     teamColor()'s fallback.
+
+     This comment said "and therefore wrong in light mode" until 2026-09-21.
+     Corrected rather than deleted: that chevron never paints in EITHER theme.
+     All four elements wearing .week-select are clipped to 1x1 by
+     .visually-hidden -- #week-select and #picks-week-select in the markup,
+     #sort-select and #teamdive-select by enhanceSelect(). Rendered and
+     measured on all four, each on its own active page. Without a browser the
+     same mechanism is held by tests/test_week_stepper.py (the two hidden in
+     markup) and tests/test_listbox.py (the two hidden by script).
+
+     So the reason to inherit here is not that the other one is broken. It is
+     that this chevron is the one a reader sees, and a literal in it would be
+     the real version of a defect the dead one only looks like. */
+  /* :hover for this component lives in the @media (hover: hover) block with
+     every other hover rule -- a bare :hover sticks after a tap on a touch
+     device, which is the "button stays highlighted after you tap it" symptom
+     this stage keeps meeting from a different direction each time. */
+  .lbx-btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .lbx-btn:active{transform:var(--press);}
+  .lbx-btn[aria-expanded="true"]{border-color:var(--accent); color:var(--accent);}
+  .lbx-btn[aria-expanded="true"] .lbx-chevron{transform:rotate(180deg); color:var(--accent);}
+  .lbx-btn:disabled{color:var(--text-disabled); cursor:default; border-color:var(--border);}
+  .lbx-btn:disabled .lbx-chevron{color:var(--text-disabled);}
+
+  .lbx-list{
+    position:absolute; top:calc(100% + var(--s1)); left:0; z-index:var(--z-overlay);
+    min-width:100%; max-height:min(320px, 60vh); overflow-y:auto;
+    background:var(--surface); border:1px solid var(--border-strong);
+    border-radius:var(--r-md); padding:var(--s1); margin:0; list-style:none;
+  }
+  /* Edge flip. The list is as wide as its longest option (.lbx-opt is nowrap),
+     which has nothing to do with how wide the button is or how much room is
+     left beside it -- so a control sitting near the right edge opens a list
+     that runs off the viewport and the document scrolls sideways. Measured at
+     a 390px mobile viewport on `main` at 0451149: the list ran to x=431
+     against a 390px client width and documentElement.scrollWidth went 390 to
+     431 the moment it opened. Anchoring the right edge instead of the left is
+     the whole fix; openList() decides which, because whether it is needed
+     depends on where the flex row happened to put the control. */
+  .lbx-list--flip{left:auto; right:0;}
+  .lbx-list[hidden]{display:none;}
+  .lbx-opt{
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12);
+    color:var(--text-2); padding:var(--s2) var(--s3); border-radius:var(--r-sm);
+    cursor:pointer; white-space:nowrap;
+    display:flex; align-items:center; gap:var(--s2);
+  }
+  /* The tick is always in the DOM and only changes opacity, so choosing an
+     option cannot reflow the list under the pointer mid-click. */
+  .lbx-opt::before{
+    content:''; width:6px; height:6px; border-radius:var(--r-full); flex-shrink:0;
+    background:var(--accent); opacity:0;
+  }
+  .lbx-opt[aria-selected="true"]{color:var(--text); font-weight:600;}
+  .lbx-opt[aria-selected="true"]::before{opacity:1;}
+  /* .is-active is keyboard position, aria-selected is the chosen value. They
+     are different things and a listbox that conflates them tells a screen
+     reader the selection moved when only the cursor did. */
+  .lbx-opt.is-active{background:var(--surface-2); color:var(--text);}
+
+  /* The week stepper. Matches .week-select's height and border so the control
+     row reads as one row of controls rather than a stepper beside a form. */
+  .week-step{display:inline-flex; align-items:center; gap:2px; background:var(--surface);
+    border:1px solid var(--border); border-radius:var(--r-md); padding:var(--s1);}
+  .week-step-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); font-weight:600;
+    color:var(--text); padding:0 var(--s2); white-space:nowrap; font-variant-numeric:tabular-nums;}
+  /* Kept in the DOM and out of sight: still announced, still the element that
+     owns which week is selected. display:none would remove it from the
+     accessibility tree along with the picture.
+     NOT in the Tab order (Stage 12). This said "still focusable" until then,
+     and it was: Tab landed on a 1x1 clipped select on the Week Board and My
+     Picks at every width, so a keyboard user's focus vanished for one stop
+     (found by the browser checks). Every select hidden here now carries
+     tabindex="-1" -- the two week selects in the markup, the sort and team
+     selects from enhanceSelect(), which already did -- and the visible
+     control beside each (the week stepper, the listbox button) is the one
+     that takes focus. tests/test_hidden_select_tab_order.py holds it. */
+  /* min-width/min-height:0 are load-bearing, not tidy-up. `width:1px` is a
+     request and `min-width` is a floor, and the floor wins: every select
+     hidden here also wears .week-select, which sets `min-width:160px`, so
+     each one stayed a 160px box. Clipping stops it being painted and does
+     NOT remove it from the page's scrollable overflow, and with no left/top
+     it sits at its static position -- after the button, inside .lbx. On the
+     Week Board at 430px the filter row does not wrap, so the phantom select
+     ran to x=533 against a 430 viewport, the fixed bottom-nav stretched with
+     it, and a phone shrink-fit the whole page. Reported as "the board zoomed
+     out and the cards don't fit". Guarded by tests/test_visually_hidden.py. */
+  .visually-hidden{position:absolute; width:1px; height:1px; min-width:0; min-height:0;
+    margin:-1px; padding:0;
+    overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0;}
+  /* Print/PDF download. Sized to match .week-select so the control row reads
+     as one group; hidden entirely when no PDF exists for the selected week
+     rather than offering a link that would 404. */
+  .team-search{
+    background:var(--surface); border:1px solid var(--border); color:var(--text);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12); padding:var(--s2) var(--s4); border-radius:8px;
+    min-width:200px;
+  }
+  .team-search::placeholder{color:var(--text-2);}
+  .undo-toast{
+    position:fixed; left:50%; transform:translateX(-50%) translateY(120%);
+    bottom:calc(20px + var(--safe-bottom, 0px)); z-index:150;
+    background:var(--border); border:1px solid var(--border-strong); border-radius:10px;
+    padding:var(--s3) var(--s4); display:flex; align-items:center; gap:var(--s4);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); color:var(--text);
+    box-shadow:var(--shadow-overlay); opacity:0; transition:transform var(--dur-slow) var(--ease), opacity var(--dur-slow) var(--ease);
+    pointer-events:none;
+  }
+  .undo-toast.visible{transform:translateX(-50%) translateY(0); opacity:1; pointer-events:auto;}
+  /* Undo is the toast's one action, so it wears the accent and drops the
+     underline a .btn-link carries when it sits in running text. */
+  .undo-toast .btn-link{color:var(--accent); font-weight:700; font-size:var(--fs-12); text-decoration:none;}
+  @media (max-width:1079px){ .undo-toast{bottom:calc(90px + var(--safe-bottom, 0px));} }
+
+  /* ---------- Naming a model in prose ----------
+     A model's identity is a COLOURED MARK beside its name, never the name in
+     colour. That is the dataviz rule this project adopted -- "text wears text
+     tokens, never the series colour; a coloured mark beside them carries
+     identity" -- and it fixes a real defect rather than merely tidying one.
+
+     Before this, prose set Model A in --series-a (#5283E0) and Model B in
+     --accent (#7FA8F5). Two blues, measured 11.5 dE00 apart -- under the 15
+     floor, and 10.8 under red-green CVD. So the sentence that teaches a reader
+     which model is which was drawing them in near-identical colours, while the
+     charts drew the same pair 49.3 apart (Model B is ochre there). A reader who
+     learned "Model B is the blue one" from the text then met an orange Model B
+     in every chart.
+
+     Two failures in one: an entity wearing two different colours in two places,
+     and --accent (Job 2, the model's lean / the active thing) borrowed to mean
+     series identity (Job 4). The dot now carries identity and matches the chart
+     exactly; the words wear --text like all other words.
+
+     One residual to know about rather than discover. --accent (the pick tick)
+     and --series-a (Model A's dot) are the same two blues that caused the
+     problem above -- 11.5 dE00 dark, 8.1 light, 6.6 under CVD.
+
+     An earlier version of this comment justified that by asserting the two
+     marks are never on screen together. THAT WAS FALSE, and Booth caught it
+     on PR #60 by tracing the DOM. Both live inside the page-board section:
+     the onboarding banner holding the Model A chip at line ~1110, #game-grid
+     holding the ticks at ~1187. The banner is display:none only until
+     initOnboarding() shows it to any visitor without the dismissal key --
+     that is, every first-time reader, the exact audience it exists for.
+     Measured on the rendered page at 1440x1200: banner display:block, the dot
+     at y=78, the first tick at y=612. Both on screen, 534px apart, on a first
+     visit.
+
+     (The phrasing above is deliberately indirect. Quoting the false sentence
+     verbatim here trips tests/test_model_colour_comment.py, which forbids it
+     -- correctly: a guard that cannot tell a use from a mention is still
+     better than one that lets the claim back in, and this is the third time
+     tonight that explaining a defect reproduced it. Writing the tag names
+     with angle brackets also broke the section-balance check in
+     tests/test_methodology_merge.py, since a CSS comment is still inside the
+     document it describes.)
+
+     What is actually true, and what the residual now rests on, is weaker and
+     checkable. They never share a ROLE or a COMPONENT, and they do not look
+     alike beyond hue: the dot is a solid 8px circle; the tick is a 15px badge
+     whose fill is --accent at 10% opacity carrying a 9px glyph, so the only
+     saturated surfaces being compared are a circle and a checkmark. Shape,
+     size and meaning all differ, and neither is identified by hue in copy any
+     more -- the onboarding list used to call the tick "a blue tick" one
+     bullet below a blue Model A dot, which is fixed.
+
+     Be honest about the limit of that argument: shape carrying the difference
+     is what the dataviz rules permit only as a FLOOR case, and the
+     normal-vision figure in light mode (8.1) is below the 15 they ask for. It
+     is not a hypothetical-reader problem any more, it is a real one at low
+     severity. Re-stepping this token pair so it clears 15 is queued as Stage
+     11 work in docs/context.md. Until then, this is a known and measured
+     compromise rather than an unexamined one. */
+  .model-chip{display:inline-flex; align-items:baseline; gap:var(--s2); font-weight:700; color:var(--text);}
+  .model-chip::before{content:''; width:8px; height:8px; border-radius:50%;
+    background:var(--chip); flex:none; transform:translateY(-1px);}
+  .model-chip.a{--chip:var(--series-a);}
+  .model-chip.b{--chip:var(--series-b);}
+  .why-toggle, .toggle-flag{margin-top:var(--s3);}
+  /* The grid stretches cards in a row to a common height, and
+     `margin-top:auto` sends whatever slack that creates above this button, so
+     it sits on the card's bottom edge and lines up across the row. padding-top
+     keeps the 11px minimum gap the margin above provided, since `auto`
+     replaces that margin rather than adding to it.
+
+     The `>` is a direct-child guard, not a page guard, and the first version
+     of this comment got that wrong. It said the rule was scoped "so the same
+     button on My Picks -- which is not in a stretched grid -- keeps its
+     ordinary margin." My Picks IS in a stretched grid: #picks-grid and
+     #game-grid carry the same `game-grid` class and there is exactly one
+     .game-grid rule in this file, so align-items:stretch reaches both. Booth
+     caught it on PR #59 by reading the computed style off the rendered page,
+     which is the only way that claim could have been checked -- it was a
+     statement about a page, written from the CSS.
+
+     What is actually true is duller: My Picks emits no `.why-toggle` at all --
+     only renderGames() writes that button, renderPicksGrid() does not -- so
+     this rule has nothing to select there either way. The `>` still earns its
+     place by keeping the rule off any toggle nested deeper inside a card,
+     such as one inside .why-panel. */
+  .game-card > .why-toggle{margin-top:auto; padding-top:var(--s3);}
+  /* The plain-English reason, on the card rather than behind the toggle.
+     Sized between the model rows and the footnotes: it is the first thing
+     worth reading after the percentages, so it must not look like a caption. */
+  .why-words{margin:var(--s3) 0 0; font-size:var(--fs-13); line-height:1.55; color:var(--text);}
+  .why-words.dim{color:var(--text-2); font-size:var(--fs-12);}
+  /* Whose reasoning the sentence is (Stage 17). The card's headline is Model
+     B's, but the sentence is built from Model A's own contributions, so on a
+     card where the two disagree it names the other team. The label is the
+     headline's own small-caps style, so the two read as a pair. Its own
+     class, not .why-label: that one styles the row labels inside the
+     numbers panel, and sharing it restyled those rows too (caught by
+     counting the class on the rendered page, 64 on 16 cards). */
+  .why-by{margin-top:var(--s3); font-size:var(--fs-11); letter-spacing:.06em;
+    text-transform:uppercase; color:var(--text-2);}
+  .why-by + .why-words{margin-top:var(--s1);}
+  .why-panel .why-words{margin-top:0; margin-bottom:var(--s3);}
+
+  .why-panel{display:none; margin-top:var(--s3); padding-top:var(--s3); border-top:1px dashed var(--border);}
+  .why-panel.open{display:block; animation:fade var(--dur-slow) var(--ease);}
+  .why-row{display:flex; align-items:center; gap:var(--s3); font-size:var(--fs-12); margin-bottom:var(--s2);}
+  .why-row:last-child{margin-bottom:0;}
+  .why-label{font-family:'Plus Jakarta Sans', sans-serif; color:var(--text-2); width:90px; flex-shrink:0;}
+  .why-bar-track{position:relative; flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden;}
+  .why-bar-fill{position:absolute; top:0; bottom:0; border-radius:3px;}
+  .why-bar-fill.pos{background:var(--text-3); left:50%;}
+  .why-bar-fill.neg{background:var(--text-3); right:50%;}
+  .why-val{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); width:52px; text-align:right; flex-shrink:0;}
+  .graded-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); padding:var(--s1) var(--s3); border-radius:20px;}
+  .graded-tag.correct{background:var(--good-dim); color:var(--good);}
+  .graded-tag.incorrect{background:var(--warn-dim); color:var(--warn);}
+  /* A tie is neither: it was graded, and no model can be right or wrong
+     about a game with no winner (Stage 30 item 1). Neutral, never --good or
+     --warn, which are graded outcomes. */
+  .graded-tag.tie{background:var(--surface-2); color:var(--text-2); border:1px solid var(--border);}
+  .dive-result.tie{color:var(--text-2);}
+
+  .pick-buttons{display:flex; gap:var(--s2); margin-top:var(--s4);}
+  .pick-btn{flex:1; background:transparent; border:1.5px solid var(--border); color:var(--text);
+    font-family:'Plus Jakarta Sans'; font-weight:700; font-size:var(--fs-16); padding:var(--s3) var(--s2); border-radius:8px;
+    display:flex; flex-direction:column; align-items:center; gap:var(--s2);
+    cursor:pointer; transition:background-color var(--dur-base) var(--ease), border-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease), transform var(--dur-fast) var(--ease);}
+  /* 36px against the 20px the Week Board's telemetry rows use. That is not an
+     inconsistency: those sit inline inside a probability bar where the team is
+     a label, and this is the thing being chosen. The tap target grew with it,
+     which is the accessibility half of the same change. */
+  .pick-logo{width:36px; height:36px; object-fit:contain;}
+  .pick-abbr{font-size:var(--fs-16); font-weight:700; letter-spacing:.02em;}
+  .pick-btn.selected{background:var(--accent); border-color:var(--accent); color:var(--bg);}
+  /* One class, both pages. Sits under the matchup on the Week Board and
+     between the matchup and the buttons on My Picks, quiet in both places:
+     the card's header is WHICH game and WHEN, and what the card is FOR --
+     the models on one page, the choice on the other -- is what should draw
+     the eye. Empty string from kickoffLabel() renders no element at all
+     rather than a blank line.
+
+     Shared rather than duplicated per page for the reason matchupHeader is:
+     two copies of "the kickoff line" drift, and the one that drifts is
+     always the page nobody was looking at. */
+  .card-kickoff{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
+    color:var(--text-2); letter-spacing:.03em; margin-bottom:2px;}
+  /* Where the game stands between the Thursday lock and Tuesday's grading
+     (Stage 15), from the weekend refresh. Under the kickoff line, never in
+     place of it: the board is sorted by kickoff, and a sort key that leaves
+     the card is CLAUDE.md's invisible-sort-key trap. Neutral text, not a
+     graded colour: a final score is not a verdict on the pick until the
+     week is graded, and the graded tag already carries that verdict.
+     --text, the colour it renders in today: it named --text-1, which is
+     declared nowhere, so the declaration was dropped and the line inherited
+     --text from body (tests/test_css_tokens_defined.py). */
+  .card-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
+    color:var(--text); letter-spacing:.03em; margin-bottom:2px;}
+  /* Where to watch (Stage 17): the network name and nothing else, inside
+     the kickoff line because it answers the same question -- when and where.
+     A border, not a fill or a hue: elevation is a border here, and colour is
+     kept for graded results. The words "On TV:" are for a screen reader. */
+  .tv-pill{display:inline-block; margin-left:var(--s2); padding:0 var(--s2);
+    border:1px solid var(--border-strong); border-radius:var(--r-sm);
+    color:var(--text); font-weight:600; letter-spacing:.02em; line-height:1.5;}
+  /* The quarterbacks the pick was made with, and the one-line team news.
+     Same size and tone as the Vegas line above them: context for the pick,
+     not part of it. Team news is plain text, never a warning colour: an
+     injury is news, not a verdict on the pick (the Team Deep-Dive block's
+     rule, kept here). */
+  .card-qbs, .card-news{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
+    color:var(--text-2); margin-top:var(--s2); line-height:1.5;}
+  .card-qbs b, .card-news b{color:var(--text); font-weight:600;}
+  .board-note{font-size:var(--fs-12); color:var(--text-2); margin:0 0 var(--s3);}
+  /* A preview week (Tuesday's picks before Thursday's lock) says so above the
+     cards, in body text rather than the note size, with a rule down the side:
+     it changes how every number below it should be read. */
+  .board-preview-note{font-size:var(--fs-14); color:var(--text); padding:var(--s2) var(--s3);
+    border-left:3px solid var(--border-strong);}
+  .pick-agrees{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);}
+  /* A locked card (Stage 11). The chosen side keeps its fill so the pick
+     stays readable; the other side drops to the secondary text colour, not
+     an opacity, so its abbreviation keeps a known contrast. The lock line is
+     painted by paintPickCard and is empty, so not drawn, on an open game. */
+  .pick-btn:disabled{cursor:default;}
+  .pick-btn:disabled:not(.selected){color:var(--text-2);}
+  .pick-lock{display:flex; align-items:flex-start; gap:var(--s2); font-family:'Plus Jakarta Sans', sans-serif;
+    font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);}
+  .pick-lock:empty{display:none;}
+  .lock-icon{flex:none; margin-top:1px;}
+
+  /* ---------- The season scoreboard ----------
+     Stage 10's one deliberate "stop and look" moment, chosen by Mark on
+     2026-09-23 from three rendered candidates (a league ladder on Power
+     Ratings and four headline numbers on the Week Board were declined).
+
+     It replaced four equal cards -- My Picks, Model A, Model B, Market --
+     which made the reader do the comparison the page exists to make. Now the
+     page opens on the answer in words, then the race that backs it. The
+     verdict is honest in both directions: today the market leads, and the
+     page says so first.
+
+     Colour is Job 1, series identity, and each row also carries its series
+     shape, so the race reads without colour. Bars run 0 to 100 on one
+     shared track, with the 50% coin-flip line marked -- the fair baseline
+     for "picked the winner" -- rather than a truncated axis that would make
+     one game look like a landslide. */
+  .scoreboard{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg);
+    padding:var(--s7) var(--s7) var(--s6); margin-bottom:var(--s5);}
+  .scoreboard-eyebrow{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); font-weight:600;
+    letter-spacing:.12em; text-transform:uppercase; color:var(--text-2);}
+  .scoreboard-verdict{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-32); font-weight:800; line-height:1.1;
+    letter-spacing:-.01em; color:var(--text); margin:var(--s2) 0 var(--s5);}
+  .score-row{display:grid; grid-template-columns:120px 1fr 150px; gap:var(--s4); align-items:center; padding:var(--s2) 0;}
+  .score-name{display:flex; align-items:center; gap:var(--s2); font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:600; color:var(--text);}
+  .score-mark{width:9px; height:9px; flex-shrink:0; background:var(--series);}
+  .score-mark.dot{border-radius:var(--r-full);}
+  .score-mark.tri{background:none; width:0; height:0; border-left:5px solid transparent;
+    border-right:5px solid transparent; border-bottom:9px solid var(--series);}
+  .score-mark.diamond{width:8px; height:8px; transform:rotate(45deg);}
+  /* The same marks in "How sure, and how right"'s table cells (Stage 19),
+     where they sit inline beside the name instead of in a flex row. */
+  .forecast-score .score-mark{display:inline-block; margin-right:var(--s2); vertical-align:middle;}
+  .score-track{position:relative; height:14px; background:var(--border); border-radius:var(--r-full);}
+  .score-fill{position:absolute; top:0; bottom:0; left:0; border-radius:inherit; background:var(--series);}
+  .score-coin{position:absolute; left:50%; top:-6px; bottom:-6px; width:1px; background:var(--text-2); opacity:.6;}
+  .score-figure{text-align:right; font-family:'Plus Jakarta Sans', sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .score-pct{font-size:var(--fs-24); font-weight:800; color:var(--text);}
+  .score-count{font-size:var(--fs-12); color:var(--text-2); margin-left:var(--s1);}
+  .score-axis{display:grid; grid-template-columns:120px 1fr 150px; gap:var(--s4); font-size:var(--fs-11);
+    color:var(--text-2); margin-top:var(--s1);}
+  .score-axis-track{position:relative; height:14px;}
+  .score-axis-track span{position:absolute; top:0; white-space:nowrap;}
+  .score-axis-track .coin{left:50%; transform:translateX(-50%);}
+  .score-axis-track .full{right:0;}
+  .score-foot{margin-top:var(--s5); font-size:var(--fs-13); color:var(--text-2);}
+  @media (max-width:640px){
+    .scoreboard{padding:var(--s5) var(--s4);}
+    .scoreboard-verdict{font-size:var(--fs-24);}
+    .score-row{grid-template-columns:1fr auto; gap:var(--s2) var(--s3);}
+    .score-track{grid-column:1 / -1; order:3;}
+    .score-axis{grid-template-columns:1fr;}
+    .score-axis > span:first-child, .score-axis > span:last-child{display:none;}
+  }
+  /* ---------- Reliability diagram ---------- */
+  .rel-wrap{display:flex; gap:var(--s6); flex-wrap:wrap; align-items:flex-start;}
+  /* min-width is min(300px, 100%) for the game grid's reason: on a 320px
+     phone the panel is narrower than 300px and a hard floor pushed the plot's
+     right edge, and the "100%" tick with it, off the screen. */
+  .rel-plot{flex:1 1 420px; min-width:min(300px, 100%); max-width:520px; position:relative;}
+  /* Capped so the explanatory prose keeps a readable measure instead of
+     stretching to whatever width the panel happens to have. */
+  /* A 430px basis, not 300: the Brier table beside the plot needs 429px
+     before its scroller starts clipping it (the wrapper's scrollWidth when
+     squeezed, measured in the webfont; given room, the table stretches to
+     fill the column, so its rendered width is wider -- Booth read 438 on
+     #89). A narrower basis let the pair sit side by side with the table's
+     last column clipped. With this basis the two only
+     share a row when the table fits; otherwise the side wraps below. */
+  .rel-side{flex:1 1 430px; min-width:240px; max-width:440px;}
+  /* Series toggles. One row, above the chart. The dot in each is the series'
+     own colour, so the control says which line it governs without a label
+     that only repeats the button text. */
+  .rel-filters{display:flex; gap:var(--s2); flex-wrap:wrap; margin-bottom:var(--s3);}
+  /* Hover/focus readout. Positioned over the plot, never over the cursor, and
+     pointer-events:none so it can't steal the next hover. */
+  .rel-tip{position:absolute; pointer-events:none; opacity:0; transition:opacity var(--dur-fast) var(--ease);
+    background:var(--surface-2); border:1px solid var(--border-strong); border-radius:8px;
+    box-shadow:var(--shadow-overlay); padding:var(--s2) var(--s3); font-size:var(--fs-12); line-height:1.5;
+    color:var(--text-2); max-width:230px; z-index:5;}
+  .rel-tip.on{opacity:1;}
+  .rel-tip b{color:var(--text);}
+  .rel-point{cursor:pointer;}
+  .rel-point:focus-visible{outline:none;}
+  .rel-point:focus-visible .rel-halo{stroke:var(--text); stroke-width:2; opacity:1;}
+  .rel-stat{display:grid; grid-template-columns:1fr auto auto; gap:2px var(--s4); align-items:baseline;
+    font-size:var(--fs-12); padding:var(--s2) 0; border-bottom:1px solid var(--border);}
+  .rel-stat:last-of-type{border-bottom:none;}
+  .rel-stat .nm{display:inline-flex; align-items:center; gap:var(--s2); color:var(--text); font-weight:600;}
+  .rel-stat .v{font-variant-numeric:tabular-nums; color:var(--text-2);}
+  .rel-prov{font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s3); line-height:1.6;}
+  .rel-table summary{cursor:pointer; font-size:var(--fs-12); color:var(--text-2); padding:var(--s2) 0; transition:color var(--dur-fast) var(--ease);}
+
+  /* A grid, which the name promised and the rule did not: this was
+     `display:flex; flex-direction:column`, a single-column stack that forced
+     every card to the full ~1100px content width. The component study that
+     chose this card rendered it at 340px in a multi-column grid -- measured
+     340 x 312-350, near-square -- and the shipped page rendered the same
+     markup as a full-width rectangle, which is why the design was approved
+     and then did not appear.
+
+     340px is not a guess: it is the floor the study measured against and the
+     width the card was required to hold together at.
+
+     Same idiom as .agent-stats and .roadmap-grid (and .accuracy-cards,
+     until Stage 10's scoreboard replaced it), so the page has one way of
+     doing this.
+
+     align-items was `start`, and the reason given was that cards carry
+     different amounts of text, so stretching them to a common height would
+     pad the short ones with dead space. That was true when it was written and
+     is not true now. Measured at 1440px: with the coin-flip track record on
+     the card face, cards took SIX distinct heights spanning 205px, and
+     `start` left up to 205px of ragged gap BETWEEN cards in a row. With that
+     block behind the breakdown toggle the spread is 20px -- a single line of
+     explanation prose wrapping to two lines instead of three.
+
+     So the trade reversed. `start` now buys nothing and costs a ragged
+     bottom edge on every row, which is the thing a reader actually notices;
+     `stretch` costs at most 20px of slack inside the shorter card, and that
+     slack is absorbed by pinning the toggle to the bottom (below) so the row
+     ends on an aligned baseline rather than a gap.
+
+     NOT grid-auto-rows:1fr, which would make every row as tall as the
+     tallest row in the grid. Opening one breakdown would then pad all
+     sixteen cards to that height -- the 205px problem back, everywhere at
+     once, instead of in one row.
+
+     THIS RULE REACHES TWO PAGES, and that is deliberate rather than
+     incidental. `game-grid` is the class on both #game-grid (Week Board) and
+     #picks-grid (My Picks), and there is exactly one .game-grid rule, so the
+     stretch applies to both. Booth flagged it on PR #59 because the change
+     was described as being about the Week Board while quietly changing My
+     Picks too -- a fair catch under this repo's "one item, one PR" rule.
+
+     Kept shared rather than narrowed to #game-grid, for one reason: they are
+     the same component. A card grid whose rows end level is the behaviour
+     wanted on both, and splitting it by id would leave one class meaning two
+     different things depending on which page rendered it, which is a worse
+     trap than the one being fixed.
+
+     The difference between the two pages is what absorbs the slack. Week
+     Board cards end in a .why-toggle pinned with margin-top:auto, so the
+     slack sits above an aligned baseline. My Picks cards have no toggle, so
+     the slack sits at the bottom of the card -- which is what any stretched
+     card grid does, and is fine.
+
+     My Picks is improved by this, not merely unharmed. Measured at 1440px on
+     Week 1 data: its cards take two natural heights, 259px and 277px, so its
+     rows were ragged by up to 18px before and are level now.
+
+     That 18px is worth how it was arrived at. Booth's audit reported My Picks
+     rows as already uniform, spread 0.0px, and the first draft of this
+     comment repeated it. Both measurements were taken with align-items:
+     stretch applied, which makes the spread zero BY CONSTRUCTION -- it is the
+     property being measured. Re-measured with start forced back on, the real
+     natural spread is 18px. A measurement that cannot come out any other way
+     is not evidence, however many times it is run, and an audit is not exempt
+     from that. */
+  /* min(340px, 100%), not a bare 340px: below a 340px content box (a 320px
+     phone has 296px once the gutters come off) a bare minimum is a floor the
+     column cannot go under, so the 340px card ran 44px past its content box
+     (right edge at 352 on a 320 screen) and the whole page scrolled
+     sideways. Stage 10's mobile pass. */
+  .game-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+    gap:var(--s3); align-items:stretch;}
+
+  /* The card sizes its own internals from ITS width, not the viewport's.
+     Before this, the narrow treatments below were gated on a viewport media
+     query, which is correct for a stack and wrong for a grid: in a grid the
+     viewport is wide while each card is 340px, so a card would have taken
+     desktop internals inside a phone-width box.
+     Since Stage 17 no @container rule is keyed to it: the only one sized the
+     per-model rows that card v2 (#146) replaced, and it went with them. The
+     declaration is kept, not removed, because inline-size containment changes
+     how the card itself is sized, so taking it out is a layout change of its
+     own rather than a clean-up. */
+  .game-card{container-type:inline-size; container-name:card;}
+  /* Historical track record for a pick's confidence band. Recessive by
+     default -- it is context, not the headline -- but gains a left rule and
+     warm ink when the band's interval spans 50%.
+
+     That emphasis now lives inside the breakdown panel rather than on the
+     card face: the coin-flip case was moved behind the toggle because it
+     repeated on seven of sixteen cards saying the same thing. The `.warn`
+     treatment is kept and still fires there, because the point of it is to
+     stop the sentence being skimmed by someone who opened the panel to check
+     a number -- which is a different reader from the one scanning the board. */
+  .track-record{font-size:var(--fs-12); line-height:1.55; color:var(--text-2);
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:8px; padding:var(--s2) var(--s3); margin-top:var(--s3);}
+  .track-record b{color:var(--text);}
+  .track-record.warn{border-left:3px solid var(--accent);}
+  .track-record.thin{color:var(--text-2); font-style:italic;}
+  .track-coin{color:var(--accent); font-weight:600;}
+  .track-note{display:block; margin-top:var(--s1); font-size:var(--fs-11);}
+  /* flex column so the toggle can pin to the bottom edge. The grid stretches
+     every card in a row to the row's height; without this the slack lands
+     after the last element as an unexplained gap, which reads as a mistake.
+     With it, "+ the numbers behind this" sits on the same baseline across the
+     row and the slack reads as structure.
+
+     Margins do NOT collapse between flex children, so vertical rhythm inside
+     the card is the sum of adjacent margins rather than the larger of the
+     two. That is not free: measured flex-vs-block at 1440, 1100 and 390px,
+     with stretch removed from both sides so each card reports its natural
+     height, every card is exactly 8px taller. One pair is responsible --
+     .model-row's 10px bottom margin meeting .market-ref's 12px top margin,
+     which used to collapse to 12 and now sums to 22. (A record of the card as
+     it was measured then: .model-row left the card with Stage 17's #146.)
+
+     8px on a ~362px card is accepted rather than tuned away, because it is
+     uniform across all sixteen cards and therefore costs nothing in the thing
+     this change is for. Tightening a margin to win it back would be fitting
+     the spacing scale to an implementation detail.
+
+     Stated precisely because the first draft of this comment claimed the
+     change had no effect on height, on the grounds that the margins looked
+     one-directional. They are not: it is the pair above. The claim was
+     written before it was measured, which is the defect this repository
+     documents as its recurring one. */
+  .game-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:var(--s5) var(--s5);
+    display:flex; flex-direction:column;
+    transition:border-color var(--dur-base) var(--ease);}
+  .game-card.has-flag{border-left:3px solid var(--accent);}
+  /* The tags alone since the pick'em rank left this row (2026-09-28); they
+     keep the right-hand place they had beside it. */
+  .game-top{display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:var(--s3); margin-bottom:var(--s4);}
+  .matchup-header{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); margin-bottom:var(--s3); display:flex; align-items:center; gap:var(--s2); flex-wrap:wrap;}
+  .at-symbol{color:var(--text-2); font-weight:500;}
+  /* My Picks' variant. These values are not a new design choice -- they are
+     what .game-top > .game-confidence produced there, measured on the rendered
+     page before the two render paths were merged into one helper: 11px,
+     weight 400, --text-2, .03em, and the 16px the wrapper carried. The card
+     is meant to look exactly as it did.
+
+     display:block matters and is not cosmetic: .matchup-header is a flex
+     container with an 8px gap, so on the Week Board the words are flex items
+     separated by that gap. The span this replaced on My Picks was ordinary
+     inline text with single spaces, and inheriting flex here would widen
+     "NE at SEA" without anyone deciding to. */
+  .matchup-header.quiet{display:block; font-weight:400; font-size:var(--fs-11);
+    color:var(--text-2); letter-spacing:.03em; margin-bottom:var(--s4);}
+  .conf-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.06em; text-transform:uppercase; padding:var(--s1) var(--s3); border-radius:20px;}
+  /* .tag-good / .tag-warn retired (Stage 9): an ACCEPT or a REJECT is a
+     decision about an experiment, not a scored pick, and the pill already
+     prints the word. Every decision now wears .tag-neutral. */
+  /* --accent, not --series-a: a neutral status tag is not a chart series. */
+  /* The neutral pill, and it is now actually neutral (Stage 9). It wore
+     --accent-soft, so every decision label, and the toss-up tag on a game
+     card, was painted in the colour that means "the model's lean" -- and a
+     toss-up is precisely the absence of one. Same values as .status-planned. */
+  .tag-neutral{background:var(--border); color:var(--text-2);}
+
+  /* The badge names the picked side from the start, in --accent; it switches
+     to the graded pair only once the game has been played, because a colour
+     meaning "correct" must never sit on a game that has not happened. (The
+     two per-model rows this sat beside, .model-row and .tele-team, went with
+     Stage 17's card body, #146; their rules were removed in Stage 17.) */
+  .pick-badge{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px;
+    border-radius:50%; margin-bottom:var(--s1); flex-shrink:0; box-sizing:border-box;}
+  /* Job 2, not Job 3: this marks the model's pick on a game nobody has played.
+     It must never wear --good, which means "this was right". */
+  .pick-badge.picked{background:var(--accent-soft); color:var(--accent);}
+  .pick-badge.correct{background:var(--good-dim); color:var(--good);}
+  .pick-badge.incorrect{background:var(--warn-dim); color:var(--warn);}
+  .pick-badge.placeholder{background:transparent; border:1.5px dashed var(--border-strong);}
+  .pick-badge svg{width:9px; height:9px;}
+  .tele-bar{position:relative; height:9px; background:var(--border); border-radius:5px; overflow:hidden; display:flex;}
+  /* Was the last hardcoded duration on the page, held back while the game card
+     was under study; Booth caught that the exclusion made "prefers-reduced-motion
+     verified end to end" untrue -- 64 of these kept animating at .4s for a user
+     who had asked for no motion. */
+  .tele-bar-seg{height:100%; transition:width var(--dur-slow) var(--ease); opacity:.88;}
+  /* The 2px gap is the accessibility half of the game-card study. matchupColors
+     compares RGB Euclidean distance, which models no form of colour vision:
+     60 of the 496 distinct team pairs (12.1%) sit under the dE00 15 floor once
+     simulated for the common red-green types, and 9 are effectively identical
+     (dE00 < 5) -- worst ARI/PHI 0.18, LA/SEA 1.10, GB/SEA 3.08, JAX/SEA 3.16.
+     Identity survives (logo, abbreviation and percentage sit at both ends) but
+     with the fills touching the SPLIT POINT vanishes, so the bar stops showing
+     the proportion.
+
+     Every number above is regenerated by `src/research/verify_matchup_cvd.py`, which
+     reads TEAM_COLOR and CONTRAST_THRESHOLD out of this file so it cannot drift
+     from the code it describes. Run it rather than trusting this comment.
+
+     It exists because the first version of this comment shipped "115 of 992
+     team/theme pairs ... and 15 effectively identical" with no script anywhere,
+     computed once in a browser. Booth re-ran the stated method on PR #52 and
+     got 71 and 9; re-deriving it here gives 70 and 9 for that same reading. The
+     "992" was the trap: 32*31 ordered matchups and C(32,2) x 2 CVD types are
+     both 992, so two people can agree on the total while counting different
+     things. The denominator is 496 now for that reason. Note also that the
+     count is threshold-fragile -- 9 pairs sit between 14.9 and 15.25, so
+     8-bit rounding at each step moves several across the line. Quote the worst
+     pairs, which are stable; treat the count as approximate.
+
+     That "9" was "seven" when this comment first shipped, which is the same
+     mistake one paragraph up, made while writing the paragraph that describes
+     it: a number read off a script's output by eye instead of asserted. Booth
+     caught it on PR #52 and noted the real reason it survived -- no test
+     covered this sentence, only the two above it. One does now. */
+  .tele-bar-seg:first-child{border-radius:5px 0 0 5px; border-right:2px solid var(--surface);}
+  .tele-bar-seg:last-child{border-radius:0 5px 5px 0;}
+
+  /* ---------- Card v2: headline, Model B's bar, one probability line (Stage 17) ---------- */
+  .card-hl{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-20); margin:var(--s2) 0 var(--s3);}
+  .card-hl b{font-weight:800;}
+  .card-hl-label{font-size:var(--fs-11); letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); margin-right:var(--s1);}
+  .card-hl-to{font-size:var(--fs-13); color:var(--text-2);}
+  .card-viz{display:grid; grid-template-columns:auto 1fr auto; gap:var(--s3); align-items:start;}
+  .card-end{display:inline-flex; align-items:center; gap:var(--s1); font-family:'Plus Jakarta Sans', sans-serif;
+    font-weight:700; font-size:var(--fs-13); line-height:9px; color:var(--text-2);}
+  .card-end .pick-badge{margin-bottom:0;}
+  /* 20px logo on a 9px line: the negative margin keeps the row as tall as the
+     bar it sits beside, so the logo does not push the bar down. */
+  .card-end-team{display:inline-flex; align-items:center; gap:var(--s1);}
+  .card-end-logo{width:20px; height:20px; object-fit:contain; flex-shrink:0; margin:calc(-1 * var(--s1)) 0;}
+  @media (max-width:767px){
+    .card-end-team{flex-direction:column; gap:var(--s1);}
+    .card-end-logo{margin:calc(-1 * var(--s1)) 0 0;}
+  }
+  /* A faint inner outline, so a pale team colour (LV's silver, NO's gold)
+     still has an edge on the light theme's white card. */
+  .card-scale .tele-bar{box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--text) 18%, transparent);}
+  .card-line{position:relative; height:40px;}
+  .card-line::before{content:""; position:absolute; left:0; right:0; top:50%; height:2px; margin-top:-1px; background:var(--border-strong);}
+  .card-mid{position:absolute; left:50%; top:8px; bottom:8px; width:1px; background:var(--text-2);}
+  .card-mid-label{position:absolute; left:50%; bottom:-10px; transform:translateX(-50%); font-size:var(--fs-11); color:var(--text-2);}
+  .card-mk{position:absolute; transform:translate(-50%,-50%); overflow:visible;
+    filter:drop-shadow(0 0 1px var(--surface)) drop-shadow(0 0 1px var(--surface));}
+  .card-keys{display:flex; flex-wrap:wrap; gap:var(--s1) var(--s4); margin-top:var(--s4);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12); color:var(--text-2);}
+  .card-key{display:inline-flex; align-items:center; gap:var(--s1); white-space:nowrap;}
+  .card-key b{color:var(--text); font-weight:600;}
+  .card-disagree{margin-top:var(--s3); padding:var(--s2) var(--s3); border-radius:var(--r-md);
+    background:var(--surface-2); border:1px solid var(--border); font-size:var(--fs-12); color:var(--text);}
+
+  .market-ref{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s3); padding-top:var(--s3); border-top:1px dashed var(--border);}
+  .market-ref b{color:var(--text);}
+
+  .flag-note{margin-top:var(--s3); font-size:var(--fs-13); color:var(--text-2); line-height:1.5; display:none;}
+  .flag-note.open{display:block; animation:fade var(--dur-slow) var(--ease);}
+  .flag-note b{color:var(--text); font-weight:600;}
+
+  /* ---------- Page states ----------
+     One component for "there is nothing to show here", in the three kinds
+     that mean different things to a reader and must not look alike
+     (Stage 10). Every one is written by stateHtml() in the script, except
+     the SOS note, which ships in the markup.
+
+       waiting   nothing YET, and that is normal: no games played, no picks
+                 saved for a week that has not locked. Dashed, because it is
+                 a space that will fill.
+       filtered  the data is there and a control is hiding all of it. Always
+                 carries the action that undoes the control.
+       missing   something that should be in the build is not: a data file
+                 absent, a workflow that never ran. Solid, with a heavier left
+                 rule, so it cannot be read as the calm "not yet" -- which is
+                 the more flattering of the two and the one a broken page
+                 would otherwise borrow. Not --warn: the graded colours mean a
+                 scored pick and nothing else.
+       note      a line of explanation beside content that IS showing, e.g.
+                 why a column is blank. Left-aligned, compact.
+
+     There is no loading state, deliberately: every page's data is written
+     into the HTML when it is built, and nothing is fetched afterwards, so a
+     spinner would be decoration. The brand mark's tumble covers the one
+     real wait, the entrance. */
+  .state{padding:var(--s7) var(--s6); text-align:center; color:var(--text-2);
+    font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); line-height:var(--lh-body);
+    background:var(--surface); border:1px dashed var(--border); border-radius:var(--r-md);}
+  .state-title{display:block; font-size:var(--fs-14); font-weight:600; color:var(--text); margin-bottom:var(--s1);}
+  .state p{margin:0 auto; max-width:60ch;}
+  .state .btn{margin-top:var(--s3);}
+  .state--missing{border-style:solid; border-left:3px solid var(--border-strong);}
+  .state--note{padding:var(--s3) var(--s4); text-align:left; border-style:solid; max-width:680px;
+    font-size:var(--fs-13); margin:2px 0 var(--s4);}
+  .state--note .state-title{display:inline; font-size:inherit; margin:0;}
+  .state--after{margin-top:var(--s4);}
+  /* Season Accuracy's is two paragraphs and is the whole page until the
+     first week is played, so it gets a reading measure and a left edge:
+     centred prose gives the eye no fixed point to return to at the start of
+     each line. The title stays centred. */
+  .state--readable{max-width:60ch; margin:0 auto; text-align:left; line-height:1.65;}
+  .state--readable .state-title{text-align:center; margin-bottom:var(--s3);}
+  .state--readable p{margin:0 0 var(--s3);}
+  .state--readable p:last-child{margin-bottom:0;}
+
+  /* ---------- Team Deep-Dive: this week's team news (Stage 16) ----------
+     At most five short lines, each with where it came from and when. Neutral
+     colours throughout: an injury is news, not a verdict on the pick. */
+  .dive-news{margin-bottom:var(--s5);}
+  .dive-news-title{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); color:var(--text); margin-bottom:var(--s1);}
+  .dive-news-sub{font-size:var(--fs-13); color:var(--text-2); margin-bottom:var(--s3);}
+  .dive-news-list{list-style:none; margin:0; padding:var(--s2) var(--s4);}
+  .dive-news-item{padding:var(--s2) 0; border-bottom:1px solid var(--border);}
+  .dive-news-item:last-child{border-bottom:none;}
+  .dive-news-text{font-size:var(--fs-14); color:var(--text); line-height:1.5;}
+  .dive-news-text b{font-weight:600;}
+  .dive-news-src{display:block; font-size:var(--fs-12); color:var(--text-2); margin-top:2px;}
+
+  /* ---------- Team Deep-Dive: game drill-down ----------
+     Reuses .why-panel / .why-row from the week board rather than restating
+     them, so the expanded breakdown looks the same in both places. */
+  .dive-games{margin-top:var(--s5);}
+  .dive-games-title{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); color:var(--text); margin-bottom:var(--s2);}
+  .dive-games-summary{font-size:var(--fs-13); color:var(--text-2); line-height:1.55; margin-bottom:var(--s3);}
+  .dive-games-summary b{color:var(--text); font-weight:600;}
+  .dive-game{border-bottom:1px solid var(--border);}
+  .dive-game:last-child{border-bottom:none;}
+  .dive-game-head{width:100%; display:grid; grid-template-columns:104px 1fr 62px 66px 96px;
+    align-items:center; gap:var(--s3); background:none; border:none; cursor:pointer; text-align:left;
+    padding:var(--s3) var(--s4); color:var(--text); font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); transition:background-color var(--dur-fast) var(--ease);}
+  .dive-game-week{color:var(--text-2); font-size:var(--fs-12);}
+  .dive-game-opp{font-weight:600;}
+  .dive-game-line,.dive-game-prob{text-align:right; font-variant-numeric:tabular-nums; color:var(--text-2);}
+  .dive-game-prob{color:var(--text); font-weight:600;}
+  .dive-game-res{text-align:right;}
+  /* The games list's column headings (Stage 19). The rows are buttons, not
+     table rows, so this is a heading row drawn on the same grid, hidden from
+     assistive technology; each row says the same words to a screen reader
+     through its .visually-hidden labels instead. */
+  .dive-games-head{display:grid; grid-template-columns:104px 1fr 62px 66px 96px; gap:var(--s3);
+    padding:var(--s2) var(--s4); border-bottom:1px solid var(--border);
+    font-size:var(--fs-11); font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2);}
+  .dive-games-head .dgh-line, .dive-games-head .dgh-prob, .dive-games-head .dgh-res{text-align:right;}
+  .dive-result{font-weight:700; font-size:var(--fs-13);}
+  /* W / L is the TEAM's result, not the model's. Neutral; the letter says it. */
+  .dive-result.won{color:var(--text);}
+  .dive-result.lost{color:var(--text-2);}
+  .dive-pending{color:var(--text-2); font-size:var(--fs-12);}
+  .dive-game .why-panel{padding:0 var(--s4) var(--s4);}
+  .dive-why-head{font-size:var(--fs-13); color:var(--text-2); margin-bottom:var(--s1);}
+  .dive-why-note{font-size:var(--fs-11); color:var(--text-2); margin-bottom:var(--s3);}
+  .dive-tick{color:var(--good); font-weight:600;}
+  .dive-cross{color:var(--warn); font-weight:600;}
+  @media (max-width:640px){
+    /* Week on its own line, then opponent, Model B and result on one row.
+       Was 1fr auto, which sent the result to a third line under the
+       opponent, right-aligned in the wide column. */
+    .dive-game-head{grid-template-columns:1fr 66px 96px; gap:var(--s1) var(--s3);}
+    .dive-game-week{grid-column:1 / -1;}
+    .dive-game-line{display:none;}
+    .dive-games-head{grid-template-columns:1fr 66px 96px;}
+    .dive-games-head .dgh-week, .dive-games-head .dgh-line{display:none;}
+  }
+
+  /* ---------- Changelog ---------- */
+  .cl-entry{display:grid; grid-template-columns:104px 1fr; gap:0 var(--s6); padding:var(--s5) 0; border-bottom:1px solid var(--border);}
+  .cl-entry:last-child{border-bottom:none;}
+  .cl-meta{display:flex; flex-direction:column; gap:var(--s1);}
+  .cl-version{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); color:var(--text); font-variant-numeric:tabular-nums;}
+  .cl-date{font-size:var(--fs-12); color:var(--text-2); font-variant-numeric:tabular-nums;}
+  .cl-current{align-self:flex-start; margin-top:var(--s1); font-size:var(--fs-11); letter-spacing:.08em; text-transform:uppercase;
+    font-weight:600; color:var(--accent); background:var(--accent-soft); border:1px solid var(--accent-soft);
+    border-radius:999px; padding:var(--s1) var(--s2);}
+  .cl-headline{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:var(--fs-14); color:var(--text); line-height:1.45;}
+  .cl-detail{font-size:var(--fs-13); color:var(--text-2); line-height:1.68; margin-top:var(--s2);}
+  @media (max-width:640px){
+    .cl-entry{grid-template-columns:1fr; gap:var(--s2) 0;}
+    .cl-meta{flex-direction:row; align-items:baseline; gap:var(--s3); flex-wrap:wrap;}
+    .cl-current{margin-top:0;}
+  }
+
+  /* ---------- Methodology ---------- */
+  .method-block{background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--border-strong); border-radius:var(--r-md); padding:var(--s6) var(--s6); margin-bottom:var(--s4);}
+  /* Explanatory note sitting under a table, for the case where a column is
+     legitimately empty and would otherwise read as broken. */
+  .method-block h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); letter-spacing:.01em; margin-bottom:var(--s3); color:var(--text); display:flex; align-items:center; gap:var(--s2);}
+  .method-block h3::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--text-2); flex-shrink:0;}
+  .method-block p, .method-block li{font-size:var(--fs-14); line-height:1.68; color:var(--text-2);}
+  .method-block ul, .method-block ol{padding-left:var(--s5); margin-top:var(--s2);}
+  .formula{font-family:'Plus Jakarta Sans', sans-serif; background:var(--bg); border:1px solid var(--border); border-radius:8px;
+    padding:var(--s4) var(--s4); font-size:var(--fs-13); color:var(--accent); margin:var(--s3) 0; overflow-x:auto; white-space:pre;}
+  .metrics-table{width:100%; border-collapse:separate; border-spacing:0; margin-top:var(--s3); font-size:var(--fs-13);}
+  .metrics-table th{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); text-transform:uppercase; letter-spacing:.06em;
+    color:var(--text-2); text-align:left; padding:var(--s2) var(--s3); border-bottom:1px solid var(--border);}
+  .metrics-table td{padding:var(--s2) var(--s3); border-bottom:1px solid var(--border); font-family:'Plus Jakarta Sans', sans-serif; color:var(--text);}
+  /* A number column's header sits over its numbers: td.num is right-aligned,
+     so its th is too (the ablation table's headers sat left of their values
+     until 2026-09-28). */
+  .metrics-table th.num{text-align:right;}
+  .metrics-table tr:last-child td{border-bottom:none;}
+  .metrics-table .highlight{color:var(--accent);}
+  .gap-item{display:flex; gap:var(--s3); padding:var(--s3) 0; border-bottom:1px solid var(--border); font-size:var(--fs-13);}
+  .gap-item:last-child{border-bottom:none;}
+  .gap-num{font-family:'Plus Jakarta Sans', sans-serif; color:var(--text-3); flex-shrink:0;}
+
+  .section-title{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:var(--fs-16);
+    margin:var(--s7) 0 var(--s1); padding-top:var(--s6); border-top:1px solid var(--border);}
+  .section-title:first-of-type{margin-top:0; padding-top:0; border-top:0;}
+  .section-lead{font-size:var(--fs-13); color:var(--text-2); line-height:1.55; margin-bottom:var(--s4); max-width:70ch;}
+
+  /* Booth's audit scoreboard. Deliberately plain numbers rather than a
+     chart: four counts do not need axes, and the point is that they are
+     measured rather than asserted. */
+  .agent-stats{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:var(--s3); margin-top:var(--s4);}
+  .agent-stat{background:var(--border); border:1px solid var(--border); border-radius:var(--r-md); padding:var(--s4);}
+  .agent-stat-n{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-24); line-height:1.1;}
+  .agent-stat-l{font-size:var(--fs-12); color:var(--text-2); margin-top:var(--s1); line-height:1.4;}
+  .agent-stat-note{font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2); line-height:1.4;}
+
+  /* Jump links for Methodology, which is now four pages in one. Long
+     enough that arriving at the top with no idea what is below it is its
+     own problem -- so the page says what it holds before you scroll. */
+  .page-jump{display:flex; flex-wrap:wrap; gap:var(--s2); margin:0 0 var(--s6);}
+  .page-jump a{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12);
+    padding:var(--s2) var(--s3); border-radius:20px; background:var(--border);
+    color:var(--text-2); text-decoration:none; border:1px solid var(--border); transition:color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);}
+  .method-part{scroll-margin-top:18px;}
+  .method-part + .method-part{margin-top:var(--s7); padding-top:var(--s6); border-top:1px solid var(--border);}
+  .method-part > h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:var(--fs-20); margin-bottom:var(--s1);}
+  .part-lead{font-size:var(--fs-13); color:var(--text-2); line-height:1.55; margin-bottom:var(--s4); max-width:70ch;}
+
+  /* ---------- Milestone cards (What's Changed) ----------
+     Named for the page they came from. .status-planned is the neutral pill:
+     it carries every idea that was tested and not kept. Those cards wore
+     .status-done -- the success green -- for as long as the Roadmap page
+     existed, so "TESTED -- REJECTED" was painted as an achievement. The pill
+     colour is the only thing most readers actually parse. */
+  .roadmap-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:var(--s4);}
+  .roadmap-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:var(--s5); transition:border-color var(--dur-base) var(--ease);}
+  .roadmap-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.06em; text-transform:uppercase;
+    padding:var(--s1) var(--s2); border-radius:20px; display:inline-block; margin-bottom:var(--s3);}
+  .status-planned{background:var(--border); color:var(--text-2);}
+  /* Shipped vs not kept is told apart by FORM now, not by the graded green:
+     shipped is an outlined pill in primary text, not-kept the filled grey
+     .status-planned. The word on each still says which (Stage 9). */
+  .status-done{background:transparent; color:var(--text); border:1px solid var(--border-strong);}
+  .roadmap-card h4{font-family:'Plus Jakarta Sans', sans-serif; font-weight:600; font-size:var(--fs-16); margin-bottom:var(--s2);}
+  .roadmap-card p{font-size:var(--fs-13); color:var(--text-2); line-height:1.55;}
+
+  /* ---------- Mobile bottom nav ---------- */
+  .bottom-nav{
+    display:none; position:fixed; left:0; right:0; bottom:0; z-index:50;
+    /* Was a hardcoded rgba(19,24,38,0.88) -- the OLD --panel (#131826) written
+       as literal channels, which is why the token migration walked straight
+       past it: a sweep for var() cannot see a colour that is not one. It left
+       the phone's nav bar on the pre-Stage-8 palette, and worse, pinned it
+       dark in BOTH themes, so light mode got a dark bar. Translucency is the
+       reason it was written raw; color-mix gets it from the token instead. */
+    background:color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--border-strong);
+    padding:var(--s2) var(--s2) calc(8px + var(--safe-bottom));
+  }
+  /* Capped and centred: the bottom nav now runs up to 1079px, and five
+     targets spread across a 1024px tablet sat ~200px apart, centre to centre. */
+  .bottom-nav-row{display:flex; justify-content:space-between; align-items:center; overflow-x:hidden; gap:2px;
+    max-width:560px; margin:0 auto;}
+  .bnav-btn{
+    display:flex; flex-direction:column; align-items:center; gap:var(--s1); background:none; border:none;
+    color:var(--text-2); font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.01em;
+    padding:var(--s2) 2px; border-radius:10px; flex:1 1 0; min-width:0; transition:color var(--dur-base) var(--ease);
+  }
+  .bnav-btn svg{width:18px; height:18px; flex-shrink:0;}
+  .bnav-label{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:100%;}
+  .bnav-btn.active{color:var(--accent);}
+  
+  .bnav-more-sheet{
+    position:fixed; left:0; right:0; bottom:0; z-index:49;
+    /* Same hardcoded old-palette literal as .bottom-nav above. */
+    background:color-mix(in srgb, var(--surface) 97%, transparent);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--border-strong); border-radius:16px 16px 0 0;
+    padding:var(--s4) var(--s4) calc(90px + var(--safe-bottom));
+    transform:translateY(100%); transition:transform var(--dur-slow) var(--ease);
+    pointer-events:none;
+  }
+  .bnav-more-sheet.open{transform:translateY(0); pointer-events:auto;}
+  .bnav-more-sheet-inner{display:grid; grid-template-columns:1fr 1fr; gap:var(--s2); max-width:560px; margin:0 auto;}
+  .bnav-more-item{
+    display:flex; align-items:center; gap:var(--s3); background:var(--border); border:none; border-radius:12px;
+    padding:var(--s4); color:var(--text); font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); font-weight:600;
+  }
+  .bnav-more-item svg{width:20px; height:20px; flex-shrink:0; color:var(--text-2);}
+  .bnav-more-item.active{background:var(--accent-soft); color:var(--accent);}
+  .bnav-more-item.active svg{color:var(--accent);}
+
+  /* ---------- Breakpoints ----------
+     Five, each named for what changes at it rather than for a device:
+       1180px  the Power Ratings table drops the full team names while the
+               sidebar is still up (the abbreviation stays). In the webfont
+               the names stop fitting at about 1155; 1180 leaves room for
+               text that sets wider on another machine.
+       1079px  the sidebar gives way to the bottom nav. Was 820: from 821 to
+               about 1065 the 236px sidebar left too narrow a content box,
+               and the ratings table clipped behind its scroller even
+               without the full names. The toast lift further up keys on
+               this same width.
+        767px  Model Lab's experiment log turns its rows into cards (Stage
+               18). Its three columns of prose first fit side by side at
+               about 651 to 655px, so 640 would leave them scrolling
+               sideways.
+        640px  components stack (Team Deep-Dive game rows, changelog).
+        400px  the small-phone tightening below.
+     Measured by rendering, not by arithmetic -- the range is in the Stage 10
+     PR. The card grid is deliberately NOT here: it sizes from the card's own
+     width through the container query further down. */
+  @media (max-width:1180px){
+    .team-full{display:none;}
+  }
+  @media (max-width:1079px){
+    body{flex-direction:column;}
+    .sidebar{display:none;}
+    .topbar{display:flex; align-items:center; gap:var(--s3); position:sticky; top:0; z-index:40;
+      margin-top:calc(-1 * var(--safe-top)); padding:calc(var(--s3) + var(--safe-top)) var(--s4) var(--s3);
+      background:var(--surface); border-bottom:1px solid var(--border);}
+    .topbar .brand-ball{width:22px; height:22px; flex-shrink:0;}
+    .topbar h1{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-16); font-weight:800;
+      letter-spacing:.04em; line-height:1.2; text-transform:uppercase;}
+    .topbar-sub{display:block; font-size:var(--fs-11); font-weight:500; letter-spacing:0;
+      text-transform:none; color:var(--text-2);}
+    .topbar-theme{margin-left:auto; width:40px; height:40px; flex-shrink:0; display:grid; place-items:center;
+      border:1px solid var(--border); border-radius:var(--r-md, 10px); background:transparent; color:var(--text-2); cursor:pointer;}
+    .topbar-theme svg{width:18px; height:18px;}
+    .page-prov{display:block; margin-top:var(--s7); padding-top:var(--s4); border-top:1px solid var(--border);
+      text-align:center; font-size:var(--fs-12); color:var(--text-2);}
+    main{padding:var(--s5) var(--s4) calc(88px + var(--safe-bottom));}
+    .page-head h2{font-size:var(--fs-24);}
+    .page-head{margin-bottom:var(--s6); padding-bottom:var(--s4);}
+    .bottom-nav{display:block;}
+    table{font-size:var(--fs-13);}
+    thead th{padding:var(--s3) var(--s3);}
+    /* Below 1080px the top bar is sticky at top:0 and sits over the page
+       (z-index 40), so a fitting table's sticky header, also at top:0,
+       stuck UNDER it and was never seen (the 2026-09-29 re-audit, Stage 30
+       item 2; rendered at 390 and 900 before fixing). .table-wrap.fits is
+       overflow:clip, which is not a scroll container, so the header sticks
+       to the viewport, not to its wrapper. It now sticks under the bar.
+       --topbar-h is the bar's measured height, written by initTopbarHeight():
+       the height varies with the safe area and with the title wrapping, so
+       a fixed figure here would be wrong on some phone. */
+    .table-wrap.fits thead th{top:var(--topbar-h, 0px);}
+    tbody td{padding:var(--s3) var(--s3);}
+  }
+  @media (max-width:400px){
+    .page-head h2{font-size:var(--fs-24);}
+    main{padding:var(--s4) var(--s3) calc(84px + var(--safe-bottom));}
+  }
+
+
+  /* The one press gesture, on everything clickable. Three different scale
+     values used to be scattered across three components. */
+  button:active, a:active, summary:active, [role="button"]:active{ transform:var(--press); }
+
+  /* The football's nudge. Lives here because every :hover in this file does.
+     It is (0,4,0) and deliberately loses to the (0,4,1) entrance and loading
+     rules defined much earlier -- see the note beside them; a hover must never
+     interrupt a load. */
+  @media (hover: hover){
+    .brand:hover .brand-ball .spin{animation:bm-nudge 320ms var(--ease);}
+  }
+
+  /* ---------------------------------------------------------------
+     Every :hover rule lives here, behind (hover: hover). The phone
+     layout has a bottom nav, i.e. real touch users, and an unguarded
+     hover sticks after a tap. Source order is preserved from where
+     these were defined.
+     --------------------------------------------------------------- */
+  @media (hover: hover){
+    .row-link:hover .team-abbr, .row-link.week-link:hover{text-decoration:underline;}
+    .nav-btn:hover{background:var(--surface-2); color:var(--text);}
+    .nav-btn.disabled:hover{background:transparent; color:var(--text-2);}
+    thead th[aria-sort]:hover{color:var(--accent);}
+    tbody tr:hover{background:var(--surface-2);}
+    .pick-btn:hover:not(:disabled){border-color:var(--accent);}
+    .rel-table summary:hover{color:var(--text);}
+    .btn:hover:not(:disabled){border-color:var(--accent); color:var(--text);}
+    .btn-chip.btn-toggle[aria-pressed="false"]:hover svg{opacity:.7;}
+    .btn-link:hover{color:var(--text);}
+    .btn-icon:hover:not(:disabled){background:var(--surface-2);}
+    .lbx-btn:hover{border-color:var(--accent); color:var(--text);}
+    .lbx-opt:hover{background:var(--surface-2); color:var(--text);}
+    .game-card:hover{border-color:var(--border-strong);}
+    .dive-game-head:hover{background:var(--border);}
+    .page-jump a:hover{color:var(--text); border-color:var(--border-strong);}
+    .roadmap-card:hover{border-color:var(--border-strong);}
+  }

@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_units.py",
   "cases": [
     {
@@ -33,6 +33,7 @@
     },
     {
       "id": "units-pp-undefined",
+      "target": "src/dashboard/body.html",
       "why": "the glossary loses its pp row, so a reader meets '-2.39 pp' with nothing on the page saying what pp is.",
       "find": "          <tr><td>Percentage points (pp)</td>",
       "replace": "          <tr><td>Percentage gap</td>",

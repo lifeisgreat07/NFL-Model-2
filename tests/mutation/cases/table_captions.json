@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/body.html",
   "tests": "tests/test_table_captions.py",
   "cases": [
     {
@@ -11,6 +11,7 @@
     },
     {
       "id": "built-table-loses-its-caption",
+      "target": "src/dashboard/app.js",
       "why": "a table the page builds in JavaScript (Season Accuracy's week-by-week record) has no caption; the check has to read template strings, not only markup.",
       "find": "<caption class=\"visually-hidden\">Correct picks by week for each model</caption>",
       "replace": "",
@@ -25,6 +26,7 @@
     },
     {
       "id": "hiding-rule-stops-hiding",
+      "target": "src/dashboard/styles.css",
       "why": "the .visually-hidden rule stops taking the element out of the layout, so all fourteen captions show as second titles over tables that already have headings.",
       "find": ".visually-hidden{position:absolute;",
       "replace": ".visually-hidden{position:static;",

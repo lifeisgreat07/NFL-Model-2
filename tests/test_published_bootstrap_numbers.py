@@ -23,8 +23,10 @@ from pathlib import Path
 import pytest
 from page_source import page_source  # Model Lab's rows are rendered in at build time
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 REPO_ROOT = Path(__file__).parent.parent
-TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 RESULTS = REPO_ROOT / 'data' / 'bootstrap_brier_gap.json'
 
 # The page writes negatives as the HTML entity and positives with a sign, e.g.

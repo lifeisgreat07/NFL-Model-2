@@ -27,8 +27,10 @@ from pathlib import Path
 
 import pytest
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 HARNESS = Path(__file__).parent / 'my_picks_lock_harness.js'
 NODE = shutil.which('node')
 

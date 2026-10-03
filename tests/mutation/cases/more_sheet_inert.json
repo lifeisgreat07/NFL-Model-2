@@ -1,9 +1,10 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_more_sheet_inert.py",
   "cases": [
     {
       "id": "more-sheet-starts-reachable",
+      "target": "src/dashboard/body.html",
       "why": "the closed sheet loses `inert` in the markup, so until someone opens and closes it once, its five buttons are back in the Tab order -- on a desktop, where it never opens, that is forever. Focus disappears off the bottom of the screen for five presses and nothing on the page shows it.",
       "find": "<div id=\"bnav-more-sheet\" class=\"bnav-more-sheet\" inert>",
       "replace": "<div id=\"bnav-more-sheet\" class=\"bnav-more-sheet\">",

@@ -36,6 +36,8 @@ import re
 import sys
 from pathlib import Path
 
+from src.pipeline.template_parts import read_template
+
 REPO_ROOT = Path(__file__).parents[2]
 PAGES = ['ratings', 'board', 'picks', 'accuracy', 'teamdive',
          'modellab', 'method', 'changelog', 'reliability']
@@ -155,8 +157,7 @@ def meaning_tokens(src, theme):
 def sweep(built_page):
     from playwright.sync_api import sync_playwright
 
-    src = (REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(
-        encoding='utf-8')
+    src = read_template()
     out = {}
     with sync_playwright() as pw:
         browser = pw.chromium.launch()

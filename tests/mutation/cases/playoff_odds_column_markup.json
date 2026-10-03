@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_playoff_odds_column.py",
   "cases": [
     {
@@ -11,6 +11,7 @@
     },
     {
       "id": "header-is-a-label-not-a-control",
+      "target": "src/dashboard/body.html",
       "why": "the Playoff Odds header loses its sort key, so the column renders and refuses to sort -- the exact half-working state that joining the value onto the team object exists to prevent",
       "find": "<th scope=\"col\" data-key=\"playoff\" style=\"text-align:right;\"",
       "replace": "<th scope=\"col\" style=\"text-align:right;\"",
@@ -32,6 +33,7 @@
     },
     {
       "id": "plain-english-note-removed",
+      "target": "src/dashboard/body.html",
       "why": "the column ships as a bare percentage, which reads as 'the model is 67.5% sure' rather than 'the team made the playoffs in 67.5% of 10,000 simulated seasons' -- a different and much stronger claim. Re-anchored 2026-09-15: the explanation was a card above the table and is now a glossary definition, so this deletes the glossary row instead of renaming the card's id. The mutation is the same one either way, which is the point of writing the guard against the sentence rather than against the element holding it.",
       "find": "          <tr><td>Playoff Odds</td>",
       "replace": "          <tr><td>Playoff Chances</td>",

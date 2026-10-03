@@ -14,9 +14,10 @@ asserts it found what it must, so a matcher that goes blind fails.
 Run with: pytest tests/test_outbound_hygiene.py -v
 """
 import re
-from pathlib import Path
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 
 
 def _page():

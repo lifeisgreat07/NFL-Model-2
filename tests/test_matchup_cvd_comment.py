@@ -20,8 +20,10 @@ from pathlib import Path
 
 import pytest
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 
 # These tests used to run twice, against the template and against index.html,
 # and a fifth test asserted the two copies agreed. That made sense while
@@ -124,7 +126,7 @@ def test_the_threshold_fragility_count_is_what_the_script_computes(computed):
 def test_the_verifier_reads_the_palette_rather_than_copying_it():
     """A copied palette is a second source of truth that goes stale silently."""
     src = (ROOT / 'src' / 'research' / 'verify_matchup_cvd.py').read_text(encoding='utf-8')
-    assert 'TEAM_COLOR' in src and 'dashboard_template.html' in src, (
+    assert 'TEAM_COLOR' in src and 'JOINED_TEMPLATE' in src, (
         'verify_matchup_cvd.py must read TEAM_COLOR out of the template')
     assert not re.search(r"ARI\s*:\s*'#", src), (
         'verify_matchup_cvd.py appears to hardcode the team palette; it must '

@@ -1,9 +1,10 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_orientation_banner.py",
   "cases": [
     {
       "id": "orientation-fourth-line-shown",
+      "target": "src/dashboard/body.html",
       "why": "a fourth explanation creeps back out of the disclosure onto the banner, which is how three lines became six bullets the first time.",
       "find": "          <li>Tap &ldquo;the numbers behind this&rdquo; on any game to see where its sentence came from.</li>\n        </ul>",
       "replace": "          <li>Tap &ldquo;the numbers behind this&rdquo; on any game to see where its sentence came from.</li>\n          <li>Check <b>Model Lab</b> for the full research history.</li>\n        </ul>",
@@ -32,6 +33,7 @@
     },
     {
       "id": "orientation-toggle-too-small",
+      "target": "src/dashboard/styles.css",
       "why": "the 'How to read this' toggle drops to its 13px line height, under the 24px target every other text toggle clears.",
       "find": "  .onboarding-more summary{display:inline-flex; align-items:center; min-height:24px; cursor:pointer;",
       "replace": "  .onboarding-more summary{display:inline-flex; align-items:center; cursor:pointer;",

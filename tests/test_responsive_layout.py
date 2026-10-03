@@ -26,11 +26,12 @@ that keep every branch of each rule reachable.
 Run with: pytest tests/test_responsive_layout.py -v
 """
 import re
-from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).parent.parent / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 NARROWEST_PHONE = 320
 
 

@@ -17,8 +17,10 @@ Run with: pytest tests/test_css_tokens_defined.py -v
 import re
 from pathlib import Path
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 
 USE = re.compile(r'var\(\s*(--[\w-]+)\s*(,)?')
 DECLARE = re.compile(r'(--[\w-]+)\s*:')

@@ -10,8 +10,10 @@ reason.
 """
 from pathlib import Path
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 
 
 def model_lab_rows():

@@ -93,7 +93,7 @@ flowchart TB
 | browser checks | `tests/browser/check_page.py`, `.github/workflows/browser-checks.yml` | Every pull request that touches what the page is built from, and pushes to `main`. Builds the page and drives Chromium over every page at six widths, with the network blocked and allowed: sideways overflow, a Tab stop nobody can see, a control under 24px, a serious or critical axe-core finding, the font not rendering, a page error, the byte budget. Runs `--self-test` first, so a rule that cannot fail fails the job. |
 | nfl.com schedule probe | `src/pipeline/nfl_schedule_probe.py`, `.github/workflows/nfl-schedule-probe.yml` | Pull requests that touch it, and by hand. Reads the league's by-week schedule pages for weeks 1-4 of 2026 from a GitHub runner and fails unless every week is reachable and every game has an elias id, a kickoff, two teams, a territory, a network and the week asked for. Writes nothing (Stage 15, before any TV-channel code; ESPN refused the runners). |
 | page generator | `src/pipeline/generate_dashboard.py`, checked by `src/pipeline/check_build.py` | `.github/workflows/deploy-pages.yml`, when the inputs change or another workflow commits data. The build is refused if any page's data payload is missing or empty. |
-| one HTML template | `src/pipeline/dashboard_template.html` | Vanilla JavaScript, no framework, no build step. |
+| one HTML template, in parts | `src/dashboard/` (`page.html` includes `styles.css`, `body.html`, `app.js`), joined by `src/pipeline/template_parts.py` | Vanilla JavaScript, no framework. The only build step is the join, which gives back one file (Stage 33 item 26). |
 
 ## Decisions the diagram rests on
 

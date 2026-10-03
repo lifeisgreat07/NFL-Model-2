@@ -15,7 +15,7 @@ after Booth found the matchup figures unreproducible on PR #52.
 Every choice a number depends on is named, because the PR #52 lesson was that
 two people can agree on a figure while measuring different objects:
 
-  * Tokens are PARSED out of src/pipeline/dashboard_template.html, never copied, so this
+  * Tokens are PARSED out of the dashboard template (src/dashboard/), never copied, so this
     cannot drift from the palette it describes.
   * Distance is CIEDE2000 on sRGB -> Lab (D65), reusing the implementation in
     verify_matchup_cvd.py rather than keeping a second copy of colour science.
@@ -37,9 +37,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
 from src.research import verify_matchup_cvd as v  # noqa: E402
 
-TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 
 #: The pairs worth reporting, and why each one is here.
 PAIRS = (
@@ -117,7 +118,7 @@ def report():
     data = measure()
     print('CIEDE2000, sRGB->Lab (D65). CVD: Machado 2009 severity 1.0,')
     print('protanopia and deuteranopia, worst (minimum) of the two.')
-    print('Tokens parsed from src/pipeline/dashboard_template.html.\n')
+    print('Tokens parsed from the dashboard template, src/dashboard/.\n')
     for theme in ('dark', 'light'):
         print(f'{theme}:')
         for a, b, why in PAIRS:

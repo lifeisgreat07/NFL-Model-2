@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_team_dive_logo.py",
   "cases": [
     {
@@ -25,6 +25,7 @@
     },
     {
       "id": "dive-logo-shrunk",
+      "target": "src/dashboard/styles.css",
       "why": "the logo shrinks to the size of the table's row logos and stops reading as the page's identity.",
       "find": "  .dive-logo{width:48px; height:48px;",
       "replace": "  .dive-logo{width:22px; height:22px;",

@@ -7,8 +7,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const TEMPLATE = path.join(__dirname, '..', 'src', 'pipeline', 'dashboard_template.html');
-const tpl = fs.readFileSync(TEMPLATE, 'utf8').replace(/\r\n/g, '\n');
+const { readTemplate } = require('./template_source');
+const tpl = readTemplate().replace(/\r\n/g, '\n');
 
 const START = 'function teamDiveDefault(';
 const i = tpl.indexOf(START);

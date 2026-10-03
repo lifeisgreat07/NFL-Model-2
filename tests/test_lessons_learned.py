@@ -15,11 +15,13 @@ the wrong place.
 import re
 from pathlib import Path
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 REPO = Path(__file__).resolve().parents[1]
 DOC = REPO / 'docs' / 'lessons-learned.md'
 ARCH = REPO / 'docs' / 'architecture.md'
 CITED = {'CLAUDE.md': REPO / 'CLAUDE.md', 'docs/traps.md': REPO / 'docs' / 'traps.md'}
-TEMPLATE = REPO / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 LINK = 'https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/lessons-learned.md'
 
 

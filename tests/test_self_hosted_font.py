@@ -24,9 +24,10 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 
 from src.pipeline import generate_dashboard as gd  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
 
 FONT_DIR = ROOT / 'assets' / 'fonts'
-TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 APPROVED = {  # file -> bytes, as approved and downloaded 2026-09-26
     'plus-jakarta-sans-latin-normal.woff2': 27348,
     'plus-jakarta-sans-latin-ext-normal.woff2': 21728,

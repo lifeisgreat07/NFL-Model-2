@@ -11,8 +11,10 @@ and 1280 for the PR; held here by source, as the suite has no browser.
 import re
 from pathlib import Path
 
+from src.pipeline.template_parts import read_template  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = (ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+TEMPLATE = read_template()
 
 
 def css():

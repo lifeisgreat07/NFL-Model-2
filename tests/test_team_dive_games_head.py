@@ -17,9 +17,10 @@ result on one row, on the same columns as the heading.
 Run with: pytest tests/test_team_dive_games_head.py -v
 """
 import re
-from pathlib import Path
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 LABELS = ['Week', 'Opponent', 'Line', 'Model B', 'Result']
 
 

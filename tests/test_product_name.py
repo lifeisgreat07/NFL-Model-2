@@ -13,6 +13,8 @@ Run with: pytest tests/test_product_name.py -v
 import re
 from pathlib import Path
 
+from src.pipeline.template_parts import read_template
+
 REPO = Path(__file__).resolve().parents[1]
 NAME = "Pick'em Model"
 RETIRED = ('Command Board', "Pick'em Board", "NFL Pick'em Model", 'COMMAND<br>BOARD')
@@ -23,7 +25,7 @@ def read(rel):
 
 
 def test_the_tab_the_sidebar_and_the_phone_bar_say_the_name():
-    t = read('src/pipeline/dashboard_template.html')
+    t = read_template()
     assert f'<title>Week Board \u2014 {NAME}</title>' in t
     assert "`${heading.textContent.trim()} \u2014 Pick'em Model`" in t, (
         'the other pages no longer end their tab title with the name')
@@ -40,7 +42,7 @@ def test_the_readme_and_the_printed_sheet_say_the_name():
 
 
 def test_no_retired_name_is_left_where_a_reader_sees_it():
-    for rel in ('src/pipeline/dashboard_template.html', 'README.md', 'src/pipeline/generate_picks_pdf.py'):
-        text = read(rel)
+    for rel in ('src/dashboard/', 'README.md', 'src/pipeline/generate_picks_pdf.py'):
+        text = read_template() if rel == 'src/dashboard/' else read(rel)
         left = [n for n in RETIRED if re.search(re.escape(n), text)]
         assert not left, f'{rel} still says {left}'

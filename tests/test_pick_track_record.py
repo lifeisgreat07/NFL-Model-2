@@ -15,8 +15,10 @@ from pathlib import Path
 
 import pytest
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 REPO_ROOT = Path(__file__).parent.parent
-TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 CALIBRATION = REPO_ROOT / 'data' / 'calibration.json'
 
 

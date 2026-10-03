@@ -13,8 +13,10 @@ import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 REPO = Path(__file__).resolve().parents[1]
-TEMPLATE = REPO / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 ICON = REPO / 'assets' / 'favicon.svg'
 TOUCH = REPO / 'assets' / 'apple-touch-icon.png'
 DEPLOY = REPO / '.github' / 'workflows' / 'deploy-pages.yml'

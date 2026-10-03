@@ -41,7 +41,7 @@
     },
     {
       "id": "preview-week-label-unmarked",
-      "target": "src/pipeline/dashboard_template.html",
+      "target": "src/dashboard/app.js",
       "why": "the week stepper names a preview week like a locked one, so a reader stepping back to it later cannot tell the picks were never final.",
       "find": "  return `${w.season} · Week ${w.week}${w.preview ? ' (preview)' : ''}`;\n",
       "replace": "  return `${w.season} · Week ${w.week}`;\n",
@@ -49,7 +49,7 @@
     },
     {
       "id": "preview-note-never-shown",
-      "target": "src/pipeline/dashboard_template.html",
+      "target": "src/dashboard/app.js",
       "why": "the note above a preview week's cards stays hidden, so its picks read as the week's picks.",
       "find": "    previewNote.hidden = !isPreview;\n",
       "replace": "    previewNote.hidden = true;\n",

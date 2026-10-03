@@ -11,10 +11,12 @@
     },
     {
       "id": "generator-reads-the-template-in-the-local-encoding",
-      "why": "the template is read in the platform default, so its non-ASCII text is decoded as cp1252 on Windows",
-      "find": "    with open(TEMPLATE_PATH, encoding='utf-8') as f:",
-      "replace": "    with open(TEMPLATE_PATH) as f:",
-      "expect_caught_by": "test_every_open_names_utf8"
+      "target": "src/pipeline/template_parts.py",
+      "tests": "tests/test_template_parts.py",
+      "why": "the template's parts are read in the platform default, so their non-ASCII text is decoded as cp1252 on Windows. The read moved out of the generator when the template was cut into parts (Stage 33 item 26), so the guard moved with it",
+      "find": "lambda name: (directory / name).read_text(encoding='utf-8')",
+      "replace": "lambda name: (directory / name).read_text()",
+      "expect_caught_by": "test_every_read_names_utf8"
     }
   ]
 }

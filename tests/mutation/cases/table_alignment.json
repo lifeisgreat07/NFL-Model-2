@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/body.html",
   "tests": "tests/test_table_alignment.py",
   "cases": [
     {
@@ -11,6 +11,7 @@
     },
     {
       "id": "number-header-rule-left-aligned",
+      "target": "src/dashboard/styles.css",
       "why": "th.num keeps its class but not its alignment, so every number header drifts left of its column again.",
       "find": "  .metrics-table th.num{text-align:right;}",
       "replace": "  .metrics-table th.num{text-align:left;}",

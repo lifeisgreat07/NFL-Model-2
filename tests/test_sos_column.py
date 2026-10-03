@@ -34,8 +34,9 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 
 from src.pipeline import weekly_update
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
 
-TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 LIVE_RATINGS = REPO_ROOT / 'data' / 'current_ratings.json'
 
 # Three teams with deliberately distinct net ratings, so a wrong pairing shows

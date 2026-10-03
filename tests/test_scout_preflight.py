@@ -243,6 +243,16 @@ def test_merge_commits_are_not_counted_as_undisclosed_features():
 # Visual claims
 # --------------------------------------------------------------------------
 
+def test_a_change_to_any_dashboard_part_counts_as_the_page():
+    """Stage 33 item 26 cut the template into parts under src/dashboard/.
+    Its script is app.js now, not an .html file, and a change to it is still
+    a change a screenshot could show."""
+    changed = ['src/dashboard/app.js', 'src/dashboard/styles.css', 'src/pipeline/config.py',
+               'docs/context.md', 'assets/og.svg']
+    assert pf.page_files(changed) == ['src/dashboard/app.js', 'src/dashboard/styles.css',
+                                      'assets/og.svg']
+
+
 @pytest.mark.parametrize('claim', [
     "Screenshots in both themes moved it above the table.",
     "Verified in both themes at 1440px.",
@@ -250,7 +260,7 @@ def test_merge_commits_are_not_counted_as_undisclosed_features():
 ])
 def test_a_visual_claim_without_an_attachment_fails(claim):
     f = pf.check_visual_claims_have_artifacts(
-        claim, ui_files=['src/pipeline/dashboard_template.html'])
+        claim, ui_files=['src/dashboard/body.html'])
     assert not f.ok, f"{claim!r} was not treated as a visual claim"
 
 
@@ -280,7 +290,7 @@ def test_a_ui_pr_making_the_same_claim_still_fails():
     the page, and the check fires."""
     f = pf.check_visual_claims_have_artifacts(
         "Booth flagged the missing screenshots three times.",
-        ui_files=['src/pipeline/dashboard_template.html'])
+        ui_files=['src/dashboard/body.html'])
     assert not f.ok
 
 

@@ -1,9 +1,10 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/styles.css",
   "tests": "tests/test_row_links.py",
   "cases": [
     {
       "id": "team-link-built-by-hand",
+      "target": "src/dashboard/app.js",
       "why": "the team link writes its own address instead of asking routeHash, so the day the team route changes shape every Power Ratings link points at a page that opens nothing",
       "find": "<a class=\"row-link\" href=\"${routeHash({page:'teamdive', team:t.team})}\">",
       "replace": "<a class=\"row-link\" href=\"#teamdive/${t.team}\">",
@@ -11,6 +12,7 @@
     },
     {
       "id": "week-link-for-a-week-with-no-board",
+      "target": "src/dashboard/app.js",
       "why": "a graded week the page has no board for still gets a link, which parseRoute answers by opening the latest week instead: a link that goes somewhere else than it says",
       "find": "    return weekKeysSorted.includes(key)\n",
       "replace": "    return true\n",

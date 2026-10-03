@@ -26,6 +26,8 @@ from pathlib import Path
 
 import pytest
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 REPO = Path(__file__).resolve().parents[1]
 README = REPO / 'README.md'
 TEXT = README.read_text(encoding='utf-8')
@@ -167,7 +169,7 @@ def test_the_dashboard_link_matches_the_one_verification_md_uses():
 
 # --- Stage 7: the model section and the results table ----------------------
 
-TEMPLATE = REPO / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 
 # README row label -> Methodology row label. The README uses shorter names;
 # the numbers must be identical.

@@ -27,8 +27,10 @@ from pathlib import Path
 
 import pytest
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 ROOT = Path(__file__).resolve().parent.parent
-TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 
 
 @pytest.fixture(scope='module')
@@ -83,7 +85,7 @@ def decide(source):
         r'(?:.*?\n)*?\}$',
         source, re.M)
     assert m, (
-        'lbxFlipDecision is gone from src/pipeline/dashboard_template.html, or its '
+        'lbxFlipDecision is gone from src/dashboard/app.js, or its '
         'signature changed. It is the rule this whole file exists to check; '
         'if it moved, move this anchor with it rather than deleting the test.')
     fn = m.group(0)

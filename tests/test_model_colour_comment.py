@@ -19,8 +19,10 @@ from pathlib import Path
 
 import pytest
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 VERIFIER = ROOT / 'src' / 'research' / 'verify_model_colours.py'
 
 #: The false excuse, in the forms it has actually been written in.
@@ -241,7 +243,7 @@ def test_the_verifier_parses_the_palette_rather_than_copying_it():
     Same assertion tests/test_matchup_cvd_comment.py makes, for the same
     reason."""
     src = (ROOT / 'src' / 'research' / 'verify_model_colours.py').read_text(encoding='utf-8')
-    assert 'dashboard_template.html' in src, (
+    assert 'JOINED_TEMPLATE' in src, (
         'verify_model_colours.py must read the tokens out of the template')
     assert not re.search(r"'--accent'\s*:\s*'#", src), (
         'verify_model_colours.py appears to hardcode a token value; it must '

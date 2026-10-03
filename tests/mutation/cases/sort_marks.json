@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/styles.css",
   "tests": "tests/test_sort_marks.py",
   "cases": [
     {
@@ -18,6 +18,7 @@
     },
     {
       "id": "rank-header-made-a-control",
+      "target": "src/dashboard/body.html",
       "why": "'#' becomes a sortable control again. Sorting by the net-rating rank only repeats Net Rating, and it would now draw a sort mark it cannot honour.",
       "find": "<th scope=\"col\" data-key=\"rank\">#</th>",
       "replace": "<th scope=\"col\" data-key=\"rank\" tabindex=\"0\" aria-sort=\"none\">#</th>",

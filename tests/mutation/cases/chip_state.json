@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_chip_state.py",
   "cases": [
     {
@@ -18,6 +18,7 @@
     },
     {
       "id": "a-board-filter-ships-without-state",
+      "target": "src/dashboard/body.html",
       "why": "a filter chip added or copied without the attribute: it looks exactly like its neighbours and is silent to a screen reader until the first click, and only then if the handler reaches it.",
       "find": "<button class=\"btn btn-chip filter-btn\" data-filter=\"flagged\" aria-pressed=\"false\">",
       "replace": "<button class=\"btn btn-chip filter-btn\" data-filter=\"flagged\">",
@@ -25,6 +26,7 @@
     },
     {
       "id": "series-look-keyed-on-the-state-alone",
+      "target": "src/dashboard/styles.css",
       "why": "the trap this item walked into and back out of. Before, only series toggles carried aria-pressed, so a bare .btn-chip[aria-pressed=\"false\"] rule was safe; now every unchosen filter chip carries it too, and that rule turns Model Disagreement and Flagged Only dashed on page load. Nothing throws and the tests about state all pass.",
       "find": ".btn-chip.btn-toggle[aria-pressed=\"false\"]{border-style:dashed;",
       "replace": ".btn-chip[aria-pressed=\"false\"]{border-style:dashed;",

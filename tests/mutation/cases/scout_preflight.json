@@ -119,8 +119,8 @@
     {
       "id": "preflight-ui-gate-blind-to-html",
       "why": "the UI gate stops seeing .html changes, so template edits look non-visual",
-      "find": "    return [f for f in changed if f.endswith(('.html', '.css', '.svg'))]",
-      "replace": "    return [f for f in changed if f.endswith(('.css', '.svg'))]",
+      "find": "            if f.endswith(('.html', '.css', '.svg')) or f.startswith(DASHBOARD_PARTS)]",
+      "replace": "            if f.endswith(('.css', '.svg')) or f.startswith(DASHBOARD_PARTS)]",
       "expect_caught_by": "test_touches_ui_sees_template_changes_and_ignores_python"
     }
   ]

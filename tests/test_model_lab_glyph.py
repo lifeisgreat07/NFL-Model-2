@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 from src.pipeline import generate_dashboard as gd  # noqa: E402
 from src.pipeline import model_lab as ml  # noqa: E402
+from src.pipeline.template_parts import read_template  # noqa: E402
 
 ROW = re.compile(r'<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>', re.S)
 
@@ -117,6 +118,6 @@ def test_every_glyph_sits_in_the_same_frame():
         frames.add(first)
         assert parts(svg)[0] == pytest.approx(48.0), e['id']
     assert len(frames) == 1, frames
-    src = (ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+    src = read_template()
     rule = re.search(r'\.lab-ci-frame\{([^}]*)\}', src)
     assert rule and 'stroke:var(--border)' in rule.group(1).replace(' ', ''), 'the frame has no visible edge'

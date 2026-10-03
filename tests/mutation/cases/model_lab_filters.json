@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_model_lab_filters.py",
   "cases": [
     {
@@ -32,6 +32,7 @@
     },
     {
       "id": "lab-chips-show-without-script",
+      "target": "src/dashboard/body.html",
       "why": "the chip row shows with JavaScript off, as an empty band where filters would be.",
       "find": "<div class=\"filter-row\" id=\"lab-filter-row\" role=\"group\" aria-label=\"Show experiments by decision\" hidden></div>",
       "replace": "<div class=\"filter-row\" id=\"lab-filter-row\" role=\"group\" aria-label=\"Show experiments by decision\"></div>",

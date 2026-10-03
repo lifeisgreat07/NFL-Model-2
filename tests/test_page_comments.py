@@ -30,8 +30,9 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 from src.pipeline import generate_dashboard as gd  # noqa: E402
 from src.pipeline import page_comments as pc  # noqa: E402
+from src.pipeline.template_parts import read_template  # noqa: E402
 
-TEMPLATE = (ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+TEMPLATE = read_template()
 NODE = shutil.which('node')
 
 
@@ -197,7 +198,7 @@ def test_the_line_check_can_fail():
 
 def test_the_build_strips_the_template_before_filling_it():
     src = (ROOT / 'src' / 'pipeline' / 'generate_dashboard.py').read_text(encoding='utf-8')
-    read = src.index('template = f.read()')
+    read = src.index('template = read_template()')
     strip = src.index('template = strip_page_comments(template)')
     fill = src.index("html = template.replace(")
     assert read < strip < fill

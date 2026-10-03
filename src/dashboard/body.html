@@ -1,0 +1,833 @@
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark"><span class="pulse"></span>Season 2026</div>
+    <div class="brand-row">
+      <svg class="brand-ball" viewBox="0 0 20 20" role="img" aria-label="Pick'em Model">
+        <g class="spin"><g transform="rotate(-28 10 10)">
+          <ellipse class="ball" cx="10" cy="10" rx="8.6" ry="5.2"/>
+          <line class="lace" x1="5.6" y1="10" x2="14.4" y2="10"/>
+          <line class="lace" x1="7" y1="8.1" x2="7" y2="11.9"/>
+          <line class="lace" x1="9" y1="8.1" x2="9" y2="11.9"/>
+          <line class="lace" x1="11" y1="8.1" x2="11" y2="11.9"/>
+          <line class="lace" x1="13" y1="8.1" x2="13" y2="11.9"/>
+        </g></g>
+      </svg>
+      <h1>PICK'EM<br>MODEL</h1>
+    </div>
+    <div class="brand-sub">Weekly NFL picks, graded</div>
+  </div>
+  <nav class="side-nav" aria-label="Main navigation">
+    <!-- Grouped by the question a visitor is asking (Mark, 2026-09-23).
+         Each group label is also the eyebrow above the title of every page
+         in it, so on a phone, where this sidebar is hidden, the page still
+         says which part of the site it belongs to. Held to each other by
+         tests/test_page_header.py. -->
+    <div class="nav-group-label">This Week</div>
+    <button class="nav-btn active" data-page="board" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Week Board</button>
+    <button class="nav-btn" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Power Ratings</button>
+    <button class="nav-btn" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>Team Deep-Dive</button>
+    <div class="nav-group-label">Your Picks</div>
+    <button class="nav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>My Picks Log</button>
+    <div class="nav-group-label">Track Record</div>
+    <button class="nav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg>Season Accuracy</button>
+    <button class="nav-btn" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg>Model Lab</button>
+    <div class="nav-group-label">How It Was Built</div>
+    <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
+    <button class="nav-btn" data-page="changelog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 21v-5h5"/></svg>What&#39;s Changed</button>
+    <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>Checking the AI&#39;s work</button>
+  </nav>
+  <div class="sidebar-foot">
+    <button id="theme-toggle" class="btn btn-block theme-toggle" aria-label="Toggle light and dark theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <span id="theme-toggle-label">Light mode</span>
+    </button>
+    __SIDEBAR_FOOT__
+  </div>
+</aside>
+
+<!-- Below 1080px only (Stage 26 item 3); the sidebar holds all three above
+     that width. Two h1 elements are in the markup and one is ever shown: each
+     is display:none at the widths where the other is visible, which also
+     takes it out of the accessibility tree. -->
+<header class="topbar">
+  <svg class="brand-ball" viewBox="0 0 20 20" aria-hidden="true">
+        <g class="spin"><g transform="rotate(-28 10 10)">
+          <ellipse class="ball" cx="10" cy="10" rx="8.6" ry="5.2"/>
+          <line class="lace" x1="5.6" y1="10" x2="14.4" y2="10"/>
+          <line class="lace" x1="7" y1="8.1" x2="7" y2="11.9"/>
+          <line class="lace" x1="9" y1="8.1" x2="9" y2="11.9"/>
+          <line class="lace" x1="11" y1="8.1" x2="11" y2="11.9"/>
+          <line class="lace" x1="13" y1="8.1" x2="13" y2="11.9"/>
+        </g></g>
+      </svg>
+  <h1>Pick'em Model <span class="topbar-sub">Weekly NFL picks, graded</span></h1>
+  <button type="button" class="topbar-theme" aria-label="Toggle light and dark theme">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+  </button>
+</header>
+
+<main id="main-content" tabindex="-1">
+
+  <!-- Outside every .page section ON PURPOSE, and first inside <main>. With
+       scripts off exactly one section is active -- #page-board, the one the
+       markup ships active since Stage 13 -- and nothing can change that: every nav control is
+       an inert <button> with no href, and there is no :target rule and no
+       anchor pointing at a page. A note placed inside a section would
+       therefore be visible only if that section happened to be the active one,
+       which is the same unreachability this note exists to explain. Guarded by
+       tests/test_noscript_note.py, which fails if anything comes before it.
+
+       Reuses .onboarding-banner rather than adding a class: every value in it
+       is already on the page, so this introduces nothing for Stage 10 to
+       unpick. -->
+  <noscript>
+    <div class="onboarding-banner">
+      <div class="onboarding-content">
+        <h4>This page needs JavaScript turned on</h4>
+        <p class="shared-note">Everything here &mdash; the ratings table, the game cards, the charts, and the menu down the left &mdash; is put together by your browser after the page arrives. With JavaScript switched off you get this message and an empty page, and the menu buttons will not take you anywhere. Switch it on for this site and the dashboard appears.</p>
+      </div>
+    </div>
+  </noscript>
+
+  <!-- POWER RATINGS -->
+  <section class="page" id="page-ratings">
+    <div class="page-head">
+      <div>
+        <div class="page-eyebrow">This Week</div>
+        <h2>Power Ratings</h2>
+        <div class="desc">Every team ranked by how much better or worse it plays than an average team, in expected points per 100 plays, rebuilt each week from real game data.</div>
+      </div>
+    </div>
+    <!-- Stage 19: filled by moversSentence(); stays hidden until there is a
+         previous weekly ranking to compare with. -->
+    <p id="ratings-movers" class="movers-line" hidden></p>
+    <div class="filter-row">
+      <input type="search" id="ratings-search" class="team-search" placeholder="Search teams..." aria-label="Search teams by name or abbreviation">
+    </div>
+    <!-- Above the table on purpose. Placed below it, this sat under 32 rows of
+         data -- the reader meets the empty column long before the sentence
+         explaining it. Only rendered while SOS is genuinely empty, so in-season
+         it costs nothing. -->
+    <div id="sos-empty-note" class="state state--note" role="status" style="display:none;">
+      <b class="state-title">SOS is blank because no games have been played yet this season.</b>
+      Strength of schedule is the average current net rating of the opponents a
+      team has actually faced, so it has nothing to average until Week 1 is in
+      the books. It fills in on its own from the first completed week onward.
+    </div>
+    <div class="table-wrap">
+      <table id="ratings-table"><caption class="visually-hidden">Power ratings for every team</caption>
+        <thead>
+          <tr>
+            <th scope="col" data-key="rank">#</th>
+            <th scope="col" data-key="team" tabindex="0" aria-sort="none">Team</th>
+            <th scope="col" data-key="net" class="sorted" style="text-align:center;" tabindex="0" aria-sort="descending">
+              <div class="net-head">
+                <span>Net Rating</span>
+                <!-- Endpoints filled in from the live data, not hardcoded: the
+                     domain is the league's own largest absolute rating and it
+                     moves every week. -->
+                <div class="net-head-row">
+                  <div class="net-axis" aria-hidden="true">
+                    <span class="ax-min"></span><span class="ax-zero">0</span><span class="ax-max"></span>
+                  </div>
+                  <span></span>
+                </div>
+              </div>
+            </th>
+            <th scope="col" data-key="off" tabindex="0" aria-sort="none" style="text-align:right;">Offense</th>
+            <th scope="col" data-key="def" tabindex="0" aria-sort="none" style="text-align:right;">Defense</th>
+            <th scope="col" data-key="sos" style="text-align:right;" title="Strength of schedule: the average current net rating of the opponents a team has actually played so far. Blank until games have been played." tabindex="0" aria-sort="none">SOS</th>
+            <th scope="col" data-key="playoff" style="text-align:right;" title="How often this team reached the playoffs across the simulated seasons." tabindex="0" aria-sort="none">Playoff Odds</th>
+          </tr>
+        </thead>
+        <tbody id="ratings-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- WEEK BOARD -->
+  <section class="page active" id="page-board">
+    <!-- No standing caption and no count badge. (Stage 10 added the one-line
+         .desc every page header carries. It says what the page is for; it
+         does not explain Model A and Model B, which is what the caption
+         below was, so the reasoning still holds.)
+
+         This block is STATIC markup, not a JS template literal - a ${...}
+         comment here renders as visible text on the page.
+
+         The caption explained Model A vs Model B on every visit, permanently,
+         to a reader who needs it once - and the onboarding banner directly
+         below says the same thing and can be dismissed, which is what "explain
+         this once" is supposed to look like. Two explanations of the same two
+         models, one of them undismissable, is the redundancy the owner named.
+
+         The badge said "16 games" beside a grid of sixteen game cards. A count
+         is worth showing when counting is hard; here the answer is on screen.
+         #board-badge is kept as a hidden hook because renderGames writes to it
+         and the empty state ("No games") still has to go somewhere. -->
+    <div class="page-head">
+      <div>
+        <div class="page-eyebrow">This Week</div>
+        <h2>Week Board</h2>
+        <div class="desc">This week&#39;s games, what each model picks, and why.</div>
+        <!-- When the page was built, written by generate_dashboard.py's
+             updated_line() (Stage 13). It lived in the sidebar footer, which
+             is hidden below 1080px, so phones and tablets never saw it. -->
+        <div class="board-updated">__BOARD_UPDATED__</div>
+      </div>
+      <div class="badge" id="board-badge" aria-live="polite" hidden></div>
+    </div>
+    <!-- Below the title, not above it (Stage 10). Above, a first visit
+         met a box of six bullets before it met the name of the page.
+
+         Three lines, not six bullets (Stage 13). At 390x844 the six filled
+         the first screen: 610px tall, first game card at 914px. The three
+         that a first visit needs are on show; the rest are one tap away
+         under "How to read this", and "Got it" still hides the whole
+         thing on this device for good. On a phone placeOrientation() moves
+         the banner in among the cards, after the first two, so the page
+         opens on games. No <div> before the list ends: a test reads the copy
+         up to the first </div> and checks it never names a mark by its hue. -->
+    <div id="onboarding-banner" class="onboarding-banner" style="display:none;">
+      <div class="onboarding-content">
+        <h4>New here? Three things to know.</h4>
+        <ul>
+          <li><span class="model-chip a">Model A</span> uses football data only; <span class="model-chip b">Model B</span> adds the Vegas spread.</li>
+          <li>A tick beside a team is Model B&#39;s pick. When the game ends it turns green if right, or a red cross if wrong.</li>
+          <li>Tap &ldquo;the numbers behind this&rdquo; on any game to see where its sentence came from.</li>
+        </ul>
+        <details class="onboarding-more">
+          <summary>How to read this</summary>
+          <ul>
+            <li>The coloured bar is split by Model B&#39;s chance for each team. The line under it marks all three: the square is Model B, the triangle is the betting market, the circle is Model A. The mark in the middle is 50%, a coin flip. When Model B is too close to call, the card says so instead of picking a team.</li>
+            <li>Each game says in a sentence why Model A has that team ahead. It will often be the quarterback matchup, because that is what moves this model most; a sentence that repeats across a week is the model showing through, not a stuck template.</li>
+            <li><b>Model A</b> is built from team ratings and quarterback performance, with no market data. <b>Model B</b> is Model A plus the current Vegas spread.</li>
+            <li><b>Model Lab</b> has the full research history, including everything that didn&#39;t work.</li>
+            <li>On a keyboard, <kbd>[</kbd> and <kbd>]</kbd> step to the previous and next week.</li>
+          </ul>
+        </details>
+        <button class="btn" onclick="dismissOnboarding()">Got it</button>
+      </div>
+    </div>
+    <div id="week-glance"></div>
+    <div class="filter-row">
+      <!-- A stepper, not a dropdown. Weeks are ordered and you almost always
+           want the one next to the one you are on; a select makes that two
+           clicks and a scan. The select is kept, hidden, as the accessible
+           control and the single source of truth for which week is showing -
+           the arrows drive it and it emits the change event, so there is one
+           state, not two. It is also the fallback if this markup is ever
+           rendered somewhere the stepper's script does not run.
+           No date range. This used to say the pipeline had no date field at
+           all; that stopped being true when gameday/gametime_et/weekday were
+           added to the prediction record, so the reason is now a choice and
+           not a limitation: a week's span is a derived claim (min and max
+           kickoff) that would be wrong for any week saved before those fields
+           existed, and it would sit above a board that already prints each
+           game's own kickoff. One date per game, stated where the game is. -->
+      <div class="week-step" id="week-step">
+        <button type="button" class="btn btn-icon week-step-btn" id="week-prev" aria-label="Previous week" aria-keyshortcuts="[">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <span class="week-step-label" id="week-step-label" aria-live="polite"></span>
+        <button type="button" class="btn btn-icon week-step-btn" id="week-next" aria-label="Next week" aria-keyshortcuts="]">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <select id="week-select" class="week-select visually-hidden" aria-label="Week" tabindex="-1"></select>
+      <!-- #sort-select below ships VISIBLE and enhanceSelect() adds
+           visually-hidden once the listbox is built, so the select is never
+           hidden unless the control replacing it already exists. That
+           ordering is the whole reason, and it is not the reason recorded
+           here until 2026-09-21: this comment used to say the visible select
+           kept a working control for a no-script reader, and it also sat
+           directly under a select that ships hidden, so it read as describing
+           the wrong element. Both corrected. Since Stage 13 the Week Board is
+           the page the markup ships active, so with scripts off a reader DOES
+           land here and sees this select -- a native control whose change
+           nothing listens to, since the cards it would sort are built by
+           script too. The <noscript> note at the top of <main> is what tells
+           that reader why; the select does not pretend to work for them. -->
+      <!-- The labels carry no "Sort: " prefix. It cost 65px of a 398px row at
+           430px and said nothing the aria-label, the chevron and the control's
+           position were not already saying. data-lbx-fit="widest" then freezes
+           the button at its longest label so the row cannot rearrange itself
+           when someone changes the sort. Opt-in rather than automatic, because
+           #teamdive-select is the other consumer of enhanceSelect() and this
+           change is not about that page. -->
+      <select id="sort-select" class="week-select" aria-label="Sort" data-lbx-fit="widest">
+        <option value="chronological">First Game to Last</option>
+        <option value="confidence">Most Confident First</option>
+        <option value="confidence_asc">Closest Games First</option>
+        <option value="disagreement">Biggest Model Disagreement</option>
+        <option value="spread">Biggest Spread First</option>
+        <option value="alpha">Alphabetical (Home Team)</option>
+      </select>
+      <a id="picks-pdf-link" class="btn pdf-link" href="#" download
+         title="Printable PDF of this week's picks, ordered by confidence">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <path d="M7 10l5 5 5-5M12 15V3"/>
+        </svg>Print / PDF
+      </a>
+    </div>
+    <div class="filter-row" id="filter-row">
+      <button class="btn btn-chip filter-btn active" data-filter="all" aria-pressed="true">All Games</button>
+      <button class="btn btn-chip filter-btn" data-filter="divergent" aria-pressed="false">Model Disagreement</button>
+      <button class="btn btn-chip filter-btn" data-filter="flagged" aria-pressed="false">Flagged Only</button>
+    </div>
+    <p class="board-note board-preview-note" id="board-preview-note" role="note" hidden></p>
+    <p class="board-note" id="board-tv-note" hidden>CBS and FOX games on Sunday afternoon are regional: which one your local channel shows depends on where you live.</p>
+    <div class="game-grid" id="game-grid"></div>
+  </section>
+
+  <!-- MY PICKS LOG -->
+  <section class="page" id="page-picks">
+    <div class="page-head">
+      <div>
+        <div class="page-eyebrow">Your Picks</div>
+        <h2>My Picks Log</h2>
+        <div class="desc">Tap your actual pick for each game in the selected week. Saved locally on this device only -- not real-time synced across devices (this is a static site with no backend), but you can export your picks and import them on another device.</div>
+      </div>
+      <div class="badge" id="picks-record-badge" aria-live="polite">—</div>
+    </div>
+    <!-- Only appears when the page was opened from a share link. Reuses the
+         onboarding banner's styling rather than adding another one-off block;
+         the amber variant marks it as "this is not your data". -->
+    <div id="shared-picks-banner" class="onboarding-banner shared-banner" style="display:none;">
+      <div class="onboarding-content">
+        <h4 id="shared-picks-title">Viewing someone else's picks</h4>
+        <p id="shared-picks-note" class="shared-note"></p>
+        <div class="shared-actions">
+          <button class="btn" onclick="importSharedPicks()">Copy these into my log</button>
+          <button class="btn" onclick="exitSharedPicks()">Back to my picks</button>
+        </div>
+      </div>
+    </div>
+    <div class="filter-row">
+      <!-- The same control the Week Board uses, driven by the same code with
+           prefix `picks-week`. It was a bare <select> here, which meant the
+           identical job looked like two different controls depending on the
+           tab -- and on a phone one of them was the iOS system wheel while the
+           other was a pair of arrows. The <select> stays as the single source
+           of truth -- it owns the selected week and the arrows write through
+           it -- exactly as on the Board. It is NOT a no-script fallback, as
+           this said until 2026-09-21: it ships visually-hidden, and with
+           scripts off this page cannot be reached anyway. -->
+      <div class="week-step" id="picks-week-step">
+        <button type="button" class="btn btn-icon week-step-btn" id="picks-week-prev" aria-label="Previous week" aria-keyshortcuts="[">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <span class="week-step-label" id="picks-week-step-label" aria-live="polite"></span>
+        <button type="button" class="btn btn-icon week-step-btn" id="picks-week-next" aria-label="Next week" aria-keyshortcuts="]">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+      <select id="picks-week-select" class="week-select visually-hidden" aria-label="Week" tabindex="-1"></select>
+      <button class="btn" onclick="copyShareLink(this)">Copy Share Link</button>
+      <button class="btn" onclick="exportMyPicks()">Export My Picks</button>
+      <button class="btn" onclick="document.getElementById('picks-import-input').click()">Import My Picks</button>
+      <input type="file" id="picks-import-input" accept=".json" style="display:none;" onchange="if(this.files[0]) importMyPicks(this.files[0])">
+    </div>
+    <div id="picks-streak-strip"></div>
+    <div class="game-grid" id="picks-grid"></div>
+  </section>
+
+  <!-- SEASON ACCURACY -->
+  <section class="page" id="page-accuracy">
+    <div class="page-head">
+      <div>
+        <div class="page-eyebrow">Track Record</div>
+        <h2>Season Accuracy</h2>
+        <div class="desc">Every saved prediction, graded against real results after the fact. Built from graded weeks only — nothing here is projected or estimated.</div>
+      </div>
+    </div>
+    <div id="accuracy-content"></div>
+  </section>
+
+  <!-- TEAM DEEP-DIVE -->
+  <section class="page" id="page-teamdive">
+    <div class="page-head">
+      <div>
+        <div class="page-eyebrow">This Week</div>
+        <h2>Team Deep-Dive</h2>
+        <div class="desc">Net rating over time -- 2020-2025 season-end snapshots (real history, replayed as if we had been predicting it at the time), then week-by-week as the 2026 season is actually played.</div>
+      </div>
+      <div class="badge" id="teamdive-badge">—</div>
+    </div>
+    <div class="filter-row">
+      <!-- Ships VISIBLE and with no options: renderTeamDive() writes them and
+           enhanceSelect() hides this once the listbox is built. The aria-label
+           is the only name either control can have -- there is no visible
+           <label> here, and the <h2> above is the page title, not a label. -->
+      <select id="teamdive-select" class="week-select" aria-label="Team"></select>
+    </div>
+    <div id="teamdive-content"></div>
+  </section>
+
+  <!-- MODEL LAB -->
+  <section class="page" id="page-modellab">
+    <div class="page-head">
+      <div>
+        <div class="page-eyebrow">Track Record</div>
+        <h2>Model Lab</h2>
+        <div class="desc">Every experiment run against this model, with real numbers and an honest decision -- including the ones that didn't work. Model version <b id="modellab-version" style="color:var(--text)">&mdash;</b>.</div>
+      </div>
+    </div>
+    <!-- Filled by wireLabFilters() from the rows below, so its counts are the
+         table's own. Stays hidden without JavaScript, when a filter could not
+         work (Stage 18). -->
+    <div class="filter-row" id="lab-filter-row" role="group" aria-label="Show experiments by decision" hidden></div>
+    <p class="visually-hidden" id="lab-filter-status" aria-live="polite"></p>
+    <div class="table-wrap" data-scroll-label="Experiment log">
+      <table><caption class="visually-hidden">Model Lab experiment log</caption>
+        <thead><tr><th scope="col">Experiment</th><th scope="col">Result</th><th scope="col">Decision</th></tr></thead>
+        <tbody>
+          <!-- Rendered at build time by generate_dashboard.render_model_lab_rows()
+               from src/pipeline/model_lab.py: every pre-registered answer in experiments/,
+               then the rows moved to experiments/legacy/rows.json (Stage 18).
+               Nothing is typed here any more. -->
+          __MODEL_LAB_ROWS__
+        </tbody>
+      </table>
+    </div>
+    <!-- Filled by buildReliabilityDiagram(). Empty when data/calibration.json
+         is absent, which is the correct state for a checkout that has never
+         run src/research/calibration.py -- the section omits itself rather than
+         rendering an empty axis. Below the experiments since Stage 18: the
+         page opened on the diagram and its paragraphs of explanation before
+         the first experiment. The explanation is now behind "How to read
+         this"; the findings stay in view. -->
+    <div id="reliability-diagram"></div>
+    <!-- Model Lab used to carry its own hand-written version timeline, a
+         second copy of config.VERSION_HISTORY that nothing kept in step: it
+         would have gone on marking v2.4 "Current." after the model moved on,
+         in the success green reserved for a scored pick. What's Changed
+         renders the real list from config.py. -->
+    <div class="method-block" style="margin-top:var(--s4);">
+      <h3>Version History</h3>
+      <p>Every model version, and what changed in it, is on the What's Changed page.</p>
+    </div>
+  </section>
+
+  <!-- METHODOLOGY -->
+  <section class="page" id="page-method">
+    <div class="page-head">
+      <div>
+        <div class="page-eyebrow">How It Was Built</div>
+        <h2>Methodology</h2>
+        <div class="desc">How the model works, how it stacks up against other ways of picking games, where its data comes from, and what every word on this page means.</div>
+      </div>
+    </div>
+    <nav class="page-jump" aria-label="Sections on this page">
+      <a href="#part-method">How the model works</a>
+      <a href="#part-compare">How this compares</a>
+      <a href="#part-datasources">Where the numbers come from</a>
+      <a href="#part-glossary">Words used here</a>
+    </nav>
+
+    <div class="method-part" id="part-method">
+      <h3>How the model works</h3>
+      <p class="part-lead">The whole method, in enough detail that a sceptical reader could rebuild it.</p>
+
+    <div class="method-block">
+      <h4>Model A vs. Model B — What Actually Separates Them</h4>
+      <p><span class="model-chip a">Model A (football-only)</span> is built entirely from what we can compute ourselves: opponent-adjusted team ratings, per-QB performance, and QB-change detection — all derived from real play-by-play data, with zero market information involved. Its job is to answer "what does the football itself say," independent of what oddsmakers think. This is the model we've actually validated feature-by-feature, backtested, and can fully explain the reasoning behind (every game on the Week Board says in a sentence which of these is driving it, with the underlying figures one tap away).</p>
+      <p><span class="model-chip b">Model B (market-blended)</span> takes everything Model A knows and adds the current Vegas spread as an additional input. The spread reflects information Model A structurally can't see — injuries our data doesn't capture, weather forecasts, sharp money, line moves in response to breaking news. In our backtest of 1,087 games, Model B beats Model A on the proper scoring rules this project judges by: <b data-claim="b-vs-a" style="color:var(--text)">log loss 0.606 against 0.650, and Brier 0.209 against 0.229</b>, and a paired bootstrap puts both gaps clearly below zero (log loss &minus;0.044, 95% interval &minus;0.059 to &minus;0.029; Brier &minus;0.019, &minus;0.026 to &minus;0.013). Accuracy points the same way, 68.3% against 62.7%, but on its own it cannot carry a comparison this close. The gap is there because the market prices in real-world information our football-only features are blind to. The honest tradeoff: Model B's edge comes mostly from the market itself, not from our own modeling — so it's the stronger predictor, but leaning on it means leaning on Vegas, not on what's unique about this project.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Data</h4>
+      <p>Real nflverse play-by-play, filtered to pass/rush attempts with valid EPA, used to fit opponent-adjusted team ratings and per-QB ratings.</p>
+      <p style="margin-top:var(--s3);">Data pipeline migrated from nfl_data_py to nflreadpy (2026-08) after nfl_data_py was officially deprecated. Verified column-schema match and exact value match (scores, spreads, EPA, snap counts) on a real completed week before merging -- see What&#39;s Changed.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Rating System — Opponent-Adjusted, Recency-Weighted</h4>
+      <p>A two-way fixed-effects ridge regression: play-level EPA regressed on offense-team dummies + defense-team dummies, using only plays strictly before the point being rated. Each play is recency-weighted. A team's offensive rating already accounts for the strength of every defense it faced.</p>
+      <div class="formula">play_epa ~ ridge( offense_team_dummies + defense_team_dummies )
+sample_weight = 0.5 ^ (games_ago / half_life)
+half_life = 16 games   (backtested against 6 and 10 — 16 won on log loss)
+ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</div>
+    </div>
+
+    <div class="method-block">
+      <h4>Backtest Results — Chronological, Weekly-Refitting Walk-Forward</h4>
+      <p>Trained only on strictly earlier data, refit every week within the test season (not just once per season) -- validated 2026-08 (Stage 9) to match what the live model actually does: weekly_update.py always trains on all real completed games available up to "now," every single run. Evaluated on 2022-2025 (1,087 games):</p>
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Backtest results for each model</caption>
+        <thead><tr><th scope="col">Model</th><th scope="col">Accuracy</th><th scope="col">Log Loss</th><th scope="col">Brier</th><th scope="col">AUC</th></tr></thead>
+        <tbody>
+          <tr><td>Coin flip</td><td>50.0%</td><td>0.693</td><td>0.250</td><td>0.500</td></tr>
+          <tr><td>Home team always wins</td><td>54.6%</td><td>-</td><td>-</td><td>-</td></tr>
+          <tr><td>3-feature (off+def+QB) only</td><td>62.4%</td><td>0.654</td><td>0.231</td><td>0.662</td></tr>
+          <tr><td>Model A -- live, 4 features, weekly refit</td><td class="highlight">62.7%</td><td class="highlight">0.650</td><td class="highlight">0.229</td><td class="highlight">0.670</td></tr>
+          <tr><td>Vegas market alone</td><td>68.2%</td><td>0.607</td><td>0.210</td><td>0.725</td></tr>
+          <tr><td>Model B -- live, 4 features + market, weekly refit</td><td class="highlight">68.3%</td><td class="highlight">0.606</td><td class="highlight">0.209</td><td class="highlight">0.727</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:var(--s3);">Update (2026-08-31): these numbers reflect two real changes, not a silent swap. First, a leak in the QB rating's shrinkage target was found and fixed (it was averaging in future weeks instead of only strictly-earlier ones -- see ratings_engine.py). Second, we revisited our own earlier QB-shrinkage tuning decision (k=8 -&gt; 96) after it turned out not to reproduce, re-ran the retune under the fixed, current config, and found the fresh result (k=128) didn't hold up consistently on confirmatory data either -- so we reverted to the original k=8. See Model Lab, "QB Shrinkage Re-tune," for the full investigation.</p>
+      <p style="margin-top:var(--s3);">Update (2026-08, research Stage 6): O-line continuity was removed from the live model after two independent negative results -- a paired bootstrap found its individual contribution statistically indistinguishable from zero (95% CI included zero), and a later confirmatory test found "no OL feature at all" outperformed both the original and a smoothed version of it on held-out 2024-2025 data. It's still computed and logged as informational data, just no longer fed into the model, in case future evidence changes this. QB-change detection has held up across every test run against it and remains live.</p>
+      <p style="margin-top:var(--s3);">Separately: the market barely changes when our full feature set is blended in (68.3% against the market's 68.2% on raw accuracy, one game in 1,087, and marginally better on log loss/Brier/AUC). The Vegas line still captures almost everything we can see, plus real-world information we structurally can't.</p>
+      <p style="margin-top:var(--s3);" id="live-market-note">One difference between this table and the live pages. The "Vegas market alone" row above is a model fitted to the spread. The market's win chance on the Week Board's cards and in Season Accuracy is not: it is a fixed conversion of the spread, 1 / (1 + e<sup>&minus;spread / 5.5</sup>), with the 5.5 chosen by hand rather than fitted. It uses the spread saved with each pick, which is the line when the pick was locked (usually the Thursday run, the Tuesday run for a week that opens early), not the line at kickoff.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>How We Know a Result Is Real (Not Just Luck)</h4>
+      <p>Every experiment on Model Lab reports a real accuracy number, but a small difference between two numbers doesn't automatically mean one is genuinely better -- with only a few hundred games in a season, some of that difference is just random luck in which games happened to go a certain way.</p>
+      <p style="margin-top:var(--s3);">To check, we use a technique called <b style="color:var(--text)">bootstrap resampling</b>: take the real games, randomly reshuffle which ones get counted (with repeats allowed) thousands of times, and see how much the accuracy difference bounces around. If it consistently stays positive across nearly all of those reshuffles, that's real signal. If it swings between positive and negative depending on which games got picked, that's a sign that we can't confidently tell the difference from noise yet -- even if the original number looked good.</p>
+      <p style="margin-top:var(--s3);">This is why you'll see "CI [-1.2, +3.4]" type notation on Model Lab -- that's the range the true effect most likely falls in. When that range includes zero, we mark it INCONCLUSIVE rather than pretending we know for sure.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Which Features Actually Do the Work</h4>
+      <p>Most of this project's research has tested whether <i>adding</i> something helps. A formal ablation pass asks the opposite question: remove each existing feature one at a time, fully retrain, and measure what actually breaks. That's how you find out where a model's predictive power really lives, rather than assuming every feature is pulling its weight.</p>
+      <div class="table-wrap" style="margin-top:var(--s3);"><table class="metrics-table"><caption class="visually-hidden">Accuracy change when each feature is removed</caption>
+        <thead><tr><th scope="col">Feature removed</th><th scope="col" class="num">Accuracy change</th><th scope="col" class="num">95% CI</th></tr></thead>
+        <tbody>
+          <tr><td>QB matchup</td><td class="num">-2.39&nbsp;pp</td><td class="num">[-5.15, +0.37]</td></tr>
+          <tr><td>QB change</td><td class="num">-0.55&nbsp;pp</td><td class="num">[-1.93, +0.83]</td></tr>
+          <tr><td>Offense matchup</td><td class="num">-0.37&nbsp;pp</td><td class="num">[-1.20, +0.46]</td></tr>
+          <tr><td>Defense matchup</td><td class="num">+0.37&nbsp;pp</td><td class="num">[-0.83, +1.56]</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:var(--s3);"><b style="color:var(--text)">QB quality is doing most of the work</b> -- removing it costs more than four times what any other feature costs. That matches football intuition, and it's why so much of this project's research effort has gone into getting the QB rating right.</p>
+      <p style="margin-top:var(--s3);">Two honest caveats. First, <b style="color:var(--text)">none of these individually reach statistical significance</b> -- every confidence interval includes zero. That's expected with correlated features: the model partially compensates for a missing one using the others, so no single removal produces a clean, sharp drop. Second, defense matchup's point estimate is actually <i>positive</i> when removed, though well within noise. It isn't clearly earning its place, but there's no real evidence it's hurting either -- so it stays, and this is noted rather than acted on.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Why the Confidence Ranking Is the Right Strategy, Not Just a Guess</h4>
+      <p>For a standard confidence pool -- rank your picks, assign points 1 through N, earn those points if correct -- the strategy of assigning the highest point value to your highest-confidence pick, and so on down the list, isn't just a reasonable habit. It's <b style="color:var(--text)">mathematically provable</b> as the strategy that maximizes your expected total points, assuming the underlying probabilities are well-calibrated.</p>
+      <p style="margin-top:var(--s3);">This follows from the <b style="color:var(--text)">rearrangement inequality</b>: when you're pairing two ordered lists (win probabilities and point values) to maximize their summed product, pairing largest-with-largest and smallest-with-smallest always beats any other pairing. We checked this isn't just theory -- a real simulation compared the rank-order strategy against 20,000 random point assignments for a realistic 16-game week, and rank-ordering beat every single one.</p>
+      <p style="margin-top:var(--s3);">What this means practically: the confidence ranking you see on the Week Board isn't a stylistic choice or a rough heuristic -- it's the actual optimal strategy for this pool format, given whatever our probabilities say. The only way to do better is to have better probabilities, not a cleverer ranking scheme.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Trying to Beat the Market: An Honest Accounting</h4>
+      <p>A recurring question for Model B has been whether it can be made meaningfully more sophisticated than "our features plus the raw spread in one regression." Across two research cycles, we've tried roughly a dozen distinct approaches: a stacking ensemble combining Model A and market probabilities, feature-by-spread interaction terms, the total (over/under) line as an added input, dynamic weighting by model disagreement, market efficiency trends across and within seasons, and market accuracy conditional on travel distance.</p>
+      <p style="margin-top:var(--s3);"><b style="color:var(--text)">None of them improved on the current flat regression.</b> Most came back as clean rejections; a couple were inconclusive with confidence intervals straddling zero. Not one showed a real, defensible edge.</p>
+      <p style="margin-top:var(--s3);">We think this negative result is worth stating plainly rather than quietly moving past: the betting market for NFL point spreads is genuinely difficult to improve on with the data and methods available here. That's not a failure of effort -- it's a real, repeatedly-tested finding about market efficiency, and arguably more honest than claiming a marginal edge that wouldn't hold up under scrutiny.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Known Gaps</h4>
+      <div class="gap-item"><span class="gap-num">01</span><span>Rest days, weather, and travel distance were tested and rejected (real backtests, not adopted) — see What&#39;s Changed and Model Lab. No injury feature yet, blocked on data availability.</span></div>
+      <div class="gap-item"><span class="gap-num">02</span><span>QB shrinkage: the shrinkage target had a real (small) leak -- fixed 2026-08-31. Re-tuning it turned out to be inconclusive: the original k=8 -> 96 decision didn't reproduce, and a fresh retune under the fixed config (k=128) won on validation but lost 3 of 4 metrics to k=8 on confirmatory data (bootstrap CI included zero). Reverted to k=8 as the more defensible default -- see Model Lab for the full investigation and src/research/tune_qb_shrink_k.py for the reusable methodology.</span></div>
+      <div class="gap-item"><span class="gap-num">03</span><span>Gradient boosting was tested and did not beat logistic regression at this feature-set size.</span></div>
+    </div>
+
+    <div class="method-block">
+      <h4>Weekly Automated Process</h4>
+      <ol>
+        <li>Pull fresh play-by-play + schedule data</li>
+        <li>Refit team + QB ratings at the current "as of" cutoff</li>
+        <li>Refit Model A and Model B themselves (not just the underlying ratings) on all real completed games available -- confirmed 2026-08 to already match the weekly-refitting approach validated as the correct backtest methodology</li>
+        <li>Web-search for QB/injury news that might contradict the assumed starter</li>
+        <li>Generate both models' predictions, save before kickoff (never overwritten)</li>
+        <li>On a run that is not yet the lock (usually Tuesday), save the same picks as a labelled preview instead. A preview can change at each run until the lock and is never graded or counted</li>
+        <li>Grade the previous week's saved predictions against actual results</li>
+        <li>Regenerate this dashboard</li>
+      </ol>
+    </div>
+    </div>
+
+    <div class="method-part" id="part-compare">
+      <h3>How this compares to other ways of picking games</h3>
+      <p class="part-lead">The question a sceptical reader asks first.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>The Short Version</h4>
+      <p>On log loss and Brier, the proper scoring rules this project judges by, <b style="color:var(--text)">this model does not beat the Vegas betting market</b>: <span data-claim="a-vs-market">Model A's log loss is 0.650 against the market's 0.607</span>, and the paired bootstrap puts the gap at +0.042, 95% interval +0.027 to +0.058, which excludes zero. Neither do most public NFL models. Across two full research cycles, roughly a dozen distinct approaches were tested to try to add something the market doesn't already price in. None of them worked. That's documented in detail on Model Lab and in the Methodology page's "Trying to Beat the Market" section.</p>
+      <p style="margin-top:var(--s3);">Added 2026-09-05, because it is the question a sceptical reader asks first and this project had never actually asked it: <b style="color:var(--text)">would any of this have beaten the spread?</b> Picking winners and beating the spread are not the same test, and the second one is the real claim. A model fitted on the same features against a <i>cover</i> target, over 1,058 backtested games, hit <b style="color:var(--text)">51.61%</b> against the spread &mdash; 95% CI [48.58%, 54.63%]. That interval contains 50%, so it is not distinguishable from a coin flip; and at standard &minus;110 juice you need <b style="color:var(--text)">52.38%</b> just to break even, which it does not reach either. Three trivial controls &mdash; always home, always away, always the favourite &mdash; all came back at exactly 50.00%, which is what a spread is for and what confirms the arithmetic. <b style="color:var(--text)">This model would not have made money.</b> See <code>src/research/ats_evaluation.py</code>.</p>
+      <p style="margin-top:var(--s3);">What this project offers instead is <b style="color:var(--text)">transparency about how it actually works and what it actually gets wrong</b> -- which is genuinely rare among prediction sites, most of which publish a number and no accounting of how it was arrived at or how often it fails.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Where This Model Stands</h4>
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Where this model stands</caption>
+        <thead><tr><th scope="col">Dimension</th><th scope="col">How this project does</th></tr></thead>
+        <tbody>
+          <tr><td>Model A against the market (log loss, Brier)</td><td>Behind on both. The market is a genuinely hard benchmark and this doesn't clear it</td></tr>
+          <tr><td>Football-only, no market data</td><td>Reasonable -- log loss 0.650 on held-out games against 0.693 for a coin flip, and roughly 63% right against the ~54% you'd get by always picking home teams</td></tr>
+          <tr><td>Methodology transparency</td><td>Every constant is backtested and documented with its real justification; the tuning scripts are committed and re-runnable</td></tr>
+          <tr><td>Honest failure reporting</td><td>Model Lab documents every rejected experiment with real numbers, including a data leak that was caught and fixed</td></tr>
+          <tr><td>Leak-free discipline</td><td>A real, executable test suite guards the walk-forward properties -- and it caught a genuine production leak</td></tr>
+          <tr><td>Live, ongoing track record</td><td>Predictions are locked in before kickoff and graded automatically -- no post-hoc editing</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h4>What Would Actually Close the Gap</h4>
+      <p>Being specific rather than vague about this: the single biggest missing input is <b style="color:var(--text)">injury and player-availability data</b>, which the market prices in heavily and this model has no access to (the upstream data source has been broken with no ETA -- see Data Sources). Beyond that, the market aggregates information this project structurally can't reach: sharp money, insider knowledge, and real-time news. Closing that gap isn't a matter of a better algorithm.</p>
+    </div>
+    </div>
+
+    <div class="method-part" id="part-datasources">
+      <h3>Where the numbers come from</h3>
+      <p class="part-lead">Every dataset this project touches, honestly labelled.</p>
+    <div class="method-block">
+      <h4>In Production (used every single weekly run)</h4>
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Datasets used in production</caption>
+        <thead><tr><th scope="col">Dataset</th><th scope="col">Used For</th></tr></thead>
+        <tbody>
+          <tr><td>Play-by-play</td><td>Team ratings (ridge regression), per-QB trailing EPA</td></tr>
+          <tr><td>Schedules</td><td>Game results, spread/total lines, home/away, current-week matchups</td></tr>
+          <tr><td>Snap counts</td><td>Computed and logged each run for O-line continuity, though that feature was removed from the live model in v2.1 -- data collection continues in case future evidence changes that</td></tr>
+        </tbody>
+      </table></div>
+      <p style="margin-top:var(--s3);">All three migrated from the now-deprecated nfl_data_py to nflreadpy in 2026-08, verified with real column-schema and exact-value checks before merging -- see What&#39;s Changed.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Research-Only (fetched to test a specific idea, never part of live predictions)</h4>
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Research-only datasets</caption>
+        <thead><tr><th scope="col">Dataset</th><th scope="col">What happened</th></tr></thead>
+        <tbody>
+          <tr><td>Officials</td><td>Rejected</td></tr>
+          <tr><td>FTN charting</td><td>Rejected</td></tr>
+          <tr><td>Trades</td><td>Rejected</td></tr>
+          <tr><td>Rosters (weekly)</td><td>Not suitable -- confirmed not gameday active/inactive status</td></tr>
+          <tr><td>Participation</td><td>Not suitable -- same limitation as snap counts, also doesn't update during the season</td></tr>
+          <tr><td>ESPN QBR</td><td>Alternative QB quality metric -- Source confirmed abandoned, stops at 2023</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+          <p style="margin-top:var(--s3);">This section exists specifically so a claim like "we tried X" is checkable, not just asserted -- every row here has a real check behind it, documented on Model Lab or What&#39;s Changed.</p>
+    </div>
+    </div>
+
+    <div class="method-part" id="part-glossary">
+      <h3>Words used on this page</h3>
+      <p class="part-lead">Look anything up here rather than guessing from context.</p>
+    </div>
+
+    <div class="method-block">
+      <h4>Model &amp; Prediction Terms</h4>
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Model and prediction terms</caption>
+        <thead><tr><th scope="col">Term</th><th scope="col">What it means</th></tr></thead>
+        <tbody>
+          <tr><td>EPA (Expected Points Added)</td><td>How much a single play changed a team's expected points on that drive. A 40-yard gain has high positive EPA; a sack has negative EPA. Summed up, it's a better measure of team quality than raw yards</td></tr>
+          <tr><td>Model A</td><td>The football-only model -- team ratings, QB performance, QB changes. Uses no betting market data at all</td></tr>
+          <tr><td>Model B</td><td>Model A's features plus the current Vegas point spread</td></tr>
+          <tr><td>Opponent-adjusted rating</td><td>A team's performance adjusted for who they played. Beating a strong defense counts more than beating a weak one</td></tr>
+          <!-- Moved here from a card above the Power Ratings table. The card
+               went because the page is being decluttered; the sentence stayed
+               because a bare "67.5%" reads as "the model is 67.5% sure", which
+               is not what a count of simulated seasons means. The simulation
+               count is still filled from playoffMeta at render time -- it is a
+               real number from the run, not a figure typed into prose. -->
+          <tr><td>Playoff Odds</td><td>We play out the rest of the season <span id="playoff-sims"></span> times on a computer and count how often each team makes the playoffs. Each run assumes every team stays exactly as good as it is today, which is never quite true &mdash; teams get better, get worse, and get injured. So treat these as a rough guide, not a prediction, and trust them less the further away a game is</td></tr>
+          <tr><td>Recency weighting</td><td>Recent games count more than old ones. This model uses a 16-game half-life -- a game 16 games ago counts half as much as this week's</td></tr>
+          <tr><td>Shrinkage</td><td>Pulling a small-sample estimate toward the league average. A QB with 20 career dropbacks shouldn't be rated as confidently as one with 2,000</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h4>Evaluation Terms</h4>
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Evaluation terms</caption>
+        <thead><tr><th scope="col">Term</th><th scope="col">What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Log loss</td><td>Penalizes confident wrong predictions heavily. Lower is better. A model that says 95% and is wrong is punished far more than one that said 55%. Season Accuracy's "How sure, and how right" score is this, averaged over the season's graded games</td></tr>
+          <tr><td>Brier score</td><td>Average squared difference between predicted probability and what actually happened. Lower is better. Similar spirit to log loss, less harsh on confident misses</td></tr>
+          <tr><td>AUC</td><td>How well the model ranks games from most to least likely home win. 0.5 is random, 1.0 is perfect. Measures ordering ability, not calibration</td></tr>
+          <tr><td>Calibration</td><td>Whether stated confidence matches reality -- do games predicted at 70% actually win about 70% of the time?</td></tr>
+          <tr><td>Bootstrap / confidence interval</td><td>Reshuffling the real results thousands of times to see how much a result bounces around. If the range includes zero, the difference can't be distinguished from luck</td></tr>
+          <tr><td>Percentage points (pp)</td><td>The gap between two percentages. Accuracy going from 60.0% to 62.6% is +2.6 pp. Written &ldquo;pp&rdquo; because &ldquo;points&rdquo; on this page always means football points</td></tr>
+          <tr><td>Walk-forward backtest</td><td>Testing a model using only data that existed before each game. Prevents the model from "knowing" future results it couldn't have known</td></tr>
+          <tr><td>Data leakage</td><td>When information from the future accidentally gets used to predict the past, making results look better than they really are. This project found and fixed a real one -- see Checking the AI&#39;s work</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="method-block">
+      <h4>Betting Terms</h4>
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Betting terms</caption>
+        <thead><tr><th scope="col">Term</th><th scope="col">What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Point spread</td><td>The margin the favorite is expected to win by. A -7 favorite is expected to win by 7</td></tr>
+          <tr><td>Over/under (total)</td><td>The combined score both teams are expected to reach</td></tr>
+          <tr><td>Market-implied probability</td><td>Converting a point spread into a win percentage, so it can be compared directly against a model's prediction</td></tr>
+          <tr><td>Confidence pool</td><td>A pick'em format where you rank games and assign point values -- most confident pick gets the most points. See Methodology for why ranking by probability is provably optimal here</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+    </div>
+
+  </section>
+
+
+  <!-- WHAT'S CHANGED  (Changelog + Roadmap, merged 2026-09-08) -->
+  <!-- Three parts, in this order on purpose:
+
+       1. Model versions, rendered from config.VERSION_HISTORY -- the same
+          object MODEL_VERSION is checked against, so the page cannot drift
+          from the constant it describes. tests/test_version_history.py holds
+          the two together.
+
+       2. What got built. These were the Roadmap page's "Done" cards. The
+          written plan said the Roadmap merely duplicated this page and the
+          list could be deleted. It did not: the changelog is seven MODEL
+          versions, this list is sixteen mostly-PRODUCT milestones, and only
+          about three genuinely overlap. Deleting it would have thrown away
+          the only record of the picks log, the calibration table, the
+          deep-dive page and the nflreadpy migration.
+
+       3. What we tried that did not work. A reader deciding whether to trust
+          any of this should weigh part 3 more heavily than part 2, which is
+          why it is on the page rather than only in git history. These cards
+          used to wear the same green pill as the shipped ones -- a "TESTED --
+          REJECTED" badge in the success colour -- and now wear a neutral one.
+
+       Parts 2 and 3 are hand-written because they describe work, not model
+       versions. If that ever stops being true, generate them; do not maintain
+       the same facts in two places. -->
+  <section class="page" id="page-changelog">
+    <div class="page-head">
+      <div>
+        <div class="page-eyebrow">How It Was Built</div>
+        <h2>What&#39;s Changed</h2>
+        <div class="desc">Every version of the model, what got built around it, and what we tried that did not work. The version list is generated from <code>config.py</code> rather than written out by hand, and reversals are kept: a history that quietly deletes the decisions that were later undone is just marketing.</div>
+      </div>
+      <div class="badge" id="changelog-badge">—</div>
+    </div>
+
+    <h3 class="section-title">Model versions</h3>
+    <div id="changelog-content"></div>
+
+    <h3 class="section-title">What got built</h3>
+    <p class="section-lead">The model is only half of it. This is the rest &mdash; the pages, the weekly routine, and the record-keeping that turns a script into something you can actually use on a Sunday.</p>
+    <div class="roadmap-grid">
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Opponent-Adjusted Ratings</h4><p>Two-way fixed-effects ridge regression on real play-by-play, replacing flat trailing averages.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Recency Weighting</h4><p>Backtested half-life values; 16 games won on log loss.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Market Blend Model</h4><p>Model B combines football-only features with the Vegas spread, evaluated honestly against market alone.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Tuned Ridge Alpha</h4><p>Backtested 1-1600; alpha=200 was over-regularized, alpha=15 wins.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>QB-Specific Features</h4><p>Leak-free per-starter trailing EPA/dropback. Biggest single accuracy gain: 60.0% to 62.6%.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Automated Weekly Routine</h4><p>Scheduled, self-updating: auto-detects the current week, locks each week's picks shortly before its first kickoff (usually Thursday) so the week's injury news can land first, walks straight through the playoffs with no manual intervention.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>My Picks Log</h4><p>Tap your actual pick per game, tracked locally with a real win/loss record against graded results.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Season Accuracy + Calibration</h4><p>Real running record for Model A, Model B, and market, plus a calibration table checking whether confidence buckets actually hit their rate.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Confidence Ranking + Why Breakdown</h4><p>Games auto-ranked by pick confidence for confidence-pool scoring; every pick shows its real feature-level math, not a black box.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Past-Week Browsing</h4><p>Week selector on the Board and Picks pages instead of only ever showing the latest week.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Per-Game Context Notes</h4><p>Generalized from a single QB-only flag into a real multi-note list the routine's web-search step can populate with injuries, coaching changes, or anything else worth flagging — shown as a real bulleted list per game.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Line Movement Tracking</h4><p>Every routine run now logs the current spread for the upcoming week's games to a running archive -- even weeks that are too early to lock in real predictions. Building real, first-party movement data starting this season.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Formal Backup-QB Detection</h4><p>Tested honestly first: a leak-free "did this team change starting QB since last week" flag improved every metric (accuracy +0.46&nbsp;pp, log loss/Brier/AUC all better too) and shows a clean, correctly-signed coefficient. Real signal -- now a live 5th model feature.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Team Deep-Dive Page</h4><p>New tab: pick any team, see real season-end net ratings for 2020-2025, with live week-by-week 2026 data appending automatically as the season is actually played.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Adopted</div><h4>Weekly-Refitting Backtest</h4><p>Backtest methodology now refits every week within a season (not just once), matching what the live weekly routine already does. Not statistically significant on its own (+0.37&nbsp;pp, CI included zero) but tied-or-better on every metric and free -- adopted as the more methodologically correct practice.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-done">Built</div><h4>Migrated to nflreadpy</h4><p>nfl_data_py (our data source since day one) was officially deprecated by nflverse. Migrated to nflreadpy, the actively-maintained successor, with a safety toggle to instantly revert if needed. Verified two ways before merging: every required column present, and real values from a completed 2025 week -- scores, spread lines, EPA and snap counts -- matched exactly between the old and new sources.</p></div>
+    </div>
+
+    <h3 class="section-title">What we tried that did not work</h3>
+    <p class="section-lead">Ideas that sounded good, got a real backtest, and lost. They are here because a list of only the wins tells you nothing about whether the wins were earned.</p>
+    <div class="roadmap-grid">
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Tested — Rejected</div><h4>Rest, Weather &amp; Travel Distance</h4><p>Real backtest on all three: rest days, dome/cold/wind, and haversine travel distance all made the model flat or slightly worse (62.6% down to ~61.5-62.2%). Honest negative results, none adopted.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Tested — Not Adopted</div><h4>Time-Decay QB-Change Signal</h4><p>Real backtest: the decay version actually scored slightly worse on accuracy (62.6-62.9% vs the binary flag's 63.1%) while only marginally improving log loss/Brier/AUC. Keeping the simpler binary flag -- it's not just simpler, it's genuinely no worse.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Tested — Decided Against</div><h4>Re-test Ensemble/Gradient Boosting</h4><p>With 5 features, GBM does edge out logistic regression on raw accuracy (63.4% vs 62.6%) -- but AUC drops notably (0.654 vs 0.670), meaning worse discrimination between confidence levels. Since confidence-ranked picks depend on that discrimination, staying with logistic regression.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Removed — Tested Twice, Negative</div><h4>O-Line Continuity</h4><p>Was live as a Model A/B feature; pulled after two independent tests (bootstrap CI included zero; a later confirmatory test found no-OL-feature beat both raw and smoothed versions on held-out data). Still computed and logged as data, not fed into the model.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Tested — Rejected</div><h4>Coaching Changes</h4><p>Tested 5 framings (season-level flag, in-season change, 3 decay half-lives) using real per-game coach data from nflverse schedules. Every variant tied or underperformed the baseline. Likely redundant with what opponent-adjusted team ratings already absorb.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Tested — Rejected</div><h4>Early-Season Prior Blending</h4><p>Confirmed a real gap (61.7% weeks 1-4 vs. 65.9% weeks 15+), but explicit extra shrinkage didn't close it -- the existing continuous recency-weighted ratings already blend across the season boundary correctly. Gap remains open; import_win_totals() (real preseason market data) flagged as a genuinely different angle for later.</p></div>
+      <div class="roadmap-card"><div class="roadmap-status status-planned">Confirmed Infeasible</div><h4>Preseason EPA as Early-Season Prior</h4><p>Checked directly: nflreadpy's play-by-play loader has zero preseason rows, for any season 2020-2025. Not a data-quality problem to work around -- the play-level detail simply isn't in this pipeline. Ruled out, not deferred.</p></div>
+    </div>
+  </section>
+
+  <!-- DATA SOURCES -->
+
+  <!-- AI RELIABILITY -->
+  <section class="page" id="page-reliability">
+    <div class="page-head">
+      <div>
+        <div class="page-eyebrow">How It Was Built</div>
+        <h2>Checking the AI&#39;s work</h2>
+        <div class="desc">This project is built almost entirely by delegating real engineering work to an AI agent ("Scout" -- Claude Code, doing the research, coding, and PRs throughout this project). That's genuinely useful, and it also fails in specific, real ways. This page documents what actually went wrong here, not what could theoretically go wrong in the abstract.</div>
+      </div>
+    </div>
+
+    <!-- Filled by renderAgentLog(). Every audit Booth has posted, parsed
+         from its machine-readable verdict block by src/agents/collect_agent_log.py.
+         Before this existed the page was three hand-written incidents frozen
+         in time: true when written, and saying nothing about whether any of
+         it still happens. The incidents stay below -- they are the part a
+         reader learns from -- but the counts above them are now measured. -->
+    <div id="agent-log"></div>
+
+    <div class="method-block">
+      <h3>Why This Page Exists</h3>
+      <p>An AI agent confidently stating something false -- about a result, about the state of a codebase, about whether a test actually passed -- is a real, well-documented failure mode, not a hypothetical. The honest mitigation isn't "use a smarter model" or "ask it to double-check itself" (the same failure mode that produced the wrong claim can just as easily produce a confident re-confirmation of it). The mitigation that actually worked here, every time, was <b style="color:var(--text)">external, mechanical verification</b> -- demanding the real command output, the real screenshot, the real re-run, rather than accepting a description of one.</p>
+      <p style="margin-top:var(--s3);">Below is one real incident where that discipline caught something that would otherwise have shipped wrong, and then the longer case studies.</p>
+    </div>
+
+    <div class="method-block">
+      <h3>Incident 1 -- False Claim About Repository State</h3>
+      <p><b style="color:var(--text)">Claim made:</b> Scout stated that a specific pull request "hasn't actually been merged yet," contradicting an earlier confirmation that it had been.</p>
+      <p style="margin-top:var(--s2);"><b style="color:var(--text);">How it was caught:</b> Rather than accept either statement, a direct screenshot of the actual PR page was requested. It showed a purple "Merged" badge -- the PR genuinely was merged. Scout's later claim was the false one.</p>
+      <p style="margin-top:var(--s2);"><b style="color:var(--text);">Why it matters:</b> This was a claim about objective, checkable repo state -- not a judgment call or a probabilistic model output. It still came out wrong. Ground truth (a real screenshot) resolved it in seconds; trusting the more recent-sounding claim would not have.</p>
+    </div>
+
+    <!-- One card per file in docs/case-studies/. The full write-up lives in
+         the repository, for a technical reader; this is the short version,
+         so there is one copy of each story, not two. tests/test_case_studies.py
+         holds the cards and the files to each other. The QB-leak card
+         replaces what were Incidents 2 and 3 here: both were that afternoon. -->
+    <div class="method-block" id="case-studies">
+      <h3>Case Studies</h3>
+      <p>The longer stories. Each one is written up in full in the project&#39;s repository, where every number can be checked. This is the short version.</p>
+      <div class="case-study" data-case-study="qb-rating-leak" style="margin-top:var(--s3);">
+        <p><b style="color:var(--text)">The QB rating that could see the future.</b> A test built to prove the quarterback ratings only used past games failed on its first run: a 2022 prediction was quietly using 2023 to 2025. Fixing it turned up two worse problems the same afternoon. The project&#39;s own leak-free tests had never actually run, and an earlier tuning result could not be repeated, so it was undone. Measured afterwards, the leak itself barely moved the results.</p>
+        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/qb-rating-leak.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
+      </div>
+      <div class="case-study" data-case-study="booth-first-audit" style="margin-top:var(--s4);">
+        <p><b style="color:var(--text)">The checker&#39;s first week.</b> Booth is the second AI on this project. It writes nothing; it re-runs what the first one claims. Its very first run ran out of time and said nothing at all. Its first real report found a hole in its own setup, and a result marked &quot;confirmed&quot; on this dashboard that nothing in the project could reproduce. That result was rebuilt from scratch and held up. A checker that can quietly say nothing took three more fixes to close.</p>
+        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/booth-first-audit.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
+      </div>
+      <div class="case-study" data-case-study="stage2-corrections" style="margin-top:var(--s4);">
+        <p><b style="color:var(--text)">When the to-do list was wrong.</b> Two of the jobs on an early to-do list were wrong about what they described. A column marked &quot;broken&quot; was only blank because the season hadn&#39;t started, and removing it would have thrown away something that worked. A page marked &quot;done&quot; had never shown anything at all. Since then this project treats every queued problem as a guess to check before doing the work it asks for.</p>
+        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/stage2-corrections.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
+      </div>
+      <div class="case-study" data-case-study="booth-regression-suite" style="margin-top:var(--s4);">
+        <p><b style="color:var(--text)">Testing the tester.</b> Booth checks the other AI&#39;s work, but something has to check Booth. Its tests are small fake changes with a mistake planted in them, where the right answer is known in advance, so a missed mistake shows up as a failure. The tests were ready for seventeen days before anyone ran one. When one finally ran, Booth caught the planted mistake, and the run turned up two small problems in the test setup itself, both since fixed.</p>
+        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/booth-regression-suite.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
+      </div>
+    </div>
+
+    <div class="method-block" id="lessons-learned">
+      <h3>What This Project Learned</h3>
+      <p>The short version of everything above, and of what went wrong along the way: check a claim by doing it again rather than by reading it, treat a problem on the to-do list as a guess until it is confirmed, and never trust a number that nothing can recompute. The full list gives each lesson with where it came from.</p>
+      <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/lessons-learned.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the lessons</a></p>
+    </div>
+
+    <div class="method-block">
+      <h3>The Actual Rule</h3>
+      <p>Formalized in <a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/VERIFICATION.md" target="_blank" rel="noopener" style="color:var(--accent);">VERIFICATION.md</a>: any claim about test results, repo state, or reproducibility must be backed by real, re-executed command output -- not a summary of one. See also <b style="color:var(--text)">Booth</b>, a dedicated verification role built specifically to audit Scout's work against this rule.</p>
+    </div>
+  </section>
+
+  <!-- HOW THIS COMPARES -->
+
+  <!-- GLOSSARY -->
+
+  <p class="page-prov">__SIDEBAR_FOOT__</p>
+</main>
+
+<nav class="bottom-nav" aria-label="Mobile navigation">
+  <div class="bottom-nav-row">
+    <button class="bnav-btn active" data-page="board" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span class="bnav-label">Board</span></button>
+    <button class="bnav-btn" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span class="bnav-label">Ratings</span></button>
+    <button class="bnav-btn" data-page="picks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span class="bnav-label">Picks</span></button>
+    <button class="bnav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg><span class="bnav-label">Accuracy</span></button>
+    <button class="bnav-btn" id="bnav-more-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span class="bnav-label">More</span></button>
+  </div>
+</nav>
+<div id="bnav-more-sheet" class="bnav-more-sheet" inert>
+  <div class="bnav-more-sheet-inner">
+    <button class="bnav-more-item" data-page="teamdive"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Team Deep-Dive</span></button>
+    <button class="bnav-more-item" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span>Methodology</span></button>
+    <button class="bnav-more-item" data-page="changelog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><path d="M3.05 11a9 9 0 1 1 .5 4"/><path d="M3 21v-5h5"/></svg><span>What&#39;s Changed</span></button>
+    <button class="bnav-more-item" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span>Model Lab</span></button>
+    <button class="bnav-more-item" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg><span>Checking the AI&#39;s work</span></button>
+  </div>
+</div>
+

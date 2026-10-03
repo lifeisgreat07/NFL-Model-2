@@ -19,11 +19,12 @@ fetched, this file says a loading state is now owed.
 Run with: pytest tests/test_page_states.py -v
 """
 import re
-from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).parent.parent / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 
 #: Which kinds each render function may use. A new state anywhere else, or a
 #: kind changing, fails -- decide it on purpose.

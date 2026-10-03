@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_page_states.py",
   "cases": [
     {
@@ -18,6 +18,7 @@
     },
     {
       "id": "missing-looks-like-waiting",
+      "target": "src/dashboard/styles.css",
       "why": "the missing kind goes back to the dashed border every other state wears, so a broken build and a quiet week are drawn the same.",
       "find": ".state--missing{border-style:solid;",
       "replace": ".state--missing{border-style:dashed;",
@@ -25,6 +26,7 @@
     },
     {
       "id": "sos-note-back-on-the-old-class",
+      "target": "src/dashboard/body.html",
       "why": "the SOS note returns to .table-note, a second way of saying 'nothing here' beside the component that replaced it.",
       "find": "<div id=\"sos-empty-note\" class=\"state state--note\"",
       "replace": "<div id=\"sos-empty-note\" class=\"table-note\"",

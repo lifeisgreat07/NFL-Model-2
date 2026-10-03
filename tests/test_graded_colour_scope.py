@@ -27,11 +27,12 @@ synthetic template so both of its branches stay alive.
 Run with: pytest tests/test_graded_colour_scope.py -v
 """
 import re
-from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).parent.parent / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 
 GRADED_TOKENS = ('--good', '--good-dim', '--warn', '--warn-dim',
                  '--graded-correct', '--graded-correct-soft',

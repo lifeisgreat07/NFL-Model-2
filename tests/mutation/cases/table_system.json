@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/styles.css",
   "tests": "tests/test_table_system.py",
   "cases": [
     {
@@ -32,6 +32,7 @@
     },
     {
       "id": "offense-header-unreachable-by-keyboard",
+      "target": "src/dashboard/body.html",
       "why": "the Offense header sorts on click and cannot be reached with Tab, which is how every sort header was before Stage 10.",
       "find": "<th scope=\"col\" data-key=\"off\" tabindex=\"0\" aria-sort=\"none\"",
       "replace": "<th scope=\"col\" data-key=\"off\" aria-sort=\"none\"",
@@ -39,6 +40,7 @@
     },
     {
       "id": "sort-handler-ignores-the-keyboard",
+      "target": "src/dashboard/app.js",
       "why": "the header takes focus but Enter and Space do nothing: a control a keyboard can reach and not operate.",
       "find": "    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); sortBy(); }\n",
       "replace": "",
@@ -46,6 +48,7 @@
     },
     {
       "id": "an-inline-overflow-unsticks-a-table",
+      "target": "src/dashboard/body.html",
       "why": "Model Lab's experiments table gets back the inline overflow-x:auto it carried before Stage 10, which beats .fits and leaves its 46 rows without a sticky header.",
       "find": "    <div class=\"table-wrap\" data-scroll-label=\"Experiment log\">",
       "replace": "    <div class=\"table-wrap\" data-scroll-label=\"Experiment log\" style=\"overflow-x:auto;\">",
@@ -53,6 +56,7 @@
     },
     {
       "id": "a-glossary-definition-goes-flush-right",
+      "target": "src/dashboard/body.html",
       "why": "one Methodology glossary definition gets td.num back and is set flush right again, the way all 30 of Methodology's prose cells and Model Lab's 46 result cells were before Stage 10.",
       "find": "<td>Model A's features plus the current Vegas point spread</td>",
       "replace": "<td class=\"num\">Model A's features plus the current Vegas point spread</td>",

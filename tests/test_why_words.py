@@ -33,6 +33,8 @@ from pathlib import Path
 
 import pytest
 
+from src.pipeline.template_parts import read_template  # noqa: E402
+
 REPO_ROOT = Path(__file__).parent.parent
 HARNESS = Path(__file__).parent / 'why_words_harness.js'
 NODE = shutil.which('node')
@@ -140,14 +142,14 @@ def test_the_labels_class_is_its_own():
     """The first draft reused .why-label, which already styles the row labels
     in the numbers panel, so its new rule restyled those rows as well. Nothing
     else in the template may carry the label's class."""
-    tpl = (REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+    tpl = read_template()
     fn = tpl[tpl.index('function whyLabelled('):]
     cls = re.search(r'<div class="([\w-]+)">Model A', fn).group(1)
     assert tpl.count(f'class="{cls}"') == 1, f'.{cls} is shared with other markup'
 
 
 def test_the_board_draws_the_labelled_sentence():
-    tpl = (REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+    tpl = read_template()
     body = tpl[tpl.index('function renderGames('):tpl.index('function renderPicksGrid(')]
     assert '${whyLabelled(g)}' in body and '${whySentence(g)}' not in body
 

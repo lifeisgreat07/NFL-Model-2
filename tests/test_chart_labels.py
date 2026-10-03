@@ -10,9 +10,10 @@ aria-hidden="true". Fixed-size icons (a 24x24 nav glyph beside its label)
 are outside this rule.
 """
 import re
-from pathlib import Path
 
-TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+from src.pipeline.template_parts import read_template  # noqa: E402
+
+TEMPLATE = read_template()
 
 
 def svgs():

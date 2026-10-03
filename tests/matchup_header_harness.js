@@ -13,8 +13,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const TEMPLATE = path.join(__dirname, '..', 'src', 'pipeline', 'dashboard_template.html');
-const tpl = fs.readFileSync(TEMPLATE, 'utf8');
+const { readTemplate } = require('./template_source');
+const tpl = readTemplate();
 
 const START = 'function matchupHeader(';
 const END = 'function renderGames(';

@@ -28,8 +28,10 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
+from src.pipeline.template_parts import JOINED_TEMPLATE
+
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 sys.path.insert(0, str(Path(__file__).parent))
 
 import synthetic_league as league  # noqa: E402
