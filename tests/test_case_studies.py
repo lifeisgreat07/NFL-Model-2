@@ -21,9 +21,11 @@ from pathlib import Path
 
 import pytest
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 REPO = Path(__file__).resolve().parents[1]
 CASE_DIR = REPO / 'docs' / 'case-studies'
-TEMPLATE = REPO / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 VERIFICATION = REPO / 'VERIFICATION.md'
 BLOB = 'https://github.com/lifeisgreat07/NFL-Model-2/blob/main/'
 

@@ -24,11 +24,12 @@ The rule being guarded, stated once: every duration in the stylesheet is a
 all of them at once. A literal duration anywhere is invisible to that block.
 """
 import re
-from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).parent.parent / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 
 
 def stylesheet():

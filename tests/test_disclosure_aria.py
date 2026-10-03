@@ -10,9 +10,10 @@ aria-controls names the panel's id, and aria-expanded starts "false" and is
 set from the panel's .open on every click.
 """
 import re
-from pathlib import Path
 
-TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+from src.pipeline.template_parts import read_template  # noqa: E402
+
+TEMPLATE = read_template()
 
 BUTTONS = {
     # class -> (panel id prefix, handler's panel variable)

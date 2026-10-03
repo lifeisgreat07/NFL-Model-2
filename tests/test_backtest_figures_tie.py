@@ -44,10 +44,11 @@ import pytest
 REPO = Path(__file__).parent.parent
 
 from src.pipeline.config import VERSION_HISTORY  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
 
 CALIBRATION = 'data/calibration.json'
 BOOTSTRAP = 'data/bootstrap_brier_gap.json'
-TEMPLATE = REPO / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 
 # Releases after the backtest files were written that did not change what
 # the backtest scores. Re-running the backtest under a newer version empties

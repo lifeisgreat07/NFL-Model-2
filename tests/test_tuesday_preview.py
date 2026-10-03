@@ -23,8 +23,10 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
+from src.pipeline.template_parts import JOINED_TEMPLATE
+
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 
 from src.pipeline import generate_dashboard as gd  # noqa: E402
 from src.pipeline import weekly_summary as ws  # noqa: E402

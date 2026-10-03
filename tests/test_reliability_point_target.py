@@ -18,11 +18,12 @@ import json
 import re
 import shutil
 import subprocess
-from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
 VIEWBOX = 470
 WIDTHS = [0, 200, 330, 400, 452, 470, 480, 520, 680, 900]

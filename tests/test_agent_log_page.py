@@ -23,8 +23,9 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 from src.pipeline import generate_dashboard as gd  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
 
-TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 WORKFLOW = REPO_ROOT / '.github' / 'workflows' / 'collect-agent-log.yml'
 
 

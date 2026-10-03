@@ -1,9 +1,10 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/page.html",
   "tests": "tests/test_product_name.py",
   "cases": [
     {
       "id": "product-name-sidebar-goes-back",
+      "target": "src/dashboard/body.html",
       "why": "the sidebar says COMMAND BOARD again, a second name for the same site beside the tab's Pick'em Model.",
       "find": "<h1>PICK'EM<br>MODEL</h1>",
       "replace": "<h1>COMMAND<br>BOARD</h1>",

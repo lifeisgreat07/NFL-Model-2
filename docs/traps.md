@@ -468,7 +468,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   proves each `find` string still RESOLVES — it never runs the mutation. A case
   can therefore anchor cleanly and still be caught by the wrong guard, or by
   nothing. After merging two branches that had both edited
-  `src/pipeline/dashboard_template.html`, all 147 cases were run individually (147/147
+  the dashboard template (then one file), all 147 cases were run individually (147/147
   CAUGHT) precisely because clean auto-merge only means no two edits touched the
   same *lines*.
 - **Booth's environment is not the same from run to run.** #67's audit drove

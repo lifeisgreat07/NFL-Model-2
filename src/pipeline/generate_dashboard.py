@@ -48,11 +48,11 @@ from src.pipeline.paths import (  # noqa: E402
     STATUS_DIR,
 )
 from src.pipeline.paths import parse_week as parse_week_stem  # noqa: E402
+from src.pipeline.template_parts import read_template  # noqa: E402
 
 DIST_DIR = ROOT / 'dist'
 NEWS_DIR = DATA_DIR / 'team_news'
 TV_DIR = DATA_DIR / 'tv'
-TEMPLATE_PATH = ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
 OUTPUT_PATH = ROOT / 'index.html'  # served as the default page by GitHub Pages
 
 #: (season, week).
@@ -977,8 +977,9 @@ def main() -> None:
     foot_html = provenance_line()
     updated_html = updated_line(datetime.now(UTC))
 
-    with open(TEMPLATE_PATH, encoding='utf-8') as f:
-        template = f.read()
+    # The template is kept as parts under src/dashboard/ (Stage 33 item 26)
+    # and joined here into the one file it always was.
+    template = read_template()
     # The template's comments stay in the template for whoever reads it; the
     # page a visitor downloads does not carry them (Stage 26 item 11,
     # src/pipeline/page_comments.py). Stripped before the fills, so no data string is

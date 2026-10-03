@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_scrollable_regions.py",
   "cases": [
     {
@@ -53,6 +53,7 @@
     },
     {
       "id": "scroll-stop-no-focus-ring",
+      "target": "src/dashboard/styles.css",
       "why": "the focus ring is dropped, so Tab lands on a table with nothing on screen to say so (WCAG 2.4.7).",
       "find": "  [data-scroll-stop]:focus-visible{outline:2px solid var(--accent); outline-offset:-2px;}",
       "replace": "",

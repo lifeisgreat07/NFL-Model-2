@@ -11,9 +11,10 @@ it is markup or a JavaScript template string, including tables added later.
 Run with: pytest tests/test_table_captions.py -v
 """
 import re
-from pathlib import Path
 
-TEMPLATE = Path(__file__).parent.parent / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 TABLE = re.compile(r'<table\b[^>]*>')
 CAPTION = re.compile(r'\s*<caption class="visually-hidden">([^<]+)</caption>')
 

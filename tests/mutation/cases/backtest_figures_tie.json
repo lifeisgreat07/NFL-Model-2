@@ -19,7 +19,7 @@
     },
     {
       "id": "methodology-log-loss-a-digit-off",
-      "target": "src/pipeline/dashboard_template.html",
+      "target": "src/dashboard/body.html",
       "why": "the Methodology page prints a Model B log loss the backtest never produced; README's table, held to the page, would copy it.",
       "find": "<td class=\"highlight\">0.606</td>",
       "replace": "<td class=\"highlight\">0.605</td>",
@@ -27,7 +27,7 @@
     },
     {
       "id": "methodology-accuracy-one-game-off",
-      "target": "src/pipeline/dashboard_template.html",
+      "target": "src/dashboard/body.html",
       "why": "Model A's printed accuracy goes back to 62.8%, one game from the file's 62.74%. It is inside the machine allowance, and it is still not the figure the file holds, which is what the page is meant to print.",
       "find": "<td class=\"highlight\">62.7%</td>",
       "replace": "<td class=\"highlight\">62.8%</td>",
@@ -35,7 +35,7 @@
     },
     {
       "id": "methodology-game-count-drifts",
-      "target": "src/pipeline/dashboard_template.html",
+      "target": "src/dashboard/body.html",
       "why": "the sentence above the table names a game count the backtest did not score.",
       "find": "Evaluated on 2022-2025 (1,087 games)",
       "replace": "Evaluated on 2022-2025 (1,086 games)",

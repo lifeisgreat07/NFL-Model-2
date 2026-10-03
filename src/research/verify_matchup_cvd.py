@@ -2,7 +2,7 @@
 
 Why this file exists. PR #52 shipped "115 of 992 team/theme pairs sit under the
 dE00 15 floor ... and 15 are effectively identical" as a permanent comment in
-`src/pipeline/dashboard_template.html`. Booth re-ran the stated method and got 71 and 9.
+the dashboard template (`src/dashboard/`). Booth re-ran the stated method and got 71 and 9.
 Neither number could be checked against anything, because the original was
 computed in a browser against rendered pixels and no script was kept. The repo
 has been here before: `src/research/verify_low_confidence_finding.py` exists because
@@ -40,9 +40,10 @@ import math
 import re
 import sys
 from itertools import combinations, permutations
-from pathlib import Path
 
-TEMPLATE = Path(__file__).resolve().parent.parent / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE
+
+TEMPLATE = JOINED_TEMPLATE
 
 # --- the palette and the transform, read from the template rather than copied
 # so this file cannot drift from the code it describes ----------------------

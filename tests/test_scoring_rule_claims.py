@@ -15,12 +15,13 @@ Run with: pytest tests/test_scoring_rule_claims.py -v
 """
 import html
 import re
-from pathlib import Path
 
 import pytest
 from page_source import page_source  # Model Lab's rows are rendered in at build time
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 
 
 def num(s):

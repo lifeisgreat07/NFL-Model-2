@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_team_dive.py",
   "cases": [
     {
@@ -126,6 +126,7 @@
     },
     {
       "id": "dive-games-head-wide-drift",
+      "target": "src/dashboard/styles.css",
       "tests": "tests/test_team_dive_games_head.py",
       "why": "the heading's result column is narrower than the rows', so on a wide screen Model B and Result sit off their numbers.",
       "find": "  .dive-games-head{display:grid; grid-template-columns:104px 1fr 62px 66px 96px; gap:var(--s3);",
@@ -134,6 +135,7 @@
     },
     {
       "id": "dive-games-phone-rows-two-columns",
+      "target": "src/dashboard/styles.css",
       "tests": "tests/test_team_dive_games_head.py",
       "why": "the phone rows go back to two columns, which puts the result on a third line under the opponent.",
       "find": "    .dive-game-head{grid-template-columns:1fr 66px 96px; gap:var(--s1) var(--s3);}",
@@ -142,6 +144,7 @@
     },
     {
       "id": "dive-games-phone-head-keeps-week",
+      "target": "src/dashboard/styles.css",
       "tests": "tests/test_team_dive_games_head.py",
       "why": "on a phone the heading still names Week and Line, columns the rows no longer show, and every heading after them lands one column off.",
       "find": "    .dive-games-head .dgh-week, .dive-games-head .dgh-line{display:none;}\n",

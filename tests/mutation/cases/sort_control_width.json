@@ -1,9 +1,10 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_listbox.py",
   "cases": [
     {
       "id": "sort-labels-take-the-prefix-back",
+      "target": "src/dashboard/body.html",
       "why": "the six sort options regain a \"Sort: \" prefix. It reads as harmless copy and costs 65px on the one row that cannot afford it: measured at 430px, the button goes 183px on the default label and 248px on the longest against 398px of row, which is enough to push it off the stepper's line and, at 390px and below, onto a third line. A copy edit that is really a layout change.",
       "find": "        <option value=\"chronological\">First Game to Last</option>",
       "replace": "        <option value=\"chronological\">Sort: First Game to Last</option>",
@@ -11,6 +12,7 @@
     },
     {
       "id": "sort-control-stops-asking-for-a-frozen-width",
+      "target": "src/dashboard/body.html",
       "why": "the data-lbx-fit opt-in is dropped from the markup. fitWidest() returns immediately, --lbx-fit is never set, .lbx-btn falls back to its 160px floor and sizes to its label again -- and every visual check on the default option still passes, because the default is the short one. The row only starts moving once a reader picks a longer sort, which is the state no screenshot is taken in.",
       "find": " aria-label=\"Sort\" data-lbx-fit=\"widest\">",
       "replace": " aria-label=\"Sort\">",
@@ -18,6 +20,7 @@
     },
     {
       "id": "frozen-width-becomes-a-literal",
+      "target": "src/dashboard/styles.css",
       "why": "the measured width is written into the stylesheet as a number. It is right today and wrong the first time anyone edits a label, with nothing to recompute it -- the number-in-prose failure moved into CSS. It is also precisely the 160px-minimum-as-a-literal that Stage 8 exists to remove, reintroduced by the component built to replace it.",
       "find": "    min-width:var(--lbx-fit, 160px); text-align:left;",
       "replace": "    min-width:218px; text-align:left;",

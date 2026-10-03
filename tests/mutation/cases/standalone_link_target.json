@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/styles.css",
   "tests": "tests/test_standalone_link_target.py",
   "cases": [
     {
@@ -18,6 +18,7 @@
     },
     {
       "id": "standalone-link-one-card-misses-the-class",
+      "target": "src/dashboard/body.html",
       "why": "one card's link is written without the class -- the ordinary result of copying an older card -- and that one link is a small target again among four that are fine.",
       "find": "docs/lessons-learned.md\" class=\"link-standalone\" target=\"_blank\"",
       "replace": "docs/lessons-learned.md\" target=\"_blank\"",
@@ -25,6 +26,7 @@
     },
     {
       "id": "new-tab-link-loses-noopener",
+      "target": "src/dashboard/body.html",
       "tests": "tests/test_outbound_hygiene.py",
       "why": "the VERIFICATION.md link goes back to opening a new tab with no rel, the one link of six the re-audit found that way (Stage 30 item 9).",
       "find": "/VERIFICATION.md\" target=\"_blank\" rel=\"noopener\" style=",
@@ -33,6 +35,7 @@
     },
     {
       "id": "one-logo-image-sends-its-referrer",
+      "target": "src/dashboard/app.js",
       "tests": "tests/test_outbound_hygiene.py",
       "why": "one of the four logo images drops referrerpolicy -- the ordinary result of adding a fifth by copying an old one -- and ESPN is told which page asked (Stage 30 item 9).",
       "find": "<img class=\"dive-logo\" src=\"${teamLogo(team)}\" alt=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer\"",

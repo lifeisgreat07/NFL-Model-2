@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_listbox_edge_flip.py",
   "cases": [
     {
@@ -25,6 +25,7 @@
     },
     {
       "id": "flip-class-pins-both-edges-instead-of-moving",
+      "target": "src/dashboard/styles.css",
       "why": "the flip rule sets right:0 without releasing left. .lbx-list already sets left:0, so the box ends up pinned on both sides and STRETCHES from the control's left edge to its right rather than moving -- the overflow is unchanged and the list is now a different shape while open. A rule that adds a property without removing the one it replaces is the most ordinary CSS mistake there is and it survives every source read.",
       "find": "  .lbx-list--flip{left:auto; right:0;}",
       "replace": "  .lbx-list--flip{right:0;}",

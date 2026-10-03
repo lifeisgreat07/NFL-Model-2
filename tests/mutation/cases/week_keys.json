@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_week_keys.py",
   "cases": [
     {
@@ -39,6 +39,7 @@
     },
     {
       "id": "week-keys-unannounced",
+      "target": "src/dashboard/body.html",
       "why": "a screen reader is never told the Week Board's previous-week button has a key.",
       "find": "id=\"week-prev\" aria-label=\"Previous week\" aria-keyshortcuts=\"[\">",
       "replace": "id=\"week-prev\" aria-label=\"Previous week\">",

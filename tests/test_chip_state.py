@@ -10,9 +10,10 @@ is keyed on .btn-toggle, and a filter chip carrying aria-pressed="false"
 does not turn dashed.
 """
 import re
-from pathlib import Path
 
-TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+from src.pipeline.template_parts import read_template  # noqa: E402
+
+TEMPLATE = read_template()
 
 
 def chip_tags():

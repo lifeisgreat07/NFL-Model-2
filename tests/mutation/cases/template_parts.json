@@ -1,0 +1,83 @@
+{
+  "target": "src/pipeline/template_parts.py",
+  "tests": "tests/test_template_parts.py",
+  "cases": [
+    {
+      "id": "template-join-accepts-a-part-twice",
+      "why": "a part included twice is joined twice, so the page carries two copies of a stylesheet or a script and every function in it is declared twice",
+      "find": "    if len(names) != len(set(names)):\n        raise ValueError(f\"a part is included more than once: {names}\")\n",
+      "replace": "",
+      "expect_caught_by": "test_a_broken_layout_is_refused"
+    },
+    {
+      "id": "template-join-accepts-a-directive-mid-line",
+      "why": "an include written inside other text is left in the page as literal text, so the part it names is silently missing",
+      "find": "    if shell_text.count(DIRECTIVE) != len(names):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_broken_layout_is_refused"
+    },
+    {
+      "id": "template-join-accepts-a-part-without-its-newline",
+      "why": "a part's last line runs into the shell's next line, so `}` and `</style>` share a line and the bytes are no longer the page that was proved",
+      "find": "        if not part.endswith('\\n'):",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_broken_layout_is_refused"
+    },
+    {
+      "id": "template-read-accepts-a-stray-file",
+      "why": "a file in src/dashboard/ that the page never includes is accepted, so someone edits it believing they are editing the page",
+      "find": "    if present != set(names):",
+      "replace": "    if set(names) - present:",
+      "expect_caught_by": "test_a_broken_layout_is_refused"
+    },
+    {
+      "id": "js-template-join-accepts-a-part-twice",
+      "target": "tests/template_source.js",
+      "why": "the harnesses join a part twice where the generator refuses, so a harness runs a page the build would never make",
+      "find": "  if (new Set(names).size !== names.length) {",
+      "replace": "  if (false) {",
+      "expect_caught_by": "test_the_javascript_join_refuses_it_too"
+    },
+    {
+      "id": "js-template-join-accepts-a-stray-file",
+      "target": "tests/template_source.js",
+      "why": "the harnesses accept a file the page never includes, where the generator refuses it",
+      "find": "  if (JSON.stringify(present) !== JSON.stringify([...new Set(names)].sort())) {",
+      "replace": "  if (false) {",
+      "expect_caught_by": "test_the_javascript_join_refuses_it_too"
+    },
+    {
+      "id": "js-template-join-accepts-a-part-without-its-newline",
+      "target": "tests/template_source.js",
+      "why": "the harnesses join a part whose last line runs into the shell's next one, where the generator refuses it",
+      "find": "    if (!part.endsWith('\\n')) throw",
+      "replace": "    if (false) throw",
+      "expect_caught_by": "test_the_javascript_join_refuses_it_too"
+    },
+    {
+      "id": "js-template-join-accepts-a-directive-mid-line",
+      "target": "tests/template_source.js",
+      "why": "the harnesses leave an include written inside other text in the page, where the generator refuses it",
+      "find": "  if (shell.split('{% include').length - 1 !== names.length) {",
+      "replace": "  if (false) {",
+      "expect_caught_by": "test_the_javascript_join_refuses_it_too"
+    },
+    {
+      "id": "stylesheet-included-outside-its-style-element",
+      "target": "src/dashboard/page.html",
+      "why": "the stylesheet lands after its </style>, so the browser renders the whole stylesheet as text and the page has no styles",
+      "find": "<style>\n{% include \"styles.css\" %}\n</style>",
+      "replace": "<style>\n</style>\n{% include \"styles.css\" %}",
+      "expect_caught_by": "test_each_part_sits_where_its_name_says"
+    },
+    {
+      "id": "preflight-misses-a-dashboard-script-change",
+      "target": "src/agents/scout_preflight.py",
+      "tests": "tests/test_scout_preflight.py",
+      "why": "a change to src/dashboard/app.js is not counted as a change to the page, so a PR claiming it looked at the result is never asked for the screenshot; before the cut the same change was to an .html file and was counted",
+      "find": " or f.startswith(DASHBOARD_PARTS)]",
+      "replace": "]",
+      "expect_caught_by": "test_a_change_to_any_dashboard_part_counts_as_the_page"
+    }
+  ]
+}

@@ -9,9 +9,10 @@ equal to the data-page values of the More sheet's own buttons.
 """
 import json
 import re
-from pathlib import Path
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 
 
 def overflow_pages(src):

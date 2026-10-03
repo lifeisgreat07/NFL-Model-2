@@ -21,8 +21,10 @@ from pathlib import Path
 
 import pytest
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
-TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 HARNESS = Path(__file__).parent / 'trend_labels_harness.js'
 NODE = shutil.which('node')
 LABEL_FONT = 10     # the end-labels' font-size, in the chart's own units

@@ -7,9 +7,10 @@ Three copies of an escaper is three places to fix when one is found
 wanting; two spellings on one page read as two different things.
 """
 import re
-from pathlib import Path
 
-TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+from src.pipeline.template_parts import read_template  # noqa: E402
+
+TEMPLATE = read_template()
 
 # The body every copy shared: replacing & < > " with entities.
 ESCAPE_BODY = re.compile(r"""replace\(/\[&<>"\]/g""")

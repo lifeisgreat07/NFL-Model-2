@@ -10,9 +10,10 @@ legend above it names every line (Mark's choice from rendered side-by-sides,
 held here by source and by the arithmetic that makes the rule true.
 """
 import re
-from pathlib import Path
 
-TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+from src.pipeline.template_parts import read_template  # noqa: E402
+
+TEMPLATE = read_template()
 PHONE_RENDERED_PX = 300   # the chart's width on a 375px phone, measured 299
 MIN_PX = 11
 

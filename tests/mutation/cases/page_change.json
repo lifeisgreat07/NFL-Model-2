@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_page_change.py",
   "cases": [
     {
@@ -11,6 +11,7 @@
     },
     {
       "id": "board-not-current-at-load",
+      "target": "src/dashboard/body.html",
       "why": "the board's sidebar button starts without the mark, so until the first page change nothing in the nav says which page is showing",
       "find": "<button class=\"nav-btn active\" data-page=\"board\" aria-current=\"page\">",
       "replace": "<button class=\"nav-btn active\" data-page=\"board\">",

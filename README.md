@@ -55,7 +55,7 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, 169 case files, one per subject under test)
+  (`tests/mutation/`, 170 case files, one per subject under test)
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
@@ -162,13 +162,16 @@ src/pipeline/           -- what the scheduled workflows and the page build run
   weekly_update.py      -- main entrypoint: generates next week's predictions
   grade_predictions.py  -- grades a completed week against actual results
   generate_dashboard.py -- builds index.html from the template plus data/
-  dashboard_template.html -- the dashboard's markup, with data injected at build
+  template_parts.py     -- joins the dashboard template's parts into one page
 src/research/           -- run by hand: backtests, experiments, re-derived figures
   backtest.py           -- the holdout backtest behind the table above
   calibration.py        -- reliability of the stated probabilities
 src/agents/             -- Booth, Scout and the session gates
   scout_preflight.py    -- checks a branch against the project's own rules
   session_wrapup.py     -- end-of-session checks (suite count, unpushed work, docs)
+src/dashboard/          -- the dashboard template, in parts, with data injected at build
+  page.html             -- the document; includes the three parts below
+  styles.css, body.html, app.js -- stylesheet, markup and script
 predictions/            -- one JSON file per week, saved BEFORE kickoff, never edited
 results/                -- graded predictions, builds the season accuracy record
 data/                   -- generated inputs the dashboard reads

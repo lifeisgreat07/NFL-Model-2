@@ -19,11 +19,12 @@ its reason.
 Run with: pytest tests/test_type_and_spacing_scale.py -v
 """
 import re
-from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).parent.parent / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 
 SPACING_PROP = re.compile(
     r'(?<![\w-])((?:padding|margin)(?:-(?:top|right|bottom|left|block|inline)(?:-(?:start|end))?)?'

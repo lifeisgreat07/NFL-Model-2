@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pick'em Model">
+<meta name="theme-color" content="#0B0E15">
+<!-- One product name everywhere (Stage 29; Mark, 2026-09-29): Pick'em
+     Model. The tab reads "<page> — Pick'em Model" on every page, this one
+     included. tests/test_product_name.py holds it. -->
+<title>Week Board — Pick'em Model</title>
+<!-- The favicon (Stage 29): assets/favicon.svg, published at the same path by
+     deploy-pages.yml, so it works on the site and from a local checkout.
+     tests/test_favicon.py holds the link, the file and the copy step. -->
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<!-- The home-screen icon (Stage 34 item 31): iOS takes a PNG, not the SVG,
+     and without one it uses a shrunken screenshot of the page. It is
+     favicon.svg rendered at 180x180 on a full-bleed dark tile (iOS rounds
+     the corners itself and fills transparent ones with black). To remake it,
+     render assets/favicon.svg at that size in Chromium on #0B0D10. -->
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<!-- What a search result and a link preview show (Stage 13). The description
+     is under 160 characters so a search result does not cut it off. The
+     Open Graph image is static -- assets/og/og-card.png, made from
+     assets/og/og-card.html -- and deploy-pages.yml copies it to the site
+     root; og:image and og:url are absolute because link-preview crawlers do
+     not resolve relative ones. tests/test_meta_and_og.py holds all of it. -->
+<meta name="description" content="Weekly NFL picks from two models, one football-only and one with the Vegas spread, graded in public, with every experiment logged, failures included.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Pick'em Model">
+<meta property="og:title" content="The Pick'em Model">
+<meta property="og:description" content="Weekly NFL picks from two models, one football-only and one with the Vegas spread, graded in public, with every experiment logged, failures included.">
+<meta property="og:url" content="https://lifeisgreat07.github.io/NFL-Model-2/">
+<meta property="og:image" content="https://lifeisgreat07.github.io/NFL-Model-2/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Pick'em Model: weekly game picks from two models, graded in public, with every experiment logged, including the ones that failed.">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+{% include "styles.css" %}
+</style>
+<!-- Plus Jakarta Sans, self-hosted (Stage 12): four files from assets/fonts/,
+     inlined as data URIs by src/pipeline/generate_dashboard.py's font_faces_css(). No
+     request to a font host; the licence travels in assets/fonts/OFL.txt.
+     A block of its own AFTER the main stylesheet on purpose: several guards
+     read "the stylesheet" as the first <style> element, and @font-face rules
+     apply wherever they sit. -->
+<style id="font-faces">
+__FONT_FACES__
+</style>
+</head>
+<body class="is-entering">
+<script>
+  // Applied before first paint so there's no visible flash of the wrong
+  // theme on load. Falls back to the OS preference when the user hasn't
+  // made an explicit choice yet.
+  (function(){
+    try{
+      var saved = localStorage.getItem('nfl_pickem_theme');
+      if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches){
+        saved = 'light';
+      }
+      if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+    }catch(e){}
+  })();
+</script>
+{% include "body.html" %}
+<script>
+{% include "app.js" %}
+</script>
+</body>
+</html>

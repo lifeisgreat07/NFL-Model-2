@@ -17,6 +17,7 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
+from src.pipeline.template_parts import read_template  # noqa: E402
 from src.research.ats_evaluation import (  # noqa: E402
     BREAK_EVEN,
     add_ats_columns,
@@ -222,7 +223,7 @@ def test_the_page_quotes_the_real_ats_numbers():
     the dashboard have to be the ones in the results file."""
     d = _results()
     r = d['results']['model']
-    page = (REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text()
+    page = read_template()
     for value in (f"{r['rate']*100:.2f}%",
                   f"{r['ci_lo']*100:.2f}%",
                   f"{r['ci_hi']*100:.2f}%"):
@@ -236,7 +237,7 @@ def test_the_page_does_not_claim_an_ats_edge_that_the_data_denies():
     the interval never supported."""
     d = _results()
     r = d['results']['model']
-    page = (REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html').read_text()
+    page = read_template()
     if not r['beats_break_even']:
         assert 'would not have made money' in page, (
             "the ATS result does not clear break-even, but the page no longer "

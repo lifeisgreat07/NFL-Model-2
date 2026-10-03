@@ -1,9 +1,10 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_week_stepper.py",
   "cases": [
     {
       "id": "stepper-picks-select-becomes-visible-again",
+      "target": "src/dashboard/body.html",
       "why": "My Picks' native select loses visually-hidden, which is the change a tidy-up makes when it sees a hidden control and assumes it is dead markup. The page then has TWO week controls side by side doing the same job, and on a phone the visible one opens the iOS system wheel -- which is the complaint this change exists to answer. Nothing errors, nothing looks broken in a desktop screenshot, and the regression is only visible on the device that had the problem.",
       "find": "      <select id=\"picks-week-select\" class=\"week-select visually-hidden\" aria-label=\"Week\" tabindex=\"-1\"></select>",
       "replace": "      <select id=\"picks-week-select\" class=\"week-select\" aria-label=\"Week\" tabindex=\"-1\"></select>",
@@ -32,6 +33,7 @@
     },
     {
       "id": "stepper-picks-loses-its-label",
+      "target": "src/dashboard/body.html",
       "why": "the label element goes and the arrows remain. The control still steps and still re-renders the grid, so every behavioural check passes -- and the reader has no idea which week they are looking at, on a page whose entire purpose is logging picks against a specific week. Three of the four elements is a control that misleads rather than one that fails.",
       "find": "        <span class=\"week-step-label\" id=\"picks-week-step-label\" aria-live=\"polite\"></span>",
       "replace": "        <span class=\"week-step-label\" aria-live=\"polite\"></span>",

@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/styles.css",
   "tests": "tests/test_text_toggle_target.py",
   "cases": [
     {
@@ -11,6 +11,7 @@
     },
     {
       "id": "context-toggle-drops-the-component",
+      "target": "src/dashboard/app.js",
       "why": "the context toggle is written as a plain .btn with its hook class, so it inherits the bordered action style's box but not the text toggle's floor -- the kind of one-word edit a restyle makes.",
       "find": "<button class=\"btn btn-link toggle-flag\"",
       "replace": "<button class=\"btn toggle-flag\"",

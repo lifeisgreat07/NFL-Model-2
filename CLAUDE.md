@@ -223,7 +223,7 @@ casually.
   has changed is that it is no longer queued for removal. Do not re-open this
   as a colour defect. The one thing worth knowing if it is ever revisited:
   the push does not preserve team colour — it renders Cincinnati's `#FB4F14`
-  as `#C43E10` — and `src/pipeline/dashboard_template.html`'s comment said otherwise
+  as `#C43E10` — and `src/dashboard/app.js`'s comment said otherwise
   until this decision corrected it.
 - **`--good` vs `--warn` collapse under CVD (4.5 dark, 4.3 light) and that is
   NOT a defect.** Checked rather than assumed: the graded tag renders the word

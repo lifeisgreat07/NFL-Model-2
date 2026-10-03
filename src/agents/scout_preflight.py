@@ -390,10 +390,21 @@ def check_scope_disclosed(body, commits):
                    f"all {len(commits)} commits enumerated in the body")
 
 
+#: The dashboard template's parts (Stage 33 item 26). Every file there is
+#: part of the page, its script included: before the template was cut into
+#: parts, a change to that script was a change to an .html file.
+DASHBOARD_PARTS = 'src/dashboard/'
+
+
+def page_files(changed):
+    """The changed files a screenshot could show."""
+    return [f for f in changed
+            if f.endswith(('.html', '.css', '.svg')) or f.startswith(DASHBOARD_PARTS)]
+
+
 def touches_ui(base, head='HEAD'):
     """Does this branch change anything a screenshot could show?"""
-    changed = _git('diff', '--name-only', f'{base}...{head}').splitlines()
-    return [f for f in changed if f.endswith(('.html', '.css', '.svg'))]
+    return page_files(_git('diff', '--name-only', f'{base}...{head}').splitlines())
 
 
 def check_visual_claims_have_artifacts(claims, full_body=None, ui_files=None):

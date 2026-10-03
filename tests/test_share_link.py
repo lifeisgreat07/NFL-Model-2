@@ -12,7 +12,7 @@ So the link carries a fingerprint of the schedule it was made from, and the
 tests that matter here are the refusals, not the happy path.
 
 These do not reimplement the encoding. tests/share_link_harness.js lifts the
-functions out of dashboard_template.html and executes them, so this fails when
+functions out of the dashboard template and executes them, so this fails when
 the shipped code changes. A Python reimplementation would only ever prove that
 two implementations agree, and the template's could rot untouched underneath
 it. The existing string-matching guards elsewhere in this suite prove certain
@@ -30,9 +30,11 @@ from pathlib import Path
 
 import pytest
 
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
 REPO_ROOT = Path(__file__).parent.parent
 HARNESS = Path(__file__).parent / 'share_link_harness.js'
-TEMPLATE = REPO_ROOT / 'src' / 'pipeline' / 'dashboard_template.html'
+TEMPLATE = JOINED_TEMPLATE
 
 NODE = shutil.which('node')
 pytestmark = pytest.mark.skipif(

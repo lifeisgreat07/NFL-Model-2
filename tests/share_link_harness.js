@@ -2,7 +2,7 @@
  * Executes the dashboard's real share-link functions and reports what they do.
  *
  * The point is that this does NOT reimplement the encoding. It lifts the
- * actual source out of dashboard_template.html and runs it, so the test can
+ * actual source out of the dashboard template and runs it, so the test can
  * fail when the shipped code changes -- which a Python-side reimplementation
  * could never do, and which grepping the template for strings cannot do
  * either. Those greps prove the text is present; this proves it works.
@@ -12,8 +12,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const TEMPLATE = path.join(__dirname, '..', 'src', 'pipeline', 'dashboard_template.html');
-const tpl = fs.readFileSync(TEMPLATE, 'utf8');
+const { readTemplate } = require('./template_source');
+const tpl = readTemplate();
 
 const START = 'const SHARE_VERSION';
 const END = 'function copyShareLink';

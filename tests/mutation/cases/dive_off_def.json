@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/dashboard_template.html",
+  "target": "src/dashboard/app.js",
   "tests": "tests/test_dive_off_def.py",
   "cases": [
     {
@@ -48,6 +48,7 @@
     },
     {
       "id": "dive-split-bar-keeps-its-width-on-phones",
+      "target": "src/dashboard/styles.css",
       "why": "the bar keeps its fixed 140px on a phone, so with wrapping on the net value drops to a line of its own and every row is three lines at 375px.",
       "find": "    .dive-row .srs-bar-track{flex:1 1 0; min-width:48px;}\n",
       "replace": "",

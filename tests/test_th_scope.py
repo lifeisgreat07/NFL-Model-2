@@ -5,9 +5,10 @@ scope. Every one sits in a <thead>, so each is scope="col". Held over the
 template's text, which includes the tables its JavaScript builds.
 """
 import re
-from pathlib import Path
 
-TEMPLATE = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html').read_text(encoding='utf-8')
+from src.pipeline.template_parts import read_template  # noqa: E402
+
+TEMPLATE = read_template()
 
 
 def headers():

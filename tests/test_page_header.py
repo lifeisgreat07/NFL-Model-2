@@ -17,11 +17,12 @@ hidden, the eyebrow is the only place that still says so.
 Run with: pytest tests/test_page_header.py -v
 """
 import re
-from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).parent.parent / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 
 
 def strip_comments(src):

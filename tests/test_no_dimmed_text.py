@@ -19,11 +19,12 @@ reason it is not text; a new one fails until it is looked at and listed.
 Run with: pytest tests/test_no_dimmed_text.py -v
 """
 import re
-from pathlib import Path
 
 import pytest
 
-TEMPLATE = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'dashboard_template.html'
+from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+
+TEMPLATE = JOINED_TEMPLATE
 
 # selector -> why an opacity below 1 is not dimming text
 NOT_TEXT = {
