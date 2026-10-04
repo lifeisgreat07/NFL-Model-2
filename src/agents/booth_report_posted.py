@@ -22,6 +22,14 @@ What counts as "a report for this run" -- all four must hold for ONE comment:
   4. whose `head` names the commit this run checked out. The protocol's own
      example writes a short SHA, so a prefix of at least seven characters
      counts; anything shorter is too ambiguous to be evidence.
+  5. whose block agrees with its own prose: the four count lines, the
+     overall verdict, and no DISCREPANCY under an unqualified SAFE TO MERGE
+     (booth_verdict.cross_check). The collector had recorded these
+     disagreements since Stage 23 and nothing acted on them: on 2026-10-04,
+     52 of 335 reports in data/agent_log.json carried one, the latest on
+     #213 for a count and #268 for a count line with a note (which now
+     reads). A report written from two conclusions is not a verdict, so
+     the run fails and a person reads it (Stage 41 item 2).
 
 The head SHA and the start time are recorded by the workflow in a step BEFORE
 Booth runs, not read afterwards: Booth builds worktrees and may check out other
@@ -46,6 +54,7 @@ from src.agents.booth_verdict import (
     BOOTH_ACCOUNTS,
     VerdictError,
     author,
+    cross_check,
     extract,
 )
 
@@ -104,7 +113,7 @@ def check(comments, head_sha, started_at):
             "Compare the run's duration with the usual 5-13 minutes and read the action's log."
         )
 
-    problems = []
+    problems, disagreeing = [], []
     for c in candidates:
         try:
             block = extract(c.get('body') or '')
@@ -115,6 +124,10 @@ def check(comments, head_sha, started_at):
             problems.append(f"{c.get('html_url', c.get('id'))}: no booth-verdict block")
             continue
         if head_matches(str(block.get('head')), head_sha):
+            inconsistent = cross_check(c.get('body') or '', block)
+            if inconsistent:
+                disagreeing.append(f"{c.get('html_url', c.get('id'))}: " + '; '.join(inconsistent))
+                continue
             return True, (
                 f"Booth report found for {head_sha[:7]}: {c.get('html_url', c.get('id'))} "
                 f"(overall: {block['overall']})"
@@ -124,6 +137,12 @@ def check(comments, head_sha, started_at):
             f"this run audited {head_sha[:7]}"
         )
 
+    if disagreeing:
+        return False, (
+            f"Booth's report for {head_sha[:7]} disagrees with itself, so it is not a verdict: "
+            "its block does not restate its prose. Read the report and decide by hand.\n  "
+            + "\n  ".join(disagreeing)
+        )
     return False, (
         "Booth commented during this run, but no comment is a readable report for the commit "
         "this run audited:\n  " + "\n  ".join(problems)

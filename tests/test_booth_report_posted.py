@@ -137,6 +137,35 @@ def test_one_good_report_among_other_bot_chatter_passes():
     assert 'c2' in message
 
 
+def test_a_report_whose_counts_disagree_with_its_block_fails():
+    """Stage 41 item 2: the prose says one thing and the block another."""
+    body = report().replace('Unverifiable: 0', 'Unverifiable: 1')
+    ok, msg = check([comment(body)], SHA, STARTED)
+    assert not ok
+    assert 'disagrees with itself' in msg and 'Unverifiable' in msg
+
+
+def test_a_discrepancy_under_safe_to_merge_fails():
+    body = report().replace('"verdict": "CONFIRMED"', '"verdict": "DISCREPANCY"')
+    body = body.replace('Confirmed: 1\nDiscrepancies: 0', 'Confirmed: 0\nDiscrepancies: 1')
+    ok, msg = check([comment(body)], SHA, STARTED)
+    assert not ok
+    assert 'SAFE TO MERGE' in msg
+
+
+def test_a_count_line_with_a_note_still_passes():
+    body = report().replace('Unverifiable: 0', 'Unverifiable: 0 (the PR discloses its one gap)')
+    ok, msg = check([comment(body)], SHA, STARTED)
+    assert ok, msg
+
+
+def test_a_consistent_report_passes_beside_one_that_disagrees():
+    bad = report().replace('Unverifiable: 0', 'Unverifiable: 1')
+    ok, msg = check([comment(bad, cid=1), comment(report(), cid=2)], SHA, STARTED)
+    assert ok, msg
+    assert 'c2' in msg
+
+
 def test_a_truncated_head_sha_is_refused():
     """The workflow must record a full SHA; a short one could match anything."""
     ok, message = check([comment(report())], SHA[:7], STARTED)
