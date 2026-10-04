@@ -3,6 +3,14 @@
   "tests": "tests/test_weekend_refresh.py",
   "cases": [
     {
+      "id": "refresh-cron-inside-the-lock-slack",
+      "target": ".github/workflows/weekend-refresh.yml",
+      "why": "a refresh moved to Tuesday 03:00 UTC can still be running when the Tuesday weekly run starts if both are as late as LOCK_SLACK allows; the old five-hour margin passed it (the fourth audit, Q9).",
+      "find": "    - cron: '37 5 * * 1'\n",
+      "replace": "    - cron: '0 3 * * 2'\n",
+      "expect_caught_by": "test_its_runs_cannot_meet_the_weekly_runs_however_late_either_starts"
+    },
+    {
       "id": "refresh-calls-one-score-final",
       "why": "a game with one score in is called final, so a card would show a final score with half of it missing.",
       "find": "    if _score(row.get('home_score')) is not None and _score(row.get('away_score')) is not None:",
