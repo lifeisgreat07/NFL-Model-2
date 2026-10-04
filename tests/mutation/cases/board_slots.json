@@ -22,6 +22,14 @@
       "find": "  const regional = g.tv_regional ? '<span class=\"tv-regional\"> · regional</span>' : '';\n",
       "replace": "  const regional = '';\n",
       "expect_caught_by": "test_a_regional_channel_says_so_on_its_pill"
+    },
+    {
+      "id": "slot-heads-on-desktop-too",
+      "target": "src/dashboard/styles.css",
+      "why": "the headers show at every width again, so a desktop board with single-game slots leaves lone cards in rows of their own (Mark chose phones only).",
+      "find": "  @media (min-width:641px){ .game-grid > .slot-head{display:none;} }\n",
+      "replace": "",
+      "expect_caught_by": "test_the_headers_show_on_phones_only"
     }
   ]
 }

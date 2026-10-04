@@ -5,7 +5,8 @@ Mark's observation in the 2026-10-04 audit: on a Sunday the board repeats
 viewer gets depends on where they live. The pill now says "regional", and
 under the chronological sort the cards sit under one header per kickoff
 slot. Under any other sort there are no slot headers: they would contradict
-the order the cards are in.
+the order the cards are in. The headers show on phones only (Mark,
+2026-10-04): wider than 640px they are hidden.
 
 The functions run in node, taken from the shipped template.
 
@@ -83,3 +84,13 @@ def test_a_regional_channel_says_so_on_its_pill(out):
     p = out['pills']
     assert 'CBS' in p[0] and 'regional' in p[0]
     assert 'NBC' in p[3] and 'regional' not in p[3]
+
+
+def test_the_headers_show_on_phones_only():
+    """Wider than the page's phone width (640px) the slot headers are hidden,
+    and nothing else in the stylesheet shows them again."""
+    css = template()
+    hide = re.findall(r'@media \(min-width:(\d+)px\)\{\s*\.game-grid > \.slot-head\{display:none;\}\s*\}', css)
+    assert hide == ['641'], hide
+    shown = re.findall(r'\.slot-head\{[^}]*display:(?!none)', css)
+    assert not shown, shown
