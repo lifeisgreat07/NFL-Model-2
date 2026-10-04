@@ -1,0 +1,37 @@
+{
+  "target": "src/pipeline/grade_predictions.py",
+  "tests": "tests/test_league_scenarios.py",
+  "cases": [
+    {
+      "id": "scenario-cancelled-game-graded",
+      "why": "a game with no score is graded anyway, so a cancelled game counts as a loss for the home pick and a win for the away pick, for every model.",
+      "find": "        if len(row) == 0 or pd.isna(row.iloc[0].get('home_score')):\n",
+      "replace": "        if len(row) == 0:\n",
+      "expect_caught_by": "test_a_cancelled_game_is_never_graded_and_the_rest_of_its_week_is"
+    },
+    {
+      "id": "scenario-postponed-game-reads-started",
+      "target": "src/pipeline/weekend_refresh.py",
+      "why": "a game whose kickoff moved to a later day reads as started on the page from its original time on.",
+      "find": "        return 'started'\n    return 'upcoming'\n",
+      "replace": "        return 'started'\n    return 'started'\n",
+      "expect_caught_by": "test_a_postponed_game_waits_ungraded_and_reads_as_upcoming"
+    },
+    {
+      "id": "scenario-fully-graded-week-stays-open",
+      "target": "src/pipeline/weekend_refresh.py",
+      "why": "a week whose postponed game has since been graded stays on the refresh's list, so the refresh keeps reading a finished week.",
+      "find": "        if _count(graded) < _count(f):\n",
+      "replace": "        if _count(graded) <= _count(f):\n",
+      "expect_caught_by": "test_a_postponed_game_is_graded_by_the_first_run_after_it_is_played"
+    },
+    {
+      "id": "scenario-unchanged-snapshot-rewritten",
+      "target": "src/pipeline/weekend_refresh.py",
+      "why": "every refresh rewrites a week that has not changed, so a cancelled game's week makes a commit every weekend for the rest of the season.",
+      "find": "            if json.load(f).get('games') == games:\n                return False\n",
+      "replace": "            if json.load(f).get('games') == games and False:\n                return False\n",
+      "expect_caught_by": "test_a_cancelled_games_week_stays_open_but_is_not_rewritten_while_nothing_changes"
+    }
+  ]
+}
