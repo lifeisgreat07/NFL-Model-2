@@ -599,6 +599,18 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
           <p style="margin-top:var(--s3);">This section exists specifically so a claim like "we tried X" is checkable, not just asserted -- every row here has a real check behind it, documented on Model Lab or What&#39;s Changed.</p>
     </div>
+    <div class="method-block" id="not-shown">
+      <h4>What this page leaves out, on purpose</h4>
+      <p>Each of these is a known gap, said here once so a missing number never reads as a broken page.</p>
+      <ul>
+        <li><b style="color:var(--text)">Picks made after kickoff, or with no recorded time, are not counted</b> in My Picks or on Season Accuracy. A pick has to be made before the game to be a prediction; the page shows how many it left out.</li>
+        <li><b style="color:var(--text)">Which regional game your local CBS or FOX station shows.</b> The league's schedule marks Sunday-afternoon games as regional without saying where, so the cards say "regional" and stop there.</li>
+        <li><b style="color:var(--text)">Monday night's final score.</b> The last weekend refresh runs before Monday night's game, so its card shows no score; the Tuesday run grades it, and the graded tag says how the picks did.</li>
+        <li><b style="color:var(--text)">Neutral-site games are treated as home games.</b> For an international game, the team listed at home still gets the model's home edge. Whether to remove it is an open decision, not a test: a handful of such games a season cannot settle it.</li>
+        <li><b style="color:var(--text)">The line a pick was made against is not the closing line.</b> Live picks use the line at Thursday's lock; the published backtest uses the last line the data source kept for each game. How much that difference is worth is registered to be measured after the season (<code>experiments/stage38/registry.json</code>, L1).</li>
+      </ul>
+    </div>
+
     </div>
 
     <div class="method-part" id="part-glossary">
