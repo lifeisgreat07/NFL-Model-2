@@ -1490,7 +1490,29 @@ function contextNotesHtml(notes){
 
 function cardTvPill(g){
   if(!g.tv || g.graded || g.status === 'final') return '';
-  return `<span class="tv-pill"><span class="visually-hidden">On TV: </span>${escapeHtml(g.tv)}</span>`;
+  // "regional" on the pill itself (Stage 37 item 2, Mark's observation in
+  // the 2026-10-04 audit): nine cards reading "CBS" implied every viewer
+  // gets all nine. Which games a viewer gets depends on their market, which
+  // nfl.com does not say, so the pill says regional and nothing more.
+  const regional = g.tv_regional ? '<span class="tv-regional"> · regional</span>' : '';
+  return `<span class="tv-pill"><span class="visually-hidden">On TV: </span>${escapeHtml(g.tv)}${regional}</span>`;
+}
+
+/* One header per kickoff slot on the Week Board (Stage 37 item 2): a
+   Sunday's 1:00 PM games read as one group under one time instead of the
+   same time on every card. Only under the chronological sort -- under any
+   other order a slot header would contradict the order the cards are in. */
+function slotKey(g){
+  return g.gameday ? `${g.gameday} ${g.gametime_et || ''}` : '';
+}
+
+function slotHeadBefore(sorted, i){
+  if(currentSort !== 'chronological') return '';
+  const key = slotKey(sorted[i]);
+  if(!key || (i > 0 && slotKey(sorted[i - 1]) === key)) return '';
+  const n = sorted.filter(g => slotKey(g) === key).length;
+  return `<h3 class="slot-head">${escapeHtml(kickoffLabel(sorted[i]))}`
+    + `<span class="slot-count"> · ${n} game${n === 1 ? '' : 's'}</span></h3>`;
 }
 
 /* Sunday-afternoon CBS and FOX games are regional: nfl.com says so
@@ -1641,7 +1663,7 @@ function renderGames(){
   if(tvNote) tvNote.hidden = !boardTvNote(sorted);
   const news = weekData.news;
 
-  grid.innerHTML = sorted.map(g=>{
+  const cards = sorted.map(g=>{
     // Within EVEN_BAND points of 50 the model has not picked anybody, and
     // bolding one side of a 50.4/49.6 split states a confidence it does not have.
     const EVEN_BAND = 2;
@@ -1716,7 +1738,8 @@ function renderGames(){
         </ul>
       </div>` : ''}
     </div>`;
-  }).join('');
+  });
+  grid.innerHTML = cards.map((card, i) => slotHeadBefore(sorted, i) + card).join('');
 
   document.querySelectorAll('.toggle-flag').forEach(btn=>{
     const originalLabel = btn.textContent;
