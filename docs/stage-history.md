@@ -1848,6 +1848,14 @@ shown to Mark before any registry file is written.
 6. Bracket status in place of the simulation once `games_remaining == 0`.
 7. A test that every scheduled game gets a status refresh after kickoff.
 
+Item 1, first part (2026-10-04): `tests/test_league_scenarios.py` holds the
+postponed and the cancelled game. Found while writing it: a cancelled game
+reads "started" on the Week Board for the rest of the season, because
+`weekend_refresh.game_status` has no state for a game that kicked off and
+will never have a score. Not asserted either way; a "no result" state is
+Mark's call, and it touches the weekend refresh, so after the 2026-10-08
+lock in any case.
+
 ### Stage 40 - Season turnover (January)
 
 `docs/season-turnover.md` and `tasks.py turnover` (item 7); the 2026
