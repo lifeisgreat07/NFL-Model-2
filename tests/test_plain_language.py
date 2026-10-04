@@ -128,6 +128,8 @@ RENDERERS = {
     # to 'board' because that page bans jargon, so whatever the helper ever
     # grows of its own is held to the strict rules rather than the loose ones.
     'stateHtml': 'board',
+    # Stage 37 item 2: one header per kickoff slot on the Week Board.
+    'slotHeadBefore': 'board',
     'renderPicksGrid': 'picks',
     'renderPicksStreak': 'picks',
     # The pick tile: a logo above the team abbreviation. My Picks only.

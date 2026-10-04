@@ -433,6 +433,13 @@
   .rel-how[open] summary::before{content:'\2212\00a0';}
   /* On a phone the banner sits among the cards (placeOrientation). */
   .game-grid > .onboarding-banner{grid-column:1 / -1; margin:0;}
+  /* One header per kickoff slot under the chronological sort (Stage 37
+     item 2). It spans the grid, like the banner, so it never takes a card's
+     cell. */
+  .game-grid > .slot-head{grid-column:1 / -1; margin:var(--s3) 0 0; font-size:var(--fs-13);
+    font-weight:600; color:var(--text-2); text-transform:none;}
+  .game-grid > .slot-head:first-child{margin-top:0;}
+  .slot-count{font-weight:400;}
   /* Shared-picks view. Borrows the onboarding banner wholesale and changes one
      property, so this adds a line rather than a block.
 
