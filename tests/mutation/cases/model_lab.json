@@ -19,7 +19,7 @@
     {
       "id": "lab-drops-monitoring-rules",
       "why": "a registered monitoring rule has no result file, so Stage 33's R4 vanishes from the record its registry promised it a row in (the fourth audit, Q2).",
-      "find": "            elif entry.get('kind') == 'monitoring_rule':",
+      "find": "            elif entry.get('kind') == 'monitoring_rule' and entry.get('status') != 'REGISTERED':",
       "replace": "            elif False:",
       "expect_caught_by": "test_a_registry_that_promises_a_row_for_every_question_gets_one"
     },
