@@ -439,6 +439,10 @@
   .game-grid > .slot-head{grid-column:1 / -1; margin:var(--s3) 0 0; font-size:var(--fs-13);
     font-weight:600; color:var(--text-2); text-transform:none;}
   .game-grid > .slot-head:first-child{margin-top:0;}
+  /* Phones only (Mark, 2026-10-04, after seeing both): on a wide screen the
+     cards already sit side by side in time order, and a header over each
+     single-game slot leaves a lone card in a row of its own. */
+  @media (min-width:641px){ .game-grid > .slot-head{display:none;} }
   .slot-count{font-weight:400;}
   /* Shared-picks view. Borrows the onboarding banner wholesale and changes one
      property, so this adds a line rather than a block.
