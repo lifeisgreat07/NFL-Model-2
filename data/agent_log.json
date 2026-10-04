@@ -1,16 +1,16 @@
 {
-  "generated_utc": "2026-10-04T22:24:09Z",
+  "generated_utc": "2026-10-04T23:01:45Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 335,
+    "audits_total": 336,
     "audits_superseded": 80,
-    "pull_requests_audited": 255,
+    "pull_requests_audited": 256,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 2330,
+    "claims_checked": 2335,
     "discrepancies_found": 25,
     "unverifiable": 198,
     "pull_requests_with_a_discrepancy": 16,
-    "reports_disagreeing_with_themselves": 29
+    "reports_disagreeing_with_themselves": 26
   },
   "audits": [
     {
@@ -564,7 +564,7 @@
       "inconsistencies": [
         "prose says Confirmed: 3, block has 2",
         "prose says Discrepancies: 3, block has 4",
-        "prose has no 'Unverifiable:' line to check against"
+        "prose says Unverifiable: 1, block has 0"
       ],
       "superseded": false
     },
@@ -655,8 +655,7 @@
       "overall": "NEEDS HUMAN REVIEW",
       "implicated": [],
       "inconsistencies": [
-        "prose says Confirmed: 10, block has 9",
-        "prose has no 'Unverifiable:' line to check against"
+        "prose says Confirmed: 10, block has 9"
       ],
       "superseded": true
     },
@@ -2671,7 +2670,6 @@
         "tests/mutation/cases/team_dive.json"
       ],
       "inconsistencies": [
-        "prose has no 'Unverifiable:' line to check against",
         "block reports discrepancies but an unqualified SAFE TO MERGE"
       ],
       "superseded": true
@@ -3664,9 +3662,7 @@
       "unverifiable": 0,
       "overall": "SAFE TO MERGE",
       "implicated": [],
-      "inconsistencies": [
-        "prose has no 'Unverifiable:' line to check against"
-      ],
+      "inconsistencies": [],
       "superseded": false
     },
     {
@@ -3740,7 +3736,6 @@
       ],
       "inconsistencies": [
         "prose says Confirmed: 11, block has 10",
-        "prose has no 'Discrepancies:' line to check against",
         "block reports discrepancies but an unqualified SAFE TO MERGE"
       ],
       "superseded": true
@@ -3763,7 +3758,6 @@
       ],
       "inconsistencies": [
         "prose says Confirmed: 9, block has 7",
-        "prose has no 'Discrepancies:' line to check against",
         "prose says Unverifiable: 2, block has 4"
       ],
       "superseded": true
@@ -4913,7 +4907,7 @@
       "overall": "SAFE TO MERGE",
       "implicated": [],
       "inconsistencies": [
-        "prose has no 'Unverifiable:' line to check against"
+        "prose says Unverifiable: 1, block has 0"
       ],
       "superseded": false
     },
@@ -5724,9 +5718,7 @@
       "unverifiable": 0,
       "overall": "SAFE TO MERGE",
       "implicated": [],
-      "inconsistencies": [
-        "prose has no 'Unverifiable:' line to check against"
-      ],
+      "inconsistencies": [],
       "superseded": false
     },
     {
@@ -5862,9 +5854,7 @@
       "unverifiable": 0,
       "overall": "SAFE TO MERGE",
       "implicated": [],
-      "inconsistencies": [
-        "prose has no 'Unverifiable:' line to check against"
-      ],
+      "inconsistencies": [],
       "superseded": false
     },
     {
@@ -6032,6 +6022,23 @@
       "confirmed": 6,
       "discrepancies": 0,
       "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 279,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/279#issuecomment-5985386536",
+      "posted_utc": "2026-10-04T23:00:52Z",
+      "head": "8328b75",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 5,
+      "confirmed": 5,
+      "discrepancies": 0,
+      "unverifiable": 0,
       "overall": "SAFE TO MERGE",
       "implicated": [],
       "inconsistencies": [],
