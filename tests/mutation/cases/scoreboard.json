@@ -3,6 +3,13 @@
   "tests": "tests/test_scoreboard.py",
   "cases": [
     {
+      "id": "scoreboard-late-picks-drop-their-row",
+      "why": "graded picks that were all made after kickoff leave no row, and the board invites the visitor to start picking, which reads as their picks being lost (Mark's observation, 2026-10-04).",
+      "find": "  else if(leftOut) race.push({name: 'My picks', series: 'var(--series-d)', shape: 'diamond',\n                              correct: 0, n: 0, pct: null, noneCounted: true});\n",
+      "replace": "",
+      "expect_caught_by": "test_graded_picks_that_all_came_late_still_join_as_a_row_that_counts_nothing"
+    },
+    {
       "id": "scoreboard-says-leads-by-zero",
       "why": "a gap of zero is treated as a lead, so a tie at the top prints 'leads by 0 games' -- a headline that picks a winner the numbers did not.",
       "find": "  if(gap > 0) return `${lead} leads by",

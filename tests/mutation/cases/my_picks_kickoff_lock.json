@@ -3,6 +3,13 @@
   "tests": "tests/test_my_picks_kickoff_lock.py",
   "cases": [
     {
+      "id": "badge-calls-late-picks-ungraded",
+      "why": "the record badge says 'No graded picks yet' for picks that are graded but all late or untimed, which is not true and hides why.",
+      "find": "  if(left) return `0 counted: ${left} graded pick${left === 1 ? '' : 's'} made after kickoff or with no time`;\n",
+      "replace": "",
+      "expect_caught_by": "test_the_badge_says_none_counted_rather_than_none_graded"
+    },
+    {
       "id": "my-picks-lock-never-closes",
       "why": "the clock half of the lock is gone, so an ungraded game stays open through kickoff and into the fourth quarter. Every card still looks like a card and every pick still saves, which is the whole problem: a pick made with the score on the screen is indistinguishable from one made on Saturday.",
       "find": "  return k !== null && nowMs >= k;",
@@ -89,7 +96,7 @@
     {
       "id": "my-picks-scoreboard-hides-what-it-left-out",
       "why": "the scoreboard stops printing how many picks it left out, so a visitor whose record shrank sees a smaller number with no reason given.",
-      "find": "    ${leftOut ? `<div class=\"score-foot\">${leftOut} Only picks made before kickoff are counted.</div>` : ''}",
+      "find": "    ${leftOut ? `<div class=\"score-foot\">${leftOut} Only picks made before kickoff are counted.${mine ? '' : ` ${PICKS_LIVE_HERE}`}</div>` : ''}",
       "replace": "",
       "expect_caught_by": "test_the_left_out_sentence_is_printed",
       "tests": "tests/test_scoreboard.py"

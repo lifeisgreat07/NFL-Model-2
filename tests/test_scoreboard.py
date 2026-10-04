@@ -118,10 +118,13 @@ def boards():
     if not NODE:
         pytest.skip('node not available')
     src = template()
-    js = (function_source(src, 'scoreboardVerdict') + function_source(src, 'scoreboardHtml') +
+    live_here = re.search(r"^const PICKS_LIVE_HERE = .*;$", src, re.M)
+    js = ((live_here.group(0) if live_here else '') +
+          function_source(src, 'scoreboardVerdict') + function_source(src, 'scoreboardHtml') +
           f'const O={json.dumps(BOARD_O)};'
           f'process.stdout.write(JSON.stringify({{mine: scoreboardHtml(O, {json.dumps(BOARD_MINE)}, '
           f'{json.dumps(BOARD_LEFT)}, {BOARD_GRADED}), none: scoreboardHtml(O, null, "", {BOARD_GRADED}), '
+          f'late: scoreboardHtml(O, null, {json.dumps(BOARD_LEFT)}, {BOARD_GRADED}), '
           f'ties: scoreboardHtml({json.dumps(BOARD_ALL_TIES)}, null, "", 2)}}));')
     r = subprocess.run([NODE, '-e', js], capture_output=True, text=True, encoding='utf-8')
     if r.returncode != 0:
@@ -181,6 +184,24 @@ def test_the_left_out_sentence_is_printed(boards):
     assert f'{BOARD_LEFT} Only picks made before kickoff are counted.' in boards['mine']
     assert 'Only picks made before kickoff' not in boards['none']
 
+
+
+def test_graded_picks_that_all_came_late_still_join_as_a_row_that_counts_nothing(boards):
+    """Mark's observation in the 2026-10-04 audit: with every graded pick made
+    after kickoff or with no time, the row was left out and the board invited
+    him to start picking, which read as his picks being lost. The row now
+    joins, counting nothing, and the board says why and where picks live
+    (Stage 37 item 1)."""
+    ran(boards)
+    late = boards['late']
+    rows = rows_of(late)
+    assert rows[-1][0] == 'My picks' and rows[-1][3] == '0', rows
+    assert '0 counted' in late
+    assert 'Pick some games on the Week Board to join this race.' not in late
+    assert f'{BOARD_LEFT} Only picks made before kickoff are counted.' in late
+    assert 'Export and Import on My Picks' in late
+    assert 'Export and Import on My Picks' not in boards['mine'], (
+        'the device hint is for a board with nothing counted, not for every left-out pick')
 
 
 def test_the_eyebrow_counts_every_graded_game_a_tie_included(boards):

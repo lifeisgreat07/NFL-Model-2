@@ -47,7 +47,8 @@ def test_the_trend_chart_is_drawn_for_the_phone_with_readable_text():
 def test_the_trend_chart_drops_the_line_names_on_a_phone_only():
     body = fn('buildCumulativeTrendChart')
     assert re.search(r"function endLabels\(\)\{\s*if\(phone\) return '';", body)
-    assert "const legend = seriesLegend(['a','b','market','picks']);" in body, (
+    # My picks joins the legend only when it has a line (Stage 37 item 1).
+    assert "const legend = seriesLegend(picksDrawn ? ['a','b','market','picks'] : ['a','b','market']);" in body, (
         'the legend that names the lines on a phone is gone')
 
 
