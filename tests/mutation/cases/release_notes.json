@@ -1,0 +1,28 @@
+{
+  "target": "src/agents/release_notes.py",
+  "tests": "tests/test_release_notes.py",
+  "cases": [
+    {
+      "id": "releases-include-untagged-versions",
+      "why": "v2.0 and v2.1 get releases, which would create tags for code that never existed in this repository.",
+      "find": "FIRST_TAGGED = (2, 2)",
+      "replace": "FIRST_TAGGED = (2, 0)",
+      "expect_caught_by": "test_every_tagged_version_from_2_2_to_the_current_one_is_listed"
+    },
+    {
+      "id": "release-notes-retyped",
+      "why": "the notes stop quoting the history entry, so a release can say something What's Changed does not.",
+      "find": "    return (f\"**{e['date']}.** {e['detail']}\\n\\n\"",
+      "replace": "    return (f\"**{e['date']}.** {e['headline']}\\n\\n\"",
+      "expect_caught_by": "test_the_notes_are_the_history_entry_word_for_word"
+    },
+    {
+      "id": "releases-workflow-recreates-existing-releases",
+      "target": ".github/workflows/releases.yml",
+      "why": "the workflow stops checking for an existing release, so a second run fails on the first version already released and nothing after it is created.",
+      "find": "            if gh release view \"v$v\" >/dev/null 2>&1; then\n              echo \"v$v: already released\"\n              continue\n            fi\n",
+      "replace": "",
+      "expect_caught_by": "test_the_workflow_skips_a_version_already_released_and_runs_only_by_hand"
+    }
+  ]
+}
