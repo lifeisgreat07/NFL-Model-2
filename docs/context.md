@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-04, evening ET (#266 to #275 merged; on-time runs started through cron-job.org)
+Last updated: 2026-10-04, night ET (#266 to #281 merged; on-time runs started through cron-job.org)
 
 ---
 
@@ -47,8 +47,10 @@ run on time and a late `schedule` copy.
 1. After the 10-08 lock: Stage 42's slot guard, Stage 36 item 7, Stage 37
    items 3, 4 and 6. Page-only Stage 37 item 5 any time.
 2. **Stage 21** once week 5 is graded (Tuesday 2026-10-13 at the earliest).
-3. Stages 44 (Line Judge), 43 (Spotter), 39 (playoffs, before December),
-   41 (when a week has slack), 40 (January); 20, 22 and 28 as before.
+3. Stages 44 (Line Judge), 43 (Spotter), 39 (playoffs, before December;
+   item 1's first part done), 41 (items 2 to 4 done; 5 and 7 after the lock,
+   6 needs rendered options for Mark), 40 (January); 20, 22, 28 as before.
+4. Mark's call: a cancelled game reads "started" forever (#280's finding).
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict. Run the suite
@@ -66,7 +68,6 @@ the body discloses it.
 - **The drift check re-tests a growing sample every week**, so it will sometimes flag by chance. The issue says so. R4 registered the rule as written; changing it needs a new registration.
 - **A failed Thursday run leaves Thursday night's game unpicked** unless someone dispatches the workflow by hand that day. Since #105 the failure opens an issue.
 - **Mutation runs quote a count Booth cannot always rerun**: a large scope is UNVERIFIABLE in the audit by design; list the files so the selection is at least checkable.
-- **A Booth header can disagree with its verdict block**, logged by `cross_check()`. It has cost nothing yet.
 - **Season Accuracy's trend end-labels** stack where Model A and Model B end on the same value. Not yet looked at.
 - **`check_scoped_test_counts` skips a count for a module that does not exist** — a DELETED module passes silently.
 - **Only the wrap-up gate and session-start recompute CLAUDE.md's `Suite:` line.** Both manual, accepted.
