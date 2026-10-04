@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-03, afternoon ET (#263 to #265 merged; Stage 33 finished)
+Last updated: 2026-10-04, afternoon ET (fourth audit reviewed; Stages 36 to 41 planned)
 
 ---
 
@@ -16,16 +16,18 @@ The dashboard template is parts under `src/dashboard/`, joined by
 `src/pipeline/template_parts.py`. Read it with `read_template()`, never one
 part as the page (traps).
 
-**Next action: check Tuesday's Weekly update** (read-only). It runs
-2026-10-06 at 11:00 UTC, usually hours late. It is the first Weekly update
-on `MODEL_SPECS`, on the log-loss drift check (#261) and on the template
-parts (#265). Its summary should read `DRIFT CHECK: OK`, its drift report
-should have a "Model A, log loss" section, and Pages should deploy. Check the
-Monday 22:00 UTC QB routine's run (its first on the `src.pipeline` imports)
-at the same time.
+**Next action: Stage 36, one PR at a time** (the fourth audit's loose
+ends; none touches the weekly run except item 7, which waits). Alongside,
+read-only: the Monday 22:00 UTC QB routine (its first run on the
+`src.pipeline` imports); Tuesday 2026-10-06's Weekly update (summary reads
+`DRIFT CHECK: OK`, the drift report has a "Model A, log loss" section,
+Pages deploys from `src/dashboard/`); and **Thursday 2026-10-08, the first
+LOCK on the new code**. Week 4 locked on 2026-10-01, before #255 and #258,
+so it tested none of it.
 
-**Stage 33 is finished.** Every item is done or answered. A further model
-question needs a new registration.
+**Stages 36 to 41 are planned** (fourth audit, 86/100, Mark approved
+2026-10-04). Order at the top of that section in `docs/stage-history.md`;
+the Stage 38 registration drafts are in `memory/2026-10-04.md`.
 
 ## Open work, and what each is waiting on
 
@@ -37,14 +39,17 @@ question needs a new registration.
 | claude-code-action pin | On v1.0.236 | A hand bump when a release matters |
 | Season Accuracy's forecast score | Merged (#160), not on the page yet | 50 graded games: after week 4 at the earliest |
 | TV exceptions for holiday and Saturday games | Weeks 12, 15, 16 | Sourced entries in `data/tv/exceptions.json` before those weeks |
-| Audit Response Log | Updated 2026-10-03 | Fable, for the next audit |
+| Audit Response Log | Updated 2026-10-04 with the fourth audit's verdicts | Fable, for the next audit |
 
 ## Queued, in order
 
-1. **Stage 21** once week 5 is graded (Tuesday 2026-10-13 at the earliest).
-2. **Stage 34 item 32**: Stage 20's five real-person tests (Mark finds the
-   testers) and the fourth audit (Mark's call on when).
-3. **Stage 22** comes from 20; **Stage 28** and the closing-line backtest
+1. **Stage 36** now; Stage 38's drafts to Mark; **Stage 37** after the
+   2026-10-08 lock is seen to run.
+2. **Stage 21** once week 5 is graded (Tuesday 2026-10-13 at the earliest).
+3. **Stage 39** (playoffs) before December; **Stage 41** when a week has
+   slack; **Stage 40** (season turnover) in January.
+4. **Stage 34 item 32**: Stage 20's five real-person tests (Mark finds the
+   testers), then the re-audit. **Stage 22** comes from 20; **Stage 28**
    after the regular season.
 
 Merge one branch at a time: every branch that adds a mutation case file

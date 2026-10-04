@@ -280,12 +280,11 @@ The full text of every stage, finished or planned, is in
 - **Stage 21 - Once the season has data**: not before week 5.
 - **Stage 22 - Beyond 95**: comes out of Stage 20.
 - **Stage 28 - After the forward test**: after the regular season.
-- **Stages 30 to 34 - the 2026-09-29 re-audit (78/100)**: 30 regressions and
-  residuals, 31 maintainability, 32 code quality, 33 architecture and model
-  engineering (finished 2026-10-03), 34 front door. Order and rules at the
-  top of that section.
-- **Stage 35 - the 2026-09-30 third audit (83/100)**: its new fixes; the rest
-  of its plan is the Stage 32 to 34 queue. Status and decisions in its section.
+- **Stage 34 item 32**: Stage 20's testers, then the re-audit. Stages 30 to
+  33 and 35 are finished.
+- **Stages 36 to 41 - the 2026-10-04 fourth audit (86/100)**: 36 loose ends,
+  37 honest states, 38 registrations, 39 playoffs, 40 season turnover, 41
+  operations and releases. Order and rules at the top of that section.
 
 ## Ending a session
 
