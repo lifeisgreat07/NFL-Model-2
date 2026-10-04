@@ -30,7 +30,7 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.research import stage5_eval as se  # noqa: E402
+from src.research import stage5_eval as se
 
 REGISTRY = REPO_ROOT / 'experiments' / 'stage6' / 'registry.json'
 RESULTS = REPO_ROOT / 'experiments' / 'stage6' / 'results'

@@ -16,7 +16,7 @@ Run with: pytest tests/test_row_links.py -v
 import re
 from pathlib import Path
 
-from src.pipeline.template_parts import read_template  # noqa: E402
+from src.pipeline.template_parts import read_template
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = read_template()

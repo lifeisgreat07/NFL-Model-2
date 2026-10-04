@@ -12,15 +12,13 @@ Run with: pytest tests/test_type_check.py -v
 """
 import importlib.util
 import subprocess
-import sys
 from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+import tasks
 
-import tasks  # noqa: E402
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_the_weekly_modules_type_check(tmp_path):

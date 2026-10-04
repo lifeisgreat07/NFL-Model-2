@@ -5,8 +5,8 @@
     {
       "id": "report-check-imports-what-is-not-copied",
       "why": "the report check takes Booth's accounts from collect_agent_log.py, which the workflow does not copy into booth-check. Every test here passes, because the tests run inside the checkout; in CI the step fails on a run whose report was posted -- exactly what happened on PR #219's first audit (Stage 30 item 5).",
-      "find": "from src.agents.booth_verdict import (  # noqa: E402\n    BOOTH_ACCOUNTS,\n    VerdictError,\n    author,\n    extract,\n)",
-      "replace": "from src.agents.booth_verdict import VerdictError, extract  # noqa: E402\nfrom src.agents.collect_agent_log import BOOTH_ACCOUNTS, author  # noqa: E402",
+      "find": "from src.agents.booth_verdict import (\n    BOOTH_ACCOUNTS,\n    VerdictError,\n    author,\n    extract,\n)",
+      "replace": "from src.agents.booth_verdict import VerdictError, extract\nfrom src.agents.collect_agent_log import BOOTH_ACCOUNTS, author",
       "expect_caught_by": "test_the_copied_check_imports_only_what_is_copied"
     },
     {

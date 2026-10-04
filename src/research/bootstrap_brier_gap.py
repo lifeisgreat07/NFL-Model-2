@@ -59,7 +59,7 @@ from sklearn.metrics import brier_score_loss, log_loss
 
 from src.pipeline.config import BACKTEST_SEASONS, MODEL_VERSION
 from src.pipeline.paths import (
-    DATA_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+    DATA_DIR,
 )
 
 # build_hist and brier_decomposition are imported, never reimplemented: the

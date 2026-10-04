@@ -28,9 +28,9 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-from src.pipeline import generate_dashboard as gd  # noqa: E402
-from src.pipeline import page_comments as pc  # noqa: E402
-from src.pipeline.template_parts import read_template  # noqa: E402
+from src.pipeline import generate_dashboard as gd
+from src.pipeline import page_comments as pc
+from src.pipeline.template_parts import read_template
 
 TEMPLATE = read_template()
 NODE = shutil.which('node')

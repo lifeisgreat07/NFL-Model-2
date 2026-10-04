@@ -17,7 +17,7 @@ import pytest
 
 SRC = Path(__file__).resolve().parents[1] / 'src'
 
-from src.pipeline import data_loader  # noqa: E402
+from src.pipeline import data_loader
 
 
 @pytest.fixture

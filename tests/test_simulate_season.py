@@ -24,8 +24,8 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import simulate_season as ss  # noqa: E402
-from src.pipeline import weekly_update as wu  # noqa: E402
+from src.pipeline import simulate_season as ss
+from src.pipeline import weekly_update as wu
 
 AFC_EAST = ['BUF', 'MIA', 'NE', 'NYJ']
 

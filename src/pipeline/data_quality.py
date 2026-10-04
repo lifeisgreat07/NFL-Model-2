@@ -29,7 +29,7 @@ Run standalone: python -m src.pipeline.data_quality --season 2026
 import argparse
 from dataclasses import dataclass, field
 
-from src.pipeline.data_loader import (  # noqa: E402
+from src.pipeline.data_loader import (
     QB_SCHEDULE_COLS,
     REQUIRED_PBP_COLS,
     REQUIRED_SCHEDULE_COLS,
@@ -40,7 +40,7 @@ from src.pipeline.data_loader import (  # noqa: E402
 #: target season's schedule, so those never appear here.
 # One list, in src/pipeline/paths.py (Stage 32 item 15), shared with the names the
 # dashboard shows.
-from src.pipeline.paths import NFL_TEAMS  # noqa: E402
+from src.pipeline.paths import NFL_TEAMS
 
 #: Regular-season games since the 17-game schedule began in 2021.
 REG_GAMES_SINCE_2021 = 272

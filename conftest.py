@@ -45,7 +45,6 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent
-GENERATOR = ROOT / 'src' / 'pipeline' / 'generate_dashboard.py'
 GENERATOR_MODULE = 'src.pipeline.generate_dashboard'
 
 #: Attribute the build stamps onto pytest's config object. The guard reads it

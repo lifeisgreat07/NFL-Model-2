@@ -37,8 +37,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
-from src.research import verify_matchup_cvd as v  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.research import verify_matchup_cvd as v
 
 TEMPLATE = JOINED_TEMPLATE
 

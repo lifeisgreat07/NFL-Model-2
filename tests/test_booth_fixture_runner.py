@@ -26,9 +26,9 @@ import pytest
 REPO = Path(__file__).parent.parent
 sys.path.insert(0, str(REPO / 'tests' / 'booth_fixtures'))
 
-import loader  # noqa: E402
+import loader
 
-from src.agents import booth_fixture_runner as runner  # noqa: E402
+from src.agents import booth_fixture_runner as runner
 
 FIXTURES = loader.load_all()
 IDS = [m['id'] for m in FIXTURES]

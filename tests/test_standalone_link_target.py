@@ -17,7 +17,7 @@ import re
 
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 TEMPLATE = JOINED_TEMPLATE
 STANDALONE = re.compile(r'<p\b[^>]*>\s*(<a\b[^>]*>)[^<]*</a>\s*</p>')

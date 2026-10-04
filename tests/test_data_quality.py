@@ -14,8 +14,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.pipeline import data_quality as dq  # noqa: E402
-from src.pipeline.data_loader import REQUIRED_PBP_COLS  # noqa: E402
+from src.pipeline import data_quality as dq
+from src.pipeline.data_loader import REQUIRED_PBP_COLS
 
 SEASON = 2026
 TEAMS = sorted(dq.NFL_TEAMS)

@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.agents import scout_preflight as pf  # noqa: E402
+from src.agents import scout_preflight as pf
 
 LINE = "Human review required: this changes how Booth reads the diff.\n"
 

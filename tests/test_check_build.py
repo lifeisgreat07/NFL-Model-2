@@ -14,8 +14,8 @@ import pytest
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline import check_build as cb  # noqa: E402
-from src.pipeline.data_quality import NFL_TEAMS  # noqa: E402
+from src.pipeline import check_build as cb
+from src.pipeline.data_quality import NFL_TEAMS
 
 TEAMS = sorted(NFL_TEAMS)
 PAGES = REPO / '.github' / 'workflows' / 'deploy-pages.yml'

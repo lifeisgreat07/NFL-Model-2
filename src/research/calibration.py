@@ -46,7 +46,7 @@ from src.pipeline.config import BACKTEST_SEASONS, MODEL_VERSION, TRAIN_SEASONS
 from src.pipeline.data_loader import load_plays, load_schedule
 from src.pipeline.model_specs import MODEL_SPECS
 from src.pipeline.paths import (
-    DATA_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+    DATA_DIR,
 )
 from src.pipeline.ratings_engine import build_qb_ratings, build_team_ratings, prep_plays
 from src.pipeline.weekly_update import build_historical_features, build_qb_change_lookup

@@ -13,7 +13,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from src.pipeline import alerts  # noqa: E402
+from src.pipeline import alerts
 
 
 class FakeGh:

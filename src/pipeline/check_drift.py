@@ -39,7 +39,7 @@ from src.pipeline.paths import (  # src/pipeline/paths.py, Stage 32 item 15
     RESULTS_DIR,
     parse_week,
 )
-from src.pipeline.runlog import get_logger  # noqa: E402  (Stage 32 item 17)
+from src.pipeline.runlog import get_logger
 
 log = get_logger(__name__)
 MIN_GAMES_TO_TEST = 30  # below this, any gap could easily just be noise
@@ -75,7 +75,7 @@ def log_loss_baseline(path: Path | None = None) -> dict:
     KeyError when the file is missing, unreadable or incomplete."""
     spec = json.loads(Path(DRIFT_BASELINE if path is None else path).read_text(encoding='utf-8'))
     for key in ('baseline', 'printed_beside', 'rule'):
-        spec[key]  # noqa: B018 -- a KeyError here is the "incomplete" case
+        spec[key]  # a KeyError here is the "incomplete" case
     return spec
 
 

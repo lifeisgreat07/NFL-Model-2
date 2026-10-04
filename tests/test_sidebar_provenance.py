@@ -22,9 +22,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import config  # noqa: E402
-from src.pipeline import generate_dashboard as gd  # noqa: E402
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline import config
+from src.pipeline import generate_dashboard as gd
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 WHEN = datetime(2026, 9, 26, 19, 11, tzinfo=UTC)
 TEMPLATE = JOINED_TEMPLATE

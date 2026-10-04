@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tests' / 'mutation'))
-import runner  # noqa: E402
+import runner
 
 FIXTURE = '''
 def test_reports_text_outside_cp1252():

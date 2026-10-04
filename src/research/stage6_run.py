@@ -28,11 +28,11 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from src.research import stage5_data as sd  # noqa: E402
-from src.research import stage5_eval as se  # noqa: E402
-from src.research import stage6_data as s6  # noqa: E402
-from src.research import stage6_referee as rf  # noqa: E402
-from src.research.stage5_run import compare_on, git_head, parity_check  # noqa: E402
+from src.research import stage5_data as sd
+from src.research import stage5_eval as se
+from src.research import stage6_data as s6
+from src.research import stage6_referee as rf
+from src.research.stage5_run import compare_on, git_head, parity_check
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 REGISTRY_PATH = REPO_ROOT / 'experiments' / 'stage6' / 'registry.json'

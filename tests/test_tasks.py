@@ -11,14 +11,12 @@ Run with: pytest tests/test_tasks.py -v
 """
 import importlib.util
 import re
-import sys
 from pathlib import Path
 from types import SimpleNamespace
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT))
+import tasks
 
-import tasks  # noqa: E402
+ROOT = Path(__file__).resolve().parents[1]
 
 WF = ROOT / '.github' / 'workflows'
 

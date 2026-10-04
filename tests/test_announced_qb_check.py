@@ -21,7 +21,7 @@ import pytest
 
 ROOT = Path(__file__).parent.parent
 
-from src.pipeline.weekly_update import (  # noqa: E402
+from src.pipeline.weekly_update import (
     QBOverrideError,
     load_qb_overrides,
     resolve_starters,

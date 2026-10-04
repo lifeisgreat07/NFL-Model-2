@@ -10,7 +10,7 @@ import inspect
 import re
 from pathlib import Path
 
-from src.pipeline.template_parts import read_template  # noqa: E402
+from src.pipeline.template_parts import read_template
 
 ROOT = Path(__file__).resolve().parents[1]
 

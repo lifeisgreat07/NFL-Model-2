@@ -105,7 +105,7 @@ LOCK_SLACK = pd.Timedelta(hours=8)
 
 # The folders are defined once, in src/pipeline/paths.py (Stage 32 item 15); the
 # reasons each exists stay here, beside the code that writes them.
-from src.pipeline.paths import (  # noqa: E402
+from src.pipeline.paths import (
     DATA_DIR,
     PRED_DIR,
     PREVIEW_DIR,
@@ -113,11 +113,11 @@ from src.pipeline.paths import (  # noqa: E402
     TEAM_NAMES,
     parse_week,
 )
-from src.pipeline.runlog import get_logger  # noqa: E402  (Stage 32 item 17)
+from src.pipeline.runlog import get_logger
 
 log = get_logger(__name__)
 
-from src.pipeline.ratings_engine import (  # noqa: E402  (the aliases, for hints)
+from src.pipeline.ratings_engine import (
     Ratings,
     WeekKey,
 )

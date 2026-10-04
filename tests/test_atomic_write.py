@@ -15,7 +15,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline.atomic_write import write_json_atomic  # noqa: E402
+from src.pipeline.atomic_write import write_json_atomic
 
 
 def test_it_writes_what_json_dumps_would(tmp_path):

@@ -48,7 +48,7 @@ from pathlib import Path
 
 REPO = Path(__file__).parents[2]
 
-from src.agents import booth_verdict as bv  # noqa: E402
+from src.agents import booth_verdict as bv
 
 OUT = REPO / 'data' / 'agent_log.json'
 

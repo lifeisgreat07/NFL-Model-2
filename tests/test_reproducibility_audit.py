@@ -16,7 +16,7 @@ import pytest
 
 REPO = Path(__file__).parent.parent
 
-from src.research import reproducibility_audit as ra  # noqa: E402
+from src.research import reproducibility_audit as ra
 
 N = 1087
 PUB = {'n': N, 'accuracy': 0.6274, 'log_loss': 0.649812, 'brier': 0.228603, 'auc': 0.670119}

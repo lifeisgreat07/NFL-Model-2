@@ -43,8 +43,8 @@ import pytest
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline.config import VERSION_HISTORY  # noqa: E402
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline.config import VERSION_HISTORY
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 CALIBRATION = 'data/calibration.json'
 BOOTSTRAP = 'data/bootstrap_brier_gap.json'

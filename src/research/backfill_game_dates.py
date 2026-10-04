@@ -36,7 +36,7 @@ from pathlib import Path
 
 REPO = Path(__file__).parents[2]
 from src.pipeline.paths import (
-    PRED_DIR,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+    PRED_DIR,
 )
 
 FIELDS = ('gameday', 'gametime_et', 'weekday')

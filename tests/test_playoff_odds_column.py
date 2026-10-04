@@ -19,8 +19,8 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline import generate_dashboard as gd  # noqa: E402
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline import generate_dashboard as gd
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 TEMPLATE = JOINED_TEMPLATE
 

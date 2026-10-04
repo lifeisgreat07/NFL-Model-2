@@ -19,7 +19,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import nfl_schedule_probe as probe  # noqa: E402
+from src.pipeline import nfl_schedule_probe as probe
 
 WORKFLOW = ROOT / '.github' / 'workflows' / 'nfl-schedule-probe.yml'
 

@@ -19,9 +19,9 @@ import json
 import numpy as np
 import pandas as pd
 
-from src.research import stage5_data as sd  # noqa: E402
-from src.research import stage5_eval as se  # noqa: E402
-from src.research.stage5_run import GAMES, REPO_ROOT, git_head  # noqa: E402
+from src.research import stage5_data as sd
+from src.research import stage5_eval as se
+from src.research.stage5_run import GAMES, REPO_ROOT, git_head
 
 SEASONS = [2022, 2023, 2024, 2025]
 OUT = REPO_ROOT / 'experiments' / 'stage5' / 'residuals.json'

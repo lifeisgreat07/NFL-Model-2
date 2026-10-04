@@ -33,7 +33,7 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.template_parts import read_template  # noqa: E402
+from src.pipeline.template_parts import read_template
 
 REPO_ROOT = Path(__file__).parent.parent
 HARNESS = Path(__file__).parent / 'why_words_harness.js'

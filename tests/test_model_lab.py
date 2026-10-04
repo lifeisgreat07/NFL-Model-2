@@ -17,7 +17,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import model_lab as ml  # noqa: E402
+from src.pipeline import model_lab as ml
 
 FIVE = {'ACCEPT', 'REJECT', 'INCONCLUSIVE', 'DEFERRED', 'CONFIRMED FINDING'}
 

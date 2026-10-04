@@ -16,7 +16,7 @@ from pathlib import Path
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline import weekly_summary as ws  # noqa: E402
+from src.pipeline import weekly_summary as ws
 
 WEEKLY = REPO / '.github' / 'workflows' / 'weekly-update.yml'
 
@@ -111,7 +111,7 @@ def test_a_deleted_file_is_removed_not_changed():
                   'D  predictions/preview/2026_week5.json\n'
                   '?? predictions/2026_week4.json\n')
 
-    run = lambda *a, **k: Done()  # noqa: E731
+    run = lambda *a, **k: Done()
     assert ws.changed_paths(run=run) == ['predictions/2026_week4.json']
     assert ws.removed_paths(run=run) == ['predictions/preview/2026_week4.json',
                                          'predictions/preview/2026_week5.json']

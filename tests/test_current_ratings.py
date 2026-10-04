@@ -11,8 +11,8 @@ Run with: pytest tests/test_current_ratings.py -v
 import pandas as pd
 import pytest
 
-from src.pipeline import weekly_update as wu  # noqa: E402
-from src.pipeline.config import MIN_PLAYS_FOR_RATING  # noqa: E402
+from src.pipeline import weekly_update as wu
+from src.pipeline.config import MIN_PLAYS_FOR_RATING
 
 
 def plays(n):

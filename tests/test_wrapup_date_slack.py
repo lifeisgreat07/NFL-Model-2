@@ -39,7 +39,7 @@ import pytest
 
 REPO = Path(__file__).resolve().parents[1]
 
-from src.agents import session_wrapup  # noqa: E402
+from src.agents import session_wrapup
 
 TODAY = date.today()
 YESTERDAY = TODAY - timedelta(days=1)

@@ -18,7 +18,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import runlog  # noqa: E402
+from src.pipeline import runlog
 
 #: The modules converted from print(). A module joins when it is converted.
 LOGGED = ['weekly_update', 'grade_predictions', 'weekend_refresh', 'check_drift']

@@ -12,7 +12,7 @@ Run with: pytest tests/test_retired_card_css.py -v
 """
 import re
 
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 TEMPLATE = JOINED_TEMPLATE
 RETIRED = ('model-row', 'model-label', 'tele', 'tele-team', 'tele-logo', 'tele-marker')

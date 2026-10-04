@@ -30,9 +30,9 @@ import argparse
 import traceback
 from pathlib import Path
 
-from src.pipeline.data_quality import Report  # noqa: E402
+from src.pipeline.data_quality import Report
 from src.pipeline.paths import (
-    current_season,  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+    current_season,
 )
 
 
