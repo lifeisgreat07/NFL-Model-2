@@ -8,7 +8,8 @@ Two sources, and nothing typed in between them:
 - experiments/<stage>/results/<id>.json -- every pre-registered answer from
   Stage 5 on, read as it was committed, plus each registry entry marked
   DEFERRED (a registered question that was deliberately not asked has no
-  result file, and leaving it off would hide a decision).
+  result file, and leaving it off would hide a decision), and each registered
+  monitoring rule (Stage 33's R4: a rule put in force, with no result file).
 
 THE FIVE DECISIONS are the project's own (CLAUDE.md, "Non-negotiable
 methodology"): ACCEPT, REJECT, INCONCLUSIVE, DEFERRED, CONFIRMED FINDING.
@@ -53,6 +54,10 @@ RESULT_DECISION = {
     # curve is no worse than the hand-picked one by more than the margin, and
     # not measurably worse at all, so the registered rule switches to it.
     'NON-INFERIOR': 'ACCEPT',
+    # Stage 33's R4 (experiments/stage33/registry.json): a monitoring rule,
+    # not a model question. It has no result file and spends no slot; it was
+    # registered, then put in place (#261), so its row says it is in force.
+    'ADOPTED': 'ACCEPT',
 }
 
 
@@ -122,9 +127,25 @@ def headline(result):
     return out
 
 
+def monitoring_reason(entry):
+    """The Result text for a registered monitoring rule (Stage 33's R4): its
+    rule and baseline, copied from the registry entry, never retyped."""
+    text = f"A monitoring rule, adopted without spending a slot. {entry['rule']}"
+    base = entry.get('baseline')
+    if base:
+        beside = base.get('printed_beside')
+        text += (f" Baseline: Model A log loss {base['value']:.4f} "
+                 f"({base['chosen'].replace('_', ' ')})")
+        if beside:
+            text += f", with {beside['value']:.4f} ({beside['name'].replace('_', ' ').replace('qb', 'QB')}) printed beside it"
+        text += '.'
+    return text
+
+
 def result_entries(experiments=EXPERIMENTS):
     """One entry per results file, then one per registry entry marked
-    DEFERRED, stage by stage in registration order."""
+    DEFERRED or registered as a monitoring rule, stage by stage in
+    registration order."""
     out = []
     for stage in sorted(p for p in experiments.glob('stage*') if p.is_dir()):
         registry = json.loads((stage / 'registry.json').read_text(encoding='utf-8'))
@@ -145,6 +166,13 @@ def result_entries(experiments=EXPERIMENTS):
                             'title': entry['title'], 'question': entry.get('question'),
                             'label': 'DEFERRED', 'decision': 'DEFERRED', 'leakage': False,
                             'headline': None, 'reason': entry.get('reason'),
+                            'source': _rel(stage / 'registry.json')})
+            elif entry.get('kind') == 'monitoring_rule':
+                out.append({'id': entry['id'], 'stage': _stage_name(stage),
+                            'title': entry['title'], 'question': entry.get('question'),
+                            'label': 'ADOPTED', 'decision': RESULT_DECISION['ADOPTED'],
+                            'leakage': False, 'headline': None,
+                            'reason': monitoring_reason(entry),
                             'source': _rel(stage / 'registry.json')})
     return out
 
