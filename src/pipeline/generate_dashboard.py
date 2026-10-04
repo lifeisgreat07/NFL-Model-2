@@ -172,6 +172,24 @@ def agent_log_for_page(log: dict[str, Any] | None) -> dict[str, Any] | None:
     return {k: log.get(k) for k in ('generated_utc', 'summary')}
 
 
+def load_recent_runs(path: Path | None = None) -> dict[str, Any] | None:
+    """The scheduled jobs' last runs, read from GitHub by
+    src/pipeline/recent_runs.py in the deploy job (Stage 41 item 4).
+
+    The file is gitignored and only the deploy writes it, so every other
+    build -- a local one, the test suite's, the browser checks' -- has none,
+    and so does a deploy whose read failed. None, not [], so the page says
+    the history was not read rather than that nothing ran.
+    """
+    path = path or DATA_DIR / 'recent_runs.json'
+    if not path.exists():
+        print("  No data/recent_runs.json -- the deploy writes it; the page will "
+              "say the run history was not read for this build.")
+        return None
+    with open(path, encoding='utf-8') as f:
+        return json.load(f)
+
+
 def load_calibration() -> dict[str, Any] | None:
     """Backtest-derived calibration written by src/research/calibration.py.
 
@@ -970,6 +988,9 @@ def main() -> None:
     print("Loading Booth's audit log...")
     agent_log = load_agent_log()
 
+    print("Loading the scheduled jobs' recent runs...")
+    recent_runs = load_recent_runs()
+
     print("Loading team history...")
     team_history_js = load_team_history()
 
@@ -1007,6 +1028,8 @@ def main() -> None:
     # anything" -- those are opposite claims about the verifier, and an empty
     # object would let the page make the flattering one by accident.
     html = html.replace('__AGENT_LOG_JSON__', safe_json(agent_log_for_page(agent_log), **COMPACT))
+    # null when this build did not read the run history (see load_recent_runs).
+    html = html.replace('__RECENT_RUNS_JSON__', safe_json(recent_runs, **COMPACT))
     # The Changelog page is rendered from config.VERSION_HISTORY, so the
     # release notes on the site and the constant the model actually runs under
     # cannot drift apart -- they are the same object.

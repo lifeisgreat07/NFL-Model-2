@@ -37,7 +37,7 @@ from src.pipeline.data_quality import NFL_TEAMS, Report
 #: The page's JavaScript names for what generate_dashboard.main() writes.
 PAYLOADS = ('agentLog', 'versionHistory', 'modelVersion', 'teams', 'playoffMeta',
             'weeks', 'latestWeekKey', 'picksPdfs', 'accuracy', 'teamHistory',
-            'calibration')
+            'calibration', 'recentRuns')
 
 PLACEHOLDER_RE = re.compile(r'__[A-Z0-9_]+__')
 
@@ -101,6 +101,11 @@ def check(html):
     # records stay in data/agent_log.json, where nothing on the page read them.
     need('agentLog', lambda v: isinstance(v, dict) and isinstance(v.get('summary'), dict),
          "is missing (Checking the AI's work would say no audits were ever recorded)")
+
+    # recentRuns may be null: a build whose read of GitHub's API failed still
+    # publishes, and the page says the history was not read (Stage 41 item 4).
+    need('recentRuns', lambda v: v is None or (isinstance(v, dict) and isinstance(v.get('runs'), list)),
+         'is neither null nor a list of runs')
 
     if 'picksPdfs' in ok and not ok['picksPdfs']:
         report.warnings.append('no printable picks sheets were built; the download control will hide itself')

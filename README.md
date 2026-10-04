@@ -55,7 +55,7 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, 176 case files, one per subject under test)
+  (`tests/mutation/`, 177 case files, one per subject under test)
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
@@ -197,13 +197,14 @@ python -m src.pipeline.generate_dashboard
 
 ### Settings and the rules the code enforces
 
-Three environment variables, all optional:
+Four environment variables, all optional:
 
 | Variable | What it does | Who sets it |
 |---|---|---|
 | `NFL_PBP_CACHE` | A folder for finished seasons of play-by-play, read from disk instead of refetched. The current season is always fetched. | Only the nightly canary. The weekly run never does: the run that makes picks always fetches fresh. |
 | `STAGE5_CACHE` | Where the Stage 5 experiment runner keeps its game table. Defaults to nfl-cache/stage5 beside the repository folder. | Anyone re-running a registered Stage 5 question. |
 | `STAGE6_CACHE` | The same for the Stage 6 data-source runner (nfl-cache/stage6). | Anyone re-running Stage 6. |
+| `GITHUB_TOKEN` | Read by `src/pipeline/recent_runs.py` for GitHub's Actions API; without it the anonymous limit applies (60 calls an hour, four used per read). | The deploy job, with its own token. |
 
 Four rules that live in the code rather than in any one document:
 

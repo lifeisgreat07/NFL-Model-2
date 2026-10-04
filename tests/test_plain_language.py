@@ -179,6 +179,7 @@ RENDERERS = {
     # of verification belongs on it -- but it is written for the same reader
     # as the rest, so it is scoped, not exempt.
     'renderAgentLog': 'reliability',
+    'renderRecentRuns': 'reliability',
 }
 
 

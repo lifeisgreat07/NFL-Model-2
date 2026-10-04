@@ -34,6 +34,8 @@ def good():
         'accuracy': {'weeks': []},
         'teamHistory': {'names': {}, 'timeline': {t: [{'net': 0.1}] for t in TEAMS}},
         'calibration': {'models': {'model_a': {}}},
+        # null on every build but a deploy that read GitHub (Stage 41 item 4).
+        'recentRuns': None,
     }
 
 
@@ -82,6 +84,12 @@ def test_a_good_synthetic_page_passes():
 def test_each_empty_payload_is_an_error(name, value, phrase):
     errs = errors_for(**{name: value})
     assert any(f'`{name}`' in e and phrase in e for e in errs), errs
+
+
+def test_recent_runs_may_be_null_or_a_list_of_runs_but_not_anything_else():
+    assert errors_for(recentRuns={'read_utc': 't', 'runs': []}) == []
+    assert any('`recentRuns`' in e for e in errors_for(recentRuns={'runs': 5}))
+    assert any('no `recentRuns` payload' in e for e in errors_for(recentRuns=KeyError))
 
 
 def test_a_payload_missing_from_the_page_is_an_error():

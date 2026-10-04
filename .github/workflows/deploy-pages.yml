@@ -75,6 +75,8 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  # To read the scheduled jobs' recent runs for the page (Stage 41 item 4).
+  actions: read
 
 # One deploy at a time, and never cancel one midway: a cancelled deploy can
 # leave the site on a half-published artifact. Queue instead.
@@ -110,6 +112,15 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      # The scheduled jobs' last runs, for Checking the AI's work (Stage 41
+      # item 4): read from GitHub's Actions API into a gitignored file the
+      # build reads. A failed read writes nothing and exits 0, so the site
+      # still publishes and the page says the history was not read.
+      - name: Read the scheduled jobs' recent runs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python -m src.pipeline.recent_runs --repo "${{ github.repository }}" --out data/recent_runs.json
 
       - name: Build the dashboard
         run: python -m src.pipeline.generate_dashboard
