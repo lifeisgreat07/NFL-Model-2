@@ -167,7 +167,10 @@ def result_entries(experiments=EXPERIMENTS):
                             'label': 'DEFERRED', 'decision': 'DEFERRED', 'leakage': False,
                             'headline': None, 'reason': entry.get('reason'),
                             'source': _rel(stage / 'registry.json')})
-            elif entry.get('kind') == 'monitoring_rule':
+            elif entry.get('kind') == 'monitoring_rule' and entry.get('status') != 'REGISTERED':
+                # A rule registered but not yet put in force (Stage 38's M1)
+                # has no row: like a question not yet answered, it has no
+                # decision to show.
                 out.append({'id': entry['id'], 'stage': _stage_name(stage),
                             'title': entry['title'], 'question': entry.get('question'),
                             'label': 'ADOPTED', 'decision': RESULT_DECISION['ADOPTED'],

@@ -1,0 +1,107 @@
+{
+ "family": "stage38",
+ "registered": "2026-10-04",
+ "approved_by": "Mark, 2026-10-04 afternoon ET: 'OK to write them in', for the five drafts in memory/2026-10-04.md, after reading the fourth-audit review that proposed them.",
+ "protocol": {
+  "validation_seasons": [
+   2022,
+   2023
+  ],
+  "confirmation_seasons": [
+   2024,
+   2025
+  ],
+  "forward_holdout_season": 2026,
+  "primary_metric": "log_loss",
+  "secondary_metric": "brier",
+  "accuracy": "Reported, never decides.",
+  "alpha": 0.05,
+  "budget_m": 2,
+  "budget_rule": "C1 and L2 are the confirmatory slots. A slot is spent by reaching a decision, whatever the outcome. Each confirmatory interval is at level 1 - alpha/budget_m (97.5%). B1, M1 and L1 are measurements or a monitoring rule and spend nothing.",
+  "n_resamples": 5000,
+  "seed": 20261004,
+  "walk_forward": "Exactly as published: weekly refit, train on every game strictly earlier (from 2020), predict the week.",
+  "model_lab": "Each question gets a Model Lab row when it is answered, whatever it shows; until then none of them is on the page."
+ },
+ "amendments": [],
+ "prerequisite": "None beyond Stage 33's MODEL_SPECS and walk_forward(spec). L1 and L2 need the 2026 season's closing lines, read from nflverse after the regular season ends.",
+ "disclosures": [
+  "2024-2025 have confirmed earlier decisions in this project (QB shrinkage, weekly refit, Stage 5, Stage 33). They are not a fresh holdout.",
+  "C1 sits beside Stage 33's exclusion of 'anything that re-tunes the recency half-life'. It leaves the in-season half-life (16 games) untouched and adds a distance only across the offseason; Mark approved it as a new registration on 2026-10-04.",
+  "Weeks 1-3 of 2026 have one line-archive capture each (data/line_history/). L1 and L2 take the lock-time line from each saved pick and the close from nflverse, so every week counts.",
+  "Drafted in the fourth-audit review (items 8, 13, 14, 17) before any of these quantities was computed for this purpose."
+ ],
+ "hypotheses": [
+  {
+   "id": "C1",
+   "item": "8",
+   "kind": "hypothesis",
+   "title": "An offseason gap in the team ratings",
+   "question": "Team-rating plays from earlier seasons get G extra weeks of distance before the recency weight 0.5^(d/16) is applied. Today week 18 to the next week 1 is distance 1 (src/pipeline/ratings_engine.py).",
+   "candidate": {
+    "model": "model_a",
+    "offseason_gap_weeks": "G, chosen on validation from [4, 8, 16, 32]"
+   },
+   "incumbent": {
+    "model": "model_a",
+    "offseason_gap_weeks": 0
+   },
+   "screen": "Pick G by log loss over ALL weeks of 2022-2023; advance only if the chosen G beats G=0 there (point estimate).",
+   "decision_model": "model_a",
+   "also_report": [
+    "model_b",
+    "weeks 1-4 only (never decides; declared here, not a subgroup search)"
+   ],
+   "spends_slot": "if advanced",
+   "decision_rule": "On 2024-2025, all weeks: ACCEPT if the 97.5% paired-bootstrap interval on (candidate - incumbent) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE and G=0 stays.",
+   "why_not_H7": "Stage 5's H7 replaced the whole rating engine with a Kalman filter and failed the validation screen (+0.00072). Its carry-over was fitted jointly with process noise, so that result says nothing about an offseason gap alone.",
+   "expected": "Small; most likely INCONCLUSIVE."
+  },
+  {
+   "id": "B1",
+   "item": "13",
+   "kind": "measurement",
+   "title": "Resampling whole weeks instead of games",
+   "question": "Recompute R1-R3 (Stage 33) and the three published comparisons (Model B vs Model A, the market vs Model A, Model B vs the market) with season-week block resampling: every game of a week resampled together, 5,000 resamples, the same seeds as published.",
+   "spends_slot": false,
+   "consequence": "No R1-R3 label changes. If a CONFIRMED FINDING's interval reaches 0 under week blocks, the page says it holds when games are resampled and not when weeks are; the wording is Mark's decision.",
+   "expected": "Slightly wider intervals; both confirmed findings hold."
+  },
+  {
+   "id": "M1",
+   "item": "14",
+   "kind": "monitoring_rule",
+   "status": "REGISTERED",
+   "title": "Live reliability against the backtest",
+   "question": "Is live Model A as well calibrated as the backtest said?",
+   "spends_slot": false,
+   "rule": "Five bins at the backtest's quintiles of Model A probability. A bin is flagged when the 99% binomial interval of its live hit rate excludes the backtest bin's rate (Bonferroni over five bins). Not before 50 graded games; a bin is shown only with 20 games.",
+   "alert": "None. Printed on Checking the AI's work; an alert needs a new registration.",
+   "registered_before": "Any 2026 bin rate is computed."
+  },
+  {
+   "id": "L1",
+   "item": "17",
+   "kind": "measurement",
+   "title": "The market at the lock against the market at the close",
+   "question": "On every graded 2026 game: the market's log loss at the lock-time spread (stored in each saved pick) against at the closing spread (nflverse's schedule, read after the regular season).",
+   "spends_slot": false,
+   "consequence": "Reported beside the backtest's market row, as Stage 5's Q0 sits beside H1: the published backtest's market uses the closing line, the live picks the line at the lock, so this measures how much of 'the market beats Model A' comes from information the live picks never have."
+  },
+  {
+   "id": "L2",
+   "item": "17",
+   "kind": "hypothesis",
+   "title": "Does the line move toward the model?",
+   "question": "Mean signed spread move from the lock to the close, counted toward Model A's side, over every 2026 game with both.",
+   "decision_model": "model_a",
+   "spends_slot": true,
+   "decision_rule": "Movement toward the model if the 97.5% bootstrap interval of the mean move lies entirely above 0; otherwise INCONCLUSIVE.",
+   "expected": "About 0, consistent with no ATS edge (51.61%, CI [48.58%, 54.63%])."
+  }
+ ],
+ "not_in_this_registration": [
+  "The neutral-site home term: four or five games a season cannot decide it, so it is Mark's methodology call, not a test.",
+  "Any slicing of 2026 results beyond what is declared above."
+ ]
+}
