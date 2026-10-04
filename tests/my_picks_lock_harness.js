@@ -102,6 +102,10 @@ const sentences = {
   oneLate: leftOutSentence({wins: 0, losses: 0, late: 1, untimed: 0}),
   mixed: leftOutSentence({wins: 0, losses: 0, late: 2, untimed: 3}),
   oneUntimed: leftOutSentence({wins: 0, losses: 0, late: 0, untimed: 1}),
+  badgeCounted: recordBadgeText({wins: 3, losses: 1, late: 2, untimed: 0}),
+  badgeNoneCounted: recordBadgeText({wins: 0, losses: 0, late: 2, untimed: 1}),
+  badgeOneNotCounted: recordBadgeText({wins: 0, losses: 0, late: 0, untimed: 1}),
+  badgeNothing: recordBadgeText({wins: 0, losses: 0, late: 0, untimed: 0}),
 };
 
 // Stamping: an open game's untimed pick is stamped with now; a locked

@@ -1949,6 +1949,11 @@ function tallyMyPicks(picks, times, keys, weekMap){
   return r;
 }
 
+// Picks are kept in this browser only (a static site has no accounts), so a
+// visitor on a new device sees none, and picks copied in from a share link
+// carry no time. Said wherever the page reports picks it cannot count.
+const PICKS_LIVE_HERE = 'Your picks live in this browser: Export and Import on My Picks move them to another device.';
+
 function leftOutSentence(t){
   const n = t.late + t.untimed;
   if(!n) return '';
@@ -1956,6 +1961,16 @@ function leftOutSentence(t){
   if(t.late) parts.push(`${t.late} made after kickoff`);
   if(t.untimed) parts.push(`${t.untimed} with no record of when ${t.untimed === 1 ? 'it was' : 'they were'} made`);
   return `${n} of your graded picks ${n === 1 ? 'is' : 'are'} not counted: ${parts.join(', ')}.`;
+}
+
+// The My Picks record badge. Graded picks that were all late or untimed
+// say "0 counted" and why, not "No graded picks yet" -- they are graded,
+// and the visitor can see them (Stage 37 item 1).
+function recordBadgeText(t){
+  const left = t.late + t.untimed;
+  if(t.wins + t.losses > 0) return `${t.wins}-${t.losses} on graded picks` + (left ? ` (${left} not counted)` : '');
+  if(left) return `0 counted: ${left} graded pick${left === 1 ? '' : 's'} made after kickoff or with no time`;
+  return 'No graded picks yet';
 }
 
 // A stored time means "made no later than this". A pick with no time whose
@@ -2319,11 +2334,9 @@ function refreshPickTotals(myPicks){
   // anyone can build a link after the results are in.
   const times = sharedPicksView ? {} : loadPickTimes();
   const t = tallyMyPicks(myPicks, times, weekKeysSorted, weeks);
-  const wins = t.wins, losses = t.losses, left = t.late + t.untimed;
   if(badge) badge.textContent = sharedPicksView
     ? 'Shared picks are not scored'
-    : ((wins+losses)>0 ? `${wins}-${losses} on graded picks` : 'No graded picks yet')
-      + (left ? ` (${left} not counted)` : '');
+    : recordBadgeText(t);
 
   renderPicksStreak(myPicks, times);
 }
@@ -2823,7 +2836,14 @@ function buildCumulativeTrendChart(){
       <text x="${padL-6}" y="${(y(gv)+3).toFixed(1)}" text-anchor="end" font-size="${fsTick}" fill="var(--text-2)">${gv}%</text>`);
   }
 
-  const legend = seriesLegend(['a','b','market','picks']);
+  // My picks are in the legend only when they have a line to name. When
+  // every graded pick was late or untimed there is none, and the chart says
+  // why instead (Stage 37 item 1).
+  const picksDrawn = points.filter(p => p.p !== null).length >= 2;
+  const legend = seriesLegend(picksDrawn ? ['a','b','market','picks'] : ['a','b','market']);
+  const allMine = tallyMyPicks(myPicks, pickTimes, weekKeysSorted, weeks);
+  const picksNote = !picksDrawn && nP === 0 && (allMine.late + allMine.untimed) > 0
+    ? `<p class="score-foot">My picks has no line yet. ${leftOutSentence(allMine)} ${PICKS_LIVE_HERE}</p>` : '';
 
   return `<div class="method-block">
     <h3>Cumulative Accuracy Trend</h3>
@@ -2838,6 +2858,7 @@ function buildCumulativeTrendChart(){
       ${endLabels()}
       ${weekTicks}
     </svg>
+    ${picksNote}
   </div>`;
 }
 
@@ -3218,19 +3239,24 @@ function scoreboardHtml(o, mine, leftOut, nGraded){
     {name: 'Model A', subject: 'Model A', series: 'var(--series-a)', shape: 'dot', ...o.model_a},
   ];
   const race = [...rows].sort((a, b) => b.correct - a.correct);
+  // Graded picks that all came too late, or with no time, still join the
+  // race as a row that says so (Stage 37 item 1, Mark's observation in the
+  // 2026-10-04 audit): leaving the row out read as the picks being lost.
   if(mine) race.push({name: 'My picks', series: 'var(--series-d)', shape: 'diamond', ...mine});
+  else if(leftOut) race.push({name: 'My picks', series: 'var(--series-d)', shape: 'diamond',
+                              correct: 0, n: 0, pct: null, noneCounted: true});
   const row = r => `<div class="score-row">
       <div class="score-name"><span class="score-mark ${r.shape}" style="--series:${r.series}" aria-hidden="true"></span>${r.name}</div>
       <div class="score-track" aria-hidden="true"><div class="score-fill" style="--series:${r.series}; width:${r.pct ?? 0}%"></div><div class="score-coin"></div></div>
-      <div class="score-figure"><span class="score-pct">${r.pct == null ? '&ndash;' : `${r.pct.toFixed(1)}%`}</span><span class="score-count">${r.correct} of ${r.n}</span></div>
+      <div class="score-figure"><span class="score-pct">${r.pct == null ? '&ndash;' : `${r.pct.toFixed(1)}%`}</span><span class="score-count">${r.noneCounted ? '0 counted' : `${r.correct} of ${r.n}`}</span></div>
     </div>`;
   return `<div class="scoreboard" role="region" aria-label="Season scoreboard">
     <div class="scoreboard-eyebrow">Picked the winner &middot; ${nGraded} game${nGraded === 1 ? '' : 's'} graded</div>
     <div class="scoreboard-verdict">${scoreboardVerdict(rows)}</div>
     ${race.map(row).join('')}
     <div class="score-axis" aria-hidden="true"><span></span><div class="score-axis-track"><span class="coin">50% &middot; a coin flip</span><span class="full">100%</span></div><span></span></div>
-    ${mine ? '' : '<div class="score-foot">Pick some games on the Week Board to join this race.</div>'}
-    ${leftOut ? `<div class="score-foot">${leftOut} Only picks made before kickoff are counted.</div>` : ''}
+    ${mine || leftOut ? '' : '<div class="score-foot">Pick some games on the Week Board to join this race.</div>'}
+    ${leftOut ? `<div class="score-foot">${leftOut} Only picks made before kickoff are counted.${mine ? '' : ` ${PICKS_LIVE_HERE}`}</div>` : ''}
   </div>`;
 }
 /* Season Accuracy's second score (Stage 19): how sure each forecast was, not

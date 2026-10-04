@@ -163,6 +163,17 @@ def test_the_page_says_how_many_it_left_out_and_why(lock):
                           'kickoff, 3 with no record of when they were made.')
 
 
+def test_the_badge_says_none_counted_rather_than_none_graded(lock):
+    """Graded picks that were all made late or have no time are graded: the
+    badge says none of them counted, and why (Stage 37 item 1, Mark's
+    observation in the 2026-10-04 audit)."""
+    s = lock['sentences']
+    assert s['badgeCounted'] == '3-1 on graded picks (2 not counted)'
+    assert s['badgeNoneCounted'] == '0 counted: 3 graded picks made after kickoff or with no time'
+    assert s['badgeOneNotCounted'] == '0 counted: 1 graded pick made after kickoff or with no time'
+    assert s['badgeNothing'] == 'No graded picks yet'
+
+
 def test_only_a_game_still_to_come_has_an_untimed_pick_stamped(lock):
     """Now is an honest "made no later than" only before kickoff."""
     st = lock['stamp']
