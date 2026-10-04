@@ -63,7 +63,11 @@ _BLOCK = re.compile(
     re.DOTALL | re.MULTILINE,
 )
 
-_COUNT = r'^\s*{label}:\s*(\d+)\s*$'
+# A count line may carry a parenthetical note after the number -- on #268
+# Booth wrote 'Unverifiable: 0 (the PR's own "Not checked" item is disclosed
+# and not counted)' -- and the number is still what the block must restate.
+# Anything else after the number is not a count line (Stage 41 item 2).
+_COUNT = r'^\s*{label}:\s*(\d+)(?:\s+\(.*\))?\s*$'
 
 
 class VerdictError(ValueError):

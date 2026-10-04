@@ -145,6 +145,22 @@ def test_cross_check_catches_discrepancies_under_safe_to_merge():
     assert any('SAFE TO MERGE' in p for p in problems)
 
 
+def test_a_count_line_may_carry_a_parenthetical_note():
+    """#268's report wrote 'Unverifiable: 0 (... not counted)'; the number is read."""
+    text = _report(GOOD_BLOCK).replace('Unverifiable: 0', 'Unverifiable: 0 (one gap disclosed)')
+    assert bv.cross_check(text) == []
+
+
+def test_a_note_does_not_hide_a_wrong_count():
+    text = _report(GOOD_BLOCK).replace('Unverifiable: 0', 'Unverifiable: 2 (one gap disclosed)')
+    assert any('Unverifiable: 2' in p for p in bv.cross_check(text))
+
+
+def test_other_text_after_the_number_is_not_a_count_line():
+    text = _report(GOOD_BLOCK).replace('Unverifiable: 0', 'Unverifiable: 0 of 2')
+    assert any("no 'Unverifiable:' line" in p for p in bv.cross_check(text))
+
+
 def test_cross_check_reports_a_missing_block_as_a_problem():
     assert bv.cross_check("no block at all") == ["no booth-verdict block found"]
 
