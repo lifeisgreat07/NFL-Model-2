@@ -17,6 +17,20 @@
       "expect_caught_by": "test_a_question_that_reached_confirmation_is_reported_from_confirmation"
     },
     {
+      "id": "lab-drops-monitoring-rules",
+      "why": "a registered monitoring rule has no result file, so Stage 33's R4 vanishes from the record its registry promised it a row in (the fourth audit, Q2).",
+      "find": "            elif entry.get('kind') == 'monitoring_rule':",
+      "replace": "            elif False:",
+      "expect_caught_by": "test_a_registry_that_promises_a_row_for_every_question_gets_one"
+    },
+    {
+      "id": "lab-monitoring-baseline-dropped",
+      "why": "the monitoring rule's row loses the baseline it is judged against, so the page states a rule with nothing to compare to.",
+      "find": "    base = entry.get('baseline')\n",
+      "replace": "    base = None\n",
+      "expect_caught_by": "test_a_monitoring_rule_row_quotes_its_registry"
+    },
+    {
       "id": "lab-drops-deferred-questions",
       "why": "a registered question that was deliberately deferred has no result file, so it vanishes from the record.",
       "find": "            elif entry.get('status') == 'DEFERRED':",

@@ -101,6 +101,36 @@ def test_every_deferred_registry_entry_is_shown_with_its_reason(entries):
                 assert e['decision'] == 'DEFERRED' and e['reason'] == h['reason']
 
 
+def test_a_registry_that_promises_a_row_for_every_question_gets_one(entries):
+    """Stage 33's protocol says "Every question ends as a Model Lab row,
+    whatever it shows". Its R4 is a monitoring rule with no result file,
+    and until Stage 36 it was the one entry with no row (the fourth audit,
+    Q2). Stages 5 and 6 make no such promise; their never-run entries stay
+    off the page by Stage 18's decision (the test above)."""
+    promised = 0
+    for registry in ROOT.glob('experiments/stage*/registry.json'):
+        reg = json.loads(registry.read_text(encoding='utf-8'))
+        if 'Every question ends as a Model Lab row' not in reg.get('protocol', {}).get('model_lab', ''):
+            continue
+        stage = ml._stage_name(registry.parent)
+        shown = {e['id'] for e in entries if e['stage'] == stage}
+        missing = [h['id'] for h in reg['hypotheses'] if h['id'] not in shown]
+        assert not missing, f'{stage} promises a row for every question; these have none: {missing}'
+        promised += 1
+    assert promised >= 1, 'no registry promised a row for every question; the check ran over nothing'
+
+
+def test_a_monitoring_rule_row_quotes_its_registry(entries):
+    reg = json.loads((ROOT / 'experiments' / 'stage33' / 'registry.json').read_text(encoding='utf-8'))
+    r4 = next(h for h in reg['hypotheses'] if h['id'] == 'R4')
+    e = next(x for x in entries if (x['stage'], x['id']) == ('Stage 33', 'R4'))
+    assert (e['label'], e['decision'], e['headline']) == ('ADOPTED', 'ACCEPT', None)
+    assert r4['rule'] in e['reason']
+    assert f"{r4['baseline']['value']:.4f}" in e['reason']
+    assert f"{r4['baseline']['printed_beside']['value']:.4f}" in e['reason']
+    assert e['source'] == 'experiments/stage33/registry.json'
+
+
 def test_every_headline_figure_is_the_one_in_its_file(entries):
     checked = 0
     for e in entries:
