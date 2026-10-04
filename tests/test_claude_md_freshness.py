@@ -269,3 +269,31 @@ def test_claude_md_stays_short_enough_to_read_cold():
         f'CLAUDE.md is {n} lines, over {MAX_CLAUDE_MD_LINES}. Move history to '
         'docs/stage-history.md, traps to docs/traps.md, and current state to '
         'docs/context.md.')
+
+
+#: docs/traps.md had grown to 1,420 lines with three entries each calling
+#: itself "the recurring one" (the fourth audit, 2026-10-04). The rules index
+#: at its top is what a session reads; past this length, condense entries
+#: into it rather than add stories. Stage 36 item 8.
+MAX_TRAPS_LINES = 1600
+MAX_TRAPS_INDEX_LINES = 45
+
+
+def test_traps_opens_with_its_rules_on_one_screen():
+    text = _text('docs/traps.md')
+    m = re.search(r'^## The rules, on one screen\n(.*?)^## ', text, re.M | re.S)
+    assert m, 'docs/traps.md has no "## The rules, on one screen" section before its first story section'
+    assert text.index('## The rules, on one screen') < text.index('## Environment traps'), (
+        'the rules index is not first; a session reads from the top')
+    index = m.group(1).strip().splitlines()
+    rules = [line for line in index if line.startswith('- ')]
+    assert len(rules) >= 15, f'the rules index has {len(rules)} rules; it no longer covers the file'
+    assert len(index) <= MAX_TRAPS_INDEX_LINES, (
+        f'the rules index is {len(index)} lines, over {MAX_TRAPS_INDEX_LINES}: one screen is the point')
+
+
+def test_traps_stays_short_enough_to_condense():
+    n = len(_text('docs/traps.md').splitlines())
+    assert n <= MAX_TRAPS_LINES, (
+        f'docs/traps.md is {n} lines, over {MAX_TRAPS_LINES}. Condense entries into the rules '
+        'index at the top rather than adding another story.')
