@@ -1,0 +1,67 @@
+{
+  "target": "src/pipeline/recent_runs.py",
+  "tests": "tests/test_recent_runs.py",
+  "cases": [
+    {
+      "id": "recent-runs-oldest-first",
+      "why": "the table lists the oldest of the last runs first, so the run that just failed is at the bottom of a 30-row table.",
+      "find": "    rows.sort(key=lambda r: r['started_utc'] or '', reverse=True)\n",
+      "replace": "    rows.sort(key=lambda r: r['started_utc'] or '')\n",
+      "expect_caught_by": "test_runs_are_merged_across_the_jobs_newest_first_and_cut_to_thirty"
+    },
+    {
+      "id": "recent-runs-failed-read-fails-the-build",
+      "why": "a slow or rate-limited GitHub API fails the deploy, so the site is held back by a table about the site's jobs.",
+      "find": "        print(f'recent runs not read ({type(exc).__name__}: {exc}); the page will say so')\n        return 0\n",
+      "replace": "        raise\n",
+      "expect_caught_by": "test_a_failed_read_writes_nothing_and_does_not_fail_the_build"
+    },
+    {
+      "id": "recent-runs-running-job-gets-minutes",
+      "why": "a run still going shows the minutes since it started as if it had finished.",
+      "find": "    ended = _time(run.get('updated_at')) if run.get('status') == 'completed' else None\n",
+      "replace": "    ended = _time(run.get('updated_at'))\n",
+      "expect_caught_by": "test_a_finished_run_has_its_minutes_and_a_running_one_has_neither_result_nor_minutes"
+    },
+    {
+      "id": "recent-runs-missing-file-reads-as-empty",
+      "target": "src/pipeline/generate_dashboard.py",
+      "why": "a build that did not read the history says no job has run, the flattering reading of a missing file.",
+      "find": "              \"say the run history was not read for this build.\")\n        return None\n",
+      "replace": "              \"say the run history was not read for this build.\")\n        return {'read_utc': None, 'runs': []}\n",
+      "expect_caught_by": "test_no_file_is_null_not_an_empty_list"
+    },
+    {
+      "id": "recent-runs-null-renders-a-table",
+      "target": "src/dashboard/app.js",
+      "why": "the page tries to draw a table from no data instead of saying the history was not read.",
+      "find": "  if(!recentRuns || !Array.isArray(recentRuns.runs)){\n",
+      "replace": "  if(false){\n",
+      "expect_caught_by": "test_null_says_the_history_was_not_read_rather_than_showing_an_empty_table"
+    },
+    {
+      "id": "recent-runs-job-name-raw",
+      "target": "src/dashboard/app.js",
+      "why": "a job name goes into the page unescaped.",
+      "find": "      <td>${escapeHtml(r.workflow)}<div",
+      "replace": "      <td>${r.workflow}<div",
+      "expect_caught_by": "test_a_job_name_is_escaped"
+    },
+    {
+      "id": "recent-runs-start-in-utc",
+      "target": "src/dashboard/app.js",
+      "why": "start times read in UTC but say ET, four or five hours off.",
+      "find": "  return new Date(iso).toLocaleString('en-US', {timeZone: 'America/New_York',\n",
+      "replace": "  return new Date(iso).toLocaleString('en-US', {timeZone: 'UTC',\n",
+      "expect_caught_by": "test_a_start_reads_in_eastern_time_and_says_who_started_it"
+    },
+    {
+      "id": "recent-runs-deploy-cannot-read-actions",
+      "target": ".github/workflows/deploy-pages.yml",
+      "why": "the deploy's token loses Actions read, so every read fails and the page says the history was not read on every build.",
+      "find": "  actions: read\n",
+      "replace": "",
+      "expect_caught_by": "test_the_deploy_reads_the_runs_before_it_builds_and_may_read_actions"
+    }
+  ]
+}

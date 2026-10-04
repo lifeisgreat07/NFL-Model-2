@@ -1,4 +1,5 @@
 const agentLog = __AGENT_LOG_JSON__;
+const recentRuns = __RECENT_RUNS_JSON__;
 const versionHistory = __VERSION_HISTORY_JSON__;
 const modelVersion = __MODEL_VERSION__;
 /* Every "nothing to show" on the page goes through here. See the Page states
@@ -3835,6 +3836,62 @@ function renderAgentLog(){
   </div>`;
 }
 
+/* ---------- The scheduled jobs, run by run (Stage 41 item 4) ---------- */
+const RUN_RESULTS = {success: 'Finished', failure: 'Failed', cancelled: 'Cancelled',
+  skipped: 'Skipped', timed_out: 'Timed out'};
+function runResultText(r){
+  return r.conclusion == null ? 'Running' : (RUN_RESULTS[r.conclusion] || r.conclusion);
+}
+function runTriggerText(r){
+  if(r.event === 'schedule') return 'GitHub&#39;s timer';
+  if(r.event === 'workflow_dispatch') return 'Requested';
+  return escapeHtml(String(r.event || 'unknown'));
+}
+function runStartedText(iso){
+  if(!iso) return 'unknown';
+  return new Date(iso).toLocaleString('en-US', {timeZone: 'America/New_York',
+    month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
+}
+function renderRecentRuns(){
+  const el = document.getElementById('recent-runs');
+  if(!el) return;
+  // null: this build did not read the history (any build but the deploy, or
+  // a deploy whose read failed). Not the same as "nothing ran".
+  if(!recentRuns || !Array.isArray(recentRuns.runs)){
+    el.innerHTML = stateHtml('missing', 'The run history was not read for this build',
+      `The list of recent scheduled runs is read from GitHub when the site is
+      published. This copy of the page was built without it, so rather than
+      show an empty table this section says so.`);
+    return;
+  }
+  const runs = recentRuns.runs;
+  const failed = runs.filter(r => r.conclusion === 'failure' || r.conclusion === 'timed_out').length;
+  const body = runs.map(r => `<tr>
+      <td>${escapeHtml(r.workflow)}<div style="font-size:var(--fs-12); color:var(--text-2);">${runTriggerText(r)}</div></td>
+      <td>${runStartedText(r.started_utc)}</td>
+      <td>${r.url ? `<a class="row-link" href="${escapeHtml(r.url)}" style="color:var(--accent); text-decoration:underline;">${runResultText(r)}</a>` : runResultText(r)}</td>
+      <td class="num">${r.minutes == null ? '&ndash;' : r.minutes.toFixed(1)}</td>
+    </tr>`).join('');
+  el.innerHTML = `<div class="method-block">
+    <h3>The scheduled jobs, run by run</h3>
+    <p>The picks are locked, graded and checked by jobs that run on a timer with
+    nobody watching. These are their last ${runs.length} runs, read from GitHub when
+    this page was published: ${failed === 0 ? 'none failed' :
+      failed + ' failed'}. GitHub&#39;s own timer has started jobs hours late, so
+    since October 4 an outside service also asks for each run at its scheduled
+    time; those show as &ldquo;Requested&rdquo;, as does a run started by hand.
+    Times are Eastern.</p>
+    ${runs.length ? `<div class="table-wrap" data-scroll-label="Recent scheduled runs"><table class="metrics-table">
+      <caption class="visually-hidden">The last scheduled runs, newest first</caption>
+      <thead><tr><th scope="col">Job</th><th scope="col">Started</th>
+      <th scope="col">Result</th><th scope="col">Min</th></tr></thead>
+      <tbody>${body}</tbody>
+    </table></div>` : stateHtml('note', 'No runs yet.', 'GitHub returned no runs for these jobs.')}
+    <p class="rel-prov">Read ${escapeHtml(recentRuns.read_utc || 'at an unknown time')} (UTC).
+    Each result links to that run on GitHub.</p>
+  </div>`;
+}
+
 function renderChangelog(){
   const content = document.getElementById('changelog-content');
   const badge = document.getElementById('changelog-badge');
@@ -3869,6 +3926,7 @@ function renderChangelog(){
   }).join('') + `</div>`;
 }
 renderAgentLog();
+renderRecentRuns();
 renderChangelog();
 
 /* ---------- Hash routes (Stage 13) ----------

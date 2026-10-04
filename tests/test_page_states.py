@@ -35,6 +35,7 @@ EXPECTED = {
     'renderTeamDive': {'missing', 'waiting'},
     'renderTeamGames': {'note'},
     'renderAgentLog': {'missing'},
+    'renderRecentRuns': {'missing', 'note'},
     'renderChangelog': {'missing'},
 }
 
