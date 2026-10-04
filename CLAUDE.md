@@ -48,8 +48,8 @@ Model v2.5 (`MODEL_VERSION` in `src/pipeline/config.py`). `TRAIN_SEASONS` 2020-2
 The drift check flags on Model A's log loss against the committed
 `data/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
 
-Suite: **5337 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-`dec94f3` (after #275), with HEAD level with origin, which is the order that makes the
+Suite: **5362 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+`986be65` (after #278), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
