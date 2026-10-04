@@ -6,6 +6,48 @@ a page or run the mutation corpus. An "above" or "below" that points at
 the methodology or a stage now means `CLAUDE.md` or
 `docs/stage-history.md`.
 
+## The rules, on one screen
+
+Each line is the durable shape of one or more entries below; the stories
+follow. Read this list whole; read an entry when you are about to do what
+it describes. (Stage 36 item 8, from the 2026-10-04 fourth audit: three
+entries below each call themselves "the recurring one".)
+
+**Numbers**
+- A number in prose is a claim: quote the command that produced it, at a named commit, with its scope.
+- Mutation counts: list the case files, say "run whole" and give the case-by-case count too; never quote a count from an `--id` glob.
+- No counts in commit messages (scout-preflight fails them); run the suite before quoting it, with HEAD pushed.
+
+**The mutation corpus**
+- One runner at a time, from a hidden console; never in parallel, never while pytest or `git add` runs in the same checkout.
+- After any interrupted run, `git status` and restore; stale `.pyc` files can make it lie.
+- Editing template text or moving a function moves the anchors that quote it; re-anchor in the same PR.
+- A fixture that raises reads as WRONG-GUARD with "Failures: none reported".
+
+**Guards**
+- Mutation-test every guard; a guard named after the instance that prompted it misses the class, so enumerate the class.
+- An assertion over a scan needs a floor that the scan found something.
+- A guard reading source counts commented-out markup; a regex on a class name matches its CSS too.
+
+**Process**
+- One PR open at a time; no commits to `main` while one waits; the full suite before any docs commit.
+- A PR description is its own artifact, and Booth reads it once: get it right before opening.
+- Before starting an item, `git log --grep` it: a handoff can carry finished work as open.
+- Before blaming a stranger for a change, check this session's own commands.
+- Booth runs under `main`'s CLAUDE.md, restored in its tree; stash it, as its prompt says.
+- A scheduled run races every merge; the pushers catch up with `main` first.
+
+**The page**
+- Render it and look at it; a measurement from one browser or font does not travel.
+- Never sort by a fact the page does not show; there are two navigations; a wholesale `innerHTML` re-render destroys state.
+- The template is parts: read it with `read_template()`, never one part as the page.
+
+**This machine**
+- The file bridge corrupts binaries and can report a write it did not make; check the hash.
+- PowerShell: no heredocs, `>` writes UTF-16, `Set-Content -Encoding utf8` adds a BOM, `^{tree}` is mangled, `| Select -First N` stops the script.
+- A Desktop Commander call drops after 60 seconds; GitHub's anonymous API allows 60 calls an hour.
+- Windows Python has no time-zone database.
+
 ## Environment traps
 
 Moved from CLAUDE.md's "Environment and workflow" list.

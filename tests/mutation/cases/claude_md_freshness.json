@@ -3,6 +3,22 @@
   "tests": "tests/test_claude_md_freshness.py",
   "cases": [
     {
+      "id": "traps-index-dropped",
+      "target": "docs/traps.md",
+      "why": "the rules index at the top of docs/traps.md goes, and a session starts reading 1,400 lines of stories with three entries each calling itself the recurring one.",
+      "find": "## The rules, on one screen\n",
+      "replace": "## Rules\n",
+      "expect_caught_by": "test_traps_opens_with_its_rules_on_one_screen"
+    },
+    {
+      "id": "traps-grows-past-its-cap",
+      "target": "docs/traps.md",
+      "why": "the traps file keeps growing story by story instead of being condensed into the index, until nobody reads it.",
+      "find": "## Environment traps\n",
+      "replace": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n## Environment traps\n",
+      "expect_caught_by": "test_traps_stays_short_enough_to_condense"
+    },
+    {
       "id": "handoff-section-reference-rots",
       "target": "docs/stage-history.md",
       "why": "a `See \"X\" above` is left pointing at a renamed heading. Nothing fails; a reader goes looking for a section that is not there and cannot tell whether it moved or was deleted. This is the real defect that happened on 2026-09-07 when the prune renamed a heading and left Stage 2 pointing at the old title. Since the Stage 29 split the pointer lives in docs/stage-history.md and its target heading in CLAUDE.md, so this case is also the cross-file reference.",
