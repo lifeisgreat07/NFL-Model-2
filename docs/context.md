@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-04, afternoon ET (fourth audit reviewed; Stages 36 to 41 planned)
+Last updated: 2026-10-04, evening ET (#266 to #275 merged; on-time runs started through cron-job.org)
 
 ---
 
@@ -16,23 +16,24 @@ The dashboard template is parts under `src/dashboard/`, joined by
 `src/pipeline/template_parts.py`. Read it with `read_template()`, never one
 part as the page (traps).
 
-**Next action: Stage 36, one PR at a time** (the fourth audit's loose
-ends; none touches the weekly run except item 7, which waits). Alongside,
-read-only: the Monday 22:00 UTC QB routine (its first run on the
-`src.pipeline` imports); Tuesday 2026-10-06's Weekly update (summary reads
-`DRIFT CHECK: OK`, the drift report has a "Model A, log loss" section,
-Pages deploys from `src/dashboard/`); and **Thursday 2026-10-08, the first
-LOCK on the new code**. Week 4 locked on 2026-10-01, before #255 and #258,
-so it tested none of it.
+**Next action: the read-only checks**: the Monday 22:00 UTC QB routine
+(first on `src.pipeline`); Tuesday 2026-10-06's Weekly update (`DRIFT CHECK:
+OK`, a "Model A, log loss" section, Pages from `src/dashboard/`); and
+**Thursday 2026-10-08, the first LOCK on the new code** (week 4 locked
+before #255 and #258). Then Stage 42's slot guard (patch ready; it touches
+the Weekly update, so it waits for that lock), and only then does Mark
+switch on the Weekly update's cron-job.org job.
 
-**Stages 36 to 41 are planned** (fourth audit, 86/100, Mark approved
-2026-10-04). Order at the top of that section in `docs/stage-history.md`;
-the Stage 38 registration drafts are in `memory/2026-10-04.md`.
+**Scheduled runs start from cron-job.org** (Stage 42), GitHub's cron the
+fallback: canary 06:00, slice 06:30, refreshes Fri 05:17, Sun 21:47, Mon
+01:47 (no repo cron yet) and Mon 05:37 UTC. Each shows a `workflow_dispatch`
+run on time and a late `schedule` copy.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
+| cron-job.org dispatch | Six jobs on, Weekly update job off; canary test run started at once (2026-10-04 19:57 UTC) | The slot guard (Stage 42), after the 10-08 lock |
 | QB override routine | Prompt edited by Mark 2026-10-02 to `src.pipeline` | Its first run, Monday 22:00 UTC |
 | Log-loss drift check (R4) | Merged #261; first real run OK on 48 games | Tuesday's Weekly update |
 | Template parts (#265) | Merged; page byte-identical locally and on Booth's runner | Tuesday's scheduled build |
@@ -43,16 +44,11 @@ the Stage 38 registration drafts are in `memory/2026-10-04.md`.
 
 ## Queued, in order
 
-1. **Stage 36** now (#266 merged item 1); **Stage 42**, on-time runs
-   through cron-job.org, next; Stage 38's drafts to Mark; **Stage 37**
-   after the 2026-10-08 lock is seen to run; then Stages 44 (Line Judge)
-   and 43 (Spotter).
+1. After the 10-08 lock: Stage 42's slot guard, Stage 36 item 7, Stage 37
+   items 3, 4 and 6. Page-only Stage 37 item 5 any time.
 2. **Stage 21** once week 5 is graded (Tuesday 2026-10-13 at the earliest).
-3. **Stage 39** (playoffs) before December; **Stage 41** when a week has
-   slack; **Stage 40** (season turnover) in January.
-4. **Stage 34 item 32**: Stage 20's five real-person tests (Mark finds the
-   testers), then the re-audit. **Stage 22** comes from 20; **Stage 28**
-   after the regular season.
+3. Stages 44 (Line Judge), 43 (Spotter), 39 (playoffs, before December),
+   41 (when a week has slack), 40 (January); 20, 22 and 28 as before.
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict. Run the suite
