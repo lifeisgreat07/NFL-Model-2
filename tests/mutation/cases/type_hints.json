@@ -3,6 +3,15 @@
   "tests": "tests/test_type_hints.py",
   "cases": [
     {
+      "id": "type-check-skips-in-ci",
+      "target": "tests/test_type_check.py",
+      "tests": "tests/test_type_check.py",
+      "why": "a CI runner without mypy skips the type check instead of failing, so the gate goes quiet the way conftest.py records guards going quiet before (the fourth audit, Q4).",
+      "find": "        if os.environ.get('CI'):\n            pytest.fail('mypy is not installed in CI, where requirements-dev.txt installs it')\n",
+      "replace": "",
+      "expect_caught_by": "test_a_missing_mypy_fails_under_ci"
+    },
+    {
       "id": "hints-ratings-return-dropped",
       "why": "build_team_ratings loses its return type, the one function whose result changes shape (one week's ratings, or every week's) with its argument.",
       "find": "                       upto_cutoff_i: int | None = None) -> Ratings | dict[WeekKey, Ratings] | None:",
