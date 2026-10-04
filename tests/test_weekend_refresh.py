@@ -212,19 +212,33 @@ def _cron_times(text):
     return out
 
 
-def test_its_runs_cannot_meet_the_weekly_runs_even_five_hours_late():
+def test_its_runs_cannot_meet_the_weekly_runs_however_late_either_starts():
+    """Each run may start up to LOCK_SLACK late -- the lateness the lock
+    decision already assumes -- and so may the weekly run it must not meet.
+    Until Stage 36 (the fourth audit, Q9) this assumed five hours, one
+    figure typed in beside the eight the lock uses; the worst refresh seen
+    so far started 6h19m late (2026-09-28)."""
+    from src.pipeline.weekly_update import LOCK_SLACK
+    late = int(LOCK_SLACK.total_seconds() // 60)
     mine, weekly = _cron_times(_text(WORKFLOW)), _cron_times(_text(WEEKLY))
     assert len(mine) == 3 and len(weekly) == 2
     week = 7 * 24 * 60
     def at(dow, minute):
         return (dow * 24 * 60 + minute) % week
+    def apart(a, b):
+        """Minutes between two windows [a, a + late] and [b, b + late] on a
+        circular week; 0 when they overlap."""
+        gap_ab = (b - (a + late)) % week
+        gap_ba = (a - (b + late)) % week
+        if (b - a) % week <= late or (a - b) % week <= late:
+            return 0
+        return min(gap_ab, gap_ba)
     for d, t in mine:
-        start = at(d, t)
         for wd, wt in weekly:
-            other = at(wd, wt)
-            for s in (start, start + 5 * 60):
-                gap = min((s - other) % week, (other - s) % week)
-                assert gap >= 60, f'a refresh at cron day {d} minute {t} can run within an hour of the weekly run'
+            gap = apart(at(d, t), at(wd, wt))
+            assert gap >= 60, (f'a refresh at cron day {d} minute {t} and the weekly run at day {wd} '
+                               f'minute {wt} can run within an hour of each other if both start up '
+                               f'to {late // 60} hours late')
 
 
 def test_a_failed_refresh_raises_an_alert():

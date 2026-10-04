@@ -41,3 +41,12 @@ CLAUDE.local.md
 # A run killed before the swap leaves one behind, sometimes in a committed
 # folder; it must never be committed (Stage 30 item 8).
 *.tmp
+
+# Editor backups beside the dashboard's parts. read_template() refuses any
+# file in src/dashboard/ that page.html does not include, on purpose (a
+# stray file would be a part someone believes is on the page), so keep the
+# usual backup names from ever being committed there (Stage 36, Q8).
+src/dashboard/*~
+src/dashboard/*.bak
+src/dashboard/*.orig
+src/dashboard/*.swp
