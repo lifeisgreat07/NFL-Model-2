@@ -1,0 +1,20 @@
+{
+  "target": ".github/workflows/run-backtest.yml",
+  "tests": "tests/test_run_backtest_workflow.py",
+  "cases": [
+    {
+      "id": "backtest-option-names-a-missing-script",
+      "why": "an option is renamed or its script moved, and the hand-run workflow fails with ModuleNotFoundError the next time anyone needs it.",
+      "find": "          - tune_qb_shrink_k\n",
+      "replace": "          - tune_qb_shrink\n",
+      "expect_caught_by": "test_each_option_resolves_to_a_real_module"
+    },
+    {
+      "id": "backtest-drift-check-run-from-the-wrong-package",
+      "why": "the case loses check_drift's arm, so the workflow looks for src.research.check_drift, which has not existed since Stage 32's packaging.",
+      "find": "            check_drift) package=pipeline ;;\n",
+      "replace": "",
+      "expect_caught_by": "test_each_option_resolves_to_a_real_module"
+    }
+  ]
+}
