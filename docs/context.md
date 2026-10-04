@@ -43,8 +43,10 @@ the Stage 38 registration drafts are in `memory/2026-10-04.md`.
 
 ## Queued, in order
 
-1. **Stage 36** now; Stage 38's drafts to Mark; **Stage 37** after the
-   2026-10-08 lock is seen to run.
+1. **Stage 36** now (#266 merged item 1); **Stage 42**, on-time runs
+   through cron-job.org, next; Stage 38's drafts to Mark; **Stage 37**
+   after the 2026-10-08 lock is seen to run; then Stages 44 (Line Judge)
+   and 43 (Spotter).
 2. **Stage 21** once week 5 is graded (Tuesday 2026-10-13 at the earliest).
 3. **Stage 39** (playoffs) before December; **Stage 41** when a week has
    slack; **Stage 40** (season turnover) in January.

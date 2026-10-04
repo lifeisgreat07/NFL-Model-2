@@ -1757,9 +1757,13 @@ reasons are in the Audit Response Log. Mark approved this plan 2026-10-04.
   #255 and #258. The first scheduled run on the packages, `MODEL_SPECS`,
   the log-loss drift check and the template parts is Tuesday 2026-10-06;
   the first LOCK on them is Thursday 2026-10-08.
-- R4 is not the only registry entry missing from Model Lab: seven are
-  (Stage 33 R4; Stage 5 H11; Stage 6 N2, N3, A1, R2, A2), all conditional
-  entries whose condition was never met.
+- (Withdrawn the same day.) The review first said seven registry entries
+  were missing from Model Lab. Six of them (Stage 5 H11; Stage 6 N2, N3,
+  A1, R2, A2) are off the page by Stage 18's decision, held by
+  `test_every_result_file_is_an_entry_once_and_nothing_unasked_is`: never
+  run, so no decision to show. Only Stage 33's R4 is a gap, because only
+  Stage 33's registry promises a row for every question. The audit was
+  right.
 - The MNF closing line is not lost: nflverse keeps it after the game. What
   is lost is the MNF final score on the page.
 - Neutral sites are a regular-season question, not a Super Bowl one: eight
@@ -1786,9 +1790,9 @@ mutation claim names its case files.
    stale comments (`generate_dashboard.py` sys.path, `requirements-dev.txt`
    "pyflakes only", `run-backtest.yml` naming `calibration.json` as the
    drift baseline) and `conftest.py`'s unused `GENERATOR`.
-2. Every registry entry is a Model Lab row: a row kind for monitoring rules
-   and one for a conditional question not run, with a test over every
-   registry.
+2. Stage 33's R4 gets its Model Lab row (a monitoring rule: ADOPTED, shown
+   as ACCEPT), with a test that a registry promising a row for every
+   question gets one.
 3. The type-check test fails under `CI` instead of skipping.
 4. A test that each `run-backtest.yml` option resolves to a real module.
 5. The lateness margin in `tests/test_weekend_refresh.py` reads
@@ -1855,8 +1859,7 @@ before the turnover.
 
 ### Stage 41 - Operations and releases
 
-1. Each scheduled run records its start delay in the summary and warns at
-   7 hours (`LOCK_SLACK` is 8).
+1. (Moved to Stage 42, item 1.)
 2. Booth's run fails when its prose header and verdict block disagree (28
    of 322 reports did).
 3. `tasks.py release`: a GitHub Release per `MODEL_VERSION` from
@@ -1869,7 +1872,67 @@ before the turnover.
    canary is declined: CI already proves the page works with ESPN blocked).
 7. `data_provenance` in each saved pick.
 
-**Order:** Stage 36 now (items 6 and 7 as noted); Stage 38's drafts to Mark;
-Stage 37 after the 2026-10-08 lock; Stage 21 when week 5 is graded; Stage
-39 before December; Stage 41 when a week has slack; Stage 40 in January.
-Items 18 to 21 and the audience switcher's rendered options go to Stage 22.
+**Order:** Stage 36 now (items 6 and 7 as noted); Stage 42 next (Mark
+called the delays significant); Stage 38's drafts to Mark; Stage 37 after
+the 2026-10-08 lock; Stage 21 when week 5 is graded; Stage 44 after 42,
+then Stage 43; Stage 39 before December; Stage 41 when a week has slack;
+Stage 40 in January. Items 18 to 21 and the audience switcher's rendered
+options go to Stage 22.
+
+### Stage 42 - On-time runs (Mark, 2026-10-04)
+
+Mark: "preferably no delay at all", and the delays are significant.
+
+GitHub's `schedule:` trigger is best-effort. Runs here started on time
+until 2026-09-22 and 3.5 to 6.5 hours late since; `workflow_dispatch` runs
+started within seconds throughout (2026-09-29). Nothing in Stages 36 to 41
+prevented the delay, so this stage replaces the trigger, not the runner.
+
+1. Every scheduled workflow records its start delay (cron time against
+   `run_started_at`) in its summary, and warns at 7 hours (`LOCK_SLACK` is
+   8). This was Stage 41 item 1.
+2. cron-job.org (Mark's pick: a web page, nothing to deploy) sends
+   `workflow_dispatch` for the Weekly update, the three weekend refreshes,
+   the canary and the nightly mutation slice at their cron times. A
+   fine-grained token for this repository only, Actions read and write,
+   with an expiry; Mark creates it and the cron-job.org account, walked
+   through step by step.
+3. GitHub's own cron stays as the fallback. A `concurrency` group per
+   workflow so the dispatch and a late cron run never overlap, and a test
+   that a second run of the same slot changes nothing (a locked week is
+   never rewritten; a refresh with nothing new commits nothing).
+4. A missed dispatch is seen: cron-job.org's failure e-mail when GitHub
+   refuses a request (an expired token, say), and item 1's delay line on
+   the run that did start.
+5. After four on-time weeks, `LOCK_SLACK` is revisited (Mark's call).
+
+### Stage 43 - Spotter, the visual inspector (Mark, 2026-10-04)
+
+A third agent, beside Scout and Booth. On every PR that changes the page
+(`scout_preflight.page_files()`), Spotter builds the page, screenshots the
+pages the diff touches at 390 and 1280 px in both themes, attaches the
+images to the PR, and reads them against the repository's visual rules.
+"Render it and look at it" stops being a process note.
+1. Design and permissions: read and comment only, stated as Booth's are.
+2. The screenshot job in CI, on the Playwright already in browser checks.
+3. Spotter's prompt and its protocol file.
+4. A fixture PR with a planted visual defect Spotter must catch, run like
+   Booth's regression suite.
+5. Booth cites Spotter's images instead of marking a visual claim
+   UNVERIFIABLE.
+
+### Stage 44 - Line Judge, the run watcher (Mark, 2026-10-04)
+
+A fourth agent. After every scheduled run (Weekly update, weekend
+refresh, canary, mutation slice) Line Judge reads the run's summary and
+what it committed, and says whether it did the right thing: started on
+time (Stage 42's delay line), locked before the first kickoff, every game
+on the page, the drift report present. A run that went green and did the
+wrong thing gets a diagnosed issue through `src/pipeline/alerts.py`.
+1. What "right" means for each workflow, written as checks; most become
+   plain tests or scripts, and the agent explains what they find.
+2. Triggered on `workflow_run` completion.
+3. Issue wording and de-duplication through the existing alerts.
+4. A planted bad run in the synthetic league that it must flag.
+5. A weekly one-line digest.
+After Stage 42, whose delay record it reads.

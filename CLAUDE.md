@@ -282,9 +282,10 @@ The full text of every stage, finished or planned, is in
 - **Stage 28 - After the forward test**: after the regular season.
 - **Stage 34 item 32**: Stage 20's testers, then the re-audit. Stages 30 to
   33 and 35 are finished.
-- **Stages 36 to 41 - the 2026-10-04 fourth audit (86/100)**: 36 loose ends,
+- **Stages 36 to 44 - the 2026-10-04 fourth audit (86/100)**: 36 loose ends,
   37 honest states, 38 registrations, 39 playoffs, 40 season turnover, 41
-  operations and releases. Order and rules at the top of that section.
+  operations and releases, 42 on-time runs, 43 Spotter, 44 Line Judge.
+  Order and rules at the top of that section.
 
 ## Ending a session
 
