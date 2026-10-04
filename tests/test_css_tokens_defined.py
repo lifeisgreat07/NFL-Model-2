@@ -17,7 +17,7 @@ Run with: pytest tests/test_css_tokens_defined.py -v
 import re
 from pathlib import Path
 
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE

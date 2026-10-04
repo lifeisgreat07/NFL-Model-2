@@ -35,7 +35,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).parents[2]
 NEWS_DIR = ROOT / 'data' / 'team_news'
-from src.pipeline.paths import (  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+from src.pipeline.paths import (
     PRED_DIR,
     RESULTS_DIR,
 )

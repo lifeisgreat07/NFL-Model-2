@@ -14,8 +14,8 @@ from pathlib import Path
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline import canary  # noqa: E402
-from src.pipeline.data_quality import Report  # noqa: E402
+from src.pipeline import canary
+from src.pipeline.data_quality import Report
 
 WORKFLOW = REPO / '.github' / 'workflows' / 'nightly-canary.yml'
 

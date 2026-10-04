@@ -48,14 +48,14 @@ import pandas as pd
 # The folders and the season rule are defined once, in src/pipeline/paths.py
 # (Stage 32 item 15). team_news and tv_channels import current_season from
 # here, so the name stays.
-from src.pipeline.paths import (  # noqa: E402,F401
+from src.pipeline.paths import (
     PRED_DIR,
     RESULTS_DIR,
     STATUS_DIR,
     current_season,
     parse_week,
 )
-from src.pipeline.runlog import get_logger  # noqa: E402  (Stage 32 item 17)
+from src.pipeline.runlog import get_logger
 
 log = get_logger(__name__)
 SOURCE = 'nflverse schedule, via nflreadpy.load_schedules'

@@ -18,9 +18,9 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import generate_dashboard as gd  # noqa: E402
-from src.pipeline import model_lab as ml  # noqa: E402
-from src.pipeline.template_parts import read_template  # noqa: E402
+from src.pipeline import generate_dashboard as gd
+from src.pipeline import model_lab as ml
+from src.pipeline.template_parts import read_template
 
 ROW = re.compile(r'<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>', re.S)
 

@@ -18,7 +18,7 @@ Run with: pytest tests/test_team_dive_games_head.py -v
 """
 import re
 
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 TEMPLATE = JOINED_TEMPLATE
 LABELS = ['Week', 'Opponent', 'Line', 'Model B', 'Result']

@@ -13,7 +13,7 @@ import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 REPO = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE

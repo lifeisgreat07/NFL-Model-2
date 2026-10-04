@@ -8,8 +8,8 @@ from pathlib import Path
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline import schema_check as sc  # noqa: E402
-from src.pipeline.data_loader import (  # noqa: E402
+from src.pipeline import schema_check as sc
+from src.pipeline.data_loader import (
     REQUIRED_PBP_COLS,
     REQUIRED_SCHEDULE_COLS,
 )

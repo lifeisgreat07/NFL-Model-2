@@ -32,9 +32,9 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.research import stage5_data as sd  # noqa: E402
-from src.research import stage5_eval as se  # noqa: E402
-from src.research.kalman_ratings import KalmanRatings  # noqa: E402
+from src.research import stage5_data as sd
+from src.research import stage5_eval as se
+from src.research.kalman_ratings import KalmanRatings
 
 REGISTRY = REPO_ROOT / 'experiments' / 'stage5' / 'registry.json'
 RESULTS = REPO_ROOT / 'experiments' / 'stage5' / 'results'

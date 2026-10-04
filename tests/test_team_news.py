@@ -17,7 +17,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import team_news as tn  # noqa: E402
+from src.pipeline import team_news as tn
 
 WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
 WEEKEND = ROOT / '.github' / 'workflows' / 'weekend-refresh.yml'

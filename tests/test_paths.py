@@ -20,7 +20,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / 'src'
 
-from src.pipeline import paths  # noqa: E402
+from src.pipeline import paths
 
 
 @pytest.mark.parametrize('stem,expected', [

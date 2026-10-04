@@ -11,7 +11,7 @@ Run with: pytest tests/test_booth_verdict.py -v
 
 import pytest
 
-from src.agents import booth_verdict as bv  # noqa: E402
+from src.agents import booth_verdict as bv
 
 
 def _report(block, checked=2, confirmed=1, discrepancies=1, unverifiable=0,

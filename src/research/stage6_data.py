@@ -27,7 +27,7 @@ own inputs.
 import numpy as np
 import pandas as pd
 
-from src.pipeline.config import QB_SHRINK_K, RECENCY_HALF_LIFE  # noqa: E402
+from src.pipeline.config import QB_SHRINK_K, RECENCY_HALF_LIFE
 
 PBP_FROM = 2016                 # registry: "weeks counted ... from 2016 on"
 MIN_DROPBACKS = 15              # registry: qb_game

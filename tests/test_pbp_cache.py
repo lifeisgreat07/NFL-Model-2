@@ -30,7 +30,7 @@ import pytest
 pl = pytest.importorskip('polars')
 
 
-from src.pipeline import data_loader  # noqa: E402
+from src.pipeline import data_loader
 
 
 def _season_frame(season):

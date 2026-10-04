@@ -28,9 +28,9 @@ from src.pipeline.template_parts import JOINED_TEMPLATE
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
 
-from src.pipeline import generate_dashboard as gd  # noqa: E402
-from src.pipeline import weekly_summary as ws  # noqa: E402
-from src.pipeline import weekly_update as wu  # noqa: E402
+from src.pipeline import generate_dashboard as gd
+from src.pipeline import weekly_summary as ws
+from src.pipeline import weekly_update as wu
 
 
 def _main_source():

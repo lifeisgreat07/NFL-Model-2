@@ -22,7 +22,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent / 'booth_fixtures'))
 
-import loader  # noqa: E402
+import loader
 
 FIXTURES = loader.load_all()
 IDS = [m['id'] for m in FIXTURES]

@@ -11,8 +11,15 @@
 # hand reformat. UP031 is off: the seven percent-formats it flags are all
 # regular expressions holding literal braces (`[^;}]`, `{`), which .format()
 # or an f-string would have to double, making the pattern harder to read.
+#
+# Stage 36 item 1, from the 2026-10-04 fourth audit: RUF100, unused `noqa`.
+# 265 markers had outlived their reason -- mostly E402, a rule this file
+# never selects, left behind once `pyproject.toml` put the root on pytest's
+# path and the `sys.path` lines they excused went away. A marker that
+# silences nothing tells the next reader a rule is being broken on purpose.
+# Selected for good, so they cannot pile up again; auto-fixed.
 target-version = "py311"
 
 [lint]
-select = ["F", "I", "UP"]
+select = ["F", "I", "UP", "RUF100"]
 ignore = ["UP031"]

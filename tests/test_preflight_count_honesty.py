@@ -20,7 +20,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.agents import scout_preflight as sp  # noqa: E402
+from src.agents import scout_preflight as sp
 
 # --- a red suite must not be described as a stale figure ---
 

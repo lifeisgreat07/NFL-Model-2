@@ -42,7 +42,7 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from src.agents.booth_verdict import (  # noqa: E402
+from src.agents.booth_verdict import (
     BOOTH_ACCOUNTS,
     VerdictError,
     author,

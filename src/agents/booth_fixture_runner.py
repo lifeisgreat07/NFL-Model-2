@@ -44,10 +44,10 @@ from pathlib import Path
 REPO = Path(__file__).parents[2]
 sys.path.insert(0, str(REPO / 'tests' / 'booth_fixtures'))
 
-import loader  # noqa: E402
+import loader
 
-from src.agents import booth_verdict as bv  # noqa: E402
-from src.agents.booth_report_posted import MIN_SHA_PREFIX  # noqa: E402
+from src.agents import booth_verdict as bv
+from src.agents.booth_report_posted import MIN_SHA_PREFIX
 
 BASELINE = 'baseline.json'
 

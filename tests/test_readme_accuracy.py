@@ -26,7 +26,7 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 REPO = Path(__file__).resolve().parents[1]
 README = REPO / 'README.md'

@@ -13,7 +13,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import weekly_update as wu  # noqa: E402
+from src.pipeline import weekly_update as wu
 
 
 def week(listed=False):

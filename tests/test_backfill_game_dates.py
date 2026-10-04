@@ -18,7 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.research import backfill_game_dates as bf  # noqa: E402
+from src.research import backfill_game_dates as bf
 
 
 def fake_loader(rows):

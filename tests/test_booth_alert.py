@@ -12,7 +12,7 @@ import pytest
 
 REPO = Path(__file__).parent.parent
 
-from src.agents import booth_alert  # noqa: E402
+from src.agents import booth_alert
 
 WORKFLOW = REPO / '.github' / 'workflows' / 'booth-alert.yml'
 AUDIT = REPO / '.github' / 'workflows' / 'booth-pr-audit.yml'

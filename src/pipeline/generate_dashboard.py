@@ -22,9 +22,8 @@ from typing import Any
 
 # config is a pure-constants module with no third-party imports, so unlike
 # generate_picks_pdf below there is nothing here for a module-level import to
-# take down. sys.path is set explicitly rather than relying on the script's
-# own directory, so this still resolves when the module is imported by a test
-# rather than run as a script.
+# take down. It resolves the same way run as `python -m` or imported by a
+# test: both put the repository root on the path.
 from src.pipeline.config import MODEL_VERSION, TRAIN_SEASONS, VERSION_HISTORY
 from src.pipeline.page_comments import strip_page_comments
 
@@ -40,15 +39,15 @@ from src.pipeline.page_comments import strip_page_comments
 # The shared locations, and the one rule for reading a week out of a file
 # name (src/pipeline/paths.py, Stage 32 item 15). parse_week_stem keeps its name here
 # because tests and callers use it.
-from src.pipeline.paths import (  # noqa: E402
+from src.pipeline.paths import (
     DATA_DIR,
     PRED_DIR,
     RESULTS_DIR,
     ROOT,
     STATUS_DIR,
 )
-from src.pipeline.paths import parse_week as parse_week_stem  # noqa: E402
-from src.pipeline.template_parts import read_template  # noqa: E402
+from src.pipeline.paths import parse_week as parse_week_stem
+from src.pipeline.template_parts import read_template
 
 DIST_DIR = ROOT / 'dist'
 NEWS_DIR = DATA_DIR / 'team_news'

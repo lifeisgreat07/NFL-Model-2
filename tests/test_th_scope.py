@@ -6,7 +6,7 @@ template's text, which includes the tables its JavaScript builds.
 """
 import re
 
-from src.pipeline.template_parts import read_template  # noqa: E402
+from src.pipeline.template_parts import read_template
 
 TEMPLATE = read_template()
 

@@ -25,7 +25,7 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.research.bootstrap_brier_gap import (  # noqa: E402
+from src.research.bootstrap_brier_gap import (
     METRICS,
     metric_set,
     paired_bootstrap,

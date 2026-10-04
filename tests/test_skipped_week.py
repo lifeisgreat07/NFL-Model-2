@@ -21,7 +21,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import weekly_update as wu  # noqa: E402
+from src.pipeline import weekly_update as wu
 
 NOW = pd.Timestamp('2026-10-05 12:00', tz='UTC')
 

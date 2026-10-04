@@ -15,7 +15,7 @@ tests hold the source, since the suite has no browser.
 """
 import re
 
-from src.pipeline.template_parts import read_template  # noqa: E402
+from src.pipeline.template_parts import read_template
 
 TEMPLATE = read_template()
 

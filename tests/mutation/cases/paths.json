@@ -36,8 +36,8 @@
       "id": "paths-data-quality-keeps-its-own-teams",
       "target": "src/pipeline/data_quality.py",
       "why": "data_quality holds its own team list again, which can disagree with the names the dashboard shows.",
-      "find": "from src.pipeline.paths import NFL_TEAMS  # noqa: E402",
-      "replace": "NFL_TEAMS = frozenset(['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 'LA', 'LAC', 'LV', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PHI', 'PIT', 'SEA', 'SF', 'TB', 'TEN', 'WAS'])",
+      "find": "from src.pipeline.paths import NFL_TEAMS\n",
+      "replace": "NFL_TEAMS = frozenset(['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 'LA', 'LAC', 'LV', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PHI', 'PIT', 'SEA', 'SF', 'TB', 'TEN', 'WAS'])\n",
       "expect_caught_by": "test_each_module_name_is_bound_to_the_one_definition"
     },
     {

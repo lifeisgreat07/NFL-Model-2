@@ -35,14 +35,14 @@ import numpy as np
 import pandas as pd
 from sklearn.linear_model import Ridge
 
-from src.pipeline.config import (  # noqa: E402
+from src.pipeline.config import (
     MIN_PLAYS_FOR_RATING,
     RECENCY_HALF_LIFE,
     RIDGE_ALPHA,
     TRAIN_SEASONS,
 )
-from src.pipeline.data_loader import load_plays, load_schedule  # noqa: E402
-from src.pipeline.ratings_engine import (  # noqa: E402
+from src.pipeline.data_loader import load_plays, load_schedule
+from src.pipeline.ratings_engine import (
     build_qb_ratings,
     build_team_ratings,
     prep_plays,

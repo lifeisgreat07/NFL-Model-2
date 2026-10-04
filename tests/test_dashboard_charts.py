@@ -39,7 +39,7 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 REPO_ROOT = Path(__file__).parent.parent
 TEMPLATE = JOINED_TEMPLATE

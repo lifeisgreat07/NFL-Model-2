@@ -5,7 +5,9 @@
 The pyflakes rules catch mistakes -- an undefined name, an unused import, a
 variable assigned and never read, an f-string with nothing in it. `I` and
 `UP` were added after one dry run and applied in the same PR; both are
-auto-fixed, so neither asks anyone for a hand reformat. UP031 is the one
+auto-fixed, so neither asks anyone for a hand reformat. RUF100 (Stage 36,
+the 2026-10-04 fourth audit) removes a `noqa` that silences nothing, also
+auto-fixed. UP031 is the one
 rule left off, for a reason ruff.toml states. The lint itself runs in CI
 (run-tests.yml); these tests hold the pieces that make it run: the config,
 the Python it targets, the pin and the step.
@@ -25,7 +27,7 @@ def _config():
 
 def test_the_config_selects_the_agreed_rules_and_nothing_else():
     lint = _config().get('lint', {})
-    assert lint.get('select') == ['F', 'I', 'UP'], lint
+    assert lint.get('select') == ['F', 'I', 'UP', 'RUF100'], lint
     assert 'extend-select' not in lint, 'style rules crept in'
     assert lint.get('ignore', []) == ['UP031'], 'a rule is switched off beyond the one ruff.toml explains'
 

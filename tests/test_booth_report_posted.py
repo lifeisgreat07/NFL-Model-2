@@ -26,7 +26,7 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.agents.booth_report_posted import (  # noqa: E402
+from src.agents.booth_report_posted import (
     check,
     head_matches,
     load_comments,

@@ -16,7 +16,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'tests' / 'mutation'))
-import runner  # noqa: E402
+import runner
 
 WORKFLOW = ROOT / '.github' / 'workflows' / 'nightly-mutation.yml'
 CASES = [{'id': f'case-{i:03d}'} for i in range(200)]

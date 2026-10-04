@@ -17,8 +17,8 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.pipeline.template_parts import read_template  # noqa: E402
-from src.research.ats_evaluation import (  # noqa: E402
+from src.pipeline.template_parts import read_template
+from src.research.ats_evaluation import (
     BREAK_EVEN,
     add_ats_columns,
     assess,

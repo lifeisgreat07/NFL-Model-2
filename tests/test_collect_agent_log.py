@@ -11,7 +11,7 @@ Run with: pytest tests/test_collect_agent_log.py -v
 import json
 from pathlib import Path
 
-from src.agents import collect_agent_log as cal  # noqa: E402
+from src.agents import collect_agent_log as cal
 
 
 def _block(claims, overall='SAFE TO MERGE', head='abc1234', pr=1):

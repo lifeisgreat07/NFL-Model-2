@@ -10,7 +10,7 @@ equal to the data-page values of the More sheet's own buttons.
 import json
 import re
 
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 TEMPLATE = JOINED_TEMPLATE
 

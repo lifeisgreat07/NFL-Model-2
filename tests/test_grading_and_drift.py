@@ -16,9 +16,9 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import check_drift as cd  # noqa: E402
-from src.pipeline import data_loader  # noqa: E402
-from src.pipeline import grade_predictions as gp  # noqa: E402
+from src.pipeline import check_drift as cd
+from src.pipeline import data_loader
+from src.pipeline import grade_predictions as gp
 
 PICKS = [
     {'home': 'GB', 'away': 'ATL', 'market_prob_home': 0.70,

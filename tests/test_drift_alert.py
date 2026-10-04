@@ -12,7 +12,7 @@ from pathlib import Path
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline import drift_alert  # noqa: E402
+from src.pipeline import drift_alert
 
 WEEKLY = REPO / '.github' / 'workflows' / 'weekly-update.yml'
 

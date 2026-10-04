@@ -20,7 +20,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import weekend_refresh as wr  # noqa: E402
+from src.pipeline import weekend_refresh as wr
 
 WORKFLOW = ROOT / '.github' / 'workflows' / 'weekend-refresh.yml'
 WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'

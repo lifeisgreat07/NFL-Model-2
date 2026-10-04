@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import canary  # noqa: E402
+from src.pipeline import canary
 
 GOOD = {
     'id': 'g1', 'time': '2026-10-02T00:15:00Z', 'season': 2026, 'week': 4, 'seasonType': 'REG',

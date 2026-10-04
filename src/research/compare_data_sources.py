@@ -19,7 +19,7 @@ importing it fetched a season of play-by-play twice. The re-audit listed it
 as dead; it is not dead, it had no entry point.
 """
 
-from src.pipeline import data_loader  # noqa: E402
+from src.pipeline import data_loader
 
 TEST_SEASON = 2025
 TEST_WEEK = 10

@@ -17,11 +17,11 @@ import json
 
 import pandas as pd
 
-from src.pipeline.paths import (  # noqa: E402  (src/pipeline/paths.py, Stage 32 item 15)
+from src.pipeline.paths import (
     PRED_DIR,
     RESULTS_DIR,
 )
-from src.pipeline.runlog import get_logger  # noqa: E402  (Stage 32 item 17)
+from src.pipeline.runlog import get_logger
 
 log = get_logger(__name__)
 RESULTS_DIR.mkdir(exist_ok=True)

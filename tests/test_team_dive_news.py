@@ -23,7 +23,7 @@ from src.pipeline.template_parts import JOINED_TEMPLATE
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
 
-from src.pipeline import generate_dashboard as gd  # noqa: E402
+from src.pipeline import generate_dashboard as gd
 
 NODE = shutil.which('node')
 READ = '2026-09-28T02:00:00Z'   # Sunday 22:00 in New York, Monday in UTC

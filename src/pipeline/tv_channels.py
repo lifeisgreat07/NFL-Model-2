@@ -64,7 +64,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.pipeline.nfl_schedule_probe import (  # noqa: E402
+from src.pipeline.nfl_schedule_probe import (
     URL,
     elias_id,
     extract_games,

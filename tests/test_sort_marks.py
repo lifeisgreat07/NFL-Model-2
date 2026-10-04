@@ -18,7 +18,7 @@ Run with: pytest tests/test_sort_marks.py -v
 """
 import re
 
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 TEMPLATE = JOINED_TEMPLATE
 GLYPH = {'none': r'\2195', 'descending': r'\25BC', 'ascending': r'\25B2'}

@@ -30,11 +30,11 @@ import json
 from datetime import date
 from pathlib import Path
 
-from src.pipeline.data_loader import (  # noqa: E402
+from src.pipeline.data_loader import (
     REQUIRED_PBP_COLS,
     REQUIRED_SCHEDULE_COLS,
 )
-from src.pipeline.data_quality import Report  # noqa: E402
+from src.pipeline.data_quality import Report
 
 SNAPSHOT = Path(__file__).resolve().parents[2] / 'data' / 'nflverse_schema.json'
 REQUIRED = {'pbp': REQUIRED_PBP_COLS, 'schedule': REQUIRED_SCHEDULE_COLS}

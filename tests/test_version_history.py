@@ -25,7 +25,7 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 
 from src.pipeline.config import MODEL_VERSION, VERSION_HISTORY
-from src.pipeline.template_parts import JOINED_TEMPLATE  # noqa: E402
+from src.pipeline.template_parts import JOINED_TEMPLATE
 
 TEMPLATE = JOINED_TEMPLATE
 GENERATED = REPO_ROOT / 'index.html'
