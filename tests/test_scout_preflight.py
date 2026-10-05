@@ -419,3 +419,72 @@ def test_strip_quotations_leaves_ordinary_prose_alone():
     assert 'A normal sentence.' in stripped
     assert 'Another sentence.' in stripped
     assert 'quoted' not in stripped
+
+
+# ------------------------------------- files called restored/committed/tracked
+# Stage 49 item 20. PR #278's body said "restored the tracked `index.html`";
+# index.html is built and gitignored, never tracked.
+
+def _tracked_in(*paths):
+    return lambda path, ref: path in paths
+
+
+def test_pr278s_sentence_fails():
+    f = pf.check_tracked_claims('Then I restored the tracked `index.html` and reran the build.',
+                                tracked=_tracked_in('README.md'))
+    assert not f.ok
+    assert '`index.html` (called restored)' in f.detail
+
+
+@pytest.mark.parametrize('verb', ['restored', 'committed', 'tracked'])
+def test_each_verb_is_checked(verb):
+    f = pf.check_tracked_claims(f'The file `data/new.json` is {verb} here.',
+                                tracked=_tracked_in())
+    assert not f.ok, f'"{verb}" was not checked'
+
+
+def test_a_file_in_the_head_commit_passes():
+    f = pf.check_tracked_claims('`src/pipeline/recent_runs.py` is committed with its tests.',
+                                tracked=_tracked_in('src/pipeline/recent_runs.py'))
+    assert f.ok, f.detail
+
+
+def test_a_negated_sentence_is_a_disclosure_not_a_claim():
+    """How this repository describes a gitignored output, from #281's body."""
+    f = pf.check_tracked_claims('`data/recent_runs.json`, which `.gitignore` now lists: '
+                                'it is never committed.', tracked=_tracked_in())
+    assert f.ok, f.detail
+
+
+def test_a_removed_file_is_looked_for_in_the_base():
+    def tracked(path, ref):
+        return ref == 'origin/main' and path == 'src/old.py'
+    assert pf.check_tracked_claims('This removes the tracked `src/old.py`.', tracked=tracked).ok
+    assert not pf.check_tracked_claims('This keeps the tracked `src/old.py`.', tracked=tracked).ok
+
+
+def test_modules_commands_and_directories_are_not_paths():
+    f = pf.check_tracked_claims(
+        'Committed: `src.pipeline.recent_runs`, `git status` and `tests/mutation/` all stay.',
+        tracked=_tracked_in())
+    assert f.ok, f.detail
+
+
+def test_a_quoted_claim_is_not_checked():
+    """Quoting somebody else's false sentence, as this section's own comment
+    does, must not fail; preflight strips quotation before checking."""
+    body = 'PR #278 said "restored the tracked `index.html`", which was wrong.'
+    assert pf.check_tracked_claims(pf.strip_quotations(body), tracked=_tracked_in()).ok
+
+
+def test_the_real_git_lookup():
+    assert pf.is_tracked('README.md')
+    assert not pf.is_tracked('index.html'), 'index.html is built and gitignored'
+
+
+def test_preflight_runs_the_check():
+    """Wired in, and on the quotation-stripped text with the real head."""
+    findings, _ = pf.preflight('Restored the tracked `no/such/file.py`.', base='HEAD',
+                               skip_tests=True, head='HEAD')
+    tracked = {f.check: f for f in findings}['tracked files']
+    assert not tracked.ok

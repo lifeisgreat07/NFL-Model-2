@@ -601,6 +601,58 @@ def check_auditor_edits_need_a_human(body, changed):
                    f"in Booth's instructions, so the merge is a human decision.")
 
 
+# A sentence saying a file was restored, committed or tracked (Stage 49 item
+# 20). PR #278's body said it "restored the tracked `index.html`", and
+# index.html is not tracked: it is built, and .gitignore lists it. The claim
+# was false and checkable in one git call, and Booth had to find it instead.
+TRACKED_VERB_RE = re.compile(r'\b(?:restored|committed|tracked)\b', re.IGNORECASE)
+# A backticked repository path: one with a slash, or a file name with a
+# common extension. A dotted module name (`src.pipeline.recent_runs`) or a
+# command (`git status`) is neither, and is not checked.
+PATH_SPAN_RE = re.compile(
+    r'`((?:[\w.-]+/)+[\w.-]+|[\w.-]+\.(?:py|md|json|ya?ml|txt|html|js|css|csv|toml|cfg|ini|ps1))`')
+
+
+def is_tracked(path, head='HEAD'):
+    """True when `path` is a file in the commit `head`."""
+    return subprocess.run(['git', 'cat-file', '-e', f'{head}:{path}'], cwd=REPO_ROOT,
+                          capture_output=True).returncode == 0
+
+
+REMOVAL_RE = re.compile(r'\b(?:delet|remov)\w*', re.IGNORECASE)
+
+
+def check_tracked_claims(claims, head='HEAD', base='origin/main', tracked=is_tracked):
+    """Every file a sentence calls restored, committed or tracked must be a
+    file in the branch's head commit.
+
+    A sentence with a negation before the verb is a disclosure, not a claim:
+    "`drift-report.txt` is not committed" says the opposite, and is exactly
+    how a gitignored output is described here. A sentence about deleting or
+    removing a file ("removes the tracked `old.py`") is checked against the
+    base instead, where the file still is. A path ending in "/" is a
+    directory and is skipped; so is a quoted span (strip_quotations).
+    """
+    wrong = []
+    for sentence in VISUAL_SENTENCE_SPLIT_RE.split(claims):
+        verb = TRACKED_VERB_RE.search(sentence)
+        if not verb or NEGATION_RE.search(sentence[:verb.start()]):
+            continue
+        removal = REMOVAL_RE.search(sentence)
+        for path in PATH_SPAN_RE.findall(sentence):
+            if tracked(path, head) or (removal and tracked(path, base)):
+                continue
+            wrong.append((path, verb.group(0)))
+    if not wrong:
+        return Finding('tracked files', True,
+                       'every file called restored, committed or tracked is in the head commit')
+    named = '; '.join(f'`{p}` (called {v})' for p, v in wrong)
+    return Finding('tracked files', False,
+                   f"{named}: not a file in {head}. Say what actually happened to it "
+                   f"(built, gitignored, left untracked), or quote the sentence if it "
+                   f"reports somebody else's claim.")
+
+
 def preflight(body, base='origin/main', skip_tests=False, head='HEAD'):
     commits = branch_commits(base, head)
     # Assertions are checked against quotation-stripped text; the attachment
@@ -629,6 +681,8 @@ def preflight(body, base='origin/main', skip_tests=False, head='HEAD'):
         # -- quoting the rule, not declaring it -- satisfied the check
         # (Stage 30 item 6, the 2026-09-29 re-audit).
         check_auditor_edits_need_a_human(claims, changed_files(base, head)),
+        # Reads git too, so not skipped by --skip-tests either.
+        check_tracked_claims(claims, head, base),
     ], commits
 
 
