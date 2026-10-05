@@ -35,7 +35,7 @@
       "why": "resolution is measured from each bin's own forecast instead of the base rate, so a model that always says the base rate looks informative.",
       "find": "        resolution += k * (obs - base) ** 2\n",
       "replace": "        resolution += k * (obs - mean_pred) ** 2\n",
-      "expect_caught_by": "test_base_rate_forecaster_has_zero_resolution"
+      "expect_caught_by": "test_decomposition_identity_holds"
     },
     {
       "id": "calibration-reliability-unsquared",
@@ -49,7 +49,7 @@
       "why": "every bin is marked consistent with perfect calibration, whatever its interval says.",
       "find": "            'consistent_with_perfect': bool(\n                ci_lo * 100 <= float(y_prob[mask].mean()) * 100 <= ci_hi * 100\n            ),\n",
       "replace": "            'consistent_with_perfect': True,\n",
-      "expect_caught_by": "test_wide_interval_is_marked_consistent_with_perfect"
+      "expect_caught_by": "test_a_bin_far_from_its_forecast_is_not_marked_consistent"
     }
   ]
 }
