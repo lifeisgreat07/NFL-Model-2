@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 4,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-05T00:11:42Z",
+  "read_at": "2026-10-05T01:47:37Z",
   "games": [
     {
       "away": "PIT",
@@ -119,7 +119,7 @@
     {
       "away": "DET",
       "home": "CAR",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
       "spread_line": -4.5
