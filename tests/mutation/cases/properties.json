@@ -1,0 +1,35 @@
+{
+  "target": "src/pipeline/weekly_update.py",
+  "tests": "tests/test_properties.py",
+  "cases": [
+    {
+      "id": "property-market-prob-backwards",
+      "why": "the market curve's sign flips, so the bigger home favourite gets the lower home probability.",
+      "find": "    return 1 / (1 + np.exp(-home_spread / 5.5))\n",
+      "replace": "    return 1 / (1 + np.exp(home_spread / 5.5))\n",
+      "expect_caught_by": "test_a_bigger_home_spread_never_lowers_the_home_probability"
+    },
+    {
+      "id": "property-kickoff-fixed-offset",
+      "why": "kickoffs are converted at a fixed four hours, so every game after the November clock change locks an hour late in UTC terms.",
+      "find": "    return local.tz_localize('America/New_York').tz_convert('UTC')\n",
+      "replace": "    return (local + pd.Timedelta(hours=4)).tz_localize('UTC')\n",
+      "expect_caught_by": "test_kickoff_is_utc_and_reads_back_as_the_eastern_clock"
+    },
+    {
+      "id": "property-missing-time-is-noon",
+      "why": "a game with no listed time is taken to start at noon, so the lock can wait past a kickoff that was earlier.",
+      "find": "    t = t if isinstance(t, str) and t else '00:00'\n",
+      "replace": "    t = t if isinstance(t, str) and t else '12:00'\n",
+      "expect_caught_by": "test_a_missing_time_is_the_start_of_the_eastern_day"
+    },
+    {
+      "id": "property-grade-inverted",
+      "target": "src/pipeline/grade_predictions.py",
+      "why": "every correct pick is graded wrong and every wrong one right.",
+      "find": "    return int((prob >= 0.5) == bool(actual_home_win))\n",
+      "replace": "    return int((prob >= 0.5) != bool(actual_home_win))\n",
+      "expect_caught_by": "test_the_grade_is_whether_the_picked_side_won"
+    }
+  ]
+}
