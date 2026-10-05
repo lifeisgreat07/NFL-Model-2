@@ -1,0 +1,48 @@
+{
+  "target": "src/sports/nhl/market.py",
+  "tests": "tests/test_nhl_inputs.py",
+  "cases": [
+    {
+      "id": "nhl-market-sides-swapped",
+      "why": "the margin is taken out against the wrong side, so the home favourite's probability is reported for the underdog.",
+      "find": "    return h / (h + a)",
+      "replace": "    return a / (h + a)",
+      "expect_caught_by": "test_the_margin_comes_out_evenly_and_the_sides_are_not_swapped"
+    },
+    {
+      "id": "nhl-market-three-way-read",
+      "why": "the three-way regulation line is read as the two-way line, so Model B's market would price a draw as a loss.",
+      "find": "TWO_WAY = 'MONEY_LINE_2_WAY'",
+      "replace": "TWO_WAY = 'MONEY_LINE_3_WAY'",
+      "expect_caught_by": "test_the_two_way_line_is_read_and_the_three_way_one_is_not"
+    },
+    {
+      "id": "nhl-market-missing-filled",
+      "why": "a game with one price missing is kept, so a half-priced game would reach Model B.",
+      "find": "        if hp is None or ap is None:",
+      "replace": "        if hp is None and ap is None:",
+      "expect_caught_by": "test_a_game_without_both_prices_is_reported_not_filled_in"
+    },
+    {
+      "id": "nhl-market-in-game-recorded",
+      "why": "a price read after the start is recorded, so the closing line would be overwritten by an in-game price.",
+      "find": "        if _started(r):\n            continue",
+      "replace": "        if False:\n            continue",
+      "expect_caught_by": "test_a_price_read_after_the_start_is_never_recorded"
+    },
+    {
+      "id": "nhl-market-repeats-recorded",
+      "why": "an unchanged price is recorded again on every read, so the history fills with duplicates and a move cannot be told from a re-read.",
+      "find": "        if prev and (prev['home_price'], prev['away_price']) == (r['home_price'], r['away_price']):",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_price_is_recorded_once_until_it_moves"
+    },
+    {
+      "id": "nhl-market-favourite-sign",
+      "why": "a negative price is read as an underdog's, so every favourite's probability falls below a half.",
+      "find": "    return -price / (-price + 100) if price < 0 else 100 / (price + 100)",
+      "replace": "    return 100 / (-price + 100) if price < 0 else 100 / (price + 100)",
+      "expect_caught_by": "test_american_prices_become_probabilities"
+    }
+  ]
+}
