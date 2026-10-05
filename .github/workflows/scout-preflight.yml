@@ -46,9 +46,11 @@ concurrency:
   group: preflight-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+# contents: read only. The description comes from the event payload, not the
+# pull requests API, so `pull-requests: read` was held and never spent
+# (Stage 45 item 4, tests/test_workflow_permissions.py).
 permissions:
   contents: read
-  pull-requests: read
 
 jobs:
   preflight:
