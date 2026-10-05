@@ -1,0 +1,69 @@
+{
+  "target": "src/sports/nhl/data_probe.py",
+  "tests": "tests/test_nhl_data_probe.py",
+  "cases": [
+    {
+      "id": "nhl-probe-utc-unchecked",
+      "why": "a start time with an offset passes as UTC, so the per-game lock would compare times in two different clocks.",
+      "find": "        if g.get('startTimeUTC') and not str(g['startTimeUTC']).endswith('Z'):",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_schedule_game_missing_what_the_lock_needs_is_named"
+    },
+    {
+      "id": "nhl-probe-coordinates-unchecked",
+      "why": "shots without coordinates pass, so a source that dropped shot locations would read as usable for shot-quality features.",
+      "find": "    if no_xy:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_play_by_play_without_coordinates_or_goalies_fails"
+    },
+    {
+      "id": "nhl-probe-no-starter-passes",
+      "why": "a team with no flagged starting goalie passes, so the backtest's goalie term could silently have nobody in net.",
+      "find": "        if len(starters) != 1:",
+      "replace": "        if len(starters) > 1:",
+      "expect_caught_by": "test_one_starter_per_team_passes_and_anything_else_fails"
+    },
+    {
+      "id": "nhl-probe-odds-home-only",
+      "why": "only the home side's moneyline is required, so a feed missing the away price (no two-way probability) reads as usable for Model B.",
+      "find": "               if not (_has_moneyline(g.get('homeTeam') or {}) and _has_moneyline(g.get('awayTeam') or {}))]",
+      "replace": "               if not _has_moneyline(g.get('homeTeam') or {})]",
+      "expect_caught_by": "test_live_odds_need_a_moneyline_for_both_teams"
+    },
+    {
+      "id": "nhl-probe-empty-day-fails",
+      "why": "a day with no games fails the probe, so it goes red on every off-day and people learn to ignore it.",
+      "find": "        return []  # a day with no games is not a broken feed",
+      "replace": "        return ['no games today']",
+      "expect_caught_by": "test_a_day_without_games_is_not_a_broken_odds_feed"
+    },
+    {
+      "id": "nhl-probe-espn-one-side-passes",
+      "why": "ESPN odds with one side missing pass, so a past game with no two-way price reads as usable history.",
+      "find": "    if None in lines:",
+      "replace": "    if all(x is None for x in lines):",
+      "expect_caught_by": "test_espn_odds_need_both_moneylines"
+    },
+    {
+      "id": "nhl-probe-faceoff-label-unchecked",
+      "why": "Daily Faceoff without its Confirmed/Likely label passes, so the goalie routine would treat a guess as a confirmation.",
+      "find": "    if not re.search(r'\\b(Confirmed|Likely)\\b', page):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_daily_faceoff_needs_names_and_a_label"
+    },
+    {
+      "id": "nhl-probe-unreachable-passes",
+      "why": "an unreachable source does not fail the run, so a runner that gets 403 (as ESPN's scoreboard gave in #131) exits green.",
+      "find": "            ok = False\n            continue",
+      "replace": "            continue",
+      "expect_caught_by": "test_one_unreachable_source_fails_the_run_and_says_which"
+    },
+    {
+      "id": "nhl-probe-wrong-shape-passes",
+      "why": "a source that answers with the wrong shape does not fail the run.",
+      "find": "        ok = ok and not problems",
+      "replace": "        ok = ok",
+      "expect_caught_by": "test_one_wrong_shape_fails_the_run"
+    }
+  ]
+}

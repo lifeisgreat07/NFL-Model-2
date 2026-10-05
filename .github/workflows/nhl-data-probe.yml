@@ -1,0 +1,40 @@
+name: NHL data probe
+
+# Stage 51 item 1. docs/nhl-data.md was written from reads on the local
+# machine, and a home connection is not a runner: ESPN's scoreboard answers
+# GitHub's runners with HTTP 403 (#131). So src/sports/nhl/data_probe.py reads
+# every source the NHL's go/no-go relies on -- the league's schedule,
+# play-by-play, box score and live odds, ESPN's odds for a past game, the
+# SportsDataverse fallback and Daily Faceoff's starting goalies -- prints what
+# each returned, writes nothing, and exits non-zero if any source is
+# unreachable or the wrong shape.
+#
+# It runs on pull requests that touch it, so its answer is on the PR's own
+# checks, and by hand. It is not scheduled: the NHL's canary (Stage 55) is
+# where a source that later breaks will be watched.
+
+on:
+  pull_request:
+    paths:
+      - 'src/sports/nhl/data_probe.py'
+      - '.github/workflows/nhl-data-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+
+      - name: Read every NHL source from GitHub's runner
+        run: python -m src.sports.nhl.data_probe
