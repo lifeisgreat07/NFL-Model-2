@@ -60,7 +60,6 @@ import argparse
 import json
 import sys
 from datetime import UTC, datetime
-from pathlib import Path
 
 import pandas as pd
 
@@ -70,9 +69,9 @@ from src.pipeline.nfl_schedule_probe import (
     extract_games,
     fetch,
 )
+from src.pipeline.paths import DATA_DIR, PRED_DIR, RESULTS_DIR
 
-ROOT = Path(__file__).parents[2]
-TV_DIR = ROOT / 'data' / 'tv'
+TV_DIR = DATA_DIR / 'tv'
 EXCEPTIONS = TV_DIR / 'exceptions.json'
 # Through pandas, not zoneinfo: Windows Python ships no tz database, so
 # ZoneInfo('America/New_York') raises on markys while passing on Linux CI.
@@ -241,7 +240,7 @@ def load_exceptions(path=EXCEPTIONS):
 
 
 def main(argv=None, now=None, load=None, fetch_page=fetch, tv_dir=TV_DIR,
-         pred_dir=ROOT / 'predictions', results_dir=ROOT / 'results'):
+         pred_dir=PRED_DIR, results_dir=RESULTS_DIR):
     ap = argparse.ArgumentParser()
     ap.add_argument('--season', type=int, default=None)
     which = ap.add_mutually_exclusive_group(required=True)

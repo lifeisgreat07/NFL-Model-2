@@ -31,14 +31,14 @@ import argparse
 import json
 import sys
 from datetime import UTC, datetime
-from pathlib import Path
 
-ROOT = Path(__file__).parents[2]
-NEWS_DIR = ROOT / 'data' / 'team_news'
 from src.pipeline.paths import (
+    DATA_DIR,
     PRED_DIR,
     RESULTS_DIR,
 )
+
+NEWS_DIR = DATA_DIR / 'team_news'
 
 KICKING = ('PK', 'P')
 SOURCES = {'injuries': 'nflverse injury report, via nflreadpy.load_injuries',
