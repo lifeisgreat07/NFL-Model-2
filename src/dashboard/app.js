@@ -1466,6 +1466,9 @@ function cardStatusLine(g){
   // says it once it happens.
   if(g.status === 'final' && hasScore) return `Final: ${g.away} ${g.away_score}, ${g.home} ${g.home_score}`;
   if(g.status === 'started' && !g.graded) return 'Kicked off · final score not in yet';
+  // Mark's call (2026-10-05): the card stays and shows its pick, and the
+  // game is graded for nobody and left out of every count.
+  if(g.status === 'cancelled') return 'Cancelled · not played, so not graded';
   return '';
 }
 
@@ -1501,7 +1504,7 @@ function contextNotesHtml(notes){
 }
 
 function cardTvPill(g){
-  if(!g.tv || g.graded || g.status === 'final') return '';
+  if(!g.tv || g.graded || g.status === 'final' || g.status === 'cancelled') return '';
   // "regional" on the pill itself (Stage 37 item 2, Mark's observation in
   // the 2026-10-04 audit): nine cards reading "CBS" implied every viewer
   // gets all nine. Which games a viewer gets depends on their market, which
@@ -1566,7 +1569,7 @@ function cardNewsTeam(team, entry){
 }
 
 function cardNewsLine(g, news){
-  if(!news || !news.teams || g.graded || g.status === 'final') return '';
+  if(!news || !news.teams || g.graded || g.status === 'final' || g.status === 'cancelled') return '';
   const parts = [g.away, g.home].map(t => cardNewsTeam(t, news.teams[t])).filter(Boolean);
   return parts.length ? `<b>Team news</b> ${parts.map(escapeHtml).join(' · ')}` : '';
 }

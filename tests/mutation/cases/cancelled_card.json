@@ -1,0 +1,20 @@
+{
+  "target": "src/dashboard/app.js",
+  "tests": "tests/test_cancelled_game.py",
+  "cases": [
+    {
+      "id": "cancelled-card-keeps-its-channel",
+      "why": "a cancelled game's card still says which channel to watch it on.",
+      "find": "  if(!g.tv || g.graded || g.status === 'final' || g.status === 'cancelled') return '';",
+      "replace": "  if(!g.tv || g.graded || g.status === 'final') return '';",
+      "expect_caught_by": "test_a_cancelled_card_drops_its_channel_and_news"
+    },
+    {
+      "id": "cancelled-card-keeps-its-news",
+      "why": "a cancelled game's card still lists who is injured for it.",
+      "find": "  if(!news || !news.teams || g.graded || g.status === 'final' || g.status === 'cancelled') return '';",
+      "replace": "  if(!news || !news.teams || g.graded || g.status === 'final') return '';",
+      "expect_caught_by": "test_a_cancelled_card_drops_its_channel_and_news"
+    }
+  ]
+}

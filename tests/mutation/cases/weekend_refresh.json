@@ -34,7 +34,7 @@
     {
       "id": "refresh-skips-a-week-graded-before-it-was-played",
       "why": "a week whose graded file exists but is empty -- graded on Tuesday before it was played -- is treated as done, so its games never refresh.",
-      "find": "        if _count(graded) < _count(f):",
+      "find": "        if _count(graded) + _cancelled_in(season, week, cancelled) < _count(f):",
       "replace": "        if not graded.exists():",
       "expect_caught_by": "test_only_weeks_with_fewer_grades_than_picks_are_refreshed"
     },

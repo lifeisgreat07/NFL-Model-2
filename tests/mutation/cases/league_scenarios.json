@@ -21,8 +21,8 @@
       "id": "scenario-fully-graded-week-stays-open",
       "target": "src/pipeline/weekend_refresh.py",
       "why": "a week whose postponed game has since been graded stays on the refresh's list, so the refresh keeps reading a finished week.",
-      "find": "        if _count(graded) < _count(f):\n",
-      "replace": "        if _count(graded) <= _count(f):\n",
+      "find": "        if _count(graded) + _cancelled_in(season, week, cancelled) < _count(f):\n",
+      "replace": "        if _count(graded) + _cancelled_in(season, week, cancelled) <= _count(f):\n",
       "expect_caught_by": "test_a_postponed_game_is_graded_by_the_first_run_after_it_is_played"
     },
     {

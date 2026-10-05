@@ -40,6 +40,9 @@ SKIPPED_DIR = PRED_DIR / 'skipped'
 # What a holding run would pick; see weekly_update.save_preview.
 PREVIEW_DIR = PRED_DIR / 'preview'
 STATUS_DIR = DATA_DIR / 'game_status'
+# Games the league cancelled, each with a source; see
+# weekend_refresh.load_cancelled (Stage 39, Mark's call 2026-10-05).
+CANCELLED_FILE = DATA_DIR / 'cancelled_games.json'
 
 
 def parse_week(stem):

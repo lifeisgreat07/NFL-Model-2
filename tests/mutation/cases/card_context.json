@@ -5,7 +5,7 @@
     {
       "id": "tv-pill-outlives-the-game",
       "why": "the channel stays on a final or graded card, where 'where to watch' is history.",
-      "find": "  if(!g.tv || g.graded || g.status === 'final') return '';",
+      "find": "  if(!g.tv || g.graded || g.status === 'final' || g.status === 'cancelled') return '';",
       "replace": "  if(!g.tv) return '';",
       "expect_caught_by": "test_the_channel_leaves_once_the_game_is_over"
     },
@@ -78,7 +78,7 @@
     {
       "id": "news-outlives-the-game",
       "why": "injury news stays on a final card, where it no longer bears on anything.",
-      "find": "  if(!news || !news.teams || g.graded || g.status === 'final') return '';",
+      "find": "  if(!news || !news.teams || g.graded || g.status === 'final' || g.status === 'cancelled') return '';",
       "replace": "  if(!news || !news.teams) return '';",
       "expect_caught_by": "test_news_leaves_the_card_once_the_game_is_over"
     },

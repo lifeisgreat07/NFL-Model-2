@@ -1,0 +1,56 @@
+{
+  "target": "src/pipeline/weekend_refresh.py",
+  "tests": "tests/test_cancelled_game.py",
+  "cases": [
+    {
+      "id": "cancelled-state-never-set",
+      "why": "a listed game is never given the cancelled state, so it reads 'started' on the Week Board for the rest of the season, #280's finding.",
+      "find": "    if cancelled:\n        return 'cancelled'",
+      "replace": "    if False:\n        return 'cancelled'",
+      "expect_caught_by": "test_a_listed_game_with_no_score_is_cancelled_not_started"
+    },
+    {
+      "id": "cancelled-beats-a-score",
+      "why": "a listed game that was played after all is still called cancelled, so a real final score is hidden and the game reads as not graded.",
+      "find": "    if _score(row.get('home_score')) is not None and _score(row.get('away_score')) is not None:\n        return 'final'\n    if cancelled:\n        return 'cancelled'",
+      "replace": "    if cancelled:\n        return 'cancelled'\n    if _score(row.get('home_score')) is not None and _score(row.get('away_score')) is not None:\n        return 'final'",
+      "expect_caught_by": "test_a_score_wins_over_a_listing"
+    },
+    {
+      "id": "cancelled-week-stays-open",
+      "why": "a cancelled game still counts as unfinished, so its week is read by every weekend refresh, TV read and team-news read for the rest of the season.",
+      "find": "        if _count(graded) + _cancelled_in(season, week, cancelled) < _count(f):",
+      "replace": "        if _count(graded) < _count(f):",
+      "expect_caught_by": "test_a_cancelled_game_no_longer_holds_its_week_open"
+    },
+    {
+      "id": "cancelled-any-week-closes",
+      "why": "a cancellation counts against every week, so one cancelled game closes a week whose own last game is still to be graded.",
+      "find": "    return sum(1 for s, w, _, _ in cancelled if (s, w) == (season, week))",
+      "replace": "    return len(cancelled)",
+      "expect_caught_by": "test_a_cancellation_in_another_week_does_not_close_this_one"
+    },
+    {
+      "id": "cancelled-unsourced-accepted",
+      "why": "an entry with no link is accepted, so a game can be taken out of every count on an unsourced word.",
+      "find": "        if not str(e['source']).startswith(('http://', 'https://')):",
+      "replace": "        if False:",
+      "expect_caught_by": "test_an_entry_without_a_linked_source_fails_the_run"
+    },
+    {
+      "id": "cancelled-nudge-too-early",
+      "why": "the warning fires as soon as a game has no score after kickoff, so every Monday-morning refresh nags about Sunday night's game while its feed catches up.",
+      "find": "NO_SCORE_WARNING = pd.Timedelta(hours=36)",
+      "replace": "NO_SCORE_WARNING = pd.Timedelta(hours=1)",
+      "expect_caught_by": "test_an_unlisted_game_long_without_a_score_is_flagged"
+    },
+    {
+      "id": "cancelled-card-line-missing",
+      "target": "src/dashboard/app.js",
+      "why": "the card has no line for the cancelled state, so a cancelled game's card says nothing at all about why it was never graded.",
+      "find": "  if(g.status === 'cancelled') return 'Cancelled · not played, so not graded';\n",
+      "replace": "",
+      "expect_caught_by": "test_the_card_says_cancelled_and_not_graded"
+    }
+  ]
+}
