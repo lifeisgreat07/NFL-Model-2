@@ -1,0 +1,55 @@
+{
+  "target": "experiments/nhl/stage56/registry.json",
+  "tests": "tests/test_nhl_stage56_registry.py",
+  "cases": [
+    {
+      "id": "nhl56-m1-spends-a-slot",
+      "why": "a measurement starts spending a slot without the level moving, so the three questions are decided at an interval that no longer holds the family's error rate.",
+      "find": "   \"title\": \"What the goalie term adds\",\n   \"question\": \"Model A against Model A without goalie_matchup, refitted the same way, on 2024-2025.\",\n   \"spends_slot\": false,",
+      "replace": "   \"title\": \"What the goalie term adds\",\n   \"question\": \"Model A against Model A without goalie_matchup, refitted the same way, on 2024-2025.\",\n   \"spends_slot\": true,",
+      "expect_caught_by": "test_three_slots_and_the_level_they_set"
+    },
+    {
+      "id": "nhl56-budget-shrunk",
+      "why": "the budget drops to two while three questions spend slots, so each is tested at 97.5% instead of 98.33%.",
+      "find": "  \"budget_m\": 3,",
+      "replace": "  \"budget_m\": 2,",
+      "expect_caught_by": "test_three_slots_and_the_level_they_set"
+    },
+    {
+      "id": "nhl56-grid-widened",
+      "why": "the tuning grid grows after registration, so the validation search is wider than the one written down.",
+      "find": "\"H_days\": [30, 60, 120, 240]",
+      "replace": "\"H_days\": [30, 60, 120, 240, 480]",
+      "expect_caught_by": "test_tuning_touches_only_the_validation_seasons"
+    },
+    {
+      "id": "nhl56-model-b-extra-feature",
+      "why": "Model B gains a feature the registration did not name, so H2 and H3 compare a different model.",
+      "find": "\"features\": [\"goal_matchup\", \"shot_matchup\", \"goalie_matchup\", \"market_logit\"]",
+      "replace": "\"features\": [\"goal_matchup\", \"shot_matchup\", \"goalie_matchup\", \"market_logit\", \"rest_days\"]",
+      "expect_caught_by": "test_model_b_is_model_a_plus_the_market_and_nothing_else"
+    },
+    {
+      "id": "nhl56-utah-identity-dropped",
+      "why": "Utah no longer carries Arizona's history, so the registered team identity changes without an amendment.",
+      "find": "Phoenix's as Arizona's, and Arizona's as Utah's.",
+      "replace": "Phoenix's as Arizona's.",
+      "expect_caught_by": "test_utah_carries_arizonas_history_by_registration"
+    },
+    {
+      "id": "nhl56-training-earlier",
+      "why": "training starts before 3-on-3 overtime, a choice the registration did not make.",
+      "find": "  \"training_from_season\": 2015,",
+      "replace": "  \"training_from_season\": 2010,",
+      "expect_caught_by": "test_the_seasons_match_the_nfl_split_and_training_starts_with_three_on_three"
+    },
+    {
+      "id": "nhl56-bootstrap-by-game",
+      "why": "the bootstrap resamples single games, so intervals ignore games on the same day sharing conditions and come out narrower.",
+      "find": "\"bootstrap\": \"Paired, resampling whole game days (every game of a league date together)",
+      "replace": "\"bootstrap\": \"Paired, resampling single games",
+      "expect_caught_by": "test_the_bootstrap_resamples_whole_game_days"
+    }
+  ]
+}
