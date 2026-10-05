@@ -72,6 +72,10 @@ What it is meant to demonstrate, and where to look:
   and a probe of the league's own schedule page, the candidate source of
   TV channels, run from GitHub's own runners before anything depends on it.
 
+- **Decision records.** The five decisions the rest rests on -- one static
+  page, two models side by side, the kickoff lock, an auditor that cannot
+  push, and on-time scheduling -- one page each, with why, what it costs and
+  what would reopen it: `docs/decisions/README.md`.
 - **Case studies of what went wrong, and a list of what it taught.** Four
   write-ups in `docs/case-studies/`, each a real problem, how it was found
   and what it cost, with every figure held to its source by a test. The

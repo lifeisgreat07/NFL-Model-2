@@ -106,6 +106,7 @@ notes elsewhere still describe them as files you can open in the repository.
 | `docs/case-studies/` | One write-up per real problem, for a technical reader. `README.md` there is the index. |
 | `src/research/measure_qb_leak.py` | Measures what the QB rating leak did to the backtest, on today's code. Writes `data/qb_leak_effect.json`. |
 | `docs/architecture.md` | The whole system on one diagram, with the file behind each box. |
+| `docs/decisions/README.md` | The decision records (Stage 49 item 22): one page per decision the rest rests on, with why, the cost and what would reopen it. |
 | `docs/lessons-learned.md` | The lessons across all of it, each pointing at where it came from. Linked from "Checking the AI's work". |
 | `tests/test_lessons_learned.py` | Every link, path and trap the lessons cite still exists, in the document each citation names. |
 | `tests/test_case_studies.py` | Cards on "Checking the AI's work" against the files; every cited commit and quoted figure against its commit; measured figures against their data file. |

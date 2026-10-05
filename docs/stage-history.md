@@ -1854,7 +1854,9 @@ reads "started" on the Week Board for the rest of the season, because
 `weekend_refresh.game_status` has no state for a game that kicked off and
 will never have a score. Not asserted either way; a "no result" state is
 Mark's call, and it touches the weekend refresh, so after the 2026-10-08
-lock in any case.
+lock in any case. **Mark's call (2026-10-05):** the card stays with a
+"Cancelled" label; its pick is shown but not graded, and is left out of
+every count and accuracy figure. Built after the lock.
 
 ### Stage 40 - Season turnover (January)
 
@@ -1952,6 +1954,19 @@ yet thought of, that can be done before Thursday's lock. Each was checked
 against the repository on 2026-10-04 at `0ae5df4`. None touches the weekly
 run or the weekend refresh, so none has to wait for the lock. Proposed;
 Mark has not approved them yet.
+
+**Approved and worked (2026-10-05).** Mark took the recommended ten, in
+this order: 23 (#282), 21 (#283), 20 (#284), 4 (#285), 25 (#286), 15
+(#288), 16 (#289), 17 (#290), 19 (#291), 22 (`docs/decisions/`, straight
+to main). All ten are done. Narrowings: item 4 kept collect-agent-log's
+`pull-requests: read` (Booth's reports are PR comments read through the
+issues API; `issues: read` alone was not verified); item 15 covered
+`src/research/calibration.py` only among the research scripts, and found
+the tuned constants unguarded (now `tests/test_config_pins.py`); item 16
+left out `confidence_points`, which is inline in `predict_week`; item 19
+is strict on `src/agents` alone (`--follow-imports=silent`). Items 1 and 2
+wait for the 2026-10-08 lock because the deploy runs on every data commit;
+3, 5 to 14, 18 and 24 are not started.
 
 ### Stage 45 - Supply chain and security
 
