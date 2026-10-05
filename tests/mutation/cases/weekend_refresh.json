@@ -106,6 +106,36 @@
       "find": "          file_pattern: 'data/game_status/** data/line_history/** data/tv/** data/team_news/**'\n",
       "replace": "          file_pattern: 'data/game_status/** data/tv/** data/team_news/**'\n",
       "expect_caught_by": "test_the_workflow_commits_its_four_folders_and_nothing_else"
+    },
+    {
+      "id": "refresh-status-only-takes-lines",
+      "why": "--status-only still takes a line snapshot, so the weekly run becomes a second writer of the line archive on its own schedule, which the weekend refresh's schedule test was written to keep apart.",
+      "find": "        if not args.status_only and not args.weeks:",
+      "replace": "        if not args.weeks:",
+      "expect_caught_by": "test_status_only_writes_the_snapshot_and_takes_no_line"
+    },
+    {
+      "id": "refresh-named-weeks-ignored",
+      "why": "--weeks is ignored and the refresh's own list is used, so the backfill of weeks 1 to 3 (graded, so off the list) writes nothing.",
+      "find": "    if args.weeks:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_named_weeks_are_refreshed_even_when_graded"
+    },
+    {
+      "id": "refresh-weekly-step-takes-lines",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the weekly run's refresh step drops --status-only, so every Tuesday and Thursday run also appends line snapshots on the weekly schedule.",
+      "find": "        run: python -m src.pipeline.weekend_refresh --season ${{ steps.season.outputs.season }} --status-only",
+      "replace": "        run: python -m src.pipeline.weekend_refresh --season ${{ steps.season.outputs.season }}",
+      "expect_caught_by": "test_the_weekly_run_snapshots_the_week_it_grades_before_grading_it"
+    },
+    {
+      "id": "refresh-weekly-step-can-cost-grades",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the status step loses continue-on-error, so a schedule read that fails on a Tuesday fails the job before grading.",
+      "find": "      - name: Refresh the status of the weeks about to be graded\n        if: ${{ !cancelled() }}\n        continue-on-error: true\n",
+      "replace": "      - name: Refresh the status of the weeks about to be graded\n        if: ${{ !cancelled() }}\n",
+      "expect_caught_by": "test_the_weekly_run_snapshots_the_week_it_grades_before_grading_it"
     }
   ]
 }

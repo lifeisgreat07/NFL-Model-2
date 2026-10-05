@@ -124,6 +124,17 @@ jobs:
         shell: bash
         run: python -m src.pipeline.weekly_update --season ${{ steps.season.outputs.season }} 2>&1 | tee weekly-update.log
 
+      # Stage 37 item 3. The week about to be graded was last snapshotted
+      # before Monday night's game, and once graded it leaves the weekend
+      # refresh's list, so Monday night's score never reached the page. Its
+      # final snapshot goes in the same commit as its grades. Status only:
+      # no line snapshot from this workflow. continue-on-error: a status
+      # snapshot must never cost a grade.
+      - name: Refresh the status of the weeks about to be graded
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: python -m src.pipeline.weekend_refresh --season ${{ steps.season.outputs.season }} --status-only
+
       # `!cancelled()` on this step and the commit: the step above fails the
       # job on purpose when a whole week kicked off with nothing locked, and
       # that must not also stop last week's grades from landing.
