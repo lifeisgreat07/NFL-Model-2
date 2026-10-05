@@ -3,6 +3,7 @@ ever adds a release that is missing (Stage 41 item 3).
 
 Run with: pytest tests/test_release_notes.py -v
 """
+import re
 from pathlib import Path
 
 import pytest
@@ -32,8 +33,33 @@ def test_a_version_with_two_entries_is_an_error_not_a_guess():
         rn.entry('2.5', history=[{'version': '2.5'}, {'version': '2.5'}])
 
 
-def test_the_workflow_skips_a_version_already_released_and_runs_only_by_hand():
-    wf = WORKFLOW.read_text(encoding='utf-8')
+def _workflow():
+    return WORKFLOW.read_text(encoding='utf-8').replace('\r\n', '\n')
+
+
+def test_the_workflow_skips_a_version_already_released():
+    wf = _workflow()
     assert 'gh release view "v$v"' in wf and 'continue' in wf
     assert '--verify-tag' in wf, 'a release must never create a tag the history did not'
-    assert 'schedule:' not in wf and 'push:' not in wf
+
+
+def test_the_workflow_runs_by_hand_or_on_a_version_tag_never_a_branch():
+    """Stage 49 item 25: a pushed `v*` tag releases itself. A branch push
+    must not start it, and nor may a schedule: releases follow versions."""
+    wf = _workflow()
+    on = wf.split('\non:\n', 1)[1].split('\npermissions:', 1)[0]
+    assert 'workflow_dispatch:' in on
+    assert re.search(r"^  push:\n    tags: \['v\*'\]\n", on, re.M), on
+    assert 'branches' not in on and 'schedule:' not in on, on
+
+
+def test_a_pushed_tag_outside_the_history_fails_the_run():
+    """A tag nobody wrote a history entry for would otherwise release
+    nothing and go green."""
+    wf = _workflow()
+    guard = wf.split('- name: A pushed tag must name a version in the history', 1)[1]
+    guard = guard.split('- name:', 1)[0]
+    assert "if: github.event_name == 'push'" in guard
+    assert 'TAG: ${{ github.ref_name }}' in guard
+    assert 'release_notes --list | grep -qx "${TAG#v}"' in guard
+    assert 'exit 1' in guard

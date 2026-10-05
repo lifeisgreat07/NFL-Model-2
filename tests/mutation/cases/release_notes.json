@@ -22,7 +22,23 @@
       "why": "the workflow stops checking for an existing release, so a second run fails on the first version already released and nothing after it is created.",
       "find": "            if gh release view \"v$v\" >/dev/null 2>&1; then\n              echo \"v$v: already released\"\n              continue\n            fi\n",
       "replace": "",
-      "expect_caught_by": "test_the_workflow_skips_a_version_already_released_and_runs_only_by_hand"
+      "expect_caught_by": "test_the_workflow_skips_a_version_already_released"
+    },
+    {
+      "id": "releases-workflow-runs-on-branch-pushes",
+      "target": ".github/workflows/releases.yml",
+      "why": "every push to main starts the Releases workflow, which then runs beside every data commit instead of once per version.",
+      "find": "    tags: ['v*']\n",
+      "replace": "    branches: [main]\n",
+      "expect_caught_by": "test_the_workflow_runs_by_hand_or_on_a_version_tag_never_a_branch"
+    },
+    {
+      "id": "releases-unknown-tag-goes-green",
+      "target": ".github/workflows/releases.yml",
+      "why": "a pushed tag with no history entry releases nothing and the run still goes green, so a missing release is never noticed.",
+      "find": "            exit 1\n",
+      "replace": "",
+      "expect_caught_by": "test_a_pushed_tag_outside_the_history_fails_the_run"
     }
   ]
 }
