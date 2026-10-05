@@ -92,9 +92,10 @@ def test_ordinary_numbers_in_a_commit_message_are_not(text):
 
 def test_the_readme_calls_its_count_case_files():
     text = (ROOT / 'README.md').read_text(encoding='utf-8')
-    m = re.search(r'`tests/mutation/`,\s*(\d+)\s*case files', text)
+    # The figure is a floor since Stage 49 item 23; whether it is true and
+    # current is test_readme_accuracy's job. This one holds the wording.
+    m = re.search(r'`tests/mutation/`,\s*over (\d+)\s*case files', text)
     assert m, "the README's mutation figure must say what it counts"
-    assert int(m.group(1)) == len(list((ROOT / 'tests' / 'mutation' / 'cases').glob('*.json')))
 
 
 # ------------------------------------------------ 4. mutation count scope
