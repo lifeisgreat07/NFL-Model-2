@@ -144,12 +144,23 @@ def test_the_mutation_case_count_it_states_is_the_real_one():
     # the README said "N cases" while this counted FILES (one per subject,
     # each holding several cases), so every new case file forced a bump of a
     # number that meant something else.
-    m = re.search(r'`tests/mutation/`,\s*(\d+)\s*case files', TEXT)
+    #
+    # Since 2026-10-05 (Stage 49 item 23) it states a FLOOR, "over N", with N
+    # a multiple of 25, instead of the exact figure. An exact figure moved
+    # with every new case file, so every two open branches that each added
+    # one conflicted on this line. The floor must still be true (N below the
+    # real count) and must not go stale (the real count at most 50 above it),
+    # so a bump is due about once every 25 to 50 case files, not every one.
+    m = re.search(r'`tests/mutation/`,\s*over (\d+)\s*case files', TEXT)
     assert m, "README.md no longer states a mutation case count in the expected format"
     claimed = int(m.group(1))
     real = len(list((REPO / 'tests' / 'mutation' / 'cases').glob('*.json')))
-    assert claimed == real, (
-        f"README.md claims {claimed} mutation case files; tests/mutation/cases/ holds {real}")
+    assert claimed % 25 == 0, f"README.md's case-file floor {claimed} is not a multiple of 25"
+    assert claimed < real, (
+        f"README.md claims over {claimed} mutation case files; tests/mutation/cases/ holds {real}")
+    assert real - claimed <= 50, (
+        f"README.md claims over {claimed} mutation case files; tests/mutation/cases/ holds "
+        f"{real}, so the floor is stale -- raise it to the largest multiple of 25 below {real}")
 
 
 def test_the_dashboard_link_matches_the_one_verification_md_uses():

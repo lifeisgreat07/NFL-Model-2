@@ -171,6 +171,20 @@
       "find": "        run: python -m mypy --ignore-missing-imports src/pipeline/weekly_update.py src/pipeline/ratings_engine.py\n",
       "replace": "        run: echo skipped\n",
       "expect_caught_by": "test_lint_is_what_run_tests_runs"
+    },
+    {
+      "id": "readme-case-floor-above-the-real-count",
+      "why": "the README claims more mutation case files than the corpus holds, so the portfolio overstates its own test-of-the-tests.",
+      "find": "over 175 case files",
+      "replace": "over 225 case files",
+      "expect_caught_by": "test_the_mutation_case_count_it_states_is_the_real_one"
+    },
+    {
+      "id": "readme-case-floor-gone-stale",
+      "why": "the floor stays true but falls far behind, so the README undersells the corpus and nothing ever asks for the bump.",
+      "find": "over 175 case files",
+      "replace": "over 100 case files",
+      "expect_caught_by": "test_the_mutation_case_count_it_states_is_the_real_one"
     }
   ]
 }
