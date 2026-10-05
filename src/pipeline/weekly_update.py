@@ -783,7 +783,47 @@ def main(season: int, week: int) -> None:
         return
     predictions = predict_week(plan.week_games, plan.started, current, inputs.qb,
                                (model_a, model_b), plan.qb_overrides, season, week)
+    provenance = data_provenance(season, week, inputs.plays, plan.qb_overrides)
+    for p in predictions:
+        p['data_provenance'] = dict(provenance)
     save_week(predictions, season, week, plan.preview)
+
+
+def data_provenance(season: int, week: int, plays: pd.DataFrame, qb_overrides: dict[str, dict],
+                    now: pd.Timestamp | None = None) -> dict[str, Any]:
+    """Where and when this run's inputs came from, saved in every pick
+    (Stage 41 item 7). A saved pick is permanent, so this is what lets a
+    later reader tell which loader and which plays made it without the
+    run's log, which expires.
+
+    read_utc            when the run read its inputs
+    loader, loader_version   nflreadpy or the nfl_data_py fallback
+    plays_through_week  the last week of this season's play-by-play the
+                        ratings saw: always before the week being picked,
+                        and the first thing to check if a pick looks like
+                        it knew a result
+    schedule            where the spread, kickoff and listed starters came from
+    qb_override_file    the sourced override file the run used, or None
+    """
+    from importlib.metadata import PackageNotFoundError, version
+
+    from src.pipeline import data_loader
+    loader = 'nflreadpy' if data_loader.USE_NFLREADPY else 'nfl_data_py'
+    try:
+        loader_version: str | None = version(loader)
+    except PackageNotFoundError:
+        loader_version = None
+    this = plays[plays['season'] == season] if 'season' in plays.columns else plays.iloc[0:0]
+    through = int(this['week'].max()) if len(this) else None
+    now = now if now is not None else pd.Timestamp.now(tz='UTC')
+    return {
+        'read_utc': pd.Timestamp(now).tz_convert('UTC').strftime('%Y-%m-%dT%H:%M:%SZ'),
+        'loader': loader,
+        'loader_version': loader_version,
+        'plays_through_week': through,
+        'schedule': f'nflverse schedule via {loader}',
+        'qb_override_file': (f'data/qb_overrides/{season}_week{week}.json' if qb_overrides else None),
+    }
 
 
 Inputs = namedtuple('Inputs', 'raw plays week_keys week_to_idx qb qb_change_lookup '
