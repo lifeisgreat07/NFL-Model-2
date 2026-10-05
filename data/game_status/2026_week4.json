@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 4,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-04T21:47:32Z",
+  "read_at": "2026-10-05T00:11:42Z",
   "games": [
     {
       "away": "PIT",
@@ -87,33 +87,33 @@
     {
       "away": "MIA",
       "home": "MIN",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 10,
+      "home_score": 15,
       "spread_line": 10.0
     },
     {
       "away": "KC",
       "home": "LV",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 30,
+      "home_score": 27,
       "spread_line": -4.5
     },
     {
       "away": "LAC",
       "home": "SEA",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 23,
+      "home_score": 30,
       "spread_line": 7.0
     },
     {
       "away": "DEN",
       "home": "SF",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 14,
+      "home_score": 24,
       "spread_line": 3.0
     },
     {
@@ -122,7 +122,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -3.5
+      "spread_line": -4.5
     },
     {
       "away": "ATL",
