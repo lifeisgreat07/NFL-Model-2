@@ -12,7 +12,8 @@ have no tag: they predate the repository, as the v2.2 tag message says.
 
 The Releases workflow (.github/workflows/releases.yml) creates a release
 for every listed version that does not have one yet, so running it twice
-changes nothing.
+changes nothing. It runs by hand, and since Stage 49 item 25 when a `v*`
+tag is pushed; a pushed tag that `--list` does not print fails the run.
 """
 import argparse
 import subprocess
