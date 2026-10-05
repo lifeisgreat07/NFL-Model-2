@@ -52,7 +52,8 @@ The nightly shuffled suite (07:15) is GitHub cron only.
    4 and 6, Stage 41 items 5 and 7, the Monday 01:47 UTC fallback cron line
    for the Sunday evening refresh, and the cancelled-game state (Mark's
    call: "Cancelled", not graded; Stage 39).
-2. Then Stage 45 items 1 (pin the remaining actions) and 2 (CSP).
+2. Then Stage 45 items 1 and 2, and **multi-sport, NHL then NBA (Stages
+   50 to 61)**: 50 and 51 may start before the lock; 52 waits for it.
 3. **Stage 21** once week 5 is graded (Tuesday 2026-10-13 at the earliest).
 4. Stages 44, 43, 39, 41 (item 6 needs rendered options), 40; the rest of
    45 to 49 (3, 5 to 14, 18, 24); 20, 22, 28 as before.
@@ -72,8 +73,7 @@ commit messages.
 - **The drift check re-tests a growing sample every week**, so it will sometimes flag by chance. R4 registered it as written.
 - **A failed Thursday run leaves Thursday night's game unpicked** unless dispatched by hand that day. The failure opens an issue.
 - **Mutation runs quote a count Booth cannot always rerun**: a large scope is UNVERIFIABLE by design; the files are listed.
-- **Booth's prose can count an UNVERIFIABLE its block does not**: the run goes red over a SAFE TO MERGE comment (#286); decide by hand.
-- **booth-alert's issue text does not name that cause** (#287). Not yet changed.
+- **Booth's prose can count an UNVERIFIABLE its block does not**: the run goes red over a SAFE TO MERGE comment (#286), and booth-alert's issue (#287) does not name that cause.
 - **Season Accuracy's trend end-labels** stack where Model A and Model B end on the same value.
 - **`check_scoped_test_counts` skips a count for a module that does not exist.**
 - **Only the wrap-up gate and session-start recompute CLAUDE.md's `Suite:` line.**

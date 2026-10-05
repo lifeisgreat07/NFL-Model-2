@@ -286,7 +286,7 @@ The full text of every stage, finished or planned, is in
   37 honest states, 38 registrations, 39 playoffs, 40 season turnover, 41
   operations and releases, 42 on-time runs, 43 Spotter, 44 Line Judge.
   Order and rules at the top of that section.
-- **Stages 45 to 49 - proposed 2026-10-04**: ten done 2026-10-05; 1 and 2 after the lock; the rest unstarted.
+- **Stages 45 to 49**: ten done 2026-10-05; 1 and 2 after the lock. **50 to 61**: multi-sport, NHL then NBA (Mark, 2026-10-05).
 
 ## Ending a session
 
