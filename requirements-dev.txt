@@ -27,3 +27,8 @@ ruff==0.16.9
 # The type check run-tests.yml runs over the weekly run's two core modules
 # (Stage 35). Pinned for ruff's reason: a new mypy release can add errors.
 mypy==2.3.1
+
+# Property tests, tests/test_properties.py (Stage 48 item 16). Pinned for
+# ruff's reason, and the tests are derandomized, so a version and a commit
+# fix the examples drawn.
+hypothesis==6.168.4
