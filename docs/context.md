@@ -51,6 +51,8 @@ run on time and a late `schedule` copy.
    item 1's first part done), 41 (items 2 to 4 done; 5 and 7 after the lock,
    6 needs rendered options for Mark), 40 (January); 20, 22, 28 as before.
 4. Mark's call: a cancelled game reads "started" forever (#280's finding).
+5. Stages 45 to 49 (25 new items, none in the weekly run), proposed
+   2026-10-04 for before the lock: waiting for Mark's OK and order.
 
 Merge one branch at a time: every branch that adds a mutation case file
 moves the README count, so two open at once always conflict. Run the suite
