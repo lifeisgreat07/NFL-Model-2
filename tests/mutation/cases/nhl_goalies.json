@@ -1,0 +1,55 @@
+{
+  "target": "src/sports/nhl/goalies.py",
+  "tests": "tests/test_nhl_inputs.py",
+  "cases": [
+    {
+      "id": "nhl-goalie-unknown-club-dropped",
+      "why": "a club the page names that the file does not know passes, so a projection would be stored against no team.",
+      "find": "            if club is None:",
+      "replace": "            if False:",
+      "expect_caught_by": "test_anything_unrecognised_on_the_page_stops_the_parse"
+    },
+    {
+      "id": "nhl-goalie-unknown-label-passes",
+      "why": "an unrecognised label passes, so a new kind of report would be treated as one of the known ones.",
+      "find": "            if label not in LABELS:",
+      "replace": "            if False:",
+      "expect_caught_by": "test_anything_unrecognised_on_the_page_stops_the_parse"
+    },
+    {
+      "id": "nhl-goalie-unmatched-dropped",
+      "why": "a projection with no league game is dropped silently, so a page and a league that disagree about the day would go unnoticed.",
+      "find": "    if unmatched:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_projection_for_a_game_the_league_does_not_list_stops"
+    },
+    {
+      "id": "nhl-goalie-after-start-recorded",
+      "why": "a projection read after the start is recorded, so the history would show news the pick could not have used.",
+      "find": "        if r['read_utc'] >= r['start_utc']:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_projection_is_recorded_when_the_goalie_or_label_changes_and_not_after_the_start"
+    },
+    {
+      "id": "nhl-goalie-label-change-ignored",
+      "why": "only the goalie's name is compared, so a Likely starter becoming Confirmed leaves no record.",
+      "find": "    fields = ('home_goalie', 'home_status', 'away_goalie', 'away_status')",
+      "replace": "    fields = ('home_goalie', 'away_goalie')",
+      "expect_caught_by": "test_a_projection_is_recorded_when_the_goalie_or_label_changes_and_not_after_the_start"
+    },
+    {
+      "id": "nhl-goalie-two-starters-pass",
+      "why": "a box score flagging two starters passes, so the backtest's goalie could be either of them.",
+      "find": "        if len(starters) != 1:",
+      "replace": "        if len(starters) < 1:",
+      "expect_caught_by": "test_a_box_score_without_exactly_one_starter_stops"
+    },
+    {
+      "id": "nhl-goalie-start-format",
+      "why": "the start is kept in pandas' own text form, so comparing it with the read time as text puts every read before the start.",
+      "find": "        return str(value.strftime('%Y-%m-%dT%H:%M:%SZ'))",
+      "replace": "        return str(value)",
+      "expect_caught_by": "test_a_projection_gets_the_league_game_and_its_start"
+    }
+  ]
+}

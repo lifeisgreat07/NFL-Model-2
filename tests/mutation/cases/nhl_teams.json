@@ -1,0 +1,13 @@
+{
+  "target": "src/sports/nhl/teams.py",
+  "tests": "tests/test_nhl_inputs.py",
+  "cases": [
+    {
+      "id": "nhl-teams-accents-kept",
+      "why": "accents are not folded, so 'Montreal Canadiens' as the page spells it matches no club.",
+      "find": "    plain = unicodedata.normalize('NFKD', name).encode('ascii', 'ignore').decode()",
+      "replace": "    plain = name",
+      "expect_caught_by": "test_spelling_differences_still_find_the_club_and_strangers_do_not"
+    }
+  ]
+}
