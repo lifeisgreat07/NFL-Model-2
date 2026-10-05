@@ -59,7 +59,7 @@ What it is meant to demonstrate, and where to look:
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
-- **Sixteen CI workflows** in `.github/workflows/` cover the test suite, the
+- **Seventeen CI workflows** in `.github/workflows/` cover the test suite, the
   weekly data pull, a weekend refresh of game status and scores that never
   touches a saved pick, the backtest, the Pages build-and-deploy, the
   agent-activity log, a pre-flight check on every pull request description,
@@ -69,12 +69,14 @@ What it is meant to demonstrate, and where to look:
   suite nightly in a shuffled order, browser checks that drive Chromium over the
   built page at six widths (overflow, focus, 24px targets, axe-core, the
   font, a byte budget) after proving each of their own rules can fail,
-  and a probe of the league's own schedule page, the candidate source of
-  TV channels, run from GitHub's own runners before anything depends on it.
+  a probe of the league's own schedule page, the candidate source of
+  TV channels, and a probe of every source the NHL will read, each run from
+  GitHub's own runners before anything depends on it.
 
-- **Decision records.** The five decisions the rest rests on -- one static
+- **Decision records.** The six decisions the rest rests on -- one static
   page, two models side by side, the kickoff lock, an auditor that cannot
-  push, and on-time scheduling -- one page each, with why, what it costs and
+  push, on-time scheduling, and one core with a module per sport, held
+  apart by tests -- one page each, with why, what it costs and
   what would reopen it: `docs/decisions/README.md`.
 - **Case studies of what went wrong, and a list of what it taught.** Four
   write-ups in `docs/case-studies/`, each a real problem, how it was found
