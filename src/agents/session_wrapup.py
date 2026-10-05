@@ -35,16 +35,16 @@ COUNT_RE = re.compile(r'Suite:\s*\*\*([0-9,]+)\s+passing\*\*')
 
 
 class Check:
-    def __init__(self, name, ok, detail):
+    def __init__(self, name: str, ok: bool, detail: str) -> None:
         self.name, self.ok, self.detail = name, ok, detail
 
 
-def _git(*args):
+def _git(*args: str) -> str:
     r = subprocess.run(('git',) + args, cwd=REPO, capture_output=True, text=True)
     return r.stdout.strip()
 
 
-def parse_summary(stdout):
+def parse_summary(stdout: str) -> tuple[int | None, int]:
     """(passed, failed + errors) from pytest's final summary line, or (None, 0).
 
     pytest prints "N passed" beside "M failed", so reading only the passed
@@ -63,7 +63,7 @@ def parse_summary(stdout):
     return (int(passed.group(1)) if passed else 0), broken
 
 
-def check_suite_count():
+def check_suite_count() -> Check:
     """The number in CLAUDE.md must match a real run, not a remembered one."""
     text = DOC.read_text(encoding='utf-8')
     m = COUNT_RE.search(text)
@@ -94,7 +94,7 @@ def check_suite_count():
                  f'CLAUDE.md and a real run both say {actual}')
 
 
-def check_tree_clean():
+def check_tree_clean() -> Check:
     dirty = _git('status', '--porcelain')
     if dirty:
         return Check('working tree', False,
@@ -103,7 +103,7 @@ def check_tree_clean():
     return Check('working tree', True, 'clean')
 
 
-def check_nothing_unpushed():
+def check_nothing_unpushed() -> Check:
     branch = _git('rev-parse', '--abbrev-ref', 'HEAD')
     upstream = _git('rev-parse', '--abbrev-ref', '@{u}')
     if not upstream:
@@ -130,7 +130,7 @@ def check_nothing_unpushed():
     return Check('unpushed work', True, f'{branch} is level with {upstream}')
 
 
-def check_branch_state():
+def check_branch_state() -> Check:
     """Not a failure, but the next session should know where it is."""
     branch = _git('rev-parse', '--abbrev-ref', 'HEAD')
     if branch == 'main':
@@ -140,7 +140,7 @@ def check_branch_state():
                  'for and whether its PR is open')
 
 
-def check_context_is_current():
+def check_context_is_current() -> Check:
     """docs/context.md is the file the next session reads FIRST, and it is the
     only one rewritten every time. A stale one is worse than none: it is
     confidently wrong about which branch is open and what to do next.
@@ -185,7 +185,7 @@ def check_context_is_current():
                  f'stamped {m.group(1)}')
 
 
-def check_session_memory_written():
+def check_session_memory_written() -> Check:
     """One memory file per session, appended not edited. The reasoning behind a
     decision is the expensive thing to reconstruct, and it is gone by the next
     morning if nobody writes it down.
@@ -223,7 +223,7 @@ BY_HAND = [
 ]
 
 
-def main():
+def main() -> int:
     checks = [
         check_branch_state(),
         check_tree_clean(),

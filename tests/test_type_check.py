@@ -40,6 +40,16 @@ def test_the_weekly_modules_type_check(tmp_path):
     assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-500:]
 
 
+def test_the_agents_type_check_strictly(tmp_path):
+    """Stage 48 item 19: src/agents under --strict, the command run-tests.yml
+    runs (tasks.AGENT_TYPES). An unannotated function, or one returning Any
+    where it promises a type, fails here."""
+    mypy_or_skip()
+    cmd = [*tasks.AGENT_TYPES, '--cache-dir', str(tmp_path / 'mypy-cache')]
+    r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding='utf-8')
+    assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-500:]
+
+
 def _no_mypy(monkeypatch):
     real = importlib.util.find_spec
     monkeypatch.setattr(importlib.util, 'find_spec', lambda name, *a: None if name == 'mypy' else real(name, *a))

@@ -123,8 +123,8 @@
       "target": "tasks.py",
       "tests": "tests/test_tasks.py",
       "why": "the lint task checks less than CI does, so `tasks.py check` is green on a branch run-tests.yml will fail -- a fifteenth spelling of a command, the thing the runner exists to end (Stage 31 item 13).",
-      "find": "             lambda a: [['ruff', 'check', '.'], TYPES]),",
-      "replace": "             lambda a: [['ruff', 'check', 'src'], TYPES]),",
+      "find": "             lambda a: [['ruff', 'check', '.'], TYPES, AGENT_TYPES]),",
+      "replace": "             lambda a: [['ruff', 'check', 'src'], TYPES, AGENT_TYPES]),",
       "expect_caught_by": "test_lint_is_what_run_tests_runs"
     },
     {

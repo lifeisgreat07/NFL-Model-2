@@ -32,6 +32,9 @@ STATES = Path(tempfile.gettempdir()) / 'nfl-model-states'
 STATE_PAGES = ('states_tie.html', 'states_preview.html')
 # The type check run-tests.yml runs (Stage 35).
 TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/pipeline/weekly_update.py', 'src/pipeline/ratings_engine.py']
+# The strict type check over the agents (Stage 48 item 19). --follow-imports=silent
+# checks src/agents alone: the pipeline modules it imports are not strict yet.
+AGENT_TYPES = [PY, '-m', 'mypy', '--strict', '--ignore-missing-imports', '--follow-imports=silent', 'src/agents']
 
 
 def _slice_seed(argv):
@@ -48,10 +51,11 @@ def _axe():
 TASKS = {
     'test': ('the whole suite, as CLAUDE.md\'s Suite line quotes it',
              lambda a: [[PY, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider']]),
-    'lint': ('ruff, then mypy over the weekly run\'s two core modules, as run-tests.yml runs them',
-             lambda a: [['ruff', 'check', '.'], TYPES]),
-    'check': ('lint, then the suite: the three things run-tests.yml runs',
-              lambda a: [['ruff', 'check', '.'], TYPES,
+    'lint': ('ruff, then mypy over the weekly run\'s two core modules and strict mypy over the '
+             'agents, as run-tests.yml runs them',
+             lambda a: [['ruff', 'check', '.'], TYPES, AGENT_TYPES]),
+    'check': ('lint, then the suite: the four things run-tests.yml runs',
+              lambda a: [['ruff', 'check', '.'], TYPES, AGENT_TYPES,
                          [PY, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider']]),
     'build': ('build index.html from the data on disk (deploy-pages.yml does this)',
               lambda a: [[PY, '-m', 'src.pipeline.generate_dashboard']]),

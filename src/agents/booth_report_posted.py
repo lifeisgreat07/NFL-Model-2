@@ -49,6 +49,7 @@ import json
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 from src.agents.booth_verdict import (
     BOOTH_ACCOUNTS,
@@ -61,7 +62,7 @@ from src.agents.booth_verdict import (
 MIN_SHA_PREFIX = 7
 
 
-def load_comments(text):
+def load_comments(text: str) -> list[dict[str, Any]]:
     """Parse `gh api --paginate` output, which is one JSON array PER PAGE.
 
     `--paginate` concatenates pages as `[...][...]`, which is not one JSON
@@ -70,7 +71,8 @@ def load_comments(text):
     report is most likely. Decode array after array instead.
     """
     decoder = json.JSONDecoder()
-    out, pos, text = [], 0, text.strip()
+    out: list[dict[str, Any]] = []
+    pos, text = 0, text.strip()
     while pos < len(text):
         chunk, end = decoder.raw_decode(text, pos)
         if not isinstance(chunk, list):
@@ -82,16 +84,16 @@ def load_comments(text):
     return out
 
 
-def _parse_time(value):
+def _parse_time(value: str) -> datetime:
     return datetime.fromisoformat(value.replace('Z', '+00:00')).astimezone(UTC)
 
 
-def head_matches(block_head, head_sha):
+def head_matches(block_head: str | None, head_sha: str) -> bool:
     block_head = (block_head or '').strip().lower()
     return len(block_head) >= MIN_SHA_PREFIX and head_sha.lower().startswith(block_head)
 
 
-def check(comments, head_sha, started_at):
+def check(comments: list[dict[str, Any]], head_sha: str, started_at: str) -> tuple[bool, str]:
     """Return (ok, message). Pure: no I/O, so the rules are testable directly."""
     if len(head_sha) < 40:
         return False, f"head SHA {head_sha!r} is not a full SHA; the workflow must record `git rev-parse HEAD`"
@@ -113,7 +115,8 @@ def check(comments, head_sha, started_at):
             "Compare the run's duration with the usual 5-13 minutes and read the action's log."
         )
 
-    problems, disagreeing = [], []
+    problems: list[str] = []
+    disagreeing: list[str] = []
     for c in candidates:
         try:
             block = extract(c.get('body') or '')
@@ -149,7 +152,7 @@ def check(comments, head_sha, started_at):
     )
 
 
-def main(argv):
+def main(argv: list[str]) -> int:
     if len(argv) != 4:
         print(__doc__.strip().splitlines()[0])
         print("usage: booth_report_posted.py COMMENTS_JSON HEAD_SHA STARTED_AT")

@@ -26,12 +26,14 @@ audit fails three pushes running gets one issue with three comments.
 """
 import json
 import sys
+from collections.abc import Callable
 from pathlib import Path
+from typing import Any
 
 ALERT_CONCLUSIONS = ('failure', 'timed_out')
 
 
-def pr_number(run):
+def pr_number(run: dict[str, Any]) -> Any:
     """The PR the run audited, or None. A pull_request run lists it in the
     event; a workflow_dispatch run lists none, so the alert names it by its
     head commit instead."""
@@ -41,7 +43,7 @@ def pr_number(run):
     return None
 
 
-def alert_for(event):
+def alert_for(event: dict[str, Any]) -> tuple[str, str] | None:
     """(title, body) for a run worth an alert, or None."""
     run = event.get('workflow_run') or {}
     conclusion = run.get('conclusion')
@@ -71,7 +73,8 @@ def alert_for(event):
     return title, body
 
 
-def main(argv=None, raise_alert=None):
+def main(argv: list[str] | None = None,
+         raise_alert: Callable[[str, str], tuple[str, Any]] | None = None) -> int:
     argv = sys.argv[1:] if argv is None else argv
     if len(argv) != 1:
         print('usage: booth_alert.py <event.json>', file=sys.stderr)
@@ -83,7 +86,8 @@ def main(argv=None, raise_alert=None):
         print(f'no alert: the audit run ended {conclusion!r}')
         return 0
     if raise_alert is None:
-        from src.pipeline.alerts import open_or_comment as raise_alert
+        from src.pipeline.alerts import open_or_comment
+        raise_alert = open_or_comment
     action, ref = raise_alert(*alert)
     print(f'{action}: {ref}')
     return 0
