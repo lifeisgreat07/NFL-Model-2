@@ -17,3 +17,4 @@ a new record that names the one it replaces, and the old one says
 | [0003](0003-kickoff-lock.md) | A week's picks are saved once, before its first kickoff, and never rewritten |
 | [0004](0004-booth-read-only.md) | Booth, the auditor, cannot push, and merging stays a human decision |
 | [0005](0005-cron-job-org.md) | Scheduled runs are started on time by cron-job.org; GitHub's cron is the fallback |
+| [0006](0006-multi-sport.md) | One core, one module per sport, and nothing bleeds between them: each isolation rule held by a test |

@@ -1,0 +1,125 @@
+{
+  "target": "src/core/isolation.py",
+  "tests": "tests/test_sport_isolation.py",
+  "cases": [
+    {
+      "id": "iso-sport-may-import-another",
+      "why": "a sport may import another sport's code, so the NHL can quietly read the NFL's ratings engine and a change to one moves the other's picks.",
+      "find": "            elif layer == 'sport' and target == 'sport' and target_sport != sport:",
+      "replace": "            elif layer == 'sport' and target == 'sport' and False:",
+      "expect_caught_by": "test_a_sport_importing_another_is_caught"
+    },
+    {
+      "id": "iso-relative-imports-unresolved",
+      "why": "relative imports are read as written, so `from ..nhl import model` inside the NBA is never seen as reaching another sport.",
+      "find": "            if node.level:",
+      "replace": "            if False:",
+      "expect_caught_by": "test_a_relative_import_into_another_sport_is_caught"
+    },
+    {
+      "id": "iso-core-may-import-a-sport",
+      "why": "the core may import a sport, so a shared lock or grading change can start depending on one league's code.",
+      "find": "            elif layer == 'core' and target == 'sport':",
+      "replace": "            elif layer == 'core' and False:",
+      "expect_caught_by": "test_the_core_importing_a_sport_is_caught"
+    },
+    {
+      "id": "iso-legacy-nfl-not-a-sport",
+      "why": "src/pipeline stops counting as the NFL before Stage 52 has moved it, so the core can import the NFL's modules and nothing says so.",
+      "find": "    if any(module == p or module.startswith(p + '.') for p in LEGACY_NFL_PACKAGES):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_the_core_importing_the_legacy_nfl_is_caught"
+    },
+    {
+      "id": "iso-site-importable",
+      "why": "anything may import the site layer, so the one module that sees every sport becomes a back door from one sport to another.",
+      "find": "            if target == 'site' and layer != 'site':",
+      "replace": "            if False:",
+      "expect_caught_by": "test_importing_the_site_layer_is_caught"
+    },
+    {
+      "id": "iso-literals-not-read",
+      "why": "strings are no longer read, so a path built by hand into another sport's folder, or an importlib call, gets past the import check.",
+      "find": "                m = pattern.search(node.value)",
+      "replace": "                m = None",
+      "expect_caught_by": "test_a_path_into_another_sport_is_caught"
+    },
+    {
+      "id": "iso-docstrings-read-as-paths",
+      "why": "docstrings count as paths, so a sentence comparing the NHL with data/nfl/ fails the build and authors learn to stop writing them.",
+      "find": " and id(node) not in prose:",
+      "replace": ":",
+      "expect_caught_by": "test_a_docstring_about_another_sport_is_not_a_path"
+    },
+    {
+      "id": "iso-unclassified-workflow-skipped",
+      "why": "a workflow that is neither a sport's, shared nor legacy is skipped, so a new one escapes every rule by having a new name.",
+      "find": "        if sport is None:\n            out.append(",
+      "replace": "        if sport is None:\n            continue\n            out.append(",
+      "expect_caught_by": "test_an_unclassified_workflow_is_caught"
+    },
+    {
+      "id": "iso-any-sport-folder-allowed",
+      "why": "any sport's folder counts as a sport's own, so the NHL's workflow may commit into data/nfl/.",
+      "find": "    return any(path == f'{f}/{sport}' or path.startswith(f'{f}/{sport}/') for f in SPORT_FOLDERS)",
+      "replace": "    return any(path.startswith(f'{f}/') for f in SPORT_FOLDERS)",
+      "expect_caught_by": "test_a_sport_workflow_writing_outside_its_folders_is_caught"
+    },
+    {
+      "id": "iso-git-add-all-unseen",
+      "why": "`git add -A` is dropped from the paths read, so a sport workflow that commits the whole tree is reported for the wrong reason or not at all.",
+      "find": "        paths = [a for a in args.split() if not a.startswith('-') or a in ('-A', '--all')]",
+      "replace": "        paths = [a for a in args.split() if not a.startswith('-')]",
+      "expect_caught_by": "test_a_sport_workflow_writing_outside_its_folders_is_caught"
+    },
+    {
+      "id": "iso-uploads-unchecked",
+      "why": "uploaded artifacts are not checked, so a sport workflow can publish another sport's files as its own.",
+      "find": "    for p in _upload_paths(text):",
+      "replace": "    for p in _upload_paths(text)[:0]:",
+      "expect_caught_by": "test_a_sport_workflow_writing_outside_its_folders_is_caught"
+    },
+    {
+      "id": "iso-workflow-name-unchecked",
+      "why": "a sport's workflow need not say its sport, so two leagues' 'Daily update' runs look the same in the Actions list and the runs table.",
+      "find": "    if not m or not m.group(1).strip().strip('\\'\"').startswith(f'{tag} '):",
+      "replace": "    if not m:",
+      "expect_caught_by": "test_a_sport_workflow_name_without_its_sport_is_caught"
+    },
+    {
+      "id": "iso-alert-title-unchecked",
+      "why": "alert titles need not carry the sport, so an NHL failure comments on the NFL's open issue of the same title.",
+      "find": "        if not title.startswith(f'{tag}: '):",
+      "replace": "        if False:",
+      "expect_caught_by": "test_an_alert_title_without_its_sport_is_caught"
+    },
+    {
+      "id": "iso-storage-key-unchecked",
+      "why": "browser storage keys need not carry the sport, so the NHL page's My Picks reads and overwrites the NFL's on the same device.",
+      "find": "                if not key.startswith((f'{code}:', f'{code}-', f'{code}.')):",
+      "replace": "                if False:",
+      "expect_caught_by": "test_a_storage_key_without_its_sport_is_caught"
+    },
+    {
+      "id": "iso-css-unchecked",
+      "why": "a sport's CSS need not be scoped, so an NHL rule for .card restyles every NFL card on a shared page.",
+      "find": "            for m in CSS_RULE.finditer(text):",
+      "replace": "            for m in CSS_RULE.finditer(''):",
+      "expect_caught_by": "test_unscoped_css_is_caught"
+    },
+    {
+      "id": "iso-sports-not-discovered",
+      "why": "sports with a package are not discovered, so with the NHL present the checks still believe the NFL is the only sport.",
+      "find": "        found |= {p.name for p in base.iterdir() if p.is_dir() and (p / '__init__.py').exists()}",
+      "replace": "        pass",
+      "expect_caught_by": "test_a_clean_two_sport_repository_passes"
+    },
+    {
+      "id": "iso-folder-code-unchecked",
+      "why": "a folder under src/sports need not be a sport code, so its names can never be checked against the code they should carry.",
+      "find": "        if not SPORT_CODE.match(code):",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_sport_folder_that_is_not_a_code_is_caught"
+    }
+  ]
+}
