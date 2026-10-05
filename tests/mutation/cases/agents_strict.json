@@ -1,0 +1,39 @@
+{
+  "target": "src/agents/booth_alert.py",
+  "tests": "tests/test_type_check.py",
+  "cases": [
+    {
+      "id": "agents-strict-annotation-dropped",
+      "why": "a function in src/agents loses its annotations and nothing notices, so the strict check covers less than it says.",
+      "find": "def pr_number(run: dict[str, Any]) -> Any:\n",
+      "replace": "def pr_number(run):\n",
+      "expect_caught_by": "test_the_agents_type_check_strictly"
+    },
+    {
+      "id": "agents-strict-return-type-dropped",
+      "target": "src/agents/session_start.py",
+      "why": "an orientation helper drops its return type, the commonest way a strict module goes loose again.",
+      "find": "def section(title: str) -> None:\n",
+      "replace": "def section(title: str):\n",
+      "expect_caught_by": "test_the_agents_type_check_strictly"
+    },
+    {
+      "id": "agents-strict-step-dropped-from-ci",
+      "target": ".github/workflows/run-tests.yml",
+      "tests": "tests/test_tasks.py",
+      "why": "run-tests.yml stops running the strict check, so tasks.py's lint gates on a check CI never runs.",
+      "find": "        run: python -m mypy --strict --ignore-missing-imports --follow-imports=silent src/agents\n",
+      "replace": "        run: echo skipped\n",
+      "expect_caught_by": "test_lint_is_what_run_tests_runs"
+    },
+    {
+      "id": "agents-strict-check-not-strict",
+      "target": "tasks.py",
+      "tests": "tests/test_tasks.py",
+      "why": "the task drops --strict, so the suite's type check passes unannotated agents while CI's would not.",
+      "find": "AGENT_TYPES = [PY, '-m', 'mypy', '--strict', '--ignore-missing-imports', '--follow-imports=silent', 'src/agents']\n",
+      "replace": "AGENT_TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', '--follow-imports=silent', 'src/agents']\n",
+      "expect_caught_by": "test_lint_is_what_run_tests_runs"
+    }
+  ]
+}

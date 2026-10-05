@@ -38,8 +38,10 @@ import json
 import shutil
 import subprocess
 import sys
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 REPO = Path(__file__).parents[2]
 sys.path.insert(0, str(REPO / 'tests' / 'booth_fixtures'))
@@ -56,7 +58,7 @@ BASELINE = 'baseline.json'
 GIT_ID = ('-c', 'user.name=fixture', '-c', 'user.email=fixture@example.invalid')
 
 
-def _git(cwd, *args):
+def _git(cwd: Path | str, *args: str) -> str:
     r = subprocess.run(
         ('git',) + GIT_ID + args, cwd=cwd,
         capture_output=True, text=True,
@@ -67,7 +69,7 @@ def _git(cwd, *args):
     return r.stdout
 
 
-def _force_rmtree(path):
+def _force_rmtree(path: Path) -> None:
     """Delete a git checkout on Windows, where objects are read-only.
 
     Git writes loose objects without the write bit, and `shutil.rmtree` then
@@ -78,21 +80,21 @@ def _force_rmtree(path):
     import os
     import stat
 
-    def _retry(func, target, _exc):
+    def _retry(func: Callable[[str], Any], target: str, _exc: Any) -> None:
         os.chmod(target, stat.S_IWRITE)
         func(target)
 
     shutil.rmtree(path, onerror=_retry)
 
 
-def _write_tree(dest, tree):
+def _write_tree(dest: Path, tree: dict[str, str]) -> None:
     for rel, text in tree.items():
         path = dest / rel
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text, encoding='utf-8')
 
 
-def assemble(meta, dest):
+def assemble(meta: dict[str, Any], dest: Path | str) -> tuple[str, str]:
     """Build the throwaway repo. Returns (base_sha, head_sha).
 
     Two real commits, not a patch file: Booth's procedure runs git commands --
@@ -153,7 +155,7 @@ Use {head} as the head, and 0 as the PR number.
 """
 
 
-def prompt(meta, head_sha, work_dir='.'):
+def prompt(meta: dict[str, Any], head_sha: str, work_dir: str = '.') -> str:
     """The exact instructions, as one source of truth.
 
     The workflow calls this rather than restating the prompt in YAML. The
@@ -165,11 +167,11 @@ def prompt(meta, head_sha, work_dir='.'):
     return PROMPT.format(head=head_sha[:7], work_dir=work_dir)
 
 
-def baseline_path(meta):
-    return meta['_path'] / BASELINE
+def baseline_path(meta: dict[str, Any]) -> Path:
+    return Path(meta['_path']) / BASELINE
 
 
-def record(meta, report_text, head_sha=None):
+def record(meta: dict[str, Any], report_text: str, head_sha: str | None = None) -> tuple[bool, str]:
     """Parse a Booth report, check the expectation, write the baseline.
 
     Returns (ok, explanation). Writes the baseline either way: a fixture Booth
@@ -196,7 +198,7 @@ def record(meta, report_text, head_sha=None):
     return ok, why
 
 
-def head_matches(head_sha, verdict):
+def head_matches(head_sha: str | None, verdict: dict[str, Any] | None) -> bool:
     """True when the commit Booth says it audited is the one being recorded.
 
     Booth reports a short SHA; the runner knows the full one. A baseline whose
@@ -216,20 +218,20 @@ def head_matches(head_sha, verdict):
     return full.startswith(short)
 
 
-def _head_mismatch(head_sha, verdict):
+def _head_mismatch(head_sha: str | None, verdict: dict[str, Any] | None) -> str:
     return ('the baseline names head {!r} but Booth audited {!r}; the result '
             'is not tied to the commit it claims to be about'.format(
                 head_sha, (verdict or {}).get('head')))
 
 
-def load_baseline(meta):
+def load_baseline(meta: dict[str, Any]) -> Any:
     p = baseline_path(meta)
     if not p.is_file():
         return None
     return json.loads(p.read_text(encoding='utf-8'))
 
 
-def check_one(meta):
+def check_one(meta: dict[str, Any]) -> tuple[bool | None, str]:
     """Re-check a recorded baseline against the fixture's expectation. Free.
 
     Deliberately re-derives the answer from the stored verdict rather than
@@ -248,7 +250,7 @@ def check_one(meta):
     return ok, why
 
 
-def main(argv=None):
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     sub = ap.add_subparsers(dest='cmd', required=True)
 
@@ -318,7 +320,7 @@ def main(argv=None):
     return _record_and_report(meta, args.report, head)
 
 
-def _record_and_report(meta, report_path, head):
+def _record_and_report(meta: dict[str, Any], report_path: str, head: str | None) -> int:
     ok, why = record(meta, Path(report_path).read_text(encoding='utf-8'), head)
     print('{}: {}'.format('SATISFIED' if ok else 'NOT SATISFIED', why))
     print(f'baseline written to {baseline_path(meta)}')

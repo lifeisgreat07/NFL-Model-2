@@ -45,6 +45,7 @@ import re
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 REPO = Path(__file__).parents[2]
 
@@ -59,7 +60,7 @@ AUDIT_RE = re.compile(r'^##\s+Booth Audit:\s*PR\s*#(\d+)', re.M)
 HEAD_RE = re.compile(r'^Head commit audited:\s*`?([0-9a-f]{7,40})`?', re.M)
 
 
-def _pr_number(comment):
+def _pr_number(comment: dict[str, Any]) -> int | None:
     """The PR a comment belongs to, from its own heading or its URL."""
     m = AUDIT_RE.search(comment.get('body') or '')
     if m:
@@ -76,7 +77,7 @@ BOOTH_ACCOUNTS = bv.BOOTH_ACCOUNTS
 author = bv.author
 
 
-def is_audit(comment):
+def is_audit(comment: dict[str, Any]) -> bool:
     """A comment is an audit only if it has Booth's heading AND was posted by
     one of Booth's accounts. A comment with no author recorded is not one:
     failing closed here means a collector fed the wrong shape logs nothing,
@@ -85,7 +86,7 @@ def is_audit(comment):
     return bool(AUDIT_RE.search(body)) and author(comment) in BOOTH_ACCOUNTS
 
 
-def parse_audit(comment):
+def parse_audit(comment: dict[str, Any]) -> dict[str, Any]:
     """One comment -> one row. Never raises on a malformed block.
 
     A report whose block cannot be parsed is recorded with the reason. Dropping
@@ -93,7 +94,7 @@ def parse_audit(comment):
     the kind of thing this log should be able to show.
     """
     body = comment['body']
-    row = {
+    row: dict[str, Any] = {
         'pr': _pr_number(comment),
         'url': comment.get('html_url'),
         'posted_utc': comment.get('created_at'),
@@ -140,13 +141,13 @@ def parse_audit(comment):
     return row
 
 
-def mark_superseded(rows):
+def mark_superseded(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Within a pull request, only the newest audit counts.
 
     Sorted by posted_utc so the rule does not depend on the order comments
     arrive in. Ties keep document order, which matches how GitHub returns them.
     """
-    by_pr = {}
+    by_pr: dict[Any, list[int]] = {}
     for i, row in enumerate(rows):
         by_pr.setdefault(row['pr'], []).append(i)
     for indices in by_pr.values():
@@ -156,7 +157,7 @@ def mark_superseded(rows):
     return rows
 
 
-def summarise(rows):
+def summarise(rows: list[dict[str, Any]]) -> dict[str, int]:
     current = [r for r in rows if not r['superseded']]
     scored = [r for r in current if r['has_verdict_block']]
     return {
@@ -175,7 +176,7 @@ def summarise(rows):
     }
 
 
-def build(comments):
+def build(comments: list[dict[str, Any]]) -> dict[str, Any]:
     rows = [parse_audit(c) for c in comments if is_audit(c)]
     rows.sort(key=lambda r: (r['posted_utc'] or '', r['pr'] or 0))
     mark_superseded(rows)
@@ -192,7 +193,7 @@ def build(comments):
     }
 
 
-def main(argv=None):
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     ap.add_argument('--comments', required=True,
                     help="JSON array of issue comments, or - for stdin")

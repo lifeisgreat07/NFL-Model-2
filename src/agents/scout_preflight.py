@@ -41,6 +41,7 @@ import argparse
 import re
 import subprocess
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).parents[2]
@@ -108,7 +109,7 @@ UNATTACHED_RE = re.compile(r'\b(?:not attached|unattached|not been attached)\b',
 VISUAL_SENTENCE_SPLIT_RE = re.compile(r'(?<=[.!?])\s+|\n+')
 
 
-def visual_claim(text):
+def visual_claim(text: str) -> str | None:
     """The first sentence asserting a visual check, or None.
 
     Returns the matched phrase. A sentence labelled "Process note", or one
@@ -176,20 +177,20 @@ CODE_COUNT_SPAN_RE = re.compile(
     r'`[^`\n]*\b\d+\s+(?:passed|failed|errors?|skipped|collected|CAUGHT|SURVIVED)\b[^`\n]*`')
 
 
-def strip_quotations(body):
+def strip_quotations(body: str) -> str:
     """Remove quoted regions so only the body's own assertions are checked."""
     body = BLOCKQUOTE_RE.sub('', FENCED_RE.sub('', body))
     return QUOTED_SPAN_RE.sub('', CODE_COUNT_SPAN_RE.sub('', body))
 
 
 class Finding:
-    def __init__(self, check, ok, detail):
+    def __init__(self, check: str, ok: bool, detail: str) -> None:
         self.check = check
         self.ok = ok
         self.detail = detail
 
 
-def _git(*args):
+def _git(*args: str) -> str:
     out = subprocess.run(['git'] + list(args), cwd=REPO_ROOT,
                          capture_output=True, text=True)
     if out.returncode != 0:
@@ -197,7 +198,7 @@ def _git(*args):
     return out.stdout.strip()
 
 
-def branch_commits(base, head='HEAD'):
+def branch_commits(base: str, head: str = 'HEAD') -> list[tuple[str, ...]]:
     """Non-merge commits on this branch that are not on base.
 
     Merges are excluded deliberately: "Merge main" is not a feature a reviewer
@@ -215,7 +216,7 @@ def branch_commits(base, head='HEAD'):
     return [tuple(line.split('\x1f', 1)) for line in raw.splitlines()]
 
 
-def parse_suite_summary(stdout):
+def parse_suite_summary(stdout: str) -> tuple[int | None, int | None]:
     """(passed, broken) from pytest's own summary text, or (None, None).
 
     A separate function because run_test_suite() shells out, which makes its
@@ -229,7 +230,7 @@ def parse_suite_summary(stdout):
     return int(m.group(1)), sum(int(n) for n in SUITE_BROKEN_RE.findall(stdout))
 
 
-def branch_commit_messages(base, head='HEAD'):
+def branch_commit_messages(base: str, head: str = 'HEAD') -> list[tuple[str, str, str]]:
     """(short sha, subject, full message) for each non-merge commit.
 
     branch_commits() reads subjects only, which is right for the scope check
@@ -239,7 +240,7 @@ def branch_commit_messages(base, head='HEAD'):
     """
     raw = _git('log', '--no-merges', '--format=%h%x1f%s%x1f%B%x1e',
                f'{base}..{head}')
-    out = []
+    out: list[tuple[str, str, str]] = []
     for record in raw.split('\x1e'):
         record = record.strip('\n')
         if not record:
@@ -249,7 +250,7 @@ def branch_commit_messages(base, head='HEAD'):
     return out
 
 
-def check_no_suite_count_in_a_commit_message(base, head):
+def check_no_suite_count_in_a_commit_message(base: str, head: str) -> 'Finding':
     """The one artifact in this repository that cannot be corrected.
 
     A PR body is editable and scout-preflight.yml re-checks it on every
@@ -292,7 +293,7 @@ def check_no_suite_count_in_a_commit_message(base, head):
                    "no commit message on this branch states a suite count")
 
 
-def run_test_suite():
+def run_test_suite() -> tuple[int | None, int | None, str | None]:
     """Returns (passed, broken, error) for a real run at HEAD.
 
     `broken` is failures plus errors. It exists because reading ONLY the
@@ -317,7 +318,7 @@ def run_test_suite():
     return passed, broken, None
 
 
-def check_test_count(body, skip_tests):
+def check_test_count(body: str, skip_tests: bool) -> 'Finding':
     """The PR #21 failure: a figure that was true at some earlier commit."""
     claims = {int(m) for m in TEST_COUNT_RE.findall(body)}
     if not claims:
@@ -349,7 +350,7 @@ def check_test_count(body, skip_tests):
     return Finding('test count', True, f"claimed and actual both {actual}")
 
 
-def check_scope_disclosed(body, commits):
+def check_scope_disclosed(body: str, commits: list[tuple[str, ...]]) -> 'Finding':
     """Booth's scope discrepancy: a description covering part of the branch.
 
     The rule is deliberately mechanical rather than a fuzzy match on commit
@@ -372,7 +373,7 @@ def check_scope_disclosed(body, commits):
         return Finding('scope disclosed', True,
                        f"{len(commits)} non-merge commit(s) -- title covers it")
 
-    def disclosed(sha, subj):
+    def disclosed(sha: str, subj: str) -> bool:
         # Markdown may wrap a subject in backticks, bold it, or list it after a
         # number; a substring test survives all of those without loosening what
         # counts as a match.
@@ -396,18 +397,19 @@ def check_scope_disclosed(body, commits):
 DASHBOARD_PARTS = 'src/dashboard/'
 
 
-def page_files(changed):
+def page_files(changed: list[str]) -> list[str]:
     """The changed files a screenshot could show."""
     return [f for f in changed
             if f.endswith(('.html', '.css', '.svg')) or f.startswith(DASHBOARD_PARTS)]
 
 
-def touches_ui(base, head='HEAD'):
+def touches_ui(base: str, head: str = 'HEAD') -> list[str]:
     """Does this branch change anything a screenshot could show?"""
     return page_files(_git('diff', '--name-only', f'{base}...{head}').splitlines())
 
 
-def check_visual_claims_have_artifacts(claims, full_body=None, ui_files=None):
+def check_visual_claims_have_artifacts(claims: str, full_body: str | None = None,
+                                      ui_files: list[str] | None = None) -> 'Finding':
     """Booth marked the same claim UNVERIFIABLE three times in one PR.
 
     Scoped to PRs that actually change the page. Without that gate the check
@@ -452,7 +454,7 @@ def check_visual_claims_have_artifacts(claims, full_body=None, ui_files=None):
 MUTATION_GLOB_RE = re.compile(r'runner\.py\b[^\n]*?--id[ =]+["\']?([^\s"\'`]*[*?\[][^\s"\'`]*)')
 
 
-def check_mutation_count_scope(body):
+def check_mutation_count_scope(body: str) -> 'Finding':
     """A mutation figure must come from the full corpus or named ids, never a glob."""
     globs = MUTATION_GLOB_RE.findall(body)
     if globs:
@@ -496,7 +498,7 @@ SCOPED_COUNT_RE = re.compile(
 SENTENCE_SPLIT_RE = re.compile(r'(?<=[.!?])\s+|\n{2,}|\n\|')
 
 
-def collected_count(module):
+def collected_count(module: str) -> int | None:
     """How many cases pytest actually collects from tests/<module>.py."""
     path = REPO_ROOT / 'tests' / f'{module}.py'
     if not path.exists():
@@ -508,7 +510,7 @@ def collected_count(module):
     return int(m.group(1)) if m else None
 
 
-def check_scoped_test_counts(body, skip_tests):
+def check_scoped_test_counts(body: str, skip_tests: bool) -> 'Finding':
     """A count that is real output from a command with a DIFFERENT scope.
 
     The failure this exists for, stated exactly: on PR #54 the body said
@@ -576,7 +578,7 @@ AUDITOR_FILES = ('.github/workflows/booth-pr-audit.yml', 'BOOTH_PROTOCOL.md')
 HUMAN_REVIEW_RE = re.compile(r'(?im)^\W*human review required:')
 
 
-def changed_files(base, head='HEAD'):
+def changed_files(base: str, head: str = 'HEAD') -> list[str]:
     # --no-renames: a rename is listed as its deletion AND its addition. With
     # rename detection on, renaming booth-pr-audit.yml listed only the new
     # name, and the auditor-edits check below watched nothing it knew
@@ -584,7 +586,7 @@ def changed_files(base, head='HEAD'):
     return _git('diff', '--name-only', '--no-renames', f'{base}...{head}').splitlines()
 
 
-def check_auditor_edits_need_a_human(body, changed):
+def check_auditor_edits_need_a_human(body: str, changed: list[str]) -> 'Finding':
     """A PR that edits Booth's instructions is audited by its own edits, so a
     Booth SAFE TO MERGE on it is not independent. It must carry a line
     starting 'Human review required:' so nobody merges it on Booth alone."""
@@ -613,7 +615,7 @@ PATH_SPAN_RE = re.compile(
     r'`((?:[\w.-]+/)+[\w.-]+|[\w.-]+\.(?:py|md|json|ya?ml|txt|html|js|css|csv|toml|cfg|ini|ps1))`')
 
 
-def is_tracked(path, head='HEAD'):
+def is_tracked(path: str, head: str = 'HEAD') -> bool:
     """True when `path` is a file in the commit `head`."""
     return subprocess.run(['git', 'cat-file', '-e', f'{head}:{path}'], cwd=REPO_ROOT,
                           capture_output=True).returncode == 0
@@ -622,7 +624,8 @@ def is_tracked(path, head='HEAD'):
 REMOVAL_RE = re.compile(r'\b(?:delet|remov)\w*', re.IGNORECASE)
 
 
-def check_tracked_claims(claims, head='HEAD', base='origin/main', tracked=is_tracked):
+def check_tracked_claims(claims: str, head: str = 'HEAD', base: str = 'origin/main',
+                         tracked: Callable[[str, str], bool] = is_tracked) -> 'Finding':
     """Every file a sentence calls restored, committed or tracked must be a
     file in the branch's head commit.
 
@@ -653,7 +656,8 @@ def check_tracked_claims(claims, head='HEAD', base='origin/main', tracked=is_tra
                    f"reports somebody else's claim.")
 
 
-def preflight(body, base='origin/main', skip_tests=False, head='HEAD'):
+def preflight(body: str, base: str = 'origin/main', skip_tests: bool = False,
+              head: str = 'HEAD') -> tuple[list['Finding'], list[tuple[str, ...]]]:
     commits = branch_commits(base, head)
     # Assertions are checked against quotation-stripped text; the attachment
     # search runs on the FULL body, because an image is evidence wherever it
@@ -686,7 +690,7 @@ def preflight(body, base='origin/main', skip_tests=False, head='HEAD'):
     ], commits
 
 
-def main():
+def main() -> int:
     ap = argparse.ArgumentParser(
         description="Check a PR description against reality before opening it.")
     ap.add_argument('body_file', help="file containing the PR description")

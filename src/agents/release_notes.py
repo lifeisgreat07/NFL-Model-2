@@ -18,6 +18,8 @@ tag is pushed; a pushed tag that `--list` does not print fails the run.
 import argparse
 import subprocess
 import sys
+from collections.abc import Callable
+from typing import Any
 
 from src.pipeline.config import VERSION_HISTORY
 
@@ -31,23 +33,23 @@ def _key(version: str) -> tuple[int, ...]:
     return tuple(int(p) for p in version.split('.'))
 
 
-def released_versions(history=VERSION_HISTORY) -> list[str]:
+def released_versions(history: list[dict[str, str]] = VERSION_HISTORY) -> list[str]:
     """Every VERSION_HISTORY version from the first tagged one on, oldest first."""
     return sorted((h['version'] for h in history if _key(h['version']) >= FIRST_TAGGED), key=_key)
 
 
-def entry(version: str, history=VERSION_HISTORY) -> dict:
+def entry(version: str, history: list[dict[str, str]] = VERSION_HISTORY) -> dict[str, str]:
     found = [h for h in history if h['version'] == version]
     if len(found) != 1:
         raise ValueError(f'VERSION_HISTORY has {len(found)} entries for {version!r}, not one')
     return found[0]
 
 
-def title(version: str, history=VERSION_HISTORY) -> str:
+def title(version: str, history: list[dict[str, str]] = VERSION_HISTORY) -> str:
     return f"v{version}: {entry(version, history)['headline']}"
 
 
-def notes(version: str, history=VERSION_HISTORY) -> str:
+def notes(version: str, history: list[dict[str, str]] = VERSION_HISTORY) -> str:
     e = entry(version, history)
     return (f"**{e['date']}.** {e['detail']}\n\n"
             f"Every version and its reason is on the dashboard's What's Changed page "
@@ -55,12 +57,12 @@ def notes(version: str, history=VERSION_HISTORY) -> str:
             f"Model Lab ({PAGE_URL}#modellab).\n")
 
 
-def tag_exists(version: str, run=subprocess.run) -> bool:
+def tag_exists(version: str, run: Callable[..., Any] = subprocess.run) -> bool:
     r = run(['git', 'rev-parse', '-q', '--verify', f'refs/tags/v{version}'], capture_output=True, text=True)
-    return r.returncode == 0
+    return bool(r.returncode == 0)
 
 
-def main(argv=None) -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     which = ap.add_mutually_exclusive_group(required=True)
     which.add_argument('--list', action='store_true')

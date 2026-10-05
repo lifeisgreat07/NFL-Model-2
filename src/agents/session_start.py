@@ -37,8 +37,10 @@ import re
 import subprocess
 import sys
 import urllib.request
+from collections.abc import Callable
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
+from typing import Any
 
 REPO = Path(__file__).parents[2]
 SLUG = 'lifeisgreat07/NFL-Model-2'
@@ -65,18 +67,18 @@ COUNT_RE = re.compile(r'Suite:\s*\*\*([0-9,]+)\s+passing\*\*')
 CONTEXT_STALE_DAYS = 3
 
 
-def _git(*args):
+def _git(*args: str) -> str:
     r = subprocess.run(['git'] + list(args), cwd=REPO,
                        capture_output=True, text=True)
     return r.stdout.strip()
 
 
-def section(title):
+def section(title: str) -> None:
     print('\n' + title)
     print('-' * len(title))
 
 
-def repo_state():
+def repo_state() -> str:
     section('Repository')
     branch = _git('rev-parse', '--abbrev-ref', 'HEAD')
     print(f'  branch          {branch}')
@@ -99,7 +101,7 @@ def repo_state():
     return branch
 
 
-def branches():
+def branches() -> None:
     """Local branches, and whether each is already merged into main.
 
     A merged branch left lying around is the noise that makes the unmerged one
@@ -114,7 +116,7 @@ def branches():
         print(f'  {name:<38} {state}')
 
 
-def context_file():
+def context_file() -> None:
     """Cross-check what docs/context.md says against what git knows.
 
     This is the check worth having. The file's job is to name the open work,
@@ -163,7 +165,7 @@ def context_file():
             print(f'    {name}')
 
 
-def suite(skip):
+def suite(skip: bool) -> None:
     section('Suite')
     claimed = COUNT_RE.search(CLAUDE_MD.read_text(encoding='utf-8'))
     print('  CLAUDE.md says  {}'.format(
@@ -184,7 +186,7 @@ def suite(skip):
               'than carrying it through the session.')
 
 
-def _get_json(url):
+def _get_json(url: str) -> Any:
     """One anonymous read of GitHub's public API (GITHUB_TOKEN if set). The
     repository is public, so no token is needed; without one the limit is
     60 calls an hour, and this section makes six."""
@@ -197,11 +199,11 @@ def _get_json(url):
         return json.load(resp)
 
 
-def _utc(value):
+def _utc(value: str | None) -> datetime | None:
     return datetime.fromisoformat(value.replace('Z', '+00:00')).astimezone(UTC) if value else None
 
 
-def run_lines(runs, shown, now):
+def run_lines(runs: list[dict[str, Any]], shown: str, now: datetime) -> list[str]:
     """A workflow's runs inside the window, oldest first, one line each.
 
     A schedule run that follows a requested run of the same workflow within
@@ -213,12 +215,14 @@ def run_lines(runs, shown, now):
     cutoff = now - timedelta(hours=RUN_WINDOW_HOURS)
     recent = sorted((r for r in runs if (_utc(r.get('run_started_at') or r.get('created_at'))
                                          or cutoff) > cutoff),
-                    key=lambda r: r.get('run_started_at') or r.get('created_at'))
+                    key=lambda r: str(r.get('run_started_at') or r.get('created_at')))
     if not recent:
         return [f'  {shown:<26} no run in the last {RUN_WINDOW_HOURS} hours']
     lines, requested = [], None
     for r in recent:
         start = _utc(r.get('run_started_at') or r.get('created_at'))
+        if start is None:  # the window filter above already left these out
+            continue
         note = ''
         if r.get('event') == 'workflow_dispatch':
             how, requested = 'requested', start
@@ -235,7 +239,7 @@ def run_lines(runs, shown, now):
     return lines
 
 
-def github_state(get=_get_json, now=None):
+def github_state(get: Callable[[str], Any] = _get_json, now: datetime | None = None) -> None:
     """The unattended jobs and the open pull requests and issues, read from
     GitHub. Never raises: a failed read is printed as one, and the session
     goes on with what git can tell it."""
@@ -280,7 +284,7 @@ def github_state(get=_get_json, now=None):
         print('  Nothing above this line is affected; check the Actions tab by hand.')
 
 
-def print_context():
+def print_context() -> None:
     """Print docs/context.md in full, rather than telling you to go read it.
 
     It is capped at 70 non-blank lines by tests/test_workflow_docs.py for
@@ -301,7 +305,7 @@ def print_context():
         print('  ' + line if line.strip() else '')
 
 
-def main(argv=None):
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--skip-tests', action='store_true')
     ap.add_argument('--offline', action='store_true',
@@ -322,7 +326,7 @@ def main(argv=None):
     # able to die on the contents of the file it exists to show you.
     for stream in (sys.stdout, sys.stderr):
         try:
-            stream.reconfigure(encoding='utf-8', errors='replace')
+            getattr(stream, 'reconfigure')(encoding='utf-8', errors='replace')
         except (AttributeError, ValueError, OSError):
             pass
 

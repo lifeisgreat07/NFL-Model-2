@@ -28,6 +28,7 @@ has already been bitten by.
 """
 import json
 import re
+from typing import Any
 
 #: The accounts Booth posts as. Every audit before Stage 23 was posted by
 #: claude[bot] (the Claude GitHub App's token); since Booth runs on the
@@ -44,7 +45,7 @@ import re
 BOOTH_ACCOUNTS = frozenset({'claude[bot]', 'github-actions[bot]'})
 
 
-def author(comment):
+def author(comment: dict[str, Any]) -> Any:
     """The login a comment was posted by, or None when the input carries none."""
     return (comment.get('user') or {}).get('login')
 
@@ -74,7 +75,7 @@ class VerdictError(ValueError):
     """The block is present but malformed. Never raised for a missing block."""
 
 
-def extract(report_text):
+def extract(report_text: str | None) -> dict[str, Any] | None:
     """Return the parsed verdict block, or None if the report has none.
 
     Raises VerdictError if a block is present but unusable -- a malformed
@@ -90,14 +91,14 @@ def extract(report_text):
             "Cannot tell which is the real verdict."
         )
     try:
-        data = json.loads(matches[0])
+        data: dict[str, Any] = json.loads(matches[0])
     except json.JSONDecodeError as exc:
         raise VerdictError(f"booth-verdict block is not valid JSON: {exc}") from exc
     _validate(data)
     return data
 
 
-def _validate(data):
+def _validate(data: Any) -> None:
     if not isinstance(data, dict):
         raise VerdictError(f"booth-verdict must be a JSON object, got {type(data).__name__}")
 
@@ -114,7 +115,7 @@ def _validate(data):
     if not isinstance(claims, list) or not claims:
         raise VerdictError("booth-verdict 'claims' must be a non-empty list")
 
-    seen = set()
+    seen: set[Any] = set()
     for claim in claims:
         if not isinstance(claim, dict):
             raise VerdictError(f"each claim must be an object, got {claim!r}")
@@ -136,12 +137,12 @@ def _validate(data):
         seen.add(claim['id'])
 
 
-def _prose_count(report_text, label):
+def _prose_count(report_text: str, label: str) -> int | None:
     match = re.search(_COUNT.format(label=label), report_text, re.MULTILINE)
     return int(match.group(1)) if match else None
 
 
-def cross_check(report_text, data=None):
+def cross_check(report_text: str, data: dict[str, Any] | None = None) -> list[str]:
     """Compare the block against the report's own prose counts.
 
     Returns a list of human-readable mismatches; empty means consistent.
@@ -156,7 +157,7 @@ def cross_check(report_text, data=None):
     if data is None:
         return ["no booth-verdict block found"]
 
-    problems = []
+    problems: list[str] = []
     tally = {v: 0 for v in VERDICTS}
     for claim in data['claims']:
         tally[claim['verdict']] += 1
@@ -191,13 +192,13 @@ def cross_check(report_text, data=None):
     return problems
 
 
-def implicated_paths(data, verdicts=('DISCREPANCY',)):
+def implicated_paths(data: dict[str, Any], verdicts: tuple[str, ...] = ('DISCREPANCY',)) -> set[str]:
     """Every path implicated by a claim with one of the given verdicts.
 
     The regression suite's actual question: does this set contain the file
     where the fixture seeded its defect?
     """
-    out = set()
+    out: set[str] = set()
     for claim in data['claims']:
         if claim['verdict'] in verdicts:
             out.update(claim['implicates'])
