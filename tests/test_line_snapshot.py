@@ -160,3 +160,56 @@ def test_a_partly_priced_week_logs_what_it_has_and_says_what_it_skipped(archive)
 # an explicit no-op kept for intent, not a fix, and a guard over it would be
 # the "comment claims more than the code delivers" shape this repository has
 # shipped five times.
+
+
+# --- Stage 37 item 4: a row per move, with the moment it was read ----------
+
+from datetime import UTC, datetime
+
+
+def _at(s):
+    return datetime.fromisoformat(s).replace(tzinfo=UTC)
+
+
+def test_an_unmoved_line_is_not_written_again_the_next_day(archive):
+    """One row per day per game wrote the same spread every day it did not
+    move; the archive is for movement."""
+    wu.log_line_snapshot(2026, 99, _games(*REAL_LINES), now=_at('2026-10-06 11:00'))
+    wu.log_line_snapshot(2026, 99, _games(*REAL_LINES), now=_at('2026-10-08 11:00'))
+    assert len(_rows(archive)) == 2
+
+
+def test_a_move_within_the_same_day_is_written(archive):
+    """The per-day rule missed this: a line that moved between two runs on
+    one day kept the morning's value for the day."""
+    wu.log_line_snapshot(2026, 99, _games(('KC', 'BAL', -3.5)), now=_at('2026-10-08 05:00'))
+    wu.log_line_snapshot(2026, 99, _games(('KC', 'BAL', -4.0)), now=_at('2026-10-08 11:00'))
+    rows = _rows(archive)
+    assert [r['spread_line'] for r in rows] == [-3.5, -4.0]
+    assert [r['captured_utc'] for r in rows] == ['2026-10-08T05:00:00Z', '2026-10-08T11:00:00Z']
+
+
+def test_a_line_that_moves_back_is_a_move(archive):
+    for when, spread in (('2026-10-06 11:00', -3.0), ('2026-10-07 11:00', -3.5), ('2026-10-08 11:00', -3.0)):
+        wu.log_line_snapshot(2026, 99, _games(('KC', 'BAL', spread)), now=_at(when))
+    assert [r['spread_line'] for r in _rows(archive)] == [-3.0, -3.5, -3.0]
+
+
+def test_rows_from_before_captured_utc_still_count_as_the_last_line(archive):
+    """The 2026 files written before this change carry captured_date only;
+    their last spread still decides whether a new row is a move."""
+    (archive / '2026_week99_lines.json').write_text(json.dumps(
+        [{'captured_date': '2026-10-01', 'home': 'KC', 'away': 'BAL', 'spread_line': -3.5}]))
+    wu.log_line_snapshot(2026, 99, _games(('KC', 'BAL', -3.5)), now=_at('2026-10-06 11:00'))
+    assert len(_rows(archive)) == 1
+    wu.log_line_snapshot(2026, 99, _games(('KC', 'BAL', -2.5)), now=_at('2026-10-06 12:00'))
+    rows = _rows(archive)
+    assert len(rows) == 2 and rows[-1]['captured_utc'] == '2026-10-06T12:00:00Z'
+    assert rows[-1]['captured_date'] == '2026-10-06'
+
+
+def test_a_duplicated_game_in_one_read_is_written_once(archive):
+    """A schedule that lists one game twice (a data error upstream) must not
+    record a move from a line to itself."""
+    wu.log_line_snapshot(2026, 99, _games(('KC', 'BAL', -3.5), ('KC', 'BAL', -3.5)), now=_at('2026-10-06 11:00'))
+    assert len(_rows(archive)) == 1

@@ -37,7 +37,7 @@ import argparse
 import json
 import re
 from collections import namedtuple
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -399,58 +399,61 @@ LINE_HISTORY_DIR = Path(__file__).parents[2] / 'data' / 'line_history'
 LINE_HISTORY_DIR.mkdir(parents=True, exist_ok=True)
 
 
-def log_line_snapshot(season: int, week: int, week_games: pd.DataFrame) -> None:
-    """Append today's spread for each game in this week to a running
-    archive. Building this over the season is how we'll eventually have
-    real line-movement data to backtest against, without needing to buy
+def log_line_snapshot(season: int, week: int, week_games: pd.DataFrame,
+                      now: datetime | None = None) -> None:
+    """Append each game's spread to a running archive WHEN IT HAS MOVED.
+
+    Building this over the season is how we'll eventually have real
+    line-movement data to backtest against, without needing to buy
     historical odds data we don't have access to.
 
+    A row is written when the game's spread differs from the last one
+    captured for it, or when none has been (Stage 37 item 4). Until then the
+    rule was one row per game per day, which wrote the same line every day
+    it did not move and missed a move that happened between two runs on the
+    same day. Each row carries `captured_utc`, the moment it was read, as
+    well as `captured_date` (kept so older rows and readers still line up).
+    A line that moves back is a move, and is written.
+
     A GAME WITH NO SPREAD POSTED YET IS SKIPPED, NOT WRITTEN AS NULL, and the
-    reason is not tidiness. A null row costs more than the noise it adds,
-    because `already_logged_today` below is built from whatever is on disk for
-    today: write a null for a game this morning and that game is a duplicate
-    for the rest of the day, so when the line is posted this afternoon the run
-    that would have captured it skips instead. Reproduced 2026-09-21 -- two
-    games, a morning run with no lines, an afternoon run with real ones, and
-    the archive ends the day holding two nulls and no spreads. The old code
-    then printed "already captured today -- skipped duplicate", which names a
-    cause that is not the cause and sends the reader looking for a duplicate
-    that does not exist.
-
-    This is the repository's own rule about absent inputs, applied where the
-    data is built rather than downstream: 2026 week 3's snapshot was 16 rows
-    of nulls (PR #75, closed rather than merged), and the scheduled weekly
-    workflow writes this archive straight to `main`, so nothing but this
-    function stands between an early run and a week of dead rows.
-
-    Nothing is lost by skipping. The archive is for line MOVEMENT, a null
-    carries no spread to compare, and "when did this line first appear" is
-    still answerable from the earliest captured_date for that game."""
+    reason is not tidiness. Under the per-day rule a null row this morning
+    made that game a duplicate for the rest of the day, so the afternoon run
+    that would have captured the real line skipped it (reproduced 2026-09-21;
+    2026 week 3's snapshot was 16 rows of nulls, PR #75, closed rather than
+    merged). Under the per-move rule a null would be "a change" from every
+    real spread and back again. Either way it carries no spread to compare,
+    and "when did this line first appear" is still answerable from the
+    earliest captured row for that game. The scheduled workflows write this
+    archive straight to `main`, so nothing but this function stands between
+    an early run and a week of dead rows."""
     path = LINE_HISTORY_DIR / f'{season}_week{week}_lines.json'
     existing = []
     if path.exists():
         with open(path) as f:
             existing = json.load(f)
 
-    today_str = date.today().isoformat()
-    already_logged_today = {(e['home'], e['away']) for e in existing if e['captured_date'] == today_str}
+    now = (now or datetime.now(UTC)).astimezone(UTC)
+    today_str = now.date().isoformat()
+    captured_utc = now.strftime('%Y-%m-%dT%H:%M:%SZ')
+    # The last spread captured for each game, in file order (appended in time order).
+    last_spread = {(e['home'], e['away']): e.get('spread_line') for e in existing}
 
     added = 0
     no_line_yet = 0
+    unchanged = 0
     for _, g in week_games.iterrows():
         key = (g['home_team'], g['away_team'])
-        if key in already_logged_today:
-            continue  # don't duplicate if this script runs more than once same day
         spread = g.get('spread_line', None)
         if pd.isna(spread):
-            # Skipped, not written as null -- see the docstring. Leaving this
-            # game out of the file is also what leaves it out of
-            # already_logged_today on the next run today, which is the half
-            # that matters.
+            # Skipped, not written as null -- see the docstring.
             no_line_yet += 1
             continue
+        if key in last_spread and last_spread[key] == float(spread):
+            unchanged += 1
+            continue  # the line has not moved since it was last captured
         existing.append({
             'captured_date': today_str,
+            'captured_utc': captured_utc,
             'home': g['home_team'], 'away': g['away_team'],
             # float() is intent, not a fix: numpy.float64 subclasses float
             # and json.dump already handles it, so this changes nothing and
@@ -458,6 +461,7 @@ def log_line_snapshot(season: int, week: int, week_games: pd.DataFrame) -> None:
             # so, because a test over it could not fail.
             'spread_line': float(spread),
         })
+        last_spread[key] = float(spread)
         added += 1
 
     # Three outcomes, three messages. They used to collapse into two, so a run
@@ -467,17 +471,19 @@ def log_line_snapshot(season: int, week: int, week_games: pd.DataFrame) -> None:
     if added:
         with open(path, 'w') as f:
             json.dump(existing, f, indent=2)
-        msg = f"Logged {added} line snapshot(s) for {season} week {week} (captured {today_str})."
+        msg = f"Logged {added} line snapshot(s) for {season} week {week} (captured {captured_utc})."
+        if unchanged:
+            msg += f" {unchanged} game(s) had not moved since their last capture."
         if no_line_yet:
             msg += f" {no_line_yet} game(s) had no spread posted yet and were skipped."
         log.info(msg)
-    elif no_line_yet:
+    elif no_line_yet and not unchanged:
         log.info(f"No line snapshots written for {season} week {week}: "
               f"{no_line_yet} game(s) have no spread posted yet. Nothing was "
-              f"recorded for {today_str}, so a later run today can still "
-              f"capture them.")
+              f"recorded, so a later run can still capture them.")
     else:
-        log.info(f"Line snapshots for {season} week {week} already captured today -- skipped duplicate.")
+        log.info(f"Line snapshots for {season} week {week}: no line has moved since its last capture -- "
+                 f"skipped duplicate.")
 
 
 def build_qb_change_lookup(qb: dict[str, Any], seasons: list[int]) -> dict[tuple[int, int, str], int]:

@@ -19,16 +19,37 @@
     {
       "id": "line-snapshot-message-collapses-to-duplicate",
       "why": "the no-line branch is unreachable, so a run that wrote nothing because no spread exists yet falls through to the duplicate message. This is the original defect's second half: 'already captured today -- skipped duplicate' names a cause that is not the cause and sends whoever reads the log looking for a duplicate that was never there. The archive is correct; only the account of it is wrong, which is the family this repository has been bitten by in four separate tools.",
-      "find": "    elif no_line_yet:",
+      "find": "    elif no_line_yet and not unchanged:",
       "replace": "    elif False:",
       "expect_caught_by": "test_each_outcome_says_which_one_it_was"
     },
     {
       "id": "line-snapshot-loses-its-same-day-dedupe",
       "why": "the duplicate guard is gutted. Skipping unpriced games sits directly next to this check and shares its data, so the edit that adds the skip is the edit most likely to disturb it -- and the symptom is silent: every manual dispatch on a day the workflow already ran doubles that day's rows, and a line-movement series computed later reads repeated identical captures as a line that did not move.",
-      "find": "        if key in already_logged_today:",
+      "find": "        if key in last_spread and last_spread[key] == float(spread):",
       "replace": "        if False:",
       "expect_caught_by": "test_a_real_spread_is_still_deduplicated_within_the_day"
+    },
+    {
+      "id": "line-snapshot-daily-rows-again",
+      "why": "the move rule goes back to one row per game per day: an unmoved line is written again every day, and a move between two runs on the same day is lost.",
+      "find": "        if key in last_spread and last_spread[key] == float(spread):",
+      "replace": "        if key in last_spread and existing and existing[-1]['captured_date'] == today_str:",
+      "expect_caught_by": "test_a_move_within_the_same_day_is_written"
+    },
+    {
+      "id": "line-snapshot-last-spread-not-updated",
+      "why": "the last spread is not updated after a write, so two copies of one game in a single week's schedule both land as moves.",
+      "find": "        last_spread[key] = float(spread)\n",
+      "replace": "",
+      "expect_caught_by": "test_a_duplicated_game_in_one_read_is_written_once"
+    },
+    {
+      "id": "line-snapshot-no-captured-utc",
+      "why": "rows lose the moment they were read, so two moves on one day cannot be told apart or ordered against a kickoff.",
+      "find": "            'captured_utc': captured_utc,\n",
+      "replace": "",
+      "expect_caught_by": "test_a_move_within_the_same_day_is_written"
     }
   ]
 }
