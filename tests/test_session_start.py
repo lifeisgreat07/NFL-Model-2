@@ -31,8 +31,11 @@ def output():
     # green, so the red was invisible where anyone would look for it, and
     # preflight reported the resulting count as a STALE FIGURE rather than as
     # a failure. Two defects, one root cause; this is the root cause.
+    #
+    # --offline: the suite never reads GitHub. The online section is tested
+    # below with a fake API (github_state's `get`), not the real one.
     env = {**os.environ, 'PYTHONIOENCODING': 'utf-8'}
-    r = subprocess.run([sys.executable, str(SCRIPT), '--skip-tests'],
+    r = subprocess.run([sys.executable, str(SCRIPT), '--skip-tests', '--offline'],
                        cwd=REPO, capture_output=True, text=True,
                        encoding='utf-8', env=env)
     assert r.returncode == 0, (
@@ -101,10 +104,10 @@ def test_it_does_not_print_claude_md_in_full(output):
 def test_it_refuses_to_state_pull_request_status(output):
     """The honesty rule, and the only one worth failing a build over.
 
-    There is no `gh` CLI on this machine, so the tool cannot know whether a PR
-    is open, merged or audited. If someone later teaches it to print a status
-    it cannot verify, this catches it: the disclaimer has to survive, and it
-    has to keep saying why.
+    There is no `gh` CLI on this machine. Since Stage 49 item 21 the tool
+    READS pull-request state from GitHub's public API; offline it cannot, so
+    it must say so rather than print a status it cannot verify. The fixture
+    runs --offline, so the disclaimer has to survive there, and keep saying why.
     """
     assert 'Pull-request state is NOT shown' in output, (
         "the tool no longer disclaims pull-request state. Either it has started "
@@ -187,6 +190,103 @@ def test_the_wrapup_and_start_scripts_read_the_same_count_line():
         f"differently:\n  start: {a.group(1)}\n  wrap:  {b.group(1)}")
 
 
+# ------------------------------------------- the GitHub section (Stage 49 item 21)
+
+def _session_start():
+    sys.path.insert(0, str(REPO))
+    from src.agents import session_start
+    return session_start
+
+
+def _run(event, start, conclusion='success'):
+    return {'event': event, 'run_started_at': start, 'created_at': start,
+            'status': 'completed', 'conclusion': conclusion}
+
+
+def _fake_api(runs_by_workflow, pulls=(), issues=()):
+    def get(url):
+        if '/actions/workflows/' in url:
+            wf = url.split('/actions/workflows/')[1].split('/')[0]
+            return {'workflow_runs': runs_by_workflow.get(wf, [])}
+        if '/pulls?' in url:
+            return list(pulls)
+        if '/issues?' in url:
+            return list(issues)
+        raise AssertionError(f'unexpected URL {url}')
+    return get
+
+
+NOW = '2026-10-05T16:00:00Z'
+
+
+def test_a_schedule_run_after_a_requested_one_is_named_githubs_late_copy():
+    """The 2026-10-05 canary: requested 06:00:52 by cron-job.org, GitHub's
+    own copy 13:15:19. A session checking the slot must see which is which."""
+    ss = _session_start()
+    lines = ss.run_lines([_run('schedule', '2026-10-05T13:15:19Z'),
+                          _run('workflow_dispatch', '2026-10-05T06:00:52Z')],
+                         'Nightly data check', ss._utc(NOW))
+    assert len(lines) == 2
+    assert 'requested' in lines[0] and 'late copy' not in lines[0], "oldest first, the request"
+    assert 'schedule' in lines[1] and "GitHub's late copy, 7h14m" in lines[1]
+
+
+def test_a_schedule_run_with_no_request_before_it_is_not_called_a_copy():
+    """The Weekly update has no cron-job.org job yet: its schedule run is the slot."""
+    ss = _session_start()
+    lines = ss.run_lines([_run('schedule', '2026-10-05T11:00:00Z')], 'Weekly update', ss._utc(NOW))
+    assert len(lines) == 1 and 'late copy' not in lines[0]
+
+
+def test_runs_outside_the_window_are_left_out_and_an_empty_window_says_so():
+    ss = _session_start()
+    old = _run('workflow_dispatch', '2026-10-03T06:00:00Z')
+    lines = ss.run_lines([old], 'Nightly data check', ss._utc(NOW))
+    assert lines == [f'  {"Nightly data check":<26} no run in the last {ss.RUN_WINDOW_HOURS} hours']
+
+
+def test_the_section_names_its_source_and_every_watched_job(capsys):
+    ss = _session_start()
+    from src.pipeline.recent_runs import WATCHED
+    get = _fake_api(
+        {'nightly-canary.yml': [_run('workflow_dispatch', '2026-10-05T06:00:52Z')]},
+        pulls=[{'number': 290, 'title': 'QB overrides: 2026 week 5', 'state': 'open',
+                'merged_at': None, 'created_at': '2026-10-05T22:06:00Z',
+                'head': {'ref': 'qb-overrides-2026-week5'}}],
+        issues=[{'number': 300, 'title': 'Model drift detected', 'created_at': '2026-10-06T12:00:00Z'},
+                {'number': 290, 'title': 'a pull request', 'created_at': 'x', 'pull_request': {}}])
+    ss.github_state(get=get, now=ss._utc(NOW))
+    out = capsys.readouterr().out
+    assert 'read from the public API at 2026-10-05 16:00 UTC' in out
+    for shown in WATCHED.values():
+        assert shown in out, f'{shown} is missing from the unattended jobs'
+    assert '#290 QB overrides: 2026 week 5' in out and 'open' in out
+    assert '#300 Model drift detected' in out
+    assert 'a pull request --' not in out, 'the issues list must not repeat pull requests'
+
+
+def test_a_failed_read_is_reported_and_does_not_raise(capsys):
+    """An orientation tool must not die because GitHub was slow or the
+    anonymous limit was spent: it says it could not read, and goes on."""
+    ss = _session_start()
+
+    def get(url):
+        raise OSError('rate limited')
+    ss.github_state(get=get, now=ss._utc(NOW))
+    out = capsys.readouterr().out
+    assert 'COULD NOT READ GitHub (OSError: rate limited)' in out
+
+
+def test_the_suite_never_reads_github():
+    """Every subprocess run of the tool in this file passes --offline: a test
+    that reads the live API is slow, spends the anonymous limit Booth's
+    runner shares, and fails for reasons that are not the code's."""
+    src = Path(__file__).read_text(encoding='utf-8')
+    runs = re.findall(r'subprocess\.run\(\[sys\.executable, str\(SCRIPT\)[^\]]*\]', src)
+    assert runs, 'no subprocess run of session_start found to check'
+    assert all("'--offline'" in r for r in runs), runs
+
+
 if __name__ == '__main__':
     sys.exit(pytest.main([__file__, '-v']))
 
@@ -211,7 +311,7 @@ def test_it_survives_a_stdout_that_cannot_encode_the_context_file():
     thing to remember, enforced by nothing, in a file anyone may edit.
     """
     env = {**os.environ, 'PYTHONIOENCODING': 'cp1252'}
-    r = subprocess.run([sys.executable, str(SCRIPT), '--skip-tests'],
+    r = subprocess.run([sys.executable, str(SCRIPT), '--skip-tests', '--offline'],
                        cwd=REPO, capture_output=True, env=env)
 
     assert b'UnicodeEncodeError' not in r.stderr, (

@@ -1,0 +1,41 @@
+{
+  "target": "src/agents/session_start.py",
+  "tests": "tests/test_session_start.py",
+  "cases": [
+    {
+      "id": "session-doctor-forgets-the-request",
+      "why": "a requested run is not remembered, so GitHub's late copy of the same slot reads as a slot of its own and a session counts one night's canary twice.",
+      "find": "            how, requested = 'requested', start\n",
+      "replace": "            how = 'requested'\n",
+      "expect_caught_by": "test_a_schedule_run_after_a_requested_one_is_named_githubs_late_copy"
+    },
+    {
+      "id": "session-doctor-window-ignored",
+      "why": "runs from days ago are printed as if they were last night's, so a slot that did not run looks as though it did.",
+      "find": "                                         or cutoff) > cutoff),\n",
+      "replace": "                                         or cutoff) > cutoff - timedelta(days=30)),\n",
+      "expect_caught_by": "test_runs_outside_the_window_are_left_out_and_an_empty_window_says_so"
+    },
+    {
+      "id": "session-doctor-dies-on-a-failed-read",
+      "why": "a rate-limited or offline API crashes the first command of the session instead of saying it could not read.",
+      "find": "    except Exception as exc:  # an orientation tool reports, never dies\n",
+      "replace": "    except ValueError as exc:  # an orientation tool reports, never dies\n",
+      "expect_caught_by": "test_a_failed_read_is_reported_and_does_not_raise"
+    },
+    {
+      "id": "session-doctor-lists-pull-requests-as-issues",
+      "why": "GitHub's issues endpoint also returns pull requests, so every open PR is listed as an open alert issue.",
+      "find": "                  if 'pull_request' not in i]\n",
+      "replace": "                  ]\n",
+      "expect_caught_by": "test_the_section_names_its_source_and_every_watched_job"
+    },
+    {
+      "id": "session-doctor-offline-without-disclaimer",
+      "why": "offline, the tool shows no pull-request state and no longer says so, so a reader takes silence for 'none open'.",
+      "find": "    if args.offline:\n        print('\\n  Pull-request state is NOT shown",
+      "replace": "    if False:\n        print('\\n  Pull-request state is NOT shown",
+      "expect_caught_by": "test_it_refuses_to_state_pull_request_status"
+    }
+  ]
+}

@@ -12,25 +12,48 @@ Writing the rule "keep these current" is what CLAUDE.md already did. So this
 does not restate the rule -- it computes the answer. Everything printed below
 comes from git or from running the suite. Nothing here is remembered.
 
-What it deliberately does NOT do is fetch pull-request state: there is no `gh`
-CLI on this machine, and inventing a PR's status would be exactly the class of
-confident-but-unchecked claim the whole project exists to avoid. Where a fact
-needs GitHub, this says so and stops.
+It never GUESSES pull-request state: there is no `gh` CLI on this machine, and
+inventing a PR's status would be exactly the class of confident-but-unchecked
+claim the whole project exists to avoid. Since Stage 49 item 21 (2026-10-05)
+it READS that state instead, with the unattended jobs every session opens by
+checking -- the QB override routine's pull request, the Weekly update, the
+weekend refresh, the nightly canary and mutation slice, and any open alert
+issue -- from GitHub's public API, the same calls CLAUDE.md's PR loop makes by
+hand. Every line it prints there says it came from the API and when. If the
+API cannot be read (offline, rate-limited) it says so and the rest still runs;
+`--offline` skips it, and then the old disclaimer is printed instead.
 
     python -m src.agents.session_start                # includes a full suite run
-    python -m src.agents.session_start --skip-tests   # git and documents only
+    python -m src.agents.session_start --skip-tests   # git, documents and GitHub
+    python -m src.agents.session_start --skip-tests --offline   # git and documents only
 
 Exits 0 always. This is an orientation tool, not a gate -- `session_wrapup.py`
 is the gate.
 """
 import argparse
+import json
+import os
 import re
 import subprocess
 import sys
-from datetime import date, datetime
+import urllib.request
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 REPO = Path(__file__).parents[2]
+SLUG = 'lifeisgreat07/NFL-Model-2'
+API = 'https://api.github.com'
+
+#: How far back the unattended-jobs section looks. A judgement, not a
+#: measurement: long enough that a session starting the next afternoon still
+#: sees last night's canary and slice AND GitHub's late copies of them, which
+#: have arrived up to 8h39m after the requested run (2026-10-05).
+RUN_WINDOW_HOURS = 36
+
+#: A schedule run this soon after a requested run of the same workflow is
+#: almost certainly GitHub's late copy of that slot, not a slot of its own.
+#: Also a judgement: the latest copy seen was under 9 hours behind.
+LATE_COPY_HOURS = 12
 CONTEXT = REPO / 'docs' / 'context.md'
 CLAUDE_MD = REPO / 'CLAUDE.md'
 COUNT_RE = re.compile(r'Suite:\s*\*\*([0-9,]+)\s+passing\*\*')
@@ -161,6 +184,102 @@ def suite(skip):
               'than carrying it through the session.')
 
 
+def _get_json(url):
+    """One anonymous read of GitHub's public API (GITHUB_TOKEN if set). The
+    repository is public, so no token is needed; without one the limit is
+    60 calls an hour, and this section makes six."""
+    req = urllib.request.Request(url, headers={'Accept': 'application/vnd.github+json',
+                                               'User-Agent': 'nfl-model-2-session-start'})
+    token = os.environ.get('GITHUB_TOKEN')
+    if token:
+        req.add_header('Authorization', f'Bearer {token}')
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        return json.load(resp)
+
+
+def _utc(value):
+    return datetime.fromisoformat(value.replace('Z', '+00:00')).astimezone(UTC) if value else None
+
+
+def run_lines(runs, shown, now):
+    """A workflow's runs inside the window, oldest first, one line each.
+
+    A schedule run that follows a requested run of the same workflow within
+    LATE_COPY_HOURS is labelled as GitHub's late copy: since Stage 42 every
+    slot is requested on time from cron-job.org and GitHub's own cron fires
+    the same slot hours later, and a session checking a slot needs to know
+    which of the two runs it is looking at.
+    """
+    cutoff = now - timedelta(hours=RUN_WINDOW_HOURS)
+    recent = sorted((r for r in runs if (_utc(r.get('run_started_at') or r.get('created_at'))
+                                         or cutoff) > cutoff),
+                    key=lambda r: r.get('run_started_at') or r.get('created_at'))
+    if not recent:
+        return [f'  {shown:<26} no run in the last {RUN_WINDOW_HOURS} hours']
+    lines, requested = [], None
+    for r in recent:
+        start = _utc(r.get('run_started_at') or r.get('created_at'))
+        note = ''
+        if r.get('event') == 'workflow_dispatch':
+            how, requested = 'requested', start
+        elif r.get('event') == 'schedule':
+            how = 'schedule'
+            if requested and start - requested < timedelta(hours=LATE_COPY_HOURS):
+                lag = start - requested
+                note = (f'  <- GitHub\'s late copy, {lag.seconds // 3600}h'
+                        f'{lag.seconds % 3600 // 60:02d}m after the requested run')
+        else:
+            how = r.get('event') or '?'
+        result = r.get('conclusion') or r.get('status') or '?'
+        lines.append(f'  {shown:<26} {start:%a %d %H:%M} UTC  {how:<9}  {result}{note}')
+    return lines
+
+
+def github_state(get=_get_json, now=None):
+    """The unattended jobs and the open pull requests and issues, read from
+    GitHub. Never raises: a failed read is printed as one, and the session
+    goes on with what git can tell it."""
+    sys.path.insert(0, str(REPO))
+    from src.pipeline.recent_runs import WATCHED  # the one list of unattended jobs
+
+    now = now or datetime.now(UTC)
+    section(f'GitHub, read from the public API at {now:%Y-%m-%d %H:%M} UTC')
+    try:
+        print(f'  Unattended jobs, last {RUN_WINDOW_HOURS} hours ("requested" is '
+              'cron-job.org on time, or a run by hand):')
+        for workflow, shown in WATCHED.items():
+            runs = get(f'{API}/repos/{SLUG}/actions/workflows/{workflow}/runs?per_page=15')
+            for line in run_lines(runs.get('workflow_runs', []), shown, now):
+                print('  ' + line)
+
+        pulls = get(f'{API}/repos/{SLUG}/pulls?state=all&sort=created&direction=desc&per_page=30')
+        qb = [p for p in pulls if (p.get('head') or {}).get('ref', '').startswith('qb-overrides')]
+        print('\n  QB override routine (Mon and Wed 22:00 UTC), its latest pull request:')
+        if qb:
+            p = qb[0]
+            state = 'merged' if p.get('merged_at') else p.get('state')
+            print(f'    #{p["number"]} {p["title"]} -- opened {p["created_at"]}, {state}')
+        else:
+            print('    none among the last 30 pull requests')
+
+        open_prs = [p for p in pulls if p.get('state') == 'open']
+        print('\n  Open pull requests:' + ('' if open_prs else ' none'))
+        for p in open_prs:
+            print(f'    #{p["number"]} {p["title"]} ({p["head"]["ref"]})')
+
+        issues = [i for i in get(f'{API}/repos/{SLUG}/issues?state=open&per_page=30')
+                  if 'pull_request' not in i]
+        print('\n  Open issues (every unattended failure and a drift flag open one):'
+              + ('' if issues else ' none'))
+        for i in issues:
+            print(f'    #{i["number"]} {i["title"]} -- opened {i["created_at"]}')
+        print('\n  The Weekly update\'s "DRIFT CHECK:" line is in its run summary, which')
+        print('  this API does not serve. A flag opens "Model drift detected" above.')
+    except Exception as exc:  # an orientation tool reports, never dies
+        print(f'  COULD NOT READ GitHub ({type(exc).__name__}: {exc}).')
+        print('  Nothing above this line is affected; check the Actions tab by hand.')
+
+
 def print_context():
     """Print docs/context.md in full, rather than telling you to go read it.
 
@@ -185,6 +304,8 @@ def print_context():
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--skip-tests', action='store_true')
+    ap.add_argument('--offline', action='store_true',
+                    help='do not read GitHub (the test suite always passes this)')
     args = ap.parse_args(argv)
 
     # docs/context.md is written by whoever last had an opinion, and this
@@ -211,6 +332,8 @@ def main(argv=None):
     branches()
     context_file()
     suite(args.skip_tests)
+    if not args.offline:
+        github_state()
 
     print_context()
 
@@ -221,9 +344,10 @@ def main(argv=None):
     print('                 a measurement or a mutation run.')
     print('  docs/index.md  only if you need to find something')
     print('  memory/        only to answer "why did we decide that"')
-    print('\n  Pull-request state is NOT shown above: there is no gh CLI here, and')
-    print('  a guessed PR status is the kind of claim this project exists to')
-    print('  avoid. Check open PRs on GitHub before starting new work.')
+    if args.offline:
+        print('\n  Pull-request state is NOT shown above: --offline, and there is no gh')
+        print('  CLI here to ask instead. A guessed PR status is the kind of claim this')
+        print('  project exists to avoid. Check open PRs on GitHub before starting new work.')
     return 0
 
 

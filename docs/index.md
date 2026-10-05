@@ -96,7 +96,7 @@ notes elsewhere still describe them as files you can open in the repository.
 | `src/agents/booth_verdict.py` | Parses the machine-readable verdict block out of a Booth report. |
 | `src/agents/booth_fixture_runner.py` | Runs deliberately-bad PRs that Booth must catch. |
 | `src/agents/collect_agent_log.py` | Turns Booth's audit comments into the data the reliability page renders. |
-| `src/agents/session_start.py` | Orientation: branch state, branch list, what `docs/context.md` claims vs what git knows, suite count vs the documented one. Never gates. |
+| `src/agents/session_start.py` | Orientation: branch state, branch list, what `docs/context.md` claims vs what git knows, suite count vs the documented one, and (unless `--offline`) the unattended jobs' last 36 hours, the QB routine's latest PR, open PRs and open issues from GitHub's public API. Never gates. |
 | `src/agents/session_wrapup.py` | End-of-session checks. Mechanical ones plus a by-hand list. This one gates. |
 
 ## Case studies (Stage 7)
