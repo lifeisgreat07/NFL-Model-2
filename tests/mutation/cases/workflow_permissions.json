@@ -1,0 +1,52 @@
+{
+  "target": ".github/workflows/scout-preflight.yml",
+  "tests": "tests/test_workflow_permissions.py",
+  "cases": [
+    {
+      "id": "permissions-unused-scope-held",
+      "why": "pre-flight holds pull-requests: read again though it reads the description from the event, so a compromised step inherits reach nothing needed.",
+      "find": "permissions:\n  contents: read\n\njobs:\n",
+      "replace": "permissions:\n  contents: read\n  pull-requests: read\n\njobs:\n",
+      "expect_caught_by": "test_every_scope_held_is_used"
+    },
+    {
+      "id": "permissions-pr-body-interpolated-into-a-shell",
+      "why": "the description is pasted into a run: block, so a body containing $(...) executes on the runner.",
+      "find": "          printf '%s' \"$PR_BODY\" > .pr-body.md\n",
+      "replace": "          printf '%s' \"${{ github.event.pull_request.body }}\" > .pr-body.md\n",
+      "expect_caught_by": "test_pull_request_text_reaches_a_shell_only_through_the_environment"
+    },
+    {
+      "id": "permissions-block-dropped",
+      "target": ".github/workflows/nightly-canary.yml",
+      "why": "the canary declares no permissions, so it runs with whatever the repository's default token is set to.",
+      "find": "permissions:\n  contents: read\n  issues: write\n",
+      "replace": "",
+      "expect_caught_by": "test_every_workflow_declares_its_permissions"
+    },
+    {
+      "id": "permissions-write-all",
+      "target": ".github/workflows/run-tests.yml",
+      "why": "the test workflow takes every scope at write, so any dependency it installs can push to main.",
+      "find": "permissions:\n  contents: read\n",
+      "replace": "permissions: write-all\n",
+      "expect_caught_by": "test_no_workflow_takes_everything"
+    },
+    {
+      "id": "permissions-pull-request-target",
+      "target": ".github/workflows/collect-agent-log.yml",
+      "why": "the log collector runs on pull_request_target, with this repository's write token, for a stranger's pull request.",
+      "find": "  pull_request:\n",
+      "replace": "  pull_request_target:\n",
+      "expect_caught_by": "test_no_workflow_runs_a_strangers_code_with_this_repositorys_token"
+    },
+    {
+      "id": "security-md-loses-its-reporting-route",
+      "target": "SECURITY.md",
+      "why": "SECURITY.md no longer says how to report a vulnerability, so a finder's only route is a public issue.",
+      "find": "## How to report a vulnerability\n",
+      "replace": "## Reporting\n",
+      "expect_caught_by": "test_security_md_points_here"
+    }
+  ]
+}
