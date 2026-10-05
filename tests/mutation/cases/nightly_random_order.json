@@ -1,0 +1,34 @@
+{
+  "target": ".github/workflows/nightly-random-order.yml",
+  "tests": "tests/test_nightly_random_order.py",
+  "cases": [
+    {
+      "id": "shuffled-suite-within-files-only",
+      "why": "tests are shuffled only inside each file, so a test that depends on another file having run first is never found.",
+      "find": "--random-order-bucket=global --random-order-seed=\"$seed\"\n",
+      "replace": "--random-order-bucket=module --random-order-seed=\"$seed\"\n",
+      "expect_caught_by": "test_it_shuffles_across_every_file_with_the_date_as_the_seed"
+    },
+    {
+      "id": "shuffled-suite-fixed-seed",
+      "why": "the seed is the same every night, so the job tries one order forever and finds nothing after its first run.",
+      "find": "          seed=\"$(date -u +%Y%m%d)\"\n          echo",
+      "replace": "          seed=\"1\"\n          echo",
+      "expect_caught_by": "test_it_shuffles_across_every_file_with_the_date_as_the_seed"
+    },
+    {
+      "id": "shuffled-suite-fails-silently",
+      "why": "a failed night is a red run and an email, the state every unattended job left behind in Stage 4.",
+      "find": "          python -m src.pipeline.alerts --title \"Nightly shuffled suite failing\" --body-file shuffled-report.md\n",
+      "replace": "          echo failed\n",
+      "expect_caught_by": "test_a_failure_raises_the_alert_with_the_replay_command"
+    },
+    {
+      "id": "shuffled-suite-plugin-unpinned",
+      "why": "the plugin floats, so a new release can change the order a seed produces and a night can no longer be replayed.",
+      "find": "          pip install pytest-random-order==1.2.0\n",
+      "replace": "          pip install pytest-random-order\n",
+      "expect_caught_by": "test_the_plugin_is_pinned_and_installed_in_this_job_only"
+    }
+  ]
+}

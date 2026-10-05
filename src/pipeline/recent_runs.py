@@ -38,6 +38,7 @@ WATCHED = {
     'weekend-refresh.yml': 'Weekend refresh',
     'nightly-canary.yml': 'Nightly data check',
     'nightly-mutation.yml': 'Nightly test of the tests',
+    'nightly-random-order.yml': 'Nightly shuffled tests',
 }
 SHOWN = 30
 API = 'https://api.github.com'

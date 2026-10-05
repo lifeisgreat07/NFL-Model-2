@@ -1,0 +1,69 @@
+name: Nightly shuffled suite
+# Stage 48 item 17 (proposed 2026-10-04, Mark's OK 2026-10-05). Every other
+# run of the suite runs it in file order, so a test that passes only because
+# an earlier test left something behind -- a module-level cache, a patched
+# global, a file on disk -- passes every time and is never found. This runs
+# the whole suite once a night in a random order across all files
+# (pytest-random-order, --random-order-bucket=global), with the UTC date
+# (YYYYMMDD) as the seed, so any night is reproducible by hand:
+#   python -m pytest -q -p no:cacheprovider --random-order-bucket=global --random-order-seed=<seed>
+#
+# pytest-random-order is installed here only, pinned, and not in
+# requirements-dev.txt: it is opt-in since 1.0 (nothing shuffles without the
+# flag), but keeping it out of every other install keeps every other run of
+# the suite exactly as it was.
+#
+# A failure opens the issue "Nightly shuffled suite failing" through
+# src/pipeline/alerts.py, or comments on it -- the one-issue-per-problem rule
+# every unattended job follows since Stage 4. It writes nothing to the
+# repository. 07:15 UTC: after the canary (06:00) and the mutation slice
+# (06:30). tests/test_nightly_random_order.py holds each of these.
+
+on:
+  schedule:
+    - cron: '15 7 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  shuffled:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          # The same full history run-tests.yml fetches: some guards read
+          # git history, and under a shallow clone they skip or misfire.
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Set up node
+        # Guards that run template code in node skip without it.
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt -r requirements-dev.txt
+          pip install pytest-random-order==1.2.0
+      - name: Run the suite in tonight's order
+        run: |
+          seed="$(date -u +%Y%m%d)"
+          echo "seed $seed" >> "$GITHUB_STEP_SUMMARY"
+          python -m pytest -q -p no:cacheprovider --random-order-bucket=global --random-order-seed="$seed"
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'The nightly shuffled suite failed (seed %s). A test that passes in file order and fails here depends on what ran before it.\n\nRun: %s\n\nReplay: python -m pytest -q -p no:cacheprovider --random-order-bucket=global --random-order-seed=%s\n' \
+            "$(date -u +%Y%m%d)" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "$(date -u +%Y%m%d)" > shuffled-report.md
+          python -m src.pipeline.alerts --title "Nightly shuffled suite failing" --body-file shuffled-report.md
