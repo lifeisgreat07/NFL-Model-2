@@ -1,0 +1,79 @@
+{
+  "target": "src/pipeline/slot_guard.py",
+  "tests": "tests/test_slot_guard.py",
+  "cases": [
+    {
+      "id": "slot-guard-ignores-served",
+      "why": "the served slot is never compared, so GitHub's late copy of a dispatched Thursday lock runs again and saves next week's preview mid-week.",
+      "find": "    if served == key:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_the_same_slot_again_is_skipped"
+    },
+    {
+      "id": "slot-guard-ignores-force",
+      "why": "force does nothing, so a run by hand after a successful one can never re-run the slot, even when the person dispatching it means to.",
+      "find": "    if force:\n        return True, f'slot {key}: forced'",
+      "replace": "    if False:\n        return True, f'slot {key}: forced'",
+      "expect_caught_by": "test_force_runs_a_served_slot"
+    },
+    {
+      "id": "slot-guard-on-the-slot-is-last-week",
+      "why": "a run that starts exactly on its slot is counted as the slot before, so the on-time Tuesday run is skipped as a late copy of last Thursday.",
+      "find": "        if t > now:",
+      "replace": "        if t >= now:",
+      "expect_caught_by": "test_a_run_belongs_to_the_latest_slot_at_or_before_it"
+    },
+    {
+      "id": "slot-guard-reads-own-checkout",
+      "why": "the marker is read from the run's own checkout, which can predate the on-time run's commit, so the late copy never sees the slot served.",
+      "find": "    r = subprocess.run(['git', 'show', f'origin/main:{path}'], cwd=ROOT, capture_output=True, text=True)",
+      "replace": "    r = subprocess.run(['git', 'show', f'HEAD:{path}'], cwd=ROOT, capture_output=True, text=True)",
+      "expect_caught_by": "test_the_marker_is_read_from_origin_main"
+    },
+    {
+      "id": "slot-guard-no-fetch",
+      "why": "origin/main is read without fetching it, so the guard compares against whatever the checkout happened to bring.",
+      "find": "    subprocess.run(['git', 'fetch', '--quiet', '--depth=1', 'origin', 'main'], cwd=ROOT, check=True)\n",
+      "replace": "",
+      "expect_caught_by": "test_the_marker_is_read_from_origin_main"
+    },
+    {
+      "id": "slot-guard-always-says-run",
+      "why": "the guard's output always says run, so the workflow never skips whatever the decision was.",
+      "find": "    _output('run', 'true' if run else 'false')",
+      "replace": "    _output('run', 'true')",
+      "expect_caught_by": "test_check_writes_the_outputs_the_workflow_reads"
+    },
+    {
+      "id": "slot-guard-slots-drift",
+      "why": "the guard's slots stop matching the weekly runs, so it files a run under the wrong slot and skips a real one.",
+      "find": "    'weekly-update': ((1, 11, 0), (3, 11, 0)),",
+      "replace": "    'weekly-update': ((1, 11, 0), (3, 16, 0)),",
+      "expect_caught_by": "test_the_slots_are_the_weekly_runs"
+    },
+    {
+      "id": "slot-guard-fails-closed",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the weekly job runs only on an explicit yes, so a guard that crashed skips the week and costs Thursday's lock.",
+      "find": "    if: ${{ !cancelled() && needs.slot-guard.outputs.run != 'false' }}",
+      "replace": "    if: ${{ needs.slot-guard.outputs.run == 'true' }}",
+      "expect_caught_by": "test_the_weekly_job_waits_for_the_guard_and_skips_only_on_false"
+    },
+    {
+      "id": "slot-guard-marks-a-failed-run",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "the slot is marked even when the run failed, so a retry by hand the same day is skipped and the week is never locked.",
+      "find": "        if: ${{ success() && needs.slot-guard.outputs.slot != '' }}",
+      "replace": "        if: ${{ !cancelled() && needs.slot-guard.outputs.slot != '' }}",
+      "expect_caught_by": "test_the_slot_is_marked_after_the_work_and_before_the_commit"
+    },
+    {
+      "id": "slot-guard-runs-cancel-each-other",
+      "target": ".github/workflows/weekly-update.yml",
+      "why": "runs in the group cancel each other, so GitHub's late copy can cancel the on-time run mid-lock.",
+      "find": "  group: weekly-update\n  cancel-in-progress: false",
+      "replace": "  group: weekly-update\n  cancel-in-progress: true",
+      "expect_caught_by": "test_the_runs_queue_rather_than_cancel_each_other"
+    }
+  ]
+}

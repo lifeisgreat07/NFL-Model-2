@@ -25,7 +25,19 @@ on:
   schedule:
     - cron: '0 11 * * 2'
     - cron: '0 11 * * 4'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Run even if this slot was already served (a run by hand after a successful one)'
+        type: boolean
+        default: false
+
+# One run at a time, queued rather than cancelled: GitHub's late copy of a
+# slot waits for the on-time run to finish, then the slot guard sees that
+# slot served on origin/main and skips the run (Stage 42 item 3).
+concurrency:
+  group: weekly-update
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -34,7 +46,52 @@ permissions:
   issues: write
 
 jobs:
+  # cron-job.org starts this on time and GitHub's cron sends a late copy of
+  # the same slot (decision record 0005). The copy must change nothing: it
+  # would otherwise see Thursday's week locked and save next week's preview
+  # mid-week. src/pipeline/slot_guard.py reads which slot was last served
+  # from origin/main and says whether this run is a new one.
+  slot-guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.slot.outputs.run }}
+      slot: ${{ steps.slot.outputs.slot }}
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Has this slot been served?
+        id: slot
+        run: python -m src.pipeline.slot_guard check --workflow weekly-update ${{ inputs.force && '--force' || '' }}
+
+      # The week still runs when this job fails (see the weekly job's `if`),
+      # but a guard that cannot read its marker is a fault to fix before the
+      # next late copy, so it says so.
+      - name: Alert that the guard failed
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          echo "The slot guard failed, so this run went ahead unguarded: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > guard-alert.md
+          python -m src.pipeline.alerts --title "Weekly update slot guard failed" --body-file guard-alert.md
+
+  # Runs unless the guard said this slot was already served. A guard that
+  # FAILED says nothing (run is empty), and the week still runs: a broken
+  # guard must never cost a lock, and a duplicate run is what this workflow
+  # did before the guard existed.
   weekly-update:
+    needs: slot-guard
+    if: ${{ !cancelled() && needs.slot-guard.outputs.run != 'false' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -130,6 +187,14 @@ jobs:
         run: |
           python -m src.pipeline.team_news --pending 2>&1 | tee team-news.log
           { echo '### Team news'; echo '```'; cat team-news.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      # Marks the slot served, in the same commit as the data, and only if
+      # every step above succeeded: a failed run leaves the slot open, so a
+      # run by hand the same day can still lock the week. Skipped when the
+      # guard failed and gave no slot.
+      - name: Mark the slot served
+        if: ${{ success() && needs.slot-guard.outputs.slot != '' }}
+        run: python -m src.pipeline.slot_guard mark --workflow weekly-update --slot ${{ needs.slot-guard.outputs.slot }}
 
       # CATCH UP WITH MAIN BEFORE COMMITTING (2026-09-27). The first scheduled
       # weekend refresh read everything correctly and then lost it: a pull
