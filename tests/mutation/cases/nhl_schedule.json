@@ -1,0 +1,104 @@
+{
+  "target": "src/sports/nhl/schedule.py",
+  "tests": "tests/test_nhl_schedule.py",
+  "cases": [
+    {
+      "id": "nhl-sched-ppd-ignored",
+      "why": "a postponed game that still reads FUT keeps the scheduled status, so a per-game lock would save a pick for a game that is not being played.",
+      "find": "    'PPD': GameStatus.POSTPONED, 'SUSP': GameStatus.SUSPENDED, 'CNCL': GameStatus.CANCELLED,",
+      "replace": "    'PPD': None, 'SUSP': GameStatus.SUSPENDED, 'CNCL': GameStatus.CANCELLED,",
+      "expect_caught_by": "test_a_postponed_game_is_postponed_whatever_its_game_state_says"
+    },
+    {
+      "id": "nhl-sched-state-order",
+      "why": "the game state is read before the schedule state, so a cancelled game that the feed still marks FUT is treated as scheduled.",
+      "find": "    return forced if forced is not None else GAME_STATE[g['gameState']]",
+      "replace": "    return GAME_STATE[g['gameState']]",
+      "expect_caught_by": "test_each_league_state_maps_to_one_core_status"
+    },
+    {
+      "id": "nhl-sched-home-win-flipped",
+      "why": "home_win compares the scores the wrong way round, so every graded game would be graded backwards.",
+      "find": "            home_win = int(hs > as_)",
+      "replace": "            home_win = int(hs < as_)",
+      "expect_caught_by": "test_a_shootout_loss_at_home_is_a_home_loss"
+    },
+    {
+      "id": "nhl-sched-live-score-kept",
+      "why": "a game in progress carries its current score as a result, so grading or a feature could read a half-played game as decided.",
+      "find": "        hs = g['homeTeam'].get('score') if final else None",
+      "replace": "        hs = g['homeTeam'].get('score')",
+      "expect_caught_by": "test_a_game_not_yet_final_has_no_result_even_with_a_score_on_the_board"
+    },
+    {
+      "id": "nhl-sched-utc-unchecked",
+      "why": "a start time with an offset passes as UTC, so the per-game lock would compare times in two different clocks.",
+      "find": "    if start and not str(start).endswith('Z'):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_anything_unrecognised_stops_the_load_and_is_named"
+    },
+    {
+      "id": "nhl-sched-unknown-state-passes",
+      "why": "a game state the file does not know passes the check, and status_of would then fail with a bare KeyError instead of a named stop.",
+      "find": "    if state and state not in GAME_STATE:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_anything_unrecognised_stops_the_load_and_is_named"
+    },
+    {
+      "id": "nhl-sched-tie-passes",
+      "why": "a final with a tied score passes, so a damaged result reaches grading as a home loss.",
+      "find": "        elif hs == as_:",
+      "replace": "        elif False:",
+      "expect_caught_by": "test_anything_unrecognised_stops_the_load_and_is_named"
+    },
+    {
+      "id": "nhl-sched-one-sided-passes",
+      "why": "a game seen from only one club's list is kept, so a short list leaves a hole in the season with nothing said.",
+      "find": "    one_sided = sorted(str(gid) for gid, s in sides.items() if len(s) < 2)",
+      "replace": "    one_sided: list[str] = []",
+      "expect_caught_by": "test_a_game_seen_from_only_one_side_stops_the_load"
+    },
+    {
+      "id": "nhl-sched-preseason-kept",
+      "why": "preseason and all-star games are kept, so exhibition results would train the model and be graded.",
+      "find": "            if g.get('gameType') not in GAME_TYPES:",
+      "replace": "            if False:",
+      "expect_caught_by": "test_preseason_and_all_star_games_are_left_out"
+    },
+    {
+      "id": "nhl-sched-wrong-season-passes",
+      "why": "games from another season pass, so a feed answering with last season would be loaded as this one.",
+      "find": "    if wrong_season:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_game_from_another_season_stops_the_load"
+    },
+    {
+      "id": "nhl-sched-current-season-cached",
+      "why": "the current season is cached once finished games fill it, so a later load would never see new results.",
+      "find": "    cacheable = cache is not None and season < current_season(now)",
+      "replace": "    cacheable = cache is not None",
+      "expect_caught_by": "test_the_current_season_is_never_cached"
+    },
+    {
+      "id": "nhl-sched-unfinished-cached",
+      "why": "a past season with a game still to play is cached, freezing a postponed game's missing result.",
+      "find": "    if cacheable and path is not None and finished(df):",
+      "replace": "    if cacheable and path is not None:",
+      "expect_caught_by": "test_a_past_season_with_a_game_still_to_play_is_not_cached"
+    },
+    {
+      "id": "nhl-sched-season-boundary",
+      "why": "August is counted as the new season, so a load in August asks for a season that has no games yet.",
+      "find": "    return now.year if now.month >= 9 else now.year - 1",
+      "replace": "    return now.year if now.month >= 8 else now.year - 1",
+      "expect_caught_by": "test_season_ids_and_season_boundaries"
+    },
+    {
+      "id": "nhl-sched-unsorted",
+      "why": "games are left in the feed's order, so the day's slate is not earliest first.",
+      "find": "    df = df.sort_values(['start_utc', 'game_id'], kind='stable').reset_index(drop=True)",
+      "replace": "    df = df.reset_index(drop=True)",
+      "expect_caught_by": "test_games_come_out_earliest_start_first"
+    }
+  ]
+}
