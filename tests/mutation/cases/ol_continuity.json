@@ -1,0 +1,34 @@
+{
+  "target": "src/pipeline/ol_continuity.py",
+  "tests": "tests/test_leak_free.py",
+  "cases": [
+    {
+      "id": "ol-continuity-counts-playoff-games",
+      "why": "playoff snap counts enter the lookup, so a week-1 score can compare against last January's line.",
+      "find": "    ol = ol[ol['game_type'] == 'REG']\n",
+      "replace": "",
+      "expect_caught_by": "test_ol_continuity_respects_game_type_filter"
+    },
+    {
+      "id": "ol-continuity-bridges-the-bye",
+      "why": "a team coming off a bye is compared with the week before the bye, a score the docstring promises never to make.",
+      "find": "        if prev_key not in starters_lookup:\n            continue  # bye week, season opener, or otherwise not truly consecutive\n",
+      "replace": "        if prev_key not in starters_lookup:\n            prev_key = max((k for k in starters_lookup if k[:2] == (team, season) and k[2] < week), default=None)\n            if prev_key is None:\n                continue\n",
+      "expect_caught_by": "test_ol_continuity_bye_week_gets_no_score"
+    },
+    {
+      "id": "ol-continuity-reads-the-current-week",
+      "why": "the 'most recent' score for a prediction includes the week being predicted, a leak of that game's own line-up.",
+      "find": "if t == team and s == season and w < before_week]",
+      "replace": "if t == team and s == season and w <= before_week]",
+      "expect_caught_by": "test_most_recent_continuity_boundary_excludes_current_week"
+    },
+    {
+      "id": "ol-continuity-default-fabricated",
+      "why": "a missing week gets a made-up score instead of the caller's honest default.",
+      "find": "    return lookup.get((team, season, week), default)\n",
+      "replace": "    return lookup.get((team, season, week), 5)\n",
+      "expect_caught_by": "test_get_continuity_exact_match_and_default"
+    }
+  ]
+}
