@@ -1,0 +1,48 @@
+{
+  "target": "src/pipeline/config.py",
+  "tests": "tests/test_config_pins.py",
+  "cases": [
+    {
+      "id": "config-qb-shrink-retuned-silently",
+      "why": "QB shrinkage moves back to the k=96 the v2.4 entry reverted, and the model the page describes is no longer the one making picks.",
+      "find": "QB_SHRINK_K = 8\n",
+      "replace": "QB_SHRINK_K = 96\n",
+      "expect_caught_by": "test_the_tuned_constants_are_the_ones_claude_md_states"
+    },
+    {
+      "id": "config-ridge-retuned-silently",
+      "why": "the team-rating penalty changes with no backtest, no version bump and no statement.",
+      "find": "RIDGE_ALPHA = 15.0\n",
+      "replace": "RIDGE_ALPHA = 5.0\n",
+      "expect_caught_by": "test_the_tuned_constants_are_the_ones_claude_md_states"
+    },
+    {
+      "id": "config-half-life-retuned-silently",
+      "why": "the recency half-life changes for team and QB ratings at once, unannounced.",
+      "find": "RECENCY_HALF_LIFE = 16\n",
+      "replace": "RECENCY_HALF_LIFE = 10\n",
+      "expect_caught_by": "test_the_tuned_constants_are_the_ones_claude_md_states"
+    },
+    {
+      "id": "config-backtest-drops-a-season",
+      "why": "the backtest stops scoring 2025, so the published figures and the drift baseline describe a different sample from the one the code would score.",
+      "find": "BACKTEST_SEASONS = [2022, 2023, 2024, 2025]\n",
+      "replace": "BACKTEST_SEASONS = [2022, 2023, 2024]\n",
+      "expect_caught_by": "test_the_published_backtest_used_these_seasons"
+    },
+    {
+      "id": "config-training-starts-later",
+      "why": "training drops 2020 and nothing the page or CLAUDE.md says changes with it.",
+      "find": "TRAIN_SEASONS = [2020, 2021, 2022, 2023, 2024, 2025]\n",
+      "replace": "TRAIN_SEASONS = [2021, 2022, 2023, 2024, 2025]\n",
+      "expect_caught_by": "test_the_seasons_are_the_ones_claude_md_states"
+    },
+    {
+      "id": "config-version-bumped-without-the-state",
+      "why": "MODEL_VERSION moves on while CLAUDE.md still describes the last model to every new session.",
+      "find": "MODEL_VERSION = \"2.5\"\n",
+      "replace": "MODEL_VERSION = \"2.6\"\n",
+      "expect_caught_by": "test_the_model_version_is_the_one_claude_md_describes"
+    }
+  ]
+}

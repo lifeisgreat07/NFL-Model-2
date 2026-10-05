@@ -174,5 +174,17 @@ def test_wide_interval_is_marked_consistent_with_perfect():
     assert bins[0]['consistent_with_perfect'] is True
 
 
+def test_a_bin_far_from_its_forecast_is_not_marked_consistent():
+    """The other half, missing until Stage 48 item 15's mutation run: with
+    only the test above, a flag that said True for every bin passed. 200
+    games at 62% that came in at 30% are miscalibrated, and must say so."""
+    from src.research.calibration import calibration_bins
+
+    probs = np.array([0.62] * 200)
+    truth = np.array([1.0] * 60 + [0.0] * 140)  # 30% observed vs 62% predicted
+    bins = calibration_bins(truth, probs, min_n=1)
+    assert bins[0]['consistent_with_perfect'] is False
+
+
 if __name__ == '__main__':
     sys.exit(pytest.main([__file__, '-v']))

@@ -1,0 +1,55 @@
+{
+  "target": "src/research/calibration.py",
+  "tests": "tests/test_calibration.py",
+  "cases": [
+    {
+      "id": "calibration-wilson-loses-its-correction",
+      "why": "the Wilson interval drops its z-squared term and becomes the normal approximation, wrong exactly in the small tail bins this module exists for.",
+      "find": "    denom = 1 + z * z / n\n",
+      "replace": "    denom = 1\n",
+      "expect_caught_by": "test_wilson_matches_published_value"
+    },
+    {
+      "id": "calibration-wilson-zero-games-certain",
+      "why": "a bin with no games reports an interval of exactly zero, a certainty measured from nothing.",
+      "find": "    if n == 0:\n        return (0.0, 1.0)\n",
+      "replace": "    if n == 0:\n        return (0.0, 0.0)\n",
+      "expect_caught_by": "test_wilson_handles_zero_games"
+    },
+    {
+      "id": "calibration-top-bin-drops-certainty",
+      "why": "a probability of exactly 1.0 falls out of every bin, so the bins stop accounting for every game.",
+      "find": "        mask = (y_prob >= lo) & (y_prob < hi) if hi < 1.0 else (y_prob >= lo) & (y_prob <= hi)\n        k = int(mask.sum())\n        if k == 0:\n            continue\n        wins",
+      "replace": "        mask = (y_prob >= lo) & (y_prob < hi)\n        k = int(mask.sum())\n        if k == 0:\n            continue\n        wins",
+      "expect_caught_by": "test_probability_of_exactly_one_is_included"
+    },
+    {
+      "id": "calibration-small-bins-not-flagged",
+      "why": "a bin of a handful of games is drawn like a measured one, the failure the underpowered flag exists to prevent.",
+      "find": "            'underpowered': k < min_n,\n",
+      "replace": "            'underpowered': False,\n",
+      "expect_caught_by": "test_small_bins_are_flagged_not_dropped"
+    },
+    {
+      "id": "calibration-resolution-measured-from-the-forecast",
+      "why": "resolution is measured from each bin's own forecast instead of the base rate, so a model that always says the base rate looks informative.",
+      "find": "        resolution += k * (obs - base) ** 2\n",
+      "replace": "        resolution += k * (obs - mean_pred) ** 2\n",
+      "expect_caught_by": "test_decomposition_identity_holds"
+    },
+    {
+      "id": "calibration-reliability-unsquared",
+      "why": "reliability sums absolute gaps, so the Murphy identity Brier = reliability - resolution + uncertainty no longer holds.",
+      "find": "        reliability += k * (mean_pred - obs) ** 2\n",
+      "replace": "        reliability += k * abs(mean_pred - obs)\n",
+      "expect_caught_by": "test_decomposition_identity_holds"
+    },
+    {
+      "id": "calibration-every-bin-consistent",
+      "why": "every bin is marked consistent with perfect calibration, whatever its interval says.",
+      "find": "            'consistent_with_perfect': bool(\n                ci_lo * 100 <= float(y_prob[mask].mean()) * 100 <= ci_hi * 100\n            ),\n",
+      "replace": "            'consistent_with_perfect': True,\n",
+      "expect_caught_by": "test_a_bin_far_from_its_forecast_is_not_marked_consistent"
+    }
+  ]
+}
