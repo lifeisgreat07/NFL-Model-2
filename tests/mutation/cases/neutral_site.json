@@ -1,0 +1,45 @@
+{
+  "target": "src/pipeline/weekly_update.py",
+  "tests": "tests/test_neutral_site.py",
+  "cases": [
+    {
+      "id": "neutral-unknown-reads-as-home",
+      "why": "a schedule that does not say where a game is played reads as a home game, so a source that drops the column silently tells the card every game is at home.",
+      "find": "        return None\n    return str(loc).strip().lower() == 'neutral'",
+      "replace": "        return False\n    return str(loc).strip().lower() == 'neutral'",
+      "expect_caught_by": "test_the_schedule_location_reads_as_neutral_or_not_or_unknown"
+    },
+    {
+      "id": "neutral-snapshot-not-carried",
+      "target": "src/pipeline/weekend_refresh.py",
+      "why": "the status snapshot drops the flag, so a neutral game in a week locked before picks carried it never says so.",
+      "find": "            'neutral_site': site_is_neutral(row),\n",
+      "replace": "",
+      "expect_caught_by": "test_the_status_snapshot_carries_it_for_weeks_locked_before_picks_did"
+    },
+    {
+      "id": "neutral-page-ignores-the-snapshot",
+      "target": "src/pipeline/generate_dashboard.py",
+      "why": "the page reads the flag from the pick only, so every week locked before picks carried it shows no neutral site.",
+      "find": "                            else status.get('neutral_site')),",
+      "replace": "                            else None),",
+      "expect_caught_by": "test_the_page_takes_the_pick_first_then_the_snapshot"
+    },
+    {
+      "id": "neutral-line-on-every-card",
+      "target": "src/dashboard/app.js",
+      "why": "the line is drawn whatever the flag says, so every home game claims a neutral site.",
+      "find": "  if(!g.neutral) return '';",
+      "replace": "  if(false) return '';",
+      "expect_caught_by": "test_a_home_game_draws_nothing"
+    },
+    {
+      "id": "neutral-venue-unescaped",
+      "target": "src/dashboard/app.js",
+      "why": "the venue name from the schedule goes into the card unescaped, so a stray angle bracket in an upstream field becomes markup.",
+      "find": "  const where = g.venue ? ` · ${escapeHtml(g.venue)}` : '';",
+      "replace": "  const where = g.venue ? ` · ${g.venue}` : '';",
+      "expect_caught_by": "test_the_venue_is_escaped"
+    }
+  ]
+}

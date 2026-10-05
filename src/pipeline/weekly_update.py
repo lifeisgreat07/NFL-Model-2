@@ -642,6 +642,20 @@ def starter_warning(week_games: pd.DataFrame, overrides: dict[str, dict], season
             f"quarterback.")
 
 
+def site_is_neutral(game: pd.Series) -> bool | None:
+    """True at a neutral site, False at the home team's, None when the
+    schedule does not say (Stage 37 item 6)."""
+    loc = game.get('location')
+    if loc is None or (not isinstance(loc, str) and pd.isna(loc)):
+        return None
+    return str(loc).strip().lower() == 'neutral'
+
+
+def _venue(game: pd.Series) -> str | None:
+    v = game.get('stadium')
+    return str(v) if isinstance(v, str) and v.strip() else None
+
+
 def kickoff_utc(game: pd.Series) -> pd.Timestamp | None:
     """A game's kickoff as a UTC timestamp, or None with no gameday.
 
@@ -1037,6 +1051,13 @@ def predict_week(week_games: pd.DataFrame, started: set[tuple[str, str]], curren
 
         predictions.append({
             'season': season, 'week': week, 'home': home, 'away': away,
+            # Stage 37 item 6: a game at a neutral site (London, Munich,
+            # Sao Paulo...) still has a listed home team, and both models
+            # still give it the home edge; the card says so. nflverse's
+            # `location` is 'Home' or 'Neutral'. Optional columns: absent
+            # means unknown (None), never a guessed False.
+            'neutral_site': site_is_neutral(g),
+            'venue': _venue(g),
             'gameday': str(gameday) if pd.notna(gameday) else None,
             'gametime_et': str(gametime) if pd.notna(gametime) else None,
             'weekday': str(weekday) if pd.notna(weekday) else None,
