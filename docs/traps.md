@@ -36,6 +36,8 @@ entries below each call themselves "the recurring one".)
 - Before blaming a stranger for a change, check this session's own commands.
 - Booth runs under `main`'s CLAUDE.md, restored in its tree; stash it, as its prompt says.
 - A scheduled run races every merge; the pushers catch up with `main` first.
+- A migration or bulk rewrite never touches a record (`data/`, `experiments/`, `memory/`): an early Stage 52 run rewrote `data/agent_log.json`.
+- Jobs an Actions outage cancelled stay cancelled until someone re-runs them from the PR page; Booth passing again does not re-run preflight or the browser check.
 
 **The page**
 - Render it and look at it; a measurement from one browser or font does not travel.
@@ -47,6 +49,7 @@ entries below each call themselves "the recurring one".)
 - PowerShell: no heredocs, `>` writes UTF-16, `Set-Content -Encoding utf8` adds a BOM, `^{tree}` is mangled, `| Select -First N` stops the script.
 - A Desktop Commander call drops after 60 seconds; GitHub's anonymous API allows 60 calls an hour.
 - Windows Python has no time-zone database.
+- Desktop Commander's `start_process` hands even `cmd /c` lines to PowerShell, which eats every `$name`: put anything with a variable in a script file.
 
 ## Environment traps
 

@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-05, evening ET (#282 to #291 merged; Stages 45 to 49's approved ten done)
+Last updated: 2026-10-05, evening ET (#292 and #294 merged: Stages 50 and 51; nine post-lock branches prepared)
 
 ---
 
@@ -14,56 +14,54 @@ Last updated: 2026-10-05, evening ET (#282 to #291 merged; Stages 45 to 49's app
 figure. `src/` is packaged: run modules with `python -m src.<package>.<module>`.
 The dashboard template is parts under `src/dashboard/`, joined by
 `src/pipeline/template_parts.py`. Read it with `read_template()`, never one
-part as the page (traps). `python -m src.agents.session_start --skip-tests`
-now prints the unattended jobs, the QB routine's PR and open issues.
+part as the page (traps). `src/core/` and `src/sports/nhl/` exist since #292
+and #294; the NFL is still `src/pipeline/` until Stage 52 merges.
 
 **Next action: the read-only checks**: Tuesday 2026-10-06's Weekly update
 (`DRIFT CHECK: OK` in its run summary, a "Model A, log loss" section, Pages
-from `src/dashboard/`, its row in the runs table) and **Thursday 2026-10-08,
-the first LOCK on the new code**. Nothing that touches the weekly run or the
-weekend refresh merges until that lock has been seen to run. Then Stage 42's
-slot guard, and only then does Mark switch on the Weekly update's
-cron-job.org job.
+from `src/dashboard/`, its row in the runs table), the nightly shuffled
+suite's first run (07:15 UTC, GitHub cron only), and **Thursday 2026-10-08,
+the first LOCK on the new code**. Nothing that touches the weekly run, the
+weekend refresh or the deploy merges until that lock has been seen to run.
+
+**Mark delegated decisions to Claude on 2026-10-05 ("until I say so").**
+Each one is logged with its reason in `memory/` and the Audit Response Log.
 
 **Scheduled runs start from cron-job.org** (Stage 42; `docs/decisions/`),
 GitHub's cron the fallback: canary 06:00, slice 06:30, refreshes Fri 05:17,
-Sun 21:47, Mon 01:47 (no repo cron yet) and Mon 05:37 UTC. Each shows a
-requested run on time and a late `schedule` copy (2h24m to 8h39m on 10-05).
-The nightly shuffled suite (07:15) is GitHub cron only.
+Sun 21:47, Mon 01:47 (no repo cron yet) and Mon 05:37 UTC. The QB routine
+ran Monday 22:13 UTC on `src.pipeline` and opened no PR (week 5).
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| cron-job.org dispatch | Six jobs on, Weekly update job off | The slot guard (Stage 42), after the 10-08 lock |
-| QB override routine | Prompt on `src.pipeline` since 10-02 | Monday 22:00 UTC run: see memory/2026-10-05.md |
-| Log-loss drift check (R4) | First real run OK on 48 games | Tuesday's Weekly update |
-| Nightly shuffled suite (#290) | Merged; never run yet | Tonight's 07:15 UTC |
-| Issue #287 | Booth's report disagreed with itself on #286; cause understood | Mark closes it |
+| Nine post-lock branches | Committed on the local Windows machine, one worktree each, not pushed; each has its mutation cases, all caught | The 10-08 lock, then one PR at a time in the order below |
+| Stage 52 (NFL to `src/sports/nfl/`) | Built and proven on `s52-nfl-module` | Step 2's PRs, then the window after a Thursday lock; re-run the script on that day's `main` |
+| cron-job.org dispatch | Six jobs on, Weekly update job off | Stage 42's slot guard merged; then Mark switches it on |
+| Issue #287, and the Booth-failed issue for #292 | Both raised by infrastructure, not code (#292's audit was cancelled by GitHub's outage) | Mark closes them |
 | Private vulnerability reporting | Off (SECURITY.md covers both) | Mark's choice, Settings, Security |
 | Season Accuracy's forecast score | Merged (#160), not on the page yet | 50 graded games |
 | TV exceptions for holiday and Saturday games | Weeks 12, 15, 16 | Sourced entries before those weeks |
-| Audit Response Log | Updated 2026-10-05 with this session's deviations | Fable, for the next audit |
 
-## Queued, in order
+## Queued, in order (after the 10-08 lock is seen to run)
 
-1. After the 10-08 lock is seen to run: Stage 42's slot guard (then Mark
-   switches on the Weekly update job), Stage 36 item 7, Stage 37 items 3,
-   4 and 6, Stage 41 items 5 and 7, the Monday 01:47 UTC fallback cron line
-   for the Sunday evening refresh, and the cancelled-game state (Mark's
-   call: "Cancelled", not graded; Stage 39).
-2. Then Stage 45 items 1 and 2, and **multi-sport, NHL then NBA (Stages
-   50 to 61)**: 50 and 51 may start before the lock; 52 waits for it.
-3. **Stage 21** once week 5 is graded (Tuesday 2026-10-13 at the earliest).
-4. Stages 44, 43, 39, 41 (item 6 needs rendered options), 40; the rest of
-   45 to 49 (3, 5 to 14, 18, 24); 20, 22, 28 as before.
+The branches and their worktrees are listed in the session archive's handoff file.
+1. Stage 42's slot guard (`s42-slot-guard`), then Mark switches on the Weekly update's cron-job.org job.
+2. Stage 36 item 7 (`s36-7-folders`).
+3. Stage 37 item 3 (`s37-3-final-status`), then the backfill of weeks 1 to 4's final snapshots.
+4. Stage 37 item 4 (`s37-4-line-moves`), item 6 (`s37-6-neutral-site`).
+5. Stage 41 item 5 (`s41-5-canary-sources`), item 7 (`s41-7-provenance`).
+6. The Monday 01:47 fallback cron line (`s42-monday-fallback`).
+7. The cancelled-game state (`s39-cancelled-state`).
+8. Stage 52, then Mark re-points cron-job.org's jobs and the QB routine (step-by-step text to be written with the PR).
+Then Stage 45 items 1 and 2; Stage 21 once week 5 is graded; Stages 53 to 61.
 
-One branch at a time still: the README case count no longer conflicts
-(#282), but the one-PR rule is Mark's. Run the suite and the mutation scope
-at the exact head being opened, after the last rebase, and list the case
-files (scope_run.py in the session archive's one-off scripts runs the
-scope whole in a detached worktree, hidden). Keep counts out of
-commit messages.
+One branch at a time. Rebase each on `main` before opening, then run the
+suite and the mutation scope at the exact head being opened (scope_run.py),
+and list the case files. Keep counts out of commit messages. Branches that
+change `tests/test_action_pins.py`'s counts or the same mutation case file
+will need their numbers or anchors refreshed on rebase.
 
 ## Known and deliberately not fixed
 
@@ -80,3 +78,4 @@ commit messages.
 - **A human approval leaves no artifact in the repo.** `memory/` records it.
 - **60 of 496 team pairs sit under the CIEDE2000 floor on the Week Board's split bar, accepted 2026-09-21.**
 - **The reproducibility audit flips between GitHub runners**; local Windows reproduces exactly.
+- **`ubuntu-latest` moves to Ubuntu 26 from 2026-10-19** (GitHub's notice on every run). Nothing pins the image; watch the first runs after it.

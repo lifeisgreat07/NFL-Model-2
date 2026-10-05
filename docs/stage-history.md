@@ -2075,6 +2075,13 @@ The 2026-27 NHL season began September 29 (1,344 games, 84 per team).
    sport's workflow commits outside its folders; every sport-owned name
    carries its sport; core imports no sport.
 Documents and tests only; may run before the lock.
+DONE 2026-10-05 in #292: `docs/decisions/0006-multi-sport.md`,
+`src/core/sport.py`, `src/core/isolation.py`, `tests/test_sport_isolation.py`,
+17 mutation cases, all caught. Mark approved the six design choices: three
+layers, with `src/site/` the only code that sees every sport; `src/pipeline`
+and `src/research` counted as the NFL until Stage 52; the lock rule per
+sport and the lock engine shared; a fixed schedule column contract with a
+cancelled state; Model B optional; rule 5 a build proof, not a test.
 
 ### Stage 51 - NHL data, decided before any model
 
@@ -2087,6 +2094,14 @@ Documents and tests only; may run before the lock.
 4. A starting-goalie source and when it publishes; the injury source.
 5. Team identity across seasons (relocations and renames, the 32 teams).
 6. A written go/no-go. Read-only; may run before the lock.
+DONE 2026-10-05 in #294, except item 2's fallback check (both loaders
+agreeing on one week, as `nfl_data_py` was checked), which is Stage 55 item
+1. The probe passed on GitHub's runner for all seven sources. The go/no-go
+is `docs/nhl-data.md`: GO for Model A and Model B. Mark ruled out paid data
+and chose the Kaggle sets; the one with lines cites ESPN's public API, so
+the source itself is used (Claude, under Mark's delegation): free, every
+game from 2020-21, the three-way line before 2024-25 converted and checked
+against the free archive's two-way close.
 
 ### Stage 52 - The NFL becomes the first module
 
@@ -2101,6 +2116,18 @@ Documents and tests only; may run before the lock.
 After the 10-08 lock and Stage 42's slot guard, merged in the window after
 a Thursday lock so a weekend of refreshes and the canary test it before
 Tuesday's run.
+BUILT AND PROVEN 2026-10-05, not merged. One re-runnable script does the
+whole move (`migrate_nfl.py` in the session archive, with `git mv` for
+history); re-run it on the `main` of the merge window rather than rebasing
+the branch. Core: alerts, atomic_write, runlog, model_specs, template_parts
+(typed to --strict). Workflows renamed `nfl-*.yml` with "NFL ..." names and
+"NFL: ..." alert titles; the isolation guard's legacy lists emptied.
+Records (`memory/`, `data/`, `experiments/`) are never rewritten: an early
+version edited Booth's audit log. Suite on the moved tree: 0 failed. Proof:
+the weekly run's picks for week 5 with the clock fixed, the backtest, the
+calibration file, ratings, odds, line history and the PDF text all
+byte-identical; the page differs in 26 path strings, each naming a moved
+file.
 
 ### Stage 53 - Pages per sport
 

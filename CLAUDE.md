@@ -48,8 +48,8 @@ Model v2.5 (`MODEL_VERSION` in `src/pipeline/config.py`). `TRAIN_SEASONS` 2020-2
 The drift check flags on Model A's log loss against the committed
 `data/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
 
-Suite: **5720 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-`a34e9cc` (after #291), with HEAD level with origin, which is the order that makes the
+Suite: **5853 passing** (none skipped) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+`969017a` (after #294), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -286,7 +286,7 @@ The full text of every stage, finished or planned, is in
   37 honest states, 38 registrations, 39 playoffs, 40 season turnover, 41
   operations and releases, 42 on-time runs, 43 Spotter, 44 Line Judge.
   Order and rules at the top of that section.
-- **Stages 45 to 49**: ten done 2026-10-05; 1 and 2 after the lock. **50 to 61**: multi-sport, NHL then NBA (Mark, 2026-10-05).
+- **Stages 45 to 49**: ten done 2026-10-05; 1 and 2 after the lock. **50 to 61**: multi-sport, NHL then NBA (Mark, 2026-10-05); 50 and 51 done, 52 built and proven, not merged.
 
 ## Ending a session
 
