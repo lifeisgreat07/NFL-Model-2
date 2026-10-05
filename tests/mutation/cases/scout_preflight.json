@@ -122,6 +122,41 @@
       "find": "            if f.endswith(('.html', '.css', '.svg')) or f.startswith(DASHBOARD_PARTS)]",
       "replace": "            if f.endswith(('.css', '.svg')) or f.startswith(DASHBOARD_PARTS)]",
       "expect_caught_by": "test_touches_ui_sees_template_changes_and_ignores_python"
+    },
+    {
+      "id": "preflight-tracked-check-not-wired",
+      "why": "the tracked-files check exists but preflight never calls it, so #278's 'restored the tracked index.html' passes again.",
+      "find": "        check_tracked_claims(claims, head, base),\n",
+      "replace": "",
+      "expect_caught_by": "test_preflight_runs_the_check"
+    },
+    {
+      "id": "preflight-tracked-check-ignores-negation",
+      "why": "'it is never committed', the way a gitignored output is described, fails as a false claim, and authors learn to stop disclosing it.",
+      "find": "        if not verb or NEGATION_RE.search(sentence[:verb.start()]):\n",
+      "replace": "        if not verb:\n",
+      "expect_caught_by": "test_a_negated_sentence_is_a_disclosure_not_a_claim"
+    },
+    {
+      "id": "preflight-tracked-check-forgets-removals",
+      "why": "a PR that deletes a tracked file and says so fails, because the file is no longer in the head commit.",
+      "find": "            if tracked(path, head) or (removal and tracked(path, base)):\n",
+      "replace": "            if tracked(path, head):\n",
+      "expect_caught_by": "test_a_removed_file_is_looked_for_in_the_base"
+    },
+    {
+      "id": "preflight-tracked-check-skips-restored",
+      "why": "'restored', the verb #278 used, is no longer read, so a sentence that says only that passes.",
+      "find": "TRACKED_VERB_RE = re.compile(r'\\b(?:restored|committed|tracked)\\b', re.IGNORECASE)\n",
+      "replace": "TRACKED_VERB_RE = re.compile(r'\\b(?:committed|tracked)\\b', re.IGNORECASE)\n",
+      "expect_caught_by": "test_each_verb_is_checked"
+    },
+    {
+      "id": "preflight-tracked-lookup-always-true",
+      "why": "the git lookup answers yes for every path, so no claim about a tracked file can ever fail.",
+      "find": "                          capture_output=True).returncode == 0\n",
+      "replace": "                          capture_output=True).returncode >= 0\n",
+      "expect_caught_by": "test_the_real_git_lookup"
     }
   ]
 }
