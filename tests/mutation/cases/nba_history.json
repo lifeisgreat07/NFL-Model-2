@@ -113,6 +113,13 @@
       "find": "        if hp is None or ap is None or abs(hp) < 100 or abs(ap) < 100:",
       "replace": "        if hp is None or ap is None:",
       "expect_caught_by": "test_a_price_of_zero_is_no_price"
+    },
+    {
+      "id": "nba-hist-projection-taken",
+      "why": "a projection site's line is read as the market, so Model B trains on a forecast where the registration says a price.",
+      "find": "        if 'live' in provider.lower() or provider.lower() in PROJECTIONS:",
+      "replace": "        if 'live' in provider.lower():",
+      "expect_caught_by": "test_a_projection_site_is_never_the_market"
     }
   ]
 }

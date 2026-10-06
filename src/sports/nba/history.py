@@ -15,7 +15,7 @@ reads the same inputs. This file writes, one season at a time:
 - `data/nba/history/market_<season>.csv`: one row per game ESPN priced: the
   provider, both moneyline prices (the closing price where ESPN gives one)
   and the home team's two-way probability with the margin out. A provider
-  marked live is never used.
+  marked live is never used, nor a projection site (`PROJECTIONS`).
 
 Where ESPN's box score is empty (it lists about 500 finished games of
 2015-16 to 2017-18, and six of 2020-21's play-in, with no team figures and
@@ -60,6 +60,9 @@ FALLBACK = ('https://raw.githubusercontent.com/sportsdataverse/hoopR-nba-data/ma
             'nba/team_box/parquet/team_box_{end_year}.parquet')
 PLAYER_FALLBACK = ('https://raw.githubusercontent.com/sportsdataverse/hoopR-nba-data/main/'
                    'nba/player_box/parquet/player_box_{end_year}.parquet')
+#: Providers ESPN lists beside the sportsbooks that publish a projection,
+#: not a price anyone could bet at (seen in 2016-17). Never the market.
+PROJECTIONS = frozenset({'numberfire', 'teamrankings'})
 #: The registration's agreement floor against the fallback.
 AGREEMENT = 0.99
 #: A game's possessions: FGA + FTA_WEIGHT * FTA - OREB + TOV, averaged over
@@ -299,7 +302,7 @@ def market_row(odds: Json, game: Any) -> dict[str, Any] | None:
     gives one; a provider marked live is never used."""
     for it in odds.get('items') or []:
         provider = str((it.get('provider') or {}).get('name') or '')
-        if 'live' in provider.lower():
+        if 'live' in provider.lower() or provider.lower() in PROJECTIONS:
             continue
         h, a = it.get('homeTeamOdds') or {}, it.get('awayTeamOdds') or {}
         close_h = _num(((h.get('close') or {}).get('moneyLine') or {}).get('american'))

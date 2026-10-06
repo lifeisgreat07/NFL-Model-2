@@ -225,3 +225,9 @@ def test_a_price_of_zero_is_no_price():
     assert h.market_row({'items': [odds('Caesars', 0, 0)]}, GAME) is None
     row = h.market_row({'items': [odds('Caesars', '0', '+120'), odds('William Hill', -140, 120)]}, GAME)
     assert row['provider'] == 'William Hill'
+
+
+def test_a_projection_site_is_never_the_market():
+    assert h.market_row({'items': [odds('numberfire', -150, 130)]}, GAME) is None
+    row = h.market_row({'items': [odds('teamrankings', -300, 250), odds('5Dimes.eu', -150, 130)]}, GAME)
+    assert row['provider'] == '5Dimes.eu'
