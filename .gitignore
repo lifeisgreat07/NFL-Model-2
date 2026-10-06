@@ -56,3 +56,5 @@ src/dashboard/*.swp
 data/recent_runs.json
 # Written by src/pipeline/picks_csv.py for the site build (Stage 46 item 7).
 /picks.csv
+# Written by src/pipeline/lock_proof.py in the site build (Stage 46 item 5).
+data/lock_proof.json

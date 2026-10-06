@@ -1,5 +1,6 @@
 const agentLog = __AGENT_LOG_JSON__;
 const recentRuns = __RECENT_RUNS_JSON__;
+const lockProof = __LOCK_PROOF_JSON__;
 const versionHistory = __VERSION_HISTORY_JSON__;
 const modelVersion = __MODEL_VERSION__;
 /* Every "nothing to show" on the page goes through here. See the Page states
@@ -931,6 +932,48 @@ if(ratingsSearchEl){
   ratingsSearchEl.addEventListener('input', ()=> renderRatings());
 }
 
+/* Proof of lock (Stage 46 item 5): which commit last changed a week's
+   picks before its first kickoff, and any commit after it, each linked to
+   GitHub, where its time cannot be edited. commits are oldest first, from
+   src/pipeline/lock_proof.py. Empty when there is nothing to say. */
+function lockUtc(ms){
+  const d = new Date(ms);
+  return d.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC'})
+    + ', ' + d.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit', timeZone: 'UTC'}) + ' UTC';
+}
+function lockCommitLink(c){
+  return `<a href="${escapeHtml(c.url)}" target="_blank" rel="noopener">${escapeHtml(c.short)}</a>`;
+}
+function lockProofHtml(commits, games){
+  if(!commits || !commits.length || !games || !games.length) return '';
+  const kicks = games.map(kickoffInstant).filter(k => k !== null);
+  if(!kicks.length) return '';
+  const first = Math.min(...kicks);
+  const at = c => Date.parse(c.committed_utc);
+  const before = commits.filter(c => at(c) < first), after = commits.filter(c => at(c) >= first);
+  const parts = [];
+  if(before.length){
+    const last = before[before.length - 1];
+    const hours = Math.floor((first - at(last)) / 3600000);
+    const lead = hours >= 48 ? `${Math.floor(hours / 24)} days` : `${hours} hour${hours === 1 ? '' : 's'}`;
+    parts.push(`These picks were last changed in commit ${lockCommitLink(last)} on ${lockUtc(at(last))}, ${lead} before the week's first kickoff.`);
+    if(before.length > 1) parts.push(`First saved in ${lockCommitLink(before[0])} on ${lockUtc(at(before[0]))}.`);
+  } else {
+    parts.push('No commit of these picks is dated before the first kickoff.');
+  }
+  if(after.length){
+    parts.push(`Changed after kickoff: ${after.map(c => `${lockCommitLink(c)} (${escapeHtml(c.subject)})`).join('; ')}.`);
+  }
+  return parts.join(' ');
+}
+function renderLockProof(weekKey, weekData){
+  const el = document.getElementById('board-lock-note');
+  if(!el) return;
+  const commits = (lockProof && lockProof.weeks) ? lockProof.weeks[weekKey] : null;
+  const html = (weekData && !weekData.preview) ? lockProofHtml(commits, weekData.games) : '';
+  el.innerHTML = html;
+  el.hidden = !html;
+}
 /* ---------- Week Board ---------- */
 let currentBoardWeek = latestWeekKey;
 let currentFilter = 'all';
@@ -1605,6 +1648,7 @@ function renderGames(){
   badge.textContent = gamesList.length ? '' : 'No games';
   badge.hidden = gamesList.length > 0;
   renderWeekGlance(gamesList);
+  renderLockProof(currentBoardWeek, weekData);
   const tvNote = document.getElementById('board-tv-note');
   if(tvNote) tvNote.hidden = true;
   // Tuesday's picks for a week Thursday has not locked yet. Said above the

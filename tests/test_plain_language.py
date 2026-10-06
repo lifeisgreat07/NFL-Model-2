@@ -79,6 +79,9 @@ RENDERERS = {
     # Stage 19's rank change beside each team and the biggest-moves line.
     'rankMoveHtml': 'ratings',
     'moversSentence': 'ratings',
+    'lockCommitLink': 'board',
+    'lockProofHtml': 'board',
+    'renderLockProof': 'board',
     'renderGames': 'board',
     'renderWeekGlance': 'board',
     'whySentence': 'board',
