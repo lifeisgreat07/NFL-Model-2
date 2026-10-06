@@ -20,9 +20,11 @@
     <div class="nav-group-label">Track Record</div>
     <button class="nav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg>Season Accuracy</button>
     <button class="nav-btn" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg>Model Lab</button>
+    <button class="nav-btn" data-page="teams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/></svg>Teams</button>
     <div class="nav-group-label">How It Was Built</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>Checking the AI&#39;s work</button>
+    <button class="nav-btn" data-page="changes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>What&#39;s Changed</button>
   </nav>
   <div class="sidebar-foot">
     <button id="theme-toggle" class="btn btn-block theme-toggle" aria-label="Toggle light and dark theme">
@@ -112,6 +114,16 @@
     <div class="nhl-body" id="modellab-body"></div>
   </section>
 
+  <section class="page" id="page-teams">
+    <div class="page-head"><div>
+      <div class="page-eyebrow">Track Record</div>
+      <h2>Teams</h2>
+      <div class="desc">One club at a time: its ratings, its playoff chances and every game of its season so far.</div>
+    </div></div>
+    <div class="filter-row"><label class="nhl-team-label" for="team-select">Club</label> <select id="team-select" class="nhl-team-select"></select></div>
+    <div class="nhl-body" id="teams-body"></div>
+  </section>
+
   <section class="page" id="page-method">
     <div class="page-head"><div>
       <div class="page-eyebrow">How It Was Built</div>
@@ -128,5 +140,14 @@
       <div class="desc">The checks that run on the NHL&#39;s picks, and what they say now.</div>
     </div></div>
     <div class="nhl-body" id="reliability-body"></div>
+  </section>
+
+  <section class="page" id="page-changes">
+    <div class="page-head"><div>
+      <div class="page-eyebrow">How It Was Built</div>
+      <h2>What&#39;s Changed</h2>
+      <div class="desc">Every change to how the NHL&#39;s picks are made, newest first.</div>
+    </div></div>
+    <div class="nhl-body" id="changes-body"></div>
   </section>
 </main>
