@@ -277,6 +277,46 @@ async def check_one(browser, url, width, network, axe_src, report):
     await ctx.close()
 
 
+# Stage 47 item 10: elements that carry meaning as a background, which a
+# forced-colours theme repaints with its Canvas colour unless the page says
+# otherwise. Each one shown must still differ from what is behind it.
+FORCED_BARS = '.tele-bar-seg, .srs-bar-fill'
+FORCED_JS = """(sel) => {
+  const behind = el => {
+    for (let p = el.parentElement; p; p = p.parentElement) {
+      const c = getComputedStyle(p).backgroundColor;
+      if (c && c !== 'rgba(0, 0, 0, 0)' && c !== 'transparent') return c;
+    }
+    return getComputedStyle(document.body).backgroundColor;
+  };
+  const out = [];
+  for (const el of document.querySelectorAll(sel)) {
+    const r = el.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) continue;
+    const c = getComputedStyle(el).backgroundColor;
+    if (c === 'rgba(0, 0, 0, 0)' || c === 'transparent' || c === behind(el)) out.push(el.className);
+  }
+  return [...new Set(out)];
+}"""
+
+
+async def check_forced_colours(browser, url, report):
+    """One desktop pass with a forced-colours theme on: every bar is still
+    drawn."""
+    ctx = await browser.new_context(viewport={'width': 1280, 'height': HEIGHT}, forced_colors='active',
+                                    reduced_motion='reduce')
+    page = await ctx.new_page()
+    await page.route(lambda u: u.startswith(('http://', 'https://')), lambda r: r.abort())
+    await page.goto(url)
+    await page.wait_for_timeout(300)
+    for pid in await page.evaluate(PAGE_IDS_JS):
+        await page.evaluate(f"typeof setActivePage === 'function' && setActivePage({pid!r})")
+        await page.wait_for_timeout(120)
+        for cls in await page.evaluate(FORCED_JS, FORCED_BARS):
+            report.append(f"[forced colours] {pid}: a bar vanishes into the background ({cls})")
+    await ctx.close()
+
+
 async def check_page(path, axe_src=None, widths=WIDTHS, budget=BYTE_BUDGET):
     report = []
     size = Path(path).stat().st_size
@@ -288,6 +328,8 @@ async def check_page(path, axe_src=None, widths=WIDTHS, budget=BYTE_BUDGET):
         for network in (False, True):
             for w in widths:
                 await check_one(browser, url, w, network, axe_src, report)
+        if widths:
+            await check_forced_colours(browser, url, report)
         await browser.close()
     return report
 
@@ -313,6 +355,10 @@ FIXTURES = {
     'axe': dict(body='<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">', expect='axe'),
     'font': dict(body='<p>No self-hosted face here.</p>', expect='font'),
     'error': dict(body='<p>ok</p>', script='throw new Error("boom")', expect='page error'),
+    # A bar drawn as a background, with no forced-colours rule: the theme
+    # paints it and its track the same Canvas colour.
+    'forced': dict(body='<div style="background:#ddd;width:200px"><div class="srs-bar-fill" '
+                        'style="width:50%;height:8px;background:#36c"></div></div>', expect='forced colours'),
     # A page whose policy refuses what it loads: an inline image under img-src 'none'.
     'csp': dict(head='<meta http-equiv="Content-Security-Policy" content="img-src \'none\'">',
                 body='<img alt="dot" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">', expect='csp:'),
