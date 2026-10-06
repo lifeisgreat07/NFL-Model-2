@@ -76,6 +76,13 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   the same staged path sent the first version, and a folder that already held a file of the same
   name kept it. Give every staged copy a name it has never had, and make the script that copies
   them into a worktree check every file's SHA-256 before it copies any.
+- **`kill_run.ps1` kills every mutation runner, not just the one you mean.** On 2026-10-06 it was
+  used to stop a branch's suite and also stopped the full corpus run at case 760, leaving
+  `src/pipeline/paths.py` mutated in the `mutseq` worktree. While a corpus run is going, stop
+  anything else by its process id (`taskkill /PID <n> /T /F`).
+- **A figure slips into a commit message through a sentence about a test.** "by more than the
+  50 its test allows" is a count; preflight's check caught it after the push. Describe the rule,
+  not its number.
 - **Killing a run mid-test can leave a mutation in place.** On 2026-10-06 a full suite killed
   while the mutation harness's self-test ran left `tests/mutation/selftest_fixtures/subject.py`
   edited in the worktree. Run `git status` after any killed run, and before quoting a suite.

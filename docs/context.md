@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-06, morning UTC (#309 to #319 merged overnight: the NHL's pages with team pages, phone menu and browser checks; the run-time isolation check; the NBA's probe, registration, schedule, history and backtest)
+Last updated: 2026-10-06, morning UTC (#309 to #321 merged overnight and this morning: the NHL's pages with team pages, phone menu and browser checks, and its injury list in each pick; the run-time isolation check; the NBA's probe, registration, schedule, history, backtest and backtest-only pages)
 
 ---
 
@@ -18,7 +18,8 @@ part as the page (traps). The NFL is still `src/pipeline/` until Stage 52
 merges. **The NHL is live**: `.github/workflows/nhl-daily.yml` (14:00 and 21:00 UTC) saves and
 grades its picks and writes its page inputs; `.github/workflows/nhl-canary.yml` runs at 06:40 UTC.
 **The NHL's pages are built but not deployed**: `python -m src.sports.nhl.site` writes one page
-from the NHL's own files (#310); wiring it into the deploy waits for the lock.
+from the NHL's own files (#310); wiring it into the deploy waits for the lock. The NBA's pages
+(`python -m src.sports.nba.site`, #321) show the backtest and no live picks, and wait the same way.
 
 **Next action: the read-only checks**: the NHL daily run's first scheduled
 runs (14:00 and 21:00 UTC 2026-10-06: the first writes the season's schedule and ratings
@@ -42,7 +43,8 @@ are on GitHub's cron only until Mark adds cron-job.org jobs for them.
 | Nine post-lock branches | Committed locally, one worktree each, not pushed | The 10-08 lock, then one PR at a time in the order below |
 | Stage 52 (NFL to `src/sports/nfl/`) | Built on `s52-nfl-module`; migrate_nfl.py (session archive, v7) re-rehearsed on `main` at da39c43 on 2026-10-06: 6581 passed, 1 skipped (the unpushed-HEAD skip) | Step 2's PRs, then the window after a Thursday lock |
 | NHL pages live (Stages 53, 57, 59) | Built (#310, #315, #317): team pages, calibration, What's Changed, the phone's bottom bar; checked by the browser checks with axe | The lock, then the deploy wiring with Stage 52 and 53 |
-| NBA (Stage 61) | Registered (#312), history and backtest merged (#313, #314, #318, #319): H1 and H2 ACCEPT, H3 REJECT (Model B is worse than the market), availability helps (M1) | The NBA's pages, after Mark's call on live picks |
+| NBA (Stage 61) | Registered (#312), history and backtest merged (#313, #314, #318, #319): H1 and H2 ACCEPT, H3 REJECT (Model B is worse than the market), availability helps (M1). Backtest-only pages merged (#321), option A of the rendered "NBA Board Options", Claude's recommendation | Mark's call on those options; deploying with Stage 53 |
+| Full mutation corpus (Stage 60 item 2) | Running at `36fc82d` on the local machine since 09:45 UTC 2026-10-06 (`corpus_0706b` in the session archive); a first run at `05a05bd` was killed at case 760 by my own cleanup (Audit Response Log) | Its end: the result goes into Stage 60's progress note |
 | NBA live picks | No runner can read ESPN's price or injury report | **Mark's call** (docs/nba-data.md lists the choices) |
 | cron-job.org | Six NFL jobs on, Weekly update job off; no NHL jobs | Stage 42's slot guard; Mark adds the NHL's two |
 | Issue #308 | Booth's red run on #307 (prose counts an UNVERIFIABLE the block does not) | Mark closes it |

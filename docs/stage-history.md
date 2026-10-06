@@ -2164,7 +2164,8 @@ rule moves behind the interface with Stage 52; the slot guard waits for Stage 42
    separation like the NFL's.
 
 **Progress (2026-10-05).** Items 1 and 2 merged as #295 (`src/sports/nhl/schedule.py`), item 3 as #296
-(`market.py`, `goalies.py`, `teams.py`); injuries are not read yet. Item 4 (colours and logos)
+(`market.py`, `goalies.py`, `teams.py`); injuries followed as #320 (`injuries.py`: ESPN's list from
+SportsDataverse, stored in each saved pick with its day and read time, context only). Item 4 (colours and logos)
 merged as #300. The NHL's canary merged with #302 and was scheduled by #303, which put a copy of
 `alerts` in the core ahead of Stage 52 (Stage 52's script now drops the NFL's copy).
 
@@ -2268,3 +2269,5 @@ play-in, so those come from hoopR's box scores, and the eight neither has are na
 projection sites (numberfire, teamrankings) out of the market. The backtest merged as #319: H1 ACCEPT,
 H2 ACCEPT, H3 REJECT (Model B worse than the market alone), and the availability term worth 0.012 of
 log loss (M1). No live NBA picks until Mark decides how the live run reads a price and injuries.
+The pages merged as #321: the backtest said plainly, no board (option A of the rendered "NBA Board
+Options", Claude's recommendation under the delegation, for Mark to confirm).
