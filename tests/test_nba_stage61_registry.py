@@ -82,3 +82,10 @@ def test_it_was_registered_before_any_result_exists():
         assert all('result' not in h and 'label' not in h for h in reg['hypotheses'])
     assert reg['registered'] == '2026-10-06'
     assert reg['amendments'] == []
+
+
+def test_an_empty_espn_box_score_is_read_from_the_fallback_and_never_guessed():
+    box = registry()['data']['box_scores']
+    assert "hoopR's team_box and its minutes from hoopR's player_box" in box
+    assert 'A game neither has is left out of the history and named' in box
+    assert 'at least 99% of the games read from ESPN' in box

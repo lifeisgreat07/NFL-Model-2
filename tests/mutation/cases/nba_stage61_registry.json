@@ -57,6 +57,13 @@
       "find": "Paired, resampling whole game days (every game of a US Eastern date together)",
       "replace": "Paired, resampling single games",
       "expect_caught_by": "test_the_bootstrap_resamples_whole_game_days"
+    },
+    {
+      "id": "nba61-empty-box-guessed",
+      "why": "the registration lets a game with an empty box score be filled in some other way, so a history built on guesses would still match it.",
+      "find": "A game neither has is left out of the history and named.",
+      "replace": "A game neither has is filled from its score.",
+      "expect_caught_by": "test_an_empty_espn_box_score_is_read_from_the_fallback_and_never_guessed"
     }
   ]
 }
