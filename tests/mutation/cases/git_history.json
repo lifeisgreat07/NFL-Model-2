@@ -1,0 +1,27 @@
+{
+  "target": "tests/git_history.py",
+  "tests": "tests/test_git_history.py",
+  "cases": [
+    {
+      "id": "git-history-does-not-follow-renames",
+      "why": "the query stops following renames, so after Stage 52's move it names the move commit. The registration checks then read a parent with no registry and fail, or compare a file with its own moved copy and pass by default.",
+      "find": "['git', '-C', str(repo), 'log', '--follow', '--diff-filter=A',",
+      "replace": "['git', '-C', str(repo), 'log', '--diff-filter=A',",
+      "expect_caught_by": "test_a_moved_result_is_traced_to_the_commit_that_first_added_it"
+    },
+    {
+      "id": "git-history-reports-todays-path",
+      "why": "the commit is right but the path returned is today's, so the registry is looked for where it sits after the move, in a parent commit where nothing was there yet.",
+      "find": "    return sha, (paths[-1] if paths else rel)\n",
+      "replace": "    return sha, rel\n",
+      "expect_caught_by": "test_a_moved_result_is_traced_to_the_commit_that_first_added_it"
+    },
+    {
+      "id": "git-history-registry-in-results",
+      "why": "the registry is looked for inside results/ rather than beside it, so every registration check reads a file that never existed.",
+      "find": "    return str(PurePosixPath(result_path).parent.parent / 'registry.json')\n",
+      "replace": "    return str(PurePosixPath(result_path).parent / 'registry.json')\n",
+      "expect_caught_by": "test_a_moved_result_is_traced_to_the_commit_that_first_added_it"
+    }
+  ]
+}

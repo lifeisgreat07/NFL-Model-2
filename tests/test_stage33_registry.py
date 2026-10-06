@@ -22,6 +22,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
+from git_history import first_added, registry_beside
 
 from src.pipeline.model_specs import (
     MODEL_A_FEATURES,
@@ -173,11 +174,12 @@ def _shallow():
 def test_every_committed_result_was_registered_in_an_earlier_commit():
     for path in sorted(RESULTS.glob('*.json')):
         rel = path.relative_to(REPO_ROOT).as_posix()
-        added = git('log', '--diff-filter=A', '--format=%H', '--', rel).stdout.split()
-        if not added:
+        found = first_added(REPO_ROOT, rel)
+        if found is None:
             continue  # not committed yet; the check applies from the first commit
-        first = added[-1]
-        parent = git('show', f'{first}^:experiments/stage33/registry.json')
+        # Following renames: Stage 52 moves these files (tests/git_history.py).
+        first, then = found
+        parent = git('show', f'{first}^:{registry_beside(then)}')
         assert parent.returncode == 0, f'{rel} was committed in {first[:7]} with no registry before it'
         entries = {h['id']: h for h in json.loads(parent.stdout)['hypotheses']}
         assert path.stem in entries, f'{path.stem} was answered in {first[:7]} without being registered'
