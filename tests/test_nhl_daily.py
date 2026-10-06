@@ -135,3 +135,32 @@ def test_a_box_score_not_settled_yet_is_skipped_and_tried_next_run(tmp_path, mon
     monkeypatch.setattr(daily.history, 'boxscores', fake_boxscores)
     out = daily.refresh_season(2026, sched, folder=tmp_path)
     assert out['game_id'].tolist() == ['2']
+
+
+# --- standings ---------------------------------------------------------------------
+
+class Rated:
+    def matchup(self, home, away, home_goalie, away_goalie, ks):
+        assert home_goalie is None and away_goalie is None, 'a future game has no known goalie'
+        return {'goal_matchup': 0.0, 'shot_matchup': 0.0, 'goalie_matchup_2000': 0.0}
+
+
+class Half:
+    def predict_proba(self, x):
+        return np.tile([0.5, 0.5], (len(x), 1))
+
+
+def test_the_standings_file_is_written_from_model_a_with_no_goalies(tmp_path, monkeypatch):
+    monkeypatch.setattr(daily, 'PATHS', type('P', (), {'results': tmp_path})())
+    sched = pd.DataFrame([
+        {'game_id': '1', 'home': 'TOR', 'away': 'MTL', 'status': 'final', 'home_win': 1, 'last_period': 'OT',
+         'game_type': 'regular'},
+        {'game_id': '2', 'home': 'MTL', 'away': 'TOR', 'status': 'scheduled', 'home_win': None, 'last_period': None,
+         'game_type': 'regular'}])
+    games = pd.DataFrame({'season': [2025, 2026, 2026], 'last_period': ['REG', 'OT', 'REG']})
+    out = daily.write_standings(sched, games, Rated(), Half(), 2000.0, '2026-10-10', 2026, n_sim=40)
+    doc = json.loads(out.read_text(encoding='utf-8'))
+    assert out.name == 'standings_2026.json' and doc['as_of'] == '2026-10-10'
+    assert doc['overtime_share'] == round(1 / 3, 4)
+    mtl = next(t for t in doc['teams'] if t['team'] == 'MTL')
+    assert mtl['points_now'] == 1 and 1 < mtl['projected_points'] < 3

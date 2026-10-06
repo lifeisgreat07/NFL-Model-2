@@ -1,0 +1,83 @@
+{
+  "target": "src/sports/nhl/standings.py",
+  "tests": "tests/test_nhl_standings.py",
+  "cases": [
+    {
+      "id": "nhl-st-otl-no-point",
+      "why": "an overtime loss earns nothing, so every team that loses past regulation is short a point.",
+      "find": "    home = np.where(home_win, 2, np.where(beyond, 1, 0))\n",
+      "replace": "    home = np.where(home_win, 2, 0)\n",
+      "expect_caught_by": "test_a_win_is_two_points_and_a_loss_past_regulation_is_one"
+    },
+    {
+      "id": "nhl-st-four-per-division",
+      "why": "four teams per division qualify, so the wild cards are drawn from the wrong teams.",
+      "find": "DIVISION_SPOTS = 3",
+      "replace": "DIVISION_SPOTS = 4",
+      "expect_caught_by": "test_three_per_division_and_two_wild_cards_per_conference"
+    },
+    {
+      "id": "nhl-st-one-wild-card",
+      "why": "one wild card per conference, so the bracket has 14 teams.",
+      "find": "WILD_CARDS = 2",
+      "replace": "WILD_CARDS = 1",
+      "expect_caught_by": "test_three_per_division_and_two_wild_cards_per_conference"
+    },
+    {
+      "id": "nhl-st-no-rw-tiebreak",
+      "why": "regulation wins no longer break a tie, so tied teams are separated by lot alone.",
+      "find": "key=lambda t: (points[t], rw[t], row[t], lots[t])",
+      "replace": "key=lambda t: (points[t], lots[t])",
+      "expect_caught_by": "test_regulation_wins_break_a_tie_in_points"
+    },
+    {
+      "id": "nhl-st-final-otl-zero",
+      "why": "a real overtime loss earns nothing, so the standings now are wrong.",
+      "find": "        base_pts[loser] += 1 if period else 0\n",
+      "replace": "",
+      "expect_caught_by": "test_a_finished_game_keeps_its_result_and_an_overtime_loser_keeps_a_point"
+    },
+    {
+      "id": "nhl-st-cancelled-drawn",
+      "why": "a cancelled game is drawn as if it will be played, so its points are invented.",
+      "find": "left = reg[~reg['status'].isin(['final', 'cancelled'])]",
+      "replace": "left = reg[~reg['status'].isin(['final'])]",
+      "expect_caught_by": "test_a_cancelled_or_playoff_game_counts_for_nobody"
+    },
+    {
+      "id": "nhl-st-playoff-counted",
+      "why": "playoff games count in the regular season, so a playoff run adds standings points.",
+      "find": "reg = schedule[schedule['game_type'] == 'regular']",
+      "replace": "reg = schedule",
+      "expect_caught_by": "test_a_cancelled_or_playoff_game_counts_for_nobody"
+    },
+    {
+      "id": "nhl-st-prob-flipped",
+      "why": "the home-win probability is read as the away team's, so every projection is backwards.",
+      "find": "hw = rng.random(len(p)) < p",
+      "replace": "hw = rng.random(len(p)) >= p",
+      "expect_caught_by": "test_an_unplayed_game_is_drawn_from_its_probability"
+    },
+    {
+      "id": "nhl-st-missing-prob-guessed",
+      "why": "an unplayed game with no probability is quietly skipped, so a hole in the model looks like a finished season.",
+      "find": "    if missing:\n        raise ValueError(f'{len(missing)} unplayed game(s) have no probability, e.g. {missing[:3]}')\n",
+      "replace": "    left = left[left['game_id'].isin(list(home_prob))]\n",
+      "expect_caught_by": "test_an_unplayed_game_without_a_probability_stops_the_simulation"
+    },
+    {
+      "id": "nhl-st-shootout-share-wrong",
+      "why": "the shootout share is taken over all games, not over games past regulation, so shootouts are undercounted.",
+      "find": "    shootout = (done.loc[past, 'last_period'] == 'SO').mean() if past.any() else 0.0",
+      "replace": "    shootout = (done['last_period'] == 'SO').mean()",
+      "expect_caught_by": "test_overtime_share_counts_games_past_regulation_and_shootouts_among_them"
+    },
+    {
+      "id": "nhl-st-utah-pacific",
+      "why": "Utah is placed in the Pacific, so two divisions have the wrong teams.",
+      "find": "    'Central': ('CHI', 'COL', 'DAL', 'MIN', 'NSH', 'STL', 'UTA', 'WPG'),\n    'Pacific': ('ANA', 'CGY', 'EDM', 'LAK', 'SEA', 'SJS', 'VAN', 'VGK'),",
+      "replace": "    'Central': ('CHI', 'COL', 'DAL', 'MIN', 'NSH', 'STL', 'WPG'),\n    'Pacific': ('ANA', 'CGY', 'EDM', 'LAK', 'SEA', 'SJS', 'UTA', 'VAN', 'VGK'),",
+      "expect_caught_by": "test_the_league_is_32_teams_in_four_divisions_of_eight"
+    }
+  ]
+}
