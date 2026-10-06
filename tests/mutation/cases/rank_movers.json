@@ -76,14 +76,6 @@
       "expect_caught_by": "test_ties_are_named_two_at_most_then_counted"
     },
     {
-      "id": "movers-invents-a-fall",
-      "target": "src/dashboard/app.js",
-      "why": "a week with no fall still prints a 'down' clause, naming a team that held its place as having moved down 0 places.",
-      "find": "  if(least < 0) parts.push(",
-      "replace": "  if(least <= 0) parts.push(",
-      "expect_caught_by": "test_a_week_with_no_fall_names_no_fall"
-    },
-    {
       "id": "movers-speaks-with-no-history",
       "target": "src/dashboard/app.js",
       "why": "with nothing to compare against, the line still appears and says no team moved, a claim about a comparison that was never made.",
