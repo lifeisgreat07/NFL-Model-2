@@ -2200,6 +2200,14 @@ jump links is worth showing him when it is built). Each goalie carries its statu
 accent blue so green still means only a pick scored right (A). The market line shows both prices
 and the probability with the margin out (A).
 
+**Progress (2026-10-06).** Item 3 (standings odds) merged as #307. The daily run writes the pages'
+schedule and ratings files every run (#309). The pages merged as #310 (`src/sports/nhl/site.py`,
+`src/sports/nhl/pages/`): the week by day with the strip of days, the cards with both models, the
+market and each goalie's status, standings odds, ratings, Season Accuracy, Model Lab, Methodology
+and Checking the AI's work, rendered in both themes at phone and desktop widths before the PR.
+Not deployed: the deploy wiring waits for the 10-08 lock and goes with Stages 52 and 53. Not
+built yet from item 2: calibration, a team page, What's Changed.
+
 ### Stage 58 - The NHL goes live
 
 1. A forward-test registration, then the first lock.
@@ -2244,3 +2252,11 @@ the likely source; the NBA's own stats site has refused cloud servers), the
 pipeline, the model (player availability is the late-breaking input; rest
 and back-to-backs only through a registration), the pages, an availability
 routine, the go-live, and a card on the home page.
+
+**Progress (2026-10-06).** The probe and `docs/nba-data.md` merged as #311 (GO for history and
+backtest from ESPN on the local machine; the live run is Mark's call, since no runner can read a
+pre-game price or injury report). The registration merged as #312
+(`experiments/nba/stage61/registry.json`: point, efficiency and availability matchups; H1 to H3, M1 and M2), before any
+feature was computed on real games. The schedule loader merged as #313 and the history reader as
+#314: ESPN's box scores are empty for 501 games of 2015-16 to 2017-18 and six of 2020-21's
+play-in, so those come from hoopR's box scores, and the eight neither has are named.

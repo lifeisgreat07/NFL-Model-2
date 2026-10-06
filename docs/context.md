@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-06, early morning ET (#299 to #303 and #306 merged: the NHL's lock rule, colours, history and backtest, daily run, and its workflows; the NHL is live)
+Last updated: 2026-10-06, morning UTC (#309 to #314 merged overnight: the NHL's page inputs and pages, and the NBA's probe, registration, schedule and history reader)
 
 ---
 
@@ -16,15 +16,16 @@ The dashboard template is parts under `src/dashboard/`, joined by
 `src/pipeline/template_parts.py`. Read it with `read_template()`, never one
 part as the page (traps). The NFL is still `src/pipeline/` until Stage 52
 merges. **The NHL is live**: `.github/workflows/nhl-daily.yml` (14:00 and 21:00 UTC) saves and
-grades its picks, and `.github/workflows/nhl-canary.yml` runs at 06:40 UTC, with "NHL: ..."
-alerts through `src/core/alerts.py`. No page shows the NHL yet (Stage 57).
+grades its picks and writes its page inputs; `.github/workflows/nhl-canary.yml` runs at 06:40 UTC.
+**The NHL's pages are built but not deployed**: `python -m src.sports.nhl.site` writes one page
+from the NHL's own files (#310); wiring it into the deploy waits for the lock.
 
 **Next action: the read-only checks**: the NHL daily run's first scheduled
-runs (14:00 and 21:00 UTC 2026-10-06; picks in `predictions/nhl/2026/`),
-Tuesday's Weekly update (`DRIFT CHECK: OK`, the "Model A, log loss"
-section, its runs-table row), and **Thursday 2026-10-08, the first LOCK on
-the new code**. Nothing that touches the weekly run, the weekend refresh or
-the deploy merges until that lock has been seen to run.
+runs (14:00 and 21:00 UTC 2026-10-06: the first writes the season's schedule and ratings
+files for the NHL's pages, the second the first saved picks), Tuesday's Weekly update
+(`DRIFT CHECK: OK`, the "Model A, log loss" section, its runs-table row), and
+**Thursday 2026-10-08, the first LOCK on the new code**. Nothing that touches the
+weekly run, the weekend refresh or the deploy merges until that lock has been seen to run.
 
 **Mark delegated decisions to Claude on 2026-10-05 ("until I say so").**
 Each one is logged with its reason in `memory/` and the Audit Response Log.
@@ -39,12 +40,12 @@ are on GitHub's cron only until Mark adds cron-job.org jobs for them.
 | What | State | Waiting on |
 |---|---|---|
 | Nine post-lock branches | Committed locally, one worktree each, not pushed | The 10-08 lock, then one PR at a time in the order below |
-| Stage 52 (NFL to `src/sports/nfl/`) | Built and proven on `s52-nfl-module`; migrate_nfl.py (session archive) now drops the NFL's alerts copy, the core's being there | Step 2's PRs, then the window after a Thursday lock |
-| NHL standings odds (Stage 57 item 3) | `s58s-nhl-standings`, pushed, suite and scope run | Its PR, next |
-| NBA (Stage 61) | Probe, data doc, registration draft, schedule and history modules built in the cloud copy; ESPN history being cached locally | Mark's call on a live NBA price: ESPN refuses runners |
+| Stage 52 (NFL to `src/sports/nfl/`) | Built on `s52-nfl-module`; migrate_nfl.py (session archive, v7) re-rehearsed on `main` at da39c43 on 2026-10-06: 6581 passed, 1 skipped (the unpushed-HEAD skip) | Step 2's PRs, then the window after a Thursday lock |
+| NHL pages live (Stages 53, 57, 59) | Built (#310) and looked at in both themes; Mark chose the designs 2026-10-05 | The lock, then the deploy wiring with Stage 52 and 53 |
+| NBA backtest (Stage 61) | Registered (#312); schedule (#313) and history reader (#314) merged; the history is being read on the local machine | The history run finishing, then the backtest branch (data, results, Model Lab rows) |
+| NBA live picks | No runner can read ESPN's price or injury report | **Mark's call** (docs/nba-data.md lists the choices) |
 | cron-job.org | Six NFL jobs on, Weekly update job off; no NHL jobs | Stage 42's slot guard; Mark adds the NHL's two |
-| Issues #287, #297, #304, #305 | Raised by infrastructure, not code | Mark closes them |
-| NHL board and home page (Stages 53, 57, 59) | Mark chose the designs 2026-10-05 | Stage 52, then Stage 53's per-sport pages |
+| Issue #308 | Booth's red run on #307 (prose counts an UNVERIFIABLE the block does not) | Mark closes it |
 | Private vulnerability reporting | Off (SECURITY.md covers both) | Mark's choice, Settings, Security |
 
 ## Queued, in order (after the 10-08 lock is seen to run)
@@ -58,19 +59,19 @@ The branches and their worktrees are listed in the session archive's handoff fil
 6. The Monday 01:47 fallback cron line (`s42-monday-fallback`).
 7. The cancelled-game state (`s39-cancelled-state`).
 8. Stage 52, then Mark re-points cron-job.org's jobs and the QB routine (stage52_repoint.md in the session archive).
-Then Stages 53, 57 and 59 for the NHL's pages, Stage 45 items 1 and 2, Stage 21 once week 5 is graded.
+Then Stage 53 with the NHL's pages in the deploy, Stage 59, Stage 45 items 1 and 2, Stage 21 once week 5 is graded.
 
 One branch at a time. Rebase each on `main` before opening, then run the
-suite and the mutation scope at the exact head (scope_run.py), and list the
-case files. Keep counts out of commit messages. Branches that change
-`tests/test_action_pins.py`'s counts (now 20) or a shared case file need
-their numbers or anchors refreshed on rebase.
+suite and the mutation scope at the exact head (scope_run.py, in the session
+archive's `one-off-scripts`), and list the case files. Keep counts out of commit
+messages. Branches that change `tests/test_action_pins.py`'s counts (now 21) or a
+shared case file need their numbers or anchors refreshed on rebase.
 
 ## Known and deliberately not fixed
 
 - **Scheduled runs start hours late** on GitHub's cron; cron-job.org starts them on time.
 - **Booth's audit can run past its 20-minute limit** on a big PR (#302, twice); a re-run finished in under 5.
-- **Booth's prose can count an UNVERIFIABLE its block does not**: the run goes red over a SAFE TO MERGE comment (#286, #296, #303).
+- **Booth's prose can count an UNVERIFIABLE its block does not**: the run goes red over a SAFE TO MERGE comment (#286, #296, #303, #307).
 - **The drift check re-tests a growing sample every week**, so it will sometimes flag by chance. R4 registered it as written.
 - **A failed Thursday run leaves Thursday night's game unpicked** unless dispatched by hand that day.
 - **Mutation runs quote a count Booth cannot always rerun**: a large scope is UNVERIFIABLE by design; the files are listed.

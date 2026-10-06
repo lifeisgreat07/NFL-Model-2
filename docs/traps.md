@@ -72,6 +72,14 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   worked. **Verify the destination rather than the return value**, and read
   two identical failure messages from a file you just changed as evidence
   that you did not change it.
+  **The cache is keyed on the sandbox side too** (2026-10-06, twice): re-staging an edited copy under
+  the same staged path sent the first version, and a folder that already held a file of the same
+  name kept it. Give every staged copy a name it has never had, and make the script that copies
+  them into a worktree check every file's SHA-256 before it copies any.
+- **Desktop Commander's `write_file` refuses to overwrite a file unless `mode` is given.** The
+  refusal is an error, but a script started in the same breath runs whatever the file held before:
+  twice on 2026-10-05 and 06 a commit went out with the previous commit's message. Pass
+  `mode: 'rewrite'` on every write to a path that may exist.
 - **The mutation corpus edits the working tree in place, and is now slow.**
   On 2026-09-24 a full run on the local Windows machine reached 104 of 328 cases in about 17
   minutes, on pace for close to an hour, not the six minutes recorded
