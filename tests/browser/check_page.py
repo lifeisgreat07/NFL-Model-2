@@ -234,7 +234,8 @@ async def check_one(browser, url, width, network, axe_src, report):
         report.append(f"[{tag}] no section.page found -- the checker is looking at the wrong page")
     stops_total = 0
     for pid in ids:
-        await page.evaluate(f"setActivePage({pid!r})")
+        # A one-page site page (the home page) has nothing to switch to.
+        await page.evaluate(f"typeof setActivePage === 'function' && setActivePage({pid!r})")
         await page.wait_for_timeout(120)
         where = f"[{tag}] {pid}"
         o = await page.evaluate(OVERFLOW_JS)

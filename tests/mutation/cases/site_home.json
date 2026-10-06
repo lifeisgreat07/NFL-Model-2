@@ -19,6 +19,14 @@
       "expect_caught_by": "test_a_sport_with_no_page_loses_its_pill_too"
     },
     {
+      "id": "home-page-loses-its-section",
+      "target": "src/site/home/page.html",
+      "why": "the home page's content is no longer a section.page, so the browser checks find nothing to walk on it and fail at every width while saying nothing about the page itself.",
+      "find": "<section class=\"page active home-page\" id=\"page-home\">",
+      "replace": "<div class=\"home-page\">",
+      "expect_caught_by": "test_the_browser_checks_can_walk_the_home_page"
+    },
+    {
       "id": "home-kickoff-read-as-utc",
       "why": "an NFL kickoff is read as UTC rather than Eastern, so the card's next kickoff is four or five hours early and a week reads as played while its Sunday night game is still to come.",
       "find": "    local = pd.Timestamp(f'{day} {clock}').tz_localize('America/New_York')\n",

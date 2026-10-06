@@ -100,6 +100,15 @@ def test_a_sport_with_no_page_gets_a_card_that_links_nowhere():
     assert '`<div class="home-card is-unbuilt"' in js
 
 
+def test_the_browser_checks_can_walk_the_home_page():
+    """tests/browser/check_page.py walks each section.page and reports a page
+    with none as the wrong page; the home page has one and no switcher."""
+    page = (home.TEMPLATE / 'page.html').read_text(encoding='utf-8')
+    assert '<section class="page active home-page" id="page-home">' in page
+    checker = (Path(__file__).resolve().parent / 'browser' / 'check_page.py').read_text(encoding='utf-8')
+    assert "typeof setActivePage === 'function' && setActivePage(" in checker
+
+
 def test_a_sport_with_no_page_loses_its_pill_too():
     js = (home.TEMPLATE / 'home.js').read_text(encoding='utf-8')
     assert "if(HOME[sport] && HOME[sport].built) continue;" in js
