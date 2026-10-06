@@ -1,0 +1,135 @@
+{
+ "family": "nba-stage61",
+ "registered": "2026-10-06",
+ "approved_by": "Claude, under Mark's delegation of 2026-10-05 ('Handle the decisions going forward until I say so'), before any NBA model or feature was fitted or scored.",
+ "protocol": {
+  "outcome": "home_win: the home team wins, overtime included. A neutral-site game keeps ESPN's home and away.",
+  "games": "Every final regular-season game, play-in game and playoff game. Preseason and All-Star games are never used. A cancelled or postponed game is never scored.",
+  "training_from_season": 2015,
+  "validation_seasons": [
+   2022,
+   2023
+  ],
+  "confirmation_seasons": [
+   2024,
+   2025
+  ],
+  "forward_holdout_season": 2026,
+  "primary_metric": "log_loss",
+  "secondary_metric": "brier",
+  "accuracy": "Reported, never decides.",
+  "alpha": 0.05,
+  "budget_m": 3,
+  "budget_rule": "H1, H2 and H3 are the confirmatory slots. A slot is spent by reaching a decision, whatever the outcome. Each confirmatory interval is at level 1 - alpha/budget_m (98.33%). M1 and M2 are measurements and spend nothing.",
+  "bootstrap": "Paired, resampling whole game days (every game of a US Eastern date together), 5,000 resamples, seed 20261006.",
+  "walk_forward": "Refit before every game day on every game strictly earlier (from 2015-16), predict that day's games. Features for a game use only games that ended before that day.",
+  "tuning": "The grid below is searched on the validation seasons only, by Model A's log loss over all their games pooled. The chosen values are then fixed for the confirmation seasons and the forward test.",
+  "model_lab": "Each question gets a Model Lab row when it is answered, whatever it shows."
+ },
+ "data": {
+  "results": "ESPN's scoreboard, read by the NBA's schedule module.",
+  "box_scores": "Each game's ESPN box score: points, field-goal and free-throw attempts, offensive rebounds and turnovers per team, and each player's minutes. SportsDataverse's hoopR team_box is the checked fallback: before a season is used, points and field-goal attempts must agree on at least 99% of the games read from ESPN, and the disagreements are listed. hoopR mirrors ESPN, so this check guards against a dropped or garbled game, not against ESPN itself (docs/nba-data.md). Where ESPN's box score is empty (it lists about 500 finished games of 2015-16 to 2017-18, and six of 2020-21's play-in, with no team figures and every player's minutes as '--'), the game's team figures come from hoopR's team_box and its minutes from hoopR's player_box, and the history marks the game's source. A game neither has is left out of the history and named.",
+  "market": "Two-way home-win probability with the margin taken out evenly, from ESPN's moneyline: the closing price where ESPN gives one, the single listed price before that. A price from a provider marked live is never used. From 2026-27 the same source, read before each pick.",
+  "team_identity": "ESPN's abbreviations, which are stable from 2015-16 on: no team moved or was renamed inside the training seasons."
+ },
+ "models": {
+  "model_a": {
+   "features": [
+    "point_matchup",
+    "efficiency_matchup",
+    "availability_matchup"
+   ],
+   "estimator": "Logistic regression, L2, C=1.0, a StandardScaler fitted on each refit's own rows; the intercept is the home edge.",
+   "point_matchup": "Home rating minus away rating, where each team's rating comes from a recency-weighted ridge regression of every earlier game's point margin (home minus away) on team indicators with a home term. Weight 0.5^(days ago / H). Ridge strength lambda on the team terms only.",
+   "efficiency_matchup": "The same, on the margin per 100 possessions. A game's possessions are the mean of the two teams' FGA + 0.44 FTA - OREB + TOV.",
+   "availability_matchup": "Home availability minus away availability. A team's availability is the share of its expected minutes that play: each player's expected minutes are his recency-weighted minutes per team game over the team's earlier games (the same weights), and the share is the expected minutes of the players who play over the team's total. In the backtest the players who play are the box score's (minutes above zero); live they are every expected player not listed Out on ESPN's injury report, as the NFL uses the announced quarterback and the NHL the projected goalie.",
+   "grid": {
+    "H_days": [
+     30,
+     60,
+     120,
+     240
+    ],
+    "lambda": [
+     0.3,
+     1.0,
+     3.0,
+     10.0
+    ]
+   }
+  },
+  "model_b": {
+   "features": [
+    "point_matchup",
+    "efficiency_matchup",
+    "availability_matchup",
+    "market_logit"
+   ],
+   "estimator": "As Model A. Trained only on games that have a market price.",
+   "market_logit": "The logit of the market's home-win probability."
+  },
+  "market": "The market's home-win probability itself, not refitted.",
+  "base_rate": "The home-win share of the games each refit trains on."
+ },
+ "amendments": [],
+ "prerequisite": "The box-score history (team figures and player minutes) for 2015-16 to 2025-26, read from ESPN once and checked against the fallback, and the ESPN market history read once, both stored by the backtest's own code so a re-run reads the same inputs.",
+ "disclosures": [
+  "Before this registration, the NBA's probe measured the market's own log loss against the home-win base rate for every season from 2015-16 to 2025-26, and checked ESPN's moneyline against The Odds API's consensus spread (docs/nba-data.md). No model, feature or rating had been computed.",
+  "2019-20 was suspended in March 2020 and finished in a bubble without crowds; 2020-21 was a 72-game season with few crowds. Both stay in training as they happened; the home edge is refitted every day, so they carry only as much weight as their recency gives them.",
+  "The backtest knows who played; the live pick knows only the injury report. Measurement M2 sizes that gap once the forward test has games.",
+  "Late scratches and rest days announced after the pick is saved are not seen live. The pick's lock time decides how much of the injury report it reads.",
+  "This is the first NBA registration, written by Claude under delegation rather than approved by Mark question by question as the NFL's were.",
+  "Before registering, the history reader was run over the cached ESPN box scores and stopped on the first empty one (2015-16's opening night). Counting them, and checking that hoopR's team_box and player_box hold all but two of 2015-16 to 2017-18's and none of 2020-21's six, is what the box_scores entry's fallback rule rests on. No feature, rating or model had been computed.",
+  "The live pick's two ESPN reads, the price and the injury report, do not answer GitHub's runners (#131), and Mark ruled out routing around that. How the live run reads them is Mark's decision (docs/nba-data.md); until it is made, the forward test has no NBA picks and M2 cannot be measured."
+ ],
+ "hypotheses": [
+  {
+   "id": "H1",
+   "kind": "hypothesis",
+   "title": "Model A against the home-win base rate",
+   "question": "Does Model A forecast home wins better than knowing only how often the home team wins?",
+   "spends_slot": true,
+   "decision_rule": "On 2024-2025, all games: ACCEPT if the 98.33% day-block paired-bootstrap interval on (Model A - base rate) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE.",
+   "expected": "ACCEPT: the market beats the base rate by 0.05 to 0.12 a season, more than in the NFL or the NHL."
+  },
+  {
+   "id": "H2",
+   "kind": "hypothesis",
+   "title": "Model B against Model A",
+   "question": "Does adding the market to Model A's features improve it?",
+   "spends_slot": true,
+   "decision_rule": "On 2024-2025, all games with a market price: ACCEPT if the 98.33% interval on (Model B - Model A) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE.",
+   "expected": "ACCEPT, as in the NFL."
+  },
+  {
+   "id": "H3",
+   "kind": "hypothesis",
+   "title": "Model B against the market",
+   "question": "Does Model B forecast better than the market alone?",
+   "spends_slot": true,
+   "decision_rule": "On 2024-2025, all games with a market price: ACCEPT if the 98.33% interval on (Model B - market) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE.",
+   "expected": "INCONCLUSIVE, as in the NFL and the NHL."
+  },
+  {
+   "id": "M1",
+   "kind": "measurement",
+   "title": "What the availability term adds",
+   "question": "Model A against Model A without availability_matchup, refitted the same way, on 2024-2025.",
+   "spends_slot": false,
+   "consequence": "Reported with its interval. It does not remove the feature: removing it would need its own registration."
+  },
+  {
+   "id": "M2",
+   "kind": "measurement",
+   "title": "The injury report against who played",
+   "question": "Over the forward test's graded games: how far the availability read from the injury report was from the box score's, and Model A's log loss with each.",
+   "spends_slot": false,
+   "consequence": "Printed on the NBA's Checking the AI's work page once 100 games are graded."
+  }
+ ],
+ "not_in_this_registration": [
+  "Rest days, back-to-backs and travel: each needs its own registration.",
+  "Player ratings beyond minutes (plus-minus, box-score ratings): a candidate for a later registration, not this one.",
+  "The spread and the total."
+ ]
+}

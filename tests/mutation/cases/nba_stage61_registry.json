@@ -1,0 +1,62 @@
+{
+  "target": "experiments/nba/stage61/registry.json",
+  "tests": "tests/test_nba_stage61_registry.py",
+  "cases": [
+    {
+      "id": "nba61-m1-spends-a-slot",
+      "why": "a measurement starts spending a slot without the level moving, so the three questions are decided at an interval that no longer holds the family's error rate.",
+      "find": "\"title\": \"What the availability term adds\",\n   \"question\": \"Model A against Model A without availability_matchup, refitted the same way, on 2024-2025.\",\n   \"spends_slot\": false,",
+      "replace": "\"title\": \"What the availability term adds\",\n   \"question\": \"Model A against Model A without availability_matchup, refitted the same way, on 2024-2025.\",\n   \"spends_slot\": true,",
+      "expect_caught_by": "test_three_slots_and_the_level_they_set"
+    },
+    {
+      "id": "nba61-budget-shrunk",
+      "why": "the budget drops to two while three questions spend slots, so each is tested at 97.5% instead of 98.33%.",
+      "find": "  \"budget_m\": 3,",
+      "replace": "  \"budget_m\": 2,",
+      "expect_caught_by": "test_three_slots_and_the_level_they_set"
+    },
+    {
+      "id": "nba61-grid-widened",
+      "why": "the tuning grid grows after registration, so the validation search is wider than the one written down.",
+      "find": "\"lambda\": [\n     0.3,",
+      "replace": "\"lambda\": [\n     0.1,\n     0.3,",
+      "expect_caught_by": "test_tuning_touches_only_the_validation_seasons"
+    },
+    {
+      "id": "nba61-model-b-extra-feature",
+      "why": "Model B gains a feature the registration did not name, so H2 and H3 compare a different model.",
+      "find": "\"market_logit\"\n   ],",
+      "replace": "\"market_logit\",\n    \"rest_days\"\n   ],",
+      "expect_caught_by": "test_model_b_is_model_a_plus_the_market_and_nothing_else"
+    },
+    {
+      "id": "nba61-confirmation-moved",
+      "why": "the confirmation seasons move after registration, so the held-out test is no longer the one written down.",
+      "find": "\"confirmation_seasons\": [\n   2024,\n   2025\n  ],",
+      "replace": "\"confirmation_seasons\": [\n   2023,\n   2024\n  ],",
+      "expect_caught_by": "test_the_seasons_match_the_other_sports_split"
+    },
+    {
+      "id": "nba61-all-star-allowed",
+      "why": "All-Star games are let into the history, so exhibition results train and score the model.",
+      "find": "Preseason and All-Star games are never used.",
+      "replace": "Preseason games are never used.",
+      "expect_caught_by": "test_all_star_and_preseason_games_are_never_used"
+    },
+    {
+      "id": "nba61-live-price-allowed",
+      "why": "an in-game price is allowed as the market, so a price set after the start feeds Model B.",
+      "find": "A price from a provider marked live is never used. ",
+      "replace": "",
+      "expect_caught_by": "test_a_live_price_is_never_used"
+    },
+    {
+      "id": "nba61-bootstrap-by-game",
+      "why": "the bootstrap resamples single games, so games of one day are treated as independent and the interval narrows.",
+      "find": "Paired, resampling whole game days (every game of a US Eastern date together)",
+      "replace": "Paired, resampling single games",
+      "expect_caught_by": "test_the_bootstrap_resamples_whole_game_days"
+    }
+  ]
+}
