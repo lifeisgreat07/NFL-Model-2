@@ -60,7 +60,7 @@ The branches and their worktrees are listed in the session archive's handoff fil
 7. The Monday 01:47 fallback cron line (`s42-monday-fallback`), the cancelled-game state (`s39-cancelled-state`).
 8. Stage 45 items 1 and 2 (`s45-1-pins`, `s45-2-csp`).
 9. Stage 52 with migrate_nfl v11, then Mark re-points cron-job.org's jobs and the QB routine (stage52_repoint.md in the session archive).
-Then Stage 21 once week 5 is graded. A side suite during a mutation run takes `--basetemp` (memory/2026-10-06.md).
+Then Stage 21 (`s21-insights`, option A, Mark's pick) once week 5 is graded. Never start the mutation runner under pythonw (memory/2026-10-06.md).
 
 One branch at a time. Rebase each on `main` before opening, then run the
 suite and the mutation scope at the exact head (scope_run.py, in the session
