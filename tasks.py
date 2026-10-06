@@ -32,6 +32,8 @@ STATES = Path(tempfile.gettempdir()) / 'nfl-model-states'
 STATE_PAGES = ('states_tie.html', 'states_preview.html')
 # The NHL's page, built from a sample week (tests/browser/build_nhl.py) beside them.
 NHL_PAGE = 'nhl.html'
+# The NBA's page, built from the committed backtest (src/sports/nba/site.py).
+NBA_PAGE = 'nba.html'
 # The type check run-tests.yml runs (Stage 35).
 TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/pipeline/weekly_update.py', 'src/pipeline/ratings_engine.py']
 # The strict type check over the agents (Stage 48 item 19). --follow-imports=silent
@@ -62,7 +64,7 @@ TASKS = {
     'build': ('build index.html from the data on disk (deploy-pages.yml does this)',
               lambda a: [[PY, '-m', 'src.pipeline.generate_dashboard']]),
     'browser-check': ('build, prove every browser rule can fail, check the page, then build '
-                      'and check the states pages and the NHL\'s page (needs Playwright and node; axe-core is '
+                      'and check the states pages and the NHL\'s and NBA\'s pages (needs Playwright and node; axe-core is '
                       'used when node_modules has it)',
                       lambda a: [[PY, '-m', 'src.pipeline.generate_dashboard'],
                                  [PY, 'tests/browser/check_page.py', '--self-test', *_axe()],
@@ -71,7 +73,9 @@ TASKS = {
                                  *[[PY, 'tests/browser/check_page.py', str(STATES / page), *_axe()]
                                    for page in STATE_PAGES],
                                  [PY, 'tests/browser/build_nhl.py', '--out', str(STATES / NHL_PAGE)],
-                                 [PY, 'tests/browser/check_page.py', str(STATES / NHL_PAGE), *_axe()]]),
+                                 [PY, 'tests/browser/check_page.py', str(STATES / NHL_PAGE), *_axe()],
+                                 [PY, '-m', 'src.sports.nba.site', '--out', str(STATES / NBA_PAGE)],
+                                 [PY, 'tests/browser/check_page.py', str(STATES / NBA_PAGE), *_axe()]]),
     'mutation-slice': ('30 mutation cases chosen by a date seed, as the nightly job runs '
                        '(--seed YYYYMMDD to replay a night)',
                        lambda a: [[PY, '-B', 'tests/mutation/runner.py', '--sample', '30',

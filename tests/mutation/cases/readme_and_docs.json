@@ -175,15 +175,15 @@
     {
       "id": "readme-case-floor-above-the-real-count",
       "why": "the README claims more mutation case files than the corpus holds, so the portfolio overstates its own test-of-the-tests.",
-      "find": "over 175 case files",
-      "replace": "over 225 case files",
+      "find": "over 225 case files",
+      "replace": "over 250 case files",
       "expect_caught_by": "test_the_mutation_case_count_it_states_is_the_real_one"
     },
     {
       "id": "readme-case-floor-gone-stale",
       "why": "the floor stays true but falls far behind, so the README undersells the corpus and nothing ever asks for the bump.",
-      "find": "over 175 case files",
-      "replace": "over 100 case files",
+      "find": "over 225 case files",
+      "replace": "over 150 case files",
       "expect_caught_by": "test_the_mutation_case_count_it_states_is_the_real_one"
     },
     {
@@ -191,7 +191,16 @@
       "target": "tasks.py",
       "tests": "tests/test_tasks.py",
       "why": "the task stops building and checking the NHL's page, so a local browser check passes on an NHL page CI would fail.",
-      "find": "                                 [PY, 'tests/browser/build_nhl.py', '--out', str(STATES / NHL_PAGE)],\n                                 [PY, 'tests/browser/check_page.py', str(STATES / NHL_PAGE), *_axe()]]),",
+      "find": "                                 [PY, 'tests/browser/build_nhl.py', '--out', str(STATES / NHL_PAGE)],\n                                 [PY, 'tests/browser/check_page.py', str(STATES / NHL_PAGE), *_axe()],\n",
+      "replace": "",
+      "expect_caught_by": "test_browser_check_runs_what_the_workflow_runs_in_the_same_order"
+    },
+    {
+      "id": "browser-check-skips-the-nba-page",
+      "target": "tasks.py",
+      "tests": "tests/test_tasks.py",
+      "why": "the task stops building and checking the NBA's page, so a local browser check passes on an NBA page CI would fail.",
+      "find": "                                 [PY, '-m', 'src.sports.nba.site', '--out', str(STATES / NBA_PAGE)],\n                                 [PY, 'tests/browser/check_page.py', str(STATES / NBA_PAGE), *_axe()]]),",
       "replace": "                                 ]),",
       "expect_caught_by": "test_browser_check_runs_what_the_workflow_runs_in_the_same_order"
     }

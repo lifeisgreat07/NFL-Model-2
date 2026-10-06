@@ -1,0 +1,34 @@
+{
+  "target": "src/sports/nba/site.py",
+  "tests": "tests/test_nba_site.py",
+  "cases": [
+    {
+      "id": "nba-site-closing-is-any-price",
+      "why": "every priced game is counted as a closing price, so the coverage table overstates how many prices are the market's last word.",
+      "find": "'closing': len({r['game_id'] for r in market if r['closing'] == 'True'})",
+      "replace": "'closing': len({r['game_id'] for r in market})",
+      "expect_caught_by": "test_the_coverage_is_each_seasons_games_and_prices"
+    },
+    {
+      "id": "nba-site-priced-counts-other-games",
+      "why": "prices for games the history does not hold are counted, so a season can show more priced games than games.",
+      "find": "        market = [r for r in _rows(folder / f'market_{season}.csv') if r['game_id'] in games]",
+      "replace": "        market = _rows(folder / f'market_{season}.csv')",
+      "expect_caught_by": "test_the_coverage_is_each_seasons_games_and_prices"
+    },
+    {
+      "id": "nba-site-tuning-dropped",
+      "why": "the page is built without the tuning grid, so the Model Lab cannot show how the settings were chosen.",
+      "find": "        'tuning': _read(folder / 'results' / 'tuning.json'),",
+      "replace": "        'tuning': {'grid': [], 'chosen': {}},",
+      "expect_caught_by": "test_the_page_carries_the_committed_backtest_and_grid_unchanged"
+    },
+    {
+      "id": "nba-site-reads-the-nhls-folders",
+      "why": "the NBA's page is built from another sport's folders.",
+      "find": "PATHS = sport_paths('nba')",
+      "replace": "PATHS = sport_paths('nhl')",
+      "expect_caught_by": "test_the_page_reads_the_nbas_own_folders"
+    }
+  ]
+}

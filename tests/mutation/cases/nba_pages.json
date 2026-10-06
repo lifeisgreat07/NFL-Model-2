@@ -1,0 +1,27 @@
+{
+  "target": "src/sports/nba/pages/nba.js",
+  "tests": "tests/test_nba_site.py",
+  "cases": [
+    {
+      "id": "nba-pages-label-by-hand",
+      "why": "an answer is written into the page instead of read from the results file, so a re-run that changed it would leave the page saying the old one.",
+      "find": "it came back ${Q.H3.label}, and it is reported",
+      "replace": "it came back REJECT, and it is reported",
+      "expect_caught_by": "test_no_answer_or_figure_is_written_into_the_page_by_hand"
+    },
+    {
+      "id": "nba-pages-shared-theme-key",
+      "why": "the theme is stored under a key every sport shares, so choosing light on one sport's page changes another's.",
+      "find": "localStorage.setItem('nba:theme', next)",
+      "replace": "localStorage.setItem('theme', next)",
+      "expect_caught_by": "test_the_page_uses_the_nbas_own_names"
+    },
+    {
+      "id": "nba-pages-no-checker-hook",
+      "why": "the browser checks cannot open each page, so only the first page is ever checked.",
+      "find": "window.setActivePage = id => showPage(String(id).replace(/^page-/, ''));",
+      "replace": "",
+      "expect_caught_by": "test_every_page_is_on_both_menus_and_the_checker_can_open_it"
+    }
+  ]
+}

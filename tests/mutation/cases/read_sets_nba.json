@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nba/site.py",
+  "tests": "tests/test_sport_read_sets.py",
+  "cases": [
+    {
+      "id": "read-set-nba-opens-nhl-results",
+      "why": "the NBA's page build reads one of the NHL's results files, so an NHL change could move a byte of the NBA's page.",
+      "find": "    reg = _read(folder / 'registry.json')\n",
+      "replace": "    reg = _read(folder / 'registry.json')\n    (ROOT / 'experiments' / 'nhl' / 'stage56' / 'registry.json').read_text(encoding='utf-8')\n",
+      "expect_caught_by": "test_the_nba_build_opens_only_its_own_files_and_the_shared_ones"
+    },
+    {
+      "id": "read-set-nba-opens-nfl-code",
+      "why": "the NBA's page build imports the NFL's pipeline, so an NFL change could break or change the NBA's page.",
+      "find": "from src.core.sport import sport_paths\n",
+      "replace": "from src.core.sport import sport_paths\nimport src.pipeline.paths  # noqa: F401\n",
+      "expect_caught_by": "test_the_nba_build_opens_only_its_own_files_and_the_shared_ones"
+    }
+  ]
+}
