@@ -1,5 +1,4 @@
 """The NHL's page: ratings."""
-from pathlib import Path
 
 from core.data import ROOT, load_ratings
 

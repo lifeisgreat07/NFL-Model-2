@@ -1,5 +1,4 @@
 """The NFL's page: ratings, then the week's results."""
-from pathlib import Path
 
 from core.data import ROOT, load_ratings, load_results
 
