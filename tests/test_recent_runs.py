@@ -104,7 +104,7 @@ def test_the_file_is_never_committed():
 def test_the_deploy_reads_the_runs_before_it_builds_and_may_read_actions():
     text = (WORKFLOWS / 'deploy-pages.yml').read_text(encoding='utf-8')
     read = text.index('python -m src.pipeline.recent_runs')
-    build = text.index('python -m src.pipeline.generate_dashboard')
+    build = text.index('python -m src.site.build')
     assert read < build
     assert '--out data/recent_runs.json' in text
     assert re.search(r'^permissions:\n(?:  .*\n)*  actions: read\n', text, re.M)

@@ -42,15 +42,15 @@ def line_of(lines, needle):
 def test_the_page_is_built_before_it_is_uploaded(lines):
     """The whole point. Upload without a build publishes the checked-out file,
     which is exactly the committed artifact this change exists to delete."""
-    build = line_of(lines, 'generate_dashboard.py')
+    build = line_of(lines, 'run: python -m src.site.build')
     upload = line_of(lines, 'upload-pages-artifact')
     assert build is not None, (
-        "the deploy workflow never runs generate_dashboard.py, so it publishes "
-        "whatever index.html is in the checkout rather than building one")
+        "the deploy workflow never runs src.site.build, so it publishes "
+        "whatever is in the checkout rather than building the site")
     assert upload is not None, "the deploy workflow never uploads a Pages artifact"
     assert build < upload, (
-        f"generate_dashboard.py runs at line {build + 1} but the upload is at "
-        f"line {upload + 1} -- building after the upload publishes the old page")
+        f"the site build runs at line {build + 1} but the upload is at "
+        f"line {upload + 1} -- building after the upload publishes the old site")
 
 
 def test_a_page_that_did_not_build_is_refused(lines):
@@ -66,20 +66,30 @@ def test_a_page_that_did_not_build_is_refused(lines):
         "published and then complained about")
     assert line_of(lines, 'test -s _site/index.html') is not None, (
         "nothing checks that the built index.html is non-empty")
+    assert line_of(lines, 'test -s _site/nfl/index.html') is not None, (
+        "nothing checks that the NFL's board is non-empty")
+    assert line_of(lines, "find _site -name index.html") is not None, (
+        "the placeholder check reads one page, not every page the site publishes")
 
 
-@pytest.mark.parametrize('needed', ['index.html', '.nojekyll', 'dist', 'assets/og/og-card.png _site/og-card.png'])
-def test_the_artifact_contains_what_the_site_needs(lines, needed):
-    """The deployed site is exactly four things (the Open Graph image joined
-    in Stage 13). .nojekyll is the one people forget: without it Pages runs
-    the output through Jekyll, which drops files and directories whose names
-    begin with an underscore."""
-    body = '\n'.join(lines)
-    assembly = re.search(r'Assemble the site(.*?)(?=\n      - name:)', body, re.S)
-    assert assembly, "no 'Assemble the site' step to check"
-    assert needed in assembly.group(1), (
-        f"{needed} is never copied into _site, so the published site will not "
-        f"have it")
+@pytest.mark.parametrize('published, source', [('.nojekyll', '.nojekyll'),
+                                                ('og-card.png', 'assets/og/og-card.png')])
+def test_the_artifact_contains_what_the_site_needs(published, source):
+    """Since Stage 53 src/site/build.py assembles the site: every sport's
+    page, the NFL's printable picks under nfl/dist/, and the shared files.
+    .nojekyll is the one people forget: without it Pages runs the output
+    through Jekyll, which drops files and directories whose names begin with
+    an underscore."""
+    from src.site import build as site
+    assert site.SHARED_FILES.get(published) == source, (
+        f"{published} is never copied into the site, so the published site will not have it")
+
+
+def test_the_nfl_board_and_its_printable_picks_are_collected():
+    from src.site import build as site
+    source = Path(site.__file__).read_text(encoding='utf-8')
+    assert "shutil.copyfile(ROOT / 'index.html', dest / 'index.html')" in source
+    assert "shutil.copytree(ROOT / 'dist', dest / 'dist', dirs_exist_ok=True)" in source
 
 
 def test_the_deploy_cannot_write_to_the_repository(lines):

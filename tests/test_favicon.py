@@ -7,19 +7,24 @@ the SVG the link says, and the deploy publishes it at the path the link
 names. A link that points nowhere fails silently -- the browser just shows
 the blank page again -- so each is checked here rather than by looking.
 
+Since Stage 53 the board is published at nfl/ and the icons at the site
+root's assets/ (src/site/build.py's SHARED_FILES), so the links climb one
+folder; the published path is where the link lands from nfl/index.html.
+
 Run with: pytest tests/test_favicon.py -v
 """
+import posixpath
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.site.build import SHARED_FILES
 
 REPO = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
 ICON = REPO / 'assets' / 'favicon.svg'
 TOUCH = REPO / 'assets' / 'apple-touch-icon.png'
-DEPLOY = REPO / '.github' / 'workflows' / 'deploy-pages.yml'
 SVG = '{http://www.w3.org/2000/svg}'
 
 
@@ -30,7 +35,7 @@ def icon_links():
 
 def test_the_page_links_one_svg_icon_in_its_head():
     links = icon_links()
-    assert links == [('assets/favicon.svg', 'image/svg+xml')], links
+    assert links == [('../assets/favicon.svg', 'image/svg+xml')], links
 
 
 def test_the_icon_is_a_square_svg_with_a_dark_tile_and_the_accent_ball():
@@ -43,12 +48,16 @@ def test_the_icon_is_a_square_svg_with_a_dark_tile_and_the_accent_ball():
     assert ball is not None and ball.get('fill') == '#7FA8F5', 'the accent football is gone'
 
 
+def published_at(href):
+    """Where a link in the NFL board's head lands on the site."""
+    return posixpath.normpath(posixpath.join('nfl', href))
+
+
 def test_the_deploy_publishes_the_icon_where_the_link_points():
-    text = DEPLOY.read_text(encoding='utf-8')
     href = icon_links()[0][0]
-    assert f'cp assets/favicon.svg _site/{href}' in text, (
-        f'deploy-pages.yml does not copy the favicon to _site/{href}, so the '
-        'live site links an icon that is not there')
+    assert SHARED_FILES.get(published_at(href)) == 'assets/favicon.svg', (
+        f'src/site/build.py does not publish the favicon at {published_at(href)}, '
+        'so the live site links an icon that is not there')
 
 
 # --- the home-screen icon (Stage 34 item 31) ----------------------------------
@@ -68,7 +77,7 @@ def png_size(data):
 def test_the_page_links_one_home_screen_icon():
     """iOS ignores the SVG favicon; without this link a saved-to-home-screen
     page shows a shrunken screenshot of itself."""
-    assert touch_links() == ['assets/apple-touch-icon.png'], touch_links()
+    assert touch_links() == ['../assets/apple-touch-icon.png'], touch_links()
 
 
 def test_the_home_screen_icon_is_a_180px_png():
@@ -77,10 +86,9 @@ def test_the_home_screen_icon_is_a_180px_png():
 
 
 def test_the_deploy_publishes_the_home_screen_icon_where_the_link_points():
-    text = DEPLOY.read_text(encoding='utf-8')
     href = touch_links()[0]
-    assert f'cp assets/apple-touch-icon.png _site/{href}' in text, (
-        f'deploy-pages.yml does not copy the home-screen icon to _site/{href}')
+    assert SHARED_FILES.get(published_at(href)) == 'assets/apple-touch-icon.png', (
+        f'src/site/build.py does not publish the home-screen icon at {published_at(href)}')
 
 
 def test_a_file_that_is_not_a_180px_png_is_caught():

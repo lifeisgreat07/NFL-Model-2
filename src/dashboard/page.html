@@ -11,28 +11,31 @@
      Model. The tab reads "<page> — Pick'em Model" on every page, this one
      included. tests/test_product_name.py holds it. -->
 <title>Week Board — Pick'em Model</title>
-<!-- The favicon (Stage 29): assets/favicon.svg, published at the same path by
-     deploy-pages.yml, so it works on the site and from a local checkout.
-     tests/test_favicon.py holds the link, the file and the copy step. -->
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<!-- The favicon (Stage 29): assets/favicon.svg, published at the site root's
+     assets/ by src/site/build.py. The board lives at nfl/ since Stage 53, so
+     the link climbs one folder; from a local checkout's root index.html the
+     browser stops at the root, so the same link still finds assets/.
+     tests/test_favicon.py holds the link, the file and the copy. -->
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
 <!-- The home-screen icon (Stage 34 item 31): iOS takes a PNG, not the SVG,
      and without one it uses a shrunken screenshot of the page. It is
      favicon.svg rendered at 180x180 on a full-bleed dark tile (iOS rounds
      the corners itself and fills transparent ones with black). To remake it,
      render assets/favicon.svg at that size in Chromium on #0B0D10. -->
-<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
 <!-- What a search result and a link preview show (Stage 13). The description
      is under 160 characters so a search result does not cut it off. The
      Open Graph image is static -- assets/og/og-card.png, made from
-     assets/og/og-card.html -- and deploy-pages.yml copies it to the site
+     assets/og/og-card.html -- and src/site/build.py copies it to the site
      root; og:image and og:url are absolute because link-preview crawlers do
-     not resolve relative ones. tests/test_meta_and_og.py holds all of it. -->
+     not resolve relative ones. og:url is the board's own address, nfl/, since
+     Stage 53. tests/test_meta_and_og.py holds all of it. -->
 <meta name="description" content="Weekly NFL picks from two models, one football-only and one with the Vegas spread, graded in public, with every experiment logged, failures included.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="The Pick'em Model">
 <meta property="og:title" content="The Pick'em Model">
 <meta property="og:description" content="Weekly NFL picks from two models, one football-only and one with the Vegas spread, graded in public, with every experiment logged, failures included.">
-<meta property="og:url" content="https://lifeisgreat07.github.io/NFL-Model-2/">
+<meta property="og:url" content="https://lifeisgreat07.github.io/NFL-Model-2/nfl/">
 <meta property="og:image" content="https://lifeisgreat07.github.io/NFL-Model-2/og-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">

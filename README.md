@@ -5,6 +5,9 @@ heuristic -- trained and validated on nflverse play-by-play for 2020-2025,
 with backtest numbers that were actually run.
 
 **Live dashboard: https://lifeisgreat07.github.io/NFL-Model-2/**
+(the NFL board is at [nfl/](https://lifeisgreat07.github.io/NFL-Model-2/nfl/); the NHL's pages at
+[nhl/](https://lifeisgreat07.github.io/NFL-Model-2/nhl/) and the NBA's backtest at
+[nba/](https://lifeisgreat07.github.io/NFL-Model-2/nba/). The root forwards to the NFL board, shared-picks links included.)
 
 ![The Week Board: each game's win probability from Model A and Model B, with the betting line](docs/images/week-board.png)
 
