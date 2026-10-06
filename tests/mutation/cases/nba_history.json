@@ -1,0 +1,118 @@
+{
+  "target": "src/sports/nba/history.py",
+  "tests": "tests/test_nba_history.py",
+  "cases": [
+    {
+      "id": "nba-hist-fta-weight",
+      "why": "the free-throw weight drifts from the registered 0.44, so every possession count is off.",
+      "find": "FTA_WEIGHT = 0.44",
+      "replace": "FTA_WEIGHT = 0.5",
+      "expect_caught_by": "test_possessions_are_the_registered_formula_averaged_over_both_teams"
+    },
+    {
+      "id": "nba-hist-oreb-added",
+      "why": "offensive rebounds are added instead of taken away, so possessions run long.",
+      "find": "return t['fga'] + FTA_WEIGHT * t['fta'] - t['oreb'] + t['tov']",
+      "replace": "return t['fga'] + FTA_WEIGHT * t['fta'] + t['oreb'] + t['tov']",
+      "expect_caught_by": "test_possessions_are_the_registered_formula_averaged_over_both_teams"
+    },
+    {
+      "id": "nba-hist-sides-unchecked",
+      "why": "a box score is taken without checking its sides against the schedule, so a swapped game is stored backwards.",
+      "find": "        if got != abbr:\n            raise HistoryError(f'game {gid}: box score {side} is {got}, schedule says {abbr}')\n",
+      "replace": "",
+      "expect_caught_by": "test_a_box_score_whose_sides_disagree_with_the_schedule_stops_the_season"
+    },
+    {
+      "id": "nba-hist-dnp-minutes",
+      "why": "a player who did not play keeps whatever stats ESPN lists, so availability counts him.",
+      "find": "minutes = int(stats[at]) if stats and not a.get('didNotPlay') else 0",
+      "replace": "minutes = int(stats[at]) if stats else 1",
+      "expect_caught_by": "test_a_player_who_did_not_play_has_zero_minutes"
+    },
+    {
+      "id": "nba-hist-floor-lowered",
+      "why": "the agreement floor drops, so a season with three bad games in two hundred is written.",
+      "find": "AGREEMENT = 0.99",
+      "replace": "AGREEMENT = 0.98",
+      "expect_caught_by": "test_the_fallback_must_agree_on_ninety_nine_games_in_a_hundred"
+    },
+    {
+      "id": "nba-hist-live-allowed",
+      "why": "a live provider's in-game price is used as the market.",
+      "find": "        if 'live' in provider.lower():\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_a_live_price_is_never_used"
+    },
+    {
+      "id": "nba-hist-open-not-close",
+      "why": "the listed price is used where ESPN also gives the close, so the market is an earlier, weaker one.",
+      "find": "hp, ap = (close_h, close_a) if closing else (_num(h.get('moneyLine')), _num(a.get('moneyLine')))",
+      "replace": "hp, ap = (_num(h.get('moneyLine')), _num(a.get('moneyLine')))",
+      "expect_caught_by": "test_the_market_takes_the_close_where_there_is_one_and_the_margin_out"
+    },
+    {
+      "id": "nba-hist-margin-kept",
+      "why": "the home price's implied probability is used with the margin in, so the market looks surer than it is.",
+      "find": "'home_prob': round(ih / (ih + ia), 6)}",
+      "replace": "'home_prob': round(ih, 6)}",
+      "expect_caught_by": "test_the_market_takes_the_close_where_there_is_one_and_the_margin_out"
+    },
+    {
+      "id": "nba-hist-turnovers-team-only",
+      "why": "player turnovers are read in place of the team total, so team turnovers are lost.",
+      "find": "'offensiveRebounds', 'totalTurnovers')",
+      "replace": "'offensiveRebounds', 'turnovers')",
+      "expect_caught_by": "test_a_missing_or_garbled_count_stops_the_season"
+    },
+    {
+      "id": "nba-hist-empty-box-taken",
+      "why": "an ESPN box score with no team figures is read as it stands, so about 500 games of 2015-16 to 2017-18 stop the season or carry no minutes.",
+      "find": "    return len(teams) != 2 or any(not t.get('statistics') for t in teams)",
+      "replace": "    return False",
+      "expect_caught_by": "test_an_espn_box_with_no_team_figures_is_empty_and_a_full_one_is_not"
+    },
+    {
+      "id": "nba-hist-fallback-team-turnovers-ignored",
+      "why": "the fallback's team turnover total is ignored, so a fallback game counts fewer possessions than an ESPN one.",
+      "find": "'tov': int(tov) if pd.notna(tov) else int(r['turnovers'])}",
+      "replace": "'tov': int(r['turnovers'])}",
+      "expect_caught_by": "test_an_empty_espn_box_is_read_from_the_fallback_and_says_so"
+    },
+    {
+      "id": "nba-hist-fallback-unlabelled",
+      "why": "a game read from the fallback is labelled as ESPN's, so nobody can tell which games came from where.",
+      "find": "'possessions': round(possessions(h, a), 2), 'box_source': 'hoopr'}",
+      "replace": "'possessions': round(possessions(h, a), 2), 'box_source': 'espn'}",
+      "expect_caught_by": "test_an_empty_espn_box_is_read_from_the_fallback_and_says_so"
+    },
+    {
+      "id": "nba-hist-fallback-sides-unchecked",
+      "why": "the fallback's sides are taken without checking them against the schedule, so a swapped game is stored backwards.",
+      "find": "        if r['team_abbreviation'] != abbr:\n            raise HistoryError(f'game {gid}: fallback {side} is {r[\"team_abbreviation\"]}, schedule says {abbr}')\n",
+      "replace": "",
+      "expect_caught_by": "test_a_fallback_whose_sides_disagree_with_the_schedule_stops_the_season"
+    },
+    {
+      "id": "nba-hist-skip-silent",
+      "why": "a game neither source has is dropped without a word, so the history is short a game and nothing says so.",
+      "find": "                skipped.append(f'game {g.game_id} ({g.slate}, {g.away} at {g.home}): '",
+      "replace": "                (f'game {g.game_id} ({g.slate}, {g.away} at {g.home}): '",
+      "expect_caught_by": "test_a_game_neither_source_has_is_skipped_and_named"
+    },
+    {
+      "id": "nba-hist-fallback-compared-with-itself",
+      "why": "games read from the fallback are compared with the fallback, so the agreement floor counts copies as agreement.",
+      "find": "    own = games[games['box_source'] == 'espn'] if 'box_source' in games else games",
+      "replace": "    own = games",
+      "expect_caught_by": "test_the_agreement_check_compares_only_games_read_from_espn"
+    },
+    {
+      "id": "nba-hist-zero-price-taken",
+      "why": "a price of 0, which ESPN writes for a price it does not have, is read as a price, so a season's market stops on a division by zero or carries a made-up probability.",
+      "find": "        if hp is None or ap is None or abs(hp) < 100 or abs(ap) < 100:",
+      "replace": "        if hp is None or ap is None:",
+      "expect_caught_by": "test_a_price_of_zero_is_no_price"
+    }
+  ]
+}
