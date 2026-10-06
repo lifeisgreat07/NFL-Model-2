@@ -21,11 +21,11 @@ grades its picks and writes its page inputs; `.github/workflows/nhl-canary.yml` 
 from the NHL's own files (#310); wiring it into the deploy waits for the lock. The NBA's pages
 (`python -m src.sports.nba.site`, #321) show the backtest and no live picks, and wait the same way.
 
-The NHL's first scheduled daily run (19:16 UTC) committed `results/nhl/schedule_2026.json` (`41ba1cc`), so
-its page builds from `main`. No NHL picks yet: the injury lists get checked on the first day with games.
+The NHL's daily run committed `results/nhl/schedule_2026.json` (`41ba1cc`), so its page builds from `main`.
+cron-job.org's three NHL jobs are on (Mark, 10-06); the test run (22:07 UTC) saved the evening's picks, injury lists included (`1398815`).
 
 **Next action: Thursday 2026-10-08, the first LOCK on the new code** (GitHub's cron, about
-17:00 UTC), and the NHL's cron-job.org jobs once Mark adds them. Nothing that touches the
+17:00 UTC), and that the NHL's cron-job.org jobs fire on the minute. Nothing that touches the
 weekly run, the weekend refresh or the deploy merges until that lock has been seen to run.
 
 **Mark delegated decisions to Claude on 2026-10-05 ("until I say so").**
@@ -33,8 +33,8 @@ Each one is logged with its reason in `memory/` and the Audit Response Log.
 
 **Scheduled runs start from cron-job.org** (Stage 42; `docs/decisions/`),
 GitHub's cron the fallback: canary 06:00, slice 06:30, refreshes Fri 05:17,
-Sun 21:47, Mon 01:47 (no repo cron yet) and Mon 05:37 UTC. The NHL's jobs
-are on GitHub's cron only until Mark adds cron-job.org jobs for them.
+Sun 21:47, Mon 01:47 (no repo cron yet) and Mon 05:37 UTC; the NHL's daily
+14:00 and 21:00 and its canary 06:40 UTC.
 
 ## Open work, and what each is waiting on
 
@@ -45,7 +45,7 @@ are on GitHub's cron only until Mark adds cron-job.org jobs for them.
 | Stages 53, 59, 45 to 49, 21 (one stack) | **Moved ahead of Stage 52** (Claude, under the delegation, 2026-10-06: Mark wants the NHL's and NBA's pages live soon), built on today's layout as one stack, each branch on the one before: `s53-site-pre52` (nfl/, nhl/, nba/), `s59-home-pre52` (home page; sport pills option A, Mark confirmed), `s45-1-pins`, `s45-2-csp`, `s45-3-pip-audit`, `s46-7-picks-csv`, `s46-5-lock-proof`, `s47-12-canonical`, `s47-11-print`, `s47-10-forced-colors`, `s48-18-dead-code`, `s49-24-history`, then `s21-insights` (option A, Mark confirmed). Suites green at each head; PR bodies `body_*.md` in the session archive; mutation scopes in `precheck_scope_summary.txt` there | The 10-08 lock and the slot guard's merge; then one PR each, rebasing the rest of the stack after each merge |
 | NBA (Stage 61) | Registered (#312), history and backtest merged (#313, #314, #318, #319): H1 and H2 ACCEPT, H3 REJECT (Model B is worse than the market), availability helps (M1). Backtest-only pages merged (#321), option A of the rendered "NBA Board Options", Claude's recommendation | **Decided** (Mark, 2026-10-06): option A stands, no live NBA picks this season; deploying with Stage 53 |
 | Stage 60 item 2 | The whole mutation corpus at `36fc82d`: every case caught (2026-10-06); a first run was killed by my own cleanup (Audit Response Log) | The leak fixture is merged (#322, `tests/booth_fixtures/cross-sport-leak/`); its baseline test skips until the Booth regression run, dispatched after the lock (Mark approved it) |
-| cron-job.org | Six NFL jobs on, Weekly update job off; no NHL jobs | Stage 42's slot guard; Mark adds the NHL's two (14:00 and 21:00 UTC) on the evening of 10-06, then Claude confirms they fire |
+| cron-job.org | Six NFL jobs on, Weekly update job off; NHL daily 14:00 and 21:00 and canary 06:40 UTC on (10-06) | Stage 42's slot guard for the Weekly update job |
 | Private vulnerability reporting | Off (SECURITY.md covers both) | Mark's choice, Settings, Security |
 
 ## Queued, in order (after the 10-08 lock is seen to run)
