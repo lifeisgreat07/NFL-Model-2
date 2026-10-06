@@ -1,0 +1,104 @@
+{
+  "target": "src/sports/nba/schedule.py",
+  "tests": "tests/test_nba_schedule.py",
+  "cases": [
+    {
+      "id": "nba-sched-all-star-kept",
+      "why": "the All-Star games come through as regular-season games, so exhibition results train and score the model.",
+      "find": "    'ALLSTAR': False,",
+      "replace": "    'ALLSTAR': True,",
+      "expect_caught_by": "test_all_star_games_are_left_out_though_espn_files_them_as_regular_season"
+    },
+    {
+      "id": "nba-sched-preseason-kept",
+      "why": "preseason games are kept, so warm-up results train the model.",
+      "find": "SEASON_TYPES = {2: 'regular', 3: 'playoff', 5: 'playin'}",
+      "replace": "SEASON_TYPES = {1: 'preseason', 2: 'regular', 3: 'playoff', 5: 'playin'}",
+      "expect_caught_by": "test_preseason_is_left_out_and_play_in_and_playoffs_are_kept"
+    },
+    {
+      "id": "nba-sched-unknown-kind-passes",
+      "why": "an unknown competition type passes silently, so a new kind of exhibition reaches the model unseen.",
+      "find": "    if kind not in COMPETITION_TYPES:\n        out.append(f'game {gid}: unknown competition type {kind!r}')\n",
+      "replace": "",
+      "expect_caught_by": "test_an_unknown_competition_type_stops_the_load"
+    },
+    {
+      "id": "nba-sched-postponed-final",
+      "why": "a postponed game reads as final, so its 0-0 is graded.",
+      "find": "'STATUS_POSTPONED': GameStatus.POSTPONED,",
+      "replace": "'STATUS_POSTPONED': GameStatus.FINAL,",
+      "expect_caught_by": "test_a_postponed_game_keeps_no_score"
+    },
+    {
+      "id": "nba-sched-tie-passes",
+      "why": "a tied final passes, so a garbled score becomes an away win.",
+      "find": "            if hs == as_:\n                out.append(f'game {gid}: final with a tied score {hs}-{as_}')\n",
+      "replace": "            pass\n",
+      "expect_caught_by": "test_a_tied_final_or_a_missing_score_stops_the_load"
+    },
+    {
+      "id": "nba-sched-home-win-flipped",
+      "why": "home_win is the away win, so every graded game is scored backwards.",
+      "find": "'home_win': int(hs > as_)",
+      "replace": "'home_win': int(hs < as_)",
+      "expect_caught_by": "test_the_frame_meets_the_core_contract_and_counts_overtime_wins"
+    },
+    {
+      "id": "nba-sched-first-listing-wins",
+      "why": "a moved game keeps its first listing, so it is locked on the date it was postponed from.",
+      "find": "                seen[str(ev.get('id'))] = (f'{day[:4]}-{day[4:6]}-{day[6:]}', ev)",
+      "replace": "                seen.setdefault(str(ev.get('id')), (f'{day[:4]}-{day[4:6]}-{day[6:]}', ev))",
+      "expect_caught_by": "test_a_season_is_read_along_its_calendar_and_a_moved_game_keeps_its_later_date"
+    },
+    {
+      "id": "nba-sched-other-season",
+      "why": "games ESPN files under another season are read into this one.",
+      "find": "            if (ev.get('season') or {}).get('year') not in (season + 1, None):\n                continue\n",
+      "replace": "",
+      "expect_caught_by": "test_a_season_is_read_along_its_calendar_and_a_moved_game_keeps_its_later_date"
+    },
+    {
+      "id": "nba-sched-current-cached",
+      "why": "the current season is cached, so a live season stops updating.",
+      "find": "    cacheable = cache is not None and season < current_season(now)",
+      "replace": "    cacheable = cache is not None",
+      "expect_caught_by": "test_only_a_finished_earlier_season_is_cached"
+    },
+    {
+      "id": "nba-sched-turnover-september",
+      "why": "the season turns over in September, so a September date belongs to a season that has not started and the loader reads an empty calendar.",
+      "find": "return now.year if now.month >= 10 else now.year - 1",
+      "replace": "return now.year if now.month >= 9 else now.year - 1",
+      "expect_caught_by": "test_the_season_turns_over_in_october"
+    },
+    {
+      "id": "nba-sched-utc-unchecked",
+      "why": "a start in local time passes, so a lock reads it as UTC and fires hours late.",
+      "find": "    if start and not str(start).endswith('Z'):\n        out.append(f'game {gid}: start {start!r} is not UTC')\n",
+      "replace": "",
+      "expect_caught_by": "test_a_start_that_is_not_utc_stops_the_load"
+    },
+    {
+      "id": "nba-sched-placeholder-kept",
+      "why": "a game whose teams are still TBD is kept, so the season stops loading the day the Cup bracket is listed.",
+      "find": "    if placeholder(comp):\n        return False\n",
+      "replace": "",
+      "expect_caught_by": "test_a_game_whose_teams_are_not_known_yet_is_left_out_until_they_are"
+    },
+    {
+      "id": "nba-sched-placeholder-final",
+      "why": "a finished game with a TBD team is skipped as a placeholder instead of stopping the load, so a garbled result disappears silently.",
+      "find": "    return PLACEHOLDER in abbrs and name == 'STATUS_SCHEDULED'",
+      "replace": "    return PLACEHOLDER in abbrs",
+      "expect_caught_by": "test_a_game_whose_teams_are_not_known_yet_is_left_out_until_they_are"
+    },
+    {
+      "id": "nba-sched-calendar-november",
+      "why": "the calendar is read from 1 November, which in 2020 still carried 2019-20's calendar, so 2020-21 loads with no games.",
+      "find": "    return f'{season + 1}0115'",
+      "replace": "    return f'{season}1101'",
+      "expect_caught_by": "test_the_calendar_is_read_from_a_date_every_season_has_reached"
+    }
+  ]
+}
