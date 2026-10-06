@@ -24,7 +24,7 @@ Each run, in order:
    a cancelled game is marked cancelled and never counted
    (`results/nhl/graded_<season>.json`).
 
-Nothing schedules this yet: the NHL goes live in Stage 58, after Stage 52.
+`.github/workflows/nhl-daily.yml` runs this at 14:00 and 21:00 UTC.
 
 Run by hand: python -m src.sports.nhl.daily
 """

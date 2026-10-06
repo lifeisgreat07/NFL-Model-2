@@ -1,0 +1,91 @@
+name: NHL daily run
+
+# Stage 58's daily run (src/sports/nhl/daily.py), twice a day: it adds the
+# season's finished box scores, saves a pick for every game the lock rule
+# (src/sports/nhl/lock.py) says to save now, grades final games and runs the
+# drift check. A pick file is written once and never rewritten.
+#
+# 14:00 and 21:00 UTC are the runs the lock rule was registered with (#299),
+# and its hour of slack covers a late start. GitHub's scheduler can start a
+# run later than that; a game that has already started by then is reported
+# as missed, never saved late. workflow_dispatch lets cron-job.org start it
+# on the minute, as it does the NFL's runs (Stage 42).
+#
+# It commits only the NHL's own folders (src/core/isolation.py holds that).
+# Its commits are made with GITHUB_TOKEN, so they do not start the Pages
+# deploy; the NHL's pages are not built yet.
+#
+# On a failure, or a drift flag, src/core/alerts.py opens or comments on an
+# issue whose title starts "NHL: ".
+on:
+  schedule:
+    - cron: '0 14 * * *'
+    - cron: '0 21 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: nhl-daily
+  cancel-in-progress: false
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the NHL's daily run
+        run: python -m src.sports.nhl.daily | tee nhl-daily.log
+
+      - name: Pull before committing
+        run: |
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              pull --rebase --autostash origin main
+
+      - name: Commit the NHL's picks, grades and history
+        run: |
+          git add data/nhl predictions/nhl results/nhl
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -q -m "NHL daily run"
+          git push origin HEAD:main
+
+      - name: Raise an alert on a drift flag
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if grep -q 'DRIFT CHECK: FLAGGED' nhl-daily.log; then
+            printf 'The NHL drift check flagged: Model A log loss is significantly above its backtest.\n\nRun: %s\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > drift.md
+            python -m src.core.alerts --title "NHL: drift check flagged" --body-file drift.md
+          fi
+
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'The NHL daily run failed. See %s\n' \
+            "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > failure.md
+          python -m src.core.alerts --title "NHL: daily run failed" --body-file failure.md
