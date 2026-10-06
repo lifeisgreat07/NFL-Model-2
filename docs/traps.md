@@ -76,6 +76,9 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   the same staged path sent the first version, and a folder that already held a file of the same
   name kept it. Give every staged copy a name it has never had, and make the script that copies
   them into a worktree check every file's SHA-256 before it copies any.
+- **Run the full suite on the tree you commit, not before editing it.** `974bce4` (2026-10-06)
+  passed the suite before its docs edits and two doc test files after them; `docs/context.md`
+  went one line over its limit and `main`'s Run tests stayed red for three and a half hours.
 - **`kill_run.ps1` kills every mutation runner, not just the one you mean.** On 2026-10-06 it was
   used to stop a branch's suite and also stopped the full corpus run at case 760, leaving
   `src/pipeline/paths.py` mutated in the `mutseq` worktree. While a corpus run is going, stop

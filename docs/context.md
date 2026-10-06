@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-06, morning UTC (#309 to #321 merged overnight and this morning: the NHL's pages with team pages, phone menu and browser checks, and its injury list in each pick; the run-time isolation check; the NBA's probe, registration, schedule, history, backtest and backtest-only pages)
+Last updated: 2026-10-06, 13:30 UTC (#309 to #321 merged overnight and this morning: the NHL's pages, browser checks and injury lists in picks; the run-time isolation check; the NBA's history, backtest and backtest-only pages; the whole mutation corpus caught; main's suite red 09:49 to 13:15 UTC from a docs commit, fixed in 0f9b309)
 
 ---
 
@@ -21,10 +21,10 @@ grades its picks and writes its page inputs; `.github/workflows/nhl-canary.yml` 
 from the NHL's own files (#310); wiring it into the deploy waits for the lock. The NBA's pages
 (`python -m src.sports.nba.site`, #321) show the backtest and no live picks, and wait the same way.
 
-**Next action: the read-only checks**: the NHL daily run's first scheduled
-runs (14:00 and 21:00 UTC 2026-10-06: the first writes the season's schedule and ratings
-files for the NHL's pages, the second the first saved picks), Tuesday's Weekly update
-(`DRIFT CHECK: OK`, the "Model A, log loss" section, its runs-table row), and
+**Next action: the read-only checks**: Tuesday's Weekly update (GitHub's cron copy only;
+not started at 13:01 UTC: `DRIFT CHECK: OK`, the "Model A, log loss" section, its runs-table
+row), the first nightly shuffled suite and the NHL canary (GitHub's cron only), the NHL's
+14:00 and 21:00 UTC runs (the first picks carrying injury lists), and
 **Thursday 2026-10-08, the first LOCK on the new code**. Nothing that touches the
 weekly run, the weekend refresh or the deploy merges until that lock has been seen to run.
 
@@ -71,7 +71,7 @@ shared case file need their numbers or anchors refreshed on rebase.
 ## Known and deliberately not fixed
 
 - **Scheduled runs start hours late** on GitHub's cron; cron-job.org starts them on time.
-- **Booth's audit can run past its 20-minute limit** on a big PR (#302, twice); a re-run finished in under 5.
+- **Booth's audit can run past its 20-minute limit** on a big PR (#302 twice, #319); a re-run or a body edit giving it a bounded check finished well inside it.
 - **Booth's prose can count an UNVERIFIABLE its block does not**: the run goes red over a SAFE TO MERGE comment (#286, #296, #303, #307).
 - **The drift check re-tests a growing sample every week**, so it will sometimes flag by chance. R4 registered it as written.
 - **A failed Thursday run leaves Thursday night's game unpicked** unless dispatched by hand that day.
