@@ -1,0 +1,48 @@
+{
+  "target": "src/sports/nba/ratings.py",
+  "tests": "tests/test_nba_model.py",
+  "cases": [
+    {
+      "id": "nba-rat-efficiency-not-per-100",
+      "why": "the efficiency margin is per possession, not per 100, so its scale is not the registered one.",
+      "find": "    g['efficiency_margin'] = 100.0 * g['point_margin'] / g['possessions'].astype(float)",
+      "replace": "    g['efficiency_margin'] = g['point_margin'] / g['possessions'].astype(float)",
+      "expect_caught_by": "test_prepare_adds_the_margins_and_the_outcome"
+    },
+    {
+      "id": "nba-rat-home-term-penalised",
+      "why": "the ridge penalty falls on the home term too, so the home edge shrinks with lambda, against the registration.",
+      "find": "    penalty[0] = 0.0",
+      "replace": "    penalty[0] = alpha",
+      "expect_caught_by": "test_the_ridge_penalty_falls_on_the_teams_only"
+    },
+    {
+      "id": "nba-rat-availability-always-full",
+      "why": "availability ignores who plays, so the term carries nothing.",
+      "find": "    return sum(v for p, v in expected.items() if p in plays) / total",
+      "replace": "    return 1.0",
+      "expect_caught_by": "test_availability_is_the_share_of_expected_minutes_that_plays"
+    },
+    {
+      "id": "nba-rat-minutes-never-decay",
+      "why": "the one-pass availability stops decaying old minutes, so it no longer computes the registered weighted average.",
+      "find": "                carried = {p: v * decay for p, v in carried.items()}",
+      "replace": "                carried = dict(carried)",
+      "expect_caught_by": "test_the_one_pass_availability_matches_the_registered_formula"
+    },
+    {
+      "id": "nba-rat-same-day-leak",
+      "why": "a day's ratings are fitted on that day's own games, so every feature knows its game's result.",
+      "find": "        train = games[games['day'] < day]\n        if len(train) < MIN_TRAIN:",
+      "replace": "        train = games[games['day'] <= day]\n        if len(train) < MIN_TRAIN:",
+      "expect_caught_by": "test_a_games_features_use_only_earlier_days"
+    },
+    {
+      "id": "nba-rat-rated-too-early",
+      "why": "days are rated from the first earlier game, so the first ratings rest on a handful of games.",
+      "find": "        if len(train) < MIN_TRAIN:",
+      "replace": "        if len(train) < 1:",
+      "expect_caught_by": "test_the_first_days_are_not_rated_until_there_are_enough_games"
+    }
+  ]
+}

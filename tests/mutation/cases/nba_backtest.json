@@ -1,0 +1,55 @@
+{
+  "target": "src/sports/nba/backtest.py",
+  "tests": "tests/test_nba_model.py",
+  "cases": [
+    {
+      "id": "nba-bt-label-loose",
+      "why": "an interval that only starts below zero counts as ACCEPT, so an inconclusive result is reported as a finding.",
+      "find": "    if interval['high'] < 0:\n        return 'ACCEPT'",
+      "replace": "    if interval['low'] < 0:\n        return 'ACCEPT'",
+      "expect_caught_by": "test_the_label_follows_the_registered_rule"
+    },
+    {
+      "id": "nba-bt-seed-drifts",
+      "why": "the bootstrap seed is not the registered one, so a re-run is not the registered analysis.",
+      "find": "SEED = 20261006",
+      "replace": "SEED = 20261005",
+      "expect_caught_by": "test_the_interval_resamples_whole_days_and_is_seeded"
+    },
+    {
+      "id": "nba-bt-model-b-unpriced",
+      "why": "Model B trains and predicts games with no price, so H2 and H3 are asked on games the registration leaves out.",
+      "find": "    rows = table.dropna(subset=['home_prob']) if needs_market else table",
+      "replace": "    rows = table",
+      "expect_caught_by": "test_model_b_trains_and_predicts_only_games_with_a_price"
+    },
+    {
+      "id": "nba-bt-base-rate-sees-today",
+      "why": "the base rate includes the day's own games, so it knows the results it forecasts.",
+      "find": "        rate = table.loc[table['day'] < day, 'home_win'].mean()",
+      "replace": "        rate = table.loc[table['day'] <= day, 'home_win'].mean()",
+      "expect_caught_by": "test_the_base_rate_is_the_home_share_of_earlier_days"
+    },
+    {
+      "id": "nba-bt-tuning-reads-confirmation",
+      "why": "tuning builds features over the confirmation seasons too, so the held-out games are read before they are scored.",
+      "find": "    games = games[games['season'] <= max(seasons)]",
+      "replace": "    games = games",
+      "expect_caught_by": "test_tuning_never_reads_a_game_after_the_validation_seasons"
+    },
+    {
+      "id": "nba-bt-m1-labelled",
+      "why": "the measurement M1 is given a label, as if it spent a slot the registration says it does not.",
+      "find": "        if hid != 'M1':",
+      "replace": "        if True:",
+      "expect_caught_by": "test_confirmation_answers_each_question_with_its_label"
+    },
+    {
+      "id": "nba-bt-all-star-kept",
+      "why": "All-Star games are read into the history, against the registration.",
+      "find": "    games = games[games['game_type'].isin(GAME_TYPES)]",
+      "replace": "    games = games",
+      "expect_caught_by": "test_the_history_is_read_with_its_market_and_only_registered_game_types"
+    }
+  ]
+}
