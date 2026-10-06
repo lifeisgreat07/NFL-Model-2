@@ -45,11 +45,18 @@ def fake_api(per_file):
 # --- the reader ---------------------------------------------------------------
 
 def test_every_scheduled_workflow_is_watched_and_every_watched_one_is_scheduled():
-    """A new job on a timer is on the page without anyone remembering to add it."""
+    """A new job on a timer is on the page without anyone remembering to add it.
+
+    A sport whose pages are not built yet has its jobs in
+    `src/agents/session_start.py`'s SPORT_WATCHED instead: this page is the
+    NFL's until Stage 57, and a session still sees those runs. Every
+    scheduled job is in exactly one of the two."""
+    from src.agents import session_start as ss
     scheduled = {p.name for p in WORKFLOWS.glob('*.yml')
                  if re.search(r'^\s+schedule:\s*$', p.read_text(encoding='utf-8'), re.M)}
     assert len(scheduled) >= 4, scheduled
-    assert set(rr.WATCHED) == scheduled
+    assert not set(rr.WATCHED) & set(ss.SPORT_WATCHED)
+    assert set(rr.WATCHED) | set(ss.SPORT_WATCHED) == scheduled
 
 
 def test_runs_are_merged_across_the_jobs_newest_first_and_cut_to_thirty():

@@ -59,7 +59,7 @@ What it is meant to demonstrate, and where to look:
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
-- **Seventeen CI workflows** in `.github/workflows/` cover the test suite, the
+- **Nineteen CI workflows** in `.github/workflows/` cover the test suite, the
   weekly data pull, a weekend refresh of game status and scores that never
   touches a saved pick, the backtest, the Pages build-and-deploy, the
   agent-activity log, a pre-flight check on every pull request description,

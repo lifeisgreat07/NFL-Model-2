@@ -24,7 +24,7 @@ WORKFLOWS = ROOT / '.github' / 'workflows'
 #: (scope, level) -> text in the workflow that shows the scope is spent.
 USES = {
     ('contents', 'write'): ('stefanzweifel/git-auto-commit-action', 'git push', 'gh release'),
-    ('issues', 'write'): ('src.pipeline.alerts', 'src.pipeline.drift_alert', 'booth_alert', 'gh issue'),
+    ('issues', 'write'): ('src.pipeline.alerts', 'src.core.alerts', 'src.pipeline.drift_alert', 'booth_alert', 'gh issue'),
     ('issues', 'read'): ('/issues', 'gh issue'),
     ('pull-requests', 'write'): ('anthropics/claude-code-action', 'gh pr comment'),
     # /issues/comments is how collect-agent-log reads Booth's reports, which

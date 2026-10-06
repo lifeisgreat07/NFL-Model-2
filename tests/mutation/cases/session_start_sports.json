@@ -1,0 +1,20 @@
+{
+  "target": "src/agents/session_start.py",
+  "tests": "tests/test_session_start.py",
+  "cases": [
+    {
+      "id": "session-start-nhl-canary-unwatched",
+      "why": "the NHL canary drops out of the session's list, so a failing night goes unseen at the next session start.",
+      "find": "    'nhl-canary.yml': 'NHL nightly canary',\n",
+      "replace": "",
+      "expect_caught_by": "test_every_nhl_workflow_on_a_schedule_is_watched"
+    },
+    {
+      "id": "session-start-sports-not-printed",
+      "why": "the sports' jobs are listed but never read, so the session sees only the NFL's.",
+      "find": "        for workflow, shown in {**WATCHED, **SPORT_WATCHED}.items():",
+      "replace": "        for workflow, shown in WATCHED.items():",
+      "expect_caught_by": "test_the_section_names_its_source_and_every_watched_job"
+    }
+  ]
+}

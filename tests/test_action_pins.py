@@ -27,8 +27,8 @@ WORKFLOWS = ROOT / '.github' / 'workflows'
 PINNED = {
     'anthropics/claude-code-action': 2,
     'stefanzweifel/git-auto-commit-action': 3,
-    'actions/checkout': 18,
-    'actions/setup-python': 18,
+    'actions/checkout': 20,
+    'actions/setup-python': 20,
 }
 USES = re.compile(r'^\s*(?:-\s*)?uses:\s*(\S+?)@(\S+)(.*)$', re.M)
 VERSION = re.compile(r'\s+#\s+(v\d+)\.\d+\.\d+\s*')

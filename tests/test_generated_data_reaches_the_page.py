@@ -236,6 +236,15 @@ def test_the_writer_scan_finds_the_workflows_we_know_write():
             f'reading anything into the test below')
 
 
+#: A sport's run that commits only its own folders before any page reads
+#: them, by workflow name -> sport code. Bridging it now would rebuild and
+#: republish an unchanged page twice a day. It is bridged with its sport's
+#: pages (Stage 57 for the NHL), and the test after the next one fails the
+#: moment the builder reads that sport's folders, which is when the bridge
+#: is needed.
+NOT_YET_ON_A_PAGE = {'NHL daily run': 'nhl'}
+
+
 def test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder():
     """The widened rule. A `paths:` trigger does NOT cover these, because the
     pushes are made with the default GITHUB_TOKEN and GitHub will not let such
@@ -243,13 +252,32 @@ def test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder(
     workflow_run list, matching its `name:` field exactly."""
     bridged = _bridged_names()
     missing = [(wf.name, name, roots)
-               for wf, name, roots in _writer_workflows() if name not in bridged]
+               for wf, name, roots in _writer_workflows()
+               if name not in bridged and name not in NOT_YET_ON_A_PAGE]
     assert not missing, (
         'these workflows commit paths the dashboard is built from, with the '
         'default GITHUB_TOKEN, and are not in deploy-pages.yml\'s '
         'workflow_run list, so what they write never reaches the page:\n'
         + '\n'.join(f'  {f} (name: {n!r}) writes {r}' for f, n, r in missing)
         + f'\ncurrently bridged: {bridged}')
+
+
+def test_a_writer_not_yet_on_a_page_feeds_no_page_and_writes_only_its_own_folders():
+    """NOT_YET_ON_A_PAGE holds only while it is true. Each entry must be a
+    real writer, commit only its own sport's folders, and be read by nothing
+    the builder builds from."""
+    writers = {name: wf for wf, name, _ in _writer_workflows()}
+    builder_sources = [REPO / 'src' / 'pipeline' / 'generate_dashboard.py',
+                       *sorted((REPO / 'src' / 'dashboard').glob('*'))]
+    for name, code in NOT_YET_ON_A_PAGE.items():
+        assert name in writers, f'{name} is exempted but the writer scan does not find it'
+        text = _text(writers[name])
+        paths = [p for m in GIT_ADD_RE.finditer(text) for p in m.group(1).split()]
+        assert paths and all(p.split('/')[1:2] == [code] for p in paths), (name, paths)
+        for src in builder_sources:
+            assert not re.search(rf'\b{code}\b', _text(src), re.I), (
+                f'{src.name} mentions {code!r}: the builder reads it now, so bridge '
+                f'{name!r} in deploy-pages.yml and take it out of NOT_YET_ON_A_PAGE')
 
 
 if __name__ == '__main__':
