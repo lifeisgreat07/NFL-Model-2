@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-06, 15:10 UTC (Mark's answers this morning: the NBA stays backtest-only, #308 closed, the planted-leak Booth run approved, the NHL's cron-job.org jobs tonight; #322 merged, the leak fixture; every queued branch rebased on main and green)
+Last updated: 2026-10-06, 17:30 UTC (#322 the leak fixture and #324 the registration checks that follow renames merged; Tuesday's Weekly update ran at 16:59 UTC, drift OK; Stages 53 and 59 built locally on a Stage 52 rehearsal)
 
 ---
 
@@ -41,8 +41,8 @@ are on GitHub's cron only until Mark adds cron-job.org jobs for them.
 | What | State | Waiting on |
 |---|---|---|
 | Nine post-lock branches | Committed locally, one worktree each, not pushed. All rebased on `main` on 10-06 without conflict, ruff clean, full suite green; `s42-slot-guard` also has a README fix (`83776bc`), its mutation scope run and its PR body written in the session archive | The 10-08 lock, then one PR at a time in the order below |
-| Stage 52 (NFL to `src/sports/nfl/`) | Built on `s52-nfl-module`; migrate_nfl.py (session archive, v7) re-rehearsed on `main` at da39c43 on 2026-10-06: 6581 passed, 1 skipped (the unpushed-HEAD skip) | Step 2's PRs, then the window after a Thursday lock |
-| NHL pages live (Stages 53, 57, 59) | Built (#310, #315, #317): team pages, calibration, What's Changed, the phone's bottom bar; checked by the browser checks with axe | The lock, then the deploy wiring with Stage 52 and 53 |
+| Stage 52 (NFL to `src/sports/nfl/`) | migrate_nfl.py (session archive, now v10) rehearsed and COMMITTED on `main` at 110f2c9 (branch `s52-rehearsal`, local only): suite green. v8 leaves Booth fixtures alone, v9 writes a single-module `tests/test_alerts.py`, v10 leaves the history test's throwaway repository alone; #324 made the registration checks follow the move | Step 2's PRs, then the window after a Thursday lock |
+| Stages 53 and 59 | Built locally on `s53-site-build`, three commits on the Stage 52 rehearsal: the site built one sport at a time (nfl/, nhl/, nba/; a failed sport keeps its live page and gets its own issue), the home page (option A), and a sport switcher on every page (option A of "Sport Switcher Options", Claude's pick, for Mark to confirm). Suite green, mutation cases caught, looked at in both themes at phone and desktop widths | Stage 52 merged; then one PR each, rebased with `git rebase --onto` |
 | NBA (Stage 61) | Registered (#312), history and backtest merged (#313, #314, #318, #319): H1 and H2 ACCEPT, H3 REJECT (Model B is worse than the market), availability helps (M1). Backtest-only pages merged (#321), option A of the rendered "NBA Board Options", Claude's recommendation | **Decided** (Mark, 2026-10-06): option A stands, no live NBA picks this season; deploying with Stage 53 |
 | Stage 60 item 2 | The whole mutation corpus at `36fc82d`: every case caught (2026-10-06); a first run was killed by my own cleanup (Audit Response Log) | The leak fixture is merged (#322, `tests/booth_fixtures/cross-sport-leak/`); its baseline test skips until the Booth regression run, dispatched after the lock (Mark approved it) |
 | cron-job.org | Six NFL jobs on, Weekly update job off; no NHL jobs | Stage 42's slot guard; Mark adds the NHL's two on the evening of 10-06 |
