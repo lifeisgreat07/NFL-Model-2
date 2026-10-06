@@ -1,0 +1,45 @@
+{
+  "target": "src/sports/nhl/pages/page.html",
+  "tests": "tests/test_content_security_policy.py",
+  "cases": [
+    {
+      "id": "csp-nhl-page-drops-its-logo-host",
+      "why": "the NHL's page lists ESPN's logo host but not the NHL's, so every team logo on it is refused and the page shows broken images",
+      "find": "img-src 'self' data: https://a.espncdn.com https://assets.nhle.com;",
+      "replace": "img-src 'self' data: https://a.espncdn.com;",
+      "expect_caught_by": "test_each_page_carries_the_policy_once"
+    },
+    {
+      "id": "csp-home-page-without-a-policy",
+      "target": "src/site/home/page.html",
+      "why": "the home page carries no policy, so it alone can load scripts or images from any host",
+      "find": "<meta http-equiv=\"Content-Security-Policy\"",
+      "replace": "<meta http-equiv=\"X-Content-Security-Policy\"",
+      "expect_caught_by": "test_each_page_carries_the_policy_once"
+    },
+    {
+      "id": "csp-board-policy-after-its-styles",
+      "target": "src/dashboard/page.html",
+      "why": "the board's policy moves to the end of its head, after the styles and scripts it is meant to govern; a meta policy applies only to what follows it",
+      "find": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\n<meta http-equiv=\"Content-Security-Policy\"",
+      "replace": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\n<style></style>\n<meta http-equiv=\"Content-Security-Policy\"",
+      "expect_caught_by": "test_the_policy_comes_before_anything_it_governs"
+    },
+    {
+      "id": "csp-browser-check-ignores-violations",
+      "target": "tests/browser/check_page.py",
+      "why": "the browser checks stop listening for refused loads, so a page whose policy blocks its own logos passes them",
+      "find": "if m.type == 'error' and 'Content Security Policy' in m.text else None)",
+      "replace": "if False else None)",
+      "expect_caught_by": "test_the_browser_check_reports_a_violation"
+    },
+    {
+      "id": "csp-new-logo-host-unlisted",
+      "target": "src/site/home/home.css",
+      "why": "a page starts loading an image from a host the policy does not list; the browser would refuse it and the page would show nothing there",
+      "find": ".home-title{ margin:0;",
+      "replace": ".home-mark{ background:url('https://cdn.example.com/mark.png'); }\n.home-title{ margin:0;",
+      "expect_caught_by": "test_the_only_outside_hosts_any_page_loads_from_are_the_logo_hosts"
+    }
+  ]
+}
