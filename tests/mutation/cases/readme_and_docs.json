@@ -191,7 +191,16 @@
       "target": "tasks.py",
       "tests": "tests/test_tasks.py",
       "why": "the task stops building and checking the NHL's page, so a local browser check passes on an NHL page CI would fail.",
-      "find": "                                 [PY, 'tests/browser/build_nhl.py', '--out', str(STATES / NHL_PAGE)],\n                                 [PY, 'tests/browser/check_page.py', str(STATES / NHL_PAGE), *_axe()]]),",
+      "find": "                                 [PY, 'tests/browser/build_nhl.py', '--out', str(STATES / NHL_PAGE)],\n                                 [PY, 'tests/browser/check_page.py', str(STATES / NHL_PAGE), *_axe()],\n",
+      "replace": "",
+      "expect_caught_by": "test_browser_check_runs_what_the_workflow_runs_in_the_same_order"
+    },
+    {
+      "id": "browser-check-skips-the-nba-page",
+      "target": "tasks.py",
+      "tests": "tests/test_tasks.py",
+      "why": "the task stops building and checking the NBA's page, so a local browser check passes on an NBA page CI would fail.",
+      "find": "                                 [PY, '-m', 'src.sports.nba.site', '--out', str(STATES / NBA_PAGE)],\n                                 [PY, 'tests/browser/check_page.py', str(STATES / NBA_PAGE), *_axe()]]),",
       "replace": "                                 ]),",
       "expect_caught_by": "test_browser_check_runs_what_the_workflow_runs_in_the_same_order"
     }

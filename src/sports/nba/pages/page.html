@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-sport="nba">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B0E15">
+<!-- The NBA's pages (Stage 61): the backtest and no live picks. One product
+     name everywhere, as on the NFL board: "<page> — Pick'em Model". -->
+<title>NBA — Pick'em Model</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="What a registered backtest found about predicting NBA games, and why there are no live NBA picks this season.">
+<style>
+{% include "styles.css" %}
+</style>
+<style id="font-faces">
+__FONT_FACES__
+</style>
+<style id="nba-styles">
+{% include "nba.css" %}
+</style>
+</head>
+<body class="is-entering">
+<script>
+  (function(){
+    try{
+      var saved = localStorage.getItem('nba:theme');
+      if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) saved = 'light';
+      if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+    }catch(e){}
+  })();
+</script>
+{% include "body.html" %}
+<script id="nba-data" type="application/json">__NBA_JSON__</script>
+<script>
+{% include "nba.js" %}
+</script>
+</body>
+</html>

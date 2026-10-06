@@ -104,3 +104,11 @@ jobs:
 
       - name: Check the NHL's page
         run: python tests/browser/check_page.py "$RUNNER_TEMP/states/nhl.html" --axe node_modules/axe-core/axe.min.js
+
+      # Stage 61: the NBA's page, built by the real builder from the committed
+      # backtest (src/sports/nba/site.py); it has no board and no daily files.
+      - name: Build the NBA's page
+        run: python -m src.sports.nba.site --out "$RUNNER_TEMP/states/nba.html"
+
+      - name: Check the NBA's page
+        run: python tests/browser/check_page.py "$RUNNER_TEMP/states/nba.html" --axe node_modules/axe-core/axe.min.js

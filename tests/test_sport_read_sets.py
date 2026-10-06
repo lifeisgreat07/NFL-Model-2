@@ -9,6 +9,8 @@ files included (an import opens its module), and the test reads the list:
 - **the NFL's build** opens nothing that belongs to another sport: no file
   under `data/`, `predictions/`, `results/` or `experiments/` in another
   sport's folder, and no module under `src/sports/<another sport>/`;
+- **the NBA's build** likewise opens only its own package, the core, its
+  own folders, the shared stylesheet and the font;
 - **the NHL's build** opens no other sport's folder either, and nothing of the
   repository's but its own package, the core, its own folders, the shared
   stylesheet and the self-hosted font (until Stage 53 moves the stylesheet
@@ -122,3 +124,19 @@ def test_the_nhl_build_opens_only_its_own_files_and_the_shared_ones(tmp_path: Pa
     stray = [p.as_posix() for p in opened
              if not p.as_posix().startswith(allowed) and owner(p, codes) != 'nhl']
     assert not stray, f"the NHL's build opened files that are neither its own nor shared: {stray}"
+
+
+def test_the_nba_build_opens_only_its_own_files_and_the_shared_ones(tmp_path: Path) -> None:
+    codes = isolation.sports(ROOT)
+    opened = read_set('src.sports.nba.site', ['--out', str(tmp_path / 'nba.html')], tmp_path / 'nba.json')
+    assert (tmp_path / 'nba.html').exists()
+    seen = {p.as_posix() for p in opened}
+    assert {'src/sports/nba/site.py', 'src/dashboard/styles.css',
+            'experiments/nba/stage61/results/confirmation.json'} <= seen, 'the hook did not record the build'
+    foreign = [p.as_posix() for p in opened if owner(p, codes) not in (None, 'nba')]
+    assert not foreign, f"the NBA's build opened another sport's files: {foreign}"
+    allowed = ('src/sports/nba/', 'src/core/', 'src/__init__', 'src/__pycache__/', 'src/sports/__init__',
+               'src/sports/__pycache__/', 'src/dashboard/styles.css', 'assets/fonts/')
+    stray = [p.as_posix() for p in opened
+             if not p.as_posix().startswith(allowed) and owner(p, codes) != 'nba']
+    assert not stray, f"the NBA's build opened files that are neither its own nor shared: {stray}"

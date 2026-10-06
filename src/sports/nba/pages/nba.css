@@ -1,0 +1,16 @@
+/* What the NBA pages add to the shared stylesheet: the no-picks notice and
+   the tables. Every selector carries the sport (decision record 0006, rule
+   4; src/core/isolation.py checks it). Every colour is a shared token, and
+   no label is green: on this site green means only a pick scored right. */
+.nba-notice{border:1px solid var(--border-strong); border-left:4px solid var(--accent); background:var(--surface);
+  border-radius:8px; padding:var(--s3) var(--s4); margin:0 0 var(--s5); max-width:72ch; color:var(--text-2);}
+.nba-notice b{color:var(--text);}
+.nba-lede{max-width:72ch; color:var(--text-2); margin:0 0 var(--s4);}
+.nba-body .section-title{margin:var(--s6) 0 var(--s3);}
+.nba-table{margin-bottom:var(--s4);}
+.nba-table td.num, .nba-table th.num{text-align:right; font-variant-numeric:tabular-nums;}
+.nba-table tbody th{text-transform:none; letter-spacing:0; font-size:var(--fs-13); font-weight:600; color:var(--text); white-space:nowrap;}
+.nba-table tr.nba-chosen td, .nba-table tr.nba-chosen th{font-weight:700; color:var(--text);}
+.nba-answers{display:grid; gap:var(--s3); margin:0 0 var(--s5); padding-left:var(--s5); max-width:72ch;}
+.nba-answers li{color:var(--text-2);}
+.nba-answers b{color:var(--text);}
