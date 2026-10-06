@@ -1,0 +1,121 @@
+{
+ "game_id": "2026020046",
+ "season": 2026,
+ "slate": "2026-10-06",
+ "start_utc": "2026-10-06T23:00:00Z",
+ "home": "DET",
+ "away": "OTT",
+ "model_a": 0.4507,
+ "model_b": 0.5566,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.811619,
+  "shot_matchup": -2.932646,
+  "goalie_matchup_2000": 0.00287
+ },
+ "market": {
+  "game_id": "2026020046",
+  "start_utc": "2026-10-06T23:00:00Z",
+  "home": "DET",
+  "away": "OTT",
+  "book": "DraftKings",
+  "home_price": -122.0,
+  "away_price": 102.0,
+  "home_prob": 0.5261,
+  "read_utc": "2026-10-06T22:07:32Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476434,
+   "name": "John Gibson",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/HeleneStJames/status/2107479213834215687?s=20"
+  },
+  "away": {
+   "player_id": 8481035,
+   "name": "Samuel Ersson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/TSN1200/status/2107579844795994594"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-06",
+  "read_utc": "2026-10-06T22:07:32Z",
+  "home": [
+   {
+    "name": "Carter Bear",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Chase Stillman",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "J.T. Compher",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Jacob Bernard-Docker",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marco Kasper",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mason Appleton",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Andre Burakovsky",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Artem Zub",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Blake Montgomery",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jake Sanderson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Kurtis MacDermid",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Linus Ullmark",
+    "position": "G",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-06T22:07:32Z",
+ "code": "nhl-stage56"
+}

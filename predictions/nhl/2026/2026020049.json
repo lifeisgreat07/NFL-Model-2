@@ -1,0 +1,96 @@
+{
+ "game_id": "2026020049",
+ "season": 2026,
+ "slate": "2026-10-06",
+ "start_utc": "2026-10-06T23:00:00Z",
+ "home": "BUF",
+ "away": "MIN",
+ "model_a": 0.5199,
+ "model_b": 0.4905,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.111257,
+  "shot_matchup": 0.135341,
+  "goalie_matchup_2000": -0.002983
+ },
+ "market": {
+  "game_id": "2026020049",
+  "start_utc": "2026-10-06T23:00:00Z",
+  "home": "BUF",
+  "away": "MIN",
+  "book": "DraftKings",
+  "home_price": -108.0,
+  "away_price": -112.0,
+  "home_prob": 0.4957,
+  "read_utc": "2026-10-06T22:07:32Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481551,
+   "name": "Colten Ellis",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://www.audacy.com/wgr550/sports/sabres/ellis-likely-to-get-the-call-in-net-tuesday"
+  },
+  "away": {
+   "player_id": 8482661,
+   "name": "Jesper Wallstedt",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/RussoHockey/status/2107495907239342294?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-06",
+  "read_utc": "2026-10-06T22:07:32Z",
+  "home": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Conor Timmins",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Rathbone",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jason Zucker",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Topias Leinonen",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brock Faber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Danila Yurov",
+    "position": "RW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Filip Gustavsson",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-06T22:07:32Z",
+ "code": "nhl-stage56"
+}

@@ -1,0 +1,86 @@
+{
+ "game_id": "2026020050",
+ "season": 2026,
+ "slate": "2026-10-06",
+ "start_utc": "2026-10-07T00:00:00Z",
+ "home": "CHI",
+ "away": "STL",
+ "model_a": 0.3863,
+ "model_b": 0.4362,
+ "pick": "STL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.118861,
+  "shot_matchup": -4.023207,
+  "goalie_matchup_2000": -0.003614
+ },
+ "market": {
+  "game_id": "2026020050",
+  "start_utc": "2026-10-07T00:00:00Z",
+  "home": "CHI",
+  "away": "STL",
+  "book": "DraftKings",
+  "home_price": 124.0,
+  "away_price": -148.0,
+  "home_prob": 0.4279,
+  "read_utc": "2026-10-06T22:07:32Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/BenPopeCST/status/2107492547266556314?s=20"
+  },
+  "away": {
+   "player_id": 8480981,
+   "name": "Joel Hofer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://thehockeynews.com/nhl/st-louis-blues/game-day/10-6-26-blues-blackhawks-gameday-lineup"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-06",
+  "read_utc": "2026-10-06T22:07:32Z",
+  "home": [
+   {
+    "name": "Andrew Mangiapane",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Connor Bedard",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexey Toropchenko",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Felix Trudeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan Mailloux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-06T22:07:32Z",
+ "code": "nhl-stage56"
+}

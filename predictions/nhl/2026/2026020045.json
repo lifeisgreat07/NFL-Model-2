@@ -1,0 +1,91 @@
+{
+ "game_id": "2026020045",
+ "season": 2026,
+ "slate": "2026-10-06",
+ "start_utc": "2026-10-06T23:00:00Z",
+ "home": "MTL",
+ "away": "CAR",
+ "model_a": 0.39,
+ "model_b": 0.4251,
+ "pick": "CAR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.407057,
+  "shot_matchup": -10.292705,
+  "goalie_matchup_2000": 0.002018
+ },
+ "market": {
+  "game_id": "2026020045",
+  "start_utc": "2026-10-06T23:00:00Z",
+  "home": "MTL",
+  "away": "CAR",
+  "book": "DraftKings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573,
+  "read_utc": "2026-10-06T22:07:32Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482487,
+   "name": "Jakub Dobes",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/renlavoietva/status/2107490456976392372?s=20"
+  },
+  "away": {
+   "player_id": 8483548,
+   "name": "Brandon Bussi",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/renlavoietva/status/2107503465165414503?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-06",
+  "read_utc": "2026-10-06T22:07:32Z",
+  "home": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Out"
+   },
+   {
+    "name": "Kaiden Guhle",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Oliver Kapanen",
+    "position": "C",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Nikishin",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Seth Jarvis",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-06T22:07:32Z",
+ "code": "nhl-stage56"
+}

@@ -1,0 +1,86 @@
+{
+ "game_id": "2026020044",
+ "season": 2026,
+ "slate": "2026-10-06",
+ "start_utc": "2026-10-06T23:00:00Z",
+ "home": "TOR",
+ "away": "NSH",
+ "model_a": 0.4961,
+ "model_b": 0.6167,
+ "pick": "TOR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.202879,
+  "shot_matchup": -2.454772,
+  "goalie_matchup_2000": 0.000657
+ },
+ "market": {
+  "game_id": "2026020044",
+  "start_utc": "2026-10-06T23:00:00Z",
+  "home": "TOR",
+  "away": "NSH",
+  "book": "DraftKings",
+  "home_price": -162.0,
+  "away_price": 136.0,
+  "home_prob": 0.5934,
+  "read_utc": "2026-10-06T22:07:32Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476932,
+   "name": "Anthony Stolarz",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/SEllisHockey/status/2107489858843205828?s=20"
+  },
+  "away": {
+   "player_id": 8477424,
+   "name": "Juuse Saros",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/MaxHerzTalks/status/2107493172007800940?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-06",
+  "read_utc": "2026-10-06T22:07:32Z",
+  "home": [
+   {
+    "name": "Cade Webber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dakota Joshua",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elvis Merzlikins",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Max Domi",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Villeneuve",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Justus Annunen",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-06T22:07:32Z",
+ "code": "nhl-stage56"
+}

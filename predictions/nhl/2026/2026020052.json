@@ -1,0 +1,91 @@
+{
+ "game_id": "2026020052",
+ "season": 2026,
+ "slate": "2026-10-06",
+ "start_utc": "2026-10-07T02:00:00Z",
+ "home": "LAK",
+ "away": "FLA",
+ "model_a": 0.5078,
+ "model_b": 0.4792,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.255735,
+  "shot_matchup": -0.2711,
+  "goalie_matchup_2000": -0.001923
+ },
+ "market": {
+  "game_id": "2026020052",
+  "start_utc": "2026-10-07T02:00:00Z",
+  "home": "LAK",
+  "away": "FLA",
+  "book": "DraftKings",
+  "home_price": -102.0,
+  "away_price": -118.0,
+  "home_prob": 0.4826,
+  "read_utc": "2026-10-06T22:07:32Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475311,
+   "name": "Darcy Kuemper",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/LeggetNHL/status/2107527181253677560?s=20"
+  },
+  "away": {
+   "player_id": 8474593,
+   "name": "Jacob Markstrom",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/flapanthers/status/2107540255364862309?s=46"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-06",
+  "read_utc": "2026-10-06T22:07:32Z",
+  "home": [
+   {
+    "name": "Jakub Dvorak",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jan Jenik",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Fiala",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Aaron Ekblad",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "MacKenzie Entwistle",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-06T22:07:32Z",
+ "code": "nhl-stage56"
+}

@@ -166,19 +166,19 @@
  "goalies": [
   {
    "player_id": "8482661",
-   "name": null,
+   "name": "Jesper Wallstedt",
    "rating": 0.00364,
    "weighted_shots": 404.2
   },
   {
    "player_id": "8480981",
-   "name": null,
+   "name": "Joel Hofer",
    "rating": 0.0033,
    "weighted_shots": 332.0
   },
   {
    "player_id": "8478048",
-   "name": null,
+   "name": "Igor Shesterkin",
    "rating": 0.00326,
    "weighted_shots": 432.5
   },
@@ -226,13 +226,13 @@
   },
   {
    "player_id": "8478916",
-   "name": null,
+   "name": "Joey Daccord",
    "rating": 0.00155,
    "weighted_shots": 382.0
   },
   {
    "player_id": "8482487",
-   "name": null,
+   "name": "Jakub Dobes",
    "rating": 0.00143,
    "weighted_shots": 587.9
   },
@@ -268,7 +268,7 @@
   },
   {
    "player_id": "8476434",
-   "name": null,
+   "name": "John Gibson",
    "rating": 0.00122,
    "weighted_shots": 406.3
   },
@@ -286,7 +286,7 @@
   },
   {
    "player_id": "8476932",
-   "name": null,
+   "name": "Anthony Stolarz",
    "rating": 0.00107,
    "weighted_shots": 207.2
   },
@@ -298,7 +298,7 @@
   },
   {
    "player_id": "8474596",
-   "name": null,
+   "name": "Jake Allen",
    "rating": 0.00093,
    "weighted_shots": 265.5
   },
@@ -340,7 +340,7 @@
   },
   {
    "player_id": "8481551",
-   "name": null,
+   "name": "Colten Ellis",
    "rating": 0.00065,
    "weighted_shots": 85.5
   },
@@ -370,7 +370,7 @@
   },
   {
    "player_id": "8477424",
-   "name": null,
+   "name": "Juuse Saros",
    "rating": 0.00042,
    "weighted_shots": 475.4
   },
@@ -454,7 +454,7 @@
   },
   {
    "player_id": "8478872",
-   "name": null,
+   "name": "Karel Vejmelka",
    "rating": -0.00015,
    "weighted_shots": 514.3
   },
@@ -502,7 +502,7 @@
   },
   {
    "player_id": "8481519",
-   "name": null,
+   "name": "Spencer Knight",
    "rating": -0.00032,
    "weighted_shots": 438.4
   },
@@ -574,7 +574,7 @@
   },
   {
    "player_id": "8483548",
-   "name": null,
+   "name": "Brandon Bussi",
    "rating": -0.00059,
    "weighted_shots": 289.6
   },
@@ -616,7 +616,7 @@
   },
   {
    "player_id": "8474593",
-   "name": null,
+   "name": "Jacob Markstrom",
    "rating": -0.00096,
    "weighted_shots": 320.5
   },
@@ -670,7 +670,7 @@
   },
   {
    "player_id": "8478499",
-   "name": null,
+   "name": "Adin Hill",
    "rating": -0.00151,
    "weighted_shots": 225.5
   },
@@ -682,7 +682,7 @@
   },
   {
    "player_id": "8481035",
-   "name": null,
+   "name": "Samuel Ersson",
    "rating": -0.00165,
    "weighted_shots": 185.9
   },
@@ -724,7 +724,7 @@
   },
   {
    "player_id": "8475311",
-   "name": null,
+   "name": "Darcy Kuemper",
    "rating": -0.00288,
    "weighted_shots": 340.0
   },
