@@ -1,0 +1,62 @@
+{
+  "target": "src/sports/nba/data_probe.py",
+  "tests": "tests/test_nba_data_probe.py",
+  "cases": [
+    {
+      "id": "nba-probe-utc-unchecked",
+      "why": "a start time with an offset passes as UTC, so a per-game lock would compare times in two clocks.",
+      "find": "        if ev.get('date') and not str(ev['date']).endswith('Z'):",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_scoreboard_game_missing_what_the_lock_needs_is_named"
+    },
+    {
+      "id": "nba-probe-possessions-unchecked",
+      "why": "a box score without offensive rebounds passes, so possessions could not be counted.",
+      "find": "        if missing:\n            out.append(f\"{(t.get('team') or {}).get('abbreviation', '?')}: no {', '.join(missing)}\")",
+      "replace": "        if False:\n            out.append(f\"{(t.get('team') or {}).get('abbreviation', '?')}: no {', '.join(missing)}\")",
+      "expect_caught_by": "test_a_box_score_with_what_possessions_need_passes_and_one_without_fails"
+    },
+    {
+      "id": "nba-probe-odds-home-only",
+      "why": "only one side's moneyline is required, so a half-priced game reads as usable for Model B.",
+      "find": "    return ['a moneyline is missing for one team'] if None in lines else []",
+      "replace": "    return ['a moneyline is missing for one team'] if lines[0] is None else []",
+      "expect_caught_by": "test_odds_need_both_moneylines"
+    },
+    {
+      "id": "nba-probe-injury-status-unchecked",
+      "why": "injuries without a status pass, so availability could not be read.",
+      "find": "    return [f'{len(unlabelled)} of {len(players)} injuries have no status'] if unlabelled else []",
+      "replace": "    return []",
+      "expect_caught_by": "test_injuries_need_players_with_a_status"
+    },
+    {
+      "id": "nba-probe-parquet-unchecked",
+      "why": "any answer counts as a parquet file, so a 404 page from GitHub reads as the fallback being there.",
+      "find": "    if len(data) < 12 or not (data.startswith(PARQUET_MAGIC) and data.endswith(PARQUET_MAGIC)):",
+      "replace": "    if len(data) < 0:",
+      "expect_caught_by": "test_a_parquet_file_is_known_by_its_magic_bytes"
+    },
+    {
+      "id": "nba-probe-candidates-decide",
+      "why": "a refused candidate fails the probe, so it goes red by design on ESPN, which refuses runners.",
+      "find": "    for src in candidates(get):\n        report(*src)\n",
+      "replace": "    for src in candidates(get):\n        ok = report(*src) and ok\n",
+      "expect_caught_by": "test_a_candidate_refused_is_reported_and_does_not_fail_the_run"
+    },
+    {
+      "id": "nba-probe-required-ignored",
+      "why": "a missing required file does not fail the probe, so the live run's own source can vanish unseen.",
+      "find": "    ok = all([report(*src) for src in required(get_bytes, now)])",
+      "replace": "    ok = True\n    [report(*src) for src in required(get_bytes, now)]",
+      "expect_caught_by": "test_a_required_source_missing_fails_the_run_and_says_which"
+    },
+    {
+      "id": "nba-probe-season-start-year",
+      "why": "the season is named by the year it starts, so the probe asks for last season's schedule.",
+      "find": "    return now.year + 1 if now.month >= 10 else now.year",
+      "replace": "    return now.year if now.month >= 10 else now.year - 1",
+      "expect_caught_by": "test_the_season_is_named_by_the_year_it_ends"
+    }
+  ]
+}

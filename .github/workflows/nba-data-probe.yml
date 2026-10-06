@@ -1,0 +1,42 @@
+name: NBA data probe
+
+# Stage 61, the NBA's Stage 51. docs/nba-data.md was written from reads on
+# the local machine, and a home connection is not a runner: ESPN refuses
+# GitHub's runners (#131), and Mark ruled out routing around that. So
+# src/sports/nba/data_probe.py reads two groups from a runner, prints what
+# each returned and writes nothing. The required group is what the NBA's
+# live run will read: SportsDataverse's hoopR schedule, team box and player
+# box files. If any of those is unreachable or not a parquet file, the probe
+# exits non-zero. The candidates (ESPN's scoreboard, box score, odds and
+# injuries; the league's scoreboard, odds and schedule on cdn.nba.com) are
+# reported and never fail the run, so the probe is not red by design.
+#
+# It runs on pull requests that touch it, so its answer is on the PR's own
+# checks, and by hand. It is not scheduled: the NBA's canary will be where a
+# source that later breaks is watched.
+
+on:
+  pull_request:
+    paths:
+      - 'src/sports/nba/data_probe.py'
+      - '.github/workflows/nba-data-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+
+      - name: Read every NBA source from GitHub's runner
+        run: python -m src.sports.nba.data_probe
