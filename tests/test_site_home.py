@@ -100,6 +100,12 @@ def test_a_sport_with_no_page_gets_a_card_that_links_nowhere():
     assert '`<div class="home-card is-unbuilt"' in js
 
 
+def test_a_sport_with_no_page_loses_its_pill_too():
+    js = (home.TEMPLATE / 'home.js').read_text(encoding='utf-8')
+    assert "if(HOME[sport] && HOME[sport].built) continue;" in js
+    assert 'pill.replaceWith(span);' in js
+
+
 # --- put in place by the site build -------------------------------------------
 
 def test_the_site_build_tells_the_home_page_which_sports_have_no_page(tmp_path):

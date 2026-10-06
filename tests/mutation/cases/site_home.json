@@ -11,6 +11,14 @@
       "expect_caught_by": "test_an_old_shared_picks_link_is_sent_on_to_the_nfl_board"
     },
     {
+      "id": "home-pill-kept-for-a-sport-with-no-page",
+      "target": "src/site/home/home.js",
+      "why": "a sport with no page in this build loses its card's link but keeps its pill, so the top of the home page sends visitors to GitHub's 404.",
+      "find": "  if(HOME[sport] && HOME[sport].built) continue;\n",
+      "replace": "  continue;\n",
+      "expect_caught_by": "test_a_sport_with_no_page_loses_its_pill_too"
+    },
+    {
       "id": "home-kickoff-read-as-utc",
       "why": "an NFL kickoff is read as UTC rather than Eastern, so the card's next kickoff is four or five hours early and a week reads as played while its Sunday night game is still to come.",
       "find": "    local = pd.Timestamp(f'{day} {clock}').tz_localize('America/New_York')\n",

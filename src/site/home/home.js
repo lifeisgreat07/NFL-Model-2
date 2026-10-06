@@ -78,3 +78,16 @@ function nbaCard(f){
 }
 
 document.getElementById('home-cards').innerHTML = nflCard(HOME.nfl) + nhlCard(HOME.nhl) + nbaCard(HOME.nba);
+
+// A sport with no page in this build has no pill to follow either: the link
+// would open GitHub's 404.
+for(const sport of ['nfl', 'nhl', 'nba']){
+  if(HOME[sport] && HOME[sport].built) continue;
+  const pill = document.querySelector(`.home-switch a[href="${sport}/"]`);
+  if(!pill) continue;
+  const span = document.createElement('span');
+  span.className = 'is-unbuilt';
+  span.setAttribute('aria-disabled', 'true');
+  span.textContent = pill.textContent;
+  pill.replaceWith(span);
+}
