@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-05, evening ET (#292 and #294 merged: Stages 50 and 51; nine post-lock branches prepared)
+Last updated: 2026-10-05, late evening ET (#292, #294, #295, #296, #298 merged: Stages 50, 51, 55 items 1 to 3, 56 item 1; nine post-lock branches prepared)
 
 ---
 
@@ -15,7 +15,9 @@ figure. `src/` is packaged: run modules with `python -m src.<package>.<module>`.
 The dashboard template is parts under `src/dashboard/`, joined by
 `src/pipeline/template_parts.py`. Read it with `read_template()`, never one
 part as the page (traps). `src/core/` and `src/sports/nhl/` exist since #292
-and #294; the NFL is still `src/pipeline/` until Stage 52 merges.
+and #294; the NFL is still `src/pipeline/` until Stage 52 merges. The NHL's
+schedule loader (#295), market and goalie inputs (#296) and its first
+registration (`experiments/nhl/stage56/registry.json`, #298) are on `main`.
 
 **Next action: the read-only checks**: Tuesday 2026-10-06's Weekly update
 (`DRIFT CHECK: OK` in its run summary, a "Model A, log loss" section, Pages
@@ -39,7 +41,9 @@ ran Monday 22:13 UTC on `src.pipeline` and opened no PR (week 5).
 | Nine post-lock branches | Committed on the local Windows machine, one worktree each, not pushed; each has its mutation cases, all caught | The 10-08 lock, then one PR at a time in the order below |
 | Stage 52 (NFL to `src/sports/nfl/`) | Built and proven on `s52-nfl-module` | Step 2's PRs, then the window after a Thursday lock; re-run the script on that day's `main` |
 | cron-job.org dispatch | Six jobs on, Weekly update job off | Stage 42's slot guard merged; then Mark switches it on |
-| Issue #287, and the Booth-failed issue for #292 | Both raised by infrastructure, not code (#292's audit was cancelled by GitHub's outage) | Mark closes them |
+| Issue #287, the Booth-failed issue for #292, and #297 (#296's red Booth run) | Both raised by infrastructure, not code (#292's audit was cancelled by GitHub's outage) | Mark closes them |
+| Stage 56, the NHL backtest | History collector, ratings, backtest and their tests built on `s56-nhl-history` (local); box scores and ESPN prices for 2015 to 2025 being read into `data/nhl/history/` | The history run, then one backtest run as registered, then its PR |
+| NHL board options (Stage 57) | Rendered for Mark: paging by day, the goalie line, the moneyline market (artifact "NHL Board Options") | Mark's pick; the recommended options stand if he says nothing |
 | Private vulnerability reporting | Off (SECURITY.md covers both) | Mark's choice, Settings, Security |
 | Season Accuracy's forecast score | Merged (#160), not on the page yet | 50 graded games |
 | TV exceptions for holiday and Saturday games | Weeks 12, 15, 16 | Sourced entries before those weeks |

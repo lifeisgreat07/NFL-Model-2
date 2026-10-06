@@ -2159,6 +2159,10 @@ file.
 4. Team colours and logos, checked for contrast and colour-blind
    separation like the NFL's.
 
+**Progress (2026-10-05).** Items 1 and 2 merged as #295 (`src/sports/nhl/schedule.py`), item 3 as #296
+(`market.py`, `goalies.py`, `teams.py`); injuries are not read yet. The NHL's canary waits for Stage 52,
+which moves `alerts` into the core. Item 4 goes with Stage 57.
+
 ### Stage 56 - The NHL model and its backtest
 
 1. A registration before any result: features, validation and held-out
@@ -2167,6 +2171,9 @@ file.
    starting-goalie term; refit on strictly earlier games.
 3. Model B if there is a market; the backtest, calibration and the
    reproducibility audit; every published figure tied to its file by a test.
+
+**Progress (2026-10-05).** Item 1: `experiments/nhl/stage56/registry.json`, merged as #298 before any
+model was fitted, written under Mark's delegation.
 
 ### Stage 57 - The NHL's pages
 
