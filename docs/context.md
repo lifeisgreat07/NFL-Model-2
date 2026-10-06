@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-06, 17:30 UTC (#322 the leak fixture and #324 the registration checks that follow renames merged; Tuesday's Weekly update ran at 16:59 UTC, drift OK; Stages 53 and 59 built locally on a Stage 52 rehearsal)
+Last updated: 2026-10-06, 18:45 UTC (Stages 53 and 59 moved ahead of Stage 52 so the NHL's and NBA's pages go live sooner, rebuilt on today's layout; Stage 45 items 1 and 2 built on top; all local, nothing pushed)
 
 ---
 
@@ -41,8 +41,8 @@ are on GitHub's cron only until Mark adds cron-job.org jobs for them.
 | What | State | Waiting on |
 |---|---|---|
 | Nine post-lock branches | Committed locally, one worktree each, not pushed. All rebased on `main` on 10-06 without conflict, ruff clean, full suite green; `s42-slot-guard` also has a README fix (`83776bc`), its mutation scope run and its PR body written in the session archive | The 10-08 lock, then one PR at a time in the order below |
-| Stage 52 (NFL to `src/sports/nfl/`) | migrate_nfl.py (session archive, now v10) rehearsed and COMMITTED on `main` at 110f2c9 (branch `s52-rehearsal`, local only): suite green. v8 leaves Booth fixtures alone, v9 writes a single-module `tests/test_alerts.py`, v10 leaves the history test's throwaway repository alone; #324 made the registration checks follow the move | Step 2's PRs, then the window after a Thursday lock |
-| Stages 53 and 59 | Built locally on `s53-site-build`, three commits on the Stage 52 rehearsal: the site built one sport at a time (nfl/, nhl/, nba/; a failed sport keeps its live page and gets its own issue), the home page (option A), and a sport switcher on every page (option A of "Sport Switcher Options", Claude's pick, for Mark to confirm). Suite green, mutation cases caught, looked at in both themes at phone and desktop widths | Stage 52 merged; then one PR each, rebased with `git rebase --onto` |
+| Stage 52 (NFL to `src/sports/nfl/`) | migrate_nfl.py (session archive, now v11) rehearsed and COMMITTED on `main` at 110f2c9 (branch `s52-rehearsal`, local only): suite green. v8 leaves Booth fixtures alone, v9 writes a single-module `tests/test_alerts.py`, v10 leaves the history test's throwaway repository alone, v11 moves the home page's NFL folders; #324 made the registration checks follow the move. v11 run on the Stage 59 branch gives the version already tested on the rehearsal | Step 2's PRs, then the window after a Thursday lock |
+| Stages 53, 59, 45 (items 1, 2) | **Moved ahead of Stage 52** (Claude, under the delegation, 2026-10-06: Mark wants the NHL's and NBA's pages live soon), rebuilt on today's layout as a stack: `s53-site-pre52` (one sport at a time: nfl/, nhl/, nba/), `s59-home-pre52` (home page, sport pills for Mark to confirm), `s45-1-pins`, `s45-2-csp`. Suites green, browser checker clean; PR bodies in the session archive. The NHL's page builds once its daily run has written the season's schedule | The 10-08 lock and the slot guard's merge; then one PR each |
 | NBA (Stage 61) | Registered (#312), history and backtest merged (#313, #314, #318, #319): H1 and H2 ACCEPT, H3 REJECT (Model B is worse than the market), availability helps (M1). Backtest-only pages merged (#321), option A of the rendered "NBA Board Options", Claude's recommendation | **Decided** (Mark, 2026-10-06): option A stands, no live NBA picks this season; deploying with Stage 53 |
 | Stage 60 item 2 | The whole mutation corpus at `36fc82d`: every case caught (2026-10-06); a first run was killed by my own cleanup (Audit Response Log) | The leak fixture is merged (#322, `tests/booth_fixtures/cross-sport-leak/`); its baseline test skips until the Booth regression run, dispatched after the lock (Mark approved it) |
 | cron-job.org | Six NFL jobs on, Weekly update job off; no NHL jobs | Stage 42's slot guard; Mark adds the NHL's two on the evening of 10-06 |
@@ -52,14 +52,15 @@ are on GitHub's cron only until Mark adds cron-job.org jobs for them.
 
 The branches and their worktrees are listed in the session archive's handoff file.
 1. Stage 42's slot guard (`s42-slot-guard`), then Mark switches on the Weekly update's cron-job.org job.
-2. Stage 36 item 7 (`s36-7-folders`).
-3. Stage 37 item 3 (`s37-3-final-status`), then the backfill of weeks 1 to 4's final snapshots.
-4. Stage 37 item 4 (`s37-4-line-moves`), item 6 (`s37-6-neutral-site`).
-5. Stage 41 item 5 (`s41-5-canary-sources`), item 7 (`s41-7-provenance`).
-6. The Monday 01:47 fallback cron line (`s42-monday-fallback`).
-7. The cancelled-game state (`s39-cancelled-state`).
-8. Stage 52, then Mark re-points cron-job.org's jobs and the QB routine (stage52_repoint.md in the session archive).
-Then Stage 53 with the NHL's pages in the deploy, Stage 59, Stage 45 items 1 and 2, Stage 21 once week 5 is graded.
+2. Stage 53 (`s53-site-pre52`): the NHL's and NBA's pages go live.
+3. Stage 59 (`s59-home-pre52`): the home page and the sport pills.
+4. Stage 36 item 7 (`s36-7-folders`).
+5. Stage 37 item 3 (`s37-3-final-status`, plus `2af662a` re-anchoring two cases), then the backfill of weeks 1 to 4's final snapshots.
+6. Stage 37 items 4 and 6 (`s37-4-line-moves`, `s37-6-neutral-site`), Stage 41 items 5 and 7 (`s41-5-canary-sources`, `s41-7-provenance`).
+7. The Monday 01:47 fallback cron line (`s42-monday-fallback`), the cancelled-game state (`s39-cancelled-state`).
+8. Stage 45 items 1 and 2 (`s45-1-pins`, `s45-2-csp`).
+9. Stage 52 with migrate_nfl v11, then Mark re-points cron-job.org's jobs and the QB routine (stage52_repoint.md in the session archive).
+Then Stage 21 once week 5 is graded. A side suite during a mutation run takes `--basetemp` (memory/2026-10-06.md).
 
 One branch at a time. Rebase each on `main` before opening, then run the
 suite and the mutation scope at the exact head (scope_run.py, in the session
