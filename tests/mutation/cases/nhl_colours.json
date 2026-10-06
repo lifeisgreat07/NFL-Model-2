@@ -1,0 +1,27 @@
+{
+  "target": "src/sports/nhl/colours.py",
+  "tests": "tests/test_nhl_colours.py",
+  "cases": [
+    {
+      "id": "nhl-colour-figure-stale",
+      "why": "the quoted count of close pairs no longer matches the palette, so the docstring states a figure the colours do not have.",
+      "find": "PAIRS_UNDER_15 = 149",
+      "replace": "PAIRS_UNDER_15 = 148",
+      "expect_caught_by": "test_the_quoted_separation_figures_are_what_the_palette_measures"
+    },
+    {
+      "id": "nhl-colour-dark-blue",
+      "why": "Toronto goes back to its navy, which vanishes on the dark theme.",
+      "find": "'TOR': '#4A7FD0'",
+      "replace": "'TOR': '#00205B'",
+      "expect_caught_by": "test_every_colour_stands_out_on_the_dark_theme"
+    },
+    {
+      "id": "nhl-colour-drawn-figure-stale",
+      "why": "the quoted count of pairs that look alike on a bar no longer matches the palette.",
+      "find": "DRAWN_UNDER_15 = 84",
+      "replace": "DRAWN_UNDER_15 = 83",
+      "expect_caught_by": "test_the_drawn_figures_match_the_docstring_and_the_nfls_unit"
+    }
+  ]
+}
