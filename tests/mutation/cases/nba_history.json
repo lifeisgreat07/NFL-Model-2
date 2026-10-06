@@ -40,8 +40,8 @@
     {
       "id": "nba-hist-live-allowed",
       "why": "a live provider's in-game price is used as the market.",
-      "find": "        if 'live' in provider.lower():\n            continue\n",
-      "replace": "",
+      "find": "        if 'live' in provider.lower() or provider.lower() in PROJECTIONS:\n            continue\n",
+      "replace": "        if provider.lower() in PROJECTIONS:\n            continue\n",
       "expect_caught_by": "test_a_live_price_is_never_used"
     },
     {
