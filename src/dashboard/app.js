@@ -1877,6 +1877,19 @@ function updateThemeLabel(){
   const label = document.getElementById('theme-toggle-label');
   if(label) label.textContent = currentTheme() === 'light' ? 'Dark mode' : 'Light mode';
 }
+/* Stage 47 item 11: paper is white, so a page in the dark theme prints in
+   the light one, and goes back to the reader's theme afterwards. */
+(function printInLight(){
+  let before = null;
+  window.addEventListener('beforeprint', () => {
+    before = document.documentElement.getAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', 'light');
+  });
+  window.addEventListener('afterprint', () => {
+    if(before === null) document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', before);
+  });
+})();
 (function initTheme(){
   updateThemeLabel();
   // The sidebar's button, and the top bar's below 1080px (Stage 26 item 3).
