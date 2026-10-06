@@ -1,0 +1,75 @@
+name: Nightly dependency audit
+# Stage 45 item 3. pip-audit checks requirements.txt (and what it pulls in)
+# against the known-vulnerability databases once a night. Report-only: it
+# never fails a pull request and changes no install anywhere, because the
+# pins in requirements.txt are what make the published numbers reproducible
+# (see that file's header) and moving one is a decision, not a fix a bot
+# makes. A finding goes to the run's summary and opens the issue
+# "Dependency audit found known vulnerabilities" through
+# src/core/alerts.py (standard library only, so nothing else is installed), or comments on it -- the one-issue-per-problem rule
+# every unattended job follows since Stage 4. An audit that could not run
+# (a network or resolver error) says so under its own title. It writes
+# nothing to the repository. 07:45 UTC: after the shuffled suite (07:15).
+# tests/test_dependency_audit.py holds each of these.
+
+on:
+  schedule:
+    - cron: '45 7 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+      - name: Install pip-audit
+        # Installed here only, pinned, and not in requirements-dev.txt.
+        run: pip install pip-audit==2.10.1
+      - name: Audit requirements.txt
+        id: audit
+        # pip-audit exits 1 when it finds a vulnerability and with another
+        # code when it cannot run; neither fails this step (report-only).
+        run: |
+          set +e
+          pip-audit -r requirements.txt --progress-spinner off --desc on -f markdown -o audit.md
+          code=$?
+          set -e
+          { echo "## pip-audit of requirements.txt (exit $code)"; cat audit.md 2>/dev/null; } >> "$GITHUB_STEP_SUMMARY"
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+      - name: Raise an alert
+        if: ${{ steps.audit.outputs.code != '0' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          CODE: ${{ steps.audit.outputs.code }}
+        run: |
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          if [ "$CODE" = "1" ]; then
+            title="Dependency audit found known vulnerabilities"
+            { printf 'pip-audit found known vulnerabilities in requirements.txt or what it pulls in. Nothing was changed: moving a pin is a decision (see the header of requirements.txt).\n\nRun: %s\n\n' "$run_url"; cat audit.md; } > audit-report.md
+          else
+            title="Dependency audit could not run"
+            printf 'pip-audit exited %s, so tonight'"'"'s audit says nothing either way.\n\nRun: %s\n' "$CODE" "$run_url" > audit-report.md
+          fi
+          python -m src.core.alerts --title "$title" --body-file audit-report.md
+      - name: Raise an alert if the job itself failed
+        # pip-audit's own result never fails the job; this is for the job
+        # failing around it (checkout, Python, the install).
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'The nightly dependency audit job failed before it could report.\n\nRun: %s\n' \
+            "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > job-report.md
+          python -m src.core.alerts --title "Dependency audit could not run" --body-file job-report.md

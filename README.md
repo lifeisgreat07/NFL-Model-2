@@ -62,14 +62,15 @@ What it is meant to demonstrate, and where to look:
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
-- **Twenty CI workflows** in `.github/workflows/` cover the test suite, the
+- **Twenty-one CI workflows** in `.github/workflows/` cover the test suite, the
   weekly data pull, a weekend refresh of game status and scores that never
   touches a saved pick, the backtest, the Pages build-and-deploy, the
   agent-activity log, a pre-flight check on every pull request description,
   both halves of the Booth audit, an issue raised when a Booth audit
   fails, a nightly canary that runs the weekly data path and raises an
   issue when it breaks, a nightly slice of the mutation corpus, the whole
-  suite nightly in a shuffled order, browser checks that drive Chromium over the
+  suite nightly in a shuffled order, a nightly report-only audit of the
+  pinned dependencies against known vulnerabilities, browser checks that drive Chromium over the
   built page at six widths (overflow, focus, 24px targets, axe-core, the
   font, a byte budget) after proving each of their own rules can fail,
   a probe of the league's own schedule page, the candidate source of

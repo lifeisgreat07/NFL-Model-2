@@ -49,7 +49,7 @@ LEGACY_NFL_WORKFLOWS = frozenset({
 SHARED_WORKFLOWS = frozenset({
     'booth-alert.yml', 'booth-pr-audit.yml', 'booth-regression.yml',
     'browser-checks.yml', 'collect-agent-log.yml', 'deploy-pages.yml',
-    'nightly-mutation.yml', 'nightly-random-order.yml', 'releases.yml',
+    'nightly-dependency-audit.yml', 'nightly-mutation.yml', 'nightly-random-order.yml', 'releases.yml',
     'run-tests.yml', 'scout-preflight.yml',
 })
 
