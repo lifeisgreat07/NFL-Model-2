@@ -1,0 +1,28 @@
+{
+  "target": "src/dashboard/page.html",
+  "tests": "tests/test_canonical_and_structured_data.py",
+  "cases": [
+    {
+      "id": "canonical-board-points-at-the-old-root",
+      "why": "the board names the root as its address, where it lived before Stage 53, so search engines keep sending readers through the forwarding page and split the board's standing between two addresses",
+      "find": "<link rel=\"canonical\" href=\"https://lifeisgreat07.github.io/NFL-Model-2/nfl/\">",
+      "replace": "<link rel=\"canonical\" href=\"https://lifeisgreat07.github.io/NFL-Model-2/\">",
+      "expect_caught_by": "test_one_absolute_canonical_per_page"
+    },
+    {
+      "id": "structured-data-names-a-missing-file",
+      "why": "the dataset points at a file the build does not publish, so anything that follows it finds a 404",
+      "find": "\"contentUrl\": \"https://lifeisgreat07.github.io/NFL-Model-2/nfl/picks.csv\"",
+      "replace": "\"contentUrl\": \"https://lifeisgreat07.github.io/NFL-Model-2/picks.csv\"",
+      "expect_caught_by": "test_the_board_offers_the_picks_file_as_a_dataset"
+    },
+    {
+      "id": "canonical-made-relative",
+      "target": "src/sports/nhl/pages/page.html",
+      "why": "a relative canonical is resolved against wherever the page was fetched from, so a copy at another address names itself",
+      "find": "<link rel=\"canonical\" href=\"https://lifeisgreat07.github.io/NFL-Model-2/nhl/\">",
+      "replace": "<link rel=\"canonical\" href=\"./\">",
+      "expect_caught_by": "test_one_absolute_canonical_per_page"
+    }
+  ]
+}
