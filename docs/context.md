@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-06, morning UTC (#309 to #314 merged overnight: the NHL's page inputs and pages, and the NBA's probe, registration, schedule and history reader)
+Last updated: 2026-10-06, morning UTC (#309 to #319 merged overnight: the NHL's pages with team pages, phone menu and browser checks; the run-time isolation check; the NBA's probe, registration, schedule, history and backtest)
 
 ---
 
@@ -41,8 +41,8 @@ are on GitHub's cron only until Mark adds cron-job.org jobs for them.
 |---|---|---|
 | Nine post-lock branches | Committed locally, one worktree each, not pushed | The 10-08 lock, then one PR at a time in the order below |
 | Stage 52 (NFL to `src/sports/nfl/`) | Built on `s52-nfl-module`; migrate_nfl.py (session archive, v7) re-rehearsed on `main` at da39c43 on 2026-10-06: 6581 passed, 1 skipped (the unpushed-HEAD skip) | Step 2's PRs, then the window after a Thursday lock |
-| NHL pages live (Stages 53, 57, 59) | Built (#310) and looked at in both themes; Mark chose the designs 2026-10-05 | The lock, then the deploy wiring with Stage 52 and 53 |
-| NBA backtest (Stage 61) | Registered (#312); schedule (#313) and history reader (#314) merged; the history is being read on the local machine | The history run finishing, then the backtest branch (data, results, Model Lab rows) |
+| NHL pages live (Stages 53, 57, 59) | Built (#310, #315, #317): team pages, calibration, What's Changed, the phone's bottom bar; checked by the browser checks with axe | The lock, then the deploy wiring with Stage 52 and 53 |
+| NBA (Stage 61) | Registered (#312), history and backtest merged (#313, #314, #318, #319): H1 and H2 ACCEPT, H3 REJECT (Model B is worse than the market), availability helps (M1) | The NBA's pages, after Mark's call on live picks |
 | NBA live picks | No runner can read ESPN's price or injury report | **Mark's call** (docs/nba-data.md lists the choices) |
 | cron-job.org | Six NFL jobs on, Weekly update job off; no NHL jobs | Stage 42's slot guard; Mark adds the NHL's two |
 | Issue #308 | Booth's red run on #307 (prose counts an UNVERIFIABLE the block does not) | Mark closes it |

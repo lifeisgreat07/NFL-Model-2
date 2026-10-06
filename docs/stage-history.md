@@ -2205,8 +2205,10 @@ schedule and ratings files every run (#309). The pages merged as #310 (`src/spor
 `src/sports/nhl/pages/`): the week by day with the strip of days, the cards with both models, the
 market and each goalie's status, standings odds, ratings, Season Accuracy, Model Lab, Methodology
 and Checking the AI's work, rendered in both themes at phone and desktop widths before the PR.
-Not deployed: the deploy wiring waits for the 10-08 lock and goes with Stages 52 and 53. Not
-built yet from item 2: calibration, a team page, What's Changed.
+Not deployed: the deploy wiring waits for the 10-08 lock and goes with Stages 52 and 53. Item 2's
+team pages, calibration table and What's Changed merged as #315. #317 put the page under the
+browser checks (Stage 53 item 4 for the NHL), which found tables a keyboard could not scroll; a
+phone-width look found #310 had shipped with no menu below 1080px. Both fixed in #317.
 
 ### Stage 58 - The NHL goes live
 
@@ -2239,6 +2241,9 @@ with its live status ("Week 5 locked", "9 games tonight"), its season record and
 
 ### Stage 60 - The isolation audit
 
+**Progress (2026-10-06).** Item 1 merged as #316: `tests/test_sport_read_sets.py` runs each
+sport's page build under an audit hook and fails on any file of another sport it opens.
+
 1. A test run that changes the NHL and proves no NFL byte moved, and the
    reverse.
 2. The whole mutation corpus; Booth fixtures seeded with a cross-sport
@@ -2259,4 +2264,7 @@ pre-game price or injury report). The registration merged as #312
 (`experiments/nba/stage61/registry.json`: point, efficiency and availability matchups; H1 to H3, M1 and M2), before any
 feature was computed on real games. The schedule loader merged as #313 and the history reader as
 #314: ESPN's box scores are empty for 501 games of 2015-16 to 2017-18 and six of 2020-21's
-play-in, so those come from hoopR's box scores, and the eight neither has are named.
+play-in, so those come from hoopR's box scores, and the eight neither has are named. #318 left
+projection sites (numberfire, teamrankings) out of the market. The backtest merged as #319: H1 ACCEPT,
+H2 ACCEPT, H3 REJECT (Model B worse than the market alone), and the availability term worth 0.012 of
+log loss (M1). No live NBA picks until Mark decides how the live run reads a price and injuries.

@@ -76,6 +76,16 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   the same staged path sent the first version, and a folder that already held a file of the same
   name kept it. Give every staged copy a name it has never had, and make the script that copies
   them into a worktree check every file's SHA-256 before it copies any.
+- **Killing a run mid-test can leave a mutation in place.** On 2026-10-06 a full suite killed
+  while the mutation harness's self-test ran left `tests/mutation/selftest_fixtures/subject.py`
+  edited in the worktree. Run `git status` after any killed run, and before quoting a suite.
+- **A comparison of two empty frames always passes.** `test_a_games_features_use_only_earlier_days`
+  (NBA, #319) cut its synthetic season before the first rated day and compared nothing; only its
+  mutation case, a WRONG-GUARD, showed it. A test that compares slices asserts they are not empty.
+- **An exact reproduction on Windows is not exact on Linux.** #319's body said the NBA confirmation re-run
+  equals the committed file and printed True; on Booth's runner it printed False, every number within
+  1.6e-16. A reproduction check for an audit compares numbers to a tolerance (1e-12), and a claim of
+  byte-identity names the machine it was seen on.
 - **Desktop Commander's `write_file` refuses to overwrite a file unless `mode` is given.** The
   refusal is an error, but a script started in the same breath runs whatever the file held before:
   twice on 2026-10-05 and 06 a commit went out with the previous commit's message. Pass
