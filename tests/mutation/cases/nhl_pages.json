@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nhl/pages/nhl.js",
+  "tests": "tests/test_nhl_site.py",
+  "cases": [
+    {
+      "id": "nhl-pages-missing-element",
+      "why": "the script fills an element the template does not have, so the page throws on load and shows nothing.",
+      "find": "getElementById('week-step-label')",
+      "replace": "getElementById('week-label')",
+      "expect_caught_by": "test_every_element_the_script_looks_up_is_in_the_template"
+    },
+    {
+      "id": "nhl-pages-field-renamed",
+      "why": "the script reads a field the builder does not write, so the ratings page is always empty.",
+      "find": "const r = DATA.ratings,",
+      "replace": "const r = DATA.rating,",
+      "expect_caught_by": "test_the_script_reads_only_fields_the_builder_writes"
+    }
+  ]
+}
