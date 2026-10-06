@@ -141,7 +141,7 @@ def kept(ev: Json) -> bool:
     comp = (ev.get('competitions') or [{}])[0]
     if placeholder(comp):
         return False
-    kind = (comp.get('type') or {}).get('abbreviation')
+    kind = str((comp.get('type') or {}).get('abbreviation'))
     return COMPETITION_TYPES.get(kind, True)
 
 
@@ -164,7 +164,7 @@ def raw_problems(ev: Json) -> list[str]:
     start = ev.get('date')
     if start and not str(start).endswith('Z'):
         out.append(f'game {gid}: start {start!r} is not UTC')
-    name = ((comp.get('status') or {}).get('type') or {}).get('name')
+    name = str(((comp.get('status') or {}).get('type') or {}).get('name'))
     if name not in STATUS:
         out.append(f'game {gid}: unknown status {name!r}')
     elif STATUS[name] is GameStatus.FINAL and home and away:
