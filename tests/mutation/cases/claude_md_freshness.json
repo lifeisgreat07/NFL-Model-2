@@ -20,7 +20,7 @@
     },
     {
       "id": "handoff-section-reference-rots",
-      "target": "docs/stage-history.md",
+      "target": "docs/history/01-before-stage-8.md",
       "why": "a `See \"X\" above` is left pointing at a renamed heading. Nothing fails; a reader goes looking for a section that is not there and cannot tell whether it moved or was deleted. This is the real defect that happened on 2026-09-07 when the prune renamed a heading and left Stage 2 pointing at the old title. Since the Stage 29 split the pointer lives in docs/stage-history.md and its target heading in CLAUDE.md, so this case is also the cross-file reference.",
       "find": "See \"Findings that still constrain the work\" above",
       "replace": "See \"Finished, and why it matters\" above",
@@ -44,7 +44,7 @@
     },
     {
       "id": "handoff-stage-order-scrambled",
-      "target": "docs/stage-history.md",
+      "target": "docs/history/01-before-stage-8.md",
       "why": "a stage heading lands out of reading order, which is exactly the confusion the frozen-numbers rule exists to prevent",
       "find": "### Stage 6 - New data sources",
       "replace": "### Stage 2.5 - New data sources",

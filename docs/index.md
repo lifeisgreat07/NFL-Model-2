@@ -18,7 +18,8 @@ in the parts that changed fastest.
 | `docs/index.md` | This map | When structure changes |
 | `CLAUDE.md` | What stays true for months: methodology, findings, environment, the PR loop | When a rule changes |
 | `docs/traps.md` | Every trap that has actually bitten, and the durable shape of each | When something surprises a session |
-| `docs/stage-history.md` | Every stage, finished or planned, under its frozen number | When a stage is planned or finished |
+| `docs/stage-history.md` | The index of the stage history: which era file holds which stages | When a new era file starts |
+| `docs/history/` | Every stage, finished or planned, under its frozen number, one file per era (split out of `docs/stage-history.md` by Stage 49 item 24) | When a stage is planned or finished: in the newest era's file |
 | `memory/` | One file per session: what happened and why | Appended, never edited |
 
 **Every command in one place:** `python tasks.py` lists the tasks (test,
@@ -116,7 +117,8 @@ notes elsewhere still describe them as files you can open in the repository.
 | Path | What it guards |
 |---|---|
 | `tests/mutation/` | The mutation corpus. `python tests/mutation/runner.py` — a case must name the test it expects to catch it. |
-| `tests/test_claude_md_freshness.py` | Every path and test CLAUDE.md, `docs/traps.md` and `docs/stage-history.md` name exists; stage headings are ordered and unique; CLAUDE.md holds no stage section, points at both files and stays under 450 lines. |
+| `tests/test_stage_history_split.py` | The history index lists every era file under `docs/history/` and no missing one; each file stays under its size limit; no section appears twice; the split lost no line of the old history. |
+| `tests/test_claude_md_freshness.py` | Every path and test CLAUDE.md, `docs/traps.md` and `docs/stage-history.md` name exists; stage headings are ordered and unique across the era files; CLAUDE.md holds no stage section, points at both files and stays under 450 lines. |
 | `tests/test_plain_language.py` | Statistics vocabulary stays off the reader-facing pages. Reads the JavaScript, not just the markup. |
 | `tests/test_workflow_docs.py` | These four documents stay honest — see it for what "honest" means here. |
 | `tests/test_readme_accuracy.py` | README.md may not name a path that is not there, and its stated counts are compared against what they count. |
