@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" data-site-home>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B0E15">
+<title>Pick'em Model</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="description" content="Picks for the NFL and the NHL from two models each, saved before the game and graded in public, with the NBA's backtest.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Pick'em Model">
+<meta property="og:title" content="The Pick'em Model">
+<meta property="og:description" content="Picks for the NFL and the NHL from two models each, saved before the game and graded in public, with the NBA's backtest.">
+<meta property="og:url" content="https://lifeisgreat07.github.io/NFL-Model-2/">
+<meta property="og:image" content="https://lifeisgreat07.github.io/NFL-Model-2/og-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Pick'em Model: game picks from two models, graded in public, with every experiment logged, including the ones that failed.">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+  // Every shared-picks link was made on the NFL board when it lived here.
+  // Before Stage 59 this address forwarded to it; such a link still does.
+  if(/[#&]picks=/.test(location.hash)) location.replace('nfl/' + location.search + location.hash);
+</script>
+<style>
+{% include "styles.css" %}
+</style>
+<style id="font-faces">
+__FONT_FACES__
+</style>
+<style id="home-styles">
+{% include "home.css" %}
+</style>
+</head>
+<body>
+<script>
+  (function(){
+    try{
+      if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+        document.documentElement.setAttribute('data-theme','light');
+    }catch(e){}
+  })();
+</script>
+<a href="#home-main" class="skip-link">Skip to main content</a>
+<header class="home-bar">
+  <div class="home-brand">Pick'em Model<small>Picks, graded, for every sport we follow</small></div>
+  <nav class="home-switch" aria-label="Sports">
+    <a href="./" aria-current="page">Home</a>
+    <a href="nfl/">NFL</a>
+    <a href="nhl/">NHL</a>
+    <a href="nba/">NBA</a>
+  </nav>
+</header>
+<main id="home-main" class="home-main">
+  <h1 class="home-title">What's on</h1>
+  <p class="home-sub">Two models per game, a market to beat, and every pick graded after the final whistle.</p>
+  <div class="home-cards" id="home-cards"></div>
+  <p class="home-foot">Each card is worked out in your browser from the files the last build read, so "tonight" means tonight where you are.</p>
+</main>
+<script id="home-data" type="application/json">__HOME_JSON__</script>
+<script>
+{% include "home.js" %}
+</script>
+</body>
+</html>

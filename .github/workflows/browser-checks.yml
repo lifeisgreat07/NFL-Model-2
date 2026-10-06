@@ -112,3 +112,11 @@ jobs:
 
       - name: Check the NBA's page
         run: python tests/browser/check_page.py "$RUNNER_TEMP/states/nba.html" --axe node_modules/axe-core/axe.min.js
+
+      # Stage 59: the site's home page, built by the real builder from the
+      # committed files (src/site/home.py).
+      - name: Build the home page
+        run: python -m src.site.home --out "$RUNNER_TEMP/states/home.html"
+
+      - name: Check the home page
+        run: python tests/browser/check_page.py "$RUNNER_TEMP/states/home.html" --axe node_modules/axe-core/axe.min.js
