@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nhl/roster.py",
+  "tests": "tests/test_nhl_daily.py",
+  "cases": [
+    {
+      "id": "nhl-roster-first-hit",
+      "why": "the first of two goalies with the same name is taken, so a pick could rate the wrong man.",
+      "find": "    if len(hits) == 1:",
+      "replace": "    if len(hits) >= 1:",
+      "expect_caught_by": "test_a_name_off_the_roster_or_missing_is_reported_not_guessed"
+    },
+    {
+      "id": "nhl-roster-case-sensitive",
+      "why": "names are compared as typed, so a lower-case name on the page matches no one.",
+      "find": "    hits = [pid for pid, full in goalies if _key(full) == _key(name)]",
+      "replace": "    hits = [pid for pid, full in goalies if full == name]",
+      "expect_caught_by": "test_a_projected_goalie_is_found_by_name_on_his_clubs_roster"
+    }
+  ]
+}

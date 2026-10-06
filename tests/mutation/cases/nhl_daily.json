@@ -1,0 +1,62 @@
+{
+  "target": "src/sports/nhl/daily.py",
+  "tests": "tests/test_nhl_daily.py",
+  "cases": [
+    {
+      "id": "nhl-daily-rewrites",
+      "why": "a saved pick is overwritten by a later run, so a pick could change after the lock.",
+      "find": "    if path.exists():\n        return False",
+      "replace": "    if False:\n        return False",
+      "expect_caught_by": "test_a_saved_pick_is_never_rewritten"
+    },
+    {
+      "id": "nhl-daily-cancelled-graded",
+      "why": "a cancelled game is graded, so a game never played counts for or against the model.",
+      "find": "        if status == GameStatus.CANCELLED.value:\n            result = 'cancelled'",
+      "replace": "        if False:\n            result = 'cancelled'",
+      "expect_caught_by": "test_only_final_games_are_graded_and_a_cancelled_one_is_never_counted"
+    },
+    {
+      "id": "nhl-daily-live-graded",
+      "why": "a game still in progress is graded from its current score.",
+      "find": "        elif status == GameStatus.FINAL.value:",
+      "replace": "        elif status in (GameStatus.FINAL.value, GameStatus.IN_PROGRESS.value):",
+      "expect_caught_by": "test_only_final_games_are_graded_and_a_cancelled_one_is_never_counted"
+    },
+    {
+      "id": "nhl-daily-model-a-leads",
+      "why": "Model A makes the pick even when there is a market, against the NFL's workflow where Model B is the pick.",
+      "find": "    lead = p_b if p_b is not None else p_a",
+      "replace": "    lead = p_a",
+      "expect_caught_by": "test_model_b_makes_the_pick_when_there_is_a_market_and_model_a_when_there_is_not"
+    },
+    {
+      "id": "nhl-daily-refetch-all",
+      "why": "every final game is fetched again on every run instead of only the new ones.",
+      "find": "    missing = finals[~finals['game_id'].isin(set(have['game_id']))]",
+      "replace": "    missing = finals",
+      "expect_caught_by": "test_the_season_file_only_fetches_finished_games_it_does_not_have"
+    },
+    {
+      "id": "nhl-daily-fallback-by-abbr",
+      "why": "the last starter is kept under the old club name, so Utah's first games fall back to nobody.",
+      "find": "        last[ratings.franchise(g.home)] = g.home_goalie_id",
+      "replace": "        last[g.home] = g.home_goalie_id",
+      "expect_caught_by": "test_the_fallback_is_each_clubs_last_starter_by_franchise"
+    },
+    {
+      "id": "nhl-daily-drift-unfinished",
+      "why": "games not yet final enter the drift check, so it scores picks against results that do not exist.",
+      "find": "    finals = sched[sched['status'] == GameStatus.FINAL.value].set_index('game_id')",
+      "replace": "    finals = sched.set_index('game_id')",
+      "expect_caught_by": "test_drift_is_scored_on_model_a_for_final_games_only"
+    },
+    {
+      "id": "nhl-daily-unsettled-stops",
+      "why": "one game's unsettled box score stops the whole run, so no pick is saved that day.",
+      "find": "        except history.HistoryError as exc:",
+      "replace": "        except ZeroDivisionError as exc:",
+      "expect_caught_by": "test_a_box_score_not_settled_yet_is_skipped_and_tried_next_run"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "target": "src/sports/nhl/canary.py",
+  "tests": "tests/test_nhl_canary.py",
+  "cases": [
+    {
+      "id": "nhl-canary-error-dropped",
+      "why": "a failing step is noted but not counted as an error, so the night passes.",
+      "find": "            errors.append(f'{name} raised {type(exc).__name__}: {exc}')",
+      "replace": "            pass",
+      "expect_caught_by": "test_a_failing_step_is_recorded_and_the_rest_still_run"
+    },
+    {
+      "id": "nhl-canary-always-passes",
+      "why": "the canary exits 0 whatever it found, so no issue is ever opened.",
+      "find": "    return 1 if errors else 0",
+      "replace": "    return 0",
+      "expect_caught_by": "test_any_error_fails_the_night_and_the_report_says_which"
+    },
+    {
+      "id": "nhl-canary-step-missing",
+      "why": "the goalie page is no longer read, so a broken projection source goes unseen until a lock.",
+      "find": "    ('market', step_market), ('goalies', step_goalies), ('roster', step_roster),",
+      "replace": "    ('market', step_market), ('roster', step_roster),",
+      "expect_caught_by": "test_every_read_the_daily_run_makes_has_a_step"
+    }
+  ]
+}

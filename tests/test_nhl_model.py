@@ -62,7 +62,7 @@ def test_a_game_one_half_life_ago_weighs_a_half():
 
 
 def test_the_ridge_ranks_the_strong_team_first_and_finds_the_home_edge():
-    g = ratings.prepare(synthetic(days=200))
+    g = ratings.prepare(synthetic(days=120))
     edge, r = ratings.ridge_ratings(g, 'goal_margin', np.ones(len(g)))
     assert max(r, key=r.get) == 'TOR' and min(r, key=r.get) == 'SEA'
     assert edge > 0
@@ -102,7 +102,7 @@ def test_no_features_until_there_are_a_hundred_earlier_games():
 
 # --- the backtest's machinery -----------------------------------------------------
 
-def table(days=150):
+def table(days=80):
     g = ratings.prepare(synthetic(days=days))
     t = ratings.features(g, 60, [500]).merge(g[['game_id']], on='game_id')
     t['home_prob'] = np.where(np.arange(len(t)) % 2 == 0, 0.55, np.nan)
@@ -165,3 +165,18 @@ def test_scores_report_log_loss_brier_and_accuracy():
     assert s['games'] == 2 and s['accuracy'] == 1.0
     assert s['log_loss'] == pytest.approx(-(np.log(0.8) + np.log(0.6)) / 2)
     assert s['brier'] == pytest.approx((0.04 + 0.16) / 2)
+
+
+def test_a_live_pick_gets_exactly_the_features_the_backtest_scored():
+    """The daily run rates a game with `day_ratings(...).matchup`; the
+    backtest with `features`. They must be the same numbers."""
+    g = ratings.prepare(synthetic(days=90))
+    day = g['day'].iloc[len(g) // 2]
+    table = ratings.features(g, 60, [500], first_day=str(day.date()))
+    first = table[table['day'] == day].reset_index(drop=True)
+    rated = ratings.day_ratings(g[g['day'] < day], day, 60)
+    games = g[g['day'] == day].reset_index(drop=True)
+    for i, row in games.iterrows():
+        live = rated.matchup(row['home'], row['away'], row['home_goalie_id'], row['away_goalie_id'], [500])
+        for col, value in live.items():
+            assert first.loc[i, col] == pytest.approx(value, abs=1e-12)
