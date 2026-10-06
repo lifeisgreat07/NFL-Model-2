@@ -27,6 +27,8 @@ Each run, in order:
 7. **Standings.** In a run that saves picks, the rest of the regular season
    is simulated from Model A with today's ratings
    (`src/sports/nhl/standings.py`; `results/nhl/standings_<season>.json`).
+8. **Page inputs.** Every run writes the season's schedule and today's
+   ratings for the NHL's pages (`src/sports/nhl/page_inputs.py`).
 
 `.github/workflows/nhl-daily.yml` runs this at 14:00 and 21:00 UTC.
 
@@ -50,6 +52,7 @@ from src.sports.nhl import (
     goalies,
     history,
     market,
+    page_inputs,
     ratings,
     roster,
     standings,
@@ -196,6 +199,22 @@ def write_standings(sched: pd.DataFrame, games: pd.DataFrame, rated: ratings.Day
     return out
 
 
+def write_page_inputs(sched: pd.DataFrame, games: pd.DataFrame, folder: Path, h: float, k: float,
+                      today: pd.Timestamp, season: int) -> None:
+    """The schedule and the ratings as they stand, for the NHL's pages
+    (`src/sports/nhl/page_inputs.py`). Written every run."""
+    day = today.tz_localize(None)
+    rated = ratings.day_ratings(games[games['day'] < day], day, h)
+    recent = games[games['season'] >= season - 1]
+    goalies_seen = pd.concat([recent['home_goalie_id'], recent['away_goalie_id']]).dropna()
+    picks = [json.loads(p.read_text(encoding='utf-8')) for p in sorted(folder.glob('*.json'))] if folder.exists() else []
+    as_of = str(today.date())
+    page_inputs.write(PATHS.results / f'schedule_{season}.json', page_inputs.schedule_json(sched, as_of))
+    clubs = set(sched['home']) | set(sched['away'])
+    page_inputs.write(PATHS.results / f'ratings_{season}.json', page_inputs.ratings_json(
+        rated, k, clubs, goalies_seen, page_inputs.goalie_names(picks), as_of))
+
+
 def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetch) -> int:
     now = now or datetime.now(UTC)
     season = nhl_schedule.current_season(now)
@@ -254,6 +273,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     out = PATHS.results / f'graded_{season}.json'
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(graded, indent=1) + '\n', encoding='utf-8')
+    write_page_inputs(sched, games, folder, h, k, today, season)
     spec = drift.baseline()
     losses = drift.per_game_log_loss(drift_rows(folder, sched))
     flagged = drift.flags(losses, spec)

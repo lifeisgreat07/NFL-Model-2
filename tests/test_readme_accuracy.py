@@ -326,7 +326,7 @@ def test_every_environment_variable_the_code_reads_is_documented():
     """Stage 32 item 19, from the 2026-09-29 re-audit: the variables were
     known only to the code that read them. Enumerated from src/, so the next
     one fails here instead of waiting for someone to notice."""
-    sources = [p.read_text(encoding='utf-8') for p in (REPO / 'src').glob('*/*.py')]
+    sources = [p.read_text(encoding='utf-8') for p in (REPO / 'src').rglob('*.py')]
     found = env_vars_read(sources)
     assert len(found) >= 3, f'the scan found only {sorted(found)}; it has gone blind'
     missing = sorted(v for v in found if f'`{v}`' not in TEXT)
