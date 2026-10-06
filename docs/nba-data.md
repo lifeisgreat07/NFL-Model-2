@@ -134,6 +134,29 @@ One 2023-24 row came from a provider named "ESPN Bet - Live Odds", an
 in-game price. The history reader will drop any provider marked live, so no
 price set after the start is ever used; the checks below leave them out too.
 
+*Coverage in the history* (`data/nba/history/market_<season>.csv`, written by
+`src/sports/nba/history.py`). The history reads ESPN's odds feed one game at
+a time rather than the scoreboard, and finds a price for nearly every final
+game the history holds, 2017-18 included:
+
+| Season | Games | With a price | Closing price |
+|---|---|---|---|
+| 2015-16 | 1316 | 1316 | 0 |
+| 2016-17 | 1308 | 1270 | 0 |
+| 2017-18 | 1312 | 1311 | 0 |
+| 2018-19 | 1313 | 1312 | 0 |
+| 2019-20 | 1144 | 1143 | 0 |
+| 2020-21 | 1165 | 1165 | 0 |
+| 2021-22 | 1323 | 1323 | 0 |
+| 2022-23 | 1320 | 1320 | 0 |
+| 2023-24 | 1319 | 1319 | 1319 |
+| 2024-25 | 1321 | 1321 | 1321 |
+| 2025-26 | 1322 | 1322 | 1316 |
+
+The 2016-17 gap is the 38 games whose only line came from a projection site
+(numberfire, teamrankings), which is not a market. Games here include the
+play-in and playoffs, which the scoreboard counts above did not.
+
 *Accuracy, against an independent market.* hoopR's
 `betting_lines/closing_lines_odds_api.parquet` holds The Odds API's
 consensus closing spread for 7942 games, 2020-07 to 2026-06, keyed by

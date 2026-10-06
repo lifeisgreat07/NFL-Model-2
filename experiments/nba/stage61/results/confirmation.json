@@ -1,0 +1,85 @@
+{
+ "seasons": [
+  2024,
+  2025
+ ],
+ "H_days": 120,
+ "lambda": 10.0,
+ "scores": {
+  "model_a": {
+   "games": 2643,
+   "log_loss": 0.5983212187245471,
+   "brier": 0.20606499532309436,
+   "accuracy": 0.6787741203178207
+  },
+  "model_a_no_availability": {
+   "games": 2643,
+   "log_loss": 0.6102739681059131,
+   "brier": 0.2109958459852983,
+   "accuracy": 0.6685584562996595
+  },
+  "model_b": {
+   "games": 2643,
+   "log_loss": 0.5820206288129534,
+   "brier": 0.19952048968777933,
+   "accuracy": 0.6874763526295876
+  },
+  "base_rate": {
+   "games": 2643,
+   "log_loss": 0.6888262235552335,
+   "brier": 0.24783810962634328,
+   "accuracy": 0.5501324252743095
+  },
+  "market": {
+   "games": 2643,
+   "log_loss": 0.5811756924631911,
+   "brier": 0.19922171204630232,
+   "accuracy": 0.6893681422625804
+  }
+ },
+ "questions": {
+  "H1": {
+   "candidate": "model_a",
+   "incumbent": "base_rate",
+   "games": 2643,
+   "days": 426,
+   "diff": -0.09050500483068635,
+   "low": -0.10856813607775055,
+   "high": -0.07186320122206097,
+   "level": 0.9833,
+   "label": "ACCEPT"
+  },
+  "H2": {
+   "candidate": "model_b",
+   "incumbent": "model_a",
+   "games": 2643,
+   "days": 426,
+   "diff": -0.016300589911593753,
+   "low": -0.024365317348437388,
+   "high": -0.00834477016795133,
+   "level": 0.9833,
+   "label": "ACCEPT"
+  },
+  "H3": {
+   "candidate": "model_b",
+   "incumbent": "market",
+   "games": 2643,
+   "days": 426,
+   "diff": 0.0008449363497623034,
+   "low": 0.00019801473076809831,
+   "high": 0.0014733179150456072,
+   "level": 0.9833,
+   "label": "REJECT"
+  },
+  "M1": {
+   "candidate": "model_a",
+   "incumbent": "model_a_no_availability",
+   "games": 2643,
+   "days": 426,
+   "diff": -0.011952749381365872,
+   "low": -0.016240775210431446,
+   "high": -0.007661085824325729,
+   "level": 0.9833
+  }
+ }
+}
