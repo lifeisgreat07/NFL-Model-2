@@ -96,9 +96,13 @@ def test_a_team_missing_its_main_player_is_less_available() -> None:
 
 
 def test_a_games_features_use_only_earlier_days() -> None:
-    games, minutes = synthetic(seasons=(2020,), days=40)
+    games, minutes = synthetic(seasons=(2020,), days=60)
     first = ratings.features(games, minutes, 60.0, 1.0)
-    cut = games['day'].iloc[len(games) // 2]
+    # The cut falls among the rated days, so the comparison below has rows on
+    # both sides of it (an earlier version cut before the first rated day and
+    # compared two empty frames).
+    cut = first['day'].iloc[len(first) // 2]
+    assert (first['day'] < cut).sum() >= 8 and (first['day'] == cut).sum() >= 1
     later = games['day'] >= cut
     changed = games.copy()
     changed.loc[later, 'home_score'] += 40
