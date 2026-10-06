@@ -1,0 +1,48 @@
+{
+  "target": "src/sports/nhl/lock.py",
+  "tests": "tests/test_nhl_lock.py",
+  "cases": [
+    {
+      "id": "nhl-lock-no-slack",
+      "why": "the next run is trusted to start on time, so a game starting just after it can be saved late or not at all.",
+      "find": "            elif start < after + self.slack:",
+      "replace": "            elif start < after:",
+      "expect_caught_by": "test_a_game_starting_within_the_slack_after_the_next_run_locks_now"
+    },
+    {
+      "id": "nhl-lock-started-predicted",
+      "why": "a game whose start has passed is locked anyway, so a pick saved after puck drop counts as a prediction.",
+      "find": "            if start <= now_ts:\n                started.append(gid)\n            elif",
+      "replace": "            if False:\n                started.append(gid)\n            elif",
+      "expect_caught_by": "test_a_game_that_has_started_is_never_predicted"
+    },
+    {
+      "id": "nhl-lock-postponed-locked",
+      "why": "a postponed game is locked at its old start, so a pick is saved for a game that is not played then.",
+      "find": "            if status != GameStatus.SCHEDULED.value:\n                continue",
+      "replace": "            if status in (GameStatus.CANCELLED.value,):\n                continue",
+      "expect_caught_by": "test_postponed_suspended_and_cancelled_games_are_not_locked_or_held"
+    },
+    {
+      "id": "nhl-lock-tbd-late",
+      "why": "a game with no time counts from the end of its day, so it locks too late if the league sets an early start.",
+      "find": "    day = pd.Timestamp(str(game['slate']))",
+      "replace": "    day = pd.Timestamp(str(game['slate'])) + pd.Timedelta(hours=23)",
+      "expect_caught_by": "test_a_game_with_no_time_counts_from_the_start_of_its_day"
+    },
+    {
+      "id": "nhl-lock-one-run",
+      "why": "only the evening run exists, so afternoon games are never saved before they start.",
+      "find": "    (day, hour, 0) for day in range(7) for hour in (14, 21))",
+      "replace": "    (day, hour, 0) for day in range(7) for hour in (21,))",
+      "expect_caught_by": "test_runs_are_twice_a_day_every_day"
+    },
+    {
+      "id": "nhl-lock-live-ignored",
+      "why": "a game the league reports in progress is dropped rather than counted as started.",
+      "find": "            if status in (GameStatus.IN_PROGRESS.value, GameStatus.FINAL.value):",
+      "replace": "            if status in (GameStatus.FINAL.value,):",
+      "expect_caught_by": "test_a_game_that_has_started_is_never_predicted"
+    }
+  ]
+}
