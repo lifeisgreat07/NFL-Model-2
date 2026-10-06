@@ -58,7 +58,13 @@ jobs:
 
       - name: Commit the NHL's picks, grades and history
         run: |
-          git add data/nhl predictions/nhl results/nhl
+          # Staging a path that does not exist is an error, and
+          # predictions/nhl does not exist until the first pick is saved (the
+          # first hand run, 2026-10-06, failed here). So each folder is
+          # staged only if it is there.
+          test -d data/nhl && git add data/nhl
+          test -d predictions/nhl && git add predictions/nhl
+          test -d results/nhl && git add results/nhl
           if git diff --cached --quiet; then
             echo "nothing to commit"
             exit 0

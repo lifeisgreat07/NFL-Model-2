@@ -1,0 +1,20 @@
+{
+  "target": ".github/workflows/nhl-daily.yml",
+  "tests": "tests/test_nhl_workflows.py",
+  "cases": [
+    {
+      "id": "nhl-daily-stages-a-missing-folder",
+      "why": "the daily run stages its folders in one command again, so a run with no pick saved yet fails on the missing predictions folder.",
+      "find": "          test -d data/nhl && git add data/nhl\n          test -d predictions/nhl && git add predictions/nhl\n          test -d results/nhl && git add results/nhl\n",
+      "replace": "          git add data/nhl predictions/nhl results/nhl\n",
+      "expect_caught_by": "test_the_daily_run_stages_each_folder_only_if_it_exists"
+    },
+    {
+      "id": "nhl-daily-results-unstaged",
+      "why": "the grades and drift files are never staged, so the page would read last season's.",
+      "find": "          test -d results/nhl && git add results/nhl\n",
+      "replace": "",
+      "expect_caught_by": "test_the_daily_run_stages_each_folder_only_if_it_exists"
+    }
+  ]
+}
