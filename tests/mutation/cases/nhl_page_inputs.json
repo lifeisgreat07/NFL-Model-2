@@ -1,0 +1,41 @@
+{
+  "target": "src/sports/nhl/page_inputs.py",
+  "tests": "tests/test_nhl_page_inputs.py",
+  "cases": [
+    {
+      "id": "nhl-pi-na-score-kept",
+      "why": "a missing score is written as pandas NA, so the file is not plain JSON and the page cannot read it.",
+      "find": "    if value is None or (isinstance(value, float) and pd.isna(value)) or value is pd.NA:\n        return None\n",
+      "replace": "    if value is None:\n        return None\n",
+      "expect_caught_by": "test_the_schedule_file_carries_every_game_in_plain_json"
+    },
+    {
+      "id": "nhl-pi-start-not-utc",
+      "why": "the start is written in pandas' own format, so the page reads a time without its zone.",
+      "find": "        return value.strftime('%Y-%m-%dT%H:%M:%SZ')",
+      "replace": "        return str(value)",
+      "expect_caught_by": "test_the_schedule_file_carries_every_game_in_plain_json"
+    },
+    {
+      "id": "nhl-pi-unnamed-goalie-guessed",
+      "why": "a goalie no pick named is listed under the other side's name.",
+      "find": "            if side and side.get('player_id') is not None and side.get('name'):",
+      "replace": "            if side and side.get('player_id') is not None:",
+      "expect_caught_by": "test_goalie_names_come_from_the_picks_that_named_them"
+    },
+    {
+      "id": "nhl-pi-not-by-franchise",
+      "why": "a club is looked up by its own code, so Utah reads none of Arizona's rating.",
+      "find": "        f = ratings.franchise(club)\n",
+      "replace": "        f = club\n",
+      "expect_caught_by": "test_clubs_are_rated_by_franchise_best_first"
+    },
+    {
+      "id": "nhl-pi-no-shrink",
+      "why": "goalie ratings ignore K, so a goalie with a handful of shots tops the table.",
+      "find": "'rating': round(ratings.goalie_rating(rated.goalies, key, k), 5)",
+      "replace": "'rating': round(ratings.goalie_rating(rated.goalies, key, 0.0), 5)",
+      "expect_caught_by": "test_only_recent_goalies_are_listed_best_first_with_k_shrinking_them"
+    }
+  ]
+}

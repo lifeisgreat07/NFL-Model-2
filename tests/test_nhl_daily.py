@@ -164,3 +164,28 @@ def test_the_standings_file_is_written_from_model_a_with_no_goalies(tmp_path, mo
     assert doc['overtime_share'] == round(1 / 3, 4)
     mtl = next(t for t in doc['teams'] if t['team'] == 'MTL')
     assert mtl['points_now'] == 1 and 1 < mtl['projected_points'] < 3
+
+
+# --- page inputs ---------------------------------------------------------------------
+
+def test_the_page_inputs_are_written_every_run_from_ratings_before_today(tmp_path, monkeypatch):
+    monkeypatch.setattr(daily, 'PATHS', type('P', (), {'results': tmp_path})())
+    seen = {}
+
+    def fake_day_ratings(train, day, half_life):
+        seen['last'] = train['day'].max()
+        seen['day'] = day
+        return daily.ratings.DayRatings({}, {}, pd.DataFrame({'saved': [], 'shots': []}))
+    monkeypatch.setattr(daily.ratings, 'day_ratings', fake_day_ratings)
+    games = pd.DataFrame({'day': pd.to_datetime(['2026-10-08', '2026-10-09', '2026-10-10']),
+                          'season': [2026, 2026, 2026], 'home_goalie_id': [1, 2, 3], 'away_goalie_id': [4, 5, 6]})
+    sched = pd.DataFrame([{'game_id': '9', 'slate': '2026-10-10', 'start_utc': pd.Timestamp('2026-10-10 23:00', tz='UTC'),
+                           'home': 'TOR', 'away': 'MTL', 'status': 'scheduled', 'game_type': 'regular',
+                           'home_score': None, 'away_score': None, 'last_period': None, 'neutral_site': False}])
+    daily.write_page_inputs(sched, games, tmp_path / 'none', 120.0, 2000.0, pd.Timestamp('2026-10-10', tz='UTC'), 2026)
+    assert seen['last'] == pd.Timestamp('2026-10-09') and seen['day'] == pd.Timestamp('2026-10-10'), \
+        "today's games are not in today's ratings"
+    sched_doc = json.loads((tmp_path / 'schedule_2026.json').read_text(encoding='utf-8'))
+    ratings_doc = json.loads((tmp_path / 'ratings_2026.json').read_text(encoding='utf-8'))
+    assert sched_doc['as_of'] == ratings_doc['as_of'] == '2026-10-10'
+    assert [t['team'] for t in ratings_doc['teams']] == ['MTL', 'TOR']

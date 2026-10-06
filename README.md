@@ -208,6 +208,7 @@ Four environment variables, all optional:
 
 | Variable | What it does | Who sets it |
 |---|---|---|
+| `NHL_CACHE` | A folder for finished NHL seasons' schedules and raw box scores, read from disk instead of refetched. The current season is never cached. | Anyone re-reading the NHL's history (`python -m src.sports.nhl.history`). The daily run and the canary never set it. |
 | `NFL_PBP_CACHE` | A folder for finished seasons of play-by-play, read from disk instead of refetched. The current season is always fetched. | Only the nightly canary. The weekly run never does: the run that makes picks always fetches fresh. |
 | `STAGE5_CACHE` | Where the Stage 5 experiment runner keeps its game table. Defaults to nfl-cache/stage5 beside the repository folder. | Anyone re-running a registered Stage 5 question. |
 | `STAGE6_CACHE` | The same for the Stage 6 data-source runner (nfl-cache/stage6). | Anyone re-running Stage 6. |
