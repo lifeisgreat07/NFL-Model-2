@@ -1,0 +1,105 @@
+{
+ "family": "nhl-stage56",
+ "registered": "2026-10-05",
+ "approved_by": "Claude, under Mark's delegation of 2026-10-05 ('Handle the decisions going forward until I say so'), before any NHL model or feature was fitted or scored.",
+ "protocol": {
+  "outcome": "home_win: the home team wins, overtime and shootout included (src/sports/nhl/schedule.py).",
+  "games": "Every final regular-season and playoff game; preseason and all-star games are never used. A cancelled game is never scored.",
+  "training_from_season": 2015,
+  "validation_seasons": [2022, 2023],
+  "confirmation_seasons": [2024, 2025],
+  "forward_holdout_season": 2026,
+  "primary_metric": "log_loss",
+  "secondary_metric": "brier",
+  "accuracy": "Reported, never decides.",
+  "alpha": 0.05,
+  "budget_m": 3,
+  "budget_rule": "H1, H2 and H3 are the confirmatory slots. A slot is spent by reaching a decision, whatever the outcome. Each confirmatory interval is at level 1 - alpha/budget_m (98.33%). M1 and M2 are measurements and spend nothing.",
+  "bootstrap": "Paired, resampling whole game days (every game of a league date together), 5,000 resamples, seed 20261005.",
+  "walk_forward": "Refit before every game day on every game strictly earlier (from 2015-16), predict that day's games. Features for a game use only games that ended before that day.",
+  "tuning": "The grid below is searched on the validation seasons only, by Model A's log loss over all their games pooled. The chosen values are then fixed for the confirmation seasons and the forward test.",
+  "model_lab": "Each question gets a Model Lab row when it is answered, whatever it shows."
+ },
+ "data": {
+  "results": "The league's feed, src/sports/nhl/schedule.py.",
+  "shots_and_goalies": "Each game's box score from the league (gamecenter/<id>/boxscore): shots on goal per team, the flagged starting goalie per team, and each starter's shots faced and goals allowed. SportsDataverse's team_box and goalie_box files are the checked fallback: before a season is used, shots on goal must agree on at least 99% of its games, and the disagreements are listed.",
+  "market": "Two-way home-win probability with the margin taken out evenly: ESPN's moneyline from 2024-25 (native), and before that ESPN's three-way line converted by the logit fit in docs/nhl-data.md (intercept 0.003, slope 0.824, fitted on 2020-21 and 2021-22). From 2026-27 the league's own feed (src/sports/nhl/market.py), read before each pick.",
+  "team_identity": "Ratings follow the franchise's roster, not its name: Atlanta's history continues as Winnipeg's, Phoenix's as Arizona's, and Arizona's as Utah's. The league counts Utah as a new franchise (40), but Arizona's players and staff moved there in 2024; carrying the history is the modelling choice, made here before any result. Vegas (2017-18) and Seattle (2021-22) start at the league average."
+ },
+ "models": {
+  "model_a": {
+   "features": ["goal_matchup", "shot_matchup", "goalie_matchup"],
+   "estimator": "Logistic regression, L2, C=1.0, a StandardScaler fitted on each refit's own rows; the intercept is the home edge.",
+   "goal_matchup": "Home rating minus away rating, where each team's rating comes from a recency-weighted ridge regression of every earlier game's goal margin (home minus away; a shootout's deciding goal is not counted, so a shootout game's margin is 0) on team indicators with a home term. Weight 0.5^(days ago / H). Ridge strength 1.0 on the team terms only.",
+   "shot_matchup": "The same, on the shots-on-goal margin.",
+   "goalie_matchup": "Home starter's rating minus away starter's. A goalie's rating is the recency-weighted goals saved above the league's save rate on the shots he faced, divided by (his weighted shots faced + K), so a goalie with few shots sits near 0. The league rate is from the same earlier games. In the backtest the starter is the box score's; live it is the projected starter (src/sports/nhl/goalies.py), falling back to the team's last starter with a note, as the NFL does with quarterbacks.",
+   "grid": {"H_days": [30, 60, 120, 240], "K_shots": [250, 500, 1000, 2000]}
+  },
+  "model_b": {
+   "features": ["goal_matchup", "shot_matchup", "goalie_matchup", "market_logit"],
+   "estimator": "As Model A. Trained only on games that have a market price (2020-21 on).",
+   "market_logit": "The logit of the market's home-win probability."
+  },
+  "market": "The market's home-win probability itself, not refitted.",
+  "base_rate": "The home-win share of the games each refit trains on."
+ },
+ "amendments": [],
+ "prerequisite": "The box-score history (shots, starters, goalie shots and goals) for 2015-16 to 2025-26, read from the league once and checked against the fallback, and the ESPN market history read once, both stored by the backtest's own code so a re-run reads the same inputs.",
+ "disclosures": [
+  "Before this registration, Stage 51 measured the market's own log loss against the home-win base rate for each season from 2020-21 (docs/nhl-data.md): the market beats the base rate every season, by less than in the NFL, and 2025-26 was close to a coin flip. No model, feature or rating had been computed.",
+  "2020-21 was a 56-game season played mostly without crowds, inside realigned divisions. It stays in training as it happened; the home edge is refitted every day, so it carries only as much weight as its recency gives it.",
+  "Validation 2022-23 uses a converted market and confirmation 2024-25 a native one, so Model B and the market change instrument between the two halves. The confirmation is still out of sample; it is not the same ruler.",
+  "The backtest knows each game's actual starting goalie; the live pick knows only the projection. Measurement M2 sizes that gap once the forward test has games.",
+  "This is the first NHL registration, written by Claude under delegation rather than approved by Mark question by question as the NFL's were."
+ ],
+ "hypotheses": [
+  {
+   "id": "H1",
+   "kind": "hypothesis",
+   "title": "Model A against the home-win base rate",
+   "question": "Does Model A forecast home wins better than knowing only how often the home team wins?",
+   "spends_slot": true,
+   "decision_rule": "On 2024-2025, all games: ACCEPT if the 98.33% day-block paired-bootstrap interval on (Model A - base rate) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE.",
+   "expected": "ACCEPT, by a small margin: the market itself beats the base rate by 0.01 to 0.04 a season."
+  },
+  {
+   "id": "H2",
+   "kind": "hypothesis",
+   "title": "Model B against Model A",
+   "question": "Does adding the market to Model A's features improve it?",
+   "spends_slot": true,
+   "decision_rule": "On 2024-2025, all games with a market price: ACCEPT if the 98.33% interval on (Model B - Model A) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE.",
+   "expected": "ACCEPT, as in the NFL."
+  },
+  {
+   "id": "H3",
+   "kind": "hypothesis",
+   "title": "Model B against the market",
+   "question": "Does Model B forecast better than the market alone?",
+   "spends_slot": true,
+   "decision_rule": "On 2024-2025, all games with a market price: ACCEPT if the 98.33% interval on (Model B - market) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE.",
+   "expected": "INCONCLUSIVE, as in the NFL."
+  },
+  {
+   "id": "M1",
+   "kind": "measurement",
+   "title": "What the goalie term adds",
+   "question": "Model A against Model A without goalie_matchup, refitted the same way, on 2024-2025.",
+   "spends_slot": false,
+   "consequence": "Reported with its interval. It does not remove the feature: removing it would need its own registration."
+  },
+  {
+   "id": "M2",
+   "kind": "measurement",
+   "title": "The projected starter against the actual one",
+   "question": "Over the forward test's graded games: how often the projected starter started, and Model A's log loss with each.",
+   "spends_slot": false,
+   "consequence": "Printed on the NHL's Checking the AI's work page once 50 games are graded."
+  }
+ ],
+ "not_in_this_registration": [
+  "Rest days, back-to-backs and travel: each needs its own registration.",
+  "Expected goals from shot locations: the play-by-play has them from 2009-10, and they are a candidate for a later registration, not this one.",
+  "The puck line and the total."
+ ]
+}
