@@ -137,11 +137,12 @@ def t(name, change):
 
 
 SENTENCES = {
-    'one_each': [t('Chicago Bears', 3), t('Dallas Cowboys', -2), t('Buffalo Bills', 0)],
-    'singular': [t('Chicago Bears', 1), t('Dallas Cowboys', -1)],
-    'tied_rise': [t('Detroit Lions', 2), t('Atlanta Falcons', 2), t('Miami Dolphins', 2),
-                  t('Tennessee Titans', 2), t('Dallas Cowboys', -1)],
-    'only_rises': [t('Chicago Bears', 2), t('Dallas Cowboys', 0)],
+    'one_each': [t('Chicago Bears', 3), t('Dallas Cowboys', -4), t('Buffalo Bills', 0)],
+    # Stage 21: only moves of three places or more are named.
+    'small': [t('Chicago Bears', 2), t('Dallas Cowboys', -2), t('Buffalo Bills', 1)],
+    'tied_rise': [t('Detroit Lions', 4), t('Atlanta Falcons', 4), t('Miami Dolphins', 4),
+                  t('Tennessee Titans', 4), t('Dallas Cowboys', -3)],
+    'only_rises': [t('Chicago Bears', 3), t('Dallas Cowboys', -2)],
     'quiet': [t('Chicago Bears', 0), t('Dallas Cowboys', 0)],
     'no_history': [t('Chicago Bears', None), t('Dallas Cowboys', None)],
 }
@@ -155,7 +156,9 @@ def page():
     src = TEMPLATE.read_text(encoding='utf-8')
     # Caught per case, so a case that throws fails its own test (CLAUDE.md:
     # a guard must fail on its own assertion, never through its fixture).
-    js = function_source(src, 'rankMoveHtml') + function_source(src, 'moversSentence') + \
+    # Stage 21: moversSentence reads its threshold from the page's INSIGHT.
+    insight = re.search(r'const INSIGHT = \{[^}]*\};', src).group(0)
+    js = insight + function_source(src, 'rankMoveHtml') + function_source(src, 'moversSentence') + \
         f'\nconst S={json.dumps(SENTENCES)};const M={json.dumps(MOVES)};const o={{s:{{}},m:{{}}}};' \
         'for(const k in S){try{o.s[k]=moversSentence(S[k]);}catch(e){o.s[k]="THREW: "+e.message;}}' \
         'for(const k in M){try{o.m[k]=rankMoveHtml(M[k]);}catch(e){o.m[k]="THREW: "+e.message;}}' \
@@ -168,26 +171,25 @@ def page():
 def test_the_sentence_names_the_biggest_rise_and_fall(page):
     assert page['s']['one_each'] == (
         'Biggest moves since the last update: Chicago Bears up 3 places; '
-        'Dallas Cowboys down 2 places.')
+        'Dallas Cowboys down 4 places.')
 
 
-def test_one_place_is_singular(page):
-    assert 'up 1 place;' in page['s']['singular']
-    assert 'down 1 place.' in page['s']['singular']
+def test_moves_under_three_places_are_not_named(page):
+    assert page['s']['small'] == '', 'a week of one- and two-place moves hides the line (Stage 21)'
 
 
 def test_ties_are_named_two_at_most_then_counted(page):
     assert page['s']['tied_rise'] == (
         'Biggest moves since the last update: Atlanta Falcons, Detroit Lions and 2 more '
-        'up 2 places; Dallas Cowboys down 1 place.')
+        'up 4 places; Dallas Cowboys down 3 places.')
 
 
 def test_a_week_with_no_fall_names_no_fall(page):
-    assert page['s']['only_rises'] == 'Biggest moves since the last update: Chicago Bears up 2 places.'
+    assert page['s']['only_rises'] == 'Biggest moves since the last update: Chicago Bears up 3 places.'
 
 
-def test_a_quiet_week_says_so_and_no_history_says_nothing(page):
-    assert page['s']['quiet'] == 'No team changed places since the last update.'
+def test_a_quiet_week_and_no_history_say_nothing(page):
+    assert page['s']['quiet'] == '', 'Stage 21: a week with no move of three places hides the line'
     assert page['s']['no_history'] == '', 'with nothing to compare, the line must stay hidden'
 
 

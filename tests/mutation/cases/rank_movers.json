@@ -68,14 +68,6 @@
       "expect_caught_by": "test_no_move_and_no_history_draw_no_arrow"
     },
     {
-      "id": "movers-loses-the-singular",
-      "target": "src/dashboard/app.js",
-      "why": "a one-place move reads 'up 1 places'.",
-      "find": "  const places = n => `${n} place${n === 1 ? '' : 's'}`;\n",
-      "replace": "  const places = n => `${n} places`;\n",
-      "expect_caught_by": "test_one_place_is_singular"
-    },
-    {
       "id": "movers-names-every-tie",
       "target": "src/dashboard/app.js",
       "why": "every tied team is named, so a week where five teams rose three places prints a list instead of a line.",
@@ -97,7 +89,7 @@
       "why": "with nothing to compare against, the line still appears and says no team moved, a claim about a comparison that was never made.",
       "find": "  if(!moved.length) return '';\n",
       "replace": "",
-      "expect_caught_by": "test_a_quiet_week_says_so_and_no_history_says_nothing"
+      "expect_caught_by": "test_a_quiet_week_and_no_history_say_nothing"
     },
     {
       "id": "movers-counts-only-the-searched-view",

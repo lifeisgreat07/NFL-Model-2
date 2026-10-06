@@ -141,6 +141,7 @@
                 </div>
               </div>
             </th>
+            <th scope="col" class="trend-head" title="Net rating each week this season, scaled to the team's own weeks">This season</th>
             <th scope="col" data-key="off" tabindex="0" aria-sort="none" style="text-align:right;">Offense</th>
             <th scope="col" data-key="def" tabindex="0" aria-sort="none" style="text-align:right;">Defense</th>
             <th scope="col" data-key="sos" style="text-align:right;" title="Strength of schedule: the average current net rating of the opponents a team has actually played so far. Blank until games have been played." tabindex="0" aria-sort="none">SOS</th>
@@ -291,6 +292,13 @@
     <!-- Stage 46 item 5: filled by renderLockProof() for a locked week. -->
     <button type="button" class="btn btn-link nfl-phone-only" id="board-prov-btn" aria-expanded="false">When these picks were saved, and where to check</button>
     <p class="board-note board-lock-note" id="board-lock-note" hidden></p>
+    <!-- Stage 21 (option A of "Stage 21 Insight Options"): filled by
+         renderBoardInsights(); hidden in a week where no game crosses a
+         threshold. -->
+    <div class="board-insights" id="board-insights" hidden>
+      <h3 class="board-insights-title">Worth a look</h3>
+      <ul class="board-insights-list" id="board-insights-list"></ul>
+    </div>
     <p class="board-note" id="board-tv-note" hidden>CBS and FOX games on Sunday afternoon are regional: which one your local channel shows depends on where you live.</p>
     <div class="game-grid" id="game-grid"></div>
   </section>
