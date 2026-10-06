@@ -1,0 +1,21 @@
+{
+  "target": "tests/booth_fixtures/cross-sport-leak/head/sports/nhl/site.py",
+  "tests": "tests/test_booth_fixtures.py",
+  "cases": [
+    {
+      "id": "leak-seed-quietly-fixed",
+      "why": "the NHL page's results call gains its sport, so the leak the fixture seeds is gone. Booth finding no discrepancy would then be correct, the fixture would record a pass, and Stage 60's planted-leak check would be green while planting nothing.",
+      "find": "    results = load_results()\n",
+      "replace": "    results = load_results('nhl')\n",
+      "expect_caught_by": "test_the_seeded_defect_is_actually_present"
+    },
+    {
+      "id": "leak-seed-copied-into-the-nfl-page",
+      "target": "tests/booth_fixtures/cross-sport-leak/head/sports/nfl/site.py",
+      "why": "the NFL page's call is written the same way as the NHL page's, so the seeded line is no longer the one place the defect lives. A reviewer comparing the two pages would then see nothing odd about the NHL one, and the fixture would stop modelling a leak that hides in plain sight.",
+      "find": "    played = load_results()\n",
+      "replace": "    results = load_results()\n    played = results\n",
+      "expect_caught_by": "test_the_defect_string_survives_in_exactly_one_place"
+    }
+  ]
+}
