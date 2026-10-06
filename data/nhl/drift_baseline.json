@@ -1,0 +1,18 @@
+{
+  "registered": "experiments/nhl/stage58/registry.json (registered 2026-10-05, before any NHL pick was saved)",
+  "model": "model_a",
+  "metric": "log_loss",
+  "baseline": {
+    "name": "stage56_confirmation",
+    "label": "Model A on the 2024-25 and 2025-26 confirmation seasons, with each game's actual starting goalie",
+    "value": 0.6753173753776152
+  },
+  "source": "experiments/nhl/stage56/results/confirmation.json, scores.model_a.log_loss (2792 games)",
+  "rule": {
+    "min_games": 100,
+    "one_sided_level": 0.95,
+    "n_resamples": 5000,
+    "seed": 20261005,
+    "flag_when": "the lower end of the one-sided 95% bootstrap interval of mean per-game log loss is above the baseline"
+  }
+}

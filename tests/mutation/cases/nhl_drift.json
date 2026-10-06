@@ -1,0 +1,35 @@
+{
+  "target": "src/sports/nhl/drift.py",
+  "tests": "tests/test_nhl_drift.py",
+  "cases": [
+    {
+      "id": "nhl-drift-no-minimum",
+      "why": "the check flags from the first few games, when a bad night is noise.",
+      "find": "    if len(losses) < rule['min_games']:\n        return False",
+      "replace": "    if False:\n        return False",
+      "expect_caught_by": "test_too_few_games_never_flags"
+    },
+    {
+      "id": "nhl-drift-mean-not-bound",
+      "why": "the point estimate decides instead of the interval's lower end, so ordinary variance flags.",
+      "find": "    return bool(lower_bound(losses, rule) > spec['baseline']['value'])",
+      "replace": "    return bool(sum(losses) / len(losses) > spec['baseline']['value'] - 0.05)",
+      "expect_caught_by": "test_a_clearly_worse_season_flags_and_a_matching_one_does_not"
+    },
+    {
+      "id": "nhl-drift-missing-result-counted",
+      "why": "a game without a result is scored as a home loss.",
+      "find": "        if p is None or y not in (0, 1):",
+      "replace": "        if p is None:",
+      "expect_caught_by": "test_per_game_log_loss_skips_games_without_a_result"
+    },
+    {
+      "id": "nhl-drift-baseline-moved",
+      "target": "data/nhl/drift_baseline.json",
+      "why": "the baseline is edited away from the backtest's own figure, so the flag measures against a number nobody computed.",
+      "find": "    \"value\": 0.6753173753776152",
+      "replace": "    \"value\": 0.70",
+      "expect_caught_by": "test_the_baseline_is_model_as_confirmation_log_loss"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+ "family": "nhl-stage58",
+ "registered": "2026-10-05",
+ "approved_by": "Claude, under Mark's delegation of 2026-10-05, after Stage 56's results and before any NHL pick was saved.",
+ "forward_test": {
+  "season": 2026,
+  "starts": "With the first pick the scheduled daily run saves. Games before it are never scored, and nothing is backfilled.",
+  "picks": "One file per game, predictions/nhl/2026/<game_id>.json, saved by the last scheduled run before the game starts and never rewritten (src/sports/nhl/lock.py, src/sports/nhl/daily.py).",
+  "the_pick": "Model B's side when the game has a market price, Model A's otherwise, as on the NFL board.",
+  "graded": "Final games only. A cancelled game is never counted; a postponed one is scored if a saved pick exists for the game the league played.",
+  "reported": "Model A, Model B, the market and the home-win base rate, by log loss with Brier beside it; accuracy is reported and never decides. Intervals as in Stage 56: paired, resampling game days, 5,000 resamples."
+ },
+ "drift": {
+  "file": "data/nhl/drift_baseline.json",
+  "model": "model_a",
+  "metric": "log_loss",
+  "baseline": "Model A's log loss on Stage 56's confirmation seasons (experiments/nhl/stage56/results/confirmation.json).",
+  "rule": "Flag when the lower end of a one-sided 95% bootstrap interval of mean per-game log loss is above the baseline, once 100 games are graded (the NFL's rule from Stage 33 R4, with 100 games in place of 30 because the NHL grades 6 to 15 games a day).",
+  "known_break": "The backtest rated each game with its actual starting goalie; a live pick uses the projected one. M2 of Stage 56 measures that gap."
+ },
+ "measurements": ["Stage 56 M2: the projected starter against the actual one, printed once 50 games are graded."],
+ "amendments": []
+}

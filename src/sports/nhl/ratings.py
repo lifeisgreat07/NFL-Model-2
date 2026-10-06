@@ -24,6 +24,7 @@ selected by `game_date < day` and nothing else.
 from __future__ import annotations
 
 from collections.abc import Iterable
+from dataclasses import dataclass
 
 import numpy as np
 import numpy.typing as npt
@@ -100,6 +101,34 @@ def goalie_rating(terms: pd.DataFrame, goalie: object, k: float) -> float:
     return float(row['saved'] / (row['shots'] + k))
 
 
+@dataclass(frozen=True)
+class DayRatings:
+    """Every rating as it stood before one game day."""
+    goal: dict[str, float]
+    shot: dict[str, float]
+    goalies: pd.DataFrame
+
+    def matchup(self, home: str, away: str, home_goalie: object, away_goalie: object,
+                ks: Iterable[float]) -> dict[str, float]:
+        """Model A's features for one game: home minus away, each team by its
+        franchise (`franchise`), each goalie by his league player id."""
+        home, away = franchise(home), franchise(away)
+        row = {'goal_matchup': self.goal.get(home, 0.0) - self.goal.get(away, 0.0),
+               'shot_matchup': self.shot.get(home, 0.0) - self.shot.get(away, 0.0)}
+        for k in ks:
+            row[f'goalie_matchup_{k:g}'] = (goalie_rating(self.goalies, home_goalie, k)
+                                            - goalie_rating(self.goalies, away_goalie, k))
+        return row
+
+
+def day_ratings(train: pd.DataFrame, day: pd.Timestamp, half_life: float) -> DayRatings:
+    """The ratings before `day`, from `train` (games that ended before it)."""
+    w = weights(train['day'], day, half_life)
+    _, goal = ridge_ratings(train, 'goal_margin', w)
+    _, shot = ridge_ratings(train, 'shot_margin', w)
+    return DayRatings(goal, shot, goalie_terms(train, w))
+
+
 def features(games: pd.DataFrame, half_life: float, ks: Iterable[float],
              first_day: str | None = None) -> pd.DataFrame:
     """One row per game from `first_day` on: goal_matchup, shot_matchup and
@@ -116,17 +145,11 @@ def features(games: pd.DataFrame, half_life: float, ks: Iterable[float],
         today = games[games['day'] == day]
         if len(train) < 100:
             continue
-        w = weights(train['day'], day, half_life)
-        _, goal = ridge_ratings(train, 'goal_margin', w)
-        _, shot = ridge_ratings(train, 'shot_margin', w)
-        terms = goalie_terms(train, w)
+        rated = day_ratings(train, day, half_life)
         for g in today.itertuples():
-            row = {'game_id': g.game_id, 'day': day, 'season': g.season, 'game_type': g.game_type,
-                   'home': g.home, 'away': g.away, 'home_win': g.home_win,
-                   'goal_matchup': goal.get(g.home, 0.0) - goal.get(g.away, 0.0),
-                   'shot_matchup': shot.get(g.home, 0.0) - shot.get(g.away, 0.0)}
-            for k in ks:
-                row[f'goalie_matchup_{k:g}'] = (goalie_rating(terms, g.home_goalie_id, k)
-                                                - goalie_rating(terms, g.away_goalie_id, k))
+            row: dict[str, object] = {'game_id': g.game_id, 'day': day, 'season': g.season,
+                                      'game_type': g.game_type, 'home': g.home, 'away': g.away,
+                                      'home_win': g.home_win}
+            row.update(rated.matchup(g.home, g.away, g.home_goalie_id, g.away_goalie_id, ks))
             out.append(row)
     return pd.DataFrame(out)
