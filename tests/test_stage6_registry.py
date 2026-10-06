@@ -27,6 +27,7 @@ import subprocess
 from pathlib import Path
 
 import pytest
+from git_history import first_added, registry_beside
 
 REPO_ROOT = Path(__file__).parent.parent
 
@@ -119,10 +120,13 @@ def _shallow():
 
 @pytest.mark.skipif(_shallow(), reason="needs full history to compare the registry with its first version")
 def test_budget_m_has_not_moved_since_the_family_was_registered():
-    added = git('log', '--diff-filter=A', '--format=%H', '--', REGISTRY_REL).stdout.split()
-    if not added:
+    found = first_added(REPO_ROOT, REGISTRY_REL)
+    if found is None:
         pytest.skip("registry not committed yet")
-    first = json.loads(git('show', f'{added[-1]}:{REGISTRY_REL}').stdout)
+    # Following renames: after Stage 52 moves the registry, the plain query
+    # would name the move and compare the file with itself (tests/git_history.py).
+    sha, then = found
+    first = json.loads(git('show', f'{sha}:{then}').stdout)
     assert registry()['protocol']['budget_m'] == first['protocol']['budget_m'], (
         "budget_m changed after the family was registered. Raising it after seeing results "
         "is a new family, not an edit."
@@ -213,11 +217,11 @@ def test_no_result_touches_the_forward_holdout():
 def test_every_committed_result_was_registered_in_an_earlier_commit():
     for path in sorted(RESULTS.glob('*.json')):
         rel = path.relative_to(REPO_ROOT).as_posix()
-        added = git('log', '--diff-filter=A', '--format=%H', '--', rel).stdout.split()
-        if not added:
+        found = first_added(REPO_ROOT, rel)
+        if found is None:
             continue  # not committed yet; the check applies from the first commit
-        first = added[-1]
-        parent_registry = git('show', f'{first}^:{REGISTRY_REL}')
+        first, then = found
+        parent_registry = git('show', f'{first}^:{registry_beside(then)}')
         assert parent_registry.returncode == 0, (
             f"{rel} was committed in {first[:7]}, whose parent has no registry at all"
         )

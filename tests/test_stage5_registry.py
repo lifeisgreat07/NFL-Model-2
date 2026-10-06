@@ -29,6 +29,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 import pytest
+from git_history import first_added, registry_beside
 
 REPO_ROOT = Path(__file__).parent.parent
 
@@ -141,11 +142,13 @@ def _shallow():
 def test_every_committed_result_was_registered_in_an_earlier_commit():
     for path in sorted(RESULTS.glob('*.json')):
         rel = path.relative_to(REPO_ROOT).as_posix()
-        added = git('log', '--diff-filter=A', '--format=%H', '--', rel).stdout.split()
-        if not added:
+        found = first_added(REPO_ROOT, rel)
+        if found is None:
             continue  # not committed yet; the check applies from the first commit
-        first = added[-1]
-        parent_registry = git('show', f'{first}^:experiments/stage5/registry.json')
+        # Following renames: Stage 52 moves these files, and the commit that
+        # first added one is the one that matters (tests/git_history.py).
+        first, then = found
+        parent_registry = git('show', f'{first}^:{registry_beside(then)}')
         assert parent_registry.returncode == 0, (
             f"{rel} was committed in {first[:7]}, whose parent has no registry at all"
         )
