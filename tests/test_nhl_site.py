@@ -189,3 +189,22 @@ def test_every_registration_whats_changed_names_exists_and_says_what_its_results
     labels = {k: q.get('label') for k, q in labels['questions'].items()}
     assert 'Model A beats the base rate' in backtest['text'] and labels['H1'] == 'ACCEPT'
     assert 'are inconclusive' in backtest['text'] and labels['H2'] == labels['H3'] == 'INCONCLUSIVE'
+
+
+def test_every_page_is_on_the_phones_menu() -> None:
+    """Below 1080px the sidebar is hidden; the bottom bar and its More sheet
+    are the only way to another page. #310 shipped without them, and only a
+    phone-width look at the page showed it."""
+    body = (site.TEMPLATE / 'body.html').read_text(encoding='utf-8')
+    pages = set(re.findall(r'id="page-([\w-]+)"', body))
+    phone = body[body.index('<nav class="bottom-nav"'):]
+    assert set(re.findall(r'data-page="([\w-]+)"', phone)) == pages
+
+
+def test_the_more_button_lights_up_on_exactly_the_sheets_pages() -> None:
+    body = (site.TEMPLATE / 'body.html').read_text(encoding='utf-8')
+    sheet = body[body.index('id="bnav-more-sheet"'):]
+    js = (site.TEMPLATE / 'nhl.js').read_text(encoding='utf-8')
+    listed = re.search(r'const OVERFLOW_PAGES = \[([^\]]*)\]', js)
+    assert listed is not None
+    assert set(re.findall(r"'([\w-]+)'", listed.group(1))) == set(re.findall(r'data-page="([\w-]+)"', sheet))

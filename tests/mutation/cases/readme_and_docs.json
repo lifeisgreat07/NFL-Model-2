@@ -150,8 +150,8 @@
       "target": "tasks.py",
       "tests": "tests/test_tasks.py",
       "why": "the task stops building and checking the states pages, so a local browser check passes on a page CI would fail on a tie or a stale preview: the gap the third audit found.",
-      "find": "                                 [PY, 'tests/browser/build_states.py', '--out', str(STATES)],\n                                 *[[PY, 'tests/browser/check_page.py', str(STATES / page), *_axe()]\n                                   for page in STATE_PAGES]]),",
-      "replace": "                                 ]),",
+      "find": "                                 [PY, 'tests/browser/build_states.py', '--out', str(STATES)],\n                                 *[[PY, 'tests/browser/check_page.py', str(STATES / page), *_axe()]\n                                   for page in STATE_PAGES],\n",
+      "replace": "",
       "expect_caught_by": "test_browser_check_runs_what_the_workflow_runs_in_the_same_order"
     },
     {
@@ -185,6 +185,15 @@
       "find": "over 175 case files",
       "replace": "over 100 case files",
       "expect_caught_by": "test_the_mutation_case_count_it_states_is_the_real_one"
+    },
+    {
+      "id": "browser-check-skips-the-nhl-page",
+      "target": "tasks.py",
+      "tests": "tests/test_tasks.py",
+      "why": "the task stops building and checking the NHL's page, so a local browser check passes on an NHL page CI would fail.",
+      "find": "                                 [PY, 'tests/browser/build_nhl.py', '--out', str(STATES / NHL_PAGE)],\n                                 [PY, 'tests/browser/check_page.py', str(STATES / NHL_PAGE), *_axe()]]),",
+      "replace": "                                 ]),",
+      "expect_caught_by": "test_browser_check_runs_what_the_workflow_runs_in_the_same_order"
     }
   ]
 }

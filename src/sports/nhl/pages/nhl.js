@@ -22,6 +22,61 @@ function odds(x){
 }
 function signed(x, digits){ const v = Number(x).toFixed(digits); return (x > 0 ? '+' : x < 0 ? '−' : '') + v.replace('-', ''); }
 
+/* ---------- tables that scroll ----------
+   The NFL board's rule (src/dashboard/app.js, Stage 12), copied until
+   Stage 53 moves it into the shared shell: a table wider than its box gets
+   the box into the Tab order as a named region, so a keyboard user can
+   scroll it (WCAG 2.1.1; axe's scrollable-region-focusable). A box that
+   fits leaves the Tab order again, and the shared stylesheet's .fits
+   applies. Only what this added is removed (data-scroll-stop lists it). */
+const FOCUSABLE_INSIDE = 'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
+function scrollStopLabel(el){
+  const cap = el.querySelector('caption');
+  let heading = null;
+  for(let node = el; node && !heading && !node.matches('.page'); node = node.parentElement){
+    for(let sib = node.previousElementSibling; sib; sib = sib.previousElementSibling){
+      if(sib.matches('h2, h3, h4')){ heading = sib; break; }
+    }
+  }
+  const name = (cap || heading) ? (cap || heading).textContent.trim().replace(/\s+/g, ' ') : '';
+  return (name ? `Table: ${name}` : 'Table') + ', scrolls sideways';
+}
+function setScrollStop(el, scrolls){
+  const attrs = {tabindex: () => '0', role: () => 'region', 'aria-label': scrollStopLabel};
+  const marked = el.hasAttribute('data-scroll-stop');
+  const added = marked ? el.getAttribute('data-scroll-stop').split(' ').filter(Boolean) : [];
+  if(scrolls && !el.querySelector(FOCUSABLE_INSIDE)){
+    for(const [name, value] of Object.entries(attrs)){
+      if(added.includes(name)) el.setAttribute(name, value(el));
+      else if(!el.hasAttribute(name)){ el.setAttribute(name, value(el)); added.push(name); }
+    }
+    el.setAttribute('data-scroll-stop', added.join(' '));
+  } else if(marked){
+    added.forEach(name => el.removeAttribute(name));
+    el.removeAttribute('data-scroll-stop');
+  }
+}
+function fitTables(){
+  document.querySelectorAll('.table-wrap').forEach(w => {
+    const t = w.querySelector('table');
+    if(!t || !w.clientWidth) return;
+    const fits = t.offsetWidth <= w.clientWidth;
+    w.classList.toggle('fits', fits);
+    setScrollStop(w, !fits);
+  });
+}
+(function(){
+  let queued = false;
+  const later = () => { if(queued) return; queued = true; requestAnimationFrame(() => { queued = false; fitTables(); }); };
+  window.addEventListener('resize', later);
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(later);
+  const root = document.querySelector('main');
+  if(root && window.MutationObserver){
+    new MutationObserver(later).observe(root, {childList: true, subtree: true, attributes: true, attributeFilter: ['class']});
+  }
+  later();
+})();
+
 /* ---------- dates ----------
    A game's `day` is the league's date (YYYY-MM-DD). It is turned into a Date
    at noon UTC so no time zone can move it to the day before. */
@@ -414,17 +469,62 @@ function renderReliability(){
     <p class="nhl-lede">The daily run at 14:00 and 21:00 UTC saves and grades the picks; a nightly canary at 06:40 UTC reads every source it needs and writes nothing. Either one failing opens a GitHub issue titled &ldquo;NHL: &hellip;&rdquo;. ${saved} pick${saved === 1 ? '' : 's'} saved so far this season.</p>`;
 }
 
-/* ---------- pages, theme ---------- */
-function showPage(name){
+/* ---------- pages, theme ----------
+   As the NFL board does (src/dashboard/app.js, Stage 26 item 2): every
+   button for the page shown carries aria-current, the tab's title names the
+   page, and a change the reader asked for moves focus to its heading. On a
+   phone the bottom bar and its More sheet carry the menu; the sheet is
+   inert while closed, so its buttons are not in the Tab order. */
+const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'reliability', 'changes'];
+const BASE_TITLE = document.title;
+function setMoreSheetOpen(open){
+  const sheet = document.getElementById('bnav-more-sheet');
+  if(!sheet) return;
+  sheet.classList.toggle('open', open);
+  sheet.inert = !open;
+}
+function showPage(name, opts){
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
-  document.querySelectorAll('.nav-btn').forEach(b => {
+  document.querySelectorAll('[data-page]').forEach(b => {
     const on = b.dataset.page === name;
     b.classList.toggle('active', on);
     if(on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
+  const more = document.getElementById('bnav-more-btn');
+  if(more) more.classList.toggle('active', OVERFLOW_PAGES.includes(name));
+  setMoreSheetOpen(false);
   window.scrollTo(0, 0);
+  const page = document.getElementById('page-' + name);
+  const heading = page && page.querySelector('.page-head h2');
+  document.title = name === 'board' || !heading ? BASE_TITLE : `${heading.textContent.trim()} — Pick'em Model`;
+  if(opts && opts.focus && heading){
+    heading.setAttribute('tabindex', '-1');
+    heading.focus({preventScroll: true});
+  }
 }
-document.querySelectorAll('.nav-btn').forEach(b => b.addEventListener('click', () => showPage(b.dataset.page)));
+document.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => showPage(b.dataset.page, {focus: true})));
+const moreBtn = document.getElementById('bnav-more-btn');
+if(moreBtn) moreBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  setMoreSheetOpen(!document.getElementById('bnav-more-sheet').classList.contains('open'));
+});
+document.addEventListener('click', e => {
+  const sheet = document.getElementById('bnav-more-sheet');
+  if(sheet && sheet.classList.contains('open') && !sheet.contains(e.target) && !e.target.closest('#bnav-more-btn')) setMoreSheetOpen(false);
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape') setMoreSheetOpen(false); });
+/* The browser checks (tests/browser/check_page.py) open each page by its section id, as they do the NFL's. */
+window.setActivePage = id => showPage(String(id).replace(/^page-/, ''));
+/* The top bar's height, for the table headers that stick below it under
+   1080px (the shared stylesheet's --topbar-h; app.js's initTopbarHeight). */
+(function(){
+  const bar = document.querySelector('.topbar');
+  if(!bar) return;
+  const write = () => document.documentElement.style.setProperty('--topbar-h', bar.offsetHeight + 'px');
+  write();
+  if(typeof ResizeObserver === 'function') new ResizeObserver(write).observe(bar, {box: 'border-box'});
+  window.addEventListener('resize', write);
+})();
 function currentTheme(){ return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
 function themeLabel(){ const l = document.getElementById('theme-toggle-label'); if(l) l.textContent = currentTheme() === 'light' ? 'Dark mode' : 'Light mode'; }
 document.querySelectorAll('#theme-toggle, .topbar-theme').forEach(btn => btn.addEventListener('click', () => {

@@ -15,6 +15,21 @@
       "find": "const r = DATA.ratings,",
       "replace": "const r = DATA.rating,",
       "expect_caught_by": "test_the_script_reads_only_fields_the_builder_writes"
+    },
+    {
+      "id": "nhl-pages-more-misses-a-page",
+      "why": "the More button stops lighting up on a page its sheet opens, so a phone reader on What's Changed sees no menu item marked.",
+      "find": "const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'reliability', 'changes'];",
+      "replace": "const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'reliability'];",
+      "expect_caught_by": "test_the_more_button_lights_up_on_exactly_the_sheets_pages"
+    },
+    {
+      "id": "nhl-pages-phone-menu-misses-a-page",
+      "target": "src/sports/nhl/pages/body.html",
+      "why": "a page drops off the phone's menu, so below 1080px nothing opens it.",
+      "find": "    <button class=\"bnav-more-item\" data-page=\"changes\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 3\"/></svg><span>What&#39;s Changed</span></button>\n",
+      "replace": "",
+      "expect_caught_by": "test_every_page_is_on_the_phones_menu"
     }
   ]
 }
