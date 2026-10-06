@@ -95,3 +95,12 @@ jobs:
           for page in states_tie.html states_preview.html; do
             python tests/browser/check_page.py "$RUNNER_TEMP/states/$page" --axe node_modules/axe-core/axe.min.js
           done
+
+      # Stage 53 item 4: the NHL's page, built by the real builder from a
+      # sample week with every kind of card on it (tests/browser/build_nhl.py),
+      # since the daily run's own files hold whatever state the season is in.
+      - name: Build the NHL's page from a sample week
+        run: python tests/browser/build_nhl.py --out "$RUNNER_TEMP/states/nhl.html"
+
+      - name: Check the NHL's page
+        run: python tests/browser/check_page.py "$RUNNER_TEMP/states/nhl.html" --axe node_modules/axe-core/axe.min.js

@@ -425,6 +425,8 @@ function showPage(name){
   window.scrollTo(0, 0);
 }
 document.querySelectorAll('.nav-btn').forEach(b => b.addEventListener('click', () => showPage(b.dataset.page)));
+/* The browser checks (tests/browser/check_page.py) open each page by its section id, as they do the NFL's. */
+window.setActivePage = id => showPage(String(id).replace(/^page-/, ''));
 function currentTheme(){ return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
 function themeLabel(){ const l = document.getElementById('theme-toggle-label'); if(l) l.textContent = currentTheme() === 'light' ? 'Dark mode' : 'Light mode'; }
 document.querySelectorAll('#theme-toggle, .topbar-theme').forEach(btn => btn.addEventListener('click', () => {

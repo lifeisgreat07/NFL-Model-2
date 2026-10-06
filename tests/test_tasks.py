@@ -112,16 +112,20 @@ def test_browser_check_runs_what_the_workflow_runs_in_the_same_order():
         'python tests/browser/check_page.py --self-test',
         'python tests/browser/check_page.py index.html',
         'python tests/browser/build_states.py --out $RUNNER_TEMP/states',
-        *[f'python tests/browser/check_page.py $RUNNER_TEMP/states/{p}' for p in tasks.STATE_PAGES]]
+        *[f'python tests/browser/check_page.py $RUNNER_TEMP/states/{p}' for p in tasks.STATE_PAGES],
+        f'python tests/browser/build_nhl.py --out $RUNNER_TEMP/states/{tasks.NHL_PAGE}',
+        f'python tests/browser/check_page.py $RUNNER_TEMP/states/{tasks.NHL_PAGE}']
     wf = [r.replace('"', '') for r in runs('browser-checks.yml')
-          if any(k in r for k in ('generate_dashboard', 'check_page.py', 'build_states', 'for page in'))]
+          if any(k in r for k in ('generate_dashboard', 'check_page.py', 'build_states', 'build_nhl', 'for page in'))]
     assert [w.split(' --axe')[0] for w in wf] == [
         'python -m src.pipeline.generate_dashboard',
         'python tests/browser/check_page.py --self-test',
         'python tests/browser/check_page.py index.html',
         'python tests/browser/build_states.py --out $RUNNER_TEMP/states',
         f'for page in {" ".join(tasks.STATE_PAGES)}; do',
-        'python tests/browser/check_page.py $RUNNER_TEMP/states/$page']
+        'python tests/browser/check_page.py $RUNNER_TEMP/states/$page',
+        f'python tests/browser/build_nhl.py --out $RUNNER_TEMP/states/{tasks.NHL_PAGE}',
+        f'python tests/browser/check_page.py $RUNNER_TEMP/states/{tasks.NHL_PAGE}']
 
 
 def test_the_task_builds_the_pages_build_states_writes():
