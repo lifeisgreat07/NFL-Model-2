@@ -1,0 +1,37 @@
+{
+  "target": "src/sports/nhl/pages/body.html",
+  "tests": "tests/test_sport_switch.py",
+  "cases": [
+    {
+      "id": "switch-nhl-forgets-its-own-sport",
+      "why": "the NHL's switcher no longer marks the NHL as current, so a visitor cannot tell which sport's pages they are on from the pills.",
+      "find": "  <nav class=\"sport-switch\" aria-label=\"Sports\"><a href=\"../\">Home</a><a href=\"../nfl/\">NFL</a><a href=\"../nhl/\" aria-current=\"page\">NHL</a>",
+      "replace": "  <nav class=\"sport-switch\" aria-label=\"Sports\"><a href=\"../\">Home</a><a href=\"../nfl/\">NFL</a><a href=\"../nhl/\">NHL</a>",
+      "expect_caught_by": "test_each_switcher_links_home_and_every_sport_marking_its_own"
+    },
+    {
+      "id": "switch-nba-phone-strip-dropped",
+      "target": "src/sports/nba/pages/body.html",
+      "why": "the NBA's phone strip is dropped, and the sidebar that holds the other switcher is hidden below 1080px, so a phone visitor on the NBA's pages has no way to another sport.",
+      "find": "<nav class=\"sport-switch sport-strip\" aria-label=\"Sports\">",
+      "replace": "<nav class=\"sport-switch-gone\" aria-label=\"Sports\">",
+      "expect_caught_by": "test_each_page_has_the_sidebar_pills_and_the_phone_strip"
+    },
+    {
+      "id": "switch-nfl-skips-the-nba",
+      "target": "src/dashboard/body.html",
+      "why": "the NFL board's sidebar switcher leaves out the NBA, so a sport the site publishes is unreachable from the board.",
+      "find": "  <nav class=\"sport-switch\" aria-label=\"Sports\"><a href=\"../\">Home</a><a href=\"../nfl/\" aria-current=\"page\">NFL</a><a href=\"../nhl/\">NHL</a><a href=\"../nba/\">NBA</a></nav>\n",
+      "replace": "  <nav class=\"sport-switch\" aria-label=\"Sports\"><a href=\"../\">Home</a><a href=\"../nfl/\" aria-current=\"page\">NFL</a><a href=\"../nhl/\">NHL</a></nav>\n",
+      "expect_caught_by": "test_each_switcher_links_home_and_every_sport_marking_its_own"
+    },
+    {
+      "id": "switch-strip-shown-on-desktop",
+      "target": "src/dashboard/styles.css",
+      "why": "the phone strip is no longer hidden at desktop widths, so a wide screen shows the pills twice, in the sidebar and above the page.",
+      "find": "  .sport-strip{display:none;}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_strip_shows_only_on_a_phone_and_hover_waits_for_a_pointer"
+    }
+  ]
+}
