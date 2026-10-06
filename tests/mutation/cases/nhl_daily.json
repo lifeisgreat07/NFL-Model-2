@@ -57,6 +57,20 @@
       "find": "        except history.HistoryError as exc:",
       "replace": "        except ZeroDivisionError as exc:",
       "expect_caught_by": "test_a_box_score_not_settled_yet_is_skipped_and_tried_next_run"
+    },
+    {
+      "id": "nhl-daily-standings-with-goalies",
+      "why": "the standings feed a future game the goalies of today's projections, so a game months away is rated with a starter nobody has named.",
+      "find": "        sched, lambda h, a: rated.matchup(h, a, None, None, [k]), model_a, cols)",
+      "replace": "        sched, lambda h, a: rated.matchup(h, a, h, a, [k]), model_a, cols)",
+      "expect_caught_by": "test_the_standings_file_is_written_from_model_a_with_no_goalies"
+    },
+    {
+      "id": "nhl-daily-standings-ot-one-season",
+      "why": "the overtime share comes from this season alone, so in October it rests on a handful of games.",
+      "find": "    ot = standings.overtime_share(games[games['season'] >= season - 1])",
+      "replace": "    ot = standings.overtime_share(games[games['season'] >= season])",
+      "expect_caught_by": "test_the_standings_file_is_written_from_model_a_with_no_goalies"
     }
   ]
 }

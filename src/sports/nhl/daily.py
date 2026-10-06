@@ -24,6 +24,10 @@ Each run, in order:
    a cancelled game is marked cancelled and never counted
    (`results/nhl/graded_<season>.json`).
 
+7. **Standings.** In a run that saves picks, the rest of the regular season
+   is simulated from Model A with today's ratings
+   (`src/sports/nhl/standings.py`; `results/nhl/standings_<season>.json`).
+
 `.github/workflows/nhl-daily.yml` runs this at 14:00 and 21:00 UTC.
 
 Run by hand: python -m src.sports.nhl.daily
@@ -40,7 +44,16 @@ import numpy as np
 import pandas as pd
 
 from src.core.sport import GameStatus, sport_paths
-from src.sports.nhl import backtest, drift, goalies, history, market, ratings, roster
+from src.sports.nhl import (
+    backtest,
+    drift,
+    goalies,
+    history,
+    market,
+    ratings,
+    roster,
+    standings,
+)
 from src.sports.nhl import schedule as nhl_schedule
 from src.sports.nhl.lock import GameLock
 
@@ -167,6 +180,22 @@ def drift_rows(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, in
     return rows
 
 
+def write_standings(sched: pd.DataFrame, games: pd.DataFrame, rated: ratings.DayRatings, model_a: Any,
+                    k: float, as_of: str, season: int, n_sim: int = 10000) -> Path:
+    """The standings odds (Stage 57 item 3) from this run's Model A, written
+    to `results/nhl/standings_<season>.json`. Overtime and shootout shares
+    come from this season and the last."""
+    cols = ['goal_matchup', 'shot_matchup', backtest.goalie_column(k)]
+    probs = standings.unplayed_probabilities(
+        sched, lambda h, a: rated.matchup(h, a, None, None, [k]), model_a, cols)
+    ot = standings.overtime_share(games[games['season'] >= season - 1])
+    table = standings.simulate(sched, probs, ot, n_sim=n_sim)
+    out = PATHS.results / f'standings_{season}.json'
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(standings.to_json(table, as_of, n_sim, ot), indent=1) + '\n', encoding='utf-8')
+    return out
+
+
 def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetch) -> int:
     now = now or datetime.now(UTC)
     season = nhl_schedule.current_season(now)
@@ -220,6 +249,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             feats = rated.matchup(g['home'], g['away'], ids['home'], ids['away'], [k])
             record = pick_record(g, feats, k, model_a, model_b, line_by_id.get(str(g['game_id'])), notes, now)
             print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id'])
+        print(f'standings: {write_standings(sched, games, rated, model_a, k, str(today.date()), season)}')
     graded = grade(folder, sched)
     out = PATHS.results / f'graded_{season}.json'
     out.parent.mkdir(parents=True, exist_ok=True)
