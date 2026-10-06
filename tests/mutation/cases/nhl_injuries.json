@@ -1,0 +1,48 @@
+{
+  "target": "src/sports/nhl/injuries.py",
+  "tests": "tests/test_nhl_injuries.py",
+  "cases": [
+    {
+      "id": "nhl-inj-wrong-season-file",
+      "why": "the season's own number names the file, so the run reads last season's list, which ESPN numbers by the year a season ends.",
+      "find": "    return f'{RELEASE}/injuries_{season + 1}.parquet'",
+      "replace": "    return f'{RELEASE}/injuries_{season}.parquet'",
+      "expect_caught_by": "test_the_season_starting_in_2026_is_espns_2027_file"
+    },
+    {
+      "id": "nhl-inj-every-day",
+      "why": "every day in the file is read, so a player who was hurt last week and is back stays on the list.",
+      "find": "    today = df[df['as_of_date'].astype(str) == day].copy()",
+      "replace": "    today = df.copy()",
+      "expect_caught_by": "test_only_the_latest_day_is_read_and_each_club_is_its_abbreviation"
+    },
+    {
+      "id": "nhl-inj-unknown-club-dropped",
+      "why": "a club the names do not match is dropped in silence, so a renamed club's injuries vanish.",
+      "find": "    if unknown:\n        raise InjurySourceError",
+      "replace": "    if False:\n        raise InjurySourceError",
+      "expect_caught_by": "test_a_file_that_is_not_the_list_is_refused_not_guessed"
+    },
+    {
+      "id": "nhl-inj-missing-columns-accepted",
+      "why": "a file without the columns this reads is accepted and fails later, or stores nonsense.",
+      "find": "    if missing:\n        raise InjurySourceError(f'columns missing: {missing}')",
+      "replace": "    if False:\n        raise InjurySourceError(f'columns missing: {missing}')",
+      "expect_caught_by": "test_a_file_that_is_not_the_list_is_refused_not_guessed"
+    },
+    {
+      "id": "nhl-inj-sides-swapped",
+      "why": "the home club's list is stored as the away side's.",
+      "find": "            'home': side(home), 'away': side(away)}",
+      "replace": "            'home': side(away), 'away': side(home)}",
+      "expect_caught_by": "test_a_game_stores_each_sides_players_sorted_with_source_and_times"
+    },
+    {
+      "id": "nhl-inj-no-read-time",
+      "why": "the pick does not say when the list was read, so nobody can tell what was known at the lock.",
+      "find": "'read_utc': read.strftime('%Y-%m-%dT%H:%M:%SZ'),",
+      "replace": "",
+      "expect_caught_by": "test_a_game_stores_each_sides_players_sorted_with_source_and_times"
+    }
+  ]
+}

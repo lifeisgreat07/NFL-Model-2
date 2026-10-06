@@ -13,7 +13,9 @@ Each run, in order:
    market's two-way price from the league's odds feed. A goalie the page
    does not name, or that no roster matches, falls back to the club's last
    starter, and the pick says so. A game with no market price gets Model A
-   only, and says that too.
+   only, and says that too. Each club's injury list, as context only
+   (`src/sports/nhl/injuries.py`); a failed read stores none and the pick
+   is saved regardless.
 4. **Models.** Model A and Model B as registered
    (`experiments/nhl/stage56/registry.json`), with the half-life and K the
    backtest chose (`results/confirmation.json`), fitted on every finished
@@ -51,6 +53,7 @@ from src.sports.nhl import (
     drift,
     goalies,
     history,
+    injuries,
     market,
     page_inputs,
     ratings,
@@ -117,7 +120,8 @@ def fit_models(table: pd.DataFrame, k: float) -> tuple[Any, Any]:
 
 
 def pick_record(game: pd.Series, feats: dict[str, float], k: float, model_a: Any, model_b: Any,
-                line: dict[str, Any] | None, goalie_notes: dict[str, Any], now: datetime) -> dict[str, Any]:
+                line: dict[str, Any] | None, goalie_notes: dict[str, Any], now: datetime,
+                injury_list: dict[str, Any] | None = None) -> dict[str, Any]:
     a_cols = ['goal_matchup', 'shot_matchup', backtest.goalie_column(k)]
     x = pd.DataFrame([feats])[a_cols]
     p_a = float(model_a.predict_proba(x)[0, 1])
@@ -134,9 +138,19 @@ def pick_record(game: pd.Series, feats: dict[str, float], k: float, model_a: Any
         'pick': game['home'] if lead >= 0.5 else game['away'],
         'pick_model': 'model_b' if p_b is not None else 'model_a',
         'features': {key: round(v, 6) for key, v in feats.items()},
-        'market': line, 'goalies': goalie_notes,
+        'market': line, 'goalies': goalie_notes, 'injuries': injury_list,
         'saved_utc': now.strftime('%Y-%m-%dT%H:%M:%SZ'), 'code': CODE_VERSION,
     }
+
+
+def read_injuries(season: int, get: Callable[[str], bytes]) -> tuple[str, pd.DataFrame] | None:
+    """The latest injury list, or None when it cannot be read: injuries are
+    context, so their source failing never stops a pick being saved."""
+    try:
+        return injuries.latest(get(injuries.source(season)))
+    except (injuries.InjurySourceError, OSError) as exc:
+        print(f'injuries: not read, picks saved without them: {exc}')
+        return None
 
 
 def save_once(record: dict[str, Any], folder: Path) -> bool:
@@ -251,6 +265,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         locking = slate[slate['game_id'].isin(decision.lock)]
         rosters = roster.goalie_ids(set(locking['home']) | set(locking['away']), get=lambda u: json.loads(get(u)))
         fallback = last_starters(games)
+        injury_table = read_injuries(season, get)
         rated = ratings.day_ratings(games[games['day'] < today.tz_localize(None)], today.tz_localize(None), h)
         for _, g in locking.iterrows():
             notes, ids = {}, {}
@@ -266,7 +281,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                                    'report': proj.get(f'{side}_report')}
                 ids[side] = pid
             feats = rated.matchup(g['home'], g['away'], ids['home'], ids['away'], [k])
-            record = pick_record(g, feats, k, model_a, model_b, line_by_id.get(str(g['game_id'])), notes, now)
+            injury_list = None if injury_table is None else injuries.for_game(
+                injury_table[0], injury_table[1], g['home'], g['away'], now)
+            record = pick_record(g, feats, k, model_a, model_b, line_by_id.get(str(g['game_id'])), notes, now,
+                                 injury_list)
             print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id'])
         print(f'standings: {write_standings(sched, games, rated, model_a, k, str(today.date()), season)}')
     graded = grade(folder, sched)

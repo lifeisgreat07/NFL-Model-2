@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nhl/daily.py",
+  "tests": "tests/test_nhl_injuries.py",
+  "cases": [
+    {
+      "id": "nhl-daily-injury-failure-stops-run",
+      "why": "an injury source that is down stops the run, so no pick is saved for a list that is context only.",
+      "find": "    except (injuries.InjurySourceError, OSError) as exc:",
+      "replace": "    except KeyboardInterrupt as exc:",
+      "expect_caught_by": "test_a_failed_read_is_none_and_says_so"
+    },
+    {
+      "id": "nhl-daily-injuries-not-stored",
+      "why": "the list is read but never reaches the saved pick.",
+      "find": "'goalies': goalie_notes, 'injuries': injury_list,",
+      "replace": "'goalies': goalie_notes, 'injuries': None,",
+      "expect_caught_by": "test_the_pick_stores_the_list_and_none_when_there_is_none"
+    }
+  ]
+}
