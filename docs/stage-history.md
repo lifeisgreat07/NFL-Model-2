@@ -2243,7 +2243,10 @@ with its live status ("Week 5 locked", "9 games tonight"), its season record and
 ### Stage 60 - The isolation audit
 
 **Progress (2026-10-06).** Item 1 merged as #316: `tests/test_sport_read_sets.py` runs each
-sport's page build under an audit hook and fails on any file of another sport it opens.
+sport's page build under an audit hook and fails on any file of another sport it opens; #321 added
+the NBA's build. Item 2's corpus half: the whole mutation corpus at `36fc82d` (2026-10-06), every
+case caught by the test it names. Its other half, a Booth fixture with a planted cross-sport leak,
+spends a Booth run and waits for Mark.
 
 1. A test run that changes the NHL and proves no NFL byte moved, and the
    reverse.
