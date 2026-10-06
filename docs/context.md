@@ -4,7 +4,7 @@
 One screen, present tense, no history — history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-06, 13:30 UTC (#309 to #321 merged overnight and this morning: the NHL's pages, browser checks and injury lists in picks; the run-time isolation check; the NBA's history, backtest and backtest-only pages; the whole mutation corpus caught; main's suite red 09:49 to 13:15 UTC from a docs commit, fixed in 0f9b309)
+Last updated: 2026-10-06, 14:10 UTC (Mark's answers this morning: the NBA stays backtest-only, #308 closed, the planted-leak Booth run approved, the NHL's cron-job.org jobs tonight; Stage 42's slot guard rebased and proven, not opened)
 
 ---
 
@@ -40,13 +40,12 @@ are on GitHub's cron only until Mark adds cron-job.org jobs for them.
 
 | What | State | Waiting on |
 |---|---|---|
-| Nine post-lock branches | Committed locally, one worktree each, not pushed | The 10-08 lock, then one PR at a time in the order below |
+| Nine post-lock branches | Committed locally, one worktree each, not pushed. `s42-slot-guard` rebased on `9ff050b` with a README fix (`83776bc`), suite and mutation scope run, PR body written in the session archive | The 10-08 lock, then one PR at a time in the order below |
 | Stage 52 (NFL to `src/sports/nfl/`) | Built on `s52-nfl-module`; migrate_nfl.py (session archive, v7) re-rehearsed on `main` at da39c43 on 2026-10-06: 6581 passed, 1 skipped (the unpushed-HEAD skip) | Step 2's PRs, then the window after a Thursday lock |
 | NHL pages live (Stages 53, 57, 59) | Built (#310, #315, #317): team pages, calibration, What's Changed, the phone's bottom bar; checked by the browser checks with axe | The lock, then the deploy wiring with Stage 52 and 53 |
-| NBA (Stage 61) | Registered (#312), history and backtest merged (#313, #314, #318, #319): H1 and H2 ACCEPT, H3 REJECT (Model B is worse than the market), availability helps (M1). Backtest-only pages merged (#321), option A of the rendered "NBA Board Options", Claude's recommendation | **Mark's call** on those options (no runner can read ESPN's price or injury report, so live picks need his machine); deploying with Stage 53 |
-| Stage 60 item 2 | The whole mutation corpus at `36fc82d`: every case caught (2026-10-06); a first run was killed by my own cleanup (Audit Response Log) | The Booth fixture with a planted cross-sport leak: Mark approves the Booth run |
-| cron-job.org | Six NFL jobs on, Weekly update job off; no NHL jobs | Stage 42's slot guard; Mark adds the NHL's two |
-| Issue #308 | Booth's red run on #307 (prose counts an UNVERIFIABLE the block does not) | Mark closes it |
+| NBA (Stage 61) | Registered (#312), history and backtest merged (#313, #314, #318, #319): H1 and H2 ACCEPT, H3 REJECT (Model B is worse than the market), availability helps (M1). Backtest-only pages merged (#321), option A of the rendered "NBA Board Options", Claude's recommendation | **Decided** (Mark, 2026-10-06): option A stands, no live NBA picks this season; deploying with Stage 53 |
+| Stage 60 item 2 | The whole mutation corpus at `36fc82d`: every case caught (2026-10-06); a first run was killed by my own cleanup (Audit Response Log) | The Booth fixture with a planted cross-sport leak: approved by Mark (2026-10-06), run after the lock |
+| cron-job.org | Six NFL jobs on, Weekly update job off; no NHL jobs | Stage 42's slot guard; Mark adds the NHL's two on the evening of 10-06 |
 | Private vulnerability reporting | Off (SECURITY.md covers both) | Mark's choice, Settings, Security |
 
 ## Queued, in order (after the 10-08 lock is seen to run)
