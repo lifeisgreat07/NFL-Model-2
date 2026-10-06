@@ -205,7 +205,7 @@ python -m src.pipeline.generate_dashboard
 
 ### Settings and the rules the code enforces
 
-Four environment variables, all optional:
+The environment variables the code reads, all optional:
 
 | Variable | What it does | Who sets it |
 |---|---|---|
@@ -215,6 +215,9 @@ Four environment variables, all optional:
 | `STAGE5_CACHE` | Where the Stage 5 experiment runner keeps its game table. Defaults to nfl-cache/stage5 beside the repository folder. | Anyone re-running a registered Stage 5 question. |
 | `STAGE6_CACHE` | The same for the Stage 6 data-source runner (nfl-cache/stage6). | Anyone re-running Stage 6. |
 | `GITHUB_TOKEN` | Read by `src/pipeline/recent_runs.py` for GitHub's Actions API; without it the anonymous limit applies (60 calls an hour, four used per read). | The deploy job, with its own token. |
+| `GITHUB_OUTPUT` | Read by `src/pipeline/slot_guard.py`: where it writes `run` and `slot` for the Weekly update's later steps. Unset, it prints its decision and writes nothing. | GitHub Actions, on every runner. |
+| `GITHUB_STEP_SUMMARY` | Read by `src/pipeline/slot_guard.py`: a skipped slot is noted in the run's summary. Unset, nothing is noted. | GitHub Actions, on every runner. |
+| `GITHUB_RUN_ID` | Read by `src/pipeline/slot_guard.py`: stored with the slot it marks as served. Unset, the run id is stored as null. | GitHub Actions, on every runner. |
 
 Four rules that live in the code rather than in any one document:
 
