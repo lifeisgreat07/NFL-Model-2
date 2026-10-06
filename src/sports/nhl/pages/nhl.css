@@ -1,0 +1,34 @@
+/* What the NHL pages add to the shared stylesheet: the strip of days, the
+   day headings, a goalie's status, the card for a game whose pick is not
+   saved yet, and the tables. Every selector carries the sport (decision
+   record 0006, rule 4; src/core/isolation.py checks it). Every colour is a
+   shared token but the "Likely" pill's amber, defined here per theme. */
+.nhl-day-strip{display:flex; gap:var(--s2); overflow-x:auto; padding-bottom:var(--s1); margin:var(--s3) 0 var(--s4);}
+.nhl-day-chip{flex:0 0 auto; display:grid; justify-items:center; min-width:52px; padding:var(--s1) var(--s3);
+  border:1px solid var(--border-strong); border-radius:8px; background:var(--surface);
+  color:var(--text-2); font:inherit; font-size:var(--fs-12); cursor:pointer;}
+.nhl-day-chip b{font-size:var(--fs-14); color:var(--text);}
+.nhl-day-chip[aria-current="true"]{border-color:var(--accent); background:var(--accent-soft);}
+.nhl-day-chip[aria-current="true"] b{color:var(--accent);}
+.nhl-day-head{grid-column:1 / -1; font-size:var(--fs-14); font-weight:700; color:var(--text-2);
+  margin:var(--s4) 0 var(--s1); scroll-margin-top:var(--s6);}
+.nhl-day-head .slot-count{font-weight:500; color:var(--text-3);}
+.nhl-goalie{display:inline-block; font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+  padding:1px 6px; border-radius:999px; margin-left:4px; vertical-align:1px;}
+.nhl-goalie.confirmed{background:var(--accent-soft); color:var(--accent);}
+[data-sport="nhl"]{--nhl-likely:#E0A456; --nhl-likely-soft:rgba(201,127,46,.16);}
+[data-sport="nhl"][data-theme="light"]{--nhl-likely:#8A5A00; --nhl-likely-soft:rgba(178,106,12,.12);}
+.nhl-goalie.likely{background:var(--nhl-likely-soft); color:var(--nhl-likely);}
+.nhl-goalie.unreported{border:1px solid var(--border); color:var(--text-3);}
+.game-card.nhl-not-saved{opacity:.92;}
+.game-card.nhl-not-saved .nhl-wait-note{font-size:var(--fs-13); color:var(--text-2);}
+.nhl-table td.num, .nhl-table th.num{text-align:right; font-variant-numeric:tabular-nums;}
+.nhl-div-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:var(--s5);}
+.nhl-div-grid h3{font-size:var(--fs-14); margin:0 0 var(--s2);}
+.nhl-lede{max-width:72ch; color:var(--text-2); margin:0 0 var(--s4);}
+.nhl-table tbody th{text-transform:none; letter-spacing:0; font-size:var(--fs-13); font-weight:600; color:var(--text); white-space:nowrap;}
+.nhl-table{margin-bottom:var(--s4);}
+.nhl-table .nhl-club-abbr{display:none;}
+@media (max-width:600px){ .nhl-table .nhl-club-full{display:none;} .nhl-table .nhl-club-abbr{display:inline;} .nhl-table th, .nhl-table td{padding-left:8px; padding-right:8px;} }
+.nhl-body .section-title{margin:var(--s6) 0 var(--s3);}
+.nhl-card-status{font-size:var(--fs-12); font-weight:600; color:var(--text-2);}

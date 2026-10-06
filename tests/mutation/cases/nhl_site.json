@@ -1,0 +1,62 @@
+{
+  "target": "src/sports/nhl/site.py",
+  "tests": "tests/test_nhl_site.py",
+  "cases": [
+    {
+      "id": "nhl-site-preseason-on-board",
+      "why": "preseason games reach the board, so a game that never counts shows as one waiting for a pick.",
+      "find": "if g.get('game_type') in ('regular', 'playoff')]",
+      "replace": "]",
+      "expect_caught_by": "test_preseason_games_are_left_off_the_board"
+    },
+    {
+      "id": "nhl-site-grade-dropped",
+      "why": "every pick reads as pending, so a graded pick never shows whether it was right.",
+      "find": "'result': graded.get(p['game_id'], 'pending'),",
+      "replace": "'result': 'pending',",
+      "expect_caught_by": "test_a_pick_carries_its_grade_and_an_ungraded_one_is_pending"
+    },
+    {
+      "id": "nhl-site-market-dropped",
+      "why": "the market a pick was saved with is left out, so the card says Model A made a pick Model B made.",
+      "find": "    if market:\n        out['market']",
+      "replace": "    if False:\n        out['market']",
+      "expect_caught_by": "test_a_pick_carries_the_market_it_was_saved_with_and_none_when_there_was_none"
+    },
+    {
+      "id": "nhl-site-goalie-status-dropped",
+      "why": "a goalie's status is left out, so a confirmed starter and a guess look the same.",
+      "find": "for k in ('name', 'status', 'basis')}",
+      "replace": "for k in ('name', 'basis')}",
+      "expect_caught_by": "test_a_pick_carries_each_goalie_with_his_status_and_basis"
+    },
+    {
+      "id": "nhl-site-no-schedule-builds",
+      "why": "a missing schedule builds an empty board instead of stopping, so the page says there are no games.",
+      "find": "    if sched is None:\n        raise FileNotFoundError",
+      "replace": "    if sched is None:\n        sched = {'games': []}\n    if False:\n        raise FileNotFoundError",
+      "expect_caught_by": "test_a_missing_schedule_stops_the_build"
+    },
+    {
+      "id": "nhl-site-script-tag-closable",
+      "why": "a name with </script> in it ends the data block early, and what follows runs as script.",
+      "find": ".replace('<', '\\\\u003c')",
+      "replace": "",
+      "expect_caught_by": "test_the_embedded_data_cannot_close_its_script_tag"
+    },
+    {
+      "id": "nhl-site-font-unchecked",
+      "why": "a font file that does not match its manifest is inlined anyway.",
+      "find": "        if hashlib.sha256(data).hexdigest() != f['sha256']:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_font_that_does_not_match_its_manifest_stops_the_build"
+    },
+    {
+      "id": "nhl-site-wrong-folder",
+      "why": "the pages read another folder than the NHL's own, so the board shows nothing the daily run wrote.",
+      "find": "PATHS = sport_paths('nhl')",
+      "replace": "PATHS = sport_paths('nhl2')",
+      "expect_caught_by": "test_the_payload_reads_the_nhls_own_files"
+    }
+  ]
+}

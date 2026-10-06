@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" data-sport="nhl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0B0E15">
+<!-- The NHL's pages (Stage 57). One product name everywhere, as on the NFL
+     board: "<page> — Pick'em Model". -->
+<title>NHL Board — Pick'em Model</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<meta name="description" content="Daily NHL picks from two models, one hockey-only and one with the betting market, saved before puck drop and graded in public.">
+<style>
+{% include "styles.css" %}
+</style>
+<style id="font-faces">
+__FONT_FACES__
+</style>
+<style id="nhl-styles">
+{% include "nhl.css" %}
+</style>
+</head>
+<body class="is-entering">
+<script>
+  (function(){
+    try{
+      var saved = localStorage.getItem('nhl:theme');
+      if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) saved = 'light';
+      if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+    }catch(e){}
+  })();
+</script>
+{% include "body.html" %}
+<script id="nhl-data" type="application/json">__NHL_JSON__</script>
+<script>
+{% include "nhl.js" %}
+</script>
+</body>
+</html>
