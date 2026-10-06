@@ -2149,6 +2149,10 @@ file.
    guard generalised per sport.
 3. Grading per game; postponed, cancelled and suspended games; previews.
 
+**Progress (2026-10-06).** The NHL's per-game lock rule merged as #299 (`src/sports/nhl/lock.py`),
+and its per-game grading as part of #302 (a cancelled game is never counted). The NFL's weekly
+rule moves behind the interface with Stage 52; the slot guard waits for Stage 42.
+
 ### Stage 55 - The NHL data pipeline
 
 1. Loader, schema check and cache for the NHL; the canary for the NHL.
@@ -2160,8 +2164,9 @@ file.
    separation like the NFL's.
 
 **Progress (2026-10-05).** Items 1 and 2 merged as #295 (`src/sports/nhl/schedule.py`), item 3 as #296
-(`market.py`, `goalies.py`, `teams.py`); injuries are not read yet. The NHL's canary waits for Stage 52,
-which moves `alerts` into the core. Item 4 goes with Stage 57.
+(`market.py`, `goalies.py`, `teams.py`); injuries are not read yet. Item 4 (colours and logos)
+merged as #300. The NHL's canary merged with #302 and was scheduled by #303, which put a copy of
+`alerts` in the core ahead of Stage 52 (Stage 52's script now drops the NFL's copy).
 
 ### Stage 56 - The NHL model and its backtest
 
@@ -2173,7 +2178,10 @@ which moves `alerts` into the core. Item 4 goes with Stage 57.
    reproducibility audit; every published figure tied to its file by a test.
 
 **Progress (2026-10-05).** Item 1: `experiments/nhl/stage56/registry.json`, merged as #298 before any
-model was fitted, written under Mark's delegation.
+model was fitted, written under Mark's delegation. Items 2 and 3 merged as #301: the history
+(2015-16 to 2025-26, shots on goal agreeing with the fallback on every game), Model A and Model B,
+and the backtest as registered. H1 ACCEPT (Model A beats the base rate), H2 and H3 INCONCLUSIVE,
+the goalie term adding almost nothing (M1). Booth reproduced the backtest byte for byte on Linux.
 
 ### Stage 57 - The NHL's pages
 
@@ -2201,6 +2209,13 @@ and the probability with the margin out (A).
 3. A goalie routine on game mornings that opens a PR with sourced starters,
    never given the lock scripts (Mark creates it, as the QB routine).
 4. Booth's protocol, Spotter and Line Judge cover the NHL.
+
+**Progress (2026-10-06).** Item 1's registration and the daily run, canary and drift check merged as
+#302 (`experiments/nhl/stage58/registry.json`, baseline 0.6753). Item 2's workflows merged as #303
+(`nhl-daily.yml` 14:00 and 21:00 UTC, `nhl-canary.yml` 06:40 UTC, "NHL: ..." alerts, the
+session-start check), with #306 after the first hand run failed on a folder that did not exist yet.
+Left for item 2: the cron-job.org jobs (Mark) and the runs-table rows, which wait for the NHL's
+pages. Items 3 and 4 are not started; Daily Faceoff is read by the run itself until the routine exists.
 
 ### Stage 59 - The home page
 
