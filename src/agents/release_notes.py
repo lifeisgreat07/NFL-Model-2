@@ -25,7 +25,6 @@ from src.pipeline.config import VERSION_HISTORY
 
 #: The first version with a tag in this repository (Stage 34 item 27).
 FIRST_TAGGED = (2, 2)
-REPO_URL = 'https://github.com/lifeisgreat07/NFL-Model-2'
 PAGE_URL = 'https://lifeisgreat07.github.io/NFL-Model-2/'
 
 

@@ -93,13 +93,6 @@ def plan_file(path, lookup):
     return records, changed, notes
 
 
-def seasons_on_disk():
-    seasons = set()
-    for path in sorted(PRED_DIR.glob('*_week*.json')):
-        seasons.add(int(path.name.split('_')[0]))
-    return sorted(seasons)
-
-
 def run(check_only, load_schedule=None, pred_dir=None):
     """Returns (files_that_would_change, all notes). Writes unless check_only."""
     directory = pred_dir or PRED_DIR

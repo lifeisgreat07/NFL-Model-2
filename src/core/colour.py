@@ -140,11 +140,6 @@ def matchup_push(away: str, home: str, threshold: float = PUSH_THRESHOLD
     return shade(a, -push), shade(h, push)
 
 
-def de00(a: RGB, b: RGB) -> float:
-    """dE00 between two sRGB colours under normal vision."""
-    return ciede2000(rgb_to_lab(a), rgb_to_lab(b))
-
-
 def worst_cvd_de00(a: RGB, b: RGB) -> float:
     """The smaller dE00 of the pair under protanopia and under deuteranopia."""
     return min(ciede2000(rgb_to_lab(simulate(a, k)), rgb_to_lab(simulate(b, k))) for k in MACHADO)
