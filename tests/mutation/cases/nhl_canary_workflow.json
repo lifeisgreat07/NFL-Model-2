@@ -1,0 +1,13 @@
+{
+  "target": ".github/workflows/nhl-canary.yml",
+  "tests": "tests/test_workflow_permissions.py",
+  "cases": [
+    {
+      "id": "nhl-canary-alert-dropped",
+      "why": "the canary's failure step only prints, so a broken source fails silently while the job still holds issues: write.",
+      "find": "          python -m src.core.alerts --title \"NHL: nightly canary failing\" --body-file nhl-canary-report.md\n",
+      "replace": "          echo \"NHL: nightly canary failing\"\n",
+      "expect_caught_by": "test_every_scope_held_is_used"
+    }
+  ]
+}
