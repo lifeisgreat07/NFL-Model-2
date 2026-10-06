@@ -47,13 +47,30 @@ def test_every_colour_stands_out_on_the_dark_theme():
     assert not low, f'under 3:1 on the dark card surface: {low}'
 
 
+def test_the_core_push_is_the_boards_push():
+    tc = nfl_method.team_colors()
+    for a, b in permutations(sorted(tc), 2):
+        ours = colour.matchup_push(tc[a], tc[b])
+        theirs = nfl_method.matchup_colors(tc[a], tc[b])
+        for side_ours, side_theirs in zip(ours, theirs):
+            assert list(side_ours) == pytest.approx(list(side_theirs), abs=1e-9)
+
+
+def test_the_drawn_figures_match_the_docstring_and_the_nfls_unit():
+    drawn = colours.drawn_scores()
+    assert len(drawn) == 496
+    assert sum(s < 15 for s in drawn.values()) == colours.DRAWN_UNDER_15
+    assert sum(s < 5 for s in drawn.values()) == colours.DRAWN_UNDER_5
+    assert f'{colours.DRAWN_UNDER_15} of the 496 pairs' in colours.__doc__
+    assert f'and {colours.DRAWN_UNDER_5} under 5' in colours.__doc__
+
+
 def test_the_quoted_separation_figures_are_what_the_palette_measures():
     scores = colours.pair_scores()
     assert len(scores) == 496
     assert sum(s < 15 for s in scores.values()) == colours.PAIRS_UNDER_15
     assert sum(s < 5 for s in scores.values()) == colours.PAIRS_UNDER_5
-    doc = colours.__doc__
-    assert f'{colours.PAIRS_UNDER_15} of the 496 pairs' in doc and f'and {colours.PAIRS_UNDER_5} under 5' in doc
+    assert f'{colours.PAIRS_UNDER_15} under 15 and {colours.PAIRS_UNDER_5} under 5' in colours.__doc__
 
 
 def test_logos_come_from_the_leagues_own_files_for_both_themes():

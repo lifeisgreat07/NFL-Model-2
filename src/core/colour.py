@@ -116,6 +116,30 @@ def ciede2000(lab1: RGB, lab2: RGB) -> float:
     return math.sqrt((dLp / Sl) ** 2 + (dCp / Sc) ** 2 + (dHp / Sh) ** 2 + Rt * (dCp / Sc) * (dHp / Sh))
 
 
+#: The dashboard's `CONTRAST_THRESHOLD` (src/dashboard/app.js): two colours
+#: closer than this in plain RGB distance are pushed apart on a game's bar.
+PUSH_THRESHOLD = 90.0
+
+
+def matchup_push(away: str, home: str, threshold: float = PUSH_THRESHOLD
+                 ) -> tuple[tuple[float, float, float], tuple[float, float, float]]:
+    """What the board's `matchupColors(away, home)` draws: when the two
+    colours are close, the away one darkened and the home one lightened, the
+    closer the more. Float RGB, unrounded, as the NFL's script measures it."""
+    a, h = hex_to_rgb(away), hex_to_rgb(home)
+    dist = math.dist(a, h)
+    if dist >= threshold:
+        return a, h
+    push = 0.35 * (1 - dist / threshold) + 0.2
+
+    def shade(rgb: tuple[float, float, float], amount: float) -> tuple[float, float, float]:
+        target = 255.0 if amount > 0 else 0.0
+        r, g, b = (c + (target - c) * abs(amount) for c in rgb)
+        return r, g, b
+
+    return shade(a, -push), shade(h, push)
+
+
 def de00(a: RGB, b: RGB) -> float:
     """dE00 between two sRGB colours under normal vision."""
     return ciede2000(rgb_to_lab(a), rgb_to_lab(b))

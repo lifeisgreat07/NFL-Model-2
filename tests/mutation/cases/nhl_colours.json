@@ -15,6 +15,13 @@
       "find": "'TOR': '#4A7FD0'",
       "replace": "'TOR': '#00205B'",
       "expect_caught_by": "test_every_colour_stands_out_on_the_dark_theme"
+    },
+    {
+      "id": "nhl-colour-drawn-figure-stale",
+      "why": "the quoted count of pairs that look alike on a bar no longer matches the palette.",
+      "find": "DRAWN_UNDER_15 = 84",
+      "replace": "DRAWN_UNDER_15 = 83",
+      "expect_caught_by": "test_the_drawn_figures_match_the_docstring_and_the_nfls_unit"
     }
   ]
 }

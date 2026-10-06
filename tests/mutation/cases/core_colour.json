@@ -22,6 +22,13 @@
       "find": "    if len(h) != 6:",
       "replace": "    if False:",
       "expect_caught_by": "test_wcag_contrast_has_its_known_end_points"
+    },
+    {
+      "id": "core-colour-push-backwards",
+      "why": "the push lightens the away colour and darkens the home one, so the core no longer measures what the board draws.",
+      "find": "    return shade(a, -push), shade(h, push)",
+      "replace": "    return shade(a, push), shade(h, -push)",
+      "expect_caught_by": "test_the_core_push_is_the_boards_push"
     }
   ]
 }
