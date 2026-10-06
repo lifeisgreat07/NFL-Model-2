@@ -1,0 +1,62 @@
+{
+  "target": "src/sports/nhl/history.py",
+  "tests": "tests/test_nhl_history.py",
+  "cases": [
+    {
+      "id": "nhl-hist-two-starters",
+      "why": "a side flagging two starters passes, so the goalie history could credit the wrong man with a game.",
+      "find": "    if len(starters) != 1:\n        raise HistoryError(f'game {gid} {which}:",
+      "replace": "    if len(starters) < 1:\n        raise HistoryError(f'game {gid} {which}:",
+      "expect_caught_by": "test_a_side_without_exactly_one_starter_stops_the_season"
+    },
+    {
+      "id": "nhl-hist-sog-unchecked",
+      "why": "a box score without shots on goal passes, so a missing value would enter the shot ratings.",
+      "find": "        if not isinstance(team.get('sog'), int):",
+      "replace": "        if False:",
+      "expect_caught_by": "test_a_box_score_without_shots_on_goal_stops_the_season"
+    },
+    {
+      "id": "nhl-hist-floor-loosened",
+      "why": "the fallback check accepts 98% agreement, below the registered 99%.",
+      "find": "AGREEMENT = 0.99",
+      "replace": "AGREEMENT = 0.98",
+      "expect_caught_by": "test_the_fallback_disagreeing_on_more_than_one_game_in_a_hundred_stops_the_season"
+    },
+    {
+      "id": "nhl-hist-empty-fallback-passes",
+      "why": "a fallback with none of the season's games passes the check, so nothing was compared and the season is written as checked.",
+      "find": "    if n == 0:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_fallback_with_none_of_the_seasons_games_stops_it"
+    },
+    {
+      "id": "nhl-hist-native-converted",
+      "why": "every season is converted, so the native two-way prices from 2024-25 would be bent by a fit meant for the three-way line.",
+      "find": "    if season >= NATIVE_FROM:\n        return p, False",
+      "replace": "    if False:\n        return p, False",
+      "expect_caught_by": "test_a_native_season_takes_the_margin_out_and_an_earlier_one_is_converted"
+    },
+    {
+      "id": "nhl-hist-espn-abbr",
+      "why": "ESPN's abbreviations are used as they come, so New Jersey's and Los Angeles's games match no league game.",
+      "find": "            home, away = (ESPN_ABBR.get(teams['home'], teams['home']), ESPN_ABBR.get(teams['away'], teams['away']))",
+      "replace": "            home, away = teams['home'], teams['away']",
+      "expect_caught_by": "test_espn_games_are_matched_to_the_league_through_its_own_abbreviations"
+    },
+    {
+      "id": "nhl-hist-unmatched-dropped",
+      "why": "an ESPN game that matches no league game is dropped silently.",
+      "find": "    if unmatched:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_an_espn_game_the_league_does_not_have_stops_the_season"
+    },
+    {
+      "id": "nhl-hist-unplayed-kept",
+      "why": "an ESPN game that was never completed is treated as played, so a postponed game stops the season instead of being left to the league.",
+      "find": "            if not ((comp.get('status') or {}).get('type') or {}).get('completed'):",
+      "replace": "            if False:",
+      "expect_caught_by": "test_espn_games_are_matched_to_the_league_through_its_own_abbreviations"
+    }
+  ]
+}

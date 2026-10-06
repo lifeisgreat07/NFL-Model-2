@@ -1,0 +1,27 @@
+{
+  "target": "experiments/nhl/stage56/results/confirmation.json",
+  "tests": "tests/test_nhl_stage56_results.py",
+  "cases": [
+    {
+      "id": "nhl56-label-by-hand",
+      "why": "H2's label is edited to ACCEPT while its interval still reaches above 0, so the page would claim a finding the numbers do not show.",
+      "find": "   \"high\": 0.0013423037520295697,\n   \"level\": 0.9833,\n   \"label\": \"INCONCLUSIVE\"",
+      "replace": "   \"high\": 0.0013423037520295697,\n   \"level\": 0.9833,\n   \"label\": \"ACCEPT\"",
+      "expect_caught_by": "test_every_label_follows_from_its_interval"
+    },
+    {
+      "id": "nhl56-confirmed-other-setting",
+      "why": "the confirmation run uses a half-life the validation search did not choose.",
+      "find": " \"H_days\": 120,\n \"K_shots\": 2000,\n \"scores\"",
+      "replace": " \"H_days\": 240,\n \"K_shots\": 2000,\n \"scores\"",
+      "expect_caught_by": "test_the_chosen_values_are_the_lowest_validation_log_loss"
+    },
+    {
+      "id": "nhl56-level-loosened",
+      "why": "H1 is decided at 95% instead of the registered 98.33%.",
+      "find": "   \"high\": -0.005344925969344086,\n   \"level\": 0.9833,",
+      "replace": "   \"high\": -0.005344925969344086,\n   \"level\": 0.95,",
+      "expect_caught_by": "test_confirmation_is_on_the_registered_seasons_at_the_registered_level"
+    }
+  ]
+}

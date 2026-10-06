@@ -1,0 +1,85 @@
+{
+ "seasons": [
+  2024,
+  2025
+ ],
+ "H_days": 120,
+ "K_shots": 2000,
+ "scores": {
+  "model_a": {
+   "games": 2792,
+   "log_loss": 0.6753173753776152,
+   "brier": 0.24130712031985788,
+   "accuracy": 0.5669770773638968
+  },
+  "model_a_no_goalie": {
+   "games": 2792,
+   "log_loss": 0.6755524437896959,
+   "brier": 0.24140434897177426,
+   "accuracy": 0.5669770773638968
+  },
+  "model_b": {
+   "games": 2624,
+   "log_loss": 0.6711357848935612,
+   "brier": 0.2393136814163577,
+   "accuracy": 0.5807926829268293
+  },
+  "base_rate": {
+   "games": 2792,
+   "log_loss": 0.6896339071526244,
+   "brier": 0.24824529677082582,
+   "accuracy": 0.5422636103151862
+  },
+  "market": {
+   "games": 2624,
+   "log_loss": 0.6699594128385823,
+   "brier": 0.2387485431598395,
+   "accuracy": 0.5819359756097561
+  }
+ },
+ "questions": {
+  "H1": {
+   "candidate": "model_a",
+   "incumbent": "base_rate",
+   "games": 2792,
+   "days": 435,
+   "diff": -0.014316531775009349,
+   "low": -0.023545135068760832,
+   "high": -0.005344925969344086,
+   "level": 0.9833,
+   "label": "ACCEPT"
+  },
+  "H2": {
+   "candidate": "model_b",
+   "incumbent": "model_a",
+   "games": 2624,
+   "days": 345,
+   "diff": -0.00493754323247189,
+   "low": -0.010953691525640841,
+   "high": 0.0013423037520295697,
+   "level": 0.9833,
+   "label": "INCONCLUSIVE"
+  },
+  "H3": {
+   "candidate": "model_b",
+   "incumbent": "market",
+   "games": 2624,
+   "days": 345,
+   "diff": 0.0011763720549788186,
+   "low": -0.0013750660915903504,
+   "high": 0.003881258256799255,
+   "level": 0.9833,
+   "label": "INCONCLUSIVE"
+  },
+  "M1": {
+   "candidate": "model_a",
+   "incumbent": "model_a_no_goalie",
+   "games": 2792,
+   "days": 435,
+   "diff": -0.00023506841208083786,
+   "low": -0.0012936172905159702,
+   "high": 0.0007755066713515053,
+   "level": 0.9833
+  }
+ }
+}

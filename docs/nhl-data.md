@@ -50,6 +50,13 @@ in releases: `nhl/pbp/`, `nhl/schedules/`, `nhl/goalie_box/`, `nhl/team_box/`,
 Stage 55 item 1, and until it has run the fallback is a candidate, not a
 verified revert path.
 
+**Checked 2026-10-05 (Stage 56).** `src/sports/nhl/history.py` read every
+final game's box score from the league for 2015-16 to 2025-26 and compared
+shots on goal with the fallback's `team_box`: they agreed on every game of
+every season (1321, 1317, 1355, 1358, 1212, 952, 1401, 1400, 1400, 1398 and
+1394 games). For shots on goal the fallback is a verified revert path. Its
+other files are not checked.
+
 ## 3. The market (Model B)
 
 **Live: the league's own feed.** `/partner-game/US/now` (DraftKings) and

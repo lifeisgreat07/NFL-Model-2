@@ -1,0 +1,48 @@
+{
+  "target": "src/sports/nhl/backtest.py",
+  "tests": "tests/test_nhl_model.py",
+  "cases": [
+    {
+      "id": "nhl-bt-leak-same-day",
+      "why": "each refit trains on its own day's games, so the backtest sees the results it predicts.",
+      "find": "        train = rows[rows['day'] < day]",
+      "replace": "        train = rows[rows['day'] <= day]",
+      "expect_caught_by": "test_a_days_predictions_do_not_see_that_days_results"
+    },
+    {
+      "id": "nhl-bt-market-unfiltered",
+      "why": "Model B trains on and predicts games with no market price.",
+      "find": "    rows = table.dropna(subset=['home_prob']) if needs_market else table",
+      "replace": "    rows = table",
+      "expect_caught_by": "test_a_market_model_neither_trains_on_nor_predicts_unpriced_games"
+    },
+    {
+      "id": "nhl-bt-base-rate-leak",
+      "why": "the base rate includes the day's own games.",
+      "find": "        rate = table.loc[table['day'] < day, 'home_win'].mean()",
+      "replace": "        rate = table.loc[table['day'] <= day, 'home_win'].mean()",
+      "expect_caught_by": "test_the_base_rate_is_the_share_of_earlier_home_wins"
+    },
+    {
+      "id": "nhl-bt-label-boundary",
+      "why": "an interval touching 0 is labelled ACCEPT, against the registered 'entirely below 0'.",
+      "find": "    if interval['high'] < 0:",
+      "replace": "    if interval['high'] <= 0:",
+      "expect_caught_by": "test_the_registered_labels"
+    },
+    {
+      "id": "nhl-bt-unpaired",
+      "why": "the bootstrap resamples each model's days separately, so the comparison is no longer paired.",
+      "find": "    diff = log_losses(a.loc[common].to_numpy(float), y) - log_losses(b.loc[common].to_numpy(float), y)",
+      "replace": "    diff = log_losses(a.loc[common].to_numpy(float), y) - log_losses(b.loc[common].to_numpy(float)[::-1], y)",
+      "expect_caught_by": "test_the_day_block_bootstrap_is_paired_and_seeded"
+    },
+    {
+      "id": "nhl-bt-brier-wrong",
+      "why": "the Brier score is the mean absolute error.",
+      "find": "            'brier': float(((q - y) ** 2).mean()),",
+      "replace": "            'brier': float(abs(q - y).mean()),",
+      "expect_caught_by": "test_scores_report_log_loss_brier_and_accuracy"
+    }
+  ]
+}
