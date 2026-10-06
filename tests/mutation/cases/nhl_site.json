@@ -53,10 +53,10 @@
     },
     {
       "id": "nhl-site-wrong-folder",
-      "why": "the pages read another folder than the NHL's own, so the board shows nothing the daily run wrote.",
+      "why": "the pages read the NFL's folders instead of the NHL's, so the board shows another sport's files.",
       "find": "PATHS = sport_paths('nhl')",
-      "replace": "PATHS = sport_paths('nhl2')",
-      "expect_caught_by": "test_the_payload_reads_the_nhls_own_files"
+      "replace": "PATHS = sport_paths('nfl')",
+      "expect_caught_by": "test_the_pages_read_only_the_nhls_folders"
     }
   ]
 }

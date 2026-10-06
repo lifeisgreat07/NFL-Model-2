@@ -67,6 +67,13 @@ def test_the_payload_reads_the_nhls_own_files(nhl_root: Path) -> None:
     assert data['standings'] is None and data['ratings'] is None and data['backtest'] is None
 
 
+def test_the_pages_read_only_the_nhls_folders() -> None:
+    """The builder's folders are the NHL's, so the page can show nothing
+    another sport wrote (decision record 0006)."""
+    for folder in (site.PATHS.data, site.PATHS.predictions, site.PATHS.results, site.PATHS.experiments):
+        assert folder.name == 'nhl' and folder.parent.parent == site.ROOT, folder
+
+
 def test_preseason_games_are_left_off_the_board(nhl_root: Path) -> None:
     ids = [g['id'] for g in site.payload(2026, NOW)['games']]
     assert ids == ['2026020001', '2026020002', '2026020003']
