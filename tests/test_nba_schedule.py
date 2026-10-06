@@ -161,7 +161,9 @@ def test_only_a_finished_earlier_season_is_cached(tmp_path, monkeypatch):
     again = nba.load_schedule(2025, get, cache=tmp_path, now=now)
     assert len(calls) == 2 and (tmp_path / 'schedule_2025.parquet').exists()
     pd.testing.assert_frame_equal(first, again)
-    nba.load_schedule(2026, lambda u: board(days=['2026-10-21T07:00Z']) if '0115' in u else board([event(gid='5')]),
+    # The current season is never cached, even with every game it lists
+    # final: it is still being played, so tomorrow's read must refetch it.
+    nba.load_schedule(2026, lambda u: board(days=['2026-10-21T07:00Z']) if '0115' in u else board([final(gid='5')]),
                       cache=tmp_path, now=now)
     assert not (tmp_path / 'schedule_2026.parquet').exists()
 
