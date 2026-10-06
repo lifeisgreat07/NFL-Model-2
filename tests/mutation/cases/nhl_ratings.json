@@ -1,0 +1,55 @@
+{
+  "target": "src/sports/nhl/ratings.py",
+  "tests": "tests/test_nhl_model.py",
+  "cases": [
+    {
+      "id": "nhl-rat-utah-alone",
+      "why": "Utah no longer carries Arizona's history, against the registration.",
+      "find": "FRANCHISE = {'ATL': 'WPG', 'PHX': 'UTA', 'ARI': 'UTA'}",
+      "replace": "FRANCHISE = {'ATL': 'WPG', 'PHX': 'ARI'}",
+      "expect_caught_by": "test_franchises_follow_the_roster"
+    },
+    {
+      "id": "nhl-rat-shootout-goal-counted",
+      "why": "a shootout's deciding goal counts in the goal margin, against the registration.",
+      "find": "    g['goal_margin'] = np.where(g['last_period'] == 'SO', 0, margin)",
+      "replace": "    g['goal_margin'] = margin",
+      "expect_caught_by": "test_a_shootout_counts_as_a_win_but_not_in_the_goal_margin"
+    },
+    {
+      "id": "nhl-rat-halflife-doubled",
+      "why": "the weight halves every two half-lives, so recency counts half as much as registered.",
+      "find": "    out: npt.NDArray[np.float64] = np.power(0.5, age / half_life)",
+      "replace": "    out: npt.NDArray[np.float64] = np.power(0.5, age / (2 * half_life))",
+      "expect_caught_by": "test_a_game_one_half_life_ago_weighs_a_half"
+    },
+    {
+      "id": "nhl-rat-leak-same-day",
+      "why": "the day's own games are in its training rows, so features know the results they are meant to predict.",
+      "find": "        train = games[games['day'] < day]",
+      "replace": "        train = games[games['day'] <= day]",
+      "expect_caught_by": "test_a_days_features_ignore_that_day_and_everything_after"
+    },
+    {
+      "id": "nhl-rat-away-sign",
+      "why": "the away team enters the ridge with the home team's sign, so ratings measure schedule not strength.",
+      "find": "    x[rows, train['away'].map(idx).to_numpy()] = -1.0",
+      "replace": "    x[rows, train['away'].map(idx).to_numpy()] = 1.0",
+      "expect_caught_by": "test_the_ridge_ranks_the_strong_team_first_and_finds_the_home_edge"
+    },
+    {
+      "id": "nhl-rat-goalie-unshrunk",
+      "why": "K is ignored, so a goalie with ten good shots rates like one with ten thousand.",
+      "find": "    return float(row['saved'] / (row['shots'] + k))",
+      "replace": "    return float(row['saved'] / row['shots'])",
+      "expect_caught_by": "test_a_goalie_better_than_the_league_rates_above_zero_and_k_pulls_him_back"
+    },
+    {
+      "id": "nhl-rat-min-games",
+      "why": "features start with fewer than a hundred earlier games, from ratings fitted on a handful.",
+      "find": "        if len(train) < 100:",
+      "replace": "        if len(train) < 10:",
+      "expect_caught_by": "test_no_features_until_there_are_a_hundred_earlier_games"
+    }
+  ]
+}
