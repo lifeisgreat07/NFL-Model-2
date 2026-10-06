@@ -2186,6 +2186,12 @@ model was fitted, written under Mark's delegation.
 4. Rendered options for Mark where the NHL differs from the NFL; looked at
    in both themes at phone and desktop widths before any PR says so.
 
+**Decided (Mark, 2026-10-05, from the rendered "NHL Board Options").** The board pages by week,
+grouped by day (option C; he also liked the strip of days, so a strip pinned above the week as
+jump links is worth showing him when it is built). Each goalie carries its status, Confirmed in the
+accent blue so green still means only a pick scored right (A). The market line shows both prices
+and the probability with the margin out (A).
+
 ### Stage 58 - The NHL goes live
 
 1. A forward-test registration, then the first lock.
@@ -2204,6 +2210,9 @@ model was fitted, written under Mark's delegation.
    header; share image and link preview for the home page.
 3. Browser checks, accessibility, both themes, phone first.
 Launched the day the NHL's forward test is live, not with "coming soon".
+
+**Decided (Mark, 2026-10-05, from the rendered "Pick'em Home Options").** Option A: a card per sport
+with its live status ("Week 5 locked", "9 games tonight"), its season record and a link to its board.
 
 ### Stage 60 - The isolation audit
 
