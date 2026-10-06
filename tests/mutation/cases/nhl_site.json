@@ -57,6 +57,13 @@
       "find": "PATHS = sport_paths('nhl')",
       "replace": "PATHS = sport_paths('nfl')",
       "expect_caught_by": "test_the_pages_read_only_the_nhls_folders"
+    },
+    {
+      "id": "nhl-site-changes-dropped",
+      "why": "the What's Changed entries are left out of the page's data, so the page always says nothing has changed.",
+      "find": "        'changes': json.loads((TEMPLATE / 'changes.json').read_text(encoding='utf-8')),\n",
+      "replace": "",
+      "expect_caught_by": "test_whats_changed_is_dated_newest_first_and_reaches_the_page"
     }
   ]
 }

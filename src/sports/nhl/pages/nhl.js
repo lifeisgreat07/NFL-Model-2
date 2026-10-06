@@ -269,6 +269,32 @@ function renderRatings(){
   el.innerHTML = teams + goalies;
 }
 
+/* ---------- calibration ----------
+   How sure each pick was against how often picks that sure came true. The
+   chance is the one the model that made the pick gave its side. */
+const CAL_BINS = [[0.5, 0.55], [0.55, 0.6], [0.6, 0.65], [0.65, 0.7], [0.7, 1.01]];
+const CAL_MIN = 30;
+function pickChance(p, g){
+  const home = p.by === 'model_b' && p.b !== null ? p.b : p.a;
+  return p.pick === g.home ? home : 1 - home;
+}
+function calibrationHtml(graded){
+  const rows = CAL_BINS.map(([lo, hi]) => {
+    const inBin = graded.filter(x => { const c = pickChance(x.p, x.g); return c >= lo && c < hi; });
+    const n = inBin.length;
+    const said = n ? inBin.reduce((t, x) => t + pickChance(x.p, x.g), 0) / n : null;
+    const right = n ? inBin.filter(x => x.p.result === 'correct').length / n : null;
+    const label = hi > 1 ? `${Math.round(lo * 100)}% and up` : `${Math.round(lo * 100)}% to ${Math.round(hi * 100)}%`;
+    return `<tr><th scope="row">${label}</th><td class="num">${n}</td><td class="num">${said === null ? '' : pct(said, 1)}</td><td class="num">${right === null ? '' : pct(right, 1)}</td></tr>`;
+  }).join('');
+  const thin = graded.length < CAL_MIN * CAL_BINS.length;
+  return `<h2 class="section-title">How sure, and how often right</h2>
+    <p class="nhl-lede">Each graded pick by the chance its model gave the side it picked. A well-calibrated model is right about as often as it says.${thin ? ` With ${graded.length} graded picks, most rows hold too few games to read: a row means little under ${CAL_MIN}.` : ''}</p>
+    <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">Calibration of the graded picks</caption>
+    <thead><tr><th scope="col">The pick's chance</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Said, on average</th><th scope="col" class="num">Right</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+
 /* ---------- accuracy ---------- */
 function renderAccuracy(){
   const el = document.getElementById('accuracy-body');
@@ -281,9 +307,62 @@ function renderAccuracy(){
   const right = graded.filter(x => x.p.result === 'correct').length;
   const list = graded.sort((a, b) => (b.g.start || '').localeCompare(a.g.start || ''));
   el.innerHTML = `<p class="nhl-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the market had a price when it was saved, Model A&#39;s otherwise. The forward test is judged on log loss once 100 games are graded; see Checking the AI&#39;s work.</p>
+    ${calibrationHtml(graded)}
+    <h2 class="section-title">Every graded pick</h2>
     <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">Graded picks</caption>
     <thead><tr><th scope="col">Date</th><th scope="col">Game</th><th scope="col">Pick</th><th scope="col">Model</th><th scope="col">Result</th></tr></thead>
     <tbody>${list.map(x => `<tr><td>${FMT_MONTHDAY.format(dayDate(x.g.day))}</td><td>${x.g.away} at ${x.g.home}</td><td>${x.p.pick}</td><td>${x.p.by === 'model_b' ? 'Model B' : 'Model A'}</td><td><span class="graded-tag ${x.p.result === 'correct' ? 'correct' : 'incorrect'}">${x.p.result === 'correct' ? 'Correct' : 'Missed'}</span></td></tr>`).join('')}</tbody></table></div>`;
+}
+
+/* ---------- teams ---------- */
+let currentTeam = null;
+try{ currentTeam = localStorage.getItem('nhl:team'); }catch(e){}
+function teamGames(abbr){
+  return DATA.games.filter(g => g.home === abbr || g.away === abbr)
+    .sort((a, b) => (a.start || a.day).localeCompare(b.start || b.day));
+}
+function renderTeams(){
+  const select = document.getElementById('team-select');
+  const clubs = Object.keys(DATA.teams).sort((a, b) => teamName(a).localeCompare(teamName(b)));
+  if(!currentTeam || !DATA.teams[currentTeam]) currentTeam = clubs[0];
+  if(!select.options.length){
+    select.innerHTML = clubs.map(c => `<option value="${c}">${escapeHtml(teamName(c))}</option>`).join('');
+    select.addEventListener('change', () => {
+      currentTeam = select.value;
+      try{ localStorage.setItem('nhl:team', currentTeam); }catch(e){}
+      renderTeams();
+    });
+  }
+  select.value = currentTeam;
+  const t = currentTeam, el = document.getElementById('teams-body');
+  const board = DATA.ratings, st = DATA.standings;
+  const rated = board ? board.teams.findIndex(x => x.team === t) : -1;
+  const rating = rated >= 0 ? board.teams[rated] : null;
+  const odds_ = st ? st.teams.find(x => x.team === t) : null;
+  const facts = [
+    rating ? `Goal rating <b>${signed(rating.goal, 2)}</b> a game (${rated + 1} of ${board.teams.length}), shot rating <b>${signed(rating.shot, 1)}</b>.` : 'No ratings yet.',
+    odds_ ? `${odds_.points_now} points; projected <b>${odds_.projected_points.toFixed(1)}</b>, playoffs <b>${odds(odds_.playoff_pct)}</b>, the ${escapeHtml(odds_.division)} title ${odds(odds_.division_pct)}.` : 'Standings odds not simulated yet.',
+  ];
+  const games = teamGames(t).filter(g => g.status === 'final' || DATA.picks[g.id]);
+  const row = g => {
+    const home = g.home === t, opp = home ? g.away : g.home, p = DATA.picks[g.id];
+    const score = g.status === 'final' && g.hs !== null ? `${home ? g.hs : g.as}-${home ? g.as : g.hs}${g.lp === 'OT' ? ' OT' : g.lp === 'SO' ? ' SO' : ''}` : '';
+    const won = g.status === 'final' && g.hs !== null ? ((home ? g.hs > g.as : g.as > g.hs) ? 'W' : 'L') : '';
+    const graded = p && (p.result === 'correct' || p.result === 'wrong');
+    const tag = graded ? `<span class="graded-tag ${p.result === 'correct' ? 'correct' : 'incorrect'}">${p.result === 'correct' ? 'Correct' : 'Missed'}</span>` : (p ? 'Not final' : '');
+    return `<tr><td>${FMT_MONTHDAY.format(dayDate(g.day))}</td><td>${home ? 'vs' : 'at'} ${opp}</td><td>${won} ${score}</td><td>${p ? p.pick : 'No pick'}</td><td>${tag}</td></tr>`;
+  };
+  el.innerHTML = `<h2 class="section-title">${escapeHtml(teamName(t))}</h2><p class="nhl-lede">${facts.join(' ')}</p>
+    ${games.length ? `<div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">${escapeHtml(teamName(t))}: games so far</caption>
+    <thead><tr><th scope="col">Date</th><th scope="col">Opponent</th><th scope="col">Result</th><th scope="col">Pick</th><th scope="col">Graded</th></tr></thead>
+    <tbody>${games.map(row).join('')}</tbody></table></div>` : stateHtml('waiting', 'No games played yet', '')}`;
+}
+
+/* ---------- what's changed ---------- */
+function renderChanges(){
+  const el = document.getElementById('changes-body');
+  el.innerHTML = (DATA.changes || []).map(c => `<div class="nhl-change"><span class="nhl-change-date">${escapeHtml(c.date)}</span><h3>${escapeHtml(c.title)}</h3><p class="nhl-lede">${escapeHtml(c.text)}</p></div>`).join('')
+    || stateHtml('waiting', 'Nothing recorded yet', '');
 }
 
 /* ---------- model lab ---------- */
@@ -367,4 +446,6 @@ renderAccuracy();
 renderModelLab();
 renderMethod();
 renderReliability();
+renderTeams();
+renderChanges();
 document.body.classList.remove('is-entering');

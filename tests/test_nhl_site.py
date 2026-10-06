@@ -167,3 +167,25 @@ def test_the_script_reads_only_fields_the_builder_writes() -> None:
     written = set(re.findall(r"^\s+'(\w+)':", body, re.M))
     read = set(re.findall(r'\bDATA\.(\w+)', js))
     assert read and read <= written, sorted(read - written)
+
+
+CHANGES = json.loads((site.TEMPLATE / 'changes.json').read_text(encoding='utf-8'))
+
+
+def test_whats_changed_is_dated_newest_first_and_reaches_the_page(nhl_root: Path) -> None:
+    dates = [c['date'] for c in CHANGES]
+    assert dates and dates == sorted(dates, reverse=True)
+    assert all(re.fullmatch(r'\d{4}-\d{2}-\d{2}', d) for d in dates)
+    assert site.payload(2026, NOW)['changes'] == CHANGES
+
+
+def test_every_registration_whats_changed_names_exists_and_says_what_its_results_say() -> None:
+    root = Path(site.__file__).resolve().parents[3]
+    for c in CHANGES:
+        for path in re.findall(r'experiments/\S+?\.json', c['text']):
+            assert (root / path).exists(), path
+    backtest = next(c for c in CHANGES if 'stage56' in c['text'])
+    labels = json.loads((root / 'experiments/nhl/stage56/results/confirmation.json').read_text(encoding='utf-8'))
+    labels = {k: q.get('label') for k, q in labels['questions'].items()}
+    assert 'Model A beats the base rate' in backtest['text'] and labels['H1'] == 'ACCEPT'
+    assert 'are inconclusive' in backtest['text'] and labels['H2'] == labels['H3'] == 'INCONCLUSIVE'

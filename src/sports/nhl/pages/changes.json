@@ -1,0 +1,6 @@
+[
+ {"date": "2026-10-06", "title": "The NHL's picks go live",
+  "text": "The daily run (14:00 and 21:00 UTC) saves each game's pick by the last run before puck drop, with the projected goalies and the market price at that moment, and grades it once the game is final. The forward test and its drift check were registered first (experiments/nhl/stage58/registry.json)."},
+ {"date": "2026-10-05", "title": "Model A and Model B, registered and backtested",
+  "text": "Model A reads three differences between the clubs: goal ratings, shot ratings and starting goalies. Model B adds the market. Both were registered before either was fitted (experiments/nhl/stage56/registry.json), tuned on 2022-23 and 2023-24 and answered once on 2024-25 and 2025-26: Model A beats the base rate; Model B against Model A, and against the market, are inconclusive."}
+]

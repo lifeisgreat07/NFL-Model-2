@@ -9,7 +9,9 @@ What it reads, all under the NHL's folders (`src.core.sport.sport_paths`):
   `ratings_<season>.json`: what the daily run writes;
 - `experiments/nhl/stage56/results/confirmation.json`: the backtest's
   answers;
-- `data/nhl/drift_baseline.json`: the drift check's registered rule.
+- `data/nhl/drift_baseline.json`: the drift check's registered rule;
+
+and `src/sports/nhl/pages/changes.json`, the What's Changed page's entries.
 
 A missing results file is not an error: the page says what it has not got
 yet (the standings before the first run that saves picks, say). A missing
@@ -108,6 +110,7 @@ def payload(season: int, now: datetime) -> dict[str, Any]:
         'drift': _read(PATHS.results / f'drift_{season}.json'),
         'drift_rule': _read(PATHS.data / 'drift_baseline.json'),
         'backtest': confirmation,
+        'changes': json.loads((TEMPLATE / 'changes.json').read_text(encoding='utf-8')),
     }
 
 
