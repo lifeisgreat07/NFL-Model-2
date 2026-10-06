@@ -48,8 +48,8 @@
       "id": "check-build-pages-never-runs-it",
       "target": "src/site/build.py",
       "why": "the site build stops calling the check. Every rule would still pass its tests and guard nothing, because nothing would run it before publishing.",
-      "find": ",\n                py + ['src.pipeline.check_build', 'index.html']]",
-      "replace": "]",
+      "find": "                py + ['src.pipeline.check_build', 'index.html'],\n",
+      "replace": "",
       "expect_caught_by": "test_pages_checks_the_build_before_uploading_it"
     }
   ]

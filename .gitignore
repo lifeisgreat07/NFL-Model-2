@@ -54,3 +54,5 @@ src/dashboard/*.swp
 # The scheduled jobs' recent runs, written by the deploy job only
 # (src/pipeline/recent_runs.py) and never committed.
 data/recent_runs.json
+# Written by src/pipeline/picks_csv.py for the site build (Stage 46 item 7).
+/picks.csv

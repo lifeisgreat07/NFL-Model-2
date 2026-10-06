@@ -1,0 +1,35 @@
+{
+  "target": "src/pipeline/picks_csv.py",
+  "tests": "tests/test_picks_csv.py",
+  "cases": [
+    {
+      "id": "picks-csv-takes-previews",
+      "why": "Tuesday's previews are read as picks, so the file lists games under a week whose picks can still change and are never graded",
+      "find": "    for p in pred_dir.glob('*_week*.json'):",
+      "replace": "    for p in pred_dir.rglob('*_week*.json'):",
+      "expect_caught_by": "test_one_row_per_locked_game_in_kickoff_order_and_never_a_preview"
+    },
+    {
+      "id": "picks-csv-loses-the-tie",
+      "why": "a tie reads as a game not yet played, so the file says a finished game has no result",
+      "find": "            elif r.get('result') == 'tie':\n                result, winner = 'tie', ''\n",
+      "replace": "",
+      "expect_caught_by": "test_a_tie_and_an_unplayed_game_grade_no_one"
+    },
+    {
+      "id": "picks-csv-fifty-percent-goes-away",
+      "why": "a model at exactly 50% is listed as picking the away side, which is not the side the grading scored it on",
+      "find": "    return game['home'] if prob >= 0.5 else game['away']",
+      "replace": "    return game['home'] if prob > 0.5 else game['away']",
+      "expect_caught_by": "test_a_pick_is_the_side_given_fifty_percent_or_more"
+    },
+    {
+      "id": "picks-csv-never-published",
+      "target": "src/site/build.py",
+      "why": "the file is written at the root and never copied beside the board, so the page's link opens a 404",
+      "find": "        shutil.copyfile(ROOT / 'picks.csv', dest / 'picks.csv')\n",
+      "replace": "        pass\n",
+      "expect_caught_by": "test_the_site_build_writes_it_and_publishes_it_beside_the_board"
+    }
+  ]
+}
