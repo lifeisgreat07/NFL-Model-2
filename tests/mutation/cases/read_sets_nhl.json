@@ -1,0 +1,13 @@
+{
+  "target": "src/sports/nhl/site.py",
+  "tests": "tests/test_sport_read_sets.py",
+  "cases": [
+    {
+      "id": "read-set-nhl-opens-nfl-data",
+      "why": "the NHL's page build reads one of the NFL's data files, so an NFL change could move a byte of the NHL's page.",
+      "find": "    graded_rows = _read(PATHS.results / f'graded_{season}.json') or []\n",
+      "replace": "    graded_rows = _read(PATHS.results / f'graded_{season}.json') or []\n    (ROOT / 'data' / 'drift_baseline.json').read_text(encoding='utf-8')\n",
+      "expect_caught_by": "test_the_nhl_build_opens_only_its_own_files_and_the_shared_ones"
+    }
+  ]
+}
