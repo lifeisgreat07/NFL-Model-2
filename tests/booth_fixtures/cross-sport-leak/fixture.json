@@ -1,0 +1,20 @@
+{
+  "id": "cross-sport-leak",
+  "why": "A pull request on a multi-sport repository says one sport's page still reads only its own files, and a static test that greps for the other sport's name passes. The page in fact reads the other sport's results through a shared reader whose default argument is the original sport. Only building the page and looking at what it read, or what it printed, shows it.",
+  "provenance": "Seeded for Stage 60 item 2 (Mark, 2026-10-05: Booth fixtures seeded with a cross-sport leak it must catch), approved for a Booth run on 2026-10-06. Unlike fixed-everywhere it is not a defect a real audit found: this repository has not shipped a cross-sport leak. It models the hazard Stage 50 named, NFL code that was the only sport's code and so treats the NFL as the default, which is why tests/test_sport_read_sets.py (#316) traces the files each build opens instead of grepping its source.",
+  "assertion": "file-locus",
+  "assertion_strength": "strong -- the defect has a file locus, so the verdict block's `implicates` is checked directly rather than inferring intent from prose",
+  "expect_discrepancy_implicating": "sports/nhl/site.py",
+  "seeded_defect": {
+    "file": "sports/nhl/site.py",
+    "contains": "results = load_results()",
+    "unique_in_head": true,
+    "explanation": "The call passes no sport, so core/data.py's load_results falls back to its default, 'nfl', and the NHL page lists MIA at BUF and NYJ at KC. The body's claim that the NHL page reads only the NHL's files is false; its test claim is true, because the isolation test greps sports/nhl/ for the word nfl and the leak never names it."
+  },
+  "head_suite": {
+    "command": "pytest -q",
+    "expect": "passes",
+    "why": "The fixture must isolate EXACTLY ONE defect. The body claims '2 passed', and that must be true, so the only false claim is the isolation one. The new test checks the heading, not whose games are listed under it."
+  },
+  "notes": "Team abbreviations differ between the two sports' data (BUF, KC, MIA, NYJ against TOR, MTL, BOS, OTT) so the leak is visible in the built page. No figure here is from the real repository's data."
+}

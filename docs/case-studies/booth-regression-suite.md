@@ -23,7 +23,7 @@ known in advance which claim is false.
 
 A fixture is a miniature pull request: a `base/` folder, a `head/` folder,
 a description in `body.md`, and a `fixture.json` holding the expected
-answer and where the defect came from. The first and only fixture,
+answer and where the defect came from. The first fixture,
 `fixed-everywhere`, is built from a real mistake on PR #28. That pull
 request corrected a wrong date, said it had searched and corrected it
 everywhere, and missed one copy in a file the same branch had just added.
@@ -34,6 +34,13 @@ It was deliberately one fixture. The commit that built the format explains
 why: "Deliberately one and not six" (`f07411b`). Six fixtures written
 against a format Booth had never seen would be six things to redo if the
 format turned out to be wrong.
+
+The second, `cross-sport-leak`, came with the multi-sport work (Stage 60
+item 2). It is the first fixture that is seeded rather than taken from a
+real audit: no cross-sport leak has shipped here. Its pull request says
+the NHL page still reads only NHL files, and a test that greps the NHL
+folder for the NFL's name passes, while the page reads NFL results through
+a shared reader whose default sport is the NFL. Building the page shows it.
 
 ## How it is built so it can't fool itself
 
