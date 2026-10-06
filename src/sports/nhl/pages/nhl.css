@@ -38,3 +38,5 @@
 .nhl-change{border-left:2px solid var(--border-strong); padding-left:var(--s3); margin:0 0 var(--s4);}
 .nhl-change h3{font-size:var(--fs-14); margin:0;}
 .nhl-change .nhl-change-date{font-size:var(--fs-12); color:var(--text-3);}
+.nhl-div-grid > div{container-type:inline-size; min-width:0;}
+@container (max-width: 560px){ .nhl-div-grid .nhl-club-full{display:none;} .nhl-div-grid .nhl-club-abbr{display:inline;} }
