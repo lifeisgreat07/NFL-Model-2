@@ -1,0 +1,750 @@
+{
+ "as_of": "2026-10-06",
+ "K_shots": 2000.0,
+ "teams": [
+  {
+   "team": "COL",
+   "goal": 1.0874,
+   "shot": 6.4834
+  },
+  {
+   "team": "CAR",
+   "goal": 0.7636,
+   "shot": 7.9083
+  },
+  {
+   "team": "TBL",
+   "goal": 0.5508,
+   "shot": 2.0868
+  },
+  {
+   "team": "MIN",
+   "goal": 0.5254,
+   "shot": 0.0369
+  },
+  {
+   "team": "OTT",
+   "goal": 0.4992,
+   "shot": 3.5062
+  },
+  {
+   "team": "VGK",
+   "goal": 0.4609,
+   "shot": 3.7819
+  },
+  {
+   "team": "BUF",
+   "goal": 0.4142,
+   "shot": 0.1723
+  },
+  {
+   "team": "PIT",
+   "goal": 0.398,
+   "shot": 1.411
+  },
+  {
+   "team": "UTA",
+   "goal": 0.3712,
+   "shot": 1.7887
+  },
+  {
+   "team": "WSH",
+   "goal": 0.3574,
+   "shot": -0.6836
+  },
+  {
+   "team": "MTL",
+   "goal": 0.3565,
+   "shot": -2.3844
+  },
+  {
+   "team": "DAL",
+   "goal": 0.3264,
+   "shot": -0.1674
+  },
+  {
+   "team": "NYR",
+   "goal": 0.1914,
+   "shot": -2.9537
+  },
+  {
+   "team": "EDM",
+   "goal": 0.1168,
+   "shot": 3.1485
+  },
+  {
+   "team": "BOS",
+   "goal": 0.0688,
+   "shot": -2.7514
+  },
+  {
+   "team": "STL",
+   "goal": 0.0685,
+   "shot": -1.8973
+  },
+  {
+   "team": "CBJ",
+   "goal": 0.0248,
+   "shot": 0.0703
+  },
+  {
+   "team": "NYI",
+   "goal": -0.0194,
+   "shot": 0.4225
+  },
+  {
+   "team": "FLA",
+   "goal": -0.1188,
+   "shot": 1.6238
+  },
+  {
+   "team": "WPG",
+   "goal": -0.177,
+   "shot": -0.8591
+  },
+  {
+   "team": "SEA",
+   "goal": -0.1943,
+   "shot": -2.9588
+  },
+  {
+   "team": "NSH",
+   "goal": -0.2389,
+   "shot": -2.2855
+  },
+  {
+   "team": "ANA",
+   "goal": -0.2466,
+   "shot": 2.1348
+  },
+  {
+   "team": "PHI",
+   "goal": -0.2738,
+   "shot": -2.1378
+  },
+  {
+   "team": "DET",
+   "goal": -0.3125,
+   "shot": 0.5735
+  },
+  {
+   "team": "LAK",
+   "goal": -0.3746,
+   "shot": 1.3527
+  },
+  {
+   "team": "NJD",
+   "goal": -0.4104,
+   "shot": 2.7846
+  },
+  {
+   "team": "TOR",
+   "goal": -0.4418,
+   "shot": -4.7403
+  },
+  {
+   "team": "SJS",
+   "goal": -0.7157,
+   "shot": -3.6954
+  },
+  {
+   "team": "VAN",
+   "goal": -0.9972,
+   "shot": -3.7873
+  },
+  {
+   "team": "CGY",
+   "goal": -1.0101,
+   "shot": -2.0638
+  },
+  {
+   "team": "CHI",
+   "goal": -1.0504,
+   "shot": -5.9205
+  }
+ ],
+ "goalies": [
+  {
+   "player_id": "8482661",
+   "name": null,
+   "rating": 0.00364,
+   "weighted_shots": 404.2
+  },
+  {
+   "player_id": "8480981",
+   "name": null,
+   "rating": 0.0033,
+   "weighted_shots": 332.0
+  },
+  {
+   "player_id": "8478048",
+   "name": null,
+   "rating": 0.00326,
+   "weighted_shots": 432.5
+  },
+  {
+   "player_id": "8475809",
+   "name": null,
+   "rating": 0.003,
+   "weighted_shots": 345.6
+  },
+  {
+   "player_id": "8480313",
+   "name": null,
+   "rating": 0.00299,
+   "weighted_shots": 436.2
+  },
+  {
+   "player_id": "8478009",
+   "name": null,
+   "rating": 0.00296,
+   "weighted_shots": 455.6
+  },
+  {
+   "player_id": "8480280",
+   "name": null,
+   "rating": 0.00244,
+   "weighted_shots": 539.4
+  },
+  {
+   "player_id": "8476883",
+   "name": null,
+   "rating": 0.0024,
+   "weighted_shots": 516.5
+  },
+  {
+   "player_id": "8482193",
+   "name": null,
+   "rating": 0.0019,
+   "weighted_shots": 53.8
+  },
+  {
+   "player_id": "8476999",
+   "name": null,
+   "rating": 0.00174,
+   "weighted_shots": 400.6
+  },
+  {
+   "player_id": "8478916",
+   "name": null,
+   "rating": 0.00155,
+   "weighted_shots": 382.0
+  },
+  {
+   "player_id": "8482487",
+   "name": null,
+   "rating": 0.00143,
+   "weighted_shots": 587.9
+  },
+  {
+   "player_id": "8482982",
+   "name": null,
+   "rating": 0.00136,
+   "weighted_shots": 404.4
+  },
+  {
+   "player_id": "8478435",
+   "name": null,
+   "rating": 0.00133,
+   "weighted_shots": 499.2
+  },
+  {
+   "player_id": "8481020",
+   "name": null,
+   "rating": 0.0013,
+   "weighted_shots": 186.4
+  },
+  {
+   "player_id": "8479361",
+   "name": null,
+   "rating": 0.00125,
+   "weighted_shots": 416.4
+  },
+  {
+   "player_id": "8479979",
+   "name": null,
+   "rating": 0.00125,
+   "weighted_shots": 479.7
+  },
+  {
+   "player_id": "8476434",
+   "name": null,
+   "rating": 0.00122,
+   "weighted_shots": 406.3
+  },
+  {
+   "player_id": "8475831",
+   "name": null,
+   "rating": 0.00118,
+   "weighted_shots": 235.1
+  },
+  {
+   "player_id": "8478406",
+   "name": null,
+   "rating": 0.00113,
+   "weighted_shots": 352.8
+  },
+  {
+   "player_id": "8476932",
+   "name": null,
+   "rating": 0.00107,
+   "weighted_shots": 207.2
+  },
+  {
+   "player_id": "8483532",
+   "name": null,
+   "rating": 0.00103,
+   "weighted_shots": 61.3
+  },
+  {
+   "player_id": "8474596",
+   "name": null,
+   "rating": 0.00093,
+   "weighted_shots": 265.5
+  },
+  {
+   "player_id": "8479193",
+   "name": null,
+   "rating": 0.00084,
+   "weighted_shots": 205.0
+  },
+  {
+   "player_id": "8479394",
+   "name": null,
+   "rating": 0.00083,
+   "weighted_shots": 428.8
+  },
+  {
+   "player_id": "8484170",
+   "name": null,
+   "rating": 0.0008,
+   "weighted_shots": 111.5
+  },
+  {
+   "player_id": "8479312",
+   "name": null,
+   "rating": 0.00078,
+   "weighted_shots": 293.7
+  },
+  {
+   "player_id": "8482445",
+   "name": null,
+   "rating": 0.00077,
+   "weighted_shots": 203.6
+  },
+  {
+   "player_id": "8476341",
+   "name": null,
+   "rating": 0.00073,
+   "weighted_shots": 298.0
+  },
+  {
+   "player_id": "8481551",
+   "name": null,
+   "rating": 0.00065,
+   "weighted_shots": 85.5
+  },
+  {
+   "player_id": "8477968",
+   "name": null,
+   "rating": 0.00064,
+   "weighted_shots": 251.0
+  },
+  {
+   "player_id": "8479406",
+   "name": null,
+   "rating": 0.0005,
+   "weighted_shots": 359.0
+  },
+  {
+   "player_id": "8482657",
+   "name": null,
+   "rating": 0.00048,
+   "weighted_shots": 18.7
+  },
+  {
+   "player_id": "8483710",
+   "name": null,
+   "rating": 0.00045,
+   "weighted_shots": 94.2
+  },
+  {
+   "player_id": "8477424",
+   "name": null,
+   "rating": 0.00042,
+   "weighted_shots": 475.4
+  },
+  {
+   "player_id": "8482949",
+   "name": null,
+   "rating": 0.00035,
+   "weighted_shots": 10.3
+  },
+  {
+   "player_id": "8484910",
+   "name": null,
+   "rating": 0.0003,
+   "weighted_shots": 12.9
+  },
+  {
+   "player_id": "8483703",
+   "name": null,
+   "rating": 0.00024,
+   "weighted_shots": 50.9
+  },
+  {
+   "player_id": "8476899",
+   "name": null,
+   "rating": 0.00023,
+   "weighted_shots": 15.9
+  },
+  {
+   "player_id": "8482123",
+   "name": null,
+   "rating": 0.0002,
+   "weighted_shots": 20.6
+  },
+  {
+   "player_id": "8481529",
+   "name": null,
+   "rating": 0.00012,
+   "weighted_shots": 16.5
+  },
+  {
+   "player_id": "8481544",
+   "name": null,
+   "rating": 0.0001,
+   "weighted_shots": 5.9
+  },
+  {
+   "player_id": "8478971",
+   "name": null,
+   "rating": 1e-05,
+   "weighted_shots": 282.9
+  },
+  {
+   "player_id": "8480022",
+   "name": null,
+   "rating": 1e-05,
+   "weighted_shots": 28.5
+  },
+  {
+   "player_id": "8477831",
+   "name": null,
+   "rating": -1e-05,
+   "weighted_shots": 6.1
+  },
+  {
+   "player_id": "8483114",
+   "name": null,
+   "rating": -4e-05,
+   "weighted_shots": 5.6
+  },
+  {
+   "player_id": "8483668",
+   "name": null,
+   "rating": -9e-05,
+   "weighted_shots": 29.7
+  },
+  {
+   "player_id": "8477480",
+   "name": null,
+   "rating": -0.00011,
+   "weighted_shots": 150.7
+  },
+  {
+   "player_id": "8478872",
+   "name": null,
+   "rating": -0.00015,
+   "weighted_shots": 514.3
+  },
+  {
+   "player_id": "8480193",
+   "name": null,
+   "rating": -0.00015,
+   "weighted_shots": 237.2
+  },
+  {
+   "player_id": "8481611",
+   "name": null,
+   "rating": -0.00015,
+   "weighted_shots": 87.0
+  },
+  {
+   "player_id": "8477967",
+   "name": null,
+   "rating": -0.00018,
+   "weighted_shots": 105.3
+  },
+  {
+   "player_id": "8476914",
+   "name": null,
+   "rating": -0.00021,
+   "weighted_shots": 200.9
+  },
+  {
+   "player_id": "8480238",
+   "name": null,
+   "rating": -0.00022,
+   "weighted_shots": 6.8
+  },
+  {
+   "player_id": "8476945",
+   "name": null,
+   "rating": -0.00024,
+   "weighted_shots": 421.6
+  },
+  {
+   "player_id": "8479496",
+   "name": null,
+   "rating": -0.0003,
+   "weighted_shots": 165.9
+  },
+  {
+   "player_id": "8481519",
+   "name": null,
+   "rating": -0.00032,
+   "weighted_shots": 438.4
+  },
+  {
+   "player_id": "8482761",
+   "name": null,
+   "rating": -0.00033,
+   "weighted_shots": 29.5
+  },
+  {
+   "player_id": "8477484",
+   "name": null,
+   "rating": -0.00036,
+   "weighted_shots": 32.4
+  },
+  {
+   "player_id": "8473503",
+   "name": null,
+   "rating": -0.00038,
+   "weighted_shots": 99.3
+  },
+  {
+   "player_id": "8477990",
+   "name": null,
+   "rating": -0.00038,
+   "weighted_shots": 8.6
+  },
+  {
+   "player_id": "8480051",
+   "name": null,
+   "rating": -0.0004,
+   "weighted_shots": 16.7
+  },
+  {
+   "player_id": "8482783",
+   "name": null,
+   "rating": -0.00043,
+   "weighted_shots": 12.2
+  },
+  {
+   "player_id": "8475717",
+   "name": null,
+   "rating": -0.00049,
+   "weighted_shots": 94.9
+  },
+  {
+   "player_id": "8471734",
+   "name": null,
+   "rating": -0.0005,
+   "weighted_shots": 161.8
+  },
+  {
+   "player_id": "8476316",
+   "name": null,
+   "rating": -0.00051,
+   "weighted_shots": 9.5
+  },
+  {
+   "player_id": "8482515",
+   "name": null,
+   "rating": -0.00055,
+   "weighted_shots": 27.1
+  },
+  {
+   "player_id": "8475852",
+   "name": null,
+   "rating": -0.00058,
+   "weighted_shots": 65.4
+  },
+  {
+   "player_id": "8483548",
+   "name": null,
+   "rating": -0.00059,
+   "weighted_shots": 289.6
+  },
+  {
+   "player_id": "8482447",
+   "name": null,
+   "rating": -0.00066,
+   "weighted_shots": 110.6
+  },
+  {
+   "player_id": "8481668",
+   "name": null,
+   "rating": -0.00073,
+   "weighted_shots": 304.2
+  },
+  {
+   "player_id": "8478024",
+   "name": null,
+   "rating": -0.00074,
+   "weighted_shots": 139.8
+  },
+  {
+   "player_id": "8478470",
+   "name": null,
+   "rating": -0.00075,
+   "weighted_shots": 168.5
+  },
+  {
+   "player_id": "8479292",
+   "name": null,
+   "rating": -0.00078,
+   "weighted_shots": 178.3
+  },
+  {
+   "player_id": "8477970",
+   "name": null,
+   "rating": -0.0009,
+   "weighted_shots": 122.1
+  },
+  {
+   "player_id": "8474593",
+   "name": null,
+   "rating": -0.00096,
+   "weighted_shots": 320.5
+  },
+  {
+   "player_id": "8479973",
+   "name": null,
+   "rating": -0.00097,
+   "weighted_shots": 431.8
+  },
+  {
+   "player_id": "8475883",
+   "name": null,
+   "rating": -0.00101,
+   "weighted_shots": 374.0
+  },
+  {
+   "player_id": "8475660",
+   "name": null,
+   "rating": -0.00119,
+   "weighted_shots": 172.2
+  },
+  {
+   "player_id": "8481033",
+   "name": null,
+   "rating": -0.00122,
+   "weighted_shots": 171.0
+  },
+  {
+   "player_id": "8477992",
+   "name": null,
+   "rating": -0.00125,
+   "weighted_shots": 149.7
+  },
+  {
+   "player_id": "8478007",
+   "name": null,
+   "rating": -0.00128,
+   "weighted_shots": 211.1
+  },
+  {
+   "player_id": "8482076",
+   "name": null,
+   "rating": -0.00128,
+   "weighted_shots": 61.6
+  },
+  {
+   "player_id": "8480045",
+   "name": null,
+   "rating": -0.00131,
+   "weighted_shots": 347.2
+  },
+  {
+   "player_id": "8478499",
+   "name": null,
+   "rating": -0.00151,
+   "weighted_shots": 225.5
+  },
+  {
+   "player_id": "8484268",
+   "name": null,
+   "rating": -0.00154,
+   "weighted_shots": 144.8
+  },
+  {
+   "player_id": "8481035",
+   "name": null,
+   "rating": -0.00165,
+   "weighted_shots": 185.9
+  },
+  {
+   "player_id": "8482221",
+   "name": null,
+   "rating": -0.00176,
+   "weighted_shots": 47.6
+  },
+  {
+   "player_id": "8481692",
+   "name": null,
+   "rating": -0.00179,
+   "weighted_shots": 431.7
+  },
+  {
+   "player_id": "8475683",
+   "name": null,
+   "rating": -0.0018,
+   "weighted_shots": 393.3
+  },
+  {
+   "player_id": "8482821",
+   "name": null,
+   "rating": -0.00215,
+   "weighted_shots": 231.7
+  },
+  {
+   "player_id": "8480843",
+   "name": null,
+   "rating": -0.00218,
+   "weighted_shots": 555.4
+  },
+  {
+   "player_id": "8476412",
+   "name": null,
+   "rating": -0.00248,
+   "weighted_shots": 292.0
+  },
+  {
+   "player_id": "8475311",
+   "name": null,
+   "rating": -0.00288,
+   "weighted_shots": 340.0
+  },
+  {
+   "player_id": "8477465",
+   "name": null,
+   "rating": -0.0032,
+   "weighted_shots": 228.2
+  },
+  {
+   "player_id": "8482137",
+   "name": null,
+   "rating": -0.00327,
+   "weighted_shots": 377.9
+  },
+  {
+   "player_id": "8480947",
+   "name": null,
+   "rating": -0.00532,
+   "weighted_shots": 400.8
+  }
+ ]
+}
