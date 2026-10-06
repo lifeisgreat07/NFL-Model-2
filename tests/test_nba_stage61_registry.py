@@ -1,0 +1,91 @@
+"""The NBA's first registration (Stage 61), held to itself before any NBA
+model has a result.
+
+`experiments/nba/stage61/registry.json` fixes the seasons, the models, the
+tuning grid, the budget and each question's decision rule before anything
+is fitted. These tests stop it drifting quietly once results exist: a
+change has to be an amendment, which this file then names.
+
+Run with: pytest tests/test_nba_stage61_registry.py -v
+"""
+import json
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+FOLDER = ROOT / 'experiments' / 'nba' / 'stage61'
+REGISTRY = FOLDER / 'registry.json'
+
+
+def registry():
+    return json.loads(REGISTRY.read_text(encoding='utf-8'))
+
+
+def entry(hid):
+    return next(h for h in registry()['hypotheses'] if h['id'] == hid)
+
+
+def test_it_asks_three_questions_and_takes_two_measurements():
+    assert [h['id'] for h in registry()['hypotheses']] == ['H1', 'H2', 'H3', 'M1', 'M2']
+
+
+def test_three_slots_and_the_level_they_set():
+    p = registry()['protocol']
+    assert (p['alpha'], p['budget_m']) == (0.05, 3)
+    slots = [h['id'] for h in registry()['hypotheses'] if h['spends_slot'] is True]
+    assert slots == ['H1', 'H2', 'H3']
+    assert '98.33%' in p['budget_rule'] and round(1 - p['alpha'] / p['budget_m'], 4) == 0.9833
+    for hid in slots:
+        rule = entry(hid)['decision_rule']
+        assert '98.33%' in rule and '2024-2025' in rule and 'log loss' in rule
+
+
+def test_the_seasons_match_the_other_sports_split():
+    p = registry()['protocol']
+    assert (p['validation_seasons'], p['confirmation_seasons'], p['forward_holdout_season']) == (
+        [2022, 2023], [2024, 2025], 2026)
+    assert p['training_from_season'] == 2015
+    assert p['primary_metric'] == 'log_loss' and p['accuracy'] == 'Reported, never decides.'
+
+
+def test_the_bootstrap_resamples_whole_game_days():
+    p = registry()['protocol']
+    assert 'game days' in p['bootstrap'] and '5,000' in p['bootstrap'] and '20261006' in p['bootstrap']
+
+
+def test_all_star_and_preseason_games_are_never_used():
+    games = registry()['protocol']['games']
+    assert 'Preseason and All-Star games are never used' in games
+
+
+def test_tuning_touches_only_the_validation_seasons():
+    p = registry()['protocol']
+    assert 'validation seasons only' in p['tuning']
+    grid = registry()['models']['model_a']['grid']
+    assert grid == {'H_days': [30, 60, 120, 240], 'lambda': [0.3, 1.0, 3.0, 10.0]}
+
+
+def test_model_b_is_model_a_plus_the_market_and_nothing_else():
+    m = registry()['models']
+    assert m['model_b']['features'] == m['model_a']['features'] + ['market_logit']
+    assert m['model_a']['features'] == ['point_matchup', 'efficiency_matchup', 'availability_matchup']
+
+
+def test_a_live_price_is_never_used():
+    assert 'A price from a provider marked live is never used' in registry()['data']['market']
+
+
+def test_it_was_registered_before_any_result_exists():
+    """Results land in experiments/nba/stage61/results/. Until they do,
+    nothing in the registry may claim an outcome."""
+    reg = registry()
+    if not (FOLDER / 'results').exists():
+        assert all('result' not in h and 'label' not in h for h in reg['hypotheses'])
+    assert reg['registered'] == '2026-10-06'
+    assert reg['amendments'] == []
+
+
+def test_an_empty_espn_box_score_is_read_from_the_fallback_and_never_guessed():
+    box = registry()['data']['box_scores']
+    assert "hoopR's team_box and its minutes from hoopR's player_box" in box
+    assert 'A game neither has is left out of the history and named' in box
+    assert 'at least 99% of the games read from ESPN' in box
