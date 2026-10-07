@@ -2,46 +2,46 @@
  {
   "game_id": "2026020044",
   "pick": "TOR",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020045",
   "pick": "CAR",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020046",
   "pick": "DET",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020047",
   "pick": "NJD",
-  "result": "pending"
+  "result": "wrong"
  },
  {
   "game_id": "2026020048",
   "pick": "NYR",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020049",
   "pick": "MIN",
-  "result": "pending"
+  "result": "wrong"
  },
  {
   "game_id": "2026020050",
   "pick": "STL",
-  "result": "pending"
+  "result": "wrong"
  },
  {
   "game_id": "2026020051",
   "pick": "VGK",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020052",
   "pick": "FLA",
-  "result": "pending"
+  "result": "correct"
  }
 ]

@@ -1,5 +1,5 @@
 {
- "as_of": "2026-10-06",
+ "as_of": "2026-10-07",
  "games": [
   {
    "game_id": "2026020001",
@@ -566,11 +566,11 @@
    "start_utc": "2026-10-06T23:00:00Z",
    "home": "TOR",
    "away": "NSH",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 5,
+   "away_score": 4,
+   "last_period": "OT",
    "neutral_site": false
   },
   {
@@ -579,11 +579,11 @@
    "start_utc": "2026-10-06T23:00:00Z",
    "home": "MTL",
    "away": "CAR",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 4,
+   "away_score": 6,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -592,11 +592,11 @@
    "start_utc": "2026-10-06T23:00:00Z",
    "home": "DET",
    "away": "OTT",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 5,
+   "away_score": 3,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -605,11 +605,11 @@
    "start_utc": "2026-10-06T23:00:00Z",
    "home": "NJD",
    "away": "UTA",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 3,
+   "away_score": 5,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -618,11 +618,11 @@
    "start_utc": "2026-10-06T23:00:00Z",
    "home": "BUF",
    "away": "MIN",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 3,
+   "away_score": 2,
+   "last_period": "OT",
    "neutral_site": false
   },
   {
@@ -631,11 +631,11 @@
    "start_utc": "2026-10-06T23:30:00Z",
    "home": "NYR",
    "away": "NYI",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 5,
+   "away_score": 2,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -644,11 +644,11 @@
    "start_utc": "2026-10-07T00:00:00Z",
    "home": "CHI",
    "away": "STL",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 4,
+   "away_score": 2,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -657,11 +657,11 @@
    "start_utc": "2026-10-07T01:40:00Z",
    "home": "SEA",
    "away": "VGK",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 2,
+   "away_score": 6,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -670,11 +670,11 @@
    "start_utc": "2026-10-07T02:00:00Z",
    "home": "LAK",
    "away": "FLA",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 1,
+   "away_score": 2,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
