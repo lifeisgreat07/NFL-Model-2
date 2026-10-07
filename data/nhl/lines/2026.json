@@ -106,5 +106,17 @@
   "home_prob": 0.4826,
   "read_utc": "2026-10-06T22:07:32Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020051",
+  "start_utc": "2026-10-07T01:40:00Z",
+  "home": "SEA",
+  "away": "VGK",
+  "book": "DraftKings",
+  "home_price": 140.0,
+  "away_price": -166.0,
+  "home_prob": 0.4004,
+  "read_utc": "2026-10-07T00:12:54Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]
