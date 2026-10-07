@@ -1,0 +1,91 @@
+{
+ "game_id": "2026020053",
+ "season": 2026,
+ "slate": "2026-10-07",
+ "start_utc": "2026-10-07T23:30:00Z",
+ "home": "WSH",
+ "away": "PIT",
+ "model_a": 0.5273,
+ "model_b": 0.6112,
+ "pick": "WSH",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.037527,
+  "shot_matchup": -2.082974,
+  "goalie_matchup_2000": 0.003722
+ },
+ "market": {
+  "game_id": "2026020053",
+  "start_utc": "2026-10-07T23:30:00Z",
+  "home": "WSH",
+  "away": "PIT",
+  "book": "DraftKings",
+  "home_price": -162.0,
+  "away_price": 136.0,
+  "home_prob": 0.5934,
+  "read_utc": "2026-10-07T21:01:57Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480313,
+   "name": "Logan Thompson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/sammisilber/status/2107842819360698397?s=20"
+  },
+  "away": {
+   "player_id": 8481668,
+   "name": "Arturs Silovs",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/joshyohe_pgh/status/2107859617984479401?s=46"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-07",
+  "read_utc": "2026-10-07T21:01:57Z",
+  "home": [
+   {
+    "name": "Matt Roy",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Patrick Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Sandin",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Andrei Kuzmenko",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Bryan Rust",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Justin Brazeau",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Graves",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-07T21:01:57Z",
+ "code": "nhl-stage56"
+}

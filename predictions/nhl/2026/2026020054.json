@@ -1,0 +1,91 @@
+{
+ "game_id": "2026020054",
+ "season": 2026,
+ "slate": "2026-10-07",
+ "start_utc": "2026-10-07T23:30:00Z",
+ "home": "WPG",
+ "away": "COL",
+ "model_a": 0.3452,
+ "model_b": 0.3563,
+ "pick": "COL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.255135,
+  "shot_matchup": -7.2573,
+  "goalie_matchup_2000": -0.002078
+ },
+ "market": {
+  "game_id": "2026020054",
+  "start_utc": "2026-10-07T23:30:00Z",
+  "home": "WPG",
+  "away": "COL",
+  "book": "DraftKings",
+  "home_price": 160.0,
+  "away_price": -192.0,
+  "home_prob": 0.3691,
+  "read_utc": "2026-10-07T21:01:57Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479973,
+   "name": "Stuart Skinner",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8478406,
+   "name": "Mackenzie Blackwood",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/conormcgahey/status/2107861470189134080?s=46"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-07",
+  "read_utc": "2026-10-07T21:01:57Z",
+  "home": [
+   {
+    "name": "Connor Hellebuyck",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elias Salomonsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Garrett Brown",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Walker Duehr",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Georgii Merkulov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan O'Connor",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Trent Miner",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-07T21:01:57Z",
+ "code": "nhl-stage56"
+}
