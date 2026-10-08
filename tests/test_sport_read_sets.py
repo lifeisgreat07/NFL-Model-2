@@ -23,8 +23,10 @@ Run with: pytest tests/test_sport_read_sets.py -v
 """
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
+import py_compile
 import subprocess
 import sys
 import textwrap
@@ -61,9 +63,15 @@ HOOK = textwrap.dedent('''
 def read_set(target: str, argv: list[str], out: Path) -> list[Path]:
     """Every file `target` (a module name, or a script path) opens when run
     with `argv`, as paths relative to the repository; files outside it (the
-    interpreter, site-packages, a test's scratch folder) are left out."""
+    interpreter, site-packages, a test's scratch folder) are left out.
+
+    The child's bytecode cache points at an empty scratch folder. Otherwise a
+    `__pycache__` left by an earlier test (pytest without `-B` writes one) is
+    read instead of the source, the `.py` is never opened, and the read set
+    depends on what ran first: issue #325, the shuffled suite of 2026-10-08."""
     env = {**os.environ, 'READ_SET_TARGET': target, 'READ_SET_ARGV': json.dumps(argv),
-           'READ_SET_OUT': str(out), 'PYTHONPATH': str(ROOT)}
+           'READ_SET_OUT': str(out), 'PYTHONPATH': str(ROOT),
+           'PYTHONPYCACHEPREFIX': str(out.parent / f'{out.stem}-pycache')}
     run = subprocess.run([sys.executable, '-B', '-c', HOOK], cwd=str(ROOT), env=env,
                          capture_output=True, text=True, timeout=300)
     assert run.returncode == 0, run.stderr[-2000:]
@@ -84,6 +92,19 @@ def owner(rel: Path, codes: list[str]) -> str | None:
     if len(parts) >= 3 and parts[:2] == ('src', 'sports') and parts[2] in codes:
         return parts[2]
     return None
+
+
+def test_a_bytecode_cache_left_behind_does_not_hide_the_source(tmp_path: Path) -> None:
+    """Issue #325: with a valid `.pyc` beside a module, an import reads the
+    cache and never opens the `.py`, so a build's read set lost its own
+    `site.py` whenever an earlier test had imported it. Leave a cache on
+    purpose and check the source is still seen."""
+    source = ROOT / 'src' / 'core' / 'sport.py'
+    py_compile.compile(str(source), cfile=importlib.util.cache_from_source(str(source)), doraise=True)
+    driver = tmp_path / 'driver.py'
+    driver.write_text('import src.core.sport\n', encoding='utf-8')
+    seen = {p.as_posix() for p in read_set(str(driver), [], tmp_path / 'cache.json')}
+    assert 'src/core/sport.py' in seen, 'a cached .pyc was read instead of the source'
 
 
 def test_the_nfl_build_opens_nothing_of_another_sport(tmp_path: Path) -> None:

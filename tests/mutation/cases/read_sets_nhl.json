@@ -8,6 +8,14 @@
       "find": "    graded_rows = _read(PATHS.results / f'graded_{season}.json') or []\n",
       "replace": "    graded_rows = _read(PATHS.results / f'graded_{season}.json') or []\n    (ROOT / 'data' / 'drift_baseline.json').read_text(encoding='utf-8')\n",
       "expect_caught_by": "test_the_nhl_build_opens_only_its_own_files_and_the_shared_ones"
+    },
+    {
+      "id": "read-set-child-reads-a-left-behind-pyc",
+      "target": "tests/test_sport_read_sets.py",
+      "why": "the build's interpreter reads a .pyc an earlier test left behind instead of the source, so its own site.py drops out of the read set and the check depends on test order (issue #325).",
+      "find": "           'PYTHONPYCACHEPREFIX': str(out.parent / f'{out.stem}-pycache')}\n",
+      "replace": "           }\n",
+      "expect_caught_by": "test_a_bytecode_cache_left_behind_does_not_hide_the_source"
     }
   ]
 }
