@@ -48,6 +48,22 @@
       "find": "        key = parse_week(f.stem)\n        if key is None:\n            continue\n        week = key[1]\n",
       "replace": "        try:\n            week = int(f.stem.split('_week')[1])\n        except (IndexError, ValueError):\n            continue\n",
       "expect_caught_by": "test_no_module_defines_its_own_copy_again"
+    },
+    {
+      "id": "paths-tv-defaults-built-by-hand",
+      "target": "src/pipeline/tv_channels.py",
+      "why": "tv_channels.main's folder defaults go back to ROOT / 'predictions' and ROOT / 'results', the copy Stage 36 item 7 removed: a second definition of where locked picks live, which the next folder move would miss.",
+      "find": "pred_dir=PRED_DIR, results_dir=RESULTS_DIR):",
+      "replace": "pred_dir=ROOT / 'predictions', results_dir=ROOT / 'results'):",
+      "expect_caught_by": "test_no_module_defines_its_own_copy_again"
+    },
+    {
+      "id": "paths-team-news-builds-its-own-folder",
+      "target": "src/pipeline/team_news.py",
+      "why": "team news builds data/team_news from the repository root again instead of from DATA_DIR, so moving the data folder (Stage 52) would leave it writing to the old place.",
+      "find": "NEWS_DIR = DATA_DIR / 'team_news'",
+      "replace": "NEWS_DIR = ROOT / 'data' / 'team_news'",
+      "expect_caught_by": "test_no_module_defines_its_own_copy_again"
     }
   ]
 }

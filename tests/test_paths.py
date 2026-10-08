@@ -94,6 +94,10 @@ COPIES = [
     # stem themselves after #241 (the third audit found both). Stage 35.
     (r"\.split\(['\"]_week['\"]\)", 'the week-in-a-file-name rule, inline'),
     (r'^(NFL_TEAMS|TEAM_NAMES)\s*=', 'the team list'),
+    # Anywhere, not only at the start of a line: tv_channels.main's
+    # defaults were `ROOT / 'predictions'` and `ROOT / 'results'` until
+    # Stage 36 item 7, a copy the line-start patterns above could not see.
+    (r"\bROOT\s*/\s*['\"](?:data|predictions|results)['\"]", 'a data folder built by hand'),
 ]
 
 
@@ -120,7 +124,15 @@ def test_no_module_defines_its_own_copy_again():
     assert not copies(sources)
 
 
+def test_a_folder_built_by_hand_anywhere_is_found():
+    """A default argument or a sub-folder, not a module-level name: the
+    shape tv_channels.main and team_news.NEWS_DIR had (Stage 36 item 7)."""
+    assert copies({'x.py': "def main(pred_dir=ROOT / 'predictions'):\n"}) == [('x.py', 'a data folder built by hand')]
+    assert copies({'y.py': "NEWS_DIR = ROOT / 'data' / 'team_news'\n"}) == [('y.py', 'a data folder built by hand')]
+    assert copies({'z.py': "NEWS_DIR = DATA_DIR / 'team_news'\n"}) == []
+
+
 def test_a_copy_is_found():
     """Synthetic, so the failing branch stays reachable."""
     assert copies({'x.py': "RESULTS_DIR = ROOT / 'results'\n", 'paths.py': 'PRED_DIR = 1\n'}) == [
-        ('x.py', 'a data folder')]
+        ('x.py', 'a data folder'), ('x.py', 'a data folder built by hand')]
