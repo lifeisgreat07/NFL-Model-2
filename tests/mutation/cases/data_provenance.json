@@ -1,0 +1,27 @@
+{
+  "target": "src/pipeline/weekly_update.py",
+  "tests": "tests/test_weekly_update_end_to_end.py",
+  "cases": [
+    {
+      "id": "provenance-not-saved",
+      "why": "picks are saved without their provenance, so a permanent file no longer says which loader and which plays made it once the run's log has expired.",
+      "find": "    for p in predictions:\n        p['data_provenance'] = dict(provenance)\n",
+      "replace": "",
+      "expect_caught_by": "test_every_pick_records_its_inputs_and_saw_no_play_from_its_own_week"
+    },
+    {
+      "id": "provenance-plays-from-every-season",
+      "why": "the last week of plays is read across every season, so last season's week 18 is reported as this season's latest play and the leak check it exists for reads nonsense.",
+      "find": "    this = plays[plays['season'] == season] if 'season' in plays.columns else plays.iloc[0:0]",
+      "replace": "    this = plays",
+      "expect_caught_by": "test_plays_through_week_reads_this_season_only"
+    },
+    {
+      "id": "provenance-override-file-never-named",
+      "why": "the override file is never named, so a pick made on a sourced override looks like one made on the schedule's starter.",
+      "find": "        'qb_override_file': (f'data/qb_overrides/{season}_week{week}.json' if qb_overrides else None),",
+      "replace": "        'qb_override_file': None,",
+      "expect_caught_by": "test_the_override_file_a_pick_used_is_named"
+    }
+  ]
+}

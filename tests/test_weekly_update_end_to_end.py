@@ -20,6 +20,7 @@ The only other substitution is the season simulation's draw count, cut from
 Run with: pytest tests/test_weekly_update_end_to_end.py -v
 """
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -44,7 +45,7 @@ PICK_KEYS = {
     'model_version', 'off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff',
     'spread_line', 'model_a_home_win_prob', 'model_b_home_win_prob',
     'market_prob_home', 'context_notes', 'why', 'confidence_rank',
-    'confidence_points', 'neutral_site', 'venue',
+    'confidence_points', 'neutral_site', 'venue', 'data_provenance',
     *(f'{prefix}{side}_qb{suffix}'
       for side in ('home', 'away')
       for prefix, suffix in (('', ''), ('', '_id'), ('', '_basis'),
@@ -219,3 +220,34 @@ def test_a_week_outside_the_lock_in_window_saves_nothing(run):
     out, tmp = run([far, far + H, far + 2 * H, far + 3 * H])
     assert 'lock-in window' in out
     assert not locked(tmp).exists() and not previews(tmp)
+
+
+# --- Stage 41 item 7: where each pick's inputs came from ---------------------
+
+def test_every_pick_records_its_inputs_and_saw_no_play_from_its_own_week(run):
+    _, tmp = run([H, 2 * H, 3 * H, 4 * H])
+    picks = json.loads(locked(tmp).read_text(encoding='utf-8'))
+    for p in picks:
+        prov = p['data_provenance']
+        assert prov['plays_through_week'] == league.PLAYED_WEEKS < p['week'], prov
+        assert prov['loader'] in ('nflreadpy', 'nfl_data_py') and prov['qb_override_file'] is None
+        assert re.fullmatch(r'\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ', prov['read_utc'])
+    assert len({json.dumps(p['data_provenance'], sort_keys=True) for p in picks}) == 1
+
+
+def test_the_override_file_a_pick_used_is_named(run, tmp_path):
+    home, _ = league.round_robin(league.TARGET_WEEK)[0]
+    (tmp_path / 'data' / 'qb_overrides').mkdir(parents=True, exist_ok=True)
+    (tmp_path / 'data' / 'qb_overrides' / f'{league.TARGET}_week{league.TARGET_WEEK}.json').write_text(
+        json.dumps([{'team': home, 'player_id': '00-0009999', 'player_name': 'B.Ackup',
+                     'source': 'https://example.com/injury-report'}]), encoding='utf-8')
+    _, tmp = run([H, 2 * H, 3 * H, 4 * H])
+    prov = json.loads(locked(tmp).read_text(encoding='utf-8'))[0]['data_provenance']
+    assert prov['qb_override_file'] == f'data/qb_overrides/{league.TARGET}_week{league.TARGET_WEEK}.json'
+
+
+def test_plays_through_week_reads_this_season_only():
+    """Last season's week 18 is not this season's latest play."""
+    plays = pd.DataFrame({'season': [2025, 2025, 2026, 2026], 'week': [17, 18, 3, 4]})
+    assert wu.data_provenance(2026, 5, plays, {})['plays_through_week'] == 4
+    assert wu.data_provenance(2027, 1, plays, {})['plays_through_week'] is None
