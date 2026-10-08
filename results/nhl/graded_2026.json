@@ -47,16 +47,16 @@
  {
   "game_id": "2026020053",
   "pick": "WSH",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020054",
   "pick": "COL",
-  "result": "pending"
+  "result": "wrong"
  },
  {
   "game_id": "2026020055",
   "pick": "EDM",
-  "result": "pending"
+  "result": "correct"
  }
 ]
