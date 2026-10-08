@@ -1,0 +1,13 @@
+{
+  "target": ".github/workflows/weekend-refresh.yml",
+  "tests": "tests/test_weekend_refresh.py",
+  "cases": [
+    {
+      "id": "refresh-monday-fallback-dropped",
+      "why": "the Monday 01:47 cron line goes, so the late-Sunday refresh runs only if cron-job.org's request lands; a missed request (an expired token, say) loses that refresh with nothing behind it.",
+      "find": "    - cron: '47 1 * * 1'\n",
+      "replace": "",
+      "expect_caught_by": "test_every_cron_job_org_slot_has_a_github_fallback"
+    }
+  ]
+}

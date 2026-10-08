@@ -21,6 +21,8 @@ name: Weekend refresh
 # (2026-09-25 to 27); that cause is a guess, not a finding.
 #   Friday 05:17  -- after Thursday night's game
 #   Sunday 21:47  -- after the early Sunday games
+#   Monday 01:47  -- after the late Sunday games (cron-job.org's request
+#                    since Stage 42; this line is GitHub's fallback for it)
 #   Monday 05:37  -- after the late games and Sunday night
 # Monday night's game is left to Tuesday's grading. None of these can meet
 # the weekly runs (Tuesday 11:00, Thursday 11:00) even five hours late.
@@ -32,6 +34,7 @@ on:
   schedule:
     - cron: '17 5 * * 5'
     - cron: '47 21 * * 0'
+    - cron: '47 1 * * 1'
     - cron: '37 5 * * 1'
   workflow_dispatch: {}
 

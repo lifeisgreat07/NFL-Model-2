@@ -212,6 +212,17 @@ def _cron_times(text):
     return out
 
 
+def test_every_cron_job_org_slot_has_a_github_fallback():
+    """Decision record 0005: cron-job.org starts each slot on time and
+    GitHub's own cron stays as the fallback. The Monday 01:47 slot had a
+    cron-job.org job and no fallback line until Stage 42's follow-up."""
+    lines = set(re.findall(r"cron:\s*'([^']+)'", _text(WORKFLOW)))
+    assert lines == {'17 5 * * 5', '47 21 * * 0', '47 1 * * 1', '37 5 * * 1'}
+    record = (ROOT / 'docs' / 'decisions' / '0005-cron-job-org.md').read_text(encoding='utf-8')
+    for slot in ('Friday 05:17', 'Sunday 21:47', 'Monday 01:47', '05:37'):
+        assert slot in record, f'{slot} is not in decision record 0005'
+
+
 def test_its_runs_cannot_meet_the_weekly_runs_however_late_either_starts():
     """Each run may start up to LOCK_SLACK late -- the lateness the lock
     decision already assumes -- and so may the weekly run it must not meet.
@@ -221,7 +232,7 @@ def test_its_runs_cannot_meet_the_weekly_runs_however_late_either_starts():
     from src.pipeline.weekly_update import LOCK_SLACK
     late = int(LOCK_SLACK.total_seconds() // 60)
     mine, weekly = _cron_times(_text(WORKFLOW)), _cron_times(_text(WEEKLY))
-    assert len(mine) == 3 and len(weekly) == 2
+    assert len(mine) == 4 and len(weekly) == 2
     week = 7 * 24 * 60
     def at(dow, minute):
         return (dow * 24 * 60 + minute) % week
