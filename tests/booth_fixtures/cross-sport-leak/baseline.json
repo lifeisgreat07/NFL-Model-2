@@ -1,0 +1,46 @@
+{
+  "fixture": "cross-sport-leak",
+  "recorded_utc": "2026-10-08T19:09:05Z",
+  "fixture_head": "4f1fa509bc2815bf7af5a73366458d7a0a9480d8",
+  "assertion": "file-locus",
+  "satisfied": true,
+  "explanation": "claim(s) [4, 5] raised a DISCREPANCY implicating sports/nhl/site.py",
+  "cross_check": [],
+  "verdict": {
+    "pr": 0,
+    "head": "4f1fa50",
+    "claims": [
+      {
+        "id": 1,
+        "verdict": "CONFIRMED",
+        "implicates": []
+      },
+      {
+        "id": 2,
+        "verdict": "CONFIRMED",
+        "implicates": []
+      },
+      {
+        "id": 3,
+        "verdict": "CONFIRMED",
+        "implicates": []
+      },
+      {
+        "id": 4,
+        "verdict": "DISCREPANCY",
+        "implicates": [
+          "sports/nhl/site.py"
+        ]
+      },
+      {
+        "id": 5,
+        "verdict": "DISCREPANCY",
+        "implicates": [
+          "test_isolation.py",
+          "sports/nhl/site.py"
+        ]
+      }
+    ],
+    "overall": "DO NOT MERGE -- DISCREPANCIES FOUND"
+  }
+}
