@@ -1,0 +1,250 @@
+{
+  "reads": [
+    "2026-10-08T17:43:27Z"
+  ],
+  "changes": [],
+  "games": [
+    {
+      "elias": "2026100800",
+      "networks": [
+        "Prime Video"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "TB",
+      "home": "DAL",
+      "territory": "NATIONAL",
+      "listed": [
+        "Prime Video"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101100",
+      "networks": [
+        "NFL Network"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "PHI",
+      "home": "JAX",
+      "territory": "NATIONAL",
+      "listed": [
+        "NFL Network"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101101",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CIN",
+      "home": "MIA",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101102",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LV",
+      "home": "NE",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101103",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "MIN",
+      "home": "NO",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101104",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CLE",
+      "home": "NYJ",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101105",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "IND",
+      "home": "PIT",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101106",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "HOU",
+      "home": "TEN",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101107",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NYG",
+      "home": "WAS",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101110",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CHI",
+      "home": "GB",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101108",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "DEN",
+      "home": "LAC",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101109",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "DET",
+      "home": "ARI",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101111",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "SF",
+      "home": "SEA",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101112",
+      "networks": [
+        "NBC"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "BAL",
+      "home": "ATL",
+      "territory": "NATIONAL",
+      "listed": [
+        "NBC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    },
+    {
+      "elias": "2026101200",
+      "networks": [
+        "ESPN"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "BUF",
+      "home": "LA",
+      "territory": "NATIONAL",
+      "listed": [
+        "ESPN",
+        "ABC",
+        "NFL Network"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-5",
+      "read_at": "2026-10-08T17:43:27Z"
+    }
+  ]
+}

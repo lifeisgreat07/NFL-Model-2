@@ -13,170 +13,164 @@
     {
       "team": "KC",
       "division": "AFC West",
-      "playoff_pct": 89.3,
-      "division_win_pct": 71.3
+      "playoff_pct": 89.8,
+      "division_win_pct": 71.5
     },
     {
       "team": "BUF",
       "division": "AFC East",
-      "playoff_pct": 81.8,
-      "division_win_pct": 64.1
+      "playoff_pct": 81.4,
+      "division_win_pct": 64.3
     },
     {
       "team": "BAL",
       "division": "AFC North",
       "playoff_pct": 76.3,
-      "division_win_pct": 49.0
+      "division_win_pct": 48.6
     },
     {
       "team": "JAX",
       "division": "AFC South",
-      "playoff_pct": 69.2,
-      "division_win_pct": 53.8
+      "playoff_pct": 69.1,
+      "division_win_pct": 53.6
     },
     {
       "team": "DAL",
       "division": "NFC East",
-      "playoff_pct": 63.1,
-      "division_win_pct": 40.3
+      "playoff_pct": 63.2,
+      "division_win_pct": 39.8
     },
     {
       "team": "CIN",
       "division": "AFC North",
-      "playoff_pct": 59.9,
-      "division_win_pct": 26.8
+      "playoff_pct": 60.4,
+      "division_win_pct": 27.4
     },
     {
       "team": "DET",
       "division": "NFC North",
-      "playoff_pct": 59.1,
-      "division_win_pct": 32.3
+      "playoff_pct": 59.5,
+      "division_win_pct": 32.0
     },
     {
       "team": "CAR",
       "division": "NFC South",
       "playoff_pct": 58.5,
-      "division_win_pct": 48.6
+      "division_win_pct": 48.8
     },
     {
       "team": "NYG",
       "division": "NFC East",
-      "playoff_pct": 58.1,
+      "playoff_pct": 57.3,
       "division_win_pct": 34.6
     },
     {
       "team": "CHI",
       "division": "NFC North",
-      "playoff_pct": 55.6,
-      "division_win_pct": 28.1
+      "playoff_pct": 55.7,
+      "division_win_pct": 28.0
     },
     {
       "team": "IND",
       "division": "AFC South",
-      "playoff_pct": 53.9,
-      "division_win_pct": 36.1
+      "playoff_pct": 54.0,
+      "division_win_pct": 36.2
     },
     {
       "team": "NE",
       "division": "AFC East",
-      "playoff_pct": 49.9,
+      "playoff_pct": 50.0,
       "division_win_pct": 22.3
     },
     {
       "team": "GB",
       "division": "NFC North",
-      "playoff_pct": 47.7,
-      "division_win_pct": 21.2
+      "playoff_pct": 46.8,
+      "division_win_pct": 21.0
     },
     {
       "team": "LV",
       "division": "AFC West",
-      "playoff_pct": 45.8,
-      "division_win_pct": 14.9
+      "playoff_pct": 45.4,
+      "division_win_pct": 14.8
     },
     {
       "team": "MIN",
       "division": "NFC North",
-      "playoff_pct": 44.6,
-      "division_win_pct": 18.5
+      "playoff_pct": 45.0,
+      "division_win_pct": 19.0
     },
     {
       "team": "ATL",
       "division": "NFC South",
-      "playoff_pct": 42.1,
+      "playoff_pct": 42.2,
       "division_win_pct": 31.2
     },
     {
       "team": "SEA",
       "division": "NFC West",
-      "playoff_pct": 41.3,
+      "playoff_pct": 41.8,
       "division_win_pct": 12.0
     },
     {
       "team": "PIT",
       "division": "AFC North",
       "playoff_pct": 40.5,
-      "division_win_pct": 14.2
+      "division_win_pct": 14.1
     },
     {
       "team": "DEN",
       "division": "AFC West",
-      "playoff_pct": 38.9,
-      "division_win_pct": 11.9
+      "playoff_pct": 38.8,
+      "division_win_pct": 11.8
     },
     {
       "team": "LA",
       "division": "NFC West",
-      "playoff_pct": 34.6,
-      "division_win_pct": 8.1
+      "playoff_pct": 34.4,
+      "division_win_pct": 8.2
     },
     {
       "team": "CLE",
       "division": "AFC North",
-      "playoff_pct": 31.4,
-      "division_win_pct": 10.1
+      "playoff_pct": 31.3,
+      "division_win_pct": 9.9
     },
     {
       "team": "WAS",
       "division": "NFC East",
-      "playoff_pct": 27.8,
-      "division_win_pct": 12.4
+      "playoff_pct": 28.1,
+      "division_win_pct": 12.8
     },
     {
       "team": "PHI",
       "division": "NFC East",
-      "playoff_pct": 26.8,
-      "division_win_pct": 12.7
+      "playoff_pct": 26.7,
+      "division_win_pct": 12.8
     },
     {
       "team": "NYJ",
       "division": "AFC East",
-      "playoff_pct": 24.7,
-      "division_win_pct": 9.6
+      "playoff_pct": 25.0,
+      "division_win_pct": 9.4
     },
     {
       "team": "ARI",
       "division": "NFC West",
-      "playoff_pct": 20.1,
-      "division_win_pct": 3.4
+      "playoff_pct": 20.2,
+      "division_win_pct": 3.3
     },
     {
       "team": "NO",
       "division": "NFC South",
-      "playoff_pct": 16.8,
-      "division_win_pct": 11.9
+      "playoff_pct": 16.7,
+      "division_win_pct": 11.6
     },
     {
       "team": "TEN",
       "division": "AFC South",
-      "playoff_pct": 13.7,
-      "division_win_pct": 6.9
-    },
-    {
-      "team": "MIA",
-      "division": "AFC East",
-      "playoff_pct": 11.3,
-      "division_win_pct": 4.0
+      "playoff_pct": 13.5,
+      "division_win_pct": 7.2
     },
     {
       "team": "TB",
@@ -185,16 +179,22 @@
       "division_win_pct": 8.3
     },
     {
+      "team": "MIA",
+      "division": "AFC East",
+      "playoff_pct": 11.3,
+      "division_win_pct": 4.0
+    },
+    {
       "team": "LAC",
       "division": "AFC West",
       "playoff_pct": 7.4,
-      "division_win_pct": 1.9
+      "division_win_pct": 1.8
     },
     {
       "team": "HOU",
       "division": "AFC South",
-      "playoff_pct": 5.9,
-      "division_win_pct": 3.1
+      "playoff_pct": 5.7,
+      "division_win_pct": 3.0
     }
   ]
 }

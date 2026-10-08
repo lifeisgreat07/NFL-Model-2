@@ -12,15 +12,15 @@
     "def_matchup": -0.1038,
     "qb_matchup": 0.292,
     "qb_change_diff": 0,
-    "spread_line": 8.5,
+    "spread_line": 9.5,
     "model_a_home_win_prob": 0.7217,
-    "model_b_home_win_prob": 0.7724,
-    "market_prob_home": 0.8243,
+    "model_b_home_win_prob": 0.7975,
+    "market_prob_home": 0.8491,
     "context_notes": [],
     "why": {
-      "off_matchup": 0.0413,
-      "def_matchup": 0.089,
-      "qb_matchup": 0.6718,
+      "off_matchup": 0.0414,
+      "def_matchup": 0.0888,
+      "qb_matchup": 0.6716,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0033077",
@@ -38,9 +38,7 @@
     "last_game_away_qb_id": "00-0041251",
     "last_game_away_qb": "J.Daniels",
     "confidence_rank": 1,
-    "confidence_points": 15,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_points": 15
   },
   {
     "season": 2026,
@@ -55,15 +53,15 @@
     "def_matchup": 0.0187,
     "qb_matchup": 0.0484,
     "qb_change_diff": 0,
-    "spread_line": 6.5,
-    "model_a_home_win_prob": 0.5731,
-    "model_b_home_win_prob": 0.7131,
-    "market_prob_home": 0.7653,
+    "spread_line": 7.5,
+    "model_a_home_win_prob": 0.5732,
+    "model_b_home_win_prob": 0.7426,
+    "market_prob_home": 0.7964,
     "context_notes": [],
     "why": {
-      "off_matchup": 0.0481,
-      "def_matchup": -0.0161,
-      "qb_matchup": 0.1114,
+      "off_matchup": 0.0483,
+      "def_matchup": -0.016,
+      "qb_matchup": 0.1113,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0036971",
@@ -80,10 +78,49 @@
     "announced_away_qb": "Jalen Hurts",
     "last_game_away_qb_id": "00-0036389",
     "last_game_away_qb": "J.Hurts",
-    "confidence_rank": 3,
-    "confidence_points": 13,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_rank": 2,
+    "confidence_points": 14
+  },
+  {
+    "season": 2026,
+    "week": 5,
+    "home": "GB",
+    "away": "CHI",
+    "gameday": "2026-10-11",
+    "gametime_et": "13:00",
+    "weekday": "Sunday",
+    "model_version": "2.5",
+    "off_matchup": 0.072,
+    "def_matchup": 0.0122,
+    "qb_matchup": 0.0984,
+    "qb_change_diff": 0,
+    "spread_line": -1.5,
+    "model_a_home_win_prob": 0.6008,
+    "model_b_home_win_prob": 0.4265,
+    "market_prob_home": 0.4322,
+    "context_notes": [],
+    "why": {
+      "off_matchup": 0.0419,
+      "def_matchup": -0.0105,
+      "qb_matchup": 0.2263,
+      "qb_change": -0.0
+    },
+    "home_qb_id": "00-0036264",
+    "home_qb": "Jordan Love",
+    "home_qb_basis": "announced",
+    "announced_home_qb_id": "00-0036264",
+    "announced_home_qb": "Jordan Love",
+    "last_game_home_qb_id": "00-0036264",
+    "last_game_home_qb": "J.Love",
+    "away_qb_id": "00-0038416",
+    "away_qb": "Tyson Bagent",
+    "away_qb_basis": "announced",
+    "announced_away_qb_id": "00-0038416",
+    "announced_away_qb": "Tyson Bagent",
+    "last_game_away_qb_id": "00-0038416",
+    "last_game_away_qb": "T.Bagent",
+    "confidence_rank": 11,
+    "confidence_points": 5
   },
   {
     "season": 2026,
@@ -98,15 +135,15 @@
     "def_matchup": 0.0075,
     "qb_matchup": -0.1004,
     "qb_change_diff": 0,
-    "spread_line": -7.0,
-    "model_a_home_win_prob": 0.4637,
-    "model_b_home_win_prob": 0.2449,
-    "market_prob_home": 0.2188,
+    "spread_line": -6.5,
+    "model_a_home_win_prob": 0.4638,
+    "model_b_home_win_prob": 0.2585,
+    "market_prob_home": 0.2347,
     "context_notes": [],
     "why": {
-      "off_matchup": -0.0587,
-      "def_matchup": -0.0065,
-      "qb_matchup": -0.2311,
+      "off_matchup": -0.059,
+      "def_matchup": -0.0064,
+      "qb_matchup": -0.231,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0038128",
@@ -123,10 +160,8 @@
     "announced_away_qb": "Joe Burrow",
     "last_game_away_qb_id": "00-0036442",
     "last_game_away_qb": "J.Burrow",
-    "confidence_rank": 2,
-    "confidence_points": 14,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_rank": 3,
+    "confidence_points": 13
   },
   {
     "season": 2026,
@@ -142,13 +177,13 @@
     "qb_matchup": 0.091,
     "qb_change_diff": 0,
     "spread_line": 3.5,
-    "model_a_home_win_prob": 0.6116,
+    "model_a_home_win_prob": 0.6117,
     "model_b_home_win_prob": 0.6275,
     "market_prob_home": 0.6539,
     "context_notes": [],
     "why": {
-      "off_matchup": 0.0183,
-      "def_matchup": 0.0757,
+      "off_matchup": 0.0184,
+      "def_matchup": 0.0755,
       "qb_matchup": 0.2092,
       "qb_change": -0.0
     },
@@ -167,9 +202,7 @@
     "last_game_away_qb_id": "00-0029604",
     "last_game_away_qb": "K.Cousins",
     "confidence_rank": 7,
-    "confidence_points": 9,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_points": 9
   },
   {
     "season": 2026,
@@ -184,14 +217,14 @@
     "def_matchup": -0.0572,
     "qb_matchup": 0.0199,
     "qb_change_diff": 0,
-    "spread_line": -1.5,
-    "model_a_home_win_prob": 0.5698,
-    "model_b_home_win_prob": 0.4487,
-    "market_prob_home": 0.4322,
+    "spread_line": -2.5,
+    "model_a_home_win_prob": 0.5699,
+    "model_b_home_win_prob": 0.4122,
+    "market_prob_home": 0.3883,
     "context_notes": [],
     "why": {
-      "off_matchup": 0.0353,
-      "def_matchup": 0.049,
+      "off_matchup": 0.0354,
+      "def_matchup": 0.0489,
       "qb_matchup": 0.0458,
       "qb_change": -0.0
     },
@@ -209,10 +242,8 @@
     "announced_away_qb": "Kyler Murray",
     "last_game_away_qb_id": "00-0035228",
     "last_game_away_qb": "K.Murray",
-    "confidence_rank": 12,
-    "confidence_points": 4,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_rank": 8,
+    "confidence_points": 8
   },
   {
     "season": 2026,
@@ -227,14 +258,14 @@
     "def_matchup": -0.206,
     "qb_matchup": -0.0319,
     "qb_change_diff": 0,
-    "spread_line": 2.5,
+    "spread_line": 1.5,
     "model_a_home_win_prob": 0.557,
-    "model_b_home_win_prob": 0.62,
-    "market_prob_home": 0.6117,
+    "model_b_home_win_prob": 0.5847,
+    "market_prob_home": 0.5678,
     "context_notes": [],
     "why": {
-      "off_matchup": -0.0247,
-      "def_matchup": 0.1765,
+      "off_matchup": -0.0248,
+      "def_matchup": 0.1761,
       "qb_matchup": -0.0735,
       "qb_change": -0.0
     },
@@ -253,9 +284,7 @@
     "last_game_away_qb_id": "00-0033537",
     "last_game_away_qb": "D.Watson",
     "confidence_rank": 9,
-    "confidence_points": 7,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_points": 7
   },
   {
     "season": 2026,
@@ -271,8 +300,8 @@
     "qb_matchup": 0.0279,
     "qb_change_diff": 0,
     "spread_line": 2.5,
-    "model_a_home_win_prob": 0.5488,
-    "model_b_home_win_prob": 0.5691,
+    "model_a_home_win_prob": 0.5489,
+    "model_b_home_win_prob": 0.569,
     "market_prob_home": 0.6117,
     "context_notes": [],
     "why": {
@@ -295,10 +324,8 @@
     "announced_away_qb": "Daniel Jones",
     "last_game_away_qb_id": "00-0035710",
     "last_game_away_qb": "D.Jones",
-    "confidence_rank": 11,
-    "confidence_points": 5,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_rank": 12,
+    "confidence_points": 4
   },
   {
     "season": 2026,
@@ -313,14 +340,14 @@
     "def_matchup": -0.1153,
     "qb_matchup": -0.2093,
     "qb_change_diff": 0,
-    "spread_line": -6.5,
+    "spread_line": -7.5,
     "model_a_home_win_prob": 0.4384,
-    "model_b_home_win_prob": 0.2987,
-    "market_prob_home": 0.2347,
+    "model_b_home_win_prob": 0.2684,
+    "market_prob_home": 0.2036,
     "context_notes": [],
     "why": {
       "off_matchup": -0.0161,
-      "def_matchup": 0.0988,
+      "def_matchup": 0.0986,
       "qb_matchup": -0.4814,
       "qb_change": -0.0
     },
@@ -339,9 +366,7 @@
     "last_game_away_qb_id": "00-0039163",
     "last_game_away_qb": "C.Stroud",
     "confidence_rank": 4,
-    "confidence_points": 12,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_points": 12
   },
   {
     "season": 2026,
@@ -356,18 +381,18 @@
     "def_matchup": -0.1215,
     "qb_matchup": 0.1105,
     "qb_change_diff": 1,
-    "spread_line": 3.0,
-    "model_a_home_win_prob": 0.5013,
-    "model_b_home_win_prob": 0.5379,
-    "market_prob_home": 0.6331,
+    "spread_line": 3.5,
+    "model_a_home_win_prob": 0.5038,
+    "model_b_home_win_prob": 0.5588,
+    "market_prob_home": 0.6539,
     "context_notes": [
       "WAS: the pick uses Jayden Daniels, the listed starter, not A.Kaliakmanis, who started WAS's last game."
     ],
     "why": {
       "off_matchup": -0.0174,
-      "def_matchup": 0.1041,
+      "def_matchup": 0.1039,
       "qb_matchup": 0.2541,
-      "qb_change": -0.4867
+      "qb_change": -0.4767
     },
     "home_qb_id": "00-0039910",
     "home_qb": "Jayden Daniels",
@@ -384,9 +409,7 @@
     "last_game_away_qb_id": "00-0031503",
     "last_game_away_qb": "J.Winston",
     "confidence_rank": 14,
-    "confidence_points": 2,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_points": 2
   },
   {
     "season": 2026,
@@ -402,13 +425,13 @@
     "qb_matchup": -0.0515,
     "qb_change_diff": 0,
     "spread_line": -3.5,
-    "model_a_home_win_prob": 0.4986,
-    "model_b_home_win_prob": 0.3531,
+    "model_a_home_win_prob": 0.4987,
+    "model_b_home_win_prob": 0.3528,
     "market_prob_home": 0.3461,
     "context_notes": [],
     "why": {
       "off_matchup": 0.0084,
-      "def_matchup": -0.0467,
+      "def_matchup": -0.0466,
       "qb_matchup": -0.1184,
       "qb_change": -0.0
     },
@@ -427,9 +450,7 @@
     "last_game_away_qb_id": "00-0039732",
     "last_game_away_qb": "B.Nix",
     "confidence_rank": 6,
-    "confidence_points": 10,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_points": 10
   },
   {
     "season": 2026,
@@ -444,15 +465,15 @@
     "def_matchup": 0.0377,
     "qb_matchup": -0.2396,
     "qb_change_diff": 0,
-    "spread_line": -4.5,
-    "model_a_home_win_prob": 0.3886,
-    "model_b_home_win_prob": 0.3332,
-    "market_prob_home": 0.3061,
+    "spread_line": -5.5,
+    "model_a_home_win_prob": 0.3887,
+    "model_b_home_win_prob": 0.3009,
+    "market_prob_home": 0.2689,
     "context_notes": [],
     "why": {
-      "off_matchup": -0.0209,
-      "def_matchup": -0.0323,
-      "qb_matchup": -0.5511,
+      "off_matchup": -0.021,
+      "def_matchup": -0.0322,
+      "qb_matchup": -0.551,
       "qb_change": -0.0
     },
     "home_qb_id": "00-0033119",
@@ -470,52 +491,7 @@
     "last_game_away_qb_id": "00-0033106",
     "last_game_away_qb": "J.Goff",
     "confidence_rank": 5,
-    "confidence_points": 11,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
-  },
-  {
-    "season": 2026,
-    "week": 5,
-    "home": "GB",
-    "away": "CHI",
-    "gameday": "2026-10-11",
-    "gametime_et": "13:00",
-    "weekday": "Sunday",
-    "model_version": "2.5",
-    "off_matchup": 0.072,
-    "def_matchup": 0.0122,
-    "qb_matchup": 0.0984,
-    "qb_change_diff": 0,
-    "spread_line": -3.0,
-    "model_a_home_win_prob": 0.6007,
-    "model_b_home_win_prob": 0.3734,
-    "market_prob_home": 0.3669,
-    "context_notes": [],
-    "why": {
-      "off_matchup": 0.0417,
-      "def_matchup": -0.0105,
-      "qb_matchup": 0.2264,
-      "qb_change": -0.0
-    },
-    "home_qb_id": "00-0036264",
-    "home_qb": "Jordan Love",
-    "home_qb_basis": "announced",
-    "announced_home_qb_id": "00-0036264",
-    "announced_home_qb": "Jordan Love",
-    "last_game_home_qb_id": "00-0036264",
-    "last_game_home_qb": "J.Love",
-    "away_qb_id": "00-0038416",
-    "away_qb": "Tyson Bagent",
-    "away_qb_basis": "announced",
-    "announced_away_qb_id": "00-0038416",
-    "announced_away_qb": "Tyson Bagent",
-    "last_game_away_qb_id": "00-0038416",
-    "last_game_away_qb": "T.Bagent",
-    "confidence_rank": 8,
-    "confidence_points": 8,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_points": 11
   },
   {
     "season": 2026,
@@ -531,17 +507,17 @@
     "qb_matchup": -0.2211,
     "qb_change_diff": 1,
     "spread_line": 3.0,
-    "model_a_home_win_prob": 0.2626,
-    "model_b_home_win_prob": 0.4943,
+    "model_a_home_win_prob": 0.2646,
+    "model_b_home_win_prob": 0.4967,
     "market_prob_home": 0.6331,
     "context_notes": [
       "SEA: the pick uses Drew Lock, the listed starter, not S.Darnold, who started SEA's last game."
     ],
     "why": {
       "off_matchup": -0.0127,
-      "def_matchup": -0.1756,
-      "qb_matchup": -0.5085,
-      "qb_change": -0.4867
+      "def_matchup": -0.1753,
+      "qb_matchup": -0.5084,
+      "qb_change": -0.4767
     },
     "home_qb_id": "00-0035704",
     "home_qb": "Drew Lock",
@@ -558,9 +534,7 @@
     "last_game_away_qb_id": "00-0037834",
     "last_game_away_qb": "B.Purdy",
     "confidence_rank": 15,
-    "confidence_points": 1,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_points": 1
   },
   {
     "season": 2026,
@@ -576,13 +550,13 @@
     "qb_matchup": -0.0719,
     "qb_change_diff": 0,
     "spread_line": 3.0,
-    "model_a_home_win_prob": 0.4784,
+    "model_a_home_win_prob": 0.4786,
     "model_b_home_win_prob": 0.582,
     "market_prob_home": 0.6331,
     "context_notes": [],
     "why": {
       "off_matchup": -0.0042,
-      "def_matchup": -0.0677,
+      "def_matchup": -0.0676,
       "qb_matchup": -0.1653,
       "qb_change": -0.0
     },
@@ -601,9 +575,7 @@
     "last_game_away_qb_id": "00-0034796",
     "last_game_away_qb": "L.Jackson",
     "confidence_rank": 10,
-    "confidence_points": 6,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_points": 6
   },
   {
     "season": 2026,
@@ -618,14 +590,14 @@
     "def_matchup": 0.1977,
     "qb_matchup": -0.0171,
     "qb_change_diff": 0,
-    "spread_line": 2.5,
-    "model_a_home_win_prob": 0.4954,
-    "model_b_home_win_prob": 0.5414,
-    "market_prob_home": 0.6117,
+    "spread_line": 3.0,
+    "model_a_home_win_prob": 0.4956,
+    "model_b_home_win_prob": 0.5595,
+    "market_prob_home": 0.6331,
     "context_notes": [],
     "why": {
-      "off_matchup": 0.0392,
-      "def_matchup": -0.1693,
+      "off_matchup": 0.0394,
+      "def_matchup": -0.169,
       "qb_matchup": -0.0394,
       "qb_change": -0.0
     },
@@ -644,8 +616,6 @@
     "last_game_away_qb_id": "00-0034857",
     "last_game_away_qb": "J.Allen",
     "confidence_rank": 13,
-    "confidence_points": 3,
-    "preview": true,
-    "previewed_utc": "2026-10-06T17:00:23.237117+00:00"
+    "confidence_points": 3
   }
 ]
