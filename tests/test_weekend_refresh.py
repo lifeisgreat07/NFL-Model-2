@@ -314,3 +314,57 @@ def test_the_lock_run_catches_up_even_after_a_failed_step():
     saves the picks; its catch-up must run under the same condition."""
     steps = dict(_step_blocks(WEEKLY))
     assert '${{ !cancelled() }}' in steps['Catch up with main']
+
+
+# --- Stage 37 item 3: the weekly run's final snapshot, and the backfill ------
+
+TUESDAY = datetime(2026, 10, 6, 11, 0, tzinfo=UTC)
+
+
+def test_status_only_writes_the_snapshot_and_takes_no_line(tmp_path):
+    """The weekly run calls this just before grading. It must write the week's
+    status and nothing else: the line archive keeps its own writers."""
+    preds, results, status, load = _locked_week_four(tmp_path)
+    calls = []
+    assert wr.main(['--season', '2026', '--status-only'], now=TUESDAY, load=load, pred_dir=preds,
+                   results_dir=results, status_dir=status,
+                   snapshot=lambda *a: calls.append(a)) == 0
+    assert calls == []
+    saved = json.loads((status / '2026_week4.json').read_text(encoding='utf-8'))
+    assert [g['status'] for g in saved['games']] == ['final', 'started']
+
+
+def test_named_weeks_are_refreshed_even_when_graded(tmp_path):
+    """The backfill: weeks graded before the weekly run took a final snapshot
+    left the refresh's list at grading, so they are named outright."""
+    preds, results, status, load = _locked_week_four(tmp_path)
+    _write(results / '2026_week4_graded.json', [{'graded': True}, {'graded': True}])
+    assert wr.weeks_to_refresh(2026, preds, results) == []
+    calls = []
+    assert wr.main(['--season', '2026', '--weeks', '4'], now=TUESDAY, load=load, pred_dir=preds,
+                   results_dir=results, status_dir=status,
+                   snapshot=lambda *a: calls.append(a)) == 0
+    assert (status / '2026_week4.json').exists() and calls == []
+
+
+def test_a_named_week_with_no_picks_is_named_and_skipped(tmp_path, capsys):
+    preds, results, status, load = _locked_week_four(tmp_path)
+    assert wr.main(['--season', '2026', '--weeks', '4', '9'], now=TUESDAY, load=load, pred_dir=preds,
+                   results_dir=results, status_dir=status, snapshot=lambda *a: None) == 0
+    assert 'week 9: no locked picks' in capsys.readouterr().out
+    assert not (status / '2026_week9.json').exists()
+
+
+def _steps(text):
+    return {m.group(1): m.group(0) for m in re.finditer(r'(?ms)^      - name: (.+?)$.*?(?=^      - name: |\Z)', text)}
+
+
+def test_the_weekly_run_snapshots_the_week_it_grades_before_grading_it():
+    text = _text(WEEKLY)
+    name = 'Refresh the status of the weeks about to be graded'
+    names = re.findall(r'^      - name: (.+)$', text, re.M)
+    assert names.index(name) < names.index('Grade any completed weeks')
+    step = _steps(text)[name]
+    assert 'python -m src.pipeline.weekend_refresh' in step and '--status-only' in step
+    assert '!cancelled()' in step, 'a failed lock step must not also cost the final scores'
+    assert 'continue-on-error: true' in step, 'a status snapshot must never cost a grade'

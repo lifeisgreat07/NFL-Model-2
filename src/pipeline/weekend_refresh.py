@@ -36,7 +36,17 @@ the games the page shows. A predicted game the schedule no longer lists is
 left out and printed, never filled in. A snapshot whose games did not change
 is not rewritten, so a quiet run commits nothing and rebuilds nothing.
 
-Run with: python -m src.pipeline.weekend_refresh [--season 2026]
+THE WEEKLY RUN USES THIS TOO (Stage 37 item 3). Tuesday's run grades a week
+whose last snapshot was taken before Monday night's game, and once graded the
+week leaves `weeks_to_refresh`, so Monday night's score never reached the
+page. So the weekly run calls this with --status-only just before it grades:
+the week about to be graded gets its final snapshot in the same commit as its
+grades. --status-only writes data/game_status/ and nothing else (no line
+snapshot), so the line archive keeps its two writers' schedules apart.
+--weeks names the weeks outright, graded or not: the one-off backfill of the
+weeks graded before this existed.
+
+Run with: python -m src.pipeline.weekend_refresh [--season 2026] [--status-only] [--weeks 1 2 3]
 """
 import argparse
 import json
@@ -149,17 +159,26 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
          status_dir=STATUS_DIR, snapshot=None):
     ap = argparse.ArgumentParser()
     ap.add_argument('--season', type=int, default=None)
+    ap.add_argument('--status-only', action='store_true',
+                    help='write data/game_status/ only, no line snapshot (the weekly run)')
+    ap.add_argument('--weeks', type=int, nargs='+',
+                    help='these locked weeks, graded or not (a backfill)')
     args = ap.parse_args(argv)
     now = now or datetime.now(UTC)
     season = args.season or current_season(now)
-    weeks = weeks_to_refresh(season, pred_dir, results_dir)
+    if args.weeks:
+        weeks = sorted(w for w in args.weeks if (pred_dir / f'{season}_week{w}.json').exists())
+        for w in sorted(set(args.weeks) - set(weeks)):
+            log.warning(f'{season} week {w}: no locked picks, so no snapshot')
+    else:
+        weeks = weeks_to_refresh(season, pred_dir, results_dir)
     if not weeks:
         log.info(f'{season}: no locked week is waiting on grading; nothing to refresh.')
         return 0
     if load is None:
         from src.pipeline.data_loader import load_schedule as load
     sched = load(season)
-    if snapshot is None:
+    if snapshot is None and not args.status_only:
         from src.pipeline.weekly_update import log_line_snapshot as snapshot
     for week in weeks:
         with open(pred_dir / f'{season}_week{week}.json') as f:
@@ -176,7 +195,9 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
             log.warning(f'  WARNING: {away} at {home} is in the picks but not in the schedule; left out')
         # Item 23: the line archive for a locked week (see the docstring).
         # `weeks` holds locked, ungraded weeks only, so no other week is touched.
-        snapshot(season, week, rows)
+        # Not on --status-only (the weekly run) or a --weeks backfill.
+        if not args.status_only and not args.weeks:
+            snapshot(season, week, rows)
     return 0
 
 
