@@ -373,5 +373,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020065",
   "start_utc": "2026-10-09T02:00:00Z"
+ },
+ {
+  "date": "2026-10-08",
+  "home": "CGY",
+  "home_goalie": "Dustin Wolf",
+  "home_status": null,
+  "home_report": null,
+  "away": "COL",
+  "away_goalie": "Mackenzie Blackwood",
+  "away_status": null,
+  "away_report": null,
+  "read_utc": "2026-10-08T00:30:55Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020064",
+  "start_utc": "2026-10-09T01:00:00Z"
  }
 ]
