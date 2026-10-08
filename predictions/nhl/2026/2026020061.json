@@ -1,0 +1,91 @@
+{
+ "game_id": "2026020061",
+ "season": 2026,
+ "slate": "2026-10-08",
+ "start_utc": "2026-10-08T23:00:00Z",
+ "home": "CAR",
+ "away": "VAN",
+ "model_a": 0.8052,
+ "model_b": 0.7604,
+ "pick": "CAR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.807287,
+  "shot_matchup": 11.86924,
+  "goalie_matchup_2000": 0.005063
+ },
+ "market": {
+  "game_id": "2026020061",
+  "start_utc": "2026-10-08T23:00:00Z",
+  "home": "CAR",
+  "away": "VAN",
+  "book": "DraftKings",
+  "home_price": -340.0,
+  "away_price": 270.0,
+  "home_prob": 0.7409,
+  "read_utc": "2026-10-08T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481611,
+   "name": "Pyotr Kochetkov",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/WaltRuff/status/2108203274453103069"
+  },
+  "away": {
+   "player_id": 8480947,
+   "name": "Kevin Lankinen",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/ThomasDrance/status/2108224045984764231"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-08",
+  "read_utc": "2026-10-08T21:01:47Z",
+  "home": [
+   {
+    "name": "Alexander Nikishin",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Seth Jarvis",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Akil Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Chytil",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Thompson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-08T21:01:47Z",
+ "code": "nhl-stage56"
+}

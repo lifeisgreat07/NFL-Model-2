@@ -1,0 +1,91 @@
+{
+ "game_id": "2026020058",
+ "season": 2026,
+ "slate": "2026-10-08",
+ "start_utc": "2026-10-08T23:00:00Z",
+ "home": "MTL",
+ "away": "NSH",
+ "model_a": 0.5949,
+ "model_b": 0.5966,
+ "pick": "MTL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.593456,
+  "shot_matchup": 0.384022,
+  "goalie_matchup_2000": 0.000759
+ },
+ "market": {
+  "game_id": "2026020058",
+  "start_utc": "2026-10-08T23:00:00Z",
+  "home": "MTL",
+  "away": "NSH",
+  "book": "DraftKings",
+  "home_price": -166.0,
+  "away_price": 140.0,
+  "home_prob": 0.5996,
+  "read_utc": "2026-10-08T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8484170,
+   "name": "Jacob Fowler",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/PFrioletRDS/status/2108210742923051063?s=20"
+  },
+  "away": {
+   "player_id": 8477424,
+   "name": "Juuse Saros",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/MaxHerzTalks/status/2108221003893559452?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-08",
+  "read_utc": "2026-10-08T21:01:47Z",
+  "home": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kaiden Guhle",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Oliver Kapanen",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Justus Annunen",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-08T21:01:47Z",
+ "code": "nhl-stage56"
+}

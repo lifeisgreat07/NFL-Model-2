@@ -1,0 +1,60 @@
+{
+ "game_id": "2026020056",
+ "season": 2026,
+ "slate": "2026-10-08",
+ "start_utc": "2026-10-08T23:00:00Z",
+ "home": "BOS",
+ "away": "UTA",
+ "model_a": 0.4645,
+ "model_b": 0.4395,
+ "pick": "UTA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.358098,
+  "shot_matchup": -4.49258,
+  "goalie_matchup_2000": 0.002053
+ },
+ "market": {
+  "game_id": "2026020056",
+  "start_utc": "2026-10-08T23:00:00Z",
+  "home": "BOS",
+  "away": "UTA",
+  "book": "DraftKings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573,
+  "read_utc": "2026-10-08T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480280,
+   "name": "Jeremy Swayman",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/jackstudley13/status/2108215047919218795?s=20"
+  },
+  "away": {
+   "player_id": 8482657,
+   "name": "Sebastian Cossa",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/BagleyKSLsports/status/2108227481211936792"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-08",
+  "read_utc": "2026-10-08T21:01:47Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Maveric Lamoureux",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-08T21:01:47Z",
+ "code": "nhl-stage56"
+}

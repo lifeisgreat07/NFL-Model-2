@@ -1,0 +1,76 @@
+{
+ "game_id": "2026020064",
+ "season": 2026,
+ "slate": "2026-10-08",
+ "start_utc": "2026-10-09T01:00:00Z",
+ "home": "CGY",
+ "away": "COL",
+ "model_a": 0.2752,
+ "model_b": 0.3282,
+ "pick": "COL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -2.041183,
+  "shot_matchup": -8.731083,
+  "goalie_matchup_2000": -0.00223
+ },
+ "market": {
+  "game_id": "2026020064",
+  "start_utc": "2026-10-09T01:00:00Z",
+  "home": "CGY",
+  "away": "COL",
+  "book": "DraftKings",
+  "home_price": 195.0,
+  "away_price": -238.0,
+  "home_prob": 0.325,
+  "read_utc": "2026-10-08T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482445,
+   "name": "Devin Cooley",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/SteinbergYYC/status/2108240526021664924?s=20"
+  },
+  "away": {
+   "player_id": 8475809,
+   "name": "Scott Wedgewood",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/runwriteAarif/status/2108240182919172137?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-08",
+  "read_utc": "2026-10-08T21:01:47Z",
+  "home": [
+   {
+    "name": "Jonathan Huberdeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Georgii Merkulov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan O'Connor",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Trent Miner",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-08T21:01:47Z",
+ "code": "nhl-stage56"
+}

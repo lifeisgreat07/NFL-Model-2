@@ -1,0 +1,111 @@
+{
+ "game_id": "2026020057",
+ "season": 2026,
+ "slate": "2026-10-08",
+ "start_utc": "2026-10-08T23:00:00Z",
+ "home": "BUF",
+ "away": "DAL",
+ "model_a": 0.5468,
+ "model_b": 0.452,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.125504,
+  "shot_matchup": 0.614986,
+  "goalie_matchup_2000": -0.002556
+ },
+ "market": {
+  "game_id": "2026020057",
+  "start_utc": "2026-10-08T23:00:00Z",
+  "home": "BUF",
+  "away": "DAL",
+  "book": "DraftKings",
+  "home_price": 102.0,
+  "away_price": -122.0,
+  "home_prob": 0.4739,
+  "read_utc": "2026-10-08T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480045,
+   "name": "Ukko-Pekka Luukkonen",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/rachelmlenzi/status/2108203158233326040"
+  },
+  "away": {
+   "player_id": 8479979,
+   "name": "Jake Oettinger",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/engelheather/status/2108230789712506964?s=46"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-08",
+  "read_utc": "2026-10-08T21:01:47Z",
+  "home": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Conor Timmins",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Rathbone",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jason Zucker",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Josh Doan",
+    "position": "RW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Topias Leinonen",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Cameron Hughes",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Harrison Scott",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Joel Kiviranta",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Luke Krys",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Duchene",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-08T21:01:47Z",
+ "code": "nhl-stage56"
+}

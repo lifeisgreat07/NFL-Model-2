@@ -1,0 +1,96 @@
+{
+ "game_id": "2026020065",
+ "season": 2026,
+ "slate": "2026-10-08",
+ "start_utc": "2026-10-09T02:00:00Z",
+ "home": "VGK",
+ "away": "TOR",
+ "model_a": 0.705,
+ "model_b": 0.6061,
+ "pick": "VGK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.969239,
+  "shot_matchup": 7.936983,
+  "goalie_matchup_2000": 0.000257
+ },
+ "market": {
+  "game_id": "2026020065",
+  "start_utc": "2026-10-09T02:00:00Z",
+  "home": "VGK",
+  "away": "TOR",
+  "book": "DraftKings",
+  "home_price": -170.0,
+  "away_price": 142.0,
+  "home_prob": 0.6038,
+  "read_utc": "2026-10-08T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478499,
+   "name": "Adin Hill",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JesseGranger_/status/2108262531701809520?s=20"
+  },
+  "away": {
+   "player_id": 8475683,
+   "name": "Sergei Bobrovsky",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/davidalter/status/2108260684236836915"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-08",
+  "read_utc": "2026-10-08T21:01:47Z",
+  "home": [
+   {
+    "name": "Lukas Cormier",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Raphael Lavoie",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Victor Olofsson",
+    "position": "LW",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Cade Webber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dakota Joshua",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elvis Merzlikins",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Max Domi",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Villeneuve",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-08T21:01:47Z",
+ "code": "nhl-stage56"
+}

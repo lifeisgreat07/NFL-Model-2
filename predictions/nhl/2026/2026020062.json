@@ -1,0 +1,81 @@
+{
+ "game_id": "2026020062",
+ "season": 2026,
+ "slate": "2026-10-08",
+ "start_utc": "2026-10-08T23:30:00Z",
+ "home": "NYI",
+ "away": "CHI",
+ "model_a": 0.6864,
+ "model_b": 0.6336,
+ "pick": "NYI",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.815941,
+  "shot_matchup": 6.251659,
+  "goalie_matchup_2000": 0.002871
+ },
+ "market": {
+  "game_id": "2026020062",
+  "start_utc": "2026-10-08T23:30:00Z",
+  "home": "NYI",
+  "away": "CHI",
+  "book": "DraftKings",
+  "home_price": -185.0,
+  "away_price": 154.0,
+  "home_prob": 0.6225,
+  "read_utc": "2026-10-08T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478009,
+   "name": "Ilya Sorokin",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/SWhyno/status/2108218255861236091?s=20"
+  },
+  "away": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-08",
+  "read_utc": "2026-10-08T21:01:47Z",
+  "home": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Mathew Barzal",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Andrew Mangiapane",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Connor Bedard",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Teuvo Teravainen",
+    "position": "C",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-08T21:01:47Z",
+ "code": "nhl-stage56"
+}

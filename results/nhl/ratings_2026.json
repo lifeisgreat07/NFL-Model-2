@@ -190,19 +190,19 @@
   },
   {
    "player_id": "8475809",
-   "name": null,
+   "name": "Scott Wedgewood",
    "rating": 0.00304,
    "weighted_shots": 341.6
   },
   {
    "player_id": "8478009",
-   "name": null,
+   "name": "Ilya Sorokin",
    "rating": 0.00302,
    "weighted_shots": 450.4
   },
   {
    "player_id": "8480280",
-   "name": null,
+   "name": "Jeremy Swayman",
    "rating": 0.00253,
    "weighted_shots": 533.2
   },
@@ -220,7 +220,7 @@
   },
   {
    "player_id": "8476999",
-   "name": null,
+   "name": "Linus Ullmark",
    "rating": 0.00181,
    "weighted_shots": 396.0
   },
@@ -238,7 +238,7 @@
   },
   {
    "player_id": "8479979",
-   "name": null,
+   "name": "Jake Oettinger",
    "rating": 0.00133,
    "weighted_shots": 474.2
   },
@@ -250,7 +250,7 @@
   },
   {
    "player_id": "8479361",
-   "name": null,
+   "name": "Joseph Woll",
    "rating": 0.00132,
    "weighted_shots": 411.6
   },
@@ -298,13 +298,13 @@
   },
   {
    "player_id": "8482445",
-   "name": null,
+   "name": "Devin Cooley",
    "rating": 0.00081,
    "weighted_shots": 201.3
   },
   {
    "player_id": "8484170",
-   "name": null,
+   "name": "Jacob Fowler",
    "rating": 0.00081,
    "weighted_shots": 110.2
   },
@@ -328,7 +328,7 @@
   },
   {
    "player_id": "8477968",
-   "name": null,
+   "name": "Alex Nedeljkovic",
    "rating": 0.00069,
    "weighted_shots": 248.1
   },
@@ -346,13 +346,13 @@
   },
   {
    "player_id": "8482657",
-   "name": null,
+   "name": "Sebastian Cossa",
    "rating": 0.00047,
    "weighted_shots": 18.5
   },
   {
    "player_id": "8483710",
-   "name": null,
+   "name": "Dennis Hildeby",
    "rating": 0.00046,
    "weighted_shots": 93.1
   },
@@ -472,7 +472,7 @@
   },
   {
    "player_id": "8481611",
-   "name": null,
+   "name": "Pyotr Kochetkov",
    "rating": -0.00012,
    "weighted_shots": 86.0
   },
@@ -658,7 +658,7 @@
   },
   {
    "player_id": "8480045",
-   "name": null,
+   "name": "Ukko-Pekka Luukkonen",
    "rating": -0.00122,
    "weighted_shots": 343.2
   },
@@ -700,7 +700,7 @@
   },
   {
    "player_id": "8475683",
-   "name": null,
+   "name": "Sergei Bobrovsky",
    "rating": -0.0017,
    "weighted_shots": 388.8
   },
@@ -748,7 +748,7 @@
   },
   {
    "player_id": "8480947",
-   "name": null,
+   "name": "Kevin Lankinen",
    "rating": -0.00519,
    "weighted_shots": 396.2
   }

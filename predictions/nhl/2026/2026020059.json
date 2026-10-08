@@ -1,0 +1,91 @@
+{
+ "game_id": "2026020059",
+ "season": 2026,
+ "slate": "2026-10-08",
+ "start_utc": "2026-10-08T23:00:00Z",
+ "home": "OTT",
+ "away": "PHI",
+ "model_a": 0.6568,
+ "model_b": 0.6279,
+ "pick": "OTT",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.68642,
+  "shot_matchup": 5.216128,
+  "goalie_matchup_2000": 0.000483
+ },
+ "market": {
+  "game_id": "2026020059",
+  "start_utc": "2026-10-08T23:00:00Z",
+  "home": "OTT",
+  "away": "PHI",
+  "book": "DraftKings",
+  "home_price": -180.0,
+  "away_price": 150.0,
+  "home_prob": 0.6164,
+  "read_utc": "2026-10-08T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476999,
+   "name": "Linus Ullmark",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/AndrewWilimek/status/2108215360394846430"
+  },
+  "away": {
+   "player_id": 8479361,
+   "name": "Joseph Woll",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/NHLFlyers/status/2108227599847829556"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-08",
+  "read_utc": "2026-10-08T21:01:47Z",
+  "home": [
+   {
+    "name": "Andre Burakovsky",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Artem Zub",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jake Sanderson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Kurtis MacDermid",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Helge Grans",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nikita Grebenkin",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Ristolainen",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-08T21:01:47Z",
+ "code": "nhl-stage56"
+}

@@ -1,0 +1,106 @@
+{
+ "game_id": "2026020063",
+ "season": 2026,
+ "slate": "2026-10-08",
+ "start_utc": "2026-10-09T00:00:00Z",
+ "home": "STL",
+ "away": "SJS",
+ "model_a": 0.627,
+ "model_b": 0.5615,
+ "pick": "STL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.671682,
+  "shot_matchup": 1.955405,
+  "goalie_matchup_2000": 0.002614
+ },
+ "market": {
+  "game_id": "2026020063",
+  "start_utc": "2026-10-09T00:00:00Z",
+  "home": "STL",
+  "away": "SJS",
+  "book": "DraftKings",
+  "home_price": -148.0,
+  "away_price": 124.0,
+  "home_prob": 0.5721,
+  "read_utc": "2026-10-08T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480981,
+   "name": "Joel Hofer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/lkorac10/status/2108238121917710379?s=20"
+  },
+  "away": {
+   "player_id": 8477968,
+   "name": "Alex Nedeljkovic",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Sheng_Peng/status/2108236350197784669"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-08",
+  "read_utc": "2026-10-08T21:01:47Z",
+  "home": [
+   {
+    "name": "Alexey Toropchenko",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Felix Trudeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan Mailloux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Adam Gaudette",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Alex Barre-Boulet",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Cam Lund",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Macklin Celebrini",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-08T21:01:47Z",
+ "code": "nhl-stage56"
+}
