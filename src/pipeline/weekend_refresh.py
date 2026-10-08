@@ -25,7 +25,7 @@ archive stops at the lock and the closing line the Stage 28 backtest needs
 is never captured. So for every locked, ungraded week, this also appends
 the schedule's current spreads to data/line_history/ -- through the weekly
 run's own log_line_snapshot, so there is one format and one de-duplication
-rule (one capture per game per day, a game with no spread skipped). It
+rule (a row when a game's line moves, a game with no spread skipped). It
 appends and never rewrites a past capture, and it touches no week that is
 not locked. Two writers of the archive are safe where two writers of picks
 are not: an archive row is a dated observation, nothing reads it to make a
