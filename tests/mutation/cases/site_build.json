@@ -12,8 +12,8 @@
     {
       "id": "site-build-keeps-the-redirect-as-the-nfl-board",
       "why": "after this stage the live root is the redirect. A failed NFL build that fell back to it would publish a page at nfl/ that sends the visitor to nfl/, a loop.",
-      "find": "        if root is not None and REDIRECT_MARK.encode() not in root:\n",
-      "replace": "        if root is not None:\n",
+      "find": "        if root is not None and REDIRECT_MARK.encode() not in root and HOME_MARK.encode() not in root:\n",
+      "replace": "        if root is not None and HOME_MARK.encode() not in root:\n",
       "expect_caught_by": "test_the_nfl_falls_back_to_the_old_root_page_but_never_to_the_redirect"
     },
     {

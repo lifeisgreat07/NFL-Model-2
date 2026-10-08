@@ -36,7 +36,11 @@ def test_the_bar_and_the_line_are_hidden_at_desktop_widths():
 
 
 def test_the_bar_holds_the_h1_and_a_theme_button_before_main():
-    bar = re.search(r'<header class="topbar">(.*?)</header>\s*<main id="main-content"', TEMPLATE, re.S)
+    # Only the phone's strip of sport pills (Stage 59) may sit between the
+    # bar and <main>; tests/test_sport_switch.py holds the strip itself.
+    bar = re.search(r'<header class="topbar">(.*?)</header>\s*'
+                    r'(?:<nav class="sport-switch sport-strip" aria-label="Sports">.*?</nav>\s*)?'
+                    r'<main id="main-content"', TEMPLATE, re.S)
     assert bar, 'the top bar is not directly before <main>'
     assert re.search(r'<h1>Pick\'em Model <span class="topbar-sub">Weekly NFL picks, graded</span></h1>', bar.group(1))
     assert '<button type="button" class="topbar-theme" aria-label="Toggle light and dark theme">' in bar.group(1)

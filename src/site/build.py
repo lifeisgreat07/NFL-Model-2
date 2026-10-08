@@ -2,9 +2,8 @@
 
 The site the deploy publishes:
 
-    index.html            sends a visitor to the NFL's board, keeping any
-                          #picks= share link and query string (until the home
-                          page, Stage 59, takes the root)
+    index.html            the home page (Stage 59, src/site/home.py): a card
+                          per sport; a #picks= share link is sent on to nfl/
     nfl/index.html        the NFL's board, and nfl/dist/ its printable picks
     nhl/index.html        the NHL's pages
     nba/index.html        the NBA's pages
@@ -54,9 +53,10 @@ SHARED_FILES = {
     'assets/apple-touch-icon.png': 'assets/apple-touch-icon.png',
 }
 
-#: What the root redirect says, so a live copy of it is never mistaken for a
-#: sport's page.
+#: What the root redirect and the home page say about themselves, so a live
+#: copy of the root is never mistaken for the NFL's board.
 REDIRECT_MARK = 'data-site-redirect'
+HOME_MARK = 'data-site-home'
 
 Runner = Callable[[list[str]], int]
 Fetcher = Callable[[str], 'bytes | None']
@@ -128,7 +128,7 @@ def live_copy(sport: str, live_url: str, fetcher: Fetcher) -> bytes | None:
     body = fetcher(f'{base}/{sport}/')
     if body is None and sport == 'nfl':
         root = fetcher(f'{base}/')
-        if root is not None and REDIRECT_MARK.encode() not in root:
+        if root is not None and REDIRECT_MARK.encode() not in root and HOME_MARK.encode() not in root:
             body = root
     return body
 
@@ -197,7 +197,29 @@ def assemble_shared(out: Path) -> None:
         target = out / dest
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / src, target)
-    (out / 'index.html').write_text(redirect_page(), encoding='utf-8')
+
+
+def build_home(out: Path, runner: Runner = run, unpublished: tuple[str, ...] = ()) -> SportResult:
+    """The home page, in a process of its own like every sport's. If it
+    fails, the root forwards to the NFL board instead, as it did before the
+    home page existed, and the failure is reported like a sport's."""
+    res = SportResult('home')
+    page = out / 'index.html'
+    cmd = [sys.executable, '-B', '-m', 'src.site.home', '--out', str(page), '--unpublished', ','.join(unpublished)]
+    try:
+        code = runner(cmd)
+        res.log.append(f'src.site.home: exit {code}')
+        if code != 0:
+            raise RuntimeError(f'src.site.home exited {code}')
+        html = page.read_text(encoding='utf-8') if page.exists() else ''
+        if not html.strip() or unfilled(html):
+            raise RuntimeError(f'index.html is empty or unfilled: {unfilled(html)}')
+        res.built = True
+    except Exception as exc:  # the home page's failure, and only the home page's
+        res.error = str(exc)
+        page.write_text(redirect_page(), encoding='utf-8')
+        res.kept_live = True
+    return res
 
 
 def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS,
@@ -207,6 +229,7 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     out.mkdir(parents=True)
     results = [build_sport(s, out, live_url, runner, fetcher) for s in sports]
     assemble_shared(out)
+    results.append(build_home(out, runner, tuple(r.sport for r in results if not r.published)))
     return results
 
 

@@ -66,7 +66,7 @@ def no_network(url):
 def test_every_sport_lands_in_its_own_folder(root_page, tmp_path):
     out = tmp_path / 'site'
     results = build.build_site(out, LIVE, runner=FakeRunner(out), fetcher=no_network)
-    assert [r.built for r in results] == [True, True, True]
+    assert [(r.sport, r.built) for r in results] == [('nfl', True), ('nhl', True), ('nba', True), ('home', True)]
     for sport in build.SPORTS:
         assert (out / sport / 'index.html').read_text(encoding='utf-8') == PAGE.format(sport=sport)
     assert (out / 'nfl' / 'dist' / 'picks_2026_week5.pdf').exists()
@@ -109,10 +109,10 @@ def test_the_nfl_falls_back_to_the_old_root_page_but_never_to_the_redirect(root_
     assert results[0].kept_live
     assert (out / 'nfl' / 'index.html').read_bytes() == board
 
-    redirect = build.redirect_page().encode('utf-8')
-    results = build.build_site(out, LIVE, runner=FakeRunner(out, fail={'nfl'}),
-                               fetcher=lambda url: redirect if url == f'{LIVE}/' else None)
-    assert not results[0].published
+    for root in (build.redirect_page().encode('utf-8'), b'<html data-site-home><body>home</body></html>'):
+        results = build.build_site(out, LIVE, runner=FakeRunner(out, fail={'nfl'}),
+                                   fetcher=lambda url, root=root: root if url == f'{LIVE}/' else None)
+        assert not results[0].published
 
 
 def test_no_nfl_page_at_all_refuses_to_publish(root_page, tmp_path, monkeypatch):

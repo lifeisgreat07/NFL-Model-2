@@ -1,0 +1,90 @@
+{
+  "target": "src/site/home.py",
+  "tests": "tests/test_site_home.py",
+  "cases": [
+    {
+      "id": "home-drops-the-picks-forward",
+      "target": "src/site/home/page.html",
+      "why": "the home page stops sending a #picks= link on, so every shared-picks link made while the board lived at the root opens a page with no picks on it.",
+      "find": "  if(/[#&]picks=/.test(location.hash)) location.replace('nfl/' + location.search + location.hash);\n",
+      "replace": "",
+      "expect_caught_by": "test_an_old_shared_picks_link_is_sent_on_to_the_nfl_board"
+    },
+    {
+      "id": "home-pill-kept-for-a-sport-with-no-page",
+      "target": "src/site/home/home.js",
+      "why": "a sport with no page in this build loses its card's link but keeps its pill, so the top of the home page sends visitors to GitHub's 404.",
+      "find": "  if(HOME[sport] && HOME[sport].built) continue;\n",
+      "replace": "  continue;\n",
+      "expect_caught_by": "test_a_sport_with_no_page_loses_its_pill_too"
+    },
+    {
+      "id": "home-page-loses-its-section",
+      "target": "src/site/home/page.html",
+      "why": "the home page's content is no longer a section.page, so the browser checks find nothing to walk on it and fail at every width while saying nothing about the page itself.",
+      "find": "<section class=\"page active home-page\" id=\"page-home\">",
+      "replace": "<div class=\"home-page\">",
+      "expect_caught_by": "test_the_browser_checks_can_walk_the_home_page"
+    },
+    {
+      "id": "home-kickoff-read-as-utc",
+      "why": "an NFL kickoff is read as UTC rather than Eastern, so the card's next kickoff is four or five hours early and a week reads as played while its Sunday night game is still to come.",
+      "find": "    local = pd.Timestamp(f'{day} {clock}').tz_localize('America/New_York')\n",
+      "replace": "    local = pd.Timestamp(f'{day} {clock}').tz_localize('UTC')\n",
+      "expect_caught_by": "test_an_nfl_kickoff_is_eastern_time_with_daylight_saving_by_the_date"
+    },
+    {
+      "id": "home-counts-cancelled-games",
+      "why": "a cancelled or postponed game counts towards tonight, so the card promises a game that will not be played.",
+      "find": " and g.get('status') not in ('cancelled', 'postponed'))\n",
+      "replace": ")\n",
+      "expect_caught_by": "test_the_nhl_card_carries_two_weeks_of_games_and_the_picks_record"
+    },
+    {
+      "id": "home-record-spans-seasons",
+      "why": "Model B's record takes in every season's graded weeks, so 'this season' is not this season.",
+      "find": "        if s != season:\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_the_nfl_card_reads_the_latest_locked_week_and_model_bs_record"
+    },
+    {
+      "id": "home-ignores-unpublished",
+      "why": "a sport with no page in this build keeps a card that links to it, so the home page sends visitors to a missing page.",
+      "find": "    for code in filter(None, args.unpublished.split(',')):\n        data[code] = {'built': False}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_command_line_marks_unpublished_sports_as_not_built"
+    },
+    {
+      "id": "home-json-can-close-its-script",
+      "why": "the data is put in the page without escaping '<', so a string holding </script> ends the script and the rest is read as markup.",
+      "find": "            .replace('<', '\\\\u003c').replace('>', '\\\\u003e').replace('&', '\\\\u0026'))\n",
+      "replace": "            )\n",
+      "expect_caught_by": "test_the_page_is_filled_and_its_data_cannot_close_its_script"
+    },
+    {
+      "id": "site-build-home-not-told-unpublished",
+      "target": "src/site/build.py",
+      "why": "the site build stops telling the home page which sports failed, so the home page links to them anyway.",
+      "find": "    cmd = [sys.executable, '-B', '-m', 'src.site.home', '--out', str(page), '--unpublished', ','.join(unpublished)]\n",
+      "replace": "    cmd = [sys.executable, '-B', '-m', 'src.site.home', '--out', str(page)]\n",
+      "expect_caught_by": "test_the_site_build_tells_the_home_page_which_sports_have_no_page"
+    },
+    {
+      "id": "site-build-home-failure-leaves-no-root",
+      "target": "src/site/build.py",
+      "why": "a home page that fails to build leaves no root page at all, so the site's address shows a 404 until the next deploy.",
+      "find": "        page.write_text(redirect_page(), encoding='utf-8')\n        res.kept_live = True\n",
+      "replace": "        res.kept_live = False\n",
+      "expect_caught_by": "test_a_home_page_that_fails_leaves_the_root_forwarding_to_the_nfl"
+    },
+    {
+      "id": "site-build-keeps-the-home-page-as-the-nfl-board",
+      "target": "src/site/build.py",
+      "why": "after Stage 59 the live root is the home page. A failed NFL build that fell back to it would publish the home page at nfl/.",
+      "find": "        if root is not None and REDIRECT_MARK.encode() not in root and HOME_MARK.encode() not in root:\n",
+      "replace": "        if root is not None and REDIRECT_MARK.encode() not in root:\n",
+      "expect_caught_by": "test_the_nfl_falls_back_to_the_old_root_page_but_never_to_the_redirect",
+      "tests": "tests/test_site_build.py"
+    }
+  ]
+}
