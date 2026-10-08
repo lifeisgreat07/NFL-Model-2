@@ -48,6 +48,22 @@
       "find": "uses: actions/setup-python@",
       "replace": "uses: ./actions/setup-python@",
       "expect_caught_by": "test_the_scan_finds_every_use_of_the_pinned_actions"
+    },
+    {
+      "id": "deploy-pages-back-on-a-movable-tag",
+      "target": ".github/workflows/deploy-pages.yml",
+      "why": "the step that publishes the site, holding pages: write and id-token: write, runs whatever @v4 points at today",
+      "find": "uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5",
+      "replace": "uses: actions/deploy-pages@v4",
+      "expect_caught_by": "test_each_is_pinned_to_a_full_commit_sha"
+    },
+    {
+      "id": "a-new-action-arrives-on-a-tag",
+      "target": ".github/workflows/run-tests.yml",
+      "why": "a workflow gains an action no list names, on a movable tag; a scan that checks only the listed actions would pass it",
+      "find": "uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0",
+      "replace": "uses: actions/github-script@v7",
+      "expect_caught_by": "test_every_action_in_every_workflow_is_on_the_list"
     }
   ]
 }

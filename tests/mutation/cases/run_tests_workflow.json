@@ -26,7 +26,7 @@
     {
       "id": "run-tests-without-node",
       "why": "node is not installed, so every test that runs template code in node skips green instead of running",
-      "find": "        uses: actions/setup-node@v4",
+      "find": "        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0",
       "replace": "        uses: actions/setup-python@v5",
       "expect_caught_by": "test_it_installs_node"
     },

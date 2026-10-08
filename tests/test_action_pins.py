@@ -14,8 +14,13 @@ also the commit of the newest release in that major, so pinning changed
 nothing that runs. checkout and setup-python are on two majors each (some
 workflows moved to v6 and some did not); pinning keeps each where it was.
 
-setup-node, cache, upload/download-artifact and the Pages actions are not in
-the item and stay on tags for now.
+Stage 45 item 1 pinned the rest: setup-node, cache, upload- and
+download-artifact and the two Pages actions (deploy-pages runs with
+`pages: write` and `id-token: write`). Their SHAs were read with
+`git ls-remote` on 2026-10-06, again the commit each major tag pointed at,
+with the newest release on that commit in the comment. The scan now covers
+every `uses:` in every workflow, so a new action arriving on a tag fails here
+rather than waiting for someone to add it to a list.
 """
 import re
 from pathlib import Path
@@ -29,24 +34,35 @@ PINNED = {
     'stefanzweifel/git-auto-commit-action': 3,
     'actions/checkout': 22,
     'actions/setup-python': 22,
+    'actions/setup-node': 4,
+    'actions/cache': 1,
+    'actions/upload-artifact': 2,
+    'actions/download-artifact': 1,
+    'actions/upload-pages-artifact': 1,
+    'actions/deploy-pages': 1,
 }
 USES = re.compile(r'^\s*(?:-\s*)?uses:\s*(\S+?)@(\S+)(.*)$', re.M)
 VERSION = re.compile(r'\s+#\s+(v\d+)\.\d+\.\d+\s*')
 
 
 def uses():
+    """Every `uses:` in every workflow, pinned list or not."""
     out = []
     for p in sorted(WORKFLOWS.glob('*.yml')):
         for action, ref, rest in USES.findall(p.read_text(encoding='utf-8').replace('\r\n', '\n')):
-            if action.lower() in PINNED:
-                out.append((p.name, action.lower(), ref, rest))
+            out.append((p.name, action.lower(), ref, rest))
     return out
+
+
+def test_every_action_in_every_workflow_is_on_the_list():
+    unlisted = sorted({(f, a) for f, a, _, _ in uses() if a not in PINNED})
+    assert not unlisted, f'an action no test counts: {unlisted}'
 
 
 def test_the_scan_finds_every_use_of_the_pinned_actions():
     counts = {a: 0 for a in PINNED}
     for _, a, _, _ in uses():
-        counts[a] += 1
+        counts[a] = counts.get(a, 0) + 1
     assert counts == PINNED, counts
 
 
