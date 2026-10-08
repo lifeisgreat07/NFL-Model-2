@@ -116,6 +116,7 @@ def game_status(row, now):
 def build_week(preds, week_rows, now):
     """(games, missing): one entry per predicted game, in the picks' order,
     and the (away, home) pairs the schedule no longer lists."""
+    from src.pipeline.weekly_update import _venue, site_is_neutral
     by_pair = {(r['away_team'], r['home_team']): r for _, r in week_rows.iterrows()}
     games, missing = [], []
     for p in preds:
@@ -131,6 +132,9 @@ def build_week(preds, week_rows, now):
             'away_score': _score(row.get('away_score')) if final else None,
             'home_score': _score(row.get('home_score')) if final else None,
             'spread_line': _number(row.get('spread_line')),
+            # Stage 37 item 6, for weeks locked before the pick carried it.
+            'neutral_site': site_is_neutral(row),
+            'venue': _venue(row),
         })
     return games, missing
 
@@ -178,6 +182,7 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
     if load is None:
         from src.pipeline.data_loader import load_schedule as load
     sched = load(season)
+    from src.pipeline.weekly_update import with_usual_stadium
     if snapshot is None and not args.status_only:
         from src.pipeline.weekly_update import log_line_snapshot as snapshot
     for week in weeks:
@@ -185,7 +190,7 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
             preds = json.load(f)
         # Week alone, not game type: nflverse numbers playoff weeks on from
         # the regular season (19, 20, ...), so a week number is unique.
-        rows = sched[sched['week'] == week]
+        rows = with_usual_stadium(sched, sched[sched['week'] == week])
         games, missing = build_week(preds, rows, now)
         counts = {s: sum(g['status'] == s for g in games) for s in ('final', 'started', 'upcoming')}
         wrote = write_week(season, week, games, now, status_dir)

@@ -517,6 +517,11 @@ def build_games_js(preds: list[Pick], graded_lookup_by_key: dict[tuple[str, str]
             # Week Board down rather than render a card with no start time.
             # Absent stays absent: None, never a fabricated date.
             'gameday': p.get('gameday'),
+            # Stage 37 item 6: the saved pick says, or failing that (a week
+            # locked before picks carried it) the status snapshot does.
+            'neutral': bool(p.get('neutral_site') if p.get('neutral_site') is not None
+                            else status.get('neutral_site')),
+            'venue': p.get('venue') or status.get('venue'),
             'gametime_et': p.get('gametime_et'),
             'weekday': p.get('weekday'),
             'spread': p.get('spread_line'),

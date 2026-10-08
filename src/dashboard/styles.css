@@ -936,6 +936,10 @@
      --text from body (tests/test_css_tokens_defined.py). */
   .card-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
     color:var(--text); letter-spacing:.03em; margin-bottom:2px;}
+  /* A neutral site (Stage 37 item 6): the kickoff line's size and colour,
+     because it answers the same question, where. */
+  .card-site{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11);
+    color:var(--text-2); letter-spacing:.03em; margin-bottom:2px;}
   /* Where to watch (Stage 17): the network name and nothing else, inside
      the kickoff line because it answers the same question -- when and where.
      A border, not a fill or a hue: elevation is a border here, and colour is

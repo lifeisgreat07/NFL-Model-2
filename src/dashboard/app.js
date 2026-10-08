@@ -1448,6 +1448,17 @@ function gameHasScore(g){
     && g.home_score !== null && g.home_score !== undefined;
 }
 
+/* A neutral site (Stage 37 item 6). The game still has a listed home team
+   and both models still give it the home edge, which at Wembley is a
+   modelling choice the reader should see, not find in the Methodology page.
+   Whether a neutral game should lose the home term is a registration for
+   Mark (Stage 38), not something this line decides. */
+function cardSiteLine(g){
+  if(!g.neutral) return '';
+  const where = g.venue ? ` · ${escapeHtml(g.venue)}` : '';
+  return `Neutral site${where}. The models still give ${escapeHtml(g.home)} the home edge.`;
+}
+
 function cardStatusLine(g){
   const hasScore = gameHasScore(g);
   // Just the score. Until 2026-09-28 an ungraded final also said when the
@@ -1707,11 +1718,13 @@ function renderGames(){
     const kickoff = kickoffLabel(g);
     const tvPill = cardTvPill(g);
     const statusLine = cardStatusLine(g);
+    const siteLine = cardSiteLine(g);
     const qbLine = cardQbLine(g), newsLine = cardNewsLine(g, news);
     return `<div class="game-card ${g.flag?'has-flag':''}">
       ${matchupHeader(g)}
       ${kickoff || tvPill ? `<div class="card-kickoff">${kickoff}${tvPill}</div>` : ''}
       ${statusLine ? `<div class="card-status">${statusLine}</div>` : ''}
+      ${siteLine ? `<div class="card-site">${siteLine}</div>` : ''}
       <div class="game-top">
         <div class="tag-row" style="display:flex; gap:var(--s2); align-items:center;">
           ${gradedTag}

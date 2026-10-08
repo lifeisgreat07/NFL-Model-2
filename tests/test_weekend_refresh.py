@@ -73,11 +73,11 @@ def test_a_week_carries_scores_only_when_final_and_follows_the_picks():
                                     pick('KC', 'LV'), pick('DAL', 'HOU')], rows, SUNDAY)
     assert games == [
         {'away': 'PIT', 'home': 'CLE', 'status': 'final', 'away_score': 20,
-         'home_score': 17, 'spread_line': -3.0},
+         'home_score': 17, 'spread_line': -3.0, 'neutral_site': None, 'venue': None},
         {'away': 'NE', 'home': 'BUF', 'status': 'started', 'away_score': None,
-         'home_score': None, 'spread_line': 3.0},
+         'home_score': None, 'spread_line': 3.0, 'neutral_site': None, 'venue': None},
         {'away': 'KC', 'home': 'LV', 'status': 'upcoming', 'away_score': None,
-         'home_score': None, 'spread_line': None},
+         'home_score': None, 'spread_line': None, 'neutral_site': None, 'venue': None},
     ]
     assert missing == [('DAL', 'HOU')], 'a pick the schedule lost is reported, never filled in'
 

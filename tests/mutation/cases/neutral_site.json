@@ -1,0 +1,74 @@
+{
+  "target": "src/pipeline/weekly_update.py",
+  "tests": "tests/test_neutral_site.py",
+  "cases": [
+    {
+      "id": "neutral-unknown-reads-as-home",
+      "why": "a schedule that does not say where a game is played reads as a home game, so a source that drops the column silently tells the card every game is at home.",
+      "find": "    return False if known else None",
+      "replace": "    return False",
+      "expect_caught_by": "test_the_schedule_location_reads_as_neutral_or_not_or_unknown"
+    },
+    {
+      "id": "neutral-stadium-rule-dropped",
+      "why": "only the schedule's location decides, so a game listed 'Home' at a stadium that is not the home team's (2026 week 5's PHI at JAX, at Tottenham) says nothing on its card.",
+      "find": "        if here != usual:\n            return True\n        return False",
+      "replace": "        return False",
+      "expect_caught_by": "test_a_game_away_from_the_usual_stadium_is_neutral_even_when_listed_home"
+    },
+    {
+      "id": "neutral-usual-stadium-is-the-rarest",
+      "why": "the usual stadium is taken as the one a team hosts FEWEST games at, so its London game reads as home and every real home game as neutral.",
+      "find": "    return {team: str(grp['stadium'].value_counts().idxmax())",
+      "replace": "    return {team: str(grp['stadium'].value_counts().idxmin())",
+      "expect_caught_by": "test_the_usual_stadium_is_where_a_team_hosts_most_of_its_games"
+    },
+    {
+      "id": "neutral-weekly-run-reads-the-week-alone",
+      "why": "the weekly run reads the week's rows without the season's usual stadiums, so the stadium rule never fires on a saved pick.",
+      "find": "    week_games = with_usual_stadium(sched, sched[sched['week'] == week])",
+      "replace": "    week_games = sched[sched['week'] == week]",
+      "expect_caught_by": "test_both_readers_add_the_usual_stadium_from_the_whole_season"
+    },
+    {
+      "id": "neutral-refresh-reads-the-week-alone",
+      "target": "src/pipeline/weekend_refresh.py",
+      "why": "the weekend refresh reads the week's rows without the season's usual stadiums, so a week locked before picks carried the flag never gets it for a game listed 'Home'.",
+      "find": "        rows = with_usual_stadium(sched, sched[sched['week'] == week])",
+      "replace": "        rows = sched[sched['week'] == week]",
+      "expect_caught_by": "test_both_readers_add_the_usual_stadium_from_the_whole_season"
+    },
+    {
+      "id": "neutral-snapshot-not-carried",
+      "target": "src/pipeline/weekend_refresh.py",
+      "why": "the status snapshot drops the flag, so a neutral game in a week locked before picks carried it never says so.",
+      "find": "            'neutral_site': site_is_neutral(row),\n",
+      "replace": "",
+      "expect_caught_by": "test_the_status_snapshot_carries_it_for_weeks_locked_before_picks_did"
+    },
+    {
+      "id": "neutral-page-ignores-the-snapshot",
+      "target": "src/pipeline/generate_dashboard.py",
+      "why": "the page reads the flag from the pick only, so every week locked before picks carried it shows no neutral site.",
+      "find": "                            else status.get('neutral_site')),",
+      "replace": "                            else None),",
+      "expect_caught_by": "test_the_page_takes_the_pick_first_then_the_snapshot"
+    },
+    {
+      "id": "neutral-line-on-every-card",
+      "target": "src/dashboard/app.js",
+      "why": "the line is drawn whatever the flag says, so every home game claims a neutral site.",
+      "find": "  if(!g.neutral) return '';",
+      "replace": "  if(false) return '';",
+      "expect_caught_by": "test_a_home_game_draws_nothing"
+    },
+    {
+      "id": "neutral-venue-unescaped",
+      "target": "src/dashboard/app.js",
+      "why": "the venue name from the schedule goes into the card unescaped, so a stray angle bracket in an upstream field becomes markup.",
+      "find": "  const where = g.venue ? ` · ${escapeHtml(g.venue)}` : '';",
+      "replace": "  const where = g.venue ? ` · ${g.venue}` : '';",
+      "expect_caught_by": "test_the_venue_is_escaped"
+    }
+  ]
+}
