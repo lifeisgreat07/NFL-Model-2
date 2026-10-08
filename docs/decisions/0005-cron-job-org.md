@@ -31,6 +31,12 @@ Mark's pick on 2026-10-04: a web page, with nothing to deploy or maintain.
   update it is not harmless: a late copy of a dispatched Thursday lock
   would see the week locked, move to the next one and save a preview
   mid-week. Hence the slot guard before its job is switched on.
+  **The guard exists since Stage 42 item 3**: the Weekly update's first
+  job, `slot-guard`, works out the run's slot and reads the last served
+  slot from `data/run_slots/weekly-update.json` on origin/main; a slot
+  already served is skipped, and the runs queue in one concurrency group.
+  A guard that fails lets the week run (fail open) and raises its own
+  alert. `tests/test_slot_guard.py` holds it.
 - A credential outside GitHub, with an expiry to renew.
 - A missed request is seen only through cron-job.org's failure e-mail and
   the delay line in the run that did start.
