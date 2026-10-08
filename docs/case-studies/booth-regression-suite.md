@@ -116,6 +116,25 @@ The run also turned up two problems in the suite itself. Both are now fixed.
   by hand to 9d2d81e, with a note saying why; the run's log shows that
   hash in both the assembly step and the prompt.
 
+## The second fixture: a cross-sport leak
+
+The site now carries three sports, and the rule that matters most between
+them is that nothing bleeds: an NHL change must not move a byte of the
+NFL's page. `tests/booth_fixtures/cross-sport-leak/` (Stage 60 item 2) is a
+pull request that breaks that rule on purpose: its NHL page reads the NFL's
+results through a shared reader whose default is the NFL, while its
+description says the page still reads only the NHL's files and its test,
+which greps for the word "nfl", passes. It was seeded rather than taken
+from a real audit, and its `fixture.json` says so.
+
+Mark approved the run, and it was started after the 2026-10-08 lock. The
+result is committed as `tests/booth_fixtures/cross-sport-leak/baseline.json`
+(`2f17d2a`). **Booth caught this one too.** The recorded explanation is "claim(s)
+[4, 5] raised a DISCREPANCY implicating sports/nhl/site.py", the file the
+leak was planted in, and the overall verdict was "DO NOT MERGE --
+DISCREPANCIES FOUND". The baseline's head matches the verdict's, the check
+the first run made necessary.
+
 ## The injection test
 
 The plan also asks for a write-up of a prompt-injection test: a pull request
