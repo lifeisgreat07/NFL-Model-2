@@ -5,9 +5,38 @@
     {
       "id": "neutral-unknown-reads-as-home",
       "why": "a schedule that does not say where a game is played reads as a home game, so a source that drops the column silently tells the card every game is at home.",
-      "find": "        return None\n    return str(loc).strip().lower() == 'neutral'",
-      "replace": "        return False\n    return str(loc).strip().lower() == 'neutral'",
+      "find": "    return False if known else None",
+      "replace": "    return False",
       "expect_caught_by": "test_the_schedule_location_reads_as_neutral_or_not_or_unknown"
+    },
+    {
+      "id": "neutral-stadium-rule-dropped",
+      "why": "only the schedule's location decides, so a game listed 'Home' at a stadium that is not the home team's (2026 week 5's PHI at JAX, at Tottenham) says nothing on its card.",
+      "find": "        if here != usual:\n            return True\n        return False",
+      "replace": "        return False",
+      "expect_caught_by": "test_a_game_away_from_the_usual_stadium_is_neutral_even_when_listed_home"
+    },
+    {
+      "id": "neutral-usual-stadium-is-the-rarest",
+      "why": "the usual stadium is taken as the one a team hosts FEWEST games at, so its London game reads as home and every real home game as neutral.",
+      "find": "    return {team: str(grp['stadium'].value_counts().idxmax())",
+      "replace": "    return {team: str(grp['stadium'].value_counts().idxmin())",
+      "expect_caught_by": "test_the_usual_stadium_is_where_a_team_hosts_most_of_its_games"
+    },
+    {
+      "id": "neutral-weekly-run-reads-the-week-alone",
+      "why": "the weekly run reads the week's rows without the season's usual stadiums, so the stadium rule never fires on a saved pick.",
+      "find": "    week_games = with_usual_stadium(sched, sched[sched['week'] == week])",
+      "replace": "    week_games = sched[sched['week'] == week]",
+      "expect_caught_by": "test_both_readers_add_the_usual_stadium_from_the_whole_season"
+    },
+    {
+      "id": "neutral-refresh-reads-the-week-alone",
+      "target": "src/pipeline/weekend_refresh.py",
+      "why": "the weekend refresh reads the week's rows without the season's usual stadiums, so a week locked before picks carried the flag never gets it for a game listed 'Home'.",
+      "find": "        rows = with_usual_stadium(sched, sched[sched['week'] == week])",
+      "replace": "        rows = sched[sched['week'] == week]",
+      "expect_caught_by": "test_both_readers_add_the_usual_stadium_from_the_whole_season"
     },
     {
       "id": "neutral-snapshot-not-carried",

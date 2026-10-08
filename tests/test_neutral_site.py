@@ -1,11 +1,14 @@
 """A game at a neutral site says so on its card (Stage 37 item 6).
 
-Eight 2026 regular-season games are at neutral sites (London, Munich, Sao
+Nine 2026 regular-season games are at neutral sites (London, Munich, Sao
 Paulo and others). Each still has a listed home team, and both models still
 give that team the home edge: a modelling choice, which Stage 38 leaves to
 Mark as a registration. Until then the card says it plainly. nflverse's
 schedule has `location` ('Home' or 'Neutral') and `stadium`; nothing in
-src/ read either before this.
+src/ read either before this. Eight of the nine say 'Neutral'. The ninth,
+week 5's PHI at JAX at Tottenham Hotspur Stadium, says 'Home', so a game
+away from the home team's usual stadium counts as neutral too (Mark,
+2026-10-08, after the gap was found by building the week's page).
 
 The flag reaches the card two ways: on picks locked from now on, and, for
 weeks locked before picks carried it, through the weekend refresh's status
@@ -46,6 +49,41 @@ def test_the_schedule_location_reads_as_neutral_or_not_or_unknown(location, expe
 def test_a_schedule_without_the_column_is_unknown_not_home():
     assert wu.site_is_neutral(pd.Series({'home_team': 'JAX'})) is None
     assert wu._venue(pd.Series({'home_team': 'JAX'})) is None
+
+
+def _season():
+    """A small season: JAX hosts three games at home and one in London that
+    the schedule lists as 'Home'; LA hosts one listed 'Neutral'."""
+    rows = [('NYJ', 'JAX', 1, 'Home', 'EverBank Stadium'), ('TEN', 'JAX', 2, 'Home', 'EverBank Stadium'),
+            ('PHI', 'JAX', 3, 'Home', 'Tottenham Hotspur Stadium'), ('HOU', 'JAX', 4, 'Home', 'EverBank Stadium'),
+            ('SF', 'LA', 3, 'Neutral', 'Melbourne Cricket Ground'), ('ARI', 'LA', 4, 'Home', 'SoFi Stadium')]
+    return pd.DataFrame([{'away_team': a, 'home_team': h, 'week': w, 'location': loc, 'stadium': st,
+                          'gameday': '2026-10-11', 'gametime': '13:00', 'away_score': None,
+                          'home_score': None, 'spread_line': 1.0} for a, h, w, loc, st in rows])
+
+
+def test_the_usual_stadium_is_where_a_team_hosts_most_of_its_games():
+    usual = wu.usual_home_stadiums(_season())
+    assert usual['JAX'] == 'EverBank Stadium'
+    assert wu.usual_home_stadiums(_season().drop(columns='stadium')) == {}
+
+
+def test_a_game_away_from_the_usual_stadium_is_neutral_even_when_listed_home():
+    sched = _season()
+    rows = wu.with_usual_stadium(sched, sched[sched['week'] == 3])
+    by_home = {r['home_team']: wu.site_is_neutral(r) for _, r in rows.iterrows()}
+    assert by_home == {'JAX': True, 'LA': True}
+    home_week = wu.with_usual_stadium(sched, sched[sched['week'] == 1])
+    assert wu.site_is_neutral(home_week.iloc[0]) is False
+
+
+def test_both_readers_add_the_usual_stadium_from_the_whole_season():
+    """The weekly run and the weekend refresh must annotate the week's rows
+    from the full schedule; a week's own rows cannot know a team's usual
+    ground, and without the column the London game reads as home again."""
+    import inspect
+    assert "with_usual_stadium(sched, sched[sched['week'] == week])" in inspect.getsource(wu.plan_week)
+    assert "with_usual_stadium(sched, sched[sched['week'] == week])" in inspect.getsource(wr.main)
 
 
 def test_the_status_snapshot_carries_it_for_weeks_locked_before_picks_did():

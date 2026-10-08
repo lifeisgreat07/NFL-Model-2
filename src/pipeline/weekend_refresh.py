@@ -182,6 +182,7 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
     if load is None:
         from src.pipeline.data_loader import load_schedule as load
     sched = load(season)
+    from src.pipeline.weekly_update import with_usual_stadium
     if snapshot is None and not args.status_only:
         from src.pipeline.weekly_update import log_line_snapshot as snapshot
     for week in weeks:
@@ -189,7 +190,7 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
             preds = json.load(f)
         # Week alone, not game type: nflverse numbers playoff weeks on from
         # the regular season (19, 20, ...), so a week number is unique.
-        rows = sched[sched['week'] == week]
+        rows = with_usual_stadium(sched, sched[sched['week'] == week])
         games, missing = build_week(preds, rows, now)
         counts = {s: sum(g['status'] == s for g in games) for s in ('final', 'started', 'upcoming')}
         wrote = write_week(season, week, games, now, status_dir)
