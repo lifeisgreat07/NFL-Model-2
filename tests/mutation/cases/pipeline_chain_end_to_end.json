@@ -37,7 +37,7 @@
       "id": "chain-refresh-never-lets-go",
       "target": "src/pipeline/weekend_refresh.py",
       "why": "a week already graded is still treated as waiting, so the weekend job re-reads and rewrites it every run for the rest of the season.",
-      "find": "if _count(graded) < _count(f):",
+      "find": "if _count(graded) + _cancelled_in(season, week, cancelled) < _count(f):",
       "replace": "if True:",
       "expect_caught_by": "test_a_graded_week_leaves_nothing_for_the_weekend_refresh"
     }

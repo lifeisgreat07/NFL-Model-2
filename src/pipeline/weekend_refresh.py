@@ -46,6 +46,17 @@ snapshot), so the line archive keeps its two writers' schedules apart.
 --weeks names the weeks outright, graded or not: the one-off backfill of the
 weeks graded before this existed.
 
+A CANCELLED GAME (Stage 39; Mark's call, 2026-10-05) kicks off on the
+schedule and never gets a score, so on its own it read "started" for the rest
+of the season and held its week open forever. nflverse gives no cancelled
+flag (2022's Bills-Bengals game is a row with no score), and "no score some
+hours after kickoff" is also what a late data feed looks like, so the call
+is not inferred: data/cancelled_games.json lists each cancelled game with a
+link to the league's announcement, as a QB override does. A listed game
+reads "cancelled", is never graded, counts for nothing, and no longer holds
+its week open. A game with no score a day and a half after kickoff that is
+NOT listed is printed as a warning, so the file gets written.
+
 Run with: python -m src.pipeline.weekend_refresh [--season 2026] [--status-only] [--weeks 1 2 3]
 """
 import argparse
@@ -59,6 +70,7 @@ import pandas as pd
 # (Stage 32 item 15). team_news and tv_channels import current_season from
 # here, so the name stays.
 from src.pipeline.paths import (
+    CANCELLED_FILE,
     PRED_DIR,
     RESULTS_DIR,
     STATUS_DIR,
@@ -78,10 +90,43 @@ def _count(path):
         return len(json.load(f))
 
 
-def weeks_to_refresh(season, pred_dir=PRED_DIR, results_dir=RESULTS_DIR):
+class CancelledGamesError(ValueError):
+    """data/cancelled_games.json exists but cannot be trusted."""
+
+
+def load_cancelled(path=CANCELLED_FILE):
+    """{(season, week, away, home)} for every game the league cancelled.
+
+    A missing file means none. A malformed one FAILS the run: a cancellation
+    removes a game from every count, which is not something to do on an
+    entry with no source."""
+    if not path.exists():
+        return set()
+    with open(path, encoding='utf-8') as f:
+        entries = json.load(f)
+    if not isinstance(entries, list):
+        raise CancelledGamesError(f'{path.name}: expected a list of games')
+    out = set()
+    for e in entries:
+        missing = [k for k in ('season', 'week', 'away', 'home', 'source') if not e.get(k)]
+        if missing:
+            raise CancelledGamesError(f'{path.name}: {e!r} is missing {missing}')
+        if not str(e['source']).startswith(('http://', 'https://')):
+            raise CancelledGamesError(f"{path.name}: {e['away']} at {e['home']}'s source must be a link")
+        out.add((int(e['season']), int(e['week']), e['away'], e['home']))
+    return out
+
+
+def _cancelled_in(season, week, cancelled):
+    return sum(1 for s, w, _, _ in cancelled if (s, w) == (season, week))
+
+
+def weeks_to_refresh(season, pred_dir=PRED_DIR, results_dir=RESULTS_DIR, cancelled=None):
     """Every saved week of this season with fewer graded games than picks,
-    oldest first. A week graded before it was played has an empty graded
-    file, so it is still unfinished."""
+    oldest first, a cancelled game counting as finished. A week graded
+    before it was played has an empty graded file, so it is still
+    unfinished."""
+    cancelled = load_cancelled() if cancelled is None else cancelled
     weeks = []
     for f in pred_dir.glob(f'{season}_week*.json'):
         key = parse_week(f.stem)
@@ -89,7 +134,7 @@ def weeks_to_refresh(season, pred_dir=PRED_DIR, results_dir=RESULTS_DIR):
             continue
         week = key[1]
         graded = results_dir / f'{season}_week{week}_graded.json'
-        if _count(graded) < _count(f):
+        if _count(graded) + _cancelled_in(season, week, cancelled) < _count(f):
             weeks.append(week)
     return sorted(weeks)
 
@@ -102,20 +147,30 @@ def _score(value):
     return None if value is None or pd.isna(value) else int(value)
 
 
-def game_status(row, now):
-    """'final', 'started' or 'upcoming' for one schedule row at `now` (UTC)."""
+#: How long after kickoff a game with no score is worth a warning: past any
+#: overtime and any late feed, short of the next scheduled refresh's lateness.
+NO_SCORE_WARNING = pd.Timedelta(hours=36)
+
+
+def game_status(row, now, cancelled=False):
+    """'final', 'cancelled', 'started' or 'upcoming' for one schedule row at
+    `now` (UTC). A score wins over a cancellation: a listed game that has one
+    was played after all, and is reported as it ended."""
     from src.pipeline.weekly_update import kickoff_utc
     if _score(row.get('home_score')) is not None and _score(row.get('away_score')) is not None:
         return 'final'
+    if cancelled:
+        return 'cancelled'
     kickoff = kickoff_utc(row)
     if kickoff is not None and kickoff <= pd.Timestamp(now).tz_convert('UTC'):
         return 'started'
     return 'upcoming'
 
 
-def build_week(preds, week_rows, now):
+def build_week(preds, week_rows, now, cancelled=frozenset()):
     """(games, missing): one entry per predicted game, in the picks' order,
-    and the (away, home) pairs the schedule no longer lists."""
+    and the (away, home) pairs the schedule no longer lists. `cancelled`
+    holds this week's cancelled (away, home) pairs."""
     from src.pipeline.weekly_update import _venue, site_is_neutral
     by_pair = {(r['away_team'], r['home_team']): r for _, r in week_rows.iterrows()}
     games, missing = [], []
@@ -124,7 +179,7 @@ def build_week(preds, week_rows, now):
         if row is None:
             missing.append((p['away'], p['home']))
             continue
-        status = game_status(row, now)
+        status = game_status(row, now, cancelled=(p['away'], p['home']) in cancelled)
         final = status == 'final'
         games.append({
             'away': p['away'], 'home': p['home'],
@@ -137,6 +192,24 @@ def build_week(preds, week_rows, now):
             'venue': _venue(row),
         })
     return games, missing
+
+
+def overdue(preds, week_rows, now, cancelled=frozenset()):
+    """(away, home) for each picked game with no score NO_SCORE_WARNING after
+    kickoff that is not listed as cancelled."""
+    from src.pipeline.weekly_update import kickoff_utc
+    by_pair = {(r['away_team'], r['home_team']): r for _, r in week_rows.iterrows()}
+    out = []
+    for p in preds:
+        pair = (p['away'], p['home'])
+        row = by_pair.get(pair)
+        if row is None or pair in cancelled:
+            continue
+        kickoff = kickoff_utc(row)
+        has_score = _score(row.get('home_score')) is not None and _score(row.get('away_score')) is not None
+        if kickoff is not None and not has_score and pd.Timestamp(now).tz_convert('UTC') - kickoff > NO_SCORE_WARNING:
+            out.append(pair)
+    return out
 
 
 def write_week(season, week, games, now, status_dir=STATUS_DIR):
@@ -160,7 +233,7 @@ def write_week(season, week, games, now, status_dir=STATUS_DIR):
 
 
 def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_DIR,
-         status_dir=STATUS_DIR, snapshot=None):
+         status_dir=STATUS_DIR, snapshot=None, cancelled=None):
     ap = argparse.ArgumentParser()
     ap.add_argument('--season', type=int, default=None)
     ap.add_argument('--status-only', action='store_true',
@@ -170,12 +243,13 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
     args = ap.parse_args(argv)
     now = now or datetime.now(UTC)
     season = args.season or current_season(now)
+    cancelled_all = load_cancelled() if cancelled is None else cancelled
     if args.weeks:
         weeks = sorted(w for w in args.weeks if (pred_dir / f'{season}_week{w}.json').exists())
         for w in sorted(set(args.weeks) - set(weeks)):
             log.warning(f'{season} week {w}: no locked picks, so no snapshot')
     else:
-        weeks = weeks_to_refresh(season, pred_dir, results_dir)
+        weeks = weeks_to_refresh(season, pred_dir, results_dir, cancelled_all)
     if not weeks:
         log.info(f'{season}: no locked week is waiting on grading; nothing to refresh.')
         return 0
@@ -191,11 +265,18 @@ def main(argv=None, now=None, load=None, pred_dir=PRED_DIR, results_dir=RESULTS_
         # Week alone, not game type: nflverse numbers playoff weeks on from
         # the regular season (19, 20, ...), so a week number is unique.
         rows = with_usual_stadium(sched, sched[sched['week'] == week])
-        games, missing = build_week(preds, rows, now)
+        this_week = {(a, h) for s, w, a, h in cancelled_all if (s, w) == (season, week)}
+        games, missing = build_week(preds, rows, now, this_week)
         counts = {s: sum(g['status'] == s for g in games) for s in ('final', 'started', 'upcoming')}
+        for away, home in overdue(preds, rows, now, this_week):
+            log.warning(f'  WARNING: {away} at {home} kicked off over {NO_SCORE_WARNING.total_seconds() / 3600:.0f} hours '
+                        f'ago with no score. If the league cancelled it, list it in data/cancelled_games.json '
+                        f'with a link to the announcement; until then it reads "started".')
         wrote = write_week(season, week, games, now, status_dir)
+        n_cancelled = sum(g['status'] == 'cancelled' for g in games)
         log.info(f"{season} week {week}: {counts['final']} final, {counts['started']} started, "
-              f"{counts['upcoming']} upcoming -- {'written' if wrote else 'unchanged, not rewritten'}")
+              f"{counts['upcoming']} upcoming" + (f", {n_cancelled} cancelled" if n_cancelled else '')
+              + f" -- {'written' if wrote else 'unchanged, not rewritten'}")
         for away, home in missing:
             log.warning(f'  WARNING: {away} at {home} is in the picks but not in the schedule; left out')
         # Item 23: the line archive for a locked week (see the docstring).
