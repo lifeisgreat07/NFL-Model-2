@@ -32,8 +32,8 @@ WORKFLOWS = ROOT / '.github' / 'workflows'
 PINNED = {
     'anthropics/claude-code-action': 2,
     'stefanzweifel/git-auto-commit-action': 3,
-    'actions/checkout': 22,
-    'actions/setup-python': 22,
+    'actions/checkout': 23,
+    'actions/setup-python': 23,
     'actions/setup-node': 4,
     'actions/cache': 1,
     'actions/upload-artifact': 2,
