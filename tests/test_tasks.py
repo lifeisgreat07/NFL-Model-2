@@ -95,8 +95,8 @@ def test_the_suite_command_is_claude_mds_and_collects_what_the_gate_does():
 
 
 def test_build_is_what_the_pages_workflow_runs():
-    assert commands('build') == ['python -m src.pipeline.generate_dashboard']
-    assert 'python -m src.pipeline.generate_dashboard' in runs('deploy-pages.yml')
+    assert commands('build') == ['python -m src.site.build --out _site']
+    assert any(r.startswith('python -m src.site.build --out _site ') for r in runs('deploy-pages.yml'))
 
 
 def test_browser_check_runs_what_the_workflow_runs_in_the_same_order():

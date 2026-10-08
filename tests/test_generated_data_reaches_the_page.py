@@ -237,12 +237,12 @@ def test_the_writer_scan_finds_the_workflows_we_know_write():
 
 
 #: A sport's run that commits only its own folders before any page reads
-#: them, by workflow name -> sport code. Bridging it now would rebuild and
-#: republish an unchanged page twice a day. It is bridged with its sport's
-#: pages (Stage 57 for the NHL), and the test after the next one fails the
-#: moment the builder reads that sport's folders, which is when the bridge
-#: is needed.
-NOT_YET_ON_A_PAGE = {'NHL daily run': 'nhl'}
+#: them, by workflow name -> sport code. Bridging it would rebuild and
+#: republish an unchanged page. Empty since Stage 53: the site build reads
+#: every sport, so "NHL daily run" is bridged like the NFL's writers. A sport
+#: whose run starts before its pages do goes here until they exist, and the
+#: test after the next one fails the moment the builder reads its folders.
+NOT_YET_ON_A_PAGE: dict[str, str] = {}
 
 
 def test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder():

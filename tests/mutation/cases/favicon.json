@@ -5,15 +5,15 @@
     {
       "id": "favicon-link-dropped",
       "why": "the page stops linking its icon and every tab shows the browser's blank page again.",
-      "find": "<link rel=\"icon\" href=\"assets/favicon.svg\" type=\"image/svg+xml\">",
+      "find": "<link rel=\"icon\" href=\"../assets/favicon.svg\" type=\"image/svg+xml\">",
       "replace": "",
       "expect_caught_by": "test_the_page_links_one_svg_icon_in_its_head"
     },
     {
       "id": "favicon-not-deployed",
-      "target": ".github/workflows/deploy-pages.yml",
+      "target": "src/site/build.py",
       "why": "the deploy stops copying the icon, so the live page links a file that is not published and the tab shows the blank page.",
-      "find": "          cp assets/favicon.svg _site/assets/favicon.svg\n",
+      "find": "    'assets/favicon.svg': 'assets/favicon.svg',\n",
       "replace": "",
       "expect_caught_by": "test_the_deploy_publishes_the_icon_where_the_link_points"
     },
@@ -28,15 +28,15 @@
     {
       "id": "touch-icon-link-dropped",
       "why": "the page stops linking its home-screen icon, and an iPhone saving the site shows a shrunken screenshot instead.",
-      "find": "<link rel=\"apple-touch-icon\" href=\"assets/apple-touch-icon.png\">",
+      "find": "<link rel=\"apple-touch-icon\" href=\"../assets/apple-touch-icon.png\">",
       "replace": "",
       "expect_caught_by": "test_the_page_links_one_home_screen_icon"
     },
     {
       "id": "touch-icon-not-deployed",
-      "target": ".github/workflows/deploy-pages.yml",
+      "target": "src/site/build.py",
       "why": "the deploy stops copying the home-screen icon, so the live page links a file that is not published.",
-      "find": "          cp assets/apple-touch-icon.png _site/assets/apple-touch-icon.png\n",
+      "find": "    'assets/apple-touch-icon.png': 'assets/apple-touch-icon.png',\n",
       "replace": "",
       "expect_caught_by": "test_the_deploy_publishes_the_home_screen_icon_where_the_link_points"
     }

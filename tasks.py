@@ -61,8 +61,9 @@ TASKS = {
     'check': ('lint, then the suite: the four things run-tests.yml runs',
               lambda a: [['ruff', 'check', '.'], TYPES, AGENT_TYPES,
                          [PY, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider']]),
-    'build': ('build index.html from the data on disk (deploy-pages.yml does this)',
-              lambda a: [[PY, '-m', 'src.pipeline.generate_dashboard']]),
+    'build': ('build the whole site into _site/, one sport at a time, from the data on disk '
+              '(deploy-pages.yml does this, keeping a failed sport\'s live page)',
+              lambda a: [[PY, '-m', 'src.site.build', '--out', '_site']]),
     'browser-check': ('build, prove every browser rule can fail, check the page, then build '
                       'and check the states pages and the NHL\'s and NBA\'s pages (needs Playwright and node; axe-core is '
                       'used when node_modules has it)',

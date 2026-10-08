@@ -1,0 +1,58 @@
+{
+  "target": "src/site/build.py",
+  "tests": "tests/test_site_build.py",
+  "cases": [
+    {
+      "id": "site-build-keeps-nothing-live",
+      "why": "a sport whose build fails no longer keeps its live page, so one broken NHL build takes the NHL's pages off the site until someone fixes it.",
+      "find": "    if live_url:\n        body = live_copy(sport, live_url, fetcher)\n",
+      "replace": "    if False:\n        body = live_copy(sport, live_url, fetcher)\n",
+      "expect_caught_by": "test_a_failing_sport_keeps_its_live_page_and_the_others_publish"
+    },
+    {
+      "id": "site-build-keeps-the-redirect-as-the-nfl-board",
+      "why": "after this stage the live root is the redirect. A failed NFL build that fell back to it would publish a page at nfl/ that sends the visitor to nfl/, a loop.",
+      "find": "        if root is not None and REDIRECT_MARK.encode() not in root:\n",
+      "replace": "        if root is not None:\n",
+      "expect_caught_by": "test_the_nfl_falls_back_to_the_old_root_page_but_never_to_the_redirect"
+    },
+    {
+      "id": "site-build-redirect-drops-the-hash",
+      "target": "src/site/build.py",
+      "why": "the root forwards without the hash, so every shared-picks link already sent (#picks=...) opens the board with nobody's picks on it.",
+      "find": "  location.replace('{sport}/' + location.search + location.hash);\n",
+      "replace": "  location.replace('{sport}/' + location.search);\n",
+      "expect_caught_by": "test_the_root_sends_a_visitor_on_with_the_shared_picks_intact"
+    },
+    {
+      "id": "site-build-publishes-without-an-nfl-page",
+      "why": "the build exits 0 when the NFL has no page at all, so the deploy publishes a root that forwards to a missing board.",
+      "find": "    if first is not None and not first.published:\n",
+      "replace": "    if first is not None and not first.published and False:\n",
+      "expect_caught_by": "test_no_nfl_page_at_all_refuses_to_publish"
+    },
+    {
+      "id": "site-build-ignores-unfilled-placeholders",
+      "why": "a page with an unfilled __PLACEHOLDER__ counts as built, so a template rename that stops filling one publishes literal underscores.",
+      "find": "        left = unfilled(html)\n",
+      "replace": "        left = []\n",
+      "expect_caught_by": "test_a_page_with_an_unfilled_placeholder_is_a_failed_build"
+    },
+    {
+      "id": "site-alert-for-every-sport",
+      "target": "src/site/alert_failed.py",
+      "why": "every sport gets an issue on every deploy, built or not, and a real failure drowns among them.",
+      "find": "    return [s for s in report.get('sports', []) if not s.get('built')]\n",
+      "replace": "    return list(report.get('sports', []))\n",
+      "expect_caught_by": "test_only_failed_sports_get_an_issue_titled_for_them"
+    },
+    {
+      "id": "site-alert-step-skipped-on-failure",
+      "target": ".github/workflows/deploy-pages.yml",
+      "why": "the alert step loses !cancelled(), so when the build step fails, the step that would say which sport failed never runs.",
+      "find": "      - name: Open an issue for each sport whose page did not build\n        if: ${{ !cancelled() }}\n",
+      "replace": "      - name: Open an issue for each sport whose page did not build\n",
+      "expect_caught_by": "test_the_deploy_builds_the_site_and_alerts_per_sport_before_uploading"
+    }
+  ]
+}

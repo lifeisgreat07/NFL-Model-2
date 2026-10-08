@@ -125,8 +125,8 @@ def test_main_fails_on_a_missing_file(tmp_path, capsys):
 def test_pages_checks_the_build_before_uploading_it():
     """A check that runs after the upload, or not at all, publishes the
     broken page anyway."""
+    from src.site import build as site
     text = PAGES.read_text(encoding='utf-8')
-    build = text.index('run: python -m src.pipeline.generate_dashboard')
-    check = text.index('run: python -m src.pipeline.check_build index.html')
-    upload = text.index('uses: actions/upload-pages-artifact')
-    assert build < check < upload
+    assert text.index('run: python -m src.site.build') < text.index('uses: actions/upload-pages-artifact')
+    steps = [cmd[3:] for cmd in site.build_commands('nfl', Path('_site'))]
+    assert steps == [['src.pipeline.generate_dashboard'], ['src.pipeline.check_build', 'index.html']], steps
