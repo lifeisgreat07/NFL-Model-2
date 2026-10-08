@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 3,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-09-28T11:56:33Z",
+  "read_at": "2026-10-08T20:21:20Z",
   "games": [
     {
       "away": "ATL",
@@ -127,9 +127,9 @@
     {
       "away": "PHI",
       "home": "CHI",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 7,
+      "home_score": 27,
       "spread_line": -3.5
     }
   ]

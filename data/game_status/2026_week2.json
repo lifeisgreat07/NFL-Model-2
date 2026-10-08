@@ -1,0 +1,136 @@
+{
+  "season": 2026,
+  "week": 2,
+  "source": "nflverse schedule, via nflreadpy.load_schedules",
+  "read_at": "2026-10-08T20:21:20Z",
+  "games": [
+    {
+      "away": "DET",
+      "home": "BUF",
+      "status": "final",
+      "away_score": 31,
+      "home_score": 41,
+      "spread_line": 5.5
+    },
+    {
+      "away": "CAR",
+      "home": "ATL",
+      "status": "final",
+      "away_score": 34,
+      "home_score": 3,
+      "spread_line": -2.5
+    },
+    {
+      "away": "NO",
+      "home": "BAL",
+      "status": "final",
+      "away_score": 24,
+      "home_score": 17,
+      "spread_line": 8.5
+    },
+    {
+      "away": "MIN",
+      "home": "CHI",
+      "status": "final",
+      "away_score": 9,
+      "home_score": 3,
+      "spread_line": 4.5
+    },
+    {
+      "away": "CIN",
+      "home": "HOU",
+      "status": "final",
+      "away_score": 20,
+      "home_score": 6,
+      "spread_line": 3.0
+    },
+    {
+      "away": "PIT",
+      "home": "NE",
+      "status": "final",
+      "away_score": 3,
+      "home_score": 20,
+      "spread_line": 4.5
+    },
+    {
+      "away": "GB",
+      "home": "NYJ",
+      "status": "final",
+      "away_score": 20,
+      "home_score": 17,
+      "spread_line": -3.5
+    },
+    {
+      "away": "CLE",
+      "home": "TB",
+      "status": "final",
+      "away_score": 23,
+      "home_score": 19,
+      "spread_line": 8.5
+    },
+    {
+      "away": "PHI",
+      "home": "TEN",
+      "status": "final",
+      "away_score": 24,
+      "home_score": 20,
+      "spread_line": -7.0
+    },
+    {
+      "away": "JAX",
+      "home": "DEN",
+      "status": "final",
+      "away_score": 13,
+      "home_score": 20,
+      "spread_line": 2.5
+    },
+    {
+      "away": "LV",
+      "home": "LAC",
+      "status": "final",
+      "away_score": 26,
+      "home_score": 14,
+      "spread_line": 6.5
+    },
+    {
+      "away": "SEA",
+      "home": "ARI",
+      "status": "final",
+      "away_score": 31,
+      "home_score": 7,
+      "spread_line": -3.5
+    },
+    {
+      "away": "WAS",
+      "home": "DAL",
+      "status": "final",
+      "away_score": 20,
+      "home_score": 37,
+      "spread_line": 3.5
+    },
+    {
+      "away": "MIA",
+      "home": "SF",
+      "status": "final",
+      "away_score": 13,
+      "home_score": 35,
+      "spread_line": 12.5
+    },
+    {
+      "away": "IND",
+      "home": "KC",
+      "status": "final",
+      "away_score": 30,
+      "home_score": 33,
+      "spread_line": 6.0
+    },
+    {
+      "away": "NYG",
+      "home": "LA",
+      "status": "final",
+      "away_score": 6,
+      "home_score": 28,
+      "spread_line": 6.5
+    }
+  ]
+}
