@@ -19,6 +19,11 @@ it writes is kept:
   5. work out the next week to predict, as the weekly run does
   6. read that week's page on nfl.com, the TV-channel source (Stage 15),
      and check its shape (check_schedule_page below)
+  7. ask every source the scheduled jobs read whether it answers, one line
+     each (Stage 41 item 5): a failed load above says THAT something broke,
+     this says WHICH host. An unreachable source the picks depend on is an
+     error; one that only feeds context (injuries, depth charts, TV) is a
+     warning, because neither ever costs a pick
 
 A step that raises is recorded as an error and the rest still run, so one
 report says everything that is wrong tonight. Exit 1 on any error; the
@@ -96,9 +101,58 @@ def default_steps():
             return f'skipped: week {week} is past the regular season'
         return check_schedule_page(probe.fetch(week, state['season']), state['season'], week)
 
+    def sources(state):
+        return reachability(state['season'], state.get('next_week'))
+
     return [('load play-by-play', plays), ('load schedule', schedule),
             ('data quality', quality), ('schema', schema),
-            ('next week', next_week), ('nfl.com schedule', nfl_schedule)]
+            ('next week', next_week), ('nfl.com schedule', nfl_schedule),
+            ('sources', sources)]
+
+
+NFLVERSE = 'https://github.com/nflverse/nflverse-data/releases/download/'
+
+#: (name, url template, whether a pick depends on it). The nflverse paths are
+#: the ones nflreadpy's downloader builds (load_pbp, load_schedules,
+#: load_injuries, load_depth_charts); nfl.com's is the TV source's.
+SOURCES = (
+    ('nflverse play-by-play', NFLVERSE + 'pbp/play_by_play_{season}.parquet', True),
+    ('nflverse schedules', NFLVERSE + 'schedules/games.parquet', True),
+    ('nflverse injuries', NFLVERSE + 'injuries/injuries_{season}.parquet', False),
+    ('nflverse depth charts', NFLVERSE + 'depth_charts/depth_charts_{season}.parquet', False),
+    ('nfl.com schedule', 'https://www.nfl.com/schedules/{season}/by-week/week-{week}', False),
+)
+
+
+def _head(url, timeout=20):
+    """(HTTP status, None) or (None, the error). A HEAD that redirects is
+    followed: nflverse's release assets answer 302 to a storage host."""
+    import urllib.error
+    import urllib.request
+    req = urllib.request.Request(url, method='HEAD', headers={'User-Agent': 'NFL-Model-2 canary'})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.status, None
+    except urllib.error.HTTPError as e:
+        return e.code, None
+    except Exception as e:  # unreachable: DNS, TLS, timeout -- the point is to name it
+        return None, f'{type(e).__name__}: {e}'
+
+
+def reachability(season, week, head=_head):
+    """One line per source: does it answer? (Stage 41 item 5)"""
+    report = Report()
+    for name, template, critical in SOURCES:
+        if '{week}' in template and (week is None or week > LAST_REGULAR_WEEK):
+            report.warnings.append(f'{name}: not checked (no regular-season week to ask for)')
+            continue
+        url = template.format(season=season, week=week)
+        status, error = head(url)
+        if status is not None and 200 <= status < 400:
+            continue
+        problem = f'{name}: ' + (f'HTTP {status}' if status is not None else f'unreachable ({error})') + f' -- {url}'
+        (report.errors if critical else report.warnings).append(problem)
+    return report
 
 
 #: nfl.com's by-week pages are regular-season weeks; the playoffs are not.

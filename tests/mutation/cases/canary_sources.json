@@ -1,0 +1,41 @@
+{
+  "target": "src/pipeline/canary.py",
+  "tests": "tests/test_canary.py",
+  "cases": [
+    {
+      "id": "canary-sources-not-run",
+      "why": "the sources step is dropped from the canary, so a night with one host down reports only that a load failed, not which host.",
+      "find": "('nfl.com schedule', nfl_schedule),\n            ('sources', sources)]",
+      "replace": "('nfl.com schedule', nfl_schedule)]",
+      "expect_caught_by": "test_the_default_steps_are_the_weekly_data_path"
+    },
+    {
+      "id": "canary-sources-everything-a-warning",
+      "why": "an unreachable play-by-play or schedule host is only a warning, so the canary stays green the night the source the picks depend on goes away.",
+      "find": "        (report.errors if critical else report.warnings).append(problem)",
+      "replace": "        report.warnings.append(problem)",
+      "expect_caught_by": "test_an_unreachable_source_a_pick_depends_on_is_an_error_naming_it"
+    },
+    {
+      "id": "canary-sources-everything-an-error",
+      "why": "a context source failing fails the canary, so a missing injury file early in a season opens an issue every night for something that never costs a pick.",
+      "find": "        (report.errors if critical else report.warnings).append(problem)",
+      "replace": "        report.errors.append(problem)",
+      "expect_caught_by": "test_a_context_source_failing_is_only_a_warning"
+    },
+    {
+      "id": "canary-sources-redirect-is-failure",
+      "why": "a redirect counts as a failure, so every nflverse release asset (which answers 302) is reported unreachable every night.",
+      "find": "        if status is not None and 200 <= status < 400:",
+      "replace": "        if status is not None and 200 <= status < 300:",
+      "expect_caught_by": "test_a_redirect_counts_as_answering"
+    },
+    {
+      "id": "canary-sources-tv-past-the-season",
+      "why": "the TV page is asked for a playoff week, which nfl.com's by-week pages do not have, so every January night warns about a page that was never going to exist.",
+      "find": "        if '{week}' in template and (week is None or week > LAST_REGULAR_WEEK):",
+      "replace": "        if '{week}' in template and week is None:",
+      "expect_caught_by": "test_the_tv_page_is_not_asked_for_a_week_past_the_regular_season"
+    }
+  ]
+}

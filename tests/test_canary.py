@@ -71,7 +71,56 @@ def test_january_belongs_to_last_season():
 def test_the_default_steps_are_the_weekly_data_path():
     names = [name for name, _ in canary.default_steps()]
     assert names == ['load play-by-play', 'load schedule', 'data quality',
-                     'schema', 'next week', 'nfl.com schedule']
+                     'schema', 'next week', 'nfl.com schedule', 'sources']
+
+
+# --- Stage 41 item 5: which source, not only that something broke -----------
+
+def _head_from(answers):
+    """A fake HEAD: the first matching fragment's answer, else 200."""
+    def head(url):
+        for fragment, answer in answers.items():
+            if fragment in url:
+                return answer
+        return 200, None
+    return head
+
+
+def test_every_source_answering_is_quiet():
+    r = canary.reachability(2026, 6, head=_head_from({}))
+    assert r.errors == [] and r.warnings == []
+
+
+def test_an_unreachable_source_a_pick_depends_on_is_an_error_naming_it():
+    r = canary.reachability(2026, 6, head=_head_from({'play_by_play_2026': (None, 'URLError: timed out')}))
+    assert len(r.errors) == 1 and r.errors[0].startswith('nflverse play-by-play: unreachable (URLError')
+    assert 'play_by_play_2026.parquet' in r.errors[0]
+
+
+def test_a_missing_schedule_file_is_an_error():
+    r = canary.reachability(2026, 6, head=_head_from({'schedules/games': (404, None)}))
+    assert r.errors == [f'nflverse schedules: HTTP 404 -- {canary.NFLVERSE}schedules/games.parquet']
+
+
+def test_a_context_source_failing_is_only_a_warning():
+    """Injuries, depth charts and the TV page feed context; none of them
+    ever costs a pick, so none of them fails the canary."""
+    r = canary.reachability(2026, 6, head=_head_from({'injuries_2026': (404, None),
+                                                      'nfl.com': (403, None)}))
+    assert r.errors == []
+    assert [w.split(':')[0] for w in r.warnings] == ['nflverse injuries', 'nfl.com schedule']
+
+
+def test_the_tv_page_is_not_asked_for_a_week_past_the_regular_season():
+    asked = []
+    canary.reachability(2026, 19, head=lambda url: asked.append(url) or (200, None))
+    assert not any('nfl.com' in u for u in asked)
+
+
+def test_a_redirect_counts_as_answering():
+    """nflverse's release assets answer 302 to a storage host."""
+    r = canary.reachability(2026, 6, head=_head_from({'nflverse': (302, None)}))
+    assert r.errors == []
 
 
 # --- the workflow ------------------------------------------------------------
