@@ -28,6 +28,9 @@ network allowed, because a loaded logo changes the layout.
 `--self-test` runs each rule against a synthetic page that breaks it and
 fails unless the rule reports it. A rule that cannot fail is decoration
 (CLAUDE.md, "Before writing a guard, ask what input would make it go red").
+A fixture with `forbid` is the other side: a page the rule must pass, and
+the self-test fails if the rule reports it (a rule that cries wolf is
+switched off by the people it bothers).
 
 Usage:
   python tests/browser/check_page.py index.html --axe node_modules/axe-core/axe.min.js
@@ -136,8 +139,17 @@ STICKY_JS = """() => {
   // hidden (absolute and clipped) for screen readers: nothing to see stuck.
   if (getComputedStyle(th.closest('thead')).position === 'absolute') return null;
   const box = w.getBoundingClientRect();
-  if (box.height < 3 * th.offsetHeight) return null;       // too short to scroll past
-  window.scrollTo(0, box.top + window.scrollY + Math.min(200, box.height / 2));
+  // Scroll the table's top past the top of the screen, but keep enough of
+  // the table below for its header to stay stuck where its own `top` puts
+  // it. Past that, the table's end pushes the header up under whatever sits
+  // above, as every sticky header must: that is the table leaving, not a
+  // defect. Scrolling a fixed half of a short table did exactly that: the
+  // rule reported Accuracy's 3-row table at every width below 1080px on
+  // 2026-10-08, though its header stuck below the top bar as it should.
+  const stuckAt = parseFloat(getComputedStyle(th).top) || 0;
+  const into = Math.min(200, box.height / 2, box.height - stuckAt - 2 * th.offsetHeight);
+  if (into < th.offsetHeight) return null;                 // too short to scroll past
+  window.scrollTo(0, box.top + window.scrollY + into);
   const r = th.getBoundingClientRect();
   const hit = document.elementFromPoint(r.left + Math.min(10, r.width / 2), r.top + r.height / 2);
   const ok = !!hit && hit.closest('thead') === th.closest('thead');
@@ -308,6 +320,19 @@ FIXTURES = {
                         '<thead><tr><th>Head</th></tr></thead><tbody>'
                         + '<tr><td>row</td></tr>' * 400 + '</tbody></table></div>',
                    expect='sticky'),
+    # The other side of the same rule: a short fitting table whose header
+    # sticks correctly below the bar. Scrolled half its height, the table's
+    # end pushes the header under the bar, as it must; the rule has to
+    # scroll less than that and report nothing (it reported Accuracy's
+    # 3-row table on 2026-10-08).
+    'sticky-short': dict(css='.bar{position:sticky;top:0;z-index:40;height:65px;background:#fff}'
+                             '.table-wrap.fits{overflow:clip}'
+                             '.table-wrap.fits thead th{position:sticky;top:65px;z-index:3;background:#eee}',
+                         body='<div class="bar">bar</div><div class="table-wrap fits"><table>'
+                              '<thead><tr><th>Head</th></tr></thead><tbody>'
+                              + '<tr><td>row</td></tr>' * 3 + '</tbody></table></div>'
+                              + '<p>after</p>' * 400,
+                         forbid='sticky'),
     # The shape before Stage 34 item 29: headers that sort and one that does
     # not ("#"), all drawn alike, with nothing after any of them.
     'sortmark': dict(body='<table><thead><tr><th>#</th><th aria-sort="none">Team</th>'
@@ -327,6 +352,13 @@ async def self_test(axe_src, tmp):
         page.write_text(SHELL.format(css=fx.get('css', ''), head='', body=fx['body'],
                                      script=fx.get('script', '')), encoding='utf-8')
         report = await check_page(page, axe_src, widths=(390,), budget=10**9)
+        if 'forbid' in fx:
+            # A page the rule must pass: anything it reports is a false alarm.
+            hit = [r for r in report if fx['forbid'] in r]
+            print(f"self-test {name}: {'FALSE ALARM' if hit else 'clean'} ({len(report)} finding(s))")
+            if hit:
+                failed.append(name)
+            continue
         hit = [r for r in report if fx['expect'] in r]
         print(f"self-test {name}: {'caught' if hit else 'MISSED'} ({len(report)} finding(s))")
         if not hit:
@@ -354,7 +386,7 @@ def main():
     if a.self_test:
         failed = asyncio.run(self_test(axe_src, a.tmp))
         if failed:
-            print(f"SELF-TEST FAILED: these rules did not catch their own fixture: {failed}")
+            print(f"SELF-TEST FAILED: these fixtures were missed, or raised a false alarm: {failed}")
             sys.exit(1)
         print("self-test: every rule caught its fixture")
         return
