@@ -27,7 +27,7 @@ def at(s):
 
 
 def test_the_workflows_own_cron_lines_are_read():
-    assert sd.crons(REFRESH) == ['17 5 * * 5', '47 21 * * 0', '47 1 * * 1', '37 5 * * 1']
+    assert sd.crons(REFRESH) == ['17 5 * * 5', '17 5 * * 6', '47 21 * * 0', '47 1 * * 1', '37 5 * * 1']
 
 
 def test_a_run_dispatched_on_time_is_minutes_late():
