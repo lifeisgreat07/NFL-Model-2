@@ -48,8 +48,8 @@ Model v2.5 (`MODEL_VERSION` in `src/sports/nfl/config.py`). `TRAIN_SEASONS` 2020
 The drift check flags on Model A's log loss against the committed
 `data/nfl/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
 
-Suite: **7197 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-`8d9c30f` (after #337), with HEAD level with origin, which is the order that makes the
+Suite: **7417 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+`c0475bd` (after #351, Stage 52), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -280,13 +280,14 @@ The full text of every stage, finished or planned, is in
 - **Stage 21 - Once the season has data**: not before week 5.
 - **Stage 22 - Beyond 95**: comes out of Stage 20.
 - **Stage 28 - After the forward test**: after the regular season.
-- **Stage 34 item 32**: Stage 20's testers, then the re-audit. Stages 30 to
-  33 and 35 are finished.
+- **Stage 34 item 32**: Stage 20's testers, then the re-audit. Stages 30 to 33 and 35 are finished.
 - **Stages 36 to 44 - the 2026-10-04 fourth audit (86/100)**: 36 loose ends,
   37 honest states, 38 registrations, 39 playoffs, 40 season turnover, 41
   operations and releases, 42 on-time runs, 43 Spotter, 44 Line Judge.
-  Order and rules at the top of that section.
-- **Stages 45 to 49**: ten done 2026-10-05; 1 and 2 after the lock. **50 to 61**: multi-sport, NHL then NBA (Mark, 2026-10-05); 50, 51, 55 and 56 done, the NHL live since 2026-10-06 (54, 57 and 58 in part; its pages built, not deployed), 52 built and proven, not merged; 61 under way (the NBA's history, backtest and backtest-only pages merged; no live picks).
+  Order at the top of that section. 36, 37 done; 38's neutral sites decided
+  2026-10-09 (no home edge, a declared rule); 40 in January.
+- **Stages 45 to 49**: all approved items done by 2026-10-08 (46's 6 and 9 approved 2026-10-09, 8 dropped; 47's 13 and 14 approved). **50 to 61**: multi-sport, NHL then NBA (Mark, 2026-10-05); 50 to 53, 55 to 57 and 59 done (52, the NFL's move to `src/sports/nfl/`, merged 2026-10-08 as #351); 54, 58 and 60 in part; 61's live picks wait for Stage 65.
+- **Stages 62 to 67 (Mark, 2026-10-09)**: 62 one site, one look (shared theme, sport icons, NHL logo size); 63 boards that show what happened; 64 a day at a time (layout chosen: a day strip with tap-to-expand rows); 65 the NBA goes live on GitHub's runners; 66 the home page, audited and redone for the best UX; 67 the display name "Sportalytics" (no repo rename). Text at the end of `docs/history/09-more-sports.md`.
 
 ## Ending a session
 

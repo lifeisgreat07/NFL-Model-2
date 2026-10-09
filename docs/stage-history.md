@@ -30,4 +30,4 @@ each under its size limit.
 | The 2026-09-30 third audit | Stage 35 | `docs/history/06-third-audit-2026-09-30.md` |
 | The 2026-10-04 fourth audit | Stages 36 to 44 | `docs/history/07-fourth-audit-2026-10-04.md` |
 | New items before the 2026-10-08 lock | Stages 45 to 49 | `docs/history/08-before-the-lock.md` |
-| More sports, NHL then NBA | Stages 50 to 61 | `docs/history/09-more-sports.md` |
+| More sports, NHL then NBA; then the site and the NBA | Stages 50 to 67 | `docs/history/09-more-sports.md` |

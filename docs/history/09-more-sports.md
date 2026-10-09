@@ -99,6 +99,11 @@ the weekly run's picks for week 5 with the clock fixed, the backtest, the
 calibration file, ratings, odds, line history and the PDF text all
 byte-identical; the page differs in 26 path strings, each naming a moved
 file.
+MERGED 2026-10-08 as #351, re-made by `migrate_nfl_v12.py` on that day's
+`main` (four hand edits for work merged after v11's rehearsal), the whole
+corpus run once (one case re-aimed, `d5f4069`), the #265 proof 13 of 14
+byte-identical and the page identical once the path moves are undone. Mark
+re-pointed the six cron-job.org jobs that night.
 
 ### Stage 53 - Pages per sport
 
@@ -245,3 +250,85 @@ H2 ACCEPT, H3 REJECT (Model B worse than the market alone), and the availability
 log loss (M1). No live NBA picks until Mark decides how the live run reads a price and injuries.
 The pages merged as #321: the backtest said plainly, no board (option A of the rendered "NBA Board
 Options", Claude's recommendation under the delegation, for Mark to confirm).
+
+## Stages 62 to 67: the site and the NBA (Mark, 2026-10-09)
+
+Mark's list after Stage 52 merged, with Claude's pushback taken where he
+agreed. Declined: the leagues' official logos on the home page (trademarks
+read as endorsement on a public site; one icon set of our own instead, in
+Stage 62). Decided at the same time: Stage 38's neutral-site question gets
+a declared rule (no home edge at a neutral site, back-checked on past
+neutral games, disclosed as a rule change rather than a tested win); Stage
+46 items 6 and 9 go ahead and item 8 (`feed.xml`) is dropped; Stage 47
+items 13 and 14 are approved; Stage 40 waits for January.
+
+### Stage 62 - One site, one look
+
+1. The light/dark choice is the site's, not each page's: one shared storage
+   key, declared as an exception the isolation tests name (each page had
+   its own key since Stage 53 item 5, so each button worked alone).
+2. One icon set for the sports in the style of the NFL's football: a puck
+   for the NHL, a ball for the NBA, top left on every page and on the home
+   cards; rendered options first.
+3. The NHL's team logos at the NFL Week Board's size.
+4. Browser checks that the theme follows the visitor from page to page.
+
+### Stage 63 - Boards that show what happened
+
+1. On the NHL board, every played game shows the pick, the final score,
+   the winner and whether each model was right.
+2. Every upcoming game with a locked pick shows it, marked locked; a game
+   not yet locked says when its pick will lock.
+3. The NBA board the same, once it exists (Stage 65). The NFL board
+   already does this (Mark: no gap there).
+
+### Stage 64 - A day at a time
+
+Mark chose, from the rendered "NHL Day Board Options" (2026-10-09): option
+A's day strip (seven day buttons with game counts, opening on today) with
+option B's compact rows (time, game, pick, result; a row expands on tap to
+both models, the market, the lock time and the goalies).
+1. The NHL board opens on today and moves day by day; the week stays one
+   tap away.
+2. Fewer cards on screen, phone first; the day's summary ("3 games, 1 of 1
+   right so far") above the rows.
+3. The NFL keeps its week view: it plays by the week.
+4. Browser checks at phone and desktop widths, both themes.
+
+### Stage 65 - The NBA goes live
+
+Mark: on GitHub's runners only; his PC is not on overnight.
+1. The season's start date and a schedule source a runner can read.
+2. Model A live from the first game, since it needs no market.
+3. Model B only where a runner can read a pre-game price; where none can,
+   the page says so plainly.
+4. An availability/injury input a runner can read, stored per pick with its
+   read time, as the NHL's is; none readable: Model A without it, said so.
+5. A forward-test registration before the first lock, the daily run, its
+   cron-job.org jobs (Mark), alerts "NBA: ...", drift baseline and canary.
+6. The board built like the NHL's after Stages 63 and 64; the home card
+   shows live status.
+
+### Stage 66 - The home page, looked at again
+
+Mark wants a home page that makes sense to a first-time visitor: "highest
+UX score possible".
+1. An audit of today's home page: what a newcomer sees first, the phone
+   layout, each card's content, anything stale or empty.
+2. Two or three rendered options for Mark, built on Stage 62's icons and
+   Stage 67's name.
+3. The chosen option built, with browser and accessibility checks.
+
+### Stage 67 - Sportalytics
+
+Mark's name for the project. The display name only: the repository keeps
+its name, so the published address, the cron-job.org jobs and the API calls
+stay as they are (Mark: no redoing the API work).
+1. Page titles, the header, the home page, share images and link previews,
+   and the README's first line say "Sportalytics".
+2. "The Pick'em Model" goes, with a test that no old name shows anywhere a
+   visitor can see.
+3. A small wordmark beside Stage 62's icons, rendered options first.
+The name is in use elsewhere (an Android developer, "Sportalytics Private
+Limited"); fine for a portfolio, worth a trademark check if the site ever
+goes commercial.
