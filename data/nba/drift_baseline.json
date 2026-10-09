@@ -1,0 +1,18 @@
+{
+  "registered": "experiments/nba/stage65/registry.json (registered 2026-10-09, before any NBA pick was saved)",
+  "model": "model_a",
+  "metric": "log_loss",
+  "baseline": {
+    "name": "stage61_confirmation",
+    "label": "Model A on the 2024-25 and 2025-26 confirmation seasons, with each game's actual players from the box score",
+    "value": 0.5983212187245471
+  },
+  "source": "experiments/nba/stage61/results/confirmation.json, scores.model_a.log_loss (2643 games)",
+  "rule": {
+    "min_games": 100,
+    "one_sided_level": 0.95,
+    "n_resamples": 5000,
+    "seed": 20261009,
+    "flag_when": "the lower end of the one-sided 95% bootstrap interval of mean per-game log loss is above the baseline"
+  }
+}
