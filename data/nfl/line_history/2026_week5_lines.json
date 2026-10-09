@@ -178,5 +178,12 @@
     "home": "LA",
     "away": "BUF",
     "spread_line": 3.0
+  },
+  {
+    "captured_date": "2026-10-09",
+    "captured_utc": "2026-10-09T05:17:42Z",
+    "home": "NYJ",
+    "away": "CLE",
+    "spread_line": 2.5
   }
 ]
