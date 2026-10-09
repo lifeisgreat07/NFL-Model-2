@@ -148,7 +148,14 @@ def test_no_comment_is_left_outside_scripts(stripped):
 def test_every_script_on_the_stripped_template_compiles(stripped):
     if not NODE:
         pytest.skip('node not available')
-    scripts = re.findall(r'<script\b[^>]*>(.*?)</script>', stripped, re.S)
+    found = re.findall(r'<script\b([^>]*)>(.*?)</script>', stripped, re.S)
+    # The structured data (Stage 47 item 12) is JSON, not script: it must
+    # still parse as JSON after stripping, which also proves no "//" inside
+    # its URLs was taken for a comment.
+    for attrs, s in found:
+        if 'application/ld+json' in attrs:
+            json.loads(s)
+    scripts = [s for attrs, s in found if 'application/ld+json' not in attrs]
     assert len(scripts) >= 2, 'the scan found fewer scripts than the page has -- re-anchor it'
     for k, s in enumerate(scripts):
         s = re.sub(r'__[A-Z_]+__', 'null', s)   # the build's placeholders
