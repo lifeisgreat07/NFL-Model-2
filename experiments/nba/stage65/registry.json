@@ -1,0 +1,47 @@
+{
+ "family": "nba-stage65",
+ "registered": "2026-10-09",
+ "approved_by": "Mark's GO of 2026-10-09 (10:52 ET): both models live from opening night, Model B's market ESPN's odds with Kalshi as the named fallback and 'no price' rather than a silent switch. The details below are Claude's, under Mark's delegation, written before any NBA pick was saved.",
+ "models": "Model A and Model B exactly as experiments/nba/stage61/registry.json registers them, with the half-life and ridge strength Stage 61's validation chose (experiments/nba/stage61/results/tuning.json: H_days 120, lambda 10.0), refitted at every run on every final game from 2015-16 to the day before.",
+ "forward_test": {
+  "season": 2026,
+  "starts": "With the first pick the scheduled daily run saves, on or after opening night (2026-10-20). Games before it are never scored, and nothing is backfilled.",
+  "picks": "One file per game, predictions/nba/2026/<game_id>.json, saved by the last scheduled run before the game starts and never rewritten (src/sports/nba/lock.py, src/sports/nba/daily.py).",
+  "runs": "16:00 and 21:30 UTC every day (noon and 5:30 PM Eastern in October). A game is saved by a run when it starts before the next run plus one hour, the NHL's rule; a run that finds a game already started never predicts it.",
+  "the_pick": "Model B's side when the game has a market price, Model A's otherwise, as on the NFL and NHL boards.",
+  "graded": "Final games only. A cancelled game is never counted; a postponed one is scored if a saved pick exists for the game the league played.",
+  "reported": "Model A, Model B, the market and the home-win base rate, by log loss with Brier beside it; accuracy is reported and never decides. Intervals as in Stage 61: paired, resampling whole game days, 5,000 resamples. Picks priced by the fallback are reported on their own as well as in the total."
+ },
+ "market": {
+  "primary": "ESPN's pre-game moneyline for the game (sports.core.api.espn.com .../events/<id>/competitions/<id>/odds), read at the run that saves the pick: the first listed provider that is not marked live and is not a projection site, the margin taken out evenly. This is the backtest's own source.",
+  "fallback": "Kalshi's game-winner market (series KXNBAGAME), read only when ESPN gives no usable price for the game at that run. Each side's price is the midpoint of its yes bid and ask; the home probability is the home midpoint over the sum of the two. Used only when both sides are quoted and each side's ask minus bid is at most 0.05; otherwise there is no fallback price.",
+  "none": "With neither price, Model B is not run for the game, the pick is Model A's, and the page says 'no price'. There is never a silent switch: every pick stores which source priced it ('espn', 'kalshi' or none), the provider, both prices and the read time.",
+  "why_kalshi": "Mark's choice from the runner probe (#357): ESPN's odds answered GitHub's runner, and Kalshi was the other source that did with a usable two-way price. Model B was trained on ESPN's prices only; a Kalshi-priced pick is a forecast with a different market input, which is why it is labelled and reported on its own.",
+  "record": "Every price read is kept in data/nba/lines/<season>.json, added only when it moves and never after the game starts."
+ },
+ "availability": {
+  "source": "ESPN's injury report (site.api.espn.com .../nba/injuries), read at the run that saves the pick.",
+  "playing": "Every player with expected minutes for the team who is not listed Out. Day-To-Day counts as playing, as the registration's 'not listed Out' says. A player is matched by ESPN's athlete id.",
+  "stored": "Each pick stores the injury list for both teams as read, the read time, and the availability each side was given.",
+  "unreadable": "If the report cannot be read, the pick is made by Model A and Model B without availability_matchup, each refitted the same way without it, and the pick says so. Nothing is filled in."
+ },
+ "drift": {
+  "file": "data/nba/drift_baseline.json",
+  "model": "model_a",
+  "metric": "log_loss",
+  "baseline": "Model A's log loss on Stage 61's confirmation seasons (experiments/nba/stage61/results/confirmation.json, 2643 games).",
+  "rule": "Flag when the lower end of a one-sided 95% bootstrap interval of mean per-game log loss is above the baseline, once 100 games are graded (the NHL's rule; the NBA grades 5 to 15 games a day).",
+  "known_break": "The backtest knew who played from the box score; a live pick knows only the injury report. Stage 61's M2 measures that gap."
+ },
+ "canary": "Every night, each source the daily run reads is read once on its own (ESPN's scoreboard, box score, odds and injury report, and Kalshi), judged on the shape the run needs, and named in the report. A failed source opens or comments on the issue 'NBA: nightly canary failing'.",
+ "measurements": [
+  "Stage 61 M2: the injury report against who played, printed once 100 games are graded.",
+  "How many picks each market source priced, and how many had no price."
+ ],
+ "disclosures": [
+  "Stage 61's last disclosure said the live reads waited on Mark. The runner probe of 2026-10-09 (#357) found ESPN's odds and injury report answering GitHub's runner, where in September (#131) they had not; this registration rests on that probe, and the canary is what says when it stops being true.",
+  "Kalshi is a prediction market, not a sportsbook; its prices on NBA games were not in Stage 61's data and were never backtested.",
+  "The lock times are chosen for October's clocks. When the US leaves daylight saving on 2026-11-01, 21:30 UTC is 4:30 PM Eastern, earlier before the 7 PM games; the rule is unchanged."
+ ],
+ "amendments": []
+}

@@ -1,0 +1,48 @@
+{
+  "target": "experiments/nba/stage65/registry.json",
+  "tests": "tests/test_nba_stage65_registry.py",
+  "cases": [
+    {
+      "id": "nba65-silent-switch",
+      "why": "the no-price rule loses its promise, so a night without ESPN could price picks from somewhere unnamed and the page would not say so",
+      "find": "There is never a silent switch: every pick stores",
+      "replace": "Every pick stores",
+      "expect_caught_by": "test_the_market_is_espn_then_kalshi_then_no_price_and_never_a_silent_switch"
+    },
+    {
+      "id": "nba65-kalshi-spread-widened",
+      "why": "Kalshi's fallback accepts a wide market, so a preseason-style 0.15/0.79 quote becomes a price Model B reads",
+      "find": "each side's ask minus bid is at most 0.05",
+      "replace": "each side's ask minus bid is at most 0.50",
+      "expect_caught_by": "test_the_market_is_espn_then_kalshi_then_no_price_and_never_a_silent_switch"
+    },
+    {
+      "id": "nba65-kalshi-first",
+      "why": "Kalshi is read even when ESPN has a price, so the backtest's own source stops being the market for most picks",
+      "find": "read only when ESPN gives no usable price for the game at that run",
+      "replace": "read for every game",
+      "expect_caught_by": "test_the_market_is_espn_then_kalshi_then_no_price_and_never_a_silent_switch"
+    },
+    {
+      "id": "nba65-injuries-filled-in",
+      "why": "an unreadable injury report is quietly treated as everyone playing, so the pick claims an availability nobody read",
+      "find": "and the pick says so. Nothing is filled in.",
+      "replace": "and every player counts as playing.",
+      "expect_caught_by": "test_an_unreadable_injury_report_is_said_and_never_filled_in"
+    },
+    {
+      "id": "nba65-drift-min-games",
+      "why": "the registry says one sample size and the baseline file another, so the drift check runs a rule nobody registered",
+      "find": "once 100 games are graded (the NHL's rule",
+      "replace": "once 30 games are graded (the NHL's rule",
+      "expect_caught_by": "test_the_drift_rule_it_registers_is_the_one_the_baseline_file_holds"
+    },
+    {
+      "id": "nba65-backfill",
+      "why": "the forward test may score games picked after the fact, which is a backtest wearing a forward test's name",
+      "find": "Games before it are never scored, and nothing is backfilled.",
+      "replace": "Games before it are scored from a backfill.",
+      "expect_caught_by": "test_the_forward_test_is_this_season_from_the_first_saved_pick"
+    }
+  ]
+}
