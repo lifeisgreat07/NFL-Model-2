@@ -1,0 +1,69 @@
+{
+  "target": "src/core/isolation.py",
+  "tests": "tests/test_shared_theme.py",
+  "cases": [
+    {
+      "id": "shared-theme-nhl-button-own-key",
+      "target": "src/sports/nhl/pages/nhl.js",
+      "why": "the NHL's theme button goes back to its own key, so a choice made there no longer reaches the NFL, the NBA or the home page.",
+      "find": "try{ localStorage.setItem('site:theme', next); }catch(e){}",
+      "replace": "try{ localStorage.setItem('nhl:theme', next); }catch(e){}",
+      "expect_caught_by": "test_every_theme_button_writes_the_shared_key"
+    },
+    {
+      "id": "shared-theme-nfl-key-constant",
+      "target": "src/dashboard/app.js",
+      "why": "the NFL's theme key constant goes back to the old per-page name, so its button writes a key no other page reads.",
+      "find": "const THEME_KEY = 'site:theme';",
+      "replace": "const THEME_KEY = 'nfl_pickem_theme';",
+      "expect_caught_by": "test_every_theme_button_writes_the_shared_key"
+    },
+    {
+      "id": "shared-theme-home-ignores-choice",
+      "target": "src/site/home/page.html",
+      "why": "the home page ignores the stored choice and follows only the system setting, so a visitor who chose light on a sport's page meets dark at home.",
+      "find": "var saved = localStorage.getItem('site:theme');",
+      "replace": "var saved = null;",
+      "expect_caught_by": "test_every_page_reads_the_shared_key_before_first_paint"
+    },
+    {
+      "id": "shared-theme-nba-reads-old-key-only",
+      "target": "src/sports/nba/pages/page.html",
+      "why": "the NBA's first-paint script reads only its old key, so it paints whatever was chosen there before Stage 62, not the site's choice.",
+      "find": "var saved = localStorage.getItem('site:theme') || localStorage.getItem('nba:theme');",
+      "replace": "var saved = localStorage.getItem('nba:theme');",
+      "expect_caught_by": "test_every_page_reads_the_shared_key_before_first_paint"
+    },
+    {
+      "id": "shared-theme-exception-widened",
+      "why": "the exception lets every key starting site: through, so a sport could store anything under a shared name without a decision.",
+      "find": "                if key in SHARED_STORAGE_KEYS:",
+      "replace": "                if key in SHARED_STORAGE_KEYS or key.startswith('site:'):",
+      "expect_caught_by": "test_the_exception_lets_only_its_own_key_through"
+    },
+    {
+      "id": "shared-theme-second-shared-key",
+      "why": "a second shared key is added to the list without its own decision; the list is meant to hold the theme alone.",
+      "find": "    'site:theme': \"the visitor's light or dark choice, one for the whole site (Stage 62 item 1)\",\n}",
+      "replace": "    'site:theme': \"the visitor's light or dark choice, one for the whole site (Stage 62 item 1)\",\n    'site:picks': 'my picks, for every sport',\n}",
+      "expect_caught_by": "test_the_one_shared_key_is_the_theme"
+    },
+    {
+      "id": "shared-theme-exception-dropped",
+      "tests": "tests/test_sport_isolation.py",
+      "why": "the named exception is lost, so the isolation rule reports the NHL's and the NBA's theme buttons and the shared key cannot be used.",
+      "find": "                if key in SHARED_STORAGE_KEYS:\n                    continue\n",
+      "replace": "",
+      "expect_caught_by": "test_this_repository_breaks_no_isolation_rule"
+    },
+    {
+      "id": "shared-theme-check-not-proven",
+      "target": ".github/workflows/browser-checks.yml",
+      "tests": "tests/test_browser_checks.py",
+      "why": "the theme check runs without proving it can fail, so a check that had gone blind would pass every site.",
+      "find": "        run: python tests/browser/check_theme.py --self-test --tmp \"$RUNNER_TEMP\"\n",
+      "replace": "        run: echo skipped\n",
+      "expect_caught_by": "test_the_theme_check_proves_itself_then_walks_the_whole_built_site"
+    }
+  ]
+}

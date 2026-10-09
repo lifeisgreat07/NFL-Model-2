@@ -90,7 +90,7 @@ def test_the_page_uses_the_nbas_own_names(built: tuple[dict, str]) -> None:
     _, html = built
     assert '<html lang="en" data-sport="nba">' in html
     keys = set(re.findall(r'''localStorage\.(?:get|set)Item\('([^']+)''', html))
-    assert keys == {'nba:theme'}
+    assert keys == {'site:theme', 'nba:theme'}
     css = (PAGES / 'nba.css').read_text(encoding='utf-8')
     assert '--good' not in css, 'green means only a pick scored right'
 

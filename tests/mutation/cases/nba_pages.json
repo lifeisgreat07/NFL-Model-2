@@ -11,8 +11,8 @@
     },
     {
       "id": "nba-pages-shared-theme-key",
-      "why": "the theme is stored under a key every sport shares, so choosing light on one sport's page changes another's.",
-      "find": "localStorage.setItem('nba:theme', next)",
+      "why": "the theme is stored under a key that is neither the site's one shared key (Stage 62) nor the NBA's own, so no other page reads the choice.",
+      "find": "localStorage.setItem('site:theme', next)",
       "replace": "localStorage.setItem('theme', next)",
       "expect_caught_by": "test_the_page_uses_the_nbas_own_names"
     },

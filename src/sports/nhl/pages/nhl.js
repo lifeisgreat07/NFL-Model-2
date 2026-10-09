@@ -531,7 +531,7 @@ document.querySelectorAll('#theme-toggle, .topbar-theme').forEach(btn => btn.add
   const next = currentTheme() === 'light' ? 'dark' : 'light';
   if(next === 'light') document.documentElement.setAttribute('data-theme', 'light');
   else document.documentElement.removeAttribute('data-theme');
-  try{ localStorage.setItem('nhl:theme', next); }catch(e){}
+  try{ localStorage.setItem('site:theme', next); }catch(e){}
   themeLabel();
   renderBoard();
 }));

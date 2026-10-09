@@ -120,3 +120,16 @@ jobs:
 
       - name: Check the home page
         run: python tests/browser/check_page.py "$RUNNER_TEMP/states/home.html" --axe node_modules/axe-core/axe.min.js
+
+      # Stage 62 items 1 and 4: the light/dark choice is the site's, so it
+      # must follow the visitor from page to page. Only a browser walking the
+      # built site on one origin can see that (tests/browser/check_theme.py);
+      # it proves it can fail first, on pages that keep their own keys.
+      - name: Prove the theme check can fail
+        run: python tests/browser/check_theme.py --self-test --tmp "$RUNNER_TEMP"
+
+      - name: Build the whole site
+        run: python -m src.site.build --out "$RUNNER_TEMP/site"
+
+      - name: Check the theme follows the visitor between pages
+        run: python tests/browser/check_theme.py "$RUNNER_TEMP/site"
