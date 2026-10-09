@@ -62,51 +62,51 @@
  {
   "game_id": "2026020056",
   "pick": "UTA",
-  "result": "pending"
+  "result": "wrong"
  },
  {
   "game_id": "2026020057",
   "pick": "DAL",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020058",
   "pick": "MTL",
-  "result": "pending"
+  "result": "wrong"
  },
  {
   "game_id": "2026020059",
   "pick": "OTT",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020060",
   "pick": "TBL",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020061",
   "pick": "CAR",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020062",
   "pick": "NYI",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020063",
   "pick": "STL",
-  "result": "pending"
+  "result": "wrong"
  },
  {
   "game_id": "2026020064",
   "pick": "COL",
-  "result": "pending"
+  "result": "correct"
  },
  {
   "game_id": "2026020065",
   "pick": "VGK",
-  "result": "pending"
+  "result": "correct"
  }
 ]
