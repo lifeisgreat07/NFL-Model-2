@@ -1,0 +1,27 @@
+{
+  "target": ".github/workflows/nba-daily.yml",
+  "tests": "tests/test_nba_workflows.py",
+  "cases": [
+    {
+      "id": "nba-daily-evening-slot-moved",
+      "why": "the fallback schedule drifts from the registered 21:30 UTC, so a late GitHub start lands after more tips",
+      "find": "    - cron: '30 21 * * *'\n",
+      "replace": "    - cron: '30 22 * * *'\n",
+      "expect_caught_by": "test_the_daily_run_is_scheduled_at_the_registered_times_and_by_hand"
+    },
+    {
+      "id": "nba-daily-unguarded-stage",
+      "why": "predictions/nba is staged before it exists, and the first run with nothing to save fails, as the NHL's did",
+      "find": "          test -d predictions/nba && git add predictions/nba\n",
+      "replace": "          git add predictions/nba\n",
+      "expect_caught_by": "test_the_daily_run_stages_each_folder_only_if_it_exists"
+    },
+    {
+      "id": "nba-daily-silent-failure",
+      "why": "a failed daily run raises nothing, so a night of missed picks is found by whoever next opens the page",
+      "find": "          python -m src.core.alerts --title \"NBA: daily run failed\" --body-file failure.md",
+      "replace": "          echo failed",
+      "expect_caught_by": "test_the_daily_run_alerts_on_a_failure_and_a_drift_flag"
+    }
+  ]
+}

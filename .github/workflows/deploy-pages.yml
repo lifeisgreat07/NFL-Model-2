@@ -65,11 +65,14 @@ on:
   # "NHL daily run" writes data/nhl/**, predictions/nhl/** and results/nhl/**
   # twice a day; the NHL's page is built from them since Stage 53.
   #
+  # "NBA daily run" (Stage 65) writes data/nba/**, predictions/nba/** and
+  # results/nba/** twice a day from opening night, 2026-10-20.
+  #
   # Guarded by tests/test_generated_data_reaches_the_page.py, which now
   # enumerates the writers rather than listing them, so a third one is covered
   # without anyone remembering to come back here.
   workflow_run:
-    workflows: ["Collect Booth's audit log", "NFL weekly update", "NFL weekend refresh", "NHL daily run"]
+    workflows: ["Collect Booth's audit log", "NFL weekly update", "NFL weekend refresh", "NHL daily run", "NBA daily run"]
     types: [completed]
 
   workflow_dispatch:

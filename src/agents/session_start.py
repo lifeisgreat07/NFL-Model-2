@@ -63,6 +63,8 @@ LATE_COPY_HOURS = 12
 SPORT_WATCHED = {
     'nhl-daily.yml': 'NHL daily run',
     'nhl-canary.yml': 'NHL nightly canary',
+    'nba-daily.yml': 'NBA daily run',
+    'nba-canary.yml': 'NBA nightly canary',
 }
 CONTEXT = REPO / 'docs' / 'context.md'
 CLAUDE_MD = REPO / 'CLAUDE.md'

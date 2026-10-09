@@ -5,8 +5,8 @@
     {
       "id": "rebuild-bridge-drops-weekly-update",
       "why": "the exact state main was in on 2026-09-15, and it cost a week of the dashboard being wrong in the first week anyone could have noticed. The Tuesday run graded Week 1 and locked in Week 2 at 11:05 UTC, committed all of it with the default GITHUB_TOKEN, and no build followed: the page served 04:30 UTC data with no Week 2 in either week control. Nothing failed, because the paths trigger LOOKS like it covers this and a GITHUB_TOKEN push cannot fire it. This is the case that says the widened guard is load-bearing rather than decorative -- revert this one line and the suite must go red.",
-      "find": "    workflows: [\"Collect Booth's audit log\", \"NFL weekly update\", \"NFL weekend refresh\", \"NHL daily run\"]",
-      "replace": "    workflows: [\"Collect Booth's audit log\", \"NFL weekend refresh\", \"NHL daily run\"]",
+      "find": "    workflows: [\"Collect Booth's audit log\", \"NFL weekly update\", \"NFL weekend refresh\", \"NHL daily run\", \"NBA daily run\"]",
+      "replace": "    workflows: [\"Collect Booth's audit log\", \"NFL weekend refresh\", \"NHL daily run\", \"NBA daily run\"]",
       "expect_caught_by": "test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder"
     },
     {
@@ -33,7 +33,14 @@
     {
       "id": "rebuild-bridge-drops-nhl-daily-run",
       "why": "the NHL's run commits its picks, grades and page inputs twice a day with the default GITHUB_TOKEN. Without this entry the NHL's page, built since Stage 53, never shows them: the 2026-09-15 defect in a second sport.",
-      "find": ", \"NHL daily run\"]",
+      "find": ", \"NHL daily run\", \"NBA daily run\"]",
+      "replace": ", \"NBA daily run\"]",
+      "expect_caught_by": "test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder"
+    },
+    {
+      "id": "rebuild-bridge-drops-nba-daily-run",
+      "why": "the NBA's run (Stage 65) commits its picks, grades and lines twice a day with the default GITHUB_TOKEN. Without this entry its board never shows them: the 2026-09-15 defect in a third sport.",
+      "find": ", \"NBA daily run\"]",
       "replace": "]",
       "expect_caught_by": "test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder"
     }
