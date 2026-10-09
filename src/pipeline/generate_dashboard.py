@@ -190,6 +190,19 @@ def load_recent_runs(path: Path | None = None) -> dict[str, Any] | None:
         return json.load(f)
 
 
+def load_lock_proof(path: Path | None = None) -> dict[str, Any] | None:
+    """Every commit that changed each locked week's picks, written by
+    src/pipeline/lock_proof.py in the site build (Stage 46 item 5). None
+    when this build has none (a local build that skipped it, or a shallow
+    clone), and the page then shows no lock line."""
+    path = path or DATA_DIR / 'lock_proof.json'
+    if not path.exists():
+        print("  No data/lock_proof.json -- the site build writes it; the page will show no lock line.")
+        return None
+    with open(path, encoding='utf-8') as f:
+        return json.load(f)
+
+
 def load_calibration() -> dict[str, Any] | None:
     """Backtest-derived calibration written by src/research/calibration.py.
 
@@ -995,6 +1008,7 @@ def main() -> None:
 
     print("Loading the scheduled jobs' recent runs...")
     recent_runs = load_recent_runs()
+    lock_proof = load_lock_proof()
 
     print("Loading team history...")
     team_history_js = load_team_history()
@@ -1035,6 +1049,8 @@ def main() -> None:
     html = html.replace('__AGENT_LOG_JSON__', safe_json(agent_log_for_page(agent_log), **COMPACT))
     # null when this build did not read the run history (see load_recent_runs).
     html = html.replace('__RECENT_RUNS_JSON__', safe_json(recent_runs, **COMPACT))
+    # null when this build read no lock commits (see load_lock_proof).
+    html = html.replace('__LOCK_PROOF_JSON__', safe_json(lock_proof, **COMPACT))
     # The Changelog page is rendered from config.VERSION_HISTORY, so the
     # release notes on the site and the constant the model actually runs under
     # cannot drift apart -- they are the same object.

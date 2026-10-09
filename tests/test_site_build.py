@@ -155,8 +155,8 @@ def test_each_sport_is_built_in_a_process_of_its_own():
     """A crash or sys.exit in one sport's code must not stop the others, so
     the builders are separate processes, never imports."""
     cmds = {s: build.build_commands(s, Path('_site')) for s in build.SPORTS}
-    assert [c[3] for c in cmds['nfl']] == ['src.pipeline.generate_dashboard', 'src.pipeline.check_build',
-                                           'src.pipeline.picks_csv']
+    assert [c[3] for c in cmds['nfl']] == ['src.pipeline.lock_proof', 'src.pipeline.generate_dashboard',
+                                           'src.pipeline.check_build', 'src.pipeline.picks_csv']
     assert cmds['nhl'][0][3:] == ['src.sports.nhl.site', '--out', str(Path('_site') / 'nhl' / 'index.html')]
     source = Path(build.__file__).read_text(encoding='utf-8')
     assert 'import src.sports' not in source and 'from src.sports' not in source

@@ -129,5 +129,6 @@ def test_pages_checks_the_build_before_uploading_it():
     text = PAGES.read_text(encoding='utf-8')
     assert text.index('run: python -m src.site.build') < text.index('uses: actions/upload-pages-artifact')
     steps = [cmd[3:] for cmd in site.build_commands('nfl', Path('_site'))]
-    # The check runs straight after the build; picks.csv (Stage 46 item 7) follows it.
-    assert steps[:2] == [['src.pipeline.generate_dashboard'], ['src.pipeline.check_build', 'index.html']], steps
+    # The check runs straight after the build: the lock history (Stage 46
+    # item 5) comes before it and picks.csv (item 7) after.
+    assert steps[1:3] == [['src.pipeline.generate_dashboard'], ['src.pipeline.check_build', 'index.html']], steps

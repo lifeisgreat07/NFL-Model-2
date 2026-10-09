@@ -109,6 +109,11 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          # The whole history: src/pipeline/lock_proof.py reads every commit
+          # that changed a week's picks, and a shallow clone has none of them
+          # (Stage 46 item 5).
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0

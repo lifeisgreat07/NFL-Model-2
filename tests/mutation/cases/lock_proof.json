@@ -1,0 +1,43 @@
+{
+  "target": "src/pipeline/lock_proof.py",
+  "tests": "tests/test_lock_proof.py",
+  "cases": [
+    {
+      "id": "lock-proof-reads-a-shallow-clone",
+      "why": "a shallow clone is read anyway, and its one commit looks as if it added every file, so every week's picks are dated to the deploy",
+      "find": "    if git(['rev-parse', '--is-shallow-repository'], root).strip() == 'true':\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_a_shallow_clone_is_refused_and_writes_nothing"
+    },
+    {
+      "id": "lock-proof-stops-at-a-move",
+      "why": "the history stops at a rename, so after Stage 52 moves the NFL's folders every week's picks are dated to the move",
+      "find": "['log', '--follow',",
+      "replace": "['log',",
+      "expect_caught_by": "test_history_follows_renames"
+    },
+    {
+      "id": "lock-proof-newest-first",
+      "why": "the commits are kept newest first, so the page calls the latest change the first save and measures the lead time from the wrong commit",
+      "find": "    return commits[::-1]\n",
+      "replace": "    return commits\n",
+      "expect_caught_by": "test_every_commit_oldest_first_in_utc_and_previews_left_out"
+    },
+    {
+      "id": "lock-line-hides-changes-after-kickoff",
+      "target": "src/dashboard/app.js",
+      "why": "a commit that changed the picks after kickoff is left off the line, which is the one thing the proof exists to show",
+      "find": "  const before = commits.filter(c => at(c) < first), after = commits.filter(c => at(c) >= first);",
+      "replace": "  const before = commits.filter(c => at(c) < first), after = [];",
+      "expect_caught_by": "test_a_change_after_kickoff_is_named_with_its_reason"
+    },
+    {
+      "id": "lock-line-on-a-preview",
+      "target": "src/dashboard/app.js",
+      "why": "a preview week gets a lock line, though its picks are not locked and can still change",
+      "find": "(weekData && !weekData.preview) ? lockProofHtml(",
+      "replace": "(weekData) ? lockProofHtml(",
+      "expect_caught_by": "test_the_board_shows_it_for_locked_weeks_and_the_file_is_not_committed"
+    }
+  ]
+}
