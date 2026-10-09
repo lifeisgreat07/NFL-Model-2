@@ -48,6 +48,10 @@ wait for the 2026-10-08 lock because the deploy runs on every data commit;
 9. Against the market: how the models did when they picked against the
    market's favourite (check first that no page already shows it).
 
+Items 9 and 6 done (2026-10-09 overnight, #359): "Picking against the
+market" on Season Accuracy, each row an interval; a "Late by" column on
+the runs table from Stage 42 item 1's rule. Item 8 dropped (Mark).
+
 ### Stage 47 - Accessibility and resilience
 
 10. Forced colours (Windows High Contrast): no rule today; bars and chips
@@ -56,6 +60,9 @@ wait for the 2026-10-08 lock because the deploy runs on every data commit;
 12. A canonical link and structured data (JSON-LD).
 13. A render-time budget in the browser checks beside the byte budget.
 14. A web app manifest beside the existing touch icon.
+
+Items 13 and 14 done (2026-10-09 overnight, #362): a 1,500 ms render
+budget judged on the fastest width, and `assets/site.webmanifest`.
 
 ### Stage 48 - Test depth
 

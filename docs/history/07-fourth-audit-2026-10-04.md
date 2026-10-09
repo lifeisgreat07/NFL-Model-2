@@ -117,6 +117,14 @@ lock in any case. **Mark's call (2026-10-05):** the card stays with a
 "Cancelled" label; its pick is shown but not graded, and is left out of
 every count and accuracy figure. Built after the lock.
 
+Items 2 (the week stepper's half: weeks 19 to 22 named by their round
+from 2021), 3 and 7 (2026-10-09 overnight, #360). Item 7 found that
+Friday games (Black Friday, Christmas) wait up to two days for a status
+refresh: no slot runs between Friday 05:17 and Sunday 21:47 UTC; a
+Saturday cron-job.org slot would close it (Mark's account). Left: item
+2's `game_type` in saved picks, item 1's other scenarios, 5 (December),
+6, and 4 (Mark's call).
+
 ### Stage 40 - Season turnover (January)
 
 `docs/season-turnover.md` and `tasks.py turnover` (item 7); the 2026
@@ -174,6 +182,10 @@ prevented the delay, so this stage replaces the trigger, not the runner.
    refuses a request (an expired token, say), and item 1's delay line on
    the run that did start.
 5. After four on-time weeks, `LOCK_SLACK` is revisited (Mark's call).
+
+Item 1 done (2026-10-09 overnight, #358): `src/core/start_delay.py`, a
+"Record the start delay" step in every scheduled workflow, warning at
+seven hours late.
 
 ### Stage 43 - Spotter, the visual inspector (Mark, 2026-10-04)
 

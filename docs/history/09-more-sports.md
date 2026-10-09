@@ -273,6 +273,10 @@ items 13 and 14 are approved; Stage 40 waits for January.
 3. The NHL's team logos at the NFL Week Board's size.
 4. Browser checks that the theme follows the visitor from page to page.
 
+Progress (2026-10-09 overnight): items 1 and 4 done (#353, the key
+`site:theme`), item 3 done (#354). Item 2: options rendered on the
+canvas "Sportalytics Icons and Wordmark"; waiting on Mark.
+
 ### Stage 63 - Boards that show what happened
 
 1. On the NHL board, every played game shows the pick, the final score,
@@ -281,6 +285,10 @@ items 13 and 14 are approved; Stage 40 waits for January.
    not yet locked says when its pick will lock.
 3. The NBA board the same, once it exists (Stage 65). The NFL board
    already does this (Mark: no gap there).
+
+Progress (2026-10-09 overnight): items 1 and 2 done for the NHL (#355);
+the lock time shown is the page's copy of `lock.py`'s rule, run
+against `GameLock` over 384 start times. Item 3 waits for Stage 65.
 
 ### Stage 64 - A day at a time
 
@@ -294,6 +302,9 @@ both models, the market, the lock time and the goalies).
    right so far") above the rows.
 3. The NFL keeps its week view: it plays by the week.
 4. Browser checks at phone and desktop widths, both themes.
+
+Progress (2026-10-09 overnight): items 1, 2 and 4 done (#356), a
+click-through browser check included.
 
 ### Stage 65 - The NBA goes live
 
@@ -309,6 +320,13 @@ Mark: on GitHub's runners only; his PC is not on overnight.
 6. The board built like the NHL's after Stages 63 and 64; the home card
    shows live status.
 
+Progress (2026-10-09 overnight): the source probe ran on a runner
+(#357). hoopR, ESPN (scoreboard, box score, odds, injuries), Kalshi,
+Polymarket and SportsDataverse's injuries answered; DraftKings and
+cdn.nba.com did not. Opening night is 2026-10-20. Claude's go/no-go
+(GO for both models, on conditions) is in `memory/2026-10-09.md`;
+Model B's market and the start date are Mark's.
+
 ### Stage 66 - The home page, looked at again
 
 Mark wants a home page that makes sense to a first-time visitor: "highest
@@ -318,6 +336,11 @@ UX score possible".
 2. Two or three rendered options for Mark, built on Stage 62's icons and
    Stage 67's name.
 3. The chosen option built, with browser and accessibility checks.
+
+Progress (2026-10-09 overnight): item 1 done,
+`docs/design/HOME-AUDIT-2026-10-09.md`; item 2, three options on the
+canvas "Sportalytics Home Page Options" (Claude recommends A with C's
+"New here?"); waiting on Mark.
 
 ### Stage 67 - Sportalytics
 
@@ -332,3 +355,6 @@ stay as they are (Mark: no redoing the API work).
 The name is in use elsewhere (an Android developer, "Sportalytics Private
 Limited"); fine for a portfolio, worth a trademark check if the site ever
 goes commercial.
+
+Progress (2026-10-09 overnight): item 3, three wordmarks on the canvas
+"Sportalytics Icons and Wordmark"; waiting on Mark.

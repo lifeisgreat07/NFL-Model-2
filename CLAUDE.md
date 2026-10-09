@@ -48,8 +48,8 @@ Model v2.5 (`MODEL_VERSION` in `src/sports/nfl/config.py`). `TRAIN_SEASONS` 2020
 The drift check flags on Model A's log loss against the committed
 `data/nfl/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
 
-Suite: **7417 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-`c0475bd` (after #351, Stage 52), with HEAD level with origin, which is the order that makes the
+Suite: **7752 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+the 2026-10-09 overnight wrap-up commit (after #364), with HEAD level with origin, which is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
