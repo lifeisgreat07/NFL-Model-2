@@ -48,8 +48,10 @@ def test_a_clean_night_does_not_fail_the_step():
     t = text()
     step = t[t.index('- name: Audit requirements.txt'):t.index('- name: Raise an alert')]
     after = step[step.index('set -e'):]
+    read_back = '{ echo "## pip-audit of requirements.txt (exit $code)"; cat audit.md; }'
+    assert read_back in after, 'the summary must still read the report back'
     assert 'if [ ! -f audit.md ]; then' in after, 'a missing report must be handled before it is read'
-    assert after.index('if [ ! -f audit.md ]; then') < after.index('cat audit.md')
+    assert after.index('if [ ! -f audit.md ]; then') < after.index(read_back)
     assert 'echo "No known vulnerabilities found." > audit.md' in after
 
 

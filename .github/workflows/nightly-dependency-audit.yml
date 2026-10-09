@@ -49,8 +49,8 @@ jobs:
           code=$?
           set -e
           # pip-audit writes no report at all on a clean night (2.10.1, checked
-          # 2026-10-09), and a bare `cat audit.md` then failed this step under
-          # set -e: the clean night after #364 opened "could not run" (#365).
+          # 2026-10-09), and reading a missing report back failed this step
+          # under set -e: the clean night after #364 opened "could not run" (#365).
           if [ ! -f audit.md ]; then
             if [ "$code" = "0" ]; then
               echo "No known vulnerabilities found." > audit.md
