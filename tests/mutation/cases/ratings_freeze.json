@@ -1,0 +1,28 @@
+{
+  "target": "src/sports/nfl/ratings_engine.py",
+  "tests": "tests/test_ratings_freeze_disclosed.py",
+  "cases": [
+    {
+      "id": "ratings-read-playoff-plays",
+      "why": "the ratings start reading playoff plays, so the Methodology page's freeze sentence is false and the model changed without a registration",
+      "find": "    reg = raw_pbp[raw_pbp['season_type'] == 'REG'].copy()",
+      "replace": "    reg = raw_pbp[raw_pbp['season_type'].isin(['REG', 'POST'])].copy()",
+      "expect_caught_by": "test_the_ratings_read_regular_season_plays_only"
+    },
+    {
+      "id": "qb-ratings-read-playoff-dropbacks",
+      "why": "the QB ratings start reading playoff dropbacks while the team ratings do not, so the page's sentence is half false",
+      "find": "    df = df[df['season_type'] == 'REG']",
+      "replace": "    df = df[df['season_type'].isin(['REG', 'POST'])]",
+      "expect_caught_by": "test_the_qb_ratings_read_regular_season_dropbacks_only"
+    },
+    {
+      "id": "ratings-freeze-undisclosed",
+      "why": "the disclosure is dropped from the page while the ratings still freeze, so a reader assumes a playoff pick knows the playoffs",
+      "find": "<b style=\"color:var(--text)\">The ratings freeze through the playoffs.</b> ",
+      "replace": "",
+      "expect_caught_by": "test_the_methodology_page_says_so",
+      "target": "src/dashboard/body.html"
+    }
+  ]
+}
