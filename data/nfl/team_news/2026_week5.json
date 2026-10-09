@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 5,
-  "read_at": "2026-10-08T17:43:29Z",
+  "read_at": "2026-10-09T11:54:48Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-10-08T14:33:03Z"
+    "depth_chart_snapshot": "2026-10-09T06:01:46Z"
   },
   "teams": {
     "DAL": {
@@ -23,7 +23,7 @@
         }
       ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "TB": {
       "qb": {
