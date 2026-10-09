@@ -124,6 +124,41 @@ Moved from CLAUDE.md's "Environment and workflow" list.
 
 ## Traps that have actually bitten
 
+- **A timed-out foreground call keeps running on the machine.** On
+  2026-10-09 a loop of mutation runs hit the bridge's 60-second limit. It went
+  on in the background while a second loop started, and their
+  mutate-and-restore steps overlapped and left six files mutated. Before
+  starting any runner, list the `runner.py` processes and confirm none is
+  alive. Run long work hidden, with a log (`Start-Process`), never in the
+  foreground.
+- **`experiments/nfl/*/results/` is for pre-registered answers only.**
+  `tests/test_model_lab.py` makes every file there a Model Lab entry. A
+  descriptive back-check run before its rule was registered (Stage 38 N1)
+  lives beside the registry instead (`experiments/nfl/stage38/backcheck/`).
+- **A `MODEL_VERSION` bump touches two guards outside the model:**
+  `BACKTEST_UNCHANGED` in `tests/test_backtest_figures_tie.py` (with the
+  reason the backtest did not move) and `PICK_KEYS` in
+  `tests/test_weekly_update_end_to_end.py` for any new pick field. #374's
+  first full suite failed both.
+- **"Reproduces exactly" holds only where it was run.** The N1 back-check
+  matches byte for byte on local Windows, and is close but not identical on
+  Booth's Linux runner with the same pins (#373). Say where a re-run was
+  exact; Booth will run it somewhere else.
+- **Editing a PR body on GitHub re-runs pre-flight and Booth.** The run
+  before the edit stays in the check list, red if it failed. The latest
+  run of each check is the one that counts; say so in the log.
+- **The mutation scope runs in a detached worktree at the head, outside the
+  branch's own.** Editing the branch's worktree does not disturb it, but its
+  result is for the old head. After a fix, kill `runner.py` and run the
+  prep again.
+- **A Windows console reads node's output as cp1252.** A test that runs JS
+  through `subprocess.run(..., text=True)` turns an en dash into mojibake.
+  Pass `encoding='utf-8'`.
+- **The README's case-file floor has a mutation case that stops biting
+  when the corpus passes the next multiple of 25.** At 276 files, "over
+  250" raised to "over 275" is still true. Raise the floor and both floor
+  cases in the first PR that touches the README after the count crosses
+  (done in #376).
 - **A handoff can carry finished work as open.** Stage 33 items 20 and 25
   shipped on 2026-09-29, but `docs/stage-history.md` never marked them
   DONE, so the 10-02 handoff and the next opening prompt listed both as

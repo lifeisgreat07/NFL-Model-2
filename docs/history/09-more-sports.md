@@ -277,6 +277,9 @@ Progress (2026-10-09 overnight): items 1 and 4 done (#353, the key
 `site:theme`), item 3 done (#354). Item 2: options rendered on the
 canvas "Sportalytics Icons and Wordmark"; waiting on Mark.
 
+Item 2 done (2026-10-09, #375): puck P3 and ball B2, top left on the NHL
+and NBA pages (sidebar and phone bar) and on the home cards.
+
 ### Stage 63 - Boards that show what happened
 
 1. On the NHL board, every played game shows the pick, the final score,
@@ -289,6 +292,7 @@ canvas "Sportalytics Icons and Wordmark"; waiting on Mark.
 Progress (2026-10-09 overnight): items 1 and 2 done for the NHL (#355);
 the lock time shown is the page's copy of `lock.py`'s rule, run
 against `GameLock` over 384 start times. Item 3 waits for Stage 65.
+Item 3 done with Stage 65's board (#370).
 
 ### Stage 64 - A day at a time
 
@@ -327,6 +331,12 @@ cdn.nba.com did not. Opening night is 2026-10-20. Claude's go/no-go
 (GO for both models, on conditions) is in `memory/2026-10-09.md`;
 Model B's market and the start date are Mark's.
 
+Done (2026-10-09): Mark said GO for both models from opening night,
+ESPN's odds with Kalshi as the named fallback. #367 registration and
+drift baseline; #368 lock, market, injuries, drift and the daily run; #369
+workflows, canary and alerts; #370 the day board and the live home card.
+Mark set up the three cron-job.org jobs the same day.
+
 ### Stage 66 - The home page, looked at again
 
 Mark wants a home page that makes sense to a first-time visitor: "highest
@@ -341,6 +351,9 @@ Progress (2026-10-09 overnight): item 1 done,
 `docs/design/HOME-AUDIT-2026-10-09.md`; item 2, three options on the
 canvas "Sportalytics Home Page Options" (Claude recommends A with C's
 "New here?"); waiting on Mark.
+
+Item 3 done (2026-10-09, #377): option A with C's "New here?", axe-core
+clean at six widths.
 
 ### Stage 67 - Sportalytics
 
@@ -358,3 +371,7 @@ goes commercial.
 
 Progress (2026-10-09 overnight): item 3, three wordmarks on the canvas
 "Sportalytics Icons and Wordmark"; waiting on Mark.
+
+Done (2026-10-09, #376): wordmark W2, every visitor-facing name, the
+share image remade, and `tests/test_product_name.py`'s check that the old
+name shows nowhere a visitor sees.
