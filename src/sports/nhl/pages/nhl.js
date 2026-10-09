@@ -647,7 +647,7 @@ function showPage(name, opts){
   window.scrollTo(0, 0);
   const page = document.getElementById('page-' + name);
   const heading = page && page.querySelector('.page-head h2');
-  document.title = name === 'board' || !heading ? BASE_TITLE : `${heading.textContent.trim()} — Pick'em Model`;
+  document.title = name === 'board' || !heading ? BASE_TITLE : `${heading.textContent.trim()} — Sportalytics`;
   if(opts && opts.focus && heading){
     heading.setAttribute('tabindex', '-1');
     heading.focus({preventScroll: true});

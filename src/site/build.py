@@ -180,7 +180,7 @@ REDIRECT = """<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex">
-<title>Pick'em Model</title>
+<title>Sportalytics</title>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <script>
   // The board moved to {sport}/ (Stage 53). A shared-picks link carries its

@@ -739,7 +739,7 @@ function setActivePage(pageId, opts){
   window.scrollTo({top:0, behavior:'auto'});
   const heading = pageHeading(pageId);
   document.title = (pageId === 'board' || !heading) ? BASE_TITLE
-    : `${heading.textContent.trim()} — Pick'em Model`;
+    : `${heading.textContent.trim()} — Sportalytics`;
   if(opts && opts.focus && heading){
     heading.setAttribute('tabindex', '-1');
     heading.focus({preventScroll:true});

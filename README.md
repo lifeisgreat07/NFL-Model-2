@@ -1,4 +1,4 @@
-# Pick'em Model
+# Sportalytics
 
 A real, backtested win-probability model for weekly NFL picks. Not a
 heuristic -- trained and validated on nflverse play-by-play for 2020-2025,

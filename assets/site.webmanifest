@@ -1,6 +1,6 @@
 {
-  "name": "Pick'em Model",
-  "short_name": "Pick'em",
+  "name": "Sportalytics",
+  "short_name": "Sportalytics",
   "description": "NFL and NHL picks, made before each game and graded after it.",
   "start_url": "../",
   "scope": "../",

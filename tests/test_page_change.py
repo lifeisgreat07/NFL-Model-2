@@ -41,7 +41,7 @@ def test_the_title_names_the_page_by_its_heading():
     body = set_active_page()
     assert 'const BASE_TITLE = document.title;' in TEMPLATE
     assert re.search(r"document\.title = \(pageId === 'board' \|\| !heading\) \? BASE_TITLE\s*"
-                     r":\s*`\$\{heading\.textContent\.trim\(\)\} — Pick'em Model`;", body), (
+                     r":\s*`\$\{heading\.textContent\.trim\(\)\} — Sportalytics`;", body), (
         'the document title is no longer set from the page heading')
 
 
