@@ -54,7 +54,7 @@ def test_every_page_carries_the_wordmark():
         body = read(rel)
         assert f'<h1 class="wordmark">{WORDMARK}</h1>' in body, f'{rel}: sidebar'
         assert f'<h1>{WORDMARK} <span class="topbar-sub">' in body, f'{rel}: phone bar'
-    assert f'<div class="home-brand">{WORDMARK}<small>' in read('src/site/home/page.html')
+    assert f'<span class="home-wordmark">{WORDMARK}</span>' in read('src/site/home/page.html')
 
 
 def test_lytics_takes_the_accent_colour():

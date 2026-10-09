@@ -1,0 +1,27 @@
+{
+  "target": "src/site/home/home.js",
+  "tests": "tests/test_home_option_a.py",
+  "cases": [
+    {
+      "id": "home-scoreboard-counts-only-wins",
+      "why": "\"after N games\" counts the wins alone, so a 39-25 record says it came after 39 games.",
+      "find": "  const n = f.record.won + f.record.lost;\n",
+      "replace": "  const n = f.record.won;\n",
+      "expect_caught_by": "test_the_scoreboard_counts_each_sports_graded_games"
+    },
+    {
+      "id": "home-theme-uses-its-own-key",
+      "why": "the home page's theme is stored under its own key, so a visitor who chose light here gets dark on every board.",
+      "find": "    try{ localStorage.setItem('site:theme', light() ? 'light' : 'dark'); }catch(e){}\n",
+      "replace": "    try{ localStorage.setItem('home:theme', light() ? 'light' : 'dark'); }catch(e){}\n",
+      "expect_caught_by": "test_the_theme_button_shares_every_page_s_key"
+    },
+    {
+      "id": "home-scoreboard-blank-before-grading",
+      "why": "a sport with nothing graded yet shows 0-0 after 0 games instead of saying so.",
+      "find": "`after ${n} game${n === 1 ? '' : 's'}` : 'no graded games yet'",
+      "replace": "`after ${n} game${n === 1 ? '' : 's'}` : `after ${n} games`",
+      "expect_caught_by": "test_the_scoreboard_says_so_when_nothing_is_graded_or_built"
+    }
+  ]
+}

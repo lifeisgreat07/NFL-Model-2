@@ -1,0 +1,41 @@
+{
+  "target": "src/site/home/page.html",
+  "tests": "tests/test_home_option_a.py",
+  "cases": [
+    {
+      "id": "home-marks-read-aloud",
+      "why": "a screen reader announces three unnamed images before the site's name.",
+      "find": "<span class=\"home-marks\" aria-hidden=\"true\">",
+      "replace": "<span class=\"home-marks\">",
+      "expect_caught_by": "test_the_header_has_the_three_marks_the_wordmark_the_pills_and_a_theme_button"
+    },
+    {
+      "id": "home-faq-loses-a-question",
+      "why": "the newcomer never learns that the picks can be checked, which is the site's whole claim.",
+      "find": "    <details><summary>Can I check the picks?</summary>",
+      "replace": "    <details hidden><summary>Can I check the picks?</summary>",
+      "expect_caught_by": "test_new_here_asks_option_cs_three_questions_closed"
+    },
+    {
+      "id": "home-faq-opens-itself",
+      "why": "the answers open on load, so the questions stop being questions and push the links down the page.",
+      "find": "    <details><summary>What is a model?</summary>",
+      "replace": "    <details open><summary>What is a model?</summary>",
+      "expect_caught_by": "test_new_here_asks_option_cs_three_questions_closed"
+    },
+    {
+      "id": "home-link-to-a-page-that-is-not-there",
+      "why": "\"Checking the AI's work\" opens the NFL board at a page id it does not have, so the visitor lands on the Week Board.",
+      "find": "<a href=\"nfl/#reliability\">",
+      "replace": "<a href=\"nfl/#checks\">",
+      "expect_caught_by": "test_the_footer_links_reach_real_pages"
+    },
+    {
+      "id": "home-scoreboard-after-the-cards",
+      "why": "option A's scoreboard drops below the cards, which is option B's order, not the one chosen.",
+      "find": "  <div class=\"home-score\" id=\"home-score\"></div>\n  <div class=\"home-cards\" id=\"home-cards\"></div>\n",
+      "replace": "  <div class=\"home-cards\" id=\"home-cards\"></div>\n  <div class=\"home-score\" id=\"home-score\"></div>\n",
+      "expect_caught_by": "test_the_page_says_what_the_site_does_before_anything_else"
+    }
+  ]
+}

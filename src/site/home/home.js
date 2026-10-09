@@ -110,6 +110,35 @@ function nbaCard(f){
 
 document.getElementById('home-cards').innerHTML = nflCard(HOME.nfl) + nhlCard(HOME.nhl) + nbaCard(HOME.nba);
 
+// The scoreboard above the cards (Stage 66, option A): each sport's record
+// from the same facts the cards read, and what every pick has in common.
+function tile(label, value, sub, words){
+  return `<div class="home-tile"><span>${esc(label)}</span><b${words ? ' class="is-words"' : ''}>${esc(value)}</b>`
+    + `<small>${esc(sub)}</small></div>`;
+}
+function scoreTile(f, label){
+  if(!f || !f.built) return tile(label, '\u2013', 'page not built this time');
+  const n = f.record.won + f.record.lost;
+  return tile(label, record(f.record), n ? `after ${n} game${n === 1 ? '' : 's'}` : 'no graded games yet');
+}
+document.getElementById('home-score').innerHTML = scoreTile(HOME.nfl, 'NFL, Model B')
+  + scoreTile(HOME.nhl, 'NHL, picks') + tile('Every pick', 'saved before the start', 'checked after', true);
+
+// The theme button: the same choice, under the same key, as every sport's page.
+(function(){
+  const btn = document.querySelector('.home-theme');
+  if(!btn) return;
+  const light = () => document.documentElement.getAttribute('data-theme') === 'light';
+  const label = () => btn.setAttribute('aria-label', light() ? 'Switch to the dark theme' : 'Switch to the light theme');
+  label();
+  btn.addEventListener('click', () => {
+    if(light()) document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', 'light');
+    try{ localStorage.setItem('site:theme', light() ? 'light' : 'dark'); }catch(e){}
+    label();
+  });
+})();
+
 // A sport with no page in this build has no pill to follow either: the link
 // would open GitHub's 404.
 for(const sport of ['nfl', 'nhl', 'nba']){
