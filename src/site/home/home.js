@@ -12,10 +12,26 @@ function weekday(t){ return new Date(t).toLocaleDateString([], {weekday:'short'}
 function when(t){ return weekday(t) + ' ' + clock(t); }
 function record(r){ return r && (r.won + r.lost) > 0 ? `${r.won}–${r.lost}` : '—'; }
 
+// Each sport's icon, as at the top left of its page (Stage 62.2: the football,
+// puck P3 and ball B2 of the "Sportalytics Icons and Wordmark" canvas).
+const ICON_PARTS = {
+  nfl: '<g transform="rotate(-28 10 10)"><ellipse cx="10" cy="10" rx="8.6" ry="5.2"/>'
+     + '<path stroke-width="1.2" d="M5.6 10h8.8M7 8.1v3.8M9 8.1v3.8M11 8.1v3.8M13 8.1v3.8"/></g>',
+  nhl: '<g transform="rotate(-28 10 10)"><ellipse cx="10" cy="8.4" rx="8.4" ry="3.2"/>'
+     + '<path d="M1.6 8.4v3.2a8.4 3.2 0 0 0 16.8 0V8.4"/></g>',
+  nba: '<g transform="rotate(-28 10 10)"><circle cx="10" cy="10" r="8.4"/>'
+     + '<path stroke-width="1.2" d="M10 1.6v16.8M1.6 10h16.8M4.1 4c2.5 2.3 3 9.2 0 12M15.9 4c-2.5 2.3-3 9.2 0 12"/></g>',
+};
+function icon(sport){
+  const parts = ICON_PARTS[sport];
+  return parts ? '<svg class="home-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" '
+    + 'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + parts + '</svg>' : '';
+}
+
 function card(sport, name, href, status, big, rows, go){
   const kv = rows.length
     ? `<dl class="home-kv">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` : '';
-  const inner = `<div class="home-card-top"><span class="home-sport">${esc(name)}</span>`
+  const inner = `<div class="home-card-top"><span class="home-sport">${icon(sport)}${esc(name)}</span>`
     + `<span class="home-status${status.cls ? ' ' + status.cls : ''}">${esc(status.text)}</span></div>`
     + `<div class="home-big">${esc(big)}</div>${kv}`;
   // A sport with no page in this build gets a card that links nowhere.

@@ -1,0 +1,13 @@
+{
+  "target": "src/dashboard/styles.css",
+  "tests": "tests/test_sport_icons.py",
+  "cases": [
+    {
+      "id": "ball-seams-fill-solid",
+      "why": "without fill:none the ball's curved seams close into filled black shapes in the NBA page's corner.",
+      "find": "  .brand-ball .lace{fill:none; stroke:var(--text);",
+      "replace": "  .brand-ball .lace{stroke:var(--text);",
+      "expect_caught_by": "test_the_ball_seams_have_no_fill"
+    }
+  ]
+}

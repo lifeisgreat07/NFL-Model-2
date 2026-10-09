@@ -1,0 +1,27 @@
+{
+  "target": "src/site/home/home.js",
+  "tests": "tests/test_sport_icons.py",
+  "cases": [
+    {
+      "id": "home-card-drops-the-icon",
+      "why": "the cards go back to bare names while every page's top left shows its sport's icon.",
+      "find": "<span class=\"home-sport\">${icon(sport)}${esc(name)}</span>",
+      "replace": "<span class=\"home-sport\">${esc(name)}</span>",
+      "expect_caught_by": "test_the_card_puts_the_icon_beside_the_sport_name"
+    },
+    {
+      "id": "home-ball-loses-its-seams",
+      "why": "the NBA card's ball is a bare circle, which is not the ball Mark chose and not the one at the top of the NBA page.",
+      "find": " + '<path stroke-width=\"1.2\" d=\"M10 1.6v16.8M1.6 10h16.8M4.1 4c2.5 2.3 3 9.2 0 12M15.9 4c-2.5 2.3-3 9.2 0 12\"/></g>',",
+      "replace": " + '</g>',",
+      "expect_caught_by": "test_each_home_card_draws_the_same_icon_as_the_page"
+    },
+    {
+      "id": "home-icon-read-aloud",
+      "why": "a screen reader announces an unnamed image before every sport's name.",
+      "find": "stroke-linejoin=\"round\" aria-hidden=\"true\">'",
+      "replace": "stroke-linejoin=\"round\">'",
+      "expect_caught_by": "test_the_card_puts_the_icon_beside_the_sport_name"
+    }
+  ]
+}

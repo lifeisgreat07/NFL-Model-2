@@ -28,7 +28,8 @@ body{ flex-direction:column; }
   .home-card:hover{ border-color:var(--border-strong); }
 }
 .home-card-top{ display:flex; justify-content:space-between; align-items:baseline; gap:var(--s2); flex-wrap:wrap; }
-.home-sport{ font-size:var(--fs-20); font-weight:800; }
+.home-sport{ font-size:var(--fs-20); font-weight:800; display:inline-flex; align-items:center; gap:var(--s2); }
+.home-icon{ width:26px; height:26px; flex:none; overflow:visible; }
 .home-status{ font-size:var(--fs-11); font-weight:700; letter-spacing:var(--track-label); text-transform:uppercase; color:var(--accent); }
 .home-status.is-live::before{ content:''; display:inline-block; width:7px; height:7px; border-radius:50%;
   background:var(--accent); margin-right:6px; vertical-align:1px; }
