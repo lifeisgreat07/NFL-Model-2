@@ -44,6 +44,10 @@ jobs:
         with:
           python-version: '3.11'
           cache: pip
+
+      # Stage 42 item 1: how late this run started, against its own cron lines.
+      - name: Record the start delay
+        run: python -m src.core.start_delay .github/workflows/nightly-random-order.yml
       - name: Set up node
         # Guards that run template code in node skip without it.
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0

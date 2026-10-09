@@ -1,0 +1,49 @@
+{
+  "target": "src/core/start_delay.py",
+  "tests": "tests/test_start_delay.py",
+  "cases": [
+    {
+      "id": "start-delay-warns-too-late",
+      "why": "the warning moves past the Weekly update's lock slack, so a Thursday run could miss the kickoff before anyone was warned.",
+      "find": "WARN_HOURS = 7",
+      "replace": "WARN_HOURS = 9",
+      "expect_caught_by": "test_the_warning_comes_before_the_lock_slack"
+    },
+    {
+      "id": "start-delay-sunday-seven",
+      "why": "a cron line with 7 for Sunday never matches, so a Sunday slot is missed and the delay measured from the slot before.",
+      "find": "self.dow = {d % 7 for d in dow}",
+      "replace": "self.dow = set(dow)",
+      "expect_caught_by": "test_cron_fields_read_as_github_reads_them"
+    },
+    {
+      "id": "start-delay-dom-and-dow",
+      "why": "day of month and day of week are ANDed, unlike GitHub's cron, which ORs them.",
+      "find": "return dom_ok or dow_ok",
+      "replace": "return dom_ok and dow_ok",
+      "expect_caught_by": "test_cron_fields_read_as_github_reads_them"
+    },
+    {
+      "id": "start-delay-earliest-slot",
+      "why": "the earliest of several slots is taken, so a run on time for Monday's slot reads as a day late for Sunday's.",
+      "find": "return max(found) if found else None",
+      "replace": "return min(found) if found else None",
+      "expect_caught_by": "test_the_latest_slot_of_several_is_the_one_served"
+    },
+    {
+      "id": "start-delay-strict-threshold",
+      "why": "a start exactly seven hours late is not warned about.",
+      "find": "delay >= timedelta(hours=WARN_HOURS)",
+      "replace": "delay > timedelta(hours=WARN_HOURS)",
+      "expect_caught_by": "test_seven_hours_warns_and_a_minute_less_does_not"
+    },
+    {
+      "id": "start-delay-step-dropped",
+      "why": "the NHL's daily run stops recording its start delay, so its late starts are silent again.",
+      "find": "      - name: Record the start delay\n        run: python -m src.core.start_delay .github/workflows/nhl-daily.yml\n",
+      "replace": "",
+      "expect_caught_by": "test_every_scheduled_workflow_records_its_own_start_delay_first",
+      "target": ".github/workflows/nhl-daily.yml"
+    }
+  ]
+}

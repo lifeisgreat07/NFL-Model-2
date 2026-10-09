@@ -66,6 +66,10 @@ jobs:
         with:
           python-version: '3.11'
 
+      # Stage 42 item 1: how late this run started, against its own cron lines.
+      - name: Record the start delay
+        run: python -m src.core.start_delay .github/workflows/nfl-weekly-update.yml
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
