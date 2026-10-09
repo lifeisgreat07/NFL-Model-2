@@ -40,15 +40,15 @@
     {
       "id": "nba-probe-candidates-decide",
       "why": "a refused candidate fails the probe, so it goes red by design on ESPN, which refuses runners.",
-      "find": "    for src in candidates(get):\n        report(*src)\n",
-      "replace": "    for src in candidates(get):\n        ok = report(*src) and ok\n",
+      "find": "    for src in candidates(get, get_bytes, now):\n        report(*src, seen=seen)\n",
+      "replace": "    for src in candidates(get, get_bytes, now):\n        ok = report(*src, seen=seen) and ok\n",
       "expect_caught_by": "test_a_candidate_refused_is_reported_and_does_not_fail_the_run"
     },
     {
       "id": "nba-probe-required-ignored",
       "why": "a missing required file does not fail the probe, so the live run's own source can vanish unseen.",
-      "find": "    ok = all([report(*src) for src in required(get_bytes, now)])",
-      "replace": "    ok = True\n    [report(*src) for src in required(get_bytes, now)]",
+      "find": "    ok = all([report(*src, seen=seen) for src in required(get_bytes, now)])",
+      "replace": "    ok = True\n    [report(*src, seen=seen) for src in required(get_bytes, now)]",
       "expect_caught_by": "test_a_required_source_missing_fails_the_run_and_says_which"
     },
     {
@@ -57,6 +57,41 @@
       "find": "    return now.year + 1 if now.month >= 10 else now.year",
       "replace": "    return now.year if now.month >= 10 else now.year - 1",
       "expect_caught_by": "test_the_season_is_named_by_the_year_it_ends"
+    },
+    {
+      "id": "nba-probe-draftkings-one-side",
+      "why": "a moneyline with one side priced passes, so a live Model B could read half a market (Stage 65).",
+      "find": "len(picks.get(str(m.get('id')), [])) == 2",
+      "replace": "len(picks.get(str(m.get('id')), [])) >= 1",
+      "expect_caught_by": "test_a_draftkings_moneyline_needs_both_sides_and_a_start"
+    },
+    {
+      "id": "nba-probe-kalshi-no-bid",
+      "why": "a Kalshi market with an ask and no bid passes as a price, though nobody is buying at any price (Stage 65).",
+      "find": "0 < quote(m, 'yes_bid_dollars') <= quote(m, 'yes_ask_dollars') < 1",
+      "replace": "quote(m, 'yes_ask_dollars') > 0",
+      "expect_caught_by": "test_a_kalshi_game_needs_a_bid_and_an_ask"
+    },
+    {
+      "id": "nba-probe-polymarket-any-event",
+      "why": "any NBA event counts as a game, so a futures market (the Finals) reads as a pre-game price (Stage 65).",
+      "find": "if any(t.get('slug') == 'games' for t in e.get('tags') or [])]",
+      "replace": "if True]",
+      "expect_caught_by": "test_a_polymarket_game_needs_a_two_way_price"
+    },
+    {
+      "id": "nba-probe-no-notice",
+      "why": "the runner's answer is only in the log, which cannot be read without signing in, so the probe's whole point is lost (Stage 65).",
+      "find": "        print('::notice title=NBA data probe::' + '; '.join(seen))",
+      "replace": "        pass",
+      "expect_caught_by": "test_on_a_runner_one_notice_sums_every_source_up"
+    },
+    {
+      "id": "nba-probe-injuries-last-season",
+      "why": "the injury list is read from last season's file, which stops changing when the season ends (Stage 65).",
+      "find": "get_bytes(f'{INJURIES}/injuries_{end}.parquet')",
+      "replace": "get_bytes(f'{INJURIES}/injuries_{end - 1}.parquet')",
+      "expect_caught_by": "test_every_required_source_usable_exits_zero_and_reads_this_seasons_files"
     }
   ]
 }
