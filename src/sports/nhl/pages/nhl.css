@@ -30,6 +30,11 @@
    draws about 18px wide, as the NFL's does. Measured on all 32 files of each
    league, tests/test_nhl_logo_size.py. */
 [data-sport="nhl"] .card-end-logo{width:30px;}
+/* Stage 63: a played game's winner and each model's side; a saved pick's lock. */
+.nhl-result-line{font-size:var(--fs-13); color:var(--text-2); margin:2px 0 var(--s2); display:flex; flex-wrap:wrap; column-gap:var(--s3); row-gap:2px;}
+.nhl-result-line b{color:var(--text);}
+.nhl-model-result{white-space:nowrap;}
+.graded-tag.nhl-locked{background:var(--surface-2); color:var(--text-2); border:1px solid var(--border);}
 .nhl-table td.num, .nhl-table th.num{text-align:right; font-variant-numeric:tabular-nums;}
 .nhl-div-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:var(--s5);}
 .nhl-div-grid h3{font-size:var(--fs-14); margin:0 0 var(--s2);}

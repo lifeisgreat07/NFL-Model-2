@@ -1,0 +1,62 @@
+{
+  "target": "src/sports/nhl/pages/nhl.js",
+  "tests": "tests/test_nhl_board_states.py",
+  "cases": [
+    {
+      "id": "nhl-board-lock-no-slack",
+      "why": "the page forgets the run's hour of slack, so it promises a later lock run than the one that really saves the game.",
+      "find": "if(start < runs[i + 1] + LOCK_SLACK_MS) return new Date(runs[i]);",
+      "replace": "if(start < runs[i + 1]) return new Date(runs[i]);",
+      "expect_caught_by": "test_the_page_and_the_lock_rule_agree_on_every_start"
+    },
+    {
+      "id": "nhl-board-lock-wrong-hours",
+      "why": "the page's run hours drift from lock.py's, so every lock time it prints is wrong.",
+      "find": "const LOCK_RUN_HOURS_UTC = [14, 21];",
+      "replace": "const LOCK_RUN_HOURS_UTC = [14, 22];",
+      "expect_caught_by": "test_the_page_uses_the_lock_rules_own_runs_and_slack"
+    },
+    {
+      "id": "nhl-board-wrong-never-said",
+      "why": "a model on the losing side is still called right.",
+      "find": "${s === won ? 'right' : 'wrong'}",
+      "replace": "${s === won ? 'right' : 'right'}",
+      "expect_caught_by": "test_a_model_on_the_losing_side_is_wrong"
+    },
+    {
+      "id": "nhl-board-shutout-no-winner",
+      "why": "a score of 0 reads as no score, so a shutout shows no winner.",
+      "find": "if(g.status !== 'final' || g.hs === null || g.hs === undefined || g.as === null || g.as === undefined || g.hs === g.as) return null;",
+      "replace": "if(g.status !== 'final' || !g.hs || !g.as || g.hs === g.as) return null;",
+      "expect_caught_by": "test_a_shutout_still_has_a_winner"
+    },
+    {
+      "id": "nhl-board-locked-on-final",
+      "why": "a final game keeps its Locked tag beside Correct or Missed.",
+      "find": "if(g.status === 'final' || g.status === 'cancelled' || g.status === 'postponed') return '';",
+      "replace": "if(g.status === 'cancelled' || g.status === 'postponed') return '';",
+      "expect_caught_by": "test_a_saved_pick_on_a_game_not_final_is_marked_locked"
+    },
+    {
+      "id": "nhl-board-overdue-unsaid",
+      "why": "a game whose lock run passed without a pick still promises a lock time already gone.",
+      "find": "  if(run.getTime() + LOCK_SLACK_MS < nowMs) return `The pick was due to lock ${whenEt(run)} and has not been saved yet.`;\n",
+      "replace": "",
+      "expect_caught_by": "test_a_lock_run_that_passed_without_a_pick_says_so"
+    },
+    {
+      "id": "nhl-board-no-result-line",
+      "why": "the card drops the winner line, so a played game shows the score but not who each model got right.",
+      "find": "    ${resultLine(g, p)}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_card_uses_these_functions"
+    },
+    {
+      "id": "nhl-board-even-goes-away",
+      "why": "a model at exactly 50% is counted on the away side, unlike the saved pick, which takes the home team.",
+      "find": "(prob >= 0.5 ? g.home : g.away)",
+      "replace": "(prob > 0.5 ? g.home : g.away)",
+      "expect_caught_by": "test_exactly_even_is_the_home_side_as_the_saved_pick_is"
+    }
+  ]
+}
