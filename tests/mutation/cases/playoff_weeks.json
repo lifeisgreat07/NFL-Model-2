@@ -1,0 +1,44 @@
+{
+  "target": "src/dashboard/app.js",
+  "tests": "tests/test_playoff_weeks.py",
+  "cases": [
+    {
+      "id": "playoff-rounds-unnamed",
+      "why": "the board calls the Super Bowl 'Week 22'.",
+      "find": "  const round = w.season >= 2021\n",
+      "replace": "  const round = false && w.season >= 2021\n",
+      "expect_caught_by": "test_each_playoff_week_is_named_for_its_round"
+    },
+    {
+      "id": "playoff-rounds-every-season",
+      "why": "seasons before 2021, whose week 19 was the Divisional round, get 2021's names.",
+      "find": "  const round = w.season >= 2021\n",
+      "replace": "  const round = w.season >= 0\n",
+      "expect_caught_by": "test_a_season_before_2021_keeps_week_numbers"
+    },
+    {
+      "id": "refresh-friday-slot-gone",
+      "why": "the Friday 05:17 refresh is dropped, so a Thursday night game reads 'started' until Sunday evening.",
+      "find": "    - cron: '17 5 * * 5'\n",
+      "replace": "",
+      "expect_caught_by": "test_every_kind_of_kickoff_gets_a_status_refresh_soon_after_the_game",
+      "target": ".github/workflows/nfl-weekend-refresh.yml"
+    },
+    {
+      "id": "refresh-monday-slot-gone",
+      "why": "the Monday 05:37 refresh is dropped, so a Sunday night game waits for Tuesday's run.",
+      "find": "    - cron: '37 5 * * 1'\n",
+      "replace": "",
+      "expect_caught_by": "test_every_kind_of_kickoff_gets_a_status_refresh_soon_after_the_game",
+      "target": ".github/workflows/nfl-weekend-refresh.yml"
+    },
+    {
+      "id": "refresh-week-closed-early",
+      "why": "a week counts as finished with one game still ungraded, so the Super Bowl's week closes before its only game is graded.",
+      "find": "if _count(graded) + _cancelled_in(season, week, cancelled) < _count(f):",
+      "replace": "if _count(graded) + _cancelled_in(season, week, cancelled) < _count(f) - 1:",
+      "expect_caught_by": "test_a_playoff_week_stays_open_until_every_game_is_graded",
+      "target": "src/sports/nfl/weekend_refresh.py"
+    }
+  ]
+}
