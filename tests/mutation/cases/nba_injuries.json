@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nba/injuries.py",
+  "tests": "tests/test_nba_injuries.py",
+  "cases": [
+    {
+      "id": "nba-injuries-day-to-day-out",
+      "why": "Day-To-Day players are removed too, so availability counts out players the registration counts as playing",
+      "find": "    return {r['athlete_id'] for r in rows if r['team'] == team and r['status'] == OUT}",
+      "replace": "    return {r['athlete_id'] for r in rows if r['team'] == team}",
+      "expect_caught_by": "test_out_is_the_only_status_that_removes_a_player_as_registered"
+    },
+    {
+      "id": "nba-injuries-unknown-status-passes",
+      "why": "a status this file does not know (Suspension) is let through and counted as playing, instead of the report being refused",
+      "find": "            if status not in STATUSES:\n",
+      "replace": "            if False:\n",
+      "expect_caught_by": "test_anything_unrecognised_refuses_the_whole_report"
+    }
+  ]
+}

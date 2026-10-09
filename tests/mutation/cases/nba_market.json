@@ -1,0 +1,55 @@
+{
+  "target": "src/sports/nba/market.py",
+  "tests": "tests/test_nba_market.py",
+  "cases": [
+    {
+      "id": "nba-market-kalshi-before-espn",
+      "why": "Kalshi is consulted first, so the backtest's own source stops pricing the picks Model B was trained for",
+      "find": "    found = espn_price(espn_odds) if espn_odds is not None else None\n    if found is not None:\n        return {**base, **found}\n",
+      "replace": "    found = None\n",
+      "expect_caught_by": "test_kalshi_is_never_read_when_espn_has_a_price"
+    },
+    {
+      "id": "nba-market-wide-spread-accepted",
+      "why": "the spread limit is never applied, so a preseason 0.15/0.79 quote becomes a price",
+      "find": "    if widest > KALSHI_MAX_SPREAD + 1e-9:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_a_wide_kalshi_market_is_no_price"
+    },
+    {
+      "id": "nba-market-live-provider-used",
+      "why": "a live, in-game price is taken as the pre-game market",
+      "find": "        if 'live' in provider.lower() or provider.lower() in PROJECTIONS:\n            continue\n        hp = _num((it.get('homeTeamOdds')",
+      "replace": "        hp = _num((it.get('homeTeamOdds')",
+      "expect_caught_by": "test_live_and_projection_providers_are_skipped"
+    },
+    {
+      "id": "nba-market-zero-price",
+      "why": "ESPN's 0 for a missing price is read as a price, so a game with none gets a nonsense probability",
+      "find": "        if hp is None or ap is None or abs(hp) < 100 or abs(ap) < 100:\n            continue\n        h, a = implied(hp), implied(ap)",
+      "replace": "        if hp is None or ap is None:\n            continue\n        h, a = implied(hp or 100), implied(ap or 100)",
+      "expect_caught_by": "test_a_zero_price_from_espn_is_no_price"
+    },
+    {
+      "id": "nba-market-silent-none",
+      "why": "a game with no price loses its reasons, so the page cannot say why there is none",
+      "find": "    return {**base, 'source': None, 'home_prob': None, 'why': '; '.join(reasons)}",
+      "replace": "    return {**base, 'source': None, 'home_prob': None, 'why': ''}",
+      "expect_caught_by": "test_no_price_names_every_reason"
+    },
+    {
+      "id": "nba-market-code-map-dropped",
+      "why": "Kalshi's NYK and GSW never match ESPN's NY and GS, so those clubs never get a fallback price",
+      "find": "        sides.setdefault(event, {})[KALSHI_TO_ESPN.get(code, code)] = {",
+      "replace": "        sides.setdefault(event, {})[code] = {",
+      "expect_caught_by": "test_kalshi_codes_are_mapped_to_espns"
+    },
+    {
+      "id": "nba-market-records-after-start",
+      "why": "a price read after the start, an in-game price, is kept in the line history",
+      "find": "        if r.get('source') is None or _started(r):",
+      "replace": "        if r.get('source') is None:",
+      "expect_caught_by": "test_record_adds_only_moves_and_nothing_after_the_start"
+    }
+  ]
+}
