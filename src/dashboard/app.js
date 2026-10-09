@@ -3951,6 +3951,16 @@ function runStartedText(iso){
   return new Date(iso).toLocaleString('en-US', {timeZone: 'America/New_York',
     month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
 }
+/* Stage 46 item 6: how late each run started after the slot it served
+   (recent_runs.late_minutes, from the workflow's own cron lines). Seven
+   hours or more is marked, the threshold of each run's own warning
+   (src/core/start_delay.py). */
+const LATE_WARN_MINUTES = 7 * 60;
+function lateText(m){
+  if(m == null) return '&ndash;';
+  const text = `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
+  return m >= LATE_WARN_MINUTES ? `<b>${text}</b>` : text;
+}
 function renderRecentRuns(){
   const el = document.getElementById('recent-runs');
   if(!el) return;
@@ -3970,6 +3980,7 @@ function renderRecentRuns(){
       <td>${runStartedText(r.started_utc)}</td>
       <td>${r.url ? `<a class="row-link" href="${escapeHtml(r.url)}" style="color:var(--accent); text-decoration:underline;">${runResultText(r)}</a>` : runResultText(r)}</td>
       <td class="num">${r.minutes == null ? '&ndash;' : r.minutes.toFixed(1)}</td>
+      <td class="num">${lateText(r.late_minutes)}</td>
     </tr>`).join('');
   el.innerHTML = `<div class="method-block">
     <h3>The scheduled jobs, run by run</h3>
@@ -3979,11 +3990,12 @@ function renderRecentRuns(){
       failed + ' failed'}. GitHub&#39;s own timer has started jobs hours late, so
     since October 4 an outside service also asks for each run at its scheduled
     time; those show as &ldquo;Requested&rdquo;, as does a run started by hand.
-    Times are Eastern.</p>
+    &ldquo;Late by&rdquo; is how long after its scheduled time a run started; seven
+    hours or more is in bold. Times are Eastern.</p>
     ${runs.length ? `<div class="table-wrap" data-scroll-label="Recent scheduled runs"><table class="metrics-table">
       <caption class="visually-hidden">The last scheduled runs, newest first</caption>
       <thead><tr><th scope="col">Job</th><th scope="col">Started</th>
-      <th scope="col">Result</th><th scope="col">Min</th></tr></thead>
+      <th scope="col">Result</th><th scope="col">Min</th><th scope="col">Late by</th></tr></thead>
       <tbody>${body}</tbody>
     </table></div>` : stateHtml('note', 'No runs yet.', 'GitHub returned no runs for these jobs.')}
     <p class="rel-prov">Read ${escapeHtml(recentRuns.read_utc || 'at an unknown time')} (UTC).
