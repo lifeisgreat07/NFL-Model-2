@@ -15,7 +15,7 @@ Run with: pytest tests/test_outbound_hygiene.py -v
 """
 import re
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 TEMPLATE = JOINED_TEMPLATE
 

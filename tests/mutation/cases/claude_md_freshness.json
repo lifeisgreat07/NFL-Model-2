@@ -53,7 +53,7 @@
     {
       "id": "handoff-path-rots-in-the-rules",
       "why": "the same rot as handoff-path-rots, in the file that kept the rules. Before the split one anchor covered one file; after it, a path check that silently stopped reading CLAUDE.md would pass every other case here.",
-      "find": "comment on a GitHub issue (`src/pipeline/alerts.py`)",
+      "find": "comment on a GitHub issue (`src/core/alerts.py`)",
       "replace": "comment on a GitHub issue (`src/alert.py`)",
       "expect_caught_by": "test_every_repository_path_it_names_exists"
     },

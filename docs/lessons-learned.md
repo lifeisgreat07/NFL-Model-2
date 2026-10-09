@@ -100,4 +100,4 @@ session rather than for a reader.
     experiments were written down, with the rule that would decide each one,
     before any answers came in. None of the ten was accepted, and a result
     like that is only believable when the questions came first.
-    *From: `experiments/stage5/registry.json`; `CLAUDE.md`, "Stage 5 accepted nothing".*
+    *From: `experiments/nfl/stage5/registry.json`; `CLAUDE.md`, "Stage 5 accepted nothing".*

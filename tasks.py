@@ -37,7 +37,7 @@ NBA_PAGE = 'nba.html'
 # The site's home page (src/site/home.py, Stage 59).
 HOME_PAGE = 'home.html'
 # The type check run-tests.yml runs (Stage 35).
-TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/pipeline/weekly_update.py', 'src/pipeline/ratings_engine.py']
+TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/sports/nfl/weekly_update.py', 'src/sports/nfl/ratings_engine.py']
 # The strict type check over the agents (Stage 48 item 19). --follow-imports=silent
 # checks src/agents alone: the pipeline modules it imports are not strict yet.
 AGENT_TYPES = [PY, '-m', 'mypy', '--strict', '--ignore-missing-imports', '--follow-imports=silent', 'src/agents']
@@ -69,7 +69,7 @@ TASKS = {
     'browser-check': ('build, prove every browser rule can fail, check the page, then build '
                       'and check the states pages, the NHL\'s and NBA\'s pages and the home page (needs Playwright and node; axe-core is '
                       'used when node_modules has it)',
-                      lambda a: [[PY, '-m', 'src.pipeline.generate_dashboard'],
+                      lambda a: [[PY, '-m', 'src.sports.nfl.generate_dashboard'],
                                  [PY, 'tests/browser/check_page.py', '--self-test', *_axe()],
                                  [PY, 'tests/browser/check_page.py', 'index.html', *_axe()],
                                  [PY, 'tests/browser/build_states.py', '--out', str(STATES)],

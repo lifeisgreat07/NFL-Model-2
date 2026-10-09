@@ -1,5 +1,5 @@
 {
-  "target": "src/research/stage6_referee.py",
+  "target": "src/sports/nfl/research/stage6_referee.py",
   "tests": "tests/test_stage6_referee.py",
   "cases": [
     {
@@ -103,7 +103,7 @@
     {
       "id": "referee-run-reads-the-ngs-build",
       "why": "R1 goes through the Next Gen Stats build's cache, so it cannot run without an unrelated build and its result carries that build's description",
-      "target": "src/research/stage6_run.py",
+      "target": "src/sports/nfl/research/stage6_run.py",
       "find": "    if hid == 'R1':\n        ngs = {}",
       "replace": "    if hid == 'R9':\n        ngs = {}",
       "expect_caught_by": "test_run_r1_loads_only_2016_to_2023_and_scores_by_the_rule"

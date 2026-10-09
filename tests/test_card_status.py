@@ -1,7 +1,7 @@
 """Each Week Board card says where its game stands (Stage 15).
 
-The weekend refresh (src/pipeline/weekend_refresh.py) writes a snapshot per unfinished
-week to data/game_status/. src/pipeline/generate_dashboard.py joins it onto each game,
+The weekend refresh (src/sports/nfl/weekend_refresh.py) writes a snapshot per unfinished
+week to data/nfl/game_status/. src/sports/nfl/generate_dashboard.py joins it onto each game,
 and the template's cardStatusLine() turns it into one line under the kickoff.
 The line is generated prose over data that can go stale -- Monday morning's
 snapshot still calls Monday night's game upcoming when Tuesday grades it -- so
@@ -17,12 +17,12 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
 
-from src.pipeline import generate_dashboard as gd
+from src.sports.nfl import generate_dashboard as gd
 
 NODE = shutil.which('node')
 

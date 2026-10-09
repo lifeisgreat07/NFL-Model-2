@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/slot_guard.py",
+  "target": "src/sports/nfl/slot_guard.py",
   "tests": "tests/test_slot_guard.py",
   "cases": [
     {
@@ -53,7 +53,7 @@
     },
     {
       "id": "slot-guard-fails-closed",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the weekly job runs only on an explicit yes, so a guard that crashed skips the week and costs Thursday's lock.",
       "find": "    if: ${{ !cancelled() && needs.slot-guard.outputs.run != 'false' }}",
       "replace": "    if: ${{ needs.slot-guard.outputs.run == 'true' }}",
@@ -61,7 +61,7 @@
     },
     {
       "id": "slot-guard-marks-a-failed-run",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the slot is marked even when the run failed, so a retry by hand the same day is skipped and the week is never locked.",
       "find": "        if: ${{ success() && needs.slot-guard.outputs.slot != '' }}",
       "replace": "        if: ${{ !cancelled() && needs.slot-guard.outputs.slot != '' }}",
@@ -69,7 +69,7 @@
     },
     {
       "id": "slot-guard-runs-cancel-each-other",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "runs in the group cancel each other, so GitHub's late copy can cancel the on-time run mid-lock.",
       "find": "  group: weekly-update\n  cancel-in-progress: false",
       "replace": "  group: weekly-update\n  cancel-in-progress: true",

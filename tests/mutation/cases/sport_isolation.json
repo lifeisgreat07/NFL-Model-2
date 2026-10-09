@@ -24,13 +24,6 @@
       "expect_caught_by": "test_the_core_importing_a_sport_is_caught"
     },
     {
-      "id": "iso-legacy-nfl-not-a-sport",
-      "why": "src/pipeline stops counting as the NFL before Stage 52 has moved it, so the core can import the NFL's modules and nothing says so.",
-      "find": "    if any(module == p or module.startswith(p + '.') for p in LEGACY_NFL_PACKAGES):",
-      "replace": "    if False:",
-      "expect_caught_by": "test_the_core_importing_the_legacy_nfl_is_caught"
-    },
-    {
       "id": "iso-site-importable",
       "why": "anything may import the site layer, so the one module that sees every sport becomes a back door from one sport to another.",
       "find": "            if target == 'site' and layer != 'site':",

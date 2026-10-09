@@ -3,7 +3,7 @@ Guards on the dashboard's chart layer.
 
 Two things are checked here, and they fail for different reasons.
 
-1. WIRING -- data/calibration.json actually reaches the page, the template's
+1. WIRING -- data/nfl/calibration.json actually reaches the page, the template's
    placeholders are all filled, and a checkout without that file still builds.
    These catch the ordinary regression: someone edits generate_dashboard.py
    and the reliability diagram silently disappears, or worse, ships with a
@@ -39,11 +39,11 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 REPO_ROOT = Path(__file__).parent.parent
 TEMPLATE = JOINED_TEMPLATE
-CALIBRATION = REPO_ROOT / 'data' / 'calibration.json'
+CALIBRATION = REPO_ROOT / 'data' / 'nfl' / 'calibration.json'
 
 # Thresholds, from the data-viz checks. CVD_TARGET is the pass mark for the
 # minimum of the protan and deutan distances; NORMAL_FLOOR is a hard gate --
@@ -230,7 +230,7 @@ def _pair(a, b):
 #: Every entry here now says whether the two are ever on screen together,
 #: because six of them used to say "Not traced" and a reader cannot tell an
 #: untraced pair from a tolerated one. The tracing is not done by reading:
-#: `python -m src.research.verify_token_cooccurrence` renders the built page and prints
+#: `python -m src.sports.nfl.research.verify_token_cooccurrence` renders the built page and prints
 #: which pages paint each token, and every co-occurrence claim below is read
 #: off that table. It needs a browser, so it is a standalone verifier rather
 #: than a suite test -- but the PREMISE under the two "cannot meet" verdicts is
@@ -414,7 +414,7 @@ def test_every_close_pair_is_one_we_have_written_down(theme):
     Every pair under CVD_TARGET has to appear in ACCEPTED_CLOSE with a reason.
     Adding a token that collides with an existing one, or re-stepping one into
     another, fails here rather than shipping -- which is what the two-pair
-    table in src/research/verify_model_colours.py could not do.
+    table in src/sports/nfl/research/verify_model_colours.py could not do.
     """
     tokens = meaning_tokens(theme)
     close = close_pairs(tokens)
@@ -770,11 +770,11 @@ def test_generated_page_has_no_unfilled_placeholders():
 
 
 def test_generated_page_carries_the_real_calibration_data():
-    """Every bin of every model in data/calibration.json has to survive into
+    """Every bin of every model in data/nfl/calibration.json has to survive into
     the page -- the reliability diagram is only as honest as the file behind
     it, and a truncated or stale injection would still draw a plausible chart."""
     if not CALIBRATION.exists():
-        pytest.skip("data/calibration.json absent -- run src/research/calibration.py")
+        pytest.skip("data/nfl/calibration.json absent -- run src/sports/nfl/research/calibration.py")
     html = (REPO_ROOT / 'index.html').read_text()
     # Parsed from where it starts, as the browser would: the fill is compact
     # JSON on one line since Stage 26, so there is no closing brace on a line
@@ -783,7 +783,7 @@ def test_generated_page_carries_the_real_calibration_data():
     assert m, "const calibration = ... not found in the generated page"
     embedded, _ = json.JSONDecoder().raw_decode(html, m.end())
     on_disk = json.loads(CALIBRATION.read_text())
-    assert embedded == on_disk, "the page's calibration data differs from data/calibration.json"
+    assert embedded == on_disk, "the page's calibration data differs from data/nfl/calibration.json"
     for name, model in embedded['models'].items():
         assert model['bins'], f"{name} has no bins"
         assert sum(b['n'] for b in model['bins']) == model['metrics']['n'], (
@@ -794,7 +794,7 @@ def test_underpowered_bins_are_flagged_not_hidden():
     """The chart draws flagged bins hollow rather than dropping them. If the
     flag stopped being written, they would render as ordinary measurements."""
     if not CALIBRATION.exists():
-        pytest.skip("data/calibration.json absent")
+        pytest.skip("data/nfl/calibration.json absent")
     data = json.loads(CALIBRATION.read_text())
     floor = data['min_bin_n']
     for name, model in data['models'].items():
@@ -804,12 +804,12 @@ def test_underpowered_bins_are_flagged_not_hidden():
 
 
 def test_dashboard_still_builds_without_calibration_json(tmp_path):
-    """A fresh clone has never run src/research/calibration.py, which needs six seasons
+    """A fresh clone has never run src/sports/nfl/research/calibration.py, which needs six seasons
     of play-by-play and several minutes. The dashboard must still build, and
     the diagram must omit itself rather than render an empty axis."""
     import importlib.util
     spec = importlib.util.spec_from_file_location(
-        "gen_dash_probe", REPO_ROOT / 'src' / 'pipeline' / 'generate_dashboard.py')
+        "gen_dash_probe", REPO_ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py')
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
 

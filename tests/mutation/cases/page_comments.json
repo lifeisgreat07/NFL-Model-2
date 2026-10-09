@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/page_comments.py",
+  "target": "src/sports/nfl/page_comments.py",
   "tests": "tests/test_page_comments.py",
   "cases": [
     {
@@ -39,7 +39,7 @@
     },
     {
       "id": "page-carries-the-whole-agent-log-again",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the per-audit records go back onto the page: about a hundred kilobytes a visitor downloads that nothing on the page reads, and growing with every audit.",
       "find": "    return {k: log.get(k) for k in ('generated_utc', 'summary')}",
       "replace": "    return log",
@@ -47,7 +47,7 @@
     },
     {
       "id": "build-stops-stripping",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the stripper exists and passes its own tests, and the build no longer calls it. Every lexer test stays green while the page ships its comments again.",
       "find": "    template = strip_page_comments(template)\n",
       "replace": "",
@@ -55,7 +55,7 @@
     },
     {
       "id": "a-data-fill-indented-again",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "one fill goes back to indent=2, the largest single source of bytes in the data after the audit records.",
       "find": "safe_json(weeks_js, **COMPACT)",
       "replace": "safe_json(weeks_js, indent=2)",

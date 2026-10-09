@@ -10,7 +10,7 @@ name: Collect Booth's audit log
 # nineteen PRs of Booth reports down to a laptop to parse them is the same job
 # done in the more expensive place.
 #
-# Writing data/agent_log.json pushes to main under data/**, which is one of the
+# Writing data/agent_log.json pushes to main under data/nfl/**, which is one of the
 # paths Auto-regenerate dashboard watches -- so the page updates itself from
 # here without this workflow knowing anything about index.html.
 # Triggered when a pull request into main is closed, and run only if it was

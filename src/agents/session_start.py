@@ -56,7 +56,7 @@ RUN_WINDOW_HOURS = 36
 #: almost certainly GitHub's late copy of that slot, not a slot of its own.
 #: Also a judgement: the latest copy seen was under 9 hours behind.
 LATE_COPY_HOURS = 12
-#: The other sports' unattended jobs. `src.pipeline.recent_runs.WATCHED`
+#: The other sports' unattended jobs. `src.sports.nfl.recent_runs.WATCHED`
 #: is the NFL page's runs table, which is a page input the NHL does not join
 #: until its own pages are built (Stage 57); until then a session sees the
 #: NHL's runs here.
@@ -252,7 +252,7 @@ def github_state(get: Callable[[str], Any] = _get_json, now: datetime | None = N
     GitHub. Never raises: a failed read is printed as one, and the session
     goes on with what git can tell it."""
     sys.path.insert(0, str(REPO))
-    from src.pipeline.recent_runs import WATCHED  # the one list of unattended jobs
+    from src.sports.nfl.recent_runs import WATCHED  # the one list of unattended jobs
 
     now = now or datetime.now(UTC)
     section(f'GitHub, read from the public API at {now:%Y-%m-%d %H:%M} UTC')

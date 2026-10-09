@@ -1,11 +1,11 @@
 """
-src/research/reproducibility_audit.py: the pass mark, checked on synthetic numbers,
+src/sports/nfl/research/reproducibility_audit.py: the pass mark, checked on synthetic numbers,
 and the committed record held to the published file.
 
 The audit itself needs nflverse and six seasons of play-by-play, so it is
 not run here. What is run: every comparison rule on inputs built to sit
-just inside and just outside it, and a check that data/reproducibility_audit.json
-still describes the data/calibration.json the page is built from.
+just inside and just outside it, and a check that data/nfl/reproducibility_audit.json
+still describes the data/nfl/calibration.json the page is built from.
 
 Run with: pytest tests/test_reproducibility_audit.py -v
 """
@@ -16,7 +16,7 @@ import pytest
 
 REPO = Path(__file__).parent.parent
 
-from src.research import reproducibility_audit as ra
+from src.sports.nfl.research import reproducibility_audit as ra
 
 N = 1087
 PUB = {'n': N, 'accuracy': 0.6274, 'log_loss': 0.649812, 'brier': 0.228603, 'auc': 0.670119}
@@ -65,8 +65,8 @@ def test_identical_runs_that_match_are_reproduced():
 
 # --- the committed record ----------------------------------------------------
 
-RECORD = REPO / 'data' / 'reproducibility_audit.json'
-CALIBRATION = REPO / 'data' / 'calibration.json'
+RECORD = REPO / 'data' / 'nfl' / 'reproducibility_audit.json'
+CALIBRATION = REPO / 'data' / 'nfl' / 'calibration.json'
 
 
 def test_the_committed_record_says_reproduced():
@@ -78,7 +78,7 @@ def test_the_committed_record_says_reproduced():
 
 
 def test_the_committed_record_is_about_the_published_file_as_it_is_now():
-    """Regenerating data/calibration.json without re-running the audit would
+    """Regenerating data/nfl/calibration.json without re-running the audit would
     leave a record vouching for numbers that are no longer on the page."""
     rec = json.loads(RECORD.read_text(encoding='utf-8'))
     cal = json.loads(CALIBRATION.read_text(encoding='utf-8'))

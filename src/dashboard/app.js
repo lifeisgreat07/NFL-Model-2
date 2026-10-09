@@ -161,7 +161,7 @@ function teamColor(abbr){ return TEAM_COLOR[abbr] || '#8A93A8'; }
 // four were declined. The team-colour bars are wanted on the board as part
 // of how the dashboard looks, and the cost below is accepted knowingly.
 //
-// The accepted cost, measured with src/research/verify_matchup_cvd.py (CIEDE2000, NOT
+// The accepted cost, measured with src/sports/nfl/research/verify_matchup_cvd.py (CIEDE2000, NOT
 // the OKLab ruler tests/test_dashboard_charts.py gates on):
 //   - 60 of 496 distinct team pairs sit under 15, 9 under 5, worst ARI/PHI
 //     at 0.18; as ordered matchups it is 103 of 992.
@@ -227,8 +227,8 @@ const latestWeekKey = __LATEST_WEEK__;  // "2026_week1" or null
 const picksPdfs = __PICKS_PDFS_JSON__;
 const accuracy = __ACCURACY_JSON__;
 const teamHistory = __TEAM_HISTORY_JSON__;
-// Backtest-derived calibration (data/calibration.json, ~1087 games). null when
-// src/research/calibration.py has never been run in this checkout -- the reliability
+// Backtest-derived calibration (data/nfl/calibration.json, ~1087 games). null when
+// src/sports/nfl/research/calibration.py has never been run in this checkout -- the reliability
 // diagram omits itself rather than inventing numbers.
 const calibration = __CALIBRATION_JSON__;
 
@@ -935,7 +935,7 @@ if(ratingsSearchEl){
 /* Proof of lock (Stage 46 item 5): which commit last changed a week's
    picks before its first kickoff, and any commit after it, each linked to
    GitHub, where its time cannot be edited. commits are oldest first, from
-   src/pipeline/lock_proof.py. Empty when there is nothing to say. */
+   src/sports/nfl/lock_proof.py. Empty when there is nothing to say. */
 function lockUtc(ms){
   const d = new Date(ms);
   return d.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC'})
@@ -1517,10 +1517,10 @@ function cardStatusLine(g){
 
 /* ---------- Where to watch, the quarterbacks, team news (Stage 17) ----------
    Three small facts, each from a file that was checked before it got here:
-   the channel from src/pipeline/tv_channels.py (one network, only one that passed
+   the channel from src/sports/nfl/tv_channels.py (one network, only one that passed
    its checks), the quarterbacks from the saved pick itself (so the card
    cannot name a different one from the model's), and the news from
-   src/pipeline/team_news.py. Each returns '' when it has nothing to say, and nothing
+   src/sports/nfl/team_news.py. Each returns '' when it has nothing to say, and nothing
    is drawn -- a blank line or "no news" would be a claim nobody made.
 
    Once a game is final or graded, "where to watch" and "who is hurt" are
@@ -2658,7 +2658,7 @@ window.addEventListener('hashchange', ()=>{
    Given a stated probability, it finds the backtest bin that probability falls
    in and reports what really happened in that bin across ~1087 games, with the
    Wilson interval. Motivated by a confirmed finding, re-derived 2026-09-06 by
-   src/research/verify_low_confidence_finding.py: across the 343 games where Model A's
+   src/sports/nfl/research/verify_low_confidence_finding.py: across the 343 games where Model A's
    own probability sits within 0.05 of a coin flip it hits 52.48%, while the
    market hits 64.14% on those same games -- a -11.66pt gap, CI [-18.37,
    -5.25]. A number like 52% on a pick card reads as "slightly favoured"
@@ -3189,7 +3189,7 @@ function buildReliabilityDiagram(){
           <p style="font-size:var(--fs-12); margin-top:var(--s3);">Brier = reliability &minus; resolution + uncertainty (Murphy, 1973). <b style="color:var(--text)">Reliability</b> is miscalibration: lower is better. <b style="color:var(--text)">Resolution</b> is how far the model dares to move away from the base rate: higher is better. A model that always predicts the ${base}% base rate scores a perfect 0 on reliability and a useless 0 on resolution &mdash; which is exactly why accuracy alone can't tell those two apart. Uncertainty (${calibration.models.model_a ? calibration.models.model_a.decomposition.uncertainty.toFixed(6) : '--'}) belongs to the games, not to any model.</p>
         </details>
         <p style="font-size:var(--fs-12); margin-top:var(--s3);">Model B's numbers look better than the market's on resolution and worse on reliability, and until 2026-09-05 this panel called that "a lead, not a claim" because nothing had tested it. It has now been tested, with a 5,000-resample paired bootstrap, and <b style="color:var(--text)">the lead did not survive</b>: every one of the four gaps against the market has a 95% interval that includes zero. Brier &minus;0.000622, CI [&minus;0.002395, +0.001141]. Resolution +0.001141, CI [&minus;0.002196, +0.004597]. At 1,087 games those differences are indistinguishable from noise, so the honest reading of this chart is that <b style="color:var(--text)">Model B and the market are calibrated about equally well</b> &mdash; not that one edges the other.</p>
-        <p style="font-size:var(--fs-12); margin-top:var(--s3);">The same test did find two things that hold. Against <b style="color:var(--text)">Model A</b>, Model B is genuinely better &mdash; Brier &minus;0.019133, CI [&minus;0.025838, &minus;0.012687], and resolution +0.016814, CI [+0.008990, +0.024819] &mdash; which is the first version of "the spread helps" that rests on proper scoring rules rather than on accuracy, a metric this project has already shown moves by a whole game between platforms. And the market genuinely beats Model A: Brier +0.018511, CI [+0.011496, +0.025553]. See <b style="color:var(--text)">the experiment log above</b> for all three, and <code>src/research/bootstrap_brier_gap.py</code> for the method.</p>
+        <p style="font-size:var(--fs-12); margin-top:var(--s3);">The same test did find two things that hold. Against <b style="color:var(--text)">Model A</b>, Model B is genuinely better &mdash; Brier &minus;0.019133, CI [&minus;0.025838, &minus;0.012687], and resolution +0.016814, CI [+0.008990, +0.024819] &mdash; which is the first version of "the spread helps" that rests on proper scoring rules rather than on accuracy, a metric this project has already shown moves by a whole game between platforms. And the market genuinely beats Model A: Brier +0.018511, CI [+0.011496, +0.025553]. See <b style="color:var(--text)">the experiment log above</b> for all three, and <code>src/sports/nfl/research/bootstrap_brier_gap.py</code> for the method.</p>
         <details class="rel-table" style="margin-top:var(--s3);">
           <summary>Show the numbers as a table</summary>
           <div class="table-wrap" style="margin-top:var(--s2);"><table class="metrics-table"><caption class="visually-hidden">Backtest calibration by probability bin, with 95% intervals</caption>
@@ -3198,7 +3198,7 @@ function buildReliabilityDiagram(){
           </table></div>
           <p style="font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);">* Fewer than ${calibration.min_bin_n} games in the bin &mdash; shown for completeness, drawn hollow on the chart, and not a measurement.</p>
         </details>
-        <p class="rel-prov">Computed by <code>src/research/calibration.py</code> over ${JSON.stringify(calibration.backtest_seasons)} &middot; model v${calibration.model_version} &middot; ${calibration.generated_at}<br>
+        <p class="rel-prov">Computed by <code>src/sports/nfl/research/calibration.py</code> over ${JSON.stringify(calibration.backtest_seasons)} &middot; model v${calibration.model_version} &middot; ${calibration.generated_at}<br>
         ${p.platform || 'unknown platform'} &middot; Python ${p.python || '?'} &middot; numpy ${p.numpy || '?'} &middot; pandas ${p.pandas || '?'} &middot; scikit-learn ${p['scikit-learn'] || '?'}<br>
         The machine is recorded because it has mattered before: see &ldquo;Backtest accuracy is not reproducible across platforms&rdquo; above.</p>
       </div>
@@ -3599,7 +3599,7 @@ function diveSplitHtml(p){
 
 /* ---------- Team Deep-Dive: this week's team news (Stage 16) ----------
 
-   src/pipeline/team_news.py writes, per locked week not yet graded, each team's
+   src/sports/nfl/team_news.py writes, per locked week not yet graded, each team's
    starters listed Out or Doubtful, a count of those Questionable, and the
    quarterback the saved pick was made with. generate_dashboard.py attaches
    that to weeks[k].news only while the week is still being played, so an item

@@ -14,7 +14,7 @@ The NHL's rules, as the simulation applies them:
   aloud rather than hidden.
 
 Design choices, stated rather than buried, as the NFL's simulation states
-its own (`src/pipeline/simulate_season.py`):
+its own (`src/sports/nfl/simulate_season.py`):
 
 - A finished game keeps its real result, overtime and shootout included.
 - An unplayed game is decided by its home-win probability, then goes to

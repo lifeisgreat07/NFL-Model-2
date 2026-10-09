@@ -5,7 +5,7 @@ A pre-registration is only worth anything if three things are mechanically
 true, and each has a test here:
 
   1. A question is written down BEFORE it is answered. The commit that first
-     adds experiments/stage5/results/<id>.json must have a parent in which
+     adds experiments/nfl/stage5/results/<id>.json must have a parent in which
      registry.json already registers <id>, with the same wording. Editing the
      question after seeing the answer -- or registering and answering in one
      commit -- fails.
@@ -33,12 +33,12 @@ from git_history import first_added, registry_beside
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.research import stage5_data as sd
-from src.research import stage5_eval as se
-from src.research.kalman_ratings import KalmanRatings
+from src.sports.nfl.research import stage5_data as sd
+from src.sports.nfl.research import stage5_eval as se
+from src.sports.nfl.research.kalman_ratings import KalmanRatings
 
-REGISTRY = REPO_ROOT / 'experiments' / 'stage5' / 'registry.json'
-RESULTS = REPO_ROOT / 'experiments' / 'stage5' / 'results'
+REGISTRY = REPO_ROOT / 'experiments' / 'nfl' / 'stage5' / 'registry.json'
+RESULTS = REPO_ROOT / 'experiments' / 'nfl' / 'stage5' / 'results'
 
 
 def registry():
@@ -305,7 +305,7 @@ def test_kalman_ratings_for_a_week_do_not_see_that_week():
 
 
 def test_fit_ratings_is_the_production_fit_when_nothing_is_changed():
-    from src.pipeline.ratings_engine import build_team_ratings
+    from src.sports.nfl.ratings_engine import build_team_ratings
     rng = np.random.default_rng(3)
     teams = ['A', 'B', 'C', 'D']
     rows = []

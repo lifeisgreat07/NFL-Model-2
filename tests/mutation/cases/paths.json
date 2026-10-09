@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/paths.py",
+  "target": "src/sports/nfl/paths.py",
   "tests": "tests/test_paths.py",
   "cases": [
     {
@@ -18,31 +18,31 @@
     },
     {
       "id": "paths-weekly-update-keeps-its-own-folder",
-      "target": "src/pipeline/weekly_update.py",
+      "target": "src/sports/nfl/weekly_update.py",
       "why": "weekly_update defines its own predictions folder again, a second copy that can drift from the one every other module reads.",
       "find": "PRED_DIR.mkdir(exist_ok=True)",
-      "replace": "PRED_DIR = Path(__file__).parent.parent / 'predictions'\nPRED_DIR.mkdir(exist_ok=True)",
+      "replace": "PRED_DIR = Path(__file__).parent.parent / 'predictions' / 'nfl'\nPRED_DIR.mkdir(exist_ok=True)",
       "expect_caught_by": "test_each_module_name_is_bound_to_the_one_definition"
     },
     {
       "id": "paths-season-rule-back-in-bash",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the weekly workflow works the season out in bash again, a third copy of the rule that the tests of paths.current_season never see.",
-      "find": "          season=$(python -m src.pipeline.paths --current-season)",
+      "find": "          season=$(python -m src.sports.nfl.paths --current-season)",
       "replace": "          season=$(date -u +%Y)",
       "expect_caught_by": "test_the_workflow_asks_paths_for_the_season"
     },
     {
       "id": "paths-data-quality-keeps-its-own-teams",
-      "target": "src/pipeline/data_quality.py",
+      "target": "src/sports/nfl/data_quality.py",
       "why": "data_quality holds its own team list again, which can disagree with the names the dashboard shows.",
-      "find": "from src.pipeline.paths import NFL_TEAMS\n",
+      "find": "from src.sports.nfl.paths import NFL_TEAMS\n",
       "replace": "NFL_TEAMS = frozenset(['ARI', 'ATL', 'BAL', 'BUF', 'CAR', 'CHI', 'CIN', 'CLE', 'DAL', 'DEN', 'DET', 'GB', 'HOU', 'IND', 'JAX', 'KC', 'LA', 'LAC', 'LV', 'MIA', 'MIN', 'NE', 'NO', 'NYG', 'NYJ', 'PHI', 'PIT', 'SEA', 'SF', 'TB', 'TEN', 'WAS'])\n",
       "expect_caught_by": "test_each_module_name_is_bound_to_the_one_definition"
     },
     {
       "id": "weekend-refresh-splits-the-stem-again",
-      "target": "src/pipeline/weekend_refresh.py",
+      "target": "src/sports/nfl/weekend_refresh.py",
       "tests": "tests/test_paths.py",
       "why": "weeks_to_refresh goes back to splitting the stem itself, a fifth copy of the week rule beside paths.parse_week: the shape #241 missed twice.",
       "find": "        key = parse_week(f.stem)\n        if key is None:\n            continue\n        week = key[1]\n",
@@ -51,18 +51,18 @@
     },
     {
       "id": "paths-tv-defaults-built-by-hand",
-      "target": "src/pipeline/tv_channels.py",
-      "why": "tv_channels.main's folder defaults go back to ROOT / 'predictions' and ROOT / 'results', the copy Stage 36 item 7 removed: a second definition of where locked picks live, which the next folder move would miss.",
+      "target": "src/sports/nfl/tv_channels.py",
+      "why": "tv_channels.main's folder defaults go back to ROOT / 'predictions' / 'nfl' and ROOT / 'results' / 'nfl', the copy Stage 36 item 7 removed: a second definition of where locked picks live, which the next folder move would miss.",
       "find": "pred_dir=PRED_DIR, results_dir=RESULTS_DIR):",
-      "replace": "pred_dir=ROOT / 'predictions', results_dir=ROOT / 'results'):",
+      "replace": "pred_dir=ROOT / 'predictions' / 'nfl', results_dir=ROOT / 'results' / 'nfl'):",
       "expect_caught_by": "test_no_module_defines_its_own_copy_again"
     },
     {
       "id": "paths-team-news-builds-its-own-folder",
-      "target": "src/pipeline/team_news.py",
-      "why": "team news builds data/team_news from the repository root again instead of from DATA_DIR, so moving the data folder (Stage 52) would leave it writing to the old place.",
+      "target": "src/sports/nfl/team_news.py",
+      "why": "team news builds data/nfl/team_news from the repository root again instead of from DATA_DIR, so moving the data folder (Stage 52) would leave it writing to the old place.",
       "find": "NEWS_DIR = DATA_DIR / 'team_news'",
-      "replace": "NEWS_DIR = ROOT / 'data' / 'team_news'",
+      "replace": "NEWS_DIR = ROOT / 'data' / 'nfl' / 'team_news'",
       "expect_caught_by": "test_no_module_defines_its_own_copy_again"
     }
   ]

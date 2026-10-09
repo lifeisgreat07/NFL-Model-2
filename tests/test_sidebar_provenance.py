@@ -22,9 +22,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import config
-from src.pipeline import generate_dashboard as gd
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl import config
+from src.sports.nfl import generate_dashboard as gd
 
 WHEN = datetime(2026, 9, 26, 19, 11, tzinfo=UTC)
 TEMPLATE = JOINED_TEMPLATE
@@ -35,7 +35,7 @@ def _text(html):
 
 
 def _code():
-    src = (ROOT / 'src' / 'pipeline' / 'generate_dashboard.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
     code = re.sub(r'(?s)""".*?"""', '', src)
     return re.sub(r'(?m)#.*$', '', code)
 

@@ -2,7 +2,7 @@
 Tell a person when something automated goes wrong: open a GitHub issue, or
 comment on the one already open.
 
-The core's copy of `src/pipeline/alerts.py`, for every sport's workflows.
+The core's copy of `src/core/alerts.py`, for every sport's workflows.
 The sports may not import the NFL's legacy package, and the NHL's daily
 run, canary and drift check needed alerts before Stage 52 moves the NFL
 onto the core. Until then the two files are the same module; Stage 52

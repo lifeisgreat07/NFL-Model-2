@@ -44,13 +44,11 @@ def test_every_listed_workflow_still_exists():
     assert not isolation.LEGACY_NFL_WORKFLOWS & isolation.SHARED_WORKFLOWS
 
 
-def test_the_legacy_lists_only_shrink():
-    """Stage 52 empties them; nothing is ever added. Adding a name here means
-    editing this test too, which a reviewer sees."""
-    assert isolation.LEGACY_NFL_WORKFLOWS <= {
-        'nfl-schedule-probe.yml', 'nightly-canary.yml', 'run-backtest.yml',
-        'weekend-refresh.yml', 'weekly-update.yml'}
-    assert set(isolation.LEGACY_NFL_PACKAGES) <= {'src.pipeline', 'src.research'}
+def test_the_legacy_lists_are_empty():
+    """Stage 52 moved the NFL into src/sports/nfl/ and renamed its workflows
+    nfl-*.yml, so nothing is exempt any more, and nothing is ever added."""
+    assert isolation.LEGACY_NFL_WORKFLOWS == frozenset()
+    assert isolation.LEGACY_NFL_PACKAGES == ()
 
 
 def test_the_core_type_checks_strictly(tmp_path):
@@ -92,7 +90,7 @@ def test_a_clean_two_sport_repository_passes(tmp_path):
 
 
 def test_a_sport_importing_another_is_caught(tmp_path):
-    root = make_repo(tmp_path, {'src/sports/nhl/model.py': 'from src.pipeline import ratings_engine\n'})
+    root = make_repo(tmp_path, {'src/sports/nhl/model.py': 'from src.sports.nfl import ratings_engine\n'})
     found = isolation.import_violations(root)
     assert found and 'nhl imports another sport (nfl)' in found[0]
 
@@ -113,9 +111,9 @@ def test_the_core_importing_a_sport_is_caught(tmp_path):
     assert found and 'the core imports no sport' in found[0]
 
 
-def test_the_core_importing_the_legacy_nfl_is_caught(tmp_path):
-    """Until Stage 52, src/pipeline is the NFL; the core may not reach it."""
-    root = make_repo(tmp_path, {'src/core/grading.py': 'from src.pipeline.model_specs import ModelSpec\n'})
+def test_the_core_importing_the_nfl_is_caught(tmp_path):
+    """The NFL is a sport like any other since Stage 52; the core may not reach it."""
+    root = make_repo(tmp_path, {'src/core/grading.py': 'from src.sports.nfl.weekly_update import decide_lock\n'})
     assert any('the core imports no sport' in f for f in isolation.import_violations(root))
 
 
@@ -255,6 +253,6 @@ def test_a_schedule_breaking_the_contract_is_named(df, expected):
 def test_the_model_spec_has_the_shape_the_core_asks_for():
     """The core describes ModelSpec instead of importing it (rule 2), so this
     holds the two together until Stage 52 moves the file."""
-    from src.pipeline.model_specs import MODEL_SPECS
+    from src.core.model_specs import MODEL_SPECS
     for spec in MODEL_SPECS.values():
         assert isinstance(spec.features, tuple) and callable(spec.fit)

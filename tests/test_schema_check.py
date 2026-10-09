@@ -1,5 +1,5 @@
 """
-src/pipeline/schema_check.py: today's nflverse columns against the committed snapshot.
+src/sports/nfl/schema_check.py: today's nflverse columns against the committed snapshot.
 
 Run with: pytest tests/test_schema_check.py -v
 """
@@ -8,8 +8,8 @@ from pathlib import Path
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline import schema_check as sc
-from src.pipeline.data_loader import (
+from src.sports.nfl import schema_check as sc
+from src.sports.nfl.data_loader import (
     REQUIRED_PBP_COLS,
     REQUIRED_SCHEDULE_COLS,
 )

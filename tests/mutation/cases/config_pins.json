@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/config.py",
+  "target": "src/sports/nfl/config.py",
   "tests": "tests/test_config_pins.py",
   "cases": [
     {

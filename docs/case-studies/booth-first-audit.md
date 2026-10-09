@@ -48,7 +48,7 @@ noticing:
   said a headless browser had checked every card on that week's board.
   Booth had no browser. So it pulled the shipped JavaScript functions out of
   the built page, ran them under Node against the week's real games, and
-  recomputed every card from `data/calibration.json`. None disagreed. It
+  recomputed every card from `data/nfl/calibration.json`. None disagreed. It
   marked the browser claim itself UNVERIFIABLE and said why.
 - **It found a flaw in its own harness.** The Booth workflow installed only
   `requirements.txt`, which has never contained pytest. So every audit began
@@ -72,7 +72,7 @@ bins, so they couldn't even be read off an existing file. A CONFIRMED FINDING
 on the live page had nothing behind it.
 
 The next PR, #19, rebuilt it from scratch as a committed script,
-`src/research/verify_low_confidence_finding.py`. It holds:
+`src/sports/nfl/research/verify_low_confidence_finding.py`. It holds:
 
 | | Published | Re-derived |
 |---|---|---|

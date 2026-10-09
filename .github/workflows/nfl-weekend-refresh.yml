@@ -1,0 +1,124 @@
+name: NFL weekend refresh
+
+# Stage 15. Between Thursday's lock and Tuesday's grading the page learned
+# nothing: a game played on Sunday read as upcoming until the weekly run
+# graded it. src/sports/nfl/weekend_refresh.py writes a snapshot per locked, not yet
+# fully graded week -- status, final scores, the latest line -- to
+# data/nfl/game_status/, from nflverse's schedule.
+#
+# TWO WRITERS OF PICKS IS TWO WAYS TO BREAK A LOCK (2026-09-24). This commits
+# data/nfl/game_status/**, data/nfl/line_history/** (line snapshots for locked weeks,
+# Stage 33 item 23, 2026-10-01), data/nfl/tv/** (TV channels,
+# src/sports/nfl/tv_channels.py) and data/nfl/team_news/** (src/sports/nfl/team_news.py)
+# and nothing else; "NFL weekly update" stays the only writer of predictions/ and
+# results/nfl/. The line archive has two appenders, which is safe: a row is a
+# dated observation nothing reads to make a pick, and the schedules below
+# cannot meet. tests/test_weekend_refresh.py holds the file_pattern to exactly
+# those four folders.
+#
+# Schedule (UTC). Odd minutes, in case the queue for the top of the hour is
+# why the nightly canary's 06:00 runs have started 4.5 to 5 hours late
+# (2026-09-25 to 27); that cause is a guess, not a finding.
+#   Friday 05:17  -- after Thursday night's game
+#   Sunday 21:47  -- after the early Sunday games
+#   Monday 01:47  -- after the late Sunday games (cron-job.org's request
+#                    since Stage 42; this line is GitHub's fallback for it)
+#   Monday 05:37  -- after the late games and Sunday night
+# Monday night's game is left to Tuesday's grading. None of these can meet
+# the weekly runs (Tuesday 11:00, Thursday 11:00) even five hours late.
+#
+# Its commit is made with the default GITHUB_TOKEN, which cannot trigger
+# another workflow, so "Deploy dashboard to Pages" names this workflow in its
+# workflow_run list. Renaming it here breaks that handoff silently.
+on:
+  schedule:
+    - cron: '17 5 * * 5'
+    - cron: '47 21 * * 0'
+    - cron: '47 1 * * 1'
+    - cron: '37 5 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  # For the alert step: a failed refresh opens an issue, like every other
+  # unattended job since Stage 4.
+  issues: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Refresh game status, scores and lines
+        shell: bash
+        run: python -m src.sports.nfl.weekend_refresh 2>&1 | tee weekend-refresh.log
+
+      # TV channels (Stage 15) for the same weeks, so a flexed game is seen
+      # before it airs. continue-on-error: a TV listing never fails the refresh.
+      - name: Read TV channels
+        continue-on-error: true
+        shell: bash
+        run: |
+          python -m src.sports.nfl.tv_channels --pending 2>&1 | tee tv-channels.log
+          { echo '### TV channels'; echo '```'; cat tv-channels.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      # Team news (Stage 16) for the same weeks, so a starter ruled out on
+      # Friday is on the page before Sunday. continue-on-error, like TV.
+      - name: Read team news
+        continue-on-error: true
+        shell: bash
+        run: |
+          python -m src.sports.nfl.team_news --pending 2>&1 | tee team-news.log
+          { echo '### Team news'; echo '```'; cat team-news.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+      # CATCH UP WITH MAIN BEFORE COMMITTING (2026-09-27). The first scheduled
+      # weekend refresh read everything correctly and then lost it: a pull
+      # request merged into main in the minute between this job's checkout and
+      # its push, the push was refused as non-fast-forward, and nothing was
+      # saved (run 36360495917, issue #145). The scheduler starts these jobs
+      # hours late, so "nobody merges at 21:47" protects nothing. This leaves a
+      # window of seconds, not the whole job. --autostash carries this run's
+      # uncommitted data files across the rebase, and stashing makes a commit,
+      # so the bot's identity is set for this one command.
+      - name: Catch up with main
+        shell: bash
+        run: |
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              pull --rebase --autostash origin main
+
+      - name: Commit and push changes
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
+        with:
+          commit_message: "Weekend refresh: game status, scores, lines, TV channels and team news"
+          file_pattern: 'data/nfl/game_status/** data/nfl/line_history/** data/nfl/tv/** data/nfl/team_news/**'
+
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          {
+            echo "The weekend refresh failed, so the page still shows the last snapshot."
+            echo "No pick is affected: this job never writes predictions/ or results/nfl/."
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            echo
+            echo "Last lines of the log:"
+            echo '```'
+            tail -n 30 weekend-refresh.log 2>/dev/null || echo "(no log)"
+            echo '```'
+          } > alert-body.md
+          python -m src.core.alerts --title "NFL: Weekend refresh failed" --body-file alert-body.md

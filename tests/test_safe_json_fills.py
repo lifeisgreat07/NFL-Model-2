@@ -28,11 +28,11 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl import generate_dashboard as gd
 
 TEMPLATE = JOINED_TEMPLATE
-GENERATOR = ROOT / 'src' / 'pipeline' / 'generate_dashboard.py'
+GENERATOR = ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py'
 PAYLOAD = '</script><img src=x onerror=alert(1)><!--<script>'
 
 

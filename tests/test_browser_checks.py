@@ -55,7 +55,7 @@ def step_runs(workflow):
 
 def test_the_workflow_builds_then_proves_the_rules_then_checks_the_page(workflow):
     runs = step_runs(workflow)
-    build = next(i for i, r in enumerate(runs) if 'src.pipeline.generate_dashboard' in r)
+    build = next(i for i, r in enumerate(runs) if 'src.sports.nfl.generate_dashboard' in r)
     selftest = next(i for i, r in enumerate(runs) if 'check_page.py --self-test' in r)
     check = next(i for i, r in enumerate(runs) if 'check_page.py index.html' in r)
     assert build < selftest < check, (
@@ -161,7 +161,7 @@ def test_the_sortmark_rule_runs_on_every_page_and_reads_what_is_drawn(checker):
 def test_the_states_builder_runs_by_path():
     """browser-checks.yml and tasks.py run tests/browser/build_states.py by
     path, so Python puts tests/browser/ on sys.path, not the root, and its
-    `from src.pipeline import ...` resolves only because the script puts the
+    `from src.sports.nfl import ...` resolves only because the script puts the
     root there itself. The suite imports the module under pytest, where the
     root is always on the path, so only a run by path sees it fail (#255's
     first Browser checks run did, in CI). --help imports the module and

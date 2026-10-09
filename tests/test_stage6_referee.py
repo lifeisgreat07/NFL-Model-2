@@ -18,8 +18,8 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.research import stage6_referee as rf
-from src.research import stage6_run as s6r
+from src.sports.nfl.research import stage6_referee as rf
+from src.sports.nfl.research import stage6_run as s6r
 
 
 def sched_rows(rows):

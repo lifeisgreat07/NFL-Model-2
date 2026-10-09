@@ -18,7 +18,7 @@ import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 from src.site.build import SHARED_FILES
 
 REPO = Path(__file__).resolve().parents[1]

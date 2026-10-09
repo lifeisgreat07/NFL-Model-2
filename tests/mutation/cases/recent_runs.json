@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/recent_runs.py",
+  "target": "src/sports/nfl/recent_runs.py",
   "tests": "tests/test_recent_runs.py",
   "cases": [
     {
@@ -25,7 +25,7 @@
     },
     {
       "id": "recent-runs-missing-file-reads-as-empty",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "a build that did not read the history says no job has run, the flattering reading of a missing file.",
       "find": "              \"say the run history was not read for this build.\")\n        return None\n",
       "replace": "              \"say the run history was not read for this build.\")\n        return {'read_utc': None, 'runs': []}\n",

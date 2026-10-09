@@ -2,7 +2,7 @@
 
 cron-job.org dispatches the Weekly update on time; GitHub's cron sends a
 late copy of the same slot hours later (decision record 0005). The copy
-must change nothing. `src/pipeline/slot_guard.py` decides; these tests hold
+must change nothing. `src/sports/nfl/slot_guard.py` decides; these tests hold
 the decision on the slots that matter, the marker's round trip, and the
 workflow's wiring, including that a broken guard fails open (the week
 still runs) rather than costing a lock.
@@ -16,11 +16,11 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline import slot_guard as sg
-from src.pipeline import weekly_update as wu
+from src.sports.nfl import slot_guard as sg
+from src.sports.nfl import weekly_update as wu
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKFLOW = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
+WORKFLOW = ROOT / '.github' / 'workflows' / 'nfl-weekly-update.yml'
 RUNS = sg.WORKFLOW_SLOTS['weekly-update']
 
 
@@ -89,7 +89,7 @@ def test_the_marker_is_read_from_origin_main(monkeypatch):
     monkeypatch.setattr(sg.subprocess, 'run', fake_run)
     assert sg.served_slot('weekly-update') == '2026-10-08T11:00Z'
     assert ['git', 'fetch', '--quiet', '--depth=1', 'origin', 'main'] == calls[0]
-    assert calls[1] == ['git', 'show', 'origin/main:data/run_slots/weekly-update.json']
+    assert calls[1] == ['git', 'show', 'origin/main:data/nfl/run_slots/weekly-update.json']
 
 
 def test_check_writes_the_outputs_the_workflow_reads(tmp_path, monkeypatch):
@@ -139,14 +139,14 @@ def test_the_slot_is_marked_after_the_work_and_before_the_commit():
 def test_the_marker_is_inside_what_the_commit_takes():
     job = _job(WORKFLOW.read_text(encoding='utf-8'), 'weekly-update')
     pattern = re.search(r"file_pattern: '([^']+)'", job).group(1).split()
-    assert 'data/**' in pattern
+    assert 'data/nfl/**' in pattern
     assert str(sg.SLOT_DIR.relative_to(ROOT)).replace('\\', '/').startswith('data/')
 
 
 def test_the_guard_job_alerts_and_offers_force():
     text = WORKFLOW.read_text(encoding='utf-8')
     guard = _job(text, 'slot-guard')
-    assert 'python -m src.pipeline.slot_guard check --workflow weekly-update' in guard
+    assert 'python -m src.sports.nfl.slot_guard check --workflow weekly-update' in guard
     assert "inputs.force && '--force'" in guard
-    assert re.search(r'- name: Alert that the guard failed\n        if: failure\(\)[\s\S]*src\.pipeline\.alerts --title "Weekly update slot guard failed"', guard)
+    assert re.search(r'- name: Alert that the guard failed\n        if: failure\(\)[\s\S]*src\.core\.alerts --title "NFL: Weekly update slot guard failed"', guard)
     assert re.search(r'workflow_dispatch:\n    inputs:\n      force:', text)

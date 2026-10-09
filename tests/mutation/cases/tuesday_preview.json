@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/weekly_update.py",
+  "target": "src/sports/nfl/weekly_update.py",
   "tests": "tests/test_tuesday_preview.py",
   "cases": [
     {
@@ -12,8 +12,8 @@
     {
       "id": "preview-falls-through-to-the-lock",
       "why": "the holding run saves its preview and carries on into the locked save, so Tuesday writes the week's write-once picks two days before the injury news the Thursday lock exists for.",
-      "find": "                  f\"predictions/preview/{path.name} (not locked, never graded)\")\n        return\n",
-      "replace": "                  f\"predictions/preview/{path.name} (not locked, never graded)\")\n",
+      "find": "                  f\"predictions/nfl/preview/{path.name} (not locked, never graded)\")\n        return\n",
+      "replace": "                  f\"predictions/nfl/preview/{path.name} (not locked, never graded)\")\n",
       "expect_caught_by": "test_a_holding_run_saves_a_preview_instead_of_returning_early"
     },
     {
@@ -25,7 +25,7 @@
     },
     {
       "id": "preview-page-shows-a-preview-for-a-locked-week",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the page loads Tuesday's preview for a week Thursday already locked, and the preview's key replaces the locked week's in the board data: the page shows picks that can still change in place of the ones that are graded.",
       "find": "        if parsed is None or parsed in locked:\n",
       "replace": "        if parsed is None:\n",
@@ -33,7 +33,7 @@
     },
     {
       "id": "preview-summary-says-locked",
-      "target": "src/pipeline/weekly_summary.py",
+      "target": "src/sports/nfl/weekly_summary.py",
       "why": "the run summary reports a preview as a lock, so the Tuesday summary says week N was locked when nothing was.",
       "find": "        lines.append(f'- Previewed {s} week {w}: {len(read_json(p))} games '\n",
       "replace": "        lines.append(f'- Locked {s} week {w}: {len(read_json(p))} games '\n",

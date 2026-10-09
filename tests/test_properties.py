@@ -24,8 +24,8 @@ import pandas as pd
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from src.pipeline import weekly_update as wu
-from src.pipeline.grade_predictions import graded_correct
+from src.sports.nfl import weekly_update as wu
+from src.sports.nfl.grade_predictions import graded_correct
 
 PROPS = settings(derandomize=True, database=None, deadline=None, max_examples=300)
 

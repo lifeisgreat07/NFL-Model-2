@@ -19,7 +19,7 @@
     },
     {
       "id": "product-name-pdf-goes-back",
-      "target": "src/pipeline/generate_picks_pdf.py",
+      "target": "src/sports/nfl/generate_picks_pdf.py",
       "why": "the printed picks sheet carries the old name, so a sheet on a fridge names a different site from the one it came from.",
       "find": "Paragraph(f\"Pick'em Model &mdash; {season} Week {week}\", title_style)",
       "replace": "Paragraph(f\"NFL Pick'em &mdash; {season} Week {week}\", title_style)",

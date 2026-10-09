@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/model_specs.py",
+  "target": "src/core/model_specs.py",
   "tests": "tests/test_model_specs.py",
   "cases": [
     {
@@ -46,7 +46,7 @@
     },
     {
       "id": "specs-live-b-trains-on-missing-lines-as-zero",
-      "target": "src/pipeline/weekly_update.py",
+      "target": "src/sports/nfl/weekly_update.py",
       "why": "the live fit gives Model B a zero spread for games with no line instead of leaving them out, so the live Model B is no longer the model the backtest scores",
       "find": "MODEL_SPECS['model_b'].fit(hist)",
       "replace": "MODEL_SPECS['model_b'].fit(hist.fillna({'spread_line': 0.0}))",
@@ -54,7 +54,7 @@
     },
     {
       "id": "specs-backtest-ignores-a-candidate",
-      "target": "src/research/backtest.py",
+      "target": "src/sports/nfl/research/backtest.py",
       "why": "backtest() given a candidate ModelSpec scores the incumbent on its features instead, so every Stage 33 question would compare the incumbent with itself",
       "find": "    spec = features if isinstance(features, ModelSpec) else ModelSpec(tuple(features))",
       "replace": "    spec = ModelSpec(tuple(features.features if isinstance(features, ModelSpec) else features))",

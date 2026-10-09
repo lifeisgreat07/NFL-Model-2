@@ -1,5 +1,5 @@
 """picks.csv: every locked pick and its grade, beside the board (Stage 46
-item 7, src/pipeline/picks_csv.py).
+item 7, src/sports/nfl/picks_csv.py).
 
 Held here: locked weeks only, never a preview; each game joined to its own
 grade; a game not yet played and a tie each say so and grade no one; a pick
@@ -13,9 +13,9 @@ import csv
 import json
 from pathlib import Path
 
-from src.pipeline import picks_csv
-from src.pipeline.paths import PRED_DIR, RESULTS_DIR
 from src.site import build
+from src.sports.nfl import picks_csv
+from src.sports.nfl.paths import PRED_DIR, RESULTS_DIR
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -96,7 +96,7 @@ def test_the_file_agrees_with_the_committed_grades():
 
 def test_the_site_build_writes_it_and_publishes_it_beside_the_board():
     cmds = [' '.join(c[3:]) for c in build.build_commands('nfl', Path('_site'))]
-    assert 'src.pipeline.picks_csv --out picks.csv' in cmds
+    assert 'src.sports.nfl.picks_csv --out picks.csv' in cmds
     src = Path(build.__file__).read_text(encoding='utf-8')
     assert "shutil.copyfile(ROOT / 'picks.csv', dest / 'picks.csv')" in src
 

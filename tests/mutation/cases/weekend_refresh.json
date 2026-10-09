@@ -1,10 +1,10 @@
 {
-  "target": "src/pipeline/weekend_refresh.py",
+  "target": "src/sports/nfl/weekend_refresh.py",
   "tests": "tests/test_weekend_refresh.py",
   "cases": [
     {
       "id": "refresh-cron-inside-the-lock-slack",
-      "target": ".github/workflows/weekend-refresh.yml",
+      "target": ".github/workflows/nfl-weekend-refresh.yml",
       "why": "a refresh moved to Tuesday 03:00 UTC can still be running when the Tuesday weekly run starts if both are as late as LOCK_SLACK allows; the old five-hour margin passed it (the fourth audit, Q9).",
       "find": "    - cron: '37 5 * * 1'\n",
       "replace": "    - cron: '0 3 * * 2'\n",
@@ -47,7 +47,7 @@
     },
     {
       "id": "refresh-pushes-without-catching-up",
-      "target": ".github/workflows/weekend-refresh.yml",
+      "target": ".github/workflows/nfl-weekend-refresh.yml",
       "why": "the refresh commits straight onto the commit it checked out, so any merge during the run makes its push fail and the snapshot is lost (run 36360495917).",
       "find": "      - name: Catch up with main\n        shell: bash\n",
       "replace": "      - name: Tidy the tree\n        shell: bash\n",
@@ -55,7 +55,7 @@
     },
     {
       "id": "lock-run-catch-up-refuses-dirty-tree",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the weekly run's catch-up rebases without --autostash, which refuses a tree holding this run's new picks, so the lock run fails before it saves them.",
       "find": "              pull --rebase --autostash origin main\n",
       "replace": "              pull --rebase origin main\n",
@@ -63,7 +63,7 @@
     },
     {
       "id": "lock-run-catch-up-skipped-after-a-failure",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "a failed summary step skips the catch-up, so the picks commit meets the old race again on the one run that must save them.",
       "find": "      - name: Catch up with main\n        if: ${{ !cancelled() }}\n",
       "replace": "      - name: Catch up with main\n",
@@ -101,10 +101,10 @@
     },
     {
       "id": "refresh-takes-line-snapshots-it-never-commits",
-      "target": ".github/workflows/weekend-refresh.yml",
-      "why": "the workflow's commit drops data/line_history/**, so the refresh appends the snapshots in the runner and the runner throws them away. Every run reports success, and the archive on main never changes -- the shape of a guard that looks present.",
-      "find": "          file_pattern: 'data/game_status/** data/line_history/** data/tv/** data/team_news/**'\n",
-      "replace": "          file_pattern: 'data/game_status/** data/tv/** data/team_news/**'\n",
+      "target": ".github/workflows/nfl-weekend-refresh.yml",
+      "why": "the workflow's commit drops data/nfl/line_history/**, so the refresh appends the snapshots in the runner and the runner throws them away. Every run reports success, and the archive on main never changes -- the shape of a guard that looks present.",
+      "find": "          file_pattern: 'data/nfl/game_status/** data/nfl/line_history/** data/nfl/tv/** data/nfl/team_news/**'\n",
+      "replace": "          file_pattern: 'data/nfl/game_status/** data/nfl/tv/** data/nfl/team_news/**'\n",
       "expect_caught_by": "test_the_workflow_commits_its_four_folders_and_nothing_else"
     },
     {
@@ -123,15 +123,15 @@
     },
     {
       "id": "refresh-weekly-step-takes-lines",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the weekly run's refresh step drops --status-only, so every Tuesday and Thursday run also appends line snapshots on the weekly schedule.",
-      "find": "        run: python -m src.pipeline.weekend_refresh --season ${{ steps.season.outputs.season }} --status-only",
-      "replace": "        run: python -m src.pipeline.weekend_refresh --season ${{ steps.season.outputs.season }}",
+      "find": "        run: python -m src.sports.nfl.weekend_refresh --season ${{ steps.season.outputs.season }} --status-only",
+      "replace": "        run: python -m src.sports.nfl.weekend_refresh --season ${{ steps.season.outputs.season }}",
       "expect_caught_by": "test_the_weekly_run_snapshots_the_week_it_grades_before_grading_it"
     },
     {
       "id": "refresh-weekly-step-can-cost-grades",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the status step loses continue-on-error, so a schedule read that fails on a Tuesday fails the job before grading.",
       "find": "      - name: Refresh the status of the weeks about to be graded\n        if: ${{ !cancelled() }}\n        continue-on-error: true\n",
       "replace": "      - name: Refresh the status of the weeks about to be graded\n        if: ${{ !cancelled() }}\n",

@@ -36,7 +36,7 @@ def test_the_plugin_is_pinned_and_installed_in_this_job_only():
 def test_a_failure_raises_the_alert_with_the_replay_command():
     alert = WF.split('- name: Raise an alert', 1)[1]
     assert 'if: failure()' in alert
-    assert 'python -m src.pipeline.alerts --title "Nightly shuffled suite failing"' in alert
+    assert 'python -m src.core.alerts --title "Nightly shuffled suite failing"' in alert
     assert 'Replay: python -m pytest -q -p no:cacheprovider --random-order-bucket=global --random-order-seed=%s' in alert
 
 

@@ -1,8 +1,8 @@
 """The Model Lab's records, held to where they came from (Stage 18).
 
-src/pipeline/model_lab.py builds one list from two sources: the 46 rows the page
-carried before Stage 18, moved into experiments/legacy/rows.json once and
-verbatim, and every pre-registered answer in experiments/*/results/. These
+src/sports/nfl/model_lab.py builds one list from two sources: the 46 rows the page
+carried before Stage 18, moved into experiments/nfl/legacy/rows.json once and
+verbatim, and every pre-registered answer in experiments/nfl/*/results/. These
 tests check the move lost nothing, that every entry carries one of the
 project's five decisions, and that every figure a result entry carries is
 the one in its file.
@@ -17,7 +17,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import model_lab as ml
+from src.sports.nfl import model_lab as ml
 
 FIVE = {'ACCEPT', 'REJECT', 'INCONCLUSIVE', 'DEFERRED', 'CONFIRMED FINDING'}
 
@@ -80,7 +80,7 @@ def test_a_registered_label_maps_as_the_rule_says():
 
 
 def test_every_result_file_is_an_entry_once_and_nothing_unasked_is(entries):
-    files = sorted(p.relative_to(ROOT).as_posix() for p in ROOT.glob('experiments/stage*/results/*.json'))
+    files = sorted(p.relative_to(ROOT).as_posix() for p in ROOT.glob('experiments/nfl/stage*/results/*.json'))
     sourced = sorted(e['source'] for e in entries if e['source'].split('/')[-2] == 'results')
     assert sourced == files
     # Keyed by stage as well as id: Stage 33 reuses R1 and R2, which Stage 6
@@ -93,7 +93,7 @@ def test_every_result_file_is_an_entry_once_and_nothing_unasked_is(entries):
 
 
 def test_every_deferred_registry_entry_is_shown_with_its_reason(entries):
-    for registry in ROOT.glob('experiments/stage*/registry.json'):
+    for registry in ROOT.glob('experiments/nfl/stage*/registry.json'):
         stage = ml._stage_name(registry.parent)
         for h in json.loads(registry.read_text(encoding='utf-8'))['hypotheses']:
             if h.get('status') == 'DEFERRED':
@@ -108,7 +108,7 @@ def test_a_registry_that_promises_a_row_for_every_question_gets_one(entries):
     Q2). Stages 5 and 6 make no such promise; their never-run entries stay
     off the page by Stage 18's decision (the test above)."""
     promised = 0
-    for registry in ROOT.glob('experiments/stage*/registry.json'):
+    for registry in ROOT.glob('experiments/nfl/stage*/registry.json'):
         reg = json.loads(registry.read_text(encoding='utf-8'))
         if 'Every question ends as a Model Lab row' not in reg.get('protocol', {}).get('model_lab', ''):
             continue
@@ -121,14 +121,14 @@ def test_a_registry_that_promises_a_row_for_every_question_gets_one(entries):
 
 
 def test_a_monitoring_rule_row_quotes_its_registry(entries):
-    reg = json.loads((ROOT / 'experiments' / 'stage33' / 'registry.json').read_text(encoding='utf-8'))
+    reg = json.loads((ROOT / 'experiments' / 'nfl' / 'stage33' / 'registry.json').read_text(encoding='utf-8'))
     r4 = next(h for h in reg['hypotheses'] if h['id'] == 'R4')
     e = next(x for x in entries if (x['stage'], x['id']) == ('Stage 33', 'R4'))
     assert (e['label'], e['decision'], e['headline']) == ('ADOPTED', 'ACCEPT', None)
     assert r4['rule'] in e['reason']
     assert f"{r4['baseline']['value']:.4f}" in e['reason']
     assert f"{r4['baseline']['printed_beside']['value']:.4f}" in e['reason']
-    assert e['source'] == 'experiments/stage33/registry.json'
+    assert e['source'] == 'experiments/nfl/stage33/registry.json'
 
 
 def test_every_headline_figure_is_the_one_in_its_file(entries):

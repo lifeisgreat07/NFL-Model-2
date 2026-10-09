@@ -45,7 +45,7 @@ actually be a failure, a team with games played and no SOS.
 
 **The Team Deep-Dive page had never worked.** The roadmap listed it as done,
 and the drill-down item was written on the assumption that it was.
-Its loader read `data/team_history.json`, but the file had sat in `src/`
+Its loader read `data/nfl/team_history.json`, but the file had sat in `src/`
 since it was uploaded. When the file was missing, the loader returned an
 empty result and said nothing, so every build published a page reading "No
 team history" for every team (`5e52457`). Nobody noticed, because nothing

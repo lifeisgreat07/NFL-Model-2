@@ -1,5 +1,5 @@
 {
-  "target": "src/research/stage6_run.py",
+  "target": "src/sports/nfl/research/stage6_run.py",
   "tests": "tests/test_stage6_data.py",
   "cases": [
     {

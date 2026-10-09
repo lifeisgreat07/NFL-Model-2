@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/canary.py",
+  "target": "src/sports/nfl/canary.py",
   "tests": "tests/test_canary.py",
   "cases": [
     {

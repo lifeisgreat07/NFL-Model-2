@@ -234,7 +234,7 @@ def test_a_schedule_run_after_a_requested_one_is_named_githubs_late_copy():
 def test_a_schedule_run_with_no_request_before_it_is_not_called_a_copy():
     """The Weekly update has no cron-job.org job yet: its schedule run is the slot."""
     ss = _session_start()
-    lines = ss.run_lines([_run('schedule', '2026-10-05T11:00:00Z')], 'Weekly update', ss._utc(NOW))
+    lines = ss.run_lines([_run('schedule', '2026-10-05T11:00:00Z')], 'NFL weekly update', ss._utc(NOW))
     assert len(lines) == 1 and 'late copy' not in lines[0]
 
 
@@ -247,9 +247,9 @@ def test_runs_outside_the_window_are_left_out_and_an_empty_window_says_so():
 
 def test_the_section_names_its_source_and_every_watched_job(capsys):
     ss = _session_start()
-    from src.pipeline.recent_runs import WATCHED
+    from src.sports.nfl.recent_runs import WATCHED
     get = _fake_api(
-        {'nightly-canary.yml': [_run('workflow_dispatch', '2026-10-05T06:00:52Z')]},
+        {'nfl-nightly-canary.yml': [_run('workflow_dispatch', '2026-10-05T06:00:52Z')]},
         pulls=[{'number': 290, 'title': 'QB overrides: 2026 week 5', 'state': 'open',
                 'merged_at': None, 'created_at': '2026-10-05T22:06:00Z',
                 'head': {'ref': 'qb-overrides-2026-week5'}}],

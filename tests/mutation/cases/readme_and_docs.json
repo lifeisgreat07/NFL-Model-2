@@ -42,7 +42,7 @@
       "target": "docs/architecture.md",
       "tests": "tests/test_lessons_learned.py",
       "why": "a box on the architecture page names a file that is not there, so the one table meant to answer 'which file is this' answers wrongly.",
-      "find": "`src/pipeline/grade_predictions.py` | Same workflow",
+      "find": "`src/sports/nfl/grade_predictions.py` | Same workflow",
       "replace": "`src/grade.py` | Same workflow",
       "expect_caught_by": "test_every_path_in_the_architecture_table_exists"
     },
@@ -60,8 +60,8 @@
       "target": "docs/lessons-learned.md",
       "tests": "tests/test_lessons_learned.py",
       "why": "a lesson's evidence names a file that does not exist, so it reads as sourced and is not.",
-      "find": "`experiments/stage5/registry.json`",
-      "replace": "`experiments/stage5/register.json`",
+      "find": "`experiments/nfl/stage5/registry.json`",
+      "replace": "`experiments/nfl/stage5/register.json`",
       "expect_caught_by": "test_every_path_exists"
     },
     {
@@ -73,7 +73,7 @@
     },
     {
       "id": "backtest-default-stops-refitting-weekly",
-      "target": "src/research/backtest.py",
+      "target": "src/sports/nfl/research/backtest.py",
       "why": "the backtest's default goes back to one fit per season, so the README's 'refit every week' no longer describes the table",
       "find": "def backtest(hist, features, test_seasons, refit_every_n_weeks=1, return_raw=False):",
       "replace": "def backtest(hist, features, test_seasons, refit_every_n_weeks=None, return_raw=False):",
@@ -168,7 +168,7 @@
       "target": ".github/workflows/run-tests.yml",
       "tests": "tests/test_tasks.py",
       "why": "run-tests.yml stops running mypy, so tasks.py's lint gates on a check CI never runs, and a type error reaches main green.",
-      "find": "        run: python -m mypy --ignore-missing-imports src/pipeline/weekly_update.py src/pipeline/ratings_engine.py\n",
+      "find": "        run: python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py\n",
       "replace": "        run: echo skipped\n",
       "expect_caught_by": "test_lint_is_what_run_tests_runs"
     },

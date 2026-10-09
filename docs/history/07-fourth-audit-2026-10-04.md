@@ -47,20 +47,20 @@ mutation claim names its case files.
    `pythonpath`, then ruff `RUF100` once (262 of the 265 unused `noqa` are
    E402 behind those lines; keep `weekend_refresh.py`'s real F401). Three
    stale comments (`generate_dashboard.py` sys.path, `requirements-dev.txt`
-   "pyflakes only", `run-backtest.yml` naming `calibration.json` as the
+   "pyflakes only", `nfl-run-backtest.yml` naming `calibration.json` as the
    drift baseline) and `conftest.py`'s unused `GENERATOR`.
 2. Stage 33's R4 gets its Model Lab row (a monitoring rule: ADOPTED, shown
    as ACCEPT), with a test that a registry promising a row for every
    question gets one.
 3. The type-check test fails under `CI` instead of skipping.
-4. A test that each `run-backtest.yml` option resolves to a real module.
+4. A test that each `nfl-run-backtest.yml` option resolves to a real module.
 5. The lateness margin in `tests/test_weekend_refresh.py` reads
    `LOCK_SLACK`; backup files under `src/dashboard/` are gitignored. The
    strict folder check stays (pushback: Pages builds from a clean checkout).
 6. Booth's prompt: do not re-read CLAUDE.md or BOOTH_PROTOCOL.md after the
    stash. Booth skips PRs that edit its workflow; merges on Mark's say-so.
 7. `tv_channels.main`'s folder defaults come from `paths.py`, and `COPIES`
-   catches a `ROOT / 'predictions'` default. After the 2026-10-08 lock.
+   catches a `ROOT / 'predictions' / 'nfl'` default. After the 2026-10-08 lock.
 8. `docs/traps.md`: a short rules index at the top and a size guard.
 
 ### Stage 37 - The honest states
@@ -102,7 +102,7 @@ shown to Mark before any registry file is written.
    weeks.
 4. Ratings use regular-season plays only, so they freeze through the
    playoffs: disclose it, or register a change (Mark's call).
-5. Playoff TV: sourced `data/tv/exceptions.json` entries in December, and a
+5. Playoff TV: sourced `data/nfl/tv/exceptions.json` entries in December, and a
    canary rule that they exist before week 19.
 6. Bracket status in place of the simulation once `games_remaining == 0`.
 7. A test that every scheduled game gets a status refresh after kickoff.
@@ -120,7 +120,7 @@ every count and accuracy figure. Built after the lock.
 ### Stage 40 - Season turnover (January)
 
 `docs/season-turnover.md` and `tasks.py turnover` (item 7); the 2026
-forward test archived as `experiments/forward-2026/` with a Model Lab row
+forward test archived as `experiments/nfl/forward-2026/` with a Model Lab row
 (item 9); the "season not started" state (10); My Picks per season (11);
 the season in links and routes (12); whether R4's drift sample resets per
 season or per `MODEL_VERSION`, decided before week 1; C1, L1 and L2 run
@@ -197,7 +197,7 @@ refresh, canary, mutation slice) Line Judge reads the run's summary and
 what it committed, and says whether it did the right thing: started on
 time (Stage 42's delay line), locked before the first kickoff, every game
 on the page, the drift report present. A run that went green and did the
-wrong thing gets a diagnosed issue through `src/pipeline/alerts.py`.
+wrong thing gets a diagnosed issue through `src/core/alerts.py`.
 1. What "right" means for each workflow, written as checks; most become
    plain tests or scripts, and the agent explains what they find.
 2. Triggered on `workflow_run` completion.

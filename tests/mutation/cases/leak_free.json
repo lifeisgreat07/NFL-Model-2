@@ -1,10 +1,10 @@
 {
-  "target": "src/research/backtest.py",
+  "target": "src/sports/nfl/research/backtest.py",
   "tests": "tests/test_leak_free.py",
   "cases": [
     {
       "id": "leak-backtest-trains-on-the-week-it-predicts",
-      "target": "src/pipeline/model_specs.py",
+      "target": "src/core/model_specs.py",
       "why": "the walk-forward refit includes the week being predicted. Every backtest figure on the page would then be scored by a model that had seen the answers, and nothing else in the suite would notice.",
       "find": "((d2['season'] == test_season) & (d2['week'] < w))",
       "replace": "((d2['season'] == test_season) & (d2['week'] <= w))",
@@ -12,7 +12,7 @@
     },
     {
       "id": "leak-features-read-next-weeks-qb-cutoff",
-      "target": "src/pipeline/weekly_update.py",
+      "target": "src/sports/nfl/weekly_update.py",
       "why": "a game asks for QB ratings at the next week's cutoff, so the quarterback's own game in this week feeds his rating for it. The same shape as the QB rating leak in the case study, one link further along.",
       "find": "            qb_cutoff = qb['week_to_idx'].get(key)",
       "replace": "            qb_cutoff = qb['week_to_idx'].get(key, -1) + 1",
@@ -20,7 +20,7 @@
     },
     {
       "id": "leak-features-read-next-weeks-ratings",
-      "target": "src/pipeline/weekly_update.py",
+      "target": "src/sports/nfl/weekly_update.py",
       "why": "a game reads the team ratings keyed to the following week, which include the game itself. The cutoff tests above would still pass, because the ratings are built correctly; they would just be read from the wrong week.",
       "find": "            rt = team_ratings_by_week[key]",
       "replace": "            rt = team_ratings_by_week.get((key[0], key[1] + 1), team_ratings_by_week[key])",

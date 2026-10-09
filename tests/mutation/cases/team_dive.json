@@ -47,7 +47,7 @@
     {
       "id": "dive-loader-points-at-src",
       "why": "the loader reads src/ again, orphaning the committed data file",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "find": "    static_path = DATA_DIR / 'team_history.json'",
       "replace": "    static_path = Path(__file__).parent / 'team_history.json'",
       "expect_caught_by": "test_the_generator_looks_where_the_file_actually_is"
@@ -55,7 +55,7 @@
     {
       "id": "dive-missing-file-goes-silent",
       "why": "the missing-history branch returns empty without a warning, the silence that hid a broken page for months",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "find": "        print(f\"  WARNING: {static_path} not found",
       "replace": "        print(f\"  {static_path} not found",
       "expect_caught_by": "test_a_missing_history_file_is_reported_loudly"

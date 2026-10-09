@@ -1,5 +1,5 @@
 """
-Every number experiments/stage6/README.md prints must exist in the file it
+Every number experiments/nfl/stage6/README.md prints must exist in the file it
 came from, the pattern tests/test_stage5_published_numbers.py set for
 Stage 5.
 
@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).parent.parent / 'experiments' / 'stage6'
+ROOT = Path(__file__).parent.parent / 'experiments' / 'nfl' / 'stage6'
 README = ROOT / 'README.md'
 
 

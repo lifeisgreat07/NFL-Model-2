@@ -35,15 +35,13 @@ SPORT_CODE = re.compile(r'^[a-z]{2,5}$')
 #: The folders a sport may write, each followed by /<code>/.
 SPORT_FOLDERS = ('data', 'predictions', 'results', 'experiments', 'site')
 
-#: Packages that are the NFL until Stage 52 moves them to src/sports/nfl/.
-LEGACY_NFL_PACKAGES = ('src.pipeline', 'src.research')
+#: Packages that were the NFL before Stage 52 moved it to src/sports/nfl/.
+#: Emptied by Stage 52; nothing is ever added.
+LEGACY_NFL_PACKAGES: tuple[str, ...] = ()
 
-#: The NFL's workflows under their pre-multi-sport names (Stage 52 renames
-#: them nfl-*.yml). Exempt from rules 3 and 4 until then.
-LEGACY_NFL_WORKFLOWS = frozenset({
-    'nfl-schedule-probe.yml', 'nightly-canary.yml', 'run-backtest.yml',
-    'weekend-refresh.yml', 'weekly-update.yml',
-})
+#: The NFL's workflows under their pre-multi-sport names. Stage 52 renamed
+#: them nfl-*.yml and emptied this; nothing is ever added.
+LEGACY_NFL_WORKFLOWS: frozenset[str] = frozenset()
 
 #: Workflows that serve every sport: the PR loop, the suite, the deploy.
 SHARED_WORKFLOWS = frozenset({
@@ -73,8 +71,6 @@ def _layer(module: str) -> tuple[str, str | None]:
         return 'site', None
     if parts[:2] == ['src', 'sports'] and len(parts) > 2:
         return 'sport', parts[2]
-    if any(module == p or module.startswith(p + '.') for p in LEGACY_NFL_PACKAGES):
-        return 'sport', 'nfl'
     return 'other', None
 
 

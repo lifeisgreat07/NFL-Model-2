@@ -1,6 +1,6 @@
 """First tests for grading and for the drift check (Stage 24 item 9).
 
-The 2026-09-28 audit, confirmed: `src/pipeline/grade_predictions.py` and
+The 2026-09-28 audit, confirmed: `src/sports/nfl/grade_predictions.py` and
 `check_drift.one_proportion_z_test` had no tests of their own. Grading is
 what turns a saved pick into the season's record, and the drift test is
 what raises "Model drift detected". These pin the behaviour they have
@@ -16,9 +16,9 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import check_drift as cd
-from src.pipeline import data_loader
-from src.pipeline import grade_predictions as gp
+from src.sports.nfl import check_drift as cd
+from src.sports.nfl import data_loader
+from src.sports.nfl import grade_predictions as gp
 
 PICKS = [
     {'home': 'GB', 'away': 'ATL', 'market_prob_home': 0.70,
@@ -162,9 +162,9 @@ def test_live_results_leave_out_the_backtest_seasons(tmp_path, monkeypatch):
 
 def test_the_baseline_is_the_published_backtest():
     """The drift check compares with the numbers the page and README print:
-    data/calibration.json, not a copy of them. The old literal was one game
+    data/nfl/calibration.json, not a copy of them. The old literal was one game
     off each way (0.628 and 0.682 against 682 and 742 of 1087)."""
-    cal = json.loads((ROOT / 'data' / 'calibration.json').read_text(encoding='utf-8'))['models']
+    cal = json.loads((ROOT / 'data' / 'nfl' / 'calibration.json').read_text(encoding='utf-8'))['models']
     got = cd.backtest_baseline()
     assert set(got) == {'model_a', 'model_b'}
     for model in got:

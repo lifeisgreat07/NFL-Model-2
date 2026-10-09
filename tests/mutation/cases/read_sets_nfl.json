@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/generate_dashboard.py",
+  "target": "src/sports/nfl/generate_dashboard.py",
   "tests": "tests/test_sport_read_sets.py",
   "cases": [
     {

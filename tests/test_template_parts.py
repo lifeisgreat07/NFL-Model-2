@@ -3,7 +3,7 @@ The dashboard template's parts, and the two joins that put them together
 (Stage 33 item 26).
 
 src/dashboard/page.html includes styles.css, body.html and app.js; the
-generator joins them with src/pipeline/template_parts.py and the JavaScript
+generator joins them with src/core/template_parts.py and the JavaScript
 harnesses with tests/template_source.js. When the parts were cut, the join
 was byte-identical to the one file it replaced. What has to stay true after
 that is held here:
@@ -31,7 +31,7 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline import template_parts as tp
+from src.core import template_parts as tp
 
 REPO = Path(__file__).resolve().parents[1]
 JS = REPO / 'tests' / 'template_source.js'
@@ -144,7 +144,7 @@ def test_the_javascript_join_refuses_it_too(tmp_path, case):
 # --- encoding ------------------------------------------------------------------
 
 def test_every_read_names_utf8():
-    tree = ast.parse((REPO / 'src' / 'pipeline' / 'template_parts.py').read_text(encoding='utf-8'))
+    tree = ast.parse((REPO / 'src' / 'core' / 'template_parts.py').read_text(encoding='utf-8'))
     reads = [n for n in ast.walk(tree)
              if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
              and n.func.attr == 'read_text']

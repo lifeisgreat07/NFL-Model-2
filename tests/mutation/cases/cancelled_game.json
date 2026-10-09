@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/weekend_refresh.py",
+  "target": "src/sports/nfl/weekend_refresh.py",
   "tests": "tests/test_cancelled_game.py",
   "cases": [
     {

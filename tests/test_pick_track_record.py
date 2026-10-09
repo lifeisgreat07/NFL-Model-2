@@ -15,17 +15,17 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 REPO_ROOT = Path(__file__).parent.parent
 TEMPLATE = JOINED_TEMPLATE
-CALIBRATION = REPO_ROOT / 'data' / 'calibration.json'
+CALIBRATION = REPO_ROOT / 'data' / 'nfl' / 'calibration.json'
 
 
 @pytest.fixture(scope='module')
 def calibration():
     if not CALIBRATION.exists():
-        pytest.skip("data/calibration.json absent -- run src/research/calibration.py")
+        pytest.skip("data/nfl/calibration.json absent -- run src/sports/nfl/research/calibration.py")
     return json.loads(CALIBRATION.read_text())
 
 

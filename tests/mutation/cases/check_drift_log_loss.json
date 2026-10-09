@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/check_drift.py",
+  "target": "src/sports/nfl/check_drift.py",
   "tests": "tests/test_check_drift_log_loss.py",
   "cases": [
     {
@@ -39,7 +39,7 @@
     },
     {
       "id": "drift-log-loss-baseline-retyped",
-      "target": "data/drift_baseline.json",
+      "target": "data/nfl/drift_baseline.json",
       "why": "the committed baseline is retyped as a rounded figure, so the flag compares against a number the registry and its source file do not hold",
       "find": "    \"value\": 0.6517835197359845",
       "replace": "    \"value\": 0.6518",

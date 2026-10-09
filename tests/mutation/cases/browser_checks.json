@@ -34,8 +34,8 @@
     {
       "id": "browser-checks-ignore-asset-changes",
       "why": "a pull request that changes only the self-hosted font no longer runs the checks, though a changed font is a changed page -- the font check is the one most likely to catch it.",
-      "find": "      - 'src/**'\n      - 'assets/**'\n      - 'data/**'",
-      "replace": "      - 'src/**'\n      - 'data/**'",
+      "find": "      - 'src/**'\n      - 'assets/**'\n      - 'data/nfl/**'",
+      "replace": "      - 'src/**'\n      - 'data/nfl/**'",
       "expect_caught_by": "test_it_runs_on_changes_to_what_the_page_is_built_from"
     },
     {

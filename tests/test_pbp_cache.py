@@ -1,5 +1,5 @@
 """
-The play-by-play cache in src/pipeline/data_loader.py.
+The play-by-play cache in src/sports/nfl/data_loader.py.
 
 Three properties, each one a way a cache goes wrong quietly:
 
@@ -30,7 +30,7 @@ import pytest
 pl = pytest.importorskip('polars')
 
 
-from src.pipeline import data_loader
+from src.sports.nfl import data_loader
 
 
 def _season_frame(season):
@@ -110,8 +110,8 @@ def test_only_the_canary_uses_the_cache():
     comment in data_loader.py says so; this is what makes it true."""
     users = sorted(p.name for p in WORKFLOWS.glob('*.yml')
                    if data_loader.PBP_CACHE_ENV in p.read_text(encoding='utf-8'))
-    assert users == ['nightly-canary.yml']
-    canary = (WORKFLOWS / 'nightly-canary.yml').read_text(encoding='utf-8')
+    assert users == ['nfl-nightly-canary.yml']
+    canary = (WORKFLOWS / 'nfl-nightly-canary.yml').read_text(encoding='utf-8')
     assert 'actions/cache@' in canary and 'path: .pbp-cache' in canary
     assert f'{data_loader.PBP_CACHE_ENV}: .pbp-cache' in canary
 

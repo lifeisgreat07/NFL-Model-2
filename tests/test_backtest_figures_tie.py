@@ -1,7 +1,7 @@
 """
 The backtest's published figures, held to the files they came from.
 
-data/calibration.json and data/bootstrap_brier_gap.json carry the model
+data/nfl/calibration.json and data/nfl/bootstrap_brier_gap.json carry the model
 version of the backtest that wrote them (2.4). MODEL_VERSION is 2.5, and 2.5
 changed only which quarterback the live picks use: the backtest was always
 scored with the real starter, so its numbers did not move (VERSION_HISTORY's
@@ -10,7 +10,7 @@ the next version bump has to either re-run the backtest or add itself to the
 list and say why. Nothing else in the suite noticed the gap between 2.4 and
 2.5.
 
-The Methodology page's backtest table is held to data/calibration.json, and
+The Methodology page's backtest table is held to data/nfl/calibration.json, and
 README's table is held to the page by test_readme_accuracy.py, so both
 published tables now trace back to the file. Log loss, Brier and AUC must be
 the file's figures to the three decimals printed, and accuracy the file's
@@ -21,7 +21,7 @@ where the file says 62.74% and 68.26%. Mark chose to print the file's own
 figures, so the page is now held to them exactly. The machine allowance
 still belongs where machines differ, in the reproducibility audit.
 
-data/reproducibility_audit.json carries no model version; it is tied to
+data/nfl/reproducibility_audit.json carries no model version; it is tied to
 calibration.json by generated_at in test_reproducibility_audit.py.
 
 The version check covers every file under data/ that names both a
@@ -43,11 +43,11 @@ import pytest
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline.config import VERSION_HISTORY
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl.config import VERSION_HISTORY
 
-CALIBRATION = 'data/calibration.json'
-BOOTSTRAP = 'data/bootstrap_brier_gap.json'
+CALIBRATION = 'data/nfl/calibration.json'
+BOOTSTRAP = 'data/nfl/bootstrap_brier_gap.json'
 TEMPLATE = JOINED_TEMPLATE
 
 # Releases after the backtest files were written that did not change what
@@ -88,8 +88,8 @@ def backtest_files(root):
 KNOWN_BACKTEST_FILES = {
     CALIBRATION,
     BOOTSTRAP,
-    'data/ats_evaluation.json',
-    'data/low_confidence_finding.json',
+    'data/nfl/ats_evaluation.json',
+    'data/nfl/low_confidence_finding.json',
 }
 BACKTEST_FILES = backtest_files(REPO)
 
@@ -147,8 +147,8 @@ def test_every_release_since_the_backtest_left_it_unchanged(rel):
     missing = unexplained(version, VERSION_HISTORY, BACKTEST_UNCHANGED)
     assert not missing, (
         f"{rel} is from model {version}, but {missing} came after it and is not in "
-        "BACKTEST_UNCHANGED. Re-run the script under src/research/ that writes it (for "
-        "calibration.json also src/research/reproducibility_audit.py), or add the "
+        "BACKTEST_UNCHANGED. Re-run the script under src/sports/nfl/research/ that writes it (for "
+        "calibration.json also src/sports/nfl/research/reproducibility_audit.py), or add the "
         "release to the allowance with the reason its numbers did not move.")
 
 

@@ -17,7 +17,7 @@ this order: 23 (#282), 21 (#283), 20 (#284), 4 (#285), 25 (#286), 15
 to main). All ten are done. Narrowings: item 4 kept collect-agent-log's
 `pull-requests: read` (Booth's reports are PR comments read through the
 issues API; `issues: read` alone was not verified); item 15 covered
-`src/research/calibration.py` only among the research scripts, and found
+`src/sports/nfl/research/calibration.py` only among the research scripts, and found
 the tuned constants unguarded (now `tests/test_config_pins.py`); item 16
 left out `confidence_points`, which is inline in `predict_week`; item 19
 is strict on `src/agents` alone (`--follow-imports=silent`). Items 1 and 2
@@ -59,14 +59,14 @@ wait for the 2026-10-08 lock because the deploy runs on every data commit;
 
 ### Stage 48 - Test depth
 
-15. Mutation cases for the modules no case targets: `src/pipeline/config.py`,
-    `src/pipeline/ol_continuity.py`, `src/research/calibration.py` (the
+15. Mutation cases for the modules no case targets: `src/sports/nfl/config.py`,
+    `src/sports/nfl/ol_continuity.py`, `src/sports/nfl/research/calibration.py` (the
     drift baseline's writer) first, then the research scripts.
 16. Property tests (hypothesis, dev only) for `market_prob`,
     `confidence_points`, `kickoff_utc` across DST, `graded_correct`.
 17. The suite in random order, nightly, to find tests that depend on order.
 18. A dead-code report (vulture) with an allowlist; delete outside
-    `src/pipeline` now, inside after the lock.
+    `src/sports/nfl` now, inside after the lock.
 19. mypy strict on `src/agents`.
 
 ### Stage 49 - Agents, process and documentation

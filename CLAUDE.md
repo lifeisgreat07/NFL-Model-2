@@ -43,10 +43,10 @@ the engineering. Public repo, so anything committed is read by strangers.
 
 ## Current state (update this when it changes)
 
-Model v2.5 (`MODEL_VERSION` in `src/pipeline/config.py`). `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
+Model v2.5 (`MODEL_VERSION` in `src/sports/nfl/config.py`). `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 The drift check flags on Model A's log loss against the committed
-`data/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
+`data/nfl/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
 
 Suite: **7197 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
 `8d9c30f` (after #337), with HEAD level with origin, which is the order that makes the
@@ -68,11 +68,11 @@ reads like a deleted section rather than an edited sentence.
 GitHub **Weekly update** workflow owns predictions, grading and the data
 commit: Tuesday 11:00 and Thursday 11:00 UTC. Its commit triggers the Pages
 rebuild. A run that holds the week (usually Tuesday) saves a labelled
-preview to `predictions/preview/` (#204, Mark's "an update both on Tuesday
+preview to `predictions/nfl/preview/` (#204, Mark's "an update both on Tuesday
 and Thursday"); only the locked picks are ever graded. Mark's Claude routine, **"Weekly QB override research"**
 (`trig_01CG1y9jfmcNQXnu8Hc9SL5K`, Mon and Wed 22:00 UTC), only researches
 starting-QB news and opens a PR with a sourced
-`data/qb_overrides/<season>_week<N>.json`. It never runs the weekly
+`data/nfl/qb_overrides/<season>_week<N>.json`. It never runs the weekly
 scripts, and it must never be given them back: two writers of saved picks
 is two ways to break a lock. The routine was created through the HTTP API,
 so **an agent cannot edit it**. `update_trigger` refuses; Mark edits it at
@@ -83,9 +83,9 @@ Routines" section describes the same split.
 (06:00 UTC) runs the weekly data path and writes nothing. The Weekly update
 runs the drift check and writes a run summary. A failed canary night, a
 failed weekly run, a drift flag, a failed Booth audit and a failed nightly
-mutation slice each open or comment on a GitHub issue (`src/pipeline/alerts.py`);
+mutation slice each open or comment on a GitHub issue (`src/core/alerts.py`);
 `tests/test_alerts.py` fails any scheduled workflow that does not. The Pages build refuses a page
-whose data is missing (`src/pipeline/check_build.py`). Stage 4's section in
+whose data is missing (`src/sports/nfl/check_build.py`). Stage 4's section in
 `docs/stage-history.md` keeps the decisions.
 
 One habit from Stage 8 is worth keeping whatever you work on: every numeric
@@ -172,8 +172,8 @@ casually.
   than discovering the shift afterwards.
 - **THERE ARE TWO RULERS IN THIS REPOSITORY AND THEY ARE NOT INTERCHANGEABLE.**
   `tests/test_dashboard_charts.py` measures **OKLab distance x100**, with
-  `CVD_TARGET = 8.0` and `NORMAL_FLOOR = 15.0`. `src/research/verify_model_colours.py`
-  and `src/research/verify_matchup_cvd.py` measure **CIEDE2000**. The 8 and the 15 are
+  `CVD_TARGET = 8.0` and `NORMAL_FLOOR = 15.0`. `src/sports/nfl/research/verify_model_colours.py`
+  and `src/sports/nfl/research/verify_matchup_cvd.py` measure **CIEDE2000**. The 8 and the 15 are
   OKLab numbers; quoting a CIEDE2000 figure against them compares two different
   objects, which is the failure this file's own `verify_model_colours` docstring
   was written to prevent — and the first version of this entry did exactly
@@ -232,7 +232,7 @@ casually.
   secondary encoding the floor exists to require. A red/green pass-fail pair is
   the most obvious-looking colour-blindness defect there is, and this one was
   already handled — an audit finding is a hypothesis, not a defect.
-- **`src/research/verify_model_colours.py` checks a hand-written table of two pairs.**
+- **`src/sports/nfl/research/verify_model_colours.py` checks a hand-written table of two pairs.**
   That is why the `--accent`/`--series-d` and `--accent-strong`/`--series-a`
   collisions went unrecorded: the pairs in it are the ones that were in front
   of whoever wrote it. Same shape as the bridging guard #74 widened. Enumerate

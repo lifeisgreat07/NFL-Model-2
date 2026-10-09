@@ -22,7 +22,7 @@ def check(body, changed):
 
 
 def test_a_pr_not_touching_booths_instructions_passes():
-    assert check('', ['src/pipeline/weekly_update.py', 'README.md']).ok
+    assert check('', ['src/sports/nfl/weekly_update.py', 'README.md']).ok
 
 
 def test_editing_booths_workflow_without_the_line_fails():

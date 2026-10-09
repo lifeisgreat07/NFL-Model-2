@@ -19,7 +19,7 @@ push cancels the older audit through the concurrency group) and a `success`
 is the report having posted; neither is an alert. `skipped` means the job's
 `if:` kept it off, such as a draft PR.
 
-One issue per PR, matched on the exact title (src/pipeline/alerts.py): a PR whose
+One issue per PR, matched on the exact title (src/core/alerts.py): a PR whose
 audit fails three pushes running gets one issue with three comments.
 
     python -m src.agents.booth_alert "$GITHUB_EVENT_PATH"
@@ -86,7 +86,7 @@ def main(argv: list[str] | None = None,
         print(f'no alert: the audit run ended {conclusion!r}')
         return 0
     if raise_alert is None:
-        from src.pipeline.alerts import open_or_comment
+        from src.core.alerts import open_or_comment
         raise_alert = open_or_comment
     action, ref = raise_alert(*alert)
     print(f'{action}: {ref}')

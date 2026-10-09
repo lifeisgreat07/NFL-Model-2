@@ -32,7 +32,7 @@
     },
     {
       "id": "tie-result-never-reaches-the-page",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "build_games_js stops carrying the graded file's result, so the page cannot tell a tie from anything else.",
       "find": "            'result': graded.get('result') if graded else None,",
       "replace": "",

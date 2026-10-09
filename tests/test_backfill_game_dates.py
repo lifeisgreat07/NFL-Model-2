@@ -1,7 +1,7 @@
 """The backfill may only add, and the suite proves it rather than trusting it.
 
 `predictions/` is write-once by design, and that refusal is what makes "saved
-before kickoff" a claim anyone can trust. src/research/backfill_game_dates.py bends it
+before kickoff" a claim anyone can trust. src/sports/nfl/research/backfill_game_dates.py bends it
 under a narrow exception -- three schedule facts, not model outputs -- and an
 exception defended only by a docstring is an exception that widens.
 
@@ -18,7 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.research import backfill_game_dates as bf
+from src.sports.nfl.research import backfill_game_dates as bf
 
 
 def fake_loader(rows):

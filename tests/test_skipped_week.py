@@ -7,10 +7,10 @@ made every later run pick the same week and refuse it, for the rest of the
 season, and the only manual way out -- an empty picks file -- is a file the
 Pages build refuses.
 
-Now main() records the week in predictions/skipped/ before failing, and
+Now main() records the week in predictions/nfl/skipped/ before failing, and
 determine_next_week() counts a recorded skip as done. The run still fails and
 still opens its issue (Stage 4). Everything else that reads saved picks globs
-predictions/*_week*.json without recursing, so a skip is invisible to it;
+predictions/nfl/*_week*.json without recursing, so a skip is invisible to it;
 the last tests here hold that for the readers that matter.
 """
 import json
@@ -21,7 +21,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import weekly_update as wu
+from src.sports.nfl import weekly_update as wu
 
 NOW = pd.Timestamp('2026-10-05 12:00', tz='UTC')
 
@@ -83,7 +83,7 @@ def test_a_record_is_write_once(tmp_path):
 def test_main_records_the_skip_before_it_fails():
     """The wiring: the refusal branch in main() must write the record, or
     determine_next_week() has nothing to count and the stall is back."""
-    src = (ROOT / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'weekly_update.py').read_text(encoding='utf-8')
     branch = re.search(r'if decision\.started and not decision\.lock:(.*?)raise SystemExit', src, re.S)
     assert branch, 'the refusal branch in main() is not findable -- re-anchor this guard'
     assert 'record_skipped_week(' in branch.group(1), (
@@ -93,7 +93,7 @@ def test_main_records_the_skip_before_it_fails():
 # ---- the other readers of saved picks do not see a skip --------------------
 
 def test_the_dashboard_does_not_load_a_skip_as_a_week(tmp_path, monkeypatch):
-    from src.pipeline import generate_dashboard as gd
+    from src.sports.nfl import generate_dashboard as gd
     picks(tmp_path, 1)
     wu.record_skipped_week(2026, 2, 'test', NOW, tmp_path / 'skipped')
     monkeypatch.setattr(gd, 'PRED_DIR', tmp_path)
@@ -101,7 +101,7 @@ def test_the_dashboard_does_not_load_a_skip_as_a_week(tmp_path, monkeypatch):
 
 
 def test_the_weekend_refresh_does_not_see_a_skip(tmp_path):
-    from src.pipeline import weekend_refresh as wr
+    from src.sports.nfl import weekend_refresh as wr
     results = tmp_path / 'results'
     results.mkdir()
     wu.record_skipped_week(2026, 2, 'test', NOW, tmp_path / 'skipped')
@@ -109,8 +109,8 @@ def test_the_weekend_refresh_does_not_see_a_skip(tmp_path):
 
 
 def test_the_weekly_grading_loop_does_not_recurse():
-    """weekly-update.yml grades every predictions/*_week*.json. A recursive
+    """nfl-weekly-update.yml grades every predictions/nfl/*_week*.json. A recursive
     glob there would try to grade a skip record."""
-    wf = (ROOT / '.github' / 'workflows' / 'weekly-update.yml').read_text(encoding='utf-8')
-    assert 'for f in predictions/*_week*.json; do' in wf
+    wf = (ROOT / '.github' / 'workflows' / 'nfl-weekly-update.yml').read_text(encoding='utf-8')
+    assert 'for f in predictions/nfl/*_week*.json; do' in wf
     assert 'globstar' not in wf

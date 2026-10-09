@@ -1,7 +1,8 @@
 """
-src/pipeline/alerts.py and its core copy src/core/alerts.py: one issue per
-problem, opened once and commented on after. Every behaviour test runs on
-both until Stage 52 deletes the NFL's copy.
+src/core/alerts.py: one issue per problem, opened once and commented on
+after. Until Stage 52 the NFL kept its own copy (src/pipeline/alerts.py) and
+every behaviour test ran on both; Stage 52 deleted that copy, so they run on
+the core's alone.
 
 `gh` is replaced by a recorder, so nothing here reaches GitHub. What is
 checked is the conversation the module has with `gh`: which commands it
@@ -15,10 +16,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from src.core import alerts as core_alerts
-from src.pipeline import alerts as nfl_alerts
-
-MODULES = pytest.mark.parametrize('alerts', [nfl_alerts, core_alerts])
+from src.core import alerts
 
 
 class FakeGh:
@@ -45,37 +43,33 @@ class FakeGh:
         return [' '.join(args[:2]) for args, _ in self.calls]
 
 
-@MODULES
-def test_no_open_issue_means_one_is_opened(alerts):
+def test_no_open_issue_means_one_is_opened():
     gh = FakeGh(open_issues=[{'number': 3, 'title': 'Something else'}])
-    action, ref = alerts.open_or_comment('Nightly canary failing', 'body text', run=gh)
+    action, ref = alerts.open_or_comment('NFL: Nightly canary failing', 'body text', run=gh)
     assert (action, ref) == ('opened', 'https://github.com/o/r/issues/9')
     assert gh.verbs() == ['issue list', 'issue create']
     args, stdin = gh.calls[-1]
-    assert args[args.index('--title') + 1] == 'Nightly canary failing'
+    assert args[args.index('--title') + 1] == 'NFL: Nightly canary failing'
     assert stdin == 'body text'
 
 
-@MODULES
-def test_an_open_issue_with_the_same_title_gets_a_comment_not_a_twin(alerts):
-    gh = FakeGh(open_issues=[{'number': 7, 'title': 'Nightly canary failing'}])
-    action, ref = alerts.open_or_comment('Nightly canary failing', 'again', run=gh)
+def test_an_open_issue_with_the_same_title_gets_a_comment_not_a_twin():
+    gh = FakeGh(open_issues=[{'number': 7, 'title': 'NFL: Nightly canary failing'}])
+    action, ref = alerts.open_or_comment('NFL: Nightly canary failing', 'again', run=gh)
     assert (action, ref) == ('commented', 7)
     assert gh.verbs() == ['issue list', 'issue comment']
     args, stdin = gh.calls[-1]
     assert args[2] == '7' and stdin == 'again'
 
 
-@MODULES
-def test_the_title_match_is_exact(alerts):
+def test_the_title_match_is_exact():
     """A prefix is not the same problem: 'PR #10' must not land on 'PR #100'."""
     gh = FakeGh(open_issues=[{'number': 7, 'title': 'Booth audit failed: PR #100'}])
     action, _ = alerts.open_or_comment('Booth audit failed: PR #10', 'b', run=gh)
     assert action == 'opened'
 
 
-@MODULES
-def test_only_open_issues_are_searched(alerts):
+def test_only_open_issues_are_searched():
     """Closing an issue is how a person says 'handled'. The search must ask
     for open issues only, or a closed one would swallow the next failure."""
     gh = FakeGh()
@@ -84,15 +78,13 @@ def test_only_open_issues_are_searched(alerts):
     assert args[args.index('--state') + 1] == 'open'
 
 
-@MODULES
-def test_a_failing_gh_call_raises_rather_than_passing_quietly(alerts):
+def test_a_failing_gh_call_raises_rather_than_passing_quietly():
     gh = FakeGh(fail_on='issue create')
     with pytest.raises(RuntimeError, match='HTTP 403'):
         alerts.open_or_comment('t', 'b', run=gh)
 
 
-@MODULES
-def test_an_empty_body_is_refused(alerts, tmp_path, capsys):
+def test_an_empty_body_is_refused(tmp_path, capsys):
     body = tmp_path / 'body.md'
     body.write_text('   \n', encoding='utf-8')
     assert alerts.main(['--title', 't', '--body-file', str(body)]) == 1
@@ -110,10 +102,9 @@ def scheduled_workflows(folder=WORKFLOWS):
 
 
 def raises_an_alert_on_failure(text):
-    """A step guarded by failure() that runs src.pipeline.alerts or
-    src.core.alerts."""
+    """A step guarded by failure() that runs src.core.alerts."""
     steps = text.split('\n      - ')
-    return any('if: failure()' in s and ('src.pipeline.alerts' in s or 'src.core.alerts' in s) for s in steps)
+    return any('if: failure()' in s and 'src.core.alerts' in s for s in steps)
 
 
 def test_every_scheduled_workflow_opens_an_issue_when_it_fails():
@@ -131,11 +122,10 @@ def test_the_alert_check_can_tell_a_silent_workflow():
     """Synthetic, so the failing branch stays reachable while every real
     workflow alerts."""
     good = ("steps:\n      - name: run\n        run: x\n"
-            "      - name: alert\n        if: failure()\n        run: python -m src.pipeline.alerts --title t\n")
+            "      - name: alert\n        if: failure()\n        run: python -m src.core.alerts --title t\n")
     silent = "steps:\n      - name: run\n        run: x\n"
-    unguarded = "steps:\n      - name: alert\n        run: python -m src.pipeline.alerts --title t\n"
+    unguarded = "steps:\n      - name: alert\n        run: python -m src.core.alerts --title t\n"
     assert raises_an_alert_on_failure(good)
-    assert raises_an_alert_on_failure(good.replace('src.pipeline.alerts', 'src.core.alerts'))
-    assert not raises_an_alert_on_failure(good.replace('src.pipeline.alerts', 'src.core.alarms'))
+    assert not raises_an_alert_on_failure(good.replace('src.core.alerts', 'src.core.alarms'))
     assert not raises_an_alert_on_failure(silent)
     assert not raises_an_alert_on_failure(unguarded)

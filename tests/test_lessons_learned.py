@@ -15,7 +15,7 @@ the wrong place.
 import re
 from pathlib import Path
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 REPO = Path(__file__).resolve().parents[1]
 DOC = REPO / 'docs' / 'lessons-learned.md'
@@ -122,7 +122,7 @@ def test_every_workflow_is_on_the_architecture_page_or_deliberately_not():
     manual and described under the boxes they serve, so they are listed here
     as known omissions rather than silently skipped."""
     text = ARCH.read_text(encoding='utf-8')
-    omitted = {'booth-regression.yml', 'run-backtest.yml'}
+    omitted = {'booth-regression.yml', 'nfl-run-backtest.yml'}
     for wf in sorted((REPO / '.github' / 'workflows').glob('*.yml')):
         if wf.name in omitted:
             continue

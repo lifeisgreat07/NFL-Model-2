@@ -4,7 +4,7 @@
 
 Every page's data is written into the HTML when it is built. The page makes
 no network requests for data, and there is no server. The template is kept
-as parts under `src/dashboard/` and joined by `src/pipeline/template_parts.py`
+as parts under `src/dashboard/` and joined by `src/core/template_parts.py`
 into one file at build time; that join is the only build step. The built
 `index.html` is not committed: `.github/workflows/deploy-pages.yml` builds it
 and is the only thing that publishes it.

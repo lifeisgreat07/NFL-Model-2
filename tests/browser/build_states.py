@@ -47,8 +47,8 @@ ROOT = Path(__file__).resolve().parents[2]
 # path the way it is under pytest or `python -m`.
 sys.path.insert(0, str(ROOT))
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline.paths import (
+from src.sports.nfl import generate_dashboard as gd
+from src.sports.nfl.paths import (
     PRED_DIR,
     RESULTS_DIR,
     STATUS_DIR,

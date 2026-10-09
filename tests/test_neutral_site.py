@@ -25,10 +25,10 @@ from datetime import UTC, datetime
 import pandas as pd
 import pytest
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline import weekend_refresh as wr
-from src.pipeline import weekly_update as wu
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl import generate_dashboard as gd
+from src.sports.nfl import weekend_refresh as wr
+from src.sports.nfl import weekly_update as wu
 
 NODE = shutil.which('node')
 

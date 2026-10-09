@@ -8,7 +8,7 @@ wanting; two spellings on one page read as two different things.
 """
 import re
 
-from src.pipeline.template_parts import read_template
+from src.core.template_parts import read_template
 
 TEMPLATE = read_template()
 

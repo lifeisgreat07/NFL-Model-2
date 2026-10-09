@@ -4,9 +4,9 @@ __pycache__/
 
 # Local backtest output. Platform-specific (see the Model Lab reproducibility
 # finding) -- must not be committed over the canonical numbers.
-results/backtest_metrics.csv
-results/qb_shrink_k_*.csv
-results/*_run.log
+results/nfl/backtest_metrics.csv
+results/nfl/qb_shrink_k_*.csv
+results/nfl/*_run.log
 
 # Throwaway repos built by src/agents/booth_fixture_runner.py.
 .fixture-run/
@@ -21,7 +21,7 @@ results/*_run.log
 # Scratch commit message; PowerShell has no heredocs, so git commit -F needs a file.
 .commit-msg.txt
 
-# Build outputs. Both are produced by src/pipeline/generate_dashboard.py and were
+# Build outputs. Both are produced by src/sports/nfl/generate_dashboard.py and were
 # tracked until Stage 8c phase 2. Tracking a generated file meant every branch
 # that touched the template collided with whatever CI had regenerated on main
 # -- five conflicts in one day across three branches -- and neither file has a
@@ -37,7 +37,7 @@ results/*_run.log
 /dist/
 CLAUDE.local.md 
 
-# A temporary file src/pipeline/atomic_write.py writes beside its target and swaps in.
+# A temporary file src/core/atomic_write.py writes beside its target and swaps in.
 # A run killed before the swap leaves one behind, sometimes in a committed
 # folder; it must never be committed (Stage 30 item 8).
 *.tmp
@@ -52,9 +52,9 @@ src/dashboard/*.orig
 src/dashboard/*.swp
 
 # The scheduled jobs' recent runs, written by the deploy job only
-# (src/pipeline/recent_runs.py) and never committed.
+# (src/sports/nfl/recent_runs.py) and never committed.
 data/recent_runs.json
-# Written by src/pipeline/picks_csv.py for the site build (Stage 46 item 7).
+# Written by src/sports/nfl/picks_csv.py for the site build (Stage 46 item 7).
 /picks.csv
-# Written by src/pipeline/lock_proof.py in the site build (Stage 46 item 5).
-data/lock_proof.json
+# Written by src/sports/nfl/lock_proof.py in the site build (Stage 46 item 5).
+data/nfl/lock_proof.json

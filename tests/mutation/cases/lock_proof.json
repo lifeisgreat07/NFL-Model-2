@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/lock_proof.py",
+  "target": "src/sports/nfl/lock_proof.py",
   "tests": "tests/test_lock_proof.py",
   "cases": [
     {

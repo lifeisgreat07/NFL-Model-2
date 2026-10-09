@@ -43,10 +43,10 @@ SCHEDULE_COLUMNS: tuple[str, ...] = (
 
 
 class ModelSpecLike(Protocol):
-    """What the core needs of a model definition. `src/pipeline/model_specs.py`'s
+    """What the core needs of a model definition. `src/core/model_specs.py`'s
     `ModelSpec` satisfies it as it stands; the core names the shape rather
     than importing it, because until Stage 52 moves that file here,
-    `src/pipeline` is the NFL and the core imports no sport."""
+    `src/sports/nfl` is the NFL and the core imports no sport."""
     @property
     def features(self) -> tuple[str, ...]: ...
 

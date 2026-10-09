@@ -63,7 +63,7 @@ other files are not checked.
 `/partner-game/CA/now` (FanDuel) return today's games with a two-way
 moneyline, a three-way moneyline, the puck line and the total. It is only
 "now": a past date returns 404. So the feed is a live source, and the
-pipeline has to record it itself (as `data/line_history/` does for the NFL)
+pipeline has to record it itself (as `data/nfl/line_history/` does for the NFL)
 to build any history.
 
 **Historical: ESPN's public API** (free, no key). On 2026-10-05 Mark ruled

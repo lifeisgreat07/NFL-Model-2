@@ -21,7 +21,7 @@ import subprocess
 
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')

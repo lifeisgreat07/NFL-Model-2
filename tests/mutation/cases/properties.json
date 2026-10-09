@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/weekly_update.py",
+  "target": "src/sports/nfl/weekly_update.py",
   "tests": "tests/test_properties.py",
   "cases": [
     {
@@ -25,7 +25,7 @@
     },
     {
       "id": "property-grade-inverted",
-      "target": "src/pipeline/grade_predictions.py",
+      "target": "src/sports/nfl/grade_predictions.py",
       "why": "every correct pick is graded wrong and every wrong one right.",
       "find": "    return int((prob >= 0.5) == bool(actual_home_win))\n",
       "replace": "    return int((prob >= 0.5) != bool(actual_home_win))\n",

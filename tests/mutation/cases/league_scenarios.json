@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/grade_predictions.py",
+  "target": "src/sports/nfl/grade_predictions.py",
   "tests": "tests/test_league_scenarios.py",
   "cases": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "id": "scenario-postponed-game-reads-started",
-      "target": "src/pipeline/weekend_refresh.py",
+      "target": "src/sports/nfl/weekend_refresh.py",
       "why": "a game whose kickoff moved to a later day reads as started on the page from its original time on.",
       "find": "        return 'started'\n    return 'upcoming'\n",
       "replace": "        return 'started'\n    return 'started'\n",
@@ -19,7 +19,7 @@
     },
     {
       "id": "scenario-fully-graded-week-stays-open",
-      "target": "src/pipeline/weekend_refresh.py",
+      "target": "src/sports/nfl/weekend_refresh.py",
       "why": "a week whose postponed game has since been graded stays on the refresh's list, so the refresh keeps reading a finished week.",
       "find": "        if _count(graded) + _cancelled_in(season, week, cancelled) < _count(f):\n",
       "replace": "        if _count(graded) + _cancelled_in(season, week, cancelled) <= _count(f):\n",
@@ -27,7 +27,7 @@
     },
     {
       "id": "scenario-unchanged-snapshot-rewritten",
-      "target": "src/pipeline/weekend_refresh.py",
+      "target": "src/sports/nfl/weekend_refresh.py",
       "why": "every refresh rewrites a week that has not changed, so a cancelled game's week makes a commit every weekend for the rest of the season.",
       "find": "            if json.load(f).get('games') == games:\n                return False\n",
       "replace": "            if json.load(f).get('games') == games and False:\n                return False\n",

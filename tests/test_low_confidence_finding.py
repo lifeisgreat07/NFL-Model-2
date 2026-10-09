@@ -18,18 +18,18 @@ from pathlib import Path
 import pytest
 from page_source import page_source  # Model Lab's rows are rendered in at build time
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 REPO_ROOT = Path(__file__).parent.parent
 TEMPLATE = JOINED_TEMPLATE
-RESULTS = REPO_ROOT / 'data' / 'low_confidence_finding.json'
+RESULTS = REPO_ROOT / 'data' / 'nfl' / 'low_confidence_finding.json'
 
 
 @pytest.fixture(scope='module')
 def result():
     if not RESULTS.exists():
-        pytest.skip("data/low_confidence_finding.json absent -- run "
-                    "src/research/verify_low_confidence_finding.py")
+        pytest.skip("data/nfl/low_confidence_finding.json absent -- run "
+                    "src/sports/nfl/research/verify_low_confidence_finding.py")
     return json.loads(RESULTS.read_text())
 
 
@@ -67,7 +67,7 @@ def test_the_page_quotes_the_reproduced_figures_not_the_old_ones(result):
             f"{value} appears {count} time(s) on the page; the finding is "
             f"stated in both the Model Lab row and the pick-card comment, so "
             f"a count below 2 means one of them has drifted off the "
-            f"re-derived numbers in data/low_confidence_finding.json")
+            f"re-derived numbers in data/nfl/low_confidence_finding.json")
 
 
 def test_the_page_names_the_script_that_produces_the_numbers(result):

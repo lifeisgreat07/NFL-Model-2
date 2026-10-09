@@ -351,7 +351,7 @@
         <div class="desc">Every saved prediction, graded against real results after the fact. Built from graded weeks only — nothing here is projected or estimated.</div>
       </div>
       <!-- Stage 46 item 7: every locked pick and its grade, written beside
-           the page by the site build (src/pipeline/picks_csv.py). -->
+           the page by the site build (src/sports/nfl/picks_csv.py). -->
       <a id="picks-csv-link" class="btn pdf-link" href="picks.csv" download
          title="Every locked pick this season and its grade, as a spreadsheet file">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -403,16 +403,16 @@
         <thead><tr><th scope="col">Experiment</th><th scope="col">Result</th><th scope="col">Decision</th></tr></thead>
         <tbody>
           <!-- Rendered at build time by generate_dashboard.render_model_lab_rows()
-               from src/pipeline/model_lab.py: every pre-registered answer in experiments/,
-               then the rows moved to experiments/legacy/rows.json (Stage 18).
+               from src/sports/nfl/model_lab.py: every pre-registered answer in experiments/,
+               then the rows moved to experiments/nfl/legacy/rows.json (Stage 18).
                Nothing is typed here any more. -->
           __MODEL_LAB_ROWS__
         </tbody>
       </table>
     </div>
-    <!-- Filled by buildReliabilityDiagram(). Empty when data/calibration.json
+    <!-- Filled by buildReliabilityDiagram(). Empty when data/nfl/calibration.json
          is absent, which is the correct state for a checkout that has never
-         run src/research/calibration.py -- the section omits itself rather than
+         run src/sports/nfl/research/calibration.py -- the section omits itself rather than
          rendering an empty axis. Below the experiments since Stage 18: the
          page opened on the diagram and its paragraphs of explanation before
          the first experiment. The explanation is now behind "How to read
@@ -530,7 +530,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h4>Known Gaps</h4>
       <div class="gap-item"><span class="gap-num">01</span><span>Rest days, weather, and travel distance were tested and rejected (real backtests, not adopted) — see What&#39;s Changed and Model Lab. No injury feature yet, blocked on data availability.</span></div>
-      <div class="gap-item"><span class="gap-num">02</span><span>QB shrinkage: the shrinkage target had a real (small) leak -- fixed 2026-08-31. Re-tuning it turned out to be inconclusive: the original k=8 -> 96 decision didn't reproduce, and a fresh retune under the fixed config (k=128) won on validation but lost 3 of 4 metrics to k=8 on confirmatory data (bootstrap CI included zero). Reverted to k=8 as the more defensible default -- see Model Lab for the full investigation and src/research/tune_qb_shrink_k.py for the reusable methodology.</span></div>
+      <div class="gap-item"><span class="gap-num">02</span><span>QB shrinkage: the shrinkage target had a real (small) leak -- fixed 2026-08-31. Re-tuning it turned out to be inconclusive: the original k=8 -> 96 decision didn't reproduce, and a fresh retune under the fixed config (k=128) won on validation but lost 3 of 4 metrics to k=8 on confirmatory data (bootstrap CI included zero). Reverted to k=8 as the more defensible default -- see Model Lab for the full investigation and src/sports/nfl/research/tune_qb_shrink_k.py for the reusable methodology.</span></div>
       <div class="gap-item"><span class="gap-num">03</span><span>Gradient boosting was tested and did not beat logistic regression at this feature-set size.</span></div>
     </div>
 
@@ -557,7 +557,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
     <div class="method-block">
       <h4>The Short Version</h4>
       <p>On log loss and Brier, the proper scoring rules this project judges by, <b style="color:var(--text)">this model does not beat the Vegas betting market</b>: <span data-claim="a-vs-market">Model A's log loss is 0.650 against the market's 0.607</span>, and the paired bootstrap puts the gap at +0.042, 95% interval +0.027 to +0.058, which excludes zero. Neither do most public NFL models. Across two full research cycles, roughly a dozen distinct approaches were tested to try to add something the market doesn't already price in. None of them worked. That's documented in detail on Model Lab and in the Methodology page's "Trying to Beat the Market" section.</p>
-      <p style="margin-top:var(--s3);">Added 2026-09-05, because it is the question a sceptical reader asks first and this project had never actually asked it: <b style="color:var(--text)">would any of this have beaten the spread?</b> Picking winners and beating the spread are not the same test, and the second one is the real claim. A model fitted on the same features against a <i>cover</i> target, over 1,058 backtested games, hit <b style="color:var(--text)">51.61%</b> against the spread &mdash; 95% CI [48.58%, 54.63%]. That interval contains 50%, so it is not distinguishable from a coin flip; and at standard &minus;110 juice you need <b style="color:var(--text)">52.38%</b> just to break even, which it does not reach either. Three trivial controls &mdash; always home, always away, always the favourite &mdash; all came back at exactly 50.00%, which is what a spread is for and what confirms the arithmetic. <b style="color:var(--text)">This model would not have made money.</b> See <code>src/research/ats_evaluation.py</code>.</p>
+      <p style="margin-top:var(--s3);">Added 2026-09-05, because it is the question a sceptical reader asks first and this project had never actually asked it: <b style="color:var(--text)">would any of this have beaten the spread?</b> Picking winners and beating the spread are not the same test, and the second one is the real claim. A model fitted on the same features against a <i>cover</i> target, over 1,058 backtested games, hit <b style="color:var(--text)">51.61%</b> against the spread &mdash; 95% CI [48.58%, 54.63%]. That interval contains 50%, so it is not distinguishable from a coin flip; and at standard &minus;110 juice you need <b style="color:var(--text)">52.38%</b> just to break even, which it does not reach either. Three trivial controls &mdash; always home, always away, always the favourite &mdash; all came back at exactly 50.00%, which is what a spread is for and what confirms the arithmetic. <b style="color:var(--text)">This model would not have made money.</b> See <code>src/sports/nfl/research/ats_evaluation.py</code>.</p>
       <p style="margin-top:var(--s3);">What this project offers instead is <b style="color:var(--text)">transparency about how it actually works and what it actually gets wrong</b> -- which is genuinely rare among prediction sites, most of which publish a number and no accounting of how it was arrived at or how often it fails.</p>
     </div>
 
@@ -623,7 +623,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
         <li><b style="color:var(--text)">Which regional game your local CBS or FOX station shows.</b> The league's schedule marks Sunday-afternoon games as regional without saying where, so the cards say "regional" and stop there.</li>
         <li><b style="color:var(--text)">Monday night's final score.</b> The last weekend refresh runs before Monday night's game, so its card shows no score; the Tuesday run grades it, and the graded tag says how the picks did.</li>
         <li><b style="color:var(--text)">Neutral-site games are treated as home games.</b> For an international game, the team listed at home still gets the model's home edge. Whether to remove it is an open decision, not a test: a handful of such games a season cannot settle it.</li>
-        <li><b style="color:var(--text)">The line a pick was made against is not the closing line.</b> Live picks use the line at Thursday's lock; the published backtest uses the last line the data source kept for each game. How much that difference is worth is registered to be measured after the season (<code>experiments/stage38/registry.json</code>, L1).</li>
+        <li><b style="color:var(--text)">The line a pick was made against is not the closing line.</b> Live picks use the line at Thursday's lock; the published backtest uses the last line the data source kept for each game. How much that difference is worth is registered to be measured after the season (<code>experiments/nfl/stage38/registry.json</code>, L1).</li>
       </ul>
     </div>
 

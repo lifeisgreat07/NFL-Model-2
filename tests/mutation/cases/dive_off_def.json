@@ -4,7 +4,7 @@
   "cases": [
     {
       "id": "dive-split-drops-the-live-weeks",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the live weekly points stop carrying offense and defense, so 2026's rows -- the ones a reader most wants -- lose the split while the season-end rows keep it.",
       "find": "                timeline[team].append({'label': f\"{season} Wk{p['week']}\", 'net': p['net'],\n                                       'off': p.get('off'), 'def': p.get('def')})\n",
       "replace": "                timeline[team].append({'label': f\"{season} Wk{p['week']}\", 'net': p['net']})\n",
@@ -12,7 +12,7 @@
     },
     {
       "id": "dive-split-swaps-offense-and-defense",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the season-end points take offense from the defense field and defense from the offense field, so a great defense reads as a great offense and the note 'net is offense minus defense' stops being true.",
       "find": "'off': p.get('off'), 'def': p.get('def')})\n\n    # Layer in",
       "replace": "'off': p.get('def'), 'def': p.get('off')})\n\n    # Layer in",

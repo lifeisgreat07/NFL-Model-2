@@ -25,8 +25,8 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl import generate_dashboard as gd
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -114,9 +114,9 @@ def test_the_committed_ratings_are_the_latest_history_week():
     the weekly run writes current_ratings.json and appends the same numbers
     to the season's history. If a run ever writes one and not the other, this
     goes red rather than the page quietly comparing against the wrong week."""
-    ratings = json.loads((REPO_ROOT / 'data' / 'current_ratings.json').read_text(encoding='utf-8'))
+    ratings = json.loads((REPO_ROOT / 'data' / 'nfl' / 'current_ratings.json').read_text(encoding='utf-8'))
     live = gd.load_latest_live_history()
-    assert live, 'no data/team_history_<season>.json -- vacuity: nothing was checked'
+    assert live, 'no data/nfl/team_history_<season>.json -- vacuity: nothing was checked'
     latest = max(p['week'] for pts in live.values() for p in pts)
     for r in ratings:
         point = [p for p in live[r['team']] if p['week'] == latest]

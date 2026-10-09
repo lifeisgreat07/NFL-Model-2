@@ -1,5 +1,5 @@
 {
-  "target": "data/calibration.json",
+  "target": "data/nfl/calibration.json",
   "tests": "tests/test_backtest_figures_tie.py",
   "cases": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "id": "bootstrap-from-a-different-run",
-      "target": "data/bootstrap_brier_gap.json",
+      "target": "data/nfl/bootstrap_brier_gap.json",
       "why": "the bootstrap interval says it came from a different model than the calibration file beside it, so the page would quote an interval and a table from two different backtests.",
       "find": "\"model_version\": \"2.4\",",
       "replace": "\"model_version\": \"2.5\",",
@@ -43,7 +43,7 @@
     },
     {
       "id": "ats-finding-from-an-unexplained-older-model",
-      "target": "data/ats_evaluation.json",
+      "target": "data/nfl/ats_evaluation.json",
       "why": "the ATS finding claims a model older than any release the allowance explains, the case the version check could not see while it named two files by hand.",
       "find": "\"model_version\": \"2.4\",",
       "replace": "\"model_version\": \"2.3\",",
@@ -51,7 +51,7 @@
     },
     {
       "id": "low-confidence-finding-from-an-unexplained-older-model",
-      "target": "data/low_confidence_finding.json",
+      "target": "data/nfl/low_confidence_finding.json",
       "why": "the low-confidence finding claims a model older than any release the allowance explains, unseen while the check named two files by hand.",
       "find": "\"model_version\": \"2.4\",",
       "replace": "\"model_version\": \"2.3\",",

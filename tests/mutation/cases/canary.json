@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/canary.py",
+  "target": "src/sports/nfl/canary.py",
   "tests": "tests/test_canary.py",
   "cases": [
     {
@@ -32,15 +32,15 @@
     },
     {
       "id": "canary-january-is-next-season",
-      "target": "src/pipeline/paths.py",
-      "why": "January is treated as the new calendar year's season. Every playoff-month canary would check a season with no schedule. The rule lives in src/pipeline/paths.py since Stage 32 item 15; the canary imports it.",
+      "target": "src/sports/nfl/paths.py",
+      "why": "January is treated as the new calendar year's season. Every playoff-month canary would check a season with no schedule. The rule lives in src/sports/nfl/paths.py since Stage 32 item 15; the canary imports it.",
       "find": "    return now.year - 1 if now.month <= 2 else now.year",
       "replace": "    return now.year",
       "expect_caught_by": "test_january_belongs_to_last_season"
     },
     {
       "id": "canary-workflow-never-alerts",
-      "target": ".github/workflows/nightly-canary.yml",
+      "target": ".github/workflows/nfl-nightly-canary.yml",
       "why": "the alert step is switched off. The canary would fail in the Actions tab, which is the silence it exists to end.",
       "find": "        if: failure()",
       "replace": "        if: false",
@@ -48,7 +48,7 @@
     },
     {
       "id": "canary-workflow-can-write",
-      "target": ".github/workflows/nightly-canary.yml",
+      "target": ".github/workflows/nfl-nightly-canary.yml",
       "why": "the canary is given write access to the repository. It must never be able to touch a pick, a lock or a grade.",
       "find": "  contents: read",
       "replace": "  contents: write",

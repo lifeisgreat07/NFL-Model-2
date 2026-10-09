@@ -1,5 +1,5 @@
 {
-  "target": "experiments/stage6/registry.json",
+  "target": "experiments/nfl/stage6/registry.json",
   "tests": "tests/test_stage6_registry.py",
   "cases": [
     {

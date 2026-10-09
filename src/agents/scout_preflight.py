@@ -609,7 +609,7 @@ def check_auditor_edits_need_a_human(body: str, changed: list[str]) -> 'Finding'
 # was false and checkable in one git call, and Booth had to find it instead.
 TRACKED_VERB_RE = re.compile(r'\b(?:restored|committed|tracked)\b', re.IGNORECASE)
 # A backticked repository path: one with a slash, or a file name with a
-# common extension. A dotted module name (`src.pipeline.recent_runs`) or a
+# common extension. A dotted module name (`src.sports.nfl.recent_runs`) or a
 # command (`git status`) is neither, and is not checked.
 PATH_SPAN_RE = re.compile(
     r'`((?:[\w.-]+/)+[\w.-]+|[\w.-]+\.(?:py|md|json|ya?ml|txt|html|js|css|csv|toml|cfg|ini|ps1))`')

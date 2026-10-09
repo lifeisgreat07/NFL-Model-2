@@ -1,6 +1,6 @@
 """Team news names the starters who will not play, and the pick's own QB (Stage 16).
 
-src/pipeline/team_news.py keeps only what a reader needs to judge a pick: starters Out
+src/sports/nfl/team_news.py keeps only what a reader needs to judge a pick: starters Out
 or Doubtful by name, starters Questionable as a count, and the quarterback
 the pick was made with. An unpublished report is never an empty one. The
 injury report and depth chart are synthetic frames here, so the suite makes
@@ -17,10 +17,10 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import team_news as tn
+from src.sports.nfl import team_news as tn
 
-WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
-WEEKEND = ROOT / '.github' / 'workflows' / 'weekend-refresh.yml'
+WEEKLY = ROOT / '.github' / 'workflows' / 'nfl-weekly-update.yml'
+WEEKEND = ROOT / '.github' / 'workflows' / 'nfl-weekend-refresh.yml'
 
 NOW = datetime(2026, 10, 2, 12, tzinfo=UTC)
 
@@ -146,7 +146,7 @@ def test_both_workflows_read_team_news_and_cannot_fail_on_it():
         steps, _ = _steps(path)
         step = steps.get('Read team news')
         assert step, f'{path.name} has no "Read team news" step'
-        assert 'python -m src.pipeline.team_news --pending' in step
+        assert 'python -m src.sports.nfl.team_news --pending' in step
         assert re.search(r'^\s+continue-on-error: true\s*$', step, re.M), (
             f'{path.name}: without continue-on-error a failed injury read fails the run -- '
             f'and in Weekly update that run is the one that locks the picks')
@@ -165,5 +165,5 @@ def test_the_weekly_run_reads_team_news_after_it_locks_and_before_it_commits():
 def test_the_refresh_reads_team_news_before_it_commits_it():
     steps, order = _steps(WEEKEND)
     assert order.index('Read team news') < order.index('Commit and push changes')
-    assert 'data/team_news/**' in steps['Commit and push changes'], (
+    assert 'data/nfl/team_news/**' in steps['Commit and push changes'], (
         'the refresh reads team news and then does not commit it, so Friday\'s ruling never reaches the page')

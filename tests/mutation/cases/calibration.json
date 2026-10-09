@@ -1,5 +1,5 @@
 {
-  "target": "src/research/calibration.py",
+  "target": "src/sports/nfl/research/calibration.py",
   "tests": "tests/test_calibration.py",
   "cases": [
     {

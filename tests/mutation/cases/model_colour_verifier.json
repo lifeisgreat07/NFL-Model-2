@@ -1,5 +1,5 @@
 {
-  "target": "src/research/verify_model_colours.py",
+  "target": "src/sports/nfl/research/verify_model_colours.py",
   "tests": "tests/test_model_colour_comment.py",
   "cases": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "id": "model-colour-verifier-hardcodes-a-token",
-      "why": "a copied palette is a second source of truth. The verifier exists so the comment cannot drift from the tokens; if it carries its own copy of them, it agrees with the comment forever and both can be wrong together. src/research/verify_matchup_cvd.py carries the same guard after the same lesson.",
+      "why": "a copied palette is a second source of truth. The verifier exists so the comment cannot drift from the tokens; if it carries its own copy of them, it agrees with the comment forever and both can be wrong together. src/sports/nfl/research/verify_matchup_cvd.py carries the same guard after the same lesson.",
       "find": "            ha, hb = token(block, a), token(block, b)",
       "replace": "            ha, hb = {'--accent': '#7FA8F5'}.get(a, token(block, a)), token(block, b)",
       "expect_caught_by": "test_the_verifier_parses_the_palette_rather_than_copying_it"

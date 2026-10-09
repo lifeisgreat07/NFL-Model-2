@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/data_loader.py",
+  "target": "src/sports/nfl/data_loader.py",
   "tests": "tests/test_pbp_cache.py",
   "cases": [
     {
@@ -25,7 +25,7 @@
     },
     {
       "id": "pbp-cache-reaches-the-weekly-run",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the weekly run starts reading cached play-by-play. The run that makes picks must always fetch fresh, so a stale cache can cost a canary night at worst, never a pick.",
       "find": "      - name: Generate/lock in this week's predictions\n",
       "replace": "      - name: Generate/lock in this week's predictions\n        env:\n          NFL_PBP_CACHE: .pbp-cache\n",

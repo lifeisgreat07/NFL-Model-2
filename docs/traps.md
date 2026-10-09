@@ -81,7 +81,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   went one line over its limit and `main`'s Run tests stayed red for three and a half hours.
 - **`kill_run.ps1` kills every mutation runner, not just the one you mean.** On 2026-10-06 it was
   used to stop a branch's suite and also stopped the full corpus run at case 760, leaving
-  `src/pipeline/paths.py` mutated in the `mutseq` worktree. While a corpus run is going, stop
+  `src/sports/nfl/paths.py` mutated in the `mutseq` worktree. While a corpus run is going, stop
   anything else by its process id (`taskkill /PID <n> /T /F`).
 - **A figure slips into a commit message through a sentence about a test.** "by more than the
   50 its test allows" is a count; preflight's check caught it after the push. Describe the rule,
@@ -165,7 +165,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   hashes, as #261 did.
 - **The reproducibility audit passes or fails on GitHub depending on
   which runner you get.** On 2026-10-02, two dispatches of
-  `run-backtest.yml` (`reproducibility_audit`) on the same commit
+  `nfl-run-backtest.yml` (`reproducibility_audit`) on the same commit
   (`0e590c0`), seconds apart, with identical package versions from the
   install log and the same `ubuntu-24.04` image: one REPRODUCED bit for bit,
   the other gave Model A log loss 0.6499472 against the published
@@ -238,8 +238,8 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   had past kickoffs too, so nothing could catch it. Before writing a case,
   say what input would differ, and check the input actually differs.
 - **Moving a function moves the mutation anchors that name it, even across
-  modules.** #241 moved `current_season` from `src/pipeline/canary.py` to `src/pipeline/paths.py`; the
-  canary's case still targeted `src/pipeline/canary.py`, and only the full suite's anchor
+  modules.** #241 moved `current_season` from `src/sports/nfl/canary.py` to `src/sports/nfl/paths.py`; the
+  canary's case still targeted `src/sports/nfl/canary.py`, and only the full suite's anchor
   test saw it. Grep the case files for every moved definition's text.
 - **PowerShell's `>` writes UTF-16.** A `git diff > x.patch` made that way
   fails `git apply` with "No valid patches in input". Use
@@ -429,7 +429,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   raises `ZoneInfoNotFoundError` on the local Windows machine and passes on Linux CI, so a test
   can be green in CI and crash the tool locally, or the reverse. Convert
   through pandas (`pd.Timestamp(...).tz_convert('America/New_York')`), as
-  `src/pipeline/weekly_update.py` and `src/pipeline/tv_channels.py` do. Found 2026-09-27.
+  `src/sports/nfl/weekly_update.py` and `src/sports/nfl/tv_channels.py` do. Found 2026-09-27.
 - **GITHUB'S ANONYMOUS API IS 60 CALLS AN HOUR, AND POLLING SPENDS IT.** A
   poll that listed every job of every run for a PR burned it in minutes on
   2026-09-27, and the session archive's `merge_pr.ps1` then stopped at its merged check -- the safe
@@ -459,7 +459,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   an explicit rewrite, then read `git log -1` every time.
 
 - **QUOTE THE COMMAND YOU RAN, NOT A SHORTER ONE.** #105's body said
-  `python -m src.pipeline.weekly_summary --season 2026` printed the summary. The run
+  `python -m src.sports.nfl.weekly_summary --season 2026` printed the summary. The run
   behind that sentence had passed `--log` and `--drift`; the bare command
   crashed on `Path(None)`, and Booth found it by running the sentence
   verbatim. The flags left out of the quote were exactly where the bug
@@ -709,7 +709,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
 - **A document can point at a file that has never existed, for months.**
   `METHODOLOGY.md` was cited by the README's fifth line and two `src/`
   docstrings; `git log --all --diff-filter=A -- METHODOLOGY.md` returns nothing.
-  `src/research/tune_qb_shrink_k.py` had already noticed and written it down, which fixed
+  `src/sports/nfl/research/tune_qb_shrink_k.py` had already noticed and written it down, which fixed
   nothing, because a note is not a check. `tests/test_readme_accuracy.py` is now
   the check.
 - **THE AUDITOR PRODUCES UNTRACEABLE FIGURES TOO, AND NOTHING AUDITS THE
@@ -787,7 +787,7 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   deliberately excludes before concluding it failed; the symptom of "working
   as designed" and "broken" are byte-identical here.
 - **A date recalled is a date invented. `git log` is three seconds away.**
-  Writing the churn guard into `weekly-update.yml` on 2026-09-07, I annotated it
+  Writing the churn guard into `nfl-weekly-update.yml` on 2026-09-07, I annotated it
   "same guard the other workflow has run since 2026-08" — from memory, into
   a permanent code comment, in the same PR whose other half exists to correct an
   unverified inherited claim. It was 2026-09-04. The same wrong date went into
@@ -1402,8 +1402,8 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   GITHUB_TOKEN push cannot trigger another workflow and the collector's output
   therefore never reached the page. It encoded that as `DASHBOARD_INPUTS =
   ('data/agent_log.json',)` and `COLLECTOR = collect-agent-log.yml` — the one
-  file and the one workflow in front of it at the time. "Weekly update" writes
-  `predictions/**`, `results/**` and `data/**` with the same token, was never
+  file and the one workflow in front of it at the time. "NFL weekly update" writes
+  `predictions/nfl/**`, `results/nfl/**` and `data/nfl/**` with the same token, was never
   in `deploy-pages.yml`'s `workflow_run` list, and was invisible to every
   assertion in that file. On 2026-09-15 it graded the first real week at 11:05
   UTC and the published page served 04:30 UTC data — no Week 2 in either week

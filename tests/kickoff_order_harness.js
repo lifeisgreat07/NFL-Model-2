@@ -31,7 +31,7 @@ eval(tpl.slice(i, j));
 const game = (away, home, gameday, gametime_et, confidence_rank) =>
   ({away, home, gameday, gametime_et, confidence_rank});
 
-// Real week-1 slots, transcribed from predictions/2026_week1.json.
+// Real week-1 slots, transcribed from predictions/nfl/2026_week1.json.
 const wed = game('NE', 'SEA', '2026-09-09', '20:20', 7);
 const thu = game('SF', 'LA', '2026-09-10', '20:35', 9);
 const sunEarlyA = game('TB', 'CIN', '2026-09-13', '13:00', 3);

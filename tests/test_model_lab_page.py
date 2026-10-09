@@ -1,7 +1,7 @@
 """Model Lab's table is built from the experiment records (Stage 18).
 
 generate_dashboard.render_model_lab_rows() writes one row per entry that
-src/pipeline/model_lab.py builds, into the template's placeholder, at build time -- so
+src/sports/nfl/model_lab.py builds, into the template's placeholder, at build time -- so
 the table is there without JavaScript and every #modellab/<slug> link still
 finds its row. These tests check nothing is typed into the template any
 more, that a moved row reaches the page unchanged, that each row shows its
@@ -18,9 +18,9 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline import model_lab as ml
-from src.pipeline.template_parts import JOINED_TEMPLATE, read_template
+from src.core.template_parts import JOINED_TEMPLATE, read_template
+from src.sports.nfl import generate_dashboard as gd
+from src.sports.nfl import model_lab as ml
 
 TEMPLATE = JOINED_TEMPLATE
 ROW = re.compile(r'<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>', re.S)
@@ -47,7 +47,7 @@ def test_no_experiment_row_is_typed_into_the_template():
 
 
 def test_the_build_fills_the_placeholder():
-    src = (ROOT / 'src' / 'pipeline' / 'generate_dashboard.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
     assert "html.replace('__MODEL_LAB_ROWS__', render_model_lab_rows(model_lab_entries()))" in src
 
 

@@ -19,7 +19,7 @@
     {
       "id": "shuffled-suite-fails-silently",
       "why": "a failed night is a red run and an email, the state every unattended job left behind in Stage 4.",
-      "find": "          python -m src.pipeline.alerts --title \"Nightly shuffled suite failing\" --body-file shuffled-report.md\n",
+      "find": "          python -m src.core.alerts --title \"Nightly shuffled suite failing\" --body-file shuffled-report.md\n",
       "replace": "          echo failed\n",
       "expect_caught_by": "test_a_failure_raises_the_alert_with_the_replay_command"
     },

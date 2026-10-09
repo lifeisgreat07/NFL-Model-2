@@ -18,7 +18,7 @@
     },
     {
       "id": "permissions-block-dropped",
-      "target": ".github/workflows/nightly-canary.yml",
+      "target": ".github/workflows/nfl-nightly-canary.yml",
       "why": "the canary declares no permissions, so it runs with whatever the repository's default token is set to.",
       "find": "permissions:\n  contents: read\n  issues: write\n",
       "replace": "",

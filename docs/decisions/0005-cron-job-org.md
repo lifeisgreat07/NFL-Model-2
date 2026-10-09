@@ -33,7 +33,7 @@ Mark's pick on 2026-10-04: a web page, with nothing to deploy or maintain.
   mid-week. Hence the slot guard before its job is switched on.
   **The guard exists since Stage 42 item 3**: the Weekly update's first
   job, `slot-guard`, works out the run's slot and reads the last served
-  slot from `data/run_slots/weekly-update.json` on origin/main; a slot
+  slot from `data/nfl/run_slots/weekly-update.json` on origin/main; a slot
   already served is skipped, and the runs queue in one concurrency group.
   A guard that fails lets the week run (fail open) and raises its own
   alert. `tests/test_slot_guard.py` holds it.

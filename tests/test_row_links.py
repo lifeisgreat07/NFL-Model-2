@@ -16,7 +16,7 @@ Run with: pytest tests/test_row_links.py -v
 import re
 from pathlib import Path
 
-from src.pipeline.template_parts import read_template
+from src.core.template_parts import read_template
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = read_template()
@@ -40,7 +40,7 @@ def test_each_graded_week_links_to_its_board_only_when_the_board_exists():
 
 
 def test_the_week_key_is_the_one_the_saved_weeks_use():
-    from src.pipeline import generate_dashboard as gd
+    from src.sports.nfl import generate_dashboard as gd
     assert gd.parse_week_stem('2026_week3') == (2026, 3), (
         'the saved-week key format changed, so the week links point at nothing')
 

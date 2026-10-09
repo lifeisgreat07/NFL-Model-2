@@ -13,15 +13,15 @@ Last updated: 2026-10-08, 21:55 UTC (week 5 locked by hand; slot guard, site bui
 **Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked
 figure. `src/` is packaged: run modules with `python -m src.<package>.<module>`.
 The dashboard template is parts under `src/dashboard/`, joined by
-`src/pipeline/template_parts.py`. Read it with `read_template()`, never one
-part as the page (traps). The NFL is still `src/pipeline/` until Stage 52 merges.
+`src/core/template_parts.py`. Read it with `read_template()`, never one
+part as the page (traps). The NFL is still `src/sports/nfl/` until Stage 52 merges.
 
 **Live:** the home page at `/`, the NFL at `/nfl/`, the NHL at `/nhl/`, the
 NBA's backtest at `/nba/`, with sport pills on each (#329, #330). The NHL's
 daily run (14:00, 21:00 UTC) and canary (06:40) start on time from cron-job.org.
 
 **The Weekly update's cron-job.org job is ON** (Mark, 10-08 14:29 ET) behind
-the slot guard (#327). `data/run_slots/weekly-update.json` records the last
+the slot guard (#327). `data/nfl/run_slots/weekly-update.json` records the last
 served slot. Tuesday 2026-10-13 11:00 UTC is its first real test: one run
 does the work and GitHub's late copy is skipped by `slot-guard`. Check it.
 

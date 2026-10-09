@@ -4,7 +4,7 @@ The defect this exists for, observed on 2026-09-09 the first time the collector
 ever ran end to end:
 
   "Collect Booth's audit log" ran, produced data/agent_log.json with 44 audits
-  in it, and committed it to main. `Auto-regenerate dashboard` watches `data/**`
+  in it, and committed it to main. `Auto-regenerate dashboard` watches `data/nfl/**`
   and did not run. The live page went on saying "The record has not been
   collected yet" while the record sat in the repository.
 
@@ -24,7 +24,7 @@ WIDENED 2026-09-15, after the same defect recurred in a second workflow.
 
 The checks above are the collector's chain and only the collector's chain --
 DASHBOARD_INPUTS named one file and COLLECTOR named one workflow. "Weekly
-update" writes predictions/**, results/** and data/** with the same default
+update" writes predictions/nfl/**, results/nfl/** and data/nfl/** with the same default
 GITHUB_TOKEN, is not in the workflow_run list, and was therefore invisible to
 every assertion here. On 2026-09-15 it graded the first real week and locked in
 Week 2 at 11:05 UTC; the published page went on serving 04:30 UTC data with no
@@ -92,7 +92,7 @@ def test_the_collector_commits_a_file_the_dashboard_reads():
 
 
 def test_the_builder_runs_when_the_collector_finishes():
-    """The actual fix. Not "the builder watches data/**" -- it does, and that is
+    """The actual fix. Not "the builder watches data/nfl/**" -- it does, and that is
     precisely what was not enough, because GITHUB_TOKEN pushes do not trigger
     workflows. It has to name the collector in a workflow_run trigger."""
     text = _text(BUILDER)
@@ -133,7 +133,7 @@ def test_a_failed_weekly_update_still_rebuilds_the_page():
     other build happened. Only the Weekly update gets this: a failed collector
     run still wrote nothing."""
     text = _text(BUILDER)
-    weekly = _workflow_name(WORKFLOWS / 'weekly-update.yml')
+    weekly = _workflow_name(WORKFLOWS / 'nfl-weekly-update.yml')
     gate = re.search(r"\n    if: >-\n(.*?)\n    runs-on:", text, re.S)
     assert gate, "the build job's if: block is not findable -- re-anchor this guard"
     clause = re.search(r"workflow_run\.name == '([^']+)'\s*&&\s*"
@@ -141,7 +141,7 @@ def test_a_failed_weekly_update_still_rebuilds_the_page():
     assert clause, ("the build job skips a failed Weekly update, so grades that run "
                     "committed before failing never reach the page")
     assert clause.group(1) == weekly, (
-        f"the gate names {clause.group(1)!r} but weekly-update.yml is called {weekly!r}; "
+        f"the gate names {clause.group(1)!r} but nfl-weekly-update.yml is called {weekly!r}; "
         "GitHub matches the display name, so the clause would never fire")
 
 
@@ -150,14 +150,14 @@ def test_the_reason_is_written_down_where_the_trigger_is():
 
     Both workflows already documented the GITHUB_TOKEN rule -- as a benefit.
     That is exactly why nobody noticed it also broke the handoff. A future
-    reader deleting this trigger as redundant ("data/** already covers it")
+    reader deleting this trigger as redundant ("data/nfl/** already covers it")
     would restore the bug, and the diff would look like a simplification.
     """
     text = _text(BUILDER)
     assert 'GITHUB_TOKEN' in text and 'workflow_run' in text, (
         'the workflow_run trigger in deploy-pages.yml is not accompanied '
         'by the GITHUB_TOKEN explanation. Without it the trigger looks '
-        'redundant against the data/** paths and invites deletion')
+        'redundant against the data/nfl/** paths and invites deletion')
 
 
 #: The two forms a workflow in this repo uses to commit: the action's
@@ -169,7 +169,7 @@ GIT_ADD_RE = re.compile(r'git add\s+(.+?)\s*$', re.M)
 
 def _roots(paths):
     """Top-level directory of each path. Comparing roots rather than globs is
-    deliberately coarse: `data/**` and `data/agent_log.json` must both count as
+    deliberately coarse: `data/nfl/**` and `data/agent_log.json` must both count as
     'writes something under data', and a guard that tried to resolve globs
     against the real tree would pass whenever the tree happened to be empty."""
     out = set()
@@ -228,7 +228,7 @@ def test_the_writer_scan_finds_the_workflows_we_know_write():
     swapped, `file_pattern` renamed -- the scan returns nothing and the real
     check passes while testing nothing at all."""
     names = {wf.name for wf, _, _ in _writer_workflows()}
-    for expected in ('weekly-update.yml', 'collect-agent-log.yml'):
+    for expected in ('nfl-weekly-update.yml', 'collect-agent-log.yml'):
         assert expected in names, (
             f'{expected} commits paths the builder watches, but the writer '
             f'scan did not find it (found: {sorted(names) or "nothing"}). '
@@ -267,7 +267,7 @@ def test_a_writer_not_yet_on_a_page_feeds_no_page_and_writes_only_its_own_folder
     real writer, commit only its own sport's folders, and be read by nothing
     the builder builds from."""
     writers = {name: wf for wf, name, _ in _writer_workflows()}
-    builder_sources = [REPO / 'src' / 'pipeline' / 'generate_dashboard.py',
+    builder_sources = [REPO / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py',
                        *sorted((REPO / 'src' / 'dashboard').glob('*'))]
     for name, code in NOT_YET_ON_A_PAGE.items():
         assert name in writers, f'{name} is exempted but the writer scan does not find it'

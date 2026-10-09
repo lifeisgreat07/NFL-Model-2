@@ -1,5 +1,5 @@
 """
-Tests for the printable week-picks PDF (src/pipeline/generate_picks_pdf.py).
+Tests for the printable week-picks PDF (src/sports/nfl/generate_picks_pdf.py).
 
 Design principle, same as test_leak_free.py: these tests import the ACTUAL
 production functions and run them against the REAL committed predictions
@@ -30,7 +30,7 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-REAL_WEEK_FILE = REPO_ROOT / "predictions" / "2026_week1.json"
+REAL_WEEK_FILE = REPO_ROOT / "predictions" / "nfl" / "2026_week1.json"
 
 
 @pytest.fixture
@@ -46,7 +46,7 @@ def real_preds():
 def test_rows_preserve_saved_confidence_order(real_preds):
     """Rows come out ordered by the SAVED confidence_rank, 1..N, and carry
     the saved points through unchanged."""
-    from src.pipeline.generate_picks_pdf import build_picks_rows
+    from src.sports.nfl.generate_picks_pdf import build_picks_rows
 
     rows = build_picks_rows(real_preds)
 
@@ -63,7 +63,7 @@ def test_rows_preserve_saved_confidence_order(real_preds):
 def test_pick_matches_dashboard_rule_on_real_data(real_preds):
     """The pick must match the dashboard's rule exactly, computed here
     independently from the raw file rather than by calling the same helper."""
-    from src.pipeline.generate_picks_pdf import build_picks_rows
+    from src.sports.nfl.generate_picks_pdf import build_picks_rows
 
     rows = {(r.away, r.home): r for r in build_picks_rows(real_preds)}
 
@@ -81,7 +81,7 @@ def test_pick_falls_back_to_model_a_when_model_b_missing():
     """Model B is allowed to be absent; the dashboard falls back to Model A
     and so must this. Model A here says AWAY, Model B is missing -- if the
     fallback were broken this would silently pick the home side."""
-    from src.pipeline.generate_picks_pdf import build_picks_rows
+    from src.sports.nfl.generate_picks_pdf import build_picks_rows
 
     preds = [{
         "season": 2026, "week": 1, "home": "AAA", "away": "BBB",
@@ -99,7 +99,7 @@ def test_ranks_are_read_not_recomputed():
     """Guard against a second source of truth: this input's saved ranks
     deliberately CONTRADICT what a fresh distance-from-0.5 sort would
     produce. The saved order must win."""
-    from src.pipeline.generate_picks_pdf import build_picks_rows
+    from src.sports.nfl.generate_picks_pdf import build_picks_rows
 
     preds = [
         {  # further from a coin flip, but saved as rank 2
@@ -124,7 +124,7 @@ def test_legacy_predictions_without_ranking_rejected_clearly():
     """Predictions written before confidence ranking existed must fail with an
     explanatory error, not a bare KeyError, and must never have a ranking
     invented for them."""
-    from src.pipeline.generate_picks_pdf import build_picks_rows
+    from src.sports.nfl.generate_picks_pdf import build_picks_rows
 
     # Synthetic, not the real 2025 week 10 file. That file was deleted when the
     # page it fed was corrected -- and had this test kept reading it, deleting
@@ -148,7 +148,7 @@ def test_legacy_predictions_without_ranking_rejected_clearly():
 def test_empty_predictions_rejected():
     """An empty week should fail loudly, not silently emit a blank sheet
     that looks like a real one."""
-    from src.pipeline.generate_picks_pdf import build_picks_rows
+    from src.sports.nfl.generate_picks_pdf import build_picks_rows
 
     with pytest.raises(ValueError):
         build_picks_rows([])
@@ -162,7 +162,7 @@ def test_pdf_contains_every_game_and_pick(tmp_path, real_preds):
     picked team must actually appear on the page."""
     from pypdf import PdfReader
 
-    from src.pipeline.generate_picks_pdf import build_picks_rows, render_picks_pdf
+    from src.sports.nfl.generate_picks_pdf import build_picks_rows, render_picks_pdf
 
     out = tmp_path / "picks.pdf"
     rows = build_picks_rows(real_preds)
@@ -184,7 +184,7 @@ def test_pdf_reports_correct_page_and_game_count(tmp_path, real_preds):
     page of 10 rows would otherwise look fine."""
     from pypdf import PdfReader
 
-    from src.pipeline.generate_picks_pdf import build_picks_rows, render_picks_pdf
+    from src.sports.nfl.generate_picks_pdf import build_picks_rows, render_picks_pdf
 
     out = tmp_path / "picks.pdf"
     rows = build_picks_rows(real_preds)

@@ -38,7 +38,7 @@ import pytest
 # to determine whether THIS week represents a change.
 # ============================================================
 def test_qb_change_lookup_never_leaks_future_starter():
-    from src.pipeline.weekly_update import build_qb_change_lookup
+    from src.sports.nfl.weekly_update import build_qb_change_lookup
 
     # Synthetic starters: team AAA starts QB1 weeks 1-2, switches to QB2 in
     # week 3, switches BACK to QB1 in week 4. A leak-free implementation
@@ -61,7 +61,7 @@ def test_qb_change_lookup_never_leaks_future_starter():
 
 
 def test_qb_change_lookup_resets_across_season_boundary():
-    from src.pipeline.weekly_update import build_qb_change_lookup
+    from src.sports.nfl.weekly_update import build_qb_change_lookup
 
     # Team BBB ends 2023 with QB2, opens 2024 with QB1 (who started 2023
     # week 1). A leak-free, season-scoped implementation must NOT flag
@@ -110,8 +110,8 @@ def test_team_ratings_cutoff_excludes_current_week():
     move at all -- a stronger check than "the rating still looks
     reasonable," since even a real leak can produce a plausible-looking
     number."""
-    from src.pipeline.config import MIN_PLAYS_FOR_RATING
-    from src.pipeline.ratings_engine import build_team_ratings
+    from src.sports.nfl.config import MIN_PLAYS_FOR_RATING
+    from src.sports.nfl.ratings_engine import build_team_ratings
 
     rng = np.random.default_rng(42)
     plays, week_keys = _synthetic_team_plays(rng, n_week0=260, n_week1=40)
@@ -140,7 +140,7 @@ def test_qb_rating_cutoff_excludes_current_week():
     """Same leak-free property as team ratings, but for build_qb_ratings'
     trailing_rating closure: prior plays AND the shrinkage target must
     both satisfy gwidx < cutoff_gwidx."""
-    from src.pipeline.ratings_engine import build_qb_ratings
+    from src.sports.nfl.ratings_engine import build_qb_ratings
 
     rng = np.random.default_rng(7)
     n_week0, n_week1 = 30, 10
@@ -185,7 +185,7 @@ def test_ol_continuity_bye_week_gets_no_score():
     a real continuity score against week 1. Week 4 must get NO score at all
     (excluded from the lookup) rather than being silently compared against
     week 2's lineup just because it's the next row in sorted order."""
-    from src.pipeline.ol_continuity import compute_ol_continuity_lookup
+    from src.sports.nfl.ol_continuity import compute_ol_continuity_lookup
 
     starters = ["L1", "L2", "L3", "L4", "L5"]
     rows = []
@@ -213,7 +213,7 @@ def test_ol_continuity_bye_week_gets_no_score():
 def test_ol_continuity_respects_game_type_filter():
     """A POST-season row for the 'previous' week number must not be treated
     as a real adjacency for REG-season continuity."""
-    from src.pipeline.ol_continuity import compute_ol_continuity_lookup
+    from src.sports.nfl.ol_continuity import compute_ol_continuity_lookup
 
     starters = ["L1", "L2", "L3", "L4", "L5"]
     rows = []
@@ -233,7 +233,7 @@ def test_most_recent_continuity_boundary_excludes_current_week():
     """get_most_recent_continuity(..., before_week=W) must only consider
     weeks strictly less than W. Asking 'as of week 5' must never see week
     5's own (not-yet-known) continuity value."""
-    from src.pipeline.ol_continuity import get_most_recent_continuity
+    from src.sports.nfl.ol_continuity import get_most_recent_continuity
 
     lookup = {("AAA", 2023, 2): 3.0, ("AAA", 2023, 5): 7.0}
 
@@ -253,7 +253,7 @@ def test_most_recent_continuity_boundary_excludes_current_week():
 
 
 def test_get_continuity_exact_match_and_default():
-    from src.pipeline.ol_continuity import get_continuity
+    from src.sports.nfl.ol_continuity import get_continuity
 
     lookup = {("AAA", 2023, 3): 2}
     assert get_continuity(lookup, "AAA", 2023, 3) == 2
@@ -288,7 +288,7 @@ def test_backtest_never_trains_on_the_week_it_predicts():
     """Flip every outcome from 2022 week 4 on. Predictions for weeks 1-4 must
     not move: week 4's model is fitted on weeks before 4 only. Weeks 5-6
     must move, or the test has proved nothing about the refit."""
-    from src.research.backtest import backtest
+    from src.sports.nfl.research.backtest import backtest
 
     hist = _walk_forward_hist()
     _, _, before = backtest(hist, ['f1', 'f2'], [2022], return_raw=True)
@@ -330,7 +330,7 @@ def test_historical_features_read_the_games_own_week_and_no_other():
     cutoff the tests above prove excludes that week) and ask for QB ratings
     at its own week's cutoff. Changing a later week's ratings must leave
     earlier rows exactly as they were."""
-    from src.pipeline.weekly_update import build_historical_features
+    from src.sports.nfl.weekly_update import build_historical_features
 
     week_keys, week_to_idx, ratings, qb, scheds, calls = _feature_inputs()
     base = build_historical_features(None, week_keys, week_to_idx, ratings, qb, scheds)

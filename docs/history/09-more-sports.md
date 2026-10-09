@@ -49,8 +49,8 @@ Documents and tests only; may run before the lock.
 DONE 2026-10-05 in #292: `docs/decisions/0006-multi-sport.md`,
 `src/core/sport.py`, `src/core/isolation.py`, `tests/test_sport_isolation.py`,
 17 mutation cases, all caught. Mark approved the six design choices: three
-layers, with `src/site/` the only code that sees every sport; `src/pipeline`
-and `src/research` counted as the NFL until Stage 52; the lock rule per
+layers, with `src/site/` the only code that sees every sport; `src/sports/nfl`
+and `src/sports/nfl/research` counted as the NFL until Stage 52; the lock rule per
 sport and the lock engine shared; a fixed schedule column contract with a
 cancelled state; Model B optional; rule 5 a build proof, not a test.
 
@@ -82,7 +82,7 @@ against the free archive's two-way close.
 3. Workflows renamed per sport with schedules unchanged; Mark re-points
    the cron-job.org jobs and the QB routine's paths.
 4. Tests and the mutation corpus re-targeted; the whole corpus run once.
-5. The proof: picks, backtest, `data/calibration.json` (moved) and the page
+5. The proof: picks, backtest, `data/nfl/calibration.json` (moved) and the page
    byte-identical before and after (the #265 method).
 After the 10-08 lock and Stage 42's slot guard, merged in the window after
 a Thursday lock so a weekend of refreshes and the canary test it before

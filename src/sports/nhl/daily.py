@@ -18,7 +18,7 @@ Each run, in order:
    is saved regardless.
 4. **Models.** Model A and Model B as registered
    (`experiments/nhl/stage56/registry.json`), with the half-life and K the
-   backtest chose (`results/confirmation.json`), fitted on every finished
+   backtest chose (`results/nfl/confirmation.json`), fitted on every finished
    game since 2015-16 (Model B on those with a market price).
 5. **Save.** One file per game, `predictions/nhl/<season>/<game_id>.json`,
    written once and never rewritten: a file already there is left alone.

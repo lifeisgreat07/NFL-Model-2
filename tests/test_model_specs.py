@@ -2,7 +2,7 @@
 
 The live pipeline and the backtest used to build their own
 `LogisticRegression(max_iter=1000)` and keep their own feature lists. Both
-now fit from `MODEL_SPECS` (src/pipeline/model_specs.py). These tests hold:
+now fit from `MODEL_SPECS` (src/core/model_specs.py). These tests hold:
 
 - the published specs are exactly the old default fit, written out, so the
   refactor and the explicit C=1.0 / L2 moved nothing;
@@ -27,16 +27,16 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from src.pipeline import model_specs as ms
-from src.pipeline import weekly_update as wu
-from src.pipeline.model_specs import (
+from src.core import model_specs as ms
+from src.core.model_specs import (
     MODEL_A_FEATURES,
     MODEL_B_FEATURES,
     MODEL_SPECS,
     ModelSpec,
 )
-from src.research import backtest as bt
-from src.research import calibration
+from src.sports.nfl import weekly_update as wu
+from src.sports.nfl.research import backtest as bt
+from src.sports.nfl.research import calibration
 
 
 def _hist(seed=3):

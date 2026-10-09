@@ -13,7 +13,7 @@ from itertools import permutations
 import pytest
 
 from src.core import colour
-from src.research import verify_matchup_cvd as nfl_method
+from src.sports.nfl.research import verify_matchup_cvd as nfl_method
 from src.sports.nhl import colours
 from src.sports.nhl.teams import NAMES
 

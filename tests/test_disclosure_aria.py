@@ -11,7 +11,7 @@ set from the panel's .open on every click.
 """
 import re
 
-from src.pipeline.template_parts import read_template
+from src.core.template_parts import read_template
 
 TEMPLATE = read_template()
 

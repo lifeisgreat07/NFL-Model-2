@@ -21,7 +21,7 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 REPO = Path(__file__).resolve().parents[1]
 CASE_DIR = REPO / 'docs' / 'case-studies'
@@ -210,7 +210,7 @@ def test_a_figure_quoted_from_a_commit_is_in_that_commit(doc, as_printed, sha, i
 # --- figures measured for the QB-leak case study -----------------------------
 
 LEAK_DOC = CASE_DIR / 'qb-rating-leak.md'
-LEAK_DATA = REPO / 'data' / 'qb_leak_effect.json'
+LEAK_DATA = REPO / 'data' / 'nfl' / 'qb_leak_effect.json'
 
 
 def leak_figures(data):
@@ -288,7 +288,7 @@ def test_the_verdict_check_notices_a_real_difference():
 
 
 def test_the_measuring_script_names_the_commit_the_case_study_cites():
-    src = (REPO / 'src' / 'research' / 'measure_qb_leak.py').read_text(encoding='utf-8')
+    src = (REPO / 'src' / 'sports' / 'nfl' / 'research' / 'measure_qb_leak.py').read_text(encoding='utf-8')
     data = json.loads(LEAK_DATA.read_text(encoding='utf-8'))
     assert f"FIX_COMMIT = '{data['fix_commit']}'" in src
 

@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/generate_dashboard.py",
+  "target": "src/sports/nfl/generate_dashboard.py",
   "tests": "tests/test_model_lab_page.py",
   "cases": [
     {
@@ -72,7 +72,7 @@
     {
       "id": "lab-correlation-read-as-a-difference",
       "tests": "tests/test_model_lab_glyph.py",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "R1's correlation is followed by 'a negative difference favours the new idea', which reads a correlation backwards.",
       "find": "                f\"{h.get('note', 'A negative difference favours the new idea.')}\")",
       "replace": "                f\"A negative difference favours the new idea.\")",
@@ -81,7 +81,7 @@
     {
       "id": "lab-glyph-says-includes-when-it-excludes",
       "tests": "tests/test_model_lab_glyph.py",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the text equivalent tells a screen-reader user an interval clear of zero includes it, the opposite of what the decision rests on.",
       "find": "    zero = 'includes zero' if lo <= 0 <= hi else 'excludes zero'",
       "replace": "    zero = 'includes zero'",
@@ -90,7 +90,7 @@
     {
       "id": "lab-glyph-scale-not-centred-on-zero",
       "tests": "tests/test_model_lab_glyph.py",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the scale starts at the interval's low end instead of being symmetric about zero, so the zero line wanders and a glance misreads which side of zero the interval sits.",
       "find": "        return round(pad + (v + span) / (2 * span) * (width - 2 * pad), 1)",
       "replace": "        return round(pad + (v - lo) / (2 * span) * (width - 2 * pad), 1)",
@@ -99,7 +99,7 @@
     {
       "id": "lab-glyph-bound-rounds-to-zero",
       "tests": "tests/test_model_lab_glyph.py",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "H2's lower bound prints as +0.0000 beside the words 'excludes zero'.",
       "find": "    while places < 8 and x != 0 and round(abs(x), places) == 0:\n        places += 1\n",
       "replace": "",
@@ -108,7 +108,7 @@
     {
       "id": "lab-glyph-literal-minus",
       "tests": "tests/test_model_lab_glyph.py",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "a non-ASCII sign goes into the page, which generate_dashboard.py writes in the platform's encoding. A literal U+2212 crashes the build on Windows before any test runs; an en dash, which cp1252 can encode, builds everywhere, so this case reaches the guard on every platform.",
       "find": "    return ('&minus;' if x < 0 else '+') + f'{abs(x):.{places}f}'",
       "replace": "    return ('\u2013' if x < 0 else '+') + f'{abs(x):.{places}f}'",
@@ -117,7 +117,7 @@
     {
       "id": "lab-glyph-not-drawn",
       "tests": "tests/test_model_lab_glyph.py",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the registered results go back to opening with the sentence, with no interval drawn.",
       "find": "        body = f'<span class=\"lab-lead\">{interval_glyph(h)}</span>{body}'\n",
       "replace": "",

@@ -109,7 +109,7 @@ def test_a_bytecode_cache_left_behind_does_not_hide_the_source(tmp_path: Path) -
 
 def test_the_nfl_build_opens_nothing_of_another_sport(tmp_path: Path) -> None:
     codes = isolation.sports(ROOT)
-    opened = read_set('src.pipeline.generate_dashboard', [], tmp_path / 'nfl.json')
+    opened = read_set('src.sports.nfl.generate_dashboard', [], tmp_path / 'nfl.json')
     assert len(opened) > 20, 'the hook saw almost nothing: it is not recording the build'
     foreign = [p.as_posix() for p in opened if owner(p, codes) not in (None, 'nfl')]
     assert not foreign, f"the NFL's build opened another sport's files: {foreign}"

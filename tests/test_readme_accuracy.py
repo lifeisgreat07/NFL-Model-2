@@ -5,7 +5,7 @@ It had gone stale in exactly the ways a front page does, and none of it was
 visible from inside the repo because nothing checked:
 
 - its fifth line said "see METHODOLOGY.md" for the backtest numbers. There
-  has never been a METHODOLOGY.md in this repository. src/research/tune_qb_shrink_k.py
+  has never been a METHODOLOGY.md in this repository. src/sports/nfl/research/tune_qb_shrink_k.py
   had already noticed and written that down; two other files went on pointing
   at it anyway, and so did the README;
 - the repo layout named `dashboard.html`, a file that does not exist -- the
@@ -26,7 +26,7 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 REPO = Path(__file__).resolve().parents[1]
 README = REPO / 'README.md'
@@ -66,8 +66,8 @@ def test_every_path_the_readme_names_in_prose_exists():
 
 def _layout_paths():
     """Walk the ``` block under '## Repo layout', tracking the directory a
-    line is indented under. A bare `config.py` under `src/pipeline/` means
-    `src/pipeline/config.py`, and checking it as a top-level file would pass while
+    line is indented under. A bare `config.py` under `src/sports/nfl/` means
+    `src/sports/nfl/config.py`, and checking it as a top-level file would pass while
     meaning nothing."""
     block = re.search(r'## Repo layout\s*\n```\n(.*?)\n```', TEXT, re.S)
     assert block, "README.md has no '## Repo layout' code block to check"
@@ -248,7 +248,7 @@ def test_the_table_check_notices_a_drifted_figure():
 
 
 def test_the_model_version_it_names_is_the_live_one():
-    from src.pipeline.config import MODEL_VERSION
+    from src.sports.nfl.config import MODEL_VERSION
     m = re.search(r'## Current model \(v([\d.]+)\)', TEXT)
     assert m, "README.md no longer names the model version in its section heading"
     assert m.group(1) == MODEL_VERSION, f"README says v{m.group(1)}, config says {MODEL_VERSION}"
@@ -280,7 +280,7 @@ def test_it_describes_the_backtest_the_code_runs():
     says so, and this ties the sentence to the default it describes."""
     import inspect
 
-    from src.research import backtest
+    from src.sports.nfl.research import backtest
     default = inspect.signature(backtest.backtest).parameters['refit_every_n_weeks'].default
     assert default == 1, f'backtest() now refits every {default} weeks -- update README'
     flat = ' '.join(TEXT.split())
