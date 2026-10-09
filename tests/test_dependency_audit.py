@@ -39,6 +39,22 @@ def test_the_audit_never_fails_the_run():
     assert 'echo "code=$code" >> "$GITHUB_OUTPUT"' in step
 
 
+def test_a_clean_night_does_not_fail_the_step():
+    """pip-audit 2.10.1 writes no report file when it finds nothing (checked
+    on 2026-10-09: exit 0, no audit.md). The step reads the report back after
+    `set -e`, so a bare `cat audit.md` turned the first clean night after #364
+    into a failed job and a "could not run" issue (#365). The report must
+    exist before it is read, and a clean night must say so in the summary."""
+    t = text()
+    step = t[t.index('- name: Audit requirements.txt'):t.index('- name: Raise an alert')]
+    after = step[step.index('set -e'):]
+    read_back = '{ echo "## pip-audit of requirements.txt (exit $code)"; cat audit.md; }'
+    assert read_back in after, 'the summary must still read the report back'
+    assert 'if [ ! -f audit.md ]; then' in after, 'a missing report must be handled before it is read'
+    assert after.index('if [ ! -f audit.md ]; then') < after.index(read_back)
+    assert 'echo "No known vulnerabilities found." > audit.md' in after
+
+
 def test_a_finding_and_a_failed_audit_raise_different_alerts():
     t = text()
     alert = t[t.index('- name: Raise an alert'):]
