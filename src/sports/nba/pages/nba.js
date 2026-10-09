@@ -1,7 +1,8 @@
-/* The NBA's pages (Stage 61). Everything below reads one JSON block,
-   #nba-data, written by src/sports/nba/site.py from the NBA's own files:
-   the registered backtest's answers, its validation grid and the history's
-   coverage. There is no board: no live NBA picks this season. */
+/* The NBA's pages: the day board (Stage 65) and the registered backtest
+   (Stage 61). Everything below reads one JSON block, #nba-data, written by
+   src/sports/nba/site.py from the NBA's own files: the saved picks, the
+   season's schedule and grades, the backtest's answers, its validation grid
+   and the history's coverage. Times are shown in US Eastern. */
 const DATA = JSON.parse(document.getElementById('nba-data').textContent);
 const ET = 'America/New_York';
 
@@ -84,21 +85,369 @@ const CONFIRM = P.confirmation_seasons.map(seasonLabel).join(' and ');
 const VALIDATE = P.validation_seasons.map(seasonLabel).join(' and ');
 function better(diff){ return diff < 0 ? 'lower' : 'higher'; }
 
-/* ---------- why no picks ---------- */
-function renderSeason(){
-  const s = B.scores;
-  document.getElementById('season-body').innerHTML = `
-    <div class="nba-notice"><b>No live NBA picks this season.</b> The backtest found that the betting market alone forecasts NBA games slightly better than our best model, and the two things a live pick needs before tip-off, a price and the injury report, cannot be read where this site runs. So instead of picks we expect to do worse than the market, this section shows what was tested and what it found.</div>
-    <p class="nba-lede">Three questions were registered on ${escapeHtml(DATA.registered)}, before any NBA model was fitted, and answered once on ${num(Q.H1.games)} games of ${CONFIRM}. Lower log loss is better.</p>
-    <ol class="nba-answers">
-      <li><b>Model A beats a coin weighted for home court.</b> Its log loss is ${s.model_a.log_loss.toFixed(4)} against ${s.base_rate.log_loss.toFixed(4)} for the home team&#39;s past win rate (H1, <b>${Q.H1.label}</b>).</li>
-      <li><b>Adding the market to Model A helps.</b> Model B&#39;s log loss is ${s.model_b.log_loss.toFixed(4)}, ${Math.abs(Q.H2.diff).toFixed(4)} ${better(Q.H2.diff)} than Model A&#39;s (H2, <b>${Q.H2.label}</b>).</li>
-      <li><b>But the market alone is better still.</b> The market&#39;s own probability scores ${s.market.log_loss.toFixed(4)}, and Model B is ${Math.abs(Q.H3.diff).toFixed(4)} ${better(Q.H3.diff)}, a small gap whose interval does not reach zero (H3, <b>${Q.H3.label}</b>). What Model A adds to the market costs more than it gives.</li>
-      <li><b>Who plays matters.</b> Leaving out the share of each team&#39;s expected minutes that plays raises Model A&#39;s log loss by ${Math.abs(Q.M1.diff).toFixed(4)} (M1, a measurement). In the backtest that share comes from the box score; live it would come from the injury report.</li>
-    </ol>
-    <h2 class="section-title">What would change this</h2>
-    <p class="nba-lede">A live NBA pick needs a scheduled job that reads ESPN&#39;s price and injury report before each tip-off, from a machine those sites answer. And by H3 the pick to lead with would be the market&#39;s, not Model B&#39;s. The forward-test season the registration holds back, ${seasonLabel(P.forward_holdout_season)}, is untouched either way.</p>`;
+/* ---------- the day board (Stage 65) ----------
+   The NHL's day board (Stages 63 and 64, src/sports/nhl/pages/nhl.js), for
+   the NBA: a strip of the week's seven days opening on today, compact rows
+   (time, game, pick, result), and a tap to the full card. Where the NHL's
+   card names the goalies, this one says who was listed Out and the
+   availability each side was given; where a game had no price it says
+   "no price" and why, and that Model A made the pick. */
+const BD = DATA.board;
+function stateHtml(kind, title, text){
+  return `<div class="state state--${kind}" role="status"><span class="state-title">${title}</span>${text ? `<p>${text}</p>` : ''}</div>`;
 }
+function dayDate(day){ return new Date(day + 'T12:00:00Z'); }
+function dayIso(d){ return d.toISOString().slice(0, 10); }
+function mondayOf(day){
+  const d = dayDate(day);
+  d.setUTCDate(d.getUTCDate() - (d.getUTCDay() + 6) % 7);
+  return dayIso(d);
+}
+const FMT_DAY = new Intl.DateTimeFormat('en-US', {weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC'});
+const FMT_SHORT = new Intl.DateTimeFormat('en-US', {weekday: 'short', timeZone: 'UTC'});
+const FMT_MONTHDAY = new Intl.DateTimeFormat('en-US', {month: 'short', day: 'numeric', timeZone: 'UTC'});
+const FMT_TIME = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: ET});
+const FMT_ET_DATE = new Intl.DateTimeFormat('en-CA', {year: 'numeric', month: '2-digit', day: '2-digit', timeZone: ET});
+function todayEt(){ return FMT_ET_DATE.format(new Date()); }
+function startLabel(g){
+  const day = FMT_DAY.format(dayDate(g.day));
+  return g.start ? `${day} · ${FMT_TIME.format(new Date(g.start))} ET` : day;
+}
+const WEEKS = {};
+BD.games.forEach(g => { (WEEKS[mondayOf(g.day)] ||= []).push(g); });
+const WEEK_KEYS = Object.keys(WEEKS).sort();
+function defaultWeek(){
+  const now = mondayOf(todayEt());
+  if(WEEKS[now]) return now;
+  return WEEK_KEYS.find(k => k >= now) || WEEK_KEYS[WEEK_KEYS.length - 1] || now;
+}
+let currentWeek = defaultWeek();
+function logo(abbr){
+  const t = BD.teams[abbr];
+  if(!t) return '';
+  return document.documentElement.getAttribute('data-theme') === 'light' ? t.logo_light : t.logo;
+}
+
+/* ---------- the card ---------- */
+const SERIES = {
+  a:      {label: 'Model A', color: 'var(--series-a)', shape: 'circle'},
+  b:      {label: 'Model B', color: 'var(--series-b)', shape: 'square'},
+  market: {label: 'Market',  color: 'var(--series-c)', shape: 'triangle'},
+};
+const EVEN_BAND = 2, NEAR = 7, LANE = {market: -1, b: 0, a: 1};
+function markerPath(shape, cx, cy, r){
+  const s = r * 0.92;
+  if(shape === 'square') return `<rect x="${(cx-s).toFixed(1)}" y="${(cy-s).toFixed(1)}" width="${(2*s).toFixed(1)}" height="${(2*s).toFixed(1)}" rx="1"`;
+  if(shape === 'triangle') return `<polygon points="${cx},${(cy-r*1.15).toFixed(1)} ${cx+r},${(cy+r*0.75).toFixed(1)} ${cx-r},${(cy+r*0.75).toFixed(1)}"`;
+  return `<circle cx="${cx}" cy="${cy}" r="${r}"`;
+}
+function side(pHome, g){
+  if(pHome === null || pHome === undefined) return null;
+  if(Math.abs(pHome - 50) < EVEN_BAND) return {team: null, pct: Math.max(pHome, 100 - pHome)};
+  return pHome >= 50 ? {team: g.home, pct: pHome} : {team: g.away, pct: 100 - pHome};
+}
+function sideText(s){ return s.team ? `${s.team} ${Math.round(s.pct)}%` : `even (${Math.round(s.pct)}%)`; }
+function lanes(vals){
+  const keys = Object.keys(vals).filter(k => vals[k] !== null && vals[k] !== undefined);
+  const out = {};
+  keys.forEach(k => { out[k] = keys.some(o => o !== k && Math.abs(vals[o] - vals[k]) < NEAR) ? LANE[k] : 0; });
+  return out;
+}
+function american(p){ return p > 0 ? `+${p}` : `−${Math.abs(p)}`; }
+function endTeam(abbr){
+  const src = logo(abbr);
+  const img = src ? `<img class="card-end-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : '';
+  return `<span class="card-end-team">${img}${abbr}</span>`;
+}
+function badge(picked, result){
+  if(!picked) return '<span class="pick-badge placeholder"></span>';
+  const graded = result === 'correct' || result === 'wrong';
+  const state = !graded ? 'picked' : (result === 'correct' ? 'correct' : 'incorrect');
+  const path = state === 'incorrect' ? '<path d="M6 6l12 12M18 6L6 18"/>' : '<path d="M20 6L9 17l-5-5"/>';
+  return `<span class="pick-badge ${state}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">${path}</svg></span>`;
+}
+function scoreLine(g){
+  if(g.status === 'cancelled') return 'Cancelled';
+  if(g.status === 'postponed') return 'Postponed';
+  if(g.status === 'in_progress') return 'In progress';
+  if(g.status !== 'final' || g.hs === null || g.as === null) return '';
+  return `Final: ${g.away} ${g.as}, ${g.home} ${g.hs}`;
+}
+/* The market line: the price and who quoted it, or "no price" and why.
+   Every pick names its source (experiments/nba/stage65/registry.json):
+   ESPN's sportsbook, Kalshi's market as the named fallback, or none. */
+function marketText(g, p){
+  const m = p.market;
+  if(!m) return `Market: <b>no price</b>${p.why ? ` (${escapeHtml(p.why)})` : ''}, so Model A made the pick`;
+  if(p.source === 'kalshi'){
+    return `Market (Kalshi, the fallback: ESPN had no price): ${g.away} <b>${pct(m.ap)}</b> · ${g.home} <b>${pct(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))}`;
+  }
+  return `Market (${escapeHtml(m.book || 'sportsbook')} via ESPN): ${g.away} <b>${american(m.ap)}</b> · ${g.home} <b>${american(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))} with the margin out`;
+}
+/* Who is out, and the availability each side was given: the share of its
+   expected minutes from players not listed Out. */
+function availText(g, p){
+  if(!p.avail || !p.avail.read) return 'Injury report: <b>not read</b> when the pick was saved, so both models ran without availability';
+  /* A player listed Out with no minutes yet (a rookie, a new signing) weighs
+     nothing, so a side can be at 100% with a name out: the share is of
+     expected minutes, and the line says so. */
+  const one = (team, share, names) => `${team} <b>${pct(share)}</b>${names.length ? ` (out: ${names.map(escapeHtml).join(', ')})` : ''}`;
+  return `Expected minutes available: ${one(g.away, p.avail.away, p.out.away)} · ${one(g.home, p.avail.home, p.out.home)}`;
+}
+function pickedCard(g, p){
+  const vals = {b: p.b === null ? null : p.b * 100, a: p.a * 100, market: p.market ? p.market.prob * 100 : null};
+  const lead = vals.b !== null ? vals.b : vals.a;
+  const leadLabel = vals.b !== null ? 'Model B' : 'Model A';
+  const s = side(lead, g);
+  const done = g.status === 'final';
+  const headline = s.team
+    ? `<span class="card-hl-label">${leadLabel}${done ? ' picked' : ''}</span> <b>${s.team} ${Math.round(s.pct)}%</b> <span class="card-hl-to">to win</span>`
+    : `<span class="card-hl-label">${leadLabel}</span> <b>Too close to call</b> <span class="card-hl-to">· saved pick ${p.pick}</span>`;
+  const ln = lanes(vals);
+  const mark = k => vals[k] === null ? '' :
+    `<svg class="card-mk" style="left:${vals[k]}%; top:calc(50% + ${ln[k] * 12}px)" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">${markerPath(SERIES[k].shape, 6, 6, 4.5)} fill="${SERIES[k].color}"/></svg>`;
+  const key = k => vals[k] === null ? '' :
+    `<span class="card-key"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">${markerPath(SERIES[k].shape, 7, 7, 5)} fill="${SERIES[k].color}"/></svg>${SERIES[k].label} <b>${sideText(side(vals[k], g))}</b></span>`;
+  const aria = ['b', 'market', 'a'].filter(k => vals[k] !== null).map(k => `${SERIES[k].label} ${sideText(side(vals[k], g))}`).join('. ') + '.';
+  const [awayC, homeC] = p.colours;
+  const graded = p.result === 'correct' || p.result === 'wrong';
+  const tag = graded ? `<span class="graded-tag ${p.result === 'correct' ? 'correct' : 'incorrect'}">${p.result === 'correct' ? 'Correct' : 'Missed'}</span>`
+    : (p.result === 'cancelled' ? '<span class="graded-tag tie">Cancelled</span>' : lockedTag(g, p));
+  const status = scoreLine(g);
+  return `<div class="game-card">
+    <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
+    <div class="card-kickoff">${startLabel(g)}</div>
+    ${status ? `<div class="nba-card-status">${status}</div>` : ''}
+    ${resultLine(g, p)}
+    ${tag ? `<div class="game-top"><div class="tag-row">${tag}</div></div>` : ''}
+    <div class="card-hl">${headline}</div>
+    <div class="card-viz" role="img" aria-label="${escapeHtml(aria)}">
+      <span class="card-end">${badge(p.pick === g.away, p.result)}${endTeam(g.away)}</span>
+      <div class="card-scale">
+        <div class="tele-bar">
+          <div class="tele-bar-seg" style="width:${100 - lead}%; background:${awayC};"></div>
+          <div class="tele-bar-seg" style="width:${lead}%; background:${homeC};"></div>
+        </div>
+        <div class="card-line"><span class="card-mid"></span><span class="card-mid-label">50%</span>${mark('a')}${mark('market')}${mark('b')}</div>
+      </div>
+      <span class="card-end">${badge(p.pick === g.home, p.result)}${endTeam(g.home)}</span>
+    </div>
+    <div class="card-keys">${key('b')}${key('market')}${key('a')}</div>
+    <div class="market-ref">${marketText(g, p)}</div>
+    <div class="card-qbs">${availText(g, p)}</div>
+  </div>`;
+}
+/* A saved pick is a locked pick: the daily run writes a game's pick file only
+   when it locks it, at the last run before tip-off (src/sports/nba/lock.py). */
+const LOCK_RUNS_UTC = [[16, 0], [21, 30]];    // lock.py's RUNS_UTC, every day
+const LOCK_SLACK_MS = 60 * 60 * 1000;         // lock.py's SLACK
+/* The run that will save a game starting at `startIso`: the first run before
+   the start whose next run, plus the slack, would come too late. The same
+   rule as GameLock.decide; tests/test_nba_board.py runs both. */
+function lockRunFor(startIso){
+  const start = Date.parse(startIso);
+  if(Number.isNaN(start)) return null;
+  const runs = [];
+  const day0 = new Date(start - 3 * 86400000);
+  for(let d = 0; d <= 4; d++){
+    LOCK_RUNS_UTC.forEach(([h, m]) => runs.push(Date.UTC(day0.getUTCFullYear(), day0.getUTCMonth(), day0.getUTCDate() + d, h, m)));
+  }
+  runs.sort((x, y) => x - y);
+  for(let i = 0; i < runs.length - 1; i++){
+    if(runs[i] >= start) break;
+    if(start < runs[i + 1] + LOCK_SLACK_MS) return new Date(runs[i]);
+  }
+  return null;
+}
+const FMT_WHEN = new Intl.DateTimeFormat('en-US', {weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: ET});
+function whenEt(d){ return `${FMT_WHEN.format(d)} ET`; }
+function lockNote(g, nowMs){
+  const run = g.start ? lockRunFor(g.start) : null;
+  if(!run) return 'The pick locks at the last run before tip-off (16:00 or 21:30 UTC).';
+  if(run.getTime() + LOCK_SLACK_MS < nowMs) return `The pick was due to lock ${whenEt(run)} and has not been saved yet.`;
+  return `The pick locks ${whenEt(run)}, at the last run before tip-off.`;
+}
+function modelSide(prob, g){ return prob === null || prob === undefined ? null : (prob >= 0.5 ? g.home : g.away); }
+function winnerOf(g){
+  if(g.status !== 'final' || g.hs === null || g.hs === undefined || g.as === null || g.as === undefined || g.hs === g.as) return null;
+  return g.hs > g.as ? g.home : g.away;
+}
+function resultLine(g, p){
+  const won = winnerOf(g);
+  if(!won) return '';
+  const one = (label, prob) => {
+    const s = modelSide(prob, g);
+    return s === null ? '' : `<span class="nba-model-result">${label} ${s}, <b>${s === won ? 'right' : 'wrong'}</b></span>`;
+  };
+  const market = p.market ? one('Market', p.market.prob) : '';
+  return `<div class="nba-result-line">Winner <b>${won}</b>${one('Model B', p.b)}${one('Model A', p.a)}${market}</div>`;
+}
+function lockedTag(g, p){
+  if(g.status === 'final' || g.status === 'cancelled' || g.status === 'postponed') return '';
+  const when = p.saved ? ` ${whenEt(new Date(p.saved))}` : '';
+  return `<span class="graded-tag nba-locked">Locked${when}</span>`;
+}
+const FIRST_SAVED = Object.values(BD.picks).map(p => p.saved).filter(Boolean).sort()[0] || null;
+function waitingCard(g){
+  const status = scoreLine(g);
+  let note;
+  if(g.status === 'final' || g.status === 'in_progress'){
+    note = !FIRST_SAVED || (g.start && g.start < FIRST_SAVED) ? 'Before the first pick was saved.' : 'No pick was saved for this game.';
+  } else if(g.status === 'cancelled' || g.status === 'postponed'){
+    note = 'No pick: a postponed or cancelled game is never predicted.';
+  } else {
+    note = lockNote(g, Date.now());
+  }
+  return `<div class="game-card nba-not-saved">
+    <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
+    <div class="card-kickoff">${startLabel(g)}</div>
+    ${status ? `<div class="nba-card-status">${status}</div>` : ''}
+    <div class="nba-wait-note">${note}</div>
+  </div>`;
+}
+
+/* ---------- rows, a day at a time ---------- */
+const FMT_HOUR = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: ET});
+function weekDays(week){
+  const out = [];
+  const d = dayDate(week);
+  for(let i = 0; i < 7; i++){ out.push(dayIso(d)); d.setUTCDate(d.getUTCDate() + 1); }
+  return out;
+}
+function defaultDay(week, games, today){
+  if(weekDays(week).includes(today)) return today;
+  const days = [...new Set(games.map(g => g.day))].sort();
+  return days[0] || week;
+}
+function rowResult(g, p, nowMs){
+  if(g.status === 'postponed' || g.status === 'cancelled') return {text: g.status === 'postponed' ? 'Postponed' : 'Cancelled', cls: 'off'};
+  if(p){
+    if(p.result === 'correct') return {text: 'Right', cls: 'right'};
+    if(p.result === 'wrong') return {text: 'Wrong', cls: 'wrong'};
+    return {text: g.status === 'final' ? 'Grading' : 'Locked', cls: 'locked'};
+  }
+  if(g.status === 'final' || g.status === 'in_progress') return {text: 'No pick', cls: 'off'};
+  const run = g.start ? lockRunFor(g.start) : null;
+  if(!run) return {text: 'Not locked', cls: 'open'};
+  if(run.getTime() + LOCK_SLACK_MS < nowMs) return {text: 'Late', cls: 'open'};
+  return {text: `Locks ${FMT_HOUR.format(run).replace(':00', '')}`, cls: 'open'};
+}
+/* The pick in a row: the saved side, the chance the leading model gave it,
+   and "no price" when Model A made it for want of one. */
+function rowPick(g, p){
+  if(!p) return '—';
+  const lead = p.b !== null && p.b !== undefined ? p.b : p.a;
+  const chance = p.pick === g.home ? lead : 1 - lead;
+  return `${p.pick} ${Math.round(chance * 100)}%${p.market ? '' : ' <span class="nba-no-price">no price</span>'}`;
+}
+function rowTime(g){
+  if(g.status === 'final') return 'Final';
+  if(g.status === 'in_progress') return 'Live';
+  return g.start ? FMT_HOUR.format(new Date(g.start)) : 'TBD';
+}
+function rowGame(g){
+  const won = winnerOf(g);
+  const has = g.status === 'final' && g.hs !== null && g.hs !== undefined && g.as !== null && g.as !== undefined;
+  const team = (abbr, score) => {
+    const text = has ? `${abbr} ${score}` : abbr;
+    return `<span class="nba-row-team">${abbr === won ? `<b>${text}</b>` : text}</span>`;
+  };
+  /* A team and its score never split; on a phone the game wraps at the @,
+     since three-digit scores do not fit one line beside the pick. */
+  return `${team(g.away, g.as)} <span class="at-symbol">@</span> ${team(g.home, g.hs)}`;
+}
+function daySummary(games, picks){
+  const n = games.length;
+  if(!n) return 'No games this day.';
+  const graded = games.map(g => picks[g.id]).filter(p => p && (p.result === 'correct' || p.result === 'wrong'));
+  const right = graded.filter(p => p.result === 'correct').length;
+  let s = `${n} game${n === 1 ? '' : 's'}`;
+  if(graded.length) s += `, ${right} of ${graded.length} right so far`;
+  else {
+    const locked = games.filter(g => picks[g.id]).length;
+    if(locked) s += `, ${locked} locked`;
+  }
+  return s;
+}
+const CHEVRON = '<svg class="nba-row-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+function rowHtml(g, p, nowMs){
+  const r = rowResult(g, p, nowMs);
+  const id = `nba-detail-${g.id}`;
+  return `<li class="nba-row-item">
+    <button type="button" class="nba-row" aria-expanded="false" aria-controls="${id}">
+      <span class="nba-row-time">${rowTime(g)}</span>
+      <span class="nba-row-game">${rowGame(g)}</span>
+      <span class="nba-row-pick">${rowPick(g, p)}</span>
+      <span class="nba-row-result ${r.cls}">${r.text}</span>${CHEVRON}
+    </button>
+    <div class="nba-row-detail" id="${id}" hidden>${p ? pickedCard(g, p) : waitingCard(g)}</div>
+  </li>`;
+}
+let currentDay = null;
+function renderBoard(){
+  const grid = document.getElementById('game-grid');
+  if(!BD.games.length){
+    /* The shared stylesheet sets .week-step's display, which beats the hidden
+       attribute, so the whole row is taken out instead. */
+    document.getElementById('week-step').closest('.filter-row').style.display = 'none';
+    document.getElementById('nba-day-strip').innerHTML = '';
+    grid.innerHTML = stateHtml('waiting', 'The board fills from the first daily run',
+      `Picks start on opening night, ${escapeHtml(FMT_DAY.format(dayDate('2026-10-20')))}. The daily run saves each game's pick before tip-off and never changes it.`);
+    return;
+  }
+  const games = (WEEKS[currentWeek] || []).slice().sort((a, b) => (a.start || '').localeCompare(b.start || '') || a.id.localeCompare(b.id));
+  document.getElementById('week-step-label').textContent = `Week of ${FMT_MONTHDAY.format(dayDate(currentWeek))} · ${games.length} game${games.length === 1 ? '' : 's'}`;
+  const i = WEEK_KEYS.indexOf(currentWeek);
+  document.getElementById('week-prev').disabled = i <= 0;
+  document.getElementById('week-next').disabled = i >= WEEK_KEYS.length - 1;
+  const today = todayEt();
+  const days = weekDays(currentWeek);
+  if(!days.includes(currentDay)) currentDay = defaultDay(currentWeek, games, today);
+  const byDay = {};
+  games.forEach(g => (byDay[g.day] ||= []).push(g));
+  document.getElementById('nba-day-strip').innerHTML = days.map(d => {
+    const dd = dayDate(d);
+    const n = (byDay[d] || []).length;
+    const name = `${FMT_DAY.format(dd)}${d === today ? ', today' : ''}, ${n ? `${n} game${n === 1 ? '' : 's'}` : 'no games'}`;
+    return `<button type="button" class="nba-day-chip" data-day="${d}" aria-pressed="${d === currentDay}" aria-label="${name}"${d === today ? ' aria-current="date"' : ''}>`
+      + `<span>${FMT_SHORT.format(dd)}</span><b>${dd.getUTCDate()}</b><span>${n || '–'}</span></button>`;
+  }).join('');
+  document.querySelectorAll('.nba-day-chip').forEach(btn => btn.addEventListener('click', () => {
+    currentDay = btn.dataset.day;
+    renderBoard();
+    const chip = document.querySelector(`.nba-day-chip[data-day="${currentDay}"]`);
+    if(chip) chip.focus();
+  }));
+  const dayGames = byDay[currentDay] || [];
+  const title = `${FMT_DAY.format(dayDate(currentDay))}${currentDay === today ? ' · Today' : ''}`;
+  const head = `<div class="nba-day-top"><h3 class="nba-day-title">${title}</h3>`
+    + `<p class="nba-day-summary" aria-live="polite">${daySummary(dayGames, BD.picks)}</p></div>`;
+  if(!dayGames.length){
+    grid.innerHTML = head + (games.length ? '' : stateHtml('waiting', 'No games this week', ''));
+    return;
+  }
+  const nowMs = Date.now();
+  grid.innerHTML = head + `<ul class="nba-rows">${dayGames.map(g => rowHtml(g, BD.picks[g.id], nowMs)).join('')}</ul>`;
+  grid.querySelectorAll('.nba-row').forEach(btn => btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', String(open));
+    document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
+  }));
+}
+function stepWeek(by){
+  const i = WEEK_KEYS.indexOf(currentWeek) + by;
+  if(i < 0 || i >= WEEK_KEYS.length) return;
+  currentWeek = WEEK_KEYS[i];
+  renderBoard();
+}
+document.getElementById('week-prev').addEventListener('click', () => stepWeek(-1));
+document.getElementById('week-next').addEventListener('click', () => stepWeek(1));
+document.addEventListener('keydown', e => {
+  if(e.target.closest && e.target.closest('input, select, textarea')) return;
+  if(!document.getElementById('page-board').classList.contains('active')) return;
+  if(e.key === '[') stepWeek(-1);
+  if(e.key === ']') stepWeek(1);
+});
 
 /* ---------- model lab ---------- */
 function renderModelLab(){
@@ -132,6 +481,7 @@ function renderMethod(){
     <p class="nba-lede"><b>Model A</b> reads three numbers about a game, each home minus away. Two are team ratings from a ridge regression of every earlier game&#39;s margin, recent games counting more (half as much every ${B.H_days} days): one on points, one on points per 100 possessions. The third is availability: the share of each team&#39;s expected minutes that plays, where a player&#39;s expected minutes are his recent minutes per team game. A logistic regression turns the three into a home-win probability.</p>
     <p class="nba-lede"><b>Model B</b> is Model A plus the market&#39;s home-win probability: ESPN&#39;s moneyline with the bookmaker&#39;s margin taken out evenly, the closing price where there is one.</p>
     <p class="nba-lede"><b>The test.</b> Every regular-season, play-in and playoff game from ${seasonLabel(P.training_from_season)} on. Before each game day both models are refitted on every earlier game and predict that day&#39;s games, so nothing a game did is known before it. The settings were chosen on ${VALIDATE} only, then fixed, and ${CONFIRM} were scored once. ${P.budget_m} questions shared a ${pct(P.alpha)} error budget, so each interval is at ${pct(1 - P.alpha / P.budget_m, 2)}.</p>
+    <p class="nba-lede"><b>The live picks</b> (from ${escapeHtml(FMT_DAY.format(dayDate('2026-10-20')))}, registered in <code>experiments/nba/stage65/registry.json</code> before the first was saved): each game's pick is saved by the last run before tip-off and never changed. Model B makes it with ESPN's pre-game price; when ESPN has none, Kalshi's game market is the named fallback, used only when its two sides are quoted within five cents, and the card says so. With neither, the card says <b>no price</b> and Model A makes the pick. Availability comes from ESPN's injury report: every player not listed Out counts as playing.</p>
     <p class="nba-lede"><b>What the backtest knew that a live pick would not:</b> who actually played, from the box score. A live pick would know only the injury report before tip-off. The registration measures that gap (M2) once there are live games to measure it on.</p>
     <h2 class="section-title">The games</h2>
     <p class="nba-lede">Box scores are ESPN&#39;s. Where ESPN&#39;s is empty (about 500 games of 2015-16 to 2017-18, and six play-in games of 2020-21) they come from SportsDataverse&#39;s copy, and the few games neither has are left out and named in the repository.</p>
@@ -166,7 +516,7 @@ function showPage(name, opts){
   window.scrollTo(0, 0);
   const page = document.getElementById('page-' + name);
   const heading = page && page.querySelector('.page-head h2');
-  document.title = name === 'season' || !heading ? BASE_TITLE : `${heading.textContent.trim()} — Pick'em Model`;
+  document.title = name === 'board' || !heading ? BASE_TITLE : `${heading.textContent.trim()} — Pick'em Model`;
   if(opts && opts.focus && heading){
     heading.setAttribute('tabindex', '-1');
     heading.focus({preventScroll: true});
@@ -191,11 +541,13 @@ document.querySelectorAll('#theme-toggle, .topbar-theme').forEach(btn => btn.add
   else document.documentElement.removeAttribute('data-theme');
   try{ localStorage.setItem('site:theme', next); }catch(e){}
   themeLabel();
+  renderBoard();
 }));
 
 document.getElementById('built-line').textContent = `Built ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', year: 'numeric'})}`;
+document.getElementById('board-updated').textContent = `Updated ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})} ET${BD.schedule_as_of ? `, schedule as of ${BD.schedule_as_of}` : ''}`;
 themeLabel();
-renderSeason();
+renderBoard();
 renderModelLab();
 renderMethod();
 renderReliability();

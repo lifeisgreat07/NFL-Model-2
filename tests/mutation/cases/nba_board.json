@@ -1,0 +1,41 @@
+{
+  "target": "src/sports/nba/pages/nba.js",
+  "tests": "tests/test_nba_board.py",
+  "cases": [
+    {
+      "id": "nba-board-lock-time-hour-only",
+      "why": "the page drops the evening run's minutes, so every game it says locks at 5:30 PM is shown locking at 5 PM, a time no run keeps",
+      "find": "const LOCK_RUNS_UTC = [[16, 0], [21, 30]];",
+      "replace": "const LOCK_RUNS_UTC = [[16, 0], [21, 0]];",
+      "expect_caught_by": "test_the_page_uses_the_lock_rules_own_runs_and_slack"
+    },
+    {
+      "id": "nba-board-kalshi-unlabelled",
+      "why": "a Kalshi-priced pick reads like an ESPN one, which is the silent switch the registration rules out",
+      "find": "  if(p.source === 'kalshi'){\n",
+      "replace": "  if(false){\n",
+      "expect_caught_by": "test_a_kalshi_price_says_it_is_the_fallback"
+    },
+    {
+      "id": "nba-board-no-price-unsaid",
+      "why": "a pick with no price says nothing about it, so a reader takes Model A's pick for Model B's",
+      "find": "  if(!m) return `Market: <b>no price</b>${p.why ? ` (${escapeHtml(p.why)})` : ''}, so Model A made the pick`;",
+      "replace": "  if(!m) return '';",
+      "expect_caught_by": "test_no_price_is_said_with_its_reason_and_model_a_makes_the_pick"
+    },
+    {
+      "id": "nba-board-out-names-unescaped",
+      "why": "a player's name from ESPN's report goes into the page as HTML",
+      "find": "(out: ${names.map(escapeHtml).join(', ')})",
+      "replace": "(out: ${names.join(', ')})",
+      "expect_caught_by": "test_availability_names_who_is_out_and_says_when_the_report_was_not_read"
+    },
+    {
+      "id": "nba-board-unread-report-hidden",
+      "why": "a pick made without the injury report shows an availability line anyway",
+      "find": "  if(!p.avail || !p.avail.read) return 'Injury report: <b>not read</b> when the pick was saved, so both models ran without availability';",
+      "replace": "  if(!p.avail) return '';",
+      "expect_caught_by": "test_availability_names_who_is_out_and_says_when_the_report_was_not_read"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "target": "src/site/home.py",
+  "tests": "tests/test_site_home.py",
+  "cases": [
+    {
+      "id": "home-nba-play-in-dropped",
+      "why": "the NBA's card counts only regular-season and playoff games, so play-in nights read as no games",
+      "find": "    f = day_sport_facts('nba', ('regular', 'playin', 'playoff'), root, now)",
+      "replace": "    f = day_sport_facts('nba', ('regular', 'playoff'), root, now)",
+      "expect_caught_by": "test_the_nba_card_is_live_as_the_nhls_is_play_in_included"
+    },
+    {
+      "id": "home-nba-not-built-before-first-run",
+      "why": "before the daily run's first schedule the NBA's card says 'not built' and its pill is removed, though its page is built",
+      "find": "    return f if f['built'] else {'built': True, 'games': [], 'record': {'label': 'Picks this season', 'won': 0, 'lost': 0}}",
+      "replace": "    return f",
+      "expect_caught_by": "test_a_sport_with_no_files_says_so_rather_than_vanishing"
+    }
+  ]
+}

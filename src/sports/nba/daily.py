@@ -24,7 +24,9 @@ in order:
    written once and never rewritten.
 6. **Grade.** Every saved pick whose game is final is scored; a cancelled
    game is marked cancelled and never counted (`results/nba/graded_<season>.json`).
-7. **Drift.** Model A's per-game log loss against the registered baseline
+7. **Page inputs.** The season's schedule as ESPN lists it now, for the
+   board (`src/sports/nba/page_inputs.py`), written every run.
+8. **Drift.** Model A's per-game log loss against the registered baseline
    (`results/nba/drift_<season>.json`); a flag prints a line the workflow
    turns into an alert.
 
@@ -42,7 +44,15 @@ import numpy as np
 import pandas as pd
 
 from src.core.sport import GameStatus, sport_paths
-from src.sports.nba import backtest, drift, history, injuries, market, ratings
+from src.sports.nba import (
+    backtest,
+    drift,
+    history,
+    injuries,
+    market,
+    page_inputs,
+    ratings,
+)
 from src.sports.nba import schedule as nba_schedule
 from src.sports.nba.lock import GameLock
 
@@ -265,6 +275,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         market.record(prices, PATHS.data / 'lines' / f'{season}.json')
     graded = grade(folder, sched)
     PATHS.results.mkdir(parents=True, exist_ok=True)
+    page_inputs.write(PATHS.results / f'schedule_{season}.json', page_inputs.schedule_json(sched, str(today.date())))
     (PATHS.results / f'graded_{season}.json').write_text(json.dumps(graded, indent=1) + '\n', encoding='utf-8')
     spec = drift.baseline()
     losses = drift.per_game_log_loss(drift_rows(folder, sched))
