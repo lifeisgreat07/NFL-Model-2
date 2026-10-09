@@ -101,7 +101,7 @@ def fake_bytes(bad=()):
     def get(url):
         if any(b in url for b in bad):
             raise OSError('HTTP Error 404: Not Found')
-        assert url.startswith(probe.HOOPR), url
+        assert url.startswith((probe.HOOPR, probe.INJURIES)), url
         return PARQUET
     return get
 
@@ -115,6 +115,10 @@ GOOD = {
     'todaysScoreboard': {'scoreboard': {'games': []}},
     'odds_todaysGames': {'games': []},
     'scheduleLeagueV2': {'leagueSchedule': {'gameDates': [{}]}},
+    'draftkings.com': None,   # filled below, once the helpers exist
+    'kalshi.com': None,
+    'polymarket.com': None,
+    'timestamp.json': {'last_updated': '2026-10-08 15:12:01 EDT'},
 }
 NOW = __import__('datetime').datetime(2026, 10, 6, tzinfo=__import__('datetime').UTC)
 
@@ -127,7 +131,7 @@ def test_every_required_source_usable_exits_zero_and_reads_this_seasons_files(ca
         return PARQUET
     assert probe.main(get=fake_get(GOOD), get_bytes=get_bytes, now=NOW) == 0
     assert [u.rsplit('/', 1)[1] for u in seen] == ['nba_schedule_2027.parquet', 'team_box_2026.parquet',
-                                                    'player_box_2026.parquet']
+                                                    'player_box_2026.parquet', 'injuries_2027.parquet']
     assert 'all usable from here' in capsys.readouterr().out
 
 
@@ -153,3 +157,68 @@ def test_the_workflow_runs_the_probe_on_its_own_pull_requests_and_writes_nothing
     assert 'python -m src.sports.nba.data_probe' in wf
     assert re.search(r'permissions:\s*\n\s*contents: read\s*\n', wf)
     assert 'git-auto-commit' not in wf and 'git add' not in wf and 'git push' not in wf
+
+
+# ---------------------------------------------------------------- Stage 65: a price and an injury list
+
+def draftkings(odds=(1.84, 2.05), start='2026-10-20T19:00:00.0000000Z', market='Moneyline'):
+    return {'events': [{'id': '1', 'startEventDate': start}],
+            'markets': [{'id': 'm1', 'eventId': '1', 'marketType': {'name': market}}],
+            'selections': [{'marketId': 'm1', 'trueOdds': o} for o in odds]}
+
+
+def kalshi(bid='0.4500', ask='0.4700', ticker='KXNBAGAME-26OCT20BOSDET'):
+    return {'markets': [{'event_ticker': ticker, 'yes_bid_dollars': bid, 'yes_ask_dollars': ask}]}
+
+
+def polymarket(prices='["0.535", "0.465"]', tag='games'):
+    return [{'title': 'Rockets vs. Mavericks', 'tags': [{'slug': 'nba'}, {'slug': tag}],
+             'markets': [{'outcomes': '["Rockets", "Mavericks"]', 'outcomePrices': prices}]}]
+
+
+GOOD.update({'draftkings.com': draftkings(), 'kalshi.com': kalshi(), 'polymarket.com': polymarket()})
+
+
+def test_a_draftkings_moneyline_needs_both_sides_and_a_start():
+    assert probe.check_draftkings(draftkings()) == []
+    assert probe.check_draftkings(draftkings(odds=(1.84,))) != []
+    assert probe.check_draftkings(draftkings(start=None)) != []
+    assert probe.check_draftkings(draftkings(market='Spread')) == ['no Moneyline market']
+    assert probe.check_draftkings({}) == ['no NBA events']
+
+
+def test_a_kalshi_game_needs_a_bid_and_an_ask():
+    assert probe.check_kalshi(kalshi()) == []
+    assert probe.check_kalshi(kalshi(bid='0.0000')) != []
+    assert probe.check_kalshi(kalshi(bid='0.6000', ask='0.4000')) != [], 'a bid above the ask is not a quote'
+    assert probe.check_kalshi(kalshi(ticker='KXNBA-26-OKC')) == ['no NBA game markets'], 'a futures market is not a game'
+
+
+def test_a_polymarket_game_needs_a_two_way_price():
+    assert probe.check_polymarket(polymarket()) == []
+    assert probe.check_polymarket(polymarket(tag='nba-finals')) == ['no NBA game events']
+    assert probe.check_polymarket(polymarket(prices='["0.9", "0.9"]')) != []
+    assert probe.check_polymarket({}) == ['no list of events']
+
+
+def test_the_injury_release_is_read_for_this_season():
+    assert probe.check_timestamp({'last_updated': 'x'}) == [] and probe.check_timestamp({}) != []
+    names = [n for n, _, _ in probe.candidates(fake_get(GOOD), fake_bytes(), NOW)]
+    assert 'SportsDataverse injuries 2027' in names
+
+
+def test_on_a_runner_one_notice_sums_every_source_up(capsys, monkeypatch):
+    monkeypatch.setenv('GITHUB_ACTIONS', 'true')
+    refused = dict(GOOD, **{'kalshi.com': OSError('HTTP Error 403: Forbidden')})
+    assert probe.main(get=fake_get(refused), get_bytes=fake_bytes(), now=NOW) == 0
+    notices = [ln for ln in capsys.readouterr().out.splitlines() if ln.startswith('::notice')]
+    assert len(notices) == 1
+    for part in ('DraftKings NBA moneylines: ok', 'Kalshi NBA game markets: UNREACHABLE',
+                 'Polymarket NBA games: ok', 'SportsDataverse injuries 2027: ok', 'hoopR schedule 2027: ok'):
+        assert part in notices[0], part
+
+
+def test_off_a_runner_there_is_no_notice(capsys, monkeypatch):
+    monkeypatch.delenv('GITHUB_ACTIONS', raising=False)
+    probe.main(get=fake_get(GOOD), get_bytes=fake_bytes(), now=NOW)
+    assert '::notice' not in capsys.readouterr().out
