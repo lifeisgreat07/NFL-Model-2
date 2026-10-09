@@ -40,8 +40,8 @@
     {
       "id": "config-version-bumped-without-the-state",
       "why": "MODEL_VERSION moves on while CLAUDE.md still describes the last model to every new session.",
-      "find": "MODEL_VERSION = \"2.5\"\n",
-      "replace": "MODEL_VERSION = \"2.6\"\n",
+      "find": "MODEL_VERSION = \"2.6\"\n",
+      "replace": "MODEL_VERSION = \"2.7\"\n",
       "expect_caught_by": "test_the_model_version_is_the_one_claude_md_describes"
     }
   ]

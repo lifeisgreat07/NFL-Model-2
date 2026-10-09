@@ -118,6 +118,7 @@ CASES = {
     'neutral_no_venue': {'home': 'JAX', 'neutral': True, 'venue': None},
     'home_game': {'home': 'JAX', 'neutral': False, 'venue': 'EverBank Stadium'},
     'escaped': {'home': 'JAX', 'neutral': True, 'venue': 'A <b>'},
+    'edge_out': {'home': 'JAX', 'neutral': True, 'venue': 'Wembley Stadium', 'edge_out': True},
 }
 
 
@@ -134,9 +135,22 @@ def lines():
     return json.loads(r.stdout)
 
 
-def test_the_card_says_neutral_site_and_who_keeps_the_home_edge(lines):
-    assert lines['neutral_with_venue'] == 'Neutral site · Wembley Stadium. The models still give JAX the home edge.'
-    assert lines['neutral_no_venue'] == 'Neutral site. The models still give JAX the home edge.'
+def test_a_pick_saved_before_v2_6_says_the_models_gave_the_home_edge(lines):
+    """Saved picks are never rewritten, so a card shows the edge its pick was
+    made with: an international game picked under v2.5 keeps its edge."""
+    assert lines['neutral_with_venue'] == ('Neutral site · Wembley Stadium. The models gave JAX the home edge '
+                                           '(picks saved before v2.6).')
+    assert lines['neutral_no_venue'] == 'Neutral site. The models gave JAX the home edge (picks saved before v2.6).'
+
+
+def test_a_v2_6_pick_says_neither_model_gives_a_home_edge(lines):
+    assert lines['edge_out'] == 'Neutral site · Wembley Stadium. Neither model gives JAX a home edge here.'
+
+
+def test_the_page_carries_whether_the_pick_took_the_edge_out():
+    game = gd.build_games_js([_pick(neutral_site=True, home_edge_removed=True)], {}, {})[0]
+    assert game['edge_out'] is True
+    assert gd.build_games_js([_pick(neutral_site=True)], {}, {})[0]['edge_out'] is False
 
 
 def test_a_home_game_draws_nothing(lines):

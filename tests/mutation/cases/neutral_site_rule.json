@@ -1,0 +1,48 @@
+{
+  "target": "src/sports/nfl/weekly_update.py",
+  "tests": "tests/test_neutral_site_rule.py",
+  "cases": [
+    {
+      "id": "n1-rule-never-fires",
+      "why": "the v2.6 rule is switched off while the version still says 2.6: every neutral-site pick keeps the home edge the registration says it has lost.",
+      "find": "        edge_out = neutral is True\n",
+      "replace": "        edge_out = False\n",
+      "expect_caught_by": "test_at_a_neutral_site_both_models_lose_exactly_their_intercept"
+    },
+    {
+      "id": "n1-rule-fires-on-unknown-sites",
+      "why": "a game the schedule does not place is treated as neutral, so ordinary home games lose their home edge whenever a column is missing.",
+      "find": "        edge_out = neutral is True\n",
+      "replace": "        edge_out = neutral is not False\n",
+      "expect_caught_by": "test_a_game_the_schedule_does_not_place_keeps_the_home_edge"
+    },
+    {
+      "id": "n1-rule-skips-model-b",
+      "why": "only Model A loses the home edge; Model B, the one the page leads with, keeps it at a neutral site.",
+      "find": "            if edge_out:\n                prob_b = without_home_edge(prob_b, model_b.intercept_[0])\n",
+      "replace": "",
+      "expect_caught_by": "test_at_a_neutral_site_both_models_lose_exactly_their_intercept"
+    },
+    {
+      "id": "n1-rule-uses-the-wrong-intercept",
+      "why": "Model B is shifted by Model A's intercept, which has the opposite sign: B moves away from the home side instead of toward it.",
+      "find": "                prob_b = without_home_edge(prob_b, model_b.intercept_[0])\n",
+      "replace": "                prob_b = without_home_edge(prob_b, model_a.intercept_[0])\n",
+      "expect_caught_by": "test_at_a_neutral_site_both_models_lose_exactly_their_intercept"
+    },
+    {
+      "id": "n1-shift-sign-flipped",
+      "why": "the intercept is added rather than removed, doubling the home edge at exactly the games the rule exists for.",
+      "find": "    return float(1 / (1 + np.exp(-(logit - float(intercept)))))\n",
+      "replace": "    return float(1 / (1 + np.exp(-(logit + float(intercept)))))\n",
+      "expect_caught_by": "test_without_home_edge_is_the_backchecks_function"
+    },
+    {
+      "id": "n1-pick-does-not-record-the-rule",
+      "why": "the pick stops saying the edge was taken out, so a v2.6 card at Wembley says the models gave the home team the edge.",
+      "find": "            'home_edge_removed': edge_out,\n",
+      "replace": "",
+      "expect_caught_by": "test_at_a_neutral_site_both_models_lose_exactly_their_intercept"
+    }
+  ]
+}

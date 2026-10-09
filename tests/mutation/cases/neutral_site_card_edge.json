@@ -1,0 +1,20 @@
+{
+  "target": "src/dashboard/app.js",
+  "tests": "tests/test_neutral_site.py",
+  "cases": [
+    {
+      "id": "card-ignores-edge-out",
+      "why": "every neutral-site card says the models gave the home team the edge, including v2.6 picks that did not.",
+      "find": "  if(g.edge_out) return `Neutral site${where}. Neither model gives ${escapeHtml(g.home)} a home edge here.`;\n",
+      "replace": "",
+      "expect_caught_by": "test_a_v2_6_pick_says_neither_model_gives_a_home_edge"
+    },
+    {
+      "id": "card-says-every-pick-lost-the-edge",
+      "why": "a pick saved before v2.6 is described as if the new rule had applied to it, which is not the pick that was saved.",
+      "find": "  if(g.edge_out) return",
+      "replace": "  if(true) return",
+      "expect_caught_by": "test_a_pick_saved_before_v2_6_says_the_models_gave_the_home_edge"
+    }
+  ]
+}

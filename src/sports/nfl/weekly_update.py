@@ -665,6 +665,14 @@ def with_usual_stadium(sched: pd.DataFrame, rows: pd.DataFrame) -> pd.DataFrame:
     return rows.assign(home_usual_stadium=rows['home_team'].map(usual))
 
 
+def without_home_edge(p: float, intercept: float) -> float:
+    """Stage 38 N1: a model's home-win probability with its intercept, the
+    home edge, taken out of the logit. The back-check
+    (src/sports/nfl/research/neutral_site_backcheck.py) did exactly this."""
+    logit = float(np.log(p / (1 - p)))
+    return float(1 / (1 + np.exp(-(logit - float(intercept)))))
+
+
 def site_is_neutral(game: pd.Series) -> bool | None:
     """True at a neutral site, False at the home team's, None when the
     schedule does not say (Stage 37 item 6).
@@ -1084,7 +1092,15 @@ def predict_week(week_games: pd.DataFrame, started: set[tuple[str, str]], curren
 
         qb_change_diff = home_qb_changed - away_qb_changed
 
+        # Stage 38 N1 (MODEL_VERSION 2.6, experiments/nfl/stage38/n1_registry.json):
+        # at a game the schedule calls neutral, neither model gives the listed
+        # home team a home edge. A game it does not place (None) keeps it.
+        neutral = site_is_neutral(g)
+        edge_out = neutral is True
+
         prob_a = model_a.predict_proba([[off_matchup, def_matchup, qb_matchup, qb_change_diff]])[0][1]
+        if edge_out:
+            prob_a = without_home_edge(prob_a, model_a.intercept_[0])
 
         # "Why" breakdown: each feature's raw contribution to the log-odds,
         # i.e. coefficient * feature value. Signed toward home team (positive
@@ -1101,6 +1117,8 @@ def predict_week(week_games: pd.DataFrame, started: set[tuple[str, str]], curren
         spread = g.get('spread_line', np.nan)
         if pd.notna(spread):
             prob_b = model_b.predict_proba([[off_matchup, def_matchup, qb_matchup, qb_change_diff, spread]])[0][1]
+            if edge_out:
+                prob_b = without_home_edge(prob_b, model_b.intercept_[0])
             mkt = market_prob(spread)
         else:
             prob_b, mkt = None, None
@@ -1127,13 +1145,15 @@ def predict_week(week_games: pd.DataFrame, started: set[tuple[str, str]], curren
         predictions.append({
             'season': season, 'week': week, 'home': home, 'away': away,
             # Stage 37 item 6: a game at a neutral site (London, Munich,
-            # Sao Paulo...) still has a listed home team, and both models
-            # still give it the home edge; the card says so. nflverse's
+            # Sao Paulo...) still has a listed home team. nflverse's
             # `location` is 'Home' or 'Neutral', and a game away from the
             # home team's usual stadium counts too (see site_is_neutral).
             # Optional columns: absent means unknown (None), never a
-            # guessed False.
-            'neutral_site': site_is_neutral(g),
+            # guessed False. Since v2.6 (Stage 38 N1) neither model gives
+            # that team the home edge, and the pick records that it did not,
+            # so the card can tell a v2.6 pick from an earlier one.
+            'neutral_site': neutral,
+            'home_edge_removed': edge_out,
             'venue': _venue(g),
             'gameday': str(gameday) if pd.notna(gameday) else None,
             'gametime_et': str(gametime) if pd.notna(gametime) else None,

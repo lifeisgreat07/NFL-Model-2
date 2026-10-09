@@ -4,8 +4,8 @@
   "cases": [
     {
       "id": "not-shown-loses-the-neutral-site-gap",
-      "why": "the line saying neutral-site games keep a home edge goes, and a reader comparing an international game's pick to the market has no way to know why it leans to the listed home team.",
-      "find": "        <li><b style=\"color:var(--text)\">Neutral-site games are treated as home games.</b>",
+      "why": "the line saying neutral-site picks saved before v2.6 kept a home edge goes, and a reader comparing an earlier international game's pick to the market has no way to know why it leans to the listed home team.",
+      "find": "        <li><b style=\"color:var(--text)\">Neutral-site picks saved before v2.6 gave the listed home team a home edge.</b>",
       "replace": "        <li><b style=\"color:var(--text)\">Some games are played abroad.</b>",
       "expect_caught_by": "test_methodology_names_each_gap_once"
     }

@@ -19,8 +19,8 @@
     {
       "id": "readme-names-an-old-model-version",
       "why": "the model section's heading keeps naming a version after the model has moved on -- it said v2 through v2.5.",
-      "find": "## Current model (v2.5)",
-      "replace": "## Current model (v2.4)",
+      "find": "## Current model (v2.6)",
+      "replace": "## Current model (v2.5)",
       "expect_caught_by": "test_the_model_version_it_names_is_the_live_one"
     },
     {

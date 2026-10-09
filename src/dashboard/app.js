@@ -1495,15 +1495,16 @@ function gameHasScore(g){
     && g.home_score !== null && g.home_score !== undefined;
 }
 
-/* A neutral site (Stage 37 item 6). The game still has a listed home team
-   and both models still give it the home edge, which at Wembley is a
-   modelling choice the reader should see, not find in the Methodology page.
-   Whether a neutral game should lose the home term is a registration for
-   Mark (Stage 38), not something this line decides. */
+/* A neutral site (Stage 37 item 6). The game still has a listed home team.
+   From v2.6 (Stage 38 N1, experiments/nfl/stage38/n1_registry.json) neither
+   model gives it the home edge, and the pick records that (edge_out). A pick
+   saved before v2.6 did give it the edge, and its card still says so: the
+   card describes the pick that was saved, never the model that came after. */
 function cardSiteLine(g){
   if(!g.neutral) return '';
   const where = g.venue ? ` · ${escapeHtml(g.venue)}` : '';
-  return `Neutral site${where}. The models still give ${escapeHtml(g.home)} the home edge.`;
+  if(g.edge_out) return `Neutral site${where}. Neither model gives ${escapeHtml(g.home)} a home edge here.`;
+  return `Neutral site${where}. The models gave ${escapeHtml(g.home)} the home edge (picks saved before v2.6).`;
 }
 
 function cardStatusLine(g){
