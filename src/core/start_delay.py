@@ -20,8 +20,11 @@ The clock is read when this step runs, a few seconds after the job starts
 (checkout and Python's set-up), so the delay is that much later than the
 run's own `run_started_at`: small next to the hours it is there to show.
 
-A run started by hand at an odd time is measured against the latest slot
-before it, which is the slot it serves.
+A run GitHub's cron started always serves a slot. A dispatched run (by
+cron-job.org at a slot, or by hand) serves one only if it started within
+`OFF_SLOT_HOURS` of it; later than that it was started by hand for its own
+reason, and the line says so instead of calling it a day late, with no
+warning.
 
 Run with: python -m src.core.start_delay .github/workflows/<file>.yml
 """
@@ -35,6 +38,8 @@ from pathlib import Path
 
 #: A start this late or later is warned about.
 WARN_HOURS = 7
+#: A dispatched run this long after the last slot is not serving it.
+OFF_SLOT_HOURS = 12
 #: How far back to look for a slot: every workflow here runs at least weekly.
 LOOKBACK = timedelta(days=8)
 CRON_LINE = re.compile(r'''^\s*-\s*cron:\s*['"]([^'"]+)['"]''', re.M)
@@ -112,6 +117,19 @@ def latest_slot(exprs: list[str], now: datetime) -> tuple[datetime, str] | None:
     return max(found) if found else None
 
 
+def served_delay(exprs: list[str], started: datetime, event: str | None) -> timedelta | None:
+    """How late a run started for the slot it served, or None when it served
+    none: no slot found, or a dispatched run more than OFF_SLOT_HOURS after
+    the last one."""
+    slot = latest_slot(exprs, started)
+    if slot is None:
+        return None
+    delay = started - slot[0]
+    if event != 'schedule' and delay > timedelta(hours=OFF_SLOT_HOURS):
+        return None
+    return delay
+
+
 def hm(delta: timedelta) -> str:
     minutes = int(delta.total_seconds() // 60)
     return f'{minutes // 60}h {minutes % 60:02d}m'
@@ -128,6 +146,9 @@ def report(workflow_text: str, now: datetime, event: str | None) -> tuple[str, b
     at, expr = slot
     delay = now - at
     by = f', started by {event}' if event else ''
+    if served_delay(exprs, now, event) is None:
+        return (f"Start delay: none; started by {event or 'hand'} {hm(delay)} after the last slot "
+                f"({at:%a %H:%M} UTC), so it serves no slot."), False
     line = (f"Start delay: {hm(delay)} after the {at:%a %H:%M} UTC slot (cron '{expr}'){by}.")
     return line, delay >= timedelta(hours=WARN_HOURS)
 

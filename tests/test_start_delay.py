@@ -48,6 +48,21 @@ def test_seven_hours_warns_and_a_minute_less_does_not():
     assert not sd.report(REFRESH, at('2026-10-09T12:16:00'), 'schedule')[1]
 
 
+def test_a_hand_run_long_after_a_slot_is_not_called_late():
+    line, warn = sd.report(REFRESH, at('2026-10-08T12:20:00'), 'workflow_dispatch')
+    assert line.startswith('Start delay: none; started by workflow_dispatch') and not warn
+
+
+def test_a_cron_run_is_always_measured_however_late():
+    line, warn = sd.report(REFRESH, at('2026-10-09T18:00:00'), 'schedule')
+    assert line.startswith('Start delay: 12h 43m') and warn
+
+
+def test_a_dispatch_within_the_window_is_measured():
+    assert sd.served_delay(sd.crons(REFRESH), at('2026-10-09T17:17:00'), 'workflow_dispatch') == timedelta(hours=12)
+    assert sd.served_delay(sd.crons(REFRESH), at('2026-10-09T17:18:00'), 'workflow_dispatch') is None
+
+
 def test_the_warning_comes_before_the_lock_slack():
     """At eight hours a Thursday run no longer locks before kickoff; the
     warning must come first."""
