@@ -1,0 +1,37 @@
+{
+  "target": "assets/site.webmanifest",
+  "tests": "tests/test_web_manifest.py",
+  "cases": [
+    {
+      "id": "manifest-start-here",
+      "why": "the start address resolves to assets/, so a home-screen launch opens a folder listing, not the site.",
+      "find": "\"start_url\": \"../\",",
+      "replace": "\"start_url\": \"./\",",
+      "expect_caught_by": "test_start_and_scope_are_the_site_root_from_where_the_manifest_sits"
+    },
+    {
+      "id": "manifest-csp-refused",
+      "why": "the home page's policy no longer allows the manifest, so default-src 'none' refuses it.",
+      "find": "connect-src 'none'; manifest-src 'self';",
+      "replace": "connect-src 'none';",
+      "expect_caught_by": "test_every_pages_policy_lets_it_load",
+      "target": "src/site/home/page.html"
+    },
+    {
+      "id": "manifest-link-misaimed",
+      "why": "the NFL page links the manifest from its own folder, where the build does not put it.",
+      "find": "<link rel=\"manifest\" href=\"../assets/site.webmanifest\">",
+      "replace": "<link rel=\"manifest\" href=\"assets/site.webmanifest\">",
+      "expect_caught_by": "test_every_page_links_it_where_the_build_puts_it",
+      "target": "src/dashboard/page.html"
+    },
+    {
+      "id": "manifest-not-published",
+      "why": "the build stops publishing the manifest, so every page links a missing file.",
+      "find": "    'assets/site.webmanifest': 'assets/site.webmanifest',\n",
+      "replace": "",
+      "expect_caught_by": "test_the_build_publishes_it",
+      "target": "src/site/build.py"
+    }
+  ]
+}

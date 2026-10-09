@@ -26,7 +26,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 CSP = ("default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
        "img-src 'self' data: https://a.espncdn.com https://assets.nhle.com; font-src data:; connect-src 'none'; "
-       "base-uri 'none'; form-action 'none'")
+       "manifest-src 'self'; base-uri 'none'; form-action 'none'")
 META = f'<meta http-equiv="Content-Security-Policy" content="{CSP}">'
 PAGES = ['src/dashboard/page.html', 'src/sports/nhl/pages/page.html', 'src/sports/nba/pages/page.html',
          'src/site/home/page.html']

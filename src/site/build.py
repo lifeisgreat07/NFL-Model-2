@@ -51,6 +51,7 @@ SHARED_FILES = {
     'og-card.png': 'assets/og/og-card.png',
     'assets/favicon.svg': 'assets/favicon.svg',
     'assets/apple-touch-icon.png': 'assets/apple-touch-icon.png',
+    'assets/site.webmanifest': 'assets/site.webmanifest',
 }
 
 #: What the root redirect and the home page say about themselves, so a live

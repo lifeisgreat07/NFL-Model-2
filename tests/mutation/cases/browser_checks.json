@@ -152,6 +152,38 @@
       "find": "new ResizeObserver(write).observe(bar, {box: 'border-box'});",
       "replace": "new ResizeObserver(write).observe(bar);",
       "expect_caught_by": "test_the_page_writes_the_bar_height_it_reads"
+    },
+    {
+      "id": "render-budget-never-judged",
+      "why": "the render times are read but never compared with the budget, so a page that works for seconds before it loads passes (Stage 47 item 13).",
+      "find": "        if timings and min(timings)[0] > RENDER_BUDGET_MS:",
+      "replace": "        if False:",
+      "expect_caught_by": "test_the_render_budget_takes_the_fastest_width_with_the_network_blocked",
+      "target": "tests/browser/check_page.py"
+    },
+    {
+      "id": "render-budget-slowest-width",
+      "why": "the slowest width decides, so one slow moment on a runner fails a page that is fast everywhere else.",
+      "find": "min(timings)[0] > RENDER_BUDGET_MS",
+      "replace": "max(timings)[0] > RENDER_BUDGET_MS",
+      "expect_caught_by": "test_the_render_budget_takes_the_fastest_width_with_the_network_blocked",
+      "target": "tests/browser/check_page.py"
+    },
+    {
+      "id": "render-budget-raised",
+      "why": "the budget is raised tenfold without a reason, so it no longer catches anything.",
+      "find": "RENDER_BUDGET_MS = 1500",
+      "replace": "RENDER_BUDGET_MS = 15000",
+      "expect_caught_by": "test_the_thresholds_are_what_the_rules_say",
+      "target": "tests/browser/check_page.py"
+    },
+    {
+      "id": "render-fixture-gone",
+      "why": "the render rule loses the page built to break it, so its self-test proves nothing.",
+      "find": "    'render': dict(body='<p>slow</p>',",
+      "replace": "    'render_gone': dict(body='<p>slow</p>',",
+      "expect_caught_by": "test_every_rule_has_a_fixture_that_breaks_it",
+      "target": "tests/browser/check_page.py"
     }
   ]
 }

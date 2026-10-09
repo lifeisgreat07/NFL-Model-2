@@ -63,6 +63,15 @@ FAIL_IMPACTS = ('serious', 'critical')
 # decision with a reason in the commit, not a reflex. (It was 1,000,000
 # before Stage 26, set against the page with comments and indentation.)
 BYTE_BUDGET = 800_000
+# Stage 47 item 13: a render-time budget beside the byte budget. The time from
+# navigation to the load event, with the network blocked (so only the page's
+# own work counts), the fastest of the six widths: one slow runner moment at
+# one width is not the page. Measured 2026-10-09 in Chromium: the NFL board,
+# the heaviest page, at 210-310 ms; the home page about 80 ms. 1,500 ms is
+# about five times the heaviest, room for a slower runner, and still catches
+# a page that starts doing seconds of work before it shows anything.
+RENDER_BUDGET_MS = 1500
+RENDER_JS = "(() => { const n = performance.getEntriesByType('navigation')[0]; return n ? n.loadEventEnd : null; })()"
 TAB_CAP = 400
 
 PAGE_IDS_JS = "[...document.querySelectorAll('section.page')].map(s => s.id.replace(/^page-/, ''))"
@@ -216,7 +225,7 @@ SORTMARK_JS = """() => {
 }"""
 
 
-async def check_one(browser, url, width, network, axe_src, report):
+async def check_one(browser, url, width, network, axe_src, report, timings=None):
     mobile = width < MOBILE_BELOW
     ctx = await browser.new_context(viewport={'width': width, 'height': HEIGHT},
                                     is_mobile=mobile, has_touch=mobile,
@@ -232,6 +241,10 @@ async def check_one(browser, url, width, network, axe_src, report):
         await page.route(lambda u: u.startswith(('http://', 'https://')), lambda r: r.abort())
     await page.goto(url)
     await page.wait_for_timeout(300)
+    if timings is not None and not network:
+        t = await page.evaluate(RENDER_JS)
+        if t is not None:
+            timings.append((t, width))
     tag = f"{width}px, network {'on' if network else 'blocked'}"
     ids = await page.evaluate(PAGE_IDS_JS)
     if not ids:
@@ -325,9 +338,14 @@ async def check_page(path, axe_src=None, widths=WIDTHS, budget=BYTE_BUDGET):
     url = Path(path).resolve().as_uri()
     async with async_playwright() as p:
         browser = await p.chromium.launch()
+        timings = []
         for network in (False, True):
             for w in widths:
-                await check_one(browser, url, w, network, axe_src, report)
+                await check_one(browser, url, w, network, axe_src, report, timings)
+        if timings and min(timings)[0] > RENDER_BUDGET_MS:
+            fastest, at = min(timings)
+            report.append(f"render: {path} took {fastest:.0f} ms to load at its fastest ({at}px), "
+                          f"over the {RENDER_BUDGET_MS:,} ms budget")
         if widths:
             await check_forced_colours(browser, url, report)
         await browser.close()
@@ -355,6 +373,9 @@ FIXTURES = {
     'axe': dict(body='<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">', expect='axe'),
     'font': dict(body='<p>No self-hosted face here.</p>', expect='font'),
     'error': dict(body='<p>ok</p>', script='throw new Error("boom")', expect='page error'),
+    # Stage 47 item 13: a page that works for two seconds before it loads.
+    'render': dict(body='<p>slow</p>', script='const t0 = Date.now(); while (Date.now() - t0 < 2000) {}',
+                   expect='render:'),
     # A bar drawn as a background, with no forced-colours rule: the theme
     # paints it and its track the same Canvas colour.
     'forced': dict(body='<div style="background:#ddd;width:200px"><div class="srs-bar-fill" '
