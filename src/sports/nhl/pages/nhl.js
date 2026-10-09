@@ -194,7 +194,7 @@ function pickedCard(g, p){
   const [awayC, homeC] = p.colours;
   const graded = p.result === 'correct' || p.result === 'wrong';
   const tag = graded ? `<span class="graded-tag ${p.result === 'correct' ? 'correct' : 'incorrect'}">${p.result === 'correct' ? 'Correct' : 'Missed'}</span>`
-    : (p.result === 'cancelled' ? '<span class="graded-tag tie">Cancelled</span>' : '');
+    : (p.result === 'cancelled' ? '<span class="graded-tag tie">Cancelled</span>' : lockedTag(g, p));
   const m = p.market;
   const market = m
     ? `Market (${escapeHtml(m.book || 'sportsbook')}): ${g.away} <b>${american(m.ap)}</b> · ${g.home} <b>${american(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))} with the margin out`
@@ -204,6 +204,7 @@ function pickedCard(g, p){
     <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
     <div class="card-kickoff">${startLabel(g)}</div>
     ${status ? `<div class="nhl-card-status">${status}</div>` : ''}
+    ${resultLine(g, p)}
     ${tag ? `<div class="game-top"><div class="tag-row">${tag}</div></div>` : ''}
     <div class="card-hl">${headline}</div>
     <div class="card-viz" role="img" aria-label="${escapeHtml(aria)}">
@@ -222,6 +223,64 @@ function pickedCard(g, p){
     <div class="card-qbs">Goalies: ${goalieText(g.away, p.goalies.away)} · ${goalieText(g.home, p.goalies.home)}</div>
   </div>`;
 }
+/* Stage 63: what a card says about its pick's state. A saved pick is a
+   locked pick: the daily run writes a game's pick file only when it locks
+   it, at the last run before puck drop (src/sports/nhl/lock.py). */
+const LOCK_RUN_HOURS_UTC = [14, 21];        // lock.py's RUNS_UTC, every day
+const LOCK_SLACK_MS = 60 * 60 * 1000;       // lock.py's SLACK
+/* The run that will save a game starting at `startIso`: the first run before
+   the start whose next run, plus the slack, would come too late. The same
+   rule as GameLock.decide; tests/test_nhl_board_states.py runs both. */
+function lockRunFor(startIso){
+  const start = Date.parse(startIso);
+  if(Number.isNaN(start)) return null;
+  const runs = [];
+  const day0 = new Date(start - 3 * 86400000);
+  for(let d = 0; d <= 4; d++){
+    LOCK_RUN_HOURS_UTC.forEach(h => runs.push(Date.UTC(day0.getUTCFullYear(), day0.getUTCMonth(), day0.getUTCDate() + d, h)));
+  }
+  runs.sort((x, y) => x - y);
+  for(let i = 0; i < runs.length - 1; i++){
+    if(runs[i] >= start) break;
+    if(start < runs[i + 1] + LOCK_SLACK_MS) return new Date(runs[i]);
+  }
+  return null;
+}
+const FMT_WHEN = new Intl.DateTimeFormat('en-US', {weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: ET});
+function whenEt(d){ return `${FMT_WHEN.format(d)} ET`; }
+/* An unsaved game that has not started: when its pick will lock, or that
+   the run that should have locked it has passed without saving it. */
+function lockNote(g, nowMs){
+  const run = g.start ? lockRunFor(g.start) : null;
+  if(!run) return 'The pick locks at the last run before puck drop (14:00 or 21:00 UTC).';
+  if(run.getTime() + LOCK_SLACK_MS < nowMs) return `The pick was due to lock ${whenEt(run)} and has not been saved yet.`;
+  return `The pick locks ${whenEt(run)}, at the last run before puck drop.`;
+}
+/* A model's side is the side of 50% its chance for the home team falls on,
+   the rule the saved pick follows (exactly 50% picks the home team). */
+function modelSide(prob, g){ return prob === null || prob === undefined ? null : (prob >= 0.5 ? g.home : g.away); }
+function winnerOf(g){
+  if(g.status !== 'final' || g.hs === null || g.hs === undefined || g.as === null || g.as === undefined || g.hs === g.as) return null;
+  return g.hs > g.as ? g.home : g.away;
+}
+/* A played game: the winner, and each model's side with right or wrong. */
+function resultLine(g, p){
+  const won = winnerOf(g);
+  if(!won) return '';
+  const one = (label, prob) => {
+    const s = modelSide(prob, g);
+    return s === null ? '' : `<span class="nhl-model-result">${label} ${s}, <b>${s === won ? 'right' : 'wrong'}</b></span>`;
+  };
+  const market = p.market ? one('Market', p.market.prob) : '';
+  return `<div class="nhl-result-line">Winner <b>${won}</b>${one('Model B', p.b)}${one('Model A', p.a)}${market}</div>`;
+}
+/* A saved pick on a game not yet final: locked, and when. */
+function lockedTag(g, p){
+  if(g.status === 'final' || g.status === 'cancelled' || g.status === 'postponed') return '';
+  const when = p.saved ? ` ${whenEt(new Date(p.saved))}` : '';
+  return `<span class="graded-tag nhl-locked">Locked${when}</span>`;
+}
+
 const FIRST_SAVED = Object.values(DATA.picks).map(p => p.saved).filter(Boolean).sort()[0] || null;
 function waitingCard(g){
   const status = scoreLine(g);
@@ -231,7 +290,7 @@ function waitingCard(g){
   } else if(g.status === 'cancelled' || g.status === 'postponed') {
     note = 'No pick: a postponed or cancelled game is never predicted.';
   } else {
-    note = 'The pick is saved by the last run before puck drop (14:00 or 21:00 UTC).';
+    note = lockNote(g, Date.now());
   }
   return `<div class="game-card nhl-not-saved">
     <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
