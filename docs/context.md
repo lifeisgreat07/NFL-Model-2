@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-09, 08:50 UTC (overnight session: #353 to #360, #362 and #364 merged; no PR open)
+Last updated: 2026-10-09, 14:55 UTC (Mark's answers on the six waiting items; no PR open)
 
 ---
 
@@ -28,41 +28,41 @@ slot guard's first real test. Unconfirmed: whether Mark updated the QB
 routine's prompt for the move; its next PR (Mon 22:00 UTC) shows which path
 it used.
 
-**Waiting on Mark (each written up in `memory/2026-10-09.md`):**
-1. **NBA go/no-go** (Stage 65). Claude's call is GO for both models; opening
-   night is Tuesday 10-20. Mark picks Model B's market (ESPN's odds, as the
-   backtest, or Kalshi) and the start date, and sets up cron-job.org jobs.
-2. **Stage 38's neutral-site rule**: the draft amendment N1 and its
-   back-check. Model B's intercept is negative, so decide whether the rule
-   covers Model B before it is registered. No model change until then.
-3. **Stage 66**: home page option A, B or C (canvas "Sportalytics Home Page
-   Options"); the audit is `docs/design/HOME-AUDIT-2026-10-09.md`.
-4. **Stages 62.2 and 67**: a puck and ball icon and a wordmark (canvas
-   "Sportalytics Icons and Wordmark").
-5. **A Saturday refresh slot** on cron-job.org, if Friday NFL games
-   (Black Friday, Christmas) should not wait two days for a status refresh.
-6. **Stage 39 item 4** (ratings frozen through the playoffs): disclose or register.
+**Mark's answers, 2026-10-09 10:52 ET (reasons in `memory/2026-10-09.md`):**
+1. **NBA: GO** for both models from opening night (Tue 10-20). Model B's market
+   is ESPN's odds (the backtest's), Kalshi the named fallback, "no price"
+   rather than a silent switch. Mark adds the cron-job.org jobs when the PR
+   gives him the literal steps.
+2. **Stage 38 N1** covers both models, registered, shipped as a
+   `MODEL_VERSION` bump between locks, if Mark confirms (he asked what was needed).
+3. **Home page: option A** with C's "New here?" (Claude's recommendation).
+4. **Icons and wordmark: puck P3, ball B2, wordmark W2** (canvas "Sportalytics
+   Icons and Wordmark"), with Stage 67's rename.
+5. **Saturday refresh:** a PR adds `'17 5 * * 6'` to `.github/workflows/nfl-weekend-refresh.yml`
+   and retires the Friday exception; then Mark clones the Friday cron-job.org job to Saturday.
+6. **Stage 39 item 4: disclose**, no model change (Claude's recommendation).
 
-**Single next action:** build the NBA's live run (Stage 65 items 2 to 5)
-once Mark answers 1; until then, Stage 21 once week 5 is graded (Tue 10-13).
+**Single next action:** Stage 65's live run (registration, daily run, canary,
+board from the NHL day board) before 10-20.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
 | Stage 21 (`s21-insights`) | Built on the pre-move layout | Week 5 graded (Tue 10-13); rebase across #351's moves first |
-| Stage 65 (NBA live) | Probe merged (#357); go/no-go written | Mark's answers above |
-| Stage 62.2, 66, 67 | Options rendered on two canvases | Mark's choice |
-| Stage 38 neutral-site rule | Draft N1 and back-check written | Mark: Model B in or out |
-| Stage 39 | Items 2 (stepper), 3, 7 merged | Item 2's `game_type` in saved picks; 1's rest; 5 in December; 6; 4 is Mark's |
+| Stage 65 (NBA live) | GO 10-09; probe merged (#357) | Nothing; cron-job.org jobs by Mark at the end |
+| Stage 62.2, 66, 67 | Chosen 10-09: P3, B2, W2; home option A + "New here?" | Nothing |
+| Stage 38 neutral-site rule | Draft N1, both models | Mark's yes to the model change |
+| Stage 39 | Items 2 (stepper), 3, 7 merged | Item 4 (disclose), 2's `game_type`; 1's rest; 5 in December; 6 |
 | Stage 42 | Item 1 merged (#358) | Its other items |
 | Stage 43; 44 | Open | Nothing |
 
 ## Queued, in order
 
-Stage 65's live run once Mark answers; Stage 21 once week 5 is graded; Stage 39
-item 2's `game_type` in saved picks, then item 6; whichever of 62.2, 66 and 67
-Mark chooses; Stage 42's other items; 43; 44.
+Stage 65's live run; Stage 21 once week 5 is graded (Tue 10-13); the Saturday
+refresh slot; Stage 39 item 4's disclosure; Stage 38 N1 once Mark says yes; 62.2
+icons, then 67's name and wordmark, then 66's home page; Stage 39's other items;
+Stage 42's other items; 43; 44.
 
 One branch at a time. Rebase on `main`, full suite and mutation scope at the
 head, case files listed, and give Booth a bounded check when the scope is big.
