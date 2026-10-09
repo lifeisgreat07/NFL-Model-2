@@ -1,0 +1,35 @@
+{
+  "target": "src/dashboard/styles.css",
+  "tests": "tests/test_print_stylesheet.py",
+  "cases": [
+    {
+      "id": "print-shows-every-page",
+      "why": "every page of the dashboard prints, one after another, so printing the Week Board produces Methodology, the Model Lab and the rest behind it",
+      "find": "    .page:not(.active){display:none !important;}\n",
+      "replace": "",
+      "expect_caught_by": "test_only_the_open_page_prints"
+    },
+    {
+      "id": "print-drops-the-bars",
+      "why": "the browser's default drops backgrounds, so every card's split bar and every rating bar prints as an empty track",
+      "find": "    body, body *{-webkit-print-color-adjust:exact; print-color-adjust:exact;}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_bars_and_chips_print"
+    },
+    {
+      "id": "print-keeps-the-menu",
+      "why": "the sidebar prints down the left of every sheet, taking a quarter of the paper for buttons nobody can press",
+      "find": "    .sidebar, .topbar, .sport-strip,",
+      "replace": "    .topbar, .sport-strip,",
+      "expect_caught_by": "test_navigation_and_controls_stay_off_the_paper"
+    },
+    {
+      "id": "print-stays-dark",
+      "target": "src/dashboard/app.js",
+      "why": "a page in the dark theme prints light text for white paper, which a printer drops, so the sheet comes out nearly blank",
+      "find": "    document.documentElement.setAttribute('data-theme', 'light');\n  });",
+      "replace": "  });",
+      "expect_caught_by": "test_a_dark_page_prints_light_and_goes_back"
+    }
+  ]
+}

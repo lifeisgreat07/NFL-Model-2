@@ -1675,3 +1675,25 @@
     .sport-strip{display:flex; flex-wrap:nowrap; overflow-x:auto; margin:0; padding:var(--s2) var(--s4);
       background:var(--surface); border-bottom:1px solid var(--border);}
   }
+
+  /* Stage 47 item 11: printing a page prints that page. The navigation, the
+     controls and the other pages stay off the paper; a card, a table row or
+     a block is not split across two sheets; a table that scrolls on screen
+     prints whole; and a link to another site prints its address, so a sheet
+     of paper still says where the proof lives. The page prints in the light
+     theme (app.js switches it for the print and back). */
+  @media print{
+    .sidebar, .topbar, .sport-strip, .bottom-nav, .bnav-more-sheet, .skip-link,
+    .filter-row, .pdf-link, .onboarding-banner, .page-jump{display:none !important;}
+    body{display:block; min-height:0; padding-top:0; background:var(--surface);}
+    /* The bars, dots and chips are drawn as backgrounds, which a browser
+       leaves off the paper by default; without them a card's split and a
+       rating's bar print as empty tracks. */
+    body, body *{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    main{padding:0 !important; max-width:none !important;}
+    .page:not(.active){display:none !important;}
+    .page.active{animation:none;}
+    .game-card, .method-block, .roadmap-card, .case-study, .board-insights, tr{break-inside:avoid;}
+    .table-wrap{overflow:visible !important;}
+    a[href^="http"]::after{content:" (" attr(href) ")"; font-size:var(--fs-11); color:var(--text-2); word-break:break-all;}
+  }
