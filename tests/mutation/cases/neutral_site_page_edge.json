@@ -1,0 +1,13 @@
+{
+  "target": "src/sports/nfl/generate_dashboard.py",
+  "tests": "tests/test_neutral_site.py",
+  "cases": [
+    {
+      "id": "page-drops-edge-out",
+      "why": "the page never learns the pick took the edge out, so a v2.6 card at a neutral site describes the old rule.",
+      "find": "            'edge_out': bool(p.get('home_edge_removed')),\n",
+      "replace": "            'edge_out': False,\n",
+      "expect_caught_by": "test_the_page_carries_whether_the_pick_took_the_edge_out"
+    }
+  ]
+}

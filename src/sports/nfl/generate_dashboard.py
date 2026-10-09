@@ -589,6 +589,10 @@ def build_games_js(preds: list[Pick], graded_lookup_by_key: dict[tuple[str, str]
             'neutral': bool(p.get('neutral_site') if p.get('neutral_site') is not None
                             else status.get('neutral_site')),
             'venue': p.get('venue') or status.get('venue'),
+            # Stage 38 N1: a pick saved from v2.6 at a neutral site says the
+            # home edge was taken out; one saved before says nothing, and the
+            # card keeps saying the models gave the home team the edge.
+            'edge_out': bool(p.get('home_edge_removed')),
             'gametime_et': p.get('gametime_et'),
             'weekday': p.get('weekday'),
             'spread': p.get('spread_line'),

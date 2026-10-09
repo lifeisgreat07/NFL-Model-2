@@ -45,7 +45,7 @@ PICK_KEYS = {
     'model_version', 'off_matchup', 'def_matchup', 'qb_matchup', 'qb_change_diff',
     'spread_line', 'model_a_home_win_prob', 'model_b_home_win_prob',
     'market_prob_home', 'context_notes', 'why', 'confidence_rank',
-    'confidence_points', 'neutral_site', 'venue', 'data_provenance',
+    'confidence_points', 'neutral_site', 'home_edge_removed', 'venue', 'data_provenance',
     *(f'{prefix}{side}_qb{suffix}'
       for side in ('home', 'away')
       for prefix, suffix in (('', ''), ('', '_id'), ('', '_basis'),

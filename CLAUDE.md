@@ -43,7 +43,7 @@ the engineering. Public repo, so anything committed is read by strangers.
 
 ## Current state (update this when it changes)
 
-Model v2.5 (`MODEL_VERSION` in `src/sports/nfl/config.py`). `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
+Model v2.6 (`MODEL_VERSION` in `src/sports/nfl/config.py`). `TRAIN_SEASONS` 2020-2025, `BACKTEST_SEASONS` 2022-2025,
 `QB_SHRINK_K = 8`, `RIDGE_ALPHA = 15.0`, `RECENCY_HALF_LIFE = 16`.
 The drift check flags on Model A's log loss against the committed
 `data/nfl/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.

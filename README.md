@@ -93,7 +93,7 @@ page, then read `VERIFICATION.md`. Those three cover what the model does,
 how it was validated, and how the work on it is checked. For how the pieces
 fit together, `docs/architecture.md` has the whole system on one diagram.
 
-## Current model (v2.5)
+## Current model (v2.6)
 - Opponent-adjusted team ratings: two-way fixed-effects ridge regression
   on play-level EPA, recency-weighted (16-game half-life), alpha=15
   (tuned via backtest -- see `src/sports/nfl/config.py` for justification of every
@@ -108,6 +108,10 @@ fit together, `docs/architecture.md` has the whole system on one diagram.
   logistic regression refit every week. The model outputs a win probability, never a margin.
 - Two models shown side by side: **Model A** (football-only) and
   **Model B** (Model A plus the current betting spread).
+- At a game the schedule places at a neutral site, neither model gives the
+  listed home team a home edge: each model's intercept is taken out of its
+  log-odds (Stage 38 N1, registered in
+  `experiments/nfl/stage38/n1_registry.json`).
 
 Backtest results (2022-2025, 1,087 games, refit every week on strictly
 earlier games, which include the earlier weeks of the season being

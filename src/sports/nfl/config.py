@@ -79,9 +79,27 @@ MIN_PLAYS_FOR_RATING = 200
 # renumbered twice, so on a public page they would read as the CURRENT Stage 2
 # and mean something entirely different. The dates and the substance are the
 # durable part; the stage labels were not.
-MODEL_VERSION = "2.5"
+MODEL_VERSION = "2.6"
 
 VERSION_HISTORY = [
+    {
+        'version': '2.6',
+        'date': '2026-10-09',
+        'headline': 'No home edge at a neutral site',
+        'detail': (
+            "A game played at a neutral site (London, Munich, Sao Paulo and "
+            "the like) still has a listed home team, and both models used to "
+            "give that team the home edge anyway. From this version neither "
+            "does: at a game the schedule calls neutral, each model's home "
+            "edge is left out. This is a declared rule, registered before it "
+            "shipped (experiments/nfl/stage38/n1_registry.json in the "
+            "repository), not a tested improvement: four or five neutral "
+            "games a season could never show one, and a look back at 25 such "
+            "games found neither model clearly better or worse for it. Picks "
+            "saved earlier keep the edge they were made with, and the "
+            "published backtest is unchanged."
+        ),
+    },
     {
         'version': '2.5',
         'date': '2026-09-22',
