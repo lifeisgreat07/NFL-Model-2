@@ -1,0 +1,27 @@
+{
+  "target": "src/sports/nba/lock.py",
+  "tests": "tests/test_nba_lock.py",
+  "cases": [
+    {
+      "id": "nba-lock-no-slack",
+      "why": "a game that starts just after the next run is held, so a late run saves it after the tip or never",
+      "find": "SLACK = timedelta(hours=1)",
+      "replace": "SLACK = timedelta(hours=0)",
+      "expect_caught_by": "test_the_run_times_and_slack_are_the_registered_ones"
+    },
+    {
+      "id": "nba-lock-evening-run-moved",
+      "why": "the evening run moves from the registered 21:30 UTC, so the lock happens at a time nobody registered",
+      "find": "for hour, minute in ((16, 0), (21, 30)))",
+      "replace": "for hour, minute in ((16, 0), (22, 30)))",
+      "expect_caught_by": "test_the_run_times_and_slack_are_the_registered_ones"
+    },
+    {
+      "id": "nba-lock-predicts-started",
+      "why": "a game whose start has passed is locked, which is a pick made after the tip",
+      "find": "            if start <= now_ts:\n                started.append(gid)\n            elif",
+      "replace": "            if False:\n                started.append(gid)\n            elif",
+      "expect_caught_by": "test_a_started_game_is_never_predicted"
+    }
+  ]
+}

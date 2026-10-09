@@ -1,0 +1,48 @@
+{
+  "target": "src/sports/nba/daily.py",
+  "tests": "tests/test_nba_daily.py",
+  "cases": [
+    {
+      "id": "nba-daily-unread-injuries-filled-in",
+      "why": "with no injury report the pick still uses the models with availability, so it claims an input nobody read",
+      "find": "    cols = A_COLUMNS if avail is not None else NO_AVAIL\n    suffix = '' if avail is not None else '_no_availability'",
+      "replace": "    cols = NO_AVAIL if avail is None else A_COLUMNS\n    suffix = ''",
+      "expect_caught_by": "test_an_unread_injury_report_runs_both_models_without_availability_and_says_so"
+    },
+    {
+      "id": "nba-daily-model-b-without-price",
+      "why": "the pick is labelled Model B's even when there was no price, so the page cannot say 'no price'",
+      "find": "        'pick_model': 'model_b' if p_b is not None else 'model_a',",
+      "replace": "        'pick_model': 'model_b',",
+      "expect_caught_by": "test_with_no_price_the_pick_is_model_as_and_says_no_price"
+    },
+    {
+      "id": "nba-daily-rewrites-picks",
+      "why": "a saved pick is overwritten by a later run, so a lock is not a lock",
+      "find": "    if path.exists():\n        return False\n    folder.mkdir",
+      "replace": "    folder.mkdir",
+      "expect_caught_by": "test_a_saved_pick_is_never_rewritten"
+    },
+    {
+      "id": "nba-daily-grades-cancelled",
+      "why": "a cancelled game is graded as a loss for the home side",
+      "find": "        if status == GameStatus.CANCELLED.value:\n            result = 'cancelled'\n        elif status == GameStatus.FINAL.value:",
+      "replace": "        if status in (GameStatus.CANCELLED.value, GameStatus.FINAL.value):",
+      "expect_caught_by": "test_only_final_games_are_graded_and_a_cancelled_one_is_never_counted"
+    },
+    {
+      "id": "nba-daily-out-ignored",
+      "why": "players listed Out still count as playing, so the availability term never moves live",
+      "find": "    return ratings.availability(expected, [p for p in expected if p not in out])",
+      "replace": "    return ratings.availability(expected, list(expected))",
+      "expect_caught_by": "test_availability_counts_everyone_not_listed_out"
+    },
+    {
+      "id": "nba-daily-one-bad-box-stops-all",
+      "why": "one unsettled box score stops the season refresh, so every later final game is missed too",
+      "find": "        except (history.HistoryError, OSError, ValueError) as exc:\n            print(f'box score not settled yet, retried next run: {exc}')\n            continue",
+      "replace": "        except OSError as exc:\n            print(f'box score not settled yet, retried next run: {exc}')\n            continue",
+      "expect_caught_by": "test_the_season_file_only_fetches_finished_games_it_does_not_have"
+    }
+  ]
+}

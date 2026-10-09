@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nba/drift.py",
+  "tests": "tests/test_nba_drift.py",
+  "cases": [
+    {
+      "id": "nba-drift-no-minimum",
+      "why": "the check flags on a handful of games, where one bad night is noise",
+      "find": "    if len(losses) < rule['min_games']:\n        return False\n",
+      "replace": "",
+      "expect_caught_by": "test_too_few_games_never_flags"
+    },
+    {
+      "id": "nba-drift-mean-not-bound",
+      "why": "the check compares the mean, not the interval's lower end, so a season merely around the baseline flags half the time",
+      "find": "    return bool(lower_bound(losses, rule) > spec['baseline']['value'])",
+      "replace": "    return bool(sum(losses) / len(losses) >= spec['baseline']['value'])",
+      "expect_caught_by": "test_a_clearly_worse_season_flags_and_a_matching_one_does_not"
+    }
+  ]
+}
