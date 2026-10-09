@@ -60,13 +60,31 @@ def test_the_nhl_card_carries_two_weeks_of_games_and_the_picks_record(tmp_path):
 
 
 def test_a_sport_with_no_files_says_so_rather_than_vanishing(tmp_path):
+    """The NBA's page is built from its backtest even before the daily run's
+    first schedule, so its card is built and says when picks start."""
     f = home.facts(tmp_path, NOW)
     assert f['nfl'] == {'built': False} and f['nhl'] == {'built': False}
-    assert f['nba']['built'] and f['nba']['live'] is False
+    assert f['nba'] == {'built': True, 'games': [], 'record': {'label': 'Picks this season', 'won': 0, 'lost': 0}}
+
+
+def test_the_nba_card_is_live_as_the_nhls_is_play_in_included(tmp_path):
+    """Stage 65: the NBA locks game by game, as the NHL does, so its card
+    counts tonight's games and the picks' record the same way."""
+    games = [{'start_utc': '2026-10-06T23:00:00Z', 'status': 'scheduled', 'game_type': 'regular'},
+             {'start_utc': '2026-10-06T23:30:00Z', 'status': 'scheduled', 'game_type': 'playin'},
+             {'start_utc': '2026-10-07T00:00:00Z', 'status': 'postponed', 'game_type': 'regular'}]
+    write(tmp_path / 'results/nba/schedule_2026.json', {'games': games})
+    write(tmp_path / 'results/nba/graded_2026.json', [{'result': 'correct'}, {'result': 'correct'}, {'result': 'wrong'}])
+    f = home.nba_facts(tmp_path, NOW)
+    assert f['games'] == [['2026-10-06T23:00:00Z', 'scheduled'], ['2026-10-06T23:30:00Z', 'scheduled']]
+    assert (f['record']['won'], f['record']['lost']) == (2, 1)
+    js = (home.TEMPLATE / 'home.js').read_text(encoding='utf-8')
+    assert "dayStatus(f, 'tip-off')" in js and "'Open the NBA board'" in js
+    assert 'No live picks' not in js and 'Backtest only' not in js
 
 
 def test_the_page_is_filled_and_its_data_cannot_close_its_script():
-    data = {'nfl': {'built': False}, 'nhl': {'built': False}, 'nba': {'built': True, 'live': False},
+    data = {'nfl': {'built': False}, 'nhl': {'built': False}, 'nba': {'built': False},
             'x': '</script><script>alert(1)</script>'}
     page = home.render(data)
     assert '__HOME_JSON__' not in page and '{% include' not in page

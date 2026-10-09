@@ -50,6 +50,14 @@ choices, for Mark:
 Until he chooses, there are no live NBA picks; the history and the
 backtest go ahead.
 
+**Superseded (2026-10-09).** A second probe from a runner (#357) found
+ESPN's odds and injury report answering GitHub's runners after all, and
+Kalshi's game markets too. Mark said GO: both models live from opening
+night, 2026-10-20, Model B priced by ESPN's odds with Kalshi as the named
+fallback and "no price" rather than a silent switch
+(`experiments/nba/stage65/registry.json`, Stage 65). The nightly canary
+reads each of those sources and says when one stops answering.
+
 ## 1. Schedule, results and box scores: ESPN
 
 | What | Endpoint | Checked |

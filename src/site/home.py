@@ -8,8 +8,9 @@ What the build reads, each sport from its own folders only:
   latest locked week and its kickoffs, any preview of the next week
   (`predictions/nfl/preview/`), and the graded weeks for Model B's record;
 - NHL: the season's schedule and graded picks (`results/nhl/`);
-- NBA: nothing. It has no live picks this season (Mark, 2026-10-06), and
-  its card says so.
+- NBA: the same (`results/nba/`), live from opening night 2026-10-20
+  (Stage 65). Before the daily run's first schedule its card says when
+  picks start.
 
 The page carries those facts as data and works out the status in the
 visitor's browser, against the visitor's clock: "9 games tonight" is about
@@ -83,10 +84,13 @@ def nfl_facts(root: Path = ROOT) -> dict[str, Any]:
             'record': {'label': 'Model B this season', 'won': won, 'lost': lost}}
 
 
-def nhl_facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
-    """The NHL's games from two days before the build to two weeks after,
-    as [start UTC, status], so the visitor's browser can count tonight's."""
-    results = root / 'results' / 'nhl'
+def day_sport_facts(sport: str, game_types: tuple[str, ...], root: Path = ROOT,
+                    now: datetime | None = None) -> dict[str, Any]:
+    """A sport that locks game by game (the NHL, the NBA): its games from two
+    days before the build to two weeks after, as [start UTC, status], so the
+    visitor's browser can count tonight's, and its picks' record. None of
+    the season's schedule yet: {'built': False}."""
+    results = root / 'results' / sport
     seasons = sorted(int(m.group(1)) for p in results.glob('schedule_*.json')
                      if (m := re.fullmatch(r'schedule_(\d{4})', p.stem))) if results.is_dir() else []
     if not seasons:
@@ -97,7 +101,7 @@ def nhl_facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
     now = now or datetime.now(UTC)
     lo, hi = (now - timedelta(days=2)).strftime('%Y-%m-%dT%H:%M:%SZ'), (now + timedelta(days=14)).strftime('%Y-%m-%dT%H:%M:%SZ')
     games = sorted([g['start_utc'], g.get('status')] for g in sched.get('games', [])
-                   if g.get('game_type') in ('regular', 'playoff') and g.get('start_utc')
+                   if g.get('game_type') in game_types and g.get('start_utc')
                    and lo <= g['start_utc'] <= hi and g.get('status') not in ('cancelled', 'postponed'))
     return {'built': True, 'season': season, 'games': games,
             'record': {'label': 'Picks this season',
@@ -105,8 +109,20 @@ def nhl_facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
                        'lost': sum(1 for r in graded if r.get('result') == 'wrong')}}
 
 
+def nhl_facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
+    return day_sport_facts('nhl', ('regular', 'playoff'), root, now)
+
+
+def nba_facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
+    """The NBA's, as the NHL's (Stage 65), play-in games included. Before the
+    daily run's first schedule the page is still built, and the card says
+    when picks start rather than "not built"."""
+    f = day_sport_facts('nba', ('regular', 'playin', 'playoff'), root, now)
+    return f if f['built'] else {'built': True, 'games': [], 'record': {'label': 'Picks this season', 'won': 0, 'lost': 0}}
+
+
 def facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
-    return {'nfl': nfl_facts(root), 'nhl': nhl_facts(root, now), 'nba': {'built': True, 'live': False}}
+    return {'nfl': nfl_facts(root), 'nhl': nhl_facts(root, now), 'nba': nba_facts(root, now)}
 
 
 def safe_json(obj: Any) -> str:

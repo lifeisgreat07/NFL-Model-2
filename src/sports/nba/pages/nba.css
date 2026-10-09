@@ -1,16 +1,61 @@
-/* What the NBA pages add to the shared stylesheet: the no-picks notice and
-   the tables. Every selector carries the sport (decision record 0006, rule
-   4; src/core/isolation.py checks it). Every colour is a shared token, and
-   no label is green: on this site green means only a pick scored right. */
-.nba-notice{border:1px solid var(--border-strong); border-left:4px solid var(--accent); background:var(--surface);
-  border-radius:8px; padding:var(--s3) var(--s4); margin:0 0 var(--s5); max-width:72ch; color:var(--text-2);}
-.nba-notice b{color:var(--text);}
+/* What the NBA pages add to the shared stylesheet: the day board (Stage 65,
+   the NHL's day board with the sport's own prefix) and the backtest's
+   tables. Every selector carries the sport (decision record 0006, rule 4;
+   src/core/isolation.py checks it). Every colour is a shared token, and
+   green (--good) marks only a pick scored right. */
+.nba-day-strip{display:grid; grid-template-columns:repeat(7, minmax(0, 1fr)); gap:var(--s1); margin:var(--s3) 0 var(--s3); max-width:760px;}
+.nba-day-chip{display:grid; justify-items:center; min-height:56px; padding:var(--s1) 0;
+  border:1px solid var(--border-strong); border-radius:8px; background:var(--surface);
+  color:var(--text-2); font:inherit; font-size:var(--fs-12); cursor:pointer;}
+.nba-day-chip b{font-size:var(--fs-14); color:var(--text);}
+.nba-day-chip[aria-current="date"]{border-color:var(--accent);}
+.nba-day-chip[aria-pressed="true"]{border-color:var(--accent); background:var(--accent-soft);}
+.nba-day-chip[aria-pressed="true"] b{color:var(--accent);}
+#game-grid.nba-board{display:block; max-width:760px;}
+.nba-day-top{display:flex; flex-wrap:wrap; align-items:baseline; column-gap:var(--s3); margin:0 0 var(--s2);}
+.nba-day-title{font-size:var(--fs-16); font-weight:700; margin:0; color:var(--text);}
+.nba-day-summary{margin:0; font-size:var(--fs-13); color:var(--text-2);}
+.nba-rows{list-style:none; margin:0; padding:0; border-top:1px solid var(--border);}
+.nba-row-item{border-bottom:1px solid var(--border);}
+.nba-row{display:grid; grid-template-columns:3.6rem minmax(0, 1fr) auto 5.2rem 16px; align-items:center; column-gap:var(--s2);
+  width:100%; min-height:52px; padding:var(--s2) var(--s1); background:none; border:0; color:var(--text);
+  font:inherit; font-size:var(--fs-14); text-align:left; cursor:pointer; font-variant-numeric:tabular-nums;}
+.nba-row:hover{background:var(--surface);}
+.nba-row-time{font-size:var(--fs-12); color:var(--text-2);}
+.nba-row-game{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.nba-row-game .at-symbol{color:var(--text-3);}
+.nba-row-pick{white-space:nowrap; color:var(--text-2);}
+.nba-row-pick .nba-no-price{font-size:var(--fs-12); color:var(--text-3);}
+.nba-row-result{justify-self:end; white-space:nowrap; font-size:var(--fs-13); font-weight:600;}
+.nba-row-result.right{color:var(--good);}
+.nba-row-result.wrong{color:var(--warn);}
+.nba-row-result.locked{color:var(--accent);}
+.nba-row-result.open, .nba-row-result.off{color:var(--text-3); font-weight:500;}
+.nba-row-chev{color:var(--text-3); transition:transform .15s;}
+.nba-row[aria-expanded="true"] .nba-row-chev{transform:rotate(180deg);}
+.nba-row-detail{padding:0 0 var(--s3);}
+@media (prefers-reduced-motion: reduce){ .nba-row-chev{transition:none;} }
+.nba-row-team{white-space:nowrap;}
+/* A phone: NBA scores are three digits, so a final game ("ATL 104 @ ORL 112")
+   does not fit one line beside the pick. The game wraps at the @, and "no
+   price" takes its own line under the pick, rather than either being cut. */
+@media (max-width:600px){
+  .nba-row{grid-template-columns:3.7rem minmax(0, 1fr) auto 4.4rem 14px; column-gap:6px;}
+  .nba-row-time{white-space:nowrap;}
+  .nba-row-game{white-space:normal; overflow:visible;}
+  .nba-row-pick{text-align:right;}
+  .nba-row-pick .nba-no-price{display:block;}
+}
+.game-card.nba-not-saved{opacity:.92;}
+.game-card.nba-not-saved .nba-wait-note{font-size:var(--fs-13); color:var(--text-2);}
+.nba-card-status{font-size:var(--fs-12); font-weight:600; color:var(--text-2);}
+.nba-result-line{font-size:var(--fs-13); color:var(--text-2); margin:2px 0 var(--s2); display:flex; flex-wrap:wrap; column-gap:var(--s3); row-gap:2px;}
+.nba-result-line b{color:var(--text);}
+.nba-model-result{white-space:nowrap;}
+.graded-tag.nba-locked{background:var(--surface-2); color:var(--text-2); border:1px solid var(--border);}
 .nba-lede{max-width:72ch; color:var(--text-2); margin:0 0 var(--s4);}
 .nba-body .section-title{margin:var(--s6) 0 var(--s3);}
 .nba-table{margin-bottom:var(--s4);}
 .nba-table td.num, .nba-table th.num{text-align:right; font-variant-numeric:tabular-nums;}
 .nba-table tbody th{text-transform:none; letter-spacing:0; font-size:var(--fs-13); font-weight:600; color:var(--text); white-space:nowrap;}
 .nba-table tr.nba-chosen td, .nba-table tr.nba-chosen th{font-weight:700; color:var(--text);}
-.nba-answers{display:grid; gap:var(--s3); margin:0 0 var(--s5); padding-left:var(--s5); max-width:72ch;}
-.nba-answers li{color:var(--text-2);}
-.nba-answers b{color:var(--text);}

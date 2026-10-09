@@ -1,0 +1,27 @@
+{
+  "target": "src/sports/nba/colours.py",
+  "tests": "tests/test_nba_colours.py",
+  "cases": [
+    {
+      "id": "nba-colour-vanishes-on-dark",
+      "why": "Dallas goes back to its navy, which is under 3:1 on the dark card and draws a bar nobody can see",
+      "find": "'DAL': '#1F689A'",
+      "replace": "'DAL': '#00538C'",
+      "expect_caught_by": "test_every_colour_stands_out_on_the_dark_theme"
+    },
+    {
+      "id": "nba-colour-figures-stale",
+      "why": "the docstring's quoted separation stops matching the palette, the stale-figure failure this repository guards everywhere",
+      "find": "DRAWN_UNDER_15 = 57",
+      "replace": "DRAWN_UNDER_15 = 50",
+      "expect_caught_by": "test_the_drawn_figures_match_the_docstring"
+    },
+    {
+      "id": "nba-colour-league-code",
+      "why": "a club keyed by the league's code instead of ESPN's never matches the schedule, so its bars fall back to grey",
+      "find": "'GS': '#FFC72C'",
+      "replace": "'GSW': '#FFC72C'",
+      "expect_caught_by": "test_every_club_has_exactly_one_colour_in_hex"
+    }
+  ]
+}

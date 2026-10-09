@@ -50,31 +50,46 @@ function nflCard(f){
   return card('nfl', 'NFL', 'nfl/', status, big, rows, 'Open the NFL board');
 }
 
-function nhlCard(f){
-  if(!f || !f.built) return notBuilt('nhl', 'NHL');
-  const games = (f.games || []).map(([start, st]) => ({t: Date.parse(start), st}));
+/* A sport that locks game by game (the NHL; the NBA from Stage 65): today's
+   games, or the next day with games, and the season's record. `start` names
+   the moment a game begins in that sport ("puck drop", "tip-off"). */
+function dayStatus(f, start){
+  const games = (f.games || []).map(([s, st]) => ({t: Date.parse(s), st}));
   const today = games.filter(g => dayKey(g.t) === dayKey(NOW));
   const upcoming = games.filter(g => g.t > NOW - 3 * HOUR && g.st !== 'final');
   let status, rows = [[f.record.label, record(f.record)]];
   if(today.length){
     const evening = new Date(Math.min(...today.map(g => g.t))).getHours() >= 17;
     status = {text:`${today.length} game${today.length === 1 ? '' : 's'} ${evening ? 'tonight' : 'today'}`, cls:'is-live'};
-    rows.push(['First puck drop', clock(Math.min(...today.map(g => g.t)))]);
+    rows.push([`First ${start}`, clock(Math.min(...today.map(g => g.t)))]);
   } else if(upcoming.length){
     const next = Math.min(...upcoming.map(g => g.t));
     const n = games.filter(g => dayKey(g.t) === dayKey(next)).length;
     status = {text:`Next: ${n} game${n === 1 ? '' : 's'} ${weekday(next)}`};
-    rows.push(['First puck drop', when(next)]);
+    rows.push([`First ${start}`, when(next)]);
   } else {
-    status = {text:'No games scheduled', cls:'is-quiet'};
+    status = null;
   }
-  return card('nhl', 'NHL', 'nhl/', status, 'Picks lock game by game', rows, 'Open the NHL board');
+  return {status, rows};
 }
 
+function nhlCard(f){
+  if(!f || !f.built) return notBuilt('nhl', 'NHL');
+  const d = dayStatus(f, 'puck drop');
+  return card('nhl', 'NHL', 'nhl/', d.status || {text:'No games scheduled', cls:'is-quiet'},
+              'Picks lock game by game', d.rows, 'Open the NHL board');
+}
+
+/* The NBA's live picks start on opening night (Stage 65). Until the daily
+   run has written the season's schedule, the card says when they start. */
+const NBA_OPENING = Date.parse('2026-10-20T23:00:00Z');
 function nbaCard(f){
   if(!f || !f.built) return notBuilt('nba', 'NBA');
-  return card('nba', 'NBA', 'nba/', {text:'Backtest only', cls:'is-quiet'},
-              'No live picks this season', [], 'Open the NBA backtest');
+  const d = dayStatus(f, 'tip-off');
+  const status = d.status || (NOW < NBA_OPENING
+    ? {text:`Live from ${new Date(NBA_OPENING).toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'})}`}
+    : {text:'No games scheduled', cls:'is-quiet'});
+  return card('nba', 'NBA', 'nba/', status, 'Picks lock game by game', d.rows, 'Open the NBA board');
 }
 
 document.getElementById('home-cards').innerHTML = nflCard(HOME.nfl) + nhlCard(HOME.nhl) + nbaCard(HOME.nba);

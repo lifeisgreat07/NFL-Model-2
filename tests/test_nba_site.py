@@ -1,7 +1,7 @@
-"""The NBA's pages (Stage 61, src/sports/nba/site.py): the backtest said
-plainly and no board, every figure read from the committed files when the
-page is built, nothing of another sport read, and the NBA's own names for
-storage and styles.
+"""The NBA's pages (src/sports/nba/site.py): the day board (Stage 65) and
+the backtest said plainly (Stage 61), every figure read from the committed
+files when the page is built, nothing of another sport read, and the NBA's
+own names for storage and styles. The board itself is tests/test_nba_board.py.
 
 Run with: pytest tests/test_nba_site.py -v
 """
@@ -70,16 +70,19 @@ def test_no_answer_or_figure_is_written_into_the_page_by_hand() -> None:
         assert not re.search(r'\b(ACCEPT|REJECT)\b|0\.\d{3,}', text)
 
 
-def test_there_is_no_board_and_the_page_says_why(built: tuple[dict, str]) -> None:
+def test_the_board_leads_and_the_no_picks_page_is_gone(built: tuple[dict, str]) -> None:
+    """Stage 65: live picks from opening night, so the page that said there
+    were none would now be false."""
     _, html = built
-    assert not re.search(r'id="(page-board|game-grid)"', html)
-    assert 'No live NBA picks this season.' in html
+    assert re.search(r'<section class="page active" id="page-board">', html)
+    assert 'id="game-grid"' in html and 'id="nba-day-strip"' in html
+    assert 'No live NBA picks' not in html and 'Why No Picks' not in html and 'no live picks' not in html
 
 
 def test_every_page_is_on_both_menus_and_the_checker_can_open_it(built: tuple[dict, str]) -> None:
     _, html = built
     pages = re.findall(r'<section class="page[^"]*" id="page-([a-z]+)"', html)
-    assert pages == ['season', 'modellab', 'method', 'reliability']
+    assert pages == ['board', 'modellab', 'method', 'reliability']
     side = re.findall(r'class="nav-btn[^"]*" data-page="([a-z]+)"', html)
     bottom = re.findall(r'class="bnav-btn[^"]*" data-page="([a-z]+)"', html)
     assert side == pages and bottom == pages
@@ -92,7 +95,8 @@ def test_the_page_uses_the_nbas_own_names(built: tuple[dict, str]) -> None:
     keys = set(re.findall(r'''localStorage\.(?:get|set)Item\('([^']+)''', html))
     assert keys == {'site:theme', 'nba:theme'}
     css = (PAGES / 'nba.css').read_text(encoding='utf-8')
-    assert '--good' not in css, 'green means only a pick scored right'
+    green = [ln.strip() for ln in css.splitlines() if 'var(--good)' in ln]
+    assert green == ['.nba-row-result.right{color:var(--good);}'], 'green means only a pick scored right'
 
 
 def test_the_page_reads_the_nbas_own_folders() -> None:
