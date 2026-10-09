@@ -598,5 +598,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020069",
   "start_utc": "2026-10-10T00:00:00Z"
+ },
+ {
+  "date": "2026-10-08",
+  "home": "CGY",
+  "home_goalie": "Devin Cooley",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/SteinbergYYC/status/2108240526021664924?s=20",
+  "away": "COL",
+  "away_goalie": "Scott Wedgewood",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/Avalanche/status/2108356052152647683",
+  "read_utc": "2026-10-09T00:44:52Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020064",
+  "start_utc": "2026-10-09T01:00:00Z"
  }
 ]
