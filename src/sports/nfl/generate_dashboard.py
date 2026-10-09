@@ -120,6 +120,58 @@ def build_forecast_score(all_games: list[Game]) -> dict[str, Any] | None:
     }
 
 
+def wilson_interval(successes: int, n: int, z: float = 1.96) -> tuple[float, float]:
+    """The 95% Wilson score interval for a proportion, as (lo, hi).
+
+    The same formula as `src.sports.nfl.research.calibration.wilson_interval`,
+    which the page code does not import (no production module reaches into
+    research/); tests/test_against_market.py holds the two equal.
+    """
+    if n == 0:
+        return (0.0, 1.0)
+    p = successes / n
+    denom = 1 + z * z / n
+    centre = p + z * z / (2 * n)
+    margin = z * math.sqrt((p * (1 - p) + z * z / (4 * n)) / n)
+    return ((centre - margin) / denom, (centre + margin) / denom)
+
+
+AGAINST_MARKET_MODELS = (('model_a', 'model_a_home_win_prob', 'model_a_correct'),
+                         ('model_b', 'model_b_home_win_prob', 'model_b_correct'))
+
+
+def build_against_market(all_games: list[Game]) -> dict[str, Any]:
+    """Stage 46 item 9: how each model did on the graded games where it
+    picked against the market's favourite.
+
+    A model picks the home team at 50% or more (how its pick is graded); the
+    market's favourite is the side its no-vig chance puts over 50%, and a
+    game the market prices at exactly 50% has no favourite and is left out,
+    as is a game with no price or no grade. Reported with a 95% Wilson
+    interval, because at a few games a season the interval is the finding:
+    the page leads with it, not with the rate.
+    """
+    out: dict[str, Any] = {}
+    priced = 0
+    for name, prob_key, correct_key in AGAINST_MARKET_MODELS:
+        n = right = 0
+        for g in all_games:
+            prob, market, correct = g.get(prob_key), g.get('market_prob_home'), g.get(correct_key)
+            if not isinstance(prob, (int, float)) or not isinstance(market, (int, float)) or correct not in (0, 1):
+                continue
+            if name == 'model_a':
+                priced += 1
+            if market == 0.5:
+                continue
+            if (prob >= 0.5) != (market > 0.5):
+                n += 1
+                right += int(correct)
+        lo, hi = wilson_interval(right, n)
+        out[name] = {'n': n, 'right': right, 'lo': round(100 * lo, 1), 'hi': round(100 * hi, 1)}
+    out['priced'] = priced
+    return out
+
+
 def load_current_ratings() -> list[dict[str, Any]]:
     path = DATA_DIR / 'current_ratings.json'
     if not path.exists():
@@ -591,7 +643,7 @@ def build_accuracy_summary(all_graded: dict[WeekKey, list[Pick]]) -> dict[str, A
             all_games.append({**g, 'season': season, 'week': week})
 
     if not all_games:
-        return {'weeks': [], 'overall': None, 'calibration': [], 'forecast_score': None}
+        return {'weeks': [], 'overall': None, 'calibration': [], 'forecast_score': None, 'against_market': None}
 
     weekly = []
     for (season, week), graded in sorted(all_graded.items()):
@@ -680,6 +732,9 @@ def build_accuracy_summary(all_graded: dict[WeekKey, list[Pick]]) -> dict[str, A
         # None until FORECAST_SCORE_MIN_GAMES paired games are graded; the
         # page renders nothing for None.
         'forecast_score': build_forecast_score(all_games),
+        # Stage 46 item 9: the games each model picked against the market's
+        # favourite, with a Wilson interval.
+        'against_market': build_against_market(all_games),
     }
 
 

@@ -3388,6 +3388,27 @@ function forecastScoreHtml(s){
       <p style="font-size:var(--fs-12); color:var(--text-2); margin-top:var(--s2);">Over the ${s.n} games all three had a number for. The Methodology page explains how it is worked out.</p>
     </div>`;
 }
+/* Stage 46 item 9: the games each model picked against the market's
+   favourite. Few games a season, so it leads with the interval and says
+   plainly when there is none; the rate alone would read as a finding it
+   is not. Numbers are Python's (build_against_market). */
+function againstMarketHtml(m){
+  if(!m) return '';
+  const row = (label, r) => {
+    if(!r.n) return `<tr><td>${label}</td><td>No game yet</td></tr>`;
+    return `<tr><td>${label}</td><td>${r.right} of ${r.n} right <span class="against-ci">(95% interval ${r.lo}% to ${r.hi}%)</span></td></tr>`;
+  };
+  return `
+    <div class="method-block against-market">
+      <h3>Picking against the market</h3>
+      <p>The graded games where a model picked the side the betting market made the underdog. So few that the interval matters more than the record: an interval that spans 50% says this season cannot tell a good contrarian pick from a coin flip.</p>
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Games each model picked against the market's favourite, with how many it got right</caption>
+        <thead><tr><th scope="col">Model</th><th scope="col">Against the favourite</th></tr></thead>
+        <tbody>${row('Model B', m.model_b)}${row('Model A', m.model_a)}</tbody>
+      </table></div>
+      <p style="font-size:var(--fs-12); color:var(--text-2); margin-top:var(--s2);">Out of the ${m.priced} graded games with a market price. A game the market priced at exactly 50% has no favourite and is left out.</p>
+    </div>`;
+}
 function renderAccuracy(){
   const el = document.getElementById('accuracy-content');
   if(!accuracy.overall){
@@ -3473,7 +3494,8 @@ function renderAccuracy(){
       ${calibFootnote}
     </div>`;
 
-  el.innerHTML = cardsHtml + forecastScoreHtml(accuracy.forecast_score) + cumulativeChartHtml + weeklyHtml + calibHtml;
+  el.innerHTML = cardsHtml + forecastScoreHtml(accuracy.forecast_score) + cumulativeChartHtml + weeklyHtml + calibHtml
+    + againstMarketHtml(accuracy.against_market);
 }
 renderAccuracy();
 
