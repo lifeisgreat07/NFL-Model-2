@@ -457,7 +457,8 @@
 
     <div class="method-block">
       <h4>Data</h4>
-      <p>Real nflverse play-by-play, filtered to pass/rush attempts with valid EPA, used to fit opponent-adjusted team ratings and per-QB ratings.</p>
+      <p>Real nflverse play-by-play, filtered to regular-season pass/rush attempts with valid EPA, used to fit opponent-adjusted team ratings and per-QB ratings.</p>
+      <p style="margin-top:var(--s3);" id="ratings-freeze"><b style="color:var(--text)">The ratings freeze through the playoffs.</b> They read regular-season plays only, so from the end of week 18 they stay as they were: a playoff pick uses each team&#39;s and quarterback&#39;s ratings as of its last regular-season game, and the playoff games already played do not move them. This is said here rather than changed. Counting playoff plays would be a change to the model, and with about 13 playoff games a season no test could tell whether it helped.</p>
       <p style="margin-top:var(--s3);">Data pipeline migrated from nfl_data_py to nflreadpy (2026-08) after nfl_data_py was officially deprecated. Verified column-schema match and exact value match (scores, spreads, EPA, snap counts) on a real completed week before merging -- see What&#39;s Changed.</p>
     </div>
 
