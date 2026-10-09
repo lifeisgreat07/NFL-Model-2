@@ -14,7 +14,7 @@ from src.sports.nfl.research import neutral_site_backcheck as bc
 ROOT = Path(__file__).resolve().parents[1]
 FOLDER = ROOT / 'experiments' / 'nfl' / 'stage38'
 REG = json.loads((FOLDER / 'n1_registry.json').read_text(encoding='utf-8'))
-BACK = json.loads((FOLDER / 'results' / 'n1_backcheck.json').read_text(encoding='utf-8'))
+BACK = json.loads((FOLDER / 'backcheck' / 'n1_backcheck.json').read_text(encoding='utf-8'))
 
 
 def test_it_covers_both_models_and_ships_as_its_own_version():

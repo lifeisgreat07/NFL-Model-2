@@ -12,7 +12,7 @@
  },
  "why_a_rule_not_a_test": "Four or five neutral games a season cannot decide it at any useful level, so Stage 38's registration left it out as a methodology call (experiments/nfl/stage38/registry.json, not_in_this_registration). The reasoning: a home edge is crowd, travel and familiarity, and a neutral site has none of them for either side. For Model B, whose intercept is negative (it corrects the market's home edge back slightly), the same reasoning holds: at a neutral site the line has no home edge to correct.",
  "backcheck": {
-  "file": "experiments/nfl/stage38/results/n1_backcheck.json",
+  "file": "experiments/nfl/stage38/backcheck/n1_backcheck.json",
   "script": "src/sports/nfl/research/neutral_site_backcheck.py",
   "what": "Walk-forward as published, 2021-2025, on every game nflverse's location calls neutral: each model with and without its intercept, by log loss, with a 95% bootstrap interval over games (5,000 resamples, seed 20261009).",
   "reading": "Neither interval excludes zero (Model A +0.0086, 95% -0.0134 to +0.0302; Model B -0.0136, -0.0368 to +0.0087, on 25 games). The rule moved Model B the right way and Model A the wrong way, and neither result decides anything; the rule rests on the reasoning above, as decided."

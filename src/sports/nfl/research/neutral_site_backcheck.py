@@ -7,7 +7,7 @@ Walk-forward exactly as published (weekly refit on every earlier game from
 neutral (`weekly_update.site_is_neutral`, on nflverse's `location`), each
 model's probability is recomputed with its intercept (the home edge) taken
 out of the logit, which is what N1 does live. Writes
-experiments/nfl/stage38/results/n1_backcheck.json, which the rule's
+experiments/nfl/stage38/backcheck/n1_backcheck.json, which the rule's
 registration (experiments/nfl/stage38/n1_registry.json) quotes.
 
 `hist` keeps no team names, so a game is matched to its schedule row by
@@ -32,7 +32,7 @@ from src.sports.nfl.research.calibration import build_hist
 from src.sports.nfl.weekly_update import site_is_neutral
 
 SEASONS = [2021, 2022, 2023, 2024, 2025]
-OUT = Path(__file__).resolve().parents[4] / 'experiments' / 'nfl' / 'stage38' / 'results' / 'n1_backcheck.json'
+OUT = Path(__file__).resolve().parents[4] / 'experiments' / 'nfl' / 'stage38' / 'backcheck' / 'n1_backcheck.json'
 SEED = 20261009
 
 
