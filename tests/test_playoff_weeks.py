@@ -27,10 +27,10 @@ import json
 import re
 import shutil
 import subprocess
-from datetime import UTC, datetime, timedelta
+from datetime import timedelta
 from pathlib import Path
-from zoneinfo import ZoneInfo
 
+import pandas as pd
 import pytest
 
 from src.core.start_delay import Cron, crons
@@ -41,7 +41,6 @@ from src.sports.nfl import weekend_refresh as wr
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS = ROOT / '.github' / 'workflows'
 NODE = shutil.which('node')
-ET = ZoneInfo('America/New_York')
 ROUNDS = {19: (6, 'Wild Card'), 20: (4, 'Divisional'), 21: (2, 'Conference Championships'), 22: (1, 'Super Bowl')}
 
 
@@ -144,6 +143,14 @@ WITHIN = timedelta(hours=24)
 FRIDAY = timedelta(hours=49)
 
 
+def kickoff(eastern):
+    """(the kickoff in UTC, its weekday in Eastern time, Monday 0). pandas
+    reads the time zone, as the pipeline does: Windows has no tz database
+    for the standard library's zoneinfo."""
+    t = pd.Timestamp(eastern, tz='America/New_York')
+    return t.tz_convert('UTC').to_pydatetime(), t.weekday()
+
+
 def refresh_crons():
     return (crons((WORKFLOWS / 'nfl-weekend-refresh.yml').read_text(encoding='utf-8'))
             + crons((WORKFLOWS / 'nfl-weekly-update.yml').read_text(encoding='utf-8')))
@@ -161,11 +168,11 @@ def next_refresh(after, exprs):
 @pytest.mark.parametrize('name', sorted(KICKOFFS))
 def test_every_kind_of_kickoff_gets_a_status_refresh_soon_after_the_game(name):
     exprs = refresh_crons()
-    kick = datetime.fromisoformat(KICKOFFS[name]).replace(tzinfo=ET).astimezone(UTC)
+    kick, weekday = kickoff(KICKOFFS[name])
     end = kick + GAME_LENGTH
     found = next_refresh(end, exprs)
     assert found is not None, f'{name}: no refresh slot in the eight days after it'
-    limit = FRIDAY if kick.astimezone(ET).weekday() == 4 else WITHIN
+    limit = FRIDAY if weekday == 4 else WITHIN
     gap = found - end
     assert gap <= limit, f'{name}: the first refresh after the game comes {gap} later ({found:%a %H:%M} UTC)'
 
@@ -175,8 +182,8 @@ def test_the_friday_exception_is_needed_and_no_wider():
     exception above should go."""
     exprs = refresh_crons()
     gaps = []
-    for name, s in KICKOFFS.items():
-        kick = datetime.fromisoformat(s).replace(tzinfo=ET).astimezone(UTC)
-        if kick.astimezone(ET).weekday() == 4:
+    for s in KICKOFFS.values():
+        kick, weekday = kickoff(s)
+        if weekday == 4:
             gaps.append(next_refresh(kick + GAME_LENGTH, exprs) - (kick + GAME_LENGTH))
     assert max(gaps) > WITHIN, 'every Friday game is now refreshed within a day: drop the exception'
