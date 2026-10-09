@@ -105,7 +105,9 @@ def build_commands(sport: str, out: Path) -> list[list[str]]:
         # root, where a local checkout looks at them, and check_build refuses
         # a page with missing data; collect() copies both into place.
         return [py + ['src.pipeline.generate_dashboard'],
-                py + ['src.pipeline.check_build', 'index.html']]
+                py + ['src.pipeline.check_build', 'index.html'],
+                # Every locked pick and its grade, beside the board (Stage 46 item 7).
+                py + ['src.pipeline.picks_csv', '--out', 'picks.csv']]
     return [py + [f'src.sports.{sport}.site', '--out', str(out / sport / 'index.html')]]
 
 
@@ -116,6 +118,8 @@ def collect(sport: str, out: Path) -> None:
     dest = out / 'nfl'
     dest.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(ROOT / 'index.html', dest / 'index.html')
+    if (ROOT / 'picks.csv').exists():
+        shutil.copyfile(ROOT / 'picks.csv', dest / 'picks.csv')
     if (ROOT / 'dist').is_dir():
         shutil.copytree(ROOT / 'dist', dest / 'dist', dirs_exist_ok=True)
 
