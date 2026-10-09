@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: https://a.espncdn.com https://assets.nhle.com; font-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: https://a.espncdn.com https://assets.nhle.com; font-src data:; connect-src 'none'; manifest-src 'self'; base-uri 'none'; form-action 'none'">
 <link rel="canonical" href="https://lifeisgreat07.github.io/NFL-Model-2/nfl/">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "NFL Week Board, The Pick'em Model", "url": "https://lifeisgreat07.github.io/NFL-Model-2/nfl/", "isPartOf": {"@type": "WebSite", "name": "The Pick'em Model", "url": "https://lifeisgreat07.github.io/NFL-Model-2/"}, "mainEntity": {"@type": "Dataset", "name": "Every locked NFL pick and its grade", "description": "One row per game of every locked week: both models' and the market's home win probabilities, each side's pick, the result and who was right.", "license": "https://opensource.org/licenses/MIT", "distribution": {"@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://lifeisgreat07.github.io/NFL-Model-2/nfl/picks.csv"}}}</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -20,6 +20,7 @@
      browser stops at the root, so the same link still finds assets/.
      tests/test_favicon.py holds the link, the file and the copy. -->
 <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../assets/site.webmanifest">
 <!-- The home-screen icon (Stage 34 item 31): iOS takes a PNG, not the SVG,
      and without one it uses a shrunken screenshot of the page. It is
      favicon.svg rendered at 180x180 on a full-bleed dark tile (iOS rounds
