@@ -290,7 +290,11 @@ const brandMark = (function(){
 
 function weekLabel(key){
   const w = weeks[key];
-  return `${w.season} · Week ${w.week}${w.preview ? ' (preview)' : ''}`;
+  // Stage 39 item 2: the playoff weeks by their round. nflverse numbers them
+  // on from the regular season, which has run to week 18 since 2021.
+  const round = w.season >= 2021
+    ? {19: 'Wild Card', 20: 'Divisional', 21: 'Conference Championships', 22: 'Super Bowl'}[w.week] : undefined;
+  return `${w.season} · ${round || 'Week ' + w.week}${w.preview ? ' (preview)' : ''}`;
 }
 
 // "Tue Sep 29, 16:41 UTC" from a preview's ISO stamp. UTC, like the page's

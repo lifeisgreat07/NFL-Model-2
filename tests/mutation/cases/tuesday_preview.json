@@ -43,8 +43,8 @@
       "id": "preview-week-label-unmarked",
       "target": "src/dashboard/app.js",
       "why": "the week stepper names a preview week like a locked one, so a reader stepping back to it later cannot tell the picks were never final.",
-      "find": "  return `${w.season} · Week ${w.week}${w.preview ? ' (preview)' : ''}`;\n",
-      "replace": "  return `${w.season} · Week ${w.week}`;\n",
+      "find": "  return `${w.season} · ${round || 'Week ' + w.week}${w.preview ? ' (preview)' : ''}`;\n",
+      "replace": "  return `${w.season} · ${round || 'Week ' + w.week}`;\n",
       "expect_caught_by": "test_a_preview_week_is_labelled_in_the_week_stepper"
     },
     {
