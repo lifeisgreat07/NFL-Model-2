@@ -154,6 +154,8 @@ RENDERERS = {
     # Stage 19's "How sure, and how right" block. Its whole reason for plain
     # wording is that this map puts it on a page where "log loss" is banned.
     'forecastScoreHtml': 'accuracy',
+    # Stage 46 item 9: the games each model picked against the market.
+    'againstMarketHtml': 'accuracy',
     'buildCalibrationChart': 'accuracy',
     # Added when the trend chart gained a not-enough-data message. It used to
     # return '' in that case and so rendered no prose at all; the moment it
@@ -183,6 +185,8 @@ RENDERERS = {
     # as the rest, so it is scoped, not exempt.
     'renderAgentLog': 'reliability',
     'renderRecentRuns': 'reliability',
+    # Stage 46 item 6: the Late by cell of the runs table.
+    'lateText': 'reliability',
 }
 
 
