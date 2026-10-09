@@ -27,7 +27,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / '.github' / 'workflows' / 'browser-checks.yml'
 CHECKER = ROOT / 'tests' / 'browser' / 'check_page.py'
-RULES = ('overflow', 'focus', 'target', 'axe', 'font', 'error', 'sticky', 'sortmark')
+RULES = ('overflow', 'focus', 'target', 'axe', 'font', 'error', 'sticky', 'sortmark', 'render')
 
 
 @pytest.fixture(scope='module')
@@ -98,6 +98,16 @@ def test_the_thresholds_are_what_the_rules_say(checker):
     # bound is that figure, so raising it means changing this test as well.
     assert isinstance(budget, int) and 600_000 < budget <= 800_000, (
         f'BYTE_BUDGET is {budget}; moving it is a decision with a reason, not a reflex')
+    render = constant(tree, 'RENDER_BUDGET_MS')
+    # Stage 47 item 13: about five times the heaviest page's measured load.
+    assert isinstance(render, int) and 1000 <= render <= 2000, (
+        f'RENDER_BUDGET_MS is {render}; moving it is a decision with a reason, not a reflex')
+
+
+def test_the_render_budget_takes_the_fastest_width_with_the_network_blocked(checker):
+    src, _ = checker
+    assert 'if timings is not None and not network:' in src, 'the render time is not read with the network blocked'
+    assert 'min(timings)[0] > RENDER_BUDGET_MS' in src, 'the render budget is not judged on the fastest width'
 
 
 def fixture_names(tree):
