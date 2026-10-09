@@ -8,7 +8,9 @@ scored with the real starter, so its numbers did not move (VERSION_HISTORY's
 2.5 entry says so). That allowance is written down here, with its reason, so
 the next version bump has to either re-run the backtest or add itself to the
 list and say why. Nothing else in the suite noticed the gap between 2.4 and
-2.5.
+2.5. 2.6 (Stage 38 N1) took the home edge out at neutral sites in the live
+picks only; the published backtest keeps it, as its registration says, so
+2.6 is on the list too.
 
 The Methodology page's backtest table is held to data/nfl/calibration.json, and
 README's table is held to the page by test_readme_accuracy.py, so both
@@ -55,6 +57,8 @@ TEMPLATE = JOINED_TEMPLATE
 # this; a release that is not here and is newer than the files fails.
 BACKTEST_UNCHANGED = {
     '2.5': 'the live picks use the listed starter; the backtest always used the real one',
+    '2.6': ('the live picks take the home edge out at a neutral site (Stage 38 N1); the published '
+            'backtest keeps it, as experiments/nfl/stage38/n1_registry.json says'),
 }
 
 # Methodology table row -> calibration.json model.
@@ -173,9 +177,9 @@ def test_the_allowance_names_only_releases_newer_than_the_backtest():
 
 def test_a_release_the_allowance_does_not_cover_is_caught():
     """Synthetic, so the failing branch stays reachable while the two agree."""
-    history = [{'version': '2.6'}] + list(VERSION_HISTORY)
-    assert unexplained('2.4', history, BACKTEST_UNCHANGED) == ['2.6']
-    assert unexplained('2.4', VERSION_HISTORY, {}) == ['2.5']
+    history = [{'version': '2.7'}] + list(VERSION_HISTORY)
+    assert unexplained('2.4', history, BACKTEST_UNCHANGED) == ['2.7']
+    assert unexplained('2.4', VERSION_HISTORY, {}) == ['2.6', '2.5']
 
 
 def test_the_search_skips_files_without_both_keys(tmp_path):
