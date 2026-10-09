@@ -892,6 +892,8 @@
   .why-bar-fill.pos{background:var(--text-3); left:50%;}
   .why-bar-fill.neg{background:var(--text-3); right:50%;}
   .why-val{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); width:52px; text-align:right; flex-shrink:0;}
+  /* Stage 46 item 9: the model's name stays on one line on a phone. */
+  .against-market td:first-child{white-space:nowrap;}
   .graded-tag{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); padding:var(--s1) var(--s3); border-radius:20px;}
   .graded-tag.correct{background:var(--good-dim); color:var(--good);}
   .graded-tag.incorrect{background:var(--warn-dim); color:var(--warn);}

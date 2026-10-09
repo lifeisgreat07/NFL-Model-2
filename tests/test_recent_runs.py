@@ -73,7 +73,7 @@ def test_runs_are_merged_across_the_jobs_newest_first_and_cut_to_thirty():
 def test_a_finished_run_has_its_minutes_and_a_running_one_has_neither_result_nor_minutes():
     done = rr.row(run(4, minute=47), 'NFL weekend refresh')
     assert done == {'workflow': 'NFL weekend refresh', 'event': 'schedule', 'conclusion': 'success',
-                    'started_utc': '2026-10-04T21:47:00Z', 'minutes': 3.5,
+                    'started_utc': '2026-10-04T21:47:00Z', 'minutes': 3.5, 'late_minutes': None,
                     'url': 'https://github.com/o/r/actions/runs/4'}
     going = rr.row(run(4, status='in_progress', conclusion=None), 'NFL weekend refresh')
     assert going['conclusion'] is None and going['minutes'] is None
@@ -145,7 +145,8 @@ def render(payload):
     js = (const_block(src, 'STATE_KINDS') + function_source(src, 'stateHtml') +
           function_source(src, 'escapeHtml') + const_block(src, 'RUN_RESULTS') +
           function_source(src, 'runResultText') + function_source(src, 'runTriggerText') +
-          function_source(src, 'runStartedText') + function_source(src, 'renderRecentRuns') +
+          function_source(src, 'runStartedText') + const_block(src, 'LATE_WARN_MINUTES') +
+          function_source(src, 'lateText') + function_source(src, 'renderRecentRuns') +
           f'const recentRuns = {json.dumps(payload)};'
           'const el = {innerHTML: ""}; const document = {getElementById: () => el};'
           'renderRecentRuns(); process.stdout.write(el.innerHTML);')
@@ -186,3 +187,52 @@ def test_a_job_name_is_escaped():
 def test_no_failures_says_so():
     out = render({'read_utc': 't', 'runs': ROWS[:1]})
     assert 'none failed' in out
+
+
+# --- Stage 46 item 6: late by ------------------------------------------------------
+
+def at(s):
+    from datetime import UTC, datetime
+    return datetime.fromisoformat(s).replace(tzinfo=UTC)
+
+
+REFRESH_CRONS = ['17 5 * * 5', '47 21 * * 0', '47 1 * * 1', '37 5 * * 1']
+
+
+def test_late_by_is_minutes_after_the_slot_the_run_served():
+    assert rr.late_minutes(at('2026-10-09T05:17:06'), REFRESH_CRONS) == 0
+    assert rr.late_minutes(at('2026-10-09T13:00:00'), REFRESH_CRONS) == 463
+    assert rr.late_minutes(at('2026-10-12T02:30:00'), REFRESH_CRONS) == 43
+
+
+def test_a_hand_run_off_its_slot_has_no_late_by():
+    assert rr.late_minutes(at('2026-10-08T12:20:00'), REFRESH_CRONS, 'workflow_dispatch') is None
+    assert rr.late_minutes(at('2026-10-08T12:20:00'), REFRESH_CRONS, 'schedule') is not None
+
+
+def test_late_by_is_unknown_without_a_cron_line_not_zero():
+    assert rr.late_minutes(at('2026-10-09T05:17:06'), []) is None
+    assert rr.late_minutes(None, REFRESH_CRONS) is None
+
+
+def test_the_reader_measures_each_run_against_its_own_workflows_cron_lines():
+    r = run(9, event='workflow_dispatch')
+    r['run_started_at'] = r['created_at'] = '2026-10-09T05:17:06Z'
+    get, _ = fake_api({'nfl-weekend-refresh.yml': [r]})
+    rows = rr.fetch('o/r', None, get)
+    assert [x['late_minutes'] for x in rows] == [0]
+
+
+def test_the_table_has_a_late_by_column_and_marks_seven_hours():
+    rows = [dict(ROWS[0], late_minutes=3), dict(ROWS[1], late_minutes=463), dict(ROWS[2], late_minutes=None)]
+    out = render({'read_utc': 't', 'runs': rows})
+    assert '<th scope="col">Late by</th>' in out
+    assert '<td class="num">0h 03m</td>' in out
+    assert '<td class="num"><b>7h 43m</b></td>' in out
+    assert '<td class="num">&ndash;</td>' in out.split('Running')[1]
+
+
+def test_the_page_marks_late_at_the_runs_own_warning():
+    from src.core import start_delay
+    src = JOINED_TEMPLATE.read_text(encoding='utf-8')
+    assert f'const LATE_WARN_MINUTES = {start_delay.WARN_HOURS} * 60;' in src

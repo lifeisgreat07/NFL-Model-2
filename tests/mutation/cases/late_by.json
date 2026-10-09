@@ -1,0 +1,44 @@
+{
+  "target": "src/sports/nfl/recent_runs.py",
+  "tests": "tests/test_recent_runs.py",
+  "cases": [
+    {
+      "id": "late-by-not-shown",
+      "why": "the runs table drops the Late by cell, so the column header sits over the wrong values.",
+      "find": "      <td class=\"num\">${lateText(r.late_minutes)}</td>\n",
+      "replace": "",
+      "expect_caught_by": "test_the_table_has_a_late_by_column_and_marks_seven_hours",
+      "target": "src/dashboard/app.js"
+    },
+    {
+      "id": "late-by-never-bold",
+      "why": "a run seven hours late is drawn like one on time.",
+      "find": "return m >= LATE_WARN_MINUTES ? `<b>${text}</b>` : text;",
+      "replace": "return text;",
+      "expect_caught_by": "test_the_table_has_a_late_by_column_and_marks_seven_hours",
+      "target": "src/dashboard/app.js"
+    },
+    {
+      "id": "late-by-own-threshold",
+      "why": "the page marks lateness at its own threshold, not the runs' warning.",
+      "find": "const LATE_WARN_MINUTES = 7 * 60;",
+      "replace": "const LATE_WARN_MINUTES = 6 * 60;",
+      "expect_caught_by": "test_the_page_marks_late_at_the_runs_own_warning",
+      "target": "src/dashboard/app.js"
+    },
+    {
+      "id": "late-by-zero-default",
+      "why": "a run with no cron line reads as on time.",
+      "find": "    if not started or not crons:\n        return None\n    delay",
+      "replace": "    if not started or not crons:\n        return 0\n    delay",
+      "expect_caught_by": "test_late_by_is_unknown_without_a_cron_line_not_zero"
+    },
+    {
+      "id": "late-by-hand-run-days-late",
+      "why": "a hand run on an off day is shown as days late.",
+      "find": "    delay = served_delay(list(crons), started, event)",
+      "replace": "    delay = served_delay(list(crons), started, 'schedule')",
+      "expect_caught_by": "test_a_hand_run_off_its_slot_has_no_late_by"
+    }
+  ]
+}

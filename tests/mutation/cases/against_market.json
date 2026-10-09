@@ -1,0 +1,43 @@
+{
+  "target": "src/sports/nfl/generate_dashboard.py",
+  "tests": "tests/test_against_market.py",
+  "cases": [
+    {
+      "id": "against-market-even-market-counted",
+      "why": "a game the market priced at exactly 50% is counted as picking against a favourite it does not have.",
+      "find": "            if market == 0.5:\n                continue\n",
+      "replace": "",
+      "expect_caught_by": "test_a_market_at_exactly_even_has_no_favourite"
+    },
+    {
+      "id": "against-market-even-model-away",
+      "why": "a model at exactly 50% is put on the away side, unlike its grade, which takes the home team.",
+      "find": "if (prob >= 0.5) != (market > 0.5):",
+      "replace": "if (prob > 0.5) != (market > 0.5):",
+      "expect_caught_by": "test_a_model_at_exactly_even_picks_home_as_its_grade_does"
+    },
+    {
+      "id": "against-market-narrow-interval",
+      "why": "the interval is drawn at 90%, not 95%, so it looks tighter than the page says.",
+      "find": "def wilson_interval(successes: int, n: int, z: float = 1.96)",
+      "replace": "def wilson_interval(successes: int, n: int, z: float = 1.645)",
+      "expect_caught_by": "test_the_interval_is_the_research_modules_wilson"
+    },
+    {
+      "id": "against-market-not-shown",
+      "why": "Season Accuracy stops showing the section.",
+      "find": "calibHtml\n    + againstMarketHtml(accuracy.against_market);",
+      "replace": "calibHtml;",
+      "expect_caught_by": "test_season_accuracy_shows_it",
+      "target": "src/dashboard/app.js"
+    },
+    {
+      "id": "against-market-headline-rate",
+      "why": "the row leads with a bare rate, the headline Mark asked not to have.",
+      "find": "${r.right} of ${r.n} right <span",
+      "replace": "${Math.round(100 * r.right / r.n)}% right <span",
+      "expect_caught_by": "test_the_page_leads_each_row_with_its_interval_and_shows_no_bare_rate",
+      "target": "src/dashboard/app.js"
+    }
+  ]
+}

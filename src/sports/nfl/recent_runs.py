@@ -32,6 +32,9 @@ import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
 
+from src.core.start_delay import crons as cron_lines
+from src.core.start_delay import served_delay
+
 #: The unattended jobs, by workflow file, with the name the page shows.
 WATCHED = {
     'nfl-weekly-update.yml': 'NFL weekly update',
@@ -42,6 +45,7 @@ WATCHED = {
     'nightly-dependency-audit.yml': 'Nightly dependency audit',
 }
 SHOWN = 30
+WORKFLOWS = Path(__file__).resolve().parents[3] / '.github' / 'workflows'
 API = 'https://api.github.com'
 
 
@@ -58,7 +62,19 @@ def _time(value):
     return datetime.fromisoformat(value.replace('Z', '+00:00')).astimezone(UTC) if value else None
 
 
-def row(run, shown_name):
+def late_minutes(started, crons, event='schedule'):
+    """Stage 46 item 6: minutes from the slot a run served (the latest of its
+    workflow's cron times at or before its start) to its start, by the rule
+    each run's own start-delay line uses (src/core/start_delay.py). None with
+    no cron line, no slot, or a hand run that served none; never 0 by
+    default, since 0 means on time."""
+    if not started or not crons:
+        return None
+    delay = served_delay(list(crons), started, event)
+    return None if delay is None else int(delay.total_seconds() // 60)
+
+
+def row(run, shown_name, crons=()):
     """One run as the page reads it. Duration only once the run has finished."""
     started = _time(run.get('run_started_at') or run.get('created_at'))
     ended = _time(run.get('updated_at')) if run.get('status') == 'completed' else None
@@ -68,6 +84,7 @@ def row(run, shown_name):
         'conclusion': run.get('conclusion') if run.get('status') == 'completed' else None,
         'started_utc': started.strftime('%Y-%m-%dT%H:%M:%SZ') if started else None,
         'minutes': round((ended - started).total_seconds() / 60, 1) if started and ended else None,
+        'late_minutes': late_minutes(started, crons, run.get('event')),
         'url': run.get('html_url'),
     }
 
@@ -77,7 +94,9 @@ def fetch(repo, token=None, get=_get, shown=SHOWN):
     rows = []
     for file, name in WATCHED.items():
         data = get(f'{API}/repos/{repo}/actions/workflows/{file}/runs?per_page={shown}', token)
-        rows.extend(row(r, name) for r in data.get('workflow_runs', []))
+        path = WORKFLOWS / file
+        crons = cron_lines(path.read_text(encoding='utf-8')) if path.exists() else []
+        rows.extend(row(r, name, crons) for r in data.get('workflow_runs', []))
     rows.sort(key=lambda r: r['started_utc'] or '', reverse=True)
     return rows[:shown]
 

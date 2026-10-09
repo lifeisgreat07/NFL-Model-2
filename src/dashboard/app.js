@@ -3388,6 +3388,27 @@ function forecastScoreHtml(s){
       <p style="font-size:var(--fs-12); color:var(--text-2); margin-top:var(--s2);">Over the ${s.n} games all three had a number for. The Methodology page explains how it is worked out.</p>
     </div>`;
 }
+/* Stage 46 item 9: the games each model picked against the market's
+   favourite. Few games a season, so it leads with the interval and says
+   plainly when there is none; the rate alone would read as a finding it
+   is not. Numbers are Python's (build_against_market). */
+function againstMarketHtml(m){
+  if(!m) return '';
+  const row = (label, r) => {
+    if(!r.n) return `<tr><td>${label}</td><td>No game yet</td></tr>`;
+    return `<tr><td>${label}</td><td>${r.right} of ${r.n} right <span class="against-ci">(95% interval ${r.lo}% to ${r.hi}%)</span></td></tr>`;
+  };
+  return `
+    <div class="method-block against-market">
+      <h3>Picking against the market</h3>
+      <p>The graded games where a model picked the side the betting market made the underdog. So few that the interval matters more than the record: an interval that spans 50% says this season cannot tell a good contrarian pick from a coin flip.</p>
+      <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Games each model picked against the market's favourite, with how many it got right</caption>
+        <thead><tr><th scope="col">Model</th><th scope="col">Against the favourite</th></tr></thead>
+        <tbody>${row('Model B', m.model_b)}${row('Model A', m.model_a)}</tbody>
+      </table></div>
+      <p style="font-size:var(--fs-12); color:var(--text-2); margin-top:var(--s2);">Out of the ${m.priced} graded games with a market price. A game the market priced at exactly 50% has no favourite and is left out.</p>
+    </div>`;
+}
 function renderAccuracy(){
   const el = document.getElementById('accuracy-content');
   if(!accuracy.overall){
@@ -3473,7 +3494,8 @@ function renderAccuracy(){
       ${calibFootnote}
     </div>`;
 
-  el.innerHTML = cardsHtml + forecastScoreHtml(accuracy.forecast_score) + cumulativeChartHtml + weeklyHtml + calibHtml;
+  el.innerHTML = cardsHtml + forecastScoreHtml(accuracy.forecast_score) + cumulativeChartHtml + weeklyHtml + calibHtml
+    + againstMarketHtml(accuracy.against_market);
 }
 renderAccuracy();
 
@@ -3929,6 +3951,16 @@ function runStartedText(iso){
   return new Date(iso).toLocaleString('en-US', {timeZone: 'America/New_York',
     month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
 }
+/* Stage 46 item 6: how late each run started after the slot it served
+   (recent_runs.late_minutes, from the workflow's own cron lines). Seven
+   hours or more is marked, the threshold of each run's own warning
+   (src/core/start_delay.py). */
+const LATE_WARN_MINUTES = 7 * 60;
+function lateText(m){
+  if(m == null) return '&ndash;';
+  const text = `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
+  return m >= LATE_WARN_MINUTES ? `<b>${text}</b>` : text;
+}
 function renderRecentRuns(){
   const el = document.getElementById('recent-runs');
   if(!el) return;
@@ -3948,6 +3980,7 @@ function renderRecentRuns(){
       <td>${runStartedText(r.started_utc)}</td>
       <td>${r.url ? `<a class="row-link" href="${escapeHtml(r.url)}" style="color:var(--accent); text-decoration:underline;">${runResultText(r)}</a>` : runResultText(r)}</td>
       <td class="num">${r.minutes == null ? '&ndash;' : r.minutes.toFixed(1)}</td>
+      <td class="num">${lateText(r.late_minutes)}</td>
     </tr>`).join('');
   el.innerHTML = `<div class="method-block">
     <h3>The scheduled jobs, run by run</h3>
@@ -3957,11 +3990,12 @@ function renderRecentRuns(){
       failed + ' failed'}. GitHub&#39;s own timer has started jobs hours late, so
     since October 4 an outside service also asks for each run at its scheduled
     time; those show as &ldquo;Requested&rdquo;, as does a run started by hand.
-    Times are Eastern.</p>
+    &ldquo;Late by&rdquo; is how long after its scheduled time a run started; seven
+    hours or more is in bold. Times are Eastern.</p>
     ${runs.length ? `<div class="table-wrap" data-scroll-label="Recent scheduled runs"><table class="metrics-table">
       <caption class="visually-hidden">The last scheduled runs, newest first</caption>
       <thead><tr><th scope="col">Job</th><th scope="col">Started</th>
-      <th scope="col">Result</th><th scope="col">Min</th></tr></thead>
+      <th scope="col">Result</th><th scope="col">Min</th><th scope="col">Late by</th></tr></thead>
       <tbody>${body}</tbody>
     </table></div>` : stateHtml('note', 'No runs yet.', 'GitHub returned no runs for these jobs.')}
     <p class="rel-prov">Read ${escapeHtml(recentRuns.read_utc || 'at an unknown time')} (UTC).
