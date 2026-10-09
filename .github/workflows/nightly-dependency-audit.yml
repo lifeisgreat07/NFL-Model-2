@@ -48,7 +48,17 @@ jobs:
           pip-audit -r requirements.txt --progress-spinner off --desc on -f markdown -o audit.md
           code=$?
           set -e
-          { echo "## pip-audit of requirements.txt (exit $code)"; cat audit.md 2>/dev/null; } >> "$GITHUB_STEP_SUMMARY"
+          # pip-audit writes no report at all on a clean night (2.10.1, checked
+          # 2026-10-09), and a bare `cat audit.md` then failed this step under
+          # set -e: the clean night after #364 opened "could not run" (#365).
+          if [ ! -f audit.md ]; then
+            if [ "$code" = "0" ]; then
+              echo "No known vulnerabilities found." > audit.md
+            else
+              echo "pip-audit wrote no report." > audit.md
+            fi
+          fi
+          { echo "## pip-audit of requirements.txt (exit $code)"; cat audit.md; } >> "$GITHUB_STEP_SUMMARY"
           echo "code=$code" >> "$GITHUB_OUTPUT"
       - name: Raise an alert
         if: ${{ steps.audit.outputs.code != '0' }}

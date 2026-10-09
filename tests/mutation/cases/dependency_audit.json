@@ -22,6 +22,13 @@
       "find": "        if: ${{ steps.audit.outputs.code != '0' }}\n",
       "replace": "        if: ${{ steps.audit.outputs.code == '1' }}\n",
       "expect_caught_by": "test_a_finding_and_a_failed_audit_raise_different_alerts"
+    },
+    {
+      "id": "dependency-audit-clean-night-fails",
+      "why": "pip-audit writes no report on a clean night, so reading it back under set -e fails the step and a clean night opens 'could not run' (#365)",
+      "find": "          if [ ! -f audit.md ]; then\n",
+      "replace": "          if false; then\n",
+      "expect_caught_by": "test_a_clean_night_does_not_fail_the_step"
     }
   ]
 }
