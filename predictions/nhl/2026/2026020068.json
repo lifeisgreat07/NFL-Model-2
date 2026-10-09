@@ -1,0 +1,70 @@
+{
+ "game_id": "2026020068",
+ "season": 2026,
+ "slate": "2026-10-09",
+ "start_utc": "2026-10-09T23:00:00Z",
+ "home": "CBJ",
+ "away": "PIT",
+ "model_a": 0.4912,
+ "model_b": 0.5249,
+ "pick": "CBJ",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.316949,
+  "shot_matchup": -1.412022,
+  "goalie_matchup_2000": -0.001376
+ },
+ "market": {
+  "game_id": "2026020068",
+  "start_utc": "2026-10-09T23:00:00Z",
+  "home": "CBJ",
+  "away": "PIT",
+  "book": "DraftKings",
+  "home_price": -118.0,
+  "away_price": -102.0,
+  "home_prob": 0.5174,
+  "read_utc": "2026-10-09T21:01:44Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475660,
+   "name": "Cam Talbot",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/DMaetzMedia/status/2108574875996786697?s=20"
+  },
+  "away": {
+   "player_id": 8483703,
+   "name": "Sergei Murashov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JG_PxP/status/2108592158018310551?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-09",
+  "read_utc": "2026-10-09T21:01:44Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Andrei Kuzmenko",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Justin Brazeau",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Graves",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-09T21:01:44Z",
+ "code": "nhl-stage56"
+}

@@ -108,5 +108,25 @@
   "game_id": "2026020065",
   "pick": "VGK",
   "result": "correct"
+ },
+ {
+  "game_id": "2026020066",
+  "pick": "DET",
+  "result": "pending"
+ },
+ {
+  "game_id": "2026020067",
+  "pick": "WSH",
+  "result": "pending"
+ },
+ {
+  "game_id": "2026020068",
+  "pick": "CBJ",
+  "result": "pending"
+ },
+ {
+  "game_id": "2026020069",
+  "pick": "WPG",
+  "result": "pending"
  }
 ]

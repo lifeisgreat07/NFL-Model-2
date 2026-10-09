@@ -1,0 +1,96 @@
+{
+ "game_id": "2026020069",
+ "season": 2026,
+ "slate": "2026-10-09",
+ "start_utc": "2026-10-10T00:00:00Z",
+ "home": "WPG",
+ "away": "ANA",
+ "model_a": 0.5323,
+ "model_b": 0.5134,
+ "pick": "WPG",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.238307,
+  "shot_matchup": -3.676118,
+  "goalie_matchup_2000": 0.004303
+ },
+ "market": {
+  "game_id": "2026020069",
+  "start_utc": "2026-10-10T00:00:00Z",
+  "home": "WPG",
+  "away": "ANA",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-10-09T21:01:44Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8483532,
+   "name": "Clay Stevenson",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/MitchellClinton/status/2108578361585127736?s=20"
+  },
+  "away": {
+   "player_id": 8480843,
+   "name": "Lukas Dostal",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-09",
+  "read_utc": "2026-10-09T21:01:44Z",
+  "home": [
+   {
+    "name": "Connor Hellebuyck",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elias Salomonsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Garrett Brown",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Josh Morrissey",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Walker Duehr",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Drew Helleson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ian Moore",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Troy Terry",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-09T21:01:44Z",
+ "code": "nhl-stage56"
+}
