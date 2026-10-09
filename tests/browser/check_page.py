@@ -224,6 +224,10 @@ async def check_one(browser, url, width, network, axe_src, report):
     page = await ctx.new_page()
     errors = []
     page.on('pageerror', lambda e: errors.append(str(e)))
+    # Stage 45 item 2: anything the page's Content-Security-Policy refuses.
+    blocked = []
+    page.on('console', lambda m: blocked.append(m.text)
+            if m.type == 'error' and 'Content Security Policy' in m.text else None)
     if not network:
         await page.route(lambda u: u.startswith(('http://', 'https://')), lambda r: r.abort())
     await page.goto(url)
@@ -269,6 +273,7 @@ async def check_one(browser, url, width, network, axe_src, report):
             report.append(f"[{tag}] font: Plus Jakarta Sans is not rendering "
                           f"(loaded={font['loaded']}, {font['withFace']:.1f}px vs monospace {font['fallback']:.1f}px)")
     report.extend(f"[{tag}] page error: {e}" for e in errors)
+    report.extend(f"[{tag}] csp: {b[:200]}" for b in dict.fromkeys(blocked))
     await ctx.close()
 
 
@@ -308,6 +313,9 @@ FIXTURES = {
     'axe': dict(body='<img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">', expect='axe'),
     'font': dict(body='<p>No self-hosted face here.</p>', expect='font'),
     'error': dict(body='<p>ok</p>', script='throw new Error("boom")', expect='page error'),
+    # A page whose policy refuses what it loads: an inline image under img-src 'none'.
+    'csp': dict(head='<meta http-equiv="Content-Security-Policy" content="img-src \'none\'">',
+                body='<img alt="dot" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">', expect='csp:'),
     # The real defect's shape (Stage 30 item 2): a sticky bar over the page
     # and a fitting table's sticky header at the same top:0, under it. The
     # table is long on purpose: this shell has no viewport meta, so phone
@@ -350,7 +358,7 @@ async def self_test(axe_src, tmp):
             print(f"self-test {name}: SKIPPED (no axe-core given)")
             continue
         page = Path(tmp) / f'fixture_{name}.html'
-        page.write_text(SHELL.format(css=fx.get('css', ''), head='', body=fx['body'],
+        page.write_text(SHELL.format(css=fx.get('css', ''), head=fx.get('head', ''), body=fx['body'],
                                      script=fx.get('script', '')), encoding='utf-8')
         report = await check_page(page, axe_src, widths=(390,), budget=10**9)
         if 'forbid' in fx:
