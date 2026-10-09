@@ -5,15 +5,15 @@
     {
       "id": "nhl-puck-loses-its-side",
       "why": "the puck's edge goes and it reads as a flat oval, not puck P3.",
-      "find": "          <path class=\"ball\" d=\"M1.6 8.4v3.2a8.4 3.2 0 0 0 16.8 0V8.4\"/>\n        </g>\n      </svg>\n      <h1>PICK'EM",
-      "replace": "        </g>\n      </svg>\n      <h1>PICK'EM",
+      "find": "          <path class=\"ball\" d=\"M1.6 8.4v3.2a8.4 3.2 0 0 0 16.8 0V8.4\"/>\n        </g>\n      </svg>\n      <h1 class=\"wordmark\">Sporta",
+      "replace": "        </g>\n      </svg>\n      <h1 class=\"wordmark\">Sporta",
       "expect_caught_by": "test_the_page_draws_its_icon_in_the_sidebar_and_the_top_bar"
     },
     {
       "id": "nhl-puck-stands-level",
       "why": "the puck loses the football's tilt, so the three icons stop reading as one set.",
-      "find": "        <g transform=\"rotate(-28 10 10)\">\n          <ellipse class=\"ball\" cx=\"10\" cy=\"8.4\" rx=\"8.4\" ry=\"3.2\"/>\n          <path class=\"ball\" d=\"M1.6 8.4v3.2a8.4 3.2 0 0 0 16.8 0V8.4\"/>\n        </g>\n      </svg>\n      <h1>PICK'EM",
-      "replace": "        <g>\n          <ellipse class=\"ball\" cx=\"10\" cy=\"8.4\" rx=\"8.4\" ry=\"3.2\"/>\n          <path class=\"ball\" d=\"M1.6 8.4v3.2a8.4 3.2 0 0 0 16.8 0V8.4\"/>\n        </g>\n      </svg>\n      <h1>PICK'EM",
+      "find": "        <g transform=\"rotate(-28 10 10)\">\n          <ellipse class=\"ball\" cx=\"10\" cy=\"8.4\" rx=\"8.4\" ry=\"3.2\"/>\n          <path class=\"ball\" d=\"M1.6 8.4v3.2a8.4 3.2 0 0 0 16.8 0V8.4\"/>\n        </g>\n      </svg>\n      <h1 class=\"wordmark\">Sporta",
+      "replace": "        <g>\n          <ellipse class=\"ball\" cx=\"10\" cy=\"8.4\" rx=\"8.4\" ry=\"3.2\"/>\n          <path class=\"ball\" d=\"M1.6 8.4v3.2a8.4 3.2 0 0 0 16.8 0V8.4\"/>\n        </g>\n      </svg>\n      <h1 class=\"wordmark\">Sporta",
       "expect_caught_by": "test_the_page_draws_its_icon_in_the_sidebar_and_the_top_bar"
     }
   ]
