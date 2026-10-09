@@ -5,25 +5,56 @@
     {
       "id": "product-name-sidebar-goes-back",
       "target": "src/dashboard/body.html",
-      "why": "the sidebar says COMMAND BOARD again, a second name for the same site beside the tab's Pick'em Model.",
-      "find": "<h1>PICK'EM<br>MODEL</h1>",
-      "replace": "<h1>COMMAND<br>BOARD</h1>",
+      "why": "the sidebar says PICK'EM MODEL again, the old name beside the tab's Sportalytics.",
+      "find": "<h1 class=\"wordmark\">Sporta<span class=\"wm-accent\">lytics</span></h1>",
+      "replace": "<h1>PICK'EM<br>MODEL</h1>",
       "expect_caught_by": "test_the_tab_the_sidebar_and_the_phone_bar_say_the_name"
     },
     {
       "id": "product-name-tab-goes-back",
-      "why": "the Week Board's tab title goes back to naming the old Command Board.",
-      "find": "<title>Week Board — Pick'em Model</title>",
-      "replace": "<title>Pick'em Model — Command Board</title>",
+      "why": "the Week Board's tab title goes back to the old name.",
+      "find": "<title>Week Board — Sportalytics</title>",
+      "replace": "<title>Week Board — Pick'em Model</title>",
       "expect_caught_by": "test_the_tab_the_sidebar_and_the_phone_bar_say_the_name"
     },
     {
       "id": "product-name-pdf-goes-back",
       "target": "src/sports/nfl/generate_picks_pdf.py",
       "why": "the printed picks sheet carries the old name, so a sheet on a fridge names a different site from the one it came from.",
-      "find": "Paragraph(f\"Pick'em Model &mdash; {season} Week {week}\", title_style)",
-      "replace": "Paragraph(f\"NFL Pick'em &mdash; {season} Week {week}\", title_style)",
-      "expect_caught_by": "test_the_readme_and_the_printed_sheet_say_the_name"
+      "find": "Paragraph(f\"Sportalytics &mdash; {season} Week {week}\", title_style)",
+      "replace": "Paragraph(f\"Pick'em Model &mdash; {season} Week {week}\", title_style)",
+      "expect_caught_by": "test_the_readme_the_printed_sheet_and_the_home_screen_say_the_name"
+    },
+    {
+      "id": "product-name-left-in-a-link-preview",
+      "why": "a shared link's preview still names the old site, though no page shows it.",
+      "find": "<meta property=\"og:site_name\" content=\"Sportalytics\">",
+      "replace": "<meta property=\"og:site_name\" content=\"The Pick'em Model\">",
+      "expect_caught_by": "test_the_old_name_is_nowhere_a_visitor_sees"
+    },
+    {
+      "id": "product-name-left-on-the-nba-tab",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the NBA page's tabs end in the old name, a corner the page-by-page checks never read.",
+      "find": "— Sportalytics`;",
+      "replace": "— Pick&#39;em Model`;",
+      "expect_caught_by": "test_the_old_name_is_nowhere_a_visitor_sees"
+    },
+    {
+      "id": "wordmark-loses-its-accent",
+      "target": "src/dashboard/styles.css",
+      "why": "the wordmark becomes one colour, which is W1 and not the W2 Mark chose.",
+      "find": "  .wm-accent{color:var(--accent);}",
+      "replace": "  .wm-accent{color:inherit;}",
+      "expect_caught_by": "test_lytics_takes_the_accent_colour"
+    },
+    {
+      "id": "phone-bar-shouts-the-wordmark",
+      "target": "src/dashboard/styles.css",
+      "why": "the phone bar sets the wordmark in capitals again, SPORTALYTICS, not the mixed-case W2 the sidebar shows.",
+      "find": "      letter-spacing:-.01em; line-height:1.2;}  /* wordmark W2",
+      "replace": "      letter-spacing:-.01em; line-height:1.2; text-transform:uppercase;}  /* wordmark W2",
+      "expect_caught_by": "test_the_phone_bar_does_not_shout_the_wordmark"
     }
   ]
 }

@@ -174,6 +174,9 @@
     .is-loading .brand-ball .ball, .is-loading .brand-ball .lace{stroke:var(--text-3);}
   }
   .brand h1{font-family:'Plus Jakarta Sans', sans-serif; font-weight:800; font-size:var(--fs-24); letter-spacing:.01em; line-height:.98;}
+  /* Wordmark W2 (Stage 67): Sportalytics, "lytics" in the accent colour, on one line. */
+  .brand h1.wordmark{letter-spacing:-.01em; line-height:1;}
+  .wm-accent{color:var(--accent);}
   .brand-sub{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2);}
   nav.side-nav{display:flex; flex-direction:column; gap:2px; padding:0 var(--s3);}
   .nav-group-label{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.13em; text-transform:uppercase; color:var(--text-2); padding:var(--s4) var(--s3) var(--s2);}
@@ -1592,7 +1595,7 @@
       background:var(--surface); border-bottom:1px solid var(--border);}
     .topbar .brand-ball{width:22px; height:22px; flex-shrink:0;}
     .topbar h1{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-16); font-weight:800;
-      letter-spacing:.04em; line-height:1.2; text-transform:uppercase;}
+      letter-spacing:-.01em; line-height:1.2;}  /* wordmark W2: mixed case, as in the sidebar (Stage 67) */
     .topbar-sub{display:block; font-size:var(--fs-11); font-weight:500; letter-spacing:0;
       text-transform:none; color:var(--text-2);}
     .topbar-theme{margin-left:auto; width:40px; height:40px; flex-shrink:0; display:grid; place-items:center;

@@ -175,15 +175,15 @@
     {
       "id": "readme-case-floor-above-the-real-count",
       "why": "the README claims more mutation case files than the corpus holds, so the portfolio overstates its own test-of-the-tests.",
-      "find": "over 250 case files",
-      "replace": "over 275 case files",
+      "find": "over 275 case files",
+      "replace": "over 300 case files",
       "expect_caught_by": "test_the_mutation_case_count_it_states_is_the_real_one"
     },
     {
       "id": "readme-case-floor-gone-stale",
       "why": "the floor stays true but falls far behind, so the README undersells the corpus and nothing ever asks for the bump.",
-      "find": "over 250 case files",
-      "replace": "over 175 case files",
+      "find": "over 275 case files",
+      "replace": "over 200 case files",
       "expect_caught_by": "test_the_mutation_case_count_it_states_is_the_real_one"
     },
     {
