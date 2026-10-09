@@ -308,6 +308,9 @@
      it maps to, and where a registered answer's figures come from. */
   .lab-first,.lab-src{display:block; margin-top:var(--s1); font-size:var(--fs-12); color:var(--text-2);}
   .lab-src code{font-size:var(--fs-12);}
+/* A repository path on the Methodology page has no spaces to break at; at
+   390 px it ran past the edge of the "not shown" list (Stage 38 N1 render). */
+#page-method li code{overflow-wrap:anywhere;}
   /* A row's decision pills: one wrapping row with a gap, and a pill never
      breaks inside itself ("CONFIRMED FINDING" did, and DEFERRED stacked on
      LEAKAGE with no space between them, until 2026-09-28). */
