@@ -1,0 +1,23 @@
+{
+ "family": "stage38-n1",
+ "registered": "2026-10-09",
+ "approved_by": "Mark, 2026-10-09 11:22 ET ('Yes to N1'), after the back-check below was put to him, for both models. Recorded as a declared rule, not a tested win.",
+ "rule": {
+  "id": "N1",
+  "title": "No home edge at a neutral site",
+  "statement": "For a game the schedule calls neutral (src/sports/nfl/weekly_update.site_is_neutral: nflverse's location is 'Neutral', or the game is away from the home team's usual stadium), each model's probability is computed with its intercept, the home edge, taken out of the logit: p = sigmoid(logit(p_model) - intercept). Model A and Model B both. A game the schedule does not place (site_is_neutral None) keeps the home edge.",
+  "models": ["model_a", "model_b"],
+  "ships_as": "MODEL_VERSION 2.6, between two weekly locks, in its own pull request after this registration.",
+  "applies_to": "Live picks saved from MODEL_VERSION 2.6 on. Picks already saved are never rewritten, and the published backtest is unchanged: it gave neutral games the home edge, and this file's back-check says by how much that matters."
+ },
+ "why_a_rule_not_a_test": "Four or five neutral games a season cannot decide it at any useful level, so Stage 38's registration left it out as a methodology call (experiments/nfl/stage38/registry.json, not_in_this_registration). The reasoning: a home edge is crowd, travel and familiarity, and a neutral site has none of them for either side. For Model B, whose intercept is negative (it corrects the market's home edge back slightly), the same reasoning holds: at a neutral site the line has no home edge to correct.",
+ "backcheck": {
+  "file": "experiments/nfl/stage38/backcheck/n1_backcheck.json",
+  "script": "src/sports/nfl/research/neutral_site_backcheck.py",
+  "what": "Walk-forward as published, 2021-2025, on every game nflverse's location calls neutral: each model with and without its intercept, by log loss, with a 95% bootstrap interval over games (5,000 resamples, seed 20261009).",
+  "reproduction": "Re-run on the Windows machine that wrote it, the script reproduces the committed file byte for byte (2026-10-09, twice). Booth's Linux runner on PR #373, with the same pinned pandas, numpy and scikit-learn, got the same 25 games per model, the same outcomes and the same 16 ambiguous keys left out, but close rather than identical figures (Booth's report on PR #373 lists them); the cause, the data nflverse served or the platform, is not isolated. Both runs leave each interval across zero. The figures quoted here are the committed file's.",
+  "reading": "Neither interval excludes zero (Model A +0.0086, 95% -0.0134 to +0.0302; Model B -0.0136, -0.0368 to +0.0087, on 25 games). The rule moved Model B the right way and Model A the wrong way, and neither result decides anything; the rule rests on the reasoning above, as decided."
+ },
+ "forward": "Every 2026 pick at a neutral site stores neutral_site true and the model version; the page says the home edge was left out. Reported at the season's end beside the back-check, deciding nothing.",
+ "amendments": []
+}

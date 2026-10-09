@@ -1,0 +1,13 @@
+{
+  "target": "src/sports/nfl/research/neutral_site_backcheck.py",
+  "tests": "tests/test_stage38_n1_registry.py",
+  "cases": [
+    {
+      "id": "n1-backcheck-adds-the-edge",
+      "why": "the back-check adds the intercept instead of taking it out, so it measures a doubled home edge and calls it the rule",
+      "find": "    out: np.ndarray = 1 / (1 + np.exp(-(logit - intercept)))",
+      "replace": "    out: np.ndarray = 1 / (1 + np.exp(-(logit + intercept)))",
+      "expect_caught_by": "test_taking_the_intercept_out_is_exactly_a_shift_of_the_logit"
+    }
+  ]
+}
