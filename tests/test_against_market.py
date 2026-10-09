@@ -42,8 +42,9 @@ def test_a_pick_against_the_favourite_is_counted_and_graded():
 
 
 def test_a_market_at_exactly_even_has_no_favourite():
-    m = gd.build_against_market([game(0.40, 0.40, 0.5, home_won=0)])
-    assert m['model_a']['n'] == 0 and m['priced'] == 1
+    # Both sides of 50%: read as an away favourite, the home pick would count.
+    m = gd.build_against_market([game(0.40, 0.40, 0.5, home_won=0), game(0.60, 0.60, 0.5, home_won=1)])
+    assert m['model_a']['n'] == 0 and m['model_b']['n'] == 0 and m['priced'] == 2
 
 
 def test_a_model_at_exactly_even_picks_home_as_its_grade_does():
