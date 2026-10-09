@@ -158,6 +158,23 @@ def test_the_sortmark_rule_runs_on_every_page_and_reads_what_is_drawn(checker):
     assert loop and 'page.evaluate(SORTMARK_JS)' in loop.group(1), (
         'the sortmark rule is not run for each page')
 
+def test_the_theme_check_proves_itself_then_walks_the_whole_built_site(workflow):
+    """Stage 62 items 1 and 4. tests/browser/check_theme.py is the only
+    thing that sees the theme survive a walk between pages; it must prove it
+    can fail before its pass is believed, and walk a site built whole, since
+    the pages are only on one origin there."""
+    runs = step_runs(workflow)
+    selftest = next((i for i, r in enumerate(runs) if 'check_theme.py --self-test' in r), None)
+    build = next((i for i, r in enumerate(runs) if 'src.site.build --out "$RUNNER_TEMP/site"' in r), None)
+    check = next((i for i, r in enumerate(runs) if 'check_theme.py "$RUNNER_TEMP/site"' in r), None)
+    assert None not in (selftest, build, check), 'the theme check, its self-test or the site build is missing'
+    assert selftest < check and build < check, 'prove the check, build the site, then check it'
+    src = (ROOT / 'tests' / 'browser' / 'check_theme.py').read_text(encoding='utf-8')
+    pages = ast.literal_eval(re.search(r'^PAGES = (.+)$', src, re.M).group(1))
+    from src.site.build import SPORTS
+    assert set(pages) == {''} | {f'{s}/' for s in SPORTS}, 'the theme check must visit every page the site builds'
+
+
 def test_the_states_builder_runs_by_path():
     """browser-checks.yml and tasks.py run tests/browser/build_states.py by
     path, so Python puts tests/browser/ on sys.path, not the root, and its

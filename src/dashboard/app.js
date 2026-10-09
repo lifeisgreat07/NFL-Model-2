@@ -1869,7 +1869,11 @@ renderGames();
 const ONBOARDING_KEY = 'nfl_pickem_onboarding_dismissed';
 
 /* ---------- Theme toggle ---------- */
-const THEME_KEY = 'nfl_pickem_theme';
+// Stage 62 item 1: one key for the whole site (src/core/isolation.py's
+// SHARED_STORAGE_KEYS). The first-paint script in page.html still reads the
+// old 'nfl_pickem_theme' when the new key is empty, so a returning visitor
+// keeps the choice they made before.
+const THEME_KEY = 'site:theme';
 function currentTheme(){
   return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
 }

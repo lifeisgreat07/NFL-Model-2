@@ -64,7 +64,7 @@ __FONT_FACES__
   // made an explicit choice yet.
   (function(){
     try{
-      var saved = localStorage.getItem('nfl_pickem_theme');
+      var saved = localStorage.getItem('site:theme') || localStorage.getItem('nfl_pickem_theme');
       if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches){
         saved = 'light';
       }

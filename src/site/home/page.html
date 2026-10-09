@@ -40,8 +40,10 @@ __FONT_FACES__
 <script>
   (function(){
     try{
-      if(window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
-        document.documentElement.setAttribute('data-theme','light');
+      // Stage 62 item 1: the choice made on any sport's page, else the system's.
+      var saved = localStorage.getItem('site:theme');
+      if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) saved = 'light';
+      if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
     }catch(e){}
   })();
 </script>

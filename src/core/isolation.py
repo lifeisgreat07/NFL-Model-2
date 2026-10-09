@@ -244,6 +244,15 @@ def _upload_paths(text: str) -> list[str]:
     return paths
 
 
+#: Storage keys every page shares on purpose, each with its reason. Stage 62
+#: item 1 (Mark, 2026-10-09): light or dark is the visitor's choice for the
+#: whole site, so the four pages read and write one key. Every other key a
+#: sport's pages own still starts with the sport's code; this list is the only
+#: way past that rule, and tests/test_shared_theme.py holds it to one entry.
+SHARED_STORAGE_KEYS = {
+    'site:theme': "the visitor's light or dark choice, one for the whole site (Stage 62 item 1)",
+}
+
 STORAGE_KEY = re.compile(r'''(?:localStorage|sessionStorage)\.(?:get|set|remove)Item\(\s*(['"])(.+?)\1'''
                          r'''|\b[A-Z_]*KEY\s*=\s*(['"])(.+?)\3''')
 CSS_RULE = re.compile(r'([^{}@]+)\{[^{}]*\}')
@@ -264,6 +273,8 @@ def name_violations(root: Path) -> list[str]:
         for path in sorted(folder.rglob('*.js')):
             for m in STORAGE_KEY.finditer(path.read_text(encoding='utf-8')):
                 key = m.group(2) or m.group(4)
+                if key in SHARED_STORAGE_KEYS:
+                    continue
                 if not key.startswith((f'{code}:', f'{code}-', f'{code}.')):
                     out.append(f'{path.relative_to(root).as_posix()}: storage key {key!r} must start with "{code}:"')
         for path in sorted(folder.rglob('*.css')):
