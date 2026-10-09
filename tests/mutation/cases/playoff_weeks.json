@@ -25,6 +25,14 @@
       "target": ".github/workflows/nfl-weekend-refresh.yml"
     },
     {
+      "id": "refresh-saturday-slot-gone",
+      "why": "the Saturday 05:17 refresh is dropped, so a Black Friday or Christmas game reads 'started' until Sunday evening again.",
+      "find": "    - cron: '17 5 * * 6'\n",
+      "replace": "",
+      "expect_caught_by": "test_every_kind_of_kickoff_gets_a_status_refresh_soon_after_the_game",
+      "target": ".github/workflows/nfl-weekend-refresh.yml"
+    },
+    {
       "id": "refresh-monday-slot-gone",
       "why": "the Monday 05:37 refresh is dropped, so a Sunday night game waits for Tuesday's run.",
       "find": "    - cron: '37 5 * * 1'\n",

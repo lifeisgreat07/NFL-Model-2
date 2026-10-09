@@ -4,7 +4,8 @@
 
 cron-job.org sends a `workflow_dispatch` request at each scheduled time:
 the nightly canary (06:00 UTC), the nightly mutation slice (06:30), and the
-weekend refreshes (Friday 05:17, Sunday 21:47, Monday 01:47 and 05:37).
+weekend refreshes (Friday 05:17, Saturday 05:17 from 2026-10-09 for Friday
+games, Sunday 21:47, Monday 01:47 and 05:37).
 GitHub's own `schedule:` cron stays in each workflow as the fallback. The
 Weekly update's job exists and stays off until the slot guard (Stage 42)
 makes a second run of the same slot harmless.

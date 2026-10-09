@@ -10,10 +10,11 @@ yet has reached them, so this holds what will happen:
   weekend refresh keeps a 1-game week open until its game is graded (item 3);
 - every kind of kickoff the season holds, the playoffs included, gets a
   status refresh soon after its game ends, from the weekend refresh's and
-  the Weekly update's own cron lines (item 7). Friday games are the named
-  exception: no slot runs between Friday 05:17 and Sunday 21:47 UTC, so a
-  Black Friday or Christmas game's card says "started" until Sunday evening.
-  Adding a Saturday slot is a cron-job.org change, which is Mark's.
+  the Weekly update's own cron lines (item 7), within a day. Friday games
+  were the named exception until 2026-10-09, when Mark added a Saturday
+  05:17 UTC slot (a cron-job.org job, with GitHub's cron as the fallback);
+  before it, a Black Friday or Christmas game's card said "started" until
+  Sunday evening.
 
 The rest of item 1 lives where the rule does: the postponed and cancelled
 games in tests/test_league_scenarios.py, the tie in
@@ -138,9 +139,9 @@ KICKOFFS = {
 }
 #: A game is final about this long after kickoff.
 GAME_LENGTH = timedelta(hours=3, minutes=30)
-#: The refresh must follow the end within this; a Friday game within FRIDAY.
+#: The refresh must follow the end within this, every game. Friday games had
+#: an exception of 49 hours until the Saturday 05:17 slot (2026-10-09).
 WITHIN = timedelta(hours=24)
-FRIDAY = timedelta(hours=49)
 
 
 def kickoff(eastern):
@@ -172,18 +173,18 @@ def test_every_kind_of_kickoff_gets_a_status_refresh_soon_after_the_game(name):
     end = kick + GAME_LENGTH
     found = next_refresh(end, exprs)
     assert found is not None, f'{name}: no refresh slot in the eight days after it'
-    limit = FRIDAY if weekday == 4 else WITHIN
     gap = found - end
-    assert gap <= limit, f'{name}: the first refresh after the game comes {gap} later ({found:%a %H:%M} UTC)'
+    assert gap <= WITHIN, f'{name}: the first refresh after the game comes {gap} later ({found:%a %H:%M} UTC)'
 
 
-def test_the_friday_exception_is_needed_and_no_wider():
-    """If a slot is added that covers Friday games, this fails, and the
-    exception above should go."""
+def test_friday_games_are_refreshed_by_the_saturday_slot():
+    """The Friday exception is retired: Black Friday and both Christmas games
+    are refreshed by Saturday 05:17 UTC, the Christmas night game about half
+    an hour after it ends, rather than waiting for Sunday 21:47."""
     exprs = refresh_crons()
-    gaps = []
-    for s in KICKOFFS.values():
-        kick, weekday = kickoff(s)
-        if weekday == 4:
-            gaps.append(next_refresh(kick + GAME_LENGTH, exprs) - (kick + GAME_LENGTH))
-    assert max(gaps) > WITHIN, 'every Friday game is now refreshed within a day: drop the exception'
+    assert '17 5 * * 6' in exprs
+    for name in ('Black Friday', 'Christmas, Friday afternoon', 'Christmas, Friday night'):
+        kick, weekday = kickoff(KICKOFFS[name])
+        assert weekday == 4, name
+        found = next_refresh(kick + GAME_LENGTH, exprs)
+        assert (found.weekday(), found.hour, found.minute) == (5, 5, 17), f'{name}: {found:%a %H:%M} UTC'
