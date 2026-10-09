@@ -56,4 +56,4 @@ nfl_data_py==0.3.3
 nflreadpy==0.1.5
 pyarrow==25.0.1
 reportlab==5.0.1
-pypdf==6.16.2
+pypdf==6.19.0
