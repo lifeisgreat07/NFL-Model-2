@@ -90,6 +90,11 @@ neutral-site home term is Mark's methodology call (a test at four or five
 games a season cannot decide it). Drafts are in `memory/2026-10-04.md`;
 shown to Mark before any registry file is written.
 
+N1 (2026-10-09): no home edge at a neutral site, both models, a declared
+rule. Registered in #373 (`experiments/nfl/stage38/n1_registry.json`, with
+the back-check in `stage38/backcheck/`), shipped as MODEL_VERSION 2.6 in
+#374 between week 6's and week 7's locks.
+
 ### Stage 39 - Ready for the playoffs (by mid-December)
 
 1. The synthetic league as named scenarios with asserted outcomes, first:
@@ -124,6 +129,12 @@ refresh: no slot runs between Friday 05:17 and Sunday 21:47 UTC; a
 Saturday cron-job.org slot would close it (Mark's account). Left: item
 2's `game_type` in saved picks, item 1's other scenarios, 5 (December),
 6, and 4 (Mark's call).
+
+Item 4 (2026-10-09, #372): Mark chose to disclose. The Methodology page says
+the ratings use regular-season plays only and freeze through the playoffs;
+`tests/test_ratings_freeze_disclosed.py` holds the filters and the sentence
+together. Item 7's Friday gap closed the same day (#371, a Saturday 05:17
+UTC slot).
 
 ### Stage 40 - Season turnover (January)
 
