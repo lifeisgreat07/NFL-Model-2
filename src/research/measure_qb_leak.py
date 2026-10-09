@@ -179,8 +179,8 @@ def main():
     assert moved.max() > 0, "leaky and fixed QB features are identical -- the leak was not reproduced"
 
     print("\nRunning the aligned walk-forward on each table...")
-    k_f, y_f, p_f, cov_f = walk_forward_aligned(fixed)
-    k_l, y_l, p_l, cov_l = walk_forward_aligned(leaky)
+    k_f, y_f, p_f, _ = walk_forward_aligned(fixed)
+    k_l, y_l, p_l, _ = walk_forward_aligned(leaky)
     assert k_f == k_l, "the two walk-forwards evaluated different games"
     assert np.array_equal(y_f, y_l), "the two walk-forwards saw different outcomes"
 

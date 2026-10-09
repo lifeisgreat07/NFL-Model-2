@@ -1,0 +1,21 @@
+{
+  "target": "src/core/colour.py",
+  "tests": "tests/test_dead_code.py",
+  "cases": [
+    {
+      "id": "dead-code-new-unused-helper",
+      "why": "a helper nothing calls arrives in src/, the shape the first report found five of",
+      "find": "def worst_cvd_de00(a: RGB, b: RGB) -> float:",
+      "replace": "def never_called_helper(a: RGB) -> RGB:\n    return a\n\n\ndef worst_cvd_de00(a: RGB, b: RGB) -> float:",
+      "expect_caught_by": "test_nothing_in_src_is_unused"
+    },
+    {
+      "id": "dead-code-allowlist-entry-without-a-reason",
+      "target": "tests/dead_code_allowlist.py",
+      "why": "an entry goes in with no reason above it, which is dead code with an excuse nobody wrote down",
+      "find": "_ = None  # vulture's whitelist idiom: attribute uses of a stand-in object\n",
+      "replace": "_ = None  # vulture's whitelist idiom: attribute uses of a stand-in object\n_.anything_at_all\n",
+      "expect_caught_by": "test_every_allowlist_entry_has_a_reason"
+    }
+  ]
+}
