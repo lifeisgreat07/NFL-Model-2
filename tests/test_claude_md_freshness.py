@@ -66,7 +66,14 @@ def _text(name='CLAUDE.md'):
     path = DOCS[name]
     if not path.is_file():
         pytest.skip(f'{name} not present in this checkout')
-    return path.read_text(encoding='utf-8')
+    text = path.read_text(encoding='utf-8')
+    if path == HISTORY:
+        # Since Stage 49 item 24 the history is an index plus one file per
+        # era under docs/history/, in the index's order; every check here
+        # reads them as the one document they were.
+        eras = re.findall(r'`docs/history/([^`]+\.md)`', text)
+        text = '\n'.join([text] + [(REPO / 'docs' / 'history' / e).read_text(encoding='utf-8') for e in eras])
+    return text
 
 
 def _all_text():

@@ -1,0 +1,29 @@
+{
+  "target": "docs/stage-history.md",
+  "tests": "tests/test_stage_history_split.py",
+  "cases": [
+    {
+      "id": "history-index-drops-an-era",
+      "why": "the index stops listing an era file, so the stages in it are still on disk and nobody reading the index finds them",
+      "find": "| The 2026-09-30 third audit | Stage 35 | `docs/history/06-third-audit-2026-09-30.md` |\n",
+      "replace": "",
+      "expect_caught_by": "test_the_index_lists_every_era_file_and_only_real_ones"
+    },
+    {
+      "id": "history-era-file-grows-unbounded",
+      "target": "docs/history/09-more-sports.md",
+      "why": "the newest era file keeps taking every new stage until it is the 2,200-line file the split replaced",
+      "find": "## Stages 50 to 61",
+      "replace": "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n## Stages 50 to 61",
+      "expect_caught_by": "test_each_file_stays_readable"
+    },
+    {
+      "id": "history-section-copied-into-two-eras",
+      "target": "docs/history/08-before-the-lock.md",
+      "why": "a section is pasted into a second era file and then edited in one of them, so the history says two things about one stage",
+      "find": "## Stages 45 to 49",
+      "replace": "### Stage 35 - Fixes from the third audit\n\n## Stages 45 to 49",
+      "expect_caught_by": "test_no_section_appears_twice"
+    }
+  ]
+}
