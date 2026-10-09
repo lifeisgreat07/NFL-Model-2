@@ -1,0 +1,27 @@
+{
+  "target": ".github/workflows/nightly-dependency-audit.yml",
+  "tests": "tests/test_dependency_audit.py",
+  "cases": [
+    {
+      "id": "dependency-audit-unpinned",
+      "why": "pip-audit is installed at whatever version is newest, so two nights can audit with different rules and nothing records which",
+      "find": "        run: pip install pip-audit==2.10.1\n",
+      "replace": "        run: pip install pip-audit\n",
+      "expect_caught_by": "test_it_audits_requirements_txt_with_a_pinned_pip_audit"
+    },
+    {
+      "id": "dependency-audit-fails-the-run",
+      "why": "a finding fails the step, so the job goes red and the step that records the exit code never runs: the alert says the job failed instead of naming the vulnerability",
+      "find": "          set +e\n",
+      "replace": "",
+      "expect_caught_by": "test_the_audit_never_fails_the_run"
+    },
+    {
+      "id": "dependency-audit-silent-when-it-cannot-run",
+      "why": "only a finding raises an alert, so a night the audit could not reach the database passes as a clean night",
+      "find": "        if: ${{ steps.audit.outputs.code != '0' }}\n",
+      "replace": "        if: ${{ steps.audit.outputs.code == '1' }}\n",
+      "expect_caught_by": "test_a_finding_and_a_failed_audit_raise_different_alerts"
+    }
+  ]
+}

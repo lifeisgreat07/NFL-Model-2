@@ -35,7 +35,17 @@ TEXT = README.read_text(encoding='utf-8')
 WORDS = {'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6,
          'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10, 'eleven': 11,
          'twelve': 12, 'thirteen': 13, 'fourteen': 14, 'fifteen': 15, 'sixteen': 16,
-         'seventeen': 17, 'eighteen': 18, 'nineteen': 19, 'twenty': 20}
+         'seventeen': 17, 'eighteen': 18, 'nineteen': 19, 'twenty': 20, 'thirty': 30}
+
+
+def number_word(word):
+    """'Twenty' is 20 and 'Twenty-one' is 21; None for anything else."""
+    parts = word.lower().split('-')
+    if len(parts) == 1:
+        return WORDS.get(parts[0])
+    if len(parts) == 2 and parts[0] in ('twenty', 'thirty') and WORDS.get(parts[1], 10) < 10:
+        return WORDS[parts[0]] + WORDS[parts[1]]
+    return None
 
 
 def _looks_like_a_path(token):
@@ -131,9 +141,9 @@ def test_the_recruiter_section_comes_before_the_statistical_detail():
 
 
 def test_the_workflow_count_it_states_is_the_real_one():
-    m = re.search(r'\*\*(\w+) CI workflows\*\*', TEXT)
+    m = re.search(r'\*\*([\w-]+) CI workflows\*\*', TEXT)
     assert m, "README.md no longer states a CI workflow count in the expected format"
-    claimed = WORDS.get(m.group(1).lower(), None)
+    claimed = number_word(m.group(1))
     assert claimed is not None, f"unrecognised number word in README.md: {m.group(1)!r}"
     real = len(list((REPO / '.github' / 'workflows').glob('*.yml')))
     assert claimed == real, (
