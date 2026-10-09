@@ -1,0 +1,590 @@
+{
+ "seasons": [
+  2021,
+  2022,
+  2023,
+  2024,
+  2025
+ ],
+ "ambiguous_keys_left_out": 16,
+ "games": [
+  {
+   "model": "model_a",
+   "season": 2021,
+   "week": 1,
+   "home": "NO",
+   "away": "GB",
+   "home_win": 1,
+   "p_incumbent": 0.3604182592499422,
+   "p_neutral_rule": 0.3598512821112162,
+   "intercept": 0.002460435873331273
+  },
+  {
+   "model": "model_a",
+   "season": 2021,
+   "week": 5,
+   "home": "ATL",
+   "away": "NYJ",
+   "home_win": 1,
+   "p_incumbent": 0.6595176879011793,
+   "p_neutral_rule": 0.6604955320607877,
+   "intercept": -0.0043576376235904225
+  },
+  {
+   "model": "model_a",
+   "season": 2021,
+   "week": 6,
+   "home": "JAX",
+   "away": "MIA",
+   "home_win": 1,
+   "p_incumbent": 0.6427894240530274,
+   "p_neutral_rule": 0.6454408286400156,
+   "intercept": -0.011566567266043368
+  },
+  {
+   "model": "model_a",
+   "season": 2022,
+   "week": 4,
+   "home": "NO",
+   "away": "MIN",
+   "home_win": 0,
+   "p_incumbent": 0.28964488747158457,
+   "p_neutral_rule": 0.28107595429348436,
+   "intercept": 0.042021423747369016
+  },
+  {
+   "model": "model_a",
+   "season": 2022,
+   "week": 5,
+   "home": "GB",
+   "away": "NYG",
+   "home_win": 0,
+   "p_incumbent": 0.6774765542839206,
+   "p_neutral_rule": 0.6689788356954451,
+   "intercept": 0.03862900237797781
+  },
+  {
+   "model": "model_a",
+   "season": 2022,
+   "week": 8,
+   "home": "JAX",
+   "away": "DEN",
+   "home_win": 0,
+   "p_incumbent": 0.6548648427958159,
+   "p_neutral_rule": 0.6418388761042828,
+   "intercept": 0.057138418648385925
+  },
+  {
+   "model": "model_a",
+   "season": 2022,
+   "week": 10,
+   "home": "TB",
+   "away": "SEA",
+   "home_win": 1,
+   "p_incumbent": 0.5222772656156863,
+   "p_neutral_rule": 0.5078082055791577,
+   "intercept": 0.05793273481607406
+  },
+  {
+   "model": "model_a",
+   "season": 2022,
+   "week": 11,
+   "home": "BUF",
+   "away": "CLE",
+   "home_win": 1,
+   "p_incumbent": 0.5837943438063463,
+   "p_neutral_rule": 0.5671739555577552,
+   "intercept": 0.06803911158363261
+  },
+  {
+   "model": "model_a",
+   "season": 2022,
+   "week": 11,
+   "home": "ARI",
+   "away": "SF",
+   "home_win": 0,
+   "p_incumbent": 0.43944474965214253,
+   "p_neutral_rule": 0.42275964792280196,
+   "intercept": 0.06803911158363261
+  },
+  {
+   "model": "model_a",
+   "season": 2023,
+   "week": 4,
+   "home": "JAX",
+   "away": "ATL",
+   "home_win": 1,
+   "p_incumbent": 0.572258994581437,
+   "p_neutral_rule": 0.5476416235917804,
+   "intercept": 0.09992742411122633
+  },
+  {
+   "model": "model_a",
+   "season": 2023,
+   "week": 5,
+   "home": "BUF",
+   "away": "JAX",
+   "home_win": 0,
+   "p_incumbent": 0.6153267836157011,
+   "p_neutral_rule": 0.5911505185923225,
+   "intercept": 0.10103569953055708
+  },
+  {
+   "model": "model_a",
+   "season": 2023,
+   "week": 6,
+   "home": "TEN",
+   "away": "BAL",
+   "home_win": 0,
+   "p_incumbent": 0.5501404631993894,
+   "p_neutral_rule": 0.525710259336778,
+   "intercept": 0.098306418621868
+  },
+  {
+   "model": "model_a",
+   "season": 2023,
+   "week": 9,
+   "home": "KC",
+   "away": "MIA",
+   "home_win": 1,
+   "p_incumbent": 0.5562922732569492,
+   "p_neutral_rule": 0.526065940536883,
+   "intercept": 0.12176938472816129
+  },
+  {
+   "model": "model_a",
+   "season": 2023,
+   "week": 10,
+   "home": "NE",
+   "away": "IND",
+   "home_win": 0,
+   "p_incumbent": 0.4962177772502509,
+   "p_neutral_rule": 0.46330528776509167,
+   "intercept": 0.1319140415750519
+  },
+  {
+   "model": "model_a",
+   "season": 2024,
+   "week": 1,
+   "home": "PHI",
+   "away": "GB",
+   "home_win": 1,
+   "p_incumbent": 0.49851185984734725,
+   "p_neutral_rule": 0.4621977813074624,
+   "intercept": 0.1455453935945993
+  },
+  {
+   "model": "model_a",
+   "season": 2024,
+   "week": 6,
+   "home": "CHI",
+   "away": "JAX",
+   "home_win": 1,
+   "p_incumbent": 0.4564388625403652,
+   "p_neutral_rule": 0.42191396598197206,
+   "intercept": 0.14023386008489003
+  },
+  {
+   "model": "model_a",
+   "season": 2024,
+   "week": 7,
+   "home": "JAX",
+   "away": "NE",
+   "home_win": 1,
+   "p_incumbent": 0.7134236488389979,
+   "p_neutral_rule": 0.6857701841067149,
+   "intercept": 0.13165247794921076
+  },
+  {
+   "model": "model_a",
+   "season": 2024,
+   "week": 10,
+   "home": "CAR",
+   "away": "NYG",
+   "home_win": 1,
+   "p_incumbent": 0.4648485103859685,
+   "p_neutral_rule": 0.4287403386673582,
+   "intercept": 0.1461540935975154
+  },
+  {
+   "model": "model_a",
+   "season": 2025,
+   "week": 1,
+   "home": "LAC",
+   "away": "KC",
+   "home_win": 1,
+   "p_incumbent": 0.5013971996645581,
+   "p_neutral_rule": 0.4653445392616518,
+   "intercept": 0.14443327815313634
+  },
+  {
+   "model": "model_a",
+   "season": 2025,
+   "week": 4,
+   "home": "PIT",
+   "away": "MIN",
+   "home_win": 1,
+   "p_incumbent": 0.568899000099186,
+   "p_neutral_rule": 0.5301973409399688,
+   "intercept": 0.15642396653485274
+  },
+  {
+   "model": "model_a",
+   "season": 2025,
+   "week": 5,
+   "home": "CLE",
+   "away": "MIN",
+   "home_win": 0,
+   "p_incumbent": 0.47568547155817364,
+   "p_neutral_rule": 0.4355195360882556,
+   "intercept": 0.16203123336766748
+  },
+  {
+   "model": "model_a",
+   "season": 2025,
+   "week": 6,
+   "home": "NYJ",
+   "away": "DEN",
+   "home_win": 0,
+   "p_incumbent": 0.47343618336211013,
+   "p_neutral_rule": 0.43603767687756745,
+   "intercept": 0.1509033855189709
+  },
+  {
+   "model": "model_a",
+   "season": 2025,
+   "week": 7,
+   "home": "JAX",
+   "away": "LA",
+   "home_win": 0,
+   "p_incumbent": 0.49076183145896063,
+   "p_neutral_rule": 0.452402887755498,
+   "intercept": 0.15400981257955404
+  },
+  {
+   "model": "model_a",
+   "season": 2025,
+   "week": 10,
+   "home": "IND",
+   "away": "ATL",
+   "home_win": 1,
+   "p_incumbent": 0.5554793916704103,
+   "p_neutral_rule": 0.5185808603202884,
+   "intercept": 0.1484774098087412
+  },
+  {
+   "model": "model_a",
+   "season": 2025,
+   "week": 11,
+   "home": "MIA",
+   "away": "WAS",
+   "home_win": 1,
+   "p_incumbent": 0.5579940028810858,
+   "p_neutral_rule": 0.5204814562194882,
+   "intercept": 0.15105307084634373
+  },
+  {
+   "model": "model_b",
+   "season": 2021,
+   "week": 1,
+   "home": "NO",
+   "away": "GB",
+   "home_win": 1,
+   "p_incumbent": 0.28378766165886987,
+   "p_neutral_rule": 0.3240742374281586,
+   "intercept": -0.1906397627021076
+  },
+  {
+   "model": "model_b",
+   "season": 2021,
+   "week": 5,
+   "home": "ATL",
+   "away": "NYJ",
+   "home_win": 1,
+   "p_incumbent": 0.5804783517484277,
+   "p_neutral_rule": 0.6334750924661329,
+   "intercept": -0.22241682355016015
+  },
+  {
+   "model": "model_b",
+   "season": 2021,
+   "week": 6,
+   "home": "JAX",
+   "away": "MIA",
+   "home_win": 1,
+   "p_incumbent": 0.4207034282900803,
+   "p_neutral_rule": 0.4791640859599669,
+   "intercept": -0.23649447079987035
+  },
+  {
+   "model": "model_b",
+   "season": 2022,
+   "week": 4,
+   "home": "NO",
+   "away": "MIN",
+   "home_win": 0,
+   "p_incumbent": 0.26093218860535305,
+   "p_neutral_rule": 0.2877326827897384,
+   "intercept": -0.1347076958448459
+  },
+  {
+   "model": "model_b",
+   "season": 2022,
+   "week": 5,
+   "home": "GB",
+   "away": "NYG",
+   "home_win": 0,
+   "p_incumbent": 0.7470469240489531,
+   "p_neutral_rule": 0.7722119989403237,
+   "intercept": -0.13791974701392723
+  },
+  {
+   "model": "model_b",
+   "season": 2022,
+   "week": 8,
+   "home": "JAX",
+   "away": "DEN",
+   "home_win": 0,
+   "p_incumbent": 0.6168473523116837,
+   "p_neutral_rule": 0.6448810291631867,
+   "intercept": -0.12042486389759238
+  },
+  {
+   "model": "model_b",
+   "season": 2022,
+   "week": 10,
+   "home": "TB",
+   "away": "SEA",
+   "home_win": 1,
+   "p_incumbent": 0.528426651964405,
+   "p_neutral_rule": 0.557721998611063,
+   "intercept": -0.11809262385339218
+  },
+  {
+   "model": "model_b",
+   "season": 2022,
+   "week": 11,
+   "home": "BUF",
+   "away": "CLE",
+   "home_win": 1,
+   "p_incumbent": 0.6756790090803998,
+   "p_neutral_rule": 0.6991206746054452,
+   "intercept": -0.10912970764460803
+  },
+  {
+   "model": "model_b",
+   "season": 2022,
+   "week": 11,
+   "home": "ARI",
+   "away": "SF",
+   "home_win": 0,
+   "p_incumbent": 0.19981950183275987,
+   "p_neutral_rule": 0.21784090743664913,
+   "intercept": -0.10912970764460803
+  },
+  {
+   "model": "model_b",
+   "season": 2023,
+   "week": 4,
+   "home": "JAX",
+   "away": "ATL",
+   "home_win": 1,
+   "p_incumbent": 0.5875102279163602,
+   "p_neutral_rule": 0.6135921249512905,
+   "intercept": -0.10875468853837947
+  },
+  {
+   "model": "model_b",
+   "season": 2023,
+   "week": 5,
+   "home": "BUF",
+   "away": "JAX",
+   "home_win": 0,
+   "p_incumbent": 0.6647514765735144,
+   "p_neutral_rule": 0.6884525843949965,
+   "intercept": -0.10835377053169848
+  },
+  {
+   "model": "model_b",
+   "season": 2023,
+   "week": 6,
+   "home": "TEN",
+   "away": "BAL",
+   "home_win": 0,
+   "p_incumbent": 0.3034030438767602,
+   "p_neutral_rule": 0.3271334504887176,
+   "intercept": -0.10996606397755207
+  },
+  {
+   "model": "model_b",
+   "season": 2023,
+   "week": 9,
+   "home": "KC",
+   "away": "MIA",
+   "home_win": 1,
+   "p_incumbent": 0.5159589673930385,
+   "p_neutral_rule": 0.5373082627433406,
+   "intercept": -0.08565337727291392
+  },
+  {
+   "model": "model_b",
+   "season": 2023,
+   "week": 10,
+   "home": "NE",
+   "away": "IND",
+   "home_win": 0,
+   "p_incumbent": 0.4422994045565814,
+   "p_neutral_rule": 0.461533228361951,
+   "intercept": -0.07766347529200333
+  },
+  {
+   "model": "model_b",
+   "season": 2024,
+   "week": 1,
+   "home": "PHI",
+   "away": "GB",
+   "home_win": 1,
+   "p_incumbent": 0.5542335515796949,
+   "p_neutral_rule": 0.5699424362076677,
+   "intercept": -0.06382528306105456
+  },
+  {
+   "model": "model_b",
+   "season": 2024,
+   "week": 6,
+   "home": "CHI",
+   "away": "JAX",
+   "home_win": 1,
+   "p_incumbent": 0.42560482005987205,
+   "p_neutral_rule": 0.4421421961038024,
+   "intercept": -0.06733380574078636
+  },
+  {
+   "model": "model_b",
+   "season": 2024,
+   "week": 7,
+   "home": "JAX",
+   "away": "NE",
+   "home_win": 1,
+   "p_incumbent": 0.7152499545023879,
+   "p_neutral_rule": 0.7309095322902892,
+   "intercept": -0.07822175279253071
+  },
+  {
+   "model": "model_b",
+   "season": 2024,
+   "week": 10,
+   "home": "CAR",
+   "away": "NYG",
+   "home_win": 1,
+   "p_incumbent": 0.31013850961059236,
+   "p_neutral_rule": 0.3241755797242793,
+   "intercept": -0.06482380874103966
+  },
+  {
+   "model": "model_b",
+   "season": 2025,
+   "week": 1,
+   "home": "LAC",
+   "away": "KC",
+   "home_win": 1,
+   "p_incumbent": 0.3560857512166967,
+   "p_neutral_rule": 0.3714218859114499,
+   "intercept": -0.066272255603321
+  },
+  {
+   "model": "model_b",
+   "season": 2025,
+   "week": 4,
+   "home": "PIT",
+   "away": "MIN",
+   "home_win": 1,
+   "p_incumbent": 0.4041650274272579,
+   "p_neutral_rule": 0.4181772096954329,
+   "intercept": -0.057879830752648326
+  },
+  {
+   "model": "model_b",
+   "season": 2025,
+   "week": 5,
+   "home": "CLE",
+   "away": "MIN",
+   "home_win": 0,
+   "p_incumbent": 0.25829861380075664,
+   "p_neutral_rule": 0.26815891024300814,
+   "intercept": -0.05084673778343427
+  },
+  {
+   "model": "model_b",
+   "season": 2025,
+   "week": 6,
+   "home": "NYJ",
+   "away": "DEN",
+   "home_win": 0,
+   "p_incumbent": 0.24794908150161082,
+   "p_neutral_rule": 0.259761607921776,
+   "intercept": -0.06237265589599958
+  },
+  {
+   "model": "model_b",
+   "season": 2025,
+   "week": 7,
+   "home": "JAX",
+   "away": "LA",
+   "home_win": 0,
+   "p_incumbent": 0.39235468238311844,
+   "p_neutral_rule": 0.40639537710748536,
+   "intercept": -0.058538161118988206
+  },
+  {
+   "model": "model_b",
+   "season": 2025,
+   "week": 10,
+   "home": "IND",
+   "away": "ATL",
+   "home_win": 1,
+   "p_incumbent": 0.7190680224163014,
+   "p_neutral_rule": 0.7324772013338623,
+   "intercept": -0.06738403173588169
+  },
+  {
+   "model": "model_b",
+   "season": 2025,
+   "week": 11,
+   "home": "MIA",
+   "away": "WAS",
+   "home_win": 1,
+   "p_incumbent": 0.5491376180347981,
+   "p_neutral_rule": 0.5647664530485589,
+   "intercept": -0.06334258439725568
+  }
+ ],
+ "summary": {
+  "model_a": {
+   "n": 25,
+   "home_won": 15,
+   "log_loss_incumbent": 0.6696,
+   "log_loss_neutral_rule": 0.6781,
+   "diff_mean": 0.0086,
+   "diff_ci95": [
+    -0.0134,
+    0.0302
+   ],
+   "mean_intercept": 0.1001,
+   "mean_shift_pp": 2.44
+  },
+  "model_b": {
+   "n": 25,
+   "home_won": 15,
+   "log_loss_incumbent": 0.6676,
+   "log_loss_neutral_rule": 0.654,
+   "diff_mean": -0.0136,
+   "diff_ci95": [
+    -0.0368,
+    0.0087
+   ],
+   "mean_intercept": -0.1028,
+   "mean_shift_pp": -2.29
+  }
+ }
+}

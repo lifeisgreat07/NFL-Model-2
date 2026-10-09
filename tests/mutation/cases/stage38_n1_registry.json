@@ -1,0 +1,27 @@
+{
+  "target": "experiments/nfl/stage38/n1_registry.json",
+  "tests": "tests/test_stage38_n1_registry.py",
+  "cases": [
+    {
+      "id": "n1-one-model-only",
+      "why": "the rule quietly narrows to Model A, so Model B keeps a home edge at a neutral site that Mark decided to remove",
+      "find": "  \"models\": [\"model_a\", \"model_b\"],",
+      "replace": "  \"models\": [\"model_a\"],",
+      "expect_caught_by": "test_it_covers_both_models_and_ships_as_its_own_version"
+    },
+    {
+      "id": "n1-figure-rounded-by-hand",
+      "why": "a quoted interval is retyped and drifts from the back-check file it came from",
+      "find": "Model A +0.0086, 95% -0.0134 to +0.0302",
+      "replace": "Model A +0.0086, 95% -0.0130 to +0.0300",
+      "expect_caught_by": "test_the_quoted_figures_are_the_backchecks_own"
+    },
+    {
+      "id": "n1-unplaced-game-loses-its-edge",
+      "why": "a game the schedule does not place is treated as neutral, so a missing field takes the home edge away",
+      "find": "A game the schedule does not place (site_is_neutral None) keeps the home edge.",
+      "replace": "A game the schedule does not place is treated as neutral.",
+      "expect_caught_by": "test_an_unplaced_game_keeps_the_home_edge"
+    }
+  ]
+}
