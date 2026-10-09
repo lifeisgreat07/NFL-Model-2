@@ -22,6 +22,14 @@
 .nhl-goalie.unreported{border:1px solid var(--border); color:var(--text-3);}
 .game-card.nhl-not-saved{opacity:.92;}
 .game-card.nhl-not-saved .nhl-wait-note{font-size:var(--fs-13); color:var(--text-2);}
+/* Stage 62 item 3: the logos as big as the NFL Week Board's. The shared rule
+   boxes a logo in 20 x 20. ESPN's NFL files are square and the mark fills
+   about 0.92 of the box, so it draws about 18px wide. The NHL's files are
+   3:2 with a margin, so in the same box the mark drew about 12px wide. A
+   30 x 20 box fits the file's own shape at the same height, and the mark
+   draws about 18px wide, as the NFL's does. Measured on all 32 files of each
+   league, tests/test_nhl_logo_size.py. */
+[data-sport="nhl"] .card-end-logo{width:30px;}
 .nhl-table td.num, .nhl-table th.num{text-align:right; font-variant-numeric:tabular-nums;}
 .nhl-div-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:var(--s5);}
 .nhl-div-grid h3{font-size:var(--fs-14); margin:0 0 var(--s2);}

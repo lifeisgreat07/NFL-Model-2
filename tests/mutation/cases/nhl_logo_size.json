@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nhl/pages/nhl.css",
+  "tests": "tests/test_nhl_logo_size.py",
+  "cases": [
+    {
+      "id": "nhl-logo-back-to-shared-size",
+      "why": "the NHL's logo box goes back to the shared 20px, so its marks draw a third smaller than the NFL board's again.",
+      "find": "[data-sport=\"nhl\"] .card-end-logo{width:30px;}",
+      "replace": "[data-sport=\"nhl\"] .card-end-logo{width:20px;}",
+      "expect_caught_by": "test_the_nhl_mark_draws_as_wide_as_the_nfl_mark"
+    },
+    {
+      "id": "nhl-logo-taller-box",
+      "why": "the NHL's logo is enlarged by height too, so the row grows and the bar beside it is pushed down.",
+      "find": "[data-sport=\"nhl\"] .card-end-logo{width:30px;}",
+      "replace": "[data-sport=\"nhl\"] .card-end-logo{width:30px; height:26px;}",
+      "expect_caught_by": "test_the_nhl_box_keeps_the_rows_height"
+    }
+  ]
+}
