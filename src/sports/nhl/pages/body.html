@@ -17,7 +17,7 @@
   <nav class="sport-switch" aria-label="Sports"><a href="../">Home</a><a href="../nfl/">NFL</a><a href="../nhl/" aria-current="page">NHL</a><a href="../nba/">NBA</a></nav>
   <nav class="side-nav" aria-label="Main navigation">
     <div class="nav-group-label">This Week</div>
-    <button class="nav-btn active" data-page="board" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Week Board</button>
+    <button class="nav-btn active" data-page="board" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>Day Board</button>
     <button class="nav-btn" data-page="standings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Standings Odds</button>
     <button class="nav-btn" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Ratings</button>
     <div class="nav-group-label">Track Record</div>
@@ -61,9 +61,9 @@
   <section class="page active" id="page-board">
     <div class="page-head">
       <div>
-        <div class="page-eyebrow">This Week</div>
-        <h2>Week Board</h2>
-        <div class="desc">This week&#39;s games by day, what each model picks, and who is in goal.</div>
+        <div class="page-eyebrow">Day by Day</div>
+        <h2>Day Board</h2>
+        <div class="desc">A day at a time: what each model picks and how it did. Tap a game for both models, the market and the goalies.</div>
         <div class="board-updated" id="board-updated"></div>
       </div>
     </div>
@@ -79,7 +79,7 @@
       </div>
     </div>
     <nav class="nhl-day-strip" id="nhl-day-strip" aria-label="Days of this week"></nav>
-    <div class="game-grid" id="game-grid"></div>
+    <div class="nhl-board" id="game-grid"></div>
   </section>
 
   <section class="page" id="page-standings">

@@ -105,6 +105,17 @@ jobs:
       - name: Check the NHL's page
         run: python tests/browser/check_page.py "$RUNNER_TEMP/states/nhl.html" --axe node_modules/axe-core/axe.min.js
 
+      # Stage 64: the NHL board shows one day, with each game's card folded
+      # under its row, so most of it is reached only by clicking.
+      # tests/browser/check_nhl_day.py presses every day and opens every row
+      # at 390 and 1280 px in both themes; it proves itself first on copies
+      # of the sample page with a defect written in.
+      - name: Prove the NHL day board check can fail
+        run: python tests/browser/check_nhl_day.py --self-test --tmp "$RUNNER_TEMP"
+
+      - name: Check the NHL's day board
+        run: python tests/browser/check_nhl_day.py "$RUNNER_TEMP/states/nhl.html"
+
       # Stage 61: the NBA's page, built by the real builder from the committed
       # backtest (src/sports/nba/site.py); it has no board and no daily files.
       - name: Build the NBA's page
