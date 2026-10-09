@@ -1697,3 +1697,20 @@
     .table-wrap{overflow:visible !important;}
     a[href^="http"]::after{content:" (" attr(href) ")"; font-size:var(--fs-11); color:var(--text-2); word-break:break-all;}
   }
+
+  /* Stage 47 item 10: Windows' high-contrast themes (forced colours). They
+     repaint every background with the theme's one Canvas colour, so a bar
+     drawn as a background vanishes: Model B's split on every card and the
+     Net Rating bar would show an empty track. These keep their own paint,
+     in the theme's system colours, inside a track outlined in its text
+     colour. Chips and badges, also drawn as backgrounds, gain an outline so
+     they still read as chips. Lines, markers and sparklines are strokes and
+     fills, which the theme already redraws in its text colour. */
+  @media (forced-colors: active){
+    .tele-bar, .srs-bar-track{border:1px solid CanvasText;}
+    .tele-bar-seg, .srs-bar-fill{forced-color-adjust:none;}
+    .tele-bar-seg:first-child{background:CanvasText !important;}
+    .tele-bar-seg:last-child{background:Highlight !important;}
+    .srs-bar-fill{background:Highlight !important;}
+    .model-chip, .insight-chip, .badge, .btn-chip, .sport-switch a{border:1px solid CanvasText;}
+  }

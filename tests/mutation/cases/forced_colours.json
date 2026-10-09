@@ -1,0 +1,29 @@
+{
+  "target": "src/dashboard/styles.css",
+  "tests": "tests/test_forced_colours.py",
+  "cases": [
+    {
+      "id": "forced-colours-bars-repainted",
+      "why": "the bars take the theme's Canvas colour like every other background, so in a high-contrast theme every card's split and every Net Rating bar is an empty track",
+      "find": "    .tele-bar-seg, .srs-bar-fill{forced-color-adjust:none;}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_bars_keep_their_own_paint_in_system_colours"
+    },
+    {
+      "id": "forced-colours-track-unoutlined",
+      "why": "the track loses its outline, so a bar near zero has nothing around it to be measured against",
+      "find": "    .tele-bar, .srs-bar-track{border:1px solid CanvasText;}\n",
+      "replace": "",
+      "expect_caught_by": "test_tracks_chips_and_badges_are_outlined"
+    },
+    {
+      "id": "forced-colours-pass-never-runs",
+      "target": "tests/browser/check_page.py",
+      "why": "the forced-colours pass is defined and never called, so a bar that vanishes in a high-contrast theme passes the browser checks",
+      "find": "        if widths:\n            await check_forced_colours(browser, url, report)\n",
+      "replace": "",
+      "tests": "tests/test_forced_colours.py",
+      "expect_caught_by": "test_the_browser_checks_run_a_forced_colours_pass_with_its_fixture"
+    }
+  ]
+}
