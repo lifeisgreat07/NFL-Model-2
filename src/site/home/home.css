@@ -6,20 +6,38 @@ body{ flex-direction:column; }
   display:flex; justify-content:space-between; align-items:center; gap:var(--s4); flex-wrap:wrap;
   padding:var(--s4) var(--s5); background:var(--surface); border-bottom:1px solid var(--border);
 }
-.home-brand{ font-weight:800; font-size:var(--fs-16); color:var(--text); }
-.home-brand small{ display:block; font-weight:500; font-size:var(--fs-12); color:var(--text-2); }
+/* Stage 66, option A: the three sports' marks and wordmark W2 at the left; the
+   sport pills and the theme button at the right. */
+.home-brand{ display:inline-flex; align-items:center; gap:var(--s2); color:var(--text); text-decoration:none; min-height:44px; }
+.home-marks{ display:inline-flex; gap:3px; }
+.home-mark{ width:20px; height:20px; flex:none; overflow:visible; display:block; }
+.home-wordmark{ font-weight:800; font-size:21px; letter-spacing:-.01em; line-height:1; }
+.home-bar-end{ display:flex; align-items:center; gap:var(--s3); }
+.home-theme{ width:44px; height:44px; flex:none; border-radius:var(--r-md); border:1px solid var(--border);
+  background:transparent; color:var(--text); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+.home-theme svg{ width:18px; height:18px; }
 .home-switch{ display:flex; gap:var(--s1); background:var(--surface-2); border:1px solid var(--border);
   border-radius:var(--r-full); padding:3px; }
 .home-switch a{ font-size:var(--fs-13); font-weight:700; padding:var(--s1) var(--s3); border-radius:var(--r-full);
-  color:var(--text-2); text-decoration:none; min-height:32px; display:inline-flex; align-items:center; }
+  color:var(--text-2); text-decoration:none; min-height:40px; display:inline-flex; align-items:center; }
 .home-switch span.is-unbuilt{ font-size:var(--fs-13); font-weight:700; padding:var(--s1) var(--s3);
-  color:var(--text-3); min-height:32px; display:inline-flex; align-items:center; cursor:default; }
+  color:var(--text-3); min-height:40px; display:inline-flex; align-items:center; cursor:default; }
 .home-switch a[aria-current="page"]{ background:var(--surface); color:var(--text); box-shadow:0 1px 2px rgba(0,0,0,.18); }
-.home-switch a:focus-visible, .home-card:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
-.home-main{ width:100%; max-width:1080px; margin:0 auto; padding:var(--s6) var(--s5) var(--s8); display:grid; gap:var(--s4); align-content:start; }
-.page.active.home-page{ display:grid; gap:var(--s4); align-content:start; }
-.home-title{ margin:0; font-size:var(--fs-32); font-weight:800; line-height:var(--lh-tight); color:var(--text); }
-.home-sub{ margin:0; color:var(--text-2); font-size:var(--fs-14); max-width:62ch; }
+.home-switch a:focus-visible, .home-card:focus-visible, .home-brand:focus-visible, .home-theme:focus-visible,
+.home-links a:focus-visible, .home-faq summary:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+.home-main{ width:100%; max-width:1100px; margin:0 auto; padding:var(--s7) var(--s5) var(--s8); display:grid; gap:var(--s4); align-content:start; }
+.page.active.home-page{ display:grid; gap:var(--s6); align-content:start; }
+.home-hero{ display:grid; gap:var(--s2); }
+.home-title{ margin:0; font-size:44px; font-weight:800; line-height:1.1; letter-spacing:-.02em; color:var(--text); max-width:24ch; }
+.home-sub{ margin:0; color:var(--text-2); font-size:18px; line-height:1.5; max-width:60ch; }
+/* The scoreboard: each sport's record, worked out from the same files as the cards. */
+.home-score{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--s3); }
+.home-tile{ display:grid; gap:2px; align-content:start; padding:var(--s3) var(--s4); background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--r-md); min-width:0; }
+.home-tile span{ font-size:var(--fs-12); color:var(--text-2); }
+.home-tile b{ font-size:22px; font-weight:800; color:var(--text); font-variant-numeric:tabular-nums; }
+.home-tile b.is-words{ font-size:15px; }
+.home-tile small{ font-size:var(--fs-12); color:var(--text-3); }
 .home-cards{ display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:var(--s4); }
 .home-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:var(--s5);
   display:grid; gap:var(--s3); align-content:start; color:var(--text); text-decoration:none; min-width:0; }
@@ -39,11 +57,33 @@ body{ flex-direction:column; }
 .home-kv dt{ margin:0; }
 .home-kv dd{ margin:0; color:var(--text); font-weight:700; font-variant-numeric:tabular-nums; text-align:right; }
 .home-go{ font-size:var(--fs-14); font-weight:700; color:var(--accent); }
-.home-foot{ margin:0; font-size:var(--fs-12); color:var(--text-3); max-width:70ch; }
+.home-foot{ margin:calc(-1 * var(--s3)) 0 0; font-size:var(--fs-12); color:var(--text-3); max-width:70ch; }
+.home-how, .home-faq{ display:grid; gap:var(--s3); }
+.home-how h2, .home-faq h2{ margin:0; font-size:18px; font-weight:800; color:var(--text); }
+.home-steps{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--s6); }
+.home-steps li{ display:flex; gap:var(--s3); min-width:0; font-size:var(--fs-14); line-height:1.45; color:var(--text-2); }
+.home-steps b{ display:block; font-size:15px; color:var(--text); margin-bottom:4px; }
+.home-step-n{ flex:none; width:28px; height:28px; border-radius:50%; border:1px solid var(--border-strong);
+  display:inline-flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:var(--accent); }
+/* Option C's questions for a newcomer, closed until asked. */
+.home-faq{ gap:0; }
+.home-faq h2{ margin-bottom:var(--s1); }
+.home-faq details{ border-bottom:1px solid var(--border); padding:var(--s3) 0; }
+.home-faq summary{ font-size:15px; font-weight:700; color:var(--text); cursor:pointer; min-height:24px; }
+.home-faq p{ margin:var(--s2) 0 0; font-size:var(--fs-14); line-height:1.5; color:var(--text-2); max-width:70ch; }
+.home-links{ display:flex; flex-wrap:wrap; gap:var(--s2) var(--s5); font-size:var(--fs-14); padding-top:var(--s4); border-top:1px solid var(--border); }
+.home-links a{ color:var(--accent); }
 @media (max-width:600px){
-  .home-bar{ padding:var(--s3) var(--s4); }
-  .home-brand small{ display:none; }
+  .home-bar{ padding:var(--s3) var(--s4); display:grid; grid-template-columns:1fr auto; gap:var(--s3); }
+  .home-bar-end{ display:contents; }
+  .home-theme{ grid-column:2; grid-row:1; }
+  .home-switch{ grid-column:1 / -1; justify-self:start; }
+  .home-wordmark{ font-size:19px; }
+  .home-mark{ width:18px; height:18px; }
+  .home-sub{ font-size:16px; }
+  .home-score{ grid-template-columns:1fr; }
+  .home-steps{ grid-template-columns:1fr; gap:var(--s4); }
   .home-main{ padding:var(--s5) var(--s4) var(--s7); }
-  .home-title{ font-size:var(--fs-24); }
+  .home-title{ font-size:30px; }
   .home-cards{ grid-template-columns:1fr; }
 }
