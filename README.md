@@ -227,6 +227,7 @@ The environment variables the code reads, all optional:
 | `GITHUB_TOKEN` | Read by `src/sports/nfl/recent_runs.py` for GitHub's Actions API; without it the anonymous limit applies (60 calls an hour, four used per read). | The deploy job, with its own token. |
 | `GITHUB_OUTPUT` | Read by `src/sports/nfl/slot_guard.py`: where it writes `run` and `slot` for the Weekly update's later steps. Unset, it prints its decision and writes nothing. | GitHub Actions, on every runner. |
 | `GITHUB_STEP_SUMMARY` | Read by `src/sports/nfl/slot_guard.py`: a skipped slot is noted in the run's summary. Unset, nothing is noted. | GitHub Actions, on every runner. |
+| `GITHUB_ACTIONS` | Read by `src/sports/nba/data_probe.py`: on a runner it adds one notice line summing up every source, readable from the run's annotations. Unset, the probe only prints. | GitHub Actions, on every runner. |
 | `GITHUB_RUN_ID` | Read by `src/sports/nfl/slot_guard.py`: stored with the slot it marks as served. Unset, the run id is stored as null. | GitHub Actions, on every runner. |
 
 Four rules that live in the code rather than in any one document:
