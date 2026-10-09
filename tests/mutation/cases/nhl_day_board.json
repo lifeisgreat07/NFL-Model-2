@@ -1,0 +1,71 @@
+{
+  "target": "src/sports/nhl/pages/nhl.js",
+  "tests": "tests/test_nhl_day_board.py",
+  "cases": [
+    {
+      "id": "nhl-day-ignores-today",
+      "why": "the board opens on the week's first game day, not today, so a visitor lands on Monday's results on a Friday.",
+      "find": "  if(weekDays(week).includes(today)) return today;\n",
+      "replace": "",
+      "expect_caught_by": "test_the_board_opens_on_today_and_otherwise_on_the_first_day_with_games"
+    },
+    {
+      "id": "nhl-day-summary-no-right",
+      "why": "the day's summary stops saying how many picks were right.",
+      "find": ", ${right} of ${graded.length} right so far",
+      "replace": ", ${graded.length} graded",
+      "expect_caught_by": "test_the_summary_counts_the_days_right_picks_as_mark_wrote_it"
+    },
+    {
+      "id": "nhl-day-wrong-coloured-right",
+      "why": "a wrong pick's row wears the right colour.",
+      "find": "if(p.result === 'wrong') return {text: 'Wrong', cls: 'wrong'};",
+      "replace": "if(p.result === 'wrong') return {text: 'Wrong', cls: 'right'};",
+      "expect_caught_by": "test_a_graded_pick_says_right_or_wrong"
+    },
+    {
+      "id": "nhl-day-pick-home-chance",
+      "why": "the pick column shows the home team's chance even when the pick is the away team.",
+      "find": "const pct = p.pick === g.home ? lead : 1 - lead;",
+      "replace": "const pct = lead;",
+      "expect_caught_by": "test_the_pick_column_is_the_saved_side_with_its_chance"
+    },
+    {
+      "id": "nhl-day-late-unsaid",
+      "why": "a game whose lock run has passed still says it locks later.",
+      "find": "  if(run.getTime() + LOCK_SLACK_MS < nowMs) return {text: 'Late', cls: 'open'};\n",
+      "replace": "",
+      "expect_caught_by": "test_an_unsaved_game_says_when_it_locks_or_that_it_is_late"
+    },
+    {
+      "id": "nhl-day-winner-not-bold",
+      "why": "the row no longer marks the winner.",
+      "find": "return abbr === won ? `<b>${text}</b>` : text;",
+      "replace": "return text;",
+      "expect_caught_by": "test_the_game_column_bolds_the_winner_with_the_score"
+    },
+    {
+      "id": "nhl-day-row-silent",
+      "why": "a row opens its card without saying so, so a screen reader hears no change.",
+      "find": "    btn.setAttribute('aria-expanded', String(open));\n",
+      "replace": "",
+      "expect_caught_by": "test_a_row_opens_its_card_and_says_so"
+    },
+    {
+      "id": "nhl-day-strip-unpressed",
+      "why": "the day strip stops saying which day is shown.",
+      "find": "aria-pressed=\"${d === currentDay}\" ",
+      "replace": "",
+      "expect_caught_by": "test_the_day_strip_marks_the_chosen_day_and_today"
+    },
+    {
+      "id": "nhl-day-check-not-proven",
+      "why": "the day board check runs without proving it can fail.",
+      "find": "        run: python tests/browser/check_nhl_day.py --self-test --tmp \"$RUNNER_TEMP\"\n",
+      "replace": "        run: echo skipped\n",
+      "expect_caught_by": "test_the_nhl_day_board_is_clicked_through_after_its_check_proves_itself",
+      "target": ".github/workflows/browser-checks.yml",
+      "tests": "tests/test_browser_checks.py"
+    }
+  ]
+}

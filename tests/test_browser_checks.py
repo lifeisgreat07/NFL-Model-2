@@ -158,6 +158,7 @@ def test_the_sortmark_rule_runs_on_every_page_and_reads_what_is_drawn(checker):
     assert loop and 'page.evaluate(SORTMARK_JS)' in loop.group(1), (
         'the sortmark rule is not run for each page')
 
+
 def test_the_theme_check_proves_itself_then_walks_the_whole_built_site(workflow):
     """Stage 62 items 1 and 4. tests/browser/check_theme.py is the only
     thing that sees the theme survive a walk between pages; it must prove it
@@ -173,6 +174,19 @@ def test_the_theme_check_proves_itself_then_walks_the_whole_built_site(workflow)
     pages = ast.literal_eval(re.search(r'^PAGES = (.+)$', src, re.M).group(1))
     from src.site.build import SPORTS
     assert set(pages) == {''} | {f'{s}/' for s in SPORTS}, 'the theme check must visit every page the site builds'
+
+
+def test_the_nhl_day_board_is_clicked_through_after_its_check_proves_itself(workflow):
+    """Stage 64 item 4. The NHL board folds each card under a row, so the
+    page check alone never sees most of it; check_nhl_day.py clicks every
+    day and row, after its self-test, over the sample page the NHL build
+    step writes."""
+    runs = step_runs(workflow)
+    build = next((i for i, r in enumerate(runs) if 'build_nhl.py --out "$RUNNER_TEMP/states/nhl.html"' in r), None)
+    selftest = next((i for i, r in enumerate(runs) if 'check_nhl_day.py --self-test' in r), None)
+    check = next((i for i, r in enumerate(runs) if 'check_nhl_day.py "$RUNNER_TEMP/states/nhl.html"' in r), None)
+    assert None not in (build, selftest, check), 'the NHL day board check, its self-test or the sample build is missing'
+    assert build < check and selftest < check
 
 
 def test_the_states_builder_runs_by_path():

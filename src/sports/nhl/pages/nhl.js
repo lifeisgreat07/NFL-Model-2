@@ -300,7 +300,88 @@ function waitingCard(g){
   </div>`;
 }
 
-/* ---------- the board ---------- */
+/* ---------- the board: a day at a time (Stage 64) ----------
+   Mark chose it from the rendered "NHL Day Board Options" (2026-10-09):
+   option A's strip of the week's seven days, opening on today, with option
+   B's compact rows. A row is the time, the game, the pick and the result; a
+   tap opens the full card below it (both models, the market, the lock time
+   and the goalies). The NFL keeps its week view: it plays by the week. */
+const FMT_HOUR = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: ET});
+function weekDays(week){
+  const out = [];
+  const d = dayDate(week);
+  for(let i = 0; i < 7; i++){ out.push(dayIso(d)); d.setUTCDate(d.getUTCDate() + 1); }
+  return out;
+}
+function defaultDay(week, games, today){
+  if(weekDays(week).includes(today)) return today;
+  const days = [...new Set(games.map(g => g.day))].sort();
+  return days[0] || week;
+}
+/* What a row says in its last column, and its class. */
+function rowResult(g, p, nowMs){
+  if(g.status === 'postponed' || g.status === 'cancelled') return {text: g.status === 'postponed' ? 'Postponed' : 'Cancelled', cls: 'off'};
+  if(p){
+    if(p.result === 'correct') return {text: 'Right', cls: 'right'};
+    if(p.result === 'wrong') return {text: 'Wrong', cls: 'wrong'};
+    return {text: g.status === 'final' ? 'Grading' : 'Locked', cls: 'locked'};
+  }
+  if(g.status === 'final' || g.status === 'in_progress') return {text: 'No pick', cls: 'off'};
+  const run = g.start ? lockRunFor(g.start) : null;
+  if(!run) return {text: 'Not locked', cls: 'open'};
+  if(run.getTime() + LOCK_SLACK_MS < nowMs) return {text: 'Late', cls: 'open'};
+  return {text: `Locks ${FMT_HOUR.format(run).replace(':00', '')}`, cls: 'open'};
+}
+/* The pick in a row: the saved side, with the chance the leading model gave it. */
+function rowPick(g, p){
+  if(!p) return '—';
+  const lead = p.b !== null && p.b !== undefined ? p.b : p.a;
+  const pct = p.pick === g.home ? lead : 1 - lead;
+  return `${p.pick} ${Math.round(pct * 100)}%`;
+}
+function rowTime(g){
+  if(g.status === 'final') return g.lp === 'OT' ? 'Final/OT' : g.lp === 'SO' ? 'Final/SO' : 'Final';
+  if(g.status === 'in_progress') return 'Live';
+  return g.start ? FMT_HOUR.format(new Date(g.start)) : 'TBD';
+}
+function rowGame(g){
+  const won = winnerOf(g);
+  const has = g.status === 'final' && g.hs !== null && g.hs !== undefined && g.as !== null && g.as !== undefined;
+  const team = (abbr, score) => {
+    const text = has ? `${abbr} ${score}` : abbr;
+    return abbr === won ? `<b>${text}</b>` : text;
+  };
+  return `${team(g.away, g.as)} <span class="at-symbol">@</span> ${team(g.home, g.hs)}`;
+}
+/* "3 games, 1 of 1 right so far", from the saved picks' grades. */
+function daySummary(games, picks){
+  const n = games.length;
+  if(!n) return 'No games this day.';
+  const graded = games.map(g => picks[g.id]).filter(p => p && (p.result === 'correct' || p.result === 'wrong'));
+  const right = graded.filter(p => p.result === 'correct').length;
+  let s = `${n} game${n === 1 ? '' : 's'}`;
+  if(graded.length) s += `, ${right} of ${graded.length} right so far`;
+  else {
+    const locked = games.filter(g => picks[g.id]).length;
+    if(locked) s += `, ${locked} locked`;
+  }
+  return s;
+}
+const CHEVRON = '<svg class="nhl-row-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+function rowHtml(g, p, nowMs){
+  const r = rowResult(g, p, nowMs);
+  const id = `nhl-detail-${g.id}`;
+  return `<li class="nhl-row-item">
+    <button type="button" class="nhl-row" aria-expanded="false" aria-controls="${id}">
+      <span class="nhl-row-time">${rowTime(g)}</span>
+      <span class="nhl-row-game">${rowGame(g)}</span>
+      <span class="nhl-row-pick">${rowPick(g, p)}</span>
+      <span class="nhl-row-result ${r.cls}">${r.text}</span>${CHEVRON}
+    </button>
+    <div class="nhl-row-detail" id="${id}" hidden>${p ? pickedCard(g, p) : waitingCard(g)}</div>
+  </li>`;
+}
+let currentDay = null;
 function renderBoard(){
   const games = (WEEKS[currentWeek] || []).slice().sort((a, b) => (a.start || '').localeCompare(b.start || '') || a.id.localeCompare(b.id));
   const label = document.getElementById('week-step-label');
@@ -308,29 +389,40 @@ function renderBoard(){
   const i = WEEK_KEYS.indexOf(currentWeek);
   document.getElementById('week-prev').disabled = i <= 0;
   document.getElementById('week-next').disabled = i >= WEEK_KEYS.length - 1;
+  const today = todayEt();
+  const days = weekDays(currentWeek);
+  if(!days.includes(currentDay)) currentDay = defaultDay(currentWeek, games, today);
   const byDay = {};
   games.forEach(g => (byDay[g.day] ||= []).push(g));
-  const days = Object.keys(byDay).sort();
-  const today = todayEt();
   document.getElementById('nhl-day-strip').innerHTML = days.map(d => {
     const dd = dayDate(d);
-    return `<button type="button" class="nhl-day-chip" data-day="${d}"${d === today ? ' aria-current="true"' : ''}>`
-      + `<span>${FMT_SHORT.format(dd)}</span><b>${dd.getUTCDate()}</b><span>${byDay[d].length}</span></button>`;
+    const n = (byDay[d] || []).length;
+    const name = `${FMT_DAY.format(dd)}${d === today ? ', today' : ''}, ${n ? `${n} game${n === 1 ? '' : 's'}` : 'no games'}`;
+    return `<button type="button" class="nhl-day-chip" data-day="${d}" aria-pressed="${d === currentDay}" aria-label="${name}"${d === today ? ' aria-current="date"' : ''}>`
+      + `<span>${FMT_SHORT.format(dd)}</span><b>${dd.getUTCDate()}</b><span>${n || '–'}</span></button>`;
   }).join('');
   document.querySelectorAll('.nhl-day-chip').forEach(btn => btn.addEventListener('click', () => {
-    const head = document.getElementById('day-' + btn.dataset.day);
-    if(head) head.scrollIntoView({behavior: 'smooth', block: 'start'});
+    currentDay = btn.dataset.day;
+    renderBoard();
+    const chip = document.querySelector(`.nhl-day-chip[data-day="${currentDay}"]`);
+    if(chip) chip.focus();
   }));
+  const dayGames = byDay[currentDay] || [];
   const grid = document.getElementById('game-grid');
-  if(!games.length){
-    grid.innerHTML = stateHtml('waiting', 'No games this week', '');
+  const title = `${FMT_DAY.format(dayDate(currentDay))}${currentDay === today ? ' · Today' : ''}`;
+  const head = `<div class="nhl-day-top"><h3 class="nhl-day-title">${title}</h3>`
+    + `<p class="nhl-day-summary" aria-live="polite">${daySummary(dayGames, DATA.picks)}</p></div>`;
+  if(!dayGames.length){
+    grid.innerHTML = head + (games.length ? '' : stateHtml('waiting', 'No games this week', ''));
     return;
   }
-  grid.innerHTML = days.map(d => {
-    const n = byDay[d].length;
-    return `<h3 class="nhl-day-head" id="day-${d}">${FMT_DAY.format(dayDate(d))}<span class="slot-count"> · ${n} game${n === 1 ? '' : 's'}</span></h3>`
-      + byDay[d].map(g => DATA.picks[g.id] ? pickedCard(g, DATA.picks[g.id]) : waitingCard(g)).join('');
-  }).join('');
+  const nowMs = Date.now();
+  grid.innerHTML = head + `<ul class="nhl-rows">${dayGames.map(g => rowHtml(g, DATA.picks[g.id], nowMs)).join('')}</ul>`;
+  grid.querySelectorAll('.nhl-row').forEach(btn => btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', String(open));
+    document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
+  }));
 }
 function stepWeek(by){
   const i = WEEK_KEYS.indexOf(currentWeek) + by;
