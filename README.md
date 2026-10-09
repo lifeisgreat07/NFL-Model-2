@@ -58,11 +58,11 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, over 225 case files, one per subject under test)
+  (`tests/mutation/`, over 250 case files, one per subject under test)
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
-- **Twenty-one CI workflows** in `.github/workflows/` cover the test suite, the
+- **Twenty-three CI workflows** in `.github/workflows/` cover the test suite, the
   weekly data pull, a weekend refresh of game status and scores that never
   touches a saved pick, the backtest, the Pages build-and-deploy, the
   agent-activity log, a pre-flight check on every pull request description,
@@ -74,9 +74,9 @@ What it is meant to demonstrate, and where to look:
   built page at six widths (overflow, focus, 24px targets, axe-core, the
   font, a byte budget) after proving each of their own rules can fail,
   a probe of the league's own schedule page, the candidate source of
-  TV channels, the NHL's daily run and nightly canary, and probes of the
-  sources the NHL and the NBA will read, each run from GitHub's own runners
-  before anything depends on it.
+  TV channels, the NHL's and the NBA's daily runs and nightly canaries, and
+  probes of the sources the NHL and the NBA read, each run from GitHub's own
+  runners before anything depends on it.
 
 - **Decision records.** The six decisions the rest rests on -- one static
   page, two models side by side, the kickoff lock, an auditor that cannot

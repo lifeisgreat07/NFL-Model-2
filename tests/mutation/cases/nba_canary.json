@@ -1,0 +1,34 @@
+{
+  "target": "src/sports/nba/canary.py",
+  "tests": "tests/test_nba_canary.py",
+  "cases": [
+    {
+      "id": "nba-canary-skips-kalshi",
+      "why": "Kalshi drops out of the night's checks, so the named fallback can break unseen until the night ESPN fails too",
+      "find": "    ('ESPN odds', check_odds), ('ESPN injuries', check_injuries), ('Kalshi', check_kalshi),\n",
+      "replace": "    ('ESPN odds', check_odds), ('ESPN injuries', check_injuries),\n",
+      "expect_caught_by": "test_it_checks_every_source_the_registration_names"
+    },
+    {
+      "id": "nba-canary-unpriced-slate-passes",
+      "why": "a night ESPN prices none of the upcoming games passes, so Model B goes dark with no alert",
+      "find": "    if not priced:\n        raise ValueError(",
+      "replace": "    if False:\n        raise ValueError(",
+      "expect_caught_by": "test_odds_fail_when_none_of_the_upcoming_games_is_priced"
+    },
+    {
+      "id": "nba-canary-skip-counted-as-failure",
+      "why": "checks that depend on an unreadable schedule are failed too, so one outage opens four issues under the wrong names",
+      "find": "        except Skipped as why:\n            notes.append(f'{name}: not checked, {why}')\n",
+      "replace": "",
+      "expect_caught_by": "test_a_failure_is_named_by_source_and_the_dependent_checks_are_skipped"
+    },
+    {
+      "id": "nba-canary-failed-file-empty",
+      "why": "the failing sources are never written, so the workflow can only raise the generic alert and the title names no source",
+      "find": "        Path(args.failed).write_text(''.join(f'{f}\\n' for f in failed), encoding='utf-8')",
+      "replace": "        Path(args.failed).write_text('', encoding='utf-8')",
+      "expect_caught_by": "test_main_writes_the_failing_sources_one_per_line"
+    }
+  ]
+}

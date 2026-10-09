@@ -1,0 +1,64 @@
+name: NBA nightly canary
+
+# Stage 65: every source the NBA's daily run reads (src/sports/nba/canary.py),
+# read once each night and judged on the shape the run needs. It writes
+# nothing to the repository, so it cannot touch a pick.
+#
+# One issue per failing source, not one for the night: the registration
+# names five outside reads (ESPN's scoreboard, box score, odds and injury
+# report, and Kalshi), and a title that names the source lets one recover
+# without hiding another. src/core/alerts.py opens "NBA: <source> failing in
+# the nightly canary", or comments on it if it is already open. A canary that
+# fails before naming any source opens "NBA: nightly canary failing".
+#
+# 06:50 UTC: after the night's last games have ended, and clear of the NFL's
+# canary (06:00), the mutation slice (06:30) and the NHL's canary (06:40).
+on:
+  schedule:
+    - cron: '50 6 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+
+      # Stage 42 item 1: how late this run started, against its own cron lines.
+      - name: Record the start delay
+        run: python -m src.core.start_delay .github/workflows/nba-canary.yml
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the canary
+        run: python -m src.sports.nba.canary --report nba-canary-report.md --failed nba-canary-failed.txt
+
+      - name: Raise an alert per failing source
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          if [ ! -s nba-canary-failed.txt ]; then
+            printf 'The NBA canary failed before naming a source. See %s\n' "$run_url" > nba-canary-report.md
+            python -m src.core.alerts --title "NBA: nightly canary failing" --body-file nba-canary-report.md
+            exit 0
+          fi
+          printf '\nRun: %s\n' "$run_url" >> nba-canary-report.md
+          while IFS= read -r source; do
+            [ -n "$source" ] || continue
+            python -m src.core.alerts --title "NBA: $source failing in the nightly canary" --body-file nba-canary-report.md
+          done < nba-canary-failed.txt

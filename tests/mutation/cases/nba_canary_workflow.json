@@ -1,0 +1,20 @@
+{
+  "target": ".github/workflows/nba-canary.yml",
+  "tests": "tests/test_nba_workflows.py",
+  "cases": [
+    {
+      "id": "nba-canary-one-title-for-all",
+      "why": "every failing source lands in one issue, so a source that recovers hides the one that has not",
+      "find": "            python -m src.core.alerts --title \"NBA: $source failing in the nightly canary\" --body-file nba-canary-report.md",
+      "replace": "            python -m src.core.alerts --title \"NBA: nightly canary failing\" --body-file nba-canary-report.md",
+      "expect_caught_by": "test_the_canary_raises_one_issue_per_failing_source"
+    },
+    {
+      "id": "nba-canary-unnamed-failure-silent",
+      "why": "a canary that crashes before naming a source raises nothing",
+      "find": "            python -m src.core.alerts --title \"NBA: nightly canary failing\" --body-file nba-canary-report.md\n            exit 0",
+      "replace": "            exit 0",
+      "expect_caught_by": "test_the_canary_raises_one_issue_per_failing_source"
+    }
+  ]
+}

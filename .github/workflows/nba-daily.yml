@@ -1,0 +1,102 @@
+name: NBA daily run
+
+# Stage 65's daily run (src/sports/nba/daily.py), twice a day: it adds the
+# season's finished box scores, saves a pick for every game the lock rule
+# (src/sports/nba/lock.py) says to save now, prices it by the registered
+# order (ESPN, then Kalshi, then "no price"), grades final games and runs the
+# drift check. A pick file is written once and never rewritten.
+#
+# 16:00 and 21:30 UTC are the runs registered in
+# experiments/nba/stage65/registry.json, and the lock rule's hour of slack
+# covers a late start. GitHub's scheduler can start a run hours late; a game
+# that has started by then is never saved late. workflow_dispatch lets
+# cron-job.org start it on the minute, as it does the NFL's and NHL's runs.
+#
+# It commits only the NBA's own folders (src/core/isolation.py holds that).
+# Its commits are made with GITHUB_TOKEN, so deploy-pages.yml lists it under
+# workflow_run to rebuild the site.
+#
+# On a failure, or a drift flag, src/core/alerts.py opens or comments on an
+# issue whose title starts "NBA: ".
+on:
+  schedule:
+    - cron: '0 16 * * *'
+    - cron: '30 21 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: nba-daily
+  cancel-in-progress: false
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+
+      # Stage 42 item 1: how late this run started, against its own cron lines.
+      - name: Record the start delay
+        run: python -m src.core.start_delay .github/workflows/nba-daily.yml
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run the NBA's daily run
+        run: python -m src.sports.nba.daily | tee nba-daily.log
+
+      - name: Pull before committing
+        run: |
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              pull --rebase --autostash origin main
+
+      - name: Commit the NBA's picks, grades and history
+        run: |
+          # Staging a path that does not exist is an error, and
+          # predictions/nba does not exist until the first pick is saved (the
+          # NHL's first hand run failed on exactly that). So each folder is
+          # staged only if it is there.
+          test -d data/nba && git add data/nba
+          test -d predictions/nba && git add predictions/nba
+          test -d results/nba && git add results/nba
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -q -m "NBA daily run"
+          git push origin HEAD:main
+
+      - name: Raise an alert on a drift flag
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if grep -q 'DRIFT CHECK: FLAGGED' nba-daily.log; then
+            printf 'The NBA drift check flagged: Model A log loss is significantly above its backtest.\n\nRun: %s\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > drift.md
+            python -m src.core.alerts --title "NBA: drift check flagged" --body-file drift.md
+          fi
+
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'The NBA daily run failed. See %s\n' \
+            "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > failure.md
+          python -m src.core.alerts --title "NBA: daily run failed" --body-file failure.md
