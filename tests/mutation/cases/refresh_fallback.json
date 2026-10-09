@@ -1,5 +1,5 @@
 {
-  "target": ".github/workflows/weekend-refresh.yml",
+  "target": ".github/workflows/nfl-weekend-refresh.yml",
   "tests": "tests/test_weekend_refresh.py",
   "cases": [
     {

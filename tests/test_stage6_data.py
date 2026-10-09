@@ -18,9 +18,9 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.pipeline.ratings_engine import build_qb_ratings
-from src.research import stage6_data as s6
-from src.research import stage6_run as s6r
+from src.sports.nfl.ratings_engine import build_qb_ratings
+from src.sports.nfl.research import stage6_data as s6
+from src.sports.nfl.research import stage6_run as s6r
 
 
 def synthetic_plays(seed=0, seasons=(2016, 2017), weeks=6):

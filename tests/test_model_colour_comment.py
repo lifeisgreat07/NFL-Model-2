@@ -10,7 +10,7 @@ stated method and got 71 and 9, an independent re-derivation got 70 and 9, and
 the number had been wrong in the code for as long as nobody checked. A comment
 is not executable. These tests make this one executable.
 
-src/research/verify_model_colours.py computes the figures from the tokens as they
+src/sports/nfl/research/verify_model_colours.py computes the figures from the tokens as they
 actually are in the template, so the pair cannot drift: change the palette and
 these fail rather than the comment quietly becoming false.
 """
@@ -19,11 +19,11 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
-VERIFIER = ROOT / 'src' / 'research' / 'verify_model_colours.py'
+VERIFIER = ROOT / 'src' / 'sports' / 'nfl' / 'research' / 'verify_model_colours.py'
 
 #: The false excuse, in the forms it has actually been written in.
 #
@@ -51,7 +51,7 @@ CO_OCCURRENCE_EXCUSE = re.compile(
 
 @pytest.fixture(scope='module')
 def measured():
-    from src.research import verify_model_colours as m
+    from src.sports.nfl.research import verify_model_colours as m
     return m.measure()
 
 
@@ -71,7 +71,7 @@ def test_the_prose_pair_distance_is_what_the_script_computes(measured, comment):
     m = re.search(r'measured ([\d.]+) dE00 apart', comment)
     assert m, 'the comment no longer states the measured prose-pair distance'
     assert abs(float(m.group(1)) - normal) < 0.05, (
-        f'comment says {m.group(1)} dE00; src/research/verify_model_colours.py '
+        f'comment says {m.group(1)} dE00; src/sports/nfl/research/verify_model_colours.py '
         f'computes {normal:.1f}')
 
     m2 = re.search(r'([\d.]+) under red-green CVD', comment)
@@ -172,7 +172,7 @@ def test_the_verifier_does_not_claim_the_two_marks_never_co_occur():
     """The same claim, in the second file that ships it -- Booth, #60 claim 12.
 
     The fix above corrected the template comment and this test, and left the
-    identical sentence standing in src/research/verify_model_colours.py's PAIRS table:
+    identical sentence standing in src/sports/nfl/research/verify_model_colours.py's PAIRS table:
     "Not a defect while they never share a view". That file is the source of
     truth the corrected comment cites, and it does not merely store the
     sentence -- main() prints every rationale string, once per theme, so
@@ -189,7 +189,7 @@ def test_the_verifier_does_not_claim_the_two_marks_never_co_occur():
                   flags=re.S)
     hit = CO_OCCURRENCE_EXCUSE.search(code)
     assert not hit, (
-        f'src/research/verify_model_colours.py claims "{hit.group(0)}". It is false, '
+        f'src/sports/nfl/research/verify_model_colours.py claims "{hit.group(0)}". It is false, '
         'and this file prints its rationale strings -- so the claim reaches '
         'the terminal of whoever runs the verifier to check the numbers the '
         'template comment cites. Booth caught exactly this on PR #60 after '
@@ -242,7 +242,7 @@ def test_the_verifier_parses_the_palette_rather_than_copying_it():
     """A copied palette is a second source of truth that goes stale silently.
     Same assertion tests/test_matchup_cvd_comment.py makes, for the same
     reason."""
-    src = (ROOT / 'src' / 'research' / 'verify_model_colours.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'research' / 'verify_model_colours.py').read_text(encoding='utf-8')
     assert 'JOINED_TEMPLATE' in src, (
         'verify_model_colours.py must read the tokens out of the template')
     assert not re.search(r"'--accent'\s*:\s*'#", src), (
@@ -259,7 +259,7 @@ def test_the_verifier_does_not_use_the_matchup_shading_path():
     10.8 -- a figure three times too flattering, which is the kind nobody
     thinks to re-check.
     """
-    src = (ROOT / 'src' / 'research' / 'verify_model_colours.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'research' / 'verify_model_colours.py').read_text(encoding='utf-8')
     # A CALL, not a mention. The module names worst_dE twice in prose to say
     # why it is the wrong function here -- once as `worst_dE()`, with the
     # parentheses, which is why matching the name plus a bracket is not enough

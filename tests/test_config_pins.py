@@ -1,4 +1,4 @@
-"""The tuned constants in src/pipeline/config.py are held to the places that
+"""The tuned constants in src/sports/nfl/config.py are held to the places that
 state them (Stage 48 item 15, proposed 2026-10-04).
 
 Until this file, no test failed when a tuned constant changed. Checked on
@@ -18,7 +18,7 @@ import json
 import re
 from pathlib import Path
 
-from src.pipeline import config
+from src.sports.nfl import config
 
 ROOT = Path(__file__).resolve().parents[1]
 STATE = (ROOT / 'CLAUDE.md').read_text(encoding='utf-8').split('## Current state', 1)[1][:2000]
@@ -56,9 +56,9 @@ def test_the_seasons_are_the_ones_claude_md_states():
 
 
 def test_the_published_backtest_used_these_seasons():
-    """data/calibration.json is the published backtest's artifact; the
+    """data/nfl/calibration.json is the published backtest's artifact; the
     drift baseline is read from it. Its seasons must be config's."""
-    published = json.loads((ROOT / 'data' / 'calibration.json').read_text(encoding='utf-8'))
+    published = json.loads((ROOT / 'data' / 'nfl' / 'calibration.json').read_text(encoding='utf-8'))
     assert published['backtest_seasons'] == config.BACKTEST_SEASONS
 
 

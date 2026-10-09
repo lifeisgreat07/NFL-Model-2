@@ -3,7 +3,7 @@ Stage 33's pre-registration, held to itself, before any question has an
 answer. Modelled on tests/test_stage5_registry.py.
 
   1. Registered before answered. The commit that first adds
-     experiments/stage33/results/<id>.json must have a parent whose
+     experiments/nfl/stage33/results/<id>.json must have a parent whose
      registry.json already registers <id> with the same wording.
   2. Labels are computed, not typed. Every stored decision is recomputed
      from its stored intervals with stage33_eval's rules, including R3's
@@ -12,7 +12,7 @@ answer. Modelled on tests/test_stage5_registry.py.
 
 Then the registry's own numbers and specs are tied to what they name: the
 incumbents are the published MODEL_SPECS, R4's baseline is the figure in
-experiments/stage5/residuals.json, and the evaluation machinery is checked
+experiments/nfl/stage5/residuals.json, and the evaluation machinery is checked
 over synthetic games.
 """
 import json
@@ -24,19 +24,19 @@ import pandas as pd
 import pytest
 from git_history import first_added, registry_beside
 
-from src.pipeline.model_specs import (
+from src.core.model_specs import (
     MODEL_A_FEATURES,
     MODEL_B_FEATURES,
     MODEL_SPECS,
     ModelSpec,
 )
-from src.pipeline.weekly_update import market_prob
-from src.research import stage33_eval as ev
-from src.research.stage5_eval import ForwardHoldoutError
+from src.sports.nfl.research import stage33_eval as ev
+from src.sports.nfl.research.stage5_eval import ForwardHoldoutError
+from src.sports.nfl.weekly_update import market_prob
 
 REPO_ROOT = Path(__file__).parent.parent
-REGISTRY = REPO_ROOT / 'experiments' / 'stage33' / 'registry.json'
-RESULTS = REPO_ROOT / 'experiments' / 'stage33' / 'results'
+REGISTRY = REPO_ROOT / 'experiments' / 'nfl' / 'stage33' / 'registry.json'
+RESULTS = REPO_ROOT / 'experiments' / 'nfl' / 'stage33' / 'results'
 
 
 def registry():
@@ -120,7 +120,7 @@ def test_r4_baseline_is_the_figure_in_its_source_file():
     """R4's two numbers were copied out of Stage 5's residuals. Prose drifts;
     hold them to the file."""
     b = H('R4')['baseline']
-    src = json.loads((REPO_ROOT / 'experiments' / 'stage5' / 'residuals.json').read_text(encoding='utf-8'))
+    src = json.loads((REPO_ROOT / 'experiments' / 'nfl' / 'stage5' / 'residuals.json').read_text(encoding='utf-8'))
     every = src['slices']['all games']
     assert b['value'] == every['log_loss_sched']
     assert b['printed_beside']['value'] == every['log_loss_lagged']
@@ -228,7 +228,7 @@ def test_r1_and_r2_are_screened_on_validation(hid):
 
 
 def test_every_label_this_family_can_produce_has_a_model_lab_decision():
-    from src.pipeline.model_lab import RESULT_DECISION
+    from src.sports.nfl.model_lab import RESULT_DECISION
     for label in ('ACCEPT', 'REJECT', 'INCONCLUSIVE', 'NOT ADVANCED', 'NON-INFERIOR'):
         assert label in RESULT_DECISION, label
     assert RESULT_DECISION['NON-INFERIOR'] == 'ACCEPT', 'R3 switches on NON-INFERIOR'

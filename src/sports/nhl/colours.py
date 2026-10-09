@@ -58,7 +58,7 @@ def pair_scores() -> dict[tuple[str, str], float]:
 
 def drawn_scores() -> dict[tuple[str, str], float]:
     """Per pair of clubs, the worst colour-vision dE00 as a bar draws them,
-    over both orderings: the NFL's "unit C" (src/research/verify_matchup_cvd.py)."""
+    over both orderings: the NFL's "unit C" (src/sports/nfl/research/verify_matchup_cvd.py)."""
     best: dict[tuple[str, str], float] = {}
     for a, h in permutations(sorted(TEAM_COLOUR), 2):
         ra, rh = colour.matchup_push(TEAM_COLOUR[a], TEAM_COLOUR[h])

@@ -1,8 +1,8 @@
 """TV channels are read on a schedule, and can never cost a pick (Stage 15).
 
-src/pipeline/tv_channels.py --pending reads every locked week not yet fully graded.
-"Weekly update" runs it after the Tuesday grading and the Thursday lock, and
-"Weekend refresh" runs it before the weekend's games; both with
+src/sports/nfl/tv_channels.py --pending reads every locked week not yet fully graded.
+"NFL weekly update" runs it after the Tuesday grading and the Thursday lock, and
+"NFL weekend refresh" runs it before the weekend's games; both with
 continue-on-error, because a TV listing must never fail the run that makes
 or refreshes picks. The page is fetched through a stub here, so the suite
 makes no network call.
@@ -18,10 +18,10 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import tv_channels as tv
+from src.sports.nfl import tv_channels as tv
 
-WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
-WEEKEND = ROOT / '.github' / 'workflows' / 'weekend-refresh.yml'
+WEEKLY = ROOT / '.github' / 'workflows' / 'nfl-weekly-update.yml'
+WEEKEND = ROOT / '.github' / 'workflows' / 'nfl-weekend-refresh.yml'
 NOW = datetime(2026, 9, 27, 20, tzinfo=UTC)
 
 
@@ -81,7 +81,7 @@ def test_both_workflows_read_channels_and_cannot_fail_on_them():
         steps, _ = _steps(path)
         step = steps.get('Read TV channels')
         assert step, f'{path.name} has no "Read TV channels" step'
-        assert 'python -m src.pipeline.tv_channels --pending' in step
+        assert 'python -m src.sports.nfl.tv_channels --pending' in step
         assert re.search(r'^\s+continue-on-error: true\s*$', step, re.M), (
             f'{path.name}: without continue-on-error a failed TV read fails the run -- '
             f'and in Weekly update that run is the one that locks the picks')

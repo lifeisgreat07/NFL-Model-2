@@ -32,8 +32,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import synthetic_league as league
 
-from src.pipeline import weekly_update as wu
-from src.pipeline.config import MODEL_VERSION
+from src.sports.nfl import weekly_update as wu
+from src.sports.nfl.config import MODEL_VERSION
 
 H = pd.Timedelta(hours=1)
 
@@ -243,7 +243,7 @@ def test_the_override_file_a_pick_used_is_named(run, tmp_path):
                      'source': 'https://example.com/injury-report'}]), encoding='utf-8')
     _, tmp = run([H, 2 * H, 3 * H, 4 * H])
     prov = json.loads(locked(tmp).read_text(encoding='utf-8'))[0]['data_provenance']
-    assert prov['qb_override_file'] == f'data/qb_overrides/{league.TARGET}_week{league.TARGET_WEEK}.json'
+    assert prov['qb_override_file'] == f'data/nfl/qb_overrides/{league.TARGET}_week{league.TARGET_WEEK}.json'
 
 
 def test_plays_through_week_reads_this_season_only():

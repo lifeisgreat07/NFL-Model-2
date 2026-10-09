@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from src.agents import release_notes as rn
-from src.pipeline.config import MODEL_VERSION, VERSION_HISTORY
+from src.sports.nfl.config import MODEL_VERSION, VERSION_HISTORY
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOW = ROOT / '.github' / 'workflows' / 'releases.yml'

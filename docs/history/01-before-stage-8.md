@@ -127,9 +127,9 @@ file does what is in `docs/architecture.md`; this section keeps the
 decisions, so they are not re-litigated.
 
 - **Every alert is a GitHub issue, one per problem**, matched on exact title
-  among OPEN issues (`src/pipeline/alerts.py`). Closing an issue is how a person says
+  among OPEN issues (`src/core/alerts.py`). Closing an issue is how a person says
   "handled"; the next failure opens a fresh one. Titles in use: "Booth audit
-  failed: PR #N", "Nightly canary failing", "Model drift detected", "Weekly
+  failed: PR #N", "NFL: Nightly canary failing", "Model drift detected", "Weekly
   update failed".
 - **Booth alerts are their own workflow** (`booth-alert.yml`, `workflow_run`
   on "Booth PR audit"), because the Claude Code action will not run on a PR
@@ -148,14 +148,14 @@ decisions, so they are not re-litigated.
   drift-report.txt), so it cannot disagree with the run. The lock step's
   `shell: bash` is load-bearing: it is what gives `| tee` pipefail.
 - **The schema snapshot is column names only**; dtypes vary with the pandas
-  version. Refresh it on purpose with `python -m src.pipeline.schema_check --season
+  version. Refresh it on purpose with `python -m src.sports.nfl.schema_check --season
   <year> --update` after looking at what changed.
 - **The play-by-play cache is the canary's alone.** The run that makes picks
   always fetches fresh; a test holds that. It was the lowest-value item and
   was kept because Mark asked for all nine.
 - **The reproducibility audit re-runs by hand or from Run backtest**, never
   in the suite (it needs nflverse). Its committed record is tied to
-  `data/calibration.json`, so regenerating calibration means re-running it.
+  `data/nfl/calibration.json`, so regenerating calibration means re-running it.
 
 Not yet seen live, because each needs a real event: the Booth alert (a
 failed audit), the canary's alert (a failed night), the drift issue (a
@@ -181,12 +181,12 @@ accumulation below rather than a new build. Each item needs a stated hypothesis 
 pulled, or it is fishing.
 
 **Next Gen Stats: answered 2026-09-26, nothing accepted.** Registered in
-`experiments/stage6/registry.json` (#108) before any of it was loaded, with one
+`experiments/nfl/stage6/registry.json` (#108) before any of it was loaded, with one
 budget of five confirmatory slots (99% intervals) for the whole of Stage 6. The
 N1 screen FAILED: four passing numbers (completion over expected, time to throw,
 aggressiveness, intended air yards) did not predict a quarterback's next game
 beyond his recent EPA plus play-by-play CPOE, so N2 and N3 were never run and no
-slot was spent. `experiments/stage6/README.md` has the figures. Do not re-open it
+slot was spent. `experiments/nfl/stage6/README.md` has the figures. Do not re-open it
 without a new registration and a reason the answer would differ.
 
 **Referees: answered 2026-09-28, nothing accepted.** Registered in #163 before

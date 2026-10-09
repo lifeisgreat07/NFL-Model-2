@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/data_quality.py",
+  "target": "src/sports/nfl/data_quality.py",
   "tests": "tests/test_data_quality.py",
   "cases": [
     {
@@ -88,7 +88,7 @@
     },
     {
       "id": "dq-weekly-run-never-checks",
-      "target": "src/pipeline/weekly_update.py",
+      "target": "src/sports/nfl/weekly_update.py",
       "why": "the call in weekly_update.main() is removed. Every rule in the module would still pass its tests and check nothing, because nothing would call it.",
       "find": "    enforce_data_quality(raw, schedules_by_season[season], season)",
       "replace": "    pass",
@@ -103,7 +103,7 @@
     },
     {
       "id": "dq-starter-columns-made-required",
-      "target": "src/pipeline/data_loader.py",
+      "target": "src/sports/nfl/data_loader.py",
       "why": "the starter columns join the required list, so their absence becomes an ERROR and a locking run loses the whole week's picks instead of falling back to last game's quarterback",
       "find": "                          'gametime', 'weekday']",
       "replace": "                          'gametime', 'weekday', 'home_qb_id']",

@@ -4,9 +4,9 @@ sport stands now, its season record, and a link to its board.
 
 What the build reads, each sport from its own folders only:
 
-- NFL: the saved weeks (`predictions/<season>_week<N>.json`) for the
+- NFL: the saved weeks (`predictions/nfl/<season>_week<N>.json`) for the
   latest locked week and its kickoffs, any preview of the next week
-  (`predictions/preview/`), and the graded weeks for Model B's record;
+  (`predictions/nfl/preview/`), and the graded weeks for Model B's record;
 - NHL: the season's schedule and graded picks (`results/nhl/`);
 - NBA: nothing. It has no live picks this season (Mark, 2026-10-06), and
   its card says so.
@@ -62,17 +62,17 @@ def nfl_kickoff(game: Json) -> str | None:
 
 
 def nfl_facts(root: Path = ROOT) -> dict[str, Any]:
-    weeks = _week_files(root / 'predictions')
+    weeks = _week_files(root / 'predictions' / 'nfl')
     if not weeks:
         return {'built': False}
     season, week = max(weeks)
     games = json.loads(weeks[(season, week)].read_text(encoding='utf-8'))
-    previews = [k for k in _week_files(root / 'predictions' / 'preview') if k > (season, week)]
+    previews = [k for k in _week_files(root / 'predictions' / 'nfl' / 'preview') if k > (season, week)]
     won = lost = 0
     for (s, _w), _p in weeks.items():
         if s != season:
             continue
-        for row in _read(root / 'results' / f'{s}_week{_w}_graded.json') or []:
+        for row in _read(root / 'results' / 'nfl' / f'{s}_week{_w}_graded.json') or []:
             if row.get('model_b_correct') in (1, True):
                 won += 1
             elif row.get('model_b_correct') in (0, False):

@@ -1,5 +1,5 @@
 """
-src/pipeline/check_build.py: the built page carries every payload its pages need.
+src/sports/nfl/check_build.py: the built page carries every payload its pages need.
 
 Checked twice, per this repo's rule for guards whose failing branch today's
 data cannot reach: once over the real built page, which must pass, and once
@@ -14,8 +14,8 @@ import pytest
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline import check_build as cb
-from src.pipeline.data_quality import NFL_TEAMS
+from src.sports.nfl import check_build as cb
+from src.sports.nfl.data_quality import NFL_TEAMS
 
 TEAMS = sorted(NFL_TEAMS)
 PAGES = REPO / '.github' / 'workflows' / 'deploy-pages.yml'
@@ -131,4 +131,4 @@ def test_pages_checks_the_build_before_uploading_it():
     steps = [cmd[3:] for cmd in site.build_commands('nfl', Path('_site'))]
     # The check runs straight after the build: the lock history (Stage 46
     # item 5) comes before it and picks.csv (item 7) after.
-    assert steps[1:3] == [['src.pipeline.generate_dashboard'], ['src.pipeline.check_build', 'index.html']], steps
+    assert steps[1:3] == [['src.sports.nfl.generate_dashboard'], ['src.sports.nfl.check_build', 'index.html']], steps

@@ -21,7 +21,7 @@ import subprocess
 import pytest
 from page_source import page_source  # Model Lab's rows are rendered in at build time
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')

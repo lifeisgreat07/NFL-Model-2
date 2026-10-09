@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/generate_dashboard.py",
+  "target": "src/sports/nfl/generate_dashboard.py",
   "tests": "tests/test_generator_encoding.py",
   "cases": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "id": "generator-reads-the-template-in-the-local-encoding",
-      "target": "src/pipeline/template_parts.py",
+      "target": "src/core/template_parts.py",
       "tests": "tests/test_template_parts.py",
       "why": "the template's parts are read in the platform default, so their non-ASCII text is decoded as cp1252 on Windows. The read moved out of the generator when the template was cut into parts (Stage 33 item 26), so the guard moved with it",
       "find": "lambda name: (directory / name).read_text(encoding='utf-8')",

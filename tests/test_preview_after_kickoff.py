@@ -2,7 +2,7 @@
 A preview does not outlive its week.
 
 Stage 30 item 3, from the 2026-09-29 re-audit. A Tuesday run that holds a
-week saves predictions/preview/<season>_week<N>.json. Three ways it could
+week saves predictions/nfl/preview/<season>_week<N>.json. Three ways it could
 outlive the week, each closed here:
 
   1. Nothing deleted it when Thursday locked the week. The page ignored it,
@@ -28,7 +28,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
@@ -36,8 +36,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import synthetic_league as league
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline import weekly_update as wu
+from src.sports.nfl import generate_dashboard as gd
+from src.sports.nfl import weekly_update as wu
 
 NODE = shutil.which('node')
 H = pd.Timedelta(hours=1)
@@ -77,7 +77,7 @@ def test_locking_a_week_deletes_its_preview(run, tmp_path):
     assert (tmp_path / 'predictions' / name).exists(), out
     assert not (tmp_path / 'predictions' / 'preview' / name).exists(), (
         'the lock was written and the preview was left beside it')
-    assert f'Removed predictions/preview/{name}' in out
+    assert f'Removed predictions/nfl/preview/{name}' in out
 
 
 # --- 2. a skipped week's preview is not shown ---------------------------------
@@ -96,7 +96,7 @@ def test_a_skipped_weeks_preview_is_not_shown(tmp_path):
 
 def test_the_build_leaves_out_skipped_weeks_previews():
     """Wiring: main() has to pass the skipped weeks with the locked ones."""
-    src = (ROOT / 'src' / 'pipeline' / 'generate_dashboard.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
     assert 'load_previews(locked=set(all_preds) | skipped_weeks())' in src
 
 

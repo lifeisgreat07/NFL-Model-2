@@ -14,7 +14,7 @@ name: Nightly shuffled suite
 # the suite exactly as it was.
 #
 # A failure opens the issue "Nightly shuffled suite failing" through
-# src/pipeline/alerts.py, or comments on it -- the one-issue-per-problem rule
+# src/core/alerts.py, or comments on it -- the one-issue-per-problem rule
 # every unattended job follows since Stage 4. It writes nothing to the
 # repository. 07:15 UTC: after the canary (06:00) and the mutation slice
 # (06:30). tests/test_nightly_random_order.py holds each of these.
@@ -66,4 +66,4 @@ jobs:
         run: |
           printf 'The nightly shuffled suite failed (seed %s). A test that passes in file order and fails here depends on what ran before it.\n\nRun: %s\n\nReplay: python -m pytest -q -p no:cacheprovider --random-order-bucket=global --random-order-seed=%s\n' \
             "$(date -u +%Y%m%d)" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "$(date -u +%Y%m%d)" > shuffled-report.md
-          python -m src.pipeline.alerts --title "Nightly shuffled suite failing" --body-file shuffled-report.md
+          python -m src.core.alerts --title "Nightly shuffled suite failing" --body-file shuffled-report.md

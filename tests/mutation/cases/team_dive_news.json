@@ -46,7 +46,7 @@
     },
     {
       "id": "dive-news-never-expires",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "a graded week's news stays on the page, so last week's injuries read as current until the next week locks.",
       "find": "    if news is None or len(graded) >= len(preds):",
       "replace": "    if news is None:",

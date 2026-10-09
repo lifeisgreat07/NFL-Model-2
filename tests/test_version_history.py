@@ -24,8 +24,8 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.pipeline.config import MODEL_VERSION, VERSION_HISTORY
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl.config import MODEL_VERSION, VERSION_HISTORY
 
 TEMPLATE = JOINED_TEMPLATE
 GENERATED = REPO_ROOT / 'index.html'
@@ -105,7 +105,7 @@ def test_the_page_carries_the_real_history_not_a_hand_written_copy():
     generated from config.py, this fails -- which is the moment the release
     notes and the model become free to disagree."""
     if not GENERATED.exists():
-        pytest.skip("index.html absent -- run src/pipeline/generate_dashboard.py")
+        pytest.skip("index.html absent -- run src/sports/nfl/generate_dashboard.py")
     page = GENERATED.read_text(encoding='utf-8')
 
     for e in VERSION_HISTORY:

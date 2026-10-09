@@ -1,11 +1,11 @@
 """A TV channel reaches the page only after it passes every check (Stage 15).
 
-src/pipeline/tv_channels.py reads nfl.com's by-week schedule and decides, per game,
+src/sports/nfl/tv_channels.py reads nfl.com's by-week schedule and decides, per game,
 which networks may be shown. These tests hold each check the plan numbers --
 the exact join and cross-check, the closed network list, the slot rules and
 their sourced exceptions, provenance and change history -- over synthetic
 games, so no league content is committed and the suite makes no network
-call. data/tv/exceptions.json is checked for what every entry must carry.
+call. data/nfl/tv/exceptions.json is checked for what every entry must carry.
 
 Run with: pytest tests/test_tv_channels.py -v
 """
@@ -19,7 +19,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import tv_channels as tv
+from src.sports.nfl import tv_channels as tv
 
 UTC = UTC
 

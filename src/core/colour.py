@@ -1,7 +1,7 @@
 """Colour arithmetic every sport's page checks its colours with.
 
 The same method the NFL's team colours were measured by
-(`src/research/verify_matchup_cvd.py`, decided 2026-09-21), moved here so a
+(`src/sports/nfl/research/verify_matchup_cvd.py`, decided 2026-09-21), moved here so a
 sport can use it without importing another sport:
 
 - WCAG 2 relative luminance and contrast ratio;

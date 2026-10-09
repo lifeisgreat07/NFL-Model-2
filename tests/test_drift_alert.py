@@ -1,5 +1,5 @@
 """
-src/pipeline/drift_alert.py and its step in the Weekly update workflow.
+src/sports/nfl/drift_alert.py and its step in the Weekly update workflow.
 
 The drift check itself is replaced by a stub returning a chosen exit code,
 and the alert by a recorder, so nothing here reads results/ or reaches
@@ -12,9 +12,9 @@ from pathlib import Path
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline import drift_alert
+from src.sports.nfl import drift_alert
 
-WEEKLY = REPO / '.github' / 'workflows' / 'weekly-update.yml'
+WEEKLY = REPO / '.github' / 'workflows' / 'nfl-weekly-update.yml'
 
 
 def stub(code, text='Model A:\n  z-score: -2.40\n'):
@@ -73,8 +73,8 @@ def _text():
 
 def test_the_weekly_run_checks_drift_after_grading_and_before_committing():
     text = _text()
-    grade = text.index('python -m src.pipeline.grade_predictions')
-    drift = text.index('run: python -m src.pipeline.drift_alert')
+    grade = text.index('python -m src.sports.nfl.grade_predictions')
+    drift = text.index('run: python -m src.sports.nfl.drift_alert')
     commit = text.index('- name: Commit and push changes')
     assert grade < drift < commit
 

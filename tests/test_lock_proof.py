@@ -1,4 +1,4 @@
-"""Proof of lock (Stage 46 item 5, src/pipeline/lock_proof.py and the Week
+"""Proof of lock (Stage 46 item 5, src/sports/nfl/lock_proof.py and the Week
 Board's lock line).
 
 Held here: every commit that changed a locked week's picks, oldest first,
@@ -18,10 +18,10 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline import lock_proof as lp
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 from src.site import build
+from src.sports.nfl import generate_dashboard as gd
+from src.sports.nfl import lock_proof as lp
 
 ROOT = Path(__file__).resolve().parents[1]
 NODE = shutil.which('node')
@@ -39,7 +39,7 @@ class FakeGit:
 
 
 def week_dir(tmp_path):
-    pred = tmp_path / 'predictions'
+    pred = tmp_path / 'predictions' / 'nfl'
     (pred / 'preview').mkdir(parents=True)
     for name in ('2026_week4.json', '2026_week5.json', 'preview/2026_week6.json'):
         (pred / name).write_text('[]', encoding='utf-8')
@@ -52,14 +52,14 @@ LOG4 = ('c80cb28aaaaaaa\t2026-10-01T17:20:56+00:00\tWeekly update: predictions a
 
 def test_every_commit_oldest_first_in_utc_and_previews_left_out(tmp_path):
     pred = week_dir(tmp_path)
-    git = FakeGit({'predictions/2026_week4.json': LOG4})
+    git = FakeGit({'predictions/nfl/2026_week4.json': LOG4})
     out = lp.proof(pred, tmp_path, 'o/r', git)
     assert list(out) == ['2026_week4'], 'a week git cannot place is left out; a preview is never asked about'
     assert [c['short'] for c in out['2026_week4']] == ['2450baa', 'c80cb28']
     assert out['2026_week4'][0]['committed_utc'] == '2026-09-29T18:59:32Z'
     assert out['2026_week4'][1]['url'] == 'https://github.com/o/r/commit/c80cb28aaaaaaa'
     asked = [c[-1] for c in git.calls if c[0] == 'log']
-    assert asked == ['predictions/2026_week4.json', 'predictions/2026_week5.json']
+    assert asked == ['predictions/nfl/2026_week4.json', 'predictions/nfl/2026_week5.json']
 
 
 def test_history_follows_renames():
@@ -112,7 +112,7 @@ def page_line(commits, games):
     return json.loads(r.stdout)
 
 
-def commit(short, when, subject='Weekly update'):
+def commit(short, when, subject='NFL weekly update'):
     return {'sha': short * 2, 'short': short, 'committed_utc': when, 'subject': subject,
             'url': f'https://github.com/o/r/commit/{short}'}
 
@@ -149,7 +149,7 @@ def test_a_subject_cannot_inject_markup():
 
 def test_the_site_build_reads_the_history_before_it_builds_the_board():
     cmds = [c[3] for c in build.build_commands('nfl', Path('_site'))]
-    assert cmds.index('src.pipeline.lock_proof') < cmds.index('src.pipeline.generate_dashboard')
+    assert cmds.index('src.sports.nfl.lock_proof') < cmds.index('src.sports.nfl.generate_dashboard')
 
 
 def test_the_deploy_checks_out_the_whole_history():
@@ -164,4 +164,4 @@ def test_the_board_shows_it_for_locked_weeks_and_the_file_is_not_committed(tmp_p
     assert "(weekData && !weekData.preview) ? lockProofHtml(" in src
     assert 'id="board-lock-note" hidden' in src
     assert gd.load_lock_proof(tmp_path / 'none.json') is None
-    assert 'data/lock_proof.json' in (ROOT / '.gitignore').read_text(encoding='utf-8').splitlines()
+    assert 'data/nfl/lock_proof.json' in (ROOT / '.gitignore').read_text(encoding='utf-8').splitlines()

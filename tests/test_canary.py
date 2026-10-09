@@ -1,5 +1,5 @@
 """
-src/pipeline/canary.py and .github/workflows/nightly-canary.yml.
+src/sports/nfl/canary.py and .github/workflows/nfl-nightly-canary.yml.
 
 The steps are injected, so the error paths run with no network. What is
 checked: one broken step does not hide the others, a crash is a finding,
@@ -14,10 +14,10 @@ from pathlib import Path
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline import canary
-from src.pipeline.data_quality import Report
+from src.sports.nfl import canary
+from src.sports.nfl.data_quality import Report
 
-WORKFLOW = REPO / '.github' / 'workflows' / 'nightly-canary.yml'
+WORKFLOW = REPO / '.github' / 'workflows' / 'nfl-nightly-canary.yml'
 
 
 def _boom(state):
@@ -137,7 +137,7 @@ def test_a_failure_raises_the_alert():
     text = _text()
     alert = text[text.index('- name: Raise an alert'):]
     assert re.search(r'if:\s*failure\(\)', alert)
-    assert '--title "Nightly canary failing"' in alert
+    assert '--title "NFL: Nightly canary failing"' in alert
     assert '--report canary-report.md' in text and '--body-file canary-report.md' in alert
 
 

@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/weekly_summary.py",
+  "target": "src/sports/nfl/weekly_summary.py",
   "tests": "tests/test_weekly_summary.py",
   "cases": [
     {
@@ -32,7 +32,7 @@
     },
     {
       "id": "weekly-summary-lock-loses-its-exit-code",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the lock step loses its explicit bash shell. The default shell has no pipefail, so `| tee` would report success for a run that failed on purpose, and the failure alert would never fire.",
       "find": "      - name: Generate/lock in this week's predictions\n        shell: bash\n",
       "replace": "      - name: Generate/lock in this week's predictions\n",
@@ -40,7 +40,7 @@
     },
     {
       "id": "weekly-summary-alert-never-fires",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the failure alert is switched off. A failed Thursday run would sit in the Actions tab while that night's game went unpicked.",
       "find": "      - name: Raise an alert\n        if: failure()",
       "replace": "      - name: Raise an alert\n        if: false",

@@ -28,24 +28,24 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
-RESULTS = REPO_ROOT / 'data' / 'pandas_version_experiment.json'
-FALLBACK = REPO_ROOT / 'data' / 'data_source_fallback.json'
+RESULTS = REPO_ROOT / 'data' / 'nfl' / 'pandas_version_experiment.json'
+FALLBACK = REPO_ROOT / 'data' / 'nfl' / 'data_source_fallback.json'
 REQUIREMENTS = REPO_ROOT / 'requirements.txt'
 
 
 @pytest.fixture(scope='module')
 def result():
     if not RESULTS.exists():
-        pytest.skip("data/pandas_version_experiment.json absent -- run "
-                    "src/research/compare_pandas_versions.py")
+        pytest.skip("data/nfl/pandas_version_experiment.json absent -- run "
+                    "src/sports/nfl/research/compare_pandas_versions.py")
     return json.loads(RESULTS.read_text())
 
 
 @pytest.fixture(scope='module')
 def fallback():
     if not FALLBACK.exists():
-        pytest.skip("data/data_source_fallback.json absent -- run "
-                    "src/research/verify_data_source_fallback.py")
+        pytest.skip("data/nfl/data_source_fallback.json absent -- run "
+                    "src/sports/nfl/research/verify_data_source_fallback.py")
     return json.loads(FALLBACK.read_text())
 
 

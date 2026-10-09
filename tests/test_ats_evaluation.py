@@ -1,5 +1,5 @@
 """
-Tests for src/research/ats_evaluation.py, plus a guard on the shared column it needed.
+Tests for src/sports/nfl/research/ats_evaluation.py, plus a guard on the shared column it needed.
 
 The cover rule is one subtraction, and getting it backwards would produce a
 confident, completely inverted result that still looks like a plausible hit
@@ -17,8 +17,8 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.pipeline.template_parts import read_template
-from src.research.ats_evaluation import (
+from src.core.template_parts import read_template
+from src.sports.nfl.research.ats_evaluation import (
     BREAK_EVEN,
     add_ats_columns,
     assess,
@@ -147,7 +147,7 @@ def test_home_margin_was_added_without_disturbing_the_feature_columns():
     the live weekly path. Adding home_margin must not change what any model
     trains on -- this reads the row literal itself rather than trusting that
     an additive edit stayed additive."""
-    src = (REPO_ROOT / 'src' / 'pipeline' / 'weekly_update.py').read_text()
+    src = (REPO_ROOT / 'src' / 'sports' / 'nfl' / 'weekly_update.py').read_text()
     tree = ast.parse(src)
     fn = next(n for n in ast.walk(tree)
               if isinstance(n, ast.FunctionDef) and n.name == 'build_historical_features')
@@ -183,7 +183,7 @@ def test_no_model_trains_on_home_margin():
     checked = 0
     for name in ('backtest.py', 'calibration.py', 'ats_evaluation.py',
                  'weekly_update.py', 'bootstrap_brier_gap.py'):
-        found = list((REPO_ROOT / 'src').glob(f'*/{name}'))
+        found = list((REPO_ROOT / 'src').glob(f'**/{name}'))
         if not found:
             continue
         path = found[0]
@@ -212,9 +212,9 @@ def test_no_model_trains_on_home_margin():
 # ============================================================
 def _results():
     import json
-    p = REPO_ROOT / 'data' / 'ats_evaluation.json'
+    p = REPO_ROOT / 'data' / 'nfl' / 'ats_evaluation.json'
     if not p.exists():
-        pytest.skip("data/ats_evaluation.json absent -- run src/research/ats_evaluation.py")
+        pytest.skip("data/nfl/ats_evaluation.json absent -- run src/sports/nfl/research/ats_evaluation.py")
     return json.loads(p.read_text())
 
 

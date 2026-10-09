@@ -37,7 +37,7 @@ no discrepancies. Decisions worth keeping, so they are not re-litigated:
 - **`.btn-link` has `min-height:24px` (#112)**, on the component, not one control.
 - **"Pick'em rank n (k points)" (#113)** via `pickemRankLabel`; the PDF's
   `Rank`/`Pts` headers were left for Stage 14, which owns every `pt`/`pts`.
-- **The footer is `provenance_line()` in `src/pipeline/generate_dashboard.py` (#115)**,
+- **The footer is `provenance_line()` in `src/sports/nfl/generate_dashboard.py` (#115)**,
   from `MODEL_VERSION` and `min(TRAIN_SEASONS)`. Its "Updated ... UTC" half
   moved to the Week Board header in Stage 13 (#125, `updated_line()`), because
   the sidebar is hidden below 1080px and no phone ever saw it.
@@ -160,10 +160,10 @@ edited, or do not say they are unaffected.
 
 **Shipped, each merged on Booth's SAFE TO MERGE with no discrepancies:** #132
 the nfl.com probe (a runner reads it, 16/16 each of weeks 1-4); #133 the
-weekend refresh (`src/pipeline/weekend_refresh.py`, snapshots to a status folder under
+weekend refresh (`src/sports/nfl/weekend_refresh.py`, snapshots to a status folder under
 data, Friday 05:17, Sunday 21:47 and Monday 05:37 UTC); #134 the card status
-line under the kickoff; #135 the TV checks (`src/pipeline/tv_channels.py`,
-`data/tv/exceptions.json`); #136 TV read with `--pending` by both the weekly
+line under the kickoff; #135 the TV checks (`src/sports/nfl/tv_channels.py`,
+`data/nfl/tv/exceptions.json`); #136 TV read with `--pending` by both the weekly
 update and the weekend refresh, continue-on-error in both; #137 the canary
 checks next week's nfl.com page. Decisions worth keeping:
 
@@ -252,7 +252,7 @@ channel it shows can be traced to where and when it was read.**
    how many matched, and what each mismatch was. It ships only with zero unexplained
    mismatches.
 6. **Watched after it ships.** The nightly canary fetches the feed and checks its
-   shape; a missing field or an empty week opens "Nightly canary failing", like any
+   shape; a missing field or an empty week opens "NFL: Nightly canary failing", like any
    other upstream break. A missing or failed channel is a WARNING, never an error:
    no pick waits on a TV listing.
 7. **Honest display.** The card shows the network name and nothing it cannot back:
@@ -268,7 +268,7 @@ thing checked, before any code is written.
 
 ### Stage 16 - Team news  <- COMPLETE (2026-09-27, #138 to #140; the card line is built in Stage 17)
 
-**Shipped:** #138 `src/pipeline/team_news.py` writes one file per locked, ungraded week
+**Shipped:** #138 `src/sports/nfl/team_news.py` writes one file per locked, ungraded week
 (starters Out or Doubtful by name, Questionable as a count, the pick's own
 quarterback); #139 both scheduled workflows run it with `--pending`,
 continue-on-error; #140 Team Deep-Dive's "This week" block, at most five
@@ -337,12 +337,12 @@ weeks on desktop.
 
 ### Stage 18 - Model Lab rebuilt from the experiment records  <- COMPLETE (2026-09-28, #141 to #143, #154 to #156)
 
-**Shipped:** #141 `src/pipeline/model_lab.py` over `experiments/stage*/results/` plus
-the 46 old rows moved once, verbatim, to `experiments/legacy/rows.json` (frozen
+**Shipped:** #141 `src/sports/nfl/model_lab.py` over `experiments/nfl/stage*/results/` plus
+the 46 old rows moved once, verbatim, to `experiments/nfl/legacy/rows.json` (frozen
 by sha256 in `tests/test_model_lab.py`); #142 the table rendered at build time
 by `render_model_lab_rows` (tests that read Model Lab copy use
 `tests/page_source.py`); #143 decision chips with counts. Mappings onto the
-five decisions are my calls, listed in `experiments/legacy/README.md`, for
+five decisions are my calls, listed in `experiments/nfl/legacy/README.md`, for
 Mark to overrule. #154 each registered result opens with `interval_glyph()`,
 its interval drawn against zero (`&minus;` in the text equivalent: the
 generator writes `index.html` without `encoding=`, and a literal U+2212 crashes
@@ -354,7 +354,7 @@ mean", while the bootstrap findings stay in view (they are results).
 
 
 Generated from a data file, not 46 hand-written rows: Stage 5 and 6 read from
-`experiments/*/results/`, the older rows moved in once, verbatim. Five
+`experiments/nfl/*/results/`, the older rows moved in once, verbatim. Five
 decisions as the project defines them plus a leakage flag (the page uses 11
 labels today); filter chips with counts; the proper scoring rule and an
 interval glyph first in each result; cards on a phone; the reliability diagram

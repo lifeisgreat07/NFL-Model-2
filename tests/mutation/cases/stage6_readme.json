@@ -1,5 +1,5 @@
 {
-  "target": "experiments/stage6/README.md",
+  "target": "experiments/nfl/stage6/README.md",
   "tests": "tests/test_stage6_published_numbers.py",
   "cases": [
     {

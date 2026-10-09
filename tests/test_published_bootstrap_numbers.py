@@ -10,7 +10,7 @@ reproduced, because nothing tied the words to the file. This is that tie.
 It works in the direction that matters. Rather than asserting the page quotes
 some fixed list of numbers -- which would fight every future edit to the prose
 -- it takes every "CI [x, y]" the page prints and requires it to be a real
-interval in data/bootstrap_brier_gap.json. Rewording is free; inventing a
+interval in data/nfl/bootstrap_brier_gap.json. Rewording is free; inventing a
 number, or leaving a stale one behind after a re-run, is not.
 
 Run with: pytest tests/test_published_bootstrap_numbers.py -v
@@ -23,11 +23,11 @@ from pathlib import Path
 import pytest
 from page_source import page_source  # Model Lab's rows are rendered in at build time
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 REPO_ROOT = Path(__file__).parent.parent
 TEMPLATE = JOINED_TEMPLATE
-RESULTS = REPO_ROOT / 'data' / 'bootstrap_brier_gap.json'
+RESULTS = REPO_ROOT / 'data' / 'nfl' / 'bootstrap_brier_gap.json'
 
 # The page writes negatives as the HTML entity and positives with a sign, e.g.
 # "CI [&minus;0.002395, +0.001141]".
@@ -51,7 +51,7 @@ def _value(text):
 @pytest.fixture(scope='module')
 def results():
     if not RESULTS.exists():
-        pytest.skip("data/bootstrap_brier_gap.json absent -- run src/research/bootstrap_brier_gap.py")
+        pytest.skip("data/nfl/bootstrap_brier_gap.json absent -- run src/sports/nfl/research/bootstrap_brier_gap.py")
     return json.loads(RESULTS.read_text())
 
 
@@ -79,7 +79,7 @@ def test_every_quoted_interval_is_a_real_result(known_intervals):
         pair = (round(_value(lo_s), 6), round(_value(hi_s), 6))
         assert pair in known_intervals, (
             f"the dashboard quotes CI [{lo_s}, {hi_s}], which is not in "
-            f"data/bootstrap_brier_gap.json -- either the prose is stale after "
+            f"data/nfl/bootstrap_brier_gap.json -- either the prose is stale after "
             f"a re-run, or the number was typed rather than read")
 
 

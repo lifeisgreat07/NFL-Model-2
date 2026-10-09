@@ -3,7 +3,7 @@
 Since 2026-09-22 a week locks on Thursday, so for two days after Tuesday's
 grading the page had nothing for the coming week. Mark asked for "an update
 both on Tuesday and Thursday": a run that HOLDS a week now saves what the
-models would pick today to predictions/preview/, and the page shows it,
+models would pick today to predictions/nfl/preview/, and the page shows it,
 labelled, until the Thursday lock replaces it.
 
 What must never happen is a preview being taken for a lock: graded, counted
@@ -23,21 +23,21 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline import weekly_summary as ws
-from src.pipeline import weekly_update as wu
+from src.sports.nfl import generate_dashboard as gd
+from src.sports.nfl import weekly_summary as ws
+from src.sports.nfl import weekly_update as wu
 
 
 def _main_source():
     """main() and the steps it calls, which follow it in the file (Stage 32
     item 16 split main into load_inputs, fit_models, refresh_current_state,
     plan_week, predict_week and save_week)."""
-    src = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (Path(__file__).resolve().parents[1] / 'src' / 'sports' / 'nfl' / 'weekly_update.py').read_text(encoding='utf-8')
     return src[src.index('def main(season'):src.index("if __name__ == '__main__':")]
 
 NODE = shutil.which('node')
@@ -122,7 +122,7 @@ def test_the_starter_warning_still_fires_only_at_lock_time():
 # --- the run summary -----------------------------------------------------------
 
 def test_the_summary_says_previewed_not_locked():
-    text = ws.summarise(2026, ['predictions/preview/2026_week4.json'], '', '',
+    text = ws.summarise(2026, ['predictions/nfl/preview/2026_week4.json'], '', '',
                         lambda p: PICKS)
     assert '- No week was locked on this run' in text
     assert '- Previewed 2026 week 4: 1 games' in text

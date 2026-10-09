@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/team_news.py",
+  "target": "src/sports/nfl/team_news.py",
   "tests": "tests/test_team_news.py",
   "cases": [
     {
@@ -39,26 +39,26 @@
     },
     {
       "id": "news-step-can-fail-the-lock-run",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the team news step loses continue-on-error in the run that locks picks, so an nflverse injury outage fails Thursday's lock run.",
-      "find": "        continue-on-error: true\n        shell: bash\n        run: |\n          python -m src.pipeline.team_news --pending",
-      "replace": "        shell: bash\n        run: |\n          python -m src.pipeline.team_news --pending",
+      "find": "        continue-on-error: true\n        shell: bash\n        run: |\n          python -m src.sports.nfl.team_news --pending",
+      "replace": "        shell: bash\n        run: |\n          python -m src.sports.nfl.team_news --pending",
       "expect_caught_by": "test_both_workflows_read_team_news_and_cannot_fail_on_it"
     },
     {
       "id": "news-step-reads-before-the-lock",
-      "target": ".github/workflows/weekly-update.yml",
+      "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "reading team news before the lock means Thursday's newly locked week is not yet pending, so it goes into Thursday night with no news.",
       "find": "      - name: Generate/lock in this week's predictions",
-      "replace": "      - name: Read team news\n        if: ${{ !cancelled() }}\n        continue-on-error: true\n        shell: bash\n        run: python -m src.pipeline.team_news --pending\n\n      - name: Generate/lock in this week's predictions",
+      "replace": "      - name: Read team news\n        if: ${{ !cancelled() }}\n        continue-on-error: true\n        shell: bash\n        run: python -m src.sports.nfl.team_news --pending\n\n      - name: Generate/lock in this week's predictions",
       "expect_caught_by": "test_the_weekly_run_reads_team_news_after_it_locks_and_before_it_commits"
     },
     {
       "id": "news-refresh-reads-but-never-commits",
-      "target": ".github/workflows/weekend-refresh.yml",
+      "target": ".github/workflows/nfl-weekend-refresh.yml",
       "why": "the refresh reads team news and leaves it out of the commit, so a starter ruled out on Friday never reaches the page before Sunday.",
-      "find": "file_pattern: 'data/game_status/** data/line_history/** data/tv/** data/team_news/**'",
-      "replace": "file_pattern: 'data/game_status/** data/line_history/** data/tv/**'",
+      "find": "file_pattern: 'data/nfl/game_status/** data/nfl/line_history/** data/nfl/tv/** data/nfl/team_news/**'",
+      "replace": "file_pattern: 'data/nfl/game_status/** data/nfl/line_history/** data/nfl/tv/**'",
       "expect_caught_by": "test_the_refresh_reads_team_news_before_it_commits_it"
     }
   ]

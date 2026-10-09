@@ -31,7 +31,7 @@ player that opens a pull request and never writes picks; Booth on every PR.
 | The lock engine: write once, never rewrite, refuse a started game | The lock rule: a week at once (NFL), each game (NHL, NBA) |
 | Grading, and the "Cancelled" state | What counts as the outcome; ties, overtime, shootouts |
 | Drift check, calibration, paired bootstrap | Its baseline, its backtest, its figures |
-| Experiment registry and decision labels | Its registrations, under `experiments/<code>/` |
+| Experiment registry and decision labels | Its registrations, under `experiments/nfl/<code>/` |
 | `ModelSpec`, the walk-forward evaluation | Its features and its model specs |
 | Alerts (open or comment on an issue) | Its issue titles, prefixed "NFL: " / "NHL: " |
 | The page shell, design tokens, charts | Its pages' content, team colours and logos |
@@ -46,8 +46,8 @@ player that opens a pull request and never writes picks; Booth on every PR.
 1. **No sport imports another.** A module under `src/sports/<a>/` imports
    nothing under `src/sports/<b>/`.
 2. **The core imports no sport.** Nothing under `src/core/` imports
-   `src/sports/` or `src/site/`. Until Stage 52, `src/pipeline/` and
-   `src/research/` *are* the NFL, so the core imports neither.
+   `src/sports/` or `src/site/`. Until Stage 52, `src/sports/nfl/` and
+   `src/sports/nfl/research/` *are* the NFL, so the core imports neither.
 3. **A sport's workflow writes only its own folders.** Every path a
    `<code>-*.yml` workflow adds, commits or uploads is under that sport's
    `data/`, `predictions/`, `results/`, `experiments/` or `site/` folder.
@@ -62,7 +62,7 @@ Rules 1 to 4 are static checks in `tests/test_sport_isolation.py`, each with
 a mutation case that breaks it on purpose. Rule 5 needs a build, so it is a
 proof run at the stages that could break it.
 
-Until Stage 52 moves the NFL, the NFL's current paths (`src/pipeline/`,
+Until Stage 52 moves the NFL, the NFL's current paths (`src/sports/nfl/`,
 `data/`, `predictions/`, the existing workflow names and storage keys) are
 listed once in the test as the legacy layout. The list may only shrink; Stage
 52 empties it.

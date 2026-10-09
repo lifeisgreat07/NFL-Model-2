@@ -24,7 +24,7 @@ WORKFLOWS = ROOT / '.github' / 'workflows'
 #: (scope, level) -> text in the workflow that shows the scope is spent.
 USES = {
     ('contents', 'write'): ('stefanzweifel/git-auto-commit-action', 'git push', 'gh release'),
-    ('issues', 'write'): ('src.pipeline.alerts', 'src.core.alerts', 'src.site.alert_failed', 'src.pipeline.drift_alert', 'booth_alert', 'gh issue'),
+    ('issues', 'write'): ('src.core.alerts', 'src.core.alerts', 'src.site.alert_failed', 'src.sports.nfl.drift_alert', 'booth_alert', 'gh issue'),
     ('issues', 'read'): ('/issues', 'gh issue'),
     ('pull-requests', 'write'): ('anthropics/claude-code-action', 'gh pr comment'),
     # /issues/comments is how collect-agent-log reads Booth's reports, which
@@ -35,7 +35,7 @@ USES = {
     ('pull-requests', 'read'): ('gh pr', '/pulls', '/issues/comments'),
     ('pages', 'write'): ('actions/deploy-pages',),
     ('id-token', 'write'): ('actions/deploy-pages',),
-    ('actions', 'read'): ('src.pipeline.recent_runs',),
+    ('actions', 'read'): ('src.sports.nfl.recent_runs',),
 }
 #: Needed by actions/checkout in every job, and grants nothing beyond reading
 #: a public repository.

@@ -1,5 +1,5 @@
 {
-  "target": "src/research/reproducibility_audit.py",
+  "target": "src/sports/nfl/research/reproducibility_audit.py",
   "tests": "tests/test_reproducibility_audit.py",
   "cases": [
     {

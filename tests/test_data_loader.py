@@ -11,7 +11,7 @@ before hitting nflreadpy, not left to crash the whole pipeline.
 
 These tests stub nflreadpy itself via sys.modules (rather than hitting
 the network) so they run offline and fast, and assert against the real
-production code in src/pipeline/data_loader.py -- not a reimplementation of its
+production code in src/sports/nfl/data_loader.py -- not a reimplementation of its
 filtering logic -- by inspecting exactly what season list it passed
 through to the stubbed fetch functions.
 
@@ -65,7 +65,7 @@ def test_load_plays_drops_not_yet_started_season(monkeypatch, capsys):
     nflreadpy still considers 2025 the current season must silently drop
     2026 -- not crash -- pass only [2024, 2025] through to load_pbp, and
     log that 2026 was skipped."""
-    from src.pipeline import data_loader
+    from src.sports.nfl import data_loader
 
     calls = {}
     _install_fake_nflreadpy(monkeypatch, current_season=2025, calls=calls)
@@ -83,7 +83,7 @@ def test_load_plays_drops_not_yet_started_season(monkeypatch, capsys):
 def test_load_snap_counts_drops_not_yet_started_season(monkeypatch):
     """Same not-started-yet filtering as load_plays, for load_snap_counts
     -- this is the second call site the original crash hit."""
-    from src.pipeline import data_loader
+    from src.sports.nfl import data_loader
 
     calls = {}
     _install_fake_nflreadpy(monkeypatch, current_season=2025, calls=calls)
@@ -98,7 +98,7 @@ def test_load_plays_passes_all_seasons_once_current(monkeypatch):
     """Once nflreadpy's current season catches up (e.g. the Thursday
     after Labor Day), nothing should be filtered out -- guards against an
     overly aggressive fix that drops seasons it shouldn't."""
-    from src.pipeline import data_loader
+    from src.sports.nfl import data_loader
 
     calls = {}
     _install_fake_nflreadpy(monkeypatch, current_season=2026, calls=calls)

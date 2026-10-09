@@ -6,13 +6,13 @@ independent re-derivation got 70 and 9. The number was wrong in the code for as
 long as it took someone to check by hand, and nothing would ever have caught it,
 because a comment is not executable.
 
-This makes it executable. `src/research/verify_matchup_cvd.py` computes the figures from
+This makes it executable. `src/sports/nfl/research/verify_matchup_cvd.py` computes the figures from
 TEAM_COLOR and CONTRAST_THRESHOLD as they actually are in the template; these
 tests assert the comment agrees with it. Change the palette or the threshold and
 the comment goes stale -- loudly, here, rather than silently in review.
 
 The repo has the same arrangement for the low-confidence finding
-(`src/research/verify_low_confidence_finding.py`), added after Booth flagged an
+(`src/sports/nfl/research/verify_low_confidence_finding.py`), added after Booth flagged an
 unverifiable number on PR #18.
 """
 import re
@@ -20,7 +20,7 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
@@ -44,7 +44,7 @@ TEMPLATE = JOINED_TEMPLATE
 
 @pytest.fixture(scope='module')
 def computed():
-    from src.research import verify_matchup_cvd as v
+    from src.sports.nfl.research import verify_matchup_cvd as v
     tc = v.team_colors()
     from itertools import permutations
     best = {}
@@ -72,7 +72,7 @@ def test_the_pair_counts_in_the_comment_are_what_the_script_computes(computed):
     assert m, 'the comment no longer states "N of the M distinct team pairs (P%)"'
     assert (int(m.group(1)), int(m.group(2))) == (under15, total), (
         f'comment says {m.group(1)} of {m.group(2)} pairs under the dE00 15 floor; '
-        f'src/research/verify_matchup_cvd.py computes {under15} of {total}')
+        f'src/sports/nfl/research/verify_matchup_cvd.py computes {under15} of {total}')
     assert abs(float(m.group(3)) - under15 / total * 100) < 0.05, (
         f'comment says {m.group(3)}%; computed {under15 / total * 100:.1f}%')
 
@@ -120,12 +120,12 @@ def test_the_threshold_fragility_count_is_what_the_script_computes(computed):
         f'checks {lo}-{hi}. Change both together or neither.')
     assert int(m.group(1)) == actual, (
         f'comment says {m.group(1)} pairs between {lo} and {hi}; '
-        f'src/research/verify_matchup_cvd.py computes {actual}')
+        f'src/sports/nfl/research/verify_matchup_cvd.py computes {actual}')
 
 
 def test_the_verifier_reads_the_palette_rather_than_copying_it():
     """A copied palette is a second source of truth that goes stale silently."""
-    src = (ROOT / 'src' / 'research' / 'verify_matchup_cvd.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'research' / 'verify_matchup_cvd.py').read_text(encoding='utf-8')
     assert 'TEAM_COLOR' in src and 'JOINED_TEMPLATE' in src, (
         'verify_matchup_cvd.py must read TEAM_COLOR out of the template')
     assert not re.search(r"ARI\s*:\s*'#", src), (

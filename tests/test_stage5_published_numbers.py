@@ -1,5 +1,5 @@
 """
-Every number experiments/stage5/README.md prints must exist in the file it
+Every number experiments/nfl/stage5/README.md prints must exist in the file it
 came from. Prose drifts; this is the pattern tests/test_published_bootstrap_numbers.py
 set for the rest of the repository.
 
@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pytest
 
-ROOT = Path(__file__).parent.parent / 'experiments' / 'stage5'
+ROOT = Path(__file__).parent.parent / 'experiments' / 'nfl' / 'stage5'
 README = ROOT / 'README.md'
 
 

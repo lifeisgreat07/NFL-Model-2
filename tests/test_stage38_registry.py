@@ -11,10 +11,10 @@ Run with: pytest tests/test_stage38_registry.py -v
 import json
 from pathlib import Path
 
-from src.pipeline import model_lab as ml
+from src.sports.nfl import model_lab as ml
 
 ROOT = Path(__file__).resolve().parents[1]
-REGISTRY = ROOT / 'experiments' / 'stage38' / 'registry.json'
+REGISTRY = ROOT / 'experiments' / 'nfl' / 'stage38' / 'registry.json'
 
 
 def registry():
@@ -60,4 +60,4 @@ def test_m1_is_registered_not_in_force_so_it_has_no_row_yet():
 
 
 def test_no_registered_question_has_a_result_yet():
-    assert not (REGISTRY.parent / 'results').exists() or not any((REGISTRY.parent / 'results').iterdir())
+    assert not (REGISTRY.parent / 'results' / 'nfl').exists() or not any((REGISTRY.parent / 'results' / 'nfl').iterdir())

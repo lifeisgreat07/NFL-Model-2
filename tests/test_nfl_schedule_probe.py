@@ -2,7 +2,7 @@
 
 Stage 15 (CLAUDE.md). ESPN answers GitHub's runners with 403 (#131), so the
 next candidate for TV channels is the league's own by-week schedule page.
-src/pipeline/nfl_schedule_probe.py reads weeks 1-4 of 2026 from it and reports each game
+src/sports/nfl/nfl_schedule_probe.py reads weeks 1-4 of 2026 from it and reports each game
 that lacks something a later stage needs. The network part runs in
 .github/workflows/nfl-schedule-probe.yml; these tests hold the judgement it
 makes on a page, built here from synthetic games so no league content is
@@ -19,7 +19,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import nfl_schedule_probe as probe
+from src.sports.nfl import nfl_schedule_probe as probe
 
 WORKFLOW = ROOT / '.github' / 'workflows' / 'nfl-schedule-probe.yml'
 
@@ -113,15 +113,15 @@ def test_an_empty_or_unreachable_week_fails_the_run(monkeypatch, capsys):
 
 
 def test_the_probe_writes_nothing():
-    src = (ROOT / 'src' / 'pipeline' / 'nfl_schedule_probe.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'nfl_schedule_probe.py').read_text(encoding='utf-8')
     code = re.sub(r'(?s)""".*?"""', '', src)
     assert not re.search(r"open\([^)]*['\"][wa]", code) and 'write_text' not in code and 'json.dump(' not in code
 
 
 def test_the_workflow_runs_it_on_its_own_pull_requests():
     wf = WORKFLOW.read_text(encoding='utf-8')
-    assert re.search(r"pull_request:\s*\n\s*paths:\s*\n\s*- 'src/pipeline/nfl_schedule_probe\.py'", wf), (
+    assert re.search(r"pull_request:\s*\n\s*paths:\s*\n\s*- 'src/sports/nfl/nfl_schedule_probe\.py'", wf), (
         'the probe no longer runs on the pull requests that change it, so its answer is not on the PR')
-    assert 'python -m src.pipeline.nfl_schedule_probe --weeks 1 2 3 4 --season 2026' in wf
+    assert 'python -m src.sports.nfl.nfl_schedule_probe --weeks 1 2 3 4 --season 2026' in wf
     assert re.search(r'permissions:\s*\n\s*contents: read', wf)
     assert 'schedule:' not in wf, 'the probe is not a monitor; the nightly canary is where the feed will be watched'

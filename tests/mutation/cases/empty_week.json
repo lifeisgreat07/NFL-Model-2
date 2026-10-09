@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/weekly_update.py",
+  "target": "src/sports/nfl/weekly_update.py",
   "tests": "tests/test_empty_week.py",
   "cases": [
     {
@@ -25,7 +25,7 @@
     },
     {
       "id": "live-ratings-none-reaches-the-writers",
-      "target": "src/pipeline/weekly_update.py",
+      "target": "src/sports/nfl/weekly_update.py",
       "tests": "tests/test_current_ratings.py",
       "why": "the None check goes, so a run with too few plays hands None to save_current_ratings, which crashes mid-run with an error that says nothing about plays.",
       "find": "    if ratings is None:\n        raise SystemExit(",
@@ -34,7 +34,7 @@
     },
     {
       "id": "live-ratings-built-around-the-guard",
-      "target": "src/pipeline/weekly_update.py",
+      "target": "src/sports/nfl/weekly_update.py",
       "tests": "tests/test_current_ratings.py",
       "why": "refresh_current_state builds its ratings directly again, so the guard exists but the live run never passes through it.",
       "find": "    current_team_ratings = current_ratings(plays, week_keys)\n",
@@ -43,7 +43,7 @@
     },
     {
       "id": "team-ratings-overload-dropped",
-      "target": "src/pipeline/ratings_engine.py",
+      "target": "src/sports/nfl/ratings_engine.py",
       "tests": "tests/test_type_check.py",
       "why": "the live call's @overload goes, so every live caller is typed as the three-way union again and the type check reports the writers taking a possible week dict: the state the third audit found, where nothing was checked because everything failed.",
       "find": "@overload\ndef build_team_ratings(plays: pd.DataFrame, week_keys: list[WeekKey],\n                       upto_cutoff_i: int) -> Ratings | None: ...\n",

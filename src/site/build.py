@@ -106,11 +106,11 @@ def build_commands(sport: str, out: Path) -> list[list[str]]:
         # a page with missing data; collect() copies both into place.
         # Every commit that changed each locked week's picks, for the
         # board's lock line (Stage 46 item 5); it never fails the build.
-        return [py + ['src.pipeline.lock_proof', '--out', 'data/lock_proof.json'],
-                py + ['src.pipeline.generate_dashboard'],
-                py + ['src.pipeline.check_build', 'index.html'],
+        return [py + ['src.sports.nfl.lock_proof', '--out', 'data/nfl/lock_proof.json'],
+                py + ['src.sports.nfl.generate_dashboard'],
+                py + ['src.sports.nfl.check_build', 'index.html'],
                 # Every locked pick and its grade, beside the board (Stage 46 item 7).
-                py + ['src.pipeline.picks_csv', '--out', 'picks.csv']]
+                py + ['src.sports.nfl.picks_csv', '--out', 'picks.csv']]
     return [py + [f'src.sports.{sport}.site', '--out', str(out / sport / 'index.html')]]
 
 

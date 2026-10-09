@@ -76,8 +76,15 @@ def test_the_split_lost_nothing():
             break
     if before is None:
         pytest.skip('no commit before the split in this clone')
-    joined = '\n\n'.join(_sections(p.read_text(encoding='utf-8')) for p in sorted(ERAS.glob('*.md'),
-                                                                                 key=lambda p: listed().index(p.name)))
+    added = subprocess.run(['git', 'log', '--diff-filter=A', '--format=%H', '--', 'docs/history'], cwd=ROOT,
+                           capture_output=True, text=True).stdout.split()
+    if not added:
+        pytest.skip('no split commit in this clone')
+    split = added[-1]  # the oldest commit that added an era file: the split itself
+    # Stage 52 rewrote the era files' paths, so they are read as the split left them.
+    joined = '\n\n'.join(_sections(subprocess.run(['git', 'show', f'{split}:docs/history/{name}'], cwd=ROOT,
+                                                   capture_output=True, text=True, encoding='utf-8').stdout)
+                         for name in listed())
     old_heads = re.findall(r'^#{2,3} .+$', _sections(before), re.M)
     new_heads = re.findall(r'^#{2,3} .+$', joined, re.M)
     assert old_heads == new_heads[:len(old_heads)], 'a section went missing or moved out of order'

@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/weekly_update.py",
+  "target": "src/sports/nfl/weekly_update.py",
   "tests": "tests/test_neutral_site.py",
   "cases": [
     {
@@ -32,7 +32,7 @@
     },
     {
       "id": "neutral-refresh-reads-the-week-alone",
-      "target": "src/pipeline/weekend_refresh.py",
+      "target": "src/sports/nfl/weekend_refresh.py",
       "why": "the weekend refresh reads the week's rows without the season's usual stadiums, so a week locked before picks carried the flag never gets it for a game listed 'Home'.",
       "find": "        rows = with_usual_stadium(sched, sched[sched['week'] == week])",
       "replace": "        rows = sched[sched['week'] == week]",
@@ -40,7 +40,7 @@
     },
     {
       "id": "neutral-snapshot-not-carried",
-      "target": "src/pipeline/weekend_refresh.py",
+      "target": "src/sports/nfl/weekend_refresh.py",
       "why": "the status snapshot drops the flag, so a neutral game in a week locked before picks carried it never says so.",
       "find": "            'neutral_site': site_is_neutral(row),\n",
       "replace": "",
@@ -48,7 +48,7 @@
     },
     {
       "id": "neutral-page-ignores-the-snapshot",
-      "target": "src/pipeline/generate_dashboard.py",
+      "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the page reads the flag from the pick only, so every week locked before picks carried it shows no neutral site.",
       "find": "                            else status.get('neutral_site')),",
       "replace": "                            else None),",

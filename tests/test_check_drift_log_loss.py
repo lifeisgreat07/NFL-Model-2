@@ -1,7 +1,7 @@
 """
 Stage 33 R4: the drift check flags on log loss, as registered.
 
-experiments/stage33/registry.json registered the rule before any 2026 log
+experiments/nfl/stage33/registry.json registered the rule before any 2026 log
 loss was computed for it: over every graded live Model A game, flag when the
 lower end of a one-sided 95% bootstrap interval of the mean per-game log loss
 is above the baseline (the 2022-2025 backtest with the schedule's listed
@@ -16,13 +16,13 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from src.pipeline import check_drift as cd
+from src.sports.nfl import check_drift as cd
 
 ROOT = Path(__file__).parent.parent
 
 
 def r4():
-    reg = json.loads((ROOT / 'experiments' / 'stage33' / 'registry.json').read_text(encoding='utf-8'))
+    reg = json.loads((ROOT / 'experiments' / 'nfl' / 'stage33' / 'registry.json').read_text(encoding='utf-8'))
     return reg, next(h for h in reg['hypotheses'] if h['id'] == 'R4')
 
 
@@ -49,7 +49,7 @@ def test_the_baseline_file_is_the_registered_one():
 
 
 def test_the_baseline_is_the_figure_in_its_source_file():
-    src = json.loads((ROOT / 'experiments' / 'stage5' / 'residuals.json').read_text(encoding='utf-8'))
+    src = json.loads((ROOT / 'experiments' / 'nfl' / 'stage5' / 'residuals.json').read_text(encoding='utf-8'))
     every = src['slices']['all games']
     spec = cd.log_loss_baseline()
     assert spec['baseline']['value'] == every['log_loss_sched']

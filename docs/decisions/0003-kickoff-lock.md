@@ -3,13 +3,13 @@
 ## Decision
 
 The Weekly update runs Tuesday and Thursday at 11:00 UTC. Each run asks
-`decide_lock` (`src/pipeline/weekly_update.py`) whether the week's first
+`decide_lock` (`src/sports/nfl/weekly_update.py`) whether the week's first
 game still to come kicks off before the next scheduled run plus
 `LOCK_SLACK` (eight hours). If it does, this run locks the week: the picks
 are saved to `predictions/` and never rewritten. Usually that is Thursday;
 a week with an earlier game (Thanksgiving, a Wednesday game) locks on
 Tuesday. A game that has already kicked off is never predicted. A run that
-holds the week saves a labelled preview to `predictions/preview/` instead,
+holds the week saves a labelled preview to `predictions/nfl/preview/` instead,
 and only locked picks are ever graded.
 
 ## Why

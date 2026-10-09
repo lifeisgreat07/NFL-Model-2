@@ -32,11 +32,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import synthetic_league as league
 
-from src.pipeline import check_drift as cd
-from src.pipeline import data_loader
-from src.pipeline import grade_predictions as gp
-from src.pipeline import weekend_refresh as wr
-from src.pipeline import weekly_update as wu
+from src.sports.nfl import check_drift as cd
+from src.sports.nfl import data_loader
+from src.sports.nfl import grade_predictions as gp
+from src.sports.nfl import weekend_refresh as wr
+from src.sports.nfl import weekly_update as wu
 
 H = pd.Timedelta(hours=1)
 S, W = league.TARGET, league.TARGET_WEEK

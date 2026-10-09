@@ -1,5 +1,5 @@
 {
-  "target": "src/research/stage33_eval.py",
+  "target": "src/sports/nfl/research/stage33_eval.py",
   "tests": "tests/test_stage33_registry.py",
   "cases": [
     {
@@ -60,7 +60,7 @@
     },
     {
       "id": "s33-non-inferior-shown-as-inconclusive",
-      "target": "src/pipeline/model_lab.py",
+      "target": "src/sports/nfl/model_lab.py",
       "why": "R3's switch shows on Model Lab as INCONCLUSIVE, so the page says the fixed curve stayed when the registered rule replaced it",
       "find": "    'NON-INFERIOR': 'ACCEPT',",
       "replace": "    'NON-INFERIOR': 'INCONCLUSIVE',",
@@ -68,7 +68,7 @@
     },
     {
       "id": "s33-r4-baseline-retyped",
-      "target": "experiments/stage33/registry.json",
+      "target": "experiments/nfl/stage33/registry.json",
       "why": "R4's baseline is retyped as a rounded figure, so the drift rule flags against a number its source file does not hold",
       "find": "    \"value\": 0.6517835197359845,",
       "replace": "    \"value\": 0.6518,",

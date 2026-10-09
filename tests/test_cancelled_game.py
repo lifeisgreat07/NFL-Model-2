@@ -9,7 +9,7 @@ week open for every weekend refresh, TV read and team-news read after it.
 
 nflverse has no cancelled flag, and "no score a while after kickoff" is also
 what a late feed looks like, so a cancellation is recorded, not inferred:
-data/cancelled_games.json, one entry per game with a link to the source, the
+data/nfl/cancelled_games.json, one entry per game with a link to the source, the
 way a QB override is. An unlisted game with no score long after kickoff is
 printed as a warning so the file gets written.
 
@@ -24,8 +24,8 @@ from datetime import UTC, datetime
 import pandas as pd
 import pytest
 
-from src.pipeline import weekend_refresh as wr
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl import weekend_refresh as wr
 
 NODE = shutil.which('node')
 # 2022 week 17's game, as the fixture: Bills at Bengals, Monday night.
@@ -134,7 +134,7 @@ def test_the_refresh_prints_the_nudge(tmp_path, capsys):
             results_dir=results, status_dir=status, snapshot=lambda *a: None, cancelled=set())
     out = capsys.readouterr().out
     assert 'BUF at CIN kicked off over 36 hours ago with no score' in out
-    assert 'data/cancelled_games.json' in out
+    assert 'data/nfl/cancelled_games.json' in out
 
 
 # --- the card -----------------------------------------------------------------

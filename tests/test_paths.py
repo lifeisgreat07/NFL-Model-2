@@ -1,5 +1,5 @@
 """
-src/pipeline/paths.py: one definition of the shared locations, the week in a file
+src/sports/nfl/paths.py: one definition of the shared locations, the week in a file
 name, the current season and the 32 teams (Stage 32 item 15).
 
 The point of the file is that there is ONE of each, so the tests check that
@@ -20,7 +20,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / 'src'
 
-from src.pipeline import paths
+from src.sports.nfl import paths
 
 
 @pytest.mark.parametrize('stem,expected', [
@@ -42,25 +42,25 @@ def test_january_and_february_belong_to_last_season(when, season):
 
 def test_the_workflow_asks_paths_for_the_season():
     """The weekly workflow's bash used to hold a third copy of the rule."""
-    wf = (ROOT / '.github' / 'workflows' / 'weekly-update.yml').read_text(encoding='utf-8')
+    wf = (ROOT / '.github' / 'workflows' / 'nfl-weekly-update.yml').read_text(encoding='utf-8')
     step = re.search(r'- name: Determine current NFL season\n(.*?)\n\n', wf, re.S)
     assert step, 'the season step is not findable -- re-anchor this guard'
-    assert 'season=$(python -m src.pipeline.paths --current-season)' in step.group(1)
+    assert 'season=$(python -m src.sports.nfl.paths --current-season)' in step.group(1)
     assert 'date -u' not in step.group(1), 'the bash copy of the season rule is back'
-    r = subprocess.run([sys.executable, '-m', 'src.pipeline.paths', '--current-season'],
+    r = subprocess.run([sys.executable, '-m', 'src.sports.nfl.paths', '--current-season'],
                        capture_output=True, text=True, cwd=str(ROOT))
     assert r.returncode == 0 and r.stdout.strip() == str(paths.current_season())
 
 
 def test_there_are_32_teams_and_every_team_table_agrees():
-    from src.pipeline import simulate_season, tv_channels
+    from src.sports.nfl import simulate_season, tv_channels
     assert len(paths.NFL_TEAMS) == 32 and paths.NFL_TEAMS == frozenset(paths.TEAM_NAMES)
     assert set(simulate_season.TEAM_DIV) == paths.NFL_TEAMS
     assert set(tv_channels.TEAMS.values()) == paths.NFL_TEAMS
 
 
 def test_each_module_name_is_bound_to_the_one_definition():
-    from src.pipeline import (
+    from src.sports.nfl import (
         canary,
         check_drift,
         data_quality,
@@ -95,13 +95,13 @@ COPIES = [
     (r"\.split\(['\"]_week['\"]\)", 'the week-in-a-file-name rule, inline'),
     (r'^(NFL_TEAMS|TEAM_NAMES)\s*=', 'the team list'),
     # Anywhere, not only at the start of a line: tv_channels.main's
-    # defaults were `ROOT / 'predictions'` and `ROOT / 'results'` until
+    # defaults were `ROOT / 'predictions' / 'nfl'` and `ROOT / 'results' / 'nfl'` until
     # Stage 36 item 7, a copy the line-start patterns above could not see.
     (r"\bROOT\s*/\s*['\"](?:data|predictions|results)['\"]", 'a data folder built by hand'),
 ]
 
 
-# Not copies: their RESULTS_DIR is experiments/stageN/results, a different
+# Not copies: their RESULTS_DIR is experiments/nfl/stageN/results, a different
 # folder that happens to share the name.
 DIFFERENT_FOLDER = {'stage5_run.py', 'stage6_run.py'}
 
@@ -119,7 +119,8 @@ def copies(sources):
 
 
 def test_no_module_defines_its_own_copy_again():
-    sources = {p.name: p.read_text(encoding='utf-8') for p in SRC.glob('*/*.py')}
+    sources = {p.name: p.read_text(encoding='utf-8') for p in SRC.rglob('*.py')
+               if p.relative_to(SRC).parts[0] != 'sports' or p.relative_to(SRC).parts[1] == 'nfl'}
     assert len(sources) > 30, 'src/ was not read -- the matcher is broken'
     assert not copies(sources)
 
@@ -127,12 +128,12 @@ def test_no_module_defines_its_own_copy_again():
 def test_a_folder_built_by_hand_anywhere_is_found():
     """A default argument or a sub-folder, not a module-level name: the
     shape tv_channels.main and team_news.NEWS_DIR had (Stage 36 item 7)."""
-    assert copies({'x.py': "def main(pred_dir=ROOT / 'predictions'):\n"}) == [('x.py', 'a data folder built by hand')]
-    assert copies({'y.py': "NEWS_DIR = ROOT / 'data' / 'team_news'\n"}) == [('y.py', 'a data folder built by hand')]
+    assert copies({'x.py': "def main(pred_dir=ROOT / 'predictions' / 'nfl'):\n"}) == [('x.py', 'a data folder built by hand')]
+    assert copies({'y.py': "NEWS_DIR = ROOT / 'data' / 'nfl' / 'team_news'\n"}) == [('y.py', 'a data folder built by hand')]
     assert copies({'z.py': "NEWS_DIR = DATA_DIR / 'team_news'\n"}) == []
 
 
 def test_a_copy_is_found():
     """Synthetic, so the failing branch stays reachable."""
-    assert copies({'x.py': "RESULTS_DIR = ROOT / 'results'\n", 'paths.py': 'PRED_DIR = 1\n'}) == [
+    assert copies({'x.py': "RESULTS_DIR = ROOT / 'results' / 'nfl'\n", 'paths.py': 'PRED_DIR = 1\n'}) == [
         ('x.py', 'a data folder'), ('x.py', 'a data folder built by hand')]

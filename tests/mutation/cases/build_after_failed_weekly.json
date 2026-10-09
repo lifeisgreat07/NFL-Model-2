@@ -12,8 +12,8 @@
     {
       "id": "failed-weekly-clause-names-the-wrong-workflow",
       "why": "the clause names a workflow that is not the Weekly update; GitHub matches on the display name, so it never fires and nothing says so",
-      "find": "      || (github.event.workflow_run.name == 'Weekly update'",
-      "replace": "      || (github.event.workflow_run.name == 'Weekend refresh'",
+      "find": "      || (github.event.workflow_run.name == 'NFL weekly update'",
+      "replace": "      || (github.event.workflow_run.name == 'NFL weekend refresh'",
       "expect_caught_by": "test_a_failed_weekly_update_still_rebuilds_the_page"
     }
   ]

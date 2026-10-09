@@ -18,7 +18,7 @@ Run with: pytest tests/test_forced_colours.py -v
 import re
 from pathlib import Path
 
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = JOINED_TEMPLATE.read_text(encoding='utf-8').replace('\r\n', '\n')

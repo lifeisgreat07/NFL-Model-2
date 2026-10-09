@@ -32,19 +32,19 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import synthetic_league as league
 
-from src.pipeline import check_drift as cd
-from src.pipeline import data_loader
-from src.pipeline import grade_predictions as gp
-from src.pipeline import model_specs as ms
-from src.pipeline import simulate_season as ss
-from src.pipeline import weekend_refresh as wr
-from src.pipeline import weekly_update as wu
-from src.pipeline.ratings_engine import (
+from src.core import model_specs as ms
+from src.sports.nfl import check_drift as cd
+from src.sports.nfl import data_loader
+from src.sports.nfl import grade_predictions as gp
+from src.sports.nfl import simulate_season as ss
+from src.sports.nfl import weekend_refresh as wr
+from src.sports.nfl import weekly_update as wu
+from src.sports.nfl.ratings_engine import (
     build_qb_ratings,
     build_team_ratings,
     prep_plays,
 )
-from src.research import backtest as bt
+from src.sports.nfl.research import backtest as bt
 
 H = pd.Timedelta(hours=1)
 S, W = league.TARGET, league.TARGET_WEEK
@@ -173,7 +173,7 @@ def test_the_backtest_scores_every_target_game_it_has_features_for(history):
 
 def test_the_backtest_never_trains_on_the_week_it_scores(history, monkeypatch):
     """Walk-forward: every fit for week w sees only games before it. The
-    estimator is built in src/pipeline/model_specs.py since Stage 33 item
+    estimator is built in src/core/model_specs.py since Stage 33 item
     21, so that is where the spy goes."""
     hist, _ = history
     seen = []

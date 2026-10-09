@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/schema_check.py",
+  "target": "src/sports/nfl/schema_check.py",
   "tests": "tests/test_schema_check.py",
   "cases": [
     {

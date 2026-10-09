@@ -1,12 +1,12 @@
 {
-  "target": ".github/workflows/weekly-update.yml",
+  "target": ".github/workflows/nfl-weekly-update.yml",
   "tests": "tests/test_workflows_do_not_commit_build_output.py",
   "cases": [
     {
       "id": "workflow-commits-the-build-output-again",
       "why": "Stage 8c phase 2 untracked index.html and dist/ because a generated file under version control made every branch touching the template collide with whatever CI regenerated on main -- five conflicts in one day across three branches. Adding either path back to a file_pattern reinstates that tax, and does it quietly: the symptom appears on somebody else's open branch days later, not in the run that caused it.",
-      "find": "file_pattern: 'predictions/** results/** data/**'",
-      "replace": "file_pattern: 'predictions/** results/** data/** index.html dist/**'",
+      "find": "file_pattern: 'predictions/nfl/** results/nfl/** data/nfl/**'",
+      "replace": "file_pattern: 'predictions/nfl/** results/nfl/** data/nfl/** index.html dist/**'",
       "expect_caught_by": "test_no_workflow_commits_the_build_outputs"
     },
     {

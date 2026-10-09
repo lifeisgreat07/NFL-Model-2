@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/model_lab.py",
+  "target": "src/sports/nfl/model_lab.py",
   "tests": "tests/test_stage38_registry.py",
   "cases": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "id": "s38-budget-loosened",
-      "target": "experiments/stage38/registry.json",
+      "target": "experiments/nfl/stage38/registry.json",
       "why": "a third slot appears without the level moving, so two questions are decided at an interval that no longer holds the family's error rate.",
       "find": "   \"spends_slot\": false,\n   \"consequence\": \"No R1-R3 label changes.",
       "replace": "   \"spends_slot\": true,\n   \"consequence\": \"No R1-R3 label changes.",

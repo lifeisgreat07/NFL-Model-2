@@ -11,7 +11,7 @@
     },
     {
       "id": "live-market-constant-changes-without-the-note",
-      "target": "src/pipeline/weekly_update.py",
+      "target": "src/sports/nfl/weekly_update.py",
       "why": "the live market's constant changes and the Methodology note still describes the old curve",
       "find": "    return 1 / (1 + np.exp(-home_spread / 5.5))",
       "replace": "    return 1 / (1 + np.exp(-home_spread / 6.0))",

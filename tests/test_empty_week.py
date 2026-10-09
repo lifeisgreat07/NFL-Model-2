@@ -11,7 +11,7 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import weekly_update as wu
+from src.sports.nfl import weekly_update as wu
 
 
 def test_an_empty_week_fails_the_run():
@@ -27,7 +27,7 @@ def test_main_checks_before_it_writes_and_only_when_it_writes():
     """The check sits in the branch that saves, ahead of the write: before
     the existing-file branch, a manual re-run of a saved week would fail
     instead of warning; after the write, it would guard nothing."""
-    src = (ROOT / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'weekly_update.py').read_text(encoding='utf-8')
     main = src[src.index('def main(season'):]
     save = main[main.index("    if out_path.exists():"):]
     other, saving = save.split('\n    else:\n', 1)

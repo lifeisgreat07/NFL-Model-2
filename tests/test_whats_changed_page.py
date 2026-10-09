@@ -24,8 +24,8 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import config
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl import config
 
 TEMPLATE = JOINED_TEMPLATE
 

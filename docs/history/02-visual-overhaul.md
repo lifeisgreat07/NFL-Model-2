@@ -145,7 +145,7 @@ the graded colours may appear only after a game has been scored, because a
 colour meaning "correct" on a game that has not happened makes the page lie.
 
 **Stage 8b, the port, is DONE** — it lifted that block into
-`src/pipeline/dashboard_template.html` and restyling page by page. The template was
+`src/sports/nfl/dashboard_template.html` and restyling page by page. The template was
 3,250 lines across nine pages at `b5d6bb9`; the design was proven against two.
 A great many tests assert on it -- several on colour tokens and exact strings. Treat a failing
 colour assertion as a question, not as something to update to match: those
@@ -181,7 +181,7 @@ all; an elevation pass so the six shadow tokens are actually used.
 
 **`--shadow-overlay` has TWO consumers, not one.** `docs/design/STAGE8-DESIGN.md`
 says one, the `.overlay` component -- but `.overlay` appears zero times in
-`src/pipeline/dashboard_template.html`; it was a mock-only element. The real consumers
+`src/sports/nfl/dashboard_template.html`; it was a mock-only element. The real consumers
 are `.undo-toast` and `.rel-tip`, which is what the token comment in the
 template says. Corrected here rather than in only one of the two documents.
 

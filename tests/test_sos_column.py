@@ -7,7 +7,7 @@ em-dash for all 32 teams" and queued the column to be removed or populated.
 Neither was the right call. The computation in weekly_update.save_current_ratings
 works; it returns None for all 32 teams because the 2026 season has not started,
 and strength of schedule is defined over opponents ACTUALLY PLAYED. Confirmed
-against data/playoff_odds.json, which independently reports games_played 0 and
+against data/nfl/playoff_odds.json, which independently reports games_played 0 and
 games_remaining 272. Deleting the column would have removed a working feature
 because it was audited in September.
 
@@ -33,11 +33,11 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.pipeline import weekly_update
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl import weekly_update
 
 TEMPLATE = JOINED_TEMPLATE
-LIVE_RATINGS = REPO_ROOT / 'data' / 'current_ratings.json'
+LIVE_RATINGS = REPO_ROOT / 'data' / 'nfl' / 'current_ratings.json'
 
 # Three teams with deliberately distinct net ratings, so a wrong pairing shows
 # up as a wrong number rather than coincidentally matching.
@@ -61,7 +61,7 @@ def written(tmp_path, monkeypatch):
     """Runs save_current_ratings against a temp data dir and returns the rows.
 
     Monkeypatching DATA_DIR matters: the function writes straight to
-    data/current_ratings.json, and a test that clobbered the live artifact
+    data/nfl/current_ratings.json, and a test that clobbered the live artifact
     would be corrupting the dashboard to check the dashboard.
     """
     def run(schedule):
@@ -117,7 +117,7 @@ def test_sos_is_absent_only_when_no_games_have_been_played():
     both of which currently look exactly like the preseason blank.
     """
     if not LIVE_RATINGS.exists():
-        pytest.skip("data/current_ratings.json absent -- run weekly_update.py")
+        pytest.skip("data/nfl/current_ratings.json absent -- run weekly_update.py")
     rows = json.loads(LIVE_RATINGS.read_text())
     assert rows, "current_ratings.json is empty"
 

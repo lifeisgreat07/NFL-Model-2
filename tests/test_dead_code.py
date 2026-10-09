@@ -7,7 +7,7 @@ tests/dead_code_allowlist.py with its reason. A new unused function,
 variable or class fails here with vulture's own line for it.
 
 The first run (2026-10-06) found 25 names. Five were dead and were deleted,
-none of them in src/pipeline/; the rest are in the allowlist: the multi-sport
+none of them in src/sports/nfl/; the rest are in the allowlist: the multi-sport
 contract's fields, two overrides a framework calls, a written-down
 vocabulary, and the NHL's former abbreviations.
 

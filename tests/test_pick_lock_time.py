@@ -25,17 +25,17 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import weekly_update as wu
+from src.sports.nfl import weekly_update as wu
 
 
 def _main_source():
     """main() and the steps it calls, which follow it in the file (Stage 32
     item 16 split main into load_inputs, fit_models, refresh_current_state,
     plan_week, predict_week and save_week)."""
-    src = (Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (Path(__file__).resolve().parents[1] / 'src' / 'sports' / 'nfl' / 'weekly_update.py').read_text(encoding='utf-8')
     return src[src.index('def main(season'):src.index("if __name__ == '__main__':")]
 
-WORKFLOW = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
+WORKFLOW = ROOT / '.github' / 'workflows' / 'nfl-weekly-update.yml'
 
 
 def utc(s):

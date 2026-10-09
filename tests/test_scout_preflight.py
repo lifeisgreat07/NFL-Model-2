@@ -247,7 +247,7 @@ def test_a_change_to_any_dashboard_part_counts_as_the_page():
     """Stage 33 item 26 cut the template into parts under src/dashboard/.
     Its script is app.js now, not an .html file, and a change to it is still
     a change a screenshot could show."""
-    changed = ['src/dashboard/app.js', 'src/dashboard/styles.css', 'src/pipeline/config.py',
+    changed = ['src/dashboard/app.js', 'src/dashboard/styles.css', 'src/sports/nfl/config.py',
                'docs/context.md', 'assets/og.svg']
     assert pf.page_files(changed) == ['src/dashboard/app.js', 'src/dashboard/styles.css',
                                       'assets/og.svg']
@@ -438,14 +438,14 @@ def test_pr278s_sentence_fails():
 
 @pytest.mark.parametrize('verb', ['restored', 'committed', 'tracked'])
 def test_each_verb_is_checked(verb):
-    f = pf.check_tracked_claims(f'The file `data/new.json` is {verb} here.',
+    f = pf.check_tracked_claims(f'The file `data/nfl/new.json` is {verb} here.',
                                 tracked=_tracked_in())
     assert not f.ok, f'"{verb}" was not checked'
 
 
 def test_a_file_in_the_head_commit_passes():
-    f = pf.check_tracked_claims('`src/pipeline/recent_runs.py` is committed with its tests.',
-                                tracked=_tracked_in('src/pipeline/recent_runs.py'))
+    f = pf.check_tracked_claims('`src/sports/nfl/recent_runs.py` is committed with its tests.',
+                                tracked=_tracked_in('src/sports/nfl/recent_runs.py'))
     assert f.ok, f.detail
 
 
@@ -465,7 +465,7 @@ def test_a_removed_file_is_looked_for_in_the_base():
 
 def test_modules_commands_and_directories_are_not_paths():
     f = pf.check_tracked_claims(
-        'Committed: `src.pipeline.recent_runs`, `git status` and `tests/mutation/` all stay.',
+        'Committed: `src.sports.nfl.recent_runs`, `git status` and `tests/mutation/` all stay.',
         tracked=_tracked_in())
     assert f.ok, f.detail
 

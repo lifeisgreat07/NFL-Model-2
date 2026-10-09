@@ -1,9 +1,9 @@
 """The weekend refresh reports status, scores and lines, and never touches a pick.
 
-Stage 15 (CLAUDE.md). src/pipeline/weekend_refresh.py writes data/game_status/ between
+Stage 15 (CLAUDE.md). src/sports/nfl/weekend_refresh.py writes data/nfl/game_status/ between
 the Thursday lock and Tuesday's grading. These tests hold what it decides for
 a game, which weeks it refreshes, that an unchanged snapshot is not rewritten,
-that it writes nothing outside data/game_status/, and the workflow that runs
+that it writes nothing outside data/nfl/game_status/, and the workflow that runs
 it: its schedule, its commit scope, its alert, and its bridge to the page
 build. The schedule is replaced here, so the suite makes no network call.
 
@@ -20,10 +20,10 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import weekend_refresh as wr
+from src.sports.nfl import weekend_refresh as wr
 
-WORKFLOW = ROOT / '.github' / 'workflows' / 'weekend-refresh.yml'
-WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
+WORKFLOW = ROOT / '.github' / 'workflows' / 'nfl-weekend-refresh.yml'
+WEEKLY = ROOT / '.github' / 'workflows' / 'nfl-weekly-update.yml'
 BUILDER = ROOT / '.github' / 'workflows' / 'deploy-pages.yml'
 
 # Sunday 2026-10-04, 18:00 UTC: the early games (1:00 PM ET, 17:00 UTC) have
@@ -135,7 +135,7 @@ def test_a_run_writes_game_status_and_line_history_and_nothing_else(tmp_path, ca
     Stage 33 item 23 (2026-10-01) a run also appends the locked week's lines,
     through the weekly run's own log_line_snapshot, which is used here for
     real with only its folder moved."""
-    from src.pipeline import weekly_update as wu
+    from src.sports.nfl import weekly_update as wu
     monkeypatch.setattr(wu, 'LINE_HISTORY_DIR', tmp_path / 'line_history')
     (tmp_path / 'line_history').mkdir()
     preds, results, status, load = _locked_week_four(tmp_path)
@@ -185,7 +185,7 @@ def test_the_season_rolls_over_after_february(today, season):
 
 
 def test_the_source_writes_only_under_game_status():
-    src = (ROOT / 'src' / 'pipeline' / 'weekend_refresh.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'weekend_refresh.py').read_text(encoding='utf-8')
     code = re.sub(r'(?s)""".*?"""', '', src)
     assert code.count("open(path, 'w')") == 1 and 'write_text' not in code
     assert "path = status_dir /" in code
@@ -197,11 +197,11 @@ def _text(path):
 
 def test_the_workflow_commits_its_four_folders_and_nothing_else():
     patterns = re.findall(r"^\s*file_pattern:\s*'([^']*)'", _text(WORKFLOW), re.M)
-    assert patterns == ['data/game_status/** data/line_history/** data/tv/** data/team_news/**'], (
-        f'the weekend refresh commits {patterns}; it may commit data/game_status/**, '
-        f'data/line_history/** (item 23), data/tv/** and data/team_news/** only -- a '
+    assert patterns == ['data/nfl/game_status/** data/nfl/line_history/** data/nfl/tv/** data/nfl/team_news/**'], (
+        f'the weekend refresh commits {patterns}; it may commit data/nfl/game_status/**, '
+        f'data/nfl/line_history/** (item 23), data/nfl/tv/** and data/nfl/team_news/** only -- a '
         f'second writer of predictions/ or results/ is a second way to break a lock, and '
-        f'without data/line_history/** the snapshots it takes are never committed')
+        f'without data/nfl/line_history/** the snapshots it takes are never committed')
     assert 'git add' not in _text(WORKFLOW)
 
 
@@ -229,7 +229,7 @@ def test_its_runs_cannot_meet_the_weekly_runs_however_late_either_starts():
     Until Stage 36 (the fourth audit, Q9) this assumed five hours, one
     figure typed in beside the eight the lock uses; the worst refresh seen
     so far started 6h19m late (2026-09-28)."""
-    from src.pipeline.weekly_update import LOCK_SLACK
+    from src.sports.nfl.weekly_update import LOCK_SLACK
     late = int(LOCK_SLACK.total_seconds() // 60)
     mine, weekly = _cron_times(_text(WORKFLOW)), _cron_times(_text(WEEKLY))
     assert len(mine) == 4 and len(weekly) == 2
@@ -254,7 +254,7 @@ def test_its_runs_cannot_meet_the_weekly_runs_however_late_either_starts():
 
 def test_a_failed_refresh_raises_an_alert():
     text = _text(WORKFLOW)
-    assert re.search(r"if: failure\(\)[\s\S]*?src\.pipeline\.alerts --title \"Weekend refresh failed\"", text)
+    assert re.search(r"if: failure\(\)[\s\S]*?src\.core\.alerts --title \"NFL: Weekend refresh failed\"", text)
     assert re.search(r'permissions:[\s\S]*?issues: write', text)
     assert 'shell: bash' in text, 'without bash there is no pipefail, and | tee hides a failed refresh'
 
@@ -265,7 +265,7 @@ def test_the_page_build_runs_after_it():
     assert name in [n.strip().strip('"\'') for n in listed.split(',')]
 
 
-WEEKLY = ROOT / '.github' / 'workflows' / 'weekly-update.yml'
+WEEKLY = ROOT / '.github' / 'workflows' / 'nfl-weekly-update.yml'
 
 
 def _step_blocks(path):
@@ -301,7 +301,7 @@ def test_every_unattended_pusher_is_found():
     """The discovery must find at least the three known pushers, or the rule
     below could pass by checking nothing."""
     names = {p.name for p in _pushers()}
-    assert {'weekend-refresh.yml', 'weekly-update.yml', 'collect-agent-log.yml'} <= names, names
+    assert {'nfl-weekend-refresh.yml', 'nfl-weekly-update.yml', 'collect-agent-log.yml'} <= names, names
 
 
 @pytest.mark.parametrize('path', _pushers(), ids=lambda p: p.stem)
@@ -376,6 +376,6 @@ def test_the_weekly_run_snapshots_the_week_it_grades_before_grading_it():
     names = re.findall(r'^      - name: (.+)$', text, re.M)
     assert names.index(name) < names.index('Grade any completed weeks')
     step = _steps(text)[name]
-    assert 'python -m src.pipeline.weekend_refresh' in step and '--status-only' in step
+    assert 'python -m src.sports.nfl.weekend_refresh' in step and '--status-only' in step
     assert '!cancelled()' in step, 'a failed lock step must not also cost the final scores'
     assert 'continue-on-error: true' in step, 'a status snapshot must never cost a grade'

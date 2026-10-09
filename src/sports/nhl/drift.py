@@ -1,6 +1,6 @@
 """The NHL's drift check: is live Model A doing worse than its backtest said?
 
-The NFL's rule (Stage 33 R4, `src/pipeline/check_drift.py`), registered for
+The NFL's rule (Stage 33 R4, `src/sports/nfl/check_drift.py`), registered for
 the NHL in `experiments/nhl/stage58/registry.json`: once `min_games` picks
 are graded, flag when the lower end of a one-sided 95% bootstrap interval of
 mean per-game log loss is above the baseline in `data/nhl/drift_baseline.json`,

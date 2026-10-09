@@ -33,13 +33,13 @@ def test_an_nfl_kickoff_is_eastern_time_with_daylight_saving_by_the_date():
 
 
 def test_the_nfl_card_reads_the_latest_locked_week_and_model_bs_record(tmp_path):
-    write(tmp_path / 'predictions/2026_week3.json', [nfl_game('2026-09-24', '20:15')])
-    write(tmp_path / 'predictions/2026_week4.json', [nfl_game('2026-10-01', '20:15'), nfl_game('2026-10-04', '13:00')])
-    write(tmp_path / 'predictions/preview/2026_week5.json', [nfl_game('2026-10-08', '20:15')])
-    write(tmp_path / 'results/2026_week3_graded.json',
+    write(tmp_path / 'predictions/nfl/2026_week3.json', [nfl_game('2026-09-24', '20:15')])
+    write(tmp_path / 'predictions/nfl/2026_week4.json', [nfl_game('2026-10-01', '20:15'), nfl_game('2026-10-04', '13:00')])
+    write(tmp_path / 'predictions/nfl/preview/2026_week5.json', [nfl_game('2026-10-08', '20:15')])
+    write(tmp_path / 'results/nfl/2026_week3_graded.json',
           [{'model_b_correct': 1}, {'model_b_correct': 0}, {'model_b_correct': 1}, {'model_b_correct': None}])
-    write(tmp_path / 'predictions/2025_week18.json', [nfl_game('2026-01-04', '13:00')])
-    write(tmp_path / 'results/2025_week18_graded.json', [{'model_b_correct': 1}])
+    write(tmp_path / 'predictions/nfl/2025_week18.json', [nfl_game('2026-01-04', '13:00')])
+    write(tmp_path / 'results/nfl/2025_week18_graded.json', [{'model_b_correct': 1}])
     f = home.nfl_facts(tmp_path)
     assert (f['season'], f['week'], f['preview_week']) == (2026, 4, 5)
     assert f['kickoffs'] == ['2026-10-02T00:15:00Z', '2026-10-04T17:00:00Z']

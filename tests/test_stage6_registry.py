@@ -5,7 +5,7 @@ The same three promises as Stage 5 (tests/test_stage5_registry.py), for a
 second family with its own budget:
 
   1. A question is written down BEFORE it is answered. The commit that first
-     adds experiments/stage6/results/<id>.json must have a parent in which
+     adds experiments/nfl/stage6/results/<id>.json must have a parent in which
      registry.json already registers <id>, with the same wording.
   2. The label is computed, not typed. Every stored decision is recomputed
      from the stored numbers.
@@ -31,11 +31,11 @@ from git_history import first_added, registry_beside
 
 REPO_ROOT = Path(__file__).parent.parent
 
-from src.research import stage5_eval as se
+from src.sports.nfl.research import stage5_eval as se
 
-REGISTRY = REPO_ROOT / 'experiments' / 'stage6' / 'registry.json'
-RESULTS = REPO_ROOT / 'experiments' / 'stage6' / 'results'
-REGISTRY_REL = 'experiments/stage6/registry.json'
+REGISTRY = REPO_ROOT / 'experiments' / 'nfl' / 'stage6' / 'registry.json'
+RESULTS = REPO_ROOT / 'experiments' / 'nfl' / 'stage6' / 'results'
+REGISTRY_REL = 'experiments/nfl/stage6/registry.json'
 
 KINDS = ('screen', 'measurement', 'hypothesis', 'deferred')
 
@@ -94,7 +94,7 @@ def test_the_seasons_are_stage5s():
     """Stage 6's candidates are compared with Stage 5's machinery and against
     a model Stage 5 tuned; changing the split between families would let a
     season that confirmed one decision screen the next."""
-    s5 = json.loads((REPO_ROOT / 'experiments' / 'stage5' / 'registry.json').read_text(encoding='utf-8'))
+    s5 = json.loads((REPO_ROOT / 'experiments' / 'nfl' / 'stage5' / 'registry.json').read_text(encoding='utf-8'))
     for k in ('validation_seasons', 'confirmation_seasons', 'forward_holdout_season'):
         assert registry()['protocol'][k] == s5['protocol'][k], k
 

@@ -1,0 +1,77 @@
+name: NFL nightly canary
+
+# Runs the weekly job's data path every night, so an upstream break shows up
+# the day it happens instead of on the next locking run. The case it exists
+# for: in the 2026 offseason nflreadpy started rejecting play-by-play for a
+# season it did not consider current, and the weekly run crashed on it (#6).
+#
+# src/sports/nfl/canary.py loads what the weekly run loads, runs the data-quality checks
+# and compares nflverse's columns with data/nfl/nflverse_schema.json. It writes
+# nothing to the repository: no predictions, no grades, no commit. So it
+# cannot touch a lock.
+#
+# On a failure, src/core/alerts.py opens the issue "NFL: Nightly canary failing", or
+# comments on it if it is already open. One issue for a run of bad nights,
+# not one a night; closing it says "handled".
+#
+# 06:00 UTC: after nflverse's nightly rebuild, and five hours before the
+# weekly runs at 11:00 Tuesday and Thursday. Started late, it can overlap
+# them; it only reads, so that costs nothing.
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Finished seasons of play-by-play, kept between nights. The key rolls
+      # over each month, because nflverse does occasionally correct an old
+      # season. The current season is never cached (src/sports/nfl/data_loader.py).
+      # The weekly run does not use this cache on purpose: the run that makes
+      # picks always fetches fresh.
+      - name: Month key for the play-by-play cache
+        id: month
+        run: echo "key=$(date -u +%Y-%m)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: .pbp-cache
+          key: pbp-${{ steps.month.outputs.key }}
+
+      - name: Run the canary
+        env:
+          NFL_PBP_CACHE: .pbp-cache
+        run: python -m src.sports.nfl.canary --report canary-report.md
+
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          # A canary that crashed before writing its report still gets an
+          # alert: the step above failing is the finding.
+          if [ ! -s canary-report.md ]; then
+            printf 'The canary failed before writing a report. See %s\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > canary-report.md
+          else
+            printf '\nRun: %s\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> canary-report.md
+          fi
+          python -m src.core.alerts --title "NFL: Nightly canary failing" --body-file canary-report.md

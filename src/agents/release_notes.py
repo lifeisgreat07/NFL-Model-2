@@ -21,7 +21,7 @@ import sys
 from collections.abc import Callable
 from typing import Any
 
-from src.pipeline.config import VERSION_HISTORY
+from src.sports.nfl.config import VERSION_HISTORY
 
 #: The first version with a tag in this repository (Stage 34 item 27).
 FIRST_TAGGED = (2, 2)

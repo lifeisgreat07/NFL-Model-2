@@ -59,7 +59,7 @@ def runs(workflow):
     return out
 
 
-TYPES = 'python -m mypy --ignore-missing-imports src/pipeline/weekly_update.py src/pipeline/ratings_engine.py'
+TYPES = 'python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py'
 AGENT_TYPES = 'python -m mypy --strict --ignore-missing-imports --follow-imports=silent src/agents'
 
 
@@ -108,7 +108,7 @@ def test_browser_check_runs_what_the_workflow_runs_in_the_same_order():
     got = [c.split(' --axe')[0].replace(str(tasks.STATES), '$RUNNER_TEMP/states').replace('\\', '/')
            for c in commands('browser-check')]
     assert got == [
-        'python -m src.pipeline.generate_dashboard',
+        'python -m src.sports.nfl.generate_dashboard',
         'python tests/browser/check_page.py --self-test',
         'python tests/browser/check_page.py index.html',
         'python tests/browser/build_states.py --out $RUNNER_TEMP/states',
@@ -122,7 +122,7 @@ def test_browser_check_runs_what_the_workflow_runs_in_the_same_order():
     wf = [r.replace('"', '') for r in runs('browser-checks.yml')
           if any(k in r for k in ('generate_dashboard', 'check_page.py', 'build_states', 'build_nhl', 'nba.site', 'site.home', 'for page in'))]
     assert [w.split(' --axe')[0] for w in wf] == [
-        'python -m src.pipeline.generate_dashboard',
+        'python -m src.sports.nfl.generate_dashboard',
         'python tests/browser/check_page.py --self-test',
         'python tests/browser/check_page.py index.html',
         'python tests/browser/build_states.py --out $RUNNER_TEMP/states',
@@ -148,8 +148,8 @@ def test_the_task_builds_the_pages_build_states_writes():
 def test_runs_reads_multi_line_steps():
     """A `run: |` block and its backslash continuations are read, not skipped:
     the weekly summary step is only reachable that way."""
-    got = runs('weekly-update.yml')
-    assert any(r.startswith('python -m src.pipeline.weekly_summary --season') and '--out weekly-summary.md' in r
+    got = runs('nfl-weekly-update.yml')
+    assert any(r.startswith('python -m src.sports.nfl.weekly_summary --season') and '--out weekly-summary.md' in r
                for r in got), got
 
 

@@ -1,7 +1,7 @@
 """The generator reads and writes UTF-8 whatever the machine's default
 (Stage 25 item 8, agreed with Mark 2026-09-28).
 
-Until then src/pipeline/generate_dashboard.py opened its inputs and wrote index.html
+Until then src/sports/nfl/generate_dashboard.py opened its inputs and wrote index.html
 with the platform default. On Linux CI that is UTF-8; on Windows it is
 cp1252, so a character outside cp1252 in generated text (#164's en dash
 was the near miss) crashed the local build, and the file a Windows build
@@ -12,7 +12,7 @@ non-ASCII in generated text. Every open() now names its encoding.
 import ast
 from pathlib import Path
 
-SRC = Path(__file__).resolve().parents[1] / 'src' / 'pipeline' / 'generate_dashboard.py'
+SRC = Path(__file__).resolve().parents[1] / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py'
 
 
 def open_calls():

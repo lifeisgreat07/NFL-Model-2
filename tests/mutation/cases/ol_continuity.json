@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/ol_continuity.py",
+  "target": "src/sports/nfl/ol_continuity.py",
   "tests": "tests/test_leak_free.py",
   "cases": [
     {

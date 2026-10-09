@@ -1,11 +1,11 @@
 {
-  "target": "src/pipeline/runlog.py",
+  "target": "src/core/runlog.py",
   "tests": "tests/test_runlog.py",
   "cases": [
     {
       "id": "runlog-keeps-the-first-stdout",
       "why": "the handler keeps the stream it was made with, so a run whose stdout is swapped after import (pytest's capture, a redirected run) writes its log to the old one.",
-      "find": "    @property\n    def stream(self):\n        return sys.stdout\n\n    @stream.setter\n    def stream(self, _value):\n        # StreamHandler.__init__ assigns a stream; there is nothing to keep.\n        pass\n",
+      "find": "    @property\n    def stream(self) -> TextIO:\n        return sys.stdout\n\n    @stream.setter\n    def stream(self, _value: Any) -> None:\n        # StreamHandler.__init__ assigns a stream; there is nothing to keep.\n        pass\n",
       "replace": "    def __init__(self):\n        super().__init__(sys.stdout)\n",
       "expect_caught_by": "test_the_stream_is_whatever_stdout_is_when_the_line_is_written"
     },
@@ -19,7 +19,7 @@
     {
       "id": "runlog-write-error-swallowed",
       "why": "a line that cannot be written is reported to stderr and dropped, where print failed the run.",
-      "find": "    def handleError(self, record):\n        raise\n",
+      "find": "    def handleError(self, record: logging.LogRecord) -> None:\n        raise\n",
       "replace": "",
       "expect_caught_by": "test_a_line_that_cannot_be_written_fails_like_print"
     },
@@ -39,7 +39,7 @@
     },
     {
       "id": "runlog-grading-prints-again",
-      "target": "src/pipeline/grade_predictions.py",
+      "target": "src/sports/nfl/grade_predictions.py",
       "why": "a converted module goes back to print for one line, which no level or redirect then reaches.",
       "find": "    log.info(f\"Saved to {out_path}\")",
       "replace": "    print(f\"Saved to {out_path}\")",

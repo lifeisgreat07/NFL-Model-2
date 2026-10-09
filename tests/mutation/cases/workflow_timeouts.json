@@ -1,5 +1,5 @@
 {
-  "target": ".github/workflows/weekly-update.yml",
+  "target": ".github/workflows/nfl-weekly-update.yml",
   "tests": "tests/test_workflow_timeouts.py",
   "cases": [
     {

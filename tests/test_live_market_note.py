@@ -10,7 +10,7 @@ import inspect
 import re
 from pathlib import Path
 
-from src.pipeline.template_parts import read_template
+from src.core.template_parts import read_template
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -24,7 +24,7 @@ def note():
 
 
 def test_the_note_names_the_constant_the_code_uses():
-    from src.pipeline import weekly_update
+    from src.sports.nfl import weekly_update
     src = inspect.getsource(weekly_update.market_prob)
     m = re.search(r'home_spread\s*/\s*([\d.]+)', src)
     assert m, 'market_prob no longer divides the spread by a constant -- rewrite the note'

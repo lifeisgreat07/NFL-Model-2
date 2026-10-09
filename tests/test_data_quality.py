@@ -1,7 +1,7 @@
 """
 Every data-quality rule, run over synthetic data built to trip it.
 
-src/pipeline/data_quality.py stops the weekly run on an ERROR, which on a locking run
+src/sports/nfl/data_quality.py stops the weekly run on an ERROR, which on a locking run
 costs a week of picks. So each rule is proved twice: it stays quiet on a clean
 season, and it fires on data broken in exactly the way it names. A rule that
 has only ever seen clean data has never been shown to check anything.
@@ -14,8 +14,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src.pipeline import data_quality as dq
-from src.pipeline.data_loader import REQUIRED_PBP_COLS
+from src.sports.nfl import data_quality as dq
+from src.sports.nfl.data_loader import REQUIRED_PBP_COLS
 
 SEASON = 2026
 TEAMS = sorted(dq.NFL_TEAMS)
@@ -94,7 +94,7 @@ def test_a_next_week_with_no_starter_listed_is_not_a_finding_here():
 
 def test_the_starter_columns_are_not_required():
     """The decision above, held: a required column's absence is an ERROR."""
-    from src.pipeline.data_loader import QB_SCHEDULE_COLS, REQUIRED_SCHEDULE_COLS
+    from src.sports.nfl.data_loader import QB_SCHEDULE_COLS, REQUIRED_SCHEDULE_COLS
     assert not set(QB_SCHEDULE_COLS) & set(REQUIRED_SCHEDULE_COLS)
 
 
@@ -206,7 +206,7 @@ def test_enforce_does_not_stop_on_warnings():
 def test_the_weekly_run_enforces_the_checks_before_fitting():
     """A check nothing calls checks nothing. It has to run before the models
     are fitted, or a bad week is already inside the picks when it fires."""
-    src = (Path(__file__).parent.parent / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (Path(__file__).parent.parent / 'src' / 'sports' / 'nfl' / 'weekly_update.py').read_text(encoding='utf-8')
     main = src[src.index('def main(season'):]
     assert 'enforce_data_quality(' in main
     # Since Stage 33 item 21 the fit is MODEL_SPECS['model_a'].fit(...),

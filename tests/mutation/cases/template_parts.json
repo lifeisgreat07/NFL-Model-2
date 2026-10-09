@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/template_parts.py",
+  "target": "src/core/template_parts.py",
   "tests": "tests/test_template_parts.py",
   "cases": [
     {

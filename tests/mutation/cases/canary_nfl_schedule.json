@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/canary.py",
+  "target": "src/sports/nfl/canary.py",
   "tests": "tests/test_canary_nfl_schedule.py",
   "cases": [
     {
@@ -11,7 +11,7 @@
     },
     {
       "id": "canary-fails-on-a-missing-network",
-      "why": "every soft gap becomes an error, so week 18's unset kickoffs open 'Nightly canary failing' every night in December -- the alert fatigue that gets alerts ignored.",
+      "why": "every soft gap becomes an error, so week 18's unset kickoffs open 'NFL: Nightly canary failing' every night in December -- the alert fatigue that gets alerts ignored.",
       "find": "        hard = [m for m in missing if m in SHAPE or m.startswith('this week')]",
       "replace": "        hard = list(missing)",
       "expect_caught_by": "test_a_missing_kickoff_or_network_is_only_a_warning"

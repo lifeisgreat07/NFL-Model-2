@@ -22,8 +22,8 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl import generate_dashboard as gd
 
 TEMPLATE = JOINED_TEMPLATE
 WORKFLOW = REPO_ROOT / '.github' / 'workflows' / 'collect-agent-log.yml'
@@ -124,14 +124,14 @@ def test_a_missing_log_is_none_and_not_an_empty_dict(tmp_path, monkeypatch):
     states make opposite claims about the verifier -- "no audits recorded yet"
     versus "audits ran and found nothing" -- and the second is the flattering
     one. None forces the page to choose."""
-    monkeypatch.setattr(gd, 'DATA_DIR', tmp_path)
+    monkeypatch.setattr(gd, 'SHARED_DATA_DIR', tmp_path)
     assert gd.load_agent_log() is None
 
 
 def test_a_present_log_is_read_back(tmp_path, monkeypatch):
     payload = {'summary': {'audits_total': 3}, 'audits': []}
     (tmp_path / 'agent_log.json').write_text(json.dumps(payload), encoding='utf-8')
-    monkeypatch.setattr(gd, 'DATA_DIR', tmp_path)
+    monkeypatch.setattr(gd, 'SHARED_DATA_DIR', tmp_path)
     assert gd.load_agent_log() == payload
 
 

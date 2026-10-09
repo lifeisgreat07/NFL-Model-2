@@ -28,7 +28,7 @@
     },
     {
       "id": "leak-case-study-figure-drifts-from-its-data",
-      "why": "a measured figure in the case study stops matching data/qb_leak_effect.json -- the prose-drifts-from-its-artifact failure every published number here is guarded against.",
+      "why": "a measured figure in the case study stops matching data/nfl/qb_leak_effect.json -- the prose-drifts-from-its-artifact failure every published number here is guarded against.",
       "find": "| Picks that change side | 3 | 1 |",
       "replace": "| Picks that change side | 2 | 1 |",
       "expect_caught_by": "test_the_leak_figures_match_the_file_they_came_from"

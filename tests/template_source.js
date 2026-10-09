@@ -1,7 +1,7 @@
 // The dashboard template, joined from its parts under src/dashboard/, for
 // the JavaScript harnesses (Stage 33 item 26).
 //
-// The JavaScript twin of src/pipeline/template_parts.py: a line in page.html
+// The JavaScript twin of src/core/template_parts.py: a line in page.html
 // that reads exactly {% include "name" %} is replaced by that part's text,
 // and the same things are refused (a stray file, a part included twice, a
 // part without its final newline, a directive not alone on its line). It

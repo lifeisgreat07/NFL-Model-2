@@ -5,7 +5,7 @@ shows the selected team's side of each game rather than the home team's.
 Two separate failures live here, and the first one is the reason the second
 was worth guarding at all.
 
-THE PAGE WAS SILENTLY EMPTY. load_team_history() reads data/team_history.json;
+THE PAGE WAS SILENTLY EMPTY. load_team_history() reads data/nfl/team_history.json;
 the file had been sitting in src/ since it was uploaded. The missing-file
 branch returned {} and said nothing, so every build produced a Team Deep-Dive
 page reading "No team history data available yet" for all 32 teams -- while
@@ -36,9 +36,9 @@ import pytest
 
 REPO_ROOT = Path(__file__).parent.parent
 HARNESS = Path(__file__).parent / 'team_dive_harness.js'
-HISTORY = REPO_ROOT / 'data' / 'team_history.json'
+HISTORY = REPO_ROOT / 'data' / 'nfl' / 'team_history.json'
 GENERATED = REPO_ROOT / 'index.html'
-GENERATOR = REPO_ROOT / 'src' / 'pipeline' / 'generate_dashboard.py'
+GENERATOR = REPO_ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py'
 
 NODE = shutil.which('node')
 
@@ -49,10 +49,10 @@ NODE = shutil.which('node')
 
 def test_the_history_file_is_where_the_loader_reads_it():
     """The whole bug in one assertion. generate_dashboard.load_team_history()
-    reads data/team_history.json; the file lived in src/ and the page was
+    reads data/nfl/team_history.json; the file lived in src/ and the page was
     empty for months without anything saying so."""
     assert HISTORY.exists(), (
-        "data/team_history.json is missing -- the Team Deep-Dive page will "
+        "data/nfl/team_history.json is missing -- the Team Deep-Dive page will "
         "render 'No team history data available yet' for every team, and "
         "nothing else will complain")
     payload = json.loads(HISTORY.read_text())
@@ -68,7 +68,7 @@ def test_the_generator_looks_where_the_file_actually_is():
     orphaned without any test noticing."""
     src = GENERATOR.read_text(encoding='utf-8')
     assert "DATA_DIR / 'team_history.json'" in src, (
-        "load_team_history no longer reads data/team_history.json")
+        "load_team_history no longer reads data/nfl/team_history.json")
 
 
 def test_a_missing_history_file_is_reported_loudly():
@@ -87,7 +87,7 @@ def test_the_generated_page_actually_carries_the_history():
     """The end-to-end check. Everything above can pass while the page still
     ships an empty object, which is what it was doing."""
     if not GENERATED.exists():
-        pytest.skip("index.html absent -- run src/pipeline/generate_dashboard.py")
+        pytest.skip("index.html absent -- run src/sports/nfl/generate_dashboard.py")
     page = GENERATED.read_text(encoding='utf-8')
     assert 'const teamHistory = {}' not in page.replace(' ', ''), (
         "the generated page carries an empty teamHistory, so the Team "

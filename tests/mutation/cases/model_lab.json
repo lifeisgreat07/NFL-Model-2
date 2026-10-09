@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/model_lab.py",
+  "target": "src/sports/nfl/model_lab.py",
   "tests": "tests/test_model_lab.py",
   "cases": [
     {

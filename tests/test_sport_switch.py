@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline.template_parts import read_template
+from src.core.template_parts import read_template
 from src.site.build import SPORTS
 
 ROOT = Path(__file__).resolve().parents[1]

@@ -35,14 +35,14 @@ import json
 import pandas as pd
 import pytest
 
-from src.pipeline import weekly_update as wu
+from src.sports.nfl import weekly_update as wu
 
 
 @pytest.fixture
 def archive(tmp_path, monkeypatch):
     """Point the module's archive directory at a temporary one.
 
-    monkeypatch, so a failing test cannot leave the real data/line_history
+    monkeypatch, so a failing test cannot leave the real data/nfl/line_history
     redirected for whatever runs next in the same session.
     """
     monkeypatch.setattr(wu, 'LINE_HISTORY_DIR', tmp_path)

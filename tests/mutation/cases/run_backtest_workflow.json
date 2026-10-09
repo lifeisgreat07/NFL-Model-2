@@ -1,5 +1,5 @@
 {
-  "target": ".github/workflows/run-backtest.yml",
+  "target": ".github/workflows/nfl-run-backtest.yml",
   "tests": "tests/test_run_backtest_workflow.py",
   "cases": [
     {
@@ -11,8 +11,8 @@
     },
     {
       "id": "backtest-drift-check-run-from-the-wrong-package",
-      "why": "the case loses check_drift's arm, so the workflow looks for src.research.check_drift, which has not existed since Stage 32's packaging.",
-      "find": "            check_drift) package=pipeline ;;\n",
+      "why": "the case loses check_drift's arm, so the workflow looks for src.sports.nfl.research.check_drift, which has not existed since Stage 32's packaging.",
+      "find": "            check_drift) package=sports.nfl ;;\n",
       "replace": "",
       "expect_caught_by": "test_each_option_resolves_to_a_real_module"
     }

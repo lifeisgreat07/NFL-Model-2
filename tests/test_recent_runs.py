@@ -1,6 +1,6 @@
 """The scheduled jobs' last runs on Checking the AI's work (Stage 41 item 4).
 
-src/pipeline/recent_runs.py reads them from GitHub's Actions API in the
+src/sports/nfl/recent_runs.py reads them from GitHub's Actions API in the
 deploy job; the generator puts them in the page as `recentRuns`; app.js's
 renderRecentRuns draws the table. Each half is checked here with no network:
 the reader over a fake API, the renderer in node over the shipped template.
@@ -15,9 +15,9 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline import recent_runs as rr
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl import generate_dashboard as gd
+from src.sports.nfl import recent_runs as rr
 
 REPO = Path(__file__).parent.parent
 WORKFLOWS = REPO / '.github' / 'workflows'
@@ -71,21 +71,21 @@ def test_runs_are_merged_across_the_jobs_newest_first_and_cut_to_thirty():
 
 
 def test_a_finished_run_has_its_minutes_and_a_running_one_has_neither_result_nor_minutes():
-    done = rr.row(run(4, minute=47), 'Weekend refresh')
-    assert done == {'workflow': 'Weekend refresh', 'event': 'schedule', 'conclusion': 'success',
+    done = rr.row(run(4, minute=47), 'NFL weekend refresh')
+    assert done == {'workflow': 'NFL weekend refresh', 'event': 'schedule', 'conclusion': 'success',
                     'started_utc': '2026-10-04T21:47:00Z', 'minutes': 3.5,
                     'url': 'https://github.com/o/r/actions/runs/4'}
-    going = rr.row(run(4, status='in_progress', conclusion=None), 'Weekend refresh')
+    going = rr.row(run(4, status='in_progress', conclusion=None), 'NFL weekend refresh')
     assert going['conclusion'] is None and going['minutes'] is None
 
 
 def test_a_read_writes_the_file_the_build_reads(tmp_path, capsys):
-    get, _ = fake_api({'weekly-update.yml': [run(6)]})
+    get, _ = fake_api({'nfl-weekly-update.yml': [run(6)]})
     out = tmp_path / 'data' / 'recent_runs.json'
     assert rr.main(['--repo', 'o/r', '--out', str(out)], get=get) == 0
     data = json.loads(out.read_text(encoding='utf-8'))
     assert re.fullmatch(r'\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ', data['read_utc'])
-    assert [r['workflow'] for r in data['runs']] == ['Weekly update']
+    assert [r['workflow'] for r in data['runs']] == ['NFL weekly update']
 
 
 def test_a_failed_read_writes_nothing_and_does_not_fail_the_build(tmp_path, capsys):
@@ -103,7 +103,7 @@ def test_the_file_is_never_committed():
 
 def test_the_deploy_reads_the_runs_before_it_builds_and_may_read_actions():
     text = (WORKFLOWS / 'deploy-pages.yml').read_text(encoding='utf-8')
-    read = text.index('python -m src.pipeline.recent_runs')
+    read = text.index('python -m src.sports.nfl.recent_runs')
     build = text.index('python -m src.site.build')
     assert read < build
     assert '--out data/recent_runs.json' in text
@@ -154,7 +154,7 @@ def render(payload):
     return r.stdout
 
 
-ROWS = [rr.row(run(4, minute=47, event='workflow_dispatch'), 'Weekend refresh'),
+ROWS = [rr.row(run(4, minute=47, event='workflow_dispatch'), 'NFL weekend refresh'),
         rr.row(run(3, conclusion='failure'), 'Nightly data check'),
         rr.row(run(2, status='in_progress', conclusion=None), 'Weekly <update>')]
 

@@ -1,5 +1,5 @@
 {
-  "target": "src/pipeline/weekly_update.py",
+  "target": "src/sports/nfl/weekly_update.py",
   "tests": "tests/test_weekly_update_end_to_end.py",
   "cases": [
     {
@@ -19,7 +19,7 @@
     {
       "id": "provenance-override-file-never-named",
       "why": "the override file is never named, so a pick made on a sourced override looks like one made on the schedule's starter.",
-      "find": "        'qb_override_file': (f'data/qb_overrides/{season}_week{week}.json' if qb_overrides else None),",
+      "find": "        'qb_override_file': (f'data/nfl/qb_overrides/{season}_week{week}.json' if qb_overrides else None),",
       "replace": "        'qb_override_file': None,",
       "expect_caught_by": "test_the_override_file_a_pick_used_is_named"
     }

@@ -34,7 +34,7 @@ def timeout(body):
 def test_the_scan_finds_the_jobs_it_must():
     """A scan that finds nothing passes every check below, so name some."""
     found = {(f, j) for f, j, _ in jobs()}
-    for must in [('weekly-update.yml', 'weekly-update'), ('deploy-pages.yml', 'build'),
+    for must in [('nfl-weekly-update.yml', 'weekly-update'), ('deploy-pages.yml', 'build'),
                  ('deploy-pages.yml', 'deploy'), ('booth-regression.yml', 'record'),
                  ('run-tests.yml', 'test')]:
         assert must in found, f'{must} not found by the job scan -- re-anchor it'
@@ -50,5 +50,5 @@ def test_the_weekly_lock_run_fails_well_inside_a_thursday():
     (Thanksgiving's early games are locked on Tuesday). A timeout is only
     useful if a failed run leaves time to dispatch it again before kickoff,
     so it is held to an hour at most."""
-    body = next(b for f, j, b in jobs() if (f, j) == ('weekly-update.yml', 'weekly-update'))
+    body = next(b for f, j, b in jobs() if (f, j) == ('nfl-weekly-update.yml', 'weekly-update'))
     assert timeout(body) and timeout(body) <= 60, timeout(body)

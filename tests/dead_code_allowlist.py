@@ -28,15 +28,15 @@ _.lock_rule
 _.scheduled_runs_utc
 _.key_players
 
-# logging.Handler calls handleError itself (src/pipeline/runlog.py).
+# logging.Handler calls handleError itself (src/core/runlog.py).
 _.handleError
 
 # A read_text override must take the encoding argument its callers pass
-# (src/pipeline/template_parts.py), even though it reads a joined string.
+# (src/core/template_parts.py), even though it reads a joined string.
 _.encoding
 
 # The five Model Lab decisions, the project's own vocabulary written down
-# where the Model Lab is built (src/pipeline/model_lab.py); the page's
+# where the Model Lab is built (src/sports/nfl/model_lab.py); the page's
 # LAB_DECISIONS mirrors it.
 _.DECISIONS
 

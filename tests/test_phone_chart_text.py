@@ -11,7 +11,7 @@ held here by source and by the arithmetic that makes the rule true.
 """
 import re
 
-from src.pipeline.template_parts import read_template
+from src.core.template_parts import read_template
 
 TEMPLATE = read_template()
 PHONE_RENDERED_PX = 300   # the chart's width on a 375px phone, measured 299

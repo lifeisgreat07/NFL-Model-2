@@ -1,7 +1,7 @@
 """The built page drops the template's comments and nothing else (Stage 26
 item 11).
 
-src/pipeline/page_comments.py strips `<!-- -->`, CSS `/* */` and JS `//` and `/* */`
+src/sports/nfl/page_comments.py strips `<!-- -->`, CSS `/* */` and JS `//` and `/* */`
 comments from the template before the build fills it. A stripper that gets
 a string, a template literal or a regex wrong eats code up to the next `*/`
 or end of line, and the page breaks for a visitor.
@@ -28,9 +28,9 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
-from src.pipeline import generate_dashboard as gd
-from src.pipeline import page_comments as pc
-from src.pipeline.template_parts import read_template
+from src.core.template_parts import read_template
+from src.sports.nfl import generate_dashboard as gd
+from src.sports.nfl import page_comments as pc
 
 TEMPLATE = read_template()
 NODE = shutil.which('node')
@@ -204,7 +204,7 @@ def test_the_line_check_can_fail():
 # ---- what the build does with it ----------------------------------------------
 
 def test_the_build_strips_the_template_before_filling_it():
-    src = (ROOT / 'src' / 'pipeline' / 'generate_dashboard.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
     read = src.index('template = read_template()')
     strip = src.index('template = strip_page_comments(template)')
     fill = src.index("html = template.replace(")
@@ -220,6 +220,6 @@ def test_the_page_carries_only_the_agent_log_it_reads():
 
 
 def test_every_data_fill_is_compact():
-    src = (ROOT / 'src' / 'pipeline' / 'generate_dashboard.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
     assert 'indent=' not in src, 'a data fill is indented again'
     assert json.dumps({'a': [1, 2]}, **gd.COMPACT) == '{"a":[1,2]}'

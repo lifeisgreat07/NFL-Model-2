@@ -19,8 +19,8 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE
+from src.sports.nfl import generate_dashboard as gd
 
 TEMPLATE = JOINED_TEMPLATE
 

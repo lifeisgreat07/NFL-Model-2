@@ -21,7 +21,7 @@ import pytest
 
 ROOT = Path(__file__).parent.parent
 
-from src.pipeline.weekly_update import (
+from src.sports.nfl.weekly_update import (
     QBOverrideError,
     load_qb_overrides,
     resolve_starters,
@@ -124,7 +124,7 @@ def test_two_overrides_for_one_team_fail(tmp_path):
 # -------------------------------------------------------------------- wiring
 
 def _main_source():
-    src = (ROOT / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'weekly_update.py').read_text(encoding='utf-8')
     return src[src.index('def main(season'):]
 
 

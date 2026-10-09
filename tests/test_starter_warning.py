@@ -13,7 +13,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import weekly_update as wu
+from src.sports.nfl import weekly_update as wu
 
 
 def week(listed=False):
@@ -48,7 +48,7 @@ def test_it_runs_only_on_the_path_that_locks():
     by name on a run that holds the week. A holding run used to return
     before reaching it; since the Tuesday preview (2026-09-29) it builds
     picks too, so the skip is now explicit."""
-    src = (ROOT / 'src' / 'pipeline' / 'weekly_update.py').read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'sports' / 'nfl' / 'weekly_update.py').read_text(encoding='utf-8')
     main = src[src.index('def main(season'):]
     hold = main.index('preview = not decision.lock')
     call = main.index('no_starters = None if preview else '

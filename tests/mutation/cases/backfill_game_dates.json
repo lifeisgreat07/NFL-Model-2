@@ -1,5 +1,5 @@
 {
-  "target": "src/research/backfill_game_dates.py",
+  "target": "src/sports/nfl/research/backfill_game_dates.py",
   "tests": "tests/test_backfill_game_dates.py",
   "cases": [
     {

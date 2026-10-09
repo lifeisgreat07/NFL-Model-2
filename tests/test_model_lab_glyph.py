@@ -18,9 +18,9 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-from src.pipeline import generate_dashboard as gd
-from src.pipeline import model_lab as ml
-from src.pipeline.template_parts import read_template
+from src.core.template_parts import read_template
+from src.sports.nfl import generate_dashboard as gd
+from src.sports.nfl import model_lab as ml
 
 ROW = re.compile(r'<tr><td>(.*?)</td><td>(.*?)</td><td>(.*?)</td></tr>', re.S)
 

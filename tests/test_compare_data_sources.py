@@ -1,4 +1,4 @@
-"""src/research/compare_data_sources.py does its work when run, and nothing when imported.
+"""src/sports/nfl/research/compare_data_sources.py does its work when run, and nothing when imported.
 
 It is the value-level half of the USE_NFLREADPY revert check (data_loader.py
 checks the columns). Until Stage 31 it ran at import -- two full fetches of
@@ -17,7 +17,7 @@ import pytest
 
 SRC = Path(__file__).resolve().parents[1] / 'src'
 
-from src.pipeline import data_loader
+from src.sports.nfl import data_loader
 
 
 @pytest.fixture
@@ -26,13 +26,13 @@ def no_fetching(monkeypatch):
         raise AssertionError('compare_data_sources fetched data at import')
     for name in ('load_schedule', 'load_plays', 'load_snap_counts'):
         monkeypatch.setattr(data_loader, name, refuse)
-    sys.modules.pop('src.research.compare_data_sources', None)
+    sys.modules.pop('src.sports.nfl.research.compare_data_sources', None)
     yield
-    sys.modules.pop('src.research.compare_data_sources', None)
+    sys.modules.pop('src.sports.nfl.research.compare_data_sources', None)
 
 
 def test_importing_it_fetches_nothing(no_fetching):
-    mod = importlib.import_module('src.research.compare_data_sources')
+    mod = importlib.import_module('src.sports.nfl.research.compare_data_sources')
     assert callable(mod.main)
 
 

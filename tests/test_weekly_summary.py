@@ -1,5 +1,5 @@
 """
-src/pipeline/weekly_summary.py and the summary and alert steps of the Weekly update
+src/sports/nfl/weekly_summary.py and the summary and alert steps of the Weekly update
 workflow.
 
 The summary is built from synthetic changed-file lists, logs and result
@@ -16,9 +16,9 @@ from pathlib import Path
 
 REPO = Path(__file__).parent.parent
 
-from src.pipeline import weekly_summary as ws
+from src.sports.nfl import weekly_summary as ws
 
-WEEKLY = REPO / '.github' / 'workflows' / 'weekly-update.yml'
+WEEKLY = REPO / '.github' / 'workflows' / 'nfl-weekly-update.yml'
 
 
 def game(result, a=1, b=1, m=0):
@@ -30,14 +30,14 @@ def game(result, a=1, b=1, m=0):
 
 
 FILES = {
-    'predictions/2026_week4.json': [{}] * 16,
-    'results/2026_week3_graded.json': [game(1), game(0, a=0), game(1, b=0)] + [game(None)] * 13,
+    'predictions/nfl/2026_week4.json': [{}] * 16,
+    'results/nfl/2026_week3_graded.json': [game(1), game(0, a=0), game(1, b=0)] + [game(None)] * 13,
 }
 
 LOG = """Checking data quality...
   data quality WARNING: 2026 week 3 is complete in the schedule but has no play-by-play yet.
 WARNING: NYJ@NE has already kicked off and gets NO pick.
-Saved 16 predictions to predictions/2026_week4.json
+Saved 16 predictions to predictions/nfl/2026_week4.json
 """
 
 DRIFT = "Model A:\n  No significant drift detected.\n\n=== DRIFT CHECK: OK ===\n"
@@ -52,7 +52,7 @@ def test_a_locked_week_is_named_with_its_game_count():
 
 
 def test_no_new_predictions_file_means_nothing_locked():
-    assert '- No week was locked on this run' in summary(changed=['results/2026_week3_graded.json'])
+    assert '- No week was locked on this run' in summary(changed=['results/nfl/2026_week3_graded.json'])
 
 
 def test_grading_counts_only_games_with_a_result():
@@ -98,23 +98,23 @@ def test_the_drift_verdict_is_carried_over():
 
 def test_changed_paths_reads_git_status_and_normalises_slashes():
     class Done:
-        stdout = '?? predictions/2026_week4.json\n M results\\2026_week3_graded.json\n'
+        stdout = '?? predictions/nfl/2026_week4.json\n M results\\nfl\\2026_week3_graded.json\n'
 
     got = ws.changed_paths(run=lambda *a, **k: Done())
-    assert got == ['predictions/2026_week4.json', 'results/2026_week3_graded.json']
+    assert got == ['predictions/nfl/2026_week4.json', 'results/nfl/2026_week3_graded.json']
 
 
 def test_a_deleted_file_is_removed_not_changed():
     """Both porcelain spellings of a deletion: unstaged (' D') and staged ('D ')."""
     class Done:
-        stdout = (' D predictions/preview/2026_week4.json\n'
-                  'D  predictions/preview/2026_week5.json\n'
-                  '?? predictions/2026_week4.json\n')
+        stdout = (' D predictions/nfl/preview/2026_week4.json\n'
+                  'D  predictions/nfl/preview/2026_week5.json\n'
+                  '?? predictions/nfl/2026_week4.json\n')
 
     run = lambda *a, **k: Done()
-    assert ws.changed_paths(run=run) == ['predictions/2026_week4.json']
-    assert ws.removed_paths(run=run) == ['predictions/preview/2026_week4.json',
-                                         'predictions/preview/2026_week5.json']
+    assert ws.changed_paths(run=run) == ['predictions/nfl/2026_week4.json']
+    assert ws.removed_paths(run=run) == ['predictions/nfl/preview/2026_week4.json',
+                                         'predictions/nfl/preview/2026_week5.json']
 
 
 def test_the_lock_run_that_deletes_its_preview_is_summarised(tmp_path):
@@ -129,13 +129,13 @@ def test_the_lock_run_that_deletes_its_preview_is_summarised(tmp_path):
     git('init', '-q')
     git('config', 'user.email', 'test@example.com')
     git('config', 'user.name', 'test')
-    preview = tmp_path / 'predictions' / 'preview' / '2026_week4.json'
+    preview = tmp_path / 'predictions' / 'nfl' / 'preview' / '2026_week4.json'
     preview.parent.mkdir(parents=True)
     preview.write_text('[{"home": "KC"}]', encoding='utf-8')
     git('add', '-A')
     git('commit', '-q', '-m', 'the Tuesday preview')
     preview.unlink()
-    (tmp_path / 'predictions' / '2026_week4.json').write_text(
+    (tmp_path / 'predictions' / 'nfl' / '2026_week4.json').write_text(
         '[{"home": "KC"}, {"home": "BUF"}]', encoding='utf-8')
 
     changed = ws.changed_paths(repo=tmp_path)
@@ -193,4 +193,4 @@ def test_a_failed_run_raises_the_alert_last():
     step = _step('Raise an alert')
     assert text.index('- name: Raise an alert') > text.index('- name: Commit and push changes')
     assert re.search(r'if:\s*failure\(\)', step)
-    assert '--title "Weekly update failed"' in step and 'weekly-summary.md' in step
+    assert '--title "NFL: Weekly update failed"' in step and 'weekly-summary.md' in step

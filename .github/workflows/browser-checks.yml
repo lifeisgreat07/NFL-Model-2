@@ -24,9 +24,9 @@ on:
     paths:
       - 'src/**'
       - 'assets/**'
-      - 'data/**'
-      - 'predictions/**'
-      - 'results/**'
+      - 'data/nfl/**'
+      - 'predictions/nfl/**'
+      - 'results/nfl/**'
       - 'tests/browser/**'
       - 'requirements.txt'
       - '.github/workflows/browser-checks.yml'
@@ -73,7 +73,7 @@ jobs:
         run: npm install --no-save --no-package-lock axe-core@4.13.0
 
       - name: Build the dashboard
-        run: python -m src.pipeline.generate_dashboard
+        run: python -m src.sports.nfl.generate_dashboard
 
       - name: Prove every rule can fail
         run: python tests/browser/check_page.py --self-test --axe node_modules/axe-core/axe.min.js --tmp "$RUNNER_TEMP"
