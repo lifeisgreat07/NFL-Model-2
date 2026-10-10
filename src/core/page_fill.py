@@ -22,6 +22,8 @@ FONT_DIR = ROOT / 'assets' / 'fonts'
 #: The escape helper the NHL's and NBA's scripts share, included ahead of
 #: each sport's own script in the same <script> element.
 ESCAPE_JS = Path(__file__).with_name('escape.js')
+#: The hash routes the same two scripts share (Stage 68 item 23).
+ROUTES_JS = Path(__file__).with_name('routes.js')
 
 
 def safe_json(obj: Any) -> str:

@@ -33,7 +33,7 @@ from typing import Any
 
 from src.core import colour, pick_proof
 from src.core.page_comments import strip_page_comments
-from src.core.page_fill import ESCAPE_JS, font_faces_css, safe_json
+from src.core.page_fill import ESCAPE_JS, ROUTES_JS, font_faces_css, safe_json
 from src.core.sport import sport_paths
 from src.sports.nhl import colours, teams
 from src.sports.nhl.schedule import current_season
@@ -127,6 +127,7 @@ def render(data: dict[str, Any]) -> str:
     html = (page.replace('{% include "styles.css" %}', SHARED_STYLES.read_text(encoding='utf-8'))
                 .replace('{% include "nhl.css" %}', (TEMPLATE / 'nhl.css').read_text(encoding='utf-8'))
                 .replace('{% include "escape.js" %}', ESCAPE_JS.read_text(encoding='utf-8'))
+                .replace('{% include "routes.js" %}', ROUTES_JS.read_text(encoding='utf-8'))
                 .replace('{% include "body.html" %}', (TEMPLATE / 'body.html').read_text(encoding='utf-8'))
                 .replace('{% include "nhl.js" %}', (TEMPLATE / 'nhl.js').read_text(encoding='utf-8')))
     # Comments stay in the templates for whoever reads them; the page a

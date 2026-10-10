@@ -62,9 +62,14 @@ def test_new_here_asks_option_cs_three_questions_closed():
 
 def test_the_footer_links_reach_real_pages():
     links = re.findall(r'<a href="([^"]+)">', re.search(r'<footer class="home-links">(.*?)</footer>', PAGE, re.S).group(1))
-    assert links == ['nfl/#method', 'nfl/#reliability', 'https://github.com/lifeisgreat07/NFL-Model-2']
+    assert links == ['nfl/#method', 'nhl/#method', 'nba/#method', 'nfl/#reliability',
+                     'https://github.com/lifeisgreat07/NFL-Model-2']
     for page in ('method', 'reliability'):
         assert f'id="page-{page}"' in NFL_BODY, f'the NFL board has no {page} page to land on'
+    # The NHL's and NBA's Methodology since Stage 68 item 23 (their pages answer to hash routes).
+    for sport in ('nhl', 'nba'):
+        body = (REPO / 'src' / 'sports' / sport / 'pages' / 'body.html').read_text(encoding='utf-8')
+        assert 'id="page-method"' in body, f'the {sport.upper()} has no method page to land on'
 
 
 def test_the_theme_button_shares_every_page_s_key():

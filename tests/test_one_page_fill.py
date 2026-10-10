@@ -41,7 +41,9 @@ def test_the_sport_scripts_share_one_escape(sport):
     js = (ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.js').read_text(encoding='utf-8')
     assert 'function escapeHtml' not in js
     page = (ROOT / 'src' / 'sports' / sport / 'pages' / 'page.html').read_text(encoding='utf-8')
-    assert f'<script>\n{{% include "escape.js" %}}\n{{% include "{sport}.js" %}}\n' in page.replace('\r\n', '\n')
+    page = page.replace('\r\n', '\n')
+    assert '<script>\n{% include "escape.js" %}\n' in page
+    assert page.index('{% include "escape.js" %}') < page.index(f'{{% include "{sport}.js" %}}')
 
 
 @pytest.mark.parametrize('sport', ('nhl', 'nba'))

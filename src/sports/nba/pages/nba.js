@@ -645,4 +645,5 @@ renderBoard();
 renderModelLab();
 renderMethod();
 renderReliability();
+installRoutes(showPage);
 document.body.classList.remove('is-entering');
