@@ -1,0 +1,27 @@
+{
+  "target": ".github/workflows/booth-pr-audit.yml",
+  "tests": "tests/test_booth_fork_guard.py",
+  "cases": [
+    {
+      "id": "fork-guard-passes-forks",
+      "why": "the guard compares against true, so a PR GitHub cannot describe passes as if it were ours",
+      "find": "          if [ \"$cross\" != \"false\" ]; then\n",
+      "replace": "          if [ \"$cross\" = \"true\" ]; then\n",
+      "expect_caught_by": "test_it_fails_unless_github_says_same_repository"
+    },
+    {
+      "id": "fork-guard-never-runs",
+      "why": "the guard runs only on pull_request events, where it is not needed, and never on a dispatch",
+      "find": "        if: github.event_name == 'workflow_dispatch'\n        env:\n          GH_TOKEN: ${{ github.token }}\n          PR: ${{ inputs.pr_number }}\n",
+      "replace": "        if: github.event_name == 'pull_request'\n        env:\n          GH_TOKEN: ${{ github.token }}\n          PR: ${{ inputs.pr_number }}\n",
+      "expect_caught_by": "test_the_fork_guard_is_the_first_step_and_runs_on_a_dispatch"
+    },
+    {
+      "id": "fork-guard-free-text-input",
+      "why": "the PR number goes back to free text, which reaches Booth's prompt as typed",
+      "find": "        required: true\n        type: number\n",
+      "replace": "        required: true\n        type: string\n",
+      "expect_caught_by": "test_the_dispatch_input_is_a_number"
+    }
+  ]
+}
