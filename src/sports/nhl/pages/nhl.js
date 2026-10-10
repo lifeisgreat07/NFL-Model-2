@@ -696,7 +696,7 @@ document.querySelectorAll('#theme-toggle, .topbar-theme').forEach(btn => btn.add
 }));
 
 document.getElementById('board-updated').textContent = `Updated ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})} ET`;
-document.getElementById('built-line').textContent = `Schedule as of ${DATA.schedule_as_of || 'unknown'}`;
+document.getElementById('built-line').textContent = `Updated ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})} ET`;
 themeLabel();
 renderBoard();
 renderStandings();

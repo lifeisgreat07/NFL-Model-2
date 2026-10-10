@@ -12,8 +12,8 @@
     {
       "id": "provenance-loses-its-time-zone",
       "why": "the time is printed without UTC. A reader in New York reads 19:11 as their own evening, four hours off, and nothing on the page says otherwise.",
-      "find": "             f\"{now.strftime('%H:%M')} UTC\")",
-      "replace": "             f\"{now.strftime('%H:%M')}\")",
+      "find": "             f\"{hour}:{et.minute:02d} {'PM' if et.hour >= 12 else 'AM'} ET\")",
+      "replace": "             f\"{hour}:{et.minute:02d} {'PM' if et.hour >= 12 else 'AM'}\")",
       "expect_caught_by": "test_the_updated_line_names_its_time_zone"
     },
     {

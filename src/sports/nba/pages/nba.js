@@ -576,7 +576,7 @@ document.querySelectorAll('#theme-toggle, .topbar-theme').forEach(btn => btn.add
   renderBoard();
 }));
 
-document.getElementById('built-line').textContent = `Built ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', year: 'numeric'})}`;
+document.getElementById('built-line').textContent = `Updated ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})} ET`;
 document.getElementById('board-updated').textContent = `Updated ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})} ET${BD.schedule_as_of ? `, schedule as of ${BD.schedule_as_of}` : ''}`;
 themeLabel();
 renderBoard();

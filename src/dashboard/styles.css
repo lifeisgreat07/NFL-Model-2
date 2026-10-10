@@ -1725,3 +1725,8 @@
     .srs-bar-fill{background:Highlight !important;}
     .model-chip, .insight-chip, .badge, .btn-chip, .sport-switch a{border:1px solid CanvasText;}
   }
+/* Stage 68 item 18c (U20): the theme button showed a sun in both themes.
+   Dark shows the sun (the button turns the page light), light the moon. */
+.icon-moon{display:none;}
+[data-theme="light"] .icon-sun{display:none;}
+[data-theme="light"] .icon-moon{display:inline-block;}
