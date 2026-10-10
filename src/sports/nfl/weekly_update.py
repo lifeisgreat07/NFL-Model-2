@@ -1159,6 +1159,9 @@ def predict_week(week_games: pd.DataFrame, started: set[tuple[str, str]], curren
             'gametime_et': str(gametime) if pd.notna(gametime) else None,
             'weekday': str(weekday) if pd.notna(weekday) else None,
             'model_version': MODEL_VERSION,
+            # Stage 68 item 27 (E26): regular season or postseason, as the
+            # NHL's and NBA's picks say, read from the schedule row.
+            'game_type': str(g['game_type']) if pd.notna(g.get('game_type')) else None,
             'off_matchup': round(off_matchup, 4), 'def_matchup': round(def_matchup, 4),
             'qb_matchup': round(qb_matchup, 4),
             'qb_change_diff': qb_change_diff,

@@ -47,6 +47,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nhl import (
     backtest,
@@ -264,6 +265,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     if decision.lock:
         table = ratings.features(games, h, [k]).merge(games[['game_id', 'home_prob']], on='game_id', how='left')
         model_a, model_b = fit_models(table, k)
+        trained = training(table, first)
         lines, missing = market.parse(json.loads(get(market.SOURCE)), now)
         for m in missing:
             print(f'market: {m}')
@@ -301,7 +303,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             injury_list = None if injury_table is None else injuries.for_game(
                 injury_table[0], injury_table[1], g['home'], g['away'], now)
             record = pick_record(g, feats, k, model_a, model_b, line_by_id.get(str(g['game_id'])), notes, now,
-                                 injury_list)
+                                 injury_list) | trained
             print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id'])
         print(f'standings: {write_standings(sched, games, rated, model_a, k, str(today.date()), season)}')
     graded = grade(folder, sched)
