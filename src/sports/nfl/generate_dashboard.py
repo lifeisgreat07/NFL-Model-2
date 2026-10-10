@@ -958,12 +958,18 @@ def provenance_line(model_version: str = MODEL_VERSION,
 def updated_line(now: datetime) -> str:
     """When the page was built, for the Week Board's header (Stage 13).
 
-    Read from the clock in UTC and labelled so, because a time whose zone
-    is not stated is not a time. Carried in a <time> element so the
-    instant is machine-readable as well as printed.
+    Printed in US Eastern and labelled so, as every time on the board is
+    (Stage 68 item 18c, the 2026-10-09 audit's U18: this line said UTC
+    beside cards that say ET), because a time whose zone is not stated is
+    not a time. The <time> element keeps the UTC instant machine-readable.
+    pandas does the conversion: zoneinfo needs the tzdata package, which
+    this project does not install.
     """
-    stamp = (f"{MONTHS[now.month - 1]} {now.day}, {now.year}, "
-             f"{now.strftime('%H:%M')} UTC")
+    import pandas as pd
+    et = pd.Timestamp(now).tz_convert('America/New_York')
+    hour = et.hour % 12 or 12
+    stamp = (f"{MONTHS[et.month - 1]} {et.day}, {et.year}, "
+             f"{hour}:{et.minute:02d} {'PM' if et.hour >= 12 else 'AM'} ET")
     iso = now.strftime('%Y-%m-%dT%H:%MZ')
     return f'<time datetime="{iso}">Updated {stamp}.</time>'
 

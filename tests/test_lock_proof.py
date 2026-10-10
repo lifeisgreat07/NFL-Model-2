@@ -123,7 +123,7 @@ GAMES = [{'gameday': '2026-10-01', 'gametime_et': '20:15'}, {'gameday': '2026-10
 def test_the_line_names_the_last_change_before_kickoff_and_the_first_save():
     line = page_line([commit('2450baa', '2026-09-29T18:59:32Z'), commit('c80cb28', '2026-10-01T17:20:56Z')], GAMES)
     assert 'last changed in commit <a href="https://github.com/o/r/commit/c80cb28"' in line
-    assert 'Thu, Oct 1, 17:20 UTC, 6 hours before' in line, line
+    assert 'Thu, Oct 1, 1:20 PM ET, 6 hours before' in line, line  # ET since Stage 68 item 18c (U18)
     assert 'First saved in <a href="https://github.com/o/r/commit/2450baa"' in line
     assert 'after kickoff' not in line
 

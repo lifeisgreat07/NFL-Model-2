@@ -942,8 +942,9 @@ if(ratingsSearchEl){
    src/sports/nfl/lock_proof.py. Empty when there is nothing to say. */
 function lockUtc(ms){
   const d = new Date(ms);
-  return d.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC'})
-    + ', ' + d.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit', timeZone: 'UTC'}) + ' UTC';
+  // ET, as every other time on the board (Stage 68 item 18c, U18).
+  return d.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/New_York'})
+    + ', ' + d.toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York'}) + ' ET';
 }
 function lockCommitLink(c){
   return `<a href="${escapeHtml(c.url)}" target="_blank" rel="noopener">${escapeHtml(c.short)}</a>`;

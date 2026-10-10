@@ -60,13 +60,14 @@ def test_the_version_and_first_season_come_from_config():
 
 def test_the_updated_line_names_its_time_zone():
     line = gd.updated_line(WHEN)
-    assert _text(line) == 'Updated Sep 26, 2026, 19:11 UTC.'
+    assert _text(line) == 'Updated Sep 26, 2026, 3:11 PM ET.'  # ET since Stage 68 item 18c (U18)
     assert '<time datetime="2026-09-26T19:11Z">' in line, 'the instant is not machine-readable'
 
 
-def test_a_morning_build_keeps_its_leading_zero():
+def test_a_morning_build_keeps_its_minutes_and_its_day():
     early = datetime(2026, 1, 4, 6, 5, tzinfo=UTC)
-    assert 'Updated Jan 4, 2026, 06:05 UTC.' in _text(gd.updated_line(early))
+    assert 'Updated Jan 4, 2026, 1:05 AM ET.' in _text(gd.updated_line(early))
+    assert 'Updated Jan 3, 2026, 11:30 PM ET.' in _text(gd.updated_line(datetime(2026, 1, 4, 4, 30, tzinfo=UTC)))
     assert 'datetime="2026-01-04T06:05Z"' in gd.updated_line(early)
 
 

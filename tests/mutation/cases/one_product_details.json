@@ -1,0 +1,29 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_one_product_details.py",
+ "cases": [
+  {
+   "id": "details-sun-in-both-themes",
+   "why": "the light theme shows the sun again",
+   "find": "[data-theme=\"light\"] .icon-sun{display:none;}\n",
+   "replace": "",
+   "expect_caught_by": "test_every_theme_button_has_a_sun_and_a_moon"
+  },
+  {
+   "id": "details-nfl-proof-back-to-utc",
+   "target": "src/dashboard/app.js",
+   "why": "the NFL's proof times go back to UTC beside ET times",
+   "find": "  return d.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/New_York'})",
+   "replace": "  return d.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC'})",
+   "expect_caught_by": "test_the_nfl_lock_proof_reads_in_et"
+  },
+  {
+   "id": "details-nba-pick-model-unsaid",
+   "target": "src/sports/nba/pages/body.html",
+   "why": "nothing says the pick is Model B's when priced",
+   "find": " The pick is Model B&#39;s when the market posted a price, and Model A&#39;s when it did not.",
+   "replace": "",
+   "expect_caught_by": "test_the_foot_says_when_in_et_and_the_board_says_which_model_picks"
+  }
+ ]
+}
