@@ -49,6 +49,13 @@
   .nba-row-pick{text-align:right;}
   .nba-row-pick .nba-no-price{display:block;}
 }
+/* Before the first pick (Stage 68 item 6). */
+.nba-preseason{margin:0 0 var(--s3); padding:var(--s3); border:1px solid var(--border); border-radius:var(--r-2, 10px);
+  background:var(--surface); font-size:var(--fs-14); color:var(--text-2);}
+.nba-preseason p{margin:0 0 var(--s2);}
+.nba-preseason b{color:var(--text);}
+.nba-to-lab{background:none; border:0; padding:0; min-height:24px; font:inherit; color:var(--accent);
+  text-decoration:underline; cursor:pointer;}
 .game-card.nba-not-saved{opacity:.92;}
 .game-card.nba-not-saved .nba-wait-note{font-size:var(--fs-13); color:var(--text-2);}
 .nba-card-status{font-size:var(--fs-12); font-weight:600; color:var(--text-2);}
