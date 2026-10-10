@@ -124,6 +124,16 @@ jobs:
       - name: Check the NBA's page
         run: python tests/browser/check_page.py "$RUNNER_TEMP/states/nba.html" --axe node_modules/axe-core/axe.min.js
 
+      # Stage 68 item 5: no cell of a day-board row drawn over another, at
+      # 320, 390 and 1280 px in both themes, with the clock before opening
+      # night so every row carries its "Locks ..." label. It proves itself
+      # first on a copy with the old fixed column written back.
+      - name: Prove the row check can fail
+        run: python tests/browser/check_rows.py --self-test --tmp "$RUNNER_TEMP"
+
+      - name: Check the NBA's rows
+        run: python tests/browser/check_rows.py "$RUNNER_TEMP/states/nba.html"
+
       # Stage 59: the site's home page, built by the real builder from the
       # committed files (src/site/home.py).
       - name: Build the home page

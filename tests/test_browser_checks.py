@@ -199,6 +199,28 @@ def test_the_nhl_day_board_is_clicked_through_after_its_check_proves_itself(work
     assert build < check and selftest < check
 
 
+def test_the_nba_rows_are_measured_after_the_check_proves_itself(workflow):
+    """Stage 68 item 5. check_rows.py measures every cell of every NBA row
+    at 320, 390 and 1280 px, after a self-test on a copy with the old
+    fixed column written back, over the page the NBA build step writes."""
+    runs = step_runs(workflow)
+    build = next((i for i, r in enumerate(runs) if 'src.sports.nba.site --out "$RUNNER_TEMP/states/nba.html"' in r), None)
+    selftest = next((i for i, r in enumerate(runs) if 'check_rows.py --self-test' in r), None)
+    check = next((i for i, r in enumerate(runs) if 'check_rows.py "$RUNNER_TEMP/states/nba.html"' in r), None)
+    assert None not in (build, selftest, check), 'the NBA row check, its self-test or the NBA build is missing'
+    assert build < check and selftest < check
+
+
+def test_the_row_check_breaks_the_rule_the_stylesheet_has():
+    """The self-test writes OLD back over NEW; NEW must be the stylesheet's
+    rule and OLD must be gone from it, or the self-test proves nothing."""
+    src = (ROOT / 'tests' / 'browser' / 'check_rows.py').read_text(encoding='utf-8')
+    css = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.css').read_text(encoding='utf-8')
+    new = src.split("NEW = '", 1)[1].split("'", 1)[0]
+    old = src.split("OLD = '", 1)[1].split("'", 1)[0]
+    assert css.count(new) == 1 and old not in css
+
+
 def test_the_states_builder_runs_by_path():
     """browser-checks.yml and tasks.py run tests/browser/build_states.py by
     path, so Python puts tests/browser/ on sys.path, not the root, and its
