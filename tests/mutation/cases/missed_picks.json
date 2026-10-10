@@ -1,0 +1,61 @@
+{
+  "target": "src/sports/nhl/daily.py",
+  "tests": "tests/test_missed_picks.py",
+  "cases": [
+    {
+      "id": "missed-nhl-counts-saved-games",
+      "why": "every started game is reported missed, saved or not, and the alert cries wolf twice a day",
+      "find": "    return sorted(str(g) for g in started if not (folder / f'{g}.json').exists())\n",
+      "replace": "    return sorted(str(g) for g in started)\n",
+      "expect_caught_by": "test_a_started_game_with_no_pick_file_is_missed"
+    },
+    {
+      "id": "missed-nba-never-reported",
+      "target": "src/sports/nba/daily.py",
+      "why": "the NBA's missed games are found and never printed, so the alert has nothing to read",
+      "find": "    return f'MISSED PICKS: {len(lost)} started with no saved pick: {\", \".join(lost)}' if lost else None\n",
+      "replace": "    return None\n",
+      "expect_caught_by": "test_main_prints_the_line_the_alert_reads"
+    },
+    {
+      "id": "missed-nba-alert-reads-the-wrong-log",
+      "target": ".github/workflows/nba-daily.yml",
+      "why": "the NBA's alert greps the NHL's log, which this job never writes",
+      "find": "          if grep -q '^MISSED PICKS:' nba-daily.log; then\n",
+      "replace": "          if grep -q '^MISSED PICKS:' nhl-daily.log; then\n",
+      "expect_caught_by": "test_the_workflow_raises_the_alert_on_that_line"
+    },
+    {
+      "id": "missed-delay-threshold-drifts",
+      "target": "src/core/start_delay.py",
+      "why": "the daily runs are warned at two hours while their lock has one hour of slack",
+      "find": "WARN_HOURS_FOR = {'nhl-daily.yml': 1, 'nba-daily.yml': 1}\n",
+      "replace": "WARN_HOURS_FOR = {'nhl-daily.yml': 2, 'nba-daily.yml': 1}\n",
+      "expect_caught_by": "test_a_daily_run_is_warned_at_its_lock_slack"
+    },
+    {
+      "id": "missed-delay-ignores-fired-line",
+      "target": "src/core/start_delay.py",
+      "why": "a late copy of the 14:00 run is measured against the 21:00 slot again and looks on time",
+      "find": "    if event == 'schedule' and schedule in exprs:\n        exprs = [schedule]\n",
+      "replace": "",
+      "expect_caught_by": "test_a_late_copy_is_measured_against_its_own_slot"
+    },
+    {
+      "id": "missed-delay-main-drops-threshold",
+      "target": "src/core/start_delay.py",
+      "why": "main computes the daily threshold and then warns at the NFL's seven hours anyway",
+      "find": "                        warn_hours)\n",
+      "replace": "                        WARN_HOURS)\n",
+      "expect_caught_by": "test_main_reads_the_schedule_and_the_threshold"
+    },
+    {
+      "id": "missed-nhl-workflow-no-schedule",
+      "target": ".github/workflows/nhl-daily.yml",
+      "why": "the NHL workflow stops passing the cron line that fired, so the fix never reaches a real run",
+      "find": "          CRON_SCHEDULE: ${{ github.event.schedule }}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_daily_workflow_passes_the_cron_line_that_fired"
+    }
+  ]
+}

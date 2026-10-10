@@ -164,6 +164,22 @@ def save_once(record: dict[str, Any], folder: Path) -> bool:
     return True
 
 
+def missed(started: tuple[str, ...] | list[str], folder: Path) -> list[str]:
+    """Games of this slate that have started with no pick saved for them.
+
+    A pick is written once, before its game, so one of these can never be
+    made now; the daily workflow raises an alert on the line main prints
+    (Stage 68 item 3, the 2026-10-09 audit)."""
+    return sorted(str(g) for g in started if not (folder / f'{g}.json').exists())
+
+
+def missed_line(started: tuple[str, ...] | list[str], folder: Path) -> str | None:
+    """The line the workflow's alert step greps for, or None when nothing
+    was missed."""
+    lost = missed(started, folder)
+    return f'MISSED PICKS: {len(lost)} started with no saved pick: {", ".join(lost)}' if lost else None
+
+
 def grade(folder: Path, sched: pd.DataFrame) -> list[dict[str, Any]]:
     """One row per saved pick: correct, wrong, cancelled, or pending."""
     by_id = sched.set_index('game_id')
@@ -285,6 +301,9 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
          'baseline': spec['baseline']['value'], 'flagged': flagged}, indent=1) + '\n', encoding='utf-8')
     if flagged:
         print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
+    lost = missed_line(decision.started, folder)
+    if lost:
+        print(lost)
     print(f'lock {len(decision.lock)}, hold {len(decision.hold)}, started {len(decision.started)}; '
           f'graded {sum(r["result"] in ("correct", "wrong") for r in graded)}')
     return 0

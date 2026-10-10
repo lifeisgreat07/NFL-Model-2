@@ -38,6 +38,11 @@ from pathlib import Path
 
 #: A start this late or later is warned about.
 WARN_HOURS = 7
+#: The daily sports save a game's pick at the last run before it starts,
+#: with an hour of slack (`SLACK` in src/sports/<sport>/lock.py), so a run
+#: more than an hour late can miss a game the run before left to it. They
+#: are warned at that hour, not at the NFL's seven (Stage 68 item 3).
+WARN_HOURS_FOR = {'nhl-daily.yml': 1, 'nba-daily.yml': 1}
 #: A dispatched run this long after the last slot is not serving it.
 OFF_SLOT_HOURS = 12
 #: How far back to look for a slot: every workflow here runs at least weekly.
@@ -135,11 +140,19 @@ def hm(delta: timedelta) -> str:
     return f'{minutes // 60}h {minutes % 60:02d}m'
 
 
-def report(workflow_text: str, now: datetime, event: str | None) -> tuple[str, bool]:
-    """The summary line, and whether it is a warning."""
+def report(workflow_text: str, now: datetime, event: str | None,
+           schedule: str | None = None, warn_hours: int = WARN_HOURS) -> tuple[str, bool]:
+    """The summary line, and whether it is a warning.
+
+    `schedule` is the cron line that fired a scheduled run
+    (`github.event.schedule`). Given, the run is measured against that
+    line's own latest slot: a 14:00 run GitHub starts at 21:20 is seven
+    hours late, not twenty minutes after the 21:00 slot."""
     exprs = crons(workflow_text)
     if not exprs:
         return 'Start delay: this workflow has no cron line to measure against.', False
+    if event == 'schedule' and schedule in exprs:
+        exprs = [schedule]
     slot = latest_slot(exprs, now)
     if slot is None:
         return f'Start delay: no slot in the last {LOOKBACK.days} days for {exprs}.', True
@@ -150,7 +163,7 @@ def report(workflow_text: str, now: datetime, event: str | None) -> tuple[str, b
         return (f"Start delay: none; started by {event or 'hand'} {hm(delay)} after the last slot "
                 f"({at:%a %H:%M} UTC), so it serves no slot."), False
     line = (f"Start delay: {hm(delay)} after the {at:%a %H:%M} UTC slot (cron '{expr}'){by}.")
-    return line, delay >= timedelta(hours=WARN_HOURS)
+    return line, delay >= timedelta(hours=warn_hours)
 
 
 def main(argv: list[str] | None = None, now: datetime | None = None) -> int:
@@ -158,15 +171,17 @@ def main(argv: list[str] | None = None, now: datetime | None = None) -> int:
     if len(args) != 1:
         print('usage: python -m src.core.start_delay .github/workflows/<file>.yml')
         return 2
+    warn_hours = WARN_HOURS_FOR.get(Path(args[0]).name, WARN_HOURS)
     line, warn = report(Path(args[0]).read_text(encoding='utf-8'), now or datetime.now(UTC),
-                        os.environ.get('GITHUB_EVENT_NAME'))
+                        os.environ.get('GITHUB_EVENT_NAME'), os.environ.get('CRON_SCHEDULE') or None,
+                        warn_hours)
     print(line)
     if warn:
-        print(f'::warning title=Late start::{line} Warned at {WARN_HOURS} hours.')
+        print(f'::warning title=Late start::{line} Warned at {warn_hours} hours.')
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary:
         with open(summary, 'a', encoding='utf-8') as fh:
-            fh.write(line + (f' **Late: {WARN_HOURS} hours or more.**' if warn else '') + '\n')
+            fh.write(line + (f' **Late: {warn_hours} hours or more.**' if warn else '') + '\n')
     return 0
 
 

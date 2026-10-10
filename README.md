@@ -232,6 +232,7 @@ The environment variables the code reads, all optional:
 | `GITHUB_OUTPUT` | Read by `src/sports/nfl/slot_guard.py`: where it writes `run` and `slot` for the Weekly update's later steps. Unset, it prints its decision and writes nothing. | GitHub Actions, on every runner. |
 | `GITHUB_STEP_SUMMARY` | Read by `src/sports/nfl/slot_guard.py`: a skipped slot is noted in the run's summary. Read by `src/core/start_delay.py`: each scheduled run's start delay is written there. Unset, nothing is noted. | GitHub Actions, on every runner. |
 | `GITHUB_EVENT_NAME` | Read by `src/core/start_delay.py`: a run GitHub's cron started always serves a slot; a dispatched one serves it only within twelve hours. Unset, the run is measured as dispatched. | GitHub Actions, on every runner. |
+| `CRON_SCHEDULE` | Read by `src/core/start_delay.py`: the cron line that fired a scheduled run (the NHL and NBA daily workflows pass `github.event.schedule`), so a late copy of one slot is measured against that slot, not the next. Unset or empty, the latest slot of any line is used. | The NHL and NBA daily workflows' start-delay step. |
 | `GITHUB_ACTIONS` | Read by `src/sports/nba/data_probe.py`: on a runner it adds one notice line summing up every source, readable from the run's annotations. Unset, the probe only prints. | GitHub Actions, on every runner. |
 | `GITHUB_RUN_ID` | Read by `src/sports/nfl/slot_guard.py`: stored with the slot it marks as served. Unset, the run id is stored as null. | GitHub Actions, on every runner. |
 
