@@ -1526,3 +1526,31 @@ Moved from CLAUDE.md's "Environment and workflow" list.
   after the lock. **Describe a file the pipeline will delete in words, not
   as a backticked path**, and run the suite on `main` after any scheduled
   run that writes or deletes tracked files before building on it.
+
+## 2026-10-10, the Stage 68 night
+
+- **Booth's report check fails a clean audit when a disclosure sits outside
+  the claims.** A "not verifiable here" paragraph is counted in the report's
+  prose but not in its verdict block, and "Fail if Booth posted no report"
+  calls the report self-contradictory (#389, #391, #417). Write it as a
+  bullet in Evidence: "Expected UNVERIFIABLE, to be counted as such in the
+  report and its block: ...". The check's own message says to read the
+  report and decide by hand; a re-run usually clears it.
+- **Read the prep suite's log before opening the PR.** `prep_branch.ps1`
+  starts the suite and the scope and returns; three branches (items 27, 28,
+  29) were ready for a PR with a failed suite nobody had read.
+- **A scope run's worktree is shared.** The session archive's scope runner resets `mutseq`; start
+  it while another runner is still on its last case and that runner's
+  restore writes its file into the new head. Check `runner_free.ps1` first,
+  every time, including after a long scope that "should be done".
+- **Everything in `src/core` is held to `mypy --strict`**
+  (`tests/test_sport_isolation.py`). A module moved there from a sport needs
+  annotations in the same commit.
+- **The Model Lab reads every `experiments/<sport>/stage*/registry.json` as
+  a hypothesis registry.** A measurement registration is not one; it lives
+  under `experiments/<sport>/measurements/`.
+- **No time zones in `zoneinfo` on the Windows machine** (no `tzdata`).
+  Convert with pandas (`tz_convert`).
+- **`git push --force-with-lease` with no upstream pushes nothing, quietly.**
+  A worktree made with `git worktree add -b` has no upstream until the
+  first `push -u`; check `git status -sb` after the first push.

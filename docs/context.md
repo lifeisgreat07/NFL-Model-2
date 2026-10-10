@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-10, 04:00 UTC (session 1010a: Stage 68 written; #380 merged)
+Last updated: 2026-10-10, 11:30 UTC (session 1010a: Stage 68 done, #380 to #421)
 
 ---
 
@@ -36,20 +36,24 @@ is the first week picked under it; earlier saved picks keep their edge and
 their cards say so.
 
 **Saturday 05:17 UTC weekend refresh** (#371) is in, with GitHub's fallback
-line; Mark cloned the cron-job.org job. **Stage 39 item 4** (#372) says on
+line; Mark cloned the cron-job.org job. It did **not** run on Sat 10-10: no
+cron-job.org dispatch came, and GitHub's fallback had not fired by 10:20 UTC
+either (Friday's dispatch worked). Mark checks the job's enabled state and
+history; a hand dispatch of "NFL weekend refresh" covers the week. **Stage 39 item 4** (#372) says on
 the Methodology page that ratings use regular-season plays and freeze
 through the playoffs.
 
 **Tuesday 10-13:** week 5 is graded; Stage 21 (`s21-insights`) can start,
 rebased across #351's moves. 11:00 UTC is the slot guard's first real test.
 
-**Stage 68 (the 2026-10-09 Fable audit, 29 items)** is the queue between the
-dated checks: item 1 (pipefail, #380) is merged; items 4 to 6 must land
-before 10-19/10-20. Text at the end of `docs/history/09-more-sports.md`;
-every finding's verdict is in the Audit Response Log.
+**Stage 68 (the 2026-10-09 Fable audit) is done:** 36 items merged, #380 to #421, item 33 (shared font
+files, U44) is later, Mark's call. The item-to-PR map is at the end of
+`docs/history/09-more-sports.md`; every finding's verdict is in the Audit Response Log. Mark
+reviews #387, #389 and #401, merged overnight on NEEDS HUMAN REVIEW.
 
-**Single next action:** Stage 68 item 2 (push retry); Stage 21 once week 5 is graded (Tue 10-13); before
-that, check the first NBA daily run and the Saturday refresh slot's first run.
+**Single next action:** Stage 21 once week 5 is graded (Tue 10-13). Before that: find why the
+Saturday 05:17 UTC weekend refresh did not run on 10-10 (no cron-job.org dispatch came), and watch
+the first NBA daily run on the new head. Week 7 locks Thu 10-15 under v2.6; NBA opening night 10-20.
 
 ## Open work, and what each is waiting on
 
@@ -60,7 +64,7 @@ that, check the first NBA daily run and the Saturday refresh slot's first run.
 | Stage 39 | Items 2, 3, 4, 7 merged | 2's `game_type`; 1's rest; 5 in December; 6 |
 | Stage 42 | Item 1 merged (#358) | Its other items |
 | Stage 43; 44 | Open | Nothing |
-| Stage 68 (Fable audit) | Item 1 merged (#380) | Items 2-29 in order; Mark on E10, E15, U1-U3, U11, U27, U29-U36, U44, E22/24/25/28 |
+| Stage 68 (Fable audit) | Done (#380-#421) | Item 33 (U44) later; Mark's review of #387, #389, #401 |
 | Stage 40 | Not to be touched | Mark |
 
 ## Queued, in order

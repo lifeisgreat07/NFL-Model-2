@@ -391,70 +391,86 @@ per item; Stage 40 is not touched.
 1. The NHL and NBA daily runs keep pipefail through `tee`, with a scan of
    every `| tee` in every workflow (E1). Done, #380.
 2. The daily runs retry a refused push (three tries, rebasing between) and
-   keep the picks as an artifact when the run fails (E2).
+   keep the picks as an artifact when the run fails (E2). Done, #381.
 3. A started game with no saved pick raises the alert; the start delay is
    measured against the slot the run belonged to, with a threshold that
-   fits a daily sport (E3).
+   fits a daily sport (E3). Done, #382.
 4. `ubuntu-24.04` pinned on the writers, the canaries and the browser
-   checks until a green NBA week; then unpinned (E6). Before 10-19.
+   checks until a green NBA week; then unpinned (E6). Before 10-19. Done, #383.
 5. The NBA's phone rows stop drawing the pick over "Locks 5:30 PM" (U25,
-   NBA only: the NHL's labels fit). Before 10-20.
+   NBA only: the NHL's labels fit). Before 10-20. Done, #384.
 6. The NBA explains itself before opening night: the home card's "Live
    from" status keyed on no picks, a pre-season panel on the board with
    the backtest's H3 REJECT, and the opening tip-off read from the
    schedule rather than three hard-coded times (U4, U23, U24, U38). Before
-   10-20.
-7. Booth's dispatch refuses a fork PR (E11).
+   10-20. Done, #386.
+7. Booth's dispatch refuses a fork PR (E11). Done, #387.
 8. NHL/NBA team abbreviations checked against the league's list when the
-   schedule is built, and escaped where the page draws them (E12).
-9. The Pages deploy watches every sport's data folders (E4).
+   schedule is built, and escaped where the page draws them (E12). Done, #388.
+9. The Pages deploy watches every sport's data folders (E4). Done, #391.
 10. The weekend refresh gets a concurrency group, so a late GitHub copy
-    waits for the next slot's run instead of racing its push (E5).
-11. `releases.yml` fails when a version has no tag; v2.6 is tagged (E7).
-12. One list of watched runs, NHL and NBA included (E8).
+    waits for the next slot's run instead of racing its push (E5). Done, #393.
+11. `releases.yml` fails when a version has no tag; v2.6 is tagged (E7). Done, #394.
+12. One list of watched runs, NHL and NBA included (E8). Done, #395.
 13. The page-header guard covers all three sports, and the two "Day by
-    Day" eyebrows that break it are fixed (U15, E32).
+    Day" eyebrows that break it are fixed (U15, E32). Done, #396.
 14. The dependency audit reads both requirement files; scipy is listed
-    (E14).
+    (E14). Done, #397.
 15. Each sport's daily run tested end to end over a small synthetic slate
     (postponed, overtime, no price, a late run), and the NBA's page inputs
-    get the NHL's tests (E29, E30, E31).
+    get the NHL's tests (E29, E30, E31). Done, #421.
 16. Docs: the stale comments and docstrings, SECURITY.md (21 dispatchable
     workflows, Booth's `pull-requests: write`, the OAuth token, the PAT's
-    expiry), and a README for three sports (E13, E19, E33).
+    expiry), and a README for three sports (E13, E19, E33). Done, #399.
 17. Meta and share descriptions name three sports; every page's
-    `theme-color` matches the background, `#0B0D10` (U9).
+    `theme-color` matches the background, `#0B0D10` (U9). Done, #400.
 18. One product in the words: titles, sub-lines, the wordmark as a link,
     one sidebar foot with ET stamps, the theme icon, Correct/Missed,
     goalie pills at the type floor, the home footnote and footer, one
     sentence on who runs the site, the GitHub link in "Can I check the
     picks?", the NBA's record tile on the home strip (U5's link, U6-U8,
-    U10, U12-U14, U16-U18, U20, U21, U26, U28, U30). A few PRs, not one.
+    U10, U12-U14, U16-U18, U20, U21, U26, U28, U30). A few PRs, not one. Done, #401, #402, #403.
 19. The home, NHL and NBA builds strip CSS comments as the NFL's does
-    (U45).
+    (U45). Done, #405.
 20. Lock proof for the NHL and NBA, and graded rows keep their saved time
-    (U41).
-21. The NHL's "How sure, and how often right" table on the NBA (U39).
-22. A share block per sport (U42).
+    (U41). Done, #404.
+21. The NHL's "How sure, and how often right" table on the NBA (U39). Done, #406.
+22. A share block per sport (U42). Done, #407.
 23. Hash routes on the NHL and NBA pages, then home links to their
-    Methodology (U22, U37).
-24. One `safe_json`, one `font_faces_css`, one `escapeHtml` (E17).
+    Methodology (U22, U37). Done, #410.
+24. One `safe_json`, one `font_faces_css`, one `escapeHtml` (E17). Done, #408.
 25. mypy over `src/core`, `src/site`, `src/sports/nhl`, `src/sports/nba`,
-    measured before it gates (E18).
+    measured before it gates (E18). Done, #398.
 26. Disclosures on the pages: the NBA drift baseline's known lean, both
     tuned parameters at the edge of their grids, neutral-site games
-    keeping the home edge in hockey and basketball (E20, E21, E23).
+    keeping the home edge in hockey and basketball (E20, E21, E23). Done, #409.
 27. Pick records carry `data_provenance` and `training_through`, and
-    `game_type` in all three sports (E26).
+    `game_type` in all three sports (E26). Done, #411.
 28. Dispatchable NHL and NBA backtest re-runs that diff against the
-    committed results and never commit (E27).
-29. The audit-log collector commits only when the log changed (E34).
+    committed results and never commit (E27). Done, #412.
+29. The audit-log collector commits only when the log changed (E34). Done, #413.
+30. No free-text dispatch input reaches a shell line: Booth regression's
+    fixture is a choice, `nfl-run-backtest`'s notes go through `env:`
+    (E10, reopened by Mark on 2026-10-09). Done, #389.
+31. The unused sport contract is deleted from `src/core/sport.py` and
+    decision record 0006 says what core holds (E15, Mark's call: delete). Done, #414.
+32. Measurement registrations for E22 (live market against the backtest's),
+    E24 (the injury report by status), E25 (N1's second clause, described,
+    not reopened) and E28 (a day-block drift bootstrap beside the
+    registered one), under `experiments/<sport>/measurements/`. Mark: yes. Done, #415.
+33. (U44, shared font files) later, Mark's call.
+34. Home option A2: one call to action to the sport with the next game, and
+    the record strip three across on a phone (U1, U2). Mark: A2. Done, #416.
+35. The sport switch as one segmented control (U11). Mark: S1. Done, #417.
+36. The NFL's Week Board on a phone as compact rows, with N1's Options
+    button, the provenance behind one tap and a one-line onboarding (U29,
+    U32, U33, U36). Mark: N2 for phones. Done, #420.
+37. The NHL board's column at 1280 px and wider: the day's goalies, the
+    day before's record, the division leaders (U27). Mark: C1. Done, #419.
 
-Waiting on Mark: E10 (reopen the dispatch-input decision on the PAT's new
-fact), E15 (delete the unused sport contract or build it), the home
-additions inside option A (U1, U2's compact strip, U3), the switcher
-(U11), the NFL board on a phone (U29, U32-U34, U36), the board's spare
-column (U27), shared font files (U44), and the measurement registrations
-drafted for E22, E24, E25 and E28. Deferred: E16 (after opening night),
-U31, U43, U46, U47. Declined with reasons in the log: E9, U19, U35, U40,
-U48.
+Decided by Mark on 2026-10-09 and 10-10: E10 reopened (fixture as a
+choice), E15 delete, home A2, S1, N2 for phones, C1, the registrations,
+U44 later. Deferred: E16 (after opening night), U31, U43, U46, U47.
+Declined with reasons in the log: E9, U19, U35, U40, U48.
+
+All merged on 2026-10-10 between 04:30 and 11:30 UTC, one PR at a time. Merged on Booth's NEEDS HUMAN REVIEW, as Mark said for the night: #387 and #389 (Booth's own workflows) and #401 (a render Booth could not re-run).
