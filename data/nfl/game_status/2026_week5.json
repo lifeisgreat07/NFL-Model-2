@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 5,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-09T05:17:39Z",
+  "read_at": "2026-10-10T11:10:35Z",
   "games": [
     {
       "away": "TB",
@@ -40,7 +40,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -6.5,
+      "spread_line": -7.0,
       "neutral_site": false,
       "venue": "Hard Rock Stadium"
     },
@@ -80,7 +80,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 2.5,
+      "spread_line": 3.0,
       "neutral_site": false,
       "venue": "Acrisure Stadium"
     },
@@ -90,7 +90,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -7.5,
+      "spread_line": -7.0,
       "neutral_site": false,
       "venue": "Nissan Stadium"
     },
@@ -140,7 +140,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 3.0,
+      "spread_line": 3.5,
       "neutral_site": false,
       "venue": "Mercedes-Benz Stadium"
     },

@@ -185,5 +185,33 @@
     "home": "NYJ",
     "away": "CLE",
     "spread_line": 2.5
+  },
+  {
+    "captured_date": "2026-10-10",
+    "captured_utc": "2026-10-10T11:10:36Z",
+    "home": "MIA",
+    "away": "CIN",
+    "spread_line": -7.0
+  },
+  {
+    "captured_date": "2026-10-10",
+    "captured_utc": "2026-10-10T11:10:36Z",
+    "home": "PIT",
+    "away": "IND",
+    "spread_line": 3.0
+  },
+  {
+    "captured_date": "2026-10-10",
+    "captured_utc": "2026-10-10T11:10:36Z",
+    "home": "TEN",
+    "away": "HOU",
+    "spread_line": -7.0
+  },
+  {
+    "captured_date": "2026-10-10",
+    "captured_utc": "2026-10-10T11:10:36Z",
+    "home": "ATL",
+    "away": "BAL",
+    "spread_line": 3.5
   }
 ]
