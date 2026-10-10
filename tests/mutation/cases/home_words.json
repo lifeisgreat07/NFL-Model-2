@@ -1,0 +1,21 @@
+{
+  "target": "src/site/home/page.html",
+  "tests": "tests/test_home_words.py",
+  "cases": [
+    {
+      "id": "home-words-footer-unlabelled",
+      "why": "the footer offers the NFL's methodology as if it were the whole site's",
+      "find": "    <a href=\"nfl/#method\">How the NFL models work</a>\n",
+      "replace": "    <a href=\"nfl/#method\">How the models work</a>\n",
+      "expect_caught_by": "test_the_footer_says_which_sport_its_pages_are"
+    },
+    {
+      "id": "home-words-double-rule",
+      "target": "src/site/home/home.css",
+      "why": "the last question keeps its rule above the footer's, two lines with a gap",
+      "find": ".home-faq details:last-of-type{ border-bottom:0; }\n",
+      "replace": "",
+      "expect_caught_by": "test_one_rule_at_the_page_foot"
+    }
+  ]
+}
