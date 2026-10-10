@@ -119,6 +119,33 @@ function nbaCard(f){
 
 document.getElementById('home-cards').innerHTML = nflCard(HOME.nfl) + nhlCard(HOME.nhl) + nbaCard(HOME.nba);
 
+// The hero's one action (Stage 68 item 34, option A2): the sport whose next
+// game starts first, from the same facts the cards read.
+const SPORT_NAME = {nfl:'NFL', nhl:'NHL', nba:'NBA'};
+function nextGame(){
+  const ahead = [];
+  const n = HOME.nfl;
+  if(n && n.built) (n.kickoffs || []).map(Date.parse).filter(t => t > NOW).forEach(t => ahead.push(['nfl', t]));
+  for(const s of ['nhl', 'nba']){
+    const f = HOME[s];
+    if(f && f.built) (f.games || []).forEach(([st, status]) => { const t = Date.parse(st); if(t > NOW && status !== 'final') ahead.push([s, t]); });
+  }
+  ahead.sort((a, b) => a[1] - b[1]);
+  return ahead[0] || null;
+}
+(function(){
+  const box = document.getElementById('home-cta');
+  if(!box) return;
+  const g = nextGame();
+  if(!g){ box.remove(); return; }
+  const [s, t] = g;
+  const tonight = dayKey(t) === dayKey(NOW);
+  const label = s === 'nfl' ? `See the NFL's Week ${HOME.nfl.week} picks`
+    : `See ${tonight ? "tonight's" : weekday(t) + "'s"} ${SPORT_NAME[s]} picks`;
+  box.innerHTML = `<a class="home-cta-btn" href="${s}/">${esc(label)} <span aria-hidden="true">→</span></a>`
+    + `<span class="home-cta-when">Next game ${esc(tonight ? clock(t) : when(t))}</span>`;
+})();
+
 // The scoreboard above the cards (Stage 66, option A): each sport's record
 // from the same facts the cards read, and what every pick has in common.
 function tile(label, value, sub, words){

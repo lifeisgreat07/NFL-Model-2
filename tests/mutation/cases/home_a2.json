@@ -1,0 +1,29 @@
+{
+  "target": "src/site/home/home.css",
+  "tests": "tests/test_home_a2.py",
+  "cases": [
+    {
+      "id": "home-a2-tiles-stack",
+      "why": "the record tiles stack on a phone again and push the first card down 110 px",
+      "find": "  .home-score{ gap:var(--s2); }\n",
+      "replace": "  .home-score{ grid-template-columns:1fr; gap:var(--s2); }\n",
+      "expect_caught_by": "test_the_records_are_one_row_on_a_phone"
+    },
+    {
+      "id": "home-a2-latest-game",
+      "target": "src/site/home/home.js",
+      "why": "the hero's button goes to the sport whose next game is last, not first",
+      "find": "  return ahead[0] || null;\n",
+      "replace": "  return ahead[ahead.length - 1] || null;\n",
+      "expect_caught_by": "test_the_action_goes_to_the_sport_with_the_next_game"
+    },
+    {
+      "id": "home-a2-empty-button",
+      "target": "src/site/home/home.js",
+      "why": "with no game ahead the hero keeps an empty action box",
+      "find": "  if(!g){ box.remove(); return; }\n",
+      "replace": "  if(!g){ return; }\n",
+      "expect_caught_by": "test_the_action_goes_to_the_sport_with_the_next_game"
+    }
+  ]
+}

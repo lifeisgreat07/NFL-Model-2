@@ -32,6 +32,12 @@ body{ flex-direction:column; }
 .home-sub{ margin:0; color:var(--text-2); font-size:18px; line-height:1.5; max-width:60ch; }
 .home-who{ margin:0; color:var(--text-3); font-size:var(--fs-14); max-width:60ch; }
 .home-faq p a{ color:var(--accent); }
+/* The hero's one action (Stage 68 item 34, option A2). */
+.home-cta{ display:flex; flex-wrap:wrap; align-items:center; gap:var(--s2) var(--s4); margin:var(--s2) 0 0; }
+.home-cta-btn{ display:inline-flex; align-items:center; gap:var(--s2); min-height:48px; padding:0 var(--s5);
+  border-radius:var(--r-full); background:var(--accent); color:var(--surface); font-weight:800; font-size:var(--fs-16);
+  text-decoration:none; }
+.home-cta-when{ font-size:var(--fs-13); color:var(--text-2); }
 /* The scoreboard: each sport's record, worked out from the same files as the cards. */
 .home-score{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--s3); }
 .home-tile{ display:grid; gap:2px; align-content:start; padding:var(--s3) var(--s4); background:var(--surface);
@@ -85,7 +91,15 @@ body{ flex-direction:column; }
   .home-wordmark{ font-size:19px; }
   .home-mark{ width:18px; height:18px; }
   .home-sub{ font-size:16px; }
-  .home-score{ grid-template-columns:1fr; }
+  /* Option A2: the three records as one compact row, so the first sport
+     card is higher on the first screen (679 to 569 px at 390, measured). */
+  .home-score{ gap:var(--s2); }
+  .home-tile{ padding:var(--s2); gap:0; }
+  .home-tile span{ font-size:var(--fs-11); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .home-tile b{ font-size:19px; line-height:1.2; }
+  .home-tile b.is-words{ font-size:var(--fs-13); line-height:1.25; }
+  .home-tile small{ font-size:var(--fs-11); }
+  .home-cta-btn{ width:100%; justify-content:center; }
   .home-steps{ grid-template-columns:1fr; gap:var(--s4); }
   .home-main{ padding:var(--s5) var(--s4) var(--s7); }
   .home-title{ font-size:30px; }
