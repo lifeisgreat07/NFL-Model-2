@@ -1,0 +1,29 @@
+{
+ "target": "src/sports/nhl/daily.py",
+ "tests": "tests/test_daily_end_to_end.py",
+ "cases": [
+  {
+   "id": "e2e-nhl-never-locks",
+   "why": "the run grades and writes its pages but never saves a pick, which no unit test of a piece would see",
+   "find": "    if decision.lock:\n",
+   "replace": "    if False:\n",
+   "expect_caught_by": "test_the_nhl_daily_run_end_to_end"
+  },
+  {
+   "id": "e2e-nba-never-locks",
+   "target": "src/sports/nba/daily.py",
+   "why": "the NBA's run saves nothing on opening night",
+   "find": "    if decision.lock:\n",
+   "replace": "    if False:\n",
+   "expect_caught_by": "test_the_nba_daily_run_end_to_end"
+  },
+  {
+   "id": "e2e-nba-page-inputs-raw-timestamp",
+   "target": "src/sports/nba/page_inputs.py",
+   "why": "a start time reaches the schedule file as a pandas object and json.dumps fails the run",
+   "find": "    if isinstance(value, pd.Timestamp):\n",
+   "replace": "    if False:\n",
+   "expect_caught_by": "test_the_nba_page_inputs_write_every_field_plainly"
+  }
+ ]
+}
