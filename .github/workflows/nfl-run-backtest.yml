@@ -44,7 +44,7 @@ permissions:
 
 jobs:
   run:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Six seasons of play-by-play plus a weekly-refit walk-forward is slow;
     # the grid search in tune_qb_shrink_k is slower still. Generous ceiling
     # so a legitimate long run isn't killed, but not unbounded.

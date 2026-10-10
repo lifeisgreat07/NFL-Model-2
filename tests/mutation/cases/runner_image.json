@@ -1,0 +1,21 @@
+{
+  "target": ".github/workflows/nba-daily.yml",
+  "tests": "tests/test_runner_image.py",
+  "cases": [
+    {
+      "id": "runner-nba-daily-floats",
+      "why": "the NBA daily run moves to Ubuntu 26 on opening night with nothing seen green there",
+      "find": "    runs-on: ubuntu-24.04\n",
+      "replace": "    runs-on: ubuntu-latest\n",
+      "expect_caught_by": "test_every_job_is_pinned_to_the_one_image"
+    },
+    {
+      "id": "runner-scan-blind",
+      "target": "tests/test_runner_image.py",
+      "why": "the scan reads no runs-on lines, and every check passes on nothing",
+      "find": "RUNS_ON = re.compile(r'^\\s*runs-on:",
+      "replace": "RUNS_ON = re.compile(r'^\\s*runs_on:",
+      "expect_caught_by": "test_every_job_names_its_runner"
+    }
+  ]
+}
