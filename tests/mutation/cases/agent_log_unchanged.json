@@ -1,0 +1,20 @@
+{
+ "target": "src/agents/collect_agent_log.py",
+ "tests": "tests/test_collect_agent_log_unchanged.py",
+ "cases": [
+  {
+   "id": "agent-log-always-rewritten",
+   "why": "every run commits a new timestamp again (E34)",
+   "find": "    if unchanged(out, payload):\n",
+   "replace": "    if False and unchanged(out, payload):\n",
+   "expect_caught_by": "test_a_second_run_with_the_same_comments_leaves_the_file_alone"
+  },
+  {
+   "id": "agent-log-never-rewritten",
+   "why": "a new audit would never reach the page",
+   "find": "    return isinstance(old, dict) and strip(old) == strip(payload)",
+   "replace": "    return isinstance(old, dict)",
+   "expect_caught_by": "test_a_change_to_anything_else_is_written"
+  }
+ ]
+}
