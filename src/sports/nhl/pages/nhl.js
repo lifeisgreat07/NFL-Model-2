@@ -424,6 +424,11 @@ function renderBoard(){
     if(chip) chip.focus();
   }));
   const dayGames = byDay[currentDay] || [];
+  const side = document.getElementById('nhl-side');
+  if(side){
+    side.innerHTML = sideHtml(currentDay, byDay);
+    side.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => showPage(b.dataset.page, {focus: true})));
+  }
   const grid = document.getElementById('game-grid');
   const title = `${FMT_DAY.format(dayDate(currentDay))}${currentDay === today ? ' · Today' : ''}`;
   const head = `<div class="nhl-day-top"><h3 class="nhl-day-title">${title}</h3>`
@@ -457,6 +462,35 @@ document.addEventListener('keydown', e => {
 
 /* ---------- standings ---------- */
 const CONFERENCES = {Eastern: ['Atlantic', 'Metropolitan'], Western: ['Central', 'Pacific']};
+
+/* Stage 68 item 37 (C1): the column beside the board at 1280 px and wider.
+   The selected day's goalies with their pills, the record of the day
+   before, and each division's leader with its playoff odds. */
+function sideHtml(day, byDay){
+  const games = byDay[day] || [];
+  const picked = games.filter(g => DATA.picks[g.id]);
+  const goalies = !games.length ? '<p class="nhl-side-note">No games this day.</p>'
+    : !picked.length ? `<p class="nhl-side-note">No pick is saved for this day yet, so no goalie is named. Each is saved by the last run before its game.</p>`
+    : `<ul class="nhl-side-list">${picked.map(g => {
+        const gl = DATA.picks[g.id].goalies;
+        return `<li><span class="nhl-side-game">${g.away} at ${g.home}</span><span>${goalieText(g.away, gl.away)}</span><span>${goalieText(g.home, gl.home)}</span></li>`;
+      }).join('')}</ul>`;
+  const prev = new Date(dayDate(day).getTime() - 864e5).toISOString().slice(0, 10);
+  const graded = (byDay[prev] || ALL_BY_DAY[prev] || []).map(g => DATA.picks[g.id]).filter(p => p && (p.result === 'correct' || p.result === 'wrong'));
+  const won = graded.filter(p => p.result === 'correct').length;
+  const record = graded.length ? `<p class="nhl-side-record"><b>${won}–${graded.length - won}</b> on ${escapeHtml(FMT_DAY.format(dayDate(prev)))}</p>`
+    : `<p class="nhl-side-note">No graded pick on ${escapeHtml(FMT_DAY.format(dayDate(prev)))}.</p>`;
+  const s = DATA.standings;
+  const leaders = !s ? '<p class="nhl-side-note">The standings are not simulated yet.</p>'
+    : `<ul class="nhl-side-list">${Object.values(CONFERENCES).flat().map(div => {
+        const t = s.teams.filter(x => x.division === div).sort((a, b) => b.projected_points - a.projected_points)[0];
+        return t ? `<li><span class="nhl-side-game">${escapeHtml(div)}</span><span>${clubCell(t.team)} <b>${odds(t.playoff_pct)}</b> to make the playoffs</span></li>` : '';
+      }).join('')}</ul><button type="button" class="nhl-side-link" data-page="standings">All 32 clubs</button>`;
+  return `<h3 class="nhl-side-title">Goalies</h3>${goalies}<h3 class="nhl-side-title">The day before</h3>${record}`
+    + `<h3 class="nhl-side-title">Division leaders</h3>${leaders}`;
+}
+const ALL_BY_DAY = {};
+DATA.games.forEach(g => (ALL_BY_DAY[g.day] ||= []).push(g));
 function renderStandings(){
   const s = DATA.standings, el = document.getElementById('standings-body');
   if(!s){

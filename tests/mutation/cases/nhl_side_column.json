@@ -1,0 +1,21 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_nhl_side_column.py",
+ "cases": [
+  {
+   "id": "side-stuck-on-first-day",
+   "why": "the column stops following the day chips",
+   "find": "    side.innerHTML = sideHtml(currentDay, byDay);\n",
+   "replace": "    side.innerHTML = sideHtml(todayEt(), byDay);\n",
+   "expect_caught_by": "test_it_follows_the_selected_day"
+  },
+  {
+   "id": "side-on-phones",
+   "target": "src/sports/nhl/pages/nhl.css",
+   "why": "the column squeezes the board on a phone",
+   "find": ".nhl-side{display:none;}\n",
+   "replace": "",
+   "expect_caught_by": "test_the_column_is_beside_the_board_and_only_at_1280"
+  }
+ ]
+}
