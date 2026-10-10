@@ -1,7 +1,9 @@
 """The type check run-tests.yml gates on, run from the suite (Stage 35).
 
 run-tests.yml runs `python -m mypy --ignore-missing-imports
-src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py` as its own step. This runs the
+src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/core
+src/site src/sports/nhl src/sports/nba` as its own step (the last four
+since Stage 68 item 25). This runs the
 same command (tasks.TYPES) so a change that breaks it -- dropping one of
 build_team_ratings' @overloads, a bare `return` under `-> Plan | None`
 creeping back -- fails a test the mutation corpus can name, not only a CI

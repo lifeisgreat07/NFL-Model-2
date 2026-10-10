@@ -168,7 +168,7 @@
       "target": ".github/workflows/run-tests.yml",
       "tests": "tests/test_tasks.py",
       "why": "run-tests.yml stops running mypy, so tasks.py's lint gates on a check CI never runs, and a type error reaches main green.",
-      "find": "        run: python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py\n",
+      "find": "        run: python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/core src/site src/sports/nhl src/sports/nba\n",
       "replace": "        run: echo skipped\n",
       "expect_caught_by": "test_lint_is_what_run_tests_runs"
     },
