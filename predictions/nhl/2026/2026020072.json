@@ -1,0 +1,126 @@
+{
+ "game_id": "2026020072",
+ "season": 2026,
+ "slate": "2026-10-10",
+ "start_utc": "2026-10-10T20:00:00Z",
+ "home": "SJS",
+ "away": "EDM",
+ "model_a": 0.411,
+ "model_b": null,
+ "pick": "EDM",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": -0.857498,
+  "shot_matchup": -6.324804,
+  "goalie_matchup_2000": 0.004068
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8477968,
+   "name": "Alex Nedeljkovic",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8477465,
+   "name": "Tristan Jarry",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/EdmontonJack/status/2107165295442096606?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-09",
+  "read_utc": "2026-10-10T14:01:41Z",
+  "home": [
+   {
+    "name": "Adam Gaudette",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Alex Barre-Boulet",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Cam Lund",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Macklin Celebrini",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Atro Leppanen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Colton Dach",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "James Stefan",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Nugent-Hopkins",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Zach Hyman",
+    "position": "LW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-10T14:01:41Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14472,
+  "training_games_priced": 7427
+ }
+}

@@ -1,0 +1,101 @@
+{
+ "game_id": "2026020071",
+ "season": 2026,
+ "slate": "2026-10-10",
+ "start_utc": "2026-10-10T19:30:00Z",
+ "home": "NJD",
+ "away": "VAN",
+ "model_a": 0.6702,
+ "model_b": null,
+ "pick": "NJD",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": 0.630986,
+  "shot_matchup": 6.656234,
+  "goalie_matchup_2000": 0.000815
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8474596,
+   "name": "Jake Allen",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8482447,
+   "name": "Leevi Merilainen",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-09",
+  "read_utc": "2026-10-10T14:01:41Z",
+  "home": [
+   {
+    "name": "Connor Brown",
+    "position": "RW",
+    "status": "Out"
+   },
+   {
+    "name": "Johnathan Kovacevic",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonas Siegenthaler",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Nick Bjugstad",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Seamus Casey",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Akil Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Chytil",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Thompson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-10T14:01:41Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14472,
+  "training_games_priced": 7427
+ }
+}

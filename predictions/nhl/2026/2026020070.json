@@ -1,0 +1,65 @@
+{
+ "game_id": "2026020070",
+ "season": 2026,
+ "slate": "2026-10-10",
+ "start_utc": "2026-10-10T17:00:00Z",
+ "home": "BOS",
+ "away": "PHI",
+ "model_a": 0.5741,
+ "model_b": null,
+ "pick": "BOS",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": 0.50019,
+  "shot_matchup": -1.215866,
+  "goalie_matchup_2000": 0.002171
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8480280,
+   "name": "Jeremy Swayman",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8478435,
+   "name": "Dan Vladar",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-09",
+  "read_utc": "2026-10-10T14:01:41Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Helge Grans",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nikita Grebenkin",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Ristolainen",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-10T14:01:41Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14472,
+  "training_games_priced": 7427
+ }
+}
