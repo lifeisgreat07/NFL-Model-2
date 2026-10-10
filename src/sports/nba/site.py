@@ -41,6 +41,7 @@ from pathlib import Path
 from typing import Any
 
 from src.core import colour, pick_proof
+from src.core.page_comments import strip_page_comments
 from src.core.sport import sport_paths
 from src.sports.nba import colours, teams
 from src.sports.nba.schedule import current_season
@@ -194,6 +195,10 @@ def render(data: dict[str, Any]) -> str:
                 .replace('{% include "nba.css" %}', (TEMPLATE / 'nba.css').read_text(encoding='utf-8'))
                 .replace('{% include "body.html" %}', (TEMPLATE / 'body.html').read_text(encoding='utf-8'))
                 .replace('{% include "nba.js" %}', (TEMPLATE / 'nba.js').read_text(encoding='utf-8')))
+    # Comments stay in the templates for whoever reads them; the page a
+    # visitor downloads does not carry them (src/core/page_comments.py,
+    # Stage 68 item 19). Stripped before the fills, so no data is lexed.
+    html = strip_page_comments(html)
     html = html.replace('__FONT_FACES__', font_faces_css())
     html = html.replace('__NBA_JSON__', safe_json(data))
     left = sorted({t for t in ('__FONT_FACES__', '__NBA_JSON__', '{% include') if t in html})

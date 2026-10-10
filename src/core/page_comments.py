@@ -1,5 +1,10 @@
 """Strip the template's comments from the page a visitor downloads.
 
+Every sport's page and the home page since Stage 68 item 19 (the
+2026-10-09 audit's U45): it lived in src/sports/nfl/ while only the NFL
+used it, and the other three pages shipped 58 KB of the shared stylesheet's
+comments.
+
 Stage 26 item 11, from the 2026-09-28 audit. The template is written to be
 read: its comments carry the reasons behind the page (why a selector is
 scoped, which audit found a bug), and they are most of a hundred kilobytes.
@@ -23,6 +28,8 @@ as it was.
 tests/test_page_comments.py holds the lexer to the cases that break naive
 strippers, and compiles every script on the stripped page under node.
 """
+from __future__ import annotations
+
 import re
 
 # After one of these (the last non-space character of code), a `/` starts a
@@ -37,28 +44,28 @@ class StripError(ValueError):
     """The lexer ended inside a string, template, comment or regex."""
 
 
-def strip_js(src):
+def strip_js(src: str) -> str:
     return _drop_cut_lines(_mark_js(src))
 
 
-def _mark_js(src):
-    out = []
+def _mark_js(src: str) -> str:
+    out: list[str] = []
     i, n = 0, len(src)
     # Each entry is the brace depth at which a `${` was opened inside a
     # template literal; when that brace closes, the template resumes.
-    template_stack = []
+    template_stack: list[int] = []
     depth = 0
     last_sig = ''      # last significant (non-space, non-comment) character
     last_word = ''     # the identifier that ended at last_sig, if any
 
-    def regex_allowed():
+    def regex_allowed() -> bool:
         if last_sig == '':
             return True
         if last_sig in _REGEX_AFTER_CHAR:
             return True
         return last_word in _REGEX_AFTER_WORD
 
-    def read_template(j):
+    def read_template(j: int) -> tuple[int, bool]:
         """From just after a backtick (or a closing `}` of `${`), copy to the
         closing backtick or to the next `${`. Returns (end, opened_expr)."""
         while j < n:
@@ -187,12 +194,12 @@ def _mark_js(src):
     return ''.join(out)
 
 
-def strip_css(src):
+def strip_css(src: str) -> str:
     return _drop_cut_lines(_mark_css(src))
 
 
-def _mark_css(src):
-    out = []
+def _mark_css(src: str) -> str:
+    out: list[str] = []
     i, n = 0, len(src)
     while i < n:
         c = src[i]
@@ -220,7 +227,7 @@ def _mark_css(src):
 CUT = '\x00'
 
 
-def _drop_cut_lines(text):
+def _drop_cut_lines(text: str) -> str:
     """Drop a line that is only whitespace and CUT marks; then drop the marks."""
     kept = [ln for ln in text.split('\n')
             if not (CUT in ln and not ln.replace(CUT, '').strip())]
@@ -234,17 +241,17 @@ _BLOCK = re.compile(r'(<!--.*?-->)|(<script\b[^>]*>)(.*?)(</script>)|(<style\b[^
                     re.S | re.I)
 
 
-def _cut(removed):
+def _cut(removed: str) -> str:
     """What stands where a comment was: a mark, and the line break if the
     comment spanned one."""
     return CUT + ('\n' + CUT if '\n' in removed else '')
 
 
-def strip_page_comments(html):
+def strip_page_comments(html: str) -> str:
     """The page with its comments removed. See the module docstring."""
     if CUT in html:
         raise StripError('the page already contains the cut marker')
-    out = []
+    out: list[str] = []
     pos = 0
     for m in _BLOCK.finditer(html):
         out.append(html[pos:m.start()])

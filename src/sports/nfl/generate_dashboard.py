@@ -20,6 +20,7 @@ from html import escape as _escape
 from pathlib import Path
 from typing import Any
 
+from src.core.page_comments import strip_page_comments
 from src.core.template_parts import read_template
 
 # config is a pure-constants module with no third-party imports, so unlike
@@ -27,7 +28,6 @@ from src.core.template_parts import read_template
 # take down. It resolves the same way run as `python -m` or imported by a
 # test: both put the repository root on the path.
 from src.sports.nfl.config import MODEL_VERSION, TRAIN_SEASONS, VERSION_HISTORY
-from src.sports.nfl.page_comments import strip_page_comments
 
 # generate_picks_pdf is imported lazily, inside the PDF loop in main() --
 # NOT here. It pulls in reportlab, and a module-level import would mean a
@@ -1088,7 +1088,7 @@ def main() -> None:
     template = read_template()
     # The template's comments stay in the template for whoever reads it; the
     # page a visitor downloads does not carry them (Stage 26 item 11,
-    # src/sports/nfl/page_comments.py). Stripped before the fills, so no data string is
+    # src/core/page_comments.py). Stripped before the fills, so no data string is
     # ever put through the lexer.
     template = strip_page_comments(template)
 

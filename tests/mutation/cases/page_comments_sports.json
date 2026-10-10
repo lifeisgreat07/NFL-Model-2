@@ -1,0 +1,13 @@
+{
+  "target": "src/sports/nhl/site.py",
+  "tests": "tests/test_page_comments.py",
+  "cases": [
+    {
+      "id": "strip-nhl-page-unstripped",
+      "why": "the NHL's page ships every comment in its templates again, about 60 KB",
+      "find": "    html = strip_page_comments(html)\n",
+      "replace": "",
+      "expect_caught_by": "test_every_other_page_is_stripped_before_its_fills"
+    }
+  ]
+}

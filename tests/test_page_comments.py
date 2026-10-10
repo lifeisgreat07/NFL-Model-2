@@ -1,7 +1,7 @@
 """The built page drops the template's comments and nothing else (Stage 26
 item 11).
 
-src/sports/nfl/page_comments.py strips `<!-- -->`, CSS `/* */` and JS `//` and `/* */`
+src/core/page_comments.py strips `<!-- -->`, CSS `/* */` and JS `//` and `/* */`
 comments from the template before the build fills it. A stripper that gets
 a string, a template literal or a regex wrong eats code up to the next `*/`
 or end of line, and the page breaks for a visitor.
@@ -28,9 +28,9 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
+from src.core import page_comments as pc
 from src.core.template_parts import read_template
 from src.sports.nfl import generate_dashboard as gd
-from src.sports.nfl import page_comments as pc
 
 TEMPLATE = read_template()
 NODE = shutil.which('node')
@@ -223,3 +223,13 @@ def test_every_data_fill_is_compact():
     src = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
     assert 'indent=' not in src, 'a data fill is indented again'
     assert json.dumps({'a': [1, 2]}, **gd.COMPACT) == '{"a":[1,2]}'
+
+
+@pytest.mark.parametrize('rel', ['src/site/home.py', 'src/sports/nhl/site.py', 'src/sports/nba/site.py'])
+def test_every_other_page_is_stripped_before_its_fills(rel):
+    """Stage 68 item 19: the home, NHL and NBA pages shipped the shared
+    stylesheet's 58 KB of comments that the NFL's build strips. Each now
+    strips its assembled template, and before any data is filled in."""
+    src = (Path(__file__).resolve().parents[1] / rel).read_text(encoding='utf-8')
+    strip = src.index('html = strip_page_comments(html)')
+    assert strip < src.index("html = html.replace('__FONT_FACES__'"), rel

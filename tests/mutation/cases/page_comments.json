@@ -1,5 +1,5 @@
 {
-  "target": "src/sports/nfl/page_comments.py",
+  "target": "src/core/page_comments.py",
   "tests": "tests/test_page_comments.py",
   "cases": [
     {
