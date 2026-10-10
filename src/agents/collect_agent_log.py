@@ -193,6 +193,17 @@ def build(comments: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def unchanged(out: Path, payload: dict[str, Any]) -> bool:
+    """True when the file at `out` holds this payload but for generated_utc."""
+    try:
+        old = json.loads(out.read_text(encoding='utf-8'))
+    except (OSError, ValueError):
+        return False
+    def strip(d: dict[str, Any]) -> dict[str, Any]:
+        return {k: v for k, v in d.items() if k != 'generated_utc'}
+    return isinstance(old, dict) and strip(old) == strip(payload)
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     ap.add_argument('--comments', required=True,
@@ -205,8 +216,14 @@ def main(argv: list[str] | None = None) -> int:
     comments = json.loads(raw)
 
     payload = build(comments)
-    Path(args.out).write_text(
-        json.dumps(payload, indent=2) + '\n', encoding='utf-8')
+    out = Path(args.out)
+    if unchanged(out, payload):
+        # Stage 68 item 29 (the 2026-10-09 audit's E34): a run whose audits are the
+        # ones already recorded rewrote the file anyway, because
+        # generated_utc always moves, and the workflow committed it.
+        print(f'{out} unchanged apart from its timestamp; left as it was')
+        return 0
+    out.write_text(json.dumps(payload, indent=2) + '\n', encoding='utf-8')
 
     s = payload['summary']
     print('{} audits across {} pull requests ({} superseded)'.format(
