@@ -82,7 +82,35 @@ jobs:
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
               commit -q -m "NBA daily run"
-          git push origin HEAD:main
+          # Six workflows push to main, and a push refused as non-fast-forward
+          # used to end the run with this slate's picks unsaved (Stage 68
+          # item 2, the 2026-10-09 audit). Rebase and retry, three tries in
+          # all; a final refusal fails the step, so the picks are kept as an
+          # artifact below and the failure alert fires.
+          for try in 1 2 3; do
+            if git push origin HEAD:main; then exit 0; fi
+            echo "push refused (try $try of 3); rebasing on main"
+            sleep $((try * 15))
+            git -c user.name='github-actions[bot]' \
+                  -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+                  pull --rebase origin main
+          done
+          echo "push refused three times"
+          exit 1
+
+      # The picks a failed run made are written once and never again, so a
+      # run that could not push them keeps them here for a hand commit.
+      - name: Keep the NBA's picks when the run failed
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nba-daily-${{ github.run_id }}
+          path: |
+            predictions/nba
+            results/nba
+            data/nba
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Raise an alert on a drift flag
         if: success()

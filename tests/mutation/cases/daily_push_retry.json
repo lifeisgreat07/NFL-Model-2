@@ -1,0 +1,44 @@
+{
+  "target": ".github/workflows/nhl-daily.yml",
+  "tests": "tests/test_daily_push_retry.py",
+  "cases": [
+    {
+      "id": "push-retry-nhl-loop-gone",
+      "why": "the NHL daily run pushes once again, and a refused push loses the slate's picks",
+      "find": "          for try in 1 2 3; do\n            if git push origin HEAD:main; then exit 0; fi\n",
+      "replace": "          for try in 1; do\n            if git push origin HEAD:main; then exit 0; fi\n",
+      "expect_caught_by": "test_the_push_is_retried_after_a_rebase"
+    },
+    {
+      "id": "push-retry-nba-final-failure-passes",
+      "target": ".github/workflows/nba-daily.yml",
+      "why": "three refusals end the NBA run green, so neither the artifact nor the alert fires",
+      "find": "          echo \"push refused three times\"\n          exit 1\n",
+      "replace": "          echo \"push refused three times\"\n          exit 0\n",
+      "expect_caught_by": "test_the_push_is_retried_after_a_rebase"
+    },
+    {
+      "id": "push-retry-nba-no-rebase",
+      "target": ".github/workflows/nba-daily.yml",
+      "why": "the retry pushes the same stale commit three times without catching up with main",
+      "find": "                  pull --rebase origin main\n          done\n",
+      "replace": "                  fetch origin main\n          done\n",
+      "expect_caught_by": "test_the_push_is_retried_after_a_rebase"
+    },
+    {
+      "id": "push-retry-nhl-artifact-on-success",
+      "why": "the picks are kept only on a green run, the one run that does not need them",
+      "find": "      - name: Keep the NHL's picks when the run failed\n        if: failure()\n",
+      "replace": "      - name: Keep the NHL's picks when the run failed\n        if: success()\n",
+      "expect_caught_by": "test_a_failed_run_keeps_its_picks_as_an_artifact"
+    },
+    {
+      "id": "push-retry-nba-artifact-misses-picks",
+      "target": ".github/workflows/nba-daily.yml",
+      "why": "the artifact keeps the grades and the data but not the picks themselves",
+      "find": "            predictions/nba\n            results/nba\n",
+      "replace": "            results/nba\n",
+      "expect_caught_by": "test_a_failed_run_keeps_its_picks_as_an_artifact"
+    }
+  ]
+}
