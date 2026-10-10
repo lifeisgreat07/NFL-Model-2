@@ -133,6 +133,14 @@ function startLabel(g){
   return g.start ? `${day} · ${FMT_TIME.format(new Date(g.start))} ET` : day;
 }
 const WEEKS = {};
+/* Team codes reach this page from the league's feed and are drawn into its
+   HTML in many places. The schedule build refuses a code that is not two to
+   four capital letters; the page checks again before drawing any (Stage 68
+   item 8), so a bad one shows as "?" and never as markup. */
+const TEAM_CODE = /^[A-Z]{2,4}$/;
+function cleanCode(c){ return TEAM_CODE.test(String(c)) ? c : '?'; }
+BD.games.forEach(g => { g.home = cleanCode(g.home); g.away = cleanCode(g.away); });
+Object.values(BD.picks || {}).forEach(p => { if(p.pick) p.pick = cleanCode(p.pick); });
 BD.games.forEach(g => { (WEEKS[mondayOf(g.day)] ||= []).push(g); });
 const WEEK_KEYS = Object.keys(WEEKS).sort();
 function defaultWeek(){
