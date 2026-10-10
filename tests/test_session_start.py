@@ -258,21 +258,24 @@ def test_the_section_names_its_source_and_every_watched_job(capsys):
     ss.github_state(get=get, now=ss._utc(NOW))
     out = capsys.readouterr().out
     assert 'read from the public API at 2026-10-05 16:00 UTC' in out
-    for shown in [*WATCHED.values(), *ss.SPORT_WATCHED.values()]:
+    for shown in WATCHED.values():
         assert shown in out, f'{shown} is missing from the unattended jobs'
     assert '#290 QB overrides: 2026 week 5' in out and 'open' in out
     assert '#300 Model drift detected' in out
     assert 'a pull request --' not in out, 'the issues list must not repeat pull requests'
 
 
-def test_every_nhl_workflow_on_a_schedule_is_watched():
-    """The NHL's unattended jobs reach a session through SPORT_WATCHED until
-    its pages join the runs table. A new scheduled NHL workflow left out of
-    it would run unseen."""
+def test_every_daily_sport_workflow_on_a_schedule_is_watched():
+    """The NHL's and NBA's unattended jobs reach a session through the one
+    list, recent_runs.WATCHED (Stage 68 item 12), and the session reads no
+    second one. A new scheduled workflow left out of it would run unseen."""
     ss = _session_start()
+    from src.sports.nfl.recent_runs import WATCHED
     folder = Path(__file__).parents[1] / '.github' / 'workflows'
-    scheduled = {p.name for p in folder.glob('nhl-*.yml') if 'schedule:' in p.read_text(encoding='utf-8')}
-    assert scheduled and scheduled <= set(ss.SPORT_WATCHED)
+    scheduled = {p.name for s in ('nhl', 'nba') for p in folder.glob(f'{s}-*.yml')
+                 if 'schedule:' in p.read_text(encoding='utf-8')}
+    assert len(scheduled) == 4 and scheduled <= set(WATCHED)
+    assert not hasattr(ss, 'SPORT_WATCHED')
 
 
 def test_a_failed_read_is_reported_and_does_not_raise(capsys):
