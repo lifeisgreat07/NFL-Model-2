@@ -52,6 +52,10 @@
 pandas==1.5.3
 numpy==1.26.4
 scikit-learn==1.9.0
+# Imported by src/sports/nfl/research/kalman_ratings.py, and until Stage 68
+# item 14 present only because scikit-learn pulls it in, at whatever version
+# resolved that day. Pinned at the version this machine has run since.
+scipy==1.17.1
 nfl_data_py==0.3.3
 nflreadpy==0.1.5
 pyarrow==25.0.1
