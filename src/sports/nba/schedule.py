@@ -37,6 +37,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import urllib.request
 from collections.abc import Callable, Mapping
 from datetime import UTC, datetime
@@ -145,6 +146,12 @@ def kept(ev: Json) -> bool:
     return COMPETITION_TYPES.get(kind, True)
 
 
+#: A team code as the feed sends it (BOS, NY, UTAH). The page draws codes
+#: into its HTML, so anything else is refused here rather than escaped later
+#: (Stage 68 item 8, the 2026-10-09 audit).
+TEAM_CODE = re.compile(r'[A-Z]{2,4}')
+
+
 def raw_problems(ev: Json) -> list[str]:
     """What is wrong with one kept game; empty when usable."""
     gid = ev.get('id', '?')
@@ -161,6 +168,9 @@ def raw_problems(ev: Json) -> list[str]:
     away = ((sides.get('away') or {}).get('team') or {}).get('abbreviation')
     if not home or not away or home == away:
         out.append(f'game {gid}: not two teams ({home} v {away})')
+    for code in (home, away):
+        if code and not TEAM_CODE.fullmatch(str(code)):
+            out.append(f'game {gid}: team code {code!r} is not two to four capital letters')
     start = ev.get('date')
     if start and not str(start).endswith('Z'):
         out.append(f'game {gid}: start {start!r} is not UTC')

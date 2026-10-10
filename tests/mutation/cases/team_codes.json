@@ -1,0 +1,29 @@
+{
+  "target": "src/sports/nhl/schedule.py",
+  "tests": "tests/test_team_codes.py",
+  "cases": [
+    {
+      "id": "team-codes-nhl-unchecked",
+      "why": "the NHL schedule takes whatever team code the feed sends, markup included",
+      "find": "        if code and not TEAM_CODE.fullmatch(str(code)):\n",
+      "replace": "        if False:\n",
+      "expect_caught_by": "test_the_nhl_schedule_refuses_a_code_that_is_not_one"
+    },
+    {
+      "id": "team-codes-nba-search-not-match",
+      "target": "src/sports/nba/schedule.py",
+      "why": "a code is accepted when it merely contains capitals, so '<b>BOS</b>' passes",
+      "find": "        if code and not TEAM_CODE.fullmatch(str(code)):\n",
+      "replace": "        if code and not TEAM_CODE.search(str(code)):\n",
+      "expect_caught_by": "test_the_nba_schedule_refuses_a_code_that_is_not_one"
+    },
+    {
+      "id": "team-codes-nba-page-unclean",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the NBA page draws the feed's codes without its own check",
+      "find": "BD.games.forEach(g => { g.home = cleanCode(g.home); g.away = cleanCode(g.away); });\n",
+      "replace": "",
+      "expect_caught_by": "test_each_page_cleans_the_codes_before_it_draws_any"
+    }
+  ]
+}
