@@ -158,19 +158,31 @@
  {
   "game_id": "2026020070",
   "pick": "BOS",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-10T14:01:41Z"
  },
  {
   "game_id": "2026020071",
   "pick": "NJD",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-10T14:01:41Z"
  },
  {
   "game_id": "2026020072",
   "pick": "EDM",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-10T14:01:41Z"
+ },
+ {
+  "game_id": "2026020082",
+  "pick": "ANA",
+  "result": "pending",
+  "saved_utc": "2026-10-10T23:56:11Z"
+ },
+ {
+  "game_id": "2026020083",
+  "pick": "VGK",
+  "result": "pending",
+  "saved_utc": "2026-10-10T23:56:11Z"
  }
 ]

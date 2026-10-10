@@ -1213,5 +1213,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020082",
   "start_utc": "2026-10-11T02:00:00Z"
+ },
+ {
+  "date": "2026-10-10",
+  "home": "VGK",
+  "home_goalie": "Carter Hart",
+  "home_status": null,
+  "home_report": null,
+  "away": "LAK",
+  "away_goalie": "Darcy Kuemper",
+  "away_status": "Likely",
+  "away_report": "https://x.com/LAKings/status/2109007312841273380?s=20",
+  "read_utc": "2026-10-10T23:56:11Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020083",
+  "start_utc": "2026-10-11T02:00:00Z"
  }
 ]
