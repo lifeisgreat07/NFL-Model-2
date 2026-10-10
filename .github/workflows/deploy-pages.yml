@@ -30,14 +30,18 @@ name: Deploy dashboard to Pages
 on:
   push:
     branches: [main]
-    # The inputs the dashboard is built from. index.html is not watched
+    # The inputs the site is built from. index.html is not watched
     # because it is no longer in the repository to watch; it is this
-    # workflow's output.
+    # workflow's output. Whole folders, not the NFL's: the NHL and NBA
+    # pages read results/, predictions/ and experiments/ too, and a fix
+    # pushed by hand to one of those never redeployed (Stage 68 item 9,
+    # the 2026-10-09 audit's E4). tests/test_deploy_paths.py holds it.
     paths:
       - 'src/**'
-      - 'data/nfl/**'
-      - 'predictions/nfl/**'
-      - 'results/nfl/**'
+      - 'data/**'
+      - 'predictions/**'
+      - 'results/**'
+      - 'experiments/**'
       # The self-hosted font (Stage 12) is inlined into the page at build
       # time, so a changed font file is a changed page.
       - 'assets/**'

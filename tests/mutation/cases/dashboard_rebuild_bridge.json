@@ -26,7 +26,7 @@
     {
       "id": "rebuild-bridge-writer-scan-goes-blind",
       "why": "the vacuity failure, and it is here because it actually happened while this guard was being written. The bridging assertion is over a list the writer scan produces, so a scan that finds nothing makes it pass while testing nothing -- which is precisely the shape of defect this whole file exists to prevent, reproduced one level up. Narrowing the watched paths empties the scan; the vacuity test must be what fires, not the bridging test, because the bridging test would report success.",
-      "find": "      - 'data/nfl/**'\n      - 'predictions/nfl/**'\n      - 'results/nfl/**'\n",
+      "find": "      - 'data/**'\n      - 'predictions/**'\n      - 'results/**'\n      - 'experiments/**'\n",
       "replace": "",
       "expect_caught_by": "test_the_writer_scan_finds_the_workflows_we_know_write"
     },
