@@ -43,6 +43,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nba import (
     backtest,
@@ -260,6 +261,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         table = ratings.features(games, minutes, h, lam, avail=avail_table)
         table = table.merge(games[['game_id', 'home_prob']], on='game_id', how='left')
         models = fit_models(table)
+        trained = training(table, first)
         teams = set(sched['home']) | set(sched['away'])
         report = read_injuries(get, teams)
         locking = slate[slate['game_id'].isin(decision.lock)]
@@ -285,7 +287,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                 feats['availability_matchup'] = ah - aa
                 avail = {'read': True, 'home': round(ah, 4), 'away': round(aa, 4)}
                 injury_list = injuries.for_game(report, g['home'], g['away'], now)
-            record = pick_record(g, feats, models, price, avail, injury_list, now)
+            record = pick_record(g, feats, models, price, avail, injury_list, now) | trained
             print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id']
                   + f" (price: {record['market_source'] or 'none'})")
         market.record(prices, PATHS.data / 'lines' / f'{season}.json')

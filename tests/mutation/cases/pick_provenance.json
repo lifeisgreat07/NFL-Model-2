@@ -1,0 +1,36 @@
+{
+ "target": "src/core/provenance.py",
+ "tests": "tests/test_pick_provenance.py",
+ "cases": [
+  {
+   "id": "provenance-first-day",
+   "why": "training_through names the first day trained on, not the last",
+   "find": "str(days.max().date())",
+   "replace": "str(days.min().date())",
+   "expect_caught_by": "test_the_record_is_the_fitted_table"
+  },
+  {
+   "id": "provenance-priced-all",
+   "why": "every game counted as priced",
+   "find": "int(table['home_prob'].notna().sum())",
+   "replace": "int(len(table))",
+   "expect_caught_by": "test_the_record_is_the_fitted_table"
+  },
+  {
+   "id": "provenance-nba-not-saved",
+   "target": "src/sports/nba/daily.py",
+   "why": "the NBA's picks lose it",
+   "find": "injury_list, now) | trained\n",
+   "replace": "injury_list, now)\n",
+   "expect_caught_by": "test_both_day_sports_save_it_with_every_pick"
+  },
+  {
+   "id": "provenance-nhl-not-saved",
+   "target": "src/sports/nhl/daily.py",
+   "why": "the NHL's picks lose it",
+   "find": "injury_list) | trained\n",
+   "replace": "injury_list)\n",
+   "expect_caught_by": "test_both_day_sports_save_it_with_every_pick"
+  }
+ ]
+}

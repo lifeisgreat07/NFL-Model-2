@@ -46,6 +46,7 @@ PICK_KEYS = {
     'spread_line', 'model_a_home_win_prob', 'model_b_home_win_prob',
     'market_prob_home', 'context_notes', 'why', 'confidence_rank',
     'confidence_points', 'neutral_site', 'home_edge_removed', 'venue', 'data_provenance',
+    'game_type',  # Stage 68 item 27: regular season or postseason, as the day sports' picks say
     *(f'{prefix}{side}_qb{suffix}'
       for side in ('home', 'away')
       for prefix, suffix in (('', ''), ('', '_id'), ('', '_basis'),
