@@ -8,7 +8,7 @@ name: NHL daily run
 # 14:00 and 21:00 UTC are the runs the lock rule was registered with (#299),
 # and its hour of slack covers a late start. GitHub's scheduler can start a
 # run later than that; a game that has already started by then is reported
-# as missed, never saved late. workflow_dispatch lets cron-job.org start it
+# as missed, never saved late, and raises an alert (Stage 68 item 3). workflow_dispatch lets cron-job.org start it
 # on the minute, as it does the NFL's runs (Stage 42).
 #
 # It commits only the NHL's own folders (src/core/isolation.py holds that).
@@ -46,6 +46,10 @@ jobs:
 
       # Stage 42 item 1: how late this run started, against its own cron lines.
       - name: Record the start delay
+        env:
+          # Which cron line fired, so a late copy of one slot is not measured
+          # against the next (Stage 68 item 3). Empty on a dispatch.
+          CRON_SCHEDULE: ${{ github.event.schedule }}
         run: python -m src.core.start_delay .github/workflows/nhl-daily.yml
 
       - name: Install dependencies
@@ -121,6 +125,20 @@ jobs:
             printf 'The NHL drift check flagged: Model A log loss is significantly above its backtest.\n\nRun: %s\n' \
               "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > drift.md
             python -m src.core.alerts --title "NHL: drift check flagged" --body-file drift.md
+          fi
+
+      - name: Raise an alert on a missed pick
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if grep -q '^MISSED PICKS:' nhl-daily.log; then
+            { grep '^MISSED PICKS:' nhl-daily.log
+              printf '\nA pick is saved once, before its game, so these cannot be made now.\n\nRun: %s\n' \
+                "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            } > missed.md
+            python -m src.core.alerts --title "NHL: a game started with no saved pick" --body-file missed.md
           fi
 
       - name: Raise an alert
