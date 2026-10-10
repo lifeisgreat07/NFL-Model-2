@@ -1,0 +1,21 @@
+{
+  "target": "src/sports/nba/pages/page.html",
+  "tests": "tests/test_site_meta.py",
+  "cases": [
+    {
+      "id": "meta-nba-theme-colour-drifts",
+      "why": "one page's browser bar is drawn a different near-black from the page under it",
+      "find": "<meta name=\"theme-color\" content=\"#0B0D10\">",
+      "replace": "<meta name=\"theme-color\" content=\"#0B0E15\">",
+      "expect_caught_by": "test_every_page_and_the_manifest_share_the_backgrounds_colour"
+    },
+    {
+      "id": "meta-manifest-two-sports",
+      "target": "assets/site.webmanifest",
+      "why": "the installed app describes itself as two sports again",
+      "find": "\"description\": \"NFL, NHL and NBA picks,",
+      "replace": "\"description\": \"NFL and NHL picks,",
+      "expect_caught_by": "test_the_sites_descriptions_name_all_three_sports"
+    }
+  ]
+}
