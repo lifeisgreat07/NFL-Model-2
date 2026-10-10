@@ -61,13 +61,16 @@ jobs:
         # variables, empty f-strings -- mistakes, not style (Stage 27 item 3)
         # -- and I and UP, auto-fixed (Stage 32 item 18). No line lengths.
         run: ruff check .
-      - name: Type check (the two modules the weekly run is built on)
+      - name: Type check (the weekly run's two modules, the core, the site and the day sports)
+        # Stage 68 item 25 (the 2026-10-09 audit's E18): src/core, src/site,
+        # src/sports/nhl and src/sports/nba were clean when added, and had
+        # never been checked.
         # Stage 35, from the third audit: build_team_ratings' one union
         # return type made every caller a type error, so nothing was
         # checked. With @overloads it is clean, and checking it found the
         # live ratings could be None with nothing stopping the writers
         # (weekly_update.current_ratings now does). Gating, since clean.
-        run: python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py
+        run: python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/core src/site src/sports/nhl src/sports/nba
       - name: Type-check the agents strictly
         # Stage 48 item 19: every function in src/agents annotated, checked
         # with --strict. --follow-imports=silent keeps it to src/agents: the

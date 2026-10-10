@@ -37,7 +37,8 @@ NBA_PAGE = 'nba.html'
 # The site's home page (src/site/home.py, Stage 59).
 HOME_PAGE = 'home.html'
 # The type check run-tests.yml runs (Stage 35).
-TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/sports/nfl/weekly_update.py', 'src/sports/nfl/ratings_engine.py']
+TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/sports/nfl/weekly_update.py', 'src/sports/nfl/ratings_engine.py',
+         'src/core', 'src/site', 'src/sports/nhl', 'src/sports/nba']  # the last four: Stage 68 item 25
 # The strict type check over the agents (Stage 48 item 19). --follow-imports=silent
 # checks src/agents alone: the pipeline modules it imports are not strict yet.
 AGENT_TYPES = [PY, '-m', 'mypy', '--strict', '--ignore-missing-imports', '--follow-imports=silent', 'src/agents']

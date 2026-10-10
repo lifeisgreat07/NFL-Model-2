@@ -1,0 +1,13 @@
+{
+  "target": "tasks.py",
+  "tests": "tests/test_tasks.py",
+  "cases": [
+    {
+      "id": "type-check-drops-the-day-sports",
+      "why": "the NHL's and NBA's code leaves the type check again",
+      "find": "         'src/core', 'src/site', 'src/sports/nhl', 'src/sports/nba']",
+      "replace": "         'src/core', 'src/site']",
+      "expect_caught_by": "test_lint_is_what_run_tests_runs"
+    }
+  ]
+}
