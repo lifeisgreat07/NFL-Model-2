@@ -63,3 +63,13 @@ def test_a_pushed_tag_outside_the_history_fails_the_run():
     assert 'TAG: ${{ github.ref_name }}' in guard
     assert 'release_notes --list | grep -qx "${TAG#v}"' in guard
     assert 'exit 1' in guard
+
+
+def test_a_failing_list_fails_the_release_step():
+    """Stage 68 item 11. `for v in $(cmd)` ignores cmd's exit status even
+    under set -e, so a version with no tag released nothing, green. The list
+    is assigned first, which set -e does stop on."""
+    text = WORKFLOW.read_text(encoding='utf-8').replace('\r\n', '\n')
+    step = text[text.index('- name: Create the releases that do not exist yet'):]
+    assert 'versions=$(python -m src.agents.release_notes --list)\n          for v in $versions; do' in step
+    assert 'for v in $(python' not in step
