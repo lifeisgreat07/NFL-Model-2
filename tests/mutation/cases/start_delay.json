@@ -33,14 +33,14 @@
     {
       "id": "start-delay-strict-threshold",
       "why": "a start exactly seven hours late is not warned about.",
-      "find": "delay >= timedelta(hours=WARN_HOURS)",
-      "replace": "delay > timedelta(hours=WARN_HOURS)",
+      "find": "delay >= timedelta(hours=warn_hours)",
+      "replace": "delay > timedelta(hours=warn_hours)",
       "expect_caught_by": "test_seven_hours_warns_and_a_minute_less_does_not"
     },
     {
       "id": "start-delay-step-dropped",
       "why": "the NHL's daily run stops recording its start delay, so its late starts are silent again.",
-      "find": "      - name: Record the start delay\n        run: python -m src.core.start_delay .github/workflows/nhl-daily.yml\n",
+      "find": "      - name: Record the start delay\n        env:\n          # Which cron line fired, so a late copy of one slot is not measured\n          # against the next (Stage 68 item 3). Empty on a dispatch.\n          CRON_SCHEDULE: ${{ github.event.schedule }}\n        run: python -m src.core.start_delay .github/workflows/nhl-daily.yml\n",
       "replace": "",
       "expect_caught_by": "test_every_scheduled_workflow_records_its_own_start_delay_first",
       "target": ".github/workflows/nhl-daily.yml"
