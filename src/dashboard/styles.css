@@ -1747,8 +1747,8 @@
   .nfl-row-game{overflow-wrap:anywhere;}
   .nfl-row-pick{font-weight:600;}
   .nfl-row-res{font-size:var(--fs-13); font-weight:600; min-width:3.2rem; text-align:right;}
-  .nfl-row-res.correct{color:var(--success, #22c55e);}
-  .nfl-row-res.incorrect{color:var(--danger, #ef4444);}
+  .nfl-row-res.correct{color:var(--graded-correct);}
+  .nfl-row-res.incorrect{color:var(--graded-wrong);}
   .nfl-row-res.final{color:var(--text-2);}
   .nfl-row-flag{color:var(--accent);}
   .nfl-row[aria-expanded="true"] .nfl-row-chev{transform:rotate(180deg);}
