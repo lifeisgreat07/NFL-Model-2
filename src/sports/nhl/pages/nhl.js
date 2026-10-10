@@ -330,8 +330,8 @@ function defaultDay(week, games, today){
 function rowResult(g, p, nowMs){
   if(g.status === 'postponed' || g.status === 'cancelled') return {text: g.status === 'postponed' ? 'Postponed' : 'Cancelled', cls: 'off'};
   if(p){
-    if(p.result === 'correct') return {text: 'Right', cls: 'right'};
-    if(p.result === 'wrong') return {text: 'Wrong', cls: 'wrong'};
+    if(p.result === 'correct') return {text: 'Correct', cls: 'right'};
+    if(p.result === 'wrong') return {text: 'Missed', cls: 'wrong'};
     return {text: g.status === 'final' ? 'Grading' : 'Locked', cls: 'locked'};
   }
   if(g.status === 'final' || g.status === 'in_progress') return {text: 'No pick', cls: 'off'};
@@ -655,7 +655,7 @@ function showPage(name, opts){
   window.scrollTo(0, 0);
   const page = document.getElementById('page-' + name);
   const heading = page && page.querySelector('.page-head h2');
-  document.title = name === 'board' || !heading ? BASE_TITLE : `${heading.textContent.trim()} — Sportalytics`;
+  document.title = name === 'board' || !heading ? BASE_TITLE : `NHL ${heading.textContent.trim()} — Sportalytics`;
   if(opts && opts.focus && heading){
     heading.setAttribute('tabindex', '-1');
     heading.focus({preventScroll: true});

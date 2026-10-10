@@ -19,9 +19,9 @@
     {
       "id": "nhl-day-wrong-coloured-right",
       "why": "a wrong pick's row wears the right colour.",
-      "find": "if(p.result === 'wrong') return {text: 'Wrong', cls: 'wrong'};",
-      "replace": "if(p.result === 'wrong') return {text: 'Wrong', cls: 'right'};",
-      "expect_caught_by": "test_a_graded_pick_says_right_or_wrong"
+      "find": "if(p.result === 'wrong') return {text: 'Missed', cls: 'wrong'};",
+      "replace": "if(p.result === 'wrong') return {text: 'Missed', cls: 'right'};",
+      "expect_caught_by": "test_a_graded_pick_says_correct_or_missed"
     },
     {
       "id": "nhl-day-pick-home-chance",

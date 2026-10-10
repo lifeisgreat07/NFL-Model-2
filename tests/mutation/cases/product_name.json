@@ -6,15 +6,15 @@
       "id": "product-name-sidebar-goes-back",
       "target": "src/dashboard/body.html",
       "why": "the sidebar says PICK'EM MODEL again, the old name beside the tab's Sportalytics.",
-      "find": "<h1 class=\"wordmark\">Sporta<span class=\"wm-accent\">lytics</span></h1>",
+      "find": "<h1 class=\"wordmark\"><a class=\"wordmark-link\" href=\"../\">Sporta<span class=\"wm-accent\">lytics</span></a></h1>",
       "replace": "<h1>PICK'EM<br>MODEL</h1>",
       "expect_caught_by": "test_the_tab_the_sidebar_and_the_phone_bar_say_the_name"
     },
     {
       "id": "product-name-tab-goes-back",
       "why": "the Week Board's tab title goes back to the old name.",
-      "find": "<title>Week Board — Sportalytics</title>",
-      "replace": "<title>Week Board — Pick'em Model</title>",
+      "find": "<title>NFL Week Board — Sportalytics</title>",
+      "replace": "<title>NFL Week Board — Pick'em Model</title>",
       "expect_caught_by": "test_the_tab_the_sidebar_and_the_phone_bar_say_the_name"
     },
     {

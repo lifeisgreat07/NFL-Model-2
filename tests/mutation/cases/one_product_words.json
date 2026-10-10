@@ -1,0 +1,29 @@
+{
+  "target": "src/sports/nba/pages/body.html",
+  "tests": "tests/test_one_product_words.py",
+  "cases": [
+    {
+      "id": "words-nba-sub-line-own-shape",
+      "why": "the NBA's sub-line goes back to its own shape, and wraps at 1440",
+      "find": "<div class=\"brand-sub\">Daily NBA picks, graded</div>",
+      "replace": "<div class=\"brand-sub\">NBA: daily picks, saved before tip-off</div>",
+      "expect_caught_by": "test_one_sub_line_shape"
+    },
+    {
+      "id": "words-nhl-tab-drops-the-sport",
+      "target": "src/sports/nhl/pages/nhl.js",
+      "why": "the NHL's Model Lab tab reads 'Model Lab — Sportalytics', the same as the NFL's and the NBA's",
+      "find": "BASE_TITLE : `NHL ${heading.textContent.trim()} — Sportalytics`;",
+      "replace": "BASE_TITLE : `${heading.textContent.trim()} — Sportalytics`;",
+      "expect_caught_by": "test_one_title_rule"
+    },
+    {
+      "id": "words-nba-row-says-right",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the NBA's rows say Right where its cards say Correct",
+      "find": "{text: 'Correct', cls: 'right'}",
+      "replace": "{text: 'Right', cls: 'right'}",
+      "expect_caught_by": "test_rows_say_correct_or_missed"
+    }
+  ]
+}

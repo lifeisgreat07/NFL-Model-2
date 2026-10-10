@@ -35,7 +35,7 @@
 .nhl-row[aria-expanded="true"] .nhl-row-chev{transform:rotate(180deg);}
 .nhl-row-detail{padding:0 0 var(--s3);}
 @media (prefers-reduced-motion: reduce){ .nhl-row-chev{transition:none;} }
-.nhl-goalie{display:inline-block; font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;
+.nhl-goalie{display:inline-block; font-size:var(--fs-11); font-weight:700; letter-spacing:.05em; text-transform:uppercase;
   padding:1px 6px; border-radius:999px; margin-left:4px; vertical-align:1px;}
 .nhl-goalie.confirmed{background:var(--accent-soft); color:var(--accent);}
 [data-sport="nhl"]{--nhl-likely:#E0A456; --nhl-likely-soft:rgba(201,127,46,.16);}
