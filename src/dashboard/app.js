@@ -1643,6 +1643,33 @@ function byKickoff(a, b){
   return byConfidence(a, b);
 }
 
+/* Stage 68 item 36 (option N2 of the rendered Stage 68 design options,
+   Mark's pick on 2026-10-10): on a phone each game is a compact row, as on
+   the NHL's day board, that opens to its full card. Fifteen open cards were
+   9,146 px of page and 30 logo requests at load; the rows are about 1,600 px.
+   Wider than 640 px the rows are not shown and every card is, as before.
+   The row says the time, the game, Model B's pick and, once graded,
+   whether it was right. */
+function phoneRowHtml(g, n){
+  let time = '';
+  if(g.gametime_et){
+    const [h, m] = g.gametime_et.split(':').map(Number);
+    time = `${h % 12 === 0 ? 12 : h % 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+  }
+  const s = cardSide(g.mktB_home, g) || cardSide(g.fbA_home, g);
+  const pick = !s ? '—' : s.team ? `${escapeHtml(s.team)} ${Math.round(s.pct)}%` : 'Toss-up';
+  const verdict = g.graded ? (g.model_b_correct ?? g.model_a_correct) : undefined;
+  // An ungraded final says Final and no more, as its card does (cardProvisional).
+  const res = !g.graded ? (g.status === 'final' ? ['final', 'Final'] : ['', '']) : (g.result === 'tie' || verdict === null || verdict === undefined) ? ['tie', 'Tie']
+    : verdict ? ['correct', 'Right'] : ['incorrect', 'Wrong'];
+  return `<button type="button" class="nfl-row" aria-expanded="false" aria-controls="card-${n}">`
+    + `<span class="nfl-row-time">${time}</span>`
+    + `<span class="nfl-row-game">${escapeHtml(g.away)} @ ${escapeHtml(g.home)}${g.flag ? ' <span class="nfl-row-flag" aria-label="flagged">&#9679;</span>' : ''}</span>`
+    + `<span class="nfl-row-pick">${pick}</span>`
+    + `<span class="nfl-row-res ${res[0]}">${res[1]}</span>`
+    + `<svg class="nfl-row-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>`;
+}
+
 function renderGames(){
   const grid = document.getElementById('game-grid');
   const badge = document.getElementById('board-badge');
@@ -1806,7 +1833,14 @@ function renderGames(){
       </div>` : ''}
     </div>`;
   });
-  grid.innerHTML = cards.map((card, i) => slotHeadBefore(sorted, i) + card).join('');
+  grid.innerHTML = cards.map((card, i) => slotHeadBefore(sorted, i) + phoneRowHtml(sorted[i], i) + card).join('');
+  // Stage 68 item 36 (N2): each card follows its phone row, which opens it.
+  grid.querySelectorAll(':scope > .game-card').forEach((card, i) => { card.id = `card-${i}`; card.classList.add('nfl-collapsible'); });
+  grid.querySelectorAll('.nfl-row').forEach(btn => btn.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') !== 'true';
+    btn.setAttribute('aria-expanded', String(open));
+    document.getElementById(btn.getAttribute('aria-controls')).classList.toggle('is-open', open);
+  }));
 
   document.querySelectorAll('.toggle-flag').forEach(btn=>{
     const originalLabel = btn.textContent;
@@ -1933,6 +1967,21 @@ function dismissOnboarding(){
   const el = document.getElementById('onboarding-banner');
   if(el) el.style.display = 'none';
 }
+/* N1's two buttons, shown on a phone only: Options holds the sort, the PDF
+   and the filters; the provenance line and the regional-TV note sit behind
+   one tap. */
+(function phoneBoardButtons(){
+  const page = document.getElementById('page-board');
+  [['board-options-btn', 'nfl-options-open'], ['board-prov-btn', 'nfl-prov-open']].forEach(([id, cls]) => {
+    const btn = document.getElementById(id);
+    if(!btn || !page) return;
+    btn.addEventListener('click', () => {
+      const open = !page.classList.contains(cls);
+      page.classList.toggle(cls, open);
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  });
+})();
 (function initOnboarding(){
   let dismissed = false;
   try{ dismissed = localStorage.getItem(ONBOARDING_KEY) === '1'; }catch(e){}

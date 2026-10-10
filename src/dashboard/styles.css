@@ -1734,3 +1734,35 @@
 .icon-moon{display:none;}
 [data-theme="light"] .icon-sun{display:none;}
 [data-theme="light"] .icon-moon{display:inline-block;}
+/* Stage 68 item 36 (N2): the Week Board on a phone. Wider than 640 px
+   nothing here shows and the board is as before. */
+.nfl-row, .nfl-phone-only{display:none;}
+@media (max-width:640px){
+  .nfl-phone-only{display:inline-flex;}
+  #game-grid .nfl-row{display:grid; grid-template-columns:4.2rem minmax(0, 1fr) auto auto 16px; align-items:center; column-gap:var(--s2);
+    width:100%; min-height:48px; padding:var(--s2) var(--s1); background:none; border:0; border-bottom:1px solid var(--border);
+    font:inherit; font-size:var(--fs-14); color:var(--text); text-align:left; cursor:pointer;}
+  #game-grid{display:block;}
+  .nfl-row-time{font-size:var(--fs-12); color:var(--text-2);}
+  .nfl-row-game{overflow-wrap:anywhere;}
+  .nfl-row-pick{font-weight:600;}
+  .nfl-row-res{font-size:var(--fs-13); font-weight:600; min-width:3.2rem; text-align:right;}
+  .nfl-row-res.correct{color:var(--graded-correct);}
+  .nfl-row-res.incorrect{color:var(--graded-wrong);}
+  .nfl-row-res.final{color:var(--text-2);}
+  .nfl-row-flag{color:var(--accent);}
+  .nfl-row[aria-expanded="true"] .nfl-row-chev{transform:rotate(180deg);}
+  #game-grid .game-card.nfl-collapsible{display:none; margin:var(--s2) 0 var(--s3);}
+  #game-grid .game-card.nfl-collapsible.is-open{display:block;}
+  #page-board:not(.nfl-options-open) .filter-row > .lbx,
+  #page-board:not(.nfl-options-open) #sort-select,
+  #page-board:not(.nfl-options-open) #picks-pdf-link,
+  #page-board:not(.nfl-options-open) #filter-row{display:none;}
+  #page-board:not(.nfl-prov-open) #board-lock-note,
+  #page-board:not(.nfl-prov-open) #board-tv-note{display:none;}
+  #board-prov-btn{margin:0 0 var(--s2); min-height:44px;}
+  #onboarding-banner .onboarding-content > h4,
+  #onboarding-banner .onboarding-content > ul,
+  #onboarding-banner .onboarding-more{display:none;}
+  .onboarding-phone{display:block; margin:0;}
+}

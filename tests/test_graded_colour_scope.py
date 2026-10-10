@@ -46,6 +46,9 @@ SCORED_PICK_CONSUMERS = {
     '.streak-label.loss': 'the My Picks streak label',
     '.graded-tag.correct': 'a model pick on the Board, scored right',
     '.graded-tag.incorrect': 'a model pick on the Board, scored wrong',
+    # Stage 68 item 36: the same graded pick, in its phone row on the Week Board.
+    '.nfl-row-res.correct': 'the Model B pick in its Week Board phone row, scored right',
+    '.nfl-row-res.incorrect': 'the Model B pick in its Week Board phone row, scored wrong',
     '.pick-badge.correct': "the user's pick, scored right",
     '.pick-badge.incorrect': "the user's pick, scored wrong",
     '.dive-tick': 'Team Deep-Dive: this model was right about this game',
