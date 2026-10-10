@@ -1668,23 +1668,27 @@
     .roadmap-card:hover{border-color:var(--border-strong);}
   }
 
-  /* ---------- Sport switcher (Stage 59) ----------
-     Home and every sport as pills, the current one filled: in the sidebar
-     under the name on a wide screen, and as a strip under the top bar on a
-     phone. Option A of the rendered "Sport Switcher Options". */
-  .sport-switch{display:flex; gap:var(--s1); flex-wrap:wrap; margin-top:var(--s3);}
-  .sport-switch a{display:inline-flex; align-items:center; min-height:28px; padding:0 var(--s3);
-    border-radius:var(--r-full); border:1px solid var(--border); background:var(--surface-2);
-    color:var(--text-2); font-size:var(--fs-12); font-weight:700; text-decoration:none; white-space:nowrap;}
+  /* ---------- Sport switcher (Stage 59; Stage 68 item 35) ----------
+     Home and every sport in one segmented control, the current one raised:
+     in the sidebar under the name on a wide screen, and as a strip under
+     the top bar on a phone. The home page's control (.home-switch), which
+     Mark chose for every page on 2026-10-10 (option S1 of the rendered
+     "Stage 68 Design Options"); it replaced 28 px inverted pills. */
+  .sport-switch{display:flex; gap:2px; flex-wrap:nowrap; margin-top:var(--s3); padding:var(--s1); width:max-content;
+    max-width:100%; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-full);}
+  .sport-switch a{display:inline-flex; align-items:center; min-height:40px; padding:0 var(--s3);
+    border-radius:var(--r-full); border:0; background:transparent;
+    color:var(--text-2); font-size:var(--fs-13); font-weight:700; text-decoration:none; white-space:nowrap;}
   @media (hover: hover){
-    .sport-switch a:hover{color:var(--text); border-color:var(--border-strong);}
+    .sport-switch a:hover{color:var(--text);}
   }
-  .sport-switch a[aria-current="page"]{background:var(--text); color:var(--surface); border-color:var(--text);}
+  .sport-switch a[aria-current="page"]{background:var(--surface); color:var(--text); box-shadow:0 1px 2px rgba(0,0,0,.18);}
   .sport-switch a:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  .sidebar .sport-switch{margin:var(--s3) var(--s4) 0; width:auto;}
+  .sidebar .sport-switch a{flex:1; justify-content:center; padding:0 var(--s2);}
   .sport-strip{display:none;}
   @media (max-width:1079px){
-    .sport-strip{display:flex; flex-wrap:nowrap; overflow-x:auto; margin:0; padding:var(--s2) var(--s4);
-      background:var(--surface); border-bottom:1px solid var(--border);}
+    .sport-strip{display:flex; flex-wrap:nowrap; overflow-x:auto; margin:var(--s2) var(--s4); padding:var(--s1);}
   }
 
   /* Stage 47 item 11: printing a page prints that page. The navigation, the

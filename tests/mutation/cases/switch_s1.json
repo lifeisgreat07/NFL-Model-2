@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard/styles.css",
+  "tests": "tests/test_switch_s1.py",
+  "cases": [
+    {
+      "id": "switch-s1-pills-back",
+      "why": "the sport pages' links go back to 28 px pills, under a phone's tap target and unlike the home page's",
+      "find": "  .sport-switch a{display:inline-flex; align-items:center; min-height:40px; padding:0 var(--s3);\n",
+      "replace": "  .sport-switch a{display:inline-flex; align-items:center; min-height:28px; padding:0 var(--s3);\n",
+      "expect_caught_by": "test_the_links_are_forty_pixel_segments"
+    },
+    {
+      "id": "switch-s1-inverted-current",
+      "why": "the current sport is filled with the text colour again, the white block S1 replaced",
+      "find": "  .sport-switch a[aria-current=\"page\"]{background:var(--surface); color:var(--text);",
+      "replace": "  .sport-switch a[aria-current=\"page\"]{background:var(--text); color:var(--surface);",
+      "expect_caught_by": "test_the_current_sport_is_raised_not_inverted"
+    },
+    {
+      "id": "switch-s1-sidebar-edge",
+      "why": "in the sidebar the control starts 2 px from the edge again",
+      "find": "  .sidebar .sport-switch{margin:var(--s3) var(--s4) 0; width:auto;}\n",
+      "replace": "",
+      "expect_caught_by": "test_in_the_sidebar_it_keeps_inside_the_margins"
+    }
+  ]
+}
