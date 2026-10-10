@@ -197,7 +197,8 @@ def grade(folder: Path, sched: pd.DataFrame) -> list[dict[str, Any]]:
             result = 'correct' if pick['pick'] == winner else 'wrong'
         else:
             result = 'pending'
-        rows.append({'game_id': pick['game_id'], 'pick': pick['pick'], 'result': result})
+        rows.append({'game_id': pick['game_id'], 'pick': pick['pick'], 'result': result,
+                     'saved_utc': pick.get('saved_utc')})
     return rows
 
 
