@@ -1,0 +1,21 @@
+{
+  "target": "src/sports/nba/pages/page.html",
+  "tests": "tests/test_link_previews.py",
+  "cases": [
+    {
+      "id": "preview-nba-points-at-the-nhl",
+      "why": "a shared NBA link previews with the NHL board's address",
+      "find": "<meta property=\"og:url\" content=\"https://lifeisgreat07.github.io/NFL-Model-2/nba/\">",
+      "replace": "<meta property=\"og:url\" content=\"https://lifeisgreat07.github.io/NFL-Model-2/nhl/\">",
+      "expect_caught_by": "test_each_board_previews_as_itself"
+    },
+    {
+      "id": "preview-nfl-title-is-the-site",
+      "target": "src/dashboard/page.html",
+      "why": "the NFL board previews with the home page's title again",
+      "find": "<meta property=\"og:title\" content=\"NFL Week Board — Sportalytics\">",
+      "replace": "<meta property=\"og:title\" content=\"Sportalytics\">",
+      "expect_caught_by": "test_each_board_previews_as_itself"
+    }
+  ]
+}
