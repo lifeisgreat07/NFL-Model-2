@@ -12,10 +12,19 @@ and one module per sport**, in three layers:
 | Sport | `src/sports/<code>/` | the core, itself | the site layer only |
 | Site | `src/site/` | the core, every sport | nothing |
 
-A sport is a code (`nfl`, `nhl`, `nba`) and one object, `SPORT`, that
-satisfies `SportModule` in `src/core/sport.py`. The core is written
-against that interface and never against a sport. The site layer builds the
-home page and is the only code that sees more than one sport.
+A sport is a code (`nfl`, `nhl`, `nba`) and a package, `src/sports/<code>/`.
+It takes from `src/core/sport.py` the shapes every sport shares (the
+schedule's columns and checks, a game's status, a lock run's decision,
+its own paths), and the core never imports a sport. The site layer builds
+the home page and is the only code that sees more than one sport.
+
+**Amended 2026-10-10 (Stage 68 item 31, Mark).** As first written, each
+sport exposed one object, `SPORT`, satisfying a `SportModule` interface the
+core was written against. No sport implemented it and nothing imported it,
+so it was deleted. The "Shared" column below is the design: today the NHL
+and NBA each keep their own copies of the lock engine, grading and the
+drift check, and lifting those into the core waits until after the NBA's
+opening week (the 2026-10-09 audit's E16).
 
 **Every sport runs the NFL's workflow.** The same page set; Model A (the sport
 alone) beside Model B (plus the market) and the market itself; a lock that
