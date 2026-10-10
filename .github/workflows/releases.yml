@@ -51,7 +51,12 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          for v in $(python -m src.agents.release_notes --list); do
+          # Assigned first: inside `for v in $(...)` a failing --list (a
+          # version with no tag, as v2.6 was) is ignored even under set -e,
+          # and the run went green releasing nothing (Stage 68 item 11, the
+          # 2026-10-09 audit's E7). An assignment fails the step.
+          versions=$(python -m src.agents.release_notes --list)
+          for v in $versions; do
             if gh release view "v$v" >/dev/null 2>&1; then
               echo "v$v: already released"
               continue

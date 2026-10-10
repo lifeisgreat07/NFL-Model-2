@@ -1,0 +1,13 @@
+{
+  "target": ".github/workflows/releases.yml",
+  "tests": "tests/test_release_notes.py",
+  "cases": [
+    {
+      "id": "releases-list-in-the-loop",
+      "why": "the list goes back inside the for loop, where its failure is ignored and the run is green with nothing released",
+      "find": "          versions=$(python -m src.agents.release_notes --list)\n          for v in $versions; do\n",
+      "replace": "          for v in $(python -m src.agents.release_notes --list); do\n",
+      "expect_caught_by": "test_a_failing_list_fails_the_release_step"
+    }
+  ]
+}
