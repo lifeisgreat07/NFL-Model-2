@@ -35,7 +35,9 @@ from pathlib import Path
 from src.core.start_delay import crons as cron_lines
 from src.core.start_delay import served_delay
 
-#: The unattended jobs, by workflow file, with the name the page shows.
+#: The unattended jobs, by workflow file, with the name the page shows: the
+#: one list, every sport's (Stage 68 item 12). The NHL's and NBA's lived in
+#: src/agents/session_start.py until their pages were built; they are now.
 WATCHED = {
     'nfl-weekly-update.yml': 'NFL weekly update',
     'nfl-weekend-refresh.yml': 'NFL weekend refresh',
@@ -43,6 +45,10 @@ WATCHED = {
     'nightly-mutation.yml': 'Nightly test of the tests',
     'nightly-random-order.yml': 'Nightly shuffled tests',
     'nightly-dependency-audit.yml': 'Nightly dependency audit',
+    'nhl-daily.yml': 'NHL daily run',
+    'nhl-canary.yml': 'NHL nightly canary',
+    'nba-daily.yml': 'NBA daily run',
+    'nba-canary.yml': 'NBA nightly canary',
 }
 SHOWN = 30
 WORKFLOWS = Path(__file__).resolve().parents[3] / '.github' / 'workflows'

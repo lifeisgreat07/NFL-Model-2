@@ -56,16 +56,6 @@ RUN_WINDOW_HOURS = 36
 #: almost certainly GitHub's late copy of that slot, not a slot of its own.
 #: Also a judgement: the latest copy seen was under 9 hours behind.
 LATE_COPY_HOURS = 12
-#: The other sports' unattended jobs. `src.sports.nfl.recent_runs.WATCHED`
-#: is the NFL page's runs table, which is a page input the NHL does not join
-#: until its own pages are built (Stage 57); until then a session sees the
-#: NHL's runs here.
-SPORT_WATCHED = {
-    'nhl-daily.yml': 'NHL daily run',
-    'nhl-canary.yml': 'NHL nightly canary',
-    'nba-daily.yml': 'NBA daily run',
-    'nba-canary.yml': 'NBA nightly canary',
-}
 CONTEXT = REPO / 'docs' / 'context.md'
 CLAUDE_MD = REPO / 'CLAUDE.md'
 COUNT_RE = re.compile(r'Suite:\s*\*\*([0-9,]+)\s+passing\*\*')
@@ -261,7 +251,7 @@ def github_state(get: Callable[[str], Any] = _get_json, now: datetime | None = N
     try:
         print(f'  Unattended jobs, last {RUN_WINDOW_HOURS} hours ("requested" is '
               'cron-job.org on time, or a run by hand):')
-        for workflow, shown in {**WATCHED, **SPORT_WATCHED}.items():
+        for workflow, shown in WATCHED.items():
             runs = get(f'{API}/repos/{SLUG}/actions/workflows/{workflow}/runs?per_page=15')
             for line in run_lines(runs.get('workflow_runs', []), shown, now):
                 print('  ' + line)
