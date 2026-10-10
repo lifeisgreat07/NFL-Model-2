@@ -1,0 +1,20 @@
+{
+  "target": ".github/workflows/deploy-pages.yml",
+  "tests": "tests/test_deploy_paths.py",
+  "cases": [
+    {
+      "id": "deploy-paths-nfl-results-only",
+      "why": "results/ narrows back to the NFL's, and a hand-pushed NHL or NBA grade never reaches the page",
+      "find": "      - 'results/**'\n",
+      "replace": "      - 'results/nfl/**'\n",
+      "expect_caught_by": "test_every_folder_a_page_reads_is_watched_whole"
+    },
+    {
+      "id": "deploy-paths-no-experiments",
+      "why": "a corrected backtest under experiments/ is printed on the NHL and NBA pages but never redeploys them",
+      "find": "      - 'experiments/**'\n",
+      "replace": "",
+      "expect_caught_by": "test_every_folder_a_page_reads_is_watched_whole"
+    }
+  ]
+}
