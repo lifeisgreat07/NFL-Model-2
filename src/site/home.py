@@ -31,6 +31,8 @@ from typing import Any
 
 import pandas as pd
 
+from src.core.page_comments import strip_page_comments
+
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATE = Path(__file__).resolve().parent / 'home'
 SHARED_STYLES = ROOT / 'src' / 'dashboard' / 'styles.css'
@@ -143,6 +145,10 @@ def render(data: dict[str, Any], font_faces: str = '') -> str:
     html = (page.replace('{% include "styles.css" %}', SHARED_STYLES.read_text(encoding='utf-8'))
                 .replace('{% include "home.css" %}', (TEMPLATE / 'home.css').read_text(encoding='utf-8'))
                 .replace('{% include "home.js" %}', (TEMPLATE / 'home.js').read_text(encoding='utf-8')))
+    # Comments stay in the templates for whoever reads them; the page a
+    # visitor downloads does not carry them (src/core/page_comments.py,
+    # Stage 68 item 19). Stripped before the fills, so no data is lexed.
+    html = strip_page_comments(html)
     html = html.replace('__FONT_FACES__', font_faces).replace('__HOME_JSON__', safe_json(data))
     left = sorted(set(re.findall(r'__[A-Z0-9_]+__', html)) | ({'{% include'} if '{% include' in html else set()))
     if left:
