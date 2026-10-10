@@ -1,0 +1,21 @@
+{
+  "target": "src/sports/nba/pages/nba.css",
+  "tests": "tests/test_browser_checks.py",
+  "cases": [
+    {
+      "id": "nba-rows-fixed-column-back",
+      "why": "the phone's result column goes back to a fixed 4.4rem and the pick is drawn over 'Locks 5:30 PM' again",
+      "find": "auto minmax(4.4rem, max-content) 14px;",
+      "replace": "auto 4.4rem 14px;",
+      "expect_caught_by": "test_the_row_check_breaks_the_rule_the_stylesheet_has"
+    },
+    {
+      "id": "nba-rows-check-unproven",
+      "target": ".github/workflows/browser-checks.yml",
+      "why": "the row check runs without first proving it can see an overlap",
+      "find": "        run: python tests/browser/check_rows.py --self-test --tmp \"$RUNNER_TEMP\"\n",
+      "replace": "        run: echo skipped\n",
+      "expect_caught_by": "test_the_nba_rows_are_measured_after_the_check_proves_itself"
+    }
+  ]
+}

@@ -17,7 +17,7 @@
 .nba-day-summary{margin:0; font-size:var(--fs-13); color:var(--text-2);}
 .nba-rows{list-style:none; margin:0; padding:0; border-top:1px solid var(--border);}
 .nba-row-item{border-bottom:1px solid var(--border);}
-.nba-row{display:grid; grid-template-columns:3.6rem minmax(0, 1fr) auto 5.2rem 16px; align-items:center; column-gap:var(--s2);
+.nba-row{display:grid; grid-template-columns:3.6rem minmax(0, 1fr) auto minmax(5.2rem, max-content) 16px; align-items:center; column-gap:var(--s2);
   width:100%; min-height:52px; padding:var(--s2) var(--s1); background:none; border:0; color:var(--text);
   font:inherit; font-size:var(--fs-14); text-align:left; cursor:pointer; font-variant-numeric:tabular-nums;}
 .nba-row:hover{background:var(--surface);}
@@ -38,9 +38,12 @@
 .nba-row-team{white-space:nowrap;}
 /* A phone: NBA scores are three digits, so a final game ("ATL 104 @ ORL 112")
    does not fit one line beside the pick. The game wraps at the @, and "no
-   price" takes its own line under the pick, rather than either being cut. */
+   price" takes its own line under the pick, rather than either being cut.
+   The result column grows to its label: at a fixed 4.4rem, "Locks 5:30 PM"
+   (89px) was drawn 12px over the pick (Stage 68 item 5; held by
+   tests/browser/check_rows.py). */
 @media (max-width:600px){
-  .nba-row{grid-template-columns:3.7rem minmax(0, 1fr) auto 4.4rem 14px; column-gap:6px;}
+  .nba-row{grid-template-columns:3.7rem minmax(0, 1fr) auto minmax(4.4rem, max-content) 14px; column-gap:6px;}
   .nba-row-time{white-space:nowrap;}
   .nba-row-game{white-space:normal; overflow:visible;}
   .nba-row-pick{text-align:right;}
