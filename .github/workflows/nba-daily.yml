@@ -52,7 +52,12 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      # `shell: bash` is not decoration: only an explicit bash shell runs with
+      # pipefail, and without it `tee` reports success for a run that crashed,
+      # the partial state is committed and the failure alert never fires
+      # (Stage 68 item 1, the 2026-10-09 audit).
       - name: Run the NBA's daily run
+        shell: bash
         run: python -m src.sports.nba.daily | tee nba-daily.log
 
       - name: Pull before committing

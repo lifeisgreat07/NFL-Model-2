@@ -1,0 +1,37 @@
+{
+  "target": ".github/workflows/nhl-daily.yml",
+  "tests": "tests/test_workflow_pipefail.py",
+  "cases": [
+    {
+      "id": "pipefail-nhl-daily-shell-dropped",
+      "why": "the NHL daily run loses pipefail again, so a crash exits 0 through tee and the alert never fires",
+      "find": "        shell: bash\n        run: python -m src.sports.nhl.daily | tee nhl-daily.log\n",
+      "replace": "        run: python -m src.sports.nhl.daily | tee nhl-daily.log\n",
+      "expect_caught_by": "test_every_tee_keeps_the_exit_status_of_what_it_logs"
+    },
+    {
+      "id": "pipefail-nba-daily-shell-dropped",
+      "target": ".github/workflows/nba-daily.yml",
+      "why": "the NBA daily run loses pipefail again, the audit's finding on opening night",
+      "find": "        shell: bash\n        run: python -m src.sports.nba.daily | tee nba-daily.log\n",
+      "replace": "        run: python -m src.sports.nba.daily | tee nba-daily.log\n",
+      "expect_caught_by": "test_every_tee_keeps_the_exit_status_of_what_it_logs"
+    },
+    {
+      "id": "pipefail-backtest-set-dropped",
+      "target": ".github/workflows/nfl-run-backtest.yml",
+      "why": "the dispatched backtest's inline set -o pipefail goes, and a crashed script reports success",
+      "find": "          set -o pipefail\n",
+      "replace": "",
+      "expect_caught_by": "test_every_tee_keeps_the_exit_status_of_what_it_logs"
+    },
+    {
+      "id": "pipefail-scan-skips-every-step",
+      "target": "tests/test_workflow_pipefail.py",
+      "why": "the scanner stops seeing tee steps, and every check passes on an empty list",
+      "find": "TEE = re.compile(r'\\|\\s*tee\\b')",
+      "replace": "TEE = re.compile(r'\\|\\s*teeX\\b')",
+      "expect_caught_by": "test_the_scan_sees_the_daily_runs"
+    }
+  ]
+}
