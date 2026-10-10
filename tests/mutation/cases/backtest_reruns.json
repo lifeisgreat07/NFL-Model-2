@@ -1,0 +1,43 @@
+{
+ "target": "src/core/compare_results.py",
+ "tests": "tests/test_backtest_reruns.py",
+ "cases": [
+  {
+   "id": "rerun-any-float-agrees",
+   "why": "a re-run with a different log loss reads as the same result",
+   "find": "        return [] if math.isclose(a, b, rel_tol=REL, abs_tol=REL) else [f'{where}: {a!r} != {b!r}']",
+   "replace": "        return []",
+   "expect_caught_by": "test_float_noise_agrees_and_anything_else_does_not"
+  },
+  {
+   "id": "rerun-exact-floats",
+   "why": "float noise in the last digit fails every honest re-run",
+   "find": "REL = 1e-9\n",
+   "replace": "REL = 0.0\n",
+   "expect_caught_by": "test_float_noise_agrees_and_anything_else_does_not"
+  },
+  {
+   "id": "rerun-difference-exits-zero",
+   "why": "the run prints the difference and goes green",
+   "find": "    return 1 if diffs else 0\n",
+   "replace": "    return 0\n",
+   "expect_caught_by": "test_a_folder_that_differs_fails"
+  },
+  {
+   "id": "rerun-compares-the-wrong-stage",
+   "target": ".github/workflows/nba-run-backtest.yml",
+   "why": "the comparison reads a folder the backtest never writes",
+   "find": "python -m src.core.compare_results \"$RUNNER_TEMP/committed\" experiments/nba/stage61/results",
+   "replace": "python -m src.core.compare_results \"$RUNNER_TEMP/committed\" experiments/nba/stage56/results",
+   "expect_caught_by": "test_it_reruns_the_registered_backtest_and_compares_with_what_was_committed"
+  },
+  {
+   "id": "rerun-nhl-can-write",
+   "target": ".github/workflows/nhl-run-backtest.yml",
+   "why": "a re-run gets a write token, one step from committing its own baseline",
+   "find": "permissions:\n  contents: read\n",
+   "replace": "permissions:\n  contents: write\n",
+   "expect_caught_by": "test_it_runs_only_when_asked_and_cannot_write"
+  }
+ ]
+}

@@ -1,0 +1,82 @@
+name: NHL run backtest
+
+# Re-runs the NHL's registered backtest (experiments/nhl/stage56/registry.json)
+# from the committed box scores and market file, and says whether the results
+# match the committed ones (Stage 68 item 28, the 2026-10-09 audit's E27).
+# The comparison allows float noise in the last digits and nothing more.
+# Until this existed, the tuning and confirmation files had been written once,
+# on one machine, and nothing re-ran them where anyone else could see.
+#
+# On demand only. Like the NFL's run backtest, it commits nothing: a re-run
+# that differs is uploaded as an artifact and fails, and promoting it into the
+# repo is a separate, deliberate commit by a human, because the drift check's
+# baseline and the page's numbers are read from these files.
+
+on:
+  workflow_dispatch:
+    inputs:
+      notes:
+        description: 'Why this run? (recorded in the run summary)'
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Keep the committed results
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/committed"
+          cp experiments/nhl/stage56/results/*.json "$RUNNER_TEMP/committed/"
+
+      - name: Re-run the backtest
+        shell: bash
+        env:
+          NOTES: ${{ inputs.notes }}
+        run: |
+          {
+            echo "### NHL backtest re-run"
+            echo ""
+            echo "commit \`$GITHUB_SHA\`, requested by @$GITHUB_ACTOR; notes: ${NOTES:-none given}"
+          } >> "$GITHUB_STEP_SUMMARY"
+          mkdir -p results/nhl
+          python -m src.sports.nhl.backtest 2>&1 | tee results/nhl/backtest_rerun.log
+
+      # A float may move in its last digits on another machine (the sums run
+      # in another order); src/core/compare_results.py allows a relative 1e-9
+      # and nothing else. A difference fails the run, and the new files are in
+      # its artifact.
+      - name: Compare with the committed results
+        shell: bash
+        run: |
+          python -m src.core.compare_results "$RUNNER_TEMP/committed" experiments/nhl/stage56/results \
+            | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the re-run
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: nhl-backtest-${{ github.run_number }}
+          path: |
+            experiments/nhl/stage56/results/*.json
+            results/nhl/backtest_rerun.log
+          if-no-files-found: warn
+          retention-days: 90
