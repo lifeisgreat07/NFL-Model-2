@@ -13,7 +13,8 @@ name: NHL daily run
 #
 # It commits only the NHL's own folders (src/core/isolation.py holds that).
 # Its commits are made with GITHUB_TOKEN, so they do not start the Pages
-# deploy; the NHL's pages are not built yet.
+# deploy by themselves; deploy-pages.yml names this workflow in its
+# workflow_run list, which does.
 #
 # On a failure, or a drift flag, src/core/alerts.py opens or comments on an
 # issue whose title starts "NHL: ".

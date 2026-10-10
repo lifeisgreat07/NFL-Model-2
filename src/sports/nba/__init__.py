@@ -1,3 +1,4 @@
-"""The NBA (Stage 61: Stages 51 and 54 to 58 again). Nothing here yet but the
-data probe; the pipeline follows once the go/no-go in `docs/nba-data.md` says go.
+"""The NBA (Stage 61, the backtest; Stage 65, live from opening night 2026-10-20):
+the schedule, history, model and backtest, the lock rule, the daily run and its
+canary, and the pages.
 """

@@ -26,13 +26,14 @@ rather than relying on someone noticing.
 - **Every workflow declares its token's permissions, and holds no scope it
   does not use.** `tests/test_workflow_permissions.py`: each scope beyond
   `contents: read` must name the step in that workflow that spends it.
-- **The Claude Code action, the auto-commit action, checkout and
-  setup-python are pinned to commit SHAs**, not movable tags.
-  `tests/test_action_pins.py`. The Pages, cache, artifact and setup-node
-  actions are still on tags; pinning them is queued (Stage 45 item 1) for
-  after the 2026-10-08 lock, because the deploy runs on every data commit.
-- **Booth, the AI auditor, runs on a token that cannot write** and cannot
-  mint one. `tests/test_booth_permissions.py`.
+- **Every action is pinned to a commit SHA**, not a movable tag, with the
+  release it is named in a comment. `tests/test_action_pins.py`.
+- **Booth, the AI auditor, cannot push code** and cannot mint a token: it
+  holds `contents: read` and `pull-requests: write`, which posting its report
+  needs and which could also edit a pull request's title or description
+  (its workflow's header says so). `tests/test_booth_permissions.py`. A
+  dispatched audit refuses a pull request from a fork before checking
+  anything out (Stage 68 item 7).
 - **A pull request's description or title is never interpolated into a
   shell**: it reaches a step only through an `env:` assignment.
   `tests/test_workflow_permissions.py`.
@@ -44,5 +45,12 @@ rather than relying on someone noticing.
 
 The scheduled runs are started on time by cron-job.org, which holds one
 fine-grained GitHub token: this repository only, Actions read and write,
-expiring after a year. It can start a workflow; it cannot push code
-itself. The data sources the workflows read are public and need no key.
+expiring a year after it was made (decision record 0005; renew it before
+then). It cannot push code itself, but it can start any of the 21
+workflows that accept a dispatch, the weekly lock's `force` included, and
+give their inputs. So no free-text input reaches a shell line
+(Stage 68 item 30).
+
+Booth's audits run on `CLAUDE_CODE_OAUTH_TOKEN`, a repository secret that
+only the Booth workflows read. The data sources the workflows read are
+public and need no key.

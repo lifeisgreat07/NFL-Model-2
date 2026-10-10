@@ -24,6 +24,11 @@ SportsDataverse's `hoopR-nba-data` mirrors ESPN's box scores back to 2002.
 It also adds a consensus closing spread from The Odds API, which is what
 the market is checked against. Mark ruled out paid data on 2026-10-05.
 
+**Superseded on 2026-10-09:** ESPN answered a GitHub runner for the
+scoreboard, box score, odds and injuries (#357's probe), and the live run
+uses ESPN's odds with Kalshi as the named fallback (Stage 65). What follows
+is the September finding, kept as it was.
+
 **The live run cannot use ESPN.** ESPN refuses GitHub's runners (#131,
 docs/stage-history.md), and Mark ruled out routing around that. The
 league's own feeds refuse too:

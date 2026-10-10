@@ -1,8 +1,9 @@
 # Sportalytics
 
-A real, backtested win-probability model for weekly NFL picks. Not a
-heuristic -- trained and validated on nflverse play-by-play for 2020-2025,
-with backtest numbers that were actually run.
+Backtested win-probability picks for the NFL (weekly), the NHL and the NBA
+(daily), each saved before the game and graded in public. Not heuristics:
+every model was registered, tuned and confirmed on held-out seasons before
+it picked a live game, and the backtest numbers were actually run.
 
 **Live dashboard: https://lifeisgreat07.github.io/NFL-Model-2/**
 (the NFL board is at [nfl/](https://lifeisgreat07.github.io/NFL-Model-2/nfl/); the NHL's pages at
@@ -186,7 +187,9 @@ src/sports/nfl/         -- the NFL: what its scheduled workflows and the page bu
 src/sports/nfl/research/ -- run by hand: backtests, experiments, re-derived figures
   backtest.py           -- the holdout backtest behind the table above
   calibration.py        -- reliability of the stated probabilities
-src/sports/nhl/         -- the NHL, from Stage 51: its data probe so far
+src/sports/nhl/         -- the NHL: schedule, history, model, lock rule, daily run, pages
+src/sports/nba/         -- the NBA, the NHL's shape again: live from 2026-10-20
+src/site/               -- the home page and the site build that joins every sport's pages
 src/agents/             -- Booth, Scout and the session gates
   scout_preflight.py    -- checks a branch against the project's own rules
   session_wrapup.py     -- end-of-session checks (suite count, unpushed work, docs)
