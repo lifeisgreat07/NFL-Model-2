@@ -1,0 +1,29 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_nfl_phone_rows.py",
+ "cases": [
+  {
+   "id": "phone-rows-on-desktop",
+   "why": "the rows show at every width, each card twice over",
+   "find": ".nfl-row, .nfl-phone-only{display:none;}\n",
+   "replace": "",
+   "expect_caught_by": "test_rows_and_buttons_are_for_phones_only"
+  },
+  {
+   "id": "phone-row-never-opens",
+   "target": "src/dashboard/app.js",
+   "why": "a tap on a row leaves its card hidden",
+   "find": "    document.getElementById(btn.getAttribute('aria-controls')).classList.toggle('is-open', open);\n",
+   "replace": "",
+   "expect_caught_by": "test_every_card_has_its_row_and_the_row_opens_it"
+  },
+  {
+   "id": "phone-row-result-inverted",
+   "target": "src/dashboard/app.js",
+   "why": "a wrong pick reads Right",
+   "find": "    : verdict ? ['correct', 'Right'] : ['incorrect', 'Wrong'];",
+   "replace": "    : verdict ? ['incorrect', 'Wrong'] : ['correct', 'Right'];",
+   "expect_caught_by": "test_a_row_says_the_time_the_game_the_pick_and_the_result"
+  }
+ ]
+}

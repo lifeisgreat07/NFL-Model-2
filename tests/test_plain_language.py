@@ -83,6 +83,7 @@ RENDERERS = {
     'lockProofHtml': 'board',
     'renderLockProof': 'board',
     'renderGames': 'board',
+    'phoneRowHtml': 'board',
     'renderWeekGlance': 'board',
     'whySentence': 'board',
     'whyMarketSentence': 'board',

@@ -198,6 +198,7 @@
     <div id="onboarding-banner" class="onboarding-banner" style="display:none;">
       <div class="onboarding-content">
         <h4>New here? Three things to know.</h4>
+        <p class="nfl-phone-only onboarding-phone">New here? <a href="#method">How to read a card</a></p>
         <ul>
           <li><span class="model-chip a">Model A</span> uses football data only; <span class="model-chip b">Model B</span> adds the Vegas spread.</li>
           <li>A tick beside a team is Model B&#39;s pick. When the game ends it turns green if right, or a red cross if wrong.</li>
@@ -242,6 +243,8 @@
         </button>
       </div>
       <select id="week-select" class="week-select visually-hidden" aria-label="Week" tabindex="-1"></select>
+      <!-- Stage 68 item 36 (N1, N2): on a phone, one button for the sort, the PDF and the filters. -->
+      <button type="button" class="btn nfl-phone-only" id="board-options-btn" aria-expanded="false">Options</button>
       <!-- #sort-select below ships VISIBLE and enhanceSelect() adds
            visually-hidden once the listbox is built, so the select is never
            hidden unless the control replacing it already exists. That
@@ -286,6 +289,7 @@
     </div>
     <p class="board-note board-preview-note" id="board-preview-note" role="note" hidden></p>
     <!-- Stage 46 item 5: filled by renderLockProof() for a locked week. -->
+    <button type="button" class="btn btn-link nfl-phone-only" id="board-prov-btn" aria-expanded="false">When these picks were saved, and where to check</button>
     <p class="board-note board-lock-note" id="board-lock-note" hidden></p>
     <p class="board-note" id="board-tv-note" hidden>CBS and FOX games on Sunday afternoon are regional: which one your local channel shows depends on where you live.</p>
     <div class="game-grid" id="game-grid"></div>
