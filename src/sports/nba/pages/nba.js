@@ -6,9 +6,6 @@
 const DATA = JSON.parse(document.getElementById('nba-data').textContent);
 const ET = 'America/New_York';
 
-function escapeHtml(s){
-  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
 function pct(x, digits){ return (x * 100).toFixed(digits ?? 0) + '%'; }
 function signed(x, digits){ const v = Number(x).toFixed(digits); return (x > 0 ? '+' : x < 0 ? '−' : '') + v.replace('-', ''); }
 function seasonLabel(y){ return `${y}-${String((y + 1) % 100).padStart(2, '0')}`; }

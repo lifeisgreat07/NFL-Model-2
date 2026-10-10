@@ -32,9 +32,7 @@ Run by hand: python -m src.sports.nba.site --out site/nba/index.html
 from __future__ import annotations
 
 import argparse
-import base64
 import csv
-import hashlib
 import json
 from datetime import UTC, datetime
 from pathlib import Path
@@ -42,6 +40,7 @@ from typing import Any
 
 from src.core import colour, pick_proof
 from src.core.page_comments import strip_page_comments
+from src.core.page_fill import ESCAPE_JS, font_faces_css, safe_json
 from src.core.sport import sport_paths
 from src.sports.nba import colours, teams
 from src.sports.nba.schedule import current_season
@@ -165,34 +164,15 @@ def payload(now: datetime) -> dict[str, Any]:
     }
 
 
-def font_faces_css(font_dir: Path = FONT_DIR) -> str:
-    """The self-hosted face, as the NFL board and the NHL's pages inline it
-    (each file checked against assets/fonts/manifest.json first). A copy of
-    the NHL's until Stage 53's shared shell holds one for every sport."""
-    manifest = json.loads((font_dir / 'manifest.json').read_text(encoding='utf-8'))
-    rules = []
-    for f in manifest['files']:
-        data = (font_dir / f['file']).read_bytes()
-        if hashlib.sha256(data).hexdigest() != f['sha256']:
-            raise ValueError(f"{f['file']}: sha256 does not match the manifest")
-        weight = '400 800' if f['style'] == 'normal' else '500'
-        rules.append("@font-face{font-family:'Plus Jakarta Sans';"
-                     f"font-style:{f['style']};font-weight:{weight};font-display:swap;"
-                     f"src:url(data:font/woff2;base64,{base64.b64encode(data).decode('ascii')}) format('woff2');"
-                     f"unicode-range:{f['unicode_range']};}}")
-    return '\n'.join(rules)
 
 
-def safe_json(obj: Any) -> str:
-    """JSON for a <script> block: nothing in it can close the tag."""
-    return (json.dumps(obj, separators=(',', ':'), ensure_ascii=False)
-            .replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026'))
 
 
 def render(data: dict[str, Any]) -> str:
     page = (TEMPLATE / 'page.html').read_text(encoding='utf-8')
     html = (page.replace('{% include "styles.css" %}', SHARED_STYLES.read_text(encoding='utf-8'))
                 .replace('{% include "nba.css" %}', (TEMPLATE / 'nba.css').read_text(encoding='utf-8'))
+                .replace('{% include "escape.js" %}', ESCAPE_JS.read_text(encoding='utf-8'))
                 .replace('{% include "body.html" %}', (TEMPLATE / 'body.html').read_text(encoding='utf-8'))
                 .replace('{% include "nba.js" %}', (TEMPLATE / 'nba.js').read_text(encoding='utf-8')))
     # Comments stay in the templates for whoever reads them; the page a

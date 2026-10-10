@@ -1,0 +1,37 @@
+{
+  "target": "src/sports/nhl/pages/page.html",
+  "tests": "tests/test_one_page_fill.py",
+  "cases": [
+    {
+      "id": "page-fill-nhl-escape-not-included",
+      "why": "the NHL's script calls escapeHtml with nothing defining it, and every row throws",
+      "find": "{% include \"escape.js\" %}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_sport_scripts_share_one_escape"
+    },
+    {
+      "id": "page-fill-nba-copy-grows-back",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "a second escapeHtml comes back and the two drift apart",
+      "find": "const ET = 'America/New_York';\n",
+      "replace": "const ET = 'America/New_York';\nfunction escapeHtml(s){ return String(s); }\n",
+      "expect_caught_by": "test_the_sport_scripts_share_one_escape"
+    },
+    {
+      "id": "page-fill-nba-include-left-unfilled",
+      "target": "src/sports/nba/site.py",
+      "why": "the include line reaches the page as text instead of the helper",
+      "find": "                .replace('{% include \"escape.js\" %}', ESCAPE_JS.read_text(encoding='utf-8'))\n",
+      "replace": "",
+      "expect_caught_by": "test_the_build_fills_the_include"
+    },
+    {
+      "id": "page-fill-home-own-copy",
+      "target": "src/site/home.py",
+      "why": "home grows its own safe_json again",
+      "find": "from src.core.page_fill import font_faces_css, safe_json\n",
+      "replace": "from src.core.page_fill import font_faces_css\n\n\ndef safe_json(obj: Any) -> str:\n    return json.dumps(obj)\n",
+      "expect_caught_by": "test_no_build_defines_its_own"
+    }
+  ]
+}

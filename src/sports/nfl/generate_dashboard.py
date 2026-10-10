@@ -10,8 +10,6 @@ breakdown that weekly_update.py now computes per game.
 """
 from __future__ import annotations
 
-import base64
-import hashlib
 import json
 import math
 from collections.abc import Collection, Sequence
@@ -21,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from src.core.page_comments import strip_page_comments
+from src.core.page_fill import font_faces_css
 from src.core.template_parts import read_template
 
 # config is a pure-constants module with no third-party imports, so unlike
@@ -895,40 +894,6 @@ def load_team_history() -> dict[str, Any]:
 
 
 FONT_DIR = Path(__file__).resolve().parents[3] / 'assets' / 'fonts'
-
-
-def font_faces_css(font_dir: Path = FONT_DIR) -> str:
-    """@font-face rules for the self-hosted Plus Jakarta Sans, as data URIs.
-
-    Stage 12. The page used to load the face from Google Fonts at runtime, so
-    a visitor offline, behind a filter, or on a slow link got the fallback
-    face -- and CLAUDE.md records a layout defect that is ABSENT in the
-    fallback face, so a render without the font can check nothing. The four
-    files Mark approved on 2026-09-26 (latin and latin-ext; the normal face
-    is one variable file for 400-800) are inlined at build time, which keeps
-    the published site a single self-contained file, with no request to any
-    font host.
-
-    Every file is checked against the SHA-256 in assets/fonts/manifest.json
-    before it is inlined. A mismatch raises: a corrupted font does not fail
-    loudly in a browser, it silently falls back, which is the failure this
-    exists to remove.
-    """
-    manifest = json.loads((font_dir / 'manifest.json').read_text(encoding='utf-8'))
-    rules = []
-    for f in manifest['files']:
-        data = (font_dir / f['file']).read_bytes()
-        digest = hashlib.sha256(data).hexdigest()
-        if digest != f['sha256']:
-            raise ValueError(f"{f['file']}: sha256 {digest} does not match the "
-                             f"manifest's {f['sha256']}")
-        weight = '400 800' if f['style'] == 'normal' else '500'
-        rules.append(
-            "@font-face{font-family:'Plus Jakarta Sans';"
-            f"font-style:{f['style']};font-weight:{weight};font-display:swap;"
-            f"src:url(data:font/woff2;base64,{base64.b64encode(data).decode('ascii')}) format('woff2');"
-            f"unicode-range:{f['unicode_range']};}}")
-    return '\n'.join(rules)
 
 
 MONTHS = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',

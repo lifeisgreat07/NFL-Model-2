@@ -24,11 +24,13 @@ from src.sports.nba import lock
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js'
+# escapeHtml is shared with the NHL and included ahead of nba.js (Stage 68 item 24).
+ESCAPE_JS = ROOT / 'src' / 'core' / 'escape.js'
 NODE = shutil.which('node')
 
 
 def source():
-    return JS.read_text(encoding='utf-8')
+    return ESCAPE_JS.read_text(encoding='utf-8') + JS.read_text(encoding='utf-8')
 
 
 def function_source(src, name):
