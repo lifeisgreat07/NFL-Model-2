@@ -287,7 +287,7 @@ The full text of every stage, finished or planned, is in
   Order at the top of that section. 36, 37 done; 38's neutral sites decided
   2026-10-09 (no home edge, a declared rule); 40 in January.
 - **Stages 45 to 49**: all approved items done by 2026-10-08 (46's 6 and 9 approved 2026-10-09, 8 dropped; 47's 13 and 14 approved). **50 to 61**: multi-sport, NHL then NBA (Mark, 2026-10-05); 50 to 53, 55 to 57 and 59 done (52, the NFL's move to `src/sports/nfl/`, merged 2026-10-08 as #351); 54, 58 and 60 in part; 61's live picks wait for Stage 65.
-- **Stages 62 to 67 (Mark, 2026-10-09)**: 62 one site, one look (shared theme, sport icons, NHL logo size); 63 boards that show what happened; 64 a day at a time (layout chosen: a day strip with tap-to-expand rows); 65 the NBA goes live on GitHub's runners; 66 the home page, audited and redone for the best UX; 67 the display name "Sportalytics" (no repo rename). Text at the end of `docs/history/09-more-sports.md`.
+- **Stages 62 to 67 (Mark, 2026-10-09)**: 62 one site, one look (shared theme, sport icons, NHL logo size); 63 boards that show what happened; 64 a day at a time (layout chosen: a day strip with tap-to-expand rows); 65 the NBA goes live on GitHub's runners; 66 the home page, audited and redone for the best UX; 67 the display name "Sportalytics" (no repo rename). Text at the end of `docs/history/09-more-sports.md`, followed by **Stage 68, the 2026-10-09 Fable audit** (29 items in order; item 1 merged as #380).
 
 ## Ending a session
 

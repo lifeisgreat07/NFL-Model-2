@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-09, 19:10 UTC (session 1009b wrap-up; no PR open)
+Last updated: 2026-10-10, 04:00 UTC (session 1010a: Stage 68 written; #380 merged)
 
 ---
 
@@ -43,7 +43,12 @@ through the playoffs.
 **Tuesday 10-13:** week 5 is graded; Stage 21 (`s21-insights`) can start,
 rebased across #351's moves. 11:00 UTC is the slot guard's first real test.
 
-**Single next action:** Stage 21 once week 5 is graded (Tue 10-13); before
+**Stage 68 (the 2026-10-09 Fable audit, 29 items)** is the queue between the
+dated checks: item 1 (pipefail, #380) is merged; items 4 to 6 must land
+before 10-19/10-20. Text at the end of `docs/history/09-more-sports.md`;
+every finding's verdict is in the Audit Response Log.
+
+**Single next action:** Stage 68 item 2 (push retry); Stage 21 once week 5 is graded (Tue 10-13); before
 that, check the first NBA daily run and the Saturday refresh slot's first run.
 
 ## Open work, and what each is waiting on
@@ -55,6 +60,7 @@ that, check the first NBA daily run and the Saturday refresh slot's first run.
 | Stage 39 | Items 2, 3, 4, 7 merged | 2's `game_type`; 1's rest; 5 in December; 6 |
 | Stage 42 | Item 1 merged (#358) | Its other items |
 | Stage 43; 44 | Open | Nothing |
+| Stage 68 (Fable audit) | Item 1 merged (#380) | Items 2-29 in order; Mark on E10, E15, U1-U3, U11, U27, U29-U36, U44, E22/24/25/28 |
 | Stage 40 | Not to be touched | Mark |
 
 ## Queued, in order
