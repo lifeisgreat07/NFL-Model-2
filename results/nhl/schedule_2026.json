@@ -904,7 +904,7 @@
    "start_utc": "2026-10-10T17:00:00Z",
    "home": "BOS",
    "away": "PHI",
-   "status": "scheduled",
+   "status": "in_progress",
    "game_type": "regular",
    "home_score": null,
    "away_score": null,
