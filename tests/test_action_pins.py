@@ -36,7 +36,7 @@ PINNED = {
     'actions/setup-python': 25,
     'actions/setup-node': 4,
     'actions/cache': 1,
-    'actions/upload-artifact': 2,
+    'actions/upload-artifact': 4,
     'actions/download-artifact': 1,
     'actions/upload-pages-artifact': 1,
     'actions/deploy-pages': 1,
