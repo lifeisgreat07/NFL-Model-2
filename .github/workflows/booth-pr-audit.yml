@@ -60,7 +60,7 @@ on:
       pr_number:
         description: 'PR number to audit'
         required: true
-        type: string
+        type: number
 
 permissions:
   contents: read
@@ -95,6 +95,24 @@ jobs:
     timeout-minutes: 20
 
     steps:
+      # A dispatch names a PR by number and checks out refs/pull/N/head,
+      # which for a fork is a stranger's code; the steps below install its
+      # requirements and run its tests with Booth's tokens in reach. A fork's
+      # own pull_request runs get no secrets from GitHub; a dispatch would
+      # (Stage 68 item 7, the 2026-10-09 audit). So a dispatch stops here
+      # unless the PR's head is in this repository, or GitHub cannot say.
+      - name: Refuse a pull request from a fork
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ inputs.pr_number }}
+        run: |
+          cross=$(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json isCrossRepository --jq .isCrossRepository)
+          if [ "$cross" != "false" ]; then
+            echo "PR $PR is from a fork, or GitHub would not say: Booth does not run it with this repository's tokens."
+            exit 1
+          fi
+
       - name: Check out the PR branch
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
