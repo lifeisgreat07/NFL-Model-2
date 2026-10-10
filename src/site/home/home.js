@@ -96,16 +96,25 @@ function nhlCard(f){
               'Picks lock game by game', d.rows, 'Open the NHL board');
 }
 
-/* The NBA's live picks start on opening night (Stage 65). Until the daily
-   run has written the season's schedule, the card says when they start. */
-const NBA_OPENING = Date.parse('2026-10-20T23:00:00Z');
+/* Before a day sport's first pick is saved (the NBA until opening night,
+   Stage 65), the card says when picks start, read from the schedule's
+   first game, instead of a record of "—" (Stage 68 item 6). It used to
+   wait for no games within two weeks, which the schedule never allowed. */
+function beforeFirstPick(f){
+  const first = f.first_game ? Date.parse(f.first_game) : NaN;
+  return !f.picks && first > NOW - 3 * HOUR ? first : null;
+}
 function nbaCard(f){
   if(!f || !f.built) return notBuilt('nba', 'NBA');
   const d = dayStatus(f, 'tip-off');
-  const status = d.status || (NOW < NBA_OPENING
-    ? {text:`Live from ${new Date(NBA_OPENING).toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'})}`}
-    : {text:'No games scheduled', cls:'is-quiet'});
-  return card('nba', 'NBA', 'nba/', status, 'Picks lock game by game', d.rows, 'Open the NBA board');
+  const first = beforeFirstPick(f);
+  if(first !== null){
+    const day = new Date(first).toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'});
+    return card('nba', 'NBA', 'nba/', {text:`Live from ${day}`}, 'Picks lock game by game',
+                [['First tip-off', when(first)]], 'Open the NBA board');
+  }
+  return card('nba', 'NBA', 'nba/', d.status || {text:'No games scheduled', cls:'is-quiet'},
+              'Picks lock game by game', d.rows, 'Open the NBA board');
 }
 
 document.getElementById('home-cards').innerHTML = nflCard(HOME.nfl) + nhlCard(HOME.nhl) + nbaCard(HOME.nba);

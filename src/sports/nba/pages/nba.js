@@ -93,6 +93,25 @@ function better(diff){ return diff < 0 ? 'lower' : 'higher'; }
    availability each side was given; where a game had no price it says
    "no price" and why, and that Model A made the pick. */
 const BD = DATA.board;
+/* Opening night, read from the schedule rather than written in three places
+   (Stage 68 item 6): the season's first game and its day. */
+const FIRST_GAME = BD.games.filter(g => g.start).sort((a, b) => a.start.localeCompare(b.start))[0] || null;
+const OPENING_DAY = FIRST_GAME ? FIRST_GAME.day : (BD.live && BD.live.first_day) || '2026-10-20';
+const FMT_TIP = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York'});
+/* Until the first pick is saved, the board says so above the rows, with the
+   backtest's own verdict on Model B against the market (H3). */
+function preseasonHtml(){
+  if(Object.keys(BD.picks || {}).length || !FIRST_GAME) return '';
+  /* The label and the direction come from the results file, as the
+     Model Lab's table's do: nothing here is written by hand. */
+  const h3 = Q.H3 || null;
+  const verdict = h3 && h3.label
+    ? ` Before the season, the backtest's answer to H3 was <b>${escapeHtml(h3.label)}</b>: on ${escapeHtml(CONFIRM)}, Model B's log loss was <b>${better(h3.diff)}</b> than the market alone's (${signed(h3.diff, 4)}), and the page will say how it goes live.`
+    : '';
+  return `<div class="nba-preseason" role="note"><p><b>No picks yet.</b> The first is saved by the run before the season's first tip-off, `
+    + `${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))} at ${escapeHtml(FMT_TIP.format(new Date(FIRST_GAME.start)))} ET, and never changed.${verdict}</p>`
+    + `<button type="button" class="nba-to-lab">See the backtest in the Model Lab</button></div>`;
+}
 function stateHtml(kind, title, text){
   return `<div class="state state--${kind}" role="status"><span class="state-title">${title}</span>${text ? `<p>${text}</p>` : ''}</div>`;
 }
@@ -383,6 +402,9 @@ function rowHtml(g, p, nowMs){
     <div class="nba-row-detail" id="${id}" hidden>${p ? pickedCard(g, p) : waitingCard(g)}</div>
   </li>`;
 }
+function labLinks(root){
+  root.querySelectorAll('.nba-to-lab').forEach(b => b.addEventListener('click', () => showPage('modellab', {focus: true})));
+}
 let currentDay = null;
 function renderBoard(){
   const grid = document.getElementById('game-grid');
@@ -392,7 +414,7 @@ function renderBoard(){
     document.getElementById('week-step').closest('.filter-row').style.display = 'none';
     document.getElementById('nba-day-strip').innerHTML = '';
     grid.innerHTML = stateHtml('waiting', 'The board fills from the first daily run',
-      `Picks start on opening night, ${escapeHtml(FMT_DAY.format(dayDate('2026-10-20')))}. The daily run saves each game's pick before tip-off and never changes it.`);
+      `Picks start on opening night, ${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))}. The daily run saves each game's pick before tip-off and never changes it.`);
     return;
   }
   const games = (WEEKS[currentWeek] || []).slice().sort((a, b) => (a.start || '').localeCompare(b.start || '') || a.id.localeCompare(b.id));
@@ -423,11 +445,13 @@ function renderBoard(){
   const head = `<div class="nba-day-top"><h3 class="nba-day-title">${title}</h3>`
     + `<p class="nba-day-summary" aria-live="polite">${daySummary(dayGames, BD.picks)}</p></div>`;
   if(!dayGames.length){
-    grid.innerHTML = head + (games.length ? '' : stateHtml('waiting', 'No games this week', ''));
+    grid.innerHTML = head + preseasonHtml() + (games.length ? '' : stateHtml('waiting', 'No games this week', ''));
+    labLinks(grid);
     return;
   }
   const nowMs = Date.now();
-  grid.innerHTML = head + `<ul class="nba-rows">${dayGames.map(g => rowHtml(g, BD.picks[g.id], nowMs)).join('')}</ul>`;
+  grid.innerHTML = head + preseasonHtml() + `<ul class="nba-rows">${dayGames.map(g => rowHtml(g, BD.picks[g.id], nowMs)).join('')}</ul>`;
+  labLinks(grid);
   grid.querySelectorAll('.nba-row').forEach(btn => btn.addEventListener('click', () => {
     const open = btn.getAttribute('aria-expanded') !== 'true';
     btn.setAttribute('aria-expanded', String(open));
@@ -481,7 +505,7 @@ function renderMethod(){
     <p class="nba-lede"><b>Model A</b> reads three numbers about a game, each home minus away. Two are team ratings from a ridge regression of every earlier game&#39;s margin, recent games counting more (half as much every ${B.H_days} days): one on points, one on points per 100 possessions. The third is availability: the share of each team&#39;s expected minutes that plays, where a player&#39;s expected minutes are his recent minutes per team game. A logistic regression turns the three into a home-win probability.</p>
     <p class="nba-lede"><b>Model B</b> is Model A plus the market&#39;s home-win probability: ESPN&#39;s moneyline with the bookmaker&#39;s margin taken out evenly, the closing price where there is one.</p>
     <p class="nba-lede"><b>The test.</b> Every regular-season, play-in and playoff game from ${seasonLabel(P.training_from_season)} on. Before each game day both models are refitted on every earlier game and predict that day&#39;s games, so nothing a game did is known before it. The settings were chosen on ${VALIDATE} only, then fixed, and ${CONFIRM} were scored once. ${P.budget_m} questions shared a ${pct(P.alpha)} error budget, so each interval is at ${pct(1 - P.alpha / P.budget_m, 2)}.</p>
-    <p class="nba-lede"><b>The live picks</b> (from ${escapeHtml(FMT_DAY.format(dayDate('2026-10-20')))}, registered in <code>experiments/nba/stage65/registry.json</code> before the first was saved): each game's pick is saved by the last run before tip-off and never changed. Model B makes it with ESPN's pre-game price; when ESPN has none, Kalshi's game market is the named fallback, used only when its two sides are quoted within five cents, and the card says so. With neither, the card says <b>no price</b> and Model A makes the pick. Availability comes from ESPN's injury report: every player not listed Out counts as playing.</p>
+    <p class="nba-lede"><b>The live picks</b> (from ${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))}, registered in <code>experiments/nba/stage65/registry.json</code> before the first was saved): each game's pick is saved by the last run before tip-off and never changed. Model B makes it with ESPN's pre-game price; when ESPN has none, Kalshi's game market is the named fallback, used only when its two sides are quoted within five cents, and the card says so. With neither, the card says <b>no price</b> and Model A makes the pick. Availability comes from ESPN's injury report: every player not listed Out counts as playing.</p>
     <p class="nba-lede"><b>What the backtest knew that a live pick would not:</b> who actually played, from the box score. A live pick would know only the injury report before tip-off. The registration measures that gap (M2) once there are live games to measure it on.</p>
     <h2 class="section-title">The games</h2>
     <p class="nba-lede">Box scores are ESPN&#39;s. Where ESPN&#39;s is empty (about 500 games of 2015-16 to 2017-18, and six play-in games of 2020-21) they come from SportsDataverse&#39;s copy, and the few games neither has are left out and named in the repository.</p>

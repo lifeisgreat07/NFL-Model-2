@@ -1,0 +1,52 @@
+{
+  "target": "src/site/home.py",
+  "tests": "tests/test_nba_preseason.py",
+  "cases": [
+    {
+      "id": "preseason-picks-never-counted",
+      "why": "the card thinks no pick is ever saved and says 'Live from' all season",
+      "find": "'picks': len(graded),",
+      "replace": "'picks': 0,",
+      "expect_caught_by": "test_the_card_knows_the_first_game_and_how_many_picks_are_saved"
+    },
+    {
+      "id": "preseason-last-game-as-first",
+      "why": "opening night is read as the season's last game",
+      "find": "            'first_game': season_starts[0] if season_starts else None,",
+      "replace": "            'first_game': season_starts[-1] if season_starts else None,",
+      "expect_caught_by": "test_the_card_knows_the_first_game_and_how_many_picks_are_saved"
+    },
+    {
+      "id": "preseason-home-keys-on-games",
+      "target": "src/site/home/home.js",
+      "why": "the card says 'Live from' even after picks are saved",
+      "find": "  return !f.picks && first > NOW - 3 * HOUR ? first : null;",
+      "replace": "  return first > NOW - 3 * HOUR ? first : null;",
+      "expect_caught_by": "test_the_home_card_keys_on_no_picks_not_on_no_games"
+    },
+    {
+      "id": "preseason-board-hand-date",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the Methodology's opening night goes back to a date typed by hand",
+      "find": "(from ${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))}",
+      "replace": "(from ${escapeHtml(FMT_DAY.format(dayDate('2026-10-20')))}",
+      "expect_caught_by": "test_the_board_reads_opening_night_from_the_schedule"
+    },
+    {
+      "id": "preseason-panel-after-picks",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the 'No picks yet' panel stays up after the first pick is saved",
+      "find": "  if(Object.keys(BD.picks || {}).length || !FIRST_GAME) return '';",
+      "replace": "  if(!FIRST_GAME) return '';",
+      "expect_caught_by": "test_the_board_says_no_picks_yet_with_the_backtests_h3_answer"
+    },
+    {
+      "id": "preseason-verdict-written-by-hand",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the note's direction stops following the results file",
+      "find": "log loss was <b>${better(h3.diff)}</b> than",
+      "replace": "log loss was <b>higher</b> than",
+      "expect_caught_by": "test_the_board_says_no_picks_yet_with_the_backtests_h3_answer"
+    }
+  ]
+}
