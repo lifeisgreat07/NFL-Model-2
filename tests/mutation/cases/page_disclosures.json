@@ -1,0 +1,21 @@
+{
+  "target": "src/sports/nhl/pages/nhl.js",
+  "tests": "tests/test_page_disclosures.py",
+  "cases": [
+    {
+      "id": "disclose-edge-said-of-any-setting",
+      "why": "the grid-edge note is printed whatever was chosen, so the page claims an edge that is not there",
+      "find": "  if(v !== top || next === undefined) return '';\n",
+      "replace": "  if(next === undefined) return '';\n",
+      "expect_caught_by": "test_it_is_not_said_of_a_setting_inside_the_grid"
+    },
+    {
+      "id": "disclose-nba-neutral-gone",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the NBA's Methodology stops saying a neutral-site game keeps the home edge",
+      "find": "    <p class=\"nba-lede\"><b>Neutral sites.</b>",
+      "replace": "    <p class=\"nba-lede\"><b>Venues.</b>",
+      "expect_caught_by": "test_methodology_says_neutral_sites_keep_the_home_edge"
+    }
+  ]
+}
