@@ -732,4 +732,5 @@ renderMethod();
 renderReliability();
 renderTeams();
 renderChanges();
+installRoutes(showPage);
 document.body.classList.remove('is-entering');

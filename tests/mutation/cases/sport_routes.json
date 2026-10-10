@@ -1,0 +1,35 @@
+{
+ "target": "src/core/routes.js",
+ "tests": "tests/test_sport_routes.py",
+ "cases": [
+  {
+   "id": "routes-link-ignored",
+   "why": "a link to the Methodology opens the board",
+   "find": "  if(first) show(first);\n",
+   "replace": "",
+   "expect_caught_by": "test_a_link_to_a_page_opens_it_and_back_follows"
+  },
+  {
+   "id": "routes-back-leaves",
+   "why": "the back button changes the address but not the page",
+   "find": "  window.addEventListener('popstate', follow);\n",
+   "replace": "",
+   "expect_caught_by": "test_a_link_to_a_page_opens_it_and_back_follows"
+  },
+  {
+   "id": "routes-unknown-hash-shown",
+   "why": "a typed hash that names no page leaves an empty page",
+   "find": "    return known.has(h) ? h : null;\n",
+   "replace": "    return h || null;\n",
+   "expect_caught_by": "test_a_link_to_a_page_opens_it_and_back_follows"
+  },
+  {
+   "id": "routes-nba-not-installed",
+   "target": "src/sports/nba/pages/nba.js",
+   "why": "the NBA's pages never take a route",
+   "find": "installRoutes(showPage);\n",
+   "replace": "",
+   "expect_caught_by": "test_each_sport_installs_the_shared_routes"
+  }
+ ]
+}
