@@ -1,7 +1,7 @@
 {
   "name": "Sportalytics",
   "short_name": "Sportalytics",
-  "description": "NFL and NHL picks, made before each game and graded after it.",
+  "description": "NFL, NHL and NBA picks, made before each game and graded after it.",
   "start_url": "../",
   "scope": "../",
   "display": "standalone",
