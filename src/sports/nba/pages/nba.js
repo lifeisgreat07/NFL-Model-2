@@ -515,6 +515,21 @@ function renderModelLab(){
 }
 
 /* ---------- methodology ---------- */
+/* Stage 68 item 26 (the 2026-10-09 audit's E21): a tuned setting chosen at
+   the top of the grid the registration searched is said so, with how
+   little the validation score moved across the top of it. Read from the
+   results file, so the page cannot say it of a setting that is not. */
+function edgeNote(tuning, key, label){
+  if(!tuning || !tuning.grid || !tuning.chosen) return '';
+  const vals = [...new Set(tuning.grid.map(g => g[key]))].sort((a, b) => a - b);
+  const top = vals[vals.length - 1], next = vals[vals.length - 2], v = tuning.chosen[key];
+  if(v !== top || next === undefined) return '';
+  const at = k => tuning.grid.find(g => g.H_days === tuning.chosen.H_days && g[key] === k);
+  if(!at(top) || !at(next)) return '';
+  const gap = Math.abs(at(top).log_loss - at(next).log_loss);
+  const n = x => Number(x).toLocaleString('en-US');
+  return `<p class="nba-lede"><b>At the edge of the grid.</b> The chosen ${label}, ${n(v)}, is the largest the registered grid searched. The validation log loss moved by ${gap.toFixed(5)} between ${n(next)} and ${n(v)}, so a wider search would be unlikely to move the picks much; it is for next season's registration, not a change to this one.</p>`;
+}
 function renderMethod(){
   const cov = DATA.coverage.map(c => `<tr><th scope="row">${seasonLabel(c.season)}</th><td class="num">${num(c.games)}</td><td class="num">${num(c.priced)}</td><td class="num">${num(c.closing)}</td></tr>`).join('');
   document.getElementById('method-body').innerHTML = `
@@ -523,6 +538,8 @@ function renderMethod(){
     <p class="nba-lede"><b>The test.</b> Every regular-season, play-in and playoff game from ${seasonLabel(P.training_from_season)} on. Before each game day both models are refitted on every earlier game and predict that day&#39;s games, so nothing a game did is known before it. The settings were chosen on ${VALIDATE} only, then fixed, and ${CONFIRM} were scored once. ${P.budget_m} questions shared a ${pct(P.alpha)} error budget, so each interval is at ${pct(1 - P.alpha / P.budget_m, 2)}.</p>
     <p class="nba-lede"><b>The live picks</b> (from ${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))}, registered in <code>experiments/nba/stage65/registry.json</code> before the first was saved): each game's pick is saved by the last run before tip-off and never changed. Model B makes it with ESPN's pre-game price; when ESPN has none, Kalshi's game market is the named fallback, used only when its two sides are quoted within five cents, and the card says so. With neither, the card says <b>no price</b> and Model A makes the pick. Availability comes from ESPN's injury report: every player not listed Out counts as playing.</p>
     <p class="nba-lede"><b>What the backtest knew that a live pick would not:</b> who actually played, from the box score. A live pick would know only the injury report before tip-off. The registration measures that gap (M2) once there are live games to measure it on.</p>
+    ${edgeNote(DATA.tuning, 'lambda', 'ridge strength')}
+    <p class="nba-lede"><b>Neutral sites.</b> A game at a neutral site (the NBA Cup final, a game abroad) still gives the listed home team its home edge. The NFL has a declared rule for those games since v2.6; none has been registered for basketball.</p>
     <h2 class="section-title">The games</h2>
     <p class="nba-lede">Box scores are ESPN&#39;s. Where ESPN&#39;s is empty (about 500 games of 2015-16 to 2017-18, and six play-in games of 2020-21) they come from SportsDataverse&#39;s copy, and the few games neither has are left out and named in the repository.</p>
     <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">Games and prices per season</caption>
@@ -569,6 +586,7 @@ function calibrationHtml(graded){
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
     ${calibrationHtml(gradedPicks())}
+    <p class="nba-lede"><b>The drift check leans toward flagging.</b> Its baseline was measured with each game's actual players, from the box score: knowing who played lowered the backtest's log loss by ${(-Q.M1.diff).toFixed(3)} (M1). A live pick knows only the injury report before tip-off, so live log loss is expected to run up to about that much worse for a reason that is not drift, and the check may flag sooner than a like-for-like comparison would. The registration says so (<code>experiments/nba/stage65/registry.json</code>), and M2 measures the gap once there are live games.</p>
     <h2 class="section-title">Before anything was fitted</h2>
     <p class="nba-lede">The questions, the seasons, the settings to search, the bootstrap and the labels were written down and committed on ${escapeHtml(DATA.registered)} (<code>experiments/nba/stage61/registry.json</code>), before any NBA feature was computed on a real game. H3 had been expected to come back INCONCLUSIVE; it came back ${Q.H3.label}, and it is reported as it came out. Nothing was re-run or re-tuned.</p>
     <h2 class="section-title">After</h2>

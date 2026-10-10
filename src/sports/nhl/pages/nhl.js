@@ -611,13 +611,30 @@ function renderModelLab(){
 }
 
 /* ---------- methodology ---------- */
+/* Stage 68 item 26 (the 2026-10-09 audit's E21): a tuned setting chosen at
+   the top of the grid the registration searched is said so, with how
+   little the validation score moved across the top of it. Read from the
+   results file, so the page cannot say it of a setting that is not. */
+function edgeNote(tuning, key, label){
+  if(!tuning || !tuning.grid || !tuning.chosen) return '';
+  const vals = [...new Set(tuning.grid.map(g => g[key]))].sort((a, b) => a - b);
+  const top = vals[vals.length - 1], next = vals[vals.length - 2], v = tuning.chosen[key];
+  if(v !== top || next === undefined) return '';
+  const at = k => tuning.grid.find(g => g.H_days === tuning.chosen.H_days && g[key] === k);
+  if(!at(top) || !at(next)) return '';
+  const gap = Math.abs(at(top).log_loss - at(next).log_loss);
+  const n = x => Number(x).toLocaleString('en-US');
+  return `<p class="nhl-lede"><b>At the edge of the grid.</b> The chosen ${label}, ${n(v)}, is the largest the registered grid searched. The validation log loss moved by ${gap.toFixed(5)} between ${n(next)} and ${n(v)}, so a wider search would be unlikely to move the picks much; it is for next season's registration, not a change to this one.</p>`;
+}
 function renderMethod(){
   const b = DATA.backtest;
   document.getElementById('method-body').innerHTML = `
     <p class="nhl-lede"><b>Model A</b> reads three numbers about a game: the two clubs&#39; goal ratings, their shot ratings, and their starting goalies&#39; ratings, each as a difference, home minus away. Ratings come from every game since 2015-16 that ended before the game&#39;s day, recent games counting more (half as much every ${b ? b.H_days : 120} days). A logistic regression turns the three into a home-win probability, refitted before every game day.</p>
     <p class="nhl-lede"><b>Model B</b> is Model A plus the market&#39;s home-win probability: the two-way moneyline with the bookmaker&#39;s margin taken out evenly. Where a game has no price when its pick is saved, Model A makes the pick.</p>
     <p class="nhl-lede"><b>A pick</b> is saved once, by the last run before puck drop (14:00 or 21:00 UTC), with the projected goalies Daily Faceoff lists and the market price at that moment, and is never rewritten. A goalie no roster matches falls back to his club&#39;s last starter, and the card says so. Only a game that is final is graded; a postponed or cancelled one never counts.</p>
-    <p class="nhl-lede"><b>What the backtest knew that the live pick does not:</b> it used each game&#39;s actual starting goalie, from the box score. The live pick knows only the projection. The registration measures that gap once there are games to measure it on.</p>`;
+    <p class="nhl-lede"><b>What the backtest knew that the live pick does not:</b> it used each game&#39;s actual starting goalie, from the box score. The live pick knows only the projection. The registration measures that gap once there are games to measure it on.</p>
+    ${edgeNote(DATA.tuning, 'K_shots', 'shot-rating K')}
+    <p class="nhl-lede"><b>Neutral sites.</b> A game at a neutral site (a Global Series game abroad, say) still gives the listed home club its home edge. The NFL has a declared rule for those games since v2.6; none has been registered for hockey.</p>`;
 }
 
 /* ---------- checking ---------- */
