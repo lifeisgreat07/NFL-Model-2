@@ -20,8 +20,8 @@
       "id": "deploy-job-loses-its-timeout",
       "target": ".github/workflows/deploy-pages.yml",
       "why": "the second job of a two-job workflow loses its timeout, which a check reading only each file's first job would miss",
-      "find": "    needs: build\n    runs-on: ubuntu-latest\n    timeout-minutes: 10",
-      "replace": "    needs: build\n    runs-on: ubuntu-latest",
+      "find": "    needs: build\n    runs-on: ubuntu-24.04\n    timeout-minutes: 10",
+      "replace": "    needs: build\n    runs-on: ubuntu-24.04",
       "expect_caught_by": "test_every_job_has_a_timeout"
     }
   ]
