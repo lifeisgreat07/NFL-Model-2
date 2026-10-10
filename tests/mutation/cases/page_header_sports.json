@@ -1,0 +1,21 @@
+{
+  "target": "src/sports/nhl/pages/body.html",
+  "tests": "tests/test_page_header_sports.py",
+  "cases": [
+    {
+      "id": "header-nhl-eyebrow-drifts",
+      "why": "the NHL's Day Board eyebrow says something the sidebar does not, as it did until Stage 68",
+      "find": "        <div class=\"page-eyebrow\">This Week</div>\n",
+      "replace": "        <div class=\"page-eyebrow\">Day by Day</div>\n",
+      "expect_caught_by": "test_every_page_header_agrees_with_the_sidebar"
+    },
+    {
+      "id": "header-nba-group-renamed",
+      "target": "src/sports/nba/pages/body.html",
+      "why": "the NBA's first group goes back to its own name, unlike the other two sports'",
+      "find": "<div class=\"nav-group-label\">This Week</div>",
+      "replace": "<div class=\"nav-group-label\">This Season</div>",
+      "expect_caught_by": "test_the_first_group_has_one_name_in_every_sport"
+    }
+  ]
+}
