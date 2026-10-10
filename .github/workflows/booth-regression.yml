@@ -23,11 +23,21 @@ name: Booth regression fixture
 on:
   workflow_dispatch:
     inputs:
+      # A choice, not free text (Stage 68 item 30, the 2026-10-09 audit's
+      # E10): the id reaches shell lines below in a job that pushes to main,
+      # and the cron-job.org token (Actions read and write) can dispatch
+      # this workflow. Mark declined env: inputs in September because only
+      # he could dispatch; that token changed it, and he reopened it on
+      # 2026-10-09. tests/test_dispatch_inputs.py holds the options equal to
+      # the folders under tests/booth_fixtures/.
       fixture:
         description: 'Fixture id (a directory under tests/booth_fixtures/)'
         required: true
         default: 'fixed-everywhere'
-        type: string
+        type: choice
+        options:
+          - cross-sport-leak
+          - fixed-everywhere
       record_baseline:
         description: 'Commit the result as the fixture baseline'
         required: false

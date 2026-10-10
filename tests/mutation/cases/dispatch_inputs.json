@@ -1,0 +1,28 @@
+{
+  "target": ".github/workflows/booth-regression.yml",
+  "tests": "tests/test_dispatch_inputs.py",
+  "cases": [
+    {
+      "id": "dispatch-fixture-free-text",
+      "why": "the fixture id goes back to free text pasted into shell lines in a job that pushes to main",
+      "find": "        type: choice\n        options:\n          - cross-sport-leak\n          - fixed-everywhere\n",
+      "replace": "        type: string\n",
+      "expect_caught_by": "test_a_free_text_input_reaches_the_shell_only_through_env"
+    },
+    {
+      "id": "dispatch-fixture-choice-drifts",
+      "why": "a fixture folder exists that the choice cannot select, so its baseline can never be recorded",
+      "find": "          - cross-sport-leak\n          - fixed-everywhere\n",
+      "replace": "          - fixed-everywhere\n",
+      "expect_caught_by": "test_the_fixture_choices_are_the_fixture_folders"
+    },
+    {
+      "id": "dispatch-notes-inline",
+      "target": ".github/workflows/nfl-run-backtest.yml",
+      "why": "the backtest's free-text notes are pasted into the shell again",
+      "find": "            echo \"| notes | ${NOTES:-_none given_} |\"\n",
+      "replace": "            echo \"| notes | ${{ inputs.notes || '_none given_' }} |\"\n",
+      "expect_caught_by": "test_a_free_text_input_reaches_the_shell_only_through_env"
+    }
+  ]
+}

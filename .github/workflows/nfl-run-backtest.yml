@@ -64,6 +64,10 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Record run context
+        env:
+          # Free text, so it reaches the shell as a variable, never as code
+          # (Stage 68 item 30).
+          NOTES: ${{ inputs.notes }}
         run: |
           {
             echo "### Run context"
@@ -73,7 +77,7 @@ jobs:
             echo "| script | \`${{ inputs.script }}\` |"
             echo "| commit | \`${{ github.sha }}\` |"
             echo "| requested by | @${{ github.actor }} |"
-            echo "| notes | ${{ inputs.notes || '_none given_' }} |"
+            echo "| notes | ${NOTES:-_none given_} |"
             echo ""
             echo "Config values this run used:"
             echo ""
