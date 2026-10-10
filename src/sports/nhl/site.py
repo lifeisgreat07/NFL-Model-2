@@ -33,7 +33,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from src.core import colour
+from src.core import colour, pick_proof
 from src.core.sport import sport_paths
 from src.sports.nhl import colours, teams
 from src.sports.nhl.schedule import current_season
@@ -102,6 +102,8 @@ def payload(season: int, now: datetime) -> dict[str, Any]:
         'schedule_as_of': sched.get('as_of'),
         'games': [slim_game(g) for g in sched['games'] if g.get('game_type') in ('regular', 'playoff')],
         'picks': picks,
+        # Stage 68 item 20: when each pick file reached the public history.
+        'proof': pick_proof.proof(folder) if folder.exists() else {},
         'teams': {abbr: {'name': name, 'logo': colours.LOGO.format(abbr=abbr, theme='dark'),
                          'logo_light': colours.LOGO.format(abbr=abbr, theme='light')}
                   for abbr, name in teams.NAMES.items()},

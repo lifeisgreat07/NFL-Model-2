@@ -69,3 +69,6 @@
 .nba-table td.num, .nba-table th.num{text-align:right; font-variant-numeric:tabular-nums;}
 .nba-table tbody th{text-transform:none; letter-spacing:0; font-size:var(--fs-13); font-weight:600; color:var(--text); white-space:nowrap;}
 .nba-table tr.nba-chosen td, .nba-table tr.nba-chosen th{font-weight:700; color:var(--text);}
+/* Stage 68 item 20. */
+.nba-proof{margin-top:var(--s2); font-size:var(--fs-12); color:var(--text-2);}
+.nba-proof a{color:inherit;}

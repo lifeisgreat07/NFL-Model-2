@@ -1,0 +1,35 @@
+{
+ "target": "src/core/pick_proof.py",
+ "tests": "tests/test_pick_proof.py",
+ "cases": [
+  {
+   "id": "proof-reads-a-shallow-clone",
+   "why": "a shallow clone's one commit would seem to add every pick at once",
+   "find": "        if git(['rev-parse', '--is-shallow-repository'], root).strip() != 'false':\n            return {}\n",
+   "replace": "",
+   "expect_caught_by": "test_a_shallow_clone_or_a_git_failure_gives_nothing"
+  },
+  {
+   "id": "proof-takes-the-last-commit",
+   "why": "a later change would replace the commit that first saved the pick",
+   "find": "        if status == 'A' and gid not in out:",
+   "replace": "        if status in ('A', 'M'):",
+   "expect_caught_by": "test_each_file_gets_the_commit_that_added_it_and_later_changes_are_counted"
+  },
+  {
+   "id": "proof-hides-changes",
+   "why": "a pick changed after it was saved shows no sign of it",
+   "find": "            out[gid]['changes'] += 1",
+   "replace": "            pass",
+   "expect_caught_by": "test_each_file_gets_the_commit_that_added_it_and_later_changes_are_counted"
+  },
+  {
+   "id": "proof-nba-after-start-reads-before",
+   "target": "src/sports/nba/pages/nba.js",
+   "why": "a pick committed after tip-off is shown as made before it",
+   "find": "before ? 'before the start' : '<b>after the start</b>'",
+   "replace": "'before the start'",
+   "expect_caught_by": "test_the_page_and_the_grades_carry_it"
+  }
+ ]
+}

@@ -40,7 +40,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from src.core import colour
+from src.core import colour, pick_proof
 from src.core.sport import sport_paths
 from src.sports.nba import colours, teams
 from src.sports.nba.schedule import current_season
@@ -139,6 +139,8 @@ def board(season: int) -> dict[str, Any]:
         'schedule_as_of': (sched or {}).get('as_of'),
         'games': [slim_game(g) for g in (sched or {}).get('games', [])],
         'picks': picks,
+        # Stage 68 item 20: when each pick file reached the public history.
+        'proof': pick_proof.proof(folder) if folder.exists() else {},
         'teams': {abbr: {'name': name, 'logo': colours.logo(abbr, 'dark'), 'logo_light': colours.logo(abbr, 'light')}
                   for abbr, name in teams.NAMES.items()},
         'drift': _maybe(PATHS.results / f'drift_{season}.json'),

@@ -262,7 +262,18 @@ function pickedCard(g, p){
     <div class="card-keys">${key('b')}${key('market')}${key('a')}</div>
     <div class="market-ref">${marketText(g, p)}</div>
     <div class="card-qbs">${availText(g, p)}</div>
+    ${proofLine(g, p, BD.proof)}
   </div>`;
+}
+/* Stage 68 item 20: the commit that put this pick in the public history,
+   when, and whether that was before the start (src/core/pick_proof.py). */
+function proofLine(g, p, proof){
+  const pr = (proof || {})[g.id];
+  if(!pr || !/^[0-9a-f]{40}$/.test(pr.sha)) return '';
+  const before = g.start && pr.committed < g.start;
+  const link = `<a href="https://github.com/lifeisgreat07/NFL-Model-2/commit/${pr.sha}" rel="noopener">${pr.sha.slice(0, 7)}</a>`;
+  const later = pr.changes ? ` Changed ${pr.changes === 1 ? 'once' : `${pr.changes} times`} since.` : '';
+  return `<div class="nba-proof">In the public history ${escapeHtml(whenEt(new Date(pr.committed)))} (commit ${link}), ${before ? 'before the start' : '<b>after the start</b>'}.${later}</div>`;
 }
 /* A saved pick is a locked pick: the daily run writes a game's pick file only
    when it locks it, at the last run before tip-off (src/sports/nba/lock.py). */
