@@ -534,8 +534,44 @@ function renderMethod(){
 }
 
 /* ---------- checking ---------- */
+/* ---------- calibration (Stage 68 item 21) ----------
+   The NHL's table (src/sports/nhl/pages/nhl.js), on the NBA's live picks:
+   how sure each graded pick was against how often picks that sure came
+   true. The chance is the one the model that made the pick gave its side. */
+const CAL_BINS = [[0.5, 0.55], [0.55, 0.6], [0.6, 0.65], [0.65, 0.7], [0.7, 1.01]];
+const CAL_MIN = 30;
+function pickChance(p, g){
+  const home = p.by === 'model_b' && p.b !== null && p.b !== undefined ? p.b : p.a;
+  return p.pick === g.home ? home : 1 - home;
+}
+function gradedPicks(){
+  const byId = Object.fromEntries(BD.games.map(g => [g.id, g]));
+  return Object.entries(BD.picks || {}).map(([id, p]) => ({p, g: byId[id]}))
+    .filter(x => x.g && (x.p.result === 'correct' || x.p.result === 'wrong'));
+}
+function calibrationHtml(graded){
+  if(!graded.length){
+    return `<h2 class="section-title">How sure, and how often right</h2>
+    <p class="nba-lede">No NBA pick has been graded yet. From opening night this table sets each graded pick's chance beside how often picks that sure came true.</p>`;
+  }
+  const rows = CAL_BINS.map(([lo, hi]) => {
+    const inBin = graded.filter(x => { const c = pickChance(x.p, x.g); return c >= lo && c < hi; });
+    const n = inBin.length;
+    const said = n ? inBin.reduce((t, x) => t + pickChance(x.p, x.g), 0) / n : null;
+    const right = n ? inBin.filter(x => x.p.result === 'correct').length / n : null;
+    const label = hi > 1 ? `${Math.round(lo * 100)}% and up` : `${Math.round(lo * 100)}% to ${Math.round(hi * 100)}%`;
+    return `<tr><th scope="row">${label}</th><td class="num">${n}</td><td class="num">${said === null ? '' : pct(said, 1)}</td><td class="num">${right === null ? '' : pct(right, 1)}</td></tr>`;
+  }).join('');
+  const thin = graded.length < CAL_MIN * CAL_BINS.length;
+  return `<h2 class="section-title">How sure, and how often right</h2>
+    <p class="nba-lede">Each graded pick by the chance its model gave the side it picked. A well-calibrated model is right about as often as it says.${thin ? ` With ${graded.length} graded picks, most rows hold too few games to read: a row means little under ${CAL_MIN}.` : ''}</p>
+    <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">Calibration of the graded picks</caption>
+    <thead><tr><th scope="col">The pick's chance</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Said, on average</th><th scope="col" class="num">Right</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
+    ${calibrationHtml(gradedPicks())}
     <h2 class="section-title">Before anything was fitted</h2>
     <p class="nba-lede">The questions, the seasons, the settings to search, the bootstrap and the labels were written down and committed on ${escapeHtml(DATA.registered)} (<code>experiments/nba/stage61/registry.json</code>), before any NBA feature was computed on a real game. H3 had been expected to come back INCONCLUSIVE; it came back ${Q.H3.label}, and it is reported as it came out. Nothing was re-run or re-tuned.</p>
     <h2 class="section-title">After</h2>

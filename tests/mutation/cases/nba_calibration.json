@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nba/pages/nba.js",
+  "tests": "tests/test_nba_calibration.py",
+  "cases": [
+    {
+      "id": "nba-cal-pending-counted",
+      "why": "a pick not graded yet is counted as graded, so the table reads a pending game as wrong",
+      "find": "    .filter(x => x.g && (x.p.result === 'correct' || x.p.result === 'wrong'));\n",
+      "replace": "    .filter(x => x.g);\n",
+      "expect_caught_by": "test_graded_picks_fall_in_their_bins"
+    },
+    {
+      "id": "nba-cal-home-chance-for-away-pick",
+      "why": "an away pick is binned by the home side's chance, so a 62% away pick reads as 38%",
+      "find": "  return p.pick === g.home ? home : 1 - home;\n}\nfunction gradedPicks(){",
+      "replace": "  return home;\n}\nfunction gradedPicks(){",
+      "expect_caught_by": "test_graded_picks_fall_in_their_bins"
+    }
+  ]
+}
