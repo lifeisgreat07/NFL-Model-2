@@ -30,6 +30,8 @@ body{ flex-direction:column; }
 .home-hero{ display:grid; gap:var(--s2); }
 .home-title{ margin:0; font-size:44px; font-weight:800; line-height:1.1; letter-spacing:-.02em; color:var(--text); max-width:24ch; }
 .home-sub{ margin:0; color:var(--text-2); font-size:18px; line-height:1.5; max-width:60ch; }
+.home-who{ margin:0; color:var(--text-3); font-size:var(--fs-14); max-width:60ch; }
+.home-faq p a{ color:var(--accent); }
 /* The scoreboard: each sport's record, worked out from the same files as the cards. */
 .home-score{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--s3); }
 .home-tile{ display:grid; gap:2px; align-content:start; padding:var(--s3) var(--s4); background:var(--surface);
@@ -69,6 +71,8 @@ body{ flex-direction:column; }
 .home-faq{ gap:0; }
 .home-faq h2{ margin-bottom:var(--s1); }
 .home-faq details{ border-bottom:1px solid var(--border); padding:var(--s3) 0; }
+/* The footer's rule closes the page; the last question needs none of its own (U10). */
+.home-faq details:last-of-type{ border-bottom:0; }
 .home-faq summary{ font-size:15px; font-weight:700; color:var(--text); cursor:pointer; min-height:24px; }
 .home-faq p{ margin:var(--s2) 0 0; font-size:var(--fs-14); line-height:1.5; color:var(--text-2); max-width:70ch; }
 .home-links{ display:flex; flex-wrap:wrap; gap:var(--s2) var(--s5); font-size:var(--fs-14); padding-top:var(--s4); border-top:1px solid var(--border); }
