@@ -6,9 +6,6 @@
 const DATA = JSON.parse(document.getElementById('nhl-data').textContent);
 const ET = 'America/New_York';
 
-function escapeHtml(s){
-  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
 function stateHtml(kind, title, text){
   return `<div class="state state--${kind}" role="status"><span class="state-title">${title}</span>${text ? `<p>${text}</p>` : ''}</div>`;
 }

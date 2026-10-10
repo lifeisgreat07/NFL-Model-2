@@ -7,21 +7,24 @@
       "why": "the build stops checking each font against its recorded hash. A file damaged in transit -- the file bridge has already done this to PNGs -- is inlined anyway, and a browser answers a bad font by silently using the fallback, so the page looks almost right and every later measurement is taken in the wrong face.",
       "find": "        if digest != f['sha256']:",
       "replace": "        if False:",
-      "expect_caught_by": "test_a_damaged_font_stops_the_build"
+      "expect_caught_by": "test_a_damaged_font_stops_the_build",
+      "target": "src/core/page_fill.py"
     },
     {
       "id": "font-normal-face-declares-one-weight",
       "why": "the variable file is declared as weight 400 only, so every 600, 700 and 800 on the page is synthesised bold by the browser -- smeared, wider, and measured differently from the real face, while still being 'Plus Jakarta Sans' to anyone who inspects the element.",
       "find": "        weight = '400 800' if f['style'] == 'normal' else '500'",
       "replace": "        weight = '400' if f['style'] == 'normal' else '500'",
-      "expect_caught_by": "test_the_normal_face_covers_every_weight_the_page_uses"
+      "expect_caught_by": "test_the_normal_face_covers_every_weight_the_page_uses",
+      "target": "src/core/page_fill.py"
     },
     {
       "id": "font-unicode-range-dropped",
       "why": "the unicode-range goes, so the latin and latin-ext files both claim every character and the browser picks whichever was declared last for all text -- here the smaller latin-ext subset, which lacks most basic letters.",
       "find": "            f\"unicode-range:{f['unicode_range']};}}\")",
       "replace": "            \"}\")",
-      "expect_caught_by": "test_each_file_becomes_one_rule_carrying_exactly_its_bytes"
+      "expect_caught_by": "test_each_file_becomes_one_rule_carrying_exactly_its_bytes",
+      "target": "src/core/page_fill.py"
     },
     {
       "id": "font-google-link-comes-back",

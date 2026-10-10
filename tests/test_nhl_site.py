@@ -163,7 +163,7 @@ def test_the_script_reads_only_fields_the_builder_writes() -> None:
     returns, so a renamed field cannot leave a page silently empty."""
     js = (site.TEMPLATE / 'nhl.js').read_text(encoding='utf-8')
     src = Path(site.__file__).read_text(encoding='utf-8')
-    body = src[src.index('def payload'):src.index('def font_faces_css')]
+    body = src[src.index('def payload'):src.index('def render')]
     written = set(re.findall(r"^\s+'(\w+)':", body, re.M))
     read = set(re.findall(r'\bDATA\.(\w+)', js))
     assert read and read <= written, sorted(read - written)

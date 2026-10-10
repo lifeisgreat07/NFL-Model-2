@@ -59,7 +59,8 @@
       "why": "the data is put in the page without escaping '<', so a string holding </script> ends the script and the rest is read as markup.",
       "find": "            .replace('<', '\\\\u003c').replace('>', '\\\\u003e').replace('&', '\\\\u0026'))\n",
       "replace": "            )\n",
-      "expect_caught_by": "test_the_page_is_filled_and_its_data_cannot_close_its_script"
+      "expect_caught_by": "test_the_page_is_filled_and_its_data_cannot_close_its_script",
+      "target": "src/core/page_fill.py"
     },
     {
       "id": "site-build-home-not-told-unpublished",

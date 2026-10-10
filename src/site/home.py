@@ -32,6 +32,7 @@ from typing import Any
 import pandas as pd
 
 from src.core.page_comments import strip_page_comments
+from src.core.page_fill import font_faces_css, safe_json
 
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATE = Path(__file__).resolve().parent / 'home'
@@ -134,10 +135,6 @@ def facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
     return {'nfl': nfl_facts(root), 'nhl': nhl_facts(root, now), 'nba': nba_facts(root, now)}
 
 
-def safe_json(obj: Any) -> str:
-    """JSON for a <script> block: nothing in it can close the tag."""
-    return (json.dumps(obj, separators=(',', ':'), ensure_ascii=False)
-            .replace('<', '\\u003c').replace('>', '\\u003e').replace('&', '\\u0026'))
 
 
 def render(data: dict[str, Any], font_faces: str = '') -> str:
@@ -156,22 +153,6 @@ def render(data: dict[str, Any], font_faces: str = '') -> str:
     return html
 
 
-def font_faces_css(font_dir: Path = ROOT / 'assets' / 'fonts') -> str:
-    """The self-hosted face, inlined as every sport's page inlines it."""
-    import base64
-    import hashlib
-    manifest = json.loads((font_dir / 'manifest.json').read_text(encoding='utf-8'))
-    rules = []
-    for f in manifest['files']:
-        data = (font_dir / f['file']).read_bytes()
-        if hashlib.sha256(data).hexdigest() != f['sha256']:
-            raise ValueError(f"{f['file']}: sha256 does not match the manifest")
-        weight = '400 800' if f['style'] == 'normal' else '500'
-        rules.append("@font-face{font-family:'Plus Jakarta Sans';"
-                     f"font-style:{f['style']};font-weight:{weight};font-display:swap;"
-                     f"src:url(data:font/woff2;base64,{base64.b64encode(data).decode('ascii')}) format('woff2');"
-                     f"unicode-range:{f['unicode_range']};}}")
-    return '\n'.join(rules)
 
 
 def main(argv: list[str] | None = None) -> int:
