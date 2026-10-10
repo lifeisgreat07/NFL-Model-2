@@ -45,7 +45,9 @@ jobs:
         # code when it cannot run; neither fails this step (report-only).
         run: |
           set +e
-          pip-audit -r requirements.txt --progress-spinner off --desc on -f markdown -o audit.md
+          # Both files (Stage 68 item 14): the test harness Booth verifies
+          # with is pinned in requirements-dev.txt and runs on every PR.
+          pip-audit -r requirements.txt -r requirements-dev.txt --progress-spinner off --desc on -f markdown -o audit.md
           code=$?
           set -e
           # pip-audit writes no report at all on a clean night (2.10.1, checked

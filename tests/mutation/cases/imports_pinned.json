@@ -1,0 +1,21 @@
+{
+  "target": "requirements.txt",
+  "tests": "tests/test_imports_pinned.py",
+  "cases": [
+    {
+      "id": "imports-scipy-unpinned",
+      "why": "scipy is imported by src/ again with no pin, at whatever version scikit-learn resolves",
+      "find": "scipy==1.17.1\n",
+      "replace": "",
+      "expect_caught_by": "test_every_import_is_pinned_or_explained"
+    },
+    {
+      "id": "imports-audit-runtime-only",
+      "target": ".github/workflows/nightly-dependency-audit.yml",
+      "why": "the nightly audit goes back to reading requirements.txt alone, and the test harness is never audited",
+      "find": "pip-audit -r requirements.txt -r requirements-dev.txt ",
+      "replace": "pip-audit -r requirements.txt ",
+      "expect_caught_by": "test_the_nightly_audit_reads_both_files"
+    }
+  ]
+}
