@@ -107,7 +107,7 @@ jobs:
       || github.event.workflow_run.conclusion == 'success'
       || (github.event.workflow_run.name == 'NFL weekly update'
           && github.event.workflow_run.conclusion == 'failure')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: Check out repo
@@ -179,7 +179,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment:
       name: github-pages

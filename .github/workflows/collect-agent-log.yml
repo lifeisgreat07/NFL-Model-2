@@ -51,7 +51,7 @@ jobs:
   collect:
     # A closed pull request that was not merged has nothing to record.
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Check out repo
