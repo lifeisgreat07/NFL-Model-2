@@ -41,10 +41,10 @@ def read(rel):
 
 def test_the_tab_the_sidebar_and_the_phone_bar_say_the_name():
     t = read_template()
-    assert f'<title>Week Board — {NAME}</title>' in t
-    assert "`${heading.textContent.trim()} — Sportalytics`" in t, (
+    assert f'<title>NFL Week Board — {NAME}</title>' in t
+    assert "`NFL ${heading.textContent.trim()} — Sportalytics`" in t, (
         'the other pages no longer end their tab title with the name')
-    assert f'<h1 class="wordmark">{WORDMARK}</h1>' in t, 'the sidebar heading is not wordmark W2'
+    assert f'<h1 class="wordmark"><a class="wordmark-link" href="../">{WORDMARK}</a></h1>' in t, 'the sidebar heading is not wordmark W2'
     assert f'<h1>{WORDMARK} <span class="topbar-sub">' in t, 'the phone bar is not wordmark W2'
     assert f'<meta name="apple-mobile-web-app-title" content="{NAME}">' in t
 
@@ -52,7 +52,7 @@ def test_the_tab_the_sidebar_and_the_phone_bar_say_the_name():
 def test_every_page_carries_the_wordmark():
     for rel in ('src/sports/nhl/pages/body.html', 'src/sports/nba/pages/body.html'):
         body = read(rel)
-        assert f'<h1 class="wordmark">{WORDMARK}</h1>' in body, f'{rel}: sidebar'
+        assert f'<h1 class="wordmark"><a class="wordmark-link" href="../">{WORDMARK}</a></h1>' in body, f'{rel}: sidebar'
         assert f'<h1>{WORDMARK} <span class="topbar-sub">' in body, f'{rel}: phone bar'
     assert f'<span class="home-wordmark">{WORDMARK}</span>' in read('src/site/home/page.html')
 

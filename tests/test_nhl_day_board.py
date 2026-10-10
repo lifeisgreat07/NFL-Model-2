@@ -86,9 +86,10 @@ def rows():
                     'process.stdout.write(JSON.stringify(o));')
 
 
-def test_a_graded_pick_says_right_or_wrong(rows):
-    assert rows['right']['r'] == {'text': 'Right', 'cls': 'right'}
-    assert rows['wrong']['r'] == {'text': 'Wrong', 'cls': 'wrong'}
+def test_a_graded_pick_says_correct_or_missed(rows):
+    """The words the cards and the Accuracy table use (Stage 68 item 18b)."""
+    assert rows['right']['r'] == {'text': 'Correct', 'cls': 'right'}
+    assert rows['wrong']['r'] == {'text': 'Missed', 'cls': 'wrong'}
 
 
 def test_a_saved_pick_not_yet_graded_says_locked_or_grading(rows):
