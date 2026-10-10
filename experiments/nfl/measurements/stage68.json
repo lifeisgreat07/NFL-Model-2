@@ -1,0 +1,19 @@
+{
+ "family": "stage68-nfl-measurements",
+ "registered": "2026-10-10",
+ "approved_by": "Mark, 2026-10-09 23:52 ET ('Measurement registrations: Yes'), after the 2026-10-09 audit's E22, E24, E25 and E28 were put to him. Measurements only: none changes a model, a lock or a pick.",
+ "changes_no_model": "No model, lock rule, market source or saved pick changes because of these. A finding that argues for a change is a new registration, put to Mark first.",
+ "measurements": [
+  {
+   "id": "S68-N1-CLAUSE",
+   "audit": "E25",
+   "question": "Which past games does N1's second clause (a game away from the home team's usual stadium) add to the 25 the back-check covered, and how does each model score on them with and without the home edge?",
+   "why": "The back-check (src/sports/nfl/research/neutral_site_backcheck.py) called site_is_neutral on raw schedule rows, which carry no home_usual_stadium, so only the first clause (nflverse's location is 'Neutral') could fire. N1 stays a declared rule (Mark, 2026-10-09); this describes it, it does not test it.",
+   "data": "The same walk-forward seasons, 2021-2025, through src/sports/nfl/weekly_update.with_usual_stadium before site_is_neutral.",
+   "method": "The games the second clause adds, listed, and the back-check's own comparison on them and on all neutral games together, written as an amendment to experiments/nfl/stage38/n1_registry.json's back-check.",
+   "when": "Once, before week 9.",
+   "decides": "Nothing: N1 is not narrowed or widened by it."
+  }
+ ],
+ "amendments": []
+}

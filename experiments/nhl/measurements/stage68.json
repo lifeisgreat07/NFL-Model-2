@@ -1,0 +1,29 @@
+{
+ "family": "stage68-nhl-measurements",
+ "registered": "2026-10-10",
+ "approved_by": "Mark, 2026-10-09 23:52 ET ('Measurement registrations: Yes'), after the 2026-10-09 audit's E22, E24, E25 and E28 were put to him. Measurements only: none changes a model, a lock or a pick.",
+ "changes_no_model": "No model, lock rule, market source or saved pick changes because of these. A finding that argues for a change is a new registration, put to Mark first.",
+ "measurements": [
+  {
+   "id": "S68-L1-NHL",
+   "audit": "E22",
+   "question": "How far is the price a live NHL pick was saved with from ESPN's closing price for the same game, the price the backtest's Model B was scored with?",
+   "why": "The live market is the league's odds feed (DraftKings, read about three hours before the start, src/sports/nhl/market.py); the Stage 56 backtest's is ESPN's moneyline, the close where given. Model B's backtest edge holds for the backtest's market, not necessarily the live one.",
+   "data": "Every graded 2026-27 NHL pick with a saved price, joined to ESPN's closing moneyline for the game, read after the game by hand on the local machine.",
+   "method": "Both prices as no-vig home-win probabilities (margin removed evenly, as the pick does). Reported: mean and median absolute difference, the share of games where the two sides disagree on the favourite, and Model B's log loss under each price, with a paired day-block bootstrap at 95% (5,000 resamples, seed 20261010).",
+   "when": "Once 200 priced picks are graded, then at the season's end.",
+   "decides": "Nothing by itself. It says whether the live Model B is the model the backtest scored."
+  },
+  {
+   "id": "S68-DRIFT-DAYBLOCK",
+   "audit": "E28",
+   "question": "Does the drift check's verdict change when its bootstrap resamples whole game days, as the backtests' intervals do, instead of single games?",
+   "why": "The NHL's and NBA's drift checks (src/sports/<sport>/drift.py) resample games independently; the Stage 56 and 61 intervals resample whole days, because games on one day share news and conditions.",
+   "data": "The graded live picks the drift check reads, each run.",
+   "method": "Alongside the registered check, the same lower bound with day-block resampling (5,000 resamples, the registered seed), printed beside it; the registered check alone flags.",
+   "when": "From before 100 graded games, so neither version has been seen to flag first.",
+   "decides": "Nothing this season. Which version flags from next season is a registration put to Mark with both records in hand."
+  }
+ ],
+ "amendments": []
+}

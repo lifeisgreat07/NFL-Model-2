@@ -1,0 +1,35 @@
+{
+ "target": "experiments/nba/measurements/stage68.json",
+ "tests": "tests/test_stage68_registries.py",
+ "cases": [
+  {
+   "id": "registration-decides-something",
+   "why": "A measurement that decides a change on its own is a model change no one approved.",
+   "find": "\"decides\": \"Nothing by itself. A case for treating Doubtful",
+   "replace": "\"decides\": \"Treat Doubtful as Out once it reads high. A case for treating Doubtful",
+   "expect_caught_by": "test_each_measurement_says_everything"
+  },
+  {
+   "id": "registration-loses-its-method",
+   "why": "A registration without a method can be read any way after the data is in.",
+   "find": "\"method\": \"Per status: players listed, the share who logged minutes, and the expected minutes the availability feature gave them. M2's own figure is unchanged and printed beside it.\",",
+   "replace": "\"method\": \"\",",
+   "expect_caught_by": "test_each_measurement_says_everything"
+  },
+  {
+   "id": "registration-loses-its-approval",
+   "why": "Mark approved these; a file that does not say so is an unapproved plan.",
+   "find": "\"approved_by\": \"Mark, 2026-10-09 23:52 ET",
+   "replace": "\"approved_by\": \"Claude, 2026-10-10",
+   "expect_caught_by": "test_each_is_approved_and_changes_no_model"
+  },
+  {
+   "id": "n1-registration-reopens-n1",
+   "target": "experiments/nfl/measurements/stage68.json",
+   "why": "N1 stays a declared rule (Mark, 2026-10-09); the measurement only describes it.",
+   "find": "\"decides\": \"Nothing: N1 is not narrowed or widened by it.\"",
+   "replace": "\"decides\": \"Nothing: N1 is narrowed to the games it helps.\"",
+   "expect_caught_by": "test_n1_is_described_not_reopened"
+  }
+ ]
+}
