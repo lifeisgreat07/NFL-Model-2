@@ -1,0 +1,20 @@
+{
+  "target": ".github/workflows/nfl-weekend-refresh.yml",
+  "tests": "tests/test_writer_concurrency.py",
+  "cases": [
+    {
+      "id": "concurrency-refresh-ungrouped",
+      "why": "the weekend refresh loses its group, and a late GitHub copy races the next slot's push",
+      "find": "concurrency:\n  group: weekend-refresh\n  cancel-in-progress: false\n",
+      "replace": "",
+      "expect_caught_by": "test_each_writer_queues_rather_than_overlaps"
+    },
+    {
+      "id": "concurrency-refresh-cancels",
+      "why": "the second copy cancels the first, which may already have read and written the slot",
+      "find": "  group: weekend-refresh\n  cancel-in-progress: false\n",
+      "replace": "  group: weekend-refresh\n  cancel-in-progress: true\n",
+      "expect_caught_by": "test_each_writer_queues_rather_than_overlaps"
+    }
+  ]
+}

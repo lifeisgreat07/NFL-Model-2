@@ -48,6 +48,15 @@ permissions:
   # unattended job since Stage 4.
   issues: write
 
+# One refresh at a time (Stage 68 item 10, the 2026-10-09 audit's E5).
+# cron-job.org and GitHub's own cron both start every slot, by design
+# (decision 0005); GitHub's copy can start 2h24m to 8h39m late, past the
+# next slot's on-time run, and two refreshes racing to push means one is
+# refused. This queues them; it does not drop either.
+concurrency:
+  group: weekend-refresh
+  cancel-in-progress: false
+
 jobs:
   refresh:
     runs-on: ubuntu-24.04
