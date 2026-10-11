@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 5,
-  "read_at": "2026-10-10T11:10:38Z",
+  "read_at": "2026-10-11T21:47:34Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-10-10T06:02:29Z"
+    "depth_chart_snapshot": "2026-10-11T13:56:31Z"
   },
   "teams": {
     "DAL": {
@@ -293,11 +293,6 @@
       "injury_report": "published",
       "out": [
         {
-          "name": "Arden Key",
-          "position": "DE",
-          "injury": "Hamstring"
-        },
-        {
           "name": "Jaylon Carlies",
           "position": "LB",
           "injury": "Ribs"
@@ -358,13 +353,7 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [
-        {
-          "name": "Chauncey Golston",
-          "position": "DE",
-          "injury": "Neck"
-        }
-      ],
+      "out": [],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -385,6 +374,11 @@
           "name": "Donte Jackson",
           "position": "CB",
           "injury": "Hamstring"
+        },
+        {
+          "name": "Joe Alt",
+          "position": "T",
+          "injury": "Neck"
         }
       ],
       "doubtful": [],
@@ -525,7 +519,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "BUF": {
       "qb": {
@@ -534,9 +528,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Ed Oliver",
+          "position": "DE",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     }
   }
 }

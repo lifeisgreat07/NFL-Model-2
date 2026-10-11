@@ -213,5 +213,19 @@
     "home": "ATL",
     "away": "BAL",
     "spread_line": 3.5
+  },
+  {
+    "captured_date": "2026-10-11",
+    "captured_utc": "2026-10-11T21:47:32Z",
+    "home": "TEN",
+    "away": "HOU",
+    "spread_line": -6.5
+  },
+  {
+    "captured_date": "2026-10-11",
+    "captured_utc": "2026-10-11T21:47:32Z",
+    "home": "ATL",
+    "away": "BAL",
+    "spread_line": 3.0
   }
 ]
