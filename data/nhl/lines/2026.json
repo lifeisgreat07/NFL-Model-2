@@ -526,5 +526,17 @@
   "home_prob": 0.3425,
   "read_utc": "2026-10-11T18:34:58Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020085",
+  "start_utc": "2026-10-11T22:00:00Z",
+  "home": "NYR",
+  "away": "VAN",
+  "book": "DraftKings",
+  "home_price": -278.0,
+  "away_price": 225.0,
+  "home_prob": 0.705,
+  "read_utc": "2026-10-11T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]

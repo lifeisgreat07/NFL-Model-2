@@ -1,0 +1,112 @@
+{
+ "game_id": "2026020085",
+ "season": 2026,
+ "slate": "2026-10-11",
+ "start_utc": "2026-10-11T22:00:00Z",
+ "home": "NYR",
+ "away": "VAN",
+ "model_a": 0.6977,
+ "model_b": 0.7058,
+ "pick": "NYR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.408496,
+  "shot_matchup": 1.435895,
+  "goalie_matchup_2000": 0.008684
+ },
+ "market": {
+  "game_id": "2026020085",
+  "start_utc": "2026-10-11T22:00:00Z",
+  "home": "NYR",
+  "away": "VAN",
+  "book": "DraftKings",
+  "home_price": -278.0,
+  "away_price": 225.0,
+  "home_prob": 0.705,
+  "read_utc": "2026-10-11T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482193,
+   "name": "Dylan Garand",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/peter_baugh/status/2109291323560022225?s=46"
+  },
+  "away": {
+   "player_id": 8480947,
+   "name": "Kevin Lankinen",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/ThomasDrance/status/2109276082855891271?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-11",
+  "read_utc": "2026-10-11T21:01:48Z",
+  "home": [
+   {
+    "name": "Adam Sykora",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Aidan Thompson",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Igor Shesterkin",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Joe Veleno",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Joonas Korpisalo",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Akil Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Chytil",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Thompson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-11T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-10",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14486,
+  "training_games_priced": 7427
+ }
+}

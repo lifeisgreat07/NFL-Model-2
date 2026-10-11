@@ -1,0 +1,92 @@
+{
+ "game_id": "2026020086",
+ "season": 2026,
+ "slate": "2026-10-11",
+ "start_utc": "2026-10-11T23:00:00Z",
+ "home": "PHI",
+ "away": "CAR",
+ "model_a": 0.3219,
+ "model_b": 0.3154,
+ "pick": "CAR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.274347,
+  "shot_matchup": -10.49555,
+  "goalie_matchup_2000": 0.001601
+ },
+ "market": {
+  "game_id": "2026020086",
+  "start_utc": "2026-10-11T23:00:00Z",
+  "home": "PHI",
+  "away": "CAR",
+  "book": "DraftKings",
+  "home_price": 180.0,
+  "away_price": -218.0,
+  "home_prob": 0.3425,
+  "read_utc": "2026-10-11T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479361,
+   "name": "Joseph Woll",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8481611,
+   "name": "Pyotr Kochetkov",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-11",
+  "read_utc": "2026-10-11T21:01:48Z",
+  "home": [
+   {
+    "name": "Cam York",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Nikita Grebenkin",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Ristolainen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Travis Konecny",
+    "position": "RW",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Nikishin",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Seth Jarvis",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-11T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-10",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14486,
+  "training_games_priced": 7427
+ }
+}
