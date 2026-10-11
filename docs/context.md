@@ -23,47 +23,32 @@ option C's "New here?"), the NFL at `/nfl/` (Model **v2.6**), the NHL at `/nhl/`
 Puck P3 and ball B2 sit top left on the NHL and NBA pages and on the home
 cards (Stage 62.2). One theme key, `site:theme`, everywhere.
 
-**NBA goes live on Tue 10-20** (Stage 65, #367-#370). `.github/workflows/nba-daily.yml` runs at
-16:00 and 21:30 UTC, and `.github/workflows/nba-canary.yml` at 06:50 UTC. Mark set up and enabled
-all three cron-job.org jobs on 10-09, but **the 16:00 UTC one has never
-dispatched** (none on 10-10 or 10-11; GitHub's fallback ran it hours late).
-The 21:30 job and the 06:50 canary fire on time. Before 10-20 the daily run
-only refreshes the schedule. On 10-20/21 check that picks were saved and
-priced (ESPN first, Kalshi fallback, else "no price").
+**NBA goes live on Tue 10-20** (Stage 65, #367-#370): `.github/workflows/nba-daily.yml` at 16:00 and 21:30 UTC,
+`.github/workflows/nba-canary.yml` at 06:50 UTC. Before 10-20 the daily run only refreshes the schedule. On
+10-20/21 check picks were saved and priced (ESPN, then Kalshi, else "no price").
 
 **NFL v2.6 (Stage 38 N1, #373/#374):** at a game the schedule calls neutral,
 neither model gives the listed home team a home edge. Week 7 (lock Thu 10-15)
 is the first week picked under it; earlier saved picks keep their edge and
 their cards say so.
 
-**Saturday 05:17 UTC weekend refresh** (#371) is in, with GitHub's fallback
-line; Mark cloned the cron-job.org job. No cron-job.org dispatch came on
-Sat 10-10; GitHub's fallback ran at 11:10 UTC and succeeded, so week 5 is
-covered. **Not fixed yet:** like the NBA 16:00 job, it was made on 10-09
-and has never fired, while every older job (Sunday's 21:47 included) fires
-on time. The cause is in Mark's cron-job.org account (enabled state,
-schedule, or the clone's settings); Claude cannot sign in there. Next real
-test: Sat 10-17 05:17 UTC.
+**Two cron-job.org jobs Mark made on 10-09 have never fired:** the NFL Saturday 05:17 UTC weekend refresh
+(#371) and the NBA 16:00 UTC daily run. GitHub's fallback covered both, hours late (Sat 10-10's refresh ran
+11:10 UTC; week 5 is covered). Every older job fires on time. The cause is in Mark's account; Claude cannot
+sign in there. Next Saturday test: 10-17 05:17 UTC.
 
-**NHL picks no longer die with a source (#427).** On Sat 10-10 an odds-feed
-timeout ended the 21:00 UTC run before it saved anything; nine games started
-unpicked (#423, #424). Now a feed or roster that cannot be read prices no
-game or falls back to the last starter, and the pick says so. **Main's
-suite was red from 10-11 (#425)**: the end-to-end test read the committed
-schedule as rewritten since its moment; #426 reads it as it stood. Nothing
-runs the suite on main between merges (data commits start no test run),
-so the nightly shuffled run is the only daily check of main. **Stage 39 item 4** (#372) says on
-the Methodology page that ratings use regular-season plays and freeze
-through the playoffs.
+**NHL picks no longer die with a source (#427):** on Sat 10-10 an odds-feed timeout ended the 21:00 UTC run
+and nine games started unpicked (#423, #424). **Main's suite was red on 10-11 (#425)** until #426: the
+end-to-end test read a schedule rewritten since its moment. Data commits start no test run, so the nightly
+shuffled suite is main's only daily check. **Stage 39 item 4** (#372) says on the Methodology page that
+ratings use regular-season plays and freeze through the playoffs.
 
 **Tuesday 10-13:** week 5 is graded; Stage 21 (`s21-insights`) can start,
 rebased across #351's moves. 11:00 UTC is the slot guard's first real test.
 
-**Stage 68 (the 2026-10-09 Fable audit) is done:** 36 items merged, #380 to #421, item 33 (shared font
-files, U44) is later, Mark's call. The item-to-PR map is at the end of
-`docs/history/09-more-sports.md`; every finding's verdict is in the Audit Response Log. #387,
-#389, #401 and #417 were reviewed on 10-11 (`memory/2026-10-11.md`): no reverts; two
-questions for Mark (#401's "every number comes from code" wording, #417's 1.06:1 fill).
+**Stage 68 (the 2026-10-09 Fable audit) is done:** #380 to #421; item 33 (U44, shared fonts) later, Mark's
+call. Item-to-PR map at the end of `docs/history/09-more-sports.md`; verdicts in the Audit Response Log.
+#387, #389, #401, #417 reviewed 10-11 (`memory/2026-10-11.md`): no reverts, two wording/contrast questions.
 
 **Single next action:** Stage 21 once week 5 is graded (Tue 10-13, a reminder is set). Before
 that, Mark: open the two silent cron-job.org jobs (NFL Saturday 05:17, NBA 16:00) and check enabled
