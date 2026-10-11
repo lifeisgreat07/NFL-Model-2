@@ -15,7 +15,12 @@ Each run, in order:
    starter, and the pick says so. A game with no market price gets Model A
    only, and says that too. Each club's injury list, as context only
    (`src/sports/nhl/injuries.py`); a failed read stores none and the pick
-   is saved regardless.
+   is saved regardless. The same holds for every optional source: an odds
+   feed that is down or slow means every game is priced as missing, and a
+   roster that cannot be read sends that club to its last starter, with the
+   reason on the pick. Only the schedule and the box scores can stop a run.
+   (2026-10-10: an odds-feed timeout ended the 21:00 UTC run before it saved
+   anything, and nine games started with no pick, issue #424.)
 4. **Models.** Model A and Model B as registered
    (`experiments/nhl/stage56/registry.json`), with the half-life and K the
    backtest chose (`experiments/nhl/stage56/results/confirmation.json`), fitted on every finished
@@ -154,6 +159,29 @@ def read_injuries(season: int, get: Callable[[str], bytes]) -> tuple[str, pd.Dat
         return None
 
 
+def read_market(get: Callable[[str], bytes], now: datetime) -> tuple[list[dict[str, Any]], list[str]]:
+    """The odds feed's prices and the reasons a game has none. A feed that
+    cannot be read prices no game, and every pick is made by Model A and
+    says so; it never stops a pick being saved."""
+    try:
+        return market.parse(json.loads(get(market.SOURCE)), now)
+    except (OSError, ValueError) as exc:
+        return [], [f'odds feed not read, every pick made without a price: {exc}']
+
+
+def read_rosters(clubs: set[str], get: Callable[[str], bytes]) -> dict[str, list[tuple[int, str]] | None]:
+    """Each club's goalies, or None for a club whose roster cannot be read:
+    that club's goalie falls back to its last starter, and the pick says why."""
+    out: dict[str, list[tuple[int, str]] | None] = {}
+    for club in sorted(clubs):
+        try:
+            out[club] = roster.goalies_of(json.loads(get(roster.ROSTER.format(club=club))))
+        except (OSError, ValueError) as exc:
+            print(f'roster for {club}: not read, its last starter is used: {exc}')
+            out[club] = None
+    return out
+
+
 def save_once(record: dict[str, Any], folder: Path) -> bool:
     """Write the pick unless one is already saved. True when written."""
     path = folder / f"{record['game_id']}.json"
@@ -266,7 +294,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         table = ratings.features(games, h, [k]).merge(games[['game_id', 'home_prob']], on='game_id', how='left')
         model_a, model_b = fit_models(table, k)
         trained = training(table, first)
-        lines, missing = market.parse(json.loads(get(market.SOURCE)), now)
+        lines, missing = read_market(get, now)
         for m in missing:
             print(f'market: {m}')
         market.record(lines, PATHS.data / 'lines' / f'{season}.json')
@@ -282,7 +310,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             goalies.record(attached, PATHS.data / 'goalies' / f'{season}.json')
             projected.update({r['game_id']: r for r in attached})
         locking = slate[slate['game_id'].isin(decision.lock)]
-        rosters = roster.goalie_ids(set(locking['home']) | set(locking['away']), get=lambda u: json.loads(get(u)))
+        rosters = read_rosters(set(locking['home']) | set(locking['away']), get)
         fallback = last_starters(games)
         injury_table = read_injuries(season, get)
         rated = ratings.day_ratings(games[games['day'] < today.tz_localize(None)], today.tz_localize(None), h)
@@ -290,7 +318,11 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             notes, ids = {}, {}
             proj = projected.get(str(g['game_id']), {})
             for side in ('home', 'away'):
-                pid, why = roster.match(proj.get(f'{side}_goalie'), rosters.get(g[side], []))
+                name, club_goalies = proj.get(f'{side}_goalie'), rosters.get(g[side])
+                if not name or club_goalies is not None:
+                    pid, why = roster.match(name, club_goalies or [])
+                else:
+                    pid, why = None, f'{name} is projected, but the roster was not read'
                 if pid is None:
                     pid = fallback.get(ratings.franchise(g[side]))
                     notes[side] = {'player_id': pid, 'basis': 'last_start', 'note': why}

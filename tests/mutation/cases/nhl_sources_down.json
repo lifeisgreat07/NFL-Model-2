@@ -1,0 +1,27 @@
+{
+ "target": "src/sports/nhl/daily.py",
+ "tests": "tests/test_nhl_sources_down.py",
+ "cases": [
+  {
+   "id": "nhl-market-timeout-stops-run",
+   "why": "an odds feed that times out ends the run before any pick is saved, as on 2026-10-10 (issue #424)",
+   "find": "    except (OSError, ValueError) as exc:\n        return [], [",
+   "replace": "    except KeyboardInterrupt as exc:\n        return [], [",
+   "expect_caught_by": "test_an_odds_feed_that_cannot_be_read_still_saves_every_pick"
+  },
+  {
+   "id": "nhl-roster-failure-stops-run",
+   "why": "one club's roster that cannot be read ends the run, though its goalie has a fallback",
+   "find": "        except (OSError, ValueError) as exc:\n            print(f'roster for {club}",
+   "replace": "        except KeyboardInterrupt as exc:\n            print(f'roster for {club}",
+   "expect_caught_by": "test_a_roster_that_cannot_be_read_still_saves_every_pick"
+  },
+  {
+   "id": "nhl-roster-unread-wrong-reason",
+   "why": "a projected goalie whose roster was never read is reported as not on the roster, a reason that is false",
+   "find": "                if not name or club_goalies is not None:\n",
+   "replace": "                if True:\n",
+   "expect_caught_by": "test_a_projected_goalie_with_no_roster_says_the_roster_was_not_read"
+  }
+ ]
+}
