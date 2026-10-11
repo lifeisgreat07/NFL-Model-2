@@ -1303,5 +1303,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020089",
   "start_utc": "2026-10-13T00:00:00Z"
+ },
+ {
+  "date": "2026-10-11",
+  "home": "NYR",
+  "home_goalie": "Dylan Garand",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/peter_baugh/status/2109291323560022225?s=46",
+  "away": "VAN",
+  "away_goalie": "Kevin Lankinen",
+  "away_status": "Likely",
+  "away_report": "https://x.com/ThomasDrance/status/2109276082855891271?s=20",
+  "read_utc": "2026-10-11T18:34:58Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020085",
+  "start_utc": "2026-10-11T22:00:00Z"
  }
 ]
