@@ -176,13 +176,19 @@
  {
   "game_id": "2026020082",
   "pick": "ANA",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-10T23:56:11Z"
  },
  {
   "game_id": "2026020083",
   "pick": "VGK",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-10T23:56:11Z"
+ },
+ {
+  "game_id": "2026020084",
+  "pick": "WSH",
+  "result": "pending",
+  "saved_utc": "2026-10-11T14:01:43Z"
  }
 ]

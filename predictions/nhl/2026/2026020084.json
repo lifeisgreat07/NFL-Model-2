@@ -1,0 +1,86 @@
+{
+ "game_id": "2026020084",
+ "season": 2026,
+ "slate": "2026-10-11",
+ "start_utc": "2026-10-11T21:00:00Z",
+ "home": "WSH",
+ "away": "SEA",
+ "model_a": 0.6327,
+ "model_b": null,
+ "pick": "WSH",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": 0.707082,
+  "shot_matchup": 2.489398,
+  "goalie_matchup_2000": 0.001786
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8480313,
+   "name": "Logan Thompson",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8475831,
+   "name": "Philipp Grubauer",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-10",
+  "read_utc": "2026-10-11T14:01:43Z",
+  "home": [
+   {
+    "name": "Matt Roy",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Patrick Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Pierre-Luc Dubois",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Rasmus Sandin",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jacob Melanson",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jake O'Brien",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Lindgren",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-11T14:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-10",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14486,
+  "training_games_priced": 7427
+ }
+}
