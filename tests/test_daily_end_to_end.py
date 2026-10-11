@@ -9,6 +9,13 @@ temporary folder. The run must save a pick for each game it locks, grade,
 write the drift check and the page inputs, and, run again at the same
 moment, save nothing twice.
 
+Each run reads the committed schedule AS IT STOOD at the run's own moment:
+every game that starts at or after it is put back to scheduled, with no
+score. The daily runs rewrite that file, so read as it is today the test's
+games had gone final under it: on 2026-10-11 the NHL test locked nothing and
+failed (issue #425), and the NBA test would have done the same after its
+opening night.
+
 Run with: pytest tests/test_daily_end_to_end.py -v
 """
 from __future__ import annotations
@@ -24,11 +31,15 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def committed_schedule(sport: str, season: int) -> pd.DataFrame:
-    """The schedule the daily run last wrote, as load_schedule returns it."""
+def committed_schedule(sport: str, season: int, as_of: datetime) -> pd.DataFrame:
+    """The schedule the daily run last wrote, as load_schedule returns it,
+    with every game starting at or after `as_of` not yet played."""
     doc = json.loads((ROOT / 'results' / sport / f'schedule_{season}.json').read_text(encoding='utf-8'))
     df = pd.DataFrame(doc['games'])
     df['start_utc'] = pd.to_datetime(df['start_utc'], utc=True)
+    later = df['start_utc'] >= pd.Timestamp(as_of)
+    df.loc[later, 'status'] = 'scheduled'
+    df.loc[later, ['home_score', 'away_score']] = None
     final = df['status'] == 'final'
     df['home_win'] = pd.NA
     df.loc[final, 'home_win'] = (df.loc[final, 'home_score'] > df.loc[final, 'away_score']).astype(int)
@@ -54,7 +65,8 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     from src.sports.nhl import daily, goalies, history, injuries, market
 
     season = 2026
-    sched = committed_schedule('nhl', season)
+    now = datetime(2026, 10, 10, 16, 30, tzinfo=UTC)
+    sched = committed_schedule('nhl', season, now)
     monkeypatch.setattr(daily, 'PATHS', temp_paths(tmp_path, 'nhl'))
     monkeypatch.setattr(daily.nhl_schedule, 'load_schedule', lambda s, *a, **k: sched.copy())
     have = history.HISTORY / f'boxscores_{season}.csv'
@@ -72,7 +84,6 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
             raise OSError('no injury report in this test')
         raise AssertionError(f'unexpected fetch: {url}')
 
-    now = datetime(2026, 10, 10, 16, 30, tzinfo=UTC)
     first, second = run_twice(daily, now, get, capsys)
     picks = sorted((tmp_path / 'predictions' / str(season)).glob('*.json'))
     locked = [line for line in first.splitlines() if line.startswith('saved ')]
@@ -94,7 +105,8 @@ def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     from src.sports.nba import daily, history
 
     season = 2026
-    sched = committed_schedule('nba', season)
+    now = datetime(2026, 10, 20, 16, 5, tzinfo=UTC)
+    sched = committed_schedule('nba', season, now)
     monkeypatch.setattr(daily, 'PATHS', temp_paths(tmp_path, 'nba'))
     monkeypatch.setattr(daily.nba_schedule, 'load_schedule', lambda s, *a, **k: sched.copy())
     real_refresh = daily.refresh_season
@@ -104,7 +116,6 @@ def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     def get(url: str) -> bytes:
         raise OSError(f'offline: {url}')
 
-    now = datetime(2026, 10, 20, 16, 5, tzinfo=UTC)
     first, second = run_twice(daily, now, get, capsys)
     picks = sorted((tmp_path / 'predictions' / str(season)).glob('*.json'))
     assert picks, first[-2000:]
@@ -114,6 +125,20 @@ def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
         assert rec['start_utc'] > rec['saved_utc']
     assert not [ln for ln in second.splitlines() if ln.startswith('saved ')]
     assert (tmp_path / 'results' / f'graded_{season}.json').exists()
+
+
+def test_a_game_after_the_moment_reads_as_not_yet_played():
+    """The schedule is read as it stood: a game that has since gone final
+    reads as scheduled with no score, and one before the moment is left
+    alone."""
+    moment = datetime(2026, 10, 10, 16, 30, tzinfo=UTC)
+    now_file = committed_schedule('nhl', 2026, datetime(2100, 1, 1, tzinfo=UTC))
+    rewound = committed_schedule('nhl', 2026, moment)
+    later = rewound['start_utc'] >= pd.Timestamp(moment)
+    assert later.any() and (~later).any()
+    assert (rewound.loc[later, 'status'] == 'scheduled').all()
+    assert rewound.loc[later, 'home_win'].isna().all() and rewound.loc[later, 'home_score'].isna().all()
+    pd.testing.assert_frame_equal(rewound.loc[~later], now_file.loc[~later])
 
 
 def test_the_nba_page_inputs_write_every_field_plainly(tmp_path):
