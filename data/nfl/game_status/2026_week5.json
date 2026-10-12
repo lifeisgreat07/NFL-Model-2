@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 5,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-11T21:47:31Z",
+  "read_at": "2026-10-12T00:44:44Z",
   "games": [
     {
       "away": "TB",
@@ -97,9 +97,9 @@
     {
       "away": "NYG",
       "home": "WAS",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 27,
+      "home_score": 27,
       "spread_line": 3.5,
       "neutral_site": false,
       "venue": "Northwest Stadium"
@@ -107,9 +107,9 @@
     {
       "away": "DEN",
       "home": "LAC",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 23,
+      "home_score": 17,
       "spread_line": -3.5,
       "neutral_site": false,
       "venue": "SoFi Stadium"
@@ -117,9 +117,9 @@
     {
       "away": "DET",
       "home": "ARI",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 45,
+      "home_score": 21,
       "spread_line": -5.5,
       "neutral_site": false,
       "venue": "State Farm Stadium"
@@ -127,9 +127,9 @@
     {
       "away": "SF",
       "home": "SEA",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 32,
+      "home_score": 29,
       "spread_line": 3.0,
       "neutral_site": false,
       "venue": "Lumen Field"
@@ -137,10 +137,10 @@
     {
       "away": "BAL",
       "home": "ATL",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
-      "spread_line": 3.0,
+      "spread_line": 3.5,
       "neutral_site": false,
       "venue": "Mercedes-Benz Stadium"
     },
@@ -150,7 +150,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 3.0,
+      "spread_line": 3.5,
       "neutral_site": false,
       "venue": "SoFi Stadium"
     }
