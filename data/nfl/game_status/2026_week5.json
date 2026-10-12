@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 5,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-12T00:44:44Z",
+  "read_at": "2026-10-12T05:37:36Z",
   "games": [
     {
       "away": "TB",
@@ -137,9 +137,9 @@
     {
       "away": "BAL",
       "home": "ATL",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 30,
+      "home_score": 23,
       "spread_line": 3.5,
       "neutral_site": false,
       "venue": "Mercedes-Benz Stadium"
@@ -150,7 +150,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 3.5,
+      "spread_line": 3.0,
       "neutral_site": false,
       "venue": "SoFi Stadium"
     }

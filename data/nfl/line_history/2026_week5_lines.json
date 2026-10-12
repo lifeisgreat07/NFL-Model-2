@@ -241,5 +241,12 @@
     "home": "LA",
     "away": "BUF",
     "spread_line": 3.5
+  },
+  {
+    "captured_date": "2026-10-12",
+    "captured_utc": "2026-10-12T05:37:38Z",
+    "home": "LA",
+    "away": "BUF",
+    "spread_line": 3.0
   }
 ]
