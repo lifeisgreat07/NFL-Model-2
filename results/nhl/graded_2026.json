@@ -206,7 +206,19 @@
  {
   "game_id": "2026020087",
   "pick": "BUF",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-12T14:01:51Z"
+ },
+ {
+  "game_id": "2026020088",
+  "pick": "NJD",
+  "result": "pending",
+  "saved_utc": "2026-10-12T21:01:43Z"
+ },
+ {
+  "game_id": "2026020089",
+  "pick": "VGK",
+  "result": "pending",
+  "saved_utc": "2026-10-12T21:01:43Z"
  }
 ]

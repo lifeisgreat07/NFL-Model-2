@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020089",
+ "season": 2026,
+ "slate": "2026-10-12",
+ "start_utc": "2026-10-13T00:00:00Z",
+ "home": "MIN",
+ "away": "VGK",
+ "model_a": 0.5039,
+ "model_b": 0.4853,
+ "pick": "VGK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.017984,
+  "shot_matchup": -3.948339,
+  "goalie_matchup_2000": 0.002635
+ },
+ "market": {
+  "game_id": "2026020089",
+  "start_utc": "2026-10-13T00:00:00Z",
+  "home": "MIN",
+  "away": "VGK",
+  "book": "DraftKings",
+  "home_price": -112.0,
+  "away_price": -108.0,
+  "home_prob": 0.5043,
+  "read_utc": "2026-10-12T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482661,
+   "name": "Jesper Wallstedt",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/DylanLoucks4/status/2109676406804537470?s=20"
+  },
+  "away": {
+   "player_id": 8479394,
+   "name": "Carter Hart",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-11",
+  "read_utc": "2026-10-12T21:01:43Z",
+  "home": [
+   {
+    "name": "Brock Faber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Gustavsson",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marcus Foligno",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Nick Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Zach Bogosian",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Lukas Cormier",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Victor Olofsson",
+    "position": "LW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-12T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14490,
+  "training_games_priced": 7427
+ }
+}

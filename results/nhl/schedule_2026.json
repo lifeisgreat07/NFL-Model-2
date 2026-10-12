@@ -1125,11 +1125,11 @@
    "start_utc": "2026-10-12T17:00:00Z",
    "home": "BUF",
    "away": "FLA",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 5,
+   "away_score": 3,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
