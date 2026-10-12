@@ -1,5 +1,5 @@
 {
- "as_of": "2026-10-11",
+ "as_of": "2026-10-12",
  "games": [
   {
    "game_id": "2026020001",
@@ -1099,11 +1099,11 @@
    "start_utc": "2026-10-11T22:00:00Z",
    "home": "NYR",
    "away": "VAN",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 6,
+   "away_score": 2,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -1112,11 +1112,11 @@
    "start_utc": "2026-10-11T23:00:00Z",
    "home": "PHI",
    "away": "CAR",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 1,
+   "away_score": 4,
+   "last_period": "REG",
    "neutral_site": false
   },
   {

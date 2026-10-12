@@ -1,0 +1,91 @@
+{
+ "game_id": "2026020087",
+ "season": 2026,
+ "slate": "2026-10-12",
+ "start_utc": "2026-10-12T17:00:00Z",
+ "home": "BUF",
+ "away": "FLA",
+ "model_a": 0.5473,
+ "model_b": null,
+ "pick": "BUF",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": 0.389714,
+  "shot_matchup": -1.392415,
+  "goalie_matchup_2000": -0.001643
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8480045,
+   "name": "Ukko-Pekka Luukkonen",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8474593,
+   "name": "Jacob Markstrom",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-11",
+  "read_utc": "2026-10-12T14:01:51Z",
+  "home": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Conor Timmins",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Rathbone",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jason Zucker",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Topias Leinonen",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-12T14:01:51Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14489,
+  "training_games_priced": 7427
+ }
+}
