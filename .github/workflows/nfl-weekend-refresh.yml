@@ -43,6 +43,8 @@ on:
   workflow_dispatch: {}
 
 permissions:
+  # Stage 42 item 4: src/core/missed_dispatch.py reads this workflow's own runs.
+  actions: read
   contents: write
   # For the alert step: a failed refresh opens an issue, like every other
   # unattended job since Stage 4.
@@ -73,6 +75,15 @@ jobs:
       # Stage 42 item 1: how late this run started, against its own cron lines.
       - name: Record the start delay
         run: python -m src.core.start_delay .github/workflows/nfl-weekend-refresh.yml
+
+      # Stage 42 item 4: a run GitHub's cron started, for a slot cron-job.org
+      # should have started, asks whether it did, and opens an issue if not.
+      - name: Did cron-job.org start this slot?
+        if: github.event_name == 'schedule'
+        env:
+          CRON_SCHEDULE: ${{ github.event.schedule }}
+          GH_TOKEN: ${{ github.token }}
+        run: python -m src.core.missed_dispatch .github/workflows/nfl-weekend-refresh.yml
 
       - name: Install dependencies
         run: pip install -r requirements.txt

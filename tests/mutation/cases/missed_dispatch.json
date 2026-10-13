@@ -1,0 +1,56 @@
+{
+  "target": "src/core/missed_dispatch.py",
+  "tests": "tests/test_missed_dispatch.py",
+  "cases": [
+    {
+      "id": "dispatch-late-dispatch-not-covering",
+      "why": "a dispatch that started a few minutes after its slot no longer covers it, so every late GitHub copy of a slot cron-job.org did start raises a false alert.",
+      "find": "    if any(slot - EARLY <= d <= slot + GRACE for d in dispatches):\n",
+      "replace": "    if any(slot - EARLY <= d <= slot for d in dispatches):\n",
+      "expect_caught_by": "test_a_dispatch_near_the_slot_covers_it"
+    },
+    {
+      "id": "dispatch-any-dispatch-covers",
+      "why": "any dispatch at all counts, so yesterday's run or one started by hand hides a slot cron-job.org never started.",
+      "find": "    if any(slot - EARLY <= d <= slot + GRACE for d in dispatches):\n",
+      "replace": "    if dispatches:\n",
+      "expect_caught_by": "test_a_dispatch_far_from_the_slot_does_not"
+    },
+    {
+      "id": "dispatch-on-time-github-judged",
+      "why": "GitHub's own run on time is judged before a dispatch could have arrived, so a punctual GitHub cron raises a false alert.",
+      "find": "    if started - slot < GRACE:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_github_on_time_is_not_judged"
+    },
+    {
+      "id": "dispatch-dispatched-run-judged",
+      "why": "a run cron-job.org itself started is judged too, and finds no OTHER dispatch, so the on-time run reports itself missing.",
+      "find": "    if event != 'schedule':\n",
+      "replace": "    if event is None:\n",
+      "expect_caught_by": "test_a_run_github_cron_did_not_start_is_not_judged"
+    },
+    {
+      "id": "dispatch-check-fails-its-run",
+      "why": "an alert that cannot be raised fails the run it was checking, so a GitHub outage stops the daily picks.",
+      "find": "    except Exception as e:  # e.g. the alert itself could not be raised\n        line = f'Dispatch check: failed ({e}); not judged.'\n",
+      "replace": "    except KeyError as e:  # e.g. the alert itself could not be raised\n        line = f'Dispatch check: failed ({e}); not judged.'\n",
+      "expect_caught_by": "test_main_never_fails_its_run"
+    },
+    {
+      "id": "dispatch-step-runs-on-every-event",
+      "target": ".github/workflows/nba-daily.yml",
+      "why": "the step loses its event guard, so the table guard no longer holds the step to GitHub's cron runs.",
+      "find": "      - name: Did cron-job.org start this slot?\n        if: github.event_name == 'schedule'\n",
+      "replace": "      - name: Did cron-job.org start this slot?\n",
+      "expect_caught_by": "test_every_covered_workflow_runs_the_check"
+    },
+    {
+      "id": "dispatch-table-drops-a-line",
+      "why": "a cron line cron-job.org covers drops out of the table, so a miss on that slot is never judged.",
+      "find": "    'nba-daily.yml': ('0 16 * * *', '30 21 * * *'),\n",
+      "replace": "    'nba-daily.yml': ('30 21 * * *',),\n",
+      "expect_caught_by": "test_every_cron_line_is_either_covered_or_declared_left_to_github"
+    }
+  ]
+}
