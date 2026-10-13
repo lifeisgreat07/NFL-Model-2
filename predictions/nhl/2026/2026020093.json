@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020093",
+ "season": 2026,
+ "slate": "2026-10-13",
+ "start_utc": "2026-10-13T22:45:00Z",
+ "home": "CAR",
+ "away": "WSH",
+ "model_a": 0.6736,
+ "model_b": 0.5992,
+ "pick": "CAR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.547392,
+  "shot_matchup": 8.547007,
+  "goalie_matchup_2000": -0.002168
+ },
+ "market": {
+  "game_id": "2026020093",
+  "start_utc": "2026-10-13T22:45:00Z",
+  "home": "CAR",
+  "away": "WSH",
+  "book": "DraftKings",
+  "home_price": -155.0,
+  "away_price": 130.0,
+  "home_prob": 0.583,
+  "read_utc": "2026-10-13T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481611,
+   "name": "Pyotr Kochetkov",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/RyanHenkel_/status/2110014935229165840?s=20"
+  },
+  "away": {
+   "player_id": 8480313,
+   "name": "Logan Thompson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/sammisilber/status/2110061488237060213"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-13",
+  "read_utc": "2026-10-13T21:01:48Z",
+  "home": [
+   {
+    "name": "Alexander Nikishin",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Jordan Staal",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Seth Jarvis",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Matt Roy",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Patrick Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Pierre-Luc Dubois",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Rasmus Sandin",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-13T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14492,
+  "training_games_priced": 7427
+ }
+}

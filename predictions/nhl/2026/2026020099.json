@@ -1,0 +1,112 @@
+{
+ "game_id": "2026020099",
+ "season": 2026,
+ "slate": "2026-10-13",
+ "start_utc": "2026-10-14T00:15:00Z",
+ "home": "WPG",
+ "away": "MIN",
+ "model_a": 0.454,
+ "model_b": 0.5287,
+ "pick": "WPG",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.865766,
+  "shot_matchup": -1.359488,
+  "goalie_matchup_2000": 0.000192
+ },
+ "market": {
+  "game_id": "2026020099",
+  "start_utc": "2026-10-14T00:15:00Z",
+  "home": "WPG",
+  "away": "MIN",
+  "book": "DraftKings",
+  "home_price": -110.0,
+  "away_price": -110.0,
+  "home_prob": 0.5,
+  "read_utc": "2026-10-13T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479973,
+   "name": "Stuart Skinner",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://www.nhl.com/news/gameday-wild-at-jets-x6643"
+  },
+  "away": {
+   "player_id": 8475717,
+   "name": "Calvin Pickard",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/DylanLoucks4/status/2109676406804537470?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-13",
+  "read_utc": "2026-10-13T21:01:48Z",
+  "home": [
+   {
+    "name": "Connor Hellebuyck",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elias Salomonsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Garrett Brown",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Josh Morrissey",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Walker Duehr",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brock Faber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Gustavsson",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marcus Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nico Sturm",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-13T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14492,
+  "training_games_priced": 7427
+ }
+}

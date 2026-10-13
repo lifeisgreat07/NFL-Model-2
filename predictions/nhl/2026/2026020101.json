@@ -1,0 +1,71 @@
+{
+ "game_id": "2026020101",
+ "season": 2026,
+ "slate": "2026-10-13",
+ "start_utc": "2026-10-14T00:45:00Z",
+ "home": "NSH",
+ "away": "VGK",
+ "model_a": 0.4184,
+ "model_b": 0.4436,
+ "pick": "VGK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.586576,
+  "shot_matchup": -6.82451,
+  "goalie_matchup_2000": 0.002231
+ },
+ "market": {
+  "game_id": "2026020101",
+  "start_utc": "2026-10-14T00:45:00Z",
+  "home": "NSH",
+  "away": "VGK",
+  "book": "DraftKings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573,
+  "read_utc": "2026-10-13T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8477424,
+   "name": "Juuse Saros",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/AlexDaugherty1/status/2110035427172196512"
+  },
+  "away": {
+   "player_id": 8478499,
+   "name": "Adin Hill",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/SinBinVegas/status/2109790048061370739"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-13",
+  "read_utc": "2026-10-13T21:01:48Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Lukas Cormier",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Parker Wotherspoon",
+    "position": "D",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-13T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14492,
+  "training_games_priced": 7427
+ }
+}

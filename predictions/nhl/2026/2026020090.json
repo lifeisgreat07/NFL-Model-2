@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020090",
+ "season": 2026,
+ "slate": "2026-10-13",
+ "start_utc": "2026-10-13T22:00:00Z",
+ "home": "DET",
+ "away": "NJD",
+ "model_a": 0.525,
+ "model_b": 0.4909,
+ "pick": "NJD",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.176303,
+  "shot_matchup": -2.031815,
+  "goalie_matchup_2000": -0.001014
+ },
+ "market": {
+  "game_id": "2026020090",
+  "start_utc": "2026-10-13T22:00:00Z",
+  "home": "DET",
+  "away": "NJD",
+  "book": "DraftKings",
+  "home_price": -115.0,
+  "away_price": -105.0,
+  "home_prob": 0.5108,
+  "read_utc": "2026-10-13T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476434,
+   "name": "John Gibson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/mwhitaker_89/status/2110014744711086284"
+  },
+  "away": {
+   "player_id": 8474596,
+   "name": "Jake Allen",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/amandacstein/status/2109681823223877952"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-13",
+  "read_utc": "2026-10-13T21:01:48Z",
+  "home": [
+   {
+    "name": "J.T. Compher",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marco Kasper",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mason Appleton",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Connor Brown",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Bjugstad",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Seamus Casey",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-13T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14492,
+  "training_games_priced": 7427
+ }
+}

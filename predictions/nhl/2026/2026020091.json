@@ -1,0 +1,82 @@
+{
+ "game_id": "2026020091",
+ "season": 2026,
+ "slate": "2026-10-13",
+ "start_utc": "2026-10-13T22:15:00Z",
+ "home": "CBJ",
+ "away": "FLA",
+ "model_a": 0.5439,
+ "model_b": 0.5492,
+ "pick": "CBJ",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.163276,
+  "shot_matchup": -0.823572,
+  "goalie_matchup_2000": 0.000177
+ },
+ "market": {
+  "game_id": "2026020091",
+  "start_utc": "2026-10-13T22:15:00Z",
+  "home": "CBJ",
+  "away": "FLA",
+  "book": "DraftKings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514,
+  "read_utc": "2026-10-13T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475660,
+   "name": "Cam Talbot",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/mark_scheig/status/2110012705700450737"
+  },
+  "away": {
+   "player_id": 8481033,
+   "name": "Akira Schmid",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/darraghfla/status/2110094395689304078?s=46"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-13",
+  "read_utc": "2026-10-13T21:01:48Z",
+  "home": [
+   {
+    "name": "Conor Garland",
+    "position": "RW",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-13T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14492,
+  "training_games_priced": 7427
+ }
+}

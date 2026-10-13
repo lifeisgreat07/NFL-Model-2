@@ -1,0 +1,92 @@
+{
+ "game_id": "2026020103",
+ "season": 2026,
+ "slate": "2026-10-13",
+ "start_utc": "2026-10-14T01:45:00Z",
+ "home": "ANA",
+ "away": "CGY",
+ "model_a": 0.6596,
+ "model_b": 0.601,
+ "pick": "ANA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.985159,
+  "shot_matchup": 3.96941,
+  "goalie_matchup_2000": -0.000894
+ },
+ "market": {
+  "game_id": "2026020103",
+  "start_utc": "2026-10-14T01:45:00Z",
+  "home": "ANA",
+  "away": "CGY",
+  "book": "DraftKings",
+  "home_price": -175.0,
+  "away_price": 145.0,
+  "home_prob": 0.6092,
+  "read_utc": "2026-10-13T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480843,
+   "name": "Lukas Dostal",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Derek_Lee27/status/2110058759603245372"
+  },
+  "away": {
+   "player_id": 8481692,
+   "name": "Dustin Wolf",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/dwillsnhl/status/2110060606711840966?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-13",
+  "read_utc": "2026-10-13T21:01:48Z",
+  "home": [
+   {
+    "name": "Cutter Gauthier",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Ian Moore",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Poehling",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Troy Terry",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jonathan Huberdeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Samuel Honzek",
+    "position": "LW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-13T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14492,
+  "training_games_priced": 7427
+ }
+}

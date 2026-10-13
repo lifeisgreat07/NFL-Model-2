@@ -1,0 +1,132 @@
+{
+ "game_id": "2026020092",
+ "season": 2026,
+ "slate": "2026-10-13",
+ "start_utc": "2026-10-13T22:30:00Z",
+ "home": "MTL",
+ "away": "BUF",
+ "model_a": 0.5154,
+ "model_b": 0.5973,
+ "pick": "MTL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.075121,
+  "shot_matchup": -2.81266,
+  "goalie_matchup_2000": 0.00378
+ },
+ "market": {
+  "game_id": "2026020092",
+  "start_utc": "2026-10-13T22:30:00Z",
+  "home": "MTL",
+  "away": "BUF",
+  "book": "DraftKings",
+  "home_price": -155.0,
+  "away_price": 130.0,
+  "home_prob": 0.583,
+  "read_utc": "2026-10-13T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8484170,
+   "name": "Jacob Fowler",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/MAGodin/status/2110008598679978301?s=20"
+  },
+  "away": {
+   "player_id": 8480045,
+   "name": "Ukko-Pekka Luukkonen",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-13",
+  "read_utc": "2026-10-13T21:01:48Z",
+  "home": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Florian Xhekaj",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mike Matheson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Oliver Kapanen",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Conor Timmins",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Rathbone",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jason Zucker",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Grzelcyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Dahlin",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Topias Leinonen",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-13T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14492,
+  "training_games_priced": 7427
+ }
+}
