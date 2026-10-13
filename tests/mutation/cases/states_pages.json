@@ -51,6 +51,20 @@
       "find": "        if tags != 1:\n",
       "replace": "        if False:\n",
       "expect_caught_by": "test_a_tie_page_with_more_than_one_tie_tag_fails_the_build"
+    },
+    {
+      "id": "states-tie-added-beside-a-real-one",
+      "why": "a week that already holds a real tie gains a second, synthetic one, and the page shows two \"Tie\" tags",
+      "find": "    first = next((g for g in graded if g.get('result') == 'tie'), graded[0])\n",
+      "replace": "    first = graded[0]\n",
+      "expect_caught_by": "test_a_week_with_a_real_tie_keeps_it_as_the_tie"
+    },
+    {
+      "id": "states-tie-counted-over-every-week",
+      "why": "an earlier week's real tie is counted against the synthetic one, and the build fails",
+      "find": "        tags = rendered_tie_tags(html, max(holding, key=parse_week))\n",
+      "replace": "        tags = rendered_tie_tags(html)\n",
+      "expect_caught_by": "test_a_real_tie_in_an_earlier_week_does_not_fail_the_page"
     }
   ]
 }

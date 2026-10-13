@@ -86,9 +86,13 @@ def saved_weeks():
 def with_a_tie(graded, status, season, week):
     """The week's graded picks and snapshot with the first game tied: the
     grade exactly as grade_predictions writes one, the snapshot final and
-    level."""
+    level.
+
+    A week that already holds a real tie keeps it as THE tie, rather than
+    gaining a second: week 5 of 2026 (NYG 27, WAS 27) did, and the page
+    came out with two "Tie" tags where a real week with one tie has one."""
     graded, status = copy.deepcopy(graded), copy.deepcopy(status)
-    first = graded[0]
+    first = next((g for g in graded if g.get('result') == 'tie'), graded[0])
     first['result'] = 'tie'
     first['actual_home_win'] = None
     first['market_correct'] = first['model_a_correct'] = first['model_b_correct'] = None
@@ -181,9 +185,12 @@ def weeks_json(html):
     return json.JSONDecoder().raw_decode(html, m.end())[0]
 
 
-def rendered_tie_tags(html):
+def rendered_tie_tags(html, week=None):
     """How many cards on the built page the page's own gradedTagHtml tags
-    "Tie", over every week the page holds. Run in node from the built file,
+    "Tie": in `week` (a key such as '2026_week5'), or over every week the
+    page holds. The state's check counts the tie week only, the week the
+    board opens on: an earlier week's real tie is real, and counting it
+    failed the page once a real tie had been played. Run in node from the built file,
     not the template, so it measures what ships. The script goes in on stdin:
     the page's weeks are far past Windows' command-line limit."""
     node = shutil.which('node')
@@ -192,7 +199,10 @@ def rendered_tie_tags(html):
     m = re.search(r'function gradedTagHtml\(.*?\n\}\n', html, re.S)
     if not m:
         raise StateMissing('the built page has no gradedTagHtml -- re-anchor this')
-    js = (m.group(0) + f'const W={json.dumps(weeks_json(html))};let n=0;'
+    shown = weeks_json(html)
+    if week is not None:
+        shown = {week: shown[week]}
+    js = (m.group(0) + f'const W={json.dumps(shown)};let n=0;'
           'for(const k in W)for(const g of W[k].games)'
           'if(gradedTagHtml(g).includes(\'class="graded-tag tie"\'))n++;'
           'process.stdout.write(String(n));')
@@ -206,11 +216,11 @@ def check(state, html, expect):
     weeks = weeks_json(html)
     if state == 'tie':
         home, away = expect
-        games = [g for w in weeks.values() for g in w['games']
-                 if (g['home'], g['away']) == (home, away) and g.get('result') == 'tie']
-        if not games:
+        holding = [k for k, w in weeks.items() for g in w['games']
+                   if (g['home'], g['away']) == (home, away) and g.get('result') == 'tie']
+        if not holding:
             raise StateMissing('the tie page has no tied game in it')
-        tags = rendered_tie_tags(html)
+        tags = rendered_tie_tags(html, max(holding, key=parse_week))
         if tags != 1:
             raise StateMissing(f'the tie page renders {tags} "Tie" tags; a real week with one tie renders one')
     else:
