@@ -7,7 +7,7 @@
       "why": "the builder stops marking the game a tie, so the tie page is an ordinary graded week and the tied card is never laid out in CI.",
       "find": "    first['result'] = 'tie'\n",
       "replace": "",
-      "expect_caught_by": "test_the_tie_page_carries_a_tied_final"
+      "expect_caught_by": "test_a_week_without_a_tie_gets_one"
     },
     {
       "id": "states-skip-never-recorded",

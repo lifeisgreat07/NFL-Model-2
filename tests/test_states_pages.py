@@ -166,3 +166,20 @@ def test_a_real_tie_in_an_earlier_week_does_not_fail_the_page():
              '2026_week5': {'season': 2026, 'week': 5, 'games': [dict(tie, home='GB', away='ATL')]}}
     page = fn + 'const weeks = ' + json.dumps(weeks) + ';'
     builder.check('tie', page, ('GB', 'ATL'))
+
+
+def test_a_week_without_a_tie_gets_one():
+    """The builder's own job, held without the saved weeks: once a real week
+    held a real tie, the built page stopped showing whether the builder
+    could still make one (states-tie-never-tied survived on 2026-10-13)."""
+    builder = load_builder()
+    graded = [{'home': 'DAL', 'away': 'TB', 'result': None, 'actual_home_win': 0, 'spread_line': 9.5,
+               'market_correct': 1, 'model_a_correct': 0, 'model_b_correct': 0},
+              {'home': 'GB', 'away': 'CHI', 'result': None, 'actual_home_win': 1, 'spread_line': -1.5,
+               'market_correct': 1, 'model_a_correct': 1, 'model_b_correct': 1}]
+    out, status, tied = builder.with_a_tie(graded, None, 2026, 4)
+    assert tied == ('DAL', 'TB')
+    assert out[0]['result'] == 'tie' and out[0]['model_a_correct'] is None
+    assert out[1]['result'] is None and out[1]['model_a_correct'] == 1
+    [game] = status['games']
+    assert (game['home'], game['status'], game['home_score'], game['away_score']) == ('DAL', 'final', 20, 20)
