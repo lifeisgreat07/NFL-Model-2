@@ -1,5 +1,5 @@
 {
- "as_of": "2026-10-12",
+ "as_of": "2026-10-13",
  "games": [
   {
    "game_id": "401909088",
@@ -374,18 +374,6 @@
    "neutral_site": false
   },
   {
-   "game_id": "401909856",
-   "slate": "2026-10-24",
-   "start_utc": "2026-10-25T00:00:00Z",
-   "home": "ATL",
-   "away": "HOU",
-   "status": "scheduled",
-   "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "neutral_site": false
-  },
-  {
    "game_id": "401909857",
    "slate": "2026-10-24",
    "start_utc": "2026-10-25T00:00:00Z",
@@ -403,6 +391,18 @@
    "start_utc": "2026-10-25T00:00:00Z",
    "home": "DAL",
    "away": "SA",
+   "status": "scheduled",
+   "game_type": "regular",
+   "home_score": null,
+   "away_score": null,
+   "neutral_site": false
+  },
+  {
+   "game_id": "401909856",
+   "slate": "2026-10-24",
+   "start_utc": "2026-10-25T00:30:00Z",
+   "home": "ATL",
+   "away": "HOU",
    "status": "scheduled",
    "game_type": "regular",
    "home_score": null,
