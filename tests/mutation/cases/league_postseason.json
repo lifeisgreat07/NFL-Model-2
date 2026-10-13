@@ -1,0 +1,27 @@
+{
+  "target": "src/sports/nfl/weekly_update.py",
+  "tests": "tests/test_league_postseason.py",
+  "cases": [
+    {
+      "id": "postseason-empty-week-fails-the-run",
+      "why": "a week with no games is planned like any other, so the runs after the Super Bowl find no picks to save and fail every Tuesday and Thursday until January, each opening an issue.",
+      "find": "    if len(week_games) == 0:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_week_23_exits_cleanly_and_writes_nothing"
+    },
+    {
+      "id": "postseason-pick-reads-regular-season",
+      "why": "every saved pick says REG whatever the schedule says, so a playoff week's picks cannot be told from a regular-season week's.",
+      "find": "            'game_type': str(g['game_type']) if pd.notna(g.get('game_type')) else None,\n",
+      "replace": "            'game_type': 'REG',\n",
+      "expect_caught_by": "test_every_playoff_game_is_picked_and_carries_its_round"
+    },
+    {
+      "id": "postseason-super-bowl-keeps-home-edge",
+      "why": "a game the schedule calls Neutral is read as the listed home team's ground, so the Super Bowl's picks keep a home edge v2.6 removed.",
+      "find": "    if known and str(loc).strip().lower() == 'neutral':\n",
+      "replace": "    if known and str(loc).strip().lower() == 'neutral-site':\n",
+      "expect_caught_by": "test_the_super_bowl_gives_no_home_edge_and_the_other_rounds_do"
+    }
+  ]
+}
