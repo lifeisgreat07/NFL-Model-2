@@ -40,12 +40,11 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  # Stage 42 item 4: src/core/missed_dispatch.py reads this workflow's own runs.
-  actions: read
   contents: write
   # For the alert step at the end, which opens an issue when the run fails.
   # For src/sports/nfl/drift_alert.py, which opens an issue when the drift check flags.
   issues: write
+  actions: read
 
 jobs:
   # cron-job.org starts this on time and GitHub's cron sends a late copy of

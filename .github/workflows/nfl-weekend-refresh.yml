@@ -43,12 +43,11 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  # Stage 42 item 4: src/core/missed_dispatch.py reads this workflow's own runs.
-  actions: read
   contents: write
   # For the alert step: a failed refresh opens an issue, like every other
   # unattended job since Stage 4.
   issues: write
+  actions: read
 
 # One refresh at a time (Stage 68 item 10, the 2026-10-09 audit's E5).
 # cron-job.org and GitHub's own cron both start every slot, by design

@@ -23,10 +23,9 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  # Stage 42 item 4: src/core/missed_dispatch.py reads this workflow's own runs.
-  actions: read
   contents: read
   issues: write
+  actions: read
 
 jobs:
   canary:

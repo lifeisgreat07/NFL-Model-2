@@ -72,7 +72,7 @@ def test_the_workflow_cannot_write_to_the_repository():
     """It may open an issue (Stage 30 item 7) and nothing else."""
     wf = WORKFLOW.read_text(encoding='utf-8')
     block = re.search(r'\npermissions:\n((?:  .*\n)+)', wf)
-    assert block and set(block.group(1).split('\n')) - {''} == {'  contents: read', '  issues: write'}
+    assert block and set(block.group(1).split('\n')) - {''} == {'  contents: read', '  issues: write', '  actions: read'}
     assert 'git push' not in wf and 'auto-commit' not in wf
 
 

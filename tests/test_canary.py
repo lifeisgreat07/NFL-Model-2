@@ -146,5 +146,6 @@ def test_it_can_open_issues_and_cannot_write_the_repository():
     text = _text()
     block = re.search(r'^permissions:\s*\n((?:[ \t]+.+\n)+)', text, re.M)
     granted = dict(re.findall(r'(\S+):\s*(\S+)', block.group(1)))
-    assert granted == {'contents': 'read', 'issues': 'write'}
+    # actions: read lists its own runs (Stage 42 item 4); it cannot write.
+    assert granted == {'contents': 'read', 'issues': 'write', 'actions': 'read'}
     assert 'git-auto-commit' not in text and 'git push' not in text

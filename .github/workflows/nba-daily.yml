@@ -25,10 +25,9 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  # Stage 42 item 4: src/core/missed_dispatch.py reads this workflow's own runs.
-  actions: read
   contents: write
   issues: write
+  actions: read
 
 concurrency:
   group: nba-daily

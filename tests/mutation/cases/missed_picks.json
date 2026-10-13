@@ -53,8 +53,8 @@
       "id": "missed-nhl-workflow-no-schedule",
       "target": ".github/workflows/nhl-daily.yml",
       "why": "the NHL workflow stops passing the cron line that fired, so the fix never reaches a real run",
-      "find": "          CRON_SCHEDULE: ${{ github.event.schedule }}\n",
-      "replace": "",
+      "find": "          # against the next (Stage 68 item 3). Empty on a dispatch.\n          CRON_SCHEDULE: ${{ github.event.schedule }}\n",
+      "replace": "          # against the next (Stage 68 item 3). Empty on a dispatch.\n",
       "expect_caught_by": "test_the_daily_workflow_passes_the_cron_line_that_fired"
     }
   ]
