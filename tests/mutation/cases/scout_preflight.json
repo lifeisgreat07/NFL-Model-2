@@ -33,15 +33,15 @@
     {
       "id": "preflight-scope-subject-match-is-fuzzy",
       "why": "an approximation of a commit subject counts as disclosure, so a real undisclosed commit can hide behind a truncated or reworded title -- the risk introduced by accepting subjects as well as SHAs",
-      "find": "        return sha in body or subj.strip() in body",
-      "replace": "        return sha in body or subj.strip()[:10] in body",
+      "find": "        return sha[:7] in body or subj.strip() in body",
+      "replace": "        return sha[:7] in body or subj.strip()[:10] in body",
       "expect_caught_by": "test_a_near_miss_subject_does_not_count_as_disclosure"
     },
     {
       "id": "preflight-scope-shas-only",
       "why": "subjects stop counting as disclosure, so every well-written description that names its commits by title fails in CI and the check gets worked around",
-      "find": "        return sha in body or subj.strip() in body",
-      "replace": "        return sha in body",
+      "find": "        return sha[:7] in body or subj.strip() in body",
+      "replace": "        return sha[:7] in body",
       "expect_caught_by": "test_listing_commits_by_their_exact_subject_also_counts_as_disclosure"
     },
     {
