@@ -26,10 +26,11 @@
     },
     {
       "id": "empty-state-no-longer-spans-the-table",
-      "why": "the colspan lags the column count, so the 'no teams' row draws a ragged edge exactly when something has gone wrong and the reader most needs the page to look deliberate",
-      "find": "colspan=\"7\"",
-      "replace": "colspan=\"6\"",
-      "expect_caught_by": "test_the_empty_state_still_spans_the_whole_table"
+      "why": "the colspan lags the column count, so the 'no teams' row draws a ragged edge exactly when something has gone wrong and the reader most needs the page to look deliberate Re-pointed by Stage 21: the old guard counts only the columns that sort, and the new \"This season\" column does not, so it passed a row one column short.",
+      "find": "colspan=\"8\"",
+      "replace": "colspan=\"7\"",
+      "expect_caught_by": "test_the_no_match_row_spans_the_new_column",
+      "tests": "tests/test_stage21_insights.py"
     },
     {
       "id": "plain-english-note-removed",

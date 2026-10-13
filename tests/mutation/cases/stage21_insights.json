@@ -1,0 +1,48 @@
+{
+  "target": "src/dashboard/app.js",
+  "tests": "tests/test_stage21_insights.py",
+  "cases": [
+    {
+      "id": "insight-market-gap-read-from-model-a",
+      "why": "the gap is measured with Model A, which never sees the market, so most games of every week are flagged and the box stops meaning anything",
+      "find": "Math.abs(g.mktB_home - mkt) >= INSIGHT.MARKET_GAP_MIN",
+      "replace": "Math.abs(g.fbA_home - mkt) >= INSIGHT.MARKET_GAP_MIN",
+      "expect_caught_by": "test_the_market_gap_is_measured_with_model_b_not_model_a"
+    },
+    {
+      "id": "insight-market-gap-misses-its-edge",
+      "why": "a gap of exactly ten points is left out, so the threshold the page states is not the one it applies",
+      "find": "Math.abs(g.mktB_home - mkt) >= INSIGHT.MARKET_GAP_MIN",
+      "replace": "Math.abs(g.mktB_home - mkt) > INSIGHT.MARKET_GAP_MIN",
+      "expect_caught_by": "test_the_edges_of_each_threshold"
+    },
+    {
+      "id": "insight-coin-flip-asks-one-model",
+      "why": "a game is called a coin flip when only Model B is near 50%, so a game Model A calls clearly is shown as one neither model will call",
+      "find": "if(Math.abs(g.fbA_home - 50) <= INSIGHT.COIN_FLIP_WITHIN && Math.abs(g.mktB_home - 50) <= INSIGHT.COIN_FLIP_WITHIN){",
+      "replace": "if(Math.abs(g.mktB_home - 50) <= INSIGHT.COIN_FLIP_WITHIN){",
+      "expect_caught_by": "test_the_edges_of_each_threshold"
+    },
+    {
+      "id": "movers-line-names-every-move-again",
+      "why": "the movers line names one- and two-place shuffles again, so it is never hidden and never news",
+      "find": "  const moved = teams.filter(t => typeof t.rank_change === 'number'\n                                  && Math.abs(t.rank_change) >= INSIGHT.RANK_MOVE_MIN);",
+      "replace": "  const moved = teams.filter(t => typeof t.rank_change === 'number' && t.rank_change !== 0);",
+      "expect_caught_by": "test_a_week_of_small_moves_hides_the_line"
+    },
+    {
+      "id": "trend-drawn-from-too-few-weeks",
+      "why": "two or three weeks draw a line, and a line through two points reads as a trend it cannot show",
+      "find": "  return vals.length >= INSIGHT.TREND_MIN_WEEKS ? vals : [];",
+      "replace": "  return vals;",
+      "expect_caught_by": "test_fewer_weeks_than_the_minimum_draw_no_line"
+    },
+    {
+      "id": "board-never-renders-its-insights",
+      "why": "the functions are right and the box never fills, because the board does not call them: the collector that never ran",
+      "find": "  renderBoardInsights(gamesList);\n",
+      "replace": "",
+      "expect_caught_by": "test_the_board_and_the_table_use_them"
+    }
+  ]
+}
