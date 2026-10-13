@@ -488,3 +488,16 @@ def test_preflight_runs_the_check():
                                skip_tests=True, head='HEAD')
     tracked = {f.check: f for f in findings}['tracked files']
     assert not tracked.ok
+
+
+def test_a_seven_character_sha_still_names_a_commit_git_prints_longer():
+    """git's short SHA grows with the repository (seven characters until
+    2026-10, eight after). A body written with seven must still disclose the
+    commit; one written with the full short form already did."""
+    commits = [('63d61758', 'Generate the Changelog page'), ('791b6a64', 'Give the bar a scale')]
+    seven = pf.check_scope_disclosed('Commits: `63d6175` and `791b6a6`.', commits)
+    assert seven.ok, seven.detail
+    eight = pf.check_scope_disclosed('Commits: 63d61758 and 791b6a64.', commits)
+    assert eight.ok, eight.detail
+    one_missing = pf.check_scope_disclosed('Commits: `63d6175` only.', commits)
+    assert not one_missing.ok and '791b6a64' in one_missing.detail

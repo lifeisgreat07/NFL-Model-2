@@ -49,7 +49,8 @@ def test_the_tie_page_carries_a_tied_final(built):
     builder, out, missing = built
     assert missing is None, missing
     weeks = builder.weeks_json((out / 'states_tie.html').read_text(encoding='utf-8'))
-    ties = [g for w in weeks.values() for g in w['games'] if g.get('result') == 'tie']
+    opens_on = max(weeks, key=builder.parse_week)
+    ties = [g for g in weeks[opens_on]['games'] if g.get('result') == 'tie']
     assert len(ties) == 1, ties
     tie = ties[0]
     assert (tie['status'], tie['home_score'], tie['away_score']) == ('final', 20, 20), tie
@@ -62,7 +63,9 @@ def test_the_tie_page_renders_exactly_one_tie_tag(built):
     while the board showed sixteen (Stage 35, the third audit)."""
     builder, out, missing = built
     assert missing is None, missing
-    assert builder.rendered_tie_tags((out / 'states_tie.html').read_text(encoding='utf-8')) == 1
+    page = (out / 'states_tie.html').read_text(encoding='utf-8')
+    opens_on = max(builder.weeks_json(page), key=builder.parse_week)
+    assert builder.rendered_tie_tags(page, opens_on) == 1
 
 
 def test_a_locked_week_not_graded_yet_does_not_take_the_tie(tmp_path):
@@ -81,7 +84,7 @@ def test_a_locked_week_not_graded_yet_does_not_take_the_tie(tmp_path):
     page = builder.build(tmp_path, 'tie', weeks).read_text(encoding='utf-8')
     shown = {builder.parse_week(k) for k in builder.weeks_json(page)}
     assert locked not in shown and max(shown) == graded_latest, sorted(shown)
-    assert builder.rendered_tie_tags(page) == 1
+    assert builder.rendered_tie_tags(page, f'{graded_latest[0]}_week{graded_latest[1]}') == 1
 
 
 def test_the_preview_page_shows_the_stale_preview_and_hides_the_skipped_week(built):
@@ -134,3 +137,49 @@ def test_ci_builds_the_states_pages_and_checks_each_one():
     assert loop, 'the workflow no longer runs check_page on the states pages'
     builder = load_builder()
     assert sorted(loop.group(1).split()) == sorted(builder.PAGES)
+
+
+def test_a_week_with_a_real_tie_keeps_it_as_the_tie():
+    """Week 5 of 2026 had a real tie (NYG 27, WAS 27). Tying another game
+    beside it gave the page two "Tie" tags; the real one is the tie."""
+    builder = load_builder()
+    graded = [{'home': 'DAL', 'away': 'TB', 'result': None, 'actual_home_win': 0,
+               'market_correct': 1, 'model_a_correct': 0, 'model_b_correct': 0},
+              {'home': 'WAS', 'away': 'NYG', 'result': 'tie', 'actual_home_win': None,
+               'market_correct': None, 'model_a_correct': None, 'model_b_correct': None}]
+    out, status, tied = builder.with_a_tie(graded, None, 2026, 5)
+    assert tied == ('WAS', 'NYG')
+    assert [g['home'] for g in out if g.get('result') == 'tie'] == ['WAS']
+    assert out[0]['model_a_correct'] == 0
+
+
+def test_a_real_tie_in_an_earlier_week_does_not_fail_the_page():
+    """Only the week the board opens on is counted: a real tie in an earlier
+    week is a real result, not a second synthetic one."""
+    builder = load_builder()
+    fn = ("function gradedTagHtml(g){\n  if(!g.graded) return '';\n"
+          "  const verdict = g.model_b_correct ?? g.model_a_correct;\n"
+          "  if(g.result === 'tie' || verdict === null || verdict === undefined)\n"
+          "    return `<span class=\"graded-tag tie\">Tie</span>`;\n  return '';\n}\n")
+    tie = {'graded': True, 'result': 'tie'}
+    weeks = {'2026_week4': {'season': 2026, 'week': 4, 'games': [dict(tie, home='NYG', away='WAS')]},
+             '2026_week5': {'season': 2026, 'week': 5, 'games': [dict(tie, home='GB', away='ATL')]}}
+    page = fn + 'const weeks = ' + json.dumps(weeks) + ';'
+    builder.check('tie', page, ('GB', 'ATL'))
+
+
+def test_a_week_without_a_tie_gets_one():
+    """The builder's own job, held without the saved weeks: once a real week
+    held a real tie, the built page stopped showing whether the builder
+    could still make one (states-tie-never-tied survived on 2026-10-13)."""
+    builder = load_builder()
+    graded = [{'home': 'DAL', 'away': 'TB', 'result': None, 'actual_home_win': 0, 'spread_line': 9.5,
+               'market_correct': 1, 'model_a_correct': 0, 'model_b_correct': 0},
+              {'home': 'GB', 'away': 'CHI', 'result': None, 'actual_home_win': 1, 'spread_line': -1.5,
+               'market_correct': 1, 'model_a_correct': 1, 'model_b_correct': 1}]
+    out, status, tied = builder.with_a_tie(graded, None, 2026, 4)
+    assert tied == ('DAL', 'TB')
+    assert out[0]['result'] == 'tie' and out[0]['model_a_correct'] is None
+    assert out[1]['result'] is None and out[1]['model_a_correct'] == 1
+    [game] = status['games']
+    assert (game['home'], game['status'], game['home_score'], game['away_score']) == ('DAL', 'final', 20, 20)
