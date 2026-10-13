@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-11, 23:30 UTC (session 1011a: #426, #427; two silent cron-job.org jobs)
+Last updated: 2026-10-13, 18:30 UTC (session 1011a, Tuesday: week 5 graded; #429, #430)
 
 ---
 
@@ -43,23 +43,23 @@ end-to-end test read a schedule rewritten since its moment. Data commits start n
 shuffled suite is main's only daily check. **Stage 39 item 4** (#372) says on the Methodology page that
 ratings use regular-season plays and freeze through the playoffs.
 
-**Tuesday 10-13:** week 5 is graded; Stage 21 (`s21-insights`) can start,
-rebased across #351's moves. 11:00 UTC is the slot guard's first real test.
+**Week 5 graded on time (Tue 10-13, 11:03 UTC);** NYG 27 WAS 27, the first real tie, scored as neither.
+**Stage 21 is merged (#430):** Worth a look box, movers line, season sparklines. #429 made main green
+again (8-character short SHAs; a real tie in the tie state). Slot guard: GitHub's late copy of 11:00 had
+not run by 18:30 UTC, so the skip is still unproven.
 
 **Stage 68 (the 2026-10-09 Fable audit) is done:** #380 to #421; item 33 (U44, shared fonts) later, Mark's
 call. Item-to-PR map at the end of `docs/history/09-more-sports.md`; verdicts in the Audit Response Log.
 #387, #389, #401, #417 reviewed 10-11 (`memory/2026-10-11.md`): no reverts, two wording/contrast questions.
 
-**Single next action:** Stage 21 once week 5 is graded (Tue 10-13, a reminder is set). Before
-that, Mark: open the two silent cron-job.org jobs (NFL Saturday 05:17, NBA 16:00) and check enabled
-state and schedule. Week 7 locks Thu 10-15 under v2.6; NBA opening night 10-20 (reminders set).
+**Single next action:** check the week 7 lock under v2.6 (Thu 10-15, a reminder is set). Mark:
+open the two silent cron-job.org jobs (NFL Saturday 05:17, NBA 16:00). NBA opening night 10-20.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
 | cron-job.org: NFL Sat 05:17, NBA 16:00 | Never fired since made on 10-09 | Mark, in his account |
-| Stage 21 (`s21-insights`) | Built on the pre-move layout | Week 5 graded (Tue 10-13); rebase across #351's moves first |
 | Stage 65 (NBA live) | All four PRs merged (#367-#370); cron jobs on | Opening night 10-20; watch the first runs |
 | Stage 39 | Items 2, 3, 4, 7 merged | 2's `game_type`; 1's rest; 5 in December; 6 |
 | Stage 42 | Item 1 merged (#358) | Its other items |
@@ -69,8 +69,7 @@ state and schedule. Week 7 locks Thu 10-15 under v2.6; NBA opening night 10-20 (
 
 ## Queued, in order
 
-Stage 21 once week 5 is graded (Tue 10-13); Stage 39's other items; Stage 42's
-other items; 43; 44.
+Stage 39's other items; Stage 42's other items; 43; 44.
 
 One branch at a time. Rebase on `main`, full suite and mutation scope at the
 head, case files listed, and give Booth a bounded check when the scope is big.
