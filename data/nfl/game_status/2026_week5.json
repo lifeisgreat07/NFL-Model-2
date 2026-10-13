@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 5,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-12T13:27:23Z",
+  "read_at": "2026-10-13T11:02:55Z",
   "games": [
     {
       "away": "TB",
@@ -147,9 +147,9 @@
     {
       "away": "BUF",
       "home": "LA",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 37,
+      "home_score": 34,
       "spread_line": 3.5,
       "neutral_site": false,
       "venue": "SoFi Stadium"
