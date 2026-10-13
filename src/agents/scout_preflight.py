@@ -377,7 +377,12 @@ def check_scope_disclosed(body: str, commits: list[tuple[str, ...]]) -> 'Finding
         # Markdown may wrap a subject in backticks, bold it, or list it after a
         # number; a substring test survives all of those without loosening what
         # counts as a match.
-        return sha in body or subj.strip() in body
+        # The SHA is matched on its first seven characters. git lengthens its
+        # short form as a repository grows: this one went from seven to eight
+        # by 2026-10-13, and every body that had named its commits the
+        # seven-character way read as undisclosed overnight. Seven is git's
+        # own floor, and a body naming more of the SHA still contains them.
+        return sha[:7] in body or subj.strip() in body
 
     missing = [(sha, subj) for sha, subj in commits if not disclosed(sha, subj)]
     if missing:

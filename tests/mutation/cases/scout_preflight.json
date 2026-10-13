@@ -157,6 +157,13 @@
       "find": "                          capture_output=True).returncode == 0\n",
       "replace": "                          capture_output=True).returncode >= 0\n",
       "expect_caught_by": "test_the_real_git_lookup"
+    },
+    {
+      "id": "preflight-scope-needs-the-whole-short-sha",
+      "why": "a body naming a commit by git's seven-character short SHA reads as undisclosed once git prints eight, as it did on 2026-10-13",
+      "find": "        return sha[:7] in body or subj.strip() in body\n",
+      "replace": "        return sha in body or subj.strip() in body\n",
+      "expect_caught_by": "test_a_seven_character_sha_still_names_a_commit_git_prints_longer"
     }
   ]
 }
