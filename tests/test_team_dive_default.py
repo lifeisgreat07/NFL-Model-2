@@ -78,7 +78,7 @@ def test_a_team_link_still_overrides_the_default():
     route = route[:route.index('\n}\n')]
     assert re.search(r"if\(r\.team\)\{\s*const s = document\.getElementById\('teamdive-select'\);", route)
     first_render = src.index('\nrenderTeamDive();')
-    load_route = src.index('  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown));')
+    load_route = src.index('  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown), {focus:true});')
     assert first_render < load_route, (
         'the page applies a #team/ link before its first render sets the default, '
         'so the default would overwrite the link')

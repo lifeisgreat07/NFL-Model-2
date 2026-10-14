@@ -7,8 +7,10 @@ a screen reader heard nothing of the page that had just replaced the last.
 setActivePage() now marks every nav button for the page aria-current="page"
 (and clears the rest), titles the document from the page's heading, and,
 when the change is one the reader asked for, moves focus to that heading.
-A nav click and Back/Forward ask for it; the first paint does not, so a page
-opened from a link starts where pages normally start.
+A nav click and Back/Forward ask for it, and since Stage 76 item 10 (the
+2026-10-13 audit's N12) so does a link that opens a page: it left focus on
+<body> while a tap on the nav put it on the heading. A bare address, the
+Week Board's first paint, still moves nothing.
 
 The page was driven in a browser for the PR (process note there); these
 tests hold the source, since the suite has no browser.
@@ -51,11 +53,12 @@ def test_focus_moves_only_when_asked():
                      r"\s*heading\.focus\(\{preventScroll:true\}\);", body), 'focus is not moved to the heading'
 
 
-def test_a_nav_click_and_back_ask_for_focus_and_the_first_paint_does_not():
-    assert re.search(r'function goToPage\(page\)\{\s*setActivePage\(page, \{focus:true\}\);', TEMPLATE)
+def test_a_nav_click_back_and_a_link_ask_for_focus():
+    go = re.search(r'function goToPage\(page\)\{.*?\n\}', TEMPLATE, re.S).group(0)
+    assert '  setActivePage(page, {focus:true});\n}' in go
     assert ("window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown), "
             "{focus:true}));") in TEMPLATE
-    assert 'if(location.hash) applyRoute(parseRoute(location.hash, routeKnown));' in TEMPLATE
+    assert 'if(location.hash) applyRoute(parseRoute(location.hash, routeKnown), {focus:true});' in TEMPLATE
     assert 'setActivePage(r.page, opts);' in TEMPLATE
 
 

@@ -1,0 +1,73 @@
+{
+ "target": "src/core/routes.js",
+ "tests": "tests/test_page_return.py",
+ "cases": [
+  {
+   "id": "page-return-link-unfocused",
+   "why": "a link that opens a page leaves focus on <body> again (Stage 76 item 10, N12).",
+   "find": "    if(first.page !== 'board' || first.arg !== undefined) show(first.page, {focus: true});\n",
+   "replace": "    if(first.page !== 'board' || first.arg !== undefined) show(first.page);\n",
+   "expect_caught_by": "test_a_link_focuses_the_pages_heading_as_a_tap_does"
+  },
+  {
+   "id": "page-return-push-bubbles",
+   "why": "the push waits for the bubbling phase, after showPage has scrolled to the top.",
+   "find": "    history.pushState({y: 0}, '', want);\n  }, true);",
+   "replace": "    history.pushState({y: 0}, '', want);\n  });",
+   "expect_caught_by": "test_a_tap_saves_the_scroll_it_leaves_before_it_pushes_on_the_capture_phase"
+  },
+  {
+   "id": "page-return-scroll-not-saved",
+   "why": "a tap does not save the scroll of the page it leaves, so Back lands at the top.",
+   "find": "    saveScroll();\n    history.pushState({y: 0}, '', want);\n",
+   "replace": "    history.pushState({y: 0}, '', want);\n",
+   "expect_caught_by": "test_a_tap_saves_the_scroll_it_leaves_before_it_pushes_on_the_capture_phase"
+  },
+  {
+   "id": "page-return-browser-restores",
+   "why": "the browser's own restoration is left on, and loses to showPage's scroll to the top.",
+   "find": "  try{ if('scrollRestoration' in history) history.scrollRestoration = 'manual'; }catch(e){}\n",
+   "replace": "",
+   "expect_caught_by": "test_a_tap_saves_the_scroll_it_leaves_before_it_pushes_on_the_capture_phase"
+  },
+  {
+   "id": "page-return-no-restore",
+   "why": "Back and Forward show the page at the top, whatever scroll its entry kept.",
+   "find": "    if(y && window.scrollTo) window.scrollTo(0, y);\n",
+   "replace": "",
+   "expect_caught_by": "test_back_and_forward_put_each_page_where_it_was_left"
+  },
+  {
+   "id": "page-return-nfl-push-after",
+   "target": "src/dashboard/app.js",
+   "why": "the NFL changes the page, scrolling to the top, before it pushes: Back from the Methodology puts the Week Board at 0 (left at 800).",
+   "find": "function goToPage(page){\n  if(!inSharedView()){\n    const url = routeUrl(currentRoute(page));\n    if(location.pathname + location.search + location.hash !== url) history.pushState(null, '', url);\n  }\n  setActivePage(page, {focus:true});\n}",
+   "replace": "function goToPage(page){\n  setActivePage(page, {focus:true});\n  if(!inSharedView()){\n    const url = routeUrl(currentRoute(page));\n    if(location.pathname + location.search + location.hash !== url) history.pushState(null, '', url);\n  }\n}",
+   "expect_caught_by": "test_the_nfl_pushes_before_the_page_changes_and_a_link_focuses"
+  },
+  {
+   "id": "page-return-nfl-link-unfocused",
+   "target": "src/dashboard/app.js",
+   "why": "an NFL link that opens a page leaves focus on <body>.",
+   "find": "  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown), {focus:true});\n",
+   "replace": "  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown));\n",
+   "expect_caught_by": "test_the_nfl_pushes_before_the_page_changes_and_a_link_focuses"
+  },
+  {
+   "id": "page-return-heading-ring",
+   "target": "src/dashboard/styles.css",
+   "why": "every page change draws a 2px ring round its heading again.",
+   "find": "  h2[tabindex=\"-1\"]:focus{outline:none;}\n",
+   "replace": "",
+   "expect_caught_by": "test_a_focused_heading_wears_no_ring"
+  },
+  {
+   "id": "page-return-check-unwired",
+   "target": ".github/workflows/browser-checks.yml",
+   "why": "the page return browser check is dropped from CI.",
+   "find": "        run: python tests/browser/check_page_return.py index.html \"$RUNNER_TEMP/states/nhl.html\"\n",
+   "replace": "        run: echo skipped\n",
+   "expect_caught_by": "test_the_browser_check_runs"
+  }
+ ]
+}

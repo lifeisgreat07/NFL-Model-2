@@ -58,16 +58,33 @@ function installRoutes(show, arg){
   // its "All 32 clubs" lost the route after a day chip, and the NBA's "See
   // the backtest" is not a nav button (data-route): both opened their page
   // without an entry, and Back left the site.
+  // Stage 76 item 10 (N12): each entry keeps its own scroll in its state,
+  // and Back and Forward put it back. The browser's own restoration lost to
+  // showPage's scroll to the top (Back and Forward both landed at 0), so it
+  // is turned off and the router does it: the scroll is saved as the reader
+  // scrolls and again on the capture phase of a page button's click, before
+  // the button's own handler shows the page and scrolls to the top.
+  try{ if('scrollRestoration' in history) history.scrollRestoration = 'manual'; }catch(e){}
+  let saving = null;
+  const saveScroll = () => {
+    clearTimeout(saving);
+    try{ history.replaceState(Object.assign({}, history.state, {y: window.scrollY || 0}), ''); }catch(e){}
+  };
+  window.addEventListener('scroll', () => { clearTimeout(saving); saving = setTimeout(saveScroll, 120); }, {passive: true});
   document.addEventListener('click', e => {
     const b = e.target && e.target.closest ? e.target.closest('[data-page], [data-route]') : null;
     if(!b) return;
     const want = url(b.dataset.page || b.dataset.route);
-    if(!same(want)) history.pushState(null, '', want);
-  });
+    if(same(want)) return;
+    saveScroll();
+    history.pushState({y: 0}, '', want);
+  }, true);
   const follow = () => {
     const r = parseHash(location.hash, known()) || {page: 'board'};
     if(route.apply) route.apply(r.page, r.arg);
-    show(r.page);
+    show(r.page, {focus: true});
+    const y = history.state && history.state.y;
+    if(y && window.scrollTo) window.scrollTo(0, y);
     if(r.game && route.open) route.open(r.game);
   };
   window.addEventListener('popstate', follow);
@@ -75,7 +92,8 @@ function installRoutes(show, arg){
   const first = location.hash ? parseHash(location.hash, known()) : null;
   if(first){
     if(route.apply && first.arg !== undefined) route.apply(first.page, first.arg);
-    if(first.page !== 'board' || first.arg !== undefined) show(first.page);
+    // Arrival on a page by its link focuses its heading, as a tap does (N12).
+    if(first.page !== 'board' || first.arg !== undefined) show(first.page, {focus: true});
     if(first.game && route.open) route.open(first.game);
   }
   return function replace(page){

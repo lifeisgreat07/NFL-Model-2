@@ -4318,11 +4318,17 @@ function currentRoute(page){
 function inSharedView(){ return /[#&]picks=/.test(location.hash || ''); }
 function routeUrl(r){ return location.pathname + location.search + routeHash(r); }
 
+/* Stage 76 item 10 (the 2026-10-13 audit's N12): the entry is pushed BEFORE
+   the page changes. setActivePage scrolls to the top, and the browser keeps
+   each entry's scroll as it is when the next one is pushed, so pushing after
+   it saved 0 for the page being left: Back from the Methodology put the
+   Week Board at the top (left at 800 px), though Forward restored 1500. */
 function goToPage(page){
+  if(!inSharedView()){
+    const url = routeUrl(currentRoute(page));
+    if(location.pathname + location.search + location.hash !== url) history.pushState(null, '', url);
+  }
   setActivePage(page, {focus:true});
-  if(inSharedView()) return;
-  const url = routeUrl(currentRoute(page));
-  if(location.pathname + location.search + location.hash !== url) history.pushState(null, '', url);
 }
 function replaceRoute(page){
   const active = document.querySelector('.page.active');
@@ -4390,5 +4396,7 @@ function openGame(key){
   // popstate covers Back and Forward, and a fragment typed or pasted into the
   // address bar of an open tab.
   window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown), {focus:true}));
-  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown));
+  // A link that opens on a page focuses its heading, as a tap on the page's
+  // nav button does (Stage 76 item 10: it left focus on <body>).
+  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown), {focus:true});
 })();
