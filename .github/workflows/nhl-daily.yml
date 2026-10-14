@@ -27,6 +27,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: read
 
 concurrency:
   group: nhl-daily
@@ -52,6 +53,15 @@ jobs:
           # against the next (Stage 68 item 3). Empty on a dispatch.
           CRON_SCHEDULE: ${{ github.event.schedule }}
         run: python -m src.core.start_delay .github/workflows/nhl-daily.yml
+
+      # Stage 42 item 4: a run GitHub's cron started, for a slot cron-job.org
+      # should have started, asks whether it did, and opens an issue if not.
+      - name: Did cron-job.org start this slot?
+        if: github.event_name == 'schedule'
+        env:
+          CRON_SCHEDULE: ${{ github.event.schedule }}
+          GH_TOKEN: ${{ github.token }}
+        run: python -m src.core.missed_dispatch .github/workflows/nhl-daily.yml
 
       - name: Install dependencies
         run: pip install -r requirements.txt

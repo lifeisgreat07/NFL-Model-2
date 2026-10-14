@@ -95,4 +95,4 @@ def test_the_drift_step_survives_a_failed_lock_like_the_grading_does():
 def test_the_workflow_may_open_issues():
     block = re.search(r'^permissions:\s*\n((?:[ \t]+.+\n)+)', _text(), re.M).group(1)
     granted = dict(re.findall(r'^\s+(\w+):\s*(\S+)', block, re.M))
-    assert granted == {'contents': 'write', 'issues': 'write'}
+    assert granted == {'contents': 'write', 'issues': 'write', 'actions': 'read'}

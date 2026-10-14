@@ -39,8 +39,13 @@ Mark's pick on 2026-10-04: a web page, with nothing to deploy or maintain.
   A guard that fails lets the week run (fail open) and raises its own
   alert. `tests/test_slot_guard.py` holds it.
 - A credential outside GitHub, with an expiry to renew.
-- A missed request is seen only through cron-job.org's failure e-mail and
-  the delay line in the run that did start.
+- A missed request is seen. cron-job.org e-mails when GitHub refuses a
+  request; a job that never sends is caught by GitHub's own late copy of
+  the slot, which asks the Actions API whether a dispatch started near it
+  and opens or comments on an issue when none did
+  (`src/core/missed_dispatch.py`, Stage 42 item 4). Until then a job that
+  never fired was found only by reading the Actions history: the NBA's
+  16:00 and the NFL's Saturday 05:17, both made 2026-10-09, went four days.
 
 ## What would reopen it
 

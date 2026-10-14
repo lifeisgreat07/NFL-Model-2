@@ -35,7 +35,7 @@ USES = {
     ('pull-requests', 'read'): ('gh pr', '/pulls', '/issues/comments'),
     ('pages', 'write'): ('actions/deploy-pages',),
     ('id-token', 'write'): ('actions/deploy-pages',),
-    ('actions', 'read'): ('src.sports.nfl.recent_runs',),
+    ('actions', 'read'): ('src.sports.nfl.recent_runs', 'src.core.missed_dispatch'),
 }
 #: Needed by actions/checkout in every job, and grants nothing beyond reading
 #: a public repository.

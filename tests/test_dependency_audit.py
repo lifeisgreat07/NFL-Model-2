@@ -67,7 +67,7 @@ def test_a_finding_and_a_failed_audit_raise_different_alerts():
 
 def test_it_writes_nothing_and_holds_only_what_it_uses():
     t = text()
-    assert re.search(r'^permissions:\n  contents: read\n  issues: write\n\n', t, re.M)
+    assert re.search(r'^permissions:\n  contents: read\n  issues: write\n  actions: read\n\n', t, re.M)
     assert 'git push' not in t and 'git-auto-commit-action' not in t
 
 
