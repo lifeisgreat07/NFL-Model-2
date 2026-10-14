@@ -134,6 +134,17 @@ jobs:
       - name: Check the NBA's rows
         run: python tests/browser/check_rows.py "$RUNNER_TEMP/states/nba.html"
 
+      # Stage 75 item 1 (the 2026-10-13 UI/UX audit): a card's lead marker sits
+      # on its bar's split, within 1 px, on every NFL and NHL card at 390 and
+      # 1440 px in both themes. The NBA has no card until opening night;
+      # tests/test_card_axis.py holds its source. Proves itself first on a
+      # copy with the old marker position written back.
+      - name: Prove the card axis check can fail
+        run: python tests/browser/check_card_axis.py --self-test --tmp "$RUNNER_TEMP/axis"
+
+      - name: Check the cards' axis
+        run: python tests/browser/check_card_axis.py index.html "$RUNNER_TEMP/states/nhl.html"
+
       # Stage 59: the site's home page, built by the real builder from the
       # committed files (src/site/home.py).
       - name: Build the home page
