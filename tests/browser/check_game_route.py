@@ -72,7 +72,8 @@ async def check_pages(nfl, nhl):
                 ctx, page = await open_at(browser, nfl_uri, theme, w, h, f'#game/{key}')
                 card, bar, hash_ = await page.evaluate(NFL_CARD, key), await page.evaluate(TOP_BAR), await page.evaluate('location.hash')
                 if not card:
-                    report.append(f'{where} NFL #game/{key}: no card for it (week {await page.evaluate("document.getElementById(\'week-select\').value")})')
+                    week = await page.evaluate("document.getElementById('week-select').value")
+                    report.append(f'{where} NFL #game/{key}: no card for it (week {week})')
                 elif not card['open'] or card['top'] < bar - 1 or card['top'] > h / 2:
                     report.append(f'{where} NFL #game/{key}: card open {card["open"]}, top {card["top"]:.0f} (top bar {bar:.0f})')
                 if hash_ != f'#game/{key}':
