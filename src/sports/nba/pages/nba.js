@@ -688,7 +688,19 @@ renderReliability();
    opened (this week, today or its first day with games). */
 const HOME_WEEK = currentWeek, HOME_DAY = currentDay;
 replaceRoute = installRoutes(showPage, {
-  known: () => ({days: WEEK_KEYS.flatMap(weekDays)}),
+  // Stage 76 item 9: #game/<id> opens that game's day with its row open.
+  open: id => {
+    const g = BD.games.find(x => x.id === id);
+    if(!g) return;
+    currentWeek = mondayOf(g.day);
+    currentDay = g.day;
+    OPEN_ROWS.add(`nba-detail-${id}`);
+    renderBoard();
+    // As a tap does (Stage 75 item 3): the card, clear of the top bar and the bottom nav.
+    const card = document.getElementById(`nba-detail-${id}`);
+    if(card) revealOpened(card);
+  },
+  known: () => ({days: WEEK_KEYS.flatMap(weekDays), games: BD.games.map(g => g.id)}),
   current: page => (page === 'board' && currentDay !== HOME_DAY ? currentDay : undefined),
   apply: (page, value) => {
     if(page !== 'board') return;

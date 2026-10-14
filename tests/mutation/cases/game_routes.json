@@ -1,0 +1,106 @@
+{
+ "target": "src/core/routes.js",
+ "tests": "tests/test_game_routes.py",
+ "cases": [
+  {
+   "id": "game-route-unread",
+   "why": "#game/<id> on the NHL or NBA opens the board on today again (Stage 76 item 9, F4).",
+   "find": "  if(head === 'game') return (known.games || []).includes(arg) ? {page: 'board', game: arg} : {page: 'board'};\n",
+   "replace": "",
+   "expect_caught_by": "test_the_shared_router_reads_and_writes_a_game"
+  },
+  {
+   "id": "game-route-any-id",
+   "why": "an id the schedule does not hold is taken, and the board opens on nothing.",
+   "find": "  if(head === 'game') return (known.games || []).includes(arg) ? {page: 'board', game: arg} : {page: 'board'};\n",
+   "replace": "  if(head === 'game') return {page: 'board', game: arg};\n",
+   "expect_caught_by": "test_the_shared_router_reads_and_writes_a_game"
+  },
+  {
+   "id": "game-route-not-opened-on-load",
+   "why": "a link to a game is read but the game is never opened.",
+   "find": "    if(first.game && route.open) route.open(first.game);\n",
+   "replace": "",
+   "expect_caught_by": "test_the_shared_router_opens_a_game_on_load_and_on_back"
+  },
+  {
+   "id": "game-route-not-opened-on-back",
+   "why": "Back to a game's address leaves the board where it was.",
+   "find": "    if(r.game && route.open) route.open(r.game);\n",
+   "replace": "",
+   "expect_caught_by": "test_the_shared_router_opens_a_game_on_load_and_on_back"
+  },
+  {
+   "id": "game-route-nhl-row-closed",
+   "target": "src/sports/nhl/pages/nhl.js",
+   "why": "the NHL opens the game's day but leaves its row shut.",
+   "find": "    OPEN_ROWS.add(`nhl-detail-${id}`);\n",
+   "replace": "",
+   "expect_caught_by": "test_each_day_board_opens_the_games_day_with_its_row_open"
+  },
+  {
+   "id": "game-route-nba-no-ids",
+   "target": "src/sports/nba/pages/nba.js",
+   "why": "the NBA's router is never told its games, so every #game/<id> opens the board.",
+   "find": "  known: () => ({days: WEEK_KEYS.flatMap(weekDays), games: BD.games.map(g => g.id)}),\n",
+   "replace": "  known: () => ({days: WEEK_KEYS.flatMap(weekDays)}),\n",
+   "expect_caught_by": "test_each_day_board_opens_the_games_day_with_its_row_open"
+  },
+  {
+   "id": "game-route-nfl-unread",
+   "target": "src/dashboard/app.js",
+   "why": "the NFL reads #game/<key> as no route, and opens the latest week.",
+   "find": "  if(head === 'game') return (known.games || []).includes(arg) ? {page:'board', week:arg.split('-')[0], game:arg} : {page:'board'};\n",
+   "replace": "",
+   "expect_caught_by": "test_the_nfl_reads_and_writes_a_game"
+  },
+  {
+   "id": "game-route-nfl-not-opened",
+   "target": "src/dashboard/app.js",
+   "why": "the NFL opens the game's week but never its card.",
+   "find": "  if(r.game) openGame(r.game);\n",
+   "replace": "",
+   "expect_caught_by": "test_the_nfl_cards_carry_their_key_and_a_route_opens_one"
+  },
+  {
+   "id": "game-route-nfl-filter-hides",
+   "target": "src/dashboard/app.js",
+   "why": "a filter that hides the game leaves the link opening nothing.",
+   "find": "  if(!card && currentFilter !== 'all'){\n",
+   "replace": "  if(false){\n",
+   "expect_caught_by": "test_the_nfl_cards_carry_their_key_and_a_route_opens_one"
+  },
+  {
+   "id": "game-route-nfl-address-lost",
+   "target": "src/dashboard/app.js",
+   "why": "drawing the week rewrites the address to #board/<week>, so the link the reader arrived on is gone.",
+   "find": "  if(!inSharedView() && location.pathname + location.search + location.hash !== want) history.replaceState(null, '', want);\n",
+   "replace": "",
+   "expect_caught_by": "test_the_nfl_cards_carry_their_key_and_a_route_opens_one"
+  },
+  {
+   "id": "game-route-nfl-flush-top",
+   "target": "src/dashboard/styles.css",
+   "why": "on a desktop the card scrolls flush against the window's top edge, 6 px under it once it settles.",
+   "find": "  .game-card{scroll-margin-top:var(--s5);}\n",
+   "replace": "",
+   "expect_caught_by": "test_the_nfl_card_scrolls_to_a_margin_on_a_desktop"
+  },
+  {
+   "id": "game-route-check-unwired",
+   "target": ".github/workflows/browser-checks.yml",
+   "why": "the game route browser check is dropped from CI.",
+   "find": "        run: python tests/browser/check_game_route.py index.html \"$RUNNER_TEMP/states/nhl.html\"\n",
+   "replace": "        run: echo skipped\n",
+   "expect_caught_by": "test_the_browser_check_runs"
+  },
+  {
+   "id": "game-route-nfl-row-hidden",
+   "target": "src/dashboard/app.js",
+   "why": "on a phone the link scrolls the card to the top and leaves the row that names the game above it, off screen.",
+   "find": "  (phone ? row : card).scrollIntoView({block:'start'});\n",
+   "replace": "  card.scrollIntoView({block:'start'});\n",
+   "expect_caught_by": "test_the_nfl_cards_carry_their_key_and_a_route_opens_one"
+  }
+ ]
+}

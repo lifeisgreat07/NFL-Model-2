@@ -1909,7 +1909,10 @@ function renderGames(){
   });
   grid.innerHTML = cards.map((card, i) => slotHeadBefore(sorted, i) + phoneRowHtml(sorted[i], i) + card).join('');
   // Stage 68 item 36 (N2): each card follows its phone row, which opens it.
-  grid.querySelectorAll(':scope > .game-card').forEach((card, i) => { card.id = `card-${i}`; card.classList.add('nfl-collapsible'); });
+  grid.querySelectorAll(':scope > .game-card').forEach((card, i) => {
+    card.id = `card-${i}`; card.classList.add('nfl-collapsible');
+    card.dataset.game = gameKey(currentBoardWeek, sorted[i]);  // Stage 76 item 9: #game/<key>
+  });
   grid.querySelectorAll('.nfl-row').forEach(btn => btn.addEventListener('click', () => {
     const open = btn.getAttribute('aria-expanded') !== 'true';
     btn.setAttribute('aria-expanded', String(open));
@@ -4207,17 +4210,24 @@ function parseRoute(hash, known){
   let arg = slash === -1 ? '' : raw.slice(slash + 1);
   try{ arg = decodeURIComponent(arg); }catch(e){ arg = ''; }
   if(head === 'team') return known.teams.includes(arg) ? {page:'teamdive', team:arg} : {page:'teamdive'};
+  if(head === 'game') return (known.games || []).includes(arg) ? {page:'board', week:arg.split('-')[0], game:arg} : {page:'board'};
   if(!ROUTE_PAGES.includes(head)) return null;
   if(head === 'board' && known.weeks.includes(arg)) return {page:'board', week:arg};
   if(head === 'modellab' && known.experiments.includes(arg)) return {page:'modellab', experiment:arg};
   return {page:head};
 }
 function routeHash(r){
+  if(r.game) return '#game/' + encodeURIComponent(r.game);
   if(r.page === 'teamdive' && r.team) return '#team/' + encodeURIComponent(r.team);
   if(r.page === 'board' && r.week) return '#board/' + encodeURIComponent(r.week);
   if(r.page === 'modellab' && r.experiment) return '#modellab/' + encodeURIComponent(r.experiment);
   return '#' + r.page;
 }
+/* Stage 76 item 9 (the 2026-10-13 audit's F4): a game's address is its week
+   and its two clubs, #game/2026_week6-SEA-DEN. Nothing in the data has to
+   carry an id, and the key stays the same however the board is sorted or
+   filtered. */
+function gameKey(week, g){ return `${week}-${g.away}-${g.home}`; }
 function experimentSlug(text){
   return String(text).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
     .slice(0, 48).replace(/-+$/, '');
@@ -4293,7 +4303,8 @@ const routeKnown = (function(){
     tr.id = 'exp-' + slug;
   });
   const teams = (teamHistory && teamHistory.names) ? Object.keys(teamHistory.names) : [];
-  return {weeks: weekKeysSorted.slice(), teams, experiments};
+  const games = weekKeysSorted.flatMap(k => ((weeks[k] || {}).games || []).map(g => gameKey(k, g)));
+  return {weeks: weekKeysSorted.slice(), teams, experiments, games};
 })();
 
 function currentRoute(page){
@@ -4332,6 +4343,7 @@ function applyRoute(r, opts){
     const s = document.getElementById('teamdive-select');
     if(s && s.value !== r.team){ s.value = r.team; s.dispatchEvent(new Event('change')); }
   }
+  if(r.game) openGame(r.game);
   document.querySelectorAll('tr.route-target').forEach(tr => tr.classList.remove('route-target'));
   if(r.experiment){
     const row = document.getElementById('exp-' + r.experiment);
@@ -4345,6 +4357,29 @@ function applyRoute(r, opts){
       row.focus({preventScroll:true});
     }
   }
+}
+
+/* #game/<key>: the game's card, after its week is drawn. A filter that hides
+   it is cleared first, as a link to a hidden Model Lab row clears its
+   filter; on a phone the card's row is opened. */
+function openGame(key){
+  const find = () => [...document.querySelectorAll('#game-grid > .game-card')].find(c => c.dataset.game === key);
+  let card = find();
+  if(!card && currentFilter !== 'all'){
+    const all = document.querySelector('#filter-row .filter-btn[data-filter=all]');
+    if(all){ all.click(); card = find(); }
+  }
+  if(!card) return;
+  const row = document.querySelector(`.nfl-row[aria-controls="${card.id}"]`);
+  const phone = row && row.offsetParent;
+  if(phone && row.getAttribute('aria-expanded') !== 'true') row.click();
+  // On a phone the row names the game and its card, opened below it, drops
+  // the header (Stage 75 item 3), so the row is what goes to the top.
+  (phone ? row : card).scrollIntoView({block:'start'});
+  // Drawing the week replaced the address with #board/<week>; the link
+  // named the game, and the address keeps it.
+  const want = routeUrl({page:'board', game:key});
+  if(!inSharedView() && location.pathname + location.search + location.hash !== want) history.replaceState(null, '', want);
 }
 
 (function wireRoutes(){

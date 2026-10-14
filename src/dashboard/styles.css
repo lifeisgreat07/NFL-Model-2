@@ -1181,6 +1181,9 @@
      how the card itself is sized, so taking it out is a layout change of its
      own rather than a clean-up. */
   .game-card{container-type:inline-size; container-name:card;}
+  /* Stage 76 item 9: a #game/<key> link scrolls its card to the top with room
+     above it; the phone's own margin (the top bar, the bottom nav) wins below 1080px. */
+  .game-card{scroll-margin-top:var(--s5);}
   /* Historical track record for a pick's confidence band. Recessive by
      default -- it is context, not the headline -- but gains a left rule and
      warm ink when the band's interval spans 50%.
@@ -1631,6 +1634,7 @@
        (65 px) and the fixed bottom nav, the same 88 px main keeps for it.
        The NHL's and NBA's rows carry the same rule in their own sheets. */
     .game-card.nfl-collapsible{scroll-margin:76px 0 calc(88px + var(--safe-bottom));}
+    #game-grid .nfl-row{scroll-margin-top:76px;}  /* Stage 76 item 9: a #game link on a phone */
     table{font-size:var(--fs-13);}
     thead th{padding:var(--s3) var(--s3);}
     /* Below 1080px the top bar is sticky at top:0 and sits over the page
