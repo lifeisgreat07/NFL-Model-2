@@ -442,6 +442,9 @@ function labLinks(root){
   root.querySelectorAll('.nba-to-lab').forEach(b => b.addEventListener('click', () => showPage('modellab', {focus: true})));
 }
 let currentDay = null;
+/* Set by installRoutes at the end of the script (Stage 76 item 7): a chip
+   or a week step replaces the address's #board/<day>. */
+let replaceRoute = () => {};
 /* The rows open on the board, by their card's id (one per game), kept
    across every redraw (Stage 75 item 4). */
 const OPEN_ROWS = new Set();
@@ -476,6 +479,7 @@ function renderBoard(){
   document.querySelectorAll('.nba-day-chip').forEach(btn => btn.addEventListener('click', () => {
     currentDay = btn.dataset.day;
     renderBoard();
+    replaceRoute('board');
     const chip = document.querySelector(`.nba-day-chip[data-day="${currentDay}"]`);
     if(chip) chip.focus();
   }));
@@ -513,6 +517,7 @@ function stepWeek(by){
   if(i < 0 || i >= WEEK_KEYS.length) return;
   currentWeek = WEEK_KEYS[i];
   renderBoard();
+  replaceRoute('board');
 }
 document.getElementById('week-prev').addEventListener('click', () => stepWeek(-1));
 document.getElementById('week-next').addEventListener('click', () => stepWeek(1));
@@ -679,5 +684,17 @@ renderBoard();
 renderModelLab();
 renderMethod();
 renderReliability();
-installRoutes(showPage);
+/* Stage 76 item 7: #board/<day>. The bare address is the board as it
+   opened (this week, today or its first day with games). */
+const HOME_WEEK = currentWeek, HOME_DAY = currentDay;
+replaceRoute = installRoutes(showPage, {
+  known: () => ({days: WEEK_KEYS.flatMap(weekDays)}),
+  current: page => (page === 'board' && currentDay !== HOME_DAY ? currentDay : undefined),
+  apply: (page, value) => {
+    if(page !== 'board') return;
+    currentWeek = value ? mondayOf(value) : HOME_WEEK;
+    currentDay = value || HOME_DAY;
+    renderBoard();
+  },
+});
 document.body.classList.remove('is-entering');

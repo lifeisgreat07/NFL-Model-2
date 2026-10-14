@@ -417,6 +417,10 @@ function rowHtml(g, p, nowMs){
   </li>`;
 }
 let currentDay = null;
+/* Set by installRoutes at the end of the script (Stage 76 item 7): a chip,
+   a week step or a club change replaces the address's #board/<day> or
+   #team/<club>. */
+let replaceRoute = () => {};
 /* The rows open on the board, by their card's id (one per game), kept
    across every redraw (Stage 75 item 4). */
 const OPEN_ROWS = new Set();
@@ -442,6 +446,7 @@ function renderBoard(){
   document.querySelectorAll('.nhl-day-chip').forEach(btn => btn.addEventListener('click', () => {
     currentDay = btn.dataset.day;
     renderBoard();
+    replaceRoute('board');
     const chip = document.querySelector(`.nhl-day-chip[data-day="${currentDay}"]`);
     if(chip) chip.focus();
   }));
@@ -483,6 +488,7 @@ function stepWeek(by){
   if(i < 0 || i >= WEEK_KEYS.length) return;
   currentWeek = WEEK_KEYS[i];
   renderBoard();
+  replaceRoute('board');
 }
 document.getElementById('week-prev').addEventListener('click', () => stepWeek(-1));
 document.getElementById('week-next').addEventListener('click', () => stepWeek(1));
@@ -620,6 +626,7 @@ function renderTeams(){
       currentTeam = select.value;
       try{ localStorage.setItem('nhl:team', currentTeam); }catch(e){}
       renderTeams();
+      replaceRoute('teams');
     });
   }
   select.value = currentTeam;
@@ -799,5 +806,20 @@ renderMethod();
 renderReliability();
 renderTeams();
 renderChanges();
-installRoutes(showPage);
+/* Stage 76 item 7: #board/<day> and #team/<club>. The bare address is the
+   board as it opened (this week, today or its first day with games). */
+const HOME_WEEK = currentWeek, HOME_DAY = currentDay;
+replaceRoute = installRoutes(showPage, {
+  known: () => ({days: WEEK_KEYS.flatMap(weekDays), teams: Object.keys(DATA.teams)}),
+  current: page => (page === 'board' ? (currentDay !== HOME_DAY ? currentDay : undefined)
+    : page === 'teams' ? currentTeam || undefined : undefined),
+  apply: (page, value) => {
+    if(page === 'board'){
+      currentWeek = value ? mondayOf(value) : HOME_WEEK;
+      currentDay = value || HOME_DAY;
+      renderBoard();
+    }
+    if(page === 'teams' && value && value !== currentTeam){ currentTeam = value; renderTeams(); }
+  },
+});
 document.body.classList.remove('is-entering');

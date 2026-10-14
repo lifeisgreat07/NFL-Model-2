@@ -5,7 +5,7 @@
   {
    "id": "routes-link-ignored",
    "why": "a link to the Methodology opens the board",
-   "find": "  if(first) show(first);\n",
+   "find": "    if(first.page !== 'board' || first.arg !== undefined) show(first.page);\n",
    "replace": "",
    "expect_caught_by": "test_a_link_to_a_page_opens_it_and_back_follows"
   },
@@ -19,17 +19,105 @@
   {
    "id": "routes-unknown-hash-shown",
    "why": "a typed hash that names no page leaves an empty page",
-   "find": "    return known.has(h) ? h : null;\n",
-   "replace": "    return h || null;\n",
+   "find": "  if(!known.pages.includes(head)) return null;\n",
+   "replace": "",
    "expect_caught_by": "test_a_link_to_a_page_opens_it_and_back_follows"
   },
   {
    "id": "routes-nba-not-installed",
    "target": "src/sports/nba/pages/nba.js",
    "why": "the NBA's pages never take a route",
-   "find": "installRoutes(showPage);\n",
-   "replace": "",
+   "find": "replaceRoute = installRoutes(showPage, {\n",
+   "replace": "replaceRoute = ({\n",
    "expect_caught_by": "test_each_sport_installs_the_shared_routes"
+  },
+  {
+   "id": "routes-day-ignored",
+   "why": "a typed #board/<day> opens the board on its default day again (Stage 76 item 7, X6).",
+   "find": "  if(head === 'board' && (known.days || []).includes(arg)) return {page: 'board', arg};\n",
+   "replace": "",
+   "expect_caught_by": "test_a_route_names_a_day_or_a_club_and_falls_back_to_the_page_without_it"
+  },
+  {
+   "id": "routes-any-day-taken",
+   "why": "a day the schedule does not hold is taken as a route, and the board draws an empty week.",
+   "find": "  if(head === 'board' && (known.days || []).includes(arg)) return {page: 'board', arg};\n",
+   "replace": "  if(head === 'board' && arg) return {page: 'board', arg};\n",
+   "expect_caught_by": "test_a_route_names_a_day_or_a_club_and_falls_back_to_the_page_without_it"
+  },
+  {
+   "id": "routes-team-ignored",
+   "why": "#team/DET opens the Teams page on whatever club was last chosen.",
+   "find": "    return (known.teams || []).includes(arg) ? {page: 'teams', arg} : {page: 'teams'};\n",
+   "replace": "    return {page: 'teams'};\n",
+   "expect_caught_by": "test_a_route_names_a_day_or_a_club_and_falls_back_to_the_page_without_it"
+  },
+  {
+   "id": "routes-hash-drops-the-club",
+   "why": "the Teams page writes #teams, so a shared link loses the club.",
+   "find": "  if(r.page === 'teams' && r.arg) return '#team/' + encodeURIComponent(r.arg);\n",
+   "replace": "",
+   "expect_caught_by": "test_route_hash_writes_what_parse_hash_reads"
+  },
+  {
+   "id": "routes-typed-day-not-drawn",
+   "why": "a typed day is parsed but the board is never drawn for it.",
+   "find": "    if(route.apply && first.arg !== undefined) route.apply(first.page, first.arg);\n",
+   "replace": "",
+   "expect_caught_by": "test_a_typed_day_or_club_opens_on_it"
+  },
+  {
+   "id": "routes-chip-pushes",
+   "why": "every chip press adds a history entry, so seven chips cost seven presses of Back.",
+   "find": "    if(!same(want)) history.replaceState(null, '', want);\n",
+   "replace": "    if(!same(want)) history.pushState(null, '', want);\n",
+   "expect_caught_by": "test_a_chip_or_a_club_replaces_the_address_and_a_page_change_pushes"
+  },
+  {
+   "id": "routes-replace-off-page",
+   "why": "a club change made while another page is on screen rewrites that page's address.",
+   "find": "    if(active && active.id !== 'page-' + page) return;\n",
+   "replace": "",
+   "expect_caught_by": "test_a_replace_for_a_page_not_on_screen_writes_nothing"
+  },
+  {
+   "id": "routes-back-keeps-the-day",
+   "why": "Back to the bare address shows the board still on the day the reader left.",
+   "find": "    if(route.apply) route.apply(r.page, r.arg);\n",
+   "replace": "",
+   "expect_caught_by": "test_back_to_the_bare_address_puts_the_board_back_as_it_opened"
+  },
+  {
+   "id": "routes-nhl-chip-silent",
+   "target": "src/sports/nhl/pages/nhl.js",
+   "why": "an NHL day chip leaves the address on the day before.",
+   "find": "    renderBoard();\n    replaceRoute('board');\n",
+   "replace": "    renderBoard();\n",
+   "expect_caught_by": "test_a_day_chip_and_a_week_step_write_the_day"
+  },
+  {
+   "id": "routes-nba-week-silent",
+   "target": "src/sports/nba/pages/nba.js",
+   "why": "an NBA week step leaves the address on last week's day.",
+   "find": "  renderBoard();\n  replaceRoute('board');\n}",
+   "replace": "  renderBoard();\n}",
+   "expect_caught_by": "test_a_day_chip_and_a_week_step_write_the_day"
+  },
+  {
+   "id": "routes-nhl-club-silent",
+   "target": "src/sports/nhl/pages/nhl.js",
+   "why": "the club select leaves the address on the club before.",
+   "find": "      renderTeams();\n      replaceRoute('teams');\n",
+   "replace": "      renderTeams();\n",
+   "expect_caught_by": "test_the_nhl_club_select_writes_the_club"
+  },
+  {
+   "id": "routes-check-unwired",
+   "target": ".github/workflows/browser-checks.yml",
+   "why": "the routes browser check is dropped from CI.",
+   "find": "        run: python tests/browser/check_routes.py \"$RUNNER_TEMP/states/nhl.html\"\n",
+   "replace": "        run: echo skipped\n",
+   "expect_caught_by": "test_the_browser_check_runs"
   }
  ]
 }
