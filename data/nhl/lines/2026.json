@@ -754,5 +754,17 @@
   "home_prob": 0.4675,
   "read_utc": "2026-10-13T21:01:48Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020105",
+  "start_utc": "2026-10-14T03:00:00Z",
+  "home": "SJS",
+  "away": "BOS",
+  "book": "DraftKings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573,
+  "read_utc": "2026-10-14T00:00:30Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]
