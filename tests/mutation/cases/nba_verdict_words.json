@@ -1,0 +1,20 @@
+{
+ "target": "src/sports/nba/pages/nba.js",
+ "tests": "tests/test_nba_verdict_words.py",
+ "cases": [
+  {
+   "id": "nba-verdict-jargon-back",
+   "why": "the NBA's pre-season note reads the H3 label and a log-loss gap again (Stage 77 item 21).",
+   "find": "      : ` In the ${howMany} test seasons Model B did not beat the betting market, so the first live picks are a real test, not a victory lap.`)\n",
+   "replace": "      : ` Before the season, the backtest's answer to H3 was <b>${escapeHtml(h3.label)}</b>: Model B's log loss was <b>${better(h3.diff)}</b> than the market alone's (${signed(h3.diff, 4)}).`)\n",
+   "expect_caught_by": "test_the_note_says_the_verdict_in_plain_words"
+  },
+  {
+   "id": "nba-verdict-season-count-typed",
+   "why": "the number of test seasons is typed, not read from the registry.",
+   "find": "  const howMany = ['no', 'one', 'two', 'three', 'four'][seasons] || String(seasons);\n",
+   "replace": "  const howMany = 'two';\n",
+   "expect_caught_by": "test_the_note_says_the_verdict_in_plain_words"
+  }
+ ]
+}

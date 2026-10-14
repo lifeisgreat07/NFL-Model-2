@@ -44,8 +44,8 @@
       "id": "preseason-verdict-written-by-hand",
       "target": "src/sports/nba/pages/nba.js",
       "why": "the note's direction stops following the results file",
-      "find": "log loss was <b>${better(h3.diff)}</b> than",
-      "replace": "log loss was <b>higher</b> than",
+      "find": "    ? (h3.diff < 0\n",
+      "replace": "    ? (false\n",
       "expect_caught_by": "test_the_board_says_no_picks_yet_with_the_backtests_h3_answer"
     }
   ]
