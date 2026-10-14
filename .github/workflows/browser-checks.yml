@@ -132,6 +132,14 @@ jobs:
       - name: Check the NBA eyebrow names its week
         run: python tests/browser/check_nba_eyebrow.py "$RUNNER_TEMP/states/nba.html"
 
+      # Stage 77 item 33: a weekday tip before 5 PM Eastern is ESPN's
+      # placeholder and reads "time TBD" on the row and in the card.
+      - name: Prove the NBA tip time check can fail
+        run: python tests/browser/check_nba_tip.py --self-test --tmp "$RUNNER_TEMP/tip"
+
+      - name: Check a placeholder tip time is not printed
+        run: python tests/browser/check_nba_tip.py "$RUNNER_TEMP/states/nba.html"
+
       # Stage 68 item 5: no cell of a day-board row drawn over another, at
       # 320, 390 and 1280 px in both themes, with the clock before opening
       # night so every row carries its "Locks ..." label. It proves itself
