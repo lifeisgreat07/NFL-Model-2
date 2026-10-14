@@ -93,7 +93,8 @@ shown to Mark before any registry file is written.
 N1 (2026-10-09): no home edge at a neutral site, both models, a declared
 rule. Registered in #373 (`experiments/nfl/stage38/n1_registry.json`, with
 the back-check in `stage38/backcheck/`), shipped as MODEL_VERSION 2.6 in
-#374 between week 6's and week 7's locks.
+#374 between week 5's and week 6's locks (corrected 2026-10-13: this line
+said 6 and 7). Week 6, locked Thu 10-15, is the first week picked under it.
 
 ### Stage 39 - Ready for the playoffs (by mid-December)
 
