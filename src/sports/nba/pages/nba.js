@@ -107,7 +107,7 @@ function preseasonHtml(){
     : '';
   return `<div class="nba-preseason" role="note"><p><b>No picks yet.</b> The first is saved by the run before the season's first tip-off, `
     + `${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))} at ${escapeHtml(FMT_TIP.format(new Date(FIRST_GAME.start)))} ET, and never changed.${verdict}</p>`
-    + `<button type="button" class="nba-to-lab">See the backtest in the Model Lab</button></div>`;
+    + `<button type="button" class="nba-to-lab" data-route="modellab">See the backtest in the Model Lab</button></div>`;
 }
 function stateHtml(kind, title, text){
   return `<div class="state state--${kind}" role="status"><span class="state-title">${title}</span>${text ? `<p>${text}</p>` : ''}</div>`;
