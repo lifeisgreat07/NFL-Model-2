@@ -10,6 +10,19 @@ function dayKey(t){ const d = new Date(t); return d.getFullYear() + '-' + d.getM
 function clock(t){ return new Date(t).toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}); }
 function weekday(t){ return new Date(t).toLocaleDateString([], {weekday:'short'}); }
 function when(t){ return weekday(t) + ' ' + clock(t); }
+/* Stage 77 item 33 (the 2026-10-13 audit's B5), on the home page as on the
+   NBA's board (nba.js tipSet): ESPN files an NBA game whose tip-off is not
+   set at a placeholder hour, and NBA games on a weekday start in the
+   evening, so a weekday tip before 5 PM Eastern is not printed as a time. */
+const ET_WEEKDAY_HOUR = new Intl.DateTimeFormat('en-US', {weekday: 'short', hour: 'numeric', hourCycle: 'h23', timeZone: 'America/New_York'});
+function tipSet(t){
+  const parts = Object.fromEntries(ET_WEEKDAY_HOUR.formatToParts(new Date(t)).map(x => [x.type, x.value]));
+  return parts.weekday === 'Sat' || parts.weekday === 'Sun' || Number(parts.hour) >= 17;
+}
+function tipClock(t){ return tipSet(t) ? clock(t) : 'time TBD'; }
+function tipWhen(t){ return tipSet(t) ? when(t) : `${weekday(t)} · time TBD`; }
+/* Which moments can be placeholders: only the NBA's tip-off. */
+const PLACEHOLDER_TIMES = {'tip-off': [tipClock, tipWhen]};
 function record(r){ return r && (r.won + r.lost) > 0 ? `${r.won}–${r.lost}` : '—'; }
 
 // Each sport's icon, as at the top left of its page (Stage 62.2: the football,
@@ -70,6 +83,7 @@ function nflCard(f){
    games, or the next day with games, and the season's record. `start` names
    the moment a game begins in that sport ("puck drop", "tip-off"). */
 function dayStatus(f, start){
+  const [atClock, atWhen] = PLACEHOLDER_TIMES[start] || [clock, when];
   const games = (f.games || []).map(([s, st]) => ({t: Date.parse(s), st}));
   const today = games.filter(g => dayKey(g.t) === dayKey(NOW));
   const upcoming = games.filter(g => g.t > NOW - 3 * HOUR && g.st !== 'final');
@@ -77,12 +91,12 @@ function dayStatus(f, start){
   if(today.length){
     const evening = new Date(Math.min(...today.map(g => g.t))).getHours() >= 17;
     status = {text:`${today.length} game${today.length === 1 ? '' : 's'} ${evening ? 'tonight' : 'today'}`, cls:'is-live'};
-    rows.push([`First ${start}`, clock(Math.min(...today.map(g => g.t)))]);
+    rows.push([`First ${start}`, atClock(Math.min(...today.map(g => g.t)))]);
   } else if(upcoming.length){
     const next = Math.min(...upcoming.map(g => g.t));
     const n = games.filter(g => dayKey(g.t) === dayKey(next)).length;
     status = {text:`Next: ${n} game${n === 1 ? '' : 's'} ${weekday(next)}`};
-    rows.push([`First ${start}`, when(next)]);
+    rows.push([`First ${start}`, atWhen(next)]);
   } else {
     status = null;
   }
@@ -111,7 +125,7 @@ function nbaCard(f){
   if(first !== null){
     const day = new Date(first).toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'});
     return card('nba', 'NBA', 'nba/', {text:`Live from ${day}`}, 'Picks lock game by game',
-                [['First tip-off', when(first)]], 'Open the NBA board');
+                [['First tip-off', tipWhen(first)]], 'Open the NBA board');
   }
   return card('nba', 'NBA', 'nba/', d.status || {text:'No games scheduled', cls:'is-quiet'},
               'Picks lock game by game', d.rows, 'Open the NBA board');
@@ -143,7 +157,7 @@ function nextGame(){
   const label = s === 'nfl' ? `See the NFL's Week ${HOME.nfl.week} picks`
     : `See ${tonight ? "tonight's" : weekday(t) + "'s"} ${SPORT_NAME[s]} picks`;
   box.innerHTML = `<a class="home-cta-btn" href="${s}/">${esc(label)} <span aria-hidden="true">→</span></a>`
-    + `<span class="home-cta-when">Next game ${esc(tonight ? clock(t) : when(t))}</span>`;
+    + `<span class="home-cta-when">Next game ${esc(s === 'nba' ? (tonight ? tipClock(t) : tipWhen(t)) : (tonight ? clock(t) : when(t)))}</span>`;
 })();
 
 // The scoreboard above the cards (Stage 66, option A): each sport's record

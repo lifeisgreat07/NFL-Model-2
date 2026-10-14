@@ -1,0 +1,58 @@
+{
+ "target": "src/sports/nba/pages/nba.js",
+ "tests": "tests/test_nba_tip_time.py",
+ "cases": [
+  {
+   "id": "nba-tip-placeholder-printed",
+   "why": "opening night's BOS at DET reads \"3:00 PM\" from ESPN's placeholder again (Stage 77 item 33, B5).",
+   "find": "  return tipSet(g) ? FMT_HOUR.format(new Date(g.start)) : 'time TBD';\n",
+   "replace": "  return FMT_HOUR.format(new Date(g.start));\n",
+   "expect_caught_by": "test_the_row_the_card_and_the_note_all_use_it"
+  },
+  {
+   "id": "nba-tip-weekend-matinee-hidden",
+   "why": "a Saturday 3:30 PM game, which is real, reads time TBD.",
+   "find": "  return parts.weekday === 'Sat' || parts.weekday === 'Sun' || Number(parts.hour) >= 17;\n",
+   "replace": "  return Number(parts.hour) >= 17;\n",
+   "expect_caught_by": "test_a_weekday_afternoon_is_a_placeholder_and_an_evening_or_a_weekend_is_not"
+  },
+  {
+   "id": "nba-tip-read-in-utc",
+   "why": "the hour is read in UTC, so a 7 PM Eastern tip (23:00Z) passes and a 3 PM placeholder (19:00Z) does too.",
+   "find": "const FMT_ET_WEEKDAY_HOUR = new Intl.DateTimeFormat('en-US', {weekday: 'short', hour: 'numeric', hourCycle: 'h23', timeZone: ET});",
+   "replace": "const FMT_ET_WEEKDAY_HOUR = new Intl.DateTimeFormat('en-US', {weekday: 'short', hour: 'numeric', hourCycle: 'h23', timeZone: 'UTC'});",
+   "expect_caught_by": "test_a_weekday_afternoon_is_a_placeholder_and_an_evening_or_a_weekend_is_not"
+  },
+  {
+   "id": "nba-tip-card-prints-placeholder",
+   "why": "the card's date line prints the placeholder hour while the row says time TBD.",
+   "find": "  return tipSet(g) ? `${day} · ${FMT_TIME.format(new Date(g.start))} ET` : `${day} · time TBD`;\n",
+   "replace": "  return `${day} · ${FMT_TIME.format(new Date(g.start))} ET`;\n",
+   "expect_caught_by": "test_the_row_the_card_and_the_note_all_use_it"
+  },
+  {
+   "id": "nba-tip-home-card-placeholder",
+   "target": "src/site/home/home.js",
+   "why": "the home page's NBA card reads \"First tip-off Tue 3:00 PM\" from the placeholder again.",
+   "find": "[['First tip-off', tipWhen(first)]]",
+   "replace": "[['First tip-off', when(first)]]",
+   "expect_caught_by": "test_the_home_page_reads_a_placeholder_the_same_way"
+  },
+  {
+   "id": "nba-tip-home-rule-in-utc",
+   "target": "src/site/home/home.js",
+   "why": "the home page reads the tip's hour in UTC, so every evening tip reads as set and a 3 PM placeholder too.",
+   "find": "hourCycle: 'h23', timeZone: 'America/New_York'});",
+   "replace": "hourCycle: 'h23', timeZone: 'UTC'});",
+   "expect_caught_by": "test_the_home_page_reads_a_placeholder_the_same_way"
+  },
+  {
+   "id": "nba-tip-check-unwired",
+   "target": ".github/workflows/browser-checks.yml",
+   "why": "the NBA tip time browser check is dropped from CI.",
+   "find": "        run: python tests/browser/check_nba_tip.py \"$RUNNER_TEMP/states/nba.html\"\n",
+   "replace": "        run: echo skipped\n",
+   "expect_caught_by": "test_the_browser_check_runs"
+  }
+ ]
+}

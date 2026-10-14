@@ -106,7 +106,7 @@ function preseasonHtml(){
     ? ` Before the season, the backtest's answer to H3 was <b>${escapeHtml(h3.label)}</b>: on ${escapeHtml(CONFIRM)}, Model B's log loss was <b>${better(h3.diff)}</b> than the market alone's (${signed(h3.diff, 4)}), and the page will say how it goes live.`
     : '';
   return `<div class="nba-preseason" role="note"><p><b>No picks yet.</b> The first is saved by the run before the season's first tip-off, `
-    + `${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))} at ${escapeHtml(FMT_TIP.format(new Date(FIRST_GAME.start)))} ET, and never changed.${verdict}</p>`
+    + `${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))}${tipSet(FIRST_GAME) ? ` at ${escapeHtml(FMT_TIP.format(new Date(FIRST_GAME.start)))} ET` : ', its tip-off time still to be set'}, and never changed.${verdict}</p>`
     + `<button type="button" class="nba-to-lab" data-route="modellab">See the backtest in the Model Lab</button></div>`;
 }
 function stateHtml(kind, title, text){
@@ -125,9 +125,24 @@ const FMT_MONTHDAY = new Intl.DateTimeFormat('en-US', {month: 'short', day: 'num
 const FMT_TIME = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: ET});
 const FMT_ET_DATE = new Intl.DateTimeFormat('en-CA', {year: 'numeric', month: '2-digit', day: '2-digit', timeZone: ET});
 function todayEt(){ return FMT_ET_DATE.format(new Date()); }
+/* Stage 77 item 33 (the 2026-10-13 audit's B5): ESPN files a game whose
+   tip-off is not set yet at a placeholder hour, and the board printed it:
+   opening night's BOS at DET read "3:00 PM" from a 19:00Z feed time. NBA
+   games on a weekday start in the evening, so a weekday tip before 5 PM
+   Eastern reads "time TBD". Weekend afternoon games are real and are
+   printed. (A few weekday holiday matinees read TBD too; the schedule file
+   does not carry ESPN's own "time confirmed" flag, and the daily run is not
+   changed in this stage.) */
+const FMT_ET_WEEKDAY_HOUR = new Intl.DateTimeFormat('en-US', {weekday: 'short', hour: 'numeric', hourCycle: 'h23', timeZone: ET});
+function tipSet(g){
+  if(!g.start) return false;
+  const parts = Object.fromEntries(FMT_ET_WEEKDAY_HOUR.formatToParts(new Date(g.start)).map(x => [x.type, x.value]));
+  return parts.weekday === 'Sat' || parts.weekday === 'Sun' || Number(parts.hour) >= 17;
+}
 function startLabel(g){
   const day = FMT_DAY.format(dayDate(g.day));
-  return g.start ? `${day} · ${FMT_TIME.format(new Date(g.start))} ET` : day;
+  if(!g.start) return day;
+  return tipSet(g) ? `${day} · ${FMT_TIME.format(new Date(g.start))} ET` : `${day} · time TBD`;
 }
 const WEEKS = {};
 /* Team codes reach this page from the league's feed and are drawn into its
@@ -390,7 +405,8 @@ function rowPick(g, p){
 function rowTime(g){
   if(g.status === 'final') return 'Final';
   if(g.status === 'in_progress') return 'Live';
-  return g.start ? FMT_HOUR.format(new Date(g.start)) : 'TBD';
+  if(!g.start) return 'TBD';
+  return tipSet(g) ? FMT_HOUR.format(new Date(g.start)) : 'time TBD';
 }
 function rowGame(g){
   const won = winnerOf(g);
