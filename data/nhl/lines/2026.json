@@ -790,5 +790,17 @@
   "home_prob": 0.5635,
   "read_utc": "2026-10-14T21:01:48Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020107",
+  "start_utc": "2026-10-15T00:30:00Z",
+  "home": "COL",
+  "away": "DAL",
+  "book": "DraftKings",
+  "home_price": -162.0,
+  "away_price": 136.0,
+  "home_prob": 0.5934,
+  "read_utc": "2026-10-14T23:31:31Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]
