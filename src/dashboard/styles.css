@@ -621,8 +621,10 @@
     color:var(--text-2); font-size:var(--fs-11); font-weight:400; letter-spacing:.04em;
     text-decoration:underline; text-underline-offset:3px;
   }
+  /* Stage 75 item 5: 40x40, from 28x28 beside 48x58 day chips; the glyph
+     stays 15px. tests/test_icon_button_size.py. */
   .btn-icon{
-    width:28px; height:28px; padding:0; background:none; border:none;
+    width:40px; height:40px; padding:0; background:none; border:none;
     border-radius:var(--r-sm); color:var(--text-2);
   }
   .btn-icon svg{width:15px; height:15px;}
