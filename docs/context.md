@@ -28,16 +28,17 @@ the old name anywhere a visitor sees it.
 neutral site). Weeks 1-5 are locked (5 under v2.5); week 6's Tuesday preview is v2.6 and has HOU at
 JAX (London) neutral. Earlier docs said "week 7"; corrected. A reminder is set.
 
-**The QB override routine is broken since #351 (10-08).** Its prompt imports `src.pipeline.*` and
-writes `data/qb_overrides/`; both moved to `src/sports/nfl/` and `data/nfl/qb_overrides/`. No override
-PR since week 4. An agent cannot edit it (HTTP-API routine): Mark pastes the corrected prompt
-(`qb_routine_prompt.txt` in the session archive) at claude.ai/code/routines before Wed 22:00 UTC.
+**The QB override routine was broken from #351 (10-08) to 10-13.** Its prompt imported `src.pipeline.*`
+and wrote `data/qb_overrides/`; both moved to `src/sports/nfl/` and `data/nfl/qb_overrides/`. No override
+PR since week 4. Mark pasted the corrected prompt 10-13 (verified with list_triggers); it now stops on a
+ModuleNotFoundError instead of improvising. A path move must update it (agents cannot edit it).
 
-**Two cron-job.org jobs have never fired:** NBA 16:00 UTC (0 of 8 days) and NFL Saturday 05:17 UTC.
-Mark's account; Claude cannot sign in. **Since #433 a miss is seen:** GitHub's late copy of a covered
+**cron-job.org fixed 10-13 evening (Mark, checked in the console):** there was no 16:00 NBA job (the one
+titled 16:00 ran at 21:30), no Saturday 05:17 job, and the Thursday Weekly update job pointed at the
+pre-#351 `weekly-update.yml` and had never run. All three are now right, UTC. **Since #433 a miss is seen:** GitHub's late copy of a covered
 slot asks the Actions API for a dispatch near the slot and, finding none, opens or comments on
 "<workflow>: cron-job.org did not start the HH:MM UTC run" (`src/core/missed_dispatch.py`).
-First real test: GitHub's ~20:50 UTC copy of NBA 16:00 on 10-14 (reminder set).
+First tests: NBA 16:00 on 10-14, the Thursday lock 10-15, Saturday 10-17 (reminders set).
 
 **Slot guard proven (10-13):** the 11:01 dispatch served the Weekly update's slot; GitHub's 17:56
 copy ran only the guard, skipped the job and committed nothing.
@@ -48,15 +49,15 @@ Item 2's `game_type` and the Cancelled card were already built (Stage 68 item 27
 **Issue #428** (nightly shuffled suite red) should be fixed by #429; the first nightly after it is
 10-14 07:15 UTC (reminder set). #431 (Booth's count-line red on #430) is open for Mark.
 
-**Single next action:** Mark: paste the QB routine's corrected prompt, and turn on (or fix) the
-NBA 16:00 and NFL Saturday 05:17 cron-job.org jobs. Then: Stage 44's shape (below).
+**Single next action:** check the 10-14 16:00 UTC NBA dispatch arrived. Mark pasted the QB
+routine's corrected prompt (verified 10-13); its next run is Wed 22:00 UTC. Then: Stage 44's shape.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| QB override routine | Broken since 10-08 (old paths) | Mark pastes the corrected prompt |
-| cron-job.org: NBA 16:00, NFL Sat 05:17 | Never fired; #433 now alerts on it | Mark, in his account |
+| QB override routine | Prompt fixed 10-13 | Wed 22:00 UTC run: a week 6 PR or "none needed" |
+| cron-job.org jobs | Fixed 10-13 (Thu URL, NBA 16:00, Sat 05:17) | First runs 10-14, 10-15, 10-17 |
 | Stage 65 (NBA live) | Merged (#367-#370) | Opening night 10-20 |
 | Stage 39 | Items 1-4, 7 done (#432 last) | 5 in December; 6 (bracket status) wants a rendered choice in January |
 | Stage 42 | Items 1-4 done (#358, slot guard, #433) | 5: after four on-time weeks |
