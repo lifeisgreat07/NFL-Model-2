@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-14, 18:45 UTC (session 1014, Wednesday: Stage 75 done, #436-#440 and #442)
+Last updated: 2026-10-14, 23:30 UTC (session 1014, Wednesday: Stage 76 done, #443-#447)
 
 ---
 
@@ -17,19 +17,15 @@ figure. The NFL lives in `src/sports/nfl/` and `*/nfl/`; shared modules in `src/
 NHL `/nhl/` (day board), NBA `/nba/` (day board, empty until opening night). One theme key, `site:theme`.
 
 **The 2026-10-13 UI/UX audit is being worked as Stages 75-80** (text in
-`docs/history/09-more-sports.md`; one item per PR; merge granted by Mark for 75-78).
+`docs/history/09-more-sports.md`; one item per PR; merge granted by Mark for 75-80).
 **Stage 75 is done:** items 1-6 are #436, #437, #438, #439, #440, #442 (#441 is not a PR).
 Every finding reproduced.
-**Stage 76 is in progress:** all five findings reproduced on 10-14 (X6; X5, the NHL's half only
-after a redraw; F4; N12; C1). Item 7 is on its branch; items 8-11 are built and guarded on a
-scratch branch, one PR each, in order. Stage 77's items 12-24 and the NBA block (21, 22, 32, 33,
-and 46, 48, 51, 60 from Stages 79-80) are built the same way, waiting their turn.
-
-**Decided for Stage 76 item 10 (N12):** a link that opens a page focuses that page's heading, as a
-nav tap does. Stage 26 had chosen no focus on load; the audit asks for it and Mark said to fix every
-item, so it changes, and the heading's focus ring goes (it is not a control). A bare address still
-moves nothing. Back and Forward keep each page's scroll: the NFL pushes its entry before the page
-change, and the shared router keeps the scroll in each entry's state.
+**Stage 76 is done:** items 7-11 are #443, #444, #445, #446, #447. Every finding reproduced
+(X6; X5, the NHL's half only after a redraw; F4; N12; C1).
+**Next, in this order (Mark, 2026-10-14):** the NBA block that must be live by 10-20 - Stage 77
+items 32, 33, 22, 21, then Stage 80 item 60 and Stage 79 items 51, 48, 46 - then Stage 77's
+12-20 and 23-31, 34, 35, then Stage 78. All of these are built and guarded on a scratch branch,
+one PR each; Stage 79's 45, 47, 49, 50 and Stage 80's 52-59 and 61-64 are not built yet.
 
 **Decided for Stage 77 item 23 (copy row 12), Mark 2026-10-14:** the NFL's "numbers behind this"
 are not printed in points per 100 plays, as the audit suggested. A `why` value is the part's push on
@@ -37,8 +33,15 @@ Model A's log-odds, not a rating, so that unit would be false. Each row reads th
 helped and the points of win chance it gave them ("DEN +1.2"), under a one-line caption. Team
 Deep-Dive's game panels still print the raw values; that is outside the item.
 
+**Decided, Mark 2026-10-14:** results read **Correct / Missed** on every surface and every sport
+(Stage 77 item 26; this replaces Stage 64's "right so far"). Stage 78 item 36 takes option B: the
+home's font sizes move onto tokens, with one new token `--fs-40` for the hero. Stage 78 item 37's
+three tag tones (filled, outlined, accent) are approved as rendered. Item 40's 72ch is about
+100-115 characters a line in this face. Item 42 moves the four surfaces the audit names to
+`--surface-2` and leaves the More sheet's items alone. Merging Stage 79 and 80 items is granted.
+
 **NBA goes live on Tue 10-20** (Stage 65). Before then: Stage 80 item 60 (countdown) and the
-audit's B1-B5 must be merged. Merging Stage 79 and 80 items needs Mark's word (granted: 75-78).
+audit's B1-B5 must be merged. Merging Stage 79 and 80 items is granted (Mark, 2026-10-14).
 A reminder is set for the night itself.
 
 **Week 6 locks Thu 10-15**, the first week under v2.6 (HOU at JAX in London is neutral). Reminder set.
@@ -46,15 +49,18 @@ A reminder is set for the night itself.
 **Watching:** the first missed-dispatch alerts (#433) on the Thursday lock 10-15 and Saturday 10-17
 (the NBA's 16:00 slot fired on time 10-14); the QB routine's Wed 22:00 UTC run (prompt fixed 10-13);
 issue #428, whose first test since #429 is the 10-14 nightly shuffled suite (GitHub starts it hours late).
+Two things for Mark, seen while rendering: the NHL board's eyebrow reads "This Week" on any week
+(not in the audit; ask before adding it), and 10-13's NHL games still show as Live because the
+saved status is stale (Stage 80 item 61, live scores, is the fix).
 
-**Single next action:** merge Stage 76 item 7 (#board/<day> and #team/<club>) on SAFE TO MERGE,
-then item 8 from its prepared patch.
+**Single next action:** open Stage 77 item 32 (the NBA eyebrow says "Next week" when it shows
+next week) from its prepared patch, then 33, 22, 21, 60, 51, 48, 46 before Tue 10-20.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| Stages 76-80 (UI/UX audit) | 75 done; 76 item 7 open | 76 in order; item 60 and B1-B5 before 10-20 |
+| Stages 77-80 (UI/UX audit) | 75 and 76 done | the NBA block first; item 60 and B1-B5 before 10-20 |
 | Stage 44 (Line Judge) | Item 1 merged (#435): checks first, agent on failure | PR 2 (other runs), PR 3 (agent, digest) after the audit stages |
 | Stage 42 | Items 1-4 done | 5: after four on-time weeks |
 | Stage 39 | Items 1-4, 7 done | 5 in December; 6 wants a rendered choice in January |
