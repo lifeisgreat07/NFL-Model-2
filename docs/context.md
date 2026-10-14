@@ -35,7 +35,7 @@ ModuleNotFoundError instead of improvising. A path move must update it (agents c
 
 **cron-job.org fixed 10-13 evening (Mark, checked in the console):** there was no 16:00 NBA job (the one
 titled 16:00 ran at 21:30), no Saturday 05:17 job, and the Thursday Weekly update job pointed at the
-pre-#351 `weekly-update.yml` and had never run. All three are now right, UTC. **Since #433 a miss is seen:** GitHub's late copy of a covered
+workflow's pre-#351 file name and had never run. All three are now right, UTC. **Since #433 a miss is seen:** GitHub's late copy of a covered
 slot asks the Actions API for a dispatch near the slot and, finding none, opens or comments on
 "<workflow>: cron-job.org did not start the HH:MM UTC run" (`src/core/missed_dispatch.py`).
 First tests: NBA 16:00 on 10-14, the Thursday lock 10-15, Saturday 10-17 (reminders set).
