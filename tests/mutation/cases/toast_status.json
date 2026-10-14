@@ -1,0 +1,21 @@
+{
+  "target": "src/dashboard/body.html",
+  "tests": "tests/test_toast_status.py",
+  "cases": [
+    {
+      "id": "toast-status-role-dropped",
+      "why": "the page's toast has no role, so \"Pick saved\" is never announced.",
+      "find": "<div id=\"undo-toast\" class=\"undo-toast\" role=\"status\"></div>",
+      "replace": "<div id=\"undo-toast\" class=\"undo-toast\"></div>",
+      "expect_caught_by": "test_the_page_carries_the_toast_as_a_status_region_from_the_start"
+    },
+    {
+      "id": "toast-status-fallback-bare",
+      "target": "src/dashboard/app.js",
+      "why": "a toast made because the page's one is missing has no role again.",
+      "find": "    toast.setAttribute('role', 'status');  // Stage 75 item 6; body.html carries it from the start\n",
+      "replace": "",
+      "expect_caught_by": "test_the_fallback_toast_is_a_status_region_too"
+    }
+  ]
+}

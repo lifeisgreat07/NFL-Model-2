@@ -2725,6 +2725,7 @@ function showUndoToast(){
     toast = document.createElement('div');
     toast.id = 'undo-toast';
     toast.className = 'undo-toast';
+    toast.setAttribute('role', 'status');  // Stage 75 item 6; body.html carries it from the start
     document.body.appendChild(toast);
   }
   toast.innerHTML = `<span>Pick saved</span><button class="btn btn-link undo-btn" id="undo-action">Undo</button>`;

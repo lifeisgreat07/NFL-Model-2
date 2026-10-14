@@ -854,6 +854,11 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
   <p class="page-prov">__SIDEBAR_FOOT__</p>
 </main>
+<!-- Stage 75 item 6: the "Pick saved / Undo" toast is a status region from
+     the start, so a screen reader hears "Pick saved" when it changes; one made
+     on the first pick had no role, and a live region added with its text is
+     not announced reliably. Empty and off screen until a pick (styles.css). -->
+<div id="undo-toast" class="undo-toast" role="status"></div>
 
 <nav class="bottom-nav" aria-label="Mobile navigation">
   <div class="bottom-nav-row">
