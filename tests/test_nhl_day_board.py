@@ -28,7 +28,7 @@ PAGES = ROOT / 'src' / 'sports' / 'nhl' / 'pages'
 JS = PAGES / 'nhl.js'
 NODE = shutil.which('node')
 
-FUNCTIONS = ('dayDate', 'dayIso', 'weekDays', 'defaultDay', 'lockRunFor', 'winnerOf', 'rowResult', 'rowPick',
+FUNCTIONS = ('dayDate', 'dayIso', 'weekDays', 'defaultDay', 'lockRunFor', 'winnerOf', 'rowResult', 'pickText', 'rowPick',
              'rowTime', 'rowGame', 'daySummary')
 
 
@@ -53,7 +53,7 @@ def run_node(body):
         pytest.skip('node not available')
     src = source()
     js = ("const ET = 'America/New_York';\n"
-          + ''.join(const_line(src, c) for c in ('LOCK_RUN_HOURS_UTC', 'LOCK_SLACK_MS', 'FMT_HOUR'))
+          + ''.join(const_line(src, c) for c in ('LOCK_RUN_HOURS_UTC', 'LOCK_SLACK_MS', 'FMT_HOUR', 'EVEN_BAND'))
           + ''.join(function_source(src, n) for n in FUNCTIONS) + body)
     r = subprocess.run([NODE, '-e', js], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr

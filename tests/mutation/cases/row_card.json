@@ -1,0 +1,44 @@
+{
+  "target": "src/sports/nhl/pages/nhl.js",
+  "tests": "tests/test_row_card_agree.py",
+  "cases": [
+    {
+      "id": "row-card-nhl-row-own-text",
+      "why": "the NHL row works its pick out by itself again, so a close game's row says \"TOR 51%\" while its card says it is even.",
+      "find": "  return pickText(g, p).replace(' · even', '<span class=\"row-even\"><span class=\"row-even-sep\"> · </span>even</span>');\n",
+      "replace": "  const lead = p.b !== null && p.b !== undefined ? p.b : p.a;\n  return `${p.pick} ${Math.round((p.pick === g.home ? lead : 1 - lead) * 100)}%`;\n",
+      "expect_caught_by": "test_the_row_prints_pick_text"
+    },
+    {
+      "id": "row-card-nba-card-gives-up",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the NBA card's close-game headline goes back to naming no chance, beside a row that names one.",
+      "find": "<b>${pickText(g, p).replace(' · even', '')}</b> <span class=\"card-hl-to\">· even</span>",
+      "replace": "<b>Too close to call</b> <span class=\"card-hl-to\">· saved pick ${p.pick}</span>",
+      "expect_caught_by": "test_the_cards_close_game_headline_prints_pick_text"
+    },
+    {
+      "id": "row-card-even-band-drifts",
+      "why": "the row's \"even\" uses a wider band than the card's side(), so a 52% game is even on the row and a pick on the card.",
+      "find": "Math.abs(lead * 100 - 50) < EVEN_BAND ? ' · even' : ''",
+      "replace": "Math.abs(lead * 100 - 50) < EVEN_BAND + 1 ? ' · even' : ''",
+      "expect_caught_by": "test_even_means_what_the_card_means_by_it"
+    },
+    {
+      "id": "row-card-phone-even-inline",
+      "target": "src/sports/nhl/pages/nhl.css",
+      "why": "on a phone \"even\" stays on the pick's line, which cuts the game beside it to \"MIN @ B...\".",
+      "find": "  .nhl-row-pick .row-even{display:block;}\n",
+      "replace": "",
+      "expect_caught_by": "test_on_a_phone_even_takes_its_own_line"
+    },
+    {
+      "id": "row-card-check-unwired",
+      "target": ".github/workflows/browser-checks.yml",
+      "why": "the row-and-card browser check is dropped from CI.",
+      "find": "        run: python tests/browser/check_row_card.py \"$RUNNER_TEMP/states/nhl.html\"\n",
+      "replace": "        run: echo skipped\n",
+      "expect_caught_by": "test_the_browser_check_runs_on_the_nhl_page"
+    }
+  ]
+}
