@@ -112,9 +112,26 @@ function preseasonHtml(){
       ? ` In the ${howMany} test seasons Model B beat the betting market, so the live picks will show whether that holds.`
       : ` In the ${howMany} test seasons Model B did not beat the betting market, so the first live picks are a real test, not a victory lap.`)
     : '';
-  return `<div class="nba-preseason" role="note"><p><b>No picks yet.</b> The first is saved by the run before the season's first tip-off, `
+  const countdown = countdownText(todayEt());
+  return `<div class="nba-preseason" role="note">${countdown ? `<p class="nba-countdown">${escapeHtml(countdown)}</p>` : ''}<p><b>No picks yet.</b> The first is saved by the run before the season's first tip-off, `
     + `${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))}${tipSet(FIRST_GAME) ? ` at ${escapeHtml(FMT_TIP.format(new Date(FIRST_GAME.start)))} ET` : ', its tip-off time still to be set'}, and never changed.${verdict}</p>`
     + `<button type="button" class="nba-to-lab" data-route="modellab">See the backtest in the Model Lab</button></div>`;
+}
+/* Stage 80 item 60 (the 2026-10-13 audit's F17): until the first pick is
+   saved, the note leads with when it locks and how long that is from today
+   (Eastern calendar days). The clock time is given only when every opening-
+   night tip-off is set: a placeholder tip (item 33) would give a wrong lock. */
+const FMT_LOCK_DAY = new Intl.DateTimeFormat('en-US', {weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC'});
+function countdownText(today){
+  if(!FIRST_GAME) return '';
+  const days = Math.round((Date.parse(OPENING_DAY) - Date.parse(today)) / 86400000);
+  if(days < 0) return '';
+  const opening = BD.games.filter(g => g.day === OPENING_DAY && g.start);
+  const runs = opening.every(tipSet) ? opening.map(g => lockRunFor(g.start)).filter(Boolean) : [];
+  const first = runs.length ? new Date(Math.min(...runs.map(r => r.getTime()))) : null;
+  const when = `${FMT_LOCK_DAY.format(dayDate(OPENING_DAY))}${first ? `, ${FMT_TIP.format(first)} ET` : ''}`;
+  const away = days === 0 ? 'today' : days === 1 ? 'tomorrow' : `${days} days`;
+  return `First picks lock ${when} — ${away}`;
 }
 function stateHtml(kind, title, text){
   return `<div class="state state--${kind}" role="status"><span class="state-title">${title}</span>${text ? `<p>${text}</p>` : ''}</div>`;

@@ -47,7 +47,9 @@ def test_the_home_card_keys_on_no_picks_not_on_no_games():
 
 def test_the_board_reads_opening_night_from_the_schedule():
     assert NBA_JS.count("'2026-10-20'") == 1, 'only the fallback for a page with no schedule'
-    assert NBA_JS.count('dayDate(OPENING_DAY)') == 3
+    # Four since Stage 80 item 60: the pre-season note, the countdown, the
+    # empty board and the reliability lede.
+    assert NBA_JS.count('dayDate(OPENING_DAY)') == 4
     assert "const FIRST_GAME = BD.games.filter(g => g.start).sort((a, b) => a.start.localeCompare(b.start))[0] || null;" in NBA_JS
 
 

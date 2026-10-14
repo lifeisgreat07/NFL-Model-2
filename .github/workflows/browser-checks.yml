@@ -140,6 +140,15 @@ jobs:
       - name: Check a placeholder tip time is not printed
         run: python tests/browser/check_nba_tip.py "$RUNNER_TEMP/states/nba.html"
 
+      # Stage 80 item 60: until the first pick is saved, the NBA's note counts
+      # down to it, with the clock fixed a week before, the day before, the
+      # morning of and the day after opening night.
+      - name: Prove the NBA countdown check can fail
+        run: python tests/browser/check_nba_countdown.py --self-test --tmp "$RUNNER_TEMP/countdown"
+
+      - name: Check the NBA counts down to its first picks
+        run: python tests/browser/check_nba_countdown.py "$RUNNER_TEMP/states/nba.html"
+
       # Stage 68 item 5: no cell of a day-board row drawn over another, at
       # 320, 390 and 1280 px in both themes, with the clock before opening
       # night so every row carries its "Locks ..." label. It proves itself
