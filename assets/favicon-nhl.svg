@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- The NHL's favicon (Stage 76 item 11, the 2026-10-13 audit's C1 and V6):
+       the NFL's tile (token n0, #0B0D10) with the NHL sidebar's puck in the
+       dark theme's accent (#7FA8F5), drawn at the football's angle.
+       tests/test_favicon.py holds it. -->
+  <rect width="32" height="32" rx="7" fill="#0B0D10"/>
+  <g transform="rotate(-28 16 16)">
+    <path d="M5.08 13.92v4.16a10.92 4.16 0 0 0 21.84 0v-4.16z" fill="#7FA8F5"/>
+    <ellipse cx="16" cy="13.92" rx="10.92" ry="4.16" fill="#7FA8F5" stroke="#0B0D10" stroke-width="1.6"/>
+  </g>
+</svg>

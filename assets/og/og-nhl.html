@@ -1,0 +1,39 @@
+<!doctype html>
+<!-- The source of assets/og/og-nhl.png, the NHL pages' Open Graph image (Stage 76
+     item 11, the 2026-10-13 audit's C1 and V6: one football card served all four pages).
+     To remake it: open this file in Chromium at a 1200x630 viewport and take a
+     screenshot of the viewport, then check tests/test_meta_and_og.py still passes.
+     Colours are the dark theme's tokens (--bg, --text, --text-2, --border,
+     --accent, --series-a, --series-b); the marks are the sidebar's, and there
+     are no team logos, which are the leagues' trademarks. -->
+<html><head><meta charset="utf-8"><style>
+@font-face{font-family:PJS;src:url(../fonts/plus-jakarta-sans-latin-normal.woff2) format('woff2');font-weight:400 800;}
+html,body{margin:0;width:1200px;height:630px;}
+body{background:#0B0D10;color:#E6E9ED;font-family:PJS,sans-serif;position:relative;overflow:hidden;}
+.frame{position:absolute;inset:0;padding:72px 84px;display:flex;flex-direction:column;justify-content:space-between;}
+.eyebrow{font-size:22px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#AEB6C0;}
+h1{font-size:84px;font-weight:800;line-height:1.02;margin:18px 0 0;letter-spacing:-.01em;}
+p{font-size:32px;line-height:1.35;color:#AEB6C0;max-width:900px;margin:28px 0 0;}
+.foot{display:flex;align-items:center;gap:28px;font-size:24px;color:#AEB6C0;}
+.chip{display:inline-flex;align-items:center;gap:12px;font-weight:700;color:#E6E9ED;}
+.dot{width:16px;height:16px;border-radius:50%;}
+.sq{width:16px;height:16px;border-radius:3px;}
+.rule{position:absolute;left:84px;right:84px;bottom:150px;height:2px;background:#232830;}
+.marks{position:absolute;top:64px;right:84px;display:flex;gap:28px;}
+.bar{position:absolute;left:0;top:0;bottom:0;width:10px;background:#7FA8F5;}
+</style></head><body>
+<div class="bar"></div>
+<div class="marks"><svg class="mark" viewBox="0 0 20 20" width="150" height="150" fill="none" stroke="#7FA8F5" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g transform="rotate(-28 10 10)"><ellipse cx="10" cy="8.4" rx="8.4" ry="3.2"/><path d="M1.6 8.4v3.2a8.4 3.2 0 0 0 16.8 0V8.4"/></g></svg></div>
+<div class="frame">
+  <div>
+    <div class="eyebrow">NHL · daily picks</div>
+    <h1>Sporta<span style="color:#7FA8F5">lytics</span></h1>
+    <p>Daily NHL picks from two models, saved before puck drop and graded in public, with every experiment logged.</p>
+  </div>
+  <div class="foot">
+    <span class="chip"><span class="dot" style="background:#5283E0"></span>Model A &middot; hockey only</span>
+    <span class="chip"><span class="sq" style="background:#C97F2E"></span>Model B &middot; plus the betting market</span>
+  </div>
+</div>
+<div class="rule"></div>
+</body></html>

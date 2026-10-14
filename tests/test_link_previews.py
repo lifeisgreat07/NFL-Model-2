@@ -16,6 +16,9 @@ BASE = 'https://lifeisgreat07.github.io/NFL-Model-2/'
 PAGES = {'nfl': ('src/dashboard/page.html', 'NFL Week Board — Sportalytics'),
          'nhl': ('src/sports/nhl/pages/page.html', 'NHL Day Board — Sportalytics'),
          'nba': ('src/sports/nba/pages/page.html', 'NBA Day Board — Sportalytics')}
+#: Each board's own preview image and home-screen icon (Stage 76 item 11).
+OWN = {'nfl': ('og-card.png', 'apple-touch-icon.png'), 'nhl': ('og-nhl.png', 'apple-touch-icon-nhl.png'),
+       'nba': ('og-nba.png', 'apple-touch-icon-nba.png')}
 
 
 def meta(html, prop):
@@ -30,5 +33,6 @@ def test_each_board_previews_as_itself(sport):
     assert meta(html, 'og:title') == title
     assert meta(html, 'og:url') == f'{BASE}{sport}/'
     assert meta(html, 'og:description') == meta(html, 'description') and meta(html, 'description')
-    assert meta(html, 'og:image') == f'{BASE}og-card.png' and meta(html, 'twitter:card') == 'summary_large_image'
-    assert '<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">' in html
+    image, touch = OWN[sport]
+    assert meta(html, 'og:image') == f'{BASE}{image}' and meta(html, 'twitter:card') == 'summary_large_image'
+    assert f'<link rel="apple-touch-icon" href="../assets/{touch}">' in html

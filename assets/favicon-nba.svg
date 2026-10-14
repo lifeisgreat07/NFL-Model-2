@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- The NBA's favicon (Stage 76 item 11, the 2026-10-13 audit's C1 and V6):
+       the NFL's tile (token n0, #0B0D10) with the NBA sidebar's ball in the
+       dark theme's accent (#7FA8F5) and its seams in the tile's colour, drawn
+       at the football's angle. tests/test_favicon.py holds it. -->
+  <rect width="32" height="32" rx="7" fill="#0B0D10"/>
+  <g transform="rotate(-28 16 16)">
+    <circle cx="16" cy="16" r="10" fill="#7FA8F5"/>
+    <g fill="none" stroke="#0B0D10" stroke-width="1.6" stroke-linecap="round">
+      <path d="M16 6v20M6 16h20"/>
+      <path d="M8.97 8.86c2.98 2.74 3.57 10.95 0 14.29M23.03 8.86c-2.98 2.74-3.57 10.95 0 14.29"/>
+    </g>
+  </g>
+</svg>
