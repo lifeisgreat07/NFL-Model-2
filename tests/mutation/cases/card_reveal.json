@@ -1,0 +1,53 @@
+{
+  "target": "src/dashboard/app.js",
+  "tests": "tests/test_card_reveal.py",
+  "cases": [
+    {
+      "id": "card-reveal-nfl-no-scroll",
+      "why": "an NFL phone row opens its card below the fold again (704 to 1195 px on an 844 px phone).",
+      "find": "    if(open) revealOpened(card);\n",
+      "replace": "",
+      "expect_caught_by": "test_opening_a_row_reveals_its_card"
+    },
+    {
+      "id": "card-reveal-nba-no-scroll",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "an NBA row opens its card below the fold; no browser check sees the NBA before opening night.",
+      "find": "    if(open) revealOpened(card);\n",
+      "replace": "",
+      "expect_caught_by": "test_opening_a_row_reveals_its_card"
+    },
+    {
+      "id": "card-reveal-nhl-jumps-to-top",
+      "target": "src/sports/nhl/pages/nhl.js",
+      "why": "every open jumps the card to the top, even when it was already in view.",
+      "find": "  panel.scrollIntoView({block: 'nearest', behavior: still ? 'auto' : 'smooth'});",
+      "replace": "  panel.scrollIntoView({block: 'start', behavior: still ? 'auto' : 'smooth'});",
+      "expect_caught_by": "test_opening_a_row_reveals_its_card"
+    },
+    {
+      "id": "card-reveal-nhl-under-the-nav",
+      "target": "src/sports/nhl/pages/nhl.css",
+      "why": "the NHL card scrolls to the window's bottom edge, under the fixed bottom nav.",
+      "find": "  .nhl-row-detail{scroll-margin:76px 0 calc(88px + var(--safe-bottom));}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_cards_clear_the_top_bar_and_the_bottom_nav"
+    },
+    {
+      "id": "card-reveal-nfl-header-twice",
+      "target": "src/dashboard/styles.css",
+      "why": "the NFL phone card repeats \"SEA at DEN\" right under the row that says it.",
+      "find": "  #game-grid .game-card.nfl-collapsible > .matchup-header{display:none;}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_nfl_phone_card_drops_the_rows_header"
+    },
+    {
+      "id": "card-reveal-check-unwired",
+      "target": ".github/workflows/browser-checks.yml",
+      "why": "the card reveal browser check is dropped from CI.",
+      "find": "        run: python tests/browser/check_card_reveal.py index.html \"$RUNNER_TEMP/states/nhl.html\"\n",
+      "replace": "        run: echo skipped\n",
+      "expect_caught_by": "test_the_browser_check_runs"
+    }
+  ]
+}

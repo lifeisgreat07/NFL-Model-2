@@ -1625,6 +1625,10 @@
     .page-head h2{font-size:var(--fs-24);}
     .page-head{margin-bottom:var(--s6); padding-bottom:var(--s4);}
     .bottom-nav{display:block;}
+    /* Stage 75 item 3: a card scrolled into view clears the sticky top bar
+       (65 px) and the fixed bottom nav, the same 88 px main keeps for it.
+       The NHL's and NBA's rows carry the same rule in their own sheets. */
+    .game-card.nfl-collapsible{scroll-margin:76px 0 calc(88px + var(--safe-bottom));}
     table{font-size:var(--fs-13);}
     thead th{padding:var(--s3) var(--s3);}
     /* Below 1080px the top bar is sticky at top:0 and sits over the page
@@ -1769,6 +1773,10 @@
   .nfl-row[aria-expanded="true"] .nfl-row-chev{transform:rotate(180deg);}
   #game-grid .game-card.nfl-collapsible{display:none; margin:var(--s2) 0 var(--s3);}
   #game-grid .game-card.nfl-collapsible.is-open{display:block;}
+  /* Stage 75 item 3: the phone row already names the two teams, so the
+     opened card does not say them again. Its kickoff line stays: the row
+     shows the time only, the card the day and the channel too. */
+  #game-grid .game-card.nfl-collapsible > .matchup-header{display:none;}
   #page-board:not(.nfl-options-open) .filter-row > .lbx,
   #page-board:not(.nfl-options-open) #sort-select,
   #page-board:not(.nfl-options-open) #picks-pdf-link,

@@ -155,6 +155,15 @@ jobs:
       - name: Check each row agrees with its card
         run: python tests/browser/check_row_card.py "$RUNNER_TEMP/states/nhl.html"
 
+      # Stage 75 item 3: a tapped row's card is scrolled on screen, clear of
+      # the sticky top bar and the fixed bottom nav, at 390x844 and 1440x900
+      # in both themes; the NFL phone card does not repeat the row's header.
+      - name: Prove the card reveal check can fail
+        run: python tests/browser/check_card_reveal.py --self-test --tmp "$RUNNER_TEMP/reveal"
+
+      - name: Check an opened card is on screen
+        run: python tests/browser/check_card_reveal.py index.html "$RUNNER_TEMP/states/nhl.html"
+
       # Stage 59: the site's home page, built by the real builder from the
       # committed files (src/site/home.py).
       - name: Build the home page

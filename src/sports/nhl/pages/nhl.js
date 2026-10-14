@@ -395,6 +395,14 @@ function daySummary(games, picks){
   return s;
 }
 const CHEVRON = '<svg class="nhl-row-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+/* Stage 75 item 3: an opened card is brought on screen. A row near the
+   bottom of a phone opened its card below the fold and never scrolled
+   (NHL card 612 to 1052 px, NFL 704 to 1195 px, on an 844 px phone). 'nearest'
+   leaves a card that is already in view where it is. */
+function revealOpened(panel){
+  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  panel.scrollIntoView({block: 'nearest', behavior: still ? 'auto' : 'smooth'});
+}
 function rowHtml(g, p, nowMs){
   const r = rowResult(g, p, nowMs);
   const id = `nhl-detail-${g.id}`;
@@ -453,7 +461,9 @@ function renderBoard(){
   grid.querySelectorAll('.nhl-row').forEach(btn => btn.addEventListener('click', () => {
     const open = btn.getAttribute('aria-expanded') !== 'true';
     btn.setAttribute('aria-expanded', String(open));
-    document.getElementById(btn.getAttribute('aria-controls')).hidden = !open;
+    const card = document.getElementById(btn.getAttribute('aria-controls'));
+    card.hidden = !open;
+    if(open) revealOpened(card);
   }));
 }
 function stepWeek(by){

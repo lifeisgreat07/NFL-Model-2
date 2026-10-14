@@ -1412,6 +1412,15 @@ function cardProvisional(g){
   return `${g.away_score > g.home_score ? g.away : g.home} won`;
 }
 
+/* Stage 75 item 3: an opened card is brought on screen. A row near the
+   bottom of a phone opened its card below the fold and never scrolled
+   (NHL card 612 to 1052 px, NFL 704 to 1195 px, on an 844 px phone). 'nearest'
+   leaves a card that is already in view where it is. */
+function revealOpened(panel){
+  const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  panel.scrollIntoView({block: 'nearest', behavior: still ? 'auto' : 'smooth'});
+}
+
 function cardProbHtml(g, awayC, homeC){
   const b = cardSide(g.mktB_home, g), a = cardSide(g.fbA_home, g), m = cardSide(g.mkt_home, g);
   const vals = {b: g.mktB_home, a: g.fbA_home, market: g.mkt_home};
@@ -1904,7 +1913,9 @@ function renderGames(){
   grid.querySelectorAll('.nfl-row').forEach(btn => btn.addEventListener('click', () => {
     const open = btn.getAttribute('aria-expanded') !== 'true';
     btn.setAttribute('aria-expanded', String(open));
-    document.getElementById(btn.getAttribute('aria-controls')).classList.toggle('is-open', open);
+    const card = document.getElementById(btn.getAttribute('aria-controls'));
+    card.classList.toggle('is-open', open);
+    if(open) revealOpened(card);
   }));
 
   document.querySelectorAll('.toggle-flag').forEach(btn=>{
