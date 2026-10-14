@@ -1,0 +1,27 @@
+{
+  "target": "src/dashboard/styles.css",
+  "tests": "tests/test_icon_button_size.py",
+  "cases": [
+    {
+      "id": "icon-button-back-to-28",
+      "why": "the week stepper's arrows shrink back to 28x28 beside 48x58 day chips.",
+      "find": "    width:40px; height:40px; padding:0; background:none; border:none;",
+      "replace": "    width:28px; height:28px; padding:0; background:none; border:none;",
+      "expect_caught_by": "test_the_stepper_arrow_is_40_by_40_with_a_15px_glyph"
+    },
+    {
+      "id": "icon-button-glyph-grows",
+      "why": "the glyph grows with the button, which the item says to keep at 15px.",
+      "find": "  .btn-icon svg{width:15px; height:15px;}",
+      "replace": "  .btn-icon svg{width:20px; height:20px;}",
+      "expect_caught_by": "test_the_stepper_arrow_is_40_by_40_with_a_15px_glyph"
+    },
+    {
+      "id": "icon-button-shrunk-on-hover",
+      "why": "a later rule sizes the arrow again, so it is 40x40 only until something else wins.",
+      "find": "    .btn-icon:hover:not(:disabled){background:var(--surface-2);}",
+      "replace": "    .btn-icon:hover:not(:disabled){background:var(--surface-2); width:28px;}",
+      "expect_caught_by": "test_no_other_rule_resizes_it"
+    }
+  ]
+}
