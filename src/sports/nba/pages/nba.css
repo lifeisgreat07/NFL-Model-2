@@ -56,6 +56,7 @@
 .nba-preseason{margin:0 0 var(--s3); padding:var(--s3); border:1px solid var(--border); border-radius:var(--r-2, 10px);
   background:var(--surface); font-size:var(--fs-14); color:var(--text-2);}
 .nba-preseason p{margin:0 0 var(--s2);}
+.nba-preseason .nba-countdown{font-weight:700; color:var(--text);}  /* Stage 80 item 60 */
 .nba-preseason b{color:var(--text);}
 .nba-to-lab{background:none; border:0; padding:0; min-height:24px; font:inherit; color:var(--accent);
   text-decoration:underline; cursor:pointer;}

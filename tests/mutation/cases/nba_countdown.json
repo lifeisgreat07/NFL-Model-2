@@ -1,0 +1,42 @@
+{
+ "target": "src/sports/nba/pages/nba.js",
+ "tests": "tests/test_nba_countdown.py",
+ "cases": [
+  {
+   "id": "nba-countdown-dropped",
+   "why": "the NBA's pre-season note no longer says how long until the first picks (Stage 80 item 60, F17).",
+   "find": "<div class=\"nba-preseason\" role=\"note\">${countdown ? `<p class=\"nba-countdown\">${escapeHtml(countdown)}</p>` : ''}",
+   "replace": "<div class=\"nba-preseason\" role=\"note\">",
+   "expect_caught_by": "test_the_note_leads_with_it_while_there_are_no_picks"
+  },
+  {
+   "id": "nba-countdown-never-stops",
+   "why": "the day after opening night the note still counts, \"-1 days\".",
+   "find": "  if(days < 0) return '';\n",
+   "replace": "",
+   "expect_caught_by": "test_it_counts_days_then_tomorrow_then_today_then_stops"
+  },
+  {
+   "id": "nba-countdown-placeholder-time",
+   "why": "a placeholder tip-off gives a lock time it cannot know (12 PM from ESPN's 3 PM stand-in).",
+   "find": "  const runs = opening.every(tipSet) ? opening.map(g => lockRunFor(g.start)).filter(Boolean) : [];\n",
+   "replace": "  const runs = opening.map(g => lockRunFor(g.start)).filter(Boolean);\n",
+   "expect_caught_by": "test_a_placeholder_tip_gives_the_day_without_a_time"
+  },
+  {
+   "id": "nba-countdown-no-tomorrow",
+   "why": "the day before reads \"1 days\".",
+   "find": "  const away = days === 0 ? 'today' : days === 1 ? 'tomorrow' : `${days} days`;\n",
+   "replace": "  const away = days === 0 ? 'today' : `${days} days`;\n",
+   "expect_caught_by": "test_it_counts_days_then_tomorrow_then_today_then_stops"
+  },
+  {
+   "id": "nba-countdown-check-unwired",
+   "target": ".github/workflows/browser-checks.yml",
+   "why": "the NBA countdown browser check is dropped from CI.",
+   "find": "        run: python tests/browser/check_nba_countdown.py \"$RUNNER_TEMP/states/nba.html\"\n",
+   "replace": "        run: echo skipped\n",
+   "expect_caught_by": "test_the_browser_check_runs"
+  }
+ ]
+}
