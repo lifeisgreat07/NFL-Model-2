@@ -474,3 +474,123 @@ U44 later. Deferred: E16 (after opening night), U31, U43, U46, U47.
 Declined with reasons in the log: E9, U19, U35, U40, U48.
 
 All merged on 2026-10-10 between 04:30 and 11:30 UTC, one PR at a time. Merged on Booth's NEEDS HUMAN REVIEW, as Mark said for the night: #387 and #389 (Booth's own workflows) and #401 (a render Booth could not re-run).
+
+## Stages 75 to 80 - the 2026-10-13 UI/UX audit
+
+Mark ran a UI/UX-only audit on 2026-10-13 ("Sportalytics UI/UX Audit -
+2026-10-13", a Claude Doc, run against `42d8fd7`) and approved Stages 75
+to 80 the same night, merge granted for 75 to 78. Weighted UI/UX block
+80.3 (audit 5: 81.0). The audit numbered on from "audit 5's Stages 68 to
+74"; this repository took audit 5 as Stage 68's items, so **69 to 74 are
+unused** and stay unused. Every finding is a hypothesis until rendered at
+390x844 and 1440x900 in both themes; one that does not reproduce is marked
+"not reproduced" here with its measurement. Order: 75, 76, 77, then 78,
+79, 80; within 80, items 52 to 54 and 60 first. Item 60 and B1 to B5 land
+before the NBA's opening night (Tue 2026-10-20); 61 to 64 last. Item 61
+(live scores) is the plan's only data change; nothing in the daily, lock,
+drift, backtest, weekly update or grading scripts changes in 75 to 79.
+The team-colour split bar stays (decided 2026-09-21): item 1 moves the
+markers onto its axis and does not change its colours.
+
+The finding IDs the items cite, one line each (the audit has the evidence
+and file:line for every one):
+
+- X1 card split bar and marker line disagree about Model B (opposite axes), NFL, NHL, NBA.
+- X2 a row opens its card below the fold and never scrolls; the NFL phone card repeats the row.
+- X3 nothing on the home names a pick; the NHL card's "First puck drop" stays after the drop.
+- X4 row "NJD 51%" vs card "Too close to call": EVEN_BAND on the card only (NHL, NBA).
+- X5 the NHL "All 32 clubs" and NBA Model Lab buttons skip the router; Back goes to about:blank.
+- X6 NHL and NBA day, week and club are not in the URL.
+- X7 the theme toggle re-renders the NHL and NBA boards and closes every open row.
+- X8 build-speak for visitors: UTC preview note, commit subjects, "H3 was REJECT", unitless +0.055.
+- X9 nhl.css, nba.css and home.css sit outside the motion, token and literal guards.
+- X10 two visual languages: two switches, two chip styles, three rows, 16 pill styles, a fifth hue.
+- H1 home stat tiles mix patterns; H2 no "Updated" line or done/remaining; H3 hero half empty at 1440 and a native FAQ marker; H4 card hover is transition:all.
+- N1 NFL phone fold: first game at y~647 of 844; N2 preview week: dead lock-proof toggle, hidden PDF, Options has no open state; N3 "Copied (1 picks)" and two more sentences; N4 "How to read a card" goes to #method; N5 toast has no live region, flag dot has no legend; N6 a filter hidden below 640 px with no hint; N7 phone print hides cards; N8 td.num without tabular-nums; N9 fixed 680 px trend chart, 9 px ticks; N10 sparkline in --accent, Deep-Dive bars with no scale; N11 prose at 143-153 characters a line; N12 deep-link focus stays on BODY, Back/Forward scroll differs.
+- L1 "Vegas Golden KnightsVGK"; L2 28x28 stepper arrows; L3 sticky side column taller than the viewport; L4 last-row th border stub; L5 NHL Accuracy, Lab and Ratings thinner than the NFL's; L6 "Updated" twice, empty day with no pointer, "No pick / -" before launch; L7 "Jake AllenCONFIRMED" for screen readers.
+- B1 NBA eyebrow "This Week" over next week; B2 NBA chrome labels differ from the NHL's; B3 760 px board, nothing beside it at 1440; B4 Reliability prose only, Lab labels bold text; B5 a 19:00Z feed time printed as "3:00 PM" instead of "time TBD".
+- C1 one OG card and one football favicon for all four pages; C2 light --border on --surface 1.24:1; C3 a border token used as a surface; C4 the More sheet has no scrim or close, the bottom nav is last in tab order.
+- F1-F17 and V1-V9 are the audit's feature and visual-lift lists; items 45 to 64 name the ones they build.
+
+### Stage 75 - The card reads one way
+
+1. Markers on the split bar's own axis with team labels at both ends, guarded by a browser test asserting the split and the Model B marker are within 1 px on every card (X1, F5). **Reproduced 2026-10-13** (SEA at DEN, 1440x900, both themes): split x=471.4, Model B marker x=447.7, 23.7 px apart on a 208.3 px track.
+2. Row and card agree on close games: apply EVEN_BAND to the row, or print "51% · even" in both (X4).
+3. After a row opens, scrollIntoView({block:'nearest'}) in all three boards, and the duplicated header inside the NFL phone card is dropped (X2).
+4. renderBoard remembers open rows and restores them, which fixes the theme toggle and chip taps (X7).
+5. .btn-icon to 40x40 with the 15 px glyph kept (L2).
+6. The toast gets role="status" (N5).
+
+### Stage 76 - Everything has an address
+
+7. #board/<day> and #team/<club> on NHL and NBA with replaceState; installRoutes learns one argument, mirroring parseRoute (X6, F3).
+8. The NHL side-column button and the NBA Model Lab button go through the router, either by exporting its click handler or by pushState before showPage (X5).
+9. #game/<id> opens, expands and scrolls to the row on every sport (F4).
+10. Deep-link arrival focuses the H2 exactly like an in-page tap, without the focus ring, and Forward and Back restore the same scroll (N12).
+11. Per-sport favicon, touch icon and OG card, and a home OG with the three marks (C1, V6).
+
+### Stage 77 - Copy a 12-year-old can read
+
+12 to 26. The fifteen copy fixes, one item each (X3, X8, H1, N3, B2, L6):
+12. Home NHL card: "16 games tonight / First puck drop 6:00 PM" becomes "16 games tonight · 11 final, 5 to play / Next puck drop 11:00 PM" (when the first is past).
+13. Home tiles: "NFL, Model B 49–29 / NHL, picks 25–12 / Every pick saved before the start" become "NFL picks 49–29 / NHL picks 25–12 / 3 sports · 115 picks graded".
+14. NHL and NBA board lede: four lines ending in the Model A/B rule become "Today's games, each model's pick, and how it did. Tap a game for the details." (the A/B rule moves into the card).
+15. NFL preview note: "as of Tue Oct 13, 11:02 UTC" becomes "as of Tue 7:02 AM ET".
+16. NFL preview week: "When these picks were saved, and where to check" is hidden, or reads "These picks lock Thursday before kickoff."
+17. NFL lock-proof line: "Changed after kickoff: feb3d1b (Stage 52: ...)" becomes "Changed after kickoff in commit feb3d1b."
+18. My Picks share button: "Copied (1 picks)" becomes "Link copied · 1 pick".
+19. Shared-picks banner: "1 pick for 2026 week6, shared from someone else's device." becomes "Someone shared 1 pick for Week 6 with you."
+20. Season Accuracy empty state: "Pick some games on the Week Board to join this race." becomes "Make your own picks on My Picks Log to join this race."
+21. NBA pre-season note: the H3/REJECT/+0.0008 sentence becomes "In the two test seasons Model B did not beat the betting market, so the first live picks are a real test, not a victory lap."
+22. NBA chrome: "NBA / Method / Checks" become "Daily NBA picks, graded" and the NHL's labels, so all three sports match.
+23. NFL "the numbers behind this": "Offense edge +0.055" becomes "+5.5 points per 100 plays" (fmtRating).
+24. NHL pre-launch rows: "No pick / —" becomes "Before launch".
+25. Row status on a live game: "Locked" becomes "Live" (and the score once the daily run writes live scores).
+26. Result words: Right/Wrong on the NFL rows and Correct/Missed on the NHL and NBA become one vocabulary on every surface.
+27. The preview provenance link is hidden when the lock note is empty, the hidden PDF link gets a sentence, Options gets an open state (N2).
+28. The flag dot gets a legend and no longer shares its shape with the live dots (N5).
+29. "How to read a card" points at a real card section or at the onboarding spotlight (N4).
+30. The home gets an Updated line and done/remaining counts (H2).
+31. A filter that is active at a width where the chips are hidden prints "Filtered: Model Disagreement · clear" above the rows (N6).
+32. The NBA eyebrow says "Next week" when it shows next week (B1).
+33. A non-evening NBA tip time reads "time TBD" (B5).
+34. The goalie pill gets a space or a visually-hidden separator (L7).
+35. An empty NHL day names the next day with games (L6).
+
+### Stage 78 - One system, guarded
+
+36. The three CSS guards read home.css, nhl.css and nba.css as well as the NFL template, and everything they then catch is fixed: hovers behind the hover guard, .15s to var(--dur-base) var(--ease), --r-2 to --r-lg, home font sizes onto tokens, both rgba shadows deleted and the raised segment drawn with --border-strong (X9, V9).
+37. One .sport-switch, one .day-chip, one .game-row with one chevron transition, one .tag with three tones, one disclosure style, one result vocabulary (X10, H3).
+38. --nhl-likely retired; goalie pills become neutral filled or outlined with the word, and "Locked" and CONFIRMED stop wearing the accent (X10).
+39. td.num gets tabular-nums, .metrics-table tr:last-child :is(td,th) loses its border, .rel-prov wins its specificity fight, the sparkline moves to --text-3 (N8, L4, N9, N10).
+40. max-width:72ch on NFL prose blocks (N11).
+41. "LightningTBL": the side column prints the full name only (L1).
+42. The border-as-surface fills move to --surface-2 (C3).
+43. The More sheet gets a scrim and a close button, and the bottom nav moves ahead of the rows in tab order or gets a skip link (C4).
+44. Phone print shows the cards (N7).
+
+### Stage 79 - The newer sports get the NFL's charts
+
+45. One chart style module with 11 px minimum text, a 50% reference, series shapes and CI whiskers, applied to the trend, the scoreboard, the reliability diagram and Deep-Dive (N9, V3).
+46. NHL and NBA Accuracy render the race, the trend and the calibration diagram from the same component, with the empty state drawn inside the frame for the NBA (L5, B4).
+47. NHL and NBA Ratings adopt Power Ratings' row (V8).
+48. The NBA gets a side column at 1280 and wider (injuries, who is out), and the NHL column gets max-height:calc(100vh - var(--s8)) with overflow:auto (B3, L3).
+49. The trend chart takes its width from its container and Deep-Dive prints its scale (N9, N10).
+50. Light-mode state borders reach 1.5:1 (C2, V7).
+51. The NBA Model Lab's decision labels become the NFL's pills with interval glyphs (B4).
+
+### Stage 80 - Product features
+
+52. Tonight strip on every surface and the best pick on each home card (F1, F2).
+53. Favourite teams (F7).
+54. "Since your last visit" (F8).
+55. Compare mode (F9).
+56. Command palette (F6).
+57. Settings sheet and keyboard panel, with [ and ] stepping days (F10, F11).
+58. Three-step onboarding spotlight (F12).
+59. Week or day summary strip (F16).
+60. NBA countdown state, which must land before 10-20 (F17).
+61. Live scores on rows, which needs the daily run to write them (F15).
+62. PWA and offline last board (F14).
+63. Shareable card image (F13).
+64. Numeric display face, logo watermark, density modes, print stylesheet per sport (V1, V2, V4, V5).
