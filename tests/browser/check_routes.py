@@ -141,8 +141,10 @@ ONE_LISTENER = """  document.addEventListener('click', e => {
     const b = e.target && e.target.closest ? e.target.closest('[data-page], [data-route]') : null;
     if(!b) return;
     const want = url(b.dataset.page || b.dataset.route);
-    if(!same(want)) history.pushState(null, '', want);
-  });
+    if(same(want)) return;
+    saveScroll();
+    history.pushState({y: 0}, '', want);
+  }, true);
 """
 PER_BUTTON = """  document.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => {
     const want = url(b.dataset.page);

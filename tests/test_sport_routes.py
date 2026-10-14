@@ -40,7 +40,7 @@ const listeners = {}; const shown = []; const pushed = [];
 const pages = ['board', 'method', 'modellab'].map(n => ({id: 'page-' + n}));
 const names = %s;
 global.location = {hash: %s, pathname: '/nhl/', search: ''};
-global.history = {pushState: (s, t, u) => { pushed.push(u); location.hash = u.startsWith('#') ? u : ''; }};
+global.history = {pushState: (s, t, u) => { pushed.push(u); location.hash = u.startsWith('#') ? u : ''; }, replaceState: () => {}};
 global.window = {addEventListener: (e, f) => { listeners[e] = f; }};
 global.document = {querySelectorAll: s => s === '.page' ? pages : [], addEventListener: (e, f) => { listeners['doc:' + e] = f; }};
 %s
@@ -116,7 +116,10 @@ let active = 'board';
 
 global.location = {hash: %s, pathname: '/nhl/', search: ''};
 const go = u => { location.hash = u.startsWith('#') ? u : ''; };
-global.history = {pushState: (s, t, u) => { pushed.push(u); go(u); }, replaceState: (s, t, u) => { replaced.push(u); go(u); }};
+global.history = {state: null,
+  pushState: (s, t, u) => { history.state = s; pushed.push(u); go(u); },
+  // A replace with no URL keeps the address: it only writes the entry's state (its scroll).
+  replaceState: (s, t, u) => { history.state = s; if(u === undefined) return; replaced.push(u); go(u); }};
 global.window = {addEventListener: (e, f) => { listeners[e] = f; }};
 global.document = {querySelectorAll: s => s === '.page' ? pages : [],
                    querySelector: s => ({id: 'page-' + active}),

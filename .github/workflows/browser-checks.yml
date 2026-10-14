@@ -188,6 +188,14 @@ jobs:
       - name: Check a game's address opens it
         run: python tests/browser/check_game_route.py index.html "$RUNNER_TEMP/states/nhl.html"
 
+      # Stage 76 item 10: a link focuses the page's heading as a tap does, the
+      # heading wears no ring, and Back and Forward keep each page's scroll.
+      - name: Prove the page return check can fail
+        run: python tests/browser/check_page_return.py --self-test --tmp "$RUNNER_TEMP/pagereturn"
+
+      - name: Check arriving on a page and coming back to one
+        run: python tests/browser/check_page_return.py index.html "$RUNNER_TEMP/states/nhl.html"
+
       # Stage 59: the site's home page, built by the real builder from the
       # committed files (src/site/home.py).
       - name: Build the home page

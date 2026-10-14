@@ -5,7 +5,7 @@
   {
    "id": "routes-link-ignored",
    "why": "a link to the Methodology opens the board",
-   "find": "    if(first.page !== 'board' || first.arg !== undefined) show(first.page);\n",
+   "find": "    if(first.page !== 'board' || first.arg !== undefined) show(first.page, {focus: true});\n",
    "replace": "",
    "expect_caught_by": "test_a_link_to_a_page_opens_it_and_back_follows"
   },

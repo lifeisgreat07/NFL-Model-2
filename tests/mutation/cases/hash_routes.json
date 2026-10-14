@@ -40,7 +40,7 @@
     {
       "id": "route-not-read-on-load",
       "why": "a link with a route in it opens on the Week Board anyway, which is every shared address doing nothing.",
-      "find": "  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown));\n",
+      "find": "  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown), {focus:true});\n",
       "replace": "",
       "expect_caught_by": "test_back_forward_and_a_pasted_address_are_followed"
     },

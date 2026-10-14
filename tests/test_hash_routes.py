@@ -128,7 +128,7 @@ def test_the_navs_record_the_page_in_the_address(src):
         'a nav click no longer goes through goToPage, so the address and Back stop following it')
     body = re.search(r'function goToPage\(page\)\{.*?\n\}', src, re.S).group(0)
     assert 'history.pushState(' in body, 'a page change must add a history entry, or Back leaves the site'
-    assert re.search(r'if\(inSharedView\(\)\) return;', body), (
+    assert re.search(r'if\(!inSharedView\(\)\)\{', body), (
         'a page change during a shared view would overwrite the share link in the address')
 
 
@@ -146,7 +146,7 @@ def test_a_week_or_team_change_replaces_rather_than_adds(src):
 def test_back_forward_and_a_pasted_address_are_followed(src):
     code = re.search(r'\(function wireRoutes\(\)\{.*?\n\}\)\(\);', src, re.S).group(0)
     assert "window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown), {focus:true}));" in code
-    assert 'if(location.hash) applyRoute(parseRoute(location.hash, routeKnown));' in code, (
+    assert 'if(location.hash) applyRoute(parseRoute(location.hash, routeKnown), {focus:true});' in code, (
         'a link with a route in it no longer opens that route on load')
 
 
