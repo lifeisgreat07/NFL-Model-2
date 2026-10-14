@@ -1,0 +1,36 @@
+{
+ "target": "src/sports/nba/pages/body.html",
+ "tests": "tests/test_nba_chrome.py",
+ "cases": [
+  {
+   "id": "nba-chrome-sub-says-nba",
+   "why": "the NBA's phone top bar says \"NBA\" again where the NHL's says \"Daily NHL picks, graded\" (Stage 77 item 22, B2).",
+   "find": "<span class=\"topbar-sub\">Daily NBA picks, graded</span>",
+   "replace": "<span class=\"topbar-sub\">NBA</span>",
+   "expect_caught_by": "test_the_top_bar_says_daily_picks_graded"
+  },
+  {
+   "id": "nba-chrome-checks-label",
+   "why": "the NBA calls the reliability page \"Checks\" where the other sports say \"Checking the AI's work\".",
+   "find": "<span>Checking the AI&#39;s work</span></button>\n  </div>\n</div>",
+   "replace": "<span>Checks</span></button>\n  </div>\n</div>",
+   "expect_caught_by": "test_the_nba_names_each_page_as_the_other_sports_do"
+  },
+  {
+   "id": "nba-chrome-sheet-never-closes",
+   "target": "src/sports/nba/pages/nba.js",
+   "why": "a page chosen from the NBA's More sheet opens behind the sheet, which stays up.",
+   "find": "  const more = document.getElementById('bnav-more-btn');\n  if(more) more.classList.toggle('active', OVERFLOW_PAGES.includes(name));\n  setMoreSheetOpen(false);\n",
+   "replace": "  const more = document.getElementById('bnav-more-btn');\n  if(more) more.classList.toggle('active', OVERFLOW_PAGES.includes(name));\n",
+   "expect_caught_by": "test_the_long_names_sit_under_more_as_they_do_on_the_nhl"
+  },
+  {
+   "id": "nba-chrome-more-dead",
+   "target": "src/sports/nba/pages/nba.js",
+   "why": "the NBA's More button does nothing, so Methodology and Checking the AI's work cannot be reached on a phone.",
+   "find": "if(moreBtn) moreBtn.addEventListener('click', e => {",
+   "replace": "if(false) moreBtn.addEventListener('click', e => {",
+   "expect_caught_by": "test_the_long_names_sit_under_more_as_they_do_on_the_nhl"
+  }
+ ]
+}
