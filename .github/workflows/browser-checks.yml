@@ -164,6 +164,14 @@ jobs:
       - name: Check an opened card is on screen
         run: python tests/browser/check_card_reveal.py index.html "$RUNNER_TEMP/states/nhl.html"
 
+      # Stage 75 item 4: rows the reader opened stay open through the theme
+      # toggle and a day chip and back, at 390 and 1440 px in both themes.
+      - name: Prove the open rows check can fail
+        run: python tests/browser/check_open_rows.py --self-test --tmp "$RUNNER_TEMP/openrows"
+
+      - name: Check open rows stay open
+        run: python tests/browser/check_open_rows.py "$RUNNER_TEMP/states/nhl.html"
+
       # Stage 59: the site's home page, built by the real builder from the
       # committed files (src/site/home.py).
       - name: Build the home page

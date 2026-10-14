@@ -442,6 +442,9 @@ function labLinks(root){
   root.querySelectorAll('.nba-to-lab').forEach(b => b.addEventListener('click', () => showPage('modellab', {focus: true})));
 }
 let currentDay = null;
+/* The rows open on the board, by their card's id (one per game), kept
+   across every redraw (Stage 75 item 4). */
+const OPEN_ROWS = new Set();
 function renderBoard(){
   const grid = document.getElementById('game-grid');
   if(!BD.games.length){
@@ -488,10 +491,19 @@ function renderBoard(){
   const nowMs = Date.now();
   grid.innerHTML = head + preseasonHtml() + `<ul class="nba-rows">${dayGames.map(g => rowHtml(g, BD.picks[g.id], nowMs)).join('')}</ul>`;
   labLinks(grid);
+  // Stage 75 item 4: rows the reader opened stay open when the board is
+  // drawn again (the theme toggle, a day chip and back), by game id.
+  grid.querySelectorAll('.nba-row').forEach(btn => {
+    if(!OPEN_ROWS.has(btn.getAttribute('aria-controls'))) return;
+    btn.setAttribute('aria-expanded', 'true');
+    document.getElementById(btn.getAttribute('aria-controls')).hidden = false;
+  });
   grid.querySelectorAll('.nba-row').forEach(btn => btn.addEventListener('click', () => {
     const open = btn.getAttribute('aria-expanded') !== 'true';
     btn.setAttribute('aria-expanded', String(open));
-    const card = document.getElementById(btn.getAttribute('aria-controls'));
+    const id = btn.getAttribute('aria-controls');
+    if(open) OPEN_ROWS.add(id); else OPEN_ROWS.delete(id);
+    const card = document.getElementById(id);
     card.hidden = !open;
     if(open) revealOpened(card);
   }));
