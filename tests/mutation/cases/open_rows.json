@@ -1,0 +1,29 @@
+{
+  "target": "src/sports/nhl/pages/nhl.js",
+  "tests": "tests/test_open_rows.py",
+  "cases": [
+    {
+      "id": "open-rows-nhl-never-restored",
+      "why": "the NHL board forgets its open rows on every redraw: the theme toggle closes them all again.",
+      "find": "    if(!OPEN_ROWS.has(btn.getAttribute('aria-controls'))) return;\n",
+      "replace": "    return;\n",
+      "expect_caught_by": "test_a_click_records_the_row_and_a_redraw_restores_it"
+    },
+    {
+      "id": "open-rows-nba-never-recorded",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the NBA board never records a row as open, so a day chip and back closes it.",
+      "find": "    if(open) OPEN_ROWS.add(id); else OPEN_ROWS.delete(id);\n",
+      "replace": "    OPEN_ROWS.delete(id);\n",
+      "expect_caught_by": "test_a_click_records_the_row_and_a_redraw_restores_it"
+    },
+    {
+      "id": "open-rows-check-unwired",
+      "target": ".github/workflows/browser-checks.yml",
+      "why": "the open rows browser check is dropped from CI.",
+      "find": "        run: python tests/browser/check_open_rows.py \"$RUNNER_TEMP/states/nhl.html\"\n",
+      "replace": "        run: echo skipped\n",
+      "expect_caught_by": "test_the_browser_check_runs"
+    }
+  ]
+}
