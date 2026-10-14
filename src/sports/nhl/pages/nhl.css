@@ -101,3 +101,8 @@
 .nhl-side-note{margin:0;}
 .nhl-side-record{margin:0; color:var(--text);}
 .nhl-side-link{margin-top:var(--s2); background:none; border:0; padding:0; min-height:24px; font:inherit; color:var(--accent); text-decoration:underline; cursor:pointer;}
+/* Stage 75 item 3: an opened card scrolled into view clears the sticky top
+   bar and the fixed bottom nav (styles.css keeps the NFL's). */
+@media (max-width:1079px){
+  .nhl-row-detail{scroll-margin:76px 0 calc(88px + var(--safe-bottom));}
+}

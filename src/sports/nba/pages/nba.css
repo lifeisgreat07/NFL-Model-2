@@ -75,3 +75,8 @@
 /* Stage 68 item 20. */
 .nba-proof{margin-top:var(--s2); font-size:var(--fs-12); color:var(--text-2);}
 .nba-proof a{color:inherit;}
+/* Stage 75 item 3: an opened card scrolled into view clears the sticky top
+   bar and the fixed bottom nav (styles.css keeps the NFL's). */
+@media (max-width:1079px){
+  .nba-row-detail{scroll-margin:76px 0 calc(88px + var(--safe-bottom));}
+}

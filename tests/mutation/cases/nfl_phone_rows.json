@@ -13,7 +13,7 @@
    "id": "phone-row-never-opens",
    "target": "src/dashboard/app.js",
    "why": "a tap on a row leaves its card hidden",
-   "find": "    document.getElementById(btn.getAttribute('aria-controls')).classList.toggle('is-open', open);\n",
+   "find": "    card.classList.toggle('is-open', open);\n",
    "replace": "",
    "expect_caught_by": "test_every_card_has_its_row_and_the_row_opens_it"
   },
