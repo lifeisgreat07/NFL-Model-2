@@ -1,0 +1,112 @@
+{
+ "game_id": "2026020107",
+ "season": 2026,
+ "slate": "2026-10-14",
+ "start_utc": "2026-10-15T00:30:00Z",
+ "home": "COL",
+ "away": "DAL",
+ "model_a": 0.6632,
+ "model_b": 0.5693,
+ "pick": "COL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.524762,
+  "shot_matchup": 6.271115,
+  "goalie_matchup_2000": 0.002097
+ },
+ "market": {
+  "game_id": "2026020107",
+  "start_utc": "2026-10-15T00:30:00Z",
+  "home": "COL",
+  "away": "DAL",
+  "book": "DraftKings",
+  "home_price": -142.0,
+  "away_price": 120.0,
+  "home_prob": 0.5635,
+  "read_utc": "2026-10-14T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475809,
+   "name": "Scott Wedgewood",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://coloradohockeynow.com/postgame-avalanche-edge-stars-as-mackinnon-hintz-drop-the-gloves/"
+  },
+  "away": {
+   "player_id": 8479193,
+   "name": "Casey DeSmith",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/samnestler/status/2110045713627308046"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-14",
+  "read_utc": "2026-10-14T21:01:48Z",
+  "home": [
+   {
+    "name": "Cale Makar",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Georgii Merkulov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan O'Connor",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Zachary L'Heureux",
+    "position": "LW",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Cameron Hughes",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Joel Kiviranta",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Luke Krys",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Duchene",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Roope Hintz",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Wyatt Johnston",
+    "position": "C",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-14T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14508,
+  "training_games_priced": 7427
+ }
+}

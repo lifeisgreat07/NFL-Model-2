@@ -1,0 +1,117 @@
+{
+ "game_id": "2026020106",
+ "season": 2026,
+ "slate": "2026-10-14",
+ "start_utc": "2026-10-14T23:30:00Z",
+ "home": "WSH",
+ "away": "MTL",
+ "model_a": 0.5566,
+ "model_b": 0.5142,
+ "pick": "WSH",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.165376,
+  "shot_matchup": 0.857461,
+  "goalie_matchup_2000": -0.001652
+ },
+ "market": {
+  "game_id": "2026020106",
+  "start_utc": "2026-10-14T23:30:00Z",
+  "home": "WSH",
+  "away": "MTL",
+  "book": "DraftKings",
+  "home_price": -120.0,
+  "away_price": 100.0,
+  "home_prob": 0.5217,
+  "read_utc": "2026-10-14T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479292,
+   "name": "Charlie Lindgren",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://www.nhl.com/capitals/news/caps-open-homestand-vs-habs-x5399"
+  },
+  "away": {
+   "player_id": 8482487,
+   "name": "Jakub Dobes",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/mndamico/status/2110009301934936331"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-14",
+  "read_utc": "2026-10-14T21:01:48Z",
+  "home": [
+   {
+    "name": "Matt Roy",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Patrick Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Pierre-Luc Dubois",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Rasmus Sandin",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Florian Xhekaj",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mike Matheson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Oliver Kapanen",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-14T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14508,
+  "training_games_priced": 7427
+ }
+}
