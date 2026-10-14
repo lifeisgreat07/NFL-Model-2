@@ -224,97 +224,97 @@
  {
   "game_id": "2026020090",
   "pick": "NJD",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020091",
   "pick": "CBJ",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020092",
   "pick": "MTL",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020093",
   "pick": "CAR",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020094",
   "pick": "PHI",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020095",
   "pick": "TBL",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020096",
   "pick": "STL",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020097",
   "pick": "NYI",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020098",
   "pick": "PIT",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020099",
   "pick": "WPG",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020100",
   "pick": "DAL",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020101",
   "pick": "VGK",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020102",
   "pick": "UTA",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020103",
   "pick": "ANA",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020104",
   "pick": "EDM",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-13T21:01:48Z"
  },
  {
   "game_id": "2026020105",
   "pick": "BOS",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-13T21:01:48Z"
  }
 ]
