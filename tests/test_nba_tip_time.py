@@ -3,7 +3,8 @@
 ESPN files a game whose tip-off is not set at a placeholder hour, and the
 board printed opening night's BOS at DET as "3:00 PM" from 19:00Z. A
 weekday tip before 5 PM Eastern now reads "time TBD" on the row, in the
-card and in the pre-season note; a weekend afternoon game keeps its time.
+card and in the pre-season note, and on the home page's NBA card and its
+next-game line; a weekend afternoon game keeps its time.
 tipSet runs here under node; tests/browser/check_nba_tip.py reads the rows.
 
 Run with: pytest tests/test_nba_tip_time.py -v
@@ -60,3 +61,24 @@ def test_the_browser_check_runs():
     wf = (ROOT / '.github' / 'workflows' / 'browser-checks.yml').read_text(encoding='utf-8')
     assert 'run: python tests/browser/check_nba_tip.py --self-test --tmp "$RUNNER_TEMP/tip"\n' in wf
     assert 'run: python tests/browser/check_nba_tip.py "$RUNNER_TEMP/states/nba.html"\n' in wf
+
+
+HOME = ROOT / 'src' / 'site' / 'home' / 'home.js'
+
+
+def test_the_home_page_reads_a_placeholder_the_same_way():
+    """The home page printed the same placeholder: "First tip-off Tue 3:00 PM"."""
+    if not NODE:
+        pytest.skip('node not available')
+    js = HOME.read_text(encoding='utf-8')
+    fmt = re.search(r'^const ET_WEEKDAY_HOUR = .*$', js, re.M)
+    fn = re.search(r'function tipSet\(t\)\{.*?\n\}\n', js, re.S)
+    assert fmt and fn, 'the home page has no tipSet -- re-anchor this guard'
+    starts = ['2026-10-20T19:00:00Z', '2026-10-20T23:00:00Z', '2026-10-24T19:30:00Z', '2026-12-02T20:00:00Z']
+    code = fmt.group(0) + '\n' + fn.group(0) + 'console.log(JSON.stringify(%s.map(s => tipSet(Date.parse(s)))));' % json.dumps(starts)
+    r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')
+    assert r.returncode == 0, r.stderr
+    assert json.loads(r.stdout) == tip_set(starts) == [False, True, True, False]
+    assert "const PLACEHOLDER_TIMES = {'tip-off': [tipClock, tipWhen]};" in js, 'the NBA card\'s day rows'
+    assert "[['First tip-off', tipWhen(first)]]" in js, 'the NBA card before its first pick'
+    assert "s === 'nba' ? (tonight ? tipClock(t) : tipWhen(t))" in js, 'the next-game line'

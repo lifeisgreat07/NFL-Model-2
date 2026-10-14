@@ -31,6 +31,22 @@
    "expect_caught_by": "test_the_row_the_card_and_the_note_all_use_it"
   },
   {
+   "id": "nba-tip-home-card-placeholder",
+   "target": "src/site/home/home.js",
+   "why": "the home page's NBA card reads \"First tip-off Tue 3:00 PM\" from the placeholder again.",
+   "find": "[['First tip-off', tipWhen(first)]]",
+   "replace": "[['First tip-off', when(first)]]",
+   "expect_caught_by": "test_the_home_page_reads_a_placeholder_the_same_way"
+  },
+  {
+   "id": "nba-tip-home-rule-in-utc",
+   "target": "src/site/home/home.js",
+   "why": "the home page reads the tip's hour in UTC, so every evening tip reads as set and a 3 PM placeholder too.",
+   "find": "hourCycle: 'h23', timeZone: 'America/New_York'});",
+   "replace": "hourCycle: 'h23', timeZone: 'UTC'});",
+   "expect_caught_by": "test_the_home_page_reads_a_placeholder_the_same_way"
+  },
+  {
    "id": "nba-tip-check-unwired",
    "target": ".github/workflows/browser-checks.yml",
    "why": "the NBA tip time browser check is dropped from CI.",
