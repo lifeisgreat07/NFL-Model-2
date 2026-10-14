@@ -19,7 +19,11 @@
      arg.apply(page, value) -> draw the page for value (undefined: its default)
    installRoutes returns replace(page), which the sport calls after a chip,
    a week step or a club change. parseHash and routeHash are pure, so the
-   suite runs them under node. */
+   suite runs them under node.
+
+   Stage 76 item 9 (F4): #game/<id> opens the board on that game's day with
+   its row open and on screen. known().games lists the ids a route may name,
+   and arg.open(id) draws it; a game that does not exist opens the board. */
 function parseHash(hash, known){
   let raw = '';
   try{ raw = decodeURIComponent(String(hash || '').replace(/^#/, '')); }catch(e){ raw = ''; }
@@ -27,6 +31,7 @@ function parseHash(hash, known){
   const slash = raw.indexOf('/');
   const head = slash === -1 ? raw : raw.slice(0, slash);
   const arg = slash === -1 ? '' : raw.slice(slash + 1);
+  if(head === 'game') return (known.games || []).includes(arg) ? {page: 'board', game: arg} : {page: 'board'};
   if(head === 'team'){
     if(!known.pages.includes('teams')) return null;
     return (known.teams || []).includes(arg) ? {page: 'teams', arg} : {page: 'teams'};
@@ -36,6 +41,7 @@ function parseHash(hash, known){
   return {page: head};
 }
 function routeHash(r){
+  if(r.game) return '#game/' + encodeURIComponent(r.game);
   if(r.page === 'teams' && r.arg) return '#team/' + encodeURIComponent(r.arg);
   if(r.page === 'board') return r.arg ? '#board/' + encodeURIComponent(r.arg) : '';
   return '#' + r.page;
@@ -62,6 +68,7 @@ function installRoutes(show, arg){
     const r = parseHash(location.hash, known()) || {page: 'board'};
     if(route.apply) route.apply(r.page, r.arg);
     show(r.page);
+    if(r.game && route.open) route.open(r.game);
   };
   window.addEventListener('popstate', follow);
   window.addEventListener('hashchange', follow);
@@ -69,6 +76,7 @@ function installRoutes(show, arg){
   if(first){
     if(route.apply && first.arg !== undefined) route.apply(first.page, first.arg);
     if(first.page !== 'board' || first.arg !== undefined) show(first.page);
+    if(first.game && route.open) route.open(first.game);
   }
   return function replace(page){
     const active = document.querySelector('.page.active');

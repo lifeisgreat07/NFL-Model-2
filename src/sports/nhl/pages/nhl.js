@@ -810,7 +810,19 @@ renderChanges();
    board as it opened (this week, today or its first day with games). */
 const HOME_WEEK = currentWeek, HOME_DAY = currentDay;
 replaceRoute = installRoutes(showPage, {
-  known: () => ({days: WEEK_KEYS.flatMap(weekDays), teams: Object.keys(DATA.teams)}),
+  // Stage 76 item 9: #game/<id> opens that game's day with its row open.
+  open: id => {
+    const g = DATA.games.find(x => x.id === id);
+    if(!g) return;
+    currentWeek = mondayOf(g.day);
+    currentDay = g.day;
+    OPEN_ROWS.add(`nhl-detail-${id}`);
+    renderBoard();
+    // As a tap does (Stage 75 item 3): the card, clear of the top bar and the bottom nav.
+    const card = document.getElementById(`nhl-detail-${id}`);
+    if(card) revealOpened(card);
+  },
+  known: () => ({days: WEEK_KEYS.flatMap(weekDays), teams: Object.keys(DATA.teams), games: DATA.games.map(g => g.id)}),
   current: page => (page === 'board' ? (currentDay !== HOME_DAY ? currentDay : undefined)
     : page === 'teams' ? currentTeam || undefined : undefined),
   apply: (page, value) => {
