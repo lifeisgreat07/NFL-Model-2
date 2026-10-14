@@ -81,3 +81,5 @@
 @media (max-width:1079px){
   .nba-row-detail{scroll-margin:76px 0 calc(88px + var(--safe-bottom));}
 }
+/* Stage 79 item 51: the interval glyph sits at the right of its right-aligned cell. */
+.nba-table td.num .lab-ci{margin-left:auto;}
