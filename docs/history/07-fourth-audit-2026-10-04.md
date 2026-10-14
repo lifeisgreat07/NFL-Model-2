@@ -229,3 +229,12 @@ wrong thing gets a diagnosed issue through `src/core/alerts.py`.
 4. A planted bad run in the synthetic league that it must flag.
 5. A weekly one-line digest.
 After Stage 42, whose delay record it reads.
+
+**Shape decided (Mark, 2026-10-13): checks first, agent on failure.** As
+written, an agent would run after every scheduled run, 12 to 15 a day over
+three sports, mostly to say "fine". Instead every "right" is a plain check
+in code (tested and mutation-tested like any guard), run inside each
+workflow; the agent runs only to diagnose a failed check, plus item 5's
+weekly digest. Three PRs: the Weekly update's checks (as a job in its own
+workflow, which serves item 2 for it); the other scheduled runs; the
+agent-on-failure step, the digest and item 4's planted bad run.

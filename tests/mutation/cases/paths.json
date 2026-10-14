@@ -28,8 +28,8 @@
       "id": "paths-season-rule-back-in-bash",
       "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the weekly workflow works the season out in bash again, a third copy of the rule that the tests of paths.current_season never see.",
-      "find": "          season=$(python -m src.sports.nfl.paths --current-season)",
-      "replace": "          season=$(date -u +%Y)",
+      "find": "          season=$(python -m src.sports.nfl.paths --current-season)\n          echo \"season=$season\" >> \"$GITHUB_OUTPUT\"",
+      "replace": "          season=$(date -u +%Y)\n          echo \"season=$season\" >> \"$GITHUB_OUTPUT\"",
       "expect_caught_by": "test_the_workflow_asks_paths_for_the_season"
     },
     {
