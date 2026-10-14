@@ -51,6 +51,16 @@ SHARED_FILES = {
     'og-card.png': 'assets/og/og-card.png',
     'assets/favicon.svg': 'assets/favicon.svg',
     'assets/apple-touch-icon.png': 'assets/apple-touch-icon.png',
+    # Stage 76 item 11 (the 2026-10-13 audit's C1, V6): each sport its own
+    # icon, home-screen icon and link preview, and the home page a preview
+    # with the three marks. The NFL keeps the files above.
+    'og-nhl.png': 'assets/og/og-nhl.png',
+    'og-nba.png': 'assets/og/og-nba.png',
+    'og-home.png': 'assets/og/og-home.png',
+    'assets/favicon-nhl.svg': 'assets/favicon-nhl.svg',
+    'assets/favicon-nba.svg': 'assets/favicon-nba.svg',
+    'assets/apple-touch-icon-nhl.png': 'assets/apple-touch-icon-nhl.png',
+    'assets/apple-touch-icon-nba.png': 'assets/apple-touch-icon-nba.png',
     'assets/site.webmanifest': 'assets/site.webmanifest',
 }
 
