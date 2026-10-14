@@ -448,6 +448,16 @@ let replaceRoute = () => {};
 /* The rows open on the board, by their card's id (one per game), kept
    across every redraw (Stage 75 item 4). */
 const OPEN_ROWS = new Set();
+/* Stage 77 item 32 (the 2026-10-13 audit's B1): the board's eyebrow names the
+   week it shows. Before opening night the board opens on the week of the
+   first games, and it said "This Week" over "Week of Oct 19" on the 13th. */
+function weekEyebrow(week, thisWeek){
+  if(week === thisWeek) return 'This Week';
+  const next = dayDate(thisWeek);
+  next.setUTCDate(next.getUTCDate() + 7);
+  if(week === dayIso(next)) return 'Next Week';
+  return week > thisWeek ? 'Coming Up' : 'Earlier';
+}
 function renderBoard(){
   const grid = document.getElementById('game-grid');
   if(!BD.games.length){
@@ -461,6 +471,7 @@ function renderBoard(){
   }
   const games = (WEEKS[currentWeek] || []).slice().sort((a, b) => (a.start || '').localeCompare(b.start || '') || a.id.localeCompare(b.id));
   document.getElementById('week-step-label').textContent = `Week of ${FMT_MONTHDAY.format(dayDate(currentWeek))} · ${games.length} game${games.length === 1 ? '' : 's'}`;
+  document.querySelector('#page-board .page-eyebrow').textContent = weekEyebrow(currentWeek, mondayOf(todayEt()));
   const i = WEEK_KEYS.indexOf(currentWeek);
   document.getElementById('week-prev').disabled = i <= 0;
   document.getElementById('week-next').disabled = i >= WEEK_KEYS.length - 1;
