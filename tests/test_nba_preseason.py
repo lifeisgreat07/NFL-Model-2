@@ -53,7 +53,11 @@ def test_the_board_reads_opening_night_from_the_schedule():
 
 def test_the_board_says_no_picks_yet_with_the_backtests_h3_answer():
     assert "if(Object.keys(BD.picks || {}).length || !FIRST_GAME) return '';" in NBA_JS
-    assert "const verdict = h3 && h3.label" in NBA_JS and '<b>${escapeHtml(h3.label)}</b>' in NBA_JS
-    assert '<b>${better(h3.diff)}</b>' in NBA_JS, 'the direction is read, not written'
+    # Since Stage 77 item 21 the verdict is in plain words; its direction is
+    # still read from the results file's sign, not written.
+    assert "const verdict = h3 && typeof h3.diff === 'number'" in NBA_JS
+    assert '    ? (h3.diff < 0\n' in NBA_JS, 'the direction is read, not written'
+    assert 'Model B beat the betting market' in NBA_JS and 'Model B did not beat the betting market' in NBA_JS
+    assert "const seasons = P.confirmation_seasons.length;" in NBA_JS, 'the count of test seasons is read, not written'
     assert NBA_JS.count('head + preseasonHtml() + ') == 2, 'on a day with games and on one without'
     assert NBA_JS.count('labLinks(grid);') == 2

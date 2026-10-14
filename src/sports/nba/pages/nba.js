@@ -102,8 +102,15 @@ function preseasonHtml(){
   /* The label and the direction come from the results file, as the
      Model Lab's table's do: nothing here is written by hand. */
   const h3 = Q.H3 || null;
-  const verdict = h3 && h3.label
-    ? ` Before the season, the backtest's answer to H3 was <b>${escapeHtml(h3.label)}</b>: on ${escapeHtml(CONFIRM)}, Model B's log loss was <b>${better(h3.diff)}</b> than the market alone's (${signed(h3.diff, 4)}), and the page will say how it goes live.`
+  /* Stage 77 item 21 (the 2026-10-13 audit's copy fix 10): the verdict in
+     plain words. The label, the log-loss gap and its sign stay on the Model
+     Lab, one tap away; here the sign alone picks the sentence. */
+  const seasons = P.confirmation_seasons.length;
+  const howMany = ['no', 'one', 'two', 'three', 'four'][seasons] || String(seasons);
+  const verdict = h3 && typeof h3.diff === 'number'
+    ? (h3.diff < 0
+      ? ` In the ${howMany} test seasons Model B beat the betting market, so the live picks will show whether that holds.`
+      : ` In the ${howMany} test seasons Model B did not beat the betting market, so the first live picks are a real test, not a victory lap.`)
     : '';
   return `<div class="nba-preseason" role="note"><p><b>No picks yet.</b> The first is saved by the run before the season's first tip-off, `
     + `${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))}${tipSet(FIRST_GAME) ? ` at ${escapeHtml(FMT_TIP.format(new Date(FIRST_GAME.start)))} ET` : ', its tip-off time still to be set'}, and never changed.${verdict}</p>`
