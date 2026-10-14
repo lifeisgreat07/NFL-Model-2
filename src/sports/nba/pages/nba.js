@@ -666,6 +666,14 @@ function renderReliability(){
    reader asked for moves focus to its heading. Four pages fit the phone's
    bottom bar, so there is no More sheet. */
 const BASE_TITLE = document.title;
+/* The pages the phone nav keeps under More (Stage 77 item 22), as the NHL's does. */
+const OVERFLOW_PAGES = ['method', 'reliability'];
+function setMoreSheetOpen(open){
+  const sheet = document.getElementById('bnav-more-sheet');
+  if(!sheet) return;
+  sheet.classList.toggle('open', open);
+  sheet.inert = !open;
+}
 function showPage(name, opts){
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
   document.querySelectorAll('[data-page]').forEach(b => {
@@ -673,6 +681,9 @@ function showPage(name, opts){
     b.classList.toggle('active', on);
     if(on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
   });
+  const more = document.getElementById('bnav-more-btn');
+  if(more) more.classList.toggle('active', OVERFLOW_PAGES.includes(name));
+  setMoreSheetOpen(false);
   window.scrollTo(0, 0);
   const page = document.getElementById('page-' + name);
   const heading = page && page.querySelector('.page-head h2');
@@ -683,6 +694,16 @@ function showPage(name, opts){
   }
 }
 document.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => showPage(b.dataset.page, {focus: true})));
+const moreBtn = document.getElementById('bnav-more-btn');
+if(moreBtn) moreBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  setMoreSheetOpen(!document.getElementById('bnav-more-sheet').classList.contains('open'));
+});
+document.addEventListener('click', e => {
+  const sheet = document.getElementById('bnav-more-sheet');
+  if(sheet && sheet.classList.contains('open') && !sheet.contains(e.target) && !e.target.closest('#bnav-more-btn')) setMoreSheetOpen(false);
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape') setMoreSheetOpen(false); });
 /* The browser checks (tests/browser/check_page.py) open each page by its section id. */
 window.setActivePage = id => showPage(String(id).replace(/^page-/, ''));
 (function(){

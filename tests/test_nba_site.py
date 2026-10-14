@@ -85,7 +85,10 @@ def test_every_page_is_on_both_menus_and_the_checker_can_open_it(built: tuple[di
     assert pages == ['board', 'modellab', 'method', 'reliability']
     side = re.findall(r'class="nav-btn[^"]*" data-page="([a-z]+)"', html)
     bottom = re.findall(r'class="bnav-btn[^"]*" data-page="([a-z]+)"', html)
-    assert side == pages and bottom == pages
+    # Since Stage 77 item 22 the phone nav keeps Methodology and Checking the
+    # AI's work under More, as the NHL's and the NFL's do.
+    more = re.findall(r'class="bnav-more-item[^"]*" data-page="([a-z]+)"', html)
+    assert side == pages and bottom + more == pages and 'id="bnav-more-btn"' in html
     assert 'window.setActivePage = ' in html
 
 
