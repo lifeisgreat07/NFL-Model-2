@@ -228,8 +228,11 @@ function pickedCard(g, p){
     ? `<span class="card-hl-label">${leadLabel}${done ? ' picked' : ''}</span> <b>${s.team} ${Math.round(s.pct)}%</b> <span class="card-hl-to">to win</span>`
     : `<span class="card-hl-label">${leadLabel}</span> <b>Too close to call</b> <span class="card-hl-to">· saved pick ${p.pick}</span>`;
   const ln = lanes(vals);
+  // One axis (Stage 75 item 1): the bar draws the away team first, so a
+  // home share v sits at 100 - v from the left, and the lead model's
+  // marker lands on the split. tests/browser/check_card_axis.py.
   const mark = k => vals[k] === null ? '' :
-    `<svg class="card-mk" style="left:${vals[k]}%; top:calc(50% + ${ln[k] * 12}px)" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">${markerPath(SERIES[k].shape, 6, 6, 4.5)} fill="${SERIES[k].color}"/></svg>`;
+    `<svg class="card-mk" data-series="${k}" style="left:${100 - vals[k]}%; top:calc(50% + ${ln[k] * 12}px)" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">${markerPath(SERIES[k].shape, 6, 6, 4.5)} fill="${SERIES[k].color}"/></svg>`;
   const key = k => vals[k] === null ? '' :
     `<span class="card-key"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true">${markerPath(SERIES[k].shape, 7, 7, 5)} fill="${SERIES[k].color}"/></svg>${SERIES[k].label} <b>${sideText(side(vals[k], g))}</b></span>`;
   const aria = ['b', 'market', 'a'].filter(k => vals[k] !== null).map(k => `${SERIES[k].label} ${sideText(side(vals[k], g))}`).join('. ') + '.';

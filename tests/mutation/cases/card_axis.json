@@ -1,0 +1,45 @@
+{
+  "target": "src/dashboard/app.js",
+  "tests": "tests/test_card_axis.py",
+  "cases": [
+    {
+      "id": "card-axis-nfl-marker-back",
+      "why": "the NFL card's markers go back to the home share from the left, so Model B's marker misses the bar's split again (23.7 px on SEA at DEN).",
+      "find": "data-series=\"${k}\" style=\"left:${100 - vals[k]}%;",
+      "replace": "data-series=\"${k}\" style=\"left:${vals[k]}%;",
+      "expect_caught_by": "test_every_card_marker_sits_on_the_bars_axis"
+    },
+    {
+      "id": "card-axis-nhl-marker-back",
+      "target": "src/sports/nhl/pages/nhl.js",
+      "why": "the NHL card's markers go back to the home share from the left.",
+      "find": "data-series=\"${k}\" style=\"left:${100 - vals[k]}%;",
+      "replace": "data-series=\"${k}\" style=\"left:${vals[k]}%;",
+      "expect_caught_by": "test_every_card_marker_sits_on_the_bars_axis"
+    },
+    {
+      "id": "card-axis-nba-marker-back",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the NBA card's markers go back to the home share from the left; no browser check can see it until opening night.",
+      "find": "data-series=\"${k}\" style=\"left:${100 - vals[k]}%;",
+      "replace": "data-series=\"${k}\" style=\"left:${vals[k]}%;",
+      "expect_caught_by": "test_every_card_marker_sits_on_the_bars_axis"
+    },
+    {
+      "id": "card-axis-nba-bar-flipped",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the NBA bar draws the home team first, so the markers' 100 - v is now the wrong side.",
+      "find": "          <div class=\"tele-bar-seg\" style=\"width:${100 - lead}%; background:${awayC};\"></div>\n          <div class=\"tele-bar-seg\" style=\"width:${lead}%; background:${homeC};\"></div>",
+      "replace": "          <div class=\"tele-bar-seg\" style=\"width:${lead}%; background:${homeC};\"></div>\n          <div class=\"tele-bar-seg\" style=\"width:${100 - lead}%; background:${awayC};\"></div>",
+      "expect_caught_by": "test_the_bar_still_draws_the_away_team_first"
+    },
+    {
+      "id": "card-axis-check-unwired",
+      "target": ".github/workflows/browser-checks.yml",
+      "why": "the browser check is dropped from CI, so the NFL and NHL cards are never measured.",
+      "find": "        run: python tests/browser/check_card_axis.py index.html \"$RUNNER_TEMP/states/nhl.html\"\n",
+      "replace": "        run: echo skipped\n",
+      "expect_caught_by": "test_the_browser_check_runs_on_the_nfl_and_nhl_pages"
+    }
+  ]
+}

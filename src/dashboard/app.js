@@ -1419,8 +1419,11 @@ function cardProbHtml(g, awayC, homeC){
   const mark = k => {
     if(vals[k] === null || vals[k] === undefined) return '';
     const s = CARD_SERIES[k];
+    // One axis (Stage 75 item 1): the bar draws the away team first, so a
+    // home share v sits at 100 - v from the left, and the lead model's
+    // marker lands on the split. tests/browser/check_card_axis.py.
     // 12px markers on 12px lanes: a laned marker clears its neighbour.
-    return `<svg class="card-mk" style="left:${vals[k]}%; top:calc(50% + ${lanes[k] * 12}px)" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">`
+    return `<svg class="card-mk" data-series="${k}" style="left:${100 - vals[k]}%; top:calc(50% + ${lanes[k] * 12}px)" width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">`
       + `${markerPath(s.shape, 6, 6, 4.5)} fill="${s.color}"/></svg>`;
   };
   const key = (k, side) => {
