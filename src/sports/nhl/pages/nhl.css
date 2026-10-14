@@ -26,6 +26,14 @@
 .nhl-row-game{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .nhl-row-game .at-symbol{color:var(--text-3);}
 .nhl-row-pick{white-space:nowrap; color:var(--text-2);}
+/* Stage 75 item 2: a close game's pick reads "TOR 51% · even", as its card
+   does. On a phone "even" takes its own line under the pick, so the pick
+   column keeps its width and the game beside it is not cut. */
+@media (max-width:600px){
+  .nhl-row-pick{text-align:right;}
+  .nhl-row-pick .row-even{display:block;}
+  .nhl-row-pick .row-even-sep{display:none;}
+}
 .nhl-row-result{justify-self:end; white-space:nowrap; font-size:var(--fs-13); font-weight:600;}
 .nhl-row-result.right{color:var(--good);}
 .nhl-row-result.wrong{color:var(--warn);}

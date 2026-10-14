@@ -6,7 +6,9 @@ week, measured 2026-10-13). Both now print "TOR 51% · even" from one
 function, pickText. This opens the NHL's sample page at 390 and 1440 px,
 dark and light, presses every day, and for every row with a pick checks
 that its card's pick phrase (the headline's bold text, and "· even" when
-the line after it says so) is exactly the row's pick text. A page with no
+the line after it says so) is exactly the row's pick text, and that the
+row's game column is not cut off (on a phone the longer pick first cut
+"MIN @ BUF" to "MIN @ B...", so "even" takes its own line there). A page with no
 close game, or no pick at all, is a failure: the check would prove nothing.
 
 `--self-test` writes the old row code back into a copy of the page and
@@ -31,11 +33,14 @@ PAIRS_JS = """() => [...document.querySelectorAll('.nhl-row, .nba-row')].map(row
   const pick = row.querySelector('.nhl-row-pick, .nba-row-pick');
   const card = document.getElementById(row.getAttribute('aria-controls'));
   const hl = card && card.querySelector('.card-hl');
-  const text = pick ? [...pick.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join('').trim() : '';
+  let text = '';
+  if (pick) { const c = pick.cloneNode(true); c.querySelectorAll('.nba-no-price').forEach(e => e.remove()); text = c.textContent.trim(); }
+  const game = row.querySelector('.nhl-row-game, .nba-row-game');
   // The card's pick phrase: its bold text, and "· even" when the line after it says so.
   const b = hl && hl.querySelector('b'), to = hl && hl.querySelector('.card-hl-to');
   const even = to && to.textContent.trim() === '· even' ? ' · even' : '';
   return {row: row.innerText.replace(/\\n/g, ' | '), pick: text.replace(/\\s+/g, ' '),
+          cut: game ? game.scrollWidth > game.clientWidth + 1 : false,
           card: b ? (b.textContent.trim() + even).replace(/\\s+/g, ' ') : null};
 }).filter(x => x.pick && x.pick !== '—')"""
 
@@ -61,6 +66,8 @@ async def check_page(path):
                     for x in await page.evaluate(PAIRS_JS):
                         pairs += 1
                         even += 'even' in x['pick']
+                        if x['cut']:
+                            report.append(f'{where} {x["row"]}: the game column is cut off')
                         if x['card'] != x['pick']:
                             report.append(f'{where} {x["row"]}: the row says "{x["pick"]}", '
                                           f'the card says "{x["card"]}"')
@@ -79,8 +86,12 @@ OLD = """  const lead = p.b !== null && p.b !== undefined ? p.b : p.a;
   const pct = p.pick === g.home ? lead : 1 - lead;
   return `${p.pick} ${Math.round(pct * 100)}%`;
 }"""
-NEW = """  return pickText(g, p);
+NEW = """  return pickText(g, p).replace(' · even', '<span class="row-even"><span class="row-even-sep"> · </span>even</span>');
 }"""
+#: The phone rule that puts "even" on its own line, as it reads in the page.
+PHONE = """  .nhl-row-pick .row-even{display:block;}
+  .nhl-row-pick .row-even-sep{display:none;}
+"""
 
 
 def self_test(tmp):
@@ -97,6 +108,12 @@ def self_test(tmp):
     problems = [f'self-test: the real page should be clean: {r}' for r in asyncio.run(check_page(page))]
     if not any('the row says' in r for r in asyncio.run(check_page(bad))):
         problems.append('self-test: the old row was not reported')
+    if html.count(PHONE) != 1:
+        return problems + [f'self-test: the page holds {html.count(PHONE)} copies of the phone rule, expected 1']
+    cut = tmp / 'row-card-nhl-uncut.html'
+    cut.write_text(html.replace(PHONE, ''), encoding='utf-8')
+    if not any('cut off' in r for r in asyncio.run(check_page(cut))):
+        problems.append('self-test: a page with no phone rule was not reported cut off')
     return problems
 
 

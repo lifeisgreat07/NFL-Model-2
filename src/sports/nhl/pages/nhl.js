@@ -363,7 +363,8 @@ function rowResult(g, p, nowMs){
 /* The pick in a row: the saved side, with the chance the leading model gave it. */
 function rowPick(g, p){
   if(!p) return '—';
-  return pickText(g, p);
+  // On a phone "even" takes its own line under the pick (nhl.css).
+  return pickText(g, p).replace(' · even', '<span class="row-even"><span class="row-even-sep"> · </span>even</span>');
 }
 function rowTime(g){
   if(g.status === 'final') return g.lp === 'OT' ? 'Final/OT' : g.lp === 'SO' ? 'Final/SO' : 'Final';

@@ -50,3 +50,15 @@ def test_the_browser_check_runs_on_the_nhl_page():
     wf = (REPO / '.github' / 'workflows' / 'browser-checks.yml').read_text(encoding='utf-8')
     assert 'python tests/browser/check_row_card.py --self-test' in wf
     assert 'python tests/browser/check_row_card.py "$RUNNER_TEMP/states/nhl.html"' in wf
+
+
+@pytest.mark.parametrize('sport', sorted(BOARDS))
+def test_on_a_phone_even_takes_its_own_line(sport):
+    """The longer pick first cut the game column to "MIN @ B..." at 390 px."""
+    css = (REPO / 'src' / 'sports' / sport / 'pages' / f'{sport}.css').read_text(encoding='utf-8')
+    block = css[css.index('@media (max-width:600px){', css.index(f'.{sport}-row-pick{{')):]
+    block = block[:block.index('\n}')]
+    assert f'.{sport}-row-pick .row-even{{display:block;}}' in block
+    assert f'.{sport}-row-pick .row-even-sep{{display:none;}}' in block
+    src = BOARDS[sport].read_text(encoding='utf-8')
+    assert """pickText(g, p).replace(' · even', '<span class="row-even"><span class="row-even-sep"> · </span>even</span>')""" in src

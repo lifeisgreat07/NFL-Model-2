@@ -5,8 +5,8 @@
     {
       "id": "row-card-nhl-row-own-text",
       "why": "the NHL row works its pick out by itself again, so a close game's row says \"TOR 51%\" while its card says it is even.",
-      "find": "  if(!p) return '—';\n  return pickText(g, p);\n",
-      "replace": "  if(!p) return '—';\n  const lead = p.b !== null && p.b !== undefined ? p.b : p.a;\n  return `${p.pick} ${Math.round((p.pick === g.home ? lead : 1 - lead) * 100)}%`;\n",
+      "find": "  return pickText(g, p).replace(' · even', '<span class=\"row-even\"><span class=\"row-even-sep\"> · </span>even</span>');\n",
+      "replace": "  const lead = p.b !== null && p.b !== undefined ? p.b : p.a;\n  return `${p.pick} ${Math.round((p.pick === g.home ? lead : 1 - lead) * 100)}%`;\n",
       "expect_caught_by": "test_the_row_prints_pick_text"
     },
     {
@@ -23,6 +23,14 @@
       "find": "Math.abs(lead * 100 - 50) < EVEN_BAND ? ' · even' : ''",
       "replace": "Math.abs(lead * 100 - 50) < EVEN_BAND + 1 ? ' · even' : ''",
       "expect_caught_by": "test_even_means_what_the_card_means_by_it"
+    },
+    {
+      "id": "row-card-phone-even-inline",
+      "target": "src/sports/nhl/pages/nhl.css",
+      "why": "on a phone \"even\" stays on the pick's line, which cuts the game beside it to \"MIN @ B...\".",
+      "find": "  .nhl-row-pick .row-even{display:block;}\n",
+      "replace": "",
+      "expect_caught_by": "test_on_a_phone_even_takes_its_own_line"
     },
     {
       "id": "row-card-check-unwired",

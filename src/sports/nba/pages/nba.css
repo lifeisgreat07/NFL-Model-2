@@ -48,6 +48,9 @@
   .nba-row-game{white-space:normal; overflow:visible;}
   .nba-row-pick{text-align:right;}
   .nba-row-pick .nba-no-price{display:block;}
+  /* Stage 75 item 2: a close game's "even" on its own line, as on the NHL. */
+  .nba-row-pick .row-even{display:block;}
+  .nba-row-pick .row-even-sep{display:none;}
 }
 /* Before the first pick (Stage 68 item 6). */
 .nba-preseason{margin:0 0 var(--s3); padding:var(--s3); border:1px solid var(--border); border-radius:var(--r-2, 10px);

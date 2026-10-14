@@ -383,7 +383,9 @@ function rowResult(g, p, nowMs){
    and "no price" when Model A made it for want of one. */
 function rowPick(g, p){
   if(!p) return '—';
-  return `${pickText(g, p)}${p.market ? '' : ' <span class="nba-no-price">no price</span>'}`;
+  // On a phone "even" takes its own line under the pick (nba.css).
+  const pick = pickText(g, p).replace(' · even', '<span class="row-even"><span class="row-even-sep"> · </span>even</span>');
+  return `${pick}${p.market ? '' : ' <span class="nba-no-price">no price</span>'}`;
 }
 function rowTime(g){
   if(g.status === 'final') return 'Final';
