@@ -1,0 +1,63 @@
+{
+  "target": "src/sports/nfl/line_judge.py",
+  "tests": "tests/test_line_judge.py",
+  "cases": [
+    {
+      "id": "line-judge-late-start-passes",
+      "why": "the on-time check moves past LOCK_SLACK, so a Thursday run late enough to miss the first kickoff is judged on time.",
+      "find": "    if delay is None or delay < timedelta(hours=WARN_HOURS):\n",
+      "replace": "    if delay is None or delay < timedelta(hours=WARN_HOURS + 2):\n",
+      "expect_caught_by": "test_a_github_copy_seven_hours_late_is_flagged"
+    },
+    {
+      "id": "line-judge-locked-week-flagged",
+      "why": "a locked week is not counted as done, so every started week is reported missing after every run.",
+      "find": "        if week > LAST_WEEK or week in done:\n",
+      "replace": "        if week > LAST_WEEK:\n",
+      "expect_caught_by": "test_a_locked_or_skipped_week_holds"
+    },
+    {
+      "id": "line-judge-missed-week-unseen",
+      "why": "a week that kicked off with no lock and no skip record is never reported, the failure Stage 24 fixed in determine_next_week.",
+      "find": "        if kicks and min(kicks) <= pd.Timestamp(now):\n",
+      "replace": "        if kicks and False:\n",
+      "expect_caught_by": "test_a_started_week_with_no_lock_is_flagged"
+    },
+    {
+      "id": "line-judge-late-lock-unseen",
+      "why": "a pick saved up to six hours after its kickoff passes, so a lock that landed after Thursday night's game is judged fine.",
+      "find": "        if pair in picked and k <= saved_at:\n",
+      "replace": "        if pair in picked and k <= saved_at - pd.Timedelta(hours=6):\n",
+      "expect_caught_by": "test_a_pick_saved_after_its_kickoff_is_flagged"
+    },
+    {
+      "id": "line-judge-dropped-game-unseen",
+      "why": "a game still to come that the lock left without a pick passes, so a run that lost a game is judged complete.",
+      "find": "        if pair not in picked and pair not in cancelled and k > saved_at:\n",
+      "replace": "        if pair not in picked and pair not in cancelled and False:\n",
+      "expect_caught_by": "test_an_upcoming_game_left_without_a_pick_is_flagged"
+    },
+    {
+      "id": "line-judge-grades-due-early",
+      "why": "a week with a game still to play is owed its grades, so Monday night's game makes every Sunday a false alert.",
+      "find": "            return []  # not every picked game is final yet: nothing is due\n",
+      "replace": "            continue\n",
+      "expect_caught_by": "test_a_week_with_a_game_still_to_finish_is_not_due"
+    },
+    {
+      "id": "line-judge-lock-is-preview",
+      "why": "the lock time is read as the preview's creation, so a lock saved after kickoff passes whenever Tuesday saved a preview.",
+      "find": "        if dest and not any('/preview/' in d for d in dest):\n",
+      "replace": "        if dest:\n",
+      "expect_caught_by": "test_the_lock_is_when_the_preview_was_moved_into_place_not_when_it_was_made"
+    },
+    {
+      "id": "line-judge-shallow-checkout",
+      "target": ".github/workflows/nfl-weekly-update.yml",
+      "why": "Line Judge's checkout is shallow, so git shows every week added in one commit and the lock times are wrong.",
+      "find": "          ref: main\n          fetch-depth: 0\n",
+      "replace": "          ref: main\n",
+      "expect_caught_by": "test_line_judge_runs_after_a_green_weekly_update_with_the_whole_history"
+    }
+  ]
+}

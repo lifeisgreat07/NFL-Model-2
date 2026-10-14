@@ -289,3 +289,52 @@ jobs:
             echo '```'
           } > alert-body.md
           python -m src.core.alerts --title "NFL: Weekly update failed" --body-file alert-body.md
+
+  # Stage 44, Line Judge: after a run that went green, does main hold what a
+  # right run leaves? Every started week locked or recorded as skipped, each
+  # lock saved before its games' kickoffs, final weeks graded, the run on
+  # time (src/sports/nfl/line_judge.py). Plain checks; an agent to explain a
+  # failure comes later and only on a failure (Mark, 2026-10-13). A finding
+  # fails this job and opens or comments on its own issue.
+  line-judge:
+    needs: [slot-guard, weekly-update]
+    if: ${{ needs.weekly-update.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      # The whole history, from main as the run left it: `locked_at` reads
+      # when each week was locked, and a shallow clone shows every file
+      # added at once.
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Judge the run
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          season=$(python -m src.sports.nfl.paths --current-season)
+          started=$(gh api "repos/$GH_REPO/actions/runs/$GITHUB_RUN_ID" --jq .run_started_at)
+          if python -m src.sports.nfl.line_judge --season "$season" --run-event "$GITHUB_EVENT_NAME" \
+              --run-started "$started" --report line-judge.md; then
+            cat line-judge.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            cat line-judge.md >> "$GITHUB_STEP_SUMMARY"
+            echo >> line-judge.md
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> line-judge.md
+            python -m src.core.alerts --title "NFL: Line Judge found the Weekly update left something wrong" \
+              --body-file line-judge.md
+            exit 1
+          fi
