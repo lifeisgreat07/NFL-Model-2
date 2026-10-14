@@ -171,6 +171,15 @@ function side(pHome, g){
   return pHome >= 50 ? {team: g.home, pct: pHome} : {team: g.away, pct: 100 - pHome};
 }
 function sideText(s){ return s.team ? `${s.team} ${Math.round(s.pct)}%` : `even (${Math.round(s.pct)}%)`; }
+/* The saved pick and the chance its leading model gave it, as the row and
+   the card both print it (Stage 75 item 2): "TOR 63%", or "TOR 51% · even"
+   inside EVEN_BAND, where the card's headline used to call the game too
+   close beside a row that said "TOR 51%". */
+function pickText(g, p){
+  const lead = p.b !== null && p.b !== undefined ? p.b : p.a;
+  const chance = Math.round((p.pick === g.home ? lead : 1 - lead) * 100);
+  return `${p.pick} ${chance}%${Math.abs(lead * 100 - 50) < EVEN_BAND ? ' · even' : ''}`;
+}
 function lanes(vals){
   const keys = Object.keys(vals).filter(k => vals[k] !== null && vals[k] !== undefined);
   const out = {};
@@ -226,7 +235,7 @@ function pickedCard(g, p){
   const done = g.status === 'final';
   const headline = s.team
     ? `<span class="card-hl-label">${leadLabel}${done ? ' picked' : ''}</span> <b>${s.team} ${Math.round(s.pct)}%</b> <span class="card-hl-to">to win</span>`
-    : `<span class="card-hl-label">${leadLabel}</span> <b>Too close to call</b> <span class="card-hl-to">· saved pick ${p.pick}</span>`;
+    : `<span class="card-hl-label">${leadLabel}${done ? ' picked' : ''}</span> <b>${pickText(g, p).replace(' · even', '')}</b> <span class="card-hl-to">· even</span>`;
   const ln = lanes(vals);
   // One axis (Stage 75 item 1): the bar draws the away team first, so a
   // home share v sits at 100 - v from the left, and the lead model's
@@ -374,9 +383,7 @@ function rowResult(g, p, nowMs){
    and "no price" when Model A made it for want of one. */
 function rowPick(g, p){
   if(!p) return '—';
-  const lead = p.b !== null && p.b !== undefined ? p.b : p.a;
-  const chance = p.pick === g.home ? lead : 1 - lead;
-  return `${p.pick} ${Math.round(chance * 100)}%${p.market ? '' : ' <span class="nba-no-price">no price</span>'}`;
+  return `${pickText(g, p)}${p.market ? '' : ' <span class="nba-no-price">no price</span>'}`;
 }
 function rowTime(g){
   if(g.status === 'final') return 'Final';

@@ -26,8 +26,8 @@
     {
       "id": "nhl-day-pick-home-chance",
       "why": "the pick column shows the home team's chance even when the pick is the away team.",
-      "find": "const pct = p.pick === g.home ? lead : 1 - lead;",
-      "replace": "const pct = lead;",
+      "find": "const chance = Math.round((p.pick === g.home ? lead : 1 - lead) * 100);",
+      "replace": "const chance = Math.round(lead * 100);",
       "expect_caught_by": "test_the_pick_column_is_the_saved_side_with_its_chance"
     },
     {
