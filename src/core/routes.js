@@ -3,7 +3,7 @@
    section, #page-<name>; until now the address never changed, so a link
    could not open the Methodology and the back button left the site.
    installRoutes(show) is called once by the sport's script with its own
-   showPage: a tap pushes #<name> (the board is the bare address), the back
+   showPage: a tap on a [data-page] or [data-route] button pushes #<name> (the board is the bare address), the back
    and forward buttons and a typed link follow, and a link that names no
    page opens the board. Included ahead of each sport's script.
 
@@ -47,10 +47,17 @@ function installRoutes(show, arg){
   const current = page => (route.current ? route.current(page) : undefined);
   const url = page => routeHash({page, arg: current(page)}) || location.pathname + location.search;
   const same = want => (want.startsWith('#') ? location.hash === want : location.hash === '');
-  document.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => {
-    const want = url(b.dataset.page);
+  // Stage 76 item 8 (X5): one listener on the document, not one per button
+  // bound at load. The NHL's side column is drawn again with the board, so
+  // its "All 32 clubs" lost the route after a day chip, and the NBA's "See
+  // the backtest" is not a nav button (data-route): both opened their page
+  // without an entry, and Back left the site.
+  document.addEventListener('click', e => {
+    const b = e.target && e.target.closest ? e.target.closest('[data-page], [data-route]') : null;
+    if(!b) return;
+    const want = url(b.dataset.page || b.dataset.route);
     if(!same(want)) history.pushState(null, '', want);
-  }));
+  });
   const follow = () => {
     const r = parseHash(location.hash, known()) || {page: 'board'};
     if(route.apply) route.apply(r.page, r.arg);

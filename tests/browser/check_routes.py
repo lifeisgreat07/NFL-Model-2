@@ -12,11 +12,14 @@ fails unless:
     history entries;
   - the page opened at #board/<day> shows that day;
   - the page opened at #team/<club> shows the Teams page on that club, and
-    choosing another club writes #team/<it>.
+    choosing another club writes #team/<it>;
+  - at 1440 px, after a day chip has drawn the side column again, its "All
+    32 clubs" writes #standings and Back comes back to the board (Stage 76
+    item 8, X5: it opened Standings with no entry, and Back left the site).
 
-`--self-test` makes two copies of the page, one whose chips no longer write
-the address and one whose router ignores a day, and fails unless each is
-reported.
+`--self-test` makes three copies of the page: one whose chips no longer
+write the address, one whose router ignores a day, and one whose router
+binds each button once at load; it fails unless each is reported.
 
 Usage:
   python tests/browser/check_routes.py <nhl page.html>
@@ -100,6 +103,31 @@ async def check_page(path):
                     if got != f'#team/{second}':
                         report.append(f'{where} choosing {second} left the address at {got!r}')
                 await ctx.close()
+
+                if width < 1280:
+                    continue
+                ctx = await browser.new_context(viewport={'width': width, 'height': 900}, color_scheme=theme,
+                                                reduced_motion='reduce')
+                page = await ctx.new_page()
+                await page.route(lambda u: u.startswith(('http://', 'https://')), lambda r: r.abort())
+                await page.goto(uri)
+                await page.wait_for_timeout(200)
+                await page.locator(f'.nhl-day-chip[data-day="{others[0]}"]').click()
+                await page.wait_for_timeout(50)
+                clubs_btn = page.locator('#nhl-side [data-page]').filter(has_text='All 32 clubs')
+                if not await clubs_btn.count():
+                    report.append(f'{where} the side column has no "All 32 clubs" button')
+                else:
+                    await clubs_btn.first.click()
+                    await page.wait_for_timeout(100)
+                    got = await page.evaluate('location.hash')
+                    if got != '#standings':
+                        report.append(f'{where} the side column\'s "All 32 clubs" left the address at {got!r}')
+                    await page.go_back()
+                    await page.wait_for_timeout(200)
+                    if not page.url.startswith(uri) or await page.evaluate(ACTIVE) != 'page-board':
+                        report.append(f'{where} Back from "All 32 clubs" went to {page.url}')
+                await ctx.close()
         await browser.close()
     return report
 
@@ -108,6 +136,19 @@ async def check_page(path):
 #: indented four spaces; the week step's two).
 CHIP_WRITE = "    replaceRoute('board');\n"
 DAY_ROUTE = "  if(head === 'board' && (known.days || []).includes(arg)) return {page: 'board', arg};\n"
+#: Stage 76 item 8's one listener, and the per-button binding it replaced.
+ONE_LISTENER = """  document.addEventListener('click', e => {
+    const b = e.target && e.target.closest ? e.target.closest('[data-page], [data-route]') : null;
+    if(!b) return;
+    const want = url(b.dataset.page || b.dataset.route);
+    if(!same(want)) history.pushState(null, '', want);
+  });
+"""
+PER_BUTTON = """  document.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => {
+    const want = url(b.dataset.page);
+    if(!same(want)) history.pushState(null, '', want);
+  }));
+"""
 
 
 def self_test(tmp):
@@ -118,17 +159,21 @@ def self_test(tmp):
                    capture_output=True)
     html = page.read_text(encoding='utf-8')
     problems = []
-    if html.count(CHIP_WRITE) != 1 or html.count(DAY_ROUTE) != 1:
-        return [f'self-test: the page holds {html.count(CHIP_WRITE)} chip writes (expected 1) and '
-                f'{html.count(DAY_ROUTE)} day routes (expected 1)']
+    if html.count(CHIP_WRITE) != 1 or html.count(DAY_ROUTE) != 1 or html.count(ONE_LISTENER) != 1:
+        return [f'self-test: the page holds {html.count(CHIP_WRITE)} chip writes, {html.count(DAY_ROUTE)} day '
+                f'routes and {html.count(ONE_LISTENER)} document listeners (expected 1 of each)']
     no_write, no_day = tmp / 'routes-nhl-no-write.html', tmp / 'routes-nhl-no-day.html'
+    per_button = tmp / 'routes-nhl-per-button.html'
     no_write.write_text(html.replace(CHIP_WRITE, ''), encoding='utf-8')
     no_day.write_text(html.replace(DAY_ROUTE, ''), encoding='utf-8')
+    per_button.write_text(html.replace(ONE_LISTENER, PER_BUTTON), encoding='utf-8')
     problems += [f'self-test: the real page should be clean: {r}' for r in asyncio.run(check_page(page))]
     if not any('left the address' in r for r in asyncio.run(check_page(no_write))):
         problems.append('self-test: the page whose chips write no address was not reported')
     if not any('#board/' in r and 'opened on' in r for r in asyncio.run(check_page(no_day))):
         problems.append('self-test: the page that ignores a typed day was not reported')
+    if not any('All 32 clubs' in r for r in asyncio.run(check_page(per_button))):
+        problems.append('self-test: the page whose router binds each button once was not reported')
     return problems
 
 

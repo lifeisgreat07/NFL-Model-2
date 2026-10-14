@@ -38,14 +38,15 @@ def run(hash_, clicks=()):
     js = """
 const listeners = {}; const shown = []; const pushed = [];
 const pages = ['board', 'method', 'modellab'].map(n => ({id: 'page-' + n}));
-const buttons = %s.map(n => ({dataset: {page: n}, addEventListener: (e, f) => { listeners['click:' + n] = f; }}));
+const names = %s;
 global.location = {hash: %s, pathname: '/nhl/', search: ''};
 global.history = {pushState: (s, t, u) => { pushed.push(u); location.hash = u.startsWith('#') ? u : ''; }};
 global.window = {addEventListener: (e, f) => { listeners[e] = f; }};
-global.document = {querySelectorAll: s => s === '.page' ? pages : buttons};
+global.document = {querySelectorAll: s => s === '.page' ? pages : [], addEventListener: (e, f) => { listeners['doc:' + e] = f; }};
 %s
 installRoutes(n => shown.push(n));
-for (const c of %s) listeners['click:' + c]();
+const tap = n => listeners['doc:click']({target: {closest: s => names.includes(n) ? {dataset: {page: n}} : null}});
+for (const c of %s) tap(c);
 location.hash = '#modellab'; listeners.popstate();
 location.hash = '#nonsense'; listeners.hashchange();
 console.log(JSON.stringify({shown, pushed}));
@@ -105,20 +106,22 @@ def test_route_hash_writes_what_parse_hash_reads():
 def routed(hash_, steps):
     """installRoutes with a sport's argument under node. `steps` are
     ['tap', page], ['set', page, value] (a chip or a club, then replace),
-    or ['pop', hash]. Returns what was shown, applied, pushed and replaced."""
+    ['route', page] (a data-route button), ['click-elsewhere'], or ['pop', hash]. Returns what was shown, applied, pushed and replaced."""
     if not NODE:
         pytest.skip('node not available')
     js = """
 const listeners = {}; const shown = []; const applied = []; const pushed = []; const replaced = [];
 const pages = ['board', 'teams', 'method'].map(n => ({id: 'page-' + n}));
 let active = 'board';
-const buttons = ['board', 'teams', 'method'].map(n => ({dataset: {page: n}, addEventListener: (e, f) => { listeners['click:' + n] = f; }}));
+
 global.location = {hash: %s, pathname: '/nhl/', search: ''};
 const go = u => { location.hash = u.startsWith('#') ? u : ''; };
 global.history = {pushState: (s, t, u) => { pushed.push(u); go(u); }, replaceState: (s, t, u) => { replaced.push(u); go(u); }};
 global.window = {addEventListener: (e, f) => { listeners[e] = f; }};
-global.document = {querySelectorAll: s => s === '.page' ? pages : buttons,
-                   querySelector: s => ({id: 'page-' + active})};
+global.document = {querySelectorAll: s => s === '.page' ? pages : [],
+                   querySelector: s => ({id: 'page-' + active}),
+                   addEventListener: (e, f) => { listeners['doc:' + e] = f; }};
+const tap = (attr, n) => listeners['doc:click']({target: {closest: s => ({dataset: {[attr]: n}})}});
 %s
 const state = {board: undefined, teams: 'ANA'};
 const replace = installRoutes(n => { shown.push(n); active = n; }, {
@@ -127,7 +130,9 @@ const replace = installRoutes(n => { shown.push(n); active = n; }, {
   apply: (page, value) => { applied.push([page, value === undefined ? null : value]); if(page in state && (value || page === 'board')) state[page] = value; },
 });
 for (const s of %s){
-  if(s[0] === 'tap'){ listeners['click:' + s[1]](); shown.push(s[1]); active = s[1]; }
+  if(s[0] === 'tap'){ tap('page', s[1]); shown.push(s[1]); active = s[1]; }
+  if(s[0] === 'route'){ tap('route', s[1]); shown.push(s[1]); active = s[1]; }
+  if(s[0] === 'click-elsewhere'){ listeners['doc:click']({target: {closest: s => null}}); }
   if(s[0] === 'set'){ state[s[1]] = s[2]; replace(s[1]); }
   if(s[0] === 'pop'){ location.hash = s[1]; listeners.popstate(); }
 }
@@ -184,3 +189,25 @@ def test_the_browser_check_runs():
     wf = (ROOT / '.github' / 'workflows' / 'browser-checks.yml').read_text(encoding='utf-8')
     assert 'run: python tests/browser/check_routes.py --self-test --tmp "$RUNNER_TEMP/routes"\n' in wf
     assert 'run: python tests/browser/check_routes.py "$RUNNER_TEMP/states/nhl.html"\n' in wf
+
+
+# --- Stage 76 item 8: every button that opens a page goes through the router --
+
+def test_a_button_drawn_after_load_or_outside_the_nav_still_pushes_its_page():
+    """The router listens on the document, so the NHL side column's buttons,
+    drawn again with every board, and the NBA's data-route button push their
+    page as a nav button does; a click on anything else pushes nothing."""
+    out = routed('', [['click-elsewhere'], ['route', 'method'], ['tap', 'board']])
+    assert out['pushed'] == ['#method', '/nhl/']
+
+
+def test_the_router_listens_on_the_document_not_per_button():
+    src = ROUTES.read_text(encoding='utf-8')
+    assert "document.addEventListener('click', e => {" in src
+    assert "e.target.closest('[data-page], [data-route]')" in src
+    assert "querySelectorAll('[data-page]').forEach" not in src
+
+
+def test_the_nba_backtest_button_names_its_route():
+    js = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+    assert '<button type="button" class="nba-to-lab" data-route="modellab">' in js

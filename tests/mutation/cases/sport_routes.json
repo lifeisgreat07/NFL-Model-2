@@ -118,6 +118,35 @@
    "find": "        run: python tests/browser/check_routes.py \"$RUNNER_TEMP/states/nhl.html\"\n",
    "replace": "        run: echo skipped\n",
    "expect_caught_by": "test_the_browser_check_runs"
+  },
+  {
+   "id": "routes-buttons-bound-once",
+   "why": "the router binds each nav button once at load, so the NHL side column's buttons, drawn again with the board, open their page with no entry and Back leaves the site (Stage 76 item 8, X5).",
+   "find": "  document.addEventListener('click', e => {\n    const b = e.target && e.target.closest ? e.target.closest('[data-page], [data-route]') : null;\n    if(!b) return;\n",
+   "replace": "  document.querySelectorAll('[data-page]').forEach(b => b.addEventListener('click', () => {\n    if(!b) return;\n",
+   "expect_caught_by": "test_a_button_drawn_after_load_or_outside_the_nav_still_pushes_its_page"
+  },
+  {
+   "id": "routes-data-route-unheard",
+   "why": "a data-route button is not heard, so the NBA's \"See the backtest\" opens the Model Lab with no entry.",
+   "find": "e.target.closest('[data-page], [data-route]')",
+   "replace": "e.target.closest('[data-page]')",
+   "expect_caught_by": "test_the_router_listens_on_the_document_not_per_button"
+  },
+  {
+   "id": "routes-route-name-dropped",
+   "why": "a data-route button pushes the board's address instead of its page's.",
+   "find": "    const want = url(b.dataset.page || b.dataset.route);\n",
+   "replace": "    const want = url(b.dataset.page);\n",
+   "expect_caught_by": "test_a_button_drawn_after_load_or_outside_the_nav_still_pushes_its_page"
+  },
+  {
+   "id": "routes-nba-lab-unnamed",
+   "target": "src/sports/nba/pages/nba.js",
+   "why": "the NBA's \"See the backtest\" names no route again; no browser check sees it before opening night.",
+   "find": "<button type=\"button\" class=\"nba-to-lab\" data-route=\"modellab\">",
+   "replace": "<button type=\"button\" class=\"nba-to-lab\">",
+   "expect_caught_by": "test_the_nba_backtest_button_names_its_route"
   }
  ]
 }
