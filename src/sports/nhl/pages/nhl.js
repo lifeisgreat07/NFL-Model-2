@@ -391,6 +391,17 @@ function rowGame(g){
   };
   return `${team(g.away, g.as)} <span class="at-symbol">@</span> ${team(g.home, g.hs)}`;
 }
+/* Stage 77 item 35 (L6): a day with no games names the next day that has
+   some, as a button that goes there, so an empty day is not a dead end. */
+function nextDay(day){
+  return DATA.games.map(g => g.day).filter(d => d > day).sort()[0] || null;
+}
+function nextDayHtml(day){
+  const d = nextDay(day);
+  if(!d) return '';
+  const n = DATA.games.filter(g => g.day === d).length;
+  return `<p class="nhl-next-day">Next games: <button type="button" class="btn btn-link" data-go-day="${d}">${FMT_DAY.format(dayDate(d))}, ${n} game${n === 1 ? '' : 's'}</button></p>`;
+}
 /* "3 games, 1 of 1 correct so far", from the saved picks' grades. */
 function daySummary(games, picks){
   const n = games.length;
@@ -472,7 +483,16 @@ function renderBoard(){
   const head = `<div class="nhl-day-top"><h3 class="nhl-day-title">${title}</h3>`
     + `<p class="nhl-day-summary" aria-live="polite">${daySummary(dayGames, DATA.picks)}</p></div>`;
   if(!dayGames.length){
-    grid.innerHTML = head + (games.length ? '' : stateHtml('waiting', 'No games this week', ''));
+    grid.innerHTML = head + nextDayHtml(currentDay) + (games.length ? '' : stateHtml('waiting', 'No games this week', ''));
+    const go = grid.querySelector('[data-go-day]');
+    if(go) go.addEventListener('click', () => {
+      currentDay = go.dataset.goDay;
+      currentWeek = mondayOf(currentDay);
+      renderBoard();
+      replaceRoute('board');
+      const chip = document.querySelector(`.nhl-day-chip[data-day="${currentDay}"]`);
+      if(chip) chip.focus();
+    });
     return;
   }
   const nowMs = Date.now();

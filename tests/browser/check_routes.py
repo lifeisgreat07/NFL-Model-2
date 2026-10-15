@@ -134,7 +134,9 @@ async def check_page(path):
 
 #: What the item added, as it reads in the NHL's built page (the chip handler's write is
 #: indented four spaces; the week step's two).
-CHIP_WRITE = "    replaceRoute('board');\n"
+# Anchored on the line before it, so the empty day's next-day button (Stage 77
+# item 35), indented two spaces further, is not counted as a chip.
+CHIP_WRITE = "\n    replaceRoute('board');\n"
 DAY_ROUTE = "  if(head === 'board' && (known.days || []).includes(arg)) return {page: 'board', arg};\n"
 #: Stage 76 item 8's one listener, and the per-button binding it replaced.
 ONE_LISTENER = """  document.addEventListener('click', e => {
@@ -166,7 +168,7 @@ def self_test(tmp):
                 f'routes and {html.count(ONE_LISTENER)} document listeners (expected 1 of each)']
     no_write, no_day = tmp / 'routes-nhl-no-write.html', tmp / 'routes-nhl-no-day.html'
     per_button = tmp / 'routes-nhl-per-button.html'
-    no_write.write_text(html.replace(CHIP_WRITE, ''), encoding='utf-8')
+    no_write.write_text(html.replace(CHIP_WRITE, '\n'), encoding='utf-8')
     no_day.write_text(html.replace(DAY_ROUTE, ''), encoding='utf-8')
     per_button.write_text(html.replace(ONE_LISTENER, PER_BUTTON), encoding='utf-8')
     problems += [f'self-test: the real page should be clean: {r}' for r in asyncio.run(check_page(page))]
