@@ -119,6 +119,10 @@ let currentWeek = defaultWeek();
 function teamName(abbr){ return (DATA.teams[abbr] || {}).name || abbr; }
 /* A table's club cell: the full name, and on a phone the three letters, so
    the odds columns fit without scrolling sideways. */
+/* A table cell's club: the full name, or the code where the table is narrow
+   (nhl.css). Only inside .nhl-table, which hides one of the two; the side
+   column prints the name alone (Stage 78 item 41, the audit's L1: it read
+   "Tampa Bay LightningTBL"). */
 function clubCell(abbr){ return `<span class="nhl-club-full">${escapeHtml(teamName(abbr))}</span><span class="nhl-club-abbr">${escapeHtml(abbr)}</span>`; }
 function logo(abbr){
   const t = DATA.teams[abbr];
@@ -554,7 +558,7 @@ function sideHtml(day, byDay){
   const leaders = !s ? '<p class="nhl-side-note">The standings are not simulated yet.</p>'
     : `<ul class="nhl-side-list">${Object.values(CONFERENCES).flat().map(div => {
         const t = s.teams.filter(x => x.division === div).sort((a, b) => b.projected_points - a.projected_points)[0];
-        return t ? `<li><span class="nhl-side-game">${escapeHtml(div)}</span><span>${clubCell(t.team)} <b>${odds(t.playoff_pct)}</b> to make the playoffs</span></li>` : '';
+        return t ? `<li><span class="nhl-side-game">${escapeHtml(div)}</span><span>${escapeHtml(teamName(t.team))} <b>${odds(t.playoff_pct)}</b> to make the playoffs</span></li>` : '';
       }).join('')}</ul><button type="button" class="nhl-side-link" data-page="standings">All 32 clubs</button>`;
   return `<h3 class="nhl-side-title">Goalies</h3>${goalies}<h3 class="nhl-side-title">The day before</h3>${record}`
     + `<h3 class="nhl-side-title">Division leaders</h3>${leaders}`;
