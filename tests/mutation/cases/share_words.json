@@ -8,6 +8,13 @@
    "find": "function copiedText(n){ return `Link copied · ${n} pick${n === 1 ? '' : 's'}`; }",
    "replace": "function copiedText(n){ return `Copied (${n} picks)`; }",
    "expect_caught_by": "test_the_share_button_says_the_link_is_copied_and_counts_right"
+  },
+  {
+   "id": "share-banner-week-key",
+   "why": "the shared view says \"1 pick for 2026 week6, shared from someone else's device\" again (Stage 77 item 19).",
+   "find": "  return `Someone shared ${picked} pick${picked === 1 ? '' : 's'} for ${week} with you. `\n",
+   "replace": "  return `${picked} pick${picked === 1 ? '' : 's'} for ${String(weekKey).replace('_', ' ')}, shared from someone else's device. `\n",
+   "expect_caught_by": "test_the_shared_view_says_who_shared_what_for_which_week"
   }
  ]
 }

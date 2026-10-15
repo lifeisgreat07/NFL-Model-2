@@ -2393,6 +2393,18 @@ function copiedText(n){ return `Link copied · ${n} pick${n === 1 ? '' : 's'}`; 
 // is what keeps the shared view from touching localStorage at all.
 let sharedPicksView = null;
 
+/* Stage 77 item 19 (the 2026-10-13 audit's copy fix 8): "1 pick for 2026
+   week6, shared from someone else's device" read the week's key aloud and
+   began with a number. Who did what comes first, and the week as the
+   stepper names it. */
+function sharedNote(picked, weekKey, mine){
+  const m = /_week(\d+)$/.exec(weekKey || '');
+  const week = m ? `Week ${m[1]}` : String(weekKey || '').replace('_', ' ');
+  return `Someone shared ${picked} pick${picked === 1 ? '' : 's'} for ${week} with you. `
+    + 'Nothing has been saved to this device. '
+    + (mine ? 'Your own picks are untouched and will come back when you leave this view.'
+            : 'You have no picks of your own logged yet.');
+}
 function showSharedPicks(decoded){
   sharedPicksView = decoded;
   currentPicksWeek = decoded.weekKey;
@@ -2411,11 +2423,7 @@ function showSharedPicks(decoded){
   const note = document.getElementById('shared-picks-note');
   if(note){
     const mine = Object.keys(loadMyPicks()).length;
-    note.textContent = `${decoded.picked} pick${decoded.picked===1?'':'s'} for `
-      + `${decoded.weekKey.replace('_',' ')}, shared from someone else's device. `
-      + `Nothing has been saved to this device. `
-      + (mine ? 'Your own picks are untouched and will come back when you leave this view.'
-              : 'You have no picks of your own logged yet.');
+    note.textContent = sharedNote(decoded.picked, decoded.weekKey, mine);
   }
   if(banner) banner.style.display = 'block';
   // Dismiss any pending undo. It refers to a pick made on THIS device a

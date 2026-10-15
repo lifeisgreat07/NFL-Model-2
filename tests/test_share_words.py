@@ -30,3 +30,11 @@ def test_the_share_button_says_the_link_is_copied_and_counts_right():
     assert call('copiedText', 1) == 'Link copied · 1 pick'
     assert call('copiedText', 4) == 'Link copied · 4 picks'
     assert 'flash(copiedText(encoded.picked))' in JOINED_TEMPLATE.read_text(encoding='utf-8')
+
+
+def test_the_shared_view_says_who_shared_what_for_which_week():
+    assert call('sharedNote', 1, '2026_week6', 0) == (
+        'Someone shared 1 pick for Week 6 with you. Nothing has been saved to this device. '
+        'You have no picks of your own logged yet.')
+    assert call('sharedNote', 3, '2026_week12', 5).startswith('Someone shared 3 picks for Week 12 with you.')
+    assert 'note.textContent = sharedNote(decoded.picked, decoded.weekKey, mine);' in JOINED_TEMPLATE.read_text(encoding='utf-8')
