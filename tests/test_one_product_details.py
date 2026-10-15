@@ -37,7 +37,9 @@ def test_the_nhl_teams_page_sits_with_standings_and_ratings():
 def test_the_foot_says_when_in_et_and_the_board_says_which_model_picks(sport):
     js = text(f'src/sports/{sport}/pages/{sport}.js')
     assert "document.getElementById('built-line').textContent = `Updated ${" in js and "} ET`;" in js
-    assert 'The pick is Model B&#39;s when the market posted a price, and Model A&#39;s when it did not.' in text(PAGES[sport])
+    # Since Stage 77 item 14 each card says which model made its pick, beside
+    # the market it depends on; the board's lede is one plain line.
+    assert js.count('; with a price, Model B made the pick`') == {'nhl': 1, 'nba': 2}[sport] and 'so Model A made' in js
 
 
 def test_the_nfl_lock_proof_reads_in_et():

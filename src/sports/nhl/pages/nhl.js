@@ -214,7 +214,7 @@ function pickedCard(g, p){
     : (p.result === 'cancelled' ? '<span class="graded-tag tie">Cancelled</span>' : lockedTag(g, p));
   const m = p.market;
   const market = m
-    ? `Market (${escapeHtml(m.book || 'sportsbook')}): ${g.away} <b>${american(m.ap)}</b> · ${g.home} <b>${american(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))} with the margin out`
+    ? `Market (${escapeHtml(m.book || 'sportsbook')}): ${g.away} <b>${american(m.ap)}</b> · ${g.home} <b>${american(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))} with the margin out; with a price, Model B made the pick`
     : 'Market: no price was posted when the pick was saved, so Model A made it';
   const status = scoreLine(g);
   return `<div class="game-card">

@@ -19,10 +19,10 @@
   },
   {
    "id": "details-nba-pick-model-unsaid",
-   "target": "src/sports/nba/pages/body.html",
-   "why": "nothing says the pick is Model B's when priced",
-   "find": " The pick is Model B&#39;s when the market posted a price, and Model A&#39;s when it did not.",
-   "replace": "",
+   "target": "src/sports/nba/pages/nba.js",
+   "why": "nothing in an NBA card says the pick is Model B's when priced",
+   "find": "with the margin out; with a price, Model B made the pick`;",
+   "replace": "with the margin out`;",
    "expect_caught_by": "test_the_foot_says_when_in_et_and_the_board_says_which_model_picks"
   }
  ]
