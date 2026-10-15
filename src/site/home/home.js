@@ -89,9 +89,17 @@ function dayStatus(f, start){
   const upcoming = games.filter(g => g.t > NOW - 3 * HOUR && g.st !== 'final');
   let status, rows = [[f.record.label, record(f.record)]];
   if(today.length){
-    const evening = new Date(Math.min(...today.map(g => g.t))).getHours() >= 17;
-    status = {text:`${today.length} game${today.length === 1 ? '' : 's'} ${evening ? 'tonight' : 'today'}`, cls:'is-live'};
-    rows.push([`First ${start}`, atClock(Math.min(...today.map(g => g.t)))]);
+    const first = Math.min(...today.map(g => g.t));
+    const evening = new Date(first).getHours() >= 17;
+    /* Stage 77 item 12 (the 2026-10-13 audit's copy fix 1): how many of
+       today's games are over, and once the first has started, when the next
+       one does, not the first again. */
+    const finals = today.filter(g => g.st === 'final').length;
+    const done = !finals ? '' : finals === today.length ? ' · all final' : ` · ${finals} final, ${today.length - finals} to play`;
+    status = {text:`${today.length} game${today.length === 1 ? '' : 's'} ${evening ? 'tonight' : 'today'}${done}`, cls:'is-live'};
+    const later = today.filter(g => g.t > NOW && g.st !== 'final').map(g => g.t);
+    if(first > NOW || !later.length) rows.push([`First ${start}`, atClock(first)]);
+    else rows.push([`Next ${start}`, atClock(Math.min(...later))]);
   } else if(upcoming.length){
     const next = Math.min(...upcoming.map(g => g.t));
     const n = games.filter(g => dayKey(g.t) === dayKey(next)).length;

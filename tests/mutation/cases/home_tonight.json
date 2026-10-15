@@ -1,0 +1,27 @@
+{
+ "target": "src/site/home/home.js",
+ "tests": "tests/test_home_tonight.py",
+ "cases": [
+  {
+   "id": "home-tonight-no-count",
+   "why": "the home card says \"16 games tonight\" all evening, however many are over (Stage 77 item 12).",
+   "find": "    status = {text:`${today.length} game${today.length === 1 ? '' : 's'} ${evening ? 'tonight' : 'today'}${done}`, cls:'is-live'};",
+   "replace": "    status = {text:`${today.length} game${today.length === 1 ? '' : 's'} ${evening ? 'tonight' : 'today'}`, cls:'is-live'};",
+   "expect_caught_by": "test_once_games_finish_it_counts_them_and_names_the_next_start"
+  },
+  {
+   "id": "home-tonight-first-again",
+   "why": "after the first game starts, the card still names the first puck drop.",
+   "find": "    if(first > NOW || !later.length) rows.push([`First ${start}`, atClock(first)]);\n",
+   "replace": "    if(true) rows.push([`First ${start}`, atClock(first)]);\n",
+   "expect_caught_by": "test_once_games_finish_it_counts_them_and_names_the_next_start"
+  },
+  {
+   "id": "home-tonight-all-final-counted",
+   "why": "a night that is over reads \"16 final, 0 to play\".",
+   "find": "!finals ? '' : finals === today.length ? ' · all final' : ",
+   "replace": "!finals ? '' : ",
+   "expect_caught_by": "test_when_every_game_is_over_it_says_so"
+  }
+ ]
+}
