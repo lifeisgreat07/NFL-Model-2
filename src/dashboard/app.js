@@ -299,12 +299,14 @@ function weekLabel(key){
 
 // "Tue Sep 29, 16:41 UTC" from a preview's ISO stamp. UTC, like the page's
 // "Updated" line, so the two can be compared at a glance.
+/* Stage 77 item 15 (the 2026-10-13 audit's copy fix 4): Eastern time, as
+   every other time on the board is, and the weekday alone: a preview is
+   this week's, so "Tue 7:02 AM ET" says it where "Tue Oct 13, 11:02 UTC"
+   made the reader convert. */
 function previewWhen(iso){
   const d = iso ? new Date(iso) : null;
   if(!d || isNaN(d)) return 'the last run';
-  const day = d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric', timeZone:'UTC'});
-  const hm = d.toISOString().slice(11, 16);
-  return `${day.replace(',', '')}, ${hm} UTC`;
+  return `${d.toLocaleString('en-US', {weekday:'short', hour:'numeric', minute:'2-digit', timeZone:'America/New_York'})} ET`;
 }
 
 /* The note above a preview week's cards. Before the week's first kickoff
