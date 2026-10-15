@@ -1,0 +1,64 @@
+{
+ "target": "src/core/accuracy.js",
+ "tests": "tests/test_accuracy_component.py",
+ "cases": [
+  {
+   "id": "acc-even-call-counted",
+   "why": "a 50% call is scored as picking the away side (Stage 79 item 46).",
+   "find": "  const decided = games.filter(g => g[key] !== null && g[key] !== undefined && g[key] !== 0.5);\n",
+   "replace": "  const decided = games.filter(g => g[key] !== null && g[key] !== undefined);\n",
+   "expect_caught_by": "test_each_forecast_is_scored_on_the_games_it_picked_a_side_in"
+  },
+  {
+   "id": "acc-missing-forecast-counted-wrong",
+   "why": "a game a forecast had no number for counts against it.",
+   "find": "  const decided = games.filter(g => g[key] !== null && g[key] !== undefined && g[key] !== 0.5);\n",
+   "replace": "  const decided = games.filter(g => g[key] !== 0.5);\n",
+   "expect_caught_by": "test_each_forecast_is_scored_on_the_games_it_picked_a_side_in"
+  },
+  {
+   "id": "acc-wilson-normal-interval",
+   "why": "the diagram's interval is the normal one, which runs past 0% and 100% on a small bin.",
+   "find": "  const mid = (p + z * z / (2 * n)) / d, half = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d;\n",
+   "replace": "  const mid = p, half = z * Math.sqrt(p * (1 - p) / n);\n",
+   "expect_caught_by": "test_the_interval_is_wilsons_at_95_percent"
+  },
+  {
+   "id": "acc-empty-frame-blank",
+   "why": "with nothing graded the charts draw an empty frame and say nothing.",
+   "find": "  const body = !games.length ? accEmpty(f, 'Nothing is graded yet.')\n",
+   "replace": "  const body = !games.length ? ''\n",
+   "expect_caught_by": "test_with_nothing_graded_each_chart_says_so_inside_its_frame"
+  },
+  {
+   "id": "acc-one-day-trend",
+   "why": "one graded day is drawn as a trend line.",
+   "find": "  if(days.length < 2){\n",
+   "replace": "  if(days.length < 1){\n",
+   "expect_caught_by": "test_one_graded_day_is_not_drawn_as_a_trend"
+  },
+  {
+   "id": "acc-tiny-text",
+   "why": "the charts' text drops under 11 px (the audit's V3).",
+   "find": "  return phone ? {W: 300, H: 230, padL: 40, padR: 16, padT: 14, padB: 36, fs: 11}\n               : {W: 680, H: 230, padL: 44, padR: 24, padT: 14, padB: 36, fs: 11};",
+   "replace": "  return phone ? {W: 300, H: 230, padL: 40, padR: 16, padT: 14, padB: 36, fs: 11}\n               : {W: 680, H: 230, padL: 44, padR: 24, padT: 14, padB: 36, fs: 9};",
+   "expect_caught_by": "test_no_chart_text_is_under_11px"
+  },
+  {
+   "id": "acc-nba-not-drawn",
+   "target": "src/sports/nba/pages/nba.js",
+   "why": "the NBA's Checking the AI's work is prose only again (B4).",
+   "find": "    ${accuracyHtml(accGames(gradedPicks()))}\n",
+   "replace": "",
+   "expect_caught_by": "test_each_sport_draws_it_from_its_own_graded_picks"
+  },
+  {
+   "id": "acc-check-unwired",
+   "target": ".github/workflows/browser-checks.yml",
+   "why": "the accuracy browser check is dropped from CI.",
+   "find": "        run: python tests/browser/check_accuracy.py \"$RUNNER_TEMP/states/nhl.html\" \"$RUNNER_TEMP/states/nba.html\"\n",
+   "replace": "        run: echo skipped\n",
+   "expect_caught_by": "test_the_browser_check_runs"
+  }
+ ]
+}

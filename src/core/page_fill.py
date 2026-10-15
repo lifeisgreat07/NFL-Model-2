@@ -24,6 +24,8 @@ FONT_DIR = ROOT / 'assets' / 'fonts'
 ESCAPE_JS = Path(__file__).with_name('escape.js')
 #: The hash routes the same two scripts share (Stage 68 item 23).
 ROUTES_JS = Path(__file__).with_name('routes.js')
+#: The season-accuracy component both sports draw (Stage 79 item 46).
+ACCURACY_JS = Path(__file__).with_name('accuracy.js')
 
 
 def safe_json(obj: Any) -> str:

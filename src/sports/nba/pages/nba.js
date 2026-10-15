@@ -704,6 +704,11 @@ function gradedPicks(){
   return Object.entries(BD.picks || {}).map(([id, p]) => ({p, g: byId[id]}))
     .filter(x => x.g && (x.p.result === 'correct' || x.p.result === 'wrong'));
 }
+/* Stage 79 item 46: a graded pick as src/core/accuracy.js reads it. */
+function accGames(graded){
+  return graded.map(({p, g}) => ({day: g.day, a: p.a, b: p.b, m: p.market ? p.market.prob : null,
+    home: winnerOf(g) === g.home, c: pickChance(p, g), right: p.result === 'correct'}));
+}
 function calibrationHtml(graded){
   if(!graded.length){
     return `<h2 class="section-title">How sure, and how often right</h2>
@@ -726,6 +731,8 @@ function calibrationHtml(graded){
 }
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
+    <h2 class="section-title">The live picks so far</h2>
+    ${accuracyHtml(accGames(gradedPicks()))}
     ${calibrationHtml(gradedPicks())}
     <p class="nba-lede"><b>The drift check leans toward flagging.</b> Its baseline was measured with each game's actual players, from the box score: knowing who played lowered the backtest's log loss by ${(-Q.M1.diff).toFixed(3)} (M1). A live pick knows only the injury report before tip-off, so live log loss is expected to run up to about that much worse for a reason that is not drift, and the check may flag sooner than a like-for-like comparison would. The registration says so (<code>experiments/nba/stage65/registry.json</code>), and M2 measures the gap once there are live games.</p>
     <h2 class="section-title">Before anything was fitted</h2>
