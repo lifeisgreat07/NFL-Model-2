@@ -21,7 +21,9 @@
 .nhl-row{display:grid; grid-template-columns:3.6rem minmax(0, 1fr) auto 5.2rem 16px; align-items:center; column-gap:var(--s2);
   width:100%; min-height:52px; padding:var(--s2) var(--s1); background:none; border:0; color:var(--text);
   font:inherit; font-size:var(--fs-14); text-align:left; cursor:pointer; font-variant-numeric:tabular-nums;}
-.nhl-row:hover{background:var(--surface);}
+@media (hover: hover){
+  .nhl-row:hover{background:var(--surface);}
+}
 .nhl-row-time{font-size:var(--fs-12); color:var(--text-2);}
 .nhl-row-game{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .nhl-row-game .at-symbol{color:var(--text-3);}
@@ -39,12 +41,12 @@
 .nhl-row-result.wrong{color:var(--warn);}
 .nhl-row-result.locked, .nhl-row-result.live{color:var(--accent);}
 .nhl-row-result.open, .nhl-row-result.off{color:var(--text-3); font-weight:500;}
-.nhl-row-chev{color:var(--text-3); transition:transform .15s;}
+.nhl-row-chev{color:var(--text-3); transition:transform var(--dur-base) var(--ease);}
 .nhl-row[aria-expanded="true"] .nhl-row-chev{transform:rotate(180deg);}
 .nhl-row-detail{padding:0 0 var(--s3);}
 @media (prefers-reduced-motion: reduce){ .nhl-row-chev{transition:none;} }
 .nhl-goalie{display:inline-block; font-size:var(--fs-11); font-weight:700; letter-spacing:.05em; text-transform:uppercase;
-  padding:1px 6px; border-radius:999px; margin-left:4px; vertical-align:1px;}
+  padding:1px var(--s2); border-radius:999px; margin-left:var(--s1); vertical-align:1px;}
 .nhl-goalie.confirmed{background:var(--accent-soft); color:var(--accent);}
 [data-sport="nhl"]{--nhl-likely:#E0A456; --nhl-likely-soft:rgba(201,127,46,.16);}
 [data-sport="nhl"][data-theme="light"]{--nhl-likely:#8A5A00; --nhl-likely-soft:rgba(178,106,12,.12);}
@@ -72,7 +74,7 @@
 .nhl-table tbody th{text-transform:none; letter-spacing:0; font-size:var(--fs-13); font-weight:600; color:var(--text); white-space:nowrap;}
 .nhl-table{margin-bottom:var(--s4);}
 .nhl-table .nhl-club-abbr{display:none;}
-@media (max-width:600px){ .nhl-table .nhl-club-full{display:none;} .nhl-table .nhl-club-abbr{display:inline;} .nhl-table th, .nhl-table td{padding-left:8px; padding-right:8px;} }
+@media (max-width:600px){ .nhl-table .nhl-club-full{display:none;} .nhl-table .nhl-club-abbr{display:inline;} .nhl-table th, .nhl-table td{padding-left:var(--s2); padding-right:var(--s2);} }
 .nhl-body .section-title{margin:var(--s6) 0 var(--s3);}
 .nhl-card-status{font-size:var(--fs-12); font-weight:600; color:var(--text-2);}
 .nhl-team-select{font:inherit; font-size:var(--fs-14); padding:var(--s1) var(--s2); border:1px solid var(--border-strong);
@@ -93,7 +95,7 @@
   /* Stage 79 item 48 (L3): capped at the window's height, scrolling inside. */
   .nhl-side{display:block; position:sticky; top:var(--s4); max-height:calc(100vh - var(--s8)); overflow:auto;
     padding:var(--s3) var(--s4); border:1px solid var(--border);
-    border-radius:var(--r-2, 10px); background:var(--surface); font-size:var(--fs-13); color:var(--text-2);}
+    border-radius:var(--r-lg); background:var(--surface); font-size:var(--fs-13); color:var(--text-2);}
 }
 .nhl-side-title{margin:var(--s3) 0 var(--s2); font-size:var(--fs-12); font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2);}
 .nhl-side-title:first-child{margin-top:0;}

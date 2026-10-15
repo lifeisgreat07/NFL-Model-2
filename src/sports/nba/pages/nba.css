@@ -20,7 +20,9 @@
 .nba-row{display:grid; grid-template-columns:3.6rem minmax(0, 1fr) auto minmax(5.2rem, max-content) 16px; align-items:center; column-gap:var(--s2);
   width:100%; min-height:52px; padding:var(--s2) var(--s1); background:none; border:0; color:var(--text);
   font:inherit; font-size:var(--fs-14); text-align:left; cursor:pointer; font-variant-numeric:tabular-nums;}
-.nba-row:hover{background:var(--surface);}
+@media (hover: hover){
+  .nba-row:hover{background:var(--surface);}
+}
 .nba-row-time{font-size:var(--fs-12); color:var(--text-2);}
 .nba-row-game{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .nba-row-game .at-symbol{color:var(--text-3);}
@@ -31,7 +33,7 @@
 .nba-row-result.wrong{color:var(--warn);}
 .nba-row-result.locked, .nba-row-result.live{color:var(--accent);}
 .nba-row-result.open, .nba-row-result.off{color:var(--text-3); font-weight:500;}
-.nba-row-chev{color:var(--text-3); transition:transform .15s;}
+.nba-row-chev{color:var(--text-3); transition:transform var(--dur-base) var(--ease);}
 .nba-row[aria-expanded="true"] .nba-row-chev{transform:rotate(180deg);}
 .nba-row-detail{padding:0 0 var(--s3);}
 @media (prefers-reduced-motion: reduce){ .nba-row-chev{transition:none;} }
@@ -43,7 +45,7 @@
    (89px) was drawn 12px over the pick (Stage 68 item 5; held by
    tests/browser/check_rows.py). */
 @media (max-width:600px){
-  .nba-row{grid-template-columns:3.7rem minmax(0, 1fr) auto minmax(4.4rem, max-content) 14px; column-gap:6px;}
+  .nba-row{grid-template-columns:3.7rem minmax(0, 1fr) auto minmax(4.4rem, max-content) 14px; column-gap:var(--s2);}
   .nba-row-time{white-space:nowrap;}
   .nba-row-game{white-space:normal; overflow:visible;}
   .nba-row-pick{text-align:right;}
@@ -53,7 +55,7 @@
   .nba-row-pick .row-even-sep{display:none;}
 }
 /* Before the first pick (Stage 68 item 6). */
-.nba-preseason{margin:0 0 var(--s3); padding:var(--s3); border:1px solid var(--border); border-radius:var(--r-2, 10px);
+.nba-preseason{margin:0 0 var(--s3); padding:var(--s3); border:1px solid var(--border); border-radius:var(--r-lg);
   background:var(--surface); font-size:var(--fs-14); color:var(--text-2);}
 .nba-preseason p{margin:0 0 var(--s2);}
 .nba-preseason .nba-countdown{font-weight:700; color:var(--text);}  /* Stage 80 item 60 */
@@ -90,7 +92,7 @@
 @media (min-width:1280px){
   .nba-board-wrap{display:grid; grid-template-columns:minmax(0, 760px) 300px; column-gap:var(--s5); align-items:start;}
   .nba-side{display:block; position:sticky; top:var(--s4); max-height:calc(100vh - var(--s8)); overflow:auto;
-    padding:var(--s3) var(--s4); border:1px solid var(--border); border-radius:var(--r-2, 10px); background:var(--surface);
+    padding:var(--s3) var(--s4); border:1px solid var(--border); border-radius:var(--r-lg); background:var(--surface);
     font-size:var(--fs-13); color:var(--text-2);}
 }
 .nba-side-title{margin:var(--s3) 0 var(--s2); font-size:var(--fs-12); font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2);}

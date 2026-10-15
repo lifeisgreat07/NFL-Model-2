@@ -1,0 +1,13 @@
+{
+ "target": "src/site/home/home.css",
+ "tests": "tests/test_css_sheets_guarded.py",
+ "cases": [
+  {
+   "id": "sheets-home-rgba-shadow",
+   "why": "the home switch's raised segment gets its rgba shadow back.",
+   "find": "box-shadow:inset 0 0 0 1px var(--border-strong); }",
+   "replace": "box-shadow:0 1px 2px rgba(0,0,0,.18); }",
+   "expect_caught_by": "test_no_shadow_carries_a_colour_literal"
+  }
+ ]
+}

@@ -1,0 +1,13 @@
+{
+ "target": "src/sports/nhl/pages/nhl.css",
+ "tests": "tests/test_css_tokens_defined.py",
+ "cases": [
+  {
+   "id": "sheets-nhl-undeclared-radius",
+   "why": "the NHL note's radius names the undeclared --r-2 again and draws its 10px fallback.",
+   "find": "border-radius:var(--r-lg);",
+   "replace": "border-radius:var(--r-2, 10px);",
+   "expect_caught_by": "test_every_token_the_sport_sheets_use_is_declared"
+  }
+ ]
+}

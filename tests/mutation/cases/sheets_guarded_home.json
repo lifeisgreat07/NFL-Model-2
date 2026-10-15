@@ -1,0 +1,20 @@
+{
+ "target": "src/site/home/home.css",
+ "tests": "tests/test_type_and_spacing_scale.py",
+ "cases": [
+  {
+   "id": "sheets-home-font-literal",
+   "why": "the home's headline goes back to a literal 44px, off the type scale (Stage 78 item 36, V9).",
+   "find": ".home-title{ margin:0; font-size:var(--fs-40);",
+   "replace": ".home-title{ margin:0; font-size:44px;",
+   "expect_caught_by": "test_every_font_size_is_on_the_scale"
+  },
+  {
+   "id": "sheets-home-spacing-literal",
+   "why": "the home's marks go back to a 3px gap, off the spacing scale.",
+   "find": ".home-marks{ display:inline-flex; gap:var(--s1); }",
+   "replace": ".home-marks{ display:inline-flex; gap:3px; }",
+   "expect_caught_by": "test_every_spacing_length_is_on_the_scale"
+  }
+ ]
+}
