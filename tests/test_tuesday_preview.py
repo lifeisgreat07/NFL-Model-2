@@ -177,7 +177,8 @@ def test_a_preview_week_is_labelled_in_the_week_stepper(labels):
 
 
 def test_the_preview_note_says_when(labels):
-    assert labels['when'] == 'Tue Sep 29, 16:41 UTC'
+    # Eastern time since Stage 77 item 15: 16:41 UTC on Sep 29 is 12:41 PM EDT.
+    assert labels['when'] == 'Tue 12:41 PM ET'
     assert labels['missing'] == 'the last run'
 
 

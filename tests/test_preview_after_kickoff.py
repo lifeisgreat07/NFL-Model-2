@@ -128,7 +128,7 @@ WEEK = {'preview': True, 'previewed_utc': '2026-09-29T16:41:00+00:00',
 
 def test_before_the_first_kickoff_the_preview_says_it_will_lock():
     text = note(WEEK, '2026-10-01T12:00:00Z')
-    assert text.startswith("Preview: these are the models' picks as of Tue Sep 29, 16:41 UTC.")
+    assert text.startswith("Preview: these are the models' picks as of Tue 12:41 PM ET.")   # Eastern since Stage 77 item 15
     assert 'The picks lock before the week' in text and 'only locked picks are graded' in text
 
 

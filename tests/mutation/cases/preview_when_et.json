@@ -1,0 +1,13 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_tuesday_preview.py",
+ "cases": [
+  {
+   "id": "preview-when-back-to-utc",
+   "why": "the preview note reads \"as of Tue Oct 13, 11:02 UTC\" again (Stage 77 item 15).",
+   "find": "  return `${d.toLocaleString('en-US', {weekday:'short', hour:'numeric', minute:'2-digit', timeZone:'America/New_York'})} ET`;",
+   "replace": "  return `${d.toLocaleString('en-US', {weekday:'short', hour:'numeric', minute:'2-digit', timeZone:'UTC'})} UTC`;",
+   "expect_caught_by": "test_the_preview_note_says_when"
+  }
+ ]
+}
