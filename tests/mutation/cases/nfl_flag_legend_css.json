@@ -1,0 +1,20 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_nfl_flag_legend.py",
+ "cases": [
+  {
+   "id": "flag-legend-on-desktop",
+   "why": "the legend shows on a desktop, where there are no rows and no flags to explain.",
+   "find": ".nfl-flag-legend{display:none;}",
+   "replace": "",
+   "expect_caught_by": "test_the_legend_shows_on_a_phone_only_like_the_rows"
+  },
+  {
+   "id": "flag-legend-never-shown",
+   "why": "the legend never shows, even on a phone.",
+   "find": "  .nfl-flag-legend{display:block;",
+   "replace": "  .nfl-flag-legend{display:none;",
+   "expect_caught_by": "test_the_legend_shows_on_a_phone_only_like_the_rows"
+  }
+ ]
+}

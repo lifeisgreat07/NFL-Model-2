@@ -1771,6 +1771,7 @@
 [data-theme="light"] .icon-moon{display:inline-block;}
 /* Stage 68 item 36 (N2): the Week Board on a phone. Wider than 640 px
    nothing here shows and the board is as before. */
+.nfl-flag-legend{display:none;}
 .nfl-row, .nfl-phone-only{display:none;}
 @media (max-width:640px){
   .nfl-phone-only{display:inline-flex;}
@@ -1785,7 +1786,8 @@
   .nfl-row-res.correct{color:var(--graded-correct);}
   .nfl-row-res.incorrect{color:var(--graded-wrong);}
   .nfl-row-res.final{color:var(--text-2);}
-  .nfl-row-flag{color:var(--accent);}
+  .nfl-row-flag{color:var(--accent); display:inline-flex; vertical-align:-1px;}
+  .nfl-flag-legend{display:block; margin:0 0 var(--s2); font-size:var(--fs-12); color:var(--text-2);}
   .nfl-row[aria-expanded="true"] .nfl-row-chev{transform:rotate(180deg);}
   #game-grid .game-card.nfl-collapsible{display:none; margin:var(--s2) 0 var(--s3);}
   #game-grid .game-card.nfl-collapsible.is-open{display:block;}
