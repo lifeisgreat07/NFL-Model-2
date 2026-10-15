@@ -1,0 +1,27 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_one_system.py",
+ "cases": [
+  {
+   "id": "one-chip-nhl-own",
+   "why": "the NHL chip drops the shared chip and loses every style.",
+   "find": "<button type=\"button\" class=\"day-chip nhl-day-chip\" data-day=",
+   "replace": "<button type=\"button\" class=\"nhl-day-chip\" data-day=",
+   "expect_caught_by": "test_one_day_chip"
+  },
+  {
+   "id": "one-row-nhl-own",
+   "why": "the NHL row drops the shared row.",
+   "find": "<button type=\"button\" class=\"game-row nhl-row\" aria-expanded",
+   "replace": "<button type=\"button\" class=\"nhl-row\" aria-expanded",
+   "expect_caught_by": "test_one_game_row_and_one_chevron_turn"
+  },
+  {
+   "id": "one-tag-nhl-locked-bare",
+   "why": "the NHL's Locked tag loses its tone.",
+   "find": "<span class=\"graded-tag tag-fill nhl-locked\">Locked",
+   "replace": "<span class=\"graded-tag nhl-locked\">Locked",
+   "expect_caught_by": "test_one_tag_shape_and_three_tones"
+  }
+ ]
+}

@@ -47,7 +47,7 @@ def test_the_diagram_follows_the_experiment_log():
 
 def test_how_to_read_this_holds_the_explanation():
     js = diagram_js()
-    m = re.search(r'<details class="rel-how">\s*<summary>How to read this</summary>(.*?)</details>', js, re.S)
+    m = re.search(r'<details class="disclosure rel-how">\s*<summary>How to read this</summary>(.*?)</details>', js, re.S)
     assert m, 'the diagram has no "How to read this" disclosure'
     assert 'Wilson interval' in m.group(1) and 'perfect calibration' in m.group(1)
     assert not inside_details(js, 'does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games, with its 95% interval.'), (
@@ -56,7 +56,7 @@ def test_how_to_read_this_holds_the_explanation():
 
 def test_the_brier_definition_is_behind_a_disclosure():
     js = diagram_js()
-    m = re.search(r'<details class="rel-how">\s*<summary>What these numbers mean</summary>(.*?)</details>', js, re.S)
+    m = re.search(r'<details class="disclosure rel-how">\s*<summary>What these numbers mean</summary>(.*?)</details>', js, re.S)
     assert m and 'Brier = reliability' in m.group(1)
 
 
@@ -85,4 +85,6 @@ def test_the_disclosure_looks_and_focuses_like_the_other_how_to_read_this():
         return out
     assert '.rel-how summary' in selectors_of(r'min-height\s*:\s*24px'), 'the toggle is under 24px tall'
     assert '.rel-how summary:focus-visible' in selectors_of(r'outline\s*:\s*2px solid var\(--accent\)')
-    assert '.rel-how[open] summary::before' in selectors_of(r"content\s*:\s*'\\2212")
+    # Since Stage 78 item 37 the open marker is the one every disclosure wears.
+    assert '.disclosure[open] > summary::before' in selectors_of(r"content\s*:\s*'\\2212")
+    assert 'class="disclosure rel-how"' in source()

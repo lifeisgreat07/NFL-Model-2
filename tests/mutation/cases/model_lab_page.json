@@ -182,8 +182,8 @@
       "target": "src/dashboard/app.js",
       "tests": "tests/test_model_lab_diagram_below.py",
       "why": "the one-line lead goes behind \"How to read this\" with the explanation, so nothing says what the chart is until it is opened.",
-      "find": "    <p style=\"margin-bottom:var(--s3);\">When a model says <b style=\"color:var(--text)\">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games, with its 95% interval.</p>\n    <details class=\"rel-how\">\n      <summary>How to read this</summary>\n",
-      "replace": "    <details class=\"rel-how\">\n      <summary>How to read this</summary>\n    <p style=\"margin-bottom:var(--s3);\">When a model says <b style=\"color:var(--text)\">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games, with its 95% interval.</p>\n",
+      "find": "    <p style=\"margin-bottom:var(--s3);\">When a model says <b style=\"color:var(--text)\">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games, with its 95% interval.</p>\n    <details class=\"disclosure rel-how\">\n      <summary>How to read this</summary>\n",
+      "replace": "    <details class=\"disclosure rel-how\">\n      <summary>How to read this</summary>\n    <p style=\"margin-bottom:var(--s3);\">When a model says <b style=\"color:var(--text)\">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games, with its 95% interval.</p>\n",
       "expect_caught_by": "test_how_to_read_this_holds_the_explanation"
     },
     {

@@ -12,15 +12,15 @@
     {
       "id": "home-faq-loses-a-question",
       "why": "the newcomer never learns that the picks can be checked, which is the site's whole claim.",
-      "find": "    <details><summary>Can I check the picks?</summary>",
-      "replace": "    <details hidden><summary>Can I check the picks?</summary>",
+      "find": "    <details class=\"disclosure\"><summary>Can I check the picks?</summary>",
+      "replace": "    <details class=\"disclosure\" hidden><summary>Can I check the picks?</summary>",
       "expect_caught_by": "test_new_here_asks_option_cs_three_questions_closed"
     },
     {
       "id": "home-faq-opens-itself",
       "why": "the answers open on load, so the questions stop being questions and push the links down the page.",
-      "find": "    <details><summary>What is a model?</summary>",
-      "replace": "    <details open><summary>What is a model?</summary>",
+      "find": "    <details class=\"disclosure\"><summary>What is a model?</summary>",
+      "replace": "    <details class=\"disclosure\" open><summary>What is a model?</summary>",
       "expect_caught_by": "test_new_here_asks_option_cs_three_questions_closed"
     },
     {

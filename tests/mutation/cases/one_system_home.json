@@ -1,0 +1,20 @@
+{
+ "target": "src/site/home/page.html",
+ "tests": "tests/test_one_system.py",
+ "cases": [
+  {
+   "id": "one-switch-home-own-again",
+   "why": "the home draws its own switch again, two pixels shorter than the others' (Stage 78 item 37, X10).",
+   "find": "<nav class=\"sport-switch home-switch\" aria-label=\"Sports\">",
+   "replace": "<nav class=\"home-switch\" aria-label=\"Sports\">",
+   "expect_caught_by": "test_one_sport_switch"
+  },
+  {
+   "id": "one-disclosure-home-triangle",
+   "why": "the home's questions draw the browser's triangle again (H3).",
+   "find": "<details class=\"disclosure\"><summary>What is a model?</summary>",
+   "replace": "<details><summary>What is a model?</summary>",
+   "expect_caught_by": "test_one_disclosure"
+  }
+ ]
+}
