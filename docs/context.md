@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-14, 23:30 UTC (session 1014, Wednesday: Stage 76 done, #443-#447)
+Last updated: 2026-10-15 (session 1014-15, Thursday: Stage 77 done, #448-#478)
 
 ---
 
@@ -18,20 +18,15 @@ NHL `/nhl/` (day board), NBA `/nba/` (day board, empty until opening night). One
 
 **The 2026-10-13 UI/UX audit is being worked as Stages 75-80** (text in
 `docs/history/09-more-sports.md`; one item per PR; merge granted by Mark for 75-80).
-**Stage 75 is done:** items 1-6 are #436, #437, #438, #439, #440, #442 (#441 is not a PR).
-Every finding reproduced.
-**Stage 76 is done:** items 7-11 are #443, #444, #445, #446, #447. Every finding reproduced
-(X6; X5, the NHL's half only after a redraw; F4; N12; C1).
-**Next, in this order (Mark, 2026-10-14):** the NBA block that must be live by 10-20 - Stage 77
-items 32, 33, 22, 21, then Stage 80 item 60 and Stage 79 items 51, 48, 46 - then Stage 77's
-12-20 and 23-31, 34, 35, then Stage 78. All of these are built and guarded on a scratch branch,
-one PR each; Stage 79's 45, 47, 49, 50 and Stage 80's 52-59 and 61-64 are not built yet.
-
-**Decided for Stage 77 item 23 (copy row 12), Mark 2026-10-14:** the NFL's "numbers behind this"
-are not printed in points per 100 plays, as the audit suggested. A `why` value is the part's push on
-Model A's log-odds, not a rating, so that unit would be false. Each row reads the team the part
-helped and the points of win chance it gave them ("DEN +1.2"), under a one-line caption. Team
-Deep-Dive's game panels still print the raw values; that is outside the item.
+**Stages 75 and 76 are done:** items 1-6 are #436-#440, #442; items 7-11 are #443-#447.
+**Stage 77 is done:** items 32, 33, 22, 21 are #448-#451; 12, 13, 14 are #456-#458; 15-20 are
+#460-#465; 23, 24 are #466, #467; 25-31 are #469-#475; 34 is #477; 35 is #478.
+The NBA block is in: Stage 80 item 60 is #452, Stage 79 items 51, 48, 46 are #453-#455.
+**Next:** Stage 78 (items 36-44, nine PRs), then Stage 79's 45, 47, 49, 50, then Stage 80's
+54, 59, 52, 53, 55-58, 61, 62, the NHL/NBA accuracy fix (the three forecasts compared on the
+same games), 63, 64 and Expand all. All are built, guarded and queued on Mark's PC, one PR each.
+Items 63 (share a card as an image) and 64 (even figures, logo watermark, Compact spacing,
+print) wait for Mark's look at the renders before they run.
 
 **Decided, Mark 2026-10-14:** results read **Correct / Missed** on every surface and every sport
 (Stage 77 item 26; this replaces Stage 64's "right so far"). Stage 78 item 36 takes option B: the
@@ -40,8 +35,7 @@ three tag tones (filled, outlined, accent) are approved as rendered. Item 40's 7
 100-115 characters a line in this face. Item 42 moves the four surfaces the audit names to
 `--surface-2` and leaves the More sheet's items alone. Merging Stage 79 and 80 items is granted.
 
-**NBA goes live on Tue 10-20** (Stage 65). Before then: Stage 80 item 60 (countdown) and the
-audit's B1-B5 must be merged. Merging Stage 79 and 80 items is granted (Mark, 2026-10-14).
+**NBA goes live on Tue 10-20** (Stage 65). Its block (item 60 and B1-B5) is merged.
 A reminder is set for the night itself.
 
 **Week 6 locks Thu 10-15**, the first week under v2.6 (HOU at JAX in London is neutral). Reminder set.
@@ -53,14 +47,13 @@ Two things for Mark, seen while rendering: the NHL board's eyebrow reads "This W
 (not in the audit; ask before adding it), and 10-13's NHL games still show as Live because the
 saved status is stale (Stage 80 item 61, live scores, is the fix).
 
-**Single next action:** open Stage 77 item 32 (the NBA eyebrow says "Next week" when it shows
-next week) from its prepared patch, then 33, 22, 21, 60, 51, 48, 46 before Tue 10-20.
+**Single next action:** start the Stage 78 queue (items 36-44) from its prepared patches.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| Stages 77-80 (UI/UX audit) | 75 and 76 done | the NBA block first; item 60 and B1-B5 before 10-20 |
+| Stages 78-80 (UI/UX audit) | 75, 76, 77 done; 60, 51, 48, 46 done | 78 in order, then 79, then 80 (63, 64 after Mark's look) |
 | Stage 44 (Line Judge) | Item 1 merged (#435): checks first, agent on failure | PR 2 (other runs), PR 3 (agent, digest) after the audit stages |
 | Stage 42 | Items 1-4 done | 5: after four on-time weeks |
 | Stage 39 | Items 1-4, 7 done | 5 in December; 6 wants a rendered choice in January |
@@ -84,3 +77,5 @@ check for Booth. Never start the mutation runner under pythonw, and never two ru
 - **A failed Thursday run leaves Thursday night's game unpicked** unless dispatched by hand that day.
 - **`ubuntu-latest` moves to Ubuntu 26 from 2026-10-19.** Nothing pins the image; watch the first runs after it.
 - **An NBA tip time is read as a placeholder by hour** (Stage 77 item 33): a weekday tip before 5 PM ET reads "time TBD". ESPN's own time-valid flag would be exact, but reading it is a change to `src/sports/nba/schedule.py`, held until the audit's UI stages are done.
+- **Mark's PC runs on Eastern time**, so a guard for an ET clock runs node with `TZ` far from ET, or a dropped `timeZone` survives there (Stage 77 item 30).
+- **The plain-language guard reads only `RENDERERS`**: add each new markup function with its page; a top-level literal is charged to the function above it (items 28, 31).
