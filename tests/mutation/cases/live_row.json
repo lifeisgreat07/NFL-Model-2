@@ -1,0 +1,27 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_live_row.py",
+ "cases": [
+  {
+   "id": "live-row-nhl-says-locked",
+   "why": "an NHL game under way reads \"Live | ... | Locked\" again (Stage 77 item 25).",
+   "find": "    if(g.status === 'in_progress') return {text: 'Live', cls: 'live'};\n",
+   "replace": "",
+   "expect_caught_by": "test_a_picked_game_under_way_says_live_once"
+  },
+  {
+   "id": "live-row-nhl-live-twice",
+   "why": "the time cell says Live beside a status cell saying Live.",
+   "find": "  if(g.status === 'in_progress' && !p) return 'Live';",
+   "replace": "  if(g.status === 'in_progress') return 'Live';",
+   "expect_caught_by": "test_a_picked_game_under_way_says_live_once"
+  },
+  {
+   "id": "live-row-nhl-unpicked-loses-live",
+   "why": "a game under way with no pick shows only its start time, so nothing says it has begun.",
+   "find": "  if(g.status === 'in_progress' && !p) return 'Live';",
+   "replace": "  if(false) return 'Live';",
+   "expect_caught_by": "test_an_unpicked_game_under_way_and_the_other_states_are_unchanged"
+  }
+ ]
+}

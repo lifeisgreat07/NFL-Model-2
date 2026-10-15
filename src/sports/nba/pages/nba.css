@@ -29,7 +29,7 @@
 .nba-row-result{justify-self:end; white-space:nowrap; font-size:var(--fs-13); font-weight:600;}
 .nba-row-result.right{color:var(--good);}
 .nba-row-result.wrong{color:var(--warn);}
-.nba-row-result.locked{color:var(--accent);}
+.nba-row-result.locked, .nba-row-result.live{color:var(--accent);}
 .nba-row-result.open, .nba-row-result.off{color:var(--text-3); font-weight:500;}
 .nba-row-chev{color:var(--text-3); transition:transform .15s;}
 .nba-row[aria-expanded="true"] .nba-row-chev{transform:rotate(180deg);}
