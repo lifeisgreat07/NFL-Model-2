@@ -3493,6 +3493,9 @@ function scoreboardVerdict(rows){
    graded games. Each row's "N of M" is that row's own decided games.
    A row's pct is null when it has decided nothing yet -- every graded game
    a tie -- and then draws no bar and a dash, never r.pct.toFixed on null. */
+/* Stage 77 item 20 (the 2026-10-13 audit's copy fix 9): picks are made on My
+   Picks Log, not on the Week Board, which the invitation used to name. */
+const JOIN_THE_RACE = 'Make your own picks on My Picks Log to join this race.';
 function scoreboardHtml(o, mine, leftOut, nGraded){
   const rows = [
     {name: 'Market', subject: 'The betting market', series: 'var(--series-c)', shape: 'tri', ...o.market},
@@ -3516,7 +3519,7 @@ function scoreboardHtml(o, mine, leftOut, nGraded){
     <div class="scoreboard-verdict">${scoreboardVerdict(rows)}</div>
     ${race.map(row).join('')}
     <div class="score-axis" aria-hidden="true"><span></span><div class="score-axis-track"><span class="coin">50% &middot; a coin flip</span><span class="full">100%</span></div><span></span></div>
-    ${mine || leftOut ? '' : '<div class="score-foot">Pick some games on the Week Board to join this race.</div>'}
+    ${mine || leftOut ? '' : `<div class="score-foot">${JOIN_THE_RACE}</div>`}
     ${leftOut ? `<div class="score-foot">${leftOut} Only picks made before kickoff are counted.${mine ? '' : ` ${PICKS_LIVE_HERE}`}</div>` : ''}
   </div>`;
 }
