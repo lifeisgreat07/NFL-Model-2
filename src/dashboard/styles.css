@@ -1812,4 +1812,9 @@
   #onboarding-banner .onboarding-content > ul,
   #onboarding-banner .onboarding-more{display:none;}
   .onboarding-phone{display:block; margin:0;}
+  /* Stage 77 item 29 (N4): "How to read a card" opens the guide here. */
+  #onboarding-banner.onboarding-open .onboarding-content > ul,
+  #onboarding-banner.onboarding-open .onboarding-more{display:block;}
+  #onboarding-banner.onboarding-open .onboarding-phone{margin:0 0 var(--s3);}
+  .onboarding-phone .btn-link{font-size:inherit; min-height:24px;}
 }

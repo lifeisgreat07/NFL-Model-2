@@ -1,0 +1,20 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_phone_card_guide.py",
+ "cases": [
+  {
+   "id": "card-guide-open-hides",
+   "why": "opening the guide shows nothing on a phone.",
+   "find": "  #onboarding-banner.onboarding-open .onboarding-more{display:block;}",
+   "replace": "  #onboarding-banner.onboarding-open .onboarding-more{display:none;}",
+   "expect_caught_by": "test_open_shows_the_points_and_the_more_on_a_phone"
+  },
+  {
+   "id": "card-guide-small-button",
+   "why": "the button's words drop below the line's size beside it.",
+   "find": ".onboarding-phone .btn-link{font-size:inherit; min-height:24px;}",
+   "replace": ".onboarding-phone .btn-link{min-height:24px;}",
+   "expect_caught_by": "test_open_shows_the_points_and_the_more_on_a_phone"
+  }
+ ]
+}
