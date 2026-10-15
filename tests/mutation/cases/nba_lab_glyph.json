@@ -1,0 +1,34 @@
+{
+ "target": "src/sports/nba/pages/nba.js",
+ "tests": "tests/test_nba_lab_glyph.py",
+ "cases": [
+  {
+   "id": "nba-lab-bold-label",
+   "why": "the NBA's decisions go back to bold text where the NFL shows a pill (Stage 79 item 51, B4).",
+   "find": "<span class=\"lab-tags\"><span class=\"conf-tag tag-neutral\">${escapeHtml(q.label)}</span></span>",
+   "replace": "<b>${q.label}</b>",
+   "expect_caught_by": "test_each_question_shows_the_glyph_and_its_decision_as_a_pill"
+  },
+  {
+   "id": "nba-lab-glyph-off-centre",
+   "why": "zero is no longer the centre of every frame, so the glyphs stop reading as one scale.",
+   "find": "  const x = v => Math.round((pad + (v + span) / (2 * span) * (width - 2 * pad)) * 10) / 10;",
+   "replace": "  const x = v => Math.round((pad + (v + span) / span * (width - 2 * pad)) * 10) / 10;",
+   "expect_caught_by": "test_the_port_draws_what_the_nfl_draws"
+  },
+  {
+   "id": "nba-lab-glyph-zero-said-wrong",
+   "why": "an interval that crosses zero is announced as excluding it.",
+   "find": "${lo <= 0 && 0 <= hi ? 'includes zero' : 'excludes zero'}",
+   "replace": "${lo < 0 && 0 < hi ? 'includes zero' : 'excludes zero'}",
+   "expect_caught_by": "test_the_port_draws_what_the_nfl_draws"
+  },
+  {
+   "id": "nba-lab-glyph-dropped",
+   "why": "the NBA's intervals are figures only again.",
+   "find": "<span class=\"lab-lead\">${intervalGlyph(q.diff, q.low, q.high)}</span>",
+   "replace": "",
+   "expect_caught_by": "test_each_question_shows_the_glyph_and_its_decision_as_a_pill"
+  }
+ ]
+}
