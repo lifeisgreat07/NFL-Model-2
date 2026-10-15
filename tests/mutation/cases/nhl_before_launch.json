@@ -1,0 +1,34 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_nhl_before_launch.py",
+ "cases": [
+  {
+   "id": "nhl-before-launch-says-no-pick",
+   "why": "the season's first rows read \"No pick\" again, as if the model skipped games it had not launched for (Stage 77 item 24).",
+   "find": "return {text: beforeLaunch(g) ? 'Before launch' : 'No pick', cls: 'off'};",
+   "replace": "return {text: 'No pick', cls: 'off'};",
+   "expect_caught_by": "test_a_game_before_the_first_saved_pick_says_before_launch"
+  },
+  {
+   "id": "nhl-before-launch-dash-kept",
+   "why": "a pre-launch row keeps the dash beside \"Before launch\".",
+   "find": "  if(!p) return beforeLaunch(g) ? '' : '—';",
+   "replace": "  if(!p) return '—';",
+   "expect_caught_by": "test_a_game_before_the_first_saved_pick_says_before_launch"
+  },
+  {
+   "id": "nhl-before-launch-every-miss",
+   "why": "every game without a pick says \"Before launch\", hiding a real missed save after launch.",
+   "find": "  return !!(FIRST_SAVED && g.start && g.start < FIRST_SAVED);",
+   "replace": "  return true;",
+   "expect_caught_by": "test_a_game_after_it_without_a_pick_still_says_no_pick"
+  },
+  {
+   "id": "nhl-before-launch-card-own-test",
+   "why": "the card note goes back to its own copy of the test, so the row and card can disagree.",
+   "find": "    note = beforeLaunch(g) ? 'Before the first pick was saved.'",
+   "replace": "    note = FIRST_SAVED && g.start && g.start < FIRST_SAVED ? 'Before the first pick was saved.'",
+   "expect_caught_by": "test_the_card_note_reads_the_same_test"
+  }
+ ]
+}
