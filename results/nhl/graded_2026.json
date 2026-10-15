@@ -320,13 +320,13 @@
  {
   "game_id": "2026020106",
   "pick": "WSH",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-14T21:01:48Z"
  },
  {
   "game_id": "2026020107",
   "pick": "COL",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-14T21:01:48Z"
  }
 ]
