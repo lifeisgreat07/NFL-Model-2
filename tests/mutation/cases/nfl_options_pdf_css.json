@@ -1,0 +1,27 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_nfl_options_pdf.py",
+ "cases": [
+  {
+   "id": "options-no-open-state",
+   "why": "Options looks the same open and closed again.",
+   "find": "  #board-options-btn[aria-expanded=\"true\"]{border-color:var(--accent); color:var(--accent);}\n",
+   "replace": "",
+   "expect_caught_by": "test_options_shows_when_it_is_open"
+  },
+  {
+   "id": "pdf-none-outside-options",
+   "why": "on a phone the sentence shows with Options closed.",
+   "find": "  #page-board:not(.nfl-options-open) #picks-pdf-none,\n",
+   "replace": "",
+   "expect_caught_by": "test_on_a_phone_the_sentence_sits_behind_options_and_never_prints"
+  },
+  {
+   "id": "options-flex-on-desktop",
+   "why": "the Options rule leaves the phone block, so the phone-only button shows on a desktop.",
+   "find": "  /* Stage 77 item 27 (N2): Options shows when it is open, as the listbox buttons do. */\n  #board-options-btn{display:inline-flex; align-items:center; gap:var(--s1);}\n",
+   "replace": "  /* Stage 77 item 27 (N2): Options shows when it is open, as the listbox buttons do. */\n",
+   "expect_caught_by": "test_options_shows_when_it_is_open"
+  }
+ ]
+}
