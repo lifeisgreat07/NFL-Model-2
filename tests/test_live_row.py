@@ -58,6 +58,7 @@ def test_an_unpicked_game_under_way_and_the_other_states_are_unchanged(sport):
 
 
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
-def test_live_is_coloured_as_locked_was(sport):
+def test_live_wears_the_accent(sport):
     css = (ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.css').read_text(encoding='utf-8')
-    assert f'.{sport}-row-result.locked, .{sport}-row-result.live{{color:var(--accent);}}' in css
+    # Since Stage 78 item 38 Live alone keeps the accent; Locked went quiet.
+    assert f'.{sport}-row-result.live{{color:var(--accent);}}' in css

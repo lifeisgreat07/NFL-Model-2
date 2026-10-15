@@ -2,7 +2,7 @@
    day headings, a goalie's status, the card for a game whose pick is not
    saved yet, and the tables. Every selector carries the sport (decision
    record 0006, rule 4; src/core/isolation.py checks it). Every colour is a
-   shared token but the "Likely" pill's amber, defined here per theme. */
+   shared token (the "Likely" pill's own amber retired in Stage 78 item 38). */
 /* Stage 64: one day's games as compact rows, each opening to its full card. */
 #game-grid.nhl-board{display:block; max-width:760px;}
 .nhl-day-top{display:flex; flex-wrap:wrap; align-items:baseline; column-gap:var(--s3); margin:0 0 var(--s2);}
@@ -26,16 +26,16 @@
 .nhl-row-result{justify-self:end; white-space:nowrap; font-size:var(--fs-13); font-weight:600;}
 .nhl-row-result.right{color:var(--good);}
 .nhl-row-result.wrong{color:var(--warn);}
-.nhl-row-result.locked, .nhl-row-result.live{color:var(--accent);}
+/* Stage 78 item 38: Locked is a state, not news; the accent is kept for a game under way. */
+.nhl-row-result.locked{color:var(--text-2);}
+.nhl-row-result.live{color:var(--accent);}
 .nhl-row-result.open, .nhl-row-result.off{color:var(--text-3); font-weight:500;}
 .nhl-row-detail{padding:0 0 var(--s3);}
-.nhl-goalie{display:inline-block; font-size:var(--fs-11); font-weight:700; letter-spacing:.05em; text-transform:uppercase;
-  padding:1px var(--s2); border-radius:999px; margin-left:var(--s1); vertical-align:1px;}
-.nhl-goalie.confirmed{background:var(--accent-soft); color:var(--accent);}
-[data-sport="nhl"]{--nhl-likely:#E0A456; --nhl-likely-soft:rgba(201,127,46,.16);}
-[data-sport="nhl"][data-theme="light"]{--nhl-likely:#8A5A00; --nhl-likely-soft:rgba(178,106,12,.12);}
-.nhl-goalie.likely{background:var(--nhl-likely-soft); color:var(--nhl-likely);}
-.nhl-goalie.unreported{border:1px solid var(--border); color:var(--text-3);}
+/* Stage 78 item 38 (the 2026-10-13 audit's X10): a goalie's status is a shared
+   .tag, filled when confirmed and outlined otherwise, with the word; the
+   Likely pill's own amber, a fifth colour job, is retired, and Confirmed no
+   longer spends the accent. */
+.nhl-goalie{margin-left:var(--s1); vertical-align:1px;}
 .game-card.nhl-not-saved{opacity:.92;}
 .game-card.nhl-not-saved .nhl-wait-note{font-size:var(--fs-13); color:var(--text-2);}
 /* Stage 62 item 3: the logos as big as the NFL Week Board's. The shared rule

@@ -1,0 +1,13 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_quiet_states.py",
+ "cases": [
+  {
+   "id": "quiet-confirmed-accent",
+   "why": "CONFIRMED wears the accent again (Stage 78 item 38, X10).",
+   "find": "'<span class=\"tag tag-fill nhl-goalie confirmed\">Confirmed</span>'",
+   "replace": "'<span class=\"tag tag-accent nhl-goalie confirmed\">Confirmed</span>'",
+   "expect_caught_by": "test_goalie_pills_are_shared_tags_with_their_word"
+  }
+ ]
+}
