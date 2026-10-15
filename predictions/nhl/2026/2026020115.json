@@ -1,0 +1,81 @@
+{
+ "game_id": "2026020115",
+ "season": 2026,
+ "slate": "2026-10-15",
+ "start_utc": "2026-10-16T00:00:00Z",
+ "home": "NSH",
+ "away": "SJS",
+ "model_a": 0.5811,
+ "model_b": 0.5217,
+ "pick": "NSH",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.552876,
+  "shot_matchup": 0.19347,
+  "goalie_matchup_2000": -0.00121
+ },
+ "market": {
+  "game_id": "2026020115",
+  "start_utc": "2026-10-16T00:00:00Z",
+  "home": "NSH",
+  "away": "SJS",
+  "book": "DraftKings",
+  "home_price": -130.0,
+  "away_price": 110.0,
+  "home_prob": 0.5427,
+  "read_utc": "2026-10-15T21:02:16Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8477424,
+   "name": "Juuse Saros",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/KieserNick/status/2110760728378434019"
+  },
+  "away": {
+   "player_id": 8477968,
+   "name": "Alex Nedeljkovic",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Sheng_Peng/status/2110775882814267671?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-15",
+  "read_utc": "2026-10-15T21:02:16Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Cam Lund",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Darnell Nurse",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-15T21:02:16Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-14",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14510,
+  "training_games_priced": 7427
+ }
+}

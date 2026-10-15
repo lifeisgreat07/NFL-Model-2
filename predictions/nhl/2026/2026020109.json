@@ -1,0 +1,92 @@
+{
+ "game_id": "2026020109",
+ "season": 2026,
+ "slate": "2026-10-15",
+ "start_utc": "2026-10-15T23:00:00Z",
+ "home": "OTT",
+ "away": "NYI",
+ "model_a": 0.6104,
+ "model_b": 0.6022,
+ "pick": "OTT",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.404684,
+  "shot_matchup": 1.904572,
+  "goalie_matchup_2000": 0.003666
+ },
+ "market": {
+  "game_id": "2026020109",
+  "start_utc": "2026-10-15T23:00:00Z",
+  "home": "OTT",
+  "away": "NYI",
+  "book": "DraftKings",
+  "home_price": -162.0,
+  "away_price": 136.0,
+  "home_prob": 0.5934,
+  "read_utc": "2026-10-15T21:02:16Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476999,
+   "name": "Linus Ullmark",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/jkamckenzie/status/2110772054035452173"
+  },
+  "away": {
+   "player_id": 8473575,
+   "name": "Semyon Varlamov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/AGrossNewsday/status/2110761310346674497?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-15",
+  "read_utc": "2026-10-15T21:02:16Z",
+  "home": [
+   {
+    "name": "Jake Sanderson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Kurtis MacDermid",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nikolas Matinpalo",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "William Eklund",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Mathew Barzal",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-15T21:02:16Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-14",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14510,
+  "training_games_priced": 7427
+ }
+}

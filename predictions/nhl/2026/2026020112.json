@@ -1,0 +1,107 @@
+{
+ "game_id": "2026020112",
+ "season": 2026,
+ "slate": "2026-10-15",
+ "start_utc": "2026-10-15T23:00:00Z",
+ "home": "FLA",
+ "away": "VAN",
+ "model_a": 0.6918,
+ "model_b": 0.7414,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.139629,
+  "shot_matchup": 6.097862,
+  "goalie_matchup_2000": -0.0013
+ },
+ "market": {
+  "game_id": "2026020112",
+  "start_utc": "2026-10-15T23:00:00Z",
+  "home": "FLA",
+  "away": "VAN",
+  "book": "DraftKings",
+  "home_price": -298.0,
+  "away_price": 240.0,
+  "home_prob": 0.718,
+  "read_utc": "2026-10-15T21:02:16Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481033,
+   "name": "Akira Schmid",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/DougPlagens/status/2110745730784882873?s=20"
+  },
+  "away": {
+   "player_id": 8482447,
+   "name": "Leevi Merilainen",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/sportsnetmurph/status/2110766076673863991"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-15",
+  "read_utc": "2026-10-15T21:02:16Z",
+  "home": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jacob Markstrom",
+    "position": "G",
+    "status": "Out"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Radko Gudas",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Akil Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Thompson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-15T21:02:16Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-14",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14510,
+  "training_games_priced": 7427
+ }
+}
