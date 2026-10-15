@@ -153,7 +153,7 @@ def test_the_board_opens_on_today_and_otherwise_on_the_first_day_with_games(days
 
 
 def test_the_summary_counts_the_days_right_picks_as_mark_wrote_it(days):
-    assert days['s3'] == '3 games, 1 of 2 right so far'
+    assert days['s3'] == '3 games, 1 of 2 correct so far'
     assert days['s_locked'] == '2 games, 1 locked'
     assert days['s_none'] == '1 game'
     assert days['s_empty'] == 'No games this day.'

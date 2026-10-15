@@ -54,6 +54,6 @@ def test_a_row_says_the_time_the_game_the_pick_and_the_result():
          'model_b_correct': False}
     out = row(g)
     assert '8:15 PM' in out and 'BUF @ KC' in out
-    assert 'KC 61%' in out and 'incorrect">Wrong<' in out
+    assert 'KC 61%' in out and 'incorrect">Missed<' in out
     assert 'final">Final<' in row(dict(g, graded=False, status='final')), 'an ungraded final: Final, no verdict'
-    assert 'Toss-up' in row(dict(g, mktB_home=50.5, graded=False)) and '">Wrong' not in row(dict(g, graded=False))
+    assert 'Toss-up' in row(dict(g, mktB_home=50.5, graded=False)) and '">Missed' not in row(dict(g, graded=False))

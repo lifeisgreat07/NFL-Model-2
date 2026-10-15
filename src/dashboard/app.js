@@ -1076,7 +1076,7 @@ function pickBadge(picked, graded, correct){
   const cross = '<path d="M6 6l12 12M18 6L6 18"/>';
   const state = !graded ? 'picked' : (correct ? 'correct' : 'incorrect');
   const label = !graded ? "this model's pick"
-    : (correct ? 'this model was right' : 'this model was wrong');
+    : (correct ? "this model's pick: correct" : "this model's pick: missed");
   return `<span class="pick-badge ${state}" title="${label}">`
     + `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">${state === 'incorrect' ? cross : tick}</svg></span>`;
 }
@@ -1732,7 +1732,7 @@ function phoneRowHtml(g, n){
   const verdict = g.graded ? (g.model_b_correct ?? g.model_a_correct) : undefined;
   // An ungraded final says Final and no more, as its card does (cardProvisional).
   const res = !g.graded ? (g.status === 'final' ? ['final', 'Final'] : ['', '']) : (g.result === 'tie' || verdict === null || verdict === undefined) ? ['tie', 'Tie']
-    : verdict ? ['correct', 'Right'] : ['incorrect', 'Wrong'];
+    : verdict ? ['correct', 'Correct'] : ['incorrect', 'Missed'];  // Stage 77 item 26: one pair of result words
   return `<button type="button" class="nfl-row" aria-expanded="false" aria-controls="card-${n}">`
     + `<span class="nfl-row-time">${time}</span>`
     + `<span class="nfl-row-game">${escapeHtml(g.away)} @ ${escapeHtml(g.home)}${g.flag ? ' <span class="nfl-row-flag" aria-label="flagged">&#9679;</span>' : ''}</span>`
@@ -4003,7 +4003,7 @@ function renderTeamGames(team){
       : (g.line > 0 ? `-${g.line}` : (g.line < 0 ? `+${Math.abs(g.line)}` : 'PK'));
     const result = diveResultHtml(g);
     const mark = c => c === true ? '<span class="dive-tick">correct</span>'
-      : c === false ? '<span class="dive-cross">wrong</span>' : '';
+      : c === false ? '<span class="dive-cross">missed</span>' : '';
 
     const whyHtml = g.why
       ? Object.entries(g.why)

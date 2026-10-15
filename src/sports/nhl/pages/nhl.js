@@ -297,7 +297,7 @@ function resultLine(g, p){
   if(!won) return '';
   const one = (label, prob) => {
     const s = modelSide(prob, g);
-    return s === null ? '' : `<span class="nhl-model-result">${label} ${s}, <b>${s === won ? 'right' : 'wrong'}</b></span>`;
+    return s === null ? '' : `<span class="nhl-model-result">${label} ${s}, <b>${s === won ? 'correct' : 'missed'}</b></span>`;
   };
   const market = p.market ? one('Market', p.market.prob) : '';
   return `<div class="nhl-result-line">Winner <b>${won}</b>${one('Model B', p.b)}${one('Model A', p.a)}${market}</div>`;
@@ -389,14 +389,14 @@ function rowGame(g){
   };
   return `${team(g.away, g.as)} <span class="at-symbol">@</span> ${team(g.home, g.hs)}`;
 }
-/* "3 games, 1 of 1 right so far", from the saved picks' grades. */
+/* "3 games, 1 of 1 correct so far", from the saved picks' grades. */
 function daySummary(games, picks){
   const n = games.length;
   if(!n) return 'No games this day.';
   const graded = games.map(g => picks[g.id]).filter(p => p && (p.result === 'correct' || p.result === 'wrong'));
   const right = graded.filter(p => p.result === 'correct').length;
   let s = `${n} game${n === 1 ? '' : 's'}`;
-  if(graded.length) s += `, ${right} of ${graded.length} right so far`;
+  if(graded.length) s += `, ${right} of ${graded.length} correct so far`;
   else {
     const locked = games.filter(g => picks[g.id]).length;
     if(locked) s += `, ${locked} locked`;
@@ -600,7 +600,7 @@ function calibrationHtml(graded){
   return `<h2 class="section-title">How sure, and how often right</h2>
     <p class="nhl-lede">Each graded pick by the chance its model gave the side it picked. A well-calibrated model is right about as often as it says.${thin ? ` With ${graded.length} graded picks, most rows hold too few games to read: a row means little under ${CAL_MIN}.` : ''}</p>
     <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">Calibration of the graded picks</caption>
-    <thead><tr><th scope="col">The pick's chance</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Said, on average</th><th scope="col" class="num">Right</th></tr></thead>
+    <thead><tr><th scope="col">The pick's chance</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Said, on average</th><th scope="col" class="num">Correct</th></tr></thead>
     <tbody>${rows}</tbody></table></div>`;
 }
 

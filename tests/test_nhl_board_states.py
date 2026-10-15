@@ -127,18 +127,18 @@ def results():
 def test_a_played_game_names_the_winner_and_each_model_right_or_wrong(results):
     line = results['home_win']
     assert 'Winner <b>TBL</b>' in line
-    for part in ('Model B TBL, <b>right</b>', 'Model A TBL, <b>right</b>', 'Market TBL, <b>right</b>'):
+    for part in ('Model B TBL, <b>correct</b>', 'Model A TBL, <b>correct</b>', 'Market TBL, <b>correct</b>'):
         assert part in line, part
 
 
 def test_a_model_on_the_losing_side_is_wrong(results):
     line = results['away_win']
-    assert 'Winner <b>PHI</b>' in line and 'Model B TBL, <b>wrong</b>' in line and 'Model A TBL, <b>wrong</b>' in line
+    assert 'Winner <b>PHI</b>' in line and 'Model B TBL, <b>missed</b>' in line and 'Model A TBL, <b>missed</b>' in line
 
 
 def test_a_model_with_no_chance_is_left_out_not_called_wrong(results):
     line = results['a_only']
-    assert 'Model B' not in line and 'Market' not in line and 'Model A PHI, <b>wrong</b>' in line
+    assert 'Model B' not in line and 'Market' not in line and 'Model A PHI, <b>missed</b>' in line
 
 
 def test_a_shutout_still_has_a_winner(results):
@@ -151,7 +151,7 @@ def test_a_game_not_final_has_no_result_line(results):
 
 
 def test_exactly_even_is_the_home_side_as_the_saved_pick_is(results):
-    assert 'Model A TBL, <b>right</b>' in results['even_picks_home']
+    assert 'Model A TBL, <b>correct</b>' in results['even_picks_home']
 
 
 @pytest.fixture(scope='module')

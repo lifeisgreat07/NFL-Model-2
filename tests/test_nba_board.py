@@ -157,7 +157,7 @@ def test_availability_names_who_is_out_and_says_when_the_report_was_not_read():
 def test_a_played_game_names_the_winner_and_each_model():
     g = dict(G, status='final', hs=0, **{'as': 101})
     got = run_node(f'process.stdout.write(JSON.stringify(resultLine({json.dumps(g)}, {json.dumps(PICKS["espn"])})));')
-    assert 'Winner <b>ATL</b>' in got and 'Model B ORL, <b>wrong</b>' in got and 'Market ORL, <b>wrong</b>' in got
+    assert 'Winner <b>ATL</b>' in got and 'Model B ORL, <b>missed</b>' in got and 'Market ORL, <b>missed</b>' in got
 
 
 def test_a_game_not_locked_says_when_it_locks():
