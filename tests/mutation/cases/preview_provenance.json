@@ -1,0 +1,20 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_preview_provenance.py",
+ "cases": [
+  {
+   "id": "preview-prov-button-shown",
+   "why": "a preview week offers \"When these picks were saved\" with nothing behind it again (Stage 77 item 16).",
+   "find": "  if(prov) prov.hidden = !!(weekData && weekData.preview);\n",
+   "replace": "",
+   "expect_caught_by": "test_a_preview_week_hides_the_button_with_nothing_behind_it"
+  },
+  {
+   "id": "preview-prov-button-always-hidden",
+   "why": "the button is hidden on a locked week too, so its lock proof cannot be opened on a phone.",
+   "find": "  if(prov) prov.hidden = !!(weekData && weekData.preview);\n",
+   "replace": "  if(prov) prov.hidden = true;\n",
+   "expect_caught_by": "test_a_locked_week_keeps_it"
+  }
+ ]
+}
