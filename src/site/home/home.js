@@ -179,8 +179,16 @@ function scoreTile(f, label){
   const n = f.record.won + f.record.lost;
   return tile(label, record(f.record), n ? `after ${n} game${n === 1 ? '' : 's'}` : 'no graded games yet');
 }
-document.getElementById('home-score').innerHTML = scoreTile(HOME.nfl, 'NFL, Model B')
-  + scoreTile(HOME.nhl, 'NHL, picks') + tile('Every pick', 'saved before the start', 'checked after', true);
+/* Stage 77 item 13 (the 2026-10-13 audit's copy fix 2): "NFL picks" and "NHL
+   picks", and the third tile counts what the site has graded, every sport's
+   record added up, where it said "Every pick / saved before the start". */
+function gradedTile(sports){
+  const built = sports.filter(f => f && f.built);
+  const graded = built.reduce((t, f) => t + (f.record ? f.record.won + f.record.lost : 0), 0);
+  return tile(`${built.length} sport${built.length === 1 ? '' : 's'}`, String(graded), `pick${graded === 1 ? '' : 's'} graded`);
+}
+document.getElementById('home-score').innerHTML = scoreTile(HOME.nfl, 'NFL picks')
+  + scoreTile(HOME.nhl, 'NHL picks') + gradedTile([HOME.nfl, HOME.nhl, HOME.nba]);
 
 // The theme button: the same choice, under the same key, as every sport's page.
 (function(){

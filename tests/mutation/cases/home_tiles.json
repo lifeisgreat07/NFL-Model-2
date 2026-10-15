@@ -1,0 +1,27 @@
+{
+ "target": "src/site/home/home.js",
+ "tests": "tests/test_home_tiles.py",
+ "cases": [
+  {
+   "id": "home-tiles-model-b-label",
+   "why": "the NFL tile reads \"NFL, Model B\" again (Stage 77 item 13).",
+   "find": "scoreTile(HOME.nfl, 'NFL picks')",
+   "replace": "scoreTile(HOME.nfl, 'NFL, Model B')",
+   "expect_caught_by": "test_the_tiles_say_picks"
+  },
+  {
+   "id": "home-tiles-graded-skips-unbuilt-check",
+   "why": "a sport whose page was not built is counted as a sport.",
+   "find": "  const built = sports.filter(f => f && f.built);\n",
+   "replace": "  const built = sports.filter(f => f);\n",
+   "expect_caught_by": "test_the_third_tile_counts_every_graded_pick_across_the_built_sports"
+  },
+  {
+   "id": "home-tiles-graded-singular",
+   "why": "one graded pick reads \"1 picks graded\".",
+   "find": "`pick${graded === 1 ? '' : 's'} graded`",
+   "replace": "'picks graded'",
+   "expect_caught_by": "test_the_third_tile_counts_every_graded_pick_across_the_built_sports"
+  }
+ ]
+}
