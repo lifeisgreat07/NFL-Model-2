@@ -188,7 +188,9 @@ function goalieText(team, gl){
   else if(gl.status === 'Confirmed') pill = '<span class="nhl-goalie confirmed">Confirmed</span>';
   else if(gl.status === 'Likely') pill = '<span class="nhl-goalie likely">Likely</span>';
   else pill = '<span class="nhl-goalie unreported">No report yet</span>';
-  return `${team} <b>${escapeHtml(gl.name)}</b>${pill}`;
+  // Stage 77 item 34 (L7): a hidden comma, so a screen reader says
+  // "Jake Allen, Confirmed", not "Jake AllenConfirmed"; the pill's margin is the gap on screen.
+  return `${team} <b>${escapeHtml(gl.name)}</b><span class="visually-hidden">, </span>${pill}`;
 }
 function pickedCard(g, p){
   const vals = {b: p.b === null ? null : p.b * 100, a: p.a * 100, market: p.market ? p.market.prob * 100 : null};
