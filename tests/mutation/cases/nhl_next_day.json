@@ -1,0 +1,41 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_nhl_next_day.py",
+ "cases": [
+  {
+   "id": "next-day-not-shown",
+   "why": "an empty NHL day is a dead end again (Stage 77 item 35, L6).",
+   "find": "grid.innerHTML = head + nextDayHtml(currentDay) + ",
+   "replace": "grid.innerHTML = head + ",
+   "expect_caught_by": "test_the_board_shows_it_on_an_empty_day_and_the_button_goes_there"
+  },
+  {
+   "id": "next-day-same-day",
+   "why": "a day with games names itself as the next.",
+   "find": "filter(d => d > day)",
+   "replace": "filter(d => d >= day)",
+   "expect_caught_by": "test_an_empty_day_names_the_next_day_with_games"
+  },
+  {
+   "id": "next-day-wrong-week",
+   "why": "the button sets the day but leaves the board on the old week.",
+   "find": "      currentWeek = mondayOf(currentDay);\n",
+   "replace": "",
+   "expect_caught_by": "test_the_board_shows_it_on_an_empty_day_and_the_button_goes_there"
+  },
+  {
+   "id": "next-day-address-stale",
+   "why": "the button moves the board but the address keeps the empty day.",
+   "find": "      renderBoard();\n      replaceRoute('board');\n      const chip = document.querySelector(`.nhl-day-chip[data-day=\"${currentDay}\"]`);\n      if(chip) chip.focus();\n    });\n    return;",
+   "replace": "      renderBoard();\n      const chip = document.querySelector(`.nhl-day-chip[data-day=\"${currentDay}\"]`);\n      if(chip) chip.focus();\n    });\n    return;",
+   "expect_caught_by": "test_the_board_shows_it_on_an_empty_day_and_the_button_goes_there"
+  },
+  {
+   "id": "next-day-one-games",
+   "why": "one game reads \"1 games\".",
+   "find": "${n} game${n === 1 ? '' : 's'}</button>",
+   "replace": "${n} games</button>",
+   "expect_caught_by": "test_an_empty_day_names_the_next_day_with_games"
+  }
+ ]
+}

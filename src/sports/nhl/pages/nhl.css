@@ -108,3 +108,6 @@
 @media (max-width:1079px){
   .nhl-row-detail{scroll-margin:76px 0 calc(88px + var(--safe-bottom));}
 }
+/* Stage 77 item 35 (L6): an empty day's pointer to the next day with games. */
+.nhl-next-day{margin:var(--s3) 0 0; font-size:var(--fs-14); color:var(--text-2);}
+.nhl-next-day .btn-link{font-size:inherit; min-height:24px;}
