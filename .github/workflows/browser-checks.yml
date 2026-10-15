@@ -157,6 +157,14 @@ jobs:
       - name: Check the column beside the day boards
         run: python tests/browser/check_side_column.py "$RUNNER_TEMP/states/nba.html" "$RUNNER_TEMP/states/nhl.html"
 
+      # Stage 79 item 46: the NHL's Accuracy and the NBA's Checking the AI's
+      # work draw the race, the trend and the calibration diagram.
+      - name: Prove the accuracy check can fail
+        run: python tests/browser/check_accuracy.py --self-test --tmp "$RUNNER_TEMP/accuracy"
+
+      - name: Check the accuracy charts on the NHL and the NBA
+        run: python tests/browser/check_accuracy.py "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
+
       # Stage 68 item 5: no cell of a day-board row drawn over another, at
       # 320, 390 and 1280 px in both themes, with the clock before opening
       # night so every row carries its "Locks ..." label. It proves itself

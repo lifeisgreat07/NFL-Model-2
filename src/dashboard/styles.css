@@ -1040,6 +1040,9 @@
   /* The same marks in "How sure, and how right"'s table cells (Stage 19),
      where they sit inline beside the name instead of in a flex row. */
   .forecast-score .score-mark{display:inline-block; margin-right:var(--s2); vertical-align:middle;}
+  /* Stage 79 item 46: the NHL's and NBA's accuracy charts name their lines as the NFL's legend does. */
+  .acc-legend{display:flex; flex-wrap:wrap; gap:var(--s3); margin-bottom:var(--s2); font-size:var(--fs-12); color:var(--text-2);}
+  .acc-legend > span{display:inline-flex; align-items:center; gap:var(--s1);}
   .score-track{position:relative; height:14px; background:var(--border); border-radius:var(--r-full);}
   .score-fill{position:absolute; top:0; bottom:0; left:0; border-radius:inherit; background:var(--series);}
   .score-coin{position:absolute; left:50%; top:-6px; bottom:-6px; width:1px; background:var(--text-2); opacity:.6;}

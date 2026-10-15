@@ -27,7 +27,8 @@ BUILDS = {'home': 'src/site/home.py', 'nhl': 'src/sports/nhl/site.py', 'nba': 's
 def test_no_build_defines_its_own(name):
     src = (ROOT / BUILDS[name]).read_text(encoding='utf-8')
     assert not re.search(r'^def (safe_json|font_faces_css)\(', src, re.M), name
-    assert re.search(r'^from src\.core\.page_fill import .*\bsafe_json\b', src, re.M), name
+    # The import may be wrapped in brackets, one name a line, as ruff sorts it.
+    assert re.search(r'^from src\.core\.page_fill import \(?[\w\s,]*\bsafe_json\b', src, re.M), name
 
 
 def test_every_build_uses_the_core_functions():

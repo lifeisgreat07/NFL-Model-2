@@ -573,6 +573,11 @@ function pickChance(p, g){
   const home = p.by === 'model_b' && p.b !== null ? p.b : p.a;
   return p.pick === g.home ? home : 1 - home;
 }
+/* Stage 79 item 46: a graded pick as src/core/accuracy.js reads it. */
+function accGames(graded){
+  return graded.map(({p, g}) => ({day: g.day, a: p.a, b: p.b, m: p.market ? p.market.prob : null,
+    home: winnerOf(g) === g.home, c: pickChance(p, g), right: p.result === 'correct'}));
+}
 function calibrationHtml(graded){
   const rows = CAL_BINS.map(([lo, hi]) => {
     const inBin = graded.filter(x => { const c = pickChance(x.p, x.g); return c >= lo && c < hi; });
@@ -602,6 +607,7 @@ function renderAccuracy(){
   const right = graded.filter(x => x.p.result === 'correct').length;
   const list = graded.sort((a, b) => (b.g.start || '').localeCompare(a.g.start || ''));
   el.innerHTML = `<p class="nhl-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the market had a price when it was saved, Model A&#39;s otherwise. The forward test is judged on log loss once 100 games are graded; see Checking the AI&#39;s work.</p>
+    ${accuracyHtml(accGames(graded))}
     ${calibrationHtml(graded)}
     <h2 class="section-title">Every graded pick</h2>
     <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">Graded picks</caption>
