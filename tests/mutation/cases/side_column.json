@@ -1,0 +1,50 @@
+{
+ "target": "src/sports/nba/pages/nba.js",
+ "tests": "tests/test_side_column.py",
+ "cases": [
+  {
+   "id": "side-nba-never-drawn",
+   "why": "the NBA's column is in the page but never filled (Stage 79 item 48, B3).",
+   "find": "  if(side) side.innerHTML = sideHtml(currentDay, byDay);\n",
+   "replace": "",
+   "expect_caught_by": "test_the_board_draws_it_and_both_columns_are_capped"
+  },
+  {
+   "id": "side-nba-unread-report-as-nobody",
+   "why": "a pick saved without the injury report reads \"nobody listed out\".",
+   "find": "        const body = p.avail && p.avail.read\n",
+   "replace": "        const body = true\n",
+   "expect_caught_by": "test_who_is_out_comes_from_each_saved_picks_report"
+  },
+  {
+   "id": "side-nba-names-unescaped",
+   "why": "a player's name goes into the page unescaped.",
+   "find": "list.map(escapeHtml).join(', ')",
+   "replace": "list.join(', ')",
+   "expect_caught_by": "test_who_is_out_comes_from_each_saved_picks_report"
+  },
+  {
+   "id": "side-nba-yesterday-wrong-day",
+   "why": "the column's day before is the day itself.",
+   "find": "  const prev = new Date(dayDate(day).getTime() - 864e5).toISOString().slice(0, 10);\n  const graded = (byDay[prev] || ALL_BY_DAY[prev] || []).map(g => BD.picks[g.id])",
+   "replace": "  const prev = day;\n  const graded = (byDay[prev] || ALL_BY_DAY[prev] || []).map(g => BD.picks[g.id])",
+   "expect_caught_by": "test_who_is_out_comes_from_each_saved_picks_report"
+  },
+  {
+   "id": "side-nhl-uncapped",
+   "target": "src/sports/nhl/pages/nhl.css",
+   "why": "the NHL's column runs past the window on a long day again (L3).",
+   "find": "  .nhl-side{display:block; position:sticky; top:var(--s4); max-height:calc(100vh - var(--s8)); overflow:auto;\n",
+   "replace": "  .nhl-side{display:block; position:sticky; top:var(--s4);\n",
+   "expect_caught_by": "test_the_board_draws_it_and_both_columns_are_capped"
+  },
+  {
+   "id": "side-check-unwired",
+   "target": ".github/workflows/browser-checks.yml",
+   "why": "the side column browser check is dropped from CI.",
+   "find": "        run: python tests/browser/check_side_column.py \"$RUNNER_TEMP/states/nba.html\" \"$RUNNER_TEMP/states/nhl.html\"\n",
+   "replace": "        run: echo skipped\n",
+   "expect_caught_by": "test_the_browser_check_runs"
+  }
+ ]
+}

@@ -498,6 +498,32 @@ function weekEyebrow(week, thisWeek){
   if(week === dayIso(next)) return 'Next Week';
   return week > thisWeek ? 'Coming Up' : 'Earlier';
 }
+/* Stage 79 item 48 (B3): the column beside the board at 1280 px and wider,
+   as the NHL's (Stage 68 item 37): who is out for each game with a saved
+   pick, from the injury report that pick read, and the day before's record.
+   Before a pick is saved there is no report to show, and it says so. */
+const ALL_BY_DAY = {};
+BD.games.forEach(g => (ALL_BY_DAY[g.day] ||= []).push(g));
+function sideHtml(day, byDay){
+  const games = byDay[day] || [];
+  const picked = games.filter(g => BD.picks[g.id]);
+  const names = (team, list) => `${team}: ${list && list.length ? list.map(escapeHtml).join(', ') : 'nobody listed out'}`;
+  const out = !games.length ? '<p class="nba-side-note">No games this day.</p>'
+    : !picked.length ? '<p class="nba-side-note">No pick is saved for this day yet. Who is out is read from the injury report when each pick is saved, by the last run before its game.</p>'
+    : `<ul class="nba-side-list">${picked.map(g => {
+        const p = BD.picks[g.id];
+        const body = p.avail && p.avail.read
+          ? `<span>${names(g.away, p.out && p.out.away)}</span><span>${names(g.home, p.out && p.out.home)}</span>`
+          : '<span>The injury report was not read when this pick was saved.</span>';
+        return `<li><span class="nba-side-game">${g.away} at ${g.home}</span>${body}</li>`;
+      }).join('')}</ul>`;
+  const prev = new Date(dayDate(day).getTime() - 864e5).toISOString().slice(0, 10);
+  const graded = (byDay[prev] || ALL_BY_DAY[prev] || []).map(g => BD.picks[g.id]).filter(p => p && (p.result === 'correct' || p.result === 'wrong'));
+  const won = graded.filter(p => p.result === 'correct').length;
+  const record = graded.length ? `<p class="nba-side-record"><b>${won}–${graded.length - won}</b> on ${escapeHtml(FMT_DAY.format(dayDate(prev)))}</p>`
+    : `<p class="nba-side-note">No graded pick on ${escapeHtml(FMT_DAY.format(dayDate(prev)))}.</p>`;
+  return `<h3 class="nba-side-title">Who is out</h3>${out}<h3 class="nba-side-title">The day before</h3>${record}`;
+}
 function renderBoard(){
   const grid = document.getElementById('game-grid');
   if(!BD.games.length){
@@ -535,6 +561,8 @@ function renderBoard(){
     if(chip) chip.focus();
   }));
   const dayGames = byDay[currentDay] || [];
+  const side = document.getElementById('nba-side');
+  if(side) side.innerHTML = sideHtml(currentDay, byDay);
   const title = `${FMT_DAY.format(dayDate(currentDay))}${currentDay === today ? ' · Today' : ''}`;
   const head = `<div class="nba-day-top"><h3 class="nba-day-title">${title}</h3>`
     + `<p class="nba-day-summary" aria-live="polite">${daySummary(dayGames, BD.picks)}</p></div>`;

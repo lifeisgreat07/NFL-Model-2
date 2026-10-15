@@ -90,7 +90,9 @@
 .nhl-side{display:none;}
 @media (min-width:1280px){
   .nhl-board-wrap{display:grid; grid-template-columns:minmax(0, 760px) 300px; column-gap:var(--s5); align-items:start;}
-  .nhl-side{display:block; position:sticky; top:var(--s4); padding:var(--s3) var(--s4); border:1px solid var(--border);
+  /* Stage 79 item 48 (L3): capped at the window's height, scrolling inside. */
+  .nhl-side{display:block; position:sticky; top:var(--s4); max-height:calc(100vh - var(--s8)); overflow:auto;
+    padding:var(--s3) var(--s4); border:1px solid var(--border);
     border-radius:var(--r-2, 10px); background:var(--surface); font-size:var(--fs-13); color:var(--text-2);}
 }
 .nhl-side-title{margin:var(--s3) 0 var(--s2); font-size:var(--fs-12); font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-2);}
