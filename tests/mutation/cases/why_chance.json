@@ -1,0 +1,48 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_why_chance.py",
+ "cases": [
+  {
+   "id": "why-chance-raw-number-back",
+   "why": "the panel prints \"+0.055\" again, a raw model term no reader can use (Stage 77 item 23).",
+   "find": "        ${whyRow('Offense edge', g.why.off_matchup, whyChance(g.why.off_matchup, g.fbA_home, g.home, g.away))}",
+   "replace": "        ${whyRow('Offense edge', g.why.off_matchup)}",
+   "expect_caught_by": "test_the_board_panel_prints_every_row_this_way_under_a_caption"
+  },
+  {
+   "id": "why-chance-team-flipped",
+   "why": "a push toward the home team is credited to the away team.",
+   "find": "  return `${pts > 0 ? home : away} +${Math.abs(pts).toFixed(1)}`;",
+   "replace": "  return `${pts > 0 ? away : home} +${Math.abs(pts).toFixed(1)}`;",
+   "expect_caught_by": "test_a_push_reads_as_points_of_win_chance_for_the_team_it_helped"
+  },
+  {
+   "id": "why-chance-flat-scale",
+   "why": "the push is read as if every pick were a coin flip, overstating it on a sure pick.",
+   "find": "  const without = 1 / (1 + Math.exp(-(Math.log(p / (1 - p)) - val)));",
+   "replace": "  const without = 1 / (1 + Math.exp(val));",
+   "expect_caught_by": "test_a_push_reads_as_points_of_win_chance_for_the_team_it_helped"
+  },
+  {
+   "id": "why-chance-zero-signed",
+   "why": "a part with no push reads \"A +0.0\", naming a team it did not help.",
+   "find": "  if(pts === 0) return 'even';",
+   "replace": "",
+   "expect_caught_by": "test_no_push_and_no_chance_are_said_plainly"
+  },
+  {
+   "id": "why-chance-certain-pick-nan",
+   "why": "a 100% or missing chance prints NaN instead of a dash.",
+   "find": "  if(typeof homePct !== 'number' || homePct <= 0 || homePct >= 100) return '—';",
+   "replace": "",
+   "expect_caught_by": "test_no_push_and_no_chance_are_said_plainly"
+  },
+  {
+   "id": "why-chance-caption-dropped",
+   "why": "the numbers lose the line saying what they are.",
+   "find": "        <p class=\"why-unit\">Points of win chance each part gave a team in Model A's pick.</p>\n",
+   "replace": "",
+   "expect_caught_by": "test_the_board_panel_prints_every_row_this_way_under_a_caption"
+  }
+ ]
+}
