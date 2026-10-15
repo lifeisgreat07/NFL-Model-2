@@ -1,0 +1,13 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_scoreboard.py",
+ "cases": [
+  {
+   "id": "race-invite-names-the-board",
+   "why": "the race invites picks \"on the Week Board\", where none can be made (Stage 77 item 20).",
+   "find": "const JOIN_THE_RACE = 'Make your own picks on My Picks Log to join this race.';",
+   "replace": "const JOIN_THE_RACE = 'Pick some games on the Week Board to join this race.';",
+   "expect_caught_by": "test_my_picks_joins_only_with_picks"
+  }
+ ]
+}

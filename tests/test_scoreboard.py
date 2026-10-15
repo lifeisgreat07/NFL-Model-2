@@ -119,7 +119,8 @@ def boards():
         pytest.skip('node not available')
     src = template()
     live_here = re.search(r"^const PICKS_LIVE_HERE = .*;$", src, re.M)
-    js = ((live_here.group(0) if live_here else '') +
+    join = re.search(r"^const JOIN_THE_RACE = .*;$", src, re.M)   # Stage 77 item 20
+    js = ((live_here.group(0) if live_here else '') + (join.group(0) if join else '') +
           function_source(src, 'scoreboardVerdict') + function_source(src, 'scoreboardHtml') +
           f'const O={json.dumps(BOARD_O)};'
           f'process.stdout.write(JSON.stringify({{mine: scoreboardHtml(O, {json.dumps(BOARD_MINE)}, '
@@ -172,7 +173,7 @@ def test_my_picks_joins_only_with_picks(boards):
     assert [r[0] for r in with_picks][-1] == 'My picks', with_picks
     assert 'My picks' not in [r[0] for r in without], without
     assert len(without) == 3, without
-    invite = 'Pick some games on the Week Board to join this race.'
+    invite = 'Make your own picks on My Picks Log to join this race.'   # Stage 77 item 20
     assert invite in boards['none'] and invite not in boards['mine']
 
 
@@ -197,7 +198,7 @@ def test_graded_picks_that_all_came_late_still_join_as_a_row_that_counts_nothing
     rows = rows_of(late)
     assert rows[-1][0] == 'My picks' and rows[-1][3] == '0', rows
     assert '0 counted' in late
-    assert 'Pick some games on the Week Board to join this race.' not in late
+    assert 'Make your own picks on My Picks Log to join this race.' not in late
     assert f'{BOARD_LEFT} Only picks made before kickoff are counted.' in late
     assert 'Export and Import on My Picks' in late
     assert 'Export and Import on My Picks' not in boards['mine'], (
