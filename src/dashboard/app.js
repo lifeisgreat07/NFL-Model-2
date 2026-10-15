@@ -1947,6 +1947,7 @@ function renderGames(){
   });
   grid.innerHTML = cards.map((card, i) => slotHeadBefore(sorted, i) + phoneRowHtml(sorted[i], i) + card).join('');
   if(sorted.some(g => g.flag)) grid.insertAdjacentHTML('afterbegin', FLAG_LEGEND);
+  showFilteredNote(grid);
   // Stage 68 item 36 (N2): each card follows its phone row, which opens it.
   grid.querySelectorAll(':scope > .game-card').forEach((card, i) => {
     card.id = `card-${i}`; card.classList.add('nfl-collapsible');
@@ -1978,6 +1979,23 @@ function renderGames(){
       btn.setAttribute('aria-expanded', panel.classList.toggle('open') ? 'true' : 'false');
       btn.textContent = panel.classList.contains('open') ? '− hide the numbers' : '+ the numbers behind this';
     });
+  });
+}
+/* Stage 77 item 31 (N6): on a phone the filter chips sit behind Options, so
+   a filter left on hid most of the week with nothing on screen to say so.
+   An active filter now says which, above the rows, with a way to clear it;
+   CSS shows it only where the chips are hidden. */
+function filteredNoteHtml(label){
+  return `<p class="nfl-filtered-note">Filtered: ${escapeHtml(label)} &middot; <button type="button" class="btn btn-link" data-clear-filter>clear</button></p>`;
+}
+function showFilteredNote(grid){
+  if(currentFilter === 'all') return;
+  const chip = document.querySelector(`#filter-row .filter-btn[data-filter=${currentFilter}]`);
+  if(!chip) return;
+  grid.insertAdjacentHTML('afterbegin', filteredNoteHtml(chip.textContent.trim()));
+  grid.querySelector('[data-clear-filter]').addEventListener('click', () => {
+    const all = document.querySelector('#filter-row .filter-btn[data-filter=all]');
+    if(all) all.click();
   });
 }
 /* SCOPED TO #filter-row, deliberately. `.filter-btn` is a shared pill style,

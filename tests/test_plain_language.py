@@ -87,6 +87,7 @@ RENDERERS = {
     'boardInsights': 'board',
     'renderGames': 'board',
     'phoneRowHtml': 'board',
+    'filteredNoteHtml': 'board',
     'renderWeekGlance': 'board',
     'whySentence': 'board',
     'whyMarketSentence': 'board',

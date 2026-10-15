@@ -1,0 +1,34 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_filtered_note.py",
+ "cases": [
+  {
+   "id": "filtered-note-never-drawn",
+   "why": "a phone with a filter on hides most of the week with no word of it again (Stage 77 item 31, N6).",
+   "find": "  showFilteredNote(grid);\n",
+   "replace": "",
+   "expect_caught_by": "test_it_is_drawn_with_the_rows_only_when_a_filter_is_on_and_clear_shows_all"
+  },
+  {
+   "id": "filtered-note-on-all-games",
+   "why": "\"Filtered: All Games\" shows when nothing is filtered.",
+   "find": "  if(currentFilter === 'all') return;\n  const chip",
+   "replace": "  const chip",
+   "expect_caught_by": "test_it_is_drawn_with_the_rows_only_when_a_filter_is_on_and_clear_shows_all"
+  },
+  {
+   "id": "filtered-note-clear-dead",
+   "why": "\"clear\" does nothing.",
+   "find": "    if(all) all.click();\n  });\n}",
+   "replace": "  });\n}",
+   "expect_caught_by": "test_it_is_drawn_with_the_rows_only_when_a_filter_is_on_and_clear_shows_all"
+  },
+  {
+   "id": "filtered-note-unescaped",
+   "why": "the chip's label is written into the page unescaped.",
+   "find": "Filtered: ${escapeHtml(label)} &middot;",
+   "replace": "Filtered: ${label} &middot;",
+   "expect_caught_by": "test_the_note_names_the_filter_and_offers_to_clear_it"
+  }
+ ]
+}
