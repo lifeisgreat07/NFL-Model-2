@@ -252,9 +252,9 @@ function marketText(g, p){
   const m = p.market;
   if(!m) return `Market: <b>no price</b>${p.why ? ` (${escapeHtml(p.why)})` : ''}, so Model A made the pick`;
   if(p.source === 'kalshi'){
-    return `Market (Kalshi, the fallback: ESPN had no price): ${g.away} <b>${pct(m.ap)}</b> · ${g.home} <b>${pct(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))}`;
+    return `Market (Kalshi, the fallback: ESPN had no price): ${g.away} <b>${pct(m.ap)}</b> · ${g.home} <b>${pct(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))}; with a price, Model B made the pick`;
   }
-  return `Market (${escapeHtml(m.book || 'sportsbook')} via ESPN): ${g.away} <b>${american(m.ap)}</b> · ${g.home} <b>${american(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))} with the margin out`;
+  return `Market (${escapeHtml(m.book || 'sportsbook')} via ESPN): ${g.away} <b>${american(m.ap)}</b> · ${g.home} <b>${american(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))} with the margin out; with a price, Model B made the pick`;
 }
 /* Who is out, and the availability each side was given: the share of its
    expected minutes from players not listed Out. */

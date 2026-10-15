@@ -1,0 +1,21 @@
+{
+ "target": "src/sports/nhl/pages/body.html",
+ "tests": "tests/test_board_lede.py",
+ "cases": [
+  {
+   "id": "lede-nhl-four-lines",
+   "why": "the NHL board's lede is four lines ending in the Model A/B rule again (Stage 77 item 14).",
+   "find": "<div class=\"desc\">Today&#39;s games, each model&#39;s pick, and how it did. Tap a game for the details.</div>",
+   "replace": "<div class=\"desc\">A day at a time: what each model picks and how it did. Tap a game for both models, the market and the goalies. The pick is Model B&#39;s when the market posted a price, and Model A&#39;s when it did not.</div>",
+   "expect_caught_by": "test_the_day_boards_lede_is_one_plain_line"
+  },
+  {
+   "id": "lede-nhl-card-silent-on-model",
+   "target": "src/sports/nhl/pages/nhl.js",
+   "why": "an NHL card with a price no longer says Model B made the pick.",
+   "find": " with the margin out; with a price, Model B made the pick`",
+   "replace": " with the margin out`",
+   "expect_caught_by": "test_each_card_says_which_model_made_its_pick"
+  }
+ ]
+}
