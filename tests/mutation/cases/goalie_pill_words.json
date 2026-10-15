@@ -1,0 +1,20 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_goalie_pill_words.py",
+ "cases": [
+  {
+   "id": "goalie-name-runs-into-pill",
+   "why": "a screen reader hears \"Jake AllenConfirmed\" again (Stage 77 item 34, L7).",
+   "find": "</b><span class=\"visually-hidden\">, </span>${pill}`;",
+   "replace": "</b>${pill}`;",
+   "expect_caught_by": "test_the_name_and_the_status_are_separate_words"
+  },
+  {
+   "id": "goalie-separator-shown",
+   "why": "the comma shows on screen beside the pill.",
+   "find": "<span class=\"visually-hidden\">, </span>${pill}",
+   "replace": "<span>, </span>${pill}",
+   "expect_caught_by": "test_the_name_and_the_status_are_separate_words"
+  }
+ ]
+}
