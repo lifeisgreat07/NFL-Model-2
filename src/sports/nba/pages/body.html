@@ -78,8 +78,16 @@
         </button>
       </div>
     </div>
-    <nav class="nba-day-strip" id="nba-day-strip" aria-label="Days of this week"></nav>
-    <div class="nba-board" id="game-grid"></div>
+    <div class="nba-board-wrap">
+      <div class="nba-board-main">
+        <nav class="nba-day-strip" id="nba-day-strip" aria-label="Days of this week"></nav>
+        <div class="nba-board" id="game-grid"></div>
+      </div>
+      <!-- Stage 79 item 48 (the 2026-10-13 audit's B3): at 1280 px and wider the
+           board sat at 760 px in a 1124 px column with nothing beside it. This
+           column follows the day chips, as the NHL's does; below 1280 it is not shown. -->
+      <aside class="nba-side" id="nba-side" aria-label="This day at a glance"></aside>
+    </div>
   </section>
 
   <section class="page" id="page-modellab">
