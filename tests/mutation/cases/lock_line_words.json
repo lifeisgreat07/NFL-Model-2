@@ -1,0 +1,27 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_lock_proof.py",
+ "cases": [
+  {
+   "id": "lock-line-subject-back-in-the-sentence",
+   "why": "the line reads \"Changed after kickoff: feb3d1b (Stage 52: ...)\" again (Stage 77 item 17).",
+   "find": "    parts.push(`Changed after kickoff in commit${after.length === 1 ? '' : 's'} ${links.join(', ')}.`);\n",
+   "replace": "    parts.push(`Changed after kickoff: ${after.map(c => `${lockCommitLink(c)} (${escapeHtml(c.subject)})`).join('; ')}.`);\n",
+   "expect_caught_by": "test_a_change_after_kickoff_is_named_with_its_reason"
+  },
+  {
+   "id": "lock-line-reason-lost",
+   "why": "the commit's reason is dropped altogether, not kept as the link's title.",
+   "find": "    const links = after.map(c => lockCommitLink(c).replace('<a href=', `<a title=\"${escapeHtml(c.subject)}\" href=`));\n",
+   "replace": "    const links = after.map(c => lockCommitLink(c));\n",
+   "expect_caught_by": "test_two_changes_after_kickoff_read_as_one_plain_sentence"
+  },
+  {
+   "id": "lock-line-plural-lost",
+   "why": "two changes read \"in commit a, b\".",
+   "find": "in commit${after.length === 1 ? '' : 's'} ",
+   "replace": "in commit ",
+   "expect_caught_by": "test_two_changes_after_kickoff_read_as_one_plain_sentence"
+  }
+ ]
+}

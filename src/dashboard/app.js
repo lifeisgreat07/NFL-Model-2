@@ -1001,7 +1001,12 @@ function lockProofHtml(commits, games){
     parts.push('No commit of these picks is dated before the first kickoff.');
   }
   if(after.length){
-    parts.push(`Changed after kickoff: ${after.map(c => `${lockCommitLink(c)} (${escapeHtml(c.subject)})`).join('; ')}.`);
+    // Stage 77 item 17 (the 2026-10-13 audit's copy fix 6): the sentence says
+    // what happened; each commit's own subject, why it was changed, is the
+    // link's title, one hover or long-press away, rather than a run of
+    // "Stage 52: the NFL becomes the first sport module" in the middle of it.
+    const links = after.map(c => lockCommitLink(c).replace('<a href=', `<a title="${escapeHtml(c.subject)}" href=`));
+    parts.push(`Changed after kickoff in commit${after.length === 1 ? '' : 's'} ${links.join(', ')}.`);
   }
   return parts.join(' ');
 }

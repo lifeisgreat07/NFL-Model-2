@@ -131,9 +131,20 @@ def test_the_line_names_the_last_change_before_kickoff_and_the_first_save():
 def test_a_change_after_kickoff_is_named_with_its_reason():
     line = page_line([commit('a6ba9f1', '2026-09-02T16:38:14Z'),
                       commit('f599666', '2026-10-02T18:22:12Z', 'Backfill the schedule dates')], GAMES)
-    assert 'Changed after kickoff: <a href="https://github.com/o/r/commit/f599666"' in line
-    assert '(Backfill the schedule dates)' in line
+    # Since Stage 77 item 17 the reason is the link's title, not words in the line.
+    assert 'Changed after kickoff in commit <a title="Backfill the schedule dates" href="https://github.com/o/r/commit/f599666"' in line
+    assert '(Backfill the schedule dates)' not in line
     assert 'last changed in commit <a href="https://github.com/o/r/commit/a6ba9f1"' in line
+
+
+def test_two_changes_after_kickoff_read_as_one_plain_sentence():
+    """Stage 77 item 17 (the 2026-10-13 UI/UX audit's copy fix 6)."""
+    line = page_line([commit('a6ba9f1', '2026-09-02T16:38:14Z'),
+                      commit('feb3d1b', '2026-10-02T18:22:12Z', 'Stage 52: the NFL becomes the first sport module'),
+                      commit('0c1d2e3', '2026-10-03T18:22:12Z', 'Fix a typo')], GAMES)
+    assert 'Changed after kickoff in commits <a title="Stage 52: the NFL becomes the first sport module" href=' in line
+    assert '>feb3d1b</a>, <a title="Fix a typo" href=' in line and line.endswith('>0c1d2e3</a>.')
+    assert 'Stage 52' not in line.replace('title="Stage 52', '')
 
 
 def test_no_commits_say_nothing():
