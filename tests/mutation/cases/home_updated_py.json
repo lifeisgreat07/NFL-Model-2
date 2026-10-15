@@ -1,0 +1,13 @@
+{
+ "target": "src/site/home.py",
+ "tests": "tests/test_home_updated.py",
+ "cases": [
+  {
+   "id": "home-built-time-dropped",
+   "why": "the build stops recording when it ran, so the page has nothing to print.",
+   "find": ", 'built_utc': built}",
+   "replace": "}",
+   "expect_caught_by": "test_the_build_records_when_it_ran"
+  }
+ ]
+}

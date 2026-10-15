@@ -132,7 +132,10 @@ def nba_facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
 
 
 def facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
-    return {'nfl': nfl_facts(root), 'nhl': nhl_facts(root, now), 'nba': nba_facts(root, now)}
+    # built_utc: when this page was made, printed as "Updated ... ET" as the
+    # sport pages print theirs (Stage 77 item 30, the 2026-10-13 audit's H2).
+    built = (now or datetime.now(UTC)).strftime('%Y-%m-%dT%H:%M:%SZ')
+    return {'nfl': nfl_facts(root), 'nhl': nhl_facts(root, now), 'nba': nba_facts(root, now), 'built_utc': built}
 
 
 
