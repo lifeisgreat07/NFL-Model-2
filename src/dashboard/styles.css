@@ -1498,7 +1498,9 @@
      legitimately empty and would otherwise read as broken. */
   .method-block h3{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-16); letter-spacing:.01em; margin-bottom:var(--s3); color:var(--text); display:flex; align-items:center; gap:var(--s2);}
   .method-block h3::before{content:''; width:7px; height:7px; border-radius:50%; background:var(--text-2); flex-shrink:0;}
-  .method-block p, .method-block li{font-size:var(--fs-14); line-height:1.68; color:var(--text-2);}
+  /* Stage 78 item 40 (N11): a readable measure, as the NHL's and NBA's ledes already have; at
+     1440 px Methodology and Checks ran to 159 characters a line. */
+  .method-block p, .method-block li{font-size:var(--fs-14); line-height:1.68; color:var(--text-2); max-width:72ch;}
   .method-block ul, .method-block ol{padding-left:var(--s5); margin-top:var(--s2);}
   .formula{font-family:'Plus Jakarta Sans', sans-serif; background:var(--bg); border:1px solid var(--border); border-radius:8px;
     padding:var(--s4) var(--s4); font-size:var(--fs-13); color:var(--accent); margin:var(--s3) 0; overflow-x:auto; white-space:pre;}
