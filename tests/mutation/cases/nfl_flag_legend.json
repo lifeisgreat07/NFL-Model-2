@@ -1,0 +1,27 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_nfl_flag_legend.py",
+ "cases": [
+  {
+   "id": "flag-dot-back",
+   "why": "the row's flag goes back to a dot, the shape of the live dots (Stage 77 item 28, N5).",
+   "find": "${g.flag ? ` <span class=\"nfl-row-flag\" role=\"img\" aria-label=\"flagged: a note to read\">${FLAG_ICON}</span>` : ''}",
+   "replace": "${g.flag ? ' <span class=\"nfl-row-flag\" aria-label=\"flagged\">&#9679;</span>' : ''}",
+   "expect_caught_by": "test_a_flagged_row_ends_in_a_flag_not_a_dot"
+  },
+  {
+   "id": "flag-legend-dropped",
+   "why": "a week with flagged games says nothing about what the flag means.",
+   "find": "  if(sorted.some(g => g.flag)) grid.insertAdjacentHTML('afterbegin', FLAG_LEGEND);\n",
+   "replace": "",
+   "expect_caught_by": "test_a_week_with_a_flag_says_what_it_means_once"
+  },
+  {
+   "id": "flag-legend-unspoken",
+   "why": "a screen reader hears the legend start at \"marks a game\".",
+   "find": "<span class=\"visually-hidden\">A flag</span> marks",
+   "replace": "marks",
+   "expect_caught_by": "test_a_week_with_a_flag_says_what_it_means_once"
+  }
+ ]
+}

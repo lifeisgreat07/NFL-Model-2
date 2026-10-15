@@ -1735,7 +1735,7 @@ function phoneRowHtml(g, n){
     : verdict ? ['correct', 'Correct'] : ['incorrect', 'Missed'];  // Stage 77 item 26: one pair of result words
   return `<button type="button" class="nfl-row" aria-expanded="false" aria-controls="card-${n}">`
     + `<span class="nfl-row-time">${time}</span>`
-    + `<span class="nfl-row-game">${escapeHtml(g.away)} @ ${escapeHtml(g.home)}${g.flag ? ' <span class="nfl-row-flag" aria-label="flagged">&#9679;</span>' : ''}</span>`
+    + `<span class="nfl-row-game">${escapeHtml(g.away)} @ ${escapeHtml(g.home)}${g.flag ? ` <span class="nfl-row-flag" role="img" aria-label="flagged: a note to read">${FLAG_ICON}</span>` : ''}</span>`
     + `<span class="nfl-row-pick">${pick}</span>`
     + `<span class="nfl-row-res ${res[0]}">${res[1]}</span>`
     + `<svg class="nfl-row-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>`;
@@ -1745,6 +1745,11 @@ function phoneRowHtml(g, n){
    market MARKET_GAP_MIN points or more apart (Model B, because Model A never
    sees the market and is that far from it in most games), and a game both
    models put within COIN_FLIP_WITHIN points of 50%. In kickoff order. */
+/* Stage 77 item 28 (N5): a flagged row is marked with a flag, not a dot --
+   the dot means "live" on the home page and in the sidebar -- and a week
+   with one says what the flag means, once, above the phone rows. */
+const FLAG_ICON = '<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M5 22V3h12l-2.5 4.5L17 12H7v10z"/></svg>';
+const FLAG_LEGEND = `<p class="nfl-flag-legend"><span class="nfl-row-flag">${FLAG_ICON}</span><span class="visually-hidden">A flag</span> marks a game with a note to read before you trust its pick. The note is in the game's card.</p>`;
 function boardInsights(games){
   const out = [];
   for(const g of [...games].sort(byKickoff)){
@@ -1941,6 +1946,7 @@ function renderGames(){
     </div>`;
   });
   grid.innerHTML = cards.map((card, i) => slotHeadBefore(sorted, i) + phoneRowHtml(sorted[i], i) + card).join('');
+  if(sorted.some(g => g.flag)) grid.insertAdjacentHTML('afterbegin', FLAG_LEGEND);
   // Stage 68 item 36 (N2): each card follows its phone row, which opens it.
   grid.querySelectorAll(':scope > .game-card').forEach((card, i) => {
     card.id = `card-${i}`; card.classList.add('nfl-collapsible');
