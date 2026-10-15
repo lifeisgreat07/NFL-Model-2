@@ -1012,6 +1012,12 @@ function renderLockProof(weekKey, weekData){
   const html = (weekData && !weekData.preview) ? lockProofHtml(commits, weekData.games) : '';
   el.innerHTML = html;
   el.hidden = !html;
+  // Stage 77 item 16 (the 2026-10-13 audit's copy fix 5): on a preview week
+  // the phone's "When these picks were saved, and where to check" opened
+  // nothing, since nothing is saved yet; the preview note above it already
+  // says when they lock, so the button goes.
+  const prov = document.getElementById('board-prov-btn');
+  if(prov) prov.hidden = !!(weekData && weekData.preview);
 }
 /* ---------- Week Board ---------- */
 let currentBoardWeek = latestWeekKey;
