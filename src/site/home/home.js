@@ -64,7 +64,10 @@ function nflCard(f){
   const ahead = kicks.filter(k => k > NOW);
   let status, big;
   if(ahead.length){
-    status = {text:`Week ${f.week} locked`};
+    /* Stage 77 item 30 (H2): once the week has begun, how much is left. The
+       home has each game's kickoff, not its result, so it counts kickoffs. */
+    const started = kicks.length - ahead.length;
+    status = {text:`Week ${f.week} locked${started ? ` · ${started} kicked off, ${ahead.length} to play` : ''}`};
     const first = new Date(Math.min(...kicks)), last = new Date(Math.max(...kicks));
     big = `${kicks.length} games, ${weekday(first)} to ${weekday(last)}`;
   } else if(f.preview_week){
@@ -140,6 +143,12 @@ function nbaCard(f){
 }
 
 document.getElementById('home-cards').innerHTML = nflCard(HOME.nfl) + nhlCard(HOME.nhl) + nbaCard(HOME.nba);
+/* Stage 77 item 30 (H2): "Updated ... ET", as on each sport's page. */
+function updatedText(iso){
+  if(!iso) return '';
+  return `Updated ${new Date(iso).toLocaleString('en-US', {timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})} ET`;
+}
+document.getElementById('home-updated').textContent = updatedText(HOME.built_utc);
 
 // The hero's one action (Stage 68 item 34, option A2): the sport whose next
 // game starts first, from the same facts the cards read.

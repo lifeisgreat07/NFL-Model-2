@@ -1,0 +1,34 @@
+{
+ "target": "src/site/home/home.js",
+ "tests": "tests/test_home_updated.py",
+ "cases": [
+  {
+   "id": "home-updated-never-written",
+   "why": "the home says nothing about when it was made again (Stage 77 item 30, H2).",
+   "find": "document.getElementById('home-updated').textContent = updatedText(HOME.built_utc);\n",
+   "replace": "",
+   "expect_caught_by": "test_the_page_says_when_it_was_made_in_eastern_time"
+  },
+  {
+   "id": "home-updated-local-time",
+   "why": "the time is printed in the visitor's zone while it says ET.",
+   "find": "{timeZone: 'America/New_York', month: 'short'",
+   "replace": "{month: 'short'",
+   "expect_caught_by": "test_the_page_says_when_it_was_made_in_eastern_time"
+  },
+  {
+   "id": "home-nfl-week-no-split",
+   "why": "a locked NFL week reads \"Week 6 locked\" from Thursday to Monday night.",
+   "find": "    status = {text:`Week ${f.week} locked${started ? ` · ${started} kicked off, ${ahead.length} to play` : ''}`};",
+   "replace": "    status = {text:`Week ${f.week} locked`};",
+   "expect_caught_by": "test_a_locked_week_says_how_much_is_left_once_it_has_begun"
+  },
+  {
+   "id": "home-nfl-split-before-kickoff",
+   "why": "before any game, the card says \"0 kicked off\".",
+   "find": "${started ? ` · ${started} kicked off",
+   "replace": "${true ? ` · ${started} kicked off",
+   "expect_caught_by": "test_a_locked_week_says_how_much_is_left_once_it_has_begun"
+  }
+ ]
+}
