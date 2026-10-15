@@ -1,0 +1,34 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_table_details.py",
+ "cases": [
+  {
+   "id": "table-num-proportional",
+   "why": "number columns go back to proportional figures (Stage 78 item 39, N8).",
+   "find": "text-align:right; font-variant-numeric:tabular-nums;}",
+   "replace": "text-align:right;}",
+   "expect_caught_by": "test_number_cells_use_tabular_figures"
+  },
+  {
+   "id": "table-last-th-border",
+   "why": "the last row's header cell keeps its border stub again (L4).",
+   "find": "  .metrics-table tr:last-child :is(td, th){border-bottom:none;}",
+   "replace": "  .metrics-table tr:last-child td{border-bottom:none;}",
+   "expect_caught_by": "test_the_last_row_has_no_border_under_its_header_cell_either"
+  },
+  {
+   "id": "table-rel-prov-loses",
+   "why": "the provenance note loses to .method-block p and draws at 14px again (N9).",
+   "find": "  .rel-prov, .method-block .rel-prov{font-size:var(--fs-11);",
+   "replace": "  .rel-prov{font-size:var(--fs-11);",
+   "expect_caught_by": "test_the_provenance_note_outranks_the_prose_rule_it_sits_inside"
+  },
+  {
+   "id": "table-spark-accent",
+   "why": "the sparkline wears the accent again beside the quiet Net bar (N10).",
+   "find": "stroke:var(--text-3); stroke-width:1.6;",
+   "replace": "stroke:var(--accent); stroke-width:1.6;",
+   "expect_caught_by": "test_the_sparkline_is_quiet"
+  }
+ ]
+}
