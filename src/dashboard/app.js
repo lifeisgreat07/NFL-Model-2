@@ -2108,6 +2108,20 @@ function pdfNoneText(weekData){
     });
   });
 })();
+/* Stage 77 item 29 (N4): on a phone the banner shows one line, and its
+   "How to read a card" opens the banner's own three points and "How to
+   read this" in place, where the cards are. It used to go to Methodology,
+   which has no section on reading a card. */
+(function phoneOnboardingGuide(){
+  const btn = document.getElementById('onboarding-phone-more');
+  const banner = document.getElementById('onboarding-banner');
+  if(!btn || !banner) return;
+  btn.addEventListener('click', () => {
+    const open = !banner.classList.contains('onboarding-open');
+    banner.classList.toggle('onboarding-open', open);
+    btn.setAttribute('aria-expanded', String(open));
+  });
+})();
 (function initOnboarding(){
   let dismissed = false;
   try{ dismissed = localStorage.getItem(ONBOARDING_KEY) === '1'; }catch(e){}

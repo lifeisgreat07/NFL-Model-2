@@ -1,0 +1,20 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_phone_card_guide.py",
+ "cases": [
+  {
+   "id": "card-guide-no-open",
+   "why": "the button does nothing, so the phone guide never opens (Stage 77 item 29, N4).",
+   "find": "    banner.classList.toggle('onboarding-open', open);\n",
+   "replace": "",
+   "expect_caught_by": "test_the_button_opens_and_closes_the_guide_and_says_which"
+  },
+  {
+   "id": "card-guide-silent-state",
+   "why": "the guide opens but a screen reader is told it is still closed.",
+   "find": "    banner.classList.toggle('onboarding-open', open);\n    btn.setAttribute('aria-expanded', String(open));\n",
+   "replace": "    banner.classList.toggle('onboarding-open', open);\n",
+   "expect_caught_by": "test_the_button_opens_and_closes_the_guide_and_says_which"
+  }
+ ]
+}
