@@ -22,7 +22,7 @@ import re
 
 import pytest
 
-from src.core.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE, every_stylesheet
 
 TEMPLATE = JOINED_TEMPLATE
 
@@ -72,13 +72,20 @@ def src():
     return TEMPLATE.read_text(encoding='utf-8')
 
 
+# Stage 78 item 36 (the 2026-10-13 audit's X9, V9): the home, NHL and NBA
+# sheets are read as well as the NFL template; the home's 13 literal font
+# sizes and nine spacing literals across the three were outside this guard.
+def sources(src):
+    return [('the NFL template', src)] + every_stylesheet()[1:]
+
+
 def test_every_font_size_is_on_the_scale(src):
-    lits = literal_font_sizes(src)
+    lits = [f'{name}: {v}' for name, css in sources(src) for v in literal_font_sizes(css)]
     assert not lits, f'font sizes off the type scale: {sorted(set(lits))}. Use var(--fs-N).'
 
 
 def test_every_spacing_length_is_on_the_scale(src):
-    lits = literal_spacing(src)
+    lits = [f'{name}: {v}' for name, css in sources(src) for v in literal_spacing(css)]
     assert not lits, 'spacing off the 4px scale:\n  ' + '\n  '.join(lits[:20])
 
 

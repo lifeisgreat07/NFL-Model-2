@@ -1,0 +1,13 @@
+{
+ "target": "src/sports/nba/pages/nba.css",
+ "tests": "tests/test_motion_system.py",
+ "cases": [
+  {
+   "id": "sheets-nba-hover-unguarded",
+   "why": "the NBA row's hover sticks after a tap again.",
+   "find": "@media (hover: hover){\n  .nba-row:hover{background:var(--surface);}\n}",
+   "replace": ".nba-row:hover{background:var(--surface);}",
+   "expect_caught_by": "test_every_hover_rule_sits_behind_the_hover_guard"
+  }
+ ]
+}

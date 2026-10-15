@@ -17,7 +17,7 @@ Run with: pytest tests/test_css_tokens_defined.py -v
 import re
 from pathlib import Path
 
-from src.core.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE, every_stylesheet
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
@@ -43,6 +43,22 @@ def test_every_token_the_template_uses_is_declared():
         'var() names a custom property the template never declares, so that '
         'declaration is dropped and the element inherits instead: '
         + ', '.join(f'{t} (line {n})' for t, n in missing))
+
+
+
+def test_every_token_the_sport_sheets_use_is_declared():
+    """The home, NHL and NBA sheets load after the shared styles and use its
+    tokens (Stage 78 item 36, the 2026-10-13 audit's X9). Here a fallback
+    does not excuse a name: `var(--r-2, 10px)` named a radius that was never
+    declared and drew an off-scale 10 px from its fallback."""
+    sheets = every_stylesheet()
+    declared = set()
+    for _name, css in sheets:
+        declared |= set(DECLARE.findall(css)) | set(SET_FROM_SCRIPT.findall(css))
+    declared |= set(DECLARE.findall(TEMPLATE.read_text(encoding='utf-8')))
+    missing = [f'{name}: {m.group(1)}' for name, css in sheets[1:]
+               for m in USE.finditer(css) if m.group(1) not in declared]
+    assert not missing, 'a sport sheet names a token nobody declares: ' + ', '.join(missing)
 
 
 def test_the_check_can_fail():

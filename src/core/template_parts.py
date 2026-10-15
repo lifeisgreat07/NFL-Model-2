@@ -102,3 +102,24 @@ class JoinedTemplate:
 
 
 JOINED_TEMPLATE = JoinedTemplate()
+
+
+#: The stylesheets that are not part of the NFL template: the home page's and
+#: the NHL's and NBA's. They load after the shared styles.css and use its
+#: tokens, so the CSS guards read them too (Stage 78 item 36, the 2026-10-13
+#: audit's X9: every motion, token and type-scale violation it found lived in
+#: these three files, which no guard read).
+SPORT_SHEETS = (
+    ROOT / 'src' / 'site' / 'home' / 'home.css',
+    ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.css',
+    ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.css',
+)
+
+
+def every_stylesheet() -> list[tuple[str, str]]:
+    """(name, CSS) for the NFL template's <style> block and each sport sheet."""
+    page = read_template()
+    out = [('the NFL template', page[page.index('<style'):page.index('</style>')])]
+    for path in SPORT_SHEETS:
+        out.append((path.relative_to(ROOT).as_posix(), path.read_text(encoding='utf-8')))
+    return out

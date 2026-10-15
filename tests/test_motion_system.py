@@ -27,7 +27,7 @@ import re
 
 import pytest
 
-from src.core.template_parts import JOINED_TEMPLATE
+from src.core.template_parts import JOINED_TEMPLATE, every_stylesheet
 
 TEMPLATE = JOINED_TEMPLATE
 
@@ -50,9 +50,13 @@ ANY_DURATION = re.compile(r'(?<![\w.-])(\d*\.?\d+)(ms|s)\b')
 
 
 def motion_declarations():
-    """Every transition/animation declaration, comments removed."""
-    css = strip_comments(stylesheet())
-    return re.findall(r'(?:transition|animation)\s*:\s*([^;}]+)', css)
+    """Every transition/animation declaration, comments removed, in the NFL
+    template and in the home, NHL and NBA sheets (Stage 78 item 36: those
+    three were outside this guard, and held its only violations)."""
+    out = []
+    for _name, sheet in every_stylesheet():
+        out += re.findall(r'(?:transition|animation)\s*:\s*([^;}]+)', strip_comments(sheet))
+    return out
 
 
 # The brand mark's three animations (bm-settle, bm-nudge, bm-tumble) are the one
@@ -148,9 +152,17 @@ def test_every_hover_rule_sits_behind_the_hover_guard():
     separate failure from the duration one but the same family: a rule that is
     correct on a desktop and wrong everywhere else.
     """
-    css = strip_comments(stylesheet())
+    unguarded = []
+    for name, sheet in every_stylesheet():
+        unguarded += [f'{name}: {r}' for r in unguarded_hovers(strip_comments(sheet))]
+    assert not unguarded, (
+        "these :hover rules are outside @media (hover: hover) and will stick "
+        f"after a tap on touch: {unguarded}")
+    assert re.search(r'@media\s*\(\s*hover\s*:\s*hover\s*\)', stylesheet()), "no @media (hover: hover) block in the stylesheet"
+
+
+def unguarded_hovers(css):
     guards = [m.start() for m in re.finditer(r'@media\s*\(\s*hover\s*:\s*hover\s*\)\s*\{', css)]
-    assert guards, "no @media (hover: hover) block in the stylesheet"
 
     # Span of each guard block, by brace matching from its opening brace.
     spans = []
@@ -172,9 +184,7 @@ def test_every_hover_rule_sits_behind_the_hover_guard():
         pos = m.start()
         if not any(a <= pos <= b for a, b in spans):
             unguarded.append(m.group(1).strip())
-    assert not unguarded, (
-        "these :hover rules are outside @media (hover: hover) and will stick "
-        f"after a tap on touch: {unguarded}")
+    return unguarded
 
 
 @pytest.mark.parametrize('token', ['--dur-fast', '--dur-base', '--dur-slow', '--ease', '--press'])

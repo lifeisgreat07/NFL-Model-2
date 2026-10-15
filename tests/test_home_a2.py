@@ -36,7 +36,8 @@ def test_the_action_goes_to_the_sport_with_the_next_game():
 def test_the_records_are_one_row_on_a_phone():
     phone = phone_block()
     assert not re.search(r'\.home-score\{\s*grid-template-columns:1fr;', phone), 'the tiles stack again'
-    assert '.home-tile b{ font-size:19px;' in phone
+    # On the type scale since Stage 78 item 36 (it was a literal 19px).
+    assert '.home-tile b{ font-size:var(--fs-20);' in phone
 
 
 def test_the_button_is_a_full_tap_target():

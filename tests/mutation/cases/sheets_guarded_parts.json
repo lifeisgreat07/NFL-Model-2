@@ -1,0 +1,13 @@
+{
+ "target": "src/core/template_parts.py",
+ "tests": "tests/test_css_sheets_guarded.py",
+ "cases": [
+  {
+   "id": "sheets-guards-blind-again",
+   "why": "the guards stop reading the sport sheets, which is how X9 happened.",
+   "find": "    for path in SPORT_SHEETS:\n        out.append((path.relative_to(ROOT).as_posix(), path.read_text(encoding='utf-8')))\n",
+   "replace": "",
+   "expect_caught_by": "test_the_guards_read_every_sheet_the_site_ships"
+  }
+ ]
+}

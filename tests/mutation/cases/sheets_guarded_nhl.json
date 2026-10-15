@@ -1,0 +1,20 @@
+{
+ "target": "src/sports/nhl/pages/nhl.css",
+ "tests": "tests/test_motion_system.py",
+ "cases": [
+  {
+   "id": "sheets-nhl-hover-unguarded",
+   "why": "the NHL row's hover sticks after a tap again (X9).",
+   "find": "@media (hover: hover){\n  .nhl-row:hover{background:var(--surface);}\n}",
+   "replace": ".nhl-row:hover{background:var(--surface);}",
+   "expect_caught_by": "test_every_hover_rule_sits_behind_the_hover_guard"
+  },
+  {
+   "id": "sheets-nhl-literal-duration",
+   "why": "the NHL chevron turns in a literal .15s that reduced motion cannot reach.",
+   "find": "transition:transform var(--dur-base) var(--ease);}",
+   "replace": "transition:transform .15s;}",
+   "expect_caught_by": "test_every_duration_is_a_token"
+  }
+ ]
+}
