@@ -1771,6 +1771,7 @@
 [data-theme="light"] .icon-moon{display:inline-block;}
 /* Stage 68 item 36 (N2): the Week Board on a phone. Wider than 640 px
    nothing here shows and the board is as before. */
+.nfl-filtered-note{display:none;}
 .nfl-flag-legend{display:none;}
 .nfl-row, .nfl-phone-only{display:none;}
 @media (max-width:640px){
@@ -1788,6 +1789,9 @@
   .nfl-row-res.final{color:var(--text-2);}
   .nfl-row-flag{color:var(--accent); display:inline-flex; vertical-align:-1px;}
   .nfl-flag-legend{display:block; margin:0 0 var(--s2); font-size:var(--fs-12); color:var(--text-2);}
+  /* Stage 77 item 31 (N6): where the chips are hidden, an active filter says so. */
+  #page-board:not(.nfl-options-open) .nfl-filtered-note{display:block; margin:0 0 var(--s2); font-size:var(--fs-13); color:var(--text);}
+  .nfl-filtered-note .btn-link{font-size:inherit; min-height:24px;}
   .nfl-row[aria-expanded="true"] .nfl-row-chev{transform:rotate(180deg);}
   #game-grid .game-card.nfl-collapsible{display:none; margin:var(--s2) 0 var(--s3);}
   #game-grid .game-card.nfl-collapsible.is-open{display:block;}

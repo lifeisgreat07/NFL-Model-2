@@ -1,0 +1,20 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_filtered_note.py",
+ "cases": [
+  {
+   "id": "filtered-note-on-desktop",
+   "why": "the note shows beside the chips on a desktop, where they are already visible.",
+   "find": ".nfl-filtered-note{display:none;}\n",
+   "replace": "",
+   "expect_caught_by": "test_it_shows_only_where_the_chips_are_hidden"
+  },
+  {
+   "id": "filtered-note-never-shown",
+   "why": "the note is drawn but never shown on a phone.",
+   "find": "  #page-board:not(.nfl-options-open) .nfl-filtered-note{display:block;",
+   "replace": "  #page-board:not(.nfl-options-open) .nfl-filtered-note{display:none;",
+   "expect_caught_by": "test_it_shows_only_where_the_chips_are_hidden"
+  }
+ ]
+}
