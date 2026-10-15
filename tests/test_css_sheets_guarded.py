@@ -43,4 +43,5 @@ def test_no_shadow_carries_a_colour_literal():
 def test_the_raised_segment_is_drawn_with_the_strong_border():
     sheets = dict(every_stylesheet())
     assert '.sport-switch a[aria-current="page"]{background:var(--surface); color:var(--text); box-shadow:inset 0 0 0 1px var(--border-strong);}' in sheets['the NFL template']
-    assert '.home-switch a[aria-current="page"]{ background:var(--surface); color:var(--text); box-shadow:inset 0 0 0 1px var(--border-strong); }' in sheets['src/site/home/home.css']
+    # Since Stage 78 item 37 the home wears the same .sport-switch; it has no segment rule of its own.
+    assert 'aria-current' not in sheets['src/site/home/home.css']

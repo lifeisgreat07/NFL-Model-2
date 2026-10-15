@@ -66,8 +66,10 @@ def test_the_disclosure_is_a_24px_control_that_shows_its_state(src):
     css = re.sub(r'/\*.*?\*/', '', src.split('</style>')[0], flags=re.S)
     rule = re.search(r'\.onboarding-more summary\{([^}]*)\}', css)
     assert rule and 'min-height:24px' in rule.group(1), 'the "How to read this" toggle is under 24px tall'
-    assert re.search(r'\.onboarding-more\[open\] summary::before\{content:', css), (
+    # Since Stage 78 item 37 the state marker is the one every disclosure wears.
+    assert re.search(r'\.disclosure\[open\] > summary::before\{content:', css), (
         'nothing says whether "How to read this" is open')
+    assert '<details class="disclosure onboarding-more">' in src
 
 
 def test_on_a_phone_the_banner_goes_after_the_first_two_cards(slots):

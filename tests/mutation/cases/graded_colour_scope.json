@@ -26,8 +26,8 @@
     {
       "id": "toss-up-tag-back-on-the-accent",
       "why": "the toss-up tag on a game card, and every decision pill on Model Lab, go back to the accent -- the colour of the model's lean, on the one tag that says the model has none",
-      "find": "  .tag-neutral{background:var(--border); color:var(--text-2);}",
-      "replace": "  .tag-neutral{background:var(--accent-soft); color:var(--accent);}",
+      "find": "  .tag-fill, .graded-tag.tie, .tag-neutral{background:var(--surface-2); color:var(--text-2);}",
+      "replace": "  .tag-fill, .graded-tag.tie, .tag-neutral{background:var(--accent-soft); color:var(--accent);}",
       "expect_caught_by": "test_the_neutral_pill_is_neutral"
     },
     {

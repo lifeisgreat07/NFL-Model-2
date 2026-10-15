@@ -1,0 +1,41 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_one_system.py",
+ "cases": [
+  {
+   "id": "one-chevron-snaps",
+   "why": "the one chevron loses its turn, so every row snaps open.",
+   "find": "  .game-row-chev{color:var(--text-3); transition:transform var(--dur-base) var(--ease);}",
+   "replace": "  .game-row-chev{color:var(--text-3);}",
+   "expect_caught_by": "test_one_game_row_and_one_chevron_turn"
+  },
+  {
+   "id": "one-disclosure-marker-gone",
+   "why": "no disclosure says whether it is open.",
+   "find": "  .disclosure[open] > summary::before{content:'\\2212\\00a0';}\n",
+   "replace": "",
+   "expect_caught_by": "test_one_disclosure"
+  },
+  {
+   "id": "one-tag-own-shape",
+   "why": "a pill takes its own size and shape again (Stage 78 item 37, X10: 16 pill styles).",
+   "find": "  .tv-pill{margin-left:var(--s2);}",
+   "replace": "  .tv-pill{margin-left:var(--s2); border-radius:var(--r-sm); font-size:var(--fs-13);}",
+   "expect_caught_by": "test_one_tag_shape_and_three_tones"
+  },
+  {
+   "id": "one-tag-fill-on-border",
+   "why": "the fill tone is painted with a border token again.",
+   "find": "  .tag-fill, .graded-tag.tie, .tag-neutral{background:var(--surface-2); color:var(--text-2);}",
+   "replace": "  .tag-fill, .graded-tag.tie, .tag-neutral{background:var(--border); color:var(--text-2);}",
+   "expect_caught_by": "test_one_tag_shape_and_three_tones"
+  },
+  {
+   "id": "one-tag-chip-left-out",
+   "why": "the insight chip leaves the shared shape.",
+   "find": "  .tag, .graded-tag, .conf-tag, .insight-chip, .tv-pill{display:inline-flex;",
+   "replace": "  .tag, .graded-tag, .conf-tag, .tv-pill{display:inline-flex;",
+   "expect_caught_by": "test_one_tag_shape_and_three_tones"
+  }
+ ]
+}

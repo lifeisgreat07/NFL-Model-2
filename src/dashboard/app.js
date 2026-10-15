@@ -1733,12 +1733,12 @@ function phoneRowHtml(g, n){
   // An ungraded final says Final and no more, as its card does (cardProvisional).
   const res = !g.graded ? (g.status === 'final' ? ['final', 'Final'] : ['', '']) : (g.result === 'tie' || verdict === null || verdict === undefined) ? ['tie', 'Tie']
     : verdict ? ['correct', 'Correct'] : ['incorrect', 'Missed'];  // Stage 77 item 26: one pair of result words
-  return `<button type="button" class="nfl-row" aria-expanded="false" aria-controls="card-${n}">`
+  return `<button type="button" class="game-row nfl-row" aria-expanded="false" aria-controls="card-${n}">`
     + `<span class="nfl-row-time">${time}</span>`
     + `<span class="nfl-row-game">${escapeHtml(g.away)} @ ${escapeHtml(g.home)}${g.flag ? ` <span class="nfl-row-flag" role="img" aria-label="flagged: a note to read">${FLAG_ICON}</span>` : ''}</span>`
     + `<span class="nfl-row-pick">${pick}</span>`
     + `<span class="nfl-row-res ${res[0]}">${res[1]}</span>`
-    + `<svg class="nfl-row-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>`;
+    + `<svg class="game-row-chev nfl-row-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>`;
 }
 
 /* Stage 21's two game insights, for the week on the board: Model B and the
@@ -3390,7 +3390,7 @@ function buildReliabilityDiagram(){
   return `<div class="method-block">
     <h3>Reliability Diagram &mdash; Are the Probabilities Honest?</h3>
     <p style="margin-bottom:var(--s3);">When a model says <b style="color:var(--text)">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games, with its 95% interval.</p>
-    <details class="rel-how">
+    <details class="disclosure rel-how">
       <summary>How to read this</summary>
       <p style="margin:var(--s2) 0 var(--s4);">Accuracy only asks whether we picked the right side; this asks something harder. The vertical bar on each mark is its 95% Wilson interval. The dashed diagonal is perfect calibration &mdash; and a mark whose bar crosses that line is <i>consistent</i> with being perfectly calibrated, however far the mark itself sits from it.</p>
     </details>
@@ -3414,13 +3414,13 @@ function buildReliabilityDiagram(){
           <span class="v" style="font-size:var(--fs-11); letter-spacing:.06em; text-transform:uppercase;" title="How far the bins sit from the base rate. Higher is better; 0 means the model says nothing.">Resol. &uarr;</span>
         </div>
         ${statRows}
-        <details class="rel-how">
+        <details class="disclosure rel-how">
           <summary>What these numbers mean</summary>
           <p style="font-size:var(--fs-12); margin-top:var(--s3);">Brier = reliability &minus; resolution + uncertainty (Murphy, 1973). <b style="color:var(--text)">Reliability</b> is miscalibration: lower is better. <b style="color:var(--text)">Resolution</b> is how far the model dares to move away from the base rate: higher is better. A model that always predicts the ${base}% base rate scores a perfect 0 on reliability and a useless 0 on resolution &mdash; which is exactly why accuracy alone can't tell those two apart. Uncertainty (${calibration.models.model_a ? calibration.models.model_a.decomposition.uncertainty.toFixed(6) : '--'}) belongs to the games, not to any model.</p>
         </details>
         <p style="font-size:var(--fs-12); margin-top:var(--s3);">Model B's numbers look better than the market's on resolution and worse on reliability, and until 2026-09-05 this panel called that "a lead, not a claim" because nothing had tested it. It has now been tested, with a 5,000-resample paired bootstrap, and <b style="color:var(--text)">the lead did not survive</b>: every one of the four gaps against the market has a 95% interval that includes zero. Brier &minus;0.000622, CI [&minus;0.002395, +0.001141]. Resolution +0.001141, CI [&minus;0.002196, +0.004597]. At 1,087 games those differences are indistinguishable from noise, so the honest reading of this chart is that <b style="color:var(--text)">Model B and the market are calibrated about equally well</b> &mdash; not that one edges the other.</p>
         <p style="font-size:var(--fs-12); margin-top:var(--s3);">The same test did find two things that hold. Against <b style="color:var(--text)">Model A</b>, Model B is genuinely better &mdash; Brier &minus;0.019133, CI [&minus;0.025838, &minus;0.012687], and resolution +0.016814, CI [+0.008990, +0.024819] &mdash; which is the first version of "the spread helps" that rests on proper scoring rules rather than on accuracy, a metric this project has already shown moves by a whole game between platforms. And the market genuinely beats Model A: Brier +0.018511, CI [+0.011496, +0.025553]. See <b style="color:var(--text)">the experiment log above</b> for all three, and <code>src/sports/nfl/research/bootstrap_brier_gap.py</code> for the method.</p>
-        <details class="rel-table" style="margin-top:var(--s3);">
+        <details class="disclosure rel-table" style="margin-top:var(--s3);">
           <summary>Show the numbers as a table</summary>
           <div class="table-wrap" style="margin-top:var(--s2);"><table class="metrics-table"><caption class="visually-hidden">Backtest calibration by probability bin, with 95% intervals</caption>
             <thead><tr><th scope="col">Series</th><th scope="col">Bin</th><th scope="col">Games</th><th scope="col">Stated</th><th scope="col">Observed</th><th scope="col">95% interval</th></tr></thead>

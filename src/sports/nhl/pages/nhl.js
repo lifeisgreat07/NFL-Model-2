@@ -308,7 +308,7 @@ function resultLine(g, p){
 function lockedTag(g, p){
   if(g.status === 'final' || g.status === 'cancelled' || g.status === 'postponed') return '';
   const when = p.saved ? ` ${whenEt(new Date(p.saved))}` : '';
-  return `<span class="graded-tag nhl-locked">Locked${when}</span>`;
+  return `<span class="graded-tag tag-fill nhl-locked">Locked${when}</span>`;
 }
 
 const FIRST_SAVED = Object.values(DATA.picks).map(p => p.saved).filter(Boolean).sort()[0] || null;
@@ -416,7 +416,7 @@ function daySummary(games, picks){
   }
   return s;
 }
-const CHEVRON = '<svg class="nhl-row-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+const CHEVRON = '<svg class="game-row-chev nhl-row-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 /* Stage 75 item 3: an opened card is brought on screen. A row near the
    bottom of a phone opened its card below the fold and never scrolled
    (NHL card 612 to 1052 px, NFL 704 to 1195 px, on an 844 px phone). 'nearest'
@@ -429,7 +429,7 @@ function rowHtml(g, p, nowMs){
   const r = rowResult(g, p, nowMs);
   const id = `nhl-detail-${g.id}`;
   return `<li class="nhl-row-item">
-    <button type="button" class="nhl-row" aria-expanded="false" aria-controls="${id}">
+    <button type="button" class="game-row nhl-row" aria-expanded="false" aria-controls="${id}">
       <span class="nhl-row-time">${rowTime(g, p)}</span>
       <span class="nhl-row-game">${rowGame(g)}</span>
       <span class="nhl-row-pick">${rowPick(g, p)}</span>
@@ -462,7 +462,7 @@ function renderBoard(){
     const dd = dayDate(d);
     const n = (byDay[d] || []).length;
     const name = `${FMT_DAY.format(dd)}${d === today ? ', today' : ''}, ${n ? `${n} game${n === 1 ? '' : 's'}` : 'no games'}`;
-    return `<button type="button" class="nhl-day-chip" data-day="${d}" aria-pressed="${d === currentDay}" aria-label="${name}"${d === today ? ' aria-current="date"' : ''}>`
+    return `<button type="button" class="day-chip nhl-day-chip" data-day="${d}" aria-pressed="${d === currentDay}" aria-label="${name}"${d === today ? ' aria-current="date"' : ''}>`
       + `<span>${FMT_SHORT.format(dd)}</span><b>${dd.getUTCDate()}</b><span>${n || '–'}</span></button>`;
   }).join('');
   document.querySelectorAll('.nhl-day-chip').forEach(btn => btn.addEventListener('click', () => {

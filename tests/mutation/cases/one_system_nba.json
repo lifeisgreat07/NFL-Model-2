@@ -1,0 +1,13 @@
+{
+ "target": "src/sports/nba/pages/nba.js",
+ "tests": "tests/test_one_system.py",
+ "cases": [
+  {
+   "id": "one-chev-nba-own",
+   "why": "the NBA chevron drops the shared turn and snaps open.",
+   "find": "<svg class=\"game-row-chev nba-row-chev\"",
+   "replace": "<svg class=\"nba-row-chev\"",
+   "expect_caught_by": "test_one_game_row_and_one_chevron_turn"
+  }
+ ]
+}

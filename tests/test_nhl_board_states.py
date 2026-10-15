@@ -189,7 +189,7 @@ def test_a_game_with_no_start_time_names_the_rule(notes):
 
 
 def test_a_saved_pick_on_a_game_not_final_is_marked_locked(notes):
-    assert notes['tag_locked'] == '<span class="graded-tag nhl-locked">Locked Fri 5:00 PM ET</span>'
+    assert notes['tag_locked'] == '<span class="graded-tag tag-fill nhl-locked">Locked Fri 5:00 PM ET</span>'
     assert notes['tag_in_progress'] == notes['tag_locked']
     assert notes['tag_final'] == '' and notes['tag_postponed'] == ''
 

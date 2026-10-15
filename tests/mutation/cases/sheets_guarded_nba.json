@@ -4,9 +4,9 @@
  "cases": [
   {
    "id": "sheets-nba-hover-unguarded",
-   "why": "the NBA row's hover sticks after a tap again.",
-   "find": "@media (hover: hover){\n  .nba-row:hover{background:var(--surface);}\n}",
-   "replace": ".nba-row:hover{background:var(--surface);}",
+   "why": "an NBA rule hovers outside the guard and sticks after a tap.",
+   "find": "#game-grid.nba-board{display:block; max-width:760px;}",
+   "replace": "#game-grid.nba-board{display:block; max-width:760px;}\n.nba-side a:hover{color:var(--text);}",
    "expect_caught_by": "test_every_hover_rule_sits_behind_the_hover_guard"
   }
  ]

@@ -16,15 +16,10 @@ body{ flex-direction:column; }
 .home-theme{ width:44px; height:44px; flex:none; border-radius:var(--r-md); border:1px solid var(--border);
   background:transparent; color:var(--text); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
 .home-theme svg{ width:18px; height:18px; }
-.home-switch{ display:flex; gap:var(--s1); background:var(--surface-2); border:1px solid var(--border);
-  border-radius:var(--r-full); padding:var(--s1); }
-.home-switch a{ font-size:var(--fs-13); font-weight:700; padding:var(--s1) var(--s3); border-radius:var(--r-full);
-  color:var(--text-2); text-decoration:none; min-height:40px; display:inline-flex; align-items:center; }
-.home-switch span.is-unbuilt{ font-size:var(--fs-13); font-weight:700; padding:var(--s1) var(--s3);
+.home-switch{ margin-top:0; }  /* Stage 78 item 37 (X10): the shared .sport-switch, placed in the home bar. */
+.home-switch span.is-unbuilt{ font-size:var(--fs-13); font-weight:700; padding:0 var(--s3);
   color:var(--text-3); min-height:40px; display:inline-flex; align-items:center; cursor:default; }
-/* Stage 78 item 36 (V9): the raised segment is drawn with a hairline, not a shadow. */
-.home-switch a[aria-current="page"]{ background:var(--surface); color:var(--text); box-shadow:inset 0 0 0 1px var(--border-strong); }
-.home-switch a:focus-visible, .home-card:focus-visible, .home-brand:focus-visible, .home-theme:focus-visible,
+.home-card:focus-visible, .home-brand:focus-visible, .home-theme:focus-visible,
 .home-links a:focus-visible, .home-faq summary:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
 .home-main{ width:100%; max-width:1100px; margin:0 auto; padding:var(--s7) var(--s5) var(--s8); display:grid; gap:var(--s4); align-content:start; }
 .page.active.home-page{ display:grid; gap:var(--s6); align-content:start; }
@@ -51,7 +46,6 @@ body{ flex-direction:column; }
 .home-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:var(--s5);
   display:grid; gap:var(--s3); align-content:start; color:var(--text); text-decoration:none; min-width:0; }
 @media (hover: hover){
-  .home-switch a:hover{ color:var(--text); }
   .home-card:hover{ border-color:var(--border-strong); }
 }
 .home-card-top{ display:flex; justify-content:space-between; align-items:baseline; gap:var(--s2); flex-wrap:wrap; }

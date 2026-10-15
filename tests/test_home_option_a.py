@@ -36,7 +36,7 @@ def test_the_header_has_the_three_marks_the_wordmark_the_pills_and_a_theme_butto
     assert 'rx="8.6" ry="5.2"' in h and 'rx="8.4" ry="3.2"' in h and 'r="8.4"' in h, 'football, puck P3, ball B2'
     assert '<span class="home-marks" aria-hidden="true">' in h, 'the marks repeat the name; a reader skips them'
     assert '<span class="home-wordmark">Sporta<span class="wm-accent">lytics</span></span>' in h
-    assert re.search(r'<nav class="home-switch" aria-label="Sports">.*?aria-current="page">Home</a>', h, re.S)
+    assert re.search(r'<nav class="sport-switch home-switch" aria-label="Sports">.*?aria-current="page">Home</a>', h, re.S)
     assert '<button type="button" class="home-theme" aria-label="Switch to the light theme">' in h
 
 
@@ -55,7 +55,7 @@ def test_how_it_works_has_three_steps_in_order():
 def test_new_here_asks_option_cs_three_questions_closed():
     faq = re.search(r'<section class="home-faq".*?</section>', PAGE, re.S).group(0)
     assert '<h2 id="home-faq-title">New here?</h2>' in faq
-    asked = re.findall(r'<details><summary>(.*?)</summary><p>.+?</p></details>', faq)
+    asked = re.findall(r'<details class="disclosure"><summary>(.*?)</summary><p>.+?</p></details>', faq)
     assert asked == ['What is a model?', 'What is the market?', 'Can I check the picks?']
     assert ' open' not in faq, 'the answers wait to be asked'
 
