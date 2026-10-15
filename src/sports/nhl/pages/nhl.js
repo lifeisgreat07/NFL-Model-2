@@ -310,11 +310,17 @@ function lockedTag(g, p){
 }
 
 const FIRST_SAVED = Object.values(DATA.picks).map(p => p.saved).filter(Boolean).sort()[0] || null;
+/* A game that started before the first pick was ever saved (Stage 77 item
+   24): the model had not launched, so the row says so instead of "No pick",
+   which reads as a pick the model skipped. */
+function beforeLaunch(g){
+  return !!(FIRST_SAVED && g.start && g.start < FIRST_SAVED);
+}
 function waitingCard(g){
   const status = scoreLine(g);
   let note;
   if(g.status === 'final' || g.status === 'in_progress') {
-    note = FIRST_SAVED && g.start && g.start < FIRST_SAVED ? 'Before the first pick was saved.' : 'No pick was saved for this game.';
+    note = beforeLaunch(g) ? 'Before the first pick was saved.' : 'No pick was saved for this game.';
   } else if(g.status === 'cancelled' || g.status === 'postponed') {
     note = 'No pick: a postponed or cancelled game is never predicted.';
   } else {
@@ -354,7 +360,7 @@ function rowResult(g, p, nowMs){
     if(p.result === 'wrong') return {text: 'Missed', cls: 'wrong'};
     return {text: g.status === 'final' ? 'Grading' : 'Locked', cls: 'locked'};
   }
-  if(g.status === 'final' || g.status === 'in_progress') return {text: 'No pick', cls: 'off'};
+  if(g.status === 'final' || g.status === 'in_progress') return {text: beforeLaunch(g) ? 'Before launch' : 'No pick', cls: 'off'};
   const run = g.start ? lockRunFor(g.start) : null;
   if(!run) return {text: 'Not locked', cls: 'open'};
   if(run.getTime() + LOCK_SLACK_MS < nowMs) return {text: 'Late', cls: 'open'};
@@ -362,7 +368,7 @@ function rowResult(g, p, nowMs){
 }
 /* The pick in a row: the saved side, with the chance the leading model gave it. */
 function rowPick(g, p){
-  if(!p) return '—';
+  if(!p) return beforeLaunch(g) ? '' : '—';
   // On a phone "even" takes its own line under the pick (nhl.css).
   return pickText(g, p).replace(' · even', '<span class="row-even"><span class="row-even-sep"> · </span>even</span>');
 }

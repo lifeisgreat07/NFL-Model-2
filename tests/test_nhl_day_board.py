@@ -28,7 +28,7 @@ PAGES = ROOT / 'src' / 'sports' / 'nhl' / 'pages'
 JS = PAGES / 'nhl.js'
 NODE = shutil.which('node')
 
-FUNCTIONS = ('dayDate', 'dayIso', 'weekDays', 'defaultDay', 'lockRunFor', 'winnerOf', 'rowResult', 'pickText', 'rowPick',
+FUNCTIONS = ('dayDate', 'dayIso', 'weekDays', 'defaultDay', 'lockRunFor', 'winnerOf', 'beforeLaunch', 'rowResult', 'pickText', 'rowPick',
              'rowTime', 'rowGame', 'daySummary')
 
 
@@ -52,7 +52,9 @@ def run_node(body):
     if not NODE:
         pytest.skip('node not available')
     src = source()
-    js = ("const ET = 'America/New_York';\n"
+    # No pick saved yet here, so beforeLaunch is false: these rows read as
+    # the launched board's (tests/test_nhl_before_launch.py covers the rest).
+    js = ("const ET = 'America/New_York';\nconst FIRST_SAVED = null;\n"
           + ''.join(const_line(src, c) for c in ('LOCK_RUN_HOURS_UTC', 'LOCK_SLACK_MS', 'FMT_HOUR', 'EVEN_BAND'))
           + ''.join(function_source(src, n) for n in FUNCTIONS) + body)
     r = subprocess.run([NODE, '-e', js], capture_output=True, encoding='utf-8')
