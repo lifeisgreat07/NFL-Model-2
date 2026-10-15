@@ -1,0 +1,27 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_result_words.py",
+ "cases": [
+  {
+   "id": "result-words-nfl-row-right",
+   "why": "the NFL's phone rows say Right/Wrong again beside cards that say Correct/Missed (Stage 77 item 26).",
+   "find": "    : verdict ? ['correct', 'Correct'] : ['incorrect', 'Missed'];",
+   "replace": "    : verdict ? ['correct', 'Right'] : ['incorrect', 'Wrong'];",
+   "expect_caught_by": "test_no_label_says_right_or_wrong"
+  },
+  {
+   "id": "result-words-nfl-badge-wrong",
+   "why": "the tick and cross say \"this model was wrong\".",
+   "find": "\"this model's pick: missed\"",
+   "replace": "'this model was wrong'",
+   "expect_caught_by": "test_every_result_label_says_correct_or_missed"
+  },
+  {
+   "id": "result-words-dive-wrong",
+   "why": "Team Deep-Dive marks a miss \"wrong\".",
+   "find": "<span class=\"dive-cross\">missed</span>",
+   "replace": "<span class=\"dive-cross\">wrong</span>",
+   "expect_caught_by": "test_no_label_says_right_or_wrong"
+  }
+ ]
+}

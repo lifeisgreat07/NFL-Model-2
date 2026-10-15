@@ -19,8 +19,8 @@
     {
       "id": "nhl-board-wrong-never-said",
       "why": "a model on the losing side is still called right.",
-      "find": "${s === won ? 'right' : 'wrong'}",
-      "replace": "${s === won ? 'right' : 'right'}",
+      "find": "${s === won ? 'correct' : 'missed'}",
+      "replace": "${s === won ? 'correct' : 'correct'}",
       "expect_caught_by": "test_a_model_on_the_losing_side_is_wrong"
     },
     {

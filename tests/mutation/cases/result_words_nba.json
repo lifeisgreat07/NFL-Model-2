@@ -1,0 +1,27 @@
+{
+ "target": "src/sports/nba/pages/nba.js",
+ "tests": "tests/test_result_words.py",
+ "cases": [
+  {
+   "id": "result-words-nba-line",
+   "why": "the NBA card's result line says right/wrong.",
+   "find": "<b>${s === won ? 'correct' : 'missed'}</b>",
+   "replace": "<b>${s === won ? 'right' : 'wrong'}</b>",
+   "expect_caught_by": "test_every_result_label_says_correct_or_missed"
+  },
+  {
+   "id": "result-words-nba-row",
+   "why": "the NBA rows say Hit instead of Correct.",
+   "find": "if(p.result === 'correct') return {text: 'Correct', cls: 'right'};",
+   "replace": "if(p.result === 'correct') return {text: 'Hit', cls: 'right'};",
+   "expect_caught_by": "test_every_result_label_says_correct_or_missed"
+  },
+  {
+   "id": "result-words-nba-day-summary",
+   "why": "the NBA day summary says \"1 of 3 right so far\" above rows that say Correct.",
+   "find": ", ${right} of ${graded.length} correct so far`;",
+   "replace": ", ${right} of ${graded.length} right so far`;",
+   "expect_caught_by": "test_every_result_label_says_correct_or_missed"
+  }
+ ]
+}

@@ -12,7 +12,7 @@
     {
       "id": "nhl-day-summary-no-right",
       "why": "the day's summary stops saying how many picks were right.",
-      "find": ", ${right} of ${graded.length} right so far",
+      "find": ", ${right} of ${graded.length} correct so far",
       "replace": ", ${graded.length} graded",
       "expect_caught_by": "test_the_summary_counts_the_days_right_picks_as_mark_wrote_it"
     },

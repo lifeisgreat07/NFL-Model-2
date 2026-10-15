@@ -21,8 +21,8 @@
    "id": "phone-row-result-inverted",
    "target": "src/dashboard/app.js",
    "why": "a wrong pick reads Right",
-   "find": "    : verdict ? ['correct', 'Right'] : ['incorrect', 'Wrong'];",
-   "replace": "    : verdict ? ['incorrect', 'Wrong'] : ['correct', 'Right'];",
+   "find": "    : verdict ? ['correct', 'Correct'] : ['incorrect', 'Missed'];",
+   "replace": "    : verdict ? ['incorrect', 'Missed'] : ['correct', 'Correct'];",
    "expect_caught_by": "test_a_row_says_the_time_the_game_the_pick_and_the_result"
   }
  ]
