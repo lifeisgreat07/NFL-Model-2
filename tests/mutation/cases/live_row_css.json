@@ -1,0 +1,13 @@
+{
+ "target": "src/sports/nhl/pages/nhl.css",
+ "tests": "tests/test_live_row.py",
+ "cases": [
+  {
+   "id": "live-row-nhl-uncoloured",
+   "why": "Live falls back to the plain text colour, unlike the Locked it replaces.",
+   "find": ".nhl-row-result.locked, .nhl-row-result.live{color:var(--accent);}",
+   "replace": ".nhl-row-result.locked{color:var(--accent);}",
+   "expect_caught_by": "test_live_is_coloured_as_locked_was"
+  }
+ ]
+}

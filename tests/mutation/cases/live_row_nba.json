@@ -1,0 +1,20 @@
+{
+ "target": "src/sports/nba/pages/nba.js",
+ "tests": "tests/test_live_row.py",
+ "cases": [
+  {
+   "id": "live-row-nba-says-locked",
+   "why": "an NBA game under way reads Locked beside a Live time cell.",
+   "find": "    if(g.status === 'in_progress') return {text: 'Live', cls: 'live'};\n",
+   "replace": "",
+   "expect_caught_by": "test_a_picked_game_under_way_says_live_once"
+  },
+  {
+   "id": "live-row-nba-live-twice",
+   "why": "the NBA time cell says Live beside a status cell saying Live.",
+   "find": "  if(g.status === 'in_progress' && !p) return 'Live';",
+   "replace": "  if(g.status === 'in_progress') return 'Live';",
+   "expect_caught_by": "test_a_picked_game_under_way_says_live_once"
+  }
+ ]
+}

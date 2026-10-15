@@ -37,7 +37,7 @@
 .nhl-row-result{justify-self:end; white-space:nowrap; font-size:var(--fs-13); font-weight:600;}
 .nhl-row-result.right{color:var(--good);}
 .nhl-row-result.wrong{color:var(--warn);}
-.nhl-row-result.locked{color:var(--accent);}
+.nhl-row-result.locked, .nhl-row-result.live{color:var(--accent);}
 .nhl-row-result.open, .nhl-row-result.off{color:var(--text-3); font-weight:500;}
 .nhl-row-chev{color:var(--text-3); transition:transform .15s;}
 .nhl-row[aria-expanded="true"] .nhl-row-chev{transform:rotate(180deg);}

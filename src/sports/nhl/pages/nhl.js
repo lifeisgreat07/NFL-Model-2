@@ -358,6 +358,9 @@ function rowResult(g, p, nowMs){
   if(p){
     if(p.result === 'correct') return {text: 'Correct', cls: 'right'};
     if(p.result === 'wrong') return {text: 'Missed', cls: 'wrong'};
+    // Stage 77 item 25 (copy row 14): a game under way says Live, not Locked;
+    // the time cell then keeps the start time rather than saying Live twice.
+    if(g.status === 'in_progress') return {text: 'Live', cls: 'live'};
     return {text: g.status === 'final' ? 'Grading' : 'Locked', cls: 'locked'};
   }
   if(g.status === 'final' || g.status === 'in_progress') return {text: beforeLaunch(g) ? 'Before launch' : 'No pick', cls: 'off'};
@@ -372,9 +375,9 @@ function rowPick(g, p){
   // On a phone "even" takes its own line under the pick (nhl.css).
   return pickText(g, p).replace(' · even', '<span class="row-even"><span class="row-even-sep"> · </span>even</span>');
 }
-function rowTime(g){
+function rowTime(g, p){
   if(g.status === 'final') return g.lp === 'OT' ? 'Final/OT' : g.lp === 'SO' ? 'Final/SO' : 'Final';
-  if(g.status === 'in_progress') return 'Live';
+  if(g.status === 'in_progress' && !p) return 'Live';
   return g.start ? FMT_HOUR.format(new Date(g.start)) : 'TBD';
 }
 function rowGame(g){
@@ -414,7 +417,7 @@ function rowHtml(g, p, nowMs){
   const id = `nhl-detail-${g.id}`;
   return `<li class="nhl-row-item">
     <button type="button" class="nhl-row" aria-expanded="false" aria-controls="${id}">
-      <span class="nhl-row-time">${rowTime(g)}</span>
+      <span class="nhl-row-time">${rowTime(g, p)}</span>
       <span class="nhl-row-game">${rowGame(g)}</span>
       <span class="nhl-row-pick">${rowPick(g, p)}</span>
       <span class="nhl-row-result ${r.cls}">${r.text}</span>${CHEVRON}
