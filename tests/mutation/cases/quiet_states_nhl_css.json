@@ -1,0 +1,20 @@
+{
+ "target": "src/sports/nhl/pages/nhl.css",
+ "tests": "tests/test_quiet_states.py",
+ "cases": [
+  {
+   "id": "quiet-locked-accent",
+   "why": "the NHL's Locked rows wear the accent again.",
+   "find": ".nhl-row-result.locked{color:var(--text-2);}",
+   "replace": ".nhl-row-result.locked{color:var(--accent);}",
+   "expect_caught_by": "test_locked_is_quiet_and_live_keeps_the_accent"
+  },
+  {
+   "id": "quiet-amber-back",
+   "why": "the amber comes back for Likely.",
+   "find": ".nhl-goalie{margin-left:var(--s1); vertical-align:1px;}",
+   "replace": ".nhl-goalie{margin-left:var(--s1); vertical-align:1px;}\n[data-sport=\"nhl\"]{--nhl-likely:#E0A456;}\n.nhl-goalie.likely{color:var(--nhl-likely);}",
+   "expect_caught_by": "test_the_amber_is_retired"
+  }
+ ]
+}

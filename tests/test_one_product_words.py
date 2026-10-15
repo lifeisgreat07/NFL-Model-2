@@ -53,4 +53,6 @@ def test_rows_say_correct_or_missed(sport):
 
 
 def test_goalie_pills_are_on_the_type_scale():
-    assert re.search(r'\.nhl-goalie\{[^}]*font-size:var\(--fs-11\)', read('src/sports/nhl/pages/nhl.css'))
+    # Since Stage 78 item 38 a goalie pill is a shared .tag, which carries the size.
+    assert re.search(r'\.tag, \.graded-tag[^{]*\{[^}]*font-size:var\(--fs-11\)', read('src/dashboard/styles.css'))
+    assert '<span class="tag tag-fill nhl-goalie confirmed">' in read('src/sports/nhl/pages/nhl.js')

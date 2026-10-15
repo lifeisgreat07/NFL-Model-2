@@ -42,4 +42,4 @@ def text(gl):
 def test_the_name_and_the_status_are_separate_words(gl, spoken):
     html, said = text(gl)
     assert said == spoken
-    assert '</b><span class="visually-hidden">, </span><span class="nhl-goalie' in html
+    assert '</b><span class="visually-hidden">, </span><span class="tag ' in html

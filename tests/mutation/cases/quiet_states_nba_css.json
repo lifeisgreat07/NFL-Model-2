@@ -1,0 +1,13 @@
+{
+ "target": "src/sports/nba/pages/nba.css",
+ "tests": "tests/test_quiet_states.py",
+ "cases": [
+  {
+   "id": "quiet-nba-locked-accent",
+   "why": "the NBA's Locked rows wear the accent.",
+   "find": ".nba-row-result.locked{color:var(--text-2);}",
+   "replace": ".nba-row-result.locked{color:var(--accent);}",
+   "expect_caught_by": "test_locked_is_quiet_and_live_keeps_the_accent"
+  }
+ ]
+}

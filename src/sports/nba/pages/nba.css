@@ -18,7 +18,9 @@
 .nba-row-result{justify-self:end; white-space:nowrap; font-size:var(--fs-13); font-weight:600;}
 .nba-row-result.right{color:var(--good);}
 .nba-row-result.wrong{color:var(--warn);}
-.nba-row-result.locked, .nba-row-result.live{color:var(--accent);}
+/* Stage 78 item 38: Locked is a state, not news; the accent is kept for a game under way. */
+.nba-row-result.locked{color:var(--text-2);}
+.nba-row-result.live{color:var(--accent);}
 .nba-row-result.open, .nba-row-result.off{color:var(--text-3); font-weight:500;}
 .nba-row-detail{padding:0 0 var(--s3);}
 .nba-row-team{white-space:nowrap;}

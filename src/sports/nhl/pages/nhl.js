@@ -184,10 +184,10 @@ function scoreLine(g){
 function goalieText(team, gl){
   if(!gl || !gl.name) return `${team} <b>none named</b>`;
   let pill;
-  if(gl.basis !== 'projected') pill = '<span class="nhl-goalie unreported">Last start</span>';
-  else if(gl.status === 'Confirmed') pill = '<span class="nhl-goalie confirmed">Confirmed</span>';
-  else if(gl.status === 'Likely') pill = '<span class="nhl-goalie likely">Likely</span>';
-  else pill = '<span class="nhl-goalie unreported">No report yet</span>';
+  if(gl.basis !== 'projected') pill = '<span class="tag tag-outline nhl-goalie unreported">Last start</span>';
+  else if(gl.status === 'Confirmed') pill = '<span class="tag tag-fill nhl-goalie confirmed">Confirmed</span>';
+  else if(gl.status === 'Likely') pill = '<span class="tag tag-outline nhl-goalie likely">Likely</span>';
+  else pill = '<span class="tag tag-outline nhl-goalie unreported">No report yet</span>';
   // Stage 77 item 34 (L7): a hidden comma, so a screen reader says
   // "Jake Allen, Confirmed", not "Jake AllenConfirmed"; the pill's margin is the gap on screen.
   return `${team} <b>${escapeHtml(gl.name)}</b><span class="visually-hidden">, </span>${pill}`;
