@@ -245,7 +245,7 @@
       </div>
       <select id="week-select" class="week-select visually-hidden" aria-label="Week" tabindex="-1"></select>
       <!-- Stage 68 item 36 (N1, N2): on a phone, one button for the sort, the PDF and the filters. -->
-      <button type="button" class="btn nfl-phone-only" id="board-options-btn" aria-expanded="false">Options</button>
+      <button type="button" class="btn nfl-phone-only" id="board-options-btn" aria-expanded="false">Options<svg class="nfl-options-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
       <!-- #sort-select below ships VISIBLE and enhanceSelect() adds
            visually-hidden once the listbox is built, so the select is never
            hidden unless the control replacing it already exists. That
@@ -282,6 +282,8 @@
           <path d="M7 10l5 5 5-5M12 15V3"/>
         </svg>Print / PDF
       </a>
+      <!-- Stage 77 item 27 (N2): said, not silently hidden, when a week has no PDF. -->
+      <span id="picks-pdf-none" class="pdf-none" hidden></span>
     </div>
     <div class="filter-row" id="filter-row">
       <button class="btn btn-chip filter-btn active" data-filter="all" aria-pressed="true">All Games</button>

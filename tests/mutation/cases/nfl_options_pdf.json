@@ -1,0 +1,20 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_nfl_options_pdf.py",
+ "cases": [
+  {
+   "id": "pdf-none-silent",
+   "why": "the Print / PDF link vanishes again with nothing in its place (Stage 77 item 27, N2).",
+   "find": "      pdfNone.hidden = hasPdf;\n",
+   "replace": "      pdfNone.hidden = true;\n",
+   "expect_caught_by": "test_the_sentence_sits_where_the_link_would_and_shows_only_without_it"
+  },
+  {
+   "id": "pdf-none-preview-generic",
+   "why": "a preview week gives the generic sentence instead of saying the PDF comes at the lock.",
+   "find": "  return weekData && weekData.preview\n",
+   "replace": "  return false\n",
+   "expect_caught_by": "test_a_week_without_a_pdf_says_why"
+  }
+ ]
+}

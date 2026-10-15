@@ -1799,6 +1799,11 @@ function renderGames(){
   if(pdfLink){
     const hasPdf = picksPdfs.indexOf(currentBoardWeek) !== -1;
     pdfLink.hidden = !hasPdf;
+    const pdfNone = document.getElementById('picks-pdf-none');
+    if(pdfNone){
+      pdfNone.hidden = hasPdf;
+      pdfNone.textContent = hasPdf ? '' : pdfNoneText(weekData);
+    }
     if(hasPdf){
       pdfLink.href = 'dist/picks_' + currentBoardWeek + '.pdf';
       pdfLink.setAttribute('aria-label', 'Download printable PDF of picks for ' + currentBoardWeek.replace('_week', ' week '));
@@ -2073,6 +2078,14 @@ function dismissOnboarding(){
   try{ localStorage.setItem(ONBOARDING_KEY, '1'); }catch(e){}
   const el = document.getElementById('onboarding-banner');
   if(el) el.style.display = 'none';
+}
+/* Stage 77 item 27 (N2): a week without a printable PDF says why, where the
+   link would be. A PDF is made for each saved week, so a preview week has
+   none until its picks lock. */
+function pdfNoneText(weekData){
+  return weekData && weekData.preview
+    ? 'The printable PDF comes when these picks lock.'
+    : 'No printable PDF for this week.';
 }
 /* N1's two buttons, shown on a phone only: Options holds the sort, the PDF
    and the filters; the provenance line and the regional-TV note sit behind

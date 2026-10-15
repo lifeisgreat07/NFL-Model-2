@@ -1,0 +1,13 @@
+{
+ "target": "src/dashboard/body.html",
+ "tests": "tests/test_nfl_options_pdf.py",
+ "cases": [
+  {
+   "id": "pdf-none-slot-gone",
+   "why": "the sentence's slot is not in the page.",
+   "find": "      <span id=\"picks-pdf-none\" class=\"pdf-none\" hidden></span>\n",
+   "replace": "",
+   "expect_caught_by": "test_the_sentence_sits_where_the_link_would_and_shows_only_without_it"
+  }
+ ]
+}

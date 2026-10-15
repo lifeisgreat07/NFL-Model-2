@@ -1730,9 +1730,11 @@
      prints whole; and a link to another site prints its address, so a sheet
      of paper still says where the proof lives. The page prints in the light
      theme (app.js switches it for the print and back). */
+  /* Stage 77 item 27 (N2): where the Print / PDF link would be on a week without one. */
+  .pdf-none{align-self:center; font-size:var(--fs-12); color:var(--text-2);}
   @media print{
     .sidebar, .topbar, .sport-strip, .bottom-nav, .bnav-more-sheet, .skip-link,
-    .filter-row, .pdf-link, .onboarding-banner, .page-jump{display:none !important;}
+    .filter-row, .pdf-link, .pdf-none, .onboarding-banner, .page-jump{display:none !important;}
     body{display:block; min-height:0; padding-top:0; background:var(--surface);}
     /* The bars, dots and chips are drawn as backgrounds, which a browser
        leaves off the paper by default; without them a card's split and a
@@ -1794,10 +1796,16 @@
   #page-board:not(.nfl-options-open) .filter-row > .lbx,
   #page-board:not(.nfl-options-open) #sort-select,
   #page-board:not(.nfl-options-open) #picks-pdf-link,
+  #page-board:not(.nfl-options-open) #picks-pdf-none,
   #page-board:not(.nfl-options-open) #filter-row{display:none;}
   #page-board:not(.nfl-prov-open) #board-lock-note,
   #page-board:not(.nfl-prov-open) #board-tv-note{display:none;}
   #board-prov-btn{margin:0 0 var(--s2); min-height:44px;}
+  /* Stage 77 item 27 (N2): Options shows when it is open, as the listbox buttons do. */
+  #board-options-btn{display:inline-flex; align-items:center; gap:var(--s1);}
+  #board-options-btn .nfl-options-chev{color:var(--text-2); transition:transform var(--dur-base) var(--ease);}
+  #board-options-btn[aria-expanded="true"]{border-color:var(--accent); color:var(--accent);}
+  #board-options-btn[aria-expanded="true"] .nfl-options-chev{transform:rotate(180deg); color:var(--accent);}
   #onboarding-banner .onboarding-content > h4,
   #onboarding-banner .onboarding-content > ul,
   #onboarding-banner .onboarding-more{display:none;}
