@@ -1,0 +1,13 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_share_words.py",
+ "cases": [
+  {
+   "id": "share-copied-old-words",
+   "why": "the share button flashes \"Copied (1 picks)\" again (Stage 77 item 18).",
+   "find": "function copiedText(n){ return `Link copied · ${n} pick${n === 1 ? '' : 's'}`; }",
+   "replace": "function copiedText(n){ return `Copied (${n} picks)`; }",
+   "expect_caught_by": "test_the_share_button_says_the_link_is_copied_and_counts_right"
+  }
+ ]
+}

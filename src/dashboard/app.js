@@ -2378,12 +2378,16 @@ function copyShareLink(btn){
   };
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(url)
-      .then(()=> flash(`Copied (${encoded.picked} picks)`))
+      .then(()=> flash(copiedText(encoded.picked)))
       .catch(fallback);
   } else {
     fallback();
   }
 }
+
+/* Stage 77 item 18 (the 2026-10-13 audit's copy fix 7): "Copied (1 picks)"
+   said what was copied in brackets and miscounted one. */
+function copiedText(n){ return `Link copied · ${n} pick${n === 1 ? '' : 's'}`; }
 
 // Non-null only while a shared link is open. renderPicksGrid reads it, which
 // is what keeps the shared view from touching localStorage at all.
