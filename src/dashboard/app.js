@@ -1252,14 +1252,28 @@ function fmtRatingScale(epaPerPlay){
   return String(Math.round(Math.abs(epaPerPlay) * ratingScale()));
 }
 
-function whyRow(label, val){
+function whyRow(label, val, text){
   const pct = Math.min(50, Math.abs(val)*300); // scaled for visual width, not a real unit
   const cls = val >= 0 ? 'pos' : 'neg';
   return `<div class="why-row">
     <span class="why-label">${label}</span>
     <div class="why-bar-track"><div class="why-bar-fill ${cls}" style="width:${pct}%;"></div></div>
-    <span class="why-val">${val>=0?'+':''}${val.toFixed(3)}</span>
+    <span class="why-val">${text !== undefined ? text : `${val>=0?'+':''}${val.toFixed(3)}`}</span>
   </div>`;
+}
+/* Stage 77 item 23 (the audit's copy row 12): a why{} value is that part's
+   push on Model A's log-odds, signed toward the home side -- not a rating,
+   so it is not printed in points per 100 plays. It is printed as the points
+   of win chance it gave a team: Model A's home chance with the part, less
+   the chance with the part taken back out of the log-odds. "SEA +1.2" means
+   that part added 1.2 points to SEA's chance. */
+function whyChance(val, homePct, home, away){
+  if(typeof homePct !== 'number' || homePct <= 0 || homePct >= 100) return '—';
+  const p = homePct / 100;
+  const without = 1 / (1 + Math.exp(-(Math.log(p / (1 - p)) - val)));
+  const pts = Math.round((p - without) * 1000) / 10;
+  if(pts === 0) return 'even';
+  return `${pts > 0 ? home : away} +${Math.abs(pts).toFixed(1)}`;
 }
 
 /* The Week Board's summary strip is gone: Games / Most confident / Biggest
@@ -1876,10 +1890,11 @@ function renderGames(){
       ${whyMarketSentence(g)}
       <button class="btn btn-link why-toggle" data-why="${idSafe}" aria-expanded="false" aria-controls="why-${idSafe}">+ the numbers behind this</button>
       <div class="why-panel" id="why-${idSafe}">
-        ${whyRow('Offense edge', g.why.off_matchup)}
-        ${whyRow('Defense edge', g.why.def_matchup)}
-        ${whyRow('QB edge', g.why.qb_matchup)}
-        ${(g.why.ol_continuity !== undefined) ? whyRow('O-line continuity', g.why.ol_continuity) : ''}
+        <p class="why-unit">Points of win chance each part gave a team in Model A's pick.</p>
+        ${whyRow('Offense edge', g.why.off_matchup, whyChance(g.why.off_matchup, g.fbA_home, g.home, g.away))}
+        ${whyRow('Defense edge', g.why.def_matchup, whyChance(g.why.def_matchup, g.fbA_home, g.home, g.away))}
+        ${whyRow('QB edge', g.why.qb_matchup, whyChance(g.why.qb_matchup, g.fbA_home, g.home, g.away))}
+        ${(g.why.ol_continuity !== undefined) ? whyRow('O-line continuity', g.why.ol_continuity, whyChance(g.why.ol_continuity, g.fbA_home, g.home, g.away)) : ''}
         ${trackRecordHtml(g.mktB_home, 'panel')}
       </div>` : '';
     const kickoff = kickoffLabel(g);

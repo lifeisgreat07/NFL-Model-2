@@ -1,0 +1,13 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_why_chance.py",
+ "cases": [
+  {
+   "id": "why-chance-value-wraps",
+   "why": "\"DEN +1.2\" wraps onto two lines in the 52px value cell at 390px.",
+   "find": "min-width:52px; text-align:right; flex-shrink:0; white-space:nowrap;}",
+   "replace": "width:52px; text-align:right; flex-shrink:0;}",
+   "expect_caught_by": "test_the_value_cell_keeps_to_one_line"
+  }
+ ]
+}
