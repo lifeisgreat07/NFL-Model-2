@@ -1,0 +1,148 @@
+{
+  "season": 2026,
+  "week": 6,
+  "source": "nflverse schedule, via nflreadpy.load_schedules",
+  "read_at": "2026-10-15T11:02:54Z",
+  "games": [
+    {
+      "away": "SEA",
+      "home": "DEN",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -2.5,
+      "neutral_site": false,
+      "venue": "Empower Field at Mile High"
+    },
+    {
+      "away": "HOU",
+      "home": "JAX",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 2.5,
+      "neutral_site": true,
+      "venue": "Wembley Stadium"
+    },
+    {
+      "away": "CHI",
+      "home": "ATL",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -1.5,
+      "neutral_site": false,
+      "venue": "Mercedes-Benz Stadium"
+    },
+    {
+      "away": "BAL",
+      "home": "CLE",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -5.5,
+      "neutral_site": false,
+      "venue": "Huntington Bank Field"
+    },
+    {
+      "away": "TEN",
+      "home": "IND",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 7.0,
+      "neutral_site": false,
+      "venue": "Lucas Oil Stadium"
+    },
+    {
+      "away": "NYJ",
+      "home": "NE",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 7.5,
+      "neutral_site": false,
+      "venue": "Gillette Stadium"
+    },
+    {
+      "away": "NO",
+      "home": "NYG",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -1.5,
+      "neutral_site": false,
+      "venue": "MetLife Stadium"
+    },
+    {
+      "away": "CAR",
+      "home": "PHI",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -1.5,
+      "neutral_site": false,
+      "venue": "Lincoln Financial Field"
+    },
+    {
+      "away": "PIT",
+      "home": "TB",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -2.5,
+      "neutral_site": false,
+      "venue": "Raymond James Stadium"
+    },
+    {
+      "away": "ARI",
+      "home": "LA",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 12.5,
+      "neutral_site": false,
+      "venue": "SoFi Stadium"
+    },
+    {
+      "away": "LAC",
+      "home": "KC",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 8.5,
+      "neutral_site": false,
+      "venue": "GEHA Field at Arrowhead Stadium"
+    },
+    {
+      "away": "BUF",
+      "home": "LV",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -5.5,
+      "neutral_site": false,
+      "venue": "Allegiant Stadium"
+    },
+    {
+      "away": "DAL",
+      "home": "GB",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 1.5,
+      "neutral_site": false,
+      "venue": "Lambeau Field"
+    },
+    {
+      "away": "WAS",
+      "home": "SF",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 7.5,
+      "neutral_site": false,
+      "venue": "Levi's Stadium"
+    }
+  ]
+}
