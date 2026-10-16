@@ -582,14 +582,33 @@ function renderStandings(){
     `<h2 class="section-title">${conf} Conference</h2><div class="nhl-div-grid">${divs.map(table).join('')}</div>`).join('');
 }
 
-/* ---------- ratings ---------- */
+/* ---------- ratings ----------
+   Stage 79 item 47 (the 2026-10-13 audit's V8): a club's row is the NFL's
+   Power Ratings row, built from the shared stylesheet's classes: rank, logo
+   and name, and its goal rating as a bar about a zero line against the
+   league's largest, whose ends the header prints. The NFL's sparkline and
+   rank move need a rating's history, which the daily run does not keep. */
+function ratingAxisHtml(scale, title){
+  return `<div class="net-head"><span>${title}</span><div class="net-head-row"><div class="net-axis" aria-hidden="true">`
+    + `<span class="ax-min">${signed(-scale, 2)}</span><span class="ax-zero">0</span><span class="ax-max">${signed(scale, 2)}</span></div><span></span></div></div>`;
+}
+function ratingRowHtml(t, i, scale){
+  const w = Math.abs(t.goal) / scale * 100, src = logo(t.team);
+  const img = src ? `<img class="team-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : '';
+  return `<tr><td class="rank">${i + 1}</td>`
+    + `<td><div class="team-cell">${img}<span class="team-abbr">${escapeHtml(t.team)}</span><span class="team-full">${escapeHtml(teamName(t.team))}</span></div></td>`
+    + `<td class="num"><div class="net-cell-inner"><div class="srs-bar-track diverging" title="${signed(t.goal, 2)} goals a game; league scale ±${scale.toFixed(2)}, centre line is zero">`
+    + `<div class="srs-bar-fill" style="left:${t.goal >= 0 ? 50 : 50 - w / 2}%; width:${w / 2}%;"></div></div><span class="net-value">${signed(t.goal, 2)}</span></div></td>`
+    + `<td class="num">${signed(t.shot, 1)}</td></tr>`;
+}
 function renderRatings(){
   const r = DATA.ratings, el = document.getElementById('ratings-body');
   if(!r){ el.innerHTML = stateHtml('waiting', 'No ratings yet', 'The daily run writes them every run.'); return; }
+  const scale = Math.max(...r.teams.map(t => Math.abs(t.goal)), 0.01);
   const teams = `<p class="nhl-lede">As of ${escapeHtml(r.as_of)}. A club&#39;s goal rating is how many goals a game better than an average club it has been, from a ridge regression of every earlier game&#39;s goal margin, recent games counting more. The shot rating is the same on shots on goal. Model A reads the difference between the two clubs in a game.</p>
-    <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">Team ratings</caption>
-    <thead><tr><th scope="col" class="num">#</th><th scope="col">Club</th><th scope="col" class="num">Goals a game</th><th scope="col" class="num">Shots a game</th></tr></thead>
-    <tbody>${r.teams.map((t, i) => `<tr><td class="num">${i + 1}</td><th scope="row">${clubCell(t.team)}</th><td class="num">${signed(t.goal, 2)}</td><td class="num">${signed(t.shot, 1)}</td></tr>`).join('')}</tbody></table></div>`;
+    <div class="table-wrap"><table class="metrics-table nhl-ratings-table"><caption class="visually-hidden">Team ratings</caption>
+    <thead><tr><th scope="col">#</th><th scope="col">Club</th><th scope="col" style="text-align:center;">${ratingAxisHtml(scale, 'Goals a game')}</th><th scope="col" class="num">Shots a game</th></tr></thead>
+    <tbody>${r.teams.map((t, i) => ratingRowHtml(t, i, scale)).join('')}</tbody></table></div>`;
   const named = r.goalies.filter(g => g.name);
   const goalies = `<h2 class="section-title">Goalies</h2><p class="nhl-lede">Goals saved above the league&#39;s save rate per 100 shots faced, shrunk toward zero by ${Number(r.K_shots).toLocaleString('en-US')} shots, so a goalie with few shots sits near average. Listed: goalies who started this season or last, and whom a saved pick has named.</p>
     ${named.length ? `<div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">Goalie ratings</caption>
