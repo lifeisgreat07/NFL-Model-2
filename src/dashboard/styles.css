@@ -2033,3 +2033,12 @@
 [data-score-live] .score-off{display:none;}
 [data-score-live="in"] [data-score-slot="clock"]{color:var(--accent); font-weight:700;}
 [data-score-live] [data-score-slot="game"]{font-variant-numeric:tabular-nums;}
+
+/* Stage 80 item 62 (F14): with no connection the page shown is this
+   device's saved copy, and src/core/offline.js says so at the foot of the
+   screen, above the phone's bottom bar. */
+.offline-note{position:fixed; left:50%; transform:translateX(-50%); bottom:calc(var(--s4) + var(--safe-bottom, 0px)); z-index:1000;
+  margin:0; max-width:calc(100vw - 2 * var(--s4)); width:max-content; padding:var(--s2) var(--s4); border-radius:var(--r-md);
+  background:var(--text); color:var(--bg); font-size:var(--fs-13); font-weight:600; line-height:var(--lh-tight); box-shadow:var(--shadow-overlay);}
+.offline-note[hidden]{display:none;}
+@media (max-width:640px){ .offline-note{bottom:calc(72px + var(--safe-bottom, 0px)); width:auto;} }

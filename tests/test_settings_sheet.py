@@ -205,4 +205,4 @@ def test_the_build_puts_the_sheet_on_a_page_once(tmp_path):
     other = tmp_path / 'o.html'
     other.write_text('<body>none</body>', encoding='utf-8')
     assert not build.inject_sheet(other, block)
-    assert '    add_sheet(out)\n    add_scores(out)\n    return results' in Path(build.__file__).read_text(encoding='utf-8')
+    assert '    add_sheet(out)\n    add_scores(out)\n    add_offline(out)\n    return results' in Path(build.__file__).read_text(encoding='utf-8')

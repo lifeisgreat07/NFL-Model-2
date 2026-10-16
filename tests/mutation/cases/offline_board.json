@@ -1,0 +1,80 @@
+{
+ "target": "src/site/sw.js",
+ "tests": "tests/test_offline_board.py",
+ "cases": [
+  {
+   "id": "offline-cache-first",
+   "why": "a visitor with a connection is given last visit's board (Stage 80 item 62, F14).",
+   "find": "    e.respondWith(fetch(req)\n      .then(res => {",
+   "replace": "    e.respondWith(caches.match(key).then(hit => hit || fetch(req))\n      .then(res => {",
+   "expect_caught_by": "test_with_a_connection_the_page_is_always_the_networks"
+  },
+  {
+   "id": "offline-keeps-errors",
+   "why": "a 404 or a 500 replaces the good copy.",
+   "find": "if(res.ok){ const copy = res.clone(); caches.open(CACHE).then(c => c.put(key, copy)); }",
+   "replace": "{ const copy = res.clone(); caches.open(CACHE).then(c => c.put(key, copy)); }",
+   "expect_caught_by": "test_a_broken_page_does_not_replace_the_good_copy"
+  },
+  {
+   "id": "offline-other-hosts",
+   "why": "ESPN's logos and live scores are answered from the cache.",
+   "find": "  if(url.origin !== self.location.origin) return;\n",
+   "replace": "",
+   "expect_caught_by": "test_another_hosts_request_is_left_to_the_browser"
+  },
+  {
+   "id": "offline-old-copies-kept",
+   "why": "every deploy's copies pile up on the visitor's phone.",
+   "find": "k.startsWith('sportalytics-') && k !== CACHE",
+   "replace": "false",
+   "expect_caught_by": "test_a_new_build_drops_the_old_copies"
+  },
+  {
+   "id": "offline-route-in-key",
+   "why": "#board/2026_week6 and #board/2026_week5 are kept as two pages, and a bare address finds neither.",
+   "find": "  return u.origin + u.pathname.replace(/index\\.html$/, '');",
+   "replace": "  return u.href;",
+   "expect_caught_by": "test_a_pages_copy_is_kept_under_its_address_without_the_route"
+  },
+  {
+   "id": "offline-unpublished-file",
+   "why": "the worker keeps a file the build never publishes, so its install fails.",
+   "find": "'assets/icon-192.png', 'assets/icon-512.png'];",
+   "replace": "'assets/icon-192.png', 'assets/icon-512.png', 'assets/icon-1024.png'];",
+   "expect_caught_by": "test_every_file_the_worker_keeps_is_one_the_build_publishes"
+  },
+  {
+   "id": "offline-no-note",
+   "why": "with no connection the saved copy reads as the latest board.",
+   "target": "src/core/offline.js",
+   "find": "    const off = navigator.onLine === false;",
+   "replace": "    const off = false;",
+   "expect_caught_by": "test_with_no_connection_the_page_says_it_is_the_saved_copy"
+  },
+  {
+   "id": "offline-wrong-base",
+   "why": "a sport page looks for the worker in its own folder, where there is none.",
+   "target": "src/core/offline.js",
+   "find": "  return at < 0 ? null : String(href).slice(0, at);",
+   "replace": "  return at < 0 ? null : '';",
+   "expect_caught_by": "test_the_worker_is_found_from_the_pages_manifest_link"
+  },
+  {
+   "id": "offline-same-worker",
+   "why": "every build publishes the same worker, so a visitor's old copies are never dropped.",
+   "target": "src/site/build.py",
+   "find": "            digest.update((out / p).read_bytes())",
+   "replace": "            pass",
+   "expect_caught_by": "test_a_changed_page_makes_a_new_worker"
+  },
+  {
+   "id": "offline-icon-unpublished",
+   "why": "the 512 px icon is not published, so the site cannot be installed.",
+   "target": "src/site/build.py",
+   "find": "    'assets/icon-512.png': 'assets/icon-512.png',\n",
+   "replace": "",
+   "expect_caught_by": "test_the_manifest_offers_the_two_icon_sizes_an_install_needs"
+  }
+ ]
+}

@@ -32,7 +32,8 @@ SCORES_HOST = 'https://site.api.espn.com'
 def policy(connect):
     return ("default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
             "img-src 'self' data: https://a.espncdn.com https://assets.nhle.com; font-src data:; "
-            f"connect-src {connect}; manifest-src 'self'; base-uri 'none'; form-action 'none'")
+            # Stage 80 item 62: worker-src lets the page start the site's own service worker.
+            f"connect-src {connect}; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'")
 
 
 CSP = policy("'none'")
