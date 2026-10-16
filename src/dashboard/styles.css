@@ -1046,6 +1046,8 @@
     letter-spacing:.12em; text-transform:uppercase; color:var(--text-2);}
   .scoreboard-verdict{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-32); font-weight:800; line-height:1.1;
     letter-spacing:-.01em; color:var(--text); margin:var(--s2) 0 var(--s5);}
+  /* The games the race leaves out (Mark, 2026-10-15). */
+  .scoreboard-note{margin-top:var(--s4); font-size:var(--fs-13); line-height:var(--lh-body); color:var(--text-2);}
   .score-row{display:grid; grid-template-columns:120px 1fr 150px; gap:var(--s4); align-items:center; padding:var(--s2) 0;}
   .score-name{display:flex; align-items:center; gap:var(--s2); font-family:'Plus Jakarta Sans', sans-serif;
     font-weight:600; color:var(--text);}

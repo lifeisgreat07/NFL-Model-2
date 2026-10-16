@@ -1,0 +1,41 @@
+{
+ "target": "src/core/accuracy.js",
+ "tests": "tests/test_accuracy_component.py",
+ "cases": [
+  {
+   "id": "acc-race-own-games",
+   "why": "each forecast is raced on its own games again: 53, 48 and 47 on the NHL (Mark, 2026-10-15).",
+   "find": "  const rows = ACC_SERIES.map(s => ({...s, ...accRecord(shared, s.key)}));",
+   "replace": "  const rows = ACC_SERIES.map(s => ({...s, ...accRecord(games, s.key)}));",
+   "expect_caught_by": "test_the_race_compares_the_three_on_the_games_all_three_called"
+  },
+  {
+   "id": "acc-shared-two",
+   "why": "a game the market had no price for is still raced.",
+   "find": "function accShared(games){ return games.filter(g => ACC_SERIES.every(s => accCalled(g, s.key))); }",
+   "replace": "function accShared(games){ return games.filter(g => accCalled(g, 'a') && accCalled(g, 'b')); }",
+   "expect_caught_by": "test_the_race_compares_the_three_on_the_games_all_three_called"
+  },
+  {
+   "id": "acc-ranked-by-count",
+   "why": "Model A, on the lowest rate, is named the leader because it had the most games.",
+   "find": "    const best = rows.filter(r => r.n).sort((a, b) => b.pct - a.pct)[0];",
+   "replace": "    const best = rows.filter(r => r.n).sort((a, b) => b.correct - a.correct)[0];",
+   "expect_caught_by": "test_records_over_different_games_are_ranked_by_rate_not_count"
+  },
+  {
+   "id": "acc-left-out-silent",
+   "why": "the games the race leaves out vanish without a word.",
+   "find": "    ${accLeftOut(games, shared)}\n",
+   "replace": "",
+   "expect_caught_by": "test_what_the_race_leaves_out_is_said_with_each_forecasts_record_on_it"
+  },
+  {
+   "id": "acc-trend-own-games",
+   "why": "the trend still draws each forecast on its own games, so it disagrees with the race.",
+   "find": "  const games = accShared(all);",
+   "replace": "  const games = all;",
+   "expect_caught_by": "test_the_trend_is_drawn_from_the_same_games"
+  }
+ ]
+}

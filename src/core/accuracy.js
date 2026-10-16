@@ -20,10 +20,18 @@ const ACC_SERIES = [
   {key: 'b', name: 'Model B', subject: 'Model B', series: 'var(--series-b)', shape: 'sq'},
   {key: 'a', name: 'Model A', subject: 'Model A', series: 'var(--series-a)', shape: 'dot'},
 ];
+/* Whether a forecast picked a side in a game: it had a number, and not 50%. */
+function accCalled(g, key){ return g[key] !== null && g[key] !== undefined && g[key] !== 0.5; }
+/* The games all three called. Mark found (2026-10-15) the NHL's race
+   scoring Model A on 53 games, Model B on 48 and the market on 47 (no
+   market price when five picks were saved, one even market), and its
+   headline naming the lowest rate the leader. The race and the trend
+   compare the three on these games alone. */
+function accShared(games){ return games.filter(g => ACC_SERIES.every(s => accCalled(g, s.key))); }
 /* A forecast's record: the games it picked a side in (50% exactly picks
    none) and how many of those its side won. */
 function accRecord(games, key){
-  const decided = games.filter(g => g[key] !== null && g[key] !== undefined && g[key] !== 0.5);
+  const decided = games.filter(g => accCalled(g, key));
   const correct = decided.filter(g => (g[key] > 0.5) === g.home).length;
   return {correct, n: decided.length, pct: decided.length ? correct / decided.length * 100 : null};
 }
@@ -32,14 +40,27 @@ function accVerdict(rows){
   if(rows.every(r => r.n === 0)) return 'Nothing is graded yet.';
   const sorted = [...rows].sort((a, b) => b.correct - a.correct);
   const top = sorted[0], gap = top.correct - sorted[1].correct;
-  if(!rows.every(r => r.n === rows[0].n)) return `${top.subject} has the best record so far.`;
+  // Records over different games are ranked by their rate, never their count.
+  if(!rows.every(r => r.n === rows[0].n)){
+    const best = rows.filter(r => r.n).sort((a, b) => b.pct - a.pct)[0];
+    return `${best.subject} has the best rate so far.`;
+  }
   if(gap > 0) return `${top.subject} leads by ${gap} game${gap === 1 ? '' : 's'}.`;
   const level = sorted.filter(r => r.correct === top.correct);
   if(level.length === rows.length) return 'All three are level so far.';
   return `${level.map((r, i) => i === 0 ? r.subject : r.subject.replace(/^The /, 'the ')).join(' and ')} are level at the top.`;
 }
+/* What the race leaves out, and how each forecast did on it. */
+function accLeftOut(games, shared){
+  const out = games.length - shared.length;
+  if(!out) return '';
+  const each = ACC_SERIES.map(s => ({s, ...accRecord(games.filter(g => !shared.includes(g)), s.key)})).filter(r => r.n);
+  const said = each.map(r => `${r.s.name} ${r.correct} of ${r.n} right`).join(', ');
+  return `<div class="scoreboard-note">${out} more graded game${out === 1 ? ' is' : 's are'} left out, because a forecast had no number for ${out === 1 ? 'it' : 'them'} or called ${out === 1 ? 'it' : 'them'} 50-50.${said ? ` On ${out === 1 ? 'it' : 'those'}: ${said}.` : ''}</div>`;
+}
 function accRaceHtml(games){
-  const rows = ACC_SERIES.map(s => ({...s, ...accRecord(games, s.key)}));
+  const shared = accShared(games);
+  const rows = ACC_SERIES.map(s => ({...s, ...accRecord(shared, s.key)}));
   const race = [...rows].sort((a, b) => b.correct - a.correct);
   const row = r => `<div class="score-row">
       <div class="score-name"><span class="score-mark ${r.shape}" style="--series:${r.series}" aria-hidden="true"></span>${r.name}</div>
@@ -47,10 +68,11 @@ function accRaceHtml(games){
       <div class="score-figure"><span class="score-pct">${r.pct === null ? '&ndash;' : `${r.pct.toFixed(1)}%`}</span><span class="score-count">${r.correct} of ${r.n}</span></div>
     </div>`;
   return `<div class="scoreboard" role="region" aria-label="Season scoreboard">
-    <div class="scoreboard-eyebrow">Picked the winner &middot; ${games.length} game${games.length === 1 ? '' : 's'} graded</div>
+    <div class="scoreboard-eyebrow">Picked the winner &middot; the ${shared.length} game${shared.length === 1 ? '' : 's'} all three called</div>
     <div class="scoreboard-verdict">${accVerdict(rows)}</div>
     ${race.map(row).join('')}
     <div class="score-axis" aria-hidden="true"><span></span><div class="score-axis-track"><span class="coin">50% &middot; a coin flip</span><span class="full">100%</span></div><span></span></div>
+    ${accLeftOut(games, shared)}
   </div>`;
 }
 /* The chart frame's size: the NFL's, narrower on a phone. Its text, grid,
@@ -65,7 +87,8 @@ function accEmpty(f, text){
   return `<text class="acc-empty chart-title" x="${(f.W + f.padL - f.padR) / 2}" y="${(f.H - f.padB + f.padT) / 2}" text-anchor="middle">${text}</text>`;
 }
 /* Running accuracy by day, one line per forecast, ending in its marker. */
-function accTrendHtml(games){
+function accTrendHtml(all){
+  const games = accShared(all);
   const f = accFrame();
   const days = [...new Set(games.map(g => g.day))].sort();
   const x = i => days.length <= 1 ? f.padL : f.padL + i / (days.length - 1) * (f.W - f.padL - f.padR);
@@ -87,7 +110,7 @@ function accTrendHtml(games){
   }
   return `<div class="method-block acc-chart">
     <h3>Running accuracy</h3>
-    <p>Each forecast's share of its picks that won, counted from the first graded day to each day since.</p>
+    <p>Each forecast's share of its picks that won on the games all three called, counted from the first graded day to each day since.</p>
     ${accLegend()}
     <svg class="chart" viewBox="0 0 ${f.W} ${f.H}" style="width:100%; height:auto; max-width:${f.W}px;" role="img" aria-label="Line chart of running accuracy by day for the market, Model B and Model A.${days.length < 2 ? ' Not enough is graded to draw it yet.' : ''}">${grid}${body}</svg>
   </div>`;
