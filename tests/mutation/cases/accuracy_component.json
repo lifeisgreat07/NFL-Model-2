@@ -5,15 +5,15 @@
   {
    "id": "acc-even-call-counted",
    "why": "a 50% call is scored as picking the away side (Stage 79 item 46).",
-   "find": "  const decided = games.filter(g => g[key] !== null && g[key] !== undefined && g[key] !== 0.5);\n",
-   "replace": "  const decided = games.filter(g => g[key] !== null && g[key] !== undefined);\n",
+   "find": "function accCalled(g, key){ return g[key] !== null && g[key] !== undefined && g[key] !== 0.5; }",
+   "replace": "function accCalled(g, key){ return g[key] !== null && g[key] !== undefined; }",
    "expect_caught_by": "test_each_forecast_is_scored_on_the_games_it_picked_a_side_in"
   },
   {
    "id": "acc-missing-forecast-counted-wrong",
    "why": "a game a forecast had no number for counts against it.",
-   "find": "  const decided = games.filter(g => g[key] !== null && g[key] !== undefined && g[key] !== 0.5);\n",
-   "replace": "  const decided = games.filter(g => g[key] !== 0.5);\n",
+   "find": "function accCalled(g, key){ return g[key] !== null && g[key] !== undefined && g[key] !== 0.5; }",
+   "replace": "function accCalled(g, key){ return g[key] !== 0.5; }",
    "expect_caught_by": "test_each_forecast_is_scored_on_the_games_it_picked_a_side_in"
   },
   {

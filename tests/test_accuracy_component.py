@@ -48,7 +48,40 @@ def test_the_race_says_who_leads_as_the_nfl_scoreboard_does():
         'Model B and the betting market are level at the top.'
     assert run("accVerdict([{subject: 'Model B', correct: 0, n: 0}, {subject: 'Model A', correct: 0, n: 0}])") == 'Nothing is graded yet.'
     html = run('accRaceHtml(games)')
-    assert html.count('class="score-row"') == 3 and 'Picked the winner &middot; 4 games graded' in html
+    assert html.count('class="score-row"') == 3 and 'Picked the winner &middot; the 2 games all three called' in html
+
+
+# Mark, 2026-10-15: the NHL's race scored Model A on 53 games, Model B on 48
+# and the market on 47, and its headline named Model A, on the lowest rate,
+# the leader. The race and the trend now compare the three on the same games.
+
+def test_the_race_compares_the_three_on_the_games_all_three_called():
+    shared = run('accShared(games).map(g => games.indexOf(g))')
+    assert shared == [0, 1], 'no market price on the third, Model A even on the fourth'
+    html = run('accRaceHtml(games)')
+    counts = [c for c in html.split('class="score-count">')[1:]]
+    assert [c[:c.index('<')] for c in counts] == ['2 of 2', '2 of 2', '1 of 2'], 'every row over the same games'
+    no_market = GAMES + [{'day': '2026-10-07', 'a': 0.6, 'b': 0.6, 'm': None, 'home': True, 'c': 0.6, 'right': True}]
+    assert run('accShared(games).length', no_market) == 2, 'a game the market had no number for is not raced'
+
+
+def test_what_the_race_leaves_out_is_said_with_each_forecasts_record_on_it():
+    html = run('accRaceHtml(games)')
+    assert ('<div class="scoreboard-note">2 more graded games are left out, because a forecast had no number for them'
+            ' or called them 50-50. On those: Market 1 of 1 right, Model B 1 of 1 right, Model A 0 of 1 right.</div>') in html
+    assert 'scoreboard-note' not in run('accRaceHtml(games.slice(0, 2))'), 'nothing left out, nothing said'
+
+
+def test_records_over_different_games_are_ranked_by_rate_not_count():
+    assert run("accVerdict([{subject: 'Model A', correct: 32, n: 53, pct: 60.4}, {subject: 'Model B', correct: 31, n: 48, pct: 64.6},"
+               " {subject: 'The betting market', correct: 30, n: 47, pct: 63.8}])") == 'Model B has the best rate so far.'
+
+
+def test_the_trend_is_drawn_from_the_same_games():
+    one = run("accTrendHtml(games)")
+    same = run("accTrendHtml(accShared(games))")
+    assert one == same
+    assert 'on the games all three called' in one
 
 
 def test_the_interval_is_wilsons_at_95_percent():
