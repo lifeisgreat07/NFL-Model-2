@@ -235,6 +235,14 @@ function badge(picked, result){
   const path = state === 'incorrect' ? '<path d="M6 6l12 12M18 6L6 18"/>' : '<path d="M20 6L9 17l-5-5"/>';
   return `<span class="pick-badge ${state}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">${path}</svg></span>`;
 }
+/* Stage 80 item 61 (F15): a game not yet final is marked for src/core/scores.js,
+   which the build puts on the page and which fills the empty slots with
+   ESPN's score while the game is on. */
+function scoreMark(g){
+  if(!g.start || g.status === 'final' || g.status === 'cancelled' || g.status === 'postponed') return '';
+  return ` data-score-sport="nba" data-score-key="${g.away}@${g.home}" data-score-start="${g.start}" data-score-id="${g.id}"`;
+}
+const scoreSlot = (name, cls) => `<span class="score-on ${cls || ''}" data-score-slot="${name}"></span>`;
 function scoreLine(g){
   if(g.status === 'cancelled') return 'Cancelled';
   if(g.status === 'postponed') return 'Postponed';
@@ -286,10 +294,11 @@ function pickedCard(g, p){
   const tag = graded ? `<span class="graded-tag ${p.result === 'correct' ? 'correct' : 'incorrect'}">${p.result === 'correct' ? 'Correct' : 'Missed'}</span>`
     : (p.result === 'cancelled' ? '<span class="graded-tag tie">Cancelled</span>' : lockedTag(g, p));
   const status = scoreLine(g);
-  return `<div class="game-card">
+  return `<div class="game-card"${scoreMark(g)}>
     <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
     <div class="card-kickoff">${startLabel(g)}</div>
-    ${status ? `<div class="nba-card-status">${status}</div>` : ''}
+    ${status ? `<div class="nba-card-status score-off">${status}</div>` : ''}
+    <div class="nba-card-status score-on" data-score-slot="line"></div>
     ${resultLine(g, p)}
     ${tag ? `<div class="game-top"><div class="tag-row">${tag}</div></div>` : ''}
     <div class="card-hl">${headline}</div>
@@ -381,10 +390,11 @@ function waitingCard(g){
   } else {
     note = lockNote(g, Date.now());
   }
-  return `<div class="game-card nba-not-saved">
+  return `<div class="game-card nba-not-saved"${scoreMark(g)}>
     <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
     <div class="card-kickoff">${startLabel(g)}</div>
-    ${status ? `<div class="nba-card-status">${status}</div>` : ''}
+    ${status ? `<div class="nba-card-status score-off">${status}</div>` : ''}
+    <div class="nba-card-status score-on" data-score-slot="line"></div>
     <div class="nba-wait-note">${note}</div>
   </div>`;
 }
@@ -469,9 +479,9 @@ function rowHtml(g, p, nowMs){
   const r = rowResult(g, p, nowMs);
   const id = `nba-detail-${g.id}`;
   return `<li class="nba-row-item">
-    <button type="button" class="game-row nba-row" aria-expanded="false" aria-controls="${id}">
-      <span class="nba-row-time">${rowTime(g, p)}</span>
-      <span class="nba-row-game">${rowGame(g)}</span>
+    <button type="button" class="game-row nba-row" aria-expanded="false" aria-controls="${id}"${scoreMark(g)}>
+      <span class="nba-row-time"><span class="score-off">${rowTime(g, p)}</span>${scoreSlot('clock')}</span>
+      <span class="nba-row-game"><span class="score-off">${rowGame(g)}</span>${scoreSlot('game')}</span>
       <span class="nba-row-pick">${rowPick(g, p)}</span>
       <span class="nba-row-result ${r.cls}">${r.text}</span>${CHEVRON}
     </button>

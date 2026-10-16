@@ -1,0 +1,97 @@
+{
+ "target": "src/core/scores.js",
+ "tests": "tests/test_live_scores.py",
+ "cases": [
+  {
+   "id": "scores-pre-read",
+   "why": "a game not yet started is read as live at 0-0 (Stage 80 item 61, F15).",
+   "find": "if(state !== 'in' && state !== 'post') continue;",
+   "replace": "if(state === 'post' && false) continue;",
+   "expect_caught_by": "test_a_game_not_started_or_without_a_score_is_left_out"
+  },
+  {
+   "id": "scores-blank-score",
+   "why": "a missing score reads as a number and the row says 3-NaN.",
+   "find": "if(as === null || hs === null) continue;",
+   "replace": "",
+   "expect_caught_by": "test_a_game_not_started_or_without_a_score_is_left_out"
+  },
+  {
+   "id": "scores-no-alias",
+   "why": "the NHL's TBL never finds ESPN's TB, so its game never shows a score.",
+   "find": "function scoresCode(sport, team){ return (SCORES_ALIAS[sport] || {})[team] || team; }",
+   "replace": "function scoresCode(sport, team){ return team; }",
+   "expect_caught_by": "test_a_pages_team_codes_find_espns"
+  },
+  {
+   "id": "scores-id-ignored",
+   "why": "the NBA's game is found only by teams, so a rematch the same day takes the wrong score.",
+   "find": "if(id && s[`#${id}`]) return s[`#${id}`];",
+   "replace": "",
+   "expect_caught_by": "test_espns_id_wins_over_the_teams"
+  },
+  {
+   "id": "scores-asked-after-final",
+   "why": "a game ESPN has ended is asked about every minute for twelve hours.",
+   "find": "if(entry && entry.state === 'post') return false;",
+   "replace": "",
+   "expect_caught_by": "test_a_game_espn_has_called_final_is_not_asked_about_again"
+  },
+  {
+   "id": "scores-window-early",
+   "why": "the page asks from an hour before the start.",
+   "find": "const SCORES_BEFORE_MS = 10 * 60 * 1000;",
+   "replace": "const SCORES_BEFORE_MS = 60 * 60 * 1000;",
+   "expect_caught_by": "test_a_game_is_asked_about_from_ten_minutes_before_until_twelve_hours_after"
+  },
+  {
+   "id": "scores-utc-day",
+   "why": "a 10:30 PM Eastern game is looked for on the next day's scoreboard.",
+   "find": "timeZone: 'America/New_York', year: 'numeric'",
+   "replace": "timeZone: 'UTC', year: 'numeric'",
+   "expect_caught_by": "test_a_late_game_is_on_its_eastern_day_not_utcs"
+  },
+  {
+   "id": "scores-halftime",
+   "why": "halftime reads Q2 0:00.",
+   "find": "if(t.name === 'STATUS_HALFTIME') return 'Half';",
+   "replace": "",
+   "expect_caught_by": "test_the_clock_reads_as_a_fan_would_say_it"
+  },
+  {
+   "id": "scores-espn-codes",
+   "why": "the slots say ESPN's LAR and WSH where the page says LA and WAS.",
+   "find": "function scoresView(key, e, nowMs, fmt){\n  const [away, home] = key.split('@');",
+   "replace": "function scoresView(key, e, nowMs, fmt){\n  const [away, home] = key.split('@').map(t => scoresCode('nfl', t));",
+   "expect_caught_by": "test_a_live_game_says_live_with_the_pages_own_codes"
+  },
+  {
+   "id": "scores-no-stale-note",
+   "why": "a reading from ten minutes ago still reads as now.",
+   "find": "if(e.state !== 'post' && nowMs - e.at > SCORES_STALE_MS)",
+   "replace": "if(false)",
+   "expect_caught_by": "test_an_old_reading_says_when_it_was_taken"
+  },
+  {
+   "id": "scores-final-says-live",
+   "why": "ESPN's final reads Live.",
+   "find": "const word = e.state === 'post' ? 'Final' : 'Live';",
+   "replace": "const word = 'Live';",
+   "expect_caught_by": "test_espns_final_says_the_picks_wait_for_the_next_update"
+  },
+  {
+   "id": "scores-hidden-tab",
+   "why": "a tab in the background keeps asking ESPN every minute.",
+   "find": "if(busy || document.hidden) return;",
+   "replace": "if(busy) return;",
+   "expect_caught_by": "test_nothing_is_asked_while_the_tab_is_hidden_and_a_failure_is_swallowed"
+  },
+  {
+   "id": "scores-uncaught",
+   "why": "a refused request becomes a page error.",
+   "find": "      .catch(() => {})));",
+   "replace": "));",
+   "expect_caught_by": "test_nothing_is_asked_while_the_tab_is_hidden_and_a_failure_is_swallowed"
+  }
+ ]
+}

@@ -1,0 +1,68 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_live_scores.py",
+ "cases": [
+  {
+   "id": "scores-nhl-final-marked",
+   "why": "a final game keeps asking ESPN.",
+   "find": "if(!g.start || g.status === 'final' || g.status === 'cancelled' || g.status === 'postponed') return '';",
+   "replace": "if(!g.start || g.status === 'cancelled' || g.status === 'postponed') return '';",
+   "expect_caught_by": "test_a_day_board_marks_a_game_not_yet_final"
+  },
+  {
+   "id": "scores-nba-no-id",
+   "why": "the NBA's row loses ESPN's id.",
+   "find": " data-score-id=\"${g.id}\"",
+   "replace": "",
+   "target": "src/sports/nba/pages/nba.js",
+   "expect_caught_by": "test_a_day_board_marks_a_game_not_yet_final"
+  },
+  {
+   "id": "scores-nhl-row-unmarked",
+   "why": "the NHL's row never gets its score.",
+   "find": "aria-controls=\"${id}\"${scoreMark(g)}>",
+   "replace": "aria-controls=\"${id}\">",
+   "expect_caught_by": "test_a_day_boards_row_and_cards_carry_the_mark_and_the_slots"
+  },
+  {
+   "id": "scores-nfl-graded-marked",
+   "why": "a graded NFL game keeps asking ESPN.",
+   "target": "src/dashboard/app.js",
+   "find": "if(!g.gameday || !g.gametime_et || g.graded || g.status === 'final'",
+   "replace": "if(!g.gameday || !g.gametime_et || g.status === 'final'",
+   "expect_caught_by": "test_the_nfl_board_marks_a_game_not_yet_final_or_graded"
+  },
+  {
+   "id": "scores-nfl-card-slot",
+   "why": "the NFL card never says Live.",
+   "target": "src/dashboard/app.js",
+   "find": "      <div class=\"card-status score-on\" data-score-slot=\"line\"></div>\n",
+   "replace": "",
+   "expect_caught_by": "test_the_nfl_row_and_card_carry_the_mark_and_the_slots"
+  },
+  {
+   "id": "scores-slots-shown",
+   "why": "empty slots show before ESPN answers.",
+   "target": "src/dashboard/styles.css",
+   "find": ".score-on{display:none;}",
+   "replace": ".score-on{}",
+   "expect_caught_by": "test_until_espn_answers_the_row_and_card_read_as_before"
+  },
+  {
+   "id": "scores-not-built",
+   "why": "the build never puts the script on the pages.",
+   "target": "src/site/build.py",
+   "find": "    add_sheet(out)\n    add_scores(out)\n",
+   "replace": "    add_sheet(out)\n",
+   "expect_caught_by": "test_the_build_tries_the_three_sport_pages_only"
+  },
+  {
+   "id": "scores-doubled",
+   "why": "a rebuilt page carries the script twice.",
+   "target": "src/site/build.py",
+   "find": "    html = _SCORES_OLD.sub('', page.read_text(encoding='utf-8'))",
+   "replace": "    html = page.read_text(encoding='utf-8')",
+   "expect_caught_by": "test_the_build_puts_the_script_on_a_page_that_marks_games"
+  }
+ ]
+}

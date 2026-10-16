@@ -2023,3 +2023,13 @@
   #onboarding-banner.onboarding-open .onboarding-phone{margin:0 0 var(--s3);}
   .onboarding-phone .btn-link{font-size:inherit; min-height:24px;}
 }
+
+/* Stage 80 item 61 (F15): live scores. src/core/scores.js marks a game
+   data-score-live once ESPN has its score; until then the slots stay out
+   of the way and the row and card read as they always have. */
+.score-on{display:none;}
+[data-score-live] .score-on{display:inline;}
+[data-score-live] div.score-on{display:block;}
+[data-score-live] .score-off{display:none;}
+[data-score-live="in"] [data-score-slot="clock"]{color:var(--accent); font-weight:700;}
+[data-score-live] [data-score-slot="game"]{font-variant-numeric:tabular-nums;}

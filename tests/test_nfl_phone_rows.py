@@ -46,6 +46,8 @@ def row(g):
           "function escapeHtml(s){ return String(s ?? '').replace(/[&<>\"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[c])); }\n"
           # Times in Eastern, the default (Stage 80 item 57's setting is tests/test_settings_sheet.py's).
           + "function startZone(){ return 'America/New_York'; }\n" + fn('kickoffClock')
+          # Stage 80 item 61's live-score marks and slots are tests/test_live_scores.py's.
+          + "function scoreMark(){ return ''; }\nfunction scoreSlot(){ return ''; }\n"
           + fn('cardSide') + fn('phoneRowHtml') + f'console.log(phoneRowHtml({json.dumps(g)}, "x"));')
     r = subprocess.run([NODE, '-e', js], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr

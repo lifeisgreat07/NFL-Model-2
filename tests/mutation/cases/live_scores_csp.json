@@ -1,0 +1,21 @@
+{
+ "target": "src/sports/nba/pages/page.html",
+ "tests": "tests/test_content_security_policy.py",
+ "cases": [
+  {
+   "id": "scores-csp-wide",
+   "why": "a sport page may fetch from anywhere.",
+   "find": "connect-src https://site.api.espn.com;",
+   "replace": "connect-src https:;",
+   "expect_caught_by": "test_a_sport_page_reaches_espns_scoreboard_and_nothing_else"
+  },
+  {
+   "id": "scores-csp-home",
+   "why": "the home page, which fetches nothing, may reach ESPN too.",
+   "target": "src/site/home/page.html",
+   "find": "connect-src 'none';",
+   "replace": "connect-src https://site.api.espn.com;",
+   "expect_caught_by": "test_a_sport_page_reaches_espns_scoreboard_and_nothing_else"
+  }
+ ]
+}
