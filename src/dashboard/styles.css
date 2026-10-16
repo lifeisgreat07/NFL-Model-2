@@ -782,7 +782,7 @@
   .undo-toast{
     position:fixed; left:50%; transform:translateX(-50%) translateY(120%);
     bottom:calc(20px + var(--safe-bottom, 0px)); z-index:150;
-    background:var(--border); border:1px solid var(--border-strong); border-radius:10px;
+    background:var(--surface-2); border:1px solid var(--border-strong); border-radius:10px;  /* Stage 78 item 42 (C3): a surface token, not a border one */
     padding:var(--s3) var(--s4); display:flex; align-items:center; gap:var(--s4);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); color:var(--text);
     box-shadow:var(--shadow-overlay); opacity:0; transition:transform var(--dur-slow) var(--ease), opacity var(--dur-slow) var(--ease);
@@ -1528,7 +1528,8 @@
      chart: four counts do not need axes, and the point is that they are
      measured rather than asserted. */
   .agent-stats{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:var(--s3); margin-top:var(--s4);}
-  .agent-stat{background:var(--border); border:1px solid var(--border); border-radius:var(--r-md); padding:var(--s4);}
+  /* Stage 78 item 42 (C3): these four were painted with a border token; a surface wears a surface one. */
+  .agent-stat{background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-md); padding:var(--s4);}
   .agent-stat-n{font-family:'Plus Jakarta Sans', sans-serif; font-weight:700; font-size:var(--fs-24); line-height:1.1;}
   .agent-stat-l{font-size:var(--fs-12); color:var(--text-2); margin-top:var(--s1); line-height:1.4;}
   .agent-stat-note{font-size:var(--fs-11); color:var(--text-2); margin-top:var(--s2); line-height:1.4;}
@@ -1538,7 +1539,7 @@
      own problem -- so the page says what it holds before you scroll. */
   .page-jump{display:flex; flex-wrap:wrap; gap:var(--s2); margin:0 0 var(--s6);}
   .page-jump a{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12);
-    padding:var(--s2) var(--s3); border-radius:20px; background:var(--border);
+    padding:var(--s2) var(--s3); border-radius:20px; background:var(--surface-2);
     color:var(--text-2); text-decoration:none; border:1px solid var(--border); transition:color var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);}
   .method-part{scroll-margin-top:18px;}
   .method-part + .method-part{margin-top:var(--s7); padding-top:var(--s6); border-top:1px solid var(--border);}
@@ -1555,7 +1556,7 @@
   .roadmap-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:var(--s5); transition:border-color var(--dur-base) var(--ease);}
   .roadmap-status{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-11); letter-spacing:.06em; text-transform:uppercase;
     padding:var(--s1) var(--s2); border-radius:20px; display:inline-block; margin-bottom:var(--s3);}
-  .status-planned{background:var(--border); color:var(--text-2);}
+  .status-planned{background:var(--surface-2); color:var(--text-2);}
   /* Shipped vs not kept is told apart by FORM now, not by the graded green:
      shipped is an outlined pill in primary text, not-kept the filled grey
      .status-planned. The word on each still says which (Stage 9). */
