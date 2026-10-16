@@ -1,0 +1,13 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_prose_measure.py",
+ "cases": [
+  {
+   "id": "prose-measure-unbounded",
+   "why": "NFL Methodology and Checks run to 159 characters a line again (Stage 78 item 40, N11).",
+   "find": "line-height:1.68; color:var(--text-2); max-width:72ch;}",
+   "replace": "line-height:1.68; color:var(--text-2);}",
+   "expect_caught_by": "test_nfl_prose_caps_at_72ch"
+  }
+ ]
+}
