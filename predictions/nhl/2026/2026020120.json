@@ -1,0 +1,86 @@
+{
+ "game_id": "2026020120",
+ "season": 2026,
+ "slate": "2026-10-16",
+ "start_utc": "2026-10-17T02:00:00Z",
+ "home": "ANA",
+ "away": "BOS",
+ "model_a": 0.5365,
+ "model_b": 0.5286,
+ "pick": "ANA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.628018,
+  "shot_matchup": 4.666096,
+  "goalie_matchup_2000": -0.002526
+ },
+ "market": {
+  "game_id": "2026020120",
+  "start_utc": "2026-10-17T02:00:00Z",
+  "home": "ANA",
+  "away": "BOS",
+  "book": "DraftKings",
+  "home_price": -108.0,
+  "away_price": -112.0,
+  "home_prob": 0.4957,
+  "read_utc": "2026-10-16T21:01:50Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480843,
+   "name": "Lukas Dostal",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Derek_Lee27/status/2111152645683490902?s=20"
+  },
+  "away": {
+   "player_id": 8480022,
+   "name": "Michael DiPietro",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/adampellerin/status/2111159660170670098?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-16",
+  "read_utc": "2026-10-16T21:01:50Z",
+  "home": [
+   {
+    "name": "Cutter Gauthier",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Ian Moore",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mikael Granlund",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Ryan Poehling",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Troy Terry",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-10-16T21:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-15",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14521,
+  "training_games_priced": 7427
+ }
+}

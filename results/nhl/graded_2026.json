@@ -394,5 +394,17 @@
   "pick": "VGK",
   "result": "correct",
   "saved_utc": "2026-10-15T21:02:16Z"
+ },
+ {
+  "game_id": "2026020119",
+  "pick": "COL",
+  "result": "pending",
+  "saved_utc": "2026-10-16T21:01:50Z"
+ },
+ {
+  "game_id": "2026020120",
+  "pick": "ANA",
+  "result": "pending",
+  "saved_utc": "2026-10-16T21:01:50Z"
  }
 ]
