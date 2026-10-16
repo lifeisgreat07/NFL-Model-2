@@ -2,14 +2,14 @@
   "season": 2026,
   "week": 6,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-15T11:02:54Z",
+  "read_at": "2026-10-16T05:17:36Z",
   "games": [
     {
       "away": "SEA",
       "home": "DEN",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 14,
+      "home_score": 17,
       "spread_line": -2.5,
       "neutral_site": false,
       "venue": "Empower Field at Mile High"
@@ -40,7 +40,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -5.5,
+      "spread_line": -3.5,
       "neutral_site": false,
       "venue": "Huntington Bank Field"
     },
@@ -80,7 +80,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -1.5,
+      "spread_line": -3.5,
       "neutral_site": false,
       "venue": "Lincoln Financial Field"
     },
@@ -110,7 +110,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 8.5,
+      "spread_line": 7.5,
       "neutral_site": false,
       "venue": "GEHA Field at Arrowhead Stadium"
     },
@@ -120,7 +120,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -5.5,
+      "spread_line": -4.5,
       "neutral_site": false,
       "venue": "Allegiant Stadium"
     },
