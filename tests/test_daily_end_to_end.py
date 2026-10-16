@@ -147,7 +147,7 @@ def test_the_nba_page_inputs_write_every_field_plainly(tmp_path):
     sched = pd.DataFrame([
         {'game_id': '1', 'slate': '2026-10-20', 'start_utc': pd.Timestamp('2026-10-20T19:00:00Z'), 'home': 'DET',
          'away': 'BOS', 'status': 'final', 'game_type': 'regular', 'home_score': np.int64(101),
-         'away_score': np.int64(99), 'neutral_site': False, 'extra': 'dropped'},
+         'away_score': np.int64(99), 'neutral_site': False, 'time_valid': np.bool_(True), 'extra': 'dropped'},
         {'game_id': '2', 'slate': '2026-10-20', 'start_utc': pd.Timestamp('2026-10-20T23:30:00Z'), 'home': 'NY',
          'away': 'PHI', 'status': 'scheduled', 'game_type': 'regular', 'home_score': np.nan,
          'away_score': pd.NA, 'neutral_site': None},
@@ -156,7 +156,8 @@ def test_the_nba_page_inputs_write_every_field_plainly(tmp_path):
     assert doc['as_of'] == '2026-10-20T16:00:00Z'
     assert doc['games'][0] == {'game_id': '1', 'slate': '2026-10-20', 'start_utc': '2026-10-20T19:00:00Z',
                                'home': 'DET', 'away': 'BOS', 'status': 'final', 'game_type': 'regular',
-                               'home_score': 101, 'away_score': 99, 'neutral_site': False}
+                               'home_score': 101, 'away_score': 99, 'neutral_site': False, 'time_valid': True}
     assert doc['games'][1]['home_score'] is None and doc['games'][1]['away_score'] is None
+    assert doc['games'][1]['time_valid'] is None   # a row with no flag writes null, not a missing key
     out = page_inputs.write(tmp_path / 'a' / 'schedule_2026.json', doc)
     assert json.loads(out.read_text(encoding='utf-8')) == doc and not out.with_suffix('.tmp').exists()

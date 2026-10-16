@@ -3,48 +3,80 @@
  "tests": "tests/test_nba_tip_time.py",
  "cases": [
   {
-   "id": "nba-tip-placeholder-printed",
-   "why": "opening night's BOS at DET reads \"3:00 PM\" from ESPN's placeholder again (Stage 77 item 33, B5).",
+   "id": "nba-tip-flag-ignored",
+   "why": "a game ESPN says has no time set prints its placeholder hour (Stage 77 item 33, as corrected 2026-10-15).",
+   "find": "  return Boolean(g.start) && g.tv !== false;\n",
+   "replace": "  return Boolean(g.start);\n",
+   "expect_caught_by": "test_only_espns_false_reads_tbd"
+  },
+  {
+   "id": "nba-tip-missing-flag-reads-tbd",
+   "why": "a game with no flag (a schedule file from before the field) reads time TBD everywhere.",
+   "find": "  return Boolean(g.start) && g.tv !== false;\n",
+   "replace": "  return Boolean(g.start) && g.tv === true;\n",
+   "expect_caught_by": "test_only_espns_false_reads_tbd"
+  },
+  {
+   "id": "nba-tip-row-prints-anyway",
+   "why": "the row prints the hour while the card says time TBD.",
    "find": "  return tipSet(g) ? FMT_HOUR.format(new Date(g.start)) : 'time TBD';\n",
    "replace": "  return FMT_HOUR.format(new Date(g.start));\n",
    "expect_caught_by": "test_the_row_the_card_and_the_note_all_use_it"
   },
   {
-   "id": "nba-tip-weekend-matinee-hidden",
-   "why": "a Saturday 3:30 PM game, which is real, reads time TBD.",
-   "find": "  return parts.weekday === 'Sat' || parts.weekday === 'Sun' || Number(parts.hour) >= 17;\n",
-   "replace": "  return Number(parts.hour) >= 17;\n",
-   "expect_caught_by": "test_a_weekday_afternoon_is_a_placeholder_and_an_evening_or_a_weekend_is_not"
-  },
-  {
-   "id": "nba-tip-read-in-utc",
-   "why": "the hour is read in UTC, so a 7 PM Eastern tip (23:00Z) passes and a 3 PM placeholder (19:00Z) does too.",
-   "find": "const FMT_ET_WEEKDAY_HOUR = new Intl.DateTimeFormat('en-US', {weekday: 'short', hour: 'numeric', hourCycle: 'h23', timeZone: ET});",
-   "replace": "const FMT_ET_WEEKDAY_HOUR = new Intl.DateTimeFormat('en-US', {weekday: 'short', hour: 'numeric', hourCycle: 'h23', timeZone: 'UTC'});",
-   "expect_caught_by": "test_a_weekday_afternoon_is_a_placeholder_and_an_evening_or_a_weekend_is_not"
-  },
-  {
-   "id": "nba-tip-card-prints-placeholder",
-   "why": "the card's date line prints the placeholder hour while the row says time TBD.",
+   "id": "nba-tip-card-prints-anyway",
+   "why": "the card's date line prints the hour while the row says time TBD.",
    "find": "  return tipSet(g) ? `${day} · ${FMT_TIME.format(new Date(g.start))} ET` : `${day} · time TBD`;\n",
    "replace": "  return `${day} · ${FMT_TIME.format(new Date(g.start))} ET`;\n",
    "expect_caught_by": "test_the_row_the_card_and_the_note_all_use_it"
   },
   {
-   "id": "nba-tip-home-card-placeholder",
-   "target": "src/site/home/home.js",
-   "why": "the home page's NBA card reads \"First tip-off Tue 3:00 PM\" from the placeholder again.",
-   "find": "[['First tip-off', tipWhen(first)]]",
-   "replace": "[['First tip-off', when(first)]]",
-   "expect_caught_by": "test_the_home_page_reads_a_placeholder_the_same_way"
+   "id": "nba-tip-schedule-drops-flag",
+   "target": "src/sports/nba/schedule.py",
+   "why": "the schedule no longer keeps ESPN's flag, so every time is printed.",
+   "find": "            'time_valid': comp['timeValid'] if isinstance(comp.get('timeValid'), bool) else None,\n",
+   "replace": "            'time_valid': None,\n",
+   "expect_caught_by": "test_the_schedule_keeps_espns_flag"
   },
   {
-   "id": "nba-tip-home-rule-in-utc",
+   "id": "nba-tip-file-drops-flag",
+   "target": "src/sports/nba/page_inputs.py",
+   "why": "the daily run's schedule file leaves the flag out, so the board never sees it.",
+   "find": "                   'home_score', 'away_score', 'neutral_site', 'time_valid')",
+   "replace": "                   'home_score', 'away_score', 'neutral_site')",
+   "expect_caught_by": "test_the_schedule_file_and_the_board_carry_it"
+  },
+  {
+   "id": "nba-tip-board-drops-flag",
+   "target": "src/sports/nba/site.py",
+   "why": "the board's game data leaves the flag out.",
+   "find": "            'tv': g.get('time_valid')}",
+   "replace": "            }",
+   "expect_caught_by": "test_the_schedule_file_and_the_board_carry_it"
+  },
+  {
+   "id": "nba-tip-home-drops-unset",
+   "target": "src/site/home.py",
+   "why": "the home page is never told which starts are not set.",
+   "find": "if g.get('game_type') in game_types and g.get('start_utc') and g.get('time_valid') is False})",
+   "replace": "if False})",
+   "expect_caught_by": "test_the_home_page_lists_the_unset_starts"
+  },
+  {
+   "id": "nba-tip-home-ignores-unset",
    "target": "src/site/home/home.js",
-   "why": "the home page reads the tip's hour in UTC, so every evening tip reads as set and a 3 PM placeholder too.",
-   "find": "hourCycle: 'h23', timeZone: 'America/New_York'});",
-   "replace": "hourCycle: 'h23', timeZone: 'UTC'});",
-   "expect_caught_by": "test_the_home_page_reads_a_placeholder_the_same_way"
+   "why": "the home page prints a time ESPN says is not set.",
+   "find": "function tipSet(t){ return !UNSET_TIPS.has(t); }",
+   "replace": "function tipSet(t){ return true; }",
+   "expect_caught_by": "test_the_home_page_reads_them_the_same_way"
+  },
+  {
+   "id": "nba-tip-home-card-plain-time",
+   "target": "src/site/home/home.js",
+   "why": "the home page's NBA card before its first pick prints the first tip's hour whatever ESPN says.",
+   "find": "[['First tip-off', tipWhen(first)]]",
+   "replace": "[['First tip-off', when(first)]]",
+   "expect_caught_by": "test_the_home_page_reads_them_the_same_way"
   },
   {
    "id": "nba-tip-check-unwired",

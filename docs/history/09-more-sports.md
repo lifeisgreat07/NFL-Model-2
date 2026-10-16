@@ -553,7 +553,10 @@ and file:line for every one):
 30. The home gets an Updated line and done/remaining counts (H2).
 31. A filter that is active at a width where the chips are hidden prints "Filtered: Model Disagreement · clear" above the rows (N6).
 32. The NBA eyebrow says "Next week" when it shows next week (B1).
-33. A non-evening NBA tip time reads "time TBD" (B5).
+33. A non-evening NBA tip time reads "time TBD" (B5). **Corrected 2026-10-15:** the 3 PM BOS at DET
+    the audit read as a placeholder is a real NBC matinee, and ESPN marks it set. The hour rule
+    (a weekday tip before 5 PM) hid it, Christmas Day's noon and 2:30 games and the opening-night
+    lock time; ESPN's own flag (`timeValid`) is read instead, and only false reads "time TBD".
 34. The goalie pill gets a space or a visually-hidden separator (L7).
 35. An empty NHL day names the next day with games (L6).
 

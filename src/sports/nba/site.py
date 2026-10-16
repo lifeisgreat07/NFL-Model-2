@@ -104,7 +104,8 @@ def bar_colours(away: str, home: str) -> list[str]:
 
 def slim_game(g: Json) -> dict[str, Any]:
     return {'id': g['game_id'], 'day': g['slate'], 'start': g['start_utc'], 'home': g['home'], 'away': g['away'],
-            'status': g['status'], 'type': g.get('game_type'), 'hs': g.get('home_score'), 'as': g.get('away_score')}
+            'status': g['status'], 'type': g.get('game_type'), 'hs': g.get('home_score'), 'as': g.get('away_score'),
+            'tv': g.get('time_valid')}
 
 
 def slim_pick(p: Json, graded: dict[str, str]) -> dict[str, Any]:
