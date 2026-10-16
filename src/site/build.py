@@ -26,6 +26,7 @@ The deploy:   python -m src.site.build --out _site --live-url https://lifeisgrea
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import shutil
@@ -59,6 +60,9 @@ SHARED_FILES = {
     'og-home.png': 'assets/og/og-home.png',
     'assets/favicon-nhl.svg': 'assets/favicon-nhl.svg',
     'assets/favicon-nba.svg': 'assets/favicon-nba.svg',
+    # Stage 80 item 62 (F14): the icons an installed site needs.
+    'assets/icon-192.png': 'assets/icon-192.png',
+    'assets/icon-512.png': 'assets/icon-512.png',
     'assets/apple-touch-icon-nhl.png': 'assets/apple-touch-icon-nhl.png',
     'assets/apple-touch-icon-nba.png': 'assets/apple-touch-icon-nba.png',
     'assets/site.webmanifest': 'assets/site.webmanifest',
@@ -397,6 +401,48 @@ def add_scores(out: Path) -> list[str]:
     return [p for p in (f'{s}/index.html' for s in SPORTS) if inject_scores(out / p, block)]
 
 
+OFFLINE_JS = ROOT / 'src' / 'core' / 'offline.js'
+SERVICE_WORKER = ROOT / 'src' / 'site' / 'sw.js'
+OFFLINE_MARK = 'data-site-offline'
+_OFFLINE_OLD = re.compile(r'<script[^>]*\bdata-site-offline\b[^>]*>.*?</script>\n?', re.S)
+
+
+def offline_block() -> str:
+    """Stage 80 item 62: src/core/offline.js, which registers the service
+    worker and says when the board shown is this device's saved copy."""
+    from src.core.page_comments import strip_page_comments
+    script = strip_page_comments('<script>\n' + OFFLINE_JS.read_text(encoding='utf-8') + '</script>')
+    return script.replace('<script>', f'<script {OFFLINE_MARK}>', 1) + '\n'
+
+
+def inject_offline(page: Path, block: str) -> bool:
+    """Put it on one built page: only a page that links the site's manifest
+    (where the worker is found from), before its </body>."""
+    if not page.exists():
+        return False
+    html = _OFFLINE_OLD.sub('', page.read_text(encoding='utf-8'))
+    if 'assets/site.webmanifest' not in html or '</body>' not in html:
+        return False
+    at = html.rindex('</body>')
+    page.write_text(html[:at] + block + html[at:], encoding='utf-8')
+    return True
+
+
+def add_offline(out: Path) -> list[str]:
+    """The script on every page, then the worker at the site's root, named
+    for this build: a hash of the four pages as published."""
+    pages = ['index.html'] + [f'{s}/index.html' for s in SPORTS]
+    block = offline_block()
+    done = [p for p in pages if inject_offline(out / p, block)]
+    digest = hashlib.sha256()
+    for p in pages:
+        if (out / p).exists():
+            digest.update((out / p).read_bytes())
+    worker = SERVICE_WORKER.read_text(encoding='utf-8').replace('__SITE_BUILD__', digest.hexdigest()[:16])
+    (out / 'sw.js').write_text(worker, encoding='utf-8')
+    return done
+
+
 def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS,
                runner: Runner = run, fetcher: Fetcher = fetch) -> list[SportResult]:
     if out.exists():
@@ -409,6 +455,7 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     add_search(out, results)
     add_sheet(out)
     add_scores(out)
+    add_offline(out)
     return results
 
 

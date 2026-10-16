@@ -1,0 +1,13 @@
+{
+ "target": "src/sports/nhl/pages/page.html",
+ "tests": "tests/test_content_security_policy.py",
+ "cases": [
+  {
+   "id": "offline-csp-no-worker",
+   "why": "the NHL page's policy refuses the service worker (default-src 'none').",
+   "find": "manifest-src 'self'; worker-src 'self';",
+   "replace": "manifest-src 'self';",
+   "expect_caught_by": "test_each_page_carries_the_policy_once"
+  }
+ ]
+}
