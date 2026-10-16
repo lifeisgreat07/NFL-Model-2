@@ -3098,7 +3098,14 @@ function chartTickStep(labels, gap){
   return Math.max(1, Math.ceil((widest + 4) / Math.max(gap, 1)));
 }
 
-function buildCumulativeTrendChart(){
+/* Stage 79 item 49 (the 2026-10-13 audit's N9): on a desktop the trend is
+   drawn at its box's own width, so it fills the 1124 px block a fixed 680 left
+   half empty and one unit stays one pixel (its 11-unit text 11 px) at any
+   width. `width` is that box's width; the chart is redrawn when it changes
+   (sizeTrendChart), the first time when the page is shown. A phone keeps its
+   300-unit drawing (Stage 26 item 4). */
+const TREND_MIN_W = 360;
+function buildCumulativeTrendChart(width){
   // Two points, not one. A trend needs somewhere to go, and a single graded
   // week drew either nothing (every series short-circuits at valid.length < 2)
   // or, when an empty week was still being emitted as a data point, three flat
@@ -3141,7 +3148,7 @@ function buildCumulativeTrendChart(){
   // "<= 4 series are also direct-labeled" rule, so identity never rests on
   // colour alone even for a reader who skips the legend.
   const phone = chartIsPhone();
-  const W = phone ? 300 : 680, H = phone ? 230 : 220, padL = phone ? 34 : 36, padR = phone ? 20 : 74;
+  const W = phone ? 300 : Math.max(TREND_MIN_W, Math.round(width || 680)), H = phone ? 230 : 220, padL = phone ? 34 : 36, padR = phone ? 20 : 74;
   const padT=14, padB=28;
   const n = points.length;
   const x = i => n<=1 ? padL : padL + (i/(n-1))*(W-padL-padR);
@@ -3203,7 +3210,7 @@ function buildCumulativeTrendChart(){
     <h3>Cumulative Accuracy Trend</h3>
     <p style="margin-bottom:var(--s3);">Running accuracy as the season progresses -- not week-by-week noise, but how each approach has performed overall up to that point.</p>
     <div style="font-size:var(--fs-11); color:var(--text-2); margin-bottom:var(--s2);">${legend}</div>
-    <svg class="chart" viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:${W}px;" role="img" aria-label="Line chart of running accuracy by week for Model A, Model B, the market and, once you have made picks, yours. Each week's own figures are in the Week by week table below.">
+    <div class="trend-plot" id="trend-plot" data-w="${W}"><svg class="chart" viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:${W}px;" role="img" aria-label="Line chart of running accuracy by week for Model A, Model B, the market and, once you have made picks, yours. Each week's own figures are in the Week by week table below.">
       ${gridLines.join('')}
       ${lineFor('a','a')}
       ${lineFor('b','b')}
@@ -3211,7 +3218,7 @@ function buildCumulativeTrendChart(){
       ${lineFor('p','picks')}
       ${endLabels()}
       ${weekTicks}
-    </svg>
+    </svg></div>
     ${picksNote}
   </div>`;
 }
@@ -3691,7 +3698,7 @@ function renderAccuracy(){
   const cardsHtml = scoreboardHtml(o, myTotal > 0 ? {correct: myWins, n: myTotal, pct: myPct} : null,
                                    leftOutSentence(mineTally), accuracy.n_graded);
 
-  const cumulativeChartHtml = buildCumulativeTrendChart();
+  const cumulativeChartHtml = buildCumulativeTrendChart(0);
 
   // Each week names its own board when that week is saved (Stage 26 item 5);
   // a week the page has no board for stays plain text rather than a link to
@@ -3752,6 +3759,23 @@ function renderAccuracy(){
     + againstMarketHtml(accuracy.against_market);
 }
 renderAccuracy();
+/* Stage 79 item 49: the trend redrawn at its box's width whenever that
+   changes, including from 0 to its width the first time Accuracy is shown. */
+function sizeTrendChart(){
+  const plot = document.getElementById('trend-plot');
+  if(!plot || chartIsPhone()) return;
+  const w = Math.round(plot.clientWidth);
+  if(!w || w === Number(plot.dataset.w)) return;
+  const tmp = document.createElement('div');
+  tmp.innerHTML = buildCumulativeTrendChart(w);
+  const fresh = tmp.querySelector('#trend-plot');
+  if(fresh) plot.replaceWith(fresh);
+}
+{
+  const plotBox = document.getElementById('accuracy-content');
+  if(plotBox && window.ResizeObserver) new ResizeObserver(sizeTrendChart).observe(plotBox);
+  else window.addEventListener('resize', sizeTrendChart);
+}
 
 (function mountReliabilityDiagram(){
   const el = document.getElementById('reliability-diagram');
@@ -3853,9 +3877,21 @@ function renderTeamDive(){
     : '';
 
   content.innerHTML = diveTeamHtml(team, teamHistory.names[team]) + renderTeamNews(team)
-    + `<div class="table-wrap" style="padding:var(--s5) var(--s5);">${splitNote}${rowsHtml}</div>`
+    + `<div class="table-wrap" style="padding:var(--s5) var(--s5);">${splitNote}${diveScaleHtml(maxAbs)}${rowsHtml}</div>`
     + renderTeamGames(team);
   wireTeamGameToggles();
+}
+
+/* Stage 79 item 49 (the 2026-10-13 audit's N10): Deep-Dive's bars' scale,
+   printed above the bar column. It is this team's own largest net, not the
+   league's, so a full bar here and a full bar on Power Ratings are different
+   sizes, and the page says so. */
+function diveScaleHtml(maxAbs){
+  const scale = fmtRatingScale(maxAbs);
+  return `<p class="dive-note dive-scale-note">Each bar is scaled to this team's largest net in its own history, about ${scale} either way; the line through them is zero.</p>`
+    + `<div class="dive-row dive-scale" aria-hidden="true"><span class="dive-label"></span>`
+    + `<div class="net-axis dive-axis"><span class="ax-min">−${scale}</span><span class="ax-zero">0</span><span class="ax-max">+${scale}</span></div>`
+    + `<span class="dive-value"></span></div>`;
 }
 
 /* Which team the page is showing, as a logo and the full name above

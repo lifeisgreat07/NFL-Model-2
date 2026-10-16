@@ -5,8 +5,8 @@
     {
       "id": "trend-chart-phone-width-too-wide",
       "why": "the phone drawing goes back to a wide viewBox, so the chart is shrunk to fit again and its 11-unit text renders at about 7px on a 375px phone",
-      "find": "const W = phone ? 300 : 680, H = phone ? 230 : 220,",
-      "replace": "const W = phone ? 480 : 680, H = phone ? 230 : 220,",
+      "find": "const W = phone ? 300 : Math.max(TREND_MIN_W, Math.round(width || 680)), H = phone ? 230 : 220,",
+      "replace": "const W = phone ? 480 : Math.max(TREND_MIN_W, Math.round(width || 680)), H = phone ? 230 : 220,",
       "expect_caught_by": "test_the_trend_chart_is_drawn_for_the_phone_with_readable_text"
     },
     {

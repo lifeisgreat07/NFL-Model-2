@@ -7,10 +7,12 @@ an svg.chart (the one chart style in styles.css), no chart text renders under
 11 px once its viewBox is scaled to the page, the NFL's trend draws its 50%
 reference, and no script error is thrown. Before the item the NFL's trend
 printed 9 px text at 1440 px, its calibration chart 9 px at both widths and
-its reliability diagram one label at 10.5 px.
+its reliability diagram one label at 10.5 px. Since Stage 79 item 49 it also
+fails unless the NFL's trend, at 1440 px, is as wide as its box (it was 680
+px in 1072).
 
-`--self-test` puts a copy of the NFL page's chart text back to 9 units and
-fails unless it is reported.
+`--self-test` puts a copy of the NFL page's chart text back to 9 units, and
+another's trend back to a fixed width, and fails unless each is reported.
 
 Usage:
   python tests/browser/check_chart_text.py <nfl page.html> <nhl page.html> <nba page.html>
@@ -41,7 +43,9 @@ MEASURE = """() => {
   sizes.sort((a, b) => a.px - b.px);
   return {charts: charts.length, unstyled: charts.filter(s => !s.classList.contains('chart')).length,
           smallest: sizes[0] || null,
-          trendRef: !!page.querySelector('svg.chart[aria-label^="Line chart of running accuracy by week"] .chart-ref')}; }"""
+          trendRef: !!page.querySelector('svg.chart[aria-label^="Line chart of running accuracy by week"] .chart-ref'),
+          trendFill: (() => { const s = page.querySelector('svg[aria-label^="Line chart of running accuracy by week"]');
+            return s ? [Math.round(s.getBoundingClientRect().width), Math.round(s.parentElement.clientWidth)] : null; })()}; }"""
 
 
 async def check_pages(nfl, nhl, nba):
@@ -74,12 +78,17 @@ async def check_pages(nfl, nhl, nba):
                             report.append(f'{where} chart text at {m["smallest"]["px"]:.1f} px ("{m["smallest"]["text"]}")')
                         if sport == 'NFL' and page_id == 'accuracy' and not m['trendRef']:
                             report.append(f'{where} the trend draws no 50% reference')
+                        fill = m['trendFill']
+                        if sport == 'NFL' and page_id == 'accuracy' and width == 1440 and fill and abs(fill[0] - fill[1]) > 2:
+                            report.append(f'{where} the trend is {fill[0]} px wide in a {fill[1]} px box')
         await browser.close()
     return report
 
 
 #: The chart style's text rule, as it reads in every built page.
 RULE = '.chart text{font-size:var(--fs-11); fill:var(--text-2);}'
+#: What redraws the NFL's trend at its box's width (Stage 79 item 45's sibling, item 49).
+OBSERVE = 'new ResizeObserver(sizeTrendChart).observe(plotBox)'
 
 
 def self_test(tmp):
@@ -95,9 +104,15 @@ def self_test(tmp):
         return [f'self-test: the NFL page holds {html.count(RULE)} copies of the chart text rule, expected 1']
     bad = tmp / 'chart-nfl-9.html'
     bad.write_text(html.replace(RULE, RULE.replace('var(--fs-11)', '9px')), encoding='utf-8')
+    if html.count(OBSERVE) != 1:
+        return [f'self-test: the NFL page holds {html.count(OBSERVE)} trend observers, expected 1']
+    fixed = tmp / 'chart-nfl-fixed.html'
+    fixed.write_text(html.replace(OBSERVE, 'void plotBox'), encoding='utf-8')
     problems = [f'self-test: the real pages should be clean: {r}' for r in asyncio.run(check_pages(nfl, nhl, nba))]
     if not any(r.startswith('[NFL') and 'chart text at 9' in r for r in asyncio.run(check_pages(bad, nhl, nba))):
         problems.append('self-test: the NFL page with 9 px chart text was not reported')
+    if not any(r.startswith('[NFL accuracy') and 'px box' in r for r in asyncio.run(check_pages(fixed, nhl, nba))):
+        problems.append('self-test: the NFL page with a fixed-width trend was not reported')
     return problems
 
 

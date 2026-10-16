@@ -495,6 +495,9 @@
   .dive-split{display:flex; gap:var(--s3); font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-12);
     color:var(--text-2); font-variant-numeric:tabular-nums; white-space:nowrap;}
   .dive-note{font-size:var(--fs-12); color:var(--text-2); margin:0 0 var(--s3);}
+  /* Stage 79 item 49 (N10): the bars' scale, in the bar's column. */
+  .dive-row.dive-scale{padding:0 0 var(--s1); border-bottom:none;}
+  .net-axis.dive-axis{width:140px; flex-shrink:0;}  /* the bar's width; .net-axis alone is the Net column's 90 */
   /* On a phone the pair takes a second small line, lined up under the bar
      (Mark, 2026-09-28). After the rules above on purpose: the earlier
      767px block would lose to them on source order. */
@@ -505,6 +508,7 @@
        lines a row at 375px. flex-basis 0 overrides the inline width. */
     .dive-row .srs-bar-track{flex:1 1 0; min-width:48px;}
     .dive-split{flex-basis:100%; padding-left:calc(80px + var(--s4));}
+    .dive-row .dive-axis{flex:1 1 0; min-width:48px;}  /* Stage 79 item 49: the scale flexes with the bar */
   }
   .net-value{font-family:'Plus Jakarta Sans', sans-serif; text-align:right; justify-self:end; white-space:nowrap;}
   .srs-bar-track{position:relative; width:90px; height:6px; background:var(--border); border-radius:3px; overflow:hidden;}

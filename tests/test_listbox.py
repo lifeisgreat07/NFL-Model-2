@@ -307,9 +307,12 @@ def teamdive(source):
         'renderTeamDive is gone or was renamed. If the Team Deep-Dive moved, '
         're-anchor this file rather than deleting it.')
     # A matcher that drifts can still satisfy every assertion below it. The
-    # function is ~45 lines; anything an order of magnitude past that is a
-    # match that ran on into the rest of the file.
-    assert len(m.group(0)) < 4000, (
+    # function is ~50 lines (about 4,000 characters since Stage 79 item 49
+    # printed Deep-Dive's scale); a match past twice that ran on into the rest
+    # of the file. The cap sat at 4,000 until then, so the listbox mutation
+    # cases that add a line pushed it over and failed this fixture at setup --
+    # an ERROR the mutation runner reads as WRONG-GUARD.
+    assert len(m.group(0)) < 8000, (
         f'the renderTeamDive match ran to {len(m.group(0))} characters, so it '
         'is no longer just that function. Re-anchor it before reading '
         'anything off it.')

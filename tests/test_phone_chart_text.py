@@ -24,7 +24,7 @@ CHART_TEXT_UNITS = 11     # .chart text{font-size:var(--fs-11)}, styles.css
 
 
 def fn(name):
-    m = re.search(r'function ' + name + r'\(\)\{.*?\n\}\n', TEMPLATE, re.S)
+    m = re.search(r'function ' + name + r'\(\w*\)\{.*?\n\}\n', TEMPLATE, re.S)
     assert m, f'{name} is not findable -- re-anchor this test'
     return m.group(0)
 
@@ -38,7 +38,8 @@ def test_the_phone_width_is_the_pages_phone_width():
 
 def test_the_trend_chart_is_drawn_for_the_phone_with_readable_text():
     body = fn('buildCumulativeTrendChart')
-    m = re.search(r'const W = phone \? (\d+) : 680, H = phone \? \d+ : 220, padL = phone \? \d+ : 36, padR = phone \? \d+ : 74;', body)
+    # Since Stage 79 item 49 the desktop drawing takes its box's width.
+    m = re.search(r'const W = phone \? (\d+) : Math\.max\(TREND_MIN_W, Math\.round\(width \|\| 680\)\), H = phone \? \d+ : 220, padL = phone \? \d+ : 36, padR = phone \? \d+ : 74;', body)
     assert m, 'the trend chart no longer has a phone drawing (or its desktop one moved)'
     w = int(m.group(1))
     assert CHART_TEXT_UNITS * PHONE_RENDERED_PX / w >= MIN_PX, f'{CHART_TEXT_UNITS} units in a {w}-unit chart renders under {MIN_PX}px'
