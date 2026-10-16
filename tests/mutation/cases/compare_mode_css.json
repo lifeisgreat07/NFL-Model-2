@@ -1,0 +1,20 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_compare_mode.py",
+ "cases": [
+  {
+   "id": "compare-switch-on-phones",
+   "why": "the switch shows on a phone, where it does nothing.",
+   "find": "  .view-seg{display:none; border:",
+   "replace": "  .view-seg{display:inline-flex; border:",
+   "expect_caught_by": "test_the_switch_sits_beside_the_sort_and_only_where_the_table_fits"
+  },
+  {
+   "id": "compare-table-in-grid",
+   "why": "the table is squeezed into one card column.",
+   "find": "  #game-grid.is-table{display:block;}\n",
+   "replace": "",
+   "expect_caught_by": "test_the_board_draws_the_table_from_its_filtered_sorted_games"
+  }
+ ]
+}

@@ -61,6 +61,22 @@
       "find": "<td>Model A's features plus the current Vegas point spread</td>",
       "replace": "<td class=\"num\">Model A's features plus the current Vegas point spread</td>",
       "expect_caught_by": "test_figure_cells_hold_figures"
+    },
+    {
+      "id": "compare-header-takes-focus-too",
+      "target": "src/dashboard/app.js",
+      "why": "the Compare table's header takes a tab stop as well as its sort button, so a keyboard reaches every column twice (Stage 80 item 55).",
+      "find": "`<th scope=\"col\"${cls ? ` class=\"${cls}\"` : ''} aria-sort=",
+      "replace": "`<th scope=\"col\" tabindex=\"0\"${cls ? ` class=\"${cls}\"` : ''} aria-sort=",
+      "expect_caught_by": "test_sortable_headers_are_announced_and_reachable"
+    },
+    {
+      "id": "compare-table-outside-the-wrapper",
+      "target": "src/dashboard/app.js",
+      "why": "the Compare table is drawn outside .table-wrap, so on a phone it pushes the page sideways instead of scrolling in its own box.",
+      "find": "return `<div class=\"table-wrap\"><table class=\"metrics-table compare-table\">",
+      "replace": "return `<div class=\"compare-wrap\"><table class=\"metrics-table compare-table\">",
+      "expect_caught_by": "test_every_table_sits_in_the_wrapper"
     }
   ]
 }

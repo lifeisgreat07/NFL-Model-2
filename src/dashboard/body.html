@@ -281,6 +281,12 @@
         <option value="spread">Biggest Spread First</option>
         <option value="alpha">Alphabetical (Home Team)</option>
       </select>
+      <!-- Stage 80 item 55 (the audit's F9): the week as cards or as one table;
+           shown at 641 px and wider only, where the table fits (Mark, 2026-10-14). -->
+      <div class="view-seg" id="view-seg" role="group" aria-label="Show the week as">
+        <button type="button" data-view="cards" aria-pressed="true">Cards</button>
+        <button type="button" data-view="table" aria-pressed="false">Table</button>
+      </div>
       <a id="picks-pdf-link" class="btn pdf-link" href="#" download
          title="Printable PDF of this week's picks, ordered by confidence">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
