@@ -1,0 +1,20 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_more_sheet.py",
+ "cases": [
+  {
+   "id": "more-scrim-never-shown",
+   "why": "the open sheet stops dimming the page behind it (Stage 78 item 43, C4).",
+   "find": "  .bnav-more-sheet.open + .bnav-scrim{opacity:1; pointer-events:auto;}\n",
+   "replace": "",
+   "expect_caught_by": "test_the_scrim_shows_only_with_the_sheet_and_the_skip_link_only_with_the_menu"
+  },
+  {
+   "id": "more-skip-on-desktop",
+   "why": "\"Skip to the menu\" shows on a desktop, where there is no bottom menu.",
+   "find": "  .skip-link-nav{display:none;}",
+   "replace": "  .skip-link-nav{display:block;}",
+   "expect_caught_by": "test_the_scrim_shows_only_with_the_sheet_and_the_skip_link_only_with_the_menu"
+  }
+ ]
+}

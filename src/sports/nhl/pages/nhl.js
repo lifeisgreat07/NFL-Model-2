@@ -812,6 +812,21 @@ document.addEventListener('click', e => {
   if(sheet && sheet.classList.contains('open') && !sheet.contains(e.target) && !e.target.closest('#bnav-more-btn')) setMoreSheetOpen(false);
 });
 document.addEventListener('keydown', e => { if(e.key === 'Escape') setMoreSheetOpen(false); });
+/* Stage 78 item 43: a skip link moves focus and nothing else. Followed as a
+   link, its #main-content or #bottom-nav reached the router, which read it as
+   an unknown page: the board opened, focus went to its heading, and the
+   history gained an entry. */
+document.querySelectorAll('.skip-link').forEach(a => a.addEventListener('click', e => {
+  const target = document.getElementById(a.getAttribute('href').slice(1));
+  if(!target) return;
+  e.preventDefault();
+  target.focus();
+}));
+/* Stage 78 item 43: the sheet's own close button. */
+document.querySelector('#bnav-more-sheet .bnav-more-close').addEventListener('click', () => {
+  setMoreSheetOpen(false);
+  document.getElementById('bnav-more-btn').focus();
+});
 /* The browser checks (tests/browser/check_page.py) open each page by its section id, as they do the NFL's. */
 window.setActivePage = id => showPage(String(id).replace(/^page-/, ''));
 /* The top bar's height, for the table headers that stick below it under

@@ -1,0 +1,20 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_more_sheet.py",
+ "cases": [
+  {
+   "id": "more-nhl-skip-to-router",
+   "why": "the NHL's skip links reach the router again, which opens the board and adds a history entry.",
+   "find": "  e.preventDefault();\n  target.focus();",
+   "replace": "  target.focus();",
+   "expect_caught_by": "test_a_skip_link_does_not_reach_the_router"
+  },
+  {
+   "id": "more-nhl-close-strands-focus",
+   "why": "the NHL's close button leaves focus on a button that just disappeared.",
+   "find": "  setMoreSheetOpen(false);\n  document.getElementById('bnav-more-btn').focus();",
+   "replace": "  setMoreSheetOpen(false);",
+   "expect_caught_by": "test_the_close_button_closes_and_hands_focus_back"
+  }
+ ]
+}
