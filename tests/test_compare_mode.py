@@ -46,7 +46,8 @@ def run(expr):
         pytest.skip('node not available')
     js = (const('CARD_EVEN_BAND') + const('COMPARE_COLS') + const('COMPARE_PROB')
           + "function escapeHtml(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }\n"
-          + ''.join(fn(n) for n in ('cardSide', 'cardSideText', 'gradedTagHtml', 'compareKick', 'compareValue',
+          + "function startZone(){ return 'America/New_York'; }\n"
+          + ''.join(fn(n) for n in ('cardSide', 'cardSideText', 'gradedTagHtml', 'kickoffClock', 'compareKick', 'compareValue',
                                     'compareRows', 'compareSortState', 'compareTableHtml')))
     r = subprocess.run([NODE, '-e', js + f'\nprocess.stdout.write(JSON.stringify({expr}));'],
                        capture_output=True, encoding='utf-8')

@@ -1131,6 +1131,38 @@
   .pal-item small{flex-shrink:0; max-width:50%; text-align:right; color:var(--text-2); font-size:var(--fs-12);}
   .pal-item.is-active{background:var(--accent-soft);}
   .pal-none{margin:0; padding:var(--s4); font-size:var(--fs-14); color:var(--text-2);}
+  /* ---------- Settings and keyboard shortcuts (Stage 80 item 57, the 2026-10-13 audit's F10, F11) ----------
+     The sheet from src/core/sheet.js, its buttons (the sidebar's, the phone's
+     More sheet's, the home's), and compact cards. */
+  .side-settings{display:flex; align-items:center; gap:var(--s2); margin-bottom:var(--s2);}
+  .side-settings svg, .bnav-more-item[data-settings-open] svg{width:16px; height:16px; flex-shrink:0;}
+  .side-settings[hidden], .bnav-more-item[hidden], .home-settings[hidden]{display:none;}
+  .home-settings{border:0; background:none; padding:0; font:inherit; color:var(--accent); cursor:pointer; text-decoration:underline; min-height:24px;}
+  .sheet-shell{position:fixed; inset:0; z-index:95;}
+  .sheet-shell[hidden]{display:none;}
+  .sheet-scrim{position:absolute; inset:0; background:color-mix(in srgb, var(--bg) 60%, transparent);}
+  .sheet-dialog{position:absolute; left:50%; top:10vh; transform:translateX(-50%); width:min(520px, calc(100vw - 32px));
+    max-height:80vh; overflow-y:auto; background:var(--surface); border:1px solid var(--border-strong); border-radius:var(--r-lg);}
+  .sheet-head{display:flex; align-items:center; justify-content:space-between; padding:var(--s4) var(--s4) var(--s2);}
+  .sheet-head h2{margin:0; font-size:var(--fs-16); font-weight:800; color:var(--text);}
+  .sheet-x{width:32px; height:32px; display:grid; place-items:center; border:0; background:none; color:var(--text-2); cursor:pointer; border-radius:var(--r-sm);}
+  .sheet-row{display:flex; justify-content:space-between; align-items:center; gap:var(--s3); flex-wrap:wrap;
+    padding:var(--s3) var(--s4); border-top:1px solid var(--border); font-size:var(--fs-14); color:var(--text);}
+  .sheet-row small{display:block; color:var(--text-2); font-size:var(--fs-12);}
+  .sheet-seg{display:inline-flex; flex-wrap:wrap; border:1px solid var(--border-strong); border-radius:var(--r-full); padding:2px; gap:2px; background:var(--surface-2);}
+  .sheet-seg button{border:0; background:none; color:var(--text-2); font:inherit; font-size:var(--fs-12); font-weight:700;
+    padding:var(--s1) var(--s3); border-radius:var(--r-full); min-height:28px; cursor:pointer;}
+  .sheet-seg button[aria-pressed="true"]{background:var(--surface); color:var(--text); box-shadow:inset 0 0 0 1px var(--border-strong);}
+  .sheet-status{margin:0; padding:0 var(--s4); font-size:var(--fs-12); color:var(--text-2);}
+  .sheet-status:empty{display:none;}
+  .sheet-foot{padding:var(--s2) var(--s4) var(--s4); border-top:1px solid var(--border);}
+  .sheet-keys{display:grid; grid-template-columns:auto 1fr; gap:var(--s2) var(--s4); margin:0; padding:var(--s2) var(--s4) var(--s4);
+    font-size:var(--fs-14); color:var(--text);}
+  .sheet-keys dd{margin:0; color:var(--text-2);}
+  .sheet-keys kbd{font-family:inherit; font-size:var(--fs-12); border:1px solid var(--border-strong); border-radius:var(--r-sm); padding:1px var(--s1);}
+  /* Compact cards: the game, its pick and its bar; the rest is a tap on Full away. */
+  html[data-cards="compact"] .game-card > :is(.card-keys, .market-ref, .card-qbs, .why-by, .why-words, .why-toggle, .why-panel,
+    .card-site, .card-disagree, .nhl-proof, .nba-proof){display:none;}
   /* ---------- Favourite teams (Stage 80 item 53, the 2026-10-13 audit's F7) ----------
      A star beside a team: outlined until it is a favourite, then filled. Its
      own 24 px target, in the text's colour, never the accent. */

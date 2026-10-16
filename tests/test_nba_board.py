@@ -49,7 +49,7 @@ def run_node(body):
     if not NODE:
         pytest.skip('node not available')
     src = source()
-    js = ("const ET = 'America/New_York';\n"
+    js = ("const ET = 'America/New_York';\nfunction startZone(){ return 'America/New_York'; }\nfunction startMark(){ return ' ET'; }\n"
           + ''.join(const_line(src, n) for n in ('LOCK_RUNS_UTC', 'LOCK_SLACK_MS', 'FMT_WHEN', 'FMT_HOUR'))
           + 'const EVEN_BAND = 2;\n'
           + ''.join(function_source(src, n) for n in

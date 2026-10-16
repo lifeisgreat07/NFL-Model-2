@@ -43,6 +43,8 @@ __FONT_FACES__
       var saved = localStorage.getItem('site:theme') || localStorage.getItem('nhl:theme');
       if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) saved = 'light';
       if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+      // Stage 80 item 57: compact cards, chosen in the Settings sheet.
+      if(localStorage.getItem('site:cards') === 'compact') document.documentElement.setAttribute('data-cards','compact');
     }catch(e){}
   })();
 </script>
@@ -53,6 +55,7 @@ __FONT_FACES__
 {% include "routes.js" %}
 {% include "accuracy.js" %}
 {% include "favs.js" %}
+{% include "prefs.js" %}
 {% include "nhl.js" %}
 </script>
 </body>

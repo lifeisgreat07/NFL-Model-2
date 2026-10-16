@@ -45,6 +45,11 @@ __FONT_FACES__
       var saved = localStorage.getItem('site:theme');
       if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) saved = 'light';
       if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+      // Stage 80 item 57: the sport the visitor chose to open the site on, for a
+      // visit that starts here; a step back to Home from a sport's page stays.
+      var start = localStorage.getItem('site:start');
+      var fromSite = document.referrer && document.referrer.indexOf(location.origin) === 0;
+      if(/^(nfl|nhl|nba)$/.test(start || '') && !fromSite && !location.hash) location.replace(start + '/');
     }catch(e){}
   })();
 </script>
@@ -117,6 +122,8 @@ __FONT_FACES__
     <a href="nba/#method">How the NBA models work</a>
     <a href="nfl/#reliability">Checking the AI's work (NFL)</a>
     <a href="https://github.com/lifeisgreat07/NFL-Model-2">Source on GitHub</a>
+    <!-- Stage 80 item 57 (the audit's F10, F11): the Settings sheet; shown once the site build has put it on the page (src/core/sheet.js). -->
+    <button type="button" class="home-settings" data-settings-open hidden>Settings</button>
   </footer>
 </section>
 </main>

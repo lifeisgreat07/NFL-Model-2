@@ -334,6 +334,38 @@ def add_search(out: Path, results: list[SportResult],
     return [p for p in pages if inject_search(out / p, block)]
 
 
+#: The Settings sheet and the keyboard shortcuts (Stage 80 item 57), put on
+#: a page as the search box is.
+SHEET_JS = ROOT / 'src' / 'core' / 'sheet.js'
+SHEET_MARK = 'data-site-sheet'
+_SHEET_OLD = re.compile(r'<script[^>]*\bdata-site-sheet\b[^>]*>.*?</script>\n?', re.S)
+
+
+def sheet_block() -> str:
+    from src.core.page_comments import strip_page_comments
+    script = strip_page_comments('<script>\n' + SHEET_JS.read_text(encoding='utf-8') + '</script>')
+    return script.replace('<script>', f'<script {SHEET_MARK}>', 1) + '\n'
+
+
+def inject_sheet(page: Path, block: str) -> bool:
+    """Put the sheet on one built page: only a page whose template has a
+    Settings button for it, before its </body>."""
+    if not page.exists():
+        return False
+    html = _SHEET_OLD.sub('', page.read_text(encoding='utf-8'))
+    if 'data-settings-open' not in html or '</body>' not in html:
+        return False
+    at = html.rindex('</body>')
+    page.write_text(html[:at] + block + html[at:], encoding='utf-8')
+    return True
+
+
+def add_sheet(out: Path) -> list[str]:
+    pages = ['index.html'] + [f'{s}/index.html' for s in SPORTS]
+    block = sheet_block()
+    return [p for p in pages if inject_sheet(out / p, block)]
+
+
 def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS,
                runner: Runner = run, fetcher: Fetcher = fetch) -> list[SportResult]:
     if out.exists():
@@ -344,6 +376,7 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     results.append(build_home(out, runner, tuple(r.sport for r in results if not r.published)))
     add_strip(out, results)
     add_search(out, results)
+    add_sheet(out)
     return results
 
 

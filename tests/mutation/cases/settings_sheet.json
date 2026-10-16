@@ -1,0 +1,41 @@
+{
+ "target": "src/core/sheet.js",
+ "tests": "tests/test_settings_sheet.py",
+ "cases": [
+  {
+   "id": "sheet-no-device",
+   "why": "the theme cannot go back to the device's.",
+   "find": "[['light', 'Light'], ['dark', 'Dark'], [null, 'Device']]",
+   "replace": "[['light', 'Light'], ['dark', 'Dark']]",
+   "expect_caught_by": "test_the_sheet_offers_the_mocked_settings_under_site_keys"
+  },
+  {
+   "id": "sheet-old-theme-kept",
+   "why": "an old per-sport theme survives the device's choice.",
+   "find": "    if(s.key === 'site:theme') SHEET_OLD_THEMES.forEach(k => put(k, null));\n",
+   "replace": "",
+   "expect_caught_by": "test_the_sheet_is_a_dialog_that_keeps_the_focus_and_question_mark_opens_the_keys"
+  },
+  {
+   "id": "sheet-tab-escapes",
+   "why": "Tab leaves the open sheet.",
+   "find": "    else if(!e.shiftKey && i === stops.length - 1){ e.preventDefault(); stops[0].focus(); }\n",
+   "replace": "",
+   "expect_caught_by": "test_the_sheet_is_a_dialog_that_keeps_the_focus_and_question_mark_opens_the_keys"
+  },
+  {
+   "id": "sheet-buttons-hidden",
+   "why": "the Settings buttons are never shown.",
+   "find": "openers.forEach(b => { b.hidden = false; b.addEventListener('click', () => open('settings')); });",
+   "replace": "openers.forEach(b => { b.addEventListener('click', () => open('settings')); });",
+   "expect_caught_by": "test_the_settings_buttons_wait_for_the_sheet"
+  },
+  {
+   "id": "sheet-no-tour-reset",
+   "why": "\"Show them again\" leaves the tour dismissed.",
+   "find": "      put(SHEET_TOUR, 'show');\n",
+   "replace": "",
+   "expect_caught_by": "test_the_sheet_offers_the_mocked_settings_under_site_keys"
+  }
+ ]
+}

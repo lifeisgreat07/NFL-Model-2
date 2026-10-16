@@ -28,6 +28,8 @@ ROUTES_JS = Path(__file__).with_name('routes.js')
 ACCURACY_JS = Path(__file__).with_name('accuracy.js')
 #: Favourite teams, shared by the NHL's and NBA's pages (Stage 80 item 53).
 FAVS_JS = Path(__file__).with_name('favs.js')
+#: The visitor's settings that change how a page draws (Stage 80 item 57).
+PREFS_JS = Path(__file__).with_name('prefs.js')
 
 
 def safe_json(obj: Any) -> str:

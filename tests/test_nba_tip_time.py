@@ -91,7 +91,8 @@ def test_the_row_the_card_and_the_note_all_use_it():
     row = js[js.index('function rowTime(g, p){'):]
     assert "  return tipSet(g) ? FMT_HOUR.format(new Date(g.start)) : 'time TBD';\n" in row[:300]
     label = js[js.index('function startLabel(g){'):]
-    assert "return tipSet(g) ? `${day} · ${FMT_TIME.format(new Date(g.start))} ET` : `${day} · time TBD`;" in label[:300]
+    # " ET" is startMark()'s, the time-zone setting's (Stage 80 item 57).
+    assert "return tipSet(g) ? `${day} · ${FMT_TIME.format(new Date(g.start))}${startMark()}` : `${day} · time TBD`;" in label[:300]
     note = js[js.index('function preseasonHtml(){'):js.index('function stateHtml(')]
     assert "tipSet(FIRST_GAME) ?" in note and 'its tip-off time still to be set' in note
     assert 'FMT_ET_WEEKDAY_HOUR' not in js, 'the hour rule is back'

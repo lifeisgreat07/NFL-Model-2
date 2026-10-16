@@ -94,7 +94,8 @@ const BD = DATA.board;
    (Stage 68 item 6): the season's first game and its day. */
 const FIRST_GAME = BD.games.filter(g => g.start).sort((a, b) => a.start.localeCompare(b.start))[0] || null;
 const OPENING_DAY = FIRST_GAME ? FIRST_GAME.day : (BD.live && BD.live.first_day) || '2026-10-20';
-const FMT_TIP = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York'});
+// A start's time, in Eastern time or the visitor's own (Stage 80 item 57, src/core/prefs.js).
+const FMT_TIP = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: startZone()});
 /* Until the first pick is saved, the board says so above the rows, with the
    backtest's own verdict on Model B against the market (H3). */
 function preseasonHtml(){
@@ -114,7 +115,7 @@ function preseasonHtml(){
     : '';
   const countdown = countdownText(todayEt());
   return `<div class="nba-preseason" role="note">${countdown ? `<p class="nba-countdown">${escapeHtml(countdown)}</p>` : ''}<p><b>No picks yet.</b> The first is saved by the run before the season's first tip-off, `
-    + `${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))}${tipSet(FIRST_GAME) ? ` at ${escapeHtml(FMT_TIP.format(new Date(FIRST_GAME.start)))} ET` : ', its tip-off time still to be set'}, and never changed.${verdict}</p>`
+    + `${escapeHtml(FMT_DAY.format(dayDate(OPENING_DAY)))}${tipSet(FIRST_GAME) ? ` at ${escapeHtml(FMT_TIP.format(new Date(FIRST_GAME.start)))}${startMark()}` : ', its tip-off time still to be set'}, and never changed.${verdict}</p>`
     + `<button type="button" class="nba-to-lab" data-route="modellab">See the backtest in the Model Lab</button></div>`;
 }
 /* Stage 80 item 60 (the 2026-10-13 audit's F17): until the first pick is
@@ -129,7 +130,7 @@ function countdownText(today){
   const opening = BD.games.filter(g => g.day === OPENING_DAY && g.start);
   const runs = opening.every(tipSet) ? opening.map(g => lockRunFor(g.start)).filter(Boolean) : [];
   const first = runs.length ? new Date(Math.min(...runs.map(r => r.getTime()))) : null;
-  const when = `${FMT_LOCK_DAY.format(dayDate(OPENING_DAY))}${first ? `, ${FMT_TIP.format(first)} ET` : ''}`;
+  const when = `${FMT_LOCK_DAY.format(dayDate(OPENING_DAY))}${first ? `, ${FMT_TIP.format(first)}${startMark()}` : ''}`;
   const away = days === 0 ? 'today' : days === 1 ? 'tomorrow' : `${days} days`;
   return `First picks lock ${when} — ${away}`;
 }
@@ -146,7 +147,7 @@ function mondayOf(day){
 const FMT_DAY = new Intl.DateTimeFormat('en-US', {weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC'});
 const FMT_SHORT = new Intl.DateTimeFormat('en-US', {weekday: 'short', timeZone: 'UTC'});
 const FMT_MONTHDAY = new Intl.DateTimeFormat('en-US', {month: 'short', day: 'numeric', timeZone: 'UTC'});
-const FMT_TIME = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: ET});
+const FMT_TIME = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: startZone()});
 const FMT_ET_DATE = new Intl.DateTimeFormat('en-CA', {year: 'numeric', month: '2-digit', day: '2-digit', timeZone: ET});
 function todayEt(){ return FMT_ET_DATE.format(new Date()); }
 /* Whether a game's tip-off time is set, by ESPN's own word (`tv`, the
@@ -162,7 +163,7 @@ function tipSet(g){
 function startLabel(g){
   const day = FMT_DAY.format(dayDate(g.day));
   if(!g.start) return day;
-  return tipSet(g) ? `${day} · ${FMT_TIME.format(new Date(g.start))} ET` : `${day} · time TBD`;
+  return tipSet(g) ? `${day} · ${FMT_TIME.format(new Date(g.start))}${startMark()}` : `${day} · time TBD`;
 }
 const WEEKS = {};
 /* Team codes reach this page from the league's feed and are drawn into its
@@ -389,7 +390,7 @@ function waitingCard(g){
 }
 
 /* ---------- rows, a day at a time ---------- */
-const FMT_HOUR = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: ET});
+const FMT_HOUR = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: startZone()});
 function weekDays(week){
   const out = [];
   const d = dayDate(week);
@@ -603,11 +604,37 @@ function stepWeek(by){
 }
 document.getElementById('week-prev').addEventListener('click', () => stepWeek(-1));
 document.getElementById('week-next').addEventListener('click', () => stepWeek(1));
+/* Stage 80 item 57 (the 2026-10-13 audit's F11): on the day board [ and ]
+   step a day and Shift with them a week. A day past the week's edge opens
+   the next week on its first day (the week before on its last). */
+function stepDay(by){
+  const days = weekDays(currentWeek);
+  const i = days.indexOf(currentDay) + by;
+  if(i >= 0 && i < days.length){
+    currentDay = days[i];
+  } else {
+    const w = WEEK_KEYS.indexOf(currentWeek) + by;
+    if(w < 0 || w >= WEEK_KEYS.length) return;
+    currentWeek = WEEK_KEYS[w];
+    const next = weekDays(currentWeek);
+    currentDay = by > 0 ? next[0] : next[next.length - 1];
+  }
+  renderBoard();
+  replaceRoute('board');
+}
+/* Which way a key steps, and whether a week: Shift+[ arrives as "{". */
+function dayKeyStep(e){
+  if(e.ctrlKey || e.metaKey || e.altKey) return null;
+  const by = e.key === '[' || e.key === '{' ? -1 : e.key === ']' || e.key === '}' ? 1 : 0;
+  return by ? {by, week: e.shiftKey || e.key === '{' || e.key === '}'} : null;
+}
 document.addEventListener('keydown', e => {
   if(e.target.closest && e.target.closest('input, select, textarea')) return;
   if(!document.getElementById('page-board').classList.contains('active')) return;
-  if(e.key === '[') stepWeek(-1);
-  if(e.key === ']') stepWeek(1);
+  const step = dayKeyStep(e);
+  if(!step) return;
+  e.preventDefault();
+  if(step.week) stepWeek(step.by); else stepDay(step.by);
 });
 
 /* ---------- model lab ---------- */

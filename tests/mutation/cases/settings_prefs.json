@@ -1,0 +1,27 @@
+{
+ "target": "src/core/prefs.js",
+ "tests": "tests/test_settings_sheet.py",
+ "cases": [
+  {
+   "id": "tz-ignored",
+   "why": "the setting is never read: every start stays Eastern (Stage 80 item 57, F10).",
+   "find": "return localStorage.getItem(TZ_KEY) === 'local' ? undefined : 'America/New_York';",
+   "replace": "return 'America/New_York';",
+   "expect_caught_by": "test_a_start_is_eastern_unless_the_visitor_chose_their_own"
+  },
+  {
+   "id": "tz-blocked-local",
+   "why": "storage that throws prints starts in the browser's zone with no mark.",
+   "find": "  catch(e){ return 'America/New_York'; }",
+   "replace": "  catch(e){ return undefined; }",
+   "expect_caught_by": "test_a_start_is_eastern_unless_the_visitor_chose_their_own"
+  },
+  {
+   "id": "tz-mark-always",
+   "why": "a start in the visitor's own zone is still marked ET.",
+   "find": "function startMark(){ return startZone() ? ' ET' : ''; }",
+   "replace": "function startMark(){ return ' ET'; }",
+   "expect_caught_by": "test_a_start_is_eastern_unless_the_visitor_chose_their_own"
+  }
+ ]
+}

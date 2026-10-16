@@ -1,0 +1,27 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_settings_sheet.py",
+ "cases": [
+  {
+   "id": "et-no-dst",
+   "why": "Eastern is taken as five hours behind all year, so October starts land an hour late.",
+   "find": "    t += want - Date.UTC(Number(p.year), Number(p.month) - 1, Number(p.day), Number(p.hour) % 24, Number(p.minute));\n",
+   "replace": "",
+   "expect_caught_by": "test_an_eastern_date_and_clock_is_the_right_instant_either_side_of_daylight_saving"
+  },
+  {
+   "id": "nfl-label-eastern-day",
+   "why": "in a zone where the day moves, the label keeps the Eastern day.",
+   "find": "  return `${at.toLocaleDateString('en-US', {weekday: 'long', month: 'short', day: 'numeric'})} · ${kickoffClock(g)}`;",
+   "replace": "  return `${g.weekday}, ${g.gameday} · ${kickoffClock(g)}`;",
+   "expect_caught_by": "test_an_nfl_start_is_printed_where_the_visitor_asked"
+  },
+  {
+   "id": "nfl-row-eastern",
+   "why": "a phone row keeps the Eastern clock.",
+   "find": "  const time = g.gametime_et ? kickoffClock(g) : '';",
+   "replace": "  const time = g.gametime_et ? g.gametime_et : '';",
+   "expect_caught_by": "test_every_nfl_start_goes_through_the_setting"
+  }
+ ]
+}
