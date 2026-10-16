@@ -100,7 +100,7 @@ def test_the_line_sits_under_the_kickoff_and_never_replaces_it():
     """The board is sorted by kickoff; the kickoff line must stay on the card."""
     body = function_source(template(), 'renderGames')
     kick = body.find('<div class="card-kickoff">')
-    status = body.find('<div class="card-status">')
+    status = body.find('<div class="card-status score-off">')  # Stage 80 item 61: hidden while ESPN's live line shows
     assert kick != -1 and status != -1 and kick < status
 
 

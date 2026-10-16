@@ -103,6 +103,7 @@ RENDERERS = {
     'cardDisagreement': 'board',
     # Stage 17's channel, quarterback and team-news lines on the card.
     'cardTvPill': 'board',
+    'scoreSlot': 'board',
     'cardQbLine': 'board',
     'cardNewsLine': 'board',
     'ratingsNoMatchRow': 'ratings',

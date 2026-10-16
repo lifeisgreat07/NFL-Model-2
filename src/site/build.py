@@ -366,6 +366,37 @@ def add_sheet(out: Path) -> list[str]:
     return [p for p in pages if inject_sheet(out / p, block)]
 
 
+SCORES_JS = ROOT / 'src' / 'core' / 'scores.js'
+SCORES_MARK = 'data-site-scores'
+_SCORES_OLD = re.compile(r'<script[^>]*\bdata-site-scores\b[^>]*>.*?</script>\n?', re.S)
+
+
+def scores_block() -> str:
+    """Stage 80 item 61: src/core/scores.js, which fills a sport page's
+    marked rows and cards with ESPN's live scores."""
+    from src.core.page_comments import strip_page_comments
+    script = strip_page_comments('<script>\n' + SCORES_JS.read_text(encoding='utf-8') + '</script>')
+    return script.replace('<script>', f'<script {SCORES_MARK}>', 1) + '\n'
+
+
+def inject_scores(page: Path, block: str) -> bool:
+    """Put the scores script on one built page: only a page whose code marks
+    games for it (data-score-key), before its </body>."""
+    if not page.exists():
+        return False
+    html = _SCORES_OLD.sub('', page.read_text(encoding='utf-8'))
+    if 'data-score-key' not in html or '</body>' not in html:
+        return False
+    at = html.rindex('</body>')
+    page.write_text(html[:at] + block + html[at:], encoding='utf-8')
+    return True
+
+
+def add_scores(out: Path) -> list[str]:
+    block = scores_block()
+    return [p for p in (f'{s}/index.html' for s in SPORTS) if inject_scores(out / p, block)]
+
+
 def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS,
                runner: Runner = run, fetcher: Fetcher = fetch) -> list[SportResult]:
     if out.exists():
@@ -377,6 +408,7 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     add_strip(out, results)
     add_search(out, results)
     add_sheet(out)
+    add_scores(out)
     return results
 
 

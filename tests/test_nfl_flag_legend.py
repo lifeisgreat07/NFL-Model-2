@@ -28,7 +28,9 @@ def row(g):
     consts = ''.join(re.search(r'^const %s = .*$' % n, APP, re.M).group(0) + '\n' for n in ('FLAG_ICON', 'FLAG_LEGEND'))
     fns = ''.join(re.search(r'function %s\(.*?\n\}\n' % n, APP, re.S).group(0) for n in ('cardSide', 'kickoffClock', 'phoneRowHtml'))
     js = ("const CARD_EVEN_BAND = 2;\nfunction startZone(){ return 'America/New_York'; }\nfunction startMark(){ return ' ET'; }\n"
-          "function escapeHtml(s){ return String(s ?? ''); }\n" + consts + fns
+          "function escapeHtml(s){ return String(s ?? ''); }\n"
+          # Stage 80 item 61's live-score marks and slots are tests/test_live_scores.py's.
+          "function scoreMark(){ return ''; }\nfunction scoreSlot(){ return ''; }\n" + consts + fns
           + 'console.log(JSON.stringify(phoneRowHtml(%s, "x")));' % json.dumps(g))
     r = subprocess.run([NODE, '-e', js], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr

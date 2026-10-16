@@ -1770,9 +1770,9 @@ function phoneRowHtml(g, n){
   // An ungraded final says Final and no more, as its card does (cardProvisional).
   const res = !g.graded ? (g.status === 'final' ? ['final', 'Final'] : ['', '']) : (g.result === 'tie' || verdict === null || verdict === undefined) ? ['tie', 'Tie']
     : verdict ? ['correct', 'Correct'] : ['incorrect', 'Missed'];  // Stage 77 item 26: one pair of result words
-  return `<button type="button" class="game-row nfl-row" aria-expanded="false" aria-controls="card-${n}">`
-    + `<span class="nfl-row-time">${time}</span>`
-    + `<span class="nfl-row-game">${escapeHtml(g.away)} @ ${escapeHtml(g.home)}${g.flag ? ` <span class="nfl-row-flag" role="img" aria-label="flagged: a note to read">${FLAG_ICON}</span>` : ''}</span>`
+  return `<button type="button" class="game-row nfl-row" aria-expanded="false" aria-controls="card-${n}"${scoreMark(g)}>`
+    + `<span class="nfl-row-time"><span class="score-off">${time}</span>${scoreSlot('clock')}</span>`
+    + `<span class="nfl-row-game"><span class="score-off">${escapeHtml(g.away)} @ ${escapeHtml(g.home)}</span>${scoreSlot('game')}${g.flag ? ` <span class="nfl-row-flag" role="img" aria-label="flagged: a note to read">${FLAG_ICON}</span>` : ''}</span>`
     + `<span class="nfl-row-pick">${pick}</span>`
     + `<span class="nfl-row-res ${res[0]}">${res[1]}</span>`
     + `<svg class="game-row-chev nfl-row-chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>`;
@@ -2108,10 +2108,11 @@ function renderGames(){
     const statusLine = cardStatusLine(g);
     const siteLine = cardSiteLine(g);
     const qbLine = cardQbLine(g), newsLine = cardNewsLine(g, news);
-    return `<div class="game-card ${g.flag?'has-flag':''}">
+    return `<div class="game-card ${g.flag?'has-flag':''}"${scoreMark(g)}>
       ${matchupHeader(g)}
       ${kickoff || tvPill ? `<div class="card-kickoff">${kickoff}${tvPill}</div>` : ''}
-      ${statusLine ? `<div class="card-status">${statusLine}</div>` : ''}
+      ${statusLine ? `<div class="card-status score-off">${statusLine}</div>` : ''}
+      <div class="card-status score-on" data-score-slot="line"></div>
       ${siteLine ? `<div class="card-site">${siteLine}</div>` : ''}
       <div class="game-top">
         <div class="tag-row" style="display:flex; gap:var(--s2); align-items:center;">
@@ -2208,6 +2209,16 @@ function kickoffClock(g){
   }
   return new Date(etInstant(g.gameday, g.gametime_et)).toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit'});
 }
+/* Stage 80 item 61 (F15): a game not yet final or graded is marked for
+   src/core/scores.js, which the build puts on the page and which fills the
+   empty slots with ESPN's score while the game is on. Here, after the
+   kickoff-order block, because it builds a Date. */
+function scoreMark(g){
+  if(!g.gameday || !g.gametime_et || g.graded || g.status === 'final' || g.status === 'cancelled') return '';
+  const start = new Date(etInstant(g.gameday, g.gametime_et)).toISOString();
+  return ` data-score-sport="nfl" data-score-key="${escapeHtml(g.away)}@${escapeHtml(g.home)}" data-score-start="${start}"`;
+}
+function scoreSlot(name){ return `<span class="score-on" data-score-slot="${name}"></span>`; }
 /* The label and the short day of a start, in the visitor's own zone. */
 function kickoffLocalLabel(g){
   const at = new Date(etInstant(g.gameday, g.gametime_et));
