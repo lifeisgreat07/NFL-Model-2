@@ -1163,6 +1163,17 @@
   /* Compact cards: the game, its pick and its bar; the rest is a tap on Full away. */
   html[data-cards="compact"] .game-card > :is(.card-keys, .market-ref, .card-qbs, .why-by, .why-words, .why-toggle, .why-panel,
     .card-site, .card-disagree, .nhl-proof, .nba-proof){display:none;}
+  /* ---------- The first-visit tour (Stage 80 item 58, the 2026-10-13 audit's F12) ----------
+     A ring round one part of the Week Board, the rest of the page dimmed, and
+     the step's card beside it (app.js startTour). */
+  .tour-ring{position:absolute; z-index:85; border:2px solid var(--accent); border-radius:var(--r-md); pointer-events:none;
+    box-shadow:0 0 0 9999px color-mix(in srgb, var(--bg) 72%, transparent);}
+  .tour-pop{position:absolute; z-index:86; padding:var(--s4); background:var(--surface); border:1px solid var(--border-strong);
+    border-radius:var(--r-lg); color:var(--text);}
+  .tour-pop h2{margin:0 0 var(--s1); font-size:var(--fs-16); font-weight:800;}
+  .tour-pop p{margin:0; font-size:var(--fs-14); line-height:1.5;}
+  .tour-pop .tour-count{font-size:var(--fs-12); color:var(--text-2); margin-bottom:var(--s1);}
+  .tour-actions{display:flex; justify-content:space-between; align-items:center; gap:var(--s3); margin-top:var(--s3);}
   /* ---------- Favourite teams (Stage 80 item 53, the 2026-10-13 audit's F7) ----------
      A star beside a team: outlined until it is a favourite, then filled. Its
      own 24 px target, in the text's colour, never the accent. */
