@@ -1,0 +1,34 @@
+{
+ "target": "src/site/search.py",
+ "tests": "tests/test_search_box.py",
+ "cases": [
+  {
+   "id": "search-phone-bar-read",
+   "why": "the phone bar's buttons are read as pages too, so each page is listed twice.",
+   "find": "_NAV = re.compile(r'<button class=\"nav-btn[^\"]*\" data-page=",
+   "replace": "_NAV = re.compile(r'<button class=\"[a-z]*nav-btn[^\"]*\" data-page=",
+   "expect_caught_by": "test_a_sports_pages_are_read_from_its_sidebar"
+  },
+  {
+   "id": "search-slug-no-cut",
+   "why": "a long experiment's address is not cut as the page cuts it.",
+   "find": "    return slug[:48].rstrip('-')",
+   "replace": "    return slug",
+   "expect_caught_by": "test_an_experiments_address_is_the_one_its_row_gets_in_the_page"
+  },
+  {
+   "id": "search-slug-duplicates",
+   "why": "two rows that slug alike share one address.",
+   "find": "        while slug in seen:\n",
+   "replace": "        while False:\n",
+   "expect_caught_by": "test_the_experiments_are_the_model_labs_rows_each_slug_made_unique"
+  },
+  {
+   "id": "search-unpublished",
+   "why": "a sport this build did not publish is searched.",
+   "find": "        if sport not in published:\n            continue\n",
+   "replace": "",
+   "expect_caught_by": "test_the_index_holds_published_sports_only"
+  }
+ ]
+}

@@ -1,0 +1,76 @@
+{
+ "target": "src/core/palette.js",
+ "tests": "tests/test_search_box.py",
+ "cases": [
+  {
+   "id": "search-mid-word",
+   "why": "\"eason\" finds Season Accuracy: the middle of a word matches (Stage 80 item 56, F6).",
+   "find": "return terms.every(t => words.some(w => w.startsWith(t)));",
+   "replace": "return terms.every(t => words.some(w => w.includes(t)));",
+   "expect_caught_by": "test_every_word_typed_must_start_a_word_and_a_name_that_starts_with_it_leads"
+  },
+  {
+   "id": "search-unranked",
+   "why": "a name that only has the word comes before one that starts with it.",
+   "find": ".sort((a, b) => a[1] - b[1] || a[2] - b[2])",
+   "replace": ".sort((a, b) => a[2] - b[2])",
+   "expect_caught_by": "test_every_word_typed_must_start_a_word_and_a_name_that_starts_with_it_leads"
+  },
+  {
+   "id": "search-past-games",
+   "why": "a game long over is offered.",
+   "find": ".filter(g => Date.parse(g.t) > now - 3 * 3600 * 1000 && NAME[g.s])",
+   "replace": ".filter(g => NAME[g.s])",
+   "expect_caught_by": "test_sea_finds_both_seattles_their_games_and_season_accuracy"
+  },
+  {
+   "id": "search-no-step-up",
+   "why": "a sport page's results lead inside its own folder.",
+   "find": "const href = (s, hash) => `${base}${s}/${hash}`;",
+   "replace": "const href = (s, hash) => `${s}/${hash}`;",
+   "expect_caught_by": "test_each_thing_found_leads_where_it_lives_from_this_page"
+  },
+  {
+   "id": "search-nba-team-route",
+   "why": "an NBA club leads to a Teams page the NBA has not got.",
+   "find": "href: href(s, s === 'nba' ? '' : `#team/${encodeURIComponent(abbr)}`),",
+   "replace": "href: href(s, `#team/${encodeURIComponent(abbr)}`),",
+   "expect_caught_by": "test_each_thing_found_leads_where_it_lives_from_this_page"
+  },
+  {
+   "id": "search-board-hash",
+   "why": "a board is reached at #board, which some pages do not route.",
+   "find": "href: href(s, page === 'board' ? '' : `#${page}`), note: NAME[s], sport: s}));",
+   "replace": "href: href(s, `#${page}`), note: NAME[s], sport: s}));",
+   "expect_caught_by": "test_each_thing_found_leads_where_it_lives_from_this_page"
+  },
+  {
+   "id": "search-empty-everything",
+   "why": "with nothing typed, every page of every sport is listed.",
+   "find": "if(!terms.length) return items.filter(it => it.group === 'Pages' && PAL_SPORT[it.sport] === here);",
+   "replace": "if(!terms.length) return items.filter(it => it.group === 'Pages');",
+   "expect_caught_by": "test_with_nothing_typed_it_offers_this_sports_pages"
+  },
+  {
+   "id": "search-focus-lost",
+   "why": "Esc leaves the focus on nothing.",
+   "find": "    if(back && back.focus) back.focus();\n",
+   "replace": "",
+   "expect_caught_by": "test_slash_and_ctrl_k_open_it_and_it_is_a_dialog_with_a_combobox"
+  },
+  {
+   "id": "search-slash-in-field",
+   "why": "\"/\" typed in a field opens the box instead of typing.",
+   "find": "} else if(e.key === '/' && !typing && !e.ctrlKey",
+   "replace": "} else if(e.key === '/' && !e.ctrlKey",
+   "expect_caught_by": "test_slash_and_ctrl_k_open_it_and_it_is_a_dialog_with_a_combobox"
+  },
+  {
+   "id": "search-buttons-stay-hidden",
+   "why": "the Search buttons are never shown.",
+   "find": "openers.forEach(b => { b.hidden = false; b.addEventListener('click', open); });",
+   "replace": "openers.forEach(b => { b.addEventListener('click', open); });",
+   "expect_caught_by": "test_the_search_buttons_wait_for_the_box"
+  }
+ ]
+}
