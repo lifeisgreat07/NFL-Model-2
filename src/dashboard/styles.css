@@ -1068,6 +1068,23 @@
   .slate-summary{margin:0 0 var(--s3); font-size:var(--fs-14); color:var(--text-2); font-variant-numeric:tabular-nums;}
   .slate-summary b{color:var(--text);}
   .slate-summary .slate-of{margin-left:var(--s2); font-size:var(--fs-12);}
+  /* Stage 80 item 52 (F1, option B): the "Next games" strip, a row of small
+     cards that scrolls sideways when it does not fit (src/core/strip.js). */
+  .ts{margin:0 0 var(--s4); min-width:0; max-width:100%;}
+  .ts-head{display:flex; flex-wrap:wrap; align-items:baseline; column-gap:var(--s3); margin:0 0 var(--s2);}
+  .ts-head h2, .ts-head h3{margin:0; font-size:var(--fs-14); font-weight:800; color:var(--text);}
+  .ts-head span{font-size:var(--fs-12); color:var(--text-2);}
+  .ts-row{display:flex; gap:var(--s2); overflow-x:auto; scroll-snap-type:x mandatory; padding-bottom:var(--s1);}
+  .ts-item{scroll-snap-align:start; flex:0 0 auto; display:grid; gap:2px; width:150px; padding:var(--s2) var(--s3);
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md);
+    color:var(--text); text-decoration:none; font-size:var(--fs-12);}
+  .ts-top{display:flex; align-items:center; justify-content:space-between; gap:var(--s2); color:var(--text-2); font-variant-numeric:tabular-nums;}
+  .ts-mark{width:16px; height:16px; flex-shrink:0;}
+  .ts-teams{font-size:var(--fs-14); font-weight:800;}
+  .ts-pick{color:var(--text-2);}
+  .ts-pick.is-pick{color:var(--text); font-weight:700;}
+  .ts-bar{position:relative; height:4px; margin-top:2px; border-radius:2px; background:var(--border);}
+  .ts-bar i{position:absolute; left:0; top:0; bottom:0; border-radius:2px; background:var(--text-3);}
   /* ---------- One chart style (Stage 79 item 45, the 2026-10-13 audit's N9 and V3) ----------
      Every SVG chart on every sport is an svg.chart: its text is 11 units and up,
      its grid a hairline, its reference (50%, or perfect calibration) dashed in

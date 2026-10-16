@@ -1,0 +1,69 @@
+{
+ "target": "src/site/home.py",
+ "tests": "tests/test_tonight_strip.py",
+ "cases": [
+  {
+   "id": "slate-model-a-first",
+   "why": "the chance read is Model A's where Model B has one.",
+   "find": "(p.get('model_b') if p.get('model_b') is not None else p.get('model_a'))",
+   "replace": "(p.get('model_a'))",
+   "expect_caught_by": "test_a_day_sports_games_carry_the_saved_pick_or_when_it_is_saved"
+  },
+  {
+   "id": "slate-home-chance-for-away",
+   "why": "an away pick carries the home side's chance.",
+   "find": "    pct = home_prob if team == home else 1 - home_prob\n",
+   "replace": "    pct = home_prob\n",
+   "expect_caught_by": "test_an_away_pick_carries_the_away_sides_chance"
+  },
+  {
+   "id": "slate-lock-a-run-late",
+   "why": "the run named is the one after the run that saves the game.",
+   "find": "            return times[i]\n    return None",
+   "replace": "            return times[i + 1]\n    return None",
+   "expect_caught_by": "test_the_run_named_matches_the_boards_for_tonight"
+  },
+  {
+   "id": "slate-no-slack",
+   "why": "the lock rule's slack is dropped.",
+   "find": "if start < times[i + 1] + slack:",
+   "replace": "if start < times[i + 1]:",
+   "expect_caught_by": "test_the_run_named_is_the_run_that_saves_the_game"
+  },
+  {
+   "id": "slate-postponed-kept",
+   "why": "a postponed game is named as one to come.",
+   "find": "and g.get('status') == 'scheduled'), key",
+   "replace": "), key",
+   "expect_caught_by": "test_a_day_sports_games_carry_the_saved_pick_or_when_it_is_saved"
+  },
+  {
+   "id": "slate-nfl-past-kept",
+   "why": "an NFL game already played is named.",
+   "find": "if t is None or b is None or t < lo:",
+   "replace": "if t is None or b is None:",
+   "expect_caught_by": "test_the_nfl_names_model_bs_side_for_its_locked_week_and_leans_for_the_preview"
+  },
+  {
+   "id": "slate-old-preview-kept",
+   "why": "a preview of the locked week itself is read as a lean.",
+   "find": "_week_files(root / 'predictions' / 'nfl' / 'preview').items() if k > latest}",
+   "replace": "_week_files(root / 'predictions' / 'nfl' / 'preview').items()}",
+   "expect_caught_by": "test_the_nfl_names_model_bs_side_for_its_locked_week_and_leans_for_the_preview"
+  },
+  {
+   "id": "slate-even-band-off",
+   "why": "no pick is ever inside the even band.",
+   "find": "'e': abs(home_prob * 100 - 50) < EVEN_BAND}",
+   "replace": "'e': False}",
+   "expect_caught_by": "test_a_day_sports_games_carry_the_saved_pick_or_when_it_is_saved"
+  },
+  {
+   "id": "slate-unsorted",
+   "why": "the slate is in sport order, not start order.",
+   "find": "    return sorted(rows, key=lambda r: r['t'])\n",
+   "replace": "    return rows\n",
+   "expect_caught_by": "test_the_home_carries_the_slate_in_start_order"
+  }
+ ]
+}

@@ -1,0 +1,69 @@
+{
+ "target": "src/core/strip.js",
+ "tests": "tests/test_tonight_strip.py",
+ "cases": [
+  {
+   "id": "strip-shows-started",
+   "why": "a game already under way is offered as one still to come (Stage 80 item 52, F1).",
+   "find": "filter(r => Date.parse(r.t) > NOW && NAME[r.s])",
+   "replace": "filter(r => NAME[r.s])",
+   "expect_caught_by": "test_the_strip_shows_the_next_six_games_still_to_start"
+  },
+  {
+   "id": "strip-shows-all",
+   "why": "the strip runs on past six cards.",
+   "find": ".slice(0, SHOWN);",
+   "replace": ";",
+   "expect_caught_by": "test_the_strip_shows_the_next_six_games_still_to_start"
+  },
+  {
+   "id": "strip-drops-even",
+   "why": "a pick inside the even band reads as a clear pick, where the board says even.",
+   "find": "${r.e ? ' · even' : ''}",
+   "replace": "",
+   "expect_caught_by": "test_each_card_says_the_pick_the_lean_or_when_the_pick_is_saved"
+  },
+  {
+   "id": "strip-lean-as-pick",
+   "why": "a preview lean is printed as a saved pick.",
+   "find": "if(r.k === 'lean') return `Leans ${r.p} ${r.c}%`;\n",
+   "replace": "",
+   "expect_caught_by": "test_each_card_says_the_pick_the_lean_or_when_the_pick_is_saved"
+  },
+  {
+   "id": "strip-past-lock",
+   "why": "a lock time already gone is still promised.",
+   "find": "return lock > NOW ? `Pick at",
+   "replace": "return lock > 0 ? `Pick at",
+   "expect_caught_by": "test_each_card_says_the_pick_the_lean_or_when_the_pick_is_saved"
+  },
+  {
+   "id": "strip-nba-placeholder-time",
+   "why": "an NBA tip-off ESPN has not set is printed as a time.",
+   "find": "const at = r.s === 'nba' && !tipSet(t) ? 'time TBD' : clock(t);",
+   "replace": "const at = clock(t);",
+   "expect_caught_by": "test_each_card_says_when_in_the_visitors_time_zone_and_reads_as_one_sentence"
+  },
+  {
+   "id": "strip-wrong-base",
+   "why": "a sport page's cards link inside that sport's own folder.",
+   "find": "const base = home ? '' : '../';",
+   "replace": "const base = '';",
+   "expect_caught_by": "test_on_a_sports_page_the_cards_lead_up_a_level_and_the_heading_is_a_step_down"
+  },
+  {
+   "id": "strip-shown-empty",
+   "why": "an empty strip is shown with its heading and no games.",
+   "find": "  if(!next.length) return;\n",
+   "replace": "",
+   "expect_caught_by": "test_with_nothing_ahead_the_strip_stays_hidden"
+  },
+  {
+   "id": "strip-bar-on-lean",
+   "why": "a lean or a waiting game draws a chance bar.",
+   "find": "const bar = r.k === 'pick' ?",
+   "replace": "const bar = true ?",
+   "expect_caught_by": "test_each_card_says_the_pick_the_lean_or_when_the_pick_is_saved"
+  }
+ ]
+}

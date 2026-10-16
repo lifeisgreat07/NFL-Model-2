@@ -38,6 +38,18 @@ function icon(sport){
     + 'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + parts + '</svg>' : '';
 }
 
+/* Stage 80 item 52 (the 2026-10-13 audit's F2): the best pick on each card,
+   "COL 57% over DAL · 8:30 PM", from the slate the build hands over
+   (home.py slate()): the strongest saved pick among `games` not started. */
+function bestPick(games, timeOf){
+  const ahead = games.filter(r => (r.k === 'pick' || r.k === 'lean') && Date.parse(r.t) > NOW);
+  if(!ahead.length) return null;
+  const r = ahead.reduce((x, y) => y.c > x.c ? y : x);
+  return `${r.p} ${r.c}% over ${r.p === r.h ? r.a : r.h} · ${timeOf(Date.parse(r.t))}`;
+}
+const START_SPORT = {'puck drop': 'nhl', 'tip-off': 'nba'};
+function slateOf(sport){ return (HOME.slate || []).filter(r => r.s === sport); }
+
 function card(sport, name, href, status, big, rows, go){
   const kv = rows.length
     ? `<dl class="home-kv">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` : '';
@@ -76,6 +88,11 @@ function nflCard(f){
   }
   const rows = [[f.record.label, record(f.record)]];
   if(ahead.length) rows.push(['Next kickoff', when(Math.min(...ahead))]);
+  /* The locked week's strongest pick still to play, or before it the
+     preview's strongest lean. */
+  const kind = ahead.length ? 'pick' : 'lean', wk = ahead.length ? f.week : f.preview_week;
+  const best = wk ? bestPick(slateOf('nfl').filter(r => r.k === kind), when) : null;
+  if(best) rows.push([`Strongest ${kind}, Week ${wk}`, best]);
   return card('nfl', 'NFL', 'nfl/', status, big, rows, 'Open the NFL board');
 }
 
@@ -100,6 +117,8 @@ function dayStatus(f, start){
     const later = today.filter(g => g.t > NOW && g.st !== 'final').map(g => g.t);
     if(first > NOW || !later.length) rows.push([`First ${start}`, atClock(first)]);
     else rows.push([`Next ${start}`, atClock(Math.min(...later))]);
+    const best = bestPick(slateOf(START_SPORT[start]).filter(r => r.k === 'pick' && dayKey(Date.parse(r.t)) === dayKey(NOW)), atClock);
+    if(best) rows.push([`Best pick ${evening ? 'tonight' : 'today'}`, best]);
   } else if(upcoming.length){
     const next = Math.min(...upcoming.map(g => g.t));
     const n = games.filter(g => dayKey(g.t) === dayKey(next)).length;

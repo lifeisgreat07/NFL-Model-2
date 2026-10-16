@@ -40,7 +40,10 @@ def node(code, tz=None):
 def nfl_status(now, kickoffs):
     keep = ''.join(re.search(r'^function %s\(.*$' % n, JS, re.M).group(0) + '\n' for n in ('esc', 'clock', 'weekday', 'when', 'record'))
     fns = ''.join(re.search(r'function %s\(.*?\n\}\n' % n, JS, re.S).group(0) for n in ('nflCard',))
-    code = (f'const NOW = Date.parse({json.dumps(now)});\n' + keep
+    # The strongest pick reads the slate (Stage 80 item 52); none here.
+    best = ("const HOME = {slate: []};\n" + re.search(r'^const START_SPORT = .*$', JS, re.M).group(0) + '\n' + re.search(r'^function slateOf\(.*$', JS, re.M).group(0) + '\n'
+            + re.search(r'function bestPick\(.*?\n\}\n', JS, re.S).group(0))
+    code = (f'const NOW = Date.parse({json.dumps(now)});\n' + keep + best
             + 'function notBuilt(){ return null; }\n'
             + 'function card(sport, name, href, status){ return status.text; }\n' + fns
             + 'console.log(JSON.stringify(nflCard(%s)));' % json.dumps(

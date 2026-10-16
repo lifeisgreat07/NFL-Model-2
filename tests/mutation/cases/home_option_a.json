@@ -33,8 +33,8 @@
     {
       "id": "home-scoreboard-after-the-cards",
       "why": "option A's scoreboard drops below the cards, which is option B's order, not the one chosen.",
-      "find": "  <div class=\"home-score\" id=\"home-score\"></div>\n  <div class=\"home-cards\" id=\"home-cards\"></div>\n",
-      "replace": "  <div class=\"home-cards\" id=\"home-cards\"></div>\n  <div class=\"home-score\" id=\"home-score\"></div>\n",
+      "find": "  <div class=\"home-score\" id=\"home-score\"></div>\n  <!-- Stage 80 item 52 (the audit's F1): the next games across the three sports,\n       put on the page by the site build (src/core/strip.js); empty, and\n       hidden, in a page built on its own. -->\n  <div class=\"ts\" id=\"site-strip\" role=\"region\" aria-labelledby=\"ts-title\" hidden></div>\n  <div class=\"home-cards\" id=\"home-cards\"></div>\n",
+      "replace": "  <!-- Stage 80 item 52 (the audit's F1): the next games across the three sports,\n       put on the page by the site build (src/core/strip.js); empty, and\n       hidden, in a page built on its own. -->\n  <div class=\"ts\" id=\"site-strip\" role=\"region\" aria-labelledby=\"ts-title\" hidden></div>\n  <div class=\"home-cards\" id=\"home-cards\"></div>\n  <div class=\"home-score\" id=\"home-score\"></div>\n",
       "expect_caught_by": "test_the_page_says_what_the_site_does_before_anything_else"
     }
   ]

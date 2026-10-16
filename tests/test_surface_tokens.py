@@ -16,7 +16,7 @@ from src.core.template_parts import every_stylesheet
 
 #: Rules that may fill with the border token: tracks and marks drawn as lines.
 TRACKS = {'::-webkit-scrollbar-thumb', '.streak-cell', '.srs-bar-track', '.why-bar-track', '.score-track',
-          '.tele-bar', '.dive-game-head:hover', '.bnav-more-item'}
+          '.tele-bar', '.dive-game-head:hover', '.bnav-more-item', '.ts-bar'}
 
 
 def border_fills():
