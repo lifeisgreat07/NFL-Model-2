@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-10-16T13:08:01Z",
+  "generated_utc": "2026-10-16T13:40:33Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 562,
-    "audits_superseded": 115,
-    "pull_requests_audited": 447,
+    "audits_total": 564,
+    "audits_superseded": 116,
+    "pull_requests_audited": 448,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 3511,
+    "claims_checked": 3517,
     "discrepancies_found": 25,
-    "unverifiable": 394,
+    "unverifiable": 395,
     "pull_requests_with_a_discrepancy": 16,
     "reports_disagreeing_with_themselves": 36
   },
@@ -9973,6 +9973,45 @@
       "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/503#issuecomment-6216168205",
       "posted_utc": "2026-10-16T13:07:17Z",
       "head": "72acfb8",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 6,
+      "confirmed": 5,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 505,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/505#issuecomment-6216286969",
+      "posted_utc": "2026-10-16T13:13:57Z",
+      "head": "6a18add",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 7,
+      "confirmed": 4,
+      "discrepancies": 1,
+      "unverifiable": 2,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "tests/mutation/cases/first_visit_tour.json"
+      ],
+      "inconsistencies": [
+        "prose says Confirmed: 6, block has 4",
+        "prose says Unverifiable: 1, block has 2"
+      ],
+      "superseded": true
+    },
+    {
+      "pr": 505,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/505#issuecomment-6216755936",
+      "posted_utc": "2026-10-16T13:39:38Z",
+      "head": "6a18add",
       "records_head": true,
       "has_verdict_block": true,
       "block_error": null,
