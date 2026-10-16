@@ -1,0 +1,27 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_phone_print.py",
+ "cases": [
+  {
+   "id": "phone-print-no-cards",
+   "why": "a phone prints the rows and none of the cards again (Stage 78 item 44, N7).",
+   "find": "    #game-grid .game-card.nfl-collapsible{display:block !important;}\n",
+   "replace": "",
+   "expect_caught_by": "test_print_shows_every_card_with_its_header"
+  },
+  {
+   "id": "phone-print-no-header",
+   "why": "printed cards lose the matchup that only the unprinted row named.",
+   "find": "    #game-grid .game-card.nfl-collapsible > .matchup-header{display:flex !important;}",
+   "replace": "",
+   "expect_caught_by": "test_print_shows_every_card_with_its_header"
+  },
+  {
+   "id": "phone-print-rows-too",
+   "why": "the rows print above the cards they open.",
+   "find": "    #game-grid .nfl-row, .nfl-flag-legend, .nfl-filtered-note{display:none !important;}\n",
+   "replace": "",
+   "expect_caught_by": "test_print_leaves_out_what_belongs_to_the_rows"
+  }
+ ]
+}
