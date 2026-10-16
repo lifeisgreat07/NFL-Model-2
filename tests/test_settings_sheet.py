@@ -159,7 +159,8 @@ def test_the_sheet_offers_the_mocked_settings_under_site_keys():
     settings, tips, tour = got
     assert [(s['key'], [o[1] for o in s['options']]) for s in settings] == [
         ('site:theme', ['Light', 'Dark', 'Device']), ('site:tz', ['Your time', 'Eastern']),
-        ('site:cards', ['Full', 'Compact']), ('site:start', ['Home', 'NFL', 'NHL', 'NBA'])]
+        ('site:cards', ['Full', 'Compact']), ('site:density', ['Comfortable', 'Compact']),  # Stage 80 item 64 (V4)
+        ('site:start', ['Home', 'NFL', 'NHL', 'NBA'])]
     assert [o[0] for o in settings[0]['options']] == ['light', 'dark', None], "the device's theme is no saved choice"
     assert tips == ['nfl_pickem_onboarding_dismissed'] and tour == 'site:tour'
     assert "      put(SHEET_TOUR, 'show');\n" in SHEET, '"Show them again" asks for the tour once more'

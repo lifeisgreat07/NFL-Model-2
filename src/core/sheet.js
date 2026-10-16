@@ -18,6 +18,9 @@ const SHEET_SETTINGS = [
    options: [['local', 'Your time'], [null, 'Eastern']]},
   {key: 'site:cards', label: 'Cards', note: 'Compact shows the pick and the bar only', reload: false,
    options: [[null, 'Full'], ['compact', 'Compact']]},
+  // Stage 80 item 64 (V4).
+  {key: 'site:density', label: 'Spacing', note: 'Compact fits more on a screen', reload: false,
+   options: [[null, 'Comfortable'], ['compact', 'Compact']]},
   {key: 'site:start', label: 'Open the site on', note: '', reload: false,
    options: [[null, 'Home'], ['nfl', 'NFL'], ['nhl', 'NHL'], ['nba', 'NBA']]},
 ];
@@ -103,6 +106,10 @@ const SHEET_OLD_THEMES = ['nfl_pickem_theme', 'nhl:theme', 'nba:theme'];
     if(s.key === 'site:cards'){
       if(value) document.documentElement.setAttribute('data-cards', value);
       else document.documentElement.removeAttribute('data-cards');
+    }
+    if(s.key === 'site:density'){
+      if(value) document.documentElement.setAttribute('data-density', value);
+      else document.documentElement.removeAttribute('data-density');
     }
     if(s.reload){ location.reload(); return; }
     b.parentNode.querySelectorAll('[data-set]').forEach(x => x.setAttribute('aria-pressed', String(x === b)));

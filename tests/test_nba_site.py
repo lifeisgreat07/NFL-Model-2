@@ -97,7 +97,8 @@ def test_the_page_uses_the_nbas_own_names(built: tuple[dict, str]) -> None:
     assert '<html lang="en" data-sport="nba">' in html
     keys = set(re.findall(r'''localStorage\.(?:get|set)Item\('([^']+)''', html))
     # site:cards: compact cards, chosen in the Settings sheet (Stage 80 item 57).
-    assert keys == {'site:theme', 'nba:theme', 'site:cards'}
+    # site:density: Compact spacing, the same sheet (Stage 80 item 64).
+    assert keys == {'site:theme', 'nba:theme', 'site:cards', 'site:density'}
     css = (PAGES / 'nba.css').read_text(encoding='utf-8')
     green = [ln.strip() for ln in css.splitlines() if 'var(--good)' in ln]
     assert green == ['.nba-row-result.right{color:var(--good);}'], 'green means only a pick scored right'

@@ -87,3 +87,12 @@
 .nba-side-game{font-weight:600; color:var(--text);}
 .nba-side-note{margin:0;}
 .nba-side-record{margin:0; color:var(--text);}
+/* Stage 80 item 64 (V4): Compact spacing (site:density) brings a row from 52 to 40 px. */
+html[data-density="compact"] .nba-row{min-height:40px;}
+/* Stage 80 item 64 (V5): on paper the Day Board is its cards, which on screen
+   sit closed inside their rows; the shared print rules (styles.css) give each
+   half a sheet, grey bars and the sport's header. */
+@media print{
+  .nba-row{display:none !important;}
+  .nba-row-detail{display:block !important;}
+}

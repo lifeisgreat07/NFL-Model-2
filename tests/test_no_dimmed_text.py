@@ -33,6 +33,7 @@ NOT_TEXT = {
     '.btn-chip.btn-toggle[aria-pressed="false"] svg': "a switched-off series' marker, not its label",
     '.btn-chip.btn-toggle[aria-pressed="false"]:hover svg': 'the same marker on hover',
     '.tele-bar-seg': 'an empty bar segment',
+    '.game-card[style*="--wm"]::before': "the picked side's logo behind the card (Stage 80 item 64, V2); it holds no text",
 }
 # Rules that dimmed text before Stage 12 and must not again.
 # (.foot-freshness was one too; Stage 13 removed the rule when the "Updated"

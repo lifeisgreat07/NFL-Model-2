@@ -1,0 +1,87 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_visual_lift.py",
+ "cases": [
+  {
+   "id": "lift-proportional-digits",
+   "why": "a figure ending in % is set in proportional digits again (Stage 80 item 64, V1).",
+   "find": "body{font-variant-numeric:tabular-nums;}",
+   "replace": "body{}",
+   "expect_caught_by": "test_every_figure_has_even_width_digits"
+  },
+  {
+   "id": "lift-pick-not-display",
+   "why": "a card's pick is set at the text size, not the display size.",
+   "find": "  .card-hl b{font-weight:800; font-size:var(--fs-display); font-variant-numeric:tabular-nums;}",
+   "replace": "  .card-hl b{font-weight:800;}",
+   "expect_caught_by": "test_the_big_figures_take_the_display_size"
+  },
+  {
+   "id": "lift-watermark-colour",
+   "why": "the watermark shows the logo in its colours, so a team is told by colour.",
+   "find": "opacity:.06; filter:grayscale(1); pointer-events:none; z-index:-1;}",
+   "replace": "opacity:.06; pointer-events:none; z-index:-1;}",
+   "expect_caught_by": "test_the_watermark_is_grey_faint_and_behind_everything"
+  },
+  {
+   "id": "lift-watermark-over-content",
+   "why": "without its own stacking context the card's watermark falls behind the page or over its text.",
+   "find": "display:flex; flex-direction:column; position:relative; isolation:isolate;",
+   "replace": "display:flex; flex-direction:column;",
+   "expect_caught_by": "test_the_watermark_is_grey_faint_and_behind_everything"
+  },
+  {
+   "id": "lift-compact-rows-tiny",
+   "why": "compact rows shrink below a 24 px target.",
+   "find": "html[data-density=\"compact\"] #game-grid .nfl-row{min-height:40px;}",
+   "replace": "html[data-density=\"compact\"] #game-grid .nfl-row{min-height:20px;}",
+   "expect_caught_by": "test_compact_spacing_halves_the_larger_steps_and_shortens_rows"
+  },
+  {
+   "id": "lift-print-colour-bars",
+   "why": "the bars print in team colours, which a black-and-white printer makes one grey.",
+   "find": "    .tele-bar-seg:first-child{background:#3A3F47 !important;}\n",
+   "replace": "",
+   "expect_caught_by": "test_the_bars_print_in_two_greys_and_the_watermark_stays_off"
+  },
+  {
+   "id": "lift-print-no-head",
+   "why": "a printed sheet does not say which sport or when.",
+   "find": "    .print-head{display:flex !important;}\n",
+   "replace": "",
+   "expect_caught_by": "test_each_sports_sheet_has_its_own_header"
+  },
+  {
+   "id": "lift-nhl-prints-rows",
+   "why": "the NHL's printed Day Board is its closed rows again, with no card.",
+   "target": "src/sports/nhl/pages/nhl.css",
+   "find": "  .nhl-row-detail{display:block !important;}\n",
+   "replace": "",
+   "expect_caught_by": "test_a_printed_day_board_prints_its_cards_two_to_a_sheet"
+  },
+  {
+   "id": "lift-density-not-kept",
+   "why": "the NBA's page opens comfortable and jumps to compact once its script runs.",
+   "target": "src/sports/nba/pages/page.html",
+   "find": "      if(localStorage.getItem('site:density') === 'compact') document.documentElement.setAttribute('data-density','compact');\n",
+   "replace": "",
+   "expect_caught_by": "test_spacing_is_chosen_in_the_settings_sheet_and_kept"
+  },
+  {
+   "id": "lift-nfl-watermark-wrong-side",
+   "why": "the NFL card carries the home side's logo whoever is picked.",
+   "target": "src/dashboard/app.js",
+   "find": "  return s && s.team ? ` style=\"--wm:url('${teamLogo(s.team)}')\"` : '';",
+   "replace": "  return s && s.team ? ` style=\"--wm:url('${teamLogo(g.home)}')\"` : '';",
+   "expect_caught_by": "test_the_nfl_card_carries_the_picked_sides_logo"
+  },
+  {
+   "id": "lift-nhl-watermark-any-url",
+   "why": "a logo address that is not https reaches a style attribute.",
+   "target": "src/sports/nhl/pages/nhl.js",
+   "find": "function watermark(src){ return src && /^https:\\/\\//.test(src) ? ",
+   "replace": "function watermark(src){ return src ? ",
+   "expect_caught_by": "test_a_day_boards_card_carries_the_picked_sides_logo"
+  }
+ ]
+}
