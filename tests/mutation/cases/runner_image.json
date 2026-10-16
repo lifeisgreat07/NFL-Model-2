@@ -5,8 +5,8 @@
     {
       "id": "runner-nba-daily-floats",
       "why": "the NBA daily run moves to Ubuntu 26 on opening night with nothing seen green there",
-      "find": "    runs-on: ubuntu-24.04\n",
-      "replace": "    runs-on: ubuntu-latest\n",
+      "find": "  daily:\n    runs-on: ubuntu-24.04\n",
+      "replace": "  daily:\n    runs-on: ubuntu-latest\n",
       "expect_caught_by": "test_every_job_is_pinned_to_the_one_image"
     },
     {

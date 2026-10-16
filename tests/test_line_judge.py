@@ -212,3 +212,67 @@ def test_a_finding_fails_the_job_and_raises_its_own_alert():
     assert '--run-started "$started" --report line-judge.md' in body
     assert '--title "NFL: Line Judge found the Weekly update left something wrong"' in body
     assert 'exit 1' in body.split('--body-file line-judge.md')[1]
+
+
+# --- the Weekend refresh (Stage 44 item 2) ---------------------------------------
+
+REFRESH = (REPO / '.github' / 'workflows' / 'nfl-weekend-refresh.yml').read_text(encoding='utf-8')
+PICKS6 = [{'home': 'DEN', 'away': 'SEA'}, {'home': 'JAX', 'away': 'HOU'}]
+
+
+def shown(*rows):
+    return {'season': 2026, 'week': 6, 'games': [
+        {'home': h, 'away': a, 'status': st, 'home_score': hs, 'away_score': as_} for h, a, st, hs, as_ in rows]}
+
+
+def test_a_snapshot_that_matches_the_schedule_holds():
+    games = sched(game(6, 'DEN', 'SEA', '2026-10-15 20:15', (24, 17)), SUN)
+    snap = shown(('DEN', 'SEA', 'final', 24, 17), ('JAX', 'HOU', 'upcoming', None, None))
+    assert lj.check_snapshot(6, PICKS6, games, snap, CANCELLED) == []
+
+
+@pytest.mark.parametrize('row', [('DEN', 'SEA', 'started', None, None), ('DEN', 'SEA', 'final', 17, 24)])
+def test_a_final_score_the_snapshot_does_not_show_is_flagged(row):
+    games = sched(game(6, 'DEN', 'SEA', '2026-10-15 20:15', (24, 17)), SUN)
+    found = lj.check_snapshot(6, PICKS6, games, shown(row, ('JAX', 'HOU', 'upcoming', None, None)), CANCELLED)
+    assert [f.check for f in found] == ['snapshot'] and 'SEA at DEN ended 17-24' in found[0].message
+
+
+def test_a_kept_week_with_no_snapshot_or_a_missing_game_is_flagged():
+    games = sched(THU, SUN)
+    assert [f.check for f in lj.check_snapshot(6, PICKS6, games, None, CANCELLED)] == ['snapshot']
+    found = lj.check_snapshot(6, PICKS6, games, shown(('DEN', 'SEA', 'upcoming', None, None)), CANCELLED)
+    assert len(found) == 1 and 'HOU at JAX is picked and missing' in found[0].message
+
+
+def test_a_listed_cancelled_game_must_read_cancelled():
+    games = sched(THU, SUN)
+    snap = shown(('DEN', 'SEA', 'started', None, None), ('JAX', 'HOU', 'upcoming', None, None))
+    found = lj.check_snapshot(6, PICKS6, games, snap, {('DEN', 'SEA')})
+    assert [f.check for f in found] == ['snapshot'] and 'cancelled' in found[0].message
+    snap['games'][0]['status'] = 'cancelled'
+    assert lj.check_snapshot(6, PICKS6, games, snap, {('DEN', 'SEA')}) == []
+
+
+def test_judge_refresh_reads_each_kept_week_and_the_refreshs_own_slots(tmp_path):
+    pred, status = tmp_path / 'pred', tmp_path / 'status'
+    pred.mkdir()
+    status.mkdir()
+    (pred / '2026_week6.json').write_text(json.dumps(PICKS6))
+    (status / '2026_week6.json').write_text(json.dumps(shown(('DEN', 'SEA', 'started', None, None),
+                                                              ('JAX', 'HOU', 'upcoming', None, None))))
+    games = sched(game(6, 'DEN', 'SEA', '2026-10-15 20:15', (24, 17)), SUN)
+    # Friday 05:17 UTC is a refresh slot; 12:30 is 7.2 hours after it.
+    found = lj.judge_refresh(2026, games, CANCELLED, [6], 'schedule', utc('2026-10-16T12:30:00'), REFRESH, pred, status)
+    assert [f.check for f in found] == ['on-time', 'snapshot']
+    assert lj.report(found, 2026, 'Weekend refresh').startswith('Line Judge found 2 thing(s) the 2026 Weekend refresh')
+
+
+def test_line_judge_runs_after_a_green_weekend_refresh():
+    body = REFRESH[REFRESH.index('\n  line-judge:\n'):]
+    lines = [ln.strip() for ln in body.splitlines()]
+    assert 'needs: [refresh]' in lines and "if: ${{ needs.refresh.result == 'success' }}" in lines
+    assert 'ref: main' in lines
+    assert '--workflow nfl-weekend-refresh.yml' in body and '--run-started "$started" --report line-judge.md' in body
+    assert '--title "NFL: Line Judge found the Weekend refresh left something wrong"' in body
+    assert 'exit 1' in body.split('--body-file line-judge.md')[1]

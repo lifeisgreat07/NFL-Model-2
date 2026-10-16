@@ -149,3 +149,49 @@ jobs:
             echo '```'
           } > alert-body.md
           python -m src.core.alerts --title "NFL: Weekend refresh failed" --body-file alert-body.md
+
+  # Stage 44 item 2, Line Judge: after a refresh that went green, does the
+  # page's snapshot hold what the schedule says? Every kept week has its
+  # game_status file, every picked game with a final score reads final with
+  # that score, and the run started on time (src/sports/nfl/line_judge.py,
+  # --workflow nfl-weekend-refresh.yml). A finding fails this job and opens
+  # or comments on its own issue.
+  line-judge:
+    needs: [refresh]
+    if: ${{ needs.refresh.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      # From main as the refresh left it.
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Judge the run
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          season=$(python -m src.sports.nfl.paths --current-season)
+          started=$(gh api "repos/$GH_REPO/actions/runs/$GITHUB_RUN_ID" --jq .run_started_at)
+          if python -m src.sports.nfl.line_judge --season "$season" --workflow nfl-weekend-refresh.yml \
+              --run-event "$GITHUB_EVENT_NAME" --run-started "$started" --report line-judge.md; then
+            cat line-judge.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            cat line-judge.md >> "$GITHUB_STEP_SUMMARY"
+            echo >> line-judge.md
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> line-judge.md
+            python -m src.core.alerts --title "NFL: Line Judge found the Weekend refresh left something wrong" \
+              --body-file line-judge.md
+            exit 1
+          fi

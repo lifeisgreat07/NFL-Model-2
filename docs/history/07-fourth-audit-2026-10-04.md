@@ -238,3 +238,15 @@ workflow; the agent runs only to diagnose a failed check, plus item 5's
 weekly digest. Three PRs: the Weekly update's checks (as a job in its own
 workflow, which serves item 2 for it); the other scheduled runs; the
 agent-on-failure step, the digest and item 4's planted bad run.
+
+**PR 2 (2026-10-15): the other runs that leave state on main.** The NHL's and
+the NBA's daily runs are judged by `src/core/day_line_judge.py`: every pick
+first committed before its game started (git's time, not the run's own
+`saved_utc`), every final game graded and graded right from its score, the
+schedule file written today (Eastern), the run on time against the sport's
+one-hour warning. The NFL Weekend refresh writes no pick and no grade, so it
+is judged on what it does write: every kept week's game_status snapshot
+shows each final score the schedule has (`--workflow nfl-weekend-refresh.yml`).
+The canaries and the nightly mutation slice commit nothing to judge; their
+failures already raise their own issues and their lateness is already
+recorded (Stage 42). A game started with no pick is the daily run's own alert.
