@@ -49,6 +49,8 @@ SHARED_WORKFLOWS = frozenset({
     'browser-checks.yml', 'collect-agent-log.yml', 'deploy-pages.yml',
     'nightly-dependency-audit.yml', 'nightly-mutation.yml', 'nightly-random-order.yml', 'releases.yml',
     'run-tests.yml', 'scout-preflight.yml',
+    # Line Judge's diagnosis and weekly digest serve every sport's judged runs.
+    'line-judge-diagnose.yml', 'line-judge-digest.yml',
 })
 
 

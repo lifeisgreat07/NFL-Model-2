@@ -250,3 +250,18 @@ shows each final score the schedule has (`--workflow nfl-weekend-refresh.yml`).
 The canaries and the nightly mutation slice commit nothing to judge; their
 failures already raise their own issues and their lateness is already
 recorded (Stage 42). A game started with no pick is the daily run's own alert.
+
+**PR 3 (2026-10-16): the agent on failure, the digest, the planted run.** When
+a `line-judge` job finds something, its workflow's `diagnose` job calls
+`.github/workflows/line-judge-diagnose.yml`: an agent with contents and actions
+read only follows `LINE_JUDGE_PROTOCOL.md`, reads the finding against the run's
+own job logs and git history, and writes what most likely happened; a second
+job, which runs no model, comments it on the same alert issue. Nothing runs a
+model on a right run. The digest is plain code (Mark, 2026-10-15):
+`src/core/line_judge_digest.py` counts last Monday-to-Sunday's runs of the four
+judged workflows as right, with findings or not judged, and comments the count
+on the standing issue "Line Judge weekly digest" every Monday at 08:23 UTC,
+from GitHub's cron alone. `tests/test_line_judge_planted.py` runs the Weekly
+update for real on the synthetic league and plants four faults in what it left
+-- a late lock, a dropped game, a week neither locked nor skipped, a week left
+ungraded -- each of which Line Judge must flag, and a right run it must not.

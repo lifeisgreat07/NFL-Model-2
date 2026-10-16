@@ -173,6 +173,9 @@ jobs:
     if: ${{ needs.daily.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    # The finding, for the diagnosis job below.
+    outputs:
+      report: ${{ steps.judge.outputs.report }}
     steps:
       # The whole history, from main as the run left it: when each pick file
       # was first committed is read from git, and a shallow clone shows every
@@ -192,6 +195,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Judge the run
+        id: judge
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -207,5 +211,24 @@ jobs:
             echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> line-judge.md
             python -m src.core.alerts --title "NHL: Line Judge found the daily run left something wrong" \
               --body-file line-judge.md
+            delim="LJ_$(od -An -N8 -tx1 /dev/urandom | tr -d ' \n')"
+            { echo "report<<$delim"; cat line-judge.md; echo "$delim"; } >> "$GITHUB_OUTPUT"
             exit 1
           fi
+
+  # Stage 44 PR 3: only when a check found something, an agent reads the
+  # finding against the run's logs and comments what most likely happened on
+  # the same alert (.github/workflows/line-judge-diagnose.yml).
+  diagnose:
+    needs: [line-judge]
+    if: ${{ failure() && needs.line-judge.result == 'failure' }}
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    uses: ./.github/workflows/line-judge-diagnose.yml
+    with:
+      report: ${{ needs.line-judge.outputs.report }}
+      title: "NHL: Line Judge found the daily run left something wrong"
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}

@@ -1,0 +1,65 @@
+{
+ "target": ".github/workflows/line-judge-diagnose.yml",
+ "tests": "tests/test_line_judge_diagnose.py",
+ "cases": [
+  {
+   "id": "ljdx-model-can-write-issues",
+   "why": "the job that runs the model can write issues (Stage 44 PR 3; alerts.py's rule).",
+   "find": "    permissions:\n      contents: read\n      actions: read\n",
+   "replace": "    permissions:\n      contents: read\n      actions: read\n      issues: write\n",
+   "expect_caught_by": "test_the_model_job_can_only_read"
+  },
+  {
+   "id": "ljdx-app-token",
+   "why": "the model step is not handed the repository's token, so the action fetches the Claude app's.",
+   "find": "          github_token: ${{ secrets.GITHUB_TOKEN }}\n",
+   "replace": "",
+   "expect_caught_by": "test_the_model_job_can_only_read"
+  },
+  {
+   "id": "ljdx-any-shell",
+   "why": "the model is given any shell command, not only git history.",
+   "find": "\"Read,Glob,Grep,Write,Bash(git log:*),Bash(git show:*)\"",
+   "replace": "\"Read,Glob,Grep,Write,Bash\"",
+   "expect_caught_by": "test_the_model_is_given_no_shell_beyond_reading_history"
+  },
+  {
+   "id": "ljdx-title-interpolated",
+   "why": "the alert title reaches the shell by interpolation, not the environment.",
+   "find": "python -m src.core.alerts --title \"$TITLE\"",
+   "replace": "python -m src.core.alerts --title \"${{ inputs.title }}\"",
+   "expect_caught_by": "test_the_job_that_comments_runs_no_model"
+  },
+  {
+   "id": "ljdx-runs-on-every-run",
+   "target": ".github/workflows/nhl-daily.yml",
+   "why": "the agent runs after every NHL run, not only on a finding -- the 12-to-15-a-day shape Mark ruled out on 2026-10-13.",
+   "find": "    if: ${{ failure() && needs.line-judge.result == 'failure' }}\n",
+   "replace": "    if: ${{ always() }}\n",
+   "expect_caught_by": "test_every_judged_workflow_calls_the_diagnosis_only_on_a_finding"
+  },
+  {
+   "id": "ljdx-wrong-issue",
+   "target": ".github/workflows/nba-daily.yml",
+   "why": "the NBA's diagnosis lands on a different issue from its finding.",
+   "find": "      title: \"NBA: Line Judge found the daily run left something wrong\"\n",
+   "replace": "      title: \"NBA: Line Judge diagnosis\"\n",
+   "expect_caught_by": "test_every_judged_workflow_calls_the_diagnosis_only_on_a_finding"
+  },
+  {
+   "id": "ljdx-finding-not-kept",
+   "target": ".github/workflows/nfl-weekly-update.yml",
+   "why": "the Weekly update's finding is not handed on, so the agent diagnoses blind.",
+   "find": "      report: ${{ needs.line-judge.outputs.report }}\n",
+   "replace": "",
+   "expect_caught_by": "test_every_judged_workflow_calls_the_diagnosis_only_on_a_finding"
+  },
+  {
+   "id": "ljdx-finding-interpolated",
+   "why": "the finding is interpolated into the shell, where a quote in it runs as code.",
+   "find": "          if [ -n \"$REPORT\" ]; then printf '%s\\n' \"$REPORT\" > \"$RUNNER_TEMP/line-judge/line-judge.md\"; fi\n",
+   "replace": "          printf '%s\\n' '${{ inputs.report }}' > \"$RUNNER_TEMP/line-judge/line-judge.md\"\n",
+   "expect_caught_by": "test_the_finding_reaches_the_model_only_through_the_environment"
+  }
+ ]
+}

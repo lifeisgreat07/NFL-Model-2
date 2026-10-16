@@ -1,0 +1,34 @@
+{
+ "target": "src/sports/nfl/line_judge.py",
+ "tests": "tests/test_line_judge_planted.py",
+ "cases": [
+  {
+   "id": "ljp-skips-ignored",
+   "why": "a week the pipeline recorded as skipped is flagged on a right run (Stage 44 item 4).",
+   "find": "    done = set(locked) | set(skipped)\n",
+   "replace": "    done = set(locked)\n",
+   "expect_caught_by": "test_the_real_run_leaves_nothing_to_flag"
+  },
+  {
+   "id": "ljp-dropped-game-passes",
+   "why": "a game still to come missing from the lock passes.",
+   "find": "        if pair not in picked and pair not in cancelled and k > saved_at:\n",
+   "replace": "        if pair not in picked and pair not in cancelled and k < saved_at:\n",
+   "expect_caught_by": "test_a_game_still_to_come_dropped_from_the_lock_is_flagged"
+  },
+  {
+   "id": "ljp-late-lock-passes",
+   "why": "a lock saved after a kickoff passes.",
+   "find": "        if pair in picked and k <= saved_at:\n",
+   "replace": "        if pair in picked and k < saved_at - pd.Timedelta(hours=1):\n",
+   "expect_caught_by": "test_a_lock_committed_after_the_first_kickoff_is_flagged"
+  },
+  {
+   "id": "ljp-ungraded-passes",
+   "why": "a week played out with no graded file passes.",
+   "find": "    if graded is None:\n        return [Finding('graded', f'week {week}: every picked game is final and there is no graded file.')]\n",
+   "replace": "    if graded is None:\n        return []\n",
+   "expect_caught_by": "test_a_week_played_out_and_left_ungraded_is_flagged"
+  }
+ ]
+}

@@ -1,0 +1,54 @@
+name: Line Judge weekly digest
+# Stage 44 item 5. Line Judge is silent when a run was right, and silence is
+# also what a judge that stopped running looks like. Once a week this counts
+# how last week's runs of the four judged workflows were judged (right, with
+# findings, not judged) and comments the count on the standing issue "Line
+# Judge weekly digest" (src/core/line_judge_digest.py, plain code; Mark,
+# 2026-10-15). It reads the Actions API and writes nothing to the repository.
+#
+# Monday 08:23 UTC: after the Weekend refresh's last Monday slot (05:37) has
+# finished, so the week it reports on is complete. GitHub's cron alone, not
+# cron-job.org: a digest posted a few hours late costs nothing
+# (missed_dispatch.NOT_DISPATCHED). tests/test_line_judge_digest.py holds this.
+
+on:
+  schedule:
+    - cron: '23 8 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  digest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+
+      # Stage 42 item 1: how late this run started, against its own cron lines.
+      - name: Record the start delay
+        run: python -m src.core.start_delay .github/workflows/line-judge-digest.yml
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Post the digest
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python -m src.core.line_judge_digest
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'The Line Judge weekly digest could not be posted.\n\nRun: %s\n' \
+            "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > digest-report.md
+          python -m src.core.alerts --title "Line Judge weekly digest failing" --body-file digest-report.md

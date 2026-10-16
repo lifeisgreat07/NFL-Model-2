@@ -1,0 +1,154 @@
+name: Line Judge diagnosis
+# Stage 44, PR 3: the agent on failure. Line Judge's checks are plain code
+# (src/sports/nfl/line_judge.py, src/core/day_line_judge.py); when one finds
+# something, its job fails and raises an alert with the finding. Only then is
+# a model run, here, to read the finding against the run's own logs and the
+# repository and say what most likely happened (LINE_JUDGE_PROTOCOL.md). Its
+# diagnosis is a comment on the same alert issue, marked as an agent's
+# reading. Called by the line-judge job of each judged workflow:
+#
+#   diagnose:
+#     needs: [line-judge]
+#     if: ${{ failure() && needs.line-judge.result == 'failure' }}
+#     uses: ./.github/workflows/line-judge-diagnose.yml
+#
+# Two jobs, because no job that runs a model holds a token that can write
+# (src/core/alerts.py's rule): `diagnose` runs the model with contents and
+# actions read only and hands its text on as an artifact; `post`, which runs
+# no model, comments it. tests/test_line_judge_diagnose.py holds this.
+
+on:
+  workflow_call:
+    inputs:
+      report:
+        description: "The finding, as the line-judge job wrote it (empty if the judge crashed)"
+        required: false
+        type: string
+        default: ''
+      title:
+        description: 'The title of the alert issue the finding was raised on'
+        required: true
+        type: string
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN:
+        required: true
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      # main as the run left it, with its whole history: the finding is about
+      # what the run committed, and when.
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: main
+          fetch-depth: 0
+
+      # Through the environment: the finding names teams and games, and is
+      # data, not shell. A judge that crashed before writing one left none;
+      # the logs still say why.
+      - name: Write the finding
+        env:
+          REPORT: ${{ inputs.report }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/line-judge"
+          if [ -n "$REPORT" ]; then printf '%s\n' "$REPORT" > "$RUNNER_TEMP/line-judge/line-judge.md"; fi
+
+      # The run is still in progress (this job is part of it), so `gh run view
+      # --log` refuses; each finished job's log is read on its own.
+      - name: Fetch the run's logs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/line-judge/logs"
+          gh api "repos/{owner}/{repo}/actions/runs/$GITHUB_RUN_ID/jobs?per_page=100" \
+            --jq '.jobs[] | select(.status == "completed") | "\(.id)\t\(.name)"' |
+          while IFS=$'\t' read -r id name; do
+            gh api "repos/{owner}/{repo}/actions/jobs/$id/logs" > "$RUNNER_TEMP/line-judge/logs/${name//[^A-Za-z0-9_-]/_}.log" || true
+          done
+          ls -la "$RUNNER_TEMP/line-judge" "$RUNNER_TEMP/line-judge/logs"
+
+      - name: Run Line Judge's diagnosis
+        uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829 # v1.0.236
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # The repository's own token, held to this job's read-only
+          # permissions; without it the action fetches the Claude app's token.
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          prompt: |
+            You are Line Judge. Read LINE_JUDGE_PROTOCOL.md in this repository
+            and follow it exactly.
+
+            The finding is in ${{ runner.temp }}/line-judge/line-judge.md (absent
+            if the judge crashed before writing it) and
+            the logs of this run's finished jobs are in
+            ${{ runner.temp }}/line-judge/logs/. The repository is checked out
+            at main, with its whole history.
+
+            Write your diagnosis to ${{ runner.temp }}/line-judge/diagnosis.md.
+            Writing that file is the last thing you do: this run ends the
+            moment you stop calling tools, and a run that ends before the
+            file exists has diagnosed nothing.
+          claude_args: |
+            --max-turns 40
+            --allowedTools "Read,Glob,Grep,Write,Bash(git log:*),Bash(git show:*)"
+
+      - name: Hand the diagnosis on
+        if: always()
+        run: |
+          out="$RUNNER_TEMP/line-judge/diagnosis.md"
+          if [ ! -s "$out" ]; then
+            printf 'The diagnosing agent wrote nothing; the finding above stands on its own.\n' > "$out"
+          fi
+      - name: Upload the diagnosis
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: line-judge-diagnosis
+          path: ${{ runner.temp }}/line-judge/diagnosis.md
+
+  post:
+    needs: [diagnose]
+    if: ${{ always() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.11'
+      - name: Fetch the diagnosis
+        id: fetch
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: line-judge-diagnosis
+          path: ${{ runner.temp }}/diagnosis
+      - name: Comment the diagnosis on the alert
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TITLE: ${{ inputs.title }}
+        run: |
+          body="$RUNNER_TEMP/diagnosis-comment.md"
+          {
+            printf "**Line Judge's diagnosis** -- an agent's reading of the finding above, not a check.\n\n"
+            if [ -s "$RUNNER_TEMP/diagnosis/diagnosis.md" ]; then
+              cat "$RUNNER_TEMP/diagnosis/diagnosis.md"
+            else
+              printf 'The diagnosis job left nothing to post.\n'
+            fi
+            printf '\n\nRun: %s\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > "$body"
+          python -m src.core.alerts --title "$TITLE" --body-file "$body"
