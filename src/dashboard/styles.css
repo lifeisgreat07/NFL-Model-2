@@ -1790,6 +1790,12 @@
     .sidebar, .topbar, .sport-strip, .bottom-nav, .bnav-more-sheet, .skip-link,
     .filter-row, .pdf-link, .pdf-none, .onboarding-banner, .page-jump{display:none !important;}
     body{display:block; min-height:0; padding-top:0; background:var(--surface);}
+    /* Stage 78 item 44 (the 2026-10-13 audit's N7): a phone prints the cards,
+       not the rows that open them; the phone layout hid every card it had not
+       opened, so a printed week was 15 rows and no picks. */
+    #game-grid .game-card.nfl-collapsible{display:block !important;}
+    #game-grid .nfl-row, .nfl-flag-legend, .nfl-filtered-note{display:none !important;}
+    #game-grid .game-card.nfl-collapsible > .matchup-header{display:flex !important;}  /* the row that named the game is not printed */
     /* The bars, dots and chips are drawn as backgrounds, which a browser
        leaves off the paper by default; without them a card's split and a
        rating's bar print as empty tracks. */
