@@ -39,9 +39,9 @@
   },
   {
    "id": "acc-tiny-text",
-   "why": "the charts' text drops under 11 px (the audit's V3).",
-   "find": "  return phone ? {W: 300, H: 230, padL: 40, padR: 16, padT: 14, padB: 36, fs: 11}\n               : {W: 680, H: 230, padL: 44, padR: 24, padT: 14, padB: 36, fs: 11};",
-   "replace": "  return phone ? {W: 300, H: 230, padL: 40, padR: 16, padT: 14, padB: 36, fs: 11}\n               : {W: 680, H: 230, padL: 44, padR: 24, padT: 14, padB: 36, fs: 9};",
+   "why": "the trend leaves the chart style and prints its own 9-unit text (the audit's V3).",
+   "find": "    <svg class=\"chart\" viewBox=\"0 0 ${f.W} ${f.H}\" style=\"width:100%; height:auto; max-width:${f.W}px;\" role=\"img\" aria-label=\"Line chart",
+   "replace": "    <svg font-size=\"9\" viewBox=\"0 0 ${f.W} ${f.H}\" style=\"width:100%; height:auto; max-width:${f.W}px;\" role=\"img\" aria-label=\"Line chart",
    "expect_caught_by": "test_no_chart_text_is_under_11px"
   },
   {

@@ -25,9 +25,9 @@
     },
     {
       "id": "not-text-list-goes-stale",
-      "why": "the Net Rating zero line stops using opacity but stays listed, so the list of exceptions slowly stops describing the page.",
-      "find": "    width:1px; margin-left:-.5px; background:var(--text-2); opacity:.5; z-index:2;}",
-      "replace": "    width:1px; margin-left:-.5px; background:var(--text-2); z-index:2;}",
+      "why": "the telemetry bar's segments stop using opacity but stay listed, so the list of exceptions slowly stops describing the page.",
+      "find": "  .tele-bar-seg{height:100%; transition:width var(--dur-slow) var(--ease); opacity:.88;}",
+      "replace": "  .tele-bar-seg{height:100%; transition:width var(--dur-slow) var(--ease);}",
       "expect_caught_by": "test_the_list_holds_nothing_stale"
     }
   ]

@@ -165,6 +165,14 @@ jobs:
       - name: Check the accuracy charts on the NHL and the NBA
         run: python tests/browser/check_accuracy.py "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
 
+      # Stage 79 item 45: one chart style, and no chart text under 11 px on
+      # any sport's page.
+      - name: Prove the chart text check can fail
+        run: python tests/browser/check_chart_text.py --self-test --tmp "$RUNNER_TEMP/charttext"
+
+      - name: Check no chart text is under 11 px
+        run: python tests/browser/check_chart_text.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
+
       # Stage 68 item 5: no cell of a day-board row drawn over another, at
       # 320, 390 and 1280 px in both themes, with the clock before opening
       # night so every row carries its "Locks ..." label. It proves itself
