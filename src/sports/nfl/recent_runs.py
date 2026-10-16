@@ -49,6 +49,7 @@ WATCHED = {
     'nhl-canary.yml': 'NHL nightly canary',
     'nba-daily.yml': 'NBA daily run',
     'nba-canary.yml': 'NBA nightly canary',
+    'line-judge-digest.yml': 'Line Judge weekly digest',
 }
 SHOWN = 30
 WORKFLOWS = Path(__file__).resolve().parents[3] / '.github' / 'workflows'

@@ -35,7 +35,10 @@ USES = {
     ('pull-requests', 'read'): ('gh pr', '/pulls', '/issues/comments'),
     ('pages', 'write'): ('actions/deploy-pages',),
     ('id-token', 'write'): ('actions/deploy-pages',),
-    ('actions', 'read'): ('src.sports.nfl.recent_runs', 'src.core.missed_dispatch'),
+    # line_judge_digest counts runs and their jobs; the Line Judge diagnosis
+    # reads each finished job's log.
+    ('actions', 'read'): ('src.sports.nfl.recent_runs', 'src.core.missed_dispatch',
+                          'src.core.line_judge_digest', '/actions/jobs/'),
 }
 #: Needed by actions/checkout in every job, and grants nothing beyond reading
 #: a public repository.

@@ -1,0 +1,63 @@
+{
+ "target": "src/core/line_judge_digest.py",
+ "tests": "tests/test_line_judge_digest.py",
+ "cases": [
+  {
+   "id": "ljd-counts-this-week",
+   "why": "the digest counts the week in progress, not the last whole one (Stage 44 item 5).",
+   "find": "    monday = today - timedelta(days=today.weekday() + 7)\n",
+   "replace": "    monday = today - timedelta(days=today.weekday())\n",
+   "expect_caught_by": "test_the_week_counted_is_the_last_whole_one"
+  },
+  {
+   "id": "ljd-finding-called-right",
+   "why": "a failed line-judge job counts as a right run, so a finding vanishes from the count.",
+   "find": "{'success': 'right', 'failure': 'found'}",
+   "replace": "{'success': 'right', 'failure': 'right'}",
+   "expect_caught_by": "test_a_runs_verdict_is_its_line_judge_job"
+  },
+  {
+   "id": "ljd-running-called-not-judged",
+   "why": "a judge still running is counted as not judged.",
+   "find": "    if judge.get('status') != 'completed':\n        return 'running'\n",
+   "replace": "",
+   "expect_caught_by": "test_a_runs_verdict_is_its_line_judge_job"
+  },
+  {
+   "id": "ljd-open-ended-window",
+   "why": "runs after the Sunday are counted into last week.",
+   "find": "created={start:%Y-%m-%d}..{end:%Y-%m-%d}",
+   "replace": "created=>={start:%Y-%m-%d}",
+   "expect_caught_by": "test_runs_are_counted_by_verdict_and_findings_linked"
+  },
+  {
+   "id": "ljd-findings-unlinked",
+   "why": "the runs with findings are counted but not linked.",
+   "find": "    if links:\n",
+   "replace": "    if False:\n",
+   "expect_caught_by": "test_the_digest_leads_with_the_count_and_links_every_finding"
+  },
+  {
+   "id": "ljd-silent-week-unflagged",
+   "why": "a week with nothing judged -- the failure the digest exists for -- reads like any other.",
+   "find": "    if judged == 0:\n",
+   "replace": "    if judged < 0:\n",
+   "expect_caught_by": "test_a_week_with_nothing_judged_says_so_first"
+  },
+  {
+   "id": "ljd-dry-run-posts",
+   "why": "--dry-run posts to the issue anyway.",
+   "find": "    if not args.dry_run:\n",
+   "replace": "    if True:\n",
+   "expect_caught_by": "test_the_digest_is_posted_to_the_standing_issue"
+  },
+  {
+   "id": "ljd-runs-before-the-refresh",
+   "target": ".github/workflows/line-judge-digest.yml",
+   "why": "the digest runs before Monday's last refresh slot, so its week is not finished.",
+   "find": "    - cron: '23 8 * * 1'\n",
+   "replace": "    - cron: '23 4 * * 1'\n",
+   "expect_caught_by": "test_the_workflow_runs_monday_after_the_last_refresh_slot"
+  }
+ ]
+}

@@ -40,9 +40,25 @@ def test_the_scan_finds_the_jobs_it_must():
         assert must in found, f'{must} not found by the job scan -- re-anchor it'
 
 
+def calls_a_workflow(body):
+    """A job that runs a reusable workflow (`uses: ./.github/workflows/...`)
+    cannot take timeout-minutes; the called workflow's own jobs carry theirs,
+    and are scanned here like any other."""
+    return re.search(r'(?m)^    uses:\s*\./\.github/workflows/\S+\.yml\s*$', body) is not None
+
+
 def test_every_job_has_a_timeout():
-    missing = [f'{f}:{j}' for f, j, body in jobs() if not timeout(body)]
+    missing = [f'{f}:{j}' for f, j, body in jobs() if not timeout(body) and not calls_a_workflow(body)]
     assert not missing, f'jobs with no timeout-minutes: {missing}'
+
+
+def test_only_a_call_is_excused_and_what_it_calls_is_held():
+    called = {(f, j) for f, j, b in jobs() if calls_a_workflow(b)}
+    assert ('nhl-daily.yml', 'diagnose') in called
+    assert not calls_a_workflow('    runs-on: ubuntu-24.04\n    steps:\n      - uses: ./.github/workflows/x.yml\n')
+    for job in ('diagnose', 'post'):
+        body = next(b for f, j, b in jobs() if (f, j) == ('line-judge-diagnose.yml', job))
+        assert timeout(body), job
 
 
 def test_the_weekly_lock_run_fails_well_inside_a_thursday():
