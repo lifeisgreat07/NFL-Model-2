@@ -770,6 +770,9 @@ function closeMoreSheet(){
   setMoreSheetOpen(false);
 }
 const moreBtn = document.getElementById('bnav-more-btn');
+/* Stage 78 item 43: the sheet's own close button. */
+const moreClose = document.querySelector('#bnav-more-sheet .bnav-more-close');
+if(moreClose) moreClose.addEventListener('click', () => { closeMoreSheet(); if(moreBtn) moreBtn.focus(); });
 if(moreBtn){
   moreBtn.addEventListener('click', (e)=>{
     e.stopPropagation();

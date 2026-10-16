@@ -1602,6 +1602,14 @@
     pointer-events:none;
   }
   .bnav-more-sheet.open{transform:translateY(0); pointer-events:auto;}
+  /* Stage 78 item 43 (the 2026-10-13 audit's C4): the open sheet dims the page
+     behind it, and says how to close it, as a dialog does. */
+  .bnav-scrim{position:fixed; inset:0; z-index:48; background:color-mix(in srgb, var(--bg) 60%, transparent);
+    opacity:0; pointer-events:none; transition:opacity var(--dur-slow) var(--ease);}
+  .bnav-more-sheet.open + .bnav-scrim{opacity:1; pointer-events:auto;}
+  .bnav-more-close{display:flex; align-items:center; justify-content:center; width:44px; height:44px; margin:calc(-1 * var(--s2)) 0 var(--s2) auto;
+    background:none; border:1px solid var(--border); border-radius:var(--r-md); color:var(--text-2); cursor:pointer;}
+  .skip-link-nav{display:none;}
   .bnav-more-sheet-inner{display:grid; grid-template-columns:1fr 1fr; gap:var(--s2); max-width:560px; margin:0 auto;}
   .bnav-more-item{
     display:flex; align-items:center; gap:var(--s3); background:var(--border); border:none; border-radius:12px;
@@ -1654,6 +1662,7 @@
     .page-head h2{font-size:var(--fs-24);}
     .page-head{margin-bottom:var(--s6); padding-bottom:var(--s4);}
     .bottom-nav{display:block;}
+    .skip-link-nav{display:block;}
     /* Stage 75 item 3: a card scrolled into view clears the sticky top bar
        (65 px) and the fixed bottom nav, the same 88 px main keeps for it.
        The NHL's and NBA's rows carry the same rule in their own sheets. */

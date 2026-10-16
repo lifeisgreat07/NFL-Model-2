@@ -1,4 +1,6 @@
 <a href="#main-content" class="skip-link">Skip to main content</a>
+<!-- Stage 78 item 43 (C4): on a phone the menu is last in the page, after every row. -->
+<a href="#bottom-nav" class="skip-link skip-link-nav">Skip to the menu</a>
 
 <aside class="sidebar">
   <div class="brand">
@@ -171,7 +173,7 @@
   </section>
 </main>
 
-<nav class="bottom-nav" aria-label="Mobile navigation">
+<nav class="bottom-nav" id="bottom-nav" tabindex="-1" aria-label="Mobile navigation">
   <div class="bottom-nav-row">
     <button class="bnav-btn active" data-page="board" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span class="bnav-label">Board</span></button>
     <button class="bnav-btn" data-page="standings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="bnav-label">Standings</span></button>
@@ -181,6 +183,7 @@
   </div>
 </nav>
 <div id="bnav-more-sheet" class="bnav-more-sheet" inert>
+  <button type="button" class="bnav-more-close" aria-label="Close the menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <div class="bnav-more-sheet-inner">
     <button class="bnav-more-item" data-page="teams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/></svg><span>Teams</span></button>
     <button class="bnav-more-item" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span>Model Lab</span></button>
@@ -189,3 +192,5 @@
     <button class="bnav-more-item" data-page="changes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>What&#39;s Changed</span></button>
   </div>
 </div>
+<!-- Stage 78 item 43 (C4): dims the page behind the open sheet; a tap on it closes the sheet. -->
+<div class="bnav-scrim" aria-hidden="true"></div>

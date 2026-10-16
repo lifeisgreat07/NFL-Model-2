@@ -1,0 +1,20 @@
+{
+ "target": "src/dashboard/body.html",
+ "tests": "tests/test_more_sheet.py",
+ "cases": [
+  {
+   "id": "more-nfl-no-skip",
+   "why": "the NFL's menu is reached only after every row again.",
+   "find": "<a href=\"#bottom-nav\" class=\"skip-link skip-link-nav\">Skip to the menu</a>\n",
+   "replace": "",
+   "expect_caught_by": "test_the_menu_is_one_skip_away"
+  },
+  {
+   "id": "more-nfl-no-scrim",
+   "why": "the NFL's sheet loses its scrim.",
+   "find": "<div class=\"bnav-scrim\" aria-hidden=\"true\"></div>",
+   "replace": "",
+   "expect_caught_by": "test_the_sheet_has_a_close_button_and_a_scrim"
+  }
+ ]
+}
