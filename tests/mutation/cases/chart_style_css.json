@@ -1,0 +1,34 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_chart_style.py",
+ "cases": [
+  {
+   "id": "chart-text-9",
+   "why": "chart text is 9 units again, as the NFL trend printed it (Stage 79 item 45, N9).",
+   "find": ".chart text{font-size:var(--fs-11);",
+   "replace": ".chart text{font-size:9px;",
+   "expect_caught_by": "test_the_style_sets_the_floor_the_grid_the_reference_and_the_whisker"
+  },
+  {
+   "id": "chart-ref-solid",
+   "why": "the 50% reference is drawn solid, indistinguishable from the grid.",
+   "find": " stroke-dasharray:4 3; fill:none;}",
+   "replace": " fill:none;}",
+   "expect_caught_by": "test_the_style_sets_the_floor_the_grid_the_reference_and_the_whisker"
+  },
+  {
+   "id": "chart-score-mark-9",
+   "why": "the scoreboard's series marks shrink back to 9 px.",
+   "find": ".score-mark{width:12px; height:12px;",
+   "replace": ".score-mark{width:9px; height:9px;",
+   "expect_caught_by": "test_intervals_are_whiskers_and_series_shapes_are_12_across"
+  },
+  {
+   "id": "chart-coin-own-line",
+   "why": "the scoreboard's coin flip goes back to its own solid line.",
+   "find": "width:0; border-left:1px dashed var(--text-2);}  /* the chart style",
+   "replace": "width:1px; background:var(--text-2); opacity:.6;}  /* the chart style",
+   "expect_caught_by": "test_each_chart_draws_its_reference"
+  }
+ ]
+}

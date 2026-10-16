@@ -1,0 +1,20 @@
+{
+ "target": "src/core/accuracy.js",
+ "tests": "tests/test_chart_style.py",
+ "cases": [
+  {
+   "id": "chart-acc-diagram-unstyled",
+   "why": "the NHL's and NBA's diagram leaves the chart style.",
+   "find": "<svg class=\"chart\" viewBox=\"0 0 ${f.W} ${f.H}\" style=\"width:100%; height:auto; max-width:${f.W}px;\" role=\"img\" aria-label=\"Calibration diagram",
+   "replace": "<svg viewBox=\"0 0 ${f.W} ${f.H}\" style=\"width:100%; height:auto; max-width:${f.W}px;\" role=\"img\" aria-label=\"Calibration diagram",
+   "expect_caught_by": "test_every_chart_is_drawn_in_the_chart_style"
+  },
+  {
+   "id": "chart-acc-bare-interval",
+   "why": "the NHL's and NBA's intervals lose their whiskers.",
+   "find": ": bins.map(p => accWhisker(x(p.said), y(p.ci[1] * 100), y(p.ci[0] * 100))",
+   "replace": ": bins.map(p => ''",
+   "expect_caught_by": "test_intervals_are_whiskers_and_series_shapes_are_12_across"
+  }
+ ]
+}

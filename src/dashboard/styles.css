@@ -530,7 +530,7 @@
      on every team in the table. */
   .srs-bar-track.diverging{overflow:visible;}
   .srs-bar-track.diverging::before{content:''; position:absolute; left:50%; top:-3px; bottom:-3px;
-    width:1px; margin-left:-.5px; background:var(--text-2); opacity:.5; z-index:2;}
+    width:0; margin-left:-.5px; border-left:1px dashed var(--text-2); z-index:2;}  /* the chart style's reference (Stage 79 item 45) */
 
   /* Printed domain for the Net Rating column. The bars are normalised to the
      league's largest absolute rating, so a full-width bar does not mean "1.0"
@@ -1045,11 +1045,12 @@
   .score-row{display:grid; grid-template-columns:120px 1fr 150px; gap:var(--s4); align-items:center; padding:var(--s2) 0;}
   .score-name{display:flex; align-items:center; gap:var(--s2); font-family:'Plus Jakarta Sans', sans-serif;
     font-weight:600; color:var(--text);}
-  .score-mark{width:9px; height:9px; flex-shrink:0; background:var(--series);}
+  /* A series' shape is 12 px across, as its marker is in the charts (Stage 79 item 45, V3). */
+  .score-mark{width:12px; height:12px; flex-shrink:0; background:var(--series);}
   .score-mark.dot{border-radius:var(--r-full);}
-  .score-mark.tri{background:none; width:0; height:0; border-left:5px solid transparent;
-    border-right:5px solid transparent; border-bottom:9px solid var(--series);}
-  .score-mark.diamond{width:8px; height:8px; transform:rotate(45deg);}
+  .score-mark.tri{background:none; width:0; height:0; border-left:6px solid transparent;
+    border-right:6px solid transparent; border-bottom:11px solid var(--series);}
+  .score-mark.diamond{width:8.5px; height:8.5px; margin:0 1.75px; transform:rotate(45deg);}
   /* The same marks in "How sure, and how right"'s table cells (Stage 19),
      where they sit inline beside the name instead of in a flex row. */
   .forecast-score .score-mark{display:inline-block; margin-right:var(--s2); vertical-align:middle;}
@@ -1058,7 +1059,20 @@
   .acc-legend > span{display:inline-flex; align-items:center; gap:var(--s1);}
   .score-track{position:relative; height:14px; background:var(--border); border-radius:var(--r-full);}
   .score-fill{position:absolute; top:0; bottom:0; left:0; border-radius:inherit; background:var(--series);}
-  .score-coin{position:absolute; left:50%; top:-6px; bottom:-6px; width:1px; background:var(--text-2); opacity:.6;}
+  .score-coin{position:absolute; left:50%; top:-6px; bottom:-6px; width:0; border-left:1px dashed var(--text-2);}  /* the chart style's 50% reference */
+  /* ---------- One chart style (Stage 79 item 45, the 2026-10-13 audit's N9 and V3) ----------
+     Every SVG chart on every sport is an svg.chart: its text is 11 units and up,
+     its grid a hairline, its reference (50%, or perfect calibration) dashed in
+     --text-2, its 95% intervals whiskers. The NFL's trend drew 9 px text and no
+     50% line, its calibration chart 9 px and the reliability diagram 9.5 to
+     10.5; each chose its own grey. app.js and src/core/accuracy.js draw with
+     these classes and no colours or sizes of their own. */
+  .chart text{font-size:var(--fs-11); fill:var(--text-2);}
+  .chart .chart-label{font-weight:600;}
+  .chart .chart-title{font-size:var(--fs-12);}
+  .chart .chart-grid{stroke:var(--border); stroke-width:1;}
+  .chart .chart-ref{stroke:var(--text-2); stroke-width:1; stroke-dasharray:4 3; fill:none;}
+  .chart .chart-whisker{stroke-width:2; stroke-opacity:.5; stroke-linecap:round;}
   .score-figure{text-align:right; font-family:'Plus Jakarta Sans', sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap;}
   .score-pct{font-size:var(--fs-24); font-weight:800; color:var(--text);}
   .score-count{font-size:var(--fs-12); color:var(--text-2); margin-left:var(--s1);}

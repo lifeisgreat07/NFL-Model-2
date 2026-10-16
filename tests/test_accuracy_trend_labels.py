@@ -27,7 +27,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
 HARNESS = Path(__file__).parent / 'trend_labels_harness.js'
 NODE = shutil.which('node')
-LABEL_FONT = 10     # the end-labels' font-size, in the chart's own units
+LABEL_FONT = 11     # the end-labels' font-size, in the chart's own units (the chart style's, Stage 79 item 45)
 
 
 @pytest.fixture(scope='module')
@@ -76,14 +76,17 @@ def test_the_gap_clears_the_label_text(spread):
 def test_the_chart_places_its_labels_together_after_every_line():
     js = chart()
     assert 'spreadLabels(ends.map(e => e.y), TREND_LABEL_GAP' in js
-    svg = js[js.index('<svg viewBox'):]
+    svg = js[js.index('<svg class="chart" viewBox'):]
     assert svg.index("${lineFor('p','picks')}") < svg.index('${endLabels()}')
     assert 'labelSlots' not in js, 'the one-at-a-time nudge is back'
 
 
 def test_every_graded_week_is_labelled_on_the_x_axis():
     js = chart()
-    m = re.search(r'const weekTicks = accuracy\.weeks\.map\(\(w, i\) =>\s*`<text x="\$\{x\(i\)', js)
+    # Since Stage 79 item 45 the labels are 11 units, and an axis too crowded
+    # for every week labels every k-th, counted back from the latest
+    # (chartTickStep, tests/test_chart_style.py).
+    m = re.search(r"const weekTicks = accuracy\.weeks\.map\(\(w, i\) => \(n - 1 - i\) % every \? '' :\s*`<text x=\"\$\{x\(i\)", js)
     assert m, 'the x-axis has no week labels'
     assert 'Wk ${w.week}' in js
-    assert '${weekTicks}' in js[js.index('<svg viewBox'):]
+    assert '${weekTicks}' in js[js.index('<svg class="chart" viewBox'):]

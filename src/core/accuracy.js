@@ -53,15 +53,16 @@ function accRaceHtml(games){
     <div class="score-axis" aria-hidden="true"><span></span><div class="score-axis-track"><span class="coin">50% &middot; a coin flip</span><span class="full">100%</span></div><span></span></div>
   </div>`;
 }
-/* The chart frame's size: the NFL's, narrower on a phone, and no text under
-   11 px (the audit's V3). */
+/* The chart frame's size: the NFL's, narrower on a phone. Its text, grid,
+   reference line and whiskers take the NFL's one chart style (styles.css,
+   Stage 79 item 45): no text under 11 px, the audit's V3. */
 function accFrame(){
   const phone = !!(window.matchMedia && window.matchMedia('(max-width:640px)').matches);
-  return phone ? {W: 300, H: 230, padL: 40, padR: 16, padT: 14, padB: 36, fs: 11}
-               : {W: 680, H: 230, padL: 44, padR: 24, padT: 14, padB: 36, fs: 11};
+  return phone ? {W: 300, H: 230, padL: 40, padR: 16, padT: 14, padB: 36}
+               : {W: 680, H: 230, padL: 44, padR: 24, padT: 14, padB: 36};
 }
 function accEmpty(f, text){
-  return `<text class="acc-empty" x="${(f.W + f.padL - f.padR) / 2}" y="${(f.H - f.padB + f.padT) / 2}" text-anchor="middle" font-size="${f.fs + 1}" fill="var(--text-2)">${text}</text>`;
+  return `<text class="acc-empty chart-title" x="${(f.W + f.padL - f.padR) / 2}" y="${(f.H - f.padB + f.padT) / 2}" text-anchor="middle">${text}</text>`;
 }
 /* Running accuracy by day, one line per forecast, ending in its marker. */
 function accTrendHtml(games){
@@ -69,8 +70,8 @@ function accTrendHtml(games){
   const days = [...new Set(games.map(g => g.day))].sort();
   const x = i => days.length <= 1 ? f.padL : f.padL + i / (days.length - 1) * (f.W - f.padL - f.padR);
   const y = v => f.padT + (1 - v / 100) * (f.H - f.padT - f.padB);
-  const grid = [0, 25, 50, 75, 100].map(v => `<line x1="${f.padL}" y1="${y(v).toFixed(1)}" x2="${f.W - f.padR}" y2="${y(v).toFixed(1)}" stroke="var(--border)" stroke-width="1"${v === 50 ? ' stroke-dasharray="4 3"' : ''}/>`
-    + `<text x="${f.padL - 6}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" font-size="${f.fs}" fill="var(--text-2)">${v}%</text>`).join('');
+  const grid = [0, 25, 50, 75, 100].map(v => `<line class="${v === 50 ? 'chart-ref' : 'chart-grid'}" x1="${f.padL}" y1="${y(v).toFixed(1)}" x2="${f.W - f.padR}" y2="${y(v).toFixed(1)}"/>`
+    + `<text x="${f.padL - 6}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end">${v}%</text>`).join('');
   let body;
   if(days.length < 2){
     body = accEmpty(f, days.length ? 'The trend starts once two days are graded.' : 'Nothing is graded yet.');
@@ -88,11 +89,11 @@ function accTrendHtml(games){
     <h3>Running accuracy</h3>
     <p>Each forecast's share of its picks that won, counted from the first graded day to each day since.</p>
     ${accLegend()}
-    <svg viewBox="0 0 ${f.W} ${f.H}" style="width:100%; height:auto; max-width:${f.W}px;" role="img" aria-label="Line chart of running accuracy by day for the market, Model B and Model A.${days.length < 2 ? ' Not enough is graded to draw it yet.' : ''}">${grid}${body}</svg>
+    <svg class="chart" viewBox="0 0 ${f.W} ${f.H}" style="width:100%; height:auto; max-width:${f.W}px;" role="img" aria-label="Line chart of running accuracy by day for the market, Model B and Model A.${days.length < 2 ? ' Not enough is graded to draw it yet.' : ''}">${grid}${body}</svg>
   </div>`;
 }
 function accMarker(shape, cx, cy, colour){
-  const r = 4.5;
+  const r = 6;  // 12 across, the chart style's series shape
   if(shape === 'sq') return `<rect x="${(cx - r).toFixed(1)}" y="${(cy - r).toFixed(1)}" width="${2 * r}" height="${2 * r}" fill="${colour}" stroke="var(--surface)" stroke-width="2"/>`;
   if(shape === 'tri') return `<path d="M${cx.toFixed(1)},${(cy - r - 1).toFixed(1)} L${(cx + r + 1).toFixed(1)},${(cy + r).toFixed(1)} L${(cx - r - 1).toFixed(1)},${(cy + r).toFixed(1)} Z" fill="${colour}" stroke="var(--surface)" stroke-width="2"/>`;
   return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="${colour}" stroke="var(--surface)" stroke-width="2"/>`;
@@ -109,6 +110,11 @@ function accWilson(k, n){
   const mid = (p + z * z / (2 * n)) / d, half = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d;
   return [Math.max(0, mid - half), Math.min(1, mid + half)];
 }
+/* A 95% interval, drawn as the NFL's reliability diagram draws one. */
+function accWhisker(cx, top, bottom){
+  const cap = y => `<line class="chart-whisker" x1="${(cx - 3.5).toFixed(1)}" y1="${y.toFixed(1)}" x2="${(cx + 3.5).toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--text-2)"/>`;
+  return `<line class="chart-whisker" x1="${cx.toFixed(1)}" y1="${top.toFixed(1)}" x2="${cx.toFixed(1)}" y2="${bottom.toFixed(1)}" stroke="var(--text-2)"/>${cap(top)}${cap(bottom)}`;
+}
 const ACC_BINS = [[0.5, 0.55], [0.55, 0.6], [0.6, 0.65], [0.65, 0.7], [0.7, 1.01]];
 /* How sure each pick was, against how often picks that sure came true, with
    the line a well-calibrated forecast would sit on. A pick is Model B's or
@@ -119,23 +125,23 @@ function accDiagramHtml(games){
   const x = v => f.padL + (v - lo) / (hi - lo) * (f.W - f.padL - f.padR);
   const y = v => f.padT + (1 - v / 100) * (f.H - f.padT - f.padB);
   const ticks = [50, 60, 70, 80, 90, 100];
-  const axes = ticks.map(v => `<line x1="${x(v).toFixed(1)}" y1="${f.padT}" x2="${x(v).toFixed(1)}" y2="${f.H - f.padB}" stroke="var(--border)" stroke-width="1"/>`
-      + `<text x="${x(v).toFixed(1)}" y="${f.H - f.padB + 20}" text-anchor="middle" font-size="${f.fs}" fill="var(--text-2)">${v}%</text>`).join('')
-    + [0, 50, 100].map(v => `<text x="${f.padL - 6}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end" font-size="${f.fs}" fill="var(--text-2)">${v}%</text>`).join('')
-    + `<line x1="${x(50).toFixed(1)}" y1="${y(50).toFixed(1)}" x2="${x(100).toFixed(1)}" y2="${y(100).toFixed(1)}" stroke="var(--text-2)" stroke-width="1" stroke-dasharray="4 3"/>`;
+  const axes = ticks.map(v => `<line class="chart-grid" x1="${x(v).toFixed(1)}" y1="${f.padT}" x2="${x(v).toFixed(1)}" y2="${f.H - f.padB}"/>`
+      + `<text x="${x(v).toFixed(1)}" y="${f.H - f.padB + 20}" text-anchor="middle">${v}%</text>`).join('')
+    + [0, 50, 100].map(v => `<text x="${f.padL - 6}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end">${v}%</text>`).join('')
+    + `<line class="chart-ref" x1="${x(50).toFixed(1)}" y1="${y(50).toFixed(1)}" x2="${x(100).toFixed(1)}" y2="${y(100).toFixed(1)}"/>`;
   const bins = ACC_BINS.map(([a, b]) => {
     const inBin = games.filter(g => g.c >= a && g.c < b);
     const n = inBin.length, k = inBin.filter(g => g.right).length;
     return n ? {n, k, said: inBin.reduce((t, g) => t + g.c, 0) / n * 100, rate: k / n * 100, ci: accWilson(k, n)} : null;
   }).filter(Boolean);
   const body = !games.length ? accEmpty(f, 'Nothing is graded yet.')
-    : bins.map(p => `<line x1="${x(p.said).toFixed(1)}" y1="${y(p.ci[0] * 100).toFixed(1)}" x2="${x(p.said).toFixed(1)}" y2="${y(p.ci[1] * 100).toFixed(1)}" stroke="var(--text-2)" stroke-width="1.5"/>`
-      + `<circle cx="${x(p.said).toFixed(1)}" cy="${y(p.rate).toFixed(1)}" r="5" fill="var(--text)" stroke="var(--surface)" stroke-width="2"><title>Said ${p.said.toFixed(1)}%, right ${p.rate.toFixed(1)}% over ${p.n} pick${p.n === 1 ? '' : 's'} (95% interval ${Math.round(p.ci[0] * 100)}% to ${Math.round(p.ci[1] * 100)}%)</title></circle>`).join('');
+    : bins.map(p => accWhisker(x(p.said), y(p.ci[1] * 100), y(p.ci[0] * 100))
+      + `<circle cx="${x(p.said).toFixed(1)}" cy="${y(p.rate).toFixed(1)}" r="6" fill="var(--text)" stroke="var(--surface)" stroke-width="2"><title>Said ${p.said.toFixed(1)}%, right ${p.rate.toFixed(1)}% over ${p.n} pick${p.n === 1 ? '' : 's'} (95% interval ${Math.round(p.ci[0] * 100)}% to ${Math.round(p.ci[1] * 100)}%)</title></circle>`).join('');
   const thin = games.length && games.length < 30 * ACC_BINS.length;
   return `<div class="method-block acc-chart">
     <h3>How sure, and how often right</h3>
     <p>Each dot is the graded picks made at about one level of sureness: how sure they were, across, and how often they came true, up. A well-calibrated forecast sits on the dashed line; the bar through each dot is its 95% interval.${thin ? ` With ${games.length} graded, every interval is wide: a dot means little under 30 picks.` : ''}</p>
-    <svg viewBox="0 0 ${f.W} ${f.H}" style="width:100%; height:auto; max-width:${f.W}px;" role="img" aria-label="Calibration diagram of the graded picks: how sure each was against how often picks that sure came true.${games.length ? '' : ' Nothing is graded yet.'}">${axes}${body}</svg>
+    <svg class="chart" viewBox="0 0 ${f.W} ${f.H}" style="width:100%; height:auto; max-width:${f.W}px;" role="img" aria-label="Calibration diagram of the graded picks: how sure each was against how often picks that sure came true.${games.length ? '' : ' Nothing is graded yet.'}">${axes}${body}</svg>
   </div>`;
 }
 function accuracyHtml(games){

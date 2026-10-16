@@ -3075,6 +3075,28 @@ const CHART_PHONE = '(max-width:640px)';
 function chartIsPhone(){
   return !!(window.matchMedia && window.matchMedia(CHART_PHONE).matches);
 }
+/* One chart style (Stage 79 item 45, the 2026-10-13 audit's N9 and V3). Every
+   SVG chart is an svg.chart: its text, grid, 50% or perfect-calibration
+   reference and interval whiskers are styled once, in styles.css's "One chart
+   style" block, which the NHL's and NBA's charts (src/core/accuracy.js) share.
+   A series' marker is 12 units across (CHART_MARK_R); a whisker is drawn by
+   chartWhisker. Text is 11 units or more; drawn at a phone's width below
+   640px and at its full width on a desktop, no chart's text renders under
+   11px at 390 or 1440px (tests/browser/check_chart_text.py measures both).
+   Between them a desktop drawing wider than its box still shrinks, which the
+   trend's container width (Stage 79 item 49) takes up. */
+const CHART_MARK_R = 6;
+function chartWhisker(cx, top, bottom, colour){
+  const cap = y => `<line class="chart-whisker" x1="${(cx-3.5).toFixed(1)}" y1="${y.toFixed(1)}" x2="${(cx+3.5).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${colour}"/>`;
+  return `<line class="chart-whisker" x1="${cx.toFixed(1)}" y1="${top.toFixed(1)}" x2="${cx.toFixed(1)}" y2="${bottom.toFixed(1)}" stroke="${colour}"/>${cap(top)}${cap(bottom)}`;
+}
+/* At 11 units a tick label is about 6 units a character ("Wk 18" measured
+   29.8). Label every k-th tick, the fewest that leaves 4 units between
+   neighbours: every week of a desktop season up to week 17. */
+function chartTickStep(labels, gap){
+  const widest = Math.max(0, ...labels.map(t => t.length)) * 6;
+  return Math.max(1, Math.ceil((widest + 4) / Math.max(gap, 1)));
+}
 
 function buildCumulativeTrendChart(){
   // Two points, not one. A trend needs somewhere to go, and a single graded
@@ -3121,7 +3143,6 @@ function buildCumulativeTrendChart(){
   const phone = chartIsPhone();
   const W = phone ? 300 : 680, H = phone ? 230 : 220, padL = phone ? 34 : 36, padR = phone ? 20 : 74;
   const padT=14, padB=28;
-  const fsTick = phone ? 11 : 9, fsName = phone ? 12 : 10;
   const n = points.length;
   const x = i => n<=1 ? padL : padL + (i/(n-1))*(W-padL-padR);
   const allVals = points.flatMap(p=>[p.a,p.b,p.m,p.p]).filter(v=>v!==null);
@@ -3145,25 +3166,28 @@ function buildCumulativeTrendChart(){
     ends.push({x: x(last.i), y: y(last.v), label: s.label});
     const dash = s.dash ? ` stroke-dasharray="${s.dash}"` : '';
     return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"${dash}/>
-      ${markerPath(s.shape, x(last.i), y(last.v), 4.5)} fill="${s.color}" stroke="var(--surface)" stroke-width="2"/>`;
+      ${markerPath(s.shape, x(last.i), y(last.v), CHART_MARK_R)} fill="${s.color}" stroke="var(--surface)" stroke-width="2"/>`;
   }
   function endLabels(){
     if(phone) return '';   // the legend names the lines on a phone
     const placed = spreadLabels(ends.map(e => e.y), TREND_LABEL_GAP, padT + 4, H - padB);
     return ends.map((e, k) =>
-      `<text x="${(e.x+9).toFixed(1)}" y="${(placed[k]+3.5).toFixed(1)}" font-size="${fsName}" font-weight="600" fill="var(--text-2)">${e.label}</text>`).join('');
+      `<text class="chart-label" x="${(e.x+CHART_MARK_R+5).toFixed(1)}" y="${(placed[k]+4).toFixed(1)}">${e.label}</text>`).join('');
   }
 
   // The weeks under the x-axis. A season's weeks as "Wk 1"; the season
   // itself only when the points span more than one.
   const oneSeason = new Set(accuracy.weeks.map(w => w.season)).size === 1;
-  const weekTicks = accuracy.weeks.map((w, i) =>
-    `<text x="${x(i).toFixed(1)}" y="${(H - padB + 16).toFixed(1)}" text-anchor="middle" font-size="${fsTick}" fill="var(--text-2)">${oneSeason ? '' : w.season + ' '}Wk ${w.week}</text>`).join('');
+  const tickText = w => `${oneSeason ? '' : w.season + ' '}Wk ${w.week}`;
+  const every = chartTickStep(accuracy.weeks.map(tickText), n <= 1 ? W : (W - padL - padR) / (n - 1));
+  // Counted back from the latest week, which is always labelled.
+  const weekTicks = accuracy.weeks.map((w, i) => (n - 1 - i) % every ? '' :
+    `<text x="${x(i).toFixed(1)}" y="${(H - padB + 16).toFixed(1)}" text-anchor="middle">${tickText(w)}</text>`).join('');
 
   const gridLines = [];
   for(let gv = Math.ceil(yMin/10)*10; gv <= yMax; gv += 10){
-    gridLines.push(`<line x1="${padL}" y1="${y(gv).toFixed(1)}" x2="${W-padR}" y2="${y(gv).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>
-      <text x="${padL-6}" y="${(y(gv)+3).toFixed(1)}" text-anchor="end" font-size="${fsTick}" fill="var(--text-2)">${gv}%</text>`);
+    gridLines.push(`<line class="${gv === 50 ? 'chart-ref' : 'chart-grid'}" x1="${padL}" y1="${y(gv).toFixed(1)}" x2="${W-padR}" y2="${y(gv).toFixed(1)}"/>
+      <text x="${padL-6}" y="${(y(gv)+4).toFixed(1)}" text-anchor="end">${gv}%</text>`);
   }
 
   // My picks are in the legend only when they have a line to name. When
@@ -3179,7 +3203,7 @@ function buildCumulativeTrendChart(){
     <h3>Cumulative Accuracy Trend</h3>
     <p style="margin-bottom:var(--s3);">Running accuracy as the season progresses -- not week-by-week noise, but how each approach has performed overall up to that point.</p>
     <div style="font-size:var(--fs-11); color:var(--text-2); margin-bottom:var(--s2);">${legend}</div>
-    <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:${W}px;" role="img" aria-label="Line chart of running accuracy by week for Model A, Model B, the market and, once you have made picks, yours. Each week's own figures are in the Week by week table below.">
+    <svg class="chart" viewBox="0 0 ${W} ${H}" style="width:100%; height:auto; max-width:${W}px;" role="img" aria-label="Line chart of running accuracy by week for Model A, Model B, the market and, once you have made picks, yours. Each week's own figures are in the Week by week table below.">
       ${gridLines.join('')}
       ${lineFor('a','a')}
       ${lineFor('b','b')}
@@ -3214,7 +3238,8 @@ function buildCalibrationChart(){
     </div>`;
   }
 
-  const S = 260, pad = 30;
+  // pad holds the axis's "100%" at the chart style's 11 units (Stage 79 item 45).
+  const S = 260, pad = 38;
   const scale = v => pad + (v/100)*(S-2*pad);
 
   const points = accuracy.calibration.map(c => ({x: c.avg_predicted, y: c.actual_rate, n: c.n, bucket: c.bucket}));
@@ -3229,14 +3254,14 @@ function buildCalibrationChart(){
 
   return `
     <div style="display:flex; align-items:flex-start; gap:var(--s5); flex-wrap:wrap; margin-bottom:var(--s4);">
-      <svg viewBox="0 0 ${S} ${S}" style="width:260px; height:260px; flex-shrink:0;" role="img" aria-label="Calibration chart: each confidence bucket's average predicted chance against how often those picks were right. The same buckets are in the table below.">
-        <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${pad}" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <line x1="${pad}" y1="${S-pad}" x2="${pad}" y2="${pad}" stroke="var(--border)" stroke-width="1"/>
-        <line x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${S-pad}" stroke="var(--border)" stroke-width="1"/>
-        <text x="${pad}" y="${S-pad+14}" font-size="9" fill="var(--text-2)">0%</text>
-        <text x="${S-pad}" y="${S-pad+14}" font-size="9" fill="var(--text-2)" text-anchor="end">100%</text>
-        <text x="${pad-6}" y="${S-pad+4}" font-size="9" fill="var(--text-2)" text-anchor="end">0%</text>
-        <text x="${pad-6}" y="${pad+4}" font-size="9" fill="var(--text-2)" text-anchor="end">100%</text>
+      <svg class="chart" viewBox="0 0 ${S} ${S}" style="width:260px; height:260px; flex-shrink:0;" role="img" aria-label="Calibration chart: each confidence bucket's average predicted chance against how often those picks were right. The same buckets are in the table below.">
+        <line class="chart-ref" x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${pad}"/>
+        <line class="chart-grid" x1="${pad}" y1="${S-pad}" x2="${pad}" y2="${pad}"/>
+        <line class="chart-grid" x1="${pad}" y1="${S-pad}" x2="${S-pad}" y2="${S-pad}"/>
+        <text x="${pad}" y="${S-pad+15}">0%</text>
+        <text x="${S-pad}" y="${S-pad+15}" text-anchor="end">100%</text>
+        <text x="${pad-6}" y="${S-pad+4}" text-anchor="end">0%</text>
+        <text x="${pad-6}" y="${pad+4}" text-anchor="end">100%</text>
         ${dots}
       </svg>
       <div style="font-size:var(--fs-12); color:var(--text-2); max-width:280px; padding-top:var(--s2);">
@@ -3293,15 +3318,14 @@ function buildReliabilityDiagram(){
   // 16 spare units at the right); only the phone plot fills its width.
   const PLOT = phone ? W - padL - padR : 390;
   const H = padT + PLOT + (phone ? 44 : 40);
-  const fs = phone ? {tick: 11, note: 11, axis: 12} : {tick: 10, note: 9.5, axis: 10.5};
   const x = v => padL + (v/100)*PLOT;
   const y = v => padT + (1 - v/100)*PLOT;
 
   const grid = [0,25,50,75,100].map(g=>`
-    <line x1="${x(g).toFixed(1)}" y1="${padT}" x2="${x(g).toFixed(1)}" y2="${(padT+PLOT).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>
-    <line x1="${padL}" y1="${y(g).toFixed(1)}" x2="${(padL+PLOT).toFixed(1)}" y2="${y(g).toFixed(1)}" stroke="var(--border)" stroke-width="1"/>
-    <text x="${x(g).toFixed(1)}" y="${(padT+PLOT+16).toFixed(1)}" font-size="${fs.tick}" fill="var(--text-2)" text-anchor="middle">${g}%</text>
-    <text x="${(padL-8).toFixed(1)}" y="${(y(g)+3.5).toFixed(1)}" font-size="${fs.tick}" fill="var(--text-2)" text-anchor="end">${g}%</text>`).join('');
+    <line class="chart-grid" x1="${x(g).toFixed(1)}" y1="${padT}" x2="${x(g).toFixed(1)}" y2="${(padT+PLOT).toFixed(1)}"/>
+    <line class="chart-grid" x1="${padL}" y1="${y(g).toFixed(1)}" x2="${(padL+PLOT).toFixed(1)}" y2="${y(g).toFixed(1)}"/>
+    <text x="${x(g).toFixed(1)}" y="${(padT+PLOT+16).toFixed(1)}" text-anchor="middle">${g}%</text>
+    <text x="${(padL-8).toFixed(1)}" y="${(y(g)+4).toFixed(1)}" text-anchor="end">${g}%</text>`).join('');
 
   // Marks are drawn series by series in fixed order so overlaps stack the same
   // way on every render -- a chart whose z-order shuffles between loads is a
@@ -3315,11 +3339,9 @@ function buildReliabilityDiagram(){
       const barTop = y(b.ci_hi), barBot = y(b.ci_lo);
       // Wilson interval. Drawn under the marker so the marker's surface ring
       // still separates it from whatever it overlaps.
-      const bar = `<line x1="${cx.toFixed(1)}" y1="${barTop.toFixed(1)}" x2="${cx.toFixed(1)}" y2="${barBot.toFixed(1)}" stroke="${s.color}" stroke-width="2" stroke-opacity="0.5" stroke-linecap="round"/>
-        <line x1="${(cx-3.5).toFixed(1)}" y1="${barTop.toFixed(1)}" x2="${(cx+3.5).toFixed(1)}" y2="${barTop.toFixed(1)}" stroke="${s.color}" stroke-width="2" stroke-opacity="0.5"/>
-        <line x1="${(cx-3.5).toFixed(1)}" y1="${barBot.toFixed(1)}" x2="${(cx+3.5).toFixed(1)}" y2="${barBot.toFixed(1)}" stroke="${s.color}" stroke-width="2" stroke-opacity="0.5"/>`;
+      const bar = chartWhisker(cx, barTop, barBot, s.color);
       const fill = b.underpowered ? 'var(--surface)' : s.color;
-      const marker = `${markerPath(s.shape, cx, cy, 5)} fill="${fill}" stroke="${b.underpowered ? s.color : 'var(--surface)'}" stroke-width="2"/>`;
+      const marker = `${markerPath(s.shape, cx, cy, CHART_MARK_R)} fill="${fill}" stroke="${b.underpowered ? s.color : 'var(--surface)'}" stroke-width="2"/>`;
       const tip = [
         `<b>${s.label} &middot; ${b.label} bin</b>`,
         `Stated ${b.mean_predicted}% &rarr; actually won <b>${b.observed}%</b>`,
@@ -3400,13 +3422,13 @@ function buildReliabilityDiagram(){
     <div class="rel-filters">${filters}</div>
     <div class="rel-wrap">
       <div class="rel-plot">
-        <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto;" role="group" aria-label="Reliability diagram: stated probability against observed win rate. One Tab stop; arrow keys move between points, Home and End go to the first and last.">
+        <svg class="chart" viewBox="0 0 ${W} ${H}" style="width:100%; height:auto;" role="group" aria-label="Reliability diagram: stated probability against observed win rate. One Tab stop; arrow keys move between points, Home and End go to the first and last.">
           ${grid}
-          <line x1="${x(0).toFixed(1)}" y1="${y(0).toFixed(1)}" x2="${x(100).toFixed(1)}" y2="${y(100).toFixed(1)}" stroke="var(--border-strong)" stroke-width="1.5" stroke-dasharray="5,4"/>
-          <text x="${(x(100)-4).toFixed(1)}" y="${(y(100)+14).toFixed(1)}" font-size="${fs.note}" fill="var(--text-2)" text-anchor="end">perfect calibration</text>
+          <line class="chart-ref" x1="${x(0).toFixed(1)}" y1="${y(0).toFixed(1)}" x2="${x(100).toFixed(1)}" y2="${y(100).toFixed(1)}"/>
+          <text x="${(x(100)-4).toFixed(1)}" y="${(y(100)+15).toFixed(1)}" text-anchor="end">perfect calibration</text>
           ${marks}
-          <text x="${(padL+PLOT/2).toFixed(1)}" y="${(padT+PLOT+34).toFixed(1)}" font-size="${fs.axis}" fill="var(--text-2)" text-anchor="middle">Probability the model stated</text>
-          <text x="12" y="${(padT+PLOT/2).toFixed(1)}" font-size="${fs.axis}" fill="var(--text-2)" text-anchor="middle" transform="rotate(-90 12 ${(padT+PLOT/2).toFixed(1)})">How often it actually happened</text>
+          <text class="chart-title" x="${(padL+PLOT/2).toFixed(1)}" y="${(padT+PLOT+34).toFixed(1)}" text-anchor="middle">Probability the model stated</text>
+          <text class="chart-title" x="12" y="${(padT+PLOT/2).toFixed(1)}" text-anchor="middle" transform="rotate(-90 12 ${(padT+PLOT/2).toFixed(1)})">How often it actually happened</text>
         </svg>
         <div class="rel-tip" id="rel-tip"></div>
       </div>

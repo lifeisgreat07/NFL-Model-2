@@ -30,10 +30,8 @@ TEMPLATE = JOINED_TEMPLATE
 NOT_TEXT = {
     '.nav-btn svg': 'the sidebar icon beside the label, not the label',
     '.nav-btn.disabled': 'a disabled control; WCAG 1.4.3 exempts inactive UI',
-    '.srs-bar-track.diverging::before': "the Net Rating bar's zero line",
     '.btn-chip.btn-toggle[aria-pressed="false"] svg': "a switched-off series' marker, not its label",
     '.btn-chip.btn-toggle[aria-pressed="false"]:hover svg': 'the same marker on hover',
-    '.score-coin': "the scoreboard's 50% line",
     '.tele-bar-seg': 'an empty bar segment',
 }
 # Rules that dimmed text before Stage 12 and must not again.

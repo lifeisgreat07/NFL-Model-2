@@ -183,6 +183,7 @@ RENDERERS = {
     # page. Verified by where the container lives (`#reliability-diagram`
     # sits inside `id="page-modellab"`), not by the function's name.
     'buildReliabilityDiagram': 'modellab',
+    'chartWhisker': 'modellab',
     'seriesLegend': 'modellab',
     'renderChangelog': 'changelog',
     # "Checking the AI's work". A page ABOUT the verifier, so the vocabulary

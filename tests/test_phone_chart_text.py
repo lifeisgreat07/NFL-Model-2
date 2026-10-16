@@ -8,6 +8,10 @@ and the trend chart's names at the line ends are dropped there, since the
 legend above it names every line (Mark's choice from rendered side-by-sides,
 2026-09-28). Desktop drawing is unchanged. Measured in a browser for the PR;
 held here by source and by the arithmetic that makes the rule true.
+
+Since Stage 79 item 45 neither chart sets its own text size: both are
+svg.chart, whose text the one chart style (styles.css) sets at 11 units and
+up (tests/test_chart_style.py), so the arithmetic is done on that.
 """
 import re
 
@@ -16,6 +20,7 @@ from src.core.template_parts import read_template
 TEMPLATE = read_template()
 PHONE_RENDERED_PX = 300   # the chart's width on a 375px phone, measured 299
 MIN_PX = 11
+CHART_TEXT_UNITS = 11     # .chart text{font-size:var(--fs-11)}, styles.css
 
 
 def fn(name):
@@ -36,11 +41,9 @@ def test_the_trend_chart_is_drawn_for_the_phone_with_readable_text():
     m = re.search(r'const W = phone \? (\d+) : 680, H = phone \? \d+ : 220, padL = phone \? \d+ : 36, padR = phone \? \d+ : 74;', body)
     assert m, 'the trend chart no longer has a phone drawing (or its desktop one moved)'
     w = int(m.group(1))
-    fs = re.search(r'const fsTick = phone \? ([\d.]+) : 9, fsName = phone \? ([\d.]+) : 10;', body)
-    assert fs, 'the trend chart text sizes are not set by width'
-    for size in map(float, fs.groups()):
-        assert size * PHONE_RENDERED_PX / w >= MIN_PX, f'{size} units in a {w}-unit chart renders under {MIN_PX}px'
-    assert 'font-size="9"' not in body and 'font-size="10"' not in body, 'a fixed text size is left in the trend chart'
+    assert CHART_TEXT_UNITS * PHONE_RENDERED_PX / w >= MIN_PX, f'{CHART_TEXT_UNITS} units in a {w}-unit chart renders under {MIN_PX}px'
+    assert '<svg class="chart" ' in body
+    assert not re.search(r'font-size="[^"]*"', body), 'a fixed text size is left in the trend chart'
     assert 'max-width:${W}px;' in body
 
 
@@ -57,11 +60,9 @@ def test_the_reliability_diagram_is_drawn_for_the_phone_with_readable_text():
     m = re.search(r'const W = phone \? (\d+) : 470, padL = phone \? \d+ : 48, padR = phone \? \d+ : 16, padT = 14;', body)
     assert m, 'the reliability diagram no longer has a phone drawing'
     w = int(m.group(1))
-    fs = re.search(r'const fs = phone \? \{tick: ([\d.]+), note: ([\d.]+), axis: ([\d.]+)\} : \{tick: 10, note: 9\.5, axis: 10\.5\};', body)
-    assert fs, 'the diagram text sizes are not set by width'
-    for size in map(float, fs.groups()):
-        assert size * PHONE_RENDERED_PX / w >= MIN_PX
-    assert not re.search(r'font-size="[\d.]+"', body), 'a fixed text size is left in the reliability diagram'
+    assert CHART_TEXT_UNITS * PHONE_RENDERED_PX / w >= MIN_PX
+    assert '<svg class="chart" ' in body
+    assert not re.search(r'font-size="[^"]*"', body), 'a fixed text size is left in the reliability diagram'
     assert 'const PLOT = phone ? W - padL - padR : 390;' in body
 
 
@@ -71,4 +72,3 @@ def test_the_reliability_diagram_is_drawn_as_before_on_a_desktop():
     body = fn('buildReliabilityDiagram')
     assert 'const PLOT = phone ? W - padL - padR : 390;' in body
     assert 'const H = padT + PLOT + (phone ? 44 : 40);' in body
-    assert ': {tick: 10, note: 9.5, axis: 10.5};' in body

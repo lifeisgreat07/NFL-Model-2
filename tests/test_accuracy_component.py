@@ -59,7 +59,7 @@ def test_the_interval_is_wilsons_at_95_percent():
 
 def test_with_nothing_graded_each_chart_says_so_inside_its_frame():
     html = run('accuracyHtml([])', games=[])
-    assert html.count('<svg') == 2 and html.count('class="acc-empty"') == 2
+    assert html.count('<svg') == 2 and html.count('class="acc-empty chart-title"') == 2
     assert 'Nothing is graded yet.' in html
 
 
@@ -69,8 +69,11 @@ def test_one_graded_day_is_not_drawn_as_a_trend():
 
 
 def test_no_chart_text_is_under_11px():
-    sizes = run("[...accuracyHtml(games).matchAll(/font-size=\"(\\d+)\"/g)].map(m => Number(m[1]))")
-    assert sizes and min(sizes) >= 11
+    # Since Stage 79 item 45 both charts take the one chart style
+    # (styles.css, tests/test_chart_style.py), which sets their text at 11
+    # and up; neither sets a size of its own.
+    html = run('accuracyHtml(games)')
+    assert html.count('<svg class="chart" ') == 2 and 'font-size=' not in html
 
 
 @pytest.mark.parametrize('sport, where', [('nhl', 'function renderAccuracy(){'), ('nba', 'function renderReliability(){')])

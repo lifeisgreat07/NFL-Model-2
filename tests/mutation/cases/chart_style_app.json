@@ -1,0 +1,48 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_chart_style.py",
+ "cases": [
+  {
+   "id": "chart-trend-no-ref",
+   "why": "the NFL trend's 50% line is a grid line again.",
+   "find": "<line class=\"${gv === 50 ? 'chart-ref' : 'chart-grid'}\" ",
+   "replace": "<line class=\"chart-grid\" ",
+   "expect_caught_by": "test_each_chart_draws_its_reference"
+  },
+  {
+   "id": "chart-trend-unstyled",
+   "why": "the NFL trend leaves the chart style.",
+   "find": "<svg class=\"chart\" viewBox=\"0 0 ${W} ${H}\" style=\"width:100%; height:auto; max-width:${W}px;\"",
+   "replace": "<svg viewBox=\"0 0 ${W} ${H}\" style=\"width:100%; height:auto; max-width:${W}px;\"",
+   "expect_caught_by": "test_every_chart_is_drawn_in_the_chart_style"
+  },
+  {
+   "id": "chart-calib-own-size",
+   "why": "the calibration chart prints its own 9-unit labels again.",
+   "find": "<text x=\"${pad}\" y=\"${S-pad+15}\">0%</text>",
+   "replace": "<text x=\"${pad}\" y=\"${S-pad+15}\" font-size=\"9\">0%</text>",
+   "expect_caught_by": "test_every_chart_is_drawn_in_the_chart_style"
+  },
+  {
+   "id": "chart-marks-small",
+   "why": "series markers shrink back to 9 units.",
+   "find": "const CHART_MARK_R = 6;",
+   "replace": "const CHART_MARK_R = 4.5;",
+   "expect_caught_by": "test_intervals_are_whiskers_and_series_shapes_are_12_across"
+  },
+  {
+   "id": "chart-ticks-from-first",
+   "why": "week labels count from the first week, so the latest can go unlabelled.",
+   "find": "(n - 1 - i) % every ?",
+   "replace": "i % every ?",
+   "expect_caught_by": "test_week_labels_thin_to_what_fits_counted_back_from_the_latest"
+  },
+  {
+   "id": "chart-ticks-never-thin",
+   "why": "every week is labelled however little room there is.",
+   "find": "return Math.max(1, Math.ceil((widest + 4) / Math.max(gap, 1)));",
+   "replace": "return 1;",
+   "expect_caught_by": "test_week_labels_thin_to_what_fits_counted_back_from_the_latest"
+  }
+ ]
+}
