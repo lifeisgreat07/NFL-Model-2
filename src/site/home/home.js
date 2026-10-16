@@ -196,6 +196,60 @@ function gradedTile(sports){
 document.getElementById('home-score').innerHTML = scoreTile(HOME.nfl, 'NFL picks')
   + scoreTile(HOME.nhl, 'NHL picks') + gradedTile([HOME.nfl, HOME.nhl, HOME.nba]);
 
+/* Stage 80 item 54 (the 2026-10-13 audit's F8): "Since your last visit".
+   Each visit leaves each sport's record in this browser; the next one says
+   what was graded in between: "Since Sunday: NFL 10 of 14 right, NHL 5 of
+   7 right." Only sports with new graded games are named, and a record that
+   went down (a new season) names nothing. The session keeps the sentence it
+   showed, so a reload does not take it away while the stored record moves
+   on. Nothing leaves the browser. */
+const SINCE_KEY = 'site:lastVisit', SINCE_SHOWN = 'site:sinceShown';
+function sinceLabel(at, now){
+  const midnight = t => { const d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); };
+  const days = Math.round((midnight(now) - midnight(at)) / (24 * HOUR));
+  if(days <= 0) return 'earlier today';
+  if(days === 1) return 'yesterday';
+  if(days < 7) return new Date(at).toLocaleDateString('en-US', {weekday: 'long'});
+  return new Date(at).toLocaleDateString('en-US', {month: 'short', day: 'numeric'});
+}
+function sinceText(prev, sports, now){
+  if(!prev || !prev.rec || !prev.at) return '';
+  const parts = [];
+  for(const s of ['nfl', 'nhl', 'nba']){
+    const f = sports[s], p = prev.rec[s];
+    if(!f || !f.built || !f.record || !p) continue;
+    const won = f.record.won - p[0], lost = f.record.lost - p[1];
+    if(won < 0 || lost < 0 || won + lost === 0) continue;
+    parts.push(`${SPORT_NAME[s]} ${won} of ${won + lost} right`);
+  }
+  return parts.length ? `Since ${sinceLabel(prev.at, now)}: ${parts.join(', ')}.` : '';
+}
+function sinceSnapshot(sports, now){
+  const rec = {};
+  for(const s of ['nfl', 'nhl', 'nba']){
+    const f = sports[s];
+    if(f && f.built && f.record) rec[s] = [f.record.won, f.record.lost];
+  }
+  return {at: now, rec};
+}
+(function(){
+  const el = document.getElementById('home-since');
+  if(!el) return;
+  const sports = {nfl: HOME.nfl, nhl: HOME.nhl, nba: HOME.nba};
+  let text = null;
+  try{ text = sessionStorage.getItem(SINCE_SHOWN); }catch(e){}
+  if(text === null){
+    let prev = null;
+    try{ prev = JSON.parse(localStorage.getItem(SINCE_KEY) || 'null'); }catch(e){}
+    text = sinceText(prev, sports, NOW);
+    try{
+      sessionStorage.setItem(SINCE_SHOWN, text);
+      localStorage.setItem(SINCE_KEY, JSON.stringify(sinceSnapshot(sports, NOW)));
+    }catch(e){}
+  }
+  el.textContent = text;
+})();
+
 // The theme button: the same choice, under the same key, as every sport's page.
 (function(){
   const btn = document.querySelector('.home-theme');

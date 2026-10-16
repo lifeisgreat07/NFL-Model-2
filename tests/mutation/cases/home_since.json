@@ -1,0 +1,41 @@
+{
+ "target": "src/site/home/home.js",
+ "tests": "tests/test_home_since.py",
+ "cases": [
+  {
+   "id": "since-never-shown",
+   "why": "a returning visitor is told nothing again (Stage 80 item 54, F8).",
+   "find": "  el.textContent = text;\n})();",
+   "replace": "  el.textContent = '';\n})();",
+   "expect_caught_by": "test_the_page_shows_it_and_keeps_it_for_the_session"
+  },
+  {
+   "id": "since-counts-total",
+   "why": "the line counts the whole season, not what changed.",
+   "find": "const won = f.record.won - p[0], lost = f.record.lost - p[1];",
+   "replace": "const won = f.record.won, lost = f.record.lost;",
+   "expect_caught_by": "test_it_says_what_was_graded_since_the_last_visit"
+  },
+  {
+   "id": "since-new-season-negative",
+   "why": "a new season prints a negative count.",
+   "find": "if(won < 0 || lost < 0 || won + lost === 0) continue;",
+   "replace": "if(won + lost === 0) continue;",
+   "expect_caught_by": "test_nothing_new_a_new_season_and_a_first_visit_say_nothing"
+  },
+  {
+   "id": "since-reload-forgets",
+   "why": "a reload loses the line, because the session does not keep it.",
+   "find": "      sessionStorage.setItem(SINCE_SHOWN, text);\n",
+   "replace": "",
+   "expect_caught_by": "test_the_page_shows_it_and_keeps_it_for_the_session"
+  },
+  {
+   "id": "since-today-is-a-weekday",
+   "why": "a visit earlier today reads \"Since Wednesday\".",
+   "find": "  if(days <= 0) return 'earlier today';\n",
+   "replace": "",
+   "expect_caught_by": "test_the_day_is_named_as_a_person_would"
+  }
+ ]
+}
