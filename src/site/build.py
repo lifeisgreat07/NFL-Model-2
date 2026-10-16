@@ -443,6 +443,37 @@ def add_offline(out: Path) -> list[str]:
     return done
 
 
+SHARE_JS = ROOT / 'src' / 'core' / 'share_card.js'
+SHARE_MARK = 'data-site-share'
+_SHARE_OLD = re.compile(r'<script[^>]*\bdata-site-share\b[^>]*>.*?</script>\n?', re.S)
+
+
+def share_block() -> str:
+    """Stage 80 item 63: src/core/share_card.js, which draws a card as an
+    image to share."""
+    from src.core.page_comments import strip_page_comments
+    script = strip_page_comments('<script>\n' + SHARE_JS.read_text(encoding='utf-8') + '</script>')
+    return script.replace('<script>', f'<script {SHARE_MARK}>', 1) + '\n'
+
+
+def inject_share(page: Path, block: str) -> bool:
+    """Put it on one built page: only a page whose cards offer it
+    (data-share-card), before its </body>."""
+    if not page.exists():
+        return False
+    html = _SHARE_OLD.sub('', page.read_text(encoding='utf-8'))
+    if 'data-share-card' not in html or '</body>' not in html:
+        return False
+    at = html.rindex('</body>')
+    page.write_text(html[:at] + block + html[at:], encoding='utf-8')
+    return True
+
+
+def add_share(out: Path) -> list[str]:
+    block = share_block()
+    return [p for p in (f'{s}/index.html' for s in SPORTS) if inject_share(out / p, block)]
+
+
 def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS,
                runner: Runner = run, fetcher: Fetcher = fetch) -> list[SportResult]:
     if out.exists():
@@ -455,6 +486,7 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     add_search(out, results)
     add_sheet(out)
     add_scores(out)
+    add_share(out)
     add_offline(out)
     return results
 

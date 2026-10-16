@@ -1,0 +1,79 @@
+{
+ "target": "src/core/share_card.js",
+ "tests": "tests/test_share_card.py",
+ "cases": [
+  {
+   "id": "share-no-forecasts",
+   "why": "the image leaves out the forecasts the card shows (Stage 80 item 63, F13).",
+   "find": "  for(const f of d.forecasts || []) out.push(`${f.label} ${f.text}`);\n",
+   "replace": "",
+   "expect_caught_by": "test_the_image_says_the_game_the_pick_and_every_forecast"
+  },
+  {
+   "id": "share-miss-in-green",
+   "why": "a missed pick is drawn in the correct colour.",
+   "find": "d.result === 'Correct' ? SHARE_INK.right : d.result === 'Missed' ? SHARE_INK.wrong : SHARE_INK.soft",
+   "replace": "SHARE_INK.right",
+   "expect_caught_by": "test_a_graded_card_says_how_it_went_in_its_colour"
+  },
+  {
+   "id": "share-bar-flipped",
+   "why": "the image's bar draws the home team first, against the card.",
+   "find": "ctx.fillStyle = awayC; ctx.fillRect(x, y, w * (100 - home) / 100, h);",
+   "replace": "ctx.fillStyle = awayC; ctx.fillRect(x, y, w * home / 100, h);",
+   "expect_caught_by": "test_the_bar_draws_the_away_team_first_split_where_the_card_splits"
+  },
+  {
+   "id": "share-even-as-pick",
+   "why": "a saved pick inside the even band is drawn as a clear pick, against its card.",
+   "find": "  else if(d.even) out.push(`${d.lead} picked ${pick} · even`);\n",
+   "replace": "",
+   "expect_caught_by": "test_the_pick_line_reads_as_its_card_does"
+  },
+  {
+   "id": "share-unsafe-name",
+   "why": "a team code with a slash makes a file name with a folder in it.",
+   "find": "  const safe = s => String(s || '').replace(/[^A-Za-z0-9]+/g, '');",
+   "replace": "  const safe = s => String(s || '');",
+   "expect_caught_by": "test_the_file_is_named_for_the_game"
+  },
+  {
+   "id": "share-cancel-downloads",
+   "why": "closing the share sheet downloads the image anyway.",
+   "find": "        catch(e){ if(e && e.name === 'AbortError') return; }",
+   "replace": "        catch(e){}",
+   "expect_caught_by": "test_a_phone_gets_its_share_sheet_and_anything_else_a_download"
+  },
+  {
+   "id": "share-site-is-page",
+   "why": "the footer names the NFL's page, route and all, not the site.",
+   "find": "  return (u.host + u.pathname.replace(/(nfl|nhl|nba)\\/.*$/, '').replace(/index\\.html$/, '')).replace(/\\/$/, '');",
+   "replace": "  return u.host + u.pathname;",
+   "expect_caught_by": "test_the_footer_names_the_site_not_the_page"
+  },
+  {
+   "id": "share-nhl-lead-a",
+   "why": "the NHL image names Model A as the pick's model when Model B made it.",
+   "target": "src/sports/nhl/pages/nhl.js",
+   "find": "  const lead = vals.b !== null ? ['Model B', vals.b] : ['Model A', vals.a];\n  const s = side(lead[1], g);\n  const forecasts",
+   "replace": "  const lead = ['Model A', vals.a];\n  const s = side(lead[1], g);\n  const forecasts",
+   "expect_caught_by": "test_a_day_boards_card_carries_its_image"
+  },
+  {
+   "id": "share-nfl-unescaped",
+   "why": "the NFL card's data-share is written unescaped, and its quotes end the attribute.",
+   "target": "src/dashboard/app.js",
+   "find": "  return escapeHtml(JSON.stringify({sport: 'NFL',",
+   "replace": "  return (JSON.stringify({sport: 'NFL',",
+   "expect_caught_by": "test_the_nfl_card_carries_its_image"
+  },
+  {
+   "id": "share-not-built",
+   "why": "the build never puts the script on the pages, so the button does nothing.",
+   "target": "src/site/build.py",
+   "find": "    add_scores(out)\n    add_share(out)\n",
+   "replace": "    add_scores(out)\n",
+   "expect_caught_by": "test_the_build_tries_the_sport_pages_only"
+  }
+ ]
+}

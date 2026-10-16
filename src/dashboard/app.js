@@ -1475,6 +1475,20 @@ function revealOpened(panel){
   panel.scrollIntoView({block: 'nearest', behavior: still ? 'auto' : 'smooth'});
 }
 
+/* Stage 80 item 63 (F13): what this card's shared image says. src/core/share_card.js,
+   which the build puts on the page, draws it when "Share image" is pressed. */
+function shareAttr(g, awayC, homeC){
+  const has = v => v !== null && v !== undefined;
+  const lead = has(g.mktB_home) ? ['Model B', g.mktB_home] : ['Model A', g.fbA_home];
+  const s = cardSide(lead[1], g);
+  const forecasts = [['Model B', g.mktB_home], ['Market', g.mkt_home], ['Model A', g.fbA_home]]
+    .filter(([, v]) => has(v)).map(([label, v]) => ({label, text: cardSideText(cardSide(v, g))}));
+  const verdict = g.graded ? (g.model_b_correct ?? g.model_a_correct) : undefined;
+  const result = !g.graded ? null : (g.result === 'tie' || !has(verdict)) ? 'Tie' : verdict ? 'Correct' : 'Missed';
+  const score = g.status === 'final' && gameHasScore(g) ? `Final: ${g.away} ${g.away_score}, ${g.home} ${g.home_score}` : null;
+  return escapeHtml(JSON.stringify({sport: 'NFL', away: g.away, home: g.home, colours: [awayC, homeC], lead: lead[0], team: s.team,
+    pct: s.pct, homePct: lead[1], forecasts, when: kickoffLabel(g), result, score}));
+}
 function cardProbHtml(g, awayC, homeC){
   const b = cardSide(g.mktB_home, g), a = cardSide(g.fbA_home, g), m = cardSide(g.mkt_home, g);
   const vals = {b: g.mktB_home, a: g.fbA_home, market: g.mkt_home};
@@ -2108,7 +2122,7 @@ function renderGames(){
     const statusLine = cardStatusLine(g);
     const siteLine = cardSiteLine(g);
     const qbLine = cardQbLine(g), newsLine = cardNewsLine(g, news);
-    return `<div class="game-card ${g.flag?'has-flag':''}"${scoreMark(g)}>
+    return `<div class="game-card ${g.flag?'has-flag':''}"${scoreMark(g)} data-share="${shareAttr(g, awayC, homeC)}">
       ${matchupHeader(g)}
       ${kickoff || tvPill ? `<div class="card-kickoff">${kickoff}${tvPill}</div>` : ''}
       ${statusLine ? `<div class="card-status score-off">${statusLine}</div>` : ''}
@@ -2140,6 +2154,7 @@ function renderGames(){
           ${contextNotesHtml(g.notes)}
         </ul>
       </div>` : ''}
+      <button type="button" class="btn btn-link share-btn" data-share-card>Share image</button>
     </div>`;
   });
   const mine = favs('nfl'), pinned = sorted.filter(g => mine.includes(g.home) || mine.includes(g.away)).length;
