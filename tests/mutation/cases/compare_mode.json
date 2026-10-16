@@ -1,0 +1,62 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_compare_mode.py",
+ "cases": [
+  {
+   "id": "compare-on-phones",
+   "why": "the table is drawn on a phone, where it does not fit (Stage 80 item 55, F9).",
+   "find": "function tableView(){ return boardView === 'table' && window.matchMedia(TABLE_MIN).matches; }",
+   "replace": "function tableView(){ return boardView === 'table'; }",
+   "expect_caught_by": "test_the_switch_sits_beside_the_sort_and_only_where_the_table_fits"
+  },
+  {
+   "id": "compare-raw-chance",
+   "why": "a column prints the home side's chance for every game, not the side each model picks.",
+   "find": "const cell = (g, key) => { const s = cardSide(g[COMPARE_PROB[key]], g); return s ? cardSideText(s) : '—'; };",
+   "replace": "const cell = (g, key) => g[COMPARE_PROB[key]] === null || g[COMPARE_PROB[key]] === undefined ? '—' : `${g.home} ${Math.round(g[COMPARE_PROB[key]])}%`;",
+   "expect_caught_by": "test_a_row_is_a_game_with_each_models_side_the_markets_and_the_result"
+  },
+  {
+   "id": "compare-weakest-first",
+   "why": "a chance column sorts weakest first.",
+   "find": "const dir = (up ? 1 : -1) * (sort.dir === -1 ? 1 : -1);",
+   "replace": "const dir = (up ? 1 : 1) * (sort.dir === -1 ? 1 : -1);",
+   "expect_caught_by": "test_a_column_sorts_strongest_first_and_again_turns_it_round"
+  },
+  {
+   "id": "compare-ignores-board-order",
+   "why": "the table sorts itself before a column is chosen.",
+   "find": "  if(!sort.key) return games;\n",
+   "replace": "  if(!sort.key) sort = {key: 'game', dir: -1};\n",
+   "expect_caught_by": "test_until_a_column_is_chosen_the_table_keeps_the_boards_order"
+  },
+  {
+   "id": "compare-silent-sort",
+   "why": "no header says how the table is sorted.",
+   "find": "aria-sort=\"${compareSortState(key, sort, boardSort)}\"",
+   "replace": "aria-sort=\"none\"",
+   "expect_caught_by": "test_every_header_is_a_button_that_says_how_the_table_is_sorted"
+  },
+  {
+   "id": "compare-unfiltered",
+   "why": "the table shows the whole week under a filter.",
+   "find": "grid.innerHTML = compareTableHtml(sorted, compareSort,",
+   "replace": "grid.innerHTML = compareTableHtml(gamesList, compareSort,",
+   "expect_caught_by": "test_the_board_draws_the_table_from_its_filtered_sorted_games"
+  },
+  {
+   "id": "compare-not-kept",
+   "why": "the choice of view is forgotten on the next visit.",
+   "find": "    try{ localStorage.setItem(VIEW_KEY, boardView); }catch(e2){}\n",
+   "replace": "",
+   "expect_caught_by": "test_the_choice_is_kept_and_a_header_keeps_the_focus"
+  },
+  {
+   "id": "compare-focus-lost",
+   "why": "sorting a column throws the keyboard focus away.",
+   "find": "    if(again) again.focus();\n",
+   "replace": "",
+   "expect_caught_by": "test_the_choice_is_kept_and_a_header_keeps_the_focus"
+  }
+ ]
+}

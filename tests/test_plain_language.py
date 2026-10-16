@@ -87,6 +87,7 @@ RENDERERS = {
     'favStar': 'board',
     'boardInsights': 'board',
     'renderGames': 'board',
+    'compareTableHtml': 'board',
     'phoneRowHtml': 'board',
     'filteredNoteHtml': 'board',
     'renderWeekGlance': 'board',

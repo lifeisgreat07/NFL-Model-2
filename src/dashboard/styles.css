@@ -1085,6 +1085,17 @@
   .ts-pick.is-pick{color:var(--text); font-weight:700;}
   .ts-bar{position:relative; height:4px; margin-top:2px; border-radius:2px; background:var(--border);}
   .ts-bar i{position:absolute; left:0; top:0; bottom:0; border-radius:2px; background:var(--text-3);}
+  /* Stage 80 item 55 (F9): "Cards | Table", and the week as one table. Below
+     641 px the phone keeps its rows and the switch is not shown. */
+  .view-seg{display:none; border:1px solid var(--border-strong); border-radius:var(--r-full); padding:2px; gap:2px; background:var(--surface-2);}
+  @media (min-width:641px){ .view-seg{display:inline-flex;} }
+  .view-seg button{border:0; background:none; color:var(--text-2); font:inherit; font-size:var(--fs-13); font-weight:700;
+    padding:var(--s1) var(--s3); border-radius:var(--r-full); min-height:32px; cursor:pointer;}
+  .view-seg button[aria-pressed="true"]{background:var(--surface); color:var(--text); box-shadow:inset 0 0 0 1px var(--border-strong);}
+  #game-grid.is-table{display:block;}
+  /* Each header's button sorts; the mark beside it is every sorting header's (thead th[aria-sort]). */
+  .compare-table .cmp-sort{border:0; background:none; padding:0; font:inherit; color:inherit; letter-spacing:inherit;
+    text-transform:inherit; cursor:pointer; min-height:24px;}
   /* ---------- Favourite teams (Stage 80 item 53, the 2026-10-13 audit's F7) ----------
      A star beside a team: outlined until it is a favourite, then filled. Its
      own 24 px target, in the text's colour, never the accent. */

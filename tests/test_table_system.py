@@ -61,10 +61,23 @@ def unwrapped_tables(src):
     return out
 
 
+#: A header that sorts through a button inside it (Stage 80 item 55's Compare
+#: table): the button is what a keyboard reaches, so the header itself takes
+#: no tabindex, and the click handler reads the button's data-cmp.
+SORT_BUTTON = re.compile(r'\s*<button type="button" class="cmp-sort" data-cmp="[^"]+">')
+
+
 def header_problems(src):
     """Sortable-looking and sortable-behaving headers must be the same set."""
     problems = []
-    for th in re.findall(r'<th\b[^>]*>', src):
+    for m in re.finditer(r'<th\b[^>]*>', src):
+        th = m.group(0)
+        if SORT_BUTTON.match(src, m.end()):
+            if 'aria-sort=' not in th:
+                problems.append(f'sorts by its button but has no aria-sort: {th}')
+            if 'tabindex=' in th:
+                problems.append(f'sorts by its button, so the header itself must not take focus: {th}')
+            continue
         key = re.search(r'data-key="([^"]+)"', th)
         sorts = key and key.group(1) != 'rank'   # the handler returns early on rank
         if sorts and 'aria-sort=' not in th:
@@ -156,6 +169,10 @@ def test_the_header_rule_over_synthetic_markup():
     assert header_problems('<th data-key="net">')            # neither
     assert header_problems('<th data-key="net" aria-sort="none">')   # no tabindex
     assert header_problems('<th tabindex="0" aria-sort="none">')     # does not sort
+    btn = '<button type="button" class="cmp-sort" data-cmp="a">A</button></th>'
+    assert header_problems('<th scope="col" aria-sort="none">' + btn) == []
+    assert header_problems('<th scope="col">' + btn)                    # no aria-sort
+    assert header_problems('<th scope="col" tabindex="0" aria-sort="none">' + btn)  # two stops
 
 
 def test_the_sort_handler_takes_a_keyboard_and_reports_its_state(src):

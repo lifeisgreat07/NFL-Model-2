@@ -1865,8 +1865,96 @@ function installFavStars(redraw){
   });
 }
 
+/* ---------- Compare mode (Stage 80 item 55, the 2026-10-13 audit's F9) ----------
+   "Cards | Table" beside the sort: the week as one table, a game a row, with
+   each model's side and chance, the market's and the result, so the three
+   can be read down a column. Mark chose the table at 641 px and wider only
+   (2026-10-14); a phone keeps its rows, which open to the same card. The
+   table follows the board's filter and sort until a column is chosen; then
+   that column sorts it, strongest first, and again turns it round. The
+   choice of view is kept in this browser. */
+const VIEW_KEY = 'nfl:boardView';
+const TABLE_MIN = '(min-width: 641px)';
+let boardView = 'cards';
+try{ if(localStorage.getItem(VIEW_KEY) === 'table') boardView = 'table'; }catch(e){}
+let compareSort = {key: null, dir: -1};
+function tableView(){ return boardView === 'table' && window.matchMedia(TABLE_MIN).matches; }
+const COMPARE_COLS = [['kickoff', 'Kickoff', ''], ['game', 'Game', ''], ['a', 'Model A', 'num'],
+                      ['b', 'Model B', 'num'], ['market', 'Market', 'num'], ['result', 'Result', '']];
+const COMPARE_PROB = {a: 'fbA_home', b: 'mktB_home', market: 'mkt_home'};
+function compareKick(g){
+  if(!g.gametime_et) return escapeHtml((g.weekday || '').slice(0, 3));
+  const [h, m] = g.gametime_et.split(':').map(Number);
+  return `${escapeHtml((g.weekday || '').slice(0, 3))} ${h % 12 === 0 ? 12 : h % 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+}
+function compareValue(g, key){
+  if(key === 'kickoff') return (g.gameday || '') + (g.gametime_et || '');
+  if(key === 'game') return `${g.away} ${g.home}`;
+  if(key === 'result'){
+    if(!g.graded) return 0;
+    const v = g.model_b_correct ?? g.model_a_correct;
+    return g.result === 'tie' || v === null || v === undefined ? 1 : v ? 3 : 2;
+  }
+  const s = cardSide(g[COMPARE_PROB[key]], g);
+  return s ? s.pct : -1;
+}
+/* Kickoff and game read first to last; a chance or a result strongest first. */
+function compareRows(games, sort){
+  if(!sort.key) return games;
+  const up = sort.key === 'kickoff' || sort.key === 'game';
+  const dir = (up ? 1 : -1) * (sort.dir === -1 ? 1 : -1);
+  return games.map((g, i) => [g, i]).sort(([a, i], [b, j]) => {
+    const x = compareValue(a, sort.key), y = compareValue(b, sort.key);
+    return x < y ? -dir : x > y ? dir : i - j;
+  }).map(([g]) => g);
+}
+function compareSortState(key, sort, boardSort){
+  if(sort.key === key){
+    const up = key === 'kickoff' || key === 'game';
+    return (sort.dir === -1) === up ? 'ascending' : 'descending';
+  }
+  return !sort.key && key === 'kickoff' && boardSort === 'chronological' ? 'ascending' : 'none';
+}
+function compareTableHtml(games, sort, boardSort, weekLabel){
+  const cell = (g, key) => { const s = cardSide(g[COMPARE_PROB[key]], g); return s ? cardSideText(s) : '—'; };
+  const rows = compareRows(games, sort).map(g => `<tr><td>${compareKick(g)}</td>`
+    + `<td><b>${escapeHtml(g.away)} @ ${escapeHtml(g.home)}</b></td>`
+    + `<td class="num">${cell(g, 'a')}</td><td class="num">${cell(g, 'b')}</td><td class="num">${cell(g, 'market')}</td>`
+    + `<td>${gradedTagHtml(g) || '—'}</td></tr>`).join('');
+  return `<div class="table-wrap"><table class="metrics-table compare-table"><caption class="visually-hidden">${escapeHtml(weekLabel)}: every game, each model's side and chance, the market's and the result</caption>
+    <thead><tr>${COMPARE_COLS.map(([key, label, cls]) => `<th scope="col"${cls ? ` class="${cls}"` : ''} aria-sort="${compareSortState(key, sort, boardSort)}"><button type="button" class="cmp-sort" data-cmp="${key}">${label}</button></th>`).join('')}</tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
+function installCompare(){
+  const seg = document.getElementById('view-seg');
+  if(!seg) return;
+  const mark = () => seg.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === boardView)));
+  mark();
+  seg.addEventListener('click', e => {
+    const b = e.target.closest('[data-view]');
+    if(!b || b.dataset.view === boardView) return;
+    boardView = b.dataset.view;
+    try{ localStorage.setItem(VIEW_KEY, boardView); }catch(e2){}
+    mark();
+    renderGames();
+  });
+  document.getElementById('game-grid').addEventListener('click', e => {
+    const b = e.target.closest('.cmp-sort');
+    if(!b) return;
+    const key = b.dataset.cmp;
+    compareSort = compareSort.key === key ? {key, dir: -compareSort.dir} : {key, dir: -1};
+    renderGames();
+    const again = document.querySelector(`#game-grid .cmp-sort[data-cmp="${key}"]`);
+    if(again) again.focus();
+  });
+  // Across 641 px the board changes view, so it is drawn again.
+  const mq = window.matchMedia(TABLE_MIN);
+  if(mq.addEventListener) mq.addEventListener('change', () => { if(boardView === 'table') renderGames(); });
+}
+
 function renderGames(){
   const grid = document.getElementById('game-grid');
+  grid.classList.remove('is-table');
   const badge = document.getElementById('board-badge');
   const weekData = weeks[currentBoardWeek];
   const gamesList = weekData ? weekData.games : [];
@@ -1955,6 +2043,12 @@ function renderGames(){
   }));
 
   if(tvNote) tvNote.hidden = !boardTvNote(sorted);
+  // Stage 80 item 55: the week as one table, at 641 px and wider.
+  if(tableView()){
+    grid.classList.add('is-table');
+    grid.innerHTML = compareTableHtml(sorted, compareSort, currentSort, weekLabel(currentBoardWeek));
+    return;
+  }
   const news = weekData.news;
 
   const cards = sorted.map(g=>{
@@ -4262,6 +4356,7 @@ function wireTeamGameToggles(){
 renderTeamDive();
 /* Stage 80 item 53: a star redraws the board with its team's games first. */
 installFavStars(() => { renderGames(); renderTeamDive(); });
+installCompare();
 
 /* ---------- Changelog ---------- */
 // Escaped (escapeHtml) rather than interpolated raw: this text comes out of config.py,
