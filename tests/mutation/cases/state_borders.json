@@ -1,0 +1,20 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_state_borders.py",
+ "cases": [
+  {
+   "id": "state-border-faint",
+   "why": "a state's dashed border goes back to --border, 1.24:1 in both themes (Stage 79 item 50, C2).",
+   "find": "border:1px dashed var(--border-strong); border-radius:var(--r-md);}",
+   "replace": "border:1px dashed var(--border); border-radius:var(--r-md);}",
+   "expect_caught_by": "test_the_state_border_reaches_1_5_to_1_in_both_themes"
+  },
+  {
+   "id": "state-light-n4-faded",
+   "why": "the light theme's strong border fades under 1.5:1 on white.",
+   "find": "--n3:#E4E7EB; --n4:#CBD1D9;",
+   "replace": "--n3:#E4E7EB; --n4:#D9DEE4;",
+   "expect_caught_by": "test_the_state_border_reaches_1_5_to_1_in_both_themes"
+  }
+ ]
+}

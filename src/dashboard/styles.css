@@ -1416,7 +1416,11 @@
      real wait, the entrance. */
   .state{padding:var(--s7) var(--s6); text-align:center; color:var(--text-2);
     font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-13); line-height:var(--lh-body);
-    background:var(--surface); border:1px dashed var(--border); border-radius:var(--r-md);}
+    background:var(--surface); border:1px dashed var(--border-strong); border-radius:var(--r-md);}
+  /* Stage 79 item 50 (the 2026-10-13 audit's C2 and V7): a state's border is
+     --border-strong, 1.50:1 on --surface dark and 1.54:1 light. --border was
+     1.24:1 in both, and in light mode the dashed "not yet" and the solid
+     "missing" looked the same, leaving only the missing state's left rule. */
   .state-title{display:block; font-size:var(--fs-14); font-weight:600; color:var(--text); margin-bottom:var(--s1);}
   .state p{margin:0 auto; max-width:60ch;}
   .state .btn{margin-top:var(--s3);}
