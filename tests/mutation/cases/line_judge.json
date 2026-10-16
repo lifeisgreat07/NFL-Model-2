@@ -58,6 +58,42 @@
       "find": "          ref: main\n          fetch-depth: 0\n",
       "replace": "          ref: main\n",
       "expect_caught_by": "test_line_judge_runs_after_a_green_weekly_update_with_the_whole_history"
+    },
+    {
+      "id": "lj-snapshot-score-ignored",
+      "why": "a final score the page's snapshot still shows as started passes (Stage 44 item 2).",
+      "find": "            if s.get('status') != 'final' or (s.get('home_score'), s.get('away_score')) != want:\n",
+      "replace": "            if s.get('status') not in ('final', 'started'):\n",
+      "expect_caught_by": "test_a_final_score_the_snapshot_does_not_show_is_flagged"
+    },
+    {
+      "id": "lj-snapshot-missing-file-passes",
+      "why": "a kept week with no game_status file passes.",
+      "find": "    if snapshot is None:\n        return [Finding('snapshot', f'week {week} is locked and not fully graded, and has no game_status file.')]\n",
+      "replace": "    if snapshot is None:\n        return []\n",
+      "expect_caught_by": "test_a_kept_week_with_no_snapshot_or_a_missing_game_is_flagged"
+    },
+    {
+      "id": "lj-snapshot-cancelled-ignored",
+      "why": "a listed cancelled game may read started on the page.",
+      "find": "        elif pair in cancelled and s.get('status') != 'cancelled':\n",
+      "replace": "        elif False:\n",
+      "expect_caught_by": "test_a_listed_cancelled_game_must_read_cancelled"
+    },
+    {
+      "id": "lj-refresh-not-on-time",
+      "why": "a refresh run hours late is not flagged.",
+      "find": "    findings = check_on_time(event, started, workflow_text)\n    for week in sorted(weeks):\n",
+      "replace": "    findings = []\n    for week in sorted(weeks):\n",
+      "expect_caught_by": "test_judge_refresh_reads_each_kept_week_and_the_refreshs_own_slots"
+    },
+    {
+      "id": "lj-refresh-job-unwired",
+      "target": ".github/workflows/nfl-weekend-refresh.yml",
+      "why": "the Weekend refresh is no longer judged.",
+      "find": "            python -m src.core.alerts --title \"NFL: Line Judge found the Weekend refresh left something wrong\" \\\n",
+      "replace": "            echo skipped \\\n",
+      "expect_caught_by": "test_line_judge_runs_after_a_green_weekend_refresh"
     }
   ]
 }

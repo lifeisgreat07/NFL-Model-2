@@ -1,4 +1,5 @@
-"""Line Judge's checks for the NFL Weekly update (Stage 44 item 1).
+"""Line Judge's checks for the NFL Weekly update (Stage 44 item 1) and the
+Weekend refresh (item 2).
 
 A run can go green and still do the wrong thing. Line Judge asks, after a
 Weekly update run, whether the state it left behind on main is what a
@@ -30,6 +31,17 @@ whole history is needed: a shallow one shows every file added at once.
     python -m src.sports.nfl.line_judge --season 2026 [--run-event schedule \
         --run-started 2026-10-15T11:00:41Z] [--report line-judge.md]
 
+The Weekend refresh writes no pick and no grade (src/sports/nfl/weekend_refresh.py):
+its job is the page's snapshot of each locked, not yet graded week. After
+each of its runs (`--workflow nfl-weekend-refresh.yml`) two checks apply:
+
+  on-time        -- as above, against the refresh's own slots.
+  snapshot       -- every week the refresh keeps (`weeks_to_refresh`) has its
+                    data/nfl/game_status/ file, and every picked game the
+                    schedule has a final score for reads final there with
+                    that score (a listed cancelled game reads cancelled). A
+                    score left as "started" is what the page shows wrong.
+
 Exit 0 when every check holds, 1 when any finding is written.
 """
 from __future__ import annotations
@@ -46,9 +58,18 @@ from typing import Any
 import pandas as pd
 
 from src.core.start_delay import WARN_HOURS, crons, served_delay
-from src.sports.nfl.paths import PRED_DIR, RESULTS_DIR, ROOT, SKIPPED_DIR, parse_week
+from src.sports.nfl.paths import (
+    PRED_DIR,
+    RESULTS_DIR,
+    ROOT,
+    SKIPPED_DIR,
+    STATUS_DIR,
+    parse_week,
+)
 
 WORKFLOW = ROOT / '.github' / 'workflows' / 'nfl-weekly-update.yml'
+#: The runs judged, by workflow file, as the report names them.
+RUNS = {'nfl-weekly-update.yml': 'Weekly update', 'nfl-weekend-refresh.yml': 'Weekend refresh'}
 #: The postseason's last week; nothing is expected beyond it.
 LAST_WEEK = 22
 
@@ -148,6 +169,49 @@ def check_graded(week: int, picks: list[dict], games: pd.DataFrame, graded: list
     return []
 
 
+def check_snapshot(week: int, picks: list[dict], games: pd.DataFrame, snapshot: dict | None,
+                   cancelled: set[tuple[str, str]]) -> list[Finding]:
+    """The page's snapshot of one kept week against the schedule."""
+    if snapshot is None:
+        return [Finding('snapshot', f'week {week} is locked and not fully graded, and has no game_status file.')]
+    shown = {_pair(g['home'], g['away']): g for g in snapshot.get('games', [])}
+    by_pair = {_pair(g['home_team'], g['away_team']): g for _, g in games.iterrows()}
+    out = []
+    for p in picks:
+        pair = _pair(p['home'], p['away'])
+        g, s = by_pair.get(pair), shown.get(pair)
+        if g is None:
+            continue  # the schedule no longer lists it: the refresh leaves it out and says so
+        name = f'{pair[1]} at {pair[0]}'
+        if s is None:
+            out.append(Finding('snapshot', f'week {week}: {name} is picked and missing from the snapshot.'))
+            continue
+        final = not (pd.isna(g.get('home_score')) or pd.isna(g.get('away_score')))
+        if final:
+            want = (int(g['home_score']), int(g['away_score']))
+            if s.get('status') != 'final' or (s.get('home_score'), s.get('away_score')) != want:
+                out.append(Finding('snapshot', f'week {week}: {name} ended {want[1]}-{want[0]}; the snapshot reads '
+                                               f'{s.get("status")} {s.get("away_score")}-{s.get("home_score")}.'))
+        elif pair in cancelled and s.get('status') != 'cancelled':
+            out.append(Finding('snapshot', f'week {week}: {name} is listed as cancelled; the snapshot reads '
+                                           f'{s.get("status")}.'))
+    return out
+
+
+def judge_refresh(season: int, schedule: pd.DataFrame, cancelled: set[tuple[str, str]], weeks: Iterable[int],
+                  event: str | None = None, started: datetime | None = None, workflow_text: str = '',
+                  pred_dir: Path = PRED_DIR, status_dir: Path = STATUS_DIR) -> list[Finding]:
+    """Every finding for a Weekend refresh run, in check order. `weeks`: the
+    weeks the refresh keeps (weekend_refresh.weeks_to_refresh)."""
+    findings = check_on_time(event, started, workflow_text)
+    for week in sorted(weeks):
+        picks = json.loads((pred_dir / f'{season}_week{week}.json').read_text(encoding='utf-8'))
+        snap_file = status_dir / f'{season}_week{week}.json'
+        snap = json.loads(snap_file.read_text(encoding='utf-8')) if snap_file.exists() else None
+        findings += check_snapshot(week, picks, schedule[schedule['week'] == week], snap, cancelled)
+    return findings
+
+
 def load_cancelled_pairs(season: int) -> set[tuple[str, str]]:
     from src.sports.nfl.weekend_refresh import load_cancelled
     return {(h, a) for s, _, a, h in load_cancelled() if s == season}
@@ -208,10 +272,10 @@ def locked_at(path: Path, root: Path = ROOT, git: Callable[[list[str], Path], st
     return datetime.fromisoformat(found).astimezone(UTC)
 
 
-def report(findings: list[Finding], season: int) -> str:
+def report(findings: list[Finding], season: int, run: str = 'Weekly update') -> str:
     if not findings:
-        return f'Line Judge: every check holds for the {season} Weekly update.'
-    lines = [f'Line Judge found {len(findings)} thing(s) the {season} Weekly update left wrong:', '']
+        return f'Line Judge: every check holds for the {season} {run}.'
+    lines = [f'Line Judge found {len(findings)} thing(s) the {season} {run} left wrong:', '']
     lines += [f'- **{f.check}**: {f.message}' for f in findings]
     return '\n'.join(lines)
 
@@ -222,14 +286,22 @@ def main(argv: list[str] | None = None, now: datetime | None = None) -> int:
     ap.add_argument('--run-event')
     ap.add_argument('--run-started', help='the judged run\'s start, ISO 8601')
     ap.add_argument('--report', help='also write the report to this file')
+    ap.add_argument('--workflow', choices=sorted(RUNS), default=WORKFLOW.name,
+                    help="the judged run's workflow file: which checks apply and whose slots on-time reads")
     args = ap.parse_args(argv)
     from src.sports.nfl.data_loader import load_schedule
     started = (datetime.fromisoformat(args.run_started.replace('Z', '+00:00'))
                if args.run_started else None)
-    findings = judge(args.season, load_schedule(args.season), now or datetime.now(UTC), locked_at,
-                     load_cancelled_pairs(args.season), args.run_event, started,
-                     WORKFLOW.read_text(encoding='utf-8'))
-    text = report(findings, args.season)
+    text_wf = (WORKFLOW.parent / args.workflow).read_text(encoding='utf-8')
+    schedule, cancelled = load_schedule(args.season), load_cancelled_pairs(args.season)
+    if args.workflow == 'nfl-weekend-refresh.yml':
+        from src.sports.nfl.weekend_refresh import weeks_to_refresh
+        findings = judge_refresh(args.season, schedule, cancelled, weeks_to_refresh(args.season),
+                                 args.run_event, started, text_wf)
+    else:
+        findings = judge(args.season, schedule, now or datetime.now(UTC), locked_at, cancelled,
+                         args.run_event, started, text_wf)
+    text = report(findings, args.season, RUNS[args.workflow])
     print(text)
     if args.report:
         Path(args.report).write_text(text + '\n', encoding='utf-8')

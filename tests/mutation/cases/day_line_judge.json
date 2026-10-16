@@ -1,0 +1,92 @@
+{
+ "target": "src/core/day_line_judge.py",
+ "tests": "tests/test_day_line_judge.py",
+ "cases": [
+  {
+   "id": "dlj-late-pick-passes",
+   "why": "a pick committed after its game started is not flagged (Stage 44 item 2).",
+   "find": "        if when >= _utc(start):\n",
+   "replace": "        if when > _utc(start) + timedelta(hours=1):\n",
+   "expect_caught_by": "test_a_pick_committed_at_or_after_its_start_is_flagged"
+  },
+  {
+   "id": "dlj-judges-the-picks-own-start",
+   "why": "the pick's own start is judged, so a game moved earlier passes.",
+   "find": "        start = starts.get(gid) or pick.get('start_utc')\n",
+   "replace": "        start = pick.get('start_utc') or starts.get(gid)\n",
+   "expect_caught_by": "test_the_schedules_start_is_the_one_judged_not_the_picks_own"
+  },
+  {
+   "id": "dlj-grade-not-recomputed",
+   "why": "any graded row passes, so a wrong grade reaches the record.",
+   "find": "        elif row.get('result') != want:\n",
+   "replace": "        elif False:\n",
+   "expect_caught_by": "test_a_grade_that_disagrees_with_the_score_is_flagged"
+  },
+  {
+   "id": "dlj-winner-backwards",
+   "why": "the winner is read the wrong way round.",
+   "find": "    return str(game['home'] if hs > as_ else game['away'])\n",
+   "replace": "    return str(game['home'] if hs < as_ else game['away'])\n",
+   "expect_caught_by": "test_a_grade_that_agrees_with_the_score_holds"
+  },
+  {
+   "id": "dlj-missing-row-passes",
+   "why": "a final game with no graded row is not flagged.",
+   "find": "        if row is None:\n            out.append(Finding('graded-right', f'game {gid} is final and has no graded row.'))\n",
+   "replace": "        if row is None:\n            pass\n",
+   "expect_caught_by": "test_a_final_game_with_no_graded_row_is_flagged"
+  },
+  {
+   "id": "dlj-fresh-read-in-utc",
+   "why": "today is read in UTC, so a run after 8 PM Eastern calls today's file stale.",
+   "find": "    today = pd.Timestamp(now).tz_convert(ET).strftime('%Y-%m-%d')\n",
+   "replace": "    today = pd.Timestamp(now).tz_convert('UTC').strftime('%Y-%m-%d')\n",
+   "expect_caught_by": "test_the_schedule_is_fresh_on_its_eastern_day"
+  },
+  {
+   "id": "dlj-newest-add-kept",
+   "why": "a re-added pick file is judged by its newest add, not its first.",
+   "find": "                first[Path(path).stem] = when  # newest first, so the last write is the oldest add\n",
+   "replace": "                first.setdefault(Path(path).stem, when)\n",
+   "expect_caught_by": "test_added_at_keeps_each_files_first_add"
+  },
+  {
+   "id": "dlj-on-time-uses-nfl-hours",
+   "why": "the daily sports are warned at the NFL's seven hours, past the lock rule's hour of slack.",
+   "find": "    warn = WARN_HOURS_FOR.get(workflow_name(sport), WARN_HOURS)\n",
+   "replace": "    warn = WARN_HOURS\n",
+   "expect_caught_by": "test_a_run_inside_the_hour_is_on_time_and_one_past_it_is_flagged"
+  },
+  {
+   "id": "dlj-finding-exits-zero",
+   "why": "a finding leaves the job green.",
+   "find": "    return 1 if findings else 0\n",
+   "replace": "    return 0\n",
+   "expect_caught_by": "test_the_command_line_exits_one_on_a_finding_and_writes_the_report"
+  },
+  {
+   "id": "dlj-nhl-job-unwired",
+   "target": ".github/workflows/nhl-daily.yml",
+   "why": "the NHL daily run is no longer judged.",
+   "find": "          if python -m src.core.day_line_judge --sport nhl --run-event \"$GITHUB_EVENT_NAME\" \\\n",
+   "replace": "          if true || python -m src.core.day_line_judge --sport nhl --run-event \"$GITHUB_EVENT_NAME\" \\\n",
+   "expect_caught_by": "test_each_daily_workflow_judges_after_a_green_run"
+  },
+  {
+   "id": "dlj-nba-job-shallow",
+   "target": ".github/workflows/nba-daily.yml",
+   "why": "the NBA judge reads a shallow clone, where every pick looks added at once.",
+   "find": "          ref: main\n          fetch-depth: 0\n",
+   "replace": "          ref: main\n",
+   "expect_caught_by": "test_each_daily_workflow_judges_after_a_green_run"
+  },
+  {
+   "id": "dlj-eastern-by-zoneinfo",
+   "why": "Eastern time through zoneinfo, which fails at import on Windows (no tz database).",
+   "find": "    today = pd.Timestamp(now).tz_convert(ET).strftime('%Y-%m-%d')\n",
+   "replace": "    from zoneinfo import ZoneInfo\n    today = now.astimezone(ZoneInfo(ET)).strftime('%Y-%m-%d')\n",
+   "expect_caught_by": "test_eastern_time_is_read_without_the_tz_database"
+  }
+ ]
+}
