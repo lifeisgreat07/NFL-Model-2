@@ -1,0 +1,41 @@
+{
+ "target": "src/site/build.py",
+ "tests": "tests/test_tonight_strip.py",
+ "cases": [
+  {
+   "id": "strip-twice",
+   "why": "a page kept from the live site gets a second strip.",
+   "find": "    html = _STRIP_OLD.sub('', page.read_text(encoding='utf-8'))\n",
+   "replace": "    html = page.read_text(encoding='utf-8')\n",
+   "expect_caught_by": "test_the_build_puts_the_slate_and_the_script_on_a_page_once"
+  },
+  {
+   "id": "strip-on-any-page",
+   "why": "a page with no place for the strip is given one anyway.",
+   "find": "    if 'id=\"site-strip\"' not in html or '</body>' not in html:",
+   "replace": "    if '</body>' not in html:",
+   "expect_caught_by": "test_the_build_puts_the_slate_and_the_script_on_a_page_once"
+  },
+  {
+   "id": "strip-unpublished-sport",
+   "why": "a sport this build did not publish gets cards that lead to a 404.",
+   "find": "[g for g in (slate or home.slate)() if g['s'] in published]",
+   "replace": "list((slate or home.slate)())",
+   "expect_caught_by": "test_a_sport_that_was_not_published_has_no_cards"
+  },
+  {
+   "id": "strip-raw-json",
+   "why": "the slate is written raw, so a value can close its script.",
+   "find": "{safe_json(rows)}</script>",
+   "replace": "{json.dumps(rows)}</script>",
+   "expect_caught_by": "test_the_build_puts_the_slate_and_the_script_on_a_page_once"
+  },
+  {
+   "id": "strip-failure-fails-build",
+   "why": "a slate that fails stops every page being published.",
+   "find": "    except Exception as exc:  # the strip's failure leaves every page as built\n        print(f'the Next games strip was left off: {exc}')\n        return []\n",
+   "replace": "    finally:\n        pass\n",
+   "expect_caught_by": "test_a_slate_that_fails_publishes_the_pages_without_it"
+  }
+ ]
+}

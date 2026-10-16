@@ -29,7 +29,10 @@ def day_status(games, now):
     fn = re.search(r'^function dayStatus\(f, start\)\{.*?\n\}\n', JS, re.S | re.M)
     assert fn, 'dayStatus is not findable -- re-anchor this guard'
     # The puck drop is never a placeholder; only the NBA's tip-off is (Stage 77 item 33).
-    code = (f'const NOW = Date.parse({json.dumps(now)}); const HOUR = 3600 * 1000; const PLACEHOLDER_TIMES = {{}};\n' + helpers + fn.group(0)
+    # The best pick tonight reads the slate (Stage 80 item 52); none here.
+    best = ("const HOME = {slate: []};\n" + re.search(r'^const START_SPORT = .*$', JS, re.M).group(0) + '\n' + re.search(r'^function slateOf\(.*$', JS, re.M).group(0) + '\n'
+            + re.search(r'function bestPick\(.*?\n\}\n', JS, re.S).group(0))
+    code = (f'const NOW = Date.parse({json.dumps(now)}); const HOUR = 3600 * 1000; const PLACEHOLDER_TIMES = {{}};\n' + helpers + best + fn.group(0)
             + 'console.log(JSON.stringify(dayStatus(%s, "puck drop")));' % json.dumps({'games': games, 'record': {'label': 'Picks'}}))
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8', env={**os.environ, 'TZ': 'America/New_York'})
     assert r.returncode == 0, r.stderr

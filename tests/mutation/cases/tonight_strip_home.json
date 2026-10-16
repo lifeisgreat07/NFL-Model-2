@@ -1,0 +1,41 @@
+{
+ "target": "src/site/home/home.js",
+ "tests": "tests/test_tonight_strip.py",
+ "cases": [
+  {
+   "id": "best-includes-started",
+   "why": "a game under way is named the best pick still to play.",
+   "find": "&& Date.parse(r.t) > NOW);\n  if(!ahead.length) return null;",
+   "replace": ");\n  if(!ahead.length) return null;",
+   "expect_caught_by": "test_a_card_names_its_strongest_pick_still_to_play"
+  },
+  {
+   "id": "best-weakest",
+   "why": "the card names the weakest pick, not the strongest.",
+   "find": "ahead.reduce((x, y) => y.c > x.c ? y : x);",
+   "replace": "ahead.reduce((x, y) => y.c < x.c ? y : x);",
+   "expect_caught_by": "test_a_card_names_its_strongest_pick_still_to_play"
+  },
+  {
+   "id": "best-over-itself",
+   "why": "an away pick is said to be \"over\" itself.",
+   "find": "over ${r.p === r.h ? r.a : r.h}",
+   "replace": "over ${r.h}",
+   "expect_caught_by": "test_a_card_names_its_strongest_pick_still_to_play"
+  },
+  {
+   "id": "best-waiting-named",
+   "why": "a game whose pick is not saved is named the best pick.",
+   "find": "(r.k === 'pick' || r.k === 'lean') &&",
+   "replace": "true &&",
+   "expect_caught_by": "test_a_card_names_its_strongest_pick_still_to_play"
+  },
+  {
+   "id": "best-nfl-dropped",
+   "why": "the NFL card stops naming its strongest pick.",
+   "find": "  if(best) rows.push([`Strongest ${kind}, Week ${wk}`, best]);\n",
+   "replace": "",
+   "expect_caught_by": "test_each_card_asks_for_its_own_best_pick"
+  }
+ ]
+}

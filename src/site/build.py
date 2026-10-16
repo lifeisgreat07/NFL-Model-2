@@ -240,6 +240,54 @@ def build_home(out: Path, runner: Runner = run, unpublished: tuple[str, ...] = (
     return res
 
 
+#: The "Next games" strip's script (Stage 80 item 52), and how the build
+#: marks what it puts on a page, so a page kept from the live site has its
+#: old strip taken out before today's goes in.
+STRIP_JS = ROOT / 'src' / 'core' / 'strip.js'
+STRIP_MARK = 'data-site-strip'
+_STRIP_OLD = re.compile(r'<script[^>]*\bdata-site-strip\b[^>]*>.*?</script>\n?', re.S)
+
+
+def strip_block(rows: list[dict[str, object]]) -> str:
+    """The slate as data and the script that draws it, comments taken out
+    as every page's are."""
+    from src.core.page_comments import strip_page_comments
+    from src.core.page_fill import safe_json
+    script = strip_page_comments('<script>\n' + STRIP_JS.read_text(encoding='utf-8') + '</script>')
+    return (f'<script type="application/json" id="site-strip-data" {STRIP_MARK}>{safe_json(rows)}</script>\n'
+            + script.replace('<script>', f'<script {STRIP_MARK}>', 1) + '\n')
+
+
+def inject_strip(page: Path, block: str) -> bool:
+    """Put the strip on one built page: only a page that has the empty
+    #site-strip its template carries, before its </body>."""
+    if not page.exists():
+        return False
+    html = _STRIP_OLD.sub('', page.read_text(encoding='utf-8'))
+    if 'id="site-strip"' not in html or '</body>' not in html:
+        return False
+    at = html.rindex('</body>')
+    page.write_text(html[:at] + block + html[at:], encoding='utf-8')
+    return True
+
+
+def add_strip(out: Path, results: list[SportResult],
+              slate: Callable[[], list[dict[str, object]]] | None = None) -> list[str]:
+    """The strip on the home and every sport's page, each published sport's
+    games only, so no card links to a page this build has not got. The
+    strip is an extra: a failure here is printed and publishes the pages
+    without it."""
+    from src.site import home
+    published = {r.sport for r in results if r.published and r.sport in SPORTS}
+    try:
+        block = strip_block([g for g in (slate or home.slate)() if g['s'] in published])
+    except Exception as exc:  # the strip's failure leaves every page as built
+        print(f'the Next games strip was left off: {exc}')
+        return []
+    pages = ['index.html'] + [f'{s}/index.html' for s in SPORTS]
+    return [p for p in pages if inject_strip(out / p, block)]
+
+
 def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS,
                runner: Runner = run, fetcher: Fetcher = fetch) -> list[SportResult]:
     if out.exists():
@@ -248,6 +296,7 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     results = [build_sport(s, out, live_url, runner, fetcher) for s in sports]
     assemble_shared(out)
     results.append(build_home(out, runner, tuple(r.sport for r in results if not r.published)))
+    add_strip(out, results)
     return results
 
 
