@@ -70,6 +70,8 @@ __FONT_FACES__
         saved = 'light';
       }
       if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+      // Stage 80 item 57: compact cards, chosen in the Settings sheet.
+      if(localStorage.getItem('site:cards') === 'compact') document.documentElement.setAttribute('data-cards','compact');
     }catch(e){}
   })();
 </script>

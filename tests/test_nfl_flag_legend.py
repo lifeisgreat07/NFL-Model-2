@@ -26,8 +26,8 @@ def row(g):
     if not NODE:
         pytest.skip('node not available')
     consts = ''.join(re.search(r'^const %s = .*$' % n, APP, re.M).group(0) + '\n' for n in ('FLAG_ICON', 'FLAG_LEGEND'))
-    fns = ''.join(re.search(r'function %s\(.*?\n\}\n' % n, APP, re.S).group(0) for n in ('cardSide', 'phoneRowHtml'))
-    js = ("const CARD_EVEN_BAND = 2;\n"
+    fns = ''.join(re.search(r'function %s\(.*?\n\}\n' % n, APP, re.S).group(0) for n in ('cardSide', 'kickoffClock', 'phoneRowHtml'))
+    js = ("const CARD_EVEN_BAND = 2;\nfunction startZone(){ return 'America/New_York'; }\nfunction startMark(){ return ' ET'; }\n"
           "function escapeHtml(s){ return String(s ?? ''); }\n" + consts + fns
           + 'console.log(JSON.stringify(phoneRowHtml(%s, "x")));' % json.dumps(g))
     r = subprocess.run([NODE, '-e', js], capture_output=True, encoding='utf-8')

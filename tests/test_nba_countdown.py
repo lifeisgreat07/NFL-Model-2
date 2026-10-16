@@ -33,7 +33,7 @@ def countdown(games, today):
     """countdownText for a schedule of (day, start[, ESPN's time flag]) rows, the first being opening night's."""
     if not NODE:
         pytest.skip('node not available')
-    code = ("const ET = 'America/New_York';\n"
+    code = ("const ET = 'America/New_York';\nfunction startZone(){ return 'America/New_York'; }\nfunction startMark(){ return ' ET'; }\n"
             + piece(r'^function dayDate\(day\).*$') + piece(r'^const FMT_TIP = .*$')
             + piece(r'^function tipSet\(g\)\{.*?\n\}') + piece(r'^const LOCK_RUNS_UTC = .*$') + piece(r'^const LOCK_SLACK_MS = .*$')
             + piece(r'^function lockRunFor\(startIso\)\{.*?\n\}') + piece(r'^const FMT_LOCK_DAY = .*$')

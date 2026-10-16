@@ -12,8 +12,8 @@
   {
    "id": "nba-chrome-checks-label",
    "why": "the NBA calls the reliability page \"Checks\" where the other sports say \"Checking the AI's work\".",
-   "find": "<span>Checking the AI&#39;s work</span></button>\n  </div>\n</div>",
-   "replace": "<span>Checks</span></button>\n  </div>\n</div>",
+   "find": "<span>Checking the AI&#39;s work</span></button>\n    <button type=\"button\" class=\"bnav-more-item\" data-settings-open hidden>",
+   "replace": "<span>Checks</span></button>\n    <button type=\"button\" class=\"bnav-more-item\" data-settings-open hidden>",
    "expect_caught_by": "test_the_nba_names_each_page_as_the_other_sports_do"
   },
   {

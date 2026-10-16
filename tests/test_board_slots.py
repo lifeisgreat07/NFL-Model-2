@@ -56,7 +56,8 @@ def out():
     if not NODE:
         pytest.skip('node not available')
     src = template()
-    js = (const_line(src, 'KICKOFF_MONTHS') + function_source(src, 'escapeHtml') +
+    # Times in Eastern, the default (Stage 80 item 57's setting is tests/test_settings_sheet.py's).
+    js = ("function startZone(){ return 'America/New_York'; }\nfunction startMark(){ return ' ET'; }\n" + const_line(src, 'KICKOFF_MONTHS') + function_source(src, 'escapeHtml') +
           function_source(src, 'kickoffLabel') + function_source(src, 'cardTvPill') +
           function_source(src, 'slotKey') + function_source(src, 'slotHeadBefore') +
           f'let currentSort = "chronological"; const S = {json.dumps(SLATE)};'

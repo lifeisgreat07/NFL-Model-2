@@ -88,12 +88,13 @@ function mondayOf(day){
 const FMT_DAY = new Intl.DateTimeFormat('en-US', {weekday: 'long', month: 'short', day: 'numeric', timeZone: 'UTC'});
 const FMT_SHORT = new Intl.DateTimeFormat('en-US', {weekday: 'short', timeZone: 'UTC'});
 const FMT_MONTHDAY = new Intl.DateTimeFormat('en-US', {month: 'short', day: 'numeric', timeZone: 'UTC'});
-const FMT_TIME = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: ET});
+// A start's time, in Eastern time or the visitor's own (Stage 80 item 57, src/core/prefs.js).
+const FMT_TIME = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: startZone()});
 const FMT_ET_DATE = new Intl.DateTimeFormat('en-CA', {year: 'numeric', month: '2-digit', day: '2-digit', timeZone: ET});
 function todayEt(){ return FMT_ET_DATE.format(new Date()); }
 function startLabel(g){
   const day = FMT_DAY.format(dayDate(g.day));
-  return g.start ? `${day} · ${FMT_TIME.format(new Date(g.start))} ET` : day;
+  return g.start ? `${day} · ${FMT_TIME.format(new Date(g.start))}${startMark()}` : day;
 }
 
 /* ---------- weeks ---------- */
@@ -346,7 +347,7 @@ function waitingCard(g){
    B's compact rows. A row is the time, the game, the pick and the result; a
    tap opens the full card below it (both models, the market, the lock time
    and the goalies). The NFL keeps its week view: it plays by the week. */
-const FMT_HOUR = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: ET});
+const FMT_HOUR = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: startZone()});
 function weekDays(week){
   const out = [];
   const d = dayDate(week);
@@ -531,11 +532,37 @@ function stepWeek(by){
 }
 document.getElementById('week-prev').addEventListener('click', () => stepWeek(-1));
 document.getElementById('week-next').addEventListener('click', () => stepWeek(1));
+/* Stage 80 item 57 (the 2026-10-13 audit's F11): on the day board [ and ]
+   step a day and Shift with them a week. A day past the week's edge opens
+   the next week on its first day (the week before on its last). */
+function stepDay(by){
+  const days = weekDays(currentWeek);
+  const i = days.indexOf(currentDay) + by;
+  if(i >= 0 && i < days.length){
+    currentDay = days[i];
+  } else {
+    const w = WEEK_KEYS.indexOf(currentWeek) + by;
+    if(w < 0 || w >= WEEK_KEYS.length) return;
+    currentWeek = WEEK_KEYS[w];
+    const next = weekDays(currentWeek);
+    currentDay = by > 0 ? next[0] : next[next.length - 1];
+  }
+  renderBoard();
+  replaceRoute('board');
+}
+/* Which way a key steps, and whether a week: Shift+[ arrives as "{". */
+function dayKeyStep(e){
+  if(e.ctrlKey || e.metaKey || e.altKey) return null;
+  const by = e.key === '[' || e.key === '{' ? -1 : e.key === ']' || e.key === '}' ? 1 : 0;
+  return by ? {by, week: e.shiftKey || e.key === '{' || e.key === '}'} : null;
+}
 document.addEventListener('keydown', e => {
   if(e.target.closest && e.target.closest('input, select, textarea')) return;
   if(!document.getElementById('page-board').classList.contains('active')) return;
-  if(e.key === '[') stepWeek(-1);
-  if(e.key === ']') stepWeek(1);
+  const step = dayKeyStep(e);
+  if(!step) return;
+  e.preventDefault();
+  if(step.week) stepWeek(step.by); else stepDay(step.by);
 });
 
 /* ---------- standings ---------- */

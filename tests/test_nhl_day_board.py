@@ -54,7 +54,7 @@ def run_node(body):
     src = source()
     # No pick saved yet here, so beforeLaunch is false: these rows read as
     # the launched board's (tests/test_nhl_before_launch.py covers the rest).
-    js = ("const ET = 'America/New_York';\nconst FIRST_SAVED = null;\n"
+    js = ("const ET = 'America/New_York';\nconst FIRST_SAVED = null;\nfunction startZone(){ return 'America/New_York'; }\nfunction startMark(){ return ' ET'; }\n"
           + ''.join(const_line(src, c) for c in ('LOCK_RUN_HOURS_UTC', 'LOCK_SLACK_MS', 'FMT_HOUR', 'EVEN_BAND'))
           + ''.join(function_source(src, n) for n in FUNCTIONS) + body)
     r = subprocess.run([NODE, '-e', js], capture_output=True, encoding='utf-8')

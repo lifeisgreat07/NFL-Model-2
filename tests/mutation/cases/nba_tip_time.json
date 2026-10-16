@@ -26,8 +26,8 @@
   {
    "id": "nba-tip-card-prints-anyway",
    "why": "the card's date line prints the hour while the row says time TBD.",
-   "find": "  return tipSet(g) ? `${day} · ${FMT_TIME.format(new Date(g.start))} ET` : `${day} · time TBD`;\n",
-   "replace": "  return `${day} · ${FMT_TIME.format(new Date(g.start))} ET`;\n",
+   "find": "  return tipSet(g) ? `${day} · ${FMT_TIME.format(new Date(g.start))}${startMark()}` : `${day} · time TBD`;\n",
+   "replace": "  return `${day} · ${FMT_TIME.format(new Date(g.start))}${startMark()}`;\n",
    "expect_caught_by": "test_the_row_the_card_and_the_note_all_use_it"
   },
   {

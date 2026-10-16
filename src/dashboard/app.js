@@ -1577,6 +1577,9 @@ function kickoffLabel(g){
   const date = `${KICKOFF_MONTHS[Number(parts[1]) - 1]} ${Number(parts[2])}`;
   const day = g.weekday ? `${g.weekday}, ` : '';
   if(!g.gametime_et) return `${day}${date}`;
+  // Stage 80 item 57: in the visitor's own time zone, through the one place
+  // an Eastern start becomes an instant (kickoffLocalLabel, after renderGames).
+  if(!startZone()) return kickoffLocalLabel(g);
   const hm = g.gametime_et.split(':');
   const hour24 = Number(hm[0]);
   const suffix = hour24 >= 12 ? 'PM' : 'AM';
@@ -1760,11 +1763,7 @@ function byKickoff(a, b){
    The row says the time, the game, Model B's pick and, once graded,
    whether it was right. */
 function phoneRowHtml(g, n){
-  let time = '';
-  if(g.gametime_et){
-    const [h, m] = g.gametime_et.split(':').map(Number);
-    time = `${h % 12 === 0 ? 12 : h % 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
-  }
+  const time = g.gametime_et ? kickoffClock(g) : '';
   const s = cardSide(g.mktB_home, g) || cardSide(g.fbA_home, g);
   const pick = !s ? '—' : s.team ? `${escapeHtml(s.team)} ${Math.round(s.pct)}%` : 'Toss-up';
   const verdict = g.graded ? (g.model_b_correct ?? g.model_a_correct) : undefined;
@@ -1865,6 +1864,18 @@ function installFavStars(redraw){
   });
 }
 
+/* The visitor's time-zone setting (Stage 80 item 57): src/core/prefs.js's functions, word for word. */
+const TZ_KEY = 'site:tz';
+/* The time zone a start is printed in: Eastern unless the visitor chose
+   their own (undefined: the browser's). */
+function startZone(){
+  try{ return localStorage.getItem(TZ_KEY) === 'local' ? undefined : 'America/New_York'; }
+  catch(e){ return 'America/New_York'; }
+}
+/* What follows a start's time: " ET" in Eastern time, nothing in the
+   visitor's own (as the home page has always printed its times). */
+function startMark(){ return startZone() ? ' ET' : ''; }
+
 /* ---------- Compare mode (Stage 80 item 55, the 2026-10-13 audit's F9) ----------
    "Cards | Table" beside the sort: the week as one table, a game a row, with
    each model's side and chance, the market's and the result, so the three
@@ -1884,8 +1895,8 @@ const COMPARE_COLS = [['kickoff', 'Kickoff', ''], ['game', 'Game', ''], ['a', 'M
 const COMPARE_PROB = {a: 'fbA_home', b: 'mktB_home', market: 'mkt_home'};
 function compareKick(g){
   if(!g.gametime_et) return escapeHtml((g.weekday || '').slice(0, 3));
-  const [h, m] = g.gametime_et.split(':').map(Number);
-  return `${escapeHtml((g.weekday || '').slice(0, 3))} ${h % 12 === 0 ? 12 : h % 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+  const day = startZone() ? (g.weekday || '').slice(0, 3) : kickoffLocalDay(g);
+  return `${escapeHtml(day)} ${kickoffClock(g)}`;
 }
 function compareValue(g, key){
   if(key === 'kickoff') return (g.gameday || '') + (g.gametime_et || '');
@@ -2166,6 +2177,44 @@ function renderGames(){
       btn.textContent = panel.classList.contains('open') ? '− hide the numbers' : '+ the numbers behind this';
     });
   });
+}
+
+/* ---------- A start in the visitor's own time zone (Stage 80 item 57) ----------
+   The only place an Eastern start becomes an instant. It sits here, outside
+   the kickoff-order block above, which must never build a Date (the order
+   and the Eastern labels stay string work, tests/test_kickoff_order.py).
+
+   A start given as an Eastern date and clock ("2026-10-15", "20:15") as an
+   instant, so it can be printed in the visitor's own time zone (Stage 80
+   item 57). Eastern's offset is read from the browser's time-zone data, so
+   daylight saving is right on either side of its change. */
+const ET_PARTS = new Intl.DateTimeFormat('en-US', {timeZone: 'America/New_York', hourCycle: 'h23', year: 'numeric',
+  month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'});
+function etInstant(day, hhmm){
+  const [y, m, d] = day.split('-').map(Number), [h, mi] = hhmm.split(':').map(Number);
+  const want = Date.UTC(y, m - 1, d, h, mi);
+  let t = want + 5 * 3600 * 1000;
+  for(let i = 0; i < 2; i++){
+    const p = Object.fromEntries(ET_PARTS.formatToParts(new Date(t)).map(x => [x.type, x.value]));
+    t += want - Date.UTC(Number(p.year), Number(p.month) - 1, Number(p.day), Number(p.hour) % 24, Number(p.minute));
+  }
+  return t;
+}
+/* A start's clock, "8:15 PM": Eastern as the data has it, or the visitor's own. */
+function kickoffClock(g){
+  if(startZone()){
+    const [h, m] = g.gametime_et.split(':').map(Number);
+    return `${h % 12 === 0 ? 12 : h % 12}:${String(m).padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+  }
+  return new Date(etInstant(g.gameday, g.gametime_et)).toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit'});
+}
+/* The label and the short day of a start, in the visitor's own zone. */
+function kickoffLocalLabel(g){
+  const at = new Date(etInstant(g.gameday, g.gametime_et));
+  return `${at.toLocaleDateString('en-US', {weekday: 'long', month: 'short', day: 'numeric'})} · ${kickoffClock(g)}`;
+}
+function kickoffLocalDay(g){
+  return new Date(etInstant(g.gameday, g.gametime_et)).toLocaleDateString('en-US', {weekday: 'short'});
 }
 /* Stage 77 item 31 (N6): on a phone the filter chips sit behind Options, so
    a filter left on hid most of the week with nothing on screen to say so.
