@@ -1064,6 +1064,10 @@
   .score-track{position:relative; height:14px; background:var(--border); border-radius:var(--r-full);}
   .score-fill{position:absolute; top:0; bottom:0; left:0; border-radius:inherit; background:var(--series);}
   .score-coin{position:absolute; left:50%; top:-6px; bottom:-6px; width:0; border-left:1px dashed var(--text-2);}  /* the chart style's 50% reference */
+  /* Stage 80 item 59 (F16): a graded slate's records, one line at its top. */
+  .slate-summary{margin:0 0 var(--s3); font-size:var(--fs-14); color:var(--text-2); font-variant-numeric:tabular-nums;}
+  .slate-summary b{color:var(--text);}
+  .slate-summary .slate-of{margin-left:var(--s2); font-size:var(--fs-12);}
   /* ---------- One chart style (Stage 79 item 45, the 2026-10-13 audit's N9 and V3) ----------
      Every SVG chart on every sport is an svg.chart: its text is 11 units and up,
      its grid a hairline, its reference (50%, or perfect calibration) dashed in

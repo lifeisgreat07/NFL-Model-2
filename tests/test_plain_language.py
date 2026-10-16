@@ -89,6 +89,7 @@ RENDERERS = {
     'phoneRowHtml': 'board',
     'filteredNoteHtml': 'board',
     'renderWeekGlance': 'board',
+    'slateSummaryHtml': 'board',
     'whySentence': 'board',
     'whyMarketSentence': 'board',
     # The label naming whose reasoning the sentence is (Stage 17).

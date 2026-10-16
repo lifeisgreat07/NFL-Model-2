@@ -144,6 +144,20 @@ function accDiagramHtml(games){
     <svg class="chart" viewBox="0 0 ${f.W} ${f.H}" style="width:100%; height:auto; max-width:${f.W}px;" role="img" aria-label="Calibration diagram of the graded picks: how sure each was against how often picks that sure came true.${games.length ? '' : ' Nothing is graded yet.'}">${axes}${body}</svg>
   </div>`;
 }
+/* Stage 80 item 59 (the 2026-10-13 audit's F16): a graded day's summary,
+   at the top of its board, as the NFL's week has: "Model B 3–1 · Model A
+   2–2 · Market 3–1", and while the day is still being played, how many of
+   its games are in. `games` is the day's graded picks, as above; `total`
+   the day's games. */
+function accSummaryHtml(games, total){
+  if(!games.length) return '';
+  const parts = ['b', 'a', 'm'].map(key => {
+    const s = ACC_SERIES.find(x => x.key === key), r = accRecord(games, key);
+    return `<span>${s.name} <b>${r.correct}–${r.n - r.correct}</b></span>`;
+  });
+  const of = total > games.length ? ` <span class="slate-of">${games.length} of ${total} graded</span>` : '';
+  return `<p class="slate-summary">${parts.join(' · ')}${of}</p>`;
+}
 function accuracyHtml(games){
   return accRaceHtml(games) + accTrendHtml(games) + accDiagramHtml(games);
 }

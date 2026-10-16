@@ -500,7 +500,10 @@ function renderBoard(){
     return;
   }
   const nowMs = Date.now();
-  grid.innerHTML = head + `<ul class="nhl-rows">${dayGames.map(g => rowHtml(g, DATA.picks[g.id], nowMs)).join('')}</ul>`;
+  // Stage 80 item 59: the day's records once a game of it is graded (src/core/accuracy.js).
+  const gradedToday = dayGames.map(g => ({p: DATA.picks[g.id], g})).filter(x => x.p && (x.p.result === 'correct' || x.p.result === 'wrong'));
+  grid.innerHTML = head + accSummaryHtml(accGames(gradedToday), dayGames.length)
+    + `<ul class="nhl-rows">${dayGames.map(g => rowHtml(g, DATA.picks[g.id], nowMs)).join('')}</ul>`;
   // Stage 75 item 4: rows the reader opened stay open when the board is
   // drawn again (the theme toggle, a day chip and back), by game id.
   grid.querySelectorAll('.nhl-row').forEach(btn => {

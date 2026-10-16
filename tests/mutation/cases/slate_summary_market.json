@@ -1,0 +1,13 @@
+{
+ "target": "src/sports/nfl/generate_dashboard.py",
+ "tests": "tests/test_slate_summary.py",
+ "cases": [
+  {
+   "id": "slate-market-grade-dropped",
+   "why": "the page loses the market's grade and its record reads 0–0.",
+   "find": "            'market_correct': graded.get('market_correct') if graded else None,\n",
+   "replace": "",
+   "expect_caught_by": "test_the_week_board_draws_it_with_the_markets_grade_as_grading_wrote_it"
+  }
+ ]
+}
