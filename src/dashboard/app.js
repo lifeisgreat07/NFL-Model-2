@@ -2382,6 +2382,112 @@ function pdfNoneText(weekData){
   if(el && !dismissed) el.style.display = 'block';
 })();
 
+/* ---------- The first-visit tour (Stage 80 item 58, the 2026-10-13 audit's F12) ----------
+   Three steps on the Week Board, each a spotlight on one part of it with a
+   line on how to read it: the week stepper, a game, and its result. Mark
+   chose it as mocked (2026-10-14), for new visitors only: it runs on a first
+   visit and never again in that browser (site:tour), and a browser that has
+   been here before, which has left one of the site's keys, never sees it.
+   Skip, Esc or Done ends it; the Settings sheet's "Show them again" asks for
+   it once more. */
+const TOUR_KEY = 'site:tour';
+const TOUR_STEPS = [
+  {target: ['#week-step'], title: 'Step through the weeks',
+   text: 'The arrows, or [ and ], move a week at a time. Each week is saved before its first kickoff.'},
+  {target: ['.game-row.nfl-row', '.game-card'], title: 'Every game, both models',
+   text: 'Model A reads football data only; Model B adds the Vegas spread. The bar shows how sure each is.'},
+  {target: ['.nfl-row-res.correct, .nfl-row-res.incorrect', '.graded-tag', '.card-hl'], title: 'Graded after the game',
+   text: 'Green if Model B picked the winner, red if not. Nothing is changed once the game starts.'},
+];
+/* Whether this browser should be shown the tour: asked for it again, or new
+   here (none of the site's keys: a theme, favourites, picks, a dismissed
+   banner, a last visit). */
+function tourWanted(store){
+  try{
+    const asked = store.getItem(TOUR_KEY);
+    if(asked) return asked === 'show';
+    for(let i = 0; i < store.length; i++){
+      const k = store.key(i) || '';
+      if(/^(site:|nfl[_:]|nhl:|nba:)/.test(k)) return false;
+    }
+    return true;
+  }catch(e){ return false; }
+}
+/* The first of a step's targets that is on the page and drawn (a closed
+   row's card is not), so a phone's step is its rows' and a wide screen's its cards'. */
+function tourTarget(step, root){
+  for(const sel of step.target){
+    const el = [...root.querySelectorAll(sel)].find(x => x.getBoundingClientRect().width > 0 && !x.closest('[hidden]'));
+    if(el) return el;
+  }
+  return null;
+}
+function startTour(){
+  const page = document.getElementById('page-board');
+  if(!page || !page.classList.contains('active') || !tourWanted(localStorage)) return;
+  // A visit that arrives at one game (a shared #game/ link) is shown that
+  // game, not walked away from it: the browser checks' game route caught it.
+  if(location.hash && !/^#board(\/|$)/.test(location.hash)) return;
+  const ring = document.createElement('div'), pop = document.createElement('div');
+  ring.className = 'tour-ring';
+  pop.className = 'tour-pop';
+  pop.setAttribute('role', 'dialog');
+  pop.setAttribute('aria-labelledby', 'tour-title');
+  pop.setAttribute('aria-describedby', 'tour-text');
+  let at = -1, target = null;
+  const back = document.activeElement;
+  // Leaving the Week Board ends the tour: its steps are the board's.
+  const leave = new MutationObserver(() => { if(!page.classList.contains('active')) end(); });
+  function end(){
+    try{ localStorage.setItem(TOUR_KEY, 'done'); }catch(e){}
+    leave.disconnect();
+    ring.remove(); pop.remove();
+    window.removeEventListener('resize', place);
+    document.removeEventListener('keydown', onKey, true);
+    if(back && back.focus) back.focus();
+  }
+  function place(){
+    if(!target) return;
+    const r = target.getBoundingClientRect(), pad = 6;
+    Object.assign(ring.style, {top: `${r.top + window.scrollY - pad}px`, left: `${r.left + window.scrollX - pad}px`,
+                               width: `${r.width + 2 * pad}px`, height: `${r.height + 2 * pad}px`});
+    const w = Math.min(320, document.documentElement.clientWidth - 32);
+    const left = Math.max(16, Math.min(r.left + window.scrollX, document.documentElement.clientWidth - w - 16));
+    const below = r.bottom + 12 + pop.offsetHeight < window.innerHeight;
+    Object.assign(pop.style, {width: `${w}px`, left: `${left}px`,
+      top: `${(below ? r.bottom + 12 : Math.max(8, r.top - 12 - pop.offsetHeight)) + window.scrollY}px`});
+  }
+  function show(i){
+    const found = TOUR_STEPS.slice(i).map(s => tourTarget(s, page));
+    const skip = found.findIndex(Boolean);
+    if(skip < 0){ end(); return; }
+    at = i + skip;
+    target = found[skip];
+    const last = at === TOUR_STEPS.length - 1;
+    const step = TOUR_STEPS[at];
+    pop.innerHTML = `<p class="tour-count">${at + 1} of ${TOUR_STEPS.length}</p><h2 id="tour-title">${step.title}</h2>`
+      + `<p id="tour-text">${step.text}</p><div class="tour-actions"><button type="button" class="btn btn-link" data-tour-skip>Skip the tour</button>`
+      + `<button type="button" class="btn" data-tour-next>${last ? 'Done' : 'Next'}</button></div>`;
+    target.scrollIntoView({block: 'center'});
+    place();
+    pop.querySelector('[data-tour-next]').focus();
+  }
+  function onKey(e){
+    if(e.key === 'Escape'){ e.preventDefault(); e.stopPropagation(); end(); }
+  }
+  pop.addEventListener('click', e => {
+    if(e.target.closest('[data-tour-skip]')) end();
+    else if(e.target.closest('[data-tour-next]')) at === TOUR_STEPS.length - 1 ? end() : show(at + 1);
+  });
+  document.body.append(ring, pop);
+  leave.observe(page, {attributes: true, attributeFilter: ['class']});
+  window.addEventListener('resize', place);
+  document.addEventListener('keydown', onKey, true);
+  show(0);
+}
+// Once the page has settled on the page its address names: the tour is the Week Board's.
+window.addEventListener('load', () => setTimeout(startTour, 300));
+
 /* Where the orientation banner sits (Stage 13). On a phone it goes in among
    the cards, after the first ORIENTATION_AFTER of them, so the first screen
    shows games rather than instructions (before this, at 390x844 the banner

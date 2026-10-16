@@ -1,0 +1,69 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_first_visit_tour.py",
+ "cases": [
+  {
+   "id": "tour-everyone",
+   "why": "a returning visitor is toured again (Stage 80 item 58, F12; Mark: new visitors only).",
+   "find": "      if(/^(site:|nfl[_:]|nhl:|nba:)/.test(k)) return false;\n",
+   "replace": "",
+   "expect_caught_by": "test_a_browser_that_has_been_here_does_not"
+  },
+  {
+   "id": "tour-forever",
+   "why": "the tour runs on every visit.",
+   "find": "    if(asked) return asked === 'show';\n",
+   "replace": "",
+   "expect_caught_by": "test_once_seen_never_again_unless_asked_and_a_blocked_store_never"
+  },
+  {
+   "id": "tour-blocked-store",
+   "why": "a browser whose storage is blocked is toured on every page load.",
+   "find": "  }catch(e){ return false; }\n}\n/* The first of a step's",
+   "replace": "  }catch(e){ return true; }\n}\n/* The first of a step's",
+   "expect_caught_by": "test_once_seen_never_again_unless_asked_and_a_blocked_store_never"
+  },
+  {
+   "id": "tour-not-saved",
+   "why": "ending the tour is not remembered.",
+   "find": "    try{ localStorage.setItem(TOUR_KEY, 'done'); }catch(e){}\n",
+   "replace": "",
+   "expect_caught_by": "test_skip_esc_and_done_end_it_for_good_and_the_focus_is_kept"
+  },
+  {
+   "id": "tour-hidden-target",
+   "why": "a step rings a card hidden in a closed row.",
+   "find": "x.getBoundingClientRect().width > 0 && !x.closest('[hidden]')",
+   "replace": "true",
+   "expect_caught_by": "test_a_step_points_at_what_is_drawn"
+  },
+  {
+   "id": "tour-any-page",
+   "why": "the tour starts on whatever page the address opens.",
+   "find": "  if(!page || !page.classList.contains('active') || !tourWanted(localStorage)) return;",
+   "replace": "  if(!page || !tourWanted(localStorage)) return;",
+   "expect_caught_by": "test_it_runs_on_the_week_board_once_the_page_has_settled"
+  },
+  {
+   "id": "tour-focus-left",
+   "why": "the step's button does not take the focus.",
+   "find": "    pop.querySelector('[data-tour-next]').focus();\n",
+   "replace": "",
+   "expect_caught_by": "test_skip_esc_and_done_end_it_for_good_and_the_focus_is_kept"
+  },
+  {
+   "id": "tour-follows-to-other-pages",
+   "why": "the tour's card stays over the next page the visitor opens (found by the browser checks on Ratings and Model Lab).",
+   "find": "  leave.observe(page, {attributes: true, attributeFilter: ['class']});\n",
+   "replace": "",
+   "expect_caught_by": "test_leaving_the_week_board_ends_it"
+  },
+  {
+   "id": "tour-over-a-shared-game",
+   "why": "a visit that arrives at one game is scrolled away from it to the week stepper (found by the browser checks' game route).",
+   "find": "  if(location.hash && !/^#board(\\/|$)/.test(location.hash)) return;\n",
+   "replace": "",
+   "expect_caught_by": "test_it_runs_on_the_week_board_once_the_page_has_settled"
+  }
+ ]
+}

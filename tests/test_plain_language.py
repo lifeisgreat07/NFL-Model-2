@@ -96,6 +96,7 @@ RENDERERS = {
     'whyMarketSentence': 'board',
     # The label naming whose reasoning the sentence is (Stage 17).
     'whyLabelled': 'board',
+    'show': 'board',
     'pickBadge': 'board',
     'gradedTagHtml': 'board',
     'cardProbHtml': 'board',
