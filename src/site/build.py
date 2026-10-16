@@ -474,6 +474,35 @@ def add_share(out: Path) -> list[str]:
     return [p for p in (f'{s}/index.html' for s in SPORTS) if inject_share(out / p, block)]
 
 
+EXPAND_JS = ROOT / 'src' / 'core' / 'expand.js'
+EXPAND_MARK = 'data-site-expand'
+_EXPAND_OLD = re.compile(r'<script[^>]*\bdata-site-expand\b[^>]*>.*?</script>\n?', re.S)
+
+
+def expand_block() -> str:
+    """Mark's request (2026-10-15): src/core/expand.js, Expand all / Collapse all."""
+    from src.core.page_comments import strip_page_comments
+    script = strip_page_comments('<script>\n' + EXPAND_JS.read_text(encoding='utf-8') + '</script>')
+    return script.replace('<script>', f'<script {EXPAND_MARK}>', 1) + '\n'
+
+
+def inject_expand(page: Path, block: str) -> bool:
+    """Put it on one built page: only a page with the button (data-expand-all), before its </body>."""
+    if not page.exists():
+        return False
+    html = _EXPAND_OLD.sub('', page.read_text(encoding='utf-8'))
+    if 'data-expand-all' not in html or '</body>' not in html:
+        return False
+    at = html.rindex('</body>')
+    page.write_text(html[:at] + block + html[at:], encoding='utf-8')
+    return True
+
+
+def add_expand(out: Path) -> list[str]:
+    block = expand_block()
+    return [p for p in (f'{s}/index.html' for s in SPORTS) if inject_expand(out / p, block)]
+
+
 def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS,
                runner: Runner = run, fetcher: Fetcher = fetch) -> list[SportResult]:
     if out.exists():
@@ -487,6 +516,7 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     add_sheet(out)
     add_scores(out)
     add_share(out)
+    add_expand(out)
     add_offline(out)
     return results
 

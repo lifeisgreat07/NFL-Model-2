@@ -1965,7 +1965,7 @@
     .tele-bar-seg:last-child{background:#B9BEC6 !important;}
     .game-card::before{display:none !important;}
     /* Controls that do nothing on paper. */
-    #site-strip, .day-strip, .week-step-btn, .share-btn, .fav-star{display:none !important;}
+    #site-strip, .day-strip, .week-step-btn, .share-btn, .fav-star, .expand-bar{display:none !important;}
   }
   @page{margin:12mm;}
 
@@ -2084,3 +2084,11 @@ html[data-density="compact"] #game-grid .nfl-row{min-height:40px;}  /* the NHL's
   font-size:var(--fs-12); color:var(--text-2);}
 .print-head img{width:24px; height:24px;}
 .print-head b{font-size:var(--fs-14); color:var(--text);}
+
+/* Mark's request (2026-10-15, option B): Expand all / Collapse all, an
+   outlined button on its own line under the day's or week's header. */
+.expand-bar{display:flex; justify-content:flex-end; margin:var(--s2) 0 var(--s1);}
+.expand-bar.nfl-phone-only{display:none;}
+@media (max-width:640px){ .expand-bar.nfl-phone-only{display:flex;} }
+.expand-all{display:inline-flex; align-items:center; gap:var(--s2); min-height:36px;}
+.expand-all[aria-expanded="true"] svg{transform:rotate(180deg);}
