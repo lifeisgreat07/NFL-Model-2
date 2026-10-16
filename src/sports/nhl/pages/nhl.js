@@ -460,6 +460,9 @@ function revealOpened(panel){
   const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   panel.scrollIntoView({block: 'nearest', behavior: still ? 'auto' : 'smooth'});
 }
+/* Mark's request (2026-10-15, option B): open or close every game of the day
+   at once (src/core/expand.js, which the build puts on the page). */
+const EXPAND_BAR = '<div class="expand-bar"><button type="button" class="btn btn-secondary expand-all" data-expand-all aria-expanded="false" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 8l5 5 5-5M7 14l5 5 5-5"/></svg><span>Expand all</span></button></div>';
 function rowHtml(g, p, nowMs){
   const r = rowResult(g, p, nowMs);
   const id = `nhl-detail-${g.id}`;
@@ -535,6 +538,7 @@ function renderBoard(){
   // Stage 80 item 59: the day's records once a game of it is graded (src/core/accuracy.js).
   const gradedToday = dayGames.map(g => ({p: DATA.picks[g.id], g})).filter(x => x.p && (x.p.result === 'correct' || x.p.result === 'wrong'));
   grid.innerHTML = head + accSummaryHtml(accGames(gradedToday), dayGames.length)
+    + EXPAND_BAR
     + `<ul class="nhl-rows">${dayGames.map(g => rowHtml(g, DATA.picks[g.id], nowMs)).join('')}</ul>`;
   // Stage 75 item 4: rows the reader opened stay open when the board is
   // drawn again (the theme toggle, a day chip and back), by game id.

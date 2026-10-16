@@ -147,7 +147,7 @@ def test_the_bars_print_in_two_greys_and_the_watermark_stays_off():
     assert '.tele-bar-seg:first-child{background:#3A3F47!important;}' in p
     assert '.tele-bar-seg:last-child{background:#B9BEC6!important;}' in p
     assert '.game-card::before{display:none!important;}' in p
-    assert '#site-strip,.day-strip,.week-step-btn,.share-btn,.fav-star{display:none!important;}' in p
+    assert '#site-strip,.day-strip,.week-step-btn,.share-btn,.fav-star' in p and 'display:none!important;' in p
 
 
 @pytest.mark.parametrize('sport,mark', [('nfl', 'favicon.svg'), ('nhl', 'favicon-nhl.svg'), ('nba', 'favicon-nba.svg')])

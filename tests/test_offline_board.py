@@ -220,5 +220,5 @@ def test_a_page_without_the_manifest_link_gets_nothing(tmp_path):
 
 def test_the_site_build_adds_it_last():
     src = Path(build.__file__).read_text(encoding='utf-8')
-    assert '    add_share(out)\n    add_offline(out)\n    return results' in src, \
+    assert '    add_expand(out)\n    add_offline(out)\n    return results' in src, \
         'last, so the worker is named for the pages as published'

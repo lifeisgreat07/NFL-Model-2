@@ -1,0 +1,58 @@
+{
+ "target": "src/core/expand.js",
+ "tests": "tests/test_expand_all.py",
+ "cases": [
+  {
+   "id": "expand-says-collapse-early",
+   "why": "the button says Collapse all once any game is open (Mark's request, 2026-10-15).",
+   "find": "rows.length && rows.every(r => r.getAttribute('aria-expanded') === 'true')",
+   "replace": "rows.length && rows.some(r => r.getAttribute('aria-expanded') === 'true')",
+   "expect_caught_by": "test_the_button_says_expand_until_every_shown_game_is_open"
+  },
+  {
+   "id": "expand-hidden-rows",
+   "why": "the NFL's hidden phone rows count, so a wide screen's button opens nothing it shows.",
+   "find": ".filter(r => r.offsetParent !== null);",
+   "replace": ";",
+   "expect_caught_by": "test_only_the_rows_shown_count"
+  },
+  {
+   "id": "expand-page-jumps",
+   "why": "every row brings its card on screen, so the page ends at the last card.",
+   "find": "    Element.prototype.scrollIntoView = function(){};\n",
+   "replace": "",
+   "expect_caught_by": "test_each_row_is_pressed_as_a_reader_would_and_the_page_stays_put"
+  },
+  {
+   "id": "expand-stale-word",
+   "why": "a row opened by hand leaves the button saying the wrong thing.",
+   "find": "      if(e.target.closest && e.target.closest('button.game-row')) setTimeout(sync, 0);\n",
+   "replace": "",
+   "expect_caught_by": "test_a_row_pressed_by_hand_keeps_the_word_right"
+  },
+  {
+   "id": "expand-nhl-missing",
+   "why": "the NHL's Day Board loses its button.",
+   "target": "src/sports/nhl/pages/nhl.js",
+   "find": "    + EXPAND_BAR\n",
+   "replace": "",
+   "expect_caught_by": "test_a_day_board_has_it_under_its_header"
+  },
+  {
+   "id": "expand-nfl-desktop",
+   "why": "the NFL's button shows on a wide screen, where every card is already open.",
+   "target": "src/dashboard/styles.css",
+   "find": ".expand-bar.nfl-phone-only{display:none;}",
+   "replace": ".expand-bar.nfl-phone-only{}",
+   "expect_caught_by": "test_the_nfl_has_it_on_a_phone_only"
+  },
+  {
+   "id": "expand-not-built",
+   "why": "the build never puts the script on the pages, so the button does nothing.",
+   "target": "src/site/build.py",
+   "find": "    add_share(out)\n    add_expand(out)\n",
+   "replace": "    add_share(out)\n",
+   "expect_caught_by": "test_the_build_puts_the_script_on_the_sport_pages_with_the_button"
+  }
+ ]
+}
