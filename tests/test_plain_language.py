@@ -176,6 +176,7 @@ RENDERERS = {
     'renderTeamGames': 'teamdive',
     'diveResultHtml': 'teamdive',
     'diveSummaryHtml': 'teamdive',
+    'diveScaleHtml': 'teamdive',
     'renderTeamNews': 'teamdive',
     'teamNewsItems': 'teamdive',
     'wireLabFilters': 'modellab',

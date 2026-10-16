@@ -1,0 +1,13 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_trend_width_dive_scale.py",
+ "cases": [
+  {
+   "id": "dive-axis-90",
+   "why": "the axis takes the Net column's 90 px and ends 50 px short of the 140 px bars.",
+   "find": "  .net-axis.dive-axis{width:140px; flex-shrink:0;}",
+   "replace": "  .dive-axis{width:140px; flex-shrink:0;}",
+   "expect_caught_by": "test_the_scale_sits_over_the_bar_column_at_every_width"
+  }
+ ]
+}

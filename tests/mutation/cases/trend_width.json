@@ -1,0 +1,34 @@
+{
+ "target": "src/dashboard/app.js",
+ "tests": "tests/test_trend_width_dive_scale.py",
+ "cases": [
+  {
+   "id": "trend-fixed-680",
+   "why": "the desktop trend is drawn 680 wide again, half its box at 1440 (Stage 79 item 49, N9).",
+   "find": "Math.max(TREND_MIN_W, Math.round(width || 680))",
+   "replace": "680",
+   "expect_caught_by": "test_the_desktop_trend_takes_its_boxs_width"
+  },
+  {
+   "id": "trend-never-redrawn",
+   "why": "the trend is never redrawn, so it keeps the width it had while its page was hidden.",
+   "find": "new ResizeObserver(sizeTrendChart).observe(plotBox)",
+   "replace": "void plotBox",
+   "expect_caught_by": "test_it_is_redrawn_when_the_box_changes_width"
+  },
+  {
+   "id": "trend-redraw-loop",
+   "why": "every resize redraws, the same width included.",
+   "find": "if(!w || w === Number(plot.dataset.w)) return;",
+   "replace": "if(!w) return;",
+   "expect_caught_by": "test_it_is_redrawn_when_the_box_changes_width"
+  },
+  {
+   "id": "dive-scale-unprinted",
+   "why": "Deep-Dive prints no scale again (N10).",
+   "find": "${splitNote}${diveScaleHtml(maxAbs)}${rowsHtml}",
+   "replace": "${splitNote}${rowsHtml}",
+   "expect_caught_by": "test_deep_dive_prints_its_scale_above_the_bars"
+  }
+ ]
+}
