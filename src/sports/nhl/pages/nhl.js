@@ -205,6 +205,23 @@ function goalieText(team, gl){
   // "Jake Allen, Confirmed", not "Jake AllenConfirmed"; the pill's margin is the gap on screen.
   return `${team} <b>${escapeHtml(gl.name)}</b><span class="visually-hidden">, </span>${pill}`;
 }
+/* Stage 80 item 63 (F13): what this card's shared image says. src/core/share_card.js,
+   which the build puts on the page, draws it when "Share image" is pressed. */
+function shareAttr(g, p){
+  const vals = {b: p.b === null ? null : p.b * 100, a: p.a * 100, market: p.market ? p.market.prob * 100 : null};
+  const lead = vals.b !== null ? ['Model B', vals.b] : ['Model A', vals.a];
+  const s = side(lead[1], g);
+  const forecasts = [['Model B', vals.b], ['Market', vals.market], ['Model A', vals.a]]
+    .filter(([, v]) => v !== null).map(([label, v]) => ({label, text: sideText(side(v, g))}));
+  const result = p.result === 'correct' ? 'Correct' : p.result === 'wrong' ? 'Missed' : null;
+  const extra = g.lp === 'OT' ? ' (OT)' : g.lp === 'SO' ? ' (SO)' : '';
+  const score = g.status === 'final' && g.hs !== null && g.hs !== undefined ? `Final: ${g.away} ${g.as}, ${g.home} ${g.hs}${extra}` : null;
+  // Inside the even band the card still names the saved pick ("NJD 51% · even").
+  const even = !s.team, team = even ? p.pick : s.team, pct = even ? (p.pick === g.home ? lead[1] : 100 - lead[1]) : s.pct;
+  return escapeHtml(JSON.stringify({sport: 'NHL', away: g.away, home: g.home, colours: p.colours, lead: lead[0], team, even,
+    pct, homePct: lead[1], forecasts, when: startLabel(g), result, score}));
+}
+const SHARE_BUTTON = '<button type="button" class="btn btn-link share-btn" data-share-card>Share image</button>';
 function pickedCard(g, p){
   const vals = {b: p.b === null ? null : p.b * 100, a: p.a * 100, market: p.market ? p.market.prob * 100 : null};
   const lead = vals.b !== null ? vals.b : vals.a;
@@ -232,7 +249,7 @@ function pickedCard(g, p){
     ? `Market (${escapeHtml(m.book || 'sportsbook')}): ${g.away} <b>${american(m.ap)}</b> · ${g.home} <b>${american(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))} with the margin out; with a price, Model B made the pick`
     : 'Market: no price was posted when the pick was saved, so Model A made it';
   const status = scoreLine(g);
-  return `<div class="game-card"${scoreMark(g)}>
+  return `<div class="game-card"${scoreMark(g)} data-share="${shareAttr(g, p)}">
     <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
     <div class="card-kickoff">${startLabel(g)}</div>
     ${status ? `<div class="nhl-card-status score-off">${status}</div>` : ''}
@@ -255,6 +272,7 @@ function pickedCard(g, p){
     <div class="market-ref">${market}</div>
     <div class="card-qbs">Goalies: ${goalieText(g.away, p.goalies.away)} · ${goalieText(g.home, p.goalies.home)}</div>
     ${proofLine(g, p, DATA.proof)}
+    ${SHARE_BUTTON}
   </div>`;
 }
 /* Stage 68 item 20: the commit that put this pick in the public history,

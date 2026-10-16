@@ -243,7 +243,7 @@ def test_a_day_boards_row_and_cards_carry_the_mark_and_the_slots(name, src):
     assert f'<span class="{name}-row-time"><span class="score-off">${{rowTime(g, p)}}</span>${{scoreSlot(\'clock\')}}</span>' in row
     assert f'<span class="{name}-row-game"><span class="score-off">${{rowGame(g)}}</span>${{scoreSlot(\'game\')}}</span>' in row
     for card in (function_source(src, 'pickedCard'), function_source(src, 'waitingCard')):
-        assert '${scoreMark(g)}>' in card
+        assert '<div class="game-card' in card and '${scoreMark(g)}' in card
         assert f'<div class="{name}-card-status score-on" data-score-slot="line"></div>' in card
         assert f'<div class="{name}-card-status score-off">' in card
 
@@ -266,7 +266,7 @@ def test_the_nfl_row_and_card_carry_the_mark_and_the_slots():
     assert 'aria-controls="card-${n}"${scoreMark(g)}>' in row
     assert "<span class=\"score-off\">${time}</span>${scoreSlot('clock')}" in row
     assert "<span class=\"score-off\">${escapeHtml(g.away)} @ ${escapeHtml(g.home)}</span>${scoreSlot('game')}" in row
-    assert "<div class=\"game-card ${g.flag?'has-flag':''}\"${scoreMark(g)}>" in APP
+    assert "<div class=\"game-card ${g.flag?'has-flag':''}\"${scoreMark(g)}" in APP
     assert '<div class="card-status score-on" data-score-slot="line"></div>' in APP
     assert '<div class="card-status score-off">${statusLine}</div>' in APP
 

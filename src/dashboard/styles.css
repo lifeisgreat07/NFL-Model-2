@@ -2044,3 +2044,6 @@
   background:var(--text); color:var(--bg); font-size:var(--fs-13); font-weight:600; line-height:var(--lh-tight); box-shadow:var(--shadow-overlay);}
 .offline-note[hidden]{display:none;}
 @media (max-width:640px){ .offline-note{bottom:calc(72px + var(--safe-bottom, 0px)); width:auto;} }
+
+/* Stage 80 item 63 (F13): a card's "Share image" (src/core/share_card.js). */
+.share-btn{display:inline-flex; align-items:center; min-height:24px; margin-top:var(--s3);}
