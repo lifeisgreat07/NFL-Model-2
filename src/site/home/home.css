@@ -89,9 +89,10 @@ body{ flex-direction:column; }
 .home-links{ display:flex; flex-wrap:wrap; gap:var(--s2) var(--s5); font-size:var(--fs-14); padding-top:var(--s4); border-top:1px solid var(--border); }
 .home-links a{ color:var(--accent); }
 @media (max-width:600px){
-  .home-bar{ padding:var(--s3) var(--s4); display:grid; grid-template-columns:1fr auto; gap:var(--s3); }
+  .home-bar{ padding:var(--s3) var(--s4); display:grid; grid-template-columns:1fr auto auto; gap:var(--s3); }
   .home-bar-end{ display:contents; }
-  .home-theme{ grid-column:2; grid-row:1; }
+  .home-theme{ grid-column:3; grid-row:1; }
+  .home-search{ grid-column:2; grid-row:1; }  /* Stage 80 item 56: the search button, left of the theme */
   .home-switch{ grid-column:1 / -1; justify-self:start; }
   .home-wordmark{ font-size:var(--fs-20); }
   .home-mark{ width:18px; height:18px; }

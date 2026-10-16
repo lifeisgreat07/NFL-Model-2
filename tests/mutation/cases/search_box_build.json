@@ -1,0 +1,27 @@
+{
+ "target": "src/site/build.py",
+ "tests": "tests/test_search_box.py",
+ "cases": [
+  {
+   "id": "search-twice",
+   "why": "a page kept from the live site gets a second box.",
+   "find": "    html = _SEARCH_OLD.sub('', page.read_text(encoding='utf-8'))\n",
+   "replace": "    html = page.read_text(encoding='utf-8')\n",
+   "expect_caught_by": "test_the_build_puts_the_index_and_the_box_on_a_page_once_after_the_slate"
+  },
+  {
+   "id": "search-failure-fails-build",
+   "why": "an index that fails stops every page being published.",
+   "find": "    except Exception as exc:  # the search box's failure leaves every page as built\n        print(f'the search box was left off: {exc}')\n        return []\n",
+   "replace": "    finally:\n        pass\n",
+   "expect_caught_by": "test_the_site_build_adds_it_and_survives_its_failure"
+  },
+  {
+   "id": "search-not-added",
+   "why": "the site build never puts the box on.",
+   "find": "    add_search(out, results)\n",
+   "replace": "",
+   "expect_caught_by": "test_the_site_build_adds_it_and_survives_its_failure"
+  }
+ ]
+}

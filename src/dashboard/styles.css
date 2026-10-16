@@ -1096,6 +1096,41 @@
   /* Each header's button sorts; the mark beside it is every sorting header's (thead th[aria-sort]). */
   .compare-table .cmp-sort{border:0; background:none; padding:0; font:inherit; color:inherit; letter-spacing:inherit;
     text-transform:inherit; cursor:pointer; min-height:24px;}
+  /* ---------- The search box (Stage 80 item 56, the 2026-10-13 audit's F6) ----------
+     Its buttons (the sidebar's, the phone's top bar's, the home's) and the box
+     itself, from src/core/palette.js. */
+  .side-search{display:flex; align-items:center; gap:var(--s2); margin:var(--s3) var(--s4) 0; padding:var(--s2) var(--s3);
+    min-height:40px; border:1px solid var(--border); border-radius:var(--r-md); background:var(--surface);
+    color:var(--text-2); font:inherit; font-size:var(--fs-14); cursor:pointer; text-align:left;}
+  .side-search svg{width:16px; height:16px; flex-shrink:0;}
+  .side-search span{flex:1;}
+  .side-search kbd, .pal-esc{font-family:inherit; font-size:var(--fs-11); border:1px solid var(--border-strong); border-radius:var(--r-sm);
+    padding:1px var(--s1); color:var(--text-2); background:none;}
+  .topbar-search{margin-left:auto; width:40px; height:40px; flex-shrink:0; display:grid; place-items:center;
+    border:0; background:none; color:var(--text); cursor:pointer;}
+  .topbar-search svg{width:18px; height:18px;}
+  .topbar-search + .topbar-theme{margin-left:0;}
+  .side-search[hidden], .topbar-search[hidden], .home-search[hidden]{display:none;}
+  .pal-shell{position:fixed; inset:0; z-index:90;}
+  .pal-shell[hidden]{display:none;}
+  .pal-scrim{position:absolute; inset:0; background:color-mix(in srgb, var(--bg) 60%, transparent);}
+  .pal-dialog{position:absolute; left:50%; top:12vh; transform:translateX(-50%); width:min(560px, calc(100vw - 32px));
+    max-height:76vh; display:flex; flex-direction:column; background:var(--surface); border:1px solid var(--border-strong);
+    border-radius:var(--r-lg); overflow:hidden;}
+  .pal-in{display:flex; align-items:center; gap:var(--s2); padding:var(--s3) var(--s4); border-bottom:1px solid var(--border); color:var(--text-2);}
+  .pal-input{flex:1; min-width:0; border:0; background:none; font:inherit; font-size:var(--fs-16); color:var(--text); outline:none;}
+  /* The field is the box's one stop: its focus is the line under it, not a second frame inside the box. */
+  .pal-in .pal-input:focus-visible{outline:none;}
+  .pal-in:focus-within{box-shadow:inset 0 -2px 0 var(--accent);}
+  .pal-esc{cursor:pointer; min-height:24px; min-width:24px;}
+  .pal-list{overflow-y:auto; padding:var(--s1) 0 var(--s2);}
+  .pal-head{padding:var(--s3) var(--s4) var(--s1); font-size:var(--fs-11); font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--text-2);}
+  .pal-item{display:flex; justify-content:space-between; align-items:baseline; gap:var(--s3); padding:var(--s2) var(--s4);
+    min-height:40px; font-size:var(--fs-14); color:var(--text); text-decoration:none;}
+  .pal-item small{flex-shrink:0; max-width:50%; text-align:right; color:var(--text-2); font-size:var(--fs-12);}
+  .pal-item.is-active{background:var(--accent-soft);}
+  .pal-none{margin:0; padding:var(--s4); font-size:var(--fs-14); color:var(--text-2);}
   /* ---------- Favourite teams (Stage 80 item 53, the 2026-10-13 audit's F7) ----------
      A star beside a team: outlined until it is a favourite, then filled. Its
      own 24 px target, in the text's colour, never the accent. */

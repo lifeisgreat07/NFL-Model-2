@@ -101,9 +101,9 @@ def test_a_day_sports_games_carry_the_saved_pick_or_when_it_is_saved(tmp_path):
     write(tmp_path / 'predictions/nhl/2026/2.json', {'model_a': 0.57, 'model_b': None, 'pick': 'COL'})
     rows = home.day_slate('nhl', ('regular', 'playoff'), nhl_lock.RUNS_UTC, nhl_lock.SLACK, tmp_path, NOW)
     assert rows == [
-        {'s': 'nhl', 't': '2026-10-14T23:30:00Z', 'a': 'MTL', 'h': 'WSH', 'k': 'pick', 'p': 'WSH', 'c': 51, 'e': True},
-        {'s': 'nhl', 't': '2026-10-15T00:30:00Z', 'a': 'DAL', 'h': 'COL', 'k': 'pick', 'p': 'COL', 'c': 57, 'e': False},
-        {'s': 'nhl', 't': '2026-10-15T23:00:00Z', 'a': 'BUF', 'h': 'TOR', 'k': 'wait', 'l': '2026-10-15T21:00:00Z'},
+        {'s': 'nhl', 't': '2026-10-14T23:30:00Z', 'a': 'MTL', 'h': 'WSH', 'g': '1', 'k': 'pick', 'p': 'WSH', 'c': 51, 'e': True},
+        {'s': 'nhl', 't': '2026-10-15T00:30:00Z', 'a': 'DAL', 'h': 'COL', 'g': '2', 'k': 'pick', 'p': 'COL', 'c': 57, 'e': False},
+        {'s': 'nhl', 't': '2026-10-15T23:00:00Z', 'a': 'BUF', 'h': 'TOR', 'g': '3', 'k': 'wait', 'l': '2026-10-15T21:00:00Z'},
     ], 'Model B leads, else Model A; a game played, postponed or out of season is not named'
 
 
@@ -125,8 +125,10 @@ def test_the_nfl_names_model_bs_side_for_its_locked_week_and_leans_for_the_previ
     write(tmp_path / 'predictions/nfl/preview/2026_week5.json', [g('X', 'Y', '2026-10-18', '13:00', 0.9)])
     rows = home.nfl_slate(tmp_path, NOW)
     assert rows == [
-        {'s': 'nfl', 't': '2026-10-18T17:00:00Z', 'a': 'CHI', 'h': 'GB', 'k': 'pick', 'p': 'CHI', 'c': 57, 'e': False},
-        {'s': 'nfl', 't': '2026-10-16T00:15:00Z', 'a': 'SEA', 'h': 'DEN', 'k': 'lean', 'p': 'SEA', 'c': 56, 'e': False},
+        {'s': 'nfl', 't': '2026-10-18T17:00:00Z', 'a': 'CHI', 'h': 'GB', 'k': 'pick', 'g': '2026_week5-CHI-GB',
+         'p': 'CHI', 'c': 57, 'e': False},
+        {'s': 'nfl', 't': '2026-10-16T00:15:00Z', 'a': 'SEA', 'h': 'DEN', 'k': 'lean', 'g': '2026_week6-SEA-DEN',
+         'p': 'SEA', 'c': 56, 'e': False},
     ], 'a game already played is left out, and so is a preview of the locked week'
 
 

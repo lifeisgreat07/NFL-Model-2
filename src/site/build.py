@@ -288,6 +288,52 @@ def add_strip(out: Path, results: list[SportResult],
     return [p for p in pages if inject_strip(out / p, block)]
 
 
+#: The search box's script and how the build marks what it puts on a page
+#: (Stage 80 item 56), as the strip's.
+PALETTE_JS = ROOT / 'src' / 'core' / 'palette.js'
+SEARCH_MARK = 'data-site-search'
+_SEARCH_OLD = re.compile(r'<script[^>]*\bdata-site-search\b[^>]*>.*?</script>\n?', re.S)
+
+
+def search_block(found: dict[str, object]) -> str:
+    """The search index as data and the script that searches it."""
+    from src.core.page_comments import strip_page_comments
+    from src.core.page_fill import safe_json
+    script = strip_page_comments('<script>\n' + PALETTE_JS.read_text(encoding='utf-8') + '</script>')
+    return (f'<script type="application/json" id="site-search-data" {SEARCH_MARK}>{safe_json(found)}</script>\n'
+            + script.replace('<script>', f'<script {SEARCH_MARK}>', 1) + '\n')
+
+
+def inject_search(page: Path, block: str) -> bool:
+    """Put the search box on one built page: only a page whose template has
+    a Search button for it, before its </body>, after the strip's slate."""
+    if not page.exists():
+        return False
+    html = _SEARCH_OLD.sub('', page.read_text(encoding='utf-8'))
+    if 'data-palette-open' not in html or '</body>' not in html:
+        return False
+    at = html.rindex('</body>')
+    page.write_text(html[:at] + block + html[at:], encoding='utf-8')
+    return True
+
+
+def add_search(out: Path, results: list[SportResult],
+               finder: Callable[[Path, set[str]], dict[str, object]] | None = None) -> list[str]:
+    """The search box on the home and every sport's page, finding the
+    published sports' teams, pages and experiments (src/site/search.py) and
+    the slate's games. Like the strip, an extra: a failure is printed and
+    publishes the pages without it."""
+    from src.site import search
+    published = {r.sport for r in results if r.published and r.sport in SPORTS}
+    try:
+        block = search_block((finder or search.index)(out, published))
+    except Exception as exc:  # the search box's failure leaves every page as built
+        print(f'the search box was left off: {exc}')
+        return []
+    pages = ['index.html'] + [f'{s}/index.html' for s in SPORTS]
+    return [p for p in pages if inject_search(out / p, block)]
+
+
 def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS,
                runner: Runner = run, fetcher: Fetcher = fetch) -> list[SportResult]:
     if out.exists():
@@ -297,6 +343,7 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     assemble_shared(out)
     results.append(build_home(out, runner, tuple(r.sport for r in results if not r.published)))
     add_strip(out, results)
+    add_search(out, results)
     return results
 
 

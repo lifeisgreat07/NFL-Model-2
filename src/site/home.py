@@ -187,12 +187,15 @@ def nfl_slate(root: Path = ROOT, now: datetime | None = None) -> list[dict[str, 
     out = []
     latest = max(weeks)
     previews = {k: p for k, p in _week_files(root / 'predictions' / 'nfl' / 'preview').items() if k > latest}
-    for kind, path in [('pick', weeks[latest])] + [('lean', previews[k]) for k in sorted(previews)]:
-        for g in _read(path) or []:
+    for kind, (season, week) in [('pick', latest)] + [('lean', k) for k in sorted(previews)]:
+        for g in _read(weeks[latest] if kind == 'pick' else previews[(season, week)]) or []:
             t, b = nfl_kickoff(g), g.get('model_b_home_win_prob')
             if t is None or b is None or t < lo:
                 continue
-            out.append({'s': 'nfl', 't': t, 'a': g['away'], 'h': g['home'], 'k': kind, **_side(b, g['home'], g['away'])})
+            # g: the game's address on the NFL's page, #game/<week>-<away>-<home>
+            # (app.js gameKey), for the search box (Stage 80 item 56).
+            out.append({'s': 'nfl', 't': t, 'a': g['away'], 'h': g['home'], 'k': kind,
+                        'g': f"{season}_week{week}-{g['away']}-{g['home']}", **_side(b, g['home'], g['away'])})
     return out
 
 
@@ -215,7 +218,7 @@ def day_slate(sport: str, game_types: tuple[str, ...], runs: tuple[tuple[int, in
     folder = root / 'predictions' / sport / str(season)
     out = []
     for g in games:
-        row: dict[str, Any] = {'s': sport, 't': g['start_utc'], 'a': g['away'], 'h': g['home']}
+        row: dict[str, Any] = {'s': sport, 't': g['start_utc'], 'a': g['away'], 'h': g['home'], 'g': str(g['game_id'])}
         p = _read(folder / f"{g['game_id']}.json")
         lead = None if p is None else (p.get('model_b') if p.get('model_b') is not None else p.get('model_a'))
         if p is not None and p.get('pick') and lead is not None:
