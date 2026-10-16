@@ -1,0 +1,13 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_nhl_side_names.py",
+ "cases": [
+  {
+   "id": "side-names-run-together",
+   "why": "the side column reads \"Tampa Bay LightningTBL\" again (Stage 78 item 41, L1).",
+   "find": "<span>${escapeHtml(teamName(t.team))} <b>${odds(t.playoff_pct)}</b> to make the playoffs</span>",
+   "replace": "<span>${clubCell(t.team)} <b>${odds(t.playoff_pct)}</b> to make the playoffs</span>",
+   "expect_caught_by": "test_the_side_column_prints_the_name_alone"
+  }
+ ]
+}
