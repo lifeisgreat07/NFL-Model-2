@@ -15,8 +15,12 @@ The answer has `src.core.sport.SCHEDULE_COLUMNS`, with the NBA's meanings:
 - `status` is a `GameStatus` value, from ESPN's status name;
 - `home_win` counts overtime, which every game that ends tied gets.
 
-Beside those: `game_type` ('regular', 'playin' or 'playoff'), `neutral_site`
-and `venue`. Preseason games and All-Star games are left out, and so is a
+Beside those: `game_type` ('regular', 'playin' or 'playoff'), `neutral_site`,
+`venue` and `time_valid`, ESPN's own word on whether the start time is set
+(the competition's `timeValid`): False for a game filed at a placeholder
+hour, None where ESPN does not say. The board prints "time TBD" only on
+False. It used to guess from the hour (a weekday tip before 5 PM Eastern),
+which hid opening night's real 3 PM BOS at DET (2026-10-15). Preseason games and All-Star games are left out, and so is a
 game not yet played whose teams ESPN still lists as `TBD`. ESPN files
 the All-Star games under the regular season, so the season type alone does
 not keep them out; the competition's own type (`ALLSTAR`) does. The NBA
@@ -79,7 +83,7 @@ STATUS: Mapping[str, GameStatus] = {
 #: ESPN's team for a side not yet decided.
 PLACEHOLDER = 'TBD'
 
-EXTRA_COLUMNS = ('game_type', 'neutral_site', 'venue')
+EXTRA_COLUMNS = ('game_type', 'neutral_site', 'venue', 'time_valid')
 
 CACHE_ENV = 'NBA_CACHE'
 
@@ -232,11 +236,13 @@ def to_schedule(games: list[tuple[str, Json]], season: int) -> pd.DataFrame:
             'game_type': SEASON_TYPES[ev['season']['type']],
             'neutral_site': bool(comp.get('neutralSite', False)),
             'venue': (comp.get('venue') or {}).get('fullName'),
+            'time_valid': comp['timeValid'] if isinstance(comp.get('timeValid'), bool) else None,
         })
     df = pd.DataFrame(rows, columns=[*SCHEDULE_COLUMNS, *EXTRA_COLUMNS])
     df['start_utc'] = pd.to_datetime(df['start_utc'], utc=True)
     for col in ('home_score', 'away_score', 'home_win'):
         df[col] = df[col].astype('Int64')
+    df['time_valid'] = df['time_valid'].astype('boolean')
     df = df.sort_values(['start_utc', 'game_id'], kind='stable').reset_index(drop=True)
     contract = check_schedule('nba', df)
     if contract:

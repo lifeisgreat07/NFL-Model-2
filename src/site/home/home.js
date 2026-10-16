@@ -10,15 +10,12 @@ function dayKey(t){ const d = new Date(t); return d.getFullYear() + '-' + d.getM
 function clock(t){ return new Date(t).toLocaleTimeString([], {hour:'numeric', minute:'2-digit'}); }
 function weekday(t){ return new Date(t).toLocaleDateString([], {weekday:'short'}); }
 function when(t){ return weekday(t) + ' ' + clock(t); }
-/* Stage 77 item 33 (the 2026-10-13 audit's B5), on the home page as on the
-   NBA's board (nba.js tipSet): ESPN files an NBA game whose tip-off is not
-   set at a placeholder hour, and NBA games on a weekday start in the
-   evening, so a weekday tip before 5 PM Eastern is not printed as a time. */
-const ET_WEEKDAY_HOUR = new Intl.DateTimeFormat('en-US', {weekday: 'short', hour: 'numeric', hourCycle: 'h23', timeZone: 'America/New_York'});
-function tipSet(t){
-  const parts = Object.fromEntries(ET_WEEKDAY_HOUR.formatToParts(new Date(t)).map(x => [x.type, x.value]));
-  return parts.weekday === 'Sat' || parts.weekday === 'Sun' || Number(parts.hour) >= 17;
-}
+/* On the home page as on the NBA's board (nba.js tipSet): a tip-off time
+   is printed unless ESPN says it is not set yet. The build lists those
+   starts (home.py `unset`). Stage 77 item 33 guessed from the hour, which
+   hid opening night's real 3 PM BOS at DET (found 2026-10-15). */
+const UNSET_TIPS = new Set(((HOME.nba || {}).unset || []).map(s => Date.parse(s)));
+function tipSet(t){ return !UNSET_TIPS.has(t); }
 function tipClock(t){ return tipSet(t) ? clock(t) : 'time TBD'; }
 function tipWhen(t){ return tipSet(t) ? when(t) : `${weekday(t)} · time TBD`; }
 /* Which moments can be placeholders: only the NBA's tip-off. */

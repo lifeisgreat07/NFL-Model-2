@@ -79,6 +79,5 @@ check for Booth. Never start the mutation runner under pythonw, and never two ru
 - **The drift check re-tests a growing sample every week**, so it will sometimes flag by chance.
 - **A failed Thursday run leaves Thursday night's game unpicked** unless dispatched by hand that day.
 - **`ubuntu-latest` moves to Ubuntu 26 from 2026-10-19.** Nothing pins the image; watch the first runs after it.
-- **An NBA tip time is read as a placeholder by hour** (Stage 77 item 33): a weekday tip before 5 PM ET reads "time TBD". ESPN's own time-valid flag would be exact, but reading it is a change to `src/sports/nba/schedule.py`, held until the audit's UI stages are done.
 - **Mark's PC runs on Eastern time**, so a guard for an ET clock runs node with `TZ` far from ET, or a dropped `timeZone` survives there (Stage 77 item 30).
 - **The plain-language guard reads only `RENDERERS`**: add each new markup function with its page; a top-level literal is charged to the function above it (items 28, 31).

@@ -108,11 +108,16 @@ def day_sport_facts(sport: str, game_types: tuple[str, ...], root: Path = ROOT,
                    and lo <= g['start_utc'] <= hi and g.get('status') not in ('cancelled', 'postponed'))
     season_starts = sorted(g['start_utc'] for g in sched.get('games', [])
                            if g.get('game_type') in game_types and g.get('start_utc'))
+    # Starts ESPN says are not set yet (`time_valid` false: a placeholder
+    # hour), which the card prints as "time TBD". Only the NBA's schedule
+    # carries the field; for the NHL this is empty.
+    unset = sorted({g['start_utc'] for g in sched.get('games', [])
+                    if g.get('game_type') in game_types and g.get('start_utc') and g.get('time_valid') is False})
     # The first game of the season and how many picks are saved, so a card
     # can say when picks start rather than show an empty record (Stage 68
     # item 6). graded_<season>.json has one row per saved pick.
     return {'built': True, 'season': season, 'games': games,
-            'first_game': season_starts[0] if season_starts else None, 'picks': len(graded),
+            'first_game': season_starts[0] if season_starts else None, 'picks': len(graded), 'unset': unset,
             'record': {'label': 'Picks this season',
                        'won': sum(1 for r in graded if r.get('result') == 'correct'),
                        'lost': sum(1 for r in graded if r.get('result') == 'wrong')}}
@@ -127,7 +132,7 @@ def nba_facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
     daily run's first schedule the page is still built, and the card says
     when picks start rather than "not built"."""
     f = day_sport_facts('nba', ('regular', 'playin', 'playoff'), root, now)
-    return f if f['built'] else {'built': True, 'games': [], 'first_game': None, 'picks': 0,
+    return f if f['built'] else {'built': True, 'games': [], 'first_game': None, 'picks': 0, 'unset': [],
                                  'record': {'label': 'Picks this season', 'won': 0, 'lost': 0}}
 
 

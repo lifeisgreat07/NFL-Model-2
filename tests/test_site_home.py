@@ -64,7 +64,7 @@ def test_a_sport_with_no_files_says_so_rather_than_vanishing(tmp_path):
     first schedule, so its card is built and says when picks start."""
     f = home.facts(tmp_path, NOW)
     assert f['nfl'] == {'built': False} and f['nhl'] == {'built': False}
-    assert f['nba'] == {'built': True, 'games': [], 'first_game': None, 'picks': 0,
+    assert f['nba'] == {'built': True, 'games': [], 'first_game': None, 'picks': 0, 'unset': [],
                         'record': {'label': 'Picks this season', 'won': 0, 'lost': 0}}
 
 

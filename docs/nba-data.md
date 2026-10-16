@@ -79,7 +79,12 @@ night, Cleveland at Chicago, is the first). hoopR's `team_box` and
 and none of the six play-in games, so the history reads those games from
 hoopR, marks where each came from, and names the eight it cannot fill.
 
-Start times are UTC (`date` ends in `Z`). The scoreboard carries every
+Start times are UTC (`date` ends in `Z`). A competition's `timeValid` says
+whether its time is set; on the four dates read on 2026-10-15 (Oct 20, 21
+and 28, Dec 25) every game had it true, opening night's 3 PM BOS at DET
+(a real NBC matinee) and Christmas Day's noon game included. The
+schedule keeps it as `time_valid`, and the board prints "time TBD" only
+when it is false. The scoreboard carries every
 game the league plays, so **the All-Star weekend's games come through as
 teams** (`EAST`, `WEST`, `GIA`, `LEB`, `USA`, `WORLD`, `STARS`, `STRIPES`,
 and in 2025 `CAN`, `CHK`, `KEN`, `SHQ`). **ESPN files them under the

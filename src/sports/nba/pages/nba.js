@@ -149,19 +149,15 @@ const FMT_MONTHDAY = new Intl.DateTimeFormat('en-US', {month: 'short', day: 'num
 const FMT_TIME = new Intl.DateTimeFormat('en-US', {hour: 'numeric', minute: '2-digit', timeZone: ET});
 const FMT_ET_DATE = new Intl.DateTimeFormat('en-CA', {year: 'numeric', month: '2-digit', day: '2-digit', timeZone: ET});
 function todayEt(){ return FMT_ET_DATE.format(new Date()); }
-/* Stage 77 item 33 (the 2026-10-13 audit's B5): ESPN files a game whose
-   tip-off is not set yet at a placeholder hour, and the board printed it:
-   opening night's BOS at DET read "3:00 PM" from a 19:00Z feed time. NBA
-   games on a weekday start in the evening, so a weekday tip before 5 PM
-   Eastern reads "time TBD". Weekend afternoon games are real and are
-   printed. (A few weekday holiday matinees read TBD too; the schedule file
-   does not carry ESPN's own "time confirmed" flag, and the daily run is not
-   changed in this stage.) */
-const FMT_ET_WEEKDAY_HOUR = new Intl.DateTimeFormat('en-US', {weekday: 'short', hour: 'numeric', hourCycle: 'h23', timeZone: ET});
+/* Whether a game's tip-off time is set, by ESPN's own word (`tv`, the
+   competition's timeValid, carried by the daily run's schedule file). Only
+   an explicit false reads "time TBD"; a schedule written before the field
+   existed prints the time. Stage 77 item 33 guessed from the hour instead
+   (a weekday tip before 5 PM Eastern was a placeholder), and that hid
+   opening night's BOS at DET, a real 3 PM game on NBC, and Christmas Day's
+   noon and 2:30 games (found 2026-10-15). */
 function tipSet(g){
-  if(!g.start) return false;
-  const parts = Object.fromEntries(FMT_ET_WEEKDAY_HOUR.formatToParts(new Date(g.start)).map(x => [x.type, x.value]));
-  return parts.weekday === 'Sat' || parts.weekday === 'Sun' || Number(parts.hour) >= 17;
+  return Boolean(g.start) && g.tv !== false;
 }
 function startLabel(g){
   const day = FMT_DAY.format(dayDate(g.day));

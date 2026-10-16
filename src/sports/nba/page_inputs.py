@@ -15,7 +15,7 @@ from typing import Any
 import pandas as pd
 
 SCHEDULE_FIELDS = ('game_id', 'slate', 'start_utc', 'home', 'away', 'status', 'game_type',
-                   'home_score', 'away_score', 'neutral_site')
+                   'home_score', 'away_score', 'neutral_site', 'time_valid')
 
 
 def _plain(value: Any) -> Any:

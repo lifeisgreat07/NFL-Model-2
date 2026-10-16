@@ -18,7 +18,7 @@
   },
   {
    "id": "nba-countdown-placeholder-time",
-   "why": "a placeholder tip-off gives a lock time it cannot know (12 PM from ESPN's 3 PM stand-in).",
+   "why": "a tip-off ESPN says is not set gives a lock time it cannot know.",
    "find": "  const runs = opening.every(tipSet) ? opening.map(g => lockRunFor(g.start)).filter(Boolean) : [];\n",
    "replace": "  const runs = opening.map(g => lockRunFor(g.start)).filter(Boolean);\n",
    "expect_caught_by": "test_a_placeholder_tip_gives_the_day_without_a_time"
