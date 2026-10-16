@@ -26,6 +26,8 @@ ESCAPE_JS = Path(__file__).with_name('escape.js')
 ROUTES_JS = Path(__file__).with_name('routes.js')
 #: The season-accuracy component both sports draw (Stage 79 item 46).
 ACCURACY_JS = Path(__file__).with_name('accuracy.js')
+#: Favourite teams, shared by the NHL's and NBA's pages (Stage 80 item 53).
+FAVS_JS = Path(__file__).with_name('favs.js')
 
 
 def safe_json(obj: Any) -> str:

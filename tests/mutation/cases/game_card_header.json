@@ -41,8 +41,8 @@
     {
       "id": "card-bar-home-end-loses-its-logo",
       "why": "the home end of the bar goes back to a bare abbreviation, so one side of the card has a logo and the other does not.",
-      "find": "${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${barTeam(g.home)}</span>",
-      "replace": "${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${g.home}</span>",
+      "find": "${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${barTeam(g.home)}${favStar(",
+      "replace": "${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${g.home}${favStar(",
       "tests": "tests/test_card_v2.py",
       "expect_caught_by": "test_both_bar_ends_carry_their_team"
     },

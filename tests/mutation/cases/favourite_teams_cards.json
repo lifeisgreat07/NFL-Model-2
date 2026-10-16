@@ -1,0 +1,27 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_favourite_teams.py",
+ "cases": [
+  {
+   "id": "fav-card-no-away-star",
+   "why": "the away team cannot be starred from its card.",
+   "find": "<span class=\"card-end\">${favStar('nhl', g.away, escapeHtml(teamName(g.away)))}",
+   "replace": "<span class=\"card-end\">",
+   "expect_caught_by": "test_each_card_has_a_star_at_the_outer_end_of_its_bar"
+  },
+  {
+   "id": "fav-card-star-in-image",
+   "why": "the star sits inside an image, where a screen reader cannot press it.",
+   "find": "    <div class=\"card-viz\">\n",
+   "replace": "    <div class=\"card-viz\" role=\"img\">\n",
+   "expect_caught_by": "test_each_card_has_a_star_at_the_outer_end_of_its_bar"
+  },
+  {
+   "id": "fav-nhl-board-unsorted",
+   "why": "the NHL day board ignores the stars.",
+   "find": "const dayGames = favFirst('nhl', byDay[currentDay] || []);",
+   "replace": "const dayGames = byDay[currentDay] || [];",
+   "expect_caught_by": "test_every_sport_puts_its_favourites_first_and_listens_for_stars"
+  }
+ ]
+}

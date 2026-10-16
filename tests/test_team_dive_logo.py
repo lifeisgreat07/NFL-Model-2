@@ -58,7 +58,8 @@ def test_a_team_with_no_name_on_file_shows_its_abbreviation():
 
 def test_the_team_comes_first_on_the_page():
     body = re.search(r'function renderTeamDive\(.*?\n\}\n', src(), re.S).group(0)
-    assert 'content.innerHTML = diveTeamHtml(team, teamHistory.names[team]) + renderTeamNews(team)' in body
+    # Since Stage 80 item 53 the name carries the team's favourite star.
+    assert "content.innerHTML = diveTeamHtml(team, teamHistory.names[team], favStar('nfl', team, teamHistory.names[team] || team)) + renderTeamNews(team)" in body
 
 
 def test_the_logo_is_large_enough_to_identify_the_page():

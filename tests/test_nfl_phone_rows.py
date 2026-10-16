@@ -24,7 +24,8 @@ def fn(name):
 
 
 def test_every_card_has_its_row_and_the_row_opens_it():
-    assert 'slotHeadBefore(sorted, i) + phoneRowHtml(sorted[i], i) + card' in APP
+    # Since Stage 80 item 53 the slot heads also know how many favourites lead.
+    assert 'slotHeadBefore(sorted, i, pinned) + phoneRowHtml(sorted[i], i) + card' in APP
     assert "card.id = `card-${i}`; card.classList.add('nfl-collapsible');" in APP
     assert "classList.toggle('is-open', open)" in APP
 

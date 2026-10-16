@@ -44,8 +44,8 @@
     {
       "id": "shared-theme-second-shared-key",
       "why": "a second shared key is added to the list without its own decision; the list is meant to hold the theme alone.",
-      "find": "    'site:theme': \"the visitor's light or dark choice, one for the whole site (Stage 62 item 1)\",\n}",
-      "replace": "    'site:theme': \"the visitor's light or dark choice, one for the whole site (Stage 62 item 1)\",\n    'site:picks': 'my picks, for every sport',\n}",
+      "find": "                 \"(Stage 80 item 53, the 2026-10-13 audit's F7)\",\n}",
+      "replace": "                 \"(Stage 80 item 53, the 2026-10-13 audit's F7)\",\n    'site:picks': 'my picks, for every sport',\n}",
       "expect_caught_by": "test_the_one_shared_key_is_the_theme"
     },
     {

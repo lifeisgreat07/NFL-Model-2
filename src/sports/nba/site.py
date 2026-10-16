@@ -43,6 +43,7 @@ from src.core.page_comments import strip_page_comments
 from src.core.page_fill import (
     ACCURACY_JS,
     ESCAPE_JS,
+    FAVS_JS,
     ROUTES_JS,
     font_faces_css,
     safe_json,
@@ -182,6 +183,7 @@ def render(data: dict[str, Any]) -> str:
                 .replace('{% include "escape.js" %}', ESCAPE_JS.read_text(encoding='utf-8'))
                 .replace('{% include "routes.js" %}', ROUTES_JS.read_text(encoding='utf-8'))
                 .replace('{% include "accuracy.js" %}', ACCURACY_JS.read_text(encoding='utf-8'))
+                .replace('{% include "favs.js" %}', FAVS_JS.read_text(encoding='utf-8'))
                 .replace('{% include "body.html" %}', (TEMPLATE / 'body.html').read_text(encoding='utf-8'))
                 .replace('{% include "nba.js" %}', (TEMPLATE / 'nba.js').read_text(encoding='utf-8')))
     # Comments stay in the templates for whoever reads them; the page a

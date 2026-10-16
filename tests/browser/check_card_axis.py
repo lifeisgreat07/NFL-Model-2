@@ -46,9 +46,9 @@ MEASURE_JS = """() => {
     if (segs.length < 2 || viz.getBoundingClientRect().width === 0) continue;
     const mk = viz.querySelector('.card-mk[data-series="b"]') || viz.querySelector('.card-mk[data-series="a"]');
     const split = segs[1].getBoundingClientRect().left;
-    if (!mk) { out.push({label: viz.getAttribute('aria-label'), split, centre: null}); continue; }
+    if (!mk) { out.push({label: viz.querySelector('.card-scale').getAttribute('aria-label'), split, centre: null}); continue; }
     const r = mk.getBoundingClientRect();
-    out.push({label: viz.getAttribute('aria-label'), split, centre: (r.left + r.right) / 2});
+    out.push({label: viz.querySelector('.card-scale').getAttribute('aria-label'), split, centre: (r.left + r.right) / 2});
   }
   return out;
 }"""

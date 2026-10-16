@@ -84,6 +84,7 @@ RENDERERS = {
     'renderLockProof': 'board',
     'trendSvg': 'ratings',
     'renderBoardInsights': 'board',
+    'favStar': 'board',
     'boardInsights': 'board',
     'renderGames': 'board',
     'phoneRowHtml': 'board',

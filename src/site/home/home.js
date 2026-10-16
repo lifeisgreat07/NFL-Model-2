@@ -269,6 +269,36 @@ function sinceSnapshot(sports, now){
   el.textContent = text;
 })();
 
+/* Stage 80 item 53 (the 2026-10-13 audit's F7): "Your teams tonight". The
+   teams starred on any sport's page (site:favs, src/core/favs.js) and
+   today's games they play, from the build's slate, each a link to its
+   board with its pick. Nothing is shown before a team is starred. */
+function yoursText(r){
+  const pick = r.k === 'pick' ? `${r.p} ${r.c}%${r.e ? ' · even' : ''}` : r.k === 'lean' ? `leans ${r.p} ${r.c}%` : 'pick to come';
+  const t = Date.parse(r.t);
+  return `${r.a} @ ${r.h} ${r.s === 'nba' ? tipClock(t) : clock(t)}, ${pick}`;
+}
+function yoursHtml(slate, favs, now){
+  const mine = slate.filter(r => {
+    const list = Array.isArray(favs[r.s]) ? favs[r.s] : [];
+    const t = Date.parse(r.t);
+    return (list.includes(r.a) || list.includes(r.h)) && dayKey(t) === dayKey(now) && t > now - 3 * HOUR;
+  });
+  if(!mine.length) return '';
+  const evening = mine.every(r => new Date(Date.parse(r.t)).getHours() >= 17);
+  return `<b>Your teams ${evening ? 'tonight' : 'today'}:</b> `
+    + mine.map(r => `<a href="${r.s}/">${esc(yoursText(r))}</a>`).join('; ');
+}
+(function(){
+  const el = document.getElementById('home-yours');
+  if(!el) return;
+  let favs = {};
+  try{ favs = JSON.parse(localStorage.getItem('site:favs') || '{}') || {}; }catch(e){}
+  const html = yoursHtml(HOME.slate || [], favs, NOW);
+  el.innerHTML = html;
+  el.hidden = !html;
+})();
+
 // The theme button: the same choice, under the same key, as every sport's page.
 (function(){
   const btn = document.querySelector('.home-theme');
