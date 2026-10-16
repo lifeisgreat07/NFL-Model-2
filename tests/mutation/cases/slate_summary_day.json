@@ -1,0 +1,20 @@
+{
+ "target": "src/core/accuracy.js",
+ "tests": "tests/test_slate_summary.py",
+ "cases": [
+  {
+   "id": "slate-day-market-left-out",
+   "why": "the NHL and NBA day strip drops the market.",
+   "find": "['b', 'a', 'm'].map(key =>",
+   "replace": "['b', 'a'].map(key =>",
+   "expect_caught_by": "test_a_graded_day_on_the_nhl_and_nba_reads_the_same"
+  },
+  {
+   "id": "slate-day-never-says-in-play",
+   "why": "a day still being played reads as if it were over.",
+   "find": "const of = total > games.length ?",
+   "replace": "const of = false ?",
+   "expect_caught_by": "test_a_graded_day_on_the_nhl_and_nba_reads_the_same"
+  }
+ ]
+}

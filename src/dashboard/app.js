@@ -1298,7 +1298,31 @@ function whyChance(val, homePct, home, away){
    than a removed one is to rebuild. */
 function renderWeekGlance(gamesList){
   const el = document.getElementById('week-glance');
-  if(el) el.innerHTML = '';
+  if(el) el.innerHTML = slateSummaryHtml(gamesList);
+}
+/* Stage 80 item 59 (the 2026-10-13 audit's F16): a graded week's summary,
+   at the top of the Week Board: "Model B 10–4 · Model A 12–2 · Market 9–5 ·
+   1 tie", and while the week is still being played, how many games are in.
+   Each record counts the games graded with a winner, as the Season Accuracy
+   page does; a tie counts for no one and is named. The seam above held a
+   strip until Stage 9, left empty for one that earns its space. */
+function slateSummaryHtml(games){
+  const graded = (games || []).filter(g => g.graded && g.result !== 'tie');
+  if(!graded.length) return '';
+  const rec = key => {
+    const v = graded.map(g => g[key]).filter(x => x !== null && x !== undefined);
+    const won = v.filter(x => x === true || x === 1).length;
+    return `${won}–${v.length - won}`;
+  };
+  const parts = [['Model B', 'model_b_correct'], ['Model A', 'model_a_correct'], ['Market', 'market_correct']]
+    .map(([name, key]) => `<span>${name} <b>${rec(key)}</b></span>`);
+  // A tie is graded and counts for no one, so it is named; a cancelled game
+  // is never graded, so it is not counted as still to come.
+  const ties = games.filter(g => g.graded && g.result === 'tie').length;
+  const due = games.filter(g => g.status !== 'cancelled'), done = due.filter(g => g.graded).length;
+  if(ties) parts.push(`<span>${ties} tie${ties === 1 ? '' : 's'}</span>`);
+  const of = done < due.length ? ` <span class="slate-of">${done} of ${due.length} graded</span>` : '';
+  return `<p class="slate-summary">${parts.join(' · ')}${of}</p>`;
 }
 
 /* ---------- The matchup title, built in ONE place ----------

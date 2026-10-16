@@ -616,6 +616,9 @@ def build_games_js(preds: list[Pick], graded_lookup_by_key: dict[tuple[str, str]
             'actual_home_win': graded.get('actual_home_win') if graded else None,
             'model_a_correct': graded.get('model_a_correct') if graded else None,
             'model_b_correct': graded.get('model_b_correct') if graded else None,
+            # Stage 80 item 59: the market's grade too, for the graded week's
+            # summary strip, as grading wrote it (50% counts as the home side).
+            'market_correct': graded.get('market_correct') if graded else None,
             # From the weekend refresh (Stage 15). None when this week has no
             # snapshot, and the scores are None until the game is final.
             'status': status.get('status'),
