@@ -222,6 +222,8 @@ function shareAttr(g, p){
     pct, homePct: lead[1], forecasts, when: startLabel(g), result, score}));
 }
 const SHARE_BUTTON = '<button type="button" class="btn btn-link share-btn" data-share-card>Share image</button>';
+/* Stage 80 item 64 (V2): the picked side's logo, faint and grey, in the card's corner (styles.css). */
+function watermark(src){ return src && /^https:\/\//.test(src) ? ` style="--wm:url('${src}')"` : ''; }
 function pickedCard(g, p){
   const vals = {b: p.b === null ? null : p.b * 100, a: p.a * 100, market: p.market ? p.market.prob * 100 : null};
   const lead = vals.b !== null ? vals.b : vals.a;
@@ -249,7 +251,7 @@ function pickedCard(g, p){
     ? `Market (${escapeHtml(m.book || 'sportsbook')}): ${g.away} <b>${american(m.ap)}</b> · ${g.home} <b>${american(m.hp)}</b>, so ${sideText(side(m.prob * 100, g))} with the margin out; with a price, Model B made the pick`
     : 'Market: no price was posted when the pick was saved, so Model A made it';
   const status = scoreLine(g);
-  return `<div class="game-card"${scoreMark(g)} data-share="${shareAttr(g, p)}">
+  return `<div class="game-card"${scoreMark(g)} data-share="${shareAttr(g, p)}"${watermark(logo(p.pick))}>
     <div class="matchup-header">${g.away} <span class="at-symbol">at</span> ${g.home}</div>
     <div class="card-kickoff">${startLabel(g)}</div>
     ${status ? `<div class="nhl-card-status score-off">${status}</div>` : ''}
@@ -971,3 +973,8 @@ replaceRoute = installRoutes(showPage, {
   },
 });
 document.body.classList.remove('is-entering');
+/* Stage 80 item 64 (V5): the printed sheet's header says when it was printed. */
+window.addEventListener('beforeprint', () => {
+  const at = new Date().toLocaleDateString('en-US', {weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'});
+  document.querySelectorAll('[data-print-date]').forEach(el => { el.textContent = `Printed ${at}.`; });
+});

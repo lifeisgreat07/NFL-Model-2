@@ -45,6 +45,8 @@ __FONT_FACES__
       var saved = localStorage.getItem('site:theme');
       if(!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) saved = 'light';
       if(saved === 'light') document.documentElement.setAttribute('data-theme','light');
+      // Stage 80 item 64 (V4): the spacing chosen in the Settings sheet.
+      if(localStorage.getItem('site:density') === 'compact') document.documentElement.setAttribute('data-density','compact');
       // Stage 80 item 57: the sport the visitor chose to open the site on, for a
       // visit that starts here; a step back to Home from a sport's page stays.
       var start = localStorage.getItem('site:start');

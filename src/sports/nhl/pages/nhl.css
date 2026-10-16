@@ -96,3 +96,12 @@
 /* Stage 77 item 35 (L6): an empty day's pointer to the next day with games. */
 .nhl-next-day{margin:var(--s3) 0 0; font-size:var(--fs-14); color:var(--text-2);}
 .nhl-next-day .btn-link{font-size:inherit; min-height:24px;}
+/* Stage 80 item 64 (V4): Compact spacing (site:density) brings a row from 52 to 40 px. */
+html[data-density="compact"] .nhl-row{min-height:40px;}
+/* Stage 80 item 64 (V5): on paper the Day Board is its cards, which on screen
+   sit closed inside their rows; the shared print rules (styles.css) give each
+   half a sheet, grey bars and the sport's header. */
+@media print{
+  .nhl-row{display:none !important;}
+  .nhl-row-detail{display:block !important;}
+}

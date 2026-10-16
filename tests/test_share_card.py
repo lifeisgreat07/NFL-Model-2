@@ -180,7 +180,7 @@ def test_the_nfl_card_carries_its_image():
     assert [f['text'] for f in d['forecasts']] == ['SEA 56%', 'SEA 63%', 'DEN 66%']
     assert d['result'] == 'Missed' and d['score'] == 'Final: SEA 20, DEN 23'
     assert d['colours'] == ['#69BE28', '#FB4F14']
-    assert "data-share=\"${shareAttr(g, awayC, homeC)}\">" in APP
+    assert "data-share=\"${shareAttr(g, awayC, homeC)}\"" in APP
     assert '<button type="button" class="btn btn-link share-btn" data-share-card>Share image</button>' in APP
 
 

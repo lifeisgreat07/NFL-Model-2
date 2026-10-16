@@ -69,6 +69,8 @@
     /* Type */
     --fs-11:11px; --fs-12:12px; --fs-13:13px; --fs-14:14px;
     --fs-16:16px; --fs-20:20px; --fs-24:24px; --fs-32:32px; --fs-40:40px;
+    /* Stage 80 item 64 (V1): the face a probability is set in. */
+    --fs-display:24px;
     --lh-tight:1.15; --lh-body:1.45; --track-label:.06em;
     --logo:20px;
 
@@ -1201,7 +1203,7 @@
   .chart .chart-ref{stroke:var(--text-2); stroke-width:1; stroke-dasharray:4 3; fill:none;}
   .chart .chart-whisker{stroke-width:2; stroke-opacity:.5; stroke-linecap:round;}
   .score-figure{text-align:right; font-family:'Plus Jakarta Sans', sans-serif; font-variant-numeric:tabular-nums; white-space:nowrap;}
-  .score-pct{font-size:var(--fs-24); font-weight:800; color:var(--text);}
+  .score-pct{font-size:var(--fs-display); font-weight:800; color:var(--text); font-variant-numeric:tabular-nums;}
   .score-count{font-size:var(--fs-12); color:var(--text-2); margin-left:var(--s1);}
   .score-axis{display:grid; grid-template-columns:120px 1fr 150px; gap:var(--s4); font-size:var(--fs-11);
     color:var(--text-2); margin-top:var(--s1);}
@@ -1391,7 +1393,7 @@
      written before it was measured, which is the defect this repository
      documents as its recurring one. */
   .game-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--r-md); padding:var(--s5) var(--s5);
-    display:flex; flex-direction:column;
+    display:flex; flex-direction:column; position:relative; isolation:isolate;
     transition:border-color var(--dur-base) var(--ease);}
   .game-card.has-flag{border-left:3px solid var(--accent);}
   /* The tags alone since the pick'em rank left this row (2026-09-28); they
@@ -1475,7 +1477,7 @@
 
   /* ---------- Card v2: headline, Model B's bar, one probability line (Stage 17) ---------- */
   .card-hl{font-family:'Plus Jakarta Sans', sans-serif; font-size:var(--fs-20); margin:var(--s2) 0 var(--s3);}
-  .card-hl b{font-weight:800;}
+  .card-hl b{font-weight:800; font-size:var(--fs-display); font-variant-numeric:tabular-nums;}
   .card-hl-label{font-size:var(--fs-11); letter-spacing:.06em; text-transform:uppercase; color:var(--text-2); margin-right:var(--s1);}
   .card-hl-to{font-size:var(--fs-13); color:var(--text-2);}
   .card-viz{display:grid; grid-template-columns:auto 1fr auto; gap:var(--s3); align-items:start;}
@@ -1951,7 +1953,21 @@
     .game-card, .method-block, .roadmap-card, .case-study, .board-insights, tr{break-inside:avoid;}
     .table-wrap{overflow:visible !important;}
     a[href^="http"]::after{content:" (" attr(href) ")"; font-size:var(--fs-11); color:var(--text-2); word-break:break-all;}
+    /* Stage 80 item 64 (V5): a sheet says which sport, when it was printed
+       and when its picks lock; a day board prints its cards, not the rows
+       that open them (nhl.css, nba.css); a card takes half a sheet, so two to a page; and the
+       split bars print in two greys, so a black-and-white printer keeps them
+       apart. The watermark stays off the paper. */
+    .print-head{display:flex !important;}
+    #game-grid{display:block !important;}
+    .game-card{min-height:118mm; margin-bottom:6mm; break-inside:avoid;}
+    .tele-bar-seg:first-child{background:#3A3F47 !important;}
+    .tele-bar-seg:last-child{background:#B9BEC6 !important;}
+    .game-card::before{display:none !important;}
+    /* Controls that do nothing on paper. */
+    #site-strip, .day-strip, .week-step-btn, .share-btn, .fav-star{display:none !important;}
   }
+  @page{margin:12mm;}
 
   /* Stage 47 item 10: Windows' high-contrast themes (forced colours). They
      repaint every background with the theme's one Canvas colour, so a bar
@@ -2047,3 +2063,24 @@
 
 /* Stage 80 item 63 (F13): a card's "Share image" (src/core/share_card.js). */
 .share-btn{display:inline-flex; align-items:center; min-height:24px; margin-top:var(--s3);}
+
+/* Stage 80 item 64 (the 2026-10-13 audit's V1, V2, V4).
+   V1: every figure is set with even-width digits, so a column of
+   percentages lines up and a number does not shift as it changes; the big
+   ones (a card's pick, the scoreboard's rates, the home's tiles) take the
+   display size, --fs-display.
+   V2: a card carries the logo of the side it picks, greyscale and faint, in
+   its corner: a team is known by its logo, never by a colour. It sits
+   behind the card's content and takes no pointer.
+   V4: Compact spacing (the Settings sheet's "Spacing", site:density)
+   halves the four larger steps and brings a day board's rows from 52 to 40
+   px, still well over a 24 px target. */
+body{font-variant-numeric:tabular-nums;}
+.game-card[style*="--wm"]::before{content:""; position:absolute; right:var(--s3); bottom:var(--s3); width:120px; height:120px;
+  background:var(--wm) center / contain no-repeat; opacity:.06; filter:grayscale(1); pointer-events:none; z-index:-1;}
+html[data-density="compact"]{--s5:10px; --s6:12px; --s7:16px; --s8:20px;}
+html[data-density="compact"] #game-grid .nfl-row{min-height:40px;}  /* the NHL's and NBA's rows: nhl.css, nba.css */
+.print-head{display:none; align-items:center; gap:var(--s3); margin:0 0 var(--s5); padding-bottom:var(--s3); border-bottom:1px solid var(--border);
+  font-size:var(--fs-12); color:var(--text-2);}
+.print-head img{width:24px; height:24px;}
+.print-head b{font-size:var(--fs-14); color:var(--text);}

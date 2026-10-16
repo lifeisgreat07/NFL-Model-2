@@ -1489,6 +1489,12 @@ function shareAttr(g, awayC, homeC){
   return escapeHtml(JSON.stringify({sport: 'NFL', away: g.away, home: g.home, colours: [awayC, homeC], lead: lead[0], team: s.team,
     pct: s.pct, homePct: lead[1], forecasts, when: kickoffLabel(g), result, score}));
 }
+/* Stage 80 item 64 (V2): the logo of the side Model B picks (Model A's
+   without a market), faint and grey, in the card's corner (styles.css). */
+function watermark(g){
+  const s = cardSide(g.mktB_home ?? g.fbA_home, g);
+  return s && s.team ? ` style="--wm:url('${teamLogo(s.team)}')"` : '';
+}
 function cardProbHtml(g, awayC, homeC){
   const b = cardSide(g.mktB_home, g), a = cardSide(g.fbA_home, g), m = cardSide(g.mkt_home, g);
   const vals = {b: g.mktB_home, a: g.fbA_home, market: g.mkt_home};
@@ -2122,7 +2128,7 @@ function renderGames(){
     const statusLine = cardStatusLine(g);
     const siteLine = cardSiteLine(g);
     const qbLine = cardQbLine(g), newsLine = cardNewsLine(g, news);
-    return `<div class="game-card ${g.flag?'has-flag':''}"${scoreMark(g)} data-share="${shareAttr(g, awayC, homeC)}">
+    return `<div class="game-card ${g.flag?'has-flag':''}"${scoreMark(g)} data-share="${shareAttr(g, awayC, homeC)}"${watermark(g)}>
       ${matchupHeader(g)}
       ${kickoff || tvPill ? `<div class="card-kickoff">${kickoff}${tvPill}</div>` : ''}
       ${statusLine ? `<div class="card-status score-off">${statusLine}</div>` : ''}
@@ -4922,3 +4928,8 @@ function openGame(key){
   // nav button does (Stage 76 item 10: it left focus on <body>).
   if(location.hash) applyRoute(parseRoute(location.hash, routeKnown), {focus:true});
 })();
+/* Stage 80 item 64 (V5): the printed sheet's header says when it was printed. */
+window.addEventListener('beforeprint', () => {
+  const at = new Date().toLocaleDateString('en-US', {weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'});
+  document.querySelectorAll('[data-print-date]').forEach(el => { el.textContent = `Printed ${at}.`; });
+});
