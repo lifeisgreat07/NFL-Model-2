@@ -116,6 +116,15 @@ jobs:
       - name: Check the NHL's day board
         run: python tests/browser/check_nhl_day.py "$RUNNER_TEMP/states/nhl.html"
 
+      # The NHL board's eyebrow names the week it shows, as the NBA's
+      # (Stage 77 item 32's rule), with the clock fixed four ways around
+      # the sample week.
+      - name: Prove the NHL eyebrow check can fail
+        run: python tests/browser/check_nhl_eyebrow.py --self-test --tmp "$RUNNER_TEMP/eyebrow-nhl"
+
+      - name: Check the NHL eyebrow names its week
+        run: python tests/browser/check_nhl_eyebrow.py "$RUNNER_TEMP/states/nhl.html"
+
       # Stage 61: the NBA's page, built by the real builder from the committed
       # backtest (src/sports/nba/site.py); it has no board and no daily files.
       - name: Build the NBA's page

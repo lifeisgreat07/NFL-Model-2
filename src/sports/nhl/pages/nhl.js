@@ -116,6 +116,16 @@ function defaultWeek(){
   return next || WEEK_KEYS[WEEK_KEYS.length - 1];
 }
 let currentWeek = defaultWeek();
+/* The board's eyebrow names the week it shows, as the NBA's does (Stage 77
+   item 32, the 2026-10-13 audit's B1). It read "This Week" over any week the
+   stepper reached, past or coming. */
+function weekEyebrow(week, thisWeek){
+  if(week === thisWeek) return 'This Week';
+  const next = dayDate(thisWeek);
+  next.setUTCDate(next.getUTCDate() + 7);
+  if(week === dayIso(next)) return 'Next Week';
+  return week > thisWeek ? 'Coming Up' : 'Earlier';
+}
 
 function teamName(abbr){ return (DATA.teams[abbr] || {}).name || abbr; }
 /* A table's club cell: the full name, and on a phone the three letters, so
@@ -488,6 +498,7 @@ function renderBoard(){
   const games = (WEEKS[currentWeek] || []).slice().sort((a, b) => (a.start || '').localeCompare(b.start || '') || a.id.localeCompare(b.id));
   const label = document.getElementById('week-step-label');
   label.textContent = `Week of ${FMT_MONTHDAY.format(dayDate(currentWeek))} · ${games.length} game${games.length === 1 ? '' : 's'}`;
+  document.querySelector('#page-board .page-eyebrow').textContent = weekEyebrow(currentWeek, mondayOf(todayEt()));
   const i = WEEK_KEYS.indexOf(currentWeek);
   document.getElementById('week-prev').disabled = i <= 0;
   document.getElementById('week-next').disabled = i >= WEEK_KEYS.length - 1;
