@@ -1,0 +1,27 @@
+{
+ "target": "src/dashboard/styles.css",
+ "tests": "tests/test_surface_tokens.py",
+ "cases": [
+  {
+   "id": "surface-toast-on-border",
+   "why": "the undo toast is painted with the border token again (Stage 78 item 42, C3).",
+   "find": "    background:var(--surface-2); border:1px solid var(--border-strong); border-radius:10px;  /* Stage 78 item 42",
+   "replace": "    background:var(--border); border:1px solid var(--border-strong); border-radius:10px;  /* Stage 78 item 42",
+   "expect_caught_by": "test_only_tracks_fill_with_the_border_token"
+  },
+  {
+   "id": "surface-agent-stat-on-border",
+   "why": "the agent stat cards are painted with the border token again.",
+   "find": "  .agent-stat{background:var(--surface-2);",
+   "replace": "  .agent-stat{background:var(--border);",
+   "expect_caught_by": "test_only_tracks_fill_with_the_border_token"
+  },
+  {
+   "id": "surface-page-jump-on-border",
+   "why": "Methodology's section links are painted with the border token again.",
+   "find": "border-radius:20px; background:var(--surface-2);\n    color:var(--text-2); text-decoration:none;",
+   "replace": "border-radius:20px; background:var(--border);\n    color:var(--text-2); text-decoration:none;",
+   "expect_caught_by": "test_the_named_surfaces_wear_surface_2"
+  }
+ ]
+}
