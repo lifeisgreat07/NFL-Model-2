@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-16 (session 1014-15, Friday: Stage 80 done, the 2026-10-13 audit complete)
+Last updated: 2026-10-16 (session 1014-15, Friday: Stage 80 done, the audit complete; Stage 44 done)
 
 ---
 
@@ -21,9 +21,9 @@ Stages 75-79 are #436-#493 (by item in `memory/2026-10-15.md` and `memory/2026-1
 **Stage 80 is done:** 54, 59, 52, 53 are #494, #496, #498, #499; 55-58 are #500, #501, #503,
 #505; 61, 62 are #507, #508; the NHL/NBA accuracy fix is #510; 63 is #511; 64 is #512;
 Expand all is #513; item 60 was #452.
-**Next, each its own PR (Mark's yes 10-16):** the NHL board's eyebrow names the week it shows,
-then Stage 44's PRs 2 (Line Judge for the daily runs and the refresh) and 3 (an agent on
-failure, a weekly digest). All three are built, guarded and run on real data.
+**After Stage 80 (Mark's yes 10-16):** the NHL board's eyebrow names the week it shows (#514);
+**Stage 44 is done:** Line Judge judges the daily runs and the refresh (#515), and a finding now
+gets an agent's diagnosis on its alert, with a weekly digest on one standing issue (#516).
 
 **Decided, Mark 2026-10-14:** results read **Correct / Missed** on every surface and every sport
 (Stage 77 item 26; this replaces Stage 64's "right so far"). Stage 78 item 36 takes option B: the
@@ -42,17 +42,17 @@ A reminder is set for the night itself.
 issue #428, whose first test since #429 is the 10-14 nightly shuffled suite (GitHub starts it hours late).
 Live scores (#507) are new: the first NBA night (10-20) is their first real test there.
 
-**Single next action:** the NHL eyebrow PR, then Stage 44's PRs 2 and 3.
+**Single next action:** read Line Judge's first weekly digest (Mon 10-19, 08:23 UTC) and the
+NBA's opening night (Tue 10-20); then Stage 43 (Spotter).
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| NHL eyebrow | Built and queued | Its own PR, first |
-| Stage 44 (Line Judge) | Item 1 merged (#435); PRs 2 and 3 built and queued | After the eyebrow |
+| Stage 44 (Line Judge) | Done: #435, #515, #516 | Its first digest, Mon 10-19 |
 | Stage 42 | Items 1-4 done | 5: after four on-time weeks |
 | Stage 39 | Items 1-4, 7 done | 5 in December; 6 wants a rendered choice in January |
-| Stage 43 (Spotter) | Not started | After 44 |
+| Stage 43 (Spotter) | Not started | Next |
 | #428, #431 | Open | Mark |
 | Stage 40 | Not to be touched | Mark |
 
@@ -75,4 +75,6 @@ check for Booth. Never start the mutation runner under pythonw, and never two ru
 - **Windows Python ships no tz database**: `ZoneInfo('America/New_York')` fails at import on Mark's PC and passes on Linux CI. Read Eastern time through pandas, as `src/sports/nfl/tv_channels.py` does.
 - **A parametrize over a page script needs `ids=`**: unnamed, the script is the test id, and Windows refuses an environment variable over 32,767 characters (items 57, 61).
 - **GitHub's runners are UTC**: a test that reads a clock passes on Mark's Eastern PC and fails in CI unless it pins `TZ` (#501).
+- **`src/core` type-checks under strict mypy** (`test_sport_isolation`, `test_type_check`); a pre-flight without mypy misses it (#515, #516).
+- **A PowerShell `>` redirect writes UTF-16**, which `git apply` refuses: write patches with `git format-patch -o`.
 - **The plain-language guard reads only `RENDERERS`**: add each new markup function with its page; a top-level literal is charged to the function above it (items 28, 31).
