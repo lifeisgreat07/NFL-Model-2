@@ -292,16 +292,16 @@ function pickedCard(g, p){
     ${resultLine(g, p)}
     ${tag ? `<div class="game-top"><div class="tag-row">${tag}</div></div>` : ''}
     <div class="card-hl">${headline}</div>
-    <div class="card-viz" role="img" aria-label="${escapeHtml(aria)}">
-      <span class="card-end">${badge(p.pick === g.away, p.result)}${endTeam(g.away)}</span>
-      <div class="card-scale">
+    <div class="card-viz">
+      <span class="card-end">${favStar('nba', g.away, escapeHtml((BD.teams[g.away] || {}).name || g.away))}${badge(p.pick === g.away, p.result)}${endTeam(g.away)}</span>
+      <div class="card-scale" role="img" aria-label="${escapeHtml(aria)}">
         <div class="tele-bar">
           <div class="tele-bar-seg" style="width:${100 - lead}%; background:${awayC};"></div>
           <div class="tele-bar-seg" style="width:${lead}%; background:${homeC};"></div>
         </div>
         <div class="card-line"><span class="card-mid"></span><span class="card-mid-label">50%</span>${mark('a')}${mark('market')}${mark('b')}</div>
       </div>
-      <span class="card-end">${badge(p.pick === g.home, p.result)}${endTeam(g.home)}</span>
+      <span class="card-end">${badge(p.pick === g.home, p.result)}${endTeam(g.home)}${favStar('nba', g.home, escapeHtml((BD.teams[g.home] || {}).name || g.home))}</span>
     </div>
     <div class="card-keys">${key('b')}${key('market')}${key('a')}</div>
     <div class="market-ref">${marketText(g, p)}</div>
@@ -559,7 +559,8 @@ function renderBoard(){
     const chip = document.querySelector(`.nba-day-chip[data-day="${currentDay}"]`);
     if(chip) chip.focus();
   }));
-  const dayGames = byDay[currentDay] || [];
+  // Stage 80 item 53: a favourite team's games first (src/core/favs.js).
+  const dayGames = favFirst('nba', byDay[currentDay] || []);
   const side = document.getElementById('nba-side');
   if(side) side.innerHTML = sideHtml(currentDay, byDay);
   const title = `${FMT_DAY.format(dayDate(currentDay))}${currentDay === today ? ' · Today' : ''}`;
@@ -828,6 +829,8 @@ document.getElementById('built-line').textContent = `Updated ${new Date(DATA.bui
 document.getElementById('board-updated').textContent = `Updated ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})} ET${BD.schedule_as_of ? `, schedule as of ${BD.schedule_as_of}` : ''}`;
 themeLabel();
 renderBoard();
+/* Stage 80 item 53: a star redraws the board with its team's games first. */
+installFavStars(renderBoard);
 renderModelLab();
 renderMethod();
 renderReliability();

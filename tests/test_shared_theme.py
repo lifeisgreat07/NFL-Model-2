@@ -43,9 +43,11 @@ def read(rel):
 
 
 def test_the_one_shared_key_is_the_theme():
-    assert set(isolation.SHARED_STORAGE_KEYS) == {KEY}, (
-        'a key shared between sports needs its own decision; the theme is the only one made')
-    assert isolation.SHARED_STORAGE_KEYS[KEY].strip(), 'the exception carries its reason'
+    # Since Stage 80 item 53 the favourite teams are shared too, one list a
+    # sport that the home reads (src/core/favs.js, tests/test_favourite_teams.py).
+    assert set(isolation.SHARED_STORAGE_KEYS) == {KEY, 'site:favs'}, (
+        'a key shared between sports needs its own decision; the theme and the favourite teams are the ones made')
+    assert all(reason.strip() for reason in isolation.SHARED_STORAGE_KEYS.values()), 'each exception carries its reason'
 
 
 @pytest.mark.parametrize('rel', sorted(FIRST_PAINT))

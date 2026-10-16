@@ -1,0 +1,41 @@
+{
+ "target": "src/core/favs.js",
+ "tests": "tests/test_favourite_teams.py",
+ "cases": [
+  {
+   "id": "favs-never-removed",
+   "why": "a second tap adds the team again instead of removing it (Stage 80 item 53, F7).",
+   "find": "list.includes(team) ? list.filter(t => t !== team) : list.concat(team)",
+   "replace": "list.concat(team)",
+   "expect_caught_by": "test_a_star_adds_and_removes_and_a_bad_store_is_empty"
+  },
+  {
+   "id": "favs-bad-store-throws",
+   "why": "a damaged list in this browser stops every page that reads it.",
+   "find": "  catch(e){ return {}; }\n",
+   "replace": "  catch(e){ throw e; }\n",
+   "expect_caught_by": "test_a_star_adds_and_removes_and_a_bad_store_is_empty"
+  },
+  {
+   "id": "favs-not-first",
+   "why": "starred teams' games are not put first.",
+   "find": "return games.filter(mine).concat(games.filter(g => !mine(g)));",
+   "replace": "return games;",
+   "expect_caught_by": "test_a_favourite_teams_games_come_first_each_group_in_its_order"
+  },
+  {
+   "id": "favs-home-only",
+   "why": "only a home team counts as a favourite's game.",
+   "find": "const mine = g => list.includes(g.home) || list.includes(g.away);",
+   "replace": "const mine = g => list.includes(g.home);",
+   "expect_caught_by": "test_a_favourite_teams_games_come_first_each_group_in_its_order"
+  },
+  {
+   "id": "favs-star-silent",
+   "why": "the star does not say whether it is on.",
+   "find": "aria-pressed=\"${on}\" ",
+   "replace": "",
+   "expect_caught_by": "test_the_star_says_its_state"
+  }
+ ]
+}

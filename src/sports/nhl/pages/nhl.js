@@ -230,16 +230,16 @@ function pickedCard(g, p){
     ${resultLine(g, p)}
     ${tag ? `<div class="game-top"><div class="tag-row">${tag}</div></div>` : ''}
     <div class="card-hl">${headline}</div>
-    <div class="card-viz" role="img" aria-label="${escapeHtml(aria)}">
-      <span class="card-end">${badge(p.pick === g.away, p.result)}${endTeam(g.away)}</span>
-      <div class="card-scale">
+    <div class="card-viz">
+      <span class="card-end">${favStar('nhl', g.away, escapeHtml(teamName(g.away)))}${badge(p.pick === g.away, p.result)}${endTeam(g.away)}</span>
+      <div class="card-scale" role="img" aria-label="${escapeHtml(aria)}">
         <div class="tele-bar">
           <div class="tele-bar-seg" style="width:${100 - lead}%; background:${awayC};"></div>
           <div class="tele-bar-seg" style="width:${lead}%; background:${homeC};"></div>
         </div>
         <div class="card-line"><span class="card-mid"></span><span class="card-mid-label">50%</span>${mark('a')}${mark('market')}${mark('b')}</div>
       </div>
-      <span class="card-end">${badge(p.pick === g.home, p.result)}${endTeam(g.home)}</span>
+      <span class="card-end">${badge(p.pick === g.home, p.result)}${endTeam(g.home)}${favStar('nhl', g.home, escapeHtml(teamName(g.home)))}</span>
     </div>
     <div class="card-keys">${key('b')}${key('market')}${key('a')}</div>
     <div class="market-ref">${market}</div>
@@ -476,7 +476,8 @@ function renderBoard(){
     const chip = document.querySelector(`.nhl-day-chip[data-day="${currentDay}"]`);
     if(chip) chip.focus();
   }));
-  const dayGames = byDay[currentDay] || [];
+  // Stage 80 item 53: a favourite team's games first (src/core/favs.js).
+  const dayGames = favFirst('nhl', byDay[currentDay] || []);
   const side = document.getElementById('nhl-side');
   if(side){
     side.innerHTML = sideHtml(currentDay, byDay);
@@ -711,7 +712,7 @@ function renderTeams(){
     const tag = graded ? `<span class="graded-tag ${p.result === 'correct' ? 'correct' : 'incorrect'}">${p.result === 'correct' ? 'Correct' : 'Missed'}</span>` : (p ? 'Not final' : '');
     return `<tr><td>${FMT_MONTHDAY.format(dayDate(g.day))}</td><td>${home ? 'vs' : 'at'} ${opp}</td><td>${won} ${score}</td><td>${p ? p.pick : 'No pick'}</td><td>${tag}</td></tr>`;
   };
-  el.innerHTML = `<h2 class="section-title">${escapeHtml(teamName(t))}</h2><p class="nhl-lede">${facts.join(' ')}</p>
+  el.innerHTML = `<div class="fav-title"><h2 class="section-title">${escapeHtml(teamName(t))}</h2>${favStar('nhl', t, escapeHtml(teamName(t)))}</div><p class="nhl-lede">${facts.join(' ')}</p>
     ${games.length ? `<div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">${escapeHtml(teamName(t))}: games so far</caption>
     <thead><tr><th scope="col">Date</th><th scope="col">Opponent</th><th scope="col">Result</th><th scope="col">Pick</th><th scope="col">Graded</th></tr></thead>
     <tbody>${games.map(row).join('')}</tbody></table></div>` : stateHtml('waiting', 'No games played yet', '')}`;
@@ -876,6 +877,8 @@ document.getElementById('board-updated').textContent = `Updated ${new Date(DATA.
 document.getElementById('built-line').textContent = `Updated ${new Date(DATA.built_utc).toLocaleString('en-US', {timeZone: ET, month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})} ET`;
 themeLabel();
 renderBoard();
+/* Stage 80 item 53: a star redraws the board with its team's games first. */
+installFavStars(() => { renderBoard(); renderTeams(); });
 renderStandings();
 renderRatings();
 renderAccuracy();

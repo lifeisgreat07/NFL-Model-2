@@ -5,7 +5,7 @@
     {
       "id": "dive-team-header-not-drawn",
       "why": "the page stops drawing the team's logo and name, so the only thing saying whose page this is goes back to the picker button.",
-      "find": "  content.innerHTML = diveTeamHtml(team, teamHistory.names[team]) + renderTeamNews(team)",
+      "find": "  content.innerHTML = diveTeamHtml(team, teamHistory.names[team], favStar('nfl', team, teamHistory.names[team] || team)) + renderTeamNews(team)",
       "replace": "  content.innerHTML = renderTeamNews(team)",
       "expect_caught_by": "test_the_team_comes_first_on_the_page"
     },

@@ -19,8 +19,9 @@ NODE = shutil.which('node')
 @pytest.mark.parametrize('sport', ('nhl', 'nba'))
 def test_each_sport_installs_the_shared_routes(sport):
     page = (ROOT / 'src' / 'sports' / sport / 'pages' / 'page.html').read_text(encoding='utf-8').replace('\r\n', '\n')
-    # Since Stage 79 item 46 the shared accuracy component sits between them.
-    assert '{% include "escape.js" %}\n{% include "routes.js" %}\n{% include "accuracy.js" %}\n' + f'{{% include "{sport}.js" %}}' in page
+    # Since Stage 79 item 46 the shared accuracy component sits between them,
+    # and since Stage 80 item 53 the favourite teams after it.
+    assert '{% include "escape.js" %}\n{% include "routes.js" %}\n{% include "accuracy.js" %}\n{% include "favs.js" %}\n' + f'{{% include "{sport}.js" %}}' in page
     js = (ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.js').read_text(encoding='utf-8')
     assert js.count('replaceRoute = installRoutes(showPage, {') == 1 and 'function installRoutes' not in js
     site = (ROOT / 'src' / 'sports' / sport / 'site.py').read_text(encoding='utf-8')

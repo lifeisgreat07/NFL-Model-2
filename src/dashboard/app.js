@@ -1502,16 +1502,16 @@ function cardProbHtml(g, awayC, homeC){
     : `<span class="card-hl-label">Model B</span> <b>Too close to call</b>${done ? ` <span class="card-hl-to">&middot; ${done}</span>` : ''}`;
   const disagree = cardDisagreement(g);
   return `<div class="card-hl">${headline}</div>
-      <div class="card-viz" role="img" aria-label="${cardAria(g)}">
-        <span class="card-end">${pickBadge(bPicksAway, g.graded, g.model_b_correct)}${barTeam(g.away)}</span>
-        <div class="card-scale">
+      <div class="card-viz">
+        <span class="card-end">${favStar('nfl', g.away, escapeHtml(teamFullName(g.away)))}${pickBadge(bPicksAway, g.graded, g.model_b_correct)}${barTeam(g.away)}</span>
+        <div class="card-scale" role="img" aria-label="${cardAria(g)}">
           <div class="tele-bar">
             <div class="tele-bar-seg" style="width:${100-g.mktB_home}%; background:${awayC};"></div>
             <div class="tele-bar-seg" style="width:${g.mktB_home}%; background:${homeC};"></div>
           </div>
           <div class="card-line"><span class="card-mid"></span><span class="card-mid-label">50%</span>${mark('a')}${mark('market')}${mark('b')}</div>
         </div>
-        <span class="card-end">${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${barTeam(g.home)}</span>
+        <span class="card-end">${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${barTeam(g.home)}${favStar('nfl', g.home, escapeHtml(teamFullName(g.home)))}</span>
       </div>
       <div class="card-keys">${key('b', b)}${m ? key('market', m) : ''}${key('a', a)}</div>
       ${disagree ? `<div class="card-disagree">${disagree}</div>` : ''}`;
@@ -1532,6 +1532,9 @@ function matchupHeader(g, variant){
    Stage 12). On a phone the logo stacks above the abbreviation, so the ends
    are no wider than the abbreviation alone and the probability line keeps
    the width CARD_NEAR was measured on. */
+/* A team's full name, for a star's label (Stage 80 item 53); the code when
+   the team history is missing. */
+function teamFullName(team){ return ((teamHistory || {}).names || {})[team] || team; }
 function barTeam(team){
   return `<span class="card-end-team"><img class="card-end-logo" src="${teamLogo(team)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">${team}</span>`;
 }
@@ -1668,7 +1671,15 @@ function slotKey(g){
   return g.gameday ? `${g.gameday} ${g.gametime_et || ''}` : '';
 }
 
-function slotHeadBefore(sorted, i){
+function slotHeadBefore(sorted, i, pinned = 0){
+  // Stage 80 item 53: the first `pinned` cards are a favourite team's games,
+  // under a head of their own; the slots, and their counts, are the rest's.
+  if(pinned){
+    if(i === 0) return `<h3 class="slot-head">Your teams<span class="slot-count"> · ${pinned} game${pinned === 1 ? '' : 's'}</span></h3>`;
+    if(i < pinned) return '';
+    if(currentSort !== 'chronological') return i === pinned ? '<h3 class="slot-head">Every other game</h3>' : '';
+    return slotHeadBefore(sorted.slice(pinned), i - pinned);
+  }
   if(currentSort !== 'chronological') return '';
   const key = slotKey(sorted[i]);
   if(!key || (i > 0 && slotKey(sorted[i - 1]) === key)) return '';
@@ -1802,6 +1813,58 @@ function renderBoardInsights(gamesList){
   list.innerHTML = items.map(i => `<li><span class="insight-chip insight-${i.kind}">${INSIGHT_LABEL[i.kind]}</span>`
     + `<span><b>${escapeHtml(i.g.away)} at ${escapeHtml(i.g.home)}</b>: ${escapeHtml(i.text)}</span></li>`).join('');
 }
+/* ---------- Favourite teams (Stage 80 item 53, the 2026-10-13 audit's F7) ----------
+   The same functions as src/core/favs.js, which the NHL's and NBA's pages
+   include; tests/test_favourite_teams.py holds the two copies equal. */
+const FAV_KEY = 'site:favs';
+const FAV_STAR = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>';
+function favsAll(){
+  try{ const all = JSON.parse(localStorage.getItem(FAV_KEY) || '{}'); return all && typeof all === 'object' ? all : {}; }
+  catch(e){ return {}; }
+}
+function favs(sport){ const list = favsAll()[sport]; return Array.isArray(list) ? list : []; }
+function isFav(sport, team){ return favs(sport).includes(team); }
+function toggleFav(sport, team){
+  const all = favsAll(), list = favs(sport);
+  all[sport] = list.includes(team) ? list.filter(t => t !== team) : list.concat(team);
+  try{ localStorage.setItem(FAV_KEY, JSON.stringify(all)); }catch(e){}
+  return all[sport].includes(team);
+}
+function favLabel(on, name){ return on ? `Remove ${name} from your teams` : `Add ${name} to your teams`; }
+function favStar(sport, team, name){
+  const on = isFav(sport, team);
+  return `<button type="button" class="fav-star" data-fav-sport="${sport}" data-fav-team="${team}" data-fav-name="${name}"`
+    + ` aria-pressed="${on}" aria-label="${favLabel(on, name)}">${FAV_STAR}</button>`;
+}
+/* Games with a favourite team first, each group in its own order. */
+function favFirst(sport, games){
+  const list = favs(sport);
+  if(!list.length) return games;
+  const mine = g => list.includes(g.home) || list.includes(g.away);
+  return games.filter(mine).concat(games.filter(g => !mine(g)));
+}
+/* One listener for every star on the page; `redraw` puts the starred games
+   back on top. */
+function installFavStars(redraw){
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.fav-star');
+    if(!b) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const on = toggleFav(b.dataset.favSport, b.dataset.favTeam);
+    document.querySelectorAll('.fav-star').forEach(x => {
+      if(x.dataset.favSport !== b.dataset.favSport || x.dataset.favTeam !== b.dataset.favTeam) return;
+      x.setAttribute('aria-pressed', String(on));
+      x.setAttribute('aria-label', favLabel(on, x.dataset.favName));
+    });
+    if(!redraw) return;
+    redraw();
+    // The star was drawn again, perhaps higher up with its game: focus follows it.
+    const again = document.querySelector(`.page.active .fav-star[data-fav-sport="${b.dataset.favSport}"][data-fav-team="${b.dataset.favTeam}"]`);
+    if(again && !b.isConnected) again.focus();
+  });
+}
+
 function renderGames(){
   const grid = document.getElementById('game-grid');
   const badge = document.getElementById('board-badge');
@@ -1864,7 +1927,8 @@ function renderGames(){
     return;
   }
 
-  const sorted = [...filtered].sort((a,b)=>{
+  // Stage 80 item 53: a favourite team's games first, then the rest in this order.
+  const sorted = favFirst('nfl', [...filtered].sort((a,b)=>{
     if(currentSort === 'chronological') return byKickoff(a,b);
     if(currentSort === 'confidence'){
       // lower confidence_rank = more confident; nulls (ungraded/old-format) sink to the bottom
@@ -1888,7 +1952,7 @@ function renderGames(){
       return a.home.localeCompare(b.home);
     }
     return 0;
-  });
+  }));
 
   if(tvNote) tvNote.hidden = !boardTvNote(sorted);
   const news = weekData.news;
@@ -1972,7 +2036,8 @@ function renderGames(){
       </div>` : ''}
     </div>`;
   });
-  grid.innerHTML = cards.map((card, i) => slotHeadBefore(sorted, i) + phoneRowHtml(sorted[i], i) + card).join('');
+  const mine = favs('nfl'), pinned = sorted.filter(g => mine.includes(g.home) || mine.includes(g.away)).length;
+  grid.innerHTML = cards.map((card, i) => slotHeadBefore(sorted, i, pinned) + phoneRowHtml(sorted[i], i) + card).join('');
   if(sorted.some(g => g.flag)) grid.insertAdjacentHTML('afterbegin', FLAG_LEGEND);
   showFilteredNote(grid);
   // Stage 68 item 36 (N2): each card follows its phone row, which opens it.
@@ -3900,7 +3965,7 @@ function renderTeamDive(){
     ? `<p class="dive-note">Net is offense minus defense. Defense counts expected points allowed, so for defense lower is better.</p>`
     : '';
 
-  content.innerHTML = diveTeamHtml(team, teamHistory.names[team]) + renderTeamNews(team)
+  content.innerHTML = diveTeamHtml(team, teamHistory.names[team], favStar('nfl', team, teamHistory.names[team] || team)) + renderTeamNews(team)
     + `<div class="table-wrap" style="padding:var(--s5) var(--s5);">${splitNote}${diveScaleHtml(maxAbs)}${rowsHtml}</div>`
     + renderTeamGames(team);
   wireTeamGameToggles();
@@ -3923,9 +3988,9 @@ function diveScaleHtml(maxAbs){
    The logo is decorative, alt="", because the name beside it is the text; a
    logo ESPN will not serve hides and leaves the name, the fallback every
    logo here has. */
-function diveTeamHtml(team, name){
+function diveTeamHtml(team, name, star = ''){
   return `<div class="dive-team"><img class="dive-logo" src="${teamLogo(team)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">`
-    + `<span class="dive-team-name">${name || team}</span></div>`;
+    + `<span class="dive-team-name">${name || team}</span>${star}</div>`;
 }
 
 /* Offense and defense beside a Team Deep-Dive row's net (Stage 19), in the
@@ -4195,6 +4260,8 @@ function wireTeamGameToggles(){
 // dropped this call entirely while moving code around, which was silent: the
 // select simply stayed empty and nothing errored.
 renderTeamDive();
+/* Stage 80 item 53: a star redraws the board with its team's games first. */
+installFavStars(() => { renderGames(); renderTeamDive(); });
 
 /* ---------- Changelog ---------- */
 // Escaped (escapeHtml) rather than interpolated raw: this text comes out of config.py,

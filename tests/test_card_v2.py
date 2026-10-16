@@ -52,6 +52,9 @@ def run(expr):
     js += ''.join(fn(s, f) for f in ('cardSide', 'cardLanes', 'cardSideText', 'cardAria',
                                      'modelsSplit', 'cardDisagreement', 'gameHasScore', 'cardProvisional', 'cardProbHtml', 'pickBadge',
                                      'markerPath', 'teamLogo', 'barTeam'))
+    # The favourite stars at the bar's ends (Stage 80 item 53) are
+    # tests/test_favourite_teams.py's; here they draw nothing.
+    js += "function favStar(){ return ''; }\nfunction escapeHtml(s){ return s; }\nfunction teamFullName(t){ return t; }\n"
     r = subprocess.run([NODE, '-e', js + f'\nprocess.stdout.write(JSON.stringify({expr}));'],
                        capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr

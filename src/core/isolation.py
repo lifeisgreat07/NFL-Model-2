@@ -251,6 +251,8 @@ def _upload_paths(text: str) -> list[str]:
 #: way past that rule, and tests/test_shared_theme.py holds it to one entry.
 SHARED_STORAGE_KEYS = {
     'site:theme': "the visitor's light or dark choice, one for the whole site (Stage 62 item 1)",
+    'site:favs': "the visitor's favourite teams, one list a sport, read by every sport's page and the home "
+                 "(Stage 80 item 53, the 2026-10-13 audit's F7)",
 }
 
 STORAGE_KEY = re.compile(r'''(?:localStorage|sessionStorage)\.(?:get|set|remove)Item\(\s*(['"])(.+?)\1'''

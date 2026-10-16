@@ -38,6 +38,10 @@ body{ flex-direction:column; }
 /* Stage 80 item 54 (F8): what was graded since this browser's last visit. */
 .home-since{ margin:0 0 calc(-1 * var(--s2)); font-size:var(--fs-14); color:var(--text); }
 .home-since:empty{ display:none; }
+/* Stage 80 item 53 (F7): the starred teams' games today, each a link to its board. */
+.home-yours{ margin:0 0 calc(-1 * var(--s2)); font-size:var(--fs-14); color:var(--text-2); }
+.home-yours b{ color:var(--text); }
+.home-yours a{ color:var(--accent); }
 .home-score{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--s3); }
 .home-tile{ display:grid; gap:2px; align-content:start; padding:var(--s3) var(--s4); background:var(--surface);
   border:1px solid var(--border); border-radius:var(--r-md); min-width:0; }
