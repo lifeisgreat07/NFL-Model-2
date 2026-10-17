@@ -1,0 +1,34 @@
+{
+  "target": "tests/browser/spotter_render.py",
+  "tests": "tests/test_spotter_render.py",
+  "cases": [
+    {
+      "id": "spotter-render-phone-width",
+      "why": "the phone viewport is not the 390x844 the reviews name.",
+      "find": "VIEWPORTS = ((390, 844), (1440, 900))",
+      "replace": "VIEWPORTS = ((414, 844), (1440, 900))",
+      "expect_caught_by": "test_the_two_viewports_are_a_phone_and_a_desktop_in_both_themes"
+    },
+    {
+      "id": "spotter-render-clock-unfixed",
+      "why": "the page clock is not fixed, so the head and the base differ by the time of day.",
+      "find": "await ctx.clock.set_fixed_time(clock)",
+      "replace": "pass",
+      "expect_caught_by": "test_what_makes_two_renders_of_a_page_the_same_picture_is_in_the_renderer"
+    },
+    {
+      "id": "spotter-render-timezone-local",
+      "why": "the timezone is the runner's own, so times on the page shift between runs.",
+      "find": "timezone_id='UTC'",
+      "replace": "timezone_id=None",
+      "expect_caught_by": "test_what_makes_two_renders_of_a_page_the_same_picture_is_in_the_renderer"
+    },
+    {
+      "id": "spotter-render-motion-allowed",
+      "why": "animations run, so a picture can catch a page mid-transition.",
+      "find": "reduced_motion='reduce'",
+      "replace": "reduced_motion='no-preference'",
+      "expect_caught_by": "test_what_makes_two_renders_of_a_page_the_same_picture_is_in_the_renderer"
+    }
+  ]
+}
