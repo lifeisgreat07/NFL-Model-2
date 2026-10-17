@@ -1,0 +1,27 @@
+{
+  "target": "tests/synthetic_league.py",
+  "tests": "tests/test_synthetic_league.py",
+  "cases": [
+    {
+      "id": "synthetic-later-weeks-keep-the-run-clock",
+      "why": "the weeks other than the target's go back to now plus whole weeks, which lands in the ambiguous hour when the clocks go back and made the planted-run tests fail for an hour.",
+      "find": "                         _off_hours(now + pd.Timedelta(weeks=week - TARGET_WEEK, days=1)), played=False)",
+      "replace": "                         now + pd.Timedelta(weeks=week - TARGET_WEEK, days=1), played=False)",
+      "expect_caught_by": "test_no_game_but_the_target_week_has_a_time_the_clock_change_makes_ambiguous"
+    },
+    {
+      "id": "synthetic-played-weeks-keep-the-run-clock",
+      "why": "the played weeks go back to now minus whole weeks, which lands in the same hour a few weeks later.",
+      "find": "                         _off_hours(now - pd.Timedelta(weeks=TARGET_WEEK - week)), played=True)",
+      "replace": "                         now - pd.Timedelta(weeks=TARGET_WEEK - week), played=True)",
+      "expect_caught_by": "test_no_game_but_the_target_week_has_a_time_the_clock_change_makes_ambiguous"
+    },
+    {
+      "id": "synthetic-target-week-moved-off-its-offsets",
+      "why": "the target week is moved to 17:00 too, so the tests that lock an hour before the first kickoff no longer measure what they say.",
+      "find": "add_game(TARGET, week, home, away, now + target_offsets[k], played=False)",
+      "replace": "add_game(TARGET, week, home, away, _off_hours(now + target_offsets[k]), played=False)",
+      "expect_caught_by": "test_the_target_week_still_kicks_off_the_offsets_after_now"
+    }
+  ]
+}
