@@ -87,6 +87,48 @@
    "find": "    today = pd.Timestamp(now).tz_convert(ET).strftime('%Y-%m-%d')\n",
    "replace": "    from zoneinfo import ZoneInfo\n    today = now.astimezone(ZoneInfo(ET)).strftime('%Y-%m-%d')\n",
    "expect_caught_by": "test_eastern_time_is_read_without_the_tz_database"
+  },
+  {
+   "id": "dlj-late-copy-judged",
+   "why": "GitHub's late copy of a slot a dispatch served is judged late again (the 2026-10-16 NHL finding, issue 517).",
+   "find": "    if event == 'schedule' and fetch is not None and is_late_copy(sport, started, workflow_text, fetch):\n",
+   "replace": "    if False:\n",
+   "expect_caught_by": "test_githubs_late_copy_of_a_slot_a_dispatch_served_is_not_judged"
+  },
+  {
+   "id": "dlj-dispatched-run-skipped",
+   "why": "a dispatched run is skipped as a copy too, so the run that does the work is never judged late.",
+   "find": "    if event == 'schedule' and fetch is not None and is_late_copy(",
+   "replace": "    if fetch is not None and is_late_copy(",
+   "expect_caught_by": "test_a_dispatched_run_is_judged_even_when_a_dispatch_served_its_slot"
+  },
+  {
+   "id": "dlj-unreadable-api-hides-late-run",
+   "why": "a late run is excused when the Actions API cannot be read, so an outage hides a real late start.",
+   "find": "    except Exception:  # unreadable: judge the run\n        return False\n",
+   "replace": "    except Exception:  # unreadable: judge the run\n        return True\n",
+   "expect_caught_by": "test_a_late_run_is_flagged_when_the_actions_api_cannot_be_read"
+  },
+  {
+   "id": "dlj-any-dispatch-covers",
+   "why": "any dispatch at all excuses the copy, not one within the slot's grace.",
+   "find": "    return missed_dispatch.judge(slot[0], started, dispatches) == 'covered'\n",
+   "replace": "    return bool(dispatches)\n",
+   "expect_caught_by": "test_a_late_run_for_a_slot_no_dispatch_served_is_still_flagged"
+  },
+  {
+   "id": "dlj-api-read-for-every-run",
+   "why": "the Actions API is read for every scheduled run, not only a late one.",
+   "find": "    if delay is None or delay < timedelta(hours=warn):\n        return []\n    if event == 'schedule' and fetch",
+   "replace": "    if event == 'schedule' and fetch is not None:\n        is_late_copy(sport, started, workflow_text, fetch)\n    if delay is None or delay < timedelta(hours=warn):\n        return []\n    if event == 'schedule' and fetch",
+   "expect_caught_by": "test_the_slot_is_looked_up_only_for_a_run_that_is_late"
+  },
+  {
+   "id": "dlj-main-does-not-read-api",
+   "why": "the command line passes no fetch, so the daily workflows never skip a copy.",
+   "find": "         fetch: missed_dispatch.Fetch | None = missed_dispatch._gh_fetch) -> int:\n",
+   "replace": "         fetch: missed_dispatch.Fetch | None = None) -> int:\n",
+   "expect_caught_by": "test_the_command_line_reads_the_actions_api_by_default"
   }
  ]
 }
