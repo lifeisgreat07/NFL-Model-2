@@ -6,7 +6,9 @@ leaves a different state on main, and it is the same for both:
 
   on-time         -- a run that served a slot started under the sport's
                      warning hour after it (start_delay.WARN_HOURS_FOR: one
-                     hour, the lock rule's slack).
+                     hour, the lock rule's slack). A run GitHub's cron
+                     started for a slot a dispatched run already served is
+                     its late copy and is not judged (missed_dispatch).
   before-start    -- every pick file was first committed before its game
                      started. git's commit time, not the `saved_utc` the run
                      writes for itself: a pick pushed after the start was
@@ -46,7 +48,14 @@ from typing import Any
 
 import pandas as pd
 
-from src.core.start_delay import WARN_HOURS, WARN_HOURS_FOR, crons, served_delay
+from src.core import missed_dispatch
+from src.core.start_delay import (
+    WARN_HOURS,
+    WARN_HOURS_FOR,
+    crons,
+    latest_slot,
+    served_delay,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 SPORTS = ('nhl', 'nba')
@@ -71,12 +80,35 @@ def workflow_name(sport: str) -> str:
     return f'{sport}-daily.yml'
 
 
-def check_on_time(sport: str, event: str | None, started: datetime | None, workflow_text: str) -> list[Finding]:
+def is_late_copy(sport: str, started: datetime, workflow_text: str,
+                 fetch: missed_dispatch.Fetch) -> bool:
+    """True when a dispatched run of this workflow already served the slot
+    `started` is measured against, so this run is GitHub's own cron copy of
+    it (src/core/missed_dispatch.py). That copy commits nothing, and judging
+    it late would raise a finding for every slot cron-job.org served on
+    time. When the Actions API cannot be read the answer is False: a late
+    run is flagged rather than guessed away."""
+    slot = latest_slot(crons(workflow_text), started)
+    if slot is None:
+        return False
+    try:
+        dispatches = fetch(workflow_name(sport), slot[0])
+    except Exception:  # unreadable: judge the run
+        return False
+    return missed_dispatch.judge(slot[0], started, dispatches) == 'covered'
+
+
+def check_on_time(sport: str, event: str | None, started: datetime | None, workflow_text: str,
+                  fetch: missed_dispatch.Fetch | None = None) -> list[Finding]:
+    """`fetch` reads when this workflow's dispatched runs started; given, a
+    run GitHub's cron started for a slot a dispatched run served is not late."""
     if started is None:
         return []
     warn = WARN_HOURS_FOR.get(workflow_name(sport), WARN_HOURS)
     delay = served_delay(crons(workflow_text), started, event)
     if delay is None or delay < timedelta(hours=warn):
+        return []
+    if event == 'schedule' and fetch is not None and is_late_copy(sport, started, workflow_text, fetch):
         return []
     hours = delay.total_seconds() / 3600
     return [Finding('on-time', f'the run started {hours:.1f} hours after its slot (started by {event or "hand"}); '
@@ -168,7 +200,8 @@ def added_at(folder: Path, root: Path = ROOT, git: Callable[[list[str], Path], s
 
 
 def judge(sport: str, season: int, now: datetime, added: dict[str, datetime], root: Path = ROOT,
-          event: str | None = None, started: datetime | None = None, workflow_text: str = '') -> list[Finding]:
+          event: str | None = None, started: datetime | None = None, workflow_text: str = '',
+          fetch: missed_dispatch.Fetch | None = None) -> list[Finding]:
     """Every finding, in check order."""
     results = root / 'results' / sport
     sched_doc = json.loads((results / f'schedule_{season}.json').read_text(encoding='utf-8'))
@@ -179,7 +212,7 @@ def judge(sport: str, season: int, now: datetime, added: dict[str, datetime], ro
     for path in sorted((root / 'predictions' / sport / str(season)).glob('*.json')):
         pick = json.loads(path.read_text(encoding='utf-8'))
         picks[str(pick.get('game_id', path.stem))] = pick
-    findings = check_on_time(sport, event, started, workflow_text)
+    findings = check_on_time(sport, event, started, workflow_text, fetch)
     findings += check_before_start(picks, {gid: g.get('start_utc') for gid, g in games.items()}, added)
     findings += check_graded(picks, games, graded)
     findings += check_fresh(sched_doc.get('as_of'), now)
@@ -195,7 +228,8 @@ def report(findings: list[Finding], sport: str, season: int) -> str:
     return '\n'.join(lines)
 
 
-def main(argv: list[str] | None = None, now: datetime | None = None, root: Path = ROOT) -> int:
+def main(argv: list[str] | None = None, now: datetime | None = None, root: Path = ROOT,
+         fetch: missed_dispatch.Fetch | None = missed_dispatch._gh_fetch) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument('--sport', choices=SPORTS, required=True)
     ap.add_argument('--season', type=int, help='default: the newest results/<sport>/schedule_<season>.json')
@@ -211,7 +245,7 @@ def main(argv: list[str] | None = None, now: datetime | None = None, root: Path 
     wf = root / '.github' / 'workflows' / workflow_name(args.sport)
     findings = judge(args.sport, season, now or datetime.now(UTC),
                      added_at(root / 'predictions' / args.sport / str(season), root), root,
-                     args.run_event, started, wf.read_text(encoding='utf-8'))
+                     args.run_event, started, wf.read_text(encoding='utf-8'), fetch)
     text = report(findings, args.sport, season)
     print(text)
     if args.report:

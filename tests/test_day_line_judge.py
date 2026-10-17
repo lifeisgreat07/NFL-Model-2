@@ -42,6 +42,71 @@ def test_no_start_given_is_not_judged():
     assert dlj.check_on_time('nhl', 'schedule', None, wf('nhl')) == []
 
 
+# Seen 2026-10-16: cron-job.org dispatched the 21:00 slot at 21:02, and GitHub's own
+# cron started a copy at 23:04 that committed nothing. The copy was judged 2.1 hours late.
+SLOT = utc('2026-10-15T21:00:00')
+COPY = utc('2026-10-15T23:04:00')
+
+
+def served_at(*starts):
+    return lambda workflow, slot: [utc(t) for t in starts]
+
+
+def test_githubs_late_copy_of_a_slot_a_dispatch_served_is_not_judged():
+    fetch = served_at('2026-10-15T21:02:00')
+    assert dlj.check_on_time('nhl', 'schedule', COPY, wf('nhl'), fetch) == []
+
+
+def test_a_late_run_for_a_slot_no_dispatch_served_is_still_flagged():
+    for fetch in (served_at(), served_at('2026-10-15T14:01:00'), served_at('2026-10-15T21:20:00')):
+        found = dlj.check_on_time('nhl', 'schedule', COPY, wf('nhl'), fetch)
+        assert [f.check for f in found] == ['on-time'] and '2.1 hours' in found[0].message
+
+
+def test_a_late_run_is_flagged_when_the_actions_api_cannot_be_read():
+    def broken(workflow, slot):
+        raise RuntimeError('HTTP 502')
+    assert [f.check for f in dlj.check_on_time('nhl', 'schedule', COPY, wf('nhl'), broken)] == ['on-time']
+
+
+def test_a_dispatched_run_is_judged_even_when_a_dispatch_served_its_slot():
+    """The dispatched run is the one that does the work: its own lateness counts."""
+    late_dispatch = SLOT + timedelta(hours=1, minutes=5)
+    found = dlj.check_on_time('nhl', 'workflow_dispatch', late_dispatch, wf('nhl'),
+                               served_at('2026-10-15T21:02:00', '2026-10-15T22:05:00'))
+    assert [f.check for f in found] == ['on-time']
+
+
+def test_the_slot_is_looked_up_only_for_a_run_that_is_late():
+    asked = []
+
+    def fetch(workflow, slot):
+        asked.append((workflow, slot))
+        return []
+    assert dlj.check_on_time('nhl', 'schedule', SLOT + timedelta(minutes=10), wf('nhl'), fetch) == []
+    assert asked == []
+    dlj.check_on_time('nhl', 'schedule', COPY, wf('nhl'), fetch)
+    assert asked == [('nhl-daily.yml', SLOT)]
+
+
+def test_the_command_line_reads_the_dispatched_runs_and_skips_the_copy(tmp_path, monkeypatch):
+    build(tmp_path)
+    (tmp_path / '.github' / 'workflows').mkdir(parents=True)
+    (tmp_path / '.github' / 'workflows' / 'nhl-daily.yml').write_text(wf('nhl'))
+    monkeypatch.setattr(dlj, 'added_at', lambda folder, root: {'1': utc('2026-10-06T22:07:32')})
+    args = ['--sport', 'nhl', '--run-event', 'schedule', '--run-started', '2026-10-15T23:04:00Z']
+    assert dlj.main(args, NOW, tmp_path, served_at('2026-10-15T21:02:00')) == 0
+    assert dlj.main(args, NOW, tmp_path, served_at()) == 1
+
+
+def test_the_command_line_reads_the_actions_api_by_default():
+    """The daily workflows call main() with no fetch of their own."""
+    import inspect
+
+    from src.core import missed_dispatch
+    assert inspect.signature(dlj.main).parameters['fetch'].default is missed_dispatch._gh_fetch
+
+
 # --- before-start ---------------------------------------------------------------
 
 PICK = {'game_id': '1', 'home': 'TOR', 'away': 'MTL', 'pick': 'TOR', 'start_utc': '2026-10-06T23:00:00Z'}
