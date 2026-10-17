@@ -60,19 +60,18 @@ jobs:
           if [ -n "$REPORT" ]; then printf '%s\n' "$REPORT" > "$RUNNER_TEMP/line-judge/line-judge.md"; fi
 
       # The run is still in progress (this job is part of it), so `gh run view
-      # --log` refuses; each finished job's log is read on its own.
+      # --log` refuses; each finished job's log is read on its own, by
+      # src/core/job_logs.py. The first real finding (#517) was diagnosed from
+      # two empty files: the old shell step was refused for the colour codes in
+      # the logs, ignored the refusal, and passed. Now a log that cannot be
+      # read is a LOGS UNAVAILABLE note saying why, and a fetch that got none
+      # fails the step. continue-on-error, because a diagnosis from the finding
+      # and the repository still beats none; the red step is how it is seen.
       - name: Fetch the run's logs
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          mkdir -p "$RUNNER_TEMP/line-judge/logs"
-          gh api "repos/{owner}/{repo}/actions/runs/$GITHUB_RUN_ID/jobs?per_page=100" \
-            --jq '.jobs[] | select(.status == "completed") | "\(.id)\t\(.name)"' |
-          while IFS=$'\t' read -r id name; do
-            gh api "repos/{owner}/{repo}/actions/jobs/$id/logs" > "$RUNNER_TEMP/line-judge/logs/${name//[^A-Za-z0-9_-]/_}.log" || true
-          done
-          ls -la "$RUNNER_TEMP/line-judge" "$RUNNER_TEMP/line-judge/logs"
+        run: python3 -m src.core.job_logs --repo "$GITHUB_REPOSITORY" --run "$GITHUB_RUN_ID" --out "$RUNNER_TEMP/line-judge/logs"
 
       - name: Run Line Judge's diagnosis
         uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829 # v1.0.236

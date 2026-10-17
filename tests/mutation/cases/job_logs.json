@@ -1,0 +1,111 @@
+{
+ "target": "src/core/job_logs.py",
+ "tests": "tests/test_job_logs.py",
+ "cases": [
+  {
+   "id": "jl-codes-kept",
+   "why": "the colour codes stay in the log the agent reads (the refusal #517 hit was over exactly these).",
+   "find": "            text = strip_ansi(api(f'repos/{repo}/actions/jobs/{job_id}/logs'))\n",
+   "replace": "            text = api(f'repos/{repo}/actions/jobs/{job_id}/logs')\n",
+   "expect_caught_by": "test_a_fetched_log_is_written_without_codes"
+  },
+  {
+   "id": "jl-empty-body-kept",
+   "why": "an empty body is written as an empty file, the shape #517 handed the agent.",
+   "find": "            if not text.strip():\n                raise LogError('the API returned an empty body')\n",
+   "replace": "",
+   "expect_caught_by": "test_an_empty_body_is_a_note_not_an_empty_file"
+  },
+  {
+   "id": "jl-refusal-leaves-an-empty-file",
+   "why": "a log that could not be fetched leaves an empty file instead of a note saying why.",
+   "find": "_write(path, f'{UNAVAILABLE} for job {name!r} (id {job_id}): {exc}\\n')",
+   "replace": "_write(path, '')",
+   "expect_caught_by": "test_a_refused_fetch_leaves_a_note_not_an_empty_file"
+  },
+  {
+   "id": "jl-nothing-fetched-exits-0",
+   "why": "a fetch that got no log at all passes, so the step stays green over nothing.",
+   "find": "notes above)')\n        return 1\n",
+   "replace": "notes above)')\n        return 0\n",
+   "expect_caught_by": "test_a_fetch_that_got_nothing_exits_1_and_says_so"
+  },
+  {
+   "id": "jl-partial-fetch-silent",
+   "why": "some logs could not be fetched and nothing says so.",
+   "find": "    if notes:\n",
+   "replace": "    if False:\n",
+   "expect_caught_by": "test_a_partial_fetch_exits_0_with_a_warning"
+  },
+  {
+   "id": "jl-running-job-read",
+   "why": "a job still running (the diagnosis job itself) is asked for a log it does not have yet.",
+   "find": "if j.get('status') == 'completed']",
+   "replace": "]",
+   "expect_caught_by": "test_a_job_still_running_is_not_read"
+  },
+  {
+   "id": "jl-job-list-failure-silent",
+   "why": "the run's job list cannot be read and the agent is told nothing.",
+   "find": "_write(out / '_jobs.log', f\"{UNAVAILABLE}: the run's list of jobs could not be read: {exc}\\n\")",
+   "replace": "pass",
+   "expect_caught_by": "test_a_job_list_that_cannot_be_read_is_a_note"
+  },
+  {
+   "id": "jl-clash-overwrites",
+   "why": "two jobs whose names clean to the same file name overwrite each other.",
+   "find": "        if path.exists():\n            path = out / f'{path.stem}-{job_id}.log'\n",
+   "replace": "",
+   "expect_caught_by": "test_file_names_and_a_clash_between_two_jobs"
+  },
+  {
+   "id": "jl-token-sent-to-the-signed-url",
+   "why": "the API token travels to the signed URL a log redirects to.",
+   "find": "status, headers, body = transport(where, {'User-Agent': USER_AGENT})",
+   "replace": "status, headers, body = transport(where, {'Authorization': f'Bearer {token}', 'User-Agent': USER_AGENT})",
+   "expect_caught_by": "test_the_token_goes_to_the_api_and_not_to_the_signed_url"
+  },
+  {
+   "id": "jl-redirect-not-followed",
+   "why": "a log's redirect is not followed, so every log comes back as an error.",
+   "find": "if status not in REDIRECTS or not where:",
+   "replace": "if True:",
+   "expect_caught_by": "test_the_token_goes_to_the_api_and_not_to_the_signed_url"
+  },
+  {
+   "id": "jl-error-hides-the-reason",
+   "why": "GitHub's own reason for refusing is dropped from the note.",
+   "find": "raise LogError(f'GitHub answered {status} for {path}: {body.decode(\"utf-8\", \"replace\")[:200].strip()}')",
+   "replace": "raise LogError(f'GitHub answered {status} for {path}')",
+   "expect_caught_by": "test_a_refusal_from_the_api_is_an_error_with_its_reason"
+  },
+  {
+   "id": "jl-token-printed",
+   "why": "the token is printed into the step's log.",
+   "find": "        api = make_api(token)\n",
+   "replace": "        print(token)\n        api = make_api(token)\n",
+   "expect_caught_by": "test_the_token_is_used_and_never_printed"
+  },
+  {
+   "id": "jl-no-token-exits-0",
+   "why": "with no token the step says so and still passes.",
+   "find": "no job log can be fetched')\n            return 1\n",
+   "replace": "no job log can be fetched')\n            return 0\n",
+   "expect_caught_by": "test_without_a_token_it_says_so_and_exits_1"
+  },
+  {
+   "id": "jl-shells-out-to-gh",
+   "why": "the module goes back to a subprocess, which is what could be refused.",
+   "find": "import urllib.error\n",
+   "replace": "import subprocess\nimport urllib.error\n",
+   "expect_caught_by": "test_the_module_never_shells_out_to_gh"
+  },
+  {
+   "id": "jl-needs-an-install",
+   "why": "the module imports something the runner's own Python does not have.",
+   "find": "def strip_ansi(text: str) -> str:\n    return ANSI.sub('', text)\n",
+   "replace": "def strip_ansi(text: str) -> str:\n    import yaml\n    return ANSI.sub('', text)\n",
+   "expect_caught_by": "test_the_module_needs_nothing_installed"
+  }
+ ]
+}
