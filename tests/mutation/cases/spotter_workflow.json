@@ -1,0 +1,34 @@
+{
+  "target": ".github/workflows/spotter.yml",
+  "tests": "tests/test_spotter_render.py",
+  "cases": [
+    {
+      "id": "spotter-workflow-runs-for-forks",
+      "why": "the fork refusal is dropped, so a fork's code would be built on this repository's runner.",
+      "find": "    if: github.event.pull_request.head.repo.full_name == github.repository\n",
+      "replace": "",
+      "expect_caught_by": "test_the_workflow_does_not_run_for_a_fork"
+    },
+    {
+      "id": "spotter-workflow-unbounded",
+      "why": "the job has no time limit.",
+      "find": "    timeout-minutes: 25\n",
+      "replace": "",
+      "expect_caught_by": "test_the_workflow_is_a_bounded_job_on_the_pinned_runner"
+    },
+    {
+      "id": "spotter-workflow-upload-may-be-empty",
+      "why": "an empty artifact is accepted, so a run that took no picture looks like a pass.",
+      "find": "if-no-files-found: error",
+      "replace": "if-no-files-found: ignore",
+      "expect_caught_by": "test_the_pictures_are_uploaded_as_one_named_artifact_that_must_exist"
+    },
+    {
+      "id": "spotter-workflow-pages-by-hand",
+      "why": "the pages are hard-coded instead of picked from the changed files.",
+      "find": "python -m src.agents.spotter_pages",
+      "replace": "echo nfl,nhl,nba,home #",
+      "expect_caught_by": "test_the_pages_are_picked_by_the_map_from_the_two_commits"
+    }
+  ]
+}

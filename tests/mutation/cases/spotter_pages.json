@@ -1,0 +1,41 @@
+{
+  "target": "src/agents/spotter_pages.py",
+  "tests": "tests/test_spotter_pages.py",
+  "cases": [
+    {
+      "id": "spotter-pages-nhl-css-renders-nba",
+      "why": "the NHL stylesheet's rule points at the NBA page, so a change is photographed on the wrong page.",
+      "find": "('src/sports/nhl/pages/', ('nhl',)),",
+      "replace": "('src/sports/nhl/pages/', ('nba',)),",
+      "expect_caught_by": "test_each_change_renders_the_pages_it_feeds"
+    },
+    {
+      "id": "spotter-pages-unmapped-renders-nothing",
+      "why": "a page file no rule knows renders nothing instead of every page.",
+      "find": "    if unmapped:\n        pages.update(PAGES)",
+      "replace": "    if False:\n        pages.update(PAGES)",
+      "expect_caught_by": "test_a_page_file_no_rule_knows_renders_every_page_and_says_so"
+    },
+    {
+      "id": "spotter-pages-diff-is-two-dot",
+      "why": "the changed files are read as base..head, which counts everything main gained since the branch started.",
+      "find": "f'{base}...{head}'",
+      "replace": "f'{base}..{head}'",
+      "expect_caught_by": "test_changed_files_reads_the_diff_between_the_merge_base_and_the_head"
+    },
+    {
+      "id": "spotter-pages-favicon-feeds-only-home",
+      "why": "the shared favicon is said to feed only the home page, so the NFL page is not photographed when it changes.",
+      "find": "('assets/favicon.svg', ('home', 'nfl')),",
+      "replace": "('assets/favicon.svg', ('home',)),",
+      "expect_caught_by": "test_each_change_renders_the_pages_it_feeds"
+    },
+    {
+      "id": "spotter-pages-build-py-renders-nothing",
+      "why": "a change to the site builder renders no page, though it can change every one.",
+      "find": "('src/site/build.py', PAGES),",
+      "replace": "('src/site/build.py', ()),",
+      "expect_caught_by": "test_each_change_renders_the_pages_it_feeds"
+    }
+  ]
+}

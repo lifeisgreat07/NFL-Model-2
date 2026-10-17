@@ -51,6 +51,8 @@ SHARED_WORKFLOWS = frozenset({
     'run-tests.yml', 'scout-preflight.yml',
     # Line Judge's diagnosis and weekly digest serve every sport's judged runs.
     'line-judge-diagnose.yml', 'line-judge-digest.yml',
+    # Spotter takes pictures of every sport's pages for a pull request (ADR 0007).
+    'spotter.yml',
 })
 
 
