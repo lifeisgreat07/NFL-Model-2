@@ -21,6 +21,7 @@ from pathlib import Path
 
 import pytest
 
+from src.core import job_logs as jl
 from src.core import line_judge_digest as dg
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -108,3 +109,30 @@ def test_the_protocol_names_every_check_the_judges_report():
     missing = sorted(n for n in names if f'`{n}`' not in PROTOCOL)
     assert not missing, f'LINE_JUDGE_PROTOCOL.md does not name {missing}'
     assert 'Writing the file is your last tool call' in PROTOCOL
+
+
+def step_block(job, name):
+    for chunk in re.split(r'^      - name: ', job, flags=re.M)[1:]:
+        if chunk.startswith(name + '\n'):
+            return chunk
+    raise AssertionError(f'no step named {name!r}')
+
+
+def test_the_logs_are_fetched_by_the_module_and_a_failure_cannot_pass_silently():
+    # 2026-10-16, #517: `gh api > file || true` was refused for the colour codes
+    # in the logs, left two empty files and passed. The agent diagnosed the
+    # finding from nothing.
+    diagnose = job_block(DIAGNOSE, 'diagnose')
+    step = step_block(diagnose, "Fetch the run's logs")
+    call = 'python3 -m src.core.job_logs --repo "$GITHUB_REPOSITORY" --run "$GITHUB_RUN_ID" --out "$RUNNER_TEMP/line-judge/logs"'
+    assert f'run: {call}\n' in step
+    assert 'GH_TOKEN: ${{ github.token }}' in step
+    # A fetch that got nothing is red, and the diagnosis goes on with what it has.
+    assert 'continue-on-error: true' in step
+    assert '|| true' not in diagnose and 'gh api' not in diagnose and '2>/dev/null' not in diagnose
+    # The module the step names is on main, and is the one that writes the notes.
+    assert (ROOT / 'src' / 'core' / 'job_logs.py').is_file() and 'src.core.job_logs' in call
+
+
+def test_the_protocol_says_what_an_unavailable_log_is():
+    assert f'`{jl.UNAVAILABLE}`' in PROTOCOL and '**Not checked**' in PROTOCOL

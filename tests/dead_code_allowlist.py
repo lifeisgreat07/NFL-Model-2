@@ -10,6 +10,13 @@ _ = None  # vulture's whitelist idiom: attribute uses of a stand-in object
 # logging.Handler calls handleError itself (src/core/runlog.py).
 _.handleError
 
+# urllib calls redirect_request by name and passes these arguments; the
+# override declines every redirect so the caller can follow the signed log
+# link by hand without the token (src/core/job_logs.py).
+_.redirect_request
+_.fp
+_.newurl
+
 # A read_text override must take the encoding argument its callers pass
 # (src/core/template_parts.py), even though it reads a joined string.
 _.encoding

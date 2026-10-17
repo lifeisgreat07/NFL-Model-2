@@ -15,7 +15,10 @@ change nothing.
   `snapshot`; the daily runs' `on-time`, `before-start`, `graded-right`,
   `schedule-fresh`). If it is missing, the judge itself crashed; its
   log says where.
-- The logs of every finished job of the run, one file per job.
+- The logs of every finished job of the run, one file per job, with the colour
+  codes already stripped. A log that could not be fetched is a file that
+  begins `LOGS UNAVAILABLE` and says why. Say so under **Not checked**, and
+  do not guess at what it held.
 - The repository at main, as the run left it, with its whole history.
 
 ## What to do

@@ -1,0 +1,42 @@
+{
+ "target": ".github/workflows/line-judge-diagnose.yml",
+ "tests": "tests/test_line_judge_diagnose.py",
+ "cases": [
+  {
+   "id": "ljdx-logs-failure-masked",
+   "why": "the log fetch is allowed to fail without anyone seeing it: the shape of #517.",
+   "find": "--out \"$RUNNER_TEMP/line-judge/logs\"\n",
+   "replace": "--out \"$RUNNER_TEMP/line-judge/logs\" || true\n",
+   "expect_caught_by": "test_the_logs_are_fetched_by_the_module_and_a_failure_cannot_pass_silently"
+  },
+  {
+   "id": "ljdx-logs-fetch-gates-the-diagnosis",
+   "why": "a fetch that got no log stops the diagnosis, where a diagnosis from the finding alone is better than none.",
+   "find": "      - name: Fetch the run's logs\n        continue-on-error: true\n",
+   "replace": "      - name: Fetch the run's logs\n",
+   "expect_caught_by": "test_the_logs_are_fetched_by_the_module_and_a_failure_cannot_pass_silently"
+  },
+  {
+   "id": "ljdx-logs-without-a-token",
+   "why": "the fetch runs without the job token and is refused by the API.",
+   "find": "        env:\n          GH_TOKEN: ${{ github.token }}\n        run: python3 -m src.core.job_logs",
+   "replace": "        run: python3 -m src.core.job_logs",
+   "expect_caught_by": "test_the_logs_are_fetched_by_the_module_and_a_failure_cannot_pass_silently"
+  },
+  {
+   "id": "ljdx-logs-back-on-the-shell",
+   "why": "the old step is back: a gh call whose refusal is ignored, which is main before this change.",
+   "find": "        run: python3 -m src.core.job_logs --repo \"$GITHUB_REPOSITORY\" --run \"$GITHUB_RUN_ID\" --out \"$RUNNER_TEMP/line-judge/logs\"\n",
+   "replace": "        run: |\n          mkdir -p \"$RUNNER_TEMP/line-judge/logs\"\n          gh api \"repos/$GITHUB_REPOSITORY/actions/jobs/1/logs\" > \"$RUNNER_TEMP/line-judge/logs/x.log\" || true\n",
+   "expect_caught_by": "test_the_logs_are_fetched_by_the_module_and_a_failure_cannot_pass_silently"
+  },
+  {
+   "id": "ljdx-protocol-forgets-the-note",
+   "target": "LINE_JUDGE_PROTOCOL.md",
+   "why": "the protocol stops saying what an unavailable log looks like, so the agent guesses at it.",
+   "find": "  begins `LOGS UNAVAILABLE` and says why.",
+   "replace": "  begins `LOGS MISSING` and says why.",
+   "expect_caught_by": "test_the_protocol_says_what_an_unavailable_log_is"
+  }
+ ]
+}
