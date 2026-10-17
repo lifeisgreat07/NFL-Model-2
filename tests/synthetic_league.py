@@ -45,6 +45,16 @@ def round_robin(week):
     return [(a, b) if (week + k) % 2 else (b, a) for k, (a, b) in enumerate(pairs)]
 
 
+def _off_hours(ts):
+    """A kickoff for a week whose exact time nothing depends on, moved to
+    17:00 UTC (noon or 1pm Eastern) on its own day. nflverse's gameday and
+    gametime are Eastern wall-clock strings, and `now` plus a whole number of
+    weeks lands in the ambiguous hour on the day the clocks go back (01:00-02:00
+    Eastern, 2026-11-01) for an hour of the previous weeks' runs, which made
+    the end-to-end tests fail then and only then."""
+    return pd.Timestamp(ts).tz_convert('UTC').normalize() + pd.Timedelta(hours=17)
+
+
 def _kickoff_fields(ts):
     """gameday / gametime (Eastern, as nflverse gives it) / weekday for a UTC time."""
     et = pd.Timestamp(ts).tz_convert('America/New_York')
@@ -101,19 +111,19 @@ def build(now, target_offsets, seed=20260929):
         games.append(row)
 
     for week in range(1, PRIOR_WEEKS + 1):
-        kick = now - pd.Timedelta(weeks=60 - week)
+        kick = _off_hours(now - pd.Timedelta(weeks=60 - week))
         for home, away in round_robin((week - 1) % 7 + 1):
             add_game(PRIOR, week, home, away, kick, played=True)
     for week in range(1, LAST_WEEK + 1):
         for k, (home, away) in enumerate(round_robin(week)):
             if week <= PLAYED_WEEKS:
                 add_game(TARGET, week, home, away,
-                         now - pd.Timedelta(weeks=TARGET_WEEK - week), played=True)
+                         _off_hours(now - pd.Timedelta(weeks=TARGET_WEEK - week)), played=True)
             elif week == TARGET_WEEK:
                 add_game(TARGET, week, home, away, now + target_offsets[k], played=False)
             else:
                 add_game(TARGET, week, home, away,
-                         now + pd.Timedelta(weeks=week - TARGET_WEEK, days=1), played=False)
+                         _off_hours(now + pd.Timedelta(weeks=week - TARGET_WEEK, days=1)), played=False)
 
     sched = pd.DataFrame(games)
     schedules = {s: sched[sched['season'] == s].reset_index(drop=True) for s in (PRIOR, TARGET)}
