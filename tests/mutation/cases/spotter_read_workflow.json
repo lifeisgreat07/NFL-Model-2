@@ -12,8 +12,8 @@
     {
       "id": "spotter-read-protocol-from-the-head",
       "why": "the reading job checks out the pull request's head, so the change being looked at can rewrite the protocol and the checker.",
-      "find": "          ref: ${{ github.event.pull_request.base.sha }}\n\n      - name: Download the pictures",
-      "replace": "          ref: ${{ github.event.pull_request.head.sha }}\n\n      - name: Download the pictures",
+      "find": "          ref: ${{ github.event.pull_request.base.sha }}\n\n      # The pull request that adds the reader",
+      "replace": "          ref: ${{ github.event.pull_request.head.sha }}\n\n      # The pull request that adds the reader",
       "expect_caught_by": "test_the_model_works_from_the_bases_protocol_never_the_pull_requests"
     },
     {
@@ -26,8 +26,8 @@
     {
       "id": "spotter-read-comment-only-on-success",
       "why": "the comment is posted only if the model step succeeded, so a failed run leaves the pull request with no trace.",
-      "find": "if: ${{ !cancelled() }}",
-      "replace": "if: success()",
+      "find": "if: ${{ !cancelled() && steps.base.outputs.ready == 'true' }}",
+      "replace": "if: ${{ steps.base.outputs.ready == 'true' }}",
       "expect_caught_by": "test_the_comment_is_posted_from_the_copy_after_the_model_and_even_if_it_failed"
     },
     {
@@ -78,6 +78,13 @@
       "find": "git push -q origin spotter-renders; then",
       "replace": "git push -q origin HEAD:main; then",
       "expect_caught_by": "test_the_publish_job_pushes_the_orphan_branch_and_only_that_branch"
+    },
+    {
+      "id": "spotter-read-model-runs-without-a-protocol",
+      "why": "the model step no longer waits for the base to have the protocol and the checker, so a base that predates the reader runs the model with no instructions and fails the pull request.",
+      "find": "      - name: Run Spotter\n        if: steps.base.outputs.ready == 'true'\n",
+      "replace": "      - name: Run Spotter\n",
+      "expect_caught_by": "test_a_base_without_the_reader_skips_every_reading_step_and_does_not_fail"
     }
   ]
 }

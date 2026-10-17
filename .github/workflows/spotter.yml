@@ -230,7 +230,21 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.base.sha }}
 
+      # The pull request that adds the reader, and any pull request whose base
+      # predates it, has nothing to read the pictures with: say so and stop
+      # without failing, rather than show a red check for a base that is behind.
+      - name: Check the base has the reader
+        id: base
+        run: |
+          if [ -f SPOTTER_PROTOCOL.md ] && [ -f src/agents/spotter_comment.py ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "The base has no Spotter protocol or checker yet, so nothing reads the pictures." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Download the pictures
+        if: steps.base.outputs.ready == 'true'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: spotter-renders-pr${{ github.event.pull_request.number }}
@@ -239,12 +253,14 @@ jobs:
       # Copied out before the model starts, as Booth's checker is, so nothing
       # the model writes can change what vets it.
       - name: Set the checker aside
+        if: steps.base.outputs.ready == 'true'
         run: |
           mkdir -p "$RUNNER_TEMP/spotter-check/src/agents" reading
           cp src/__init__.py "$RUNNER_TEMP/spotter-check/src/"
           cp src/agents/__init__.py src/agents/spotter_comment.py "$RUNNER_TEMP/spotter-check/src/agents/"
 
       - name: Run Spotter
+        if: steps.base.outputs.ready == 'true'
         uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829 # v1.0.236
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -266,7 +282,7 @@ jobs:
       # Posted whether or not the model produced a reading: the comment always
       # lists the pictures, and says why when there is no reading.
       - name: Post or update Spotter's comment
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.base.outputs.ready == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

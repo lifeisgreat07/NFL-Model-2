@@ -139,7 +139,7 @@ def test_the_comment_is_posted_from_the_copy_after_the_model_and_even_if_it_fail
     block = job('read')
     post = block[block.index("- name: Post or update Spotter's comment"):]
     assert block.index('Run Spotter') < block.index("Post or update Spotter's comment")
-    assert 'if: ${{ !cancelled() }}' in post
+    assert 'if: ${{ !cancelled() && steps.base.outputs.ready == \'true\' }}' in post
     assert 'cd "$RUNNER_TEMP/spotter-check" && python3 -m src.agents.spotter_comment' in post
     assert 'startswith("<!-- spotter-comment -->")' in post and sc.MARKER == '<!-- spotter-comment -->'
     assert 'gh api -X PATCH' in post and 'gh pr comment "$PR"' in post
@@ -149,6 +149,16 @@ def test_the_comment_that_is_updated_is_spotters_own_not_booths():
     post = job('read').split("- name: Post or update Spotter's comment")[1]
     assert '.user.login == "github-actions[bot]"' in post and 'startswith(' in post
     assert '--edit-last' not in post, 'the last comment is as likely to be the Booth report'
+
+
+def test_a_base_without_the_reader_skips_every_reading_step_and_does_not_fail():
+    block = job('read')
+    assert '[ -f SPOTTER_PROTOCOL.md ] && [ -f src/agents/spotter_comment.py ]' in block
+    for step in ('Download the pictures', 'Set the checker aside', 'Run Spotter', "Post or update Spotter's comment"):
+        body = block[block.index(f'- name: {step}'):].split('\n      - ')[0]
+        assert "steps.base.outputs.ready == 'true'" in body, step
+    check = block[block.index('- name: Check the base has the reader'):].split('\n      - ')[0]
+    assert 'exit 1' not in check
 
 
 # --- the protocol -------------------------------------------------------------------------------
