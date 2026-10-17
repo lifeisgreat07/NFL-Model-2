@@ -8,7 +8,9 @@ and the rest still run, so one report names everything wrong tonight.
 
 1. this season's schedule, through `schedule.load_schedule` (its own checks);
 2. yesterday's and today's slates, through the lock rule;
-3. a final game's box score, through `history.box_row`;
+3. a final game's box score, through `history.box_row` (the newest few finals are
+   read; one the league has not settled yet is waited for up to `UNSETTLED_HOURS`,
+   then it fails the night);
 4. the league's odds feed, through `market.parse`;
 5. Daily Faceoff's page for today, through `goalies.parse_faceoff`;
 6. a club's roster, through `roster.goalies_of`.
@@ -38,6 +40,16 @@ from src.sports.nhl.lock import GameLock
 
 Step = Callable[[dict[str, Any]], str]
 
+#: A final game whose box score still lacks its starter flags this long after
+#: it started is not going to settle by itself: a game ends about two and a
+#: half hours in and the league sets the flags minutes later (seen 2026-10-05,
+#: and again on game 2026020118 at the 2026-10-16 canary, issue 495). The
+#: daily import retries such a game silently, so past this it would retry for
+#: ever and nothing would say so. Under it the canary does not fail.
+UNSETTLED_HOURS = 12
+#: How many of the newest finals one night looks through for a settled one.
+LOOKBACK = 5
+
 
 def step_schedule(state: dict[str, Any]) -> str:
     season = nhl_schedule.current_season(state['now'])
@@ -56,9 +68,28 @@ def step_box_score(state: dict[str, Any]) -> str:
     finals = state['schedule'][state['schedule']['status'] == GameStatus.FINAL.value]
     if finals.empty:
         return 'no final game yet this season (not an error)'
-    g = finals.iloc[-1]
-    row = history.box_row(json.loads(state['get'](history.BOX.format(gid=g['game_id']))), str(g['game_type']))
-    return f'game {row["game_id"]}: shots {row["home_sog"]}-{row["away_sog"]}, both starters flagged'
+    finals = finals.assign(_start=pd.to_datetime(finals['start_utc'], utc=True)).sort_values('_start', ascending=False)
+    waiting: list[str] = []
+    settled: list[str] = []
+    for _, g in finals.head(LOOKBACK).iterrows():
+        hours = (state['now'] - g['_start'].to_pydatetime()).total_seconds() / 3600
+        try:
+            row = history.box_row(json.loads(state['get'](history.BOX.format(gid=g['game_id']))), str(g['game_type']))
+        except history.HistoryError as exc:
+            if hours >= UNSETTLED_HOURS:
+                raise history.HistoryError(f'{exc}; the game started {hours:.0f} hours ago and is not settling, '
+                                           f'so the daily import cannot store it') from exc
+            waiting.append(str(g['game_id']))
+            continue
+        settled.append(f'game {row["game_id"]}: shots {row["home_sog"]}-{row["away_sog"]}, both starters flagged')
+    if not settled:
+        return (f'no settled box score yet: {", ".join(waiting)} final but not settled (under {UNSETTLED_HOURS} '
+                f'hours since the start; the daily run retries it; not an error)')
+    note = settled[0]
+    if waiting:
+        note += (f'; {", ".join(waiting)} final but not settled yet (under {UNSETTLED_HOURS} hours since the '
+                 f'start; the daily run retries it)')
+    return note
 
 
 def step_market(state: dict[str, Any]) -> str:
