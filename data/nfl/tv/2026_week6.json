@@ -2,7 +2,8 @@
   "reads": [
     "2026-10-15T11:03:02Z",
     "2026-10-16T05:17:38Z",
-    "2026-10-16T09:49:58Z"
+    "2026-10-16T09:49:58Z",
+    "2026-10-17T05:17:48Z"
   ],
   "changes": [],
   "games": [
@@ -20,7 +21,7 @@
         "Prime Video"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101800",
@@ -36,7 +37,7 @@
         "NFL Network"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101801",
@@ -52,7 +53,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101802",
@@ -68,7 +69,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101803",
@@ -84,7 +85,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101804",
@@ -100,7 +101,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101805",
@@ -116,7 +117,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101806",
@@ -132,7 +133,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101807",
@@ -148,7 +149,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101808",
@@ -164,7 +165,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101809",
@@ -180,7 +181,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101810",
@@ -196,7 +197,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101811",
@@ -212,7 +213,7 @@
         "NBC"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     },
     {
       "elias": "2026101900",
@@ -230,7 +231,7 @@
         "NFL Network"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-6",
-      "read_at": "2026-10-16T09:49:58Z"
+      "read_at": "2026-10-17T05:17:48Z"
     }
   ]
 }

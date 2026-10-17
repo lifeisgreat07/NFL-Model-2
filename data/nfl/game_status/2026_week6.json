@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 6,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-16T05:17:36Z",
+  "read_at": "2026-10-17T05:17:46Z",
   "games": [
     {
       "away": "SEA",
@@ -40,7 +40,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -3.5,
+      "spread_line": -3.0,
       "neutral_site": false,
       "venue": "Huntington Bank Field"
     },
@@ -80,7 +80,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -3.5,
+      "spread_line": -3.0,
       "neutral_site": false,
       "venue": "Lincoln Financial Field"
     },

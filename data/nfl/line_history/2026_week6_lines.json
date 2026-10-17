@@ -250,5 +250,19 @@
     "home": "LV",
     "away": "BUF",
     "spread_line": -4.5
+  },
+  {
+    "captured_date": "2026-10-17",
+    "captured_utc": "2026-10-17T05:17:47Z",
+    "home": "CLE",
+    "away": "BAL",
+    "spread_line": -3.0
+  },
+  {
+    "captured_date": "2026-10-17",
+    "captured_utc": "2026-10-17T05:17:47Z",
+    "home": "PHI",
+    "away": "CAR",
+    "spread_line": -3.0
   }
 ]
