@@ -1,0 +1,102 @@
+{
+ "game_id": "2026020124",
+ "season": 2026,
+ "slate": "2026-10-17",
+ "start_utc": "2026-10-17T22:00:00Z",
+ "home": "FLA",
+ "away": "SEA",
+ "model_a": 0.6006,
+ "model_b": 0.6644,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.025946,
+  "shot_matchup": 5.339352,
+  "goalie_matchup_2000": -0.001501
+ },
+ "market": {
+  "game_id": "2026020124",
+  "start_utc": "2026-10-17T22:00:00Z",
+  "home": "FLA",
+  "away": "SEA",
+  "book": "DraftKings",
+  "home_price": -185.0,
+  "away_price": 154.0,
+  "home_prob": 0.6225,
+  "read_utc": "2026-10-17T21:01:44Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8474593,
+   "name": "Jacob Markstrom",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/georgerichards/status/2111459495821877661?s=46"
+  },
+  "away": {
+   "player_id": 8478916,
+   "name": "Joey Daccord",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-17",
+  "read_utc": "2026-10-17T21:01:44Z",
+  "home": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Radko Gudas",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brandon Montour",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Jacob Melanson",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jake O'Brien",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Lindgren",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-17T21:01:44Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-17",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14524,
+  "training_games_priced": 7427
+ }
+}

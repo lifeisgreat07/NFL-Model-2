@@ -1,0 +1,92 @@
+{
+ "game_id": "2026020132",
+ "season": 2026,
+ "slate": "2026-10-17",
+ "start_utc": "2026-10-18T01:00:00Z",
+ "home": "LAK",
+ "away": "BOS",
+ "model_a": 0.5083,
+ "model_b": 0.6151,
+ "pick": "LAK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.938613,
+  "shot_matchup": 4.698385,
+  "goalie_matchup_2000": -0.003268
+ },
+ "market": {
+  "game_id": "2026020132",
+  "start_utc": "2026-10-18T01:00:00Z",
+  "home": "LAK",
+  "away": "BOS",
+  "book": "DraftKings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514,
+  "read_utc": "2026-10-17T21:01:44Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476341,
+   "name": "Anton Forsberg",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/DooleyLAK/status/2111502304298111419?s=20"
+  },
+  "away": {
+   "player_id": 8480280,
+   "name": "Jeremy Swayman",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-17",
+  "read_utc": "2026-10-17T21:01:44Z",
+  "home": [
+   {
+    "name": "Alex Turcotte",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jakub Dvorak",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jan Jenik",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Fiala",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mats Zuccarello",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Pavel Zacha",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-17T21:01:44Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-17",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14524,
+  "training_games_priced": 7427
+ }
+}

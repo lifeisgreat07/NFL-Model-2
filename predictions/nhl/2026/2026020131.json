@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020131",
+ "season": 2026,
+ "slate": "2026-10-17",
+ "start_utc": "2026-10-18T00:00:00Z",
+ "home": "NSH",
+ "away": "STL",
+ "model_a": 0.5083,
+ "model_b": 0.4911,
+ "pick": "STL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.352736,
+  "shot_matchup": -1.247999,
+  "goalie_matchup_2000": 0.002796
+ },
+ "market": {
+  "game_id": "2026020131",
+  "start_utc": "2026-10-18T00:00:00Z",
+  "home": "NSH",
+  "away": "STL",
+  "book": "DraftKings",
+  "home_price": -105.0,
+  "away_price": -115.0,
+  "home_prob": 0.4892,
+  "read_utc": "2026-10-17T21:01:44Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8477424,
+   "name": "Juuse Saros",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/KieserNick/status/2111483992596001147?s=20"
+  },
+  "away": {
+   "player_id": 8476412,
+   "name": "Jordan Binnington",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/lkorac10/status/2111497058213355735?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-17",
+  "read_utc": "2026-10-17T21:01:44Z",
+  "home": [
+   {
+    "name": "Mavrik Bourque",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexey Toropchenko",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dillon Dube",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan Mailloux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Pavel Buchnevich",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Torey Krug",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-17T21:01:44Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-17",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14524,
+  "training_games_priced": 7427
+ }
+}

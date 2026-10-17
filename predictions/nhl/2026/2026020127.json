@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020127",
+ "season": 2026,
+ "slate": "2026-10-17",
+ "start_utc": "2026-10-17T23:00:00Z",
+ "home": "DET",
+ "away": "SJS",
+ "model_a": 0.6125,
+ "model_b": 0.5931,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.407129,
+  "shot_matchup": 4.1457,
+  "goalie_matchup_2000": -0.002315
+ },
+ "market": {
+  "game_id": "2026020127",
+  "start_utc": "2026-10-17T23:00:00Z",
+  "home": "DET",
+  "away": "SJS",
+  "book": "DraftKings",
+  "home_price": -155.0,
+  "away_price": 130.0,
+  "home_prob": 0.583,
+  "read_utc": "2026-10-17T21:01:44Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476434,
+   "name": "John Gibson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/mwhitaker_89/status/2111478730711343254?s=20"
+  },
+  "away": {
+   "player_id": 8477968,
+   "name": "Alex Nedeljkovic",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Sheng_Peng/status/2111504877327204835"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-17",
+  "read_utc": "2026-10-17T21:01:44Z",
+  "home": [
+   {
+    "name": "J.T. Compher",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marco Kasper",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mason Appleton",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Darnell Nurse",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-17T21:01:44Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-17",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14524,
+  "training_games_priced": 7427
+ }
+}
