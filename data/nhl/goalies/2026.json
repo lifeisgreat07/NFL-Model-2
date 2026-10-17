@@ -2938,5 +2938,50 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020135",
   "start_utc": "2026-10-18T22:00:00Z"
+ },
+ {
+  "date": "2026-10-17",
+  "home": "TOR",
+  "home_goalie": "Sergei Bobrovsky",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/markhmasters/status/2111467000622875095?s=20",
+  "away": "NYI",
+  "away_goalie": "Ilya Sorokin",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/ethan_sears/status/2111587039510474772?s=20",
+  "read_utc": "2026-10-17T22:44:35Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020125",
+  "start_utc": "2026-10-17T23:00:00Z"
+ },
+ {
+  "date": "2026-10-17",
+  "home": "MTL",
+  "home_goalie": "Jacob Fowler",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/renlavoietva/status/2111469816158597422?s=20",
+  "away": "BUF",
+  "away_goalie": "Ukko-Pekka Luukkonen",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/ByMHarrington/status/2111587510295966155?s=20",
+  "read_utc": "2026-10-17T22:44:35Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020126",
+  "start_utc": "2026-10-17T23:00:00Z"
+ },
+ {
+  "date": "2026-10-17",
+  "home": "CBJ",
+  "home_goalie": "Jet Greaves",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/Peter_Baugh/status/2111586808920445157?s=20",
+  "away": "NYR",
+  "away_goalie": "Dylan Garand",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/mark_scheig/status/2111491776628633748?s=20",
+  "read_utc": "2026-10-17T22:44:35Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020129",
+  "start_utc": "2026-10-17T23:00:00Z"
  }
 ]
