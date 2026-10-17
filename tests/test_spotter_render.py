@@ -108,6 +108,8 @@ def test_the_head_and_the_base_are_checked_out_by_sha_into_their_own_folders():
     assert 'ref: ${{ github.event.pull_request.head.sha }}' in t and '          path: head\n' in t
     assert 'ref: ${{ github.event.pull_request.base.sha }}' in t and '          path: base\n' in t
     assert 'refs/pull' not in t, 'the merge ref is neither of the two pages being compared'
+    # The NFL page reads the git log, so a shallow base shows lines the head does not.
+    assert t.count('          fetch-depth: 0\n') == 2, 'both checkouts need the same full history'
 
 
 def test_both_sites_are_built_and_both_are_photographed_with_one_clock():

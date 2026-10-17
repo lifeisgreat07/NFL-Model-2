@@ -29,6 +29,13 @@
       "find": "python -m src.agents.spotter_pages",
       "replace": "echo nfl,nhl,nba,home #",
       "expect_caught_by": "test_the_pages_are_picked_by_the_map_from_the_two_commits"
+    },
+    {
+      "id": "spotter-workflow-base-is-shallow",
+      "why": "the base is checked out shallow while the head is full, so the NFL page shows a git-history line on one side only and the two pictures differ by more than the change (seen on this item's own first run).",
+      "find": "          ref: ${{ github.event.pull_request.base.sha }}\n          fetch-depth: 0\n",
+      "replace": "          ref: ${{ github.event.pull_request.base.sha }}\n",
+      "expect_caught_by": "test_the_head_and_the_base_are_checked_out_by_sha_into_their_own_folders"
     }
   ]
 }

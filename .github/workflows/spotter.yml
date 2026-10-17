@@ -15,7 +15,8 @@ name: Spotter renders
 # Which pages: src/agents/spotter_pages.py maps the changed files to the
 # pages they feed, and a page file it does not know renders every page.
 # How: tests/browser/spotter_render.py, with a fixed clock, UTC, the network
-# blocked and two named viewports, so the head's picture and the base's of
+# blocked, the same full history in both checkouts (the NFL page reads the
+# git log, and a shallow base showed a line the head did not) and two named viewports, so the head's picture and the base's of
 # the same page differ only by the change. No pixel is compared.
 #
 # Not run for a fork: its code would run here with this repository's runner,
@@ -68,6 +69,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
           ref: ${{ github.event.pull_request.base.sha }}
+          fetch-depth: 0
           path: base
 
       - name: Set up Python
