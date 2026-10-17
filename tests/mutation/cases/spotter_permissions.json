@@ -1,0 +1,51 @@
+{
+  "target": "docs/decisions/0007-spotter-reads-renders.md",
+  "tests": "tests/test_spotter_permissions.py",
+  "cases": [
+    {
+      "id": "spotter-adr-gives-a-verdict",
+      "why": "the record lets Spotter's comment carry a verdict word, which would read like Booth's.",
+      "find": "Spotter's comment never carries a verdict word.",
+      "replace": "Spotter's comment carries a verdict word.",
+      "expect_caught_by": "test_the_decision_record_says_what_the_later_items_rely_on"
+    },
+    {
+      "id": "spotter-adr-allows-oidc",
+      "why": "the record lets the reading job mint an OIDC token, the grant that made Booth write-capable in 2026-09.",
+      "find": "and cannot mint an OIDC token.",
+      "replace": "and may mint an OIDC token.",
+      "expect_caught_by": "test_the_decision_record_says_what_the_later_items_rely_on"
+    },
+    {
+      "id": "spotter-adr-branch-renamed",
+      "why": "the record names a different branch for the pictures.",
+      "find": "`spotter-renders`; it is the only",
+      "replace": "`renders`; it is the only",
+      "expect_caught_by": "test_the_decision_record_says_what_the_later_items_rely_on"
+    },
+    {
+      "id": "spotter-adr-unlinked",
+      "target": "docs/decisions/README.md",
+      "why": "the record is not linked from the decision index.",
+      "find": "[0007](0007-spotter-reads-renders.md)",
+      "replace": "[0007](0007.md)",
+      "expect_caught_by": "test_the_decision_record_is_written_and_linked"
+    },
+    {
+      "id": "spotter-rule-allows-two-writers",
+      "target": "tests/test_spotter_permissions.py",
+      "why": "the rule lets a second job hold contents: write.",
+      "find": "    if len(writers) > 1:\n",
+      "replace": "    if len(writers) > 5:\n",
+      "expect_caught_by": "test_each_wrong_workflow_is_caught"
+    },
+    {
+      "id": "spotter-rule-lets-the-model-write",
+      "target": "tests/test_spotter_permissions.py",
+      "why": "the rule lets a job hold the model and contents: write together.",
+      "find": "        if uses_model and writes:\n",
+      "replace": "        if False:\n",
+      "expect_caught_by": "test_each_wrong_workflow_is_caught"
+    }
+  ]
+}
