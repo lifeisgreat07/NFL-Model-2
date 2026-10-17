@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-10-17T04:48:34Z",
+  "generated_utc": "2026-10-17T07:18:10Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 575,
-    "audits_superseded": 117,
-    "pull_requests_audited": 458,
+    "audits_total": 577,
+    "audits_superseded": 118,
+    "pull_requests_audited": 459,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 3582,
+    "claims_checked": 3590,
     "discrepancies_found": 25,
-    "unverifiable": 408,
+    "unverifiable": 409,
     "pull_requests_with_a_discrepancy": 16,
     "reports_disagreeing_with_themselves": 37
   },
@@ -10212,6 +10212,45 @@
       "confirmed": 5,
       "discrepancies": 0,
       "unverifiable": 2,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 521,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/521#issuecomment-6230569719",
+      "posted_utc": "2026-10-17T06:14:19Z",
+      "head": "1f9abc0",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 7,
+      "confirmed": 5,
+      "discrepancies": 1,
+      "unverifiable": 1,
+      "overall": "NEEDS HUMAN REVIEW",
+      "implicated": [
+        "tests/test_line_judge_planted.py"
+      ],
+      "inconsistencies": [
+        "prose says Confirmed: 6, block has 5",
+        "prose says Unverifiable: 0, block has 1"
+      ],
+      "superseded": true
+    },
+    {
+      "pr": 521,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/521#issuecomment-6231111199",
+      "posted_utc": "2026-10-17T07:17:00Z",
+      "head": "1f9abc0",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 8,
+      "confirmed": 7,
+      "discrepancies": 0,
+      "unverifiable": 1,
       "overall": "SAFE TO MERGE",
       "implicated": [],
       "inconsistencies": [],
