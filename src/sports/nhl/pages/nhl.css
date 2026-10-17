@@ -105,3 +105,7 @@ html[data-density="compact"] .nhl-row{min-height:40px;}
   .nhl-row{display:none !important;}
   .nhl-row-detail{display:block !important;}
 }
+
+/* TRIAL ONLY (never merged): two planted defects for Spotter. */
+@media (max-width:600px){ .nhl-table{ min-width:900px; } }
+@media (prefers-color-scheme:dark){ .nhl-table td{ color:#26262a; } }
