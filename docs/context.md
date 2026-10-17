@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-16 (session 1014-15, Friday: Stage 80 done, the audit complete; Stage 44 done)
+Last updated: 2026-10-17 (session 1016-17, Saturday: Line Judge and canary fixes done; Stage 43 items 1-2 done, item 3 waiting on Mark)
 
 ---
 
@@ -16,14 +16,14 @@ figure. The NFL lives in `src/sports/nfl/` and `*/nfl/`; shared modules in `src/
 **The product is Sportalytics** (Stage 67). **Live:** home `/`, NFL `/nfl/` (Model **v2.6**),
 NHL `/nhl/` (day board), NBA `/nba/` (day board, empty until opening night). One theme key, `site:theme`.
 
-**The 2026-10-13 UI/UX audit is done** (Stages 75-80; text in `docs/history/09-more-sports.md`).
-Stages 75-79 are #436-#493 (by item in `memory/2026-10-15.md` and `memory/2026-10-16.md`).
-**Stage 80 is done:** 54, 59, 52, 53 are #494, #496, #498, #499; 55-58 are #500, #501, #503,
-#505; 61, 62 are #507, #508; the NHL/NBA accuracy fix is #510; 63 is #511; 64 is #512;
-Expand all is #513; item 60 was #452.
-**After Stage 80 (Mark's yes 10-16):** the NHL board's eyebrow names the week it shows (#514);
-**Stage 44 is done:** Line Judge judges the daily runs and the refresh (#515), and a finding now
-gets an agent's diagnosis on its alert, with a weekly digest on one standing issue (#516).
+**The 2026-10-13 UI/UX audit is done** (Stages 75-80, #436-#513; items by PR in `memory/2026-10-15.md`
+and `memory/2026-10-16.md`; text in `docs/history/09-more-sports.md`).
+**After Stage 80:** the NHL eyebrow names its week (#514); Stage 44 is done: Line Judge judges the daily
+runs and the refresh (#515), and a finding gets an agent's diagnosis and a weekly digest (#516).
+**Overnight 10-16 into 10-17 (Mark's relaxed rule):** #517 is fixed (#519 job logs; #521 no judging of GitHub's
+late copy of a slot cron-job.org served); #495 by #523 (the NHL canary waits for an unsettled box score); #526
+keeps the synthetic league out of the clock-change hour. **Stage 43 (Spotter):** item 1 is #524, item 2 is #525;
+**item 3 is #527**, green and SAFE, **left open for Mark**: the first write permission and the first model.
 
 **Decided, Mark 2026-10-14:** results read **Correct / Missed** on every surface and every sport
 (Stage 77 item 26; this replaces Stage 64's "right so far"). Stage 78 item 36 takes option B: the
@@ -42,8 +42,9 @@ A reminder is set for the night itself.
 issue #428, whose first test since #429 is the 10-14 nightly shuffled suite (GitHub starts it hours late).
 Live scores (#507) are new: the first NBA night (10-20) is their first real test there.
 
-**Single next action:** read Line Judge's first weekly digest (Mon 10-19, 08:23 UTC) and the
-NBA's opening night (Tue 10-20); then Stage 43 (Spotter).
+**Single next action:** Mark reads #527 (Stage 43 item 3) and merges it or not. The first pull
+request after it merges is the reading job's first real run, so read the comment it posts. Then
+Line Judge's first weekly digest (Mon 10-19, 08:23 UTC) and the NBA's opening night (Tue 10-20).
 
 ## Open work, and what each is waiting on
 
@@ -52,7 +53,7 @@ NBA's opening night (Tue 10-20); then Stage 43 (Spotter).
 | Stage 44 (Line Judge) | Done: #435, #515, #516 | Its first digest, Mon 10-19 |
 | Stage 42 | Items 1-4 done | 5: after four on-time weeks |
 | Stage 39 | Items 1-4, 7 done | 5 in December; 6 wants a rendered choice in January |
-| Stage 43 (Spotter) | Not started | Next |
+| Stage 43 (Spotter) | Items 1-2 done (#524, #525); item 3 is #527, green and SAFE | Mark's review of #527; then 4 (a planted defect and a clean page) and 5 (Booth cites Spotter, which edits Booth's instructions) |
 | #428, #431 | Open | Mark |
 | Stage 40 | Not to be touched | Mark |
 
@@ -61,6 +62,9 @@ check for Booth. Never start the mutation runner under pythonw, and never two ru
 
 ## Known and deliberately not fixed
 
+- **Spotter's reading job takes its protocol and its checker from the pull request's base**, so it skips (and passes) on a base that predates them, and #527's own run cannot exercise it. The branch `s43-spotter-trial` (a planted-defect NHL stylesheet on top of #527) is pushed and unused: delete it, or open it as a draft on #527 after the merge to see Spotter's first reading.
+- **Spotter's head and base pictures can differ by a few antialiased pixels** (5 on one NHL phone picture in #525's second run); no pixel comparison is made on purpose. Both checkouts take full history because the NFL page reads the git log.
+- **NFL Line Judge's on-time check has the same late-copy exposure at its 7h slots** as the daily runs had before #521, and a GitHub 14:00 NHL copy that starts late into 21:xx is measured against the latest slot of any cron.
 - **GitHub's cron starts hours late**; cron-job.org starts on time. Every Weekly update slot runs once (slot guard).
 - **Booth's prose can disagree with its own verdict block** (#286 ... #433). Re-run once; red again for the same reason, merge and log it.
 - **Booth can say NEEDS HUMAN REVIEW on an all-green PR** whose only unverified claims are browser renders (#437, #488, #490). That is Mark's call, not a re-run; on 10-16 he made it standing for the session (0 discrepancies, only renders, measurements or mutation scope unverified: merge).
