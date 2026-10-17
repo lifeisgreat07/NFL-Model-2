@@ -49,7 +49,13 @@ from typing import Any
 import pandas as pd
 
 from src.core import missed_dispatch
-from src.core.start_delay import WARN_HOURS, WARN_HOURS_FOR, crons, latest_slot, served_delay
+from src.core.start_delay import (
+    WARN_HOURS,
+    WARN_HOURS_FOR,
+    crons,
+    latest_slot,
+    served_delay,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 SPORTS = ('nhl', 'nba')
