@@ -1,0 +1,69 @@
+{
+  "target": "src/agents/spotter_comment.py",
+  "tests": "tests/test_spotter_read.py",
+  "cases": [
+    {
+      "id": "spotter-comment-approve-not-a-verdict",
+      "why": "'approve' stops counting as a verdict word, so a reading can approve the pull request.",
+      "find": "\"approved?|reject(?:ed)?|verdict)",
+      "replace": "\"reject(?:ed)?|verdict)",
+      "expect_caught_by": "test_a_reading_is_refused_for_what_it_carries"
+    },
+    {
+      "id": "spotter-comment-links-allowed",
+      "why": "a reading may carry a link or an image, which renders as a request to a stranger's server with whatever the model put in it.",
+      "find": "    if re.search(r'https?:|www\\.|\\]\\(|!\\[|<img|<a\\b', text, re.I):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_reading_is_refused_for_what_it_carries"
+    },
+    {
+      "id": "spotter-comment-mentions-allowed",
+      "why": "a reading may @-mention a user, so a picture's text can make Spotter ping someone.",
+      "find": "    if re.search(r'(^|\\s)@\\w', text):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_reading_is_refused_for_what_it_carries"
+    },
+    {
+      "id": "spotter-comment-cites-a-picture-that-was-not-taken",
+      "why": "a reading may cite a picture that does not exist, so a claim cannot be traced to a file.",
+      "find": "    for gone in sorted(cited - stems):",
+      "replace": "    for gone in sorted(cited - cited):",
+      "expect_caught_by": "test_a_reading_is_refused_for_what_it_carries"
+    },
+    {
+      "id": "spotter-comment-cites-nothing",
+      "why": "a reading that cites no picture is posted, so a general remark passes as a reading of these pictures.",
+      "find": "    if not cited:",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_reading_is_refused_for_what_it_carries"
+    },
+    {
+      "id": "spotter-comment-marker-not-first",
+      "why": "the marker is not the first line, so the next run cannot find Spotter's comment and posts a second.",
+      "find": "        MARKER,\n        '## Spotter: the pages this change can alter',",
+      "replace": "        '## Spotter: the pages this change can alter',\n        MARKER,",
+      "expect_caught_by": "test_the_comment_starts_with_the_marker_and_lists_every_picture"
+    },
+    {
+      "id": "spotter-comment-lists-no-head",
+      "why": "the table lists the base's pictures and not the head's.",
+      "find": "for lab in ('base', 'head') if lab in pair",
+      "replace": "for lab in ('base',) if lab in pair",
+      "expect_caught_by": "test_the_comment_starts_with_the_marker_and_lists_every_picture"
+    },
+    {
+      "id": "spotter-comment-refusal-says-the-word",
+      "why": "the reason a reading was refused names the verdict word, so the posted comment carries one.",
+      "find": "'the reading sounds like a decision; Spotter advises and Booth decides'",
+      "replace": "'the reading carries a verdict word; Spotter advises and Booth decides'",
+      "expect_caught_by": "test_the_whole_comment_carries_no_verdict_word_even_the_parts_the_checker_wrote"
+    },
+    {
+      "id": "spotter-comment-refused-reading-posted-anyway",
+      "why": "a reading that failed the check is posted all the same.",
+      "find": "    if reading is not None and not problems:",
+      "replace": "    if reading is not None:",
+      "expect_caught_by": "test_a_refused_reading_is_replaced_by_its_reasons_but_the_pictures_stay"
+    }
+  ]
+}

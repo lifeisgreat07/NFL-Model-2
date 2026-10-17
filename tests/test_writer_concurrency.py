@@ -13,13 +13,26 @@ from pathlib import Path
 import pytest
 
 WF = Path(__file__).resolve().parents[1] / '.github' / 'workflows'
+# Workflows whose push is not to main. Their own queue is named here and held by the test below.
+OTHER_BRANCH = {'spotter.yml': ('spotter-renders', 'group: spotter-publish\n      cancel-in-progress: false')}
 WRITERS = sorted(p for p in WF.glob('*.yml')
-                 if re.search(r'git push|git-auto-commit-action', p.read_text(encoding='utf-8')))
+                 if p.name not in OTHER_BRANCH
+                 and re.search(r'git push|git-auto-commit-action', p.read_text(encoding='utf-8')))
 
 
 def test_the_writers_are_found():
     names = {p.name for p in WRITERS}
     assert {'nfl-weekend-refresh.yml', 'nfl-weekly-update.yml', 'nhl-daily.yml', 'nba-daily.yml'} <= names
+
+
+@pytest.mark.parametrize('name', sorted(OTHER_BRANCH))
+def test_a_writer_that_leaves_main_alone_pushes_only_its_own_branch_and_queues(name):
+    branch, queue = OTHER_BRANCH[name]
+    text = (WF / name).read_text(encoding='utf-8').replace('\r\n', '\n')
+    pushes = re.findall(r'git push[^\n]*', text)
+    assert pushes and all(f'origin {branch}' in p for p in pushes), pushes
+    assert not re.search(r'git push[^\n]*\bmain\b', text), f'{name} is listed as leaving main alone'
+    assert queue in text, f'{name} has no queue for its pushes'
 
 
 @pytest.mark.parametrize('path', WRITERS, ids=lambda p: p.name)

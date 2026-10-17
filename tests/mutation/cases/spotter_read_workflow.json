@@ -1,0 +1,90 @@
+{
+  "target": ".github/workflows/spotter.yml",
+  "tests": "tests/test_spotter_read.py",
+  "cases": [
+    {
+      "id": "spotter-read-model-may-run-bash",
+      "why": "the model is given Bash, so a picture that talks to it can make it run a command with the job's comment token.",
+      "find": "--allowedTools \"Read,Glob,Grep,Write\"",
+      "replace": "--allowedTools \"Read,Glob,Grep,Write,Bash\"",
+      "expect_caught_by": "test_the_model_can_read_and_write_one_file_and_cannot_run_a_command"
+    },
+    {
+      "id": "spotter-read-protocol-from-the-head",
+      "why": "the reading job checks out the pull request's head, so the change being looked at can rewrite the protocol and the checker.",
+      "find": "          ref: ${{ github.event.pull_request.base.sha }}\n\n      # The pull request that adds the reader",
+      "replace": "          ref: ${{ github.event.pull_request.head.sha }}\n\n      # The pull request that adds the reader",
+      "expect_caught_by": "test_the_model_works_from_the_bases_protocol_never_the_pull_requests"
+    },
+    {
+      "id": "spotter-read-checker-not-set-aside",
+      "why": "the checker is not copied out before the model starts, so what the model writes could change what vets it.",
+      "find": "cp src/agents/__init__.py src/agents/spotter_comment.py \"$RUNNER_TEMP/spotter-check/src/agents/\"",
+      "replace": "true",
+      "expect_caught_by": "test_the_checker_is_copied_aside_before_the_model_starts"
+    },
+    {
+      "id": "spotter-read-comment-only-on-success",
+      "why": "the comment is posted only if the model step succeeded, so a failed run leaves the pull request with no trace.",
+      "find": "if: ${{ !cancelled() && steps.base.outputs.ready == 'true' }}",
+      "replace": "if: ${{ steps.base.outputs.ready == 'true' }}",
+      "expect_caught_by": "test_the_comment_is_posted_from_the_copy_after_the_model_and_even_if_it_failed"
+    },
+    {
+      "id": "spotter-read-edits-the-last-comment",
+      "why": "a new comment is made by editing the last one, which is as likely to be Booth's report.",
+      "find": "gh pr comment \"$PR\" --repo \"$GITHUB_REPOSITORY\" --body-file \"$out\"",
+      "replace": "gh pr comment \"$PR\" --repo \"$GITHUB_REPOSITORY\" --edit-last --body-file \"$out\"",
+      "expect_caught_by": "test_the_comment_that_is_updated_is_spotters_own_not_booths"
+    },
+    {
+      "id": "spotter-read-job-may-write-contents",
+      "why": "the job that holds the model is granted contents: write.",
+      "find": "      contents: read\n      pull-requests: write\n",
+      "replace": "      contents: write\n      pull-requests: write\n",
+      "expect_caught_by": "test_the_reading_job_holds_the_model_and_read_and_comment_only"
+    },
+    {
+      "id": "spotter-publish-force-pushes",
+      "why": "the publish job force-pushes the orphan branch, so a bad run could rewrite what other pull requests link to.",
+      "find": "if git push -q origin spotter-renders; then",
+      "replace": "if git push -q --force origin spotter-renders; then",
+      "expect_caught_by": "test_the_publish_job_pushes_the_orphan_branch_and_only_that_branch"
+    },
+    {
+      "id": "spotter-publish-runs-a-script",
+      "why": "the job that can write runs a language runtime, which is the first step toward running a pull request's code.",
+      "find": "            git add -A\n",
+      "replace": "            python3 -c 'print(1)'\n            git add -A\n",
+      "expect_caught_by": "test_the_publish_job_runs_no_model_and_none_of_the_pull_requests_code"
+    },
+    {
+      "id": "spotter-publish-never-prunes",
+      "why": "closed pull requests' pictures are never removed, so the branch only grows.",
+      "find": "then rm -rf \"$dir\"; fi",
+      "replace": "then true \"$dir\"; fi",
+      "expect_caught_by": "test_the_publish_job_prunes_the_folders_of_pull_requests_that_closed"
+    },
+    {
+      "id": "spotter-publish-may-be-cancelled",
+      "why": "a publish is cancelled half-way through its push by the next one.",
+      "find": "cancel-in-progress: false",
+      "replace": "cancel-in-progress: true",
+      "expect_caught_by": "test_two_publishes_never_run_at_once_and_none_is_cancelled_half_way"
+    },
+    {
+      "id": "spotter-publish-pushes-main",
+      "why": "the publish job pushes to main, where every other writer is held to one queue and a pull request's pictures do not belong.",
+      "find": "git push -q origin spotter-renders; then",
+      "replace": "git push -q origin HEAD:main; then",
+      "expect_caught_by": "test_the_publish_job_pushes_the_orphan_branch_and_only_that_branch"
+    },
+    {
+      "id": "spotter-read-model-runs-without-a-protocol",
+      "why": "the model step no longer waits for the base to have the protocol and the checker, so a base that predates the reader runs the model with no instructions and fails the pull request.",
+      "find": "      - name: Run Spotter\n        if: steps.base.outputs.ready == 'true'\n",
+      "replace": "      - name: Run Spotter\n",
+      "expect_caught_by": "test_a_base_without_the_reader_skips_every_reading_step_and_does_not_fail"
+    }
+  ]
+}

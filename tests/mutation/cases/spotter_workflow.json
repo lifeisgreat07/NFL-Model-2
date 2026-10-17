@@ -12,9 +12,9 @@
     {
       "id": "spotter-workflow-unbounded",
       "why": "the job has no time limit.",
-      "find": "    timeout-minutes: 25\n",
-      "replace": "",
-      "expect_caught_by": "test_the_workflow_is_a_bounded_job_on_the_pinned_runner"
+      "find": "    timeout-minutes: 25\n    outputs:\n",
+      "replace": "    outputs:\n",
+      "expect_caught_by": "test_every_job_is_bounded_and_on_the_pinned_runner"
     },
     {
       "id": "spotter-workflow-upload-may-be-empty",

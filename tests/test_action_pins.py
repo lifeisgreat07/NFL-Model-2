@@ -30,14 +30,14 @@ WORKFLOWS = ROOT / '.github' / 'workflows'
 
 # action -> how many uses the scan must find
 PINNED = {
-    'anthropics/claude-code-action': 3,
+    'anthropics/claude-code-action': 4,
     'stefanzweifel/git-auto-commit-action': 3,
-    'actions/checkout': 36,
+    'actions/checkout': 37,
     'actions/setup-python': 34,
     'actions/setup-node': 4,
     'actions/cache': 1,
     'actions/upload-artifact': 8,
-    'actions/download-artifact': 2,
+    'actions/download-artifact': 4,
     'actions/upload-pages-artifact': 1,
     'actions/deploy-pages': 1,
 }
