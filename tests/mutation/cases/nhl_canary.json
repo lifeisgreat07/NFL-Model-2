@@ -22,6 +22,62 @@
       "find": "    ('market', step_market), ('goalies', step_goalies), ('roster', step_roster),",
       "replace": "    ('market', step_market), ('roster', step_roster),",
       "expect_caught_by": "test_every_read_the_daily_run_makes_has_a_step"
+    },
+    {
+      "id": "nhl-canary-unsettled-fails-at-once",
+      "why": "a final the league has not settled yet fails the night, as on 2026-10-16 (issue 495).",
+      "find": "            if hours >= UNSETTLED_HOURS:\n",
+      "replace": "            if True:\n",
+      "expect_caught_by": "test_a_recent_final_the_league_has_not_settled_does_not_fail_the_night"
+    },
+    {
+      "id": "nhl-canary-unsettled-never-fails",
+      "why": "a final that never settles is waited for for ever and nothing says so.",
+      "find": "            if hours >= UNSETTLED_HOURS:\n",
+      "replace": "            if False:\n",
+      "expect_caught_by": "test_a_final_still_unsettled_past_the_limit_fails_the_night_naming_the_game"
+    },
+    {
+      "id": "nhl-canary-limit-off-by-one",
+      "why": "a game exactly at the limit is still waited for.",
+      "find": "            if hours >= UNSETTLED_HOURS:\n",
+      "replace": "            if hours > UNSETTLED_HOURS:\n",
+      "expect_caught_by": "test_a_final_still_unsettled_past_the_limit_fails_the_night_naming_the_game"
+    },
+    {
+      "id": "nhl-canary-feed-change-waited-for",
+      "why": "any error reading the box score is waited for, so a feed that changed shape passes.",
+      "find": "        except history.HistoryError as exc:\n            if hours",
+      "replace": "        except Exception as exc:\n            if hours",
+      "expect_caught_by": "test_a_feed_that_changed_shape_still_fails_the_night"
+    },
+    {
+      "id": "nhl-canary-oldest-final-read",
+      "why": "the oldest final is read, not the newest, so tonight's box score is never checked.",
+      "find": ".sort_values('_start', ascending=False)\n",
+      "replace": ".sort_values('_start', ascending=True)\n",
+      "expect_caught_by": "test_the_newest_by_start_is_read_whatever_order_the_schedule_lists_them_in"
+    },
+    {
+      "id": "nhl-canary-looks-through-every-final",
+      "why": "every final is read each night, not the newest few.",
+      "find": "    for _, g in finals.head(LOOKBACK).iterrows():\n",
+      "replace": "    for _, g in finals.iterrows():\n",
+      "expect_caught_by": "test_only_the_newest_few_finals_are_looked_through"
+    },
+    {
+      "id": "nhl-canary-all-unsettled-fails",
+      "why": "when every recent final is unsettled the night fails, though nothing is wrong yet.",
+      "find": "    return (f'no settled box score yet:",
+      "replace": "    raise history.HistoryError('unsettled')\n    return (f'no settled box score yet:",
+      "expect_caught_by": "test_when_every_recent_final_is_unsettled_the_night_still_passes_and_says_so"
+    },
+    {
+      "id": "nhl-canary-stops-at-first-settled",
+      "why": "the look-through stops at the first settled final, so an older final that never settles is never seen.",
+      "find": "        settled.append(f'game {row[\"game_id\"]}: shots {row[\"home_sog\"]}-{row[\"away_sog\"]}, both starters flagged')\n",
+      "replace": "        settled.append(f'game {row[\"game_id\"]}: shots {row[\"home_sog\"]}-{row[\"away_sog\"]}, both starters flagged')\n        break\n",
+      "expect_caught_by": "test_a_stuck_final_behind_a_settled_newer_one_is_still_found"
     }
   ]
 }
