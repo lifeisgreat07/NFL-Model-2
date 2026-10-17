@@ -1,0 +1,96 @@
+{
+ "game_id": "2026020121",
+ "season": 2026,
+ "slate": "2026-10-17",
+ "start_utc": "2026-10-17T17:00:00Z",
+ "home": "WSH",
+ "away": "NJD",
+ "model_a": 0.5384,
+ "model_b": null,
+ "pick": "WSH",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": 0.561362,
+  "shot_matchup": -4.677207,
+  "goalie_matchup_2000": 0.002562
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8480313,
+   "name": "Logan Thompson",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8474596,
+   "name": "Jake Allen",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-16",
+  "read_utc": "2026-10-17T14:01:49Z",
+  "home": [
+   {
+    "name": "Justin Sourdif",
+    "position": "RW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Matt Roy",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Patrick Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Pierre-Luc Dubois",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Rasmus Sandin",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Connor Brown",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Luke Evangelista",
+    "position": "RW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Nick Bjugstad",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Seamus Casey",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-17T14:01:49Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-16",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14523,
+  "training_games_priced": 7427
+ }
+}

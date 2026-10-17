@@ -398,13 +398,31 @@
  {
   "game_id": "2026020119",
   "pick": "COL",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-16T21:01:50Z"
  },
  {
   "game_id": "2026020120",
   "pick": "ANA",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-16T21:01:50Z"
+ },
+ {
+  "game_id": "2026020121",
+  "pick": "WSH",
+  "result": "pending",
+  "saved_utc": "2026-10-17T14:01:49Z"
+ },
+ {
+  "game_id": "2026020122",
+  "pick": "CAR",
+  "result": "pending",
+  "saved_utc": "2026-10-17T14:01:49Z"
+ },
+ {
+  "game_id": "2026020123",
+  "pick": "TBL",
+  "result": "pending",
+  "saved_utc": "2026-10-17T14:01:49Z"
  }
 ]
