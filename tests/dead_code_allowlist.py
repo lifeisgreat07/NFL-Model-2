@@ -14,8 +14,8 @@ _.handleError
 # override declines every redirect so the caller can follow the signed log
 # link by hand without the token (src/core/job_logs.py).
 _.redirect_request
-fp
-newurl
+_.fp
+_.newurl
 
 # A read_text override must take the encoding argument its callers pass
 # (src/core/template_parts.py), even though it reads a joined string.
