@@ -87,20 +87,32 @@ def test_the_renderer_compares_no_pixels():
 
 # --- the workflow -----------------------------------------------------------------------------
 
-def test_the_workflow_holds_no_model_and_reads_only():
-    t = text(WORKFLOW)
+def job(name):
+    body = text(WORKFLOW).split('\njobs:\n', 1)[1]
+    parts = re.split(r'\n(?=  [A-Za-z][\w-]*:[ ]*\n)', '\n' + body)
+    found = {re.match(r'\n?  ([\w-]+):', p).group(1): p for p in parts if re.match(r'\n?  ([\w-]+):', p)}
+    return found[name]
+
+
+def test_the_render_job_holds_no_model_and_reads_only():
+    # The workflow's other jobs (item 3) publish and read; this job runs the pull request's code.
+    t = job('render')
     assert 'anthropics/claude-code-action' not in t
-    assert not re.search(r':\s*write\b', t.replace('# ', '#')), 'the render job writes nothing'
-    assert re.search(r'^permissions:\n  contents: read\n', t, re.M)
+    assert 'permissions:' not in t, 'the render job takes the workflow\'s read-only grant and nothing more'
+    assert not re.search(r':\s*write\b', t.replace('# ', '#'))
+    assert re.search(r'^permissions:\n  contents: read\n', text(WORKFLOW), re.M)
 
 
-def test_the_workflow_is_a_bounded_job_on_the_pinned_runner():
-    t = text(WORKFLOW)
+@pytest.mark.parametrize('name', ['render', 'publish', 'read'])
+def test_every_job_is_bounded_and_on_the_pinned_runner(name):
+    t = job(name)
     assert '    runs-on: ubuntu-24.04\n' in t and re.search(r'    timeout-minutes: \d+\n', t)
 
 
 def test_the_workflow_does_not_run_for_a_fork():
-    assert 'if: github.event.pull_request.head.repo.full_name == github.repository' in text(WORKFLOW)
+    # The render job is the only one that starts: the others need it, and it publishes nothing for a fork.
+    assert 'if: github.event.pull_request.head.repo.full_name == github.repository' in job('render')
+    assert "needs: [render" in job('publish') and "needs.render.outputs.pictures == 'true'" in job('publish')
 
 
 def test_the_head_and_the_base_are_checked_out_by_sha_into_their_own_folders():
