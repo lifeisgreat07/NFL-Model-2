@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 6,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-18T21:47:45Z",
+  "read_at": "2026-10-18T23:41:54Z",
   "games": [
     {
       "away": "SEA",
@@ -97,9 +97,9 @@
     {
       "away": "ARI",
       "home": "LA",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 18,
+      "home_score": 16,
       "spread_line": 12.5,
       "neutral_site": false,
       "venue": "SoFi Stadium"
@@ -107,9 +107,9 @@
     {
       "away": "LAC",
       "home": "KC",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 6,
+      "home_score": 22,
       "spread_line": 7.5,
       "neutral_site": false,
       "venue": "GEHA Field at Arrowhead Stadium"
@@ -117,9 +117,9 @@
     {
       "away": "BUF",
       "home": "LV",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 33,
+      "home_score": 30,
       "spread_line": -5.5,
       "neutral_site": false,
       "venue": "Allegiant Stadium"
