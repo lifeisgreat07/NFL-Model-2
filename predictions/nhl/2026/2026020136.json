@@ -1,0 +1,92 @@
+{
+ "game_id": "2026020136",
+ "season": 2026,
+ "slate": "2026-10-18",
+ "start_utc": "2026-10-19T00:00:00Z",
+ "home": "CGY",
+ "away": "CAR",
+ "model_a": 0.2713,
+ "model_b": 0.3527,
+ "pick": "CAR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -2.097588,
+  "shot_matchup": -9.46108,
+  "goalie_matchup_2000": 6.1e-05
+ },
+ "market": {
+  "game_id": "2026020136",
+  "start_utc": "2026-10-19T00:00:00Z",
+  "home": "CGY",
+  "away": "CAR",
+  "book": "DraftKings",
+  "home_price": 180.0,
+  "away_price": -218.0,
+  "home_prob": 0.3425,
+  "read_utc": "2026-10-18T21:01:46Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482445,
+   "name": "Devin Cooley",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/SteinbergYYC/status/2111857712556626133"
+  },
+  "away": {
+   "player_id": 8483548,
+   "name": "Brandon Bussi",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://thehockeynews.com/nhl/carolina-hurricanes/game-day/carolina-hurricanes-calgary-flames-lineups-game-preview-and-how-to-watch-1"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-18",
+  "read_utc": "2026-10-18T21:01:46Z",
+  "home": [
+   {
+    "name": "Jonathan Huberdeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Samuel Honzek",
+    "position": "LW",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Nikishin",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jordan Staal",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Seth Jarvis",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Taylor Hall",
+    "position": "LW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-18T21:01:46Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-17",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14537,
+  "training_games_priced": 7427
+ }
+}
