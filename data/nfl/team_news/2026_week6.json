@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 6,
-  "read_at": "2026-10-17T09:19:52Z",
+  "read_at": "2026-10-18T21:47:48Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-10-17T06:01:28Z"
+    "depth_chart_snapshot": "2026-10-18T12:02:37Z"
   },
   "teams": {
     "DEN": {
@@ -84,7 +84,7 @@
         }
       ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "ATL": {
       "qb": {
@@ -112,18 +112,13 @@
       "injury_report": "published",
       "out": [
         {
-          "name": "Dayo Odeyingbo",
-          "position": "DE",
-          "injury": "Quadricep"
-        },
-        {
           "name": "T.J. Edwards",
           "position": "LB",
           "injury": "Hamstring"
         }
       ],
       "doubtful": [],
-      "questionable_starters": 2
+      "questionable_starters": 3
     },
     "CLE": {
       "qb": {
@@ -145,13 +140,18 @@
       "injury_report": "published",
       "out": [
         {
+          "name": "Cam Jurgens",
+          "position": "C",
+          "injury": "Concussion"
+        },
+        {
           "name": "Lamar Jackson",
           "position": "QB",
           "injury": "Ankle"
         }
       ],
       "doubtful": [],
-      "questionable_starters": 1
+      "questionable_starters": 0
     },
     "IND": {
       "qb": {
@@ -207,7 +207,7 @@
         }
       ],
       "doubtful": [],
-      "questionable_starters": 3
+      "questionable_starters": 4
     },
     "NYJ": {
       "qb": {
@@ -274,11 +274,6 @@
       "injury_report": "published",
       "out": [
         {
-          "name": "Jalen Hurts",
-          "position": "QB",
-          "injury": "Calf"
-        },
-        {
           "name": "Saquon Barkley",
           "position": "RB",
           "injury": "Hamstring"
@@ -296,7 +291,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 3
+      "questionable_starters": 4
     },
     "TB": {
       "qb": {
@@ -335,7 +330,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 4
+      "questionable_starters": 3
     },
     "LA": {
       "qb": {
@@ -459,13 +454,7 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [
-        {
-          "name": "Jonathan Ford",
-          "position": "DT",
-          "injury": "Calf"
-        }
-      ],
+      "out": [],
       "doubtful": [],
       "questionable_starters": 2
     },
@@ -487,9 +476,20 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Marques Sigle",
+          "position": "S",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Nick Bosa",
+          "position": "DE",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "WAS": {
       "qb": {
@@ -498,9 +498,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Jacory Croskey-Merritt",
+          "position": "RB",
+          "injury": "Groin"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     }
   }
 }

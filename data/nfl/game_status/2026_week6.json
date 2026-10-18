@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 6,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-17T05:17:46Z",
+  "read_at": "2026-10-18T21:47:45Z",
   "games": [
     {
       "away": "SEA",
@@ -17,9 +17,9 @@
     {
       "away": "HOU",
       "home": "JAX",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 34,
+      "home_score": 31,
       "spread_line": 2.5,
       "neutral_site": true,
       "venue": "Wembley Stadium"
@@ -27,9 +27,9 @@
     {
       "away": "CHI",
       "home": "ATL",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 31,
+      "home_score": 23,
       "spread_line": -1.5,
       "neutral_site": false,
       "venue": "Mercedes-Benz Stadium"
@@ -37,9 +37,9 @@
     {
       "away": "BAL",
       "home": "CLE",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 10,
+      "home_score": 13,
       "spread_line": -3.0,
       "neutral_site": false,
       "venue": "Huntington Bank Field"
@@ -47,19 +47,19 @@
     {
       "away": "TEN",
       "home": "IND",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
-      "spread_line": 7.0,
+      "status": "final",
+      "away_score": 26,
+      "home_score": 20,
+      "spread_line": 6.5,
       "neutral_site": false,
       "venue": "Lucas Oil Stadium"
     },
     {
       "away": "NYJ",
       "home": "NE",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 19,
+      "home_score": 26,
       "spread_line": 7.5,
       "neutral_site": false,
       "venue": "Gillette Stadium"
@@ -67,9 +67,9 @@
     {
       "away": "NO",
       "home": "NYG",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 34,
+      "home_score": 27,
       "spread_line": -1.5,
       "neutral_site": false,
       "venue": "MetLife Stadium"
@@ -77,9 +77,9 @@
     {
       "away": "CAR",
       "home": "PHI",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 25,
+      "home_score": 14,
       "spread_line": -3.0,
       "neutral_site": false,
       "venue": "Lincoln Financial Field"
@@ -87,9 +87,9 @@
     {
       "away": "PIT",
       "home": "TB",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 26,
+      "home_score": 19,
       "spread_line": -2.5,
       "neutral_site": false,
       "venue": "Raymond James Stadium"
@@ -97,7 +97,7 @@
     {
       "away": "ARI",
       "home": "LA",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
       "spread_line": 12.5,
@@ -107,7 +107,7 @@
     {
       "away": "LAC",
       "home": "KC",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
       "spread_line": 7.5,
@@ -117,10 +117,10 @@
     {
       "away": "BUF",
       "home": "LV",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
-      "spread_line": -4.5,
+      "spread_line": -5.5,
       "neutral_site": false,
       "venue": "Allegiant Stadium"
     },
@@ -130,7 +130,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 1.5,
+      "spread_line": -1.5,
       "neutral_site": false,
       "venue": "Lambeau Field"
     },
