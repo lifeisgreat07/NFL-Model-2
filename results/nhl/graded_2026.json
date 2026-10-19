@@ -494,13 +494,13 @@
  {
   "game_id": "2026020135",
   "pick": "MIN",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-18T21:01:46Z"
  },
  {
   "game_id": "2026020136",
   "pick": "CAR",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-18T21:01:46Z"
  }
 ]
