@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 6,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-19T01:47:35Z",
+  "read_at": "2026-10-19T05:37:36Z",
   "games": [
     {
       "away": "SEA",
@@ -127,9 +127,9 @@
     {
       "away": "DAL",
       "home": "GB",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 13,
+      "home_score": 23,
       "spread_line": -1.5,
       "neutral_site": false,
       "venue": "Lambeau Field"
