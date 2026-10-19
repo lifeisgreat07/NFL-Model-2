@@ -502,5 +502,29 @@
   "pick": "CAR",
   "result": "wrong",
   "saved_utc": "2026-10-18T21:01:46Z"
+ },
+ {
+  "game_id": "2026020137",
+  "pick": "NYR",
+  "result": "pending",
+  "saved_utc": "2026-10-19T21:01:47Z"
+ },
+ {
+  "game_id": "2026020138",
+  "pick": "COL",
+  "result": "pending",
+  "saved_utc": "2026-10-19T21:01:47Z"
+ },
+ {
+  "game_id": "2026020139",
+  "pick": "TOR",
+  "result": "pending",
+  "saved_utc": "2026-10-19T21:01:47Z"
+ },
+ {
+  "game_id": "2026020140",
+  "pick": "UTA",
+  "result": "pending",
+  "saved_utc": "2026-10-19T21:01:47Z"
  }
 ]

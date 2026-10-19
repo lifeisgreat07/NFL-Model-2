@@ -1,0 +1,117 @@
+{
+ "game_id": "2026020139",
+ "season": 2026,
+ "slate": "2026-10-19",
+ "start_utc": "2026-10-19T23:30:00Z",
+ "home": "TOR",
+ "away": "SJS",
+ "model_a": 0.5613,
+ "model_b": 0.5391,
+ "pick": "TOR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.351329,
+  "shot_matchup": -1.456346,
+  "goalie_matchup_2000": 0.002504
+ },
+ "market": {
+  "game_id": "2026020139",
+  "start_utc": "2026-10-19T23:30:00Z",
+  "home": "TOR",
+  "away": "SJS",
+  "book": "DraftKings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514,
+  "read_utc": "2026-10-19T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475683,
+   "name": "Sergei Bobrovsky",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/FriedgeHNIC/status/2112204044186042829?s=20"
+  },
+  "away": {
+   "player_id": 8482137,
+   "name": "Yaroslav Askarov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/CurtisPashelka/status/2112218684479394218?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-19",
+  "read_utc": "2026-10-19T21:01:47Z",
+  "home": [
+   {
+    "name": "Cade Webber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Chris Tanev",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dakota Joshua",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elvis Merzlikins",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "John Tavares",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Max Domi",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Miles Wood",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Nylander",
+    "position": "RW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "William Villeneuve",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-19T21:01:47Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-18",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14539,
+  "training_games_priced": 7427
+ }
+}

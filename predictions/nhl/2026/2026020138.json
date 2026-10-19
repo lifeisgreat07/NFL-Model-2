@@ -1,0 +1,117 @@
+{
+ "game_id": "2026020138",
+ "season": 2026,
+ "slate": "2026-10-19",
+ "start_utc": "2026-10-19T23:00:00Z",
+ "home": "PHI",
+ "away": "COL",
+ "model_a": 0.3288,
+ "model_b": 0.3036,
+ "pick": "COL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.42188,
+  "shot_matchup": -8.694963,
+  "goalie_matchup_2000": 0.000975
+ },
+ "market": {
+  "game_id": "2026020138",
+  "start_utc": "2026-10-19T23:00:00Z",
+  "home": "PHI",
+  "away": "COL",
+  "book": "DraftKings",
+  "home_price": 195.0,
+  "away_price": -238.0,
+  "home_prob": 0.325,
+  "read_utc": "2026-10-19T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479361,
+   "name": "Joseph Woll",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JHallNBCS/status/2112191395448414367?s=20"
+  },
+  "away": {
+   "player_id": 8478406,
+   "name": "Mackenzie Blackwood",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/cmasisak22/status/2112219514322456922"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-19",
+  "read_utc": "2026-10-19T21:01:47Z",
+  "home": [
+   {
+    "name": "Cam York",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nikita Grebenkin",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Owen Tippett",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Ristolainen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Sean Couturier",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Travis Konecny",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyson Foerster",
+    "position": "RW",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Georgii Merkulov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan O'Connor",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nicolas Roy",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Zachary L'Heureux",
+    "position": "LW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-19T21:01:47Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-18",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14539,
+  "training_games_priced": 7427
+ }
+}
