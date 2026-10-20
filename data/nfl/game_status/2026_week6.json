@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 6,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-19T05:37:36Z",
+  "read_at": "2026-10-20T11:02:51Z",
   "games": [
     {
       "away": "SEA",
@@ -137,9 +137,9 @@
     {
       "away": "WAS",
       "home": "SF",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 17,
+      "home_score": 23,
       "spread_line": 7.5,
       "neutral_site": false,
       "venue": "Levi's Stadium"
