@@ -1,0 +1,101 @@
+{
+ "game_id": "2026020145",
+ "season": 2026,
+ "slate": "2026-10-20",
+ "start_utc": "2026-10-20T23:00:00Z",
+ "home": "CBJ",
+ "away": "TOR",
+ "model_a": 0.6096,
+ "model_b": 0.6281,
+ "pick": "CBJ",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.131174,
+  "shot_matchup": 3.96617,
+  "goalie_matchup_2000": 0.002513
+ },
+ "market": {
+  "game_id": "2026020145",
+  "start_utc": "2026-10-20T23:00:00Z",
+  "home": "CBJ",
+  "away": "TOR",
+  "book": "DraftKings",
+  "home_price": -166.0,
+  "away_price": 140.0,
+  "home_prob": 0.5996,
+  "read_utc": "2026-10-20T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482982,
+   "name": "Jet Greaves",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/mark_scheig/status/2112552615993061441?s=20"
+  },
+  "away": {
+   "player_id": 8476932,
+   "name": "Anthony Stolarz",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/FriedgeHNIC/status/2112204044186042829?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-20",
+  "read_utc": "2026-10-20T21:01:43Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Cade Webber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Chris Tanev",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dakota Joshua",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elvis Merzlikins",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "John Tavares",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Max Domi",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Miles Wood",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Villeneuve",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-20T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14543,
+  "training_games_priced": 7427
+ }
+}

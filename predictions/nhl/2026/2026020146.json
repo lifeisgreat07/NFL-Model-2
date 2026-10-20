@@ -1,0 +1,112 @@
+{
+ "game_id": "2026020146",
+ "season": 2026,
+ "slate": "2026-10-20",
+ "start_utc": "2026-10-21T00:00:00Z",
+ "home": "STL",
+ "away": "WPG",
+ "model_a": 0.5672,
+ "model_b": 0.5491,
+ "pick": "STL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.216285,
+  "shot_matchup": -0.290139,
+  "goalie_matchup_2000": 0.00299
+ },
+ "market": {
+  "game_id": "2026020146",
+  "start_utc": "2026-10-21T00:00:00Z",
+  "home": "STL",
+  "away": "WPG",
+  "book": "DraftKings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514,
+  "read_utc": "2026-10-20T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480981,
+   "name": "Joel Hofer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/lkorac10/status/2112609424330375296?s=20"
+  },
+  "away": {
+   "player_id": 8479973,
+   "name": "Stuart Skinner",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/WiebesWorld/status/2112585233216557256?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-20",
+  "read_utc": "2026-10-20T21:01:43Z",
+  "home": [
+   {
+    "name": "Alexey Toropchenko",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dillon Dube",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan Mailloux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ross Johnston",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Torey Krug",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Connor Hellebuyck",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Garrett Brown",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Josh Morrissey",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vladislav Namestnikov",
+    "position": "C",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-20T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14543,
+  "training_games_priced": 7427
+ }
+}

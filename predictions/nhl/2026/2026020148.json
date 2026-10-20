@@ -1,0 +1,132 @@
+{
+ "game_id": "2026020148",
+ "season": 2026,
+ "slate": "2026-10-20",
+ "start_utc": "2026-10-21T01:00:00Z",
+ "home": "EDM",
+ "away": "MIN",
+ "model_a": 0.5159,
+ "model_b": 0.5676,
+ "pick": "EDM",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.168298,
+  "shot_matchup": 0.553372,
+  "goalie_matchup_2000": -0.00402
+ },
+ "market": {
+  "game_id": "2026020148",
+  "start_utc": "2026-10-21T01:00:00Z",
+  "home": "EDM",
+  "away": "MIN",
+  "book": "DraftKings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514,
+  "read_utc": "2026-10-20T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482221,
+   "name": "Devon Levi",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/JasonGregor/status/2112611471146541544"
+  },
+  "away": {
+   "player_id": 8482661,
+   "name": "Jesper Wallstedt",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/JasonGregor/status/2112611471146541544"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-20",
+  "read_utc": "2026-10-20T21:01:43Z",
+  "home": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Atro Leppanen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jason Dickinson",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Nugent-Hopkins",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brock Faber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Gustavsson",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jared Spurgeon",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marcus Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nico Sturm",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Olli Maatta",
+    "position": "D",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-20T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14543,
+  "training_games_priced": 7427
+ }
+}

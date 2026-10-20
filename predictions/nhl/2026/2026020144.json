@@ -1,0 +1,102 @@
+{
+ "game_id": "2026020144",
+ "season": 2026,
+ "slate": "2026-10-20",
+ "start_utc": "2026-10-20T23:00:00Z",
+ "home": "WSH",
+ "away": "LAK",
+ "model_a": 0.611,
+ "model_b": 0.5511,
+ "pick": "WSH",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.952342,
+  "shot_matchup": -2.399817,
+  "goalie_matchup_2000": 0.005717
+ },
+ "market": {
+  "game_id": "2026020144",
+  "start_utc": "2026-10-20T23:00:00Z",
+  "home": "WSH",
+  "away": "LAK",
+  "book": "DraftKings",
+  "home_price": -155.0,
+  "away_price": 130.0,
+  "home_prob": 0.583,
+  "read_utc": "2026-10-20T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480313,
+   "name": "Logan Thompson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/sammisilber/status/2112553596520628394?s=20"
+  },
+  "away": {
+   "player_id": 8475311,
+   "name": "Darcy Kuemper",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/TomGulittiNHL/status/2112562675943117252?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-20",
+  "read_utc": "2026-10-20T21:01:43Z",
+  "home": [
+   {
+    "name": "Justin Sourdif",
+    "position": "RW",
+    "status": "Out"
+   },
+   {
+    "name": "Patrick Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Pierre-Luc Dubois",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Sandin",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alex Turcotte",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jakub Dvorak",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jan Jenik",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Fiala",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-20T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14543,
+  "training_games_priced": 7427
+ }
+}

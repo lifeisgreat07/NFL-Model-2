@@ -1,0 +1,77 @@
+{
+ "game_id": "2026020151",
+ "season": 2026,
+ "slate": "2026-10-20",
+ "start_utc": "2026-10-21T02:30:00Z",
+ "home": "VGK",
+ "away": "TBL",
+ "model_a": 0.5623,
+ "model_b": 0.4859,
+ "pick": "TBL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.155112,
+  "shot_matchup": 0.616753,
+  "goalie_matchup_2000": 0.00046
+ },
+ "market": {
+  "game_id": "2026020151",
+  "start_utc": "2026-10-21T02:30:00Z",
+  "home": "VGK",
+  "away": "TBL",
+  "book": "DraftKings",
+  "home_price": -110.0,
+  "away_price": -110.0,
+  "home_prob": 0.5,
+  "read_utc": "2026-10-20T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479394,
+   "name": "Carter Hart",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/SinBinVegas/status/2112609638692909495?s=20"
+  },
+  "away": {
+   "player_id": 8476883,
+   "name": "Andrei Vasilevskiy",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/Gabby_Shirley_/status/2112610562140258563?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-20",
+  "read_utc": "2026-10-20T21:01:43Z",
+  "home": [
+   {
+    "name": "Lukas Cormier",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Parker Wotherspoon",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Yanni Gourde",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-20T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14543,
+  "training_games_priced": 7427
+ }
+}

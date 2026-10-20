@@ -1,0 +1,102 @@
+{
+ "game_id": "2026020149",
+ "season": 2026,
+ "slate": "2026-10-20",
+ "start_utc": "2026-10-21T01:40:00Z",
+ "home": "SEA",
+ "away": "DET",
+ "model_a": 0.4959,
+ "model_b": 0.4522,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.083327,
+  "shot_matchup": -4.179969,
+  "goalie_matchup_2000": 0.000146
+ },
+ "market": {
+  "game_id": "2026020149",
+  "start_utc": "2026-10-21T01:40:00Z",
+  "home": "SEA",
+  "away": "DET",
+  "book": "DraftKings",
+  "home_price": -102.0,
+  "away_price": -118.0,
+  "home_prob": 0.4826,
+  "read_utc": "2026-10-20T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475831,
+   "name": "Philipp Grubauer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/sound_hockey/status/2112589031590744233?s=20"
+  },
+  "away": {
+   "player_id": 8480193,
+   "name": "Daniil Tarasov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/mwhitaker_89/status/2112202675928580495?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-20",
+  "read_utc": "2026-10-20T21:01:43Z",
+  "home": [
+   {
+    "name": "Brandon Montour",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Jacob Melanson",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jake O'Brien",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Lindgren",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "J.T. Compher",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marco Kasper",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mason Appleton",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-20T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14543,
+  "training_games_priced": 7427
+ }
+}

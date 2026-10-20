@@ -1,0 +1,92 @@
+{
+ "game_id": "2026020142",
+ "season": 2026,
+ "slate": "2026-10-20",
+ "start_utc": "2026-10-20T23:00:00Z",
+ "home": "NJD",
+ "away": "COL",
+ "model_a": 0.4046,
+ "model_b": 0.5693,
+ "pick": "NJD",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.191386,
+  "shot_matchup": -2.100527,
+  "goalie_matchup_2000": -0.003341
+ },
+ "market": {
+  "game_id": "2026020142",
+  "start_utc": "2026-10-20T23:00:00Z",
+  "home": "NJD",
+  "away": "COL",
+  "book": "DraftKings",
+  "home_price": -120.0,
+  "away_price": 100.0,
+  "home_prob": 0.5217,
+  "read_utc": "2026-10-20T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8474596,
+   "name": "Jake Allen",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/amandacstein/status/2112558895097086253?s=20"
+  },
+  "away": {
+   "player_id": 8475809,
+   "name": "Scott Wedgewood",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://coloradohockeynow.com/avalanche-game-10-at-new-jersey-devils-bounce-back-needed-lines-notes-how-to-watch-2/"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-20",
+  "read_utc": "2026-10-20T21:01:43Z",
+  "home": [
+   {
+    "name": "Nick Bjugstad",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Seamus Casey",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Georgii Merkulov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan O'Connor",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nicolas Roy",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Zachary L'Heureux",
+    "position": "LW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-20T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-19",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14543,
+  "training_games_priced": 7427
+ }
+}
