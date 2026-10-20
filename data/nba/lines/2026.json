@@ -1,0 +1,14 @@
+[
+ {
+  "game_id": "401909088",
+  "home": "DET",
+  "away": "BOS",
+  "start_utc": "2026-10-20T19:00:00Z",
+  "read_utc": "2026-10-20T16:01:54Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 102.0,
+  "away_price": -122.0,
+  "home_prob": 0.4739
+ }
+]
