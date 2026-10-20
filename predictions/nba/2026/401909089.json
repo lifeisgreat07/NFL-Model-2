@@ -1,0 +1,80 @@
+{
+ "game_id": "401909089",
+ "season": 2026,
+ "slate": "2026-10-20",
+ "start_utc": "2026-10-20T23:00:00Z",
+ "home": "NY",
+ "away": "PHI",
+ "model_a": 0.815,
+ "model_b": 0.6102,
+ "pick": "NY",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.9299
+ },
+ "features": {
+  "point_matchup": 7.561448,
+  "efficiency_matchup": 7.555978,
+  "availability_matchup": 0.070142
+ },
+ "market": {
+  "game_id": "401909089",
+  "home": "NY",
+  "away": "PHI",
+  "start_utc": "2026-10-20T23:00:00Z",
+  "read_utc": "2026-10-20T21:31:29Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -180.0,
+  "away_price": 150.0,
+  "home_prob": 0.6164
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-20T21:31:29Z",
+  "home": [],
+  "away": [
+   {
+    "athlete_id": "5105637",
+    "name": "Adem Bona",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4351851",
+    "name": "Anfernee Simons",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4871141",
+    "name": "Ariel Hukporti",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3912848",
+    "name": "Dean Wade",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4870562",
+    "name": "Dominick Barlow",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3904625",
+    "name": "Tacko Fall",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-20T21:31:29Z",
+ "code": "nba-stage61",
+ "training_through": "2026-06-13",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14058,
+  "training_games_priced": 14017
+ }
+}
