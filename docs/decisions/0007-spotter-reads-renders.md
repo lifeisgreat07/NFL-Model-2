@@ -31,8 +31,8 @@ place, saying what it sees and citing each image by name.
   comment, and any write belongs to a job with no model and no pull request
   code in it.
 - The pictures need a home a comment can link to. An orphan branch keeps the
-  images out of main's history and out of the working tree, and it is
-  deleted per pull request when the pull request closes.
+  images out of main's history and out of the working tree, and each publish
+  prunes the folders of pull requests that have closed.
 - Naming each picture (`board-390x844-dark`) turns "renders at both sizes"
   in a description from a claim into a file name that can be checked.
 
