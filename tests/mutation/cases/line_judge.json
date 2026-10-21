@@ -83,7 +83,7 @@
     {
       "id": "lj-refresh-not-on-time",
       "why": "a refresh run hours late is not flagged.",
-      "find": "    findings = check_on_time(event, started, workflow_text)\n    for week in sorted(weeks):\n",
+      "find": "    findings = check_on_time(event, started, workflow_text, fetch, 'nfl-weekend-refresh.yml')\n    for week in sorted(weeks):\n",
       "replace": "    findings = []\n    for week in sorted(weeks):\n",
       "expect_caught_by": "test_judge_refresh_reads_each_kept_week_and_the_refreshs_own_slots"
     },
@@ -94,6 +94,76 @@
       "find": "            python -m src.core.alerts --title \"NFL: Line Judge found the Weekend refresh left something wrong\" \\\n",
       "replace": "            echo skipped \\\n",
       "expect_caught_by": "test_line_judge_runs_after_a_green_weekend_refresh"
+    },
+    {
+      "id": "line-judge-late-copy-judged",
+      "why": "GitHub's late copy of a slot a dispatch served is judged late again, as the NHL's was (issue 517).",
+      "find": "    if event == 'schedule' and fetch is not None and is_late_copy(workflow, started, workflow_text, fetch):\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_githubs_late_copy_of_a_slot_a_dispatch_served_is_not_judged"
+    },
+    {
+      "id": "line-judge-dispatched-run-skipped",
+      "why": "a dispatched run is skipped as a copy too, so the run that does the work is never judged late.",
+      "find": "    if event == 'schedule' and fetch is not None and is_late_copy(",
+      "replace": "    if fetch is not None and is_late_copy(",
+      "expect_caught_by": "test_a_dispatched_run_is_judged_even_when_a_dispatch_served_its_slot"
+    },
+    {
+      "id": "line-judge-unreadable-api-hides-late-run",
+      "why": "an Actions API that cannot be read counts as a dispatch having served the slot, so a late run is guessed away.",
+      "find": "    except Exception:  # unreadable: judge the run\n        return False\n",
+      "replace": "    except Exception:  # unreadable: judge the run\n        return True\n",
+      "expect_caught_by": "test_a_late_run_is_flagged_when_the_actions_api_cannot_be_read"
+    },
+    {
+      "id": "line-judge-any-dispatch-covers",
+      "why": "any dispatch found at all covers the slot, wherever it started, so a slot no dispatch served is not flagged.",
+      "find": "    return missed_dispatch.judge(slot[0], started, dispatches) == 'covered'\n",
+      "replace": "    return bool(dispatches)\n",
+      "expect_caught_by": "test_a_late_run_for_a_slot_no_dispatch_served_is_still_flagged"
+    },
+    {
+      "id": "line-judge-refresh-asks-the-weekly-workflow",
+      "why": "the copy check asks about the Weekly update's dispatches for every run, so a Weekend refresh copy is judged by another workflow's runs.",
+      "find": "        dispatches = fetch(workflow, slot[0])\n",
+      "replace": "        dispatches = fetch(WORKFLOW.name, slot[0])\n",
+      "expect_caught_by": "test_the_weekend_refresh_asks_about_its_own_workflow"
+    },
+    {
+      "id": "line-judge-refresh-does-not-pass-fetch",
+      "why": "the Weekend refresh judge drops the dispatches, so its copies are judged late again.",
+      "find": "check_on_time(event, started, workflow_text, fetch, 'nfl-weekend-refresh.yml')",
+      "replace": "check_on_time(event, started, workflow_text, None, 'nfl-weekend-refresh.yml')",
+      "expect_caught_by": "test_the_weekend_refresh_asks_about_its_own_workflow"
+    },
+    {
+      "id": "line-judge-weekly-judge-does-not-pass-fetch",
+      "why": "the Weekly update judge drops the dispatches, so its copies are judged late again.",
+      "find": "    findings = check_on_time(event, started, workflow_text, fetch)\n",
+      "replace": "    findings = check_on_time(event, started, workflow_text)\n",
+      "expect_caught_by": "test_the_weekly_update_judge_passes_the_dispatches_to_the_on_time_check"
+    },
+    {
+      "id": "line-judge-main-does-not-read-api",
+      "why": "the command line passes no fetch by default, so the workflows never skip a copy.",
+      "find": "         fetch: missed_dispatch.Fetch | None = missed_dispatch._gh_fetch) -> int:\n",
+      "replace": "         fetch: missed_dispatch.Fetch | None = None) -> int:\n",
+      "expect_caught_by": "test_the_command_line_reads_the_actions_api_by_default"
+    },
+    {
+      "id": "line-judge-main-drops-fetch-for-weekly",
+      "why": "main does not hand the dispatches to the Weekly update judge.",
+      "find": "locked_at, cancelled,\n                         args.run_event, started, text_wf, fetch=fetch)",
+      "replace": "locked_at, cancelled,\n                         args.run_event, started, text_wf)",
+      "expect_caught_by": "test_the_command_line_hands_the_dispatches_to_the_judge_it_runs"
+    },
+    {
+      "id": "line-judge-main-drops-fetch-for-refresh",
+      "why": "main does not hand the dispatches to the Weekend refresh judge.",
+      "find": "weeks_to_refresh(args.season),\n                                 args.run_event, started, text_wf, fetch=fetch)",
+      "replace": "weeks_to_refresh(args.season),\n                                 args.run_event, started, text_wf)",
+      "expect_caught_by": "test_the_command_line_hands_the_dispatches_to_the_judge_it_runs"
     }
   ]
 }

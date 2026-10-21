@@ -11,6 +11,9 @@ Mark's call 2026-10-13: checks first, agent on failure).
   on-time        -- a run that served a slot started under
                     start_delay.WARN_HOURS after it (one under LOCK_SLACK,
                     past which a Thursday run may miss the first kickoff).
+                    A run GitHub's cron started for a slot a dispatched run
+                    already served is its late copy and is not judged
+                    (missed_dispatch).
   every-week     -- every week of the season whose first game has kicked
                     off is locked (predictions/nfl/) or recorded as skipped
                     (predictions/nfl/skipped/). A week silently passed over
@@ -57,7 +60,8 @@ from typing import Any
 
 import pandas as pd
 
-from src.core.start_delay import WARN_HOURS, crons, served_delay
+from src.core import missed_dispatch
+from src.core.start_delay import WARN_HOURS, crons, latest_slot, served_delay
 from src.sports.nfl.paths import (
     PRED_DIR,
     RESULTS_DIR,
@@ -99,11 +103,34 @@ def _pair(home: str, away: str) -> tuple[str, str]:
     return str(home), str(away)
 
 
-def check_on_time(event: str | None, started: datetime | None, workflow_text: str) -> list[Finding]:
+def is_late_copy(workflow: str, started: datetime, workflow_text: str, fetch: missed_dispatch.Fetch) -> bool:
+    """True when a dispatched run of this workflow already served the slot
+    `started` is measured against, so this run is GitHub's own cron copy of
+    it (src/core/missed_dispatch.py). That copy commits nothing, and judging
+    it late would raise a finding for every slot cron-job.org served on
+    time (the daily runs' fix, src/core/day_line_judge.py). When the Actions
+    API cannot be read the answer is False: a late run is flagged rather
+    than guessed away."""
+    slot = latest_slot(crons(workflow_text), started)
+    if slot is None:
+        return False
+    try:
+        dispatches = fetch(workflow, slot[0])
+    except Exception:  # unreadable: judge the run
+        return False
+    return missed_dispatch.judge(slot[0], started, dispatches) == 'covered'
+
+
+def check_on_time(event: str | None, started: datetime | None, workflow_text: str,
+                  fetch: missed_dispatch.Fetch | None = None, workflow: str = WORKFLOW.name) -> list[Finding]:
+    """`fetch` reads when `workflow`'s dispatched runs started; given, a run
+    GitHub's cron started for a slot a dispatched run served is not late."""
     if started is None:
         return []
     delay = served_delay(crons(workflow_text), started, event)
     if delay is None or delay < timedelta(hours=WARN_HOURS):
+        return []
+    if event == 'schedule' and fetch is not None and is_late_copy(workflow, started, workflow_text, fetch):
         return []
     hours = delay.total_seconds() / 3600
     return [Finding('on-time', f'the run started {hours:.1f} hours after its slot '
@@ -200,10 +227,11 @@ def check_snapshot(week: int, picks: list[dict], games: pd.DataFrame, snapshot: 
 
 def judge_refresh(season: int, schedule: pd.DataFrame, cancelled: set[tuple[str, str]], weeks: Iterable[int],
                   event: str | None = None, started: datetime | None = None, workflow_text: str = '',
-                  pred_dir: Path = PRED_DIR, status_dir: Path = STATUS_DIR) -> list[Finding]:
+                  pred_dir: Path = PRED_DIR, status_dir: Path = STATUS_DIR,
+                  fetch: missed_dispatch.Fetch | None = None) -> list[Finding]:
     """Every finding for a Weekend refresh run, in check order. `weeks`: the
     weeks the refresh keeps (weekend_refresh.weeks_to_refresh)."""
-    findings = check_on_time(event, started, workflow_text)
+    findings = check_on_time(event, started, workflow_text, fetch, 'nfl-weekend-refresh.yml')
     for week in sorted(weeks):
         picks = json.loads((pred_dir / f'{season}_week{week}.json').read_text(encoding='utf-8'))
         snap_file = status_dir / f'{season}_week{week}.json'
@@ -220,10 +248,10 @@ def load_cancelled_pairs(season: int) -> set[tuple[str, str]]:
 def judge(season: int, schedule: pd.DataFrame, now: datetime, saved_at: Callable[[Path], datetime | None],
           cancelled: set[tuple[str, str]], event: str | None = None, started: datetime | None = None,
           workflow_text: str = '', pred_dir: Path = PRED_DIR, skipped_dir: Path = SKIPPED_DIR,
-          results_dir: Path = RESULTS_DIR) -> list[Finding]:
+          results_dir: Path = RESULTS_DIR, fetch: missed_dispatch.Fetch | None = None) -> list[Finding]:
     """Every finding, in check order."""
     locked = _weeks(pred_dir, season)
-    findings = check_on_time(event, started, workflow_text)
+    findings = check_on_time(event, started, workflow_text, fetch)
     findings += check_every_week(schedule, locked, _weeks(skipped_dir, season), now)
     for week, path in sorted(locked.items()):
         picks = json.loads(path.read_text(encoding='utf-8'))
@@ -280,7 +308,8 @@ def report(findings: list[Finding], season: int, run: str = 'Weekly update') -> 
     return '\n'.join(lines)
 
 
-def main(argv: list[str] | None = None, now: datetime | None = None) -> int:
+def main(argv: list[str] | None = None, now: datetime | None = None,
+         fetch: missed_dispatch.Fetch | None = missed_dispatch._gh_fetch) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     ap.add_argument('--season', type=int, required=True)
     ap.add_argument('--run-event')
@@ -297,10 +326,10 @@ def main(argv: list[str] | None = None, now: datetime | None = None) -> int:
     if args.workflow == 'nfl-weekend-refresh.yml':
         from src.sports.nfl.weekend_refresh import weeks_to_refresh
         findings = judge_refresh(args.season, schedule, cancelled, weeks_to_refresh(args.season),
-                                 args.run_event, started, text_wf)
+                                 args.run_event, started, text_wf, fetch=fetch)
     else:
         findings = judge(args.season, schedule, now or datetime.now(UTC), locked_at, cancelled,
-                         args.run_event, started, text_wf)
+                         args.run_event, started, text_wf, fetch=fetch)
     text = report(findings, args.season, RUNS[args.workflow])
     print(text)
     if args.report:

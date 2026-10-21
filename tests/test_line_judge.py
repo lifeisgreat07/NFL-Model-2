@@ -7,7 +7,7 @@ workflow is held to running the checks after a green run.
 Run with: pytest tests/test_line_judge.py -v
 """
 import json
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import numpy as np
@@ -55,6 +55,108 @@ def test_a_github_copy_seven_hours_late_is_flagged():
 
 def test_a_run_by_hand_long_after_any_slot_serves_none_and_is_not_late():
     assert lj.check_on_time('workflow_dispatch', utc('2026-10-16T23:00:00'), WORKFLOW) == []
+
+
+# The daily runs' fix (#521) for the same exposure: cron-job.org dispatches the slot on
+# time, and GitHub's own cron starts a copy hours later that commits nothing. Judged as
+# a run, the copy reads 7 hours late.
+SLOT = utc('2026-10-15T11:00:00')
+COPY = utc('2026-10-15T18:05:00')
+
+
+def served_at(*starts):
+    return lambda workflow, slot: [utc(t) for t in starts]
+
+
+def test_githubs_late_copy_of_a_slot_a_dispatch_served_is_not_judged():
+    assert lj.check_on_time('schedule', COPY, WORKFLOW, served_at('2026-10-15T11:00:41')) == []
+
+
+def test_a_late_run_for_a_slot_no_dispatch_served_is_still_flagged():
+    for fetch in (served_at(), served_at('2026-10-15T04:01:00'), served_at('2026-10-15T11:20:00')):
+        found = lj.check_on_time('schedule', COPY, WORKFLOW, fetch)
+        assert [f.check for f in found] == ['on-time'] and '7.1 hours' in found[0].message
+
+
+def test_a_late_run_is_flagged_when_the_actions_api_cannot_be_read():
+    def broken(workflow, slot):
+        raise RuntimeError('HTTP 502')
+    assert [f.check for f in lj.check_on_time('schedule', COPY, WORKFLOW, broken)] == ['on-time']
+
+
+def test_a_dispatched_run_is_judged_even_when_a_dispatch_served_its_slot():
+    """The dispatched run is the one that does the work: its own lateness counts."""
+    late_dispatch = utc('2026-10-15T18:05:00')
+    found = lj.check_on_time('workflow_dispatch', late_dispatch, WORKFLOW,
+                             served_at('2026-10-15T11:00:41', '2026-10-15T18:05:00'))
+    assert [f.check for f in found] == ['on-time']
+
+
+def test_the_slot_is_looked_up_only_for_a_late_run_and_under_the_judged_workflow():
+    asked = []
+
+    def fetch(workflow, slot):
+        asked.append((workflow, slot))
+        return []
+    assert lj.check_on_time('schedule', SLOT + timedelta(minutes=10), WORKFLOW, fetch) == []
+    assert asked == []
+    lj.check_on_time('schedule', COPY, WORKFLOW, fetch)
+    assert asked == [('nfl-weekly-update.yml', SLOT)]
+
+
+def test_the_weekend_refresh_asks_about_its_own_workflow(tmp_path):
+    asked = []
+
+    def fetch(workflow, slot):
+        asked.append(workflow)
+        return [utc('2026-10-16T05:19:00')]
+    copy = utc('2026-10-16T12:40:00')   # the Friday 05:17 slot, copied 7 hours on
+    found = lj.judge_refresh(2026, sched(THU), CANCELLED, [], 'schedule', copy, REFRESH, fetch=fetch)
+    assert found == [] and asked == ['nfl-weekend-refresh.yml']
+    assert [f.check for f in lj.judge_refresh(2026, sched(THU), CANCELLED, [], 'schedule', copy, REFRESH,
+                                              fetch=served_at())] == ['on-time']
+
+
+def test_the_weekly_update_judge_passes_the_dispatches_to_the_on_time_check(tmp_path):
+    before_kickoff = utc('2026-10-15T20:00:00')
+    kwargs = dict(pred_dir=tmp_path, skipped_dir=tmp_path, results_dir=tmp_path)
+    ok = lj.judge(2026, sched(THU), before_kickoff, lambda p: None, CANCELLED, 'schedule', COPY, WORKFLOW,
+                  fetch=served_at('2026-10-15T11:00:41'), **kwargs)
+    assert ok == []
+    late = lj.judge(2026, sched(THU), before_kickoff, lambda p: None, CANCELLED, 'schedule', COPY, WORKFLOW,
+                    fetch=served_at(), **kwargs)
+    assert [f.check for f in late] == ['on-time']
+
+
+def test_the_command_line_reads_the_actions_api_by_default():
+    """The workflows call main() with no fetch of their own."""
+    import inspect
+
+    from src.core import missed_dispatch
+    assert inspect.signature(lj.main).parameters['fetch'].default is missed_dispatch._gh_fetch
+
+
+@pytest.mark.parametrize('workflow, judged', [('nfl-weekly-update.yml', 'judge'),
+                                              ('nfl-weekend-refresh.yml', 'judge_refresh')],
+                         ids=['weekly-update', 'weekend-refresh'])
+def test_the_command_line_hands_the_dispatches_to_the_judge_it_runs(workflow, judged, monkeypatch):
+    import src.sports.nfl.data_loader as data_loader
+    import src.sports.nfl.weekend_refresh as weekend_refresh
+    seen = {}
+
+    def spy(name):
+        def run(*args, **kwargs):
+            seen[name] = kwargs.get('fetch')
+            return []
+        return run
+    monkeypatch.setattr(data_loader, 'load_schedule', lambda season: sched(THU))
+    monkeypatch.setattr(lj, 'load_cancelled_pairs', lambda season: set())
+    monkeypatch.setattr(weekend_refresh, 'weeks_to_refresh', lambda season: [])
+    monkeypatch.setattr(lj, 'judge', spy('judge'))
+    monkeypatch.setattr(lj, 'judge_refresh', spy('judge_refresh'))
+    fetch = served_at()
+    assert lj.main(['--season', '2026', '--workflow', workflow], NOW, fetch) == 0
+    assert seen == {judged: fetch}
 
 
 # --- every-week ---------------------------------------------------------------
