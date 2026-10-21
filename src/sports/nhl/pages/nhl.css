@@ -105,3 +105,6 @@ html[data-density="compact"] .nhl-row{min-height:40px;}
   .nhl-row{display:none !important;}
   .nhl-row-detail{display:block !important;}
 }
+
+/* Spotter fixture clean-control (tests/spotter_fixtures): restates a declaration the file already makes. Never merged. */
+.nhl-day-title{font-weight:700;}
