@@ -592,5 +592,17 @@
   "pick": "TBL",
   "result": "correct",
   "saved_utc": "2026-10-20T21:01:43Z"
+ },
+ {
+  "game_id": "2026020152",
+  "pick": "BUF",
+  "result": "pending",
+  "saved_utc": "2026-10-21T21:01:48Z"
+ },
+ {
+  "game_id": "2026020153",
+  "pick": "FLA",
+  "result": "pending",
+  "saved_utc": "2026-10-21T21:01:48Z"
  }
 ]

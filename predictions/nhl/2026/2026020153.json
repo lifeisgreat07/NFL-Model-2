@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020153",
+ "season": 2026,
+ "slate": "2026-10-21",
+ "start_utc": "2026-10-21T23:30:00Z",
+ "home": "OTT",
+ "away": "FLA",
+ "model_a": 0.5678,
+ "model_b": 0.4825,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.172153,
+  "shot_matchup": -0.738557,
+  "goalie_matchup_2000": 0.005218
+ },
+ "market": {
+  "game_id": "2026020153",
+  "start_utc": "2026-10-21T23:30:00Z",
+  "home": "OTT",
+  "away": "FLA",
+  "book": "DraftKings",
+  "home_price": -110.0,
+  "away_price": -110.0,
+  "home_prob": 0.5,
+  "read_utc": "2026-10-21T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476999,
+   "name": "Linus Ullmark",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/Senators/status/2112929418326716423"
+  },
+  "away": {
+   "player_id": 8481033,
+   "name": "Akira Schmid",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/TSN1200/status/2112942670020522031?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-21",
+  "read_utc": "2026-10-21T21:01:48Z",
+  "home": [
+   {
+    "name": "Kurtis MacDermid",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thomas Chabot",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "William Eklund",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jacob Markstrom",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-21T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-20",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14554,
+  "training_games_priced": 7427
+ }
+}

@@ -1,0 +1,122 @@
+{
+ "game_id": "2026020152",
+ "season": 2026,
+ "slate": "2026-10-21",
+ "start_utc": "2026-10-21T23:30:00Z",
+ "home": "BUF",
+ "away": "PHI",
+ "model_a": 0.6018,
+ "model_b": 0.6415,
+ "pick": "BUF",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.61097,
+  "shot_matchup": 2.465574,
+  "goalie_matchup_2000": -0.003855
+ },
+ "market": {
+  "game_id": "2026020152",
+  "start_utc": "2026-10-21T23:30:00Z",
+  "home": "BUF",
+  "away": "PHI",
+  "book": "DraftKings",
+  "home_price": -192.0,
+  "away_price": 160.0,
+  "home_prob": 0.6309,
+  "read_utc": "2026-10-21T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480045,
+   "name": "Ukko-Pekka Luukkonen",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/ByMHarrington/status/2112928112803721536?s=20"
+  },
+  "away": {
+   "player_id": 8478435,
+   "name": "Dan Vladar",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/engelheather/status/2112939090286915977?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-21",
+  "read_utc": "2026-10-21T21:01:48Z",
+  "home": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Conor Timmins",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Rathbone",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Justin Danforth",
+    "position": "RW",
+    "status": "Out"
+   },
+   {
+    "name": "Matt Grzelcyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Sam Carrick",
+    "position": "C",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Cam York",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nikita Grebenkin",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Owen Tippett",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Ristolainen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Travis Konecny",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyson Foerster",
+    "position": "RW",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-21T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-20",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14554,
+  "training_games_priced": 7427
+ }
+}
