@@ -24,6 +24,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from pre_opening import pre_opening
+
 ROOT = Path(__file__).resolve().parents[2]
 WIDTHS = (320, 390, 1280)
 THEMES = ('dark', 'light')
@@ -47,7 +50,7 @@ OVERLAP_JS = """() => {
 
 async def check_page(path):
     report = []
-    url = Path(path).resolve().as_uri()
+    url = pre_opening(path).resolve().as_uri()
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         for theme in THEMES:

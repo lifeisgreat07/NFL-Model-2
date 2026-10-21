@@ -22,6 +22,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from pre_opening import pre_opening
+
 ROOT = Path(__file__).resolve().parents[2]
 #: Days before opening night (Eastern), and what the countdown ends with.
 MOMENTS = ((7, '— 7 days'), (1, '— tomorrow'), (0, '— today'), (-1, None))
@@ -30,7 +33,7 @@ LINE = "() => { const c = document.querySelector('.nba-countdown'); return c ? c
 
 async def check_page(path):
     report = []
-    uri = Path(path).resolve().as_uri()
+    uri = pre_opening(path).resolve().as_uri()
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         probe = await browser.new_page()
