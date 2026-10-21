@@ -1,0 +1,20 @@
+{
+  "fixture": "clean-control",
+  "recorded_utc": "2026-10-21T01:15:30Z",
+  "pr": 534,
+  "head": "e3d3a9beda8387c3fa67c19a856d5e632d845c42",
+  "change_sha256": "d1f5f058afb0289161b657d07c06188a2cedd1948b593958d9badae798ac2b09",
+  "names": [
+    "nhl-1440x900-dark-base",
+    "nhl-1440x900-dark-head",
+    "nhl-1440x900-light-base",
+    "nhl-1440x900-light-head",
+    "nhl-390x844-dark-base",
+    "nhl-390x844-dark-head",
+    "nhl-390x844-light-base",
+    "nhl-390x844-light-head"
+  ],
+  "satisfied": true,
+  "explanation": "every problem the reading lists is one the base picture shows too",
+  "reading": "#### What changed\n\nOnly one page was rendered: the NHL Day Board. I opened all eight pictures, head and base for each viewport and theme.\n\n- `nhl-390x844-dark-head` vs `nhl-390x844-dark-base`: I see no difference. Same header, Next games strip, week picker, day tabs and game rows.\n- `nhl-390x844-light-head` vs `nhl-390x844-light-base`: I see no difference.\n- `nhl-1440x900-dark-head` vs `nhl-1440x900-dark-base`: I see no difference. Sidebar, board and the Goalies panel read the same.\n- `nhl-1440x900-light-head` vs `nhl-1440x900-light-base`: I see no difference.\n\nI compared these by eye only, so a change of a few pixels or a faint colour shift could be missed.\n\n#### What looks wrong\n\nTwo things show up in the head pictures. Both are also in the base pictures, so the change did not introduce them.\n\n- `nhl-390x844-dark-head` and `nhl-390x844-light-head`: the bottom tab bar (Board, Standings, Ratings, Accuracy, More) sits in the middle of the long page, across the \"7:00 PM ANA @ NYI\" row, and hides part of it. This looks like a fixed bar captured in a whole-page photograph, not a layout fault. The same appears in `nhl-390x844-dark-base` and `nhl-390x844-light-base`.\n- `nhl-1440x900-dark-head` and `nhl-1440x900-light-head`: the sidebar's background ends at about 900px, and the page continues below it. The same appears in the base pictures. It is probably the viewport height in a whole-page capture.\n- `nhl-1440x900-dark-head` and `nhl-1440x900-light-head`: the Goalies panel ends at the \"DIVISION LEADERS\" heading with no content under it. The panel's bottom edge is visible, so the content may be cut off or empty. The same appears in the base pictures.\n\nI see no cut-off or overlapping text, no horizontal overflow at 390 wide, and no low-contrast text in the dark theme.\n\n#### What looks fine\n\nBoth themes and both viewports render a complete, readable board, and the head matches the base.\n\n#### What I could not tell\n\n- Whether the three items above are real defects or capture artifacts. I cannot scroll or interact with a page.\n- At 390 wide the Next games strip is cut off at the right edge (the third card is clipped). It is the same in the base, and it looks like a horizontal scroller, but I cannot confirm it from a still picture.\n- The pictures are one NHL page only. If the pull request changes other pages, none were rendered."
+}
