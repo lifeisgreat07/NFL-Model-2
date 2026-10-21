@@ -59,10 +59,6 @@ RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
     # The link-preview card sources are drawn to og-*.png by hand; no page
     # renders them.
     ('assets/og/', ()),
-    # The fixtures' stylesheet changes (Stage 43 item 4) are text that is
-    # appended to a page's stylesheet on a draft pull request; on their own
-    # they are not part of any page.
-    ('tests/spotter_fixtures/', ()),
     # What every page is published with, and what takes the pictures: a
     # change to the renderer or its workflow can change every picture, so it
     # renders every page (and is how the renderer's own pull request is

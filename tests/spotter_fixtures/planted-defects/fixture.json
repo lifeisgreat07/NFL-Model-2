@@ -6,7 +6,7 @@
   "page": "nhl",
   "script": "src/sports/nhl/pages/nhl.js",
   "rendered_by": ["renderBoard", "rowHtml"],
-  "change": "change.css",
+  "change": "change.css.txt",
   "expect": {
     "kind": "defects",
     "defects": [

@@ -6,7 +6,7 @@
   "page": "nhl",
   "script": "src/sports/nhl/pages/nhl.js",
   "rendered_by": ["renderBoard", "rowHtml"],
-  "change": "change.css",
+  "change": "change.css.txt",
   "expect": {
     "kind": "clean",
     "rule": "every bullet under 'What looks wrong' says the base shows the problem too, or the section says 'Nothing that I can see.'"

@@ -6,7 +6,9 @@ change it must leave alone (Stage 43 item 4; decision record 0007).
     python -m src.agents.spotter_fixtures check
 
 A fixture (tests/spotter_fixtures/<id>/) is one small change to a stylesheet,
-`change.css`, appended to the file it names. Committed on a branch from the
+`change.css.txt`, appended to the file it names. (Named `.txt` because a
+`.css` file is a page file to Scout's pre-flight and to Spotter's page map,
+and a fragment that only makes sense appended elsewhere is not one.) Committed on a branch from the
 current main and opened as a draft pull request, it is what Spotter's own
 workflow photographs and reads. Two are kept:
 
