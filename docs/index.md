@@ -96,6 +96,7 @@ notes elsewhere still describe them as files you can open in the repository.
 | `src/agents/scout_preflight.py` | Checks a PR description against reality before it opens. |
 | `src/agents/booth_verdict.py` | Parses the machine-readable verdict block out of a Booth report. |
 | `src/agents/booth_fixture_runner.py` | Runs deliberately-bad PRs that Booth must catch. |
+| `src/agents/spotter_fixtures.py` | Spotter's two fixtures (`tests/spotter_fixtures/`): a planted visual defect it must name and a clean change it must not. Appends a fixture's stylesheet change to a branch, records the comment Spotter posted, and re-checks the recorded reading for free. |
 | `src/agents/collect_agent_log.py` | Turns Booth's audit comments into the data the reliability page renders. |
 | `src/agents/session_start.py` | Orientation: branch state, branch list, what `docs/context.md` claims vs what git knows, suite count vs the documented one, and (unless `--offline`) the unattended jobs' last 36 hours, the QB routine's latest PR, open PRs and open issues from GitHub's public API. Never gates. |
 | `src/agents/session_wrapup.py` | End-of-session checks. Mechanical ones plus a by-hand list. This one gates. |

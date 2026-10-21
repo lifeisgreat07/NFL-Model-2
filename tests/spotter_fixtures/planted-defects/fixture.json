@@ -1,0 +1,27 @@
+{
+  "id": "planted-defects",
+  "why": "Two visible defects in the NHL day board, one that only a phone shows (the rows are wider than the screen) and one that only the dark theme shows (the result labels are near-black on near-black). Spotter's reading must name both, citing a picture that shows each.",
+  "provenance": "Trial PRs #531 and #532, 2026-10-20. #531 planted its rules on .nhl-table, which the day board does not draw, on a base days behind main, and Spotter saw nothing wrong. #532 planted these rules from a fresh main and Spotter named both.",
+  "target": "src/sports/nhl/pages/nhl.css",
+  "page": "nhl",
+  "script": "src/sports/nhl/pages/nhl.js",
+  "rendered_by": ["renderBoard", "rowHtml"],
+  "change": "change.css.txt",
+  "expect": {
+    "kind": "defects",
+    "defects": [
+      {
+        "id": "phone-overflow",
+        "what": ".nhl-rows is 900px wide under 600px, so the page is 912px wide at 390x844.",
+        "pictures_any": ["nhl-390x844-dark-head", "nhl-390x844-light-head"],
+        "words_any": ["wide", "overflow", "sideways", "off screen", "off the screen", "beyond", "scroll"]
+      },
+      {
+        "id": "dark-result-unreadable",
+        "what": ".nhl-row-result is #26262a in every theme but light, on a near-black page: Live and Locked cannot be read and Live loses its blue.",
+        "pictures_any": ["nhl-390x844-dark-head", "nhl-1440x900-dark-head"],
+        "words_any": ["dim", "hard to read", "cannot be read", "can't be read", "unreadable", "low contrast", "faint", "grey", "gray", "invisible"]
+      }
+    ]
+  }
+}

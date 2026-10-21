@@ -1,0 +1,4 @@
+
+/* Spotter fixture planted-defects (tests/spotter_fixtures): two defects in rules the day board renders. Never merged. */
+@media (max-width:600px){ .nhl-rows{ min-width:900px; } }
+html:not([data-theme="light"]) .nhl-row-result{ color:#26262a; }

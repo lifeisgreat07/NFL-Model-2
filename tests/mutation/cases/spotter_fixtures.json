@@ -1,0 +1,119 @@
+{
+  "target": "src/agents/spotter_fixtures.py",
+  "tests": "tests/test_spotter_fixtures.py",
+  "cases": [
+    {
+      "id": "spotter-fixtures-unrendered-class-passes",
+      "why": "a planted rule on a class the page does not draw passes the guard, which is how the first trial (#531) planted defects nobody could see.",
+      "find": "            if cls not in gone and not re.search(rf'(?<![\\w-]){re.escape(cls)}(?![\\w-])', drawn):",
+      "replace": "            if False:",
+      "expect_caught_by": "test_a_class_the_day_board_does_not_draw_is_refused"
+    },
+    {
+      "id": "spotter-fixtures-class-matches-a-longer-name",
+      "why": "a class counts as drawn when only a longer class that starts with it is, so .nhl-row would pass for .nhl-row-result.",
+      "find": "re.search(rf'(?<![\\w-]){re.escape(cls)}(?![\\w-])', drawn)",
+      "replace": "re.search(rf'{re.escape(cls)}', drawn)",
+      "expect_caught_by": "test_a_class_the_day_board_does_not_draw_is_refused"
+    },
+    {
+      "id": "spotter-fixtures-clean-change-may-add-declarations",
+      "why": "the clean control may add a declaration the file does not already make, so it stops being a change that alters nothing.",
+      "find": "            if have.get(sel, {}).get(k) != v:",
+      "replace": "            if False:",
+      "expect_caught_by": "test_the_planted_change_adds_declarations_the_file_did_not_have"
+    },
+    {
+      "id": "spotter-fixtures-nothing-with-a-bullet-is-nothing",
+      "why": "a reading that opens with 'Nothing that I can see.' and then lists a problem counts as having found nothing.",
+      "find": " and not re.search(r'^- ', wrong, re.M)",
+      "replace": "",
+      "expect_caught_by": "test_the_clean_fixture_wants_nothing_blamed_on_the_change"
+    },
+    {
+      "id": "spotter-fixtures-clean-accepts-any-reading",
+      "why": "the clean control is satisfied by a reading that reports a problem, so a reader that invents defects passes.",
+      "find": "        if said_nothing:\n            return True, 'the reading found nothing wrong",
+      "replace": "        if True:\n            return True, 'the reading found nothing wrong",
+      "expect_caught_by": "test_the_clean_fixture_wants_nothing_blamed_on_the_change"
+    },
+    {
+      "id": "spotter-fixtures-nothing-found-passes-planted",
+      "why": "a reading that finds nothing satisfies the planted-defects fixture, the miss of the first trial.",
+      "find": "    if said_nothing:\n        return False, 'the reading found nothing, and the page has planted defects'",
+      "replace": "    if False:\n        return False, 'the reading found nothing, and the page has planted defects'",
+      "expect_caught_by": "test_a_reading_that_misses_a_planted_defect_does_not_satisfy_it"
+    },
+    {
+      "id": "spotter-fixtures-defect-needs-no-picture",
+      "why": "a defect counts as named without citing a picture that shows it, so a claim cannot be traced to a file.",
+      "find": "            any(f'`{p}`' in u for p in d['pictures_any'])\n            and any(w in u.lower() for w in d['words_any'])",
+      "replace": "            any(w in u.lower() for w in d['words_any'])",
+      "expect_caught_by": "test_a_reading_that_misses_a_planted_defect_does_not_satisfy_it"
+    },
+    {
+      "id": "spotter-fixtures-defect-needs-no-word",
+      "why": "a defect counts as named by a bullet that cites its picture and says nothing about the defect.",
+      "find": "\n            and any(w in u.lower() for w in d['words_any'])",
+      "replace": "",
+      "expect_caught_by": "test_a_reading_that_misses_a_planted_defect_does_not_satisfy_it"
+    },
+    {
+      "id": "spotter-fixtures-one-defect-is-enough",
+      "why": "naming one of the two planted defects satisfies the fixture.",
+      "find": "    if missed:\n        return False, 'the reading did not name: '",
+      "replace": "    if len(missed) == len(expect['defects']):\n        return False, 'the reading did not name: '",
+      "expect_caught_by": "test_a_reading_that_misses_a_planted_defect_does_not_satisfy_it"
+    },
+    {
+      "id": "spotter-fixtures-edited-change-keeps-its-baseline",
+      "why": "a baseline keeps counting after the change it was recorded against is edited.",
+      "find": "    if base.get('change_sha256') != change_sha(meta):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_a_baseline_stops_counting_when_the_change_is_edited"
+    },
+    {
+      "id": "spotter-fixtures-check-trusts-the-stored-flag",
+      "why": "the check reads the stored satisfied flag instead of re-deriving it, so an edited answer key changes nothing.",
+      "find": "    return satisfied_by(meta, base.get('reading', ''))",
+      "replace": "    return base.get('satisfied'), 'as recorded'",
+      "expect_caught_by": "test_a_baseline_stops_counting_when_the_answer_key_changes"
+    },
+    {
+      "id": "spotter-fixtures-stored-reading-not-rechecked",
+      "why": "a stored reading that Spotter's own checker would refuse today (a verdict word, say) still counts.",
+      "find": "    if problems:\n        return False, 'the stored reading would be refused today: '",
+      "replace": "    if False:\n        return False, 'the stored reading would be refused today: '",
+      "expect_caught_by": "test_a_stored_reading_that_would_be_refused_today_stops_counting"
+    },
+    {
+      "id": "spotter-fixtures-record-ignores-the-head",
+      "why": "a reading is recorded against a commit the comment does not name.",
+      "find": "    if not named_head or not (head.startswith(named_head) or named_head.startswith(head)):",
+      "replace": "    if False:",
+      "expect_caught_by": "test_record_refuses_a_reading_of_another_commit"
+    },
+    {
+      "id": "spotter-fixtures-hash-sees-line-ends",
+      "why": "the change's hash depends on the line ends a checkout gives the file, so a Windows checkout invalidates every baseline.",
+      "find": "    return raw.replace('\\r\\n', '\\n')",
+      "replace": "    return raw",
+      "expect_caught_by": "test_the_change_hash_ignores_the_line_ends_a_checkout_gives_it"
+    },
+    {
+      "id": "spotter-fixtures-clean-blames-the-change",
+      "why": "the clean control is satisfied by a reading that lists a problem the base does not show, so a defect blamed on a change that alters nothing passes.",
+      "find": "        if bullets and all('base' in b.lower() for b in bullets):",
+      "replace": "        if True:",
+      "expect_caught_by": "test_the_clean_fixture_wants_nothing_blamed_on_the_change"
+    },
+    {
+      "id": "spotter-fixtures-apply-overwrites-the-target",
+      "why": "apply replaces the stylesheet with the change instead of appending to it.",
+      "find": "    with target.open('ab') as f:",
+      "replace": "    with target.open('wb') as f:",
+      "expect_caught_by": "test_apply_appends_the_change_and_touches_nothing_else"
+    }
+  ]
+}
+

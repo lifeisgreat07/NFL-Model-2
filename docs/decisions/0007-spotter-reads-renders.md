@@ -43,6 +43,18 @@ place, saying what it sees and citing each image by name.
 - Two builds per run (base and head), so a visual pull request waits longer.
 - A reading is a model's opinion, which is why it advises.
 
+## How the reader is held to account (Stage 43 item 4)
+
+Two fixtures in `tests/spotter_fixtures/`, each a small stylesheet change
+opened as a draft pull request and read once: `planted-defects` (the day
+board overflows a phone and its result labels are unreadable in the dark
+theme) and `clean-control` (a restated declaration; nothing changes). The
+reading is recorded, and `check` re-derives the verdict from it and from an
+answer key written beforehand, free, on every suite run. A planted rule must
+name a class the page's own script draws on the photographed page: the
+first trial planted its defects on a class the board never draws and
+proved nothing.
+
 ## What would reopen it
 
 A reading that needs to write (it should not), images too large for a

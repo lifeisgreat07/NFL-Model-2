@@ -1,0 +1,20 @@
+{
+  "fixture": "planted-defects",
+  "recorded_utc": "2026-10-21T01:15:30Z",
+  "pr": 533,
+  "head": "f4e5fd8a0fac47e432510faa65b5b0601e37b38c",
+  "change_sha256": "5b79a9d9f7543edeb1596d303412171e79e9cb525f45d473a17143fe46ed3806",
+  "names": [
+    "nhl-1440x900-dark-base",
+    "nhl-1440x900-dark-head",
+    "nhl-1440x900-light-base",
+    "nhl-1440x900-light-head",
+    "nhl-390x844-dark-base",
+    "nhl-390x844-dark-head",
+    "nhl-390x844-light-base",
+    "nhl-390x844-light-head"
+  ],
+  "satisfied": true,
+  "explanation": "the reading named every planted defect: phone-overflow, dark-result-unreadable",
+  "reading": "#### What changed\n\nOnly the NHL Day Board was photographed (four head pictures, four base pictures).\n\n- **Phone, light and dark** (`nhl-390x844-dark-base` vs `nhl-390x844-dark-head`, `nhl-390x844-light-base` vs `nhl-390x844-light-head`): the head pictures are 912 pixels wide and the base pictures are 390 wide. In the head pictures the header, the \"Next games\" strip, the week picker and the day tabs stay in the left 390 pixels. The game list below them is stretched to about 912 pixels. Its times and team names sit at the left edge. The pick percentages (\"MTL 67%\") and the Live/Locked labels have moved far right, and the chevrons touch the right edge. In the base pictures every row fits in 390 pixels, with the pick, status and chevron in one tight row. The bottom tab bar (Board, Standings, Ratings, Accuracy, More) spans the whole 912 pixels in the head pictures and sits at the foot of the page. In the base pictures it is drawn across the middle of the page, over the ANA @ NYI row, which looks like a side effect of the full-page photograph.\n- **Phone, dark** (`nhl-390x844-dark-head`): the \"Live\" and \"Locked\" labels are a faint grey. In `nhl-390x844-dark-base` they are bright blue and light grey.\n- **Desktop, dark** (`nhl-1440x900-dark-base` vs `nhl-1440x900-dark-head`): the \"Live\" and \"Locked\" labels in the game list are a dim grey in the head picture. In the base picture \"Live\" is blue and \"Locked\" is light. Nothing else in the layout differs.\n- **Desktop, light** (`nhl-1440x900-light-base` vs `nhl-1440x900-light-head`): I can see no difference in layout or colour.\n- The \"Updated\" time reads 8:58 PM in the base pictures and 8:57 PM in the head pictures. That is data, not a defect.\n\n#### What looks wrong\n\n- `nhl-390x844-dark-head` and `nhl-390x844-light-head`: the page is wider than the 390-pixel phone screen. The game rows run to about 912 pixels, the header and controls do not, and the chevrons are pushed to the edge. On a real phone this would mean a sideways scroll, or the right-hand picks and statuses being off screen. The rows look to be the cause, though the pictures alone can't confirm it. The bottom tab bar is also stretched across that wider width, so its icons sit well to the right of a phone's visible area.\n- `nhl-390x844-dark-head`: the \"Live\" and \"Locked\" labels are very low contrast against the dark background and are hard to read. I did not measure the colours.\n- `nhl-1440x900-dark-head`: the same faint \"Live\" and \"Locked\" labels in the game list. They are much dimmer than the rest of the row text, and \"Live\" has lost the blue it has in `nhl-1440x900-dark-base`.\n\n#### What looks fine\n\nThe desktop layout (sidebar, \"Next games\" strip, day tabs, goalie panel) looks intact in both themes, and the light theme labels are readable everywhere except for the phone width problem above.\n\n#### What I could not tell\n\n- Whether the phone page really scrolls sideways. A full-page picture shows the width but not the behaviour.\n- Whether the dim dark-theme labels are deliberate, for example a \"muted while not yet graded\" style. The pictures show only the result.\n- The goalie panel on desktop is cut off at \"DIVISION LEADERS\" in both head and base. That looks like the photograph's height, so I can't say whether more content follows."
+}

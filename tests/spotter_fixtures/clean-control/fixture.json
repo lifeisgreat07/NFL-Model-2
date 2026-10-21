@@ -1,0 +1,14 @@
+{
+  "id": "clean-control",
+  "why": "A change to the same stylesheet that alters nothing a person can see: it restates font-weight:700 on .nhl-day-title, which the file already sets. Spotter photographs the same page and must blame nothing on the change. The page has standing quirks of its own (a fixed tab bar lands mid-page in a whole-page photograph), which the protocol tells Spotter to list whether or not the base had them, so the key is not 'Nothing that I can see.': a problem is allowed only where its bullet says the base shows it too. A reader that finds a new defect here is inventing one.",
+  "provenance": "Written for Stage 43 item 4, 2026-10-20, as the control for planted-defects. Its first key demanded 'Nothing that I can see.' and failed the first reading (#534), which listed three standing quirks and said each is also in the base; the key was changed because it contradicted SPOTTER_PROTOCOL.md, not to fit the result.",
+  "target": "src/sports/nhl/pages/nhl.css",
+  "page": "nhl",
+  "script": "src/sports/nhl/pages/nhl.js",
+  "rendered_by": ["renderBoard", "rowHtml"],
+  "change": "change.css.txt",
+  "expect": {
+    "kind": "clean",
+    "rule": "every bullet under 'What looks wrong' says the base shows the problem too, or the section says 'Nothing that I can see.'"
+  }
+}
