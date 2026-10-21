@@ -9,14 +9,14 @@
  {
   "game_id": "401909089",
   "pick": "NY",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-10-20T21:31:29Z"
  },
  {
   "game_id": "401909090",
   "pick": "OKC",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-10-20T21:31:29Z"
  }

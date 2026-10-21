@@ -1,2 +1,4 @@
 game_id,season,slate,game_type,neutral_site,home,away,home_score,away_score,home_fga,home_fta,home_oreb,home_tov,away_fga,away_fta,away_oreb,away_tov,possessions,box_source
 401909088,2026,2026-10-20,regular,False,DET,BOS,121,113,86,32,14,17,88,21,12,14,101.16,espn
+401909089,2026,2026-10-20,regular,False,NY,PHI,100,106,94,27,14,15,89,27,6,12,106.88,espn
+401909090,2026,2026-10-20,regular,False,SA,OKC,104,116,93,25,10,14,95,20,10,14,107.9,espn
