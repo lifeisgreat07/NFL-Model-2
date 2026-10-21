@@ -1,0 +1,38 @@
+[
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "nhl-390x844-light-base.png",
+  "bytes": 96606,
+  "parked": 3
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "nhl-390x844-dark-base.png",
+  "bytes": 97871,
+  "parked": 3
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "nhl-1440x900-light-base.png",
+  "bytes": 258331,
+  "parked": 4
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "nhl-1440x900-dark-base.png",
+  "bytes": 259962,
+  "parked": 4
+ }
+]
