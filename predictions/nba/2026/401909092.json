@@ -1,0 +1,96 @@
+{
+ "game_id": "401909092",
+ "season": 2026,
+ "slate": "2026-10-21",
+ "start_utc": "2026-10-22T02:00:00Z",
+ "home": "LAL",
+ "away": "GS",
+ "model_a": 0.7161,
+ "model_b": 0.6613,
+ "pick": "LAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.992,
+  "away": 0.7352
+ },
+ "features": {
+  "point_matchup": 1.741187,
+  "efficiency_matchup": 1.714992,
+  "availability_matchup": 0.256812
+ },
+ "market": {
+  "game_id": "401909092",
+  "home": "LAL",
+  "away": "GS",
+  "start_utc": "2026-10-22T02:00:00Z",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -230.0,
+  "away_price": 190.0,
+  "home_prob": 0.669
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "5060631",
+    "name": "Adou Thiero",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5113969",
+    "name": "Cameron Carr",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4277811",
+    "name": "Collin Sexton",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4709138",
+    "name": "Brandin Podziemski",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4397886",
+    "name": "Charles Bassey",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6430",
+    "name": "Jimmy Butler III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102531",
+    "name": "Kristaps Porzingis",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432171",
+    "name": "Moses Moody",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3975",
+    "name": "Stephen Curry",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-21T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-20",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14061,
+  "training_games_priced": 14017
+ }
+}

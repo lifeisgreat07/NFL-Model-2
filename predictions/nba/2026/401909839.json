@@ -1,0 +1,65 @@
+{
+ "game_id": "401909839",
+ "season": 2026,
+ "slate": "2026-10-21",
+ "start_utc": "2026-10-22T00:00:00Z",
+ "home": "NO",
+ "away": "IND",
+ "model_a": 0.6574,
+ "model_b": 0.4201,
+ "pick": "IND",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8508
+ },
+ "features": {
+  "point_matchup": 0.978583,
+  "efficiency_matchup": 0.869208,
+  "availability_matchup": 0.149166
+ },
+ "market": {
+  "game_id": "401909839",
+  "home": "NO",
+  "away": "IND",
+  "start_utc": "2026-10-22T00:00:00Z",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 124.0,
+  "away_price": -148.0,
+  "home_prob": 0.4279
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "home": [],
+  "away": [
+   {
+    "athlete_id": "4396909",
+    "name": "Aaron Nesmith",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5157066",
+    "name": "Johnny Furphy",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2530530",
+    "name": "T.J. McConnell",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-21T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-20",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14061,
+  "training_games_priced": 14017
+ }
+}

@@ -1,0 +1,91 @@
+{
+ "game_id": "401909842",
+ "season": 2026,
+ "slate": "2026-10-21",
+ "start_utc": "2026-10-22T02:30:00Z",
+ "home": "LAC",
+ "away": "SAC",
+ "model_a": 0.794,
+ "model_b": 0.6174,
+ "pick": "LAC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9107,
+  "away": 0.86
+ },
+ "features": {
+  "point_matchup": 6.905713,
+  "efficiency_matchup": 6.758894,
+  "availability_matchup": 0.050701
+ },
+ "market": {
+  "game_id": "401909842",
+  "home": "LAC",
+  "away": "SAC",
+  "start_utc": "2026-10-22T02:30:00Z",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -185.0,
+  "away_price": 154.0,
+  "home_prob": 0.6225
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "6580",
+    "name": "Bradley Beal",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4396818",
+    "name": "Jordan Miller",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065778",
+    "name": "Max Strus",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5108024",
+    "name": "Yanic Konan Niederhauser",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433174",
+    "name": "Dylan Cardwell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066262",
+    "name": "Malik Monk",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-21T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-20",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14061,
+  "training_games_priced": 14017
+ }
+}

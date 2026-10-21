@@ -1,0 +1,61 @@
+{
+ "game_id": "401909091",
+ "season": 2026,
+ "slate": "2026-10-21",
+ "start_utc": "2026-10-21T23:30:00Z",
+ "home": "MIA",
+ "away": "MIN",
+ "model_a": 0.5881,
+ "model_b": 0.5221,
+ "pick": "MIA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8985
+ },
+ "features": {
+  "point_matchup": -0.63219,
+  "efficiency_matchup": -0.674843,
+  "availability_matchup": 0.10155
+ },
+ "market": {
+  "game_id": "401909091",
+  "home": "MIA",
+  "away": "MIN",
+  "start_utc": "2026-10-21T23:30:00Z",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -122.0,
+  "away_price": 102.0,
+  "home_prob": 0.5261
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "4700818",
+    "name": "Vladislav Goldin",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-21T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-20",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14061,
+  "training_games_priced": 14017
+ }
+}

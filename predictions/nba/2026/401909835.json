@@ -1,0 +1,71 @@
+{
+ "game_id": "401909835",
+ "season": 2026,
+ "slate": "2026-10-21",
+ "start_utc": "2026-10-21T23:00:00Z",
+ "home": "WSH",
+ "away": "MIL",
+ "model_a": 0.409,
+ "model_b": 0.6216,
+ "pick": "WSH",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9129,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": -3.9682,
+  "efficiency_matchup": -3.591578,
+  "availability_matchup": -0.087094
+ },
+ "market": {
+  "game_id": "401909835",
+  "home": "WSH",
+  "away": "MIL",
+  "start_utc": "2026-10-21T23:00:00Z",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -180.0,
+  "away_price": 150.0,
+  "home_prob": 0.6164
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "5142718",
+    "name": "AJ Dybantsa",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4606840",
+    "name": "Jamir Watkins",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4997537",
+    "name": "Tristan Vukcevic",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5164559",
+    "name": "Nate Ament",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-21T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-20",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14061,
+  "training_games_priced": 14017
+ }
+}

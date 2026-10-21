@@ -1,0 +1,71 @@
+{
+ "game_id": "401909838",
+ "season": 2026,
+ "slate": "2026-10-21",
+ "start_utc": "2026-10-22T00:00:00Z",
+ "home": "MEM",
+ "away": "UTAH",
+ "model_a": 0.6377,
+ "model_b": 0.5294,
+ "pick": "MEM",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.9614
+ },
+ "features": {
+  "point_matchup": 1.499661,
+  "efficiency_matchup": 1.423491,
+  "availability_matchup": 0.038629
+ },
+ "market": {
+  "game_id": "401909838",
+  "home": "MEM",
+  "away": "UTAH",
+  "start_utc": "2026-10-22T00:00:00Z",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-21T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "4432810",
+    "name": "Isaiah Stewart",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3102530",
+    "name": "Jusuf Nurkic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065673",
+    "name": "Tony Bradley",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433268",
+    "name": "Trey Alexander",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-21T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-20",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14061,
+  "training_games_priced": 14017
+ }
+}
