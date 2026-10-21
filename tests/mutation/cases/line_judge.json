@@ -83,7 +83,7 @@
     {
       "id": "lj-refresh-not-on-time",
       "why": "a refresh run hours late is not flagged.",
-      "find": "    findings = check_on_time(event, started, workflow_text)\n    for week in sorted(weeks):\n",
+      "find": "    findings = check_on_time(event, started, workflow_text, fetch, 'nfl-weekend-refresh.yml')\n    for week in sorted(weeks):\n",
       "replace": "    findings = []\n    for week in sorted(weeks):\n",
       "expect_caught_by": "test_judge_refresh_reads_each_kept_week_and_the_refreshs_own_slots"
     },
