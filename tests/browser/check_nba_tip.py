@@ -92,10 +92,12 @@ DATA = re.compile(r'(<script id="nba-data" type="application/json">)(.*?)(</scri
 
 
 def flag_first_game(html):
-    """The page with the first game that has a start marked by ESPN as not set."""
+    """The page with the first still-to-be-played game that has a start marked by ESPN as not set."""
     m = DATA.search(html)
     data = json.loads(m.group(2))
-    first = next(g for g in data['board']['games'] if g.get('start'))
+    # Only a game still to be played: the check skips rows reading 'Final' or 'Live',
+    # so flagging one of those could never be seen (it broke on NBA opening night).
+    first = next(g for g in data['board']['games'] if g.get('start') and g.get('status') == 'scheduled')
     first['tv'] = False
     body = json.dumps(data).replace('<', '\\u003c')
     return html[:m.start(2)] + body + html[m.end(2):], first['id']

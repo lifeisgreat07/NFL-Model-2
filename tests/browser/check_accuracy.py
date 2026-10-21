@@ -23,6 +23,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from pre_opening import pre_opening
+
 ROOT = Path(__file__).resolve().parents[2]
 MEASURE = """() => { const page = document.querySelector('.page.active');
   const charts = [...page.querySelectorAll('.acc-chart')];
@@ -48,7 +51,8 @@ async def check_pages(nhl, nba):
                     page.on('pageerror', lambda e: errors.append(str(e)))
                     await page.clock.set_fixed_time('2026-10-13T17:00:00Z')
                     await page.route(lambda u: u.startswith(('http://', 'https://')), lambda r: r.abort())
-                    await page.goto(Path(path).resolve().as_uri() + '#' + page_id)
+                    shown = pre_opening(path) if sport == 'NBA' else Path(path)
+                    await page.goto(shown.resolve().as_uri() + '#' + page_id)
                     await page.wait_for_timeout(300)
                     m = await page.evaluate(MEASURE)
                     await ctx.close()
