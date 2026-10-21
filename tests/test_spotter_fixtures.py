@@ -228,11 +228,13 @@ def test_apply_appends_the_change_and_touches_nothing_else(tmp_path):
 
 def test_the_change_hash_ignores_the_line_ends_a_checkout_gives_it(tmp_path):
     meta = scratch(tmp_path, CLEAN)
-    before = sf.change_sha(meta)
     p = Path(meta['_path']) / meta['change']
-    # Start from LF whatever the checkout gave: on Windows (autocrlf) the file is already CRLF,
-    # and turning its \n into \r\n again would make \r\r\n, a different file, not a different checkout.
-    p.write_bytes(p.read_bytes().replace(b'\r\n', b'\n').replace(b'\n', b'\r\n'))
+    # Write both forms ourselves: a checkout may already be CRLF (Windows autocrlf), and turning
+    # its \n into \r\n again makes \r\r\n, a different file rather than a different checkout.
+    lf = p.read_bytes().replace(b'\r\n', b'\n')
+    p.write_bytes(lf)
+    before = sf.change_sha(meta)
+    p.write_bytes(lf.replace(b'\n', b'\r\n'))
     assert b'\r\n' in p.read_bytes() and b'\r\r' not in p.read_bytes()
     assert sf.change_sha(meta) == before
 
