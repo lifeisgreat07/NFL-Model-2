@@ -1570,5 +1570,17 @@
   "home_prob": 0.3962,
   "read_utc": "2026-10-22T21:01:40Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020160",
+  "start_utc": "2026-10-23T00:00:00Z",
+  "home": "STL",
+  "away": "VGK",
+  "book": "DraftKings",
+  "home_price": 105.0,
+  "away_price": -125.0,
+  "home_prob": 0.4675,
+  "read_utc": "2026-10-22T23:43:30Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]

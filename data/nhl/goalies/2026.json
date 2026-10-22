@@ -3883,5 +3883,35 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020167",
   "start_utc": "2026-10-24T01:00:00Z"
+ },
+ {
+  "date": "2026-10-22",
+  "home": "STL",
+  "home_goalie": "Joel Hofer",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/MDeFranks/status/2113293788512674107",
+  "away": "VGK",
+  "away_goalie": "Adin Hill",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/MDeFranks/status/2113412373008753112",
+  "read_utc": "2026-10-22T23:43:30Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020160",
+  "start_utc": "2026-10-23T00:00:00Z"
+ },
+ {
+  "date": "2026-10-22",
+  "home": "CGY",
+  "home_goalie": "Devin Cooley",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/SteinbergYYC/status/2113317070280757566?s=20",
+  "away": "MIN",
+  "away_goalie": "Jesper Wallstedt",
+  "away_status": "Confirmed",
+  "away_report": "https://thehockeynews.com/nhl/minnesota-wild/latest-news/10-22-26-wild-vs-flames-starting-goaltender-matchup/",
+  "read_utc": "2026-10-22T23:43:30Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020162",
+  "start_utc": "2026-10-23T01:00:00Z"
  }
 ]
