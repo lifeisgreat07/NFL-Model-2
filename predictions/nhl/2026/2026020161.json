@@ -1,0 +1,107 @@
+{
+ "game_id": "2026020161",
+ "season": 2026,
+ "slate": "2026-10-22",
+ "start_utc": "2026-10-23T00:00:00Z",
+ "home": "DAL",
+ "away": "WPG",
+ "model_a": 0.6321,
+ "model_b": 0.6514,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.775138,
+  "shot_matchup": 1.389599,
+  "goalie_matchup_2000": 0.003421
+ },
+ "market": {
+  "game_id": "2026020161",
+  "start_utc": "2026-10-23T00:00:00Z",
+  "home": "DAL",
+  "away": "WPG",
+  "book": "DraftKings",
+  "home_price": -205.0,
+  "away_price": 170.0,
+  "home_prob": 0.6447,
+  "read_utc": "2026-10-22T21:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479979,
+   "name": "Jake Oettinger",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/BrienRea/status/2113305853902127185?s=20"
+  },
+  "away": {
+   "player_id": 8479973,
+   "name": "Stuart Skinner",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/WiebesWorld/status/2113323876495056938?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-22",
+  "read_utc": "2026-10-22T21:01:40Z",
+  "home": [
+   {
+    "name": "Cameron Hughes",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Esa Lindell",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Luke Krys",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Duchene",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Oskar Back",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Connor Hellebuyck",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Garrett Brown",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Josh Morrissey",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vladislav Namestnikov",
+    "position": "C",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-22T21:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14556,
+  "training_games_priced": 7427
+ }
+}

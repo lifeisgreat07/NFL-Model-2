@@ -1,0 +1,112 @@
+{
+ "game_id": "2026020158",
+ "season": 2026,
+ "slate": "2026-10-22",
+ "start_utc": "2026-10-22T23:00:00Z",
+ "home": "PIT",
+ "away": "FLA",
+ "model_a": 0.5223,
+ "model_b": 0.4778,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.07922,
+  "shot_matchup": -1.173973,
+  "goalie_matchup_2000": -0.002218
+ },
+ "market": {
+  "game_id": "2026020158",
+  "start_utc": "2026-10-22T23:00:00Z",
+  "home": "PIT",
+  "away": "FLA",
+  "book": "DraftKings",
+  "home_price": -108.0,
+  "away_price": -112.0,
+  "home_prob": 0.4957,
+  "read_utc": "2026-10-22T21:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481668,
+   "name": "Arturs Silovs",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/PensInsideScoop/status/2113296344417022131?s=20"
+  },
+  "away": {
+   "player_id": 8484900,
+   "name": "Cooper Black",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JamesonCoop/status/2113365881338396692"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-22",
+  "read_utc": "2026-10-22T21:01:40Z",
+  "home": [
+   {
+    "name": "Ben Kindel",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Bryan Rust",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Justin Brazeau",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Graves",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Samuel Girard",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Trevor van Riemsdyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jacob Markstrom",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-22T21:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14556,
+  "training_games_priced": 7427
+ }
+}

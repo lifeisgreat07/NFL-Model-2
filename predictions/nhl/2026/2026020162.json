@@ -1,0 +1,107 @@
+{
+ "game_id": "2026020162",
+ "season": 2026,
+ "slate": "2026-10-22",
+ "start_utc": "2026-10-23T01:00:00Z",
+ "home": "CGY",
+ "away": "MIN",
+ "model_a": 0.379,
+ "model_b": 0.3643,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.529733,
+  "shot_matchup": -1.889782,
+  "goalie_matchup_2000": -0.003913
+ },
+ "market": {
+  "game_id": "2026020162",
+  "start_utc": "2026-10-23T01:00:00Z",
+  "home": "CGY",
+  "away": "MIN",
+  "book": "DraftKings",
+  "home_price": 170.0,
+  "away_price": -205.0,
+  "home_prob": 0.3553,
+  "read_utc": "2026-10-22T21:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482445,
+   "name": "Devin Cooley",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/SteinbergYYC/status/2113317070280757566?s=20"
+  },
+  "away": {
+   "player_id": 8482661,
+   "name": "Jesper Wallstedt",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/JoeSmithNHL/status/2113327815139697136?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-22",
+  "read_utc": "2026-10-22T21:01:40Z",
+  "home": [
+   {
+    "name": "Jonathan Huberdeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mikael Backlund",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Samuel Honzek",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brock Faber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Gustavsson",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jared Spurgeon",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marcus Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Olli Maatta",
+    "position": "D",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-22T21:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14556,
+  "training_games_priced": 7427
+ }
+}

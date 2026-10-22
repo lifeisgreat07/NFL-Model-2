@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020160",
+ "season": 2026,
+ "slate": "2026-10-22",
+ "start_utc": "2026-10-23T00:00:00Z",
+ "home": "STL",
+ "away": "VGK",
+ "model_a": 0.4554,
+ "model_b": 0.4465,
+ "pick": "VGK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.523619,
+  "shot_matchup": -5.02798,
+  "goalie_matchup_2000": 0.004336
+ },
+ "market": {
+  "game_id": "2026020160",
+  "start_utc": "2026-10-23T00:00:00Z",
+  "home": "STL",
+  "away": "VGK",
+  "book": "DraftKings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573,
+  "read_utc": "2026-10-22T21:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480981,
+   "name": "Joel Hofer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/MDeFranks/status/2113293788512674107"
+  },
+  "away": {
+   "player_id": 8478499,
+   "name": "Adin Hill",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/lkorac10/status/2113316247647518895?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-22",
+  "read_utc": "2026-10-22T21:01:40Z",
+  "home": [
+   {
+    "name": "Alexey Toropchenko",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dillon Dube",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan Mailloux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ross Johnston",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Torey Krug",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Parker Wotherspoon",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-22T21:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14556,
+  "training_games_priced": 7427
+ }
+}

@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020156",
+ "season": 2026,
+ "slate": "2026-10-22",
+ "start_utc": "2026-10-22T23:00:00Z",
+ "home": "OTT",
+ "away": "SJS",
+ "model_a": 0.6734,
+ "model_b": 0.5247,
+ "pick": "OTT",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.016374,
+  "shot_matchup": 4.653735,
+  "goalie_matchup_2000": 0.00021
+ },
+ "market": {
+  "game_id": "2026020156",
+  "start_utc": "2026-10-22T23:00:00Z",
+  "home": "OTT",
+  "away": "SJS",
+  "book": "DraftKings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514,
+  "read_utc": "2026-10-22T21:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481035,
+   "name": "Samuel Ersson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/AndrewWilimek/status/2113372168100696452?s=20"
+  },
+  "away": {
+   "player_id": 8482137,
+   "name": "Yaroslav Askarov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Sheng_Peng/status/2113299559354859919"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-22",
+  "read_utc": "2026-10-22T21:01:40Z",
+  "home": [
+   {
+    "name": "Kurtis MacDermid",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Linus Ullmark",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thomas Chabot",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "William Eklund",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Wennberg",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-22T21:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14556,
+  "training_games_priced": 7427
+ }
+}
