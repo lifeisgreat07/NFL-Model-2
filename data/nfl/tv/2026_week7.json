@@ -1,0 +1,234 @@
+{
+  "reads": [
+    "2026-10-22T11:03:15Z"
+  ],
+  "changes": [],
+  "games": [
+    {
+      "elias": "2026102200",
+      "networks": [
+        "Prime Video"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NE",
+      "home": "CHI",
+      "territory": "NATIONAL",
+      "listed": [
+        "Prime Video"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102500",
+      "networks": [
+        "NFL Network"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "PIT",
+      "home": "NO",
+      "territory": "NATIONAL",
+      "listed": [
+        "NFL Network"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102501",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "SF",
+      "home": "ATL",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102502",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CIN",
+      "home": "BAL",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102503",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "TB",
+      "home": "CAR",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102504",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NYG",
+      "home": "HOU",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102505",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "IND",
+      "home": "MIN",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102506",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "MIA",
+      "home": "NYJ",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102507",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CLE",
+      "home": "TEN",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102508",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "DEN",
+      "home": "ARI",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102509",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "GB",
+      "home": "DET",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102510",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LA",
+      "home": "LV",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102511",
+      "networks": [
+        "NBC"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "KC",
+      "home": "SEA",
+      "territory": "NATIONAL",
+      "listed": [
+        "NBC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    },
+    {
+      "elias": "2026102600",
+      "networks": [
+        "ESPN"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "DAL",
+      "home": "PHI",
+      "territory": "NATIONAL",
+      "listed": [
+        "ESPN",
+        "ABC",
+        "NFL Network"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
+      "read_at": "2026-10-22T11:03:15Z"
+    }
+  ]
+}
