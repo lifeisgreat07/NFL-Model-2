@@ -1,0 +1,86 @@
+{
+ "game_id": "401909093",
+ "season": 2026,
+ "slate": "2026-10-22",
+ "start_utc": "2026-10-22T23:00:00Z",
+ "home": "PHI",
+ "away": "CLE",
+ "model_a": 0.4511,
+ "model_b": 0.566,
+ "pick": "PHI",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9326,
+  "away": 0.9658
+ },
+ "features": {
+  "point_matchup": -3.188585,
+  "efficiency_matchup": -3.077219,
+  "availability_matchup": -0.033196
+ },
+ "market": {
+  "game_id": "401909093",
+  "home": "PHI",
+  "away": "CLE",
+  "start_utc": "2026-10-22T23:00:00Z",
+  "read_utc": "2026-10-22T21:31:36Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -142.0,
+  "away_price": 120.0,
+  "home_prob": 0.5635
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-22T21:31:36Z",
+  "home": [
+   {
+    "athlete_id": "4871141",
+    "name": "Ariel Hukporti",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3912848",
+    "name": "Dean Wade",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4870562",
+    "name": "Dominick Barlow",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3904625",
+    "name": "Tacko Fall",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4066328",
+    "name": "Jarrett Allen",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4997530",
+    "name": "Khalifa Diop",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5106268",
+    "name": "Nae'Qwan Tomlin",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-22T21:31:36Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14072,
+  "training_games_priced": 14017
+ }
+}

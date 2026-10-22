@@ -1,0 +1,76 @@
+{
+ "game_id": "401909094",
+ "season": 2026,
+ "slate": "2026-10-22",
+ "start_utc": "2026-10-23T01:30:00Z",
+ "home": "OKC",
+ "away": "DEN",
+ "model_a": 0.7395,
+ "model_b": 0.732,
+ "pick": "OKC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9915,
+  "away": 0.9543
+ },
+ "features": {
+  "point_matchup": 4.858395,
+  "efficiency_matchup": 4.785022,
+  "availability_matchup": 0.037167
+ },
+ "market": {
+  "game_id": "401909094",
+  "home": "OKC",
+  "away": "DEN",
+  "start_utc": "2026-10-23T01:30:00Z",
+  "read_utc": "2026-10-22T21:31:36Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -325.0,
+  "away_price": 260.0,
+  "home_prob": 0.7335
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-22T21:31:36Z",
+  "home": [
+   {
+    "athlete_id": "5159925",
+    "name": "Nikola Topic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5106270",
+    "name": "Otega Oweh",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061603",
+    "name": "Thomas Sorber",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4432181",
+    "name": "Julian Strawther",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4592427",
+    "name": "Spencer Jones",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-22T21:31:36Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-21",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14072,
+  "training_games_priced": 14017
+ }
+}
