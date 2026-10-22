@@ -596,13 +596,13 @@
  {
   "game_id": "2026020152",
   "pick": "BUF",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-21T21:01:48Z"
  },
  {
   "game_id": "2026020153",
   "pick": "FLA",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-21T21:01:48Z"
  }
 ]
