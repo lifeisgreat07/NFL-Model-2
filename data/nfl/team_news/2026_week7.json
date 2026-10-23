@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 7,
-  "read_at": "2026-10-22T11:03:17Z",
+  "read_at": "2026-10-23T10:04:19Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-10-22T06:01:56Z"
+    "depth_chart_snapshot": "2026-10-23T06:04:23Z"
   },
   "teams": {
     "CHI": {
@@ -33,11 +33,6 @@
       },
       "injury_report": "published",
       "out": [
-        {
-          "name": "Alijah Vera-Tucker",
-          "position": "G",
-          "injury": "Hamstring"
-        },
         {
           "name": "Ben Brown",
           "position": "C",
