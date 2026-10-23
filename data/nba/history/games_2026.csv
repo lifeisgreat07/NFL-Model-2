@@ -13,3 +13,5 @@ game_id,season,slate,game_type,neutral_site,home,away,home_score,away_score,home
 401909840,2026,2026-10-21,regular,False,HOU,DAL,128,110,88,25,17,16,79,26,8,21,100.72,espn
 401909841,2026,2026-10-21,regular,False,POR,PHX,124,83,94,18,16,17,84,23,13,16,100.02,espn
 401909842,2026,2026-10-21,regular,False,LAC,SAC,121,96,82,31,11,18,85,28,11,17,102.98,espn
+401909093,2026,2026-10-22,regular,False,PHI,CLE,114,106,92,30,9,17,87,28,10,21,111.76,espn
+401909094,2026,2026-10-22,regular,False,OKC,DEN,96,84,95,14,16,12,82,22,19,22,95.92,espn

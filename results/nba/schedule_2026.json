@@ -1,5 +1,5 @@
 {
- "as_of": "2026-10-22",
+ "as_of": "2026-10-23",
  "games": [
   {
    "game_id": "401909088",
@@ -189,10 +189,10 @@
    "start_utc": "2026-10-22T23:00:00Z",
    "home": "PHI",
    "away": "CLE",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 114,
+   "away_score": 106,
    "neutral_site": false,
    "time_valid": true
   },
@@ -202,10 +202,10 @@
    "start_utc": "2026-10-23T01:30:00Z",
    "home": "OKC",
    "away": "DEN",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 96,
+   "away_score": 84,
    "neutral_site": false,
    "time_valid": true
   },

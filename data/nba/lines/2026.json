@@ -214,5 +214,17 @@
   "home_price": -340.0,
   "away_price": 270.0,
   "home_prob": 0.7409
+ },
+ {
+  "game_id": "401909848",
+  "home": "MIL",
+  "away": "CHI",
+  "start_utc": "2026-10-23T20:00:00Z",
+  "read_utc": "2026-10-23T16:01:59Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -118.0,
+  "away_price": -102.0,
+  "home_prob": 0.5174
  }
 ]
