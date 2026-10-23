@@ -2,14 +2,14 @@
   "season": 2026,
   "week": 7,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-22T11:03:06Z",
+  "read_at": "2026-10-23T05:17:37Z",
   "games": [
     {
       "away": "NE",
       "home": "CHI",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 24,
+      "home_score": 30,
       "spread_line": 3.0,
       "neutral_site": false,
       "venue": "Soldier Field"
@@ -20,7 +20,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -3.5,
+      "spread_line": -3.0,
       "neutral_site": true,
       "venue": "Stade de France"
     },
@@ -30,7 +30,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -3.0,
+      "spread_line": -2.5,
       "neutral_site": false,
       "venue": "Mercedes-Benz Stadium"
     },
@@ -40,7 +40,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -1.5,
+      "spread_line": 1.5,
       "neutral_site": false,
       "venue": "M&T Bank Stadium"
     },
@@ -120,7 +120,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -4.5,
+      "spread_line": -3.5,
       "neutral_site": false,
       "venue": "Allegiant Stadium"
     },
@@ -130,7 +130,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 2.5,
+      "spread_line": 3.0,
       "neutral_site": false,
       "venue": "Lumen Field"
     },
