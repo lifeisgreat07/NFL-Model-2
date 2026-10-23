@@ -1,0 +1,102 @@
+{
+ "game_id": "2026020166",
+ "season": 2026,
+ "slate": "2026-10-23",
+ "start_utc": "2026-10-24T00:00:00Z",
+ "home": "CHI",
+ "away": "MTL",
+ "model_a": 0.3843,
+ "model_b": 0.3917,
+ "pick": "MTL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.117181,
+  "shot_matchup": -5.129798,
+  "goalie_matchup_2000": -0.001184
+ },
+ "market": {
+  "game_id": "2026020166",
+  "start_utc": "2026-10-24T00:00:00Z",
+  "home": "CHI",
+  "away": "MTL",
+  "book": "DraftKings",
+  "home_price": 142.0,
+  "away_price": -170.0,
+  "home_prob": 0.3962,
+  "read_utc": "2026-10-23T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://thehockeynews.com/nhl/chicago-blackhawks/latest-news/blackhawks-vs-canadiens-projected-lineup-how-to-watch-more-ahead-of-game-10"
+  },
+  "away": {
+   "player_id": 8484170,
+   "name": "Jacob Fowler",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/EricEngels/status/2113679525447905366?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-23",
+  "read_utc": "2026-10-23T21:01:43Z",
+  "home": [
+   {
+    "name": "Andrew Mangiapane",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Florian Xhekaj",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Suzuki",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-23T21:01:43Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-22",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14568,
+  "training_games_priced": 7427
+ }
+}

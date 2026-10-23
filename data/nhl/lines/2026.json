@@ -1582,5 +1582,29 @@
   "home_prob": 0.4675,
   "read_utc": "2026-10-22T23:43:30Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020166",
+  "start_utc": "2026-10-24T00:00:00Z",
+  "home": "CHI",
+  "away": "MTL",
+  "book": "DraftKings",
+  "home_price": 142.0,
+  "away_price": -170.0,
+  "home_prob": 0.3962,
+  "read_utc": "2026-10-23T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020167",
+  "start_utc": "2026-10-24T01:00:00Z",
+  "home": "COL",
+  "away": "TBL",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-10-23T21:01:43Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]
