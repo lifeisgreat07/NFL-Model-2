@@ -1,0 +1,96 @@
+{
+ "game_id": "401909844",
+ "season": 2026,
+ "slate": "2026-10-23",
+ "start_utc": "2026-10-23T23:00:00Z",
+ "home": "IND",
+ "away": "DAL",
+ "model_a": 0.5476,
+ "model_b": 0.6998,
+ "pick": "IND",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8591,
+  "away": 0.9549
+ },
+ "features": {
+  "point_matchup": 0.234529,
+  "efficiency_matchup": 0.204852,
+  "availability_matchup": -0.095776
+ },
+ "market": {
+  "game_id": "401909844",
+  "home": "IND",
+  "away": "DAL",
+  "start_utc": "2026-10-23T23:00:00Z",
+  "read_utc": "2026-10-23T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -265.0,
+  "away_price": 215.0,
+  "home_prob": 0.6958
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-23T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4396909",
+    "name": "Aaron Nesmith",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4433076",
+    "name": "Ben Sheppard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5157066",
+    "name": "Johnny Furphy",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2530530",
+    "name": "T.J. McConnell",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3138160",
+    "name": "Caleb Martin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105806",
+    "name": "Jett Howard",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4593125",
+    "name": "Santi Aldama",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-23T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-22",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14074,
+  "training_games_priced": 14017
+ }
+}

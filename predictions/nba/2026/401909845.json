@@ -1,0 +1,76 @@
+{
+ "game_id": "401909845",
+ "season": 2026,
+ "slate": "2026-10-23",
+ "start_utc": "2026-10-23T23:00:00Z",
+ "home": "ORL",
+ "away": "MIN",
+ "model_a": 0.4837,
+ "model_b": 0.5189,
+ "pick": "ORL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8636,
+  "away": 0.9024
+ },
+ "features": {
+  "point_matchup": -2.200323,
+  "efficiency_matchup": -2.119102,
+  "availability_matchup": -0.038758
+ },
+ "market": {
+  "game_id": "401909845",
+  "home": "ORL",
+  "away": "MIN",
+  "start_utc": "2026-10-23T23:00:00Z",
+  "read_utc": "2026-10-23T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -118.0,
+  "away_price": -102.0,
+  "home_prob": 0.5174
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-23T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4712849",
+    "name": "Anthony Black",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5107251",
+    "name": "Izaiyah Nelson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065654",
+    "name": "Jonathan Isaac",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5214637",
+    "name": "Noah Penda",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-23T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-22",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14074,
+  "training_games_priced": 14017
+ }
+}

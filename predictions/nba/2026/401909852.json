@@ -1,0 +1,81 @@
+{
+ "game_id": "401909852",
+ "season": 2026,
+ "slate": "2026-10-23",
+ "start_utc": "2026-10-24T02:00:00Z",
+ "home": "SAC",
+ "away": "POR",
+ "model_a": 0.3119,
+ "model_b": 0.2088,
+ "pick": "POR",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8667,
+  "away": 0.9349
+ },
+ "features": {
+  "point_matchup": -6.976916,
+  "efficiency_matchup": -6.90702,
+  "availability_matchup": -0.068186
+ },
+ "market": {
+  "game_id": "401909852",
+  "home": "SAC",
+  "away": "POR",
+  "start_utc": "2026-10-24T02:00:00Z",
+  "read_utc": "2026-10-23T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 360.0,
+  "away_price": -470.0,
+  "home_prob": 0.2086
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-23T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433174",
+    "name": "Dylan Cardwell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4592435",
+    "name": "Branden Carlson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4706557",
+    "name": "Chris Youngblood",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4914336",
+    "name": "Shaedon Sharpe",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-23T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-22",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14074,
+  "training_games_priced": 14017
+ }
+}

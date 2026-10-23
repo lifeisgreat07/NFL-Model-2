@@ -215,7 +215,7 @@
    "start_utc": "2026-10-23T20:00:00Z",
    "home": "MIL",
    "away": "CHI",
-   "status": "scheduled",
+   "status": "in_progress",
    "game_type": "regular",
    "home_score": null,
    "away_score": null,
