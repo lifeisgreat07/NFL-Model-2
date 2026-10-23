@@ -358,5 +358,17 @@
   "home_price": 360.0,
   "away_price": -470.0,
   "home_prob": 0.2086
+ },
+ {
+  "game_id": "401909096",
+  "home": "SA",
+  "away": "HOU",
+  "start_utc": "2026-10-24T01:30:00Z",
+  "read_utc": "2026-10-23T23:56:34Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -185.0,
+  "away_price": 154.0,
+  "home_prob": 0.6225
  }
 ]
