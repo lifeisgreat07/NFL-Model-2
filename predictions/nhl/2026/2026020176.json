@@ -1,0 +1,152 @@
+{
+ "game_id": "2026020176",
+ "season": 2026,
+ "slate": "2026-10-24",
+ "start_utc": "2026-10-24T23:00:00Z",
+ "home": "EDM",
+ "away": "TOR",
+ "model_a": 0.6355,
+ "model_b": 0.6115,
+ "pick": "EDM",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.547274,
+  "shot_matchup": 5.229525,
+  "goalie_matchup_2000": -0.002348
+ },
+ "market": {
+  "game_id": "2026020176",
+  "start_utc": "2026-10-24T23:00:00Z",
+  "home": "EDM",
+  "away": "TOR",
+  "book": "DraftKings",
+  "home_price": -166.0,
+  "away_price": 140.0,
+  "home_prob": 0.5996,
+  "read_utc": "2026-10-24T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8477465,
+   "name": "Tristan Jarry",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JasonGregor/status/2113703204265607169"
+  },
+  "away": {
+   "player_id": 8476932,
+   "name": "Anthony Stolarz",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/markhmasters/status/2114097410863780252?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-24",
+  "read_utc": "2026-10-24T21:01:47Z",
+  "home": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Atro Leppanen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Devon Levi",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jason Dickinson",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Ekholm",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Cade Webber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Chris Tanev",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dakota Joshua",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elvis Merzlikins",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "John Tavares",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marshall Rifai",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Max Domi",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Miles Wood",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Blankenburg",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Villeneuve",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-24T21:01:47Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14571,
+  "training_games_priced": 7427
+ }
+}

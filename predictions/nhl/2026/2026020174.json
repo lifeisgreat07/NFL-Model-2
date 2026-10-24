@@ -1,0 +1,71 @@
+{
+ "game_id": "2026020174",
+ "season": 2026,
+ "slate": "2026-10-24",
+ "start_utc": "2026-10-24T23:00:00Z",
+ "home": "CBJ",
+ "away": "VGK",
+ "model_a": 0.4329,
+ "model_b": 0.4511,
+ "pick": "VGK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.77299,
+  "shot_matchup": -2.842243,
+  "goalie_matchup_2000": -0.002423
+ },
+ "market": {
+  "game_id": "2026020174",
+  "start_utc": "2026-10-24T23:00:00Z",
+  "home": "CBJ",
+  "away": "VGK",
+  "book": "DraftKings",
+  "home_price": 114.0,
+  "away_price": -135.0,
+  "home_prob": 0.4486,
+  "read_utc": "2026-10-24T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475660,
+   "name": "Cam Talbot",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/mark_scheig/status/2114016207557042521?s=20"
+  },
+  "away": {
+   "player_id": 8479394,
+   "name": "Carter Hart",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/mark_scheig/status/2114017617237426351?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-24",
+  "read_utc": "2026-10-24T21:01:47Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Mitch Marner",
+    "position": "RW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Parker Wotherspoon",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-24T21:01:47Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14571,
+  "training_games_priced": 7427
+ }
+}

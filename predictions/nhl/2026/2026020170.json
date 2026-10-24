@@ -1,0 +1,81 @@
+{
+ "game_id": "2026020170",
+ "season": 2026,
+ "slate": "2026-10-24",
+ "start_utc": "2026-10-24T23:00:00Z",
+ "home": "BOS",
+ "away": "SJS",
+ "model_a": 0.645,
+ "model_b": 0.6135,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.14946,
+  "shot_matchup": 0.388487,
+  "goalie_matchup_2000": 0.002633
+ },
+ "market": {
+  "game_id": "2026020170",
+  "start_utc": "2026-10-24T23:00:00Z",
+  "home": "BOS",
+  "away": "SJS",
+  "book": "DraftKings",
+  "home_price": -192.0,
+  "away_price": 160.0,
+  "home_prob": 0.6309,
+  "read_utc": "2026-10-24T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480280,
+   "name": "Jeremy Swayman",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/jackstudley13/status/2114007940751561167?s=20"
+  },
+  "away": {
+   "player_id": 8477968,
+   "name": "Alex Nedeljkovic",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/sheng_peng/status/2114022628000481621?s=46"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-24",
+  "read_utc": "2026-10-24T21:01:47Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Alexander Wennberg",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Igor Chernyshov",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-24T21:01:47Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14571,
+  "training_games_priced": 7427
+ }
+}

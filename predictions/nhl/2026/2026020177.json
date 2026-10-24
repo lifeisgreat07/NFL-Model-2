@@ -1,0 +1,87 @@
+{
+ "game_id": "2026020177",
+ "season": 2026,
+ "slate": "2026-10-24",
+ "start_utc": "2026-10-25T01:00:00Z",
+ "home": "UTA",
+ "away": "TBL",
+ "model_a": 0.5073,
+ "model_b": 0.5885,
+ "pick": "UTA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.297217,
+  "shot_matchup": 0.068957,
+  "goalie_matchup_2000": -0.00231
+ },
+ "market": {
+  "game_id": "2026020177",
+  "start_utc": "2026-10-25T01:00:00Z",
+  "home": "UTA",
+  "away": "TBL",
+  "book": "DraftKings",
+  "home_price": -142.0,
+  "away_price": 120.0,
+  "home_prob": 0.5635,
+  "read_utc": "2026-10-24T21:01:47Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478872,
+   "name": "Karel Vejmelka",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/BagleyKSLsports/status/2114038613092761860?s=20"
+  },
+  "away": {
+   "player_id": 8483710,
+   "name": "Dennis Hildeby",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-24",
+  "read_utc": "2026-10-24T21:01:47Z",
+  "home": [
+   {
+    "name": "John Marino",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Maveric Lamoureux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Michael Carcone",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Victor Hedman",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Yanni Gourde",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-24T21:01:47Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14571,
+  "training_games_priced": 7427
+ }
+}
