@@ -2178,7 +2178,7 @@
    "start_utc": "2026-10-24T17:00:00Z",
    "home": "PHI",
    "away": "ANA",
-   "status": "scheduled",
+   "status": "in_progress",
    "game_type": "regular",
    "home_score": null,
    "away_score": null,
