@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 7,
-  "read_at": "2026-10-23T10:04:19Z",
+  "read_at": "2026-10-24T09:31:41Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-10-23T06:04:23Z"
+    "depth_chart_snapshot": "2026-10-24T06:01:44Z"
   },
   "teams": {
     "CHI": {
@@ -56,7 +56,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "PIT": {
       "qb": {
@@ -76,9 +76,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Divine Deablo",
+          "position": "LB",
+          "injury": "Forearm"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 4
     },
     "SF": {
       "qb": {
@@ -87,9 +93,25 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Marques Sigle",
+          "position": "S",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Mike Evans",
+          "position": "WR",
+          "injury": "Ribs"
+        },
+        {
+          "name": "Nick Bosa",
+          "position": "DE",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "BAL": {
       "qb": {
@@ -98,9 +120,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Jaylinn Hawkins",
+          "position": "S",
+          "injury": "Knee"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "CIN": {
       "qb": {
@@ -120,7 +148,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Jaelan Phillips",
+          "position": "LB",
+          "injury": "Hamstring"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -131,9 +165,25 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Antoine Winfield Jr.",
+          "position": "S",
+          "injury": "Rib"
+        },
+        {
+          "name": "Emeka Egbuka",
+          "position": "WR",
+          "injury": "Concussion"
+        },
+        {
+          "name": "Luke Goedeke",
+          "position": "T",
+          "injury": "Calf"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "HOU": {
       "qb": {
@@ -142,7 +192,23 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "David Montgomery",
+          "position": "RB",
+          "injury": "Groin"
+        },
+        {
+          "name": "Jalen Pitre",
+          "position": "S",
+          "injury": "Shoulder"
+        },
+        {
+          "name": "Reed Blankenship",
+          "position": "S",
+          "injury": "Concussion"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -153,9 +219,15 @@
         "changed_from": "J.Winston"
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Greg Newsome II",
+          "position": "CB",
+          "injury": "Concussion"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "MIN": {
       "qb": {
@@ -175,9 +247,20 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Sauce Gardner",
+          "position": "CB",
+          "injury": "Calf"
+        },
+        {
+          "name": "Tyler Warren",
+          "position": "TE",
+          "injury": "Groin"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "NYJ": {
       "qb": {
@@ -188,7 +271,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "MIA": {
       "qb": {
@@ -199,7 +282,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "TEN": {
       "qb": {
@@ -210,7 +293,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "CLE": {
       "qb": {
@@ -221,7 +304,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "ARI": {
       "qb": {
@@ -230,9 +313,30 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Andrew Wingard",
+          "position": "S",
+          "injury": "Knee"
+        },
+        {
+          "name": "Jeremiyah Love",
+          "position": "RB",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Jon Gaines II",
+          "position": "G",
+          "injury": "Knee"
+        },
+        {
+          "name": "Walter Nolen",
+          "position": "DT",
+          "injury": "Ankle"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "DEN": {
       "qb": {
@@ -241,9 +345,20 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Jonah Elliss",
+          "position": "LB",
+          "injury": "Ankle"
+        },
+        {
+          "name": "Talanoa Hufanga",
+          "position": "S",
+          "injury": "Ankle"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "DET": {
       "qb": {
@@ -263,9 +378,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Zaire Franklin",
+          "position": "LB",
+          "injury": "Shin"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "LV": {
       "qb": {
@@ -285,9 +406,15 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Nate Landman",
+          "position": "LB",
+          "injury": "Concussion"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     },
     "SEA": {
       "qb": {
@@ -296,9 +423,15 @@
         "changed_from": "S.Darnold"
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Drake Thomas",
+          "position": "LB",
+          "injury": "Ankle"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 3
     },
     "KC": {
       "qb": {
@@ -307,9 +440,20 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Jaylon Moore",
+          "position": "T",
+          "injury": "Concussion"
+        },
+        {
+          "name": "Rashee Rice",
+          "position": "WR",
+          "injury": "Hamstring"
+        }
+      ],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     },
     "PHI": {
       "qb": {
