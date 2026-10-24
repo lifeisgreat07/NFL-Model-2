@@ -159,5 +159,26 @@
     "home": "SEA",
     "away": "KC",
     "spread_line": 3.0
+  },
+  {
+    "captured_date": "2026-10-24",
+    "captured_utc": "2026-10-24T05:17:43Z",
+    "home": "BAL",
+    "away": "CIN",
+    "spread_line": -1.5
+  },
+  {
+    "captured_date": "2026-10-24",
+    "captured_utc": "2026-10-24T05:17:43Z",
+    "home": "TEN",
+    "away": "CLE",
+    "spread_line": -2.5
+  },
+  {
+    "captured_date": "2026-10-24",
+    "captured_utc": "2026-10-24T05:17:43Z",
+    "home": "LV",
+    "away": "LA",
+    "spread_line": -3.0
   }
 ]

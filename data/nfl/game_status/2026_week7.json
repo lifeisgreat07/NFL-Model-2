@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 7,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-23T05:17:37Z",
+  "read_at": "2026-10-24T05:17:41Z",
   "games": [
     {
       "away": "NE",
@@ -40,7 +40,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 1.5,
+      "spread_line": -1.5,
       "neutral_site": false,
       "venue": "M&T Bank Stadium"
     },
@@ -90,7 +90,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -1.5,
+      "spread_line": -2.5,
       "neutral_site": false,
       "venue": "Nissan Stadium"
     },
@@ -120,7 +120,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -3.5,
+      "spread_line": -3.0,
       "neutral_site": false,
       "venue": "Allegiant Stadium"
     },

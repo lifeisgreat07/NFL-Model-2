@@ -2,7 +2,8 @@
   "reads": [
     "2026-10-22T11:03:15Z",
     "2026-10-23T05:17:39Z",
-    "2026-10-23T10:04:18Z"
+    "2026-10-23T10:04:18Z",
+    "2026-10-24T05:17:44Z"
   ],
   "changes": [],
   "games": [
@@ -20,7 +21,7 @@
         "Prime Video"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102500",
@@ -36,7 +37,7 @@
         "NFL Network"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102501",
@@ -52,7 +53,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102502",
@@ -68,7 +69,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102503",
@@ -84,7 +85,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102504",
@@ -100,7 +101,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102505",
@@ -116,7 +117,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102506",
@@ -132,7 +133,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102507",
@@ -148,7 +149,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102508",
@@ -164,7 +165,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102509",
@@ -180,7 +181,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102510",
@@ -196,7 +197,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102511",
@@ -212,7 +213,7 @@
         "NBC"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     },
     {
       "elias": "2026102600",
@@ -230,7 +231,7 @@
         "NFL Network"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-7",
-      "read_at": "2026-10-23T10:04:18Z"
+      "read_at": "2026-10-24T05:17:44Z"
     }
   ]
 }
