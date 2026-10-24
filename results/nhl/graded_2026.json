@@ -680,13 +680,25 @@
  {
   "game_id": "2026020166",
   "pick": "MTL",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-23T21:01:43Z"
  },
  {
   "game_id": "2026020167",
   "pick": "COL",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-23T21:01:43Z"
+ },
+ {
+  "game_id": "2026020168",
+  "pick": "PHI",
+  "result": "pending",
+  "saved_utc": "2026-10-24T14:01:57Z"
+ },
+ {
+  "game_id": "2026020169",
+  "pick": "NJD",
+  "result": "pending",
+  "saved_utc": "2026-10-24T14:01:57Z"
  }
 ]

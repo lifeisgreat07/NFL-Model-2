@@ -1,5 +1,5 @@
 {
- "as_of": "2026-10-23",
+ "as_of": "2026-10-24",
  "games": [
   {
    "game_id": "2026020001",
@@ -2152,11 +2152,11 @@
    "start_utc": "2026-10-24T00:00:00Z",
    "home": "CHI",
    "away": "MTL",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 1,
+   "away_score": 4,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -2165,11 +2165,11 @@
    "start_utc": "2026-10-24T01:00:00Z",
    "home": "COL",
    "away": "TBL",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 6,
+   "away_score": 3,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
