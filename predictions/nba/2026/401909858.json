@@ -1,0 +1,111 @@
+{
+ "game_id": "401909858",
+ "season": 2026,
+ "slate": "2026-10-24",
+ "start_utc": "2026-10-25T00:00:00Z",
+ "home": "DAL",
+ "away": "SA",
+ "model_a": 0.2273,
+ "model_b": 0.1381,
+ "pick": "SA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8564,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": -9.327082,
+  "efficiency_matchup": -9.059001,
+  "availability_matchup": -0.1436
+ },
+ "market": {
+  "game_id": "401909858",
+  "home": "DAL",
+  "away": "SA",
+  "start_utc": "2026-10-25T00:00:00Z",
+  "read_utc": "2026-10-24T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 600.0,
+  "away_price": -900.0,
+  "home_prob": 0.137
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-24T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "3138160",
+    "name": "Caleb Martin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5041939",
+    "name": "Cooper Flagg",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105806",
+    "name": "Jett Howard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6442",
+    "name": "Kyrie Irving",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4432582",
+    "name": "Max Christie",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4873153",
+    "name": "Morez Johnson Jr.",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4593125",
+    "name": "Santi Aldama",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5211175",
+    "name": "Zaccharie Risacher",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5101845",
+    "name": "Jayden Quaintance",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6440",
+    "name": "Tobias Harris",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-24T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-23",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14086,
+  "training_games_priced": 14017
+ }
+}

@@ -1,0 +1,55 @@
+{
+ "game_id": "401909854",
+ "season": 2026,
+ "slate": "2026-10-24",
+ "start_utc": "2026-10-24T23:30:00Z",
+ "home": "CLE",
+ "away": "BKN",
+ "model_a": 0.8331,
+ "model_b": 0.7988,
+ "pick": "CLE",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": 9.229272,
+  "efficiency_matchup": 9.094796,
+  "availability_matchup": 0.0
+ },
+ "market": {
+  "game_id": "401909854",
+  "home": "CLE",
+  "away": "BKN",
+  "start_utc": "2026-10-24T23:30:00Z",
+  "read_utc": "2026-10-24T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -500.0,
+  "away_price": 380.0,
+  "home_prob": 0.8
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-24T21:31:31Z",
+  "home": [],
+  "away": [
+   {
+    "athlete_id": "5105626",
+    "name": "Tyler Bilodeau",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-24T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-23",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14086,
+  "training_games_priced": 14017
+ }
+}

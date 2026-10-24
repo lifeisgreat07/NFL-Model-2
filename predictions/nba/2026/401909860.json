@@ -1,0 +1,106 @@
+{
+ "game_id": "401909860",
+ "season": 2026,
+ "slate": "2026-10-24",
+ "start_utc": "2026-10-25T02:00:00Z",
+ "home": "PHX",
+ "away": "GS",
+ "model_a": 0.6638,
+ "model_b": 0.7624,
+ "pick": "PHX",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8582,
+  "away": 0.6408
+ },
+ "features": {
+  "point_matchup": 0.482139,
+  "efficiency_matchup": 0.410866,
+  "availability_matchup": 0.217313
+ },
+ "market": {
+  "game_id": "401909860",
+  "home": "PHX",
+  "away": "GS",
+  "start_utc": "2026-10-25T02:00:00Z",
+  "read_utc": "2026-10-24T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -395.0,
+  "away_price": 310.0,
+  "home_prob": 0.7659
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-24T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "3913174",
+    "name": "Luke Kennard",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4701232",
+    "name": "Mark Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4601023",
+    "name": "Oso Ighodaro",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3213",
+    "name": "Al Horford",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4709138",
+    "name": "Brandin Podziemski",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4397886",
+    "name": "Charles Bassey",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6589",
+    "name": "Draymond Green",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6430",
+    "name": "Jimmy Butler III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102531",
+    "name": "Kristaps Porzingis",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432171",
+    "name": "Moses Moody",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3975",
+    "name": "Stephen Curry",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-24T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-23",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14086,
+  "training_games_priced": 14017
+ }
+}

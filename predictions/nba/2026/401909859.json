@@ -1,0 +1,76 @@
+{
+ "game_id": "401909859",
+ "season": 2026,
+ "slate": "2026-10-24",
+ "start_utc": "2026-10-25T01:00:00Z",
+ "home": "DEN",
+ "away": "NO",
+ "model_a": 0.724,
+ "model_b": 0.7982,
+ "pick": "DEN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8219,
+  "away": 0.9303
+ },
+ "features": {
+  "point_matchup": 5.829647,
+  "efficiency_matchup": 5.697201,
+  "availability_matchup": -0.10835
+ },
+ "market": {
+  "game_id": "401909859",
+  "home": "DEN",
+  "away": "NO",
+  "start_utc": "2026-10-25T01:00:00Z",
+  "read_utc": "2026-10-24T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -485.0,
+  "away_price": 370.0,
+  "home_prob": 0.7958
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-24T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4065813",
+    "name": "Alpha Diallo",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3138196",
+    "name": "Cameron Johnson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432181",
+    "name": "Julian Strawther",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4592427",
+    "name": "Spencer Jones",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5061589",
+    "name": "Yves Missi",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-24T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-23",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14086,
+  "training_games_priced": 14017
+ }
+}
