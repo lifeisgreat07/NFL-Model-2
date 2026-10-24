@@ -370,5 +370,17 @@
   "home_price": -185.0,
   "away_price": 154.0,
   "home_prob": 0.6225
+ },
+ {
+  "game_id": "401909853",
+  "home": "CHA",
+  "away": "MIA",
+  "start_utc": "2026-10-24T22:00:00Z",
+  "read_utc": "2026-10-24T16:01:48Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 120.0,
+  "away_price": -142.0,
+  "home_prob": 0.4365
  }
 ]
