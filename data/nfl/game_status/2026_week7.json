@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 7,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-25T21:47:36Z",
+  "read_at": "2026-10-25T23:35:18Z",
   "games": [
     {
       "away": "NE",
@@ -97,9 +97,9 @@
     {
       "away": "DEN",
       "home": "ARI",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 30,
+      "home_score": 16,
       "spread_line": -4.5,
       "neutral_site": false,
       "venue": "State Farm Stadium"
