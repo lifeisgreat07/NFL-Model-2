@@ -1,0 +1,71 @@
+{
+ "game_id": "2026020183",
+ "season": 2026,
+ "slate": "2026-10-25",
+ "start_utc": "2026-10-26T00:00:00Z",
+ "home": "NSH",
+ "away": "COL",
+ "model_a": 0.3281,
+ "model_b": 0.297,
+ "pick": "COL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.261953,
+  "shot_matchup": -8.326199,
+  "goalie_matchup_2000": -0.003392
+ },
+ "market": {
+  "game_id": "2026020183",
+  "start_utc": "2026-10-26T00:00:00Z",
+  "home": "NSH",
+  "away": "COL",
+  "book": "DraftKings",
+  "home_price": 195.0,
+  "away_price": -238.0,
+  "home_prob": 0.325,
+  "read_utc": "2026-10-25T21:01:45Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481020,
+   "name": "Justus Annunen",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/MaxHerzTalks/status/2114406125978423313"
+  },
+  "away": {
+   "player_id": 8475809,
+   "name": "Scott Wedgewood",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/ConorMcGahey/status/2114401654942380439"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-25",
+  "read_utc": "2026-10-25T21:01:45Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Nicolas Roy",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Zachary L'Heureux",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-25T21:01:45Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14582,
+  "training_games_priced": 7427
+ }
+}

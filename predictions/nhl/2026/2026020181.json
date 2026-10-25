@@ -1,0 +1,117 @@
+{
+ "game_id": "2026020181",
+ "season": 2026,
+ "slate": "2026-10-25",
+ "start_utc": "2026-10-25T22:00:00Z",
+ "home": "DAL",
+ "away": "NYI",
+ "model_a": 0.5876,
+ "model_b": 0.6266,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.582384,
+  "shot_matchup": 0.256801,
+  "goalie_matchup_2000": -0.000445
+ },
+ "market": {
+  "game_id": "2026020181",
+  "start_utc": "2026-10-25T22:00:00Z",
+  "home": "DAL",
+  "away": "NYI",
+  "book": "DraftKings",
+  "home_price": -185.0,
+  "away_price": 154.0,
+  "home_prob": 0.6225,
+  "read_utc": "2026-10-25T21:01:45Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479979,
+   "name": "Jake Oettinger",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/BruceLeVinePuck/status/2114457109714837921"
+  },
+  "away": {
+   "player_id": 8478009,
+   "name": "Ilya Sorokin",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/stefen_rosner/status/2114456258115678712"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-25",
+  "read_utc": "2026-10-25T21:01:45Z",
+  "home": [
+   {
+    "name": "Cameron Hughes",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Esa Lindell",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Luke Krys",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Duchene",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Oskar Back",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Radek Faksa",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Sam Steel",
+    "position": "C",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Calum Ritchie",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Mathew Barzal",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matias Maccelli",
+    "position": "LW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-25T21:01:45Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14582,
+  "training_games_priced": 7427
+ }
+}

@@ -4603,5 +4603,50 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020186",
   "start_utc": "2026-10-27T00:30:00Z"
+ },
+ {
+  "date": "2026-10-25",
+  "home": "DAL",
+  "home_goalie": "Jake Oettinger",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/BruceLeVinePuck/status/2114457109714837921",
+  "away": "NYI",
+  "away_goalie": "Ilya Sorokin",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/stefen_rosner/status/2114456258115678712",
+  "read_utc": "2026-10-25T21:01:45Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020181",
+  "start_utc": "2026-10-25T22:00:00Z"
+ },
+ {
+  "date": "2026-10-25",
+  "home": "WPG",
+  "home_goalie": "Stuart Skinner",
+  "home_status": null,
+  "home_report": null,
+  "away": "MTL",
+  "away_goalie": "Jacob Fowler",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/EricEngels/status/2114455125830098994",
+  "read_utc": "2026-10-25T21:01:45Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020182",
+  "start_utc": "2026-10-25T23:00:00Z"
+ },
+ {
+  "date": "2026-10-25",
+  "home": "NSH",
+  "home_goalie": "Justus Annunen",
+  "home_status": "Likely",
+  "home_report": "https://x.com/MaxHerzTalks/status/2114406125978423313",
+  "away": "COL",
+  "away_goalie": "Scott Wedgewood",
+  "away_status": "Likely",
+  "away_report": "https://x.com/ConorMcGahey/status/2114401654942380439",
+  "read_utc": "2026-10-25T21:01:45Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020183",
+  "start_utc": "2026-10-26T00:00:00Z"
  }
 ]

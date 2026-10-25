@@ -2334,7 +2334,7 @@
    "start_utc": "2026-10-25T19:00:00Z",
    "home": "CHI",
    "away": "FLA",
-   "status": "scheduled",
+   "status": "in_progress",
    "game_type": "regular",
    "home_score": null,
    "away_score": null,
