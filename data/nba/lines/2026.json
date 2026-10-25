@@ -514,5 +514,17 @@
   "home_price": 225.0,
   "away_price": -278.0,
   "home_prob": 0.295
+ },
+ {
+  "game_id": "401909862",
+  "home": "BKN",
+  "away": "IND",
+  "start_utc": "2026-10-25T22:00:00Z",
+  "read_utc": "2026-10-25T18:36:46Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 200.0,
+  "away_price": -245.0,
+  "home_prob": 0.3194
  }
 ]
