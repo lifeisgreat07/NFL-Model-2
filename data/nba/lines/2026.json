@@ -598,5 +598,29 @@
   "home_price": 140.0,
   "away_price": -166.0,
   "home_prob": 0.4004
+ },
+ {
+  "game_id": "401909866",
+  "home": "PHI",
+  "away": "DET",
+  "start_utc": "2026-10-25T23:30:00Z",
+  "read_utc": "2026-10-25T23:28:25Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 105.0,
+  "away_price": -125.0,
+  "home_prob": 0.4675
+ },
+ {
+  "game_id": "401909867",
+  "home": "SAC",
+  "away": "MEM",
+  "start_utc": "2026-10-26T01:00:00Z",
+  "read_utc": "2026-10-25T23:28:25Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 136.0,
+  "away_price": -162.0,
+  "home_prob": 0.4066
  }
 ]
