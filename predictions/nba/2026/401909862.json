@@ -1,0 +1,81 @@
+{
+ "game_id": "401909862",
+ "season": 2026,
+ "slate": "2026-10-25",
+ "start_utc": "2026-10-25T22:00:00Z",
+ "home": "BKN",
+ "away": "IND",
+ "model_a": 0.5286,
+ "model_b": 0.289,
+ "pick": "IND",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9923,
+  "away": 0.8653
+ },
+ "features": {
+  "point_matchup": -2.546761,
+  "efficiency_matchup": -2.640279,
+  "availability_matchup": 0.127048
+ },
+ "market": {
+  "game_id": "401909862",
+  "home": "BKN",
+  "away": "IND",
+  "start_utc": "2026-10-25T22:00:00Z",
+  "read_utc": "2026-10-25T16:01:50Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 225.0,
+  "away_price": -278.0,
+  "home_prob": 0.295
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-25T16:01:50Z",
+  "home": [
+   {
+    "athlete_id": "5101761",
+    "name": "Mikel Brown Jr.",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105626",
+    "name": "Tyler Bilodeau",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4396909",
+    "name": "Aaron Nesmith",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4433076",
+    "name": "Ben Sheppard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5157066",
+    "name": "Johnny Furphy",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2530530",
+    "name": "T.J. McConnell",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-25T16:01:50Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14094,
+  "training_games_priced": 14017
+ }
+}
