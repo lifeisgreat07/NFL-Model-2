@@ -4648,5 +4648,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020183",
   "start_utc": "2026-10-26T00:00:00Z"
+ },
+ {
+  "date": "2026-10-25",
+  "home": "WPG",
+  "home_goalie": "Stuart Skinner",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/WpgJetsPR/status/2114487327804518762",
+  "away": "MTL",
+  "away_goalie": "Jacob Fowler",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/EricEngels/status/2114455125830098994",
+  "read_utc": "2026-10-25T22:52:44Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020182",
+  "start_utc": "2026-10-25T23:00:00Z"
  }
 ]
