@@ -1,0 +1,91 @@
+{
+ "game_id": "401909866",
+ "season": 2026,
+ "slate": "2026-10-25",
+ "start_utc": "2026-10-25T23:30:00Z",
+ "home": "PHI",
+ "away": "DET",
+ "model_a": 0.3689,
+ "model_b": 0.4772,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8414,
+  "away": 0.8961
+ },
+ "features": {
+  "point_matchup": -5.273896,
+  "efficiency_matchup": -5.305963,
+  "availability_matchup": -0.054769
+ },
+ "market": {
+  "game_id": "401909866",
+  "home": "PHI",
+  "away": "DET",
+  "start_utc": "2026-10-25T23:30:00Z",
+  "read_utc": "2026-10-25T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 102.0,
+  "away_price": -122.0,
+  "home_prob": 0.4739
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-25T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4871141",
+    "name": "Ariel Hukporti",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4870562",
+    "name": "Dominick Barlow",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432446",
+    "name": "Jabari Walker",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3059318",
+    "name": "Joel Embiid",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3904625",
+    "name": "Tacko Fall",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5124612",
+    "name": "VJ Edgecombe",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4684742",
+    "name": "Ausar Thompson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4433621",
+    "name": "Jalen Duren",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-25T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14094,
+  "training_games_priced": 14017
+ }
+}

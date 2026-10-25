@@ -1,0 +1,66 @@
+{
+ "game_id": "401909864",
+ "season": 2026,
+ "slate": "2026-10-25",
+ "start_utc": "2026-10-25T23:00:00Z",
+ "home": "MIN",
+ "away": "TOR",
+ "model_a": 0.5927,
+ "model_b": 0.509,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9061,
+  "away": 0.899
+ },
+ "features": {
+  "point_matchup": 0.368308,
+  "efficiency_matchup": 0.550601,
+  "availability_matchup": 0.007061
+ },
+ "market": {
+  "game_id": "401909864",
+  "home": "MIN",
+  "away": "TOR",
+  "start_utc": "2026-10-25T23:00:00Z",
+  "read_utc": "2026-10-25T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -115.0,
+  "away_price": -105.0,
+  "home_prob": 0.5108
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-25T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3913176",
+    "name": "Brandon Ingram",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432586",
+    "name": "Nate Bittle",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-25T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14094,
+  "training_games_priced": 14017
+ }
+}

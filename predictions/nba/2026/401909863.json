@@ -1,0 +1,81 @@
+{
+ "game_id": "401909863",
+ "season": 2026,
+ "slate": "2026-10-25",
+ "start_utc": "2026-10-25T23:00:00Z",
+ "home": "NY",
+ "away": "ORL",
+ "model_a": 0.8101,
+ "model_b": 0.694,
+ "pick": "NY",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.969,
+  "away": 0.8183
+ },
+ "features": {
+  "point_matchup": 6.494644,
+  "efficiency_matchup": 6.531506,
+  "availability_matchup": 0.150648
+ },
+ "market": {
+  "game_id": "401909863",
+  "home": "NY",
+  "away": "ORL",
+  "start_utc": "2026-10-25T23:00:00Z",
+  "read_utc": "2026-10-25T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -270.0,
+  "away_price": 220.0,
+  "home_prob": 0.7002
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-25T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4277869",
+    "name": "Jose Alvarado",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4712849",
+    "name": "Anthony Black",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5107251",
+    "name": "Izaiyah Nelson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065654",
+    "name": "Jonathan Isaac",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5214637",
+    "name": "Noah Penda",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432573",
+    "name": "Paolo Banchero",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-25T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-24",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14094,
+  "training_games_priced": 14017
+ }
+}
