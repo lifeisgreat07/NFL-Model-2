@@ -1,0 +1,117 @@
+{
+ "game_id": "2026020185",
+ "season": 2026,
+ "slate": "2026-10-26",
+ "start_utc": "2026-10-26T23:00:00Z",
+ "home": "NYR",
+ "away": "LAK",
+ "model_a": 0.5534,
+ "model_b": 0.5245,
+ "pick": "NYR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.565432,
+  "shot_matchup": -2.777411,
+  "goalie_matchup_2000": 0.000467
+ },
+ "market": {
+  "game_id": "2026020185",
+  "start_utc": "2026-10-26T23:00:00Z",
+  "home": "NYR",
+  "away": "LAK",
+  "book": "DraftKings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514,
+  "read_utc": "2026-10-26T21:01:50Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8473503,
+   "name": "James Reimer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/vzmercogliano/status/2114742972969628009?s=20"
+  },
+  "away": {
+   "player_id": 8475311,
+   "name": "Darcy Kuemper",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://lakingsinsider.com/2026/10/26/10-26-preview-power-play-changes-possible-zuccarello-out-upper-body-byfield-preparing-to-play-ward-expected/"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-26",
+  "read_utc": "2026-10-26T21:01:50Z",
+  "home": [
+   {
+    "name": "Adam Sykora",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Aidan Thompson",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Igor Shesterkin",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Joe Veleno",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Joonas Korpisalo",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alex Turcotte",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jakub Dvorak",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jan Jenik",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Fiala",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mats Zuccarello",
+    "position": "RW",
+    "status": "Out"
+   },
+   {
+    "name": "Quinton Byfield",
+    "position": "RW",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-26T21:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14587,
+  "training_games_priced": 7427
+ }
+}

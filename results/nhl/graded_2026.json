@@ -790,5 +790,23 @@
   "pick": "MIN",
   "result": "correct",
   "saved_utc": "2026-10-25T21:01:45Z"
+ },
+ {
+  "game_id": "2026020185",
+  "pick": "NYR",
+  "result": "pending",
+  "saved_utc": "2026-10-26T21:01:50Z"
+ },
+ {
+  "game_id": "2026020186",
+  "pick": "TOR",
+  "result": "pending",
+  "saved_utc": "2026-10-26T21:01:50Z"
+ },
+ {
+  "game_id": "2026020187",
+  "pick": "EDM",
+  "result": "pending",
+  "saved_utc": "2026-10-26T21:01:50Z"
  }
 ]

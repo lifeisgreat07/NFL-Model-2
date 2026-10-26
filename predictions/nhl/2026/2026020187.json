@@ -1,0 +1,122 @@
+{
+ "game_id": "2026020187",
+ "season": 2026,
+ "slate": "2026-10-26",
+ "start_utc": "2026-10-27T01:30:00Z",
+ "home": "EDM",
+ "away": "DET",
+ "model_a": 0.5743,
+ "model_b": 0.6163,
+ "pick": "EDM",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.599636,
+  "shot_matchup": -0.024295,
+  "goalie_matchup_2000": -0.003071
+ },
+ "market": {
+  "game_id": "2026020187",
+  "start_utc": "2026-10-27T01:30:00Z",
+  "home": "EDM",
+  "away": "DET",
+  "book": "DraftKings",
+  "home_price": -180.0,
+  "away_price": 150.0,
+  "home_prob": 0.6164,
+  "read_utc": "2026-10-26T21:01:50Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8477465,
+   "name": "Tristan Jarry",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/EdmontonOilers/status/2114773427089523157"
+  },
+  "away": {
+   "player_id": 8485545,
+   "name": "Michal Postava",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JonathanDMillsy/status/2114774299399827514?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-26",
+  "read_utc": "2026-10-26T21:01:50Z",
+  "home": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Atro Leppanen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Devon Levi",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jason Dickinson",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Ekholm",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Daniil Tarasov",
+    "position": "G",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Marco Kasper",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mason Appleton",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-26T21:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14587,
+  "training_games_priced": 7427
+ }
+}
