@@ -1,0 +1,101 @@
+{
+ "game_id": "401909876",
+ "season": 2026,
+ "slate": "2026-10-26",
+ "start_utc": "2026-10-27T02:00:00Z",
+ "home": "DEN",
+ "away": "GS",
+ "model_a": 0.717,
+ "model_b": 0.6989,
+ "pick": "DEN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8972,
+  "away": 0.8773
+ },
+ "features": {
+  "point_matchup": 4.272592,
+  "efficiency_matchup": 4.143788,
+  "availability_matchup": 0.019942
+ },
+ "market": {
+  "game_id": "401909876",
+  "home": "DEN",
+  "away": "GS",
+  "start_utc": "2026-10-27T02:00:00Z",
+  "read_utc": "2026-10-26T21:31:33Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -270.0,
+  "away_price": 220.0,
+  "home_prob": 0.7002
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-26T21:31:33Z",
+  "home": [
+   {
+    "athlete_id": "4065813",
+    "name": "Alpha Diallo",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3138196",
+    "name": "Cameron Johnson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4432181",
+    "name": "Julian Strawther",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4592427",
+    "name": "Spencer Jones",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4397040",
+    "name": "Brandon Williams",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4397886",
+    "name": "Charles Bassey",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4997536",
+    "name": "Gui Santos",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6430",
+    "name": "Jimmy Butler III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102531",
+    "name": "Kristaps Porzingis",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432171",
+    "name": "Moses Moody",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-26T21:31:33Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14101,
+  "training_games_priced": 14017
+ }
+}

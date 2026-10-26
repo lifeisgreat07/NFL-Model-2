@@ -1,0 +1,71 @@
+{
+ "game_id": "401909870",
+ "season": 2026,
+ "slate": "2026-10-26",
+ "start_utc": "2026-10-26T23:30:00Z",
+ "home": "BOS",
+ "away": "CHI",
+ "model_a": 0.8396,
+ "model_b": 0.846,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": 9.580449,
+  "efficiency_matchup": 9.396813,
+  "availability_matchup": 0.0
+ },
+ "market": {
+  "game_id": "401909870",
+  "home": "BOS",
+  "away": "CHI",
+  "start_utc": "2026-10-26T23:30:00Z",
+  "read_utc": "2026-10-26T21:31:33Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -750.0,
+  "away_price": 525.0,
+  "home_prob": 0.8465
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-26T21:31:33Z",
+  "home": [
+   {
+    "athlete_id": "4433188",
+    "name": "Devin Carter",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4278067",
+    "name": "Nic Claxton",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5242496",
+    "name": "Noa Essengue",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4431687",
+    "name": "Patrick Williams",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-26T21:31:33Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14101,
+  "training_games_priced": 14017
+ }
+}

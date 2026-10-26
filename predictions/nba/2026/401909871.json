@@ -1,0 +1,80 @@
+{
+ "game_id": "401909871",
+ "season": 2026,
+ "slate": "2026-10-26",
+ "start_utc": "2026-10-26T23:30:00Z",
+ "home": "MIA",
+ "away": "DAL",
+ "model_a": 0.7236,
+ "model_b": 0.7053,
+ "pick": "MIA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8537
+ },
+ "features": {
+  "point_matchup": 3.207217,
+  "efficiency_matchup": 3.084809,
+  "availability_matchup": 0.146274
+ },
+ "market": {
+  "game_id": "401909871",
+  "home": "MIA",
+  "away": "DAL",
+  "start_utc": "2026-10-26T23:30:00Z",
+  "read_utc": "2026-10-26T21:31:33Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -285.0,
+  "away_price": 230.0,
+  "home_prob": 0.7095
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-26T21:31:33Z",
+  "home": [],
+  "away": [
+   {
+    "athlete_id": "3138160",
+    "name": "Caleb Martin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5041939",
+    "name": "Cooper Flagg",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4278594",
+    "name": "Naji Marshall",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4593125",
+    "name": "Santi Aldama",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-26T21:31:33Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14101,
+  "training_games_priced": 14017
+ }
+}

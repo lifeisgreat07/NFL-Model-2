@@ -1,0 +1,60 @@
+{
+ "game_id": "401909869",
+ "season": 2026,
+ "slate": "2026-10-26",
+ "start_utc": "2026-10-26T23:00:00Z",
+ "home": "CLE",
+ "away": "MIN",
+ "model_a": 0.5587,
+ "model_b": 0.6072,
+ "pick": "CLE",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.9095
+ },
+ "features": {
+  "point_matchup": -1.385703,
+  "efficiency_matchup": -1.340633,
+  "availability_matchup": 0.090501
+ },
+ "market": {
+  "game_id": "401909869",
+  "home": "CLE",
+  "away": "MIN",
+  "start_utc": "2026-10-26T23:00:00Z",
+  "read_utc": "2026-10-26T21:31:33Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -175.0,
+  "away_price": 145.0,
+  "home_prob": 0.6092
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-26T21:31:33Z",
+  "home": [],
+  "away": [
+   {
+    "athlete_id": "4594268",
+    "name": "Anthony Edwards",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-26T21:31:33Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14101,
+  "training_games_priced": 14017
+ }
+}

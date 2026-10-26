@@ -1,0 +1,91 @@
+{
+ "game_id": "401909873",
+ "season": 2026,
+ "slate": "2026-10-26",
+ "start_utc": "2026-10-27T00:00:00Z",
+ "home": "OKC",
+ "away": "PHX",
+ "model_a": 0.7882,
+ "model_b": 0.7349,
+ "pick": "OKC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7305,
+  "away": 0.8642
+ },
+ "features": {
+  "point_matchup": 8.503897,
+  "efficiency_matchup": 8.428798,
+  "availability_matchup": -0.133685
+ },
+ "market": {
+  "game_id": "401909873",
+  "home": "OKC",
+  "away": "PHX",
+  "start_utc": "2026-10-27T00:00:00Z",
+  "read_utc": "2026-10-26T21:31:33Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -325.0,
+  "away_price": 260.0,
+  "home_prob": 0.7335
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-26T21:31:33Z",
+  "home": [
+   {
+    "athlete_id": "4683692",
+    "name": "Cason Wallace",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433255",
+    "name": "Chet Holmgren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4593803",
+    "name": "Jalen Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5159925",
+    "name": "Nikola Topic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5106270",
+    "name": "Otega Oweh",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061603",
+    "name": "Thomas Sorber",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4701232",
+    "name": "Mark Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4601023",
+    "name": "Oso Ighodaro",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-26T21:31:33Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-25",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14101,
+  "training_games_priced": 14017
+ }
+}

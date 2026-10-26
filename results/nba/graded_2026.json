@@ -299,5 +299,68 @@
   "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-10-25T21:31:31Z"
+ },
+ {
+  "game_id": "401909868",
+  "pick": "CHA",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-10-26T21:31:33Z"
+ },
+ {
+  "game_id": "401909869",
+  "pick": "CLE",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-10-26T21:31:33Z"
+ },
+ {
+  "game_id": "401909870",
+  "pick": "BOS",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-10-26T21:31:33Z"
+ },
+ {
+  "game_id": "401909871",
+  "pick": "MIA",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-10-26T21:31:33Z"
+ },
+ {
+  "game_id": "401909872",
+  "pick": "IND",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-10-26T21:31:33Z"
+ },
+ {
+  "game_id": "401909873",
+  "pick": "OKC",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-10-26T21:31:33Z"
+ },
+ {
+  "game_id": "401909874",
+  "pick": "HOU",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-10-26T21:31:33Z"
+ },
+ {
+  "game_id": "401909875",
+  "pick": "UTAH",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-10-26T21:31:33Z"
+ },
+ {
+  "game_id": "401909876",
+  "pick": "DEN",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-10-26T21:31:33Z"
  }
 ]
