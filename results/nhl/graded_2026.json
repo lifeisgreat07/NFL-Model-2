@@ -770,25 +770,25 @@
  {
   "game_id": "2026020181",
   "pick": "DAL",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-25T21:01:45Z"
  },
  {
   "game_id": "2026020182",
   "pick": "MTL",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-25T21:01:45Z"
  },
  {
   "game_id": "2026020183",
   "pick": "COL",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-25T21:01:45Z"
  },
  {
   "game_id": "2026020184",
   "pick": "MIN",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-25T21:01:45Z"
  }
 ]
