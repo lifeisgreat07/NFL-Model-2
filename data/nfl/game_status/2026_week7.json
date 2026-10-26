@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 7,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-26T01:47:36Z",
+  "read_at": "2026-10-26T05:37:33Z",
   "games": [
     {
       "away": "NE",
@@ -127,9 +127,9 @@
     {
       "away": "KC",
       "home": "SEA",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 3,
+      "home_score": 20,
       "spread_line": 3.0,
       "neutral_site": false,
       "venue": "Lumen Field"
