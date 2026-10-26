@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 7,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-25T23:35:18Z",
+  "read_at": "2026-10-26T01:47:36Z",
   "games": [
     {
       "away": "NE",
@@ -107,9 +107,9 @@
     {
       "away": "GB",
       "home": "DET",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 17,
+      "home_score": 20,
       "spread_line": 3.5,
       "neutral_site": false,
       "venue": "Ford Field"
@@ -117,9 +117,9 @@
     {
       "away": "LA",
       "home": "LV",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 35,
+      "home_score": 21,
       "spread_line": -3.5,
       "neutral_site": false,
       "venue": "Allegiant Stadium"
@@ -127,7 +127,7 @@
     {
       "away": "KC",
       "home": "SEA",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
       "spread_line": 3.0,
