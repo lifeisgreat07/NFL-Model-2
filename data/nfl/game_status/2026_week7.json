@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 7,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-26T05:37:33Z",
+  "read_at": "2026-10-27T11:02:40Z",
   "games": [
     {
       "away": "NE",
@@ -137,9 +137,9 @@
     {
       "away": "DAL",
       "home": "PHI",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 38,
+      "home_score": 21,
       "spread_line": -4.5,
       "neutral_site": false,
       "venue": "Lincoln Financial Field"
