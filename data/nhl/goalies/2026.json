@@ -4873,5 +4873,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020198",
   "start_utc": "2026-10-28T02:30:00Z"
+ },
+ {
+  "date": "2026-10-26",
+  "home": "CGY",
+  "home_goalie": "Devin Cooley",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/SteinbergYYC/status/2114739037969993790?s=20",
+  "away": "TOR",
+  "away_goalie": "Sergei Bobrovsky",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/RyanNPike/status/2114870596618379275",
+  "read_utc": "2026-10-27T00:07:42Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020186",
+  "start_utc": "2026-10-27T00:30:00Z"
  }
 ]
