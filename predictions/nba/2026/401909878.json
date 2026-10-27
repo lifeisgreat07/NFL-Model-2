@@ -1,0 +1,71 @@
+{
+ "game_id": "401909878",
+ "season": 2026,
+ "slate": "2026-10-27",
+ "start_utc": "2026-10-28T00:00:00Z",
+ "home": "NY",
+ "away": "DET",
+ "model_a": 0.614,
+ "model_b": 0.6014,
+ "pick": "NY",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.97,
+  "away": 0.8999
+ },
+ "features": {
+  "point_matchup": 0.420987,
+  "efficiency_matchup": 0.462026,
+  "availability_matchup": 0.070138
+ },
+ "market": {
+  "game_id": "401909878",
+  "home": "NY",
+  "away": "DET",
+  "start_utc": "2026-10-28T00:00:00Z",
+  "read_utc": "2026-10-27T21:31:34Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -170.0,
+  "away_price": 142.0,
+  "home_prob": 0.6038
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-27T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "4277869",
+    "name": "Jose Alvarado",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4684742",
+    "name": "Ausar Thompson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4395702",
+    "name": "Isaiah Joe",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4433621",
+    "name": "Jalen Duren",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-27T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-26",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14110,
+  "training_games_priced": 14017
+ }
+}

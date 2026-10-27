@@ -1,0 +1,81 @@
+{
+ "game_id": "401909879",
+ "season": 2026,
+ "slate": "2026-10-27",
+ "start_utc": "2026-10-28T00:00:00Z",
+ "home": "SA",
+ "away": "SAC",
+ "model_a": 0.912,
+ "model_b": 0.9104,
+ "pick": "SA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.829
+ },
+ "features": {
+  "point_matchup": 12.675508,
+  "efficiency_matchup": 12.359933,
+  "availability_matchup": 0.171003
+ },
+ "market": {
+  "game_id": "401909879",
+  "home": "SA",
+  "away": "SAC",
+  "start_utc": "2026-10-28T00:00:00Z",
+  "read_utc": "2026-10-27T21:31:34Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -1800.0,
+  "away_price": 1000.0,
+  "home_prob": 0.9124
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-27T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "5101845",
+    "name": "Jayden Quaintance",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6440",
+    "name": "Tobias Harris",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433174",
+    "name": "Dylan Cardwell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4594327",
+    "name": "Keegan Murray",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-27T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-26",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14110,
+  "training_games_priced": 14017
+ }
+}

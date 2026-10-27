@@ -1,0 +1,66 @@
+{
+ "game_id": "401909877",
+ "season": 2026,
+ "slate": "2026-10-27",
+ "start_utc": "2026-10-27T23:30:00Z",
+ "home": "BOS",
+ "away": "BKN",
+ "model_a": 0.8966,
+ "model_b": 0.8251,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": 13.048701,
+  "efficiency_matchup": 12.986537,
+  "availability_matchup": 0.0
+ },
+ "market": {
+  "game_id": "401909877",
+  "home": "BOS",
+  "away": "BKN",
+  "start_utc": "2026-10-27T23:30:00Z",
+  "read_utc": "2026-10-27T21:31:34Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -625.0,
+  "away_price": 455.0,
+  "home_prob": 0.8271
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-27T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "3078576",
+    "name": "Derrick White",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4433188",
+    "name": "Devin Carter",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5105626",
+    "name": "Tyler Bilodeau",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-27T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-26",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14110,
+  "training_games_priced": 14017
+ }
+}

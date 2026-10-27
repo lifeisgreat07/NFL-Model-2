@@ -1,0 +1,71 @@
+{
+ "game_id": "401909880",
+ "season": 2026,
+ "slate": "2026-10-27",
+ "start_utc": "2026-10-28T03:00:00Z",
+ "home": "LAL",
+ "away": "POR",
+ "model_a": 0.6253,
+ "model_b": 0.5292,
+ "pick": "LAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9929,
+  "away": 0.9377
+ },
+ "features": {
+  "point_matchup": 0.98336,
+  "efficiency_matchup": 0.8756,
+  "availability_matchup": 0.055204
+ },
+ "market": {
+  "game_id": "401909880",
+  "home": "LAL",
+  "away": "POR",
+  "start_utc": "2026-10-28T03:00:00Z",
+  "read_utc": "2026-10-27T21:31:34Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-27T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "5060631",
+    "name": "Adou Thiero",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4706557",
+    "name": "Chris Youngblood",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683678",
+    "name": "Scoot Henderson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4914336",
+    "name": "Shaedon Sharpe",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-27T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-26",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14110,
+  "training_games_priced": 14017
+ }
+}
