@@ -1,0 +1,92 @@
+{
+ "game_id": "2026020190",
+ "season": 2026,
+ "slate": "2026-10-27",
+ "start_utc": "2026-10-28T00:00:00Z",
+ "home": "CHI",
+ "away": "LAK",
+ "model_a": 0.3959,
+ "model_b": 0.513,
+ "pick": "CHI",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.741852,
+  "shot_matchup": -6.481465,
+  "goalie_matchup_2000": -0.001374
+ },
+ "market": {
+  "game_id": "2026020190",
+  "start_utc": "2026-10-28T00:00:00Z",
+  "home": "CHI",
+  "away": "LAK",
+  "book": "DraftKings",
+  "home_price": -112.0,
+  "away_price": -108.0,
+  "home_prob": 0.5043,
+  "read_utc": "2026-10-27T21:01:50Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/CRoumeliotis/status/2115101967697469673?s=20"
+  },
+  "away": {
+   "player_id": 8476341,
+   "name": "Anton Forsberg",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://lakingsinsider.com/2026/10/27/10-27-preview-second-period-struggles-turnaround-first-back-to-back-ward-delivers-finally-spreading-the-wealth/"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-27",
+  "read_utc": "2026-10-27T21:01:50Z",
+  "home": [
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alex Turcotte",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jakub Dvorak",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jan Jenik",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Fiala",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mats Zuccarello",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-27T21:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-26",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14590,
+  "training_games_priced": 7427
+ }
+}

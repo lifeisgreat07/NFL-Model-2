@@ -1,0 +1,112 @@
+{
+ "game_id": "2026020191",
+ "season": 2026,
+ "slate": "2026-10-27",
+ "start_utc": "2026-10-28T00:00:00Z",
+ "home": "STL",
+ "away": "MTL",
+ "model_a": 0.4966,
+ "model_b": 0.4794,
+ "pick": "MTL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.122449,
+  "shot_matchup": -0.614928,
+  "goalie_matchup_2000": -0.005909
+ },
+ "market": {
+  "game_id": "2026020191",
+  "start_utc": "2026-10-28T00:00:00Z",
+  "home": "STL",
+  "away": "MTL",
+  "book": "DraftKings",
+  "home_price": -105.0,
+  "away_price": -115.0,
+  "home_prob": 0.4892,
+  "read_utc": "2026-10-27T21:01:50Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476412,
+   "name": "Jordan Binnington",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://thehockeynews.com/nhl/st-louis-blues/game-day/10-27-26-canadiens-blues-gameday-lineup"
+  },
+  "away": {
+   "player_id": 8484170,
+   "name": "Jacob Fowler",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/MarcDenis_RDS/status/2115130236098818162?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-27",
+  "read_utc": "2026-10-27T21:01:50Z",
+  "home": [
+   {
+    "name": "Dillon Dube",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan Mailloux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ross Johnston",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Torey Krug",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Suzuki",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-27T21:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-26",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14590,
+  "training_games_priced": 7427
+ }
+}

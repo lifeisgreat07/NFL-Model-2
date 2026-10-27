@@ -1,0 +1,117 @@
+{
+ "game_id": "2026020198",
+ "season": 2026,
+ "slate": "2026-10-27",
+ "start_utc": "2026-10-28T02:30:00Z",
+ "home": "SJS",
+ "away": "BUF",
+ "model_a": 0.4377,
+ "model_b": 0.4203,
+ "pick": "BUF",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.704844,
+  "shot_matchup": -2.974183,
+  "goalie_matchup_2000": -0.002208
+ },
+ "market": {
+  "game_id": "2026020198",
+  "start_utc": "2026-10-28T02:30:00Z",
+  "home": "SJS",
+  "away": "BUF",
+  "book": "DraftKings",
+  "home_price": 124.0,
+  "away_price": -148.0,
+  "home_prob": 0.4279,
+  "read_utc": "2026-10-27T21:01:50Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482137,
+   "name": "Yaroslav Askarov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Sheng_Peng/status/2115139330650054843?s=20"
+  },
+  "away": {
+   "player_id": 8481551,
+   "name": "Colten Ellis",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/rachelmlenzi/status/2115140888246780175?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-27",
+  "read_utc": "2026-10-27T21:01:50Z",
+  "home": [
+   {
+    "name": "Alexander Wennberg",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Igor Chernyshov",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Conor Timmins",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Rathbone",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jiri Kulich",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Justin Danforth",
+    "position": "RW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Matt Grzelcyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Sam Carrick",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-27T21:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-26",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14590,
+  "training_games_priced": 7427
+ }
+}

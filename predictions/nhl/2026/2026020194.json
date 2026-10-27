@@ -1,0 +1,102 @@
+{
+ "game_id": "2026020194",
+ "season": 2026,
+ "slate": "2026-10-27",
+ "start_utc": "2026-10-28T00:00:00Z",
+ "home": "WPG",
+ "away": "FLA",
+ "model_a": 0.5018,
+ "model_b": 0.4293,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.072601,
+  "shot_matchup": -3.423621,
+  "goalie_matchup_2000": 0.002147
+ },
+ "market": {
+  "game_id": "2026020194",
+  "start_utc": "2026-10-28T00:00:00Z",
+  "home": "WPG",
+  "away": "FLA",
+  "book": "DraftKings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573,
+  "read_utc": "2026-10-27T21:01:50Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8483532,
+   "name": "Clay Stevenson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/mikemcintyrewpg/status/2115108467644289035?s=20"
+  },
+  "away": {
+   "player_id": 8481033,
+   "name": "Akira Schmid",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JamesonCoop/status/2115131144039772602"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-27",
+  "read_utc": "2026-10-27T21:01:50Z",
+  "home": [
+   {
+    "name": "Garrett Brown",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Josh Morrissey",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Bjugstad",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vladislav Namestnikov",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jacob Markstrom",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-27T21:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-26",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14590,
+  "training_games_priced": 7427
+ }
+}

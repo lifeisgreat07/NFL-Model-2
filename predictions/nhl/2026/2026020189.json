@@ -1,0 +1,71 @@
+{
+ "game_id": "2026020189",
+ "season": 2026,
+ "slate": "2026-10-27",
+ "start_utc": "2026-10-28T00:00:00Z",
+ "home": "CAR",
+ "away": "BOS",
+ "model_a": 0.6844,
+ "model_b": 0.677,
+ "pick": "CAR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.322392,
+  "shot_matchup": 11.105082,
+  "goalie_matchup_2000": -0.002615
+ },
+ "market": {
+  "game_id": "2026020189",
+  "start_utc": "2026-10-28T00:00:00Z",
+  "home": "CAR",
+  "away": "BOS",
+  "book": "DraftKings",
+  "home_price": -192.0,
+  "away_price": 160.0,
+  "home_prob": 0.6309,
+  "read_utc": "2026-10-27T21:01:50Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481611,
+   "name": "Pyotr Kochetkov",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/WaltRuff/status/2115089172771836313"
+  },
+  "away": {
+   "player_id": 8480280,
+   "name": "Jeremy Swayman",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/adampellerin/status/2115110408919073160?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-27",
+  "read_utc": "2026-10-27T21:01:50Z",
+  "home": [
+   {
+    "name": "Alexander Nikishin",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Jordan Staal",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-10-27T21:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-26",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14590,
+  "training_games_priced": 7427
+ }
+}

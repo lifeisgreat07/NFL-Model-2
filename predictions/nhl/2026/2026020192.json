@@ -1,0 +1,81 @@
+{
+ "game_id": "2026020192",
+ "season": 2026,
+ "slate": "2026-10-27",
+ "start_utc": "2026-10-28T00:00:00Z",
+ "home": "NSH",
+ "away": "NYI",
+ "model_a": 0.5123,
+ "model_b": 0.5208,
+ "pick": "NSH",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.033731,
+  "shot_matchup": -2.370281,
+  "goalie_matchup_2000": 0.000878
+ },
+ "market": {
+  "game_id": "2026020192",
+  "start_utc": "2026-10-28T00:00:00Z",
+  "home": "NSH",
+  "away": "NYI",
+  "book": "DraftKings",
+  "home_price": -122.0,
+  "away_price": 102.0,
+  "home_prob": 0.5261,
+  "read_utc": "2026-10-27T21:01:50Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8477424,
+   "name": "Juuse Saros",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/stefen_rosner/status/2115104724730933267"
+  },
+  "away": {
+   "player_id": 8473575,
+   "name": "Semyon Varlamov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/stefen_rosner/status/2115156576906420610"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-27",
+  "read_utc": "2026-10-27T21:01:50Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Calum Ritchie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mathew Barzal",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matias Maccelli",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-27T21:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-26",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14590,
+  "training_games_priced": 7427
+ }
+}
