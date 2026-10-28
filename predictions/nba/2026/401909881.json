@@ -1,0 +1,66 @@
+{
+ "game_id": "401909881",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-28T23:00:00Z",
+ "home": "ATL",
+ "away": "MIA",
+ "model_a": 0.6583,
+ "model_b": 0.5494,
+ "pick": "ATL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9556,
+  "away": 0.9591
+ },
+ "features": {
+  "point_matchup": 2.595492,
+  "efficiency_matchup": 2.468656,
+  "availability_matchup": -0.003487
+ },
+ "market": {
+  "game_id": "401909881",
+  "home": "ATL",
+  "away": "MIA",
+  "start_utc": "2026-10-28T23:00:00Z",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -135.0,
+  "away_price": 114.0,
+  "home_prob": 0.5514
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "home": [
+   {
+    "athlete_id": "5105571",
+    "name": "Henri Veesaar",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4712863",
+    "name": "Mouhamed Gueye",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3899664",
+    "name": "Simone Fontecchio",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:31:35Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14114,
+  "training_games_priced": 14017
+ }
+}

@@ -1,0 +1,71 @@
+{
+ "game_id": "401909886",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-29T00:00:00Z",
+ "home": "CHI",
+ "away": "NY",
+ "model_a": 0.2247,
+ "model_b": 0.2959,
+ "pick": "NY",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.9709
+ },
+ "features": {
+  "point_matchup": -11.23398,
+  "efficiency_matchup": -10.868598,
+  "availability_matchup": 0.029054
+ },
+ "market": {
+  "game_id": "401909886",
+  "home": "CHI",
+  "away": "NY",
+  "start_utc": "2026-10-29T00:00:00Z",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 225.0,
+  "away_price": -278.0,
+  "home_prob": 0.295
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "home": [
+   {
+    "athlete_id": "4278067",
+    "name": "Nic Claxton",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431687",
+    "name": "Patrick Williams",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5105555",
+    "name": "Tobe Awaka",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4277869",
+    "name": "Jose Alvarado",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:31:35Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14114,
+  "training_games_priced": 14017
+ }
+}

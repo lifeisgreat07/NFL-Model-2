@@ -1,0 +1,86 @@
+{
+ "game_id": "401909883",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-28T23:00:00Z",
+ "home": "DET",
+ "away": "CHA",
+ "model_a": 0.7225,
+ "model_b": 0.7118,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8976,
+  "away": 0.8482
+ },
+ "features": {
+  "point_matchup": 4.170491,
+  "efficiency_matchup": 4.028669,
+  "availability_matchup": 0.049356
+ },
+ "market": {
+  "game_id": "401909883",
+  "home": "DET",
+  "away": "CHA",
+  "start_utc": "2026-10-28T23:00:00Z",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -290.0,
+  "away_price": 235.0,
+  "home_prob": 0.7136
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "home": [
+   {
+    "athlete_id": "4684742",
+    "name": "Ausar Thompson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4395702",
+    "name": "Isaiah Joe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433621",
+    "name": "Jalen Duren",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4395651",
+    "name": "Coby White",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066218",
+    "name": "Grant Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061575",
+    "name": "Kon Knueppel",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4684269",
+    "name": "Kylan Boswell",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:31:35Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14114,
+  "training_games_priced": 14017
+ }
+}

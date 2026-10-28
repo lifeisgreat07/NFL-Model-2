@@ -1,0 +1,126 @@
+{
+ "game_id": "401909891",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-29T01:30:00Z",
+ "home": "DAL",
+ "away": "OKC",
+ "model_a": 0.2975,
+ "model_b": 0.3494,
+ "pick": "OKC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9524,
+  "away": 0.6742
+ },
+ "features": {
+  "point_matchup": -11.079455,
+  "efficiency_matchup": -10.81412,
+  "availability_matchup": 0.278153
+ },
+ "market": {
+  "game_id": "401909891",
+  "home": "DAL",
+  "away": "OKC",
+  "start_utc": "2026-10-29T01:30:00Z",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 170.0,
+  "away_price": -205.0,
+  "home_prob": 0.3553
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "home": [
+   {
+    "athlete_id": "3138160",
+    "name": "Caleb Martin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6442",
+    "name": "Kyrie Irving",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4278594",
+    "name": "Naji Marshall",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4593125",
+    "name": "Santi Aldama",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5279129",
+    "name": "Sergio de Larrea",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4900671",
+    "name": "Ajay Mitchell",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "2991350",
+    "name": "Alex Caruso",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683692",
+    "name": "Cason Wallace",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433255",
+    "name": "Chet Holmgren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4593803",
+    "name": "Jalen Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5159925",
+    "name": "Nikola Topic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5106270",
+    "name": "Otega Oweh",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061603",
+    "name": "Thomas Sorber",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:31:35Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14114,
+  "training_games_priced": 14017
+ }
+}

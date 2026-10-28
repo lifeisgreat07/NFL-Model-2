@@ -1,0 +1,86 @@
+{
+ "game_id": "401909890",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-29T01:00:00Z",
+ "home": "UTAH",
+ "away": "SA",
+ "model_a": 0.1712,
+ "model_b": 0.1696,
+ "pick": "SA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9466,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": -12.804402,
+  "efficiency_matchup": -12.342135,
+  "availability_matchup": -0.053392
+ },
+ "market": {
+  "game_id": "401909890",
+  "home": "UTAH",
+  "away": "SA",
+  "start_utc": "2026-10-29T01:00:00Z",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 470.0,
+  "away_price": -650.0,
+  "home_prob": 0.1684
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "home": [
+   {
+    "athlete_id": "4277961",
+    "name": "Jaren Jackson Jr.",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4397077",
+    "name": "Jaxson Hayes",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3102530",
+    "name": "Jusuf Nurkic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066336",
+    "name": "Lauri Markkanen",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4433268",
+    "name": "Trey Alexander",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5101845",
+    "name": "Jayden Quaintance",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6440",
+    "name": "Tobias Harris",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:31:35Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14114,
+  "training_games_priced": 14017
+ }
+}

@@ -1,0 +1,65 @@
+{
+ "game_id": "401909887",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-29T00:00:00Z",
+ "home": "MIL",
+ "away": "HOU",
+ "model_a": 0.3405,
+ "model_b": 0.2549,
+ "pick": "HOU",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8425
+ },
+ "features": {
+  "point_matchup": -8.355633,
+  "efficiency_matchup": -8.300359,
+  "availability_matchup": 0.157548
+ },
+ "market": {
+  "game_id": "401909887",
+  "home": "MIL",
+  "away": "HOU",
+  "start_utc": "2026-10-29T00:00:00Z",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 270.0,
+  "away_price": -340.0,
+  "home_prob": 0.2591
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "home": [],
+  "away": [
+   {
+    "athlete_id": "4871144",
+    "name": "Alperen Sengun",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2990992",
+    "name": "Marcus Smart",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2991235",
+    "name": "Steven Adams",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:31:35Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14114,
+  "training_games_priced": 14017
+ }
+}

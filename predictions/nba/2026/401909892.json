@@ -1,0 +1,96 @@
+{
+ "game_id": "401909892",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-29T02:30:00Z",
+ "home": "LAC",
+ "away": "LAL",
+ "model_a": 0.5813,
+ "model_b": 0.5021,
+ "pick": "LAC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9054,
+  "away": 0.8767
+ },
+ "features": {
+  "point_matchup": -0.100741,
+  "efficiency_matchup": -0.07661,
+  "availability_matchup": 0.028737
+ },
+ "market": {
+  "game_id": "401909892",
+  "home": "LAC",
+  "away": "LAL",
+  "start_utc": "2026-10-29T02:30:00Z",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -112.0,
+  "away_price": -108.0,
+  "home_prob": 0.5043
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "home": [
+   {
+    "athlete_id": "6580",
+    "name": "Bradley Beal",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4396818",
+    "name": "Jordan Miller",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065778",
+    "name": "Max Strus",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066648",
+    "name": "Rui Hachimura",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5108024",
+    "name": "Yanic Konan Niederhauser",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5060631",
+    "name": "Adou Thiero",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5113969",
+    "name": "Cameron Carr",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3945274",
+    "name": "Luka Doncic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433137",
+    "name": "Ziaire Williams",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:31:35Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14114,
+  "training_games_priced": 14017
+ }
+}

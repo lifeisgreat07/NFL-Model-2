@@ -1,0 +1,81 @@
+{
+ "game_id": "401909888",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-29T00:00:00Z",
+ "home": "MIN",
+ "away": "GS",
+ "model_a": 0.6806,
+ "model_b": 0.6044,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7987,
+  "away": 0.8824
+ },
+ "features": {
+  "point_matchup": 4.133806,
+  "efficiency_matchup": 3.981712,
+  "availability_matchup": -0.08365
+ },
+ "market": {
+  "game_id": "401909888",
+  "home": "MIN",
+  "away": "GS",
+  "start_utc": "2026-10-29T00:00:00Z",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -170.0,
+  "away_price": 142.0,
+  "home_prob": 0.6038
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "home": [
+   {
+    "athlete_id": "4594268",
+    "name": "Anthony Edwards",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "6430",
+    "name": "Jimmy Butler III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102531",
+    "name": "Kristaps Porzingis",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432171",
+    "name": "Moses Moody",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5175737",
+    "name": "Yaxel Lendeborg",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:31:35Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14114,
+  "training_games_priced": 14017
+ }
+}

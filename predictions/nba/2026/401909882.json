@@ -1,0 +1,65 @@
+{
+ "game_id": "401909882",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-28T23:00:00Z",
+ "home": "CLE",
+ "away": "WSH",
+ "model_a": 0.8614,
+ "model_b": 0.7605,
+ "pick": "CLE",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8564
+ },
+ "features": {
+  "point_matchup": 9.40191,
+  "efficiency_matchup": 9.03419,
+  "availability_matchup": 0.143587
+ },
+ "market": {
+  "game_id": "401909882",
+  "home": "CLE",
+  "away": "WSH",
+  "start_utc": "2026-10-28T23:00:00Z",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -395.0,
+  "away_price": 310.0,
+  "home_prob": 0.7659
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-28T21:31:35Z",
+  "home": [],
+  "away": [
+   {
+    "athlete_id": "4606840",
+    "name": "Jamir Watkins",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432907",
+    "name": "Justin Champagnie",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4997537",
+    "name": "Tristan Vukcevic",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:31:35Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14114,
+  "training_games_priced": 14017
+ }
+}
