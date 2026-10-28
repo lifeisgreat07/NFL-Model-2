@@ -366,28 +366,28 @@
  {
   "game_id": "401909877",
   "pick": "BOS",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-10-27T21:31:34Z"
  },
  {
   "game_id": "401909878",
   "pick": "NY",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-10-27T21:31:34Z"
  },
  {
   "game_id": "401909879",
   "pick": "SA",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-10-27T21:31:34Z"
  },
  {
   "game_id": "401909880",
   "pick": "LAL",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-10-27T21:31:34Z"
  }

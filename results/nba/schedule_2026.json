@@ -1,5 +1,5 @@
 {
- "as_of": "2026-10-27",
+ "as_of": "2026-10-28",
  "games": [
   {
    "game_id": "401909088",
@@ -683,10 +683,10 @@
    "start_utc": "2026-10-27T23:30:00Z",
    "home": "BOS",
    "away": "BKN",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 125,
+   "away_score": 124,
    "neutral_site": false,
    "time_valid": true
   },
@@ -696,10 +696,10 @@
    "start_utc": "2026-10-28T00:00:00Z",
    "home": "NY",
    "away": "DET",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 111,
+   "away_score": 97,
    "neutral_site": false,
    "time_valid": true
   },
@@ -709,10 +709,10 @@
    "start_utc": "2026-10-28T00:00:00Z",
    "home": "SA",
    "away": "SAC",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 130,
+   "away_score": 103,
    "neutral_site": false,
    "time_valid": true
   },
@@ -722,10 +722,10 @@
    "start_utc": "2026-10-28T03:00:00Z",
    "home": "LAL",
    "away": "POR",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 129,
+   "away_score": 136,
    "neutral_site": false,
    "time_valid": true
   },
