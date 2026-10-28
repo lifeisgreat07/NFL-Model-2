@@ -1,0 +1,112 @@
+{
+ "game_id": "2026020200",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-29T00:30:00Z",
+ "home": "EDM",
+ "away": "CGY",
+ "model_a": 0.6206,
+ "model_b": 0.627,
+ "pick": "EDM",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.938276,
+  "shot_matchup": 2.634946,
+  "goalie_matchup_2000": -0.005437
+ },
+ "market": {
+  "game_id": "2026020200",
+  "start_utc": "2026-10-29T00:30:00Z",
+  "home": "EDM",
+  "away": "CGY",
+  "book": "DraftKings",
+  "home_price": -192.0,
+  "away_price": 160.0,
+  "home_prob": 0.6309,
+  "read_utc": "2026-10-28T21:01:49Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8477465,
+   "name": "Tristan Jarry",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/jasongregor/status/2115509534303334727?s=46"
+  },
+  "away": {
+   "player_id": 8482445,
+   "name": "Devin Cooley",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/dwillsnhl/status/2115480693757321566?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-28",
+  "read_utc": "2026-10-28T21:01:49Z",
+  "home": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Atro Leppanen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Devon Levi",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jason Dickinson",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Zach Hyman",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jonathan Huberdeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Samuel Honzek",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:01:49Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14601,
+  "training_games_priced": 7427
+ }
+}

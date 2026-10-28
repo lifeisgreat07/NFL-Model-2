@@ -874,5 +874,29 @@
   "pick": "BUF",
   "result": "correct",
   "saved_utc": "2026-10-27T21:01:50Z"
+ },
+ {
+  "game_id": "2026020199",
+  "pick": "WSH",
+  "result": "pending",
+  "saved_utc": "2026-10-28T21:01:49Z"
+ },
+ {
+  "game_id": "2026020200",
+  "pick": "EDM",
+  "result": "pending",
+  "saved_utc": "2026-10-28T21:01:49Z"
+ },
+ {
+  "game_id": "2026020201",
+  "pick": "COL",
+  "result": "pending",
+  "saved_utc": "2026-10-28T21:01:49Z"
+ },
+ {
+  "game_id": "2026020202",
+  "pick": "TOR",
+  "result": "pending",
+  "saved_utc": "2026-10-28T21:01:49Z"
  }
 ]

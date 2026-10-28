@@ -1,0 +1,72 @@
+{
+ "game_id": "2026020201",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-29T01:00:00Z",
+ "home": "COL",
+ "away": "NJD",
+ "model_a": 0.5996,
+ "model_b": 0.5516,
+ "pick": "COL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.743433,
+  "shot_matchup": -0.05222,
+  "goalie_matchup_2000": 0.000482
+ },
+ "market": {
+  "game_id": "2026020201",
+  "start_utc": "2026-10-29T01:00:00Z",
+  "home": "COL",
+  "away": "NJD",
+  "book": "DraftKings",
+  "home_price": -148.0,
+  "away_price": 124.0,
+  "home_prob": 0.5721,
+  "read_utc": "2026-10-28T21:01:49Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478406,
+   "name": "Mackenzie Blackwood",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/runwriteAarif/status/2115494475862880699?s=20"
+  },
+  "away": {
+   "player_id": 8474596,
+   "name": "Jake Allen",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Peter_Baugh/status/2115279730807099774"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-28",
+  "read_utc": "2026-10-28T21:01:49Z",
+  "home": [
+   {
+    "name": "Zachary L'Heureux",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Seamus Casey",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:01:49Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14601,
+  "training_games_priced": 7427
+ }
+}

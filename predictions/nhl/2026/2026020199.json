@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020199",
+ "season": 2026,
+ "slate": "2026-10-28",
+ "start_utc": "2026-10-28T23:30:00Z",
+ "home": "WSH",
+ "away": "PHI",
+ "model_a": 0.6121,
+ "model_b": 0.6892,
+ "pick": "WSH",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.613341,
+  "shot_matchup": 1.354856,
+  "goalie_matchup_2000": 0.001745
+ },
+ "market": {
+  "game_id": "2026020199",
+  "start_utc": "2026-10-28T23:30:00Z",
+  "home": "WSH",
+  "away": "PHI",
+  "book": "DraftKings",
+  "home_price": -230.0,
+  "away_price": 190.0,
+  "home_prob": 0.669,
+  "read_utc": "2026-10-28T21:01:49Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480313,
+   "name": "Logan Thompson",
+   "status": null,
+   "basis": "projected",
+   "report": "https://x.com/DFOFantasy/status/2115460382370525560"
+  },
+  "away": {
+   "player_id": 8479361,
+   "name": "Joseph Woll",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-28",
+  "read_utc": "2026-10-28T21:01:49Z",
+  "home": [
+   {
+    "name": "Patrick Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Sandin",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vincent Desharnais",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Nikita Grebenkin",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Owen Tippett",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Ristolainen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Travis Konecny",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-28T21:01:49Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-27",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14601,
+  "training_games_priced": 7427
+ }
+}
