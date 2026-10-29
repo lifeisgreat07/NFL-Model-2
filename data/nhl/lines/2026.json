@@ -2110,5 +2110,17 @@
   "home_prob": 0.4486,
   "read_utc": "2026-10-28T21:01:49Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020200",
+  "start_utc": "2026-10-29T00:30:00Z",
+  "home": "EDM",
+  "away": "CGY",
+  "book": "DraftKings",
+  "home_price": -180.0,
+  "away_price": 150.0,
+  "home_prob": 0.6164,
+  "read_utc": "2026-10-29T00:29:28Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]
