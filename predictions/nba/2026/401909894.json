@@ -1,0 +1,81 @@
+{
+ "game_id": "401909894",
+ "season": 2026,
+ "slate": "2026-10-29",
+ "start_utc": "2026-10-30T00:00:00Z",
+ "home": "NO",
+ "away": "SAC",
+ "model_a": 0.7201,
+ "model_b": 0.6713,
+ "pick": "NO",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9367,
+  "away": 0.8365
+ },
+ "features": {
+  "point_matchup": 3.552793,
+  "efficiency_matchup": 3.450821,
+  "availability_matchup": 0.100185
+ },
+ "market": {
+  "game_id": "401909894",
+  "home": "NO",
+  "away": "SAC",
+  "start_utc": "2026-10-30T00:00:00Z",
+  "read_utc": "2026-10-29T21:31:24Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -238.0,
+  "away_price": 195.0,
+  "home_prob": 0.675
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-29T21:31:24Z",
+  "home": [
+   {
+    "athlete_id": "4277956",
+    "name": "Jordan Poole",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5061589",
+    "name": "Yves Missi",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433174",
+    "name": "Dylan Cardwell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4594327",
+    "name": "Keegan Murray",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-29T21:31:24Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-28",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14126,
+  "training_games_priced": 14017
+ }
+}

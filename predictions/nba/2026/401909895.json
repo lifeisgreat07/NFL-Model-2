@@ -1,0 +1,65 @@
+{
+ "game_id": "401909895",
+ "season": 2026,
+ "slate": "2026-10-29",
+ "start_utc": "2026-10-30T02:00:00Z",
+ "home": "POR",
+ "away": "MEM",
+ "model_a": 0.6926,
+ "model_b": 0.7148,
+ "pick": "POR",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9403,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": 4.279214,
+  "efficiency_matchup": 4.140473,
+  "availability_matchup": -0.05968
+ },
+ "market": {
+  "game_id": "401909895",
+  "home": "POR",
+  "away": "MEM",
+  "start_utc": "2026-10-30T02:00:00Z",
+  "read_utc": "2026-10-29T21:31:24Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -290.0,
+  "away_price": 235.0,
+  "home_prob": 0.7136
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-29T21:31:24Z",
+  "home": [
+   {
+    "athlete_id": "4706557",
+    "name": "Chris Youngblood",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066211",
+    "name": "Robert Williams III",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4914336",
+    "name": "Shaedon Sharpe",
+    "status": "Out"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-10-29T21:31:24Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-28",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14126,
+  "training_games_priced": 14017
+ }
+}
