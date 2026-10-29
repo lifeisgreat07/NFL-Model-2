@@ -1,0 +1,233 @@
+{
+  "reads": [
+    "2026-10-29T11:03:11Z"
+  ],
+  "changes": [],
+  "games": [
+    {
+      "elias": "2026102900",
+      "networks": [
+        "Prime Video"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CAR",
+      "home": "GB",
+      "territory": "NATIONAL",
+      "listed": [
+        "Prime Video"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110100",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "BAL",
+      "home": "BUF",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110101",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "TEN",
+      "home": "CIN",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110102",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "ARI",
+      "home": "DAL",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110103",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "MIN",
+      "home": "DET",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110104",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "IND",
+      "home": "JAX",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110105",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LV",
+      "home": "NYJ",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110106",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CLE",
+      "home": "PIT",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110107",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "ATL",
+      "home": "TB",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110108",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LAC",
+      "home": "LA",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110109",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "KC",
+      "home": "DEN",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110110",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NE",
+      "home": "MIA",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110111",
+      "networks": [
+        "NBC"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "PHI",
+      "home": "WAS",
+      "territory": "NATIONAL",
+      "listed": [
+        "NBC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    },
+    {
+      "elias": "2026110200",
+      "networks": [
+        "ESPN"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CHI",
+      "home": "SEA",
+      "territory": "NATIONAL",
+      "listed": [
+        "ESPN",
+        "ABC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-8",
+      "read_at": "2026-10-29T11:03:11Z"
+    }
+  ]
+}

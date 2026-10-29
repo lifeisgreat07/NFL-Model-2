@@ -23,7 +23,7 @@
     "off": 0.1041,
     "def": 0.0124,
     "net": 0.0917,
-    "sos": 0.0059,
+    "sos": 0.0058,
     "games_played": 7
   },
   {
@@ -221,7 +221,7 @@
     "off": -0.024,
     "def": 0.0389,
     "net": -0.0628,
-    "sos": -0.0366,
+    "sos": -0.0367,
     "games_played": 7
   },
   {
@@ -229,7 +229,7 @@
     "name": "Washington Commanders",
     "off": 0.0089,
     "def": 0.082,
-    "net": -0.073,
+    "net": -0.0731,
     "sos": 0.012,
     "games_played": 6
   },

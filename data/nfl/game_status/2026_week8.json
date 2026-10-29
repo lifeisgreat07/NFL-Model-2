@@ -1,0 +1,148 @@
+{
+  "season": 2026,
+  "week": 8,
+  "source": "nflverse schedule, via nflreadpy.load_schedules",
+  "read_at": "2026-10-29T11:03:00Z",
+  "games": [
+    {
+      "away": "CAR",
+      "home": "GB",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 3.5,
+      "neutral_site": false,
+      "venue": "Lambeau Field"
+    },
+    {
+      "away": "BAL",
+      "home": "BUF",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 3.0,
+      "neutral_site": false,
+      "venue": "Highmark Stadium"
+    },
+    {
+      "away": "TEN",
+      "home": "CIN",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 10.0,
+      "neutral_site": false,
+      "venue": "Paycor Stadium"
+    },
+    {
+      "away": "ARI",
+      "home": "DAL",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 7.0,
+      "neutral_site": false,
+      "venue": "AT&T Stadium"
+    },
+    {
+      "away": "MIN",
+      "home": "DET",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 3.0,
+      "neutral_site": false,
+      "venue": "Ford Field"
+    },
+    {
+      "away": "IND",
+      "home": "JAX",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 10.0,
+      "neutral_site": false,
+      "venue": "EverBank Stadium"
+    },
+    {
+      "away": "LV",
+      "home": "NYJ",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 1.5,
+      "neutral_site": false,
+      "venue": "MetLife Stadium"
+    },
+    {
+      "away": "CLE",
+      "home": "PIT",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 3.5,
+      "neutral_site": false,
+      "venue": "Acrisure Stadium"
+    },
+    {
+      "away": "ATL",
+      "home": "TB",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 2.5,
+      "neutral_site": false,
+      "venue": "Raymond James Stadium"
+    },
+    {
+      "away": "LAC",
+      "home": "LA",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 6.5,
+      "neutral_site": false,
+      "venue": "SoFi Stadium"
+    },
+    {
+      "away": "KC",
+      "home": "DEN",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -1.5,
+      "neutral_site": false,
+      "venue": "Empower Field at Mile High"
+    },
+    {
+      "away": "NE",
+      "home": "MIA",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -7.0,
+      "neutral_site": false,
+      "venue": "Hard Rock Stadium"
+    },
+    {
+      "away": "PHI",
+      "home": "WAS",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 6.0,
+      "neutral_site": false,
+      "venue": "Northwest Stadium"
+    },
+    {
+      "away": "CHI",
+      "home": "SEA",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 3.0,
+      "neutral_site": false,
+      "venue": "Lumen Field"
+    }
+  ]
+}
