@@ -1,0 +1,86 @@
+{
+ "game_id": "2026020207",
+ "season": 2026,
+ "slate": "2026-10-29",
+ "start_utc": "2026-10-30T00:00:00Z",
+ "home": "STL",
+ "away": "BOS",
+ "model_a": 0.5083,
+ "model_b": 0.5407,
+ "pick": "STL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.63813,
+  "shot_matchup": 1.638951,
+  "goalie_matchup_2000": -0.000494
+ },
+ "market": {
+  "game_id": "2026020207",
+  "start_utc": "2026-10-30T00:00:00Z",
+  "home": "STL",
+  "away": "BOS",
+  "book": "DraftKings",
+  "home_price": -115.0,
+  "away_price": -105.0,
+  "home_prob": 0.5108,
+  "read_utc": "2026-10-29T21:01:51Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480981,
+   "name": "Joel Hofer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://thehockeynews.com/nhl/st-louis-blues/game-day/10-29-26-bruins-blues-gameday-lineup"
+  },
+  "away": {
+   "player_id": 8480280,
+   "name": "Jeremy Swayman",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/adampellerin/status/2115850098148257931?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-29",
+  "read_utc": "2026-10-29T21:01:51Z",
+  "home": [
+   {
+    "name": "Dillon Dube",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan Mailloux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ross Johnston",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Torey Krug",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-10-29T21:01:51Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-28",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14605,
+  "training_games_priced": 7427
+ }
+}

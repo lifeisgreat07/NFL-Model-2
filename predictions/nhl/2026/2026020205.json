@@ -1,0 +1,102 @@
+{
+ "game_id": "2026020205",
+ "season": 2026,
+ "slate": "2026-10-29",
+ "start_utc": "2026-10-29T23:00:00Z",
+ "home": "PIT",
+ "away": "UTA",
+ "model_a": 0.518,
+ "model_b": 0.424,
+ "pick": "UTA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.093031,
+  "shot_matchup": -1.488975,
+  "goalie_matchup_2000": 0.000759
+ },
+ "market": {
+  "game_id": "2026020205",
+  "start_utc": "2026-10-29T23:00:00Z",
+  "home": "PIT",
+  "away": "UTA",
+  "book": "DraftKings",
+  "home_price": 114.0,
+  "away_price": -135.0,
+  "home_prob": 0.4486,
+  "read_utc": "2026-10-29T21:01:51Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481668,
+   "name": "Arturs Silovs",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/pensinsidescoop/status/2115824370832588800?s=46"
+  },
+  "away": {
+   "player_id": 8478872,
+   "name": "Karel Vejmelka",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-29",
+  "read_utc": "2026-10-29T21:01:51Z",
+  "home": [
+   {
+    "name": "Bryan Rust",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elmer Soderblom",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Justin Brazeau",
+    "position": "RW",
+    "status": "Out"
+   },
+   {
+    "name": "Ryan Graves",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Trevor van Riemsdyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "John Marino",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Maveric Lamoureux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Michael Carcone",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-29T21:01:51Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-28",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14605,
+  "training_games_priced": 7427
+ }
+}

@@ -1,0 +1,76 @@
+{
+ "game_id": "2026020206",
+ "season": 2026,
+ "slate": "2026-10-29",
+ "start_utc": "2026-10-29T23:00:00Z",
+ "home": "CAR",
+ "away": "CBJ",
+ "model_a": 0.7362,
+ "model_b": 0.7111,
+ "pick": "CAR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.235218,
+  "shot_matchup": 9.15096,
+  "goalie_matchup_2000": 0.000649
+ },
+ "market": {
+  "game_id": "2026020206",
+  "start_utc": "2026-10-29T23:00:00Z",
+  "home": "CAR",
+  "away": "CBJ",
+  "book": "DraftKings",
+  "home_price": -258.0,
+  "away_price": 210.0,
+  "home_prob": 0.6908,
+  "read_utc": "2026-10-29T21:01:51Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481611,
+   "name": "Pyotr Kochetkov",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/corylav/status/2115812871791673420?s=20"
+  },
+  "away": {
+   "player_id": 8482982,
+   "name": "Jet Greaves",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/DMaetzMedia/status/2115837734514524345?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-29",
+  "read_utc": "2026-10-29T21:01:51Z",
+  "home": [
+   {
+    "name": "Alexander Nikishin",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Jordan Staal",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Taylor Hall",
+    "position": "LW",
+    "status": "Out"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-10-29T21:01:51Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-28",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14605,
+  "training_games_priced": 7427
+ }
+}

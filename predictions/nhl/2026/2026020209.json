@@ -1,0 +1,117 @@
+{
+ "game_id": "2026020209",
+ "season": 2026,
+ "slate": "2026-10-29",
+ "start_utc": "2026-10-30T00:00:00Z",
+ "home": "DAL",
+ "away": "MTL",
+ "model_a": 0.6073,
+ "model_b": 0.6331,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.230143,
+  "shot_matchup": 2.851848,
+  "goalie_matchup_2000": 0.003138
+ },
+ "market": {
+  "game_id": "2026020209",
+  "start_utc": "2026-10-30T00:00:00Z",
+  "home": "DAL",
+  "away": "MTL",
+  "book": "DraftKings",
+  "home_price": -175.0,
+  "away_price": 145.0,
+  "home_prob": 0.6092,
+  "read_utc": "2026-10-29T21:01:51Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8479979,
+   "name": "Jake Oettinger",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/BruceLeVinePuck/status/2115834868726718947?s=20"
+  },
+  "away": {
+   "player_id": 8482487,
+   "name": "Jakub Dobes",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/CanadiensMTL/status/2115507877288833238"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-29",
+  "read_utc": "2026-10-29T21:01:51Z",
+  "home": [
+   {
+    "name": "Esa Lindell",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kyle Capobianco",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Luke Krys",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Duchene",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Oskar Back",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Radek Faksa",
+    "position": "C",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Suzuki",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-29T21:01:51Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-28",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14605,
+  "training_games_priced": 7427
+ }
+}

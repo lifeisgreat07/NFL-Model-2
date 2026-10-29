@@ -1,0 +1,107 @@
+{
+ "game_id": "2026020210",
+ "season": 2026,
+ "slate": "2026-10-29",
+ "start_utc": "2026-10-30T00:00:00Z",
+ "home": "MIN",
+ "away": "NYI",
+ "model_a": 0.6253,
+ "model_b": 0.6391,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.669865,
+  "shot_matchup": 1.916202,
+  "goalie_matchup_2000": 0.002233
+ },
+ "market": {
+  "game_id": "2026020210",
+  "start_utc": "2026-10-30T00:00:00Z",
+  "home": "MIN",
+  "away": "NYI",
+  "book": "DraftKings",
+  "home_price": -192.0,
+  "away_price": 160.0,
+  "home_prob": 0.6309,
+  "read_utc": "2026-10-29T21:01:51Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482661,
+   "name": "Jesper Wallstedt",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://www.nhl.com/wild/news/game-preview-wild-vs-islanders-102930"
+  },
+  "away": {
+   "player_id": 8478009,
+   "name": "Ilya Sorokin",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/ethan_sears/status/2115850951705715029?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-29",
+  "read_utc": "2026-10-29T21:01:51Z",
+  "home": [
+   {
+    "name": "Brock Faber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Gustavsson",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jared Spurgeon",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Marcus Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Calum Ritchie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mathew Barzal",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matias Maccelli",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-29T21:01:51Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-28",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14605,
+  "training_games_priced": 7427
+ }
+}

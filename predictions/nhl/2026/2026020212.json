@@ -1,0 +1,107 @@
+{
+ "game_id": "2026020212",
+ "season": 2026,
+ "slate": "2026-10-29",
+ "start_utc": "2026-10-30T02:00:00Z",
+ "home": "LAK",
+ "away": "OTT",
+ "model_a": 0.473,
+ "model_b": 0.4692,
+ "pick": "OTT",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.556251,
+  "shot_matchup": -1.954607,
+  "goalie_matchup_2000": 0.000226
+ },
+ "market": {
+  "game_id": "2026020212",
+  "start_utc": "2026-10-30T02:00:00Z",
+  "home": "LAK",
+  "away": "OTT",
+  "book": "DraftKings",
+  "home_price": 105.0,
+  "away_price": -125.0,
+  "home_prob": 0.4675,
+  "read_utc": "2026-10-29T21:01:51Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475311,
+   "name": "Darcy Kuemper",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/IcemanAthletic/status/2115873785048146070?s=20"
+  },
+  "away": {
+   "player_id": 8477992,
+   "name": "Jonas Johansson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Jackson_Starr_/status/2115870880333287934?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-29",
+  "read_utc": "2026-10-29T21:01:51Z",
+  "home": [
+   {
+    "name": "Alex Turcotte",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Corey Perry",
+    "position": "RW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Jakub Dvorak",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jan Jenik",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Fiala",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mats Zuccarello",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Linus Ullmark",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Warren Foegele",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "William Eklund",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-29T21:01:51Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-28",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14605,
+  "training_games_priced": 7427
+ }
+}

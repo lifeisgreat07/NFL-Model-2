@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020203",
+ "season": 2026,
+ "slate": "2026-10-29",
+ "start_utc": "2026-10-29T23:30:00Z",
+ "home": "DET",
+ "away": "CHI",
+ "model_a": 0.6707,
+ "model_b": 0.6029,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.68366,
+  "shot_matchup": 7.213931,
+  "goalie_matchup_2000": -0.001681
+ },
+ "market": {
+  "game_id": "2026020203",
+  "start_utc": "2026-10-29T23:30:00Z",
+  "home": "DET",
+  "away": "CHI",
+  "book": "DraftKings",
+  "home_price": -162.0,
+  "away_price": 136.0,
+  "home_prob": 0.5934,
+  "read_utc": "2026-10-29T21:01:51Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476434,
+   "name": "John Gibson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/AnsarKhanMLive/status/2115825503357784125"
+  },
+  "away": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/BenPopeCST/status/2115827288298459361?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-29",
+  "read_utc": "2026-10-29T21:01:51Z",
+  "home": [
+   {
+    "name": "Albert Johansson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Dylan Larkin",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Marco Kasper",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mason Appleton",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alex Vlasic",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-29T21:01:51Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-28",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14605,
+  "training_games_priced": 7427
+ }
+}

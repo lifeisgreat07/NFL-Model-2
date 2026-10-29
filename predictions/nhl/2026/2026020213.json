@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020213",
+ "season": 2026,
+ "slate": "2026-10-29",
+ "start_utc": "2026-10-30T02:00:00Z",
+ "home": "SJS",
+ "away": "VAN",
+ "model_a": 0.6214,
+ "model_b": 0.6103,
+ "pick": "SJS",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.68758,
+  "shot_matchup": 2.354702,
+  "goalie_matchup_2000": -0.000192
+ },
+ "market": {
+  "game_id": "2026020213",
+  "start_utc": "2026-10-30T02:00:00Z",
+  "home": "SJS",
+  "away": "VAN",
+  "book": "DraftKings",
+  "home_price": -175.0,
+  "away_price": 145.0,
+  "home_prob": 0.6092,
+  "read_utc": "2026-10-29T21:01:51Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482137,
+   "name": "Yaroslav Askarov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/CurtisPashelka/status/2115859932390310386"
+  },
+  "away": {
+   "player_id": 8482447,
+   "name": "Leevi Merilainen",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/sportsnetmurph/status/2115880297996886029?s=46"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-29",
+  "read_utc": "2026-10-29T21:01:51Z",
+  "home": [
+   {
+    "name": "Alexander Wennberg",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Igor Chernyshov",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Akil Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-29T21:01:51Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-28",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14605,
+  "training_games_priced": 7427
+ }
+}
