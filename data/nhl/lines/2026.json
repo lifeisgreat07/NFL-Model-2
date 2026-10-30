@@ -2254,5 +2254,17 @@
   "home_prob": 0.6092,
   "read_utc": "2026-10-29T21:01:51Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020212",
+  "start_utc": "2026-10-30T02:00:00Z",
+  "home": "LAK",
+  "away": "OTT",
+  "book": "DraftKings",
+  "home_price": 102.0,
+  "away_price": -122.0,
+  "home_prob": 0.4739,
+  "read_utc": "2026-10-30T00:29:27Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]

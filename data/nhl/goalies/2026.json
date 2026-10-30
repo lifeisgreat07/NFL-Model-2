@@ -5548,5 +5548,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020216",
   "start_utc": "2026-10-31T00:00:00Z"
+ },
+ {
+  "date": "2026-10-29",
+  "home": "ANA",
+  "home_goalie": "Lukas Dostal",
+  "home_status": null,
+  "home_report": null,
+  "away": "BUF",
+  "away_goalie": "Colten Ellis",
+  "away_status": "Likely",
+  "away_report": "https://x.com/rachelmlenzi/status/2115873582920450454?s=20",
+  "read_utc": "2026-10-30T00:29:27Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020211",
+  "start_utc": "2026-10-30T02:00:00Z"
  }
 ]
