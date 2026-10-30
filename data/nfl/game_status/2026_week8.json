@@ -2,14 +2,14 @@
   "season": 2026,
   "week": 8,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-29T11:03:00Z",
+  "read_at": "2026-10-30T05:17:36Z",
   "games": [
     {
       "away": "CAR",
       "home": "GB",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 19,
+      "home_score": 27,
       "spread_line": 3.5,
       "neutral_site": false,
       "venue": "Lambeau Field"
@@ -30,7 +30,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 10.0,
+      "spread_line": 12.5,
       "neutral_site": false,
       "venue": "Paycor Stadium"
     },
