@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 8,
-  "read_at": "2026-10-29T11:03:13Z",
+  "read_at": "2026-10-30T11:24:52Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-10-29T06:01:40Z"
+    "depth_chart_snapshot": "2026-10-30T06:03:25Z"
   },
   "teams": {
     "GB": {
@@ -43,11 +43,6 @@
       },
       "injury_report": "published",
       "out": [
-        {
-          "name": "Akayleb Evans",
-          "position": "CB",
-          "injury": "Triceps"
-        },
         {
           "name": "Damien Lewis",
           "position": "G",
