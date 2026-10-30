@@ -1,0 +1,107 @@
+{
+ "game_id": "2026020216",
+ "season": 2026,
+ "slate": "2026-10-30",
+ "start_utc": "2026-10-31T00:00:00Z",
+ "home": "CGY",
+ "away": "SEA",
+ "model_a": 0.5183,
+ "model_b": 0.5091,
+ "pick": "CGY",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.54388,
+  "shot_matchup": 2.220709,
+  "goalie_matchup_2000": -0.001544
+ },
+ "market": {
+  "game_id": "2026020216",
+  "start_utc": "2026-10-31T00:00:00Z",
+  "home": "CGY",
+  "away": "SEA",
+  "book": "DraftKings",
+  "home_price": -105.0,
+  "away_price": -115.0,
+  "home_prob": 0.4892,
+  "read_utc": "2026-10-30T21:01:55Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481692,
+   "name": "Dustin Wolf",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/SteinbergYYC/status/2116202803362414760?a=K_xy4-nL3eCC1tanLLc&s=20"
+  },
+  "away": {
+   "player_id": 8478916,
+   "name": "Joey Daccord",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-30",
+  "read_utc": "2026-10-30T21:01:55Z",
+  "home": [
+   {
+    "name": "Brennan Othmann",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Connor Zary",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Devin Cooley",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonathan Huberdeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Samuel Honzek",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jacob Melanson",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jake O'Brien",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jared McCann",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Lindgren",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-30T21:01:55Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-29",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14616,
+  "training_games_priced": 7427
+ }
+}
