@@ -1,0 +1,86 @@
+{
+ "game_id": "401909280",
+ "season": 2026,
+ "slate": "2026-10-30",
+ "start_utc": "2026-10-30T23:30:00Z",
+ "home": "PHI",
+ "away": "NY",
+ "model_a": 0.3357,
+ "model_b": 0.42,
+ "pick": "NY",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.917,
+  "away": 0.9718
+ },
+ "features": {
+  "point_matchup": -6.266029,
+  "efficiency_matchup": -6.335662,
+  "availability_matchup": -0.054891
+ },
+ "market": {
+  "game_id": "401909280",
+  "home": "PHI",
+  "away": "NY",
+  "start_utc": "2026-10-30T23:30:00Z",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 130.0,
+  "away_price": -155.0,
+  "home_prob": 0.417
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4871141",
+    "name": "Ariel Hukporti",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4870562",
+    "name": "Dominick Barlow",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432446",
+    "name": "Jabari Walker",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3917376",
+    "name": "Jaylen Brown",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3904625",
+    "name": "Tacko Fall",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4277869",
+    "name": "Jose Alvarado",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3136195",
+    "name": "Karl-Anthony Towns",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-30T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-29",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14129,
+  "training_games_priced": 14017
+ }
+}

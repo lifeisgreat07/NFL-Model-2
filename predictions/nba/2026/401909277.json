@@ -1,0 +1,96 @@
+{
+ "game_id": "401909277",
+ "season": 2026,
+ "slate": "2026-10-30",
+ "start_utc": "2026-10-30T23:00:00Z",
+ "home": "WSH",
+ "away": "CHA",
+ "model_a": 0.3066,
+ "model_b": 0.4854,
+ "pick": "CHA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8624,
+  "away": 0.8544
+ },
+ "features": {
+  "point_matchup": -7.956835,
+  "efficiency_matchup": -7.797461,
+  "availability_matchup": 0.007964
+ },
+ "market": {
+  "game_id": "401909277",
+  "home": "WSH",
+  "away": "CHA",
+  "start_utc": "2026-10-30T23:00:00Z",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -102.0,
+  "away_price": -118.0,
+  "home_prob": 0.4826
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4606840",
+    "name": "Jamir Watkins",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432907",
+    "name": "Justin Champagnie",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5238230",
+    "name": "Tre Johnson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4997537",
+    "name": "Tristan Vukcevic",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4395651",
+    "name": "Coby White",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3032979",
+    "name": "Dennis Schroder",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4066218",
+    "name": "Grant Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061575",
+    "name": "Kon Knueppel",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4684269",
+    "name": "Kylan Boswell",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-30T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-29",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14129,
+  "training_games_priced": 14017
+ }
+}

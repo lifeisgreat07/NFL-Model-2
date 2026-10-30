@@ -1,0 +1,96 @@
+{
+ "game_id": "401909282",
+ "season": 2026,
+ "slate": "2026-10-30",
+ "start_utc": "2026-10-31T00:00:00Z",
+ "home": "MIA",
+ "away": "IND",
+ "model_a": 0.7436,
+ "model_b": 0.729,
+ "pick": "MIA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8266
+ },
+ "features": {
+  "point_matchup": 3.645143,
+  "efficiency_matchup": 3.536842,
+  "availability_matchup": 0.173396
+ },
+ "market": {
+  "game_id": "401909282",
+  "home": "MIA",
+  "away": "IND",
+  "start_utc": "2026-10-31T00:00:00Z",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -325.0,
+  "away_price": 260.0,
+  "home_prob": 0.7335
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "3899664",
+    "name": "Simone Fontecchio",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4396909",
+    "name": "Aaron Nesmith",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4395712",
+    "name": "Andrew Nembhard",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4433076",
+    "name": "Ben Sheppard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4017837",
+    "name": "Ivica Zubac",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5157066",
+    "name": "Johnny Furphy",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4278355",
+    "name": "Obi Toppin",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "2530530",
+    "name": "T.J. McConnell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4396993",
+    "name": "Tyrese Haliburton",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-30T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-29",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14129,
+  "training_games_priced": 14017
+ }
+}

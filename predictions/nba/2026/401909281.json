@@ -1,0 +1,86 @@
+{
+ "game_id": "401909281",
+ "season": 2026,
+ "slate": "2026-10-30",
+ "start_utc": "2026-10-30T23:30:00Z",
+ "home": "TOR",
+ "away": "ORL",
+ "model_a": 0.7514,
+ "model_b": 0.6491,
+ "pick": "TOR",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9917,
+  "away": 0.7424
+ },
+ "features": {
+  "point_matchup": 3.255197,
+  "efficiency_matchup": 2.946705,
+  "availability_matchup": 0.249341
+ },
+ "market": {
+  "game_id": "401909281",
+  "home": "TOR",
+  "away": "ORL",
+  "start_utc": "2026-10-30T23:30:00Z",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -218.0,
+  "away_price": 180.0,
+  "home_prob": 0.6575
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "6450",
+    "name": "Kawhi Leonard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432586",
+    "name": "Nate Bittle",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5107251",
+    "name": "Izaiyah Nelson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432165",
+    "name": "Jalen Suggs",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065654",
+    "name": "Jonathan Isaac",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5214637",
+    "name": "Noah Penda",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432573",
+    "name": "Paolo Banchero",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-30T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-29",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14129,
+  "training_games_priced": 14017
+ }
+}

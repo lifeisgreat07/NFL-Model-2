@@ -1,0 +1,96 @@
+{
+ "game_id": "401909283",
+ "season": 2026,
+ "slate": "2026-10-30",
+ "start_utc": "2026-10-31T00:00:00Z",
+ "home": "DAL",
+ "away": "HOU",
+ "model_a": 0.3851,
+ "model_b": 0.3215,
+ "pick": "HOU",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9853,
+  "away": 0.8724
+ },
+ "features": {
+  "point_matchup": -6.601412,
+  "efficiency_matchup": -6.429045,
+  "availability_matchup": 0.112909
+ },
+ "market": {
+  "game_id": "401909283",
+  "home": "DAL",
+  "away": "HOU",
+  "start_utc": "2026-10-31T00:00:00Z",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 195.0,
+  "away_price": -238.0,
+  "home_prob": 0.325
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4278594",
+    "name": "Naji Marshall",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4593125",
+    "name": "Santi Aldama",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5279129",
+    "name": "Sergio de Larrea",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4871144",
+    "name": "Alperen Sengun",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "2990992",
+    "name": "Marcus Smart",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4711272",
+    "name": "Reed Sheppard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2991235",
+    "name": "Steven Adams",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-30T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-29",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14129,
+  "training_games_priced": 14017
+ }
+}

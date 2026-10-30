@@ -1,0 +1,91 @@
+{
+ "game_id": "401909284",
+ "season": 2026,
+ "slate": "2026-10-30",
+ "start_utc": "2026-10-31T00:00:00Z",
+ "home": "MIN",
+ "away": "LAC",
+ "model_a": 0.6001,
+ "model_b": 0.6996,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8057,
+  "away": 0.9255
+ },
+ "features": {
+  "point_matchup": 2.020974,
+  "efficiency_matchup": 1.945289,
+  "availability_matchup": -0.119877
+ },
+ "market": {
+  "game_id": "401909284",
+  "home": "MIN",
+  "away": "LAC",
+  "start_utc": "2026-10-31T00:00:00Z",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -265.0,
+  "away_price": 215.0,
+  "home_prob": 0.6958
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-30T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4594268",
+    "name": "Anthony Edwards",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "6580",
+    "name": "Bradley Beal",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3913176",
+    "name": "Brandon Ingram",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4396818",
+    "name": "Jordan Miller",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065778",
+    "name": "Max Strus",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066648",
+    "name": "Rui Hachimura",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5108024",
+    "name": "Yanic Konan Niederhauser",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-30T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-29",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14129,
+  "training_games_priced": 14017
+ }
+}
