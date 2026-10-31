@@ -1090,5 +1090,17 @@
   "home_price": 145.0,
   "away_price": -175.0,
   "home_prob": 0.3908
+ },
+ {
+  "game_id": "401909285",
+  "home": "GS",
+  "away": "LAL",
+  "start_utc": "2026-10-31T02:00:00Z",
+  "read_utc": "2026-10-31T00:58:39Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 130.0,
+  "away_price": -155.0,
+  "home_prob": 0.417
  }
 ]
