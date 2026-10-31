@@ -138,5 +138,12 @@
     "home": "CIN",
     "away": "TEN",
     "spread_line": 12.5
+  },
+  {
+    "captured_date": "2026-10-31",
+    "captured_utc": "2026-10-31T05:17:43Z",
+    "home": "WAS",
+    "away": "PHI",
+    "spread_line": 5.5
   }
 ]
