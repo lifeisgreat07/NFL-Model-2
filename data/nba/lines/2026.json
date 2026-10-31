@@ -1126,5 +1126,17 @@
   "home_price": 110.0,
   "away_price": -130.0,
   "home_prob": 0.4573
+ },
+ {
+  "game_id": "401909897",
+  "home": "CHA",
+  "away": "PHI",
+  "start_utc": "2026-10-31T22:00:00Z",
+  "read_utc": "2026-10-31T19:37:25Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -108.0,
+  "away_price": -112.0,
+  "home_prob": 0.4957
  }
 ]
