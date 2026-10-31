@@ -2374,5 +2374,17 @@
   "home_prob": 0.76,
   "read_utc": "2026-10-31T18:06:46Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020225",
+  "start_utc": "2026-11-01T00:00:00Z",
+  "home": "DAL",
+  "away": "CBJ",
+  "book": "DraftKings",
+  "home_price": -185.0,
+  "away_price": 154.0,
+  "home_prob": 0.6225,
+  "read_utc": "2026-10-31T23:50:00Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]

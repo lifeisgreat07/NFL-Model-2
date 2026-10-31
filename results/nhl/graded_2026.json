@@ -1010,13 +1010,13 @@
  {
   "game_id": "2026020221",
   "pick": "LAK",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-31T14:01:50Z"
  },
  {
   "game_id": "2026020222",
   "pick": "OTT",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-31T14:01:50Z"
  },
  {
