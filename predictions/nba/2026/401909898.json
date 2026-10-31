@@ -1,0 +1,71 @@
+{
+ "game_id": "401909898",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-10-31T23:00:00Z",
+ "home": "NO",
+ "away": "ATL",
+ "model_a": 0.3889,
+ "model_b": 0.3791,
+ "pick": "ATL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8977,
+  "away": 0.9589
+ },
+ "features": {
+  "point_matchup": -4.673827,
+  "efficiency_matchup": -4.585952,
+  "availability_matchup": -0.061192
+ },
+ "market": {
+  "game_id": "401909898",
+  "home": "NO",
+  "away": "ATL",
+  "start_utc": "2026-10-31T23:00:00Z",
+  "read_utc": "2026-10-31T21:31:23Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 154.0,
+  "away_price": -185.0,
+  "home_prob": 0.3775
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-31T21:31:23Z",
+  "home": [
+   {
+    "athlete_id": "4277956",
+    "name": "Jordan Poole",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061589",
+    "name": "Yves Missi",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5105571",
+    "name": "Henri Veesaar",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4712863",
+    "name": "Mouhamed Gueye",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T21:31:23Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-31",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14140,
+  "training_games_priced": 14017
+ }
+}

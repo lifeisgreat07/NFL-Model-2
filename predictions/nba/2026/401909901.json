@@ -1,0 +1,81 @@
+{
+ "game_id": "401909901",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-11-01T00:00:00Z",
+ "home": "SA",
+ "away": "MIN",
+ "model_a": 0.7208,
+ "model_b": 0.82,
+ "pick": "SA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8123
+ },
+ "features": {
+  "point_matchup": 2.656055,
+  "efficiency_matchup": 2.60968,
+  "availability_matchup": 0.187706
+ },
+ "market": {
+  "game_id": "401909901",
+  "home": "SA",
+  "away": "MIN",
+  "start_utc": "2026-11-01T00:00:00Z",
+  "read_utc": "2026-10-31T21:31:23Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -600.0,
+  "away_price": 440.0,
+  "home_prob": 0.8223
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-31T21:31:23Z",
+  "home": [
+   {
+    "athlete_id": "5101845",
+    "name": "Jayden Quaintance",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4845367",
+    "name": "Stephon Castle",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6440",
+    "name": "Tobias Harris",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4594268",
+    "name": "Anthony Edwards",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3032976",
+    "name": "Rudy Gobert",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T21:31:23Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-31",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14140,
+  "training_games_priced": 14017
+ }
+}

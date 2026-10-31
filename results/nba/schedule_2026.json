@@ -1060,10 +1060,10 @@
    "start_utc": "2026-10-31T19:00:00Z",
    "home": "UTAH",
    "away": "POR",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
+   "home_score": 90,
+   "away_score": 112,
    "neutral_site": false,
    "time_valid": true
   },

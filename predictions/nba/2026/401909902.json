@@ -1,0 +1,96 @@
+{
+ "game_id": "401909902",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-11-01T00:30:00Z",
+ "home": "HOU",
+ "away": "OKC",
+ "model_a": 0.5327,
+ "model_b": 0.5592,
+ "pick": "HOU",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8508,
+  "away": 0.6848
+ },
+ "features": {
+  "point_matchup": -2.919184,
+  "efficiency_matchup": -2.826037,
+  "availability_matchup": 0.165978
+ },
+ "market": {
+  "game_id": "401909902",
+  "home": "HOU",
+  "away": "OKC",
+  "start_utc": "2026-11-01T00:30:00Z",
+  "read_utc": "2026-10-31T21:31:23Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -142.0,
+  "away_price": 120.0,
+  "home_prob": 0.5635
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-31T21:31:23Z",
+  "home": [
+   {
+    "athlete_id": "2991230",
+    "name": "Fred VanVleet",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4711272",
+    "name": "Reed Sheppard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2991235",
+    "name": "Steven Adams",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "2991350",
+    "name": "Alex Caruso",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4683692",
+    "name": "Cason Wallace",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433255",
+    "name": "Chet Holmgren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4593803",
+    "name": "Jalen Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5159925",
+    "name": "Nikola Topic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061603",
+    "name": "Thomas Sorber",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T21:31:23Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-31",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14140,
+  "training_games_priced": 14017
+ }
+}

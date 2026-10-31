@@ -1,0 +1,86 @@
+{
+ "game_id": "401909899",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-11-01T00:00:00Z",
+ "home": "MEM",
+ "away": "SAC",
+ "model_a": 0.7679,
+ "model_b": 0.7466,
+ "pick": "MEM",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.8434
+ },
+ "features": {
+  "point_matchup": 4.71318,
+  "efficiency_matchup": 4.661291,
+  "availability_matchup": 0.156605
+ },
+ "market": {
+  "game_id": "401909899",
+  "home": "MEM",
+  "away": "SAC",
+  "start_utc": "2026-11-01T00:00:00Z",
+  "read_utc": "2026-10-31T21:31:23Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -360.0,
+  "away_price": 285.0,
+  "home_prob": 0.7508
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-31T21:31:23Z",
+  "home": [
+   {
+    "athlete_id": "4593016",
+    "name": "Quinten Post",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4431785",
+    "name": "Scotty Pippen Jr.",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4065733",
+    "name": "Ty Jerome",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433174",
+    "name": "Dylan Cardwell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4594327",
+    "name": "Keegan Murray",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T21:31:23Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-31",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14140,
+  "training_games_priced": 14017
+ }
+}
