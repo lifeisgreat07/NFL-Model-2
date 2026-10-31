@@ -65,70 +65,70 @@
  {
   "game_id": "401909277",
   "pick": "CHA",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-10-30T21:31:30Z"
  },
  {
   "game_id": "401909278",
   "pick": "BOS",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-10-30T21:31:30Z"
  },
  {
   "game_id": "401909279",
   "pick": "DET",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-10-30T21:31:30Z"
  },
  {
   "game_id": "401909280",
   "pick": "NY",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-10-30T21:31:30Z"
  },
  {
   "game_id": "401909281",
   "pick": "TOR",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-10-30T21:31:30Z"
  },
  {
   "game_id": "401909282",
   "pick": "MIA",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-10-30T21:31:30Z"
  },
  {
   "game_id": "401909283",
   "pick": "HOU",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-10-30T21:31:30Z"
  },
  {
   "game_id": "401909284",
   "pick": "MIN",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-10-30T21:31:30Z"
  },
  {
   "game_id": "401909285",
   "pick": "LAL",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-10-30T21:31:30Z"
  },
  {
   "game_id": "401909286",
   "pick": "DEN",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-10-30T21:31:30Z"
  },
@@ -565,5 +565,19 @@
   "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-10-29T21:31:24Z"
+ },
+ {
+  "game_id": "401909896",
+  "pick": "POR",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-10-31T16:01:42Z"
+ },
+ {
+  "game_id": "401909897",
+  "pick": "PHI",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-10-31T16:01:42Z"
  }
 ]

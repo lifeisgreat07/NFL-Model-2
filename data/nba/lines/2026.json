@@ -1102,5 +1102,29 @@
   "home_price": 130.0,
   "away_price": -155.0,
   "home_prob": 0.417
+ },
+ {
+  "game_id": "401909896",
+  "home": "UTAH",
+  "away": "POR",
+  "start_utc": "2026-10-31T19:00:00Z",
+  "read_utc": "2026-10-31T16:01:42Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 270.0,
+  "away_price": -340.0,
+  "home_prob": 0.2591
+ },
+ {
+  "game_id": "401909897",
+  "home": "CHA",
+  "away": "PHI",
+  "start_utc": "2026-10-31T22:00:00Z",
+  "read_utc": "2026-10-31T16:01:42Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573
  }
 ]

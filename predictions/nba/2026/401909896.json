@@ -1,0 +1,91 @@
+{
+ "game_id": "401909896",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-10-31T19:00:00Z",
+ "home": "UTAH",
+ "away": "POR",
+ "model_a": 0.3593,
+ "model_b": 0.2575,
+ "pick": "POR",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9491,
+  "away": 0.9255
+ },
+ "features": {
+  "point_matchup": -6.49746,
+  "efficiency_matchup": -6.270121,
+  "availability_matchup": 0.023521
+ },
+ "market": {
+  "game_id": "401909896",
+  "home": "UTAH",
+  "away": "POR",
+  "start_utc": "2026-10-31T19:00:00Z",
+  "read_utc": "2026-10-31T16:01:42Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 270.0,
+  "away_price": -340.0,
+  "home_prob": 0.2591
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-31T16:01:42Z",
+  "home": [
+   {
+    "athlete_id": "4277961",
+    "name": "Jaren Jackson Jr.",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102530",
+    "name": "Jusuf Nurkic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066336",
+    "name": "Lauri Markkanen",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4433268",
+    "name": "Trey Alexander",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4706557",
+    "name": "Chris Youngblood",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4279888",
+    "name": "Ja Morant",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066211",
+    "name": "Robert Williams III",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4914336",
+    "name": "Shaedon Sharpe",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T16:01:42Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-30",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14139,
+  "training_games_priced": 14017
+ }
+}

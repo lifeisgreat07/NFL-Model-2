@@ -1,0 +1,106 @@
+{
+ "game_id": "401909897",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-10-31T22:00:00Z",
+ "home": "CHA",
+ "away": "PHI",
+ "model_a": 0.5675,
+ "model_b": 0.4571,
+ "pick": "PHI",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8602,
+  "away": 0.9198
+ },
+ "features": {
+  "point_matchup": 0.366373,
+  "efficiency_matchup": 0.478807,
+  "availability_matchup": -0.059597
+ },
+ "market": {
+  "game_id": "401909897",
+  "home": "CHA",
+  "away": "PHI",
+  "start_utc": "2026-10-31T22:00:00Z",
+  "read_utc": "2026-10-31T16:01:42Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-10-31T16:01:42Z",
+  "home": [
+   {
+    "athlete_id": "4395651",
+    "name": "Coby White",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066218",
+    "name": "Grant Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061575",
+    "name": "Kon Knueppel",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4684269",
+    "name": "Kylan Boswell",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4871141",
+    "name": "Ariel Hukporti",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4870562",
+    "name": "Dominick Barlow",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432446",
+    "name": "Jabari Walker",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3917376",
+    "name": "Jaylen Brown",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3059318",
+    "name": "Joel Embiid",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "1966",
+    "name": "LeBron James",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3904625",
+    "name": "Tacko Fall",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T16:01:42Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-30",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14139,
+  "training_games_priced": 14017
+ }
+}
