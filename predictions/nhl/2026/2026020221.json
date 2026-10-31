@@ -1,0 +1,116 @@
+{
+ "game_id": "2026020221",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-10-31T20:00:00Z",
+ "home": "LAK",
+ "away": "BUF",
+ "model_a": 0.5183,
+ "model_b": null,
+ "pick": "LAK",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": -0.568679,
+  "shot_matchup": 0.483864,
+  "goalie_matchup_2000": 0.003683
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8476341,
+   "name": "Anton Forsberg",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8480045,
+   "name": "Ukko-Pekka Luukkonen",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-30",
+  "read_utc": "2026-10-31T14:01:50Z",
+  "home": [
+   {
+    "name": "Alex Turcotte",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brandt Clarke",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Jakub Dvorak",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jan Jenik",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Fiala",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mats Zuccarello",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Conor Timmins",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Rathbone",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jiri Kulich",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Justin Danforth",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Konsta Helenius",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Matt Grzelcyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T14:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-30",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14619,
+  "training_games_priced": 7427
+ }
+}

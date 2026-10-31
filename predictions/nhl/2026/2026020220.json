@@ -1,0 +1,111 @@
+{
+ "game_id": "2026020220",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-10-31T18:00:00Z",
+ "home": "NYI",
+ "away": "EDM",
+ "model_a": 0.5254,
+ "model_b": null,
+ "pick": "NYI",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": -0.320733,
+  "shot_matchup": -0.822569,
+  "goalie_matchup_2000": 0.004562
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8478009,
+   "name": "Ilya Sorokin",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8477465,
+   "name": "Tristan Jarry",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/SWhyno/status/2116208974106128881?a=UGDA5Y5H9cJd_7LNoWg&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-30",
+  "read_utc": "2026-10-31T14:01:50Z",
+  "home": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Calum Ritchie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mathew Barzal",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matias Maccelli",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Pulock",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Atro Leppanen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Devon Levi",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Zach Hyman",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T14:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-30",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14619,
+  "training_games_priced": 7427
+ }
+}

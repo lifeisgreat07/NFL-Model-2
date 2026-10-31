@@ -1,0 +1,55 @@
+{
+ "game_id": "2026020217",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-10-31T17:00:00Z",
+ "home": "BOS",
+ "away": "CHI",
+ "model_a": 0.7298,
+ "model_b": null,
+ "pick": "BOS",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": 1.634637,
+  "shot_matchup": 4.152459,
+  "goalie_matchup_2000": 0.005694
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8480280,
+   "name": "Jeremy Swayman",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8482821,
+   "name": "Arvid Soderblom",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-30",
+  "read_utc": "2026-10-31T14:01:50Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T14:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-30",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14619,
+  "training_games_priced": 7427
+ }
+}
