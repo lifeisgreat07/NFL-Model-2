@@ -986,25 +986,25 @@
  {
   "game_id": "2026020217",
   "pick": "BOS",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-10-31T14:01:50Z"
  },
  {
   "game_id": "2026020218",
   "pick": "DET",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-31T14:01:50Z"
  },
  {
   "game_id": "2026020219",
   "pick": "TBL",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-31T14:01:50Z"
  },
  {
   "game_id": "2026020220",
   "pick": "NYI",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-10-31T14:01:50Z"
  },
  {
@@ -1018,5 +1018,29 @@
   "pick": "OTT",
   "result": "pending",
   "saved_utc": "2026-10-31T14:01:50Z"
+ },
+ {
+  "game_id": "2026020223",
+  "pick": "MTL",
+  "result": "pending",
+  "saved_utc": "2026-10-31T21:01:38Z"
+ },
+ {
+  "game_id": "2026020224",
+  "pick": "TOR",
+  "result": "pending",
+  "saved_utc": "2026-10-31T21:01:38Z"
+ },
+ {
+  "game_id": "2026020225",
+  "pick": "DAL",
+  "result": "pending",
+  "saved_utc": "2026-10-31T21:01:38Z"
+ },
+ {
+  "game_id": "2026020226",
+  "pick": "COL",
+  "result": "pending",
+  "saved_utc": "2026-10-31T21:01:38Z"
  }
 ]

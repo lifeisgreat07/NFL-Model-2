@@ -1,0 +1,117 @@
+{
+ "game_id": "2026020223",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-10-31T23:00:00Z",
+ "home": "MTL",
+ "away": "PIT",
+ "model_a": 0.5533,
+ "model_b": 0.5169,
+ "pick": "MTL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.246826,
+  "shot_matchup": -2.489634,
+  "goalie_matchup_2000": 0.005424
+ },
+ "market": {
+  "game_id": "2026020223",
+  "start_utc": "2026-10-31T23:00:00Z",
+  "home": "MTL",
+  "away": "PIT",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-10-31T21:01:38Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8484170,
+   "name": "Jacob Fowler",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/MAGodin/status/2116541990342947222"
+  },
+  "away": {
+   "player_id": 8483703,
+   "name": "Sergei Murashov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JG_PxP/status/2116564176953069813"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-31",
+  "read_utc": "2026-10-31T21:01:38Z",
+  "home": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mike Matheson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Nick Suzuki",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bryan Rust",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elmer Soderblom",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Justin Brazeau",
+    "position": "RW",
+    "status": "Out"
+   },
+   {
+    "name": "Ryan Graves",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Trevor van Riemsdyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T21:01:38Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-31",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14623,
+  "training_games_priced": 7427
+ }
+}

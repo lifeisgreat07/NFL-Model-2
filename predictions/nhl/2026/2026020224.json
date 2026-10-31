@@ -1,0 +1,127 @@
+{
+ "game_id": "2026020224",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-10-31T23:00:00Z",
+ "home": "VAN",
+ "away": "TOR",
+ "model_a": 0.3843,
+ "model_b": 0.364,
+ "pick": "TOR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.155982,
+  "shot_matchup": -2.122199,
+  "goalie_matchup_2000": -0.00882
+ },
+ "market": {
+  "game_id": "2026020224",
+  "start_utc": "2026-10-31T23:00:00Z",
+  "home": "VAN",
+  "away": "TOR",
+  "book": "DraftKings",
+  "home_price": 160.0,
+  "away_price": -192.0,
+  "home_prob": 0.3691,
+  "read_utc": "2026-10-31T21:01:38Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480947,
+   "name": "Kevin Lankinen",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8476932,
+   "name": "Anthony Stolarz",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/lukefoxjukebox/status/2116259381549596674?a=btNdPh3jX-jSd7fzXkE&s=46"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-31",
+  "read_utc": "2026-10-31T21:01:38Z",
+  "home": [
+   {
+    "name": "Akil Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Chytil",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Cade Webber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elvis Merzlikins",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "John Tavares",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kirill Marchenko",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marshall Rifai",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Max Domi",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Miles Wood",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Blankenburg",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Villeneuve",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T21:01:38Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-31",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14623,
+  "training_games_priced": 7427
+ }
+}

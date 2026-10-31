@@ -1,0 +1,102 @@
+{
+ "game_id": "2026020226",
+ "season": 2026,
+ "slate": "2026-10-31",
+ "start_utc": "2026-11-01T02:00:00Z",
+ "home": "COL",
+ "away": "CGY",
+ "model_a": 0.736,
+ "model_b": 0.7813,
+ "pick": "COL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.568781,
+  "shot_matchup": 7.054703,
+  "goalie_matchup_2000": 0.00051
+ },
+ "market": {
+  "game_id": "2026020226",
+  "start_utc": "2026-11-01T02:00:00Z",
+  "home": "COL",
+  "away": "CGY",
+  "book": "DraftKings",
+  "home_price": -380.0,
+  "away_price": 300.0,
+  "home_prob": 0.76,
+  "read_utc": "2026-10-31T21:01:38Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478406,
+   "name": "Mackenzie Blackwood",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/RadioMoser/status/2116577099242991986"
+  },
+  "away": {
+   "player_id": 8482949,
+   "name": "Arsenii Sergeev",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/dwillsnhl/status/2116598257594032435"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-31",
+  "read_utc": "2026-10-31T21:01:38Z",
+  "home": [
+   {
+    "name": "Josh Manson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Logan O'Connor",
+    "position": "RW",
+    "status": "Out"
+   },
+   {
+    "name": "Zachary L'Heureux",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brennan Othmann",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Connor Zary",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Devin Cooley",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonathan Huberdeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Samuel Honzek",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-10-31T21:01:38Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-31",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14623,
+  "training_games_priced": 7427
+ }
+}
