@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 8,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-10-31T05:17:42Z",
+  "read_at": "2026-11-01T21:47:41Z",
   "games": [
     {
       "away": "CAR",
@@ -17,9 +17,9 @@
     {
       "away": "BAL",
       "home": "BUF",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 10,
+      "home_score": 36,
       "spread_line": 3.0,
       "neutral_site": false,
       "venue": "Highmark Stadium"
@@ -27,19 +27,19 @@
     {
       "away": "TEN",
       "home": "CIN",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
-      "spread_line": 12.5,
+      "spread_line": 13.5,
       "neutral_site": false,
       "venue": "Paycor Stadium"
     },
     {
       "away": "ARI",
       "home": "DAL",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 33,
+      "home_score": 30,
       "spread_line": 7.0,
       "neutral_site": false,
       "venue": "AT&T Stadium"
@@ -47,9 +47,9 @@
     {
       "away": "MIN",
       "home": "DET",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 15,
+      "home_score": 19,
       "spread_line": 3.0,
       "neutral_site": false,
       "venue": "Ford Field"
@@ -57,9 +57,9 @@
     {
       "away": "IND",
       "home": "JAX",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 7,
+      "home_score": 42,
       "spread_line": 10.0,
       "neutral_site": false,
       "venue": "EverBank Stadium"
@@ -67,9 +67,9 @@
     {
       "away": "LV",
       "home": "NYJ",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 38,
+      "home_score": 33,
       "spread_line": 1.5,
       "neutral_site": false,
       "venue": "MetLife Stadium"
@@ -77,9 +77,9 @@
     {
       "away": "CLE",
       "home": "PIT",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 6,
+      "home_score": 27,
       "spread_line": 3.5,
       "neutral_site": false,
       "venue": "Acrisure Stadium"
@@ -87,9 +87,9 @@
     {
       "away": "ATL",
       "home": "TB",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 0,
+      "home_score": 16,
       "spread_line": 2.5,
       "neutral_site": false,
       "venue": "Raymond James Stadium"
@@ -97,7 +97,7 @@
     {
       "away": "LAC",
       "home": "LA",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
       "spread_line": 6.5,
@@ -107,17 +107,17 @@
     {
       "away": "KC",
       "home": "DEN",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
-      "spread_line": -1.5,
+      "spread_line": 1.5,
       "neutral_site": false,
       "venue": "Empower Field at Mile High"
     },
     {
       "away": "NE",
       "home": "MIA",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
       "spread_line": -7.0,
@@ -130,7 +130,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 5.5,
+      "spread_line": 6.0,
       "neutral_site": false,
       "venue": "Northwest Stadium"
     },

@@ -145,5 +145,26 @@
     "home": "WAS",
     "away": "PHI",
     "spread_line": 5.5
+  },
+  {
+    "captured_date": "2026-11-01",
+    "captured_utc": "2026-11-01T21:47:43Z",
+    "home": "CIN",
+    "away": "TEN",
+    "spread_line": 13.5
+  },
+  {
+    "captured_date": "2026-11-01",
+    "captured_utc": "2026-11-01T21:47:43Z",
+    "home": "DEN",
+    "away": "KC",
+    "spread_line": 1.5
+  },
+  {
+    "captured_date": "2026-11-01",
+    "captured_utc": "2026-11-01T21:47:43Z",
+    "home": "WAS",
+    "away": "PHI",
+    "spread_line": 6.0
   }
 ]

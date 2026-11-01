@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 8,
-  "read_at": "2026-10-31T10:55:07Z",
+  "read_at": "2026-11-01T21:47:45Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-10-31T06:01:42Z"
+    "depth_chart_snapshot": "2026-11-01T14:14:27Z"
   },
   "teams": {
     "GB": {
@@ -225,13 +225,7 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [
-        {
-          "name": "T'Vondre Sweat",
-          "position": "DT",
-          "injury": "Knee"
-        }
-      ],
+      "out": [],
       "doubtful": [
         {
           "name": "David Bailey",
@@ -322,11 +316,6 @@
       "injury_report": "published",
       "out": [
         {
-          "name": "Derwin James",
-          "position": "S",
-          "injury": "Hamstring"
-        },
-        {
           "name": "Kayode Awosika",
           "position": "G",
           "injury": "Fibula"
@@ -361,7 +350,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 2
+      "questionable_starters": 1
     },
     "MIA": {
       "qb": {
@@ -370,13 +359,7 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [
-        {
-          "name": "Kadyn Proctor",
-          "position": "T",
-          "injury": "Concussion"
-        }
-      ],
+      "out": [],
       "doubtful": [],
       "questionable_starters": 1
     },
@@ -437,8 +420,20 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
-      "doubtful": [],
+      "out": [
+        {
+          "name": "Charles Cross",
+          "position": "T",
+          "injury": "Ankle"
+        }
+      ],
+      "doubtful": [
+        {
+          "name": "Uchenna Nwosu",
+          "position": "LB",
+          "injury": "Ankle"
+        }
+      ],
       "questionable_starters": 0
     },
     "CHI": {
@@ -450,7 +445,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 1
     }
   }
 }
