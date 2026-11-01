@@ -1,0 +1,86 @@
+{
+ "game_id": "401909903",
+ "season": 2026,
+ "slate": "2026-11-01",
+ "start_utc": "2026-11-01T20:30:00Z",
+ "home": "ORL",
+ "away": "BOS",
+ "model_a": 0.3019,
+ "model_b": 0.3152,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7519,
+  "away": 0.9848
+ },
+ "features": {
+  "point_matchup": -5.561472,
+  "efficiency_matchup": -5.592328,
+  "availability_matchup": -0.232908
+ },
+ "market": {
+  "game_id": "401909903",
+  "home": "ORL",
+  "away": "BOS",
+  "start_utc": "2026-11-01T20:30:00Z",
+  "read_utc": "2026-11-01T16:01:39Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 210.0,
+  "away_price": -258.0,
+  "home_prob": 0.3092
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-01T16:01:39Z",
+  "home": [
+   {
+    "athlete_id": "5107251",
+    "name": "Izaiyah Nelson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432165",
+    "name": "Jalen Suggs",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065654",
+    "name": "Jonathan Isaac",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5214637",
+    "name": "Noah Penda",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432573",
+    "name": "Paolo Banchero",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4433188",
+    "name": "Devin Carter",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4351852",
+    "name": "Mitchell Robinson",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-01T16:01:39Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-31",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14146,
+  "training_games_priced": 14017
+ }
+}
