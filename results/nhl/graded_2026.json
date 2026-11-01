@@ -1046,7 +1046,7 @@
  {
   "game_id": "2026020227",
   "pick": "CAR",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-01T14:01:50Z"
  },
  {
@@ -1060,5 +1060,17 @@
   "pick": "UTA",
   "result": "pending",
   "saved_utc": "2026-11-01T14:01:50Z"
+ },
+ {
+  "game_id": "2026020230",
+  "pick": "NYR",
+  "result": "pending",
+  "saved_utc": "2026-11-01T21:01:56Z"
+ },
+ {
+  "game_id": "2026020231",
+  "pick": "OTT",
+  "result": "pending",
+  "saved_utc": "2026-11-01T21:01:56Z"
  }
 ]

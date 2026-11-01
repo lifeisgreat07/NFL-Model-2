@@ -1,0 +1,105 @@
+{
+ "game_id": "2026020231",
+ "season": 2026,
+ "slate": "2026-11-01",
+ "start_utc": "2026-11-02T01:00:00Z",
+ "home": "ANA",
+ "away": "OTT",
+ "model_a": 0.4636,
+ "model_b": 0.4982,
+ "pick": "OTT",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.716184,
+  "shot_matchup": -1.413762,
+  "goalie_matchup_2000": -0.000458
+ },
+ "market": {
+  "game_id": "2026020231",
+  "start_utc": "2026-11-02T01:00:00Z",
+  "home": "ANA",
+  "away": "OTT",
+  "book": "DraftKings",
+  "home_price": -102.0,
+  "away_price": -118.0,
+  "home_prob": 0.4826,
+  "read_utc": "2026-11-01T21:01:56Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478024,
+   "basis": "last_start",
+   "note": "Laurent Brossoit is not a goalie on the current roster"
+  },
+  "away": {
+   "player_id": 8477992,
+   "name": "Jonas Johansson",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-01",
+  "read_utc": "2026-11-01T21:01:56Z",
+  "home": [
+   {
+    "name": "Ian Moore",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Pavel Mintyukov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Poehling",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Troy Terry",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Andre Burakovsky",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Hayden Hodgson",
+    "position": "RW",
+    "status": "Suspension"
+   },
+   {
+    "name": "Linus Ullmark",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Warren Foegele",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Eklund",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-01T21:01:56Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-31",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14629,
+  "training_games_priced": 7427
+ }
+}
