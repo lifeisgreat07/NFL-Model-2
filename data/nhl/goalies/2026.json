@@ -6058,5 +6058,50 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020231",
   "start_utc": "2026-11-02T01:00:00Z"
+ },
+ {
+  "date": "2026-11-01",
+  "home": "CAR",
+  "home_goalie": "Pyotr Kochetkov",
+  "home_status": null,
+  "home_report": null,
+  "away": "WPG",
+  "away_goalie": "Stuart Skinner",
+  "away_status": null,
+  "away_report": null,
+  "read_utc": "2026-11-01T14:01:50Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020227",
+  "start_utc": "2026-11-01T18:00:00Z"
+ },
+ {
+  "date": "2026-11-01",
+  "home": "PHI",
+  "home_goalie": "Dan Vladar",
+  "home_status": null,
+  "home_report": null,
+  "away": "UTA",
+  "away_goalie": "Karel Vejmelka",
+  "away_status": null,
+  "away_report": null,
+  "read_utc": "2026-11-01T14:01:50Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020229",
+  "start_utc": "2026-11-01T21:00:00Z"
+ },
+ {
+  "date": "2026-11-01",
+  "home": "ANA",
+  "home_goalie": "Laurent Brossoit",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/Derek_Lee27/status/2116607809089622321",
+  "away": "OTT",
+  "away_goalie": "Jonas Johansson",
+  "away_status": null,
+  "away_report": null,
+  "read_utc": "2026-11-01T14:01:50Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020231",
+  "start_utc": "2026-11-02T01:00:00Z"
  }
 ]

@@ -1,0 +1,91 @@
+{
+ "game_id": "2026020228",
+ "season": 2026,
+ "slate": "2026-11-01",
+ "start_utc": "2026-11-01T20:30:00Z",
+ "home": "WSH",
+ "away": "MIN",
+ "model_a": 0.4983,
+ "model_b": null,
+ "pick": "MIN",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": -0.122344,
+  "shot_matchup": -1.976095,
+  "goalie_matchup_2000": -0.001737
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8480313,
+   "name": "Logan Thompson",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8482661,
+   "name": "Jesper Wallstedt",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JoeSmithNHL/status/2116559340928684119"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-10-31",
+  "read_utc": "2026-11-01T14:01:50Z",
+  "home": [
+   {
+    "name": "Patrick Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Sandin",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vincent Desharnais",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brock Faber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Gustavsson",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jared Spurgeon",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marcus Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-01T14:01:50Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-10-31",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14629,
+  "training_games_priced": 7427
+ }
+}
