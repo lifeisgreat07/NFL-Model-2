@@ -2945,7 +2945,7 @@
    "start_utc": "2026-11-01T18:00:00Z",
    "home": "CAR",
    "away": "WPG",
-   "status": "scheduled",
+   "status": "in_progress",
    "game_type": "regular",
    "home_score": null,
    "away_score": null,

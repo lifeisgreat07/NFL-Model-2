@@ -6103,5 +6103,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020231",
   "start_utc": "2026-11-02T01:00:00Z"
+ },
+ {
+  "date": "2026-11-01",
+  "home": "NYR",
+  "home_goalie": "Dylan Garand",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/mollieewalkerr/status/2116917680917602450?a=rl7q3ZtH4CenCRTI1ck&s=46",
+  "away": "EDM",
+  "away_goalie": "Matt Tomkins",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/zjlaing/status/2116635062422958438",
+  "read_utc": "2026-11-01T18:42:38Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020230",
+  "start_utc": "2026-11-01T23:00:00Z"
  }
 ]
