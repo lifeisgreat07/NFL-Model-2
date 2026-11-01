@@ -1151,7 +1151,7 @@
    "start_utc": "2026-11-01T20:30:00Z",
    "home": "ORL",
    "away": "BOS",
-   "status": "scheduled",
+   "status": "in_progress",
    "game_type": "regular",
    "home_score": null,
    "away_score": null,

@@ -1,0 +1,106 @@
+{
+ "game_id": "401909905",
+ "season": 2026,
+ "slate": "2026-11-01",
+ "start_utc": "2026-11-02T01:30:00Z",
+ "home": "GS",
+ "away": "LAC",
+ "model_a": 0.4859,
+ "model_b": 0.5493,
+ "pick": "GS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7173,
+  "away": 0.9286
+ },
+ "features": {
+  "point_matchup": -0.343646,
+  "efficiency_matchup": -0.298116,
+  "availability_matchup": -0.211294
+ },
+ "market": {
+  "game_id": "401909905",
+  "home": "GS",
+  "away": "LAC",
+  "start_utc": "2026-11-02T01:30:00Z",
+  "read_utc": "2026-11-01T21:31:18Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -130.0,
+  "away_price": 110.0,
+  "home_prob": 0.5427
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-01T21:31:18Z",
+  "home": [
+   {
+    "athlete_id": "6589",
+    "name": "Draymond Green",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4997536",
+    "name": "Gui Santos",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6430",
+    "name": "Jimmy Butler III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102531",
+    "name": "Kristaps Porzingis",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432171",
+    "name": "Moses Moody",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3975",
+    "name": "Stephen Curry",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "6580",
+    "name": "Bradley Beal",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3913176",
+    "name": "Brandon Ingram",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4396818",
+    "name": "Jordan Miller",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065778",
+    "name": "Max Strus",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5108024",
+    "name": "Yanic Konan Niederhauser",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-01T21:31:18Z",
+ "code": "nba-stage61",
+ "training_through": "2026-10-31",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14146,
+  "training_games_priced": 14017
+ }
+}
