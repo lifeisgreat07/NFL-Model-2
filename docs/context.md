@@ -38,9 +38,9 @@ page shows only "exit code 1" and logs need a sign-in, so the cause is unknown u
 lines (or Mon 10-26 runs). The missed-dispatch alert (#433); the QB routine's Wed 22:00 UTC run; issue #428.
 The NBA's first night (10-20) was never looked at by eye this session: open `/nba/` and look.
 
-**Single next action:** the week 9 QB override PR (the routine's Mon 22:00 UTC run) must be merged before the Thu 11-05
-11:00 UTC lock: weeks 7 and 8 locked with PHI on Hurts (out for the season) because #530 and #542 sat open. Then read
-#547 (replaces #544; a suspended NBA player now counts as Out) and #548 (pypdf 6.21.4) and merge on Booth's word.
+**Single next action:** Stage 81 item 1, the Thursday 02:00 UTC alert for an open QB override PR, before the
+week 9 lock (Thu 11-05 11:00 UTC). Stages 81 to 90 came from the 2026-11-02 review; their text and Mark's
+decisions on them are in `docs/history/10-review-2026-11-02.md`.
 
 ## Open work, and what each is waiting on
 
@@ -49,6 +49,7 @@ The NBA's first night (10-20) was never looked at by eye this session: open `/nb
 | Fable audit (non-UI criteria) | Mark runs it 10-21 | Its findings |
 | Stage 43 (Spotter) | Items 1-4 done; 5 not started | Mark's go (edits Booth's instructions) |
 | #547, #548 | Open (injury Suspension; pypdf pin) | Booth and Mark's merge |
+| Stages 81 to 90 | 81 in progress | Order: 81, 82, 86, 88 items 1-2, 83, 84 and 85, 89, 87; 90 last |
 | Issues #428 #528 #529 #540 #543 | Fixed or stale; no token here to close them | Mark closes them once #547 and #548 merge |
 | Stage 42 | Items 1-4 done | 5: after four on-time weeks |
 | Stage 39 | Items 1-4, 7 done | 5 in December; 6 wants a rendered choice in January |
