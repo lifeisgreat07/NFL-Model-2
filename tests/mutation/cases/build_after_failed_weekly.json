@@ -12,9 +12,16 @@
     {
       "id": "failed-weekly-clause-names-the-wrong-workflow",
       "why": "the clause names a workflow that is not the Weekly update; GitHub matches on the display name, so it never fires and nothing says so",
-      "find": "      || (github.event.workflow_run.name == 'NFL weekly update'",
-      "replace": "      || (github.event.workflow_run.name == 'NFL weekend refresh'",
+      "find": "      || (contains(fromJSON('[\"NFL weekly update\", \"NFL weekend refresh\", ",
+      "replace": "      || (contains(fromJSON('[\"NFL weekly updates\", \"NFL weekend refresh\", ",
       "expect_caught_by": "test_a_failed_weekly_update_still_rebuilds_the_page"
+    },
+    {
+      "id": "failed-daily-run-skips-the-build",
+      "why": "the NBA daily run drops out of the failure clause, so a night Line Judge flags leaves that night's committed picks off the page (the 2026-11-02 review's finding)",
+      "find": "\"NHL daily run\", \"NBA daily run\"]'),",
+      "replace": "\"NHL daily run\"]'),",
+      "expect_caught_by": "test_a_writer_judged_after_it_commits_still_rebuilds_the_page"
     }
   ]
 }
