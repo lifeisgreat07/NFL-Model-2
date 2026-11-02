@@ -94,6 +94,16 @@ def test_a_team_missing_from_the_previous_week_means_no_ranking():
     assert gd.previous_ranks(NOW, history(w1, W2)) is None
 
 
+def test_a_snapshot_one_rounding_step_off_the_history_is_still_that_week(capsys):
+    """2026-10-29: the Thursday run recomputed WAS at -0.0731 against the history's -0.073, an exact-equality
+    check refused the whole comparison, and Power Ratings lost its rank change until someone looked."""
+    nudged = [rating(t, n + (0.0001 if t == 'C' else 0.0)) for t, n in W2.items()]
+    assert gd.previous_ranks(nudged, history(W1, W2)) == {'A': 1, 'B': 2, 'C': 3}
+    assert 'does not match' not in capsys.readouterr().out
+    far = [rating(t, n + (0.0003 if t == 'C' else 0.0)) for t, n in W2.items()]
+    assert gd.previous_ranks(far, history(W1, W2)) is None
+
+
 def test_a_history_that_is_not_the_snapshot_is_refused(capsys):
     """If the latest history week is not today's ratings, the comparison
     would be against the wrong week. Refused, and said."""
@@ -120,7 +130,7 @@ def test_the_committed_ratings_are_the_latest_history_week():
     latest = max(p['week'] for pts in live.values() for p in pts)
     for r in ratings:
         point = [p for p in live[r['team']] if p['week'] == latest]
-        assert point and abs(point[0]['net'] - r['net']) < 1e-9, (
+        assert point and abs(point[0]['net'] - r['net']) <= gd.SNAPSHOT_MATCH_TOL, (
             f"{r['team']}: current rating {r['net']} is not week {latest}'s {point}")
 
 

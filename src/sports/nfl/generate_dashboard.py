@@ -796,6 +796,13 @@ def with_rank_change(teams_js: list[dict[str, Any]],
     return [{**t, 'rank_change': change(t)} for t in teams_js]
 
 
+#: How far a snapshot rating may sit from the history's latest week and still be the same week. Both are
+#: rounded to four decimals, and the Thursday run recomputes the snapshot, so a rating can land on the other
+#: side of a rounding step (WAS -0.073 in the history, -0.0731 in the snapshot, 2026-10-29) and the rank
+#: change disappeared from the page for days. One step is 0.0001; a different week moves ratings by far more.
+SNAPSHOT_MATCH_TOL = 1.5e-4
+
+
 def previous_ranks(ratings: list[dict[str, Any]], live_history: dict[str, Any]) -> dict[str, int] | None:
     """Each team's Power Ratings rank at the weekly update before this one.
 
@@ -827,7 +834,7 @@ def previous_ranks(ratings: list[dict[str, Any]], live_history: dict[str, Any]) 
 
     teams = {r['team'] for r in ratings}
     now = nets_at(latest)
-    if any(r['team'] not in now or abs(now[r['team']] - r['net']) > 1e-9 for r in ratings):
+    if any(r['team'] not in now or abs(now[r['team']] - r['net']) > SNAPSHOT_MATCH_TOL for r in ratings):
         print(f"  WARNING: data/nfl/current_ratings.json does not match week {latest} of the "
               f"live team history, so Power Ratings shows no rank change this build.")
         return None
