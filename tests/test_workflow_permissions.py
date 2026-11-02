@@ -33,7 +33,7 @@ USES = {
     # Kept rather than tested away: whether issues: read alone still returns
     # comments on pull requests was not verified, and a log that silently
     # lost every Booth report would be worse than one read scope.
-    ('pull-requests', 'read'): ('gh pr', '/pulls', '/issues/comments'),
+    ('pull-requests', 'read'): ('gh pr', '/pulls', '/issues/comments', 'src.sports.nfl.override_watch --after-lock'),
     ('pages', 'write'): ('actions/deploy-pages',),
     ('id-token', 'write'): ('actions/deploy-pages',),
     # line_judge_digest counts runs and their jobs; the Line Judge diagnosis
