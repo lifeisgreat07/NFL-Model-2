@@ -29,6 +29,7 @@ import sys
 from pathlib import Path
 
 from playwright.async_api import async_playwright
+from pre_opening import pre_opening
 
 ROOT = Path(__file__).resolve().parents[2]
 CLOCK = '2026-10-13T17:00:00Z'
@@ -39,7 +40,10 @@ WEEKS = 3
 
 async def check_page(path):
     report, seen = [], 0
-    uri = Path(path).resolve().as_uri()
+    # Against the page rewound to before opening night: the 3 PM game this check is about is Final on
+    # the real page now, and a Final row prints no time, so the real page would prove nothing (and the
+    # self-test's 'hour rule back' copy could never be reported). Same reason as check_rows.py.
+    uri = pre_opening(path).resolve().as_uri()
     async with async_playwright() as p:
         browser = await p.chromium.launch()
         for theme in ('dark', 'light'):
@@ -92,12 +96,13 @@ DATA = re.compile(r'(<script id="nba-data" type="application/json">)(.*?)(</scri
 
 
 def flag_first_game(html):
-    """The page with the first still-to-be-played game that has a start marked by ESPN as not set."""
+    """The page with the first game that has a start marked by ESPN as not set."""
     m = DATA.search(html)
     data = json.loads(m.group(2))
-    # Only a game still to be played: the check skips rows reading 'Final' or 'Live',
-    # so flagging one of those could never be seen (it broke on NBA opening night).
-    first = next(g for g in data['board']['games'] if g.get('start') and g.get('status') == 'scheduled')
+    # check_page rewinds every game to scheduled, so any game with a start can be flagged, and the first one
+    # is inside the weeks the check walks. (Picking the first game still scheduled on the real page broke
+    # twice: on opening night, and again once the season had passed the three weeks the check walks.)
+    first = next(g for g in data['board']['games'] if g.get('start'))
     first['tv'] = False
     body = json.dumps(data).replace('<', '\\u003c')
     return html[:m.start(2)] + body + html[m.end(2):], first['id']
