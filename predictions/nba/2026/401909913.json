@@ -1,0 +1,42 @@
+{
+ "game_id": "401909913",
+ "season": 2026,
+ "slate": "2026-11-02",
+ "start_utc": "2026-11-03T01:00:00Z",
+ "home": "DAL",
+ "away": "SAC",
+ "model_a": 0.7648,
+ "model_b": 0.7428,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": false,
+  "note": "injury report not read; both models ran without availability"
+ },
+ "features": {
+  "point_matchup": 5.611546,
+  "efficiency_matchup": 5.474707
+ },
+ "market": {
+  "game_id": "401909913",
+  "home": "DAL",
+  "away": "SAC",
+  "start_utc": "2026-11-03T01:00:00Z",
+  "read_utc": "2026-11-02T21:31:25Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -344.0,
+  "away_price": 276.0,
+  "home_prob": 0.7445
+ },
+ "injuries": null,
+ "saved_utc": "2026-11-02T21:31:25Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-01",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14150,
+  "training_games_priced": 14017
+ }
+}
