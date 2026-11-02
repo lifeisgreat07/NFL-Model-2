@@ -1,0 +1,74 @@
+[
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "nhl-390x844-light-base.png",
+  "bytes": 67227,
+  "parked": 3
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "nhl-390x844-dark-base.png",
+  "bytes": 68396,
+  "parked": 3
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "nhl-1440x900-light-base.png",
+  "bytes": 186252,
+  "parked": 4
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "nhl-1440x900-dark-base.png",
+  "bytes": 186978,
+  "parked": 4
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "nba-390x844-light-base.png",
+  "bytes": 113200,
+  "parked": 3
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "nba-390x844-dark-base.png",
+  "bytes": 114090,
+  "parked": 3
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "nba-1440x900-light-base.png",
+  "bytes": 239578,
+  "parked": 4
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "nba-1440x900-dark-base.png",
+  "bytes": 239615,
+  "parked": 4
+ }
+]
