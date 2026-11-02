@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 8,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-01T21:47:41Z",
+  "read_at": "2026-11-02T01:02:41Z",
   "games": [
     {
       "away": "CAR",
@@ -27,9 +27,9 @@
     {
       "away": "TEN",
       "home": "CIN",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 36,
+      "home_score": 43,
       "spread_line": 13.5,
       "neutral_site": false,
       "venue": "Paycor Stadium"
@@ -97,9 +97,9 @@
     {
       "away": "LAC",
       "home": "LA",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 9,
+      "home_score": 24,
       "spread_line": 6.5,
       "neutral_site": false,
       "venue": "SoFi Stadium"
@@ -107,9 +107,9 @@
     {
       "away": "KC",
       "home": "DEN",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 24,
+      "home_score": 28,
       "spread_line": 1.5,
       "neutral_site": false,
       "venue": "Empower Field at Mile High"
@@ -117,9 +117,9 @@
     {
       "away": "NE",
       "home": "MIA",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 24,
+      "home_score": 19,
       "spread_line": -7.0,
       "neutral_site": false,
       "venue": "Hard Rock Stadium"
