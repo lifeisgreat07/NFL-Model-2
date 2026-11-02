@@ -136,13 +136,34 @@ def test_a_failed_weekly_update_still_rebuilds_the_page():
     weekly = _workflow_name(WORKFLOWS / 'nfl-weekly-update.yml')
     gate = re.search(r"\n    if: >-\n(.*?)\n    runs-on:", text, re.S)
     assert gate, "the build job's if: block is not findable -- re-anchor this guard"
-    clause = re.search(r"workflow_run\.name == '([^']+)'\s*&&\s*"
-                       r"github\.event\.workflow_run\.conclusion == 'failure'", gate.group(1))
-    assert clause, ("the build job skips a failed Weekly update, so grades that run "
-                    "committed before failing never reach the page")
-    assert clause.group(1) == weekly, (
-        f"the gate names {clause.group(1)!r} but nfl-weekly-update.yml is called {weekly!r}; "
-        "GitHub matches the display name, so the clause would never fire")
+    names = rebuilt_after_failure(gate.group(1))
+    assert weekly in names, (
+        f"the build job's failure clause names {names}, not {weekly!r}: a failed Weekly update's "
+        "committed grades never reach the page (GitHub matches the display name)")
+
+
+def rebuilt_after_failure(gate):
+    """The workflow names whose FAILED run still rebuilds the page."""
+    m = re.search(r"contains\(fromJSON\('\[(.*?)\]'\),\s*github\.event\.workflow_run\.name\)"
+                  r"\s*&&\s*github\.event\.workflow_run\.conclusion == 'failure'", gate, re.S)
+    assert m, "the build job's failure clause is not findable -- re-anchor this guard"
+    return [n.strip().strip('"') for n in m.group(1).split(',')]
+
+
+def test_a_writer_judged_after_it_commits_still_rebuilds_the_page():
+    """Stage 81 item 3. The NHL and NBA daily runs and the Weekend refresh commit,
+    then run Line Judge as a later job that exits 1 on a finding, so a run whose
+    data reached main concludes 'failure'. Every workflow with a line-judge job
+    must be in the failure clause, or its committed picks wait for another build."""
+    text = _text(BUILDER)
+    gate = re.search(r"\n    if: >-\n(.*?)\n    runs-on:", text, re.S)
+    names = rebuilt_after_failure(gate.group(1))
+    judged = sorted(_workflow_name(p) for p in WORKFLOWS.glob('*.yml')
+                    if re.search(r'^  line-judge:', p.read_text(encoding='utf-8'), re.M))
+    assert len(judged) >= 3, f'the scan found only {judged} -- re-anchor it'
+    missing = [n for n in judged if n not in names]
+    assert not missing, f'judged after committing, but a failed run does not rebuild the page: {missing}'
+    assert "Collect Booth's audit log" not in names, 'a failed collector run wrote nothing to publish'
 
 
 def test_the_reason_is_written_down_where_the_trigger_is():

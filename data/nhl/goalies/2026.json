@@ -6358,5 +6358,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020246",
   "start_utc": "2026-11-04T02:00:00Z"
+ },
+ {
+  "date": "2026-11-02",
+  "home": "CHI",
+  "home_goalie": "Spencer Knight",
+  "home_status": "Confirmed",
+  "home_report": "https://thehockeynews.com/nhl/chicago-blackhawks/latest-news/blackhawks-vs-avalanche-projected-lineup-how-to-watch-more-ahead-of-game-16",
+  "away": "COL",
+  "away_goalie": "Mackenzie Blackwood",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/ConorMcGahey/status/2117382955177820339?a=NpihfFep7sltHo2yWzk&s=20",
+  "read_utc": "2026-11-02T22:33:46Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020234",
+  "start_utc": "2026-11-03T01:00:00Z"
  }
 ]

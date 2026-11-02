@@ -1,0 +1,21 @@
+{
+  "target": "src/sports/nba/pages/body.html",
+  "tests": "tests/test_side_column_focusable.py",
+  "cases": [
+    {
+      "id": "nba-side-not-focusable",
+      "why": "the NBA's scrolling side column cannot take focus again, so a keyboard user cannot read the injuries below its fold and the browser check goes red",
+      "find": "id=\"nba-side\" aria-label=\"This day at a glance\" tabindex=\"0\">",
+      "replace": "id=\"nba-side\" aria-label=\"This day at a glance\">",
+      "expect_caught_by": "test_a_scrolling_side_column_is_reachable_by_keyboard"
+    },
+    {
+      "id": "nhl-side-not-focusable",
+      "target": "src/sports/nhl/pages/body.html",
+      "why": "the NHL's scrolling side column cannot take focus, which fails the first night its list outgrows the viewport",
+      "find": "id=\"nhl-side\" aria-label=\"This day at a glance\" tabindex=\"0\">",
+      "replace": "id=\"nhl-side\" aria-label=\"This day at a glance\">",
+      "expect_caught_by": "test_a_scrolling_side_column_is_reachable_by_keyboard"
+    }
+  ]
+}
