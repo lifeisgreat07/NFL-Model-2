@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 8,
-  "read_at": "2026-11-01T21:47:45Z",
+  "read_at": "2026-11-02T08:21:45Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-11-01T14:14:27Z"
+    "depth_chart_snapshot": "2026-11-02T07:01:47Z"
   },
   "teams": {
     "GB": {
@@ -138,7 +138,7 @@
         }
       ],
       "doubtful": [],
-      "questionable_starters": 1
+      "questionable_starters": 2
     },
     "ARI": {
       "qb": {
@@ -294,7 +294,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 3
+      "questionable_starters": 2
     },
     "LA": {
       "qb": {
@@ -359,7 +359,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Kadyn Proctor",
+          "position": "T",
+          "injury": "Concussion"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 1
     },
