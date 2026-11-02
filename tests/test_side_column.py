@@ -65,7 +65,7 @@ def test_the_board_draws_it_and_both_columns_are_capped():
     body = js[js.index('function renderBoard(){'):]
     assert "  if(side) side.innerHTML = sideHtml(currentDay, byDay);\n" in body
     assert body.index('sideHtml(currentDay, byDay)') < body.index('if(!dayGames.length){'), 'a day with no games gets its column too'
-    assert '<aside class="nba-side" id="nba-side" aria-label="This day at a glance"></aside>' in NBA.joinpath('body.html').read_text(encoding='utf-8')
+    assert '<aside class="nba-side" id="nba-side" aria-label="This day at a glance" tabindex="0"></aside>' in NBA.joinpath('body.html').read_text(encoding='utf-8')
     for path, sel in ((NBA / 'nba.css', '.nba-side{'), (NHL / 'nhl.css', '.nhl-side{')):
         css = path.read_text(encoding='utf-8')
         rule = css[css.index('@media (min-width:1280px){'):]
