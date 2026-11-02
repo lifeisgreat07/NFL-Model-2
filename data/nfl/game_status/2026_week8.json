@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 8,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-02T01:02:41Z",
+  "read_at": "2026-11-02T01:47:35Z",
   "games": [
     {
       "away": "CAR",
@@ -127,7 +127,7 @@
     {
       "away": "PHI",
       "home": "WAS",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
       "spread_line": 6.0,
