@@ -1052,13 +1052,13 @@
  {
   "game_id": "2026020228",
   "pick": "MIN",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-01T14:01:50Z"
  },
  {
   "game_id": "2026020229",
   "pick": "UTA",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-01T14:01:50Z"
  },
  {

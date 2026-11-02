@@ -6118,5 +6118,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020230",
   "start_utc": "2026-11-01T23:00:00Z"
+ },
+ {
+  "date": "2026-11-01",
+  "home": "ANA",
+  "home_goalie": "Laurent Brossoit",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/Derek_Lee27/status/2116607809089622321",
+  "away": "OTT",
+  "away_goalie": "Jonas Johansson",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/SunGarrioch/status/2117029988834643986",
+  "read_utc": "2026-11-01T23:59:29Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020231",
+  "start_utc": "2026-11-02T01:00:00Z"
  }
 ]
