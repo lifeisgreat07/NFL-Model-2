@@ -22,8 +22,11 @@ from typing import Any
 SOURCE = 'https://site.api.espn.com/apis/site/v2/sports/basketball/nba/injuries'
 NAME = 'espn_nba_injuries'
 #: ESPN's statuses. Only Out removes a player; the others count as playing.
-STATUSES = frozenset({'Out', 'Day-To-Day', 'Questionable', 'Doubtful', 'Probable'})
+STATUSES = frozenset({'Out', 'Suspension', 'Day-To-Day', 'Questionable', 'Doubtful', 'Probable'})
 OUT = 'Out'
+#: Statuses that remove a player: Out, and Suspension (ESPN began listing one on 2026-11-02, and a
+#: suspended player cannot play). Mark's call, 2026-11-02; the registry's `availability.amended` says so.
+UNAVAILABLE = frozenset({OUT, 'Suspension'})
 ATHLETE_ID = re.compile(r'/id/(\d+)')
 
 Json = Any
@@ -70,8 +73,8 @@ def parse(report: Json, teams: Iterable[str]) -> list[dict[str, str]]:
 
 
 def out_ids(rows: Iterable[dict[str, str]], team: str) -> set[str]:
-    """The athlete ids listed Out for one team."""
-    return {r['athlete_id'] for r in rows if r['team'] == team and r['status'] == OUT}
+    """The athlete ids listed Out, or suspended, for one team."""
+    return {r['athlete_id'] for r in rows if r['team'] == team and r['status'] in UNAVAILABLE}
 
 
 def for_game(rows: list[dict[str, str]], home: str, away: str, read: datetime) -> dict[str, Any]:

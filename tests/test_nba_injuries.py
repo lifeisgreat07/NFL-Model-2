@@ -36,6 +36,15 @@ def test_out_is_the_only_status_that_removes_a_player_as_registered():
     assert injuries.out_ids(rows, 'ATL') == {'11'} and injuries.out_ids(rows, 'ORL') == {'12'}
 
 
+def test_a_suspended_player_is_removed_like_an_out_one():
+    """ESPN listed Kingston Flemings as Suspension on 2026-11-02 and the strict read refused the whole
+    report. Mark ruled a suspended player cannot play, so he is Out for availability (registry `amended`)."""
+    assert 'Suspension' in REG['availability']['amended']
+    rows = injuries.parse(report(player('Sus Pended', 21, 'ATL', 'Suspension'), player('Day', 22, 'ATL', 'Day-To-Day'),
+                                 player('A Out', 23, 'ATL', 'Out')), TEAMS)
+    assert injuries.out_ids(rows, 'ATL') == {'21', '23'}
+
+
 def test_the_athlete_id_comes_from_the_players_link():
     rows = injuries.parse(report(player('Keshon Gilbert', 4585618, 'ATL', 'Day-To-Day')), TEAMS)
     assert rows == [{'team': 'ATL', 'athlete_id': '4585618', 'name': 'Keshon Gilbert', 'status': 'Day-To-Day'}]
@@ -44,7 +53,7 @@ def test_the_athlete_id_comes_from_the_players_link():
 @pytest.mark.parametrize('bad, why', [
     (player('X', 1, 'XYZ', 'Out'), "team 'XYZ' not on the schedule"),
     (player('Y', None, 'ATL', 'Out'), 'no athlete id'),
-    (player('Z', 2, 'ATL', 'Suspension'), "unknown status 'Suspension'"),
+    (player('Z', 2, 'ATL', 'Rest'), "unknown status 'Rest'"),
 ])
 def test_anything_unrecognised_refuses_the_whole_report(bad, why):
     """A refused report makes the run use the models without availability,
