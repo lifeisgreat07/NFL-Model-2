@@ -33,7 +33,7 @@
     {
       "id": "rank-change-against-a-stale-history",
       "why": "the check that the latest history week is today's ratings goes, so a run that wrote one and not the other compares against the wrong week and says nothing.",
-      "find": "    if any(r['team'] not in now or abs(now[r['team']] - r['net']) > 1e-9 for r in ratings):\n",
+      "find": "    if any(r['team'] not in now or abs(now[r['team']] - r['net']) > SNAPSHOT_MATCH_TOL for r in ratings):\n",
       "replace": "    if False:\n",
       "expect_caught_by": "test_a_history_that_is_not_the_snapshot_is_refused"
     },
@@ -90,6 +90,20 @@
       "find": "    const line = moversSentence(teams);\n",
       "replace": "    const line = moversSentence([...teams].slice(0, 1));\n",
       "expect_caught_by": "test_the_table_and_the_line_both_use_them"
+    },
+    {
+      "id": "rank-change-snapshot-match-exact",
+      "why": "the snapshot match goes back to exact equality, so one rounding step between the Thursday snapshot and the history hides the rank change from the page again.",
+      "find": "SNAPSHOT_MATCH_TOL = 1.5e-4\n",
+      "replace": "SNAPSHOT_MATCH_TOL = 1e-9\n",
+      "expect_caught_by": "test_a_snapshot_one_rounding_step_off_the_history_is_still_that_week"
+    },
+    {
+      "id": "rank-change-snapshot-match-any",
+      "why": "the snapshot match is loosened until a different week passes, so a run that wrote one file and not the other compares against the wrong week.",
+      "find": "SNAPSHOT_MATCH_TOL = 1.5e-4\n",
+      "replace": "SNAPSHOT_MATCH_TOL = 0.5\n",
+      "expect_caught_by": "test_a_snapshot_one_rounding_step_off_the_history_is_still_that_week"
     }
   ]
 }
