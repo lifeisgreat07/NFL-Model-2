@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-10-17 (session 1016-17, Saturday: Line Judge and canary fixes done; Stage 43 items 1-2 done, item 3 waiting on Mark)
+Last updated: 2026-10-21 (session 1020, Tuesday night, Wednesday UTC: Stage 43 items 1-4 done; NBA browser checks and NFL Line Judge on-time fixed; item 5 waits for Mark)
 
 ---
 
@@ -14,47 +14,47 @@ Last updated: 2026-10-17 (session 1016-17, Saturday: Line Judge and canary fixes
 figure. The NFL lives in `src/sports/nfl/` and `*/nfl/`; shared modules in `src/core/`.
 
 **The product is Sportalytics** (Stage 67). **Live:** home `/`, NFL `/nfl/` (Model **v2.6**),
-NHL `/nhl/` (day board), NBA `/nba/` (day board, empty until opening night). One theme key, `site:theme`.
+NHL `/nhl/` (day board), NBA `/nba/` (day board; **opened Tue 10-20**, picks saved, live scores #507 running).
+One theme key, `site:theme`.
 
 **The 2026-10-13 UI/UX audit is done** (Stages 75-80, #436-#513; items by PR in `memory/2026-10-15.md`
-and `memory/2026-10-16.md`; text in `docs/history/09-more-sports.md`).
-**After Stage 80:** the NHL eyebrow names its week (#514); Stage 44 is done: Line Judge judges the daily
-runs and the refresh (#515), and a finding gets an agent's diagnosis and a weekly digest (#516).
-**Overnight 10-16 into 10-17 (Mark's relaxed rule):** #517 is fixed (#519 job logs; #521 no judging of GitHub's
-late copy of a slot cron-job.org served); #495 by #523 (the NHL canary waits for an unsettled box score); #526
-keeps the synthetic league out of the clock-change hour. **Stage 43 (Spotter):** item 1 is #524, item 2 is #525;
-**item 3 is #527**, green and SAFE, **left open for Mark**: the first write permission and the first model.
+and `memory/2026-10-16.md`; text in `docs/history/09-more-sports.md`). Stage 44 (Line Judge) is done, and
+its NFL on-time check now skips GitHub's late copy of a slot a dispatch served (#537), as the daily runs do (#521).
+
+**Stage 43 (Spotter):** items 1-4 are merged (#524, #525, #527, #535). Spotter renders the pages, reads the head
+and base pictures, and posts one comment; `tests/spotter_fixtures/` holds a planted-defect page it must name and a
+clean change it must not blame (recorded readings, re-checked free on every suite run). **Item 5 waits for Mark**: it
+edits `BOOTH_PROTOCOL.md` and Booth's instructions so Booth cites Spotter, and Scout's pre-flight needs a
+"Human review required:" line. Do not start it without him.
 
 **Decided, Mark 2026-10-14:** results read **Correct / Missed** on every surface and every sport
-(Stage 77 item 26; this replaces Stage 64's "right so far"). Stage 78 item 36 takes option B: the
-home's font sizes move onto tokens, with one new token `--fs-40` for the hero. Stage 78 item 37's
-three tag tones (filled, outlined, accent) are approved as rendered. Item 40's 72ch is about
-100-115 characters a line in this face. Item 42 moves the four surfaces the audit names to
-`--surface-2` and leaves the More sheet's items alone.
+(Stage 77 item 26). Stage 78 item 36 option B: font sizes on tokens, one new `--fs-40`. Item 37's three tag
+tones approved. Item 40's 72ch is about 100-115 characters a line. Item 42 moves four surfaces to `--surface-2`.
 
-**NBA goes live on Tue 10-20** (Stage 65). Its block (item 60 and B1-B5) is merged.
-A reminder is set for the night itself.
+**Week 6 locked Thu 10-15** (first week under v2.6). Week 7 locks Thu 10-22, 11:00 UTC.
 
-**Week 6 locked Thu 10-15** at cron-job.org's 11:01 UTC dispatch, the first week under v2.6.
+**Watching:** the Line Judge weekly digest failed at "Post the digest" on its first run (Mon 10-19, #529); the run
+page shows only "exit code 1" and logs need a sign-in, so the cause is unknown until someone reads the step's last
+lines (or Mon 10-26 runs). The missed-dispatch alert (#433); the QB routine's Wed 22:00 UTC run; issue #428.
+The NBA's first night (10-20) was never looked at by eye this session: open `/nba/` and look.
 
-**Watching:** the missed-dispatch alert (#433) on Saturday 10-17 (Thursday's lock and the NBA's
-16:00 slot were dispatched on time); the QB routine's Wed 22:00 UTC run (prompt fixed 10-13);
-issue #428, whose first test since #429 is the 10-14 nightly shuffled suite (GitHub starts it hours late).
-Live scores (#507) are new: the first NBA night (10-20) is their first real test there.
-
-**Single next action:** Mark reads #527 (Stage 43 item 3) and merges it or not. The first pull
-request after it merges is the reading job's first real run, so read the comment it posts. Then
-Line Judge's first weekly digest (Mon 10-19, 08:23 UTC) and the NBA's opening night (Tue 10-20).
+**Single next action:** Mark runs a **Fable audit tomorrow (10-21) on criteria other than UI/UX**. Read what it
+finds, turn the findings into staged items in the "Stage N - Short Name" chat format with a numbered-objectives
+stage and an honest sequencing call, and put them in the Progress tab. Before that, ask Mark about #530 (week 7
+QB override, Darnold for Lock at SEA, inferred from the coach's remarks, must merge before the Thu 10-22 lock) and
+about #529's log.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| Stage 44 (Line Judge) | Done: #435, #515, #516 | Its first digest, Mon 10-19 |
+| Fable audit (non-UI criteria) | Mark runs it 10-21 | Its findings |
+| Stage 43 (Spotter) | Items 1-4 done; 5 not started | Mark's go (edits Booth's instructions) |
+| #530 (week 7 QB override) | Open, Booth SAFE, one watch claim unverifiable | Mark, before Thu 10-22 11:00 UTC |
+| #529 (digest failed) | Open issue | The failing step's log, or the 10-26 run |
 | Stage 42 | Items 1-4 done | 5: after four on-time weeks |
 | Stage 39 | Items 1-4, 7 done | 5 in December; 6 wants a rendered choice in January |
-| Stage 43 (Spotter) | Items 1-2 done (#524, #525); item 3 is #527, green and SAFE | Mark's review of #527; then 4 (a planted defect and a clean page) and 5 (Booth cites Spotter, which edits Booth's instructions) |
-| #428, #431 | Open | Mark |
+| #428, #431, #528 | Open (#528 is stale: Mark closes it) | Mark |
 | Stage 40 | Not to be touched | Mark |
 
 One branch at a time. Full suite and mutation scope at the head, case files listed, a bounded
@@ -62,23 +62,25 @@ check for Booth. Never start the mutation runner under pythonw, and never two ru
 
 ## Known and deliberately not fixed
 
-- **Spotter's reading job takes its protocol and its checker from the pull request's base**, so it skips (and passes) on a base that predates them, and #527's own run cannot exercise it. The branch `s43-spotter-trial` (a planted-defect NHL stylesheet on top of #527) is pushed and unused: delete it, or open it as a draft on #527 after the merge to see Spotter's first reading.
-- **Spotter's head and base pictures can differ by a few antialiased pixels** (5 on one NHL phone picture in #525's second run); no pixel comparison is made on purpose. Both checkouts take full history because the NFL page reads the git log.
-- **NFL Line Judge's on-time check has the same late-copy exposure at its 7h slots** as the daily runs had before #521, and a GitHub 14:00 NHL copy that starts late into 21:xx is measured against the latest slot of any cron.
+- **Spotter's reading job takes its protocol and its checker from the pull request's base**, so it skips (and passes) on a base that predates them.
+- **Spotter's clean-control key is looser than first written**: a problem is allowed only where its bullet says the base picture shows it too (the real reading listed base-present problems). Disclosed in the fixture and in #535; Mark has not yet ruled on it.
+- **Spotter's head and base pictures can differ by a few antialiased pixels**; no pixel comparison is made on purpose. Both checkouts take full history because the NFL page reads the git log.
+- **A browser check that assumes the pre-season page ages out on opening night.** `tests/browser/pre_opening.py` rewinds a built NBA page (no picks, every game scheduled); the countdown, rows and accuracy checks read it (#536). A new check about a state the real page has left should do the same.
 - **GitHub's cron starts hours late**; cron-job.org starts on time. Every Weekly update slot runs once (slot guard).
 - **Booth's prose can disagree with its own verdict block** (#286 ... #433). Re-run once; red again for the same reason, merge and log it.
-- **Booth can say NEEDS HUMAN REVIEW on an all-green PR** whose only unverified claims are browser renders (#437, #488, #490). That is Mark's call, not a re-run; on 10-16 he made it standing for the session (0 discrepancies, only renders, measurements or mutation scope unverified: merge).
-- **Booth's step "Fail if Booth posted no report" can go red beside a SAFE verdict** (#440, 10-14). One re-run cleared it.
-- **Booth's runner has no Playwright**, so a Chromium claim in a PR body is UNVERIFIABLE there.
+- **Booth can say NEEDS HUMAN REVIEW on an all-green PR** whose only unverified claims are browser renders (#437, #488, #490). That is Mark's call, not a re-run. The relaxed overnight rule (0 discrepancies, only renders, measurements or mutation scope unverified: merge) is **off unless Mark turns it on**.
+- **Booth's runner has no Playwright**, so a Chromium claim in a PR body is UNVERIFIABLE there. Mark's PC has none either; the container has Playwright and Chromium and can run a `tests/browser` check, but its Python cannot install the repo's pinned pandas.
+- **Scout's body check ties any number near a test file's name to that file's whole count**, and reads `--id "glob"` as a mutation scope: quote the file's total, and run mutation cases by exact id.
+- **The PC merge scripts take the worktree's NAME (`lj7`), not its path**; a path stops the merge at "delete local branch" after GitHub has merged.
 - **The file bridge can report a write and keep the old file**: commit to a new name, copy into place, compare hashes.
-- **The N1 back-check is exact on local Windows, close but not exact on Linux runners.**
 - **The drift check re-tests a growing sample every week**, so it will sometimes flag by chance.
 - **A failed Thursday run leaves Thursday night's game unpicked** unless dispatched by hand that day.
 - **GitHub moves `ubuntu-latest` to Ubuntu 26 from 2026-10-19; nothing here follows it.** All 35 `runs-on` are `ubuntu-24.04`, held by `tests/test_runner_image.py`. Moving is a deliberate change: run the suite and one of each writer on `ubuntu-26.04` first, then change WANT and every workflow together.
 - **Mark's PC runs on Eastern time**, so a guard for an ET clock runs node with `TZ` far from ET, or a dropped `timeZone` survives there (Stage 77 item 30).
+- **Mark's PC checks files out as CRLF (autocrlf)**: a test that builds CRLF by replacing `\n` makes `\r\r\n`; write both forms from LF yourself (#538).
 - **Windows Python ships no tz database**: `ZoneInfo('America/New_York')` fails at import on Mark's PC and passes on Linux CI. Read Eastern time through pandas, as `src/sports/nfl/tv_channels.py` does.
 - **A parametrize over a page script needs `ids=`**: unnamed, the script is the test id, and Windows refuses an environment variable over 32,767 characters (items 57, 61).
 - **GitHub's runners are UTC**: a test that reads a clock passes on Mark's Eastern PC and fails in CI unless it pins `TZ` (#501).
 - **`src/core` type-checks under strict mypy** (`test_sport_isolation`, `test_type_check`); a pre-flight without mypy misses it (#515, #516).
-- **A PowerShell `>` redirect writes UTF-16**, which `git apply` refuses: write patches with `git format-patch -o`.
+- **A PowerShell `>` redirect writes UTF-16**, which `git apply` refuses: write patches with `git format-patch -o`, or a Python script written with the file tool.
 - **The plain-language guard reads only `RENDERERS`**: add each new markup function with its page; a top-level literal is charged to the function above it (items 28, 31).
