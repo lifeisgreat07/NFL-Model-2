@@ -63,7 +63,7 @@ What it is meant to demonstrate, and where to look:
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
-- **Twenty-eight CI workflows** in `.github/workflows/` cover the test suite, the
+- **Twenty-nine CI workflows** in `.github/workflows/` cover the test suite, the
   weekly data pull, a weekend refresh of game status and scores that never
   touches a saved pick, the backtest, the Pages build-and-deploy, the
   agent-activity log, a pre-flight check on every pull request description,
@@ -79,7 +79,8 @@ What it is meant to demonstrate, and where to look:
   probes of the sources the NHL and the NBA read, each run from GitHub's own
   runners before anything depends on it, the NHL's and NBA's backtests
   re-run by hand against their committed results, and Line Judge's diagnosis
-  of a run its checks flagged and its weekly digest.
+  of a run its checks flagged and its weekly digest, and an issue while a QB
+  override pull request is waiting to merge before Thursday's lock.
 
 - **Decision records.** The six decisions the rest rests on -- one static
   page, two models side by side, the kickoff lock, an auditor that cannot

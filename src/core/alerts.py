@@ -68,6 +68,20 @@ def open_or_comment(title: str, body: str, run: Run = subprocess.run) -> tuple[s
     return 'opened', out.strip()
 
 
+def close_open_issue(title: str, comment: str, run: Run = subprocess.run) -> int | None:
+    """Comment on and close the open issue with this title. Returns its number,
+    or None when there is no open issue to close (nothing is created).
+
+    For an alert whose cause has an end of its own -- a pull request merged or
+    closed -- so the issue does not wait for a person to say it is handled."""
+    number = find_open_issue(title, run)
+    if number is None:
+        return None
+    _gh(['issue', 'comment', str(number), '--body-file', '-'], run, stdin=comment)
+    _gh(['issue', 'close', str(number)], run)
+    return number
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description='Open or update an alert issue.')
     ap.add_argument('--title', required=True)
