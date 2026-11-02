@@ -1064,13 +1064,13 @@
  {
   "game_id": "2026020230",
   "pick": "NYR",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-01T21:01:56Z"
  },
  {
   "game_id": "2026020231",
   "pick": "OTT",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-01T21:01:56Z"
  }
 ]
