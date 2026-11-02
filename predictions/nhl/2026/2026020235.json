@@ -1,0 +1,107 @@
+{
+ "game_id": "2026020235",
+ "season": 2026,
+ "slate": "2026-11-02",
+ "start_utc": "2026-11-03T02:00:00Z",
+ "home": "SJS",
+ "away": "CGY",
+ "model_a": 0.52,
+ "model_b": 0.5257,
+ "pick": "SJS",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.040484,
+  "shot_matchup": -2.425079,
+  "goalie_matchup_2000": 0.001473
+ },
+ "market": {
+  "game_id": "2026020235",
+  "start_utc": "2026-11-03T02:00:00Z",
+  "home": "SJS",
+  "away": "CGY",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-11-02T21:01:59Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482137,
+   "name": "Yaroslav Askarov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://sanjosehockeynow.com/san-jose-sharks-smith-toffoli-power-play-calgary-flames-preview-lines-16/"
+  },
+  "away": {
+   "player_id": 8481692,
+   "name": "Dustin Wolf",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/dwillsnhl/status/2117314080536989822?a=TG-_s3nvvsFd14rssPk&s=46"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-01",
+  "read_utc": "2026-11-02T21:01:59Z",
+  "home": [
+   {
+    "name": "Alexander Wennberg",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Igor Chernyshov",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brennan Othmann",
+    "position": "LW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Connor Zary",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Devin Cooley",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonathan Huberdeau",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Samuel Honzek",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-02T21:01:59Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-01",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14634,
+  "training_games_priced": 7427
+ }
+}

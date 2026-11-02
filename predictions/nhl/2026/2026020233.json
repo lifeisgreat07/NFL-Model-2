@@ -1,0 +1,107 @@
+{
+ "game_id": "2026020233",
+ "season": 2026,
+ "slate": "2026-11-02",
+ "start_utc": "2026-11-03T00:00:00Z",
+ "home": "FLA",
+ "away": "DET",
+ "model_a": 0.5673,
+ "model_b": 0.6397,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.319533,
+  "shot_matchup": 0.951023,
+  "goalie_matchup_2000": -0.002288
+ },
+ "market": {
+  "game_id": "2026020233",
+  "start_utc": "2026-11-03T00:00:00Z",
+  "home": "FLA",
+  "away": "DET",
+  "book": "DraftKings",
+  "home_price": -185.0,
+  "away_price": 154.0,
+  "home_prob": 0.6225,
+  "read_utc": "2026-11-02T21:01:59Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8474593,
+   "name": "Jacob Markstrom",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/J_McPherson1126/status/2117283256357748768"
+  },
+  "away": {
+   "player_id": 8480193,
+   "name": "Daniil Tarasov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/GeorgeRichards/status/2117298904324526357?s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-01",
+  "read_utc": "2026-11-02T21:01:59Z",
+  "home": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jacob Markstrom",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Albert Johansson",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Dylan Larkin",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marco Kasper",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mason Appleton",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-02T21:01:59Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-01",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14634,
+  "training_games_priced": 7427
+ }
+}

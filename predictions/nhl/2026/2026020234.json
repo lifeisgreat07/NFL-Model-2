@@ -1,0 +1,82 @@
+{
+ "game_id": "2026020234",
+ "season": 2026,
+ "slate": "2026-11-02",
+ "start_utc": "2026-11-03T01:00:00Z",
+ "home": "CHI",
+ "away": "COL",
+ "model_a": 0.2584,
+ "model_b": 0.3282,
+ "pick": "COL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.989207,
+  "shot_matchup": -11.006158,
+  "goalie_matchup_2000": -0.001595
+ },
+ "market": {
+  "game_id": "2026020234",
+  "start_utc": "2026-11-03T01:00:00Z",
+  "home": "CHI",
+  "away": "COL",
+  "book": "DraftKings",
+  "home_price": 190.0,
+  "away_price": -230.0,
+  "home_prob": 0.331,
+  "read_utc": "2026-11-02T21:01:59Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://thehockeynews.com/nhl/chicago-blackhawks/latest-news/blackhawks-vs-avalanche-projected-lineup-how-to-watch-more-ahead-of-game-16"
+  },
+  "away": {
+   "player_id": 8475809,
+   "name": "Scott Wedgewood",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-01",
+  "read_utc": "2026-11-02T21:01:59Z",
+  "home": [
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Josh Manson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Logan O'Connor",
+    "position": "RW",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Zachary L'Heureux",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-02T21:01:59Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-01",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14634,
+  "training_games_priced": 7427
+ }
+}
