@@ -62,8 +62,8 @@
     {
       "id": "slot-guard-marks-a-failed-run",
       "target": ".github/workflows/nfl-weekly-update.yml",
-      "why": "the slot is marked even when the run failed, so a retry by hand the same day is skipped and the week is never locked.",
-      "find": "        if: ${{ success() && needs.slot-guard.outputs.slot != '' }}",
+      "why": "the slot is marked even when the lock step failed, so a retry by hand the same day is skipped and the week is never locked.",
+      "find": "        if: ${{ !cancelled() && steps.generate.outcome == 'success' && needs.slot-guard.outputs.slot != '' }}",
       "replace": "        if: ${{ !cancelled() && needs.slot-guard.outputs.slot != '' }}",
       "expect_caught_by": "test_the_slot_is_marked_after_the_work_and_before_the_commit"
     },
@@ -74,6 +74,14 @@
       "find": "  group: weekly-update\n  cancel-in-progress: false",
       "replace": "  group: weekly-update\n  cancel-in-progress: true",
       "expect_caught_by": "test_the_runs_queue_rather_than_cancel_each_other"
+    },
+    {
+      "id": "slot-guard-locked-run-leaves-slot-open",
+      "target": ".github/workflows/nfl-weekly-update.yml",
+      "why": "the slot is marked only when every step succeeded, so a run that locked the week and failed at grading commits its picks with the slot open and GitHub's late copy runs the week again (the 2026-11-02 review).",
+      "find": "        if: ${{ !cancelled() && steps.generate.outcome == 'success' && needs.slot-guard.outputs.slot != '' }}",
+      "replace": "        if: ${{ success() && steps.generate.outcome == 'success' && needs.slot-guard.outputs.slot != '' }}",
+      "expect_caught_by": "test_the_slot_is_marked_after_the_work_and_before_the_commit"
     }
   ]
 }
