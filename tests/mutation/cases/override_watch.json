@@ -1,0 +1,34 @@
+{
+  "target": "src/sports/nfl/override_watch.py",
+  "tests": "tests/test_override_watch.py",
+  "cases": [
+    {
+      "id": "override-watch-ignores-opened",
+      "why": "an opened override pull request raises nothing, so the week locks without anyone being told it is waiting -- weeks 7 and 8 again",
+      "find": "OPENING = frozenset({'opened', 'reopened'})\n",
+      "replace": "OPENING = frozenset({'reopened'})\n",
+      "expect_caught_by": "test_an_opened_pull_request_opens_an_issue_naming_the_lock"
+    },
+    {
+      "id": "override-watch-never-closes",
+      "why": "a merged pull request leaves its issue open, so the alert outlives its cause and teaches people to ignore it",
+      "find": "        elif event == 'closed':\n",
+      "replace": "        elif event == 'never':\n",
+      "expect_caught_by": "test_a_merge_closes_the_issue_with_a_comment_saying_so"
+    },
+    {
+      "id": "override-watch-wrong-file-name",
+      "why": "the watch matches a file name the lock does not read, so it stays quiet about exactly the file that matters",
+      "find": "OVERRIDE_PATH = re.compile(r'^data/nfl/qb_overrides/(\\d{4})_week(\\d{1,2})\\.json$')\n",
+      "replace": "OVERRIDE_PATH = re.compile(r'^data/nfl/qb_overrides/(\\d{4})_wk(\\d{1,2})\\.json$')\n",
+      "expect_caught_by": "test_the_file_name_matches_the_one_the_lock_reads"
+    },
+    {
+      "id": "override-watch-merge-reads-as-closed",
+      "why": "a merge is reported as a close without merging, telling Mark his overrides will not be used when they will",
+      "find": "    if merged:\n        return f'#{pr} was merged",
+      "replace": "    if not merged:\n        return f'#{pr} was merged",
+      "expect_caught_by": "test_a_merge_closes_the_issue_with_a_comment_saying_so"
+    }
+  ]
+}

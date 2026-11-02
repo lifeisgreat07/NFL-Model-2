@@ -1,0 +1,52 @@
+name: NFL QB override watch
+
+# Stage 81 item 1. A QB override file only counts once it is on main, and the
+# Weekly update locks the week on Thursday at 11:00 UTC. The QB routine opens
+# its pull request on Wednesday at 22:00 UTC; in weeks 7 and 8 of 2026 that
+# pull request was still open at the lock and the picks used a starter who was
+# out for the season. This opens an issue the moment such a pull request
+# appears, and closes it when the pull request is merged or closed
+# (src/sports/nfl/override_watch.py).
+#
+# It runs on the pull request's own events, not on a timer: GitHub's cron
+# starts hours late, and Wednesday night is the time that matters.
+#
+# The code that runs is the BASE commit's, never the pull request's: a pull
+# request cannot rewrite the watch that reports on it, and nothing from the
+# pull request runs with this job's `issues: write`. The file list comes from
+# the API, not from a checkout of the head.
+
+on:
+  pull_request:
+    types: [opened, reopened, closed]
+    paths:
+      - 'data/nfl/qb_overrides/**'
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  watch:
+    # A fork's pull request gets a read-only token; there is nothing to do.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out the base commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Open or close the week's issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT: ${{ github.event.action }}
+          PR: ${{ github.event.pull_request.number }}
+          URL: ${{ github.event.pull_request.html_url }}
+          MERGED: ${{ github.event.pull_request.merged }}
+        run: |
+          gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json files --jq '.files[].path' > "$RUNNER_TEMP/files.txt"
+          python3 -m src.sports.nfl.override_watch --event "$EVENT" --pr "$PR" --url "$URL" \
+            --merged "$MERGED" --files-file "$RUNNER_TEMP/files.txt"
