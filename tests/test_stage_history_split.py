@@ -84,7 +84,10 @@ def test_the_split_lost_nothing():
     # Stage 52 rewrote the era files' paths, so they are read as the split left them.
     joined = '\n\n'.join(_sections(subprocess.run(['git', 'show', f'{split}:docs/history/{name}'], cwd=ROOT,
                                                    capture_output=True, text=True, encoding='utf-8').stdout)
-                         for name in listed())
+                         for name in listed()
+                         # An era file started after the split (Stage 81 on) was never part of it.
+                         if subprocess.run(['git', 'cat-file', '-e', f'{split}:docs/history/{name}'],
+                                           cwd=ROOT, capture_output=True).returncode == 0)
     old_heads = re.findall(r'^#{2,3} .+$', _sections(before), re.M)
     new_heads = re.findall(r'^#{2,3} .+$', joined, re.M)
     assert old_heads == new_heads[:len(old_heads)], 'a section went missing or moved out of order'

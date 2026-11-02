@@ -31,3 +31,4 @@ each under its size limit.
 | The 2026-10-04 fourth audit | Stages 36 to 44 | `docs/history/07-fourth-audit-2026-10-04.md` |
 | New items before the 2026-10-08 lock | Stages 45 to 49 | `docs/history/08-before-the-lock.md` |
 | More sports, NHL then NBA; then the site and the NBA; the Fable audit; the 2026-10-13 UI/UX audit | Stages 50 to 68, 75 to 80 | `docs/history/09-more-sports.md` |
+| The 2026-11-02 review | Stages 81 to 90 | `docs/history/10-review-2026-11-02.md` |

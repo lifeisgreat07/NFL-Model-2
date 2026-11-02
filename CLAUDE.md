@@ -280,12 +280,8 @@ The full text of every stage, finished or planned, is in
 - **Stages 36 to 44 - the 2026-10-04 fourth audit (86/100)**: 36, 37 done; 38's neutral sites decided 2026-10-09 (no home edge, a declared rule); 39 items 5 and 6 left; 40 in January; 42 item 5 left; 44's shape decided 2026-10-13 (checks first, an agent only on a failure), item 1 merged as #435.
 - **Stages 45 to 61**: 45 to 49 done; 50 to 61 multi-sport, NHL then NBA (Mark, 2026-10-05), 52 the NFL's move to `src/sports/nfl/` (#351); 54, 58 and 60 in part.
 - **Stages 62 to 68 (Mark, 2026-10-09)**: 62 one look; 63 boards that show what happened; 64 a day at a time; 65 the NBA live; 66 the home page; 67 "Sportalytics"; 68 the 2026-10-09 Fable audit, done (#380 to #421). Text at the end of `docs/history/09-more-sports.md`. 69 to 74 are unused.
-- **Stage 75 - The card reads one way** (2026-10-13 UI/UX audit, items 1-6; text after Stage 68): done, #436 to #440 and #442.
-- **Stage 76 - Everything has an address** (items 7-11): done, #443 to #447.
-- **Stage 77 - Copy a 12-year-old can read** (items 12-35).
-- **Stage 78 - One system, guarded** (items 36-44).
-- **Stage 79 - The newer sports get the NFL's charts** (items 45-51).
-- **Stage 80 - Product features** (items 52-64; 60 and the NBA's B1-B5 before 2026-10-20, 61-64 last).
+- **Stages 75 to 80 - the 2026-10-13 UI/UX audit**: done, #436 to #513.
+- **Stages 81 to 90 - the 2026-11-02 review** (text in `docs/history/10-review-2026-11-02.md`): order 81, 82, 86, 88 items 1-2, 83, 84 and 85, 89, 87; 90 last.
 
 ## Ending a session
 
