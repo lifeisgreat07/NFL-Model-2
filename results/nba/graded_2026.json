@@ -618,14 +618,14 @@
  {
   "game_id": "401909903",
   "pick": "BOS",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-01T16:01:39Z"
  },
  {
   "game_id": "401909904",
   "pick": "IND",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-11-01T16:01:39Z"
  },
