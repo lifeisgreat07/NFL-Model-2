@@ -23,7 +23,8 @@
   "source": "ESPN's injury report (site.api.espn.com .../nba/injuries), read at the run that saves the pick.",
   "playing": "Every player with expected minutes for the team who is not listed Out. Day-To-Day counts as playing, as the registration's 'not listed Out' says. A player is matched by ESPN's athlete id.",
   "stored": "Each pick stores the injury list for both teams as read, the read time, and the availability each side was given.",
-  "unreadable": "If the report cannot be read, the pick is made by Model A and Model B without availability_matchup, each refitted the same way without it, and the pick says so. Nothing is filled in."
+  "amended": "2026-11-02 (Mark): ESPN listed a player with status Suspension, which the strict read refused, so the night's picks were made without availability. A suspended player cannot play, so Suspension now removes a player exactly as Out does. Registered sentence above is unchanged; this applies to picks saved from 2026-11-02 on, none earlier.",
+ "unreadable": "If the report cannot be read, the pick is made by Model A and Model B without availability_matchup, each refitted the same way without it, and the pick says so. Nothing is filled in."
  },
  "drift": {
   "file": "data/nba/drift_baseline.json",

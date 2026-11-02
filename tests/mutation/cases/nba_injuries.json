@@ -5,7 +5,7 @@
     {
       "id": "nba-injuries-day-to-day-out",
       "why": "Day-To-Day players are removed too, so availability counts out players the registration counts as playing",
-      "find": "    return {r['athlete_id'] for r in rows if r['team'] == team and r['status'] == OUT}",
+      "find": "    return {r['athlete_id'] for r in rows if r['team'] == team and r['status'] in UNAVAILABLE}",
       "replace": "    return {r['athlete_id'] for r in rows if r['team'] == team}",
       "expect_caught_by": "test_out_is_the_only_status_that_removes_a_player_as_registered"
     },
@@ -15,6 +15,20 @@
       "find": "            if status not in STATUSES:\n",
       "replace": "            if False:\n",
       "expect_caught_by": "test_anything_unrecognised_refuses_the_whole_report"
+    },
+    {
+      "id": "nba-injuries-suspension-refused",
+      "why": "Suspension drops out of the known statuses again, so the night's report is refused whole and picks go out without availability",
+      "find": "STATUSES = frozenset({'Out', 'Suspension', ",
+      "replace": "STATUSES = frozenset({'Out', ",
+      "expect_caught_by": "test_a_suspended_player_is_removed_like_an_out_one"
+    },
+    {
+      "id": "nba-injuries-suspension-counts-as-playing",
+      "why": "a suspended player is read but left in the team's availability, so a player who cannot play still counts as available",
+      "find": "UNAVAILABLE = frozenset({OUT, 'Suspension'})",
+      "replace": "UNAVAILABLE = frozenset({OUT})",
+      "expect_caught_by": "test_a_suspended_player_is_removed_like_an_out_one"
     }
   ]
 }
