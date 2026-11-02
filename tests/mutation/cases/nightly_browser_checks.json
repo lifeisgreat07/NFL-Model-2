@@ -22,6 +22,15 @@
       "find": "      - 'data/**'\n      - 'predictions/**'\n      - 'results/**'\n",
       "replace": "      - 'data/nfl/**'\n      - 'predictions/nfl/**'\n      - 'results/nfl/**'\n",
       "expect_caught_by": "test_a_pull_request_that_changes_any_sports_data_runs_it"
+    },
+    {
+      "id": "recent-runs-lists-pull-request-browser-runs",
+      "target": "src/sports/nfl/recent_runs.py",
+      "tests": "tests/test_recent_runs.py",
+      "why": "the recent-runs page lists every pull request's browser run beside the unattended jobs, and the nightly run is lost among them",
+      "find": "        data = get(f'{API}/repos/{repo}/actions/workflows/{file}/runs?per_page={shown}{event}', token)\n",
+      "replace": "        data = get(f'{API}/repos/{repo}/actions/workflows/{file}/runs?per_page={shown}', token)\n",
+      "expect_caught_by": "test_a_watched_job_that_also_runs_on_pull_requests_lists_only_its_timed_runs"
     }
   ]
 }

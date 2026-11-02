@@ -66,6 +66,11 @@ jobs:
         with:
           python-version: '3.11'
 
+      # Stage 42 item 1, for the nightly run only: how late it started.
+      - name: Record the start delay
+        if: github.event_name == 'schedule'
+        run: python -m src.core.start_delay .github/workflows/browser-checks.yml
+
       # Versions pinned: the checker was written and proven against these,
       # and a browser that changes under it would change what "no findings"
       # means without anyone deciding it should.
