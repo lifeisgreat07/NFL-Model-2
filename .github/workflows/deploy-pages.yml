@@ -115,7 +115,7 @@ jobs:
     if: >-
       github.event_name != 'workflow_run'
       || github.event.workflow_run.conclusion == 'success'
-      || (contains(fromJSON('["NFL weekly update", "NFL weekend refresh", "NHL daily run", "NBA daily run"]'),
+      || (contains(fromJSON('["NFL weekly update","NFL weekend refresh","NHL daily run","NBA daily run"]'),
                    github.event.workflow_run.name)
           && github.event.workflow_run.conclusion == 'failure')
     runs-on: ubuntu-24.04
