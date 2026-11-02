@@ -36,6 +36,22 @@
       "find": "          cd \"$RUNNER_TEMP/booth-check\"\n",
       "replace": "",
       "expect_caught_by": "test_the_checker_is_copied_out_before_booth_touches_the_tree"
+    },
+    {
+      "id": "booth-checker-from-the-head",
+      "target": ".github/workflows/booth-pr-audit.yml",
+      "why": "the checker is copied from the pull request's own working tree again, so a pull request can relax the check that decides whether its audit counts (the 2026-11-02 review)",
+      "find": "          cd \"$RUNNER_TEMP/booth-base\"\n",
+      "replace": "",
+      "expect_caught_by": "test_the_checker_comes_from_the_base_not_the_pull_request"
+    },
+    {
+      "id": "auditor-files-forget-the-checker",
+      "target": "src/agents/scout_preflight.py",
+      "why": "the report checker drops out of the auditor files, so a pull request that edits the check deciding whether its audit counts needs no human-review line",
+      "find": "                 'src/agents/booth_report_posted.py', 'src/agents/booth_verdict.py')\n",
+      "replace": "                 'src/agents/booth_report_posted.py')\n",
+      "expect_caught_by": "test_the_checker_files_are_auditor_files"
     }
   ]
 }
