@@ -132,7 +132,12 @@ def test_the_slot_is_marked_after_the_work_and_before_the_commit():
     assert names.index('Mark the slot served') < names.index('Commit and push changes')
     step = job[job.index('- name: Mark the slot served'):]
     step = step[:step.index('\n      - name:')]
-    assert 'success()' in step, 'a failed run must leave its slot open for a retry by hand'
+    assert "steps.generate.outcome == 'success'" in step, (
+        'a run that failed to lock must leave its slot open for a retry by hand')
+    gate = step[step.index('if:'):step.index('\n', step.index('if:'))]
+    assert '!cancelled()' in gate and 'success()' not in gate, (
+        'Stage 81 item 4: a run that locked and then failed at grading must still mark its slot, '
+        "or GitHub's late copy runs the week again")
     assert '--slot ${{ needs.slot-guard.outputs.slot }}' in step
 
 

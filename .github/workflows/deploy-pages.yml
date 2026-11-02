@@ -106,10 +106,17 @@ jobs:
     # still commit last week's grades, and those must reach the page. The
     # build's own data check (src/sports/nfl/check_build.py) still refuses a page with
     # missing data.
+    #
+    # Stage 81 item 3 (the 2026-11-02 review) widened it to every writer but the
+    # collector. The NHL and NBA daily runs and the Weekend refresh commit first
+    # and run Line Judge after, as a later job that exits 1 on any finding; that
+    # failure is the run's conclusion, so a success-only gate left their committed
+    # picks and grades off the page until something else rebuilt it.
     if: >-
       github.event_name != 'workflow_run'
       || github.event.workflow_run.conclusion == 'success'
-      || (github.event.workflow_run.name == 'NFL weekly update'
+      || (contains(fromJSON('["NFL weekly update","NFL weekend refresh","NHL daily run","NBA daily run"]'),
+                   github.event.workflow_run.name)
           && github.event.workflow_run.conclusion == 'failure')
     runs-on: ubuntu-24.04
     timeout-minutes: 15

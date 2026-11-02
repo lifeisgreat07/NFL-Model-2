@@ -131,6 +131,20 @@ def test_these_failure_alerts_carry_their_logs():
         assert alert and all(f'--log {log}' in s for s in alert), f'{name}: the failure alert does not carry {log}'
 
 
+def test_closing_comments_then_closes_the_open_issue():
+    """Stage 81 item 1: an alert whose cause ends by itself closes itself."""
+    gh = FakeGh(open_issues=[{'number': 7, 'title': 'NFL: 2026 week 9 QB override waiting to merge'}])
+    assert alerts.close_open_issue('NFL: 2026 week 9 QB override waiting to merge', 'merged', run=gh) == 7
+    assert gh.verbs() == ['issue list', 'issue comment', 'issue close']
+    assert gh.calls[1][1] == 'merged'
+
+
+def test_closing_with_no_open_issue_creates_nothing():
+    gh = FakeGh(open_issues=[{'number': 3, 'title': 'Something else'}])
+    assert alerts.close_open_issue('NFL: 2026 week 9 QB override waiting to merge', 'merged', run=gh) is None
+    assert gh.verbs() == ['issue list']
+
+
 # --- every scheduled job raises one ------------------------------------------
 
 WORKFLOWS = Path(__file__).parent.parent / '.github' / 'workflows'

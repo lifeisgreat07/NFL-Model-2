@@ -34,8 +34,8 @@
       "id": "weekly-summary-lock-loses-its-exit-code",
       "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the lock step loses its explicit bash shell. The default shell has no pipefail, so `| tee` would report success for a run that failed on purpose, and the failure alert would never fire.",
-      "find": "      - name: Generate/lock in this week's predictions\n        shell: bash\n",
-      "replace": "      - name: Generate/lock in this week's predictions\n",
+      "find": "      - name: Generate/lock in this week's predictions\n        id: generate\n        shell: bash\n",
+      "replace": "      - name: Generate/lock in this week's predictions\n        id: generate\n",
       "expect_caught_by": "test_the_lock_step_keeps_its_exit_code_through_tee"
     },
     {
