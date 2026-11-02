@@ -91,6 +91,46 @@ def test_an_empty_body_is_refused(tmp_path, capsys):
     assert 'empty body' in capsys.readouterr().err
 
 
+
+def test_an_alert_carries_the_last_lines_of_its_log(tmp_path):
+    """Stage 81 item 5: a run's log needs a sign-in, so the cause goes in the issue."""
+    log = tmp_path / 'nba-daily.log'
+    log.write_text('\n'.join(f'line {i}' for i in range(1, 51)), encoding='utf-8')
+    body = alerts.with_log_tail('The NBA daily run failed.', str(log))
+    assert body.startswith('The NBA daily run failed.')
+    assert 'line 50' in body and 'line 21' in body and 'line 20\n' not in body
+    assert 'Last 30 lines of nba-daily.log' in body
+
+
+def test_a_missing_log_is_said_not_skipped(tmp_path):
+    body = alerts.with_log_tail('failed', str(tmp_path / 'nope.log'))
+    assert 'No log was written (nope.log)' in body
+
+
+def test_the_cli_passes_the_log_through(tmp_path, monkeypatch):
+    sent = {}
+    monkeypatch.setattr(alerts, 'open_or_comment', lambda title, body: sent.update(body=body) or ('opened', 1))
+    (tmp_path / 'b.md').write_text('body', encoding='utf-8')
+    (tmp_path / 'x.log').write_text('Traceback: boom', encoding='utf-8')
+    assert alerts.main(['--title', 't', '--body-file', str(tmp_path / 'b.md'), '--log', str(tmp_path / 'x.log')]) == 0
+    assert 'Traceback: boom' in sent['body']
+
+
+#: Workflows whose failure alert used to carry only a link (Stage 81 item 5). Each
+#: must tee its main step's output, stderr included, and hand that log to the alert.
+LOGGED = {'nba-daily.yml': 'nba-daily.log', 'nhl-daily.yml': 'nhl-daily.log',
+          'line-judge-digest.yml': 'digest.log', 'nightly-mutation.yml': 'slice.log',
+          'nightly-random-order.yml': 'shuffled.log'}
+
+
+def test_these_failure_alerts_carry_their_logs():
+    for name, log in LOGGED.items():
+        text = (WORKFLOWS / name).read_text(encoding='utf-8')
+        assert f'2>&1 | tee {log}' in text, f'{name}: the main step does not keep its output, stderr included, in {log}'
+        alert = [s for s in text.split('\n      - ') if 'if: failure()' in s and 'src.core.alerts' in s]
+        assert alert and all(f'--log {log}' in s for s in alert), f'{name}: the failure alert does not carry {log}'
+
+
 # --- every scheduled job raises one ------------------------------------------
 
 WORKFLOWS = Path(__file__).parent.parent / '.github' / 'workflows'

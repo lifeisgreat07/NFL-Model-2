@@ -42,7 +42,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-        run: python -m src.core.line_judge_digest
+        shell: bash
+        run: python -m src.core.line_judge_digest 2>&1 | tee digest.log
       - name: Raise an alert
         if: failure()
         env:
@@ -51,4 +52,4 @@ jobs:
         run: |
           printf 'The Line Judge weekly digest could not be posted.\n\nRun: %s\n' \
             "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > digest-report.md
-          python -m src.core.alerts --title "Line Judge weekly digest failing" --body-file digest-report.md
+          python -m src.core.alerts --title "Line Judge weekly digest failing" --body-file digest-report.md --log digest.log

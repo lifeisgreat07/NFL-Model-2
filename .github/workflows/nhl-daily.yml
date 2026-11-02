@@ -72,7 +72,7 @@ jobs:
       # (Stage 68 item 1, the 2026-10-09 audit).
       - name: Run the NHL's daily run
         shell: bash
-        run: python -m src.sports.nhl.daily | tee nhl-daily.log
+        run: python -m src.sports.nhl.daily 2>&1 | tee nhl-daily.log
 
       - name: Pull before committing
         run: |
@@ -160,7 +160,7 @@ jobs:
         run: |
           printf 'The NHL daily run failed. See %s\n' \
             "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > failure.md
-          python -m src.core.alerts --title "NHL: daily run failed" --body-file failure.md
+          python -m src.core.alerts --title "NHL: daily run failed" --body-file failure.md --log nhl-daily.log
 
   # Stage 44 item 2, Line Judge: after a run that went green, does main hold
   # what a right daily run leaves? Every pick committed before its game
