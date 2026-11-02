@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 8,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-02T01:47:35Z",
+  "read_at": "2026-11-02T05:37:34Z",
   "games": [
     {
       "away": "CAR",
@@ -127,9 +127,9 @@
     {
       "away": "PHI",
       "home": "WAS",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 10,
+      "home_score": 27,
       "spread_line": 6.0,
       "neutral_site": false,
       "venue": "Northwest Stadium"
