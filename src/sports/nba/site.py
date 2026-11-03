@@ -153,6 +153,8 @@ def board(season: int) -> dict[str, Any]:
         'teams': {abbr: {'name': name, 'logo': colours.logo(abbr, 'dark'), 'logo_light': colours.logo(abbr, 'light')}
                   for abbr, name in teams.NAMES.items()},
         'drift': _maybe(PATHS.results / f'drift_{season}.json'),
+        # Stage 84 item 6: the registered rule, so the page can say where the check stands.
+        'drift_rule': _maybe(PATHS.data / 'drift_baseline.json'),
         'live': _read(PATHS.experiments / 'stage65' / 'registry.json')['forward_test'],
     }
 

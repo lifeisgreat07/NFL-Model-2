@@ -5,8 +5,8 @@
     {
       "id": "shuffled-suite-within-files-only",
       "why": "tests are shuffled only inside each file, so a test that depends on another file having run first is never found.",
-      "find": "--random-order-bucket=global --random-order-seed=\"$seed\"\n",
-      "replace": "--random-order-bucket=module --random-order-seed=\"$seed\"\n",
+      "find": "--random-order-bucket=global --random-order-seed=\"$seed\" 2>&1 | tee shuffled.log\n",
+      "replace": "--random-order-bucket=module --random-order-seed=\"$seed\" 2>&1 | tee shuffled.log\n",
       "expect_caught_by": "test_it_shuffles_across_every_file_with_the_date_as_the_seed"
     },
     {
@@ -19,7 +19,7 @@
     {
       "id": "shuffled-suite-fails-silently",
       "why": "a failed night is a red run and an email, the state every unattended job left behind in Stage 4.",
-      "find": "          python -m src.core.alerts --title \"Nightly shuffled suite failing\" --body-file shuffled-report.md\n",
+      "find": "          python -m src.core.alerts --title \"Nightly shuffled suite failing\" --body-file shuffled-report.md --log shuffled.log\n",
       "replace": "          echo failed\n",
       "expect_caught_by": "test_a_failure_raises_the_alert_with_the_replay_command"
     },

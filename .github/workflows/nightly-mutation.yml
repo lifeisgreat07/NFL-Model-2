@@ -71,9 +71,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt -r requirements-dev.txt
       - name: Run tonight's slice
+        shell: bash
         run: |
           seed="$(date -u +%Y%m%d)"
-          python tests/mutation/runner.py --sample 30 --seed "$seed" --summary "$GITHUB_STEP_SUMMARY"
+          python tests/mutation/runner.py --sample 30 --seed "$seed" --summary "$GITHUB_STEP_SUMMARY" 2>&1 | tee slice.log
       - name: Raise an alert
         if: failure()
         env:
@@ -86,4 +87,4 @@ jobs:
           # finding.
           printf 'The nightly mutation slice failed (seed %s).\n\nRun: %s\n\nReplay: python tests/mutation/runner.py --sample 30 --seed %s\n' \
             "$(date -u +%Y%m%d)" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "$(date -u +%Y%m%d)" > slice-report.md
-          python -m src.core.alerts --title "Nightly mutation slice failing" --body-file slice-report.md
+          python -m src.core.alerts --title "Nightly mutation slice failing" --body-file slice-report.md --log slice.log
