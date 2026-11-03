@@ -1096,5 +1096,71 @@
   "pick": "SJS",
   "result": "wrong",
   "saved_utc": "2026-11-02T21:01:59Z"
+ },
+ {
+  "game_id": "2026020236",
+  "pick": "UTA",
+  "result": "pending",
+  "saved_utc": "2026-11-03T21:01:48Z"
+ },
+ {
+  "game_id": "2026020237",
+  "pick": "MTL",
+  "result": "pending",
+  "saved_utc": "2026-11-03T21:01:48Z"
+ },
+ {
+  "game_id": "2026020238",
+  "pick": "TBL",
+  "result": "pending",
+  "saved_utc": "2026-11-03T21:01:48Z"
+ },
+ {
+  "game_id": "2026020239",
+  "pick": "NJD",
+  "result": "pending",
+  "saved_utc": "2026-11-03T21:01:48Z"
+ },
+ {
+  "game_id": "2026020240",
+  "pick": "NYR",
+  "result": "pending",
+  "saved_utc": "2026-11-03T21:01:48Z"
+ },
+ {
+  "game_id": "2026020241",
+  "pick": "MIN",
+  "result": "pending",
+  "saved_utc": "2026-11-03T21:01:48Z"
+ },
+ {
+  "game_id": "2026020242",
+  "pick": "PIT",
+  "result": "pending",
+  "saved_utc": "2026-11-03T21:01:48Z"
+ },
+ {
+  "game_id": "2026020243",
+  "pick": "WSH",
+  "result": "pending",
+  "saved_utc": "2026-11-03T21:01:48Z"
+ },
+ {
+  "game_id": "2026020244",
+  "pick": "COL",
+  "result": "pending",
+  "saved_utc": "2026-11-03T21:01:48Z"
+ },
+ {
+  "game_id": "2026020245",
+  "pick": "CAR",
+  "result": "pending",
+  "saved_utc": "2026-11-03T21:01:48Z"
+ },
+ {
+  "game_id": "2026020246",
+  "pick": "ANA",
+  "result": "pending",
+  "saved_utc": "2026-11-03T21:01:48Z"
  }
 ]
