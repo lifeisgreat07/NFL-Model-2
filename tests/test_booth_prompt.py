@@ -61,12 +61,21 @@ def test_the_prompt_says_where_the_report_goes_and_not_to_post_it():
     Booth writes its report to the file the post job fetches; a prompt still
     telling it to `gh pr comment` would end every audit in a 403 and no file."""
     prompt = prompt_block(WORKFLOW.read_text(encoding='utf-8'))
-    assert '${{ runner.temp }}/booth-report.md' in prompt
+    assert '\n              .git/booth-report.md\n' in prompt
     assert 'Do not post it.' in prompt
     assert 'gh pr comment' not in prompt
     wf = WORKFLOW.read_text(encoding='utf-8')
-    assert 'path: ${{ runner.temp }}/booth-report.md' in wf, 'the upload step keeps another file'
+    assert 'path: ${{ github.workspace }}/.git/booth-report.md' in wf, 'the upload step keeps another file'
+    assert 'include-hidden-files: true' in wf, 'upload-artifact skips .git/ unless told otherwise'
     assert "REPORT: ${{ runner.temp }}/booth/booth-report.md" in wf, 'the post job posts another file'
+
+
+def test_the_report_file_is_inside_the_checkout():
+    """#578's first run: told to write to $RUNNER_TEMP, outside the working
+    directory, Booth had one permission denial and ended with no file. The
+    report goes where Booth's tools may write."""
+    prompt = prompt_block(WORKFLOW.read_text(encoding='utf-8'))
+    assert 'runner.temp' not in prompt and 'RUNNER_TEMP' not in prompt
 
 
 def test_the_block_reader_is_not_blind():
