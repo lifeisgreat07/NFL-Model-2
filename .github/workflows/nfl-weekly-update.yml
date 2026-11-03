@@ -137,6 +137,7 @@ jobs:
       # decoration: only an explicit bash shell runs with pipefail, and without
       # it `tee` would report success for a run that failed on purpose.
       - name: Generate/lock in this week's predictions
+        id: generate
         shell: bash
         run: python -m src.sports.nfl.weekly_update --season ${{ steps.season.outputs.season }} 2>&1 | tee weekly-update.log
 
@@ -228,12 +229,17 @@ jobs:
           python -m src.sports.nfl.team_news --pending 2>&1 | tee team-news.log
           { echo '### Team news'; echo '```'; cat team-news.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
 
-      # Marks the slot served, in the same commit as the data, and only if
-      # every step above succeeded: a failed run leaves the slot open, so a
-      # run by hand the same day can still lock the week. Skipped when the
-      # guard failed and gave no slot.
+      # Marks the slot served, in the same commit as the data, when the lock
+      # step succeeded: a run that failed to lock leaves the slot open, so a
+      # run by hand the same day can still lock the week. Stage 81 item 4
+      # (the 2026-11-02 review): this used to need EVERY step to succeed, so a
+      # run that locked the week and then failed at grading or the drift check
+      # committed its picks with the slot open, and GitHub's late copy of the
+      # slot ran the week again (decision 0005 says what that copy does). A
+      # grading failure is retried by the next slot; `force` still re-runs a
+      # slot by hand. Skipped when the guard failed and gave no slot.
       - name: Mark the slot served
-        if: ${{ success() && needs.slot-guard.outputs.slot != '' }}
+        if: ${{ !cancelled() && steps.generate.outcome == 'success' && needs.slot-guard.outputs.slot != '' }}
         run: python -m src.sports.nfl.slot_guard mark --workflow weekly-update --slot ${{ needs.slot-guard.outputs.slot }}
 
       # CATCH UP WITH MAIN BEFORE COMMITTING (2026-09-27). The first scheduled

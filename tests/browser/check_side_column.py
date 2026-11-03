@@ -73,7 +73,7 @@ async def check_pages(nba, nhl):
     return report
 
 
-NBA_ASIDE = '      <aside class="nba-side" id="nba-side" aria-label="This day at a glance"></aside>\n'
+NBA_ASIDE = '      <aside class="nba-side" id="nba-side" aria-label="This day at a glance" tabindex="0"></aside>\n'
 NHL_CAP = 'max-height:calc(100vh - var(--s8)); overflow:auto;'
 
 

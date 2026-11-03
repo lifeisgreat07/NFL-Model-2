@@ -43,6 +43,20 @@
       "find": "    if number is None:\n        return None\n    _gh(['issue', 'comment', str(number), '--body-file', '-'], run, stdin=comment)\n",
       "replace": "    if number is None:\n        _gh(['issue', 'create', '--title', title, '--body-file', '-'], run, stdin=comment)\n        return None\n    _gh(['issue', 'comment', str(number), '--body-file', '-'], run, stdin=comment)\n",
       "expect_caught_by": "test_closing_with_no_open_issue_creates_nothing"
+    },
+    {
+      "id": "core-alerts-log-ignored",
+      "why": "--log is accepted and dropped, so the alert carries only a link and the cause needs a sign-in to read (#529)",
+      "find": "    action, ref = open_or_comment(args.title, with_log_tail(body, args.log))\n",
+      "replace": "    action, ref = open_or_comment(args.title, body)\n",
+      "expect_caught_by": "test_the_cli_passes_the_log_through"
+    },
+    {
+      "id": "core-alerts-missing-log-silent",
+      "why": "a run that died before writing its log raises an alert that says nothing about it, which hides where it stopped",
+      "find": "        return f'{body}\\n\\nNo log was written ({path.name}): the run stopped before its main step.'\n",
+      "replace": "        return body\n",
+      "expect_caught_by": "test_a_missing_log_is_said_not_skipped"
     }
   ]
 }

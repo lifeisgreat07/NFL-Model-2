@@ -131,7 +131,7 @@ def test_the_workflow_runs_monday_after_the_last_refresh_slot():
 
 def test_the_workflow_posts_through_the_module_with_only_what_it_needs():
     text = WORKFLOW.read_text(encoding='utf-8')
-    assert 'run: python -m src.core.line_judge_digest\n' in text
+    assert 'run: python -m src.core.line_judge_digest 2>&1 | tee digest.log\n' in text
     block = re.search(r'\npermissions:\n((?:  .*\n)+)', text).group(1)
     assert sorted(block.split()) == sorted(['contents:', 'read', 'issues:', 'write', 'actions:', 'read'])
     assert 'contents: write' not in text and 'claude-code-action' not in text
