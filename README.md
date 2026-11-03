@@ -157,7 +157,9 @@ it assumes the agent will sometimes be confidently wrong.
   re-executes each claim in the description, and posts a report with a
   machine-readable verdict. It runs on the workflow's own read-only token,
   so it cannot push or merge (until 2026-09-28 it ran on an app token that
-  could; `tests/test_booth_permissions.py` now holds that shut).
+  could; `tests/test_booth_permissions.py` now holds that shut). Booth writes
+  its report to a file and a second job, with no model, posts it, so the job
+  Booth runs in cannot write to the pull request either.
   The workflow fails if Booth posts nothing (`src/agents/booth_report_posted.py`).
 - **The test suite** includes guards on the project's own documentation:
   numbers quoted in prose are tied to the files they came from, and the

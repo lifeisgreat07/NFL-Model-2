@@ -36,6 +36,15 @@
       "find": "            EXPECT CLAUDE.md TO SHOW AS MODIFIED when the PR edits it. Before",
       "replace": "            CLAUDE.md may differ when the PR edits it. Before",
       "expect_caught_by": "test_the_prompt_says_the_claude_md_restore_is_expected"
+    },
+    {
+      "id": "booth-told-to-post-again",
+      "target": ".github/workflows/booth-pr-audit.yml",
+      "tests": "tests/test_booth_prompt.py",
+      "why": "the prompt tells Booth to post with gh pr comment again; the audit job cannot write, so every audit ends in a 403 and no report file (Stage 82 item 4)",
+      "find": "            Do not post it. This job cannot write to the pull request; a later\n",
+      "replace": "            Post it with gh pr comment. This job cannot write to the pull request; a later\n",
+      "expect_caught_by": "test_the_prompt_says_where_the_report_goes_and_not_to_post_it"
     }
   ]
 }

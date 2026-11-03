@@ -52,8 +52,21 @@ def test_the_prompt_still_asks_for_the_report_first():
     """The older instruction this sits beside. Both are needed: one is about
     running out of turns, the other about stopping early."""
     prompt = prompt_block(WORKFLOW.read_text(encoding='utf-8'))
-    assert 'POST\n' in prompt or 'POST YOUR REPORT' in prompt.replace('\n', ' ')
-    assert 'gh pr comment' in prompt
+    flat = ' '.join(prompt.split())
+    assert 'WRITE YOUR REPORT FILE BEFORE YOU RUN OUT OF TURNS' in flat
+
+
+def test_the_prompt_says_where_the_report_goes_and_not_to_post_it():
+    """Stage 82 item 4. The audit job cannot write to the pull request, so
+    Booth writes its report to the file the post job fetches; a prompt still
+    telling it to `gh pr comment` would end every audit in a 403 and no file."""
+    prompt = prompt_block(WORKFLOW.read_text(encoding='utf-8'))
+    assert '${{ runner.temp }}/booth-report.md' in prompt
+    assert 'Do not post it.' in prompt
+    assert 'gh pr comment' not in prompt
+    wf = WORKFLOW.read_text(encoding='utf-8')
+    assert 'path: ${{ runner.temp }}/booth-report.md' in wf, 'the upload step keeps another file'
+    assert "REPORT: ${{ runner.temp }}/booth/booth-report.md" in wf, 'the post job posts another file'
 
 
 def test_the_block_reader_is_not_blind():

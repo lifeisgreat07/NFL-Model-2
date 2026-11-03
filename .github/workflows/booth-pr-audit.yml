@@ -24,14 +24,18 @@ name: Booth PR audit
 # Permissions are deliberately narrow. The protocol says Booth's job ends at
 # the report and that merging is a human decision, so `contents: read` means it
 # structurally cannot push, merge or modify the branch even if instructed to.
-# It can comment on AND EDIT pull requests: `pull-requests: write` is what
-# posting the report needs, and with that token in an unrestricted Bash tool
-# it could also change a PR's title or description. It has never done so;
-# the description's edit history on GitHub would show it, and an edit to the
-# description re-runs this audit. Narrowing Bash to a list of commands was
-# considered and declined (Mark, 2026-09-29, Stage 30 item 5): the audits
-# use grep, wc, comm, sha256sum and whatever else a claim needs, and a
-# narrower list would turn those checks into UNVERIFIABLE.
+# Since Stage 82 item 4 (the 2026-11-02 review) it cannot write to the pull
+# request either. Until then the audit job held `pull-requests: write`, which
+# posting the report needed, and with that token in an unrestricted Bash tool
+# Booth could also have edited a PR's title or description, or posted a second
+# comment, on the say-so of whatever the pull request under audit contained.
+# Now the audit job, where the model runs, holds read grants only: Booth writes
+# its report to a file, and the `post` job -- no model, and nothing from the
+# pull request's head checked out -- posts that file and runs the report check.
+# Spotter has worked this way since ADR 0007. Narrowing Bash to a list of
+# commands was considered and declined (Mark, 2026-09-29, Stage 30 item 5):
+# the audits use grep, wc, comm, sha256sum and whatever else a claim needs,
+# and a narrower list would turn those checks into UNVERIFIABLE.
 #
 # The `contents: read` sentence above was FALSE until Stage 23 (the 2026-09-28 audit): with
 # `id-token: write` and no `github_token` input, the Claude Code action
@@ -64,7 +68,7 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
+  pull-requests: read
 
 # A new push supersedes the audit in flight. Without this, a branch pushed
 # three times in a minute runs Booth three times and bills all three against
@@ -93,6 +97,10 @@ jobs:
       && (github.event.action != 'edited' || github.event.changes.body != null)
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    # What the post job checks the report against, recorded before Booth ran.
+    outputs:
+      sha: ${{ steps.audited.outputs.sha }}
+      started: ${{ steps.audited.outputs.started }}
 
     steps:
       # A dispatch names a PR by number and checks out refs/pull/N/head,
@@ -141,33 +149,13 @@ jobs:
         # afterwards can name a commit this run never audited; and an
         # `edited` re-audit shares its head SHA with the audit before it, so
         # the start time is what separates this run's report from the last.
-        # The checker is copied out now for the same reason: the tree Booth
-        # leaves behind may be an older commit, or a mutation mid-swap, and
-        # the check must not depend on what the audit did to the checkout.
-        #
-        # Stage 82 item 1 (the 2026-11-02 review): the checker is taken from the
-        # BASE commit, not from the pull request being audited. Copied from the
-        # head, a pull request could relax the very check that decides whether its
-        # own audit counts -- accept SAFE TO MERGE over a DISCREPANCY line, or any
-        # author. `git show` reads the base's blobs without touching the index or
-        # the working tree, so Booth's `git status` is unchanged. A pull request
-        # that changes the checker is judged by the old one; its own tests still
-        # run on its head in Run tests, and the new checker counts from the merge.
-        # A dispatch has no base in its event, so it reads main.
+        # The report check itself runs in the post job, from a checkout of the
+        # base commit (Stage 82 items 1 and 4), where nothing Booth does in this
+        # job can reach it.
         id: audited
-        env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "started=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
-          base="${BASE_SHA:-origin/main}"
-          mkdir -p "$RUNNER_TEMP/booth-base/src/agents" "$RUNNER_TEMP/booth-check/src/agents"
-          for f in src/__init__.py src/agents/__init__.py src/agents/booth_report_posted.py src/agents/booth_verdict.py; do
-            git show "$base:$f" > "$RUNNER_TEMP/booth-base/$f"
-          done
-          cd "$RUNNER_TEMP/booth-base"
-          cp src/__init__.py "$RUNNER_TEMP/booth-check/src/"
-          cp src/agents/booth_report_posted.py src/agents/booth_verdict.py src/agents/__init__.py "$RUNNER_TEMP/booth-check/src/agents/"
 
       # Stage 82 item 2 (the 2026-11-02 review): the protocol Booth follows is
       # the BASE commit's, as Spotter's is. Read from the checkout, it was the
@@ -235,14 +223,17 @@ jobs:
             claim genuinely cannot be checked with the tools available here,
             mark it UNVERIFIABLE and say why rather than guessing.
 
-            When you are done, post your report as a PR comment using:
-              gh pr comment ${{ github.event.pull_request.number || inputs.pr_number }} --body-file <your report file>
+            When you are done, write your report, exactly as it should appear on
+            the pull request, to this file:
+              ${{ runner.temp }}/booth-report.md
+            Do not post it. This job cannot write to the pull request; a later
+            job posts that file as the PR comment, unchanged, after you finish.
 
             Work through the claims in order of how load-bearing they are --
-            a claim the merge decision rests on before a decorative one. POST
-            YOUR REPORT BEFORE YOU RUN OUT OF TURNS. A report covering the
+            a claim the merge decision rests on before a decorative one. WRITE
+            YOUR REPORT FILE BEFORE YOU RUN OUT OF TURNS. A report covering the
             claims that matter, with the rest listed as not yet checked, is
-            far more useful than an exhausted run that posts nothing at all.
+            far more useful than an exhausted run that leaves nothing at all.
             The first attempt at this workflow died exactly that way.
 
             THIS RUN ENDS THE MOMENT YOU STOP CALLING TOOLS. There is no later
@@ -250,14 +241,14 @@ jobs:
             If you start something long in the background -- the mutation
             corpus takes several minutes -- stay in the loop and poll it
             (for example `sleep 60; tail -3 <its log>` in a Bash call) until it
-            has finished, then post. Never end your turn to "wait". Posting
-            the report with `gh pr comment` is the last tool call you make,
-            and a run that ends before it has posted nothing at all.
+            has finished, then write the report. Never end your turn to "wait".
+            Writing the report file is the last tool call you make, and a run
+            that ends before it has written one leaves nothing to post.
 
             Use the exact report structure the protocol specifies. Do not
             merge, close, approve or modify the pull request -- the protocol
-            ends your job at the report, and this workflow has read-only
-            access to repository contents regardless.
+            ends your job at the report, and this job has read-only access to
+            the repository and the pull request regardless.
           # "THIS RUN ENDS THE MOMENT YOU STOP CALLING TOOLS" was added after
           # #94 (2026-09-23): two runs in a row posted nothing, and the Run
           # Booth log showed subtype "success", is_error false, 43 of 120
@@ -279,6 +270,63 @@ jobs:
             --max-turns 120
             --allowedTools "Bash,Read,Glob,Grep"
 
+      - name: Keep Booth's report for the post job
+        # Not on a cancelled run: a newer push superseded it, and its report
+        # would land on the pull request beside the newer audit's.
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: booth-report
+          path: ${{ runner.temp }}/booth-report.md
+          if-no-files-found: warn
+          retention-days: 7
+
+  post:
+    # Stage 82 item 4 (the 2026-11-02 review). The only job with a write grant,
+    # and it runs no model and none of the pull request's code. It checks out
+    # the BASE commit, so the report check is the one that stood before this
+    # pull request (Stage 82 item 1: a pull request cannot relax the check that
+    # decides whether its own audit counts); fetches the file Booth wrote; posts
+    # it; and fails the run unless a report for the audited commit is on the
+    # pull request. Not after a skipped audit (a draft) or a cancelled one (a
+    # newer push superseded it). booth_report_posted.py and booth_verdict.py
+    # import only the standard library, so nothing is installed here.
+    needs: audit
+    if: ${{ !cancelled() && needs.audit.result != 'skipped' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Check out the base's report check
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          # A dispatch has no base in its event, so it reads main.
+          ref: ${{ github.event.pull_request.base.sha || 'main' }}
+          persist-credentials: false
+
+      - name: Fetch Booth's report
+        # A run where Booth wrote nothing has no artifact. The check below then
+        # says "Booth posted NO report", rather than this step failing first.
+        continue-on-error: true
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: booth-report
+          path: ${{ runner.temp }}/booth
+
+      - name: Post Booth's report
+        env:
+          REPORT: ${{ runner.temp }}/booth/booth-report.md
+          PR: ${{ github.event.pull_request.number || inputs.pr_number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -s "$REPORT" ]; then
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body-file "$REPORT"
+          else
+            echo "Booth wrote no report; the next step fails the run."
+          fi
+
       - name: Fail if Booth posted no report
         # The action exits 0 whether or not Booth ever reached `gh pr
         # comment`. PR #80's first run did exactly that -- Success, 3m55s,
@@ -292,6 +340,5 @@ jobs:
           PR: ${{ github.event.pull_request.number || inputs.pr_number }}
         run: |
           gh api "repos/${{ github.repository }}/issues/$PR/comments" --paginate > "$RUNNER_TEMP/booth-comments.json"
-          cd "$RUNNER_TEMP/booth-check"
-          python -m src.agents.booth_report_posted "$RUNNER_TEMP/booth-comments.json" \
-            "${{ steps.audited.outputs.sha }}" "${{ steps.audited.outputs.started }}"
+          python3 -m src.agents.booth_report_posted "$RUNNER_TEMP/booth-comments.json" \
+            "${{ needs.audit.outputs.sha }}" "${{ needs.audit.outputs.started }}"

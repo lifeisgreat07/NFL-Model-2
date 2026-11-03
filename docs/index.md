@@ -130,7 +130,7 @@ notes elsewhere still describe them as files you can open in the repository.
 
 | Path | When it runs |
 |---|---|
-| `.github/workflows/booth-pr-audit.yml` | Every PR open, push and description edit. |
+| `.github/workflows/booth-pr-audit.yml` | Every PR open, push and description edit. Two jobs: **audit** runs Booth with read-only grants and keeps the report it writes; **post**, the only job that can write and with no model, checks out the base, posts the report and runs `src/agents/booth_report_posted.py`. |
 | `.github/workflows/booth-alert.yml` | After every Booth audit run. A failed or timed-out audit becomes an issue (`src/agents/booth_alert.py`, `src/core/alerts.py`); cancelled and successful runs raise nothing. |
 | `.github/workflows/nfl-nightly-canary.yml` | 06:00 UTC every night, and by hand. Runs the weekly data path without writing anything (`src/sports/nfl/canary.py`): the loads, the data-quality checks, nflverse's columns against `data/nfl/nflverse_schema.json` (`src/sports/nfl/schema_check.py`), and the shape of next week's nfl.com schedule page, the TV-channel source. A failure opens or comments on the issue "NFL: Nightly canary failing". |
 | `.github/workflows/nightly-mutation.yml` | 06:30 UTC every night, and by hand. Runs 30 cases of the mutation corpus chosen by a seed that is the UTC date (`tests/mutation/runner.py --sample 30 --seed YYYYMMDD`), and writes the counts by status to the run's summary. Anything not caught by the test it names fails the run. Writes nothing to the repository. |
