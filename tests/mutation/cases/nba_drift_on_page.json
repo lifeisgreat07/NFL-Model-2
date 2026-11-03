@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nba/pages/nba.js",
+  "tests": "tests/test_nba_drift_on_page.py",
+  "cases": [
+    {
+      "id": "nba-drift-status-not-rendered",
+      "why": "the NBA checks page computes the drift status and shows nothing again, the state the 2026-11-02 review found",
+      "find": "    <p class=\"nba-lede\">${driftStatus(BD.drift, BD.drift_rule)}</p>\n",
+      "replace": "",
+      "expect_caught_by": "test_the_page_renders_it_and_the_build_passes_the_rule"
+    },
+    {
+      "id": "nba-drift-flag-reads-not-flagged",
+      "why": "a flagged drift check reads as not flagged on the page",
+      "find": "  return d.flagged ? `<b>Flagged.</b> ${now} That is significantly above the backtest, and an issue is open.` : `Not flagged. ${now}`;\n",
+      "replace": "  return `Not flagged. ${now}`;\n",
+      "expect_caught_by": "test_the_status_follows_the_file"
+    }
+  ]
+}
