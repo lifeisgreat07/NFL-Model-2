@@ -21,6 +21,10 @@ import math
 from datetime import date, datetime, timedelta
 
 import pandas as pd
+
+from tests.optional import require
+
+require('hypothesis', module_level=True)
 from hypothesis import given, settings
 from hypothesis import strategies as st
 

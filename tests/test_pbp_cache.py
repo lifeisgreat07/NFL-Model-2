@@ -25,9 +25,9 @@ import sys
 from pathlib import Path
 from types import SimpleNamespace
 
-import pytest
+from tests.optional import require
 
-pl = pytest.importorskip('polars')
+pl = require('polars', module_level=True)
 
 
 from src.sports.nfl import data_loader
