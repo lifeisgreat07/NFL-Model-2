@@ -5,15 +5,15 @@
   {
    "id": "nhl-market-timeout-stops-run",
    "why": "an odds feed that times out ends the run before any pick is saved, as on 2026-10-10 (issue #424)",
-   "find": "    except (OSError, ValueError) as exc:\n        return [], [",
-   "replace": "    except KeyboardInterrupt as exc:\n        return [], [",
+   "find": "    except (OSError, ValueError) as exc:\n        print(f'DEGRADED: odds feed",
+   "replace": "    except KeyboardInterrupt as exc:\n        print(f'DEGRADED: odds feed",
    "expect_caught_by": "test_an_odds_feed_that_times_out_still_saves_every_pick"
   },
   {
    "id": "nhl-roster-failure-stops-run",
    "why": "one club's roster that cannot be read ends the run, though its goalie has a fallback",
-   "find": "        except (OSError, ValueError) as exc:\n            print(f'roster for {club}",
-   "replace": "        except KeyboardInterrupt as exc:\n            print(f'roster for {club}",
+   "find": "        except (OSError, ValueError) as exc:\n            print(f'DEGRADED: roster for {club}",
+   "replace": "        except KeyboardInterrupt as exc:\n            print(f'DEGRADED: roster for {club}",
    "expect_caught_by": "test_a_roster_that_cannot_be_read_still_saves_every_pick"
   },
   {
