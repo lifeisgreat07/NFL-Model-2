@@ -17,20 +17,20 @@
 #
 # Install both:  pip install -r requirements.txt -r requirements-dev.txt
 
-pytest==9.1.1
+pytest==9.2.0
 
 # The linter run-tests.yml runs, with the rules ruff.toml selects (Stage 27).
 # Pinned for the same reason: a new ruff release can add findings to a rule,
 # and a PR should not go red because the linter changed under it.
-ruff==0.16.9
+ruff==0.17.3
 
 # The type check run-tests.yml runs over the weekly run's two core modules
 # (Stage 35). Pinned for ruff's reason: a new mypy release can add errors.
-mypy==2.3.1
+mypy==2.4.1
 
 # Property tests, tests/test_properties.py (Stage 48 item 16). Pinned for
 # ruff's reason, and the tests are derandomized, so a version and a commit
 # fix the examples drawn.
-hypothesis==6.168.4
+hypothesis==6.170.14
 # The dead-code report (Stage 48 item 18, tests/test_dead_code.py).
 vulture==2.16
