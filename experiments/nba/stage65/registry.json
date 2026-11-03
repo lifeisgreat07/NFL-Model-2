@@ -48,7 +48,8 @@
  "disclosures": [
   "Stage 61's last disclosure said the live reads waited on Mark. The runner probe of 2026-10-09 (#357) found ESPN's odds and injury report answering GitHub's runner, where in September (#131) they had not; this registration rests on that probe, and the canary is what says when it stops being true.",
   "Kalshi is a prediction market, not a sportsbook; its prices on NBA games were not in Stage 61's data and were never backtested.",
-  "The lock times are chosen for October's clocks. When the US leaves daylight saving on 2026-11-01, 21:30 UTC is 4:30 PM Eastern, earlier before the 7 PM games; the rule is unchanged."
+  "The lock times are chosen for October's clocks. When the US leaves daylight saving on 2026-11-01, 21:30 UTC is 4:30 PM Eastern, earlier before the 7 PM games; the rule is unchanged.",
+  "Why the pick shown is Model B's though H3 rejected Model B against the market (+0.0008 log loss per game, [+0.0002, +0.0015]): the_pick was carried over unchanged from the NFL and NHL boards, so the three boards pick the same way, and forward_test reports Model B against the market on every live pick. Added 2026-11-03 (Stage 84 item 8); see amendments."
  ],
  "amendments": [
   {
@@ -58,6 +59,14 @@
    "before_any_result": false,
    "seen": "Written on 2026-11-03, after the forward test's first figures were computed and read: 96 graded NBA picks through 2026-11-02, with Model A minus the base rate -0.0696 [-0.1224, -0.0020], Model B minus Model A -0.0627 [-0.1008, -0.0186] and Model B minus the market -0.0001 [-0.0016, +0.0010] (log loss per game, 98.33% intervals). The rule was written knowing these, so it was kept to the backtests' own rule and level, and it decides only when it is applied.",
    "change": "Added forward_test.decision: when the season's verdict is taken, on what, and by which rule. The registration had said what is reported and not how it is judged."
+  },
+  {
+   "date": "2026-11-03",
+   "by": "Claude, under Mark's approval of 2026-11-02 (the 2026-11-02 review, Stage 84 item 8)",
+   "entry": "disclosures",
+   "before_any_result": false,
+   "seen": "H3's REJECT was in experiments/nba/stage61/results/confirmation.json when this registration was made on 2026-10-09; the forward test's first figures (see the forward_test.decision amendment) had been read when this disclosure was written.",
+   "change": "Added a disclosure saying why the board shows Model B's pick although H3 rejected it against the market. No rule changes."
   }
  ]
 }
