@@ -2,6 +2,7 @@
 
     python tasks.py                 list the tasks
     python tasks.py test            the suite, as CLAUDE.md's Suite line quotes it
+    python tasks.py quick           the suite without the tests marked slow, for iterating
     python tasks.py check           lint, then the suite -- the two things run-tests.yml runs
     python tasks.py mutation-slice  tonight's nightly slice (or --seed YYYYMMDD)
 
@@ -58,6 +59,9 @@ def _axe():
 TASKS = {
     'test': ('the whole suite, as CLAUDE.md\'s Suite line quotes it',
              lambda a: [[PY, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider']]),
+    'quick': ('the suite without the tests marked slow (whole daily runs), for iterating; '
+              'CI, `test` and the wrap-up gate still run every test',
+              lambda a: [[PY, '-B', '-m', 'pytest', '-q', '-p', 'no:cacheprovider', '-m', 'not slow']]),
     'lint': ('ruff, then mypy over the weekly run\'s two core modules and strict mypy over the '
              'agents, as run-tests.yml runs them',
              lambda a: [['ruff', 'check', '.'], TYPES, AGENT_TYPES]),
