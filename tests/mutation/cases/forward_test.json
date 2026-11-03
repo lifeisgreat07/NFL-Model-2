@@ -1,0 +1,41 @@
+{
+  "target": "src/core/forward_test.py",
+  "tests": "tests/test_forward_test.py",
+  "cases": [
+    {
+      "id": "forward-base-rate-reads-the-day-itself",
+      "why": "the base rate counts the pick's own day, so it has seen the outcomes it is scored against",
+      "find": "        before = known.loc[known['day'] < pd.Timestamp(day), 'home_win']\n",
+      "replace": "        before = known.loc[known['day'] <= pd.Timestamp(day), 'home_win']\n",
+      "expect_caught_by": "test_the_base_rate_reads_only_scored_games_before_the_day"
+    },
+    {
+      "id": "forward-unplayed-games-are-away-wins",
+      "why": "games with no score count as away wins, pulling the base rate down",
+      "find": "    known = played.dropna(subset=['home_score', 'away_score'])\n",
+      "replace": "    known = played\n",
+      "expect_caught_by": "test_the_base_rate_reads_only_scored_games_before_the_day"
+    },
+    {
+      "id": "forward-comparison-unpaired",
+      "why": "a comparison takes every game the first forecaster scored, so B against A mixes unpriced games into one side",
+      "find": "        both = frame[frame[first].notna() & frame[second].notna()]\n",
+      "replace": "        both = frame[frame[first].notna()]\n",
+      "expect_caught_by": "test_a_comparison_is_paired_on_the_games_both_scored"
+    },
+    {
+      "id": "forward-level-is-not-the-backtests",
+      "why": "the interval drops to 95%, narrower than the 98.33% the backtests registered for three comparisons",
+      "find": "LEVEL = 1 - 0.05 / 3\n",
+      "replace": "LEVEL = 0.95\n",
+      "expect_caught_by": "test_the_level_and_seed_are_the_backtests"
+    },
+    {
+      "id": "forward-seeds-swapped",
+      "why": "each sport resamples with the other's seed, so its intervals are not the registered ones",
+      "find": "SEEDS = {'nhl': 20261005, 'nba': 20261006}\n",
+      "replace": "SEEDS = {'nhl': 20261006, 'nba': 20261005}\n",
+      "expect_caught_by": "test_the_level_and_seed_are_the_backtests"
+    }
+  ]
+}

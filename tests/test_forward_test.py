@@ -106,9 +106,12 @@ def test_a_score_is_log_loss_brier_and_accuracy():
 def test_a_comparison_is_paired_on_the_games_both_scored():
     picks = [pick(str(i), 0.6, 0.65 if i % 2 else None, 0.6 if i % 2 else None, 'espn') for i in range(12)]
     fin = finals([(str(i), f'2026-10-{20 + i // 3}', float(i % 3 == 0)) for i in range(12)])
-    frame = ft.rows(picks, fin, {f'2026-10-{20 + d}': 0.55 for d in range(4)})
+    # No base rate on the first day (no earlier game): A against the base rate
+    # pairs on the nine games that have both, though A has all twelve.
+    frame = ft.rows(picks, fin, {f'2026-10-{20 + d}': 0.55 for d in range(1, 4)})
     out = ft.report(frame, 'nba', 2026, 'experiments/nba/stage65/registry.json')
-    assert out['comparisons']['model_a_minus_base_rate']['games'] == 12
+    assert out['scores']['model_a']['games'] == 12 and out['scores']['base_rate']['games'] == 9
+    assert out['comparisons']['model_a_minus_base_rate']['games'] == 9
     assert out['comparisons']['model_b_minus_model_a']['games'] == 6
     assert out['comparisons']['model_b_minus_market']['games'] == 6
 
