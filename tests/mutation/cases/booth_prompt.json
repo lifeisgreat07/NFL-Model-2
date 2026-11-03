@@ -45,6 +45,15 @@
       "find": "            Do not post it. This job cannot write to the pull request; a later\n",
       "replace": "            Post it with gh pr comment. This job cannot write to the pull request; a later\n",
       "expect_caught_by": "test_the_prompt_says_where_the_report_goes_and_not_to_post_it"
+    },
+    {
+      "id": "booth-cannot-write-its-report",
+      "target": ".github/workflows/booth-pr-audit.yml",
+      "tests": "tests/test_booth_prompt.py",
+      "why": "Write drops out of Booth's tools, so it is told to write a report file it is refused -- #578's and #580's first runs, which each ended with no report",
+      "find": "            --allowedTools \"Bash,Read,Glob,Grep,Write\"\n",
+      "replace": "            --allowedTools \"Bash,Read,Glob,Grep\"\n",
+      "expect_caught_by": "test_booth_can_write_its_report_where_it_is_told"
     }
   ]
 }

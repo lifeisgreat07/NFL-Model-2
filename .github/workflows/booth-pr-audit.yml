@@ -224,8 +224,9 @@ jobs:
             mark it UNVERIFIABLE and say why rather than guessing.
 
             When you are done, write your report, exactly as it should appear on
-            the pull request, to this file, inside the checkout:
-              .git/booth-report.md
+            the pull request, with the Write tool, to this file at the top of the
+            checkout:
+              booth-report.md
             Do not post it. This job cannot write to the pull request; a later
             job posts that file as the PR comment, unchanged, after you finish.
 
@@ -268,24 +269,25 @@ jobs:
           # and turns are a blunt proxy for it.
           claude_args: |
             --max-turns 120
-            --allowedTools "Bash,Read,Glob,Grep"
+            --allowedTools "Bash,Read,Glob,Grep,Write"
 
       - name: Keep Booth's report for the post job
         # Not on a cancelled run: a newer push superseded it, and its report
         # would land on the pull request beside the newer audit's.
         #
-        # Inside the checkout, under .git/ as the base's protocol is: the
-        # first run of this job (#578) told Booth to write to $RUNNER_TEMP,
-        # outside the working directory, and the one permission denial in
-        # that run was most likely that write -- Booth ended with no file. In
-        # .git/ it stays out of `git status`. upload-artifact skips hidden
-        # folders unless told otherwise.
+        # Where Booth writes it, and how, follow Spotter, whose model writes
+        # reading/reading.md with the Write tool on every run: a plain file
+        # in the checkout, and Write in the allowed tools. The first two runs
+        # of this job each ended with no file and one or two permission
+        # denials (#578 with $RUNNER_TEMP, #580 with .git/): Booth's tools
+        # were Bash, Read, Glob and Grep, and the old prompt never asked it to
+        # write a file, so a refused Write is the likeliest reading (the
+        # action hides which call was refused).
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: booth-report
-          path: ${{ github.workspace }}/.git/booth-report.md
-          include-hidden-files: true
+          path: ${{ github.workspace }}/booth-report.md
           if-no-files-found: warn
           retention-days: 7
 

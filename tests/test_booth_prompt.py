@@ -61,21 +61,24 @@ def test_the_prompt_says_where_the_report_goes_and_not_to_post_it():
     Booth writes its report to the file the post job fetches; a prompt still
     telling it to `gh pr comment` would end every audit in a 403 and no file."""
     prompt = prompt_block(WORKFLOW.read_text(encoding='utf-8'))
-    assert '\n              .git/booth-report.md\n' in prompt
+    assert '\n              booth-report.md\n' in prompt and 'with the Write tool' in prompt
     assert 'Do not post it.' in prompt
     assert 'gh pr comment' not in prompt
     wf = WORKFLOW.read_text(encoding='utf-8')
-    assert 'path: ${{ github.workspace }}/.git/booth-report.md' in wf, 'the upload step keeps another file'
-    assert 'include-hidden-files: true' in wf, 'upload-artifact skips .git/ unless told otherwise'
+    assert 'path: ${{ github.workspace }}/booth-report.md' in wf, 'the upload step keeps another file'
     assert "REPORT: ${{ runner.temp }}/booth/booth-report.md" in wf, 'the post job posts another file'
 
 
-def test_the_report_file_is_inside_the_checkout():
-    """#578's first run: told to write to $RUNNER_TEMP, outside the working
-    directory, Booth had one permission denial and ended with no file. The
-    report goes where Booth's tools may write."""
-    prompt = prompt_block(WORKFLOW.read_text(encoding='utf-8'))
-    assert 'runner.temp' not in prompt and 'RUNNER_TEMP' not in prompt
+def test_booth_can_write_its_report_where_it_is_told():
+    """#578 and #580: told to write a report file with no Write tool,
+    Booth ended both runs with permission denials and no file. As Spotter
+    does, the file is a plain one in the checkout, and Write is allowed;
+    Write adds nothing Bash could not already do."""
+    text = WORKFLOW.read_text(encoding='utf-8')
+    prompt = prompt_block(text)
+    assert 'runner.temp' not in prompt and 'RUNNER_TEMP' not in prompt and '.git/booth-report' not in prompt
+    tools = re.search(r'--allowedTools "([^"]+)"', text).group(1).split(',')
+    assert 'Write' in tools and 'Bash' in tools
 
 
 def test_the_block_reader_is_not_blind():
