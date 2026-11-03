@@ -218,7 +218,7 @@ def read_injuries(get: Callable[[str], bytes], teams: set[str]) -> list[dict[str
     try:
         return injuries.parse(json.loads(get(injuries.SOURCE)), teams)
     except (injuries.InjurySourceError, OSError, ValueError) as exc:
-        print(f'injuries: not read, picks made without availability: {exc}')
+        print(f'DEGRADED: injuries: not read, picks made without availability: {exc}')
         return None
 
 
@@ -226,7 +226,7 @@ def read_espn_odds(gid: str, get: Callable[[str], bytes]) -> Json | None:
     try:
         return json.loads(get(market.ESPN_ODDS.format(e=gid)))
     except (OSError, ValueError) as exc:
-        print(f'ESPN odds for {gid}: not read: {exc}')
+        print(f'DEGRADED: ESPN odds for {gid}: not read: {exc}')
         return None
 
 

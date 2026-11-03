@@ -793,8 +793,19 @@ function calibrationHtml(graded){
     <thead><tr><th scope="col">The pick's chance</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Said, on average</th><th scope="col" class="num">Correct</th></tr></thead>
     <tbody>${rows}</tbody></table></div>`;
 }
+/* Stage 84 item 6 (the 2026-11-02 review): the daily run writes the drift
+   check's result and the page never showed it. Worded as the NHL's is. */
+function driftStatus(d, rule){
+  const min = rule ? rule.rule.min_games : 100;
+  if (!d || !d.games) return 'No pick has been graded yet, so the drift check has nothing to test.';
+  const now = `Model A&#39;s mean log loss over ${d.games} graded games is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest.`;
+  if (d.games < min) return `${d.games} of the ${min} graded games the drift check needs before it can flag. ${now}`;
+  return d.flagged ? `<b>Flagged.</b> ${now} That is significantly above the backtest, and an issue is open.` : `Not flagged. ${now}`;
+}
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
+    <h2 class="section-title">The drift check</h2>
+    <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
     <h2 class="section-title">The live picks so far</h2>
     ${accuracyHtml(accGames(gradedPicks()))}
     ${calibrationHtml(gradedPicks())}

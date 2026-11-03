@@ -1,0 +1,29 @@
+{
+  "target": "src/sports/nba/daily.py",
+  "tests": "tests/test_degraded_inputs.py",
+  "cases": [
+    {
+      "id": "nba-injuries-unread-not-degraded",
+      "why": "an unread NBA injury report is a plain line again, so a night of picks without availability raises nothing (11-02's Suspension night)",
+      "find": "        print(f'DEGRADED: injuries: not read, picks made without availability: {exc}')\n",
+      "replace": "        print(f'injuries: not read, picks made without availability: {exc}')\n",
+      "expect_caught_by": "test_the_nba_says_degraded_for_injuries_and_odds"
+    },
+    {
+      "id": "nhl-odds-unread-not-degraded",
+      "target": "src/sports/nhl/daily.py",
+      "why": "an unread NHL odds feed says nothing on a DEGRADED line, so a night of picks with no prices raises nothing",
+      "find": "        print(f'DEGRADED: odds feed: not read, every pick made without a price: {exc}')\n",
+      "replace": "",
+      "expect_caught_by": "test_the_nhl_says_degraded_for_injuries_odds_and_rosters"
+    },
+    {
+      "id": "nba-degraded-alert-never-fires",
+      "target": ".github/workflows/nba-daily.yml",
+      "why": "the workflow looks for the wrong prefix, so DEGRADED lines are printed and nobody hears",
+      "find": "          if grep -q '^DEGRADED:' nba-daily.log; then\n",
+      "replace": "          if grep -q '^DEGRADE:' nba-daily.log; then\n",
+      "expect_caught_by": "test_the_workflow_raises_an_issue_on_a_degraded_line"
+    }
+  ]
+}

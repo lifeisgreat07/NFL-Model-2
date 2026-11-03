@@ -1,0 +1,20 @@
+{
+  "target": "src/core/accepted_vulns.py",
+  "tests": "tests/test_accepted_vulns.py",
+  "cases": [
+    {
+      "id": "accepted-vuln-never-expires",
+      "why": "an acceptance past its review date is still ignored, so a vulnerability nobody looks at again stays silent forever",
+      "find": "        if date.fromisoformat(row['review_by']) < today:\n",
+      "replace": "        if False:\n",
+      "expect_caught_by": "test_an_entry_past_its_review_date_is_audited_again"
+    },
+    {
+      "id": "accepted-vuln-without-reason",
+      "why": "an entry with no reason or date is accepted, so a vulnerability can be silenced without saying why or until when",
+      "find": "        if missing:\n            raise AcceptedVulnError(f'{row.get(\"id\", \"?\")}: missing {missing}')\n",
+      "replace": "",
+      "expect_caught_by": "test_an_entry_without_a_reason_or_date_is_refused"
+    }
+  ]
+}
