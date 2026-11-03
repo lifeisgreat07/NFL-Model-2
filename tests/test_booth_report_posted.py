@@ -279,6 +279,28 @@ def test_the_checker_is_copied_out_before_booth_touches_the_tree():
     )
 
 
+
+def test_the_checker_comes_from_the_base_not_the_pull_request():
+    """Stage 82 item 1 (the 2026-11-02 review). Copied from the head, a pull
+    request could relax the check that decides whether its own audit counts."""
+    steps = _steps()
+    copy = _index(steps, lambda n, b: 'cp src/agents/booth_report_posted.py' in b, 'copies the checker out')
+    body = steps[copy][1]
+    assert 'BASE_SHA: ${{ github.event.pull_request.base.sha }}' in body
+    assert 'git show "$base:$f" > "$RUNNER_TEMP/booth-base/$f"' in body
+    assert body.index('cd "$RUNNER_TEMP/booth-base"') < body.index('cp src/agents/booth_report_posted.py'), (
+        "the checker is copied from the pull request's working tree, not from the base")
+    for f in ('src/agents/booth_report_posted.py', 'src/agents/booth_verdict.py', 'src/agents/__init__.py', 'src/__init__.py'):
+        assert f in body.split('for f in ')[1].split(';')[0], f'{f} is copied but not read from the base'
+
+
+def test_the_checker_files_are_auditor_files():
+    """A pull request that edits the checker must say "Human review required:"."""
+    from src.agents import scout_preflight as pf
+    assert 'src/agents/booth_report_posted.py' in pf.AUDITOR_FILES
+    assert 'src/agents/booth_verdict.py' in pf.AUDITOR_FILES
+
+
 # --- the check runs from a copy, outside the checkout -------------------------
 
 def copied_modules(workflow_text):

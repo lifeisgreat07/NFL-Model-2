@@ -232,3 +232,15 @@ def test_the_page_marks_late_at_the_runs_own_warning():
     from src.core import start_delay
     src = JOINED_TEMPLATE.read_text(encoding='utf-8')
     assert f'const LATE_WARN_MINUTES = {start_delay.WARN_HOURS} * 60;' in src
+
+
+def test_a_watched_job_that_also_runs_on_pull_requests_lists_only_its_timed_runs():
+    """Stage 81 item 6: the browser checks run nightly and on every pull request;
+    the page lists unattended runs, so only the scheduled ones."""
+    per_file = {f: [run(1, name=f, minute=i)] for i, f in enumerate(rr.WATCHED)}
+    get, calls = fake_api(per_file)
+    rr.fetch('o/r', 'tok', get)
+    urls = [u for u, _ in calls]
+    browser = [u for u in urls if '/browser-checks.yml/' in u]
+    assert browser and all(u.endswith('&event=schedule') for u in browser)
+    assert not any('&event=' in u for u in urls if '/browser-checks.yml/' not in u)

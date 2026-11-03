@@ -1,0 +1,36 @@
+{
+  "target": ".github/workflows/browser-checks.yml",
+  "tests": "tests/test_nightly_browser_checks.py",
+  "cases": [
+    {
+      "id": "browser-checks-never-nightly",
+      "why": "the nightly run is gone, so a check that goes stale with the season shows up on the next unrelated pull request again",
+      "find": "  schedule:\n    - cron: '23 9 * * *'\n",
+      "replace": "",
+      "expect_caught_by": "test_it_runs_every_night"
+    },
+    {
+      "id": "browser-checks-nightly-silent",
+      "why": "the nightly run fails without an issue, so nobody hears about it until a pull request goes red",
+      "find": "        if: failure() && github.event_name == 'schedule'\n",
+      "replace": "        if: failure() && github.event_name == 'nothing'\n",
+      "expect_caught_by": "test_the_nightly_run_raises_an_issue_and_a_pull_request_does_not"
+    },
+    {
+      "id": "browser-checks-nfl-data-only",
+      "why": "a pull request changing the NBA's or NHL's data does not run the checks that build their pages from it",
+      "find": "      - 'data/**'\n      - 'predictions/**'\n      - 'results/**'\n",
+      "replace": "      - 'data/nfl/**'\n      - 'predictions/nfl/**'\n      - 'results/nfl/**'\n",
+      "expect_caught_by": "test_a_pull_request_that_changes_any_sports_data_runs_it"
+    },
+    {
+      "id": "recent-runs-lists-pull-request-browser-runs",
+      "target": "src/sports/nfl/recent_runs.py",
+      "tests": "tests/test_recent_runs.py",
+      "why": "the recent-runs page lists every pull request's browser run beside the unattended jobs, and the nightly run is lost among them",
+      "find": "        data = get(f'{API}/repos/{repo}/actions/workflows/{file}/runs?per_page={shown}{event}', token)\n",
+      "replace": "        data = get(f'{API}/repos/{repo}/actions/workflows/{file}/runs?per_page={shown}', token)\n",
+      "expect_caught_by": "test_a_watched_job_that_also_runs_on_pull_requests_lists_only_its_timed_runs"
+    }
+  ]
+}
