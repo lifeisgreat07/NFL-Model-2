@@ -73,6 +73,7 @@ DISPATCHED: dict[str, tuple[str, ...]] = {
 NOT_DISPATCHED: dict[str, str] = {
     'nightly-random-order.yml': 'reads main and writes nothing, so a late start costs nothing',
     'line-judge-digest.yml': 'a weekly count posted a few hours late costs nothing',
+    'browser-checks.yml': 'reads main and writes nothing, so a late start costs nothing',
 }
 
 Fetch = Callable[[str, datetime], list[datetime]]

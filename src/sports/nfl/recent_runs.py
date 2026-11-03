@@ -50,7 +50,11 @@ WATCHED = {
     'nba-daily.yml': 'NBA daily run',
     'nba-canary.yml': 'NBA nightly canary',
     'line-judge-digest.yml': 'Line Judge weekly digest',
+    'browser-checks.yml': 'Nightly browser checks',
 }
+#: Watched workflows that also run on pull requests: only their timed runs are
+#: unattended, so only those are listed (Stage 81 item 6).
+EVENT = {'browser-checks.yml': 'schedule'}
 SHOWN = 30
 WORKFLOWS = Path(__file__).resolve().parents[3] / '.github' / 'workflows'
 API = 'https://api.github.com'
@@ -100,7 +104,8 @@ def fetch(repo, token=None, get=_get, shown=SHOWN):
     """The `shown` most recent runs across WATCHED, newest first."""
     rows = []
     for file, name in WATCHED.items():
-        data = get(f'{API}/repos/{repo}/actions/workflows/{file}/runs?per_page={shown}', token)
+        event = f'&event={EVENT[file]}' if file in EVENT else ''
+        data = get(f'{API}/repos/{repo}/actions/workflows/{file}/runs?per_page={shown}{event}', token)
         path = WORKFLOWS / file
         crons = cron_lines(path.read_text(encoding='utf-8')) if path.exists() else []
         rows.extend(row(r, name, crons) for r in data.get('workflow_runs', []))

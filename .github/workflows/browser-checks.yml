@@ -19,14 +19,23 @@ name: Browser checks
 # No pixel-diff screenshots, deliberately (CLAUDE.md, Stage 12): they fail on
 # font hinting and antialiasing, and a check that cries wolf gets ignored.
 
+# Stage 81 item 6 (the 2026-11-02 review). The checks build the NHL and NBA
+# pages from the committed data, and several of them are about a state the
+# real page passes through and then leaves (pre-season, opening night). Run
+# only on pull requests, a check that had gone stale with the season showed up
+# on whichever unrelated pull request came next (the NBA tip self-test,
+# 2026-10-28 to 11-02). So it also runs every night on main and raises an
+# issue there, and a pull request that changes any sport's data runs it.
 on:
+  schedule:
+    - cron: '23 9 * * *'
   pull_request:
     paths:
       - 'src/**'
       - 'assets/**'
-      - 'data/nfl/**'
-      - 'predictions/nfl/**'
-      - 'results/nfl/**'
+      - 'data/**'
+      - 'predictions/**'
+      - 'results/**'
       - 'tests/browser/**'
       - 'requirements.txt'
       - '.github/workflows/browser-checks.yml'
@@ -41,6 +50,8 @@ on:
 
 permissions:
   contents: read
+  # The nightly run's alert, and nothing else.
+  issues: write
 
 jobs:
   browser:
@@ -54,6 +65,11 @@ jobs:
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: '3.11'
+
+      # Stage 42 item 1, for the nightly run only: how late it started.
+      - name: Record the start delay
+        if: github.event_name == 'schedule'
+        run: python -m src.core.start_delay .github/workflows/browser-checks.yml
 
       # Versions pinned: the checker was written and proven against these,
       # and a browser that changes under it would change what "no findings"
@@ -274,3 +290,20 @@ jobs:
 
       - name: Check the theme follows the visitor between pages
         run: python tests/browser/check_theme.py "$RUNNER_TEMP/site"
+
+      # Only the nightly run on main raises an issue: a pull request's own red
+      # check is already on the pull request, in front of whoever opened it.
+      - name: Raise an alert
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          {
+            echo "The nightly browser checks failed on main. A check that passed when it was written"
+            echo "can fail later because the committed data moved on (the season advanced), so read"
+            echo "the failing step before assuming the page is broken."
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          } > alert-body.md
+          python -m src.core.alerts --title "Browser checks failing on main" --body-file alert-body.md
