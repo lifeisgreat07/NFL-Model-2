@@ -29,6 +29,20 @@
       "find": "    if merged:\n        return f'#{pr} was merged",
       "replace": "    if not merged:\n        return f'#{pr} was merged",
       "expect_caught_by": "test_a_merge_closes_the_issue_with_a_comment_saying_so"
+    },
+    {
+      "id": "override-watch-preview-counts-as-lock",
+      "why": "a Tuesday preview counts as the lock, so an override pull request still in time for Thursday raises an alarm that the week locked without it",
+      "find": "            if s == season and (pred_dir / f'{season}_week{week}.json').exists():\n",
+      "replace": "            if s == season and ((pred_dir / f'{season}_week{week}.json').exists() or (pred_dir / 'preview' / f'{season}_week{week}.json').exists()):\n",
+      "expect_caught_by": "test_a_preview_is_not_a_lock"
+    },
+    {
+      "id": "override-watch-after-lock-silent",
+      "why": "the after-lock check finds the open pull request and raises nothing, so the week's lost overrides go unremarked as they did in weeks 7 and 8",
+      "find": "        action, ref = alerts.open_or_comment(locked_title(season, week), body, run)\n",
+      "replace": "        action, ref = 'skipped', 0\n",
+      "expect_caught_by": "test_after_the_lock_it_raises_one_issue_per_week"
     }
   ]
 }
