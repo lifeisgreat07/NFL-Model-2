@@ -88,3 +88,50 @@ def test_the_workflow_holds_no_write_scope_but_issues():
     perms = re.search(r'^permissions:\n((?:  .+\n)+)', WORKFLOW, re.M).group(1)
     writes = sorted(line.split(':')[0].strip() for line in perms.splitlines() if line.strip().endswith('write'))
     assert writes == ['issues']
+
+
+# --- Stage 81 item 2: after the lock -----------------------------------------
+
+def pr(number, *paths):
+    return {'number': number, 'url': f'https://github.com/o/r/pull/{number}', 'files': [{'path': p} for p in paths]}
+
+
+def test_an_open_override_for_a_locked_week_is_found(tmp_path):
+    (tmp_path / '2026_week9.json').write_text('[]', encoding='utf-8')
+    prs = [pr(560, WEEK9), pr(561, 'data/nfl/qb_overrides/2026_week10.json'), pr(562, 'README.md')]
+    assert ow.locked_while_open(2026, prs, tmp_path) == [(9, 560, 'https://github.com/o/r/pull/560')]
+
+
+def test_a_preview_is_not_a_lock(tmp_path):
+    (tmp_path / 'preview').mkdir()
+    (tmp_path / 'preview' / '2026_week9.json').write_text('[]', encoding='utf-8')
+    assert ow.locked_while_open(2026, [pr(560, WEEK9)], tmp_path) == []
+
+
+def test_after_the_lock_it_raises_one_issue_per_week(tmp_path):
+    import json as _json
+    from types import SimpleNamespace
+    (tmp_path / '2026_week9.json').write_text('[]', encoding='utf-8')
+    gh = FakeGh()
+    real = gh.__call__
+
+    def run(cmd, input=None, capture_output=True, text=True):
+        if cmd[:3] == ['gh', 'pr', 'list']:
+            return SimpleNamespace(returncode=0, stdout=_json.dumps([pr(560, WEEK9)]), stderr='')
+        return real(cmd, input=input)
+    lines = ow.after_lock(2026, run=run, pred_dir=tmp_path)
+    assert gh.verbs() == ['issue list', 'issue create']
+    args, body = gh.calls[-1]
+    assert args[args.index('--title') + 1] == 'NFL: 2026 week 9 locked while its QB override was unmerged'
+    assert '#560' in body and 'never rewritten' in body
+    assert lines and lines[0].startswith('opened')
+
+
+def test_the_weekly_update_asks_after_the_lock_and_cannot_fail_on_it():
+    text = (ROOT / '.github' / 'workflows' / 'nfl-weekly-update.yml').read_text(encoding='utf-8')
+    step = text[text.index('- name: Was a QB override still waiting at the lock?'):]
+    step = step[:step.index('\n      - name:')]
+    assert 'python -m src.sports.nfl.override_watch --after-lock' in step
+    assert 'continue-on-error: true' in step
+    names = re.findall(r'^      - name: (.+)$', text, re.M)
+    assert names.index('Was a QB override still waiting at the lock?') > names.index("Generate/lock in this week's predictions")
