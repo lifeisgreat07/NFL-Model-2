@@ -111,7 +111,7 @@
       "target": "src/sports/nfl/generate_dashboard.py",
       "why": "a non-ASCII sign goes into the page, which generate_dashboard.py writes in the platform's encoding. A literal U+2212 crashes the build on Windows before any test runs; an en dash, which cp1252 can encode, builds everywhere, so this case reaches the guard on every platform.",
       "find": "    return ('&minus;' if x < 0 else '+') + f'{abs(x):.{places}f}'",
-      "replace": "    return ('\u2013' if x < 0 else '+') + f'{abs(x):.{places}f}'",
+      "replace": "    return ('–' if x < 0 else '+') + f'{abs(x):.{places}f}'",
       "expect_caught_by": "test_the_text_equivalent_is_ascii"
     },
     {
@@ -237,6 +237,15 @@
       "find": "at {round(h['ci_level'] * 100, 2):g}%, ",
       "replace": "at {h['ci_level'] * 100:g}%, ",
       "expect_caught_by": "test_every_figure_a_registered_row_prints_is_its_files"
+    },
+    {
+      "id": "model-lab-registry-id-unescaped",
+      "target": "src/sports/nfl/generate_dashboard.py",
+      "tests": "tests/test_model_lab_page.py",
+      "why": "the registry id goes into the Model Lab row unescaped again, so a `<` in a registry file opens a tag on the page (Stage 88 item 6)",
+      "find": "{e['stage']} {html_escape(str(e['id']))} ",
+      "replace": "{e['stage']} {e['id']} ",
+      "expect_caught_by": "test_a_registry_id_and_source_are_escaped"
     }
   ]
 }
