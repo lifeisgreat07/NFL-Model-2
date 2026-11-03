@@ -1,0 +1,146 @@
+[
+ {
+  "page": "home",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "home-390x844-light-base.png",
+  "bytes": 155834,
+  "parked": 2
+ },
+ {
+  "page": "home",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "home-390x844-dark-base.png",
+  "bytes": 156695,
+  "parked": 2
+ },
+ {
+  "page": "home",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "home-1440x900-light-base.png",
+  "bytes": 158152,
+  "parked": 2
+ },
+ {
+  "page": "home",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "home-1440x900-dark-base.png",
+  "bytes": 156930,
+  "parked": 2
+ },
+ {
+  "page": "nfl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "nfl-390x844-light-base.png",
+  "bytes": 129678,
+  "parked": 3
+ },
+ {
+  "page": "nfl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "nfl-390x844-dark-base.png",
+  "bytes": 130616,
+  "parked": 3
+ },
+ {
+  "page": "nfl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "nfl-1440x900-light-base.png",
+  "bytes": 596174,
+  "parked": 4
+ },
+ {
+  "page": "nfl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "nfl-1440x900-dark-base.png",
+  "bytes": 603797,
+  "parked": 4
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "nhl-390x844-light-base.png",
+  "bytes": 66402,
+  "parked": 3
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "nhl-390x844-dark-base.png",
+  "bytes": 67757,
+  "parked": 3
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "nhl-1440x900-light-base.png",
+  "bytes": 187285,
+  "parked": 4
+ },
+ {
+  "page": "nhl",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "nhl-1440x900-dark-base.png",
+  "bytes": 187996,
+  "parked": 4
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "nba-390x844-light-base.png",
+  "bytes": 112646,
+  "parked": 3
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "nba-390x844-dark-base.png",
+  "bytes": 113563,
+  "parked": 3
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "nba-1440x900-light-base.png",
+  "bytes": 240685,
+  "parked": 4
+ },
+ {
+  "page": "nba",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "nba-1440x900-dark-base.png",
+  "bytes": 240685,
+  "parked": 4
+ }
+]
