@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-02",
+ "as_of": "2026-11-03",
  "games": [
   {
    "game_id": "2026020001",
@@ -3010,11 +3010,11 @@
    "start_utc": "2026-11-03T00:00:00Z",
    "home": "BOS",
    "away": "VGK",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 3,
+   "away_score": 2,
+   "last_period": "SO",
    "neutral_site": false
   },
   {
@@ -3036,11 +3036,11 @@
    "start_utc": "2026-11-03T01:00:00Z",
    "home": "CHI",
    "away": "COL",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 2,
+   "away_score": 5,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -3049,11 +3049,11 @@
    "start_utc": "2026-11-03T02:00:00Z",
    "home": "SJS",
    "away": "CGY",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 1,
+   "away_score": 2,
+   "last_period": "REG",
    "neutral_site": false
   },
   {

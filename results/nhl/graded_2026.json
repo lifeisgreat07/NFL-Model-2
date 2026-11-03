@@ -1076,7 +1076,7 @@
  {
   "game_id": "2026020232",
   "pick": "VGK",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-02T21:01:59Z"
  },
  {
@@ -1088,13 +1088,13 @@
  {
   "game_id": "2026020234",
   "pick": "COL",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-02T21:01:59Z"
  },
  {
   "game_id": "2026020235",
   "pick": "SJS",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-02T21:01:59Z"
  }
 ]
