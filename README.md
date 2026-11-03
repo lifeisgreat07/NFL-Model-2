@@ -262,7 +262,7 @@ Four rules that live in the code rather than in any one document:
 variable this table does not name.
 
 Running the tests needs Python 3.11 (as `.python-version` says) and, for
-the tests that run the dashboard's own JavaScript, node 20; without node
+the tests that run the dashboard's own JavaScript, node 24; without node
 those tests skip rather than fail. From the repository root:
 ```bash
 pip install -r requirements.txt -r requirements-dev.txt
