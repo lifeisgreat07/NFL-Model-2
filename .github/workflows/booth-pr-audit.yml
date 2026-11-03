@@ -144,11 +144,28 @@ jobs:
         # The checker is copied out now for the same reason: the tree Booth
         # leaves behind may be an older commit, or a mutation mid-swap, and
         # the check must not depend on what the audit did to the checkout.
+        #
+        # Stage 82 item 1 (the 2026-11-02 review): the checker is taken from the
+        # BASE commit, not from the pull request being audited. Copied from the
+        # head, a pull request could relax the very check that decides whether its
+        # own audit counts -- accept SAFE TO MERGE over a DISCREPANCY line, or any
+        # author. `git show` reads the base's blobs without touching the index or
+        # the working tree, so Booth's `git status` is unchanged. A pull request
+        # that changes the checker is judged by the old one; its own tests still
+        # run on its head in Run tests, and the new checker counts from the merge.
+        # A dispatch has no base in its event, so it reads main.
         id: audited
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           echo "started=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
-          mkdir -p "$RUNNER_TEMP/booth-check/src/agents"
+          base="${BASE_SHA:-origin/main}"
+          mkdir -p "$RUNNER_TEMP/booth-base/src/agents" "$RUNNER_TEMP/booth-check/src/agents"
+          for f in src/__init__.py src/agents/__init__.py src/agents/booth_report_posted.py src/agents/booth_verdict.py; do
+            git show "$base:$f" > "$RUNNER_TEMP/booth-base/$f"
+          done
+          cd "$RUNNER_TEMP/booth-base"
           cp src/__init__.py "$RUNNER_TEMP/booth-check/src/"
           cp src/agents/booth_report_posted.py src/agents/booth_verdict.py src/agents/__init__.py "$RUNNER_TEMP/booth-check/src/agents/"
 

@@ -579,7 +579,9 @@ def check_scoped_test_counts(body: str, skip_tests: bool) -> 'Finding':
 # differed from main's; that refusal belonged to the app-token path, and on
 # GITHUB_TOKEN it ran (PR #176). The protocol file was never covered. So a PR
 # that changes either is not audited independently, and must say so.
-AUDITOR_FILES = ('.github/workflows/booth-pr-audit.yml', 'BOOTH_PROTOCOL.md')
+AUDITOR_FILES = ('.github/workflows/booth-pr-audit.yml', 'BOOTH_PROTOCOL.md',
+                 # Stage 82 item 1: the checker that decides whether an audit counts.
+                 'src/agents/booth_report_posted.py', 'src/agents/booth_verdict.py')
 HUMAN_REVIEW_RE = re.compile(r'(?im)^\W*human review required:')
 
 

@@ -12,8 +12,8 @@
     {
       "id": "auditor-files-forget-the-protocol",
       "why": "the protocol file is no longer watched, so the easier way to steer Booth -- editing what its prompt tells it to read -- walks past the check",
-      "find": "AUDITOR_FILES = ('.github/workflows/booth-pr-audit.yml', 'BOOTH_PROTOCOL.md')",
-      "replace": "AUDITOR_FILES = ('.github/workflows/booth-pr-audit.yml',)",
+      "find": "AUDITOR_FILES = ('.github/workflows/booth-pr-audit.yml', 'BOOTH_PROTOCOL.md',\n",
+      "replace": "AUDITOR_FILES = ('.github/workflows/booth-pr-audit.yml',\n",
       "expect_caught_by": "test_editing_the_protocol_without_the_line_fails"
     },
     {
