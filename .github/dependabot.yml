@@ -1,0 +1,36 @@
+# Stage 88 item 2 (the 2026-11-02 review). Nothing updated the pinned actions or
+# the pinned Python packages, so 29 workflows drifted onto Node 20 actions that
+# GitHub now forces onto Node 24, and the dependency audit could only report.
+#
+# Dependabot opens a pull request; it decides nothing. Each one goes through the
+# same loop as any change -- Run tests, Browser checks, Booth -- and moving a pin
+# stays a decision (see the header of requirements.txt). For actions it keeps
+# the SHA pin and its `# vX.Y.Z` comment, which tests/test_action_pins.py reads.
+#
+# pandas and numpy stay on their 1.x majors on purpose (CLAUDE.md, "The pandas
+# 2.x unlock is not free"), so their major updates are ignored here; minor and
+# patch updates still arrive.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
+    open-pull-requests-limit: 2
+
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      python:
+        patterns: ['*']
+    ignore:
+      - dependency-name: pandas
+        update-types: ['version-update:semver-major']
+      - dependency-name: numpy
+        update-types: ['version-update:semver-major']
+    open-pull-requests-limit: 2
