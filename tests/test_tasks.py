@@ -94,6 +94,37 @@ def test_the_suite_command_is_claude_mds_and_collects_what_the_gate_does():
     assert commands('test') == ['python -B -m pytest -q -p no:cacheprovider']
 
 
+def test_quick_is_the_suite_without_the_slow_tests():
+    """Stage 86 item 1. `quick` is `test` with `-m "not slow"` and nothing
+    else, so the two can only differ by the marked tests."""
+    assert commands('quick') == [commands('test')[0] + ' -m not slow']
+
+
+def test_ci_and_the_suite_line_still_run_the_slow_tests():
+    """The marker is for iterating only: neither run-tests.yml's pytest, nor
+    the `test` task CLAUDE.md quotes, nor the wrap-up gate selects by marker.
+    A `-m` on any of them would quietly drop the whole daily runs from CI."""
+    pytest_lines = [r for r in runs('run-tests.yml') if '-m pytest' in r]
+    assert pytest_lines, 'run-tests.yml runs no pytest'
+    for line in pytest_lines:
+        assert not re.search(r'(^|\s)-m\s+["\']?not', line), line
+    assert '-m' not in tasks.TASKS['test'][1]([])[0][3:]
+    wrapup = (ROOT / 'src' / 'agents' / 'session_wrapup.py').read_text(encoding='utf-8')
+    assert 'not slow' not in wrapup
+
+
+def test_the_slow_marker_is_registered_and_used():
+    """An unregistered marker is only a warning; registering it keeps a typo
+    like `@pytest.mark.slwo` from silently running in `quick`. The marked
+    tests are the five whole daily runs, the suite's slowest."""
+    toml = (ROOT / 'pyproject.toml').read_text(encoding='utf-8')
+    assert re.search(r'(?m)^markers = \["slow: ', toml)
+    marked = {p.name: p.read_text(encoding='utf-8').count('@pytest.mark.slow')
+              for p in (ROOT / 'tests').glob('test_*.py')}
+    assert marked['test_daily_end_to_end.py'] == 2
+    assert marked['test_nhl_sources_down.py'] == 3
+
+
 def test_build_is_what_the_pages_workflow_runs():
     assert commands('build') == ['python -m src.site.build --out _site']
     assert any(r.startswith('python -m src.site.build --out _site ') for r in runs('deploy-pages.yml'))

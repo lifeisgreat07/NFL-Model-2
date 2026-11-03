@@ -14,3 +14,7 @@
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
+# Stage 86 item 1: a test that drives a whole daily run. `python tasks.py
+# quick` leaves these out while iterating; the full suite, CI and the
+# wrap-up gate still run every one.
+markers = ["slow: drives a whole daily run; `python tasks.py quick` leaves it out"]
