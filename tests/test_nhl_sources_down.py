@@ -72,6 +72,7 @@ def drive(tmp_path, monkeypatch, capsys, market_answer=None, roster_down=False, 
     return out, picks
 
 
+@pytest.mark.slow
 def test_an_odds_feed_that_times_out_still_saves_every_pick(tmp_path, monkeypatch, capsys):
     out, picks = drive(tmp_path, monkeypatch, capsys, market_answer=TimeoutError('The read operation timed out'))
     assert 'market: odds feed not read, every pick made without a price' in out
@@ -93,6 +94,7 @@ def test_read_market_answers_no_prices_for_a_feed_it_cannot_read(answer):
     assert lines == [] and len(missing) == 1 and missing[0].startswith('odds feed not read')
 
 
+@pytest.mark.slow
 def test_a_roster_that_cannot_be_read_still_saves_every_pick(tmp_path, monkeypatch, capsys):
     """Each club falls back to its last starter, and the reason on the pick
     is the true one: not 'not a goalie on the current roster', which would
@@ -105,6 +107,7 @@ def test_a_roster_that_cannot_be_read_still_saves_every_pick(tmp_path, monkeypat
             assert rec['goalies'][side]['note'] == f'{name} is projected, but the roster was not read'
 
 
+@pytest.mark.slow
 def test_a_projected_goalie_on_a_read_roster_keeps_the_roster_reason(tmp_path, monkeypatch, capsys):
     """With the rosters read (and empty), the old reason stands."""
     _, picks = drive(tmp_path, monkeypatch, capsys, projected=True)
