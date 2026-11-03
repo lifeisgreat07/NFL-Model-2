@@ -58,10 +58,11 @@ jobs:
           pip install -r requirements.txt -r requirements-dev.txt
           pip install pytest-random-order==1.2.0
       - name: Run the suite in tonight's order
+        shell: bash
         run: |
           seed="$(date -u +%Y%m%d)"
           echo "seed $seed" >> "$GITHUB_STEP_SUMMARY"
-          python -m pytest -q -p no:cacheprovider --random-order-bucket=global --random-order-seed="$seed"
+          python -m pytest -q -p no:cacheprovider --random-order-bucket=global --random-order-seed="$seed" 2>&1 | tee shuffled.log
       - name: Raise an alert
         if: failure()
         env:
@@ -70,4 +71,4 @@ jobs:
         run: |
           printf 'The nightly shuffled suite failed (seed %s). A test that passes in file order and fails here depends on what ran before it.\n\nRun: %s\n\nReplay: python -m pytest -q -p no:cacheprovider --random-order-bucket=global --random-order-seed=%s\n' \
             "$(date -u +%Y%m%d)" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "$(date -u +%Y%m%d)" > shuffled-report.md
-          python -m src.core.alerts --title "Nightly shuffled suite failing" --body-file shuffled-report.md
+          python -m src.core.alerts --title "Nightly shuffled suite failing" --body-file shuffled-report.md --log shuffled.log

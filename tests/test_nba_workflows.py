@@ -36,7 +36,7 @@ def test_the_daily_run_stages_each_folder_only_if_it_exists():
 
 def test_the_daily_run_alerts_on_a_failure_and_a_drift_flag():
     t = text(DAILY)
-    assert 'python -m src.sports.nba.daily | tee nba-daily.log' in t
+    assert 'python -m src.sports.nba.daily 2>&1 | tee nba-daily.log' in t
     assert '--title "NBA: daily run failed"' in t and "if: failure()" in t
     assert "grep -q 'DRIFT CHECK: FLAGGED' nba-daily.log" in t and '--title "NBA: drift check flagged"' in t
 

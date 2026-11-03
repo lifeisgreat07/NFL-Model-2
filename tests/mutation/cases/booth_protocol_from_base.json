@@ -1,0 +1,20 @@
+{
+  "target": ".github/workflows/booth-pr-audit.yml",
+  "tests": "tests/test_booth_prompt.py",
+  "cases": [
+    {
+      "id": "booth-reads-the-pull-requests-protocol",
+      "why": "Booth is told to read the protocol in the checkout again, which is the pull request's own copy, so a pull request can rewrite the procedure it is audited under (the 2026-11-02 review)",
+      "find": "            You are Booth. Read .git/booth-protocol-main.md and follow its procedure\n",
+      "replace": "            You are Booth. Read BOOTH_PROTOCOL.md in this repository and follow its procedure\n",
+      "expect_caught_by": "test_booth_follows_the_bases_protocol_not_the_pull_requests"
+    },
+    {
+      "id": "booth-protocol-copied-from-the-head",
+      "why": "the protocol set aside for Booth is the head's copy, not the base's, so the file name promises a protection it does not give",
+      "find": "        run: git show \"${BASE_SHA:-origin/main}:BOOTH_PROTOCOL.md\" > .git/booth-protocol-main.md\n",
+      "replace": "        run: cp BOOTH_PROTOCOL.md .git/booth-protocol-main.md\n",
+      "expect_caught_by": "test_booth_follows_the_bases_protocol_not_the_pull_requests"
+    }
+  ]
+}
