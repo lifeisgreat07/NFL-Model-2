@@ -6598,5 +6598,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020249",
   "start_utc": "2026-11-05T03:00:00Z"
+ },
+ {
+  "date": "2026-11-03",
+  "home": "NSH",
+  "home_goalie": "Juuse Saros",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/AlexDaugherty1/status/2117656935084552311",
+  "away": "CAR",
+  "away_goalie": "Pyotr Kochetkov",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/brooksbratten/status/2117776172725813555",
+  "read_utc": "2026-11-04T00:57:12Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020245",
+  "start_utc": "2026-11-04T01:00:00Z"
  }
 ]
