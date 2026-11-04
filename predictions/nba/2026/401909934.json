@@ -1,0 +1,76 @@
+{
+ "game_id": "401909934",
+ "season": 2026,
+ "slate": "2026-11-04",
+ "start_utc": "2026-11-05T03:00:00Z",
+ "home": "SAC",
+ "away": "LAL",
+ "model_a": 0.2307,
+ "model_b": 0.1753,
+ "pick": "LAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8414,
+  "away": 0.9941
+ },
+ "features": {
+  "point_matchup": -9.126262,
+  "efficiency_matchup": -8.793164,
+  "availability_matchup": -0.152635
+ },
+ "market": {
+  "game_id": "401909934",
+  "home": "SAC",
+  "away": "LAL",
+  "start_utc": "2026-11-05T03:00:00Z",
+  "read_utc": "2026-11-04T21:31:30Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 454.0,
+  "away_price": -620.0,
+  "home_prob": 0.1733
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-04T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4279318",
+    "name": "Daeqwon Plowden",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4594327",
+    "name": "Keegan Murray",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5060631",
+    "name": "Adou Thiero",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-04T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-02",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14165,
+  "training_games_priced": 14017
+ }
+}

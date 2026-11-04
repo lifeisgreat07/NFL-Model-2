@@ -1,0 +1,91 @@
+{
+ "game_id": "401909929",
+ "season": 2026,
+ "slate": "2026-11-04",
+ "start_utc": "2026-11-05T01:00:00Z",
+ "home": "OKC",
+ "away": "CLE",
+ "model_a": 0.6603,
+ "model_b": 0.5953,
+ "pick": "OKC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7637,
+  "away": 0.9123
+ },
+ "features": {
+  "point_matchup": 4.118456,
+  "efficiency_matchup": 4.06563,
+  "availability_matchup": -0.148558
+ },
+ "market": {
+  "game_id": "401909929",
+  "home": "OKC",
+  "away": "CLE",
+  "start_utc": "2026-11-05T01:00:00Z",
+  "read_utc": "2026-11-04T21:31:30Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -161.0,
+  "away_price": 136.0,
+  "home_prob": 0.5928
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-04T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4683692",
+    "name": "Cason Wallace",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433255",
+    "name": "Chet Holmgren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4593803",
+    "name": "Jalen Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432823",
+    "name": "Jaylin Williams",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5159925",
+    "name": "Nikola Topic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061603",
+    "name": "Thomas Sorber",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4683747",
+    "name": "Jaylon Tyson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4576087",
+    "name": "Peyton Watson",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-04T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-02",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14165,
+  "training_games_priced": 14017
+ }
+}

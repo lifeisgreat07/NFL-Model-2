@@ -1,0 +1,76 @@
+{
+ "game_id": "401909930",
+ "season": 2026,
+ "slate": "2026-11-04",
+ "start_utc": "2026-11-05T01:30:00Z",
+ "home": "HOU",
+ "away": "MIN",
+ "model_a": 0.6778,
+ "model_b": 0.7025,
+ "pick": "HOU",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9388,
+  "away": 0.7785
+ },
+ "features": {
+  "point_matchup": 1.421844,
+  "efficiency_matchup": 1.537106,
+  "availability_matchup": 0.160275
+ },
+ "market": {
+  "game_id": "401909930",
+  "home": "HOU",
+  "away": "MIN",
+  "start_utc": "2026-11-05T01:30:00Z",
+  "read_utc": "2026-11-04T21:31:30Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -278.0,
+  "away_price": 227.0,
+  "home_prob": 0.7063
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-04T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "3102529",
+    "name": "Clint Capela",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2991235",
+    "name": "Steven Adams",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4594268",
+    "name": "Anthony Edwards",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432847",
+    "name": "Terrence Shannon Jr.",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-04T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-02",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14165,
+  "training_games_priced": 14017
+ }
+}

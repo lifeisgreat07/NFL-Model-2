@@ -18,10 +18,10 @@
     },
     {
       "id": "nhl-inj-unknown-club-dropped",
-      "why": "a club the names do not match is dropped in silence, so a renamed club's injuries vanish.",
-      "find": "    if unknown:\n        raise InjurySourceError",
-      "replace": "    if False:\n        raise InjurySourceError",
-      "expect_caught_by": "test_a_file_that_is_not_the_list_is_refused_not_guessed"
+      "why": "a club the names do not match is dropped in silence, so a renamed club's injuries vanish and nothing says so.",
+      "find": "    unknown = sorted(set(today.loc[today['team'].isna(), 'team_display_name'].astype(str)))\n",
+      "replace": "    unknown: list[str] = []\n",
+      "expect_caught_by": "test_an_unknown_club_loses_its_own_rows_only_and_the_pick_says_so"
     },
     {
       "id": "nhl-inj-missing-columns-accepted",
@@ -33,8 +33,8 @@
     {
       "id": "nhl-inj-sides-swapped",
       "why": "the home club's list is stored as the away side's.",
-      "find": "            'home': side(home), 'away': side(away)}",
-      "replace": "            'home': side(away), 'away': side(home)}",
+      "find": "           'home': side(home), 'away': side(away)}",
+      "replace": "           'home': side(away), 'away': side(home)}",
       "expect_caught_by": "test_a_game_stores_each_sides_players_sorted_with_source_and_times"
     },
     {
