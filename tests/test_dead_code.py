@@ -13,19 +13,18 @@ vocabulary, and the NHL's former abbreviations.
 
 Run with: pytest tests/test_dead_code.py -v
 """
-import importlib.util
 import subprocess
 import sys
 from pathlib import Path
 
-import pytest
+from tests.optional import require
 
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWLIST = 'tests/dead_code_allowlist.py'
 
 
-@pytest.mark.skipif(importlib.util.find_spec('vulture') is None, reason='vulture not installed')
 def test_nothing_in_src_is_unused():
+    require('vulture')
     r = subprocess.run([sys.executable, '-m', 'vulture', 'src', 'tests', 'tasks.py', ALLOWLIST,
                         '--min-confidence', '60', '--exclude', 'tests/booth_fixtures'],
                        cwd=ROOT, capture_output=True, text=True)

@@ -293,6 +293,19 @@ jobs:
 
       # Only the nightly run on main raises an issue: a pull request's own red
       # check is already on the pull request, in front of whoever opened it.
+      # Stage 83 item 1: a run that succeeds closes the failure issue below, if
+      # one is open. continue-on-error: closing an issue must never fail a run.
+      - name: Close the alert if this run recovered
+        # The nightly run on main only: a pull request passing says nothing about main.
+        if: success() && github.event_name == 'schedule'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'Recovered: the run at %s succeeded.\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > recovered.md
+          python -m src.core.alerts --resolve --title "Browser checks failing on main" --body-file recovered.md
+
       - name: Raise an alert
         if: failure() && github.event_name == 'schedule'
         env:

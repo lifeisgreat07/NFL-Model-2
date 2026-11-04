@@ -106,10 +106,19 @@ def close_open_issue(title: str, comment: str, run: Run = subprocess.run) -> int
 def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description='Open or update an alert issue.')
     ap.add_argument('--title', required=True)
+    ap.add_argument('--resolve', action='store_true',
+                    help='close the open issue with this title, commenting the body; create nothing')
     ap.add_argument('--body-file', required=True)
     ap.add_argument('--log', help='append the last lines of this log file to the body')
     args = ap.parse_args(argv)
     body = Path(args.body_file).read_text(encoding='utf-8').strip()
+    if args.resolve:
+        # Stage 83 item 1 (the 2026-11-02 review): a run that succeeds closes the
+        # failure issue its own failure would have opened, so an alert ends when
+        # its cause does instead of waiting for a person to find it.
+        number = close_open_issue(args.title, body or 'Recovered.')
+        print(f'closed: {number}' if number is not None else f'no open issue titled {args.title!r}')
+        return 0
     if not body:
         # An alert that says nothing is the silent failure this module exists
         # to end, one level up.

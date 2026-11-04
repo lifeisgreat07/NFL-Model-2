@@ -44,6 +44,18 @@ jobs:
           GH_REPO: ${{ github.repository }}
         shell: bash
         run: python -m src.core.line_judge_digest 2>&1 | tee digest.log
+      # Stage 83 item 1: a run that succeeds closes the failure issue below, if
+      # one is open. continue-on-error: closing an issue must never fail a run.
+      - name: Close the alert if this run recovered
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'Recovered: the run at %s succeeded.\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > recovered.md
+          python -m src.core.alerts --resolve --title "Line Judge weekly digest failing" --body-file recovered.md
+
       - name: Raise an alert
         if: failure()
         env:

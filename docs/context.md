@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-03 (session 1102, Monday night into Tuesday: Stages 81-90 written; 20 PRs merged; #582 waits on Mark)
+Last updated: 2026-11-04 (session 1103, Tuesday night: #588, #585, #589, #591, #592 merged; #593 in audit; eight branches queued)
 
 ---
 
@@ -17,10 +17,11 @@ figure. The NFL lives in `src/sports/nfl/` and `*/nfl/`; shared modules in `src/
 NHL `/nhl/` and NBA `/nba/` (day boards, picks saved twice a day). One theme key, `site:theme`.
 
 **Stages 81 to 90** came from the 2026-11-02 review; their text and Mark's decisions are in
-`docs/history/10-review-2026-11-02.md`, what shipped in `memory/2026-11-03.md`. Order: 81, 82, 86, 88 items 1-2,
-83, 84 and 85, 89, 87; 90 last. Stage 81 is done; 82 has items 4 (#582, Mark) and 5 left; 83 items 1, 3, 5, 6;
-84 items 4, 5, 7 open (1-3, 8, 9 on a branch); 85 items 1-3, 5, 6 (4 on a branch); 86 items 2, 4, 5, 7 (3 dropped:
-no gain); 88 items 1, 3-5, 7; 87, 89, 90 not started.
+`docs/history/10-review-2026-11-02.md`, what shipped in `memory/2026-11-03.md` and `memory/2026-11-04.md`. Order:
+81, 82, 86, 88 items 1-2, 83, 84 and 85, 89, 87; 90 last. Done: 81; 82 except items 4 (#582, Mark) and 5 (after
+#582); 83 item 1's first half, items 2, 4, 7; 84 items 1-3, 6, 8, 9; 85 item 4; 86 items 1, 6. Built and queued
+below: 83 items 5, 6; 84 items 4, 5, 7; 85 item 5; 88 items 1 (part), 6. Not started: 83 item 1's repeat counter;
+85 items 1-3, 6; 86 items 2, 4, 5, 7; 88 items 1 (actions), 3-5, 7; 87, 89, 90. 83 item 3 deprioritised (11-03).
 
 **Booth audits run one at a time.** Two at once each time out at 20 minutes; one alone takes about 11. Opening or
 pushing to a PR starts its audit, so open the next PR only when no audit is running. Mark has not answered
@@ -28,27 +29,28 @@ whether to raise `timeout-minutes` to 30; do not change booth-pr-audit.yml for i
 
 **Merge rule (Mark):** Booth SAFE TO MERGE, 0 discrepancies, the audited head the PR's head, every check green;
 `merge_item.py PR WT BRANCH "Title"` (it merges a LOCAL branch: for a branch pushed by SHA, `git branch NAME SHA`
-first). A wrong description means a replacement PR at the same head, never a patch.
+first; it removes the worktree first, so let any suite there finish). A wrong description means a replacement PR at
+the same head, never a patch. **Before every push: `ruff check .` and both mypy commands from `.github/workflows/run-tests.yml`**
+(the local suite runs neither; `scratch-nba/prechecks.ps1`). A figure from a scratch script goes into the body
+with the script inline, or Booth marks it UNVERIFIABLE (#587).
 
-**Single next action:** merge s84a's PR before anything that adds a mutation case file: README's case floor
-("over 400") is stale at 451 files and s84a moves it to "over 450". Then #585, then the queue below.
+**Single next action:** merge #593 (s88a) on a clean audit, then open s88f's PR, then the queue in order.
 
 **Deadline:** the week 9 QB override PR (Mark's routine, Wed 22:00 UTC) must merge before Thu 11-05 11:00 UTC.
-Stage 81's override watch alerts at Thu 02:00 UTC if it is still open.
+Stage 81's override watch alerts at Thu 02:00 UTC if it is still open. A check-in fires at Wed 22:40 UTC.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
+| #593 s88a (Stage 88 item 1, node 24 in the test runs) | Suite 11708+1 skip at 0456d9e8 | Its audit |
+| s88f `s88-escape-id` (Stage 88 item 6) | Suite queued at b27fbfba; cases caught | An audit slot; body ready |
+| s84e (84.5 calibration), s84g (84.7 NHL Brier), s84m (84.4 NHL M2), s84n (84.4 NBA M2), s83f (83.6 credentials), s83e (83.5 injury rows) | Built, ruff/mypy clean, cases caught; bodies in `scratch-nba/body_<wt>.md` (s84n, s83e not written) | Suite then one audit each, in this order; s83f: **Mark's OAuth token expiry date** |
+| s85e (85.5 season prices) | 3270bf6d, built on s83e | s83e merged (same registry amendment list) |
 | #582 Booth post job (Stage 82 item 4) | Fully green on its own run; Human review | Mark merges; then #578, #580 close |
-| #585 deploy per-job permissions | Booth SAFE; Run tests red on README's case floor | s84a merged first, then main into s82-deploy-job-perms-2 |
-| s84a `s84-forward-test` (Stage 84 items 1-3, 8, 9) | Suite passed at da46967b | An audit slot |
-| s85d `s85-strictly-before` (Stage 85 item 4) | Built on s84a; suite queued at d63d12d9 | s84a merged |
-| s83a, s86f, s88a, s88f | Suites passed | One audit each |
 | #570, #575 (Dependabot) | Fail tests and Booth | Mark: a Dependabot secret `CLAUDE_CODE_OAUTH_TOKEN`; which updates to take |
-| Issues #428 #528 #529 #540 #543 and older alerts | Fixed or stale | Mark closes them; s83a closes future ones itself |
-| Stage 43 item 5 | Not started | Mark's go (edits Booth's instructions) |
-| Stage 42 item 5, Stage 39 items 5-6, #431, Stage 40 | As before | December, January, Mark |
+| Issues: 11 "Booth audit failed: PR #N", #543, #541, #540, #518, #517 | Stale | Mark closes them; #428, #495, #529 close on their next green run (#591) |
+| Stage 43 item 5; Stage 42 item 5, Stage 39 items 5-6, #431, Stage 40 | As before | Mark's go (43.5 edits Booth); December, January |
 
 ## Known and deliberately not fixed
 
