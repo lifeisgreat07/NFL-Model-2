@@ -1,0 +1,21 @@
+{
+  "target": "src/sports/nba/pages/nba.js",
+  "tests": "tests/test_forward_on_page.py",
+  "cases": [
+    {
+      "id": "forward-section-dropped-from-the-nba-page",
+      "why": "the NBA checks page stops rendering the forward test, so the file the daily run writes reaches no reader (Stage 84 item 2)",
+      "find": "    ${forwardHtml(BD.forward, 'nba')}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_checks_page_renders_it_from_the_file_the_build_passes"
+    },
+    {
+      "id": "forward-file-not-passed-to-the-nhl-page",
+      "target": "src/sports/nhl/site.py",
+      "why": "the NHL build stops passing the forward-test file, so the page says nothing was graded whatever the file holds",
+      "find": "        'forward': _read(PATHS.results / f'forward_{season}.json'),\n",
+      "replace": "",
+      "expect_caught_by": "test_the_checks_page_renders_it_from_the_file_the_build_passes"
+    }
+  ]
+}

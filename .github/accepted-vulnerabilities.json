@@ -1,0 +1,4 @@
+{
+  "_about": "Known vulnerabilities a person has decided to live with for now (Stage 83 item 2). Each entry needs an id, the package, the reason, and a review_by date (YYYY-MM-DD); after that date it is no longer ignored, so the nightly audit raises it again. src/core/accepted_vulns.py reads this file.",
+  "accepted": []
+}

@@ -25,6 +25,11 @@ The workflow step supplies that token and the `issues: write` permission; no
 job that runs a model is given either.
 
     python -m src.core.alerts --title "NHL: nightly canary failing" --body-file report.md
+    python -m src.core.alerts --title "NBA: daily run failed" --body-file failure.md --log nba-daily.log
+
+`--log` appends the last lines of a step's log (Stage 81 item 5): a run's own
+log needs a GitHub sign-in to read, so an alert that carried only a link left
+the cause unknown until someone opened it (#529).
 """
 from __future__ import annotations
 
@@ -68,6 +73,22 @@ def open_or_comment(title: str, body: str, run: Run = subprocess.run) -> tuple[s
     return 'opened', out.strip()
 
 
+LOG_LINES = 30
+
+
+def with_log_tail(body: str, log: str | None) -> str:
+    """The body with the last LOG_LINES lines of the log under it, or a line
+    saying no log was written -- which is itself the finding when a run died
+    before its main step."""
+    if log is None:
+        return body
+    path = Path(log)
+    if not path.exists():
+        return f'{body}\n\nNo log was written ({path.name}): the run stopped before its main step.'
+    tail = path.read_text(encoding='utf-8', errors='replace').splitlines()[-LOG_LINES:]
+    return f'{body}\n\nLast {len(tail)} lines of {path.name}:\n```\n' + '\n'.join(tail) + '\n```'
+
+
 def close_open_issue(title: str, comment: str, run: Run = subprocess.run) -> int | None:
     """Comment on and close the open issue with this title. Returns its number,
     or None when there is no open issue to close (nothing is created).
@@ -86,6 +107,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description='Open or update an alert issue.')
     ap.add_argument('--title', required=True)
     ap.add_argument('--body-file', required=True)
+    ap.add_argument('--log', help='append the last lines of this log file to the body')
     args = ap.parse_args(argv)
     body = Path(args.body_file).read_text(encoding='utf-8').strip()
     if not body:
@@ -93,7 +115,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         # to end, one level up.
         print('refusing to raise an alert with an empty body', file=sys.stderr)
         return 1
-    action, ref = open_or_comment(args.title, body)
+    action, ref = open_or_comment(args.title, with_log_tail(body, args.log))
     print(f'{action}: {ref}')
     return 0
 

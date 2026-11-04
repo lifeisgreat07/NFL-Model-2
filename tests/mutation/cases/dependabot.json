@@ -1,0 +1,20 @@
+{
+  "target": ".github/dependabot.yml",
+  "tests": "tests/test_dependabot.py",
+  "cases": [
+    {
+      "id": "dependabot-proposes-pandas-2",
+      "why": "pandas's major updates are no longer ignored, so a pull request moving the deliberate 1.x pin arrives every month",
+      "find": "      - dependency-name: pandas\n        update-types: ['version-update:semver-major']\n",
+      "replace": "",
+      "expect_caught_by": "test_pandas_and_numpy_keep_their_majors"
+    },
+    {
+      "id": "dependabot-stops-watching-actions",
+      "why": "the actions are no longer watched, so the pins drift onto deprecated runtimes again",
+      "find": "  - package-ecosystem: github-actions\n",
+      "replace": "  - package-ecosystem: docker\n",
+      "expect_caught_by": "test_actions_and_pip_are_both_watched"
+    }
+  ]
+}

@@ -16,10 +16,13 @@ cover, asks the Actions API whether a `workflow_dispatch` run of the same
 workflow started within `GRACE` of that slot:
 
   covered   -- one did. This run is GitHub's late copy; the summary says so.
-  missed    -- none did. cron-job.org did not start this slot, so the alert
-               issue for this workflow and slot time is opened, or commented
-               on when it is already open (src/core/alerts.py: one issue per
-               problem, not one per day).
+  missed    -- none did. cron-job.org did not start this slot, so the one
+               alert issue for missed dispatches is opened, or commented on
+               when it is already open (src/core/alerts.py: one issue per
+               problem, not one per day). Each comment names the workflow
+               and the slot. Until Stage 83 item 7 the title named them too,
+               so a night when cron-job.org sent nothing opened an issue for
+               every covered job -- five before 08:00 UTC -- for one cause.
   too early -- GitHub's cron itself started within GRACE of the slot, so a
                dispatch could still be on its way. Nothing is judged.
 
@@ -105,10 +108,15 @@ def _gh_fetch(workflow: str, slot: datetime) -> list[datetime]:
             for x in json.loads(r.stdout)['workflow_runs'] if x.get('run_started_at')]
 
 
-def title(name: str, slot: datetime) -> str:
-    """One issue per workflow and slot time: a job that never fires comments
-    on the same issue each day until it is fixed and the issue closed."""
-    return f'{name}: cron-job.org did not start the {slot:%H:%M} UTC run'
+#: Every missed slot alerts under this one title (Stage 83 item 7). A night
+#: when cron-job.org sends nothing is one problem with one fix -- its account,
+#: or its token -- so it is one issue with a comment per missed slot; a single
+#: job that never fires comments on the same issue each day until it is fixed.
+TITLE = 'cron-job.org did not start a scheduled run'
+
+
+def title() -> str:
+    return TITLE
 
 
 def check(workflow: str, name: str, event: str | None, cron: str | None, now: datetime,
@@ -135,14 +143,14 @@ def check(workflow: str, name: str, event: str | None, cron: str | None, now: da
     if verdict == 'too early':
         return f'Dispatch check: GitHub started the {at:%a %H:%M} UTC slot on time; not judged.'
     minutes = int((now - at).total_seconds() // 60)
-    body = (f"cron-job.org did not start `{workflow}`'s {at:%a %Y-%m-%d %H:%M} UTC slot "
+    body = (f"**{name}**: cron-job.org did not start `{workflow}`'s {at:%a %Y-%m-%d %H:%M} UTC slot "
             f"(cron `{cron}`): no `workflow_dispatch` run began within "
             f"{int(GRACE.total_seconds() // 60)} minutes of it. GitHub's own cron "
             f"started it {minutes // 60}h {minutes % 60:02d}m late instead.\n\n"
             f"Check this job in the cron-job.org account: enabled, its URL naming "
             f"`{workflow}`, and its token not expired. Close this issue once it fires "
             f"on time; the next miss opens a fresh one.\n\n{run_url}").strip()
-    alert(title(name, at), body)
+    alert(title(), body)
     return f'Dispatch check: **cron-job.org did not start the {at:%a %H:%M} UTC slot**; alert raised.'
 
 

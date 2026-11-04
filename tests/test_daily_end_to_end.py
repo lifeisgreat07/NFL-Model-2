@@ -27,6 +27,7 @@ from types import SimpleNamespace
 
 import numpy as np
 import pandas as pd
+import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -61,6 +62,7 @@ def run_twice(daily, now, get, capsys):
     return first, second
 
 
+@pytest.mark.slow
 def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     from src.sports.nhl import daily, goalies, history, injuries, market
 
@@ -101,6 +103,7 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     assert (tmp_path / 'results' / f'standings_{season}.json').exists()
 
 
+@pytest.mark.slow
 def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     from src.sports.nba import daily, history
 
