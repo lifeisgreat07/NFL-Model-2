@@ -48,9 +48,10 @@ def code(block):
 
 # --- the publish job ----------------------------------------------------------------------------
 
-def test_the_workflow_has_three_jobs_in_this_order():
+def test_the_workflow_has_four_jobs_in_this_order():
+    """render, then vet (Stage 82 item 6), then the writer, then the reader."""
     body = text(WORKFLOW).split('\njobs:\n', 1)[1]
-    assert re.findall(r'^  ([\w-]+):[ ]*$', body, re.M) == ['render', 'publish', 'read']
+    assert re.findall(r'^  ([\w-]+):[ ]*$', body, re.M) == ['render', 'vet', 'publish', 'read']
 
 
 def test_the_publish_job_is_the_only_one_that_writes():
@@ -100,7 +101,7 @@ def test_the_publish_job_tries_again_when_another_push_got_in_first():
 
 def test_the_publish_job_waits_for_the_render_and_for_pictures():
     block = job('publish')
-    assert 'needs: [render]' in block and "needs.render.outputs.pictures == 'true'" in block
+    assert 'needs: [render, vet]' in block and "needs.render.outputs.pictures == 'true'" in block
     assert "pictures: ${{ steps.pages.outputs.pages != '' }}" in text(WORKFLOW)
 
 

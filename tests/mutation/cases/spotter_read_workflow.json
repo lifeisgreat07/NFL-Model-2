@@ -85,6 +85,24 @@
       "find": "      - name: Run Spotter\n        if: steps.base.outputs.ready == 'true'\n",
       "replace": "      - name: Run Spotter\n",
       "expect_caught_by": "test_a_base_without_the_reader_skips_every_reading_step_and_does_not_fail"
+    },
+    {
+      "id": "spotter-publish-skips-the-vet",
+      "target": ".github/workflows/spotter.yml",
+      "tests": "tests/test_spotter_renders_check.py",
+      "why": "the writer no longer waits for the vet job, so pictures the check refused are still committed (Stage 82 item 6)",
+      "find": "    if: needs.render.outputs.pictures == 'true' && needs.vet.result == 'success'\n",
+      "replace": "    if: needs.render.outputs.pictures == 'true'\n",
+      "expect_caught_by": "test_the_writer_waits_for_the_vet_job_to_pass"
+    },
+    {
+      "id": "spotter-vet-checks-the-head",
+      "target": ".github/workflows/spotter.yml",
+      "tests": "tests/test_spotter_renders_check.py",
+      "why": "the vet job checks out the pull request, so the change being checked supplies its own check",
+      "find": "      - name: Check out the base's check\n        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0\n        with:\n          ref: ${{ github.event.pull_request.base.sha }}\n",
+      "replace": "      - name: Check out the base's check\n        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0\n        with:\n          ref: ${{ github.event.pull_request.head.sha }}\n",
+      "expect_caught_by": "test_the_vet_job_runs_the_bases_check_on_the_pictures_and_cannot_write"
     }
   ]
 }

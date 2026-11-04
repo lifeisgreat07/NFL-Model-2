@@ -11,7 +11,8 @@ nothing said so for four days.
 What is held here:
   - the verdict: covered, missed or too early, at the edges of its windows;
   - only a run GitHub's cron started, on a covered line, is judged, and
-    only a missed slot raises an alert, titled per workflow and slot time;
+    only a missed slot raises an alert, every one under the same title, its
+    body naming the workflow and the slot (Stage 83 item 7);
   - the check never fails its run, whatever goes wrong inside it;
   - DISPATCHED and NOT_DISPATCHED account for every cron line of every
     workflow, and every covered workflow runs the step with what it needs.
@@ -79,10 +80,29 @@ def test_the_nba_16_00_run_of_2026_10_13_raises_the_alert():
     spy = Spy()
     line = run(spy)
     assert spy.fetched == [('nba-daily.yml', SLOT)]
-    assert [t for t, _ in spy.alerts] == ['NBA daily run: cron-job.org did not start the 16:00 UTC run']
+    assert [t for t, _ in spy.alerts] == ['cron-job.org did not start a scheduled run']
     body = spy.alerts[0][1]
+    assert body.startswith('**NBA daily run**: ')
     assert 'nba-daily.yml' in body and '0 16 * * *' in body and '4h 52m late' in body
     assert 'alert raised' in line
+
+
+def test_one_night_of_misses_is_one_issue():
+    """Stage 83 item 7. Three canaries missed on one night alert under one
+    title, so alerts.open_or_comment opens one issue and comments twice;
+    each comment says which job and which slot."""
+    spy = Spy()
+    night = datetime(2026, 10, 14, tzinfo=UTC)
+    for workflow, name, cron, slot in (('nfl-nightly-canary.yml', 'NFL nightly canary', '0 6 * * *', 6 * 60),
+                                       ('nhl-canary.yml', 'NHL canary', '40 6 * * *', 6 * 60 + 40),
+                                       ('nba-canary.yml', 'NBA canary', '50 6 * * *', 6 * 60 + 50)):
+        at = night + slot * M
+        md.check(workflow, name, 'schedule', cron, at + 40 * M, fetch=spy.fetch, alert=spy.alert)
+    assert len(spy.alerts) == 3 and len({t for t, _ in spy.alerts}) == 1
+    bodies = [b for _, b in spy.alerts]
+    for workflow, hhmm, body in zip(('nfl-nightly-canary.yml', 'nhl-canary.yml', 'nba-canary.yml'),
+                                    ('06:00', '06:40', '06:50'), bodies):
+        assert f'`{workflow}`' in body and hhmm in body
 
 
 def test_a_covered_slot_raises_nothing():

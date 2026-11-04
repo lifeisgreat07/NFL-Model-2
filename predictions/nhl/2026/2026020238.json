@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020238",
+ "season": 2026,
+ "slate": "2026-11-03",
+ "start_utc": "2026-11-04T00:00:00Z",
+ "home": "TBL",
+ "away": "DET",
+ "model_a": 0.621,
+ "model_b": 0.7288,
+ "pick": "TBL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.747728,
+  "shot_matchup": 0.957259,
+  "goalie_matchup_2000": 0.00246
+ },
+ "market": {
+  "game_id": "2026020238",
+  "start_utc": "2026-11-04T00:00:00Z",
+  "home": "TBL",
+  "away": "DET",
+  "book": "DraftKings",
+  "home_price": -278.0,
+  "away_price": 225.0,
+  "home_prob": 0.705,
+  "read_utc": "2026-11-03T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476883,
+   "name": "Andrei Vasilevskiy",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8476434,
+   "name": "John Gibson",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-03",
+  "read_utc": "2026-11-03T21:01:48Z",
+  "home": [
+   {
+    "name": "Yanni Gourde",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Zemgus Girgensons",
+    "position": "C",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Albert Johansson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Dylan Larkin",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marco Kasper",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mason Appleton",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-03T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-02",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14638,
+  "training_games_priced": 7427
+ }
+}
