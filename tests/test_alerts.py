@@ -211,7 +211,6 @@ def test_every_failure_alert_is_closed_by_the_next_success():
     """A failure issue whose run later succeeds used to stay open until a person
     closed it; 14 were open on 2026-11-02. Each fixed title must have a step,
     on success() and unable to fail the run, that resolves the same title."""
-    import re as _re
     found = 0
     for p in sorted(WORKFLOWS.glob('*.yml')):
         text = p.read_text(encoding='utf-8')
