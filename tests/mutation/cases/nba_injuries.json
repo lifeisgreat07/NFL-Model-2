@@ -11,10 +11,10 @@
     },
     {
       "id": "nba-injuries-unknown-status-passes",
-      "why": "a status this file does not know (Suspension) is let through and counted as playing, instead of the report being refused",
-      "find": "            if status not in STATUSES:\n",
-      "replace": "            if False:\n",
-      "expect_caught_by": "test_anything_unrecognised_refuses_the_whole_report"
+      "why": "a status this file does not know (Suspension, before it was added) is let through and counted as playing, instead of its team's games going without availability",
+      "find": "[] if status in STATUSES else [",
+      "replace": "[] if True else [",
+      "expect_caught_by": "test_a_row_it_cannot_read_is_left_out_and_its_team_named"
     },
     {
       "id": "nba-injuries-suspension-refused",
