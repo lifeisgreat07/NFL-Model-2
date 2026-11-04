@@ -870,6 +870,18 @@ function forwardHtml(f, sport){
     <thead><tr><th scope="col">Comparison</th><th scope="col" class="num">Games</th><th scope="col" class="num">Days</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${pairs}</tbody></table></div>
     <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>`;
 }
+/* Stage 84 item 4 (the 2026-11-02 review): Stage 56's M2, the projected
+   starter against the actual one, from results/nhl/m2_<season>.json. The
+   registration prints it once 50 games are graded. */
+function m2Html(m){
+  if (!m || !m.graded) return '<p class="nhl-lede">No saved pick has a final score yet, so M2 has nothing to measure.</p>';
+  if (m.graded < m.printed_from) return `<p class="nhl-lede">${m.graded} of the ${m.printed_from} graded games the registration waits for before printing M2.</p>`;
+  const s = m.starters, a = m.model_a, d = a.actual_minus_projected;
+  const sgn = x => (x < 0 ? '&minus;' : '+') + Math.abs(x).toFixed(4);
+  const diff = d ? ` The difference, actual minus projected, is ${sgn(d.diff)} [${sgn(d.low)}, ${sgn(d.high)}] at ${(d.level * 100).toFixed(2)}%, resampling whole game days.` : '';
+  return `<p class="nhl-lede">Over ${m.graded} graded games the projected starter started on ${s.projected_started} of ${s.sides} sides (${(s.projected_started / s.sides * 100).toFixed(1)}%), and both started in ${s.games_both_started}. Model A&#39;s log loss was ${a.log_loss_projected.toFixed(4)} with the goalies the picks used and ${a.log_loss_actual.toFixed(4)} with the two who started.${diff}</p>
+    <p class="nhl-lede">Both figures come from Model A refitted as each pick records it was, so only the goalies differ; ${m.refit.reproduced_saved_model_a} of ${m.refit.of} refitted probabilities equal the saved ones to four places. A measurement (<code>${m.registered}</code>): reported, not judged.</p>`;
+}
 function renderReliability(){
   const d = DATA.drift, rule = DATA.drift_rule, el = document.getElementById('reliability-body');
   const saved = Object.keys(DATA.picks).length;
@@ -883,6 +895,8 @@ function renderReliability(){
     <p class="nhl-lede">The rule was registered before the season (<code>experiments/nhl/stage58/registry.json</code>): it flags when the one-sided ${rule ? pct(rule.rule.one_sided_level) : '95%'} lower bound of Model A&#39;s log loss is above the backtest&#39;s ${rule ? rule.baseline.value.toFixed(4) : ''}, once ${min} games are graded.</p>
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(DATA.forward, 'nhl')}
+    <h2 class="section-title">The projected starter against the actual one</h2>
+    ${m2Html(DATA.m2)}
     <h2 class="section-title">What runs unattended</h2>
     <p class="nhl-lede">The daily run at 14:00 and 21:00 UTC saves and grades the picks; a nightly canary at 06:40 UTC reads every source it needs and writes nothing. Either one failing opens a GitHub issue titled &ldquo;NHL: &hellip;&rdquo;. ${saved} pick${saved === 1 ? '' : 's'} saved so far this season.</p>`;
 }
