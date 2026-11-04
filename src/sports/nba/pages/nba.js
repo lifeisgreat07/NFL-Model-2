@@ -824,10 +824,19 @@ function forwardHtml(f, sport){
     <thead><tr><th scope="col">Comparison</th><th scope="col" class="num">Games</th><th scope="col" class="num">Days</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${pairs}</tbody></table></div>
     <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>`;
 }
+/* Stage 85 item 3 (the 2026-11-02 review): the drift baseline's season-to-
+   season spread, from experiments/<stage>/results/model_a_by_season.json.
+   Identical in nhl.js and nba.js (tests/test_season_spread.py). */
+function spreadHtml(s, sport){
+  if (!s || !s.seasons) return '';
+  const items = s.seasons.map(r => `${r.label} ${r.log_loss.toFixed(4)}`).join(', ');
+  return `<p class="${sport}-lede">How far one season moves on its own: the same Model A, at the same settings and with the backtest&#39;s walk-forward, scored a log loss of ${items}, a range of ${s.spread.range.toFixed(4)} from the best season to the worst. The baseline pools the last two (${s.baseline.pooled_confirmation.toFixed(4)}).</p>`;
+}
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
     <h2 class="section-title">The drift check</h2>
     <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
+    ${spreadHtml(BD.spread, 'nba')}
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(BD.forward, 'nba')}
     <h2 class="section-title">The live picks so far</h2>

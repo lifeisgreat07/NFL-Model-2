@@ -155,6 +155,8 @@ def board(season: int) -> dict[str, Any]:
         'drift': _maybe(PATHS.results / f'drift_{season}.json'),
         # Stage 84 item 6: the registered rule, so the page can say where the check stands.
         'drift_rule': _maybe(PATHS.data / 'drift_baseline.json'),
+        # Stage 85 item 3: the baseline's season-to-season spread (src/sports/nba/season_spread.py).
+        'spread': _maybe(PATHS.experiments / 'stage61' / 'results' / 'model_a_by_season.json'),
         # Stage 84 item 2: the registered forward test (src/core/forward_test.py).
         'forward': _maybe(PATHS.results / f'forward_{season}.json'),
         'live': _read(PATHS.experiments / 'stage65' / 'registry.json')['forward_test'],

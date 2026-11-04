@@ -870,6 +870,14 @@ function forwardHtml(f, sport){
     <thead><tr><th scope="col">Comparison</th><th scope="col" class="num">Games</th><th scope="col" class="num">Days</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${pairs}</tbody></table></div>
     <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>`;
 }
+/* Stage 85 item 3 (the 2026-11-02 review): the drift baseline's season-to-
+   season spread, from experiments/<stage>/results/model_a_by_season.json.
+   Identical in nhl.js and nba.js (tests/test_season_spread.py). */
+function spreadHtml(s, sport){
+  if (!s || !s.seasons) return '';
+  const items = s.seasons.map(r => `${r.label} ${r.log_loss.toFixed(4)}`).join(', ');
+  return `<p class="${sport}-lede">How far one season moves on its own: the same Model A, at the same settings and with the backtest&#39;s walk-forward, scored a log loss of ${items}, a range of ${s.spread.range.toFixed(4)} from the best season to the worst. The baseline pools the last two (${s.baseline.pooled_confirmation.toFixed(4)}).</p>`;
+}
 function renderReliability(){
   const d = DATA.drift, rule = DATA.drift_rule, el = document.getElementById('reliability-body');
   const saved = Object.keys(DATA.picks).length;
@@ -881,6 +889,7 @@ function renderReliability(){
       : (d.flagged ? `<b>Flagged.</b> Model A&#39;s log loss over ${d.games} games is significantly above its backtest. An issue is open.` : `Not flagged: Model A&#39;s log loss over ${d.games} games is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest.`);
   el.innerHTML = `<h2 class="section-title">The drift check</h2><p class="nhl-lede">${status}</p>
     <p class="nhl-lede">The rule was registered before the season (<code>experiments/nhl/stage58/registry.json</code>): it flags when the one-sided ${rule ? pct(rule.rule.one_sided_level) : '95%'} lower bound of Model A&#39;s log loss is above the backtest&#39;s ${rule ? rule.baseline.value.toFixed(4) : ''}, once ${min} games are graded.</p>
+    ${spreadHtml(DATA.spread, 'nhl')}
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(DATA.forward, 'nhl')}
     <h2 class="section-title">What runs unattended</h2>
