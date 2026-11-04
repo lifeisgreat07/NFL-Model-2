@@ -111,7 +111,7 @@
       "target": "src/sports/nfl/generate_dashboard.py",
       "why": "a non-ASCII sign goes into the page, which generate_dashboard.py writes in the platform's encoding. A literal U+2212 crashes the build on Windows before any test runs; an en dash, which cp1252 can encode, builds everywhere, so this case reaches the guard on every platform.",
       "find": "    return ('&minus;' if x < 0 else '+') + f'{abs(x):.{places}f}'",
-      "replace": "    return ('–' if x < 0 else '+') + f'{abs(x):.{places}f}'",
+      "replace": "    return ('\u2013' if x < 0 else '+') + f'{abs(x):.{places}f}'",
       "expect_caught_by": "test_the_text_equivalent_is_ascii"
     },
     {
