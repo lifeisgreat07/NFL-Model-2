@@ -114,7 +114,7 @@ jobs:
           fi
 
       - name: Check out the PR branch
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           # Full history: Booth checks claims about commits, branch state and
           # what changed against main, none of which survive a shallow clone.
@@ -122,7 +122,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha || format('refs/pull/{0}/head', inputs.pr_number) }}
 
       - name: Set up Python
-        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.11'
           cache: 'pip'
@@ -180,7 +180,7 @@ jobs:
         run: git show "${BASE_SHA:-origin/main}:BOOTH_PROTOCOL.md" > .git/booth-protocol-main.md
 
       - name: Run Booth
-        uses: anthropics/claude-code-action@8ce9314fa9a404564fa7e954cd84f25bcba2b829 # v1.0.236
+        uses: anthropics/claude-code-action@d535f5172dec02b204866b393d6b20b9b2aaf98d # v1.0.266
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
