@@ -824,12 +824,26 @@ function forwardHtml(f, sport){
     <thead><tr><th scope="col">Comparison</th><th scope="col" class="num">Games</th><th scope="col" class="num">Days</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${pairs}</tbody></table></div>
     <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>`;
 }
+/* Stage 84 item 4 (the 2026-11-02 review): Stage 61's M2, the injury report
+   against who played, from results/nba/m2_<season>.json. The registration
+   prints it once 100 games are graded. */
+function m2Html(m){
+  if (!m || !m.graded) return '<p class="nba-lede">No saved pick with availability has a final score yet, so M2 has nothing to measure.</p>';
+  if (m.graded < m.printed_from) return `<p class="nba-lede">${m.graded} of the ${m.printed_from} graded games the registration waits for before printing M2.</p>`;
+  const a = m.availability, s = m.model_a, d = s.box_minus_report;
+  const sgn = x => (x < 0 ? '&minus;' : '+') + Math.abs(x).toFixed(4);
+  const diff = d ? ` The difference, box score minus injury report, is ${sgn(d.diff)} [${sgn(d.low)}, ${sgn(d.high)}] at ${(d.level * 100).toFixed(2)}%, resampling whole game days.` : '';
+  return `<p class="nba-lede">Over ${m.graded} graded games, the availability the injury report gave a game (home minus away) was ${a.mean_absolute_gap.toFixed(3)} from the box score&#39;s on average, ${sgn(a.mean_report_minus_box)} on the signed average. Model A&#39;s log loss was ${s.log_loss_report.toFixed(4)} with the injury report&#39;s and ${s.log_loss_box.toFixed(4)} with the box score&#39;s.${diff}</p>
+    <p class="nba-lede">Both figures come from Model A refitted as each pick records it was, so only availability differs; ${m.refit.reproduced_saved_model_a} of ${m.refit.of} refitted probabilities equal the saved ones to four places. ${m.graded_without_availability} graded pick${m.graded_without_availability === 1 ? ' was' : 's were'} made without availability and ${m.graded_without_availability === 1 ? 'is' : 'are'} left out. A measurement (<code>${m.registered}</code>): reported, not judged.</p>`;
+}
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
     <h2 class="section-title">The drift check</h2>
     <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(BD.forward, 'nba')}
+    <h2 class="section-title">The injury report against who played</h2>
+    ${m2Html(BD.m2)}
     <h2 class="section-title">The live picks so far</h2>
     ${accuracyHtml(accGames(gradedPicks()))}
     ${calibrationHtml(gradedPicks())}
