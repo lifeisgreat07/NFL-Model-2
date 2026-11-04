@@ -804,6 +804,16 @@ const QUESTION = {
   H3: 'Does Model B beat the market alone?',
   M1: 'What does the goalie term add? (a measurement, not a test)',
 };
+/* Stage 84 item 7 (the 2026-11-02 review): the held-out seasons' scores with
+   the registered Brier column, from one function identical in nhl.js and
+   nba.js (tests/test_heldout_table.py) until Stage 87 shares the pages' code. */
+function heldOutTable(scores, names, sport){
+  const rows = names.filter(([, k]) => scores[k]).map(([n, k]) => { const v = scores[k];
+    return `<tr><th scope="row">${n}</th><td class="num">${Number(v.games).toLocaleString('en-US')}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${v.brier.toFixed(4)}</td><td class="num">${(v.accuracy * 100).toFixed(1)}%</td></tr>`; }).join('');
+  return `<div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">Scores on the held-out seasons</caption>
+    <thead><tr><th scope="col">Forecast</th><th scope="col" class="num">Games</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
 function renderModelLab(){
   const b = DATA.backtest, el = document.getElementById('modellab-body');
   if(!b){ el.innerHTML = stateHtml('waiting', 'No backtest results', ''); return; }
@@ -813,10 +823,8 @@ function renderModelLab(){
     <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">The backtest's questions</caption>
     <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Label</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
-    <h2 class="section-title">Log loss on the held-out seasons</h2>
-    <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">Scores</caption>
-    <thead><tr><th scope="col">Forecast</th><th scope="col" class="num">Games</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Accuracy</th></tr></thead>
-    <tbody>${[['Model A', s.model_a], ['Base rate', s.base_rate], ['Model B', s.model_b], ['Market', s.market]].filter(r => r[1]).map(([n, v]) => `<tr><th scope="row">${n}</th><td class="num">${v.games}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${pct(v.accuracy, 1)}</td></tr>`).join('')}</tbody></table></div>
+    <h2 class="section-title">Scores on the held-out seasons</h2>
+    ${heldOutTable(s, [['Model A', 'model_a'], ['Base rate', 'base_rate'], ['Model B', 'model_b'], ['Market', 'market']], 'nhl')}
     <p class="nhl-lede">Accuracy is printed, never decides: at this many games it moves by a game or two between machines, where log loss does not.</p>`;
 }
 
