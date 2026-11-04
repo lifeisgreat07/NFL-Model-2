@@ -67,6 +67,21 @@
    "before_any_result": false,
    "seen": "H3's REJECT was in experiments/nba/stage61/results/confirmation.json when this registration was made on 2026-10-09; the forward test's first figures (see the forward_test.decision amendment) had been read when this disclosure was written.",
    "change": "Added a disclosure saying why the board shows Model B's pick although H3 rejected it against the market. No rule changes."
+  },
+  {
+   "date": "2026-11-03",
+   "by": "Claude, under Mark's approval of 2026-11-02 (the 2026-11-02 review, Stage 85 item 4)",
+   "entry": "deviation",
+   "before_any_result": false,
+   "seen": "Found on 2026-11-03 by comparing each saved pick's training_through with its slate: 5 of 107 saved NBA picks, on 1 slate day(s) (2026-10-31), had models fitted on games finished earlier that same day.",
+   "change": "No rule changes. The live models are refitted at every run on games strictly before the pick's slate day, as the backtest's walk-forward fits them and as models says (\"to the day before\"). Until this date one fit on every final game served the whole run, so a run after the day's first games fitted on them before picking that day's later ones. The ratings and features were always computed from games before the day; only the models' coefficients saw the extra games, a handful among thousands. A saved pick is never rewritten, so these stay in the forward test as saved, listed here. From this date src/sports/nba/daily.py fit_before fits on games strictly before each slate day, and a test holds every later pick's training_through to before its slate.",
+   "picks": [
+    "401909898",
+    "401909899",
+    "401909900",
+    "401909901",
+    "401909902"
+   ]
   }
  ]
 }

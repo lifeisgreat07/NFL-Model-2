@@ -31,4 +31,5 @@ def test_model_b_makes_the_pick_as_registered():
     assert daily.CODE_VERSION == 'nhl-stage56'
     # One amendment since: the season-end decision rule (Stage 84 item 3),
     # disclosed as written after the first forward-test figures were read.
-    assert [a['entry'] for a in REG['amendments']] == ['forward_test.decision']
+    # And a disclosed deviation: picks fitted through their own slate day (Stage 85 item 4).
+    assert [a['entry'] for a in REG['amendments']] == ['forward_test.decision', 'deviation']
