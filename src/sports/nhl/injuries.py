@@ -14,12 +14,18 @@ failed read stores None and the pick is saved regardless.
 
 ESPN numbers seasons by the year they end, so the NHL's 2026 (2026-27) is
 `injuries_2027.parquet`.
+
+A file not shaped as this reads is refused whole. A club name it does not
+recognise is not: since Stage 83 item 5 (the 2026-11-02 review) its rows are
+left out, the names are returned, and each pick stores them as
+`clubs_not_recognised`, because one of the two clubs' lists may be the one
+missing. Before, one unknown name lost every club's list.
 """
 from __future__ import annotations
 
 import io
 from datetime import datetime
-from typing import Any
+from typing import Any, NamedTuple
 
 import pandas as pd
 
@@ -35,15 +41,22 @@ class InjurySourceError(ValueError):
     """The file is not the injury list this reads."""
 
 
+class Latest(NamedTuple):
+    """The latest day, its list by club abbreviation, and the club names not recognised."""
+    day: str
+    table: pd.DataFrame
+    unknown: list[str]
+
+
 def source(season: int) -> str:
     """The file for the NHL season starting in `season`."""
     return f'{RELEASE}/injuries_{season + 1}.parquet'
 
 
-def latest(raw: bytes) -> tuple[str, pd.DataFrame]:
+def latest(raw: bytes) -> Latest:
     """The latest day in the file and that day's list, one row per player,
-    with the club as its abbreviation. A club the names do not match is
-    refused, so a renamed club is reported rather than dropped."""
+    with the club as its abbreviation. A club the names do not match is left
+    out and named, so a renamed club is reported rather than silently dropped."""
     try:
         df = pd.read_parquet(io.BytesIO(raw))
     except Exception as exc:  # pyarrow raises its own types for a bad file
@@ -57,18 +70,23 @@ def latest(raw: bytes) -> tuple[str, pd.DataFrame]:
     today = df[df['as_of_date'].astype(str) == day].copy()
     today['team'] = [teams.abbr_for(str(n)) for n in today['team_display_name']]
     unknown = sorted(set(today.loc[today['team'].isna(), 'team_display_name'].astype(str)))
-    if unknown:
-        raise InjurySourceError(f'clubs not recognised: {unknown}')
+    today = today[today['team'].notna()]
+    if today.empty:
+        raise InjurySourceError(f'no club recognised: {unknown}')
     today = today.drop_duplicates(['team', 'athlete_display_name'], keep='last')
-    return day, today
+    return Latest(day, today, unknown)
 
 
-def for_game(day: str, table: pd.DataFrame, home: str, away: str, read: datetime) -> dict[str, Any]:
+def for_game(day: str, table: pd.DataFrame, home: str, away: str, read: datetime,
+             unknown: list[str] | None = None) -> dict[str, Any]:
     """What the pick stores: the source, the list's day, when it was read,
-    and each side's players sorted by name."""
+    each side's players sorted by name, and any club names not recognised."""
     def side(club: str) -> list[dict[str, str]]:
         rows = table[table['team'] == club].sort_values('athlete_display_name', kind='stable')
         return [{'name': str(r.athlete_display_name), 'position': str(r.athlete_position), 'status': str(r.status)}
                 for r in rows.itertuples()]
-    return {'source': NAME, 'as_of': day, 'read_utc': read.strftime('%Y-%m-%dT%H:%M:%SZ'),
-            'home': side(home), 'away': side(away)}
+    out = {'source': NAME, 'as_of': day, 'read_utc': read.strftime('%Y-%m-%dT%H:%M:%SZ'),
+           'home': side(home), 'away': side(away)}
+    if unknown:
+        out['clubs_not_recognised'] = list(unknown)
+    return out

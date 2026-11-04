@@ -45,14 +45,15 @@ def test_the_season_starting_in_2026_is_espns_2027_file():
 
 
 def test_only_the_latest_day_is_read_and_each_club_is_its_abbreviation():
-    day, table = injuries.latest(parquet(LIST))
+    day, table, unknown = injuries.latest(parquet(LIST))
+    assert unknown == []
     assert day == '2026-10-09'
     assert 'Old Name' not in set(table['athlete_display_name'])
     assert set(table['team']) == {'TBL', 'MTL', 'PHI'}
 
 
 def test_a_game_stores_each_sides_players_sorted_with_source_and_times():
-    day, table = injuries.latest(parquet(LIST))
+    day, table, _ = injuries.latest(parquet(LIST))
     got = injuries.for_game(day, table, 'TBL', 'MTL', NOW)
     assert got == {'source': 'espn_nhl_injuries', 'as_of': '2026-10-09', 'read_utc': '2026-10-10T21:00:00Z',
                    'home': [{'name': 'Anthony Cirelli', 'position': 'C', 'status': 'Injured Reserve'},
@@ -64,11 +65,25 @@ def test_a_game_stores_each_sides_players_sorted_with_source_and_times():
 @pytest.mark.parametrize('raw, why', [
     (b'not parquet', 'not a parquet file'),
     (parquet([{'as_of_date': '2026-10-09', 'team_display_name': 'Boston Bruins'}]), 'columns missing'),
-    (parquet([row('2026-10-09', 'Quebec Nordiques', 'Peter Stastny')]), 'clubs not recognised'),
+    (parquet([row('2026-10-09', 'Quebec Nordiques', 'Peter Stastny')]), 'no club recognised'),
 ])
 def test_a_file_that_is_not_the_list_is_refused_not_guessed(raw, why):
     with pytest.raises(injuries.InjurySourceError, match=why):
         injuries.latest(raw)
+
+
+def test_an_unknown_club_loses_its_own_rows_only_and_the_pick_says_so(capsys):
+    """Stage 83 item 5: the other clubs' lists are kept; the name is said on a
+    DEGRADED line and stored in the pick, since either side's list may be the
+    one left out."""
+    raw = parquet(LIST + [row('2026-10-09', 'Quebec Nordiques', 'Peter Stastny')])
+    got = injuries.latest(raw)
+    assert got.unknown == ['Quebec Nordiques'] and set(got.table['team']) == {'TBL', 'MTL', 'PHI'}
+    listed = injuries.for_game(got.day, got.table, 'TBL', 'MTL', NOW, got.unknown)
+    assert listed['clubs_not_recognised'] == ['Quebec Nordiques'] and len(listed['home']) == 2
+    assert 'clubs_not_recognised' not in injuries.for_game(got.day, got.table, 'TBL', 'MTL', NOW, [])
+    assert daily.read_injuries(2026, lambda url: raw).unknown == ['Quebec Nordiques']
+    assert capsys.readouterr().out.startswith("DEGRADED: injuries: clubs not recognised, their players left out: ['Quebec Nordiques']")
 
 
 def test_a_failed_read_is_none_and_says_so(capsys):
@@ -91,7 +106,7 @@ def test_the_pick_stores_the_list_and_none_when_there_is_none():
     game = pd.Series({'game_id': '1', 'season': 2026, 'slate': '2026-10-10',
                       'start_utc': pd.Timestamp('2026-10-10 23:00', tz='UTC'), 'home': 'TBL', 'away': 'MTL'})
     feats = {'goal_matchup': 0.0, 'shot_matchup': 0.0, 'goalie_matchup_500': 0.0}
-    day, table = injuries.latest(parquet(LIST))
+    day, table, _ = injuries.latest(parquet(LIST))
     listed = injuries.for_game(day, table, 'TBL', 'MTL', NOW)
     with_list = daily.pick_record(game, feats, 500, Fixed(0.5), Fixed(0.5), None, {}, NOW, listed)
     assert json.loads(json.dumps(with_list))['injuries'] == listed

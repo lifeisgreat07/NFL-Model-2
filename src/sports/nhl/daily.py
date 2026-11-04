@@ -161,14 +161,18 @@ def pick_record(game: pd.Series, feats: dict[str, float], k: float, model_a: Any
     }
 
 
-def read_injuries(season: int, get: Callable[[str], bytes]) -> tuple[str, pd.DataFrame] | None:
+def read_injuries(season: int, get: Callable[[str], bytes]) -> injuries.Latest | None:
     """The latest injury list, or None when it cannot be read: injuries are
-    context, so their source failing never stops a pick being saved."""
+    context, so their source failing never stops a pick being saved. Club
+    names it could not match are said on a DEGRADED line (Stage 83 item 5)."""
     try:
-        return injuries.latest(get(injuries.source(season)))
+        got = injuries.latest(get(injuries.source(season)))
     except (injuries.InjurySourceError, OSError) as exc:
         print(f'DEGRADED: injuries: not read, picks saved without them: {exc}')
         return None
+    if got.unknown:
+        print(f'DEGRADED: injuries: clubs not recognised, their players left out: {got.unknown}')
+    return got
 
 
 def read_market(get: Callable[[str], bytes], now: datetime) -> tuple[list[dict[str, Any]], list[str]]:
@@ -349,7 +353,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                 ids[side] = pid
             feats = rated.matchup(g['home'], g['away'], ids['home'], ids['away'], [k])
             injury_list = None if injury_table is None else injuries.for_game(
-                injury_table[0], injury_table[1], g['home'], g['away'], now)
+                injury_table.day, injury_table.table, g['home'], g['away'], now, injury_table.unknown)
             record = pick_record(g, feats, k, model_a, model_b, line_by_id.get(str(g['game_id'])), notes, now,
                                  injury_list) | trained
             print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id'])

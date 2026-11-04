@@ -135,10 +135,31 @@ def availability_for(minutes: pd.DataFrame, day_of: dict[str, pd.Timestamp], tea
     return ratings.availability(expected, [p for p in expected if p not in out])
 
 
+def game_availability(report: injuries.Report | None, home: str, away: str, minutes: pd.DataFrame,
+                      day_of: dict[str, pd.Timestamp], day: pd.Timestamp, h: float, now: datetime
+                      ) -> tuple[float | None, dict[str, Any] | None, dict[str, Any] | None, str]:
+    """(availability_matchup, what the pick stores of it, the injury list, why
+    not) for one game. No report, or a row of either team's that could not be
+    read (Stage 83 item 5), means no availability for this game, and why says
+    which; every other game uses the report."""
+    if report is None:
+        return None, None, None, 'injury report not read'
+    unread = [t for t in (home, away) if t in report.unread]
+    if unread:
+        return None, None, None, 'injury report rows not read for ' + '; '.join(
+            f"{t} ({', '.join(report.unread[t])})" for t in unread)
+    ah = availability_for(minutes, day_of, home, day, h, injuries.out_ids(report.rows, home))
+    aa = availability_for(minutes, day_of, away, day, h, injuries.out_ids(report.rows, away))
+    return (ah - aa, {'read': True, 'home': round(ah, 4), 'away': round(aa, 4)},
+            injuries.for_game(report.rows, home, away, now), '')
+
+
 def pick_record(game: pd.Series, feats: dict[str, float], models: dict[str, Any], price: dict[str, Any],
-                avail: dict[str, Any] | None, injury_list: dict[str, Any] | None, now: datetime) -> dict[str, Any]:
-    """The saved pick. `avail` is None when the injury report was not read:
-    both models then run without the availability term, and the pick says so."""
+                avail: dict[str, Any] | None, injury_list: dict[str, Any] | None, now: datetime,
+                why: str = 'injury report not read') -> dict[str, Any]:
+    """The saved pick. `avail` is None when availability could not be read for
+    this game (`why` says what was not read): both models then run without the
+    availability term, and the pick says so."""
     cols = A_COLUMNS if avail is not None else NO_AVAIL
     suffix = '' if avail is not None else '_no_availability'
     x = pd.DataFrame([feats])[cols]
@@ -157,7 +178,7 @@ def pick_record(game: pd.Series, feats: dict[str, float], models: dict[str, Any]
         'pick_model': 'model_b' if p_b is not None else 'model_a',
         'market_source': price.get('source'),
         'availability': avail if avail is not None else {'read': False,
-                                                         'note': 'injury report not read; both models ran without availability'},
+                                                         'note': f'{why}; both models ran without availability'},
         'features': {key: round(float(v), 6) for key, v in feats.items() if key in cols},
         'market': price, 'injuries': injury_list,
         'saved_utc': now.strftime('%Y-%m-%dT%H:%M:%SZ'), 'code': CODE_VERSION,
@@ -224,13 +245,18 @@ def drift_rows(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, in
     return rows
 
 
-def read_injuries(get: Callable[[str], bytes], teams: set[str]) -> list[dict[str, str]] | None:
-    """The injury report's rows, or None when it cannot be read as registered."""
+def read_injuries(get: Callable[[str], bytes], teams: set[str]) -> injuries.Report | None:
+    """The injury report, or None when it cannot be read as registered. Rows
+    it read only in part name their teams, whose games go without availability."""
     try:
-        return injuries.parse(json.loads(get(injuries.SOURCE)), teams)
+        report = injuries.parse(json.loads(get(injuries.SOURCE)), teams)
     except (injuries.InjurySourceError, OSError, ValueError) as exc:
         print(f'DEGRADED: injuries: not read, picks made without availability: {exc}')
         return None
+    for team, problems in sorted(report.unread.items()):
+        print(f"DEGRADED: injuries: {team}'s rows not all read, its games picked without availability: "
+              + '; '.join(problems))
+    return report
 
 
 def read_espn_odds(gid: str, get: Callable[[str], bytes]) -> Json | None:
@@ -292,15 +318,11 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             models, trained = fitted[day]
             rated = ratings.day_ratings(games[games['day'] < day], day, h, lam)
             feats: dict[str, float] = dict(rated.matchup(g['home'], g['away']))
-            avail = None
-            injury_list = None
-            if report is not None:
-                ah = availability_for(minutes, day_of, g['home'], day, h, injuries.out_ids(report, g['home']))
-                aa = availability_for(minutes, day_of, g['away'], day, h, injuries.out_ids(report, g['away']))
-                feats['availability_matchup'] = ah - aa
-                avail = {'read': True, 'home': round(ah, 4), 'away': round(aa, 4)}
-                injury_list = injuries.for_game(report, g['home'], g['away'], now)
-            record = pick_record(g, feats, models, price, avail, injury_list, now) | trained
+            matchup, avail, injury_list, why = game_availability(report, g['home'], g['away'], minutes, day_of,
+                                                                 day, h, now)
+            if matchup is not None:
+                feats['availability_matchup'] = matchup
+            record = pick_record(g, feats, models, price, avail, injury_list, now, why) | trained
             print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id']
                   + f" (price: {record['market_source'] or 'none'})")
         market.record(prices, PATHS.data / 'lines' / f'{season}.json')
