@@ -747,5 +747,103 @@
   "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-02T21:31:25Z"
+ },
+ {
+  "game_id": "401909922",
+  "pick": "DET",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909923",
+  "pick": "ATL",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909924",
+  "pick": "BOS",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909925",
+  "pick": "CHA",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909926",
+  "pick": "NY",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909927",
+  "pick": "MEM",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909928",
+  "pick": "NO",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909929",
+  "pick": "OKC",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909930",
+  "pick": "HOU",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909931",
+  "pick": "DEN",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909932",
+  "pick": "POR",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909933",
+  "pick": "SA",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909934",
+  "pick": "LAL",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
+ },
+ {
+  "game_id": "401909935",
+  "pick": "MIA",
+  "result": "pending",
+  "market_source": "espn",
+  "saved_utc": "2026-11-04T21:31:30Z"
  }
 ]

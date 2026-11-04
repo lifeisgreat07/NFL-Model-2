@@ -125,6 +125,16 @@ def test_a_row_says_which_step_its_figure_is_from(entries, rows):
     assert 'validation screen 2022&ndash;2023; it did not go on to confirmation' in by_id['H2'][1]
 
 
+def test_a_registry_id_and_source_are_escaped():
+    """Stage 88 item 6. The id comes from a registry file as the title does,
+    and went into the row unescaped; a `<` in it would have opened a tag."""
+    e = {'stage': 'Stage 99', 'id': 'R<script>1', 'title': 'T', 'headline': None, 'reason': 'r',
+         'source': 'experiments/x<y>/registry.json'}
+    cell = gd._registered_result(e)
+    assert '<script>' not in cell and 'R&lt;script&gt;1' in cell
+    assert '<code>experiments/x&lt;y&gt;/registry.json</code>' in cell
+
+
 def test_a_deferred_question_shows_its_reason(entries, rows):
     for e, (_, result, _) in zip(entries, rows):
         if e['stage'] and e['decision'] == 'DEFERRED':

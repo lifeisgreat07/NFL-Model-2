@@ -24,6 +24,10 @@ each sport's backtest seed. They are reported, not judged: the season-end
 decision rule is a separate registered amendment (Stage 84 item 3), so this
 file carries no ACCEPT or REJECT.
 
+Stage 84 item 5 adds each model's calibration intercept and slope (a
+logistic recalibration of its home probability), with intervals from the
+same day blocks, level and seed. Reported, not judged, like the rest.
+
 The daily run writes results/<sport>/forward_<season>.json with `write`.
 """
 from __future__ import annotations
@@ -47,6 +51,8 @@ FORECASTERS = ('model_a', 'model_b', 'market', 'base_rate')
 COMPARISONS = (('model_a_minus_base_rate', 'model_a', 'base_rate'),
                ('model_b_minus_model_a', 'model_b', 'model_a'),
                ('model_b_minus_market', 'model_b', 'market'))
+#: The models whose calibration is reported (Stage 84 item 5).
+CALIBRATED = ('model_a', 'model_b')
 
 
 def log_losses(p: npt.NDArray[np.float64], y: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -76,6 +82,73 @@ def interval(diff: npt.NDArray[np.float64], days: npt.NDArray[Any], seed: int,
     lo, hi = np.quantile(boot, [tail, 1 - tail])
     return {'games': int(len(diff)), 'days': int(len(sums)), 'diff': float(diff.mean()),
             'low': float(lo), 'high': float(hi), 'level': level}
+
+
+def _logit(p: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+    p = np.clip(p, EPS, 1 - EPS)
+    out: npt.NDArray[np.float64] = np.log(p / (1 - p))
+    return out
+
+
+def recalibrate(x: npt.NDArray[np.float64], y: npt.NDArray[np.float64], w: npt.NDArray[np.float64],
+                slope_free: bool, iters: int = 25) -> tuple[npt.NDArray[np.float64], npt.NDArray[np.float64]]:
+    """Weighted logistic regression of the outcome `y` on `x`, the forecast's
+    log-odds, for every row of weights `w` at once (shape draws x games).
+
+    slope_free=False fits the calibration intercept: logit P(home win) =
+    a + x, the slope held at 1 (calibration in the large). slope_free=True
+    fits the calibration slope: logit P(home win) = a + b * x. Perfect
+    calibration is intercept 0 and slope 1; a slope below 1 means the
+    forecasts are too far from 50%. Returns (a, b) per row, by Newton's method.
+    """
+    a = np.zeros(len(w))
+    b = np.ones(len(w))
+    for _ in range(iters):
+        p = 1 / (1 + np.exp(-(a[:, None] + b[:, None] * x[None, :])))
+        r = w * (y[None, :] - p)
+        v = w * p * (1 - p)
+        if not slope_free:
+            a = a + r.sum(axis=1) / v.sum(axis=1)
+            continue
+        g0, g1 = r.sum(axis=1), (r * x).sum(axis=1)
+        h00, h01, h11 = v.sum(axis=1), (v * x).sum(axis=1), (v * x * x).sum(axis=1)
+        det = h00 * h11 - h01 ** 2
+        a = a + (h11 * g0 - h01 * g1) / det
+        b = b + (h00 * g1 - h01 * g0) / det
+    return a, b
+
+
+def calibration(p: npt.NDArray[np.float64], y: npt.NDArray[np.float64], days: npt.NDArray[Any], seed: int,
+                level: float = LEVEL, n: int = N_RESAMPLES) -> dict[str, Any]:
+    """Calibration intercept and slope of home probabilities `p`, each with a
+    bootstrap interval that resamples whole game days as `interval` does:
+    a draw takes len(days) days with replacement, and each game counts as
+    many times as its day was drawn."""
+    x = _logit(p)
+    codes, uniq = pd.factorize(pd.Series(days))
+    rng = np.random.default_rng(seed)
+    draws = rng.integers(0, len(uniq), size=(n, len(uniq)))
+    per_day = np.stack([np.bincount(row, minlength=len(uniq)) for row in draws]).astype(float)
+    weights = per_day[:, codes]
+    one = np.ones((1, len(p)))
+    tail = (1 - level) / 2
+    out: dict[str, Any] = {'games': int(len(p)), 'days': int(len(uniq)), 'level': level}
+    for name, free, pick in (('intercept', False, 0), ('slope', True, 1)):
+        with np.errstate(all='ignore'):
+            point = recalibrate(x, y, one, free)[pick][0]
+            boot = recalibrate(x, y, weights, free)[pick]
+        # A draw whose fit has no finite answer (every drawn game a home win,
+        # say) is left out of the quantiles and counted, not hidden.
+        ok = np.isfinite(boot)
+        if not np.isfinite(point) or not ok.any():
+            # No finite fit on the games themselves: a slope cannot be fitted
+            # to forecasts that never vary, nor anything to one outcome only.
+            out[name] = {'value': None, 'low': None, 'high': None, 'draws_unfit': int((~ok).sum()),
+                         'note': 'no finite fit'}
+            continue
+        lo, hi = np.quantile(boot[ok], [tail, 1 - tail])
+        out[name] = {'value': float(point), 'low': float(lo), 'high': float(hi), 'draws_unfit': int((~ok).sum())}
+    return out
 
 
 def base_rates(pick_days: Iterable[str], played: pd.DataFrame) -> dict[str, float]:
@@ -135,6 +208,17 @@ def report(frame: pd.DataFrame, sport: str, season: int, registry: str) -> dict[
         y = both['home_win'].to_numpy(float)
         diff = log_losses(both[first].to_numpy(float), y) - log_losses(both[second].to_numpy(float), y)
         comparisons[name] = interval(diff, both['day'].to_numpy(), seed)
+    # Stage 84 item 5: calibration intercept and slope for Models A and B,
+    # each on the picks it has a number for. Reported, not judged.
+    calib: dict[str, dict[str, Any]] = {}
+    for name in CALIBRATED:
+        have = frame[frame[name].notna()]
+        if len(have) < 2 or have['day'].nunique() < 2:
+            calib[name] = {'games': int(len(have)), 'days': int(have['day'].nunique()),
+                           'note': 'too few games to resample'}
+            continue
+        calib[name] = calibration(have[name].to_numpy(float), have['home_win'].to_numpy(float),
+                                  have['day'].to_numpy(), seed)
     by_source = {str(src): scores(group) for src, group in frame[frame['source'].notna()].groupby('source')}
     return {
         'sport': sport, 'season': season, 'registered': registry,
@@ -143,6 +227,7 @@ def report(frame: pd.DataFrame, sport: str, season: int, registry: str) -> dict[
         'scores': scores(frame),
         'by_market_source': by_source,
         'comparisons': comparisons,
+        'calibration': calib,
         'interval_rule': {'level': LEVEL, 'resamples': N_RESAMPLES, 'seed': seed,
                           'blocks': 'whole game days, paired', 'judged': False},
     }

@@ -61,6 +61,7 @@ from src.sports.nhl import (
     goalies,
     history,
     injuries,
+    m2,
     market,
     page_inputs,
     ratings,
@@ -314,8 +315,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     slate = sched[sched['slate'].isin(days)]
     decision = GameLock().decide(slate, now)
     folder = PATHS.predictions / str(season)
+    # Every run builds the feature table: the picks are fitted on it, and M2
+    # (Stage 84 item 4) refits on it whether or not this run saves a pick.
+    table = ratings.features(games, h, [k]).merge(games[['game_id', 'home_prob']], on='game_id', how='left')
     if decision.lock:
-        table = ratings.features(games, h, [k]).merge(games[['game_id', 'home_prob']], on='game_id', how='left')
         fitted: dict[pd.Timestamp, tuple[Any, Any, dict[str, Any]]] = {}
         lines, missing = read_market(get, now)
         for m in missing:
@@ -385,6 +388,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                              'experiments/nhl/stage58/registry.json', folder, sched,
                              games[['day', 'home_score', 'away_score']])
     print(f"forward test: {fwd['graded_picks']} graded picks through {fwd['through']}")
+    # Stage 84 item 4: Stage 56's M2, the projected starter against the actual one.
+    m2_out = m2.write(PATHS.results / f'm2_{season}.json', forward_test.read_picks(folder), games, table,
+                      current, h, k, fit_models)
+    print(f"M2: {m2_out['graded']} graded games")
     lost = missed_line(decision.started, folder)
     if lost:
         print(lost)
