@@ -1,38 +1,38 @@
 [
  {
-  "page": "nhl",
+  "page": "nba",
   "label": "head",
   "viewport": "390x844",
   "theme": "light",
-  "file": "nhl-390x844-light-head.png",
-  "bytes": 62561,
+  "file": "nba-390x844-light-head.png",
+  "bytes": 102732,
   "parked": 3
  },
  {
-  "page": "nhl",
+  "page": "nba",
   "label": "head",
   "viewport": "390x844",
   "theme": "dark",
-  "file": "nhl-390x844-dark-head.png",
-  "bytes": 63047,
+  "file": "nba-390x844-dark-head.png",
+  "bytes": 103409,
   "parked": 3
  },
  {
-  "page": "nhl",
+  "page": "nba",
   "label": "head",
   "viewport": "1440x900",
   "theme": "light",
-  "file": "nhl-1440x900-light-head.png",
-  "bytes": 154857,
+  "file": "nba-1440x900-light-head.png",
+  "bytes": 169488,
   "parked": 4
  },
  {
-  "page": "nhl",
+  "page": "nba",
   "label": "head",
   "viewport": "1440x900",
   "theme": "dark",
-  "file": "nhl-1440x900-dark-head.png",
-  "bytes": 155107,
+  "file": "nba-1440x900-dark-head.png",
+  "bytes": 170312,
   "parked": 4
  }
 ]
