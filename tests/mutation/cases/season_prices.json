@@ -20,7 +20,7 @@
       "id": "nhl-season-prices-not-applied",
       "target": "src/sports/nhl/daily.py",
       "why": "the NHL run reads the prices and never puts them on this season's games, so Model B is again fitted on earlier seasons only",
-      "find": "    current = current.assign(home_prob=current['game_id'].astype(str).map(prices))\n",
+      "find": "    current = current.assign(home_prob=current['game_id'].astype(str).map(recorded))\n",
       "replace": "",
       "expect_caught_by": "test_both_daily_runs_put_the_prices_on_this_seasons_games"
     }

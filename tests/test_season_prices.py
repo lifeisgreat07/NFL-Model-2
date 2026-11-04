@@ -55,7 +55,7 @@ def test_the_committed_lines_give_a_price_to_most_saved_picks(sport):
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_both_daily_runs_put_the_prices_on_this_seasons_games(sport):
     src = (ROOT / 'src' / 'sports' / sport / 'daily.py').read_text(encoding='utf-8')
-    assert "prices = season_prices.read(PATHS.data / 'lines' / f'{season}.json')" in src
+    assert "recorded = season_prices.read(PATHS.data / 'lines' / f'{season}.json')" in src
     frame = 'current' if sport == 'nhl' else 'cur_games'
-    assert f"{frame} = {frame}.assign(home_prob={frame}['game_id'].astype(str).map(prices))" in src
+    assert f"{frame} = {frame}.assign(home_prob={frame}['game_id'].astype(str).map(recorded))" in src
     assert 'home_prob=np.nan' not in src

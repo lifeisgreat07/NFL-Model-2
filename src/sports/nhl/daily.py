@@ -301,8 +301,8 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     current = refresh_season(season, sched)
     # Stage 85 item 5: this season's games enter Model B's training rows with
     # the price the runs recorded, the last read before each game started.
-    prices = season_prices.read(PATHS.data / 'lines' / f'{season}.json')
-    current = current.assign(home_prob=current['game_id'].astype(str).map(prices))
+    recorded = season_prices.read(PATHS.data / 'lines' / f'{season}.json')
+    current = current.assign(home_prob=current['game_id'].astype(str).map(recorded))
     games = ratings.prepare(pd.concat([past, current], ignore_index=True))
     h, k = chosen()
 
