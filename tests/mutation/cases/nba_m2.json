@@ -1,0 +1,35 @@
+{
+  "target": "src/sports/nba/m2.py",
+  "tests": "tests/test_nba_m2.py",
+  "cases": [
+    {
+      "id": "nba-m2-box-is-the-report",
+      "why": "the box-score side reuses the injury report's matchup, so M2 reports no gap whatever the report missed",
+      "find": "        matchup = {'report': side['home'] - side['away'], 'box': float(box[gid])}\n",
+      "replace": "        matchup = {'report': side['home'] - side['away'], 'box': side['home'] - side['away']}\n",
+      "expect_caught_by": "test_each_game_is_scored_with_the_reports_availability_and_the_box_scores"
+    },
+    {
+      "id": "nba-m2-day-to-day-counts-as-out",
+      "why": "every listed player counts against the report's availability, not only Out and suspended ones, which is not the rule the picks used",
+      "find": "if r['status'] in injuries.UNAVAILABLE}\n",
+      "replace": "if r['status']}\n",
+      "expect_caught_by": "test_only_out_and_suspended_players_count_against_the_report"
+    },
+    {
+      "id": "nba-m2-unread-picks-measured",
+      "why": "picks made without availability are measured as if their availability were full, mixing two kinds of pick",
+      "find": "        if not (p.get('availability') or {}).get('read'):\n            not_read += 1\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_picks_made_without_availability_are_counted_and_left_out"
+    },
+    {
+      "id": "nba-m2-printed-before-100-games",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the page prints M2's figures before the 100 graded games the registration waits for",
+      "find": "  if (m.graded < m.printed_from) return `<p class=\"nba-lede\">",
+      "replace": "  if (false) return `<p class=\"nba-lede\">",
+      "expect_caught_by": "test_the_page_waits_for_100_games"
+    }
+  ]
+}
