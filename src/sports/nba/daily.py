@@ -43,6 +43,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from src.core import forward_test
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nba import (
@@ -303,6 +304,11 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
          'baseline': spec['baseline']['value'], 'flagged': flagged}, indent=1) + '\n', encoding='utf-8')
     if flagged:
         print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
+    # Stage 84 item 1: the registered forward test, on every saved pick whose game is final.
+    fwd = forward_test.write(PATHS.results / f'forward_{season}.json', 'nba', season,
+                             'experiments/nba/stage65/registry.json', folder, sched,
+                             games[['day', 'home_score', 'away_score']])
+    print(f"forward test: {fwd['graded_picks']} graded picks through {fwd['through']}")
     lost = missed_line(decision.started, folder)
     if lost:
         print(lost)

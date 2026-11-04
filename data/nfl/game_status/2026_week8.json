@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 8,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-02T05:37:34Z",
+  "read_at": "2026-11-03T11:03:01Z",
   "games": [
     {
       "away": "CAR",
@@ -137,9 +137,9 @@
     {
       "away": "CHI",
       "home": "SEA",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 34,
+      "home_score": 17,
       "spread_line": 3.0,
       "neutral_site": false,
       "venue": "Lumen Field"

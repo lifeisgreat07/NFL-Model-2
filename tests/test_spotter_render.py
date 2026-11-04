@@ -103,7 +103,7 @@ def test_the_render_job_holds_no_model_and_reads_only():
     assert re.search(r'^permissions:\n  contents: read\n', text(WORKFLOW), re.M)
 
 
-@pytest.mark.parametrize('name', ['render', 'publish', 'read'])
+@pytest.mark.parametrize('name', ['render', 'vet', 'publish', 'read'])
 def test_every_job_is_bounded_and_on_the_pinned_runner(name):
     t = job(name)
     assert '    runs-on: ubuntu-24.04\n' in t and re.search(r'    timeout-minutes: \d+\n', t)

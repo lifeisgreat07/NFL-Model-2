@@ -10,7 +10,13 @@
   "runs": "16:00 and 21:30 UTC every day (noon and 5:30 PM Eastern in October). A game is saved by a run when it starts before the next run plus one hour, the NHL's rule; a run that finds a game already started never predicts it.",
   "the_pick": "Model B's side when the game has a market price, Model A's otherwise, as on the NFL and NHL boards.",
   "graded": "Final games only. A cancelled game is never counted; a postponed one is scored if a saved pick exists for the game the league played.",
-  "reported": "Model A, Model B, the market and the home-win base rate, by log loss with Brier beside it; accuracy is reported and never decides. Intervals as in Stage 61: paired, resampling whole game days, 5,000 resamples. Picks priced by the fallback are reported on their own as well as in the total."
+  "reported": "Model A, Model B, the market and the home-win base rate, by log loss with Brier beside it; accuracy is reported and never decides. Intervals as in Stage 61: paired, resampling whole game days, 5,000 resamples. Picks priced by the fallback are reported on their own as well as in the total.",
+  "decision": {
+   "when": "Once, on the forward-test file (results/nba/forward_2026.json) the first scheduled daily run writes after the 2026 regular season's last game is final. No earlier look decides anything; the figures before then are reported on the checks page and are not a verdict.",
+   "what": "Each of the three comparisons the file carries -- Model A minus the base rate, Model B minus Model A, Model B minus the market -- on log loss per game, paired on the games both scored, resampling whole game days 5,000 times with the backtest's seed.",
+   "rule": "The backtests' rule at their level, 1 - 0.05/3 (98.33%): ACCEPT when the whole interval is below zero (the first forecaster did better), REJECT when it is above zero, INCONCLUSIVE otherwise.",
+   "implemented_by": "src/core/forward_test.py"
+  }
  },
  "market": {
   "primary": "ESPN's pre-game moneyline for the game (sports.core.api.espn.com .../events/<id>/competitions/<id>/odds), read at the run that saves the pick: the first listed provider that is not marked live and is not a projection site, the margin taken out evenly. This is the backtest's own source.",
@@ -24,7 +30,7 @@
   "playing": "Every player with expected minutes for the team who is not listed Out. Day-To-Day counts as playing, as the registration's 'not listed Out' says. A player is matched by ESPN's athlete id.",
   "stored": "Each pick stores the injury list for both teams as read, the read time, and the availability each side was given.",
   "amended": "2026-11-02 (Mark): ESPN listed a player with status Suspension, which the strict read refused, so the night's picks were made without availability. A suspended player cannot play, so Suspension now removes a player exactly as Out does. Registered sentence above is unchanged; this applies to picks saved from 2026-11-02 on, none earlier.",
- "unreadable": "If the report cannot be read, the pick is made by Model A and Model B without availability_matchup, each refitted the same way without it, and the pick says so. Nothing is filled in."
+  "unreadable": "If the report cannot be read, the pick is made by Model A and Model B without availability_matchup, each refitted the same way without it, and the pick says so. Nothing is filled in."
  },
  "drift": {
   "file": "data/nba/drift_baseline.json",
@@ -42,7 +48,25 @@
  "disclosures": [
   "Stage 61's last disclosure said the live reads waited on Mark. The runner probe of 2026-10-09 (#357) found ESPN's odds and injury report answering GitHub's runner, where in September (#131) they had not; this registration rests on that probe, and the canary is what says when it stops being true.",
   "Kalshi is a prediction market, not a sportsbook; its prices on NBA games were not in Stage 61's data and were never backtested.",
-  "The lock times are chosen for October's clocks. When the US leaves daylight saving on 2026-11-01, 21:30 UTC is 4:30 PM Eastern, earlier before the 7 PM games; the rule is unchanged."
+  "The lock times are chosen for October's clocks. When the US leaves daylight saving on 2026-11-01, 21:30 UTC is 4:30 PM Eastern, earlier before the 7 PM games; the rule is unchanged.",
+  "Why the pick shown is Model B's though H3 rejected Model B against the market (+0.0008 log loss per game, [+0.0002, +0.0015]): the_pick was carried over unchanged from the NFL and NHL boards, so the three boards pick the same way, and forward_test reports Model B against the market on every live pick. Added 2026-11-03 (Stage 84 item 8); see amendments."
  ],
- "amendments": []
+ "amendments": [
+  {
+   "date": "2026-11-03",
+   "by": "Claude, under Mark's approval of 2026-11-02 (the 2026-11-02 review, Stage 84 item 3: amendments disclosed)",
+   "entry": "forward_test.decision",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-03, after the forward test's first figures were computed and read: 96 graded NBA picks through 2026-11-02, with Model A minus the base rate -0.0696 [-0.1224, -0.0020], Model B minus Model A -0.0627 [-0.1008, -0.0186] and Model B minus the market -0.0001 [-0.0016, +0.0010] (log loss per game, 98.33% intervals). The rule was written knowing these, so it was kept to the backtests' own rule and level, and it decides only when it is applied.",
+   "change": "Added forward_test.decision: when the season's verdict is taken, on what, and by which rule. The registration had said what is reported and not how it is judged."
+  },
+  {
+   "date": "2026-11-03",
+   "by": "Claude, under Mark's approval of 2026-11-02 (the 2026-11-02 review, Stage 84 item 8)",
+   "entry": "disclosures",
+   "before_any_result": false,
+   "seen": "H3's REJECT was in experiments/nba/stage61/results/confirmation.json when this registration was made on 2026-10-09; the forward test's first figures (see the forward_test.decision amendment) had been read when this disclosure was written.",
+   "change": "Added a disclosure saying why the board shows Model B's pick although H3 rejected it against the market. No rule changes."
+  }
+ ]
 }

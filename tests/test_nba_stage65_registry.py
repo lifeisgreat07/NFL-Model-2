@@ -79,7 +79,11 @@ def test_the_baseline_is_model_a_on_stage_61s_confirmation_seasons():
 
 def test_it_was_registered_before_any_nba_pick_was_saved():
     reg = registry()
-    assert reg['registered'] == '2026-10-09' and reg['amendments'] == []
+    assert reg['registered'] == '2026-10-09'
+    # Two amendments since, both disclosed as written after the first
+    # forward-test figures were read: the season-end decision rule (Stage 84
+    # item 3) and the disclosure of why the board shows Model B (item 8).
+    assert [a['entry'] for a in reg['amendments']] == ['forward_test.decision', 'disclosures']
     picks = ROOT / 'predictions' / 'nba'
     saved = sorted(p for p in picks.rglob('*.json')) if picks.exists() else []
     for p in saved:
