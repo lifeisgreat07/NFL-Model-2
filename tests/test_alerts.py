@@ -11,6 +11,7 @@ runs, in which order, and what it refuses to do.
 Run with: pytest tests/test_alerts.py -v
 """
 import json
+import re
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -183,3 +184,46 @@ def test_the_alert_check_can_tell_a_silent_workflow():
     assert not raises_an_alert_on_failure(good.replace('src.core.alerts', 'src.core.alarms'))
     assert not raises_an_alert_on_failure(silent)
     assert not raises_an_alert_on_failure(unguarded)
+
+
+
+# --- Stage 83 item 1: an alert closes when its cause does --------------------
+
+def test_resolve_closes_the_open_issue_and_creates_nothing(tmp_path, monkeypatch):
+    closed = []
+    monkeypatch.setattr(alerts, 'close_open_issue', lambda title, body: closed.append((title, body)) or 7)
+    monkeypatch.setattr(alerts, 'open_or_comment', lambda *a, **k: pytest.fail('a resolve opened an issue'))
+    (tmp_path / 'r.md').write_text('Recovered: run 1', encoding='utf-8')
+    assert alerts.main(['--resolve', '--title', 'NBA: daily run failed', '--body-file', str(tmp_path / 'r.md')]) == 0
+    assert closed == [('NBA: daily run failed', 'Recovered: run 1')]
+
+
+def failure_titles(text):
+    """The fixed titles every failure alert in a workflow raises."""
+    titles = []
+    for step in text.split('\n      - '):
+        if 'if: failure()' in step and 'src.core.alerts' in step:
+            titles += [t for t in re.findall(r'--title "([^"]+)"', step) if '$' not in t]
+    return titles
+
+
+def test_every_failure_alert_is_closed_by_the_next_success():
+    """A failure issue whose run later succeeds used to stay open until a person
+    closed it; 14 were open on 2026-11-02. Each fixed title must have a step,
+    on success() and unable to fail the run, that resolves the same title."""
+    found = 0
+    for p in sorted(WORKFLOWS.glob('*.yml')):
+        text = p.read_text(encoding='utf-8')
+        for title in failure_titles(text):
+            found += 1
+            step = next((s for s in text.split('\n      - ')
+                         if f'--resolve --title "{title}"' in s), None)
+            assert step, f'{p.name}: nothing closes "{title}" when the run recovers'
+            assert 'if: success()' in step and 'continue-on-error: true' in step, (
+                f'{p.name}: the step closing "{title}" must run on success and never fail the run')
+            raised_on = next(s for s in text.split('\n      - ')
+                             if 'if: failure()' in s and f'--title "{title}"' in s)
+            if "github.event_name == 'schedule'" in raised_on:
+                assert "github.event_name == 'schedule'" in step, (
+                    f'{p.name}: "{title}" is raised only by the nightly run, so only that run may close it')
+    assert found >= 10, f'the scan found only {found} failure titles -- re-anchor it'

@@ -50,8 +50,8 @@
       "id": "nightly-failure-files-under-the-canary",
       "target": ".github/workflows/nightly-mutation.yml",
       "why": "a failed night is filed under another job's issue title, so a mutation survivor reads as a data outage and the one-issue-per-problem rule merges two problems (Stage 30 item 7).",
-      "find": "--title \"Nightly mutation slice failing\"",
-      "replace": "--title \"Nightly canary failing\"",
+      "find": "--title \"Nightly mutation slice failing\" --body-file slice-report.md",
+      "replace": "--title \"Nightly canary failing\" --body-file slice-report.md",
       "expect_caught_by": "test_a_failed_night_opens_its_own_issue"
     },
     {
