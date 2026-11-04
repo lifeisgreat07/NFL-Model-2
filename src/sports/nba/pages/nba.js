@@ -802,19 +802,43 @@ function driftStatus(d, rule){
   if (d.games < min) return `${d.games} of the ${min} graded games the drift check needs before it can flag. ${now}`;
   return d.flagged ? `<b>Flagged.</b> ${now} That is significantly above the backtest, and an issue is open.` : `Not flagged. ${now}`;
 }
+/* Stage 84 items 1 and 2 (the 2026-11-02 review): the registered forward test,
+   from results/<sport>/forward_<season>.json. Identical in nhl.js and nba.js
+   (tests/test_forward_on_page.py) until Stage 87 moves the two pages' shared
+   functions into one script. */
+function forwardHtml(f, sport){
+  const NAMES = [['Model A', 'model_a'], ['Model B', 'model_b'], ['Market', 'market'], ['Base rate', 'base_rate']];
+  const PAIRS = [['Model A against the base rate', 'model_a_minus_base_rate'], ['Model B against Model A', 'model_b_minus_model_a'], ['Model B against the market', 'model_b_minus_market']];
+  const sgn = x => (x < 0 ? '&minus;' : '+') + Math.abs(x).toFixed(4);
+  if (!f || !f.graded_picks) return `<p class="${sport}-lede">No saved pick has a final score yet, so the forward test has nothing to score.</p>`;
+  const rows = NAMES.filter(([, k]) => f.scores[k]).map(([n, k]) => { const v = f.scores[k];
+    return `<tr><th scope="row">${n}</th><td class="num">${v.games}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${v.brier.toFixed(4)}</td><td class="num">${(v.accuracy * 100).toFixed(1)}%</td></tr>`; }).join('');
+  const pairs = PAIRS.filter(([, k]) => f.comparisons[k]).map(([n, k]) => { const c = f.comparisons[k];
+    return `<tr><th scope="row">${n}</th><td class="num">${c.games}</td><td class="num">${c.days}</td>`
+      + (c.note ? `<td colspan="2">${c.note}</td>` : `<td class="num">${sgn(c.diff)}</td><td class="num">[${sgn(c.low)}, ${sgn(c.high)}]</td>`) + '</tr>'; }).join('');
+  const level = (f.interval_rule.level * 100).toFixed(2);
+  return `<p class="${sport}-lede">Every saved pick whose game is final, ${f.graded_picks} of them through ${f.through}, scored as the registration says (<code>${f.registered}</code>). Model B and the market are scored only on the picks that had a price.</p>
+    <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's scores</caption>
+    <thead><tr><th scope="col">Forecaster</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's comparisons</caption>
+    <thead><tr><th scope="col">Comparison</th><th scope="col" class="num">Games</th><th scope="col" class="num">Days</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${pairs}</tbody></table></div>
+    <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>`;
+}
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
     <h2 class="section-title">The drift check</h2>
     <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
+    <h2 class="section-title">The forward test so far</h2>
+    ${forwardHtml(BD.forward, 'nba')}
     <h2 class="section-title">The live picks so far</h2>
     ${accuracyHtml(accGames(gradedPicks()))}
     ${calibrationHtml(gradedPicks())}
     <p class="nba-lede"><b>The drift check leans toward flagging.</b> Its baseline was measured with each game's actual players, from the box score: knowing who played lowered the backtest's log loss by ${(-Q.M1.diff).toFixed(3)} (M1). A live pick knows only the injury report before tip-off, so live log loss is expected to run up to about that much worse for a reason that is not drift, and the check may flag sooner than a like-for-like comparison would. The registration says so (<code>experiments/nba/stage65/registry.json</code>), and M2 measures the gap once there are live games.</p>
     <h2 class="section-title">Before anything was fitted</h2>
-    <p class="nba-lede">The questions, the seasons, the settings to search, the bootstrap and the labels were written down and committed on ${escapeHtml(DATA.registered)} (<code>experiments/nba/stage61/registry.json</code>), before any NBA feature was computed on a real game. H3 had been expected to come back INCONCLUSIVE; it came back ${Q.H3.label}, and it is reported as it came out. Nothing was re-run or re-tuned.</p>
+    <p class="nba-lede">The questions, the seasons, the settings to search, the bootstrap and the labels were written down and committed on ${escapeHtml(DATA.registered)} (<code>experiments/nba/stage61/registry.json</code>), before any NBA feature was computed on a real game. H3 had been expected to come back INCONCLUSIVE; it came back ${Q.H3.label}, and it is reported as it came out. Nothing was re-run or re-tuned. The board still shows Model B&#39;s pick when a game has a price, although H3 found the market slightly better: the pick rule was carried over unchanged from the NFL and NHL boards when the live season was registered (<code>experiments/nba/stage65/registry.json</code>), and the forward test measures Model B against the market on every live pick.</p>
     <h2 class="section-title">After</h2>
     <p class="nba-lede">Every number on these pages is read from the committed results files when the page is built, and tests hold those files to the registration: the whole grid searched on the validation seasons only, the lowest kept, each label following from its interval. Those tests were checked in turn, by breaking the code on purpose and confirming a test fails.</p>
-    <p class="nba-lede">A separate auditing agent, Booth, re-ran the confirmation on a Linux machine before the results were merged: every number agreed with the committed file to the twelfth decimal place. On Windows the full backtest, tuning included, reproduced both files byte for byte.</p>`;
+    <p class="nba-lede">A separate auditing agent, Booth, re-ran the confirmation on a Linux machine before the results were merged (PR #319): it matched the committed file to within 1e-12 though not bit for bit (its largest difference was 1.6e-16), and every published figure, interval and label agreed. Booth did not re-run the tuning grid; that the full backtest, tuning included, reproduces both files byte for byte was checked only on the Windows machine that wrote them.</p>`;
 }
 
 /* ---------- pages, theme ----------
