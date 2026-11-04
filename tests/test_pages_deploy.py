@@ -102,8 +102,16 @@ def test_the_deploy_cannot_write_to_the_repository(lines):
     assert re.search(r'contents:\s*read', block), (
         f"contents is not read-only in the permissions block:\n{block}"
         "A Pages deploy never needs to write to the repo.")
+    for scope in ('pages: write', 'id-token: write'):
+        assert scope not in block, f'`{scope}` is workflow-wide; only the deploy job may hold it'
+    text = '\n'.join(lines) + '\n'
+    deploy = text[text.index('\n  deploy:\n'):]
+    build = text[text.index('\n  build:\n'):text.index('\n  deploy:\n')]
     for needed in ('pages: write', 'id-token: write'):
-        assert needed in block, f"missing `{needed}`, which actions/deploy-pages requires"
+        assert needed in deploy, f"the deploy job is missing `{needed}`, which actions/deploy-pages requires"
+        assert needed not in build, (
+            f'the build job holds `{needed}`; it installs packages and reads scraped data '
+            '(Stage 82 item 7, the 2026-11-02 review)')
 
 
 def test_deploys_queue_rather_than_cancel(lines):

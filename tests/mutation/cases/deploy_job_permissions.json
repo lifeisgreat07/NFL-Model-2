@@ -1,0 +1,13 @@
+{
+  "target": ".github/workflows/deploy-pages.yml",
+  "tests": "tests/test_pages_deploy.py",
+  "cases": [
+    {
+      "id": "deploy-pages-scope-back-on-the-build",
+      "why": "the build job holds pages: write again, so code it installs or data it processes runs beside a token that can publish the site",
+      "find": "      # To read the scheduled jobs' recent runs for the page (Stage 41 item 4).\n      actions: read\n",
+      "replace": "      pages: write\n      # To read the scheduled jobs' recent runs for the page (Stage 41 item 4).\n      actions: read\n",
+      "expect_caught_by": "test_the_deploy_cannot_write_to_the_repository"
+    }
+  ]
+}
