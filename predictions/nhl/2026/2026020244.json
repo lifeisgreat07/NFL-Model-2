@@ -1,0 +1,71 @@
+{
+ "game_id": "2026020244",
+ "season": 2026,
+ "slate": "2026-11-03",
+ "start_utc": "2026-11-04T00:00:00Z",
+ "home": "CBJ",
+ "away": "COL",
+ "model_a": 0.373,
+ "model_b": 0.4903,
+ "pick": "COL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.198339,
+  "shot_matchup": -4.863633,
+  "goalie_matchup_2000": -0.003014
+ },
+ "market": {
+  "game_id": "2026020244",
+  "start_utc": "2026-11-04T00:00:00Z",
+  "home": "CBJ",
+  "away": "COL",
+  "book": "DraftKings",
+  "home_price": 105.0,
+  "away_price": -125.0,
+  "home_prob": 0.4675,
+  "read_utc": "2026-11-03T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475660,
+   "name": "Cam Talbot",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/mark_scheig/status/2117656280085172360?a=3pIHEfqK684ahtscbL0&s=20"
+  },
+  "away": {
+   "player_id": 8475809,
+   "name": "Scott Wedgewood",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/FerPucksSake/status/2117386240224096631?a=EMJqzks_Dj0J42EqmOs&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-03",
+  "read_utc": "2026-11-03T21:01:48Z",
+  "home": [],
+  "away": [
+   {
+    "name": "Josh Manson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Zachary L'Heureux",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-03T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-02",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14638,
+  "training_games_priced": 7427
+ }
+}

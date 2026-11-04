@@ -59,7 +59,7 @@ What it is meant to demonstrate, and where to look:
   `VERIFICATION.md` -- the last of which is the rule that no claim in this
   repository is made without evidence that was actually run.
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, over 400 case files, one per subject under test)
+  (`tests/mutation/`, over 450 case files, one per subject under test)
   deliberately breaks the code in known
   ways and fails if the suite does not catch the break -- because a test
   that passes against broken code is worse than no test.
@@ -279,6 +279,9 @@ Every one of these, and the page build, the browser checks and the
 end-of-session gate, is also a task in `tasks.py`, which runs exactly what CI
 runs (`tests/test_tasks.py` holds each task to its workflow). `python
 tasks.py` lists them; `python tasks.py check` is lint plus the suite.
+`python tasks.py quick` is the suite without the five tests marked `slow`
+(each drives a whole daily run), for iterating; CI and the Suite line still
+run every test.
 
 ## Automating this with Claude Code Routines
 

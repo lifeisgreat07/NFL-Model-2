@@ -18,10 +18,19 @@ same week comments on it rather than opening a twin (`src/core/alerts.py`).
 
     python -m src.sports.nfl.override_watch --event opened --pr 549 \
         --url https://github.com/o/r/pull/549 --merged false --files-file files.txt
+
+Stage 81 item 2: after the Weekly update locks, `--after-lock --season S` looks
+for an override pull request that is still open for a week whose picks are now
+saved, and raises "NFL: <season> week <N> locked while its QB override was
+unmerged". The lock is final, so this cannot change a pick; it makes the cost
+visible the same morning instead of when someone reads the week's QB notes.
+
+    python -m src.sports.nfl.override_watch --after-lock --season 2026
 """
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import subprocess
 import sys
@@ -29,6 +38,7 @@ from collections.abc import Iterable, Sequence
 from pathlib import Path
 
 from src.core import alerts
+from src.sports.nfl.paths import PRED_DIR
 
 OVERRIDE_PATH = re.compile(r'^data/nfl/qb_overrides/(\d{4})_week(\d{1,2})\.json$')
 OPENING = frozenset({'opened', 'reopened'})
@@ -82,14 +92,56 @@ def handle(event: str, pr: int, url: str, merged: bool, paths: Iterable[str],
     return done
 
 
+def locked_title(season: int, week: int) -> str:
+    return f'NFL: {season} week {week} locked while its QB override was unmerged'
+
+
+def locked_while_open(season: int, open_prs: Iterable[dict], pred_dir: Path = PRED_DIR) -> list[tuple[int, int, str]]:
+    """(week, pr number, url) for every open pull request carrying an override
+    for a week of `season` whose locked picks file already exists."""
+    found = []
+    for pr in open_prs:
+        paths = [f.get('path', '') for f in pr.get('files') or []]
+        for s, week in override_weeks(paths):
+            if s == season and (pred_dir / f'{season}_week{week}.json').exists():
+                found.append((week, int(pr['number']), str(pr.get('url', ''))))
+    return sorted(found)
+
+
+def after_lock(season: int, run: alerts.Run = subprocess.run, pred_dir: Path = PRED_DIR) -> list[str]:
+    out = run(['gh', 'pr', 'list', '--state', 'open', '--limit', '100', '--json', 'number,url,files'],
+              capture_output=True, text=True)
+    if out.returncode:
+        raise RuntimeError(f'gh pr list failed: {(out.stderr or out.stdout).strip()}')
+    lines = []
+    for week, number, url in locked_while_open(season, json.loads(out.stdout or '[]'), pred_dir):
+        body = (f'Week {week} of {season} is locked, and pull request #{number} ({url}) with its QB '
+                'overrides was still open, so the picks were made without them. A lock is never '
+                'rewritten. Merge or close the pull request; the week\'s QB notes on the page say '
+                'which starter each pick used.')
+        action, ref = alerts.open_or_comment(locked_title(season, week), body, run)
+        lines.append(f'{action}: {ref} ({locked_title(season, week)})')
+    return lines
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description='Alert while a QB override pull request is open.')
-    ap.add_argument('--event', required=True)
-    ap.add_argument('--pr', required=True, type=int)
-    ap.add_argument('--url', required=True)
-    ap.add_argument('--merged', required=True, choices=('true', 'false'))
-    ap.add_argument('--files-file', required=True)
+    ap.add_argument('--after-lock', action='store_true', help='check for overrides left open at the lock')
+    ap.add_argument('--season', type=int)
+    ap.add_argument('--event')
+    ap.add_argument('--pr', type=int)
+    ap.add_argument('--url')
+    ap.add_argument('--merged', choices=('true', 'false'))
+    ap.add_argument('--files-file')
     args = ap.parse_args(argv)
+    if args.after_lock:
+        if args.season is None:
+            ap.error('--after-lock needs --season')
+        lines = after_lock(args.season)
+        print('\n'.join(lines) if lines else f'No QB override pull request was open for a locked {args.season} week.')
+        return 0
+    if None in (args.event, args.pr, args.url, args.merged, args.files_file):
+        ap.error('--event, --pr, --url, --merged and --files-file are required without --after-lock')
     paths = Path(args.files_file).read_text(encoding='utf-8').splitlines()
     lines = handle(args.event, args.pr, args.url, args.merged == 'true', paths)
     if not lines:

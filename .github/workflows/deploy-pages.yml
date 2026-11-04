@@ -81,14 +81,11 @@ on:
 
   workflow_dispatch:
 
+# Stage 82 item 7 (the 2026-11-02 review): each job holds only what it uses.
+# The build job installs packages and processes scraped inputs, so it gets no
+# Pages or OIDC scope; only the deploy job, which runs one pinned action, does.
 permissions:
   contents: read
-  pages: write
-  id-token: write
-  # To read the scheduled jobs' recent runs for the page (Stage 41 item 4).
-  actions: read
-  # To open an issue for a sport whose page did not build (Stage 53).
-  issues: write
 
 # One deploy at a time, and never cancel one midway: a cancelled deploy can
 # leave the site on a half-published artifact. Queue instead.
@@ -98,6 +95,12 @@ concurrency:
 
 jobs:
   build:
+    permissions:
+      contents: read
+      # To read the scheduled jobs' recent runs for the page (Stage 41 item 4).
+      actions: read
+      # To open an issue for a sport whose page did not build (Stage 53).
+      issues: write
     # workflow_run fires on completion, not on success. A failed collector run
     # wrote no new data, so building on it just republishes the same site.
     # A failed Weekly update is different (Stage 24, from the 2026-09-28
@@ -190,6 +193,9 @@ jobs:
 
   deploy:
     needs: build
+    permissions:
+      pages: write
+      id-token: write
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment:
