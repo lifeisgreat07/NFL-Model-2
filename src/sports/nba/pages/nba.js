@@ -695,10 +695,18 @@ function intervalGlyph(d, lo, hi){
     + `<line class="lab-ci-range" x1="${x(hi)}" y1="${mid - 4}" x2="${x(hi)}" y2="${mid + 4}"/>`
     + `<circle class="lab-ci-point" cx="${x(d)}" cy="${mid}" r="3"/></svg>`;
 }
+/* Stage 84 item 7 (the 2026-11-02 review): the held-out seasons' scores with
+   the registered Brier column, from one function identical in nhl.js and
+   nba.js (tests/test_heldout_table.py) until Stage 87 shares the pages' code. */
+function heldOutTable(scores, names, sport){
+  const rows = names.filter(([, k]) => scores[k]).map(([n, k]) => { const v = scores[k];
+    return `<tr><th scope="row">${n}</th><td class="num">${Number(v.games).toLocaleString('en-US')}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${v.brier.toFixed(4)}</td><td class="num">${(v.accuracy * 100).toFixed(1)}%</td></tr>`; }).join('');
+  return `<div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">Scores on the held-out seasons</caption>
+    <thead><tr><th scope="col">Forecast</th><th scope="col" class="num">Games</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
 function renderModelLab(){
   const rows = Object.entries(Q).map(([id, q]) => `<tr><th scope="row">${id}</th><td>${QUESTION[id] || ''}</td><td class="num">${signed(q.diff, 4)}</td><td class="num"><span class="lab-lead">${intervalGlyph(q.diff, q.low, q.high)}</span>[${signed(q.low, 4)}, ${signed(q.high, 4)}]</td><td>${q.label ? `<span class="lab-tags"><span class="conf-tag tag-neutral">${escapeHtml(q.label)}</span></span>` : 'a measurement'}</td></tr>`).join('');
-  const scores = FORECASTS.filter(([, k]) => B.scores[k]).map(([n, k]) => { const v = B.scores[k];
-    return `<tr><th scope="row">${n}</th><td class="num">${num(v.games)}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${v.brier.toFixed(4)}</td><td class="num">${pct(v.accuracy, 1)}</td></tr>`; }).join('');
   const chosen = DATA.tuning.chosen;
   const grid = DATA.tuning.grid.map(g => { const on = g.H_days === chosen.H_days && g.lambda === chosen.lambda;
     return `<tr${on ? ' class="nba-chosen"' : ''}><td class="num">${g.H_days}</td><td class="num">${g.lambda}</td><td class="num">${g.log_loss.toFixed(5)}</td><td>${on ? 'chosen' : ''}</td></tr>`; }).join('');
@@ -708,9 +716,7 @@ function renderModelLab(){
     <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Label</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
     <h2 class="section-title">Scores on ${CONFIRM}</h2>
-    <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">Scores on the held-out seasons</caption>
-    <thead><tr><th scope="col">Forecast</th><th scope="col" class="num">Games</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead>
-    <tbody>${scores}</tbody></table></div>
+    ${heldOutTable(B.scores, FORECASTS, 'nba')}
     <p class="nba-lede">Accuracy is printed, never decides: at this many games it moves by a game or two between machines, where log loss does not.</p>
     <h2 class="section-title">Tuning on ${VALIDATE}</h2>
     <p class="nba-lede">Model A&#39;s log loss over the validation seasons for each registered pair of half-life (days) and ridge strength. The lowest was kept and fixed before the held-out seasons were scored.</p>
