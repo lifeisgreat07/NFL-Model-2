@@ -1,0 +1,117 @@
+{
+ "game_id": "2026020247",
+ "season": 2026,
+ "slate": "2026-11-04",
+ "start_utc": "2026-11-05T00:30:00Z",
+ "home": "BUF",
+ "away": "OTT",
+ "model_a": 0.5436,
+ "model_b": 0.5264,
+ "pick": "BUF",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.097853,
+  "shot_matchup": -1.379235,
+  "goalie_matchup_2000": 0.00281
+ },
+ "market": {
+  "game_id": "2026020247",
+  "start_utc": "2026-11-05T00:30:00Z",
+  "home": "BUF",
+  "away": "OTT",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-11-04T21:01:36Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481551,
+   "name": "Colten Ellis",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/BillHoppeNHL/status/2118003137327796505?a=liE50h2RQHJn32V8RvM&s=20"
+  },
+  "away": {
+   "player_id": 8481035,
+   "name": "Samuel Ersson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Jackson_Starr_/status/2118023362005856693?a=UrLlDmUzq-cG5-cFqdE&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-04",
+  "read_utc": "2026-11-04T21:01:36Z",
+  "home": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Conor Timmins",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jack Rathbone",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Justin Danforth",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Konsta Helenius",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Matt Grzelcyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Andre Burakovsky",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Linus Ullmark",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Kleven",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Warren Foegele",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Eklund",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-04T21:01:36Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-03",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14649,
+  "training_games_priced": 7427
+ }
+}

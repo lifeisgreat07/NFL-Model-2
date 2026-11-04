@@ -804,6 +804,16 @@ const QUESTION = {
   H3: 'Does Model B beat the market alone?',
   M1: 'What does the goalie term add? (a measurement, not a test)',
 };
+/* Stage 84 item 7 (the 2026-11-02 review): the held-out seasons' scores with
+   the registered Brier column, from one function identical in nhl.js and
+   nba.js (tests/test_heldout_table.py) until Stage 87 shares the pages' code. */
+function heldOutTable(scores, names, sport){
+  const rows = names.filter(([, k]) => scores[k]).map(([n, k]) => { const v = scores[k];
+    return `<tr><th scope="row">${n}</th><td class="num">${Number(v.games).toLocaleString('en-US')}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${v.brier.toFixed(4)}</td><td class="num">${(v.accuracy * 100).toFixed(1)}%</td></tr>`; }).join('');
+  return `<div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">Scores on the held-out seasons</caption>
+    <thead><tr><th scope="col">Forecast</th><th scope="col" class="num">Games</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
 function renderModelLab(){
   const b = DATA.backtest, el = document.getElementById('modellab-body');
   if(!b){ el.innerHTML = stateHtml('waiting', 'No backtest results', ''); return; }
@@ -813,10 +823,8 @@ function renderModelLab(){
     <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">The backtest's questions</caption>
     <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Label</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
-    <h2 class="section-title">Log loss on the held-out seasons</h2>
-    <div class="table-wrap"><table class="metrics-table nhl-table"><caption class="visually-hidden">Scores</caption>
-    <thead><tr><th scope="col">Forecast</th><th scope="col" class="num">Games</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Accuracy</th></tr></thead>
-    <tbody>${[['Model A', s.model_a], ['Base rate', s.base_rate], ['Model B', s.model_b], ['Market', s.market]].filter(r => r[1]).map(([n, v]) => `<tr><th scope="row">${n}</th><td class="num">${v.games}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${pct(v.accuracy, 1)}</td></tr>`).join('')}</tbody></table></div>
+    <h2 class="section-title">Scores on the held-out seasons</h2>
+    ${heldOutTable(s, [['Model A', 'model_a'], ['Base rate', 'base_rate'], ['Model B', 'model_b'], ['Market', 'market']], 'nhl')}
     <p class="nhl-lede">Accuracy is printed, never decides: at this many games it moves by a game or two between machines, where log loss does not.</p>`;
 }
 
@@ -868,7 +876,35 @@ function forwardHtml(f, sport){
     <thead><tr><th scope="col">Forecaster</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's comparisons</caption>
     <thead><tr><th scope="col">Comparison</th><th scope="col" class="num">Games</th><th scope="col" class="num">Days</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${pairs}</tbody></table></div>
-    <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>`;
+    <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>${calibrationTable(f, sport, level)}`;
+}
+/* Stage 84 item 5: calibration intercept and slope for Models A and B, from
+   the same file. Older files have no calibration block, and show none. */
+function calibrationTable(f, sport, level){
+  if (!f.calibration) return '';
+  const NAMES = [['Model A', 'model_a'], ['Model B', 'model_b']];
+  const fx = x => (x < 0 ? '&minus;' : '') + Math.abs(x).toFixed(2);
+  const cell = v => v.value === null ? `<td colspan="2">${v.note}</td>`
+    : `<td class="num">${fx(v.value)}</td><td class="num">[${fx(v.low)}, ${fx(v.high)}]</td>`;
+  const rows = NAMES.filter(([, k]) => f.calibration[k]).map(([n, k]) => { const c = f.calibration[k];
+    return `<tr><th scope="row">${n}</th><td class="num">${c.games}</td>`
+      + (c.note ? `<td colspan="4">${c.note}</td>` : cell(c.intercept) + cell(c.slope)) + '</tr>'; }).join('');
+  return `
+    <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">Calibration of Models A and B</caption>
+    <thead><tr><th scope="col">Calibration</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Intercept</th><th scope="col" class="num">${level}% interval</th><th scope="col" class="num">Slope</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="${sport}-lede">Calibration asks whether the probabilities mean what they say. A perfectly calibrated model has an intercept of 0 and a slope of 1. An intercept above 0 means home teams won more often than the model said; a slope above 1 means its probabilities sat too close to 50%, and below 1 too far from it. Intervals resample whole game days, as above, and are reported, not judged.</p>`;
+}
+/* Stage 84 item 4 (the 2026-11-02 review): Stage 56's M2, the projected
+   starter against the actual one, from results/nhl/m2_<season>.json. The
+   registration prints it once 50 games are graded. */
+function m2Html(m){
+  if (!m || !m.graded) return '<p class="nhl-lede">No saved pick has a final score yet, so M2 has nothing to measure.</p>';
+  if (m.graded < m.printed_from) return `<p class="nhl-lede">${m.graded} of the ${m.printed_from} graded games the registration waits for before printing M2.</p>`;
+  const s = m.starters, a = m.model_a, d = a.actual_minus_projected;
+  const sgn = x => (x < 0 ? '&minus;' : '+') + Math.abs(x).toFixed(4);
+  const diff = d ? ` The difference, actual minus projected, is ${sgn(d.diff)} [${sgn(d.low)}, ${sgn(d.high)}] at ${(d.level * 100).toFixed(2)}%, resampling whole game days.` : '';
+  return `<p class="nhl-lede">Over ${m.graded} graded games the projected starter started on ${s.projected_started} of ${s.sides} sides (${(s.projected_started / s.sides * 100).toFixed(1)}%), and both started in ${s.games_both_started}. Model A&#39;s log loss was ${a.log_loss_projected.toFixed(4)} with the goalies the picks used and ${a.log_loss_actual.toFixed(4)} with the two who started.${diff}</p>
+    <p class="nhl-lede">Both figures come from Model A refitted as each pick records it was, so only the goalies differ; ${m.refit.reproduced_saved_model_a} of ${m.refit.of} refitted probabilities equal the saved ones to four places. A measurement (<code>${m.registered}</code>): reported, not judged.</p>`;
 }
 /* Stage 85 item 3 (the 2026-11-02 review): the drift baseline's season-to-
    season spread, from experiments/<stage>/results/model_a_by_season.json.
@@ -892,6 +928,8 @@ function renderReliability(){
     ${spreadHtml(DATA.spread, 'nhl')}
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(DATA.forward, 'nhl')}
+    <h2 class="section-title">The projected starter against the actual one</h2>
+    ${m2Html(DATA.m2)}
     <h2 class="section-title">What runs unattended</h2>
     <p class="nhl-lede">The daily run at 14:00 and 21:00 UTC saves and grades the picks; a nightly canary at 06:40 UTC reads every source it needs and writes nothing. Either one failing opens a GitHub issue titled &ldquo;NHL: &hellip;&rdquo;. ${saved} pick${saved === 1 ? '' : 's'} saved so far this season.</p>`;
 }

@@ -1,0 +1,71 @@
+{
+ "game_id": "401909924",
+ "season": 2026,
+ "slate": "2026-11-04",
+ "start_utc": "2026-11-05T00:30:00Z",
+ "home": "BOS",
+ "away": "MIL",
+ "model_a": 0.8488,
+ "model_b": 0.8055,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.92,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": 10.853749,
+  "efficiency_matchup": 10.790118,
+  "availability_matchup": -0.080033
+ },
+ "market": {
+  "game_id": "401909924",
+  "home": "BOS",
+  "away": "MIL",
+  "start_utc": "2026-11-05T00:30:00Z",
+  "read_utc": "2026-11-04T21:31:30Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -518.0,
+  "away_price": 394.0,
+  "home_prob": 0.8055
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-04T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4433188",
+    "name": "Devin Carter",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065648",
+    "name": "Jayson Tatum",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066354",
+    "name": "Payton Pritchard",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4697268",
+    "name": "Kam Jones",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-04T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-02",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14165,
+  "training_games_priced": 14017
+ }
+}
