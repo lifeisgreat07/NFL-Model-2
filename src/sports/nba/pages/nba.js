@@ -822,7 +822,23 @@ function forwardHtml(f, sport){
     <thead><tr><th scope="col">Forecaster</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's comparisons</caption>
     <thead><tr><th scope="col">Comparison</th><th scope="col" class="num">Games</th><th scope="col" class="num">Days</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${pairs}</tbody></table></div>
-    <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>`;
+    <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>${calibrationTable(f, sport, level)}`;
+}
+/* Stage 84 item 5: calibration intercept and slope for Models A and B, from
+   the same file. Older files have no calibration block, and show none. */
+function calibrationTable(f, sport, level){
+  if (!f.calibration) return '';
+  const NAMES = [['Model A', 'model_a'], ['Model B', 'model_b']];
+  const fx = x => (x < 0 ? '&minus;' : '') + Math.abs(x).toFixed(2);
+  const cell = v => v.value === null ? `<td colspan="2">${v.note}</td>`
+    : `<td class="num">${fx(v.value)}</td><td class="num">[${fx(v.low)}, ${fx(v.high)}]</td>`;
+  const rows = NAMES.filter(([, k]) => f.calibration[k]).map(([n, k]) => { const c = f.calibration[k];
+    return `<tr><th scope="row">${n}</th><td class="num">${c.games}</td>`
+      + (c.note ? `<td colspan="4">${c.note}</td>` : cell(c.intercept) + cell(c.slope)) + '</tr>'; }).join('');
+  return `
+    <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">Calibration of Models A and B</caption>
+    <thead><tr><th scope="col">Calibration</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Intercept</th><th scope="col" class="num">${level}% interval</th><th scope="col" class="num">Slope</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="${sport}-lede">Calibration asks whether the probabilities mean what they say. A perfectly calibrated model has an intercept of 0 and a slope of 1. An intercept above 0 means home teams won more often than the model said; a slope above 1 means its probabilities sat too close to 50%, and below 1 too far from it. Intervals resample whole game days, as above, and are reported, not judged.</p>`;
 }
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `

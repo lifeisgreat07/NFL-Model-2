@@ -26,10 +26,14 @@ NODE = shutil.which('node')
 
 
 def function(sport):
+    """forwardHtml and the calibrationTable it calls (Stage 84 item 5)."""
     js = PAGES[sport].read_text(encoding='utf-8').replace('\r\n', '\n')
-    m = re.search(r'function forwardHtml\(f, sport\)\{.*?\n\}\n', js, re.S)
-    assert m, f'forwardHtml is not findable in {sport}.js -- re-anchor this guard'
-    return m.group(0)
+    out = []
+    for name in ('forwardHtml', 'calibrationTable'):
+        m = re.search(rf'function {name}\(f, sport(, level)?\)\{{.*?\n\}}\n', js, re.S)
+        assert m, f'{name} is not findable in {sport}.js -- re-anchor this guard'
+        out.append(m.group(0))
+    return ''.join(out)
 
 
 def render(sport, f):
