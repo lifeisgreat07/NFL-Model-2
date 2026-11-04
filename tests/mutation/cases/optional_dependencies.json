@@ -1,0 +1,13 @@
+{
+  "target": "tests/optional.py",
+  "tests": "tests/test_optional_dependencies.py",
+  "cases": [
+    {
+      "id": "optional-skips-in-ci-too",
+      "why": "a missing optional tool skips in CI as well, so a dropped line in requirements-dev.txt turns its guard off with nothing red (the 2026-11-02 review)",
+      "find": "        if in_ci():\n            pytest.fail(f'{module} is not installed in CI, where requirements-dev.txt installs it', pytrace=False)\n",
+      "replace": "",
+      "expect_caught_by": "test_a_missing_tool_fails_in_ci"
+    }
+  ]
+}

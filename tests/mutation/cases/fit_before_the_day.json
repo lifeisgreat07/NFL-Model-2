@@ -1,0 +1,21 @@
+{
+  "target": "src/sports/nba/daily.py",
+  "tests": "tests/test_fit_before_the_day.py",
+  "cases": [
+    {
+      "id": "nba-fit-includes-the-slate-day",
+      "why": "the NBA models are fitted on the slate day's own finished games again, against the registration's 'to the day before' (Stage 85 item 4)",
+      "find": "    before = table[pd.to_datetime(table['day']) < day]\n    return fit_models(before), training(before, first)\n",
+      "replace": "    before = table[pd.to_datetime(table['day']) <= day]\n    return fit_models(before), training(before, first)\n",
+      "expect_caught_by": "test_the_fit_sees_only_games_before_the_slate_day"
+    },
+    {
+      "id": "nhl-fit-includes-the-slate-day",
+      "target": "src/sports/nhl/daily.py",
+      "why": "the NHL models are fitted on the slate day's own finished games again, unlike the backtest's walk-forward (Stage 85 item 4)",
+      "find": "    before = table[pd.to_datetime(table['day']) < day]\n    model_a, model_b = fit_models(before, k)\n",
+      "replace": "    before = table\n    model_a, model_b = fit_models(before, k)\n",
+      "expect_caught_by": "test_the_fit_sees_only_games_before_the_slate_day"
+    }
+  ]
+}
