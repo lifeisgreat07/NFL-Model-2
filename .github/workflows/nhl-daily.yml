@@ -138,6 +138,24 @@ jobs:
             python -m src.core.alerts --title "NHL: drift check flagged" --body-file drift.md
           fi
 
+      # Stage 83 item 4 (the 2026-11-02 review): an input the run could not read
+      # (injuries, odds, a roster) used to be one printed line in a green run, so
+      # picks were saved without it and nobody heard. Each such line starts
+      # DEGRADED:, and any of them raises one issue, commented on by later runs.
+      - name: Raise an alert on an input the run could not read
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if grep -q '^DEGRADED:' nhl-daily.log; then
+            { grep '^DEGRADED:' nhl-daily.log
+              printf '\nThe picks above were saved without these inputs, and each pick says so. A saved pick is never redone.\n\nRun: %s\n' \
+                "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            } > degraded.md
+            python -m src.core.alerts --title "NHL: the daily run could not read an input" --body-file degraded.md
+          fi
+
       - name: Raise an alert on a missed pick
         if: success()
         env:

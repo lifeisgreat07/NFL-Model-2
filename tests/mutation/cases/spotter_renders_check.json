@@ -1,0 +1,41 @@
+{
+  "target": "src/agents/spotter_renders_check.py",
+  "tests": "tests/test_spotter_renders_check.py",
+  "cases": [
+    {
+      "id": "renders-any-bytes-pass-as-a-png",
+      "why": "the PNG signature is no longer checked, so an HTML page named .png is committed to the spotter-renders branch and handed to the model (Stage 82 item 6)",
+      "find": "    if data[:8] != PNG_SIGNATURE:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_a_file_that_is_not_a_png_fails"
+    },
+    {
+      "id": "renders-any-name-passes",
+      "why": "a file whose name the renderer never writes is skipped instead of refused, so the pull request can publish anything it likes beside the pictures",
+      "find": "            problems.append(f'{p.name}: not a name the renderer writes')\n",
+      "replace": "",
+      "expect_caught_by": "test_a_name_the_renderer_does_not_write_fails"
+    },
+    {
+      "id": "renders-manifest-extra-keys-pass",
+      "why": "an entry with keys beyond the renderer's passes, so a manifest can carry text addressed to the model",
+      "find": "    else:\n        return [f'{where}: keys {sorted(keys)} are neither shape the renderer writes']\n",
+      "replace": "    else:\n        return []\n",
+      "expect_caught_by": "test_an_entry_that_does_not_say_what_the_renderer_says_fails"
+    },
+    {
+      "id": "renders-width-unchecked",
+      "why": "a picture of any width passes, so the reading compares a phone picture that is not a phone's",
+      "find": "        if width != want_w:\n",
+      "replace": "        if width < 0:\n",
+      "expect_caught_by": "test_a_picture_wider_than_its_viewport_fails"
+    },
+    {
+      "id": "renders-unlisted-picture-passes",
+      "why": "a picture no manifest names passes, so the folder can carry pictures the reading never accounts for",
+      "find": "        if named.count(name) != 1:\n",
+      "replace": "        if named.count(name) > 1:\n",
+      "expect_caught_by": "test_a_picture_no_entry_names_or_two_entries_name_fails"
+    }
+  ]
+}

@@ -45,6 +45,8 @@ permissions:
   # For src/sports/nfl/drift_alert.py, which opens an issue when the drift check flags.
   issues: write
   actions: read
+  # For src/sports/nfl/override_watch.py --after-lock, which lists open pull requests.
+  pull-requests: read
 
 jobs:
   # cron-job.org starts this on time and GitHub's cron sends a late copy of
@@ -150,6 +152,19 @@ jobs:
         id: generate
         shell: bash
         run: python -m src.sports.nfl.weekly_update --season ${{ steps.season.outputs.season }} 2>&1 | tee weekly-update.log
+
+      # Stage 81 item 2 (the 2026-11-02 review). The lock reads only override
+      # files already on main. If the week just locked still has an open override
+      # pull request, its overrides were not used: say so now, as an issue and in
+      # the run's summary. continue-on-error: reporting must never cost a pick.
+      - name: Was a QB override still waiting at the lock?
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python -m src.sports.nfl.override_watch --after-lock --season ${{ steps.season.outputs.season }} | tee -a "$GITHUB_STEP_SUMMARY"
 
       # Stage 37 item 3. The week about to be graded was last snapshotted
       # before Monday night's game, and once graded it leaves the weekend

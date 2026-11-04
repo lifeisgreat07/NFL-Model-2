@@ -1,0 +1,97 @@
+{
+ "game_id": "2026020243",
+ "season": 2026,
+ "slate": "2026-11-03",
+ "start_utc": "2026-11-04T00:00:00Z",
+ "home": "WSH",
+ "away": "DAL",
+ "model_a": 0.5166,
+ "model_b": 0.501,
+ "pick": "WSH",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.140537,
+  "shot_matchup": -0.882882,
+  "goalie_matchup_2000": -0.000358
+ },
+ "market": {
+  "game_id": "2026020243",
+  "start_utc": "2026-11-04T00:00:00Z",
+  "home": "WSH",
+  "away": "DAL",
+  "book": "DraftKings",
+  "home_price": -112.0,
+  "away_price": -108.0,
+  "home_prob": 0.5043,
+  "read_utc": "2026-11-03T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480313,
+   "name": "Logan Thompson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/sammisilber/status/2117641556131713461?a=2Rml9q-xOKn-aaq4Mrc&s=20"
+  },
+  "away": {
+   "player_id": 8479979,
+   "name": "Jake Oettinger",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/MikeHeika/status/2117660903684628786?a=ol-po4VKFNXY5xpTBa8&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-03",
+  "read_utc": "2026-11-03T21:01:48Z",
+  "home": [
+   {
+    "name": "Patrick Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Sandin",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vincent Desharnais",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Kyle Capobianco",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Luke Krys",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Duchene",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Oskar Back",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-03T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-02",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14638,
+  "training_games_priced": 7427
+ }
+}

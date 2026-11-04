@@ -29,4 +29,6 @@ def test_the_drift_rule_it_registers_is_the_one_the_baseline_file_holds():
 def test_model_b_makes_the_pick_as_registered():
     assert "Model B's side when the game has a market price" in REG['forward_test']['the_pick']
     assert daily.CODE_VERSION == 'nhl-stage56'
-    assert REG['amendments'] == []
+    # One amendment since: the season-end decision rule (Stage 84 item 3),
+    # disclosed as written after the first forward-test figures were read.
+    assert [a['entry'] for a in REG['amendments']] == ['forward_test.decision']

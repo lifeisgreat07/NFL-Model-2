@@ -1,0 +1,92 @@
+{
+ "game_id": "2026020242",
+ "season": 2026,
+ "slate": "2026-11-03",
+ "start_utc": "2026-11-04T00:00:00Z",
+ "home": "PIT",
+ "away": "VGK",
+ "model_a": 0.4941,
+ "model_b": 0.5165,
+ "pick": "PIT",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.335066,
+  "shot_matchup": -1.815034,
+  "goalie_matchup_2000": 0.000683
+ },
+ "market": {
+  "game_id": "2026020242",
+  "start_utc": "2026-11-04T00:00:00Z",
+  "home": "PIT",
+  "away": "VGK",
+  "book": "DraftKings",
+  "home_price": -115.0,
+  "away_price": -105.0,
+  "home_prob": 0.5108,
+  "read_utc": "2026-11-03T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481668,
+   "name": "Arturs Silovs",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JG_PxP/status/2117649983448973378?a=mterm5Xm3GXrjlM25pM&s=20"
+  },
+  "away": {
+   "player_id": 8478499,
+   "name": "Adin Hill",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-03",
+  "read_utc": "2026-11-03T21:01:48Z",
+  "home": [
+   {
+    "name": "Bryan Rust",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elmer Soderblom",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Evgeni Malkin",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Ryan Graves",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Trevor van Riemsdyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Parker Wotherspoon",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-03T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-02",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14638,
+  "training_games_priced": 7427
+ }
+}
