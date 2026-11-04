@@ -1,0 +1,117 @@
+{
+ "game_id": "2026020240",
+ "season": 2026,
+ "slate": "2026-11-03",
+ "start_utc": "2026-11-04T00:00:00Z",
+ "home": "NYR",
+ "away": "STL",
+ "model_a": 0.502,
+ "model_b": 0.5265,
+ "pick": "NYR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.192836,
+  "shot_matchup": -0.58701,
+  "goalie_matchup_2000": -0.003483
+ },
+ "market": {
+  "game_id": "2026020240",
+  "start_utc": "2026-11-04T00:00:00Z",
+  "home": "NYR",
+  "away": "STL",
+  "book": "DraftKings",
+  "home_price": -120.0,
+  "away_price": 100.0,
+  "home_prob": 0.5217,
+  "read_utc": "2026-11-03T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482193,
+   "name": "Dylan Garand",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/vzmercogliano/status/2117641840417751223?a=5OBlMfFqYSCYKwLXvSQ&s=20"
+  },
+  "away": {
+   "player_id": 8480981,
+   "name": "Joel Hofer",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Peter_Baugh/status/2117663497438064828"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-03",
+  "read_utc": "2026-11-03T21:01:48Z",
+  "home": [
+   {
+    "name": "Adam Sykora",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Aidan Thompson",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Igor Shesterkin",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Joe Veleno",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Joonas Korpisalo",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Sean Durzi",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Colton Parayko",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Dillon Dube",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Logan Mailloux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Torey Krug",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tyler Tucker",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-03T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-02",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14638,
+  "training_games_priced": 7427
+ }
+}

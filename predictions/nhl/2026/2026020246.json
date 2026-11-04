@@ -1,0 +1,102 @@
+{
+ "game_id": "2026020246",
+ "season": 2026,
+ "slate": "2026-11-03",
+ "start_utc": "2026-11-04T02:00:00Z",
+ "home": "VAN",
+ "away": "ANA",
+ "model_a": 0.3586,
+ "model_b": 0.4045,
+ "pick": "ANA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.918483,
+  "shot_matchup": -6.494733,
+  "goalie_matchup_2000": -0.006823
+ },
+ "market": {
+  "game_id": "2026020246",
+  "start_utc": "2026-11-04T02:00:00Z",
+  "home": "VAN",
+  "away": "ANA",
+  "book": "DraftKings",
+  "home_price": 130.0,
+  "away_price": -155.0,
+  "home_prob": 0.417,
+  "read_utc": "2026-11-03T21:01:48Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480947,
+   "name": "Kevin Lankinen",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/patersonjeff/status/2117669205659291721?a=tHYFw_ps1X5Ao5yTCXA&s=20"
+  },
+  "away": {
+   "player_id": 8476316,
+   "name": "Laurent Brossoit",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/KevinisInGoal/status/2117695031134003356?a=R8uJHl-88tmBvEfTsyA&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-03",
+  "read_utc": "2026-11-03T21:01:48Z",
+  "home": [
+   {
+    "name": "Akil Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Chytil",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "A.J. Greer",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ian Moore",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Poehling",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Troy Terry",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-03T21:01:48Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-02",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14638,
+  "training_games_priced": 7427
+ }
+}

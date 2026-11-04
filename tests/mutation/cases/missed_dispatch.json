@@ -51,6 +51,13 @@
       "find": "    'nba-daily.yml': ('0 16 * * *', '30 21 * * *'),\n",
       "replace": "    'nba-daily.yml': ('30 21 * * *',),\n",
       "expect_caught_by": "test_every_cron_line_is_either_covered_or_declared_left_to_github"
+    },
+    {
+      "id": "dispatch-alert-per-slot-again",
+      "why": "the title names the slot again, so a night when cron-job.org sends nothing opens an issue for every covered job instead of one (Stage 83 item 7)",
+      "find": "    alert(title(), body)\n",
+      "replace": "    alert(f'{TITLE} at {at:%H:%M}', body)\n",
+      "expect_caught_by": "test_one_night_of_misses_is_one_issue"
     }
   ]
 }
