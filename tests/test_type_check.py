@@ -16,23 +16,20 @@ the fourth audit, Q4, Stage 36 item 3.
 Run with: pytest tests/test_type_check.py -v
 """
 import importlib.util
-import os
 import subprocess
 from pathlib import Path
 
 import pytest
 
 import tasks
+from tests.optional import require
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def mypy_or_skip():
-    """Skip without mypy locally; fail without it in CI."""
-    if importlib.util.find_spec('mypy') is None:
-        if os.environ.get('CI'):
-            pytest.fail('mypy is not installed in CI, where requirements-dev.txt installs it')
-        pytest.skip('mypy not installed (pip install -r requirements-dev.txt)')
+    """Skip without mypy locally; fail without it in CI (tests/optional.py)."""
+    require('mypy')
 
 
 def test_the_weekly_modules_type_check(tmp_path):
