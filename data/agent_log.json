@@ -1,16 +1,16 @@
 {
-  "generated_utc": "2026-11-04T03:28:48Z",
+  "generated_utc": "2026-11-04T03:48:04Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 632,
-    "audits_superseded": 130,
+    "audits_total": 634,
+    "audits_superseded": 132,
     "pull_requests_audited": 502,
     "audits_without_a_verdict_block": 14,
     "claims_checked": 3838,
     "discrepancies_found": 29,
-    "unverifiable": 436,
+    "unverifiable": 437,
     "pull_requests_with_a_discrepancy": 19,
-    "reports_disagreeing_with_themselves": 41
+    "reports_disagreeing_with_themselves": 40
   },
   "audits": [
     {
@@ -11178,7 +11178,7 @@
       "inconsistencies": [
         "prose says Unverifiable: 1, block has 0"
       ],
-      "superseded": false
+      "superseded": true
     },
     {
       "pr": 587,
@@ -11209,6 +11209,42 @@
       "confirmed": 6,
       "discrepancies": 0,
       "unverifiable": 0,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 585,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/585#issuecomment-6621785562",
+      "posted_utc": "2026-11-04T03:31:25Z",
+      "head": "7c6d7d5",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 6,
+      "confirmed": 6,
+      "discrepancies": 0,
+      "unverifiable": 0,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [
+        "prose says Unverifiable: 1, block has 0"
+      ],
+      "superseded": true
+    },
+    {
+      "pr": 585,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/585#issuecomment-6621974705",
+      "posted_utc": "2026-11-04T03:45:21Z",
+      "head": "7c6d7d5",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 6,
+      "confirmed": 5,
+      "discrepancies": 0,
+      "unverifiable": 1,
       "overall": "SAFE TO MERGE",
       "implicated": [],
       "inconsistencies": [],
