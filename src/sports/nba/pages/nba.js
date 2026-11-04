@@ -695,10 +695,18 @@ function intervalGlyph(d, lo, hi){
     + `<line class="lab-ci-range" x1="${x(hi)}" y1="${mid - 4}" x2="${x(hi)}" y2="${mid + 4}"/>`
     + `<circle class="lab-ci-point" cx="${x(d)}" cy="${mid}" r="3"/></svg>`;
 }
+/* Stage 84 item 7 (the 2026-11-02 review): the held-out seasons' scores with
+   the registered Brier column, from one function identical in nhl.js and
+   nba.js (tests/test_heldout_table.py) until Stage 87 shares the pages' code. */
+function heldOutTable(scores, names, sport){
+  const rows = names.filter(([, k]) => scores[k]).map(([n, k]) => { const v = scores[k];
+    return `<tr><th scope="row">${n}</th><td class="num">${Number(v.games).toLocaleString('en-US')}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${v.brier.toFixed(4)}</td><td class="num">${(v.accuracy * 100).toFixed(1)}%</td></tr>`; }).join('');
+  return `<div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">Scores on the held-out seasons</caption>
+    <thead><tr><th scope="col">Forecast</th><th scope="col" class="num">Games</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>`;
+}
 function renderModelLab(){
   const rows = Object.entries(Q).map(([id, q]) => `<tr><th scope="row">${id}</th><td>${QUESTION[id] || ''}</td><td class="num">${signed(q.diff, 4)}</td><td class="num"><span class="lab-lead">${intervalGlyph(q.diff, q.low, q.high)}</span>[${signed(q.low, 4)}, ${signed(q.high, 4)}]</td><td>${q.label ? `<span class="lab-tags"><span class="conf-tag tag-neutral">${escapeHtml(q.label)}</span></span>` : 'a measurement'}</td></tr>`).join('');
-  const scores = FORECASTS.filter(([, k]) => B.scores[k]).map(([n, k]) => { const v = B.scores[k];
-    return `<tr><th scope="row">${n}</th><td class="num">${num(v.games)}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${v.brier.toFixed(4)}</td><td class="num">${pct(v.accuracy, 1)}</td></tr>`; }).join('');
   const chosen = DATA.tuning.chosen;
   const grid = DATA.tuning.grid.map(g => { const on = g.H_days === chosen.H_days && g.lambda === chosen.lambda;
     return `<tr${on ? ' class="nba-chosen"' : ''}><td class="num">${g.H_days}</td><td class="num">${g.lambda}</td><td class="num">${g.log_loss.toFixed(5)}</td><td>${on ? 'chosen' : ''}</td></tr>`; }).join('');
@@ -708,9 +716,7 @@ function renderModelLab(){
     <thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">Interval</th><th scope="col">Label</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
     <h2 class="section-title">Scores on ${CONFIRM}</h2>
-    <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">Scores on the held-out seasons</caption>
-    <thead><tr><th scope="col">Forecast</th><th scope="col" class="num">Games</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead>
-    <tbody>${scores}</tbody></table></div>
+    ${heldOutTable(B.scores, FORECASTS, 'nba')}
     <p class="nba-lede">Accuracy is printed, never decides: at this many games it moves by a game or two between machines, where log loss does not.</p>
     <h2 class="section-title">Tuning on ${VALIDATE}</h2>
     <p class="nba-lede">Model A&#39;s log loss over the validation seasons for each registered pair of half-life (days) and ridge strength. The lowest was kept and fixed before the held-out seasons were scored.</p>
@@ -822,7 +828,35 @@ function forwardHtml(f, sport){
     <thead><tr><th scope="col">Forecaster</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's comparisons</caption>
     <thead><tr><th scope="col">Comparison</th><th scope="col" class="num">Games</th><th scope="col" class="num">Days</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${pairs}</tbody></table></div>
-    <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>`;
+    <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>${calibrationTable(f, sport, level)}`;
+}
+/* Stage 84 item 5: calibration intercept and slope for Models A and B, from
+   the same file. Older files have no calibration block, and show none. */
+function calibrationTable(f, sport, level){
+  if (!f.calibration) return '';
+  const NAMES = [['Model A', 'model_a'], ['Model B', 'model_b']];
+  const fx = x => (x < 0 ? '&minus;' : '') + Math.abs(x).toFixed(2);
+  const cell = v => v.value === null ? `<td colspan="2">${v.note}</td>`
+    : `<td class="num">${fx(v.value)}</td><td class="num">[${fx(v.low)}, ${fx(v.high)}]</td>`;
+  const rows = NAMES.filter(([, k]) => f.calibration[k]).map(([n, k]) => { const c = f.calibration[k];
+    return `<tr><th scope="row">${n}</th><td class="num">${c.games}</td>`
+      + (c.note ? `<td colspan="4">${c.note}</td>` : cell(c.intercept) + cell(c.slope)) + '</tr>'; }).join('');
+  return `
+    <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">Calibration of Models A and B</caption>
+    <thead><tr><th scope="col">Calibration</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Intercept</th><th scope="col" class="num">${level}% interval</th><th scope="col" class="num">Slope</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="${sport}-lede">Calibration asks whether the probabilities mean what they say. A perfectly calibrated model has an intercept of 0 and a slope of 1. An intercept above 0 means home teams won more often than the model said; a slope above 1 means its probabilities sat too close to 50%, and below 1 too far from it. Intervals resample whole game days, as above, and are reported, not judged.</p>`;
+}
+/* Stage 84 item 4 (the 2026-11-02 review): Stage 61's M2, the injury report
+   against who played, from results/nba/m2_<season>.json. The registration
+   prints it once 100 games are graded. */
+function m2Html(m){
+  if (!m || !m.graded) return '<p class="nba-lede">No saved pick with availability has a final score yet, so M2 has nothing to measure.</p>';
+  if (m.graded < m.printed_from) return `<p class="nba-lede">${m.graded} of the ${m.printed_from} graded games the registration waits for before printing M2.</p>`;
+  const a = m.availability, s = m.model_a, d = s.box_minus_report;
+  const sgn = x => (x < 0 ? '&minus;' : '+') + Math.abs(x).toFixed(4);
+  const diff = d ? ` The difference, box score minus injury report, is ${sgn(d.diff)} [${sgn(d.low)}, ${sgn(d.high)}] at ${(d.level * 100).toFixed(2)}%, resampling whole game days.` : '';
+  return `<p class="nba-lede">Over ${m.graded} graded games, the availability the injury report gave a game (home minus away) was ${a.mean_absolute_gap.toFixed(3)} from the box score&#39;s on average, ${sgn(a.mean_report_minus_box)} on the signed average. Model A&#39;s log loss was ${s.log_loss_report.toFixed(4)} with the injury report&#39;s and ${s.log_loss_box.toFixed(4)} with the box score&#39;s.${diff}</p>
+    <p class="nba-lede">Both figures come from Model A refitted as each pick records it was, so only availability differs; ${m.refit.reproduced_saved_model_a} of ${m.refit.of} refitted probabilities equal the saved ones to four places. ${m.graded_without_availability} graded pick${m.graded_without_availability === 1 ? ' was' : 's were'} made without availability and ${m.graded_without_availability === 1 ? 'is' : 'are'} left out. A measurement (<code>${m.registered}</code>): reported, not judged.</p>`;
 }
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
@@ -830,6 +864,8 @@ function renderReliability(){
     <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(BD.forward, 'nba')}
+    <h2 class="section-title">The injury report against who played</h2>
+    ${m2Html(BD.m2)}
     <h2 class="section-title">The live picks so far</h2>
     ${accuracyHtml(accGames(gradedPicks()))}
     ${calibrationHtml(gradedPicks())}

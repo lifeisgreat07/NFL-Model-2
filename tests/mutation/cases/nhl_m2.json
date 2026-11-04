@@ -1,0 +1,35 @@
+{
+  "target": "src/sports/nhl/m2.py",
+  "tests": "tests/test_nhl_m2.py",
+  "cases": [
+    {
+      "id": "nhl-m2-actual-is-the-projection",
+      "why": "the 'actual' score reuses the goalies the pick used, so M2 reports no gap whatever happened in net",
+      "find": "        for name, ids in (('projected', used), ('actual', started)):\n",
+      "replace": "        for name, ids in (('projected', used), ('actual', used)):\n",
+      "expect_caught_by": "test_each_game_is_scored_with_the_goalies_used_and_the_two_who_started"
+    },
+    {
+      "id": "nhl-m2-refit-ignores-the-picks-cutoff",
+      "why": "every refit uses the day before the save, not the pick's recorded training_through, so the refit is not the pick's own model",
+      "find": "        through = pd.Timestamp(p['training_through']) if recorded else saved_on - pd.Timedelta(days=1)\n",
+      "replace": "        through = saved_on - pd.Timedelta(days=1)\n",
+      "expect_caught_by": "test_the_refit_is_the_picks_own_cutoff_or_the_day_before_it_was_saved"
+    },
+    {
+      "id": "nhl-m2-ratings-see-the-save-day",
+      "why": "the ratings include games of the day the pick was saved, which the pick could not have seen",
+      "find": "            rated[saved_on] = ratings.day_ratings(games[games['day'] < saved_on], saved_on, h)\n",
+      "replace": "            rated[saved_on] = ratings.day_ratings(games[games['day'] <= saved_on], saved_on, h)\n",
+      "expect_caught_by": "test_ratings_are_as_of_the_eastern_day_the_pick_was_saved"
+    },
+    {
+      "id": "nhl-m2-printed-before-50-games",
+      "target": "src/sports/nhl/pages/nhl.js",
+      "why": "the page prints M2's figures before the 50 graded games the registration waits for",
+      "find": "  if (m.graded < m.printed_from) return ",
+      "replace": "  if (false) return ",
+      "expect_caught_by": "test_the_page_waits_for_50_games"
+    }
+  ]
+}

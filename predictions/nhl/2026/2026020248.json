@@ -1,0 +1,87 @@
+{
+ "game_id": "2026020248",
+ "season": 2026,
+ "slate": "2026-11-04",
+ "start_utc": "2026-11-05T00:30:00Z",
+ "home": "FLA",
+ "away": "CHI",
+ "model_a": 0.706,
+ "model_b": 0.7144,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.067017,
+  "shot_matchup": 8.018636,
+  "goalie_matchup_2000": -0.001611
+ },
+ "market": {
+  "game_id": "2026020248",
+  "start_utc": "2026-11-05T00:30:00Z",
+  "home": "FLA",
+  "away": "CHI",
+  "book": "DraftKings",
+  "home_price": -258.0,
+  "away_price": 210.0,
+  "home_prob": 0.6908,
+  "read_utc": "2026-11-04T21:01:36Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8474593,
+   "name": "Jacob Markstrom",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JamesonCoop/status/2118009939549442188?a=vDa3qoj0keZi5bUNrXs&s=20"
+  },
+  "away": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/BenPopeCST/status/2118020765283135636?a=tFNzKoHVfEo44o5z5ro&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-04",
+  "read_utc": "2026-11-04T21:01:36Z",
+  "home": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Patrick Kane",
+    "position": "RW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-04T21:01:36Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-03",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14649,
+  "training_games_priced": 7427
+ }
+}

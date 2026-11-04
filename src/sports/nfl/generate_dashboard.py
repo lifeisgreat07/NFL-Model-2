@@ -486,8 +486,11 @@ def _registered_result(e):
                 f"{where}, {h['n']:,} {h['n_of']}. "
                 f"{h.get('note', 'A negative difference favours the new idea.')}")
         body = f'<span class="lab-lead">{interval_glyph(h)}</span>{body}'
-    return (f"{body}<span class=\"lab-src\">Pre-registered, {e['stage']} {e['id']} "
-            f"&middot; <code>{e['source']}</code></span>")
+    # The id is read from a registry file, as the title and reason are, so it
+    # is escaped as they are (Stage 88 item 6, the 2026-11-02 review); the
+    # source is a path, escaped too so the cell holds only text it chose.
+    return (f"{body}<span class=\"lab-src\">Pre-registered, {e['stage']} {html_escape(str(e['id']))} "
+            f"&middot; <code>{html_escape(e['source'])}</code></span>")
 
 
 def render_model_lab_rows(entries: list[dict[str, Any]]) -> str:

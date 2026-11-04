@@ -51,6 +51,7 @@ from src.sports.nba import (
     drift,
     history,
     injuries,
+    m2,
     market,
     page_inputs,
     ratings,
@@ -267,10 +268,13 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     slate = sched[sched['slate'].isin(days)]
     decision = GameLock().decide(slate, now)
     folder = PATHS.predictions / str(season)
+    # Every run builds the availability and feature tables: the picks are
+    # fitted on them, and M2 (Stage 84 item 4) reads them whether or not this
+    # run saves a pick.
+    avail_table = ratings.availability_table(games, minutes, h)
+    table = ratings.features(games, minutes, h, lam, avail=avail_table)
+    table = table.merge(games[['game_id', 'home_prob']], on='game_id', how='left')
     if decision.lock:
-        avail_table = ratings.availability_table(games, minutes, h)
-        table = ratings.features(games, minutes, h, lam, avail=avail_table)
-        table = table.merge(games[['game_id', 'home_prob']], on='game_id', how='left')
         fitted: dict[pd.Timestamp, tuple[dict[str, Any], dict[str, Any]]] = {}
         teams = set(sched['home']) | set(sched['away'])
         report = read_injuries(get, teams)
@@ -321,6 +325,11 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                              'experiments/nba/stage65/registry.json', folder, sched,
                              games[['day', 'home_score', 'away_score']])
     print(f"forward test: {fwd['graded_picks']} graded picks through {fwd['through']}")
+    # Stage 84 item 4: Stage 61's M2, the injury report against who played.
+    m2_out = m2.write(PATHS.results / f'm2_{season}.json', picks=forward_test.read_picks(folder), games=games,
+                      minutes=minutes, table=table, box=avail_table, h=h, lam=lam, columns=A_COLUMNS,
+                      fit=fit_models, report_availability=availability_for)
+    print(f"M2: {m2_out['graded']} graded games")
     lost = missed_line(decision.started, folder)
     if lost:
         print(lost)

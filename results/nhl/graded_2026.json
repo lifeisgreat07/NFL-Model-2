@@ -1100,67 +1100,91 @@
  {
   "game_id": "2026020236",
   "pick": "UTA",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-03T21:01:48Z"
  },
  {
   "game_id": "2026020237",
   "pick": "MTL",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-03T21:01:48Z"
  },
  {
   "game_id": "2026020238",
   "pick": "TBL",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-03T21:01:48Z"
  },
  {
   "game_id": "2026020239",
   "pick": "NJD",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-03T21:01:48Z"
  },
  {
   "game_id": "2026020240",
   "pick": "NYR",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-03T21:01:48Z"
  },
  {
   "game_id": "2026020241",
   "pick": "MIN",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-03T21:01:48Z"
  },
  {
   "game_id": "2026020242",
   "pick": "PIT",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-03T21:01:48Z"
  },
  {
   "game_id": "2026020243",
   "pick": "WSH",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-03T21:01:48Z"
  },
  {
   "game_id": "2026020244",
   "pick": "COL",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-03T21:01:48Z"
  },
  {
   "game_id": "2026020245",
   "pick": "CAR",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-03T21:01:48Z"
  },
  {
   "game_id": "2026020246",
   "pick": "ANA",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-03T21:01:48Z"
+ },
+ {
+  "game_id": "2026020247",
+  "pick": "BUF",
+  "result": "pending",
+  "saved_utc": "2026-11-04T21:01:36Z"
+ },
+ {
+  "game_id": "2026020248",
+  "pick": "FLA",
+  "result": "pending",
+  "saved_utc": "2026-11-04T21:01:36Z"
+ },
+ {
+  "game_id": "2026020249",
+  "pick": "LAK",
+  "result": "pending",
+  "saved_utc": "2026-11-04T21:01:36Z"
+ },
+ {
+  "game_id": "2026020250",
+  "pick": "SEA",
+  "result": "pending",
+  "saved_utc": "2026-11-04T21:01:36Z"
  }
 ]
