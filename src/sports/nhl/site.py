@@ -121,6 +121,8 @@ def payload(season: int, now: datetime) -> dict[str, Any]:
         'drift_rule': _read(PATHS.data / 'drift_baseline.json'),
         # Stage 84 item 2: the registered forward test (src/core/forward_test.py).
         'forward': _read(PATHS.results / f'forward_{season}.json'),
+        # Stage 84 item 4: Stage 56's M2 on the live season (src/sports/nhl/m2.py).
+        'm2': _read(PATHS.results / f'm2_{season}.json'),
         'backtest': confirmation,
         # The tuning grid, for Methodology's grid-edge note (Stage 68 item 26).
         'tuning': _read(PATHS.experiments / 'stage56' / 'results' / 'tuning.json'),

@@ -1,0 +1,96 @@
+{
+ "game_id": "401909927",
+ "season": 2026,
+ "slate": "2026-11-04",
+ "start_utc": "2026-11-05T01:00:00Z",
+ "home": "MEM",
+ "away": "IND",
+ "model_a": 0.7201,
+ "model_b": 0.6701,
+ "pick": "MEM",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9714,
+  "away": 0.803
+ },
+ "features": {
+  "point_matchup": 2.815027,
+  "efficiency_matchup": 2.798021,
+  "availability_matchup": 0.168447
+ },
+ "market": {
+  "game_id": "401909927",
+  "home": "MEM",
+  "away": "IND",
+  "start_utc": "2026-11-05T01:00:00Z",
+  "read_utc": "2026-11-04T21:31:30Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -237.0,
+  "away_price": 196.0,
+  "home_prob": 0.6755
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-04T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4593016",
+    "name": "Quinten Post",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4431785",
+    "name": "Scotty Pippen Jr.",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4433076",
+    "name": "Ben Sheppard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4017837",
+    "name": "Ivica Zubac",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5157066",
+    "name": "Johnny Furphy",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3133603",
+    "name": "Kelly Oubre Jr.",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4278355",
+    "name": "Obi Toppin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2530530",
+    "name": "T.J. McConnell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4396993",
+    "name": "Tyrese Haliburton",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-04T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-02",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14165,
+  "training_games_priced": 14017
+ }
+}

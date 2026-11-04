@@ -1,0 +1,130 @@
+{
+ "sport": "nba",
+ "season": 2026,
+ "registered": "experiments/nba/stage65/registry.json",
+ "graded_picks": 107,
+ "through": "2026-11-02",
+ "scores": {
+  "model_a": {
+   "games": 107,
+   "log_loss": 0.6250772164362244,
+   "brier": 0.2195081151401869,
+   "accuracy": 0.6261682242990654
+  },
+  "model_b": {
+   "games": 107,
+   "log_loss": 0.5680336467358685,
+   "brier": 0.19435117308411215,
+   "accuracy": 0.6822429906542056
+  },
+  "market": {
+   "games": 107,
+   "log_loss": 0.5681353329030749,
+   "brier": 0.19444027280373835,
+   "accuracy": 0.6915887850467289
+  },
+  "base_rate": {
+   "games": 107,
+   "log_loss": 0.6982429734213309,
+   "brier": 0.2525201029748287,
+   "accuracy": 0.514018691588785
+  }
+ },
+ "by_market_source": {
+  "espn": {
+   "model_a": {
+    "games": 107,
+    "log_loss": 0.6250772164362244,
+    "brier": 0.2195081151401869,
+    "accuracy": 0.6261682242990654
+   },
+   "model_b": {
+    "games": 107,
+    "log_loss": 0.5680336467358685,
+    "brier": 0.19435117308411215,
+    "accuracy": 0.6822429906542056
+   },
+   "market": {
+    "games": 107,
+    "log_loss": 0.5681353329030749,
+    "brier": 0.19444027280373835,
+    "accuracy": 0.6915887850467289
+   },
+   "base_rate": {
+    "games": 107,
+    "log_loss": 0.6982429734213309,
+    "brier": 0.2525201029748287,
+    "accuracy": 0.514018691588785
+   }
+  }
+ },
+ "comparisons": {
+  "model_a_minus_base_rate": {
+   "games": 107,
+   "days": 14,
+   "diff": -0.07316575698510652,
+   "low": -0.12124469729082603,
+   "high": -0.01008130616114341,
+   "level": 0.9833333333333333
+  },
+  "model_b_minus_model_a": {
+   "games": 107,
+   "days": 14,
+   "diff": -0.05704356970035589,
+   "low": -0.09155382468457376,
+   "high": -0.017662814900322926,
+   "level": 0.9833333333333333
+  },
+  "model_b_minus_market": {
+   "games": 107,
+   "days": 14,
+   "diff": -0.00010168616720640758,
+   "low": -0.0014725074837234069,
+   "high": 0.0009388458152997701,
+   "level": 0.9833333333333333
+  }
+ },
+ "calibration": {
+  "model_a": {
+   "games": 107,
+   "days": 14,
+   "level": 0.9833333333333333,
+   "intercept": {
+    "value": -0.31408449906484215,
+    "low": -0.7313207123506438,
+    "high": 0.21375395495224497,
+    "draws_unfit": 0
+   },
+   "slope": {
+    "value": 1.0665392047747837,
+    "low": 0.540633613554786,
+    "high": 1.568779597982899,
+    "draws_unfit": 0
+   }
+  },
+  "model_b": {
+   "games": 107,
+   "days": 14,
+   "level": 0.9833333333333333,
+   "intercept": {
+    "value": -0.2103337986673123,
+    "low": -0.6317102154761484,
+    "high": 0.27995663312968483,
+    "draws_unfit": 0
+   },
+   "slope": {
+    "value": 1.6246126264147736,
+    "low": 1.0459044539428872,
+    "high": 2.508304026216361,
+    "draws_unfit": 0
+   }
+  }
+ },
+ "interval_rule": {
+  "level": 0.9833333333333333,
+  "resamples": 5000,
+  "seed": 20261006,
+  "blocks": "whole game days, paired",
+  "judged": false
+ }
+}
