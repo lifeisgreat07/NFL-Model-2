@@ -118,6 +118,16 @@ def fit_models(table: pd.DataFrame) -> dict[str, Any]:
             'a_no_availability': fit(table, NO_AVAIL, False), 'b_no_availability': fit(table, NO_AVAIL, True)}
 
 
+def fit_before(table: pd.DataFrame, day: pd.Timestamp, first: int) -> tuple[dict[str, Any], dict[str, Any]]:
+    """The models and their provenance, fitted on every final game strictly
+    before `day`, the pick's slate day, as experiments/nba/stage65/registry.json
+    registers them ("to the day before"). Until Stage 85 item 4 one fit on
+    every final game served the whole run, so a run after an afternoon game
+    fitted on that game before picking the same day's evening ones."""
+    before = table[pd.to_datetime(table['day']) < day]
+    return fit_models(before), training(before, first)
+
+
 def availability_for(minutes: pd.DataFrame, day_of: dict[str, pd.Timestamp], team: str, day: pd.Timestamp,
                      h: float, out: set[str]) -> float:
     """The share of the team's expected minutes whose players are not listed Out."""
@@ -261,8 +271,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         avail_table = ratings.availability_table(games, minutes, h)
         table = ratings.features(games, minutes, h, lam, avail=avail_table)
         table = table.merge(games[['game_id', 'home_prob']], on='game_id', how='left')
-        models = fit_models(table)
-        trained = training(table, first)
+        fitted: dict[pd.Timestamp, tuple[dict[str, Any], dict[str, Any]]] = {}
         teams = set(sched['home']) | set(sched['away'])
         report = read_injuries(get, teams)
         locking = slate[slate['game_id'].isin(decision.lock)]
@@ -278,6 +287,9 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                 '%Y-%m-%dT%H:%M:%SZ')}, odds, kalshi if kalshi_read else None, now)
             prices.append(price)
             day = pd.Timestamp(str(g['slate']))
+            if day not in fitted:
+                fitted[day] = fit_before(table, day, first)
+            models, trained = fitted[day]
             rated = ratings.day_ratings(games[games['day'] < day], day, h, lam)
             feats: dict[str, float] = dict(rated.matchup(g['home'], g['away']))
             avail = None

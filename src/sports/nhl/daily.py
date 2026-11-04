@@ -127,6 +127,17 @@ def fit_models(table: pd.DataFrame, k: float) -> tuple[Any, Any]:
     return model_a, model_b
 
 
+def fit_before(table: pd.DataFrame, day: pd.Timestamp, k: float, first: int) -> tuple[Any, Any, dict[str, Any]]:
+    """Model A, Model B and their provenance, fitted on every final game
+    strictly before `day`, the pick's slate day, as the backtest's walk-forward
+    fits them. Until Stage 85 item 4 one fit on every final game served the
+    whole run, so a 21:00 run fitted on the day's afternoon games before
+    picking its evening ones."""
+    before = table[pd.to_datetime(table['day']) < day]
+    model_a, model_b = fit_models(before, k)
+    return model_a, model_b, training(before, first)
+
+
 def pick_record(game: pd.Series, feats: dict[str, float], k: float, model_a: Any, model_b: Any,
                 line: dict[str, Any] | None, goalie_notes: dict[str, Any], now: datetime,
                 injury_list: dict[str, Any] | None = None) -> dict[str, Any]:
@@ -297,8 +308,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     # (Stage 84 item 4) refits on it whether or not this run saves a pick.
     table = ratings.features(games, h, [k]).merge(games[['game_id', 'home_prob']], on='game_id', how='left')
     if decision.lock:
-        model_a, model_b = fit_models(table, k)
-        trained = training(table, first)
+        fitted: dict[pd.Timestamp, tuple[Any, Any, dict[str, Any]]] = {}
         lines, missing = read_market(get, now)
         for m in missing:
             print(f'market: {m}')
@@ -320,6 +330,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         injury_table = read_injuries(season, get)
         rated = ratings.day_ratings(games[games['day'] < today.tz_localize(None)], today.tz_localize(None), h)
         for _, g in locking.iterrows():
+            day = pd.Timestamp(str(g['slate']))
+            if day not in fitted:
+                fitted[day] = fit_before(table, day, k, first)
+            model_a, model_b, trained = fitted[day]
             notes, ids = {}, {}
             proj = projected.get(str(g['game_id']), {})
             for side in ('home', 'away'):
