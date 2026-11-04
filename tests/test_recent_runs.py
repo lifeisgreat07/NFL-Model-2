@@ -103,7 +103,9 @@ def test_the_deploy_reads_the_runs_before_it_builds_and_may_read_actions():
     build = text.index('python -m src.site.build')
     assert read < build
     assert '--out data/recent_runs.json' in text
-    assert re.search(r'^permissions:\n(?:  .*\n)*  actions: read\n', text, re.M)
+    # Stage 82 item 7: the build job, not the whole workflow, holds actions: read.
+    build_job = text[text.index('\n  build:\n'):text.index('\n  deploy:\n')]
+    assert re.search(r'^    permissions:\n(?:      .*\n)*      actions: read\n', build_job, re.M)
 
 
 # --- the generator --------------------------------------------------------------

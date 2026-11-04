@@ -35,6 +35,45 @@
    "before_any_result": false,
    "seen": "Written on 2026-11-03, after the forward test's first figures were computed and read: 180 graded NHL picks through 2026-11-02, with Model A minus the base rate -0.0305 [-0.0632, +0.0054], Model B minus Model A -0.0159 [-0.0352, +0.0047] and Model B minus the market -0.0070 [-0.0133, +0.0008] (log loss per game, 98.33% intervals). The rule was written knowing these, so it was kept to the backtests' own rule and level, and it decides only when it is applied.",
    "change": "Added forward_test.decision: when the season's verdict is taken, on what, and by which rule. The registration had said what is reported and not how it is judged."
+  },
+  {
+   "date": "2026-11-03",
+   "by": "Claude, under Mark's approval of 2026-11-02 (the 2026-11-02 review, Stage 85 item 4)",
+   "entry": "deviation",
+   "before_any_result": false,
+   "seen": "Found on 2026-11-03 by comparing each saved pick's training_through with its slate: 29 of 183 saved NHL picks, on 5 slate day(s) (2026-10-10, 2026-10-12, 2026-10-17, 2026-10-24, 2026-10-31), had models fitted on games finished earlier that same day. The 26 picks on slates 2026-10-06 to 2026-10-09 were saved before picks recorded training_through, so whether their fits included same-day games cannot be checked from the files.",
+   "change": "No rule changes. The live models are refitted at every run on games strictly before the pick's slate day, as the backtest's walk-forward fits them. Until this date one fit on every final game served the whole run, so a run after the day's first games fitted on them before picking that day's later ones. The ratings and features were always computed from games before the day; only the models' coefficients saw the extra games, a handful among thousands. A saved pick is never rewritten, so these stay in the forward test as saved, listed here. From this date src/sports/nhl/daily.py fit_before fits on games strictly before each slate day, and a test holds every later pick's training_through to before its slate.",
+   "picks": [
+    "2026020082",
+    "2026020083",
+    "2026020088",
+    "2026020089",
+    "2026020124",
+    "2026020125",
+    "2026020126",
+    "2026020127",
+    "2026020128",
+    "2026020129",
+    "2026020130",
+    "2026020131",
+    "2026020132",
+    "2026020133",
+    "2026020134",
+    "2026020170",
+    "2026020171",
+    "2026020172",
+    "2026020173",
+    "2026020174",
+    "2026020175",
+    "2026020176",
+    "2026020177",
+    "2026020178",
+    "2026020179",
+    "2026020223",
+    "2026020224",
+    "2026020225",
+    "2026020226"
+   ]
   }
  ]
 }
