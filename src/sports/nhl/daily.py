@@ -52,7 +52,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test
+from src.core import forward_test, season_prices
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nhl import (
@@ -299,6 +299,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     first = backtest.registry()['protocol']['training_from_season']
     past = backtest.load_history(first, season - 1)
     current = refresh_season(season, sched)
+    # Stage 85 item 5: this season's games enter Model B's training rows with
+    # the price the runs recorded, the last read before each game started.
+    prices = season_prices.read(PATHS.data / 'lines' / f'{season}.json')
+    current = current.assign(home_prob=current['game_id'].astype(str).map(prices))
     games = ratings.prepare(pd.concat([past, current], ignore_index=True))
     h, k = chosen()
 

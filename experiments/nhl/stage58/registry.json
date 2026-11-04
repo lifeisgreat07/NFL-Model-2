@@ -74,6 +74,14 @@
     "2026020225",
     "2026020226"
    ]
+  },
+  {
+   "date": "2026-11-04",
+   "by": "Claude, under Mark's approval of 2026-11-02 (the 2026-11-02 review, Stage 85 item 5)",
+   "entry": "models",
+   "before_any_result": false,
+   "seen": "Written after the forward test's first figures were read (see the forward_test.decision amendment). Found by reading the daily run: every game of this season reached the training table with no market price, so Model B, which is fitted on priced games, was fitted on earlier seasons only.",
+   "change": "From 2026-11-04, each of this season's final games enters the training table with the price the daily runs recorded for it in data/nhl/lines/2026.json, the last read before it started (src/core/season_prices.py). Model B is then fitted on them as on every earlier priced game, as the registered refit on every final game says. Model A does not read the price and is unchanged. Saved picks are never rewritten; picks from this date on use the refit."
   }
  ]
 }

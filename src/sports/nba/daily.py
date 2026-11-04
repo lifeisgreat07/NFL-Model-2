@@ -43,7 +43,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test
+from src.core import forward_test, season_prices
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nba import (
@@ -282,7 +282,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     first = backtest.registry()['protocol']['training_from_season']
     past_games, past_minutes = backtest.load_history(first, season - 1)
     cur_games, cur_minutes = refresh_season(season, sched, get=get)
-    cur_games = cur_games.assign(home_prob=np.nan)
+    # Stage 85 item 5: this season's games enter Model B's training rows with
+    # the price the runs recorded, the last read before each game started.
+    prices = season_prices.read(PATHS.data / 'lines' / f'{season}.json')
+    cur_games = cur_games.assign(home_prob=cur_games['game_id'].astype(str).map(prices))
     games = ratings.prepare(pd.concat([past_games, cur_games], ignore_index=True))
     minutes = pd.concat([past_minutes, cur_minutes], ignore_index=True)
     minutes = minutes.assign(game_id=minutes['game_id'].astype(str), player_id=minutes['player_id'].astype(str))
