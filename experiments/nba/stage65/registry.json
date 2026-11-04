@@ -39,7 +39,8 @@
   "metric": "log_loss",
   "baseline": "Model A's log loss on Stage 61's confirmation seasons (experiments/nba/stage61/results/confirmation.json, 2643 games).",
   "rule": "Flag when the lower end of a one-sided 95% bootstrap interval of mean per-game log loss is above the baseline, once 100 games are graded (the NHL's rule; the NBA grades 5 to 15 games a day).",
-  "known_break": "The backtest knew who played from the box score; a live pick knows only the injury report. Stage 61's M2 measures that gap."
+  "known_break": "The backtest knew who played from the box score; a live pick knows only the injury report. Stage 61's M2 measures that gap.",
+  "amended_2026_11_04": "Stage 85 item 1 (the 2026-11-02 review, Mark's approval): the check no longer tests at every daily run. It looks at five fixed checkpoints, after 100, 200, 400, 800 and 1,200 graded picks, each on the first that many graded picks in the order their games started, and flags when the lower end of the one-sided 99% bootstrap interval of mean per-game log loss is above the baseline. 99% is the one-sided 95% shared equally among the five looks (Bonferroni: 5% / 5 = 1% each), so the season's chance of a false flag is held to 5%, as nearly as each look's bootstrap bound holds its 1%; a look every day at 95% had no such limit. A flag at any look stands for the season. The baseline, the 5,000 resamples and the seed are unchanged; the registered 'rule' sentence above is kept as written and applies to runs before 2026-11-04."
  },
  "canary": "Every night, each source the daily run reads is read once on its own (ESPN's scoreboard, box score, odds and injury report, and Kalshi), judged on the shape the run needs, and named in the report. A failed source opens or comments on the issue 'NBA: nightly canary failing'.",
  "measurements": [
@@ -99,6 +100,14 @@
    "before_any_result": false,
    "seen": "Written after the forward test's first figures were read (see the forward_test.decision amendment). Found by reading the daily run: every game of this season reached the training table with no market price, so Model B, which is fitted on priced games, was fitted on earlier seasons only.",
    "change": "From 2026-11-04, each of this season's final games enters the training table with the price the daily runs recorded for it in data/nba/lines/2026.json, the last read before it started (src/core/season_prices.py). Model B is then fitted on them as on every earlier priced game, as the registered refit on every final game says. Model A does not read the price and is unchanged. Saved picks are never rewritten; picks from this date on use the refit."
+  },
+  {
+   "date": "2026-11-04",
+   "by": "Claude, under Mark's approval of 2026-11-02 (the 2026-11-02 review, Stage 85 item 1)",
+   "entry": "drift",
+   "before_any_result": false,
+   "seen": "107 NBA picks were graded and the check had run at every daily run since the 100th: Model A's mean log loss 0.6251 against the baseline 0.5983, above it but not flagged (the old rule's 95% lower bound on all 107 was 0.5684). Under this amendment the 100-game look gives a 99% lower bound of 0.5502, not flagged. Live log loss above the baseline is the direction this change makes harder to flag at each look, so it is stated here: neither rule flags on these picks, and the M1 disclosure already says the check leans toward flagging. The forward test's figures in the forward_test.decision amendment had also been read.",
+   "change": "Added drift.amended_2026_11_04: the drift check looks at five registered checkpoints at one-sided 99% each instead of at every run at 95%. data/nba/drift_baseline.json carries the checkpoints and the per-look level. No model, feature, pick or forward-test rule changes."
   }
  ]
 }

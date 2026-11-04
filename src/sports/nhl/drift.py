@@ -8,6 +8,11 @@ Model A's log loss on Stage 56's confirmation seasons.
 
 A flag is a reason to look, not proof that something broke: the backtest
 knew each game's actual starter, and a live pick knows the projected one.
+
+Amended 2026-11-04 (Stage 85 item 1, `drift.amended_2026_11_04` in the
+registry): the rule above was tested at every daily run once 100 picks were
+graded. It now looks only at the checkpoints in the baseline file's rule,
+each at the per-look level that shares the 5% false-flag rate among them.
 """
 from __future__ import annotations
 
@@ -44,16 +49,39 @@ def per_game_log_loss(rows: Iterable[tuple[float | None, int | None]]) -> list[f
     return out
 
 
-def lower_bound(losses: list[float], rule: dict[str, Any]) -> float:
+def lower_bound(losses: list[float], rule: dict[str, Any], level: float | None = None) -> float:
+    """The one-sided lower bound of mean log loss at `level` (the rule's
+    one_sided_level when not given), by the rule's seeded bootstrap."""
     arr = np.asarray(losses, dtype=float)
     rng = np.random.default_rng(rule['seed'])
     idx = rng.integers(0, len(arr), size=(rule['n_resamples'], len(arr)))
-    return float(np.percentile(arr[idx].mean(axis=1), (1 - rule['one_sided_level']) * 100))
+    lvl = rule['one_sided_level'] if level is None else level
+    return float(np.percentile(arr[idx].mean(axis=1), (1 - lvl) * 100))
+
+
+def looks(losses: list[float], spec: dict[str, Any]) -> list[dict[str, Any]]:
+    """Every registered look the graded picks have reached (Stage 85 item 1).
+
+    The check looks only at the registered checkpoints, each on the first n
+    graded picks in the order their games started, at the per-look level:
+    the family's one-sided 95% shared over the looks (Bonferroni). A daily
+    look at 95% has a 5% false-flag chance each day, and every extra look
+    can only add to the season's."""
+    rule = spec['rule']
+    out = []
+    for n in rule['checkpoints']:
+        if len(losses) < n:
+            break
+        bound = lower_bound(losses[:n], rule, rule['per_look_level'])
+        out.append({'games': n, 'lower_bound': bound, 'flagged': bool(bound > spec['baseline']['value'])})
+    return out
+
+
+def next_look(n_graded: int, spec: dict[str, Any]) -> int | None:
+    """The checkpoint the check will look at next, or None after the last."""
+    return next((n for n in spec['rule']['checkpoints'] if n > n_graded), None)
 
 
 def flags(losses: list[float], spec: dict[str, Any]) -> bool:
-    """True when the registered rule flags."""
-    rule = spec['rule']
-    if len(losses) < rule['min_games']:
-        return False
-    return bool(lower_bound(losses, rule) > spec['baseline']['value'])
+    """True when any look so far has flagged: a flag stands for the season."""
+    return any(look['flagged'] for look in looks(losses, spec))
