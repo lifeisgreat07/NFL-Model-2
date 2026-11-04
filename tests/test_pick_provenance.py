@@ -28,7 +28,9 @@ def test_an_empty_table_says_so():
 def test_both_day_sports_save_it_with_every_pick():
     for sport, call in (('nhl', 'injury_list) | trained\n'), ('nba', 'injury_list, now) | trained\n')):
         src = (ROOT / 'src' / 'sports' / sport / 'daily.py').read_text(encoding='utf-8')
-        assert 'trained = training(table, first)' in src, sport
+        # Stage 85 item 4: the provenance comes from the rows the models were
+        # fitted on, strictly before the slate day (fit_before).
+        assert 'training(before, first)' in src and 'fit_before(table, day,' in src, sport
         assert call in src, sport
 
 

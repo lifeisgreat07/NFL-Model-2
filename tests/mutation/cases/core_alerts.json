@@ -57,6 +57,21 @@
       "find": "        return f'{body}\\n\\nNo log was written ({path.name}): the run stopped before its main step.'\n",
       "replace": "        return body\n",
       "expect_caught_by": "test_a_missing_log_is_said_not_skipped"
+    },
+    {
+      "id": "core-alerts-resolve-opens-instead",
+      "why": "--resolve falls through to opening an issue, so every successful run raises a fresh alert about itself",
+      "find": "    if args.resolve:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_resolve_closes_the_open_issue_and_creates_nothing"
+    },
+    {
+      "id": "nba-daily-alert-never-closes",
+      "target": ".github/workflows/nba-daily.yml",
+      "why": "the NBA daily run's failure issue stays open after the next run succeeds, the state that left 14 issues open on 2026-11-02",
+      "find": "          python -m src.core.alerts --resolve --title \"NBA: daily run failed\" --body-file recovered.md\n",
+      "replace": "",
+      "expect_caught_by": "test_every_failure_alert_is_closed_by_the_next_success"
     }
   ]
 }

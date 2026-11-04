@@ -43,6 +43,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from src.core import forward_test
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nba import (
@@ -115,6 +116,16 @@ def fit_models(table: pd.DataFrame) -> dict[str, Any]:
     """Model A and Model B, each with and without the availability term."""
     return {'a': fit(table, A_COLUMNS, False), 'b': fit(table, A_COLUMNS, True),
             'a_no_availability': fit(table, NO_AVAIL, False), 'b_no_availability': fit(table, NO_AVAIL, True)}
+
+
+def fit_before(table: pd.DataFrame, day: pd.Timestamp, first: int) -> tuple[dict[str, Any], dict[str, Any]]:
+    """The models and their provenance, fitted on every final game strictly
+    before `day`, the pick's slate day, as experiments/nba/stage65/registry.json
+    registers them ("to the day before"). Until Stage 85 item 4 one fit on
+    every final game served the whole run, so a run after an afternoon game
+    fitted on that game before picking the same day's evening ones."""
+    before = table[pd.to_datetime(table['day']) < day]
+    return fit_models(before), training(before, first)
 
 
 def availability_for(minutes: pd.DataFrame, day_of: dict[str, pd.Timestamp], team: str, day: pd.Timestamp,
@@ -260,8 +271,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         avail_table = ratings.availability_table(games, minutes, h)
         table = ratings.features(games, minutes, h, lam, avail=avail_table)
         table = table.merge(games[['game_id', 'home_prob']], on='game_id', how='left')
-        models = fit_models(table)
-        trained = training(table, first)
+        fitted: dict[pd.Timestamp, tuple[dict[str, Any], dict[str, Any]]] = {}
         teams = set(sched['home']) | set(sched['away'])
         report = read_injuries(get, teams)
         locking = slate[slate['game_id'].isin(decision.lock)]
@@ -277,6 +287,9 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                 '%Y-%m-%dT%H:%M:%SZ')}, odds, kalshi if kalshi_read else None, now)
             prices.append(price)
             day = pd.Timestamp(str(g['slate']))
+            if day not in fitted:
+                fitted[day] = fit_before(table, day, first)
+            models, trained = fitted[day]
             rated = ratings.day_ratings(games[games['day'] < day], day, h, lam)
             feats: dict[str, float] = dict(rated.matchup(g['home'], g['away']))
             avail = None
@@ -303,6 +316,11 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
          'baseline': spec['baseline']['value'], 'flagged': flagged}, indent=1) + '\n', encoding='utf-8')
     if flagged:
         print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
+    # Stage 84 item 1: the registered forward test, on every saved pick whose game is final.
+    fwd = forward_test.write(PATHS.results / f'forward_{season}.json', 'nba', season,
+                             'experiments/nba/stage65/registry.json', folder, sched,
+                             games[['day', 'home_score', 'away_score']])
+    print(f"forward test: {fwd['graded_picks']} graded picks through {fwd['through']}")
     lost = missed_line(decision.started, folder)
     if lost:
         print(lost)

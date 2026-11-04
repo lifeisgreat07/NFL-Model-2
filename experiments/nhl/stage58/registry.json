@@ -8,7 +8,13 @@
   "picks": "One file per game, predictions/nhl/2026/<game_id>.json, saved by the last scheduled run before the game starts and never rewritten (src/sports/nhl/lock.py, src/sports/nhl/daily.py).",
   "the_pick": "Model B's side when the game has a market price, Model A's otherwise, as on the NFL board.",
   "graded": "Final games only. A cancelled game is never counted; a postponed one is scored if a saved pick exists for the game the league played.",
-  "reported": "Model A, Model B, the market and the home-win base rate, by log loss with Brier beside it; accuracy is reported and never decides. Intervals as in Stage 56: paired, resampling game days, 5,000 resamples."
+  "reported": "Model A, Model B, the market and the home-win base rate, by log loss with Brier beside it; accuracy is reported and never decides. Intervals as in Stage 56: paired, resampling game days, 5,000 resamples.",
+  "decision": {
+   "when": "Once, on the forward-test file (results/nhl/forward_2026.json) the first scheduled daily run writes after the 2026 regular season's last game is final. No earlier look decides anything; the figures before then are reported on the checks page and are not a verdict.",
+   "what": "Each of the three comparisons the file carries -- Model A minus the base rate, Model B minus Model A, Model B minus the market -- on log loss per game, paired on the games both scored, resampling whole game days 5,000 times with the backtest's seed.",
+   "rule": "The backtests' rule at their level, 1 - 0.05/3 (98.33%): ACCEPT when the whole interval is below zero (the first forecaster did better), REJECT when it is above zero, INCONCLUSIVE otherwise.",
+   "implemented_by": "src/core/forward_test.py"
+  }
  },
  "drift": {
   "file": "data/nhl/drift_baseline.json",
@@ -18,6 +24,56 @@
   "rule": "Flag when the lower end of a one-sided 95% bootstrap interval of mean per-game log loss is above the baseline, once 100 games are graded (the NFL's rule from Stage 33 R4, with 100 games in place of 30 because the NHL grades 6 to 15 games a day).",
   "known_break": "The backtest rated each game with its actual starting goalie; a live pick uses the projected one. M2 of Stage 56 measures that gap."
  },
- "measurements": ["Stage 56 M2: the projected starter against the actual one, printed once 50 games are graded."],
- "amendments": []
+ "measurements": [
+  "Stage 56 M2: the projected starter against the actual one, printed once 50 games are graded."
+ ],
+ "amendments": [
+  {
+   "date": "2026-11-03",
+   "by": "Claude, under Mark's approval of 2026-11-02 (the 2026-11-02 review, Stage 84 item 3: amendments disclosed)",
+   "entry": "forward_test.decision",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-03, after the forward test's first figures were computed and read: 180 graded NHL picks through 2026-11-02, with Model A minus the base rate -0.0305 [-0.0632, +0.0054], Model B minus Model A -0.0159 [-0.0352, +0.0047] and Model B minus the market -0.0070 [-0.0133, +0.0008] (log loss per game, 98.33% intervals). The rule was written knowing these, so it was kept to the backtests' own rule and level, and it decides only when it is applied.",
+   "change": "Added forward_test.decision: when the season's verdict is taken, on what, and by which rule. The registration had said what is reported and not how it is judged."
+  },
+  {
+   "date": "2026-11-03",
+   "by": "Claude, under Mark's approval of 2026-11-02 (the 2026-11-02 review, Stage 85 item 4)",
+   "entry": "deviation",
+   "before_any_result": false,
+   "seen": "Found on 2026-11-03 by comparing each saved pick's training_through with its slate: 29 of 183 saved NHL picks, on 5 slate day(s) (2026-10-10, 2026-10-12, 2026-10-17, 2026-10-24, 2026-10-31), had models fitted on games finished earlier that same day. The 26 picks on slates 2026-10-06 to 2026-10-09 were saved before picks recorded training_through, so whether their fits included same-day games cannot be checked from the files.",
+   "change": "No rule changes. The live models are refitted at every run on games strictly before the pick's slate day, as the backtest's walk-forward fits them. Until this date one fit on every final game served the whole run, so a run after the day's first games fitted on them before picking that day's later ones. The ratings and features were always computed from games before the day; only the models' coefficients saw the extra games, a handful among thousands. A saved pick is never rewritten, so these stay in the forward test as saved, listed here. From this date src/sports/nhl/daily.py fit_before fits on games strictly before each slate day, and a test holds every later pick's training_through to before its slate.",
+   "picks": [
+    "2026020082",
+    "2026020083",
+    "2026020088",
+    "2026020089",
+    "2026020124",
+    "2026020125",
+    "2026020126",
+    "2026020127",
+    "2026020128",
+    "2026020129",
+    "2026020130",
+    "2026020131",
+    "2026020132",
+    "2026020133",
+    "2026020134",
+    "2026020170",
+    "2026020171",
+    "2026020172",
+    "2026020173",
+    "2026020174",
+    "2026020175",
+    "2026020176",
+    "2026020177",
+    "2026020178",
+    "2026020179",
+    "2026020223",
+    "2026020224",
+    "2026020225",
+    "2026020226"
+   ]
+  }
+ ]
 }

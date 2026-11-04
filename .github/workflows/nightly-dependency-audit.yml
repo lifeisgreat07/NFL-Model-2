@@ -111,6 +111,18 @@ jobs:
           elif [ "$code" != "0" ]; then
             python -m src.core.alerts --title "Credentials register cannot be read" --body-file credentials-report.md
           fi
+      # Stage 83 item 1: a run that succeeds closes the failure issue below, if
+      # one is open. continue-on-error: closing an issue must never fail a run.
+      - name: Close the alert if this run recovered
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'Recovered: the run at %s succeeded.\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > recovered.md
+          python -m src.core.alerts --resolve --title "Dependency audit could not run" --body-file recovered.md
+
       - name: Raise an alert if the job itself failed
         # pip-audit's own result never fails the job; this is for the job
         # failing around it (checkout, Python, the install).
