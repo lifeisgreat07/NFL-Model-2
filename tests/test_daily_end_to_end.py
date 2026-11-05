@@ -29,6 +29,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from tests.shared_tables import share_nhl_features
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -69,6 +71,7 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     season = 2026
     now = datetime(2026, 10, 10, 16, 30, tzinfo=UTC)
     sched = committed_schedule('nhl', season, now)
+    share_nhl_features(monkeypatch)
     monkeypatch.setattr(daily, 'PATHS', temp_paths(tmp_path, 'nhl'))
     monkeypatch.setattr(daily.nhl_schedule, 'load_schedule', lambda s, *a, **k: sched.copy())
     have = history.HISTORY / f'boxscores_{season}.csv'
