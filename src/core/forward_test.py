@@ -272,7 +272,39 @@ def freeze(path: Path, sched: pd.DataFrame, today: str) -> Path | None:
                      'rule': 'forward_test.decision in the registration this file names'}
     doc['decision'] = {name: label(c) for name, c in doc['comparisons'].items()}
     frozen.write_text(json.dumps(doc, indent=1) + '\n', encoding='utf-8')
+    # Stage 90 item 5: the season-end report, written with the frozen file and from it.
+    frozen.with_name(path.stem + '_report.md').write_text(season_report(doc), encoding='utf-8')
     return frozen
+
+
+#: What each comparison asks, in the report's words.
+QUESTIONS = {'model_a_minus_base_rate': 'Did Model A beat the home-win base rate?',
+             'model_b_minus_model_a': 'Did reading the market (Model B) beat Model A?',
+             'model_b_minus_market': 'Did Model B beat the market itself?'}
+
+
+def season_report(doc: Mapping[str, Any]) -> str:
+    """Stage 90 item 5: the season's verdict in words, from the frozen file
+    alone, so the report says nothing the file does not."""
+    sport, season = str(doc.get('sport', '')).upper(), doc.get('season')
+    lines = [f'# {sport} {season}: the forward test\'s verdict', '',
+             f"Taken once, on {doc['frozen']['from']} as written on {doc['frozen']['on']}, the first file after "
+             f"the regular season's last game was final, by the rule registered in {doc.get('registered', 'the registry')}: "
+             'ACCEPT when the whole interval of the per-game log-loss difference is below zero, REJECT when it '
+             'is above, INCONCLUSIVE otherwise.', '',
+             f"{doc.get('graded_picks', 0)} graded picks, through {doc.get('through') or 'no graded day'}.", '',
+             '| Question | Games | Difference | Interval | Verdict |', '|---|---|---|---|---|']
+    for name, question in QUESTIONS.items():
+        c = doc.get('comparisons', {}).get(name, {})
+        verdict = doc.get('decision', {}).get(name, 'INCONCLUSIVE')
+        if 'high' in c:
+            span = f"{c['low']:+.4f} to {c['high']:+.4f}"
+            lines.append(f"| {question} | {c['games']} | {c['diff']:+.4f} | {span} | {verdict} |")
+        else:
+            lines.append(f"| {question} | {c.get('games', 0)} | none | {c.get('note', 'not scored')} | {verdict} |")
+    lines += ['', 'A difference below zero means the first forecaster had the lower log loss. '
+              'Written by src/core/forward_test.py from the frozen file beside it, and never rewritten.', '']
+    return '\n'.join(lines)
 
 
 def read_picks(folder: Path) -> list[dict[str, Any]]:

@@ -74,3 +74,27 @@ def test_each_daily_run_freezes_after_it_writes(sport):
     write_at = src.index("fwd = forward_test.write(PATHS.results / f'forward_{season}.json'")
     freeze_at = src.index("frozen = forward_test.freeze(PATHS.results / f'forward_{season}.json', sched, str(now.date()))")
     assert write_at < freeze_at
+
+
+# --- Stage 90 item 5: the season-end report ----------------------------------------
+
+
+def test_the_report_is_written_once_with_the_frozen_file_and_says_only_what_it_holds(tmp_path):
+    path = forward(tmp_path)
+    doc = json.loads(path.read_text(encoding='utf-8'))
+    doc.update({'registered': 'experiments/nhl/stage58/registry.json', 'through': '2027-04-15'})
+    path.write_text(json.dumps(doc), encoding='utf-8')
+    ft.freeze(path, season('final'), '2027-04-16')
+    report = (tmp_path / 'forward_2026_report.md').read_text(encoding='utf-8')
+    assert report.startswith("# NHL 2026: the forward test's verdict")
+    assert '| Did Model A beat the home-win base rate? | 900 | -0.0200 | -0.0300 to -0.0100 | ACCEPT |' in report
+    assert '| Did reading the market (Model B) beat Model A? | 700 | +0.0100 | +0.0020 to +0.0200 | REJECT |' in report
+    assert '| Did Model B beat the market itself? | 700 | +0.0000 | -0.0100 to +0.0100 | INCONCLUSIVE |' in report
+    assert 'experiments/nhl/stage58/registry.json' in report and '900 graded picks, through 2027-04-15' in report
+    first = report
+    assert ft.freeze(path, season('final'), '2027-05-01') is None
+    assert (tmp_path / 'forward_2026_report.md').read_text(encoding='utf-8') == first
+
+
+def test_the_report_asks_every_registered_comparison():
+    assert set(ft.QUESTIONS) == {name for name, _, _ in ft.COMPARISONS}
