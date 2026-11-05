@@ -26,6 +26,7 @@ from src.core.template_parts import read_template
 # generate_picks_pdf below there is nothing here for a module-level import to
 # take down. It resolves the same way run as `python -m` or imported by a
 # test: both put the repository root on the path.
+from src.sports.nfl import ratings_snapshot
 from src.sports.nfl.config import MODEL_VERSION, TRAIN_SEASONS, VERSION_HISTORY
 
 # generate_picks_pdf is imported lazily, inside the PDF loop in main() --
@@ -799,11 +800,9 @@ def with_rank_change(teams_js: list[dict[str, Any]],
     return [{**t, 'rank_change': change(t)} for t in teams_js]
 
 
-#: How far a snapshot rating may sit from the history's latest week and still be the same week. Both are
-#: rounded to four decimals, and the Thursday run recomputes the snapshot, so a rating can land on the other
-#: side of a rounding step (WAS -0.073 in the history, -0.0731 in the snapshot, 2026-10-29) and the rank
-#: change disappeared from the page for days. One step is 0.0001; a different week moves ratings by far more.
-SNAPSHOT_MATCH_TOL = 1.5e-4
+#: How far a snapshot rating may sit from the history's latest week and still be the same week; see
+#: src/sports/nfl/ratings_snapshot.py, whose check the weekly run makes after writing both (Stage 86 item 5).
+SNAPSHOT_MATCH_TOL = ratings_snapshot.TOL
 
 
 def previous_ranks(ratings: list[dict[str, Any]], live_history: dict[str, Any]) -> dict[str, int] | None:
