@@ -41,7 +41,7 @@ jobs:
 
       - name: Install dependencies
         timeout-minutes: 5
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Check each override file the pull request adds or changes
         timeout-minutes: 5
