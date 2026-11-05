@@ -53,4 +53,4 @@ def test_every_import_is_pinned_or_explained():
 
 def test_the_nightly_audit_reads_both_files():
     wf = (ROOT / '.github' / 'workflows' / 'nightly-dependency-audit.yml').read_text(encoding='utf-8')
-    assert 'pip-audit -r requirements.txt -r requirements-dev.txt ' in wf
+    assert 'pip-audit -r requirements-dev.lock --require-hashes --disable-pip ' in wf

@@ -74,7 +74,7 @@ in [docs/operations.md](docs/operations.md).
 - **Tests that are themselves tested.** A committed mutation corpus
   (`tests/mutation/`, over 500 case files, one per subject under test) breaks
   the code in known ways and fails if the suite does not notice.
-- **Twenty-nine CI workflows** in `.github/workflows/` run the tests, the
+- **Thirty-one CI workflows** in `.github/workflows/` run the tests, the
   scheduled picks and grading, the audits of every pull request, the nightly
   canaries and checks, and the site's build; [docs/operations.md](docs/operations.md)
   says what to do when one of them opens an alert.

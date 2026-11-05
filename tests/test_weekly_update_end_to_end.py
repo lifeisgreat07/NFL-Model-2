@@ -32,6 +32,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import synthetic_league as league
 
+from src.sports.nfl import override_check
 from src.sports.nfl import weekly_update as wu
 from src.sports.nfl.config import MODEL_VERSION
 
@@ -70,6 +71,8 @@ def run(monkeypatch, tmp_path, capsys):
     for name, path in dirs.items():
         path.mkdir(parents=True, exist_ok=True)
         monkeypatch.setattr(wu, name, path)
+    # Stage 88 item 4: the lock checks an override against the roster; never the network here.
+    monkeypatch.setattr(override_check, 'load_roster', lambda season: dict(ROSTER))
     real_simulate = wu.simulate_season
     monkeypatch.setattr(wu, 'simulate_season',
                         lambda *a, n_sim=10000, **k: real_simulate(*a, n_sim=200, **k))
@@ -82,6 +85,21 @@ def run(monkeypatch, tmp_path, capsys):
         wu.main(league.TARGET, league.TARGET_WEEK)
         return capsys.readouterr().out, tmp_path
     return go
+
+
+#: The roster the lock reads in these tests (Stage 88 item 4); empty unless a test puts a player on it.
+ROSTER: dict = {}
+
+
+@pytest.fixture(autouse=True)
+def _empty_roster():
+    ROSTER.clear()
+    yield
+    ROSTER.clear()
+
+
+def backup_on_roster(team, pid='00-0009999', status='ACT'):
+    ROSTER[pid] = {'team': team, 'position': 'QB', 'status': status, 'name': 'B.Ackup'}
 
 
 def locked(tmp):
@@ -143,7 +161,8 @@ def test_a_sourced_override_replaces_the_listed_starter(run, tmp_path):
     (tmp_path / 'data' / 'qb_overrides').mkdir(parents=True, exist_ok=True)
     (tmp_path / 'data' / 'qb_overrides' / f'{league.TARGET}_week{league.TARGET_WEEK}.json').write_text(
         json.dumps([{'team': home, 'player_id': '00-0009999', 'player_name': 'B.Ackup',
-                     'source': 'https://example.com/injury-report'}]), encoding='utf-8')
+                     'source': 'https://www.nfl.com/news/injury-report'}]), encoding='utf-8')
+    backup_on_roster(home)
     out, tmp = run([H, 2 * H, 3 * H, 4 * H])
     [pick] = [p for p in json.loads(locked(tmp).read_text(encoding='utf-8')) if p['home'] == home]
     assert (pick['home_qb'], pick['home_qb_basis']) == ('B.Ackup', 'override')
@@ -236,12 +255,29 @@ def test_every_pick_records_its_inputs_and_saw_no_play_from_its_own_week(run):
     assert len({json.dumps(p['data_provenance'], sort_keys=True) for p in picks}) == 1
 
 
+def test_an_override_the_roster_refuses_is_not_used_and_the_run_says_so(run, tmp_path):
+    """Stage 88 item 4: a player cut from the team is not predicted on; the
+    pick keeps the schedule's starter, and the run says why."""
+    home, _ = league.round_robin(league.TARGET_WEEK)[0]
+    (tmp_path / 'data' / 'qb_overrides').mkdir(parents=True, exist_ok=True)
+    (tmp_path / 'data' / 'qb_overrides' / f'{league.TARGET}_week{league.TARGET_WEEK}.json').write_text(
+        json.dumps([{'team': home, 'player_id': '00-0009999', 'player_name': 'B.Ackup',
+                     'source': 'https://www.nfl.com/news/injury-report'}]), encoding='utf-8')
+    backup_on_roster(home, status='CUT')
+    out, tmp = run([H, 2 * H, 3 * H, 4 * H])
+    [pick] = [p for p in json.loads(locked(tmp).read_text(encoding='utf-8')) if p['home'] == home]
+    assert (pick['home_qb'], pick['home_qb_basis']) == (league.QB[home][1], 'announced')
+    assert (f'DEGRADED: QB overrides: not used, {home}: B.Ackup (00-0009999) has roster status CUT, '
+            "which cannot start; the pick uses the schedule's starter") in out.splitlines()
+
+
 def test_the_override_file_a_pick_used_is_named(run, tmp_path):
     home, _ = league.round_robin(league.TARGET_WEEK)[0]
     (tmp_path / 'data' / 'qb_overrides').mkdir(parents=True, exist_ok=True)
     (tmp_path / 'data' / 'qb_overrides' / f'{league.TARGET}_week{league.TARGET_WEEK}.json').write_text(
         json.dumps([{'team': home, 'player_id': '00-0009999', 'player_name': 'B.Ackup',
-                     'source': 'https://example.com/injury-report'}]), encoding='utf-8')
+                     'source': 'https://www.nfl.com/news/injury-report'}]), encoding='utf-8')
+    backup_on_roster(home)
     _, tmp = run([H, 2 * H, 3 * H, 4 * H])
     prov = json.loads(locked(tmp).read_text(encoding='utf-8'))[0]['data_provenance']
     assert prov['qb_override_file'] == f'data/nfl/qb_overrides/{league.TARGET}_week{league.TARGET_WEEK}.json'

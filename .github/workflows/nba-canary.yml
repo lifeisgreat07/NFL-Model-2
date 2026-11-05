@@ -39,11 +39,13 @@ jobs:
 
       # Stage 42 item 1: how late this run started, against its own cron lines.
       - name: Record the start delay
+        timeout-minutes: 10
         run: python -m src.core.start_delay .github/workflows/nba-canary.yml
 
       # Stage 42 item 4: a run GitHub's cron started, for a slot cron-job.org
       # should have started, asks whether it did, and opens an issue if not.
       - name: Did cron-job.org start this slot?
+        timeout-minutes: 10
         if: github.event_name == 'schedule'
         env:
           CRON_SCHEDULE: ${{ github.event.schedule }}
@@ -51,14 +53,17 @@ jobs:
         run: python -m src.core.missed_dispatch .github/workflows/nba-canary.yml
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        timeout-minutes: 10
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Run the canary
+        timeout-minutes: 10
         run: python -m src.sports.nba.canary --report nba-canary-report.md --failed nba-canary-failed.txt
 
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
+        timeout-minutes: 10
         if: success()
         continue-on-error: true
         env:

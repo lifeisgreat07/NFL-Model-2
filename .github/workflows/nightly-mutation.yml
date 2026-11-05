@@ -56,11 +56,13 @@ jobs:
 
       # Stage 42 item 1: how late this run started, against its own cron lines.
       - name: Record the start delay
+        timeout-minutes: 40
         run: python -m src.core.start_delay .github/workflows/nightly-mutation.yml
 
       # Stage 42 item 4: a run GitHub's cron started, for a slot cron-job.org
       # should have started, asks whether it did, and opens an issue if not.
       - name: Did cron-job.org start this slot?
+        timeout-minutes: 40
         if: github.event_name == 'schedule'
         env:
           CRON_SCHEDULE: ${{ github.event.schedule }}
@@ -73,8 +75,10 @@ jobs:
         with:
           node-version: '24'
       - name: Install dependencies
-        run: pip install -r requirements.txt -r requirements-dev.txt
+        timeout-minutes: 40
+        run: pip install --require-hashes -r requirements-dev.lock
       - name: Run tonight's slice
+        timeout-minutes: 40
         shell: bash
         run: |
           seed="$(date -u +%Y%m%d)"
@@ -82,6 +86,7 @@ jobs:
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
+        timeout-minutes: 40
         if: success()
         continue-on-error: true
         env:

@@ -1,0 +1,82 @@
+name: NFL QB override auto-merge
+
+# Stage 90 item 4 (Mark's decision, 2026-11-05: build it, leave it off). A
+# pull request that only adds or changes QB override files, and whose files
+# pass the roster and source check (Stage 88 item 4), merges itself, so an
+# override is on main before Thursday's lock without waiting for a person.
+#
+# OFF until the repository variable AUTO_MERGE_OVERRIDES is `true`. With it
+# unset the job does not run at all.
+#
+# The Python that runs is the BASE commit's, never the pull request's, as in
+# nfl-override-check.yml: the files are fetched from the API as data, so a
+# pull request cannot change the check or the rule
+# (src/sports/nfl/override_automerge.py) that judges it. This file itself,
+# on a pull_request event, is read from the pull request; a pull request
+# that edits it is not data-only, and only an author who can already push
+# to this repository (no forks) can open one.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'data/nfl/qb_overrides/**'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: override-automerge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  automerge:
+    if: vars.AUTO_MERGE_OVERRIDES == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out the base commit
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        timeout-minutes: 5
+        run: pip install --require-hashes -r requirements.lock
+
+      - name: Check the files and merge if the rule allows
+        timeout-minutes: 5
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # One {filename, status} object a line, every page of the list.
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/files" --paginate \
+            --jq '.[] | {filename, status} | @json' > "$RUNNER_TEMP/files.ndjson"
+          mkdir -p "$RUNNER_TEMP/overrides"
+          grep -oE '"filename":"data/nfl/qb_overrides/[0-9]{4}_week[0-9]+\.json"' "$RUNNER_TEMP/files.ndjson" \
+            | cut -d'"' -f4 > "$RUNNER_TEMP/paths.txt" || true
+          while read -r path; do
+            gh api "repos/$GITHUB_REPOSITORY/contents/$path?ref=$HEAD_SHA" \
+              -H 'Accept: application/vnd.github.raw' > "$RUNNER_TEMP/overrides/$(basename "$path")"
+          done < "$RUNNER_TEMP/paths.txt"
+          set +e
+          python -m src.sports.nfl.override_check "$RUNNER_TEMP"/overrides/*.json
+          check=$?
+          python -m src.sports.nfl.override_automerge --files "$RUNNER_TEMP/files.ndjson" \
+            --check-exit "$check" --same-repo true
+          decision=$?
+          set -e
+          if [ "$decision" = "0" ]; then
+            gh pr merge "$PR" --repo "$GITHUB_REPOSITORY" --merge --match-head-commit "$HEAD_SHA"
+          fi
