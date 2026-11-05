@@ -30,6 +30,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.js_source import function_source
+
 ROOT = Path(__file__).resolve().parents[1]
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')
 RULES = re.sub(r'\s+', '', CSS)
@@ -52,12 +54,6 @@ def node(code):
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 def print_block():

@@ -27,6 +27,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import generate_dashboard as gd
+from tests.js_source import function_source
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -134,12 +135,6 @@ def test_the_committed_ratings_are_the_latest_history_week():
 
 
 # ---- the page half, executed in node over the real functions ----
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
-
 
 def t(name, change):
     return {'name': name, 'rank_change': change}

@@ -55,11 +55,19 @@ def parse(feed: Json, read_utc: datetime) -> tuple[list[dict[str, Any]], list[st
     rows: list[dict[str, Any]] = []
     missing: list[str] = []
     for g in feed.get('games') or []:
-        home, away = g.get('homeTeam') or {}, g.get('awayTeam') or {}
-        hp, ap = _two_way(home), _two_way(away)
-        gid = str(g.get('gameId', '?'))
-        if hp is None or ap is None:
-            missing.append(f'game {gid} ({away.get("abbrev")} at {home.get("abbrev")}): no two-way moneyline')
+        gid = str(g.get('gameId', '?')) if isinstance(g, dict) else '?'
+        # Stage 92 item 10 (audit 7, R12): one malformed row leaves that game
+        # unpriced and says why; it used to raise out of parse and cost every
+        # game its price.
+        try:
+            home, away = g.get('homeTeam') or {}, g.get('awayTeam') or {}
+            hp, ap = _two_way(home), _two_way(away)
+            if hp is None or ap is None:
+                missing.append(f'game {gid} ({away.get("abbrev")} at {home.get("abbrev")}): no two-way moneyline')
+                continue
+            home_prob = round(no_vig_home(hp, ap), 4)
+        except (AttributeError, TypeError, ValueError) as exc:
+            missing.append(f'game {gid}: a malformed price row, left unpriced ({type(exc).__name__}: {exc})')
             continue
         rows.append({
             'game_id': gid,
@@ -69,7 +77,7 @@ def parse(feed: Json, read_utc: datetime) -> tuple[list[dict[str, Any]], list[st
             'book': book,
             'home_price': hp,
             'away_price': ap,
-            'home_prob': round(no_vig_home(hp, ap), 4),
+            'home_prob': home_prob,
             'read_utc': read_utc.strftime('%Y-%m-%dT%H:%M:%SZ'),
             'source': SOURCE,
         })
