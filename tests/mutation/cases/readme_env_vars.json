@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "readme-nhl-cache-undocumented",
+      "target": "docs/operations.md",
       "why": "NHL_CACHE leaves the settings table, so a variable the NHL's history reads is known only to its code. The test read only src/*/*.py before, and never saw it.",
       "find": "| `NHL_CACHE` | A folder for finished NHL seasons' schedules and raw box scores, read from disk instead of refetched. The current season is never cached. | Anyone re-reading the NHL's history (`python -m src.sports.nhl.history`). The daily run and the canary never set it. |\n",
       "replace": "",
