@@ -46,7 +46,7 @@ def test_ruff_is_pinned_with_the_test_requirements():
 
 def test_the_test_workflow_lints_the_whole_repository_before_the_tests():
     wf = (ROOT / '.github' / 'workflows' / 'run-tests.yml').read_text(encoding='utf-8')
-    install = wf.index('pip install -r requirements.txt -r requirements-dev.txt')
+    install = wf.index('pip install --require-hashes -r requirements-dev.lock')
     lint = re.search(r'(?m)^\s+run: ruff check \.\s*$', wf)
     assert lint, 'run-tests.yml does not run `ruff check .`'
     tests = wf.index('python -m pytest')

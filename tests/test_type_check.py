@@ -39,6 +39,15 @@ def test_the_weekly_modules_type_check(tmp_path):
     assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-500:]
 
 
+def test_the_core_the_site_and_the_day_sports_type_check_strictly(tmp_path):
+    """Stage 87 item 5: src/core, src/site, src/sports/nhl and src/sports/nba under
+    --strict, the command run-tests.yml runs (tasks.STRICT_TYPES)."""
+    mypy_or_skip()
+    cmd = [*tasks.STRICT_TYPES, '--cache-dir', str(tmp_path / 'mypy-cache')]
+    r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True, encoding='utf-8')
+    assert r.returncode == 0, r.stdout[-2000:] + r.stderr[-500:]
+
+
 def test_the_agents_type_check_strictly(tmp_path):
     """Stage 48 item 19: src/agents under --strict, the command run-tests.yml
     runs (tasks.AGENT_TYPES). An unannotated function, or one returning Any

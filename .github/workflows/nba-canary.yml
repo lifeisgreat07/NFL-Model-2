@@ -54,7 +54,7 @@ jobs:
 
       - name: Install dependencies
         timeout-minutes: 10
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Run the canary
         timeout-minutes: 10

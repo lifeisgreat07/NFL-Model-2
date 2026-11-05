@@ -88,7 +88,7 @@ jobs:
 
       - name: Install dependencies
         timeout-minutes: 10
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Refresh game status, scores and lines
         timeout-minutes: 10
@@ -199,7 +199,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Judge the run
         id: judge

@@ -38,6 +38,7 @@ on:
       - 'results/**'
       - 'tests/browser/**'
       - 'requirements.txt'
+      - 'requirements.lock'
       - '.github/workflows/browser-checks.yml'
   push:
     branches: [main]
@@ -82,7 +83,7 @@ jobs:
       - name: Install dependencies
         timeout-minutes: 30
         run: |
-          pip install -r requirements.txt
+          pip install --require-hashes -r requirements.lock
           pip install playwright==1.56.0
           python -m playwright install --with-deps chromium
 

@@ -86,7 +86,7 @@ jobs:
 
       - name: Install dependencies
         timeout-minutes: 3
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Has this slot been served?
         timeout-minutes: 3
@@ -138,7 +138,7 @@ jobs:
 
       - name: Install dependencies
         timeout-minutes: 25
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Determine current NFL season
         timeout-minutes: 25
@@ -411,7 +411,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Judge the run
         id: judge

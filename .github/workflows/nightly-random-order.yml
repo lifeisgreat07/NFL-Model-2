@@ -57,7 +57,7 @@ jobs:
       - name: Install dependencies
         timeout-minutes: 25
         run: |
-          pip install -r requirements.txt -r requirements-dev.txt
+          pip install --require-hashes -r requirements-dev.lock
           pip install pytest-random-order==1.2.0
       - name: Run the suite in tonight's order
         timeout-minutes: 25

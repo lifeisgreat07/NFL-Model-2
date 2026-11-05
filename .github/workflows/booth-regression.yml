@@ -68,7 +68,7 @@ jobs:
       - name: Install dependencies
         # Booth cannot verify "the tests pass" without being able to run them,
         # and the fixture's own suite is one of the things it checks.
-        run: pip install -r requirements.txt -r requirements-dev.txt
+        run: pip install --require-hashes -r requirements-dev.lock
 
       - name: Assemble the fixture into a throwaway repository
         id: assemble
@@ -144,7 +144,7 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - run: pip install --require-hashes -r requirements-dev.lock
 
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:

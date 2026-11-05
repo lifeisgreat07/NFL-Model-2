@@ -39,7 +39,7 @@ jobs:
         run: python -m src.core.start_delay .github/workflows/line-judge-digest.yml
       - name: Install dependencies
         timeout-minutes: 5
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
       - name: Post the digest
         timeout-minutes: 5
         env:

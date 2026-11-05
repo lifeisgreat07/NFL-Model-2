@@ -55,7 +55,7 @@ jobs:
 
       - name: Install dependencies
         timeout-minutes: 15
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       # Finished seasons of play-by-play, kept between nights. The key rolls
       # over each month, because nflverse does occasionally correct an old
