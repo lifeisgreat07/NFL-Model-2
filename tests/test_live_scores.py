@@ -29,6 +29,7 @@ from pathlib import Path
 import pytest
 
 from src.site import build
+from tests.js_source import function_source
 
 ROOT = Path(__file__).resolve().parents[1]
 SCORES = (ROOT / 'src' / 'core' / 'scores.js').read_text(encoding='utf-8')
@@ -50,12 +51,6 @@ def node(code):
 def pure():
     """scores.js's functions and constants, without the part that needs a page."""
     return SCORES[:SCORES.index('(function(){')]
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 def event(eid, away, home, as_, hs, state, name='STATUS_IN_PROGRESS', period=3, clock='4:12', short='4:12 - 3rd'):
