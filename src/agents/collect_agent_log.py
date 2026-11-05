@@ -176,7 +176,71 @@ def summarise(rows: list[dict[str, Any]]) -> dict[str, int]:
     }
 
 
-def build(comments: list[dict[str, Any]]) -> dict[str, Any]:
+#: Stage 90 item 3: how many of the agents' latest outputs the page lists.
+RECENT = 16
+#: Spotter's comments open with this marker (src/agents/spotter_comment.py).
+SPOTTER_MARKER = '<!-- spotter-comment -->'
+#: Line Judge's weekly digest line (src/core/line_judge_digest.py) and its diagnosis heading.
+DIGEST_RE = re.compile(r'^Line Judge, \w{3} \d{4}-\d\d-\d\d to \w{3} \d{4}-\d\d-\d\d: .*$', re.M)
+DIAGNOSIS = "**Line Judge's diagnosis**"
+
+
+def _first_sentence(text: str, limit: int = 200) -> str:
+    """The first sentence of `text`, cut at `limit` characters with an ellipsis."""
+    text = ' '.join(text.split())
+    m = re.match(r'(.+?[.!?])(?:\s|$)', text)
+    s = m.group(1) if m else text
+    return s if len(s) <= limit else s[:limit - 1].rstrip() + '\u2026'
+
+
+def agent_entry(comment: dict[str, Any]) -> dict[str, Any] | None:
+    """One comment by Spotter or Line Judge as a line of the agents' record, or None.
+    Only this repository's bot accounts count, as for Booth (is_audit)."""
+    body = comment.get('body') or ''
+    if author(comment) not in BOOTH_ACCOUNTS:
+        return None
+    base = {'pr': None, 'url': comment.get('html_url'), 'when': comment.get('created_at')}
+    if body.startswith(SPOTTER_MARKER):
+        reading = body.split('### Reading', 1)[1] if '### Reading' in body else ''
+        return base | {'agent': 'Spotter', 'pr': _pr_number(comment),
+                       'says': _first_sentence(reading) or 'posted the pages this change can alter'}
+    m = DIGEST_RE.search(body)
+    if m:
+        return base | {'agent': 'Line Judge', 'says': m.group(0)}
+    if body.startswith(DIAGNOSIS):
+        rest = body[len(DIAGNOSIS):].split('\n', 1)[1] if '\n' in body else ''
+        return base | {'agent': 'Line Judge', 'says': 'Diagnosis: ' + (_first_sentence(rest) or 'none posted')}
+    return None
+
+
+def scout_entry(run: dict[str, Any]) -> dict[str, Any] | None:
+    """One Scout pre-flight run as a line of the record; Scout writes its findings
+    to its run, not to a comment, so the link is the run."""
+    prs = run.get('pull_requests') or []
+    if run.get('conclusion') not in ('success', 'failure'):
+        return None
+    return {'agent': 'Scout', 'pr': prs[0].get('number') if prs else None, 'url': run.get('html_url'),
+            'when': run.get('created_at'),
+            'says': ('found nothing to fix in the description' if run['conclusion'] == 'success'
+                     else 'found the description needs fixing before an audit')}
+
+
+def recent(rows: list[dict[str, Any]], comments: list[dict[str, Any]],
+           scout_runs: list[dict[str, Any]] | None, n: int = RECENT) -> list[dict[str, Any]]:
+    """The four agents' latest outputs, newest first, each linked (Stage 90 item 3).
+    Booth's are its counted audits, so a superseded run is not listed twice."""
+    out = [{'agent': 'Booth', 'pr': r['pr'], 'url': r['url'], 'when': r['posted_utc'],
+            'says': (f"{r['overall']}: {r['confirmed']} of {r['claims']} claims confirmed, "
+                     f"{r['discrepancies']} wrong, {r['unverifiable']} unverifiable"
+                     if r['has_verdict_block'] else 'an audit in prose, from before the verdict block')}
+           for r in rows if not r['superseded']]
+    out += [e for e in (agent_entry(c) for c in comments) if e]
+    out += [e for e in (scout_entry(r) for r in scout_runs or []) if e]
+    out.sort(key=lambda e: e['when'] or '', reverse=True)
+    return out[:n]
+
+
+def build(comments: list[dict[str, Any]], scout_runs: list[dict[str, Any]] | None = None) -> dict[str, Any]:
     rows = [parse_audit(c) for c in comments if is_audit(c)]
     rows.sort(key=lambda r: (r['posted_utc'] or '', r['pr'] or 0))
     mark_superseded(rows)
@@ -190,6 +254,7 @@ def build(comments: list[dict[str, Any]]) -> dict[str, Any]:
         ),
         'summary': summarise(rows),
         'audits': rows,
+        'recent': recent(rows, comments, scout_runs),
     }
 
 
@@ -208,6 +273,8 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[1])
     ap.add_argument('--comments', required=True,
                     help="JSON array of issue comments, or - for stdin")
+    ap.add_argument('--scout', default=None,
+                    help='JSON array of Scout pre-flight workflow runs (Stage 90 item 3)')
     ap.add_argument('--out', default=str(OUT))
     args = ap.parse_args(argv)
 
@@ -215,7 +282,8 @@ def main(argv: list[str] | None = None) -> int:
         Path(args.comments).read_text(encoding='utf-8')
     comments = json.loads(raw)
 
-    payload = build(comments)
+    scout = json.loads(Path(args.scout).read_text(encoding='utf-8')) if args.scout else None
+    payload = build(comments, scout)
     out = Path(args.out)
     if unchanged(out, payload):
         # Stage 68 item 29 (the 2026-10-09 audit's E34): a run whose audits are the

@@ -5,8 +5,8 @@
     {
       "id": "drift-accuracy-flags-again",
       "why": "an accuracy gap opens the drift issue again, the test R4 demoted because accuracy cannot carry a result at this sample size",
-      "find": "    if check_log_loss(records, spec):",
-      "replace": "    if check_log_loss(records, spec) or check_model(records, 'model_a_correct', baseline['model_a']['accuracy'], 'Model A'):",
+      "find": "    flagged = check_log_loss(records, spec)\n",
+      "replace": "    flagged = check_log_loss(records, spec) or check_model(records, 'model_a_correct', baseline['model_a']['accuracy'], 'Model A')\n",
       "expect_caught_by": "test_accuracy_below_its_baseline_no_longer_flags"
     },
     {

@@ -41,8 +41,8 @@
       "id": "page-carries-the-whole-agent-log-again",
       "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the per-audit records go back onto the page: about a hundred kilobytes a visitor downloads that nothing on the page reads, and growing with every audit.",
-      "find": "    return {k: log.get(k) for k in ('generated_utc', 'summary')}",
-      "replace": "    return log",
+      "find": "    page = {k: log.get(k) for k in ('generated_utc', 'summary')}\n",
+      "replace": "    page = dict(log)\n",
       "expect_caught_by": "test_the_page_carries_only_the_agent_log_it_reads"
     },
     {
