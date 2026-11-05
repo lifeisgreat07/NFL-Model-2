@@ -161,6 +161,10 @@ def live_copy(sport: str, live_url: str, fetcher: Fetcher) -> bytes | None:
 #: yesterday's board as today's. The kept page says so, from the first build
 #: that could not replace it.
 STALE_MARK = 'data-site-stale'
+#: Inside <main>: before its first child, so the page's own grid is untouched
+#: (put straight under <body>, the line became a whole grid column, seen
+#: in a render on 2026-11-05). A page with no <main> takes it under <body>.
+_MAIN_OPEN = re.compile(r'<main\b[^>]*>')
 _BODY_OPEN = re.compile(r'<body\b[^>]*>')
 
 
@@ -170,11 +174,11 @@ def mark_stale(body: bytes, since: str) -> bytes:
     html = body.decode('utf-8', 'replace')
     if STALE_MARK in html:
         return body
-    m = _BODY_OPEN.search(html)
+    m = _MAIN_OPEN.search(html) or _BODY_OPEN.search(html)
     if not m:
         return body
-    note = (f'<p {STALE_MARK} role="status" style="margin:0;padding:8px 16px;background:var(--surface-2);'
-            f'color:var(--text);border-bottom:2px solid var(--warn);font-size:14px">'
+    note = (f'<p {STALE_MARK} role="status" style="margin:0 0 16px;padding:8px 16px;border-radius:6px;background:var(--surface-2);'
+            f'color:var(--text);border:1px solid var(--warn);font-size:14px">'
             f'This page has not been rebuilt since {since} UTC, so it shows the board as it was then.</p>\n')
     return (html[:m.end()] + '\n' + note + html[m.end():]).encode('utf-8')
 
