@@ -31,6 +31,10 @@ from src.core.template_parts import JOINED_TEMPLATE
 REPO = Path(__file__).resolve().parents[1]
 README = REPO / 'README.md'
 TEXT = README.read_text(encoding='utf-8')
+#: Stage 89 item 5: the operations detail (repo layout, running it, the
+#: settings table) moved out of the README to here, and is held the same way.
+OPS = REPO / 'docs' / 'operations.md'
+OPS_TEXT = OPS.read_text(encoding='utf-8')
 
 WORDS = {'one': 1, 'two': 2, 'three': 3, 'four': 4, 'five': 5, 'six': 6,
          'seven': 7, 'eight': 8, 'nine': 9, 'ten': 10, 'eleven': 11,
@@ -69,8 +73,8 @@ def _layout_paths():
     line is indented under. A bare `config.py` under `src/sports/nfl/` means
     `src/sports/nfl/config.py`, and checking it as a top-level file would pass while
     meaning nothing."""
-    block = re.search(r'## Repo layout\s*\n```\n(.*?)\n```', TEXT, re.S)
-    assert block, "README.md has no '## Repo layout' code block to check"
+    block = re.search(r'## Repo layout\s*\n```\n(.*?)\n```', OPS_TEXT, re.S)
+    assert block, "docs/operations.md has no '## Repo layout' code block to check"
     prefix = ''
     found = []
     for line in block.group(1).splitlines():
@@ -131,8 +135,8 @@ def test_nothing_in_the_repo_points_at_a_methodology_file_that_is_not_there():
 def test_the_recruiter_section_comes_before_the_statistical_detail():
     """It exists for someone who will give the page thirty seconds. Below the
     ridge regression and the log-loss table it may as well not be there."""
-    overview = TEXT.find('## For recruiters')
-    assert overview != -1, "README.md has no '## For recruiters' section"
+    overview = TEXT.find('## What it demonstrates')
+    assert overview != -1, "README.md has no '## What it demonstrates' section"
     detail = TEXT.find('## Current model')
     assert detail != -1, "README.md has no '## Current model' section"
     assert overview < detail, (
@@ -296,9 +300,9 @@ def test_running_the_tests_says_what_the_suite_needs():
     every test that runs the page's JavaScript skips. It now installs both
     requirement files, runs the linter CI runs, and names the Python and
     node versions -- each held here to the file that decides it."""
-    flat = ' '.join(TEXT.split())
-    assert 'pip install -r requirements.txt -r requirements-dev.txt' in TEXT
-    assert 'ruff check .' in TEXT, "README no longer runs the linter run-tests.yml runs"
+    flat = ' '.join(OPS_TEXT.split())
+    assert 'pip install -r requirements.txt -r requirements-dev.txt' in OPS_TEXT
+    assert 'ruff check .' in OPS_TEXT, "docs/operations.md no longer runs the linter run-tests.yml runs"
     python = (REPO / '.python-version').read_text(encoding='utf-8').strip()
     assert f'needs Python {python}' in flat, f"README's Python version is not .python-version's {python}"
     workflow = (REPO / '.github' / 'workflows' / 'run-tests.yml').read_text(encoding='utf-8')
@@ -339,8 +343,8 @@ def test_every_environment_variable_the_code_reads_is_documented():
     sources = [p.read_text(encoding='utf-8') for p in (REPO / 'src').rglob('*.py')]
     found = env_vars_read(sources)
     assert len(found) >= 3, f'the scan found only {sorted(found)}; it has gone blind'
-    missing = sorted(v for v in found if f'`{v}`' not in TEXT)
-    assert not missing, f"README's settings table does not name {missing}"
+    missing = sorted(v for v in found if f'`{v}`' not in OPS_TEXT)
+    assert not missing, f"docs/operations.md's settings table does not name {missing}"
 
 
 def test_the_environment_scan_sees_both_spellings():
@@ -348,3 +352,25 @@ def test_the_environment_scan_sees_both_spellings():
     got = env_vars_read(["x = os.environ.get('ALPHA_DIR', '')",
                          "BETA_ENV = 'BETA_CACHE'\nvalue = os.environ.get(BETA_ENV)"])
     assert got == {'ALPHA_DIR', 'BETA_CACHE'}
+
+
+def test_the_decision_count_it_states_is_the_real_one():
+    """Stage 89 item 9: "six decisions" had become seven records
+    (docs/decisions/0007, Spotter's) with the README still saying six."""
+    m = re.search(r'the (\w+) decisions the rest rests on', TEXT)
+    assert m, 'README.md no longer states how many decision records there are'
+    records = sorted((REPO / 'docs' / 'decisions').glob('[0-9][0-9][0-9][0-9]-*.md'))
+    assert number_word(m.group(1)) == len(records), (
+        f'README.md says {m.group(1)} decisions; docs/decisions/ holds {len(records)}')
+
+
+def test_operations_and_the_docs_landing_page_are_linked_from_the_readme():
+    """Stage 89 items 5 and 7: what left the README is one link away."""
+    for link in ('](docs/operations.md)', '](docs/README.md)', '](CHANGELOG.md)'):
+        assert link in TEXT, f'README.md does not link {link[2:-1]}'
+    assert (REPO / 'docs' / 'README.md').exists() and (REPO / 'CHANGELOG.md').exists()
+
+
+def test_the_readme_is_short_enough_to_read():
+    """Stage 89 item 5: about 150 lines; the operations detail lives in docs/operations.md."""
+    assert len(TEXT.splitlines()) <= 170, f'README.md is {len(TEXT.splitlines())} lines'
