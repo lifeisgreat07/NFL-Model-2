@@ -47,7 +47,7 @@ STATUS_DIR = DATA_DIR / 'game_status'
 CANCELLED_FILE = DATA_DIR / 'cancelled_games.json'
 
 
-def parse_week(stem):
+def parse_week(stem: str) -> tuple[int, int] | None:
     """'2026_week3' -> (2026, 3). Returns None if it doesn't match.
 
     Exactly the rule generate_dashboard.parse_week_stem has always used, so
@@ -61,7 +61,7 @@ def parse_week(stem):
         return None
 
 
-def current_season(now=None):
+def current_season(now: datetime | None = None) -> int:
     """The NFL season a date belongs to. January and February still belong
     to the season that kicked off the year before (the playoffs and the
     Super Bowl)."""

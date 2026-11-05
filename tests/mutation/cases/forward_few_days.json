@@ -1,0 +1,28 @@
+{
+  "target": "src/core/forward_test.py",
+  "tests": "tests/test_forward_few_days.py",
+  "cases": [
+    {
+      "id": "few-days-never-flagged",
+      "why": "a comparison over a dozen game days is printed with only its rough day-block interval, and nothing says how few blocks it rests on",
+      "find": "    if len(sums) < MIN_DAY_BLOCKS:\n",
+      "replace": "    if len(sums) < 0:\n",
+      "expect_caught_by": "test_under_twenty_days_the_game_level_interval_is_reported_beside_it"
+    },
+    {
+      "id": "few-days-moves-the-registered-interval",
+      "why": "the game-level draws are taken first, so the registered day-block interval changes when a comparison has few days",
+      "find": "    draws = rng.integers(0, len(sums), size=(n, len(sums)))\n    boot = sums[draws].sum(axis=1) / counts[draws].sum(axis=1)\n",
+      "replace": "    rng.integers(0, len(diff), size=(n, len(diff))) if len(sums) < MIN_DAY_BLOCKS else None\n    draws = rng.integers(0, len(sums), size=(n, len(sums)))\n    boot = sums[draws].sum(axis=1) / counts[draws].sum(axis=1)\n",
+      "expect_caught_by": "test_the_day_block_interval_is_unchanged_by_it"
+    },
+    {
+      "id": "nba-page-hides-the-game-interval",
+      "target": "src/core/day_board.js",
+      "why": "the NBA page drops the game-level interval and its note, so a reader sees a dozen-day interval as if it were firm",
+      "find": "  const few = PAIRS.map(([, k]) => f.comparisons[k]).find(c => c && c.few_days);\n",
+      "replace": "  const few = undefined;\n",
+      "expect_caught_by": "test_the_page_prints_it_and_says_why_only_while_it_applies"
+    }
+  ]
+}

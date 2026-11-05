@@ -19,8 +19,8 @@
     {
       "id": "forecast-score-games-not-paired",
       "why": "a game only some forecasts priced is scored for those that did, so the three scores are averages over different games and the forecast missing a hard game looks better for missing it.",
-      "find": "        if any(not isinstance(p, (int, float)) for p in probs):\n            continue\n        for (name, _), p in zip(FORECAST_SOURCES, probs):\n",
-      "replace": "        for (name, _), p in zip(FORECAST_SOURCES, probs):\n            if not isinstance(p, (int, float)):\n                continue\n",
+      "find": "        if len(probs) != len(raw):\n            continue\n        for (name, _), p in zip(FORECAST_SOURCES, probs):\n",
+      "replace": "        for (name, _), p in zip(FORECAST_SOURCES, probs):\n",
       "expect_caught_by": "test_all_three_are_scored_over_the_same_games"
     },
     {
