@@ -1,0 +1,57 @@
+{
+ "model": "model_a",
+ "settings": {
+  "H_days": 120,
+  "lambda": 10.0
+ },
+ "source": "src/sports/nba/season_spread.py, the Stage 61 walk-forward at the chosen settings",
+ "seasons": [
+  {
+   "season": 2022,
+   "label": "2022-23",
+   "role": "validation",
+   "games": 1320,
+   "log_loss": 0.6436201002524421,
+   "brier": 0.22590712640645846,
+   "accuracy": 0.6333333333333333
+  },
+  {
+   "season": 2023,
+   "label": "2023-24",
+   "role": "validation",
+   "games": 1319,
+   "log_loss": 0.6068013004668791,
+   "brier": 0.21006860940513514,
+   "accuracy": 0.6595905989385898
+  },
+  {
+   "season": 2024,
+   "label": "2024-25",
+   "role": "confirmation",
+   "games": 1321,
+   "log_loss": 0.6027230463687896,
+   "brier": 0.20822480688429337,
+   "accuracy": 0.6729750189250567
+  },
+  {
+   "season": 2025,
+   "label": "2025-26",
+   "role": "confirmation",
+   "games": 1322,
+   "log_loss": 0.593922720753258,
+   "brier": 0.20390681750740305,
+   "accuracy": 0.6845688350983359
+  }
+ ],
+ "baseline": {
+  "value": 0.5983212187245471,
+  "pooled_confirmation": 0.5983212187245471,
+  "games": 2643,
+  "agrees": true
+ },
+ "spread": {
+  "low": 0.593922720753258,
+  "high": 0.6436201002524421,
+  "range": 0.04969737949918407
+ }
+}

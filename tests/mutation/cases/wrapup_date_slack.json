@@ -1,0 +1,20 @@
+{
+  "target": "src/agents/session_wrapup.py",
+  "tests": "tests/test_wrapup_date_slack.py",
+  "cases": [
+    {
+      "id": "wrapup-context-refuses-tomorrow",
+      "why": "a context.md stamped on the agent's UTC date is refused on Mark's Eastern evening, so the gate fails a file written minutes ago",
+      "find": "    accepted = {today.isoformat(), (today + timedelta(days=1)).isoformat()}\n",
+      "replace": "    accepted = {today.isoformat()}\n",
+      "expect_caught_by": "test_context_stamp_slack_is_one_day_forward_only"
+    },
+    {
+      "id": "wrapup-memory-accepts-yesterday",
+      "why": "a memory file from the previous session satisfies today's gate, so a session that wrote nothing passes",
+      "find": "for stamp in (today, today + timedelta(days=1))",
+      "replace": "for stamp in (today - timedelta(days=1), today, today + timedelta(days=1))",
+      "expect_caught_by": "test_session_memory_slack_is_one_day_forward_only"
+    }
+  ]
+}
