@@ -8,10 +8,13 @@ name: NFL QB override auto-merge
 # OFF until the repository variable AUTO_MERGE_OVERRIDES is `true`. With it
 # unset the job does not run at all.
 #
-# The code that runs is the BASE commit's, never the pull request's, as in
-# nfl-override-check.yml: the files are fetched from the API as data, and a
-# pull request cannot rewrite the rule that merges it. The rule itself is
-# src/sports/nfl/override_automerge.py.
+# The Python that runs is the BASE commit's, never the pull request's, as in
+# nfl-override-check.yml: the files are fetched from the API as data, so a
+# pull request cannot change the check or the rule
+# (src/sports/nfl/override_automerge.py) that judges it. This file itself,
+# on a pull_request event, is read from the pull request; a pull request
+# that edits it is not data-only, and only an author who can already push
+# to this repository (no forks) can open one.
 
 on:
   pull_request:
@@ -34,13 +37,13 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Check out the base commit
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           ref: ${{ github.event.pull_request.base.sha }}
           persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.11'
           cache: pip
