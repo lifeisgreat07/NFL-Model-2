@@ -10,6 +10,13 @@ makes `ratings.features` remember its answer for the run of tests, keyed on
 the full content of its input and its settings, so an identical call is
 answered from memory and any different call is computed as before. Each
 caller gets its own copy.
+
+Stage 96 item 49 (audit 7, T12) adds the NBA half: its four tests that drive
+the whole daily run (the end-to-end run, the two sources-down runs and the
+after-save run) each built the availability table and the feature table over
+every game since 2019, about 40 of the 45 seconds a run took. `share_nba_tables`
+remembers `ratings.availability_table` and `ratings.features` the same way,
+keyed on the content of every frame argument and the value of every other.
 """
 from __future__ import annotations
 
@@ -46,3 +53,35 @@ def share_nhl_features(monkeypatch) -> None:
     from src.sports.nhl import ratings
     original = getattr(ratings.features, '__wrapped__', ratings.features)
     monkeypatch.setattr(ratings, 'features', remembering(original))
+
+
+def _part(x: Any) -> Any:
+    if isinstance(x, pd.DataFrame):
+        return ('frame', content_key(x))
+    if isinstance(x, pd.Series):
+        h = hashlib.sha256(pd.util.hash_pandas_object(x, index=True).values.tobytes())
+        h.update(repr((str(x.name), str(x.dtype))).encode())
+        return ('series', h.hexdigest())
+    if isinstance(x, (list, tuple)):
+        return ('seq', tuple(_part(i) for i in x))
+    return ('value', repr(x))
+
+
+def remembering_any(fn: Callable[..., Any]) -> Callable[..., Any]:
+    """`fn` remembered on the content of every argument; each caller gets its own copy."""
+    def wrapped(*args: Any, **kwargs: Any) -> Any:
+        key = (fn.__module__, fn.__qualname__, tuple(_part(a) for a in args),
+               tuple(sorted((k, _part(v)) for k, v in kwargs.items())))
+        if key not in _TABLES:
+            _TABLES[key] = fn(*args, **kwargs)
+        return _TABLES[key].copy(deep=True)
+    wrapped.__wrapped__ = fn  # type: ignore[attr-defined]
+    return wrapped
+
+
+def share_nba_tables(monkeypatch) -> None:
+    """Patch the NBA's ratings.availability_table and ratings.features for this test with remembering versions."""
+    from src.sports.nba import ratings
+    for name in ('availability_table', 'features'):
+        original = getattr(getattr(ratings, name), '__wrapped__', getattr(ratings, name))
+        monkeypatch.setattr(ratings, name, remembering_any(original))

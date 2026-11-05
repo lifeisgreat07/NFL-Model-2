@@ -1,0 +1,29 @@
+{
+ "target": "tests/slow_policy.py",
+ "tests": "tests/test_tasks.py",
+ "cases": [
+  {
+   "id": "slow-policy-forgets-the-bootstrap",
+   "why": "a paired bootstrap no longer counts as slow, so the bootstrap tests are marked for nothing and an unmarked one would run in quick",
+   "find": "    'a paired bootstrap': (re.compile(r'\\bpaired_bootstrap\\('),),\n",
+   "replace": "    'a paired bootstrap': (re.compile(r'\\bnever_called\\('),),\n",
+   "expect_caught_by": "test_the_slow_marker_is_registered_and_used"
+  },
+  {
+   "id": "slow-policy-reads-no-helpers",
+   "why": "only the test body is read, so the sources-down tests, which drive the run through drive(), look fast and their marker looks wrong",
+   "find": "            for called in _called(fn) - {name}:\n",
+   "replace": "            for called in set():\n",
+   "expect_caught_by": "test_a_marker_and_its_reason_go_together",
+   "tests": "tests/test_slow_policy.py"
+  },
+  {
+   "id": "slow-policy-one-way-only",
+   "why": "a test marked slow for nothing passes, so the marker drifts onto fast tests and quick shrinks for no reason",
+   "find": "        if marked and not kinds:\n",
+   "replace": "        if False:\n",
+   "expect_caught_by": "test_a_marker_and_its_reason_go_together",
+   "tests": "tests/test_slow_policy.py"
+  }
+ ]
+}
