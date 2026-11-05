@@ -227,6 +227,37 @@ def raises_an_alert_on_failure(text):
     return any('if: failure()' in s and 'src.core.alerts' in s for s in steps)
 
 
+#: Run by an event, not by a person, and writing something a person relies on (Stage 93 item 14, audit 7
+#: R13): the Pages deploy runs on other workflows' data commits, and the QB override watch is what tells
+#: Mark an override is waiting before the lock. booth-alert.yml is itself the alert for a failed audit.
+EVENT_WRITERS = ('deploy-pages.yml', 'nfl-override-watch.yml')
+NOT_ALERTED = ('booth-alert.yml',)
+
+
+def unattended_workflows(folder=WORKFLOWS):
+    """Every workflow that runs with nobody watching: on a schedule, on another workflow's
+    completion, or one of the event-driven writers."""
+    return sorted(p for p in folder.glob('*.yml')
+                  if p.name not in NOT_ALERTED
+                  and (re.search(r'(?m)^  (schedule|workflow_run):', p.read_text(encoding='utf-8'))
+                       or p.name in EVENT_WRITERS))
+
+
+def test_every_unattended_workflow_opens_an_issue_when_it_fails():
+    found = unattended_workflows()
+    assert {'deploy-pages.yml', 'nfl-override-watch.yml', 'nhl-daily.yml'} <= {p.name for p in found}
+    silent = [p.name for p in found if not raises_an_alert_on_failure(p.read_text(encoding='utf-8'))]
+    assert not silent, f'unattended workflows that fail silently: {silent}'
+
+
+def test_every_job_of_the_pages_deploy_alerts():
+    """Two jobs: a build that fails and a deploy that fails must each raise."""
+    text = (WORKFLOWS / 'deploy-pages.yml').read_text(encoding='utf-8')
+    jobs = re.split(r'(?m)^  (?=build:|deploy:)', text.split('\njobs:\n', 1)[1])[1:]
+    assert [j.split(':')[0] for j in jobs] == ['build', 'deploy']
+    assert all(raises_an_alert_on_failure(j) for j in jobs)
+
+
 def test_every_scheduled_workflow_opens_an_issue_when_it_fails():
     """Stage 30 item 7. Stage 4's rule is that nothing unattended fails
     silently, and it was written into each workflow by hand -- so the nightly
@@ -236,6 +267,17 @@ def test_every_scheduled_workflow_opens_an_issue_when_it_fails():
     assert len(found) >= 4, f'the scan found only {[p.name for p in found]}'
     silent = [p.name for p in found if not raises_an_alert_on_failure(p.read_text(encoding='utf-8'))]
     assert not silent, f'scheduled workflows that fail silently: {silent}'
+
+
+def test_a_silent_workflow_run_writer_is_in_the_class_and_is_caught(tmp_path):
+    """Stage 93 item 14: the synthetic check, extended to a workflow_run sample."""
+    (tmp_path / 'rebuild.yml').write_text(
+        'on:\n  workflow_run:\n    workflows: ["x"]\n    types: [completed]\n'
+        'jobs:\n  build:\n    steps:\n      - name: run\n        run: x\n', encoding='utf-8')
+    (tmp_path / 'manual.yml').write_text('on:\n  workflow_dispatch: {}\n', encoding='utf-8')
+    found = unattended_workflows(tmp_path)
+    assert [p.name for p in found] == ['rebuild.yml']
+    assert not raises_an_alert_on_failure(found[0].read_text(encoding='utf-8'))
 
 
 def test_the_alert_check_can_tell_a_silent_workflow():
