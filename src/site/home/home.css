@@ -76,6 +76,7 @@ body{ flex-direction:column; }
 .home-steps{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--s6); }
 .home-steps li{ display:flex; gap:var(--s3); min-width:0; font-size:var(--fs-14); line-height:1.45; color:var(--text-2); }
 .home-steps b{ display:block; font-size:var(--fs-16); color:var(--text); margin-bottom:var(--s1); }
+.home-step-link{ display:block; margin-top:var(--s1); font-weight:600; color:var(--accent); }
 .home-step-n{ flex:none; width:28px; height:28px; border-radius:50%; border:1px solid var(--border-strong);
   display:inline-flex; align-items:center; justify-content:center; font-size:var(--fs-13); font-weight:700; color:var(--accent); }
 /* Stage 90 item 1: the track record, one small table a sport. */
