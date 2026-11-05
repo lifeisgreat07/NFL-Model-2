@@ -1,0 +1,21 @@
+{
+  "target": "src/sports/nhl/ratings.py",
+  "tests": "tests/test_direction.py",
+  "cases": [
+    {
+      "id": "nhl-goal-matchup-away-minus-home",
+      "why": "the goal matchup is taken away minus home, so the model favours whichever side is weaker and every pick points backwards",
+      "find": "        row = {'goal_matchup': self.goal.get(home, 0.0) - self.goal.get(away, 0.0),\n",
+      "replace": "        row = {'goal_matchup': self.goal.get(away, 0.0) - self.goal.get(home, 0.0),\n",
+      "expect_caught_by": "test_an_nhl_team_that_wins_every_game_is_favoured_at_home_and_away"
+    },
+    {
+      "id": "nba-point-matchup-away-minus-home",
+      "target": "src/sports/nba/ratings.py",
+      "why": "the point matchup is taken away minus home, so the NBA's picks point backwards with every ordering test still green",
+      "find": "        return {'point_matchup': self.point.get(home, 0.0) - self.point.get(away, 0.0),\n",
+      "replace": "        return {'point_matchup': self.point.get(away, 0.0) - self.point.get(home, 0.0),\n",
+      "expect_caught_by": "test_an_nba_team_that_wins_every_game_is_favoured_at_home_and_away"
+    }
+  ]
+}
