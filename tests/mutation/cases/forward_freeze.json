@@ -1,0 +1,34 @@
+{
+  "target": "src/core/forward_test.py",
+  "tests": "tests/test_forward_freeze.py",
+  "cases": [
+    {
+      "id": "forward-freeze-rewrites-every-run",
+      "why": "the deciding file is written again by every run after the season, so playoff games end up inside the verdict the registration says is taken once",
+      "find": "    if frozen.exists() or not regular_season_over(sched):\n",
+      "replace": "    if not regular_season_over(sched):\n",
+      "expect_caught_by": "test_a_later_run_never_rewrites_the_deciding_file"
+    },
+    {
+      "id": "forward-freeze-before-the-season-ends",
+      "why": "a season with games left is frozen, so the verdict is taken on part of it",
+      "find": "    return bool(len(regular)) and bool(regular['status'].isin(['final', 'cancelled']).all())\n",
+      "replace": "    return bool(len(regular)) and bool(regular['status'].isin(['final', 'cancelled']).any())\n",
+      "expect_caught_by": "test_nothing_is_frozen_while_a_regular_season_game_is_left"
+    },
+    {
+      "id": "forward-label-accepts-an-interval-touching-zero",
+      "why": "an interval reaching zero is called ACCEPT, which the registered rule calls INCONCLUSIVE",
+      "find": "    if comparison['high'] < 0:\n",
+      "replace": "    if comparison['high'] <= 0:\n",
+      "expect_caught_by": "test_the_label_is_the_backtests_rule"
+    },
+    {
+      "id": "season-report-swaps-the-interval-ends",
+      "why": "the report prints each interval high to low, so a reader takes an ACCEPT for a REJECT",
+      "find": "            span = f\"{c['low']:+.4f} to {c['high']:+.4f}\"\n",
+      "replace": "            span = f\"{c['high']:+.4f} to {c['low']:+.4f}\"\n",
+      "expect_caught_by": "test_the_report_is_written_once_with_the_frozen_file_and_says_only_what_it_holds"
+    }
+  ]
+}

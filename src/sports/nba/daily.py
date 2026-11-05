@@ -239,7 +239,11 @@ def missed_line(started: tuple[str, ...] | list[str], folder: Path) -> str | Non
 
 
 def grade(folder: Path, sched: pd.DataFrame) -> list[dict[str, Any]]:
-    """One row per saved pick: correct, wrong, cancelled, or pending."""
+    """One row per saved pick: correct, wrong, cancelled, or pending.
+
+    Pending also covers a final game whose result is not in yet (a null
+    score, which used to raise here after the picks were saved, audit 7)
+    and a pick whose game has left the schedule (Stage 96 item 44)."""
     by_id = sched.set_index('game_id')
     rows = []
     for path in sorted(folder.glob('*.json')) if folder.exists() else []:
@@ -248,8 +252,7 @@ def grade(folder: Path, sched: pd.DataFrame) -> list[dict[str, Any]]:
         status = None if g is None else g['status']
         if status == GameStatus.CANCELLED.value:
             result = 'cancelled'
-        elif status == GameStatus.FINAL.value:
-            assert g is not None
+        elif status == GameStatus.FINAL.value and g is not None and not pd.isna(g['home_win']):
             winner = g['home'] if int(g['home_win']) == 1 else g['away']
             result = 'correct' if pick['pick'] == winner else 'wrong'
         else:
@@ -411,6 +414,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                                  'experiments/nba/stage65/registry.json', folder, sched,
                                  games[['day', 'home_score', 'away_score']])
         print(f"forward test: {fwd['graded_picks']} graded picks through {fwd['through']}")
+        # Stage 95 item 36: the deciding file, frozen once when the regular season is over.
+        frozen = forward_test.freeze(PATHS.results / f'forward_{season}.json', sched, str(now.date()))
+        if frozen is not None:
+            print(f'forward test: the regular season is over; the deciding file is {frozen.name}')
 
     def write_m2() -> None:
         # Stage 84 item 4: Stage 61's M2, the injury report against who played.
