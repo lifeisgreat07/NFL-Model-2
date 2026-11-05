@@ -88,6 +88,8 @@ jobs:
           python -m src.core.pull_check
 
       - name: Commit the NBA's picks, grades and history
+        # Runs python since #628 (src.core.picks_only_grow), so it times out on its own.
+        timeout-minutes: 10
         run: |
           # Staging a path that does not exist is an error, and
           # predictions/nba does not exist until the first pick is saved (the

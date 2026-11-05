@@ -27,8 +27,8 @@
       "id": "nhl-daily-missed-pick-alert-can-be-skipped",
       "target": ".github/workflows/nhl-daily.yml",
       "why": "a refused drift or input alert fails its step and the missed-pick alert after it never runs",
-      "find": "      - name: Raise an alert on a missed pick\n        if: success()\n        # Stage 93 item 12: an alert GitHub refuses after three tries fails\n        # this step (summary and annotation) but must not skip the alerts after it.\n        continue-on-error: true\n",
-      "replace": "      - name: Raise an alert on a missed pick\n        if: success()\n",
+      "find": "      - name: Raise an alert on a missed pick\n        timeout-minutes: 25\n        if: success()\n        # Stage 93 item 12: an alert GitHub refuses after three tries fails\n        # this step (summary and annotation) but must not skip the alerts after it.\n        continue-on-error: true\n",
+      "replace": "      - name: Raise an alert on a missed pick\n        timeout-minutes: 25\n        if: success()\n",
       "expect_caught_by": "test_the_daily_runs_success_path_alerts_cannot_skip_each_other"
     },
     {
