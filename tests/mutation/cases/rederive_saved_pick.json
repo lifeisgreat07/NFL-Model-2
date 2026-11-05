@@ -1,0 +1,29 @@
+{
+  "target": "src/sports/nhl/backtest.py",
+  "tests": "tests/test_rederive_saved_pick.py",
+  "cases": [
+    {
+      "id": "nhl-registered-estimator-drifts",
+      "why": "the NHL's registered estimator is regularised a hundred times harder, so the walk-forward moves the saved pick by about 0.003, six times the test's tolerance (C=0.1 moves it by about 0.0003, inside the tolerance, and is not a case this test can catch)",
+      "find": "    return make_pipeline(StandardScaler(), LogisticRegression(C=1.0, l1_ratio=0.0, max_iter=1000))\n",
+      "replace": "    return make_pipeline(StandardScaler(), LogisticRegression(C=0.01, l1_ratio=0.0, max_iter=1000))\n",
+      "expect_caught_by": "test_an_nhl_saved_pick_is_re_derived_by_the_registered_walk_forward"
+    },
+    {
+      "id": "nba-registered-estimator-drifts",
+      "target": "src/sports/nba/backtest.py",
+      "why": "the NBA's registered estimator is regularised a hundred times harder, so the walk-forward moves the saved pick by about 0.003, six times the test's tolerance (C=0.1 moves it by about 0.0003, inside the tolerance, and is not a case this test can catch)",
+      "find": "    return make_pipeline(StandardScaler(), LogisticRegression(C=1.0, l1_ratio=0.0, max_iter=1000))\n",
+      "replace": "    return make_pipeline(StandardScaler(), LogisticRegression(C=0.01, l1_ratio=0.0, max_iter=1000))\n",
+      "expect_caught_by": "test_an_nba_saved_pick_is_re_derived_by_the_registered_walk_forward"
+    },
+    {
+      "id": "nba-chosen-settings-swapped",
+      "target": "src/sports/nba/daily.py",
+      "why": "the NBA reads the half-life validation chose as the ridge strength and the other way round, so its ratings are not the ones the picks were made with",
+      "find": "    return float(doc['chosen']['H_days']), float(doc['chosen']['lambda'])\n",
+      "replace": "    return float(doc['chosen']['lambda']), float(doc['chosen']['H_days'])\n",
+      "expect_caught_by": "test_an_nba_saved_pick_is_re_derived_by_the_registered_walk_forward"
+    }
+  ]
+}
