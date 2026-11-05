@@ -32,15 +32,21 @@ job that runs a model is given either.
 `--log` appends the last lines of a step's log (Stage 81 item 5): a run's own
 log needs a GitHub sign-in to read, so an alert that carried only a link left
 the cause unknown until someone opened it (#529).
+
+Every `gh` call is tried three times with a backoff, and an alert GitHub still
+refuses is written to the step summary with an error annotation, and the step
+exits 1 (Stage 93 item 12, audit 7 R8): before, one refused call lost the alert.
 """
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
+import time
 from collections.abc import Callable, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
@@ -49,12 +55,27 @@ from typing import Any
 Run = Callable[..., Any]
 
 
+#: Seconds to wait before the second and third tries of a `gh` call (Stage 93
+#: item 12). GitHub's API answers a burst of calls, or a moment of its own
+#: trouble, with a 5xx or a secondary rate limit that clears in seconds; one
+#: failed call used to lose the alert, and the run's own failure with it.
+BACKOFF = (5.0, 20.0)
+SLEEP: Callable[[float], Any] = time.sleep
+
+
 def _gh(args: list[str], run: Run, stdin: str | None = None) -> str:
-    r = run(['gh'] + args, input=stdin, capture_output=True, text=True)
-    if r.returncode:
-        raise RuntimeError(f"gh {' '.join(args[:2])} failed: {(r.stderr or r.stdout).strip()}")
-    out: str = r.stdout
-    return out
+    """One `gh` call, tried up to three times. A create that reached GitHub
+    but answered with an error could be tried again and open a twin; the
+    repeat is caught the next time by the title match, and a twin is a far
+    smaller harm than a lost alert."""
+    for wait in (*BACKOFF, None):
+        r = run(['gh'] + args, input=stdin, capture_output=True, text=True)
+        if not r.returncode:
+            out: str = r.stdout
+            return out
+        if wait is not None:
+            SLEEP(wait)
+    raise RuntimeError(f"gh {' '.join(args[:2])} failed {len(BACKOFF) + 1} times: {(r.stderr or r.stdout).strip()}")
 
 
 def find_open_issue(title: str, run: Run = subprocess.run) -> int | None:
@@ -192,9 +213,28 @@ def main(argv: Sequence[str] | None = None) -> int:
         # to end, one level up.
         print('refusing to raise an alert with an empty body', file=sys.stderr)
         return 1
-    action, ref = open_or_comment(args.title, with_log_tail(body, args.log), key=body)
+    text = with_log_tail(body, args.log)
+    try:
+        action, ref = open_or_comment(args.title, text, key=body)
+    except RuntimeError as exc:
+        kept_in_summary(args.title, text, exc)
+        return 1
     print(f'{action}: {ref}')
     return 0
+
+
+def kept_in_summary(title: str, body: str, exc: Exception) -> None:
+    """Stage 93 item 12: when GitHub would not take the alert after every try,
+    the alert goes where the run's page still shows it -- the step summary --
+    with an error annotation naming the title, and the step fails (the
+    caller returns 1), so the run is red with the reason on its front page
+    instead of green with the alert lost."""
+    summary = os.environ.get('GITHUB_STEP_SUMMARY')
+    if summary:
+        with open(summary, 'a', encoding='utf-8') as f:
+            f.write(f'## Alert not raised: {title}\n\nGitHub refused the issue ({exc}). '
+                    f'The alert, as it would have been posted:\n\n{body}\n')
+    print(f'::error title=Alert not raised::{title}: {exc}')
 
 
 if __name__ == '__main__':
