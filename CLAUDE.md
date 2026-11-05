@@ -284,7 +284,7 @@ The full text of every stage, finished or planned, is in
 - **Stages 62 to 68 (Mark, 2026-10-09)**: 62 one look; 63 boards that show what happened; 64 a day at a time; 65 the NBA live; 66 the home page; 67 "Sportalytics"; 68 the 2026-10-09 Fable audit, done (#380 to #421). Text at the end of `docs/history/09-more-sports.md`. 69 to 74 are unused.
 - **Stages 75 to 80 - the 2026-10-13 UI/UX audit**: done, #436 to #513.
 - **Stages 81 to 90 - the 2026-11-02 review** (text in `docs/history/10-review-2026-11-02.md`): order 81, 82, 86, 88 items 1-2, 83, 84 and 85, 89, 87; 90 last.
-- **Stages 91 to 96 - audit 7, executed** (`docs/history/11-audit7-2026-11-04.md`, with Claude's pushback): 91 first; the model-changing items held for Mark.
+- **Stages 91 to 96 - audit 7, executed** (`docs/history/11-audit7-2026-11-04.md`, with Claude's pushback): 91 first; the model-changing items as a registered shadow "day-sport v2" (Mark, 2026-11-05).
 
 ## Ending a session
 
