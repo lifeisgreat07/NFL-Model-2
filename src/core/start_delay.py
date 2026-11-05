@@ -47,9 +47,8 @@ WARN_HOURS_FOR = {'nhl-daily.yml': 1, 'nba-daily.yml': 1}
 #: Stage 93 item 19 (audit 7 R10): the runs whose lateness can cost a lock
 #: keep a record of every copy GitHub's cron started, committed with the
 #: run's data, so the weekly digest can say how close the fallback came to
-#: the slack. Workflow file -> the record, relative to the repository.
-RECORD_FOR = {'nhl-daily.yml': 'data/nhl/run_delays.json', 'nba-daily.yml': 'data/nba/run_delays.json',
-              'nfl-weekly-update.yml': 'data/nfl/run_delays.json'}
+#: the slack. The workflow files; each one's record is `record_path`.
+RECORD_FOR = ('nhl-daily.yml', 'nba-daily.yml', 'nfl-weekly-update.yml')
 #: How long a record keeps an entry.
 RECORD_DAYS = 60
 #: A dispatched run this long after the last slot is not serving it.
@@ -189,6 +188,12 @@ def record(path: Path, workflow: str, slot: datetime, started: datetime) -> list
     return kept
 
 
+def record_path(workflow: str) -> Path:
+    """data/<sport>/run_delays.json, the sport being the workflow name's
+    first word, so the core names no sport's folder (tests/test_sport_isolation.py)."""
+    return Path('data') / workflow.split('-', 1)[0] / 'run_delays.json'
+
+
 def main(argv: list[str] | None = None, now: datetime | None = None) -> int:
     args = sys.argv[1:] if argv is None else argv
     if len(args) != 1:
@@ -209,7 +214,7 @@ def main(argv: list[str] | None = None, now: datetime | None = None) -> int:
         started = now or datetime.now(UTC)
         slot = latest_slot([fired] if fired in exprs else exprs, started)
         if slot is not None:
-            record(Path(RECORD_FOR[name]), name, slot[0], started)
+            record(record_path(name), name, slot[0], started)
     if warn:
         print(f'::warning title=Late start::{line} Warned at {warn_hours} hours.')
     summary = os.environ.get('GITHUB_STEP_SUMMARY')

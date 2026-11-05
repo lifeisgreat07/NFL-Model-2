@@ -94,8 +94,9 @@ def test_the_slacks_are_the_locks_own():
     assert d.SLACK_HOURS['nhl'] == nhl_lock.SLACK / timedelta(hours=1)
     assert d.SLACK_HOURS['nba'] == nba_lock.SLACK / timedelta(hours=1)
     assert set(sd.RECORD_FOR) == {'nhl-daily.yml', 'nba-daily.yml', 'nfl-weekly-update.yml'}
-    for wf, rel in sd.RECORD_FOR.items():
+    for wf in sd.RECORD_FOR:
         text = (ROOT / '.github' / 'workflows' / wf).read_text(encoding='utf-8')
         assert f'python -m src.core.start_delay .github/workflows/{wf}' in text
-        sport = rel.split('/')[1]
+        sport = wf.split('-', 1)[0]
+        assert sd.record_path(wf).as_posix() == f'data/{sport}/run_delays.json'
         assert f'data/{sport}' in text, f'{wf} does not commit data/{sport}, so its record would be lost'
