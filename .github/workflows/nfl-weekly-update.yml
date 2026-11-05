@@ -83,7 +83,7 @@ jobs:
         run: python -m src.core.missed_dispatch .github/workflows/nfl-weekly-update.yml
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Has this slot been served?
         id: slot
@@ -132,7 +132,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Determine current NFL season
         id: season
@@ -391,7 +391,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Judge the run
         id: judge

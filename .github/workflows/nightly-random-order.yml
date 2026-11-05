@@ -55,7 +55,7 @@ jobs:
           node-version: '24'
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt -r requirements-dev.txt
+          pip install --require-hashes -r requirements-dev.lock
           pip install pytest-random-order==1.2.0
       - name: Run the suite in tonight's order
         shell: bash

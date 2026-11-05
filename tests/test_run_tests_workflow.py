@@ -42,7 +42,7 @@ def test_it_runs_on_every_push_to_main():
 
 def test_it_installs_the_pinned_test_requirements():
     t = text()
-    assert 'pip install -r requirements.txt -r requirements-dev.txt' in t
+    assert 'pip install --require-hashes -r requirements-dev.lock' in t
     assert not re.search(r'pip install pytest\b', t), (
         'an unpinned pytest is installed beside requirements-dev.txt')
 
