@@ -43,7 +43,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test, season_prices
+from src.core import forward_test, schedule_guard, season_prices
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nba import (
@@ -280,6 +280,8 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     now = now or datetime.now(UTC)
     season = nba_schedule.current_season(now)
     sched = nba_schedule.load_schedule(season, get=lambda u: json.loads(get(u)))
+    # Stage 91 item 2: an empty or shrunken feed stops the run before anything is written.
+    schedule_guard.check(len(sched), PATHS.results / f'schedule_{season}.json')
     first = backtest.registry()['protocol']['training_from_season']
     past_games, past_minutes = backtest.load_history(first, season - 1)
     cur_games, cur_minutes = refresh_season(season, sched, get=get)
