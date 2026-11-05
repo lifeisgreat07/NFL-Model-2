@@ -1166,25 +1166,25 @@
  {
   "game_id": "2026020247",
   "pick": "BUF",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-04T21:01:36Z"
  },
  {
   "game_id": "2026020248",
   "pick": "FLA",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-04T21:01:36Z"
  },
  {
   "game_id": "2026020249",
   "pick": "LAK",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-04T21:01:36Z"
  },
  {
   "game_id": "2026020250",
   "pick": "SEA",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-04T21:01:36Z"
  }
 ]
