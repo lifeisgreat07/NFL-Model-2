@@ -52,7 +52,15 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test, priced, request_budget, season_prices
+from src.core import (
+    forward_test,
+    pick_guard,
+    priced,
+    request_budget,
+    schedule_guard,
+    season_prices,
+)
+from src.core.atomic_write import write_json_atomic
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nhl import (
@@ -201,14 +209,18 @@ def read_rosters(clubs: set[str], get: Callable[[str], bytes]) -> dict[str, list
 
 
 def save_once(record: dict[str, Any], folder: Path) -> bool:
-    """Write the pick unless one is already saved. True when written."""
+    """Write the pick unless one is already saved. True when written.
+
+    Stage 91 item 6: written through write_json_atomic (fsync, a unique
+    temporary name), so a killed run never leaves a truncated pick or a
+    committed .tmp. Stage 91 item 5: a record that could have seen its own
+    result is refused before anything is written (src/core/pick_guard.py)."""
     path = folder / f"{record['game_id']}.json"
     if path.exists():
         return False
+    pick_guard.refuse_leak(record)
     folder.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix('.tmp')
-    tmp.write_text(json.dumps(record, indent=1) + '\n', encoding='utf-8')
-    tmp.replace(path)
+    write_json_atomic(path, record, trailing_newline=True, indent=1)
     return True
 
 
@@ -301,6 +313,8 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     season = nhl_schedule.current_season(now)
     # Stage 93 item 18: retried like the history and odds reads, and under a budget.
     sched = nhl_schedule.load_schedule(season, get=request_budget.Budget().wrap(lambda u: json.loads(get(u))))
+    # Stage 91 item 2: an empty or shrunken feed stops the run before anything is written.
+    schedule_guard.check(len(sched), PATHS.results / f'schedule_{season}.json')
     first = backtest.registry()['protocol']['training_from_season']
     past = backtest.load_history(first, season - 1)
     current = refresh_season(season, sched)
