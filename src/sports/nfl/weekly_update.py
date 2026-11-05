@@ -47,7 +47,7 @@ from sklearn.linear_model import LogisticRegression
 
 from src.core.atomic_write import write_json_atomic
 from src.core.model_specs import MODEL_SPECS
-from src.sports.nfl import override_check
+from src.sports.nfl import override_check, ratings_snapshot
 from src.sports.nfl.config import MIN_PLAYS_FOR_RATING, MODEL_VERSION, TRAIN_SEASONS
 from src.sports.nfl.data_loader import load_plays, load_schedule
 from src.sports.nfl.data_quality import enforce as enforce_data_quality
@@ -940,6 +940,11 @@ def refresh_current_state(inputs: Inputs, season: int) -> Current:
     else:
         log.info(f"No completed weeks yet for {season} -- skipping live history entry "
               f"(these ratings reflect prior-season data, not a real {season} week).")
+    # Stage 86 item 5: the snapshot just written must be the history's latest
+    # week. A postcondition of this run, not only a test over the committed
+    # files; the workflow raises an issue on the DEGRADED line, and the run goes on.
+    for line in ratings_snapshot.check(DATA_DIR, season) or [ratings_snapshot.OK]:
+        log.info(line)
     qb_cutoff = len(qb['week_keys'])
     # fallback starter source: most recent season with any starter data
     starter_season = season if season in [s for s, w in qb['week_keys']] else season - 1

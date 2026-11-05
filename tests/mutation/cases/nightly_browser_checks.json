@@ -31,6 +31,13 @@
       "find": "        data = get(f'{API}/repos/{repo}/actions/workflows/{file}/runs?per_page={shown}{event}', token)\n",
       "replace": "        data = get(f'{API}/repos/{repo}/actions/workflows/{file}/runs?per_page={shown}', token)\n",
       "expect_caught_by": "test_a_watched_job_that_also_runs_on_pull_requests_lists_only_its_timed_runs"
+    },
+    {
+      "id": "browser-checks-no-room-for-a-slow-install",
+      "why": "the browser job is cut off at 20 minutes again, so a day the apt mirror is slow (the install step took up to 980 s on 2026-11-05) cancels it on its last checks, on pull requests and on the nightly run on main",
+      "find": "    timeout-minutes: 35\n",
+      "replace": "    timeout-minutes: 20\n",
+      "expect_caught_by": "test_the_job_has_room_for_a_slow_install"
     }
   ]
 }

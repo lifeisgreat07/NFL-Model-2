@@ -107,6 +107,7 @@ notes elsewhere still describe them as files you can open in the repository.
 |---|---|
 | `docs/case-studies/` | One write-up per real problem, for a technical reader. `README.md` there is the index. |
 | `src/sports/nfl/research/measure_qb_leak.py` | Measures what the QB rating leak did to the backtest, on today's code. Writes `data/nfl/qb_leak_effect.json`. |
+| `docs/pandas-2-plan.md` | The plan for moving off pandas 1.5.3: the decisions to make first, the steps, and every published figure to regenerate as part of it (Stage 88 item 7). Not started. |
 | `docs/architecture.md` | The whole system on one diagram, with the file behind each box. |
 | `docs/decisions/README.md` | The decision records (Stage 49 item 22): one page per decision the rest rests on, with why, the cost and what would reopen it. |
 | `docs/lessons-learned.md` | The lessons across all of it, each pointing at where it came from. Linked from "Checking the AI's work". |

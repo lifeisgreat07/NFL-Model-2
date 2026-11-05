@@ -48,7 +48,7 @@
       "id": "card-market-probability-dropped",
       "target": "src/sports/nfl/generate_dashboard.py",
       "why": "the market's probability never reaches the page, so the card shows it only as a spread.",
-      "find": "            'mkt_home': (round(p['market_prob_home'] * 100, 1)\n                         if p.get('market_prob_home') is not None else None),",
+      "find": "            'mkt_home': (round(p['market_prob_home'] * 100, 2)\n                         if p.get('market_prob_home') is not None else None),",
       "replace": "            'mkt_home': None,",
       "expect_caught_by": "test_the_market_probability_reaches_the_page"
     },
@@ -58,6 +58,14 @@
       "find": "const CARD_NEAR = 7;",
       "replace": "const CARD_NEAR = 3;",
       "expect_caught_by": "test_the_threshold_clears_a_marker_on_the_narrowest_line"
+    },
+    {
+      "id": "nfl-probability-rounded-twice",
+      "why": "Model B's percentage is stored at one decimal again, so the board rounds twice and a saved 0.8047 shows 81%",
+      "find": "            'mktB_home': round((model_b if model_b is not None else model_a) * 100, 2),\n",
+      "replace": "            'mktB_home': round((model_b if model_b is not None else model_a) * 100, 1),\n",
+      "expect_caught_by": "test_a_probability_is_rounded_once",
+      "target": "src/sports/nfl/generate_dashboard.py"
     }
   ]
 }

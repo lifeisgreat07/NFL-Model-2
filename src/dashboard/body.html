@@ -229,7 +229,7 @@
             <li>On a keyboard, <kbd>[</kbd> and <kbd>]</kbd> step to the previous and next week.</li>
           </ul>
         </details>
-        <button class="btn" onclick="dismissOnboarding()">Got it</button>
+        <button class="btn" data-act="dismiss-onboarding">Got it</button>
       </div>
     </div>
     <div id="week-glance"></div>
@@ -345,8 +345,8 @@
         <h4 id="shared-picks-title">Viewing someone else's picks</h4>
         <p id="shared-picks-note" class="shared-note"></p>
         <div class="shared-actions">
-          <button class="btn" onclick="importSharedPicks()">Copy these into my log</button>
-          <button class="btn" onclick="exitSharedPicks()">Back to my picks</button>
+          <button class="btn" data-act="import-shared-picks">Copy these into my log</button>
+          <button class="btn" data-act="exit-shared-picks">Back to my picks</button>
         </div>
       </div>
     </div>
@@ -370,10 +370,10 @@
         </button>
       </div>
       <select id="picks-week-select" class="week-select visually-hidden" aria-label="Week" tabindex="-1"></select>
-      <button class="btn" onclick="copyShareLink(this)">Copy Share Link</button>
-      <button class="btn" onclick="exportMyPicks()">Export My Picks</button>
-      <button class="btn" onclick="document.getElementById('picks-import-input').click()">Import My Picks</button>
-      <input type="file" id="picks-import-input" accept=".json" style="display:none;" onchange="if(this.files[0]) importMyPicks(this.files[0])">
+      <button class="btn" data-act="copy-share-link">Copy Share Link</button>
+      <button class="btn" data-act="export-my-picks">Export My Picks</button>
+      <button class="btn" data-act="choose-picks-file">Import My Picks</button>
+      <input type="file" id="picks-import-input" accept=".json" style="display:none;">
     </div>
     <div id="picks-streak-strip"></div>
     <div class="game-grid" id="picks-grid"></div>

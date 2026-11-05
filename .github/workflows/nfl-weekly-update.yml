@@ -62,10 +62,10 @@ jobs:
       slot: ${{ steps.slot.outputs.slot }}
     steps:
       - name: Check out repo
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
 
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.11'
 
@@ -124,10 +124,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Check out repo
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
 
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.11'
 
@@ -152,6 +152,31 @@ jobs:
         id: generate
         shell: bash
         run: python -m src.sports.nfl.weekly_update --season ${{ steps.season.outputs.season }} 2>&1 | tee weekly-update.log
+
+      # Stage 86 item 5 (the 2026-11-02 review). The run checks, after writing
+      # them, that data/nfl/current_ratings.json is the latest week of the
+      # season's team history (src/sports/nfl/ratings_snapshot.py); a mismatch
+      # prints a DEGRADED line and raises one issue here. continue-on-error:
+      # reporting must never cost a pick.
+      - name: Is the ratings snapshot its history's latest week?
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if [ -f weekly-update.log ] && grep -q '^DEGRADED: ratings snapshot:' weekly-update.log; then
+            { grep '^DEGRADED: ratings snapshot:' weekly-update.log
+              printf '\nPower Ratings shows no rank change until the two agree.\n\nRun: %s\n' \
+                "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            } > snapshot.md
+            python -m src.core.alerts --title "NFL: the ratings snapshot is not its history's latest week" --body-file snapshot.md
+          elif [ -f weekly-update.log ] && grep -q '^RATINGS SNAPSHOT OK:' weekly-update.log; then
+            printf 'Recovered: the run at %s wrote a ratings snapshot that is its history'"'"'s latest week.\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > snapshot-ok.md
+            python -m src.core.alerts --resolve --title "NFL: the ratings snapshot is not its history's latest week" --body-file snapshot-ok.md
+          fi
 
       # Stage 81 item 2 (the 2026-11-02 review). The lock reads only override
       # files already on main. If the week just locked still has an open override
@@ -317,7 +342,7 @@ jobs:
       # pruner was deleted rather than left as a step that always does nothing.
       - name: Commit and push changes
         if: ${{ !cancelled() }}
-        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0
+        uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7.2.1
         with:
           commit_message: "Weekly update: predictions and grading"
           file_pattern: 'predictions/nfl/** results/nfl/** data/nfl/**'
@@ -375,13 +400,13 @@ jobs:
       # when each week was locked, and a shallow clone shows every file
       # added at once.
       - name: Check out repo
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           ref: main
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.11'
 
