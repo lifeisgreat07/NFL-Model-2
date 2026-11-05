@@ -48,8 +48,11 @@ def test_one_daily_run_at_a_time():
 def test_the_canary_raises_one_issue_per_failing_source():
     t = text(CANARY)
     assert '--report nba-canary-report.md --failed nba-canary-failed.txt' in t
-    assert 'done < nba-canary-failed.txt' in t
-    assert '--title "NBA: $source failing in the nightly canary"' in t
+    # Stage 93 item 15: one fixed title per source, raised when that source is listed.
+    from src.sports.nba import canary
+    for name, _ in canary.CHECKS:
+        assert (f"if grep -qx '{name}' nba-canary-failed.txt; then\n"
+                f'            python -m src.core.alerts --title "NBA: {name} failing in the nightly canary"') in t, name
     assert '--title "NBA: nightly canary failing"' in t, 'a canary that names no source still alerts'
 
 
