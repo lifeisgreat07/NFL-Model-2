@@ -52,7 +52,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test, schedule_guard, season_prices
+from src.core import forward_test, priced, schedule_guard, season_prices
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nhl import (
@@ -253,12 +253,15 @@ def drift_rows(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, in
     """(Model A's home probability, home won) for every saved pick whose game
     is final."""
     finals = sched[sched['status'] == GameStatus.FINAL.value].set_index('game_id')
-    rows: list[tuple[float | None, int | None]] = []
+    keyed: list[tuple[tuple[str, str], tuple[float | None, int | None]]] = []
     for path in sorted(folder.glob('*.json')):
         pick = json.loads(path.read_text(encoding='utf-8'))
         if pick['game_id'] in finals.index:
-            rows.append((pick.get('model_a'), int(finals.loc[pick['game_id'], 'home_win'])))
-    return rows
+            keyed.append(((pick.get('start_utc') or '', pick['game_id']),
+                          (pick.get('model_a'), int(finals.loc[pick['game_id'], 'home_win']))))
+    # Stage 85 item 1: in the order the games started, so a registered look's
+    # first n picks are the first n games played, not the first n game ids.
+    return [row for _, row in sorted(keyed, key=lambda kr: kr[0])]
 
 
 def write_standings(sched: pd.DataFrame, games: pd.DataFrame, rated: ratings.DayRatings, model_a: Any,
@@ -325,16 +328,23 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         market.record(lines, PATHS.data / 'lines' / f'{season}.json')
         line_by_id = {r['game_id']: r for r in lines}
         projected = {}
+        # Stage 92 item 7: a goalie page that cannot be read for a day with games locking costs
+        # those picks their projected starters, so it is a DEGRADED line; another day's is not.
+        locking_days = set(slate[slate['game_id'].isin(decision.lock)]['slate'].astype(str))
         for day in sorted(days):
             try:
                 rows = goalies.parse_faceoff(get(f'{goalies.SOURCE}/{day}').decode('utf-8', 'replace'), now)
                 attached = goalies.attach_games(rows, sched[sched['slate'] == day].to_dict('records'))
             except goalies.GoalieSourceError as exc:
-                print(f'goalies for {day}: {exc}')
+                print(f"{'DEGRADED: ' if day in locking_days else ''}goalies for {day}: {exc}")
                 continue
             goalies.record(attached, PATHS.data / 'goalies' / f'{season}.json')
             projected.update({r['game_id']: r for r in attached})
         locking = slate[slate['game_id'].isin(decision.lock)]
+        # Stage 92 item 7: a feed that answered but priced none of the locking games says so.
+        unpriced = priced.unpriced_line(locking['game_id'], (r['game_id'] for r in lines))
+        if unpriced and not any(m.startswith('odds feed not read') for m in missing):
+            print(unpriced)
         rosters = read_rosters(set(locking['home']) | set(locking['away']), get)
         fallback = last_starters(games)
         injury_table = read_injuries(season, get)
@@ -377,7 +387,9 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     flagged = drift.flags(losses, spec)
     (PATHS.results / f'drift_{season}.json').write_text(json.dumps(
         {'games': len(losses), 'mean_log_loss': (sum(losses) / len(losses)) if losses else None,
-         'baseline': spec['baseline']['value'], 'flagged': flagged}, indent=1) + '\n', encoding='utf-8')
+         'baseline': spec['baseline']['value'], 'flagged': flagged,
+         'looks': drift.looks(losses, spec), 'next_look': drift.next_look(len(losses), spec)},
+        indent=1) + '\n', encoding='utf-8')
     if flagged:
         print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
     # Stage 84 item 1: the registered forward test, on every saved pick whose game is final.

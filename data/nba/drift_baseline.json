@@ -10,9 +10,18 @@
   "source": "experiments/nba/stage61/results/confirmation.json, scores.model_a.log_loss (2643 games)",
   "rule": {
     "min_games": 100,
+    "checkpoints": [
+      100,
+      200,
+      400,
+      800,
+      1200
+    ],
     "one_sided_level": 0.95,
+    "per_look_level": 0.99,
     "n_resamples": 5000,
     "seed": 20261009,
-    "flag_when": "the lower end of the one-sided 95% bootstrap interval of mean per-game log loss is above the baseline"
+    "flag_when": "at each checkpoint, the first that many graded picks in the order their games started: the lower end of the one-sided 99% bootstrap interval of mean per-game log loss is above the baseline. 99% is the one-sided 95% shared equally among the five checkpoints (Bonferroni: 5% / 5 = 1% each). A flag at any checkpoint stands for the season.",
+    "amended": "2026-11-04, Stage 85 item 1 of the 2026-11-02 review (drift.amended_2026_11_04 in the registry). Until then the check tested every graded pick at one-sided 95% at every daily run once min_games picks were graded."
   }
 }

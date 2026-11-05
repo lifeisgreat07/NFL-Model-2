@@ -29,6 +29,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from tests.shared_tables import share_nhl_features
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -69,6 +71,7 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     season = 2026
     now = datetime(2026, 10, 10, 16, 30, tzinfo=UTC)
     sched = committed_schedule('nhl', season, now)
+    share_nhl_features(monkeypatch)
     monkeypatch.setattr(daily, 'PATHS', temp_paths(tmp_path, 'nhl'))
     monkeypatch.setattr(daily.nhl_schedule, 'load_schedule', lambda s, *a, **k: sched.copy())
     have = history.HISTORY / f'boxscores_{season}.csv'
@@ -99,7 +102,9 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     assert second.count('already saved ') == len(picks)
     graded = json.loads((tmp_path / 'results' / f'graded_{season}.json').read_text(encoding='utf-8'))
     assert {r['game_id'] for r in graded} == {p.stem for p in picks}
-    assert (tmp_path / 'results' / f'drift_{season}.json').exists()
+    # Stage 85 item 1: the file says which registered looks were made and when the next is.
+    drift_file = json.loads((tmp_path / 'results' / f'drift_{season}.json').read_text(encoding='utf-8'))
+    assert drift_file['looks'] == [] and drift_file['next_look'] == 100, drift_file
     assert (tmp_path / 'results' / f'standings_{season}.json').exists()
 
 
@@ -128,6 +133,9 @@ def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
         assert rec['start_utc'] > rec['saved_utc']
     assert not [ln for ln in second.splitlines() if ln.startswith('saved ')]
     assert (tmp_path / 'results' / f'graded_{season}.json').exists()
+    # Stage 85 item 1: the file says which registered looks were made and when the next is.
+    drift_file = json.loads((tmp_path / 'results' / f'drift_{season}.json').read_text(encoding='utf-8'))
+    assert drift_file['looks'] == [] and drift_file['next_look'] == 100, drift_file
 
 
 def test_a_game_after_the_moment_reads_as_not_yet_played():

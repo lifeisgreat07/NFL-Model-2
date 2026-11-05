@@ -4,16 +4,16 @@
   "cases": [
     {
       "id": "nba-drift-no-minimum",
-      "why": "the check flags on a handful of games, where one bad night is noise",
-      "find": "    if len(losses) < rule['min_games']:\n        return False\n",
+      "why": "the check looks at a checkpoint the graded picks have not reached, so it flags on a handful of games, where one bad night is noise",
+      "find": "        if len(losses) < n:\n            break\n",
       "replace": "",
       "expect_caught_by": "test_too_few_games_never_flags"
     },
     {
       "id": "nba-drift-mean-not-bound",
       "why": "the check compares the mean, not the interval's lower end, so a season merely around the baseline flags half the time",
-      "find": "    return bool(lower_bound(losses, rule) > spec['baseline']['value'])",
-      "replace": "    return bool(sum(losses) / len(losses) >= spec['baseline']['value'])",
+      "find": "        out.append({'games': n, 'lower_bound': bound, 'flagged': bool(bound > spec['baseline']['value'])})\n",
+      "replace": "        out.append({'games': n, 'lower_bound': bound, 'flagged': bool(sum(losses[:n]) / n >= spec['baseline']['value'])})\n",
       "expect_caught_by": "test_a_clearly_worse_season_flags_and_a_matching_one_does_not"
     }
   ]

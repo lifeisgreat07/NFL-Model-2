@@ -2686,5 +2686,17 @@
   "home_prob": 0.5514,
   "read_utc": "2026-11-04T21:01:36Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020250",
+  "start_utc": "2026-11-05T03:00:00Z",
+  "home": "SEA",
+  "away": "CGY",
+  "book": "DraftKings",
+  "home_price": -130.0,
+  "away_price": 110.0,
+  "home_prob": 0.5427,
+  "read_utc": "2026-11-05T01:07:49Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]

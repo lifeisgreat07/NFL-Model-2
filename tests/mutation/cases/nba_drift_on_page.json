@@ -12,8 +12,8 @@
     {
       "id": "nba-drift-flag-reads-not-flagged",
       "why": "a flagged drift check reads as not flagged on the page",
-      "find": "  return d.flagged ? `<b>Flagged.</b> ${now} That is significantly above the backtest, and an issue is open.` : `Not flagged. ${now}`;\n",
-      "replace": "  return `Not flagged. ${now}`;\n",
+      "find": "  return d.flagged ? `<b>Flagged.</b> ${now} At a registered look that was significantly above the backtest, and an issue is open.${when}` : `Not flagged. ${now}${when}`;\n",
+      "replace": "  return `Not flagged. ${now}${when}`;\n",
       "expect_caught_by": "test_the_status_follows_the_file"
     }
   ]

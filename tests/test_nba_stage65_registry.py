@@ -86,8 +86,9 @@ def test_it_was_registered_before_any_nba_pick_was_saved():
     # And a disclosed deviation: picks fitted through their own slate day (Stage 85 item 4).
     # And Stage 83 item 5: an unreadable row costs only its own team's games availability.
     # And Stage 85 item 5: this season's games carry their recorded price into Model B's fit.
+    # And Stage 85 item 1: the drift check looks at registered checkpoints.
     assert [a['entry'] for a in reg['amendments']] == ['forward_test.decision', 'disclosures', 'deviation',
-                                                       'availability', 'models']
+                                                       'availability', 'models', 'drift']
     picks = ROOT / 'predictions' / 'nba'
     saved = sorted(p for p in picks.rglob('*.json')) if picks.exists() else []
     for p in saved:
