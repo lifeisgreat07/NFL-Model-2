@@ -48,6 +48,7 @@ from src.core import (
     forward_test,
     pick_guard,
     priced,
+    request_budget,
     schedule_guard,
     season_prices,
 )
@@ -322,7 +323,8 @@ def read_kalshi(get: Callable[[str], bytes]) -> dict[Any, Any] | None:
 def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetch) -> int:
     now = now or datetime.now(UTC)
     season = nba_schedule.current_season(now)
-    sched = nba_schedule.load_schedule(season, get=lambda u: json.loads(get(u)))
+    # Stage 93 item 18: under a budget, so a slow feed stops cleanly inside the step's timeout.
+    sched = nba_schedule.load_schedule(season, get=request_budget.Budget().wrap(lambda u: json.loads(get(u))))
     # Stage 91 item 2: an empty or shrunken feed stops the run before anything is written.
     schedule_guard.check(len(sched), PATHS.results / f'schedule_{season}.json')
     first = backtest.registry()['protocol']['training_from_season']
