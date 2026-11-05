@@ -48,6 +48,7 @@ Usage:
 Exit 0 only if every case is caught by the test it names.
 """
 import argparse
+import datetime
 import fnmatch
 import os
 import random
@@ -162,6 +163,25 @@ def sample_cases(cases, n, seed):
     return [c for c in cases if c['id'] in chosen]
 
 
+#: Stage 96 item 50 (audit 7, T6): every Python case under src/core and
+#: src/sports comes up once in this many nights, beside the random slice.
+ROTATION_DAYS = 28
+ROTATED = ('src/core/', 'src/sports/')
+
+
+def rotation_cases(cases, seed):
+    """Tonight's share of the rotation: the Python cases under src/core and
+    src/sports, sorted by id, whose place in that order falls on tonight's
+    slot. The slot is the seed's date (YYYYMMDD) counted in days, modulo
+    ROTATION_DAYS, so any ROTATION_DAYS nights in a row run every one of
+    them once, across month ends. A random slice can leave a case unrun for
+    months; this cannot."""
+    slot = datetime.datetime.strptime(str(seed), '%Y%m%d').date().toordinal() % ROTATION_DAYS
+    pool = sorted(c['id'] for c in cases if c['target'].endswith('.py') and c['target'].startswith(ROTATED))
+    chosen = {cid for i, cid in enumerate(pool) if i % ROTATION_DAYS == slot}
+    return [c for c in cases if c['id'] in chosen]
+
+
 def summary_markdown(results, scope):
     """The counts as a Markdown block for a CI run summary."""
     lines = [f'### Mutation slice: {scope}', '',
@@ -190,6 +210,8 @@ def main(argv=None):
                     help="run only this many of the matching cases, chosen by --seed")
     ap.add_argument('--seed', type=int, default=None,
                     help="seed for --sample (the nightly workflow passes the UTC date)")
+    ap.add_argument('--rotate', action='store_true',
+                    help="also run tonight's share of the src/core and src/sports rotation (needs --seed)")
     ap.add_argument('--summary', default=None,
                     help="append a Markdown table of the counts to this file")
     args = ap.parse_args(argv)
@@ -201,8 +223,12 @@ def main(argv=None):
     if not cases:
         print(f"no cases match {patterns!r}")
         return 1
+    if args.rotate and args.seed is None:
+        ap.error('--rotate needs --seed: the night it is for is the date in the seed')
     if args.sample is not None:
-        cases = sample_cases(cases, args.sample, args.seed)
+        rotated = {c['id'] for c in rotation_cases(cases, args.seed)} if args.rotate else set()
+        sampled = {c['id'] for c in sample_cases(cases, args.sample, args.seed)}
+        cases = [c for c in cases if c['id'] in sampled | rotated]
 
     if args.list:
         for c in cases:
@@ -213,7 +239,8 @@ def main(argv=None):
 
     scope = "the full corpus" if patterns == ['*'] else "--id " + " --id ".join(patterns)
     if args.sample is not None:
-        scope = f"--sample {args.sample} --seed {args.seed} over {scope}"
+        rotate = ' --rotate' if args.rotate else ''
+        scope = f"--sample {args.sample}{rotate} --seed {args.seed} over {scope}"
     print(f"Running {len(cases)} mutation(s) selected by {scope}. Each breaks the "
           f"source on purpose and must be caught by the test it names.\n")
 

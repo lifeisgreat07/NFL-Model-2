@@ -42,6 +42,7 @@ permissions:
   contents: write
   pull-requests: read
   issues: read
+  actions: read
 
 concurrency:
   group: collect-agent-log
@@ -80,14 +81,23 @@ jobs:
             | python -c "import json,sys; pages=[json.loads(l) for l in sys.stdin if l.strip()]; json.dump([c for p in pages for c in p], open('comments.json','w'))"
           python -c "import json; print('fetched', len(json.load(open('comments.json'))), 'comments')"
 
+      # Stage 90 item 3: Scout writes to its run, not to a comment, so its
+      # recent runs are read too, for the page's list of the agents at work.
+      - name: Fetch Scout's recent runs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "/repos/${{ github.repository }}/actions/workflows/scout-preflight.yml/runs?per_page=30" \
+            --jq '[.workflow_runs[] | {conclusion, html_url, created_at, pull_requests: [.pull_requests[] | {number}]}]' > scout.json
+
       - name: Build data/agent_log.json
-        run: python -m src.agents.collect_agent_log --comments comments.json
+        run: python -m src.agents.collect_agent_log --comments comments.json --scout scout.json
 
       - name: Show what was collected
         run: python -c "import json; d=json.load(open('data/agent_log.json')); print(json.dumps(d.get('summary', {}), indent=2))"
 
       - name: Remove the raw comment dump
-        run: rm -f comments.json
+        run: rm -f comments.json scout.json
 
       # Catch up with main before committing, as the Weekly update and the
       # Weekend refresh do (issue #145). This job checks out main at the merge
