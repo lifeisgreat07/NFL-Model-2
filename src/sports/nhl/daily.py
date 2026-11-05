@@ -397,6 +397,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                              'experiments/nhl/stage58/registry.json', folder, sched,
                              games[['day', 'home_score', 'away_score']])
     print(f"forward test: {fwd['graded_picks']} graded picks through {fwd['through']}")
+    # Stage 95 item 36: the deciding file, frozen once when the regular season is over.
+    frozen = forward_test.freeze(PATHS.results / f'forward_{season}.json', sched, str(now.date()))
+    if frozen is not None:
+        print(f'forward test: the regular season is over; the deciding file is {frozen.name}')
     # Stage 84 item 4: Stage 56's M2, the projected starter against the actual one.
     m2_out = m2.write(PATHS.results / f'm2_{season}.json', forward_test.read_picks(folder), games, table,
                       current, h, k, fit_models)

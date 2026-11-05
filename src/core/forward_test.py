@@ -29,6 +29,13 @@ logistic recalibration of its home probability), with intervals from the
 same day blocks, level and seed. Reported, not judged, like the rest.
 
 The daily run writes results/<sport>/forward_<season>.json with `write`.
+
+Stage 95 item 36 (audit 7 M15): the registered decision is taken once, on
+the file the first daily run writes after the regular season's last game
+is final. Until now nothing kept that file: the next run overwrote it with
+playoff games added. `freeze` copies it, once, to
+results/<sport>/forward_<season>_regular_season_final.json and writes the
+registered label beside each comparison there, and only there.
 """
 from __future__ import annotations
 
@@ -231,6 +238,41 @@ def report(frame: pd.DataFrame, sport: str, season: int, registry: str) -> dict[
         'interval_rule': {'level': LEVEL, 'resamples': N_RESAMPLES, 'seed': seed,
                           'blocks': 'whole game days, paired', 'judged': False},
     }
+
+
+def label(comparison: Mapping[str, Any]) -> str:
+    """The registered rule (`forward_test.decision.rule`): ACCEPT when the whole
+    interval is below zero, REJECT when it is above, INCONCLUSIVE otherwise,
+    and for a comparison too small to resample."""
+    if 'high' not in comparison:
+        return 'INCONCLUSIVE'
+    if comparison['high'] < 0:
+        return 'ACCEPT'
+    if comparison['low'] > 0:
+        return 'REJECT'
+    return 'INCONCLUSIVE'
+
+
+def regular_season_over(sched: pd.DataFrame) -> bool:
+    """Every regular-season game on the schedule is final or cancelled."""
+    regular = sched[sched['game_type'] == 'regular']
+    return bool(len(regular)) and bool(regular['status'].isin(['final', 'cancelled']).all())
+
+
+def freeze(path: Path, sched: pd.DataFrame, today: str) -> Path | None:
+    """Once the regular season is over, copy the forward-test file at `path` to
+    its `_regular_season_final` twin with each comparison's label, and return
+    the twin. A twin already there is never rewritten (None is returned), so
+    the deciding file is the first one written after the last game."""
+    frozen = path.with_name(path.stem + '_regular_season_final.json')
+    if frozen.exists() or not regular_season_over(sched):
+        return None
+    doc = json.loads(path.read_text(encoding='utf-8'))
+    doc['frozen'] = {'on': today, 'from': path.name,
+                     'rule': 'forward_test.decision in the registration this file names'}
+    doc['decision'] = {name: label(c) for name, c in doc['comparisons'].items()}
+    frozen.write_text(json.dumps(doc, indent=1) + '\n', encoding='utf-8')
+    return frozen
 
 
 def read_picks(folder: Path) -> list[dict[str, Any]]:
