@@ -1,0 +1,158 @@
+{
+  "season": 2026,
+  "week": 9,
+  "source": "nflverse schedule, via nflreadpy.load_schedules",
+  "read_at": "2026-11-05T11:03:00Z",
+  "games": [
+    {
+      "away": "JAX",
+      "home": "BAL",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -10.0,
+      "neutral_site": false,
+      "venue": "M&T Bank Stadium"
+    },
+    {
+      "away": "CIN",
+      "home": "ATL",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -3.0,
+      "neutral_site": true,
+      "venue": "Bernabeu"
+    },
+    {
+      "away": "DEN",
+      "home": "CAR",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -2.5,
+      "neutral_site": false,
+      "venue": "Bank of America Stadium"
+    },
+    {
+      "away": "DAL",
+      "home": "IND",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -5.5,
+      "neutral_site": false,
+      "venue": "Lucas Oil Stadium"
+    },
+    {
+      "away": "NYJ",
+      "home": "KC",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 10.0,
+      "neutral_site": false,
+      "venue": "GEHA Field at Arrowhead Stadium"
+    },
+    {
+      "away": "DET",
+      "home": "MIA",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -7.0,
+      "neutral_site": false,
+      "venue": "Hard Rock Stadium"
+    },
+    {
+      "away": "CLE",
+      "home": "NO",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 3.0,
+      "neutral_site": false,
+      "venue": "Caesars Superdome"
+    },
+    {
+      "away": "NYG",
+      "home": "PHI",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -3.5,
+      "neutral_site": false,
+      "venue": "Lincoln Financial Field"
+    },
+    {
+      "away": "LA",
+      "home": "WAS",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -5.5,
+      "neutral_site": false,
+      "venue": "Northwest Stadium"
+    },
+    {
+      "away": "HOU",
+      "home": "LAC",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -4.5,
+      "neutral_site": false,
+      "venue": "SoFi Stadium"
+    },
+    {
+      "away": "LV",
+      "home": "SF",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 10.0,
+      "neutral_site": false,
+      "venue": "Levi's Stadium"
+    },
+    {
+      "away": "GB",
+      "home": "NE",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 3.5,
+      "neutral_site": false,
+      "venue": "Gillette Stadium"
+    },
+    {
+      "away": "ARI",
+      "home": "SEA",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 8.5,
+      "neutral_site": false,
+      "venue": "Lumen Field"
+    },
+    {
+      "away": "TB",
+      "home": "CHI",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": 6.0,
+      "neutral_site": false,
+      "venue": "Soldier Field"
+    },
+    {
+      "away": "BUF",
+      "home": "MIN",
+      "status": "upcoming",
+      "away_score": null,
+      "home_score": null,
+      "spread_line": -3.5,
+      "neutral_site": false,
+      "venue": "U.S. Bank Stadium"
+    }
+  ]
+}
