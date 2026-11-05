@@ -15,7 +15,6 @@ Run with: pytest tests/test_share_card.py -v
 """
 import inspect
 import json
-import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -23,6 +22,7 @@ from pathlib import Path
 import pytest
 
 from src.site import build
+from tests.js_source import function_source
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'core' / 'share_card.js').read_text(encoding='utf-8')
@@ -48,12 +48,6 @@ def node(code):
 
 def pure():
     return JS[:JS.index('(function(){')]
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 RECORDER = r"""

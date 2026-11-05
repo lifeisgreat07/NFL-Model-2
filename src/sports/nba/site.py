@@ -137,6 +137,9 @@ def board(season: int) -> dict[str, Any]:
     """The live board's inputs: the season's games, the saved picks with
     their grades, the drift check, and the clubs' names and logos."""
     sched = _maybe(PATHS.results / f'schedule_{season}.json')
+    if sched is not None and not sched.get('games'):
+        # Stage 91 item 4 (audit 7, R2): an empty schedule would publish a board with no games and every grade gone.
+        raise ValueError(f'results/nba/schedule_{season}.json has no games; refusing to build a board from it')
     graded = {str(r['game_id']): r['result'] for r in _maybe(PATHS.results / f'graded_{season}.json') or []}
     picks: dict[str, dict[str, Any]] = {}
     folder = PATHS.predictions / str(season)
@@ -155,6 +158,8 @@ def board(season: int) -> dict[str, Any]:
         'drift': _maybe(PATHS.results / f'drift_{season}.json'),
         # Stage 84 item 6: the registered rule, so the page can say where the check stands.
         'drift_rule': _maybe(PATHS.data / 'drift_baseline.json'),
+        # Stage 85 item 3: the baseline's season-to-season spread (src/sports/nba/season_spread.py).
+        'spread': _maybe(PATHS.experiments / 'stage61' / 'results' / 'model_a_by_season.json'),
         # Stage 84 item 2: the registered forward test (src/core/forward_test.py).
         'forward': _maybe(PATHS.results / f'forward_{season}.json'),
         # Stage 84 item 4: Stage 61's M2 on the live season (src/sports/nba/m2.py).

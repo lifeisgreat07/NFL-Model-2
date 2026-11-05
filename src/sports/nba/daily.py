@@ -43,7 +43,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test, season_prices
+from src.core import forward_test, priced, schedule_guard, season_prices
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nba import (
@@ -275,7 +275,7 @@ def read_kalshi(get: Callable[[str], bytes]) -> dict[Any, Any] | None:
     try:
         return market.kalshi_prices(json.loads(get(market.KALSHI)))
     except (OSError, ValueError) as exc:
-        print(f'Kalshi: not read: {exc}')
+        print(f'DEGRADED: Kalshi: not read: {exc}')
         return None
 
 
@@ -283,6 +283,8 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     now = now or datetime.now(UTC)
     season = nba_schedule.current_season(now)
     sched = nba_schedule.load_schedule(season, get=lambda u: json.loads(get(u)))
+    # Stage 91 item 2: an empty or shrunken feed stops the run before anything is written.
+    schedule_guard.check(len(sched), PATHS.results / f'schedule_{season}.json')
     first = backtest.registry()['protocol']['training_from_season']
     past_games, past_minutes = backtest.load_history(first, season - 1)
     cur_games, cur_minutes = refresh_season(season, sched, get=get)
@@ -335,6 +337,11 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             record = pick_record(g, feats, models, price, avail, injury_list, now, why) | trained
             print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id']
                   + f" (price: {record['market_source'] or 'none'})")
+        # Stage 92 item 7: odds that answered but priced none of the locking games say so.
+        unpriced = priced.unpriced_line(locking['game_id'],
+                                        (p['game_id'] for p in prices if p.get('home_prob') is not None))
+        if unpriced:
+            print(unpriced)
         market.record(prices, PATHS.data / 'lines' / f'{season}.json')
     graded = grade(folder, sched)
     PATHS.results.mkdir(parents=True, exist_ok=True)
