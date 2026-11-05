@@ -70,7 +70,7 @@
       "target": ".github/workflows/run-tests.yml",
       "why": "the test job checks out with checkout v4 again, a full SHA with its release named, so every other pin test passes; it runs on Node 20, which GitHub is retiring from its runners",
       "find": "uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0",
-      "replace": "uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0",
+      "replace": "uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0",
       "expect_caught_by": "test_every_pin_is_on_a_node_24_major"
     }
   ]
