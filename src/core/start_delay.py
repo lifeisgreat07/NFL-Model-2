@@ -30,6 +30,7 @@ Run with: python -m src.core.start_delay .github/workflows/<file>.yml
 """
 from __future__ import annotations
 
+import json
 import os
 import re
 import sys
@@ -43,6 +44,14 @@ WARN_HOURS = 7
 #: more than an hour late can miss a game the run before left to it. They
 #: are warned at that hour, not at the NFL's seven (Stage 68 item 3).
 WARN_HOURS_FOR = {'nhl-daily.yml': 1, 'nba-daily.yml': 1}
+#: Stage 93 item 19 (audit 7 R10): the runs whose lateness can cost a lock
+#: keep a record of every copy GitHub's cron started, committed with the
+#: run's data, so the weekly digest can say how close the fallback came to
+#: the slack. Workflow file -> the record, relative to the repository.
+RECORD_FOR = {'nhl-daily.yml': 'data/nhl/run_delays.json', 'nba-daily.yml': 'data/nba/run_delays.json',
+              'nfl-weekly-update.yml': 'data/nfl/run_delays.json'}
+#: How long a record keeps an entry.
+RECORD_DAYS = 60
 #: A dispatched run this long after the last slot is not serving it.
 OFF_SLOT_HOURS = 12
 #: How far back to look for a slot: every workflow here runs at least weekly.
@@ -166,6 +175,20 @@ def report(workflow_text: str, now: datetime, event: str | None,
     return line, delay >= timedelta(hours=warn_hours)
 
 
+def record(path: Path, workflow: str, slot: datetime, started: datetime) -> list[dict[str, object]]:
+    """Add one GitHub copy's start to the record and drop entries older than
+    RECORD_DAYS; returns what was written."""
+    kept: list[dict[str, object]] = json.loads(path.read_text(encoding='utf-8')) if path.exists() else []
+    cutoff = started - timedelta(days=RECORD_DAYS)
+    kept = [e for e in kept if datetime.fromisoformat(str(e['started']).replace('Z', '+00:00')) >= cutoff]
+    kept.append({'workflow': workflow, 'slot': slot.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                 'started': started.strftime('%Y-%m-%dT%H:%M:%SZ'),
+                 'delay_minutes': int((started - slot).total_seconds() // 60)})
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(kept, indent=1) + '\n', encoding='utf-8')
+    return kept
+
+
 def main(argv: list[str] | None = None, now: datetime | None = None) -> int:
     args = sys.argv[1:] if argv is None else argv
     if len(args) != 1:
@@ -176,6 +199,17 @@ def main(argv: list[str] | None = None, now: datetime | None = None) -> int:
                         os.environ.get('GITHUB_EVENT_NAME'), os.environ.get('CRON_SCHEDULE') or None,
                         warn_hours)
     print(line)
+    name = Path(args[0]).name
+    event = os.environ.get('GITHUB_EVENT_NAME')
+    # Only on a runner: a local or test run of a scheduled workflow's line records nothing.
+    if name in RECORD_FOR and event == 'schedule' and os.environ.get('GITHUB_ACTIONS') == 'true':
+        text = Path(args[0]).read_text(encoding='utf-8')
+        exprs = crons(text)
+        fired = os.environ.get('CRON_SCHEDULE') or None
+        started = now or datetime.now(UTC)
+        slot = latest_slot([fired] if fired in exprs else exprs, started)
+        if slot is not None:
+            record(Path(RECORD_FOR[name]), name, slot[0], started)
     if warn:
         print(f'::warning title=Late start::{line} Warned at {warn_hours} hours.')
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
