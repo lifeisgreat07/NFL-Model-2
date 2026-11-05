@@ -7,7 +7,8 @@
       "why": "the NHL's held-out table drops the Brier cell again, so its registered secondary metric is in the file and on no page (Stage 84 item 7)",
       "find": "<td class=\"num\">${v.log_loss.toFixed(4)}</td><td class=\"num\">${v.brier.toFixed(4)}</td><td class=\"num\">${(v.accuracy * 100).toFixed(1)}%</td></tr>`; }).join('');\n  return `<div class=\"table-wrap\">",
       "replace": "<td class=\"num\">${v.log_loss.toFixed(4)}</td><td class=\"num\">${(v.accuracy * 100).toFixed(1)}%</td></tr>`; }).join('');\n  return `<div class=\"table-wrap\">",
-      "expect_caught_by": "test_every_held_out_figure_is_on_the_page_with_brier"
+      "expect_caught_by": "test_every_held_out_figure_is_on_the_page_with_brier",
+      "target": "src/core/day_board.js"
     },
     {
       "id": "nhl-heldout-leaves-out-the-market",

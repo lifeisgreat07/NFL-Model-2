@@ -10,6 +10,7 @@ import numpy as np
 import pytest
 
 from src.core import forward_test as ft
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 SENTENCE = ('They are two fits, not one: the intercept is fitted with the slope held at 1 (calibration in the large), '
@@ -34,6 +35,6 @@ def test_the_intercept_and_the_slope_are_two_fits_and_the_file_says_so():
 
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_each_page_says_the_pair_is_two_fits(sport):
-    js = (ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.js').read_text(encoding='utf-8')
+    js = day_script(sport)
     body = js[js.index('function calibrationTable('):js.index('function m2Html(')]
     assert SENTENCE in body

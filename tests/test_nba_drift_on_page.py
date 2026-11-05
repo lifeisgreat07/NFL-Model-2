@@ -12,8 +12,10 @@ from pathlib import Path
 
 import pytest
 
+from tests.page_script import day_script
+
 ROOT = Path(__file__).resolve().parents[1]
-JS = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+JS = day_script('nba')
 NODE = shutil.which('node')
 RULE = {'rule': {'min_games': 100}}
 

@@ -30,6 +30,8 @@ ACCURACY_JS = Path(__file__).with_name('accuracy.js')
 FAVS_JS = Path(__file__).with_name('favs.js')
 #: The visitor's settings that change how a page draws (Stage 80 item 57).
 PREFS_JS = Path(__file__).with_name('prefs.js')
+#: The day boards' shared functions, identical for the NHL and the NBA (Stage 87 item 1).
+DAY_BOARD_JS = Path(__file__).with_name('day_board.js')
 
 
 def safe_json(obj: Any) -> str:

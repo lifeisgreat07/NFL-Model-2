@@ -18,6 +18,7 @@ import pandas as pd
 import pytest
 
 from src.core import forward_test as ft
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = {'nhl': ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js',
@@ -27,7 +28,7 @@ NODE = shutil.which('node')
 
 def function(sport):
     """forwardHtml and the calibrationTable it calls (Stage 84 item 5)."""
-    js = PAGES[sport].read_text(encoding='utf-8').replace('\r\n', '\n')
+    js = day_script(sport).replace('\r\n', '\n')
     out = []
     for name in ('forwardHtml', 'calibrationTable'):
         m = re.search(rf'function {name}\(f, sport(, level)?\)\{{.*?\n\}}\n', js, re.S)
@@ -101,7 +102,7 @@ def test_the_page_judges_nothing():
 
 @pytest.mark.parametrize('sport, data', [('nhl', 'DATA'), ('nba', 'BD')])
 def test_the_checks_page_renders_it_from_the_file_the_build_passes(sport, data):
-    js = PAGES[sport].read_text(encoding='utf-8')
+    js = day_script(sport)
     body = re.search(r'function renderReliability\(\)\{.*?\n\}\n', js, re.S).group(0)
     assert '<h2 class="section-title">The forward test so far</h2>' in body
     assert f"${{forwardHtml({data}.forward, '{sport}')}}" in body

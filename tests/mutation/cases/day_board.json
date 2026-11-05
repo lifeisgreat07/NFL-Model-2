@@ -1,0 +1,29 @@
+{
+ "target": "src/sports/nhl/pages/nhl.js",
+ "tests": "tests/test_day_board.py",
+ "cases": [
+  {
+   "id": "day-board-nhl-redefines-step-day",
+   "why": "the NHL's script defines stepDay again, so on its page the shared one is replaced and a fix to the shared copy never reaches the NHL",
+   "find": "\nfunction rowHtml(",
+   "replace": "\nfunction stepDay(by){\n  const days = weekDays(currentWeek);\n  const i = days.indexOf(currentDay) + by;\n  if(i >= 0 && i < days.length){\n    currentDay = days[i];\n  } else {\n    const w = WEEK_KEYS.indexOf(currentWeek) + by;\n    if(w < 0 || w >= WEEK_KEYS.length) return;\n    currentWeek = WEEK_KEYS[w];\n    const next = weekDays(currentWeek);\n    currentDay = by > 0 ? next[0] : next[next.length - 1];\n  }\n  renderBoard();\n  replaceRoute('board');\n}\n\nfunction rowHtml(",
+   "expect_caught_by": "test_no_sport_redefines_a_shared_function"
+  },
+  {
+   "id": "day-board-copy-creeps-back",
+   "target": "src/sports/nba/pages/nba.js",
+   "why": "the NHL's beforeLaunch is written into the NBA's script byte for byte, a second copy of the same code instead of one in the shared script",
+   "find": "\nfunction rowHtml(",
+   "replace": "\nfunction beforeLaunch(g){\n  return !!(FIRST_SAVED && g.start && g.start < FIRST_SAVED);\n}\n\nfunction rowHtml(",
+   "expect_caught_by": "test_no_function_is_copied_between_the_day_boards"
+  },
+  {
+   "id": "day-board-nba-page-skips-the-include",
+   "target": "src/sports/nba/pages/page.html",
+   "why": "the NBA's page does not include the shared script, so every shared function is undefined there",
+   "find": "{% include \"day_board.js\" %}\n",
+   "replace": "",
+   "expect_caught_by": "test_each_page_includes_it_ahead_of_its_own_script"
+  }
+ ]
+}

@@ -19,6 +19,7 @@ import pandas as pd
 import pytest
 
 from src.core import forward_test as ft
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = {'nhl': ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js',
@@ -110,7 +111,7 @@ def test_the_report_calibrates_a_and_b_on_the_games_each_has():
 # --- the pages --------------------------------------------------------------------------------
 
 def functions(sport):
-    js = PAGES[sport].read_text(encoding='utf-8').replace('\r\n', '\n')
+    js = day_script(sport).replace('\r\n', '\n')
     out = []
     for name in ('forwardHtml', 'calibrationTable'):
         m = re.search(rf'function {name}\(f, sport(, level)?\)\{{.*?\n\}}\n', js, re.S)

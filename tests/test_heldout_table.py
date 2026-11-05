@@ -17,6 +17,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.page_script import day_script
+
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = {'nhl': ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js',
          'nba': ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js'}
@@ -26,7 +28,7 @@ NODE = shutil.which('node')
 
 
 def function(sport):
-    js = PAGES[sport].read_text(encoding='utf-8').replace('\r\n', '\n')
+    js = day_script(sport).replace('\r\n', '\n')
     m = re.search(r'function heldOutTable\(scores, names, sport\)\{.*?\n\}\n', js, re.S)
     assert m, f'heldOutTable is not findable in {sport}.js -- re-anchor this guard'
     return m.group(0)
@@ -34,7 +36,7 @@ def function(sport):
 
 def names(sport):
     """The rows each page asks for, read from its renderModelLab call."""
-    js = PAGES[sport].read_text(encoding='utf-8').replace('\r\n', '\n')
+    js = day_script(sport).replace('\r\n', '\n')
     body = js[js.index('function renderModelLab(){'):]
     if sport == 'nhl':
         arg = re.search(r"\$\{heldOutTable\(s, (\[\[.*?\]\]), 'nhl'\)\}", body).group(1)

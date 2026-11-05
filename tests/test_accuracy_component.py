@@ -15,6 +15,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.page_script import day_script
+
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'core' / 'accuracy.js').read_text(encoding='utf-8')
 NODE = shutil.which('node')
@@ -111,7 +113,7 @@ def test_no_chart_text_is_under_11px():
 
 @pytest.mark.parametrize('sport, where', [('nhl', 'function renderAccuracy(){'), ('nba', 'function renderReliability(){')])
 def test_each_sport_draws_it_from_its_own_graded_picks(sport, where):
-    js = (ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.js').read_text(encoding='utf-8')
+    js = day_script(sport)
     assert 'function accGames(graded){' in js and 'function accuracyHtml' not in js, 'the component is shared, not copied'
     body = js[js.index(where):]
     assert 'accuracyHtml(accGames(' in body[:2500]

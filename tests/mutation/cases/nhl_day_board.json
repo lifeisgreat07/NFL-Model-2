@@ -7,14 +7,16 @@
       "why": "the board opens on the week's first game day, not today, so a visitor lands on Monday's results on a Friday.",
       "find": "  if(weekDays(week).includes(today)) return today;\n",
       "replace": "",
-      "expect_caught_by": "test_the_board_opens_on_today_and_otherwise_on_the_first_day_with_games"
+      "expect_caught_by": "test_the_board_opens_on_today_and_otherwise_on_the_first_day_with_games",
+      "target": "src/core/day_board.js"
     },
     {
       "id": "nhl-day-summary-no-right",
       "why": "the day's summary stops saying how many picks were right.",
       "find": ", ${right} of ${graded.length} correct so far",
       "replace": ", ${graded.length} graded",
-      "expect_caught_by": "test_the_summary_counts_the_days_right_picks_as_mark_wrote_it"
+      "expect_caught_by": "test_the_summary_counts_the_days_right_picks_as_mark_wrote_it",
+      "target": "src/core/day_board.js"
     },
     {
       "id": "nhl-day-wrong-coloured-right",
@@ -28,7 +30,8 @@
       "why": "the pick column shows the home team's chance even when the pick is the away team.",
       "find": "const chance = Math.round((p.pick === g.home ? lead : 1 - lead) * 100);",
       "replace": "const chance = Math.round(lead * 100);",
-      "expect_caught_by": "test_the_pick_column_is_the_saved_side_with_its_chance"
+      "expect_caught_by": "test_the_pick_column_is_the_saved_side_with_its_chance",
+      "target": "src/core/day_board.js"
     },
     {
       "id": "nhl-day-late-unsaid",
