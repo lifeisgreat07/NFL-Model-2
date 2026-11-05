@@ -25,7 +25,6 @@ weekly_update.plan_week, which exits cleanly on a week with no games.
 Run with: pytest tests/test_playoff_weeks.py -v
 """
 import json
-import re
 import shutil
 import subprocess
 from datetime import timedelta
@@ -38,6 +37,7 @@ from src.core.start_delay import Cron, crons
 from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import check_build as cb
 from src.sports.nfl import weekend_refresh as wr
+from tests.js_source import function_source
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS = ROOT / '.github' / 'workflows'
@@ -46,12 +46,6 @@ ROUNDS = {19: (6, 'Wild Card'), 20: (4, 'Divisional'), 21: (2, 'Conference Champ
 
 
 # ---------------------------------------------------------------- round names (item 2)
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
-
 
 @pytest.fixture(scope='module')
 def labels():

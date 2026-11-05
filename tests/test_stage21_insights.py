@@ -28,15 +28,14 @@ import subprocess
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.js_source import function_source as js_source
 
 NODE = shutil.which('node')
 SRC = JOINED_TEMPLATE.read_text(encoding='utf-8').replace('\r\n', '\n')
 
 
 def function_source(name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', SRC, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
+    return js_source(SRC, name)
 
 
 def insight_consts():

@@ -906,6 +906,14 @@ function m2Html(m){
   return `<p class="nhl-lede">Over ${m.graded} graded games the projected starter started on ${s.projected_started} of ${s.sides} sides (${(s.projected_started / s.sides * 100).toFixed(1)}%), and both started in ${s.games_both_started}. Model A&#39;s log loss was ${a.log_loss_projected.toFixed(4)} with the goalies the picks used and ${a.log_loss_actual.toFixed(4)} with the two who started.${diff}</p>
     <p class="nhl-lede">Both figures come from Model A refitted as each pick records it was, so only the goalies differ; ${m.refit.reproduced_saved_model_a} of ${m.refit.of} refitted probabilities equal the saved ones to four places. A measurement (<code>${m.registered}</code>): reported, not judged.</p>`;
 }
+/* Stage 85 item 3 (the 2026-11-02 review): the drift baseline's season-to-
+   season spread, from experiments/<stage>/results/model_a_by_season.json.
+   Identical in nhl.js and nba.js (tests/test_season_spread.py). */
+function spreadHtml(s, sport){
+  if (!s || !s.seasons) return '';
+  const items = s.seasons.map(r => `${r.label} ${r.log_loss.toFixed(4)}`).join(', ');
+  return `<p class="${sport}-lede">How far one season moves on its own: the same Model A, at the same settings and with the backtest&#39;s walk-forward, scored a log loss of ${items}, a range of ${s.spread.range.toFixed(4)} from the best season to the worst. The baseline pools the last two (${s.baseline.pooled_confirmation.toFixed(4)}).</p>`;
+}
 /* Stage 84 item 6 (the 2026-11-02 review), worded as the NBA's. */
 function driftStatus(d, rule){
   const n = x => Number(x).toLocaleString('en-US');
@@ -936,6 +944,7 @@ function renderReliability(){
   const status = driftStatus(d, rule);
   el.innerHTML = `<h2 class="section-title">The drift check</h2><p class="nhl-lede">${status}</p>
     ${rule && rule.rule.checkpoints ? `<p class="nhl-lede">The rule was registered before the season (<code>experiments/nhl/stage58/registry.json</code>) and amended on 2026-11-04: ${driftLooks(rule)}</p>` : ''}
+    ${spreadHtml(DATA.spread, 'nhl')}
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(DATA.forward, 'nhl')}
     <h2 class="section-title">The projected starter against the actual one</h2>
