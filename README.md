@@ -16,6 +16,25 @@ it picked a live game, and the backtest numbers were actually run.
 1280x800. The live page loads team logos from ESPN's CDN; for these images
 the same logo files were served locally.*
 
+## Results at a glance
+
+Each sport's Model B (the model that also reads the betting market) against
+the market itself and the base rate, in the backtest it was confirmed on and
+live since its first saved pick.
+
+<!-- glance:start -->
+| Sport | Record | Model B | Market | Base rate |
+|---|---|---|---|---|
+| NFL | Backtest, 2022-2025 seasons | 0.6062 (1,087) | 0.6074 (1,087) | not published |
+| NFL | Live 2026, weeks 1-8 | 0.6553 (120) | 0.6668 (120) | not published |
+| NHL | Backtest, 2024-25 and 2025-26 | 0.6711 (2,624) | 0.6700 (2,624) | 0.6896 (2,792) |
+| NHL | Live 2026-27, through 2026-11-03 | 0.6447 (174) | 0.6523 (174) | 0.6858 (194) |
+| NBA | Backtest, 2024-25 and 2025-26 | 0.5820 (2,643) | 0.5812 (2,643) | 0.6888 (2,643) |
+| NBA | Live 2026-27, through 2026-11-02 | 0.5680 (107) | 0.5681 (107) | 0.6982 (107) |
+
+Log loss, lower is better, with the games each forecaster was scored on in brackets: a model or the market is scored only on the games it had a number for. The base rate is the home side's share of wins in every earlier game of the sport's history; the NFL's backtest and live record publish none. The live rows are as of the week or day they name, and recomputed from the saved picks by `tests/test_results_glance.py`; each sport's page has today's.
+<!-- glance:end -->
+
 ## For recruiters -- project overview
 
 This is a working prediction system, not a notebook. Every week it pulls

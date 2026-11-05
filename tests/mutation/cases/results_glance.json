@@ -1,0 +1,34 @@
+{
+ "target": "src/site/glance.py",
+ "tests": "tests/test_results_glance.py",
+ "cases": [
+  {
+   "id": "glance-nfl-live-drops-its-last-week",
+   "why": "the NFL's live row stops a week short of the week it names",
+   "find": "    for week in range(1, through_week + 1):\n",
+   "replace": "    for week in range(1, through_week):\n",
+   "expect_caught_by": "test_the_nfl_live_row_is_its_graded_weeks"
+  },
+  {
+   "id": "glance-day-live-drops-its-last-day",
+   "why": "a day sport's live row leaves out the games of the day it names",
+   "find": "    done = sched[(sched['status'] == 'final') & (sched['slate'] <= through_day)].copy()\n",
+   "replace": "    done = sched[(sched['status'] == 'final') & (sched['slate'] < through_day)].copy()\n",
+   "expect_caught_by": "test_each_day_sports_live_row_is_its_forward_test_on_that_day"
+  },
+  {
+   "id": "glance-base-rate-from-this-season-only",
+   "why": "the base rate is taken over this season's games alone, not the history the daily run uses, so it is not the registered forward test's",
+   "find": "        games = pd.concat([past, cur], ignore_index=True)\n",
+   "replace": "        games = cur\n",
+   "expect_caught_by": "test_the_recomputation_is_the_registered_forward_test"
+  },
+  {
+   "id": "glance-cell-hides-its-games",
+   "why": "a cell prints the log loss without the games it was scored on, so Model B's and the base rate's different counts are hidden",
+   "find": "    return f\"{c['log_loss']:.4f} ({c['games']:,})\"\n",
+   "replace": "    return f\"{c['log_loss']:.4f}\"\n",
+   "expect_caught_by": "test_a_cell_is_log_loss_with_its_games"
+  }
+ ]
+}
