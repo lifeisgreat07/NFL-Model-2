@@ -18,6 +18,7 @@ import pytest
 from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import generate_dashboard as gd
 from src.sports.nfl import recent_runs as rr
+from tests.js_source import function_source
 
 REPO = Path(__file__).parent.parent
 WORKFLOWS = REPO / '.github' / 'workflows'
@@ -121,12 +122,6 @@ def test_a_file_is_read_as_written(tmp_path):
 
 
 # --- the page -------------------------------------------------------------------
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
-
 
 def const_block(src, name):
     m = re.search(r'^const ' + name + r' = .*?;\n', src, re.M | re.S)

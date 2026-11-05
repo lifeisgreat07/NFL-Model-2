@@ -83,6 +83,7 @@ jobs:
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
               pull --rebase --autostash origin main
+          python -m src.core.pull_check
 
       - name: Commit the NBA's picks, grades and history
         run: |
