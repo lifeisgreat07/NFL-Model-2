@@ -235,18 +235,31 @@ def grade(folder: Path, sched: pd.DataFrame) -> list[dict[str, Any]]:
     return rows
 
 
-def drift_rows(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, int | None]]:
-    """(Model A's home probability, home won) for every saved pick whose game is final."""
+def availability_read(pick: dict[str, Any]) -> bool:
+    """Whether the pick was made with the injury report: `pick_record` saves
+    {'read': False, ...} when it was not (Stage 85 item 2)."""
+    return (pick.get('availability') or {}).get('read', True) is not False
+
+
+def drift_picks(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, int | None, bool]]:
+    """(Model A's home probability, home won, made with the injury report) for
+    every saved pick whose game is final, in the order the games started."""
     finals = sched[sched['status'] == GameStatus.FINAL.value].set_index('game_id')
-    keyed: list[tuple[tuple[str, str], tuple[float | None, int | None]]] = []
+    keyed: list[tuple[tuple[str, str], tuple[float | None, int | None, bool]]] = []
     for path in sorted(folder.glob('*.json')) if folder.exists() else []:
         pick = json.loads(path.read_text(encoding='utf-8'))
         if pick['game_id'] in finals.index:
             keyed.append(((pick.get('start_utc') or '', pick['game_id']),
-                          (pick.get('model_a'), int(finals.loc[pick['game_id'], 'home_win']))))
+                          (pick.get('model_a'), int(finals.loc[pick['game_id'], 'home_win']),
+                           availability_read(pick))))
     # Stage 85 item 1: in the order the games started, so a registered look's
     # first n picks are the first n games played, not the first n game ids.
     return [row for _, row in sorted(keyed, key=lambda kr: kr[0])]
+
+
+def drift_rows(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, int | None]]:
+    """(Model A's home probability, home won) for every saved pick whose game is final."""
+    return [(p, y) for p, y, _ in drift_picks(folder, sched)]
 
 
 def read_injuries(get: Callable[[str], bytes], teams: set[str]) -> injuries.Report | None:
@@ -341,12 +354,15 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     page_inputs.write(PATHS.results / f'schedule_{season}.json', page_inputs.schedule_json(sched, str(today.date())))
     (PATHS.results / f'graded_{season}.json').write_text(json.dumps(graded, indent=1) + '\n', encoding='utf-8')
     spec = drift.baseline()
-    losses = drift.per_game_log_loss(drift_rows(folder, sched))
-    flagged = drift.flags(losses, spec)
+    # Stage 85 item 2: each pick is held to the backtest of the model it ran.
+    losses, bases = drift.per_game(drift_picks(folder, sched), spec)
+    flagged = drift.flags(losses, spec, bases)
+    without = sum(1 for b in bases if b == spec['baseline_no_availability']['value'])
     (PATHS.results / f'drift_{season}.json').write_text(json.dumps(
         {'games': len(losses), 'mean_log_loss': (sum(losses) / len(losses)) if losses else None,
-         'baseline': spec['baseline']['value'], 'flagged': flagged,
-         'looks': drift.looks(losses, spec), 'next_look': drift.next_look(len(losses), spec)},
+         'baseline': drift.look_baseline(spec, bases, len(bases)) if bases else spec['baseline']['value'],
+         'without_availability': without, 'flagged': flagged,
+         'looks': drift.looks(losses, spec, bases), 'next_look': drift.next_look(len(losses), spec)},
         indent=1) + '\n', encoding='utf-8')
     if flagged:
         print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
