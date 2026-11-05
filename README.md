@@ -16,6 +16,25 @@ it picked a live game, and the backtest numbers were actually run.
 1280x800. The live page loads team logos from ESPN's CDN; for these images
 the same logo files were served locally.*
 
+## Results at a glance
+
+Each sport's Model B (the model that also reads the betting market) against
+the market itself and the base rate, in the backtest it was confirmed on and
+live since its first saved pick.
+
+<!-- glance:start -->
+| Sport | Record | Model B | Market | Base rate |
+|---|---|---|---|---|
+| NFL | Backtest, 2022-2025 seasons | 0.6062 (1,087) | 0.6074 (1,087) | not published |
+| NFL | Live 2026, weeks 1-8 | 0.6553 (120) | 0.6668 (120) | not published |
+| NHL | Backtest, 2024-25 and 2025-26 | 0.6711 (2,624) | 0.6700 (2,624) | 0.6896 (2,792) |
+| NHL | Live 2026-27, through 2026-11-03 | 0.6447 (174) | 0.6523 (174) | 0.6858 (194) |
+| NBA | Backtest, 2024-25 and 2025-26 | 0.5820 (2,643) | 0.5812 (2,643) | 0.6888 (2,643) |
+| NBA | Live 2026-27, through 2026-11-02 | 0.5680 (107) | 0.5681 (107) | 0.6982 (107) |
+
+Log loss, lower is better, with the games each forecaster was scored on in brackets: a model or the market is scored only on the games it had a number for. The base rate is the home side's share of wins in every earlier game of the sport's history; the NFL's backtest and live record publish none. The live rows are as of the week or day they name, and recomputed from the saved picks by `tests/test_results_glance.py`; each sport's page has today's.
+<!-- glance:end -->
+
 ## For recruiters -- project overview
 
 This is a working prediction system, not a notebook. Every week it pulls
@@ -147,7 +166,17 @@ numbers it explains are regenerated from the same data in the same step.
 ## How the work is checked
 
 Most of this repository was written by an AI agent, and the setup around
-it assumes the agent will sometimes be confidently wrong.
+it assumes the agent will sometimes be confidently wrong. Four agents
+share the work:
+
+<!-- agents:start -->
+| Agent | What it does | When | Its record |
+|---|---|---|---|
+| **Scout** | Does the work and opens every pull request; `src/agents/scout_preflight.py` checks the description against the repository first | Every pull request | Each pull request and its pre-flight check, on GitHub; not counted in a file |
+| **Booth** | Starts cold, re-runs each claim in the description, read-only, and posts a machine-readable verdict | Every pull request, and every edit of its description | 518 pull requests audited, 3,936 claims checked, 29 discrepancies found in 19 pull requests, as of 2026-11-05 03:51:57 UTC (`data/agent_log.json`) |
+| **Spotter** | Renders the pages a pull request changes, at phone and desktop widths, light and dark, and comments with the pictures and a reading | Pull requests that touch a page | Advisory: one comment per pull request, never a verdict; not counted |
+| **Line Judge** | Checks what each scheduled run left behind, and an agent diagnoses a finding from the run's logs | After each NFL weekly update and weekend refresh and each NHL and NBA daily run | Counted each Monday in the issue "Line Judge weekly digest" |
+<!-- agents:end -->
 
 - **Scout** does the work and opens every pull request.
   `src/agents/scout_preflight.py` checks the description against the repository
@@ -279,9 +308,10 @@ Every one of these, and the page build, the browser checks and the
 end-of-session gate, is also a task in `tasks.py`, which runs exactly what CI
 runs (`tests/test_tasks.py` holds each task to its workflow). `python
 tasks.py` lists them; `python tasks.py check` is lint plus the suite.
-`python tasks.py quick` is the suite without the five tests marked `slow`
-(each drives a whole daily run), for iterating; CI and the Suite line still
-run every test.
+`python tasks.py quick` is the suite without the eight tests marked `slow`
+(five drive a whole daily run, two re-derive a saved pick from the whole
+history, one drives the NHL's run on a renamed odds payload), for
+iterating; CI and the Suite line still run every test.
 
 ## Automating this with Claude Code Routines
 

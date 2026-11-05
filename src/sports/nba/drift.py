@@ -15,6 +15,10 @@ Amended 2026-11-04 (Stage 85 item 1, `drift.amended_2026_11_04` in the
 registry): the rule above was tested at every daily run once 100 picks were
 graded. It now looks only at the checkpoints in the baseline file's rule,
 each at the per-look level that shares the 5% false-flag rate among them.
+
+Amended 2026-11-05 (Stage 85 item 2, `drift.amended_2026_11_05`): a pick
+made without the injury report is held to Model A's backtest without
+availability, not with it (`pick_baselines`).
 """
 from __future__ import annotations
 
@@ -34,7 +38,7 @@ EPS = 1e-15
 
 def baseline(path: Path = BASELINE) -> dict[str, Any]:
     spec: dict[str, Any] = json.loads(path.read_text(encoding='utf-8'))
-    for key in ('baseline', 'rule'):
+    for key in ('baseline', 'baseline_no_availability', 'rule'):
         spec[key]  # a KeyError here is the "incomplete" case
     return spec
 
@@ -61,21 +65,53 @@ def lower_bound(losses: list[float], rule: dict[str, Any], level: float | None =
     return float(np.percentile(arr[idx].mean(axis=1), (1 - lvl) * 100))
 
 
-def looks(losses: list[float], spec: dict[str, Any]) -> list[dict[str, Any]]:
+def pick_baselines(reads: Iterable[bool], spec: dict[str, Any]) -> list[float]:
+    """Each graded pick's own baseline (Stage 85 item 2, `drift.amended_2026_11_05`).
+
+    A pick made with the injury report is held to Model A's backtest with
+    availability; a pick made without it ran the model without the
+    availability term and is held to that model's backtest
+    (`baseline_no_availability`, the same confirmation seasons). Holding it
+    to the first would count the missing report as drift."""
+    with_it, without = spec['baseline']['value'], spec['baseline_no_availability']['value']
+    return [float(with_it if read else without) for read in reads]
+
+
+def per_game(rows: Iterable[tuple[float | None, int | None, bool]],
+             spec: dict[str, Any]) -> tuple[list[float], list[float]]:
+    """(per-game log loss, each game's own baseline) from (Model A's home
+    probability, home won, availability read) rows, in their order. A game
+    without both a probability and a result decides nothing, as in
+    `per_game_log_loss`, and its baseline is dropped with it."""
+    kept = [(p, y, read) for p, y, read in rows if p is not None and y in (0, 1)]
+    return per_game_log_loss((p, y) for p, y, _ in kept), pick_baselines((read for *_, read in kept), spec)
+
+
+def look_baseline(spec: dict[str, Any], baselines: list[float] | None, n: int) -> float:
+    """The baseline a look at n picks is held to: the mean of those n picks'
+    own baselines, or the registered baseline when none are given."""
+    if baselines is None:
+        return float(spec['baseline']['value'])
+    return float(sum(baselines[:n]) / n)
+
+
+def looks(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None) -> list[dict[str, Any]]:
     """Every registered look the graded picks have reached (Stage 85 item 1).
 
     The check looks only at the registered checkpoints, each on the first n
     graded picks in the order their games started, at the per-look level:
     the family's one-sided 95% shared over the looks (Bonferroni). A daily
     look at 95% has a 5% false-flag chance each day, and every extra look
-    can only add to the season's."""
+    can only add to the season's. Each look is held to its own picks'
+    baselines (Stage 85 item 2, `pick_baselines`)."""
     rule = spec['rule']
     out = []
     for n in rule['checkpoints']:
         if len(losses) < n:
             break
         bound = lower_bound(losses[:n], rule, rule['per_look_level'])
-        out.append({'games': n, 'lower_bound': bound, 'flagged': bool(bound > spec['baseline']['value'])})
+        base = look_baseline(spec, baselines, n)
+        out.append({'games': n, 'lower_bound': bound, 'baseline': base, 'flagged': bool(bound > base)})
     return out
 
 
@@ -84,6 +120,6 @@ def next_look(n_graded: int, spec: dict[str, Any]) -> int | None:
     return next((n for n in spec['rule']['checkpoints'] if n > n_graded), None)
 
 
-def flags(losses: list[float], spec: dict[str, Any]) -> bool:
+def flags(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None) -> bool:
     """True when any look so far has flagged: a flag stands for the season."""
-    return any(look['flagged'] for look in looks(losses, spec))
+    return any(look['flagged'] for look in looks(losses, spec, baselines))

@@ -1,0 +1,57 @@
+{
+ "model": "model_a",
+ "settings": {
+  "H_days": 120,
+  "K_shots": 2000
+ },
+ "source": "src/sports/nhl/season_spread.py, the Stage 56 walk-forward at the chosen settings",
+ "seasons": [
+  {
+   "season": 2022,
+   "label": "2022-23",
+   "role": "validation",
+   "games": 1400,
+   "log_loss": 0.6591486579144855,
+   "brier": 0.23339012390375408,
+   "accuracy": 0.6078571428571429
+  },
+  {
+   "season": 2023,
+   "label": "2023-24",
+   "role": "validation",
+   "games": 1400,
+   "log_loss": 0.6633634873650478,
+   "brier": 0.2355783484441503,
+   "accuracy": 0.5985714285714285
+  },
+  {
+   "season": 2024,
+   "label": "2024-25",
+   "role": "confirmation",
+   "games": 1398,
+   "log_loss": 0.6657756455379196,
+   "brier": 0.2366932885879793,
+   "accuracy": 0.586552217453505
+  },
+  {
+   "season": 2025,
+   "label": "2025-26",
+   "role": "confirmation",
+   "games": 1394,
+   "log_loss": 0.6848864846429604,
+   "brier": 0.24593419116717855,
+   "accuracy": 0.5473457675753228
+  }
+ ],
+ "baseline": {
+  "value": 0.6753173753776152,
+  "pooled_confirmation": 0.6753173753776139,
+  "games": 2792,
+  "agrees": true
+ },
+ "spread": {
+  "low": 0.6591486579144855,
+  "high": 0.6848864846429604,
+  "range": 0.02573782672847491
+ }
+}

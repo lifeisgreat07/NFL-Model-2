@@ -1,0 +1,27 @@
+{
+  "target": "tests/js_source.py",
+  "tests": "tests/test_js_source.py",
+  "cases": [
+    {
+      "id": "js-source-runs-to-the-last-brace",
+      "why": "the match runs to the file's last lone brace, so a test meant to run one page function runs every function after it too",
+      "find": "r'\\(.*?\\n\\}\\n'",
+      "replace": "r'\\(.*\\n\\}\\n'",
+      "expect_caught_by": "test_it_takes_the_function_through_its_own_closing_brace_only"
+    },
+    {
+      "id": "js-source-name-as-a-pattern",
+      "why": "a name is read as a regular expression, so a dot in it matches any character and the wrong function can be returned",
+      "find": "re.escape(name)",
+      "replace": "name",
+      "expect_caught_by": "test_a_name_is_matched_as_text_not_as_a_pattern"
+    },
+    {
+      "id": "js-source-line-start-ignored",
+      "why": "at_line_start no longer anchors, so a mention in a comment is taken for the declaration",
+      "find": "    flags = re.S | (re.M if at_line_start else 0)\n    m = re.search(('^' if at_line_start else '') + ",
+      "replace": "    flags = re.S\n    m = re.search(",
+      "expect_caught_by": "test_at_line_start_skips_a_mention_in_a_comment"
+    }
+  ]
+}

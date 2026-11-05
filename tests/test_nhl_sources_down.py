@@ -25,6 +25,7 @@ from datetime import UTC, datetime
 import pandas as pd
 import pytest
 
+from tests.shared_tables import share_nhl_features
 from tests.test_daily_end_to_end import committed_schedule, temp_paths
 
 SEASON = 2026
@@ -36,6 +37,7 @@ def drive(tmp_path, monkeypatch, capsys, market_answer=None, roster_down=False, 
     from src.sports.nhl import daily, goalies, history, injuries, market
 
     sched = committed_schedule('nhl', SEASON, NOW)
+    share_nhl_features(monkeypatch)
     monkeypatch.setattr(daily, 'PATHS', temp_paths(tmp_path, 'nhl'))
     monkeypatch.setattr(daily.nhl_schedule, 'load_schedule', lambda s, *a, **k: sched.copy())
     have = history.HISTORY / f'boxscores_{SEASON}.csv'

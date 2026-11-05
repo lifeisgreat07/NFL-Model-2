@@ -52,7 +52,8 @@ def test_main_prints_the_line_the_alert_reads(sport, tmp_path):
     assert re.match(r'^MISSED PICKS:', line), 'the workflow greps for this prefix'
     assert DAILY[sport].missed_line(('101',), tmp_path) is None
     src = Path(DAILY[sport].__file__).read_text(encoding='utf-8')
-    assert 'lost = missed_line(decision.started, folder)\n    if lost:\n        print(lost)\n' in src
+    assert ('lost = missed_line(sorted(set(decision.started) | set(recently_started(sched, now))), folder)\n'
+            '    if lost:\n        print(lost)\n') in src
 
 
 @pytest.mark.parametrize('sport', DAILY)
