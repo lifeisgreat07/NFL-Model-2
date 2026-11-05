@@ -137,6 +137,9 @@ def board(season: int) -> dict[str, Any]:
     """The live board's inputs: the season's games, the saved picks with
     their grades, the drift check, and the clubs' names and logos."""
     sched = _maybe(PATHS.results / f'schedule_{season}.json')
+    if sched is not None and not sched.get('games'):
+        # Stage 91 item 4 (audit 7, R2): an empty schedule would publish a board with no games and every grade gone.
+        raise ValueError(f'results/nba/schedule_{season}.json has no games; refusing to build a board from it')
     graded = {str(r['game_id']): r['result'] for r in _maybe(PATHS.results / f'graded_{season}.json') or []}
     picks: dict[str, dict[str, Any]] = {}
     folder = PATHS.predictions / str(season)
