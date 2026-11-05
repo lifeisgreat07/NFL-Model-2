@@ -15,7 +15,11 @@ and percentage, and compares them with predictions/:
 - NFL: the row opens `card-<n>`, whose `data-game` is `<season>_week<w>-<away>-<home>`;
   the game is read from predictions/nfl/<season>_week<w>.json, or the
   preview of that week before it locks. Model B's home probability when it
-  has one, else Model A's, as the board picks.
+  has one, else Model A's, as the board picks. The NFL page rounds twice:
+  generate_dashboard stores it as `round(p * 100, 1)` and the row then
+  Math.rounds that, so 0.8047 shows 81%, not 80%; the check rounds the same
+  way. Within CARD_EVEN_BAND points of 50 (read from app.js) the row says
+  Toss-up.
 
 A board with no saved pick on it (an NBA Monday morning) steps back a week
 once, so the check always compares something.
@@ -46,6 +50,8 @@ ROWS = """(sport) => [...document.querySelectorAll(`.${sport}-row`)].filter(r =>
           pick: r.querySelector(`.${sport}-row-pick`).textContent.trim()};
 })"""
 PICK = re.compile(r'^([A-Z]{2,4}) (\d+)%')
+EVEN_BAND = float(re.search(r'const CARD_EVEN_BAND = ([\d.]+);',
+                            (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')).group(1))
 
 
 def whole(p):
@@ -64,7 +70,8 @@ def day_pick(pred, sport, gid):
 
 
 def nfl_pick(pred, game):
-    """(team, percent) the NFL board should show for '<season>_week<w>-<away>-<home>', or None."""
+    """(team, percent) the NFL board should show for '<season>_week<w>-<away>-<home>', or None.
+    The team is None inside the even band, where the row says Toss-up."""
     week, away, home = game.rsplit('-', 2)
     for path in (pred / 'nfl' / f'{week}.json', pred / 'nfl' / 'preview' / f'{week}.json'):
         if path.exists():
@@ -72,7 +79,10 @@ def nfl_pick(pred, game):
                 if g['home'] == home and g['away'] == away:
                     b = g.get('model_b_home_win_prob')
                     h = b if b is not None else g['model_a_home_win_prob']
-                    return (home, whole(h)) if h >= 0.5 else (away, whole(1 - h))
+                    v = round(h * 100, 1)  # as generate_dashboard stores mktB_home / fbA_home
+                    if abs(v - 50) < EVEN_BAND:
+                        return None, math.floor(max(v, 100 - v) + 0.5)
+                    return (home, math.floor(v + 0.5)) if v >= 50 else (away, math.floor(100 - v + 0.5))
     return None
 
 
@@ -86,7 +96,10 @@ def compare(sport, rows, pred):
                 report.append(f'{sport} {r["id"]}: the row shows "{r["pick"]}" and no pick was saved')
             continue
         compared.append(r['id'])
-        if want[1] == 50 and r['pick'].startswith('Toss-up'):
+        if want[0] is None:
+            if not r['pick'].startswith('Toss-up'):
+                report.append(f'{sport} {r["id"]}: the row shows "{r["pick"]}", the saved pick is within '
+                              f'{EVEN_BAND:g} points of even (Toss-up)')
             continue
         if not got or (got.group(1), int(got.group(2))) != want:
             report.append(f'{sport} {r["id"]}: the row shows "{r["pick"]}", the saved pick is {want[0]} {want[1]}%')
