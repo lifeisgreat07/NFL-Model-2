@@ -12,6 +12,7 @@ Run with: pytest tests/test_alerts.py -v
 """
 import json
 import re
+from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -23,9 +24,10 @@ from src.core import alerts
 class FakeGh:
     """Records every gh call; answers `issue list` from a fixed list."""
 
-    def __init__(self, open_issues=(), fail_on=None):
+    def __init__(self, open_issues=(), fail_on=None, issue=None):
         self.open_issues = list(open_issues)
         self.fail_on = fail_on
+        self.issue = issue if issue is not None else {'body': '', 'comments': []}
         self.calls = []
 
     def __call__(self, cmd, input=None, capture_output=True, text=True):
@@ -38,6 +40,8 @@ class FakeGh:
             return SimpleNamespace(returncode=0, stdout=json.dumps(self.open_issues), stderr='')
         if verb == 'issue create':
             return SimpleNamespace(returncode=0, stdout='https://github.com/o/r/issues/9\n', stderr='')
+        if verb == 'issue view':
+            return SimpleNamespace(returncode=0, stdout=json.dumps(self.issue), stderr='')
         return SimpleNamespace(returncode=0, stdout='', stderr='')
 
     def verbs(self):
@@ -51,16 +55,16 @@ def test_no_open_issue_means_one_is_opened():
     assert gh.verbs() == ['issue list', 'issue create']
     args, stdin = gh.calls[-1]
     assert args[args.index('--title') + 1] == 'NFL: Nightly canary failing'
-    assert stdin == 'body text'
+    assert stdin == f"body text\n\n<!-- alert-key: {alerts.report_key('body text')} -->"
 
 
 def test_an_open_issue_with_the_same_title_gets_a_comment_not_a_twin():
     gh = FakeGh(open_issues=[{'number': 7, 'title': 'NFL: Nightly canary failing'}])
     action, ref = alerts.open_or_comment('NFL: Nightly canary failing', 'again', run=gh)
     assert (action, ref) == ('commented', 7)
-    assert gh.verbs() == ['issue list', 'issue comment']
+    assert gh.verbs() == ['issue list', 'issue view', 'issue comment']
     args, stdin = gh.calls[-1]
-    assert args[2] == '7' and stdin == 'again'
+    assert args[2] == '7' and stdin.startswith('again\n\n<!-- alert-key: ')
 
 
 def test_the_title_match_is_exact():
@@ -110,11 +114,14 @@ def test_a_missing_log_is_said_not_skipped(tmp_path):
 
 def test_the_cli_passes_the_log_through(tmp_path, monkeypatch):
     sent = {}
-    monkeypatch.setattr(alerts, 'open_or_comment', lambda title, body: sent.update(body=body) or ('opened', 1))
+    monkeypatch.setattr(alerts, 'open_or_comment',
+                        lambda title, body, key=None: sent.update(body=body, key=key) or ('opened', 1))
     (tmp_path / 'b.md').write_text('body', encoding='utf-8')
     (tmp_path / 'x.log').write_text('Traceback: boom', encoding='utf-8')
     assert alerts.main(['--title', 't', '--body-file', str(tmp_path / 'b.md'), '--log', str(tmp_path / 'x.log')]) == 0
     assert 'Traceback: boom' in sent['body']
+    # The log's tail is new every run; what makes two alerts the same is the report.
+    assert sent['key'] == 'body'
 
 
 #: Workflows whose failure alert used to carry only a link (Stage 81 item 5). Each
@@ -227,3 +234,113 @@ def test_every_failure_alert_is_closed_by_the_next_success():
                 assert "github.event_name == 'schedule'" in step, (
                     f'{p.name}: "{title}" is raised only by the nightly run, so only that run may close it')
     assert found >= 10, f'the scan found only {found} failure titles -- re-anchor it'
+
+
+# --- Stage 83 item 1: a repeat failure counts instead of commenting ----------
+
+RUN_A = 'https://github.com/o/r/actions/runs/111'
+RUN_B = 'https://github.com/o/r/actions/runs/222'
+AT = datetime(2026, 11, 4, 22, 40, tzinfo=UTC)
+
+
+def report(run, finding='pypdf 6.19.0 has CVE-2026-113792'):
+    """The shape of #540's comments: a sentence, a run link, a finding."""
+    return f'pip-audit found known vulnerabilities.\n\nRun: {run}\n\n{finding}'
+
+
+def posted(body, key=None):
+    """A post as open_or_comment writes it."""
+    return f"{body}\n\n<!-- alert-key: {alerts.report_key(key if key is not None else body)} -->"
+
+
+def comment(body, cid=555):
+    return {'body': body, 'url': f'https://github.com/o/r/issues/7#issuecomment-{cid}'}
+
+
+def open7(**issue):
+    return FakeGh(open_issues=[{'number': 7, 'title': 'Dependency audit found known vulnerabilities'}],
+                  issue={'body': 'x', 'comments': [], **issue})
+
+
+def raise_(gh, body, **kw):
+    return alerts.open_or_comment('Dependency audit found known vulnerabilities', body, run=gh,
+                                  now=lambda: AT, **kw)
+
+
+def edited(gh):
+    """The text of the one edit made: the PATCHed comment or the new issue body."""
+    args, stdin = gh.calls[-1]
+    return json.loads(stdin)['body'] if args[0] == 'api' else stdin
+
+
+def test_a_repeat_of_the_latest_post_counts_on_it_instead_of_commenting():
+    gh = open7(comments=[comment(posted(report(RUN_A)))])
+    assert raise_(gh, report(RUN_B)) == ('counted', 7)
+    assert gh.verbs() == ['issue list', 'issue view', 'api --method']
+    args, _ = gh.calls[-1]
+    assert args[args.index('--method') + 1] == 'PATCH'
+    assert args[args.index('--method') + 2] == 'repos/{owner}/{repo}/issues/comments/555'
+    text = edited(gh)
+    assert text.startswith(posted(report(RUN_A))), 'the first report is kept as it was'
+    assert text.endswith(f'Seen again with the same report once; the latest: {RUN_B} (2026-11-04 22:40 UTC).')
+
+
+def test_the_count_climbs_on_one_line():
+    gh = open7(comments=[comment(posted(report(RUN_A)))])
+    raise_(gh, report(RUN_B))
+    once = edited(gh)
+    gh = open7(comments=[comment(once)])
+    raise_(gh, report('https://github.com/o/r/actions/runs/333'))
+    twice = edited(gh)
+    assert twice.count('Seen again') == 1
+    assert 'Seen again with the same report 2 times; the latest: https://github.com/o/r/actions/runs/333 ' in twice
+    gh = open7(comments=[comment(twice)])
+    raise_(gh, report(RUN_B))
+    assert 'same report 3 times' in edited(gh)
+
+
+def test_a_different_report_is_a_new_comment():
+    gh = open7(comments=[comment(posted(report(RUN_A)))])
+    assert raise_(gh, report(RUN_B, finding='pypdf 6.19.0 has CVE-2026-119204'))[0] == 'commented'
+    assert gh.verbs()[-1] == 'issue comment'
+
+
+def test_a_person_writing_after_the_alert_means_the_next_one_is_a_comment():
+    """The count goes on the latest post only: an edit above a person's reply
+    would be news no one sees."""
+    gh = open7(comments=[comment(posted(report(RUN_A)), 1), comment('Looking at this tonight.', 2)])
+    assert raise_(gh, report(RUN_B))[0] == 'commented'
+
+
+def test_a_repeat_on_an_issue_with_no_comments_counts_on_its_body():
+    gh = open7(body=posted(report(RUN_A)), comments=[])
+    assert raise_(gh, report(RUN_B)) == ('counted', 7)
+    assert gh.verbs()[-1] == 'issue edit'
+    assert gh.calls[-1][0][2] == '7'
+    assert 'same report once' in edited(gh)
+
+
+def test_a_post_from_before_the_count_is_followed_by_a_comment():
+    """#540's 23 comments carry no key; the next report after this ships is a
+    comment that does, and the ones after that count on it."""
+    gh = open7(comments=[comment(report(RUN_A))])
+    assert raise_(gh, report(RUN_B))[0] == 'commented'
+
+
+def test_a_comment_whose_id_cannot_be_read_is_not_edited():
+    gh = open7(comments=[{'body': posted(report(RUN_A)), 'url': ''}])
+    assert raise_(gh, report(RUN_B))[0] == 'commented'
+
+
+def test_the_key_ignores_run_links_and_nothing_else():
+    assert alerts.report_key(report(RUN_A)) == alerts.report_key(report(RUN_B))
+    assert alerts.report_key(report(f'{RUN_A}/job/9')) == alerts.report_key(report(RUN_B))
+    assert alerts.report_key(report(RUN_A)) != alerts.report_key(report(RUN_A, finding='pypdf 6.19.1'))
+    assert alerts.report_key('Run 41 failed') != alerts.report_key('Run 42 failed')
+
+
+def test_a_log_tail_that_differs_does_not_make_a_new_report():
+    """The CLI keys on the report without its log, so a nightly failure whose
+    log carries a new timestamp each run still counts."""
+    gh = open7(comments=[comment(posted(report(RUN_A) + '\n\n22:40:01 boom', key=report(RUN_A)))])
+    assert raise_(gh, report(RUN_B) + '\n\n22:41:07 boom', key=report(RUN_B))[0] == 'counted'
