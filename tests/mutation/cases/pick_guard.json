@@ -1,0 +1,36 @@
+{
+  "target": "src/core/pick_guard.py",
+  "tests": "tests/test_pick_guard.py",
+  "cases": [
+    {
+      "id": "pick-guard-same-day-fit-passes",
+      "why": "a pick fitted through its own slate day is written, the leak 34 disclosed picks carry",
+      "find": "    if slate and through and str(through) >= str(slate):\n",
+      "replace": "    if slate and through and str(through) > str(slate):\n",
+      "expect_caught_by": "test_a_leaked_record_is_refused"
+    },
+    {
+      "id": "pick-guard-late-price-passes",
+      "why": "a pick priced from a read taken after its game started is written",
+      "find": "    if start and read and str(read) >= str(start):\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_a_leaked_record_is_refused"
+    },
+    {
+      "id": "nhl-writer-skips-the-guard",
+      "target": "src/sports/nhl/daily.py",
+      "why": "the NHL's writer saves a leaked record, and only a later test run notices, after the pick is permanent",
+      "find": "    pick_guard.refuse_leak(record)\n",
+      "replace": "",
+      "expect_caught_by": "test_the_writer_refuses_a_leak_and_writes_nothing"
+    },
+    {
+      "id": "nba-writer-back-to-a-fixed-tmp",
+      "target": "src/sports/nba/daily.py",
+      "why": "the NBA's writer goes back to a fixed .tmp name with no fsync, which a killed run leaves in a committed folder",
+      "find": "    write_json_atomic(path, record, trailing_newline=True, indent=1)\n",
+      "replace": "    tmp = path.with_suffix('.tmp')\n    tmp.write_text(json.dumps(record, indent=1) + '\\n', encoding='utf-8')\n    tmp.replace(path)\n",
+      "expect_caught_by": "test_the_writer_writes_the_same_bytes_atomically"
+    }
+  ]
+}
