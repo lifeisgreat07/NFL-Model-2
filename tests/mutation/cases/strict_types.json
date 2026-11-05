@@ -1,0 +1,13 @@
+{
+  "target": "src/sports/nfl/paths.py",
+  "tests": "tests/test_type_check.py",
+  "cases": [
+    {
+      "id": "strict-types-miss-an-unannotated-helper",
+      "why": "a helper the site calls loses its annotations, so --strict over src/site would stop holding what it calls",
+      "find": "def parse_week(stem: str) -> tuple[int, int] | None:\n",
+      "replace": "def parse_week(stem):\n",
+      "expect_caught_by": "test_the_core_the_site_and_the_day_sports_type_check_strictly"
+    }
+  ]
+}

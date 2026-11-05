@@ -59,19 +59,20 @@ def runs(workflow):
     return out
 
 
-TYPES = 'python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/core src/site src/sports/nhl src/sports/nba'
+TYPES = 'python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/sports/nfl/generate_dashboard.py src/sports/nfl/generate_picks_pdf.py'
+STRICT_TYPES = 'python -m mypy --strict --ignore-missing-imports src/core src/site src/sports/nhl src/sports/nba'
 AGENT_TYPES = 'python -m mypy --strict --ignore-missing-imports --follow-imports=silent src/agents'
 
 
 def test_lint_is_what_run_tests_runs():
-    assert commands('lint') == ['ruff check .', TYPES, AGENT_TYPES]
+    assert commands('lint') == ['ruff check .', TYPES, STRICT_TYPES, AGENT_TYPES]
     wf = runs('run-tests.yml')
-    assert 'ruff check .' in wf and TYPES in wf and AGENT_TYPES in wf
-    assert wf.index('ruff check .') < wf.index(TYPES) < wf.index(AGENT_TYPES)
+    assert 'ruff check .' in wf and TYPES in wf and STRICT_TYPES in wf and AGENT_TYPES in wf
+    assert wf.index('ruff check .') < wf.index(TYPES) < wf.index(STRICT_TYPES) < wf.index(AGENT_TYPES)
 
 
 def test_check_is_lint_then_the_suite():
-    assert commands('check') == ['ruff check .', TYPES, AGENT_TYPES, commands('test')[0]]
+    assert commands('check') == ['ruff check .', TYPES, STRICT_TYPES, AGENT_TYPES, commands('test')[0]]
 
 
 def test_mypy_is_pinned_like_ruff():
