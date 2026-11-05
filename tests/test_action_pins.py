@@ -32,7 +32,7 @@ WORKFLOWS = ROOT / '.github' / 'workflows'
 PINNED = {
     'anthropics/claude-code-action': 4,
     'stefanzweifel/git-auto-commit-action': 3,
-    'actions/checkout': 40,  # 40 and 35 with nfl-override-check.yml (Stage 88 item 4)
+    'actions/checkout': 41,  # with nfl-override-check.yml (Stage 88 item 4) and deploy-pages' alert job (Stage 93 item 14)
     'actions/setup-python': 35,
     'actions/setup-node': 4,
     'actions/cache': 1,
