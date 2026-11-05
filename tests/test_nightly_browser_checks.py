@@ -37,3 +37,12 @@ def test_a_pull_request_that_changes_any_sports_data_runs_it():
     paths = re.findall(r"- '([^']+)'", trigger('pull_request'))
     for folder in ('data', 'predictions', 'results'):
         assert f'{folder}/**' in paths, f'a pull request changing {folder}/ of the NBA or NHL skips the checks'
+
+
+def test_the_job_has_room_for_a_slow_install():
+    """`playwright install --with-deps` fetches system packages with apt. On 2026-11-05 the mirror was slow
+    enough that the install step took up to 980 s beside about 11 minutes of checks, and a job cut off at
+    20 minutes was cancelled on its last checks three times (#647, #648)."""
+    m = re.search(r'^  browser:\n(?:    .+\n)*?    timeout-minutes: (\d+)$', WORKFLOW, re.M)
+    assert m, 'the browser job states no timeout'
+    assert int(m.group(1)) >= 30
