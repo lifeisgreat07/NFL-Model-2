@@ -122,6 +122,8 @@ def payload(season: int, now: datetime) -> dict[str, Any]:
         'ratings': _read(PATHS.results / f'ratings_{season}.json'),
         'drift': _read(PATHS.results / f'drift_{season}.json'),
         'drift_rule': _read(PATHS.data / 'drift_baseline.json'),
+        # Stage 85 item 3: the baseline's season-to-season spread (src/sports/nhl/season_spread.py).
+        'spread': _read(PATHS.experiments / 'stage56' / 'results' / 'model_a_by_season.json'),
         # Stage 84 item 2: the registered forward test (src/core/forward_test.py).
         'forward': _read(PATHS.results / f'forward_{season}.json'),
         # Stage 84 item 4: Stage 56's M2 on the live season (src/sports/nhl/m2.py).

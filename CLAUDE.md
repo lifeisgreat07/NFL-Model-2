@@ -307,7 +307,7 @@ fresh session anchors on.
 **What the script checks**, because these cannot be checked continuously --
 six checks, in the order it prints them: which branch you are leaving behind
 (informational, it cannot fail); a clean working tree; nothing committed but
-unpushed; the suite count stated above against a real run; `docs/context.md`
+unpushed; the suite count stated above, and its split, against a real run; `docs/context.md`
 stamped `Last updated:` today or tomorrow (tomorrow is a timezone, yesterday
 is a file nobody rewrote); and a `memory/` file named for today. It exits
 non-zero if any of the five that can fail do.
