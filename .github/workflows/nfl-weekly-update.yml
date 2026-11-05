@@ -167,6 +167,7 @@ jobs:
       # prints a DEGRADED line and raises one issue here. continue-on-error:
       # reporting must never cost a pick.
       - name: Is the ratings snapshot its history's latest week?
+        timeout-minutes: 25
         if: ${{ !cancelled() }}
         continue-on-error: true
         shell: bash
