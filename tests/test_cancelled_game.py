@@ -16,7 +16,6 @@ printed as a warning so the file gets written.
 Run with: pytest tests/test_cancelled_game.py -v
 """
 import json
-import re
 import shutil
 import subprocess
 from datetime import UTC, datetime
@@ -26,6 +25,7 @@ import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import weekend_refresh as wr
+from tests.js_source import function_source
 
 NODE = shutil.which('node')
 # 2022 week 17's game, as the fixture: Bills at Bengals, Monday night.
@@ -138,12 +138,6 @@ def test_the_refresh_prints_the_nudge(tmp_path, capsys):
 
 
 # --- the card -----------------------------------------------------------------
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
-
 
 def test_the_card_says_cancelled_and_not_graded():
     if not NODE:
