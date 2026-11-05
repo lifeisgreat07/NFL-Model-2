@@ -75,21 +75,22 @@ INSTALL = re.compile(r'pip install ([^\n]*-r [^\n]*)')
 
 
 def test_every_workflow_installs_the_project_from_a_lock_with_hashes():
-    """Booth's audit checks out the pull request's head, which may predate the
-    lock; it falls back to the pinned files then, and only then."""
+    """Every install but Booth's audit's. booth-pr-audit.yml still installs from
+    the pinned files: Booth cannot vouch for a change to its own workflow (#582
+    was NEEDS HUMAN REVIEW for that alone), so its move to the lock is a pull
+    request of its own, for Mark."""
     seen = 0
     for p in sorted(WORKFLOWS.glob('*.yml')):
         if p.name == 'spotter.yml':
             continue  # installs the pull request head's requirements.txt to render it, never runs it on main
         for args in INSTALL.findall(p.read_text(encoding='utf-8')):
             seen += 1
-            if p.name == 'booth-pr-audit.yml' and args == '-r requirements.txt -r requirements-dev.txt':
+            if p.name == 'booth-pr-audit.yml':
+                assert args == '-r requirements.txt -r requirements-dev.txt', args
                 continue
             assert args in ('--require-hashes -r requirements.lock', '--require-hashes -r requirements-dev.lock'), \
                 f'{p.name}: pip install {args}'
     assert seen >= 25, f'only {seen} installs found -- re-anchor the scan'
-    booth = (WORKFLOWS / 'booth-pr-audit.yml').read_text(encoding='utf-8')
-    assert 'if [ -f requirements-dev.lock ]; then\n            pip install --require-hashes -r requirements-dev.lock' in booth
 
 
 def test_the_dependency_audit_reads_the_lock():
