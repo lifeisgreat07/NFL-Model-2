@@ -1,0 +1,27 @@
+{
+ "target": "src/site/home.py",
+ "tests": "tests/test_runtime_pins_and_even_band.py",
+ "cases": [
+  {
+   "id": "home-even-band-inclusive",
+   "why": "a chance exactly at the band's edge counts as even, so 0.52 or 0.48 would pick nobody",
+   "find": "    return {'p': team, 'c': round(pct * 100), 'e': abs(home_prob * 100 - 50) < EVEN_BAND}\n",
+   "replace": "    return {'p': team, 'c': round(pct * 100), 'e': abs(home_prob * 100 - 50) <= EVEN_BAND + 1}\n",
+   "expect_caught_by": "test_the_even_band_picks_nobody_only_within_two_points"
+  },
+  {
+   "id": "home-even-band-widened",
+   "why": "the home page's band drifts from every board's two points",
+   "find": "EVEN_BAND = 2\n",
+   "replace": "EVEN_BAND = 4\n",
+   "expect_caught_by": "test_the_even_band_picks_nobody_only_within_two_points"
+  },
+  {
+   "id": "home-side-from-the-away-chance",
+   "why": "the favoured side is read the wrong way round, so a 0.47 home chance is shown as the home side's",
+   "find": "    team = team or (home if home_prob >= 0.5 else away)\n",
+   "replace": "    team = team or (away if home_prob >= 0.5 else home)\n",
+   "expect_caught_by": "test_the_even_band_picks_nobody_only_within_two_points"
+  }
+ ]
+}
