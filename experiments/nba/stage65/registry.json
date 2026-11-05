@@ -30,7 +30,8 @@
   "playing": "Every player with expected minutes for the team who is not listed Out. Day-To-Day counts as playing, as the registration's 'not listed Out' says. A player is matched by ESPN's athlete id.",
   "stored": "Each pick stores the injury list for both teams as read, the read time, and the availability each side was given.",
   "amended": "2026-11-02 (Mark): ESPN listed a player with status Suspension, which the strict read refused, so the night's picks were made without availability. A suspended player cannot play, so Suspension now removes a player exactly as Out does. Registered sentence above is unchanged; this applies to picks saved from 2026-11-02 on, none earlier.",
-  "unreadable": "If the report cannot be read, the pick is made by Model A and Model B without availability_matchup, each refitted the same way without it, and the pick says so. Nothing is filled in."
+  "unreadable": "If the report cannot be read, the pick is made by Model A and Model B without availability_matchup, each refitted the same way without it, and the pick says so. Nothing is filled in.",
+  "amended_2026_11_04": "Stage 83 item 5 (the 2026-11-02 review, Mark's approval): a report that reads, but with a player row this cannot read (an unknown status, or no athlete id), is no longer refused whole. That row is left out and its team is named; that team's games are picked by Model A and Model B without availability_matchup, as 'unreadable' says, because the row could be a player who is out, and every other game uses the report. A team code the schedule does not know, or a report not shaped as registered, still refuses the whole report: a changed code would leave the real team with no rows, which reads as fully healthy. The registered sentences above are unchanged; this applies to picks saved from 2026-11-04 on."
  },
  "drift": {
   "file": "data/nba/drift_baseline.json",
@@ -82,6 +83,14 @@
     "401909901",
     "401909902"
    ]
+  },
+  {
+   "date": "2026-11-04",
+   "by": "Claude, under Mark's approval of 2026-11-02 (the 2026-11-02 review, Stage 83 item 5)",
+   "entry": "availability",
+   "before_any_result": false,
+   "seen": "On 2026-11-02 one row with the status Suspension made the whole report unreadable, so all 15 picks saved that night were made without availability (the 'amended' entry fixed that status). The forward test's figures in the forward_test.decision amendment had been read when this was written.",
+   "change": "Added availability.amended_2026_11_04: a player row that cannot be read takes availability away from its own team's games only, not from every game. No model, feature or decision rule changes."
   }
  ]
 }

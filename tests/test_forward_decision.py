@@ -66,7 +66,8 @@ def test_the_registration_dates_are_untouched():
 
 
 def test_the_nba_amendments_are_the_rule_and_then_the_disclosure():
-    assert [a['entry'] for a in reg('nba')['amendments']] == ['forward_test.decision', 'disclosures', 'deviation']
+    assert [a['entry'] for a in reg('nba')['amendments']] == ['forward_test.decision', 'disclosures', 'deviation',
+                                                              'availability']
     assert [a['entry'] for a in reg('nhl')['amendments']] == ['forward_test.decision', 'deviation']
 
 
