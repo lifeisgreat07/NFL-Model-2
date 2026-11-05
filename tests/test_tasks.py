@@ -117,7 +117,8 @@ def test_the_slow_marker_is_registered_and_used():
     """An unregistered marker is only a warning; registering it keeps a typo
     like `@pytest.mark.slwo` from silently running in `quick`. The marked
     tests are the five whole daily runs, the suite's slowest, and the two
-    re-derivations of a saved pick (Stage 85 item 6), each a whole feature table."""
+    re-derivations of a saved pick (Stage 85 item 6), each a whole feature table,
+    and the two day runs whose after-save step fails (Stage 91 item 3)."""
     toml = (ROOT / 'pyproject.toml').read_text(encoding='utf-8')
     assert re.search(r'(?m)^markers = \["slow: ', toml)
     marked = {p.name: len(re.findall(r'(?m)^@pytest\.mark\.slow$', p.read_text(encoding='utf-8')))
@@ -125,9 +126,10 @@ def test_the_slow_marker_is_registered_and_used():
     assert marked['test_daily_end_to_end.py'] == 2
     assert marked['test_nhl_sources_down.py'] == 3
     assert marked['test_rederive_saved_pick.py'] == 2
-    assert sum(marked.values()) == 7, 'README says how many tests quick leaves out'
+    assert marked['test_after_save.py'] == 2
+    assert sum(marked.values()) == 9, 'README says how many tests quick leaves out'
     readme = (ROOT / 'README.md').read_text(encoding='utf-8')
-    assert 'the suite without the seven tests marked `slow`' in readme
+    assert 'the suite without the nine tests marked `slow`' in readme
 
 
 def test_build_is_what_the_pages_workflow_runs():
