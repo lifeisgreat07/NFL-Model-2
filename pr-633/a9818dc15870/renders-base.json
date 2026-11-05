@@ -1,74 +1,74 @@
 [
  {
   "page": "nhl",
-  "label": "head",
+  "label": "base",
   "viewport": "390x844",
   "theme": "light",
-  "file": "nhl-390x844-light-head.png",
-  "bytes": 85520,
+  "file": "nhl-390x844-light-base.png",
+  "bytes": 85487,
   "parked": 3
  },
  {
   "page": "nhl",
-  "label": "head",
+  "label": "base",
   "viewport": "390x844",
   "theme": "dark",
-  "file": "nhl-390x844-dark-head.png",
-  "bytes": 86302,
+  "file": "nhl-390x844-dark-base.png",
+  "bytes": 86219,
   "parked": 3
  },
  {
   "page": "nhl",
-  "label": "head",
+  "label": "base",
   "viewport": "1440x900",
   "theme": "light",
-  "file": "nhl-1440x900-light-head.png",
-  "bytes": 178965,
+  "file": "nhl-1440x900-light-base.png",
+  "bytes": 178615,
   "parked": 4
  },
  {
   "page": "nhl",
-  "label": "head",
+  "label": "base",
   "viewport": "1440x900",
   "theme": "dark",
-  "file": "nhl-1440x900-dark-head.png",
-  "bytes": 179741,
+  "file": "nhl-1440x900-dark-base.png",
+  "bytes": 179404,
   "parked": 4
  },
  {
   "page": "nba",
-  "label": "head",
+  "label": "base",
   "viewport": "390x844",
   "theme": "light",
-  "file": "nba-390x844-light-head.png",
-  "bytes": 56469,
+  "file": "nba-390x844-light-base.png",
+  "bytes": 56359,
   "parked": 3
  },
  {
   "page": "nba",
-  "label": "head",
+  "label": "base",
   "viewport": "390x844",
   "theme": "dark",
-  "file": "nba-390x844-dark-head.png",
-  "bytes": 57786,
+  "file": "nba-390x844-dark-base.png",
+  "bytes": 57682,
   "parked": 3
  },
  {
   "page": "nba",
-  "label": "head",
+  "label": "base",
   "viewport": "1440x900",
   "theme": "light",
-  "file": "nba-1440x900-light-head.png",
-  "bytes": 116093,
+  "file": "nba-1440x900-light-base.png",
+  "bytes": 115812,
   "parked": 4
  },
  {
   "page": "nba",
-  "label": "head",
+  "label": "base",
   "viewport": "1440x900",
   "theme": "dark",
-  "file": "nba-1440x900-dark-head.png",
-  "bytes": 116467,
+  "file": "nba-1440x900-dark-base.png",
+  "bytes": 116144,
   "parked": 4
  }
 ]
