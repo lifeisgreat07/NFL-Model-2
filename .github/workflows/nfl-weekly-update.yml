@@ -166,6 +166,26 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: python -m src.sports.nfl.override_watch --after-lock --season ${{ steps.season.outputs.season }} | tee -a "$GITHUB_STEP_SUMMARY"
 
+      # Stage 88 item 4 (the 2026-11-02 review). The lock does not use an
+      # override whose player is not a quarterback on the team's roster or whose
+      # source is not a listed site, and logs why (src/sports/nfl/override_check.py);
+      # an unreadable roster leaves the overrides unchecked, and says so. Either
+      # raises one issue. continue-on-error: reporting must never cost a pick.
+      - name: Did the lock refuse a QB override?
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if [ -f weekly-update.log ] && grep -q '^DEGRADED: QB overrides:' weekly-update.log; then
+            { grep '^DEGRADED: QB overrides:' weekly-update.log
+              printf '\nRun: %s\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            } > overrides.md
+            python -m src.core.alerts --title "NFL: the lock did not use a QB override" --body-file overrides.md
+          fi
+
       # Stage 37 item 3. The week about to be graded was last snapshotted
       # before Monday night's game, and once graded it leaves the weekend
       # refresh's list, so Monday night's score never reached the page. Its

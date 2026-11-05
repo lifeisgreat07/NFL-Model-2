@@ -47,6 +47,7 @@ from sklearn.linear_model import LogisticRegression
 
 from src.core.atomic_write import write_json_atomic
 from src.core.model_specs import MODEL_SPECS
+from src.sports.nfl import override_check
 from src.sports.nfl.config import MIN_PLAYS_FOR_RATING, MODEL_VERSION, TRAIN_SEASONS
 from src.sports.nfl.data_loader import load_plays, load_schedule
 from src.sports.nfl.data_quality import enforce as enforce_data_quality
@@ -1039,6 +1040,11 @@ def plan_week(season: int, week: int) -> Plan | None:
               f"prediction.")
 
     qb_overrides = load_qb_overrides(season, week)
+    # Stage 88 item 4: an override whose player is not a quarterback on the
+    # team's roster, or whose source is not a listed site, is not used.
+    qb_overrides, screened = override_check.screen(qb_overrides, season)
+    for line in screened:
+        log.info(line)
     if qb_overrides:
         log.info(f"  QB overrides for week {week}: " + ", ".join(
             f"{t} -> {o['player_name']}" for t, o in sorted(qb_overrides.items())))
