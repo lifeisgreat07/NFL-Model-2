@@ -21,6 +21,16 @@ passed; "with findings" when it failed (its own alert says what was found).
 run itself failed, and raised its own alert -- or has none. A week with no
 judged run at all is said first, in bold: it is the failure this exists for.
 
+Stage 93 item 19 (audit 7 R10): the digest also reads the record
+`src/core/start_delay.py` keeps of every copy GitHub's cron started for the
+three lock-writing runs, and gives each sport's latest start in the last
+30 days against its lock slack. GitHub's copy is the fallback for a slot
+cron-job.org missed; when the NFL's came within an hour of its eight-hour
+slack, the next late one could lock nothing, and the digest fails (after
+posting) so the run's alert says so. The day sports' slack is one hour,
+which a GitHub copy has never met, so for them the line is reported, not
+failed: their missed slots are caught by the page build (Stage 93 item 20).
+
 Run with: python -m src.core.line_judge_digest [--dry-run]
 """
 from __future__ import annotations
@@ -32,6 +42,7 @@ import sys
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
 from datetime import UTC, date, datetime, timedelta
+from pathlib import Path
 from typing import Any
 
 from src.core import alerts
@@ -45,6 +56,14 @@ JUDGED: dict[str, str] = {
     'nhl-daily.yml': 'NHL daily run',
     'nba-daily.yml': 'NBA daily run',
 }
+
+#: Each sport's record of late GitHub copies, and its lock slack in hours (the NFL's
+#: LOCK_SLACK in weekly_update.py, the day sports' SLACK in their lock.py; a test holds them).
+ROOT = Path(__file__).resolve().parents[2]
+SLACK_HOURS = {'nfl': 8.0, 'nhl': 1.0, 'nba': 1.0}
+#: The sports whose digest fails when a copy came within an hour of the slack.
+FAILS_ON_SLACK = ('nfl',)
+LATE_WINDOW = timedelta(days=30)
 
 Api = Callable[[str], list[dict[str, Any]]]
 Post = Callable[[str, str], object]
@@ -122,6 +141,29 @@ def digest(tallies: dict[str, Tally], start: date, end: date) -> str:
     return '\n'.join(lines) + '\n'
 
 
+def late_copies(now: datetime, root: Path = ROOT) -> tuple[list[str], list[str]]:
+    """(a line per sport, the sports whose latest copy came within an hour of the slack)."""
+    lines, close = [], []
+    for sport, slack in SLACK_HOURS.items():
+        path = root / 'data' / sport / 'run_delays.json'
+        entries = json.loads(path.read_text(encoding='utf-8')) if path.exists() else []
+        recent = [e for e in entries
+                  if now - datetime.fromisoformat(str(e['started']).replace('Z', '+00:00')) <= LATE_WINDOW]
+        if not recent:
+            lines.append(f'- {sport.upper()}: no copy started by GitHub\'s cron in the last 30 days.')
+            continue
+        worst = max(int(e['delay_minutes']) for e in recent)
+        near = worst >= (slack - 1) * 60
+        copies = f'{len(recent)} cop' + ('y' if len(recent) == 1 else 'ies')
+        hours = f'{slack:g} hour' + ('' if slack == 1 else 's')
+        lines.append(f'- {sport.upper()}: {copies} started by GitHub\'s cron in the last 30 days, '
+                     f'the latest {worst // 60}h {worst % 60:02d}m after its slot, against a lock slack of '
+                     f'{hours}' + ('.' if not near else ': within an hour of it.'))
+        if near and sport in FAILS_ON_SLACK:
+            close.append(sport)
+    return lines, close
+
+
 def gh_api(path: str) -> list[dict[str, Any]]:
     """Every item of a paginated list endpoint, one JSON object a line."""
     key = 'jobs' if '/jobs' in path else 'workflow_runs'
@@ -133,15 +175,21 @@ def gh_api(path: str) -> list[dict[str, Any]]:
 
 
 def main(argv: Sequence[str] | None = None, now: datetime | None = None, api: Api = gh_api,
-         post: Post = alerts.open_or_comment) -> int:
+         post: Post = alerts.open_or_comment, root: Path = ROOT) -> int:
     ap = argparse.ArgumentParser(description="Count Line Judge's verdicts for last week.")
     ap.add_argument('--dry-run', action='store_true', help='print the digest; post nothing')
     args = ap.parse_args(argv)
-    start, end = last_week(now or datetime.now(UTC))
+    now = now or datetime.now(UTC)
+    start, end = last_week(now)
     body = digest({wf: tally(wf, start, end, api) for wf in JUDGED}, start, end)
+    lines, close = late_copies(now, root)
+    body += '\nLate copies of the lock-writing runs (Stage 93 item 19):\n\n' + '\n'.join(lines) + '\n'
     print(body)
     if not args.dry_run:
         post(TITLE, body)
+    if close:
+        print(f"LATE COPIES: {', '.join(s.upper() for s in close)} came within an hour of the lock slack.")
+        return 1
     return 0
 
 
