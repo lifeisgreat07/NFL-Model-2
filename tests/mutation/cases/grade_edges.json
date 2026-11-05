@@ -1,0 +1,36 @@
+{
+  "target": "src/sports/nhl/daily.py",
+  "tests": "tests/test_grade_edges.py",
+  "cases": [
+    {
+      "id": "nhl-grade-crashes-on-a-null-score",
+      "why": "a final game with no score is graded anyway, and int() of a missing value raises after the slate's picks are saved, the crash audit 7 injected",
+      "find": "        elif status == GameStatus.FINAL.value and g is not None and not pd.isna(g['home_win']):\n",
+      "replace": "        elif status == GameStatus.FINAL.value and g is not None:\n",
+      "expect_caught_by": "test_a_final_game_with_no_result_is_pending_not_a_crash"
+    },
+    {
+      "id": "nba-grade-crashes-on-a-null-score",
+      "target": "src/sports/nba/daily.py",
+      "why": "the NBA's grade has the same crash on a final game with no score",
+      "find": "        elif status == GameStatus.FINAL.value and g is not None and not pd.isna(g['home_win']):\n",
+      "replace": "        elif status == GameStatus.FINAL.value and g is not None:\n",
+      "expect_caught_by": "test_a_final_game_with_no_result_is_pending_not_a_crash"
+    },
+    {
+      "id": "nhl-grade-cancelled-by-score",
+      "why": "a cancelled game that carries a score is graded on it, so a game never played counts as a win or a loss",
+      "find": "        if status == GameStatus.CANCELLED.value:\n            result = 'cancelled'\n",
+      "replace": "        if status == GameStatus.CANCELLED.value and pd.isna(g['home_win']):\n            result = 'cancelled'\n",
+      "expect_caught_by": "test_a_cancelled_game_is_cancelled_whatever_its_score_says"
+    },
+    {
+      "id": "nba-grade-unscheduled-pick-is-wrong",
+      "target": "src/sports/nba/daily.py",
+      "why": "a pick whose game left the schedule is graded wrong instead of waiting, a loss nobody can check",
+      "find": "        else:\n            result = 'pending'\n        rows.append({'game_id': pick['game_id'], 'pick': pick['pick'], 'result': result,\n                     'market_source'",
+      "replace": "        else:\n            result = 'pending' if g is not None else 'wrong'\n        rows.append({'game_id': pick['game_id'], 'pick': pick['pick'], 'result': result,\n                     'market_source'",
+      "expect_caught_by": "test_a_pick_whose_game_left_the_schedule_is_pending"
+    }
+  ]
+}

@@ -19,8 +19,8 @@
     {
       "id": "nhl-daily-live-graded",
       "why": "a game still in progress is graded from its current score.",
-      "find": "        elif status == GameStatus.FINAL.value:",
-      "replace": "        elif status in (GameStatus.FINAL.value, GameStatus.IN_PROGRESS.value):",
+      "find": "        elif status == GameStatus.FINAL.value and g is not None",
+      "replace": "        elif status in (GameStatus.FINAL.value, GameStatus.IN_PROGRESS.value) and g is not None",
       "expect_caught_by": "test_only_final_games_are_graded_and_a_cancelled_one_is_never_counted"
     },
     {

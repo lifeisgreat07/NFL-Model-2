@@ -14,26 +14,24 @@
     "game_type": "REG",
     "off_matchup": 0.077,
     "def_matchup": 0.0464,
-    "qb_matchup": -0.122,
-    "qb_change_diff": 1,
-    "spread_line": -8.5,
-    "model_a_home_win_prob": 0.3571,
-    "model_b_home_win_prob": 0.1768,
-    "market_prob_home": 0.1757,
-    "context_notes": [
-      "BAL: the pick uses Tyler Huntley, the listed starter, not J.Fagnano, who started BAL's last game."
-    ],
+    "qb_matchup": -0.4389,
+    "qb_change_diff": 0,
+    "spread_line": -10.0,
+    "model_a_home_win_prob": 0.2968,
+    "model_b_home_win_prob": 0.2021,
+    "market_prob_home": 0.1397,
+    "context_notes": [],
     "why": {
       "off_matchup": 0.0554,
       "def_matchup": -0.0368,
-      "qb_matchup": -0.2828,
-      "qb_change": -0.4598
+      "qb_matchup": -1.0173,
+      "qb_change": -0.0
     },
-    "home_qb_id": "00-0035993",
-    "home_qb": "Tyler Huntley",
+    "home_qb_id": "00-0040981",
+    "home_qb": "Joe Fagnano",
     "home_qb_basis": "announced",
-    "announced_home_qb_id": "00-0035993",
-    "announced_home_qb": "Tyler Huntley",
+    "announced_home_qb_id": "00-0040981",
+    "announced_home_qb": "Joe Fagnano",
     "last_game_home_qb_id": "00-0040981",
     "last_game_home_qb": "J.Fagnano",
     "away_qb_id": "00-0036971",
@@ -43,18 +41,16 @@
     "announced_away_qb": "Trevor Lawrence",
     "last_game_away_qb_id": "00-0036971",
     "last_game_away_qb": "T.Lawrence",
-    "confidence_rank": 2,
-    "confidence_points": 14,
+    "confidence_rank": 3,
+    "confidence_points": 13,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -98,18 +94,16 @@
     "announced_away_qb": "Joe Burrow",
     "last_game_away_qb_id": "00-0036442",
     "last_game_away_qb": "J.Burrow",
-    "confidence_rank": 12,
-    "confidence_points": 4,
+    "confidence_rank": 13,
+    "confidence_points": 3,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -128,10 +122,10 @@
     "def_matchup": -0.0503,
     "qb_matchup": -0.0902,
     "qb_change_diff": 0,
-    "spread_line": -3.0,
+    "spread_line": -2.5,
     "model_a_home_win_prob": 0.4957,
-    "model_b_home_win_prob": 0.3944,
-    "market_prob_home": 0.3669,
+    "model_b_home_win_prob": 0.4123,
+    "market_prob_home": 0.3883,
     "context_notes": [],
     "why": {
       "off_matchup": 0.0158,
@@ -153,18 +147,16 @@
     "announced_away_qb": "Bo Nix",
     "last_game_away_qb_id": "00-0039732",
     "last_game_away_qb": "B.Nix",
-    "confidence_rank": 13,
-    "confidence_points": 3,
+    "confidence_rank": 15,
+    "confidence_points": 1,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -183,10 +175,10 @@
     "def_matchup": 0.0375,
     "qb_matchup": -0.2134,
     "qb_change_diff": 0,
-    "spread_line": -6.0,
+    "spread_line": -5.5,
     "model_a_home_win_prob": 0.3824,
-    "model_b_home_win_prob": 0.2674,
-    "market_prob_home": 0.2514,
+    "model_b_home_win_prob": 0.2822,
+    "market_prob_home": 0.2689,
     "context_notes": [],
     "why": {
       "off_matchup": -0.0913,
@@ -208,18 +200,16 @@
     "announced_away_qb": "Dak Prescott",
     "last_game_away_qb_id": "00-0033077",
     "last_game_away_qb": "D.Prescott",
-    "confidence_rank": 6,
-    "confidence_points": 10,
+    "confidence_rank": 7,
+    "confidence_points": 9,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -238,10 +228,10 @@
     "def_matchup": -0.071,
     "qb_matchup": 0.1153,
     "qb_change_diff": 0,
-    "spread_line": 9.5,
+    "spread_line": 10.0,
     "model_a_home_win_prob": 0.6111,
-    "model_b_home_win_prob": 0.7928,
-    "market_prob_home": 0.8491,
+    "model_b_home_win_prob": 0.8047,
+    "market_prob_home": 0.8603,
     "context_notes": [],
     "why": {
       "off_matchup": -0.0078,
@@ -263,18 +253,16 @@
     "announced_away_qb": "Geno Smith",
     "last_game_away_qb_id": "00-0030565",
     "last_game_away_qb": "G.Smith",
-    "confidence_rank": 4,
-    "confidence_points": 12,
+    "confidence_rank": 2,
+    "confidence_points": 14,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -318,18 +306,16 @@
     "announced_away_qb": "Jared Goff",
     "last_game_away_qb_id": "00-0033106",
     "last_game_away_qb": "J.Goff",
-    "confidence_rank": 5,
-    "confidence_points": 11,
+    "confidence_rank": 4,
+    "confidence_points": 12,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -346,18 +332,20 @@
     "game_type": "REG",
     "off_matchup": -0.0052,
     "def_matchup": -0.1411,
-    "qb_matchup": 0.0731,
-    "qb_change_diff": 0,
-    "spread_line": 2.5,
-    "model_a_home_win_prob": 0.602,
-    "model_b_home_win_prob": 0.5944,
-    "market_prob_home": 0.6117,
-    "context_notes": [],
+    "qb_matchup": 0.2698,
+    "qb_change_diff": -1,
+    "spread_line": 3.0,
+    "model_a_home_win_prob": 0.7908,
+    "model_b_home_win_prob": 0.6539,
+    "market_prob_home": 0.6331,
+    "context_notes": [
+      "CLE: the pick uses Shedeur Sanders, the listed starter, not D.Watson, who started CLE's last game."
+    ],
     "why": {
       "off_matchup": -0.0038,
       "def_matchup": 0.1118,
-      "qb_matchup": 0.1695,
-      "qb_change": -0.0
+      "qb_matchup": 0.6255,
+      "qb_change": 0.4598
     },
     "home_qb_id": "00-0040743",
     "home_qb": "Tyler Shough",
@@ -366,25 +354,23 @@
     "announced_home_qb": "Tyler Shough",
     "last_game_home_qb_id": "00-0040743",
     "last_game_home_qb": "T.Shough",
-    "away_qb_id": "00-0033537",
-    "away_qb": "Deshaun Watson",
+    "away_qb_id": "00-0040668",
+    "away_qb": "Shedeur Sanders",
     "away_qb_basis": "announced",
-    "announced_away_qb_id": "00-0033537",
-    "announced_away_qb": "Deshaun Watson",
+    "announced_away_qb_id": "00-0040668",
+    "announced_away_qb": "Shedeur Sanders",
     "last_game_away_qb_id": "00-0033537",
     "last_game_away_qb": "D.Watson",
-    "confidence_rank": 14,
-    "confidence_points": 2,
+    "confidence_rank": 12,
+    "confidence_points": 4,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -401,24 +387,26 @@
     "game_type": "REG",
     "off_matchup": -0.0607,
     "def_matchup": 0.0055,
-    "qb_matchup": -0.061,
-    "qb_change_diff": 0,
+    "qb_matchup": 0.151,
+    "qb_change_diff": 1,
     "spread_line": -3.5,
-    "model_a_home_win_prob": 0.4867,
-    "model_b_home_win_prob": 0.3491,
+    "model_a_home_win_prob": 0.4946,
+    "model_b_home_win_prob": 0.2752,
     "market_prob_home": 0.3461,
-    "context_notes": [],
+    "context_notes": [
+      "PHI: the pick uses Joe Milton III, the listed starter, not T.McKee, who started PHI's last game."
+    ],
     "why": {
       "off_matchup": -0.0437,
       "def_matchup": -0.0044,
-      "qb_matchup": -0.1415,
-      "qb_change": -0.0
+      "qb_matchup": 0.3499,
+      "qb_change": -0.4598
     },
-    "home_qb_id": "00-0038400",
-    "home_qb": "Tanner McKee",
+    "home_qb_id": "00-0039398",
+    "home_qb": "Joe Milton III",
     "home_qb_basis": "announced",
-    "announced_home_qb_id": "00-0038400",
-    "announced_home_qb": "Tanner McKee",
+    "announced_home_qb_id": "00-0039398",
+    "announced_home_qb": "Joe Milton III",
     "last_game_home_qb_id": "00-0038400",
     "last_game_home_qb": "T.McKee",
     "away_qb_id": "00-0039923",
@@ -428,18 +416,16 @@
     "announced_away_qb": "J.J. McCarthy",
     "last_game_away_qb_id": "00-0039923",
     "last_game_away_qb": "J.McCarthy",
-    "confidence_rank": 11,
-    "confidence_points": 5,
+    "confidence_rank": 6,
+    "confidence_points": 10,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -483,18 +469,16 @@
     "announced_away_qb": "Matthew Stafford",
     "last_game_away_qb_id": "00-0026498",
     "last_game_away_qb": "M.Stafford",
-    "confidence_rank": 9,
-    "confidence_points": 7,
+    "confidence_rank": 10,
+    "confidence_points": 6,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -538,18 +522,16 @@
     "announced_away_qb": "C.J. Stroud",
     "last_game_away_qb_id": "00-0039163",
     "last_game_away_qb": "C.Stroud",
-    "confidence_rank": 10,
-    "confidence_points": 6,
+    "confidence_rank": 11,
+    "confidence_points": 5,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -593,18 +575,16 @@
     "announced_away_qb": "Kirk Cousins",
     "last_game_away_qb_id": "00-0029604",
     "last_game_away_qb": "K.Cousins",
-    "confidence_rank": 3,
-    "confidence_points": 13,
+    "confidence_rank": 1,
+    "confidence_points": 15,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -623,10 +603,10 @@
     "def_matchup": 0.08,
     "qb_matchup": 0.0487,
     "qb_change_diff": 0,
-    "spread_line": 3.0,
+    "spread_line": 3.5,
     "model_a_home_win_prob": 0.5558,
-    "model_b_home_win_prob": 0.5786,
-    "market_prob_home": 0.6331,
+    "model_b_home_win_prob": 0.5966,
+    "market_prob_home": 0.6539,
     "context_notes": [],
     "why": {
       "off_matchup": 0.0387,
@@ -648,18 +628,16 @@
     "announced_away_qb": "Jordan Love",
     "last_game_away_qb_id": "00-0036264",
     "last_game_away_qb": "J.Love",
-    "confidence_rank": 15,
-    "confidence_points": 1,
+    "confidence_rank": 14,
+    "confidence_points": 2,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -676,26 +654,27 @@
     "game_type": "REG",
     "off_matchup": -0.0579,
     "def_matchup": 0.0829,
-    "qb_matchup": 0.0301,
-    "qb_change_diff": -1,
-    "spread_line": 11.5,
-    "model_a_home_win_prob": 0.6361,
-    "model_b_home_win_prob": 0.854,
-    "market_prob_home": 0.89,
+    "qb_matchup": 0.0364,
+    "qb_change_diff": 0,
+    "spread_line": 8.5,
+    "model_a_home_win_prob": 0.5283,
+    "model_b_home_win_prob": 0.7423,
+    "market_prob_home": 0.8243,
     "context_notes": [
+      "SEA: the pick uses Drew Lock, the listed starter, not S.Darnold, who started SEA's last game.",
       "ARI: the pick uses Gardner Minshew, the listed starter, not J.Brissett, who started ARI's last game."
     ],
     "why": {
       "off_matchup": -0.0416,
       "def_matchup": -0.0657,
-      "qb_matchup": 0.0698,
-      "qb_change": 0.4598
+      "qb_matchup": 0.0843,
+      "qb_change": -0.0
     },
-    "home_qb_id": "00-0034869",
-    "home_qb": "Sam Darnold",
+    "home_qb_id": "00-0035704",
+    "home_qb": "Drew Lock",
     "home_qb_basis": "announced",
-    "announced_home_qb_id": "00-0034869",
-    "announced_home_qb": "Sam Darnold",
+    "announced_home_qb_id": "00-0035704",
+    "announced_home_qb": "Drew Lock",
     "last_game_home_qb_id": "00-0034869",
     "last_game_home_qb": "S.Darnold",
     "away_qb_id": "00-0035289",
@@ -705,18 +684,16 @@
     "announced_away_qb": "Gardner Minshew",
     "last_game_away_qb_id": "00-0033119",
     "last_game_away_qb": "J.Brissett",
-    "confidence_rank": 1,
-    "confidence_points": 15,
+    "confidence_rank": 5,
+    "confidence_points": 11,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -760,18 +737,16 @@
     "announced_away_qb": "Baker Mayfield",
     "last_game_away_qb_id": "00-0034855",
     "last_game_away_qb": "B.Mayfield",
-    "confidence_rank": 7,
-    "confidence_points": 9,
+    "confidence_rank": 8,
+    "confidence_points": 8,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   },
   {
     "season": 2026,
@@ -815,17 +790,15 @@
     "announced_away_qb": "Josh Allen",
     "last_game_away_qb_id": "00-0034857",
     "last_game_away_qb": "J.Allen",
-    "confidence_rank": 8,
-    "confidence_points": 8,
+    "confidence_rank": 9,
+    "confidence_points": 7,
     "data_provenance": {
-      "read_utc": "2026-11-03T11:02:59Z",
+      "read_utc": "2026-11-05T11:02:59Z",
       "loader": "nflreadpy",
       "loader_version": "0.1.5",
       "plays_through_week": 8,
       "schedule": "nflverse schedule via nflreadpy",
       "qb_override_file": null
-    },
-    "preview": true,
-    "previewed_utc": "2026-11-03T11:02:59.436220+00:00"
+    }
   }
 ]
