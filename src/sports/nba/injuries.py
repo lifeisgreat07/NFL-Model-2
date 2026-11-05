@@ -9,6 +9,8 @@ about what it keeps, and says what it could not read:
 - A report not shaped as registered, or a team the schedule does not know,
   stops the whole read (`InjurySourceError`): a team code that changed would
   leave the real team with no rows at all, which reads as fully healthy.
+  So does a report that lists teams but yields no player, read or unread
+  (Stage 92 item 8): every team "fully healthy" is the same silent failure.
   Every pick is then made without the availability term, and says so.
 - A player row it cannot read (an unknown status, or no athlete id) is not
   kept, and its team is listed in `Report.unread` with the reason. Only that
@@ -90,6 +92,11 @@ def parse(report: Json, teams: Iterable[str]) -> Report:
             rows.append({'team': str(code), 'athlete_id': str(pid), 'name': str(name), 'status': str(status)})
     if strangers:
         raise InjurySourceError('; '.join(strangers))
+    # Stage 92 item 8 (audit 7, R5): a report that lists teams but yields no
+    # player at all, read or unread, is not shaped as registered (a renamed
+    # per-team key reads exactly so). Kept, it would say every player plays.
+    if not rows and not unread:
+        raise InjurySourceError(f'{len(lists)} teams listed and not one player read')
     return Report(rows, unread)
 
 

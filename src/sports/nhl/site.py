@@ -96,6 +96,9 @@ def payload(season: int, now: datetime) -> dict[str, Any]:
     sched = _read(PATHS.results / f'schedule_{season}.json')
     if sched is None:
         raise FileNotFoundError(f'no schedule for {season}: the daily run writes it (results/nhl/schedule_{season}.json)')
+    if not sched.get('games'):
+        # Stage 91 item 4 (audit 7, R2): an empty schedule would publish a board with no games and every grade gone.
+        raise ValueError(f'results/nhl/schedule_{season}.json has no games; refusing to build a board from it')
     graded_rows = _read(PATHS.results / f'graded_{season}.json') or []
     graded = {str(r['game_id']): r['result'] for r in graded_rows}
     picks: dict[str, dict[str, Any]] = {}

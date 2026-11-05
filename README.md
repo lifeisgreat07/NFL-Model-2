@@ -279,9 +279,10 @@ Every one of these, and the page build, the browser checks and the
 end-of-session gate, is also a task in `tasks.py`, which runs exactly what CI
 runs (`tests/test_tasks.py` holds each task to its workflow). `python
 tasks.py` lists them; `python tasks.py check` is lint plus the suite.
-`python tasks.py quick` is the suite without the nine tests marked `slow`
+`python tasks.py quick` is the suite without the ten tests marked `slow`
 (seven drive a whole daily run, two re-derive a saved pick from the whole
-history), for iterating; CI and the Suite line still run every test.
+history, one drives the NHL's run on a renamed odds payload), for
+iterating; CI and the Suite line still run every test.
 
 ## Automating this with Claude Code Routines
 
