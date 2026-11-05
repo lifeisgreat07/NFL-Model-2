@@ -1,0 +1,27 @@
+{
+  "target": "src/agents/session_wrapup.py",
+  "tests": "tests/test_wrapup_suite_split.py",
+  "cases": [
+    {
+      "id": "wrapup-split-mismatch-passes",
+      "why": "a split that no longer matches a real run passes, so CLAUDE.md's two halves go stale beside a checked total",
+      "find": "    if said != real:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_a_stale_split_fails_and_says_what_is_real"
+    },
+    {
+      "id": "wrapup-split-never-checked",
+      "why": "the wrap-up checks the total and never collects the corpus, so the split is printed unchecked",
+      "find": "    return check_split(text, actual, parse_collected(collected.stdout))\n",
+      "replace": "    return Check('suite count', True, f'CLAUDE.md and a real run both say {actual}')\n",
+      "expect_caught_by": "test_the_wrapup_collects_the_corpus_file_and_checks_the_split"
+    },
+    {
+      "id": "wrapup-split-behavioural-is-the-total",
+      "why": "the behavioural half is taken as the whole run, so a true split is reported as wrong",
+      "find": "    real = (corpus, actual - corpus)\n",
+      "replace": "    real = (corpus, actual)\n",
+      "expect_caught_by": "test_a_true_split_passes"
+    }
+  ]
+}

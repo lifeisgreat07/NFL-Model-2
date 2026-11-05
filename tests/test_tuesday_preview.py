@@ -31,6 +31,7 @@ TEMPLATE = JOINED_TEMPLATE
 from src.sports.nfl import generate_dashboard as gd
 from src.sports.nfl import weekly_summary as ws
 from src.sports.nfl import weekly_update as wu
+from tests.js_source import function_source
 
 
 def _main_source():
@@ -146,12 +147,6 @@ def test_the_build_marks_a_preview_week_and_leaves_it_ungraded():
     assert re.search(r"'preview': True,", src)
     assert re.search(r"build_games_js\(preds, \{\}\)", src), (
         "a preview week is built with a graded lookup; it must never be graded")
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 @pytest.fixture(scope='module')

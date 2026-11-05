@@ -22,6 +22,7 @@ from src.core.template_parts import JOINED_TEMPLATE
 from src.site import build
 from src.sports.nfl import generate_dashboard as gd
 from src.sports.nfl import lock_proof as lp
+from tests.js_source import function_source
 
 ROOT = Path(__file__).resolve().parents[1]
 NODE = shutil.which('node')
@@ -93,12 +94,6 @@ def test_the_real_history_dates_week_4_before_its_kickoff():
 
 
 # --- the page -----------------------------------------------------------------
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
-
 
 def page_line(commits, games):
     if not NODE:
