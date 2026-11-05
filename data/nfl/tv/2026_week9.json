@@ -1,0 +1,248 @@
+{
+  "reads": [
+    "2026-11-05T11:03:11Z"
+  ],
+  "changes": [],
+  "games": [
+    {
+      "elias": "2026110500",
+      "networks": [
+        "Prime Video"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "JAX",
+      "home": "BAL",
+      "territory": "NATIONAL",
+      "listed": [
+        "Prime Video"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110800",
+      "networks": [
+        "NFL Network"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CIN",
+      "home": "ATL",
+      "territory": "NATIONAL",
+      "listed": [
+        "NFL Network"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110801",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "DEN",
+      "home": "CAR",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110802",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "DAL",
+      "home": "IND",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110803",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NYJ",
+      "home": "KC",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110804",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "DET",
+      "home": "MIA",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110805",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CLE",
+      "home": "NO",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110806",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NYG",
+      "home": "PHI",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110807",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LA",
+      "home": "WAS",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110808",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "HOU",
+      "home": "LAC",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110809",
+      "networks": [],
+      "held_back": [
+        "kickoff disagrees: nfl.com 2026-11-08T21:25:00Z"
+      ],
+      "reported": [],
+      "away": "LV",
+      "home": "SF",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ]
+    },
+    {
+      "elias": "2026110810",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "GB",
+      "home": "NE",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110811",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "ARI",
+      "home": "SEA",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110812",
+      "networks": [
+        "NBC"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "TB",
+      "home": "CHI",
+      "territory": "NATIONAL",
+      "listed": [
+        "NBC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    },
+    {
+      "elias": "2026110900",
+      "networks": [
+        "ESPN"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "BUF",
+      "home": "MIN",
+      "territory": "NATIONAL",
+      "listed": [
+        "ESPN",
+        "ABC",
+        "NFL Network"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
+      "read_at": "2026-11-05T11:03:11Z"
+    }
+  ]
+}
