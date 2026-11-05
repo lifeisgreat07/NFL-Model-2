@@ -876,14 +876,19 @@ function forwardHtml(f, sport){
     return `<tr><th scope="row">${n}</th><td class="num">${v.games}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${v.brier.toFixed(4)}</td><td class="num">${(v.accuracy * 100).toFixed(1)}%</td></tr>`; }).join('');
   const pairs = PAIRS.filter(([, k]) => f.comparisons[k]).map(([n, k]) => { const c = f.comparisons[k];
     return `<tr><th scope="row">${n}</th><td class="num">${c.games}</td><td class="num">${c.days}</td>`
-      + (c.note ? `<td colspan="2">${c.note}</td>` : `<td class="num">${sgn(c.diff)}</td><td class="num">[${sgn(c.low)}, ${sgn(c.high)}]</td>`) + '</tr>'; }).join('');
+      + (c.note ? `<td colspan="2">${c.note}</td>` : `<td class="num">${sgn(c.diff)}</td><td class="num">[${sgn(c.low)}, ${sgn(c.high)}]`
+        + (c.few_days ? `<br><span class="forward-games">games [${sgn(c.few_days.game_low)}, ${sgn(c.few_days.game_high)}]</span>` : '') + '</td>') + '</tr>'; }).join('');
+  // Stage 95 item 37: under 20 game days the day-block interval is rough, so the
+  // interval that resamples single games is printed under it, and this says why.
+  const few = PAIRS.map(([, k]) => f.comparisons[k]).find(c => c && c.few_days);
+  const fewNote = few ? ` Only ${few.days} game days are in so far, under the ${few.few_days.min_days} that make whole-day resampling dependable, so each interval is shown with the one that resamples single games under it (&ldquo;games&rdquo;), which is narrower because it ignores how games on one day move together. The day-block interval is the one the registration uses.` : '';
   const level = (f.interval_rule.level * 100).toFixed(2);
   return `<p class="${sport}-lede">Every saved pick whose game is final, ${f.graded_picks} of them through ${f.through}, scored as the registration says (<code>${f.registered}</code>). Model B and the market are scored only on the picks that had a price.${f.market_price ? ' ' + f.market_price.said : ''}</p>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's scores</caption>
     <thead><tr><th scope="col">Forecaster</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's comparisons</caption>
     <thead><tr><th scope="col">Comparison</th><th scope="col" class="num">Games</th><th scope="col" class="num">Days</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${pairs}</tbody></table></div>
-    <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>${calibrationTable(f, sport, level)}`;
+    <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored.${fewNote} The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>${calibrationTable(f, sport, level)}`;
 }
 /* Stage 84 item 5: calibration intercept and slope for Models A and B, from
    the same file. Older files have no calibration block, and show none. */

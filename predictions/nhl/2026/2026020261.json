@@ -1,0 +1,77 @@
+{
+ "game_id": "2026020261",
+ "season": 2026,
+ "slate": "2026-11-05",
+ "start_utc": "2026-11-06T02:30:00Z",
+ "home": "COL",
+ "away": "NSH",
+ "model_a": 0.691,
+ "model_b": 0.6814,
+ "pick": "COL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.85238,
+  "shot_matchup": 7.439203,
+  "goalie_matchup_2000": -0.000221
+ },
+ "market": {
+  "game_id": "2026020261",
+  "start_utc": "2026-11-06T02:30:00Z",
+  "home": "COL",
+  "away": "NSH",
+  "book": "DraftKings",
+  "home_price": -218.0,
+  "away_price": 180.0,
+  "home_prob": 0.6575,
+  "read_utc": "2026-11-05T21:01:35Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478406,
+   "name": "Mackenzie Blackwood",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/evanrawal/status/2118398149882786297"
+  },
+  "away": {
+   "player_id": 8477424,
+   "name": "Juuse Saros",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-05",
+  "read_utc": "2026-11-05T21:01:35Z",
+  "home": [
+   {
+    "name": "Josh Manson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Zachary L'Heureux",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jonathan Marchessault",
+    "position": "RW",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-05T21:01:35Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-04",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14653,
+  "training_games_priced": 7626
+ }
+}

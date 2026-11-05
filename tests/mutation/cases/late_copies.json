@@ -1,0 +1,28 @@
+{
+  "target": "src/core/line_judge_digest.py",
+  "tests": "tests/test_late_copies.py",
+  "cases": [
+    {
+      "id": "digest-never-fails-on-a-late-copy",
+      "why": "the NFL's fallback copy comes within an hour of the slack and the digest still passes, so the next late Thursday locks nothing with no warning",
+      "find": "        return 1\n    return 0\n",
+      "replace": "        return 0\n    return 0\n",
+      "expect_caught_by": "test_an_nfl_copy_seven_and_a_half_hours_late_fails_the_digest"
+    },
+    {
+      "id": "digest-reads-every-copy-ever",
+      "why": "the thirty-day window is dropped, so one bad night in September fails every digest after it",
+      "find": "LATE_WINDOW = timedelta(days=30)\n",
+      "replace": "LATE_WINDOW = timedelta(days=3650)\n",
+      "expect_caught_by": "test_copies_well_inside_the_slack_or_older_than_thirty_days_pass"
+    },
+    {
+      "id": "start-delay-records-a-dispatch",
+      "target": "src/core/start_delay.py",
+      "why": "a run cron-job.org dispatched on time is recorded as a GitHub copy, so the record says nothing about the fallback",
+      "find": "    if name in RECORD_FOR and event == 'schedule' and os.environ.get('GITHUB_ACTIONS') == 'true':\n",
+      "replace": "    if name in RECORD_FOR and os.environ.get('GITHUB_ACTIONS') == 'true':\n",
+      "expect_caught_by": "test_a_dispatch_or_a_local_run_records_nothing"
+    }
+  ]
+}
