@@ -90,6 +90,9 @@ jobs:
           test -d data/nba && git add data/nba
           test -d predictions/nba && git add predictions/nba
           test -d results/nba && git add results/nba
+          # Stage 93 item 21: a saved pick is never rewritten or removed; a
+          # commit that would do either fails here, before it is made.
+          python -m src.core.picks_only_grow predictions/nba
           if git diff --cached --quiet; then
             echo "nothing to commit"
             exit 0
