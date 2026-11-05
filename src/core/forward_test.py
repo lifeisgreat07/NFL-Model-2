@@ -58,6 +58,9 @@ FORECASTERS = ('model_a', 'model_b', 'market', 'base_rate')
 COMPARISONS = (('model_a_minus_base_rate', 'model_a', 'base_rate'),
                ('model_b_minus_model_a', 'model_b', 'model_a'),
                ('model_b_minus_market', 'model_b', 'market'))
+#: How the calibration pair is fitted (Stage 95 item 38): two fits, said in the file and on the pages.
+FITS = ('two: the intercept with the slope held at 1 (calibration in the large), '
+        'the slope with an intercept of its own')
 #: The models whose calibration is reported (Stage 84 item 5).
 CALIBRATED = ('model_a', 'model_b')
 
@@ -139,7 +142,9 @@ def calibration(p: npt.NDArray[np.float64], y: npt.NDArray[np.float64], days: np
     weights = per_day[:, codes]
     one = np.ones((1, len(p)))
     tail = (1 - level) / 2
-    out: dict[str, Any] = {'games': int(len(p)), 'days': int(len(uniq)), 'level': level}
+    # Stage 95 item 38 (audit 7 M13): the two numbers come from two fits, and
+    # the file says so, so neither is read as the other's companion in one model.
+    out: dict[str, Any] = {'games': int(len(p)), 'days': int(len(uniq)), 'level': level, 'fits': FITS}
     for name, free, pick in (('intercept', False, 0), ('slope', True, 1)):
         with np.errstate(all='ignore'):
             point = recalibrate(x, y, one, free)[pick][0]
