@@ -37,8 +37,8 @@
       "id": "checkout-back-on-a-movable-tag",
       "target": ".github/workflows/deploy-pages.yml",
       "why": "the job that publishes the site checks out with @v4 again: the first step of the job, with its token in reach, is whatever that tag points at today",
-      "find": "uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0",
-      "replace": "uses: actions/checkout@v4",
+      "find": "      - name: Check out repo\n        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0\n",
+      "replace": "      - name: Check out repo\n        uses: actions/checkout@v4\n",
       "expect_caught_by": "test_each_is_pinned_to_a_full_commit_sha"
     },
     {
