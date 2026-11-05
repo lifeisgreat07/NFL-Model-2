@@ -43,7 +43,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test, priced, season_prices
+from src.core import forward_test, priced, request_budget, season_prices
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nba import (
@@ -282,7 +282,8 @@ def read_kalshi(get: Callable[[str], bytes]) -> dict[Any, Any] | None:
 def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetch) -> int:
     now = now or datetime.now(UTC)
     season = nba_schedule.current_season(now)
-    sched = nba_schedule.load_schedule(season, get=lambda u: json.loads(get(u)))
+    # Stage 93 item 18: under a budget, so a slow feed stops cleanly inside the step's timeout.
+    sched = nba_schedule.load_schedule(season, get=request_budget.Budget().wrap(lambda u: json.loads(get(u))))
     first = backtest.registry()['protocol']['training_from_season']
     past_games, past_minutes = backtest.load_history(first, season - 1)
     cur_games, cur_minutes = refresh_season(season, sched, get=get)

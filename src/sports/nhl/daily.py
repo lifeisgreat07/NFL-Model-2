@@ -52,7 +52,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test, priced, season_prices
+from src.core import forward_test, priced, request_budget, season_prices
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nhl import (
@@ -299,7 +299,8 @@ def write_page_inputs(sched: pd.DataFrame, games: pd.DataFrame, folder: Path, h:
 def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetch) -> int:
     now = now or datetime.now(UTC)
     season = nhl_schedule.current_season(now)
-    sched = nhl_schedule.load_schedule(season)
+    # Stage 93 item 18: retried like the history and odds reads, and under a budget.
+    sched = nhl_schedule.load_schedule(season, get=request_budget.Budget().wrap(lambda u: json.loads(get(u))))
     first = backtest.registry()['protocol']['training_from_season']
     past = backtest.load_history(first, season - 1)
     current = refresh_season(season, sched)
