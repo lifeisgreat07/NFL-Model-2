@@ -1,0 +1,20 @@
+{
+ "target": "src/sports/nhl/market.py",
+ "tests": "tests/test_nhl_inputs.py",
+ "cases": [
+  {
+   "id": "nhl-malformed-row-sinks-the-market",
+   "why": "a malformed price row raises out of parse again, the daily run reads it as the feed not answering, and every game loses its price",
+   "find": "        except (AttributeError, TypeError, ValueError) as exc:\n",
+   "replace": "        except KeyError as exc:\n",
+   "expect_caught_by": "test_one_malformed_price_row_costs_only_its_own_game"
+  },
+  {
+   "id": "nhl-malformed-row-dropped-silently",
+   "why": "a malformed row is skipped and never named, so a game is unpriced with no reason given",
+   "find": "            missing.append(f'game {gid}: a malformed price row, left unpriced ({type(exc).__name__}: {exc})')\n",
+   "replace": "            pass\n",
+   "expect_caught_by": "test_one_malformed_price_row_costs_only_its_own_game"
+  }
+ ]
+}
