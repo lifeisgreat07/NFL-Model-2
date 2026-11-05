@@ -1,0 +1,43 @@
+{
+  "target": "src/core/alerts.py",
+  "tests": "tests/test_alerts.py",
+  "cases": [
+    {
+      "id": "alerts-no-retry",
+      "why": "one failed gh call loses the alert again: a 502 from GitHub for a second and the run's failure is never raised",
+      "find": "BACKOFF = (5.0, 20.0)\n",
+      "replace": "BACKOFF = ()\n",
+      "expect_caught_by": "test_a_gh_call_that_fails_twice_then_answers_opens_the_issue"
+    },
+    {
+      "id": "alerts-refused-alert-exits-zero",
+      "why": "an alert GitHub refused leaves its step green, so the run looks handled and the summary line is the only trace",
+      "find": "        kept_in_summary(args.title, text, exc)\n        return 1\n",
+      "replace": "        kept_in_summary(args.title, text, exc)\n        return 0\n",
+      "expect_caught_by": "test_three_failures_keep_the_alert_in_the_summary_and_fail_the_step"
+    },
+    {
+      "id": "alerts-refused-alert-not-kept",
+      "why": "the alert is refused and its text goes nowhere, so the run's page does not say what it would have raised",
+      "find": "            f.write(f'## Alert not raised: {title}",
+      "replace": "            f.write(f'## {title}",
+      "expect_caught_by": "test_three_failures_keep_the_alert_in_the_summary_and_fail_the_step"
+    },
+    {
+      "id": "nhl-daily-missed-pick-alert-can-be-skipped",
+      "target": ".github/workflows/nhl-daily.yml",
+      "why": "a refused drift or input alert fails its step and the missed-pick alert after it never runs",
+      "find": "      - name: Raise an alert on a missed pick\n        timeout-minutes: 25\n        if: success()\n        # Stage 93 item 12: an alert GitHub refuses after three tries fails\n        # this step (summary and annotation) but must not skip the alerts after it.\n        continue-on-error: true\n",
+      "replace": "      - name: Raise an alert on a missed pick\n        timeout-minutes: 25\n        if: success()\n",
+      "expect_caught_by": "test_the_daily_runs_success_path_alerts_cannot_skip_each_other"
+    },
+    {
+      "id": "nba-canary-kalshi-never-closed",
+      "target": ".github/workflows/nba-canary.yml",
+      "why": "Kalshi's failure title has no resolver, so a green night leaves it open the way #543 was left",
+      "find": "          python -m src.core.alerts --resolve --title \"NBA: Kalshi failing in the nightly canary\" --body-file recovered.md\n",
+      "replace": "",
+      "expect_caught_by": "test_every_failure_alert_is_closed_by_the_next_success"
+    }
+  ]
+}

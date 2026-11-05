@@ -37,8 +37,8 @@ def test_the_looks_and_their_level_are_the_registered_ones(sport):
     reg = json.loads((ROOT / registry).read_text(encoding='utf-8'))
     text = reg['drift']['amended_2026_11_04']
     assert '100, 200, 400, 800 and 1,200 graded picks' in text and 'one-sided 99%' in text
-    entry = reg['amendments'][-1]
-    assert entry['entry'] == 'drift' and entry['before_any_result'] is False and entry['date'] == '2026-11-04'
+    (entry,) = [a for a in reg['amendments'] if a['entry'] == 'drift' and a['date'] == '2026-11-04']
+    assert entry['before_any_result'] is False
 
 
 @pytest.mark.parametrize('sport', SPORTS)

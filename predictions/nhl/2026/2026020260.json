@@ -1,0 +1,122 @@
+{
+ "game_id": "2026020260",
+ "season": 2026,
+ "slate": "2026-11-05",
+ "start_utc": "2026-11-06T01:00:00Z",
+ "home": "EDM",
+ "away": "ANA",
+ "model_a": 0.6206,
+ "model_b": 0.6287,
+ "pick": "EDM",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.826851,
+  "shot_matchup": 0.448348,
+  "goalie_matchup_2000": 0.002427
+ },
+ "market": {
+  "game_id": "2026020260",
+  "start_utc": "2026-11-06T01:00:00Z",
+  "home": "EDM",
+  "away": "ANA",
+  "book": "DraftKings",
+  "home_price": -192.0,
+  "away_price": 160.0,
+  "home_prob": 0.6309,
+  "read_utc": "2026-11-05T21:01:35Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8477035,
+   "name": "Matt Tomkins",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/EdmontonOilers/status/2118434222474219564"
+  },
+  "away": {
+   "player_id": 8476316,
+   "name": "Laurent Brossoit",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/ZachCav/status/2118424067653128297?a=qt8bC-NAnuRq96BvwYo&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-05",
+  "read_utc": "2026-11-05T21:01:35Z",
+  "home": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Atro Leppanen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Devon Levi",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Isaac Howard",
+    "position": "LW",
+    "status": "Out"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Zach Hyman",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "A.J. Greer",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ian Moore",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Poehling",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Troy Terry",
+    "position": "RW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-05T21:01:35Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-04",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14653,
+  "training_games_priced": 7626
+ }
+}

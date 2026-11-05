@@ -94,15 +94,17 @@
     {
       "id": "rank-change-snapshot-match-exact",
       "why": "the snapshot match goes back to exact equality, so one rounding step between the Thursday snapshot and the history hides the rank change from the page again.",
-      "find": "SNAPSHOT_MATCH_TOL = 1.5e-4\n",
-      "replace": "SNAPSHOT_MATCH_TOL = 1e-9\n",
+      "target": "src/sports/nfl/ratings_snapshot.py",
+      "find": "TOL = 1.5e-4\n",
+      "replace": "TOL = 1e-9\n",
       "expect_caught_by": "test_a_snapshot_one_rounding_step_off_the_history_is_still_that_week"
     },
     {
       "id": "rank-change-snapshot-match-any",
       "why": "the snapshot match is loosened until a different week passes, so a run that wrote one file and not the other compares against the wrong week.",
-      "find": "SNAPSHOT_MATCH_TOL = 1.5e-4\n",
-      "replace": "SNAPSHOT_MATCH_TOL = 0.5\n",
+      "target": "src/sports/nfl/ratings_snapshot.py",
+      "find": "TOL = 1.5e-4\n",
+      "replace": "TOL = 0.5\n",
       "expect_caught_by": "test_a_snapshot_one_rounding_step_off_the_history_is_still_that_week"
     }
   ]

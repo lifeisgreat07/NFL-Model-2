@@ -47,9 +47,11 @@ def test_the_page_says_what_the_site_does_before_anything_else():
     assert main.index('home-title') < main.index('id="home-score"') < main.index('id="home-cards"')
 
 
-def test_how_it_works_has_three_steps_in_order():
+def test_how_it_works_has_its_steps_in_order():
+    """Option A's three steps, six since Stage 90 item 2 (tests/test_home_how.py holds their links)."""
     steps = re.findall(r'<li><span class="home-step-n" aria-hidden="true">(\d)</span><span><b>(.*?)</b>', PAGE)
-    assert steps == [('1', 'Picked before the game'), ('2', 'Locked in public'), ('3', 'Graded after')]
+    assert steps == [('1', 'From public data'), ('2', 'A rating for every team'), ('3', 'A chance for every game'),
+                     ('4', 'Locked in public'), ('5', 'Graded after'), ('6', 'Checked by agents')]
 
 
 def test_new_here_asks_option_cs_three_questions_closed():

@@ -282,7 +282,7 @@ def main() -> None:
     # Model version comes from the predictions themselves, not config.py --
     # a saved file should print the version that actually produced it, even
     # if config.py has since moved on.
-    versions = {p.get('model_version') for p in preds if p.get('model_version')}
+    versions = {str(p['model_version']) for p in preds if p.get('model_version')}
     model_version = versions.pop() if len(versions) == 1 else 'mixed'
 
     out = args.out or (REPO_ROOT / 'dist' / f'picks_{args.season}_week{args.week}.pdf')

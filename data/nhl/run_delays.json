@@ -1,0 +1,8 @@
+[
+ {
+  "workflow": "nhl-daily.yml",
+  "slot": "2026-11-05T14:00:00Z",
+  "started": "2026-11-05T20:54:08Z",
+  "delay_minutes": 414
+ }
+]

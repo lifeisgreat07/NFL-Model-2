@@ -29,6 +29,13 @@ logistic recalibration of its home probability), with intervals from the
 same day blocks, level and seed. Reported, not judged, like the rest.
 
 The daily run writes results/<sport>/forward_<season>.json with `write`.
+
+Stage 95 item 36 (audit 7 M15): the registered decision is taken once, on
+the file the first daily run writes after the regular season's last game
+is final. Until now nothing kept that file: the next run overwrote it with
+playoff games added. `freeze` copies it, once, to
+results/<sport>/forward_<season>_regular_season_final.json and writes the
+registered label beside each comparison there, and only there.
 """
 from __future__ import annotations
 
@@ -43,6 +50,10 @@ import pandas as pd
 
 LEVEL = 1 - 0.05 / 3
 N_RESAMPLES = 5000
+#: Stage 95 item 37 (audit 7, M12): an interval that resamples fewer whole game days
+#: than this rests on too few blocks to be read alone, so the interval that
+#: resamples single games is reported beside it until this many days are in.
+MIN_DAY_BLOCKS = 20
 #: The backtests' bootstrap seeds (experiments/nhl/stage56 and nba/stage61 registries).
 SEEDS = {'nhl': 20261005, 'nba': 20261006}
 EPS = 1e-15
@@ -51,6 +62,9 @@ FORECASTERS = ('model_a', 'model_b', 'market', 'base_rate')
 COMPARISONS = (('model_a_minus_base_rate', 'model_a', 'base_rate'),
                ('model_b_minus_model_a', 'model_b', 'model_a'),
                ('model_b_minus_market', 'model_b', 'market'))
+#: How the calibration pair is fitted (Stage 95 item 38): two fits, said in the file and on the pages.
+FITS = ('two: the intercept with the slope held at 1 (calibration in the large), '
+        'the slope with an intercept of its own')
 #: The models whose calibration is reported (Stage 84 item 5).
 CALIBRATED = ('model_a', 'model_b')
 
@@ -68,7 +82,7 @@ def score(p: npt.NDArray[np.float64], y: npt.NDArray[np.float64]) -> dict[str, f
 
 
 def interval(diff: npt.NDArray[np.float64], days: npt.NDArray[Any], seed: int,
-             level: float = LEVEL, n: int = N_RESAMPLES) -> dict[str, float | int]:
+             level: float = LEVEL, n: int = N_RESAMPLES) -> dict[str, Any]:
     """Mean of `diff` with a bootstrap interval that resamples whole days:
     each draw takes len(days) days with replacement and averages over every
     game in them, as the backtests' day_block_interval does."""
@@ -80,8 +94,15 @@ def interval(diff: npt.NDArray[np.float64], days: npt.NDArray[Any], seed: int,
     boot = sums[draws].sum(axis=1) / counts[draws].sum(axis=1)
     tail = (1 - level) / 2
     lo, hi = np.quantile(boot, [tail, 1 - tail])
-    return {'games': int(len(diff)), 'days': int(len(sums)), 'diff': float(diff.mean()),
-            'low': float(lo), 'high': float(hi), 'level': level}
+    out: dict[str, Any] = {'games': int(len(diff)), 'days': int(len(sums)), 'diff': float(diff.mean()),
+                           'low': float(lo), 'high': float(hi), 'level': level}
+    if len(sums) < MIN_DAY_BLOCKS:
+        # Drawn after the day blocks, from the same generator, so the day-block
+        # interval is exactly what it was before this was added.
+        games = rng.integers(0, len(diff), size=(n, len(diff)))
+        g_lo, g_hi = np.quantile(diff[games].mean(axis=1), [tail, 1 - tail])
+        out['few_days'] = {'min_days': MIN_DAY_BLOCKS, 'game_low': float(g_lo), 'game_high': float(g_hi)}
+    return out
 
 
 def _logit(p: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
@@ -132,7 +153,9 @@ def calibration(p: npt.NDArray[np.float64], y: npt.NDArray[np.float64], days: np
     weights = per_day[:, codes]
     one = np.ones((1, len(p)))
     tail = (1 - level) / 2
-    out: dict[str, Any] = {'games': int(len(p)), 'days': int(len(uniq)), 'level': level}
+    # Stage 95 item 38 (audit 7 M13): the two numbers come from two fits, and
+    # the file says so, so neither is read as the other's companion in one model.
+    out: dict[str, Any] = {'games': int(len(p)), 'days': int(len(uniq)), 'level': level, 'fits': FITS}
     for name, free, pick in (('intercept', False, 0), ('slope', True, 1)):
         with np.errstate(all='ignore'):
             point = recalibrate(x, y, one, free)[pick][0]
@@ -195,6 +218,14 @@ def scores(frame: pd.DataFrame) -> dict[str, dict[str, float | int]]:
     return out
 
 
+#: Stage 94 item 25 (audit 7, M3): which price "the market" is, in the file and on the page.
+MARKET_PRICE = {
+    'kind': 'lock',
+    'said': ("The market here is the price read at the run that saved each pick, hours before the start; "
+             "the backtest's market was the closing price, so the two are not the same instrument."),
+}
+
+
 def report(frame: pd.DataFrame, sport: str, season: int, registry: str) -> dict[str, Any]:
     """The whole forward-test file for one sport's season."""
     seed = SEEDS[sport]
@@ -226,11 +257,79 @@ def report(frame: pd.DataFrame, sport: str, season: int, registry: str) -> dict[
         'through': max(frame['day']) if len(frame) else None,
         'scores': scores(frame),
         'by_market_source': by_source,
+        'market_price': MARKET_PRICE,
         'comparisons': comparisons,
         'calibration': calib,
         'interval_rule': {'level': LEVEL, 'resamples': N_RESAMPLES, 'seed': seed,
                           'blocks': 'whole game days, paired', 'judged': False},
     }
+
+
+def label(comparison: Mapping[str, Any]) -> str:
+    """The registered rule (`forward_test.decision.rule`): ACCEPT when the whole
+    interval is below zero, REJECT when it is above, INCONCLUSIVE otherwise,
+    and for a comparison too small to resample."""
+    if 'high' not in comparison:
+        return 'INCONCLUSIVE'
+    if comparison['high'] < 0:
+        return 'ACCEPT'
+    if comparison['low'] > 0:
+        return 'REJECT'
+    return 'INCONCLUSIVE'
+
+
+def regular_season_over(sched: pd.DataFrame) -> bool:
+    """Every regular-season game on the schedule is final or cancelled."""
+    regular = sched[sched['game_type'] == 'regular']
+    return bool(len(regular)) and bool(regular['status'].isin(['final', 'cancelled']).all())
+
+
+def freeze(path: Path, sched: pd.DataFrame, today: str) -> Path | None:
+    """Once the regular season is over, copy the forward-test file at `path` to
+    its `_regular_season_final` twin with each comparison's label, and return
+    the twin. A twin already there is never rewritten (None is returned), so
+    the deciding file is the first one written after the last game."""
+    frozen = path.with_name(path.stem + '_regular_season_final.json')
+    if frozen.exists() or not regular_season_over(sched):
+        return None
+    doc = json.loads(path.read_text(encoding='utf-8'))
+    doc['frozen'] = {'on': today, 'from': path.name,
+                     'rule': 'forward_test.decision in the registration this file names'}
+    doc['decision'] = {name: label(c) for name, c in doc['comparisons'].items()}
+    frozen.write_text(json.dumps(doc, indent=1) + '\n', encoding='utf-8')
+    # Stage 90 item 5: the season-end report, written with the frozen file and from it.
+    frozen.with_name(path.stem + '_report.md').write_text(season_report(doc), encoding='utf-8')
+    return frozen
+
+
+#: What each comparison asks, in the report's words.
+QUESTIONS = {'model_a_minus_base_rate': 'Did Model A beat the home-win base rate?',
+             'model_b_minus_model_a': 'Did reading the market (Model B) beat Model A?',
+             'model_b_minus_market': 'Did Model B beat the market itself?'}
+
+
+def season_report(doc: Mapping[str, Any]) -> str:
+    """Stage 90 item 5: the season's verdict in words, from the frozen file
+    alone, so the report says nothing the file does not."""
+    sport, season = str(doc.get('sport', '')).upper(), doc.get('season')
+    lines = [f'# {sport} {season}: the forward test\'s verdict', '',
+             f"Taken once, on {doc['frozen']['from']} as written on {doc['frozen']['on']}, the first file after "
+             f"the regular season's last game was final, by the rule registered in {doc.get('registered', 'the registry')}: "
+             'ACCEPT when the whole interval of the per-game log-loss difference is below zero, REJECT when it '
+             'is above, INCONCLUSIVE otherwise.', '',
+             f"{doc.get('graded_picks', 0)} graded picks, through {doc.get('through') or 'no graded day'}.", '',
+             '| Question | Games | Difference | Interval | Verdict |', '|---|---|---|---|---|']
+    for name, question in QUESTIONS.items():
+        c = doc.get('comparisons', {}).get(name, {})
+        verdict = doc.get('decision', {}).get(name, 'INCONCLUSIVE')
+        if 'high' in c:
+            span = f"{c['low']:+.4f} to {c['high']:+.4f}"
+            lines.append(f"| {question} | {c['games']} | {c['diff']:+.4f} | {span} | {verdict} |")
+        else:
+            lines.append(f"| {question} | {c.get('games', 0)} | none | {c.get('note', 'not scored')} | {verdict} |")
+    lines += ['', 'A difference below zero means the first forecaster had the lower log loss. '
+              'Written by src/core/forward_test.py from the frozen file beside it, and never rewritten.', '']
+    return '\n'.join(lines)
 
 
 def read_picks(folder: Path) -> list[dict[str, Any]]:

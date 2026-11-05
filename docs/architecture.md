@@ -1,71 +1,63 @@
 # Architecture
 
-How the pieces fit: where the data comes from, what runs on a schedule, how
-a change gets checked, and how the page is built. The diagram is the whole
+How the pieces fit: where each sport's data comes from, what runs on a
+schedule, how a change gets checked, and how the site is built. The diagram is the whole
 system on one screen; the table under it names the file behind each box.
 
 ```mermaid
 flowchart TB
-  subgraph DATA["Data"]
-    NFL["nflverse play-by-play<br/>and schedules"]
-    OVR["QB override files"]
+  subgraph SOURCES["Sources"]
+    NFLV["NFL: nflverse play-by-play,<br/>schedules and rosters"]
+    OVR["NFL: sourced QB override files"]
+    NHLS["NHL: the league's feed,<br/>its odds, Daily Faceoff goalies"]
+    NBAS["NBA: ESPN scores, box scores,<br/>odds and injury report; Kalshi"]
   end
 
-  subgraph MODEL["Model"]
-    LOAD["data loader"]
-    RATE["team and QB ratings"]
-    WEEK["weekly update:<br/>features, Model A and B,<br/>playoff odds, line snapshot"]
-    GRADE["grading"]
-    CANARY["nightly canary:<br/>the weekly data path,<br/>nothing written"]
+  subgraph RUNS["Scheduled runs"]
+    WEEK["NFL weekly update:<br/>lock on Thursday, grade on Tuesday"]
+    WKND["NFL weekend refresh:<br/>status, scores, lines"]
+    NHLD["NHL daily run:<br/>save each pick before its game, grade"]
+    NBAD["NBA daily run:<br/>save each pick before its game, grade"]
+    CAN["nightly canaries,<br/>nothing written"]
   end
 
   subgraph STORE["Committed data"]
-    PRED["predictions/"]
-    RES["results/"]
-    DJ["data/nfl/*.json"]
+    PRED["predictions/&lt;sport&gt;/:<br/>picks, never rewritten"]
+    RES["results/&lt;sport&gt;/:<br/>grades, drift, forward test"]
+    EXP["experiments/:<br/>registrations and backtests"]
   end
 
-  subgraph ANALYSIS["Offline analysis, run by hand"]
-    BT["backtest, calibration,<br/>bootstrap intervals,<br/>pre-registered experiments"]
-  end
-
-  subgraph AGENTS["Agents and checks"]
+  subgraph AGENTS["The four agents"]
     SCOUT["Scout: does the work,<br/>opens the pull request"]
-    PRE["pre-flight"]
-    TESTS["test suite"]
-    BOOTH["Booth: re-runs every claim,<br/>read-only, posts a report"]
-    LOG["audit log collector"]
-    ALERT["alert: a GitHub issue,<br/>one per problem"]
+    BOOTH["Booth: re-runs every claim<br/>in a pull request, read-only"]
+    SPOT["Spotter: renders the pages<br/>a pull request changes"]
+    LJ["Line Judge: checks what each<br/>scheduled run left behind"]
   end
 
-  subgraph UI["Dashboard"]
-    GEN["page generator"]
-    TPL["one HTML template"]
-    PAGE["index.html on GitHub Pages:<br/>9 pages, data built in,<br/>nothing fetched"]
-    BROWSER["reader's browser:<br/>My Picks in local storage,<br/>share links in the URL"]
+  subgraph SITE["The site on GitHub Pages"]
+    BUILD["site build:<br/>one process per sport"]
+    HOME["home page"]
+    PAGES["NFL, NHL and NBA pages:<br/>data built in"]
   end
 
-  NFL --> LOAD --> RATE --> WEEK
+  ALERT["alert: one GitHub issue<br/>per problem"]
+
+  NFLV --> WEEK
   OVR --> WEEK
-  LOAD --> CANARY
-  CANARY -. a failed night .-> ALERT
-  GRADE -. a drift flag .-> ALERT
-  WEEK -. a failed run .-> ALERT
-  WEEK --> PRED
-  WEEK --> DJ
-  PRED --> GRADE --> RES
-  LOAD --> BT --> DJ
-
-  SCOUT --> PRE
-  SCOUT --> TESTS
+  NFLV --> WKND
+  NHLS --> NHLD
+  NBAS --> NBAD
+  RUNS --> STORE
+  RUNS --> LJ
   SCOUT --> BOOTH
-  BOOTH --> LOG --> DJ
-  BOOTH -. a failed audit .-> ALERT
+  SCOUT --> SPOT
+  STORE --> BUILD
+  BUILD --> HOME
+  BUILD --> PAGES
 
-  PRED --> GEN
-  RES --> GEN
-  DJ --> GEN
-  TPL --> GEN --> PAGE --> BROWSER
+  RUNS -. a failure or a drift flag .-> ALERT
+  BOOTH -. a failed audit .-> ALERT
+  LJ -. a finding .-> ALERT
 ```
 
 ## What each box is
@@ -75,10 +67,12 @@ flowchart TB
 | data loader | `src/sports/nfl/data_loader.py` | Every model run. nflreadpy, with `nfl_data_py` kept as a checked fallback. Finished seasons of play-by-play can be cached on disk (`NFL_PBP_CACHE`); only the nightly canary does, and the weekly run always fetches fresh. |
 | team and QB ratings | `src/sports/nfl/ratings_engine.py` | Every model run. Only data from before each game's week. |
 | weekly update | `src/sports/nfl/weekly_update.py` | `.github/workflows/nfl-weekly-update.yml`, on a schedule (Tuesday and Thursday) and by hand. Picks lock on Thursday. Each run writes a summary to its page (`src/sports/nfl/weekly_summary.py`); a failed run goes to the alert. |
-| QB override files | `src/sports/nfl/weekly_update.py` (`load_qb_overrides`) | Read by the weekly update from a folder under data, when a sourced note says who is actually starting. None has been filed yet, so the folder does not exist in the repository. |
+| QB override files | `src/sports/nfl/weekly_update.py` (`load_qb_overrides`), `data/nfl/qb_overrides/` | Read by the weekly update's lock from `data/nfl/qb_overrides/<season>_week<N>.json`, one file per week, when a sourced note says who is actually starting. A routine opens a pull request with the week's file on Wednesday evening; only a file merged to main before Thursday's lock is used (the override watch below says when one is still open). |
 | grading | `src/sports/nfl/grade_predictions.py` | Same workflow, once a week's games are played. Then `src/sports/nfl/drift_alert.py` runs the drift check (`src/sports/nfl/check_drift.py`); a flag opens an issue and never fails the run. |
 | weekend refresh | `src/sports/nfl/weekend_refresh.py`, `.github/workflows/nfl-weekend-refresh.yml` | Friday, Sunday evening and Monday morning, between the Thursday lock and Tuesday's grading. Writes game status, final scores and the latest line for each locked, not yet fully graded week to a folder under data that its first run creates, and appends the same weeks' spreads to `data/nfl/line_history/` (Stage 33 item 23), so the line archive runs past the lock to the close. Commits those folders and the TV and team-news files only, so it cannot touch a pick or a grade; a failure goes to the alert. |
+| QB override check | `src/sports/nfl/override_check.py`, `.github/workflows/nfl-override-check.yml` | A pull request that adds or changes a file in the override folder. Runs the base commit's check on the pull request's files: each player must be a quarterback on the team's current nflverse roster with a status that can start, and each source a team site or an outlet in `data/nfl/qb_override_sources.json`. The lock makes the same check and does not use an override that fails it (Stage 88 item 4). |
 | QB override watch | `src/sports/nfl/override_watch.py`, `.github/workflows/nfl-override-watch.yml` | A pull request touching the override folder opens, reopens or closes. Opens an issue while the week's override is unmerged, because the lock reads only what is on main; closes it when the pull request is merged or closed. Runs the base commit's code, so a pull request cannot change the watch that reports on it (Stage 81 item 1, after weeks 7 and 8 locked with an out-for-season starter). |
+| QB override auto-merge | `src/sports/nfl/override_automerge.py`, `.github/workflows/nfl-override-automerge.yml` | Off until the repository variable `AUTO_MERGE_OVERRIDES` is `true`. A pull request touching the override folder that changes nothing else, comes from this repository and passes the override check merges itself, so the week's file is on main before the lock without waiting for a person. Runs the base commit's code, like the check and the watch (Stage 90 item 4). |
 | TV channels | `src/sports/nfl/tv_channels.py`, `data/nfl/tv/exceptions.json` | Run with `--pending` by the weekly update (after Tuesday's grading and Thursday's lock) and by the weekend refresh, for every locked week not yet graded, as a continue-on-error step in both, so it can never cost a pick (Stage 15). Reads the league's by-week schedule page and shows a game's network only after an exact id join to nflverse, a team and kickoff cross-check, a closed network list and a slot rule with sourced exceptions; one network per game, the first listed; every shown channel carries where and when it was read, and a change between reads is recorded. Writes one file per week beside the exceptions. A held-back channel is a warning, never an error. |
 | team news | `src/sports/nfl/team_news.py` | Run with `--pending` by the weekly update (after Tuesday's grading and Thursday's lock) and by the weekend refresh, as a continue-on-error step in both, so it can never cost a pick (Stage 16). For each locked week not yet graded: starters (rank 1 on the latest depth chart, plus kicker and punter) listed Out or Doubtful on the injury report, by name; starters listed Questionable, as a count; and the quarterback the saved pick was made with, flagged when he is not last game's starter. A week whose report is not out yet says so rather than listing nobody. Writes one file per week to a folder under data that its first run creates, and does not rewrite a week whose news is unchanged. |
 | Model Lab records | `src/sports/nfl/model_lab.py`, `experiments/nfl/legacy/rows.json` | Read by the page generator, which renders Model Lab's table from it at build time (`render_model_lab_rows`), so the table is in the page without JavaScript (Stage 18). One list of every experiment: each pre-registered answer in the experiments folders' results, each registered question deferred on purpose, and the 46 rows the page carried before Stage 18, moved into `experiments/nfl/legacy/rows.json` once and verbatim. Every entry carries one of the five decisions beside the label it was first given, and a leakage flag; every figure is copied from its file. |
@@ -126,10 +120,12 @@ flowchart TB
 
 ## Decisions the diagram rests on
 
-- **The dashboard is one static file.** Every page's data is written into the
-  HTML when it is built, and the page makes no network requests for data.
-  That is why it can run on GitHub Pages from a scheduled job, and why a
-  stranger reading the repository sees no runtime dependencies.
+- **Each page is one static file.** Every page's data is written into the
+  HTML when it is built. The only thing a page fetches is the day's live
+  scores, from ESPN's scoreboard, on the sport pages; without them it still
+  shows everything it was built with. That is why the site can run on GitHub
+  Pages from scheduled jobs, and why a stranger reading the repository sees
+  no runtime dependencies.
 - **Booth can't push.** Its job runs on the workflow's own token with
   read-only access to the code, so it can never change the branch it
   audits. It can comment on pull requests, which is how it reports, and the

@@ -1,0 +1,102 @@
+{
+ "game_id": "2026020255",
+ "season": 2026,
+ "slate": "2026-11-05",
+ "start_utc": "2026-11-06T00:00:00Z",
+ "home": "NYI",
+ "away": "CAR",
+ "model_a": 0.3531,
+ "model_b": 0.3428,
+ "pick": "CAR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.162784,
+  "shot_matchup": -8.384316,
+  "goalie_matchup_2000": 0.001386
+ },
+ "market": {
+  "game_id": "2026020255",
+  "start_utc": "2026-11-06T00:00:00Z",
+  "home": "NYI",
+  "away": "CAR",
+  "book": "DraftKings",
+  "home_price": 164.0,
+  "away_price": -198.0,
+  "home_prob": 0.3631,
+  "read_utc": "2026-11-05T21:01:35Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8473575,
+   "name": "Semyon Varlamov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/stefen_rosner/status/2118372348189454767?a=5xdCMJXNHdp3HO6MSTM&s=20"
+  },
+  "away": {
+   "player_id": 8483548,
+   "name": "Brandon Bussi",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-05",
+  "read_utc": "2026-11-05T21:01:35Z",
+  "home": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Calum Ritchie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mathew Barzal",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matias Maccelli",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Pulock",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Nikishin",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Jordan Staal",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Taylor Hall",
+    "position": "LW",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-05T21:01:35Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-04",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14653,
+  "training_games_priced": 7626
+ }
+}

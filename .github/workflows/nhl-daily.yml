@@ -39,15 +39,16 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Check out repo
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
 
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.11'
 
       # Stage 42 item 1: how late this run started, against its own cron lines.
       - name: Record the start delay
+        timeout-minutes: 25
         env:
           # Which cron line fired, so a late copy of one slot is not measured
           # against the next (Stage 68 item 3). Empty on a dispatch.
@@ -57,6 +58,7 @@ jobs:
       # Stage 42 item 4: a run GitHub's cron started, for a slot cron-job.org
       # should have started, asks whether it did, and opens an issue if not.
       - name: Did cron-job.org start this slot?
+        timeout-minutes: 25
         if: github.event_name == 'schedule'
         env:
           CRON_SCHEDULE: ${{ github.event.schedule }}
@@ -64,17 +66,21 @@ jobs:
         run: python -m src.core.missed_dispatch .github/workflows/nhl-daily.yml
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        timeout-minutes: 25
+        run: pip install --require-hashes -r requirements.lock
 
       # `shell: bash` is not decoration: only an explicit bash shell runs with
       # pipefail, and without it `tee` reports success for a run that crashed,
       # the partial state is committed and the failure alert never fires
       # (Stage 68 item 1, the 2026-10-09 audit).
       - name: Run the NHL's daily run
+        timeout-minutes: 25
         shell: bash
         run: python -m src.sports.nhl.daily 2>&1 | tee nhl-daily.log
 
       - name: Pull before committing
+        # A fetch and a rebase: minutes at most, so a hung remote fails here, not at the job's limit.
+        timeout-minutes: 5
         run: |
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
@@ -82,6 +88,8 @@ jobs:
           python -m src.core.pull_check
 
       - name: Commit the NHL's picks, grades and history
+        # Runs python since #628 (src.core.picks_only_grow), so it times out on its own.
+        timeout-minutes: 10
         run: |
           # Staging a path that does not exist is an error, and
           # predictions/nhl does not exist until the first pick is saved (the
@@ -90,6 +98,9 @@ jobs:
           test -d data/nhl && git add data/nhl
           test -d predictions/nhl && git add predictions/nhl
           test -d results/nhl && git add results/nhl
+          # Stage 93 item 21: a saved pick is never rewritten or removed; a
+          # commit that would do either fails here, before it is made.
+          python -m src.core.picks_only_grow predictions/nhl
           if git diff --cached --quiet; then
             echo "nothing to commit"
             exit 0
@@ -117,7 +128,7 @@ jobs:
       # run that could not push them keeps them here for a hand commit.
       - name: Keep the NHL's picks when the run failed
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: nhl-daily-${{ github.run_id }}
           path: |
@@ -128,7 +139,11 @@ jobs:
           retention-days: 14
 
       - name: Raise an alert on a drift flag
+        timeout-minutes: 25
         if: success()
+        # Stage 93 item 12: an alert GitHub refuses after three tries fails
+        # this step (summary and annotation) but must not skip the alerts after it.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -144,7 +159,11 @@ jobs:
       # picks were saved without it and nobody heard. Each such line starts
       # DEGRADED:, and any of them raises one issue, commented on by later runs.
       - name: Raise an alert on an input the run could not read
+        timeout-minutes: 25
         if: success()
+        # Stage 93 item 12: an alert GitHub refuses after three tries fails
+        # this step (summary and annotation) but must not skip the alerts after it.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -158,7 +177,11 @@ jobs:
           fi
 
       - name: Raise an alert on a missed pick
+        timeout-minutes: 25
         if: success()
+        # Stage 93 item 12: an alert GitHub refuses after three tries fails
+        # this step (summary and annotation) but must not skip the alerts after it.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -174,6 +197,7 @@ jobs:
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
+        timeout-minutes: 25
         if: success()
         continue-on-error: true
         env:
@@ -189,8 +213,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          printf 'The NHL daily run failed. See %s\n' \
-            "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > failure.md
+          # Stage 93 item 16 (audit 7, R18): the alert names the artifact that holds the
+          # picks the run made, and when a person may commit them.
+          { printf 'The NHL daily run failed. See %s\n\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            printf 'Any picks it saved are in the artifact %s on that run (predictions/nhl, results/nhl and data/nhl). ' "nhl-daily-$GITHUB_RUN_ID"
+            printf 'Commit them only before the first of their games starts, never after: a pick on main after its start is not a prediction. '
+            printf 'Past that, leave them out; the next run marks the games missed.\n'
+          } > failure.md
           python -m src.core.alerts --title "NHL: daily run failed" --body-file failure.md --log nhl-daily.log
 
   # Stage 44 item 2, Line Judge: after a run that went green, does main hold
@@ -212,18 +242,18 @@ jobs:
       # was first committed is read from git, and a shallow clone shows every
       # file added at once.
       - name: Check out repo
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           ref: main
           fetch-depth: 0
 
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Judge the run
         id: judge
