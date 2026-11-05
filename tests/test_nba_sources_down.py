@@ -20,6 +20,7 @@ from datetime import UTC, datetime
 
 import pytest
 
+from tests.shared_tables import share_nba_tables
 from tests.test_daily_end_to_end import committed_schedule, temp_paths
 
 SEASON = 2026
@@ -70,6 +71,7 @@ def drive(tmp_path, monkeypatch, capsys, kalshi_up):
     timing out; Kalshi answers or times out. Return (stdout, saved picks)."""
     from src.sports.nba import daily, history, injuries, market
 
+    share_nba_tables(monkeypatch)
     sched = committed_schedule('nba', SEASON, NOW)
     monkeypatch.setattr(daily, 'PATHS', temp_paths(tmp_path, 'nba'))
     monkeypatch.setattr(daily.nba_schedule, 'load_schedule', lambda s, *a, **k: sched.copy())

@@ -22,6 +22,20 @@
       "find": "        return _TABLES[key].copy()\n",
       "replace": "        return _TABLES[key]\n",
       "expect_caught_by": "test_each_caller_gets_its_own_copy"
+    },
+    {
+      "id": "shared-nba-table-handed-out-itself",
+      "why": "the NBA tables are handed out themselves, so one test changing its copy changes the next test's input",
+      "find": "        return _TABLES[key].copy(deep=True)\n",
+      "replace": "        return _TABLES[key]\n",
+      "expect_caught_by": "test_the_nba_tables_are_remembered_on_every_argument"
+    },
+    {
+      "id": "shared-nba-table-ignores-keyword-arguments",
+      "why": "a keyword argument is left out of the key, so features over a different availability table is answered from memory",
+      "find": "               tuple(sorted((k, _part(v)) for k, v in kwargs.items())))\n",
+      "replace": "               ())\n",
+      "expect_caught_by": "test_the_nba_tables_are_remembered_on_every_argument"
     }
   ]
 }

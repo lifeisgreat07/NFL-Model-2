@@ -59,3 +59,33 @@ def test_the_nhl_end_to_end_tests_use_it():
     root = Path(__file__).resolve().parents[1]
     for name, n in (('test_nhl_sources_down.py', 1), ('test_daily_end_to_end.py', 1)):
         assert (root / 'tests' / name).read_text(encoding='utf-8').count('    share_nhl_features(monkeypatch)\n') == n, name
+
+
+
+def test_the_nba_tables_are_remembered_on_every_argument():
+    st._TABLES.clear()
+    calls = []
+
+    def availability_table(g, m, half_life, avail=None):
+        calls.append('a')
+        return pd.Series([half_life] * len(g), index=g['game_id'])
+    shared = st.remembering_any(availability_table)
+    m = pd.DataFrame({'game_id': ['1'], 'player_id': ['p'], 'minutes': [30.0]})
+    a = shared(games(), m, 20.0)
+    shared(games(), m.copy(), 20.0)
+    assert len(calls) == 1 and a.equals(shared(games(), m, 20.0))
+    shared(games(), m.assign(minutes=[31.0]), 20.0)
+    shared(games(), m, 21.0)
+    avail = pd.Series([1.0], name='a')
+    shared(games(), m, 20.0, avail=avail)
+    shared(games(), m, 20.0, avail=avail * 2)
+    assert len(calls) == 5
+    a.iloc[0] = -1.0
+    assert shared(games(), m, 20.0).iloc[0] == 20.0, 'each caller gets its own copy'
+
+
+def test_the_nba_end_to_end_tests_use_it():
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[1]
+    for name, n in (('test_nba_sources_down.py', 1), ('test_daily_end_to_end.py', 1), ('test_after_save.py', 1)):
+        assert (root / 'tests' / name).read_text(encoding='utf-8').count('    share_nba_tables(monkeypatch)\n') == n, name

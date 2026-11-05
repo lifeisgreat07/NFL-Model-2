@@ -116,25 +116,20 @@ def test_ci_and_the_suite_line_still_run_the_slow_tests():
 
 def test_the_slow_marker_is_registered_and_used():
     """An unregistered marker is only a warning; registering it keeps a typo
-    like `@pytest.mark.slwo` from silently running in `quick`. The marked
-    tests are the five whole daily runs, the suite's slowest, and the two
-    re-derivations of a saved pick (Stage 85 item 6), each a whole feature table,
-    the two day runs whose after-save step fails (Stage 91 item 3), the NHL daily run
-    fed an odds feed with a renamed key (Stage 92 item 7), and the two NBA daily runs
-    whose price sources time out (Stage 96 item 52)."""
+    like `@pytest.mark.slwo` from silently running in `quick`. Which tests are
+    marked is a policy, not a count (Stage 96 item 49; audit 7, T12 and T13):
+    tests/slow_policy.py says what makes a test slow, and every test is marked
+    if and only if it does one of those things."""
+    from tests import slow_policy
     toml = (ROOT / 'pyproject.toml').read_text(encoding='utf-8')
     assert re.search(r'(?m)^markers = \["slow: ', toml)
-    marked = {p.name: len(re.findall(r'(?m)^@pytest\.mark\.slow$', p.read_text(encoding='utf-8')))
-              for p in (ROOT / 'tests').glob('test_*.py')}
-    assert marked['test_daily_end_to_end.py'] == 2
-    assert marked['test_nhl_sources_down.py'] == 3
-    assert marked['test_rederive_saved_pick.py'] == 2
-    assert marked['test_after_save.py'] == 2
-    assert marked['test_priced.py'] == 1
-    assert marked['test_nba_sources_down.py'] == 2
-    assert sum(marked.values()) == 12, 'docs/operations.md says how many tests quick leaves out'
-    readme = (ROOT / 'docs' / 'operations.md').read_text(encoding='utf-8')  # from the README, Stage 89 item 5
-    assert 'the suite without the twelve tests marked `slow`' in readme
+    assert slow_policy.violations(ROOT / 'tests') == []
+    classified = slow_policy.classify(ROOT / 'tests')
+    for kind in slow_policy.KINDS:
+        assert any(kind in kinds for _, _, _, kinds in classified), f'no test does {kind}: the pattern has gone stale'
+    ops = (ROOT / 'docs' / 'operations.md').read_text(encoding='utf-8')  # from the README, Stage 89 item 5
+    assert ('the suite without the tests marked `slow`: those that drive a whole daily run, re-derive a saved '
+            'pick over the whole history, or draw a paired bootstrap') in ' '.join(ops.split())
 
 
 def test_build_is_what_the_pages_workflow_runs():
