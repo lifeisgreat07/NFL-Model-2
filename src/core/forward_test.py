@@ -43,6 +43,10 @@ import pandas as pd
 
 LEVEL = 1 - 0.05 / 3
 N_RESAMPLES = 5000
+#: Stage 95 item 37 (audit 7, M12): an interval that resamples fewer whole game days
+#: than this rests on too few blocks to be read alone, so the interval that
+#: resamples single games is reported beside it until this many days are in.
+MIN_DAY_BLOCKS = 20
 #: The backtests' bootstrap seeds (experiments/nhl/stage56 and nba/stage61 registries).
 SEEDS = {'nhl': 20261005, 'nba': 20261006}
 EPS = 1e-15
@@ -68,7 +72,7 @@ def score(p: npt.NDArray[np.float64], y: npt.NDArray[np.float64]) -> dict[str, f
 
 
 def interval(diff: npt.NDArray[np.float64], days: npt.NDArray[Any], seed: int,
-             level: float = LEVEL, n: int = N_RESAMPLES) -> dict[str, float | int]:
+             level: float = LEVEL, n: int = N_RESAMPLES) -> dict[str, Any]:
     """Mean of `diff` with a bootstrap interval that resamples whole days:
     each draw takes len(days) days with replacement and averages over every
     game in them, as the backtests' day_block_interval does."""
@@ -80,8 +84,15 @@ def interval(diff: npt.NDArray[np.float64], days: npt.NDArray[Any], seed: int,
     boot = sums[draws].sum(axis=1) / counts[draws].sum(axis=1)
     tail = (1 - level) / 2
     lo, hi = np.quantile(boot, [tail, 1 - tail])
-    return {'games': int(len(diff)), 'days': int(len(sums)), 'diff': float(diff.mean()),
-            'low': float(lo), 'high': float(hi), 'level': level}
+    out: dict[str, Any] = {'games': int(len(diff)), 'days': int(len(sums)), 'diff': float(diff.mean()),
+                           'low': float(lo), 'high': float(hi), 'level': level}
+    if len(sums) < MIN_DAY_BLOCKS:
+        # Drawn after the day blocks, from the same generator, so the day-block
+        # interval is exactly what it was before this was added.
+        games = rng.integers(0, len(diff), size=(n, len(diff)))
+        g_lo, g_hi = np.quantile(diff[games].mean(axis=1), [tail, 1 - tail])
+        out['few_days'] = {'min_days': MIN_DAY_BLOCKS, 'game_low': float(g_lo), 'game_high': float(g_hi)}
+    return out
 
 
 def _logit(p: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
