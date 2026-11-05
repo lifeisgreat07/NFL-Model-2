@@ -128,7 +128,7 @@ def test_the_slow_marker_is_registered_and_used():
     assert marked['test_rederive_saved_pick.py'] == 2
     assert marked['test_priced.py'] == 1
     assert sum(marked.values()) == 8, 'README says how many tests quick leaves out'
-    readme = (ROOT / 'README.md').read_text(encoding='utf-8')
+    readme = (ROOT / 'docs' / 'operations.md').read_text(encoding='utf-8')  # from the README, Stage 89 item 5
     assert 'the suite without the eight tests marked `slow`' in readme
 
 
@@ -220,5 +220,5 @@ def test_an_unknown_task_is_refused_and_no_task_lists_them(capsys):
 
 
 def test_the_readme_points_at_it():
-    text = (ROOT / 'README.md').read_text(encoding='utf-8')
-    assert 'python tasks.py' in text, "README's Running the tests does not mention tasks.py"
+    text = (ROOT / 'docs' / 'operations.md').read_text(encoding='utf-8')  # from the README, Stage 89 item 5
+    assert 'python tasks.py' in text, "docs/operations.md's Running the tests does not mention tasks.py"
