@@ -24,6 +24,7 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from page_edit import rehash
 from pre_opening import pre_opening
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -87,7 +88,7 @@ def self_test(tmp):
     if html.count(CALL) != 1:
         return [f'self-test: the NHL page holds {html.count(CALL)} calls, expected 1']
     bad = tmp / 'acc-nhl-old.html'
-    bad.write_text(html.replace(CALL, ''), encoding='utf-8')
+    bad.write_text(rehash(html.replace(CALL, '')), encoding='utf-8')
     problems = [f'self-test: the real pages should be clean: {r}' for r in asyncio.run(check_pages(nhl, nba))]
     if not any(r.startswith('[NHL') and 'scoreboard rows' in r for r in asyncio.run(check_pages(bad, nba))):
         problems.append('self-test: the NHL page without the component was not reported')

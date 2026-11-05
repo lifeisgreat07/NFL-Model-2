@@ -28,6 +28,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tests/browser, when imported from elsewhere
+from page_edit import rehash
+
 ROOT = Path(__file__).resolve().parents[2]
 WIDTHS = (390, 1440)
 THEMES = ('dark', 'light')
@@ -126,7 +129,7 @@ def self_test(tmp):
     if html.count(NEW) != 1:
         return [f'self-test: the page holds {html.count(NEW)} copies of the marker position, expected 1']
     bad = tmp / 'axis-nfl-old.html'
-    bad.write_text(html.replace(NEW, OLD), encoding='utf-8')
+    bad.write_text(rehash(html.replace(NEW, OLD)), encoding='utf-8')
     clean = asyncio.run(check_pages([out]))
     broken = asyncio.run(check_pages([bad]))
     problems = [f'self-test: the real page should be clean: {r}' for r in clean]
