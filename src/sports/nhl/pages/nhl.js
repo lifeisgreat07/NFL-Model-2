@@ -1,3 +1,10 @@
+/* Stage 88 item 5 (the 2026-11-02 review): the Content-Security-Policy names
+   the hash of each inline script, so the page has no inline handlers. A logo
+   that fails to load (data-hide-on-error) is hidden by this one listener. */
+document.addEventListener('error', e => {
+  const t = e.target;
+  if (t instanceof HTMLImageElement && t.hasAttribute('data-hide-on-error')) t.style.display = 'none';
+}, true);
 /* The NHL's pages (Stage 57). Everything below reads one JSON block,
    #nhl-data, written by src/sports/nhl/site.py from the NHL's own files.
    Times are shown in US Eastern, as the NFL board shows them, and the board
@@ -178,7 +185,7 @@ function lanes(vals){
 function american(p){ return p > 0 ? `+${p}` : `−${Math.abs(p)}`; }
 function endTeam(abbr){
   const src = logo(abbr);
-  const img = src ? `<img class="card-end-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : '';
+  const img = src ? `<img class="card-end-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error>` : '';
   return `<span class="card-end-team">${img}${abbr}</span>`;
 }
 function badge(picked, result){
@@ -670,7 +677,7 @@ function ratingAxisHtml(scale, title){
 }
 function ratingRowHtml(t, i, scale){
   const w = Math.abs(t.goal) / scale * 100, src = logo(t.team);
-  const img = src ? `<img class="team-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : '';
+  const img = src ? `<img class="team-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error>` : '';
   return `<tr><td class="rank">${i + 1}</td>`
     + `<td><div class="team-cell">${img}<span class="team-abbr">${escapeHtml(t.team)}</span><span class="team-full">${escapeHtml(teamName(t.team))}</span></div></td>`
     + `<td class="num"><div class="net-cell-inner"><div class="srs-bar-track diverging" title="${signed(t.goal, 2)} goals a game; league scale ±${scale.toFixed(2)}, centre line is zero">`

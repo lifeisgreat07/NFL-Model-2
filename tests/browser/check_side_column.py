@@ -25,6 +25,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tests/browser, when imported from elsewhere
+from page_edit import rehash
+
 ROOT = Path(__file__).resolve().parents[2]
 CLOCK = '2026-10-13T17:00:00Z'
 MEASURE = """(sel) => { const s = document.querySelector(sel), g = document.getElementById('game-grid');
@@ -87,8 +90,8 @@ def self_test(tmp):
     if a.count(NBA_ASIDE) != 1 or b.count(NHL_CAP) != 1:
         return [f'self-test: {a.count(NBA_ASIDE)} NBA columns and {b.count(NHL_CAP)} NHL caps, expected 1 each']
     nba_bad, nhl_bad = tmp / 'side-nba-old.html', tmp / 'side-nhl-old.html'
-    nba_bad.write_text(a.replace(NBA_ASIDE, ''), encoding='utf-8')
-    nhl_bad.write_text(b.replace(NHL_CAP, ''), encoding='utf-8')
+    nba_bad.write_text(rehash(a.replace(NBA_ASIDE, '')), encoding='utf-8')
+    nhl_bad.write_text(rehash(b.replace(NHL_CAP, '')), encoding='utf-8')
     problems = [f'self-test: the real pages should be clean: {r}' for r in asyncio.run(check_pages(nba, nhl))]
     bad = asyncio.run(check_pages(nba_bad, nhl_bad))
     if not any(r.startswith('[NBA') and 'no column' in r for r in bad):

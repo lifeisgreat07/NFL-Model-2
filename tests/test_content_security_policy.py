@@ -8,10 +8,11 @@ alone). A Content-Security-Policy meta tag says exactly that,
 so anything else (a script or image from another host, a fetch, a form, a
 <base> that re-points relative links) is refused by the browser.
 
-'unsafe-inline' stays for scripts and styles: everything the pages run is
-inline, the NFL board has inline event handlers and style attributes, and a
-hash per script would have to be rebuilt on every page build. What the policy
-buys is that nothing outside the page can run in it or be reached from it.
+The templates carry script-src 'unsafe-inline', and every page writer
+replaces it with the SHA-256 of each inline script it wrote (Stage 88 item 5,
+src/core/csp.py, tests/test_csp_hashes.py), so a script or handler injected
+through a data field is refused too. 'unsafe-inline' stays for styles: the
+pages use style attributes, which a hash cannot name.
 
 The browser checks (tests/browser/check_page.py) report any violation the
 browser logs, with the network both blocked and allowed.

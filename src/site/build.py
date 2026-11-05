@@ -39,6 +39,8 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 
+from src.core import csp
+
 ROOT = Path(__file__).resolve().parents[2]
 
 #: Every sport the site publishes, in the order they are built.
@@ -453,7 +455,10 @@ def inject_offline(page: Path, block: str) -> bool:
     if 'assets/site.webmanifest' not in html or '</body>' not in html:
         return False
     at = html.rindex('</body>')
-    page.write_text(html[:at] + block + html[at:], encoding='utf-8')
+    html = html[:at] + block + html[at:]
+    # Stage 88 item 5: this is the last script a page gains, so its CSP is
+    # recomputed here, before add_offline hashes the pages to name the worker.
+    page.write_text(csp.harden(html) if csp.CSP_RE.search(html) else html, encoding='utf-8')
     return True
 
 
@@ -532,6 +537,21 @@ def add_expand(out: Path) -> list[str]:
     return [p for p in (f'{s}/index.html' for s in SPORTS) if inject_expand(out / p, block)]
 
 
+def add_csp(out: Path) -> list[str]:
+    """Stage 88 item 5: after the injections, every page with a
+    Content-Security-Policy names the hashes of the inline scripts it now
+    holds (src/core/csp.py); add_offline, which runs next, re-hardens the
+    pages it adds its script to. A page that cannot be hardened fails the build."""
+    done = []
+    for page in sorted(out.rglob('*.html')):
+        html = page.read_text(encoding='utf-8')
+        if csp.CSP_RE.search(html) is None:
+            continue
+        page.write_text(csp.harden(html), encoding='utf-8')
+        done.append(page.relative_to(out).as_posix())
+    return done
+
+
 def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS,
                runner: Runner = run, fetcher: Fetcher = fetch) -> list[SportResult]:
     if out.exists():
@@ -546,6 +566,7 @@ def build_site(out: Path, live_url: str | None, sports: tuple[str, ...] = SPORTS
     add_scores(out)
     add_share(out)
     add_expand(out)
+    add_csp(out)
     add_offline(out)
     return results
 
