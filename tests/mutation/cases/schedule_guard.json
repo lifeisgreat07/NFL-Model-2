@@ -1,0 +1,36 @@
+{
+  "target": "src/core/schedule_guard.py",
+  "tests": "tests/test_schedule_guard.py",
+  "cases": [
+    {
+      "id": "schedule-guard-empty-feed-passes",
+      "why": "a feed with no games at all passes on a season's first run, and the run writes an empty schedule",
+      "find": "    if fresh == 0:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_an_empty_feed_is_refused_even_with_nothing_committed"
+    },
+    {
+      "id": "schedule-guard-shrink-passes",
+      "why": "a feed that has lost most of the season passes, and every grade of the lost games resets to pending",
+      "find": "    if fresh < had - allowed:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_a_few_lost_games_pass_and_more_stop_the_run"
+    },
+    {
+      "id": "nhl-daily-skips-the-schedule-guard",
+      "target": "src/sports/nhl/daily.py",
+      "why": "the NHL's run writes whatever schedule the feed returned, the green empty-schedule commit audit 7 reproduced",
+      "find": "    schedule_guard.check(len(sched), PATHS.results / f'schedule_{season}.json')\n    first = backtest.registry()['protocol']['training_from_season']\n    past = backtest.load_history(first, season - 1)\n",
+      "replace": "    first = backtest.registry()['protocol']['training_from_season']\n    past = backtest.load_history(first, season - 1)\n",
+      "expect_caught_by": "test_an_empty_feed_stops_the_daily_run_before_anything_is_written"
+    },
+    {
+      "id": "nba-daily-skips-the-schedule-guard",
+      "target": "src/sports/nba/daily.py",
+      "why": "the NBA's run writes whatever schedule the feed returned",
+      "find": "    schedule_guard.check(len(sched), PATHS.results / f'schedule_{season}.json')\n    first = backtest.registry()['protocol']['training_from_season']\n    past_games, past_minutes",
+      "replace": "    first = backtest.registry()['protocol']['training_from_season']\n    past_games, past_minutes",
+      "expect_caught_by": "test_an_empty_feed_stops_the_daily_run_before_anything_is_written"
+    }
+  ]
+}
