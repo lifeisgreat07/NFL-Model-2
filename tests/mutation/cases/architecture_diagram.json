@@ -1,0 +1,27 @@
+{
+ "target": "docs/architecture.md",
+ "tests": "tests/test_architecture_diagram.py",
+ "cases": [
+  {
+   "id": "architecture-diagram-drops-an-agent",
+   "why": "the diagram shows three agents again, the picture the table under it contradicts",
+   "find": "    SPOT[\"Spotter: renders the pages<br/>a pull request changes\"]\n",
+   "replace": "",
+   "expect_caught_by": "test_the_diagram_has_the_four_agents"
+  },
+  {
+   "id": "architecture-diagram-box-left-unconnected",
+   "why": "a sport's run is drawn and joined to nothing, so the picture does not say where its data goes",
+   "find": "  NBAS --> NBAD\n",
+   "replace": "",
+   "expect_caught_by": "test_every_box_in_the_diagram_is_drawn_into_it"
+  },
+  {
+   "id": "architecture-overrides-row-stale-again",
+   "why": "the overrides row says none has been filed, three weeks after the first was used at a lock",
+   "find": "when a sourced note says who is actually starting. A routine opens",
+   "replace": "when a sourced note says who is actually starting. None has been filed yet. A routine opens",
+   "expect_caught_by": "test_the_overrides_row_says_what_the_folder_holds"
+  }
+ ]
+}

@@ -129,6 +129,53 @@ def check_log_loss(records, spec, label='Model A'):
     return False
 
 
+def version_key(version) -> tuple[int, ...] | None:
+    """'2.6' -> (2, 6); None for a missing or unreadable version."""
+    try:
+        return tuple(int(x) for x in str(version).split('.'))
+    except ValueError:
+        return None
+
+
+def by_version(records, spec):
+    """Stage 85 item 2 (the 2026-11-02 review): Model A's live log loss split
+    by the model version that made each pick, each beside the backtest that
+    version is like. Before v2.5 a pick used last game's quarterback, so its
+    like-for-like figure is R4's printed_beside (the lagged-QB backtest);
+    from v2.5 it is R4's baseline (the schedule's listed starter). A pick
+    with no readable version is listed with no baseline.
+
+    Information only: R4's flag is on every graded game against its one
+    baseline, as registered, and this does not change it."""
+    groups: dict[str, list] = {}
+    for r in records:
+        groups.setdefault(str(r.get('model_version')), []).append(r)
+    out = {}
+    for version in sorted(groups, key=lambda v: (version_key(v) is None, version_key(v) or (), v)):
+        losses = per_game_log_loss(groups[version])
+        if not losses:
+            continue
+        key = version_key(version)
+        base = None if key is None else spec['printed_beside'] if key < (2, 5) else spec['baseline']
+        out[version] = {'games': len(losses), 'log_loss': sum(losses) / len(losses),
+                        'baseline': None if base is None else base['value'],
+                        'baseline_label': None if base is None else base['label']}
+    return out
+
+
+def log_by_version(records, spec):
+    """Print `by_version`, for information."""
+    split = by_version(records, spec)
+    if not split:
+        return
+    log.info("\nModel A's log loss by model version, each beside the backtest it is like "
+             "(information only; the flag above is on every game, as R4 registers):")
+    for version, row in split.items():
+        beside = (f"against {row['baseline']:.4f} ({row['baseline_label']})" if row['baseline'] is not None
+                  else 'no backtest named for this version')
+        log.info(f"  v{version}: {row['log_loss']:.4f} over {row['games']} games, {beside}")
+
+
 def backtest_baseline(path: Path | None = None) -> dict[str, dict]:
     """{model: its backtest metrics} for every watched model, from the
     committed backtest artifact. Raises OSError, ValueError or KeyError when
@@ -223,7 +270,9 @@ def main():
     for model, key, label in WATCHED:
         check_model(records, key, baseline[model]['accuracy'], label)
 
-    if check_log_loss(records, spec):
+    flagged = check_log_loss(records, spec)
+    log_by_version(records, spec)
+    if flagged:
         log.info("\n=== DRIFT CHECK: WARNING FLAGGED ===")
         return 1
     log.info("\n=== DRIFT CHECK: OK ===")
