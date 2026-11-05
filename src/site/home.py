@@ -70,7 +70,7 @@ def nfl_kickoff(game: Json) -> str | None:
     if not day or not clock:
         return None
     local = pd.Timestamp(f'{day} {clock}').tz_localize('America/New_York')
-    return local.tz_convert('UTC').strftime('%Y-%m-%dT%H:%M:%SZ')
+    return str(local.tz_convert('UTC').strftime('%Y-%m-%dT%H:%M:%SZ'))
 
 
 def nfl_facts(root: Path = ROOT) -> dict[str, Any]:
