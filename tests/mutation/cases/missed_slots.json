@@ -1,0 +1,35 @@
+{
+  "target": "src/site/missed_slots.py",
+  "tests": "tests/test_missed_slots.py",
+  "cases": [
+    {
+      "id": "missed-slots-ignores-a-missing-pick",
+      "why": "a game that started with no pick is not named, so a run that never happened is noticed only by its absence",
+      "find": "        if since <= start <= now and g.get('status') not in NOT_PLAYED and not (picks / f\"{g['game_id']}.json\").exists():\n",
+      "replace": "        if False:\n",
+      "expect_caught_by": "test_a_game_that_started_with_no_pick_is_named"
+    },
+    {
+      "id": "missed-slots-schedule-never-stale",
+      "why": "a schedule two days old reads as fresh, so a day with no run at all says nothing",
+      "find": "    if as_of < today - timedelta(days=1):\n",
+      "replace": "    if as_of < today - timedelta(days=30):\n",
+      "expect_caught_by": "test_yesterdays_schedule_is_still_fresh_and_the_day_before_is_not"
+    },
+    {
+      "id": "missed-slots-counts-a-postponed-game",
+      "why": "a postponed game with no pick raises a missed-slot alert, so every postponement is a false alarm",
+      "find": "NOT_PLAYED = {'postponed', 'cancelled', 'suspended'}\n",
+      "replace": "NOT_PLAYED: set[str] = set()\n",
+      "expect_caught_by": "test_a_postponed_game_and_one_outside_the_window_are_not_findings"
+    },
+    {
+      "id": "deploy-refused-by-the-missed-slot-check",
+      "target": ".github/workflows/deploy-pages.yml",
+      "why": "the missed-slot step can fail the build, so a missed pick also takes the whole site off its latest data",
+      "find": "      - name: Did a daily run slot go missing?\n        if: ${{ !cancelled() }}\n        continue-on-error: true\n",
+      "replace": "      - name: Did a daily run slot go missing?\n        if: ${{ !cancelled() }}\n",
+      "expect_caught_by": "test_the_deploy_runs_it_without_ever_refusing_the_build"
+    }
+  ]
+}

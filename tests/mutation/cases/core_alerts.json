@@ -26,8 +26,8 @@
     {
       "id": "core-alerts-gh-failure-swallowed",
       "why": "a failed gh call is treated as success. The alert step would go green having raised nothing, which is the silent failure this module exists to end, one level up.",
-      "find": "    if r.returncode:\n        raise RuntimeError",
-      "replace": "    if False:\n        raise RuntimeError",
+      "find": "        if not r.returncode:\n            out: str = r.stdout\n",
+      "replace": "        if True:\n            out: str = r.stdout\n",
       "expect_caught_by": "test_a_failing_gh_call_raises_rather_than_passing_quietly"
     },
     {
@@ -47,8 +47,8 @@
     {
       "id": "core-alerts-log-ignored",
       "why": "--log is accepted and dropped, so the alert carries only a link and the cause needs a sign-in to read (#529)",
-      "find": "    action, ref = open_or_comment(args.title, with_log_tail(body, args.log), key=body)\n",
-      "replace": "    action, ref = open_or_comment(args.title, body, key=body)\n",
+      "find": "    text = with_log_tail(body, args.log)\n",
+      "replace": "    text = body\n",
       "expect_caught_by": "test_the_cli_passes_the_log_through"
     },
     {
@@ -125,8 +125,8 @@
     {
       "id": "core-alerts-cli-keys-on-the-log",
       "why": "the CLI keys on the body with its log tail, whose timestamps change every run, so the failures that carry logs are never counted",
-      "find": "    action, ref = open_or_comment(args.title, with_log_tail(body, args.log), key=body)\n",
-      "replace": "    action, ref = open_or_comment(args.title, with_log_tail(body, args.log))\n",
+      "find": "        action, ref = open_or_comment(args.title, text, key=body)\n",
+      "replace": "        action, ref = open_or_comment(args.title, text)\n",
       "expect_caught_by": "test_the_cli_passes_the_log_through"
     }
   ]

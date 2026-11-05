@@ -871,7 +871,7 @@ function forwardHtml(f, sport){
     return `<tr><th scope="row">${n}</th><td class="num">${c.games}</td><td class="num">${c.days}</td>`
       + (c.note ? `<td colspan="2">${c.note}</td>` : `<td class="num">${sgn(c.diff)}</td><td class="num">[${sgn(c.low)}, ${sgn(c.high)}]</td>`) + '</tr>'; }).join('');
   const level = (f.interval_rule.level * 100).toFixed(2);
-  return `<p class="${sport}-lede">Every saved pick whose game is final, ${f.graded_picks} of them through ${f.through}, scored as the registration says (<code>${f.registered}</code>). Model B and the market are scored only on the picks that had a price.</p>
+  return `<p class="${sport}-lede">Every saved pick whose game is final, ${f.graded_picks} of them through ${f.through}, scored as the registration says (<code>${f.registered}</code>). Model B and the market are scored only on the picks that had a price.${f.market_price ? ' ' + f.market_price.said : ''}</p>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's scores</caption>
     <thead><tr><th scope="col">Forecaster</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's comparisons</caption>
@@ -919,7 +919,8 @@ function driftStatus(d, rule){
   const n = x => Number(x).toLocaleString('en-US');
   const min = rule ? (rule.rule.checkpoints || [rule.rule.min_games])[0] : 100;
   if (!d || !d.games) return 'No pick has been graded yet, so the drift check has nothing to test.';
-  const now = `Model A&#39;s mean log loss over ${d.games} graded games is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest.`;
+  const own = d.without_availability ? ` for the same picks, ${d.without_availability} of which were made without the injury report and are held to the backtest without it` : '';
+  const now = `Model A&#39;s mean log loss over ${d.games} graded games is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest${own}.`;
   if (d.games < min) return `${d.games} of the ${min} graded games the drift check needs before it can flag. ${now}`;
   const last = (d.looks || []).slice(-1)[0];
   const when = !last ? '' : ` Its last look was at ${n(last.games)} graded games${d.next_look ? `; the next is at ${n(d.next_look)}` : ', the season&#39;s last'}.`;
@@ -932,7 +933,10 @@ function driftLooks(rule){
   if (!rule || !rule.rule.checkpoints) return '';
   const r = rule.rule, cs = r.checkpoints.map(x => Number(x).toLocaleString('en-US'));
   const list = cs.length > 1 ? `${cs.slice(0, -1).join(', ')} and ${cs[cs.length - 1]}` : cs[0];
-  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many is above the backtest&#39;s ${rule.baseline.value.toFixed(4)}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
+  const base = rule.baseline_no_availability
+    ? `figure for those picks (${rule.baseline.value.toFixed(4)} for a pick made with the injury report, ${rule.baseline_no_availability.value.toFixed(4)} for one made without it)`
+    : rule.baseline.value.toFixed(4);
+  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many is above the backtest&#39;s ${base}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
 }
 function renderReliability(){
   const d = DATA.drift, rule = DATA.drift_rule, el = document.getElementById('reliability-body');
