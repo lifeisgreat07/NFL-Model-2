@@ -104,6 +104,13 @@ __FONT_FACES__
   <div class="home-cards" id="home-cards"></div>
   <p class="home-foot">Times are shown in your time zone.</p>
   <p class="home-updated" id="home-updated"></p>
+  <!-- Stage 90 item 1: Model B, the market and the base rate for each sport,
+       live beside the backtest, from src/site/track_record.py. -->
+  <section class="home-track" id="home-track" aria-labelledby="home-track-title" hidden>
+    <h2 id="home-track-title">Track record</h2>
+    <p class="home-track-lede">Log loss scores each forecast by how likely it said the actual result was; lower is better, and the base rate, which knows nothing about the game, is the line to beat. A win-loss record means little without it.</p>
+    <div class="home-track-tables" id="home-track-tables"></div>
+  </section>
   <section class="home-how" aria-labelledby="home-how-title">
     <h2 id="home-how-title">How it works</h2>
     <ol class="home-steps">
