@@ -225,6 +225,22 @@ jobs:
         timeout-minutes: 15
         run: python tests/browser/check_chart_text.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
 
+      # Stage 96 item 46 (audit 7, T9): every board row says the pick that
+      # was saved, on all three sports' real boards, read against
+      # predictions/. The NHL's page above is a sample week, so the real one
+      # is built here; the NFL's (index.html) and the NBA's are already real.
+      - name: Build the NHL's real board
+        timeout-minutes: 15
+        run: python -m src.sports.nhl.site --out "$RUNNER_TEMP/real-nhl.html"
+
+      - name: Prove the board picks check can fail
+        timeout-minutes: 15
+        run: python tests/browser/check_board_picks.py --self-test --tmp "$RUNNER_TEMP/picks" --nfl index.html --nhl "$RUNNER_TEMP/real-nhl.html" --nba "$RUNNER_TEMP/states/nba.html"
+
+      - name: Check every board row says the saved pick
+        timeout-minutes: 15
+        run: python tests/browser/check_board_picks.py --nfl index.html --nhl "$RUNNER_TEMP/real-nhl.html" --nba "$RUNNER_TEMP/states/nba.html"
+
       # Stage 68 item 5: no cell of a day-board row drawn over another, at
       # 320, 390 and 1280 px in both themes, with the clock before opening
       # night so every row carries its "Locks ..." label. It proves itself
