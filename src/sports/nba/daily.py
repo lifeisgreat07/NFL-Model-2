@@ -207,6 +207,18 @@ def missed(started: tuple[str, ...] | list[str], folder: Path) -> list[str]:
     return sorted(str(g) for g in started if not (folder / f'{g}.json').exists())
 
 
+def recently_started(sched: pd.DataFrame, now: datetime) -> tuple[str, ...]:
+    """Every game of yesterday's and today's slates (Eastern) that has started.
+
+    Stage 92 item 11 (audit 7, R11): the run used to check only the games of
+    the slates it was deciding, today's and tomorrow's, so a game of
+    yesterday's slate that started after the last run that could have saved it
+    was never named. Postponed and cancelled games are not started."""
+    today = pd.Timestamp(now).tz_convert('America/New_York').normalize()
+    days = {str((today - pd.Timedelta(days=1)).date()), str(today.date())}
+    return GameLock().decide(sched[sched['slate'].isin(days)], now).started
+
+
 def missed_line(started: tuple[str, ...] | list[str], folder: Path) -> str | None:
     """The line the workflow's alert step greps for, or None when nothing
     was missed."""
@@ -360,7 +372,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                       minutes=minutes, table=table, box=avail_table, h=h, lam=lam, columns=A_COLUMNS,
                       fit=fit_models, report_availability=availability_for)
     print(f"M2: {m2_out['graded']} graded games")
-    lost = missed_line(decision.started, folder)
+    lost = missed_line(sorted(set(decision.started) | set(recently_started(sched, now))), folder)
     if lost:
         print(lost)
     print(f'lock {len(decision.lock)}, hold {len(decision.hold)}, started {len(decision.started)}; '
