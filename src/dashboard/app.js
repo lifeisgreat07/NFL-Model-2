@@ -4620,6 +4620,31 @@ function renderAgentLog(){
     <p class="rel-prov">${s.audits_total} review${s.audits_total===1?'':'s'} in total,
     ${s.audits_superseded} of them replaced by a later run of the same review and not counted.
     Collected ${agentLog.generated_utc || 'unknown'}.</p>
+  </div>${agentsAtWork(agentLog.recent)}`;
+}
+
+/* Stage 90 item 3: the four agents at work. Booth audits each change, Scout
+   reads its description before the audit, Spotter photographs the pages it
+   can alter, and Line Judge reads the unattended runs. Their latest outputs,
+   newest first, each linked to the comment or run it came from. */
+const AGENT_ROLES = {Booth: 'checks each claim', Scout: 'reads the description first',
+  Spotter: 'looks at the pages', 'Line Judge': 'reads the unattended runs'};
+function agentsAtWork(recent){
+  if(!Array.isArray(recent) || !recent.length) return '';
+  const rows = recent.map(e => {
+    const when = e.when ? escapeHtml(String(e.when).slice(0, 10)) : '';
+    const pr = e.pr ? ` on #${Number(e.pr)}` : '';
+    const link = /^https:\/\/github\.com\//.test(e.url || '') ? escapeHtml(e.url) : '';
+    const says = escapeHtml(String(e.says || ''));
+    return `<li class="agent-entry"><b>${escapeHtml(String(e.agent))}</b>${pr}, ${when}: `
+      + (link ? `<a href="${link}" rel="noopener">${says}</a>` : says) + '</li>';
+  }).join('');
+  return `<div class="method-block agents-at-work">
+    <h3>The agents at work</h3>
+    <p>Four agents check this project's work: Booth ${AGENT_ROLES.Booth}, Scout ${AGENT_ROLES.Scout},
+    Spotter ${AGENT_ROLES.Spotter} and Line Judge ${AGENT_ROLES['Line Judge']}. Their latest
+    outputs, newest first, each linked to where it was posted.</p>
+    <ul class="agent-entries">${rows}</ul>
   </div>`;
 }
 

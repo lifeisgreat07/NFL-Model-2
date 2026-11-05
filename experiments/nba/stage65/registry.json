@@ -52,7 +52,9 @@
   "Stage 61's last disclosure said the live reads waited on Mark. The runner probe of 2026-10-09 (#357) found ESPN's odds and injury report answering GitHub's runner, where in September (#131) they had not; this registration rests on that probe, and the canary is what says when it stops being true.",
   "Kalshi is a prediction market, not a sportsbook; its prices on NBA games were not in Stage 61's data and were never backtested.",
   "The lock times are chosen for October's clocks. When the US leaves daylight saving on 2026-11-01, 21:30 UTC is 4:30 PM Eastern, earlier before the 7 PM games; the rule is unchanged.",
-  "Why the pick shown is Model B's though H3 rejected Model B against the market (+0.0008 log loss per game, [+0.0002, +0.0015]): the_pick was carried over unchanged from the NFL and NHL boards, so the three boards pick the same way, and forward_test reports Model B against the market on every live pick. Added 2026-11-03 (Stage 84 item 8); see amendments."
+  "Why the pick shown is Model B's though H3 rejected Model B against the market (+0.0008 log loss per game, [+0.0002, +0.0015]): the_pick was carried over unchanged from the NFL and NHL boards, so the three boards pick the same way, and forward_test reports Model B against the market on every live pick. Added 2026-11-03 (Stage 84 item 8); see amendments.",
+  "Model B did not train on a game of this season until 2026-11-05: until #600 every game of the season entered its training rows with no price, so every priced pick saved before then came from a Model B fitted on the seasons before this one only (each such pick's data_provenance.training_games_priced is the historical count, 14017). From 2026-11-05 the season's recorded prices reach its training rows (the models amendment).",
+  "The live market price is the one read at the run that saves the pick, a median of about three hours before the start; the backtest's market input is the closing price. Model B's coefficient on the market was fitted on closing prices and is applied to earlier ones, and the forward test's market is the lock-time price, so 'Model B against the market' live is against an earlier line than the backtest's."
  ],
  "amendments": [
   {
@@ -117,6 +119,14 @@
    "before_any_result": false,
    "seen": "121 NBA picks were saved, 15 of them without the injury report, and 107 were graded, all 15 among them. Model A's mean log loss on the 107 was 0.6251: 0.6267 on the 92 made with the report and 0.6152 on the 15 made without it. Held to each pick's own baseline the 107 are held to 0.6000 instead of 0.5983, and the 100-game look to 0.5993 instead of 0.5983; its 99% lower bound is 0.5502, so neither flags. A higher baseline is the direction that makes a flag harder, so it is stated here. The 2026-11-04 drift amendment's figures had also been read.",
    "change": "Added drift.amended_2026_11_05 and baseline_no_availability in data/nba/drift_baseline.json: a pick made without the injury report is held to Model A's backtest without availability. results/nba/drift_<season>.json records the look's baseline and how many graded picks ran without availability. No model, feature, pick or forward-test rule changes."
+  },
+  {
+   "date": "2026-11-05",
+   "by": "Claude, under Mark's approval of 2026-11-05 (audit 7, Stage 94 items 23 and 25)",
+   "entry": "disclosures",
+   "before_any_result": false,
+   "seen": "Written after audit 7 (2026-11-04) re-derived every saved pick's training record and every market read time, and after the forward test's figures had been read.",
+   "change": "Two disclosures added: that every priced pick saved before 2026-11-05 came from a Model B fitted on earlier seasons only, and that the live market is the lock-time price while the backtest's is the closing price. No model, rule or figure changes."
   }
  ]
 }

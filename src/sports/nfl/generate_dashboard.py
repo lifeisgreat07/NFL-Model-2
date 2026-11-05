@@ -223,7 +223,10 @@ def agent_log_for_page(log: dict[str, Any] | None) -> dict[str, Any] | None:
     Stage 26 item 11."""
     if log is None:
         return None
-    return {k: log.get(k) for k in ('generated_utc', 'summary')}
+    page = {k: log.get(k) for k in ('generated_utc', 'summary')}
+    if 'recent' in log:
+        page['recent'] = log['recent']  # Stage 90 item 3: the agents at work
+    return page
 
 
 def load_recent_runs(path: Path | None = None) -> dict[str, Any] | None:
