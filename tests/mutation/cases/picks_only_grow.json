@@ -1,0 +1,28 @@
+{
+  "target": "src/core/picks_only_grow.py",
+  "tests": "tests/test_picks_only_grow.py",
+  "cases": [
+    {
+      "id": "picks-may-be-rewritten",
+      "why": "only a removed pick is refused, so a run that rewrites a saved pick after its game commits it green",
+      "find": "    bad = [(s, p) for s, p in changes if s != 'A']\n",
+      "replace": "    bad = [(s, p) for s, p in changes if s == 'D']\n",
+      "expect_caught_by": "test_a_rewritten_removed_or_moved_pick_fails_the_step"
+    },
+    {
+      "id": "picks-check-never-fails",
+      "why": "the check names the changed pick and exits 0, so the commit goes ahead and nothing alerts",
+      "find": "            print(f'  {s} {p}')\n        return 1\n",
+      "replace": "            print(f'  {s} {p}')\n        return 0\n",
+      "expect_caught_by": "test_a_rewritten_removed_or_moved_pick_fails_the_step"
+    },
+    {
+      "id": "nba-daily-commits-without-the-picks-check",
+      "target": ".github/workflows/nba-daily.yml",
+      "why": "the NBA's run stages and commits with no check, so its picks can be rewritten while the NHL's cannot",
+      "find": "          python -m src.core.picks_only_grow predictions/nba\n",
+      "replace": "",
+      "expect_caught_by": "test_each_daily_run_checks_after_staging_and_before_committing"
+    }
+  ]
+}
