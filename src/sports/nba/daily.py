@@ -43,7 +43,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test, season_prices
+from src.core import forward_test, pick_guard, priced, schedule_guard, season_prices
+from src.core.atomic_write import write_json_atomic
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nba import (
@@ -187,14 +188,18 @@ def pick_record(game: pd.Series, feats: dict[str, float], models: dict[str, Any]
 
 
 def save_once(record: dict[str, Any], folder: Path) -> bool:
-    """Write the pick unless one is already saved. True when written."""
+    """Write the pick unless one is already saved. True when written.
+
+    Stage 91 item 6: written through write_json_atomic (fsync, a unique
+    temporary name), so a killed run never leaves a truncated pick or a
+    committed .tmp. Stage 91 item 5: a record that could have seen its own
+    result is refused before anything is written (src/core/pick_guard.py)."""
     path = folder / f"{record['game_id']}.json"
     if path.exists():
         return False
+    pick_guard.refuse_leak(record)
     folder.mkdir(parents=True, exist_ok=True)
-    tmp = path.with_suffix('.tmp')
-    tmp.write_text(json.dumps(record, indent=1) + '\n', encoding='utf-8')
-    tmp.replace(path)
+    write_json_atomic(path, record, trailing_newline=True, indent=1)
     return True
 
 
@@ -205,6 +210,18 @@ def missed(started: tuple[str, ...] | list[str], folder: Path) -> list[str]:
     made now; the daily workflow raises an alert on the line main prints
     (Stage 68 item 3, the 2026-10-09 audit)."""
     return sorted(str(g) for g in started if not (folder / f'{g}.json').exists())
+
+
+def recently_started(sched: pd.DataFrame, now: datetime) -> tuple[str, ...]:
+    """Every game of yesterday's and today's slates (Eastern) that has started.
+
+    Stage 92 item 11 (audit 7, R11): the run used to check only the games of
+    the slates it was deciding, today's and tomorrow's, so a game of
+    yesterday's slate that started after the last run that could have saved it
+    was never named. Postponed and cancelled games are not started."""
+    today = pd.Timestamp(now).tz_convert('America/New_York').normalize()
+    days = {str((today - pd.Timedelta(days=1)).date()), str(today.date())}
+    return GameLock().decide(sched[sched['slate'].isin(days)], now).started
 
 
 def missed_line(started: tuple[str, ...] | list[str], folder: Path) -> str | None:
@@ -275,7 +292,7 @@ def read_kalshi(get: Callable[[str], bytes]) -> dict[Any, Any] | None:
     try:
         return market.kalshi_prices(json.loads(get(market.KALSHI)))
     except (OSError, ValueError) as exc:
-        print(f'Kalshi: not read: {exc}')
+        print(f'DEGRADED: Kalshi: not read: {exc}')
         return None
 
 
@@ -283,6 +300,8 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     now = now or datetime.now(UTC)
     season = nba_schedule.current_season(now)
     sched = nba_schedule.load_schedule(season, get=lambda u: json.loads(get(u)))
+    # Stage 91 item 2: an empty or shrunken feed stops the run before anything is written.
+    schedule_guard.check(len(sched), PATHS.results / f'schedule_{season}.json')
     first = backtest.registry()['protocol']['training_from_season']
     past_games, past_minutes = backtest.load_history(first, season - 1)
     cur_games, cur_minutes = refresh_season(season, sched, get=get)
@@ -335,6 +354,11 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             record = pick_record(g, feats, models, price, avail, injury_list, now, why) | trained
             print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id']
                   + f" (price: {record['market_source'] or 'none'})")
+        # Stage 92 item 7: odds that answered but priced none of the locking games say so.
+        unpriced = priced.unpriced_line(locking['game_id'],
+                                        (p['game_id'] for p in prices if p.get('home_prob') is not None))
+        if unpriced:
+            print(unpriced)
         market.record(prices, PATHS.data / 'lines' / f'{season}.json')
     graded = grade(folder, sched)
     PATHS.results.mkdir(parents=True, exist_ok=True)
@@ -360,7 +384,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                       minutes=minutes, table=table, box=avail_table, h=h, lam=lam, columns=A_COLUMNS,
                       fit=fit_models, report_availability=availability_for)
     print(f"M2: {m2_out['graded']} graded games")
-    lost = missed_line(decision.started, folder)
+    lost = missed_line(sorted(set(decision.started) | set(recently_started(sched, now))), folder)
     if lost:
         print(lost)
     print(f'lock {len(decision.lock)}, hold {len(decision.hold)}, started {len(decision.started)}; '

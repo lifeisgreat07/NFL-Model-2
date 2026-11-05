@@ -22,6 +22,7 @@ from pathlib import Path
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.js_source import function_source
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = ROOT / 'src' / 'sports' / 'nhl' / 'pages'
@@ -34,12 +35,6 @@ FUNCTIONS = ('dayDate', 'dayIso', 'weekDays', 'defaultDay', 'lockRunFor', 'winne
 
 def source():
     return JS.read_text(encoding='utf-8')
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 def const_line(src, name):

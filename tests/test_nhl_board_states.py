@@ -26,6 +26,7 @@ import pandas as pd
 import pytest
 
 from src.sports.nhl import lock
+from tests.js_source import function_source
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js'
@@ -34,12 +35,6 @@ NODE = shutil.which('node')
 
 def source():
     return JS.read_text(encoding='utf-8')
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 def const_line(src, name):

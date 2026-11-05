@@ -1,0 +1,28 @@
+{
+  "target": "src/site/build.py",
+  "tests": "tests/test_site_stale.py",
+  "cases": [
+    {
+      "id": "kept-page-not-marked",
+      "why": "a sport whose build failed keeps yesterday's page with nothing on it to say so, and a visitor reads it as today's",
+      "find": "            page.write_bytes(mark_stale(body, stamp))\n",
+      "replace": "            page.write_bytes(body)\n",
+      "expect_caught_by": "test_a_failed_build_keeps_the_live_page_with_the_line"
+    },
+    {
+      "id": "stale-date-moves-every-build",
+      "why": "a page kept for a week says it is from yesterday, because each failed build writes its own date over the first",
+      "find": "    if STALE_MARK in html:\n        return body\n",
+      "replace": "",
+      "expect_caught_by": "test_a_page_already_marked_keeps_its_first_date"
+    },
+    {
+      "id": "nhl-page-built-from-an-empty-schedule",
+      "target": "src/sports/nhl/site.py",
+      "why": "the NHL's page is built from a schedule with no games, so it publishes an empty board",
+      "find": "    if not sched.get('games'):\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_the_nhl_page_refuses_an_empty_schedule"
+    }
+  ]
+}

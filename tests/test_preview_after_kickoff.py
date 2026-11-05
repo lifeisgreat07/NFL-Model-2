@@ -19,7 +19,6 @@ outlive the week, each closed here:
 Run with: pytest tests/test_preview_after_kickoff.py -v
 """
 import json
-import re
 import shutil
 import subprocess
 import sys
@@ -38,6 +37,7 @@ import synthetic_league as league
 
 from src.sports.nfl import generate_dashboard as gd
 from src.sports.nfl import weekly_update as wu
+from tests.js_source import function_source
 
 NODE = shutil.which('node')
 H = pd.Timedelta(hours=1)
@@ -101,12 +101,6 @@ def test_the_build_leaves_out_skipped_weeks_previews():
 
 
 # --- 3. the note after kickoff ------------------------------------------------
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
-
 
 def note(week, now_iso):
     if not NODE:
