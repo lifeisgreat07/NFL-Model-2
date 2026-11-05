@@ -195,6 +195,14 @@ def scores(frame: pd.DataFrame) -> dict[str, dict[str, float | int]]:
     return out
 
 
+#: Stage 94 item 25 (audit 7, M3): which price "the market" is, in the file and on the page.
+MARKET_PRICE = {
+    'kind': 'lock',
+    'said': ("The market here is the price read at the run that saved each pick, hours before the start; "
+             "the backtest's market was the closing price, so the two are not the same instrument."),
+}
+
+
 def report(frame: pd.DataFrame, sport: str, season: int, registry: str) -> dict[str, Any]:
     """The whole forward-test file for one sport's season."""
     seed = SEEDS[sport]
@@ -226,6 +234,7 @@ def report(frame: pd.DataFrame, sport: str, season: int, registry: str) -> dict[
         'through': max(frame['day']) if len(frame) else None,
         'scores': scores(frame),
         'by_market_source': by_source,
+        'market_price': MARKET_PRICE,
         'comparisons': comparisons,
         'calibration': calib,
         'interval_rule': {'level': LEVEL, 'resamples': N_RESAMPLES, 'seed': seed,
