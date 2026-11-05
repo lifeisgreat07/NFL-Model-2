@@ -1,0 +1,35 @@
+{
+  "target": "src/sports/nhl/canary.py",
+  "tests": "tests/test_canary_steps.py",
+  "cases": [
+    {
+      "id": "nhl-canary-market-passes-zero-priced",
+      "why": "an odds feed that answers with no games, or under a renamed key, passes as 0 games priced on a night with a game due, the miss audit 7 found (R4)",
+      "find": "    if not rows and sched is not None:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_an_odds_feed_that_prices_nothing_fails_the_night_with_a_game_due"
+    },
+    {
+      "id": "nhl-canary-market-fails-an-off-day",
+      "why": "an empty feed fails even with no game due to price, so every off-day and the break raise a false alarm",
+      "find": "        if len(due):\n",
+      "replace": "        if True:\n",
+      "expect_caught_by": "test_an_odds_feed_with_nothing_to_price_passes"
+    },
+    {
+      "id": "nhl-canary-lock-step-swaps-its-counts",
+      "why": "the lock step reports held games as locked; no test ran the step, so the night's report could say anything",
+      "find": "    return f'today: lock {len(d.lock)}, hold {len(d.hold)}, started {len(d.started)}'\n",
+      "replace": "    return f'today: lock {len(d.hold)}, hold {len(d.lock)}, started {len(d.started)}'\n",
+      "expect_caught_by": "test_the_nhl_night_runs_every_step_and_each_reads_its_source"
+    },
+    {
+      "id": "nba-canary-box-score-reads-the-first-final",
+      "target": "src/sports/nba/canary.py",
+      "why": "the box-score check reads the season's first final instead of its latest, so a feed change in recent games goes unseen",
+      "find": "        return finals.iloc[-1]\n",
+      "replace": "        return finals.iloc[0]\n",
+      "expect_caught_by": "test_the_nba_scoreboard_last_final_and_box_score_reads_run"
+    }
+  ]
+}

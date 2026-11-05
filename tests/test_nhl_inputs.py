@@ -82,6 +82,24 @@ def test_a_game_without_both_prices_is_reported_not_filled_in():
     assert rows == [] and 'no two-way moneyline' in missing[0]
 
 
+@pytest.mark.parametrize('bad', [
+    odds_game(gid=2026020041, home=50.0),            # not an American price
+    odds_game(gid=2026020041, home='-2l8'),          # a value that is not a number
+    {'gameId': 2026020041, 'homeTeam': 'TBL'},       # a side that is not an object
+])
+def test_one_malformed_price_row_costs_only_its_own_game(bad):
+    """Stage 92 item 10 (audit 7, R12): it used to raise out of parse, which
+    the daily run reads as the feed not answering, and every game lost its price."""
+    rows, missing = market.parse(feed(odds_game(), bad), READ)
+    assert [r['game_id'] for r in rows] == ['2026020040']
+    assert len(missing) == 1 and missing[0].startswith('game 2026020041: a malformed price row, left unpriced (')
+
+
+def test_a_row_that_is_not_an_object_is_named_too():
+    rows, missing = market.parse(feed('junk', odds_game()), READ)
+    assert [r['game_id'] for r in rows] == ['2026020040'] and missing[0].startswith('game ?: a malformed price row')
+
+
 def test_a_price_is_recorded_once_until_it_moves(tmp_path):
     path = tmp_path / 'lines.json'
     rows, _ = market.parse(feed(odds_game()), READ)
