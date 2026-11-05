@@ -19,8 +19,8 @@
     {
       "id": "core-alerts-always-opens-a-new-issue",
       "why": "an open issue with the same title is ignored. A canary failing every night for a week would open seven issues, which is how alert fatigue starts.",
-      "find": "    if number is not None:\n        _gh(['issue', 'comment'",
-      "replace": "    if False:\n        _gh(['issue', 'comment'",
+      "find": "    if number is None:\n        out = _gh(['issue', 'create'",
+      "replace": "    if True:\n        out = _gh(['issue', 'create'",
       "expect_caught_by": "test_an_open_issue_with_the_same_title_gets_a_comment_not_a_twin"
     },
     {
@@ -47,8 +47,8 @@
     {
       "id": "core-alerts-log-ignored",
       "why": "--log is accepted and dropped, so the alert carries only a link and the cause needs a sign-in to read (#529)",
-      "find": "    action, ref = open_or_comment(args.title, with_log_tail(body, args.log))\n",
-      "replace": "    action, ref = open_or_comment(args.title, body)\n",
+      "find": "    action, ref = open_or_comment(args.title, with_log_tail(body, args.log), key=body)\n",
+      "replace": "    action, ref = open_or_comment(args.title, body, key=body)\n",
       "expect_caught_by": "test_the_cli_passes_the_log_through"
     },
     {
@@ -72,6 +72,62 @@
       "find": "          python -m src.core.alerts --resolve --title \"NBA: daily run failed\" --body-file recovered.md\n",
       "replace": "",
       "expect_caught_by": "test_every_failure_alert_is_closed_by_the_next_success"
+    },
+    {
+      "id": "core-alerts-repeat-always-comments",
+      "why": "a report identical to the latest post, run link aside, is added as another comment, so a nightly failure fills its issue with copies again (#540 had 23)",
+      "find": "    if where and seen and seen.group(1) == report_key(key if key is not None else body):\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_a_repeat_of_the_latest_post_counts_on_it_instead_of_commenting"
+    },
+    {
+      "id": "core-alerts-key-keeps-run-links",
+      "why": "the key keeps the run link, which every run writes afresh, so no two reports are ever the same and nothing is counted",
+      "find": "RUN_LINK.sub('<run>', body.strip())",
+      "replace": "body.strip()",
+      "expect_caught_by": "test_the_key_ignores_run_links_and_nothing_else"
+    },
+    {
+      "id": "core-alerts-counts-any-report",
+      "why": "any keyed post is counted on whatever the new report says, so a new vulnerability or a new cause of failure is folded into an old post's number and never read",
+      "find": "    if where and seen and seen.group(1) == report_key(key if key is not None else body):\n",
+      "replace": "    if where and seen:\n",
+      "expect_caught_by": "test_a_different_report_is_a_new_comment"
+    },
+    {
+      "id": "core-alerts-count-stuck-at-one",
+      "why": "the count never climbs, so a failure seen ten times reads as seen once",
+      "find": "    n = int(m.group(1)) + 1 if m else 1\n",
+      "replace": "    n = 1\n",
+      "expect_caught_by": "test_the_count_climbs_on_one_line"
+    },
+    {
+      "id": "core-alerts-count-lines-pile-up",
+      "why": "the old count line is kept under the new one, so the post grows a line a night, which is the page of copies again in another place",
+      "find": "    rest = REPEAT_LINE.sub('', post).rstrip()\n",
+      "replace": "    rest = post.rstrip()\n",
+      "expect_caught_by": "test_the_count_climbs_on_one_line"
+    },
+    {
+      "id": "core-alerts-counts-on-the-first-comment",
+      "why": "the count goes on the issue's first comment, above any reply a person wrote since, where no one reading the thread will see it change",
+      "find": "    last = comments[-1]\n",
+      "replace": "    last = comments[0]\n",
+      "expect_caught_by": "test_a_person_writing_after_the_alert_means_the_next_one_is_a_comment"
+    },
+    {
+      "id": "core-alerts-body-count-patches-a-comment",
+      "why": "an issue with no comments is counted as if its body were a comment, which sends a PATCH to a comment that does not exist and fails the alert step",
+      "find": "        if where == 'body':\n",
+      "replace": "        if False:\n",
+      "expect_caught_by": "test_a_repeat_on_an_issue_with_no_comments_counts_on_its_body"
+    },
+    {
+      "id": "core-alerts-cli-keys-on-the-log",
+      "why": "the CLI keys on the body with its log tail, whose timestamps change every run, so the failures that carry logs are never counted",
+      "find": "    action, ref = open_or_comment(args.title, with_log_tail(body, args.log), key=body)\n",
+      "replace": "    action, ref = open_or_comment(args.title, with_log_tail(body, args.log))\n",
+      "expect_caught_by": "test_the_cli_passes_the_log_through"
     }
   ]
 }

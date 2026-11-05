@@ -48,7 +48,7 @@ def test_an_opened_pull_request_opens_an_issue_naming_the_lock():
 def test_a_second_pull_request_for_the_same_week_comments_rather_than_opening_a_twin():
     gh = FakeGh(open_issues=[{'number': 12, 'title': ow.title(2026, 9)}])
     ow.handle('reopened', 551, 'https://github.com/o/r/pull/551', False, [WEEK9], run=gh)
-    assert gh.verbs() == ['issue list', 'issue comment']
+    assert gh.verbs() == ['issue list', 'issue view', 'issue comment']
 
 
 def test_a_merge_closes_the_issue_with_a_comment_saying_so():

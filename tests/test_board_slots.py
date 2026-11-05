@@ -20,18 +20,13 @@ import subprocess
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.js_source import function_source
 
 NODE = shutil.which('node')
 
 
 def template():
     return JOINED_TEMPLATE.read_text(encoding='utf-8')
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 def const_line(src, name):
