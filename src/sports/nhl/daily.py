@@ -52,7 +52,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test, season_prices
+from src.core import forward_test, priced, schedule_guard, season_prices
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nhl import (
@@ -300,6 +300,8 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     now = now or datetime.now(UTC)
     season = nhl_schedule.current_season(now)
     sched = nhl_schedule.load_schedule(season)
+    # Stage 91 item 2: an empty or shrunken feed stops the run before anything is written.
+    schedule_guard.check(len(sched), PATHS.results / f'schedule_{season}.json')
     first = backtest.registry()['protocol']['training_from_season']
     past = backtest.load_history(first, season - 1)
     current = refresh_season(season, sched)
@@ -326,16 +328,23 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         market.record(lines, PATHS.data / 'lines' / f'{season}.json')
         line_by_id = {r['game_id']: r for r in lines}
         projected = {}
+        # Stage 92 item 7: a goalie page that cannot be read for a day with games locking costs
+        # those picks their projected starters, so it is a DEGRADED line; another day's is not.
+        locking_days = set(slate[slate['game_id'].isin(decision.lock)]['slate'].astype(str))
         for day in sorted(days):
             try:
                 rows = goalies.parse_faceoff(get(f'{goalies.SOURCE}/{day}').decode('utf-8', 'replace'), now)
                 attached = goalies.attach_games(rows, sched[sched['slate'] == day].to_dict('records'))
             except goalies.GoalieSourceError as exc:
-                print(f'goalies for {day}: {exc}')
+                print(f"{'DEGRADED: ' if day in locking_days else ''}goalies for {day}: {exc}")
                 continue
             goalies.record(attached, PATHS.data / 'goalies' / f'{season}.json')
             projected.update({r['game_id']: r for r in attached})
         locking = slate[slate['game_id'].isin(decision.lock)]
+        # Stage 92 item 7: a feed that answered but priced none of the locking games says so.
+        unpriced = priced.unpriced_line(locking['game_id'], (r['game_id'] for r in lines))
+        if unpriced and not any(m.startswith('odds feed not read') for m in missing):
+            print(unpriced)
         rosters = read_rosters(set(locking['home']) | set(locking['away']), get)
         fallback = last_starters(games)
         injury_table = read_injuries(season, get)

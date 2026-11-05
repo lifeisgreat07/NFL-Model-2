@@ -17,7 +17,6 @@ snapshot. These tests hold each step and execute the card line.
 Run with: pytest tests/test_neutral_site.py -v
 """
 import json
-import re
 import shutil
 import subprocess
 from datetime import UTC, datetime
@@ -29,14 +28,9 @@ from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import generate_dashboard as gd
 from src.sports.nfl import weekend_refresh as wr
 from src.sports.nfl import weekly_update as wu
+from tests.js_source import function_source
 
 NODE = shutil.which('node')
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 @pytest.mark.parametrize('location, expected', [
