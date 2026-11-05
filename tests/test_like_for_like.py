@@ -47,8 +47,9 @@ def test_the_amendment_is_registered_and_disclosed_as_written_after_results():
     reg = json.loads(REGISTRY.read_text(encoding='utf-8'))
     text = reg['drift']['amended_2026_11_05']
     assert 'availability.read false' in text and '0.6103' in text and '0.5983' in text
-    entry = reg['amendments'][-1]
-    assert (entry['entry'], entry['date'], entry['before_any_result']) == ('drift', '2026-11-05', False)
+    # Found by what it is, not by being last: a later amendment (Stage 94's disclosures) follows it.
+    entry = next(a for a in reg['amendments'] if a['entry'] == 'drift' and a['date'] == '2026-11-05')
+    assert entry['before_any_result'] is False
     assert '15 of them without the injury report' in entry['seen']
 
 
