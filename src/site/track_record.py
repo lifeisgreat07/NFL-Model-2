@@ -81,7 +81,10 @@ def nfl(root: Path = ROOT) -> dict[str, Any] | None:
     season = weeks[-1][0]
     base = float(cal['models']['model_a']['decomposition']['base_rate'])
     scored: dict[str, list[tuple[float, int]]] = {k: [] for k, _ in FORECASTERS}
-    for s, _w, path in weeks:
+    # The lock writes a week's graded file before its games are played, so the record runs through the
+    # latest week with a result, not the latest file.
+    graded_weeks: set[int] = set()
+    for s, w, path in weeks:
         if s != season:
             continue
         for g in json.loads(path.read_text(encoding='utf-8')):
@@ -93,6 +96,7 @@ def nfl(root: Path = ROOT) -> dict[str, Any] | None:
             if g.get('market_prob_home') is not None:
                 scored['market'].append((float(g['market_prob_home']), int(y)))
             scored['base_rate'].append((base, int(y)))
+            graded_weeks.add(w)
     rows = []
     for key, label in FORECASTERS:
         pairs = scored[key]
@@ -106,7 +110,9 @@ def nfl(root: Path = ROOT) -> dict[str, Any] | None:
             bt = _row(m['log_loss'], m['brier'], int(m['n']))
         rows.append({'key': key, 'label': label, 'live': live, 'backtest': bt})
     seasons = cal.get('backtest_seasons') or []
-    return {'season': season, 'through': f'week {max(w for s, w, _ in weeks if s == season)}', 'rows': rows,
+    if not graded_weeks:
+        return None
+    return {'season': season, 'through': f'week {max(graded_weeks)}', 'rows': rows,
             'calibration': None,
             'backtest_label': f'the {seasons[0]}-{seasons[-1]} seasons' if seasons else 'the backtest',
             'note': (f"The backtest is model v{cal.get('model_version')}; this season's picks are later "

@@ -22,6 +22,13 @@
       "find": "    files = [p for p in files if re.fullmatch(r'forward_\\d{4}', p.stem)]\n",
       "replace": "    files = [p for p in files if p.stem.startswith('forward_')]\n",
       "expect_caught_by": "test_a_day_sport_reads_its_forward_file_beside_its_confirmation_seasons"
+    },
+    {
+      "id": "track-record-nfl-through-a-locked-week",
+      "why": "the NFL's record says it runs through a week that has only locked: the lock writes the week's graded file before its games, so the home page claimed a week no game of which had been scored",
+      "find": "    return {'season': season, 'through': f'week {max(graded_weeks)}', 'rows': rows,",
+      "replace": "    return {'season': season, 'through': f'week {max(w for s, w, _ in weeks if s == season)}', 'rows': rows,",
+      "expect_caught_by": "test_the_nfl_is_scored_from_its_graded_weeks"
     }
   ]
 }

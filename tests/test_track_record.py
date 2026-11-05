@@ -76,6 +76,8 @@ def test_the_nfl_is_scored_from_its_graded_weeks(tmp_path):
              {'actual_home_win': None, 'model_b_home_win_prob': 0.9, 'market_prob_home': 0.9}]
     write(tmp_path / 'results' / 'nfl' / '2026_week1_graded.json', games)
     write(tmp_path / 'results' / 'nfl' / '2025_week18_graded.json', [{'actual_home_win': 1, 'model_b_home_win_prob': 0.01}])
+    # The lock writes week 2's file before any of its games is played: the record is still through week 1.
+    write(tmp_path / 'results' / 'nfl' / '2026_week2_graded.json', [{'actual_home_win': None, 'model_b_home_win_prob': 0.7}])
     got = tr.nfl(tmp_path)
     rows = {r['key']: r for r in got['rows']}
     assert got['season'] == 2026 and got['through'] == 'week 1'
