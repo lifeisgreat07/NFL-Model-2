@@ -1,0 +1,70 @@
+{
+ "target": "src/sports/nfl/override_check.py",
+ "tests": "tests/test_override_check.py",
+ "cases": [
+  {
+   "id": "override-source-suffix-without-dot",
+   "why": "a host that merely ends in a listed name (notespn.com) passes as that site",
+   "find": "    return any(host == d or host.endswith('.' + d) for d in domains)\n",
+   "replace": "    return any(host.endswith(d) for d in domains)\n",
+   "expect_caught_by": "test_anything_else_is_not"
+  },
+  {
+   "id": "override-source-any-scheme",
+   "why": "a link with no http(s) scheme passes the source check",
+   "find": "    if parts.scheme not in ('http', 'https') or not host:\n",
+   "replace": "    if not host:\n",
+   "expect_caught_by": "test_anything_else_is_not"
+  },
+  {
+   "id": "override-roster-ignores-the-team",
+   "why": "a quarterback on another team's roster passes as this team's starter",
+   "find": "    if row['team'] != entry['team']:\n",
+   "replace": "    if False:\n",
+   "expect_caught_by": "test_a_player_who_cannot_be_the_teams_starter_is_named"
+  },
+  {
+   "id": "override-roster-ignores-the-position",
+   "why": "a receiver named in an override passes as a quarterback",
+   "find": "    if row['position'] != 'QB':\n",
+   "replace": "    if False:\n",
+   "expect_caught_by": "test_a_player_who_cannot_be_the_teams_starter_is_named"
+  },
+  {
+   "id": "override-roster-ignores-the-status",
+   "why": "a quarterback on reserve or cut passes, the week 7 and 8 case of a starter out for the season",
+   "find": "    if row['status'] not in PLAYABLE:\n",
+   "replace": "    if False:\n",
+   "expect_caught_by": "test_a_player_who_cannot_be_the_teams_starter_is_named"
+  },
+  {
+   "id": "override-screen-keeps-a-failed-override",
+   "why": "the lock logs the problem but still predicts on the override",
+   "find": "    return {t: o for t, o in overrides.items() if t not in found}, lines\n",
+   "replace": "    return overrides, lines\n",
+   "expect_caught_by": "test_the_lock_drops_an_override_that_fails_and_keeps_the_rest"
+  },
+  {
+   "id": "override-unreadable-roster-silent",
+   "why": "a roster that cannot be read leaves the overrides unchecked and nothing says so",
+   "find": "    if why is not None:\n        lines.append(",
+   "replace": "    if False:\n        lines.append(",
+   "expect_caught_by": "test_an_unreadable_roster_keeps_the_overrides_and_says_so"
+  },
+  {
+   "id": "override-pr-check-passes-when-it-cannot-check",
+   "why": "the pull request's check passes when the roster cannot be read, so a check that did not run reads as a pass",
+   "find": "                print(f'{path}: the {season} roster could not be read ({why}); not checked')\n                bad += 1\n",
+   "replace": "                print(f'{path}: the {season} roster could not be read ({why}); not checked')\n",
+   "expect_caught_by": "test_the_pr_check_fails_when_it_cannot_check"
+  },
+  {
+   "id": "weekly-run-does-not-screen-overrides",
+   "target": "src/sports/nfl/weekly_update.py",
+   "why": "the lock uses every override the file names without the roster and source check",
+   "find": "    qb_overrides, screened = override_check.screen(qb_overrides, season)\n",
+   "replace": "    screened = []\n",
+   "expect_caught_by": "test_plan_week_screens_the_overrides_before_using_them"
+  }
+ ]
+}
