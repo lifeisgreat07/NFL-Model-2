@@ -220,5 +220,7 @@ def test_a_page_without_the_manifest_link_gets_nothing(tmp_path):
 
 def test_the_site_build_adds_it_last():
     src = Path(build.__file__).read_text(encoding='utf-8')
-    assert '    add_expand(out)\n    add_offline(out)\n    return results' in src, \
+    # Stage 88 item 5: the CSP pass comes just before it, and inject_offline
+    # re-hardens each page it adds its script to, so the hash is of the pages as published.
+    assert '    add_expand(out)\n    add_csp(out)\n    add_offline(out)\n    return results' in src, \
         'last, so the worker is named for the pages as published'

@@ -33,6 +33,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tests/browser, when imported from elsewhere
+from page_edit import rehash
+
 ROOT = Path(__file__).resolve().parents[2]
 WIDTHS = (390, 1440)
 THEMES = ('dark', 'light')
@@ -168,9 +171,9 @@ def self_test(tmp):
                 f'routes and {html.count(ONE_LISTENER)} document listeners (expected 1 of each)']
     no_write, no_day = tmp / 'routes-nhl-no-write.html', tmp / 'routes-nhl-no-day.html'
     per_button = tmp / 'routes-nhl-per-button.html'
-    no_write.write_text(html.replace(CHIP_WRITE, '\n'), encoding='utf-8')
-    no_day.write_text(html.replace(DAY_ROUTE, ''), encoding='utf-8')
-    per_button.write_text(html.replace(ONE_LISTENER, PER_BUTTON), encoding='utf-8')
+    no_write.write_text(rehash(html.replace(CHIP_WRITE, '\n')), encoding='utf-8')
+    no_day.write_text(rehash(html.replace(DAY_ROUTE, '')), encoding='utf-8')
+    per_button.write_text(rehash(html.replace(ONE_LISTENER, PER_BUTTON)), encoding='utf-8')
     problems += [f'self-test: the real page should be clean: {r}' for r in asyncio.run(check_page(page))]
     if not any('left the address' in r for r in asyncio.run(check_page(no_write))):
         problems.append('self-test: the page whose chips write no address was not reported')
