@@ -87,7 +87,8 @@ def test_only_final_games_are_graded_and_a_cancelled_one_is_never_counted(tmp_pa
         {'game_id': '1', 'home': 'TBL', 'away': 'PHI', 'status': 'final', 'home_win': 1},
         {'game_id': '2', 'home': 'BOS', 'away': 'OTT', 'status': 'final', 'home_win': 0},
         {'game_id': '3', 'home': 'NYR', 'away': 'NJD', 'status': 'cancelled', 'home_win': pd.NA},
-        {'game_id': '4', 'home': 'SEA', 'away': 'VAN', 'status': 'in_progress', 'home_win': pd.NA},
+        # A live game with the home side behind on the board: not a result yet.
+        {'game_id': '4', 'home': 'SEA', 'away': 'VAN', 'status': 'in_progress', 'home_win': 0},
     ])
     results = {r['game_id']: r['result'] for r in daily.grade(tmp_path, sched)}
     assert results == {'1': 'correct', '2': 'wrong', '3': 'cancelled', '4': 'pending'}
