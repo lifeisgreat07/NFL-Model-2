@@ -23,6 +23,7 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from page_edit import rehash
 from pre_opening import pre_opening
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -80,7 +81,7 @@ def self_test(tmp):
     if html.count(LEAD) != 1:
         return [f'self-test: the page holds {html.count(LEAD)} countdown lines, expected 1']
     bad = tmp / 'countdown-nba-old.html'
-    bad.write_text(html.replace(LEAD, ''), encoding='utf-8')
+    bad.write_text(rehash(html.replace(LEAD, '')), encoding='utf-8')
     problems = [f'self-test: the real page should be clean: {r}' for r in asyncio.run(check_page(page))]
     if not any("the note reads None" in r for r in asyncio.run(check_page(bad))):
         problems.append('self-test: the page without the countdown was not reported')

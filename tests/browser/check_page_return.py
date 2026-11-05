@@ -32,6 +32,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tests/browser, when imported from elsewhere
+from page_edit import rehash
+
 ROOT = Path(__file__).resolve().parents[2]
 SIZES = ((390, 844), (1440, 900))
 THEMES = ('dark', 'light')
@@ -127,7 +130,7 @@ def self_test(tmp):
         return [f'self-test: the NHL page holds {html.count(NEW)} capture pushes, {html.count(MANUAL)} manual '
                 f'restorations and {html.count(RESTORE)} restores, expected 1 each']
     bad = tmp / 'return-nhl-old.html'
-    bad.write_text(html.replace(NEW, OLD).replace(MANUAL, '').replace(RESTORE, ''), encoding='utf-8')
+    bad.write_text(rehash(html.replace(NEW, OLD).replace(MANUAL, '').replace(RESTORE, '')), encoding='utf-8')
     nfl = ROOT / 'index.html'
     problems = [f'self-test: the real pages should be clean: {r}' for r in asyncio.run(check_pages(nfl, nhl))]
     if not any(r.startswith('[nhl') and 'Forward' in r for r in asyncio.run(check_pages(nfl, bad))):

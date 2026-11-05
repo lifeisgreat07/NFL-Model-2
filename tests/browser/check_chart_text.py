@@ -26,6 +26,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tests/browser, when imported from elsewhere
+from page_edit import rehash
+
 ROOT = Path(__file__).resolve().parents[2]
 #: Each sport's pages with charts, by the id the router opens.
 PAGES = {'NFL': ('accuracy', 'modellab'), 'NHL': ('accuracy',), 'NBA': ('reliability',)}
@@ -103,11 +106,11 @@ def self_test(tmp):
     if html.count(RULE) != 1:
         return [f'self-test: the NFL page holds {html.count(RULE)} copies of the chart text rule, expected 1']
     bad = tmp / 'chart-nfl-9.html'
-    bad.write_text(html.replace(RULE, RULE.replace('var(--fs-11)', '9px')), encoding='utf-8')
+    bad.write_text(rehash(html.replace(RULE, RULE.replace('var(--fs-11)', '9px'))), encoding='utf-8')
     if html.count(OBSERVE) != 1:
         return [f'self-test: the NFL page holds {html.count(OBSERVE)} trend observers, expected 1']
     fixed = tmp / 'chart-nfl-fixed.html'
-    fixed.write_text(html.replace(OBSERVE, 'void plotBox'), encoding='utf-8')
+    fixed.write_text(rehash(html.replace(OBSERVE, 'void plotBox')), encoding='utf-8')
     problems = [f'self-test: the real pages should be clean: {r}' for r in asyncio.run(check_pages(nfl, nhl, nba))]
     if not any(r.startswith('[NFL') and 'chart text at 9' in r for r in asyncio.run(check_pages(bad, nhl, nba))):
         problems.append('self-test: the NFL page with 9 px chart text was not reported')

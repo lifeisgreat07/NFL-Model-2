@@ -38,7 +38,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from src.core import colour, pick_proof
+from src.core import colour, csp, pick_proof
 from src.core.page_comments import strip_page_comments
 from src.core.page_fill import (
     ACCURACY_JS,
@@ -208,7 +208,7 @@ def render(data: dict[str, Any]) -> str:
     left = sorted({t for t in ('__FONT_FACES__', '__NBA_JSON__', '{% include') if t in html})
     if left:
         raise ValueError(f'unfilled placeholders: {left}')
-    return html
+    return csp.harden(html)  # Stage 88 item 5: hashes, not unsafe-inline
 
 
 def main(argv: list[str] | None = None, now: datetime | None = None) -> int:

@@ -27,6 +27,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tests/browser, when imported from elsewhere
+from page_edit import rehash
+
 ROOT = Path(__file__).resolve().parents[2]
 SIZES = ((390, 844), (1440, 900))
 THEMES = ('dark', 'light')
@@ -105,7 +108,7 @@ def self_test(tmp):
             problems.append(f'self-test: {page.name} holds {html.count(CALL)} copies of the scroll, expected 1')
             continue
         bad = page.with_name(page.stem + '-noscroll.html')
-        bad.write_text(html.replace(CALL, ''), encoding='utf-8')
+        bad.write_text(rehash(html.replace(CALL, '')), encoding='utf-8')
         if not any('outside the room' in r for r in asyncio.run(check_pages([bad]))):
             problems.append(f'self-test: {page.name} without the scroll was not reported')
     return problems
