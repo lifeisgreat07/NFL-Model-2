@@ -10,8 +10,12 @@ name: Nightly mutation slice
 # no count here, because the corpus grows with every PR and a number in this
 # comment was stale within a day (Stage 30 item 7). Some cases come up much
 # later; this is a sampler, not a rotation through the corpus.
+# Stage 96 item 50 (audit 7, T6): beside it, a rotation. Every Python case
+# under src/core and src/sports comes up once in any 28 nights in a row
+# (`--rotate`, tests/mutation/runner.py's rotation_cases), about a 28th
+# of them a night, so no guard of the model's code waits months to be run.
 # Any one night is reproducible by hand with the seed from its run summary:
-#   python tests/mutation/runner.py --sample 30 --seed <seed>
+#   python tests/mutation/runner.py --sample 30 --rotate --seed <seed>
 # The counts by status go into the run summary. Anything but CAUGHT fails
 # the job, and a failed job opens the issue "Nightly mutation slice failing"
 # through src/core/alerts.py, or comments on it if it is already open -- the same
@@ -74,7 +78,7 @@ jobs:
         shell: bash
         run: |
           seed="$(date -u +%Y%m%d)"
-          python tests/mutation/runner.py --sample 30 --seed "$seed" --summary "$GITHUB_STEP_SUMMARY" 2>&1 | tee slice.log
+          python tests/mutation/runner.py --sample 30 --rotate --seed "$seed" --summary "$GITHUB_STEP_SUMMARY" 2>&1 | tee slice.log
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
@@ -97,6 +101,6 @@ jobs:
           # it is and how to replay the night. A failure before the slice ran
           # (a broken install) gets the same issue: the job failing is the
           # finding.
-          printf 'The nightly mutation slice failed (seed %s).\n\nRun: %s\n\nReplay: python tests/mutation/runner.py --sample 30 --seed %s\n' \
+          printf 'The nightly mutation slice failed (seed %s).\n\nRun: %s\n\nReplay: python tests/mutation/runner.py --sample 30 --rotate --seed %s\n' \
             "$(date -u +%Y%m%d)" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" "$(date -u +%Y%m%d)" > slice-report.md
           python -m src.core.alerts --title "Nightly mutation slice failing" --body-file slice-report.md --log slice.log

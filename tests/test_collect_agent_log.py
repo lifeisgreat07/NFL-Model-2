@@ -86,7 +86,8 @@ def test_the_workflow_passes_each_comment_author_to_the_collector():
     login, every comment has no author and the log is empty."""
     wf = (Path(__file__).parent.parent / '.github' / 'workflows' /
           'collect-agent-log.yml').read_text(encoding='utf-8')
-    jq = [l for l in wf.splitlines() if '--jq' in l]
+    # The comments' jq; Scout's runs have their own (Stage 90 item 3).
+    jq = [l for l in wf.splitlines() if '--jq' in l and 'workflow_runs' not in l]
     assert len(jq) == 1, jq
     assert 'user: {login: .user.login}' in jq[0], jq[0]
 

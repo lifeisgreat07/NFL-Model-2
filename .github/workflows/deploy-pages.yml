@@ -168,6 +168,19 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: python -m src.site.alert_failed site-report.json --run-url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
 
+      # Stage 93 item 20: a second missed-slot detector that does not depend
+      # on any cron. A day sport whose schedule was not refreshed today or
+      # yesterday, or a game that started with no pick, raises an issue for
+      # that sport; a clean build closes it. It never refuses the build
+      # (continue-on-error): the page that publishes is still the truest one.
+      - name: Did a daily run slot go missing?
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: python -m src.site.missed_slots --alert --run-url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
       # Fails the build rather than publishing a broken page: every page in
       # the site must be non-empty and carry no unfilled __PLACEHOLDER__. The
       # builder checks its own pages too; this reads what will actually ship.

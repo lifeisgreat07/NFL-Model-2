@@ -56,7 +56,11 @@ permissions:
 jobs:
   browser:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # Room for a slow apt mirror. `playwright install --with-deps` fetches Chromium's system packages
+    # with apt; on 2026-11-05 the runner's Ubuntu mirror served them at 12-41 kB/s (8 min 33 s and
+    # 15 min 49 s), the install step took 558 s, 588 s and 980 s, and at 20 minutes the job was
+    # cancelled on its last checks three times (#647 twice, #648). The checks take about 11 minutes.
+    timeout-minutes: 35
     steps:
       - name: Check out repo
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
@@ -197,6 +201,22 @@ jobs:
 
       - name: Check no chart text is under 11 px
         run: python tests/browser/check_chart_text.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
+
+      # Stage 96 item 46 (audit 7, T9): every board row says the pick that
+      # was saved, on all three sports' real boards, read against
+      # predictions/. The NHL's page above is a sample week, so the real one
+      # is built here; the NFL's (index.html) and the NBA's are already real.
+      - name: Build the NHL's real board
+        timeout-minutes: 15
+        run: python -m src.sports.nhl.site --out "$RUNNER_TEMP/real-nhl.html"
+
+      - name: Prove the board picks check can fail
+        timeout-minutes: 15
+        run: python tests/browser/check_board_picks.py --self-test --tmp "$RUNNER_TEMP/picks" --nfl index.html --nhl "$RUNNER_TEMP/real-nhl.html" --nba "$RUNNER_TEMP/states/nba.html"
+
+      - name: Check every board row says the saved pick
+        timeout-minutes: 15
+        run: python tests/browser/check_board_picks.py --nfl index.html --nhl "$RUNNER_TEMP/real-nhl.html" --nba "$RUNNER_TEMP/states/nba.html"
 
       # Stage 68 item 5: no cell of a day-board row drawn over another, at
       # 320, 390 and 1280 px in both themes, with the clock before opening

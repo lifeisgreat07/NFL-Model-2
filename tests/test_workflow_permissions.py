@@ -39,7 +39,8 @@ USES = {
     # line_judge_digest counts runs and their jobs; the Line Judge diagnosis
     # reads each finished job's log (src.core.job_logs).
     ('actions', 'read'): ('src.sports.nfl.recent_runs', 'src.core.missed_dispatch',
-                          'src.core.line_judge_digest', 'src.core.job_logs'),
+                          'src.core.line_judge_digest', 'src.core.job_logs',
+                          'actions/workflows/scout-preflight.yml/runs'),
 }
 #: Needed by actions/checkout in every job, and grants nothing beyond reading
 #: a public repository.
