@@ -1,0 +1,20 @@
+{
+ "target": "src/sports/nba/injuries.py",
+ "tests": "tests/test_nba_injuries.py",
+ "cases": [
+  {
+   "id": "nba-injuries-zero-rows-read-as-healthy",
+   "why": "a report whose teams yield no player is kept, so every player of every team counts as playing, the silent failure audit 7 injected",
+   "find": "    if not rows and not unread:\n",
+   "replace": "    if False:\n",
+   "expect_caught_by": "test_teams_with_no_player_read_refuse_the_report"
+  },
+  {
+   "id": "nba-injuries-one-unread-row-refuses-all",
+   "why": "a report with only an unreadable row is refused whole, undoing Stage 83 item 5's rule that only that team goes without availability",
+   "find": "    if not rows and not unread:\n",
+   "replace": "    if not rows:\n",
+   "expect_caught_by": "test_one_unread_row_is_still_a_report_not_a_refusal"
+  }
+ ]
+}
