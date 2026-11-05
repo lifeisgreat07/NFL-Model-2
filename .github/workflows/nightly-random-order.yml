@@ -47,6 +47,7 @@ jobs:
 
       # Stage 42 item 1: how late this run started, against its own cron lines.
       - name: Record the start delay
+        timeout-minutes: 25
         run: python -m src.core.start_delay .github/workflows/nightly-random-order.yml
       - name: Set up node
         # Guards that run template code in node skip without it.
@@ -54,10 +55,12 @@ jobs:
         with:
           node-version: '24'
       - name: Install dependencies
+        timeout-minutes: 25
         run: |
           pip install -r requirements.txt -r requirements-dev.txt
           pip install pytest-random-order==1.2.0
       - name: Run the suite in tonight's order
+        timeout-minutes: 25
         shell: bash
         run: |
           seed="$(date -u +%Y%m%d)"
@@ -66,6 +69,7 @@ jobs:
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
+        timeout-minutes: 25
         if: success()
         continue-on-error: true
         env:

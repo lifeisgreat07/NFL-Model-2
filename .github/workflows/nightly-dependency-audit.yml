@@ -36,20 +36,24 @@ jobs:
 
       # Stage 42 item 1: how late this run started, against its own cron lines.
       - name: Record the start delay
+        timeout-minutes: 10
         run: python -m src.core.start_delay .github/workflows/nightly-dependency-audit.yml
 
       # Stage 42 item 4: a run GitHub's cron started, for a slot cron-job.org
       # should have started, asks whether it did, and opens an issue if not.
       - name: Did cron-job.org start this slot?
+        timeout-minutes: 10
         if: github.event_name == 'schedule'
         env:
           CRON_SCHEDULE: ${{ github.event.schedule }}
           GH_TOKEN: ${{ github.token }}
         run: python -m src.core.missed_dispatch .github/workflows/nightly-dependency-audit.yml
       - name: Install pip-audit
+        timeout-minutes: 10
         # Installed here only, pinned, and not in requirements-dev.txt.
         run: pip install pip-audit==2.10.1
       - name: Audit requirements.txt
+        timeout-minutes: 10
         id: audit
         # pip-audit exits 1 when it finds a vulnerability and with another
         # code when it cannot run; neither fails this step (report-only).
@@ -75,6 +79,7 @@ jobs:
           { echo "## pip-audit of requirements.txt (exit $code)"; cat audit.md; } >> "$GITHUB_STEP_SUMMARY"
           echo "code=$code" >> "$GITHUB_OUTPUT"
       - name: Raise an alert
+        timeout-minutes: 10
         if: ${{ steps.audit.outputs.code != '0' }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -93,6 +98,7 @@ jobs:
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
+        timeout-minutes: 10
         if: success()
         continue-on-error: true
         env:
