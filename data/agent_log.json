@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-11-05T15:42:11Z",
+  "generated_utc": "2026-11-05T15:42:40Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
     "audits_total": 697,
@@ -12353,7 +12353,7 @@
     },
     {
       "agent": "Scout",
-      "pr": 649,
+      "pr": null,
       "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/42054875886",
       "when": "2026-11-05T15:25:46Z",
       "says": "found nothing to fix in the description"
