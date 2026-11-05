@@ -1,0 +1,28 @@
+{
+  "target": "src/core/season_prices.py",
+  "tests": "tests/test_season_prices.py",
+  "cases": [
+    {
+      "id": "season-price-read-at-the-start-used",
+      "why": "a read taken at the start of the game counts as pre-game, so an in-play price can reach Model B's training rows",
+      "find": "        if prob is None or not read or not start or read >= start:\n",
+      "replace": "        if prob is None or not read or not start or read > start:\n",
+      "expect_caught_by": "test_a_read_at_or_after_the_start_is_never_used"
+    },
+    {
+      "id": "season-price-first-read-kept",
+      "why": "the earliest read wins instead of the last one before the start, the furthest from the backtest's pre-game line",
+      "find": "        if gid not in best or read > best[gid][0]:\n",
+      "replace": "        if gid not in best or read < best[gid][0]:\n",
+      "expect_caught_by": "test_the_last_read_before_the_start_is_the_price"
+    },
+    {
+      "id": "nhl-season-prices-not-applied",
+      "target": "src/sports/nhl/daily.py",
+      "why": "the NHL run reads the prices and never puts them on this season's games, so Model B is again fitted on earlier seasons only",
+      "find": "    current = current.assign(home_prob=current['game_id'].astype(str).map(recorded))\n",
+      "replace": "",
+      "expect_caught_by": "test_both_daily_runs_put_the_prices_on_this_seasons_games"
+    }
+  ]
+}

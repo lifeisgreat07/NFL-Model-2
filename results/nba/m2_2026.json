@@ -1,0 +1,29 @@
+{
+ "measurement": "M2",
+ "registered": "experiments/nba/stage61/registry.json",
+ "graded": 92,
+ "graded_without_availability": 15,
+ "printed_from": 100,
+ "judged": false,
+ "availability": {
+  "mean_report_minus_box": -0.008639274452242962,
+  "mean_absolute_gap": 0.16365238171329027,
+  "median_absolute_gap": 0.15286833660959498
+ },
+ "model_a": {
+  "log_loss_report": 0.6266802619538508,
+  "log_loss_box": 0.6463468224428649,
+  "box_minus_report": {
+   "games": 92,
+   "days": 13,
+   "diff": 0.01966656048901411,
+   "low": -0.0172219428078549,
+   "high": 0.05653851776509439,
+   "level": 0.9833333333333333
+  }
+ },
+ "refit": {
+  "reproduced_saved_model_a": 88,
+  "of": 92
+ }
+}

@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-04 (session 1103, ended 06:15 UTC: #588, #585, #589, #591-#597 merged; #598 in audit; seven branches queued)
+Last updated: 2026-11-05 (session 1104, in progress: #598-#602 merged; audit 7 received, Stages 91-96 written)
 
 ---
 
@@ -13,47 +13,43 @@ Last updated: 2026-11-04 (session 1103, ended 06:15 UTC: #588, #585, #589, #591-
 **Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked figure. NFL in `src/sports/nfl/`, shared modules in `src/core/`.
 **Sportalytics** (Stage 67) is live: home `/`, NFL `/nfl/` (Model **v2.6**), NHL `/nhl/`, NBA `/nba/` (picks saved twice a day).
 
-**Stages 81 to 90** came from the 2026-11-02 review (`docs/history/10-review-2026-11-02.md`; shipped: `memory/2026-11-03.md`,
-`memory/2026-11-04.md`). Order: the rest of 82 and 83; 84; 85; 89, 87; 90 last. Done: 81; 82 except 4 (#582, Mark) and 5
-(after #582); 83 items 1 (first half), 2, 4, 7; 84 except 4's NBA half (#598); 85 item 4; 86 items 1, 6; 88 items 1 (part), 6.
-Queued below: 83 items 1 (repeat counter), 5, 6; 85 items 1, 3, 5; 86's wrap-up clock test. Not started: 85 items 2, 6 (6
-explored, see memory/2026-11-04.md); 86 items 2, 4, 5, 7; 88 items 1 (actions), 3-5, 7; 89; 87; 90. 83 item 3 deprioritised.
+**Audit 7 (2026-11-04, executed)** wrote Stages 91 to 96 (`docs/history/11-audit7-2026-11-04.md`, with the response and
+Mark's answers). Order now: the built queue below; then Stage 91's rest and 92, 93 together; 94 items 23, 25 (built), 26;
+95 (31 after #601, as a second amendment); the model-changing items (94: 24, 27-30; 95: 35) as one registered shadow
+"day-sport v2" (Mark agreed 2026-11-05); 96 alongside. Before 11-19: 94 items 23 and 25 and 95 item 31.
+Stages 81-90 left: 82 items 4-5 (Mark's #582), 83 item 6 (s83f, Mark's token date), 85 item 2, 86 item 5, 88, 89, 87, 90.
 
-**Booth audits run one at a time** (two at once time out at 20 minutes; one takes about 11): open the next PR only when none
-is running. Mark has not answered whether to raise `timeout-minutes` to 30; do not change booth-pr-audit.yml until he does.
+**Booth audits run one at a time** (two at once time out at 20 minutes). Do not change booth-pr-audit.yml until Mark decides.
 
 **Merge rule (Mark):** Booth SAFE TO MERGE, 0 discrepancies, audited head = PR head, every check green; `merge_item.py PR WT_NAME
-BRANCH "Title"` (the worktree's name, not its path). A wrong description means a replacement PR at the same head. **At the final
-head, before opening:** `scratch-nba/prechecks.ps1` (ruff, both mypy), every figure and mutation case (by exact id), the suite
-(`chain_suites.ps1`, one at a time, labelled by head); scratch-script figures go in the body inline, checking any per-pick claim.
+BRANCH "Title"`. **At the final head, before opening:** prechecks (ruff, both mypy), every figure and mutation case by exact
+id, the suite. **A branch made with `git worktree add -b X origin/main` tracks origin/main**: push it with `-u` (the
+pre-flight chain now does), or the wrap-up's "nothing unpushed" test fails on it. **A branch that rewrites code re-anchors
+the existing mutation cases on it, and re-runs them.** Render any page change in Chromium before opening (s91e's first
+version broke the sidebar grid; caught only by the render).
 
-**Single next action:** merge #598 on a clean audit; then s83e, s85e, s85a, s86c, s83r, s85s in that order.
+**Single next action:** open s83r's PR when its pre-flight passes; then s85r, s86s, s85s (merge main, render), s86h, s86t,
+then the Stage 91/93/94 branches, one audit at a time.
 
-**Deadline:** the week 9 QB override PR (Mark's routine, Wed 22:00 UTC) must merge before Thu 11-05 11:00 UTC (watch alerts Thu 02:00).
+**Week 9:** no QB override PR was opened (the routine ran 22:06 UTC Wed and opened nothing); Thursday 11:00 UTC locks week 9.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| #598 s84n (84.4 NBA M2) | Suite 11763+1 skip at 2802afa9; figures, cases, prechecks at head | Its audit (started 06:10 UTC) |
-| s83e `s83-injury-rows` (83.5) | bb0c9565 + merge fd74fd49; body_s83e.md needs MERGES, SUITE_LINE | Suite (chain), one audit |
-| s85e `s85-season-prices` (85.5) on s83e; s85a `s85-drift-looks` (85.1) on s85e | 68353a65 (mypy fix), no body; 92a50655, body_s85a.md needs MUTHEAD, MUTLIST, SUITE_LINE, its 11 cases re-run at head | The branch below merged; suite |
-| s86c `s86-wrapup-clock`; s83r `s83-alert-repeats` (83.1) | c27bcc5f, no body; a03498dd pushed, body_s83r.md needs SUITE_LINE | Suite (chain), one audit each |
-| s85s `s85-baseline-spread` (85.3) | 1656d072; no body | main merged in, suite, prechecks |
-| s83f `s83-credentials` (83.6) | a0312842 + merge d0f7f5d4; no body; **suite at d0f7f5d4: 1 failed, not yet read** (re-run that test first) | **Mark: the OAuth token's real expiry date** |
-| #582 Booth post job (Stage 82 item 4) | Fully green on its own run; Human review | Mark merges; then #578, #580 close |
-| #570, #575 (Dependabot) | Fail tests and Booth | Mark: a Dependabot secret `CLAUDE_CODE_OAUTH_TOKEN`; which updates to take |
-| Issues: 11 "Booth audit failed: PR #N", #543, #541, #540, #518, #517 | Stale | Mark closes them; #428, #495, #529 close on their next green run (#591) |
-| Stage 43 item 5; Stage 42 item 5, Stage 39 items 5-6, #431, Stage 40 | As before | Mark's go (43.5 edits Booth); December, January |
+| s83r `s83-alert-repeats` (83.1) | 83b3e66c; body_s83r_final.md | Pre-flight (running), one audit |
+| s85r `s85-rederive` (85.6) | 4cee82cb (tolerance 5e-4); suite 11838 at head | Pre-flight again (upstream fixed), one audit |
+| s86s `s86-suite-split` (86.4) | 8df83009 | Pre-flight again (upstream fixed), one audit |
+| s85s `s85-baseline-spread` (85.3) | 595b718f; no body; conflicts with #601's drift section | Merge main, render, body |
+| s86h (86.7 function_source), s86t (86.2 shared table) | 11c37ee0, 4073f9ff; suites green | Bodies, pre-flight, audits |
+| s91a (91.1 pull_check), s91b (91.2 schedule_guard), s91c (91.3 after_save), s91d (91.5-6 pick writer), s91e (91.4 site) | aae2eadf, a826514f, 316a500f, ecf81a93, 11f4d162 | Suites (chain), bodies |
+| s93t (93.13 step timeouts), s94d (94.23, 94.25 disclosures) | 1736ab29, d9292d86 | Suites, bodies |
+| Slow-test count | s85r pins 7 slow tests; s91c adds 2 | Whichever merges second updates `test_the_slow_marker_is_registered_and_used` |
+| s83f `s83-credentials` (83.6) | 00e5ea0f | **Mark: the OAuth token's real expiry date** |
+| #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then #578, #580 close |
+| #570, #575 (Dependabot) | Fail tests and Booth | Mark: a Dependabot secret; which updates to take |
+| Issues: 11 "Booth audit failed", #543, #541, #540, #518, #517 | Stale | Mark closes them |
 
-## Known and deliberately not fixed
-
-- **34 saved live picks were fitted on games of their own slate day** (5 NBA, 29 NHL; 26 earlier NHL picks
-  cannot be checked). Saved picks are never rewritten; s85d lists them in both registrations and fits per day.
-- **Booth's post job needs the Write tool**: told to write a file without it, Booth ends with permission denials
-  and no report (#578, #580). Keep Write in `--allowedTools` while the report is a file.
-- **Force-killing the mutation runner leaves its mutation in place**, and editing a worktree while its suite runs
-  tests no commit. Let both finish.
 ## Known and deliberately not fixed
 
 - **34 saved live picks were fitted on games of their own slate day** (5 NBA, 29 NHL; 26 earlier NHL picks

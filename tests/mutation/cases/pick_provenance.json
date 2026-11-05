@@ -20,8 +20,8 @@
    "id": "provenance-nba-not-saved",
    "target": "src/sports/nba/daily.py",
    "why": "the NBA's picks lose it",
-   "find": "injury_list, now) | trained\n",
-   "replace": "injury_list, now)\n",
+   "find": "injury_list, now, why) | trained\n",
+   "replace": "injury_list, now, why)\n",
    "expect_caught_by": "test_both_day_sports_save_it_with_every_pick"
   },
   {

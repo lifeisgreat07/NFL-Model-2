@@ -1,0 +1,46 @@
+{
+  "target": "src/sports/nba/injuries.py",
+  "tests": "tests/test_nba_injuries.py",
+  "cases": [
+    {
+      "id": "nba-unreadable-row-refuses-the-whole-report-again",
+      "why": "a row with an unknown status refuses the whole report again, so one new status takes availability from every game, as Suspension did on 2026-11-02 (Stage 83 item 5)",
+      "find": "                unread.setdefault(str(code), []).extend(problems)\n                continue\n",
+      "replace": "                strangers.extend(problems)\n                continue\n",
+      "expect_caught_by": "test_a_row_it_cannot_read_is_left_out_and_its_team_named"
+    },
+    {
+      "id": "nba-unknown-team-is-quietly-dropped",
+      "why": "a team code the schedule does not know is skipped instead of refusing the report, so a renamed team reads as fully healthy",
+      "find": "                strangers.append(f'{name}: team {code!r} not on the schedule')\n",
+      "replace": "",
+      "expect_caught_by": "test_a_team_the_schedule_does_not_know_refuses_the_whole_report"
+    },
+    {
+      "id": "nba-unread-team-keeps-availability",
+      "target": "src/sports/nba/daily.py",
+      "why": "a game whose team had a row left out still uses the report, counting a player who may be out as playing",
+      "find": "    if unread:\n        return None, None, None, 'injury report rows not read for '",
+      "replace": "    if False:\n        return None, None, None, 'injury report rows not read for '",
+      "expect_caught_by": "test_only_the_unread_teams_games_go_without_availability"
+    },
+    {
+      "id": "nba-canary-passes-an-unreadable-row",
+      "target": "src/sports/nba/canary.py",
+      "tests": "tests/test_nba_canary.py",
+      "why": "the canary passes a report with a row the daily run leaves out, so a new status never reaches Mark as a decision",
+      "find": "    if report.unread:\n        raise injuries.InjurySourceError(",
+      "replace": "    if False:\n        raise injuries.InjurySourceError(",
+      "expect_caught_by": "test_a_row_the_daily_run_would_leave_out_still_fails_the_canary"
+    },
+    {
+      "id": "nhl-unknown-club-not-said-in-the-pick",
+      "target": "src/sports/nhl/injuries.py",
+      "tests": "tests/test_nhl_injuries.py",
+      "why": "a pick stores two clubs' lists with no sign that one of them may be the club whose name was not recognised",
+      "find": "        out['clubs_not_recognised'] = list(unknown)\n",
+      "replace": "        pass\n",
+      "expect_caught_by": "test_an_unknown_club_loses_its_own_rows_only_and_the_pick_says_so"
+    }
+  ]
+}

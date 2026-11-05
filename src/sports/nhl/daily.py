@@ -52,7 +52,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test
+from src.core import forward_test, season_prices
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nhl import (
@@ -162,14 +162,18 @@ def pick_record(game: pd.Series, feats: dict[str, float], k: float, model_a: Any
     }
 
 
-def read_injuries(season: int, get: Callable[[str], bytes]) -> tuple[str, pd.DataFrame] | None:
+def read_injuries(season: int, get: Callable[[str], bytes]) -> injuries.Latest | None:
     """The latest injury list, or None when it cannot be read: injuries are
-    context, so their source failing never stops a pick being saved."""
+    context, so their source failing never stops a pick being saved. Club
+    names it could not match are said on a DEGRADED line (Stage 83 item 5)."""
     try:
-        return injuries.latest(get(injuries.source(season)))
+        got = injuries.latest(get(injuries.source(season)))
     except (injuries.InjurySourceError, OSError) as exc:
         print(f'DEGRADED: injuries: not read, picks saved without them: {exc}')
         return None
+    if got.unknown:
+        print(f'DEGRADED: injuries: clubs not recognised, their players left out: {got.unknown}')
+    return got
 
 
 def read_market(get: Callable[[str], bytes], now: datetime) -> tuple[list[dict[str, Any]], list[str]]:
@@ -249,12 +253,15 @@ def drift_rows(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, in
     """(Model A's home probability, home won) for every saved pick whose game
     is final."""
     finals = sched[sched['status'] == GameStatus.FINAL.value].set_index('game_id')
-    rows: list[tuple[float | None, int | None]] = []
+    keyed: list[tuple[tuple[str, str], tuple[float | None, int | None]]] = []
     for path in sorted(folder.glob('*.json')):
         pick = json.loads(path.read_text(encoding='utf-8'))
         if pick['game_id'] in finals.index:
-            rows.append((pick.get('model_a'), int(finals.loc[pick['game_id'], 'home_win'])))
-    return rows
+            keyed.append(((pick.get('start_utc') or '', pick['game_id']),
+                          (pick.get('model_a'), int(finals.loc[pick['game_id'], 'home_win']))))
+    # Stage 85 item 1: in the order the games started, so a registered look's
+    # first n picks are the first n games played, not the first n game ids.
+    return [row for _, row in sorted(keyed, key=lambda kr: kr[0])]
 
 
 def write_standings(sched: pd.DataFrame, games: pd.DataFrame, rated: ratings.DayRatings, model_a: Any,
@@ -296,6 +303,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     first = backtest.registry()['protocol']['training_from_season']
     past = backtest.load_history(first, season - 1)
     current = refresh_season(season, sched)
+    # Stage 85 item 5: this season's games enter Model B's training rows with
+    # the price the runs recorded, the last read before each game started.
+    recorded = season_prices.read(PATHS.data / 'lines' / f'{season}.json')
+    current = current.assign(home_prob=current['game_id'].astype(str).map(recorded))
     games = ratings.prepare(pd.concat([past, current], ignore_index=True))
     h, k = chosen()
 
@@ -352,7 +363,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                 ids[side] = pid
             feats = rated.matchup(g['home'], g['away'], ids['home'], ids['away'], [k])
             injury_list = None if injury_table is None else injuries.for_game(
-                injury_table[0], injury_table[1], g['home'], g['away'], now)
+                injury_table.day, injury_table.table, g['home'], g['away'], now, injury_table.unknown)
             record = pick_record(g, feats, k, model_a, model_b, line_by_id.get(str(g['game_id'])), notes, now,
                                  injury_list) | trained
             print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id'])
@@ -367,7 +378,9 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     flagged = drift.flags(losses, spec)
     (PATHS.results / f'drift_{season}.json').write_text(json.dumps(
         {'games': len(losses), 'mean_log_loss': (sum(losses) / len(losses)) if losses else None,
-         'baseline': spec['baseline']['value'], 'flagged': flagged}, indent=1) + '\n', encoding='utf-8')
+         'baseline': spec['baseline']['value'], 'flagged': flagged,
+         'looks': drift.looks(losses, spec), 'next_look': drift.next_look(len(losses), spec)},
+        indent=1) + '\n', encoding='utf-8')
     if flagged:
         print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
     # Stage 84 item 1: the registered forward test, on every saved pick whose game is final.

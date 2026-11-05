@@ -2,5 +2,13 @@
  "games": 194,
  "mean_log_loss": 0.6560978861413762,
  "baseline": 0.6753173753776152,
- "flagged": false
+ "flagged": false,
+ "looks": [
+  {
+   "games": 100,
+   "lower_bound": 0.6025531733589985,
+   "flagged": false
+  }
+ ],
+ "next_look": 200
 }

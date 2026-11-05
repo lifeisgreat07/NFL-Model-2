@@ -104,9 +104,15 @@ def check_odds(state: dict[str, Any]) -> str:
 
 def check_injuries(state: dict[str, Any]) -> str:
     sched = _schedule(state)
-    rows = injuries.parse(json.loads(state['get'](injuries.SOURCE)), set(sched['home']) | set(sched['away']))
-    out = sum(r['status'] == injuries.OUT for r in rows)
-    return f'{len(rows)} players listed, {out} Out'
+    report = injuries.parse(json.loads(state['get'](injuries.SOURCE)), set(sched['home']) | set(sched['away']))
+    # The daily run picks a team's games without availability when one of its
+    # rows cannot be read (Stage 83 item 5); the canary still fails on it, so a
+    # new status (Suspension, 2026-11-02) reaches Mark as a decision to make.
+    if report.unread:
+        raise injuries.InjurySourceError('rows not read: ' + '; '.join(
+            f"{team}: {', '.join(problems)}" for team, problems in sorted(report.unread.items())))
+    out = sum(r['status'] == injuries.OUT for r in report.rows)
+    return f'{len(report.rows)} players listed, {out} Out'
 
 
 def check_kalshi(state: dict[str, Any]) -> str:
