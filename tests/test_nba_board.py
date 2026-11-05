@@ -21,6 +21,7 @@ import pandas as pd
 import pytest
 
 from src.sports.nba import lock
+from tests.js_source import function_source as js_source
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js'
@@ -34,9 +35,7 @@ def source():
 
 
 def function_source(src, name):
-    m = re.search(r'^function ' + name + r'\(.*?\n\}\n', src, re.S | re.M)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
+    return js_source(src, name, at_line_start=True)
 
 
 def const_line(src, name):

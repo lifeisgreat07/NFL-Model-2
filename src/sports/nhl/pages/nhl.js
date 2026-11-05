@@ -871,7 +871,7 @@ function forwardHtml(f, sport){
     return `<tr><th scope="row">${n}</th><td class="num">${c.games}</td><td class="num">${c.days}</td>`
       + (c.note ? `<td colspan="2">${c.note}</td>` : `<td class="num">${sgn(c.diff)}</td><td class="num">[${sgn(c.low)}, ${sgn(c.high)}]</td>`) + '</tr>'; }).join('');
   const level = (f.interval_rule.level * 100).toFixed(2);
-  return `<p class="${sport}-lede">Every saved pick whose game is final, ${f.graded_picks} of them through ${f.through}, scored as the registration says (<code>${f.registered}</code>). Model B and the market are scored only on the picks that had a price.</p>
+  return `<p class="${sport}-lede">Every saved pick whose game is final, ${f.graded_picks} of them through ${f.through}, scored as the registration says (<code>${f.registered}</code>). Model B and the market are scored only on the picks that had a price.${f.market_price ? ' ' + f.market_price.said : ''}</p>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's scores</caption>
     <thead><tr><th scope="col">Forecaster</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's comparisons</caption>
@@ -906,12 +906,21 @@ function m2Html(m){
   return `<p class="nhl-lede">Over ${m.graded} graded games the projected starter started on ${s.projected_started} of ${s.sides} sides (${(s.projected_started / s.sides * 100).toFixed(1)}%), and both started in ${s.games_both_started}. Model A&#39;s log loss was ${a.log_loss_projected.toFixed(4)} with the goalies the picks used and ${a.log_loss_actual.toFixed(4)} with the two who started.${diff}</p>
     <p class="nhl-lede">Both figures come from Model A refitted as each pick records it was, so only the goalies differ; ${m.refit.reproduced_saved_model_a} of ${m.refit.of} refitted probabilities equal the saved ones to four places. A measurement (<code>${m.registered}</code>): reported, not judged.</p>`;
 }
+/* Stage 85 item 3 (the 2026-11-02 review): the drift baseline's season-to-
+   season spread, from experiments/<stage>/results/model_a_by_season.json.
+   Identical in nhl.js and nba.js (tests/test_season_spread.py). */
+function spreadHtml(s, sport){
+  if (!s || !s.seasons) return '';
+  const items = s.seasons.map(r => `${r.label} ${r.log_loss.toFixed(4)}`).join(', ');
+  return `<p class="${sport}-lede">How far one season moves on its own: the same Model A, at the same settings and with the backtest&#39;s walk-forward, scored a log loss of ${items}, a range of ${s.spread.range.toFixed(4)} from the best season to the worst. The baseline pools the last two (${s.baseline.pooled_confirmation.toFixed(4)}).</p>`;
+}
 /* Stage 84 item 6 (the 2026-11-02 review), worded as the NBA's. */
 function driftStatus(d, rule){
   const n = x => Number(x).toLocaleString('en-US');
   const min = rule ? (rule.rule.checkpoints || [rule.rule.min_games])[0] : 100;
   if (!d || !d.games) return 'No pick has been graded yet, so the drift check has nothing to test.';
-  const now = `Model A&#39;s mean log loss over ${d.games} graded games is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest.`;
+  const own = d.without_availability ? ` for the same picks, ${d.without_availability} of which were made without the injury report and are held to the backtest without it` : '';
+  const now = `Model A&#39;s mean log loss over ${d.games} graded games is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest${own}.`;
   if (d.games < min) return `${d.games} of the ${min} graded games the drift check needs before it can flag. ${now}`;
   const last = (d.looks || []).slice(-1)[0];
   const when = !last ? '' : ` Its last look was at ${n(last.games)} graded games${d.next_look ? `; the next is at ${n(d.next_look)}` : ', the season&#39;s last'}.`;
@@ -924,7 +933,10 @@ function driftLooks(rule){
   if (!rule || !rule.rule.checkpoints) return '';
   const r = rule.rule, cs = r.checkpoints.map(x => Number(x).toLocaleString('en-US'));
   const list = cs.length > 1 ? `${cs.slice(0, -1).join(', ')} and ${cs[cs.length - 1]}` : cs[0];
-  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many is above the backtest&#39;s ${rule.baseline.value.toFixed(4)}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
+  const base = rule.baseline_no_availability
+    ? `figure for those picks (${rule.baseline.value.toFixed(4)} for a pick made with the injury report, ${rule.baseline_no_availability.value.toFixed(4)} for one made without it)`
+    : rule.baseline.value.toFixed(4);
+  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many is above the backtest&#39;s ${base}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
 }
 function renderReliability(){
   const d = DATA.drift, rule = DATA.drift_rule, el = document.getElementById('reliability-body');
@@ -932,6 +944,7 @@ function renderReliability(){
   const status = driftStatus(d, rule);
   el.innerHTML = `<h2 class="section-title">The drift check</h2><p class="nhl-lede">${status}</p>
     ${rule && rule.rule.checkpoints ? `<p class="nhl-lede">The rule was registered before the season (<code>experiments/nhl/stage58/registry.json</code>) and amended on 2026-11-04: ${driftLooks(rule)}</p>` : ''}
+    ${spreadHtml(DATA.spread, 'nhl')}
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(DATA.forward, 'nhl')}
     <h2 class="section-title">The projected starter against the actual one</h2>
