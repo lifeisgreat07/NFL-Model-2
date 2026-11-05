@@ -71,11 +71,13 @@ jobs:
 
       # Stage 42 item 1: how late this run started, against its own cron lines.
       - name: Record the start delay
+        timeout-minutes: 3
         run: python -m src.core.start_delay .github/workflows/nfl-weekly-update.yml
 
       # Stage 42 item 4: a run GitHub's cron started, for a slot cron-job.org
       # should have started, asks whether it did, and opens an issue if not.
       - name: Did cron-job.org start this slot?
+        timeout-minutes: 3
         if: github.event_name == 'schedule'
         env:
           CRON_SCHEDULE: ${{ github.event.schedule }}
@@ -83,15 +85,18 @@ jobs:
         run: python -m src.core.missed_dispatch .github/workflows/nfl-weekly-update.yml
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        timeout-minutes: 3
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Has this slot been served?
+        timeout-minutes: 3
         id: slot
         run: python -m src.sports.nfl.slot_guard check --workflow weekly-update ${{ inputs.force && '--force' || '' }}
 
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
+        timeout-minutes: 3
         if: success()
         continue-on-error: true
         env:
@@ -132,9 +137,11 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        timeout-minutes: 25
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Determine current NFL season
+        timeout-minutes: 25
         id: season
         # The rule (Jan/Feb still belong to the season that kicked off the
         # previous calendar year) lives once, in src/sports/nfl/paths.py; this used to be
@@ -149,6 +156,7 @@ jobs:
       # decoration: only an explicit bash shell runs with pipefail, and without
       # it `tee` would report success for a run that failed on purpose.
       - name: Generate/lock in this week's predictions
+        timeout-minutes: 25
         id: generate
         shell: bash
         run: python -m src.sports.nfl.weekly_update --season ${{ steps.season.outputs.season }} 2>&1 | tee weekly-update.log
@@ -159,6 +167,7 @@ jobs:
       # prints a DEGRADED line and raises one issue here. continue-on-error:
       # reporting must never cost a pick.
       - name: Is the ratings snapshot its history's latest week?
+        timeout-minutes: 25
         if: ${{ !cancelled() }}
         continue-on-error: true
         shell: bash
@@ -183,6 +192,7 @@ jobs:
       # pull request, its overrides were not used: say so now, as an issue and in
       # the run's summary. continue-on-error: reporting must never cost a pick.
       - name: Was a QB override still waiting at the lock?
+        timeout-minutes: 25
         if: ${{ !cancelled() }}
         continue-on-error: true
         shell: bash
@@ -198,6 +208,7 @@ jobs:
       # no line snapshot from this workflow. continue-on-error: a status
       # snapshot must never cost a grade.
       - name: Refresh the status of the weeks about to be graded
+        timeout-minutes: 25
         if: ${{ !cancelled() }}
         continue-on-error: true
         run: python -m src.sports.nfl.weekend_refresh --season ${{ steps.season.outputs.season }} --status-only
@@ -206,6 +217,7 @@ jobs:
       # job on purpose when a whole week kicked off with nothing locked, and
       # that must not also stop last week's grades from landing.
       - name: Grade any completed weeks
+        timeout-minutes: 25
         if: ${{ !cancelled() }}
         run: |
           shopt -s nullglob
@@ -224,6 +236,7 @@ jobs:
       # person and stopping the run would cost picks. drift-report.txt is not
       # committed: the commit below takes predictions/, results/ and data/ only.
       - name: Check for model drift
+        timeout-minutes: 25
         if: ${{ !cancelled() }}
         env:
           GH_TOKEN: ${{ github.token }}
@@ -234,6 +247,7 @@ jobs:
       # prediction and result files this run wrote. Goes on the run's page;
       # weekly-summary.md also feeds the alert below. Neither file is committed.
       - name: Summarise the run
+        timeout-minutes: 25
         if: ${{ !cancelled() }}
         run: |
           python -m src.sports.nfl.weekly_summary --season ${{ steps.season.outputs.season }} \
@@ -246,6 +260,7 @@ jobs:
       # `git status` for predictions and results. continue-on-error: a TV
       # listing must never cost a pick, and a held-back channel is a warning.
       - name: Read TV channels
+        timeout-minutes: 25
         if: ${{ !cancelled() }}
         continue-on-error: true
         shell: bash
@@ -259,6 +274,7 @@ jobs:
       # the TV step: after the summary, before the commit, and continue-on-error,
       # because team news must never cost a pick.
       - name: Read team news
+        timeout-minutes: 25
         if: ${{ !cancelled() }}
         continue-on-error: true
         shell: bash
@@ -276,6 +292,7 @@ jobs:
       # grading failure is retried by the next slot; `force` still re-runs a
       # slot by hand. Skipped when the guard failed and gave no slot.
       - name: Mark the slot served
+        timeout-minutes: 25
         if: ${{ !cancelled() && steps.generate.outcome == 'success' && needs.slot-guard.outputs.slot != '' }}
         run: python -m src.sports.nfl.slot_guard mark --workflow weekly-update --slot ${{ needs.slot-guard.outputs.slot }}
 
@@ -291,6 +308,8 @@ jobs:
       - name: Catch up with main
         if: ${{ !cancelled() }}
         shell: bash
+        # A fetch and a rebase: minutes at most, so a hung remote fails here, not at the job's limit.
+        timeout-minutes: 5
         run: |
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
@@ -330,6 +349,7 @@ jobs:
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
+        timeout-minutes: 25
         if: success()
         continue-on-error: true
         env:
@@ -391,7 +411,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Judge the run
         id: judge

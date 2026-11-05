@@ -73,11 +73,13 @@ jobs:
 
       # Stage 42 item 1: how late this run started, against its own cron lines.
       - name: Record the start delay
+        timeout-minutes: 10
         run: python -m src.core.start_delay .github/workflows/nfl-weekend-refresh.yml
 
       # Stage 42 item 4: a run GitHub's cron started, for a slot cron-job.org
       # should have started, asks whether it did, and opens an issue if not.
       - name: Did cron-job.org start this slot?
+        timeout-minutes: 10
         if: github.event_name == 'schedule'
         env:
           CRON_SCHEDULE: ${{ github.event.schedule }}
@@ -85,15 +87,18 @@ jobs:
         run: python -m src.core.missed_dispatch .github/workflows/nfl-weekend-refresh.yml
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        timeout-minutes: 10
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Refresh game status, scores and lines
+        timeout-minutes: 10
         shell: bash
         run: python -m src.sports.nfl.weekend_refresh 2>&1 | tee weekend-refresh.log
 
       # TV channels (Stage 15) for the same weeks, so a flexed game is seen
       # before it airs. continue-on-error: a TV listing never fails the refresh.
       - name: Read TV channels
+        timeout-minutes: 10
         continue-on-error: true
         shell: bash
         run: |
@@ -103,6 +108,7 @@ jobs:
       # Team news (Stage 16) for the same weeks, so a starter ruled out on
       # Friday is on the page before Sunday. continue-on-error, like TV.
       - name: Read team news
+        timeout-minutes: 10
         continue-on-error: true
         shell: bash
         run: |
@@ -120,6 +126,8 @@ jobs:
       # so the bot's identity is set for this one command.
       - name: Catch up with main
         shell: bash
+        # A fetch and a rebase: minutes at most, so a hung remote fails here, not at the job's limit.
+        timeout-minutes: 5
         run: |
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
@@ -135,6 +143,7 @@ jobs:
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
+        timeout-minutes: 10
         if: success()
         continue-on-error: true
         env:
@@ -190,7 +199,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Judge the run
         id: judge
