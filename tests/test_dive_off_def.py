@@ -26,6 +26,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import generate_dashboard as gd
+from tests.js_source import function_source
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -52,12 +53,6 @@ def test_net_is_offense_minus_defense(history):
         for p in pts:
             assert abs(p['off'] - p['def'] - p['net']) <= 0.0002, (
                 f"{team} {p['label']}: {p['off']} - {p['def']} != {p['net']}")
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 CASES = {
