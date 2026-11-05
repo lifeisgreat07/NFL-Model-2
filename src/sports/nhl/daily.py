@@ -62,7 +62,7 @@ from src.core import (
     season_prices,
 )
 from src.core.atomic_write import write_json_atomic
-from src.core.provenance import training
+from src.core.provenance import code_identity, training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nhl import (
     backtest,
@@ -383,6 +383,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             if day not in fitted:
                 fitted[day] = fit_before(table, day, k, first)
             model_a, model_b, trained = fitted[day]
+            trained = trained | code_identity('nhl')  # Stage 95 item 39
             notes, ids = {}, {}
             proj = projected.get(str(g['game_id']), {})
             for side in ('home', 'away'):

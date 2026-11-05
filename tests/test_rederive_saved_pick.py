@@ -64,7 +64,10 @@ TOLERANCE = 5e-4
 
 def check(pick, got, record):
     assert abs(pick['model_a'] - got) <= TOLERANCE, f"{pick['game_id']}: re-derived {got:.6f}, saved {pick['model_a']}"
-    assert record == {'training_through': pick['training_through'], 'data_provenance': pick['data_provenance']}
+    assert record['training_through'] == pick['training_through']
+    # The keys the saved pick carries: one saved before Stage 95 item 40 has no training_ids_sha256.
+    saved = pick['data_provenance']
+    assert {k: record['data_provenance'][k] for k in saved} == saved
 
 
 @pytest.mark.slow
