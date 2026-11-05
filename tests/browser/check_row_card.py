@@ -26,6 +26,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tests/browser, when imported from elsewhere
+from page_edit import rehash
+
 ROOT = Path(__file__).resolve().parents[2]
 WIDTHS = (390, 1440)
 THEMES = ('dark', 'light')
@@ -104,14 +107,14 @@ def self_test(tmp):
     if html.count(NEW) != 1:
         return [f'self-test: the page holds {html.count(NEW)} copies of the row code, expected 1']
     bad = tmp / 'row-card-nhl-old.html'
-    bad.write_text(html.replace(NEW, OLD), encoding='utf-8')
+    bad.write_text(rehash(html.replace(NEW, OLD)), encoding='utf-8')
     problems = [f'self-test: the real page should be clean: {r}' for r in asyncio.run(check_page(page))]
     if not any('the row says' in r for r in asyncio.run(check_page(bad))):
         problems.append('self-test: the old row was not reported')
     if html.count(PHONE) != 1:
         return problems + [f'self-test: the page holds {html.count(PHONE)} copies of the phone rule, expected 1']
     cut = tmp / 'row-card-nhl-uncut.html'
-    cut.write_text(html.replace(PHONE, ''), encoding='utf-8')
+    cut.write_text(rehash(html.replace(PHONE, '')), encoding='utf-8')
     if not any('cut off' in r for r in asyncio.run(check_page(cut))):
         problems.append('self-test: a page with no phone rule was not reported cut off')
     return problems

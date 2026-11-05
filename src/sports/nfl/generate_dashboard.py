@@ -18,6 +18,7 @@ from html import escape as _escape
 from pathlib import Path
 from typing import Any
 
+from src.core import csp
 from src.core.page_comments import strip_page_comments
 from src.core.page_fill import font_faces_css
 from src.core.template_parts import read_template
@@ -1111,6 +1112,7 @@ def main() -> None:
     from src.sports.nfl.model_lab import entries as model_lab_entries
     html = html.replace('__MODEL_LAB_ROWS__', render_model_lab_rows(model_lab_entries()))
 
+    html = csp.harden(html)  # Stage 88 item 5: hashes, not unsafe-inline (src/core/csp.py)
     with open(OUTPUT_PATH, 'w', encoding='utf-8') as f:
         f.write(html)
     print(f"Wrote {OUTPUT_PATH}")

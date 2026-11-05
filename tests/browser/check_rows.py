@@ -25,6 +25,7 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from page_edit import rehash
 from pre_opening import pre_opening
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -95,7 +96,7 @@ async def self_test(tmp):
         failed.append('anchor')
     else:
         broken = Path(tmp) / 'nba_rows_old.html'
-        broken.write_text(html.replace(NEW, OLD), encoding='utf-8')
+        broken.write_text(rehash(html.replace(NEW, OLD)), encoding='utf-8')
         hit = [x for x in await check_page(broken) if 'overlap' in x]
         print(f"self-test old-column: {'caught' if hit else 'MISSED'} ({len(hit)} overlap(s))")
         if not hit:
