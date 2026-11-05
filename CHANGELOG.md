@@ -7,10 +7,14 @@ Generated from the merge commits on `main` and the stage titles in `docs/history
 
 ## November 2026
 
-- **Stage 93: Alerts that cannot be lost** (1 pull request, 11-05): #621
+- **Stage 96: A suite that measures the model** (5 pull requests, 11-05): #630, #631, #634, #635, #640
+- **Stage 95: Drift that means something** (2 pull requests, 11-05): #632, #633
+- **Stage 94: The live model is the registered model** (2 pull requests, 11-05): #624, #627
+- **Stage 93: Alerts that cannot be lost** (6 pull requests, 11-05): #621, #625, #626, #628, #629, #639
 - **Stage 92: Every silent downgrade says DEGRADED** (5 pull requests, 11-05): #610, #615, #617, #618, #619
-- **Stage 91: A green run never publishes wrong data** (4 pull requests, 11-05): #611, #613, #614, #616
-- **Stage 89: Ten minutes for a recruiter** (1 pull request, 11-05): #622
+- **Stage 91: A green run never publishes wrong data** (5 pull requests, 11-05): #611, #613, #614, #616, #637
+- **Stage 90: New objectives** (1 pull request, 11-05): #638
+- **Stage 89: Ten minutes for a recruiter** (2 pull requests, 11-05): #622, #623
 - **Stage 88: The supply chain stays current** (3 pull requests, 11-02 to 11-04): #567, #593, #594
 - **Stage 86: A fast suite and an honest count** (5 pull requests, 11-02 to 11-04): #574, #592, #606, #607, #609
 - **Stage 85: Drift without false alarms** (6 pull requests, 11-03 to 11-05): #589, #600, #601, #604, #608, #620
