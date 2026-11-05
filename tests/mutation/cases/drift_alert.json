@@ -28,8 +28,8 @@
       "id": "drift-workflow-skipped-after-a-failed-lock",
       "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the drift step runs only on success. When the lock step fails on purpose, grading still lands and drift would go unchecked on exactly the week something went wrong.",
-      "find": "      - name: Check for model drift\n        if: ${{ !cancelled() }}",
-      "replace": "      - name: Check for model drift\n        if: ${{ success() }}",
+      "find": "      - name: Check for model drift\n        timeout-minutes: 25\n        if: ${{ !cancelled() }}",
+      "replace": "      - name: Check for model drift\n        timeout-minutes: 25\n        if: ${{ success() }}",
       "expect_caught_by": "test_the_drift_step_survives_a_failed_lock_like_the_grading_does"
     },
     {
