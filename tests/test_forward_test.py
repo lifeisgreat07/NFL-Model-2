@@ -173,7 +173,8 @@ def test_write_reads_the_folder_and_writes_the_file(tmp_path):
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_the_daily_run_writes_the_forward_test(sport):
     src = (ROOT / 'src' / 'sports' / sport / 'daily.py').read_text(encoding='utf-8')
-    assert re.search(r'^from src\.core import (?:[\w ,]+, )?forward_test\b', src, re.M)
+    # One line, or ruff's parenthesised block once the names pass its limit.
+    assert re.search(r'^from src\.core import \(?[\w\s,]*?\bforward_test\b', src, re.M)
     rel = REGISTRIES[sport].relative_to(ROOT).as_posix()
     assert f"forward_test.write(PATHS.results / f'forward_{{season}}.json', '{sport}', season,\n" in src
     assert f"'{rel}', folder, sched," in src
