@@ -39,6 +39,7 @@ from typing import Any
 
 import pandas as pd
 
+from src.core import csp
 from src.core.page_comments import strip_page_comments
 from src.core.page_fill import font_faces_css, safe_json
 
@@ -263,7 +264,7 @@ def render(data: dict[str, Any], font_faces: str = '') -> str:
     left = sorted(set(re.findall(r'__[A-Z0-9_]+__', html)) | ({'{% include'} if '{% include' in html else set()))
     if left:
         raise ValueError(f'unfilled placeholders: {left}')
-    return html
+    return csp.harden(html)  # Stage 88 item 5: hashes, not unsafe-inline
 
 
 

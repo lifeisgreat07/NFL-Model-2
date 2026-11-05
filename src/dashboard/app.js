@@ -8,6 +8,31 @@ const modelVersion = __MODEL_VERSION__;
    a list of paragraphs; `action` is {label, onclick} and is required for
    'filtered', because a filter that hides everything must say how to undo
    itself. */
+/* Stage 88 item 5 (the 2026-11-02 review): the Content-Security-Policy names
+   the hash of each inline script, so the page has no inline handlers. A logo
+   that fails to load (data-hide-on-error) is hidden by this one listener. */
+document.addEventListener('error', e => {
+  const t = e.target;
+  if (t instanceof HTMLImageElement && t.hasAttribute('data-hide-on-error')) t.style.display = 'none';
+}, true);
+/* Every button that acts carries data-act, and this table says what each one
+   does; one click listener and one change listener run them. */
+const ACTIONS = {
+  'dismiss-onboarding': () => dismissOnboarding(),
+  'import-shared-picks': () => importSharedPicks(),
+  'exit-shared-picks': () => exitSharedPicks(),
+  'copy-share-link': b => copyShareLink(b),
+  'export-my-picks': () => exportMyPicks(),
+  'choose-picks-file': () => document.getElementById('picks-import-input').click(),
+  'show-all-games': () => document.querySelector('#filter-row [data-filter=all]').click(),
+};
+document.addEventListener('click', e => {
+  const b = e.target instanceof Element ? e.target.closest('[data-act]') : null;
+  if (b && ACTIONS[b.dataset.act]) ACTIONS[b.dataset.act](b);
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'picks-import-input' && e.target.files[0]) importMyPicks(e.target.files[0]);
+});
 const STATE_KINDS = ['waiting', 'filtered', 'missing', 'note'];
 function stateHtml(kind, title, paras, action, extra){
   if(!STATE_KINDS.includes(kind)) throw new Error('unknown page state: ' + kind);
@@ -15,7 +40,7 @@ function stateHtml(kind, title, paras, action, extra){
   const body = (Array.isArray(paras) ? paras : [paras]).filter(Boolean)
     .map(t => kind === 'note' ? ' ' + t : `<p>${t}</p>`).join('');
   const titleEl = kind === 'note' ? `<b class="state-title">${title}</b>` : `<span class="state-title">${title}</span>`;
-  const btn = action ? `<button class="btn" onclick="${action.onclick}">${action.label}</button>` : '';
+  const btn = action ? `<button class="btn" data-act="${action.act}">${action.label}</button>` : '';
   return `<div class="state state--${kind}${extra ? ' ' + extra : ''}" role="status">${titleEl}${body}${btn}</div>`;
 }
 /* Marks each table wrapper .fits when its table is no wider than its box.
@@ -929,7 +954,7 @@ function renderRatings(){
     const trendHtml = rankMoveHtml(t.rank_change);
     return `<tr>
       <td class="rank">${i+1}</td>
-      <td><div class="team-cell"><a class="row-link" href="${routeHash({page:'teamdive', team:t.team})}"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'"><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span></a>${trendHtml}</div></td>
+      <td><div class="team-cell"><a class="row-link" href="${routeHash({page:'teamdive', team:t.team})}"><img class="team-logo" src="${teamLogo(t.team)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error><span class="team-abbr">${t.team}</span><span class="team-full">${t.name}</span></a>${trendHtml}</div></td>
       <td class="num"><div class="net-cell-inner">
         <div class="srs-bar-track diverging" title="${fmtRating(t.net)} per 100 plays; league scale ±${fmtRatingScale(maxAbs)}, centre line is zero"><div class="srs-bar-fill" style="left:${t.net>=0?50:50-width/2}%; width:${width/2}%;"></div></div>
         <span class="net-value">${fmtRating(t.net)}</span>
@@ -1362,7 +1387,7 @@ function pickButton(team, pick, locked){
   // re-derives it on every path, the same way it re-derives `selected`.
   return `<button class="pick-btn ${pick===team?'selected':''}" data-team="${team}"`
     + (locked ? ` disabled aria-label="${team}, locked at kickoff"` : '') + `>`
-    + `<img class="pick-logo" src="${teamLogo(team)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">`
+    + `<img class="pick-logo" src="${teamLogo(team)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error>`
     + `<span class="pick-abbr">${team}</span>`
     + `</button>`;
 }
@@ -1556,7 +1581,7 @@ function matchupHeader(g, variant){
    the team history is missing. */
 function teamFullName(team){ return ((teamHistory || {}).names || {})[team] || team; }
 function barTeam(team){
-  return `<span class="card-end-team"><img class="card-end-logo" src="${teamLogo(team)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">${team}</span>`;
+  return `<span class="card-end-team"><img class="card-end-logo" src="${teamLogo(team)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error>${team}</span>`;
 }
 
 /* ---------- Kickoff order ----------
@@ -2042,7 +2067,7 @@ function renderGames(){
   if(filtered.length === 0){
     grid.innerHTML = stateHtml('filtered', 'No games match this filter',
       'Every game this week is still here; this filter just hides all of them.',
-      {label: 'Show all games', onclick: "document.querySelector('#filter-row [data-filter=all]').click()"});
+      {label: 'Show all games', act: 'show-all-games'});
     return;
   }
 
@@ -4270,7 +4295,7 @@ function diveScaleHtml(maxAbs){
    logo ESPN will not serve hides and leaves the name, the fallback every
    logo here has. */
 function diveTeamHtml(team, name, star = ''){
-  return `<div class="dive-team"><img class="dive-logo" src="${teamLogo(team)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">`
+  return `<div class="dive-team"><img class="dive-logo" src="${teamLogo(team)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error>`
     + `<span class="dive-team-name">${name || team}</span>${star}</div>`;
 }
 

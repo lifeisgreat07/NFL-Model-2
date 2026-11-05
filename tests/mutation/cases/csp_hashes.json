@@ -1,0 +1,81 @@
+{
+ "target": "src/core/csp.py",
+ "tests": "tests/test_csp_hashes.py",
+ "cases": [
+  {
+   "id": "csp-hash-of-the-wrong-bytes",
+   "why": "the hash is taken of the script with its whitespace trimmed, so the browser's hash of the real script differs and the page runs nothing",
+   "find": "    return \"'sha256-\" + base64.b64encode(hashlib.sha256(script.encode('utf-8')).digest()).decode('ascii') + \"'\"\n",
+   "replace": "    return \"'sha256-\" + base64.b64encode(hashlib.sha256(script.strip().encode('utf-8')).digest()).decode('ascii') + \"'\"\n",
+   "expect_caught_by": "test_each_runnable_inline_script_is_named_by_its_hash"
+  },
+  {
+   "id": "csp-keeps-unsafe-inline",
+   "why": "the hashes are added beside 'unsafe-inline', which a browser then ignores for nothing: an injected script still runs",
+   "find": "    new_policy = SCRIPT_SRC_RE.sub(lambda _m: 'script-src ' + source, policy)\n",
+   "replace": "    new_policy = SCRIPT_SRC_RE.sub(lambda _m: \"script-src 'unsafe-inline' \" + source, policy)\n",
+   "expect_caught_by": "test_each_runnable_inline_script_is_named_by_its_hash"
+  },
+  {
+   "id": "csp-lists-data-blocks",
+   "why": "a JSON data block is hashed as if it ran, so the list stops being the scripts the page runs",
+   "find": "        if _type(attrs) in RUNNABLE_TYPES:\n",
+   "replace": "        if True:\n",
+   "expect_caught_by": "test_data_blocks_and_external_scripts_are_not_listed"
+  },
+  {
+   "id": "csp-allows-inline-handlers",
+   "why": "a page with an inline handler is hardened anyway, and the browser silently refuses the handler: a button that does nothing",
+   "find": "    if HANDLER_RE.search(html):\n",
+   "replace": "    if False:\n",
+   "expect_caught_by": "test_a_page_that_cannot_be_hardened_is_refused"
+  },
+  {
+   "id": "csp-empty-list-left-open",
+   "why": "a page with no script gets an empty script-src, which reads as no restriction to a reader of the policy",
+   "find": "    source = ' '.join(hashes) if hashes else \"'none'\"\n",
+   "replace": "    source = ' '.join(hashes)\n",
+   "expect_caught_by": "test_a_page_with_no_script_runs_none_and_a_repeat_is_named_once"
+  },
+  {
+   "id": "site-build-never-rehardens",
+   "target": "src/site/build.py",
+   "why": "the scripts the site build injects after a page is written are not in its list, so the browser refuses them",
+   "find": "    add_csp(out)\n    add_offline(out)\n    return results\n",
+   "replace": "    add_offline(out)\n    return results\n",
+   "expect_caught_by": "test_the_site_build_rehardens_after_its_last_injection"
+  },
+  {
+   "id": "offline-script-not-hashed",
+   "target": "src/site/build.py",
+   "why": "the offline script is added after the CSP pass and not hashed, so the browser refuses it and the board never works offline",
+   "find": "    page.write_text(csp.harden(html) if csp.CSP_RE.search(html) else html, encoding='utf-8')\n",
+   "replace": "    page.write_text(html, encoding='utf-8')\n",
+   "expect_caught_by": "test_the_offline_script_is_hashed_and_the_worker_is_named_for_the_hardened_pages"
+  },
+  {
+   "id": "nba-page-not-hardened",
+   "target": "src/sports/nba/site.py",
+   "why": "the NBA page is written with script-src 'unsafe-inline'",
+   "find": "    return csp.harden(html)  # Stage 88 item 5: hashes, not unsafe-inline\n",
+   "replace": "    return html\n",
+   "expect_caught_by": "test_the_nhl_and_nba_pages_are_hardened"
+  },
+  {
+   "id": "nfl-share-button-has-no-action",
+   "target": "src/dashboard/app.js",
+   "why": "a button's data-act names nothing in the table, so the click does nothing",
+   "find": "  'copy-share-link': b => copyShareLink(b),\n",
+   "replace": "",
+   "expect_caught_by": "test_every_nfl_button_action_is_one_the_page_knows"
+  },
+  {
+   "id": "nhl-broken-logo-not-hidden",
+   "target": "src/sports/nhl/pages/nhl.js",
+   "why": "a logo that fails to load stays as a broken image, since the inline handler that hid it is gone",
+   "find": "  if (t instanceof HTMLImageElement && t.hasAttribute('data-hide-on-error')) t.style.display = 'none';\n",
+   "replace": "",
+   "expect_caught_by": "test_each_page_with_logos_hides_a_broken_one_by_listener"
+  }
+ ]
+}
