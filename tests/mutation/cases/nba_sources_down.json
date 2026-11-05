@@ -1,0 +1,20 @@
+{
+  "target": "src/sports/nba/daily.py",
+  "tests": "tests/test_nba_sources_down.py",
+  "cases": [
+    {
+      "id": "nba-kalshi-reader-lets-a-bad-page-through",
+      "why": "Kalshi answers with an error page instead of JSON and the run ends before it saves a pick, the 2026-10-10 failure in the NBA's fallback",
+      "find": "        return market.kalshi_prices(json.loads(get(market.KALSHI)))\n    except (OSError, ValueError) as exc:\n",
+      "replace": "        return market.kalshi_prices(json.loads(get(market.KALSHI)))\n    except OSError as exc:\n",
+      "expect_caught_by": "test_each_price_reader_answers_nothing_for_a_source_it_cannot_read"
+    },
+    {
+      "id": "nba-kalshi-read-for-every-game",
+      "why": "Kalshi is read again for each game ESPN cannot price, so a slow Kalshi costs the run its time once a game",
+      "find": "            if market.espn_price(odds or {}) is None and not kalshi_read:\n",
+      "replace": "            if market.espn_price(odds or {}) is None:\n",
+      "expect_caught_by": "test_every_price_source_timing_out_still_saves_every_pick"
+    }
+  ]
+}
