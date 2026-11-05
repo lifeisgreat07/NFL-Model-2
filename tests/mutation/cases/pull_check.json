@@ -1,0 +1,35 @@
+{
+  "target": "src/core/pull_check.py",
+  "tests": "tests/test_pull_check.py",
+  "cases": [
+    {
+      "id": "pull-check-ignores-a-left-stash",
+      "why": "a stash left by an autostash that did not apply is not reported, so the one sign git leaves besides the markers is lost",
+      "find": "    if stash:\n        out.append(",
+      "replace": "    if False:\n        out.append(",
+      "expect_caught_by": "test_a_conflicting_autostash_exits_0_and_the_check_refuses_it"
+    },
+    {
+      "id": "pull-check-misses-markers",
+      "why": "a file holding conflict markers passes when nothing else looks wrong, and is committed to main",
+      "find": "    if marked:\n        out.append(",
+      "replace": "    if False:\n        out.append(",
+      "expect_caught_by": "test_a_marker_alone_is_refused"
+    },
+    {
+      "id": "pull-check-never-fails-the-step",
+      "why": "the check prints what it found and exits 0, so the commit step pushes the markers anyway",
+      "find": "    for p in found:\n        print('  ' + p)\n    return 1\n",
+      "replace": "    for p in found:\n        print('  ' + p)\n    return 0\n",
+      "expect_caught_by": "test_a_conflicting_autostash_exits_0_and_the_check_refuses_it"
+    },
+    {
+      "id": "nhl-daily-commits-without-the-check",
+      "target": ".github/workflows/nhl-daily.yml",
+      "why": "the NHL's daily run commits straight after a pull that may have left conflict markers, the push audit 7 reproduced",
+      "find": "              pull --rebase --autostash origin main\n          python -m src.core.pull_check\n",
+      "replace": "              pull --rebase --autostash origin main\n",
+      "expect_caught_by": "test_every_writer_checks_straight_after_its_pull"
+    }
+  ]
+}

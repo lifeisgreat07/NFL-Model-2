@@ -805,7 +805,8 @@ function driftStatus(d, rule){
   const n = x => Number(x).toLocaleString('en-US');
   const min = rule ? (rule.rule.checkpoints || [rule.rule.min_games])[0] : 100;
   if (!d || !d.games) return 'No pick has been graded yet, so the drift check has nothing to test.';
-  const now = `Model A&#39;s mean log loss over ${d.games} graded games is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest.`;
+  const own = d.without_availability ? ` for the same picks, ${d.without_availability} of which were made without the injury report and are held to the backtest without it` : '';
+  const now = `Model A&#39;s mean log loss over ${d.games} graded games is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest${own}.`;
   if (d.games < min) return `${d.games} of the ${min} graded games the drift check needs before it can flag. ${now}`;
   const last = (d.looks || []).slice(-1)[0];
   const when = !last ? '' : ` Its last look was at ${n(last.games)} graded games${d.next_look ? `; the next is at ${n(d.next_look)}` : ', the season&#39;s last'}.`;
@@ -818,7 +819,10 @@ function driftLooks(rule){
   if (!rule || !rule.rule.checkpoints) return '';
   const r = rule.rule, cs = r.checkpoints.map(x => Number(x).toLocaleString('en-US'));
   const list = cs.length > 1 ? `${cs.slice(0, -1).join(', ')} and ${cs[cs.length - 1]}` : cs[0];
-  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many is above the backtest&#39;s ${rule.baseline.value.toFixed(4)}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
+  const base = rule.baseline_no_availability
+    ? `figure for those picks (${rule.baseline.value.toFixed(4)} for a pick made with the injury report, ${rule.baseline_no_availability.value.toFixed(4)} for one made without it)`
+    : rule.baseline.value.toFixed(4);
+  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many is above the backtest&#39;s ${base}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
 }
 /* Stage 84 items 1 and 2 (the 2026-11-02 review): the registered forward test,
    from results/<sport>/forward_<season>.json. Identical in nhl.js and nba.js
@@ -870,11 +874,20 @@ function m2Html(m){
   return `<p class="nba-lede">Over ${m.graded} graded games, the availability the injury report gave a game (home minus away) was ${a.mean_absolute_gap.toFixed(3)} from the box score&#39;s on average, ${sgn(a.mean_report_minus_box)} on the signed average. Model A&#39;s log loss was ${s.log_loss_report.toFixed(4)} with the injury report&#39;s and ${s.log_loss_box.toFixed(4)} with the box score&#39;s.${diff}</p>
     <p class="nba-lede">Both figures come from Model A refitted as each pick records it was, so only availability differs; ${m.refit.reproduced_saved_model_a} of ${m.refit.of} refitted probabilities equal the saved ones to four places. ${m.graded_without_availability} graded pick${m.graded_without_availability === 1 ? ' was' : 's were'} made without availability and ${m.graded_without_availability === 1 ? 'is' : 'are'} left out. A measurement (<code>${m.registered}</code>): reported, not judged.</p>`;
 }
+/* Stage 85 item 3 (the 2026-11-02 review): the drift baseline's season-to-
+   season spread, from experiments/<stage>/results/model_a_by_season.json.
+   Identical in nhl.js and nba.js (tests/test_season_spread.py). */
+function spreadHtml(s, sport){
+  if (!s || !s.seasons) return '';
+  const items = s.seasons.map(r => `${r.label} ${r.log_loss.toFixed(4)}`).join(', ');
+  return `<p class="${sport}-lede">How far one season moves on its own: the same Model A, at the same settings and with the backtest&#39;s walk-forward, scored a log loss of ${items}, a range of ${s.spread.range.toFixed(4)} from the best season to the worst. The baseline pools the last two (${s.baseline.pooled_confirmation.toFixed(4)}).</p>`;
+}
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
     <h2 class="section-title">The drift check</h2>
     <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
-    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class="nba-lede">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04: ${driftLooks(BD.drift_rule)}</p>` : ''}
+    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class="nba-lede">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04 and 2026-11-05: ${driftLooks(BD.drift_rule)}</p>` : ''}
+    ${spreadHtml(BD.spread, 'nba')}
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(BD.forward, 'nba')}
     <h2 class="section-title">The injury report against who played</h2>

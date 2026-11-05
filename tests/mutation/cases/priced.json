@@ -1,0 +1,29 @@
+{
+  "target": "src/core/priced.py",
+  "tests": "tests/test_priced.py",
+  "cases": [
+    {
+      "id": "unpriced-slate-says-nothing",
+      "why": "a slate locked with no price at all says nothing, the silent downgrade audit 7 injected",
+      "find": "    if not lock or lock & {str(g) for g in priced}:\n        return None\n",
+      "replace": "    return None\n",
+      "expect_caught_by": "test_no_price_for_any_locking_game_is_degraded"
+    },
+    {
+      "id": "nhl-unpriced-line-not-printed",
+      "target": "src/sports/nhl/daily.py",
+      "why": "the NHL's run works out that no locking game has a price and never prints it, so no issue is raised",
+      "find": "        if unpriced and not any(m.startswith('odds feed not read') for m in missing):\n            print(unpriced)\n",
+      "replace": "",
+      "expect_caught_by": "test_an_empty_or_renamed_nhl_odds_feed_says_so"
+    },
+    {
+      "id": "nba-kalshi-miss-not-degraded",
+      "target": "src/sports/nba/daily.py",
+      "why": "Kalshi failing, when it is the fallback a game needed, prints a plain line the workflow's DEGRADED grep never sees",
+      "find": "        print(f'DEGRADED: Kalshi: not read: {exc}')\n",
+      "replace": "        print(f'Kalshi: not read: {exc}')\n",
+      "expect_caught_by": "test_both_runs_print_it_and_kalshi_and_goalies_say_degraded"
+    }
+  ]
+}
