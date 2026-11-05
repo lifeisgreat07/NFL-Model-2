@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 import math
-from collections.abc import Collection, Sequence
+from collections.abc import Callable, Collection, Sequence
 from datetime import UTC, datetime
 from html import escape as _escape
 from pathlib import Path
@@ -98,13 +98,14 @@ def build_forecast_score(all_games: list[Game]) -> dict[str, Any] | None:
     or a game with no result, has no winner to score and is left out.
     Returns None below FORECAST_SCORE_MIN_GAMES.
     """
-    losses = {name: [] for name, _ in FORECAST_SOURCES}
+    losses: dict[str, list[float]] = {name: [] for name, _ in FORECAST_SOURCES}
     for g in all_games:
         actual = g.get('actual_home_win')
         if actual not in (0, 1):
             continue
-        probs = [g.get(key) for _, key in FORECAST_SOURCES]
-        if any(not isinstance(p, (int, float)) for p in probs):
+        raw = [g.get(key) for _, key in FORECAST_SOURCES]
+        probs = [float(p) for p in raw if isinstance(p, (int, float))]
+        if len(probs) != len(raw):
             continue
         for (name, _), p in zip(FORECAST_SOURCES, probs):
             p_actual = p if actual == 1 else 1 - p
@@ -303,7 +304,7 @@ def load_previews(preview_dir: Path | None = None,
     moment the week is locked its preview is ignored here, so the page can
     never show a preview beside, or instead of, a lock."""
     preview_dir = PRED_DIR / 'preview' if preview_dir is None else preview_dir
-    out = {}
+    out: dict[WeekKey, list[Pick]] = {}
     if not preview_dir.exists():
         return out
     for f in preview_dir.glob('*_week*.json'):
@@ -348,7 +349,7 @@ def load_game_status(status_dir: Path = STATUS_DIR) -> dict[WeekKey, dict[tuple[
     A week with no snapshot is simply absent, and the card then shows its
     kickoff and nothing else -- weeks graded before the refresh existed never
     get one. Absent stays absent: nothing here invents a status."""
-    out = {}
+    out: dict[WeekKey, dict[tuple[str, str], dict[Any, Any]]] = {}
     if not status_dir.exists():
         print(f"  NOTE: {status_dir} absent -- no weekend refresh has run yet, "
               f"so cards show kickoff times only.")
@@ -369,7 +370,7 @@ def load_tv(tv_dir: Path = TV_DIR) -> dict[WeekKey, dict[tuple[str, str], dict]]
     week; the `*_week*.json` pattern does not match it. A game whose channel failed a
     check has an empty `networks` list in its record, and the card then
     shows no channel: nothing here second-guesses the checks."""
-    out = {}
+    out: dict[WeekKey, dict[tuple[str, str], dict[Any, Any]]] = {}
     if not tv_dir.exists():
         return out
     for f in tv_dir.glob('*_week*.json'):
@@ -529,7 +530,7 @@ def render_model_lab_rows(entries: list[dict[str, Any]]) -> str:
 def load_team_news(news_dir: Path = NEWS_DIR) -> dict[WeekKey, dict[str, Any]]:
     """{(season, week): {'read_at', 'teams'}} from src/sports/nfl/team_news.py's week
     files (Stage 16). Absent folder, absent news: nothing is invented."""
-    out = {}
+    out: dict[WeekKey, dict[str, Any]] = {}
     if not news_dir.exists():
         print(f"  NOTE: {news_dir} absent -- team news has not been read yet, "
               f"so Team Deep-Dive shows no news.")
@@ -886,7 +887,7 @@ def load_team_history() -> dict[str, Any]:
     names = static_data.get('names', {})
     history = static_data.get('history', {})
 
-    timeline = {team: [] for team in names}
+    timeline: dict[str, list[dict[str, Any]]] = {team: [] for team in names}
     # Offense and defense ride along with net (Stage 19): Team Deep-Dive shows
     # all three, and both history files already carry them. .get(), because a
     # point without them is still a net rating worth drawing; the page shows
@@ -899,9 +900,9 @@ def load_team_history() -> dict[str, Any]:
     # Layer in any live current-season files (data/nfl/team_history_2026.json etc.),
     # sorted by season so multiple seasons of live data would stack correctly.
     live_files = sorted(DATA_DIR.glob('team_history_*.json'))
-    for f in live_files:
-        season = f.stem.replace('team_history_', '')
-        with open(f, encoding='utf-8') as lf:
+    for live_path in live_files:
+        season = live_path.stem.replace('team_history_', '')
+        with open(live_path, encoding='utf-8') as lf:
             live_data = json.load(lf)
         for team, points in live_data.items():
             timeline.setdefault(team, [])
@@ -1016,22 +1017,26 @@ def main() -> None:
     # weeks that actually produce a file get listed, so the dashboard's
     # download control can hide itself rather than link to a 404.
     print("Generating printable picks PDFs...")
-    pdf_weeks = []
+    pdf_weeks: list[str] = []
+    pdf: tuple[Callable[..., Any], Callable[..., Any]] | None
     try:
         from src.sports.nfl.generate_picks_pdf import build_picks_rows, render_picks_pdf
+        pdf = (build_picks_rows, render_picks_pdf)
     except Exception as exc:
         # reportlab missing or broken: skip PDFs entirely and carry on. The
         # dashboard still builds, and the download control hides itself
         # because pdf_weeks stays empty.
         print(f"  WARNING: PDF generation unavailable ({exc}) -- dashboard will build without printable sheets.")
-        build_picks_rows = render_picks_pdf = None
+        pdf = None
 
-    for key, preds in sorted(all_preds.items()) if build_picks_rows else []:
+    for key, preds in sorted(all_preds.items()) if pdf is not None else []:
+        assert pdf is not None
+        build_picks_rows, render_picks_pdf = pdf
         season, week = key
         label = f"{season}_week{week}"
         try:
-            rows = build_picks_rows(preds)
-            versions = {p.get('model_version') for p in preds if p.get('model_version')}
+            rows: list[Any] = build_picks_rows(preds)
+            versions = {str(p['model_version']) for p in preds if p.get('model_version')}
             model_version = versions.pop() if len(versions) == 1 else 'mixed'
             render_picks_pdf(rows, season, week, model_version,
                              DIST_DIR / f'picks_{label}.pdf')
