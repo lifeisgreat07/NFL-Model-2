@@ -37,6 +37,7 @@ from src.core import forward_test
 ROOT = Path(__file__).resolve().parents[2]
 SEASON = 2026
 START, END = '<!-- glance:start -->', '<!-- glance:end -->'
+AGENTS_START, AGENTS_END = '<!-- agents:start -->', '<!-- agents:end -->'
 NOT_PUBLISHED = 'not published'
 
 Cell = dict[str, Any] | None
@@ -162,10 +163,48 @@ def block(root: Path = ROOT) -> str:
             '`tests/test_results_glance.py`; each sport\'s page has today\'s.\n' + END)
 
 
+# --- the four agents (Stage 89 item 2) ----------------------------------------------------
+
+def booth_record(as_of: str | None = None, root: Path = ROOT) -> tuple[str, dict[str, int]]:
+    """(the time, Booth's totals over every audit posted by then), by the
+    collector's own rules: the newest audit of a pull request counts, and the
+    claims come from the verdict block. `as_of` defaults to the log's own time."""
+    from src.agents import collect_agent_log as collector
+    log = json.loads((root / 'data' / 'agent_log.json').read_text(encoding='utf-8'))
+    when = as_of or str(log['generated_utc'])
+    rows = [dict(r) for r in log['audits'] if (r['posted_utc'] or '') <= when]
+    return when, collector.summarise(collector.mark_superseded(rows))
+
+
+def agents_block(as_of: str | None = None, root: Path = ROOT) -> str:
+    when, b = booth_record(as_of, root)
+    booth = (f"{b['pull_requests_audited']:,} pull requests audited, {b['claims_checked']:,} claims checked, "
+             f"{b['discrepancies_found']:,} discrepancies found in {b['pull_requests_with_a_discrepancy']:,} pull "
+             f"requests, as of {when[:10]} {when[11:19]} UTC (`data/agent_log.json`)")
+    rows = [
+        ('Scout', 'Does the work and opens every pull request; `src/agents/scout_preflight.py` checks the '
+                  'description against the repository first', 'Every pull request',
+         'Each pull request and its pre-flight check, on GitHub; not counted in a file'),
+        ('Booth', 'Starts cold, re-runs each claim in the description, read-only, and posts a '
+                  'machine-readable verdict', 'Every pull request, and every edit of its description', booth),
+        ('Spotter', 'Renders the pages a pull request changes, at phone and desktop widths, light and dark, '
+                    'and comments with the pictures and a reading', 'Pull requests that touch a page',
+         'Advisory: one comment per pull request, never a verdict; not counted'),
+        ('Line Judge', 'Checks what each scheduled run left behind, and an agent diagnoses a finding '
+                       'from the run\'s logs', 'After each NFL weekly update and weekend refresh and each '
+                                            'NHL and NBA daily run',
+         'Counted each Monday in the issue "Line Judge weekly digest"'),
+    ]
+    lines = ['| Agent | What it does | When | Its record |', '|---|---|---|---|']
+    lines += [f'| **{a}** | {what} | {when_} | {rec} |' for a, what, when_, rec in rows]
+    return f'{AGENTS_START}\n' + '\n'.join(lines) + f'\n{AGENTS_END}'
+
+
 def write(root: Path = ROOT) -> str:
     readme = root / 'README.md'
     text = readme.read_text(encoding='utf-8')
     new = text[:text.index(START)] + block(root) + text[text.index(END) + len(END):]
+    new = new[:new.index(AGENTS_START)] + agents_block(root=root) + new[new.index(AGENTS_END) + len(AGENTS_END):]
     readme.write_text(new, encoding='utf-8')
     return new
 
@@ -177,6 +216,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.write:
         write()
     print(block())
+    print(agents_block())
     return 0
 
 

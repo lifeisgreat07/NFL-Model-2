@@ -81,6 +81,56 @@ def test_the_recomputation_is_the_registered_forward_test(sport):
         assert live[k] == written[k], k
 
 
+AGENT_ROW = re.compile(r'^\| \*\*([A-Za-z ]+)\*\* \| [^|]+ \| [^|]+ \| ([^|]+) \|$', re.M)
+
+
+def agents():
+    assert README.count(glance.AGENTS_START) == 1 and README.count(glance.AGENTS_END) == 1
+    body = README[README.index(glance.AGENTS_START):README.index(glance.AGENTS_END)]
+    return dict(AGENT_ROW.findall(body))
+
+
+def test_the_four_agents_are_in_the_table():
+    """Stage 89 item 2."""
+    assert list(agents()) == ['Scout', 'Booth', 'Spotter', 'Line Judge']
+    assert README.index(glance.AGENTS_START) > README.index('## How the work is checked')
+
+
+def test_booths_record_is_the_collectors_count_at_the_time_it_names():
+    """Recomputed from every audit posted by then, by the collector's own
+    rules, so it holds after later audits are collected."""
+    record = agents()['Booth']
+    m = re.fullmatch(r'([\d,]+) pull requests audited, ([\d,]+) claims checked, ([\d,]+) discrepancies found in '
+                     r'([\d,]+) pull requests, as of (\d{4}-\d\d-\d\d) (\d\d:\d\d:\d\d) UTC \(`data/agent_log.json`\)',
+                     record.strip())
+    assert m, record
+    _, b = glance.booth_record(f'{m.group(5)}T{m.group(6)}Z')
+    stated = [int(x.replace(',', '')) for x in m.groups()[:4]]
+    assert stated == [b['pull_requests_audited'], b['claims_checked'], b['discrepancies_found'],
+                      b['pull_requests_with_a_discrepancy']]
+
+
+def test_the_recount_at_the_logs_own_time_is_the_logs_summary():
+    log = json.loads((ROOT / 'data' / 'agent_log.json').read_text(encoding='utf-8'))
+    assert glance.booth_record()[1] == log['summary']
+
+
+def test_a_recount_at_an_earlier_time_counts_what_was_newest_then(tmp_path):
+    """Two audits of one pull request: before the second, the first is the
+    newest and counts; after it, only the second does."""
+    def audit(posted, claims, disc):
+        return {'pr': 7, 'posted_utc': posted, 'has_verdict_block': True, 'claims': claims, 'confirmed': claims - disc,
+                'discrepancies': disc, 'unverifiable': 0, 'inconsistencies': [], 'superseded': False}
+    log = {'generated_utc': '2026-11-02T00:00:00Z', 'summary': {},
+           'audits': [audit('2026-11-01T10:00:00Z', 5, 2), audit('2026-11-01T12:00:00Z', 6, 0)]}
+    (tmp_path / 'data').mkdir()
+    (tmp_path / 'data' / 'agent_log.json').write_text(json.dumps(log), encoding='utf-8')
+    _, early = glance.booth_record('2026-11-01T11:00:00Z', tmp_path)
+    _, late = glance.booth_record(None, tmp_path)
+    assert (early['audits_total'], early['claims_checked'], early['discrepancies_found']) == (1, 5, 2)
+    assert (late['audits_total'], late['audits_superseded'], late['claims_checked'], late['discrepancies_found']) == (2, 1, 6, 0)
+
+
 def test_a_cell_is_log_loss_with_its_games():
     assert glance.cell({'log_loss': 0.61234, 'games': 1087}) == '0.6123 (1,087)'
     assert glance.cell(None) == 'not published'

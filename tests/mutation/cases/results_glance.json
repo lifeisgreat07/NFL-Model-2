@@ -24,6 +24,20 @@
    "expect_caught_by": "test_the_recomputation_is_the_registered_forward_test"
   },
   {
+   "id": "glance-booth-record-ignores-its-time",
+   "why": "Booth's record counts every audit in the log, not those posted by the time the README names, so it goes stale the next time the log is collected",
+   "find": "    rows = [dict(r) for r in log['audits'] if (r['posted_utc'] or '') <= when]\n",
+   "replace": "    rows = [dict(r) for r in log['audits']]\n",
+   "expect_caught_by": "test_a_recount_at_an_earlier_time_counts_what_was_newest_then"
+  },
+  {
+   "id": "glance-booth-record-keeps-old-superseded-flags",
+   "why": "the recount keeps the log's superseded flags, so an audit that was the newest at the time named is not counted",
+   "find": "    return when, collector.summarise(collector.mark_superseded(rows))\n",
+   "replace": "    return when, collector.summarise([dict(r, superseded=r.get('superseded', False)) for r in rows])\n",
+   "expect_caught_by": "test_a_recount_at_an_earlier_time_counts_what_was_newest_then"
+  },
+  {
    "id": "glance-cell-hides-its-games",
    "why": "a cell prints the log loss without the games it was scored on, so Model B's and the base rate's different counts are hidden",
    "find": "    return f\"{c['log_loss']:.4f} ({c['games']:,})\"\n",

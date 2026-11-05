@@ -166,7 +166,17 @@ numbers it explains are regenerated from the same data in the same step.
 ## How the work is checked
 
 Most of this repository was written by an AI agent, and the setup around
-it assumes the agent will sometimes be confidently wrong.
+it assumes the agent will sometimes be confidently wrong. Four agents
+share the work:
+
+<!-- agents:start -->
+| Agent | What it does | When | Its record |
+|---|---|---|---|
+| **Scout** | Does the work and opens every pull request; `src/agents/scout_preflight.py` checks the description against the repository first | Every pull request | Each pull request and its pre-flight check, on GitHub; not counted in a file |
+| **Booth** | Starts cold, re-runs each claim in the description, read-only, and posts a machine-readable verdict | Every pull request, and every edit of its description | 518 pull requests audited, 3,936 claims checked, 29 discrepancies found in 19 pull requests, as of 2026-11-05 03:51:57 UTC (`data/agent_log.json`) |
+| **Spotter** | Renders the pages a pull request changes, at phone and desktop widths, light and dark, and comments with the pictures and a reading | Pull requests that touch a page | Advisory: one comment per pull request, never a verdict; not counted |
+| **Line Judge** | Checks what each scheduled run left behind, and an agent diagnoses a finding from the run's logs | After each NFL weekly update and weekend refresh and each NHL and NBA daily run | Counted each Monday in the issue "Line Judge weekly digest" |
+<!-- agents:end -->
 
 - **Scout** does the work and opens every pull request.
   `src/agents/scout_preflight.py` checks the description against the repository
