@@ -33,6 +33,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
 
 from src.sports.nfl import generate_dashboard as gd
+from tests.js_source import function_source
 
 NODE = shutil.which('node')
 FUNCTIONS = ('gradedTagHtml', 'pickBadge', 'diveResultHtml', 'diveSummaryHtml')
@@ -40,12 +41,6 @@ FUNCTIONS = ('gradedTagHtml', 'pickBadge', 'diveResultHtml', 'diveSummaryHtml')
 
 def template():
     return TEMPLATE.read_text(encoding='utf-8')
-
-
-def function_source(src, name):
-    m = re.search(r'function ' + name + r'\(.*?\n\}\n', src, re.S)
-    assert m, f'{name} is not findable -- re-anchor this guard'
-    return m.group(0)
 
 
 def run(expr):

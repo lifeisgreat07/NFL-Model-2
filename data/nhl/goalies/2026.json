@@ -6838,5 +6838,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020261",
   "start_utc": "2026-11-06T02:30:00Z"
+ },
+ {
+  "date": "2026-11-05",
+  "home": "DET",
+  "home_goalie": "Daniil Tarasov",
+  "home_status": null,
+  "home_report": null,
+  "away": "VGK",
+  "away_goalie": "Adin Hill",
+  "away_status": null,
+  "away_report": null,
+  "read_utc": "2026-11-05T01:07:49Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020252",
+  "start_utc": "2026-11-06T00:00:00Z"
  }
 ]
