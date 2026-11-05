@@ -229,7 +229,11 @@ def missed_line(started: tuple[str, ...] | list[str], folder: Path) -> str | Non
 
 
 def grade(folder: Path, sched: pd.DataFrame) -> list[dict[str, Any]]:
-    """One row per saved pick: correct, wrong, cancelled, or pending."""
+    """One row per saved pick: correct, wrong, cancelled, or pending.
+
+    Pending also covers a final game whose result is not in yet (a null
+    score, which used to raise here after the picks were saved, audit 7)
+    and a pick whose game has left the schedule (Stage 96 item 44)."""
     by_id = sched.set_index('game_id')
     rows = []
     for path in sorted(folder.glob('*.json')):
@@ -238,8 +242,7 @@ def grade(folder: Path, sched: pd.DataFrame) -> list[dict[str, Any]]:
         status = None if g is None else g['status']
         if status == GameStatus.CANCELLED.value:
             result = 'cancelled'
-        elif status == GameStatus.FINAL.value:
-            assert g is not None
+        elif status == GameStatus.FINAL.value and g is not None and not pd.isna(g['home_win']):
             winner = g['home'] if int(g['home_win']) == 1 else g['away']
             result = 'correct' if pick['pick'] == winner else 'wrong'
         else:
