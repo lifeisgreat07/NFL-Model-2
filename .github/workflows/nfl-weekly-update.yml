@@ -270,6 +270,7 @@ jobs:
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
               pull --rebase --autostash origin main
+          python -m src.core.pull_check
 
       # This workflow no longer builds or commits the dashboard. It commits the
       # DATA it produces, and "Deploy dashboard to Pages" turns that into the
