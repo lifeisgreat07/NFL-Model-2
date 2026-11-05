@@ -1,0 +1,21 @@
+{
+ "target": "src/sports/nhl/daily.py",
+ "tests": "tests/test_missed_days.py",
+ "cases": [
+  {
+   "id": "nhl-missed-forgets-yesterday",
+   "why": "the NHL run looks only at today's slate again, so a late game of yesterday's that lost its pick is never named",
+   "find": "    days = {str((today - pd.Timedelta(days=1)).date()), str(today.date())}\n    return GameLock().decide(sched[sched['slate'].isin(days)], now).started\n",
+   "replace": "    days = {str(today.date())}\n    return GameLock().decide(sched[sched['slate'].isin(days)], now).started\n",
+   "expect_caught_by": "test_yesterdays_and_todays_started_games_are_named"
+  },
+  {
+   "id": "nba-missed-only-the-decided-slates",
+   "target": "src/sports/nba/daily.py",
+   "why": "the NBA run names only the started games of the slates it decided, the gap audit 7 found",
+   "find": "    lost = missed_line(sorted(set(decision.started) | set(recently_started(sched, now))), folder)\n",
+   "replace": "    lost = missed_line(decision.started, folder)\n",
+   "expect_caught_by": "test_the_run_names_both_days"
+  }
+ ]
+}
