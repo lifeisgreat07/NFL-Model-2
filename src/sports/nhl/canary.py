@@ -11,7 +11,8 @@ and the rest still run, so one report names everything wrong tonight.
 3. a final game's box score, through `history.box_row` (the newest few finals are
    read; one the league has not settled yet is waited for up to `UNSETTLED_HOURS`,
    then it fails the night);
-4. the league's odds feed, through `market.parse`;
+4. the league's odds feed, through `market.parse` (no game priced at all, with
+   one due to start, fails);
 5. Daily Faceoff's page for today, through `goalies.parse_faceoff`;
 6. a club's roster, through `roster.goalies_of`.
 
@@ -49,6 +50,8 @@ Step = Callable[[dict[str, Any]], str]
 UNSETTLED_HOURS = 12
 #: How many of the newest finals one night looks through for a settled one.
 LOOKBACK = 5
+#: With a game due to start this soon, an odds feed that prices nothing at all fails the night.
+MARKET_AHEAD_HOURS = 36
 
 
 def step_schedule(state: dict[str, Any]) -> str:
@@ -93,9 +96,25 @@ def step_box_score(state: dict[str, Any]) -> str:
 
 
 def step_market(state: dict[str, Any]) -> str:
+    """The odds feed, through `market.parse`. A feed that answers with no
+    games, or under a renamed key, parses to nothing at all and used to pass
+    as "0 games priced" (audit 7, R4); with a game due to start within
+    `MARKET_AHEAD_HOURS` it now fails the night. The feed's games need not be
+    the coming slate's (the 2026-11-03 06:40 UTC canary: 4 games priced, a
+    slate of 11 held), so the test is "none priced at all", not "none of
+    today's slate priced"."""
     rows, missing = market.parse(json.loads(state['get'](market.SOURCE)), state['now'])
     if missing:
         raise ValueError('; '.join(missing))
+    sched = state.get('schedule')
+    if not rows and sched is not None:
+        now = pd.Timestamp(state['now']).tz_convert('UTC')
+        due = sched[(sched['status'] == GameStatus.SCHEDULED.value)
+                    & (pd.to_datetime(sched['start_utc'], utc=True) > now)
+                    & (pd.to_datetime(sched['start_utc'], utc=True) <= now + pd.Timedelta(hours=MARKET_AHEAD_HOURS))]
+        if len(due):
+            raise ValueError(f'the odds feed priced no game, with {len(due)} due to start within '
+                             f'{MARKET_AHEAD_HOURS} hours (an empty or renamed payload parses to nothing)')
     return f'{len(rows)} games priced'
 
 

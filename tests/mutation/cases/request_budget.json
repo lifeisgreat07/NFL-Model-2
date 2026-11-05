@@ -1,0 +1,21 @@
+{
+  "target": "src/core/request_budget.py",
+  "tests": "tests/test_request_budget.py",
+  "cases": [
+    {
+      "id": "schedule-budget-never-refuses",
+      "why": "the budget counts and never stops, so a slow feed runs the step into its timeout and the job dies with nothing kept",
+      "find": "            if spent > self.seconds:\n",
+      "replace": "            if False:\n",
+      "expect_caught_by": "test_requests_inside_the_budget_pass_and_the_one_after_it_is_refused"
+    },
+    {
+      "id": "nhl-schedule-read-without-retry",
+      "target": "src/sports/nhl/daily.py",
+      "why": "the NHL's schedule goes back to a plain urlopen, so one dropped connection among 32 club lists fails the run",
+      "find": "    sched = nhl_schedule.load_schedule(season, get=request_budget.Budget().wrap(lambda u: json.loads(get(u))))\n",
+      "replace": "    sched = nhl_schedule.load_schedule(season)\n",
+      "expect_caught_by": "test_each_daily_run_reads_its_schedule_through_the_retrying_get_under_a_budget"
+    }
+  ]
+}

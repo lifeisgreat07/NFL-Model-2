@@ -79,7 +79,7 @@
       "id": "nba-page-drift-looks-not-shown",
       "target": "src/sports/nba/pages/nba.js",
       "why": "the NBA page shows the status but not the rule, so a reader cannot tell the check looks only at checkpoints",
-      "find": "    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class=\"nba-lede\">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04: ${driftLooks(BD.drift_rule)}</p>` : ''}\n",
+      "find": "    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class=\"nba-lede\">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04 and 2026-11-05: ${driftLooks(BD.drift_rule)}</p>` : ''}\n",
       "replace": "",
       "expect_caught_by": "test_both_pages_print_the_looks_beside_the_status"
     },

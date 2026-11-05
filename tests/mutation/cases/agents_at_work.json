@@ -1,0 +1,28 @@
+{
+  "target": "src/agents/collect_agent_log.py",
+  "tests": "tests/test_agents_at_work.py",
+  "cases": [
+    {
+      "id": "agents-at-work-any-account",
+      "why": "anyone who pastes Spotter's marker or a Line Judge digest line into a comment puts it on the page as the agent's",
+      "find": "    if author(comment) not in BOOTH_ACCOUNTS:\n        return None\n    base = ",
+      "replace": "    base = ",
+      "expect_caught_by": "test_only_this_repositorys_bot_accounts_count"
+    },
+    {
+      "id": "agents-at-work-lists-superseded-audits",
+      "why": "every rerun of an audit is listed, so one pull request's stale verdicts crowd out the other agents",
+      "find": "           for r in rows if not r['superseded']]\n",
+      "replace": "           for r in rows]\n",
+      "expect_caught_by": "test_all_four_agents_are_recorded_newest_first_each_with_its_link"
+    },
+    {
+      "id": "agents-at-work-links-anywhere",
+      "target": "src/dashboard/app.js",
+      "why": "a link from the collected data is put on the page whatever its scheme, so a javascript: URL in a comment becomes a live link",
+      "find": "    const link = /^https:\\/\\/github\\.com\\//.test(e.url || '') ? escapeHtml(e.url) : '';\n",
+      "replace": "    const link = escapeHtml(e.url || '');\n",
+      "expect_caught_by": "test_the_page_lists_them_escaped_and_links_only_to_github"
+    }
+  ]
+}
