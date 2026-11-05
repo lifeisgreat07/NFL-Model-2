@@ -1,0 +1,20 @@
+{
+  "target": ".github/workflows/nhl-daily.yml",
+  "tests": "tests/test_step_timeouts.py",
+  "cases": [
+    {
+      "id": "nhl-daily-run-without-its-timeout",
+      "why": "the NHL's daily run step has no timeout of its own, so a feed that hangs it runs the job into its limit, the job is cancelled, and no failure() alert fires",
+      "find": "      - name: Run the NHL's daily run\n        timeout-minutes: 25\n",
+      "replace": "      - name: Run the NHL's daily run\n",
+      "expect_caught_by": "test_every_work_step_times_out_before_its_job"
+    },
+    {
+      "id": "nhl-daily-step-timeout-as-long-as-the-job",
+      "why": "the step's timeout equals the job's, so the job is cancelled first and the alert steps never get to run",
+      "find": "      - name: Run the NHL's daily run\n        timeout-minutes: 25\n",
+      "replace": "      - name: Run the NHL's daily run\n        timeout-minutes: 30\n",
+      "expect_caught_by": "test_every_work_step_times_out_before_its_job"
+    }
+  ]
+}

@@ -40,11 +40,13 @@ jobs:
 
       # Stage 42 item 1: how late this run started, against its own cron lines.
       - name: Record the start delay
+        timeout-minutes: 15
         run: python -m src.core.start_delay .github/workflows/nfl-nightly-canary.yml
 
       # Stage 42 item 4: a run GitHub's cron started, for a slot cron-job.org
       # should have started, asks whether it did, and opens an issue if not.
       - name: Did cron-job.org start this slot?
+        timeout-minutes: 15
         if: github.event_name == 'schedule'
         env:
           CRON_SCHEDULE: ${{ github.event.schedule }}
@@ -52,6 +54,7 @@ jobs:
         run: python -m src.core.missed_dispatch .github/workflows/nfl-nightly-canary.yml
 
       - name: Install dependencies
+        timeout-minutes: 15
         run: pip install --require-hashes -r requirements.lock
 
       # Finished seasons of play-by-play, kept between nights. The key rolls
@@ -69,6 +72,7 @@ jobs:
           key: pbp-${{ steps.month.outputs.key }}
 
       - name: Run the canary
+        timeout-minutes: 15
         env:
           NFL_PBP_CACHE: .pbp-cache
         run: python -m src.sports.nfl.canary --report canary-report.md
@@ -76,6 +80,7 @@ jobs:
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
+        timeout-minutes: 15
         if: success()
         continue-on-error: true
         env:

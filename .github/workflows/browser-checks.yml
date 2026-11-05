@@ -73,6 +73,7 @@ jobs:
 
       # Stage 42 item 1, for the nightly run only: how late it started.
       - name: Record the start delay
+        timeout-minutes: 30
         if: github.event_name == 'schedule'
         run: python -m src.core.start_delay .github/workflows/browser-checks.yml
 
@@ -80,6 +81,7 @@ jobs:
       # and a browser that changes under it would change what "no findings"
       # means without anyone deciding it should.
       - name: Install dependencies
+        timeout-minutes: 30
         run: |
           pip install --require-hashes -r requirements.lock
           pip install playwright==1.56.0
@@ -94,12 +96,15 @@ jobs:
         run: npm install --no-save --no-package-lock axe-core@4.13.0
 
       - name: Build the dashboard
+        timeout-minutes: 30
         run: python -m src.sports.nfl.generate_dashboard
 
       - name: Prove every rule can fail
+        timeout-minutes: 30
         run: python tests/browser/check_page.py --self-test --axe node_modules/axe-core/axe.min.js --tmp "$RUNNER_TEMP"
 
       - name: Check the built page
+        timeout-minutes: 30
         run: python tests/browser/check_page.py index.html --axe node_modules/axe-core/axe.min.js
 
       # Stage 34 item 30: the states no real week is in yet -- a tied game, a
@@ -109,9 +114,11 @@ jobs:
       # then checked exactly like the real page. tests/test_states_pages.py
       # holds these two steps.
       - name: Build the states pages
+        timeout-minutes: 30
         run: python tests/browser/build_states.py --out "$RUNNER_TEMP/states"
 
       - name: Check the states pages
+        timeout-minutes: 30
         run: |
           for page in states_tie.html states_preview.html; do
             python tests/browser/check_page.py "$RUNNER_TEMP/states/$page" --axe node_modules/axe-core/axe.min.js
@@ -121,9 +128,11 @@ jobs:
       # sample week with every kind of card on it (tests/browser/build_nhl.py),
       # since the daily run's own files hold whatever state the season is in.
       - name: Build the NHL's page from a sample week
+        timeout-minutes: 30
         run: python tests/browser/build_nhl.py --out "$RUNNER_TEMP/states/nhl.html"
 
       - name: Check the NHL's page
+        timeout-minutes: 30
         run: python tests/browser/check_page.py "$RUNNER_TEMP/states/nhl.html" --axe node_modules/axe-core/axe.min.js
 
       # Stage 64: the NHL board shows one day, with each game's card folded
@@ -132,75 +141,93 @@ jobs:
       # at 390 and 1280 px in both themes; it proves itself first on copies
       # of the sample page with a defect written in.
       - name: Prove the NHL day board check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_nhl_day.py --self-test --tmp "$RUNNER_TEMP"
 
       - name: Check the NHL's day board
+        timeout-minutes: 30
         run: python tests/browser/check_nhl_day.py "$RUNNER_TEMP/states/nhl.html"
 
       # The NHL board's eyebrow names the week it shows, as the NBA's
       # (Stage 77 item 32's rule), with the clock fixed four ways around
       # the sample week.
       - name: Prove the NHL eyebrow check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_nhl_eyebrow.py --self-test --tmp "$RUNNER_TEMP/eyebrow-nhl"
 
       - name: Check the NHL eyebrow names its week
+        timeout-minutes: 30
         run: python tests/browser/check_nhl_eyebrow.py "$RUNNER_TEMP/states/nhl.html"
 
       # Stage 61: the NBA's page, built by the real builder from the committed
       # backtest (src/sports/nba/site.py); it has no board and no daily files.
       - name: Build the NBA's page
+        timeout-minutes: 30
         run: python -m src.sports.nba.site --out "$RUNNER_TEMP/states/nba.html"
 
       - name: Check the NBA's page
+        timeout-minutes: 30
         run: python tests/browser/check_page.py "$RUNNER_TEMP/states/nba.html" --axe node_modules/axe-core/axe.min.js
 
       # Stage 77 item 32: the NBA board's eyebrow names the week it shows,
       # with the clock fixed on the 13th, opening night and the 27th.
       - name: Prove the NBA eyebrow check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_nba_eyebrow.py --self-test --tmp "$RUNNER_TEMP/eyebrow"
 
       - name: Check the NBA eyebrow names its week
+        timeout-minutes: 30
         run: python tests/browser/check_nba_eyebrow.py "$RUNNER_TEMP/states/nba.html"
 
       # Stage 77 item 33: a weekday tip before 5 PM Eastern is ESPN's
       # placeholder and reads "time TBD" on the row and in the card.
       - name: Prove the NBA tip time check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_nba_tip.py --self-test --tmp "$RUNNER_TEMP/tip"
 
       - name: Check a placeholder tip time is not printed
+        timeout-minutes: 30
         run: python tests/browser/check_nba_tip.py "$RUNNER_TEMP/states/nba.html"
 
       # Stage 80 item 60: until the first pick is saved, the NBA's note counts
       # down to it, with the clock fixed a week before, the day before, the
       # morning of and the day after opening night.
       - name: Prove the NBA countdown check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_nba_countdown.py --self-test --tmp "$RUNNER_TEMP/countdown"
 
       - name: Check the NBA counts down to its first picks
+        timeout-minutes: 30
         run: python tests/browser/check_nba_countdown.py "$RUNNER_TEMP/states/nba.html"
 
       # Stage 79 item 48: a column beside the NBA's and the NHL's day boards at
       # 1280 px and wider, no taller than the window.
       - name: Prove the side column check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_side_column.py --self-test --tmp "$RUNNER_TEMP/side"
 
       - name: Check the column beside the day boards
+        timeout-minutes: 30
         run: python tests/browser/check_side_column.py "$RUNNER_TEMP/states/nba.html" "$RUNNER_TEMP/states/nhl.html"
 
       # Stage 79 item 46: the NHL's Accuracy and the NBA's Checking the AI's
       # work draw the race, the trend and the calibration diagram.
       - name: Prove the accuracy check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_accuracy.py --self-test --tmp "$RUNNER_TEMP/accuracy"
 
       - name: Check the accuracy charts on the NHL and the NBA
+        timeout-minutes: 30
         run: python tests/browser/check_accuracy.py "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
 
       # Stage 79 item 45: one chart style, and no chart text under 11 px on
       # any sport's page.
       - name: Prove the chart text check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_chart_text.py --self-test --tmp "$RUNNER_TEMP/charttext"
 
       - name: Check no chart text is under 11 px
+        timeout-minutes: 30
         run: python tests/browser/check_chart_text.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
 
       # Stage 96 item 46 (audit 7, T9): every board row says the pick that
@@ -208,15 +235,15 @@ jobs:
       # predictions/. The NHL's page above is a sample week, so the real one
       # is built here; the NFL's (index.html) and the NBA's are already real.
       - name: Build the NHL's real board
-        timeout-minutes: 15
+        timeout-minutes: 30
         run: python -m src.sports.nhl.site --out "$RUNNER_TEMP/real-nhl.html"
 
       - name: Prove the board picks check can fail
-        timeout-minutes: 15
+        timeout-minutes: 30
         run: python tests/browser/check_board_picks.py --self-test --tmp "$RUNNER_TEMP/picks" --nfl index.html --nhl "$RUNNER_TEMP/real-nhl.html" --nba "$RUNNER_TEMP/states/nba.html"
 
       - name: Check every board row says the saved pick
-        timeout-minutes: 15
+        timeout-minutes: 30
         run: python tests/browser/check_board_picks.py --nfl index.html --nhl "$RUNNER_TEMP/real-nhl.html" --nba "$RUNNER_TEMP/states/nba.html"
 
       # Stage 68 item 5: no cell of a day-board row drawn over another, at
@@ -224,9 +251,11 @@ jobs:
       # night so every row carries its "Locks ..." label. It proves itself
       # first on a copy with the old fixed column written back.
       - name: Prove the row check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_rows.py --self-test --tmp "$RUNNER_TEMP"
 
       - name: Check the NBA's rows
+        timeout-minutes: 30
         run: python tests/browser/check_rows.py "$RUNNER_TEMP/states/nba.html"
 
       # Stage 75 item 1 (the 2026-10-13 UI/UX audit): a card's lead marker sits
@@ -235,9 +264,11 @@ jobs:
       # tests/test_card_axis.py holds its source. Proves itself first on a
       # copy with the old marker position written back.
       - name: Prove the card axis check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_card_axis.py --self-test --tmp "$RUNNER_TEMP/axis"
 
       - name: Check the cards' axis
+        timeout-minutes: 30
         run: python tests/browser/check_card_axis.py index.html "$RUNNER_TEMP/states/nhl.html"
 
       # Stage 75 item 2: a day-board row and its card print the same pick,
@@ -245,58 +276,72 @@ jobs:
       # at 390 and 1440 px in both themes. tests/test_row_card_agree.py holds
       # the NBA's source until it has picks.
       - name: Prove the row-and-card check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_row_card.py --self-test --tmp "$RUNNER_TEMP/rowcard"
 
       - name: Check each row agrees with its card
+        timeout-minutes: 30
         run: python tests/browser/check_row_card.py "$RUNNER_TEMP/states/nhl.html"
 
       # Stage 75 item 3: a tapped row's card is scrolled on screen, clear of
       # the sticky top bar and the fixed bottom nav, at 390x844 and 1440x900
       # in both themes; the NFL phone card does not repeat the row's header.
       - name: Prove the card reveal check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_card_reveal.py --self-test --tmp "$RUNNER_TEMP/reveal"
 
       - name: Check an opened card is on screen
+        timeout-minutes: 30
         run: python tests/browser/check_card_reveal.py index.html "$RUNNER_TEMP/states/nhl.html"
 
       # Stage 75 item 4: rows the reader opened stay open through the theme
       # toggle and a day chip and back, at 390 and 1440 px in both themes.
       - name: Prove the open rows check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_open_rows.py --self-test --tmp "$RUNNER_TEMP/openrows"
 
       - name: Check open rows stay open
+        timeout-minutes: 30
         run: python tests/browser/check_open_rows.py "$RUNNER_TEMP/states/nhl.html"
 
       # Stage 76 item 7: a day and a club have an address (#board/<day>,
       # #team/<club>), written by a chip, a week step and the club select.
       - name: Prove the routes check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_routes.py --self-test --tmp "$RUNNER_TEMP/routes"
 
       - name: Check a day and a club have an address
+        timeout-minutes: 30
         run: python tests/browser/check_routes.py "$RUNNER_TEMP/states/nhl.html"
 
       # Stage 76 item 9: #game/<id> opens the game's week or day with its card
       # open and on screen, on the NFL page and the NHL's sample page.
       - name: Prove the game route check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_game_route.py --self-test --tmp "$RUNNER_TEMP/gameroute"
 
       - name: Check a game's address opens it
+        timeout-minutes: 30
         run: python tests/browser/check_game_route.py index.html "$RUNNER_TEMP/states/nhl.html"
 
       # Stage 76 item 10: a link focuses the page's heading as a tap does, the
       # heading wears no ring, and Back and Forward keep each page's scroll.
       - name: Prove the page return check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_page_return.py --self-test --tmp "$RUNNER_TEMP/pagereturn"
 
       - name: Check arriving on a page and coming back to one
+        timeout-minutes: 30
         run: python tests/browser/check_page_return.py index.html "$RUNNER_TEMP/states/nhl.html"
 
       # Stage 59: the site's home page, built by the real builder from the
       # committed files (src/site/home.py).
       - name: Build the home page
+        timeout-minutes: 30
         run: python -m src.site.home --out "$RUNNER_TEMP/states/home.html"
 
       - name: Check the home page
+        timeout-minutes: 30
         run: python tests/browser/check_page.py "$RUNNER_TEMP/states/home.html" --axe node_modules/axe-core/axe.min.js
 
       # Stage 62 items 1 and 4: the light/dark choice is the site's, so it
@@ -304,12 +349,15 @@ jobs:
       # built site on one origin can see that (tests/browser/check_theme.py);
       # it proves it can fail first, on pages that keep their own keys.
       - name: Prove the theme check can fail
+        timeout-minutes: 30
         run: python tests/browser/check_theme.py --self-test --tmp "$RUNNER_TEMP"
 
       - name: Build the whole site
+        timeout-minutes: 30
         run: python -m src.site.build --out "$RUNNER_TEMP/site"
 
       - name: Check the theme follows the visitor between pages
+        timeout-minutes: 30
         run: python tests/browser/check_theme.py "$RUNNER_TEMP/site"
 
       # Only the nightly run on main raises an issue: a pull request's own red
@@ -317,6 +365,7 @@ jobs:
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
+        timeout-minutes: 30
         # The nightly run on main only: a pull request passing says nothing about main.
         if: success() && github.event_name == 'schedule'
         continue-on-error: true
