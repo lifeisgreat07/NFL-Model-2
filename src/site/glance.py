@@ -33,6 +33,7 @@ import numpy as np
 import pandas as pd
 
 from src.core import forward_test
+from src.sports.nfl.paths import parse_week
 
 ROOT = Path(__file__).resolve().parents[2]
 SEASON = 2026
@@ -60,8 +61,9 @@ def nfl_backtest(root: Path = ROOT) -> dict[str, Any]:
 
 
 def nfl_weeks(root: Path = ROOT) -> list[int]:
-    return sorted(int(p.stem.split('_week')[1].split('_')[0])
-                  for p in (root / 'results' / 'nfl').glob(f'{SEASON}_week*_graded.json'))
+    weeks = (parse_week(p.stem.removesuffix('_graded'))
+             for p in (root / 'results' / 'nfl').glob(f'{SEASON}_week*_graded.json'))
+    return sorted(w[1] for w in weeks if w is not None)
 
 
 def nfl_live(through_week: int, root: Path = ROOT) -> dict[str, Any]:
