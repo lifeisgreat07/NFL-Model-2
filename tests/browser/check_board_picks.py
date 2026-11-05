@@ -15,11 +15,9 @@ and percentage, and compares them with predictions/:
 - NFL: the row opens `card-<n>`, whose `data-game` is `<season>_week<w>-<away>-<home>`;
   the game is read from predictions/nfl/<season>_week<w>.json, or the
   preview of that week before it locks. Model B's home probability when it
-  has one, else Model A's, as the board picks. The NFL page rounds twice:
-  generate_dashboard stores it as `round(p * 100, 1)` and the row then
-  Math.rounds that, so 0.8047 shows 81%, not 80%; the check rounds the same
-  way. Within CARD_EVEN_BAND points of 50 (read from app.js) the row says
-  Toss-up.
+  has one, else Model A's, as the board picks, rounded once to a whole
+  percent (0.8047 shows 80%). Within CARD_EVEN_BAND points of 50 (read from
+  app.js) the row says Toss-up.
 
 A board with no saved pick on it (an NBA Monday morning) steps back a week
 once, so the check always compares something.
@@ -79,7 +77,7 @@ def nfl_pick(pred, game):
                 if g['home'] == home and g['away'] == away:
                     b = g.get('model_b_home_win_prob')
                     h = b if b is not None else g['model_a_home_win_prob']
-                    v = round(h * 100, 1)  # as generate_dashboard stores mktB_home / fbA_home
+                    v = round(h * 100, 2)  # as generate_dashboard stores mktB_home / fbA_home
                     if abs(v - 50) < EVEN_BAND:
                         return None, math.floor(max(v, 100 - v) + 0.5)
                     return (home, math.floor(v + 0.5)) if v >= 50 else (away, math.floor(100 - v + 0.5))
