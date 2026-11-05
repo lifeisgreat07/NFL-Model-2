@@ -90,7 +90,9 @@ body{ flex-direction:column; }
 .home-track th, .home-track td{ padding:var(--s1) var(--s2); text-align:right; border-bottom:1px solid var(--border); }
 .home-track th:first-child, .home-track td:first-child{ text-align:left; padding-left:0; }
 .home-track thead th{ font-weight:600; color:var(--text-2); }
-@media (max-width: 760px){ .home-track-tables{ grid-template-columns:minmax(0, 1fr); } }
+/* A sport's table needs about 270px; three side by side fit from about 1000px. Below that they stack
+   (at 768px three columns were 227px each and the page scrolled sideways). */
+@media (max-width: 1000px){ .home-track-tables{ grid-template-columns:minmax(0, 1fr); } }
 .home-track .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 /* Option C's questions for a newcomer, closed until asked. */
 .home-faq{ gap:0; }
