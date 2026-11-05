@@ -906,17 +906,32 @@ function m2Html(m){
   return `<p class="nhl-lede">Over ${m.graded} graded games the projected starter started on ${s.projected_started} of ${s.sides} sides (${(s.projected_started / s.sides * 100).toFixed(1)}%), and both started in ${s.games_both_started}. Model A&#39;s log loss was ${a.log_loss_projected.toFixed(4)} with the goalies the picks used and ${a.log_loss_actual.toFixed(4)} with the two who started.${diff}</p>
     <p class="nhl-lede">Both figures come from Model A refitted as each pick records it was, so only the goalies differ; ${m.refit.reproduced_saved_model_a} of ${m.refit.of} refitted probabilities equal the saved ones to four places. A measurement (<code>${m.registered}</code>): reported, not judged.</p>`;
 }
+/* Stage 84 item 6 (the 2026-11-02 review), worded as the NBA's. */
+function driftStatus(d, rule){
+  const n = x => Number(x).toLocaleString('en-US');
+  const min = rule ? (rule.rule.checkpoints || [rule.rule.min_games])[0] : 100;
+  if (!d || !d.games) return 'No pick has been graded yet, so the drift check has nothing to test.';
+  const now = `Model A&#39;s mean log loss over ${d.games} graded games is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest.`;
+  if (d.games < min) return `${d.games} of the ${min} graded games the drift check needs before it can flag. ${now}`;
+  const last = (d.looks || []).slice(-1)[0];
+  const when = !last ? '' : ` Its last look was at ${n(last.games)} graded games${d.next_look ? `; the next is at ${n(d.next_look)}` : ', the season&#39;s last'}.`;
+  return d.flagged ? `<b>Flagged.</b> ${now} At a registered look that was significantly above the backtest, and an issue is open.${when}` : `Not flagged. ${now}${when}`;
+}
+/* Stage 85 item 1 (the 2026-11-02 review): the drift check looks only at the
+   registered checkpoints, at a level shared among them. driftStatus and
+   driftLooks are identical in nhl.js and nba.js (tests/test_drift_looks.py). */
+function driftLooks(rule){
+  if (!rule || !rule.rule.checkpoints) return '';
+  const r = rule.rule, cs = r.checkpoints.map(x => Number(x).toLocaleString('en-US'));
+  const list = cs.length > 1 ? `${cs.slice(0, -1).join(', ')} and ${cs[cs.length - 1]}` : cs[0];
+  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many is above the backtest&#39;s ${rule.baseline.value.toFixed(4)}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
+}
 function renderReliability(){
   const d = DATA.drift, rule = DATA.drift_rule, el = document.getElementById('reliability-body');
   const saved = Object.keys(DATA.picks).length;
-  const min = rule ? rule.rule.min_games : 100;
-  const status = !d || !d.games
-    ? `No pick has been graded yet, so the drift check has nothing to test.`
-    : d.games < min
-      ? `${d.games} of the ${min} graded games the drift check needs before it can flag. Model A&#39;s mean log loss so far is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest.`
-      : (d.flagged ? `<b>Flagged.</b> Model A&#39;s log loss over ${d.games} games is significantly above its backtest. An issue is open.` : `Not flagged: Model A&#39;s log loss over ${d.games} games is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest.`);
+  const status = driftStatus(d, rule);
   el.innerHTML = `<h2 class="section-title">The drift check</h2><p class="nhl-lede">${status}</p>
-    <p class="nhl-lede">The rule was registered before the season (<code>experiments/nhl/stage58/registry.json</code>): it flags when the one-sided ${rule ? pct(rule.rule.one_sided_level) : '95%'} lower bound of Model A&#39;s log loss is above the backtest&#39;s ${rule ? rule.baseline.value.toFixed(4) : ''}, once ${min} games are graded.</p>
+    ${rule && rule.rule.checkpoints ? `<p class="nhl-lede">The rule was registered before the season (<code>experiments/nhl/stage58/registry.json</code>) and amended on 2026-11-04: ${driftLooks(rule)}</p>` : ''}
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(DATA.forward, 'nhl')}
     <h2 class="section-title">The projected starter against the actual one</h2>

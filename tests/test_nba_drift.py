@@ -36,6 +36,9 @@ def test_a_clearly_worse_season_flags_and_a_matching_one_does_not():
     # A season that averages the baseline, with spread. (A constant column of
     # exactly the baseline can sit one float ulp above it after averaging.)
     assert drift.flags([v - 0.2, v + 0.2] * 75, SPEC) is False
+    # Slightly worse than the baseline on average, but not significantly: the
+    # mean is above it and the bound is not, so only the bound decides.
+    assert drift.flags([v - 0.19, v + 0.21] * 75, SPEC) is False
 
 
 def test_the_bound_is_one_sided_and_seeded():

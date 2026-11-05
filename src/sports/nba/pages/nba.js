@@ -802,11 +802,23 @@ function calibrationHtml(graded){
 /* Stage 84 item 6 (the 2026-11-02 review): the daily run writes the drift
    check's result and the page never showed it. Worded as the NHL's is. */
 function driftStatus(d, rule){
-  const min = rule ? rule.rule.min_games : 100;
+  const n = x => Number(x).toLocaleString('en-US');
+  const min = rule ? (rule.rule.checkpoints || [rule.rule.min_games])[0] : 100;
   if (!d || !d.games) return 'No pick has been graded yet, so the drift check has nothing to test.';
   const now = `Model A&#39;s mean log loss over ${d.games} graded games is ${d.mean_log_loss.toFixed(4)}, against ${d.baseline.toFixed(4)} in the backtest.`;
   if (d.games < min) return `${d.games} of the ${min} graded games the drift check needs before it can flag. ${now}`;
-  return d.flagged ? `<b>Flagged.</b> ${now} That is significantly above the backtest, and an issue is open.` : `Not flagged. ${now}`;
+  const last = (d.looks || []).slice(-1)[0];
+  const when = !last ? '' : ` Its last look was at ${n(last.games)} graded games${d.next_look ? `; the next is at ${n(d.next_look)}` : ', the season&#39;s last'}.`;
+  return d.flagged ? `<b>Flagged.</b> ${now} At a registered look that was significantly above the backtest, and an issue is open.${when}` : `Not flagged. ${now}${when}`;
+}
+/* Stage 85 item 1 (the 2026-11-02 review): the drift check looks only at the
+   registered checkpoints, at a level shared among them. driftStatus and
+   driftLooks are identical in nhl.js and nba.js (tests/test_drift_looks.py). */
+function driftLooks(rule){
+  if (!rule || !rule.rule.checkpoints) return '';
+  const r = rule.rule, cs = r.checkpoints.map(x => Number(x).toLocaleString('en-US'));
+  const list = cs.length > 1 ? `${cs.slice(0, -1).join(', ')} and ${cs[cs.length - 1]}` : cs[0];
+  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many is above the backtest&#39;s ${rule.baseline.value.toFixed(4)}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
 }
 /* Stage 84 items 1 and 2 (the 2026-11-02 review): the registered forward test,
    from results/<sport>/forward_<season>.json. Identical in nhl.js and nba.js
@@ -862,6 +874,7 @@ function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
     <h2 class="section-title">The drift check</h2>
     <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
+    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class="nba-lede">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04: ${driftLooks(BD.drift_rule)}</p>` : ''}
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(BD.forward, 'nba')}
     <h2 class="section-title">The injury report against who played</h2>
