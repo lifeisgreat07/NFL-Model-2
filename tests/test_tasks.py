@@ -120,7 +120,7 @@ def test_the_slow_marker_is_registered_and_used():
     re-derivations of a saved pick (Stage 85 item 6), each a whole feature table."""
     toml = (ROOT / 'pyproject.toml').read_text(encoding='utf-8')
     assert re.search(r'(?m)^markers = \["slow: ', toml)
-    marked = {p.name: p.read_text(encoding='utf-8').count('@pytest.mark.slow')
+    marked = {p.name: len(re.findall(r'(?m)^@pytest\.mark\.slow$', p.read_text(encoding='utf-8')))
               for p in (ROOT / 'tests').glob('test_*.py')}
     assert marked['test_daily_end_to_end.py'] == 2
     assert marked['test_nhl_sources_down.py'] == 3
