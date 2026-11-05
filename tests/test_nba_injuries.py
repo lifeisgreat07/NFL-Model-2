@@ -111,6 +111,30 @@ def test_an_empty_report_is_refused():
         injuries.parse({'injuries': []}, TEAMS)
 
 
+@pytest.mark.parametrize('payload', [
+    {'injuries': [{'displayName': 'Atlanta Hawks', 'items': [player('A Out', 11, 'ATL', 'Out')]}]},
+    {'injuries': [{'displayName': 'Atlanta Hawks', 'injuries': []}, {'displayName': 'Orlando Magic'}]},
+])
+def test_teams_with_no_player_read_refuse_the_report(payload):
+    """Stage 92 item 8 (audit 7, R5): a renamed per-team key gave zero rows and
+    no unread team, which read as every player playing."""
+    with pytest.raises(injuries.InjurySourceError, match='teams listed and not one player read'):
+        injuries.parse(payload, TEAMS)
+
+
+def test_a_refused_report_makes_every_pick_say_it_ran_without_availability():
+    """The refusal reaches the pick: no report, no availability, and the reason stored."""
+    def get(url):
+        return json.dumps({'injuries': [{'displayName': 'Atlanta Hawks', 'items': []}]}).encode()
+    assert daily.read_injuries(get, TEAMS) is None
+    assert game(None)[3] == 'injury report not read'
+
+
+def test_one_unread_row_is_still_a_report_not_a_refusal():
+    got = injuries.parse(report(player('Z', 2, 'ATL', 'Rest')), TEAMS)
+    assert got.rows == [] and got.unread == {'ATL': ["Z: unknown status 'Rest'"]}
+
+
 def test_what_the_pick_stores():
     rows = injuries.parse(report(player('Zed', 2, 'ORL', 'Out'), player('Abe', 1, 'ORL', 'Day-To-Day')), TEAMS).rows
     got = injuries.for_game(rows, 'ORL', 'ATL', datetime(2026, 10, 21, 21, 30, tzinfo=UTC))

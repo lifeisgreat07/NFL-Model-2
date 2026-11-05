@@ -19,8 +19,8 @@
     {
       "id": "nba-daily-rewrites-picks",
       "why": "a saved pick is overwritten by a later run, so a lock is not a lock",
-      "find": "    if path.exists():\n        return False\n    folder.mkdir",
-      "replace": "    folder.mkdir",
+      "find": "    if path.exists():\n        return False\n    pick_guard.refuse_leak(record)\n    folder.mkdir",
+      "replace": "    pick_guard.refuse_leak(record)\n    folder.mkdir",
       "expect_caught_by": "test_a_saved_pick_is_never_rewritten"
     },
     {
