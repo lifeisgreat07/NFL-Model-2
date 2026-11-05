@@ -8,7 +8,8 @@ name: NBA nightly canary
 # names five outside reads (ESPN's scoreboard, box score, odds and injury
 # report, and Kalshi), and a title that names the source lets one recover
 # without hiding another. src/core/alerts.py opens "NBA: <source> failing in
-# the nightly canary", or comments on it if it is already open. A canary that
+# the nightly canary", or comments on it if it is already open; each title is
+# written out once below, so a green night closes it (Stage 93 item 15). A canary that
 # fails before naming any source opens "NBA: nightly canary failing".
 #
 # 06:50 UTC: after the night's last games have ended, and clear of the NFL's
@@ -66,6 +67,11 @@ jobs:
         run: |
           printf 'Recovered: the run at %s succeeded.\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > recovered.md
           python -m src.core.alerts --resolve --title "NBA: nightly canary failing" --body-file recovered.md
+          python -m src.core.alerts --resolve --title "NBA: ESPN scoreboard failing in the nightly canary" --body-file recovered.md
+          python -m src.core.alerts --resolve --title "NBA: ESPN box score failing in the nightly canary" --body-file recovered.md
+          python -m src.core.alerts --resolve --title "NBA: ESPN odds failing in the nightly canary" --body-file recovered.md
+          python -m src.core.alerts --resolve --title "NBA: ESPN injuries failing in the nightly canary" --body-file recovered.md
+          python -m src.core.alerts --resolve --title "NBA: Kalshi failing in the nightly canary" --body-file recovered.md
 
       - name: Raise an alert per failing source
         if: failure()
@@ -80,7 +86,27 @@ jobs:
             exit 0
           fi
           printf '\nRun: %s\n' "$run_url" >> nba-canary-report.md
-          while IFS= read -r source; do
-            [ -n "$source" ] || continue
-            python -m src.core.alerts --title "NBA: $source failing in the nightly canary" --body-file nba-canary-report.md
-          done < nba-canary-failed.txt
+          # Stage 93 item 15: one fixed title per source, each closed by the step
+          # above on the next green night (a templated title had no resolver, and
+          # #543 stayed open after the canary recovered). A source the list below
+          # does not name raises the night's own title, so a new check cannot
+          # fail in silence.
+          if grep -qx 'ESPN scoreboard' nba-canary-failed.txt; then
+            python -m src.core.alerts --title "NBA: ESPN scoreboard failing in the nightly canary" --body-file nba-canary-report.md
+          fi
+          if grep -qx 'ESPN box score' nba-canary-failed.txt; then
+            python -m src.core.alerts --title "NBA: ESPN box score failing in the nightly canary" --body-file nba-canary-report.md
+          fi
+          if grep -qx 'ESPN odds' nba-canary-failed.txt; then
+            python -m src.core.alerts --title "NBA: ESPN odds failing in the nightly canary" --body-file nba-canary-report.md
+          fi
+          if grep -qx 'ESPN injuries' nba-canary-failed.txt; then
+            python -m src.core.alerts --title "NBA: ESPN injuries failing in the nightly canary" --body-file nba-canary-report.md
+          fi
+          if grep -qx 'Kalshi' nba-canary-failed.txt; then
+            python -m src.core.alerts --title "NBA: Kalshi failing in the nightly canary" --body-file nba-canary-report.md
+          fi
+          unknown=$(grep -vxF -e 'ESPN scoreboard' -e 'ESPN box score' -e 'ESPN odds' -e 'ESPN injuries' -e 'Kalshi' nba-canary-failed.txt | grep -v '^$' || true)
+          if [ -n "$unknown" ]; then
+            python -m src.core.alerts --title "NBA: nightly canary failing" --body-file nba-canary-report.md
+          fi

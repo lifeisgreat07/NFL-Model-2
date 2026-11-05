@@ -50,3 +50,28 @@ jobs:
           gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json files --jq '.files[].path' > "$RUNNER_TEMP/files.txt"
           python3 -m src.sports.nfl.override_watch --event "$EVENT" --pr "$PR" --url "$URL" \
             --merged "$MERGED" --files-file "$RUNNER_TEMP/files.txt"
+
+      # Stage 93 item 14 (audit 7 R13): the watch is what tells Mark an override
+      # is waiting before the lock; if it fails, that issue is never opened and
+      # nothing says so.
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          printf 'The QB override watch failed on %s, so its issue may not have been opened or closed. Check the pull request before the lock.\nRun: %s\n' "$URL" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > failure.md
+          python3 -m src.core.alerts --title "NFL: QB override watch failed" --body-file failure.md
+
+      # Stage 83 item 1: a watch that succeeds closes the failure issue, if one
+      # is open. continue-on-error: closing an issue must never fail a run.
+      - name: Close the alert if this run recovered
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'Recovered: the watch at %s succeeded.\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > recovered.md
+          python3 -m src.core.alerts --resolve --title "NFL: QB override watch failed" --body-file recovered.md

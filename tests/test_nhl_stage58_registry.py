@@ -34,4 +34,5 @@ def test_model_b_makes_the_pick_as_registered():
     # And a disclosed deviation: picks fitted through their own slate day (Stage 85 item 4).
     # And Stage 85 item 5: this season's games carry their recorded price into Model B's fit.
     # And Stage 85 item 1: the drift check looks at registered checkpoints.
-    assert [a['entry'] for a in REG['amendments']] == ['forward_test.decision', 'deviation', 'models', 'drift']
+    assert [a['entry'] for a in REG['amendments']] == ['forward_test.decision', 'deviation', 'models', 'drift',
+                                                       'disclosures']

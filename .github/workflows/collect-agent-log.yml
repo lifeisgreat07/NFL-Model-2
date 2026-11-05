@@ -102,6 +102,7 @@ jobs:
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
               pull --rebase --autostash origin main
+          python -m src.core.pull_check
 
       - name: Commit the log if it changed
         uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7.2.1

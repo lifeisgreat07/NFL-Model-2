@@ -79,6 +79,7 @@ jobs:
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
               pull --rebase --autostash origin main
+          python -m src.core.pull_check
 
       - name: Commit the NHL's picks, grades and history
         run: |
@@ -128,6 +129,9 @@ jobs:
 
       - name: Raise an alert on a drift flag
         if: success()
+        # Stage 93 item 12: an alert GitHub refuses after three tries fails
+        # this step (summary and annotation) but must not skip the alerts after it.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -144,6 +148,9 @@ jobs:
       # DEGRADED:, and any of them raises one issue, commented on by later runs.
       - name: Raise an alert on an input the run could not read
         if: success()
+        # Stage 93 item 12: an alert GitHub refuses after three tries fails
+        # this step (summary and annotation) but must not skip the alerts after it.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -158,6 +165,9 @@ jobs:
 
       - name: Raise an alert on a missed pick
         if: success()
+        # Stage 93 item 12: an alert GitHub refuses after three tries fails
+        # this step (summary and annotation) but must not skip the alerts after it.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -188,8 +198,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          printf 'The NHL daily run failed. See %s\n' \
-            "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > failure.md
+          # Stage 93 item 16 (audit 7, R18): the alert names the artifact that holds the
+          # picks the run made, and when a person may commit them.
+          { printf 'The NHL daily run failed. See %s\n\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            printf 'Any picks it saved are in the artifact %s on that run (predictions/nhl, results/nhl and data/nhl). ' "nhl-daily-$GITHUB_RUN_ID"
+            printf 'Commit them only before the first of their games starts, never after: a pick on main after its start is not a prediction. '
+            printf 'Past that, leave them out; the next run marks the games missed.\n'
+          } > failure.md
           python -m src.core.alerts --title "NHL: daily run failed" --body-file failure.md --log nhl-daily.log
 
   # Stage 44 item 2, Line Judge: after a run that went green, does main hold

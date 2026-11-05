@@ -191,11 +191,28 @@ jobs:
         with:
           path: _site
 
+      # Stage 93 item 14 (audit 7 R13): a deploy that fails is unattended like
+      # any scheduled job -- it runs on another workflow's data commit -- and
+      # the live site silently stays on its last version. The deploy job
+      # closes this issue when a later deploy succeeds.
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'The site build failed, so nothing was published; the live site is the last one that was.\nRun: %s\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > failure.md
+          python -m src.core.alerts --title "Pages: the site was not published" --body-file failure.md
+
   deploy:
     needs: build
     permissions:
       pages: write
       id-token: write
+      # For the alert steps below (Stage 93 item 14): the checkout they need
+      # and the issue they open or close.
+      contents: read
+      issues: write
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment:
@@ -205,3 +222,28 @@ jobs:
       - name: Deploy to Pages
         id: deployment
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+
+      - name: Check out repo, for the alert steps
+        if: ${{ !cancelled() }}
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Raise an alert
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'The site built but did not deploy; the live site is the last one published.\nRun: %s\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > failure.md
+          python3 -m src.core.alerts --title "Pages: the site was not published" --body-file failure.md
+
+      # Stage 83 item 1: a deploy that succeeds closes the failure issue, if
+      # one is open. continue-on-error: closing an issue must never fail a run.
+      - name: Close the alert if this run recovered
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          printf 'Recovered: the deploy at %s succeeded.\n' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > recovered.md
+          python3 -m src.core.alerts --resolve --title "Pages: the site was not published" --body-file recovered.md
