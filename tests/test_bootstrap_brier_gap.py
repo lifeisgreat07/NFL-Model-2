@@ -70,6 +70,7 @@ def test_a_sharper_forecaster_scores_a_lower_brier():
 # ============================================================
 # The bootstrap itself
 # ============================================================
+@pytest.mark.slow
 def test_identical_forecasters_produce_an_interval_pinned_to_zero():
     """The strongest check on the pairing. If the same index vector is applied
     to both models, two identical forecasters differ by exactly zero on every
@@ -83,6 +84,7 @@ def test_identical_forecasters_produce_an_interval_pinned_to_zero():
             f"is not being applied to both models together")
 
 
+@pytest.mark.slow
 def test_a_real_difference_is_detected():
     y, sharp, dull = make_pair()
     diffs = paired_bootstrap(y, sharp, dull, n_resamples=600, seed=2)
@@ -90,6 +92,7 @@ def test_a_real_difference_is_detected():
     assert hi < 0, f"sharper model's Brier advantage was not detected: CI [{lo}, {hi}]"
 
 
+@pytest.mark.slow
 def test_two_equally_good_forecasters_come_back_inconclusive():
     """The other direction. A bootstrap that only ever finds differences is
     worse than useless -- most of this project's experiments are nulls, and
@@ -100,6 +103,7 @@ def test_two_equally_good_forecasters_come_back_inconclusive():
     assert lo < 0 < hi, f"two equally good models produced a 'real' gap: [{lo}, {hi}]"
 
 
+@pytest.mark.slow
 def test_pairing_is_tighter_than_treating_the_models_as_independent():
     """Why paired at all. Drawing separate index vectors for the two models
     destroys the correlation between them and widens the interval -- turning
@@ -122,6 +126,7 @@ def test_pairing_is_tighter_than_treating_the_models_as_independent():
         f"({width(unpaired):.6f}) -- the pairing is not doing anything")
 
 
+@pytest.mark.slow
 def test_the_bootstrap_is_reproducible_from_its_seed():
     """A published interval that can't be regenerated is not evidence."""
     y, sharp, dull = make_pair(400)
@@ -135,6 +140,7 @@ def test_the_bootstrap_is_reproducible_from_its_seed():
 # ============================================================
 # summarise: signs, verdicts, and the analytic cross-check
 # ============================================================
+@pytest.mark.slow
 def test_verdict_and_direction_respect_each_metric_s_own_polarity():
     """Reliability is better when lower, resolution when higher. Reporting a
     raw difference without tracking that is how a result gets described
@@ -152,6 +158,7 @@ def test_verdict_and_direction_respect_each_metric_s_own_polarity():
         assert res[key]['excludes_zero'] == (res[key]['ci_lo'] > 0 or res[key]['ci_hi'] < 0)
 
 
+@pytest.mark.slow
 def test_bootstrap_and_analytic_brier_intervals_agree():
     """Brier is a mean of per-game squared errors, so its paired difference has
     a closed-form standard error. Two independent routes to the same interval
@@ -167,6 +174,7 @@ def test_bootstrap_and_analytic_brier_intervals_agree():
     assert res['ci_lo'] < res['difference'] < res['ci_hi']
 
 
+@pytest.mark.slow
 def test_point_estimate_is_the_observed_difference_not_the_bootstrap_mean():
     """The resamples describe the spread around what was observed; they do not
     replace it. Substituting the bootstrap mean would introduce a small bias
@@ -178,6 +186,7 @@ def test_point_estimate_is_the_observed_difference_not_the_bootstrap_mean():
     assert res['brier']['difference'] == pytest.approx(pa['brier'] - pb['brier'], abs=1e-15)
 
 
+@pytest.mark.slow
 def test_degenerate_resamples_are_counted_not_silently_dropped():
     """A resample that draws a single outcome class can't be scored. It is
     excluded from the percentile, but the count is reported -- a run where

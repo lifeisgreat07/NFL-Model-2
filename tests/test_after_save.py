@@ -16,6 +16,7 @@ from datetime import UTC, datetime
 import pytest
 
 from src.core import after_save
+from tests.shared_tables import share_nba_tables
 from tests.test_daily_end_to_end import committed_schedule, temp_paths
 from tests.test_nhl_sources_down import drive
 
@@ -50,6 +51,7 @@ def test_the_nhl_run_keeps_its_picks_when_every_later_step_fails(tmp_path, monke
 @pytest.mark.slow
 def test_the_nba_run_keeps_its_picks_when_every_later_step_fails(tmp_path, monkeypatch, capsys):
     from src.sports.nba import daily, history
+    share_nba_tables(monkeypatch)
     now = datetime(2026, 10, 20, 16, 5, tzinfo=UTC)
     sched = committed_schedule('nba', 2026, now)
     monkeypatch.setattr(daily, 'PATHS', temp_paths(tmp_path, 'nba'))

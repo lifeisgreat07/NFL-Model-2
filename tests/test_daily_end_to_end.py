@@ -29,7 +29,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from tests.shared_tables import share_nhl_features
+from tests.shared_tables import share_nba_tables, share_nhl_features
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -112,6 +112,7 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
 def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     from src.sports.nba import daily, history
 
+    share_nba_tables(monkeypatch)
     season = 2026
     now = datetime(2026, 10, 20, 16, 5, tzinfo=UTC)
     sched = committed_schedule('nba', season, now)
