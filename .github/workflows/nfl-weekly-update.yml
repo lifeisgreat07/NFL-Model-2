@@ -282,6 +282,8 @@ jobs:
       - name: Catch up with main
         if: ${{ !cancelled() }}
         shell: bash
+        # A fetch and a rebase: minutes at most, so a hung remote fails here, not at the job's limit.
+        timeout-minutes: 5
         run: |
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \

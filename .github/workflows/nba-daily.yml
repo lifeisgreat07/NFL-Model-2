@@ -79,6 +79,8 @@ jobs:
         run: python -m src.sports.nba.daily 2>&1 | tee nba-daily.log
 
       - name: Pull before committing
+        # A fetch and a rebase: minutes at most, so a hung remote fails here, not at the job's limit.
+        timeout-minutes: 5
         run: |
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
