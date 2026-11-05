@@ -269,7 +269,14 @@ async def check_one(browser, url, width, network, axe_src, report, timings=None)
         stops_total += stops
         report.extend(f"{where}: focus: {p}" for p in problems)
         if axe_src and width in AXE_WIDTHS and not network:
-            await page.add_script_tag(content=axe_src)
+            # Through DevTools, which the page's CSP does not govern: the pages allow only their own
+            # inline scripts by hash (Stage 88 item 5), so an injected <script> is refused, and
+            # turning CSP off for the context would hide the violations the csp check reports.
+            cdp = await ctx.new_cdp_session(page)
+            loaded = await cdp.send('Runtime.evaluate', {'expression': axe_src})
+            await cdp.detach()
+            if 'exceptionDetails' in loaded:
+                raise RuntimeError(f"axe-core did not load: {loaded['exceptionDetails'].get('text')}")
             res = await page.evaluate("""async () => {
               const r = await axe.run(document, {runOnly: {type: 'tag', values: ['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']}});
               return r.violations.map(v => ({id: v.id, impact: v.impact, n: v.nodes.length,

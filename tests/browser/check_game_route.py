@@ -26,6 +26,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tests/browser, when imported from elsewhere
+from page_edit import rehash
+
 ROOT = Path(__file__).resolve().parents[2]
 SIZES = ((390, 844), (1440, 900))
 THEMES = ('dark', 'light')
@@ -108,8 +111,8 @@ def self_test(tmp):
     if nfl_html.count(NFL_OPEN) != 1 or nhl_html.count(NHL_OPEN) != 1:
         return [f'self-test: the pages hold {nfl_html.count(NFL_OPEN)} and {nhl_html.count(NHL_OPEN)} calls, expected 1 each']
     nfl_bad, nhl_bad = tmp / 'game-nfl-old.html', tmp / 'game-nhl-old.html'
-    nfl_bad.write_text(nfl_html.replace(NFL_OPEN, ''), encoding='utf-8')
-    nhl_bad.write_text(nhl_html.replace(NHL_OPEN, ''), encoding='utf-8')
+    nfl_bad.write_text(rehash(nfl_html.replace(NFL_OPEN, '')), encoding='utf-8')
+    nhl_bad.write_text(rehash(nhl_html.replace(NHL_OPEN, '')), encoding='utf-8')
     problems = [f'self-test: the real pages should be clean: {r}' for r in asyncio.run(check_pages(nfl, nhl))]
     bad = asyncio.run(check_pages(nfl_bad, nhl_bad))
     if not any('NFL #game/' in r for r in bad):
