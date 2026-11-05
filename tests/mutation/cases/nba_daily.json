@@ -26,8 +26,8 @@
     {
       "id": "nba-daily-grades-cancelled",
       "why": "a cancelled game is graded as a loss for the home side",
-      "find": "        if status == GameStatus.CANCELLED.value:\n            result = 'cancelled'\n        elif status == GameStatus.FINAL.value:",
-      "replace": "        if status in (GameStatus.CANCELLED.value, GameStatus.FINAL.value):",
+      "find": "        if status == GameStatus.CANCELLED.value:\n            result = 'cancelled'\n        elif status == GameStatus.FINAL.value and",
+      "replace": "        if status in (GameStatus.CANCELLED.value, GameStatus.FINAL.value) and",
       "expect_caught_by": "test_only_final_games_are_graded_and_a_cancelled_one_is_never_counted"
     },
     {
