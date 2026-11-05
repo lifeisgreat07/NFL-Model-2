@@ -1,0 +1,43 @@
+{
+ "target": "src/sports/nfl/ratings_snapshot.py",
+ "tests": "tests/test_ratings_snapshot.py",
+ "cases": [
+  {
+   "id": "snapshot-check-exact-equality",
+   "why": "the check refuses a snapshot one rounding step off its history, the 2026-10-29 case that hid the rank change for days",
+   "find": "        elif abs(point[0]['net'] - r['net']) > TOL:\n",
+   "replace": "        elif point[0]['net'] != r['net']:\n",
+   "expect_caught_by": "test_one_rounding_step_is_still_the_same_week"
+  },
+  {
+   "id": "snapshot-check-skips-a-missing-team",
+   "why": "a team the history's latest week does not have passes, so a partial week reads as the snapshot",
+   "find": "            out.append(f\"{r['team']}: not in week {latest} of the history\")\n",
+   "replace": "            pass\n",
+   "expect_caught_by": "test_a_snapshot_of_an_earlier_week_or_a_missing_team_is_named"
+  },
+  {
+   "id": "snapshot-check-says-nothing",
+   "why": "a mismatch is found and no DEGRADED line is written, so the workflow has nothing to raise",
+   "find": "    if not found:\n        return []\n",
+   "replace": "    return []\n",
+   "expect_caught_by": "test_the_check_reads_the_season_files_and_says_degraded"
+  },
+  {
+   "id": "weekly-run-skips-the-snapshot-check",
+   "target": "src/sports/nfl/weekly_update.py",
+   "why": "the run writes the snapshot and history and never checks them, so the invariant is back to a test over committed files",
+   "find": "    for line in ratings_snapshot.check(DATA_DIR, season) or [ratings_snapshot.OK]:\n",
+   "replace": "    for line in [ratings_snapshot.OK]:\n",
+   "expect_caught_by": "test_a_run_whose_snapshot_is_not_its_history_prints_degraded_not_ok"
+  },
+  {
+   "id": "weekly-workflow-never-raises-the-snapshot-alert",
+   "target": ".github/workflows/nfl-weekly-update.yml",
+   "why": "the workflow looks for a line the run never prints, so a broken snapshot raises nothing",
+   "find": "          if [ -f weekly-update.log ] && grep -q '^DEGRADED: ratings snapshot:' weekly-update.log; then\n",
+   "replace": "          if [ -f weekly-update.log ] && grep -q '^DEGRADED: snapshot:' weekly-update.log; then\n",
+   "expect_caught_by": "test_the_weekly_workflow_alerts_on_the_degraded_line_and_closes_on_the_ok_line"
+  }
+ ]
+}

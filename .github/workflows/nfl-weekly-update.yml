@@ -153,6 +153,31 @@ jobs:
         shell: bash
         run: python -m src.sports.nfl.weekly_update --season ${{ steps.season.outputs.season }} 2>&1 | tee weekly-update.log
 
+      # Stage 86 item 5 (the 2026-11-02 review). The run checks, after writing
+      # them, that data/nfl/current_ratings.json is the latest week of the
+      # season's team history (src/sports/nfl/ratings_snapshot.py); a mismatch
+      # prints a DEGRADED line and raises one issue here. continue-on-error:
+      # reporting must never cost a pick.
+      - name: Is the ratings snapshot its history's latest week?
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if [ -f weekly-update.log ] && grep -q '^DEGRADED: ratings snapshot:' weekly-update.log; then
+            { grep '^DEGRADED: ratings snapshot:' weekly-update.log
+              printf '\nPower Ratings shows no rank change until the two agree.\n\nRun: %s\n' \
+                "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            } > snapshot.md
+            python -m src.core.alerts --title "NFL: the ratings snapshot is not its history's latest week" --body-file snapshot.md
+          elif [ -f weekly-update.log ] && grep -q '^RATINGS SNAPSHOT OK:' weekly-update.log; then
+            printf 'Recovered: the run at %s wrote a ratings snapshot that is its history'"'"'s latest week.\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > snapshot-ok.md
+            python -m src.core.alerts --resolve --title "NFL: the ratings snapshot is not its history's latest week" --body-file snapshot-ok.md
+          fi
+
       # Stage 81 item 2 (the 2026-11-02 review). The lock reads only override
       # files already on main. If the week just locked still has an open override
       # pull request, its overrides were not used: say so now, as an issue and in
