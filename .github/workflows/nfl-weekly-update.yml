@@ -207,6 +207,7 @@ jobs:
       # an unreadable roster leaves the overrides unchecked, and says so. Either
       # raises one issue. continue-on-error: reporting must never cost a pick.
       - name: Did the lock refuse a QB override?
+        timeout-minutes: 25
         if: ${{ !cancelled() }}
         continue-on-error: true
         shell: bash
