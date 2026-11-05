@@ -47,7 +47,8 @@
 # cost, and the benefit side has never been stated: nothing in this project
 # currently needs pandas 2.x. Revisit when something does, or when 1.5.3 going
 # unmaintained becomes the reason -- and regenerate every published number as
-# part of it, rather than discovering the shift afterwards.
+# part of it, rather than discovering the shift afterwards. The plan for that
+# move, with the decisions it needs first, is docs/pandas-2-plan.md.
 
 # Stage 88 item 3: CI installs requirements.lock (this file, resolved for every
 # platform with every transitive package pinned and hashed) with

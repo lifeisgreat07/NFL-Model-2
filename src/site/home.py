@@ -41,6 +41,7 @@ import pandas as pd
 
 from src.core.page_comments import strip_page_comments
 from src.core.page_fill import font_faces_css, safe_json
+from src.site import track_record
 
 ROOT = Path(__file__).resolve().parents[2]
 TEMPLATE = Path(__file__).resolve().parent / 'home'
@@ -245,7 +246,7 @@ def facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
     # sport pages print theirs (Stage 77 item 30, the 2026-10-13 audit's H2).
     built = (now or datetime.now(UTC)).strftime('%Y-%m-%dT%H:%M:%SZ')
     return {'nfl': nfl_facts(root), 'nhl': nhl_facts(root, now), 'nba': nba_facts(root, now), 'built_utc': built,
-            'slate': slate(root, now)}
+            'slate': slate(root, now), 'track': track_record.track_record(root)}
 
 
 
