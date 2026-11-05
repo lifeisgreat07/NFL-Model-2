@@ -43,7 +43,14 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test, pick_guard, priced, schedule_guard, season_prices
+from src.core import (
+    after_save,
+    forward_test,
+    pick_guard,
+    priced,
+    schedule_guard,
+    season_prices,
+)
 from src.core.atomic_write import write_json_atomic
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
@@ -232,7 +239,11 @@ def missed_line(started: tuple[str, ...] | list[str], folder: Path) -> str | Non
 
 
 def grade(folder: Path, sched: pd.DataFrame) -> list[dict[str, Any]]:
-    """One row per saved pick: correct, wrong, cancelled, or pending."""
+    """One row per saved pick: correct, wrong, cancelled, or pending.
+
+    Pending also covers a final game whose result is not in yet (a null
+    score, which used to raise here after the picks were saved, audit 7)
+    and a pick whose game has left the schedule (Stage 96 item 44)."""
     by_id = sched.set_index('game_id')
     rows = []
     for path in sorted(folder.glob('*.json')) if folder.exists() else []:
@@ -241,8 +252,7 @@ def grade(folder: Path, sched: pd.DataFrame) -> list[dict[str, Any]]:
         status = None if g is None else g['status']
         if status == GameStatus.CANCELLED.value:
             result = 'cancelled'
-        elif status == GameStatus.FINAL.value:
-            assert g is not None
+        elif status == GameStatus.FINAL.value and g is not None and not pd.isna(g['home_win']):
             winner = g['home'] if int(g['home_win']) == 1 else g['away']
             result = 'correct' if pick['pick'] == winner else 'wrong'
         else:
@@ -372,34 +382,56 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                                         (p['game_id'] for p in prices if p.get('home_prob') is not None))
         if unpriced:
             print(unpriced)
-        market.record(prices, PATHS.data / 'lines' / f'{season}.json')
-    graded = grade(folder, sched)
+        # Stage 91 item 3: from here on the picks are saved, and no step may lose them.
+        after_save.guarded('market record', market.record, prices, PATHS.data / 'lines' / f'{season}.json')
     PATHS.results.mkdir(parents=True, exist_ok=True)
-    page_inputs.write(PATHS.results / f'schedule_{season}.json', page_inputs.schedule_json(sched, str(today.date())))
-    (PATHS.results / f'graded_{season}.json').write_text(json.dumps(graded, indent=1) + '\n', encoding='utf-8')
-    spec = drift.baseline()
-    # Stage 85 item 2: each pick is held to the backtest of the model it ran.
-    losses, bases = drift.per_game(drift_picks(folder, sched), spec)
-    flagged = drift.flags(losses, spec, bases)
-    without = sum(1 for b in bases if b == spec['baseline_no_availability']['value'])
-    (PATHS.results / f'drift_{season}.json').write_text(json.dumps(
-        {'games': len(losses), 'mean_log_loss': (sum(losses) / len(losses)) if losses else None,
-         'baseline': drift.look_baseline(spec, bases, len(bases)) if bases else spec['baseline']['value'],
-         'without_availability': without, 'flagged': flagged,
-         'looks': drift.looks(losses, spec, bases), 'next_look': drift.next_look(len(losses), spec)},
-        indent=1) + '\n', encoding='utf-8')
-    if flagged:
-        print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
-    # Stage 84 item 1: the registered forward test, on every saved pick whose game is final.
-    fwd = forward_test.write(PATHS.results / f'forward_{season}.json', 'nba', season,
-                             'experiments/nba/stage65/registry.json', folder, sched,
-                             games[['day', 'home_score', 'away_score']])
-    print(f"forward test: {fwd['graded_picks']} graded picks through {fwd['through']}")
-    # Stage 84 item 4: Stage 61's M2, the injury report against who played.
-    m2_out = m2.write(PATHS.results / f'm2_{season}.json', picks=forward_test.read_picks(folder), games=games,
-                      minutes=minutes, table=table, box=avail_table, h=h, lam=lam, columns=A_COLUMNS,
-                      fit=fit_models, report_availability=availability_for)
-    print(f"M2: {m2_out['graded']} graded games")
+    after_save.guarded('schedule file', lambda: page_inputs.write(PATHS.results / f'schedule_{season}.json',
+                                                                  page_inputs.schedule_json(sched, str(today.date()))))
+
+    def write_grades() -> list[dict[str, Any]]:
+        graded = grade(folder, sched)
+        (PATHS.results / f'graded_{season}.json').write_text(json.dumps(graded, indent=1) + '\n', encoding='utf-8')
+        return graded
+
+    def write_drift() -> None:
+        spec = drift.baseline()
+        # Stage 85 item 2: each pick is held to the backtest of the model it ran.
+        losses, bases = drift.per_game(drift_picks(folder, sched), spec)
+        flagged = drift.flags(losses, spec, bases)
+        without = sum(1 for b in bases if b == spec['baseline_no_availability']['value'])
+        (PATHS.results / f'drift_{season}.json').write_text(json.dumps(
+            {'games': len(losses), 'mean_log_loss': (sum(losses) / len(losses)) if losses else None,
+             'baseline': drift.look_baseline(spec, bases, len(bases)) if bases else spec['baseline']['value'],
+             'without_availability': without, 'flagged': flagged,
+             'looks': drift.looks(losses, spec, bases), 'next_look': drift.next_look(len(losses), spec)},
+            indent=1) + '\n', encoding='utf-8')
+        if flagged:
+            print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
+
+    def write_forward() -> None:
+        # Stage 84 item 1: the registered forward test, on every saved pick whose game is final.
+        fwd = forward_test.write(PATHS.results / f'forward_{season}.json', 'nba', season,
+                                 'experiments/nba/stage65/registry.json', folder, sched,
+                                 games[['day', 'home_score', 'away_score']])
+        print(f"forward test: {fwd['graded_picks']} graded picks through {fwd['through']}")
+        # Stage 95 item 36: the deciding file, frozen once when the regular season is over.
+        frozen = forward_test.freeze(PATHS.results / f'forward_{season}.json', sched, str(now.date()))
+        if frozen is not None:
+            print(f'forward test: the regular season is over; the deciding file is {frozen.name}')
+
+    def write_m2() -> None:
+        # Stage 84 item 4: Stage 61's M2, the injury report against who played.
+        m2_out = m2.write(PATHS.results / f'm2_{season}.json', picks=forward_test.read_picks(folder), games=games,
+                          minutes=minutes, table=table, box=avail_table, h=h, lam=lam, columns=A_COLUMNS,
+                          fit=fit_models, report_availability=availability_for)
+        print(f"M2: {m2_out['graded']} graded games")
+
+    # Stage 91 item 3: each step below runs after the picks are saved; a failure prints
+    # DEGRADED (which raises an issue) and the run goes on to commit the picks.
+    graded = after_save.guarded('grading', write_grades) or []
+    after_save.guarded('drift check', write_drift)
+    after_save.guarded('forward test', write_forward)
+    after_save.guarded('M2', write_m2)
     lost = missed_line(sorted(set(decision.started) | set(recently_started(sched, now))), folder)
     if lost:
         print(lost)

@@ -871,7 +871,7 @@ function forwardHtml(f, sport){
     return `<tr><th scope="row">${n}</th><td class="num">${c.games}</td><td class="num">${c.days}</td>`
       + (c.note ? `<td colspan="2">${c.note}</td>` : `<td class="num">${sgn(c.diff)}</td><td class="num">[${sgn(c.low)}, ${sgn(c.high)}]</td>`) + '</tr>'; }).join('');
   const level = (f.interval_rule.level * 100).toFixed(2);
-  return `<p class="${sport}-lede">Every saved pick whose game is final, ${f.graded_picks} of them through ${f.through}, scored as the registration says (<code>${f.registered}</code>). Model B and the market are scored only on the picks that had a price.</p>
+  return `<p class="${sport}-lede">Every saved pick whose game is final, ${f.graded_picks} of them through ${f.through}, scored as the registration says (<code>${f.registered}</code>). Model B and the market are scored only on the picks that had a price.${f.market_price ? ' ' + f.market_price.said : ''}</p>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's scores</caption>
     <thead><tr><th scope="col">Forecaster</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's comparisons</caption>
@@ -892,7 +892,7 @@ function calibrationTable(f, sport, level){
   return `
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">Calibration of Models A and B</caption>
     <thead><tr><th scope="col">Calibration</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Intercept</th><th scope="col" class="num">${level}% interval</th><th scope="col" class="num">Slope</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p class="${sport}-lede">Calibration asks whether the probabilities mean what they say. A perfectly calibrated model has an intercept of 0 and a slope of 1. An intercept above 0 means home teams won more often than the model said; a slope above 1 means its probabilities sat too close to 50%, and below 1 too far from it. Intervals resample whole game days, as above, and are reported, not judged.</p>`;
+    <p class="${sport}-lede">Calibration asks whether the probabilities mean what they say. A perfectly calibrated model has an intercept of 0 and a slope of 1. An intercept above 0 means home teams won more often than the model said; a slope above 1 means its probabilities sat too close to 50%, and below 1 too far from it. They are two fits, not one: the intercept is fitted with the slope held at 1 (calibration in the large), and the slope is fitted with an intercept of its own. Intervals resample whole game days, as above, and are reported, not judged.</p>`;
 }
 /* Stage 84 item 4 (the 2026-11-02 review): Stage 56's M2, the projected
    starter against the actual one, from results/nhl/m2_<season>.json. The
