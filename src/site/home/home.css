@@ -76,8 +76,24 @@ body{ flex-direction:column; }
 .home-steps{ list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--s6); }
 .home-steps li{ display:flex; gap:var(--s3); min-width:0; font-size:var(--fs-14); line-height:1.45; color:var(--text-2); }
 .home-steps b{ display:block; font-size:var(--fs-16); color:var(--text); margin-bottom:var(--s1); }
+.home-step-link{ display:block; margin-top:var(--s1); font-weight:600; color:var(--accent); }
 .home-step-n{ flex:none; width:28px; height:28px; border-radius:50%; border:1px solid var(--border-strong);
   display:inline-flex; align-items:center; justify-content:center; font-size:var(--fs-13); font-weight:700; color:var(--accent); }
+/* Stage 90 item 1: the track record, one small table a sport. */
+.home-track{ display:grid; gap:var(--s3); }
+.home-track h2{ margin:0; font-size:var(--fs-20); font-weight:800; color:var(--text); }
+.home-track-lede, .home-track-note{ margin:0; font-size:var(--fs-14); line-height:1.45; color:var(--text-2); }
+.home-track-tables{ display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:var(--s6); }
+.home-track-sport{ min-width:0; display:grid; gap:var(--s2); align-content:start; }
+.home-track-sport h3{ margin:0; font-size:var(--fs-16); color:var(--text); }
+.home-track table{ width:100%; border-collapse:collapse; font-size:var(--fs-13); font-variant-numeric:tabular-nums; }
+.home-track th, .home-track td{ padding:var(--s1) var(--s2); text-align:right; border-bottom:1px solid var(--border); }
+.home-track th:first-child, .home-track td:first-child{ text-align:left; padding-left:0; }
+.home-track thead th{ font-weight:600; color:var(--text-2); }
+/* A sport's table needs about 270px; three side by side fit from about 1000px. Below that they stack
+   (at 768px three columns were 227px each and the page scrolled sideways). */
+@media (max-width: 1000px){ .home-track-tables{ grid-template-columns:minmax(0, 1fr); } }
+.home-track .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 /* Option C's questions for a newcomer, closed until asked. */
 .home-faq{ gap:0; }
 .home-faq h2{ margin-bottom:var(--s1); }

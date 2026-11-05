@@ -56,7 +56,11 @@ permissions:
 jobs:
   browser:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    # Room for a slow apt mirror. `playwright install --with-deps` fetches Chromium's system packages
+    # with apt; on 2026-11-05 the runner's Ubuntu mirror served them at 12-41 kB/s (8 min 33 s and
+    # 15 min 49 s), the install step took 558 s, 588 s and 980 s, and at 20 minutes the job was
+    # cancelled on its last checks three times (#647 twice, #648). The checks take about 11 minutes.
+    timeout-minutes: 35
     steps:
       - name: Check out repo
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
