@@ -85,8 +85,66 @@ def test_only_open_issues_are_searched():
 
 def test_a_failing_gh_call_raises_rather_than_passing_quietly():
     gh = FakeGh(fail_on='issue create')
-    with pytest.raises(RuntimeError, match='HTTP 403'):
+    with pytest.raises(RuntimeError, match='failed 3 times: HTTP 403'):
         alerts.open_or_comment('t', 'b', run=gh)
+
+
+# --- Stage 93 item 12: an alert is retried, then kept where the run shows it --
+
+@pytest.fixture(autouse=True)
+def no_waiting(monkeypatch):
+    """Every test here: the backoff is recorded, not slept."""
+    waits = []
+    monkeypatch.setattr(alerts, 'SLEEP', waits.append)
+    return waits
+
+
+class FlakyGh(FakeGh):
+    """Fails one verb its first `times` calls, then answers like FakeGh."""
+
+    def __init__(self, verb, times, **kw):
+        super().__init__(**kw)
+        self.verb, self.left = verb, times
+
+    def __call__(self, cmd, input=None, capture_output=True, text=True):
+        if ' '.join(cmd[1:3]) == self.verb and self.left:
+            self.left -= 1
+            self.calls.append((cmd[1:], input))
+            return SimpleNamespace(returncode=1, stdout='', stderr='HTTP 502')
+        return super().__call__(cmd, input, capture_output, text)
+
+
+def test_a_gh_call_that_fails_twice_then_answers_opens_the_issue(no_waiting):
+    gh = FlakyGh('issue create', 2)
+    assert alerts.open_or_comment('NHL: daily run failed', 'b', run=gh) == ('opened', 'https://github.com/o/r/issues/9')
+    assert gh.verbs() == ['issue list', 'issue create', 'issue create', 'issue create']
+    assert no_waiting == list(alerts.BACKOFF)
+
+
+def test_three_failures_keep_the_alert_in_the_summary_and_fail_the_step(tmp_path, monkeypatch, capsys, no_waiting):
+    gh = FlakyGh('issue create', 3)
+    real = alerts.open_or_comment
+    monkeypatch.setattr(alerts, 'open_or_comment', lambda *a, **k: real(*a, run=gh, **k))
+    summary = tmp_path / 'summary.md'
+    monkeypatch.setenv('GITHUB_STEP_SUMMARY', str(summary))
+    body = tmp_path / 'body.md'
+    body.write_text('The NHL daily run failed. See run 5.', encoding='utf-8')
+    assert alerts.main(['--title', 'NHL: daily run failed', '--body-file', str(body)]) == 1
+    kept = summary.read_text(encoding='utf-8')
+    assert kept.startswith('## Alert not raised: NHL: daily run failed')
+    assert 'failed 3 times: HTTP 502' in kept and 'The NHL daily run failed. See run 5.' in kept
+    assert '::error title=Alert not raised::NHL: daily run failed' in capsys.readouterr().out
+    assert gh.verbs().count('issue create') == 3 and no_waiting == list(alerts.BACKOFF)
+
+
+def test_the_daily_runs_success_path_alerts_cannot_skip_each_other():
+    """A refused alert fails its step; the alerts after it must still run."""
+    for wf in ('nhl-daily.yml', 'nba-daily.yml'):
+        text = (WORKFLOWS / wf).read_text(encoding='utf-8')
+        steps = [s for s in text.split('\n      - ')
+                 if 'if: success()' in s and 'src.core.alerts --title' in s]
+        assert len(steps) == 3, wf
+        assert all('continue-on-error: true' in s for s in steps), wf
 
 
 def test_an_empty_body_is_refused(tmp_path, capsys):
@@ -206,12 +264,30 @@ def test_resolve_closes_the_open_issue_and_creates_nothing(tmp_path, monkeypatch
 
 
 def failure_titles(text):
-    """The fixed titles every failure alert in a workflow raises."""
+    """Every title a failure alert in a workflow raises. Stage 93 item 15 took
+    out the exemption for templated titles ("NBA: $source failing ..."): such a
+    title has no fixed resolver, and #543 stayed open after its canary recovered."""
     titles = []
     for step in text.split('\n      - '):
         if 'if: failure()' in step and 'src.core.alerts' in step:
-            titles += [t for t in re.findall(r'--title "([^"]+)"', step) if '$' not in t]
+            titles += re.findall(r'--title "([^"]+)"', step)
     return titles
+
+
+def test_no_failure_alert_has_a_templated_title():
+    templated = [(p.name, t) for p in sorted(WORKFLOWS.glob('*.yml'))
+                 for t in failure_titles(p.read_text(encoding='utf-8')) if '$' in t]
+    assert not templated, f'a failure title nothing fixed can close: {templated}'
+
+
+def test_the_nba_canary_raises_and_closes_one_fixed_title_per_source():
+    from src.sports.nba import canary
+    text = (WORKFLOWS / 'nba-canary.yml').read_text(encoding='utf-8')
+    per_source = {f'NBA: {name} failing in the nightly canary' for name, _ in canary.CHECKS}
+    raised = set(failure_titles(text)) - {'NBA: nightly canary failing'}
+    assert raised == per_source
+    for name, _ in canary.CHECKS:
+        assert f"grep -qx '{name}' nba-canary-failed.txt" in text, name
 
 
 def test_every_failure_alert_is_closed_by_the_next_success():

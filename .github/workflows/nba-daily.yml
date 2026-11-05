@@ -128,6 +128,9 @@ jobs:
 
       - name: Raise an alert on a drift flag
         if: success()
+        # Stage 93 item 12: an alert GitHub refuses after three tries fails
+        # this step (summary and annotation) but must not skip the alerts after it.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -144,6 +147,9 @@ jobs:
       # DEGRADED:, and any of them raises one issue, commented on by later runs.
       - name: Raise an alert on an input the run could not read
         if: success()
+        # Stage 93 item 12: an alert GitHub refuses after three tries fails
+        # this step (summary and annotation) but must not skip the alerts after it.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -158,6 +164,9 @@ jobs:
 
       - name: Raise an alert on a missed pick
         if: success()
+        # Stage 93 item 12: an alert GitHub refuses after three tries fails
+        # this step (summary and annotation) but must not skip the alerts after it.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
