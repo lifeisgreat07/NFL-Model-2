@@ -229,7 +229,7 @@
             <li>On a keyboard, <kbd>[</kbd> and <kbd>]</kbd> step to the previous and next week.</li>
           </ul>
         </details>
-        <button class="btn" onclick="dismissOnboarding()">Got it</button>
+        <button class="btn" data-act="dismiss-onboarding">Got it</button>
       </div>
     </div>
     <div id="week-glance"></div>
@@ -345,8 +345,8 @@
         <h4 id="shared-picks-title">Viewing someone else's picks</h4>
         <p id="shared-picks-note" class="shared-note"></p>
         <div class="shared-actions">
-          <button class="btn" onclick="importSharedPicks()">Copy these into my log</button>
-          <button class="btn" onclick="exitSharedPicks()">Back to my picks</button>
+          <button class="btn" data-act="import-shared-picks">Copy these into my log</button>
+          <button class="btn" data-act="exit-shared-picks">Back to my picks</button>
         </div>
       </div>
     </div>
@@ -370,10 +370,10 @@
         </button>
       </div>
       <select id="picks-week-select" class="week-select visually-hidden" aria-label="Week" tabindex="-1"></select>
-      <button class="btn" onclick="copyShareLink(this)">Copy Share Link</button>
-      <button class="btn" onclick="exportMyPicks()">Export My Picks</button>
-      <button class="btn" onclick="document.getElementById('picks-import-input').click()">Import My Picks</button>
-      <input type="file" id="picks-import-input" accept=".json" style="display:none;" onchange="if(this.files[0]) importMyPicks(this.files[0])">
+      <button class="btn" data-act="copy-share-link">Copy Share Link</button>
+      <button class="btn" data-act="export-my-picks">Export My Picks</button>
+      <button class="btn" data-act="choose-picks-file">Import My Picks</button>
+      <input type="file" id="picks-import-input" accept=".json" style="display:none;">
     </div>
     <div id="picks-streak-strip"></div>
     <div class="game-grid" id="picks-grid"></div>
@@ -510,7 +510,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
 
     <div class="method-block">
       <h4>Backtest Results — Chronological, Weekly-Refitting Walk-Forward</h4>
-      <p>Trained only on strictly earlier data, refit every week within the test season (not just once per season) -- validated 2026-08 (Stage 9) to match what the live model actually does: weekly_update.py always trains on all real completed games available up to "now," every single run. Evaluated on 2022-2025 (1,087 games):</p>
+      <p>Trained only on strictly earlier data, refit every week within the test season (not just once per season) -- validated in August 2026 to match what the live model actually does: weekly_update.py always trains on all real completed games available up to "now," every single run. Evaluated on 2022-2025 (1,087 games):</p>
       <div class="table-wrap"><table class="metrics-table"><caption class="visually-hidden">Backtest results for each model</caption>
         <thead><tr><th scope="col">Model</th><th scope="col">Accuracy</th><th scope="col">Log Loss</th><th scope="col">Brier</th><th scope="col">AUC</th></tr></thead>
         <tbody>
@@ -523,7 +523,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
         </tbody>
       </table></div>
       <p style="margin-top:var(--s3);">Update (2026-08-31): these numbers reflect two real changes, not a silent swap. First, a leak in the QB rating's shrinkage target was found and fixed (it was averaging in future weeks instead of only strictly-earlier ones -- see ratings_engine.py). Second, we revisited our own earlier QB-shrinkage tuning decision (k=8 -&gt; 96) after it turned out not to reproduce, re-ran the retune under the fixed, current config, and found the fresh result (k=128) didn't hold up consistently on confirmatory data either -- so we reverted to the original k=8. See Model Lab, "QB Shrinkage Re-tune," for the full investigation.</p>
-      <p style="margin-top:var(--s3);">Update (2026-08, research Stage 6): O-line continuity was removed from the live model after two independent negative results -- a paired bootstrap found its individual contribution statistically indistinguishable from zero (95% CI included zero), and a later confirmatory test found "no OL feature at all" outperformed both the original and a smoothed version of it on held-out 2024-2025 data. It's still computed and logged as informational data, just no longer fed into the model, in case future evidence changes this. QB-change detection has held up across every test run against it and remains live.</p>
+      <p style="margin-top:var(--s3);">Update (August 2026): O-line continuity was removed from the live model after two independent negative results -- a paired bootstrap found its individual contribution statistically indistinguishable from zero (95% CI included zero), and a later confirmatory test found "no OL feature at all" outperformed both the original and a smoothed version of it on held-out 2024-2025 data. It's still computed and logged as informational data, just no longer fed into the model, in case future evidence changes this. QB-change detection has held up across every test run against it and remains live.</p>
       <p style="margin-top:var(--s3);">Separately: the market barely changes when our full feature set is blended in (68.3% against the market's 68.2% on raw accuracy, one game in 1,087, and marginally better on log loss/Brier/AUC). The Vegas line still captures almost everything we can see, plus real-world information we structurally can't.</p>
       <p style="margin-top:var(--s3);" id="live-market-note">One difference between this table and the live pages. The "Vegas market alone" row above is a model fitted to the spread. The market's win chance on the Week Board's cards and in Season Accuracy is not: it is a fixed conversion of the spread, 1 / (1 + e<sup>&minus;spread / 5.5</sup>), with the 5.5 chosen by hand rather than fitted. It uses the spread saved with each pick, which is the line when the pick was locked (usually the Thursday run, the Tuesday run for a week that opens early), not the line at kickoff.</p>
     </div>
@@ -808,7 +808,7 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div>
         <div class="page-eyebrow">How It Was Built</div>
         <h2>Checking the AI&#39;s work</h2>
-        <div class="desc">This project is built almost entirely by delegating real engineering work to an AI agent ("Scout" -- Claude Code, doing the research, coding, and PRs throughout this project). That's genuinely useful, and it also fails in specific, real ways. This page documents what actually went wrong here, not what could theoretically go wrong in the abstract.</div>
+        <div class="desc">This project is built almost entirely by delegating real engineering work to an AI agent (Claude Code, doing the research, coding, and pull requests throughout this project). That's genuinely useful, and it also fails in specific, real ways. This page documents what actually went wrong here, not what could theoretically go wrong in the abstract.</div>
       </div>
     </div>
 
@@ -853,6 +853,10 @@ ridge alpha = 15        (backtested across 1-1600 — over-regularized at 200)</
       <div class="case-study" data-case-study="stage2-corrections" style="margin-top:var(--s4);">
         <p><b style="color:var(--text)">When the to-do list was wrong.</b> Two of the jobs on an early to-do list were wrong about what they described. A column marked &quot;broken&quot; was only blank because the season hadn&#39;t started, and removing it would have thrown away something that worked. A page marked &quot;done&quot; had never shown anything at all. Since then this project treats every queued problem as a guess to check before doing the work it asks for.</p>
         <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/stage2-corrections.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
+      </div>
+      <div class="case-study" data-case-study="auditor-would-not-vouch" style="margin-top:var(--s4);">
+        <p><b style="color:var(--text)">When the auditor would not vouch.</b> One night, changes were merged only when Booth, the checking AI, approved them. Three times it would not, though it had found nothing wrong. Once it could not repeat a test count, once the change rewrote Booth&#39;s own rules, and once its own report disagreed with itself. Each time the fix was to make the claim something Booth could check, or to hand the decision to a person. Asking it again until it said yes was never the fix.</p>
+        <p style="margin-top:var(--s2);"><a href="https://github.com/lifeisgreat07/NFL-Model-2/blob/main/docs/case-studies/auditor-would-not-vouch.md" class="link-standalone" target="_blank" rel="noopener" style="color:var(--accent);">Read the case study</a></p>
       </div>
       <div class="case-study" data-case-study="booth-regression-suite" style="margin-top:var(--s4);">
         <p><b style="color:var(--text)">Testing the tester.</b> Booth checks the other AI&#39;s work, but something has to check Booth. Its tests are small fake changes with a mistake planted in them, where the right answer is known in advance, so a missed mistake shows up as a failure. The tests were ready for seventeen days before anyone ran one. When one finally ran, Booth caught the planted mistake, and the run turned up two small problems in the test setup itself, both since fixed.</p>

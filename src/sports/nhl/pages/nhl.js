@@ -1,3 +1,10 @@
+/* Stage 88 item 5 (the 2026-11-02 review): the Content-Security-Policy names
+   the hash of each inline script, so the page has no inline handlers. A logo
+   that fails to load (data-hide-on-error) is hidden by this one listener. */
+document.addEventListener('error', e => {
+  const t = e.target;
+  if (t instanceof HTMLImageElement && t.hasAttribute('data-hide-on-error')) t.style.display = 'none';
+}, true);
 /* The NHL's pages (Stage 57). Everything below reads one JSON block,
    #nhl-data, written by src/sports/nhl/site.py from the NHL's own files.
    Times are shown in US Eastern, as the NFL board shows them, and the board
@@ -178,7 +185,7 @@ function lanes(vals){
 function american(p){ return p > 0 ? `+${p}` : `−${Math.abs(p)}`; }
 function endTeam(abbr){
   const src = logo(abbr);
-  const img = src ? `<img class="card-end-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : '';
+  const img = src ? `<img class="card-end-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error>` : '';
   return `<span class="card-end-team">${img}${abbr}</span>`;
 }
 function badge(picked, result){
@@ -670,7 +677,7 @@ function ratingAxisHtml(scale, title){
 }
 function ratingRowHtml(t, i, scale){
   const w = Math.abs(t.goal) / scale * 100, src = logo(t.team);
-  const img = src ? `<img class="team-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : '';
+  const img = src ? `<img class="team-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error>` : '';
   return `<tr><td class="rank">${i + 1}</td>`
     + `<td><div class="team-cell">${img}<span class="team-abbr">${escapeHtml(t.team)}</span><span class="team-full">${escapeHtml(teamName(t.team))}</span></div></td>`
     + `<td class="num"><div class="net-cell-inner"><div class="srs-bar-track diverging" title="${signed(t.goal, 2)} goals a game; league scale ±${scale.toFixed(2)}, centre line is zero">`
@@ -869,14 +876,19 @@ function forwardHtml(f, sport){
     return `<tr><th scope="row">${n}</th><td class="num">${v.games}</td><td class="num">${v.log_loss.toFixed(4)}</td><td class="num">${v.brier.toFixed(4)}</td><td class="num">${(v.accuracy * 100).toFixed(1)}%</td></tr>`; }).join('');
   const pairs = PAIRS.filter(([, k]) => f.comparisons[k]).map(([n, k]) => { const c = f.comparisons[k];
     return `<tr><th scope="row">${n}</th><td class="num">${c.games}</td><td class="num">${c.days}</td>`
-      + (c.note ? `<td colspan="2">${c.note}</td>` : `<td class="num">${sgn(c.diff)}</td><td class="num">[${sgn(c.low)}, ${sgn(c.high)}]</td>`) + '</tr>'; }).join('');
+      + (c.note ? `<td colspan="2">${c.note}</td>` : `<td class="num">${sgn(c.diff)}</td><td class="num">[${sgn(c.low)}, ${sgn(c.high)}]`
+        + (c.few_days ? `<br><span class="forward-games">games [${sgn(c.few_days.game_low)}, ${sgn(c.few_days.game_high)}]</span>` : '') + '</td>') + '</tr>'; }).join('');
+  // Stage 95 item 37: under 20 game days the day-block interval is rough, so the
+  // interval that resamples single games is printed under it, and this says why.
+  const few = PAIRS.map(([, k]) => f.comparisons[k]).find(c => c && c.few_days);
+  const fewNote = few ? ` Only ${few.days} game days are in so far, under the ${few.few_days.min_days} that make whole-day resampling dependable, so each interval is shown with the one that resamples single games under it (&ldquo;games&rdquo;), which is narrower because it ignores how games on one day move together. The day-block interval is the one the registration uses.` : '';
   const level = (f.interval_rule.level * 100).toFixed(2);
   return `<p class="${sport}-lede">Every saved pick whose game is final, ${f.graded_picks} of them through ${f.through}, scored as the registration says (<code>${f.registered}</code>). Model B and the market are scored only on the picks that had a price.${f.market_price ? ' ' + f.market_price.said : ''}</p>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's scores</caption>
     <thead><tr><th scope="col">Forecaster</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Log loss</th><th scope="col" class="num">Brier</th><th scope="col" class="num">Accuracy</th></tr></thead><tbody>${rows}</tbody></table></div>
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">The forward test's comparisons</caption>
     <thead><tr><th scope="col">Comparison</th><th scope="col" class="num">Games</th><th scope="col" class="num">Days</th><th scope="col" class="num">Log loss difference</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${pairs}</tbody></table></div>
-    <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored. The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>${calibrationTable(f, sport, level)}`;
+    <p class="${sport}-lede">A difference below zero means the first forecaster did better. Each interval resamples whole game days ${f.interval_rule.resamples.toLocaleString('en-US')} times, paired on the games both forecasters scored.${fewNote} The intervals are reported, not judged: the season-end decision rule is registered on its own.</p>${calibrationTable(f, sport, level)}`;
 }
 /* Stage 84 item 5: calibration intercept and slope for Models A and B, from
    the same file. Older files have no calibration block, and show none. */
@@ -892,7 +904,7 @@ function calibrationTable(f, sport, level){
   return `
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">Calibration of Models A and B</caption>
     <thead><tr><th scope="col">Calibration</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Intercept</th><th scope="col" class="num">${level}% interval</th><th scope="col" class="num">Slope</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p class="${sport}-lede">Calibration asks whether the probabilities mean what they say. A perfectly calibrated model has an intercept of 0 and a slope of 1. An intercept above 0 means home teams won more often than the model said; a slope above 1 means its probabilities sat too close to 50%, and below 1 too far from it. Intervals resample whole game days, as above, and are reported, not judged.</p>`;
+    <p class="${sport}-lede">Calibration asks whether the probabilities mean what they say. A perfectly calibrated model has an intercept of 0 and a slope of 1. An intercept above 0 means home teams won more often than the model said; a slope above 1 means its probabilities sat too close to 50%, and below 1 too far from it. They are two fits, not one: the intercept is fitted with the slope held at 1 (calibration in the large), and the slope is fitted with an intercept of its own. Intervals resample whole game days, as above, and are reported, not judged.</p>`;
 }
 /* Stage 84 item 4 (the 2026-11-02 review): Stage 56's M2, the projected
    starter against the actual one, from results/nhl/m2_<season>.json. The

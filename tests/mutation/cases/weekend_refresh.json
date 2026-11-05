@@ -133,8 +133,8 @@
       "id": "refresh-weekly-step-can-cost-grades",
       "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "the status step loses continue-on-error, so a schedule read that fails on a Tuesday fails the job before grading.",
-      "find": "      - name: Refresh the status of the weeks about to be graded\n        if: ${{ !cancelled() }}\n        continue-on-error: true\n",
-      "replace": "      - name: Refresh the status of the weeks about to be graded\n        if: ${{ !cancelled() }}\n",
+      "find": "      - name: Refresh the status of the weeks about to be graded\n        timeout-minutes: 25\n        if: ${{ !cancelled() }}\n        continue-on-error: true\n",
+      "replace": "      - name: Refresh the status of the weeks about to be graded\n        timeout-minutes: 25\n        if: ${{ !cancelled() }}\n",
       "expect_caught_by": "test_the_weekly_run_snapshots_the_week_it_grades_before_grading_it"
     }
   ]

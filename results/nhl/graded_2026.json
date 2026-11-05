@@ -1166,25 +1166,91 @@
  {
   "game_id": "2026020247",
   "pick": "BUF",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-04T21:01:36Z"
  },
  {
   "game_id": "2026020248",
   "pick": "FLA",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-04T21:01:36Z"
  },
  {
   "game_id": "2026020249",
   "pick": "LAK",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-04T21:01:36Z"
  },
  {
   "game_id": "2026020250",
   "pick": "SEA",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-04T21:01:36Z"
+ },
+ {
+  "game_id": "2026020251",
+  "pick": "UTA",
+  "result": "pending",
+  "saved_utc": "2026-11-05T21:01:35Z"
+ },
+ {
+  "game_id": "2026020252",
+  "pick": "VGK",
+  "result": "pending",
+  "saved_utc": "2026-11-05T21:01:35Z"
+ },
+ {
+  "game_id": "2026020253",
+  "pick": "TBL",
+  "result": "pending",
+  "saved_utc": "2026-11-05T21:01:35Z"
+ },
+ {
+  "game_id": "2026020254",
+  "pick": "NJD",
+  "result": "pending",
+  "saved_utc": "2026-11-05T21:01:35Z"
+ },
+ {
+  "game_id": "2026020255",
+  "pick": "CAR",
+  "result": "pending",
+  "saved_utc": "2026-11-05T21:01:35Z"
+ },
+ {
+  "game_id": "2026020256",
+  "pick": "NYR",
+  "result": "pending",
+  "saved_utc": "2026-11-05T21:01:35Z"
+ },
+ {
+  "game_id": "2026020257",
+  "pick": "PIT",
+  "result": "pending",
+  "saved_utc": "2026-11-05T21:01:35Z"
+ },
+ {
+  "game_id": "2026020258",
+  "pick": "DAL",
+  "result": "pending",
+  "saved_utc": "2026-11-05T21:01:35Z"
+ },
+ {
+  "game_id": "2026020259",
+  "pick": "WPG",
+  "result": "pending",
+  "saved_utc": "2026-11-05T21:01:35Z"
+ },
+ {
+  "game_id": "2026020260",
+  "pick": "EDM",
+  "result": "pending",
+  "saved_utc": "2026-11-05T21:01:35Z"
+ },
+ {
+  "game_id": "2026020261",
+  "pick": "COL",
+  "result": "pending",
+  "saved_utc": "2026-11-05T21:01:35Z"
  }
 ]

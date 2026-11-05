@@ -1,35 +1,35 @@
 {
- "as_of": "2026-11-04",
+ "as_of": "2026-11-05",
  "simulations": 10000,
  "overtime_share": 0.2451,
- "shootout_share_of_overtime": 0.3408,
+ "shootout_share_of_overtime": 0.34,
  "teams": [
   {
    "team": "CAR",
    "division": "Metropolitan",
    "conference": "Eastern",
    "points_now": 26,
-   "projected_points": 121.6,
+   "projected_points": 121.5,
    "playoff_pct": 0.9997,
-   "division_pct": 0.9284
+   "division_pct": 0.9268
   },
   {
    "team": "COL",
    "division": "Central",
    "conference": "Western",
    "points_now": 19,
-   "projected_points": 111.0,
-   "playoff_pct": 0.9902,
-   "division_pct": 0.4449
+   "projected_points": 111.1,
+   "playoff_pct": 0.9914,
+   "division_pct": 0.4521
   },
   {
    "team": "MIN",
    "division": "Central",
    "conference": "Western",
    "points_now": 25,
-   "projected_points": 110.0,
-   "playoff_pct": 0.9884,
-   "division_pct": 0.3736
+   "projected_points": 109.9,
+   "playoff_pct": 0.986,
+   "division_pct": 0.3665
   },
   {
    "team": "EDM",
@@ -37,35 +37,35 @@
    "conference": "Western",
    "points_now": 25,
    "projected_points": 108.0,
-   "playoff_pct": 0.9852,
-   "division_pct": 0.55
+   "playoff_pct": 0.9841,
+   "division_pct": 0.5468
   },
   {
    "team": "TBL",
    "division": "Atlantic",
    "conference": "Eastern",
    "points_now": 20,
-   "projected_points": 107.6,
-   "playoff_pct": 0.9332,
-   "division_pct": 0.5221
+   "projected_points": 107.5,
+   "playoff_pct": 0.9339,
+   "division_pct": 0.5083
   },
   {
    "team": "VGK",
    "division": "Pacific",
    "conference": "Western",
    "points_now": 22,
-   "projected_points": 106.1,
+   "projected_points": 106.2,
    "playoff_pct": 0.9741,
-   "division_pct": 0.4171
+   "division_pct": 0.4199
   },
   {
    "team": "NJD",
    "division": "Metropolitan",
    "conference": "Eastern",
    "points_now": 20,
-   "projected_points": 105.6,
-   "playoff_pct": 0.9144,
-   "division_pct": 0.0609
+   "projected_points": 105.7,
+   "playoff_pct": 0.916,
+   "division_pct": 0.0622
   },
   {
    "team": "UTA",
@@ -73,71 +73,71 @@
    "conference": "Western",
    "points_now": 20,
    "projected_points": 102.7,
-   "playoff_pct": 0.9042,
-   "division_pct": 0.091
+   "playoff_pct": 0.8992,
+   "division_pct": 0.0906
   },
   {
    "team": "DAL",
    "division": "Central",
    "conference": "Western",
    "points_now": 19,
-   "projected_points": 102.3,
-   "playoff_pct": 0.8916,
-   "division_pct": 0.0821
+   "projected_points": 102.2,
+   "playoff_pct": 0.8905,
+   "division_pct": 0.0813
   },
   {
    "team": "BOS",
    "division": "Atlantic",
    "conference": "Eastern",
    "points_now": 23,
-   "projected_points": 100.1,
-   "playoff_pct": 0.7093,
-   "division_pct": 0.1367
+   "projected_points": 100.0,
+   "playoff_pct": 0.7049,
+   "division_pct": 0.137
   },
   {
    "team": "OTT",
    "division": "Atlantic",
    "conference": "Eastern",
-   "points_now": 19,
-   "projected_points": 98.1,
-   "playoff_pct": 0.627,
-   "division_pct": 0.0904
+   "points_now": 21,
+   "projected_points": 99.5,
+   "playoff_pct": 0.6937,
+   "division_pct": 0.1217
   },
   {
    "team": "FLA",
    "division": "Atlantic",
    "conference": "Eastern",
-   "points_now": 18,
-   "projected_points": 97.8,
-   "playoff_pct": 0.6069,
-   "division_pct": 0.0851
-  },
-  {
-   "team": "BUF",
-   "division": "Atlantic",
-   "conference": "Eastern",
-   "points_now": 17,
-   "projected_points": 97.3,
-   "playoff_pct": 0.5766,
-   "division_pct": 0.0779
+   "points_now": 20,
+   "projected_points": 98.5,
+   "playoff_pct": 0.6371,
+   "division_pct": 0.0937
   },
   {
    "team": "MTL",
    "division": "Atlantic",
    "conference": "Eastern",
    "points_now": 21,
-   "projected_points": 97.1,
-   "playoff_pct": 0.5609,
-   "division_pct": 0.0705
+   "projected_points": 96.8,
+   "playoff_pct": 0.5396,
+   "division_pct": 0.0706
   },
   {
    "team": "WSH",
    "division": "Metropolitan",
    "conference": "Eastern",
    "points_now": 16,
-   "projected_points": 96.5,
-   "playoff_pct": 0.5784,
-   "division_pct": 0.0069
+   "projected_points": 96.4,
+   "playoff_pct": 0.5752,
+   "division_pct": 0.0062
+  },
+  {
+   "team": "BUF",
+   "division": "Atlantic",
+   "conference": "Eastern",
+   "points_now": 17,
+   "projected_points": 95.7,
+   "playoff_pct": 0.4899,
+   "division_pct": 0.0504
   },
   {
    "team": "NYI",
@@ -145,89 +145,89 @@
    "conference": "Eastern",
    "points_now": 16,
    "projected_points": 92.2,
-   "playoff_pct": 0.3399,
-   "division_pct": 0.0013
-  },
-  {
-   "team": "NSH",
-   "division": "Central",
-   "conference": "Western",
-   "points_now": 17,
-   "projected_points": 91.6,
-   "playoff_pct": 0.4135,
-   "division_pct": 0.0038
-  },
-  {
-   "team": "STL",
-   "division": "Central",
-   "conference": "Western",
-   "points_now": 15,
-   "projected_points": 91.5,
-   "playoff_pct": 0.4218,
-   "division_pct": 0.0042
+   "playoff_pct": 0.3406,
+   "division_pct": 0.0018
   },
   {
    "team": "DET",
    "division": "Atlantic",
    "conference": "Eastern",
    "points_now": 17,
-   "projected_points": 91.3,
-   "playoff_pct": 0.2661,
-   "division_pct": 0.0149
+   "projected_points": 91.5,
+   "playoff_pct": 0.2788,
+   "division_pct": 0.0156
+  },
+  {
+   "team": "NSH",
+   "division": "Central",
+   "conference": "Western",
+   "points_now": 17,
+   "projected_points": 91.5,
+   "playoff_pct": 0.3979,
+   "division_pct": 0.0043
+  },
+  {
+   "team": "STL",
+   "division": "Central",
+   "conference": "Western",
+   "points_now": 15,
+   "projected_points": 91.4,
+   "playoff_pct": 0.4177,
+   "division_pct": 0.0049
   },
   {
    "team": "PIT",
    "division": "Metropolitan",
    "conference": "Eastern",
    "points_now": 12,
-   "projected_points": 91.1,
-   "playoff_pct": 0.2817,
-   "division_pct": 0.0009
+   "projected_points": 91.2,
+   "playoff_pct": 0.289,
+   "division_pct": 0.0015
   },
   {
    "team": "CBJ",
    "division": "Metropolitan",
    "conference": "Eastern",
    "points_now": 12,
-   "projected_points": 90.9,
-   "playoff_pct": 0.2796,
-   "division_pct": 0.0009
+   "projected_points": 91.1,
+   "playoff_pct": 0.2859,
+   "division_pct": 0.0008
   },
   {
    "team": "ANA",
    "division": "Pacific",
    "conference": "Western",
    "points_now": 15,
-   "projected_points": 90.5,
-   "playoff_pct": 0.4719,
-   "division_pct": 0.018
+   "projected_points": 90.3,
+   "playoff_pct": 0.4521,
+   "division_pct": 0.0136
+  },
+  {
+   "team": "LAK",
+   "division": "Pacific",
+   "conference": "Western",
+   "points_now": 12,
+   "projected_points": 90.0,
+   "playoff_pct": 0.4185,
+   "division_pct": 0.0116
   },
   {
    "team": "NYR",
    "division": "Metropolitan",
    "conference": "Eastern",
    "points_now": 17,
-   "projected_points": 88.7,
-   "playoff_pct": 0.1986,
+   "projected_points": 88.6,
+   "playoff_pct": 0.192,
    "division_pct": 0.0007
-  },
-  {
-   "team": "LAK",
-   "division": "Pacific",
-   "conference": "Western",
-   "points_now": 10,
-   "projected_points": 88.5,
-   "playoff_pct": 0.3604,
-   "division_pct": 0.0082
   },
   {
    "team": "SEA",
    "division": "Pacific",
    "conference": "Western",
-   "points_now": 17,
-   "projected_points": 86.7,
-   "playoff_pct": 0.2745,
-   "division_pct": 0.0045
+   "points_now": 19,
+   "projected_points": 87.9,
+   "playoff_pct": 0.3068,
+   "division_pct": 0.0069
   },
   {
    "team": "TOR",
@@ -235,26 +235,26 @@
    "conference": "Eastern",
    "points_now": 18,
    "projected_points": 85.2,
-   "playoff_pct": 0.0848,
-   "division_pct": 0.0024
+   "playoff_pct": 0.0805,
+   "division_pct": 0.0027
   },
   {
    "team": "WPG",
    "division": "Central",
    "conference": "Western",
    "points_now": 13,
-   "projected_points": 84.7,
-   "playoff_pct": 0.1258,
-   "division_pct": 0.0004
+   "projected_points": 84.8,
+   "playoff_pct": 0.1289,
+   "division_pct": 0.0003
   },
   {
    "team": "CGY",
    "division": "Pacific",
    "conference": "Western",
-   "points_now": 14,
-   "projected_points": 82.9,
-   "playoff_pct": 0.1396,
-   "division_pct": 0.0016
+   "points_now": 15,
+   "projected_points": 82.6,
+   "playoff_pct": 0.1161,
+   "division_pct": 0.0012
   },
   {
    "team": "PHI",
@@ -262,7 +262,7 @@
    "conference": "Eastern",
    "points_now": 12,
    "projected_points": 82.3,
-   "playoff_pct": 0.0429,
+   "playoff_pct": 0.0432,
    "division_pct": 0.0
   },
   {
@@ -270,17 +270,17 @@
    "division": "Pacific",
    "conference": "Western",
    "points_now": 15,
-   "projected_points": 79.6,
-   "playoff_pct": 0.0573,
-   "division_pct": 0.0006
+   "projected_points": 77.9,
+   "playoff_pct": 0.0363,
+   "division_pct": 0.0
   },
   {
    "team": "CHI",
    "division": "Central",
    "conference": "Western",
    "points_now": 9,
-   "projected_points": 68.2,
-   "playoff_pct": 0.001,
+   "projected_points": 67.1,
+   "playoff_pct": 0.0003,
    "division_pct": 0.0
   },
   {
@@ -288,8 +288,8 @@
    "division": "Pacific",
    "conference": "Western",
    "points_now": 7,
-   "projected_points": 63.8,
-   "playoff_pct": 0.0005,
+   "projected_points": 63.7,
+   "playoff_pct": 0.0001,
    "division_pct": 0.0
   }
  ]

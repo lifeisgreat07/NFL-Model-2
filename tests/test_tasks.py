@@ -59,19 +59,20 @@ def runs(workflow):
     return out
 
 
-TYPES = 'python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/core src/site src/sports/nhl src/sports/nba'
+TYPES = 'python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/sports/nfl/generate_dashboard.py src/sports/nfl/generate_picks_pdf.py'
+STRICT_TYPES = 'python -m mypy --strict --ignore-missing-imports src/core src/site src/sports/nhl src/sports/nba'
 AGENT_TYPES = 'python -m mypy --strict --ignore-missing-imports --follow-imports=silent src/agents'
 
 
 def test_lint_is_what_run_tests_runs():
-    assert commands('lint') == ['ruff check .', TYPES, AGENT_TYPES]
+    assert commands('lint') == ['ruff check .', TYPES, STRICT_TYPES, AGENT_TYPES]
     wf = runs('run-tests.yml')
-    assert 'ruff check .' in wf and TYPES in wf and AGENT_TYPES in wf
-    assert wf.index('ruff check .') < wf.index(TYPES) < wf.index(AGENT_TYPES)
+    assert 'ruff check .' in wf and TYPES in wf and STRICT_TYPES in wf and AGENT_TYPES in wf
+    assert wf.index('ruff check .') < wf.index(TYPES) < wf.index(STRICT_TYPES) < wf.index(AGENT_TYPES)
 
 
 def test_check_is_lint_then_the_suite():
-    assert commands('check') == ['ruff check .', TYPES, AGENT_TYPES, commands('test')[0]]
+    assert commands('check') == ['ruff check .', TYPES, STRICT_TYPES, AGENT_TYPES, commands('test')[0]]
 
 
 def test_mypy_is_pinned_like_ruff():
@@ -118,7 +119,9 @@ def test_the_slow_marker_is_registered_and_used():
     like `@pytest.mark.slwo` from silently running in `quick`. The marked
     tests are the five whole daily runs, the suite's slowest, and the two
     re-derivations of a saved pick (Stage 85 item 6), each a whole feature table,
-    and the NHL daily run fed an odds feed with a renamed key (Stage 92 item 7)."""
+    the two day runs whose after-save step fails (Stage 91 item 3), the NHL daily run
+    fed an odds feed with a renamed key (Stage 92 item 7), and the two NBA daily runs
+    whose price sources time out (Stage 96 item 52)."""
     toml = (ROOT / 'pyproject.toml').read_text(encoding='utf-8')
     assert re.search(r'(?m)^markers = \["slow: ', toml)
     marked = {p.name: len(re.findall(r'(?m)^@pytest\.mark\.slow$', p.read_text(encoding='utf-8')))
@@ -126,10 +129,12 @@ def test_the_slow_marker_is_registered_and_used():
     assert marked['test_daily_end_to_end.py'] == 2
     assert marked['test_nhl_sources_down.py'] == 3
     assert marked['test_rederive_saved_pick.py'] == 2
+    assert marked['test_after_save.py'] == 2
     assert marked['test_priced.py'] == 1
-    assert sum(marked.values()) == 8, 'README says how many tests quick leaves out'
-    readme = (ROOT / 'README.md').read_text(encoding='utf-8')
-    assert 'the suite without the eight tests marked `slow`' in readme
+    assert marked['test_nba_sources_down.py'] == 2
+    assert sum(marked.values()) == 12, 'docs/operations.md says how many tests quick leaves out'
+    readme = (ROOT / 'docs' / 'operations.md').read_text(encoding='utf-8')  # from the README, Stage 89 item 5
+    assert 'the suite without the twelve tests marked `slow`' in readme
 
 
 def test_build_is_what_the_pages_workflow_runs():
@@ -220,5 +225,5 @@ def test_an_unknown_task_is_refused_and_no_task_lists_them(capsys):
 
 
 def test_the_readme_points_at_it():
-    text = (ROOT / 'README.md').read_text(encoding='utf-8')
-    assert 'python tasks.py' in text, "README's Running the tests does not mention tasks.py"
+    text = (ROOT / 'docs' / 'operations.md').read_text(encoding='utf-8')  # from the README, Stage 89 item 5
+    assert 'python tasks.py' in text, "docs/operations.md's Running the tests does not mention tasks.py"

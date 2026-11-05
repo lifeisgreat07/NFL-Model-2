@@ -25,20 +25,22 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out repo
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
 
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: '3.11'
 
       # Stage 42 item 1: how late this run started, against its own cron lines.
       - name: Record the start delay
+        timeout-minutes: 10
         run: python -m src.core.start_delay .github/workflows/nhl-canary.yml
 
       # Stage 42 item 4: a run GitHub's cron started, for a slot cron-job.org
       # should have started, asks whether it did, and opens an issue if not.
       - name: Did cron-job.org start this slot?
+        timeout-minutes: 10
         if: github.event_name == 'schedule'
         env:
           CRON_SCHEDULE: ${{ github.event.schedule }}
@@ -46,14 +48,17 @@ jobs:
         run: python -m src.core.missed_dispatch .github/workflows/nhl-canary.yml
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        timeout-minutes: 10
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Run the canary
+        timeout-minutes: 10
         run: python -m src.sports.nhl.canary --report nhl-canary-report.md
 
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered
+        timeout-minutes: 10
         if: success()
         continue-on-error: true
         env:

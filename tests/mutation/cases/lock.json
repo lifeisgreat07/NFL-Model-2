@@ -1,0 +1,29 @@
+{
+ "target": "requirements.lock",
+ "tests": "tests/test_lock.py",
+ "cases": [
+  {
+   "id": "lock-holds-an-old-pandas",
+   "why": "requirements.txt says pandas 1.5.3 and the lock CI installs holds another version, so the published pin is not what ran",
+   "find": "pandas==1.5.3 \\\n",
+   "replace": "pandas==1.5.2 \\\n",
+   "expect_caught_by": "test_each_lock_holds_exactly_the_versions_its_files_pin"
+  },
+  {
+   "id": "workflow-installs-without-hashes",
+   "target": ".github/workflows/nhl-canary.yml",
+   "why": "the NHL canary installs from the unhashed pins again, so a file swapped on the index installs unnoticed",
+   "find": "        run: pip install --require-hashes -r requirements.lock\n",
+   "replace": "        run: pip install -r requirements.txt\n",
+   "expect_caught_by": "test_every_workflow_installs_the_project_from_a_lock_with_hashes"
+  },
+  {
+   "id": "audit-reads-the-unlocked-file",
+   "target": ".github/workflows/nightly-dependency-audit.yml",
+   "why": "the nightly audit resolves requirements.txt itself again, so it audits a set of packages CI never installs",
+   "find": "pip-audit -r requirements-dev.lock --require-hashes --disable-pip ",
+   "replace": "pip-audit -r requirements.txt -r requirements-dev.txt ",
+   "expect_caught_by": "test_the_dependency_audit_reads_the_lock"
+  }
+ ]
+}

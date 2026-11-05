@@ -162,5 +162,17 @@ def test_the_market_probability_reaches_the_page():
     games = gd.build_games_js([{'away': 'ATL', 'home': 'GB', 'model_a_home_win_prob': 0.754,
                                 'model_b_home_win_prob': 0.684, 'market_prob_home': 0.7493},
                                {'away': 'LAC', 'home': 'BUF', 'model_a_home_win_prob': 0.6}], {})
-    assert games[0]['mkt_home'] == 74.9
+    assert games[0]['mkt_home'] == 74.93
     assert games[1]['mkt_home'] is None, 'absent stays absent'
+
+
+def test_a_probability_is_rounded_once():
+    """The page shows a saved probability rounded once. Stored at one decimal, a saved 0.8047 became 80.5 and the
+    row's Math.round showed 81% (Mark, 2026-11-05: round once)."""
+    games = gd.build_games_js([{'away': 'NYJ', 'home': 'KC', 'model_a_home_win_prob': 0.6111,
+                                'model_b_home_win_prob': 0.8047, 'market_prob_home': 0.8603}], {})
+    g = games[0]
+    assert (g['fbA_home'], g['mktB_home'], g['mkt_home']) == (61.11, 80.47, 86.03)
+    shown = run(f"(() => {{ const s = cardSide({g['mktB_home']}, {{home: 'KC', away: 'NYJ'}}); "
+                "return `${s.team} ${Math.round(s.pct)}%`; })()")
+    assert shown == 'KC 80%'

@@ -12,7 +12,7 @@
     {
       "id": "filtered-state-loses-its-undo",
       "why": "the Week Board filter hides every game and the page says so with no way back but finding the filter row again -- a dead end the state exists to prevent.",
-      "find": "      {label: 'Show all games', onclick: \"document.querySelector('#filter-row [data-filter=all]').click()\"});",
+      "find": "      {label: 'Show all games', act: 'show-all-games'});",
       "replace": "      null);",
       "expect_caught_by": "test_a_filtered_state_offers_its_undo"
     },

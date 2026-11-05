@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "readme-settings-table-misnames-a-variable",
+      "target": "docs/operations.md",
       "why": "the settings table names a variable the code does not read, so the one the Stage 6 runner does read is undocumented again -- the state the 2026-09-29 re-audit found (Stage 32 item 19).",
       "find": "| `STAGE6_CACHE` |",
       "replace": "| `STAGE6_DIR` |",
@@ -26,15 +27,15 @@
     {
       "id": "readme-case-study-count-goes-stale",
       "why": "the recruiter overview's case-study count stops matching docs/case-studies/, the next time one is added or folded.",
-      "find": "**Case studies of what went wrong, and a list of what it taught.** Four",
-      "replace": "**Case studies of what went wrong, and a list of what it taught.** Five",
+      "find": "**Case studies of what went wrong.** Five",
+      "replace": "**Case studies of what went wrong.** Six",
       "expect_caught_by": "test_the_case_study_count_it_states_is_the_real_one"
     },
     {
       "id": "readme-shows-an-image-that-is-not-there",
       "why": "the first thing a visitor sees becomes a broken image.",
-      "find": "docs/images/week-board.png)",
-      "replace": "docs/images/week-board-old.png)",
+      "find": "docs/images/season-accuracy.png)",
+      "replace": "docs/images/season-accuracy-old.png)",
       "expect_caught_by": "test_every_image_it_shows_exists"
     },
     {
@@ -67,8 +68,8 @@
     {
       "id": "readme-says-never-trained-on-the-season-again",
       "why": "the README goes back to saying the backtest never trained on the season it scores, while backtest() refits on that season's earlier weeks (the 2026-09-28 audit)",
-      "find": "earlier games, which include the earlier weeks of the season being",
-      "replace": "earlier games, never trained on the season being",
+      "find": "earlier games,\nwhich include the earlier weeks of the season being",
+      "replace": "earlier games,\nnever trained on the season being",
       "expect_caught_by": "test_it_describes_the_backtest_the_code_runs"
     },
     {
@@ -81,6 +82,7 @@
     },
     {
       "id": "readme-tests-install-dev-requirements-only",
+      "target": "docs/operations.md",
       "why": "the README's test instructions go back to installing requirements-dev.txt alone, which leaves out every package the suite imports.",
       "find": "pip install -r requirements.txt -r requirements-dev.txt\nruff check .",
       "replace": "pip install -r requirements-dev.txt\nruff check .",
@@ -88,6 +90,7 @@
     },
     {
       "id": "readme-tests-python-version-drifts",
+      "target": "docs/operations.md",
       "why": "the README names a Python version .python-version does not, so a reader sets up an interpreter the pinned libraries have no wheels for.",
       "find": "Running the tests needs Python 3.11",
       "replace": "Running the tests needs Python 3.12",
@@ -123,8 +126,8 @@
       "target": "tasks.py",
       "tests": "tests/test_tasks.py",
       "why": "the lint task checks less than CI does, so `tasks.py check` is green on a branch run-tests.yml will fail -- a fifteenth spelling of a command, the thing the runner exists to end (Stage 31 item 13).",
-      "find": "             lambda a: [['ruff', 'check', '.'], TYPES, AGENT_TYPES]),",
-      "replace": "             lambda a: [['ruff', 'check', 'src'], TYPES, AGENT_TYPES]),",
+      "find": "             lambda a: [['ruff', 'check', '.'], TYPES, STRICT_TYPES, AGENT_TYPES]),",
+      "replace": "             lambda a: [['ruff', 'check', 'src'], TYPES, STRICT_TYPES, AGENT_TYPES]),",
       "expect_caught_by": "test_lint_is_what_run_tests_runs"
     },
     {
@@ -168,22 +171,22 @@
       "target": ".github/workflows/run-tests.yml",
       "tests": "tests/test_tasks.py",
       "why": "run-tests.yml stops running mypy, so tasks.py's lint gates on a check CI never runs, and a type error reaches main green.",
-      "find": "        run: python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/core src/site src/sports/nhl src/sports/nba\n",
+      "find": "        run: python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/sports/nfl/generate_dashboard.py src/sports/nfl/generate_picks_pdf.py\n",
       "replace": "        run: echo skipped\n",
       "expect_caught_by": "test_lint_is_what_run_tests_runs"
     },
     {
       "id": "readme-case-floor-above-the-real-count",
       "why": "the README claims more mutation case files than the corpus holds, so the portfolio overstates its own test-of-the-tests.",
-      "find": "over 450 case files",
-      "replace": "over 475 case files",
+      "find": "over 500 case files",
+      "replace": "over 525 case files",
       "expect_caught_by": "test_the_mutation_case_count_it_states_is_the_real_one"
     },
     {
       "id": "readme-case-floor-gone-stale",
       "why": "the floor stays true but falls far behind, so the README undersells the corpus and nothing ever asks for the bump.",
-      "find": "over 450 case files",
-      "replace": "over 375 case files",
+      "find": "over 500 case files",
+      "replace": "over 425 case files",
       "expect_caught_by": "test_the_mutation_case_count_it_states_is_the_real_one"
     },
     {

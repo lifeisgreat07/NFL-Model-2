@@ -1,0 +1,36 @@
+{
+  "target": "src/core/after_save.py",
+  "tests": "tests/test_after_save.py",
+  "cases": [
+    {
+      "id": "after-save-raises-again",
+      "why": "a step that fails after the picks are saved ends the run again, so the commit step is skipped and the slate lives only in the artifact",
+      "find": "        print(f'DEGRADED: {step}: {type(exc).__name__}: {exc}')\n        return None\n",
+      "replace": "        print(f'DEGRADED: {step}: {type(exc).__name__}: {exc}')\n        raise\n",
+      "expect_caught_by": "test_a_step_that_raises_says_degraded_and_returns_none"
+    },
+    {
+      "id": "after-save-fails-quietly",
+      "why": "a failed step prints nothing, so the workflow raises no issue and the broken step goes unseen",
+      "find": "        print(f'DEGRADED: {step}: {type(exc).__name__}: {exc}')\n",
+      "replace": "",
+      "expect_caught_by": "test_a_step_that_raises_says_degraded_and_returns_none"
+    },
+    {
+      "id": "nhl-grading-unguarded",
+      "target": "src/sports/nhl/daily.py",
+      "why": "the NHL's grading runs bare after the picks are saved, so a duplicated game id loses the slate, as audit 7 reproduced",
+      "find": "    graded = after_save.guarded('grading', write_grades) or []\n",
+      "replace": "    graded = write_grades()\n",
+      "expect_caught_by": "test_the_nhl_run_keeps_its_picks_when_every_later_step_fails"
+    },
+    {
+      "id": "nba-market-record-unguarded",
+      "target": "src/sports/nba/daily.py",
+      "why": "the NBA's price record runs bare straight after the picks are saved, so a write that fails loses the slate",
+      "find": "        after_save.guarded('market record', market.record, prices, PATHS.data / 'lines' / f'{season}.json')\n",
+      "replace": "        market.record(prices, PATHS.data / 'lines' / f'{season}.json')\n",
+      "expect_caught_by": "test_the_nba_run_keeps_its_picks_when_every_later_step_fails"
+    }
+  ]
+}
