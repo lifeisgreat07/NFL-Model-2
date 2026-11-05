@@ -1,0 +1,70 @@
+{
+ "game_id": "401909937",
+ "season": 2026,
+ "slate": "2026-11-05",
+ "start_utc": "2026-11-06T03:00:00Z",
+ "home": "GS",
+ "away": "MIA",
+ "model_a": 0.5319,
+ "model_b": 0.6125,
+ "pick": "GS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8275,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": 0.562451,
+  "efficiency_matchup": 0.589501,
+  "availability_matchup": -0.172518
+ },
+ "market": {
+  "game_id": "401909937",
+  "home": "GS",
+  "away": "MIA",
+  "start_utc": "2026-11-06T03:00:00Z",
+  "read_utc": "2026-11-05T21:31:28Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -171.0,
+  "away_price": 144.0,
+  "home_prob": 0.6062
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-05T21:31:28Z",
+  "home": [
+   {
+    "athlete_id": "4997536",
+    "name": "Gui Santos",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6430",
+    "name": "Jimmy Butler III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102531",
+    "name": "Kristaps Porzingis",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432171",
+    "name": "Moses Moody",
+    "status": "Out"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-11-05T21:31:28Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-04",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14179,
+  "training_games_priced": 14138
+ }
+}

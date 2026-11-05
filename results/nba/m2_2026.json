@@ -1,29 +1,34 @@
 {
  "measurement": "M2",
  "registered": "experiments/nba/stage61/registry.json",
- "graded": 92,
+ "graded": 106,
  "graded_without_availability": 15,
  "printed_from": 100,
  "judged": false,
  "availability": {
-  "mean_report_minus_box": -0.008639274452242962,
-  "mean_absolute_gap": 0.16365238171329027,
-  "median_absolute_gap": 0.15286833660959498
+  "mean_report_minus_box": -0.014830297067309385,
+  "mean_absolute_gap": 0.15844917618134188,
+  "median_absolute_gap": 0.1459935560519993
  },
  "model_a": {
-  "log_loss_report": 0.6266802619538508,
-  "log_loss_box": 0.6463468224428649,
+  "log_loss_report": 0.6267681390357017,
+  "log_loss_box": 0.6439188869956752,
   "box_minus_report": {
-   "games": 92,
-   "days": 13,
-   "diff": 0.01966656048901411,
-   "low": -0.0172219428078549,
-   "high": 0.05653851776509439,
-   "level": 0.9833333333333333
+   "games": 106,
+   "days": 14,
+   "diff": 0.017150747959973362,
+   "low": -0.014358681818876465,
+   "high": 0.051167231980863113,
+   "level": 0.9833333333333333,
+   "few_days": {
+    "min_days": 20,
+    "game_low": -0.011958968438495327,
+    "game_high": 0.04828419257931849
+   }
   }
  },
  "refit": {
-  "reproduced_saved_model_a": 88,
-  "of": 92
+  "reproduced_saved_model_a": 102,
+  "of": 106
  }
 }

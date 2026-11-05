@@ -19,7 +19,7 @@
     {
       "id": "run-tests-installs-an-unpinned-pytest",
       "why": "the job installs whatever pytest is newest instead of requirements-dev.txt's pin, so the version that checked one PR and the next can differ with nothing recording it",
-      "find": "        run: pip install -r requirements.txt -r requirements-dev.txt",
+      "find": "        run: pip install --require-hashes -r requirements-dev.lock",
       "replace": "        run: pip install -r requirements.txt pytest",
       "expect_caught_by": "test_it_installs_the_pinned_test_requirements"
     },

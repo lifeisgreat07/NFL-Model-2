@@ -24,7 +24,7 @@ def text():
 def test_it_audits_requirements_txt_with_a_pinned_pip_audit():
     t = text()
     assert re.search(r'^\s+run: pip install pip-audit==\d+\.\d+\.\d+$', t, re.M), 'pip-audit must be pinned'
-    assert 'pip-audit -r requirements.txt ' in t
+    assert 'pip-audit -r requirements-dev.lock --require-hashes --disable-pip ' in t
 
 
 def test_it_runs_every_night_and_by_hand():

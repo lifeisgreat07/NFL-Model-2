@@ -41,8 +41,8 @@
       "id": "dispatch-step-runs-on-every-event",
       "target": ".github/workflows/nba-daily.yml",
       "why": "the step loses its event guard, so the table guard no longer holds the step to GitHub's cron runs.",
-      "find": "      - name: Did cron-job.org start this slot?\n        if: github.event_name == 'schedule'\n",
-      "replace": "      - name: Did cron-job.org start this slot?\n",
+      "find": "      - name: Did cron-job.org start this slot?\n        timeout-minutes: 25\n        if: github.event_name == 'schedule'\n",
+      "replace": "      - name: Did cron-job.org start this slot?\n        timeout-minutes: 25\n",
       "expect_caught_by": "test_every_covered_workflow_runs_the_check"
     },
     {

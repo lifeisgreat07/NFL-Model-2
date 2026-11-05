@@ -53,7 +53,7 @@ from src.core import (
     season_prices,
 )
 from src.core.atomic_write import write_json_atomic
-from src.core.provenance import training
+from src.core.provenance import code_identity, training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nba import (
     backtest,
@@ -370,6 +370,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             if day not in fitted:
                 fitted[day] = fit_before(table, day, first)
             models, trained = fitted[day]
+            trained = trained | code_identity('nba')  # Stage 95 item 39
             rated = ratings.day_ratings(games[games['day'] < day], day, h, lam)
             feats: dict[str, float] = dict(rated.matchup(g['home'], g['away']))
             matchup, avail, injury_list, why = game_availability(report, g['home'], g['away'], minutes, day_of,
