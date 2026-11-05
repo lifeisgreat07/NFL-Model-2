@@ -33,6 +33,9 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))  # tests/browser, when imported from elsewhere
+from page_edit import rehash
+
 ROOT = Path(__file__).resolve().parents[2]
 WIDTHS = (390, 1280)
 THEMES = ('dark', 'light')
@@ -145,7 +148,7 @@ async def self_test(tmp):
             failed.append(name)
             continue
         broken = Path(tmp) / f'nhl_day_{name}.html'
-        broken.write_text(html.replace(find, replace), encoding='utf-8')
+        broken.write_text(rehash(html.replace(find, replace)), encoding='utf-8')
         report = await check_page(broken)
         hit = [r for r in report if expect in r]
         print(f"self-test {name}: {'caught' if hit else 'MISSED'} ({len(report)} finding(s))")

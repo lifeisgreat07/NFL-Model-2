@@ -43,7 +43,7 @@ def expected(computed):
 
 
 def test_the_section_is_near_the_top_and_says_how_to_read_it():
-    assert README.index('## Results at a glance') < README.index('## For recruiters -- project overview')
+    assert README.index('## Results at a glance') < README.index('## Run it in three commands')
     assert 'Log loss, lower is better' in README and 'recomputed from the saved picks' in README
 
 

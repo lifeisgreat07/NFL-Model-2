@@ -57,6 +57,7 @@ from src.core import (
     forward_test,
     pick_guard,
     priced,
+    request_budget,
     schedule_guard,
     season_prices,
 )
@@ -326,7 +327,8 @@ def write_page_inputs(sched: pd.DataFrame, games: pd.DataFrame, folder: Path, h:
 def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetch) -> int:
     now = now or datetime.now(UTC)
     season = nhl_schedule.current_season(now)
-    sched = nhl_schedule.load_schedule(season)
+    # Stage 93 item 18: retried like the history and odds reads, and under a budget.
+    sched = nhl_schedule.load_schedule(season, get=request_budget.Budget().wrap(lambda u: json.loads(get(u))))
     # Stage 91 item 2: an empty or shrunken feed stops the run before anything is written.
     schedule_guard.check(len(sched), PATHS.results / f'schedule_{season}.json')
     first = backtest.registry()['protocol']['training_from_season']

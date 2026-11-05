@@ -166,9 +166,41 @@ function updatedText(iso){
 }
 document.getElementById('home-updated').textContent = updatedText(HOME.built_utc);
 
+/* Stage 90 item 1: the track record. Each sport's Model B, market and base
+   rate, live beside the backtest (src/site/track_record.py); no section at
+   all until a sport has a figure to show. */
+function trackNum(x){ return x === null || x === undefined ? '-' : Number(x).toFixed(3); }
+function trackTable(sport, t){
+  if(!t || !Array.isArray(t.rows) || !t.rows.length) return '';
+  const rows = t.rows.map(r => `<tr><th scope="row">${esc(r.label)}</th>`
+    + `<td>${trackNum(r.live.log_loss)}</td><td>${trackNum(r.backtest.log_loss)}</td>`
+    + `<td>${trackNum(r.live.brier)}</td></tr>`).join('');
+  const games = t.rows[0].live.games, back = t.rows[0].backtest.games;
+  const cal = t.calibration ? `<p class="home-track-note">Model B's calibration slope live: ${Number(t.calibration.value).toFixed(2)} `
+    + `(${Number(t.calibration.low).toFixed(2)} to ${Number(t.calibration.high).toFixed(2)}); 1 is perfect, `
+    + `above 1 means its chances sit too close to 50%.</p>` : '';
+  const note = t.note ? `<p class="home-track-note">${esc(t.note)}</p>` : '';
+  return `<div class="home-track-sport"><h3>${SPORT_NAME[sport]} ${esc(String(t.season))}</h3>`
+    + `<table><caption class="sr-only">${SPORT_NAME[sport]}: log loss live and in the backtest, and Brier score live</caption>`
+    + `<thead><tr><th scope="col"></th><th scope="col">Live</th><th scope="col">Backtest</th><th scope="col">Live Brier</th></tr></thead>`
+    + `<tbody>${rows}</tbody></table>`
+    + `<p class="home-track-note">Live: ${Number(games)} graded picks through ${esc(String(t.through))}. `
+    + `Backtest: ${Number(back)} games, ${esc(t.backtest_label)}.</p>${cal}${note}</div>`;
+}
+function trackRecord(track){
+  return ['nfl', 'nhl', 'nba'].map(s => trackTable(s, (track || {})[s])).join('');
+}
+
 // The hero's one action (Stage 68 item 34, option A2): the sport whose next
 // game starts first, from the same facts the cards read.
 const SPORT_NAME = {nfl:'NFL', nhl:'NHL', nba:'NBA'};
+{
+  const tables = trackRecord(HOME.track);
+  if(tables){
+    document.getElementById('home-track-tables').innerHTML = tables;
+    document.getElementById('home-track').hidden = false;
+  }
+}
 function nextGame(){
   const ahead = [];
   const n = HOME.nfl;
