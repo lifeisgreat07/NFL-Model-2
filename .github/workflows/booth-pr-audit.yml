@@ -133,7 +133,16 @@ jobs:
         # installs an unpinned one mid-audit, and nothing records which
         # version did the verifying -- the project's own reproducibility
         # rule, broken inside the thing that enforces it.
-        run: pip install -r requirements.txt -r requirements-dev.txt
+        # Stage 88 item 3: from the hashed lock. Booth checks out the pull
+        # request's head, so a branch made before the lock existed has none;
+        # it installs from the pins it does have, and the log says which.
+        run: |
+          if [ -f requirements-dev.lock ]; then
+            pip install --require-hashes -r requirements-dev.lock
+          else
+            echo "This head predates requirements-dev.lock; installing from requirements.txt and requirements-dev.txt."
+            pip install -r requirements.txt -r requirements-dev.txt
+          fi
 
       - name: Record what this run is about to audit
         # Taken BEFORE Booth runs, for the check after it. Booth builds

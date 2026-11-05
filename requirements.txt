@@ -49,6 +49,12 @@
 # unmaintained becomes the reason -- and regenerate every published number as
 # part of it, rather than discovering the shift afterwards.
 
+# Stage 88 item 3: CI installs requirements.lock (this file, resolved for every
+# platform with every transitive package pinned and hashed) with
+# --require-hashes, and requirements-dev.lock with requirements-dev.txt. After
+# any change to either file, regenerate both with the commands at the top of
+# each lock; tests/test_lock.py fails until they agree.
+
 pandas==1.5.3
 numpy==1.26.4
 scikit-learn==1.9.0

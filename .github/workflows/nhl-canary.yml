@@ -46,7 +46,7 @@ jobs:
         run: python -m src.core.missed_dispatch .github/workflows/nhl-canary.yml
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Run the canary
         run: python -m src.sports.nhl.canary --report nhl-canary-report.md

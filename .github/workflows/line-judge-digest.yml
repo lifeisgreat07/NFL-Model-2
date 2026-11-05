@@ -37,7 +37,7 @@ jobs:
       - name: Record the start delay
         run: python -m src.core.start_delay .github/workflows/line-judge-digest.yml
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
       - name: Post the digest
         env:
           GH_TOKEN: ${{ github.token }}

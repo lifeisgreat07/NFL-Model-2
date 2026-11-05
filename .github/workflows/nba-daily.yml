@@ -64,7 +64,7 @@ jobs:
         run: python -m src.core.missed_dispatch .github/workflows/nba-daily.yml
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       # `shell: bash` is not decoration: only an explicit bash shell runs with
       # pipefail, and without it `tee` reports success for a run that crashed,
@@ -222,7 +222,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Judge the run
         id: judge

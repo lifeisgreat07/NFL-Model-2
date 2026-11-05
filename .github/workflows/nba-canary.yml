@@ -50,7 +50,7 @@ jobs:
         run: python -m src.core.missed_dispatch .github/workflows/nba-canary.yml
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Run the canary
         run: python -m src.sports.nba.canary --report nba-canary-report.md --failed nba-canary-failed.txt

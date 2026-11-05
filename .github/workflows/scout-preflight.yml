@@ -70,7 +70,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes -r requirements.lock
 
       - name: Write the PR description to a file
         # Through the environment, not through the shell: a description is
