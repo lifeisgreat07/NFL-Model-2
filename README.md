@@ -5,16 +5,16 @@ Backtested win-probability picks for the NFL (weekly), the NHL and the NBA
 every model was registered, tuned and confirmed on held-out seasons before
 it picked a live game, and the backtest numbers were actually run.
 
-**Live dashboard: https://lifeisgreat07.github.io/NFL-Model-2/**
-(the NFL board is at [nfl/](https://lifeisgreat07.github.io/NFL-Model-2/nfl/); the NHL's pages at
-[nhl/](https://lifeisgreat07.github.io/NFL-Model-2/nhl/) and the NBA's backtest at
-[nba/](https://lifeisgreat07.github.io/NFL-Model-2/nba/). The root is a home page with a card per sport; a shared-picks link made there still opens the NFL board.)
+**Live site: https://lifeisgreat07.github.io/NFL-Model-2/** (a home page with
+a card per sport; the boards are at [nfl/](https://lifeisgreat07.github.io/NFL-Model-2/nfl/),
+[nhl/](https://lifeisgreat07.github.io/NFL-Model-2/nhl/) and
+[nba/](https://lifeisgreat07.github.io/NFL-Model-2/nba/)).
 
-![The Week Board: each game's win probability from Model A and Model B, with the betting line](docs/images/week-board.png)
+![The home page: each sport's record and tonight's games](docs/images/home.png)
 
-*Screenshots in this README were taken on 2026-09-28, in the dark theme at
-1280x800. The live page loads team logos from ESPN's CDN; for these images
-the same logo files were served locally.*
+*Screenshots in this README were taken on 2026-11-05 from the committed data, in the
+light theme at 1280 px (shown at twice the pixels). The live pages load team logos from ESPN, which these
+images leave out.*
 
 ## Results at a glance
 
@@ -35,112 +35,66 @@ live since its first saved pick.
 Log loss, lower is better, with the games each forecaster was scored on in brackets: a model or the market is scored only on the games it had a number for. The base rate is the home side's share of wins in every earlier game of the sport's history; the NFL's backtest and live record publish none. The live rows are as of the week or day they name, and recomputed from the saved picks by `tests/test_results_glance.py`; each sport's page has today's.
 <!-- glance:end -->
 
-## For recruiters -- project overview
+## Run it in three commands
 
-This is a working prediction system, not a notebook. Every week it pulls
-fresh play-by-play data, refits opponent-adjusted team ratings, writes
-that week's picks to a timestamped file **before kickoff**, and grades
-them against reality afterwards. The dashboard above is generated from
-those files, so the accuracy record on it is the model's real record, not
-a number typed in by hand.
+With Python 3.11, from the repository root:
 
-What it is meant to demonstrate, and where to look:
+```bash
+pip install -r requirements.txt
+python -m src.site.build --out _site
+python -m http.server 8000 --directory _site
+```
 
-- **A model that beats its baselines and admits where it doesn't.** The
-  table below is 1,087 games from 2022-2025, each predicted by a model
-  trained only on games played before it, refit every week as the live
-  system is. The football-only model beats
-  home-team-always-wins by about 8 points. It does *not* beat the betting
-  market, and the README says so rather than quietly omitting the
-  comparison. See `src/sports/nfl/research/backtest.py` and `src/sports/nfl/ratings_engine.py`.
-- **Leak-free by construction, and tested for it.** Every rating a
-  prediction uses is computed from data available before that game
-  kicked off. `tests/test_leak_free.py` fails the build if a future
-  observation ever reaches a past prediction.
-- **Tuned constants with the experiment attached.** `src/sports/nfl/config.py`
-  carries every hyperparameter next to the backtest that justified it,
-  so no number in the model is there because it looked about right.
-- **Experiments registered before they are run.** Each proposed change
-  to the model is written into `experiments/nfl/stage5/registry.json` or
-  `experiments/nfl/stage6/registry.json` first, with its question, its
-  metric, its decision rule and the seasons it will be judged on, so a
-  result cannot be reframed after it is seen. A rejected change stays on
-  the record, and the dashboard's Model Lab page lists it with the rest.
-- **A backtest that is re-run, not remembered.** `src/sports/nfl/research/reproducibility_audit.py`
-  re-runs the published backtest from the current code and checks log
-  loss, Brier and AUC against the published figures to four decimals; its
-  latest record is `data/nfl/reproducibility_audit.json`.
-- **AI-assisted development with an independent verifier.** Work is done
-  in a "Scout" role and audited by a separate "Booth" role that shares no
-  context with it, runs in CI on every pull request, and must re-execute
-  the commands that would prove or disprove each claim before it reports.
-  See `BOOTH_PROTOCOL.md`, `.github/workflows/booth-pr-audit.yml`, and
-  `VERIFICATION.md` -- the last of which is the rule that no claim in this
-  repository is made without evidence that was actually run.
+Then open http://localhost:8000. The build reads only the data committed here,
+so it needs no network. Tests, the scheduled jobs and every other command are
+in [docs/operations.md](docs/operations.md).
+
+## What it demonstrates
+
+- **Models that are judged against their baselines, including where they lose.**
+  Each sport's backtest predicts every game from a model trained only on games
+  played before it, refit every week as the live system is,
+  and the table above sets every model against the betting market and the base
+  rate. The models do not beat the market, and the record says so.
+- **Picks that cannot be changed after the fact.** Every pick is committed
+  before its game starts and graded after; the repository's history is the
+  proof, and a test reads it back for every NHL and NBA pick.
+- **Leak-free by construction, and tested for it.** A rating used for a game is
+  computed only from games before it, and `tests/test_leak_free.py` fails the
+  build if a later observation reaches an earlier prediction.
+- **Experiments registered before they are run.** Each change to a model is
+  written into a registry under `experiments/` with its question, metric,
+  decision rule and seasons first, so a result cannot be reframed after it is
+  seen. Rejected changes stay on the record, on each sport's Model Lab page.
+- **A backtest that is re-run, not remembered.** The published figures are
+  recomputed from the current code and checked to four decimals.
+- **AI-assisted development with an independent verifier.** Four agents share
+  the work, and the one that audits each change starts cold, cannot push, and
+  re-runs every claim before it reports (below).
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, over 450 case files, one per subject under test)
-  deliberately breaks the code in known
-  ways and fails if the suite does not catch the break -- because a test
-  that passes against broken code is worse than no test.
-- **Twenty-nine CI workflows** in `.github/workflows/` cover the test suite, the
-  weekly data pull, a weekend refresh of game status and scores that never
-  touches a saved pick, the backtest, the Pages build-and-deploy, the
-  agent-activity log, a pre-flight check on every pull request description,
-  both halves of the Booth audit, an issue raised when a Booth audit
-  fails, a nightly canary that runs the weekly data path and raises an
-  issue when it breaks, a nightly slice of the mutation corpus, the whole
-  suite nightly in a shuffled order, a nightly report-only audit of the
-  pinned dependencies against known vulnerabilities, browser checks that drive Chromium over the
-  built page at six widths (overflow, focus, 24px targets, axe-core, the
-  font, a byte budget) after proving each of their own rules can fail,
-  a probe of the league's own schedule page, the candidate source of
-  TV channels, the NHL's and the NBA's daily runs and nightly canaries, and
-  probes of the sources the NHL and the NBA read, each run from GitHub's own
-  runners before anything depends on it, the NHL's and NBA's backtests
-  re-run by hand against their committed results, and Line Judge's diagnosis
-  of a run its checks flagged and its weekly digest, and an issue while a QB
-  override pull request is waiting to merge before Thursday's lock.
+  (`tests/mutation/`, over 500 case files, one per subject under test) breaks
+  the code in known ways and fails if the suite does not notice.
+- **Twenty-nine CI workflows** in `.github/workflows/` run the tests, the
+  scheduled picks and grading, the audits of every pull request, the nightly
+  canaries and checks, and the site's build; [docs/operations.md](docs/operations.md)
+  says what to do when one of them opens an alert.
+- **Case studies of what went wrong.** Five write-ups in `docs/case-studies/`,
+  each a real problem, how it was found and what it cost, with every figure
+  held to its source by a test.
 
-- **Decision records.** The six decisions the rest rests on -- one static
-  page, two models side by side, the kickoff lock, an auditor that cannot
-  push, on-time scheduling, and one core with a module per sport, held
-  apart by tests -- one page each, with why, what it costs and
-  what would reopen it: `docs/decisions/README.md`.
-- **Case studies of what went wrong, and a list of what it taught.** Four
-  write-ups in `docs/case-studies/`, each a real problem, how it was found
-  and what it cost, with every figure held to its source by a test. The
-  lessons across all of them are in `docs/lessons-learned.md`.
+## Current model (v2.6): the NFL
 
-If you have five minutes: open the live dashboard, read its **Methodology**
-page, then read `VERIFICATION.md`. Those three cover what the model does,
-how it was validated, and how the work on it is checked. For how the pieces
-fit together, `docs/architecture.md` has the whole system on one diagram.
+Opponent-adjusted team ratings from play-level EPA (a two-way ridge
+regression, recency-weighted), a per-quarterback rating, and four features,
+each a difference between the two teams: offence, defence, quarterback, and a
+change of quarterback, fed to a logistic regression refit every week. **Model A**
+is football only; **Model B** adds the betting spread. Live picks use the
+quarterback expected to start. Every constant sits in
+`src/sports/nfl/config.py` beside the backtest that chose it.
 
-## Current model (v2.6)
-- Opponent-adjusted team ratings: two-way fixed-effects ridge regression
-  on play-level EPA, recency-weighted (16-game half-life), alpha=15
-  (tuned via backtest -- see `src/sports/nfl/config.py` for justification of every
-  constant).
-- Per-QB rating: leak-free trailing EPA/dropback, shrunk toward league
-  average for small samples. Live picks use the quarterback expected to
-  start: a sourced override if one has been filed, otherwise the
-  schedule's listed starter, otherwise last game's quarterback with a
-  note. The backtest uses each game's actual starter.
-- Four features, each a difference between the two teams: offence,
-  defence, quarterback, and a term for a change of quarterback, fed to a
-  logistic regression refit every week. The model outputs a win probability, never a margin.
-- Two models shown side by side: **Model A** (football-only) and
-  **Model B** (Model A plus the current betting spread).
-- At a game the schedule places at a neutral site, neither model gives the
-  listed home team a home edge: each model's intercept is taken out of its
-  log-odds (Stage 38 N1, registered in
-  `experiments/nfl/stage38/n1_registry.json`).
-
-Backtest results (2022-2025, 1,087 games, refit every week on strictly
-earlier games, which include the earlier weeks of the season being
-evaluated). The
-same table is on the dashboard's **Methodology** page, and
-`tests/test_readme_accuracy.py` fails if the two disagree:
+Backtest, 2022-2025, 1,087 games, refit every week on strictly earlier games,
+which include the earlier weeks of the season being evaluated (the same table is on the NFL page's Methodology, and
+`tests/test_readme_accuracy.py` fails if the two disagree):
 
 | Model | Accuracy | Log Loss | Brier | AUC |
 |---|---|---|---|---|
@@ -150,24 +104,20 @@ same table is on the dashboard's **Methodology** page, and
 | Vegas market alone | 68.2% | 0.607 | 0.210 | 0.725 |
 | Model B (+ market) | 68.3% | 0.606 | 0.209 | 0.727 |
 
-This season's live record, graded after each week, is on the dashboard's
-Season Accuracy page:
+Judge it on log loss, Brier and AUC: accuracy can differ by a game or two
+between machines, and Model B and the market are statistically tied.
 
-![Season Accuracy: the betting market, Model B and Model A, racing on games actually graded this season](docs/images/season-accuracy.png)
+![Season Accuracy: the betting market, Model B and Model A, on the games graded this season](docs/images/season-accuracy.png)
 
-Judge the backtest on log loss, Brier and AUC. The same code and data can differ
-by a game or two out of 1,087 between machines, so accuracy alone can't
-separate models this close; Model B and the market are statistically tied.
-
-The full methodology write-up lives on the dashboard's **Methodology**
-page rather than in a separate file, so that the explanation and the
-numbers it explains are regenerated from the same data in the same step.
+The NHL's and NBA's models, their registries and backtests are on their own
+pages: [nhl/](https://lifeisgreat07.github.io/NFL-Model-2/nhl/),
+[nba/](https://lifeisgreat07.github.io/NFL-Model-2/nba/).
 
 ## How the work is checked
 
-Most of this repository was written by an AI agent, and the setup around
-it assumes the agent will sometimes be confidently wrong. Four agents
-share the work:
+Most of this repository was written by an AI agent, and the setup around it
+assumes the agent will sometimes be confidently wrong. Four agents share the
+work:
 
 <!-- agents:start -->
 | Agent | What it does | When | Its record |
@@ -178,204 +128,22 @@ share the work:
 | **Line Judge** | Checks what each scheduled run left behind, and an agent diagnoses a finding from the run's logs | After each NFL weekly update and weekend refresh and each NHL and NBA daily run | Counted each Monday in the issue "Line Judge weekly digest" |
 <!-- agents:end -->
 
-- **Scout** does the work and opens every pull request.
-  `src/agents/scout_preflight.py` checks the description against the repository
-  before anyone reads it: suite counts, whether every commit is
-  mentioned, figures quoted from a wider command than the sentence claims.
-- **Booth** is a second agent that starts cold on every pull request,
-  re-executes each claim in the description, and posts a report with a
-  machine-readable verdict. It runs on the workflow's own read-only token,
-  so it cannot push or merge (until 2026-09-28 it ran on an app token that
-  could; `tests/test_booth_permissions.py` now holds that shut).
-  The workflow fails if Booth posts nothing (`src/agents/booth_report_posted.py`).
-- **The test suite** includes guards on the project's own documentation:
-  numbers quoted in prose are tied to the files they came from, and the
-  mutation corpus proves each guard fails when the thing it protects
-  breaks.
-- **Every audit is public.** The dashboard's "Checking the AI's work" page
-  counts Booth's reports live from `data/agent_log.json`, and links the
-  case studies.
+Booth runs on the workflow's own read-only token, so it cannot push or
+merge, and the workflow fails if it posts no report. Every audit is public:
+the NFL page's "Checking the AI's work" counts them live from
+`data/agent_log.json`.
 
-![Checking the AI's work: Booth's audit record and the case studies](docs/images/checking-the-ai.png)
+![Checking the AI's work: what the audits have caught](docs/images/checking-the-ai.png)
 
-## Repo layout
-```
-docs/
-  architecture.md       -- the whole system on one diagram
-  case-studies/         -- write-ups of real problems and how they were found
-  lessons-learned.md    -- what it all taught, each lesson with its source
-src/core/               -- shared by every sport (decision record 0006)
-  sport.py              -- the interface a sport module satisfies
-  isolation.py          -- the rules that keep sports apart, as checks
-  model_specs.py        -- the models, written down once, and the walk-forward evaluation
-  template_parts.py     -- joins the dashboard template's parts into one page
-src/sports/nfl/         -- the NFL: what its scheduled workflows and the page build run
-  config.py             -- every tuned constant, with the backtest that justified it
-  data_loader.py        -- pulls fresh nflverse data automatically (no manual CSVs)
-  ratings_engine.py     -- team + QB rating computation (leak-free, recency-weighted)
-  weekly_update.py      -- main entrypoint: generates next week's predictions
-  grade_predictions.py  -- grades a completed week against actual results
-  generate_dashboard.py -- builds index.html from the template plus data/nfl/
-src/sports/nfl/research/ -- run by hand: backtests, experiments, re-derived figures
-  backtest.py           -- the holdout backtest behind the table above
-  calibration.py        -- reliability of the stated probabilities
-src/sports/nhl/         -- the NHL: schedule, history, model, lock rule, daily run, pages
-src/sports/nba/         -- the NBA, the NHL's shape again: live from 2026-10-20
-src/site/               -- the home page and the site build that joins every sport's pages
-src/agents/             -- Booth, Scout and the session gates
-  scout_preflight.py    -- checks a branch against the project's own rules
-  session_wrapup.py     -- end-of-session checks (suite count, unpushed work, docs)
-src/dashboard/          -- the dashboard template, in parts, with data injected at build
-  page.html             -- the document; includes the three parts below
-  styles.css, body.html, app.js -- stylesheet, markup and script
-predictions/nfl/        -- one JSON file per week, saved BEFORE kickoff, never edited
-results/nfl/            -- graded predictions, builds the season accuracy record
-data/nfl/               -- generated inputs the dashboard reads
-data/                   -- shared: Booth's audit log
-assets/fonts/           -- the self-hosted Plus Jakarta Sans files and their licence
-tests/                  -- the suite, plus tests/mutation/ (tests for the tests)
-.github/workflows/      -- CI: tests, weekly update, backtest, dashboard, Booth
-```
+## Read next
 
-`index.html` and `dist/` are **build outputs and are not in the repository.**
-Both are produced by `src/sports/nfl/generate_dashboard.py`; GitHub Pages publishes them
-from a CI build, and the test suite builds them itself via the root
-`conftest.py`. To see the dashboard locally, run the generator.
-
-## Manual usage
-```bash
-pip install -r requirements.txt
-python -m src.sports.nfl.weekly_update --season 2026 --week 2
-# ... after that week's games finish ...
-python -m src.sports.nfl.grade_predictions --season 2026 --week 2
-# rebuild the dashboard from whatever is in data/ and results/
-python -m src.sports.nfl.generate_dashboard
-```
-
-### Settings and the rules the code enforces
-
-The environment variables the code reads, all optional:
-
-| Variable | What it does | Who sets it |
-|---|---|---|
-| `NHL_CACHE` | A folder for finished NHL seasons' schedules and raw box scores, read from disk instead of refetched. The current season is never cached. | Anyone re-reading the NHL's history (`python -m src.sports.nhl.history`). The daily run and the canary never set it. |
-| `NBA_CACHE` | A folder for finished NBA seasons' schedules and raw box scores, read from disk instead of refetched. The current season is never cached. | Anyone re-reading the NBA's history (`python -m src.sports.nba.history`, a later branch). Nothing scheduled sets it. |
-| `NFL_PBP_CACHE` | A folder for finished seasons of play-by-play, read from disk instead of refetched. The current season is always fetched. | Only the nightly canary. The weekly run never does: the run that makes picks always fetches fresh. |
-| `STAGE5_CACHE` | Where the Stage 5 experiment runner keeps its game table. Defaults to nfl-cache/stage5 beside the repository folder. | Anyone re-running a registered Stage 5 question. |
-| `STAGE6_CACHE` | The same for the Stage 6 data-source runner (nfl-cache/stage6). | Anyone re-running Stage 6. |
-| `GITHUB_TOKEN` | Read by `src/sports/nfl/recent_runs.py` for GitHub's Actions API; without it the anonymous limit applies (60 calls an hour, four used per read). | The deploy job, with its own token. |
-| `GH_TOKEN` | Read by `src/core/job_logs.py`, which fetches a failed run's job logs for the Line Judge's diagnosis; without it the fetch stops with an error. It sends the token to GitHub's API only, never to the log's signed link. | The diagnose workflow, with the run's own read-only token. |
-| `GITHUB_OUTPUT` | Read by `src/sports/nfl/slot_guard.py`: where it writes `run` and `slot` for the Weekly update's later steps. Unset, it prints its decision and writes nothing. | GitHub Actions, on every runner. |
-| `GITHUB_STEP_SUMMARY` | Read by `src/sports/nfl/slot_guard.py`: a skipped slot is noted in the run's summary. Read by `src/core/start_delay.py`: each scheduled run's start delay is written there. Unset, nothing is noted. | GitHub Actions, on every runner. |
-| `GITHUB_EVENT_NAME` | Read by `src/core/start_delay.py`: a run GitHub's cron started always serves a slot; a dispatched one serves it only within twelve hours. Unset, the run is measured as dispatched. | GitHub Actions, on every runner. |
-| `CRON_SCHEDULE` | Read by `src/core/start_delay.py`: the cron line that fired a scheduled run (the NHL and NBA daily workflows pass `github.event.schedule`), so a late copy of one slot is measured against that slot, not the next. Unset or empty, the latest slot of any line is used. | The NHL and NBA daily workflows' start-delay step. |
-| `GITHUB_ACTIONS` | Read by `src/sports/nba/data_probe.py`: on a runner it adds one notice line summing up every source, readable from the run's annotations. Unset, the probe only prints. | GitHub Actions, on every runner. |
-| `GITHUB_RUN_ID` | Read by `src/sports/nfl/slot_guard.py`: stored with the slot it marks as served. Unset, the run id is stored as null. | GitHub Actions, on every runner. |
-
-Four rules that live in the code rather than in any one document:
-
-- **A saved prediction is permanent.** `src/sports/nfl/weekly_update.py` will not
-  overwrite `predictions/nfl/<season>_week<N>.json`; it warns and writes nothing. That
-  refusal is what makes "saved before kickoff" a claim anyone can check.
-- **The next week is worked out, not configured.** With no `--week`, the run
-  takes one past the latest week saved or recorded as skipped, which is how
-  it walks through the playoffs unattended.
-- **The test suite and mutation runs rewrite `index.html`.** Several tests
-  build the page, and a mutation run can build it with a mutation applied, so
-  rebuild it (`python -m src.sports.nfl.generate_dashboard`) right before looking at it.
-- **CLAUDE.md's `Suite: **N passing**` line is read by software.**
-  `src/agents/session_wrapup.py` and `src/agents/session_start.py` parse that exact shape;
-  reword it and they report the line missing.
-
-`tests/test_readme_accuracy.py` fails if the code reads an environment
-variable this table does not name.
-
-Running the tests needs Python 3.11 (as `.python-version` says) and, for
-the tests that run the dashboard's own JavaScript, node 24; without node
-those tests skip rather than fail. From the repository root:
-```bash
-pip install -r requirements.txt -r requirements-dev.txt
-ruff check .
-python -m pytest
-```
-The mutation corpus runs separately, one case at a time or a sample of
-it; a full run takes well over an hour:
-```bash
-python tests/mutation/runner.py --id <case id>
-python tests/mutation/runner.py --sample 30 --seed 20260929
-```
-Every one of these, and the page build, the browser checks and the
-end-of-session gate, is also a task in `tasks.py`, which runs exactly what CI
-runs (`tests/test_tasks.py` holds each task to its workflow). `python
-tasks.py` lists them; `python tasks.py check` is lint plus the suite.
-`python tasks.py quick` is the suite without the eight tests marked `slow`
-(five drive a whole daily run, two re-derive a saved pick from the whole
-history, one drives the NHL's run on a renamed odds payload), for
-iterating; CI and the Suite line still run every test.
-
-## Automating this with Claude Code Routines
-
-The weekly pipeline itself needs no Claude at all. The repository's
-**Weekly update** workflow (`.github/workflows/nfl-weekly-update.yml`) runs on
-GitHub every Tuesday and Thursday at 11:00 UTC. It grades finished
-weeks, refreshes the ratings, playoff odds and line archive, and locks the
-next week's picks at the right run: Thursday usually, and Tuesday for a
-week with an earlier game (Thanksgiving, a Wednesday game). See
-`decide_lock` in `src/sports/nfl/weekly_update.py`. Its data commit then triggers the
-site rebuild.
-
-What a routine adds is the one thing a script can't do: read the news.
-Picks use the starter listed on nflverse's schedule, and that list can lag
-the news. On 2026-09-22 it still listed two starters who had already been
-ruled out. A sourced override in `data/nfl/qb_overrides/<season>_week<N>.json`
-takes precedence over it.
-
-Setup (verified against current Claude Code docs,
-code.claude.com/docs/en/routines):
-
-1. **Push this repo to GitHub.** Routines clone from GitHub on every run.
-2. **Connect GitHub to Claude Code**, if you haven't already: run
-   `/web-setup` inside Claude Code (this is separate from installing the
-   GitHub App -- both are required for the routine to actually trigger).
-3. **Create the routine** on the web at `claude.ai/code/routines` -> New
-   routine, or with `/schedule` in the Claude Code CLI.
-4. **Schedule it Monday and Wednesday evening** (`0 22 * * 1,3`, UTC), so
-   a PR is waiting before each scheduled lock: Wednesday's before
-   Thursday's, Monday's before a Tuesday lock.
-5. **Make sure the routine's cloud environment has network access
-   enabled** -- it needs nflverse's GitHub-hosted data and web search for
-   QB news. This is a setting on the routine's environment.
-6. **Give it narrow, unattended-safe instructions.** The routine this repo
-   runs, "Weekly QB override research", is told to:
-   - find the next week to predict with `determine_next_week`;
-   - web-search starting-QB news for every team playing that week;
-   - record a team only when a credible source says the listed starter
-     won't start, or names another starter;
-   - write the override file as a list of
-     `{"team", "player_id", "player_name", "source"}`, where `player_id`
-     is the GSIS id (00-0000000) and `source` is a link, and validate it
-     with `load_qb_overrides`;
-   - open a PR titled "QB overrides: <season> week N", or stop with one
-     line if nothing needs overriding.
-
-   It must NOT run `src/sports/nfl/weekly_update.py`, `src/sports/nfl/grade_predictions.py` or
-   `src/sports/nfl/generate_dashboard.py`. The workflow owns those, and a second writer of
-   saved predictions would be a second way to break a lock.
-7. **Merge the override PR before the lock.** On a normal week, that means
-   before Thursday 11:00 UTC. An override merged after the lock changes
-   nothing, because a locked week is final.
-
-## What this does NOT automate yet
-- Confirming genuinely uncertain starting QB situations (e.g. a team
-  benching its starter) -- the routine above researches them and opens a
-  PR, but a person still decides whether to merge it.
-- Hyperparameters (alpha, half-life, QB shrinkage) are NOT re-tuned
-  automatically each week -- they're fit once via backtest and left fixed
-  in `src/sports/nfl/config.py`. Re-running the full backtest sweep weekly would be
-  needlessly expensive; do it manually every few weeks or once per season.
-- The model does not beat the betting market on its own. Model B only
-  matches it, within noise. Treating Model A as an edge against a market
-  price would be a misreading of the table above.
+- [docs/README.md](docs/README.md): where to start, by what you want to know.
+- [docs/architecture.md](docs/architecture.md): the whole system on one diagram.
+- [docs/decisions/](docs/decisions/README.md): the seven decisions the rest rests on, one page each.
+- [docs/case-studies/](docs/case-studies/): real problems, how they were found and what they cost.
+- [docs/operations.md](docs/operations.md): running it, the scheduled jobs, and what to do when an alert opens.
+- [CHANGELOG.md](CHANGELOG.md): what changed, month by month.
+- [VERIFICATION.md](VERIFICATION.md): the rule that no claim here is made without evidence that was run.
 
 ## Licence
 

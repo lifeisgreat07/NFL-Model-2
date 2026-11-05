@@ -216,7 +216,10 @@ def test_the_page_carries_only_the_agent_log_it_reads():
     assert gd.agent_log_for_page(log) == {'generated_utc': 't', 'summary': {'audits': 3}}
     assert gd.agent_log_for_page(None) is None
     reads = set(re.findall(r'agentLog\.(\w+)', TEMPLATE))
-    assert reads <= {'generated_utc', 'summary'}, f'the page reads {reads} from the agent log'
+    assert reads <= {'generated_utc', 'summary', 'recent'}, f'the page reads {reads} from the agent log'
+    # Stage 90 item 3: the agents' latest outputs reach the page, and the per-audit rows still do not.
+    log['recent'] = [{'agent': 'Booth'}]
+    assert gd.agent_log_for_page(log) == {'generated_utc': 't', 'summary': {'audits': 3}, 'recent': [{'agent': 'Booth'}]}
 
 
 def test_every_data_fill_is_compact():

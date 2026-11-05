@@ -18,6 +18,7 @@ from html import escape as _escape
 from pathlib import Path
 from typing import Any
 
+from src.core import csp
 from src.core.page_comments import strip_page_comments
 from src.core.page_fill import font_faces_css
 from src.core.template_parts import read_template
@@ -26,6 +27,7 @@ from src.core.template_parts import read_template
 # generate_picks_pdf below there is nothing here for a module-level import to
 # take down. It resolves the same way run as `python -m` or imported by a
 # test: both put the repository root on the path.
+from src.sports.nfl import ratings_snapshot
 from src.sports.nfl.config import MODEL_VERSION, TRAIN_SEASONS, VERSION_HISTORY
 
 # generate_picks_pdf is imported lazily, inside the PDF loop in main() --
@@ -222,7 +224,10 @@ def agent_log_for_page(log: dict[str, Any] | None) -> dict[str, Any] | None:
     Stage 26 item 11."""
     if log is None:
         return None
-    return {k: log.get(k) for k in ('generated_utc', 'summary')}
+    page = {k: log.get(k) for k in ('generated_utc', 'summary')}
+    if 'recent' in log:
+        page['recent'] = log['recent']  # Stage 90 item 3: the agents at work
+    return page
 
 
 def load_recent_runs(path: Path | None = None) -> dict[str, Any] | None:
@@ -598,12 +603,15 @@ def build_games_js(preds: list[Pick], graded_lookup_by_key: dict[tuple[str, str]
             'gametime_et': p.get('gametime_et'),
             'weekday': p.get('weekday'),
             'spread': p.get('spread_line'),
-            'fbA_home': round(model_a * 100, 1),
-            'mktB_home': round((model_b if model_b is not None else model_a) * 100, 1),
+            # As percentages at the saved file's own precision (four decimals of a probability are two of a
+            # percentage; round() only clears float noise). Every display rounds once from here: stored at
+            # one decimal, a saved 0.8047 became 80.5 and the row's Math.round showed 81%.
+            'fbA_home': round(model_a * 100, 2),
+            'mktB_home': round((model_b if model_b is not None else model_a) * 100, 2),
             # The market's own win probability (Stage 17: the card shows the
             # market as a probability, not only as a spread). None when the
             # pick was saved without one; the card then omits the market mark.
-            'mkt_home': (round(p['market_prob_home'] * 100, 1)
+            'mkt_home': (round(p['market_prob_home'] * 100, 2)
                          if p.get('market_prob_home') is not None else None),
             'flag': " ".join(notes),
             'notes': notes,
@@ -799,11 +807,9 @@ def with_rank_change(teams_js: list[dict[str, Any]],
     return [{**t, 'rank_change': change(t)} for t in teams_js]
 
 
-#: How far a snapshot rating may sit from the history's latest week and still be the same week. Both are
-#: rounded to four decimals, and the Thursday run recomputes the snapshot, so a rating can land on the other
-#: side of a rounding step (WAS -0.073 in the history, -0.0731 in the snapshot, 2026-10-29) and the rank
-#: change disappeared from the page for days. One step is 0.0001; a different week moves ratings by far more.
-SNAPSHOT_MATCH_TOL = 1.5e-4
+#: How far a snapshot rating may sit from the history's latest week and still be the same week; see
+#: src/sports/nfl/ratings_snapshot.py, whose check the weekly run makes after writing both (Stage 86 item 5).
+SNAPSHOT_MATCH_TOL = ratings_snapshot.TOL
 
 
 def previous_ranks(ratings: list[dict[str, Any]], live_history: dict[str, Any]) -> dict[str, int] | None:
@@ -1108,6 +1114,7 @@ def main() -> None:
     from src.sports.nfl.model_lab import entries as model_lab_entries
     html = html.replace('__MODEL_LAB_ROWS__', render_model_lab_rows(model_lab_entries()))
 
+    html = csp.harden(html)  # Stage 88 item 5: hashes, not unsafe-inline (src/core/csp.py)
     with open(OUTPUT_PATH, 'w', encoding='utf-8') as f:
         f.write(html)
     print(f"Wrote {OUTPUT_PATH}")

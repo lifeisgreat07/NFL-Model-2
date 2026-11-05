@@ -1,3 +1,10 @@
+/* Stage 88 item 5 (the 2026-11-02 review): the Content-Security-Policy names
+   the hash of each inline script, so the page has no inline handlers. A logo
+   that fails to load (data-hide-on-error) is hidden by this one listener. */
+document.addEventListener('error', e => {
+  const t = e.target;
+  if (t instanceof HTMLImageElement && t.hasAttribute('data-hide-on-error')) t.style.display = 'none';
+}, true);
 /* The NBA's pages: the day board (Stage 65) and the registered backtest
    (Stage 61). Everything below reads one JSON block, #nba-data, written by
    src/sports/nba/site.py from the NBA's own files: the saved picks, the
@@ -225,7 +232,7 @@ function lanes(vals){
 function american(p){ return p > 0 ? `+${p}` : `−${Math.abs(p)}`; }
 function endTeam(abbr){
   const src = logo(abbr);
-  const img = src ? `<img class="card-end-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : '';
+  const img = src ? `<img class="card-end-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error>` : '';
   return `<span class="card-end-team">${img}${abbr}</span>`;
 }
 function badge(picked, result){
@@ -860,7 +867,7 @@ function calibrationTable(f, sport, level){
   return `
     <div class="table-wrap"><table class="metrics-table ${sport}-table"><caption class="visually-hidden">Calibration of Models A and B</caption>
     <thead><tr><th scope="col">Calibration</th><th scope="col" class="num">Picks</th><th scope="col" class="num">Intercept</th><th scope="col" class="num">${level}% interval</th><th scope="col" class="num">Slope</th><th scope="col" class="num">${level}% interval</th></tr></thead><tbody>${rows}</tbody></table></div>
-    <p class="${sport}-lede">Calibration asks whether the probabilities mean what they say. A perfectly calibrated model has an intercept of 0 and a slope of 1. An intercept above 0 means home teams won more often than the model said; a slope above 1 means its probabilities sat too close to 50%, and below 1 too far from it. Intervals resample whole game days, as above, and are reported, not judged.</p>`;
+    <p class="${sport}-lede">Calibration asks whether the probabilities mean what they say. A perfectly calibrated model has an intercept of 0 and a slope of 1. An intercept above 0 means home teams won more often than the model said; a slope above 1 means its probabilities sat too close to 50%, and below 1 too far from it. They are two fits, not one: the intercept is fitted with the slope held at 1 (calibration in the large), and the slope is fitted with an intercept of its own. Intervals resample whole game days, as above, and are reported, not judged.</p>`;
 }
 /* Stage 84 item 4 (the 2026-11-02 review): Stage 61's M2, the injury report
    against who played, from results/nba/m2_<season>.json. The registration

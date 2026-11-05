@@ -100,7 +100,7 @@ def rendered():
 
 
 LOGO = ('<img class="card-end-logo" src="https://a.espncdn.com/i/teamlogos/nfl/500/{code}.png" '
-        'alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">')
+        'alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error>')
 
 
 def test_the_helper_renders_both_teams_and_the_separator(rendered):
@@ -138,7 +138,7 @@ def test_a_logo_is_decorative_and_falls_back_to_the_name(rendered):
     imgs = re.findall(r'<img [^>]*>', rendered['bar'])
     assert len(imgs) == 1
     assert ' alt=""' in imgs[0], imgs[0]
-    assert 'onerror="this.style.display=\'none\'"' in imgs[0], imgs[0]
+    assert 'data-hide-on-error' in imgs[0], imgs[0]
     assert '<img' not in rendered['board'], 'the header has logos again as well as the bar'
 
 

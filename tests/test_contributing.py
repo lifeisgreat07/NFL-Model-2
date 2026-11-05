@@ -30,9 +30,10 @@ def test_every_path_contributing_names_exists():
 
 def test_the_setup_commands_are_the_readmes():
     block = re.search(r'```bash\n(.*?)```', text(CONTRIBUTING), re.S).group(1)
-    readme = text(REPO / 'README.md')
+    # Stage 89 item 5: the commands for running the tests moved to docs/operations.md.
+    readme = text(REPO / 'README.md') + text(REPO / 'docs' / 'operations.md')
     for line in filter(None, (l.strip() for l in block.splitlines())):
-        assert line in readme, f'CONTRIBUTING.md runs {line!r}, which README.md does not'
+        assert line in readme, f'CONTRIBUTING.md runs {line!r}, which neither README.md nor docs/operations.md does'
 
 
 def test_the_human_review_line_is_the_one_preflight_checks():

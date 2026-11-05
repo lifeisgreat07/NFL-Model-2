@@ -196,6 +196,8 @@ RENDERERS = {
     # of verification belongs on it -- but it is written for the same reader
     # as the rest, so it is scoped, not exempt.
     'renderAgentLog': 'reliability',
+    # Stage 90 item 3: the agents-at-work list, inside renderAgentLog's section.
+    'agentsAtWork': 'reliability',
     'renderRecentRuns': 'reliability',
     # Stage 46 item 6: the Late by cell of the runs table.
     'lateText': 'reliability',
