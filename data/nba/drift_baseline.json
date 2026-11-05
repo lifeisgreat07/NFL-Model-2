@@ -7,6 +7,14 @@
     "label": "Model A on the 2024-25 and 2025-26 confirmation seasons, with each game's actual players from the box score",
     "value": 0.5983212187245471
   },
+  "baseline_no_availability": {
+    "name": "stage61_confirmation_no_availability",
+    "label": "Model A without the availability term on the same confirmation seasons",
+    "value": 0.6102739681059131,
+    "source": "experiments/nba/stage61/results/confirmation.json, scores.model_a_no_availability.log_loss (2643 games)",
+    "applies_to": "graded picks saved with availability.read false (both models ran without availability)",
+    "amended": "2026-11-05, Stage 85 item 2 of the 2026-11-02 review (drift.amended_2026_11_05 in the registry)"
+  },
   "source": "experiments/nba/stage61/results/confirmation.json, scores.model_a.log_loss (2643 games)",
   "rule": {
     "min_games": 100,
@@ -21,7 +29,7 @@
     "per_look_level": 0.99,
     "n_resamples": 5000,
     "seed": 20261009,
-    "flag_when": "at each checkpoint, the first that many graded picks in the order their games started: the lower end of the one-sided 99% bootstrap interval of mean per-game log loss is above the baseline. 99% is the one-sided 95% shared equally among the five checkpoints (Bonferroni: 5% / 5 = 1% each). A flag at any checkpoint stands for the season.",
+    "flag_when": "at each checkpoint, the first that many graded picks in the order their games started: the lower end of the one-sided 99% bootstrap interval of mean per-game log loss is above the baseline. 99% is the one-sided 95% shared equally among the five checkpoints (Bonferroni: 5% / 5 = 1% each). A flag at any checkpoint stands for the season. Since 2026-11-05 a look is held to the mean of its picks' own baselines: baseline for a pick made with the injury report, baseline_no_availability for one made without it.",
     "amended": "2026-11-04, Stage 85 item 1 of the 2026-11-02 review (drift.amended_2026_11_04 in the registry). Until then the check tested every graded pick at one-sided 95% at every daily run once min_games picks were graded."
   }
 }
