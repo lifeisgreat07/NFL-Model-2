@@ -33,6 +33,14 @@ DOC = REPO / 'CLAUDE.md'
 #: The line in CLAUDE.md that states the suite size.
 COUNT_RE = re.compile(r'Suite:\s*\*\*([0-9,]+)\s+passing\*\*')
 
+#: The sentence beside it that splits the figure (Stage 86 item 4, the
+#: 2026-11-02 review): the mutation corpus's per-case checks, and the rest.
+SPLIT_RE = re.compile(r"The split[^:]*:\s*([0-9,]+)\s+of them are\s+`tests/test_mutation_corpus\.py`'s\s+"
+                      r"per-case checks of the corpus,\s+and\s+([0-9,]+)\s+are behavioural tests")
+
+#: The file whose tests are the corpus's per-case checks.
+CORPUS_TESTS = 'tests/test_mutation_corpus.py'
+
 
 class Check:
     def __init__(self, name: str, ok: bool, detail: str) -> None:
@@ -90,8 +98,40 @@ def check_suite_count() -> Check:
                      f'CLAUDE.md says {claimed} passing, a real run gives {actual}. '
                      'Fix the file before the next session inherits '
                      'it.')
+    collected = subprocess.run(
+        [sys.executable, '-B', '-m', 'pytest', '--collect-only', '-q', CORPUS_TESTS],
+        cwd=REPO, capture_output=True, text=True,
+    )
+    return check_split(text, actual, parse_collected(collected.stdout))
+
+
+def parse_collected(stdout: str) -> int | None:
+    """N from pytest's 'N tests collected' (or 'N test collected'), else None."""
+    m = re.search(r'\b(\d+) tests? collected\b', stdout)
+    return int(m.group(1)) if m else None
+
+
+def check_split(text: str, actual: int, corpus: int | None) -> Check:
+    """The split printed beside the figure must be a real one too (Stage 86
+    item 4): the corpus's per-case checks as collected, and the rest of the run."""
+    m = SPLIT_RE.search(text)
+    if not m:
+        return Check('suite count', False,
+                     f'CLAUDE.md says {actual} passing but no longer splits it; the line '
+                     "beside it must read 'The split ...: C of them are "
+                     f"`{CORPUS_TESTS}`'s per-case checks of the corpus, and B are behavioural tests'")
+    if corpus is None:
+        return Check('suite count', False,
+                     f'could not collect {CORPUS_TESTS}, so the split cannot be checked')
+    said = (int(m.group(1).replace(',', '')), int(m.group(2).replace(',', '')))
+    real = (corpus, actual - corpus)
+    if said != real:
+        return Check('suite count', False,
+                     f'CLAUDE.md splits {actual} as {said[0]} corpus checks and {said[1]} behavioural '
+                     f'tests; a real run gives {real[0]} and {real[1]}. Fix the file.')
     return Check('suite count', True,
-                 f'CLAUDE.md and a real run both say {actual}')
+                 f'CLAUDE.md and a real run both say {actual}: {real[0]} corpus checks, '
+                 f'{real[1]} behavioural tests')
 
 
 def check_tree_clean() -> Check:
