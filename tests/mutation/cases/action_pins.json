@@ -13,32 +13,32 @@
       "id": "auto-commit-pinned-to-a-short-sha",
       "target": ".github/workflows/nfl-weekly-update.yml",
       "why": "a seven-character SHA looks pinned and is not a full commit id; GitHub resolves only full SHAs as immutable",
-      "find": "uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0",
-      "replace": "uses: stefanzweifel/git-auto-commit-action@b863ae1 # v5.2.0",
+      "find": "uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7.2.1",
+      "replace": "uses: stefanzweifel/git-auto-commit-action@d0b0110 # v7.2.1",
       "expect_caught_by": "test_each_is_pinned_to_a_full_commit_sha"
     },
     {
       "id": "a-pin-without-its-version",
       "target": ".github/workflows/collect-agent-log.yml",
       "why": "the SHA is right but nothing says which release it is, so the next update has to look it up, and a reader cannot tell a current pin from a two-year-old one",
-      "find": "uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0",
-      "replace": "uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403",
+      "find": "uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7.2.1",
+      "replace": "uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c",
       "expect_caught_by": "test_each_pin_says_which_release_it_is"
     },
     {
       "id": "an-update-that-stopped-halfway",
       "target": ".github/workflows/nfl-weekend-refresh.yml",
       "why": "one workflow moves to a different commit of the action and the others do not, so the same step behaves differently depending on which workflow ran it",
-      "find": "uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5.2.0",
-      "replace": "uses: stefanzweifel/git-auto-commit-action@0000000000000000000000000000000000000000 # v5.1.0",
+      "find": "uses: stefanzweifel/git-auto-commit-action@d0b01107b5db882071f96de5dd4b54961ea93f4c # v7.2.1",
+      "replace": "uses: stefanzweifel/git-auto-commit-action@0000000000000000000000000000000000000000 # v7.2.0",
       "expect_caught_by": "test_one_major_of_an_action_is_one_sha_everywhere"
     },
     {
       "id": "checkout-back-on-a-movable-tag",
       "target": ".github/workflows/deploy-pages.yml",
-      "why": "the job that publishes the site checks out with @v4 again: the first step of the job, with its token in reach, is whatever that tag points at today",
-      "find": "uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0",
-      "replace": "uses: actions/checkout@v4",
+      "why": "the job that publishes the site checks out with @v6 again: the first step of the job, with its token in reach, is whatever that tag points at today",
+      "find": "uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0",
+      "replace": "uses: actions/checkout@v6",
       "expect_caught_by": "test_each_is_pinned_to_a_full_commit_sha"
     },
     {
@@ -52,18 +52,26 @@
     {
       "id": "deploy-pages-back-on-a-movable-tag",
       "target": ".github/workflows/deploy-pages.yml",
-      "why": "the step that publishes the site, holding pages: write and id-token: write, runs whatever @v4 points at today",
-      "find": "uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5",
-      "replace": "uses: actions/deploy-pages@v4",
+      "why": "the step that publishes the site, holding pages: write and id-token: write, runs whatever @v5 points at today",
+      "find": "uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1",
+      "replace": "uses: actions/deploy-pages@v5",
       "expect_caught_by": "test_each_is_pinned_to_a_full_commit_sha"
     },
     {
       "id": "a-new-action-arrives-on-a-tag",
       "target": ".github/workflows/run-tests.yml",
       "why": "a workflow gains an action no list names, on a movable tag; a scan that checks only the listed actions would pass it",
-      "find": "uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0",
+      "find": "uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0",
       "replace": "uses: actions/github-script@v7",
       "expect_caught_by": "test_every_action_in_every_workflow_is_on_the_list"
+    },
+    {
+      "id": "checkout-back-on-node-20",
+      "target": ".github/workflows/run-tests.yml",
+      "why": "the test job checks out with checkout v4 again, a full SHA with its release named, so every other pin test passes; it runs on Node 20, which GitHub is retiring from its runners",
+      "find": "uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0",
+      "replace": "uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0",
+      "expect_caught_by": "test_every_pin_is_on_a_node_24_major"
     }
   ]
 }
