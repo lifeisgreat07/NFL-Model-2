@@ -76,8 +76,12 @@ def test_every_figure_in_the_file_is_on_the_page(sport):
                 str(s['games']), f"{s['log_loss']:.4f}", f"{s['brier']:.4f}", f"{s['accuracy'] * 100:.1f}%")), html)
         assert row, f'{name}: its scores are not a row on the page'
     for name, c in f['comparisons'].items():
+        # Stage 95 item 37: under 20 game days the game-level interval is printed under it.
+        few = c.get('few_days')
+        games = (f'<br><span class="forward-games">games [{signed(few["game_low"])}, {signed(few["game_high"])}]</span>'
+                 if few else '')
         cells = (f'<td class="num">{c["games"]}</td><td class="num">{c["days"]}</td>'
-                 f'<td class="num">{signed(c["diff"])}</td><td class="num">[{signed(c["low"])}, {signed(c["high"])}]</td>')
+                 f'<td class="num">{signed(c["diff"])}</td><td class="num">[{signed(c["low"])}, {signed(c["high"])}]{games}</td>')
         assert cells in html, f'{name}: {cells}'
     assert f"{f['interval_rule']['level'] * 100:.2f}% interval" in html
     assert f'class="{sport}-lede"' in html and f'metrics-table {sport}-table' in html
