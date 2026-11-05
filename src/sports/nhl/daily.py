@@ -52,7 +52,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.core import forward_test, pick_guard, priced, season_prices
+from src.core import forward_test, pick_guard, priced, schedule_guard, season_prices
 from src.core.atomic_write import write_json_atomic
 from src.core.provenance import training
 from src.core.sport import GameStatus, sport_paths
@@ -305,6 +305,8 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     now = now or datetime.now(UTC)
     season = nhl_schedule.current_season(now)
     sched = nhl_schedule.load_schedule(season)
+    # Stage 91 item 2: an empty or shrunken feed stops the run before anything is written.
+    schedule_guard.check(len(sched), PATHS.results / f'schedule_{season}.json')
     first = backtest.registry()['protocol']['training_from_season']
     past = backtest.load_history(first, season - 1)
     current = refresh_season(season, sched)
