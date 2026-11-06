@@ -5,7 +5,7 @@
   "viewport": "390x844",
   "theme": "light",
   "file": "nhl-390x844-light-head.png",
-  "bytes": 96650,
+  "bytes": 97711,
   "parked": 3
  },
  {
@@ -14,7 +14,7 @@
   "viewport": "390x844",
   "theme": "dark",
   "file": "nhl-390x844-dark-head.png",
-  "bytes": 97748,
+  "bytes": 98801,
   "parked": 3
  },
  {
@@ -23,7 +23,7 @@
   "viewport": "1440x900",
   "theme": "light",
   "file": "nhl-1440x900-light-head.png",
-  "bytes": 254121,
+  "bytes": 258957,
   "parked": 4
  },
  {
@@ -32,7 +32,7 @@
   "viewport": "1440x900",
   "theme": "dark",
   "file": "nhl-1440x900-dark-head.png",
-  "bytes": 254830,
+  "bytes": 259775,
   "parked": 4
  },
  {
@@ -41,7 +41,7 @@
   "viewport": "390x844",
   "theme": "light",
   "file": "nba-390x844-light-head.png",
-  "bytes": 59501,
+  "bytes": 60554,
   "parked": 3
  },
  {
@@ -50,7 +50,7 @@
   "viewport": "390x844",
   "theme": "dark",
   "file": "nba-390x844-dark-head.png",
-  "bytes": 60780,
+  "bytes": 61855,
   "parked": 3
  },
  {
@@ -59,7 +59,7 @@
   "viewport": "1440x900",
   "theme": "light",
   "file": "nba-1440x900-light-head.png",
-  "bytes": 131907,
+  "bytes": 136570,
   "parked": 4
  },
  {
@@ -68,7 +68,7 @@
   "viewport": "1440x900",
   "theme": "dark",
   "file": "nba-1440x900-dark-head.png",
-  "bytes": 131934,
+  "bytes": 136754,
   "parked": 4
  }
 ]
