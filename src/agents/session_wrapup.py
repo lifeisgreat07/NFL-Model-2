@@ -47,9 +47,6 @@ CLASSES = ('corpus checks', 'isolated behavioural', 'mixed', 'template/JS', 'wor
 SPLIT_RE = re.compile(r'The split \(Stage 96 item 51[^)]*\):\s*'
                       + r',\s*'.join(rf'([0-9,]+)\s+{re.escape(c)}' for c in CLASSES))
 
-#: The file whose tests are the corpus's per-case checks.
-CORPUS_TESTS = 'tests/test_mutation_corpus.py'
-
 
 class Check:
     def __init__(self, name: str, ok: bool, detail: str) -> None:
