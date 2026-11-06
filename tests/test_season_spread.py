@@ -14,6 +14,7 @@ import pandas as pd
 import pytest
 
 from src.core import season_spread
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 FILES = {'nhl': ROOT / 'experiments' / 'nhl' / 'stage56' / 'results' / 'model_a_by_season.json',
@@ -76,7 +77,7 @@ def test_the_settings_are_the_ones_validation_chose(sport, key):
 # --- the pages ----------------------------------------------------------------------------------
 
 def function(sport):
-    js = PAGES[sport].read_text(encoding='utf-8').replace('\r\n', '\n')
+    js = day_script(sport).replace('\r\n', '\n')
     m = re.search(r'function spreadHtml\(s, sport\)\{.*?\n\}\n', js, re.S)
     assert m, f'spreadHtml is not findable in {sport}.js -- re-anchor this guard'
     return m.group(0), js

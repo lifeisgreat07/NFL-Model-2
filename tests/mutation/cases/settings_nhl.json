@@ -14,14 +14,16 @@
    "why": "Shift+[ arrives as \"{\" and is not read.",
    "find": "  const by = e.key === '[' || e.key === '{' ? -1 : e.key === ']' || e.key === '}' ? 1 : 0;",
    "replace": "  const by = e.key === '[' ? -1 : e.key === ']' ? 1 : 0;",
-   "expect_caught_by": "test_on_a_day_board_brackets_step_a_day_and_shift_a_week"
+   "expect_caught_by": "test_on_a_day_board_brackets_step_a_day_and_shift_a_week",
+   "target": "src/core/day_board.js"
   },
   {
    "id": "day-step-stuck",
    "why": "a day past the week's edge goes nowhere.",
    "find": "    const w = WEEK_KEYS.indexOf(currentWeek) + by;\n    if(w < 0 || w >= WEEK_KEYS.length) return;",
    "replace": "    return;",
-   "expect_caught_by": "test_a_day_past_the_weeks_edge_opens_the_next_week"
+   "expect_caught_by": "test_a_day_past_the_weeks_edge_opens_the_next_week",
+   "target": "src/core/day_board.js"
   },
   {
    "id": "nhl-time-eastern",

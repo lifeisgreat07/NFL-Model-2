@@ -28,13 +28,14 @@ from pathlib import Path
 import pytest
 
 from src.site import build
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 PREFS = (ROOT / 'src' / 'core' / 'prefs.js').read_text(encoding='utf-8')
 SHEET = (ROOT / 'src' / 'core' / 'sheet.js').read_text(encoding='utf-8')
 APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
-NHL = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
-NBA = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+NHL = day_script('nhl')
+NBA = day_script('nba')
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')
 NODE = shutil.which('node')
 STORE = ("function store(seed){ const m = Object.assign({}, seed); return {getItem: k => k in m ? m[k] : null,"

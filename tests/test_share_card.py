@@ -23,12 +23,13 @@ import pytest
 
 from src.site import build
 from tests.js_source import function_source
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'core' / 'share_card.js').read_text(encoding='utf-8')
 APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
-NHL = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
-NBA = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+NHL = day_script('nhl')
+NBA = day_script('nba')
 NODE = shutil.which('node')
 
 CARD = {'sport': 'NFL', 'away': 'SEA', 'home': 'DEN', 'colours': ['#69BE28', '#FB4F14'], 'lead': 'Model B', 'team': 'SEA',

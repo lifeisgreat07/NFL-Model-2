@@ -19,6 +19,7 @@ import pytest
 
 from src.core import forward_test as ft
 from tests.js_source import function_source
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 NODE = shutil.which('node')
@@ -64,7 +65,7 @@ def test_from_twenty_days_there_is_none():
 @pytest.mark.skipif(NODE is None, reason='node not installed')
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_the_page_prints_it_and_says_why_only_while_it_applies(sport):
-    src = (ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.js').read_text(encoding='utf-8')
+    src = day_script(sport).replace('\r\n', '\n')
     js = function_source(src, 'forwardHtml') + "function calibrationTable(){ return ''; }\n"
 
     def render(days):

@@ -26,6 +26,12 @@ and NBA each keep their own copies of the lock engine, grading and the
 drift check, and lifting those into the core waits until after the NBA's
 opening week (the 2026-10-09 audit's E16).
 
+**Amended 2026-11-05 (Stage 87 item 1).** The first piece of that lift: the
+29 page functions the NHL's and NBA's scripts carried byte for byte are one
+copy in `src/core/day_board.js`, which both pages include ahead of their own
+script, and `tests/test_day_board.py` fails if a copy comes back. The Python
+side (the lock engine, grading, drift) is Stage 87 item 2.
+
 **Every sport runs the NFL's workflow.** The same page set; Model A (the sport
 alone) beside Model B (plus the market) and the market itself; a lock that
 saves picks once before the start and never rewrites them; grading of locked

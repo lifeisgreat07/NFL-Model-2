@@ -14,6 +14,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.page_script import day_script
+
 REPO = Path(__file__).resolve().parents[1]
 BOARDS = {
     'nfl': REPO / 'src' / 'dashboard' / 'app.js',
@@ -25,7 +27,7 @@ STYLES = (REPO / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')
 
 @pytest.mark.parametrize('sport', sorted(BOARDS))
 def test_opening_a_row_reveals_its_card(sport):
-    src = BOARDS[sport].read_text(encoding='utf-8')
+    src = (day_script(sport) if sport in ('nhl', 'nba') else BOARDS[sport].read_text(encoding='utf-8'))
     assert src.count('if(open) revealOpened(card);') == 1, sport
     helper = src[src.index('function revealOpened(panel){'):]
     helper = helper[:helper.index('\n}\n')]

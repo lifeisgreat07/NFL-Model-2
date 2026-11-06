@@ -22,6 +22,7 @@ import pytest
 
 from src.sports.nba import lock
 from tests.js_source import function_source as js_source
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js'
@@ -31,7 +32,7 @@ NODE = shutil.which('node')
 
 
 def source():
-    return ESCAPE_JS.read_text(encoding='utf-8') + JS.read_text(encoding='utf-8')
+    return ESCAPE_JS.read_text(encoding='utf-8') + day_script('nba')
 
 
 def function_source(src, name):
