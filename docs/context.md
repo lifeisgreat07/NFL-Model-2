@@ -25,14 +25,16 @@ A body that must change after opening: close the PR and open a new one from the 
 job has its own `timeout-minutes` (`tests/test_step_timeouts.py`); src/core, src/site, src/sports/nhl and src/sports/nba pass
 `mypy --strict`; a new test file needs a line in the suite map (the file #670 adds) once #670 merges.
 
-**Single next action:** read Booth's re-run on #670 (s96w, run 42162328127). SAFE and green: merge it. Then open s96r part 1
-(below), and cut parts 2 and 3 one at a time after it.
+**Single next action:** land #670 (s96w). Its re-run audit was SAFE with 0 discrepancies at aa4c9ddb, but the session 1105
+wrap-up commit then changed CLAUDE.md's Suite line on main, the line #670 rewrites. Merge main into s96w and keep #670's
+five-way line, recomputed with `python -m src.agents.session_wrapup --suite-line`. Prep, push, and let the new head be
+audited once. Then open s96r part 1 (below), and cut parts 2 and 3 one at a time after it.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| #670 s96w `s96-suite-line` (96.51: five-way suite split by a committed map of test files) | aa4c9ddb; suite 12872 at head; first audit cancelled at 20 min | The one re-run (42162328127). Cancelled again: ask Mark (split, or merge on green) |
+| #670 s96w `s96-suite-line` (96.51: five-way suite split by a committed map of test files) | aa4c9ddb; SAFE on its re-run; main has since moved (wrap-up commit, CLAUDE.md) | Merge main, recompute the Suite line, one audit of the new head |
 | s96r part 1 `s96-require-tool-1` (96.48: require_tool, injuries collection, first third) | Worktree s96r1, 5fab352c, not pushed; its body and the script that writes it are in the session archive (CLAUDE.local.md) | #670 merged; then merge main, prep, open |
 | s96r parts 2 and 3 | The session archive's split_s96r script (argument 2 or 3) cuts each from branch `s96-require-tool` (the whole change, #669 closed) onto main; part 3 carries the guard test | Each after the part before merges; bodies modelled on part 1's, counts by the archive's part_counts script |
 | Stage 87 items 2-4 (core Python move; one page renderer; app.js split) | Not built | After the queue |
