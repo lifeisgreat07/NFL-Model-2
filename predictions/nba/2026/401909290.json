@@ -1,0 +1,99 @@
+{
+ "game_id": "401909290",
+ "season": 2026,
+ "slate": "2026-11-06",
+ "start_utc": "2026-11-07T01:00:00Z",
+ "home": "DAL",
+ "away": "UTAH",
+ "model_a": 0.7185,
+ "model_b": 0.6951,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.987,
+  "away": 0.9551
+ },
+ "features": {
+  "point_matchup": 4.255737,
+  "efficiency_matchup": 4.046766,
+  "availability_matchup": 0.031912
+ },
+ "market": {
+  "game_id": "401909290",
+  "home": "DAL",
+  "away": "UTAH",
+  "start_utc": "2026-11-07T01:00:00Z",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -264.0,
+  "away_price": 217.0,
+  "home_prob": 0.6969
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6442",
+    "name": "Kyrie Irving",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4432582",
+    "name": "Max Christie",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4593125",
+    "name": "Santi Aldama",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5279129",
+    "name": "Sergio de Larrea",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4277961",
+    "name": "Jaren Jackson Jr.",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102530",
+    "name": "Jusuf Nurkic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433268",
+    "name": "Trey Alexander",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-06T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-05",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14181,
+  "training_games_priced": 14140,
+  "training_ids_sha256": "5ba09b265ad27c14c359a5f56ef377cd914c93c31e27f1d7b022f6f3c89db8ea"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "95fbe74f196629144b73020fc235786939a40563"
+}
