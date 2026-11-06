@@ -80,6 +80,7 @@
   "tests/test_dashboard_charts.py": "isolated behavioural",
   "tests/test_data_loader.py": "isolated behavioural",
   "tests/test_data_quality.py": "isolated behavioural",
+  "tests/test_day_board.py": "template/JS",
   "tests/test_day_line_judge.py": "mixed",
   "tests/test_dead_code.py": "workflow/docs/tests-of-tests",
   "tests/test_degraded_inputs.py": "mixed",
