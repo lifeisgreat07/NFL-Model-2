@@ -187,5 +187,12 @@
     "home": "MIN",
     "away": "BUF",
     "spread_line": -3.0
+  },
+  {
+    "captured_date": "2026-11-06",
+    "captured_utc": "2026-11-06T12:57:39Z",
+    "home": "MIA",
+    "away": "DET",
+    "spread_line": -6.5
   }
 ]
