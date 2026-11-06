@@ -1,6 +1,6 @@
 """The day boards share one copy of what they have in common (Stage 87 item 1).
 
-The NHL's and NBA's pages carried 26 byte-identical top-level functions, one
+The NHL's and NBA's pages carried 29 byte-identical top-level functions, one
 copy in each sport's script, so a fix to one board could miss the other.
 They live in src/core/day_board.js, which both pages include ahead of their
 own script in the same <script> element.
