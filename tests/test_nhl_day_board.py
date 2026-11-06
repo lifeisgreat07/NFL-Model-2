@@ -23,6 +23,7 @@ import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
 from tests.js_source import function_source
+from tests.optional import require_tool
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,8 +46,7 @@ def const_line(src, name):
 
 
 def run_node(body):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = source()
     # No pick saved yet here, so beforeLaunch is false: these rows read as
     # the launched board's (tests/test_nhl_before_launch.py covers the rest).

@@ -26,6 +26,7 @@ from pathlib import Path
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
@@ -40,8 +41,7 @@ def source():
 
 @pytest.fixture(scope='module')
 def built():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, str(HARNESS)], capture_output=True, text=True,
                        encoding='utf-8', errors='replace')
     assert r.returncode == 0, f'harness failed:\n{r.stderr}'

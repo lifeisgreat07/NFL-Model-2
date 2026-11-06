@@ -18,9 +18,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
-
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 NODE = shutil.which('node')
@@ -30,8 +29,7 @@ ROUTES = ROOT / 'src' / 'core' / 'routes.js'
 def router(hash_, steps):
     """The shared router under node, with a scroll position. Steps:
     ['scroll', y], ['tap', page], ['pop', hash, state]."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = """
 const listeners = {}; const shown = []; const scrolled = []; const log = [];
 global.location = {hash: %s, pathname: '/nhl/', search: ''};

@@ -25,6 +25,7 @@ from pathlib import Path
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
@@ -51,8 +52,7 @@ def src():
 
 @pytest.fixture(scope='module')
 def run(src):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     code = re.search(r'const ROUTE_PAGES = .*?\nfunction experimentSlug\(.*?\n\}\n', src, re.S)
     assert code, 'the route functions are not findable -- re-anchor this guard'
     js = (code.group(0) +

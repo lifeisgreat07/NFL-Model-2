@@ -16,11 +16,15 @@ import pandas as pd
 import pytest
 
 from src.sports.nhl import daily, injuries
+from tests.optional import require
 
 NOW = datetime(2026, 10, 10, 21, 0, tzinfo=UTC)
 
 
 def parquet(rows):
+    """Rows as a parquet file's bytes. Built inside the tests, never at collection,
+    so `pytest --co` collects this file on a machine without pyarrow (Stage 96 item 48)."""
+    require('pyarrow')
     buf = io.BytesIO()
     pd.DataFrame(rows).to_parquet(buf, index=False)
     return buf.getvalue()
@@ -62,12 +66,13 @@ def test_a_game_stores_each_sides_players_sorted_with_source_and_times():
     assert injuries.for_game(day, table, 'BOS', 'NYR', NOW)['home'] == []
 
 
-@pytest.mark.parametrize('raw, why', [
-    (b'not parquet', 'not a parquet file'),
-    (parquet([{'as_of_date': '2026-10-09', 'team_display_name': 'Boston Bruins'}]), 'columns missing'),
-    (parquet([row('2026-10-09', 'Quebec Nordiques', 'Peter Stastny')]), 'no club recognised'),
-])
-def test_a_file_that_is_not_the_list_is_refused_not_guessed(raw, why):
+@pytest.mark.parametrize('rows, why', [
+    (None, 'not a parquet file'),
+    ([{'as_of_date': '2026-10-09', 'team_display_name': 'Boston Bruins'}], 'columns missing'),
+    ([row('2026-10-09', 'Quebec Nordiques', 'Peter Stastny')], 'no club recognised'),
+], ids=['not-parquet', 'columns-missing', 'no-club'])
+def test_a_file_that_is_not_the_list_is_refused_not_guessed(rows, why):
+    raw = b'not parquet' if rows is None else parquet(rows)
     with pytest.raises(injuries.InjurySourceError, match=why):
         injuries.latest(raw)
 

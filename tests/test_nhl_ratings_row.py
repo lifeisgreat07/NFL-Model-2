@@ -17,7 +17,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
@@ -31,8 +31,7 @@ def fn(name):
 
 
 def run(expr):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     signed = re.search(r'^function signed\(.*$', JS, re.M).group(0)
     code = ("const DATA = {teams: {COL: {name: 'Colorado Avalanche'}}};\n"
             "function escapeHtml(s){ return String(s); }\n"

@@ -38,6 +38,7 @@ from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import check_build as cb
 from src.sports.nfl import weekend_refresh as wr
 from tests.js_source import function_source
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS = ROOT / '.github' / 'workflows'
@@ -49,8 +50,7 @@ ROUNDS = {19: (6, 'Wild Card'), 20: (4, 'Divisional'), 21: (2, 'Conference Champ
 
 @pytest.fixture(scope='module')
 def labels():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     weeks = {f'2026_week{w}': {'season': 2026, 'week': w} for w in (18, 19, 20, 21, 22)}
     weeks['2020_week19'] = {'season': 2020, 'week': 19}
     weeks['2026_week19p'] = {'season': 2026, 'week': 19, 'preview': True}

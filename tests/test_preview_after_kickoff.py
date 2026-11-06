@@ -38,6 +38,7 @@ import synthetic_league as league
 from src.sports.nfl import generate_dashboard as gd
 from src.sports.nfl import weekly_update as wu
 from tests.js_source import function_source
+from tests.optional import require_tool
 
 NODE = shutil.which('node')
 H = pd.Timedelta(hours=1)
@@ -103,8 +104,7 @@ def test_the_build_leaves_out_skipped_weeks_previews():
 # --- 3. the note after kickoff ------------------------------------------------
 
 def note(week, now_iso):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     t = TEMPLATE.read_text(encoding='utf-8')
     js = ''.join(function_source(t, f) for f in
                  ('easternOffsetHours', 'kickoffInstant', 'previewWhen', 'previewNoteText'))

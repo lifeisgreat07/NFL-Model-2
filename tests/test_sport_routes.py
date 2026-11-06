@@ -11,6 +11,7 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import require_tool
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,8 +38,7 @@ def test_home_links_to_every_sports_methodology():
 
 
 def run(hash_, clicks=()):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = """
 const listeners = {}; const shown = []; const pushed = [];
 const pages = ['board', 'method', 'modellab'].map(n => ({id: 'page-' + n}));
@@ -79,8 +79,7 @@ KNOWN = {'pages': ['board', 'teams', 'method'], 'days': ['2026-10-12', '2026-10-
 
 def pure(calls):
     """parseHash and routeHash under node, one result per call."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = ROUTES.read_text(encoding='utf-8') + """
 console.log(JSON.stringify(%s.map(([f, a, b]) => f === 'parse' ? parseHash(a, b) : routeHash(a))));
 """ % json.dumps(calls)
@@ -111,8 +110,7 @@ def routed(hash_, steps):
     """installRoutes with a sport's argument under node. `steps` are
     ['tap', page], ['set', page, value] (a chip or a club, then replace),
     ['route', page] (a data-route button), ['click-elsewhere'], or ['pop', hash]. Returns what was shown, applied, pushed and replaced."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = """
 const listeners = {}; const shown = []; const applied = []; const pushed = []; const replaced = [];
 const pages = ['board', 'teams', 'method'].map(n => ({id: 'page-' + n}));

@@ -21,6 +21,7 @@ import pytest
 from src.sports.nba import daily as nba_daily
 from src.sports.nba import drift
 from src.sports.nfl import check_drift
+from tests.optional import in_ci
 from tests.test_drift_looks import function_source, page, run
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -113,7 +114,7 @@ def test_the_daily_run_writes_its_own_baselines():
 
 # --- on the pages ----------------------------------------------------------------
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 def test_the_nba_page_names_both_baselines_and_how_many_picks_are_held_to_the_second():
     rule = spec()
     looks = run('nba', f'driftLooks({json.dumps(rule)})')
@@ -125,7 +126,7 @@ def test_the_nba_page_names_both_baselines_and_how_many_picks_are_held_to_the_se
             'report and are held to the backtest without it.') in out
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 def test_the_nhl_page_keeps_its_one_baseline():
     rule = json.loads((ROOT / 'data' / 'nhl' / 'drift_baseline.json').read_text(encoding='utf-8'))
     assert 'baseline_no_availability' not in rule

@@ -36,9 +36,11 @@ REPO_ROOT = Path(__file__).parent.parent
 HARNESS = Path(__file__).parent / 'share_link_harness.js'
 TEMPLATE = JOINED_TEMPLATE
 
+from tests.optional import in_ci
+
 NODE = shutil.which('node')
 pytestmark = pytest.mark.skipif(
-    NODE is None,
+    NODE is None and not in_ci(),
     reason="node not on PATH -- the share-link behaviour cannot be executed")
 
 

@@ -17,6 +17,7 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import in_ci
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -65,7 +66,7 @@ def test_the_nhl_registration_names_brier_and_its_file_has_it():
     assert all('brier' in scores[k] for k in ('model_a', 'base_rate', 'model_b', 'market'))
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_every_held_out_figure_is_on_the_page_with_brier(sport):
     scores, html = render(sport)

@@ -17,7 +17,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'site' / 'home' / 'home.js').read_text(encoding='utf-8')
@@ -32,8 +32,7 @@ def fn(name):
 
 
 def run(expr):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     head = ("const HOUR = 3600 * 1000;\nconst SPORT_NAME = {nfl:'NFL', nhl:'NHL', nba:'NBA'};\n"
             + re.search(r'^function dayKey\(.*$', JS, re.M).group(0) + '\n')
     code = head + fn('sinceLabel') + fn('sinceText') + fn('sinceSnapshot') + f'console.log(JSON.stringify({expr}));'
@@ -76,8 +75,7 @@ def visits():
     """The page's own start-up block, run three times against one browser's
     storage: a first visit, a return after Sunday's games were graded, and a
     reload of that return in the same session."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     block = JS[JS.index("(function(){\n  const el = document.getElementById('home-since');"):]
     block = block[:block.index('})();') + len('})();')]
     head = ("const HOUR = 3600 * 1000;\nconst SPORT_NAME = {nfl:'NFL', nhl:'NHL', nba:'NBA'};\n"

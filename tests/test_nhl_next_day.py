@@ -14,7 +14,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
@@ -23,8 +23,7 @@ GAMES = [{'day': '2026-11-19'}, {'day': '2026-11-21'}, {'day': '2026-11-21'}, {'
 
 
 def next_day(days):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     fmt = re.search(r'^const FMT_DAY = .*$', JS, re.M).group(0)
     dd = re.search(r'function dayDate\(.*?\n\}\n|^const dayDate = .*$', JS, re.S | re.M).group(0)
     fns = ''.join(re.search(r'function %s\(day\)\{.*?\n\}\n' % n, JS, re.S).group(0) for n in ('nextDay', 'nextDayHtml'))

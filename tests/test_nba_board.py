@@ -22,6 +22,7 @@ import pytest
 
 from src.sports.nba import lock
 from tests.js_source import function_source as js_source
+from tests.optional import require_tool
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,8 +47,7 @@ def const_line(src, name):
 
 
 def run_node(body):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = source()
     js = ("const ET = 'America/New_York';\nfunction startZone(){ return 'America/New_York'; }\nfunction startMark(){ return ' ET'; }\n"
           + ''.join(const_line(src, n) for n in ('LOCK_RUNS_UTC', 'LOCK_SLACK_MS', 'FMT_WHEN', 'FMT_HOUR'))
