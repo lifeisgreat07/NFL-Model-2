@@ -27,6 +27,7 @@ import pytest
 
 from src.sports.nhl import lock
 from tests.js_source import function_source
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js'
@@ -34,7 +35,7 @@ NODE = shutil.which('node')
 
 
 def source():
-    return JS.read_text(encoding='utf-8')
+    return day_script('nhl')
 
 
 def const_line(src, name):

@@ -17,8 +17,10 @@ from pathlib import Path
 
 import pytest
 
+from tests.page_script import day_script
+
 ROOT = Path(__file__).resolve().parents[1]
-JS = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
+JS = day_script('nba')
 NODE = shutil.which('node')
 
 
@@ -69,7 +71,7 @@ def test_a_real_afternoon_tip_gives_its_lock_time():
 
 
 def test_the_note_leads_with_it_while_there_are_no_picks():
-    note = JS[JS.index('function preseasonHtml(){'):JS.index('function stateHtml(')]
+    note = JS[JS.index('function preseasonHtml(){'):JS.index('\nfunction ', JS.index('function preseasonHtml(){'))]
     assert "if(Object.keys(BD.picks || {}).length || !FIRST_GAME) return '';" in note
     assert "const countdown = countdownText(todayEt());" in note
     assert '<div class="nba-preseason" role="note">${countdown ? `<p class="nba-countdown">${escapeHtml(countdown)}</p>` : \'\'}' in note

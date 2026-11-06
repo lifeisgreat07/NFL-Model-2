@@ -48,7 +48,7 @@
   },
   {
    "id": "nba-page-hides-the-second-baseline",
-   "target": "src/sports/nba/pages/nba.js",
+   "target": "src/core/day_board.js",
    "why": "the page states one baseline while the check holds some picks to another",
    "find": "  const base = rule.baseline_no_availability\n",
    "replace": "  const base = false\n",

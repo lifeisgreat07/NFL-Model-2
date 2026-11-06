@@ -18,6 +18,7 @@ from src.sports.nba import daily as nba_daily
 from src.sports.nba import drift as nba_drift
 from src.sports.nhl import daily as nhl_daily
 from src.sports.nhl import drift as nhl_drift
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 NODE = shutil.which('node')
@@ -97,7 +98,7 @@ def test_drift_rows_go_in_the_order_the_games_started(sport, tmp_path):
 # --- on the pages --------------------------------------------------------------
 
 def page(sport):
-    return (ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.js').read_text(encoding='utf-8')
+    return day_script(sport)
 
 
 def function_source(js, name):

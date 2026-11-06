@@ -23,6 +23,7 @@ import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
 from tests.js_source import function_source
+from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = ROOT / 'src' / 'sports' / 'nhl' / 'pages'
@@ -34,7 +35,7 @@ FUNCTIONS = ('dayDate', 'dayIso', 'weekDays', 'defaultDay', 'lockRunFor', 'winne
 
 
 def source():
-    return JS.read_text(encoding='utf-8')
+    return day_script('nhl')
 
 
 def const_line(src, name):

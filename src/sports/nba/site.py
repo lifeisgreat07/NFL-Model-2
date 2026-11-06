@@ -42,6 +42,7 @@ from src.core import colour, csp, pick_proof
 from src.core.page_comments import strip_page_comments
 from src.core.page_fill import (
     ACCURACY_JS,
+    DAY_BOARD_JS,
     ESCAPE_JS,
     FAVS_JS,
     PREFS_JS,
@@ -197,6 +198,7 @@ def render(data: dict[str, Any]) -> str:
                 .replace('{% include "accuracy.js" %}', ACCURACY_JS.read_text(encoding='utf-8'))
                 .replace('{% include "favs.js" %}', FAVS_JS.read_text(encoding='utf-8'))
                 .replace('{% include "prefs.js" %}', PREFS_JS.read_text(encoding='utf-8'))
+                .replace('{% include "day_board.js" %}', DAY_BOARD_JS.read_text(encoding='utf-8'))
                 .replace('{% include "body.html" %}', (TEMPLATE / 'body.html').read_text(encoding='utf-8'))
                 .replace('{% include "nba.js" %}', (TEMPLATE / 'nba.js').read_text(encoding='utf-8')))
     # Comments stay in the templates for whoever reads them; the page a

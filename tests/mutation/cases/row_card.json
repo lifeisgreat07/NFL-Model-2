@@ -22,7 +22,8 @@
       "why": "the row's \"even\" uses a wider band than the card's side(), so a 52% game is even on the row and a pick on the card.",
       "find": "Math.abs(lead * 100 - 50) < EVEN_BAND ? ' · even' : ''",
       "replace": "Math.abs(lead * 100 - 50) < EVEN_BAND + 1 ? ' · even' : ''",
-      "expect_caught_by": "test_even_means_what_the_card_means_by_it"
+      "expect_caught_by": "test_even_means_what_the_card_means_by_it",
+      "target": "src/core/day_board.js"
     },
     {
       "id": "row-card-phone-even-inline",

@@ -21,7 +21,8 @@
    "why": "the NHL day summary says \"1 of 3 right so far\" above rows that say Correct.",
    "find": ", ${right} of ${graded.length} correct so far`;",
    "replace": ", ${right} of ${graded.length} right so far`;",
-   "expect_caught_by": "test_every_result_label_says_correct_or_missed"
+   "expect_caught_by": "test_every_result_label_says_correct_or_missed",
+   "target": "src/core/day_board.js"
   }
  ]
 }

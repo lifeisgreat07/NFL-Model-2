@@ -15,6 +15,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.page_script import day_script
+
 ROOT = Path(__file__).resolve().parents[1]
 NBA = ROOT / 'src' / 'sports' / 'nba' / 'pages'
 NODE = shutil.which('node')
@@ -23,7 +25,7 @@ NODE = shutil.which('node')
 def eyebrows(pairs):
     if not NODE:
         pytest.skip('node not available')
-    js = NBA.joinpath('nba.js').read_text(encoding='utf-8')
+    js = day_script('nba')
     # dayDate and dayIso are one line each; weekEyebrow runs to its closing brace.
     helpers = ''.join(line + '\n' for line in js.splitlines() if re.match(r'function (dayDate|dayIso)\(', line))
     eyebrow = re.search(r'function weekEyebrow\(.*?\n\}\n', js, re.S)
@@ -41,7 +43,7 @@ def test_the_eyebrow_says_which_week_it_is():
 
 
 def test_the_board_writes_it_every_time_it_draws():
-    js = NBA.joinpath('nba.js').read_text(encoding='utf-8')
+    js = day_script('nba')
     body = js[js.index('function renderBoard(){'):]
     assert "document.querySelector('#page-board .page-eyebrow').textContent = weekEyebrow(currentWeek, mondayOf(todayEt()));" in body
     # The eyebrow keeps its plain markup, which tests/test_page_header_sports.py reads.

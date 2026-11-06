@@ -19,7 +19,7 @@
     },
     {
       "id": "card-reveal-nhl-jumps-to-top",
-      "target": "src/sports/nhl/pages/nhl.js",
+      "target": "src/core/day_board.js",
       "why": "every open jumps the card to the top, even when it was already in view.",
       "find": "  panel.scrollIntoView({block: 'nearest', behavior: still ? 'auto' : 'smooth'});",
       "replace": "  panel.scrollIntoView({block: 'start', behavior: still ? 'auto' : 'smooth'});",

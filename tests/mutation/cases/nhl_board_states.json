@@ -28,7 +28,8 @@
       "why": "a score of 0 reads as no score, so a shutout shows no winner.",
       "find": "if(g.status !== 'final' || g.hs === null || g.hs === undefined || g.as === null || g.as === undefined || g.hs === g.as) return null;",
       "replace": "if(g.status !== 'final' || !g.hs || !g.as || g.hs === g.as) return null;",
-      "expect_caught_by": "test_a_shutout_still_has_a_winner"
+      "expect_caught_by": "test_a_shutout_still_has_a_winner",
+      "target": "src/core/day_board.js"
     },
     {
       "id": "nhl-board-locked-on-final",
@@ -56,7 +57,8 @@
       "why": "a model at exactly 50% is counted on the away side, unlike the saved pick, which takes the home team.",
       "find": "(prob >= 0.5 ? g.home : g.away)",
       "replace": "(prob > 0.5 ? g.home : g.away)",
-      "expect_caught_by": "test_exactly_even_is_the_home_side_as_the_saved_pick_is"
+      "expect_caught_by": "test_exactly_even_is_the_home_side_as_the_saved_pick_is",
+      "target": "src/core/day_board.js"
     }
   ]
 }
