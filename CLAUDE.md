@@ -48,10 +48,10 @@ Model v2.6 (`MODEL_VERSION` in `src/sports/nfl/config.py`). `TRAIN_SEASONS` 2020
 The drift check flags on Model A's log loss against the committed
 `data/nfl/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
 
-Suite: **11802 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
-09c40bb4 (2026-11-04 UTC, after #597), with HEAD level with origin, which is the order that makes the
-figure reproducible. The split (Stage 86 item 4): 7141 of them are `tests/test_mutation_corpus.py`'s
-per-case checks of the corpus, and 4661 are behavioural tests. Level with origin is the order that makes the
+Suite: **12868 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main` at
+52a76e3a (2026-11-06 UTC, after #668), with HEAD level with origin, which is the order that makes the
+figure reproducible. The split (Stage 86 item 4): 7750 of them are `tests/test_mutation_corpus.py`'s
+per-case checks of the corpus, and 5118 are behavioural tests. Level with origin is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
