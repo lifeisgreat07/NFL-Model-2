@@ -1,0 +1,84 @@
+{
+ "game_id": "2026020262",
+ "season": 2026,
+ "slate": "2026-11-06",
+ "start_utc": "2026-11-07T00:00:00Z",
+ "home": "BUF",
+ "away": "CBJ",
+ "model_a": 0.5503,
+ "model_b": 0.6144,
+ "pick": "BUF",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.287069,
+  "shot_matchup": -0.24392,
+  "goalie_matchup_2000": -0.002202
+ },
+ "market": {
+  "game_id": "2026020262",
+  "start_utc": "2026-11-07T00:00:00Z",
+  "home": "BUF",
+  "away": "CBJ",
+  "book": "DraftKings",
+  "home_price": -170.0,
+  "away_price": 142.0,
+  "home_prob": 0.6038,
+  "read_utc": "2026-11-06T21:01:24Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480045,
+   "name": "Ukko-Pekka Luukkonen",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/ByMHarrington/status/2118727932877365438?a=pERcy6pyByuVjo4ymWs&s=20"
+  },
+  "away": {
+   "player_id": 8482982,
+   "name": "Jet Greaves",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/mark_scheig/status/2118751085267460402?a=Yg-H0qDYij8_gZr3njk&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-06",
+  "read_utc": "2026-11-06T21:01:24Z",
+  "home": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Justin Danforth",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Konsta Helenius",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Matt Grzelcyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": []
+ },
+ "saved_utc": "2026-11-06T21:01:24Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-05",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14664,
+  "training_games_priced": 7637,
+  "training_ids_sha256": "ad453411881130839d2d80f7226341252d309e2b208ca590c90650df6ab0aa0b"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "1fc72ce91b7c3e155669a2af3d89673a9a0b7fac"
+}

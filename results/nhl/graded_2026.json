@@ -1252,5 +1252,23 @@
   "pick": "COL",
   "result": "wrong",
   "saved_utc": "2026-11-05T21:01:35Z"
+ },
+ {
+  "game_id": "2026020262",
+  "pick": "BUF",
+  "result": "pending",
+  "saved_utc": "2026-11-06T21:01:24Z"
+ },
+ {
+  "game_id": "2026020263",
+  "pick": "MIN",
+  "result": "pending",
+  "saved_utc": "2026-11-06T21:01:24Z"
+ },
+ {
+  "game_id": "2026020264",
+  "pick": "CGY",
+  "result": "pending",
+  "saved_utc": "2026-11-06T21:01:24Z"
  }
 ]
