@@ -22,6 +22,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import require_tool
+
 ROOT = Path(__file__).resolve().parents[1]
 APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
 ACC = (ROOT / 'src' / 'core' / 'accuracy.js').read_text(encoding='utf-8')
@@ -81,8 +83,7 @@ def test_intervals_are_whiskers_and_series_shapes_are_12_across():
 
 
 def test_week_labels_thin_to_what_fits_counted_back_from_the_latest():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     weeks = json.dumps([f'Wk {i}' for i in range(1, 19)])
     code = fn(APP, 'chartTickStep') + (
         f'const w = {weeks};'

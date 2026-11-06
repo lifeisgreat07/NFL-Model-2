@@ -12,7 +12,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'site' / 'home' / 'home.js').read_text(encoding='utf-8')
@@ -20,8 +20,7 @@ NODE = shutil.which('node')
 
 
 def graded_tile(sports):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     one = ''.join(re.search(rf'^function {n}\(.*$', JS, re.M).group(0) + '\n' for n in ('esc',))
     multi = ''.join(re.search(rf'^function {n}\(.*?\n\}}\n', JS, re.S | re.M).group(0) for n in ('tile', 'gradedTile'))
     code = one + multi + 'process.stdout.write(gradedTile(%s));' % json.dumps(sports)

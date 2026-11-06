@@ -18,6 +18,7 @@ import pandas as pd
 import pytest
 
 from src.core import forward_test as ft
+from tests.optional import in_ci
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -64,7 +65,7 @@ def test_both_pages_carry_the_same_function():
     assert function('nhl') == function('nba')
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_every_figure_in_the_file_is_on_the_page(sport):
     f = a_file(sport)
@@ -88,7 +89,7 @@ def test_every_figure_in_the_file_is_on_the_page(sport):
     assert f'class="{sport}-lede"' in html and f'metrics-table {sport}-table' in html
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 def test_nothing_graded_says_so_and_a_thin_comparison_says_why():
     assert 'nothing to score' in render('nhl', None)
     assert 'nothing to score' in render('nhl', {'graded_picks': 0})
@@ -97,7 +98,7 @@ def test_nothing_graded_says_so_and_a_thin_comparison_says_why():
     assert '<td colspan="2">too few games to resample</td>' in render('nba', f)
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 def test_the_page_judges_nothing():
     html = render('nba', a_file())
     assert not re.search(r'ACCEPT|REJECT|INCONCLUSIVE|significant', html)

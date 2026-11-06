@@ -22,6 +22,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import require_tool
+
 ROOT = Path(__file__).resolve().parents[1]
 APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')
@@ -36,8 +38,7 @@ def fn(name):
 
 
 def node(code):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)

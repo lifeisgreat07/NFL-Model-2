@@ -18,6 +18,7 @@ from pathlib import Path
 import pytest
 
 from src.core import forward_test as ft
+from tests.optional import in_ci
 from tests.test_forward_on_page import NODE, a_file, render
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -62,7 +63,7 @@ def test_the_forward_file_names_its_market():
     assert 'closing price' in f['market_price']['said']
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_both_pages_print_it_beside_the_forward_test(sport):
     html = render(sport, a_file(sport))

@@ -21,6 +21,7 @@ import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
 from tests.js_source import function_source
+from tests.optional import require_tool
 
 NODE = shutil.which('node')
 
@@ -48,8 +49,7 @@ SLATE = [game('2026-10-04', '13:00', 'CBS', True, 'H1', 'A1'),
 
 @pytest.fixture(scope='module')
 def out():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = template()
     # Times in Eastern, the default (Stage 80 item 57's setting is tests/test_settings_sheet.py's).
     js = ("function startZone(){ return 'America/New_York'; }\nfunction startMark(){ return ' ET'; }\n" + const_line(src, 'KICKOFF_MONTHS') + function_source(src, 'escapeHtml') +

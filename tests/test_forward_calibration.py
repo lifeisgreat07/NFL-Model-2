@@ -19,6 +19,7 @@ import pandas as pd
 import pytest
 
 from src.core import forward_test as ft
+from tests.optional import in_ci
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -145,7 +146,7 @@ def test_both_pages_carry_the_same_calibration_table():
     assert functions('nhl') == functions('nba')
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_every_calibration_figure_in_the_file_is_on_the_page(sport):
     f = a_file()
@@ -159,7 +160,7 @@ def test_every_calibration_figure_in_the_file_is_on_the_page(sport):
     assert 'intercept of 0 and a slope of 1' in html and 'reported, not judged' in html
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 def test_a_file_without_calibration_shows_no_table_and_a_missing_fit_says_so():
     f = a_file()
     old = {k: v for k, v in f.items() if k != 'calibration'}
