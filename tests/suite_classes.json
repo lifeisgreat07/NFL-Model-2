@@ -108,7 +108,7 @@
   "tests/test_forward_calibration.py": "template/JS",
   "tests/test_forward_decision.py": "isolated behavioural",
   "tests/test_forward_few_days.py": "template/JS",
-  "tests/test_forward_freeze.py": "mixed",
+  "tests/test_forward_freeze.py": "isolated behavioural",
   "tests/test_forward_on_page.py": "template/JS",
   "tests/test_forward_test.py": "mixed",
   "tests/test_game_card_header.py": "template/JS",
