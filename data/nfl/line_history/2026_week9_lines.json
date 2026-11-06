@@ -152,5 +152,40 @@
     "home": "SEA",
     "away": "ARI",
     "spread_line": 8.5
+  },
+  {
+    "captured_date": "2026-11-06",
+    "captured_utc": "2026-11-06T05:17:30Z",
+    "home": "BAL",
+    "away": "JAX",
+    "spread_line": -8.5
+  },
+  {
+    "captured_date": "2026-11-06",
+    "captured_utc": "2026-11-06T05:17:30Z",
+    "home": "WAS",
+    "away": "LA",
+    "spread_line": -4.5
+  },
+  {
+    "captured_date": "2026-11-06",
+    "captured_utc": "2026-11-06T05:17:30Z",
+    "home": "LAC",
+    "away": "HOU",
+    "spread_line": -6.0
+  },
+  {
+    "captured_date": "2026-11-06",
+    "captured_utc": "2026-11-06T05:17:30Z",
+    "home": "NE",
+    "away": "GB",
+    "spread_line": 3.0
+  },
+  {
+    "captured_date": "2026-11-06",
+    "captured_utc": "2026-11-06T05:17:30Z",
+    "home": "MIN",
+    "away": "BUF",
+    "spread_line": -3.0
   }
 ]

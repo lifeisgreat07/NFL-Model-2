@@ -2,15 +2,15 @@
   "season": 2026,
   "week": 9,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-05T11:03:00Z",
+  "read_at": "2026-11-06T05:17:28Z",
   "games": [
     {
       "away": "JAX",
       "home": "BAL",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
-      "spread_line": -10.0,
+      "status": "final",
+      "away_score": 33,
+      "home_score": 10,
+      "spread_line": -8.5,
       "neutral_site": false,
       "venue": "M&T Bank Stadium"
     },
@@ -90,7 +90,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -5.5,
+      "spread_line": -4.5,
       "neutral_site": false,
       "venue": "Northwest Stadium"
     },
@@ -100,7 +100,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -4.5,
+      "spread_line": -6.0,
       "neutral_site": false,
       "venue": "SoFi Stadium"
     },
@@ -120,7 +120,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 3.5,
+      "spread_line": 3.0,
       "neutral_site": false,
       "venue": "Gillette Stadium"
     },
@@ -150,7 +150,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -3.5,
+      "spread_line": -3.0,
       "neutral_site": false,
       "venue": "U.S. Bank Stadium"
     }
