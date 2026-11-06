@@ -25,10 +25,9 @@ A body that must change after opening: close the PR and open a new one from the 
 job has its own `timeout-minutes` (`tests/test_step_timeouts.py`); src/core, src/site, src/sports/nhl and src/sports/nba pass
 `mypy --strict`; a new test file needs a line in the suite map (the file #670 adds) once #670 merges.
 
-**Single next action:** land #670 (s96w). Its re-run audit was SAFE with 0 discrepancies at aa4c9ddb, but the session 1105
-wrap-up commit then changed CLAUDE.md's Suite line on main, the line #670 rewrites. Merge main into s96w and keep #670's
-five-way line, recomputed with `python -m src.agents.session_wrapup --suite-line`. Prep, push, and let the new head be
-audited once. Then open s96r part 1 (below), and cut parts 2 and 3 one at a time after it.
+**Single next action:** land #670 (s96w): SAFE at aa4c9ddb, but main's wrap-up commit then changed the Suite line it rewrites.
+Merge main, keep the five-way line from `python -m src.agents.session_wrapup --suite-line`, prep, push, one audit of the
+new head. Then open s96r part 1 (below), and cut parts 2 and 3 one at a time after it.
 
 ## Open work, and what each is waiting on
 
