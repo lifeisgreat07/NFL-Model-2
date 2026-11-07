@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 9,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-06T12:57:37Z",
+  "read_at": "2026-11-07T05:17:45Z",
   "games": [
     {
       "away": "JAX",
@@ -30,7 +30,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -2.5,
+      "spread_line": -3.0,
       "neutral_site": false,
       "venue": "Bank of America Stadium"
     },
@@ -40,7 +40,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -5.5,
+      "spread_line": -4.5,
       "neutral_site": false,
       "venue": "Lucas Oil Stadium"
     },
@@ -50,7 +50,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 10.0,
+      "spread_line": 9.5,
       "neutral_site": false,
       "venue": "GEHA Field at Arrowhead Stadium"
     },
@@ -70,7 +70,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": 3.0,
+      "spread_line": 3.5,
       "neutral_site": false,
       "venue": "Caesars Superdome"
     },
@@ -80,7 +80,7 @@
       "status": "upcoming",
       "away_score": null,
       "home_score": null,
-      "spread_line": -3.5,
+      "spread_line": -3.0,
       "neutral_site": false,
       "venue": "Lincoln Financial Field"
     },
