@@ -1942,5 +1942,17 @@
   "home_price": 220.0,
   "away_price": -268.0,
   "home_prob": 0.3003
+ },
+ {
+  "game_id": "401909938",
+  "home": "IND",
+  "away": "DEN",
+  "start_utc": "2026-11-07T22:00:00Z",
+  "read_utc": "2026-11-07T19:43:01Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 261.0,
+  "away_price": -324.0,
+  "home_prob": 0.2661
  }
 ]
