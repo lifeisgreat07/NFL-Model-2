@@ -1256,19 +1256,31 @@
  {
   "game_id": "2026020262",
   "pick": "BUF",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-06T21:01:24Z"
  },
  {
   "game_id": "2026020263",
   "pick": "MIN",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-06T21:01:24Z"
  },
  {
   "game_id": "2026020264",
   "pick": "CGY",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-06T21:01:24Z"
+ },
+ {
+  "game_id": "2026020265",
+  "pick": "WSH",
+  "result": "pending",
+  "saved_utc": "2026-11-07T14:01:36Z"
+ },
+ {
+  "game_id": "2026020266",
+  "pick": "NSH",
+  "result": "pending",
+  "saved_utc": "2026-11-07T14:01:36Z"
  }
 ]
