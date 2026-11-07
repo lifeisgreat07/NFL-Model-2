@@ -1,0 +1,110 @@
+{
+ "game_id": "2026020269",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T00:00:00Z",
+ "home": "OTT",
+ "away": "UTA",
+ "model_a": 0.5389,
+ "model_b": 0.4598,
+ "pick": "UTA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.025662,
+  "shot_matchup": -0.304089,
+  "goalie_matchup_2000": 3.3e-05
+ },
+ "market": {
+  "game_id": "2026020269",
+  "start_utc": "2026-11-08T00:00:00Z",
+  "home": "OTT",
+  "away": "UTA",
+  "book": "DraftKings",
+  "home_price": 100.0,
+  "away_price": -120.0,
+  "home_prob": 0.4783,
+  "read_utc": "2026-11-07T21:01:30Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481035,
+   "name": "Samuel Ersson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/GraemeNichols/status/2119101155510726838?a=kfHfsizuK4z_8cdvxRk&s=20"
+  },
+  "away": {
+   "player_id": 8478872,
+   "name": "Karel Vejmelka",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-07",
+  "read_utc": "2026-11-07T21:01:30Z",
+  "home": [
+   {
+    "name": "Andre Burakovsky",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Linus Ullmark",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ridly Greig",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Warren Foegele",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Eklund",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "John Marino",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kailer Yamamoto",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Maveric Lamoureux",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nate Schmidt",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:01:30Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14667,
+  "training_games_priced": 7640,
+  "training_ids_sha256": "e50bec1b74829f621892240e29c474ef1c71da1f86076cc92f2b102f6201e0fd"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "79cc89ef94dead8ffa06dd7c52724dc081bfeebe"
+}
