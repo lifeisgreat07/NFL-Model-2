@@ -1,0 +1,89 @@
+{
+ "game_id": "401909938",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-07T22:00:00Z",
+ "home": "IND",
+ "away": "DEN",
+ "model_a": 0.3036,
+ "model_b": 0.3017,
+ "pick": "DEN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8647,
+  "away": 0.9656
+ },
+ "features": {
+  "point_matchup": -6.969696,
+  "efficiency_matchup": -6.739903,
+  "availability_matchup": -0.100918
+ },
+ "market": {
+  "game_id": "401909938",
+  "home": "IND",
+  "away": "DEN",
+  "start_utc": "2026-11-07T22:00:00Z",
+  "read_utc": "2026-11-07T16:01:38Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 220.0,
+  "away_price": -268.0,
+  "home_prob": 0.3003
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-07T16:01:38Z",
+  "home": [
+   {
+    "athlete_id": "4433076",
+    "name": "Ben Sheppard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5157066",
+    "name": "Johnny Furphy",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3133603",
+    "name": "Kelly Oubre Jr.",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "2530530",
+    "name": "T.J. McConnell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4396993",
+    "name": "Tyrese Haliburton",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3978",
+    "name": "DeMar DeRozan",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4432181",
+    "name": "Julian Strawther",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T16:01:38Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14190,
+  "training_games_priced": 14149,
+  "training_ids_sha256": "fb78c7f86a745c40190fb3c55cb6e4a3f0decfcb11d700a10a6ea0ce720038ae"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "e73781933e0e656271025708ad55e1a78d7839da"
+}
