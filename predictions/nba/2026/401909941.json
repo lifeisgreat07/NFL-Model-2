@@ -1,0 +1,104 @@
+{
+ "game_id": "401909941",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T01:00:00Z",
+ "home": "OKC",
+ "away": "WSH",
+ "model_a": 0.8799,
+ "model_b": 0.8251,
+ "pick": "OKC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.7228,
+  "away": 0.8825
+ },
+ "features": {
+  "point_matchup": 13.699666,
+  "efficiency_matchup": 13.234453,
+  "availability_matchup": -0.15966
+ },
+ "market": {
+  "game_id": "401909941",
+  "home": "OKC",
+  "away": "WSH",
+  "start_utc": "2026-11-08T01:00:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -598.0,
+  "away_price": 443.0,
+  "home_prob": 0.8231
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4683692",
+    "name": "Cason Wallace",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433255",
+    "name": "Chet Holmgren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4593803",
+    "name": "Jalen Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432823",
+    "name": "Jaylin Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061603",
+    "name": "Thomas Sorber",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "6583",
+    "name": "Anthony Davis",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4606840",
+    "name": "Jamir Watkins",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432907",
+    "name": "Justin Champagnie",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432187",
+    "name": "Reece Beekman",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4997537",
+    "name": "Tristan Vukcevic",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14190,
+  "training_games_priced": 14149,
+  "training_ids_sha256": "fb78c7f86a745c40190fb3c55cb6e4a3f0decfcb11d700a10a6ea0ce720038ae"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "cb3867668d2eef31db63aeacf5c08bc4b94e0af7"
+}

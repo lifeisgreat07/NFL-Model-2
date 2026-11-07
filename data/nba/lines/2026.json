@@ -1954,5 +1954,77 @@
   "home_price": 261.0,
   "away_price": -324.0,
   "home_prob": 0.2661
+ },
+ {
+  "game_id": "401909939",
+  "home": "ATL",
+  "away": "BKN",
+  "start_utc": "2026-11-08T00:30:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -283.0,
+  "away_price": 231.0,
+  "home_prob": 0.7098
+ },
+ {
+  "game_id": "401909940",
+  "home": "CLE",
+  "away": "NY",
+  "start_utc": "2026-11-08T01:00:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 179.0,
+  "away_price": -216.0,
+  "home_prob": 0.344
+ },
+ {
+  "game_id": "401909941",
+  "home": "OKC",
+  "away": "WSH",
+  "start_utc": "2026-11-08T01:00:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -598.0,
+  "away_price": 443.0,
+  "home_prob": 0.8231
+ },
+ {
+  "game_id": "401909942",
+  "home": "GS",
+  "away": "ORL",
+  "start_utc": "2026-11-08T01:30:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -284.0,
+  "away_price": 231.0,
+  "home_prob": 0.71
+ },
+ {
+  "game_id": "401909943",
+  "home": "PHX",
+  "away": "HOU",
+  "start_utc": "2026-11-08T02:00:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 221.0,
+  "away_price": -270.0,
+  "home_prob": 0.2992
+ },
+ {
+  "game_id": "401909944",
+  "home": "POR",
+  "away": "SA",
+  "start_utc": "2026-11-08T03:00:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 171.0,
+  "away_price": -205.0,
+  "home_prob": 0.3544
  }
 ]
