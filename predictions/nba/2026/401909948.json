@@ -1,0 +1,84 @@
+{
+ "game_id": "401909948",
+ "season": 2026,
+ "slate": "2026-11-08",
+ "start_utc": "2026-11-09T00:30:00Z",
+ "home": "DAL",
+ "away": "BKN",
+ "model_a": 0.7294,
+ "model_b": 0.7222,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9875,
+  "away": 0.9294
+ },
+ "features": {
+  "point_matchup": 4.255864,
+  "efficiency_matchup": 4.256683,
+  "availability_matchup": 0.05804
+ },
+ "market": {
+  "game_id": "401909948",
+  "home": "DAL",
+  "away": "BKN",
+  "start_utc": "2026-11-09T00:30:00Z",
+  "read_utc": "2026-11-08T21:31:31Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -305.0,
+  "away_price": 248.0,
+  "home_prob": 0.7238
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-08T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5279129",
+    "name": "Sergio de Larrea",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5175643",
+    "name": "Egor Demin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4702670",
+    "name": "Grant Nelson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5101761",
+    "name": "Mikel Brown Jr.",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-08T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-07",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14197,
+  "training_games_priced": 14156,
+  "training_ids_sha256": "d16e1b05cf3e9a0b549ab3a5cb8b23752915c3bbde7d7f62805361a56cbeac65"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "646d105833d86e5e561f9e7510eaf67d1d2c8e4d"
+}
