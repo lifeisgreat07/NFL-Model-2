@@ -66,25 +66,25 @@
   "model_a_minus_base_rate": {
    "games": 214,
    "days": 33,
-   "diff": -0.03281175415110482,
-   "low": -0.06263562217815842,
-   "high": -0.00042929767461219833,
+   "diff": -0.03281175415110483,
+   "low": -0.06263562217815843,
+   "high": -0.00042929767461220093,
    "level": 0.9833333333333333
   },
   "model_b_minus_model_a": {
    "games": 192,
    "days": 32,
-   "diff": -0.01695564943618606,
+   "diff": -0.016955649436186045,
    "low": -0.03521829399461313,
-   "high": 0.004341316443206577,
+   "high": 0.004341316443206584,
    "level": 0.9833333333333333
   },
   "model_b_minus_market": {
    "games": 192,
    "days": 32,
-   "diff": -0.006847541672401094,
-   "low": -0.012735402020424587,
-   "high": 0.00027987687414972567,
+   "diff": -0.006847541672401082,
+   "low": -0.012735402020424572,
+   "high": 0.0002798768741497397,
    "level": 0.9833333333333333
   }
  },
@@ -95,8 +95,8 @@
    "level": 0.9833333333333333,
    "fits": "two: the intercept with the slope held at 1 (calibration in the large), the slope with an intercept of its own",
    "intercept": {
-    "value": 0.1783198909225046,
-    "low": -0.12408645431372309,
+    "value": 0.17831989092250464,
+    "low": -0.12408645431372307,
     "high": 0.4958771803519895,
     "draws_unfit": 0
    },
@@ -114,13 +114,13 @@
    "fits": "two: the intercept with the slope held at 1 (calibration in the large), the slope with an intercept of its own",
    "intercept": {
     "value": 0.17995504879024474,
-    "low": -0.12516505536392036,
+    "low": -0.12516505536392034,
     "high": 0.5270357268747474,
     "draws_unfit": 0
    },
    "slope": {
-    "value": 1.499490846378223,
-    "low": 0.9247581506434845,
+    "value": 1.4994908463782228,
+    "low": 0.9247581506434844,
     "high": 2.186247987287605,
     "draws_unfit": 0
    }

@@ -3465,7 +3465,7 @@
    "start_utc": "2026-11-07T22:00:00Z",
    "home": "SEA",
    "away": "NYR",
-   "status": "scheduled",
+   "status": "in_progress",
    "game_type": "regular",
    "home_score": null,
    "away_score": null,

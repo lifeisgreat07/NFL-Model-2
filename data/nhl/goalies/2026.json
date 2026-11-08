@@ -7633,5 +7633,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020278",
   "start_utc": "2026-11-08T20:30:00Z"
+ },
+ {
+  "date": "2026-11-07",
+  "home": "DAL",
+  "home_goalie": "Jake Oettinger",
+  "home_status": "Confirmed",
+  "home_report": "https://x.com/Lassimak/status/2119117799486370105?a=ncvkpm-wBC9pELuS-Jc&s=20",
+  "away": "SJS",
+  "away_goalie": "Alex Nedeljkovic",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/Sheng_Peng/status/2119203334884040750?a=WJedBvpIEBOanMMDlM4&s=20",
+  "read_utc": "2026-11-08T00:03:01Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020272",
+  "start_utc": "2026-11-08T01:00:00Z"
  }
 ]
