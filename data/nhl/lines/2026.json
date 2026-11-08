@@ -3046,5 +3046,17 @@
   "home_prob": 0.5217,
   "read_utc": "2026-11-08T18:36:55Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020279",
+  "start_utc": "2026-11-09T00:00:00Z",
+  "home": "TOR",
+  "away": "NJD",
+  "book": "DraftKings",
+  "home_price": 136.0,
+  "away_price": -162.0,
+  "home_prob": 0.4066,
+  "read_utc": "2026-11-08T21:01:35Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]

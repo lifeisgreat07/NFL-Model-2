@@ -3608,7 +3608,7 @@
    "start_utc": "2026-11-08T20:30:00Z",
    "home": "BUF",
    "away": "VGK",
-   "status": "scheduled",
+   "status": "in_progress",
    "game_type": "regular",
    "home_score": null,
    "away_score": null,

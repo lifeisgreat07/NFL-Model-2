@@ -1354,5 +1354,29 @@
   "pick": "VGK",
   "result": "pending",
   "saved_utc": "2026-11-08T14:01:29Z"
+ },
+ {
+  "game_id": "2026020279",
+  "pick": "NJD",
+  "result": "pending",
+  "saved_utc": "2026-11-08T21:01:35Z"
+ },
+ {
+  "game_id": "2026020280",
+  "pick": "TBL",
+  "result": "pending",
+  "saved_utc": "2026-11-08T21:01:35Z"
+ },
+ {
+  "game_id": "2026020281",
+  "pick": "PHI",
+  "result": "pending",
+  "saved_utc": "2026-11-08T21:01:35Z"
+ },
+ {
+  "game_id": "2026020282",
+  "pick": "ANA",
+  "result": "pending",
+  "saved_utc": "2026-11-08T21:01:35Z"
  }
 ]
