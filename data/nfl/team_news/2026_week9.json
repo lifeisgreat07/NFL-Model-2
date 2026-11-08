@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 9,
-  "read_at": "2026-11-07T11:42:54Z",
+  "read_at": "2026-11-08T21:47:41Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-11-07T07:02:05Z"
+    "depth_chart_snapshot": "2026-11-08T14:14:26Z"
   },
   "teams": {
     "BAL": {
@@ -102,11 +102,6 @@
           "name": "Brandon Jones",
           "position": "S",
           "injury": "Hamstring"
-        },
-        {
-          "name": "Eyioma Uwazurike",
-          "position": "DE",
-          "injury": "Shoulder"
         }
       ],
       "doubtful": [],
@@ -121,6 +116,11 @@
       "injury_report": "published",
       "out": [
         {
+          "name": "A.J. Haulcy",
+          "position": "S",
+          "injury": "Ankle"
+        },
+        {
           "name": "Akeem Davis-Gaither",
           "position": "LB",
           "injury": "Knee"
@@ -132,7 +132,7 @@
         }
       ],
       "doubtful": [],
-      "questionable_starters": 2
+      "questionable_starters": 1
     },
     "DAL": {
       "qb": {
@@ -204,19 +204,9 @@
       "injury_report": "published",
       "out": [
         {
-          "name": "Cade Mays",
-          "position": "C",
-          "injury": "Ankle"
-        },
-        {
           "name": "D.J. Reed",
           "position": "CB",
           "injury": "Hip"
-        },
-        {
-          "name": "Jack Campbell",
-          "position": "LB",
-          "injury": "Neck"
         }
       ],
       "doubtful": [],
@@ -319,13 +309,7 @@
       },
       "injury_report": "published",
       "out": [],
-      "doubtful": [
-        {
-          "name": "Kayode Awosika",
-          "position": "G",
-          "injury": "Fibula"
-        }
-      ],
+      "doubtful": [],
       "questionable_starters": 0
     },
     "HOU": {
@@ -335,7 +319,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Reed Blankenship",
+          "position": "S",
+          "injury": "Concussion"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -430,11 +420,6 @@
           "injury": "Stinger"
         },
         {
-          "name": "Quenton Nelson",
-          "position": "G",
-          "injury": "Knee"
-        },
-        {
           "name": "Sam Darnold",
           "position": "QB",
           "injury": "Quadricep"
@@ -455,20 +440,9 @@
         "changed_from": "J.Brissett"
       },
       "injury_report": "published",
-      "out": [
-        {
-          "name": "Jayden Williams",
-          "position": "T",
-          "injury": "Knee"
-        },
-        {
-          "name": "Jon Gaines II",
-          "position": "G",
-          "injury": "Ankle"
-        }
-      ],
+      "out": [],
       "doubtful": [],
-      "questionable_starters": 2
+      "questionable_starters": 3
     },
     "CHI": {
       "qb": {
@@ -505,7 +479,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "Kyler Murray",
+          "position": "QB",
+          "injury": "Hamstring"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
@@ -518,7 +498,7 @@
       "injury_report": "published",
       "out": [],
       "doubtful": [],
-      "questionable_starters": 0
+      "questionable_starters": 2
     }
   }
 }

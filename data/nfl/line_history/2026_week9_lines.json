@@ -229,5 +229,26 @@
     "home": "PHI",
     "away": "NYG",
     "spread_line": -3.0
+  },
+  {
+    "captured_date": "2026-11-08",
+    "captured_utc": "2026-11-08T21:47:39Z",
+    "home": "NO",
+    "away": "CLE",
+    "spread_line": 4.5
+  },
+  {
+    "captured_date": "2026-11-08",
+    "captured_utc": "2026-11-08T21:47:39Z",
+    "home": "LAC",
+    "away": "HOU",
+    "spread_line": -5.5
+  },
+  {
+    "captured_date": "2026-11-08",
+    "captured_utc": "2026-11-08T21:47:39Z",
+    "home": "SF",
+    "away": "LV",
+    "spread_line": 8.5
   }
 ]
