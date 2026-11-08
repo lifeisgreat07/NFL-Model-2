@@ -1,0 +1,99 @@
+{
+ "game_id": "401909945",
+ "season": 2026,
+ "slate": "2026-11-08",
+ "start_utc": "2026-11-08T20:30:00Z",
+ "home": "CHI",
+ "away": "PHI",
+ "model_a": 0.4016,
+ "model_b": 0.2176,
+ "pick": "PHI",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9844,
+  "away": 0.8945
+ },
+ "features": {
+  "point_matchup": -5.99692,
+  "efficiency_matchup": -5.569686,
+  "availability_matchup": 0.089945
+ },
+ "market": {
+  "game_id": "401909945",
+  "home": "CHI",
+  "away": "PHI",
+  "start_utc": "2026-11-08T20:30:00Z",
+  "read_utc": "2026-11-08T16:01:40Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 329.0,
+  "away_price": -420.0,
+  "home_prob": 0.224
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-08T16:01:40Z",
+  "home": [
+   {
+    "athlete_id": "4397189",
+    "name": "Jalen Smith",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4278067",
+    "name": "Nic Claxton",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2595516",
+    "name": "Norman Powell",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5105555",
+    "name": "Tobe Awaka",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4066650",
+    "name": "Zach Collins",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5105637",
+    "name": "Adem Bona",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4871141",
+    "name": "Ariel Hukporti",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4870562",
+    "name": "Dominick Barlow",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3059318",
+    "name": "Joel Embiid",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-08T16:01:40Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-07",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14197,
+  "training_games_priced": 14156,
+  "training_ids_sha256": "d16e1b05cf3e9a0b549ab3a5cb8b23752915c3bbde7d7f62805361a56cbeac65"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "e325b0b348658dd0823c92923060b117b992a992"
+}
