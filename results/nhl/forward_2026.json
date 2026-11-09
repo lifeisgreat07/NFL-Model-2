@@ -2,14 +2,14 @@
  "sport": "nhl",
  "season": 2026,
  "registered": "experiments/nhl/stage58/registry.json",
- "graded_picks": 224,
- "through": "2026-11-07",
+ "graded_picks": 226,
+ "through": "2026-11-08",
  "scores": {
   "model_a": {
-   "games": 224,
-   "log_loss": 0.6461728345793656,
-   "brier": 0.22766368651785715,
-   "accuracy": 0.6205357142857143
+   "games": 226,
+   "log_loss": 0.6460144285201046,
+   "brier": 0.227575667079646,
+   "accuracy": 0.6238938053097345
   },
   "model_b": {
    "games": 202,
@@ -24,10 +24,10 @@
    "accuracy": 0.6138613861386139
   },
   "base_rate": {
-   "games": 224,
-   "log_loss": 0.6850937123792187,
-   "brier": 0.24597977726032114,
-   "accuracy": 0.5714285714285714
+   "games": 226,
+   "log_loss": 0.6851919304997094,
+   "brier": 0.24602878774967157,
+   "accuracy": 0.5707964601769911
   }
  },
  "by_market_source": {
@@ -64,11 +64,11 @@
  },
  "comparisons": {
   "model_a_minus_base_rate": {
-   "games": 224,
-   "days": 33,
-   "diff": -0.03892087779985295,
-   "low": -0.06935880220918345,
-   "high": -0.006179393948057865,
+   "games": 226,
+   "days": 34,
+   "diff": -0.039177501979604706,
+   "low": -0.06959297157214461,
+   "high": -0.007402731357377861,
    "level": 0.9833333333333333
   },
   "model_b_minus_model_a": {
@@ -90,20 +90,20 @@
  },
  "calibration": {
   "model_a": {
-   "games": 224,
-   "days": 33,
+   "games": 226,
+   "days": 34,
    "level": 0.9833333333333333,
    "fits": "two: the intercept with the slope held at 1 (calibration in the large), the slope with an intercept of its own",
    "intercept": {
-    "value": 0.15283546166499484,
-    "low": -0.13138096848132882,
-    "high": 0.4555201958642949,
+    "value": 0.15030817537760663,
+    "low": -0.11669835088228663,
+    "high": 0.43338316318345854,
     "draws_unfit": 0
    },
    "slope": {
-    "value": 1.3590574656965928,
-    "low": 0.6772207627184584,
-    "high": 2.166317975523769,
+    "value": 1.373059264023869,
+    "low": 0.705931141743343,
+    "high": 2.192101168477453,
     "draws_unfit": 0
    }
   },

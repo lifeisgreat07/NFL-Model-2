@@ -7843,5 +7843,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020282",
   "start_utc": "2026-11-09T01:00:00Z"
+ },
+ {
+  "date": "2026-11-08",
+  "home": "ANA",
+  "home_goalie": "Laurent Brossoit",
+  "home_status": null,
+  "home_report": null,
+  "away": "PIT",
+  "away_goalie": "Arturs Silovs",
+  "away_status": "Confirmed",
+  "away_report": "https://x.com/JoshYohe_PGH/status/2119567851774509458",
+  "read_utc": "2026-11-09T00:11:34Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020282",
+  "start_utc": "2026-11-09T01:00:00Z"
  }
 ]
