@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-05 (session 1104, in progress: #598-#602 merged; audit 7 received, Stages 91-96 written)
+Last updated: 2026-11-06 (session 1105 wrap-up: #628-#668 merged; #670 in audit; #669 being split in three)
 
 ---
 
@@ -13,42 +13,36 @@ Last updated: 2026-11-05 (session 1104, in progress: #598-#602 merged; audit 7 r
 **Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked figure. NFL in `src/sports/nfl/`, shared modules in `src/core/`.
 **Sportalytics** (Stage 67) is live: home `/`, NFL `/nfl/` (Model **v2.6**), NHL `/nhl/`, NBA `/nba/` (picks saved twice a day).
 
-**Audit 7 (2026-11-04, executed)** wrote Stages 91 to 96 (`docs/history/11-audit7-2026-11-04.md`, with the response and
-Mark's answers). Order now: the built queue below; then Stage 91's rest and 92, 93 together; 94 items 23, 25 (built), 26;
-95 (31 after #601, as a second amendment); the model-changing items (94: 24, 27-30; 95: 35) as one registered shadow
-"day-sport v2" (Mark agreed 2026-11-05); 96 alongside. Before 11-19: 94 items 23 and 25 and 95 item 31.
-Stages 81-90 left: 82 items 4-5 (Mark's #582), 83 item 6 (s83f, Mark's token date), 85 item 2, 86 item 5, 88, 89, 87, 90.
-
-**Booth audits run one at a time** (two at once time out at 20 minutes). Do not change booth-pr-audit.yml until Mark decides.
+**Booth audits run one at a time**, and a diff of about a hundred files runs out of the 20-minute job time (#669 twice,
+#670 once, #667 once). Split a big change rather than re-running it. Do not change booth-pr-audit.yml until Mark decides.
 
 **Merge rule (Mark):** Booth SAFE TO MERGE, 0 discrepancies, audited head = PR head, every check green; `merge_item.py PR WT_NAME
-BRANCH "Title"`. **At the final head, before opening:** prechecks (ruff, both mypy), every figure and mutation case by exact
-id, the suite. **A branch made with `git worktree add -b X origin/main` tracks origin/main**: push it with `-u` (the
-pre-flight chain now does), or the wrap-up's "nothing unpushed" test fails on it. **A branch that rewrites code re-anchors
-the existing mutation cases on it, and re-runs them.** Render any page change in Chromium before opening (s91e's first
-version broke the sidebar grid; caught only by the render).
+BRANCH "Title"`; re-run a failed or timed-out audit once. **At the final head, before opening:** prechecks (ruff, both mypy),
+every figure and mutation case by exact id, the suite (the session archive's prep and go scripts; CLAUDE.local.md has the paths).
+A body that must change after opening: close the PR and open a new one from the same branch.
+**Rules that merged this session bind every branch behind them:** every workflow installs with
+`pip install --require-hashes -r requirements.lock` (`tests/test_lock.py`); every python or pip step of an alerting scheduled
+job has its own `timeout-minutes` (`tests/test_step_timeouts.py`); src/core, src/site, src/sports/nhl and src/sports/nba pass
+`mypy --strict`; a new test file needs a line in the suite map (the file #670 adds) once #670 merges.
 
-**Single next action:** open s83r's PR when its pre-flight passes; then s85r, s86s, s85s (merge main, render), s86h, s86t,
-then the Stage 91/93/94 branches, one audit at a time.
-
-**Week 9:** no QB override PR was opened (the routine ran 22:06 UTC Wed and opened nothing); Thursday 11:00 UTC locks week 9.
+**Single next action:** land #670 (s96w): SAFE at aa4c9ddb, but main's wrap-up commit then changed the Suite line it rewrites.
+Merge main, keep the five-way line from `python -m src.agents.session_wrapup --suite-line`, prep, push, one audit of the
+new head. Then open s96r part 1 (below), and cut parts 2 and 3 one at a time after it.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| s83r `s83-alert-repeats` (83.1) | 83b3e66c; body_s83r_final.md | Pre-flight (running), one audit |
-| s85r `s85-rederive` (85.6) | 4cee82cb (tolerance 5e-4); suite 11838 at head | Pre-flight again (upstream fixed), one audit |
-| s86s `s86-suite-split` (86.4) | 8df83009 | Pre-flight again (upstream fixed), one audit |
-| s85s `s85-baseline-spread` (85.3) | 595b718f; no body; conflicts with #601's drift section | Merge main, render, body |
-| s86h (86.7 function_source), s86t (86.2 shared table) | 11c37ee0, 4073f9ff; suites green | Bodies, pre-flight, audits |
-| s91a (91.1 pull_check), s91b (91.2 schedule_guard), s91c (91.3 after_save), s91d (91.5-6 pick writer), s91e (91.4 site) | aae2eadf, a826514f, 316a500f, ecf81a93, 11f4d162 | Suites (chain), bodies |
-| s93t (93.13 step timeouts), s94d (94.23, 94.25 disclosures) | 1736ab29, d9292d86 | Suites, bodies |
-| Slow-test count | s85r pins 7 slow tests; s91c adds 2 | Whichever merges second updates `test_the_slow_marker_is_registered_and_used` |
-| s83f `s83-credentials` (83.6) | 00e5ea0f | **Mark: the OAuth token's real expiry date** |
-| #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then #578, #580 close |
+| #670 s96w `s96-suite-line` (96.51: five-way suite split by a committed map of test files) | aa4c9ddb; SAFE on its re-run; main has since moved (wrap-up commit, CLAUDE.md) | Merge main, recompute the Suite line, one audit of the new head |
+| s96r part 1 `s96-require-tool-1` (96.48: require_tool, injuries collection, first third) | Worktree s96r1, 5fab352c, not pushed; its body and the script that writes it are in the session archive (CLAUDE.local.md) | #670 merged; then merge main, prep, open |
+| s96r parts 2 and 3 | The session archive's split_s96r script (argument 2 or 3) cuts each from branch `s96-require-tool` (the whole change, #669 closed) onto main; part 3 carries the guard test | Each after the part before merges; bodies modelled on part 1's, counts by the archive's part_counts script |
+| Stage 87 items 2-4 (core Python move; one page renderer; app.js split) | Not built | After the queue |
+| Stage 95 items 31-34, and 35 as the registered "day-sport v2" shadow (with 94 items 24, 27-30) | Not built | After the queue |
+| s83f `s83-credentials` (83.6) | Built | **Mark: the OAuth token's real expiry date** |
+| #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then 82 item 5 |
+| #664's auto-merge | Merged, off | **Mark sets AUTO_MERGE_OVERRIDES=true** when he wants it; the workflow file is read from the PR on `pull_request` (disclosed) |
 | #570, #575 (Dependabot) | Fail tests and Booth | Mark: a Dependabot secret; which updates to take |
-| Issues: 11 "Booth audit failed", #543, #541, #540, #518, #517 | Stale | Mark closes them |
+| Stage 88 item 1 (actions): one dispatch of each writer | Not done | Mark (dispatching the Weekly update can lock a week) |
 
 ## Known and deliberately not fixed
 
@@ -79,3 +73,10 @@ then the Stage 91/93/94 branches, one audit at a time.
 - **`src/core` type-checks under strict mypy** (`test_sport_isolation`, `test_type_check`); a pre-flight without mypy misses it (#515, #516).
 - **A PowerShell `>` redirect writes UTF-16**, which `git apply` refuses: write patches with `git format-patch -o`, or a Python script written with the file tool.
 - **The plain-language guard reads only `RENDERERS`**: add each new markup function with its page; a top-level literal is charged to the function above it (items 28, 31).
+- **Booth runs out of its 20-minute job on a diff of about a hundred files** (#669 twice). Split the change; parts that
+  import a new helper are cut after the helper's part merges.
+- **A test that calls a writer's `main()` writes into the real `data/` on a runner** when the code records only under
+  `GITHUB_ACTIONS=true` (#661). Such a test chdirs to its tmp folder and pins the runner variables; reproduce with
+  `GITHUB_ACTIONS=true` set on the PC.
+- **One process per worktree**: mutation cases run while that worktree's suite runs fail the suite.
+- **Scout's pre-flight reads `--durations=0 tests/test_x.py` as a count of 0 for that file**: put the flag after the files.

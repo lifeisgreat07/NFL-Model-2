@@ -1,6 +1,16 @@
 {
   "reads": [
-    "2026-11-05T11:03:11Z"
+    "2026-11-05T11:03:11Z",
+    "2026-11-06T05:17:30Z",
+    "2026-11-06T12:57:40Z",
+    "2026-11-07T05:17:47Z",
+    "2026-11-07T11:42:52Z",
+    "2026-11-08T21:47:40Z",
+    "2026-11-09T01:14:31Z",
+    "2026-11-09T01:47:38Z",
+    "2026-11-09T05:37:47Z",
+    "2026-11-09T08:42:05Z",
+    "2026-11-09T14:15:12Z"
   ],
   "changes": [],
   "games": [
@@ -18,7 +28,7 @@
         "Prime Video"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110800",
@@ -34,7 +44,7 @@
         "NFL Network"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110801",
@@ -50,7 +60,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110802",
@@ -66,7 +76,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110803",
@@ -82,7 +92,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110804",
@@ -98,7 +108,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110805",
@@ -114,7 +124,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110806",
@@ -130,7 +140,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110807",
@@ -146,7 +156,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110808",
@@ -162,7 +172,7 @@
         "CBS"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110809",
@@ -192,7 +202,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110811",
@@ -208,7 +218,7 @@
         "FOX"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110812",
@@ -224,7 +234,7 @@
         "NBC"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     },
     {
       "elias": "2026110900",
@@ -242,7 +252,7 @@
         "NFL Network"
       ],
       "source": "https://www.nfl.com/schedules/2026/by-week/week-9",
-      "read_at": "2026-11-05T11:03:11Z"
+      "read_at": "2026-11-09T14:15:12Z"
     }
   ]
 }

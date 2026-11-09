@@ -1,0 +1,80 @@
+{
+ "game_id": "2026020271",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T01:00:00Z",
+ "home": "CAR",
+ "away": "CHI",
+ "model_a": 0.8362,
+ "model_b": 0.8036,
+ "pick": "CAR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 2.21968,
+  "shot_matchup": 14.224562,
+  "goalie_matchup_2000": 0.00238
+ },
+ "market": {
+  "game_id": "2026020271",
+  "start_utc": "2026-11-08T01:00:00Z",
+  "home": "CAR",
+  "away": "CHI",
+  "book": "DraftKings",
+  "home_price": -440.0,
+  "away_price": 340.0,
+  "home_prob": 0.7819,
+  "read_utc": "2026-11-07T21:01:30Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481611,
+   "name": "Pyotr Kochetkov",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/WaltRuff/status/2119090058586157195?a=y3EnPxObRVIBy35f1H8&s=20"
+  },
+  "away": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/BenPopeCST/status/2119096660026671558?a=yz8uyjCpx47267UuiRA&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-07",
+  "read_utc": "2026-11-07T21:01:30Z",
+  "home": [
+   {
+    "name": "Jordan Staal",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Patrick Kane",
+    "position": "RW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:01:30Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14667,
+  "training_games_priced": 7640,
+  "training_ids_sha256": "e50bec1b74829f621892240e29c474ef1c71da1f86076cc92f2b102f6201e0fd"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "79cc89ef94dead8ffa06dd7c52724dc081bfeebe"
+}

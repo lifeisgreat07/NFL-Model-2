@@ -1,0 +1,84 @@
+{
+ "game_id": "401909947",
+ "season": 2026,
+ "slate": "2026-11-08",
+ "start_utc": "2026-11-09T00:00:00Z",
+ "home": "MIN",
+ "away": "UTAH",
+ "model_a": 0.8333,
+ "model_b": 0.8342,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8351,
+  "away": 0.9567
+ },
+ "features": {
+  "point_matchup": 10.613089,
+  "efficiency_matchup": 10.19045,
+  "availability_matchup": -0.121611
+ },
+ "market": {
+  "game_id": "401909947",
+  "home": "MIN",
+  "away": "UTAH",
+  "start_utc": "2026-11-09T00:00:00Z",
+  "read_utc": "2026-11-08T21:31:31Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -650.0,
+  "away_price": 470.0,
+  "home_prob": 0.8316
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-08T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4594268",
+    "name": "Anthony Edwards",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4277961",
+    "name": "Jaren Jackson Jr.",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102530",
+    "name": "Jusuf Nurkic",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433627",
+    "name": "Keyonte George",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4066336",
+    "name": "Lauri Markkanen",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-08T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-07",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14197,
+  "training_games_priced": 14156,
+  "training_ids_sha256": "d16e1b05cf3e9a0b549ab3a5cb8b23752915c3bbde7d7f62805361a56cbeac65"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "646d105833d86e5e561f9e7510eaf67d1d2c8e4d"
+}

@@ -1,0 +1,84 @@
+{
+ "game_id": "401909295",
+ "season": 2026,
+ "slate": "2026-11-06",
+ "start_utc": "2026-11-07T03:00:00Z",
+ "home": "SAC",
+ "away": "SA",
+ "model_a": 0.1481,
+ "model_b": 0.1055,
+ "pick": "SA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8932,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": -13.445648,
+  "efficiency_matchup": -13.040632,
+  "availability_matchup": -0.106848
+ },
+ "market": {
+  "game_id": "401909295",
+  "home": "SAC",
+  "away": "SA",
+  "start_utc": "2026-11-07T03:00:00Z",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 810.0,
+  "away_price": -1340.0,
+  "home_prob": 0.1056
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065732",
+    "name": "De'Andre Hunter",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4594327",
+    "name": "Keegan Murray",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5101845",
+    "name": "Jayden Quaintance",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6440",
+    "name": "Tobias Harris",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-06T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-05",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14181,
+  "training_games_priced": 14140,
+  "training_ids_sha256": "5ba09b265ad27c14c359a5f56ef377cd914c93c31e27f1d7b022f6f3c89db8ea"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "95fbe74f196629144b73020fc235786939a40563"
+}

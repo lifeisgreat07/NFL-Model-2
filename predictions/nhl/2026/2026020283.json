@@ -1,0 +1,130 @@
+{
+ "game_id": "2026020283",
+ "season": 2026,
+ "slate": "2026-11-09",
+ "start_utc": "2026-11-10T01:00:00Z",
+ "home": "EDM",
+ "away": "NYR",
+ "model_a": 0.6023,
+ "model_b": 0.6054,
+ "pick": "EDM",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.403797,
+  "shot_matchup": 3.333477,
+  "goalie_matchup_2000": -0.002521
+ },
+ "market": {
+  "game_id": "2026020283",
+  "start_utc": "2026-11-10T01:00:00Z",
+  "home": "EDM",
+  "away": "NYR",
+  "book": "DraftKings",
+  "home_price": -162.0,
+  "away_price": 136.0,
+  "home_prob": 0.5934,
+  "read_utc": "2026-11-09T21:01:37Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482221,
+   "name": "Devon Levi",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/vzmercogliano/status/2119833067988898210?a=7sei2UBfgl_lUMYUru0&s=20"
+  },
+  "away": {
+   "player_id": 8482193,
+   "name": "Dylan Garand",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/MollieeWalkerr/status/2119846498683023487?a=qEtM2bAieUWE2_Hc7IY&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-08",
+  "read_utc": "2026-11-09T21:01:37Z",
+  "home": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Colton Dach",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Isaac Howard",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Nugent-Hopkins",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Adam Sykora",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Aidan Thompson",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Alberts Smits",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Igor Shesterkin",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Joe Veleno",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Sean Durzi",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-09T21:01:37Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-08",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14685,
+  "training_games_priced": 7655,
+  "training_ids_sha256": "72a3c5c8bab98c9bb7228d3ddd9cc98e073fa73669384c3dd01e3699ccd89189"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "c6c68759179d3bcfe867c2d1d42a52a0842538a6"
+}

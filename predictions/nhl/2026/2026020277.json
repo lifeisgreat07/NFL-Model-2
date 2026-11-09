@@ -1,0 +1,84 @@
+{
+ "game_id": "2026020277",
+ "season": 2026,
+ "slate": "2026-11-08",
+ "start_utc": "2026-11-08T18:00:00Z",
+ "home": "BOS",
+ "away": "FLA",
+ "model_a": 0.5633,
+ "model_b": null,
+ "pick": "BOS",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": 0.661632,
+  "shot_matchup": -4.213865,
+  "goalie_matchup_2000": 0.005124
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8480280,
+   "name": "Jeremy Swayman",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8474593,
+   "name": "Jacob Markstrom",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-07",
+  "read_utc": "2026-11-08T14:01:29Z",
+  "home": [
+   {
+    "name": "James Hagens",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matthew Poitras",
+    "position": "C",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Anton Lundell",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-08T14:01:29Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-07",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14679,
+  "training_games_priced": 7650,
+  "training_ids_sha256": "84c5ef57bbc45dcddd275a2b7078320bd7d818fe96d1b6e090e0022b6e803a4f"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "25c1bdd917a5f40e522b6a182d03c9ddc05d6ec2"
+}

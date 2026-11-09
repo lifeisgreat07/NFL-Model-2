@@ -1,0 +1,114 @@
+{
+ "game_id": "401909942",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T01:30:00Z",
+ "home": "GS",
+ "away": "ORL",
+ "model_a": 0.7263,
+ "model_b": 0.7024,
+ "pick": "GS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.903,
+  "away": 0.6475
+ },
+ "features": {
+  "point_matchup": 2.142244,
+  "efficiency_matchup": 2.137266,
+  "availability_matchup": 0.255504
+ },
+ "market": {
+  "game_id": "401909942",
+  "home": "GS",
+  "away": "ORL",
+  "start_utc": "2026-11-08T01:30:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -284.0,
+  "away_price": 231.0,
+  "home_prob": 0.71
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "6589",
+    "name": "Draymond Green",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3134903",
+    "name": "Gary Payton II",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4997536",
+    "name": "Gui Santos",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6430",
+    "name": "Jimmy Butler III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102531",
+    "name": "Kristaps Porzingis",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432171",
+    "name": "Moses Moody",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4066320",
+    "name": "Desmond Bane",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5107251",
+    "name": "Izaiyah Nelson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432165",
+    "name": "Jalen Suggs",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065654",
+    "name": "Jonathan Isaac",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5214637",
+    "name": "Noah Penda",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432573",
+    "name": "Paolo Banchero",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14190,
+  "training_games_priced": 14149,
+  "training_ids_sha256": "fb78c7f86a745c40190fb3c55cb6e4a3f0decfcb11d700a10a6ea0ce720038ae"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "cb3867668d2eef31db63aeacf5c08bc4b94e0af7"
+}

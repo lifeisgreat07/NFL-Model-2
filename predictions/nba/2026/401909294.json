@@ -1,0 +1,68 @@
+{
+ "game_id": "401909294",
+ "season": 2026,
+ "slate": "2026-11-06",
+ "start_utc": "2026-11-07T03:00:00Z",
+ "home": "LAL",
+ "away": "POR",
+ "model_a": 0.6277,
+ "model_b": 0.5778,
+ "pick": "LAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 0.9096
+ },
+ "features": {
+  "point_matchup": 0.706845,
+  "efficiency_matchup": 0.591702,
+  "availability_matchup": 0.090404
+ },
+ "market": {
+  "game_id": "401909294",
+  "home": "LAL",
+  "away": "POR",
+  "start_utc": "2026-11-07T03:00:00Z",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -154.0,
+  "away_price": 130.0,
+  "home_prob": 0.5824
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "home": [],
+  "away": [
+   {
+    "athlete_id": "4279888",
+    "name": "Ja Morant",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4914336",
+    "name": "Shaedon Sharpe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4578893",
+    "name": "Vit Krejci",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-06T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-05",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14181,
+  "training_games_priced": 14140,
+  "training_ids_sha256": "5ba09b265ad27c14c359a5f56ef377cd914c93c31e27f1d7b022f6f3c89db8ea"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "95fbe74f196629144b73020fc235786939a40563"
+}
