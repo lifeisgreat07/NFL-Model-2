@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 9,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-09T01:14:28Z",
+  "read_at": "2026-11-09T01:47:35Z",
   "games": [
     {
       "away": "JAX",
@@ -137,10 +137,10 @@
     {
       "away": "TB",
       "home": "CHI",
-      "status": "upcoming",
+      "status": "started",
       "away_score": null,
       "home_score": null,
-      "spread_line": 6.0,
+      "spread_line": 6.5,
       "neutral_site": false,
       "venue": "Soldier Field"
     },

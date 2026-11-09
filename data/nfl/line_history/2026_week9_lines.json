@@ -250,5 +250,12 @@
     "home": "SF",
     "away": "LV",
     "spread_line": 8.5
+  },
+  {
+    "captured_date": "2026-11-09",
+    "captured_utc": "2026-11-09T01:47:37Z",
+    "home": "CHI",
+    "away": "TB",
+    "spread_line": 6.5
   }
 ]
