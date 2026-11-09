@@ -73,12 +73,24 @@ def test_each_day_sports_live_row_is_its_forward_test_on_that_day(sport):
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_the_recomputation_is_the_registered_forward_test(sport):
     """At the forward test's own day, the recomputation gives back the file the
-    daily run wrote, every figure, so the README's day is scored the same way."""
+    daily run wrote, every figure, so the README's day is scored the same way.
+
+    Floats are compared to a relative 1e-12, not with ==: on 2026-11-09 the NHL
+    base rate's log loss recomputed on a Linux runner as ...0769 against the
+    file's ...0773, a difference in the 16th digit that Windows does not show.
+    The README prints four decimals; a different scoring (the base rate from
+    this season alone, `glance-base-rate-from-this-season-only`) moves it far
+    more than 1e-12."""
     day = glance.forward_through(sport)
     live = glance.day_live(sport, day)
     written = json.loads((ROOT / 'results' / sport / 'forward_2026.json').read_text(encoding='utf-8'))['scores']
     for k in ('model_b', 'market', 'base_rate'):
-        assert live[k] == written[k], k
+        assert (live[k] is None) == (written[k] is None), k
+        if written[k] is None:
+            continue
+        assert sorted(live[k]) == sorted(written[k]), k
+        for field, value in written[k].items():
+            assert live[k][field] == pytest.approx(value, rel=1e-12, abs=0), (k, field)
 
 
 AGENT_ROW = re.compile(r'^\| \*\*([A-Za-z ]+)\*\* \| [^|]+ \| [^|]+ \| ([^|]+) \|$', re.M)
