@@ -1,0 +1,110 @@
+{
+ "game_id": "2026020285",
+ "season": 2026,
+ "slate": "2026-11-09",
+ "start_utc": "2026-11-10T03:00:00Z",
+ "home": "SJS",
+ "away": "NYI",
+ "model_a": 0.4299,
+ "model_b": 0.4282,
+ "pick": "NYI",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.664817,
+  "shot_matchup": -2.825734,
+  "goalie_matchup_2000": -0.004992
+ },
+ "market": {
+  "game_id": "2026020285",
+  "start_utc": "2026-11-10T03:00:00Z",
+  "home": "SJS",
+  "away": "NYI",
+  "book": "DraftKings",
+  "home_price": 120.0,
+  "away_price": -142.0,
+  "home_prob": 0.4365,
+  "read_utc": "2026-11-09T21:01:37Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482137,
+   "name": "Yaroslav Askarov",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Sheng_Peng/status/2119870405272060395?a=Sywxl2hpsB08NvXwORI&s=20"
+  },
+  "away": {
+   "player_id": 8478009,
+   "name": "Ilya Sorokin",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/AGrossNewsday/status/2119866822602494164?a=fwFdhVUNSF64WYnl5O8&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-08",
+  "read_utc": "2026-11-09T21:01:37Z",
+  "home": [
+   {
+    "name": "Alexander Wennberg",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Igor Chernyshov",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kyle Keyser",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Quentin Musty",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Calum Ritchie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mathew Barzal",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matias Maccelli",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Pulock",
+    "position": "D",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-09T21:01:37Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-08",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14685,
+  "training_games_priced": 7655,
+  "training_ids_sha256": "72a3c5c8bab98c9bb7228d3ddd9cc98e073fa73669384c3dd01e3699ccd89189"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "c6c68759179d3bcfe867c2d1d42a52a0842538a6"
+}

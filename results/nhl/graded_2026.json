@@ -1378,5 +1378,23 @@
   "pick": "ANA",
   "result": "correct",
   "saved_utc": "2026-11-08T21:01:35Z"
+ },
+ {
+  "game_id": "2026020283",
+  "pick": "EDM",
+  "result": "pending",
+  "saved_utc": "2026-11-09T21:01:37Z"
+ },
+ {
+  "game_id": "2026020284",
+  "pick": "PHI",
+  "result": "pending",
+  "saved_utc": "2026-11-09T21:01:37Z"
+ },
+ {
+  "game_id": "2026020285",
+  "pick": "NYI",
+  "result": "pending",
+  "saved_utc": "2026-11-09T21:01:37Z"
  }
 ]

@@ -1,0 +1,100 @@
+{
+ "game_id": "2026020284",
+ "season": 2026,
+ "slate": "2026-11-09",
+ "start_utc": "2026-11-10T02:30:00Z",
+ "home": "VAN",
+ "away": "PHI",
+ "model_a": 0.3941,
+ "model_b": 0.4593,
+ "pick": "PHI",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.01514,
+  "shot_matchup": -4.333283,
+  "goalie_matchup_2000": -0.00274
+ },
+ "market": {
+  "game_id": "2026020284",
+  "start_utc": "2026-11-10T02:30:00Z",
+  "home": "VAN",
+  "away": "PHI",
+  "book": "DraftKings",
+  "home_price": 114.0,
+  "away_price": -135.0,
+  "home_prob": 0.4486,
+  "read_utc": "2026-11-09T21:01:37Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482447,
+   "name": "Leevi Merilainen",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/patersonjeff/status/2119843420302942311"
+  },
+  "away": {
+   "player_id": 8479361,
+   "name": "Joseph Woll",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://www.nhl.com/news/rav4-things-flyers-canucks-x4957"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-08",
+  "read_utc": "2026-11-09T21:01:37Z",
+  "home": [
+   {
+    "name": "Akil Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Chytil",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tom Willander",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "name": "Nikita Grebenkin",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Ristolainen",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-09T21:01:37Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-08",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14685,
+  "training_games_priced": 7655,
+  "training_ids_sha256": "72a3c5c8bab98c9bb7228d3ddd9cc98e073fa73669384c3dd01e3699ccd89189"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "c6c68759179d3bcfe867c2d1d42a52a0842538a6"
+}
