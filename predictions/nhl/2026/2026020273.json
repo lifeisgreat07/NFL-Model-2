@@ -1,0 +1,100 @@
+{
+ "game_id": "2026020273",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T01:00:00Z",
+ "home": "MIN",
+ "away": "TBL",
+ "model_a": 0.5293,
+ "model_b": 0.4133,
+ "pick": "TBL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.102633,
+  "shot_matchup": -1.028898,
+  "goalie_matchup_2000": -0.001449
+ },
+ "market": {
+  "game_id": "2026020273",
+  "start_utc": "2026-11-08T01:00:00Z",
+  "home": "MIN",
+  "away": "TBL",
+  "book": "DraftKings",
+  "home_price": 114.0,
+  "away_price": -135.0,
+  "home_prob": 0.4486,
+  "read_utc": "2026-11-07T21:01:30Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475717,
+   "name": "Calvin Pickard",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/WildJoeRadio/status/2118743595977163244?a=lDpo7B3FvB7jKM5Xmro&s=20"
+  },
+  "away": {
+   "player_id": 8483710,
+   "name": "Dennis Hildeby",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/Gabby_Shirley_/status/2119117098597425318?a=HYdAWIYlXn9o0aV10TU&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-07",
+  "read_utc": "2026-11-07T21:01:30Z",
+  "home": [
+   {
+    "name": "Brock Faber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Gustavsson",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jared Spurgeon",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marcus Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Michael McCarron",
+    "position": "C",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Nick Foligno",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Yanni Gourde",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:01:30Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14667,
+  "training_games_priced": 7640,
+  "training_ids_sha256": "e50bec1b74829f621892240e29c474ef1c71da1f86076cc92f2b102f6201e0fd"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "79cc89ef94dead8ffa06dd7c52724dc081bfeebe"
+}

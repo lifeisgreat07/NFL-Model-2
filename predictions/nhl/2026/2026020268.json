@@ -1,0 +1,130 @@
+{
+ "game_id": "2026020268",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T00:00:00Z",
+ "home": "TOR",
+ "away": "MTL",
+ "model_a": 0.4528,
+ "model_b": 0.469,
+ "pick": "MTL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.44264,
+  "shot_matchup": -2.17275,
+  "goalie_matchup_2000": -0.005634
+ },
+ "market": {
+  "game_id": "2026020268",
+  "start_utc": "2026-11-08T00:00:00Z",
+  "home": "TOR",
+  "away": "MTL",
+  "book": "DraftKings",
+  "home_price": 102.0,
+  "away_price": -122.0,
+  "home_prob": 0.4739,
+  "read_utc": "2026-11-07T21:01:30Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475683,
+   "name": "Sergei Bobrovsky",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/koshtorontosun/status/2119104275800326378?a=oOBS0r_gKH-pFx41YTc&s=20"
+  },
+  "away": {
+   "player_id": 8484170,
+   "name": "Jacob Fowler",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/CanadiensMTL/status/2119117441355714780?a=5fmGk-7Q_Mcw3zHPuYM&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-07",
+  "read_utc": "2026-11-07T21:01:30Z",
+  "home": [
+   {
+    "name": "Cade Webber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Elvis Merzlikins",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kirill Marchenko",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marshall Rifai",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Max Domi",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Miles Wood",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Nick Blankenburg",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Villeneuve",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mike Matheson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:01:30Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14667,
+  "training_games_priced": 7640,
+  "training_ids_sha256": "e50bec1b74829f621892240e29c474ef1c71da1f86076cc92f2b102f6201e0fd"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "79cc89ef94dead8ffa06dd7c52724dc081bfeebe"
+}

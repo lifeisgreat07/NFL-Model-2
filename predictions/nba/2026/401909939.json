@@ -1,0 +1,99 @@
+{
+ "game_id": "401909939",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T00:30:00Z",
+ "home": "ATL",
+ "away": "BKN",
+ "model_a": 0.7598,
+ "model_b": 0.7127,
+ "pick": "ATL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8013,
+  "away": 0.9519
+ },
+ "features": {
+  "point_matchup": 7.573388,
+  "efficiency_matchup": 7.432466,
+  "availability_matchup": -0.150625
+ },
+ "market": {
+  "game_id": "401909939",
+  "home": "ATL",
+  "away": "BKN",
+  "start_utc": "2026-11-08T00:30:00Z",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -283.0,
+  "away_price": 231.0,
+  "home_prob": 0.7098
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-07T21:31:30Z",
+  "home": [
+   {
+    "athlete_id": "4873201",
+    "name": "Asa Newell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105571",
+    "name": "Henri Veesaar",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4701230",
+    "name": "Jalen Johnson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3146557",
+    "name": "Jock Landale",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4585618",
+    "name": "Keshon Gilbert",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4712863",
+    "name": "Mouhamed Gueye",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4432194",
+    "name": "Day'Ron Sharpe",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5175643",
+    "name": "Egor Demin",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4712896",
+    "name": "Noah Clowney",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:31:30Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14190,
+  "training_games_priced": 14149,
+  "training_ids_sha256": "fb78c7f86a745c40190fb3c55cb6e4a3f0decfcb11d700a10a6ea0ce720038ae"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "cb3867668d2eef31db63aeacf5c08bc4b94e0af7"
+}

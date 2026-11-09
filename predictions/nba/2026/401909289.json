@@ -1,0 +1,89 @@
+{
+ "game_id": "401909289",
+ "season": 2026,
+ "slate": "2026-11-06",
+ "start_utc": "2026-11-07T00:30:00Z",
+ "home": "CLE",
+ "away": "PHI",
+ "model_a": 0.6328,
+ "model_b": 0.4215,
+ "pick": "PHI",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9355,
+  "away": 0.9493
+ },
+ "features": {
+  "point_matchup": 1.905323,
+  "efficiency_matchup": 1.833417,
+  "availability_matchup": -0.013791
+ },
+ "market": {
+  "game_id": "401909289",
+  "home": "CLE",
+  "away": "PHI",
+  "start_utc": "2026-11-07T00:30:00Z",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 125.0,
+  "away_price": -148.0,
+  "home_prob": 0.4269
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-06T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4066328",
+    "name": "Jarrett Allen",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4683747",
+    "name": "Jaylon Tyson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4576087",
+    "name": "Peyton Watson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5023693",
+    "name": "Tyrese Proctor",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5105637",
+    "name": "Adem Bona",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4871141",
+    "name": "Ariel Hukporti",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4870562",
+    "name": "Dominick Barlow",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-06T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-05",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14181,
+  "training_games_priced": 14140,
+  "training_ids_sha256": "5ba09b265ad27c14c359a5f56ef377cd914c93c31e27f1d7b022f6f3c89db8ea"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "95fbe74f196629144b73020fc235786939a40563"
+}

@@ -1,0 +1,94 @@
+{
+ "game_id": "401909956",
+ "season": 2026,
+ "slate": "2026-11-09",
+ "start_utc": "2026-11-10T01:00:00Z",
+ "home": "DAL",
+ "away": "IND",
+ "model_a": 0.706,
+ "model_b": 0.5994,
+ "pick": "DAL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9879,
+  "away": 0.9043
+ },
+ "features": {
+  "point_matchup": 3.186483,
+  "efficiency_matchup": 3.1921,
+  "availability_matchup": 0.083591
+ },
+ "market": {
+  "game_id": "401909956",
+  "home": "DAL",
+  "away": "IND",
+  "start_utc": "2026-11-10T01:00:00Z",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -170.0,
+  "away_price": 143.0,
+  "home_prob": 0.6047
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4873153",
+    "name": "Morez Johnson Jr.",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5279129",
+    "name": "Sergio de Larrea",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4433076",
+    "name": "Ben Sheppard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5157066",
+    "name": "Johnny Furphy",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2530530",
+    "name": "T.J. McConnell",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4396993",
+    "name": "Tyrese Haliburton",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-09T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-08",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14204,
+  "training_games_priced": 14163,
+  "training_ids_sha256": "cbd7e79131cab3304f423eb50380cc91fa0af2897888c3dca6300de5a4d855c5"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "ace58c2e9314021a54dc4920257b608143441210"
+}

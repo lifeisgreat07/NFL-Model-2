@@ -1,0 +1,94 @@
+{
+ "game_id": "401909954",
+ "season": 2026,
+ "slate": "2026-11-09",
+ "start_utc": "2026-11-10T00:00:00Z",
+ "home": "DET",
+ "away": "WSH",
+ "model_a": 0.8869,
+ "model_b": 0.8035,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9133,
+  "away": 0.8867
+ },
+ "features": {
+  "point_matchup": 12.171458,
+  "efficiency_matchup": 11.888227,
+  "availability_matchup": 0.026591
+ },
+ "market": {
+  "game_id": "401909954",
+  "home": "DET",
+  "away": "WSH",
+  "start_utc": "2026-11-10T00:00:00Z",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -518.0,
+  "away_price": 394.0,
+  "home_prob": 0.8055
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4395702",
+    "name": "Isaiah Joe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433621",
+    "name": "Jalen Duren",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "6583",
+    "name": "Anthony Davis",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5104155",
+    "name": "Bilal Coulibaly",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4606840",
+    "name": "Jamir Watkins",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432907",
+    "name": "Justin Champagnie",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432187",
+    "name": "Reece Beekman",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4997537",
+    "name": "Tristan Vukcevic",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-09T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-08",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14204,
+  "training_games_priced": 14163,
+  "training_ids_sha256": "cbd7e79131cab3304f423eb50380cc91fa0af2897888c3dca6300de5a4d855c5"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "ace58c2e9314021a54dc4920257b608143441210"
+}

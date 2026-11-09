@@ -1,0 +1,94 @@
+{
+ "game_id": "401909955",
+ "season": 2026,
+ "slate": "2026-11-09",
+ "start_utc": "2026-11-10T00:30:00Z",
+ "home": "TOR",
+ "away": "MEM",
+ "model_a": 0.7234,
+ "model_b": 0.5583,
+ "pick": "TOR",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9931,
+  "away": 0.9546
+ },
+ "features": {
+  "point_matchup": 4.45952,
+  "efficiency_matchup": 4.022417,
+  "availability_matchup": 0.038465
+ },
+ "market": {
+  "game_id": "401909955",
+  "home": "TOR",
+  "away": "MEM",
+  "start_utc": "2026-11-10T00:30:00Z",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -142.0,
+  "away_price": 120.0,
+  "home_prob": 0.5635
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "5093267",
+    "name": "Collin Murray-Boyles",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4395724",
+    "name": "Immanuel Quickley",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6450",
+    "name": "Kawhi Leonard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432586",
+    "name": "Nate Bittle",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433134",
+    "name": "Scottie Barnes",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4432810",
+    "name": "Isaiah Stewart",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105462",
+    "name": "Richie Saunders",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431785",
+    "name": "Scotty Pippen Jr.",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-09T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-08",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14204,
+  "training_games_priced": 14163,
+  "training_ids_sha256": "cbd7e79131cab3304f423eb50380cc91fa0af2897888c3dca6300de5a4d855c5"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "ace58c2e9314021a54dc4920257b608143441210"
+}

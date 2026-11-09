@@ -1,0 +1,79 @@
+{
+ "game_id": "2026020278",
+ "season": 2026,
+ "slate": "2026-11-08",
+ "start_utc": "2026-11-08T20:30:00Z",
+ "home": "BUF",
+ "away": "VGK",
+ "model_a": 0.4947,
+ "model_b": null,
+ "pick": "VGK",
+ "pick_model": "model_a",
+ "features": {
+  "goal_matchup": -0.148904,
+  "shot_matchup": -2.694358,
+  "goalie_matchup_2000": -1.5e-05
+ },
+ "market": null,
+ "goalies": {
+  "home": {
+   "player_id": 8480045,
+   "name": "Ukko-Pekka Luukkonen",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8478499,
+   "name": "Adin Hill",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-07",
+  "read_utc": "2026-11-08T14:01:29Z",
+  "home": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Justin Danforth",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Konsta Helenius",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Matt Grzelcyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Parker Wotherspoon",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-08T14:01:29Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-07",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14679,
+  "training_games_priced": 7650,
+  "training_ids_sha256": "84c5ef57bbc45dcddd275a2b7078320bd7d818fe96d1b6e090e0022b6e803a4f"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "25c1bdd917a5f40e522b6a182d03c9ddc05d6ec2"
+}

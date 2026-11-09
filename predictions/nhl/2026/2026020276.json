@@ -1,0 +1,135 @@
+{
+ "game_id": "2026020276",
+ "season": 2026,
+ "slate": "2026-11-07",
+ "start_utc": "2026-11-08T03:00:00Z",
+ "home": "EDM",
+ "away": "VAN",
+ "model_a": 0.7496,
+ "model_b": 0.771,
+ "pick": "EDM",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 1.792966,
+  "shot_matchup": 6.60802,
+  "goalie_matchup_2000": 0.001564
+ },
+ "market": {
+  "game_id": "2026020276",
+  "start_utc": "2026-11-08T03:00:00Z",
+  "home": "EDM",
+  "away": "VAN",
+  "book": "DraftKings",
+  "home_price": -375.0,
+  "away_price": 295.0,
+  "home_prob": 0.7572,
+  "read_utc": "2026-11-07T21:01:30Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482221,
+   "name": "Devon Levi",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/EdmontonOilers/status/2119129183981125982?a=2U_NxCsGh7TU4-2HQYc&s=20"
+  },
+  "away": {
+   "player_id": 8482447,
+   "name": "Leevi Merilainen",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/imacSportsnet/status/2119133611958194449?a=fdUSrfiX6U0wPx7nA8Y&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-07",
+  "read_utc": "2026-11-07T21:01:30Z",
+  "home": [
+   {
+    "name": "Alec Regula",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Atro Leppanen",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Devon Levi",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Frederik Andersen",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Isaac Howard",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Matt Savoie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mattias Janmark",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tristan Jarry",
+    "position": "G",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Zach Hyman",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Akil Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Filip Chytil",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Tom Willander",
+    "position": "D",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-07T21:01:30Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-06",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14667,
+  "training_games_priced": 7640,
+  "training_ids_sha256": "e50bec1b74829f621892240e29c474ef1c71da1f86076cc92f2b102f6201e0fd"
+ },
+ "code_sha256": "d0c0217a875abe4276f3a2ae963605532c5367d79f44602c771c95f8d4c7ead9",
+ "code_commit": "79cc89ef94dead8ffa06dd7c52724dc081bfeebe"
+}
