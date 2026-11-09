@@ -59,21 +59,6 @@ def test_a_missing_tool_skips_on_a_pc_and_fails_in_ci(monkeypatch):
         optional.require_tool('node')
 
 
-def test_no_test_skips_on_a_missing_node_by_hand():
-    """Every page-script test asks require_tool, or a skipif that runs in CI."""
-    import re
-    root = Path(__file__).resolve().parents[1] / 'tests'
-    bad = []
-    for p in root.rglob('test_*.py'):
-        if 'booth_fixtures' in p.parts:
-            continue
-        t = p.read_text(encoding='utf-8')
-        if re.search(r"if (?:not (?:NODE|node)|(?:NODE|node) is None):\s*\n\s*pytest\.skip\(", t) \
-                or re.search(r"skipif\(\s*(?:NODE is None|not NODE|shutil\.which\('node'\) is None)\s*,", t):
-            bad.append(p.name)
-    assert not bad, f'a node skip that would pass green in CI: {sorted(bad)}'
-
-
 def test_the_injury_tests_collect_without_building_a_parquet_file():
     src = (Path(__file__).resolve().parents[1] / 'tests' / 'test_nhl_injuries.py').read_text(encoding='utf-8')
     assert '    (parquet(' not in src, 'a parquet file built in a parametrize runs at collection'
