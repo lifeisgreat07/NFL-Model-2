@@ -1,0 +1,104 @@
+{
+ "game_id": "401909957",
+ "season": 2026,
+ "slate": "2026-11-09",
+ "start_utc": "2026-11-10T01:30:00Z",
+ "home": "HOU",
+ "away": "DEN",
+ "model_a": 0.6234,
+ "model_b": 0.6095,
+ "pick": "HOU",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9374,
+  "away": 0.9668
+ },
+ "features": {
+  "point_matchup": 1.674509,
+  "efficiency_matchup": 1.8011,
+  "availability_matchup": -0.029397
+ },
+ "market": {
+  "game_id": "401909957",
+  "home": "HOU",
+  "away": "DEN",
+  "start_utc": "2026-11-10T01:30:00Z",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -173.0,
+  "away_price": 146.0,
+  "home_prob": 0.6092
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "3102529",
+    "name": "Clint Capela",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432827",
+    "name": "Oscar Tshiebwe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "2991235",
+    "name": "Steven Adams",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "3064290",
+    "name": "Aaron Gordon",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3138196",
+    "name": "Cameron Johnson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4431767",
+    "name": "Christian Braun",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3978",
+    "name": "DeMar DeRozan",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "3936299",
+    "name": "Jamal Murray",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4432181",
+    "name": "Julian Strawther",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3112335",
+    "name": "Nikola Jokic",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-09T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-08",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14204,
+  "training_games_priced": 14163,
+  "training_ids_sha256": "cbd7e79131cab3304f423eb50380cc91fa0af2897888c3dca6300de5a4d855c5"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "ace58c2e9314021a54dc4920257b608143441210"
+}

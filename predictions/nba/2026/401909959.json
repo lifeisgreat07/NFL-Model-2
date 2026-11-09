@@ -1,0 +1,99 @@
+{
+ "game_id": "401909959",
+ "season": 2026,
+ "slate": "2026-11-09",
+ "start_utc": "2026-11-10T03:00:00Z",
+ "home": "GS",
+ "away": "NO",
+ "model_a": 0.6979,
+ "model_b": 0.7869,
+ "pick": "GS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8454,
+  "away": 0.8223
+ },
+ "features": {
+  "point_matchup": 3.532913,
+  "efficiency_matchup": 3.533207,
+  "availability_matchup": 0.023098
+ },
+ "market": {
+  "game_id": "401909959",
+  "home": "GS",
+  "away": "NO",
+  "start_utc": "2026-11-10T03:00:00Z",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -448.0,
+  "away_price": 348.0,
+  "home_prob": 0.7855
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "3134903",
+    "name": "Gary Payton II",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4997536",
+    "name": "Gui Santos",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6430",
+    "name": "Jimmy Butler III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3102531",
+    "name": "Kristaps Porzingis",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432171",
+    "name": "Moses Moody",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4897262",
+    "name": "Will Richard",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4431675",
+    "name": "Trendon Watford",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4397688",
+    "name": "Trey Murphy III",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061589",
+    "name": "Yves Missi",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-09T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-08",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14204,
+  "training_games_priced": 14163,
+  "training_ids_sha256": "cbd7e79131cab3304f423eb50380cc91fa0af2897888c3dca6300de5a4d855c5"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "ace58c2e9314021a54dc4920257b608143441210"
+}

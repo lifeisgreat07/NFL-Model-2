@@ -1,0 +1,89 @@
+{
+ "game_id": "401909952",
+ "season": 2026,
+ "slate": "2026-11-09",
+ "start_utc": "2026-11-10T00:00:00Z",
+ "home": "ATL",
+ "away": "LAL",
+ "model_a": 0.4916,
+ "model_b": 0.5244,
+ "pick": "ATL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9159,
+  "away": 0.9644
+ },
+ "features": {
+  "point_matchup": -1.843045,
+  "efficiency_matchup": -1.796226,
+  "availability_matchup": -0.048559
+ },
+ "market": {
+  "game_id": "401909952",
+  "home": "ATL",
+  "away": "LAL",
+  "start_utc": "2026-11-10T00:00:00Z",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -120.0,
+  "away_price": 101.0,
+  "home_prob": 0.523
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-09T21:31:31Z",
+  "home": [
+   {
+    "athlete_id": "4873201",
+    "name": "Asa Newell",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105571",
+    "name": "Henri Veesaar",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3146557",
+    "name": "Jock Landale",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4585618",
+    "name": "Keshon Gilbert",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4712863",
+    "name": "Mouhamed Gueye",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4066457",
+    "name": "Austin Reaves",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4397014",
+    "name": "Quentin Grimes",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-09T21:31:31Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-08",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14204,
+  "training_games_priced": 14163,
+  "training_ids_sha256": "cbd7e79131cab3304f423eb50380cc91fa0af2897888c3dca6300de5a4d855c5"
+ },
+ "code_sha256": "31e61dc68ea05ac9197e65315205fd597333ef51512a1bac7fa095ac9fdcf6ea",
+ "code_commit": "ace58c2e9314021a54dc4920257b608143441210"
+}
