@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-08",
+ "as_of": "2026-11-09",
  "games": [
   {
    "game_id": "2026020001",
@@ -3621,11 +3621,11 @@
    "start_utc": "2026-11-08T23:00:00Z",
    "home": "WPG",
    "away": "TBL",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 4,
+   "away_score": 3,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -3634,11 +3634,11 @@
    "start_utc": "2026-11-09T00:00:00Z",
    "home": "TOR",
    "away": "NJD",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 0,
+   "away_score": 4,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -3647,11 +3647,11 @@
    "start_utc": "2026-11-09T00:00:00Z",
    "home": "CGY",
    "away": "PHI",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 4,
+   "away_score": 3,
+   "last_period": "OT",
    "neutral_site": false
   },
   {
@@ -3660,11 +3660,11 @@
    "start_utc": "2026-11-09T01:00:00Z",
    "home": "ANA",
    "away": "PIT",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 5,
+   "away_score": 2,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
