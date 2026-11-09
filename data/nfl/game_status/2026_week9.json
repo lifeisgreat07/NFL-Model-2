@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 9,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-08T21:47:37Z",
+  "read_at": "2026-11-09T01:14:28Z",
   "games": [
     {
       "away": "JAX",
@@ -97,9 +97,9 @@
     {
       "away": "HOU",
       "home": "LAC",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 44,
+      "home_score": 22,
       "spread_line": -5.5,
       "neutral_site": false,
       "venue": "SoFi Stadium"
@@ -107,9 +107,9 @@
     {
       "away": "LV",
       "home": "SF",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 17,
+      "home_score": 38,
       "spread_line": 8.5,
       "neutral_site": false,
       "venue": "Levi's Stadium"
@@ -117,9 +117,9 @@
     {
       "away": "GB",
       "home": "NE",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 45,
+      "home_score": 27,
       "spread_line": 3.0,
       "neutral_site": false,
       "venue": "Gillette Stadium"
@@ -127,9 +127,9 @@
     {
       "away": "ARI",
       "home": "SEA",
-      "status": "started",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 3,
+      "home_score": 17,
       "spread_line": 8.5,
       "neutral_site": false,
       "venue": "Lumen Field"
