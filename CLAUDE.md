@@ -48,9 +48,9 @@ Model v2.6 (`MODEL_VERSION` in `src/sports/nfl/config.py`). `TRAIN_SEASONS` 2020
 The drift check flags on Model A's log loss against the committed
 `data/nfl/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
 
-Suite: **12882 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main`
-at c00cd22d (2026-11-10 UTC, after #678), with HEAD level with origin, which is the order that makes the
-figure reproducible. The split (Stage 96 item 51, by `tests/suite_classes.json`): 7756 corpus checks, 1306 isolated behavioural, 1326 mixed, 1337 template/JS, 1157 workflow/docs/tests-of-tests. Each test file's class is in `tests/suite_classes.json`; `python -m src.agents.session_wrapup --suite-line` writes this sentence, and the wrap-up fails when the map misses a file. Level with origin is the order that makes the
+Suite: **12907 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main`
+at c473f2bb (2026-11-10 UTC, after #679), with HEAD level with origin, which is the order that makes the
+figure reproducible. The split (Stage 96 item 51, by `tests/suite_classes.json`): 7771 corpus checks, 1315 isolated behavioural, 1326 mixed, 1337 template/JS, 1158 workflow/docs/tests-of-tests. Each test file's class is in `tests/suite_classes.json`; `python -m src.agents.session_wrapup --suite-line` writes this sentence, and the wrap-up fails when the map misses a file. Level with origin is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the

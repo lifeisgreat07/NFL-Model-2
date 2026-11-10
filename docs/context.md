@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-10 (session 1109 wrap-up: #674-#678 merged; Stage 87 item 2 built, in prep at 3debaf19)
+Last updated: 2026-11-10 (session 1109 wrap-up: #674-#679 merged; #680 waits on Mark)
 
 ---
 
@@ -25,14 +25,15 @@ every python or pip step of an alerting scheduled job has its own `timeout-minut
 src/sports/nba pass `mypy --strict`; **a new test file needs a line in `tests/suite_classes.json`** (#675); **no test skips on a
 missing node by hand**: `require_tool('node')`, or a `skipif(... and not in_ci())` (#678).
 
-**Single next action:** open Stage 87 item 2 (branch `s87-core-python`) once its 34 mutation cases pass by exact id at its final head (CLAUDE.local.md has the worktree, the id list and the body). Then build item 3.
+**Single next action:** Mark decides #680 (see its row); meanwhile build Stage 87 item 4 step 1+2 in branch
+`s87-app-readers` (worktree made, nothing written).
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| Stage 87 item 2 `s87-core-python` (the day sports' backtest, drift, pick and rating code one copy in src/core) | Built, prepped at 3debaf19 (12907 passed), not opened | Its 34 cases by id at the final head, then open; one audit |
-| Stage 87 item 3 (one core page renderer for all four pages) and item 4 (`src/dashboard/app.js` split along page lines; corpus targets rewritten by script) | Not built. Item 4 retargets many mutation cases: count the files first, and split under about a hundred | Item 2 merged |
+| #680 Stage 87 item 3 `s87-page-render` (one page renderer, src/core/page_render.py) | Green; Booth NEEDS HUMAN REVIEW, 0 discrepancies | **Mark**: merge on the green checks, or ask for the comparison as a committed test (a new PR) |
+| Stage 87 item 4 (`src/dashboard/app.js` split) | Planned (memory/2026-11-09.md): 379 cases in 104 case files target app.js, so one PR is ~200 files. Step 1+2: the split, a helper for the ~33 tests that read app.js by path, the runner resolving an app.js target to the part holding its anchor; step 3: targets rewritten by script in two halves | #680 decided (both touch tests/test_csp_hashes.py) |
 | Stage 95 items 31-34, and 35 as the registered "day-sport v2" shadow (with 94 items 24, 27-30) | Not built | After Stage 87 |
 | s83f `s83-credentials` (83.6) | Built | **Mark: the OAuth token's real expiry date** |
 | #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then 82 item 5 |
@@ -69,8 +70,6 @@ missing node by hand**: `require_tool('node')`, or a `skipif(... and not in_ci()
 - **`src/core` type-checks under strict mypy** (`test_sport_isolation`, `test_type_check`); a pre-flight without mypy misses it (#515, #516).
 - **A PowerShell `>` redirect writes UTF-16**, which `git apply` refuses: write patches with `git format-patch -o`, or a Python script written with the file tool.
 - **The plain-language guard reads only `RENDERERS`**: add each new markup function with its page; a top-level literal is charged to the function above it (items 28, 31).
-- **Booth runs out of its 20-minute job on a diff of about a hundred files** (#669 twice). Split the change; parts that
-  import a new helper are cut after the helper's part merges.
 - **A test that calls a writer's `main()` writes into the real `data/` on a runner** when the code records only under
   `GITHUB_ACTIONS=true` (#661). Such a test chdirs to its tmp folder and pins the runner variables; reproduce with
   `GITHUB_ACTIONS=true` set on the PC.
