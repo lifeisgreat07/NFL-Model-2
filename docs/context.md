@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-10 (session 1109 wrap-up: #674-#679 merged; #680 waits on Mark)
+Last updated: 2026-11-10 (session 1109 wrap-up: #674-#679 merged; #680 and #682 wait on Mark)
 
 ---
 
@@ -25,8 +25,8 @@ every python or pip step of an alerting scheduled job has its own `timeout-minut
 src/sports/nba pass `mypy --strict`; **a new test file needs a line in `tests/suite_classes.json`** (#675); **no test skips on a
 missing node by hand**: `require_tool('node')`, or a `skipif(... and not in_ci())` (#678).
 
-**Single next action:** Mark decides #680 (see its row); meanwhile build Stage 87 item 4 step 1+2 in branch
-`s87-app-readers` (worktree made, nothing written).
+**Single next action:** Mark decides #680 and #682 (their rows); once #682 merges, cut Stage 87 item 4's step
+two: half the case files' app.js targets rewritten to their parts by script.
 
 ## Open work, and what each is waiting on
 
@@ -34,6 +34,7 @@ missing node by hand**: `require_tool('node')`, or a `skipif(... and not in_ci()
 |---|---|---|
 | #680 Stage 87 item 3 `s87-page-render` (one page renderer, src/core/page_render.py) | Green; Booth NEEDS HUMAN REVIEW, 0 discrepancies | **Mark**: merge on the green checks, or ask for the comparison as a committed test (a new PR) |
 | Stage 87 item 4 (`src/dashboard/app.js` split) | Planned (memory/2026-11-09.md): 379 cases in 104 case files target app.js, so one PR is ~200 files. Step 1+2: the split, a helper for the ~33 tests that read app.js by path, the runner resolving an app.js target to the part holding its anchor; step 3: targets rewritten by script in two halves | #680 decided (both touch tests/test_csp_hashes.py) |
+| #682 Stage 87 item 4 step one `s87-app-readers` (app.js is six parts; the corpus resolves an app.js target to its part) | Green, Browser checks included; Booth NEEDS HUMAN REVIEW, 0 discrepancies: its unverified claim is a Playwright run Booth cannot do | **Mark** merges or not. Replaces #681 (closed: Browser checks failed on an import; fixed). Steps two and three (case targets rewritten to their parts by script, half the 104 case files each) after it |
 | Stage 95 items 31-34, and 35 as the registered "day-sport v2" shadow (with 94 items 24, 27-30) | Not built | After Stage 87 |
 | s83f `s83-credentials` (83.6) | Built | **Mark: the OAuth token's real expiry date** |
 | #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then 82 item 5 |
