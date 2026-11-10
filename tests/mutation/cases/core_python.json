@@ -1,0 +1,45 @@
+{
+ "target": "src/sports/nhl/drift.py",
+ "tests": "tests/test_core_python.py",
+ "cases": [
+  {
+   "id": "core-python-copy-creeps-back",
+   "why": "the NBA's look_baseline is pasted into the NHL's drift.py byte for byte, a second copy of the same code instead of one in src/core",
+   "find": "\n\ndef looks(",
+   "replace": "\n\ndef look_baseline(spec: dict[str, Any], baselines: list[float] | None, n: int) -> float:\n    \"\"\"The baseline a look at n picks is held to: the mean of those n picks'\n    own baselines, or the registered baseline when none are given.\"\"\"\n    if baselines is None:\n        return float(spec['baseline']['value'])\n    return float(sum(baselines[:n]) / n)\n\n\ndef looks(",
+   "expect_caught_by": "test_no_function_is_copied_between_the_sports"
+  },
+  {
+   "id": "core-python-nba-defines-its-own-next-look",
+   "target": "src/sports/nba/drift.py",
+   "why": "the NBA's drift.py defines next_look again instead of taking src/core's, so a fix to the shared copy never reaches the NBA",
+   "find": "\n\ndef looks(",
+   "replace": "\n\ndef next_look(n_graded: int, spec: dict[str, Any]) -> int | None:\n    \"\"\"The checkpoint the check will look at next, or None after the last.\"\"\"\n    return next((n for n in spec['rule']['checkpoints'] if n > n_graded), None)\n\n\ndef looks(",
+   "expect_caught_by": "test_each_sport_uses_the_one_copy"
+  },
+  {
+   "id": "core-python-nba-grade-drops-market-source",
+   "target": "src/sports/nba/daily.py",
+   "why": "the NBA's grade stops passing market_source, so its graded rows lose the field they carried",
+   "find": "extra=('market_source',)",
+   "replace": "extra=()",
+   "expect_caught_by": "test_each_sports_grade_rows_keep_their_fields"
+  },
+  {
+   "id": "core-python-grade-ignores-extra",
+   "target": "src/core/day_picks.py",
+   "why": "the shared grade ignores the fields a sport asks for, so the NBA's rows lose market_source",
+   "find": "**{k: pick.get(k) for k in extra}, ",
+   "replace": "",
+   "expect_caught_by": "test_each_sports_grade_rows_keep_their_fields"
+  },
+  {
+   "id": "core-python-nhl-ridge-loses-its-alpha",
+   "target": "src/sports/nhl/ratings.py",
+   "why": "the NHL's goal ratings stop passing RIDGE now that the shared ridge has no default",
+   "find": "ridge_ratings(train, 'goal_margin', w, RIDGE)",
+   "replace": "ridge_ratings(train, 'goal_margin', w, 0.0)",
+   "expect_caught_by": "test_the_nhl_ratings_pass_their_own_alpha"
+  }
+ ]
+}

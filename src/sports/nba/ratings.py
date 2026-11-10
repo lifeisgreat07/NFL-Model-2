@@ -29,9 +29,10 @@ from __future__ import annotations
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 
-import numpy as np
-import numpy.typing as npt
 import pandas as pd
+
+from src.core.day_ratings import ridge_ratings as ridge_ratings
+from src.core.day_ratings import weights as weights
 
 #: Fewer earlier games than this and a day is not rated (the first days of
 #: the first training season).
@@ -48,32 +49,6 @@ def prepare(games: pd.DataFrame) -> pd.DataFrame:
     g['efficiency_margin'] = 100.0 * g['point_margin'] / g['possessions'].astype(float)
     g['home_win'] = (g['home_score'] > g['away_score']).astype(int)
     return g.sort_values(['day', 'game_id'], kind='stable').reset_index(drop=True)
-
-
-def weights(days: pd.Series, day: pd.Timestamp, half_life: float) -> npt.NDArray[np.float64]:
-    age = (day - days).dt.days.to_numpy(dtype=float)
-    out: npt.NDArray[np.float64] = np.power(0.5, age / half_life)
-    return out
-
-
-def ridge_ratings(train: pd.DataFrame, value: str, w: npt.NDArray[np.float64],
-                  alpha: float) -> tuple[float, dict[str, float]]:
-    """(home edge, rating per team) from a weighted ridge fit of
-    `value = edge + r[home] - r[away]`, penalising the ratings only."""
-    teams = sorted(set(train['home']) | set(train['away']))
-    idx = {t: i + 1 for i, t in enumerate(teams)}
-    n, k = len(train), len(teams) + 1
-    x = np.zeros((n, k))
-    x[:, 0] = 1.0
-    rows = np.arange(n)
-    x[rows, train['home'].map(idx).to_numpy()] = 1.0
-    x[rows, train['away'].map(idx).to_numpy()] = -1.0
-    y = train[value].to_numpy(dtype=float)
-    xtw = x.T * w
-    penalty = np.full(k, alpha)
-    penalty[0] = 0.0
-    beta = np.linalg.solve(xtw @ x + np.diag(penalty), xtw @ y)
-    return float(beta[0]), {t: float(beta[i]) for t, i in idx.items()}
 
 
 def expected_minutes(minutes: pd.DataFrame, day_of: Mapping[str, pd.Timestamp], team: str,

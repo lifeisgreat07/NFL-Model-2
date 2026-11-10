@@ -18,6 +18,7 @@
     },
     {
       "id": "nhl-rat-halflife-doubled",
+      "target": "src/core/day_ratings.py",
       "why": "the weight halves every two half-lives, so recency counts half as much as registered.",
       "find": "    out: npt.NDArray[np.float64] = np.power(0.5, age / half_life)",
       "replace": "    out: npt.NDArray[np.float64] = np.power(0.5, age / (2 * half_life))",
@@ -32,6 +33,7 @@
     },
     {
       "id": "nhl-rat-away-sign",
+      "target": "src/core/day_ratings.py",
       "why": "the away team enters the ridge with the home team's sign, so ratings measure schedule not strength.",
       "find": "    x[rows, train['away'].map(idx).to_numpy()] = -1.0",
       "replace": "    x[rows, train['away'].map(idx).to_numpy()] = 1.0",
