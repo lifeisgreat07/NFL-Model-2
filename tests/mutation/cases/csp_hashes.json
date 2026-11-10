@@ -55,10 +55,10 @@
   },
   {
    "id": "nba-page-not-hardened",
-   "target": "src/sports/nba/site.py",
-   "why": "the NBA page is written with script-src 'unsafe-inline'",
-   "find": "    return csp.harden(html)  # Stage 88 item 5: hashes, not unsafe-inline\n",
-   "replace": "    return html\n",
+   "target": "src/core/page_render.py",
+   "why": "the renderer every page shares stops hashing the scripts into the CSP, so the NBA's page, like every page, ships a policy that blocks its own scripts",
+   "find": "    return csp.harden(fill(strip_page_comments(template), fills))\n",
+   "replace": "    return fill(strip_page_comments(template), fills)\n",
    "expect_caught_by": "test_the_nhl_and_nba_pages_are_hardened"
   },
   {

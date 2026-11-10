@@ -31,8 +31,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from src.core import colour, csp, pick_proof
-from src.core.page_comments import strip_page_comments
+from src.core import colour, page_render, pick_proof
 from src.core.page_fill import (
     ACCURACY_JS,
     DAY_BOARD_JS,
@@ -140,28 +139,16 @@ def payload(season: int, now: datetime) -> dict[str, Any]:
 
 
 
+#: The parts page.html includes that live outside pages/: the shared stylesheet and the scripts the NHL and NBA
+#: share. Every other part is the file of that name in pages/.
+SHARED_PARTS = {'styles.css': SHARED_STYLES, 'escape.js': ESCAPE_JS, 'routes.js': ROUTES_JS,
+                'accuracy.js': ACCURACY_JS, 'favs.js': FAVS_JS, 'prefs.js': PREFS_JS, 'day_board.js': DAY_BOARD_JS}
+
+
 def render(data: dict[str, Any]) -> str:
-    page = (TEMPLATE / 'page.html').read_text(encoding='utf-8')
-    html = (page.replace('{% include "styles.css" %}', SHARED_STYLES.read_text(encoding='utf-8'))
-                .replace('{% include "nhl.css" %}', (TEMPLATE / 'nhl.css').read_text(encoding='utf-8'))
-                .replace('{% include "escape.js" %}', ESCAPE_JS.read_text(encoding='utf-8'))
-                .replace('{% include "routes.js" %}', ROUTES_JS.read_text(encoding='utf-8'))
-                .replace('{% include "accuracy.js" %}', ACCURACY_JS.read_text(encoding='utf-8'))
-                .replace('{% include "favs.js" %}', FAVS_JS.read_text(encoding='utf-8'))
-                .replace('{% include "prefs.js" %}', PREFS_JS.read_text(encoding='utf-8'))
-                .replace('{% include "day_board.js" %}', DAY_BOARD_JS.read_text(encoding='utf-8'))
-                .replace('{% include "body.html" %}', (TEMPLATE / 'body.html').read_text(encoding='utf-8'))
-                .replace('{% include "nhl.js" %}', (TEMPLATE / 'nhl.js').read_text(encoding='utf-8')))
-    # Comments stay in the templates for whoever reads them; the page a
-    # visitor downloads does not carry them (src/core/page_comments.py,
-    # Stage 68 item 19). Stripped before the fills, so no data is lexed.
-    html = strip_page_comments(html)
-    html = html.replace('__FONT_FACES__', font_faces_css())
-    html = html.replace('__NHL_JSON__', safe_json(data))
-    left = sorted({t for t in ('__FONT_FACES__', '__NHL_JSON__', '{% include') if t in html})
-    if left:
-        raise ValueError(f'unfilled placeholders: {left}')
-    return csp.harden(html)  # Stage 88 item 5: hashes, not unsafe-inline
+    """The page, by the renderer every page shares (Stage 87 item 3, src/core/page_render.py)."""
+    return page_render.finish(page_render.assemble(TEMPLATE, SHARED_PARTS),
+                              {'__FONT_FACES__': font_faces_css(), '__NHL_JSON__': safe_json(data)})
 
 
 def main(argv: list[str] | None = None, now: datetime | None = None) -> int:

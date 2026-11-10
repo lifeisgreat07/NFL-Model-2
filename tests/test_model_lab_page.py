@@ -48,7 +48,7 @@ def test_no_experiment_row_is_typed_into_the_template():
 
 def test_the_build_fills_the_placeholder():
     src = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
-    assert "html.replace('__MODEL_LAB_ROWS__', render_model_lab_rows(model_lab_entries()))" in src
+    assert "'__MODEL_LAB_ROWS__': render_model_lab_rows(model_lab_entries())," in src
 
 
 def test_every_entry_is_a_row_in_order(entries, rows):

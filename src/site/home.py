@@ -39,8 +39,7 @@ from typing import Any
 
 import pandas as pd
 
-from src.core import csp
-from src.core.page_comments import strip_page_comments
+from src.core import page_render
 from src.core.page_fill import font_faces_css, safe_json
 from src.site import track_record
 
@@ -253,19 +252,9 @@ def facts(root: Path = ROOT, now: datetime | None = None) -> dict[str, Any]:
 
 
 def render(data: dict[str, Any], font_faces: str = '') -> str:
-    page = (TEMPLATE / 'page.html').read_text(encoding='utf-8')
-    html = (page.replace('{% include "styles.css" %}', SHARED_STYLES.read_text(encoding='utf-8'))
-                .replace('{% include "home.css" %}', (TEMPLATE / 'home.css').read_text(encoding='utf-8'))
-                .replace('{% include "home.js" %}', (TEMPLATE / 'home.js').read_text(encoding='utf-8')))
-    # Comments stay in the templates for whoever reads them; the page a
-    # visitor downloads does not carry them (src/core/page_comments.py,
-    # Stage 68 item 19). Stripped before the fills, so no data is lexed.
-    html = strip_page_comments(html)
-    html = html.replace('__FONT_FACES__', font_faces).replace('__HOME_JSON__', safe_json(data))
-    left = sorted(set(re.findall(r'__[A-Z0-9_]+__', html)) | ({'{% include'} if '{% include' in html else set()))
-    if left:
-        raise ValueError(f'unfilled placeholders: {left}')
-    return csp.harden(html)  # Stage 88 item 5: hashes, not unsafe-inline
+    """The page, by the renderer every page shares (Stage 87 item 3, src/core/page_render.py)."""
+    return page_render.finish(page_render.assemble(TEMPLATE, {'styles.css': SHARED_STYLES}),
+                              {'__FONT_FACES__': font_faces, '__HOME_JSON__': safe_json(data)})
 
 
 

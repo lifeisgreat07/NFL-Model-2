@@ -89,7 +89,7 @@ def test_every_sport_puts_its_favourites_first_and_listens_for_stars():
         page = (ROOT / 'src' / 'sports' / sport / 'pages' / 'page.html').read_text(encoding='utf-8')
         assert '{% include "accuracy.js" %}\n{% include "favs.js" %}\n' in page
         site = (ROOT / 'src' / 'sports' / sport / 'site.py').read_text(encoding='utf-8')
-        assert """.replace('{% include "favs.js" %}', FAVS_JS.read_text(encoding='utf-8'))""" in site
+        assert "'favs.js': FAVS_JS" in site
 
 
 def test_the_teams_pages_carry_a_star():

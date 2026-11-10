@@ -85,7 +85,7 @@ def test_the_page_footer_is_the_provenance_line_and_nothing_else():
 def test_the_build_time_is_in_the_week_board_header():
     code = _code()
     assert re.findall(r'updated_html\s*=\s*(.+)', code) == ['updated_line(datetime.now(UTC))']
-    assert "html.replace('__BOARD_UPDATED__', updated_html)" in code
+    assert "'__BOARD_UPDATED__': updated_html," in code
     src = TEMPLATE.read_text(encoding='utf-8')
     board = re.search(r'<section class="page[^"]*" id="page-board">(.*?)</section>', src, re.S)
     assert board, 'the Week Board section is no longer findable'

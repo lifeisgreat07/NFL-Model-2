@@ -18,8 +18,7 @@ from html import escape as _escape
 from pathlib import Path
 from typing import Any
 
-from src.core import csp
-from src.core.page_comments import strip_page_comments
+from src.core import page_render
 from src.core.page_fill import font_faces_css
 from src.core.template_parts import read_template
 
@@ -1072,54 +1071,51 @@ def main() -> None:
     foot_html = provenance_line()
     updated_html = updated_line(datetime.now(UTC))
 
-    # The template is kept as parts under src/dashboard/ (Stage 33 item 26)
-    # and joined here into the one file it always was.
-    template = read_template()
-    # The template's comments stay in the template for whoever reads it; the
-    # page a visitor downloads does not carry them (Stage 26 item 11,
-    # src/core/page_comments.py). Stripped before the fills, so no data string is
-    # ever put through the lexer.
-    template = strip_page_comments(template)
+    # Model Lab's rows, from the experiment records (Stage 18, src/sports/nfl/model_lab.py).
+    from src.sports.nfl.model_lab import entries as model_lab_entries
 
-    # Every fill below lands inside a <script> element, so every one goes
+    # Every JSON fill lands inside a <script> element, so every one goes
     # through safe_json(): a `</script` in any string would end the script
     # (Stage 23). tests/test_safe_json_fills.py finds the placeholders by
     # reading the template's script elements, so a new one is covered.
-    html = template.replace('__TEAMS_JSON__', safe_json(teams_js, **COMPACT))
-    # Only the run's own metadata: the per-team odds now travel inside
-    # teams_js so the Power Ratings table can sort by them.
-    html = html.replace('__PLAYOFF_META_JSON__', safe_json(
-        {k: (playoff_odds or {}).get(k) for k in
-         ('n_simulations', 'games_played', 'games_remaining', 'season')},
-        **COMPACT))
-    html = html.replace('__WEEKS_JSON__', safe_json(weeks_js, **COMPACT))
-    html = html.replace('__LATEST_WEEK__', safe_json(latest_label))
-    html = html.replace('__PICKS_PDFS_JSON__', safe_json(pdf_weeks))
-    html = html.replace('__ACCURACY_JSON__', safe_json(accuracy_js, **COMPACT))
-    html = html.replace('__CALIBRATION_JSON__', safe_json(calibration_js, **COMPACT))
-    html = html.replace('__TEAM_HISTORY_JSON__', safe_json(team_history_js, **COMPACT))
-    # null, not {}, when the collector has never run. The page distinguishes
-    # "no audits recorded yet" from "audits recorded, none of them found
-    # anything" -- those are opposite claims about the verifier, and an empty
-    # object would let the page make the flattering one by accident.
-    html = html.replace('__AGENT_LOG_JSON__', safe_json(agent_log_for_page(agent_log), **COMPACT))
-    # null when this build did not read the run history (see load_recent_runs).
-    html = html.replace('__RECENT_RUNS_JSON__', safe_json(recent_runs, **COMPACT))
-    # null when this build read no lock commits (see load_lock_proof).
-    html = html.replace('__LOCK_PROOF_JSON__', safe_json(lock_proof, **COMPACT))
-    # The Changelog page is rendered from config.VERSION_HISTORY, so the
-    # release notes on the site and the constant the model actually runs under
-    # cannot drift apart -- they are the same object.
-    html = html.replace('__VERSION_HISTORY_JSON__', safe_json(VERSION_HISTORY, **COMPACT))
-    html = html.replace('__MODEL_VERSION__', safe_json(MODEL_VERSION))
-    html = html.replace('__SIDEBAR_FOOT__', foot_html)
-    html = html.replace('__BOARD_UPDATED__', updated_html)
-    html = html.replace('__FONT_FACES__', font_faces_css())
-    # Model Lab's rows, from the experiment records (Stage 18, src/sports/nfl/model_lab.py).
-    from src.sports.nfl.model_lab import entries as model_lab_entries
-    html = html.replace('__MODEL_LAB_ROWS__', render_model_lab_rows(model_lab_entries()))
-
-    html = csp.harden(html)  # Stage 88 item 5: hashes, not unsafe-inline (src/core/csp.py)
+    fills = {
+        '__TEAMS_JSON__': safe_json(teams_js, **COMPACT),
+        # Only the run's own metadata: the per-team odds now travel inside
+        # teams_js so the Power Ratings table can sort by them.
+        '__PLAYOFF_META_JSON__': safe_json(
+            {k: (playoff_odds or {}).get(k) for k in
+             ('n_simulations', 'games_played', 'games_remaining', 'season')},
+            **COMPACT),
+        '__WEEKS_JSON__': safe_json(weeks_js, **COMPACT),
+        '__LATEST_WEEK__': safe_json(latest_label),
+        '__PICKS_PDFS_JSON__': safe_json(pdf_weeks),
+        '__ACCURACY_JSON__': safe_json(accuracy_js, **COMPACT),
+        '__CALIBRATION_JSON__': safe_json(calibration_js, **COMPACT),
+        '__TEAM_HISTORY_JSON__': safe_json(team_history_js, **COMPACT),
+        # null, not {}, when the collector has never run. The page distinguishes
+        # "no audits recorded yet" from "audits recorded, none of them found
+        # anything" -- those are opposite claims about the verifier, and an empty
+        # object would let the page make the flattering one by accident.
+        '__AGENT_LOG_JSON__': safe_json(agent_log_for_page(agent_log), **COMPACT),
+        # null when this build did not read the run history (see load_recent_runs).
+        '__RECENT_RUNS_JSON__': safe_json(recent_runs, **COMPACT),
+        # null when this build read no lock commits (see load_lock_proof).
+        '__LOCK_PROOF_JSON__': safe_json(lock_proof, **COMPACT),
+        # The Changelog page is rendered from config.VERSION_HISTORY, so the
+        # release notes on the site and the constant the model actually runs under
+        # cannot drift apart -- they are the same object.
+        '__VERSION_HISTORY_JSON__': safe_json(VERSION_HISTORY, **COMPACT),
+        '__MODEL_VERSION__': safe_json(MODEL_VERSION),
+        '__SIDEBAR_FOOT__': foot_html,
+        '__BOARD_UPDATED__': updated_html,
+        '__FONT_FACES__': font_faces_css(),
+        '__MODEL_LAB_ROWS__': render_model_lab_rows(model_lab_entries()),
+    }
+    # The template is kept as parts under src/dashboard/ (Stage 33 item 26),
+    # joined into the one file it always was; the renderer every page shares
+    # strips its comments, fills it in one pass and hashes its scripts into the
+    # CSP (Stage 87 item 3, src/core/page_render.py).
+    html = page_render.finish(read_template(), fills)
     with open(OUTPUT_PATH, 'w', encoding='utf-8') as f:
         f.write(html)
     print(f"Wrote {OUTPUT_PATH}")
