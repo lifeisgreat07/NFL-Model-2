@@ -23,6 +23,7 @@ from src.site import build
 from src.sports.nfl import generate_dashboard as gd
 from src.sports.nfl import lock_proof as lp
 from tests.js_source import function_source
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 NODE = shutil.which('node')
@@ -96,8 +97,7 @@ def test_the_real_history_dates_week_4_before_its_kickoff():
 # --- the page -----------------------------------------------------------------
 
 def page_line(commits, games):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = JOINED_TEMPLATE.read_text(encoding='utf-8').replace('\r\n', '\n')
     js = ''.join(function_source(src, n) for n in ('easternOffsetHours', 'kickoffInstant', 'escapeHtml',
                                                    'lockUtc', 'lockCommitLink', 'lockProofHtml'))

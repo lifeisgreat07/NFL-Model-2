@@ -18,6 +18,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import require_tool
+
 ROOT = Path(__file__).resolve().parents[1]
 NODE = shutil.which('node')
 START = '2026-10-13T22:00:00Z'
@@ -28,8 +30,7 @@ STUBS = ("const ET = 'America/New_York';\n"
 
 
 def rows(sport, games):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = (ROOT / 'src' / 'sports' / sport / 'pages' / f'{sport}.js').read_text(encoding='utf-8')
     res = re.search(r'function rowResult\(g, p, nowMs\)\{.*?\n\}\n', js, re.S)
     tim = re.search(r'function rowTime\(g, p\)\{.*?\n\}\n', js, re.S)

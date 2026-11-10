@@ -23,11 +23,11 @@ import subprocess
 from pathlib import Path
 
 import pandas as pd
-import pytest
 
 from src.site import home as home_py
 from src.sports.nba import page_inputs, site
 from src.sports.nba import schedule as nba
+from tests.optional import require_tool
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -68,8 +68,7 @@ def test_the_schedule_file_and_the_board_carry_it():
 
 
 def tip_set(games):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = day_script('nba')
     fn = re.search(r'function tipSet\(g\)\{.*?\n\}\n', js, re.S)
     assert fn, 'tipSet is not findable -- re-anchor this guard'
@@ -119,8 +118,7 @@ def test_the_home_page_lists_the_unset_starts(tmp_path):
 
 def test_the_home_page_reads_them_the_same_way():
     """The home page printed opening night as "First tip-off Tue · time TBD"."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = HOME.read_text(encoding='utf-8')
     unset = re.search(r'^const UNSET_TIPS = .*$', js, re.M)
     fn = re.search(r'^function tipSet\(t\)\{.*\}$', js, re.M)
