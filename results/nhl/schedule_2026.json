@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-09",
+ "as_of": "2026-11-10",
  "games": [
   {
    "game_id": "2026020001",
@@ -3673,11 +3673,11 @@
    "start_utc": "2026-11-10T01:00:00Z",
    "home": "EDM",
    "away": "NYR",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 3,
+   "away_score": 1,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -3686,11 +3686,11 @@
    "start_utc": "2026-11-10T02:30:00Z",
    "home": "VAN",
    "away": "PHI",
-   "status": "in_progress",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 1,
+   "away_score": 3,
+   "last_period": "REG",
    "neutral_site": false
   },
   {
@@ -3699,11 +3699,11 @@
    "start_utc": "2026-11-10T03:00:00Z",
    "home": "SJS",
    "away": "NYI",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 3,
+   "away_score": 2,
+   "last_period": "SO",
    "neutral_site": false
   },
   {

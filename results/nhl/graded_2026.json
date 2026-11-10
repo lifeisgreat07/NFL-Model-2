@@ -1382,19 +1382,19 @@
  {
   "game_id": "2026020283",
   "pick": "EDM",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-09T21:01:37Z"
  },
  {
   "game_id": "2026020284",
   "pick": "PHI",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-09T21:01:37Z"
  },
  {
   "game_id": "2026020285",
   "pick": "NYI",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-09T21:01:37Z"
  }
 ]
