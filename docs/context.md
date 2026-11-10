@@ -4,45 +4,42 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-06 (session 1105 wrap-up: #628-#668 merged; #670 in audit; #669 being split in three)
+Last updated: 2026-11-10 (session 1109 wrap-up: #674-#678 merged; Stage 87 item 2 built, in prep at 3debaf19)
 
 ---
 
 ## Right now
 
-**Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked figure. NFL in `src/sports/nfl/`, shared modules in `src/core/`.
+**Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked figure, split five ways by `tests/suite_classes.json` (`session_wrapup --suite-line` writes it). NFL in `src/sports/nfl/`, shared modules in `src/core/`.
 **Sportalytics** (Stage 67) is live: home `/`, NFL `/nfl/` (Model **v2.6**), NHL `/nhl/`, NBA `/nba/` (picks saved twice a day).
 
-**Booth audits run one at a time**, and a diff of about a hundred files runs out of the 20-minute job time (#669 twice,
-#670 once, #667 once). Split a big change rather than re-running it. Do not change booth-pr-audit.yml until Mark decides.
+**Booth audits run one at a time**, and a diff of about a hundred files runs out of the 20-minute job time. Split a big
+change rather than re-running it. Do not change booth-pr-audit.yml until Mark decides.
 
 **Merge rule (Mark):** Booth SAFE TO MERGE, 0 discrepancies, audited head = PR head, every check green; `merge_item.py PR WT_NAME
 BRANCH "Title"`; re-run a failed or timed-out audit once. **At the final head, before opening:** prechecks (ruff, both mypy),
 every figure and mutation case by exact id, the suite (the session archive's prep and go scripts; CLAUDE.local.md has the paths).
 A body that must change after opening: close the PR and open a new one from the same branch.
-**Rules that merged this session bind every branch behind them:** every workflow installs with
-`pip install --require-hashes -r requirements.lock` (`tests/test_lock.py`); every python or pip step of an alerting scheduled
-job has its own `timeout-minutes` (`tests/test_step_timeouts.py`); src/core, src/site, src/sports/nhl and src/sports/nba pass
-`mypy --strict`; a new test file needs a line in the suite map (the file #670 adds) once #670 merges.
+**Rules on main that bind every branch:** every workflow installs with `pip install --require-hashes -r requirements.lock`;
+every python or pip step of an alerting scheduled job has its own `timeout-minutes`; src/core, src/site, src/sports/nhl and
+src/sports/nba pass `mypy --strict`; **a new test file needs a line in `tests/suite_classes.json`** (#675); **no test skips on a
+missing node by hand**: `require_tool('node')`, or a `skipif(... and not in_ci())` (#678).
 
-**Single next action:** land #670 (s96w): SAFE at aa4c9ddb, but main's wrap-up commit then changed the Suite line it rewrites.
-Merge main, keep the five-way line from `python -m src.agents.session_wrapup --suite-line`, prep, push, one audit of the
-new head. Then open s96r part 1 (below), and cut parts 2 and 3 one at a time after it.
+**Single next action:** open Stage 87 item 2 (branch `s87-core-python`) once its 34 mutation cases pass by exact id at its final head (CLAUDE.local.md has the worktree, the id list and the body). Then build item 3.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| #670 s96w `s96-suite-line` (96.51: five-way suite split by a committed map of test files) | aa4c9ddb; SAFE on its re-run; main has since moved (wrap-up commit, CLAUDE.md) | Merge main, recompute the Suite line, one audit of the new head |
-| s96r part 1 `s96-require-tool-1` (96.48: require_tool, injuries collection, first third) | Worktree s96r1, 5fab352c, not pushed; its body and the script that writes it are in the session archive (CLAUDE.local.md) | #670 merged; then merge main, prep, open |
-| s96r parts 2 and 3 | The session archive's split_s96r script (argument 2 or 3) cuts each from branch `s96-require-tool` (the whole change, #669 closed) onto main; part 3 carries the guard test | Each after the part before merges; bodies modelled on part 1's, counts by the archive's part_counts script |
-| Stage 87 items 2-4 (core Python move; one page renderer; app.js split) | Not built | After the queue |
-| Stage 95 items 31-34, and 35 as the registered "day-sport v2" shadow (with 94 items 24, 27-30) | Not built | After the queue |
+| Stage 87 item 2 `s87-core-python` (the day sports' backtest, drift, pick and rating code one copy in src/core) | Built, prepped at 3debaf19 (12907 passed), not opened | Its 34 cases by id at the final head, then open; one audit |
+| Stage 87 item 3 (one core page renderer for all four pages) and item 4 (`src/dashboard/app.js` split along page lines; corpus targets rewritten by script) | Not built. Item 4 retargets many mutation cases: count the files first, and split under about a hundred | Item 2 merged |
+| Stage 95 items 31-34, and 35 as the registered "day-sport v2" shadow (with 94 items 24, 27-30) | Not built | After Stage 87 |
 | s83f `s83-credentials` (83.6) | Built | **Mark: the OAuth token's real expiry date** |
 | #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then 82 item 5 |
 | #664's auto-merge | Merged, off | **Mark sets AUTO_MERGE_OVERRIDES=true** when he wants it; the workflow file is read from the PR on `pull_request` (disclosed) |
 | #570, #575 (Dependabot) | Fail tests and Booth | Mark: a Dependabot secret; which updates to take |
 | Stage 88 item 1 (actions): one dispatch of each writer | Not done | Mark (dispatching the Weekly update can lock a week) |
+| Leftover branches from Stage 96 item 48 | Local `s96-require-tool` (the whole change, with its worktree on the local Windows machine) and `s96-require-tool-2` (local and on GitHub; part two shipped from `-2b` instead, and no PR ever pointed at it) | Mark: delete them (a force-push or branch deletion was refused to this session) |
 
 ## Known and deliberately not fixed
 
@@ -65,11 +62,10 @@ new head. Then open s96r part 1 (below), and cut parts 2 and 3 one at a time aft
 - **The drift check re-tests a growing sample every week**, so it will sometimes flag by chance.
 - **A failed Thursday run leaves Thursday night's game unpicked** unless dispatched by hand that day.
 - **GitHub moves `ubuntu-latest` to Ubuntu 26 from 2026-10-19; nothing here follows it.** All 35 `runs-on` are `ubuntu-24.04`, held by `tests/test_runner_image.py`. Moving is a deliberate change: run the suite and one of each writer on `ubuntu-26.04` first, then change WANT and every workflow together.
-- **Mark's PC runs on Eastern time**, so a guard for an ET clock runs node with `TZ` far from ET, or a dropped `timeZone` survives there (Stage 77 item 30).
+- **Mark's PC runs on Eastern time and GitHub's runners on UTC**: a clock-reading test pins `TZ` (#501), and a guard for an ET clock runs node with `TZ` far from ET (Stage 77 item 30).
 - **Mark's PC checks files out as CRLF (autocrlf)**: a test that builds CRLF by replacing `\n` makes `\r\r\n`; write both forms from LF yourself (#538).
 - **Windows Python ships no tz database**: `ZoneInfo('America/New_York')` fails at import on Mark's PC and passes on Linux CI. Read Eastern time through pandas, as `src/sports/nfl/tv_channels.py` does.
 - **A parametrize over a page script needs `ids=`**: unnamed, the script is the test id, and Windows refuses an environment variable over 32,767 characters (items 57, 61).
-- **GitHub's runners are UTC**: a test that reads a clock passes on Mark's Eastern PC and fails in CI unless it pins `TZ` (#501).
 - **`src/core` type-checks under strict mypy** (`test_sport_isolation`, `test_type_check`); a pre-flight without mypy misses it (#515, #516).
 - **A PowerShell `>` redirect writes UTF-16**, which `git apply` refuses: write patches with `git format-patch -o`, or a Python script written with the file tool.
 - **The plain-language guard reads only `RENDERERS`**: add each new markup function with its page; a top-level literal is charged to the function above it (items 28, 31).
@@ -79,4 +75,8 @@ new head. Then open s96r part 1 (below), and cut parts 2 and 3 one at a time aft
   `GITHUB_ACTIONS=true` (#661). Such a test chdirs to its tmp folder and pins the runner variables; reproduce with
   `GITHUB_ACTIONS=true` set on the PC.
 - **One process per worktree**: mutation cases run while that worktree's suite runs fail the suite.
-- **Scout's pre-flight reads `--durations=0 tests/test_x.py` as a count of 0 for that file**: put the flag after the files.
+- **Scout reads any "N passed" in a body as the whole suite's count, "N test" in a commit message as a suite count,
+  and `--durations=0 tests/test_x.py` as 0 for that file**: say "all N of their tests pass", keep counts out of commits,
+  put flags after the files.
+- **The anonymous GitHub API allows 60 requests an hour**: poll Booth with the session archive's authenticated
+  `scratch-nba/pr_runs.py PR --wait SECONDS`, not every 15 s anonymously.
