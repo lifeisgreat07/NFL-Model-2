@@ -28,6 +28,7 @@ from pathlib import Path
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
@@ -52,8 +53,7 @@ def _run(tz):
 
 @pytest.fixture(scope='module')
 def runs():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     return {'la': _run('America/Los_Angeles'), 'utc': _run('UTC')}
 
 

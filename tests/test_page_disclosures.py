@@ -16,6 +16,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import in_ci
+
 ROOT = Path(__file__).resolve().parents[1]
 NODE = shutil.which('node')
 JS = {'nhl': ROOT / 'src/sports/nhl/pages/nhl.js', 'nba': ROOT / 'src/sports/nba/pages/nba.js'}
@@ -31,7 +33,7 @@ def edge_note(sport, tuning):
     return subprocess.run([NODE, '-e', src], capture_output=True, text=True, check=True).stdout
 
 
-@pytest.mark.skipif(NODE is None, reason='node is not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node is not installed')
 @pytest.mark.parametrize('sport', JS)
 def test_the_grid_edge_is_said_of_the_real_tuning(sport):
     tuning = json.loads((ROOT / TUNING[sport][0]).read_text(encoding='utf-8'))
@@ -39,7 +41,7 @@ def test_the_grid_edge_is_said_of_the_real_tuning(sport):
     assert 'At the edge of the grid.' in out and 'is the largest the registered grid searched' in out
 
 
-@pytest.mark.skipif(NODE is None, reason='node is not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node is not installed')
 @pytest.mark.parametrize('sport', JS)
 def test_it_is_not_said_of_a_setting_inside_the_grid(sport):
     tuning = json.loads((ROOT / TUNING[sport][0]).read_text(encoding='utf-8'))

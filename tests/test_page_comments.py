@@ -31,6 +31,7 @@ ROOT = Path(__file__).resolve().parents[1]
 from src.core import page_comments as pc
 from src.core.template_parts import read_template
 from src.sports.nfl import generate_dashboard as gd
+from tests.optional import require_tool
 
 TEMPLATE = read_template()
 NODE = shutil.which('node')
@@ -146,8 +147,7 @@ def test_no_comment_is_left_outside_scripts(stripped):
 
 
 def test_every_script_on_the_stripped_template_compiles(stripped):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     found = re.findall(r'<script\b([^>]*)>(.*?)</script>', stripped, re.S)
     # The structured data (Stage 47 item 12) is JSON, not script: it must
     # still parse as JSON after stripping, which also proves no "//" inside

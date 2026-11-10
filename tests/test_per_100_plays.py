@@ -17,6 +17,7 @@ import subprocess
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -32,8 +33,7 @@ def src():
 
 @pytest.fixture(scope='module')
 def run(src):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     code = re.search(r'function ratingScale\(\).*?\nfunction fmtRatingScale\(.*?\n\}\n', src, re.S)
     assert code, 'the rating formatters are not findable -- re-anchor this guard'
     js = (code.group(0) +
