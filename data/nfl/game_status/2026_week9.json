@@ -2,7 +2,7 @@
   "season": 2026,
   "week": 9,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-09T05:37:34Z",
+  "read_at": "2026-11-10T11:02:57Z",
   "games": [
     {
       "away": "JAX",
@@ -147,9 +147,9 @@
     {
       "away": "BUF",
       "home": "MIN",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
+      "status": "final",
+      "away_score": 23,
+      "home_score": 6,
       "spread_line": -3.0,
       "neutral_site": false,
       "venue": "U.S. Bank Stadium"
