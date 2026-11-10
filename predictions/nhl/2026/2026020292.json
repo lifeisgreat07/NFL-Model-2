@@ -1,0 +1,85 @@
+{
+ "game_id": "2026020292",
+ "season": 2026,
+ "slate": "2026-11-10",
+ "start_utc": "2026-11-11T03:00:00Z",
+ "home": "LAK",
+ "away": "NSH",
+ "model_a": 0.5403,
+ "model_b": 0.5759,
+ "pick": "LAK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.378311,
+  "shot_matchup": 2.521541,
+  "goalie_matchup_2000": -0.000392
+ },
+ "market": {
+  "game_id": "2026020292",
+  "start_utc": "2026-11-11T03:00:00Z",
+  "home": "LAK",
+  "away": "NSH",
+  "book": "DraftKings",
+  "home_price": -130.0,
+  "away_price": 110.0,
+  "home_prob": 0.5427,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476341,
+   "name": "Anton Forsberg",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/LeggetNHL/status/2120236278306554288"
+  },
+  "away": {
+   "player_id": 8477424,
+   "name": "Juuse Saros",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-10",
+  "read_utc": "2026-11-10T21:01:41Z",
+  "home": [
+   {
+    "name": "Erik Gustafsson",
+    "position": "D",
+    "status": "Day-To-Day"
+   },
+   {
+    "name": "Jakub Dvorak",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kevin Fiala",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jonathan Marchessault",
+    "position": "RW",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-10T21:01:41Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14688,
+  "training_games_priced": 7658,
+  "training_ids_sha256": "67c2a3f54dca9c05f30bb71fd6316bb529cadeced0fe5493a26bb356539ac2e0"
+ },
+ "code_sha256": "63f42334834f3d3baf7bade876c1fc04c6ec848289eec884d0b8cd14ff7c67ef",
+ "code_commit": "d62c944bd017dec7cb3d76833aa97ac8ad6bd145"
+}
