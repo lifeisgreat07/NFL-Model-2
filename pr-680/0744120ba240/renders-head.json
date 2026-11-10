@@ -1,11 +1,47 @@
 [
  {
+  "page": "home",
+  "label": "head",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "home-390x844-light-head.png",
+  "bytes": 275473,
+  "parked": 2
+ },
+ {
+  "page": "home",
+  "label": "head",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "home-390x844-dark-head.png",
+  "bytes": 277055,
+  "parked": 2
+ },
+ {
+  "page": "home",
+  "label": "head",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "home-1440x900-light-head.png",
+  "bytes": 250937,
+  "parked": 2
+ },
+ {
+  "page": "home",
+  "label": "head",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "home-1440x900-dark-head.png",
+  "bytes": 251076,
+  "parked": 2
+ },
+ {
   "page": "nhl",
   "label": "head",
   "viewport": "390x844",
   "theme": "light",
   "file": "nhl-390x844-light-head.png",
-  "bytes": 97711,
+  "bytes": 62365,
   "parked": 3
  },
  {
@@ -14,7 +50,7 @@
   "viewport": "390x844",
   "theme": "dark",
   "file": "nhl-390x844-dark-head.png",
-  "bytes": 98801,
+  "bytes": 63611,
   "parked": 3
  },
  {
@@ -23,7 +59,7 @@
   "viewport": "1440x900",
   "theme": "light",
   "file": "nhl-1440x900-light-head.png",
-  "bytes": 258957,
+  "bytes": 170272,
   "parked": 4
  },
  {
@@ -32,7 +68,7 @@
   "viewport": "1440x900",
   "theme": "dark",
   "file": "nhl-1440x900-dark-head.png",
-  "bytes": 259775,
+  "bytes": 170861,
   "parked": 4
  },
  {
@@ -41,7 +77,7 @@
   "viewport": "390x844",
   "theme": "light",
   "file": "nba-390x844-light-head.png",
-  "bytes": 60554,
+  "bytes": 83759,
   "parked": 3
  },
  {
@@ -50,7 +86,7 @@
   "viewport": "390x844",
   "theme": "dark",
   "file": "nba-390x844-dark-head.png",
-  "bytes": 61855,
+  "bytes": 84874,
   "parked": 3
  },
  {
@@ -59,7 +95,7 @@
   "viewport": "1440x900",
   "theme": "light",
   "file": "nba-1440x900-light-head.png",
-  "bytes": 136570,
+  "bytes": 205283,
   "parked": 4
  },
  {
@@ -68,7 +104,7 @@
   "viewport": "1440x900",
   "theme": "dark",
   "file": "nba-1440x900-dark-head.png",
-  "bytes": 136754,
+  "bytes": 205730,
   "parked": 4
  }
 ]
