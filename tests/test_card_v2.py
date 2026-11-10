@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
 
 from src.sports.nfl import generate_dashboard as gd
+from tests.optional import require_tool
 
 NODE = shutil.which('node')
 
@@ -44,8 +45,7 @@ def const(s, name):
 
 
 def run(expr):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     s = src()
     js = ''.join(const(s, c) for c in ('CARD_EVEN_BAND', 'CARD_SERIES', 'CARD_NEAR', 'CARD_LANE',
                                        'ESPN_CODE'))

@@ -18,6 +18,7 @@ from src.sports.nba import daily as nba_daily
 from src.sports.nba import drift as nba_drift
 from src.sports.nhl import daily as nhl_daily
 from src.sports.nhl import drift as nhl_drift
+from tests.optional import in_ci
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -117,7 +118,7 @@ def test_both_pages_carry_the_same_functions():
         assert function_source(page('nhl'), name) == function_source(page('nba'), name), name
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 @pytest.mark.parametrize('sport', SPORTS)
 def test_the_page_states_the_registered_looks(sport):
     rule = json.loads((ROOT / 'data' / sport / 'drift_baseline.json').read_text(encoding='utf-8'))
@@ -127,7 +128,7 @@ def test_the_page_states_the_registered_looks(sport):
     assert f"{rule['baseline']['value']:.4f}" in out
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 @pytest.mark.parametrize('sport', SPORTS)
 def test_the_status_says_when_the_check_last_looked_and_will_look_next(sport):
     rule = json.loads((ROOT / 'data' / sport / 'drift_baseline.json').read_text(encoding='utf-8'))

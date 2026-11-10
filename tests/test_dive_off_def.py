@@ -27,6 +27,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import generate_dashboard as gd
 from tests.js_source import function_source
+from tests.optional import require_tool
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -64,8 +65,7 @@ CASES = {
 
 @pytest.fixture(scope='module')
 def split():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = TEMPLATE.read_text(encoding='utf-8')
     # The formatter and the scale it reads, as tests/test_per_100_plays.py
     # extracts them.

@@ -15,6 +15,7 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import require_tool
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,8 +30,7 @@ GAMES = [  # home won the first two; the market had no price on the third
 
 
 def run(expr, games=GAMES):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     code = ('global.window = {matchMedia: () => ({matches: false})};\n' + JS
             + f'\nconst games = {json.dumps(games)};\nconsole.log(JSON.stringify({expr}));')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')

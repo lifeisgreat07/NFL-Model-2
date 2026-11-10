@@ -20,7 +20,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
@@ -42,8 +42,7 @@ def const(name):
 
 
 def run(expr):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = (const('CARD_EVEN_BAND') + const('COMPARE_COLS') + const('COMPARE_PROB')
           + "function escapeHtml(s){ return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }\n"
           + "function startZone(){ return 'America/New_York'; }\n"

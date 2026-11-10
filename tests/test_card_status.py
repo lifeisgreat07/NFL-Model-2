@@ -24,6 +24,7 @@ TEMPLATE = JOINED_TEMPLATE
 
 from src.sports.nfl import generate_dashboard as gd
 from tests.js_source import function_source
+from tests.optional import require_tool
 
 NODE = shutil.which('node')
 
@@ -47,8 +48,7 @@ def template():
 
 @pytest.fixture(scope='module')
 def lines():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = function_source(template(), 'gameHasScore') + function_source(template(), 'cardStatusLine') + \
         f'\nconst C={json.dumps(CASES)};const o={{}};for(const k in C)o[k]=cardStatusLine(C[k]);' \
         'process.stdout.write(JSON.stringify(o));'

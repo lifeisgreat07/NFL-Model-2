@@ -14,7 +14,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'site' / 'home' / 'home.js').read_text(encoding='utf-8')
@@ -23,8 +23,7 @@ NODE = shutil.which('node')
 
 def day_status(games, now):
     """dayStatus(f, 'puck drop') for games of (start UTC, status), at `now` (UTC), in New York."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     helpers = ''.join(re.search(rf'^function {n}\(.*$', JS, re.M).group(0) + '\n' for n in ('dayKey', 'clock', 'weekday', 'when', 'record'))
     fn = re.search(r'^function dayStatus\(f, start\)\{.*?\n\}\n', JS, re.S | re.M)
     assert fn, 'dayStatus is not findable -- re-anchor this guard'

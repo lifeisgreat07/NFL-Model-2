@@ -19,6 +19,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import in_ci
+
 REPO = Path(__file__).resolve().parents[1]
 PAGE = (REPO / 'src' / 'site' / 'home' / 'page.html').read_text(encoding='utf-8')
 JS = (REPO / 'src' / 'site' / 'home' / 'home.js').read_text(encoding='utf-8')
@@ -99,7 +101,7 @@ def scoreboard(home):
     return subprocess.run([NODE, '-e', js], capture_output=True, encoding='utf-8', check=True).stdout.split('|')
 
 
-@pytest.mark.skipif(not NODE, reason='node not available')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not available')
 def test_the_scoreboard_counts_each_sports_graded_games():
     nfl, nhl = scoreboard({'nfl': {'built': True, 'record': {'won': 39, 'lost': 25}},
                            'nhl': {'built': True, 'record': {'won': 1, 'lost': 0}}})
@@ -107,7 +109,7 @@ def test_the_scoreboard_counts_each_sports_graded_games():
     assert 'after 1 game<' in nhl
 
 
-@pytest.mark.skipif(not NODE, reason='node not available')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not available')
 def test_the_scoreboard_says_so_when_nothing_is_graded_or_built():
     nfl, nhl = scoreboard({'nfl': {'built': True, 'record': {'won': 0, 'lost': 0}}, 'nhl': {'built': False}})
     assert 'no graded games yet' in nfl

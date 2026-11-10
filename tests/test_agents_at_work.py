@@ -19,6 +19,7 @@ import pytest
 from src.agents import collect_agent_log as cal
 from src.core.template_parts import JOINED_TEMPLATE
 from tests.js_source import function_source
+from tests.optional import in_ci
 
 ROOT = Path(__file__).resolve().parents[1]
 BOT = {'login': 'github-actions[bot]'}
@@ -90,7 +91,7 @@ def test_the_workflow_reads_scouts_runs_and_passes_them_on():
     assert 'python -m src.agents.collect_agent_log --comments comments.json --scout scout.json' in wf
 
 
-@pytest.mark.skipif(shutil.which('node') is None, reason='node is not installed')
+@pytest.mark.skipif(shutil.which('node') is None and not in_ci(), reason='node is not installed')
 def test_the_page_lists_them_escaped_and_links_only_to_github():
     page = JOINED_TEMPLATE.read_text(encoding='utf-8')
     js = (function_source(page, 'escapeHtml') + 'const AGENT_ROLES = {Booth: "a", Scout: "b", '
