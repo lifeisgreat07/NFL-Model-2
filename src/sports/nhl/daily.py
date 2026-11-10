@@ -55,13 +55,15 @@ import pandas as pd
 from src.core import (
     after_save,
     forward_test,
-    pick_guard,
     priced,
     request_budget,
     schedule_guard,
     season_prices,
 )
-from src.core.atomic_write import write_json_atomic
+from src.core.day_picks import grade as grade
+from src.core.day_picks import missed as missed
+from src.core.day_picks import missed_line as missed_line
+from src.core.day_picks import save_once as save_once
 from src.core.provenance import code_identity, training
 from src.core.sport import GameStatus, sport_paths
 from src.sports.nhl import (
@@ -209,31 +211,6 @@ def read_rosters(clubs: set[str], get: Callable[[str], bytes]) -> dict[str, list
     return out
 
 
-def save_once(record: dict[str, Any], folder: Path) -> bool:
-    """Write the pick unless one is already saved. True when written.
-
-    Stage 91 item 6: written through write_json_atomic (fsync, a unique
-    temporary name), so a killed run never leaves a truncated pick or a
-    committed .tmp. Stage 91 item 5: a record that could have seen its own
-    result is refused before anything is written (src/core/pick_guard.py)."""
-    path = folder / f"{record['game_id']}.json"
-    if path.exists():
-        return False
-    pick_guard.refuse_leak(record)
-    folder.mkdir(parents=True, exist_ok=True)
-    write_json_atomic(path, record, trailing_newline=True, indent=1)
-    return True
-
-
-def missed(started: tuple[str, ...] | list[str], folder: Path) -> list[str]:
-    """Games of this slate that have started with no pick saved for them.
-
-    A pick is written once, before its game, so one of these can never be
-    made now; the daily workflow raises an alert on the line main prints
-    (Stage 68 item 3, the 2026-10-09 audit)."""
-    return sorted(str(g) for g in started if not (folder / f'{g}.json').exists())
-
-
 def recently_started(sched: pd.DataFrame, now: datetime) -> tuple[str, ...]:
     """Every game of yesterday's and today's slates (Eastern) that has started.
 
@@ -244,37 +221,6 @@ def recently_started(sched: pd.DataFrame, now: datetime) -> tuple[str, ...]:
     today = pd.Timestamp(now).tz_convert('America/New_York').normalize()
     days = {str((today - pd.Timedelta(days=1)).date()), str(today.date())}
     return GameLock().decide(sched[sched['slate'].isin(days)], now).started
-
-
-def missed_line(started: tuple[str, ...] | list[str], folder: Path) -> str | None:
-    """The line the workflow's alert step greps for, or None when nothing
-    was missed."""
-    lost = missed(started, folder)
-    return f'MISSED PICKS: {len(lost)} started with no saved pick: {", ".join(lost)}' if lost else None
-
-
-def grade(folder: Path, sched: pd.DataFrame) -> list[dict[str, Any]]:
-    """One row per saved pick: correct, wrong, cancelled, or pending.
-
-    Pending also covers a final game whose result is not in yet (a null
-    score, which used to raise here after the picks were saved, audit 7)
-    and a pick whose game has left the schedule (Stage 96 item 44)."""
-    by_id = sched.set_index('game_id')
-    rows = []
-    for path in sorted(folder.glob('*.json')):
-        pick = json.loads(path.read_text(encoding='utf-8'))
-        g = by_id.loc[pick['game_id']] if pick['game_id'] in by_id.index else None
-        status = None if g is None else g['status']
-        if status == GameStatus.CANCELLED.value:
-            result = 'cancelled'
-        elif status == GameStatus.FINAL.value and g is not None and not pd.isna(g['home_win']):
-            winner = g['home'] if int(g['home_win']) == 1 else g['away']
-            result = 'correct' if pick['pick'] == winner else 'wrong'
-        else:
-            result = 'pending'
-        rows.append({'game_id': pick['game_id'], 'pick': pick['pick'], 'result': result,
-                     'saved_utc': pick.get('saved_utc')})
-    return rows
 
 
 def drift_rows(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, int | None]]:

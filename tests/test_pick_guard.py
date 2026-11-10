@@ -63,7 +63,10 @@ def test_the_writer_writes_the_same_bytes_atomically(sport, tmp_path):
     old.parent.mkdir()
     old.write_text(json.dumps(GOOD, indent=1) + '\n', encoding='utf-8')
     assert out.read_bytes() == old.read_bytes()
-    src = (ROOT / 'src' / 'sports' / sport / 'daily.py').read_text(encoding='utf-8')
+    # save_once is the day sports' shared writer (Stage 87 item 2), taken from src/core.
+    from src.core import day_picks
+    assert daily.save_once is day_picks.save_once
+    src = (ROOT / 'src' / 'core' / 'day_picks.py').read_text(encoding='utf-8')
     body = src[src.index('def save_once('):src.index('def missed(')]
     assert 'write_json_atomic(path, record, trailing_newline=True, indent=1)' in body
     assert "with_suffix('.tmp')" not in body

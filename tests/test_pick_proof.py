@@ -70,5 +70,8 @@ def test_the_page_and_the_grades_carry_it(sport):
     assert re.search(r'\$\{proofLine\(g, p, (DATA|BD)\.proof\)\}', js)
     assert "before ? 'before the start' : '<b>after the start</b>'" in js
     assert "if(!pr || !/^[0-9a-f]{40}$/.test(pr.sha)) return '';" in js
+    # The grades come from the day sports' shared grade (Stage 87 item 2).
     daily = (ROOT / 'src' / 'sports' / sport / 'daily.py').read_text(encoding='utf-8')
-    assert "'saved_utc': pick.get('saved_utc')})" in daily
+    assert 'from src.core.day_picks import grade as grade' in daily or 'day_picks.grade(' in daily
+    shared = (ROOT / 'src' / 'core' / 'day_picks.py').read_text(encoding='utf-8')
+    assert "'saved_utc': pick.get('saved_utc')})" in shared

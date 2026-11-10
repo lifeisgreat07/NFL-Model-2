@@ -18,6 +18,7 @@
     },
     {
       "id": "nhl-drift-missing-result-counted",
+      "target": "src/core/day_drift.py",
       "why": "a game without a result is scored as a home loss.",
       "find": "        if p is None or y not in (0, 1):",
       "replace": "        if p is None:",

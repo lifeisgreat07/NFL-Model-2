@@ -28,8 +28,10 @@ def test_the_rule_is_the_backtests_rule_at_the_backtests_level(sport):
     assert '1 - 0.05/3 (98.33%)' in d['rule'] and abs(ft.LEVEL - (1 - 0.05 / 3)) < 1e-12
     assert ('ACCEPT when the whole interval is below zero' in d['rule']
             and 'REJECT when it is above zero' in d['rule'] and 'INCONCLUSIVE otherwise' in d['rule'])
-    # The backtest's label() says the same: below zero ACCEPT, above REJECT.
-    src = BACKTESTS[sport].read_text(encoding='utf-8')
+    # The backtest's label() says the same: below zero ACCEPT, above REJECT. It is the day sports'
+    # shared label (Stage 87 item 2), which this sport's backtest takes from src/core.
+    assert 'from src.core.day_backtest import' in BACKTESTS[sport].read_text(encoding='utf-8')
+    src = (ROOT / 'src' / 'core' / 'day_backtest.py').read_text(encoding='utf-8')
     assert "if interval['high'] < 0:\n        return 'ACCEPT'" in src
     assert "if interval['low'] > 0:\n        return 'REJECT'" in src
 

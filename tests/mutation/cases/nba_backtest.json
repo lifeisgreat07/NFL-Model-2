@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "nba-bt-label-loose",
+      "target": "src/core/day_backtest.py",
       "why": "an interval that only starts below zero counts as ACCEPT, so an inconclusive result is reported as a finding.",
       "find": "    if interval['high'] < 0:\n        return 'ACCEPT'",
       "replace": "    if interval['low'] < 0:\n        return 'ACCEPT'",
@@ -18,6 +19,7 @@
     },
     {
       "id": "nba-bt-model-b-unpriced",
+      "target": "src/core/day_backtest.py",
       "why": "Model B trains and predicts games with no price, so H2 and H3 are asked on games the registration leaves out.",
       "find": "    rows = table.dropna(subset=['home_prob']) if needs_market else table",
       "replace": "    rows = table",
@@ -25,6 +27,7 @@
     },
     {
       "id": "nba-bt-base-rate-sees-today",
+      "target": "src/core/day_backtest.py",
       "why": "the base rate includes the day's own games, so it knows the results it forecasts.",
       "find": "        rate = table.loc[table['day'] < day, 'home_win'].mean()",
       "replace": "        rate = table.loc[table['day'] <= day, 'home_win'].mean()",

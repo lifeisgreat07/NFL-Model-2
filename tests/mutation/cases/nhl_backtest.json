@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "nhl-bt-leak-same-day",
+      "target": "src/core/day_backtest.py",
       "why": "each refit trains on its own day's games, so the backtest sees the results it predicts.",
       "find": "        train = rows[rows['day'] < day]",
       "replace": "        train = rows[rows['day'] <= day]",
@@ -11,6 +12,7 @@
     },
     {
       "id": "nhl-bt-market-unfiltered",
+      "target": "src/core/day_backtest.py",
       "why": "Model B trains on and predicts games with no market price.",
       "find": "    rows = table.dropna(subset=['home_prob']) if needs_market else table",
       "replace": "    rows = table",
@@ -18,6 +20,7 @@
     },
     {
       "id": "nhl-bt-base-rate-leak",
+      "target": "src/core/day_backtest.py",
       "why": "the base rate includes the day's own games.",
       "find": "        rate = table.loc[table['day'] < day, 'home_win'].mean()",
       "replace": "        rate = table.loc[table['day'] <= day, 'home_win'].mean()",
@@ -25,6 +28,7 @@
     },
     {
       "id": "nhl-bt-label-boundary",
+      "target": "src/core/day_backtest.py",
       "why": "an interval touching 0 is labelled ACCEPT, against the registered 'entirely below 0'.",
       "find": "    if interval['high'] < 0:",
       "replace": "    if interval['high'] <= 0:",
@@ -39,6 +43,7 @@
     },
     {
       "id": "nhl-bt-brier-wrong",
+      "target": "src/core/day_backtest.py",
       "why": "the Brier score is the mean absolute error.",
       "find": "            'brier': float(((q - y) ** 2).mean()),",
       "replace": "            'brier': float(abs(q - y).mean()),",
