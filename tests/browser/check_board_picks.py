@@ -41,9 +41,12 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+ROOT = Path(__file__).resolve().parents[2]
+# The workflow runs this file as a script, where the repository root is not on the path; the dashboard's script
+# is read through src/core/template_parts.py, which joins its parts (Stage 87 item 4).
+sys.path.insert(0, str(ROOT))
 from src.core.template_parts import APP_SCRIPT
 
-ROOT = Path(__file__).resolve().parents[2]
 ROWS = """(sport) => [...document.querySelectorAll(`.${sport}-row`)].filter(r => r.offsetParent !== null).map(r => {
   const card = sport === 'nfl' ? document.getElementById(r.getAttribute('aria-controls')) : null;
   return {id: sport === 'nfl' ? (card && card.dataset.game) : (r.getAttribute('aria-controls') || '').replace(`${sport}-detail-`, ''),
