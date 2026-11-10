@@ -1059,21 +1059,21 @@
  {
   "game_id": "401909957",
   "pick": "HOU",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-09T21:31:31Z"
  },
  {
   "game_id": "401909958",
   "pick": "SA",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-09T21:31:31Z"
  },
  {
   "game_id": "401909959",
   "pick": "GS",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-09T21:31:31Z"
  }
