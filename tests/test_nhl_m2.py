@@ -22,6 +22,7 @@ import pandas as pd
 import pytest
 
 from src.sports.nhl import backtest, m2
+from tests.optional import in_ci
 
 ROOT = Path(__file__).resolve().parents[1]
 NODE = shutil.which('node')
@@ -189,7 +190,7 @@ A_FILE = {'measurement': 'M2', 'registered': 'experiments/nhl/stage56/registry.j
           'refit': {'reproduced_saved_model_a': 130, 'of': 157, 'provenance_recorded': 131}}
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 def test_the_page_prints_every_figure_once_50_games_are_graded():
     html = render(A_FILE)
     for want in ('Over 157 graded games', 'on 299 of 314 sides (95.2%)', 'both started in 143',
@@ -199,7 +200,7 @@ def test_the_page_prints_every_figure_once_50_games_are_graded():
         assert want in html, want
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 def test_the_page_waits_for_50_games():
     html = render({**A_FILE, 'graded': 49})
     assert '49 of the 50 graded games' in html and 'log loss' not in html

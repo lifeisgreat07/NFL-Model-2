@@ -28,6 +28,7 @@ from pathlib import Path
 import pytest
 
 from src.site import build
+from tests.optional import require_tool
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -49,8 +50,7 @@ def fn(src, name):
 
 
 def node(code, tz='America/New_York'):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8', env={**os.environ, 'TZ': tz})
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)

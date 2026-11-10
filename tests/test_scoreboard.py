@@ -24,6 +24,7 @@ import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
 from tests.js_source import function_source
+from tests.optional import require_tool
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -47,8 +48,7 @@ def template():
 
 @pytest.fixture(scope='module')
 def verdicts():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = function_source(template(), 'scoreboardVerdict') + \
         f'\nconst C={json.dumps(CASES)};const o={{}};for(const k in C)o[k]=scoreboardVerdict(C[k]);' \
         'process.stdout.write(JSON.stringify(o));'
@@ -110,8 +110,7 @@ def boards():
     """{'mine': html, 'none': html, 'ties': html} from scoreboardHtml itself, or {'error':
     stderr} if it threw. Not asserted here: a failing fixture errors every
     test that uses it, and none of them would then report which rule broke."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = template()
     live_here = re.search(r"^const PICKS_LIVE_HERE = .*;$", src, re.M)
     join = re.search(r"^const JOIN_THE_RACE = .*;$", src, re.M)   # Stage 77 item 20

@@ -22,6 +22,7 @@ import pytest
 from page_source import page_source  # Model Lab's rows are rendered in at build time
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -71,8 +72,7 @@ def test_percentage_points_are_written_pp_and_defined(src):
 
 @pytest.fixture(scope='module')
 def points(src):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     fn = re.search(r'function fmtPoints\(.*?\n\}\n', src.replace('\r\n', '\n'), re.S)
     assert fn, 'fmtPoints is not findable -- re-anchor this guard'
     js = fn.group(0) + f'\nprocess.stdout.write(JSON.stringify({json.dumps(CASES)}.map(fmtPoints)));'

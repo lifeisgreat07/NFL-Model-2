@@ -15,6 +15,8 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import in_ci
+
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
 NODE = shutil.which('node')
@@ -31,13 +33,13 @@ def run(bd):
     return subprocess.run([NODE, '-e', src], capture_output=True, text=True, check=True).stdout
 
 
-@pytest.mark.skipif(NODE is None, reason='node is not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node is not installed')
 def test_before_any_grade_it_says_so():
     out = run({'games': [{'id': '1', 'home': 'BOS', 'away': 'NY'}], 'picks': {}})
     assert 'No NBA pick has been graded yet' in out and '<table' not in out
 
 
-@pytest.mark.skipif(NODE is None, reason='node is not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node is not installed')
 def test_graded_picks_fall_in_their_bins():
     games = [{'id': str(i), 'home': 'BOS', 'away': 'NY'} for i in range(4)]
     picks = {'0': {'a': 0.62, 'b': None, 'by': 'model_a', 'pick': 'BOS', 'result': 'correct'},

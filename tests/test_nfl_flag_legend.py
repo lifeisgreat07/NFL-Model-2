@@ -14,7 +14,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
@@ -23,8 +23,7 @@ NODE = shutil.which('node')
 
 
 def row(g):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     consts = ''.join(re.search(r'^const %s = .*$' % n, APP, re.M).group(0) + '\n' for n in ('FLAG_ICON', 'FLAG_LEGEND'))
     fns = ''.join(re.search(r'function %s\(.*?\n\}\n' % n, APP, re.S).group(0) for n in ('cardSide', 'kickoffClock', 'phoneRowHtml'))
     js = ("const CARD_EVEN_BAND = 2;\nfunction startZone(){ return 'America/New_York'; }\nfunction startMark(){ return ' ET'; }\n"

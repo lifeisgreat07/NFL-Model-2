@@ -23,6 +23,7 @@ import pytest
 
 from src.site import build
 from tests.js_source import function_source
+from tests.optional import require_tool
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,8 +41,7 @@ CARD = {'sport': 'NFL', 'away': 'SEA', 'home': 'DEN', 'colours': ['#69BE28', '#F
 
 
 def node(code):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')
     assert r.returncode == 0, r.stderr
     return json.loads(r.stdout)

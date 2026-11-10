@@ -17,9 +17,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
-
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
@@ -38,8 +37,7 @@ def fn(s, name):
 
 
 def run(expr):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     s = src()
     js = ''.join(fn(s, f) for f in ('escapeHtml', 'ratingsNoMatchRow', 'contextNotesHtml'))
     r = subprocess.run([NODE, '-e', js + f'\nprocess.stdout.write(JSON.stringify({expr}));'],
