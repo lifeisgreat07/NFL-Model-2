@@ -41,6 +41,8 @@ from pathlib import Path
 
 from playwright.async_api import async_playwright
 
+from src.core.template_parts import APP_SCRIPT
+
 ROOT = Path(__file__).resolve().parents[2]
 ROWS = """(sport) => [...document.querySelectorAll(`.${sport}-row`)].filter(r => r.offsetParent !== null).map(r => {
   const card = sport === 'nfl' ? document.getElementById(r.getAttribute('aria-controls')) : null;
@@ -49,7 +51,7 @@ ROWS = """(sport) => [...document.querySelectorAll(`.${sport}-row`)].filter(r =>
 })"""
 PICK = re.compile(r'^([A-Z]{2,4}) (\d+)%')
 EVEN_BAND = float(re.search(r'const CARD_EVEN_BAND = ([\d.]+);',
-                            (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')).group(1))
+                            APP_SCRIPT.read_text(encoding='utf-8')).group(1))
 
 
 def whole(p):

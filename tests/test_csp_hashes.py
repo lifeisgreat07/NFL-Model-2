@@ -19,6 +19,7 @@ from pathlib import Path
 import pytest
 
 from src.core import csp
+from src.core.template_parts import APP_SCRIPT, read_repo_file
 from src.site import build
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -149,7 +150,7 @@ def test_no_page_source_carries_an_inline_handler():
 
 
 def test_every_nfl_button_action_is_one_the_page_knows():
-    app = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+    app = APP_SCRIPT.read_text(encoding='utf-8')
     table = app[app.index('const ACTIONS = {'):app.index('};', app.index('const ACTIONS = {'))]
     known = set(re.findall(r"^  '([a-z-]+)': ", table, re.M))
     used = set(re.findall(r'data-act="([a-z-]+)"', (ROOT / 'src' / 'dashboard' / 'body.html').read_text(encoding='utf-8')))
@@ -160,7 +161,7 @@ def test_every_nfl_button_action_is_one_the_page_knows():
 
 @pytest.mark.parametrize('rel', ['src/dashboard/app.js', 'src/sports/nba/pages/nba.js', 'src/sports/nhl/pages/nhl.js'])
 def test_each_page_with_logos_hides_a_broken_one_by_listener(rel):
-    js = (ROOT / rel).read_text(encoding='utf-8')
+    js = read_repo_file(rel)
     assert 'data-hide-on-error' in js
     assert ("document.addEventListener('error', e => {\n  const t = e.target;\n"
             "  if (t instanceof HTMLImageElement && t.hasAttribute('data-hide-on-error')) t.style.display = 'none';\n"

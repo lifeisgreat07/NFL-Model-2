@@ -7,13 +7,15 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import read_repo_file
+
 ROOT = Path(__file__).resolve().parents[1]
 PAGES = {'nfl': 'src/dashboard/body.html', 'home': 'src/site/home/page.html',
          'nhl': 'src/sports/nhl/pages/body.html', 'nba': 'src/sports/nba/pages/body.html'}
 
 
 def text(rel):
-    return (ROOT / rel).read_text(encoding='utf-8')
+    return read_repo_file(rel)
 
 
 @pytest.mark.parametrize('page', PAGES)

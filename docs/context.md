@@ -33,7 +33,7 @@ missing node by hand**: `require_tool('node')`, or a `skipif(... and not in_ci()
 | What | State | Waiting on |
 |---|---|---|
 | #680 Stage 87 item 3 `s87-page-render` (one page renderer, src/core/page_render.py) | Green; Booth NEEDS HUMAN REVIEW, 0 discrepancies | **Mark**: merge on the green checks, or ask for the comparison as a committed test (a new PR) |
-| Stage 87 item 4 (`src/dashboard/app.js` split) | Planned (memory/2026-11-09.md): 379 cases in 104 case files target app.js, so one PR is ~200 files. Step 1+2: the split, a helper for the ~33 tests that read app.js by path, the runner resolving an app.js target to the part holding its anchor; step 3: targets rewritten by script in two halves | #680 decided (both touch tests/test_csp_hashes.py) |
+| Stage 87 item 4 (the app.js split) | Planned (memory/2026-11-09.md): 379 cases in 104 case files target app.js, so one PR is ~200 files. Step 1+2: the split, a helper for the ~33 tests that read app.js by path, the runner resolving an app.js target to the part holding its anchor; step 3: targets rewritten by script in two halves | #680 decided (both touch tests/test_csp_hashes.py) |
 | Stage 95 items 31-34, and 35 as the registered "day-sport v2" shadow (with 94 items 24, 27-30) | Not built | After Stage 87 |
 | s83f `s83-credentials` (83.6) | Built | **Mark: the OAuth token's real expiry date** |
 | #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then 82 item 5 |

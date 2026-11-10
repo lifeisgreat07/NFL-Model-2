@@ -24,12 +24,13 @@ import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 
+from src.core.template_parts import APP_SCRIPT, read_repo_file
 from src.site import build, search
 from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 PAL = (ROOT / 'src' / 'core' / 'palette.js').read_text(encoding='utf-8')
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 NODE = shutil.which('node')
 
 
@@ -181,7 +182,7 @@ def test_its_names_cannot_meet_a_pages_own():
     top = set(re.findall(r'^(?:function|const|let) (\w+)', PAL, re.M))
     assert top == {'PAL_GROUPS', 'PAL_SPORT', 'palItems', 'palSearch'}
     for rel in ('src/dashboard/app.js', 'src/sports/nhl/pages/nhl.js', 'src/sports/nba/pages/nba.js', 'src/site/home/home.js'):
-        text = (ROOT / rel).read_text(encoding='utf-8')
+        text = read_repo_file(rel)
         assert not re.search(r'\b(?:function|const|let|var) (?:PAL_GROUPS|PAL_SPORT|palItems|palSearch)\b', text), rel
 
 

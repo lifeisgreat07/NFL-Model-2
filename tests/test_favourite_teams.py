@@ -18,11 +18,12 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from src.core.template_parts import APP_SCRIPT
 from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 CORE = (ROOT / 'src' / 'core' / 'favs.js').read_text(encoding='utf-8')
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 NHL = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
 NBA = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
 HOME = (ROOT / 'src' / 'site' / 'home' / 'home.js').read_text(encoding='utf-8')

@@ -21,6 +21,7 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
 from src.site import build
 from tests.js_source import function_source
 from tests.optional import require_tool
@@ -28,7 +29,7 @@ from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'core' / 'share_card.js').read_text(encoding='utf-8')
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 NHL = day_script('nhl')
 NBA = day_script('nba')
 NODE = shutil.which('node')

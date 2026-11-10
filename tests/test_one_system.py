@@ -14,14 +14,14 @@ Run with: pytest tests/test_one_system.py -v
 import re
 from pathlib import Path
 
-from src.core.template_parts import every_stylesheet
+from src.core.template_parts import APP_SCRIPT, every_stylesheet
 
 ROOT = Path(__file__).resolve().parents[1]
 SHEETS = dict(every_stylesheet())
 SHARED = SHEETS['the NFL template']
 SPORT = {k: v for k, v in SHEETS.items() if k != 'the NFL template'}
 JS = {sp: (ROOT / 'src' / 'sports' / sp / 'pages' / f'{sp}.js').read_text(encoding='utf-8') for sp in ('nhl', 'nba')}
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 HOME = (ROOT / 'src' / 'site' / 'home' / 'page.html').read_text(encoding='utf-8')
 BODY = (ROOT / 'src' / 'dashboard' / 'body.html').read_text(encoding='utf-8')
 

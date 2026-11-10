@@ -103,6 +103,48 @@ class JoinedTemplate:
 
 JOINED_TEMPLATE = JoinedTemplate()
 
+#: The dashboard's script is kept as parts too (Stage 87 item 4): every part
+#: whose name starts with this, in the order page.html includes them, joins
+#: into the one script app.js was.
+APP_PREFIX = 'app_'
+
+
+def app_parts(directory: Path = DASHBOARD_DIR) -> list[Path]:
+    """The script's parts, in page order."""
+    shell = (directory / SHELL).read_text(encoding='utf-8')
+    return [directory / name for name in includes(shell) if name.startswith(APP_PREFIX)]
+
+
+def app_script(directory: Path = DASHBOARD_DIR) -> str:
+    """The dashboard's whole script, joined from its parts: what app.js held."""
+    return ''.join(p.read_text(encoding='utf-8') for p in app_parts(directory))
+
+
+class AppScript:
+    """The joined script, readable the way app.js's Path was read, for the
+    tests written against `.../src/dashboard/app.js`."""
+
+    def read_text(self, encoding: str = 'utf-8', errors: str | None = None) -> str:
+        return app_script()
+
+    def __repr__(self) -> str:
+        return "<the dashboard's script, joined from src/dashboard/app_*.js>"
+
+
+APP_SCRIPT = AppScript()
+
+#: Files kept as parts that a check may still name by their old path.
+JOINED_FILES: dict[str, Callable[[], str]] = {'src/dashboard/app.js': app_script}
+
+
+def read_repo_file(rel: str) -> str:
+    """A repository file's text by its path from the repository root. A file in
+    JOINED_FILES reads as its joined parts, so a check that lists files by path
+    keeps its names (Stage 87 item 4)."""
+    if rel in JOINED_FILES:
+        return JOINED_FILES[rel]()
+    return (ROOT / rel).read_text(encoding='utf-8')
+
 
 #: The stylesheets that are not part of the NFL template: the home page's and
 #: the NHL's and NBA's. They load after the shared styles.css and use its

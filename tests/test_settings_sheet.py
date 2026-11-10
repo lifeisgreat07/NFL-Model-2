@@ -27,6 +27,7 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
 from src.site import build
 from tests.optional import require_tool
 from tests.page_script import day_script
@@ -34,7 +35,7 @@ from tests.page_script import day_script
 ROOT = Path(__file__).resolve().parents[1]
 PREFS = (ROOT / 'src' / 'core' / 'prefs.js').read_text(encoding='utf-8')
 SHEET = (ROOT / 'src' / 'core' / 'sheet.js').read_text(encoding='utf-8')
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 NHL = day_script('nhl')
 NBA = day_script('nba')
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')
