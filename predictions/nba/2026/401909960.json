@@ -1,0 +1,69 @@
+{
+ "game_id": "401909960",
+ "season": 2026,
+ "slate": "2026-11-10",
+ "start_utc": "2026-11-11T00:30:00Z",
+ "home": "NY",
+ "away": "MIL",
+ "model_a": 0.8862,
+ "model_b": 0.8759,
+ "pick": "NY",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 1.0,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": 12.231485,
+  "efficiency_matchup": 12.257186,
+  "availability_matchup": 0.0
+ },
+ "market": {
+  "game_id": "401909960",
+  "home": "NY",
+  "away": "MIL",
+  "start_utc": "2026-11-11T00:30:00Z",
+  "read_utc": "2026-11-10T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -1040.0,
+  "away_price": 670.0,
+  "home_prob": 0.8754
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-10T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "3062679",
+    "name": "Josh Hart",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5105623",
+    "name": "Kel'el Ware",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4395725",
+    "name": "Tyler Herro",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-10T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14212,
+  "training_games_priced": 14171,
+  "training_ids_sha256": "8fd40e96564590a93eab58677f2113c5839abd77e7b6338e7d743d9d09805506"
+ },
+ "code_sha256": "a5069c9aa87cb8efefea4ccabac6798c95c7ab0946fc06295921ba91eb13fa9b",
+ "code_commit": "9ccb09a287f5ff6c76d6a457e7550bed9cf2cda9"
+}

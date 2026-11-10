@@ -1,0 +1,94 @@
+{
+ "game_id": "401909965",
+ "season": 2026,
+ "slate": "2026-11-10",
+ "start_utc": "2026-11-11T04:00:00Z",
+ "home": "POR",
+ "away": "OKC",
+ "model_a": 0.4094,
+ "model_b": 0.4596,
+ "pick": "OKC",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.916,
+  "away": 0.7311
+ },
+ "features": {
+  "point_matchup": -6.640096,
+  "efficiency_matchup": -6.369662,
+  "availability_matchup": 0.184913
+ },
+ "market": {
+  "game_id": "401909965",
+  "home": "POR",
+  "away": "OKC",
+  "start_utc": "2026-11-11T04:00:00Z",
+  "read_utc": "2026-11-10T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 106.0,
+  "away_price": -125.0,
+  "home_prob": 0.4663
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-10T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "4279888",
+    "name": "Ja Morant",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4914336",
+    "name": "Shaedon Sharpe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4578893",
+    "name": "Vit Krejci",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4683692",
+    "name": "Cason Wallace",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433255",
+    "name": "Chet Holmgren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4593803",
+    "name": "Jalen Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432823",
+    "name": "Jaylin Williams",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5061603",
+    "name": "Thomas Sorber",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-10T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14212,
+  "training_games_priced": 14171,
+  "training_ids_sha256": "8fd40e96564590a93eab58677f2113c5839abd77e7b6338e7d743d9d09805506"
+ },
+ "code_sha256": "a5069c9aa87cb8efefea4ccabac6798c95c7ab0946fc06295921ba91eb13fa9b",
+ "code_commit": "9ccb09a287f5ff6c76d6a457e7550bed9cf2cda9"
+}
