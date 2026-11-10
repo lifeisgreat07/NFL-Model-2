@@ -18,7 +18,7 @@
     },
     {
       "id": "nhl-writer-skips-the-guard",
-      "target": "src/sports/nhl/daily.py",
+      "target": "src/core/day_picks.py",
       "why": "the NHL's writer saves a leaked record, and only a later test run notices, after the pick is permanent",
       "find": "    pick_guard.refuse_leak(record)\n",
       "replace": "",
@@ -26,7 +26,7 @@
     },
     {
       "id": "nba-writer-back-to-a-fixed-tmp",
-      "target": "src/sports/nba/daily.py",
+      "target": "src/core/day_picks.py",
       "why": "the NBA's writer goes back to a fixed .tmp name with no fsync, which a killed run leaves in a committed folder",
       "find": "    write_json_atomic(path, record, trailing_newline=True, indent=1)\n",
       "replace": "    tmp = path.with_suffix('.tmp')\n    tmp.write_text(json.dumps(record, indent=1) + '\\n', encoding='utf-8')\n    tmp.replace(path)\n",

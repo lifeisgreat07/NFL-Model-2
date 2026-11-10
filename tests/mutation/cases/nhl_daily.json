@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "nhl-daily-rewrites",
+      "target": "src/core/day_picks.py",
       "why": "a saved pick is overwritten by a later run, so a pick could change after the lock.",
       "find": "    if path.exists():\n        return False",
       "replace": "    if False:\n        return False",
@@ -11,6 +12,7 @@
     },
     {
       "id": "nhl-daily-cancelled-graded",
+      "target": "src/core/day_picks.py",
       "why": "a cancelled game is graded, so a game never played counts for or against the model.",
       "find": "        if status == GameStatus.CANCELLED.value:\n            result = 'cancelled'",
       "replace": "        if False:\n            result = 'cancelled'",
@@ -18,6 +20,7 @@
     },
     {
       "id": "nhl-daily-live-graded",
+      "target": "src/core/day_picks.py",
       "why": "a game still in progress is graded from its current score.",
       "find": "        elif status == GameStatus.FINAL.value and g is not None",
       "replace": "        elif status in (GameStatus.FINAL.value, GameStatus.IN_PROGRESS.value) and g is not None",

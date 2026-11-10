@@ -23,13 +23,13 @@ availability, not with it (`pick_baselines`).
 from __future__ import annotations
 
 import json
-import math
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
-import numpy as np
-
+from src.core.day_drift import lower_bound as lower_bound
+from src.core.day_drift import next_look as next_look
+from src.core.day_drift import per_game_log_loss as per_game_log_loss
 from src.core.sport import sport_paths
 
 BASELINE = sport_paths('nba').data / 'drift_baseline.json'
@@ -41,28 +41,6 @@ def baseline(path: Path = BASELINE) -> dict[str, Any]:
     for key in ('baseline', 'baseline_no_availability', 'rule'):
         spec[key]  # a KeyError here is the "incomplete" case
     return spec
-
-
-def per_game_log_loss(rows: Iterable[tuple[float | None, int | None]]) -> list[float]:
-    """Per-game log loss from (Model A's home probability, home won) pairs;
-    a game without both decides nothing."""
-    out = []
-    for p, y in rows:
-        if p is None or y not in (0, 1):
-            continue
-        q = min(max(float(p), EPS), 1 - EPS)
-        out.append(-math.log(q) if y == 1 else -math.log(1 - q))
-    return out
-
-
-def lower_bound(losses: list[float], rule: dict[str, Any], level: float | None = None) -> float:
-    """The one-sided lower bound of mean log loss at `level` (the rule's
-    one_sided_level when not given), by the rule's seeded bootstrap."""
-    arr = np.asarray(losses, dtype=float)
-    rng = np.random.default_rng(rule['seed'])
-    idx = rng.integers(0, len(arr), size=(rule['n_resamples'], len(arr)))
-    lvl = rule['one_sided_level'] if level is None else level
-    return float(np.percentile(arr[idx].mean(axis=1), (1 - lvl) * 100))
 
 
 def pick_baselines(reads: Iterable[bool], spec: dict[str, Any]) -> list[float]:
@@ -113,11 +91,6 @@ def looks(losses: list[float], spec: dict[str, Any], baselines: list[float] | No
         base = look_baseline(spec, baselines, n)
         out.append({'games': n, 'lower_bound': bound, 'baseline': base, 'flagged': bool(bound > base)})
     return out
-
-
-def next_look(n_graded: int, spec: dict[str, Any]) -> int | None:
-    """The checkpoint the check will look at next, or None after the last."""
-    return next((n for n in spec['rule']['checkpoints'] if n > n_graded), None)
 
 
 def flags(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None) -> bool:

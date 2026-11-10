@@ -36,7 +36,7 @@
     },
     {
       "id": "nhl-drift-next-look-is-the-current-one",
-      "target": "src/sports/nhl/drift.py",
+      "target": "src/core/day_drift.py",
       "why": "at exactly a checkpoint the page says the next look is the one just made",
       "find": "    return next((n for n in spec['rule']['checkpoints'] if n > n_graded), None)\n",
       "replace": "    return next((n for n in spec['rule']['checkpoints'] if n >= n_graded), None)\n",

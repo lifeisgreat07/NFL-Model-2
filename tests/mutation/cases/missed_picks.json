@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "missed-nhl-counts-saved-games",
+      "target": "src/core/day_picks.py",
       "why": "every started game is reported missed, saved or not, and the alert cries wolf twice a day",
       "find": "    return sorted(str(g) for g in started if not (folder / f'{g}.json').exists())\n",
       "replace": "    return sorted(str(g) for g in started)\n",
@@ -11,7 +12,7 @@
     },
     {
       "id": "missed-nba-never-reported",
-      "target": "src/sports/nba/daily.py",
+      "target": "src/core/day_picks.py",
       "why": "the NBA's missed games are found and never printed, so the alert has nothing to read",
       "find": "    return f'MISSED PICKS: {len(lost)} started with no saved pick: {\", \".join(lost)}' if lost else None\n",
       "replace": "    return None\n",
