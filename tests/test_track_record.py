@@ -17,6 +17,7 @@ import pytest
 from src.site import home
 from src.site import track_record as tr
 from tests.js_source import function_source
+from tests.optional import in_ci
 
 ROOT = Path(__file__).resolve().parents[1]
 HOME_JS = ROOT / 'src' / 'site' / 'home' / 'home.js'
@@ -100,7 +101,7 @@ def test_the_committed_files_give_every_sport_a_record_that_matches_its_sources(
     assert home.facts()['track'] == got
 
 
-@pytest.mark.skipif(shutil.which('node') is None, reason='node is not installed')
+@pytest.mark.skipif(shutil.which('node') is None and not in_ci(), reason='node is not installed')
 def test_the_home_page_draws_each_sport_and_nothing_without_figures():
     src = HOME_JS.read_text(encoding='utf-8')
     rec = tr.track_record()

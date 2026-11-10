@@ -32,6 +32,7 @@ from src.sports.nfl import generate_dashboard as gd
 from src.sports.nfl import weekly_summary as ws
 from src.sports.nfl import weekly_update as wu
 from tests.js_source import function_source
+from tests.optional import require_tool
 
 
 def _main_source():
@@ -151,8 +152,7 @@ def test_the_build_marks_a_preview_week_and_leaves_it_ungraded():
 
 @pytest.fixture(scope='module')
 def labels():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     t = TEMPLATE.read_text(encoding='utf-8')
     js = ('const weeks = {"2026_week3": {season: 2026, week: 3},'
           ' "2026_week4": {season: 2026, week: 4, preview: true}};'

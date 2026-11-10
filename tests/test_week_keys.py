@@ -13,9 +13,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
-
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
@@ -29,8 +28,7 @@ def src():
 def target(key, page='board', inside=None, **mods):
     """weekKeyTarget() for one key press. `inside` is the selector the
     focused element sits in, or None for the page body."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     fn = re.search(r'function weekKeyTarget\(.*?\n\}\n', src(), re.S)
     assert fn, 'weekKeyTarget is not findable -- re-anchor this guard'
     ev = dict({'key': key, 'ctrlKey': False, 'metaKey': False, 'altKey': False,

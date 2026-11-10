@@ -1,0 +1,21 @@
+{
+ "target": "tests/test_units.py",
+ "tests": "tests/test_optional_dependencies.py",
+ "cases": [
+  {
+   "id": "node-skip-by-hand-comes-back",
+   "why": "a page-script test goes back to skipping itself when node is missing, so on a CI image without node it would pass green without running",
+   "find": "def points(src):\n    require_tool('node')\n",
+   "replace": "def points(src):\n    if not NODE:\n        pytest.skip('node not available')\n",
+   "expect_caught_by": "test_no_test_skips_on_a_missing_node_by_hand"
+  },
+  {
+   "id": "node-skipif-skips-in-ci-again",
+   "target": "tests/test_season_spread.py",
+   "why": "a skipif on a missing node loses `and not in_ci()`, so in CI it skips instead of failing",
+   "find": "@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')\n",
+   "replace": "@pytest.mark.skipif(NODE is None, reason='node not installed')\n",
+   "expect_caught_by": "test_no_test_skips_on_a_missing_node_by_hand"
+  }
+ ]
+}
