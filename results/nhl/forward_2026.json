@@ -7,7 +7,7 @@
  "scores": {
   "model_a": {
    "games": 233,
-   "log_loss": 0.6465802850599122,
+   "log_loss": 0.6465802850599123,
    "brier": 0.22782910081545066,
    "accuracy": 0.6266094420600858
   },
@@ -66,25 +66,25 @@
   "model_a_minus_base_rate": {
    "games": 233,
    "days": 35,
-   "diff": -0.037936461094203774,
-   "low": -0.06725494741650523,
-   "high": -0.007448796307725917,
+   "diff": -0.03793646109420377,
+   "low": -0.06725494741650524,
+   "high": -0.0074487963077259104,
    "level": 0.9833333333333333
   },
   "model_b_minus_model_a": {
    "games": 209,
    "days": 35,
-   "diff": -0.017305884255896464,
-   "low": -0.0357566504743747,
-   "high": 0.0021081039662807412,
+   "diff": -0.017305884255896454,
+   "low": -0.03575665047437469,
+   "high": 0.0021081039662807495,
    "level": 0.9833333333333333
   },
   "model_b_minus_market": {
    "games": 209,
    "days": 35,
-   "diff": -0.007656879147122675,
-   "low": -0.013486803078881416,
-   "high": -0.0011370726486345994,
+   "diff": -0.007656879147122664,
+   "low": -0.013486803078881402,
+   "high": -0.001137072648634585,
    "level": 0.9833333333333333
   }
  },
@@ -96,8 +96,8 @@
    "fits": "two: the intercept with the slope held at 1 (calibration in the large), the slope with an intercept of its own",
    "intercept": {
     "value": 0.17789775310630532,
-    "low": -0.0935484106991681,
-    "high": 0.4708373194947507,
+    "low": -0.09354841069916808,
+    "high": 0.4708373194947506,
     "draws_unfit": 0
    },
    "slope": {
@@ -114,7 +114,7 @@
    "fits": "two: the intercept with the slope held at 1 (calibration in the large), the slope with an intercept of its own",
    "intercept": {
     "value": 0.18611912157703714,
-    "low": -0.10816991396000962,
+    "low": -0.1081699139600096,
     "high": 0.5276000520978366,
     "draws_unfit": 0
    },
