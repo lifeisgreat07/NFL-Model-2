@@ -25,6 +25,7 @@ import subprocess
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -70,8 +71,7 @@ def test_only_one_function_opens_or_closes_the_sheet(source):
 
 @pytest.fixture(scope='module')
 def executed(source):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     m = re.search(r'function setMoreSheetOpen\(open\)\{.*?\n\}', source, re.S)
     assert m, 'setMoreSheetOpen is gone -- re-anchor this guard'
     js = """

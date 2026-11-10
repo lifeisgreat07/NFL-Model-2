@@ -13,8 +13,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
-
+from tests.optional import require_tool
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,8 +22,7 @@ NODE = shutil.which('node')
 
 
 def eyebrows(pairs):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = day_script('nba')
     # dayDate and dayIso are one line each; weekEyebrow runs to its closing brace.
     helpers = ''.join(line + '\n' for line in js.splitlines() if re.match(r'function (dayDate|dayIso)\(', line))

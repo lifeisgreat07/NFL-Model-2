@@ -27,6 +27,7 @@ import pytest
 
 from src.sports.nhl import lock
 from tests.js_source import function_source
+from tests.optional import require_tool
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,8 +46,7 @@ def const_line(src, name):
 
 
 def run_node(body):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = source()
     js = ("const ET = 'America/New_York';\n"
           + const_line(src, 'LOCK_RUN_HOURS_UTC') + const_line(src, 'LOCK_SLACK_MS') + const_line(src, 'FMT_WHEN')

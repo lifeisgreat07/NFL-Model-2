@@ -15,9 +15,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
-
 from src.sports.nfl.generate_dashboard import interval_glyph
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
@@ -27,8 +26,7 @@ CASES = [(-0.0905, -0.1086, -0.0719), (0.0008, 0.0002, 0.0015), (-0.0109, -0.031
 
 
 def js_glyphs():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     code = ''.join(re.search(rf'function {n}\(.*?\n\}}\n', JS, re.S).group(0) for n in ('plainSigned', 'intervalGlyph'))
     code += 'console.log(JSON.stringify(%s.map(([d, lo, hi]) => intervalGlyph(d, lo, hi))));' % json.dumps(CASES)
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8')

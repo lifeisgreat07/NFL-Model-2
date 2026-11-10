@@ -14,7 +14,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 JS = ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js'
@@ -23,8 +23,7 @@ FIRST = '2026-10-06T22:07:32Z'
 
 
 def run(games):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = JS.read_text(encoding='utf-8')
     first = re.search(r'^const FIRST_SAVED = .*$', js, re.M)
     pre = re.search(r'function beforeLaunch\(g\)\{.*?\n\}\n', js, re.S)

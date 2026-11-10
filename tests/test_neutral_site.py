@@ -29,6 +29,7 @@ from src.sports.nfl import generate_dashboard as gd
 from src.sports.nfl import weekend_refresh as wr
 from src.sports.nfl import weekly_update as wu
 from tests.js_source import function_source
+from tests.optional import require_tool
 
 NODE = shutil.which('node')
 
@@ -118,8 +119,7 @@ CASES = {
 
 @pytest.fixture(scope='module')
 def lines():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = JOINED_TEMPLATE.read_text(encoding='utf-8')
     js = (function_source(src, 'escapeHtml') + function_source(src, 'cardSiteLine')
           + f'\nconst C={json.dumps(CASES)};const o={{}};for(const k in C)o[k]=cardSiteLine(C[k]);'
