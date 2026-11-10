@@ -26,6 +26,7 @@ import pytest
 from src.core.template_parts import JOINED_TEMPLATE
 from src.sports.nfl import weekend_refresh as wr
 from tests.js_source import function_source
+from tests.optional import require_tool
 
 NODE = shutil.which('node')
 # 2022 week 17's game, as the fixture: Bills at Bengals, Monday night.
@@ -140,8 +141,7 @@ def test_the_refresh_prints_the_nudge(tmp_path, capsys):
 # --- the card -----------------------------------------------------------------
 
 def test_the_card_says_cancelled_and_not_graded():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = JOINED_TEMPLATE.read_text(encoding='utf-8')
     case = {'away': 'BUF', 'home': 'CIN', 'status': 'cancelled', 'graded': False}
     js = (function_source(src, 'gameHasScore') + function_source(src, 'cardStatusLine')
@@ -155,8 +155,7 @@ def test_a_cancelled_card_drops_its_channel_and_news():
     """Where to watch and who is hurt are moot for a game nobody will play,
     as they are once a game is final (rendered and looked at, 2026-10-05:
     the first version still showed ESPN and the injury list)."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     src = JOINED_TEMPLATE.read_text(encoding='utf-8')
     case = {'away': 'ATL', 'home': 'NO', 'status': 'cancelled', 'graded': False, 'tv': 'ESPN'}
     news = {'teams': {'NO': {'out': [{'name': 'A Player'}]}}}

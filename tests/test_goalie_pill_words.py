@@ -16,14 +16,15 @@ from pathlib import Path
 
 import pytest
 
+from tests.optional import require_tool
+
 ROOT = Path(__file__).resolve().parents[1]
 JS = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
 NODE = shutil.which('node')
 
 
 def text(gl):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     fn = re.search(r'function goalieText\(team, gl\)\{.*?\n\}\n', JS, re.S)
     assert fn, 'goalieText is not findable -- re-anchor this guard'
     code = ("function escapeHtml(s){ return String(s); }\n" + fn.group(0)

@@ -22,6 +22,7 @@ from pathlib import Path
 import pytest
 
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE = JOINED_TEMPLATE
@@ -32,8 +33,7 @@ LABEL_FONT = 11     # the end-labels' font-size, in the chart's own units (the c
 
 @pytest.fixture(scope='module')
 def spread():
-    if NODE is None:
-        pytest.skip('node not on PATH -- spreadLabels() cannot be executed')
+    require_tool('node')
     proc = subprocess.run([NODE, str(HARNESS)], cwd=REPO_ROOT,
                           capture_output=True, text=True, timeout=60)
     assert proc.returncode == 0, f'harness failed:\n{proc.stderr}'

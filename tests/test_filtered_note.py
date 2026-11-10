@@ -14,7 +14,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
@@ -23,8 +23,7 @@ NODE = shutil.which('node')
 
 
 def note(label):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     fn = re.search(r'function filteredNoteHtml\(label\)\{.*?\n\}\n', APP, re.S)
     assert fn, 'filteredNoteHtml is not findable -- re-anchor this guard'
     code = ("function escapeHtml(s){ return String(s).replace(/</g, '&lt;'); }\n" + fn.group(0)

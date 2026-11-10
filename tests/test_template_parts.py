@@ -35,9 +35,11 @@ from src.core import template_parts as tp
 
 REPO = Path(__file__).resolve().parents[1]
 JS = REPO / 'tests' / 'template_source.js'
+from tests.optional import in_ci
+
 NODE = shutil.which('node')
 needs_node = pytest.mark.skipif(
-    NODE is None, reason="node not on PATH -- the JavaScript join cannot be executed")
+    NODE is None and not in_ci(), reason="node not on PATH -- the JavaScript join cannot be executed")
 
 PARTS = ['styles.css', 'body.html', 'app.js']
 
