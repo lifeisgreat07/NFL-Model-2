@@ -34,6 +34,7 @@ from pathlib import Path
 import pytest
 
 from src.core.template_parts import read_template
+from tests.optional import require_tool
 
 REPO_ROOT = Path(__file__).parent.parent
 HARNESS = Path(__file__).parent / 'why_words_harness.js'
@@ -42,8 +43,7 @@ NODE = shutil.which('node')
 
 @pytest.fixture(scope='module')
 def out():
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, str(HARNESS)], capture_output=True, text=True,
                        cwd=str(REPO_ROOT))
     assert r.returncode == 0, f'harness failed:\n{r.stderr}'

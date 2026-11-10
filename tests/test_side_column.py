@@ -15,7 +15,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 NBA = ROOT / 'src' / 'sports' / 'nba' / 'pages'
@@ -24,8 +24,7 @@ NODE = shutil.which('node')
 
 
 def side(games, picks, day):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     js = NBA.joinpath('nba.js').read_text(encoding='utf-8')
     one = lambda name: re.search(rf'^function {name}\(.*$', js, re.M).group(0) + '\n'
     fmt = re.search(r'^const FMT_DAY = .*$', js, re.M).group(0) + '\n'

@@ -14,6 +14,7 @@ import pandas as pd
 import pytest
 
 from src.core import season_spread
+from tests.optional import in_ci
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -87,7 +88,7 @@ def test_both_pages_carry_the_same_function():
     assert function('nhl')[0] == function('nba')[0]
 
 
-@pytest.mark.skipif(NODE is None, reason='node not installed')
+@pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')
 @pytest.mark.parametrize('sport', ['nhl', 'nba'])
 def test_every_season_in_the_file_is_on_the_page(sport):
     fn, _ = function(sport)

@@ -31,6 +31,7 @@ import pytest
 from src.site import build, home
 from src.sports.nba import lock as nba_lock
 from src.sports.nhl import lock as nhl_lock
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 STRIP = (ROOT / 'src' / 'core' / 'strip.js').read_text(encoding='utf-8')
@@ -45,8 +46,7 @@ def write(path: Path, obj):
 
 
 def node(code):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     r = subprocess.run([NODE, '-e', code], capture_output=True, encoding='utf-8',
                        env={**os.environ, 'TZ': 'America/New_York'})
     assert r.returncode == 0, r.stderr

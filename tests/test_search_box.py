@@ -24,9 +24,8 @@ import subprocess
 from datetime import UTC, datetime
 from pathlib import Path
 
-import pytest
-
 from src.site import build, search
+from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 PAL = (ROOT / 'src' / 'core' / 'palette.js').read_text(encoding='utf-8')
@@ -35,8 +34,7 @@ NODE = shutil.which('node')
 
 
 def node(code):
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     # A game's time is printed on the viewer's own clock (as the Tonight strip's
     # is), so the labels below are pinned to one zone, as test_tonight_strip.py
     # pins its own: on a UTC runner 'Thu 7:00 PM' would read 'Thu 11:00 PM'.

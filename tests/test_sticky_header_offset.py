@@ -17,9 +17,8 @@ import re
 import shutil
 import subprocess
 
-import pytest
-
 from src.core.template_parts import JOINED_TEMPLATE
+from tests.optional import require_tool
 
 TEMPLATE = JOINED_TEMPLATE
 NODE = shutil.which('node')
@@ -66,8 +65,7 @@ def test_the_page_writes_the_bar_height_it_reads():
     observer fires, and observe the BORDER box: offsetHeight is the border
     box, and the default content box does not fire when only the padding
     changes -- which is how the safe area (--safe-top) reaches the bar."""
-    if not NODE:
-        pytest.skip('node not available')
+    require_tool('node')
     text = TEMPLATE.read_text(encoding='utf-8')
     fn = re.search(r'\(function initTopbarHeight\(\)\{.*?\n\}\)\(\);', text, re.S)
     assert fn, 'initTopbarHeight() is gone or no longer runs at load'
