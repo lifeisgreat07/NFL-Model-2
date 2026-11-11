@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import json
 import math
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -28,14 +28,43 @@ def per_game_log_loss(rows: Iterable[tuple[float | None, int | None]]) -> list[f
     return out
 
 
-def lower_bound(losses: list[float], rule: dict[str, Any], level: float | None = None) -> float:
+def lower_bound(losses: list[float], rule: dict[str, Any], level: float | None = None,
+                days: Sequence[str] | None = None) -> float:
     """The one-sided lower bound of mean log loss at `level` (the rule's
-    one_sided_level when not given), by the rule's seeded bootstrap."""
+    one_sided_level when not given), by the rule's seeded bootstrap.
+
+    Stage 95 item 32 (audit 7, M4): given each loss's game day, the bootstrap
+    resamples whole days, each resample the pooled mean of the days drawn.
+    Games on one day share conditions, so drawing single games treats them as
+    independent, which they need not be; drawing days does not, whichever way
+    that moves the bound (when a day's games move together it widens the
+    interval). Without days it draws single games, as before."""
     arr = np.asarray(losses, dtype=float)
     rng = np.random.default_rng(rule['seed'])
-    idx = rng.integers(0, len(arr), size=(rule['n_resamples'], len(arr)))
     lvl = rule['one_sided_level'] if level is None else level
-    return float(np.percentile(arr[idx].mean(axis=1), (1 - lvl) * 100))
+    if days is None:
+        idx = rng.integers(0, len(arr), size=(rule['n_resamples'], len(arr)))
+        return float(np.percentile(arr[idx].mean(axis=1), (1 - lvl) * 100))
+    if len(days) != len(arr):
+        raise ValueError(f'{len(days)} days for {len(arr)} losses')
+    labels = sorted(set(days))
+    pos = {d: i for i, d in enumerate(labels)}
+    which = np.array([pos[d] for d in days])
+    sums = np.bincount(which, weights=arr, minlength=len(labels))
+    counts = np.bincount(which, minlength=len(labels)).astype(float)
+    idx = rng.integers(0, len(labels), size=(rule['n_resamples'], len(labels)))
+    means = sums[idx].sum(axis=1) / counts[idx].sum(axis=1)
+    return float(np.percentile(means, (1 - lvl) * 100))
+
+
+def kept_days(rows: Iterable[tuple[Any, ...]], days: Sequence[str]) -> list[str]:
+    """Stage 95 item 32: the days of the rows a per-game log loss keeps (a game
+    without both a probability and a result decides nothing, `per_game_log_loss`),
+    so each loss has its own day."""
+    rows = list(rows)
+    if len(rows) != len(days):
+        raise ValueError(f'{len(days)} days for {len(rows)} rows')
+    return [d for r, d in zip(rows, days, strict=True) if r[0] is not None and r[1] in (0, 1)]
 
 
 

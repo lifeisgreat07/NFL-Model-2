@@ -27,6 +27,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+from src.core.day_drift import kept_days as kept_days
 from src.core.day_drift import leak_direction as leak_direction
 from src.core.day_drift import leak_lines as leak_lines
 from src.core.day_drift import leaked_picks as leaked_picks
@@ -81,7 +82,8 @@ def look_baseline(spec: dict[str, Any], baselines: list[float] | None, n: int) -
     return float(sum(by[b] for b in baselines[:n]) / n)
 
 
-def looks(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None) -> list[dict[str, Any]]:
+def looks(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None,
+          days: list[str] | None = None) -> list[dict[str, Any]]:
     """Every registered look the graded picks have reached (Stage 85 item 1).
 
     The check looks only at the registered checkpoints, each on the first n
@@ -95,15 +97,17 @@ def looks(losses: list[float], spec: dict[str, Any], baselines: list[float] | No
     for n in rule['checkpoints']:
         if len(losses) < n:
             break
-        bound = lower_bound(losses[:n], rule, rule['per_look_level'])
+        # Stage 95 item 32: whole game days resampled when the picks' days are given.
+        bound = lower_bound(losses[:n], rule, rule['per_look_level'], days[:n] if days is not None else None)
         base = look_baseline(spec, baselines, n)
         out.append({'games': n, 'lower_bound': bound, 'baseline': base, 'flagged': bool(bound > base)})
     return out
 
 
-def flags(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None) -> bool:
+def flags(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None,
+          days: list[str] | None = None) -> bool:
     """True when any look so far has flagged: a flag stands for the season."""
-    return any(look['flagged'] for look in looks(losses, spec, baselines))
+    return any(look['flagged'] for look in looks(losses, spec, baselines, days))
 
 
 def spread_range() -> float | None:

@@ -112,9 +112,10 @@ def test_the_daily_reads_whether_each_pick_had_the_report(tmp_path):
 
 def test_the_daily_run_writes_its_own_baselines():
     src = (ROOT / 'src' / 'sports' / 'nba' / 'daily.py').read_text(encoding='utf-8')
-    assert 'losses, bases = drift.per_game(drift_picks(folder, sched), spec)' in src
-    assert 'flagged = drift.flags(losses, spec, bases)' in src
-    assert "'looks': drift.looks(losses, spec, bases)" in src
+    assert 'picks = drift_picks(folder, sched)\n        losses, bases = drift.per_game(picks, spec)' in src.replace('\r\n', '\n')
+    # Stage 95 item 32: with each pick's day, for the bootstrap.
+    assert 'flagged = drift.flags(losses, spec, bases, days)' in src
+    assert "'looks': drift.looks(losses, spec, bases, days)" in src
 
 
 # --- on the pages ----------------------------------------------------------------

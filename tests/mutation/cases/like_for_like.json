@@ -42,8 +42,8 @@
    "id": "nba-daily-flag-ignores-the-baselines",
    "target": "src/sports/nba/daily.py",
    "why": "the daily run writes the looks with their own baselines but flags on the one baseline",
-   "find": "    flagged = drift.flags(losses, spec, bases)\n",
-   "replace": "    flagged = drift.flags(losses, spec)\n",
+   "find": "    flagged = drift.flags(losses, spec, bases, days)\n",
+   "replace": "    flagged = drift.flags(losses, spec, None, days)\n",
    "expect_caught_by": "test_the_daily_run_writes_its_own_baselines"
   },
   {

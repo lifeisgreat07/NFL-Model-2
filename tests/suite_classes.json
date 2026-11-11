@@ -93,6 +93,7 @@
   "tests/test_dispatch_inputs.py": "workflow/docs/tests-of-tests",
   "tests/test_dive_off_def.py": "template/JS",
   "tests/test_drift_alert.py": "mixed",
+  "tests/test_drift_day_blocks.py": "isolated behavioural",
   "tests/test_drift_looks.py": "template/JS",
   "tests/test_empty_week.py": "isolated behavioural",
   "tests/test_expand_all.py": "template/JS",
