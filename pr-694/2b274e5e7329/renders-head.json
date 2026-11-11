@@ -1,38 +1,38 @@
 [
  {
   "page": "home",
-  "label": "base",
+  "label": "head",
   "viewport": "390x844",
   "theme": "light",
-  "file": "home-390x844-light-base.png",
-  "bytes": 267563,
+  "file": "home-390x844-light-head.png",
+  "bytes": 267525,
   "parked": 2
  },
  {
   "page": "home",
-  "label": "base",
+  "label": "head",
   "viewport": "390x844",
   "theme": "dark",
-  "file": "home-390x844-dark-base.png",
-  "bytes": 269321,
+  "file": "home-390x844-dark-head.png",
+  "bytes": 269271,
   "parked": 2
  },
  {
   "page": "home",
-  "label": "base",
+  "label": "head",
   "viewport": "1440x900",
   "theme": "light",
-  "file": "home-1440x900-light-base.png",
-  "bytes": 242654,
+  "file": "home-1440x900-light-head.png",
+  "bytes": 242597,
   "parked": 2
  },
  {
   "page": "home",
-  "label": "base",
+  "label": "head",
   "viewport": "1440x900",
   "theme": "dark",
-  "file": "home-1440x900-dark-base.png",
-  "bytes": 243005,
+  "file": "home-1440x900-dark-head.png",
+  "bytes": 242945,
   "parked": 2
  }
 ]
