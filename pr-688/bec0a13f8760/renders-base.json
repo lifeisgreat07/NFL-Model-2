@@ -1,0 +1,38 @@
+[
+ {
+  "page": "home",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "light",
+  "file": "home-390x844-light-base.png",
+  "bytes": 266828,
+  "parked": 2
+ },
+ {
+  "page": "home",
+  "label": "base",
+  "viewport": "390x844",
+  "theme": "dark",
+  "file": "home-390x844-dark-base.png",
+  "bytes": 268542,
+  "parked": 2
+ },
+ {
+  "page": "home",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "light",
+  "file": "home-1440x900-light-base.png",
+  "bytes": 240440,
+  "parked": 2
+ },
+ {
+  "page": "home",
+  "label": "base",
+  "viewport": "1440x900",
+  "theme": "dark",
+  "file": "home-1440x900-dark-base.png",
+  "bytes": 240851,
+  "parked": 2
+ }
+]
