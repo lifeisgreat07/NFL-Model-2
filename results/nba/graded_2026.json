@@ -1080,42 +1080,42 @@
  {
   "game_id": "401909960",
   "pick": "NY",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-10T21:31:32Z"
  },
  {
   "game_id": "401909961",
   "pick": "BOS",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-10T21:31:32Z"
  },
  {
   "game_id": "401909962",
   "pick": "PHX",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-10T21:31:32Z"
  },
  {
   "game_id": "401909963",
   "pick": "MIA",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-10T21:31:32Z"
  },
  {
   "game_id": "401909964",
   "pick": "ORL",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-10T21:31:32Z"
  },
  {
   "game_id": "401909965",
   "pick": "OKC",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-11-10T21:31:32Z"
  }
