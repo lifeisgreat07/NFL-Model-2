@@ -84,6 +84,7 @@ def test_the_accuracy_page_counts_only_graded_picks():
              '2': {'a': 0.70, 'b': None, 'by': 'model_a', 'pick': 'BOS', 'result': 'pending'}}
     out = run_accuracy({'games': games, 'picks': picks})
     assert '<b>1 of 2</b> picks right (50.0%)' in out and 'small sample' in out
+    assert out.count('ACC') == 1, 'the shared component is drawn once picks are graded'
     assert out.count('<tr><td>') == 2, 'one row per graded pick; the pending one is not listed'
     assert 'Nov 3' not in out, 'the pending game has no row'
 
