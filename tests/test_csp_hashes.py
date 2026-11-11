@@ -106,7 +106,11 @@ def test_the_home_page_is_hardened():
 
 def test_the_nfl_page_is_hardened_before_it_is_written():
     src = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
-    assert src.index('    html = csp.harden(html)') < src.index("    with open(OUTPUT_PATH, 'w', encoding='utf-8') as f:")
+    assert src.index('    html = page_render.finish(read_template(), fills)') < src.index(
+        "    with open(OUTPUT_PATH, 'w', encoding='utf-8') as f:")
+    # The shared renderer's finish hashes the scripts in (Stage 87 item 3).
+    core = (ROOT / 'src' / 'core' / 'page_render.py').read_text(encoding='utf-8')
+    assert '    return csp.harden(fill(strip_page_comments(template), fills))\n' in core
 
 
 def test_the_site_build_rehardens_after_its_last_injection(tmp_path):

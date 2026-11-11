@@ -205,10 +205,11 @@ def test_the_line_check_can_fail():
 
 def test_the_build_strips_the_template_before_filling_it():
     src = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
-    read = src.index('template = read_template()')
-    strip = src.index('template = strip_page_comments(template)')
-    fill = src.index("html = template.replace(")
-    assert read < strip < fill
+    # The NFL's template is finished by the renderer every page shares (Stage 87 item 3), which strips the
+    # comments and only then fills the placeholders.
+    assert 'html = page_render.finish(read_template(), fills)' in src
+    core = (ROOT / 'src' / 'core' / 'page_render.py').read_text(encoding='utf-8')
+    assert 'fill(strip_page_comments(template), fills)' in core
 
 
 def test_the_page_carries_only_the_agent_log_it_reads():
@@ -234,5 +235,5 @@ def test_every_other_page_is_stripped_before_its_fills(rel):
     stylesheet's 58 KB of comments that the NFL's build strips. Each now
     strips its assembled template, and before any data is filled in."""
     src = (Path(__file__).resolve().parents[1] / rel).read_text(encoding='utf-8')
-    strip = src.index('html = strip_page_comments(html)')
-    assert strip < src.index("html = html.replace('__FONT_FACES__'"), rel
+    # Each now finishes through the renderer every page shares (Stage 87 item 3), which strips before it fills.
+    assert 'page_render.finish(page_render.assemble(' in src, rel

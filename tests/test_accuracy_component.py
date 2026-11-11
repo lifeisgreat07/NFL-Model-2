@@ -120,7 +120,7 @@ def test_each_sport_draws_it_from_its_own_graded_picks(sport, where):
     page = (ROOT / 'src' / 'sports' / sport / 'pages' / 'page.html').read_text(encoding='utf-8')
     assert '{% include "routes.js" %}\n{% include "accuracy.js" %}\n' in page
     site = (ROOT / 'src' / 'sports' / sport / 'site.py').read_text(encoding='utf-8')
-    assert """.replace('{% include "accuracy.js" %}', ACCURACY_JS.read_text(encoding='utf-8'))""" in site
+    assert "'accuracy.js': ACCURACY_JS" in site
 
 
 def test_the_browser_check_runs():

@@ -43,4 +43,4 @@ def test_each_page_includes_it_ahead_of_its_own_script(sport):
     page = (ROOT / 'src' / 'sports' / sport / 'pages' / 'page.html').read_text(encoding='utf-8').replace('\r\n', '\n')
     assert '{% include "day_board.js" %}\n{% include "' + sport + '.js" %}' in page
     site = (ROOT / 'src' / 'sports' / sport / 'site.py').read_text(encoding='utf-8')
-    assert """.replace('{% include "day_board.js" %}', DAY_BOARD_JS.read_text(encoding='utf-8'))""" in site
+    assert "'day_board.js': DAY_BOARD_JS" in site

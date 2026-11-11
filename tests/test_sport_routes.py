@@ -28,7 +28,7 @@ def test_each_sport_installs_the_shared_routes(sport):
     js = day_script(sport)
     assert js.count('replaceRoute = installRoutes(showPage, {') == 1 and 'function installRoutes' not in js
     site = (ROOT / 'src' / 'sports' / sport / 'site.py').read_text(encoding='utf-8')
-    assert """.replace('{% include "routes.js" %}', ROUTES_JS.read_text(encoding='utf-8'))""" in site
+    assert "'routes.js': ROUTES_JS" in site
 
 
 def test_home_links_to_every_sports_methodology():

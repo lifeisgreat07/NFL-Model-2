@@ -273,6 +273,7 @@
   "tests/test_page_disclosures.py": "template/JS",
   "tests/test_page_header.py": "isolated behavioural",
   "tests/test_page_header_sports.py": "workflow/docs/tests-of-tests",
+  "tests/test_page_render.py": "isolated behavioural",
   "tests/test_page_return.py": "template/JS",
   "tests/test_page_states.py": "isolated behavioural",
   "tests/test_pages_deploy.py": "mixed",

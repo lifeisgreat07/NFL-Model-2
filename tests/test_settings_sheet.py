@@ -121,7 +121,7 @@ def test_the_day_sports_print_a_start_in_the_chosen_zone(src, name):
     page = (ROOT / 'src' / 'sports' / name / 'pages' / 'page.html').read_text(encoding='utf-8')
     assert '{% include "favs.js" %}\n{% include "prefs.js" %}\n' in page
     site = (ROOT / 'src' / 'sports' / name / 'site.py').read_text(encoding='utf-8')
-    assert """.replace('{% include "prefs.js" %}', PREFS_JS.read_text(encoding='utf-8'))""" in site
+    assert "'prefs.js': PREFS_JS" in site
 
 
 # ---------- the keys ----------

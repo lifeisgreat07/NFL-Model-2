@@ -47,10 +47,10 @@
     },
     {
       "id": "build-stops-stripping",
-      "target": "src/sports/nfl/generate_dashboard.py",
-      "why": "the stripper exists and passes its own tests, and the build no longer calls it. Every lexer test stays green while the page ships its comments again.",
-      "find": "    template = strip_page_comments(template)\n",
-      "replace": "",
+      "target": "src/core/page_render.py",
+      "why": "the renderer every page shares stops stripping the template's comments, so the NFL's page ships them",
+      "find": "fill(strip_page_comments(template), fills)",
+      "replace": "fill(template, fills)",
       "expect_caught_by": "test_the_build_strips_the_template_before_filling_it"
     },
     {
