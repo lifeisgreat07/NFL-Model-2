@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "why-toggle-loses-its-state",
+      "target": "src/dashboard/app_board.js",
       "why": "the numbers button stops saying it is a disclosure, so a screen reader hears a button with no open or closed state (the 2026-09-28 audit)",
       "find": "data-why=\"${idSafe}\" aria-expanded=\"false\" aria-controls=\"why-${idSafe}\">",
       "replace": "data-why=\"${idSafe}\">",
@@ -11,6 +12,7 @@
     },
     {
       "id": "context-toggle-names-the-wrong-panel",
+      "target": "src/dashboard/app_board.js",
       "why": "aria-controls points at an id no panel has, so assistive technology cannot find what the button opens",
       "find": "aria-controls=\"flag-${idSafe}\"",
       "replace": "aria-controls=\"context-${idSafe}\"",
@@ -18,6 +20,7 @@
     },
     {
       "id": "context-toggle-state-never-updates",
+      "target": "src/dashboard/app_board.js",
       "why": "the context panel opens but aria-expanded stays false, so the button announces closed while the notes are showing",
       "find": "      btn.setAttribute('aria-expanded', note.classList.toggle('open') ? 'true' : 'false');",
       "replace": "      note.classList.toggle('open');",

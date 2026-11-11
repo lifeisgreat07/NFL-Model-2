@@ -12,6 +12,7 @@
     },
     {
       "id": "orientation-phone-slot-ignored",
+      "target": "src/dashboard/app_board.js",
       "why": "the banner never moves on a phone, so the page opens on 280px of instructions above the games again.",
       "find": "  return isPhone && cardCount >= ORIENTATION_AFTER ? ORIENTATION_AFTER : null;",
       "replace": "  return null;",
@@ -19,6 +20,7 @@
     },
     {
       "id": "orientation-slot-past-the-last-card",
+      "target": "src/dashboard/app_board.js",
       "why": "the fewer-than-two guard goes, so a week with one game asks for the banner after a second card that does not exist and the placement throws.",
       "find": "  return isPhone && cardCount >= ORIENTATION_AFTER ? ORIENTATION_AFTER : null;",
       "replace": "  return isPhone ? ORIENTATION_AFTER : null;",
@@ -26,6 +28,7 @@
     },
     {
       "id": "orientation-lost-on-rerender",
+      "target": "src/dashboard/app_board.js",
       "why": "nothing re-places the banner after renderGames() rewrites the grid, so on a phone the first change of week, sort or filter deletes it.",
       "find": "  new MutationObserver(placeOrientation).observe(grid, {childList:true});\n",
       "replace": "",

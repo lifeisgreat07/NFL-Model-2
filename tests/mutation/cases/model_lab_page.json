@@ -179,7 +179,7 @@
     },
     {
       "id": "lab-diagram-lead-hidden-too",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_accuracy.js",
       "tests": "tests/test_model_lab_diagram_below.py",
       "why": "the one-line lead goes behind \"How to read this\" with the explanation, so nothing says what the chart is until it is opened.",
       "find": "    <p style=\"margin-bottom:var(--s3);\">When a model says <b style=\"color:var(--text)\">70%</b>, does that side actually win about 70% of the time? Each mark is one probability bin across ${n} backtested games, with its 95% interval.</p>\n    <details class=\"disclosure rel-how\">\n      <summary>How to read this</summary>\n",
@@ -188,7 +188,7 @@
     },
     {
       "id": "lab-diagram-brier-definition-in-view",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_accuracy.js",
       "tests": "tests/test_model_lab_diagram_below.py",
       "why": "the Brier definition loses its disclosure label, so it is no longer behind \"What these numbers mean\".",
       "find": "<summary>What these numbers mean</summary>",
@@ -197,7 +197,7 @@
     },
     {
       "id": "lab-diagram-findings-hidden",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_accuracy.js",
       "tests": "tests/test_model_lab_diagram_below.py",
       "why": "the Brier disclosure loses its close, so it swallows the bootstrap findings, which are results and must stay in view.",
       "find": "        </details>\n        <p style=\"font-size:var(--fs-12); margin-top:var(--s3);\">Model B's numbers",
@@ -206,7 +206,7 @@
     },
     {
       "id": "lab-diagram-see-model-lab-again",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_accuracy.js",
       "tests": "tests/test_model_lab_diagram_below.py",
       "why": "the diagram tells a reader already on Model Lab to see Model Lab.",
       "find": "See <b style=\"color:var(--text)\">the experiment log above</b> for all three",

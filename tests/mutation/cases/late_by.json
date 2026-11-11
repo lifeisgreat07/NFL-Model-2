@@ -8,7 +8,7 @@
       "find": "      <td class=\"num\">${lateText(r.late_minutes)}</td>\n",
       "replace": "",
       "expect_caught_by": "test_the_table_has_a_late_by_column_and_marks_seven_hours",
-      "target": "src/dashboard/app.js"
+      "target": "src/dashboard/app_pages.js"
     },
     {
       "id": "late-by-never-bold",
@@ -16,7 +16,7 @@
       "find": "return m >= LATE_WARN_MINUTES ? `<b>${text}</b>` : text;",
       "replace": "return text;",
       "expect_caught_by": "test_the_table_has_a_late_by_column_and_marks_seven_hours",
-      "target": "src/dashboard/app.js"
+      "target": "src/dashboard/app_pages.js"
     },
     {
       "id": "late-by-own-threshold",
@@ -24,7 +24,7 @@
       "find": "const LATE_WARN_MINUTES = 7 * 60;",
       "replace": "const LATE_WARN_MINUTES = 6 * 60;",
       "expect_caught_by": "test_the_page_marks_late_at_the_runs_own_warning",
-      "target": "src/dashboard/app.js"
+      "target": "src/dashboard/app_pages.js"
     },
     {
       "id": "late-by-zero-default",
