@@ -4,6 +4,7 @@
  "cases": [
   {
    "id": "lock-line-subject-back-in-the-sentence",
+   "target": "src/dashboard/app_ratings.js",
    "why": "the line reads \"Changed after kickoff: feb3d1b (Stage 52: ...)\" again (Stage 77 item 17).",
    "find": "    parts.push(`Changed after kickoff in commit${after.length === 1 ? '' : 's'} ${links.join(', ')}.`);\n",
    "replace": "    parts.push(`Changed after kickoff: ${after.map(c => `${lockCommitLink(c)} (${escapeHtml(c.subject)})`).join('; ')}.`);\n",
@@ -11,6 +12,7 @@
   },
   {
    "id": "lock-line-reason-lost",
+   "target": "src/dashboard/app_ratings.js",
    "why": "the commit's reason is dropped altogether, not kept as the link's title.",
    "find": "    const links = after.map(c => lockCommitLink(c).replace('<a href=', `<a title=\"${escapeHtml(c.subject)}\" href=`));\n",
    "replace": "    const links = after.map(c => lockCommitLink(c));\n",
@@ -18,6 +20,7 @@
   },
   {
    "id": "lock-line-plural-lost",
+   "target": "src/dashboard/app_ratings.js",
    "why": "two changes read \"in commit a, b\".",
    "find": "in commit${after.length === 1 ? '' : 's'} ",
    "replace": "in commit ",

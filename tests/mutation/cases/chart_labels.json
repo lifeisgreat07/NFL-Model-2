@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "calibration-chart-loses-its-label",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the calibration chart goes back to an unlabelled graphic, which a screen reader announces as nothing useful (the 2026-09-28 audit)",
       "find": " role=\"img\" aria-label=\"Calibration chart: each confidence bucket's average predicted chance against how often those picks were right. The same buckets are in the table below.\"",
       "replace": "",
@@ -11,6 +12,7 @@
     },
     {
       "id": "trend-chart-label-stops-pointing-at-the-table",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the trend chart's label no longer says where its figures are in text, so a reader who cannot see the lines is left with a title",
       "find": " Each week's own figures are in the Week by week table below.\"",
       "replace": "\"",
