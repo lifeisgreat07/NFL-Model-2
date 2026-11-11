@@ -658,6 +658,33 @@ function m2Html(m){
   return `<p class="nba-lede">Over ${m.graded} graded games, the availability the injury report gave a game (home minus away) was ${a.mean_absolute_gap.toFixed(3)} from the box score&#39;s on average, ${sgn(a.mean_report_minus_box)} on the signed average. Model A&#39;s log loss was ${s.log_loss_report.toFixed(4)} with the injury report&#39;s and ${s.log_loss_box.toFixed(4)} with the box score&#39;s.${diff}</p>
     <p class="nba-lede">Both figures come from Model A refitted as each pick records it was, so only availability differs; ${m.refit.reproduced_saved_model_a} of ${m.refit.of} refitted probabilities equal the saved ones to four places. ${m.graded_without_availability} graded pick${m.graded_without_availability === 1 ? ' was' : 's were'} made without availability and ${m.graded_without_availability === 1 ? 'is' : 'are'} left out. A measurement (<code>${m.registered}</code>): reported, not judged.</p>`;
 }
+/* ---------- season accuracy (Stage 104 item 1) ----------
+   The NHL's page (src/sports/nhl/pages/nhl.js), on the NBA's graded picks: the
+   record, the shared accuracy component, calibration and every graded pick.
+   Until 2026-11-11 the record sat inside Checking the AI's work, and the NBA
+   had no Season Accuracy page, which read as a scoreboard left off. */
+function renderAccuracy(){
+  const el = document.getElementById('accuracy-body');
+  const graded = gradedPicks();
+  const saved = Object.keys(BD.picks || {}).length;
+  if(!graded.length){
+    // Before any grade the component still draws, each chart saying inside its frame that nothing is
+    // graded, as on Checking the AI's work before (tests/browser/check_accuracy.py).
+    el.innerHTML = `<p class="nba-lede">Nothing graded yet: ${saved} pick${saved === 1 ? '' : 's'} saved. A pick is graded once its game is final; a cancelled game is never counted.</p>
+    ${accuracyHtml(accGames(graded))}
+    ${calibrationHtml(graded)}`;
+    return;
+  }
+  const right = graded.filter(x => x.p.result === 'correct').length;
+  const list = graded.slice().sort((a, b) => (b.g.start || '').localeCompare(a.g.start || ''));
+  el.innerHTML = `<p class="nba-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the game had a price when it was saved, Model A&#39;s otherwise. This is a small sample that grows every game day, so the record alone says little: the forward test is judged on log loss, not on picks right. See Checking the AI&#39;s work.</p>
+    ${accuracyHtml(accGames(graded))}
+    ${calibrationHtml(graded)}
+    <h2 class="section-title">Every graded pick</h2>
+    <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">Graded picks</caption>
+    <thead><tr><th scope="col">Date</th><th scope="col">Game</th><th scope="col">Pick</th><th scope="col">Model</th><th scope="col">Result</th></tr></thead>
+    <tbody>${list.map(x => `<tr><td>${FMT_MONTHDAY.format(dayDate(x.g.day))}</td><td>${escapeHtml(x.g.away)} at ${escapeHtml(x.g.home)}</td><td>${escapeHtml(x.p.pick)}</td><td>${x.p.by === 'model_b' ? 'Model B' : 'Model A'}</td><td><span class="graded-tag ${x.p.result === 'correct' ? 'correct' : 'incorrect'}">${x.p.result === 'correct' ? 'Correct' : 'Missed'}</span></td></tr>`).join('')}</tbody></table></div>`;
+}
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
     <h2 class="section-title">The drift check</h2>
@@ -668,9 +695,6 @@ function renderReliability(){
     ${forwardHtml(BD.forward, 'nba')}
     <h2 class="section-title">The injury report against who played</h2>
     ${m2Html(BD.m2)}
-    <h2 class="section-title">The live picks so far</h2>
-    ${accuracyHtml(accGames(gradedPicks()))}
-    ${calibrationHtml(gradedPicks())}
     <p class="nba-lede"><b>The drift check leans toward flagging.</b> Its baseline was measured with each game's actual players, from the box score: knowing who played lowered the backtest's log loss by ${(-Q.M1.diff).toFixed(3)} (M1). A live pick knows only the injury report before tip-off, so live log loss is expected to run up to about that much worse for a reason that is not drift, and the check may flag sooner than a like-for-like comparison would. The registration says so (<code>experiments/nba/stage65/registry.json</code>), and M2 measures the gap once there are live games.</p>
     <h2 class="section-title">Before anything was fitted</h2>
     <p class="nba-lede">The questions, the seasons, the settings to search, the bootstrap and the labels were written down and committed on ${escapeHtml(DATA.registered)} (<code>experiments/nba/stage61/registry.json</code>), before any NBA feature was computed on a real game. H3 had been expected to come back INCONCLUSIVE; it came back ${Q.H3.label}, and it is reported as it came out. Nothing was re-run or re-tuned. The board still shows Model B&#39;s pick when a game has a price, although H3 found the market slightly better: the pick rule was carried over unchanged from the NFL and NHL boards when the live season was registered (<code>experiments/nba/stage65/registry.json</code>), and the forward test measures Model B against the market on every live pick.</p>
@@ -759,6 +783,7 @@ themeLabel();
 renderBoard();
 /* Stage 80 item 53: a star redraws the board with its team's games first. */
 installFavStars(renderBoard);
+renderAccuracy();
 renderModelLab();
 renderMethod();
 renderReliability();
