@@ -46,7 +46,7 @@ def test_the_long_names_sit_under_more_as_they_do_on_the_nhl():
         assert 'data-page="method"' in sheet and 'data-page="reliability"' in sheet, sport
         assert 'id="bnav-more-btn"' in BODY[sport], sport
     js = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
-    assert "const OVERFLOW_PAGES = ['method', 'reliability'];" in js
+    assert "const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'reliability', 'changes'];" in js
     show = js[js.index('function showPage(name, opts){'):]
     assert "if(more) more.classList.toggle('active', OVERFLOW_PAGES.includes(name));" in show[:900]
     assert 'setMoreSheetOpen(false);' in show[:900], 'a page change closes the sheet'

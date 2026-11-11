@@ -26,8 +26,8 @@
     {
       "id": "nba-accuracy-page-never-built",
       "why": "the Season Accuracy page is never drawn at load, so the tab opens on an empty page",
-      "find": "installFavStars(renderBoard);\nrenderAccuracy();\n",
-      "replace": "installFavStars(renderBoard);\n",
+      "find": "renderAccuracy();\nrenderModelLab();\n",
+      "replace": "renderModelLab();\n",
       "expect_caught_by": "test_it_is_on_the_accuracy_page_and_not_the_checks_page"
     }
   ]
