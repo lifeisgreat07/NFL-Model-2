@@ -67,8 +67,9 @@ def test_a_look_is_one_sided_losses_between_the_bounds_flag(sport):
     not by calling lower_bound, so a changed lower_bound cannot move the target."""
     drift = SPORTS[sport][0]
     spec = drift.baseline()
-    rule, base = spec['rule'], spec['baseline']['value']
+    rule = spec['rule']
     n, level = rule['checkpoints'][0], rule['per_look_level']
+    base = drift.look_value(spec, 'baseline', n)   # Stage 95 item 31: the look's own baseline
     raw = 0.65 + 0.25 * np.sin(np.arange(n) * 1.7)  # spread like real log losses, fixed
     idx = np.random.default_rng(rule['seed']).integers(0, n, size=(rule['n_resamples'], n))
     means = raw[idx].mean(axis=1)
@@ -80,6 +81,65 @@ def test_a_look_is_one_sided_losses_between_the_bounds_flag(sport):
     assert look['lower_bound'] > base, 'one-sided, the bound clears the baseline'
     assert look['lower_bound'] - base == pytest.approx((one - two) / 2, abs=1e-9)
     assert look['flagged'] is True and drift.flags(losses, spec) is True
+
+
+
+SPREADS = {'nhl': 'experiments/nhl/stage56/results/model_a_by_season.json',
+           'nba': 'experiments/nba/stage61/results/model_a_by_season.json'}
+
+
+@pytest.mark.parametrize('sport', SPORTS)
+def test_the_baseline_file_holds_the_backtest_over_each_looks_first_games(sport):
+    """Stage 95 item 31: data/<sport>/drift_baseline.json's per-look figures are the
+    season spread's own, the confirmation seasons pooled, one for each look."""
+    drift = SPORTS[sport][0]
+    spec = drift.baseline()
+    spread = json.loads((ROOT / SPREADS[sport]).read_text(encoding='utf-8'))
+    keys = [('baseline_by_look', 'by_look')] + ([('baseline_no_availability_by_look', 'by_look_no_availability')]
+                                               if sport == 'nba' else [])
+    for file_key, spread_key in keys:
+        assert spec[file_key] == {str(r['games']): r['confirmation'] for r in spread[spread_key]}
+        assert [r['games'] for r in spread[spread_key]] == spec['rule']['checkpoints']
+        for r in spread[spread_key]:
+            assert r['low'] <= r['confirmation'] <= r['high']
+
+
+@pytest.mark.parametrize('sport', SPORTS)
+def test_each_look_is_held_to_the_backtest_at_as_many_games_into_a_season(sport):
+    drift = SPORTS[sport][0]
+    spec = drift.baseline()
+    looks = drift.looks([0.5] * 400, spec)
+    assert [look['baseline'] for look in looks] == [spec['baseline_by_look'][str(n)] for n in (100, 200, 400)]
+    assert len({look['baseline'] for look in looks}) == 3, 'the looks are not all held to one figure'
+
+
+def test_an_nba_look_mixes_each_picks_own_models_figure():
+    spec = nba_drift.baseline()
+    with_it, without = spec['baseline']['value'], spec['baseline_no_availability']['value']
+    bases = [with_it] * 75 + [without] * 25
+    want = (75 * spec['baseline_by_look']['100'] + 25 * spec['baseline_no_availability_by_look']['100']) / 100
+    assert nba_drift.look_baseline(spec, bases, 100) == pytest.approx(want, abs=1e-12)
+    # A count that is not a look keeps the whole-season figures (the daily file's running mean).
+    assert nba_drift.look_baseline(spec, bases, 99) == pytest.approx((75 * with_it + 24 * without) / 99, abs=1e-12)
+
+
+def test_by_look_scores_each_seasons_first_games_in_day_order():
+    from src.core import season_spread
+    table = pd.DataFrame({'game_id': ['b', 'a', 'c', 'd', 'e', 'f'], 'day': ['2', '1', '3', '1', '2', '3'],
+                          'season': [1, 1, 1, 2, 2, 2]})
+
+    def walk_forward(t, cols, seasons):
+        ids = list(t.loc[t['season'] == seasons[0], 'game_id'])
+        return pd.Series([float(ord(i)) for i in ids], index=ids)
+
+    def scores(pred, t):
+        return {'log_loss': float(pred.mean())}
+
+    out = season_spread.by_look(walk_forward, scores, table, [], [1], [2], [1, 2, 3])
+    # Season 1 in day order is a, b, c; season 2 is d, e, f.
+    assert [r['seasons']['1-02'] for r in out] == [ord('a'), (ord('a') + ord('b')) / 2, (ord('a') + ord('b') + ord('c')) / 3]
+    assert [r['confirmation'] for r in out] == [r['seasons']['2-03'] for r in out], 'the confirmation season alone'
+    assert out[0]['low'] == ord('a') and out[0]['high'] == ord('d')
 
 
 @pytest.mark.parametrize('sport', SPORTS)
@@ -150,7 +210,8 @@ def test_the_page_states_the_registered_looks(sport):
     out = run(sport, f'driftLooks({json.dumps(rule)})')
     assert 'looks only at 100, 200, 400, 800 and 1,200 graded games' in out
     assert 'one-sided 99% lower bound' in out and 'one-sided 95% shared among the 5 looks' in out
-    assert f"{rule['baseline']['value']:.4f}" in out
+    for n in rule['rule']['checkpoints']:   # Stage 95 item 31: each look's own baseline is printed
+        assert f"{rule['baseline_by_look'][str(n)]:.4f}" in out
 
 
 @pytest.mark.skipif(NODE is None and not in_ci(), reason='node not installed')

@@ -12,8 +12,8 @@
     {
       "id": "nhl-drift-mean-not-bound",
       "why": "the point estimate decides instead of the interval's lower end, so ordinary variance flags.",
-      "find": "        out.append({'games': n, 'lower_bound': bound, 'flagged': bool(bound > spec['baseline']['value'])})\n",
-      "replace": "        out.append({'games': n, 'lower_bound': bound, 'flagged': bool(sum(losses[:n]) / n >= spec['baseline']['value'])})\n",
+      "find": "        out.append({'games': n, 'lower_bound': bound, 'baseline': base, 'flagged': bool(bound > base)})\n",
+      "replace": "        out.append({'games': n, 'lower_bound': bound, 'baseline': base, 'flagged': bool(sum(losses[:n]) / n >= base)})\n",
       "expect_caught_by": "test_a_clearly_worse_season_flags_and_a_matching_one_does_not"
     },
     {

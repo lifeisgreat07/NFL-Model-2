@@ -36,6 +36,15 @@ def lower_bound(losses: list[float], rule: dict[str, Any], level: float | None =
     return float(np.percentile(arr[idx].mean(axis=1), (1 - lvl) * 100))
 
 
+
+def look_value(spec: dict[str, Any], key: str, n: int) -> float:
+    """Stage 95 item 31 (audit 7, M4): the baseline `key` for a look at n graded
+    picks: the backtest's figure over a season's first n games when the spec
+    indexes it by look (`<key>_by_look`), else its one figure for whole seasons."""
+    table = spec.get(f'{key}_by_look') or {}
+    return float(table[str(n)]) if str(n) in table else float(spec[key]['value'])
+
+
 def next_look(n_graded: int, spec: dict[str, Any]) -> int | None:
     """The checkpoint the check will look at next, or None after the last."""
     return next((n for n in spec['rule']['checkpoints'] if n > n_graded), None)

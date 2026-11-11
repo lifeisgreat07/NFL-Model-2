@@ -27,6 +27,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+from src.core.day_drift import look_value as look_value
 from src.core.day_drift import lower_bound as lower_bound
 from src.core.day_drift import next_look as next_look
 from src.core.day_drift import per_game_log_loss as per_game_log_loss
@@ -67,10 +68,14 @@ def per_game(rows: Iterable[tuple[float | None, int | None, bool]],
 
 def look_baseline(spec: dict[str, Any], baselines: list[float] | None, n: int) -> float:
     """The baseline a look at n picks is held to: the mean of those n picks'
-    own baselines, or the registered baseline when none are given."""
+    own baselines, or the registered baseline when none are given. Since
+    Stage 95 item 31 each is its model's figure over a season's first n games
+    (`look_value`); a pick's whole-season figure says which model it ran."""
     if baselines is None:
-        return float(spec['baseline']['value'])
-    return float(sum(baselines[:n]) / n)
+        return look_value(spec, 'baseline', n)
+    by = {float(spec['baseline']['value']): look_value(spec, 'baseline', n),
+          float(spec['baseline_no_availability']['value']): look_value(spec, 'baseline_no_availability', n)}
+    return float(sum(by[b] for b in baselines[:n]) / n)
 
 
 def looks(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None) -> list[dict[str, Any]]:

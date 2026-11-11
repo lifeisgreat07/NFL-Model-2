@@ -5,8 +5,8 @@
   {
    "id": "nba-drift-one-baseline-for-every-pick",
    "why": "a look ignores the picks' own baselines, so a day without the injury report counts as drift",
-   "find": "    if baselines is None:\n        return float(spec['baseline']['value'])\n    return float(sum(baselines[:n]) / n)\n",
-   "replace": "    return float(spec['baseline']['value'])\n",
+   "find": "    by = {float(spec['baseline']['value']): look_value(spec, 'baseline', n),\n          float(spec['baseline_no_availability']['value']): look_value(spec, 'baseline_no_availability', n)}\n    return float(sum(by[b] for b in baselines[:n]) / n)\n",
+   "replace": "    return look_value(spec, 'baseline', n)\n",
    "expect_caught_by": "test_picks_without_the_report_at_their_own_backtest_do_not_flag"
   },
   {
@@ -19,8 +19,8 @@
   {
    "id": "nba-drift-look-held-to-every-picks-baselines",
    "why": "a look at 100 picks is held to the mean of every graded pick's baseline, not its own 100",
-   "find": "    return float(sum(baselines[:n]) / n)\n",
-   "replace": "    return float(sum(baselines) / len(baselines))\n",
+   "find": "    return float(sum(by[b] for b in baselines[:n]) / n)\n",
+   "replace": "    return float(sum(by[b] for b in baselines) / len(baselines))\n",
    "expect_caught_by": "test_a_look_is_held_to_the_mean_of_its_own_picks_baselines"
   },
   {
@@ -50,8 +50,8 @@
    "id": "nba-page-hides-the-second-baseline",
    "target": "src/core/day_board.js",
    "why": "the page states one baseline while the check holds some picks to another",
-   "find": "  const base = rule.baseline_no_availability\n",
-   "replace": "  const base = false\n",
+   "find": "${rule.baseline_no_availability_by_look ? `; a pick made without the injury report against the model without it: ${at('baseline_no_availability')}` : ''}",
+   "replace": "",
    "expect_caught_by": "test_the_nba_page_names_both_baselines_and_how_many_picks_are_held_to_the_second"
   },
   {

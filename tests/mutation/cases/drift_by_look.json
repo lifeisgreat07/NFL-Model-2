@@ -1,0 +1,45 @@
+{
+  "target": "src/sports/nhl/drift.py",
+  "tests": "tests/test_drift_looks.py",
+  "cases": [
+    {
+      "id": "nhl-drift-look-against-the-whole-season",
+      "why": "each look is held to the whole-season log loss again, which a season's first games run above, so an early look leans toward flagging (audit 7, M4)",
+      "find": "        base = look_value(spec, 'baseline', n)\n",
+      "replace": "        base = float(spec['baseline']['value'])\n",
+      "expect_caught_by": "test_each_look_is_held_to_the_backtest_at_as_many_games_into_a_season"
+    },
+    {
+      "id": "nba-drift-look-against-the-whole-season",
+      "target": "src/sports/nba/drift.py",
+      "why": "a look's picks are held to their models' whole-season figures again (audit 7, M4)",
+      "find": "    by = {float(spec['baseline']['value']): look_value(spec, 'baseline', n),\n",
+      "replace": "    by = {float(spec['baseline']['value']): float(spec['baseline']['value']),\n",
+      "expect_caught_by": "test_an_nba_look_mixes_each_picks_own_models_figure"
+    },
+    {
+      "id": "by-look-in-file-order",
+      "target": "src/core/season_spread.py",
+      "why": "a season's first n games are taken in the order the table lists them, not the order they were played",
+      "find": "        order = table[table['game_id'].isin(pred.index)].sort_values(['day', 'game_id'], kind='stable')['game_id']\n",
+      "replace": "        order = table[table['game_id'].isin(pred.index)]['game_id']\n",
+      "expect_caught_by": "test_by_look_scores_each_seasons_first_games_in_day_order"
+    },
+    {
+      "id": "by-look-pools-every-season",
+      "target": "src/core/season_spread.py",
+      "why": "the per-look baseline pools the validation seasons with the confirmation ones, which the registration keeps apart",
+      "find": "        conf = [seasons[int(s)] for s in confirmation if int(s) in seasons]\n",
+      "replace": "        conf = list(seasons.values())\n",
+      "expect_caught_by": "test_by_look_scores_each_seasons_first_games_in_day_order"
+    },
+    {
+      "id": "nhl-drift-file-by-look-edited",
+      "target": "data/nhl/drift_baseline.json",
+      "why": "a per-look baseline is edited by hand away from the backtest's own figure",
+      "find": "\"baseline_by_look\": {\n    \"100\": ",
+      "replace": "\"baseline_by_look\": {\n    \"100\": 0.7, \"_was\": ",
+      "expect_caught_by": "test_the_baseline_file_holds_the_backtest_over_each_looks_first_games"
+    }
+  ]
+}

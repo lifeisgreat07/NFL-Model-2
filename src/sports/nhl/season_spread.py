@@ -9,9 +9,17 @@ import json
 from typing import Any
 
 from src.core import season_spread
+from src.core.sport import sport_paths
 from src.sports.nhl import backtest, ratings
 
 NAME = 'model_a_by_season.json'
+
+
+
+def checkpoints() -> list[int]:
+    """The drift check's registered looks (data/nhl/drift_baseline.json)."""
+    rule = json.loads((sport_paths('nhl').data / 'drift_baseline.json').read_text(encoding='utf-8'))['rule']
+    return [int(n) for n in rule['checkpoints']]
 
 
 def compute() -> dict[str, Any]:
@@ -24,8 +32,12 @@ def compute() -> dict[str, Any]:
     cols = ['goal_matchup', 'shot_matchup', backtest.goalie_column(k)]
     out = season_spread.spread(backtest.walk_forward, backtest.scores, table, cols, p['validation_seasons'],
                                p['confirmation_seasons'], conf['scores']['model_a']['log_loss'])
+    # Stage 95 item 31: Model A over each season's first n games, for each registered look.
+    by_look = season_spread.by_look(backtest.walk_forward, backtest.scores, table, cols, p['validation_seasons'],
+                                    p['confirmation_seasons'], checkpoints())
     return {'model': 'model_a', 'settings': {'H_days': h, 'K_shots': k},
-            'source': 'src/sports/nhl/season_spread.py, the Stage 56 walk-forward at the chosen settings', **out}
+            'source': 'src/sports/nhl/season_spread.py, the Stage 56 walk-forward at the chosen settings', **out,
+            'by_look': by_look}
 
 
 def main() -> int:
