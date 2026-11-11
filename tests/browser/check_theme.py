@@ -9,8 +9,10 @@ from one page to the next, which is what a visitor does.
 What this does, over a site built by `python -m src.site.build --out <dir>`:
 serve the folder on localhost (one origin, as GitHub Pages is), then, once
 with the system set to dark and once with it set to light, press the theme
-button on each sport's page in turn and visit every page. Each page must show
-the theme just chosen. The home page has no button; it must follow too.
+button on every page in turn and visit every page. Each page must show the
+theme just chosen. The home page has its own button (Stage 66) and is pressed
+like the others, at a desktop width, where its search button is shown too and
+once took the theme button's place (2026-11-11).
 
 --self-test builds two small sites first: one whose pages each keep their
 own key (the defect before Stage 62), which the check must report, and one
@@ -33,8 +35,8 @@ from playwright.async_api import async_playwright
 
 #: Every page of the built site, by its path under the site's root.
 PAGES = ('', 'nfl/', 'nhl/', 'nba/')
-#: The pages with a theme button. The home page has none and must still follow.
-TOGGLE_PAGES = ('nfl/', 'nhl/', 'nba/')
+#: The pages with a theme button: every page, the home page included.
+TOGGLE_PAGES = ('', 'nfl/', 'nhl/', 'nba/')
 THEME_JS = "document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'"
 # The button's own click handler, called directly: this check is about where
 # the choice goes, not whether the button is on screen (check_page.py's
@@ -84,7 +86,7 @@ async def check_site(root, pages=PAGES, toggle_pages=TOGGLE_PAGES):
                         continue
                     chosen = await page.evaluate(THEME_JS)
                     if chosen == before:
-                        report.append(f'[{scheme} system] {start}: the button did not change the theme')
+                        report.append(f'[{scheme} system] {start or "home"}: the button did not change the theme')
                         continue
                     for other in pages:
                         got = await theme_of(page, base + other)
@@ -112,15 +114,17 @@ localStorage.setItem('{key}',n);}});</script></body></html>"""
 BUTTON = '<button id="theme-toggle" type="button">Theme</button>'
 
 
-def build_fixture(root: Path, shared: bool) -> Path:
+def build_fixture(root: Path, shared: bool, dead_home: bool = False) -> Path:
     for path in PAGES:
         name = path.rstrip('/') or 'home'
         key = 'site:theme' if shared else f'{name}:theme'
         folder = root / path
         folder.mkdir(parents=True, exist_ok=True)
-        (folder / 'index.html').write_text(
-            FIXTURE.format(name=name, key=key, button=BUTTON if path in TOGGLE_PAGES else ''),
-            encoding='utf-8')
+        html = FIXTURE.format(name=name, key=key, button=BUTTON if path in TOGGLE_PAGES else '')
+        if dead_home and path == '':
+            # The button is on the page but its handler went to another element.
+            html = html.replace("document.getElementById('theme-toggle')", "document.getElementById('search')")
+        (folder / 'index.html').write_text(html, encoding='utf-8')
     return root
 
 
@@ -130,6 +134,10 @@ async def self_test(tmp: Path):
     print(f"self-test own-keys: {'caught' if own else 'MISSED'} ({len(own)} finding(s))")
     if not own:
         failed.append('own-keys')
+    dead = await check_site(build_fixture(tmp / 'theme_dead_home', shared=True, dead_home=True))
+    print(f"self-test dead-home-button: {'caught' if dead else 'MISSED'} ({len(dead)} finding(s))")
+    if not dead:
+        failed.append('dead-home-button')
     one = await check_site(build_fixture(tmp / 'theme_one_key', shared=True))
     print(f"self-test one-key: {'FALSE ALARM' if one else 'clean'} ({len(one)} finding(s))")
     if one:
@@ -150,7 +158,8 @@ def main():
         if failed:
             print(f'SELF-TEST FAILED: {failed}')
             sys.exit(1)
-        print('self-test: the check catches pages with their own keys and passes a shared one')
+        print('self-test: the check catches pages with their own keys and a dead home button, '
+              'and passes a shared key')
         return
     if not a.site:
         ap.error('give the built site folder, or --self-test')
@@ -164,7 +173,7 @@ def main():
     if report:
         print(f'{len(report)} finding(s)')
         sys.exit(1)
-    print(f'{a.site}: the theme chosen on each sport\'s page holds on every page, '
+    print(f'{a.site}: the theme chosen on every page holds on every page, '
           'with the system set to dark and to light')
 
 

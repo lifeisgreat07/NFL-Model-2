@@ -1,0 +1,47 @@
+{
+ "sports": [
+  {
+   "sport": "nfl",
+   "built": true,
+   "kept_live": false,
+   "published": true,
+   "error": "",
+   "log": [
+    "src.sports.nfl.lock_proof --out data/nfl/lock_proof.json: exit 0",
+    "src.sports.nfl.generate_dashboard: exit 0",
+    "src.sports.nfl.check_build index.html: exit 0",
+    "src.sports.nfl.picks_csv --out picks.csv: exit 0"
+   ]
+  },
+  {
+   "sport": "nhl",
+   "built": true,
+   "kept_live": false,
+   "published": true,
+   "error": "",
+   "log": [
+    "src.sports.nhl.site --out E:\\nfl-session-archive\\site_s80t\\nhl\\index.html: exit 0"
+   ]
+  },
+  {
+   "sport": "nba",
+   "built": true,
+   "kept_live": false,
+   "published": true,
+   "error": "",
+   "log": [
+    "src.sports.nba.site --out E:\\nfl-session-archive\\site_s80t\\nba\\index.html: exit 0"
+   ]
+  },
+  {
+   "sport": "home",
+   "built": true,
+   "kept_live": false,
+   "published": true,
+   "error": "",
+   "log": [
+    "src.site.home: exit 0"
+   ]
+  }
+ ]
+}
