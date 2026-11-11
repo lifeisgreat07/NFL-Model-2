@@ -1024,57 +1024,99 @@
  {
   "game_id": "401909952",
   "pick": "ATL",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-11-09T21:31:31Z"
  },
  {
   "game_id": "401909953",
   "pick": "CLE",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-11-09T21:31:31Z"
  },
  {
   "game_id": "401909954",
   "pick": "DET",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-09T21:31:31Z"
  },
  {
   "game_id": "401909955",
   "pick": "TOR",
-  "result": "pending",
+  "result": "wrong",
   "market_source": "espn",
   "saved_utc": "2026-11-09T21:31:31Z"
  },
  {
   "game_id": "401909956",
   "pick": "DAL",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-09T21:31:31Z"
  },
  {
   "game_id": "401909957",
   "pick": "HOU",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-09T21:31:31Z"
  },
  {
   "game_id": "401909958",
   "pick": "SA",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-09T21:31:31Z"
  },
  {
   "game_id": "401909959",
   "pick": "GS",
-  "result": "pending",
+  "result": "correct",
   "market_source": "espn",
   "saved_utc": "2026-11-09T21:31:31Z"
+ },
+ {
+  "game_id": "401909960",
+  "pick": "NY",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
+ },
+ {
+  "game_id": "401909961",
+  "pick": "BOS",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
+ },
+ {
+  "game_id": "401909962",
+  "pick": "PHX",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
+ },
+ {
+  "game_id": "401909963",
+  "pick": "MIA",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
+ },
+ {
+  "game_id": "401909964",
+  "pick": "ORL",
+  "result": "correct",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
+ },
+ {
+  "game_id": "401909965",
+  "pick": "OKC",
+  "result": "wrong",
+  "market_source": "espn",
+  "saved_utc": "2026-11-10T21:31:32Z"
  }
 ]

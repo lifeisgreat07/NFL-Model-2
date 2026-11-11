@@ -3094,5 +3094,89 @@
   "home_prob": 0.4365,
   "read_utc": "2026-11-09T21:01:37Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020286",
+  "start_utc": "2026-11-11T00:00:00Z",
+  "home": "TOR",
+  "away": "COL",
+  "book": "DraftKings",
+  "home_price": 145.0,
+  "away_price": -175.0,
+  "home_prob": 0.3908,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020287",
+  "start_utc": "2026-11-11T00:00:00Z",
+  "home": "MTL",
+  "away": "MIN",
+  "book": "DraftKings",
+  "home_price": 105.0,
+  "away_price": -125.0,
+  "home_prob": 0.4675,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020288",
+  "start_utc": "2026-11-11T00:00:00Z",
+  "home": "OTT",
+  "away": "WSH",
+  "book": "DraftKings",
+  "home_price": -108.0,
+  "away_price": -112.0,
+  "home_prob": 0.4957,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020289",
+  "start_utc": "2026-11-11T00:30:00Z",
+  "home": "CBJ",
+  "away": "FLA",
+  "book": "DraftKings",
+  "home_price": 100.0,
+  "away_price": -120.0,
+  "home_prob": 0.4783,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020290",
+  "start_utc": "2026-11-11T01:00:00Z",
+  "home": "STL",
+  "away": "DET",
+  "book": "DraftKings",
+  "home_price": -142.0,
+  "away_price": 120.0,
+  "home_prob": 0.5635,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020291",
+  "start_utc": "2026-11-11T00:00:00Z",
+  "home": "WPG",
+  "away": "NJD",
+  "book": "DraftKings",
+  "home_price": 124.0,
+  "away_price": -148.0,
+  "home_prob": 0.4279,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020292",
+  "start_utc": "2026-11-11T03:00:00Z",
+  "home": "LAK",
+  "away": "NSH",
+  "book": "DraftKings",
+  "home_price": -130.0,
+  "away_price": 110.0,
+  "home_prob": 0.5427,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]

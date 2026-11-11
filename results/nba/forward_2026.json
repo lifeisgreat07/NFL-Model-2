@@ -2,59 +2,59 @@
  "sport": "nba",
  "season": 2026,
  "registered": "experiments/nba/stage65/registry.json",
- "graded_picks": 146,
- "through": "2026-11-08",
+ "graded_picks": 160,
+ "through": "2026-11-10",
  "scores": {
   "model_a": {
-   "games": 146,
-   "log_loss": 0.5917365485132905,
-   "brier": 0.2042153555479452,
-   "accuracy": 0.678082191780822
+   "games": 160,
+   "log_loss": 0.5875570072940395,
+   "brier": 0.20238066843749997,
+   "accuracy": 0.6875
   },
   "model_b": {
-   "games": 146,
-   "log_loss": 0.548695992965937,
-   "brier": 0.1852858830136986,
-   "accuracy": 0.7123287671232876
+   "games": 160,
+   "log_loss": 0.5468090490193205,
+   "brier": 0.18436639475,
+   "accuracy": 0.7125
   },
   "market": {
-   "games": 146,
-   "log_loss": 0.5488618249623176,
-   "brier": 0.18538324684931506,
-   "accuracy": 0.7191780821917808
+   "games": 160,
+   "log_loss": 0.5468816574243549,
+   "brier": 0.1844125130625,
+   "accuracy": 0.71875
   },
   "base_rate": {
-   "games": 146,
-   "log_loss": 0.6983040776396956,
-   "brier": 0.2525506146951218,
-   "accuracy": 0.5136986301369864
+   "games": 160,
+   "log_loss": 0.6969633428631402,
+   "brier": 0.25188415541413567,
+   "accuracy": 0.51875
   }
  },
  "by_market_source": {
   "espn": {
    "model_a": {
-    "games": 146,
-    "log_loss": 0.5917365485132905,
-    "brier": 0.2042153555479452,
-    "accuracy": 0.678082191780822
+    "games": 160,
+    "log_loss": 0.5875570072940395,
+    "brier": 0.20238066843749997,
+    "accuracy": 0.6875
    },
    "model_b": {
-    "games": 146,
-    "log_loss": 0.548695992965937,
-    "brier": 0.1852858830136986,
-    "accuracy": 0.7123287671232876
+    "games": 160,
+    "log_loss": 0.5468090490193205,
+    "brier": 0.18436639475,
+    "accuracy": 0.7125
    },
    "market": {
-    "games": 146,
-    "log_loss": 0.5488618249623176,
-    "brier": 0.18538324684931506,
-    "accuracy": 0.7191780821917808
+    "games": 160,
+    "log_loss": 0.5468816574243549,
+    "brier": 0.1844125130625,
+    "accuracy": 0.71875
    },
    "base_rate": {
-    "games": 146,
-    "log_loss": 0.6983040776396956,
-    "brier": 0.2525506146951218,
-    "accuracy": 0.5136986301369864
+    "games": 160,
+    "log_loss": 0.6969633428631402,
+    "brier": 0.25188415541413567,
+    "accuracy": 0.51875
    }
   }
  },
@@ -64,79 +64,64 @@
  },
  "comparisons": {
   "model_a_minus_base_rate": {
-   "games": 146,
-   "days": 19,
-   "diff": -0.10656752912640487,
-   "low": -0.1687575688085385,
-   "high": -0.045647784654160424,
-   "level": 0.9833333333333333,
-   "few_days": {
-    "min_days": 20,
-    "game_low": -0.16977240290811607,
-    "game_high": -0.040217024317575824
-   }
+   "games": 160,
+   "days": 21,
+   "diff": -0.10940633556910077,
+   "low": -0.17023669796121013,
+   "high": -0.054381782549916616,
+   "level": 0.9833333333333333
   },
   "model_b_minus_model_a": {
-   "games": 146,
-   "days": 19,
-   "diff": -0.04304055554735368,
-   "low": -0.07335246914048735,
-   "high": -0.007681922523504239,
-   "level": 0.9833333333333333,
-   "few_days": {
-    "min_days": 20,
-    "game_low": -0.0834631687670505,
-    "game_high": -0.005293940995970141
-   }
+   "games": 160,
+   "days": 21,
+   "diff": -0.04074795827471896,
+   "low": -0.0694712183466984,
+   "high": -0.00795393826250138,
+   "level": 0.9833333333333333
   },
   "model_b_minus_market": {
-   "games": 146,
-   "days": 19,
-   "diff": -0.0001658319963806772,
-   "low": -0.0013366337381290332,
-   "high": 0.0009502496324298935,
-   "level": 0.9833333333333333,
-   "few_days": {
-    "min_days": 20,
-    "game_low": -0.0015211067681026131,
-    "game_high": 0.0010864213873906484
-   }
+   "games": 160,
+   "days": 21,
+   "diff": -7.260840503444562e-05,
+   "low": -0.001248365774034609,
+   "high": 0.0010496891787324094,
+   "level": 0.9833333333333333
   }
  },
  "calibration": {
   "model_a": {
-   "games": 146,
-   "days": 19,
+   "games": 160,
+   "days": 21,
    "level": 0.9833333333333333,
    "fits": "two: the intercept with the slope held at 1 (calibration in the large), the slope with an intercept of its own",
    "intercept": {
-    "value": -0.28575688208066,
-    "low": -0.6266874531621144,
-    "high": 0.1219346531066409,
+    "value": -0.2528441178333743,
+    "low": -0.5826500671188878,
+    "high": 0.1232893708376922,
     "draws_unfit": 0
    },
    "slope": {
-    "value": 1.28954245964912,
-    "low": 0.7972719700981343,
-    "high": 1.9167794116532337,
+    "value": 1.294312562615317,
+    "low": 0.837342477983441,
+    "high": 1.872732446224051,
     "draws_unfit": 0
    }
   },
   "model_b": {
-   "games": 146,
-   "days": 19,
+   "games": 160,
+   "days": 21,
    "level": 0.9833333333333333,
    "fits": "two: the intercept with the slope held at 1 (calibration in the large), the slope with an intercept of its own",
    "intercept": {
-    "value": -0.15338617303629898,
-    "low": -0.5006718921716308,
-    "high": 0.23353038154695763,
+    "value": -0.121589054228271,
+    "low": -0.4622096315399535,
+    "high": 0.24143155257402732,
     "draws_unfit": 0
    },
    "slope": {
-    "value": 1.6899856037612195,
-    "low": 1.2581266002039138,
-    "high": 2.2925905868375382,
+    "value": 1.676813819512329,
+    "low": 1.2798120306036924,
+    "high": 2.2484960310909847,
     "draws_unfit": 0
    }
   }

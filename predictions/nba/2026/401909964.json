@@ -1,0 +1,94 @@
+{
+ "game_id": "401909964",
+ "season": 2026,
+ "slate": "2026-11-10",
+ "start_utc": "2026-11-11T03:00:00Z",
+ "home": "SAC",
+ "away": "ORL",
+ "model_a": 0.4326,
+ "model_b": 0.323,
+ "pick": "ORL",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9383,
+  "away": 0.7854
+ },
+ "features": {
+  "point_matchup": -5.622,
+  "efficiency_matchup": -5.41188,
+  "availability_matchup": 0.152884
+ },
+ "market": {
+  "game_id": "401909964",
+  "home": "SAC",
+  "away": "ORL",
+  "start_utc": "2026-11-11T03:00:00Z",
+  "read_utc": "2026-11-10T21:31:32Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 190.0,
+  "away_price": -229.0,
+  "home_prob": 0.3313
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-10T21:31:32Z",
+  "home": [
+   {
+    "athlete_id": "3907387",
+    "name": "Ben Simmons",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4898371",
+    "name": "Maxime Raynaud",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "5107251",
+    "name": "Izaiyah Nelson",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432165",
+    "name": "Jalen Suggs",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4065654",
+    "name": "Jonathan Isaac",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5214637",
+    "name": "Noah Penda",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432573",
+    "name": "Paolo Banchero",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4702382",
+    "name": "Tristan da Silva",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-10T21:31:32Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14212,
+  "training_games_priced": 14171,
+  "training_ids_sha256": "8fd40e96564590a93eab58677f2113c5839abd77e7b6338e7d743d9d09805506"
+ },
+ "code_sha256": "a5069c9aa87cb8efefea4ccabac6798c95c7ab0946fc06295921ba91eb13fa9b",
+ "code_commit": "9ccb09a287f5ff6c76d6a457e7550bed9cf2cda9"
+}

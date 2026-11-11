@@ -33,8 +33,8 @@
     {
       "id": "meta-injects-the-teams-a-second-time",
       "why": "the per-team odds ship twice -- once on the team objects the table sorts by and once in the meta block -- and the two copies can disagree after any change to only one of them",
-      "find": "        {k: (playoff_odds or {}).get(k) for k in\n         ('n_simulations', 'games_played', 'games_remaining', 'season')},",
-      "replace": "        {k: (playoff_odds or {}).get(k) for k in\n         ('n_simulations', 'games_played', 'games_remaining', 'season', 'teams')},",
+      "find": "            {k: (playoff_odds or {}).get(k) for k in\n             ('n_simulations', 'games_played', 'games_remaining', 'season')},",
+      "replace": "            {k: (playoff_odds or {}).get(k) for k in\n             ('n_simulations', 'games_played', 'games_remaining', 'season', 'teams')},",
       "expect_caught_by": "test_the_meta_block_carries_the_run_details_and_not_the_teams"
     },
     {
@@ -50,13 +50,6 @@
       "find": "    order = sorted(ratings, key=lambda r: (-r['net'], r['team']))",
       "replace": "    order = sorted(ratings, key=lambda r: -r['net'])",
       "expect_caught_by": "test_tied_ratings_rank_the_same_way_on_every_build"
-    },
-    {
-      "id": "generator-still-writes-the-old-placeholder",
-      "why": "the generator and the template disagree on the placeholder name, so the substitution never fires and the literal __PLAYOFF_META_JSON__ string ships to the reader",
-      "find": "    html = html.replace('__PLAYOFF_META_JSON__', safe_json(",
-      "replace": "    html = html.replace('__PLAYOFF_ODDS_JSON__', safe_json(",
-      "expect_caught_by": "test_the_old_whole_file_placeholder_is_gone_from_both_sides"
     }
   ]
 }

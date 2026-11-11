@@ -1,30 +1,30 @@
 {
  "measurement": "M2",
  "registered": "experiments/nhl/stage56/registry.json",
- "graded": 230,
+ "graded": 240,
  "printed_from": 50,
  "judged": false,
  "starters": {
-  "sides": 460,
-  "projected_started": 439,
-  "games_both_started": 210,
+  "sides": 480,
+  "projected_started": 459,
+  "games_both_started": 220,
   "games_a_starter_differed": 20
  },
  "model_a": {
-  "log_loss_projected": 0.6469415286609158,
-  "log_loss_actual": 0.647176701894994,
+  "log_loss_projected": 0.647666293421576,
+  "log_loss_actual": 0.6478916677709008,
   "actual_minus_projected": {
-   "games": 230,
-   "days": 34,
-   "diff": 0.00023517323407799115,
-   "low": -0.0007730459257814139,
-   "high": 0.0013567086386823215,
+   "games": 240,
+   "days": 36,
+   "diff": 0.00022537434932474152,
+   "low": -0.0007384679625452449,
+   "high": 0.0013325924896898788,
    "level": 0.9833333333333333
   }
  },
  "refit": {
-  "reproduced_saved_model_a": 203,
-  "of": 230,
-  "provenance_recorded": 204
+  "reproduced_saved_model_a": 213,
+  "of": 240,
+  "provenance_recorded": 214
  }
 }

@@ -1,0 +1,125 @@
+{
+ "game_id": "2026020286",
+ "season": 2026,
+ "slate": "2026-11-10",
+ "start_utc": "2026-11-11T00:00:00Z",
+ "home": "TOR",
+ "away": "COL",
+ "model_a": 0.3293,
+ "model_b": 0.3708,
+ "pick": "COL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.092216,
+  "shot_matchup": -8.881605,
+  "goalie_matchup_2000": -0.004275
+ },
+ "market": {
+  "game_id": "2026020286",
+  "start_utc": "2026-11-11T00:00:00Z",
+  "home": "TOR",
+  "away": "COL",
+  "book": "DraftKings",
+  "home_price": 145.0,
+  "away_price": -175.0,
+  "home_prob": 0.3908,
+  "read_utc": "2026-11-10T21:01:41Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475683,
+   "name": "Sergei Bobrovsky",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/koshtorontosun/status/2120177823721660721?a=HruwCZcycr59bOQPxY8&s=20"
+  },
+  "away": {
+   "player_id": 8478406,
+   "name": "Mackenzie Blackwood",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://coloradohockeynow.com/avalanche-maple-leafs-game-preview-lines-how-to-watch/"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-10",
+  "read_utc": "2026-11-10T21:01:41Z",
+  "home": [
+   {
+    "name": "Cade Webber",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Colton Sissons",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Elvis Merzlikins",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Kirill Marchenko",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Marshall Rifai",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Max Domi",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Miles Wood",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Morgan Rielly",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Nick Blankenburg",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "William Villeneuve",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Josh Manson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Zachary L'Heureux",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-10T21:01:41Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-09",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14688,
+  "training_games_priced": 7658,
+  "training_ids_sha256": "67c2a3f54dca9c05f30bb71fd6316bb529cadeced0fe5493a26bb356539ac2e0"
+ },
+ "code_sha256": "63f42334834f3d3baf7bade876c1fc04c6ec848289eec884d0b8cd14ff7c67ef",
+ "code_commit": "d62c944bd017dec7cb3d76833aa97ac8ad6bd145"
+}

@@ -26,8 +26,8 @@
     {
       "id": "updated-line-filled-with-nothing",
       "why": "the header's placeholder is filled with an empty string, which check_build cannot see (no placeholder is left), so the page says nowhere when it was built.",
-      "find": "    html = html.replace('__BOARD_UPDATED__', updated_html)",
-      "replace": "    html = html.replace('__BOARD_UPDATED__', '')",
+      "find": "        '__BOARD_UPDATED__': updated_html,",
+      "replace": "        '__BOARD_UPDATED__': '',",
       "expect_caught_by": "test_the_build_time_is_in_the_week_board_header"
     },
     {

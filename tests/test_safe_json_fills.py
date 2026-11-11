@@ -80,7 +80,7 @@ def test_every_fill_inside_a_script_goes_through_safe_json():
     found = script_placeholders(TEMPLATE.read_text(encoding='utf-8'))
     src = GENERATOR.read_text(encoding='utf-8')
     unsafe = [p for p in sorted(found)
-              if not re.search(rf"html\s*=\s*(?:html|template)\.replace\(\s*'{p}',\s*safe_json\(", src)]
+              if not re.search(rf"'{p}':\s*safe_json\(", src)]
     assert not unsafe, (
         f'{unsafe} sit inside a <script> but are not filled through safe_json(); '
         'a `</script` in their data would end the script')
