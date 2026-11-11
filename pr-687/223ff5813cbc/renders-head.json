@@ -5,7 +5,7 @@
   "viewport": "390x844",
   "theme": "light",
   "file": "nfl-390x844-light-head.png",
-  "bytes": 139392,
+  "bytes": 139519,
   "parked": 3
  },
  {
@@ -14,7 +14,7 @@
   "viewport": "390x844",
   "theme": "dark",
   "file": "nfl-390x844-dark-head.png",
-  "bytes": 140906,
+  "bytes": 141027,
   "parked": 3
  },
  {
@@ -23,7 +23,7 @@
   "viewport": "1440x900",
   "theme": "light",
   "file": "nfl-1440x900-light-head.png",
-  "bytes": 639486,
+  "bytes": 639621,
   "parked": 4
  },
  {
@@ -32,7 +32,7 @@
   "viewport": "1440x900",
   "theme": "dark",
   "file": "nfl-1440x900-dark-head.png",
-  "bytes": 648362,
+  "bytes": 648512,
   "parked": 4
  }
 ]
