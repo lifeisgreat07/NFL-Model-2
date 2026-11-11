@@ -82,16 +82,17 @@ def test_the_board_leads_and_the_no_picks_page_is_gone(built: tuple[dict, str]) 
 def test_every_page_is_on_both_menus_and_the_checker_can_open_it(built: tuple[dict, str]) -> None:
     _, html = built
     pages = re.findall(r'<section class="page[^"]*" id="page-([a-z]+)"', html)
-    assert pages == ['board', 'ratings', 'teams', 'accuracy', 'modellab', 'method', 'reliability', 'changes']
+    assert pages == ['board', 'standings', 'ratings', 'teams', 'accuracy', 'modellab', 'method', 'reliability',
+                     'changes']
     side = re.findall(r'class="nav-btn[^"]*" data-page="([a-z]+)"', html)
     bottom = re.findall(r'class="bnav-btn[^"]*" data-page="([a-z]+)"', html)
     # Since Stage 77 item 22 the phone nav keeps Methodology and Checking the
     # AI's work under More, as the NHL's and the NFL's do.
     more = re.findall(r'class="bnav-more-item[^"]*" data-page="([a-z]+)"', html)
-    # Stage 104 item 3: the bar holds Board, Ratings and Accuracy, as the NHL's
-    # does before its standings; every other page is under More, each once.
+    # Stage 104 items 3 and 4: the bar holds Board, Standings, Ratings and
+    # Accuracy, as the NHL's does; every other page is under More, each once.
     assert side == pages and sorted(bottom + more) == sorted(pages) and len(bottom + more) == len(pages)
-    assert bottom == ['board', 'ratings', 'accuracy'] and 'id="bnav-more-btn"' in html
+    assert bottom == ['board', 'standings', 'ratings', 'accuracy'] and 'id="bnav-more-btn"' in html
     assert 'window.setActivePage = ' in html
 
 
