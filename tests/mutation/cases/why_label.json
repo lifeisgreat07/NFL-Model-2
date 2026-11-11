@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "why-label-dropped",
+      "target": "src/dashboard/app_board.js",
       "why": "the sentence goes back to sitting unlabelled under Model B's headline, so on a split card 'MIA are ahead here' reads as contradicting 'KC 86% to win'.",
       "find": "  return words ? `<div class=\"why-by\">Model A&#39;s reasoning</div>${words}` : '';",
       "replace": "  return words;",
@@ -11,6 +12,7 @@
     },
     {
       "id": "why-label-over-nothing",
+      "target": "src/dashboard/app_board.js",
       "why": "a card with no recorded contributions still draws 'Model A's reasoning' over no reason at all.",
       "find": "  return words ? `<div class=\"why-by\">Model A&#39;s reasoning</div>${words}` : '';",
       "replace": "  return `<div class=\"why-by\">Model A&#39;s reasoning</div>${words}`;",
@@ -18,6 +20,7 @@
     },
     {
       "id": "board-draws-the-unlabelled-sentence",
+      "target": "src/dashboard/app_board.js",
       "why": "the label exists but the board never calls it, so the card is unchanged.",
       "find": "    const whyHtml = g.why ? `\n      ${whyLabelled(g)}",
       "replace": "    const whyHtml = g.why ? `\n      ${whySentence(g)}",
@@ -25,6 +28,7 @@
     },
     {
       "id": "why-label-shares-a-class",
+      "target": "src/dashboard/app_board.js",
       "why": "the label takes .why-label, the class the numbers panel's row labels already wear, so its rule restyles those rows too.",
       "find": "  return words ? `<div class=\"why-by\">Model A&#39;s reasoning</div>${words}` : '';",
       "replace": "  return words ? `<div class=\"why-label\">Model A&#39;s reasoning</div>${words}` : '';",

@@ -11,7 +11,7 @@
     },
     {
       "id": "built-table-loses-its-caption",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "a table the page builds in JavaScript (Season Accuracy's week-by-week record) has no caption; the check has to read template strings, not only markup.",
       "find": "<caption class=\"visually-hidden\">Correct picks by week for each model</caption>",
       "replace": "",

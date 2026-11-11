@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "scoreboard-late-picks-drop-their-row",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "graded picks that were all made after kickoff leave no row, and the board invites the visitor to start picking, which reads as their picks being lost (Mark's observation, 2026-10-04).",
       "find": "  else if(leftOut) race.push({name: 'My picks', series: 'var(--series-d)', shape: 'diamond',\n                              correct: 0, n: 0, pct: null, noneCounted: true});\n",
       "replace": "",
@@ -11,6 +12,7 @@
     },
     {
       "id": "scoreboard-says-leads-by-zero",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "a gap of zero is treated as a lead, so a tie at the top prints 'leads by 0 games' -- a headline that picks a winner the numbers did not.",
       "find": "  if(gap > 0) return `${lead} leads by",
       "replace": "  if(gap >= 0) return `${lead} leads by",
@@ -18,6 +20,7 @@
     },
     {
       "id": "scoreboard-loses-the-singular",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "a one-game lead reads 'leads by 1 games', in the largest type on the page.",
       "find": "game${gap === 1 ? '' : 's'}.`;",
       "replace": "games.`;",
@@ -25,6 +28,7 @@
     },
     {
       "id": "scoreboard-bars-measured-from-fifty",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the bars start at the coin-flip line instead of zero, so 68.8% against 71.9% draws a bar 14% shorter than the leader's instead of 4% -- the gap of one game, more than tripled.",
       "find": "--series:${r.series}; width:${r.pct ?? 0}%",
       "replace": "--series:${r.series}; width:${((r.pct ?? 0) - 50) * 2}%",
@@ -32,6 +36,7 @@
     },
     {
       "id": "scoreboard-margin-over-different-games",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the equal-count check goes, so records over different sets of games get a margin in games, which is not a like-for-like difference.",
       "find": "  if(!sameGames) return `${lead} has the best record so far.`;\n",
       "replace": "",
@@ -39,6 +44,7 @@
     },
     {
       "id": "scoreboard-rows-share-a-shape",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "Model B's row takes Model A's dot, so the two rows are told apart by colour alone -- the one thing a series mark must never rely on.",
       "find": "series: 'var(--series-b)', shape: 'sq'",
       "replace": "series: 'var(--series-b)', shape: 'dot'",
@@ -46,6 +52,7 @@
     },
     {
       "id": "scoreboard-my-picks-always-joins",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the visitor's row is drawn whether or not they have picked anything, as an empty 'My picks' bar beside the models.",
       "find": "  if(mine) race.push(",
       "replace": "  race.push(",
@@ -53,6 +60,7 @@
     },
     {
       "id": "scoreboard-eyebrow-counts-decided-games",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the eyebrow goes back to the market row's n, which leaves out ties, so on a tie week it says one game fewer was graded than the calibration text does.",
       "find": "Picked the winner &middot; ${nGraded} game${nGraded === 1 ? '' : 's'} graded",
       "replace": "Picked the winner &middot; ${rows[0].n} games graded",
@@ -60,6 +68,7 @@
     },
     {
       "id": "scoreboard-pct-null-throws",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the null guard goes, so a season whose graded games are all ties calls toFixed on null and the Season Accuracy page does not render.",
       "find": "${r.pct == null ? '&ndash;' : `${r.pct.toFixed(1)}%`}",
       "replace": "${r.pct.toFixed(1)}%",
@@ -67,6 +76,7 @@
     },
     {
       "id": "scoreboard-no-record-called-level",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "with no decided game the verdict falls through to 'All three are level so far', which reads as three equal records where there are none.",
       "find": "  if(rows.every(r => r.n === 0)) return 'No graded game has a winner yet.';\n",
       "replace": "",

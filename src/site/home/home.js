@@ -332,8 +332,10 @@ function yoursHtml(slate, favs, now){
 })();
 
 // The theme button: the same choice, under the same key, as every sport's page.
+// Found by its id: the search button wears .home-theme too, for the same round
+// shape, and on desktop it comes first, so a class lookup bound the theme to it.
 (function(){
-  const btn = document.querySelector('.home-theme');
+  const btn = document.getElementById('theme-toggle');
   if(!btn) return;
   const light = () => document.documentElement.getAttribute('data-theme') === 'light';
   const label = () => btn.setAttribute('aria-label', light() ? 'Switch to the dark theme' : 'Switch to the light theme');

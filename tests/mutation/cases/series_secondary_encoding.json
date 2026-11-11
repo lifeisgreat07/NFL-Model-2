@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "a-series-loses-its-marker-shape",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "Model B's shape is emptied. Every colour check stays green because no colour moved, and the chart still draws -- it just draws one series with nothing but hue to identify it. That is the encoding --accent/--series-d is ACCEPTED on: at 1.26 apart under deuteranopia the My Picks line is told apart by its diamond, its dash and its label before colour is consulted, and the moment a series is hue-only that reasoning no longer describes the page.",
       "find": "  b:      {label:'Model B',  color:'var(--series-b)', shape:'square',   dash:''},",
       "replace": "  b:      {label:'Model B',  color:'var(--series-b)', shape:'',   dash:''},",
@@ -11,6 +12,7 @@
     },
     {
       "id": "two-series-share-one-marker-shape",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the market takes Model A's circle. Subtler than deleting a shape: every series still HAS one, so a guard that only asked whether a shape exists is satisfied, and the legend still renders four rows. Two of them are now a circle in two blues, which is precisely the failure the shape encoding exists to prevent -- and on the reliability diagram those two overlap on one plot.",
       "find": "  market: {label:'Market',   color:'var(--series-c)', shape:'triangle', dash:''},",
       "replace": "  market: {label:'Market',   color:'var(--series-c)', shape:'circle', dash:''},",
@@ -18,6 +20,7 @@
     },
     {
       "id": "a-second-series-goes-dashed",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "Model B picks up a dash too. It reads as a harmless styling choice and takes away a distinction nothing else replaces: the ACCEPTED_CLOSE entry for --accent/--series-d says in as many words that My Picks is the ONLY dashed stroke on the plot, so a second dashed line falsifies a written verdict rather than merely looking different. Nothing errors and no colour check notices.",
       "find": "  b:      {label:'Model B',  color:'var(--series-b)', shape:'square',   dash:''},",
       "replace": "  b:      {label:'Model B',  color:'var(--series-b)', shape:'square',   dash:'4,3'},",
@@ -25,6 +28,7 @@
     },
     {
       "id": "trend-labels-gap-under-text-height",
+      "target": "src/dashboard/app_accuracy.js",
       "tests": "tests/test_accuracy_trend_labels.py",
       "why": "the gap drops back to 11, less than a label's own height, and two lines ending together overprint their labels again.",
       "find": "const TREND_LABEL_GAP = 14;",
@@ -33,6 +37,7 @@
     },
     {
       "id": "trend-labels-not-spread",
+      "target": "src/dashboard/app_accuracy.js",
       "tests": "tests/test_accuracy_trend_labels.py",
       "why": "each label is drawn at its own line's end, so labels for lines that end together sit on top of each other.",
       "find": "  for(let k = 1; k < out.length; k++) out[k] = Math.max(out[k], out[k-1] + gap);\n",
@@ -41,6 +46,7 @@
     },
     {
       "id": "trend-labels-run-off-the-floor",
+      "target": "src/dashboard/app_accuracy.js",
       "tests": "tests/test_accuracy_trend_labels.py",
       "why": "labels pushed down past the plot's floor are left there, below the axis and over the week labels.",
       "find": "  if(over > 0){",
@@ -49,6 +55,7 @@
     },
     {
       "id": "trend-labels-lose-their-order",
+      "target": "src/dashboard/app_accuracy.js",
       "tests": "tests/test_accuracy_trend_labels.py",
       "why": "the labels come back in sorted order, not their lines' order, so each label names another line.",
       "find": "  order.forEach((o, k) => { res[o.i] = out[k]; });",
@@ -57,6 +64,7 @@
     },
     {
       "id": "trend-labels-drawn-before-every-line",
+      "target": "src/dashboard/app_accuracy.js",
       "tests": "tests/test_accuracy_trend_labels.py",
       "why": "the labels are placed before the last line is drawn, so My Picks' line gets no label at all.",
       "find": "      ${lineFor('p','picks')}\n      ${endLabels()}\n",
@@ -65,6 +73,7 @@
     },
     {
       "id": "trend-no-week-labels",
+      "target": "src/dashboard/app_accuracy.js",
       "tests": "tests/test_accuracy_trend_labels.py",
       "why": "the x-axis loses its week labels, and nothing on the chart says which point is which week.",
       "find": "      ${weekTicks}\n",

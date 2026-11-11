@@ -3,6 +3,14 @@
  "tests": "tests/test_app_parts.py",
  "cases": [
   {
+   "id": "app-split-a-case-names-the-whole-file-again",
+   "target": "tests/mutation/cases/agents_at_work.json",
+   "why": "a case is aimed at app.js again; it still runs through the resolution, so nothing else notices a target naming a file that no longer exists",
+   "find": "\"id\": \"agents-at-work-links-anywhere\",\n      \"target\": \"src/dashboard/app_pages.js\",",
+   "replace": "\"id\": \"agents-at-work-links-anywhere\",\n      \"target\": \"src/dashboard/app.js\",",
+   "expect_caught_by": "test_no_mutation_case_names_the_whole_file_any_more"
+  },
+  {
    "id": "app-split-case-given-to-the-first-of-two-parts",
    "why": "an anchor found once in each of two parts is handed to the first, so the mutation changes one copy and the other keeps passing",
    "find": "    return hits[0] if len(hits) == 1 and not others else target\n",
