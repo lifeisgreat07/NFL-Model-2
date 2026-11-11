@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "trend-chart-phone-width-too-wide",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the phone drawing goes back to a wide viewBox, so the chart is shrunk to fit again and its 11-unit text renders at about 7px on a 375px phone",
       "find": "const W = phone ? 300 : Math.max(TREND_MIN_W, Math.round(width || 680)), H = phone ? 230 : 220,",
       "replace": "const W = phone ? 480 : Math.max(TREND_MIN_W, Math.round(width || 680)), H = phone ? 230 : 220,",
@@ -11,6 +12,7 @@
     },
     {
       "id": "trend-chart-keeps-a-fixed-text-size",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "one label keeps its desktop size inside the phone drawing, the half-done version of this change: the week ticks read, the axis does not",
       "find": "<text x=\"${padL-6}\" y=\"${(y(gv)+4).toFixed(1)}\" text-anchor=\"end\">${gv}%</text>`",
       "replace": "<text x=\"${padL-6}\" y=\"${(y(gv)+4).toFixed(1)}\" text-anchor=\"end\" font-size=\"9\">${gv}%</text>`",
@@ -18,6 +20,7 @@
     },
     {
       "id": "trend-names-drawn-on-a-phone",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the names at the line ends come back on a phone, where the narrow drawing has no room for them beside the lines, and the legend above already names every line",
       "find": "    if(phone) return '';   // the legend names the lines on a phone\n",
       "replace": "",
@@ -25,6 +28,7 @@
     },
     {
       "id": "reliability-text-too-small-on-a-phone",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "one of the diagram's labels sets its own desktop size again, under 11px at the phone drawing's width",
       "find": "<text x=\"${x(g).toFixed(1)}\" y=\"${(padT+PLOT+16).toFixed(1)}\" text-anchor=\"middle\">${g}%</text>",
       "replace": "<text x=\"${x(g).toFixed(1)}\" y=\"${(padT+PLOT+16).toFixed(1)}\" text-anchor=\"middle\" font-size=\"10\">${g}%</text>",
@@ -32,6 +36,7 @@
     },
     {
       "id": "chart-phone-width-drifts-from-the-page",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the charts decide a phone at a different width from the rest of the page, so between the two widths the page lays out for a phone and draws the charts for a desktop",
       "find": "const CHART_PHONE = '(max-width:640px)';",
       "replace": "const CHART_PHONE = '(max-width:480px)';",
@@ -39,6 +44,7 @@
     },
     {
       "id": "reliability-desktop-plot-grows",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the desktop plot is derived from the width like the phone one, so it grows from 390 to 406 units and the desktop diagram draws about 4% taller than it did (#201's first version)",
       "find": "const PLOT = phone ? W - padL - padR : 390;",
       "replace": "const PLOT = W - padL - padR;",

@@ -668,7 +668,11 @@ function renderAccuracy(){
   const graded = gradedPicks();
   const saved = Object.keys(BD.picks || {}).length;
   if(!graded.length){
-    el.innerHTML = stateHtml('waiting', 'Nothing graded yet', `${saved} pick${saved === 1 ? '' : 's'} saved. A pick is graded once its game is final; a cancelled game is never counted.`);
+    // Before any grade the component still draws, each chart saying inside its frame that nothing is
+    // graded, as on Checking the AI's work before (tests/browser/check_accuracy.py).
+    el.innerHTML = `<p class="nba-lede">Nothing graded yet: ${saved} pick${saved === 1 ? '' : 's'} saved. A pick is graded once its game is final; a cancelled game is never counted.</p>
+    ${accuracyHtml(accGames(graded))}
+    ${calibrationHtml(graded)}`;
     return;
   }
   const right = graded.filter(x => x.p.result === 'correct').length;

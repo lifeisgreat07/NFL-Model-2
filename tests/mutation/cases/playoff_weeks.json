@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "playoff-rounds-unnamed",
+      "target": "src/dashboard/app_controls.js",
       "why": "the board calls the Super Bowl 'Week 22'.",
       "find": "  const round = w.season >= 2021\n",
       "replace": "  const round = false && w.season >= 2021\n",
@@ -11,6 +12,7 @@
     },
     {
       "id": "playoff-rounds-every-season",
+      "target": "src/dashboard/app_controls.js",
       "why": "seasons before 2021, whose week 19 was the Divisional round, get 2021's names.",
       "find": "  const round = w.season >= 2021\n",
       "replace": "  const round = w.season >= 0\n",
