@@ -1,0 +1,89 @@
+{
+ "game_id": "401909969",
+ "season": 2026,
+ "slate": "2026-11-11",
+ "start_utc": "2026-11-12T01:00:00Z",
+ "home": "CHI",
+ "away": "SA",
+ "model_a": 0.1678,
+ "model_b": 0.1107,
+ "pick": "SA",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.9941,
+  "away": 1.0
+ },
+ "features": {
+  "point_matchup": -13.464937,
+  "efficiency_matchup": -12.915503,
+  "availability_matchup": -0.005894
+ },
+ "market": {
+  "game_id": "401909969",
+  "home": "CHI",
+  "away": "SA",
+  "start_utc": "2026-11-12T01:00:00Z",
+  "read_utc": "2026-11-11T21:31:34Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 750.0,
+  "away_price": -1200.0,
+  "home_prob": 0.113
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-11T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "5095151",
+    "name": "Caleb Wilson",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "2595516",
+    "name": "Norman Powell",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5105555",
+    "name": "Tobe Awaka",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4066650",
+    "name": "Zach Collins",
+    "status": "Day-To-Day"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4395630",
+    "name": "Devin Vassell",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5101845",
+    "name": "Jayden Quaintance",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "6440",
+    "name": "Tobias Harris",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-11T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-10",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14218,
+  "training_games_priced": 14177,
+  "training_ids_sha256": "a0b1479189b79bacf1b8c2fb0d5ca4fae4b50a17eb6d5dc2c9bb438fb092c52f"
+ },
+ "code_sha256": "85eed674e94f0876988651e2db9c6450cfa56104ea77926ff18e9078fbf96362",
+ "code_commit": "935114417077c53f2967dd763575962eaa9edf01"
+}

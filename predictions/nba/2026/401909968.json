@@ -1,0 +1,89 @@
+{
+ "game_id": "401909968",
+ "season": 2026,
+ "slate": "2026-11-11",
+ "start_utc": "2026-11-12T00:00:00Z",
+ "home": "TOR",
+ "away": "BOS",
+ "model_a": 0.3622,
+ "model_b": 0.3393,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8546,
+  "away": 0.9617
+ },
+ "features": {
+  "point_matchup": -4.732269,
+  "efficiency_matchup": -5.144937,
+  "availability_matchup": -0.107075
+ },
+ "market": {
+  "game_id": "401909968",
+  "home": "TOR",
+  "away": "BOS",
+  "start_utc": "2026-11-12T00:00:00Z",
+  "read_utc": "2026-11-11T21:31:34Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 184.0,
+  "away_price": -222.0,
+  "home_prob": 0.3381
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-11T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "5093267",
+    "name": "Collin Murray-Boyles",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4395724",
+    "name": "Immanuel Quickley",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "6450",
+    "name": "Kawhi Leonard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432586",
+    "name": "Nate Bittle",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433134",
+    "name": "Scottie Barnes",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431684",
+    "name": "Trayce Jackson-Davis",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4251",
+    "name": "Paul George",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-11T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-10",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14218,
+  "training_games_priced": 14177,
+  "training_ids_sha256": "a0b1479189b79bacf1b8c2fb0d5ca4fae4b50a17eb6d5dc2c9bb438fb092c52f"
+ },
+ "code_sha256": "85eed674e94f0876988651e2db9c6450cfa56104ea77926ff18e9078fbf96362",
+ "code_commit": "935114417077c53f2967dd763575962eaa9edf01"
+}
