@@ -79,8 +79,8 @@
       "target": "src/sports/nhl/daily.py",
       "tests": "tests/test_daily_end_to_end.py",
       "why": "the daily run's drift file leaves out the looks, so the page cannot say when the check last looked or will look next",
-      "find": "         'looks': drift.looks(losses, spec), 'next_look': drift.next_look(len(losses), spec)},\n",
-      "replace": "        },\n",
+      "find": "             'looks': drift.looks(losses, spec), 'next_look': drift.next_look(len(losses), spec), 'leak': leak},\n",
+      "replace": "             'leak': leak},\n",
       "expect_caught_by": "test_the_nhl_daily_run_end_to_end"
     },
     {

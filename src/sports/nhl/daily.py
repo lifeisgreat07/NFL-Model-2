@@ -368,11 +368,17 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         spec = drift.baseline()
         losses = drift.per_game_log_loss(drift_rows(folder, sched))
         flagged = drift.flags(losses, spec)
+        mean = (sum(losses) / len(losses)) if losses else None
+        # Stage 95 item 33: the other direction a leak shows in, said rather than flagged.
+        leak = drift.leak_direction(mean, len(losses), spec['baseline']['value'], drift.spread_range(),
+                                    spec['rule']['checkpoints'][0], drift.leaked_picks(folder))
         (PATHS.results / f'drift_{season}.json').write_text(json.dumps(
-            {'games': len(losses), 'mean_log_loss': (sum(losses) / len(losses)) if losses else None,
+            {'games': len(losses), 'mean_log_loss': mean,
              'baseline': spec['baseline']['value'], 'flagged': flagged,
-             'looks': drift.looks(losses, spec), 'next_look': drift.next_look(len(losses), spec)},
+             'looks': drift.looks(losses, spec), 'next_look': drift.next_look(len(losses), spec), 'leak': leak},
             indent=1) + '\n', encoding='utf-8')
+        for line in drift.leak_lines(leak):
+            print(line)
         if flagged:
             print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
 

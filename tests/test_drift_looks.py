@@ -193,7 +193,9 @@ def function_source(js, name):
 
 def run(sport, call):
     js = page(sport)
-    prog = (function_source(js, 'pct') if 'function pct' in js else '') + function_source(js, 'driftStatus') \
+    # Stage 95 item 33: driftStatus says the leak line through leakNote.
+    prog = (function_source(js, 'pct') if 'function pct' in js else '') + function_source(js, 'leakNote') \
+        + function_source(js, 'driftStatus') \
         + function_source(js, 'driftLooks') + f'process.stdout.write({call});'
     return subprocess.run([NODE, '-e', prog], capture_output=True, text=True, check=True).stdout
 
