@@ -3,12 +3,14 @@
 src/dashboard/app.js was one file of some five thousand lines. It is six parts,
 app_controls.js to app_pages.js, which page.html includes in order where it
 included app.js, so the joined template is unchanged. Tests read the joined
-script through src.core.template_parts.APP_SCRIPT. A mutation case may still
-name src/dashboard/app.js: tests/mutation/corpus.py resolves it to the one part
-that holds its anchor.
+script through src.core.template_parts.APP_SCRIPT. Every mutation case names
+its part (steps two and three); tests/mutation/corpus.py still resolves a case
+naming src/dashboard/app.js to the one part holding its anchor, but no case in
+the corpus may rely on that.
 
 Run with: pytest tests/test_app_parts.py -v
 """
+import json
 import sys
 from pathlib import Path
 
@@ -79,6 +81,18 @@ def test_an_anchor_in_two_parts_or_none_stays_on_app_js_and_is_counted_across_th
     count, _, _ = mc.anchor_occurrences({'id': 'x', 'target': 'src/dashboard/app.js',
                                          'find': 'no such text anywhere 0x51f'})
     assert count == 0
+
+
+def test_no_mutation_case_names_the_whole_file_any_more():
+    """Stage 87 item 4, step three: each case names its part itself, read from the
+    case files as written, before load_corpus resolves anything. A case aimed at
+    app.js would still run, through the resolution, which is why only this sees it."""
+    whole = []
+    for path in sorted((ROOT / 'tests' / 'mutation' / 'cases').glob('*.json')):
+        doc = json.loads(path.read_text(encoding='utf-8'))
+        whole += [f"{path.name}: {c['id']}" for c in doc['cases']
+                  if c.get('target', doc.get('target')) == 'src/dashboard/app.js']
+    assert whole == [], f'{len(whole)} case(s) still name src/dashboard/app.js: {whole[:5]}'
 
 
 def test_the_old_path_reads_the_joined_script():

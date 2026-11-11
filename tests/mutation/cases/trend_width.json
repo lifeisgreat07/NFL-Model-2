@@ -4,6 +4,7 @@
  "cases": [
   {
    "id": "trend-fixed-680",
+   "target": "src/dashboard/app_accuracy.js",
    "why": "the desktop trend is drawn 680 wide again, half its box at 1440 (Stage 79 item 49, N9).",
    "find": "Math.max(TREND_MIN_W, Math.round(width || 680))",
    "replace": "680",
@@ -11,6 +12,7 @@
   },
   {
    "id": "trend-never-redrawn",
+   "target": "src/dashboard/app_accuracy.js",
    "why": "the trend is never redrawn, so it keeps the width it had while its page was hidden.",
    "find": "new ResizeObserver(sizeTrendChart).observe(plotBox)",
    "replace": "void plotBox",
@@ -18,6 +20,7 @@
   },
   {
    "id": "trend-redraw-loop",
+   "target": "src/dashboard/app_accuracy.js",
    "why": "every resize redraws, the same width included.",
    "find": "if(!w || w === Number(plot.dataset.w)) return;",
    "replace": "if(!w) return;",
@@ -25,6 +28,7 @@
   },
   {
    "id": "dive-scale-unprinted",
+   "target": "src/dashboard/app_team.js",
    "why": "Deep-Dive prints no scale again (N10).",
    "find": "${splitNote}${diveScaleHtml(maxAbs)}${rowsHtml}",
    "replace": "${splitNote}${rowsHtml}",

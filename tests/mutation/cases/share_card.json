@@ -62,7 +62,7 @@
   {
    "id": "share-nfl-unescaped",
    "why": "the NFL card's data-share is written unescaped, and its quotes end the attribute.",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_board.js",
    "find": "  return escapeHtml(JSON.stringify({sport: 'NFL',",
    "replace": "  return (JSON.stringify({sport: 'NFL',",
    "expect_caught_by": "test_the_nfl_card_carries_its_image"
