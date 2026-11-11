@@ -1,0 +1,26 @@
+[
+  {
+    "team": "SEA",
+    "player_id": "00-0035704",
+    "player_name": "Drew Lock",
+    "source": "https://www.seahawks.com/news/mike-macdonald-on-seattle-sports-710am-drew-lock-expected-to-start-again-in-week-10"
+  },
+  {
+    "team": "MIA",
+    "player_id": "00-0040014",
+    "player_name": "Kyle McCord",
+    "source": "https://www.nfl.com/news/dolphins-place-qb-malik-willis-groin-on-injured-reserve-kyle-mccord-in-line-for-first-start"
+  },
+  {
+    "team": "ARI",
+    "player_id": "00-0041561",
+    "player_name": "Carson Beck",
+    "source": "https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/mike-lafleur-on-carson-beck-we-have-all-confidence-hes-ready-to-roll"
+  },
+  {
+    "team": "BAL",
+    "player_id": "00-0033119",
+    "player_name": "Jacoby Brissett",
+    "source": "https://sports.yahoo.com/articles/ravens-qb-jacoby-brissett-status-221814705.html"
+  }
+]
