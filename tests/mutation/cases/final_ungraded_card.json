@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "provisional-winner-reversed",
+      "target": "src/dashboard/app_board.js",
       "why": "the comparison is flipped, so every finished card names the loser as the winner; nothing throws and the sentence reads naturally either way",
       "find": "  return `${g.away_score > g.home_score ? g.away : g.home} won`;",
       "replace": "  return `${g.away_score < g.home_score ? g.away : g.home} won`;",
@@ -11,6 +12,7 @@
     },
     {
       "id": "graded-cards-go-provisional-too",
+      "target": "src/dashboard/app_board.js",
       "why": "a graded card also says 'picked ... won' beside its right-or-wrong tag, so the two say the same thing twice after Tuesday, the redundancy Mark removed on 2026-09-28",
       "find": "  if(g.status !== 'final' || g.graded || !gameHasScore(g)) return '';",
       "replace": "  if(g.status !== 'final' || !gameHasScore(g)) return '';",
@@ -18,6 +20,7 @@
     },
     {
       "id": "tie-named-as-home-win",
+      "target": "src/dashboard/app_board.js",
       "why": "a tie falls through to the comparison and is reported as the home team winning",
       "find": "  if(g.away_score === g.home_score) return 'a tie';\n",
       "replace": "",
@@ -25,6 +28,7 @@
     },
     {
       "id": "finished-card-still-says-to-win",
+      "target": "src/dashboard/app_board.js",
       "why": "the headline ignores the provisional state and keeps saying 'to win' after the game is over, the exact wording the audit flagged",
       "find": "  const after = done ? `<span class=\"card-hl-to\">&middot; ${done}</span>` : '<span class=\"card-hl-to\">to win</span>';",
       "replace": "  const after = '<span class=\"card-hl-to\">to win</span>';",

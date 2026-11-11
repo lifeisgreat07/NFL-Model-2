@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "slot-heads-under-every-sort",
+      "target": "src/dashboard/app_board.js",
       "why": "slot headers stay when the board is sorted by confidence, so a 4:25 header sits over a 1:00 game and the headers contradict the order.",
       "find": "  if(currentSort !== 'chronological') return '';\n",
       "replace": "",
@@ -11,6 +12,7 @@
     },
     {
       "id": "slot-head-on-every-card",
+      "target": "src/dashboard/app_board.js",
       "why": "every card gets its own header, so the board repeats the time once per game -- the repetition the header exists to remove.",
       "find": "  if(!key || (i > 0 && slotKey(sorted[i - 1]) === key)) return '';\n",
       "replace": "  if(!key) return '';\n",
@@ -18,6 +20,7 @@
     },
     {
       "id": "regional-pill-says-nothing",
+      "target": "src/dashboard/app_board.js",
       "why": "the pill shows the network alone again, and nine cards reading CBS imply every viewer gets all nine.",
       "find": "  const regional = g.tv_regional ? '<span class=\"tv-regional\"> · regional</span>' : '';\n",
       "replace": "  const regional = '';\n",

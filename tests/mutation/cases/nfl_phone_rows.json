@@ -11,7 +11,7 @@
   },
   {
    "id": "phone-row-never-opens",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_board.js",
    "why": "a tap on a row leaves its card hidden",
    "find": "    card.classList.toggle('is-open', open);\n",
    "replace": "",
@@ -19,7 +19,7 @@
   },
   {
    "id": "phone-row-result-inverted",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_board.js",
    "why": "a wrong pick reads Right",
    "find": "    : verdict ? ['correct', 'Correct'] : ['incorrect', 'Missed'];",
    "replace": "    : verdict ? ['incorrect', 'Missed'] : ['correct', 'Correct'];",

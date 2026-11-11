@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "card-header-second-construction-site-returns",
+      "target": "src/dashboard/app_board.js",
       "why": "the Week Board goes back to hand-building its own title. This is the defect exactly as it was, and it is invisible in review: both copies read correctly, and the next change to the title edits one of them while the other looks like code nobody needed to touch. That is how the `@` separator survived on My Picks after being changed everywhere else, with a green suite and a diff that looked complete.",
       "find": "      ${matchupHeader(g)}",
       "replace": "      <div class=\"matchup-header\">${g.away} <span class=\"at-symbol\">at</span> ${g.home}</div>",
@@ -11,6 +12,7 @@
     },
     {
       "id": "card-header-picks-stops-calling-the-helper",
+      "target": "src/dashboard/app_board.js",
       "why": "My Picks drops its call, so the helper exists, is tested, and is used by one page. A guard that says 'the title is built in one place' is satisfied by a helper nobody calls -- which is the shape Stage 3 closed with, when src/agents/collect_agent_log.py was written, mutation-covered and had never run. Coverage has to be enumerated, not asserted.",
       "find": "      ${matchupHeader(g, 'quiet')}",
       "replace": "      <div class=\"picks-title\">${g.away} at ${g.home}</div>",
@@ -26,6 +28,7 @@
     },
     {
       "id": "card-header-variant-changes-the-text-not-just-the-class",
+      "target": "src/dashboard/app_board.js",
       "why": "the variant starts altering the separator as well as the class list. One construction site producing two different sentences is the original defect in a subtler and harder-to-spot form: the count guard still passes, the call-site guard still passes, and the two pages disagree again. Only executing the function catches it.",
       "find": "<span class=\"at-symbol\">at</span>",
       "replace": "<span class=\"at-symbol\">${variant ? '@' : 'at'}</span>",
@@ -33,6 +36,7 @@
     },
     {
       "id": "card-header-logos-back-in-the-title",
+      "target": "src/dashboard/app_board.js",
       "why": "the logos go back into the title as well as the bar, so every team shows its logo twice on one card.",
       "find": "  return `<div class=\"matchup-header${variant ? ' ' + variant : ''}\">${g.away} <span class=\"at-symbol\">at</span> ${g.home}</div>`;",
       "replace": "  return `<div class=\"matchup-header${variant ? ' ' + variant : ''}\">${barTeam(g.away)} <span class=\"at-symbol\">at</span> ${barTeam(g.home)}</div>`;",
@@ -40,6 +44,7 @@
     },
     {
       "id": "card-bar-home-end-loses-its-logo",
+      "target": "src/dashboard/app_board.js",
       "why": "the home end of the bar goes back to a bare abbreviation, so one side of the card has a logo and the other does not.",
       "find": "${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${barTeam(g.home)}${favStar(",
       "replace": "${pickBadge(bPicksHome, g.graded, g.model_b_correct)}${g.home}${favStar(",
@@ -48,6 +53,7 @@
     },
     {
       "id": "card-header-logo-named-twice",
+      "target": "src/dashboard/app_board.js",
       "why": "the logo carries the team as alt text, so a screen reader reads every team twice.",
       "find": "alt=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer\" data-hide-on-error>${team}</span>`",
       "replace": "alt=\"${team}\" loading=\"lazy\" referrerpolicy=\"no-referrer\" data-hide-on-error>${team}</span>`",
@@ -55,6 +61,7 @@
     },
     {
       "id": "card-header-logo-no-fallback",
+      "target": "src/dashboard/app_board.js",
       "why": "a logo ESPN will not serve stays on the card as a broken-image mark instead of hiding.",
       "find": "alt=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer\" data-hide-on-error>${team}</span>`",
       "replace": "alt=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer\">${team}</span>`",

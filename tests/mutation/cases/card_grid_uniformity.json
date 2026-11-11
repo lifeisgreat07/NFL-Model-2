@@ -18,7 +18,7 @@
     },
     {
       "id": "card-coin-flip-back-on-the-face",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the 129px coin-flip block returning to the card face is what made heights span 205px in the first place. It is the single change that undoes this work, and it is a one-word edit.",
       "find": "  const notable = t.underpowered;",
       "replace": "  const notable = t.underpowered || t.coinFlip;",

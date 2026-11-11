@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "card-status-drops-a-zero-score",
+      "target": "src/dashboard/app_board.js",
       "why": "a truthiness check reads a score of 0 as missing, so a shutout never shows as final.",
       "find": "  return g.away_score !== null && g.away_score !== undefined\n    && g.home_score !== null && g.home_score !== undefined;",
       "replace": "  return g.away_score && g.home_score;",
@@ -11,6 +12,7 @@
     },
     {
       "id": "card-status-contradicts-the-graded-tag",
+      "target": "src/dashboard/app_board.js",
       "why": "a snapshot taken before grading still says the game has started, so a graded card reads 'final score not in yet' beside 'Correct'.",
       "find": "  if(g.status === 'started' && !g.graded) return",
       "replace": "  if(g.status === 'started') return",
@@ -18,6 +20,7 @@
     },
     {
       "id": "card-status-flips-the-score",
+      "target": "src/dashboard/app_board.js",
       "why": "home score first under an away-first matchup header reads as the other team winning.",
       "find": "return `Final: ${g.away} ${g.away_score}, ${g.home} ${g.home_score}`;",
       "replace": "return `Final: ${g.away} ${g.home_score}, ${g.home} ${g.away_score}`;",
@@ -25,6 +28,7 @@
     },
     {
       "id": "card-status-replaces-the-kickoff",
+      "target": "src/dashboard/app_board.js",
       "why": "the status line takes the kickoff line's place, so a board sorted by kickoff no longer shows the kickoff it is sorted by.",
       "find": "      ${kickoff || tvPill ? `<div class=\"card-kickoff\">${kickoff}${tvPill}</div>` : ''}\n      ${statusLine ? `<div class=\"card-status score-off\">${statusLine}</div>` : ''}",
       "replace": "      ${statusLine ? `<div class=\"card-status score-off\">${statusLine}</div>` : (kickoff || tvPill ? `<div class=\"card-kickoff\">${kickoff}${tvPill}</div>` : '')}",
