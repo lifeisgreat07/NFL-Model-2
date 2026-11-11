@@ -284,6 +284,7 @@ The full text of every stage, finished or planned, is in
 - **Stages 75 to 80 - the 2026-10-13 UI/UX audit**: done, #436 to #513.
 - **Stages 81 to 90 - the 2026-11-02 review** (text in `docs/history/10-review-2026-11-02.md`): order 81, 82, 86, 88 items 1-2, 83, 84 and 85, 89, 87; 90 last.
 - **Stages 91 to 96 - audit 7, executed** (`docs/history/11-audit7-2026-11-04.md`, with Claude's pushback): 91 first; the model-changing items as a registered shadow "day-sport v2" (Mark, 2026-11-05).
+- **Stages 97 to 104 (Mark, 2026-11-11)** (`docs/history/12-mlb-and-more-2026-11-11.md`): 104 the NBA page's tabs after Stage 87; then 95 and the v2 shadow; 102 league logos; 97 to 101 MLB, built before spring training; 103 March Madness.
 
 ## Ending a session
 
