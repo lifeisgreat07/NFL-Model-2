@@ -662,7 +662,7 @@ function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
     <h2 class="section-title">The drift check</h2>
     <p class="nba-lede">${driftStatus(BD.drift, BD.drift_rule)}</p>
-    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class="nba-lede">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04 and 2026-11-05: ${driftLooks(BD.drift_rule)}</p>` : ''}
+    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class="nba-lede">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04, 2026-11-05 and 2026-11-11: ${driftLooks(BD.drift_rule)}</p>` : ''}
     ${spreadHtml(BD.spread, 'nba')}
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(BD.forward, 'nba')}
