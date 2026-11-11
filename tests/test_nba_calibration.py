@@ -92,4 +92,5 @@ def test_the_accuracy_page_counts_only_graded_picks():
 def test_the_accuracy_page_says_so_before_any_grade():
     out = run_accuracy({'games': [{'id': '1', 'home': 'BOS', 'away': 'NY', 'day': '2026-11-01'}],
                         'picks': {'1': {'a': 0.6, 'b': None, 'by': 'model_a', 'pick': 'BOS', 'result': 'pending'}}})
-    assert out.startswith('STATE Nothing graded yet: 1 pick saved.')
+    assert out.startswith('<p class="nba-lede">Nothing graded yet: 1 pick saved.')
+    assert 'ACC' in out and 'No NBA pick has been graded yet' in out, 'the component and the table still draw'

@@ -1,7 +1,7 @@
 """The NHL and the NBA draw the race, the trend and the calibration diagram (Stage 79 item 46, the 2026-10-13 UI/UX audit's L5 and B4).
 
-This opens the NHL's sample page on Accuracy and the NBA page on Checking
-the AI's work, at 390 and 1440 px, dark and light, and fails unless each
+This opens the NHL's sample page on Accuracy and the NBA page on Season
+Accuracy (Checking the AI's work until Stage 104 item 1), at 390 and 1440 px, dark and light, and fails unless each
 shows the scoreboard with its three forecasts and both charts, no script
 error is thrown, no chart text is under 11 px, and every chart stays inside
 its own box. On the NHL (graded picks) the diagram has a dot; on the NBA
@@ -42,7 +42,7 @@ async def check_pages(nhl, nba):
     report = []
     async with async_playwright() as p:
         browser = await p.chromium.launch()
-        for sport, path, page_id in (('NHL', nhl, 'accuracy'), ('NBA', nba, 'reliability')):
+        for sport, path, page_id in (('NHL', nhl, 'accuracy'), ('NBA', nba, 'accuracy')):
             for theme in ('dark', 'light'):
                 for width in (390, 1440):
                     where = f'[{sport} {theme} {width}]'

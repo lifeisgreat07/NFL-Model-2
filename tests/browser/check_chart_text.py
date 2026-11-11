@@ -31,7 +31,8 @@ from page_edit import rehash
 
 ROOT = Path(__file__).resolve().parents[2]
 #: Each sport's pages with charts, by the id the router opens.
-PAGES = {'NFL': ('accuracy', 'modellab'), 'NHL': ('accuracy',), 'NBA': ('reliability',)}
+#: The NBA's charts moved from Checking the AI's work to Season Accuracy in Stage 104 item 1.
+PAGES = {'NFL': ('accuracy', 'modellab'), 'NHL': ('accuracy',), 'NBA': ('accuracy',)}
 MEASURE = """() => {
   const page = document.querySelector('.page.active');
   const charts = [...page.querySelectorAll('svg')].filter(s => s.querySelector('text') && s.getClientRects().length);
