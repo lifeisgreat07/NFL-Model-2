@@ -699,6 +699,88 @@ function renderReliability(){
     <p class="nba-lede">A separate auditing agent, Booth, re-ran the confirmation on a Linux machine before the results were merged (PR #319): it matched the committed file to within 1e-12 though not bit for bit (its largest difference was 1.6e-16), and every published figure, interval and label agreed. Booth did not re-run the tuning grid; that the full backtest, tuning included, reproduces both files byte for byte was checked only on the Windows machine that wrote them.</p>`;
 }
 
+/* ---------- power ratings (Stage 104 item 3) ----------
+   The NHL's page (src/sports/nhl/pages/nhl.js) on the NBA's two ratings, from
+   results/nba/ratings_<season>.json, which the daily run writes: a club's row
+   is its rank, logo and name, its point rating as a bar about a zero line
+   against the league's largest, and its efficiency rating. */
+function clubName(abbr){ return (BD.teams[abbr] || {}).name || abbr; }
+function ratingAxisHtml(scale, title){
+  return `<div class="net-head"><span>${title}</span><div class="net-head-row"><div class="net-axis" aria-hidden="true">`
+    + `<span class="ax-min">${signed(-scale, 1)}</span><span class="ax-zero">0</span><span class="ax-max">${signed(scale, 1)}</span></div><span></span></div></div>`;
+}
+function ratingRowHtml(t, i, scale){
+  const w = Math.abs(t.point) / scale * 100, src = logo(t.team);
+  const img = src ? `<img class="team-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error>` : '';
+  return `<tr><td class="rank">${i + 1}</td>`
+    + `<td><div class="team-cell">${img}<span class="team-abbr">${escapeHtml(t.team)}</span><span class="team-full">${escapeHtml(clubName(t.team))}</span></div></td>`
+    + `<td class="num"><div class="net-cell-inner"><div class="srs-bar-track diverging" title="${signed(t.point, 1)} points a game; league scale ±${scale.toFixed(1)}, centre line is zero">`
+    + `<div class="srs-bar-fill" style="left:${t.point >= 0 ? 50 : 50 - w / 2}%; width:${w / 2}%;"></div></div><span class="net-value">${signed(t.point, 1)}</span></div></td>`
+    + `<td class="num">${signed(t.efficiency, 1)}</td></tr>`;
+}
+function renderRatings(){
+  const r = BD.ratings, el = document.getElementById('ratings-body');
+  if(!r || !r.teams.length){ el.innerHTML = stateHtml('waiting', 'No ratings yet', 'The daily run writes them every run.'); return; }
+  const scale = Math.max(...r.teams.map(t => Math.abs(t.point)), 0.1);
+  el.innerHTML = `<p class="nba-lede">As of ${escapeHtml(r.as_of)}. A club&#39;s point rating is how many points a game better than an average club it has been, from a ridge regression of every earlier game&#39;s point margin, recent games counting more. The efficiency rating is the same per 100 possessions, so a fast or slow pace does not inflate it. Model A reads the difference between the two clubs in a game, with who is available.</p>
+    <div class="table-wrap"><table class="metrics-table nba-ratings-table"><caption class="visually-hidden">Team ratings</caption>
+    <thead><tr><th scope="col">#</th><th scope="col">Club</th><th scope="col" style="text-align:center;">${ratingAxisHtml(scale, 'Points a game')}</th><th scope="col" class="num">Per 100 possessions</th></tr></thead>
+    <tbody>${r.teams.map((t, i) => ratingRowHtml(t, i, scale)).join('')}</tbody></table></div>`;
+}
+
+/* ---------- teams (Stage 104 item 3) ----------
+   One club at a time, as the NHL's page: its ratings and rank, its record,
+   and every game played or picked so far with the pick and its grade. */
+let currentTeam = null;
+try{ currentTeam = localStorage.getItem('nba:team'); }catch(e){}
+function teamGames(abbr){
+  return BD.games.filter(g => g.home === abbr || g.away === abbr)
+    .sort((a, b) => (a.start || a.day).localeCompare(b.start || b.day));
+}
+function teamRecord(abbr){
+  const finals = teamGames(abbr).filter(g => g.status === 'final' && g.hs !== null && g.hs !== undefined);
+  const won = finals.filter(g => (g.home === abbr ? g.hs > g.as : g.as > g.hs)).length;
+  return {won, lost: finals.length - won};
+}
+function renderTeams(){
+  const select = document.getElementById('team-select');
+  const clubs = Object.keys(BD.teams).sort((a, b) => clubName(a).localeCompare(clubName(b)));
+  if(!currentTeam || !BD.teams[currentTeam]) currentTeam = clubs[0];
+  if(!select.options.length){
+    select.innerHTML = clubs.map(c => `<option value="${c}">${escapeHtml(clubName(c))}</option>`).join('');
+    select.addEventListener('change', () => {
+      currentTeam = select.value;
+      try{ localStorage.setItem('nba:team', currentTeam); }catch(e){}
+      renderTeams();
+      replaceRoute('teams');
+    });
+  }
+  select.value = currentTeam;
+  const t = currentTeam, el = document.getElementById('teams-body');
+  const r = BD.ratings;
+  const rated = r ? r.teams.findIndex(x => x.team === t) : -1;
+  const rating = rated >= 0 ? r.teams[rated] : null;
+  const rec = teamRecord(t);
+  const facts = [
+    rating ? `Point rating <b>${signed(rating.point, 1)}</b> a game (${rated + 1} of ${r.teams.length}), efficiency rating <b>${signed(rating.efficiency, 1)}</b> per 100 possessions.` : 'No ratings yet.',
+    rec.won + rec.lost ? `<b>${rec.won}-${rec.lost}</b> this season.` : 'No games played yet this season.',
+  ];
+  const games = teamGames(t).filter(g => g.status === 'final' || BD.picks[g.id]);
+  const row = g => {
+    const home = g.home === t, opp = home ? g.away : g.home, p = BD.picks[g.id];
+    const played = g.status === 'final' && g.hs !== null && g.hs !== undefined;
+    const score = played ? `${home ? g.hs : g.as}-${home ? g.as : g.hs}` : '';
+    const won = played ? ((home ? g.hs > g.as : g.as > g.hs) ? 'W' : 'L') : '';
+    const graded = p && (p.result === 'correct' || p.result === 'wrong');
+    const tag = graded ? `<span class="graded-tag ${p.result === 'correct' ? 'correct' : 'incorrect'}">${p.result === 'correct' ? 'Correct' : 'Missed'}</span>` : (p ? 'Not final' : '');
+    return `<tr><td>${FMT_MONTHDAY.format(dayDate(g.day))}</td><td>${home ? 'vs' : 'at'} ${escapeHtml(opp)}</td><td>${won} ${score}</td><td>${p ? escapeHtml(p.pick) : 'No pick'}</td><td>${tag}</td></tr>`;
+  };
+  el.innerHTML = `<div class="fav-title"><h2 class="section-title">${escapeHtml(clubName(t))}</h2>${favStar('nba', t, escapeHtml(clubName(t)))}</div><p class="nba-lede">${facts.join(' ')}</p>
+    ${games.length ? `<div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">${escapeHtml(clubName(t))}: games so far</caption>
+    <thead><tr><th scope="col">Date</th><th scope="col">Opponent</th><th scope="col">Result</th><th scope="col">Pick</th><th scope="col">Graded</th></tr></thead>
+    <tbody>${games.map(row).join('')}</tbody></table></div>` : stateHtml('waiting', 'No games played yet', '')}`;
+}
+
 /* ---------- what's changed (Stage 104 item 2) ----------
    As the NHL's page: src/sports/nba/pages/changes.json, newest first. */
 function renderChanges(){
@@ -714,7 +796,7 @@ function renderChanges(){
    bottom bar, so there is no More sheet. */
 const BASE_TITLE = document.title;
 /* The pages the phone nav keeps under More (Stage 77 item 22), as the NHL's does. */
-const OVERFLOW_PAGES = ['method', 'reliability', 'changes'];
+const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'reliability', 'changes'];
 function showPage(name, opts){
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
   document.querySelectorAll('[data-page]').forEach(b => {
@@ -787,6 +869,8 @@ themeLabel();
 renderBoard();
 /* Stage 80 item 53: a star redraws the board with its team's games first. */
 installFavStars(renderBoard);
+renderRatings();
+renderTeams();
 renderAccuracy();
 renderModelLab();
 renderMethod();

@@ -340,6 +340,12 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     PATHS.results.mkdir(parents=True, exist_ok=True)
     after_save.guarded('schedule file', lambda: page_inputs.write(PATHS.results / f'schedule_{season}.json',
                                                                   page_inputs.schedule_json(sched, str(today.date()))))
+    # Stage 104 item 3: the ratings as they stand before today, for the Power Ratings and Teams pages.
+    rated_on = today.tz_localize(None)
+    after_save.guarded('ratings file', lambda: page_inputs.write(
+        PATHS.results / f'ratings_{season}.json',
+        page_inputs.ratings_json(ratings.day_ratings(games[games['day'] < rated_on], rated_on, h, lam),
+                                 set(sched['home']) | set(sched['away']), str(today.date()))))
 
     def write_grades() -> list[dict[str, Any]]:
         graded = grade(folder, sched)
