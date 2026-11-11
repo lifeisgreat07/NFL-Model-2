@@ -1,38 +1,38 @@
 [
  {
   "page": "nba",
-  "label": "base",
+  "label": "head",
   "viewport": "390x844",
   "theme": "light",
-  "file": "nba-390x844-light-base.png",
-  "bytes": 93410,
+  "file": "nba-390x844-light-head.png",
+  "bytes": 93987,
   "parked": 3
  },
  {
   "page": "nba",
-  "label": "base",
+  "label": "head",
   "viewport": "390x844",
   "theme": "dark",
-  "file": "nba-390x844-dark-base.png",
-  "bytes": 94137,
+  "file": "nba-390x844-dark-head.png",
+  "bytes": 94712,
   "parked": 3
  },
  {
   "page": "nba",
-  "label": "base",
+  "label": "head",
   "viewport": "1440x900",
   "theme": "light",
-  "file": "nba-1440x900-light-base.png",
-  "bytes": 232344,
+  "file": "nba-1440x900-light-head.png",
+  "bytes": 235465,
   "parked": 4
  },
  {
   "page": "nba",
-  "label": "base",
+  "label": "head",
   "viewport": "1440x900",
   "theme": "dark",
-  "file": "nba-1440x900-dark-base.png",
-  "bytes": 232508,
+  "file": "nba-1440x900-dark-head.png",
+  "bytes": 235503,
   "parked": 4
  }
 ]
