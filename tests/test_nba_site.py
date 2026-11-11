@@ -82,7 +82,7 @@ def test_the_board_leads_and_the_no_picks_page_is_gone(built: tuple[dict, str]) 
 def test_every_page_is_on_both_menus_and_the_checker_can_open_it(built: tuple[dict, str]) -> None:
     _, html = built
     pages = re.findall(r'<section class="page[^"]*" id="page-([a-z]+)"', html)
-    assert pages == ['board', 'modellab', 'method', 'reliability']
+    assert pages == ['board', 'accuracy', 'modellab', 'method', 'reliability']
     side = re.findall(r'class="nav-btn[^"]*" data-page="([a-z]+)"', html)
     bottom = re.findall(r'class="bnav-btn[^"]*" data-page="([a-z]+)"', html)
     # Since Stage 77 item 22 the phone nav keeps Methodology and Checking the

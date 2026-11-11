@@ -15,6 +15,20 @@
       "find": "  return p.pick === g.home ? home : 1 - home;\n}\nfunction gradedPicks(){",
       "replace": "  return home;\n}\nfunction gradedPicks(){",
       "expect_caught_by": "test_graded_picks_fall_in_their_bins"
+    },
+    {
+      "id": "nba-accuracy-counts-every-pick-right",
+      "why": "the Season Accuracy record counts every graded pick as right, so a losing run reads as perfect",
+      "find": "  const right = graded.filter(x => x.p.result === 'correct').length;\n  const list = graded.slice()",
+      "replace": "  const right = graded.length;\n  const list = graded.slice()",
+      "expect_caught_by": "test_the_accuracy_page_counts_only_graded_picks"
+    },
+    {
+      "id": "nba-accuracy-page-never-built",
+      "why": "the Season Accuracy page is never drawn at load, so the tab opens on an empty page",
+      "find": "installFavStars(renderBoard);\nrenderAccuracy();\n",
+      "replace": "installFavStars(renderBoard);\n",
+      "expect_caught_by": "test_it_is_on_the_accuracy_page_and_not_the_checks_page"
     }
   ]
 }
