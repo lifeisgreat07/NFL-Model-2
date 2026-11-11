@@ -20,7 +20,8 @@ What it reads, all under the NBA's folders (`src.core.sport.sport_paths`):
 - `experiments/nba/stage61/results/confirmation.json` and `tuning.json`:
   the backtest's answers and its validation grid;
 - `data/nba/history/games_<season>.csv` and `market_<season>.csv`: how
-  many games each season holds and how many have a price.
+  many games each season holds and how many have a price;
+- `src/sports/nba/pages/changes.json`: the What's Changed page's entries.
 
 Missing backtest results stop the build: without them those pages have
 nothing true to say. The template is `src/sports/nba/pages/`; the shared stylesheet is the
@@ -181,6 +182,8 @@ def payload(now: datetime) -> dict[str, Any]:
         'backtest': _read(folder / 'results' / 'confirmation.json'),
         'tuning': _read(folder / 'results' / 'tuning.json'),
         'coverage': coverage(p['training_from_season'], p['confirmation_seasons'][-1]),
+        # Stage 104 item 2: the What's Changed page's entries, newest first.
+        'changes': json.loads((TEMPLATE / 'changes.json').read_text(encoding='utf-8')),
     }
 
 

@@ -96,3 +96,8 @@ html[data-density="compact"] .nba-row{min-height:40px;}
   .nba-row{display:none !important;}
   .nba-row-detail{display:block !important;}
 }
+
+/* Stage 104 item 2: What's Changed, as the NHL's (src/sports/nhl/pages/nhl.css). */
+.nba-change{border-left:2px solid var(--border-strong); padding-left:var(--s3); margin:0 0 var(--s4);}
+.nba-change h3{font-size:var(--fs-14); margin:0;}
+.nba-change .nba-change-date{font-size:var(--fs-12); color:var(--text-3);}
