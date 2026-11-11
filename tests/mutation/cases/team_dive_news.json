@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "dive-news-shows-the-oldest-week",
+      "target": "src/dashboard/app_team.js",
       "why": "the block reads the first week with news instead of the newest, so last week's injuries sit on the page as this week's.",
       "find": "  return keys.length ? keys[keys.length - 1] : null;",
       "replace": "  return keys.length ? keys[0] : null;",
@@ -11,6 +12,7 @@
     },
     {
       "id": "dive-news-unpublished-reads-as-healthy",
+      "target": "src/dashboard/app_team.js",
       "why": "a week whose report is not out yet falls through to the published branch and reads 'No starters listed', which a reader takes for 'nobody hurt'.",
       "find": "  if(entry.injury_report === 'not yet published'){",
       "replace": "  if(entry.injury_report === 'not yet published' && false){",
@@ -18,6 +20,7 @@
     },
     {
       "id": "dive-news-hides-an-injured-pick-qb",
+      "target": "src/dashboard/app_team.js",
       "why": "a pick made with a quarterback now listed out reads 'the same starter as last game', two lines above his name under Out.",
       "find": "    const listed = (entry.out || []).some(p => p.name === qb.name) ? 'out'",
       "replace": "    const listed = false ? 'out'",
@@ -25,6 +28,7 @@
     },
     {
       "id": "dive-news-lists-questionable-players",
+      "target": "src/dashboard/app_team.js",
       "why": "the questionable count is dropped, so a starter who may not play goes unmentioned.",
       "find": "    if(q) items.push(",
       "replace": "    if(false) items.push(",
@@ -32,6 +36,7 @@
     },
     {
       "id": "dive-news-dated-in-utc",
+      "target": "src/dashboard/app_team.js",
       "why": "the read date is shown in UTC, so a Sunday-evening read says Monday.",
       "find": "timeZone:'America/New_York', weekday:'short'",
       "replace": "timeZone:'UTC', weekday:'short'",
@@ -39,6 +44,7 @@
     },
     {
       "id": "dive-news-name-not-escaped",
+      "target": "src/dashboard/app_team.js",
       "why": "a name is written into the page as markup rather than text.",
       "find": "<span class=\"dive-news-text\">${escapeHtml(it.text)}</span>",
       "replace": "<span class=\"dive-news-text\">${it.text}</span>",

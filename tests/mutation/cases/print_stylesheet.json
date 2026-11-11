@@ -25,7 +25,7 @@
     },
     {
       "id": "print-stays-dark",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_board.js",
       "why": "a page in the dark theme prints light text for white paper, which a printer drops, so the sheet comes out nearly blank",
       "find": "    document.documentElement.setAttribute('data-theme', 'light');\n  });",
       "replace": "  });",

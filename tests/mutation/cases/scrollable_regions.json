@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "scroll-stop-tables-not-marked",
+      "target": "src/dashboard/app_controls.js",
       "why": "fitTables stops calling setScrollStop for table wrappers, so a wide table on a phone scrolls sideways with no way in from the keyboard -- the five axe findings come back.",
       "find": "    setScrollStop(w, !fits);\n",
       "replace": "",
@@ -11,6 +12,7 @@
     },
     {
       "id": "scroll-stop-formula-not-marked",
+      "target": "src/dashboard/app_controls.js",
       "why": "the formula block is left out, so the ridge formula on Method scrolls with nothing to focus -- one of the five boxes axe found.",
       "find": "    setScrollStop(f, f.scrollWidth > f.clientWidth);\n",
       "replace": "",
@@ -18,6 +20,7 @@
     },
     {
       "id": "scroll-stop-kept-when-it-fits",
+      "target": "src/dashboard/app_controls.js",
       "why": "a box that fits keeps its tabindex, so after a rotate to landscape every table is a Tab stop that does nothing when you land on it.",
       "find": "  } else if(marked){",
       "replace": "  } else if(false){",
@@ -25,6 +28,7 @@
     },
     {
       "id": "scroll-stop-strips-markup-attributes",
+      "target": "src/dashboard/app_controls.js",
       "why": "fitting removes every attribute the function could have added, including a role, label or tabindex the markup set itself.",
       "find": "    added.forEach(name => el.removeAttribute(name));",
       "replace": "    Object.keys(SCROLL_STOP_ATTRS).forEach(name => el.removeAttribute(name));",
@@ -32,6 +36,7 @@
     },
     {
       "id": "scroll-stop-ignores-inner-controls",
+      "target": "src/dashboard/app_controls.js",
       "why": "a box whose own controls already reach every column (the Power Ratings headers) gets a second, pointless Tab stop in front of them.",
       "find": "  if(scrolls && !el.querySelector(FOCUSABLE_INSIDE)){",
       "replace": "  if(scrolls){",
@@ -39,6 +44,7 @@
     },
     {
       "id": "scroll-stop-name-from-nested-heading",
+      "target": "src/dashboard/app_controls.js",
       "why": "the name search looks inside earlier siblings, so the Accuracy calibration table is announced as 'Not enough games yet to check' -- the heading of a note, not of the table.",
       "find": "      if(sib.matches('h2, h3, h4')) return sib;",
       "replace": "      const hd = sib.matches('h2, h3, h4') ? sib : [...sib.querySelectorAll('h2, h3, h4')].pop(); if(hd) return hd;",
@@ -46,6 +52,7 @@
     },
     {
       "id": "scroll-stop-given-label-ignored",
+      "target": "src/dashboard/app_controls.js",
       "why": "data-scroll-label is ignored, so Model Lab's experiment log is announced under the reliability diagram's heading.",
       "find": "  const given = el.getAttribute('data-scroll-label');",
       "replace": "  const given = null;",

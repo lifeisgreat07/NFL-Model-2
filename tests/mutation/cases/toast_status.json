@@ -11,7 +11,7 @@
     },
     {
       "id": "toast-status-fallback-bare",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_board.js",
       "why": "a toast made because the page's one is missing has no role again.",
       "find": "    toast.setAttribute('role', 'status');  // Stage 75 item 6; body.html carries it from the start\n",
       "replace": "",

@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "preview-promises-a-lock-after-kickoff",
+      "target": "src/dashboard/app_controls.js",
       "why": "a preview still showing after the week's first kickoff goes back to promising the picks lock before that kickoff, which can no longer happen.",
       "find": "  if(first !== null && nowMs >= first)",
       "replace": "  if(false)",

@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "share-fingerprint-check-deleted",
+      "target": "src/dashboard/app_board.js",
       "why": "the schedule fingerprint is never compared, so a reordered schedule decodes into wrong picks",
       "find": "  if(fingerprint !== scheduleFingerprint(games)){",
       "replace": "  if(false){",
@@ -11,6 +12,7 @@
     },
     {
       "id": "share-fingerprint-ignores-sides",
+      "target": "src/dashboard/app_board.js",
       "why": "the fingerprint stops distinguishing home from away, so a swapped fixture is accepted",
       "find": "  const s = games.map(g => g.away + '@' + g.home).join(',');",
       "replace": "  const s = games.map(g => [g.away, g.home].sort().join('@')).join(',');",
@@ -18,6 +20,7 @@
     },
     {
       "id": "share-length-check-removed",
+      "target": "src/dashboard/app_board.js",
       "why": "a truncated link decodes a partial pick set instead of being refused",
       "find": "  if(bits.length !== games.length){",
       "replace": "  if(false){",
@@ -25,6 +28,7 @@
     },
     {
       "id": "share-link-in-query-string",
+      "target": "src/dashboard/app_board.js",
       "why": "picks move into the query string, so every shared set reaches the server's logs",
       "find": "const url = location.origin + location.pathname + '#picks=' + encoded.token;",
       "replace": "const url = location.origin + location.pathname + '?picks=' + encoded.token;",
@@ -32,6 +36,7 @@
     },
     {
       "id": "share-view-reads-local-storage",
+      "target": "src/dashboard/app_board.js",
       "why": "shared view renders this device's picks instead of the shared ones",
       "find": "  const myPicks = sharedPicksView ? sharedPicksView.picks : loadMyPicks();",
       "replace": "  const myPicks = loadMyPicks();",
@@ -39,6 +44,7 @@
     },
     {
       "id": "share-click-handlers-not-suppressed",
+      "target": "src/dashboard/app_board.js",
       "why": "tapping someone else's pick can write to this device",
       "find": "  if(sharedPicksView) return;\n\n  grid.querySelectorAll",
       "replace": "  grid.querySelectorAll",
@@ -46,6 +52,7 @@
     },
     {
       "id": "share-no-hashchange-listener",
+      "target": "src/dashboard/app_board.js",
       "why": "a link pasted into an already-open tab silently does nothing",
       "find": "window.addEventListener('hashchange', ()=>{",
       "replace": "window.addEventListener('nothing-at-all', ()=>{",
@@ -53,6 +60,7 @@
     },
     {
       "id": "share-empty-week-still-links",
+      "target": "src/dashboard/app_board.js",
       "why": "a week with nothing picked still produces a link to an empty board",
       "find": "  if(picked === 0) return null;",
       "replace": "  if(false) return null;",
