@@ -1438,5 +1438,41 @@
   "pick": "LAK",
   "result": "wrong",
   "saved_utc": "2026-11-10T21:01:41Z"
+ },
+ {
+  "game_id": "2026020293",
+  "pick": "TBL",
+  "result": "pending",
+  "saved_utc": "2026-11-11T21:01:00Z"
+ },
+ {
+  "game_id": "2026020294",
+  "pick": "NYR",
+  "result": "pending",
+  "saved_utc": "2026-11-11T21:01:00Z"
+ },
+ {
+  "game_id": "2026020295",
+  "pick": "EDM",
+  "result": "pending",
+  "saved_utc": "2026-11-11T21:01:00Z"
+ },
+ {
+  "game_id": "2026020296",
+  "pick": "VGK",
+  "result": "pending",
+  "saved_utc": "2026-11-11T21:01:00Z"
+ },
+ {
+  "game_id": "2026020297",
+  "pick": "ANA",
+  "result": "pending",
+  "saved_utc": "2026-11-11T21:01:00Z"
+ },
+ {
+  "game_id": "2026020298",
+  "pick": "PIT",
+  "result": "pending",
+  "saved_utc": "2026-11-11T21:01:00Z"
  }
 ]
