@@ -13,6 +13,8 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import read_repo_file
+
 ROOT = Path(__file__).resolve().parents[1]
 SPORTS = {
     'NFL': ('src/dashboard/page.html', 'src/dashboard/body.html', 'src/dashboard/app.js', 'Week Board', 'Weekly'),
@@ -22,7 +24,7 @@ SPORTS = {
 
 
 def read(rel):
-    return (ROOT / rel).read_text(encoding='utf-8')
+    return read_repo_file(rel)
 
 
 @pytest.mark.parametrize('sport', SPORTS)

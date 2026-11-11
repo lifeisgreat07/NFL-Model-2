@@ -1,0 +1,36 @@
+{
+ "target": "tests/mutation/corpus.py",
+ "tests": "tests/test_app_parts.py",
+ "cases": [
+  {
+   "id": "app-split-case-given-to-the-first-of-two-parts",
+   "why": "an anchor found once in each of two parts is handed to the first, so the mutation changes one copy and the other keeps passing",
+   "find": "    return hits[0] if len(hits) == 1 and not others else target\n",
+   "replace": "    return hits[0] if hits else target\n",
+   "expect_caught_by": "test_an_anchor_once_in_each_of_two_parts_is_not_given_to_either"
+  },
+  {
+   "id": "app-split-count-reads-one-part",
+   "why": "a case left on the whole file is counted in its first part only, so an anchor in two parts reads as one and the case runs",
+   "find": "        return sum(c for c, _, _ in counts), counts[0][1], counts[0][2]\n",
+   "replace": "        return counts[0][0], counts[0][1], counts[0][2]\n",
+   "expect_caught_by": "test_an_anchor_once_in_each_of_two_parts_is_not_given_to_either"
+  },
+  {
+   "id": "app-split-script-takes-every-part",
+   "target": "src/core/template_parts.py",
+   "why": "the joined script takes every part page.html includes, the stylesheet and markup with it",
+   "find": "    return [directory / name for name in includes(shell) if name.startswith(APP_PREFIX)]\n",
+   "replace": "    return [directory / name for name in includes(shell)]\n",
+   "expect_caught_by": "test_app_js_is_gone_and_its_parts_are_included_in_order"
+  },
+  {
+   "id": "app-split-old-path-reads-nothing",
+   "target": "src/core/template_parts.py",
+   "why": "a check that names src/dashboard/app.js reads the missing file instead of the joined parts",
+   "find": "JOINED_FILES: dict[str, Callable[[], str]] = {'src/dashboard/app.js': app_script}\n",
+   "replace": "JOINED_FILES: dict[str, Callable[[], str]] = {}\n",
+   "expect_caught_by": "test_the_old_path_reads_the_joined_script"
+  }
+ ]
+}

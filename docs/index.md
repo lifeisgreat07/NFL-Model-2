@@ -79,7 +79,7 @@ project is built to avoid. Check open PRs on GitHub yourself.
 
 | Path | What it does |
 |---|---|
-| `src/dashboard/` | The whole site, as a template in parts: `src/dashboard/page.html` includes `src/dashboard/styles.css`, `src/dashboard/body.html` and `src/dashboard/app.js`. Placeholders like `__TEAMS_JSON__` are swapped at build time. |
+| `src/dashboard/` | The whole site, as a template in parts: `src/dashboard/page.html` includes `src/dashboard/styles.css`, `src/dashboard/body.html` and the script's six parts, `src/dashboard/app_controls.js` to `src/dashboard/app_pages.js` (Stage 87 item 4). Placeholders like `__TEAMS_JSON__` are swapped at build time. |
 | `src/core/template_parts.py` | Joins the parts into the one template the generator fills; `read_template()` is how tests read it. |
 | `src/sports/nfl/generate_dashboard.py` | Reads `data/`, fills the placeholders, writes `index.html`. |
 | `conftest.py` | Repository root. Builds the page once per test session, because roughly a dozen tests read it and seven of them *skip* rather than fail when it is absent. |

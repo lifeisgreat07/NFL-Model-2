@@ -20,6 +20,7 @@ import numpy
 import pandas
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
 from src.site import home
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -55,5 +56,5 @@ def test_the_band_is_two_points_as_on_every_board():
     assert home.EVEN_BAND == 2
     for rel in ('src/sports/nhl/pages/nhl.js', 'src/sports/nba/pages/nba.js'):
         assert 'const EVEN_BAND = 2,' in (ROOT / rel).read_text(encoding='utf-8'), rel
-    app = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+    app = APP_SCRIPT.read_text(encoding='utf-8')
     assert 'const CARD_EVEN_BAND = 2;' in app and 'const EVEN_BAND = 2;' in app
