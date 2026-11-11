@@ -4,6 +4,7 @@
  "cases": [
   {
    "id": "slate-nfl-not-drawn",
+   "target": "src/dashboard/app_board.js",
    "why": "a graded NFL week says nothing about how each forecast did (Stage 80 item 59, F16).",
    "find": "if(el) el.innerHTML = slateSummaryHtml(gamesList);",
    "replace": "if(el) el.innerHTML = '';",
@@ -11,6 +12,7 @@
   },
   {
    "id": "slate-nfl-tie-unnamed",
+   "target": "src/dashboard/app_board.js",
    "why": "a tie disappears from the strip, so the records do not add up to the week.",
    "find": "  if(ties) parts.push(`<span>${ties} tie${ties === 1 ? '' : 's'}</span>`);\n",
    "replace": "",
@@ -18,6 +20,7 @@
   },
   {
    "id": "slate-nfl-waits-for-cancelled",
+   "target": "src/dashboard/app_board.js",
    "why": "a cancelled game is counted as still to come, forever.",
    "find": "const due = games.filter(g => g.status !== 'cancelled')",
    "replace": "const due = games",

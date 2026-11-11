@@ -18,7 +18,7 @@ from tests.test_page_header import header_problems, sidebar_groups, strip_commen
 
 ROOT = Path(__file__).resolve().parents[1]
 BODIES = {'nhl': ROOT / 'src/sports/nhl/pages/body.html', 'nba': ROOT / 'src/sports/nba/pages/body.html'}
-PAGES = {'nhl': 9, 'nba': 4}
+PAGES = {'nhl': 9, 'nba': 8}
 
 
 def page_heads(src):

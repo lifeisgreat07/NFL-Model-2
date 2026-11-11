@@ -4,6 +4,7 @@
  "cases": [
   {
    "id": "result-words-nfl-row-right",
+   "target": "src/dashboard/app_board.js",
    "why": "the NFL's phone rows say Right/Wrong again beside cards that say Correct/Missed (Stage 77 item 26).",
    "find": "    : verdict ? ['correct', 'Correct'] : ['incorrect', 'Missed'];",
    "replace": "    : verdict ? ['correct', 'Right'] : ['incorrect', 'Wrong'];",
@@ -11,6 +12,7 @@
   },
   {
    "id": "result-words-nfl-badge-wrong",
+   "target": "src/dashboard/app_board.js",
    "why": "the tick and cross say \"this model was wrong\".",
    "find": "\"this model's pick: missed\"",
    "replace": "'this model was wrong'",
@@ -18,6 +20,7 @@
   },
   {
    "id": "result-words-dive-wrong",
+   "target": "src/dashboard/app_team.js",
    "why": "Team Deep-Dive marks a miss \"wrong\".",
    "find": "<span class=\"dive-cross\">missed</span>",
    "replace": "<span class=\"dive-cross\">wrong</span>",

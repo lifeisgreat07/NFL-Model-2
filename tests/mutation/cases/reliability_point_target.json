@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "rel-halo-ignores-the-rendered-width",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the radius goes back to a fixed 11 units, which is 22 CSS px only when the chart happens to render at 470px wide -- right on one laptop, under 24 on every phone.",
       "find": "  return Math.max(REL_HALO_BASE_R, (minPx / 2) * (viewBoxWidth / renderedWidth));",
       "replace": "  return REL_HALO_BASE_R;",
@@ -11,6 +12,7 @@
     },
     {
       "id": "rel-halo-shrinks-on-a-wide-chart",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "max becomes min, so on a wide chart the halo shrinks below the size it has always had, and on a narrow one it stays too small -- wrong in both directions while the code still reads as a clamp.",
       "find": "  return Math.max(REL_HALO_BASE_R, (minPx / 2) * (viewBoxWidth / renderedWidth));",
       "replace": "  return Math.min(REL_HALO_BASE_R, (minPx / 2) * (viewBoxWidth / renderedWidth));",
@@ -18,6 +20,7 @@
     },
     {
       "id": "rel-halo-never-resized",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the halos are sized once, at load, while Model Lab is hidden and the chart measures 0 wide -- so they keep the base radius for good, and opening the page changes nothing.",
       "find": "new ResizeObserver(sizeRelHalos).observe(svgEl);",
       "replace": "{}",
@@ -25,6 +28,7 @@
     },
     {
       "id": "rel-halo-rounded-to-nearest",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the radius is rounded to the nearest hundredth instead of up, which can leave a halo at 23.99px -- under the line by an amount nobody would see and a checker would.",
       "find": "    const rUp = (Math.ceil(r * 100) / 100).toFixed(2);",
       "replace": "    const rUp = (Math.round(r * 100) / 100).toFixed(2);",
