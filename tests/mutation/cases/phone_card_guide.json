@@ -4,6 +4,7 @@
  "cases": [
   {
    "id": "card-guide-no-open",
+   "target": "src/dashboard/app_board.js",
    "why": "the button does nothing, so the phone guide never opens (Stage 77 item 29, N4).",
    "find": "    banner.classList.toggle('onboarding-open', open);\n",
    "replace": "",
@@ -11,6 +12,7 @@
   },
   {
    "id": "card-guide-silent-state",
+   "target": "src/dashboard/app_board.js",
    "why": "the guide opens but a screen reader is told it is still closed.",
    "find": "    banner.classList.toggle('onboarding-open', open);\n    btn.setAttribute('aria-expanded', String(open));\n",
    "replace": "    banner.classList.toggle('onboarding-open', open);\n",

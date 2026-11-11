@@ -11,7 +11,7 @@
     },
     {
       "id": "context-toggle-drops-the-component",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_board.js",
       "why": "the context toggle is written as a plain .btn with its hook class, so it inherits the bordered action style's box but not the text toggle's floor -- the kind of one-word edit a restyle makes.",
       "find": "<button class=\"btn btn-link toggle-flag\"",
       "replace": "<button class=\"btn toggle-flag\"",

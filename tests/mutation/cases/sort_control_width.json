@@ -28,6 +28,7 @@
     },
     {
       "id": "width-is-frozen-in-the-fallback-typeface",
+      "target": "src/dashboard/app_controls.js",
       "why": "the second measuring pass is deleted, so the width is whatever the fallback face measured before Plus Jakarta Sans arrived: 205px against the webfont's 218px, measured in Chromium on the built page. The button is then 13px too narrow for its own longest label for the life of the session. This is the trap the whole change came out of -- a fallback font also hid the original overflow entirely, so the first run of the reproduction said there was no defect.",
       "find": "  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitWidest);",
       "replace": "",
@@ -35,6 +36,7 @@
     },
     {
       "id": "width-is-measured-by-wearing-every-label",
+      "target": "src/dashboard/app_controls.js",
       "why": "fitWidest() measures by setting selectedIndex six times instead of using a detached clone. Each one dispatches change, which is what the Week Board listens to, so the page re-renders every game card six times on load to answer a question about text width. The measurement is correct and the cost is invisible -- there is no wrong pixel to see, only a slower first paint.",
       "find": "    const probe = btn.cloneNode(true);",
       "replace": "    const probe = btn; sel.selectedIndex = sel.selectedIndex;",
@@ -42,6 +44,7 @@
     },
     {
       "id": "frozen-width-applies-to-every-listbox",
+      "target": "src/dashboard/app_controls.js",
       "why": "the opt-in check is removed from fitWidest(), so #teamdive-select is frozen at the width of the longest team name as well. Nothing breaks and nothing is tested for it, which is the point: this PR silently changes a control on another page, and a reviewer reading the description would have no reason to look there.",
       "find": "    if(sel.dataset.lbxFit !== 'widest') return;",
       "replace": "",
