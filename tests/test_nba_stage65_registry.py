@@ -90,7 +90,7 @@ def test_it_was_registered_before_any_nba_pick_was_saved():
     # And Stage 85 item 2: a pick made without the injury report has its own baseline.
     assert [a['entry'] for a in reg['amendments']] == ['forward_test.decision', 'disclosures', 'deviation',
                                                        'availability', 'models', 'drift', 'drift',
-                                                       'disclosures']
+                                                       'disclosures', 'drift']
     picks = ROOT / 'predictions' / 'nba'
     saved = sorted(p for p in picks.rglob('*.json')) if picks.exists() else []
     for p in saved:
