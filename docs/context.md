@@ -13,8 +13,7 @@ Last updated: 2026-11-11 (session 1111 wrap-up: #680, #687, #689, #694, #695, #6
 **Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked figure, split five ways by `tests/suite_classes.json` (`session_wrapup --suite-line` writes it). NFL in `src/sports/nfl/`, shared modules in `src/core/`.
 **Sportalytics** (Stage 67) is live: home `/`, NFL `/nfl/` (Model **v2.6**), NHL `/nhl/`, NBA `/nba/` (picks saved twice a day).
 
-**Booth audits run one at a time**, and a diff of about a hundred files runs out of the 20-minute job time. Split a big
-change rather than re-running it. Do not change booth-pr-audit.yml until Mark decides.
+**Booth audits run one at a time**, and a diff of about a hundred files runs out of the 20-minute job time. Split a big change rather than re-running it. Do not change booth-pr-audit.yml until Mark decides.
 
 **Merge rule (Mark):** Booth SAFE TO MERGE, 0 discrepancies, audited head = PR head, every check green; `merge_item.py PR WT_NAME
 BRANCH "Title"`; re-run a failed or timed-out audit once. **At the final head, before opening:** prechecks (ruff, both mypy),
@@ -28,21 +27,16 @@ real file**: the app.js parts, never `src/dashboard/app.js` (Stage 87 item 4, gu
 
 **Single next action:** open Stage 104 items 3-4 (`s104-nba-ratings`, Ratings + Teams): merge main, full suite, its ids by exact id (with `nba-chrome-checks-label` and `nba-accuracy-page-never-built`, both re-anchored on this branch), prechecks, fill its body (add the chrome test and the two case files to What changes), collection split, preflight, open, audit, merge. Then `s104-nba-standings` the same way.
 
-**The order of work (Mark, 2026-11-11):** Stage 87 item 4 steps two and three; Stage 104 (the NBA page gets the other
-sports' tabs); Stage 95 items 34, then 31 to 33 as amendments now, then the day-sport v2 shadow (95 item 35 with 94
-items 24, 27 to 30); Stage 102 (league logos); Stages 97 to 101 (MLB, fully built before spring training); Stage 103
-(March Madness). The stages' text is in `docs/history/12-mlb-and-more-2026-11-11.md`.
+**The order of work (Mark, 2026-11-11):** Stage 104; Stage 95 items 34, 31-33, then the v2 shadow; 102; 97-101 (MLB); 103 (`docs/history/12-mlb-and-more-2026-11-11.md`).
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
 | Stage 104 items 3-4: `s104-nba-ratings` (Ratings + Teams, eb284439), then `s104-nba-standings` (Standings with the play-in, e84bc8c9) | Built and stacked; More-menu test and anchors already fixed for both | #698 merging, then one at a time |
-| Stage 95 items 34, 31, 33, 32: `s95-drift-sidedness` (2cfc1b90), then `s95-drift-by-look` (8f273614), `s95-leak-line` (96c4085a), `s95-day-blocks` (c61912bf) | Built and stacked; bodies in the session archive (item 31's needs its per-look table and case count) | Stage 104 merging; one at a time |
-| `s95-v2-registry`: the day-sport v2 shadow's registration (741d2397) | Built, not opened; item 24 is option 2 (Mark, 2026-11-11) | Opens after the Stage 95 stack, before any v2 fit |
+| Stage 95 items 34, 31, 33, 32: `s95-drift-sidedness` (2cfc1b90), then `s95-drift-by-look` (8f273614), `s95-leak-line` (96c4085a), `s95-day-blocks` (c61912bf) | Built and stacked; bodies in the session archive (item 31's needs its per-look table and case count) ; then `s95-v2-registry` (741d2397, item 24 = option 2, Mark 2026-11-11), opened before any v2 fit | Stage 104 merging; one at a time |
 | Stage 102 league logos | Three placements rendered side by side (A cards, B cards + switcher, C also the sport page's brand mark); Claude recommends B | **Mark: A, B or C** |
 | `fix-home-theme-button`: tests/browser/check_theme.py presses the home page's theme button | Not opened | Rebase on main keeping only check_theme.py; NEEDS HUMAN REVIEW by nature, so Mark's call |
-| Stages 97-101 (MLB), 103 (March Madness) | Planned | Stage 102 first; 103's college collector running by about January |
 | s83f `s83-credentials` (83.6) | Built | **Mark: the OAuth token's real expiry date** |
 | #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then 82 item 5 |
 | #664's auto-merge | Merged, off | **Mark sets AUTO_MERGE_OVERRIDES=true** when he wants it; the workflow file is read from the PR on `pull_request` (disclosed) |
