@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-11-12T20:39:44Z",
+  "generated_utc": "2026-11-12T21:07:59Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 753,
+    "audits_total": 754,
     "audits_superseded": 142,
-    "pull_requests_audited": 611,
+    "pull_requests_audited": 612,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 4535,
+    "claims_checked": 4541,
     "discrepancies_found": 35,
-    "unverifiable": 479,
+    "unverifiable": 480,
     "pull_requests_with_a_discrepancy": 24,
     "reports_disagreeing_with_themselves": 42
   },
@@ -13311,9 +13311,40 @@
       "implicated": [],
       "inconsistencies": [],
       "superseded": false
+    },
+    {
+      "pr": 717,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/717#issuecomment-6835906468",
+      "posted_utc": "2026-11-12T21:04:41Z",
+      "head": "705aea8",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 6,
+      "confirmed": 5,
+      "discrepancies": 0,
+      "unverifiable": 1,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
     }
   ],
   "recent": [
+    {
+      "agent": "Booth",
+      "pr": 717,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/717#issuecomment-6835906468",
+      "when": "2026-11-12T21:04:41Z",
+      "says": "SAFE TO MERGE: 5 of 6 claims confirmed, 0 wrong, 1 unverifiable"
+    },
+    {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43305028024",
+      "when": "2026-11-12T20:55:08Z",
+      "says": "found nothing to fix in the description"
+    },
     {
       "agent": "Booth",
       "pr": 715,
@@ -13411,20 +13442,6 @@
       "when": "2026-11-12T18:21:36Z",
       "agent": "Spotter",
       "says": "#### What changed **Home** (`home-1440x900-dark-head` vs `home-1440x900-dark-base`, and the three other viewport/theme pairs) - Head adds a small disclaimer at the foot of the page: \"Sportalytics is\u2026"
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43278468675",
-      "when": "2026-11-12T18:18:35Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Booth",
-      "pr": 707,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/707#issuecomment-6831381569",
-      "when": "2026-11-12T17:46:39Z",
-      "says": "SAFE TO MERGE: 7 of 8 claims confirmed, 0 wrong, 1 unverifiable"
     }
   ]
 }
