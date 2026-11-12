@@ -176,6 +176,7 @@
   "tests/test_mlb_data_probe.py": "mixed",
   "tests/test_mlb_schedule.py": "isolated behavioural",
   "tests/test_mlb_stage98_registry.py": "workflow/docs/tests-of-tests",
+  "tests/test_mlb_starters.py": "isolated behavioural",
   "tests/test_model_colour_comment.py": "isolated behavioural",
   "tests/test_model_lab.py": "isolated behavioural",
   "tests/test_model_lab_cards.py": "isolated behavioural",
