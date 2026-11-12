@@ -1442,37 +1442,43 @@
  {
   "game_id": "2026020293",
   "pick": "TBL",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-11T21:01:00Z"
  },
  {
   "game_id": "2026020294",
   "pick": "NYR",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-11T21:01:00Z"
  },
  {
   "game_id": "2026020295",
   "pick": "EDM",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-11T21:01:00Z"
  },
  {
   "game_id": "2026020296",
   "pick": "VGK",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-11T21:01:00Z"
  },
  {
   "game_id": "2026020297",
   "pick": "ANA",
-  "result": "pending",
+  "result": "wrong",
   "saved_utc": "2026-11-11T21:01:00Z"
  },
  {
   "game_id": "2026020298",
   "pick": "PIT",
-  "result": "pending",
+  "result": "correct",
   "saved_utc": "2026-11-11T21:01:00Z"
+ },
+ {
+  "game_id": "2026020309",
+  "pick": "CAR",
+  "result": "pending",
+  "saved_utc": "2026-11-12T14:01:40Z"
  }
 ]

@@ -53,6 +53,9 @@ def test_each_sport_registers_its_own_audit_items():
     assert set(reg('nhl')['changes']) == {'35_goalie', '28_neutral', '29_ingest'}
     # Whole-minute rounding: a complete NBA box can sum to a few under 240, so the short-box rule allows it.
     assert 'by more than half a minute for each player it lists' in reg('nba')['changes']['29_ingest']
+    # The NHL's prices to 2023-24 are the two sides of a three-way line, which sum below 1 by construction.
+    nhl_price = reg('nhl')['changes']['29_ingest']
+    assert '[1.00, 1.20] for a two-way moneyline' in nhl_price and '[0.75, 1.00] for the two sides of the three-way' in nhl_price
     grid = reg('nhl')['protocol']['tuning']
     assert 'K_shots in {1000, 2000, 4000, 8000, 16000, none}' in grid and 'H_days in {60, 120, 240}' in grid
     tuning = json.loads((ROOT / 'experiments/nhl/stage56/results/tuning.json').read_text(encoding='utf-8'))

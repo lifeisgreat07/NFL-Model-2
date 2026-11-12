@@ -27,6 +27,11 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+from src.core.day_drift import kept_days as kept_days
+from src.core.day_drift import leak_direction as leak_direction
+from src.core.day_drift import leak_lines as leak_lines
+from src.core.day_drift import leaked_picks as leaked_picks
+from src.core.day_drift import look_value as look_value
 from src.core.day_drift import lower_bound as lower_bound
 from src.core.day_drift import next_look as next_look
 from src.core.day_drift import per_game_log_loss as per_game_log_loss
@@ -67,13 +72,18 @@ def per_game(rows: Iterable[tuple[float | None, int | None, bool]],
 
 def look_baseline(spec: dict[str, Any], baselines: list[float] | None, n: int) -> float:
     """The baseline a look at n picks is held to: the mean of those n picks'
-    own baselines, or the registered baseline when none are given."""
+    own baselines, or the registered baseline when none are given. Since
+    Stage 95 item 31 each is its model's figure over a season's first n games
+    (`look_value`); a pick's whole-season figure says which model it ran."""
     if baselines is None:
-        return float(spec['baseline']['value'])
-    return float(sum(baselines[:n]) / n)
+        return look_value(spec, 'baseline', n)
+    by = {float(spec['baseline']['value']): look_value(spec, 'baseline', n),
+          float(spec['baseline_no_availability']['value']): look_value(spec, 'baseline_no_availability', n)}
+    return float(sum(by[b] for b in baselines[:n]) / n)
 
 
-def looks(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None) -> list[dict[str, Any]]:
+def looks(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None,
+          days: list[str] | None = None) -> list[dict[str, Any]]:
     """Every registered look the graded picks have reached (Stage 85 item 1).
 
     The check looks only at the registered checkpoints, each on the first n
@@ -87,12 +97,21 @@ def looks(losses: list[float], spec: dict[str, Any], baselines: list[float] | No
     for n in rule['checkpoints']:
         if len(losses) < n:
             break
-        bound = lower_bound(losses[:n], rule, rule['per_look_level'])
+        # Stage 95 item 32: whole game days resampled when the picks' days are given.
+        bound = lower_bound(losses[:n], rule, rule['per_look_level'], days[:n] if days is not None else None)
         base = look_baseline(spec, baselines, n)
         out.append({'games': n, 'lower_bound': bound, 'baseline': base, 'flagged': bool(bound > base)})
     return out
 
 
-def flags(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None) -> bool:
+def flags(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None,
+          days: list[str] | None = None) -> bool:
     """True when any look so far has flagged: a flag stands for the season."""
-    return any(look['flagged'] for look in looks(losses, spec, baselines))
+    return any(look['flagged'] for look in looks(losses, spec, baselines, days))
+
+
+def spread_range() -> float | None:
+    """Stage 95 item 33: how far Model A's backtest seasons differ from each other
+    (experiments/nba/stage61/results/model_a_by_season.json, `spread.range`)."""
+    path = sport_paths('nba').experiments / 'stage61' / 'results' / 'model_a_by_season.json'
+    return float(json.loads(path.read_text(encoding='utf-8'))['spread']['range']) if path.exists() else None
