@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-10 (session 1109 wrap-up: #674-#679 merged; #680 and #682 wait on Mark)
+Last updated: 2026-11-11 (session 1111 wrap-up: #680 and #687 merged; #689, #694, #695 and #697 merged; #698 in its audit at the close)
 
 ---
 
@@ -23,25 +23,33 @@ A body that must change after opening: close the PR and open a new one from the 
 **Rules on main that bind every branch:** every workflow installs with `pip install --require-hashes -r requirements.lock`;
 every python or pip step of an alerting scheduled job has its own `timeout-minutes`; src/core, src/site, src/sports/nhl and
 src/sports/nba pass `mypy --strict`; **a new test file needs a line in `tests/suite_classes.json`** (#675); **no test skips on a
-missing node by hand**: `require_tool('node')`, or a `skipif(... and not in_ci())` (#678).
+missing node by hand**: `require_tool('node')`, or a `skipif(... and not in_ci())` (#678); **every mutation case names its
+real file**: the app.js parts, never `src/dashboard/app.js` (Stage 87 item 4, guarded by `test_no_mutation_case_names_the_whole_file_any_more`).
 
-**Single next action:** Mark decides #680 and #682 (their rows); once #682 merges, cut Stage 87 item 4's step
-two: half the case files' app.js targets rewritten to their parts by script.
+**Single next action:** #698 (Stage 104 item 2, What's Changed; branch `s104-nba-changes`, head f70691e2) was in its Booth audit when the session closed: read its result, re-run once if it failed or timed out, and merge on the rule (`merge_item.py 698 s104b s104-nba-changes "Stage 104 item 2: the NBA page gets What's Changed, as the NHL's has"`). Then 104c and 104d in turn, each: merge main, full suite, its ids by exact id, prechecks, fill its body, collection split, preflight, open, audit, merge.
+
+**The order of work (Mark, 2026-11-11):** Stage 87 item 4 steps two and three; Stage 104 (the NBA page gets the other
+sports' tabs); Stage 95 items 34, then 31 to 33 as amendments now, then the day-sport v2 shadow (95 item 35 with 94
+items 24, 27 to 30); Stage 102 (league logos); Stages 97 to 101 (MLB, fully built before spring training); Stage 103
+(March Madness). The stages' text is in `docs/history/12-mlb-and-more-2026-11-11.md`.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| #680 Stage 87 item 3 `s87-page-render` (one page renderer, src/core/page_render.py) | Green; Booth NEEDS HUMAN REVIEW, 0 discrepancies | **Mark**: merge on the green checks, or ask for the comparison as a committed test (a new PR) |
-| Stage 87 item 4 (the app.js split) | Planned (memory/2026-11-09.md): 379 cases in 104 case files target app.js, so one PR is ~200 files. Step 1+2: the split, a helper for the ~33 tests that read app.js by path, the runner resolving an app.js target to the part holding its anchor; step 3: targets rewritten by script in two halves | #680 decided (both touch tests/test_csp_hashes.py) |
-| #682 Stage 87 item 4 step one `s87-app-readers` (app.js is six parts; the corpus resolves an app.js target to its part) | Green, Browser checks included; Booth NEEDS HUMAN REVIEW, 0 discrepancies: its unverified claim is a Playwright run Booth cannot do | **Mark** merges or not. Replaces #681 (closed: Browser checks failed on an import; fixed). Steps two and three (case targets rewritten to their parts by script, half the 104 case files each) after it |
-| Stage 95 items 31-34, and 35 as the registered "day-sport v2" shadow (with 94 items 24, 27-30) | Not built | After Stage 87 |
+| #698 Stage 104 item 2 (`s104-nba-changes`, f70691e2) | Open; Booth audit running at the close | Its audit, then merge |
+| Stage 104 items 3-4: `s104-nba-ratings` (Ratings + Teams, eb284439), then `s104-nba-standings` (Standings with the play-in, e84bc8c9) | Built and stacked; More-menu test and anchors already fixed for both | #698 merging, then one at a time |
+| Stage 95 items 34, 31, 33, 32: `s95-drift-sidedness` (2cfc1b90), then `s95-drift-by-look` (8f273614), `s95-leak-line` (96c4085a), `s95-day-blocks` (c61912bf) | Built and stacked; bodies in the session archive (item 31's needs its per-look table and case count) | Stage 104 merging; one at a time |
+| `s95-v2-registry`: the day-sport v2 shadow's registration (741d2397) | Built, not opened; item 24 is option 2 (Mark, 2026-11-11) | Opens after the Stage 95 stack, before any v2 fit |
+| Stage 102 league logos | Three placements rendered side by side (A cards, B cards + switcher, C also the sport page's brand mark); Claude recommends B | **Mark: A, B or C** |
+| `fix-home-theme-button`: tests/browser/check_theme.py presses the home page's theme button | Not opened | Rebase on main keeping only check_theme.py; NEEDS HUMAN REVIEW by nature, so Mark's call |
+| Stages 97-101 (MLB), 103 (March Madness) | Planned | Stage 102 first; 103's college collector running by about January |
 | s83f `s83-credentials` (83.6) | Built | **Mark: the OAuth token's real expiry date** |
 | #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then 82 item 5 |
 | #664's auto-merge | Merged, off | **Mark sets AUTO_MERGE_OVERRIDES=true** when he wants it; the workflow file is read from the PR on `pull_request` (disclosed) |
 | #570, #575 (Dependabot) | Fail tests and Booth | Mark: a Dependabot secret; which updates to take |
 | Stage 88 item 1 (actions): one dispatch of each writer | Not done | Mark (dispatching the Weekly update can lock a week) |
-| Leftover branches from Stage 96 item 48 | Local `s96-require-tool` (the whole change, with its worktree on the local Windows machine) and `s96-require-tool-2` (local and on GitHub; part two shipped from `-2b` instead, and no PR ever pointed at it) | Mark: delete them (a force-push or branch deletion was refused to this session) |
+| Leftover branches | `s96-require-tool` (local, with its worktree on the local Windows machine), `s96-require-tool-2` (local and on GitHub), `s87-app-targets-1` (local and on GitHub; its commit message carried a number, so the same tree shipped from `-1b`) | Mark: delete them (a force-push or branch deletion was refused to this session) |
 
 ## Known and deliberately not fixed
 
