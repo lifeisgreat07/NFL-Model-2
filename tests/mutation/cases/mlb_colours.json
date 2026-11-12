@@ -29,6 +29,13 @@
       "find": "PAIRS_UNDER_5 = 49",
       "replace": "PAIRS_UNDER_5 = 48",
       "expect_caught_by": "test_the_quoted_separation_figures_are_what_the_palette_measures"
+    },
+    {
+      "id": "mlb-colours-logo-code-shared",
+      "why": "two clubs share a logo code, so the Athletics' games show another club's logo.",
+      "find": "'133': 'ath',",
+      "replace": "'133': 'atl',",
+      "expect_caught_by": "test_logos_come_from_espns_files_for_both_themes_one_code_per_club"
     }
   ]
 }

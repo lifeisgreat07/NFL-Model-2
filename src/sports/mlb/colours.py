@@ -15,8 +15,9 @@ Machado 2009 at severity 1.0, the worse of protanopia and deuteranopia), as the 
 - the colours as listed, before any push: 120 under 15 and 49 under 5.
 
 The board's per-matchup push and the logos and abbreviations beside every bar carry identity, as on the other
-boards. Logos are the league's own files: `LOGO['light' | 'dark'].format(club=...)`, the club's logo for the light
-theme and its cap logo drawn for a dark ground.
+boards. Logos are ESPN's files, as the NBA's are, from the one logo host every page's Content Security Policy
+already allows (a.espncdn.com): `LOGO['light' | 'dark'].format(code=LOGO_CODE[club])`. Every club's two files answered
+with a PNG on 2026-11-12, and `LOGO_CODE` matched ESPN's own MLB team list that day.
 """
 from __future__ import annotations
 
@@ -32,8 +33,16 @@ TEAM_COLOUR: dict[str, str] = {
     '143': '#E81828', '144': '#CE1141', '145': '#C4CED4', '146': '#00A3E0', '147': '#0054ED', '158': '#FFC52F',
 }
 
-LOGO = {'light': 'https://www.mlbstatic.com/team-logos/{club}.svg',
-        'dark': 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/{club}.svg'}
+LOGO = {'light': 'https://a.espncdn.com/i/teamlogos/mlb/500/{code}.png',
+        'dark': 'https://a.espncdn.com/i/teamlogos/mlb/500-dark/{code}.png'}
+
+#: Stats API club id -> ESPN's code for the club's logo files.
+LOGO_CODE: dict[str, str] = {
+    '108': 'laa', '109': 'ari', '110': 'bal', '111': 'bos', '112': 'chc', '113': 'cin', '114': 'cle', '115': 'col',
+    '116': 'det', '117': 'hou', '118': 'kc', '119': 'lad', '120': 'wsh', '121': 'nym', '133': 'ath', '134': 'pit',
+    '135': 'sd', '136': 'sea', '137': 'sf', '138': 'stl', '139': 'tb', '140': 'tex', '141': 'tor', '142': 'min',
+    '143': 'phi', '144': 'atl', '145': 'chw', '146': 'mia', '147': 'nyy', '158': 'mil',
+}
 
 #: The dark theme's card surface, which every club colour must stand out on.
 DARK_SURFACE = '#121519'

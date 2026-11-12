@@ -44,6 +44,8 @@ def test_the_quoted_separation_figures_are_what_the_palette_measures():
     assert f'{colours.PAIRS_UNDER_15} under 15 and {colours.PAIRS_UNDER_5} under 5' in colours.__doc__
 
 
-def test_logos_come_from_the_leagues_own_files_for_both_themes():
-    assert colours.LOGO['light'].format(club='147') == 'https://www.mlbstatic.com/team-logos/147.svg'
-    assert colours.LOGO['dark'].format(club='147') == 'https://www.mlbstatic.com/team-logos/team-cap-on-dark/147.svg'
+def test_logos_come_from_espns_files_for_both_themes_one_code_per_club():
+    assert set(colours.LOGO_CODE) == set(NAMES)
+    assert len(set(colours.LOGO_CODE.values())) == 30
+    assert colours.LOGO['light'].format(code=colours.LOGO_CODE['147']) == 'https://a.espncdn.com/i/teamlogos/mlb/500/nyy.png'
+    assert colours.LOGO['dark'].format(code=colours.LOGO_CODE['133']) == 'https://a.espncdn.com/i/teamlogos/mlb/500-dark/ath.png'
