@@ -1,0 +1,135 @@
+{
+ "family": "mlb-stage98",
+ "registered": "2026-11-12",
+ "approved_by": "Claude, under Mark's delegation of 2026-10-05 ('Handle the decisions going forward until I say so') and his MLB plan of 2026-11-11, before any MLB model, feature or rating was fitted or scored.",
+ "protocol": {
+  "outcome": "home_win: the home club, the one the MLB Stats API lists as home and that bats last, wins, extra innings included.",
+  "games": "Every final regular-season and postseason game. Spring training, exhibition and All-Star games are never used. A postponed or cancelled game is never scored; a game the Stats API marks 'Completed Early' is final and scored. A suspended game is scored once, on the official date it was completed.",
+  "game_key": "The Stats API's gamePk. A postponed game keeps its gamePk and is listed again on the day it was played: one row per gamePk, the last listing wins. Each game of a doubleheader has its own gamePk.",
+  "neutral_site": "A game whose venue (the Stats API's venue on the game) is not the home club's own venue for that season (the Stats API's club record for the season) is neutral, and its forecast gets no fitted home edge. The Stats API's home club stays home.",
+  "training_from_season": 2010,
+  "validation_seasons": [
+   2023,
+   2024
+  ],
+  "confirmation_seasons": [
+   2025,
+   2026
+  ],
+  "forward_holdout_season": 2027,
+  "primary_metric": "log_loss",
+  "secondary_metric": "brier",
+  "accuracy": "Reported, never decides.",
+  "alpha": 0.05,
+  "budget_m": 3,
+  "budget_rule": "H1, H2 and H3 are the confirmatory slots. A slot is spent by reaching a decision, whatever the outcome. Each confirmatory interval is at level 1 - alpha/budget_m (98.33%). M1 and M2 are measurements and spend nothing.",
+  "bootstrap": "Paired, resampling whole game days (every game of an official date together), 5,000 resamples, seed 20261112.",
+  "walk_forward": "Refit before every game day on every game strictly earlier (from 2010), predict that day's games. Features for a game use only games that ended before that day.",
+  "tuning": "The grid below is searched on the validation seasons only, by Model A's log loss over all their games pooled. The chosen values are then fixed for the confirmation seasons and the forward test.",
+  "model_lab": "Each question gets a Model Lab row when it is answered, whatever it shows."
+ },
+ "data": {
+  "results": "The MLB Stats API's schedule (statsapi.mlb.com/api/v1), read by MLB's schedule module: each game's gamePk, official date, clubs, state, doubleheader flag, game number, venue and final score.",
+  "fallback_check": "Retrosheet's game log is the checked fallback. Before a season is used, its finals are compared with the Stats API's game by game (date, game number, the two clubs, both scores): at least 99% must agree, where a game whose home and away are swapped counts as agreeing only if the Stats API's venue is the home club's own venue for that season, or the game is neutral under neutral_site. Every disagreement is listed. A season whose log Retrosheet has not posted is not used until it has.",
+  "starters": "Each club's starting pitcher is the first pitcher its box score lists (the Stats API's boxscore). A starter's runs allowed and outs recorded come from the same box score.",
+  "market": "Two-way home-win probability with the margin taken out evenly, from ESPN's pre-game moneyline: the closing price where ESPN gives one, the single listed price before that. A price from a provider marked live is never used. From 2027 the same source, read before each pick.",
+  "club_identity": "The Stats API's club id, which is stable through renames and moves. No table keys on a name or an abbreviation; Retrosheet's codes are mapped to ids from each season's own games, never typed by hand."
+ },
+ "models": {
+  "model_a": {
+   "features": [
+    "run_matchup",
+    "starter_matchup"
+   ],
+   "estimator": "Logistic regression, L2, C=1.0, a StandardScaler fitted on each refit's own rows; the intercept is the home edge.",
+   "run_matchup": "Home rating minus away rating, where each club's rating comes from a recency-weighted ridge regression of every earlier game's run margin (home minus away) on club indicators with a home term (zero for a neutral game). Weight 0.5^(days ago / H). Ridge strength lambda on the club terms only.",
+   "starter_matchup": "Away starter's rate minus home starter's rate, so a higher value favours home. A starter's rate is his runs allowed per 27 outs over his earlier appearances, recency-weighted with the same H and shrunk toward the league: (weighted runs + 150 x the league's runs per out) / (weighted outs + 150) x 27, the league's runs per out taken from the same earlier games. A starter with no earlier appearance gets the league rate. In the backtest the starter is the box score's; live it is the Stats API's probable pitcher.",
+   "grid": {
+    "H_days": [
+     60,
+     120,
+     240,
+     480
+    ],
+    "lambda": [
+     1.0,
+     3.0,
+     10.0,
+     30.0
+    ]
+   }
+  },
+  "model_b": {
+   "features": [
+    "run_matchup",
+    "starter_matchup",
+    "market_logit"
+   ],
+   "estimator": "As Model A. Trained only on games that have a market price.",
+   "market_logit": "The logit of the market's home-win probability."
+  },
+  "market": "The market's home-win probability itself, not refitted.",
+  "base_rate": "The home-win share of the games each refit trains on."
+ },
+ "amendments": [],
+ "prerequisite": "The Stats API history (schedule, finals, venues and box scores) for 2010 to 2026, read once and checked against Retrosheet as fallback_check says, and the ESPN market history read once, both stored by the backtest's own code so a re-run reads the same inputs.",
+ "disclosures": [
+  "Before this registration, MLB's data probe (docs/mlb-data.md, #711) compared the Stats API's finals with Retrosheet's for 2015, 2020, 2021 and 2025 and sampled ESPN's moneyline on six dates a season from 2010. Every disagreement it found was a game played away from the listed home club's park with home and away swapped. No model, feature or rating had been computed, and no market log loss had been measured.",
+  "2026's season is over and already seen as a calendar; it is a confirmation season because nothing has been fitted to it. Retrosheet had not posted its 2026 log on 2026-11-11, so the confirmation scores wait for it under fallback_check.",
+  "2023 brought the pitch clock, the shift limits and larger bases, and run scoring changed with them. The validation seasons are the first two under those rules; the training seasons before them stay in as they happened, carrying only the weight their recency gives them.",
+  "2020 was a 60-game season with no crowds for most of it, the universal designated hitter and relocated home games; it stays in training as it happened, and its relocated games are neutral under neutral_site where the venue says so.",
+  "The backtest knows who started; the live pick knows only the probable pitcher. Measurement M2 sizes that gap once the forward test has games. When the probables are published before first pitch is measured in spring training 2027 (docs/mlb-data.md section 4), before the pick's lock time is set.",
+  "Bullpens, lineups and park factors are not in Model A. A park's effect on runs scored falls into the clubs' ratings, which is why the home term is kept.",
+  "This is the first MLB registration, written by Claude under delegation rather than approved by Mark question by question as the NFL's were."
+ ],
+ "hypotheses": [
+  {
+   "id": "H1",
+   "kind": "hypothesis",
+   "title": "Model A against the home-win base rate",
+   "question": "Does Model A forecast home wins better than knowing only how often the home club wins?",
+   "spends_slot": true,
+   "decision_rule": "On 2025-2026, all games: ACCEPT if the 98.33% day-block paired-bootstrap interval on (Model A - base rate) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE.",
+   "expected": "ACCEPT, by a small margin: baseball's favourites win only around 57 to 60% of games, but about 2,430 games a season keep the interval tight."
+  },
+  {
+   "id": "H2",
+   "kind": "hypothesis",
+   "title": "Model B against Model A",
+   "question": "Does adding the market to Model A's features improve it?",
+   "spends_slot": true,
+   "decision_rule": "On 2025-2026, all games with a market price: ACCEPT if the 98.33% interval on (Model B - Model A) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE.",
+   "expected": "ACCEPT, as in the other three sports."
+  },
+  {
+   "id": "H3",
+   "kind": "hypothesis",
+   "title": "Model B against the market",
+   "question": "Does Model B forecast better than the market alone?",
+   "spends_slot": true,
+   "decision_rule": "On 2025-2026, all games with a market price: ACCEPT if the 98.33% interval on (Model B - market) log loss lies entirely below 0; REJECT if entirely above; otherwise INCONCLUSIVE.",
+   "expected": "INCONCLUSIVE, as in the NFL, the NHL and the NBA."
+  },
+  {
+   "id": "M1",
+   "kind": "measurement",
+   "title": "What the starting-pitcher term adds",
+   "question": "Model A against Model A without starter_matchup, refitted the same way, on 2025-2026.",
+   "spends_slot": false,
+   "consequence": "Reported with its interval. It does not remove the feature: removing it would need its own registration."
+  },
+  {
+   "id": "M2",
+   "kind": "measurement",
+   "title": "The probable pitcher against who started",
+   "question": "Over the forward test's graded games: how often the probable pitcher read before the pick was not the starter, and Model A's log loss with each.",
+   "spends_slot": false,
+   "consequence": "Printed on MLB's Checking the AI's work page once 200 games are graded."
+  }
+ ],
+ "not_in_this_registration": [
+  "Bullpen strength and usage, lineups and platoon splits: each needs its own registration.",
+  "Park factors beyond what the club ratings absorb, weather and travel.",
+  "The run line and the total."
+ ]
+}
