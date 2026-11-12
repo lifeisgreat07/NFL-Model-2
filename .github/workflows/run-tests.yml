@@ -76,7 +76,7 @@ jobs:
         # Stage 87 item 5 (the 2026-11-02 review): every function annotated,
         # nothing returning Any where it promises a type. Imports are followed,
         # so what these packages call (src/sports/nfl/paths.py) is held too.
-        run: python -m mypy --strict --ignore-missing-imports src/core src/site src/sports/nhl src/sports/nba
+        run: python -m mypy --strict --ignore-missing-imports src/core src/site src/sports/nhl src/sports/nba src/sports/mlb
       - name: Type-check the agents strictly
         # Stage 48 item 19: every function in src/agents annotated, checked
         # with --strict. --follow-imports=silent keeps it to src/agents: the

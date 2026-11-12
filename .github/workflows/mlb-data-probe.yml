@@ -1,0 +1,42 @@
+name: MLB data probe
+
+# Stage 97 item 1 (docs/history/12-mlb-and-more-2026-11-11.md). MLB's data is
+# decided before any model, and a home connection is not a runner: the NBA's
+# league feeds refused cloud servers, and ESPN once refused GitHub's runners
+# (#131). So src/sports/mlb/data_probe.py reads two groups from a runner,
+# prints what each returned and writes nothing. The required group is the MLB
+# Stats API, the likely primary: a day's schedule with probable pitchers, a
+# doubleheader, the season ahead, a box score and the 30 clubs. If any of those
+# is unreachable or the wrong shape, the probe exits non-zero. The candidates
+# (Retrosheet's game log, ESPN's scoreboard and a past moneyline, DraftKings,
+# Kalshi and Polymarket) are reported and never fail the run.
+#
+# It runs on pull requests that touch it, so its answer is on the PR's own
+# checks, and by hand. It is not scheduled: MLB's canary (Stage 101) will be
+# where a source that later breaks is watched.
+
+on:
+  pull_request:
+    paths:
+      - 'src/sports/mlb/data_probe.py'
+      - '.github/workflows/mlb-data-probe.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.11'
+
+      - name: Read every MLB source from GitHub's runner
+        run: python -m src.sports.mlb.data_probe

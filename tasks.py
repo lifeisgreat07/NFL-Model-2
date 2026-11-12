@@ -43,7 +43,7 @@ TYPES = [PY, '-m', 'mypy', '--ignore-missing-imports', 'src/sports/nfl/weekly_up
 # Stage 87 item 5: the core, the site and the day sports under --strict (since Stage 68 item 25 they
 # were in TYPES, not strict).
 STRICT_TYPES = [PY, '-m', 'mypy', '--strict', '--ignore-missing-imports', 'src/core', 'src/site',
-                'src/sports/nhl', 'src/sports/nba']
+                'src/sports/nhl', 'src/sports/nba', 'src/sports/mlb']
 # The strict type check over the agents (Stage 48 item 19). --follow-imports=silent
 # checks src/agents alone: the pipeline modules it imports are not strict yet.
 AGENT_TYPES = [PY, '-m', 'mypy', '--strict', '--ignore-missing-imports', '--follow-imports=silent', 'src/agents']

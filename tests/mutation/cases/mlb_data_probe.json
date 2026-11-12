@@ -1,0 +1,90 @@
+{
+  "target": "src/sports/mlb/data_probe.py",
+  "tests": "tests/test_mlb_data_probe.py",
+  "cases": [
+    {
+      "id": "mlb-probe-utc-unchecked",
+      "why": "a start time with an offset passes as UTC, so a per-game lock would compare times in two clocks.",
+      "find": "        if not g.get('gameDate') or not str(g['gameDate']).endswith('Z'):",
+      "replace": "        if not g.get('gameDate'):",
+      "expect_caught_by": "test_a_schedule_game_missing_what_the_lock_needs_is_named"
+    },
+    {
+      "id": "mlb-probe-game-number-unchecked",
+      "why": "a game without its game number passes, so the two games of a doubleheader could not be told apart by their order.",
+      "find": "        miss = [k for k in ('gamePk', 'officialDate', 'doubleHeader', 'gameNumber') if g.get(k) in (None, '')]",
+      "replace": "        miss = [k for k in ('gamePk', 'officialDate', 'doubleHeader') if g.get(k) in (None, '')]",
+      "expect_caught_by": "test_a_schedule_game_missing_what_the_lock_needs_is_named"
+    },
+    {
+      "id": "mlb-probe-one-probable-enough",
+      "why": "a game naming only one club's probable pitcher passes, so the starter term would read half a game.",
+      "find": "                                     for s in ('home', 'away'))]",
+      "replace": "                                     for s in ('home',))]",
+      "expect_caught_by": "test_every_game_needs_both_probable_pitchers"
+    },
+    {
+      "id": "mlb-probe-doubleheader-shared-key",
+      "why": "a doubleheader whose two games share a gamePk passes, so locking and grading by gamePk would merge two games into one.",
+      "find": "        if len({g.get('gamePk') for g in gs}) != 2:",
+      "replace": "        if len({g.get('gamePk') for g in gs}) < 1:",
+      "expect_caught_by": "test_a_doubleheader_is_two_gamepks_numbered_one_and_two"
+    },
+    {
+      "id": "mlb-probe-season-any-length",
+      "why": "a season list of any length passes, so a half-published schedule reads as the season ahead.",
+      "find": "    if not isinstance(n, int) or n < SEASON_GAMES_FLOOR:\n        return [f'{n} games listed, fewer than {SEASON_GAMES_FLOOR}']",
+      "replace": "    if not isinstance(n, int):\n        return [f'{n} games listed, fewer than {SEASON_GAMES_FLOOR}']",
+      "expect_caught_by": "test_the_season_ahead_must_be_listed_in_full"
+    },
+    {
+      "id": "mlb-probe-no-starter-check",
+      "why": "a box score without its pitchers passes, so the starting pitcher a game was played by could not be read.",
+      "find": "        if not t.get('pitchers'):\n            out.append(f'{side}: no pitchers, so no starter')",
+      "replace": "        if False:\n            out.append(f'{side}: no pitchers, so no starter')",
+      "expect_caught_by": "test_a_box_score_needs_the_rating_totals_and_a_starter"
+    },
+    {
+      "id": "mlb-probe-retro-not-a-season",
+      "why": "any zip counts as a season's game log, so a log of a few games reads as the fallback being there.",
+      "find": "    if len(rows) < SEASON_GAMES_FLOOR:\n        return [f'{len(rows)} games, fewer than {SEASON_GAMES_FLOOR}']",
+      "replace": "    if not rows:\n        return [f'{len(rows)} games, fewer than {SEASON_GAMES_FLOOR}']",
+      "expect_caught_by": "test_a_retrosheet_game_log_is_a_zipped_season_with_the_scores"
+    },
+    {
+      "id": "mlb-probe-odds-home-only",
+      "why": "only one side's moneyline is required, so a half-priced game reads as usable for Model B.",
+      "find": "    return ['a moneyline is missing for one club'] if None in lines else []",
+      "replace": "    return ['a moneyline is missing for one club'] if lines[0] is None else []",
+      "expect_caught_by": "test_odds_need_both_moneylines"
+    },
+    {
+      "id": "mlb-probe-candidates-decide",
+      "why": "a refused candidate fails the probe, so it goes red by design on a price list that refuses runners.",
+      "find": "    for src in candidates(get, get_bytes, now):\n        report(*src, seen=seen)\n",
+      "replace": "    for src in candidates(get, get_bytes, now):\n        ok = report(*src, seen=seen) and ok\n",
+      "expect_caught_by": "test_a_candidate_refused_is_reported_and_does_not_fail_the_run"
+    },
+    {
+      "id": "mlb-probe-required-ignored",
+      "why": "a required source missing does not fail the probe, so the go/no-go could rest on a source a runner cannot read.",
+      "find": "    ok = all([report(*src, seen=seen) for src in required(get, now)])",
+      "replace": "    ok = True\n    [report(*src, seen=seen) for src in required(get, now)]",
+      "expect_caught_by": "test_a_required_source_missing_fails_the_run_and_says_which"
+    },
+    {
+      "id": "mlb-probe-season-ahead-is-last",
+      "why": "the season ahead is taken as the one just finished, so the probe checks a schedule already played.",
+      "find": "    ahead = last_finished_season(now) + 1",
+      "replace": "    ahead = last_finished_season(now)",
+      "expect_caught_by": "test_every_required_source_usable_exits_zero_and_reads_the_season_ahead"
+    },
+    {
+      "id": "mlb-probe-no-notice",
+      "why": "the runner's answer is only in the log, which cannot be read without signing in, so the probe's whole point is lost.",
+      "find": "        print('::notice title=MLB data probe::' + '; '.join(seen))",
+      "replace": "        pass",
+      "expect_caught_by": "test_on_a_runner_one_notice_sums_every_source_up"
+    }
+  ]
+}
