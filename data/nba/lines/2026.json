@@ -2626,5 +2626,17 @@
   "home_price": -147.0,
   "away_price": 124.0,
   "home_prob": 0.5714
+ },
+ {
+  "game_id": "401909974",
+  "home": "HOU",
+  "away": "GS",
+  "start_utc": "2026-11-12T02:30:00Z",
+  "read_utc": "2026-11-12T02:24:34Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": -249.0,
+  "away_price": 205.0,
+  "home_prob": 0.6851
  }
 ]
