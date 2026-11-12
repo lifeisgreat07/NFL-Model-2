@@ -34,7 +34,7 @@
       "target": "src/sports/mlb/schedule.py",
       "tests": "tests/test_mlb_schedule.py",
       "why": "an unknown state is read as scheduled, so a new state the league adds reaches a lock unnoticed.",
-      "find": "    if coded not in CODED_STATE:\n        out.append(f'game {gid}: unknown codedGameState {coded!r}')\n    elif CODED_STATE[coded] is GameStatus.FINAL:",
+      "find": "    if coded not in CODED_STATE:\n        out.append(f'game {gid}: unknown codedGameState {coded!r}')\n    elif CODED_STATE[str(coded)] is GameStatus.FINAL:",
       "replace": "    if CODED_STATE.get(coded, GameStatus.SCHEDULED) is GameStatus.FINAL:",
       "expect_caught_by": "test_an_unknown_game_type_or_state_stops_the_load"
     },

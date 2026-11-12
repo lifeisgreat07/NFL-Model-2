@@ -130,7 +130,7 @@ def raw_problems(g: Json) -> list[str]:
     coded = (g.get('status') or {}).get('codedGameState')
     if coded not in CODED_STATE:
         out.append(f'game {gid}: unknown codedGameState {coded!r}')
-    elif CODED_STATE[coded] is GameStatus.FINAL:
+    elif CODED_STATE[str(coded)] is GameStatus.FINAL:
         hs, as_ = _side(g, 'home').get('score'), _side(g, 'away').get('score')
         if not isinstance(hs, int) or not isinstance(as_, int):
             out.append(f'game {gid}: final without both scores')
@@ -189,7 +189,7 @@ def to_schedule(games: list[Json], season: int, venues: Mapping[int, int]) -> pd
             'status': status.value,
             'home_score': hs,
             'away_score': as_,
-            'home_win': int(hs > as_) if final else None,
+            'home_win': int(hs > as_) if final and hs is not None and as_ is not None else None,
             'game_type': GAME_TYPES[g['gameType']],
             'game_number': int(g['gameNumber']),
             'double_header': str(g.get('doubleHeader') or 'N'),
