@@ -42,7 +42,7 @@
  },
  "disclosures": [
   "Written on 2026-11-11, after both live seasons' first figures had been read (each sport's forward test and drift file) and after audit 7 had re-derived the backtests. The changes registered here were all named by the audit before then, and none was chosen by looking at the live figures; but they were chosen knowing the live figures exist, which is why the registered model is left untouched and v2 runs beside it as a shadow.",
-  "Item 24's definition is the second of the two Claude sent Mark on 2026-11-11 (the first was to drop the term); MV2 measures the first beside it, so the forward test shows what the term is worth."
+  "Item 24's definition is the second of the two Claude sent Mark on 2026-11-11 (the first was to drop the term); Mark chose it the same day (\"Option 2 works\"). MV2 measures the first beside it, so the forward test shows what the term is worth."
  ],
  "amendments": [],
  "not_in_this_registration": "Any change to the registered models, picks, forward test, drift check or pages. Anything not named under changes."
