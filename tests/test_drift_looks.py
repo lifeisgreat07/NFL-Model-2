@@ -11,6 +11,7 @@ import shutil
 import subprocess
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -55,6 +56,30 @@ def test_each_look_is_on_its_first_n_picks_at_the_per_look_level(sport):
         n = look['games']
         assert look['lower_bound'] == drift.lower_bound(losses[:n], rule, rule['per_look_level'])
     assert looks[0]['lower_bound'] < drift.lower_bound(losses[:100], rule, rule['one_sided_level'])
+
+
+@pytest.mark.parametrize('sport', SPORTS)
+def test_a_look_is_one_sided_losses_between_the_bounds_flag(sport):
+    """Stage 95 item 34 (T2): the level's sidedness, not only its value. Losses are
+    placed so the baseline sits between the look's one-sided lower bound and the
+    two-sided bound at the same level: one-sided, the look flags; two-sided, it
+    would not. The bounds are worked out here from the rule's seeded bootstrap,
+    not by calling lower_bound, so a changed lower_bound cannot move the target."""
+    drift = SPORTS[sport][0]
+    spec = drift.baseline()
+    rule, base = spec['rule'], spec['baseline']['value']
+    n, level = rule['checkpoints'][0], rule['per_look_level']
+    raw = 0.65 + 0.25 * np.sin(np.arange(n) * 1.7)  # spread like real log losses, fixed
+    idx = np.random.default_rng(rule['seed']).integers(0, n, size=(rule['n_resamples'], n))
+    means = raw[idx].mean(axis=1)
+    one = float(np.percentile(means, (1 - level) * 100))
+    two = float(np.percentile(means, (1 - level) / 2 * 100))
+    assert one - two > 0.001, 'the two bounds must be far enough apart to fall between'
+    losses = list(raw + (base - (one + two) / 2))
+    (look,) = drift.looks(losses, spec)
+    assert look['lower_bound'] > base, 'one-sided, the bound clears the baseline'
+    assert look['lower_bound'] - base == pytest.approx((one - two) / 2, abs=1e-9)
+    assert look['flagged'] is True and drift.flags(losses, spec) is True
 
 
 @pytest.mark.parametrize('sport', SPORTS)

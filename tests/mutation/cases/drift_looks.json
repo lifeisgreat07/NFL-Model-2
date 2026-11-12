@@ -3,6 +3,22 @@
   "tests": "tests/test_drift_looks.py",
   "cases": [
     {
+      "id": "nhl-drift-look-two-sided",
+      "target": "src/sports/nhl/drift.py",
+      "why": "each look takes the two-sided bound at its level (one-sided at half the tail), a stricter test than the registered one, so a season the registration says to flag passes unflagged",
+      "find": "        bound = lower_bound(losses[:n], rule, rule['per_look_level'])\n",
+      "replace": "        bound = lower_bound(losses[:n], rule, 1 - (1 - rule['per_look_level']) / 2)\n",
+      "expect_caught_by": "test_a_look_is_one_sided_losses_between_the_bounds_flag"
+    },
+    {
+      "id": "nba-drift-look-two-sided",
+      "target": "src/sports/nba/drift.py",
+      "why": "each look takes the two-sided bound at its level (one-sided at half the tail), a stricter test than the registered one, so a season the registration says to flag passes unflagged",
+      "find": "        bound = lower_bound(losses[:n], rule, rule['per_look_level'])\n",
+      "replace": "        bound = lower_bound(losses[:n], rule, 1 - (1 - rule['per_look_level']) / 2)\n",
+      "expect_caught_by": "test_a_look_is_one_sided_losses_between_the_bounds_flag"
+    },
+    {
       "id": "nhl-drift-looks-at-95-each-time",
       "target": "src/sports/nhl/drift.py",
       "why": "each look tests at the family's 95% instead of its share, so five looks have up to five times the registered false-flag rate",
