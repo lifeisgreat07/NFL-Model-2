@@ -5,7 +5,7 @@
   "viewport": "390x844",
   "theme": "light",
   "file": "nba-390x844-light-base.png",
-  "bytes": 93987,
+  "bytes": 94932,
   "parked": 3
  },
  {
@@ -14,7 +14,7 @@
   "viewport": "390x844",
   "theme": "dark",
   "file": "nba-390x844-dark-base.png",
-  "bytes": 94705,
+  "bytes": 95673,
   "parked": 3
  },
  {
@@ -23,7 +23,7 @@
   "viewport": "1440x900",
   "theme": "light",
   "file": "nba-1440x900-light-base.png",
-  "bytes": 235329,
+  "bytes": 241188,
   "parked": 4
  },
  {
@@ -32,7 +32,7 @@
   "viewport": "1440x900",
   "theme": "dark",
   "file": "nba-1440x900-dark-base.png",
-  "bytes": 235418,
+  "bytes": 241348,
   "parked": 4
  }
 ]
