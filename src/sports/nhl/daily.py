@@ -36,6 +36,9 @@ Each run, in order:
    (`src/sports/nhl/standings.py`; `results/nhl/standings_<season>.json`).
 8. **Page inputs.** Every run writes the season's schedule and today's
    ratings for the NHL's pages (`src/sports/nhl/page_inputs.py`).
+9. **v2 shadow.** After the picks are saved, v2's forecasts for the same games
+   (`src/sports/nhl/v2_shadow.py`), in `predictions/nhl/<season>-v2/`: never a
+   pick, never graded here.
 
 `.github/workflows/nhl-daily.yml` runs this at 14:00 and 21:00 UTC.
 
@@ -78,6 +81,7 @@ from src.sports.nhl import (
     ratings,
     roster,
     standings,
+    v2_shadow,
 )
 from src.sports.nhl import schedule as nhl_schedule
 from src.sports.nhl.lock import GameLock
@@ -335,6 +339,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         fallback = last_starters(games)
         injury_table = read_injuries(season, get)
         rated = ratings.day_ratings(games[games['day'] < today.tz_localize(None)], today.tz_localize(None), h)
+        goalie_ids: dict[str, tuple[Any, Any]] = {}
         for _, g in locking.iterrows():
             day = pd.Timestamp(str(g['slate']))
             if day not in fitted:
@@ -358,6 +363,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                                    'report': proj.get(f'{side}_report')}
                 ids[side] = pid
             feats = rated.matchup(g['home'], g['away'], ids['home'], ids['away'], [k])
+            goalie_ids[str(g['game_id'])] = (ids['home'], ids['away'])
             injury_list = None if injury_table is None else injuries.for_game(
                 injury_table.day, injury_table.table, g['home'], g['away'], now, injury_table.unknown)
             record = pick_record(g, feats, k, model_a, model_b, line_by_id.get(str(g['game_id'])), notes, now,
@@ -368,6 +374,14 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                                        str(today.date()), season)
         if standings is not None:
             print(f'standings: {standings}')
+        # Stage 95 item 36: v2's shadow forecasts for the games just saved, never a pick
+        # (experiments/nhl/stage95_v2/registry.json, forward_test.shadow).
+        shadow = after_save.guarded(
+            'v2 shadow', v2_shadow.save, locking, line_by_id, goalie_ids, pd.concat([past, current], ignore_index=True),
+            v2_shadow.history_market(first, season - 1, PATHS.data / 'lines' / f'{season}.json'), sched,
+            PATHS.predictions / f'{season}-v2', now, first)
+        if shadow is not None:
+            print(f'v2 shadow: {len(shadow)} saved')
     def write_grades() -> list[dict[str, Any]]:
         graded = grade(folder, sched)
         out = PATHS.results / f'graded_{season}.json'
