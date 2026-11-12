@@ -50,8 +50,8 @@
     {
       "id": "nhl-daily-drift-unfinished",
       "why": "games not yet final enter the drift check, so it scores picks against results that do not exist.",
-      "find": "    finals = sched[sched['status'] == GameStatus.FINAL.value].set_index('game_id')",
-      "replace": "    finals = sched.set_index('game_id')",
+      "find": "    is final.\"\"\"\n    finals = sched[sched['status'] == GameStatus.FINAL.value].set_index('game_id')",
+      "replace": "    is final.\"\"\"\n    finals = sched.set_index('game_id')",
       "expect_caught_by": "test_drift_is_scored_on_model_a_for_final_games_only"
     },
     {
