@@ -51,6 +51,9 @@ def test_a_schedule_game_missing_what_the_lock_needs_is_named():
 def test_every_game_needs_both_probable_pitchers():
     assert probe.check_probables(day(game())) == []
     assert probe.check_probables(day(game(), game(pk=2, probables=False))) == ['1 of 2 games name both probables']
+    home_only = game(pk=3)
+    del home_only['teams']['away']['probablePitcher']
+    assert probe.check_probables(day(home_only)) == ['0 of 1 games name both probables'], 'one side named is not enough'
     assert probe.check_probables({'dates': []}) == ['0 of 0 games name both probables']
 
 
