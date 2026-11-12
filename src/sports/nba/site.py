@@ -12,15 +12,17 @@ was given; where a game had no price, it says "no price" and why.
 What it reads, all under the NBA's folders (`src.core.sport.sport_paths`):
 
 - `predictions/nba/<season>/*.json`: the saved picks, one per game;
-- `results/nba/schedule_<season>.json`, `graded_<season>.json` and
-  `drift_<season>.json`: what the daily run writes. Absent before its
+- `results/nba/schedule_<season>.json`, `graded_<season>.json`,
+  `drift_<season>.json`, `ratings_<season>.json` and `standings_<season>.json`:
+  what the daily run writes. Absent before its
   first run, which the board says rather than failing the build;
 - `experiments/nba/stage65/registry.json`: the forward test's rules;
 - `experiments/nba/stage61/registry.json`: the seasons and the level;
 - `experiments/nba/stage61/results/confirmation.json` and `tuning.json`:
   the backtest's answers and its validation grid;
 - `data/nba/history/games_<season>.csv` and `market_<season>.csv`: how
-  many games each season holds and how many have a price.
+  many games each season holds and how many have a price;
+- `src/sports/nba/pages/changes.json`: the What's Changed page's entries.
 
 Missing backtest results stop the build: without them those pages have
 nothing true to say. The template is `src/sports/nba/pages/`; the shared stylesheet is the
@@ -156,6 +158,10 @@ def board(season: int) -> dict[str, Any]:
         'teams': {abbr: {'name': name, 'logo': colours.logo(abbr, 'dark'), 'logo_light': colours.logo(abbr, 'light')}
                   for abbr, name in teams.NAMES.items()},
         'drift': _maybe(PATHS.results / f'drift_{season}.json'),
+        # Stage 104 item 3: the clubs' ratings, for Power Ratings and Teams.
+        'ratings': _maybe(PATHS.results / f'ratings_{season}.json'),
+        # Stage 104 item 4: the standings odds, play-in included.
+        'standings': _maybe(PATHS.results / f'standings_{season}.json'),
         # Stage 84 item 6: the registered rule, so the page can say where the check stands.
         'drift_rule': _maybe(PATHS.data / 'drift_baseline.json'),
         # Stage 85 item 3: the baseline's season-to-season spread (src/sports/nba/season_spread.py).
@@ -181,6 +187,8 @@ def payload(now: datetime) -> dict[str, Any]:
         'backtest': _read(folder / 'results' / 'confirmation.json'),
         'tuning': _read(folder / 'results' / 'tuning.json'),
         'coverage': coverage(p['training_from_season'], p['confirmation_seasons'][-1]),
+        # Stage 104 item 2: the What's Changed page's entries, newest first.
+        'changes': json.loads((TEMPLATE / 'changes.json').read_text(encoding='utf-8')),
     }
 
 

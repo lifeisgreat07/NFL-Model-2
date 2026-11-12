@@ -1,0 +1,29 @@
+{
+  "target": "src/sports/nba/site.py",
+  "tests": "tests/test_nba_site.py",
+  "cases": [
+    {
+      "id": "nba-changes-never-reach-the-page",
+      "why": "What's Changed is built from an empty list, so the page says nothing has changed",
+      "find": "        'changes': json.loads((TEMPLATE / 'changes.json').read_text(encoding='utf-8')),\n",
+      "replace": "        'changes': [],\n",
+      "expect_caught_by": "test_whats_changed_is_dated_newest_first_and_reaches_the_page"
+    },
+    {
+      "id": "nba-changes-backtest-reads-better-than-it-came-out",
+      "target": "src/sports/nba/pages/changes.json",
+      "why": "the backtest entry says Model B matched the market, which H3's REJECT says it did not",
+      "find": "but Model B does worse than the market alone.",
+      "replace": "and Model B matches the market.",
+      "expect_caught_by": "test_every_registration_whats_changed_names_exists_and_says_what_its_results_say"
+    },
+    {
+      "id": "nba-changes-page-never-built",
+      "target": "src/sports/nba/pages/nba.js",
+      "why": "the What's Changed page is never drawn at load, so its tab opens on an empty page",
+      "find": "renderReliability();\nrenderChanges();\n",
+      "replace": "renderReliability();\n",
+      "expect_caught_by": "test_whats_changed_is_dated_newest_first_and_reaches_the_page"
+    }
+  ]
+}

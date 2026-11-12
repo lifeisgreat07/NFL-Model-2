@@ -137,6 +137,17 @@ def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     # Stage 85 item 1: the file says which registered looks were made and when the next is.
     drift_file = json.loads((tmp_path / 'results' / f'drift_{season}.json').read_text(encoding='utf-8'))
     assert drift_file['looks'] == [] and drift_file['next_look'] == 100, drift_file
+    # Stage 104 item 3: the ratings the Power Ratings and Teams pages read, written every run.
+    rated = json.loads((tmp_path / 'results' / f'ratings_{season}.json').read_text(encoding='utf-8'))
+    assert rated['as_of'] == '2026-10-20' and len(rated['teams']) == len(set(sched['home']) | set(sched['away']))
+    points = [t['point'] for t in rated['teams']]
+    assert points == sorted(points, reverse=True) and len(set(points)) > 1, 'real ratings, best first'
+    # Stage 104 item 4: the standings odds, in a run that saved picks.
+    odds = json.loads((tmp_path / 'results' / f'standings_{season}.json').read_text(encoding='utf-8'))
+    assert len(odds['teams']) == 30 and odds['simulations'] == 10000
+    for conf in ('East', 'West'):
+        clubs = [t for t in odds['teams'] if t['conference'] == conf]
+        assert abs(sum(t['playoff_pct'] for t in clubs) - 8) < 1e-6, 'eight playoff places a conference'
 
 
 def test_a_game_after_the_moment_reads_as_not_yet_played():
@@ -173,3 +184,13 @@ def test_the_nba_page_inputs_write_every_field_plainly(tmp_path):
     assert doc['games'][1]['time_valid'] is None   # a row with no flag writes null, not a missing key
     out = page_inputs.write(tmp_path / 'a' / 'schedule_2026.json', doc)
     assert json.loads(out.read_text(encoding='utf-8')) == doc and not out.with_suffix('.tmp').exists()
+
+
+def test_the_nba_ratings_file_lists_every_club_best_first():
+    """Stage 104 item 3: a club with no rated games yet is listed at zero, not left out."""
+    from src.sports.nba import page_inputs, ratings
+    rated = ratings.DayRatings({'BOS': 3.21234, 'NY': -1.5, 'DET': 3.21234}, {'BOS': 4.0, 'NY': -2.0, 'DET': 2.5})
+    doc = page_inputs.ratings_json(rated, ['NY', 'BOS', 'DET', 'UTA', 'BOS'], '2026-11-11')
+    assert doc == {'as_of': '2026-11-11', 'teams': [
+        {'team': 'BOS', 'point': 3.2123, 'efficiency': 4.0}, {'team': 'DET', 'point': 3.2123, 'efficiency': 2.5},
+        {'team': 'UTA', 'point': 0.0, 'efficiency': 0.0}, {'team': 'NY', 'point': -1.5, 'efficiency': -2.0}]}

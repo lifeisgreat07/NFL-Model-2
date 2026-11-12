@@ -716,7 +716,7 @@ function renderReliability(){
   const saved = Object.keys(DATA.picks).length;
   const status = driftStatus(d, rule);
   el.innerHTML = `<h2 class="section-title">The drift check</h2><p class="nhl-lede">${status}</p>
-    ${rule && rule.rule.checkpoints ? `<p class="nhl-lede">The rule was registered before the season (<code>experiments/nhl/stage58/registry.json</code>) and amended on 2026-11-04: ${driftLooks(rule)}</p>` : ''}
+    ${rule && rule.rule.checkpoints ? `<p class="nhl-lede">The rule was registered before the season (<code>experiments/nhl/stage58/registry.json</code>) and amended on 2026-11-04 and 2026-11-11: ${driftLooks(rule)}</p>` : ''}
     ${spreadHtml(DATA.spread, 'nhl')}
     <h2 class="section-title">The forward test so far</h2>
     ${forwardHtml(DATA.forward, 'nhl')}

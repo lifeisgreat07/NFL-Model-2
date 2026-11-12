@@ -9,9 +9,17 @@ import json
 from typing import Any
 
 from src.core import season_spread
+from src.core.sport import sport_paths
 from src.sports.nba import backtest, ratings
 
 NAME = 'model_a_by_season.json'
+
+
+
+def checkpoints() -> list[int]:
+    """The drift check's registered looks (data/nba/drift_baseline.json)."""
+    rule = json.loads((sport_paths('nba').data / 'drift_baseline.json').read_text(encoding='utf-8'))['rule']
+    return [int(n) for n in rule['checkpoints']]
 
 
 def compute() -> dict[str, Any]:
@@ -25,8 +33,14 @@ def compute() -> dict[str, Any]:
     table = ratings.features(games, minutes, h, lam).merge(games[['game_id', 'home_prob']], on='game_id', how='left')
     out = season_spread.spread(backtest.walk_forward, backtest.scores, table, list(backtest.A_COLUMNS),
                                p['validation_seasons'], p['confirmation_seasons'], conf['scores']['model_a']['log_loss'])
+    # Stage 95 item 31: Model A, with and without its availability term, over each season's first n games.
+    looks = {key: season_spread.by_look(backtest.walk_forward, backtest.scores, table, cols, p['validation_seasons'],
+                                        p['confirmation_seasons'], checkpoints())
+             for key, cols in (('by_look', list(backtest.A_COLUMNS)),
+                               ('by_look_no_availability', list(backtest.A_COLUMNS[:2])))}
     return {'model': 'model_a', 'settings': {'H_days': h, 'lambda': lam},
-            'source': 'src/sports/nba/season_spread.py, the Stage 61 walk-forward at the chosen settings', **out}
+            'source': 'src/sports/nba/season_spread.py, the Stage 61 walk-forward at the chosen settings', **out,
+            **looks}
 
 
 def main() -> int:

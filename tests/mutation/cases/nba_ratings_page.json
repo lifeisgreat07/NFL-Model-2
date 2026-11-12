@@ -1,0 +1,55 @@
+{
+  "target": "src/sports/nba/page_inputs.py",
+  "tests": "tests/test_daily_end_to_end.py",
+  "cases": [
+    {
+      "id": "nba-ratings-worst-first",
+      "why": "the ratings file lists the clubs worst first, so the page ranks the weakest club first",
+      "find": "    teams.sort(key=lambda t: (-float(t['point']), str(t['team'])))\n    return {'as_of': as_of, 'teams': teams}\n",
+      "replace": "    teams.sort(key=lambda t: (float(t['point']), str(t['team'])))\n    return {'as_of': as_of, 'teams': teams}\n",
+      "expect_caught_by": "test_the_nba_ratings_file_lists_every_club_best_first"
+    },
+    {
+      "id": "nba-ratings-skip-unrated-clubs",
+      "why": "a club with no rated games is left out, so the page lists fewer clubs than the league has",
+      "find": "        for c in sorted(set(clubs))]\n",
+      "replace": "        for c in sorted(set(clubs)) if c in rated.point]\n",
+      "expect_caught_by": "test_the_nba_ratings_file_lists_every_club_best_first"
+    },
+    {
+      "id": "nba-ratings-page-reads-no-file",
+      "target": "src/sports/nba/site.py",
+      "tests": "tests/test_nba_ratings_page.py",
+      "why": "the page data leaves the ratings out, so Power Ratings and Teams say there are none",
+      "find": "        'ratings': _maybe(PATHS.results / f'ratings_{season}.json'),\n",
+      "replace": "        'ratings': None,\n",
+      "expect_caught_by": "test_the_page_data_carries_the_ratings_file"
+    },
+    {
+      "id": "nba-ratings-bar-draws-efficiency",
+      "target": "src/sports/nba/pages/nba.js",
+      "tests": "tests/test_nba_ratings_page.py",
+      "why": "the bar and its value print the efficiency rating under a points-a-game header",
+      "find": "<span class=\"net-value\">${signed(t.point, 1)}</span>",
+      "replace": "<span class=\"net-value\">${signed(t.efficiency, 1)}</span>",
+      "expect_caught_by": "test_power_ratings_rank_the_clubs_as_the_file_does_with_both_ratings"
+    },
+    {
+      "id": "nba-teams-record-counts-unplayed-games",
+      "target": "src/sports/nba/pages/nba.js",
+      "tests": "tests/test_nba_ratings_page.py",
+      "why": "the record counts games not yet final, so a club is charged a loss for a game it has not played",
+      "find": "  const finals = teamGames(abbr).filter(g => g.status === 'final' && g.hs !== null && g.hs !== undefined);\n",
+      "replace": "  const finals = teamGames(abbr);\n",
+      "expect_caught_by": "test_teams_counts_the_record_from_final_games_only"
+    },
+    {
+      "id": "nba-daily-writes-no-ratings",
+      "target": "src/sports/nba/daily.py",
+      "why": "the daily run stops writing the ratings file, so Power Ratings and Teams freeze on the last one written",
+      "find": "    after_save.guarded('ratings file', lambda: page_inputs.write(",
+      "replace": "    (lambda *a: None)('ratings file', lambda: page_inputs.write(",
+      "expect_caught_by": "test_the_nba_daily_run_end_to_end"
+    }
+  ]
+}

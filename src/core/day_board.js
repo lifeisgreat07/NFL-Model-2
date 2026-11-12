@@ -240,6 +240,18 @@ function spreadHtml(s, sport){
 
 /* Stage 84 item 6 (the 2026-11-02 review): the daily run writes the drift
    check's result and the page never showed it. */
+/* Stage 95 item 33 (audit 7, M4): the other direction a leak shows in, said
+   beside the drift check, not flagged: live log loss better than the backtest
+   by more than its seasons differ by, and saved picks whose own records show
+   they could have seen their result. */
+function leakNote(leak){
+  if (!leak) return '';
+  const out = [];
+  if (leak.better_than_spread) out.push(` <b>Better than the backtest by more than its seasons differ.</b> Live log loss is ${leak.margin.toFixed(4)} below it, against a spread of ${leak.spread_range.toFixed(4)} between its seasons. A model doing that much better than it was tested is worth checking for a leak: a pick that could see its result.`);
+  if (leak.leaked_picks) out.push(` ${leak.leaked_picks} saved pick${leak.leaked_picks === 1 ? '' : 's'} could have seen ${leak.leaked_picks === 1 ? 'its' : 'their'} result by ${leak.leaked_picks === 1 ? 'its' : 'their'} own record${leak.leaked_picks === 1 ? '' : 's'} (fitted on games of the same day, or saved or priced after the start); the registration lists them, and saved picks are never rewritten.`);
+  return out.join('');
+}
+
 function driftStatus(d, rule){
   const n = x => Number(x).toLocaleString('en-US');
   const min = rule ? (rule.rule.checkpoints || [rule.rule.min_games])[0] : 100;
@@ -249,7 +261,8 @@ function driftStatus(d, rule){
   if (d.games < min) return `${d.games} of the ${min} graded games the drift check needs before it can flag. ${now}`;
   const last = (d.looks || []).slice(-1)[0];
   const when = !last ? '' : ` Its last look was at ${n(last.games)} graded games${d.next_look ? `; the next is at ${n(d.next_look)}` : ', the season&#39;s last'}.`;
-  return d.flagged ? `<b>Flagged.</b> ${now} At a registered look that was significantly above the backtest, and an issue is open.${when}` : `Not flagged. ${now}${when}`;
+  const leak = leakNote(d.leak);
+  return d.flagged ? `<b>Flagged.</b> ${now} At a registered look that was significantly above the backtest, and an issue is open.${when}${leak}` : `Not flagged. ${now}${when}${leak}`;
 }
 
 /* Stage 85 item 1 (the 2026-11-02 review): the drift check looks only at the
@@ -258,10 +271,14 @@ function driftLooks(rule){
   if (!rule || !rule.rule.checkpoints) return '';
   const r = rule.rule, cs = r.checkpoints.map(x => Number(x).toLocaleString('en-US'));
   const list = cs.length > 1 ? `${cs.slice(0, -1).join(', ')} and ${cs[cs.length - 1]}` : cs[0];
-  const base = rule.baseline_no_availability
+  // Stage 95 item 31: each look against the backtest over a season's first that many games.
+  const at = key => r.checkpoints.map(c => `${Number(c).toLocaleString('en-US')}, ${Number(rule[key + '_by_look'][String(c)]).toFixed(4)}`).join('; ');
+  const base = rule.baseline_by_look
+    ? `log loss over a season&#39;s first that many games, the confirmation seasons pooled (${at('baseline')}${rule.baseline_no_availability_by_look ? `; a pick made without the injury report against the model without it: ${at('baseline_no_availability')}` : ''})`
+    : rule.baseline_no_availability
     ? `figure for those picks (${rule.baseline.value.toFixed(4)} for a pick made with the injury report, ${rule.baseline_no_availability.value.toFixed(4)} for one made without it)`
     : rule.baseline.value.toFixed(4);
-  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many is above the backtest&#39;s ${base}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
+  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many, resampling whole game days, is above the backtest&#39;s ${base}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
 }
 
 function setMoreSheetOpen(open){

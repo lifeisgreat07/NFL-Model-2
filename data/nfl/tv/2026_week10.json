@@ -1,0 +1,233 @@
+{
+  "reads": [
+    "2026-11-12T11:02:40Z"
+  ],
+  "changes": [],
+  "games": [
+    {
+      "elias": "2026111200",
+      "networks": [
+        "Prime Video"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "WAS",
+      "home": "NYG",
+      "territory": "NATIONAL",
+      "listed": [
+        "Prime Video"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111500",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "NE",
+      "home": "DET",
+      "territory": "NATIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111501",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "KC",
+      "home": "ATL",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111502",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "HOU",
+      "home": "CLE",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111503",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "MIN",
+      "home": "GB",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111504",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "MIA",
+      "home": "IND",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111505",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "CAR",
+      "home": "NO",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111506",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "BUF",
+      "home": "NYJ",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111507",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "JAX",
+      "home": "TEN",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111508",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LA",
+      "home": "ARI",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111509",
+      "networks": [
+        "CBS"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "SEA",
+      "home": "LV",
+      "territory": "REGIONAL",
+      "listed": [
+        "CBS"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111510",
+      "networks": [
+        "FOX"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "SF",
+      "home": "DAL",
+      "territory": "REGIONAL",
+      "listed": [
+        "FOX"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111511",
+      "networks": [
+        "NBC"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "PIT",
+      "home": "CIN",
+      "territory": "NATIONAL",
+      "listed": [
+        "NBC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    },
+    {
+      "elias": "2026111600",
+      "networks": [
+        "ESPN"
+      ],
+      "held_back": [],
+      "reported": [],
+      "away": "LAC",
+      "home": "BAL",
+      "territory": "NATIONAL",
+      "listed": [
+        "ESPN",
+        "ABC"
+      ],
+      "source": "https://www.nfl.com/schedules/2026/by-week/week-10",
+      "read_at": "2026-11-12T11:02:40Z"
+    }
+  ]
+}

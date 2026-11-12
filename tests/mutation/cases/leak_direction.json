@@ -1,0 +1,35 @@
+{
+  "target": "src/core/day_drift.py",
+  "tests": "tests/test_leak_direction.py",
+  "cases": [
+    {
+      "id": "leak-direction-said-before-a-look",
+      "why": "the line is said from the first graded games, when a good week is noise",
+      "find": "    better = (mean is not None and spread_range is not None and games >= first_look\n",
+      "replace": "    better = (mean is not None and spread_range is not None\n",
+      "expect_caught_by": "test_better_by_more_than_the_spread_is_said_from_the_first_look_on"
+    },
+    {
+      "id": "leak-direction-reads-worse-as-better",
+      "why": "the line fires when live is worse than the backtest, which is drift, the other check's business",
+      "find": "              and baseline - mean > spread_range)\n",
+      "replace": "              and abs(baseline - mean) > spread_range)\n",
+      "expect_caught_by": "test_better_by_more_than_the_spread_is_said_from_the_first_look_on"
+    },
+    {
+      "id": "leak-count-every-pick",
+      "why": "every saved pick is counted as leaked, so the page accuses picks that saw nothing",
+      "find": "    return sum(1 for p in paths if pick_guard.problems(json.loads(p.read_text(encoding='utf-8'))))\n",
+      "replace": "    return len(paths)\n",
+      "expect_caught_by": "test_saved_picks_are_counted_by_their_own_records"
+    },
+    {
+      "id": "leak-page-never-says-it",
+      "target": "src/core/day_board.js",
+      "why": "the page drops the line, so a reader sees only the direction the drift check looks in",
+      "find": "  const leak = leakNote(d.leak);\n",
+      "replace": "  const leak = '';\n",
+      "expect_caught_by": "test_the_page_says_it_beside_the_drift_check"
+    }
+  ]
+}

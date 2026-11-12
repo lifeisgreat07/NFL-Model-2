@@ -63,7 +63,8 @@ def test_each_pick_is_held_to_the_backtest_of_the_model_it_ran():
 def test_a_look_is_held_to_the_mean_of_its_own_picks_baselines():
     s = spec()
     bases = drift.pick_baselines([False] * 20 + [True] * 180, s)
-    with_it, without = s['baseline']['value'], s['baseline_no_availability']['value']
+    # Stage 95 item 31: each pick's model's figure over a season's first 100 games.
+    with_it, without = s['baseline_by_look']['100'], s['baseline_no_availability_by_look']['100']
     assert drift.look_baseline(s, bases, 100) == pytest.approx((20 * without + 80 * with_it) / 100)
     assert drift.look_baseline(s, None, 100) == with_it
     looks = drift.looks([0.6] * 200, s, bases)
@@ -76,13 +77,17 @@ def test_picks_without_the_report_at_their_own_backtest_do_not_flag():
     availability, the check flags on the missing report rather than on
     drift; held to their own baseline it does not."""
     s = spec()
-    without = s['baseline_no_availability']['value']
-    losses = [without - 0.02, without + 0.02] * 100
-    bases = drift.pick_baselines([False] * 200, s)
+    # Stage 95 item 31: one look, at 100 picks, at the no-availability backtest's figure for a
+    # season's first 100 games, which sits above Model A's with availability.
+    with_it, without = s['baseline_by_look']['100'], s['baseline_no_availability_by_look']['100']
+    losses = [without - 0.02, without + 0.02] * 50
+    bound = drift.lower_bound(losses, s['rule'], s['rule']['per_look_level'])
+    assert with_it < bound < without, 'the premise: the bound falls between the two models\' figures'
+    bases = drift.pick_baselines([False] * 100, s)
     assert drift.flags(losses, s) is True
     assert drift.flags(losses, s, bases) is False
     # And picks made with the report are held where they were.
-    assert drift.flags(losses, s, drift.pick_baselines([True] * 200, s)) is True
+    assert drift.flags(losses, s, drift.pick_baselines([True] * 100, s)) is True
 
 
 def test_a_game_without_a_result_takes_its_baseline_with_it():
@@ -107,9 +112,10 @@ def test_the_daily_reads_whether_each_pick_had_the_report(tmp_path):
 
 def test_the_daily_run_writes_its_own_baselines():
     src = (ROOT / 'src' / 'sports' / 'nba' / 'daily.py').read_text(encoding='utf-8')
-    assert 'losses, bases = drift.per_game(drift_picks(folder, sched), spec)' in src
-    assert 'flagged = drift.flags(losses, spec, bases)' in src
-    assert "'looks': drift.looks(losses, spec, bases)" in src
+    assert 'picks = drift_picks(folder, sched)\n        losses, bases = drift.per_game(picks, spec)' in src.replace('\r\n', '\n')
+    # Stage 95 item 32: with each pick's day, for the bootstrap.
+    assert 'flagged = drift.flags(losses, spec, bases, days)' in src
+    assert "'looks': drift.looks(losses, spec, bases, days)" in src
 
 
 # --- on the pages ----------------------------------------------------------------
@@ -118,7 +124,10 @@ def test_the_daily_run_writes_its_own_baselines():
 def test_the_nba_page_names_both_baselines_and_how_many_picks_are_held_to_the_second():
     rule = spec()
     looks = run('nba', f'driftLooks({json.dumps(rule)})')
-    assert '0.5983 for a pick made with the injury report, 0.6103 for one made without it' in looks
+    # Stage 95 item 31: both models' figures, look by look.
+    a, na = rule['baseline_by_look'], rule['baseline_no_availability_by_look']
+    assert f"pooled (100, {a['100']:.4f}; 200, {a['200']:.4f};" in looks
+    assert f"against the model without it: 100, {na['100']:.4f}; 200, {na['200']:.4f};" in looks
     d = {'games': 107, 'mean_log_loss': 0.6251, 'baseline': 0.6000, 'without_availability': 15,
          'flagged': False, 'looks': [{'games': 100, 'lower_bound': 0.5502, 'flagged': False}], 'next_look': 200}
     out = run('nba', f'driftStatus({json.dumps(d)}, {json.dumps(rule)})')
@@ -131,7 +140,10 @@ def test_the_nhl_page_keeps_its_one_baseline():
     rule = json.loads((ROOT / 'data' / 'nhl' / 'drift_baseline.json').read_text(encoding='utf-8'))
     assert 'baseline_no_availability' not in rule
     looks = run('nhl', f'driftLooks({json.dumps(rule)})')
-    assert f"above the backtest&#39;s {rule['baseline']['value']:.4f}." in looks
+    # Stage 95 item 31: one model, its figure look by look.
+    assert "above the backtest&#39;s log loss over a season&#39;s first that many games" in looks
+    assert f"(100, {rule['baseline_by_look']['100']:.4f}; 200, {rule['baseline_by_look']['200']:.4f};" in looks
+    assert 'without the injury report' not in looks
     d = {'games': 194, 'mean_log_loss': 0.6561, 'baseline': 0.6753, 'flagged': False, 'looks': [], 'next_look': 200}
     assert 'against 0.6753 in the backtest.' in run('nhl', f'driftStatus({json.dumps(d)}, {json.dumps(rule)})')
 
