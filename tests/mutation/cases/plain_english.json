@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "pe-duplicate-heading-returns",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "Season Accuracy carries the same h3 twice, so the page reads as though it repeats itself and the heading stops identifying a section. This happened for real: rewriting two related sections in plain English converged on the same short question, which is exactly how it recurs. This case ALSO proves the heading scan reads render-function output and not just page markup -- the heading it mutates is emitted from a JavaScript template literal, so a markup-only scan would let this survive, which is what the first draft of the guard did",
       "find": "<h3>Not enough games yet to check</h3>",
       "replace": "<h3>Are these percentages honest?</h3>",

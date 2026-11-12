@@ -33,7 +33,7 @@
     },
     {
       "id": "recent-runs-null-renders-a-table",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_pages.js",
       "why": "the page tries to draw a table from no data instead of saying the history was not read.",
       "find": "  if(!recentRuns || !Array.isArray(recentRuns.runs)){\n",
       "replace": "  if(false){\n",
@@ -41,7 +41,7 @@
     },
     {
       "id": "recent-runs-job-name-raw",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_pages.js",
       "why": "a job name goes into the page unescaped.",
       "find": "      <td>${escapeHtml(r.workflow)}<div",
       "replace": "      <td>${r.workflow}<div",
@@ -49,7 +49,7 @@
     },
     {
       "id": "recent-runs-start-in-utc",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_pages.js",
       "why": "start times read in UTC but say ET, four or five hours off.",
       "find": "  return new Date(iso).toLocaleString('en-US', {timeZone: 'America/New_York',\n",
       "replace": "  return new Date(iso).toLocaleString('en-US', {timeZone: 'UTC',\n",

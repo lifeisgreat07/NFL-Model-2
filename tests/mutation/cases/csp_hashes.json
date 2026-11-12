@@ -63,7 +63,7 @@
   },
   {
    "id": "nfl-share-button-has-no-action",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_controls.js",
    "why": "a button's data-act names nothing in the table, so the click does nothing",
    "find": "  'copy-share-link': b => copyShareLink(b),\n",
    "replace": "",

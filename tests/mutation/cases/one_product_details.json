@@ -11,7 +11,7 @@
   },
   {
    "id": "details-nfl-proof-back-to-utc",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_ratings.js",
    "why": "the NFL's proof times go back to UTC beside ET times",
    "find": "  return d.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/New_York'})",
    "replace": "  return d.toLocaleDateString('en-US', {weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC'})",

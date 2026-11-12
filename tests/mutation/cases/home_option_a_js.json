@@ -17,6 +17,13 @@
       "expect_caught_by": "test_the_theme_button_shares_every_page_s_key"
     },
     {
+      "id": "home-theme-found-by-the-shared-class",
+      "why": "the theme button is looked up by .home-theme, which the search button also wears, so on desktop the search icon switches the theme and the sun-and-moon button does nothing (the 2026-11-11 bug).",
+      "find": "  const btn = document.getElementById('theme-toggle');\n",
+      "replace": "  const btn = document.querySelector('.home-theme');\n",
+      "expect_caught_by": "test_the_theme_lookup_finds_the_theme_button_and_not_the_search_button"
+    },
+    {
       "id": "home-scoreboard-blank-before-grading",
       "why": "a sport with nothing graded yet shows 0-0 after 0 games instead of saying so.",
       "find": "`after ${n} game${n === 1 ? '' : 's'}` : 'no graded games yet'",

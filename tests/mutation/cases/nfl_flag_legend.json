@@ -4,6 +4,7 @@
  "cases": [
   {
    "id": "flag-dot-back",
+   "target": "src/dashboard/app_board.js",
    "why": "the row's flag goes back to a dot, the shape of the live dots (Stage 77 item 28, N5).",
    "find": "${g.flag ? ` <span class=\"nfl-row-flag\" role=\"img\" aria-label=\"flagged: a note to read\">${FLAG_ICON}</span>` : ''}",
    "replace": "${g.flag ? ' <span class=\"nfl-row-flag\" aria-label=\"flagged\">&#9679;</span>' : ''}",
@@ -11,6 +12,7 @@
   },
   {
    "id": "flag-legend-dropped",
+   "target": "src/dashboard/app_board.js",
    "why": "a week with flagged games says nothing about what the flag means.",
    "find": "  if(sorted.some(g => g.flag)) grid.insertAdjacentHTML('afterbegin', FLAG_LEGEND);\n",
    "replace": "",
@@ -18,6 +20,7 @@
   },
   {
    "id": "flag-legend-unspoken",
+   "target": "src/dashboard/app_board.js",
    "why": "a screen reader hears the legend start at \"marks a game\".",
    "find": "<span class=\"visually-hidden\">A flag</span> marks",
    "replace": "marks",

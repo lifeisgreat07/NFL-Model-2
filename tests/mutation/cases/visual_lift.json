@@ -70,7 +70,7 @@
   {
    "id": "lift-nfl-watermark-wrong-side",
    "why": "the NFL card carries the home side's logo whoever is picked.",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_board.js",
    "find": "  return s && s.team ? ` style=\"--wm:url('${teamLogo(s.team)}')\"` : '';",
    "replace": "  return s && s.team ? ` style=\"--wm:url('${teamLogo(g.home)}')\"` : '';",
    "expect_caught_by": "test_the_nfl_card_carries_the_picked_sides_logo"

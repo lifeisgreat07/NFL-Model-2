@@ -25,7 +25,7 @@
     },
     {
       "id": "lock-line-hides-changes-after-kickoff",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_ratings.js",
       "why": "a commit that changed the picks after kickoff is left off the line, which is the one thing the proof exists to show",
       "find": "  const before = commits.filter(c => at(c) < first), after = commits.filter(c => at(c) >= first);",
       "replace": "  const before = commits.filter(c => at(c) < first), after = [];",
@@ -33,7 +33,7 @@
     },
     {
       "id": "lock-line-on-a-preview",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_ratings.js",
       "why": "a preview week gets a lock line, though its picks are not locked and can still change",
       "find": "(weekData && !weekData.preview) ? lockProofHtml(",
       "replace": "(weekData) ? lockProofHtml(",

@@ -47,10 +47,11 @@
   {
    "id": "acc-nba-not-drawn",
    "target": "src/sports/nba/pages/nba.js",
-   "why": "the NBA's Checking the AI's work is prose only again (B4).",
-   "find": "    ${accuracyHtml(accGames(gradedPicks()))}\n",
-   "replace": "",
-   "expect_caught_by": "test_each_sport_draws_it_from_its_own_graded_picks"
+   "tests": "tests/test_nba_calibration.py",
+   "why": "the NBA's Season Accuracy page drops the shared component and is prose only (B4; Stage 104 item 1 moved it there).",
+   "find": "See Checking the AI&#39;s work.</p>\n    ${accuracyHtml(accGames(graded))}\n",
+   "replace": "See Checking the AI&#39;s work.</p>\n",
+   "expect_caught_by": "test_the_accuracy_page_counts_only_graded_picks"
   },
   {
    "id": "acc-check-unwired",

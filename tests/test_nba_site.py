@@ -82,14 +82,47 @@ def test_the_board_leads_and_the_no_picks_page_is_gone(built: tuple[dict, str]) 
 def test_every_page_is_on_both_menus_and_the_checker_can_open_it(built: tuple[dict, str]) -> None:
     _, html = built
     pages = re.findall(r'<section class="page[^"]*" id="page-([a-z]+)"', html)
-    assert pages == ['board', 'modellab', 'method', 'reliability']
+    assert pages == ['board', 'standings', 'ratings', 'teams', 'accuracy', 'modellab', 'method', 'reliability',
+                     'changes']
     side = re.findall(r'class="nav-btn[^"]*" data-page="([a-z]+)"', html)
     bottom = re.findall(r'class="bnav-btn[^"]*" data-page="([a-z]+)"', html)
     # Since Stage 77 item 22 the phone nav keeps Methodology and Checking the
     # AI's work under More, as the NHL's and the NFL's do.
     more = re.findall(r'class="bnav-more-item[^"]*" data-page="([a-z]+)"', html)
-    assert side == pages and bottom + more == pages and 'id="bnav-more-btn"' in html
+    # Stage 104 items 3 and 4: the bar holds Board, Standings, Ratings and
+    # Accuracy, as the NHL's does; every other page is under More, each once.
+    assert side == pages and sorted(bottom + more) == sorted(pages) and len(bottom + more) == len(pages)
+    assert bottom == ['board', 'standings', 'ratings', 'accuracy'] and 'id="bnav-more-btn"' in html
     assert 'window.setActivePage = ' in html
+
+
+
+def test_whats_changed_is_dated_newest_first_and_reaches_the_page(built) -> None:
+    """Stage 104 item 2, as tests/test_nhl_site.py holds the NHL's."""
+    from src.sports.nba import site as nba_site
+    changes = json.loads((nba_site.TEMPLATE / 'changes.json').read_text(encoding='utf-8'))
+    dates = [c['date'] for c in changes]
+    assert dates and dates == sorted(dates, reverse=True)
+    assert all(re.fullmatch(r'\d{4}-\d{2}-\d{2}', d) for d in dates)
+    data, html = built
+    assert data['changes'] == changes and 'id="changes-body"' in html
+    js = (nba_site.TEMPLATE / 'nba.js').read_text(encoding='utf-8')
+    assert 'renderReliability();\nrenderChanges();\n' in js.replace('\r\n', '\n'), 'the page is built at load, as every other page is'
+
+
+def test_every_registration_whats_changed_names_exists_and_says_what_its_results_say() -> None:
+    from src.sports.nba import site as nba_site
+    root = Path(nba_site.__file__).resolve().parents[3]
+    changes = json.loads((nba_site.TEMPLATE / 'changes.json').read_text(encoding='utf-8'))
+    for c in changes:
+        for path in re.findall(r'experiments/nba/\S+?\.json', c['text']):
+            assert (root / path).exists(), path
+    backtest = next(c for c in changes if 'stage61' in c['text'])
+    answers = json.loads((root / 'experiments/nba/stage61/results/confirmation.json').read_text(encoding='utf-8'))
+    labels = {k: q.get('label') for k, q in answers['questions'].items()}
+    assert 'Model A beats the base rate' in backtest['text'] and labels['H1'] == 'ACCEPT'
+    assert 'Model B beats Model A' in backtest['text'] and labels['H2'] == 'ACCEPT'
+    assert 'does worse than the market alone' in backtest['text'] and labels['H3'] == 'REJECT'
 
 
 def test_the_page_uses_the_nbas_own_names(built: tuple[dict, str]) -> None:
@@ -98,7 +131,8 @@ def test_the_page_uses_the_nbas_own_names(built: tuple[dict, str]) -> None:
     keys = set(re.findall(r'''localStorage\.(?:get|set)Item\('([^']+)''', html))
     # site:cards: compact cards, chosen in the Settings sheet (Stage 80 item 57).
     # site:density: Compact spacing, the same sheet (Stage 80 item 64).
-    assert keys == {'site:theme', 'nba:theme', 'site:cards', 'site:density'}
+    # nba:team: the Teams page's club, as the NHL's nhl:team (Stage 104 item 3).
+    assert keys == {'site:theme', 'nba:theme', 'site:cards', 'site:density', 'nba:team'}
     css = (PAGES / 'nba.css').read_text(encoding='utf-8')
     green = [ln.strip() for ln in css.splitlines() if 'var(--good)' in ln]
     assert green == ['.nba-row-result.right{color:var(--good);}'], 'green means only a pick scored right'

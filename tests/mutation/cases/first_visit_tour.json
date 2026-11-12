@@ -4,6 +4,7 @@
  "cases": [
   {
    "id": "tour-everyone",
+   "target": "src/dashboard/app_board.js",
    "why": "a returning visitor is toured again (Stage 80 item 58, F12; Mark: new visitors only).",
    "find": "      if(/^(site:|nfl[_:]|nhl:|nba:)/.test(k)) return false;\n",
    "replace": "",
@@ -11,6 +12,7 @@
   },
   {
    "id": "tour-forever",
+   "target": "src/dashboard/app_board.js",
    "why": "the tour runs on every visit.",
    "find": "    if(asked) return asked === 'show';\n",
    "replace": "",
@@ -18,6 +20,7 @@
   },
   {
    "id": "tour-blocked-store",
+   "target": "src/dashboard/app_board.js",
    "why": "a browser whose storage is blocked is toured on every page load.",
    "find": "  }catch(e){ return false; }\n}\n/* The first of a step's",
    "replace": "  }catch(e){ return true; }\n}\n/* The first of a step's",
@@ -25,6 +28,7 @@
   },
   {
    "id": "tour-not-saved",
+   "target": "src/dashboard/app_board.js",
    "why": "ending the tour is not remembered.",
    "find": "    try{ localStorage.setItem(TOUR_KEY, 'done'); }catch(e){}\n",
    "replace": "",
@@ -32,6 +36,7 @@
   },
   {
    "id": "tour-hidden-target",
+   "target": "src/dashboard/app_board.js",
    "why": "a step rings a card hidden in a closed row.",
    "find": "x.getBoundingClientRect().width > 0 && !x.closest('[hidden]')",
    "replace": "true",
@@ -39,6 +44,7 @@
   },
   {
    "id": "tour-any-page",
+   "target": "src/dashboard/app_board.js",
    "why": "the tour starts on whatever page the address opens.",
    "find": "  if(!page || !page.classList.contains('active') || !tourWanted(localStorage)) return;",
    "replace": "  if(!page || !tourWanted(localStorage)) return;",
@@ -46,6 +52,7 @@
   },
   {
    "id": "tour-focus-left",
+   "target": "src/dashboard/app_board.js",
    "why": "the step's button does not take the focus.",
    "find": "    pop.querySelector('[data-tour-next]').focus();\n",
    "replace": "",
@@ -53,6 +60,7 @@
   },
   {
    "id": "tour-follows-to-other-pages",
+   "target": "src/dashboard/app_board.js",
    "why": "the tour's card stays over the next page the visitor opens (found by the browser checks on Ratings and Model Lab).",
    "find": "  leave.observe(page, {attributes: true, attributeFilter: ['class']});\n",
    "replace": "",
@@ -60,6 +68,7 @@
   },
   {
    "id": "tour-over-a-shared-game",
+   "target": "src/dashboard/app_board.js",
    "why": "a visit that arrives at one game is scrolled away from it to the week stepper (found by the browser checks' game route).",
    "find": "  if(location.hash && !/^#board(\\/|$)/.test(location.hash)) return;\n",
    "replace": "",

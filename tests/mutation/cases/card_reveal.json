@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "card-reveal-nfl-no-scroll",
+      "target": "src/dashboard/app_board.js",
       "why": "an NFL phone row opens its card below the fold again (704 to 1195 px on an 844 px phone).",
       "find": "    if(open) revealOpened(card);\n",
       "replace": "",
