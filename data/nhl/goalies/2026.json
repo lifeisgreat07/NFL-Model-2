@@ -8458,5 +8458,20 @@
   "source": "https://www.dailyfaceoff.com/starting-goalies",
   "game_id": "2026020308",
   "start_utc": "2026-11-13T03:00:00Z"
+ },
+ {
+  "date": "2026-11-12",
+  "home": "SEA",
+  "home_goalie": "Philipp Grubauer",
+  "home_status": null,
+  "home_report": null,
+  "away": "CAR",
+  "away_goalie": "Pyotr Kochetkov",
+  "away_status": null,
+  "away_report": null,
+  "read_utc": "2026-11-12T02:02:35Z",
+  "source": "https://www.dailyfaceoff.com/starting-goalies",
+  "game_id": "2026020309",
+  "start_utc": "2026-11-12T17:00:00Z"
  }
 ]
