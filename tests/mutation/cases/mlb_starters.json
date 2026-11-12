@@ -1,0 +1,34 @@
+{
+  "target": "src/sports/mlb/starters.py",
+  "tests": "tests/test_mlb_starters.py",
+  "cases": [
+    {
+      "id": "mlb-starters-every-read-added",
+      "why": "a repeat read is stored again, so a run every few hours fills the file with copies.",
+      "find": "        if key in last and last[key] == r['pitcher_id']:\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_append_keeps_every_earlier_read_and_adds_only_changes"
+    },
+    {
+      "id": "mlb-starters-last-pitcher",
+      "why": "the confirmed starter is the box's last pitcher, the closer, not the starter.",
+      "find": "'pitcher_id': str(pitchers[0]),",
+      "replace": "'pitcher_id': str(pitchers[-1]),",
+      "expect_caught_by": "test_the_confirmed_starter_is_the_first_pitcher_each_box_lists"
+    },
+    {
+      "id": "mlb-starters-local-time",
+      "why": "a read time is stored in whatever zone it came in, so reads from two machines do not sort.",
+      "find": "    return str(pd.Timestamp(read_at).tz_convert('UTC').isoformat())",
+      "replace": "    return str(pd.Timestamp(read_at).isoformat())",
+      "expect_caught_by": "test_read_at_must_carry_a_time_zone_and_is_stored_in_utc"
+    },
+    {
+      "id": "mlb-starters-spring-kept",
+      "why": "spring training probables are stored, so exhibition starters mix into the live reads.",
+      "find": "        if g.get('gameType') not in schedule.GAME_TYPES:\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_spring_training_has_no_rows"
+    }
+  ]
+}
