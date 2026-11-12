@@ -76,7 +76,7 @@ async def check_pages(pages):
     return report
 
 
-TIGHT = '.sidebar .sport-switch a{gap:3px; padding:0 var(--s1); font-size:var(--fs-12);}'
+TIGHT = '.sidebar .sport-switch a{gap:var(--s1); padding:0 var(--s1); font-size:var(--fs-11);}'
 LOOSE = '.sidebar .sport-switch a{gap:var(--s2); padding:0 var(--s3); font-size:var(--fs-13);}'
 
 

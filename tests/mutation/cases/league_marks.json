@@ -36,7 +36,7 @@
       "id": "league-mark-sidebar-loose",
       "target": "src/dashboard/styles.css",
       "why": "the sidebar pills keep their old spacing, so with the marks in them NHL and NBA run out of the switcher.",
-      "find": "  .sidebar .sport-switch a{gap:3px; padding:0 var(--s1); font-size:var(--fs-12);}\n",
+      "find": "  .sidebar .sport-switch a{gap:var(--s1); padding:0 var(--s1); font-size:var(--fs-11);}\n",
       "replace": "",
       "expect_caught_by": "test_the_sidebar_pills_tighten_so_four_fit"
     },

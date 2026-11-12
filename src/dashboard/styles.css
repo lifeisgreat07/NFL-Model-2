@@ -1924,15 +1924,15 @@
      hot-linked from ESPN as the team logos are, never committed. Both versions are in the page and the
      theme shows one (dark is the default, light is data-theme="light"); a mark that fails to load hides
      itself (data-hide-on-error) and its box with it, so the pill keeps its name. In the sidebar the
-     pills tighten so four fit (option 2 of the rendered fits). */
+     pills tighten so four fit (option 2 of the rendered fits), on the 4px scale. */
   .lgm{display:inline-flex; flex:none;}
   .lgm img{width:100%; height:100%; object-fit:contain; display:block;}
   .lgm .lgm-l{display:none;}
   [data-theme="light"] .lgm .lgm-l{display:block;}
   [data-theme="light"] .lgm .lgm-d{display:none;}
-  .lgm-sm{width:16px; height:16px; margin-right:6px;}
+  .lgm-sm{width:16px; height:16px; margin-right:var(--s1);}
   .lgm-sm:has(img[style*="none"]){display:none;}
-  .sidebar .sport-switch a{gap:3px; padding:0 var(--s1); font-size:var(--fs-12);}
+  .sidebar .sport-switch a{gap:var(--s1); padding:0 var(--s1); font-size:var(--fs-11);}
   .sidebar .lgm-sm{width:14px; height:14px; margin-right:0;}
   .sport-strip{display:none;}
   @media (max-width:1079px){

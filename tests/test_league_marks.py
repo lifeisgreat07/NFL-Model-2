@@ -97,7 +97,7 @@ def test_the_sidebar_pills_tighten_so_four_fit():
     """Option 2 of the rendered fits (Mark, 2026-11-11: "the slider needs to fit with the logos"): beside the name,
     smaller, with less padding, in the sidebar only. Whether it really fits is a browser check's question
     (tests/browser/check_switcher_fit.py)."""
-    assert '  .sidebar .sport-switch a{gap:3px; padding:0 var(--s1); font-size:var(--fs-12);}\n' in SHARED_CSS
+    assert '  .sidebar .sport-switch a{gap:var(--s1); padding:0 var(--s1); font-size:var(--fs-11);}\n' in SHARED_CSS
     assert rules(SHARED_CSS)['.sidebar .lgm-sm'] == 'width:14px; height:14px; margin-right:0;'
     wf = (ROOT / '.github' / 'workflows' / 'browser-checks.yml').read_text(encoding='utf-8')
     assert 'python tests/browser/check_switcher_fit.py --self-test --tmp' in wf, 'the fit check is never proven able to fail'
