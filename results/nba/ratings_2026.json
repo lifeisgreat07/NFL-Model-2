@@ -1,0 +1,155 @@
+{
+ "as_of": "2026-11-12",
+ "teams": [
+  {
+   "team": "SA",
+   "point": 7.3042,
+   "efficiency": 7.1563
+  },
+  {
+   "team": "OKC",
+   "point": 6.9985,
+   "efficiency": 6.7726
+  },
+  {
+   "team": "BOS",
+   "point": 6.313,
+   "efficiency": 6.3849
+  },
+  {
+   "team": "NY",
+   "point": 6.2026,
+   "efficiency": 6.2839
+  },
+  {
+   "team": "DET",
+   "point": 5.0345,
+   "efficiency": 4.997
+  },
+  {
+   "team": "HOU",
+   "point": 4.8607,
+   "efficiency": 4.8521
+  },
+  {
+   "team": "MIN",
+   "point": 3.9919,
+   "efficiency": 3.8708
+  },
+  {
+   "team": "LAL",
+   "point": 3.0671,
+   "efficiency": 2.95
+  },
+  {
+   "team": "DEN",
+   "point": 2.7975,
+   "efficiency": 2.6513
+  },
+  {
+   "team": "CLE",
+   "point": 2.4985,
+   "efficiency": 2.3663
+  },
+  {
+   "team": "POR",
+   "point": 2.136,
+   "efficiency": 2.171
+  },
+  {
+   "team": "GS",
+   "point": 2.1118,
+   "efficiency": 2.0889
+  },
+  {
+   "team": "TOR",
+   "point": 1.4766,
+   "efficiency": 1.1479
+  },
+  {
+   "team": "ATL",
+   "point": 0.7364,
+   "efficiency": 0.691
+  },
+  {
+   "team": "LAC",
+   "point": -0.2021,
+   "efficiency": -0.2327
+  },
+  {
+   "team": "PHI",
+   "point": -0.2906,
+   "efficiency": -0.3168
+  },
+  {
+   "team": "PHX",
+   "point": -0.3552,
+   "efficiency": -0.4836
+  },
+  {
+   "team": "MIA",
+   "point": -0.5031,
+   "efficiency": -0.507
+  },
+  {
+   "team": "ORL",
+   "point": -0.9809,
+   "efficiency": -0.9878
+  },
+  {
+   "team": "DAL",
+   "point": -1.1894,
+   "efficiency": -1.1105
+  },
+  {
+   "team": "CHA",
+   "point": -1.7158,
+   "efficiency": -1.6959
+  },
+  {
+   "team": "MEM",
+   "point": -1.9059,
+   "efficiency": -1.792
+  },
+  {
+   "team": "IND",
+   "point": -4.104,
+   "efficiency": -4.0206
+  },
+  {
+   "team": "NO",
+   "point": -4.6129,
+   "efficiency": -4.6812
+  },
+  {
+   "team": "CHI",
+   "point": -5.7868,
+   "efficiency": -5.4139
+  },
+  {
+   "team": "BKN",
+   "point": -5.9807,
+   "efficiency": -5.9009
+  },
+  {
+   "team": "MIL",
+   "point": -6.6276,
+   "efficiency": -6.6897
+  },
+  {
+   "team": "UTAH",
+   "point": -6.9918,
+   "efficiency": -6.7067
+  },
+  {
+   "team": "SAC",
+   "point": -7.0606,
+   "efficiency": -6.864
+  },
+  {
+   "team": "WSH",
+   "point": -7.2219,
+   "efficiency": -6.9807
+  }
+ ]
+}
