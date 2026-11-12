@@ -1,16 +1,22 @@
 {
- "games": 161,
- "mean_log_loss": 0.5864201038889372,
- "baseline": 0.5994348289153592,
+ "games": 170,
+ "mean_log_loss": 0.587510756192581,
+ "baseline": 0.5993758730817281,
  "without_availability": 15,
  "flagged": false,
  "looks": [
   {
    "games": 100,
-   "lower_bound": 0.5502093550202438,
-   "baseline": 0.5992774386750573,
+   "lower_bound": 0.5767405357130369,
+   "baseline": 0.6290270946946839,
    "flagged": false
   }
  ],
- "next_look": 200
+ "next_look": 200,
+ "leak": {
+  "better_than_spread": false,
+  "margin": 0.011865,
+  "spread_range": 0.04969737949918407,
+  "leaked_picks": 5
+ }
 }

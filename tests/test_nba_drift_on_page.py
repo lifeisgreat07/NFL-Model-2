@@ -22,7 +22,9 @@ RULE = {'rule': {'min_games': 100}}
 
 
 def drift_status(d, rule):
-    src = re.search(r'function driftStatus\(d, rule\)\{.*?\n\}\n', JS, re.S).group(0)
+    # Stage 95 item 33: driftStatus says the leak line through leakNote.
+    src = ''.join(re.search(rf'function {name}\(.*?\n\}}\n', JS, re.S).group(0)
+                  for name in ('leakNote', 'driftStatus'))
     prog = src + f'process.stdout.write(driftStatus({json.dumps(d)}, {json.dumps(rule)}));'
     return subprocess.run([NODE, '-e', prog], capture_output=True, text=True, check=True).stdout
 

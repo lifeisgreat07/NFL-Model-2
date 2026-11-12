@@ -66,6 +66,7 @@ from src.sports.nba import (
     market,
     page_inputs,
     ratings,
+    standings,
 )
 from src.sports.nba import schedule as nba_schedule
 from src.sports.nba.lock import GameLock
@@ -138,6 +139,32 @@ def fit_before(table: pd.DataFrame, day: pd.Timestamp, first: int) -> tuple[dict
     fitted on that game before picking the same day's evening ones."""
     before = table[pd.to_datetime(table['day']) < day]
     return fit_models(before), training(before, first)
+
+
+
+def write_standings(sched: pd.DataFrame, games: pd.DataFrame, table: pd.DataFrame, h: float, lam: float,
+                    first: int, today: pd.Timestamp, season: int, n_sim: int = 10000) -> Path:
+    """The standings odds (Stage 104 item 4) to `results/nba/standings_<season>.json`:
+    Model A without its availability term, fitted on every final game before today,
+    with today's ratings held fixed, for every unplayed game and every pairing a
+    play-in game could be."""
+    day = today.tz_localize(None)
+    models, _ = fit_before(table, day, first)
+    model = models['a_no_availability']
+    rated = ratings.day_ratings(games[games['day'] < day], day, h, lam)
+    clubs = sorted(set(sched['home']) | set(sched['away']))
+    left = sched[(sched['game_type'] == 'regular') & ~sched['status'].isin(['final', 'cancelled'])]
+    rows = list(zip(left['game_id'].astype(str), left['home'], left['away'], strict=True))
+    pairs = [(a, b) for a in clubs for b in clubs if a != b]
+    x = pd.DataFrame([dict(rated.matchup(hm, aw)) for _, hm, aw in rows]
+                     + [dict(rated.matchup(a, b)) for a, b in pairs])[NO_AVAIL]
+    p = model.predict_proba(x)[:, 1]
+    home_prob = {gid: float(v) for (gid, _, _), v in zip(rows, p[:len(rows)], strict=True)}
+    pair_prob = {ab: float(v) for ab, v in zip(pairs, p[len(rows):], strict=True)}
+    odds = standings.simulate(sched, home_prob, pair_prob, n_sim=n_sim)
+    out = PATHS.results / f'standings_{season}.json'
+    page_inputs.write(out, standings.to_json(odds, str(today.date()), n_sim, standings.games_listed(sched)))
+    return out
 
 
 def availability_for(minutes: pd.DataFrame, day_of: dict[str, pd.Timestamp], team: str, day: pd.Timestamp,
@@ -233,6 +260,17 @@ def drift_picks(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, i
     # Stage 85 item 1: in the order the games started, so a registered look's
     # first n picks are the first n games played, not the first n game ids.
     return [row for _, row in sorted(keyed, key=lambda kr: kr[0])]
+
+
+def drift_days(folder: Path, sched: pd.DataFrame) -> list[str]:
+    """Stage 95 item 32: each `drift_picks` row's slate day, in the same order."""
+    finals = sched[sched['status'] == GameStatus.FINAL.value].set_index('game_id')
+    keyed = []
+    for path in sorted(folder.glob('*.json')) if folder.exists() else []:
+        pick = json.loads(path.read_text(encoding='utf-8'))
+        if pick['game_id'] in finals.index:
+            keyed.append(((pick.get('start_utc') or '', pick['game_id']), str(pick['slate'])))
+    return [day for _, day in sorted(keyed, key=lambda kd: kd[0])]
 
 
 def drift_rows(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, int | None]]:
@@ -337,6 +375,8 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             print(unpriced)
         # Stage 91 item 3: from here on the picks are saved, and no step may lose them.
         after_save.guarded('market record', market.record, prices, PATHS.data / 'lines' / f'{season}.json')
+        # Stage 104 item 4: the standings odds, in a run that saves picks, as the NHL's.
+        after_save.guarded('standings file', write_standings, sched, games, table, h, lam, first, today, season)
     PATHS.results.mkdir(parents=True, exist_ok=True)
     after_save.guarded('schedule file', lambda: page_inputs.write(PATHS.results / f'schedule_{season}.json',
                                                                   page_inputs.schedule_json(sched, str(today.date()))))
@@ -355,15 +395,24 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     def write_drift() -> None:
         spec = drift.baseline()
         # Stage 85 item 2: each pick is held to the backtest of the model it ran.
-        losses, bases = drift.per_game(drift_picks(folder, sched), spec)
-        flagged = drift.flags(losses, spec, bases)
+        picks = drift_picks(folder, sched)
+        losses, bases = drift.per_game(picks, spec)
+        days = drift.kept_days(picks, drift_days(folder, sched))   # Stage 95 item 32
+        flagged = drift.flags(losses, spec, bases, days)
         without = sum(1 for b in bases if b == spec['baseline_no_availability']['value'])
+        mean = (sum(losses) / len(losses)) if losses else None
+        base = drift.look_baseline(spec, bases, len(bases)) if bases else spec['baseline']['value']
+        # Stage 95 item 33: the other direction a leak shows in, said rather than flagged.
+        leak = drift.leak_direction(mean, len(losses), base, drift.spread_range(), spec['rule']['checkpoints'][0],
+                                    drift.leaked_picks(folder))
         (PATHS.results / f'drift_{season}.json').write_text(json.dumps(
-            {'games': len(losses), 'mean_log_loss': (sum(losses) / len(losses)) if losses else None,
-             'baseline': drift.look_baseline(spec, bases, len(bases)) if bases else spec['baseline']['value'],
+            {'games': len(losses), 'mean_log_loss': mean, 'baseline': base,
              'without_availability': without, 'flagged': flagged,
-             'looks': drift.looks(losses, spec, bases), 'next_look': drift.next_look(len(losses), spec)},
+             'looks': drift.looks(losses, spec, bases, days), 'next_look': drift.next_look(len(losses), spec),
+             'leak': leak},
             indent=1) + '\n', encoding='utf-8')
+        for line in drift.leak_lines(leak):
+            print(line)
         if flagged:
             print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
 

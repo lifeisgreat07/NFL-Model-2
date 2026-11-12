@@ -1,0 +1,44 @@
+{
+  "target": "src/sports/nba/standings.py",
+  "tests": "tests/test_nba_standings.py",
+  "cases": [
+    {
+      "id": "nba-standings-tie-to-lots-first",
+      "why": "a tie in win percentage goes straight to the draw, skipping the games between the tied clubs",
+      "find": "            tied = sorted(tied, key=lambda t: (among(t), pct(conf_wins[t], conf_played[t]), lots[t]), reverse=True)\n",
+      "replace": "            tied = sorted(tied, key=lambda t: lots[t], reverse=True)\n",
+      "expect_caught_by": "test_a_tie_is_broken_among_the_tied_then_by_conference_then_by_lots"
+    },
+    {
+      "id": "nba-standings-eighth-seed-without-the-last-game",
+      "why": "the winner of 9 v 10 takes the eighth seed without playing the loser of 7 v 8",
+      "find": "    eighth, _ = game(loser78, winner910)\n",
+      "replace": "    eighth = winner910\n",
+      "expect_caught_by": "test_the_play_in_seats_the_winner_of_seven_and_eight_then_the_best_of_the_rest"
+    },
+    {
+      "id": "nba-standings-no-play-in",
+      "why": "the top eight go straight in, as before 2020-21, so nobody plays in and the odds overstate seeds 7 and 8",
+      "find": "DIRECT = 6\n",
+      "replace": "DIRECT = 8\n",
+      "expect_caught_by": "test_each_conference_fills_six_places_four_play_in_places_and_eight_playoff_places"
+    },
+    {
+      "id": "nba-standings-page-reads-no-file",
+      "target": "src/sports/nba/site.py",
+      "why": "the page data leaves the standings out, so the page says they are not simulated",
+      "find": "        'standings': _maybe(PATHS.results / f'standings_{season}.json'),\n",
+      "replace": "        'standings': None,\n",
+      "expect_caught_by": "test_the_page_data_carries_the_standings_file"
+    },
+    {
+      "id": "nba-daily-writes-no-standings",
+      "target": "src/sports/nba/daily.py",
+      "tests": "tests/test_daily_end_to_end.py",
+      "why": "the daily run stops writing the standings, so the page freezes on the last simulation",
+      "find": "        after_save.guarded('standings file', write_standings,",
+      "replace": "        (lambda *a: None)('standings file', write_standings,",
+      "expect_caught_by": "test_the_nba_daily_run_end_to_end"
+    }
+  ]
+}

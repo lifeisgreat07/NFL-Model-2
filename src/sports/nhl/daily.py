@@ -238,6 +238,17 @@ def drift_rows(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, in
     return [row for _, row in sorted(keyed, key=lambda kr: kr[0])]
 
 
+def drift_days(folder: Path, sched: pd.DataFrame) -> list[str]:
+    """Stage 95 item 32: each `drift_rows` row's slate day, in the same order."""
+    finals = sched[sched['status'] == GameStatus.FINAL.value].set_index('game_id')
+    keyed = []
+    for path in sorted(folder.glob('*.json')):
+        pick = json.loads(path.read_text(encoding='utf-8'))
+        if pick['game_id'] in finals.index:
+            keyed.append(((pick.get('start_utc') or '', pick['game_id']), str(pick['slate'])))
+    return [day for _, day in sorted(keyed, key=lambda kd: kd[0])]
+
+
 def write_standings(sched: pd.DataFrame, games: pd.DataFrame, rated: ratings.DayRatings, model_a: Any,
                     k: float, as_of: str, season: int, n_sim: int = 10000) -> Path:
     """The standings odds (Stage 57 item 3) from this run's Model A, written
@@ -366,13 +377,21 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
 
     def write_drift() -> None:
         spec = drift.baseline()
-        losses = drift.per_game_log_loss(drift_rows(folder, sched))
-        flagged = drift.flags(losses, spec)
+        rows = drift_rows(folder, sched)
+        losses = drift.per_game_log_loss(rows)
+        days = drift.kept_days(rows, drift_days(folder, sched))   # Stage 95 item 32
+        flagged = drift.flags(losses, spec, days)
+        mean = (sum(losses) / len(losses)) if losses else None
+        # Stage 95 item 33: the other direction a leak shows in, said rather than flagged.
+        leak = drift.leak_direction(mean, len(losses), spec['baseline']['value'], drift.spread_range(),
+                                    spec['rule']['checkpoints'][0], drift.leaked_picks(folder))
         (PATHS.results / f'drift_{season}.json').write_text(json.dumps(
-            {'games': len(losses), 'mean_log_loss': (sum(losses) / len(losses)) if losses else None,
+            {'games': len(losses), 'mean_log_loss': mean,
              'baseline': spec['baseline']['value'], 'flagged': flagged,
-             'looks': drift.looks(losses, spec), 'next_look': drift.next_look(len(losses), spec)},
+             'looks': drift.looks(losses, spec, days), 'next_look': drift.next_look(len(losses), spec), 'leak': leak},
             indent=1) + '\n', encoding='utf-8')
+        for line in drift.leak_lines(leak):
+            print(line)
         if flagged:
             print('DRIFT CHECK: FLAGGED (Model A log loss is significantly above its backtest)')
 

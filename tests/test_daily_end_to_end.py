@@ -142,6 +142,12 @@ def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
     assert rated['as_of'] == '2026-10-20' and len(rated['teams']) == len(set(sched['home']) | set(sched['away']))
     points = [t['point'] for t in rated['teams']]
     assert points == sorted(points, reverse=True) and len(set(points)) > 1, 'real ratings, best first'
+    # Stage 104 item 4: the standings odds, in a run that saved picks.
+    odds = json.loads((tmp_path / 'results' / f'standings_{season}.json').read_text(encoding='utf-8'))
+    assert len(odds['teams']) == 30 and odds['simulations'] == 10000
+    for conf in ('East', 'West'):
+        clubs = [t for t in odds['teams'] if t['conference'] == conf]
+        assert abs(sum(t['playoff_pct'] for t in clubs) - 8) < 1e-6, 'eight playoff places a conference'
 
 
 def test_a_game_after_the_moment_reads_as_not_yet_played():

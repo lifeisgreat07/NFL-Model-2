@@ -32,7 +32,14 @@ def test_too_few_games_never_flags():
 
 def test_a_clearly_worse_season_flags_and_a_matching_one_does_not():
     assert drift.flags([0.75] * 150, SPEC) is True
-    assert drift.flags([SPEC['baseline']['value']] * 150, SPEC) is False
+    # Stage 95 item 31: matching means at the look's own baseline, the backtest over a season's
+    # first 100 games (the whole-season figure is above it, so it would flag). The season has a
+    # real game-to-game spread and its mean sits a hair above the figure: the interval's lower
+    # end decides, so it does not flag, where the point estimate alone would.
+    base = drift.look_value(SPEC, 'baseline', 100)
+    matching = [base + 0.001 - 0.05, base + 0.001 + 0.05] * 75
+    assert sum(matching[:100]) / 100 > base
+    assert drift.flags(matching, SPEC) is False
 
 
 def test_the_bound_is_one_sided_and_seeded():

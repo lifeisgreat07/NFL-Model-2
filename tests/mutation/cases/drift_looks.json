@@ -3,27 +3,43 @@
   "tests": "tests/test_drift_looks.py",
   "cases": [
     {
+      "id": "nhl-drift-look-two-sided",
+      "target": "src/sports/nhl/drift.py",
+      "why": "each look takes the two-sided bound at its level (one-sided at half the tail), a stricter test than the registered one, so a season the registration says to flag passes unflagged",
+      "find": "        bound = lower_bound(losses[:n], rule, rule['per_look_level'], days[:n] if days is not None else None)\n",
+      "replace": "        bound = lower_bound(losses[:n], rule, 1 - (1 - rule['per_look_level']) / 2, days[:n] if days is not None else None)\n",
+      "expect_caught_by": "test_a_look_is_one_sided_losses_between_the_bounds_flag"
+    },
+    {
+      "id": "nba-drift-look-two-sided",
+      "target": "src/sports/nba/drift.py",
+      "why": "each look takes the two-sided bound at its level (one-sided at half the tail), a stricter test than the registered one, so a season the registration says to flag passes unflagged",
+      "find": "        bound = lower_bound(losses[:n], rule, rule['per_look_level'], days[:n] if days is not None else None)\n",
+      "replace": "        bound = lower_bound(losses[:n], rule, 1 - (1 - rule['per_look_level']) / 2, days[:n] if days is not None else None)\n",
+      "expect_caught_by": "test_a_look_is_one_sided_losses_between_the_bounds_flag"
+    },
+    {
       "id": "nhl-drift-looks-at-95-each-time",
       "target": "src/sports/nhl/drift.py",
       "why": "each look tests at the family's 95% instead of its share, so five looks have up to five times the registered false-flag rate",
-      "find": "        bound = lower_bound(losses[:n], rule, rule['per_look_level'])\n",
-      "replace": "        bound = lower_bound(losses[:n], rule)\n",
+      "find": "        bound = lower_bound(losses[:n], rule, rule['per_look_level'], days[:n] if days is not None else None)\n",
+      "replace": "        bound = lower_bound(losses[:n], rule, None, days[:n] if days is not None else None)\n",
       "expect_caught_by": "test_each_look_is_on_its_first_n_picks_at_the_per_look_level"
     },
     {
       "id": "nba-drift-look-reads-every-pick",
       "target": "src/sports/nba/drift.py",
       "why": "a look tests every graded pick instead of its first n, so the 100-game look is retaken every day and the checkpoints mean nothing",
-      "find": "        bound = lower_bound(losses[:n], rule, rule['per_look_level'])\n",
-      "replace": "        bound = lower_bound(losses, rule, rule['per_look_level'])\n",
+      "find": "        bound = lower_bound(losses[:n], rule, rule['per_look_level'], days[:n] if days is not None else None)\n",
+      "replace": "        bound = lower_bound(losses, rule, rule['per_look_level'], days if days is not None else None)\n",
       "expect_caught_by": "test_each_look_is_on_its_first_n_picks_at_the_per_look_level"
     },
     {
       "id": "nhl-drift-flag-does-not-stand",
       "target": "src/sports/nhl/drift.py",
       "why": "only the latest look counts, so a flag at 100 games is withdrawn at 200 by better games after it and the issue it opened says nothing",
-      "find": "    return any(look['flagged'] for look in looks(losses, spec))\n",
-      "replace": "    return bool(looks(losses, spec)) and looks(losses, spec)[-1]['flagged']\n",
+      "find": "    return any(look['flagged'] for look in looks(losses, spec, days))\n",
+      "replace": "    return bool(looks(losses, spec, days)) and looks(losses, spec, days)[-1]['flagged']\n",
       "expect_caught_by": "test_a_flag_at_an_early_look_stands_for_the_season"
     },
     {
@@ -63,8 +79,8 @@
       "target": "src/sports/nhl/daily.py",
       "tests": "tests/test_daily_end_to_end.py",
       "why": "the daily run's drift file leaves out the looks, so the page cannot say when the check last looked or will look next",
-      "find": "         'looks': drift.looks(losses, spec), 'next_look': drift.next_look(len(losses), spec)},\n",
-      "replace": "        },\n",
+      "find": "             'looks': drift.looks(losses, spec, days), 'next_look': drift.next_look(len(losses), spec), 'leak': leak},\n",
+      "replace": "             'leak': leak},\n",
       "expect_caught_by": "test_the_nhl_daily_run_end_to_end"
     },
     {
@@ -79,7 +95,7 @@
       "id": "nba-page-drift-looks-not-shown",
       "target": "src/sports/nba/pages/nba.js",
       "why": "the NBA page shows the status but not the rule, so a reader cannot tell the check looks only at checkpoints",
-      "find": "    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class=\"nba-lede\">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04 and 2026-11-05: ${driftLooks(BD.drift_rule)}</p>` : ''}\n",
+      "find": "    ${BD.drift_rule && BD.drift_rule.rule.checkpoints ? `<p class=\"nba-lede\">The rule is registered in <code>experiments/nba/stage65/registry.json</code>, amended on 2026-11-04, 2026-11-05 and 2026-11-11: ${driftLooks(BD.drift_rule)}</p>` : ''}\n",
       "replace": "",
       "expect_caught_by": "test_both_pages_print_the_looks_beside_the_status"
     },
