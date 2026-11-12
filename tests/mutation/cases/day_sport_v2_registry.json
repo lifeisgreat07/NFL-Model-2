@@ -17,6 +17,13 @@
       "expect_caught_by": "test_it_is_tuned_on_the_validation_seasons_only_and_decided_live_at_975"
     },
     {
+      "id": "v2-box-rule-ignores-rounding",
+      "why": "any box summing under 240 minutes is dropped, which throws out about a quarter of complete boxes whose rounded minutes sum to 238 or 239",
+      "find": "fall short of 240 (a regulation game) by more than half a minute for each player it lists",
+      "replace": "sum to under 240 (a regulation game)",
+      "expect_caught_by": "test_each_sport_registers_its_own_audit_items"
+    },
+    {
       "id": "v2-nhl-grid-not-extended",
       "target": "experiments/nhl/stage95_v2/registry.json",
       "why": "the NHL's grid stops at K 2000, the top Stage 56 already chose, so v2 cannot move it",

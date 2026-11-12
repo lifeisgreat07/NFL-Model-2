@@ -51,6 +51,8 @@ def test_it_is_tuned_on_the_validation_seasons_only_and_decided_live_at_975(spor
 def test_each_sport_registers_its_own_audit_items():
     assert set(reg('nba')['changes']) == {'24_availability', '27_history', '28_neutral', '29_ingest', '30_slates'}
     assert set(reg('nhl')['changes']) == {'35_goalie', '28_neutral', '29_ingest'}
+    # Whole-minute rounding: a complete NBA box can sum to a few under 240, so the short-box rule allows it.
+    assert 'by more than half a minute for each player it lists' in reg('nba')['changes']['29_ingest']
     grid = reg('nhl')['protocol']['tuning']
     assert 'K_shots in {1000, 2000, 4000, 8000, 16000, none}' in grid and 'H_days in {60, 120, 240}' in grid
     tuning = json.loads((ROOT / 'experiments/nhl/stage56/results/tuning.json').read_text(encoding='utf-8'))

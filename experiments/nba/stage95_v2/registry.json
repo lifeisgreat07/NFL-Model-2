@@ -16,7 +16,7 @@
   "24_availability": "A player counts as unavailable for a game when his expected minutes for his team are above zero (he has played for it, weighted as experiments/nba/stage61/registry.json defines expected minutes) and he did not appear in the team's previous game. Availability is the share of the team's expected minutes from the players who remain. The same rule in the backtest and live: the backtest stops reading who played in the game itself, and the live run stops reading the injury report for v2. A team's first game has availability 1.0.",
   "27_history": "A game in which either team is not one of the league's 30 codes (the Rising Stars game, an exhibition filed as regular season) is dropped from the history before anything is computed.",
   "28_neutral": "A neutral-site game (ESPN's neutral_site) gets no home edge: the fitted intercept is not added to its forecast. Its row still enters the fit as listed. A declared rule, not a tested win, as the NFL's (Stage 38).",
-  "29_ingest": "A price whose two implied probabilities sum to under 1.00 or over 1.20 is marked and not used: the game counts as unpriced for Model B. A box score whose team minutes sum to under 240 (a regulation game) is marked and not used for minutes or availability.",
+  "29_ingest": "A price whose two implied probabilities sum to under 1.00 or over 1.20 is marked and not used: the game counts as unpriced for Model B. A box score whose team minutes fall short of 240 (a regulation game) by more than half a minute for each player it lists is marked and not used for minutes or availability: each player's minutes are rounded to whole minutes, so a complete box can sum to a few under 240.",
   "30_slates": "The 2020-03-01 slate lists GS in two games (401161536 at PHX, 401161543 against WSH). Each game is placed on the date ESPN's own record of that game gives, read when v2's history is built and before anything is fitted; v2's history refuses any slate on which a team still appears twice."
  },
  "measurements": {
@@ -42,7 +42,8 @@
  },
  "disclosures": [
   "Written on 2026-11-11, after both live seasons' first figures had been read (each sport's forward test and drift file) and after audit 7 had re-derived the backtests. The changes registered here were all named by the audit before then, and none was chosen by looking at the live figures; but they were chosen knowing the live figures exist, which is why the registered model is left untouched and v2 runs beside it as a shadow.",
-  "Item 24's definition is the second of the two Claude sent Mark on 2026-11-11 (the first was to drop the term); Mark chose it the same day (\"Option 2 works\"). MV2 measures the first beside it, so the forward test shows what the term is worth."
+  "Item 24's definition is the second of the two Claude sent Mark on 2026-11-11 (the first was to drop the term); Mark chose it the same day (\"Option 2 works\"). MV2 measures the first beside it, so the forward test shows what the term is worth.",
+  "Item 29's box-score rule was first written as \"team minutes sum to under 240\". Before this registration was opened and before anything was fitted, a count of the committed history (every season on file, read-only) found that rule would discard 6,750 of 28,648 team box scores, almost all complete boxes whose players' rounded minutes sum to 238 or 239. The rule now allows the rounding: half a minute a listed player. 18 boxes fall short of that, 6 of them the All-Star games item 27 drops anyway. Only the count of boxes was read, no result."
  ],
  "amendments": [],
  "not_in_this_registration": "Any change to the registered models, picks, forward test, drift check or pages. Anything not named under changes."
