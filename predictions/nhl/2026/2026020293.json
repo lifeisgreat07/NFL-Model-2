@@ -1,0 +1,90 @@
+{
+ "game_id": "2026020293",
+ "season": 2026,
+ "slate": "2026-11-11",
+ "start_utc": "2026-11-12T00:00:00Z",
+ "home": "BUF",
+ "away": "TBL",
+ "model_a": 0.471,
+ "model_b": 0.4434,
+ "pick": "TBL",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.367311,
+  "shot_matchup": -2.519405,
+  "goalie_matchup_2000": -0.001889
+ },
+ "market": {
+  "game_id": "2026020293",
+  "start_utc": "2026-11-12T00:00:00Z",
+  "home": "BUF",
+  "away": "TBL",
+  "book": "DraftKings",
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573,
+  "read_utc": "2026-11-11T21:01:00Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480045,
+   "name": "Ukko-Pekka Luukkonen",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/rachelmlenzi/status/2120539814789317098?a=ZRkAf5nLGRG5YaO1C1A&s=20"
+  },
+  "away": {
+   "player_id": 8476883,
+   "name": "Andrei Vasilevskiy",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/EddieInTheYard/status/2120566959909810399?a=u2cJ2B3-3v3-5WeLF2Y&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-11",
+  "read_utc": "2026-11-11T21:01:00Z",
+  "home": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Justin Danforth",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Konsta Helenius",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Matt Grzelcyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Brayden Point",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-11T21:01:00Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-10",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14695,
+  "training_games_priced": 7665,
+  "training_ids_sha256": "4eda8e8872f24250bf8c2a85196946ca9aed5770d1129d64e6669b0f6ae6fa1d"
+ },
+ "code_sha256": "675d58024be37cfc4433d000fc9354db4f43ee98f0d481b165eb97bda9e8461f",
+ "code_commit": "a17d0ea5a47423177a7c7bf426f8a1e12e673d86"
+}

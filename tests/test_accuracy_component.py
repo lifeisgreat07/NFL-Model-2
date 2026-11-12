@@ -111,7 +111,7 @@ def test_no_chart_text_is_under_11px():
     assert html.count('<svg class="chart" ') == 2 and 'font-size=' not in html
 
 
-@pytest.mark.parametrize('sport, where', [('nhl', 'function renderAccuracy(){'), ('nba', 'function renderReliability(){')])
+@pytest.mark.parametrize('sport, where', [('nhl', 'function renderAccuracy(){'), ('nba', 'function renderAccuracy(){')])
 def test_each_sport_draws_it_from_its_own_graded_picks(sport, where):
     js = day_script(sport)
     assert 'function accGames(graded){' in js and 'function accuracyHtml' not in js, 'the component is shared, not copied'

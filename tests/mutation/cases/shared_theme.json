@@ -12,7 +12,7 @@
     },
     {
       "id": "shared-theme-nfl-key-constant",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_board.js",
       "why": "the NFL's theme key constant goes back to the old per-page name, so its button writes a key no other page reads.",
       "find": "const THEME_KEY = 'site:theme';",
       "replace": "const THEME_KEY = 'nfl_pickem_theme';",

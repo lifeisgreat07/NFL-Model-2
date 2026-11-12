@@ -66,6 +66,7 @@ from src.sports.nba import (
     market,
     page_inputs,
     ratings,
+    standings,
 )
 from src.sports.nba import schedule as nba_schedule
 from src.sports.nba.lock import GameLock
@@ -138,6 +139,32 @@ def fit_before(table: pd.DataFrame, day: pd.Timestamp, first: int) -> tuple[dict
     fitted on that game before picking the same day's evening ones."""
     before = table[pd.to_datetime(table['day']) < day]
     return fit_models(before), training(before, first)
+
+
+
+def write_standings(sched: pd.DataFrame, games: pd.DataFrame, table: pd.DataFrame, h: float, lam: float,
+                    first: int, today: pd.Timestamp, season: int, n_sim: int = 10000) -> Path:
+    """The standings odds (Stage 104 item 4) to `results/nba/standings_<season>.json`:
+    Model A without its availability term, fitted on every final game before today,
+    with today's ratings held fixed, for every unplayed game and every pairing a
+    play-in game could be."""
+    day = today.tz_localize(None)
+    models, _ = fit_before(table, day, first)
+    model = models['a_no_availability']
+    rated = ratings.day_ratings(games[games['day'] < day], day, h, lam)
+    clubs = sorted(set(sched['home']) | set(sched['away']))
+    left = sched[(sched['game_type'] == 'regular') & ~sched['status'].isin(['final', 'cancelled'])]
+    rows = list(zip(left['game_id'].astype(str), left['home'], left['away'], strict=True))
+    pairs = [(a, b) for a in clubs for b in clubs if a != b]
+    x = pd.DataFrame([dict(rated.matchup(hm, aw)) for _, hm, aw in rows]
+                     + [dict(rated.matchup(a, b)) for a, b in pairs])[NO_AVAIL]
+    p = model.predict_proba(x)[:, 1]
+    home_prob = {gid: float(v) for (gid, _, _), v in zip(rows, p[:len(rows)], strict=True)}
+    pair_prob = {ab: float(v) for ab, v in zip(pairs, p[len(rows):], strict=True)}
+    odds = standings.simulate(sched, home_prob, pair_prob, n_sim=n_sim)
+    out = PATHS.results / f'standings_{season}.json'
+    page_inputs.write(out, standings.to_json(odds, str(today.date()), n_sim, standings.games_listed(sched)))
+    return out
 
 
 def availability_for(minutes: pd.DataFrame, day_of: dict[str, pd.Timestamp], team: str, day: pd.Timestamp,
@@ -337,9 +364,17 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             print(unpriced)
         # Stage 91 item 3: from here on the picks are saved, and no step may lose them.
         after_save.guarded('market record', market.record, prices, PATHS.data / 'lines' / f'{season}.json')
+        # Stage 104 item 4: the standings odds, in a run that saves picks, as the NHL's.
+        after_save.guarded('standings file', write_standings, sched, games, table, h, lam, first, today, season)
     PATHS.results.mkdir(parents=True, exist_ok=True)
     after_save.guarded('schedule file', lambda: page_inputs.write(PATHS.results / f'schedule_{season}.json',
                                                                   page_inputs.schedule_json(sched, str(today.date()))))
+    # Stage 104 item 3: the ratings as they stand before today, for the Power Ratings and Teams pages.
+    rated_on = today.tz_localize(None)
+    after_save.guarded('ratings file', lambda: page_inputs.write(
+        PATHS.results / f'ratings_{season}.json',
+        page_inputs.ratings_json(ratings.day_ratings(games[games['day'] < rated_on], rated_on, h, lam),
+                                 set(sched['home']) | set(sched['away']), str(today.date()))))
 
     def write_grades() -> list[dict[str, Any]]:
         graded = grade(folder, sched)

@@ -12,6 +12,7 @@
     },
     {
       "id": "enhanced-select-back-in-tab-order",
+      "target": "src/dashboard/app_controls.js",
       "why": "enhanceSelect hides the sort and team selects but stops taking them out of the Tab order, so the same invisible stop appears beside every listbox.",
       "find": "  sel.setAttribute('tabindex', '-1');",
       "replace": "",

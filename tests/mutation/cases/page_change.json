@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "nav-current-set-and-never-cleared",
+      "target": "src/dashboard/app_controls.js",
       "why": "the new page's buttons are marked current and the old page's keep the mark, so after three page changes a screen reader hears four nav buttons each called the current page",
       "find": "    if(on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');",
       "replace": "    if(on) b.setAttribute('aria-current', 'page');",
@@ -19,6 +20,7 @@
     },
     {
       "id": "title-never-changes",
+      "target": "src/dashboard/app_controls.js",
       "why": "the tab says Command Board on every page again, and a reader switching tabs or reading history cannot tell the pages apart",
       "find": "  document.title = (pageId === 'board' || !heading) ? BASE_TITLE\n",
       "replace": "  void (pageId === 'board' || !heading) ? BASE_TITLE\n",
@@ -26,6 +28,7 @@
     },
     {
       "id": "focus-stays-on-the-nav-button",
+      "target": "src/dashboard/app_controls.js",
       "why": "the page is swapped under a screen reader's cursor and nothing is announced; the reader has to hunt back up the page for the content that changed",
       "find": "    heading.focus({preventScroll:true});",
       "replace": "    heading.scrollIntoView();",
@@ -33,6 +36,7 @@
     },
     {
       "id": "back-button-does-not-move-focus",
+      "target": "src/dashboard/app_pages.js",
       "why": "a nav click moves focus to the new page but Back and Forward do not, so the same page change is announced one way and silent the other",
       "find": "  window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown), {focus:true}));",
       "replace": "  window.addEventListener('popstate', ()=> applyRoute(parseRoute(location.hash, routeKnown)));",

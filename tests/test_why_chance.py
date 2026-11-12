@@ -16,10 +16,11 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from src.core.template_parts import APP_SCRIPT
 from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
-JS = ROOT / 'src' / 'dashboard' / 'app.js'
+JS = APP_SCRIPT
 NODE = shutil.which('node')
 
 

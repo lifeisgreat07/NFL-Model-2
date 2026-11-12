@@ -16,10 +16,11 @@ import shutil
 import subprocess
 from pathlib import Path
 
+from src.core.template_parts import APP_SCRIPT
 from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 ACC = (ROOT / 'src' / 'core' / 'accuracy.js').read_text(encoding='utf-8')
 GEN = (ROOT / 'src' / 'sports' / 'nfl' / 'generate_dashboard.py').read_text(encoding='utf-8')
 NODE = shutil.which('node')

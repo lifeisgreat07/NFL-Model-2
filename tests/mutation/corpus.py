@@ -23,6 +23,34 @@ CASES_DIR = Path(__file__).parent / 'cases'
 
 REQUIRED_CASE_FIELDS = ('id', 'why', 'find', 'replace', 'expect_caught_by')
 
+#: Files that were split into parts, and the parts, in order (Stage 87 item 4).
+#: A case may still name the whole file: it is resolved to the one part that
+#: holds its anchor. A case whose anchor is in no part, or in more than one,
+#: keeps the whole file's name, and anchor_occurrences counts across every part,
+#: so the anchor check reports the real count instead of a missing file.
+SPLIT = {
+    'src/dashboard/app.js': ['src/dashboard/app_controls.js', 'src/dashboard/app_ratings.js',
+                             'src/dashboard/app_board.js', 'src/dashboard/app_accuracy.js',
+                             'src/dashboard/app_team.js', 'src/dashboard/app_pages.js'],
+}
+
+
+def _count(path, find_text):
+    blob = (REPO_ROOT / path).read_bytes()
+    nl = b'\r\n' if b'\r\n' in blob else b'\n'
+    find = find_text.encode('utf-8').replace(b'\n', nl)
+    return blob.count(find), find, nl
+
+
+def resolve_target(target, find_text):
+    """The file a case mutates: `target`, or for a split file the one part
+    holding the anchor exactly once (the whole file's name when none does)."""
+    if target not in SPLIT:
+        return target
+    hits = [p for p in SPLIT[target] if _count(p, find_text)[0] == 1]
+    others = [p for p in SPLIT[target] if p not in hits and _count(p, find_text)[0]]
+    return hits[0] if len(hits) == 1 and not others else target
+
 
 class CorpusError(Exception):
     pass
@@ -61,10 +89,12 @@ def load_corpus():
                     f"case {case['id']!r}: no such test file {tests!r}. A case "
                     f"names exactly one pytest path -- for a second one, give "
                     f"that case its own 'tests' key in a separate case.")
+            named = case.get('target', data['target'])
             cases.append({
                 **case,
                 'corpus': path.name,
-                'target': case.get('target', data['target']),
+                'target': resolve_target(named, case['find']),
+                'named_target': named,
                 'tests': tests,
             })
     if not cases:
@@ -80,13 +110,13 @@ def anchor_occurrences(case):
     multi-line anchor that does not account for that matches zero times in one
     of the two -- which reads exactly like corpus rot.
     """
+    if case['target'] in SPLIT:
+        counts = [_count(p, case['find']) for p in SPLIT[case['target']]]
+        return sum(c for c, _, _ in counts), counts[0][1], counts[0][2]
     target = REPO_ROOT / case['target']
     if not target.exists():
         raise CorpusError(f"case {case['id']!r}: no such target {case['target']}")
-    blob = target.read_bytes()
-    nl = b'\r\n' if b'\r\n' in blob else b'\n'
-    find = case['find'].encode('utf-8').replace(b'\n', nl)
-    return blob.count(find), find, nl
+    return _count(case['target'], case['find'])
 
 
 def duplicate_ids():

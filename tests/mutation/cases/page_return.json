@@ -39,7 +39,7 @@
   },
   {
    "id": "page-return-nfl-push-after",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_pages.js",
    "why": "the NFL changes the page, scrolling to the top, before it pushes: Back from the Methodology puts the Week Board at 0 (left at 800).",
    "find": "function goToPage(page){\n  if(!inSharedView()){\n    const url = routeUrl(currentRoute(page));\n    if(location.pathname + location.search + location.hash !== url) history.pushState(null, '', url);\n  }\n  setActivePage(page, {focus:true});\n}",
    "replace": "function goToPage(page){\n  setActivePage(page, {focus:true});\n  if(!inSharedView()){\n    const url = routeUrl(currentRoute(page));\n    if(location.pathname + location.search + location.hash !== url) history.pushState(null, '', url);\n  }\n}",
@@ -47,7 +47,7 @@
   },
   {
    "id": "page-return-nfl-link-unfocused",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_pages.js",
    "why": "an NFL link that opens a page leaves focus on <body>.",
    "find": "  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown), {focus:true});\n",
    "replace": "  if(location.hash) applyRoute(parseRoute(location.hash, routeKnown));\n",

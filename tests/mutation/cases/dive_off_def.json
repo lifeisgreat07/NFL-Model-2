@@ -20,6 +20,7 @@
     },
     {
       "id": "dive-split-prints-raw-per-play",
+      "target": "src/dashboard/app_team.js",
       "why": "offense is printed as the raw per-play number, 0.154 beside a net of +15.4, two units in one row.",
       "find": "<span>Offense ${fmtRating(p.off)}</span>",
       "replace": "<span>Offense ${p.off.toFixed(3)}</span>",
@@ -27,6 +28,7 @@
     },
     {
       "id": "dive-split-loses-lower-is-better",
+      "target": "src/dashboard/app_team.js",
       "why": "defense no longer says lower is better, so +5.0 on defense reads as good when it is five points worse than average.",
       "find": "<span title=\"Expected points allowed: lower is better\">Defense",
       "replace": "<span>Defense",
@@ -34,6 +36,7 @@
     },
     {
       "id": "dive-split-half-drawn",
+      "target": "src/dashboard/app_team.js",
       "why": "a point with offense but no defense draws the pair anyway, printing 'Defense' beside nothing, which reads as a missing number or a zero.",
       "find": "  if(typeof p.off !== 'number' || typeof p.def !== 'number') return '';\n",
       "replace": "  if(typeof p.off !== 'number') return '';\n",
@@ -41,6 +44,7 @@
     },
     {
       "id": "dive-split-never-drawn",
+      "target": "src/dashboard/app_team.js",
       "why": "the rows stop calling the function, so the data reaches the page and nothing shows it.",
       "find": "      <span class=\"dive-value\">${fmtRating(p.net)}</span>\n      ${diveSplitHtml(p)}\n",
       "replace": "      <span class=\"dive-value\">${fmtRating(p.net)}</span>\n",

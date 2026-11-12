@@ -12,6 +12,7 @@
     },
     {
       "id": "stepper-hardcodes-one-pages-ids-again",
+      "target": "src/dashboard/app_controls.js",
       "why": "the stepper goes back to naming the Week Board's elements directly. It keeps working on the Board and silently stops driving My Picks -- getElementById returns null there, the early return fires, and the arrows become decoration that renders perfectly. Worse, the obvious repair is to paste a second copy, which is exactly the two-render-paths duplication that let the game card's separator drift.",
       "find": "  const sel = document.getElementById(`${prefix}-select`);\n  const label = document.getElementById(`${prefix}-step-label`);",
       "replace": "  const sel = document.getElementById('week-select');\n  const label = document.getElementById('week-step-label');",
@@ -19,6 +20,7 @@
     },
     {
       "id": "stepper-on-picks-is-never-wired",
+      "target": "src/dashboard/app_board.js",
       "why": "the markup exists and nothing attaches behaviour to it. Two arrows render, are enabled, invite a click and do nothing at all -- a control that is present and inert, which reads to a user as a broken page rather than a missing feature. This is the written-tested-never-called shape that Stage 3 closed with when src/agents/collect_agent_log.py ran nowhere behind a green suite.",
       "find": "wireWeekStepper('picks-week');",
       "replace": "",
@@ -26,6 +28,7 @@
     },
     {
       "id": "stepper-loses-sync-on-the-share-link-path",
+      "target": "src/dashboard/app_board.js",
       "why": "opening a share link stops telling the stepper the week moved. showSharedPicks assigns the select directly and must -- dispatching a change event there would run the handler that ENDS the shared view -- so this is the one place the 'everyone listens to the select' rule cannot apply, and therefore the one place the label can be left behind. The grid then shows the shared week while the arrows and their label show the previous one: two controls disagreeing about the same state, which is the precise failure a shared stepper exists to prevent.",
       "find": "  syncWeekStepper('picks-week');\n\n  const banner = document.getElementById('shared-picks-banner');",
       "replace": "\n  const banner = document.getElementById('shared-picks-banner');",

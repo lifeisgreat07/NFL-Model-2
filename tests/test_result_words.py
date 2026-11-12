@@ -16,11 +16,12 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
 from tests.page_script import day_script
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES = {
-    'nfl': ROOT / 'src' / 'dashboard' / 'app.js',
+    'nfl': APP_SCRIPT,
     'nhl': ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js',
     'nba': ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js',
 }

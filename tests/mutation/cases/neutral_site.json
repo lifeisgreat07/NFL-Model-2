@@ -56,7 +56,7 @@
     },
     {
       "id": "neutral-line-on-every-card",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_board.js",
       "why": "the line is drawn whatever the flag says, so every home game claims a neutral site.",
       "find": "  if(!g.neutral) return '';",
       "replace": "  if(false) return '';",
@@ -64,7 +64,7 @@
     },
     {
       "id": "neutral-venue-unescaped",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_board.js",
       "why": "the venue name from the schedule goes into the card unescaped, so a stray angle bracket in an upstream field becomes markup.",
       "find": "  const where = g.venue ? ` · ${escapeHtml(g.venue)}` : '';",
       "replace": "  const where = g.venue ? ` · ${g.venue}` : '';",

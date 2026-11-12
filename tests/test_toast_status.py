@@ -14,10 +14,10 @@ Run with: pytest tests/test_toast_status.py -v
 import re
 from pathlib import Path
 
-from src.core.template_parts import read_template
+from src.core.template_parts import APP_SCRIPT, read_template
 
 REPO = Path(__file__).resolve().parents[1]
-APP = (REPO / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 
 
 def test_the_page_carries_the_toast_as_a_status_region_from_the_start():

@@ -4,6 +4,7 @@
  "cases": [
   {
    "id": "preview-when-back-to-utc",
+   "target": "src/dashboard/app_controls.js",
    "why": "the preview note reads \"as of Tue Oct 13, 11:02 UTC\" again (Stage 77 item 15).",
    "find": "  return `${d.toLocaleString('en-US', {weekday:'short', hour:'numeric', minute:'2-digit', timeZone:'America/New_York'})} ET`;",
    "replace": "  return `${d.toLocaleString('en-US', {weekday:'short', hour:'numeric', minute:'2-digit', timeZone:'UTC'})} UTC`;",

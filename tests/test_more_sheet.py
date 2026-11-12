@@ -16,11 +16,13 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
+
 ROOT = Path(__file__).resolve().parents[1]
 BODIES = {'nfl': ROOT / 'src' / 'dashboard' / 'body.html',
           'nhl': ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'body.html',
           'nba': ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'body.html'}
-SCRIPTS = {'nfl': ROOT / 'src' / 'dashboard' / 'app.js',
+SCRIPTS = {'nfl': APP_SCRIPT,
            'nhl': ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js',
            'nba': ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js'}
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')

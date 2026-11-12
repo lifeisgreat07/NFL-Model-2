@@ -18,7 +18,7 @@
     },
     {
       "id": "agents-at-work-links-anywhere",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_pages.js",
       "why": "a link from the collected data is put on the page whatever its scheme, so a javascript: URL in a comment becomes a live link",
       "find": "    const link = /^https:\\/\\/github\\.com\\//.test(e.url || '') ? escapeHtml(e.url) : '';\n",
       "replace": "    const link = escapeHtml(e.url || '');\n",

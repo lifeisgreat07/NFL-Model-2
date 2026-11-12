@@ -1,0 +1,79 @@
+{
+ "game_id": "401909970",
+ "season": 2026,
+ "slate": "2026-11-11",
+ "start_utc": "2026-11-12T01:00:00Z",
+ "home": "MEM",
+ "away": "DEN",
+ "model_a": 0.4118,
+ "model_b": 0.3901,
+ "pick": "DEN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.96,
+  "away": 0.9679
+ },
+ "features": {
+  "point_matchup": -4.619499,
+  "efficiency_matchup": -4.345802,
+  "availability_matchup": -0.007966
+ },
+ "market": {
+  "game_id": "401909970",
+  "home": "MEM",
+  "away": "DEN",
+  "start_utc": "2026-11-12T01:00:00Z",
+  "read_utc": "2026-11-11T21:31:34Z",
+  "source": "espn",
+  "provider": "DraftKings",
+  "home_price": 145.0,
+  "away_price": -173.0,
+  "home_prob": 0.3918
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-11T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "4432810",
+    "name": "Isaiah Stewart",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "4593016",
+    "name": "Quinten Post",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5105462",
+    "name": "Richie Saunders",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431785",
+    "name": "Scotty Pippen Jr.",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4432181",
+    "name": "Julian Strawther",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-11T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-10",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14218,
+  "training_games_priced": 14177,
+  "training_ids_sha256": "a0b1479189b79bacf1b8c2fb0d5ca4fae4b50a17eb6d5dc2c9bb438fb092c52f"
+ },
+ "code_sha256": "85eed674e94f0876988651e2db9c6450cfa56104ea77926ff18e9078fbf96362",
+ "code_commit": "935114417077c53f2967dd763575962eaa9edf01"
+}
