@@ -1,0 +1,50 @@
+{
+ "family": "nba-day-sport-v2",
+ "registered": "2026-11-11",
+ "approved_by": "Mark, 2026-11-05: the model-changing items of audit 7 go ahead as a registered shadow \"day-sport v2\", judged on the forward test (docs/history/11-audit7-2026-11-04.md); 2026-11-11: build it now, after Stage 95 items 31 to 34. The details below are Claude's, under Mark's delegation, sent to him before this was written.",
+ "status": "shadow",
+ "based_on": [
+  "experiments/nba/stage61/registry.json",
+  "experiments/nba/stage65/registry.json"
+ ],
+ "protocol": {
+  "seasons": "As experiments/nba/stage61/registry.json: training from 2015-16, validation 2022-23 and 2023-24, confirmation 2024-25 and 2025-26.",
+  "tuning": "H_days and lambda over the registered grid of experiments/nba/stage61/registry.json, on the validation seasons only, by Model A's log loss pooled; the confirmation seasons are not used to choose anything.",
+  "confirmation": "v2 against the registered models on the confirmation seasons is reported once as a measurement (MV1). It decides nothing: those seasons have been seen."
+ },
+ "changes": {
+  "24_availability": "A player counts as unavailable for a game when his expected minutes for his team are above zero (he has played for it, weighted as experiments/nba/stage61/registry.json defines expected minutes) and he did not appear in the team's previous game. Availability is the share of the team's expected minutes from the players who remain. The same rule in the backtest and live: the backtest stops reading who played in the game itself, and the live run stops reading the injury report for v2. A team's first game has availability 1.0.",
+  "27_history": "A game in which either team is not one of the league's 30 codes (the Rising Stars game, an exhibition filed as regular season) is dropped from the history before anything is computed.",
+  "28_neutral": "A neutral-site game (ESPN's neutral_site) gets no home edge: the fitted intercept is not added to its forecast. Its row still enters the fit as listed. A declared rule, not a tested win, as the NFL's (Stage 38).",
+  "29_ingest": "A price whose two implied probabilities sum to under 1.00 or over 1.20 is marked and not used: the game counts as unpriced for Model B. A box score whose team minutes fall short of 240 (a regulation game) by more than half a minute for each player it lists is marked and not used for minutes or availability: each player's minutes are rounded to whole minutes, so a complete box can sum to a few under 240.",
+  "30_slates": "The 2020-03-01 slate lists GS in two games (401161536 at PHX, 401161543 against WSH). Each game is placed on the date ESPN's own record of that game gives, read when v2's history is built and before anything is fitted; v2's history refuses any slate on which a team still appears twice."
+ },
+ "measurements": {
+  "MV1": "v2 against the registered Model A and Model B on the confirmation seasons, log loss, paired, whole game days. Reported, not decided.",
+  "MV2": "v2's Model A without its availability term, beside v2 on the forward test: what availability defined the same way in both is worth. Reported, not decided."
+ },
+ "forward_test": {
+  "shadow": {
+   "what": "From the first scheduled daily run that carries v2's code, the run that saves a game's registered pick also saves v2's Model A and Model B forecasts for the same game, at the same moment, from the same price and inputs, in predictions/nba/2026-v2/<game_id>.json, never rewritten. Nothing is backfilled: a game saved before that run has no v2 forecast and is not in v2's forward test.",
+   "never_a_pick": "v2's forecasts are never the board's pick, never graded on the board, and never enter the registered forward test, the drift check or the standings.",
+   "fitted": "Refitted at every run on every final game strictly before the pick's slate day, as the registered models are."
+  },
+  "decision": {
+   "when": "Once, on the first scheduled daily run's figures after the 2026 regular season's last game is final, with the registered forward test's own file. No earlier look decides anything.",
+   "comparisons": {
+    "V1": "v2's Model A minus the registered Model A, log loss per game, on the games both forecast.",
+    "V2": "v2's Model B minus the registered Model B, log loss per game, on the priced games both forecast."
+   },
+   "rule": "Paired, resampling whole game days, 5,000 resamples, the registered forward test's seed; level 1 - 0.05/2 (97.5%), the backtests' alpha shared between the two comparisons. ACCEPT when the whole interval is below zero (v2 did better), REJECT when it is above zero, INCONCLUSIVE otherwise.",
+   "consequence": "ACCEPT on V1 makes v2's Model A the registered Model A from the 2027-28 season, through a new registration that cites this one; never during the 2026 season. REJECT or INCONCLUSIVE keeps the registered model. V2 decides Model B the same way, independently.",
+   "budget": "Two confirmatory slots per sport, V1 and V2; each is spent by reaching its decision."
+  }
+ },
+ "disclosures": [
+  "Written on 2026-11-11, after both live seasons' first figures had been read (each sport's forward test and drift file) and after audit 7 had re-derived the backtests. The changes registered here were all named by the audit before then, and none was chosen by looking at the live figures; but they were chosen knowing the live figures exist, which is why the registered model is left untouched and v2 runs beside it as a shadow.",
+  "Item 24's definition is the second of the two Claude sent Mark on 2026-11-11 (the first was to drop the term); Mark chose it the same day (\"Option 2 works\"). MV2 measures the first beside it, so the forward test shows what the term is worth.",
+  "Item 29's box-score rule was first written as \"team minutes sum to under 240\". Before this registration was opened and before anything was fitted, a count of the committed history (every season on file, read-only) found that rule would discard 6,750 of 28,648 team box scores, almost all complete boxes whose players' rounded minutes sum to 238 or 239. The rule now allows the rounding: half a minute a listed player. 18 boxes fall short of that, 6 of them the All-Star games item 27 drops anyway. Only the count of boxes was read, no result."
+ ],
+ "amendments": [],
+ "not_in_this_registration": "Any change to the registered models, picks, forward test, drift check or pages. Anything not named under changes."
+}
