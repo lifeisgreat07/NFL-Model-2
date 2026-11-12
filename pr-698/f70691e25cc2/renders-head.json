@@ -5,7 +5,7 @@
   "viewport": "390x844",
   "theme": "light",
   "file": "nba-390x844-light-head.png",
-  "bytes": 93987,
+  "bytes": 93940,
   "parked": 3
  },
  {
@@ -14,7 +14,7 @@
   "viewport": "390x844",
   "theme": "dark",
   "file": "nba-390x844-dark-head.png",
-  "bytes": 94712,
+  "bytes": 94705,
   "parked": 3
  },
  {
@@ -23,7 +23,7 @@
   "viewport": "1440x900",
   "theme": "light",
   "file": "nba-1440x900-light-head.png",
-  "bytes": 235465,
+  "bytes": 238286,
   "parked": 4
  },
  {
@@ -32,7 +32,7 @@
   "viewport": "1440x900",
   "theme": "dark",
   "file": "nba-1440x900-dark-head.png",
-  "bytes": 235503,
+  "bytes": 238359,
   "parked": 4
  }
 ]
