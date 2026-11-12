@@ -1,0 +1,95 @@
+{
+ "game_id": "2026020302",
+ "season": 2026,
+ "slate": "2026-11-12",
+ "start_utc": "2026-11-13T00:30:00Z",
+ "home": "FLA",
+ "away": "DET",
+ "model_a": 0.5784,
+ "model_b": 0.617,
+ "pick": "FLA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.32595,
+  "shot_matchup": 0.694786,
+  "goalie_matchup_2000": 0.000775
+ },
+ "market": {
+  "game_id": "2026020302",
+  "start_utc": "2026-11-13T00:30:00Z",
+  "home": "FLA",
+  "away": "DET",
+  "book": "DraftKings",
+  "home_price": -170.0,
+  "away_price": 142.0,
+  "home_prob": 0.6038,
+  "read_utc": "2026-11-12T21:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481033,
+   "name": "Akira Schmid",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/GeorgeRichards/status/2120909524487852058?a=8ZjIRgTdS-ZhsRHMAFo&s=20"
+  },
+  "away": {
+   "player_id": 8476434,
+   "name": "John Gibson",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://www.youtube.com/watch?v=QfiW3HdcYT4"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-12",
+  "read_utc": "2026-11-12T21:01:40Z",
+  "home": [
+   {
+    "name": "Aleksander Barkov",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brad Marchand",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jonah Gadjovich",
+    "position": "LW",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Albert Johansson",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Dylan Larkin",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Simon Edvinsson",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-12T21:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14701,
+  "training_games_priced": 7671,
+  "training_ids_sha256": "c8c07a2cc9351fe6197e6c08024568a81c2008d523afe37e93eddaf835c879e7"
+ },
+ "code_sha256": "767e6e57557445fab36ffa13c9889025ac8bc7cd1914f030aef830e6758b86a2",
+ "code_commit": "5dccc89f827c11a6d36ecca34950c6f6076cef8d"
+}

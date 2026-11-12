@@ -1,0 +1,90 @@
+{
+ "game_id": "2026020305",
+ "season": 2026,
+ "slate": "2026-11-12",
+ "start_utc": "2026-11-13T01:00:00Z",
+ "home": "CHI",
+ "away": "BUF",
+ "model_a": 0.3464,
+ "model_b": 0.428,
+ "pick": "BUF",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.372215,
+  "shot_matchup": -6.247912,
+  "goalie_matchup_2000": -0.002279
+ },
+ "market": {
+  "game_id": "2026020305",
+  "start_utc": "2026-11-13T01:00:00Z",
+  "home": "CHI",
+  "away": "BUF",
+  "book": "DraftKings",
+  "home_price": 130.0,
+  "away_price": -155.0,
+  "home_prob": 0.417,
+  "read_utc": "2026-11-12T21:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8481519,
+   "name": "Spencer Knight",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  },
+  "away": {
+   "player_id": 8479312,
+   "name": "Alex Lyon",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-12",
+  "read_utc": "2026-11-12T21:01:40Z",
+  "home": [
+   {
+    "name": "Bowen Byram",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alex Lyon",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Justin Danforth",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Konsta Helenius",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Matt Grzelcyk",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-12T21:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14701,
+  "training_games_priced": 7671,
+  "training_ids_sha256": "c8c07a2cc9351fe6197e6c08024568a81c2008d523afe37e93eddaf835c879e7"
+ },
+ "code_sha256": "767e6e57557445fab36ffa13c9889025ac8bc7cd1914f030aef830e6758b86a2",
+ "code_commit": "5dccc89f827c11a6d36ecca34950c6f6076cef8d"
+}

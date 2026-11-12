@@ -3881,11 +3881,11 @@
    "start_utc": "2026-11-12T17:00:00Z",
    "home": "SEA",
    "away": "CAR",
-   "status": "scheduled",
+   "status": "final",
    "game_type": "regular",
-   "home_score": null,
-   "away_score": null,
-   "last_period": null,
+   "home_score": 1,
+   "away_score": 4,
+   "last_period": "REG",
    "neutral_site": true
   },
   {
@@ -8103,7 +8103,7 @@
   {
    "game_id": "2026020624",
    "slate": "2026-12-28",
-   "start_utc": "2026-12-29T00:30:00Z",
+   "start_utc": "2026-12-29T00:00:00Z",
    "home": "WPG",
    "away": "SJS",
    "status": "scheduled",
@@ -10261,7 +10261,7 @@
   {
    "game_id": "2026020790",
    "slate": "2027-01-19",
-   "start_utc": "2027-01-20T00:00:00Z",
+   "start_utc": "2027-01-20T00:30:00Z",
    "home": "WPG",
    "away": "MIN",
    "status": "scheduled",
