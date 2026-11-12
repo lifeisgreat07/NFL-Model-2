@@ -27,7 +27,7 @@
   {
    "id": "scores-nfl-graded-marked",
    "why": "a graded NFL game keeps asking ESPN.",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_board.js",
    "find": "if(!g.gameday || !g.gametime_et || g.graded || g.status === 'final'",
    "replace": "if(!g.gameday || !g.gametime_et || g.status === 'final'",
    "expect_caught_by": "test_the_nfl_board_marks_a_game_not_yet_final_or_graded"
@@ -35,7 +35,7 @@
   {
    "id": "scores-nfl-card-slot",
    "why": "the NFL card never says Live.",
-   "target": "src/dashboard/app.js",
+   "target": "src/dashboard/app_board.js",
    "find": "      <div class=\"card-status score-on\" data-score-slot=\"line\"></div>\n",
    "replace": "",
    "expect_caught_by": "test_the_nfl_row_and_card_carry_the_mark_and_the_slots"

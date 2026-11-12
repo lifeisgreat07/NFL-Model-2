@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "illustrative-margin-row-comes-back",
+      "target": "src/dashboard/app_board.js",
       "why": "the margin row is pasted back into the numbers panel -- the obvious revert, and it looks harmless because the row says it is only illustrative. It is still a point margin of the kind the project tested and rejected, sitting under the real Vegas line.",
       "find": "        ${trackRecordHtml(g.mktB_home, 'panel')}\n      </div>` : '';",
       "replace": "        <div class=\"implied-margin\"><span>Illustrative margin</span></div>\n        ${trackRecordHtml(g.mktB_home, 'panel')}\n      </div>` : '';",
@@ -11,6 +12,7 @@
     },
     {
       "id": "illustrative-margin-helper-comes-back",
+      "target": "src/dashboard/app_board.js",
       "why": "only the helper returns, unused for now. It is the half that makes the row one line away from reappearing, and a guard that watched the label alone would let it through.",
       "find": "function pickBadge(picked, graded, correct){",
       "replace": "function impliedMargin(p){ return 5.5 * Math.log(p/(100-p)); }\nfunction pickBadge(picked, graded, correct){",

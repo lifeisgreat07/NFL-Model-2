@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "cancelled-card-keeps-its-channel",
+      "target": "src/dashboard/app_board.js",
       "why": "a cancelled game's card still says which channel to watch it on.",
       "find": "  if(!g.tv || g.graded || g.status === 'final' || g.status === 'cancelled') return '';",
       "replace": "  if(!g.tv || g.graded || g.status === 'final') return '';",
@@ -11,6 +12,7 @@
     },
     {
       "id": "cancelled-card-keeps-its-news",
+      "target": "src/dashboard/app_board.js",
       "why": "a cancelled game's card still lists who is injured for it.",
       "find": "  if(!news || !news.teams || g.graded || g.status === 'final' || g.status === 'cancelled') return '';",
       "replace": "  if(!news || !news.teams || g.graded || g.status === 'final') return '';",

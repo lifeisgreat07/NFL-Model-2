@@ -1,7 +1,7 @@
 {
- "games": 160,
- "mean_log_loss": 0.5875570072940394,
- "baseline": 0.5994417889790518,
+ "games": 161,
+ "mean_log_loss": 0.5864201038889372,
+ "baseline": 0.5994348289153592,
  "without_availability": 15,
  "flagged": false,
  "looks": [

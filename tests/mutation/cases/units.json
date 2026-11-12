@@ -12,6 +12,7 @@
     },
     {
       "id": "units-pts-in-script-text",
+      "target": "src/dashboard/app_board.js",
       "why": "the formatter writes 'pts', so every betting-line sentence carries the abbreviation this stage removed.",
       "find": "  return `${text} point${v === 1 ? '' : 's'}`;",
       "replace": "  return `${text} pts`;",
@@ -19,6 +20,7 @@
     },
     {
       "id": "units-points-keep-a-zero",
+      "target": "src/dashboard/app_board.js",
       "why": "whole-number spreads keep their '.0', so the card reads 'favourites by 3.0 points'.",
       "find": "  const text = Number.isInteger(v) ? String(v) : v.toFixed(1);",
       "replace": "  const text = v.toFixed(1);",
@@ -26,6 +28,7 @@
     },
     {
       "id": "units-one-points",
+      "target": "src/dashboard/app_board.js",
       "why": "a one-point spread reads 'favourites by 1 points'.",
       "find": "  return `${text} point${v === 1 ? '' : 's'}`;",
       "replace": "  return `${text} points`;",
@@ -41,6 +44,7 @@
     },
     {
       "id": "units-line-sentence-bare-number",
+      "target": "src/dashboard/app_board.js",
       "why": "the betting-line sentence goes back to a bare number with no unit: 'favourites by 6.5'.",
       "find": "  const by = fmtPoints(Math.abs(g.spread));",
       "replace": "  const by = Math.abs(g.spread).toFixed(1);",

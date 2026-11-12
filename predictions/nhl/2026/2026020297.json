@@ -1,0 +1,85 @@
+{
+ "game_id": "2026020297",
+ "season": 2026,
+ "slate": "2026-11-11",
+ "start_utc": "2026-11-12T03:00:00Z",
+ "home": "ANA",
+ "away": "NSH",
+ "model_a": 0.537,
+ "model_b": 0.5993,
+ "pick": "ANA",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.325169,
+  "shot_matchup": 2.316361,
+  "goalie_matchup_2000": -0.001475
+ },
+ "market": {
+  "game_id": "2026020297",
+  "start_utc": "2026-11-12T03:00:00Z",
+  "home": "ANA",
+  "away": "NSH",
+  "book": "DraftKings",
+  "home_price": -142.0,
+  "away_price": 120.0,
+  "home_prob": 0.5635,
+  "read_utc": "2026-11-11T21:01:00Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476316,
+   "name": "Laurent Brossoit",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/IcemanAthletic/status/2120581734823805317?a=hG92RaZX8aSOOX_pmdQ&s=20"
+  },
+  "away": {
+   "player_id": 8481020,
+   "name": "Justus Annunen",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-11",
+  "read_utc": "2026-11-11T21:01:00Z",
+  "home": [
+   {
+    "name": "A.J. Greer",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ian Moore",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ryan Poehling",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jonathan Marchessault",
+    "position": "RW",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-11T21:01:00Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-10",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14695,
+  "training_games_priced": 7665,
+  "training_ids_sha256": "4eda8e8872f24250bf8c2a85196946ca9aed5770d1129d64e6669b0f6ae6fa1d"
+ },
+ "code_sha256": "675d58024be37cfc4433d000fc9354db4f43ee98f0d481b165eb97bda9e8461f",
+ "code_commit": "a17d0ea5a47423177a7c7bf426f8a1e12e673d86"
+}

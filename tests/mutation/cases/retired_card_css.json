@@ -11,7 +11,7 @@
     },
     {
       "id": "retired-card-class-worn-again",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_board.js",
       "why": "card markup wears a retired class that no rule styles any more.",
       "find": "          <div class=\"tele-bar\">",
       "replace": "          <div class=\"tele-bar tele\">",

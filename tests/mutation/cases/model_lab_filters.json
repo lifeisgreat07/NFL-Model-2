@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "lab-chip-shows-an-empty-decision",
+      "target": "src/dashboard/app_pages.js",
       "why": "a decision with no rows still gets a chip, which filters the table down to nothing.",
       "find": "    if(n) chips.push({key: d, label: d.charAt(0) + d.slice(1).toLowerCase(), n});",
       "replace": "    chips.push({key: d, label: d.charAt(0) + d.slice(1).toLowerCase(), n});",
@@ -11,6 +12,7 @@
     },
     {
       "id": "lab-leakage-chip-shows-every-deferred-row",
+      "target": "src/dashboard/app_pages.js",
       "why": "the leakage chip matches on the decision, so it shows every deferred question as if each were invalidated.",
       "find": "  return key === 'all' || (key === 'leakage' ? row.leakage : row.decision === key);",
       "replace": "  return key === 'all' || (key === 'leakage' ? row.decision === 'DEFERRED' : row.decision === key);",
@@ -18,6 +20,7 @@
     },
     {
       "id": "lab-all-chip-miscounts",
+      "target": "src/dashboard/app_pages.js",
       "why": "the All chip counts the rows of one decision, so it promises fewer experiments than the table has.",
       "find": "  const chips = [{key:'all', label:'All', n: rows.length}];",
       "replace": "  const chips = [{key:'all', label:'All', n: rows.filter(r => r.decision === 'REJECT').length}];",
@@ -25,6 +28,7 @@
     },
     {
       "id": "lab-link-lands-on-a-hidden-row",
+      "target": "src/dashboard/app_pages.js",
       "why": "a link to an experiment the filter is hiding scrolls to a row that is not there.",
       "find": "    if(row && row.hidden && labShowAll) labShowAll();\n",
       "replace": "",

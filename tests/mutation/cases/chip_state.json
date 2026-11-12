@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "board-filter-click-moves-only-the-look",
+      "target": "src/dashboard/app_board.js",
       "why": "the state this item added, dropped from the handler. The markup still says All Games is pressed, so the page loads right and every static check passes; after one click the highlighted chip and the one a screen reader calls pressed are different chips, which is worse than no state at all.",
       "find": "      b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');\n",
       "replace": "",
@@ -11,6 +12,7 @@
     },
     {
       "id": "lab-filter-goes-back-to-aria-current",
+      "target": "src/dashboard/app_pages.js",
       "why": "Model Lab's chips return to the convention they had before: aria-current says 'this is the current item in a set of links', which is not what a filter toggle is, and leaves the page with two ways of saying the same thing.",
       "find": "      b.setAttribute('aria-pressed', on ? 'true' : 'false');",
       "replace": "      b.setAttribute('aria-current', on ? 'true' : 'false');",

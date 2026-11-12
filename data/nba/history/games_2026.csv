@@ -159,3 +159,4 @@ game_id,season,slate,game_type,neutral_site,home,away,home_score,away_score,home
 401909963,2026,2026-11-10,regular,False,UTAH,MIA,109,115,84,22,11,19,89,44,8,8,105.02,espn
 401909964,2026,2026-11-10,regular,False,SAC,ORL,100,107,75,22,4,21,90,18,12,14,100.8,espn
 401909965,2026,2026-11-10,regular,False,POR,OKC,123,103,91,26,11,9,84,27,11,11,98.16,espn
+401909966,2026,2026-11-11,regular,False,IND,WSH,114,101,89,24,14,11,90,22,15,15,98.12,espn

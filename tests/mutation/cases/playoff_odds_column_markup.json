@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "sort-comparator-drops-the-null-guard",
+      "target": "src/dashboard/app_ratings.js",
       "why": "(null - 5) is NaN, and a comparator that returns NaN leaves rows in whatever order the engine started with -- the table looks sorted and is not, which is worse than refusing to sort",
       "find": "    const bv = (b[sortKey]===null||b[sortKey]===undefined) ? -Infinity : b[sortKey];",
       "replace": "    const bv = b[sortKey];",
@@ -19,6 +20,7 @@
     },
     {
       "id": "cell-prints-a-number-it-does-not-have",
+      "target": "src/dashboard/app_ratings.js",
       "why": "an unsimulated team renders as though it had odds, so 'we never ran this team' and a real percentage become indistinguishable on the page",
       "find": "${(t.playoff===null||t.playoff===undefined)",
       "replace": "${(false)",
@@ -26,6 +28,7 @@
     },
     {
       "id": "empty-state-no-longer-spans-the-table",
+      "target": "src/dashboard/app_board.js",
       "why": "the colspan lags the column count, so the 'no teams' row draws a ragged edge exactly when something has gone wrong and the reader most needs the page to look deliberate Re-pointed by Stage 21: the old guard counts only the columns that sort, and the new \"This season\" column does not, so it passed a row one column short.",
       "find": "colspan=\"8\"",
       "replace": "colspan=\"7\"",
@@ -42,6 +45,7 @@
     },
     {
       "id": "playoff-sims-count-is-typed-into-the-prose",
+      "target": "src/dashboard/app_ratings.js",
       "why": "the span comes out and a real number goes into the sentence in its place. It is correct on the day it is written and becomes a lie the first time the simulation count changes, with nothing anywhere to recompute it -- the exact shape CLAUDE.md records as the number that was right when written and was falsified by the base moving underneath it. Nothing renders differently today.",
       "find": "  const sims = document.getElementById('playoff-sims');",
       "replace": "  const sims = null;",
@@ -49,6 +53,7 @@
     },
     {
       "id": "rank-becomes-position-in-the-current-sort",
+      "target": "src/dashboard/app_ratings.js",
       "why": "the # is recomputed from the row's position, so sorting by Playoff Odds prints '#1' beside the ninth-rated team on a page called Power Ratings -- and '#1' is the part a casual reader carries away",
       "find": "  const ranked = sorted.map(t=>({...t, _rank: t.rank}));",
       "replace": "  const ranked = sorted.map((t,i)=>({...t, _rank: i+1}));",
@@ -56,6 +61,7 @@
     },
     {
       "id": "rank-header-becomes-a-live-sort-control",
+      "target": "src/dashboard/app_ratings.js",
       "why": "the '#' header starts sorting, which this suite's header/field check explicitly exempts it from -- the exemption is only sound while the early return exists, so losing it silently widens what that guard permits",
       "find": "    if(key==='rank') return;",
       "replace": "    if(false) return;",
@@ -63,6 +69,7 @@
     },
     {
       "id": "signed-bar-loses-its-centre-line",
+      "target": "src/dashboard/app_team.js",
       "why": "the Team Deep-Dive bar still encodes a signed net rating from the middle of the track but stops drawing the zero, so a small positive and a small negative render as the same short mark near the centre and are distinguishable only by reading the number beside them",
       "find": "<div class=\"srs-bar-track diverging\" style=\"width:140px;\"",
       "replace": "<div class=\"srs-bar-track\" style=\"width:140px;\"",
