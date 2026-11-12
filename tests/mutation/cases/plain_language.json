@@ -13,8 +13,8 @@
       "id": "pl-scan-blinded-to-the-javascript",
       "target": "src/dashboard/page.html",
       "why": "the render script stops being seen as a script, so the literal matcher finds nothing and every check below passes over an empty string. Most of this dashboard's prose lives in template literals -- a markup-only scan called Season Accuracy clean while it was rendering 'Brier decomposition' into the page",
-      "find": "<script>\n{% include \"app.js\" %}",
-      "replace": "<scriptx>\n{% include \"app.js\" %}",
+      "find": "<script>\n{% include \"app_controls.js\" %}",
+      "replace": "<scriptx>\n{% include \"app_controls.js\" %}",
       "expect_caught_by": "test_the_scan_actually_sees_the_javascript_copy"
     },
     {

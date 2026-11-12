@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "week-keys-swapped",
+      "target": "src/dashboard/app_controls.js",
       "why": "[ steps forward and ] back, the opposite of every reader's expectation and of the arrows beside them.",
       "find": "  return `${prefix}-${e.key === '[' ? 'prev' : 'next'}`;",
       "replace": "  return `${prefix}-${e.key === ']' ? 'prev' : 'next'}`;",
@@ -11,6 +12,7 @@
     },
     {
       "id": "week-keys-miss-my-picks",
+      "target": "src/dashboard/app_controls.js",
       "why": "the keys work on the Week Board only, though My Picks has the same stepper.",
       "find": "  const prefix = pageId === 'board' ? 'week' : pageId === 'picks' ? 'picks-week' : null;",
       "replace": "  const prefix = pageId === 'board' ? 'week' : null;",
@@ -18,6 +20,7 @@
     },
     {
       "id": "week-keys-take-browser-shortcuts",
+      "target": "src/dashboard/app_controls.js",
       "why": "Ctrl+[ or Cmd+[ (the browser's back, on some systems) also steps the week.",
       "find": "  if(e.ctrlKey || e.metaKey || e.altKey || e.defaultPrevented) return null;",
       "replace": "  if(e.defaultPrevented) return null;",
@@ -25,6 +28,7 @@
     },
     {
       "id": "week-keys-steal-typing",
+      "target": "src/dashboard/app_controls.js",
       "why": "a [ typed into a field or the sort list's type-ahead changes the week instead.",
       "find": "  if(t && t.closest && t.closest('input, textarea, select, [contenteditable=\"true\"], [role=\"listbox\"]')) return null;\n",
       "replace": "",
@@ -32,6 +36,7 @@
     },
     {
       "id": "week-keys-not-wired",
+      "target": "src/dashboard/app_controls.js",
       "why": "the listener finds the button and never presses it, so the keys do nothing.",
       "find": "  e.preventDefault();\n  btn.click();\n});",
       "replace": "  e.preventDefault();\n});",

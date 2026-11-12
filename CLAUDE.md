@@ -48,9 +48,9 @@ Model v2.6 (`MODEL_VERSION` in `src/sports/nfl/config.py`). `TRAIN_SEASONS` 2020
 The drift check flags on Model A's log loss against the committed
 `data/nfl/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
 
-Suite: **12907 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main`
-at c473f2bb (2026-11-10 UTC, after #679), with HEAD level with origin, which is the order that makes the
-figure reproducible. The split (Stage 96 item 51, by `tests/suite_classes.json`): 7771 corpus checks, 1315 isolated behavioural, 1326 mixed, 1337 template/JS, 1158 workflow/docs/tests-of-tests. Each test file's class is in `tests/suite_classes.json`; `python -m src.agents.session_wrapup --suite-line` writes this sentence, and the wrap-up fails when the map misses a file. Level with origin is the order that makes the
+Suite: **12978 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main`
+at b64e105a (2026-11-12 UTC, after #698), with HEAD level with origin, which is the order that makes the
+figure reproducible. The split (Stage 96 item 51, by `tests/suite_classes.json`): 7813 corpus checks, 1327 isolated behavioural, 1326 mixed, 1352 template/JS, 1160 workflow/docs/tests-of-tests. Each test file's class is in `tests/suite_classes.json`; `python -m src.agents.session_wrapup --suite-line` writes this sentence, and the wrap-up fails when the map misses a file. Level with origin is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
@@ -224,7 +224,7 @@ casually.
   has changed is that it is no longer queued for removal. Do not re-open this
   as a colour defect. The one thing worth knowing if it is ever revisited:
   the push does not preserve team colour — it renders Cincinnati's `#FB4F14`
-  as `#C43E10` — and `src/dashboard/app.js`'s comment said otherwise
+  as `#C43E10` — and `src/dashboard/app_controls.js`'s comment (then app.js's) said otherwise
   until this decision corrected it.
 - **`--good` vs `--warn` collapse under CVD (4.5 dark, 4.3 light) and that is
   NOT a defect.** Checked rather than assumed: the graded tag renders the word
@@ -284,6 +284,7 @@ The full text of every stage, finished or planned, is in
 - **Stages 75 to 80 - the 2026-10-13 UI/UX audit**: done, #436 to #513.
 - **Stages 81 to 90 - the 2026-11-02 review** (text in `docs/history/10-review-2026-11-02.md`): order 81, 82, 86, 88 items 1-2, 83, 84 and 85, 89, 87; 90 last.
 - **Stages 91 to 96 - audit 7, executed** (`docs/history/11-audit7-2026-11-04.md`, with Claude's pushback): 91 first; the model-changing items as a registered shadow "day-sport v2" (Mark, 2026-11-05).
+- **Stages 97 to 104 (Mark, 2026-11-11)** (`docs/history/12-mlb-and-more-2026-11-11.md`): 104 the NBA page's tabs after Stage 87; then 95 and the v2 shadow; 102 league logos; 97 to 101 MLB, built before spring training; 103 March Madness.
 
 ## Ending a session
 

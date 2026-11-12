@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "card-axis-nfl-marker-back",
+      "target": "src/dashboard/app_board.js",
       "why": "the NFL card's markers go back to the home share from the left, so Model B's marker misses the bar's split again (23.7 px on SEA at DEN).",
       "find": "data-series=\"${k}\" style=\"left:${100 - vals[k]}%;",
       "replace": "data-series=\"${k}\" style=\"left:${vals[k]}%;",

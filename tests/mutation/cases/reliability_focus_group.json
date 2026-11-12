@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "every-point-its-own-tab-stop-again",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the state before this item: thirty Tab stops between the series toggles and the table. Nothing looks different and every mouse interaction still works, which is how it stood unnoticed.",
       "find": "      return `<g class=\"rel-point\" tabindex=\"-1\" role=\"img\"",
       "replace": "      return `<g class=\"rel-point\" tabindex=\"0\" role=\"img\"",
@@ -11,6 +12,7 @@
     },
     {
       "id": "no-point-handed-the-tab-stop-on-mount",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "the markup change without the hand-over: every point is tabindex -1, so the chart drops out of the Tab order entirely and a keyboard reader never reaches a single point. Worse than thirty stops, and just as invisible to a mouse.",
       "find": "  if(points.length) setRoving(points[0]);\n",
       "replace": "",
@@ -18,6 +20,7 @@
     },
     {
       "id": "arrows-move-focus-but-leave-the-tab-stop-behind",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "focus moves but the tabindex does not follow, so after walking to the fifth point, Tab out and Shift+Tab back lands on the first again. The kind of half-roving tabindex that passes a quick manual check, because the arrows themselves still work.",
       "find": "    el.addEventListener('focus', ()=>{ setRoving(el); show(el); });",
       "replace": "    el.addEventListener('focus', ()=>show(el));",
@@ -25,6 +28,7 @@
     },
     {
       "id": "arrows-walk-into-a-hidden-series",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "walking every point rather than the visible ones: with Model A switched off, the arrow keys move focus onto points that are display:none, so focus vanishes and the tooltip describes a mark nobody can see.",
       "find": "      const vis = visiblePoints(), i = vis.indexOf(el);",
       "replace": "      const vis = points, i = vis.indexOf(el);",
@@ -32,6 +36,7 @@
     },
     {
       "id": "tab-stop-stays-on-a-hidden-series",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "switching off the series that holds the Tab stop leaves it on a hidden point, and the whole chart drops out of the Tab order until the series is switched back on.",
       "find": "      if(!holder || !visiblePoints().includes(holder)) setRoving(visiblePoints()[0]);\n",
       "replace": "",
@@ -39,6 +44,7 @@
     },
     {
       "id": "arrows-wrap-at-the-ends",
+      "target": "src/dashboard/app_accuracy.js",
       "why": "wrapping from the last point to the first reads as a jump across the whole chart with no cue, and a reader holding the arrow key cannot tell where the ends are. The ends stop, as they do in the rest of the page's keyboard handling.",
       "find": "next = vis[Math.min(i + 1, vis.length - 1)];",
       "replace": "next = vis[(i + 1) % vis.length];",

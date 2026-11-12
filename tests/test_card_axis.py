@@ -16,9 +16,11 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
+
 REPO = Path(__file__).resolve().parents[1]
 CARDS = {
-    'nfl': REPO / 'src' / 'dashboard' / 'app.js',
+    'nfl': APP_SCRIPT,
     'nhl': REPO / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js',
     'nba': REPO / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js',
 }

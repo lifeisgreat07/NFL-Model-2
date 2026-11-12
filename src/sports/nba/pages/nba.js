@@ -658,6 +658,33 @@ function m2Html(m){
   return `<p class="nba-lede">Over ${m.graded} graded games, the availability the injury report gave a game (home minus away) was ${a.mean_absolute_gap.toFixed(3)} from the box score&#39;s on average, ${sgn(a.mean_report_minus_box)} on the signed average. Model A&#39;s log loss was ${s.log_loss_report.toFixed(4)} with the injury report&#39;s and ${s.log_loss_box.toFixed(4)} with the box score&#39;s.${diff}</p>
     <p class="nba-lede">Both figures come from Model A refitted as each pick records it was, so only availability differs; ${m.refit.reproduced_saved_model_a} of ${m.refit.of} refitted probabilities equal the saved ones to four places. ${m.graded_without_availability} graded pick${m.graded_without_availability === 1 ? ' was' : 's were'} made without availability and ${m.graded_without_availability === 1 ? 'is' : 'are'} left out. A measurement (<code>${m.registered}</code>): reported, not judged.</p>`;
 }
+/* ---------- season accuracy (Stage 104 item 1) ----------
+   The NHL's page (src/sports/nhl/pages/nhl.js), on the NBA's graded picks: the
+   record, the shared accuracy component, calibration and every graded pick.
+   Until 2026-11-11 the record sat inside Checking the AI's work, and the NBA
+   had no Season Accuracy page, which read as a scoreboard left off. */
+function renderAccuracy(){
+  const el = document.getElementById('accuracy-body');
+  const graded = gradedPicks();
+  const saved = Object.keys(BD.picks || {}).length;
+  if(!graded.length){
+    // Before any grade the component still draws, each chart saying inside its frame that nothing is
+    // graded, as on Checking the AI's work before (tests/browser/check_accuracy.py).
+    el.innerHTML = `<p class="nba-lede">Nothing graded yet: ${saved} pick${saved === 1 ? '' : 's'} saved. A pick is graded once its game is final; a cancelled game is never counted.</p>
+    ${accuracyHtml(accGames(graded))}
+    ${calibrationHtml(graded)}`;
+    return;
+  }
+  const right = graded.filter(x => x.p.result === 'correct').length;
+  const list = graded.slice().sort((a, b) => (b.g.start || '').localeCompare(a.g.start || ''));
+  el.innerHTML = `<p class="nba-lede"><b>${right} of ${graded.length}</b> picks right (${pct(right / graded.length, 1)}). The pick is Model B&#39;s where the game had a price when it was saved, Model A&#39;s otherwise. This is a small sample that grows every game day, so the record alone says little: the forward test is judged on log loss, not on picks right. See Checking the AI&#39;s work.</p>
+    ${accuracyHtml(accGames(graded))}
+    ${calibrationHtml(graded)}
+    <h2 class="section-title">Every graded pick</h2>
+    <div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">Graded picks</caption>
+    <thead><tr><th scope="col">Date</th><th scope="col">Game</th><th scope="col">Pick</th><th scope="col">Model</th><th scope="col">Result</th></tr></thead>
+    <tbody>${list.map(x => `<tr><td>${FMT_MONTHDAY.format(dayDate(x.g.day))}</td><td>${escapeHtml(x.g.away)} at ${escapeHtml(x.g.home)}</td><td>${escapeHtml(x.p.pick)}</td><td>${x.p.by === 'model_b' ? 'Model B' : 'Model A'}</td><td><span class="graded-tag ${x.p.result === 'correct' ? 'correct' : 'incorrect'}">${x.p.result === 'correct' ? 'Correct' : 'Missed'}</span></td></tr>`).join('')}</tbody></table></div>`;
+}
 function renderReliability(){
   document.getElementById('reliability-body').innerHTML = `
     <h2 class="section-title">The drift check</h2>
@@ -668,15 +695,123 @@ function renderReliability(){
     ${forwardHtml(BD.forward, 'nba')}
     <h2 class="section-title">The injury report against who played</h2>
     ${m2Html(BD.m2)}
-    <h2 class="section-title">The live picks so far</h2>
-    ${accuracyHtml(accGames(gradedPicks()))}
-    ${calibrationHtml(gradedPicks())}
     <p class="nba-lede"><b>The drift check leans toward flagging.</b> Its baseline was measured with each game's actual players, from the box score: knowing who played lowered the backtest's log loss by ${(-Q.M1.diff).toFixed(3)} (M1). A live pick knows only the injury report before tip-off, so live log loss is expected to run up to about that much worse for a reason that is not drift, and the check may flag sooner than a like-for-like comparison would. The registration says so (<code>experiments/nba/stage65/registry.json</code>), and M2 measures the gap once there are live games.</p>
     <h2 class="section-title">Before anything was fitted</h2>
     <p class="nba-lede">The questions, the seasons, the settings to search, the bootstrap and the labels were written down and committed on ${escapeHtml(DATA.registered)} (<code>experiments/nba/stage61/registry.json</code>), before any NBA feature was computed on a real game. H3 had been expected to come back INCONCLUSIVE; it came back ${Q.H3.label}, and it is reported as it came out. Nothing was re-run or re-tuned. The board still shows Model B&#39;s pick when a game has a price, although H3 found the market slightly better: the pick rule was carried over unchanged from the NFL and NHL boards when the live season was registered (<code>experiments/nba/stage65/registry.json</code>), and the forward test measures Model B against the market on every live pick.</p>
     <h2 class="section-title">After</h2>
     <p class="nba-lede">Every number on these pages is read from the committed results files when the page is built, and tests hold those files to the registration: the whole grid searched on the validation seasons only, the lowest kept, each label following from its interval. Those tests were checked in turn, by breaking the code on purpose and confirming a test fails.</p>
     <p class="nba-lede">A separate auditing agent, Booth, re-ran the confirmation on a Linux machine before the results were merged (PR #319): it matched the committed file to within 1e-12 though not bit for bit (its largest difference was 1.6e-16), and every published figure, interval and label agreed. Booth did not re-run the tuning grid; that the full backtest, tuning included, reproduces both files byte for byte was checked only on the Windows machine that wrote them.</p>`;
+}
+
+/* ---------- standings (Stage 104 item 4) ----------
+   From results/nba/standings_<season>.json (src/sports/nba/standings.py): each
+   conference's clubs by projected wins, with the share of simulated seasons
+   in the top six, in the play-in (seeds 7 to 10) and in the playoffs. */
+function chance(x){ return x <= 0 ? '0%' : x >= 1 ? '100%' : x < 0.01 ? '<1%' : x > 0.99 ? '>99%' : pct(x); }
+function renderStandings(){
+  const s = BD.standings, el = document.getElementById('standings-body');
+  if(!s){ el.innerHTML = stateHtml('waiting', 'Not simulated yet', 'The daily run simulates the season in every run that saves picks.'); return; }
+  const [lo, hi] = s.games_listed;
+  const listed = hi < 82 ? ` The schedule lists ${lo === hi ? lo : `${lo} to ${hi}`} of each club&#39;s 82 games so far: the last two are set by the NBA Cup and are counted once the league lists them.` : '';
+  const head = `<p class="nba-lede">As of ${escapeHtml(s.as_of)}: the rest of the regular season played out ${s.simulations.toLocaleString('en-US')} times from Model A without its availability term, with today&#39;s ratings held fixed, then the play-in. Each conference&#39;s top six make the playoffs; seeds 7 to 10 play in for the last two places. Holding today&#39;s ratings fixed makes these odds surer than they should be, most of all early in the season: real clubs change, and 0% or 100% means only that no simulated season went the other way.${listed}</p>`;
+  const table = conf => {
+    const rows = s.teams.filter(t => t.conference === conf).sort((a, b) => b.projected_wins - a.projected_wins);
+    return `<h2 class="section-title">${conf === 'East' ? 'Eastern' : 'Western'} Conference</h2><div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">${conf}</caption>
+      <thead><tr><th scope="col">Club</th><th scope="col" class="num">Record</th><th scope="col" class="num">Projected wins</th><th scope="col" class="num">Top six</th><th scope="col" class="num">Play-in</th><th scope="col" class="num">Playoffs</th></tr></thead>
+      <tbody>${rows.map(t => `<tr><th scope="row">${escapeHtml(clubName(t.team))}</th><td class="num">${t.wins_now}-${t.losses_now}</td><td class="num">${t.projected_wins.toFixed(1)}</td><td class="num">${chance(t.top6_pct)}</td><td class="num">${chance(t.playin_pct)}</td><td class="num">${chance(t.playoff_pct)}</td></tr>`).join('')}</tbody></table></div>`;
+  };
+  el.innerHTML = head + ['East', 'West'].map(table).join('');
+}
+
+/* ---------- power ratings (Stage 104 item 3) ----------
+   The NHL's page (src/sports/nhl/pages/nhl.js) on the NBA's two ratings, from
+   results/nba/ratings_<season>.json, which the daily run writes: a club's row
+   is its rank, logo and name, its point rating as a bar about a zero line
+   against the league's largest, and its efficiency rating. */
+function clubName(abbr){ return (BD.teams[abbr] || {}).name || abbr; }
+function ratingAxisHtml(scale, title){
+  return `<div class="net-head"><span>${title}</span><div class="net-head-row"><div class="net-axis" aria-hidden="true">`
+    + `<span class="ax-min">${signed(-scale, 1)}</span><span class="ax-zero">0</span><span class="ax-max">${signed(scale, 1)}</span></div><span></span></div></div>`;
+}
+function ratingRowHtml(t, i, scale){
+  const w = Math.abs(t.point) / scale * 100, src = logo(t.team);
+  const img = src ? `<img class="team-logo" src="${src}" alt="" loading="lazy" referrerpolicy="no-referrer" data-hide-on-error>` : '';
+  return `<tr><td class="rank">${i + 1}</td>`
+    + `<td><div class="team-cell">${img}<span class="team-abbr">${escapeHtml(t.team)}</span><span class="team-full">${escapeHtml(clubName(t.team))}</span></div></td>`
+    + `<td class="num"><div class="net-cell-inner"><div class="srs-bar-track diverging" title="${signed(t.point, 1)} points a game; league scale ±${scale.toFixed(1)}, centre line is zero">`
+    + `<div class="srs-bar-fill" style="left:${t.point >= 0 ? 50 : 50 - w / 2}%; width:${w / 2}%;"></div></div><span class="net-value">${signed(t.point, 1)}</span></div></td>`
+    + `<td class="num">${signed(t.efficiency, 1)}</td></tr>`;
+}
+function renderRatings(){
+  const r = BD.ratings, el = document.getElementById('ratings-body');
+  if(!r || !r.teams.length){ el.innerHTML = stateHtml('waiting', 'No ratings yet', 'The daily run writes them every run.'); return; }
+  const scale = Math.max(...r.teams.map(t => Math.abs(t.point)), 0.1);
+  el.innerHTML = `<p class="nba-lede">As of ${escapeHtml(r.as_of)}. A club&#39;s point rating is how many points a game better than an average club it has been, from a ridge regression of every earlier game&#39;s point margin, recent games counting more. The efficiency rating is the same per 100 possessions, so a fast or slow pace does not inflate it. Model A reads the difference between the two clubs in a game, with who is available.</p>
+    <div class="table-wrap"><table class="metrics-table nba-ratings-table"><caption class="visually-hidden">Team ratings</caption>
+    <thead><tr><th scope="col">#</th><th scope="col">Club</th><th scope="col" style="text-align:center;">${ratingAxisHtml(scale, 'Points a game')}</th><th scope="col" class="num">Per 100 possessions</th></tr></thead>
+    <tbody>${r.teams.map((t, i) => ratingRowHtml(t, i, scale)).join('')}</tbody></table></div>`;
+}
+
+/* ---------- teams (Stage 104 item 3) ----------
+   One club at a time, as the NHL's page: its ratings and rank, its record,
+   and every game played or picked so far with the pick and its grade. */
+let currentTeam = null;
+try{ currentTeam = localStorage.getItem('nba:team'); }catch(e){}
+function teamGames(abbr){
+  return BD.games.filter(g => g.home === abbr || g.away === abbr)
+    .sort((a, b) => (a.start || a.day).localeCompare(b.start || b.day));
+}
+function teamRecord(abbr){
+  const finals = teamGames(abbr).filter(g => g.status === 'final' && g.hs !== null && g.hs !== undefined);
+  const won = finals.filter(g => (g.home === abbr ? g.hs > g.as : g.as > g.hs)).length;
+  return {won, lost: finals.length - won};
+}
+function renderTeams(){
+  const select = document.getElementById('team-select');
+  const clubs = Object.keys(BD.teams).sort((a, b) => clubName(a).localeCompare(clubName(b)));
+  if(!currentTeam || !BD.teams[currentTeam]) currentTeam = clubs[0];
+  if(!select.options.length){
+    select.innerHTML = clubs.map(c => `<option value="${c}">${escapeHtml(clubName(c))}</option>`).join('');
+    select.addEventListener('change', () => {
+      currentTeam = select.value;
+      try{ localStorage.setItem('nba:team', currentTeam); }catch(e){}
+      renderTeams();
+      replaceRoute('teams');
+    });
+  }
+  select.value = currentTeam;
+  const t = currentTeam, el = document.getElementById('teams-body');
+  const r = BD.ratings, odds_ = BD.standings ? BD.standings.teams.find(x => x.team === t) : null;
+  const rated = r ? r.teams.findIndex(x => x.team === t) : -1;
+  const rating = rated >= 0 ? r.teams[rated] : null;
+  const rec = teamRecord(t);
+  const facts = [
+    rating ? `Point rating <b>${signed(rating.point, 1)}</b> a game (${rated + 1} of ${r.teams.length}), efficiency rating <b>${signed(rating.efficiency, 1)}</b> per 100 possessions.` : 'No ratings yet.',
+    rec.won + rec.lost ? `<b>${rec.won}-${rec.lost}</b> this season.` : 'No games played yet this season.',
+    odds_ ? `Projected <b>${odds_.projected_wins.toFixed(1)}</b> wins; the playoffs <b>${chance(odds_.playoff_pct)}</b>, the play-in ${chance(odds_.playin_pct)}.` : 'Standings odds not simulated yet.',
+  ];
+  const games = teamGames(t).filter(g => g.status === 'final' || BD.picks[g.id]);
+  const row = g => {
+    const home = g.home === t, opp = home ? g.away : g.home, p = BD.picks[g.id];
+    const played = g.status === 'final' && g.hs !== null && g.hs !== undefined;
+    const score = played ? `${home ? g.hs : g.as}-${home ? g.as : g.hs}` : '';
+    const won = played ? ((home ? g.hs > g.as : g.as > g.hs) ? 'W' : 'L') : '';
+    const graded = p && (p.result === 'correct' || p.result === 'wrong');
+    const tag = graded ? `<span class="graded-tag ${p.result === 'correct' ? 'correct' : 'incorrect'}">${p.result === 'correct' ? 'Correct' : 'Missed'}</span>` : (p ? 'Not final' : '');
+    return `<tr><td>${FMT_MONTHDAY.format(dayDate(g.day))}</td><td>${home ? 'vs' : 'at'} ${escapeHtml(opp)}</td><td>${won} ${score}</td><td>${p ? escapeHtml(p.pick) : 'No pick'}</td><td>${tag}</td></tr>`;
+  };
+  el.innerHTML = `<div class="fav-title"><h2 class="section-title">${escapeHtml(clubName(t))}</h2>${favStar('nba', t, escapeHtml(clubName(t)))}</div><p class="nba-lede">${facts.join(' ')}</p>
+    ${games.length ? `<div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">${escapeHtml(clubName(t))}: games so far</caption>
+    <thead><tr><th scope="col">Date</th><th scope="col">Opponent</th><th scope="col">Result</th><th scope="col">Pick</th><th scope="col">Graded</th></tr></thead>
+    <tbody>${games.map(row).join('')}</tbody></table></div>` : stateHtml('waiting', 'No games played yet', '')}`;
+}
+
+/* ---------- what's changed (Stage 104 item 2) ----------
+   As the NHL's page: src/sports/nba/pages/changes.json, newest first. */
+function renderChanges(){
+  const el = document.getElementById('changes-body');
+  el.innerHTML = (DATA.changes || []).map(c => `<div class="nba-change"><span class="nba-change-date">${escapeHtml(c.date)}</span><h3>${escapeHtml(c.title)}</h3><p class="nba-lede">${escapeHtml(c.text)}</p></div>`).join('')
+    || stateHtml('waiting', 'Nothing recorded yet', '');
 }
 
 /* ---------- pages, theme ----------
@@ -686,7 +821,7 @@ function renderReliability(){
    bottom bar, so there is no More sheet. */
 const BASE_TITLE = document.title;
 /* The pages the phone nav keeps under More (Stage 77 item 22), as the NHL's does. */
-const OVERFLOW_PAGES = ['method', 'reliability'];
+const OVERFLOW_PAGES = ['teams', 'modellab', 'method', 'reliability', 'changes'];
 function showPage(name, opts){
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
   document.querySelectorAll('[data-page]').forEach(b => {
@@ -759,9 +894,14 @@ themeLabel();
 renderBoard();
 /* Stage 80 item 53: a star redraws the board with its team's games first. */
 installFavStars(renderBoard);
+renderStandings();
+renderRatings();
+renderTeams();
+renderAccuracy();
 renderModelLab();
 renderMethod();
 renderReliability();
+renderChanges();
 /* Stage 76 item 7: #board/<day>. The bare address is the board as it
    opened (this week, today or its first day with games). */
 const HOME_WEEK = currentWeek, HOME_DAY = currentDay;

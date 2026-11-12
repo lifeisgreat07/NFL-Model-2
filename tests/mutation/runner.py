@@ -103,9 +103,8 @@ def _run_tests(test_path):
 
 def run_case(case):
     """Apply one mutation, run its tests, restore. Never leaves the tree dirty."""
-    target = REPO_ROOT / case['target']
-    original = target.read_bytes()
-
+    # The anchor first: a case still naming a file that was split into parts
+    # (corpus.SPLIT) and matching no single part has no file of its own to read.
     try:
         count, find, nl = anchor_occurrences(case)
     except CorpusError as e:
@@ -118,6 +117,8 @@ def run_case(case):
                        f"expected exactly 1 -- this case is testing nothing"),
             'caught_by': set(),
         }
+    target = REPO_ROOT / case['target']
+    original = target.read_bytes()
 
     replace = case['replace'].encode('utf-8').replace(b'\n', nl)
     try:

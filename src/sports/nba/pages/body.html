@@ -25,11 +25,16 @@
   <nav class="side-nav" aria-label="Main navigation">
     <div class="nav-group-label">This Week</div>
     <button class="nav-btn active" data-page="board" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Day Board</button>
+    <button class="nav-btn" data-page="standings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Standings</button>
+    <button class="nav-btn" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>Power Ratings</button>
+    <button class="nav-btn" data-page="teams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/></svg>Teams</button>
     <div class="nav-group-label">Track Record</div>
+    <button class="nav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg>Season Accuracy</button>
     <button class="nav-btn" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg>Model Lab</button>
     <div class="nav-group-label">How It Was Built</div>
     <button class="nav-btn" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg>Methodology</button>
     <button class="nav-btn" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg>Checking the AI&#39;s work</button>
+    <button class="nav-btn" data-page="changes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>What&#39;s Changed</button>
   </nav>
   <div class="sidebar-foot">
     <!-- Stage 80 item 57 (the audit's F10, F11): the Settings sheet; shown once the site build has put it on the page (src/core/sheet.js). -->
@@ -105,6 +110,43 @@
     </div>
   </section>
 
+  <section class="page" id="page-standings">
+    <div class="page-head"><div>
+      <div class="page-eyebrow">This Week</div>
+      <h2>Standings</h2>
+      <div class="desc">Each club&#39;s chances of the playoffs and the play-in, from the rest of the season simulated.</div>
+    </div></div>
+    <div class="nba-body" id="standings-body"></div>
+  </section>
+
+  <section class="page" id="page-ratings">
+    <div class="page-head"><div>
+      <div class="page-eyebrow">This Week</div>
+      <h2>Power Ratings</h2>
+      <div class="desc">The team ratings Model A reads, as they stand today.</div>
+    </div></div>
+    <div class="nba-body" id="ratings-body"></div>
+  </section>
+
+  <section class="page" id="page-teams">
+    <div class="page-head"><div>
+      <div class="page-eyebrow">This Week</div>
+      <h2>Teams</h2>
+      <div class="desc">One club at a time: its ratings, its record, its playoff chances and every game of its season so far.</div>
+    </div></div>
+    <div class="filter-row"><label class="nba-team-label" for="team-select">Club</label> <select id="team-select" class="nba-team-select"></select></div>
+    <div class="nba-body" id="teams-body"></div>
+  </section>
+
+  <section class="page" id="page-accuracy">
+    <div class="page-head"><div>
+      <div class="page-eyebrow">Track Record</div>
+      <h2>Season Accuracy</h2>
+      <div class="desc">Every pick saved before tip-off, graded once the game is final.</div>
+    </div></div>
+    <div class="nba-body" id="accuracy-body"></div>
+  </section>
+
   <section class="page" id="page-modellab">
     <div class="page-head"><div>
       <div class="page-eyebrow">Track Record</div>
@@ -131,12 +173,23 @@
     </div></div>
     <div class="nba-body" id="reliability-body"></div>
   </section>
+
+  <section class="page" id="page-changes">
+    <div class="page-head"><div>
+      <div class="page-eyebrow">How It Was Built</div>
+      <h2>What&#39;s Changed</h2>
+      <div class="desc">Every change to how the NBA&#39;s picks are made, newest first.</div>
+    </div></div>
+    <div class="nba-body" id="changes-body"></div>
+  </section>
 </main>
 
 <nav class="bottom-nav" id="bottom-nav" tabindex="-1" aria-label="Mobile navigation">
   <div class="bottom-nav-row">
     <button class="bnav-btn active" data-page="board" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span class="bnav-label">Board</span></button>
-    <button class="bnav-btn" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span class="bnav-label">Model Lab</span></button>
+    <button class="bnav-btn" data-page="standings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="bnav-label">Standings</span></button>
+    <button class="bnav-btn" data-page="ratings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 20V10M12 20V4M20 20v-7"/></svg><span class="bnav-label">Ratings</span></button>
+    <button class="bnav-btn" data-page="accuracy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18M7 15l4-6 4 3 4-8"/></svg><span class="bnav-label">Accuracy</span></button>
     <button class="bnav-btn" id="bnav-more-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg><span class="bnav-label">More</span></button>
   </div>
 </nav>
@@ -146,8 +199,11 @@
 <div id="bnav-more-sheet" class="bnav-more-sheet" inert>
   <button type="button" class="bnav-more-close" aria-label="Close the menu"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   <div class="bnav-more-sheet-inner">
+    <button class="bnav-more-item" data-page="teams"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/></svg><span>Teams</span></button>
+    <button class="bnav-more-item" data-page="modellab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-6 10a2 2 0 0 0 2 3h14a2 2 0 0 0 2-3l-6-10V2"/><path d="M9 2h6M6 15h12"/></svg><span>Model Lab</span></button>
     <button class="bnav-more-item" data-page="method"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span>Methodology</span></button>
     <button class="bnav-more-item" data-page="reliability"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><path d="M12 3l8 4v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V7l8-4z"/></svg><span>Checking the AI&#39;s work</span></button>
+    <button class="bnav-more-item" data-page="changes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>What&#39;s Changed</span></button>
     <button type="button" class="bnav-more-item" data-settings-open hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span>Settings</span></button>
   </div>
 </div>

@@ -11,7 +11,7 @@
     },
     {
       "id": "top-bar-theme-button-inert",
-      "target": "src/dashboard/app.js",
+      "target": "src/dashboard/app_board.js",
       "why": "the bar's button renders and does nothing: only the sidebar's button is wired, and the sidebar is hidden on the phone where the bar's button is the only one",
       "find": "document.querySelectorAll('#theme-toggle, .topbar-theme').forEach(btn => btn.addEventListener('click'",
       "replace": "document.querySelectorAll('#theme-toggle').forEach(btn => btn.addEventListener('click'",

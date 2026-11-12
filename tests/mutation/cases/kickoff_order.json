@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "kickoff-default-reverts-to-confidence",
+      "target": "src/dashboard/app_board.js",
       "why": "the board opens by confidence again. This is a product decision reverting itself silently: the page still works, every card renders, and the only symptom is that the reader has to re-sort on every visit to find out what is on next -- which is the complaint the change was made to answer.",
       "find": "let currentSort = 'chronological';",
       "replace": "let currentSort = 'confidence';",
@@ -19,6 +20,7 @@
     },
     {
       "id": "kickoff-undated-games-lead-instead-of-sinking",
+      "target": "src/dashboard/app_board.js",
       "why": "a game with no kickoff sorts to the FRONT rather than the back. An unknown kickoff is unknown, not midnight -- and this is not hypothetical: it is what every saved week looked like before the fields existed, and what a week looks like again if the schedule stops supplying them. The visible result is a board led by whichever games the pipeline knows least about.",
       "find": "  if(ka === null) return 1;\n  if(kb === null) return -1;",
       "replace": "  if(ka === null) return -1;\n  if(kb === null) return 1;",
@@ -26,6 +28,7 @@
     },
     {
       "id": "kickoff-shared-slot-loses-its-tiebreak",
+      "target": "src/dashboard/app_board.js",
       "why": "games sharing a kickoff fall back to file order. Thirteen of week 1's sixteen games start at the same minute, so this leaves most of the board unsorted while the control claims an order -- the sort appears to have run and to have done almost nothing, which reads as a data problem rather than a code one and sends the next person looking in the wrong place.",
       "find": "  if(ka !== kb) return ka < kb ? -1 : 1;",
       "replace": "  if(ka !== kb) return ka < kb ? -1 : 1;\n  return 0;",
@@ -33,6 +36,7 @@
     },
     {
       "id": "kickoff-key-becomes-a-date-and-picks-up-a-timezone",
+      "target": "src/dashboard/app_board.js",
       "why": "the string key becomes a Date. The stored time is EASTERN, and a Date built from it is interpreted in the runtime's zone -- so the same board orders itself differently in Los Angeles than in New York, and every card still looks perfectly correct. It is the sign-error shape: the output is plausible, nobody can see the defect on the page, and the only tell is that two readers disagree about what is on next.",
       "find": "  return g.gameday ? `${g.gameday}T${g.gametime_et || '00:00'}` : null;",
       "replace": "  return g.gameday ? new Date(`${g.gameday}T${g.gametime_et || '00:00'}`).getTime() : null;",

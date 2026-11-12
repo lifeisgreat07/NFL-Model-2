@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "tv-pill-outlives-the-game",
+      "target": "src/dashboard/app_board.js",
       "why": "the channel stays on a final or graded card, where 'where to watch' is history.",
       "find": "  if(!g.tv || g.graded || g.status === 'final' || g.status === 'cancelled') return '';",
       "replace": "  if(!g.tv) return '';",
@@ -11,6 +12,7 @@
     },
     {
       "id": "tv-regional-note-on-every-week",
+      "target": "src/dashboard/app_board.js",
       "why": "the regional line shows whenever any channel is on screen, so a week of national games says its games are regional.",
       "find": "  return games.some(g => cardTvPill(g) !== '' && g.tv_regional);",
       "replace": "  return games.some(g => cardTvPill(g) !== '');",
@@ -34,6 +36,7 @@
     },
     {
       "id": "qb-line-flips-sides",
+      "target": "src/dashboard/app_board.js",
       "why": "the home quarterback is named first under an away-first matchup header, pairing each name with the wrong team.",
       "find": "  return `Quarterbacks: ${side(g.away, g.away_qb, g.away_qb_basis)} \u00b7 ${side(g.home, g.home_qb, g.home_qb_basis)}`;",
       "replace": "  return `Quarterbacks: ${side(g.away, g.home_qb, g.home_qb_basis)} \u00b7 ${side(g.home, g.away_qb, g.away_qb_basis)}`;",
@@ -41,6 +44,7 @@
     },
     {
       "id": "qb-fallback-not-said",
+      "target": "src/dashboard/app_board.js",
       "why": "a quarterback the pick only assumed from last game reads as the announced starter.",
       "find": "      + (basis === 'last_game' ? ' (assumed: last game&#39;s starter)' : '');",
       "replace": "      + '';",
@@ -56,6 +60,7 @@
     },
     {
       "id": "news-picks-qb-not-first",
+      "target": "src/dashboard/app_board.js",
       "why": "the pick's own quarterback listed doubtful is reported as an ordinary starter, after 'new QB', instead of leading the line.",
       "find": "  if(qbListed) bits.push(`QB ${qb.name} ${qbListed}`);\n  else if",
       "replace": "  if(false) bits.push(`QB ${qb.name} ${qbListed}`);\n  else if",
@@ -63,6 +68,7 @@
     },
     {
       "id": "news-list-grows-past-two",
+      "target": "src/dashboard/app_board.js",
       "why": "every starter is named, so a bad injury week turns the one line into a paragraph.",
       "find": "  if(others.length > 2) bits.push",
       "replace": "  if(others.length > 99) bits.push",
@@ -70,6 +76,7 @@
     },
     {
       "id": "news-quiet-game-gets-a-label",
+      "target": "src/dashboard/app_board.js",
       "why": "a game with nothing to report still draws 'Team news' and nothing after it.",
       "find": "  return parts.length ? `<b>Team news</b> ${parts.map(escapeHtml).join(' \u00b7 ')}` : '';",
       "replace": "  return `<b>Team news</b> ${parts.map(escapeHtml).join(' \u00b7 ')}`;",
@@ -77,6 +84,7 @@
     },
     {
       "id": "news-outlives-the-game",
+      "target": "src/dashboard/app_board.js",
       "why": "injury news stays on a final card, where it no longer bears on anything.",
       "find": "  if(!news || !news.teams || g.graded || g.status === 'final' || g.status === 'cancelled') return '';",
       "replace": "  if(!news || !news.teams) return '';",
@@ -84,6 +92,7 @@
     },
     {
       "id": "news-names-not-escaped",
+      "target": "src/dashboard/app_board.js",
       "why": "a name from the injury report is written into the page as markup.",
       "find": "${parts.map(escapeHtml).join(' \u00b7 ')}` : '';",
       "replace": "${parts.join(' \u00b7 ')}` : '';",

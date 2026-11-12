@@ -28,13 +28,14 @@ from pathlib import Path
 
 import pytest
 
+from src.core.template_parts import APP_SCRIPT
 from src.site import build
 from tests.js_source import function_source
 from tests.optional import require_tool
 
 ROOT = Path(__file__).resolve().parents[1]
 SCORES = (ROOT / 'src' / 'core' / 'scores.js').read_text(encoding='utf-8')
-APP = (ROOT / 'src' / 'dashboard' / 'app.js').read_text(encoding='utf-8')
+APP = APP_SCRIPT.read_text(encoding='utf-8')
 NHL = (ROOT / 'src' / 'sports' / 'nhl' / 'pages' / 'nhl.js').read_text(encoding='utf-8')
 NBA = (ROOT / 'src' / 'sports' / 'nba' / 'pages' / 'nba.js').read_text(encoding='utf-8')
 CSS = (ROOT / 'src' / 'dashboard' / 'styles.css').read_text(encoding='utf-8')

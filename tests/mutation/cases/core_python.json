@@ -6,7 +6,7 @@
    "id": "core-python-copy-creeps-back",
    "why": "the NBA's look_baseline is pasted into the NHL's drift.py byte for byte, a second copy of the same code instead of one in src/core",
    "find": "\n\ndef looks(",
-   "replace": "\n\ndef look_baseline(spec: dict[str, Any], baselines: list[float] | None, n: int) -> float:\n    \"\"\"The baseline a look at n picks is held to: the mean of those n picks'\n    own baselines, or the registered baseline when none are given.\"\"\"\n    if baselines is None:\n        return float(spec['baseline']['value'])\n    return float(sum(baselines[:n]) / n)\n\n\ndef looks(",
+   "replace": "\n\ndef look_baseline(spec: dict[str, Any], baselines: list[float] | None, n: int) -> float:\n    \"\"\"The baseline a look at n picks is held to: the mean of those n picks'\n    own baselines, or the registered baseline when none are given. Since\n    Stage 95 item 31 each is its model's figure over a season's first n games\n    (`look_value`); a pick's whole-season figure says which model it ran.\"\"\"\n    if baselines is None:\n        return look_value(spec, 'baseline', n)\n    by = {float(spec['baseline']['value']): look_value(spec, 'baseline', n),\n          float(spec['baseline_no_availability']['value']): look_value(spec, 'baseline_no_availability', n)}\n    return float(sum(by[b] for b in baselines[:n]) / n)\n\n\ndef looks(",
    "expect_caught_by": "test_no_function_is_copied_between_the_sports"
   },
   {

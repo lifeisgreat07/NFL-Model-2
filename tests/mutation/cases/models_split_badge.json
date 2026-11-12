@@ -4,6 +4,7 @@
   "cases": [
     {
       "id": "models-split-ignores-which-team",
+      "target": "src/dashboard/app_board.js",
       "why": "two models that both picked a team count as split whether or not it is the same team, so nearly every card says \"Models split\".",
       "find": "  return !!(a && b && a.team && b.team && a.team !== b.team);\n",
       "replace": "  return !!(a && b && a.team && b.team);\n",
@@ -11,6 +12,7 @@
     },
     {
       "id": "models-split-counts-an-even-call",
+      "target": "src/dashboard/app_board.js",
       "why": "a model within the even band -- one that has picked nobody -- counts as disagreeing with a model that picked a team.",
       "find": "  return !!(a && b && a.team && b.team && a.team !== b.team);\n",
       "replace": "  return !!(a && b && a.team !== b.team);\n",
@@ -18,6 +20,7 @@
     },
     {
       "id": "models-split-badge-back-to-a-gap",
+      "target": "src/dashboard/app_board.js",
       "why": "the badge goes back to a 12-point gap, and TEN@NYG reads \"Models agree\" above the line saying the models picked different teams.",
       "find": "(modelsSplit(g) ? 'Models split' : 'Models agree')",
       "replace": "(Math.abs(g.fbA_home - g.mktB_home) >= 12 ? 'Models split' : 'Models agree')",
@@ -25,6 +28,7 @@
     },
     {
       "id": "models-split-filter-back-to-a-gap",
+      "target": "src/dashboard/app_board.js",
       "why": "the Model Disagreement filter goes back to a 12-point gap and hides cards whose badge says the models split.",
       "find": "if(currentFilter==='divergent') return modelsSplit(g);",
       "replace": "if(currentFilter==='divergent') return Math.abs(g.fbA_home - g.mktB_home) >= 12;",

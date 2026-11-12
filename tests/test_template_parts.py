@@ -41,7 +41,8 @@ NODE = shutil.which('node')
 needs_node = pytest.mark.skipif(
     NODE is None and not in_ci(), reason="node not on PATH -- the JavaScript join cannot be executed")
 
-PARTS = ['styles.css', 'body.html', 'app.js']
+#: The script is six parts since Stage 87 item 4 (tests/test_app_parts.py).
+PARTS = ['styles.css', 'body.html', 'app_controls.js', 'app_ratings.js', 'app_board.js', 'app_accuracy.js', 'app_team.js', 'app_pages.js']
 
 
 def shell():
@@ -64,7 +65,8 @@ def test_every_file_in_the_directory_is_on_the_page():
 @pytest.mark.parametrize('before,name,after', [
     ('<style>\n', 'styles.css', '</style>\n'),
     ('</script>\n', 'body.html', '<script>\n'),
-    ('<script>\n', 'app.js', '</script>\n'),
+    ('<script>\n', 'app_controls.js', '{% include "app_ratings.js" %}\n'),
+    ('{% include "app_team.js" %}\n', 'app_pages.js', '</script>\n'),
 ])
 def test_each_part_sits_where_its_name_says(before, name, after):
     line = f'{{% include "{name}" %}}\n'
@@ -77,7 +79,7 @@ def test_the_stylesheet_is_the_first_style_and_the_script_the_last():
     ones that read "the script" take the last <script>."""
     s = shell()
     assert s.index('<style>\n{% include "styles.css" %}') == s.index('<style')
-    assert s.rindex('<script>\n{% include "app.js" %}') == s.rindex('<script')
+    assert s.rindex('<script>\n{% include "app_controls.js" %}') == s.rindex('<script')
 
 
 def test_the_joined_template_is_one_page():

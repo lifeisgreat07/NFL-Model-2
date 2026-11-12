@@ -4,6 +4,7 @@
  "cases": [
   {
    "id": "filtered-note-never-drawn",
+   "target": "src/dashboard/app_board.js",
    "why": "a phone with a filter on hides most of the week with no word of it again (Stage 77 item 31, N6).",
    "find": "  showFilteredNote(grid);\n",
    "replace": "",
@@ -11,6 +12,7 @@
   },
   {
    "id": "filtered-note-on-all-games",
+   "target": "src/dashboard/app_board.js",
    "why": "\"Filtered: All Games\" shows when nothing is filtered.",
    "find": "  if(currentFilter === 'all') return;\n  const chip",
    "replace": "  const chip",
@@ -18,6 +20,7 @@
   },
   {
    "id": "filtered-note-clear-dead",
+   "target": "src/dashboard/app_board.js",
    "why": "\"clear\" does nothing.",
    "find": "    if(all) all.click();\n  });\n}",
    "replace": "  });\n}",
@@ -25,6 +28,7 @@
   },
   {
    "id": "filtered-note-unescaped",
+   "target": "src/dashboard/app_board.js",
    "why": "the chip's label is written into the page unescaped.",
    "find": "Filtered: ${escapeHtml(label)} &middot;",
    "replace": "Filtered: ${label} &middot;",
