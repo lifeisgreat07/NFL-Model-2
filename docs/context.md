@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-12 (session 1112 wrap-up: #699, #700, #701, #703 and #704 merged)
+Last updated: 2026-11-12 (session 1112 wrap-up: #699, #700, #701, #703, #704 and #705 merged)
 
 ---
 
@@ -28,16 +28,15 @@ src/sports/nba pass `mypy --strict`; **a new test file needs a line in `tests/su
 missing node by hand**: `require_tool('node')`, or a `skipif(... and not in_ci())` (#678); **every mutation case names its
 real file**: the app.js parts, never `src/dashboard/app.js` (Stage 87 item 4, guarded by `test_no_mutation_case_names_the_whole_file_any_more`).
 
-**Single next action:** read #705's Booth audit and merge on the rule; then open the v2 registration (`s95-v2-registry`) the same way (scoped prep, body, preflight, audit, merge), before any v2 fit.
+**Single next action:** open the v2 registration (`s95-v2-registry`) the same way (scoped prep, body, preflight, audit, merge), before any v2 fit.
 
-**The order of work (Mark, 2026-11-11):** Stage 95 item 32, then the v2 shadow (registration first); 102; 97-101 (MLB); 103 (`docs/history/12-mlb-and-more-2026-11-11.md`). Stage 104 and Stage 95 items 31, 33, 34 are done.
+**The order of work (Mark, 2026-11-11):** the v2 shadow (registration first); 102; 97-101 (MLB); 103 (`docs/history/12-mlb-and-more-2026-11-11.md`). Stage 104 and Stage 95 items 31 to 34 are done.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| Stage 95 item 32: `s95-day-blocks`, **#705** (b7aa1cfa) | Open; suite 13100 and all 116 scoped cases CAUGHT at that head | Booth; merge on 0 discrepancies and every check green |
-| v2 shadow registration: `s95-v2-registry` (47e8acca, unpushed) | Built; two item 29 rules corrected before opening and disclosed (NBA short boxes allow whole-minute rounding; NHL three-way prices get their own band); body and ids in the session archive | Item 32 merging; open before any v2 fit. Then the NBA v2 code (`s95-v2-nba-backtest`, b63704dc, not run on real games): run it only after the registration merges. NHL v2 not started (its history has no neutral-site field for item 28) |
+| v2 shadow registration: `s95-v2-registry` (47e8acca, unpushed) | Built; two item 29 rules corrected before opening and disclosed (NBA short boxes allow whole-minute rounding; NHL three-way prices get their own band); body and ids in the session archive | Open it next, before any v2 fit. Then the NBA v2 code (`s95-v2-nba-backtest`, b63704dc, not run on real games): run it only after the registration merges. NHL v2 not started (its history has no neutral-site field for item 28) |
 | Stage 102 league logos: `s102-league-marks` (2814a0e1, unpushed) | Built: option B with sidebar fit 2 (Mark, 2026-11-11), tests/browser/check_switcher_fit.py; the Audit Response Log entry's text is in the session archive for Mark | The v2 registration merging (Mark's order) |
 | Stage 97 item 1: `s97-mlb-probe` (e3fa12b1) | Built: src/sports/mlb/data_probe.py and mlb-data-probe.yml; the PR's own check answers whether a runner reads the Stats API. Items 2-7's draft doc is in the session archive | Stage 102 merging |
 | `fix-home-theme-button`: tests/browser/check_theme.py presses the home page's theme button | Not opened | Rebase on main keeping only check_theme.py; NEEDS HUMAN REVIEW by nature, so Mark's call |
