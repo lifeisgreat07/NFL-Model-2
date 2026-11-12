@@ -24,6 +24,13 @@
       "expect_caught_by": "test_each_sport_registers_its_own_audit_items"
     },
     {
+      "id": "v2-doubled-slate-guessed",
+      "why": "a game ESPN's record cannot place is put on a date no source gives, instead of being dropped and listed",
+      "find": "is dropped from v2's history, with every other game that shares the doubling, and the dropped ids are written into v2's results; no date is guessed.",
+      "replace": "is placed on the day before.",
+      "expect_caught_by": "test_a_slate_still_doubled_is_dropped_and_listed_not_guessed"
+    },
+    {
       "id": "v2-nhl-one-price-band",
       "target": "experiments/nhl/stage95_v2/registry.json",
       "why": "the NHL's three-way regulation prices are held to the two-way band, so every price before 2024-25 is dropped and Model B loses four seasons of market",
