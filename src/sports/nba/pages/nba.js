@@ -703,6 +703,26 @@ function renderReliability(){
     <p class="nba-lede">A separate auditing agent, Booth, re-ran the confirmation on a Linux machine before the results were merged (PR #319): it matched the committed file to within 1e-12 though not bit for bit (its largest difference was 1.6e-16), and every published figure, interval and label agreed. Booth did not re-run the tuning grid; that the full backtest, tuning included, reproduces both files byte for byte was checked only on the Windows machine that wrote them.</p>`;
 }
 
+/* ---------- standings (Stage 104 item 4) ----------
+   From results/nba/standings_<season>.json (src/sports/nba/standings.py): each
+   conference's clubs by projected wins, with the share of simulated seasons
+   in the top six, in the play-in (seeds 7 to 10) and in the playoffs. */
+function chance(x){ return x <= 0 ? '0%' : x >= 1 ? '100%' : x < 0.01 ? '<1%' : x > 0.99 ? '>99%' : pct(x); }
+function renderStandings(){
+  const s = BD.standings, el = document.getElementById('standings-body');
+  if(!s){ el.innerHTML = stateHtml('waiting', 'Not simulated yet', 'The daily run simulates the season in every run that saves picks.'); return; }
+  const [lo, hi] = s.games_listed;
+  const listed = hi < 82 ? ` The schedule lists ${lo === hi ? lo : `${lo} to ${hi}`} of each club&#39;s 82 games so far: the last two are set by the NBA Cup and are counted once the league lists them.` : '';
+  const head = `<p class="nba-lede">As of ${escapeHtml(s.as_of)}: the rest of the regular season played out ${s.simulations.toLocaleString('en-US')} times from Model A without its availability term, with today&#39;s ratings held fixed, then the play-in. Each conference&#39;s top six make the playoffs; seeds 7 to 10 play in for the last two places. Holding today&#39;s ratings fixed makes these odds surer than they should be, most of all early in the season: real clubs change, and 0% or 100% means only that no simulated season went the other way.${listed}</p>`;
+  const table = conf => {
+    const rows = s.teams.filter(t => t.conference === conf).sort((a, b) => b.projected_wins - a.projected_wins);
+    return `<h2 class="section-title">${conf === 'East' ? 'Eastern' : 'Western'} Conference</h2><div class="table-wrap"><table class="metrics-table nba-table"><caption class="visually-hidden">${conf}</caption>
+      <thead><tr><th scope="col">Club</th><th scope="col" class="num">Record</th><th scope="col" class="num">Projected wins</th><th scope="col" class="num">Top six</th><th scope="col" class="num">Play-in</th><th scope="col" class="num">Playoffs</th></tr></thead>
+      <tbody>${rows.map(t => `<tr><th scope="row">${escapeHtml(clubName(t.team))}</th><td class="num">${t.wins_now}-${t.losses_now}</td><td class="num">${t.projected_wins.toFixed(1)}</td><td class="num">${chance(t.top6_pct)}</td><td class="num">${chance(t.playin_pct)}</td><td class="num">${chance(t.playoff_pct)}</td></tr>`).join('')}</tbody></table></div>`;
+  };
+  el.innerHTML = head + ['East', 'West'].map(table).join('');
+}
+
 /* ---------- power ratings (Stage 104 item 3) ----------
    The NHL's page (src/sports/nhl/pages/nhl.js) on the NBA's two ratings, from
    results/nba/ratings_<season>.json, which the daily run writes: a club's row
@@ -761,13 +781,14 @@ function renderTeams(){
   }
   select.value = currentTeam;
   const t = currentTeam, el = document.getElementById('teams-body');
-  const r = BD.ratings;
+  const r = BD.ratings, odds_ = BD.standings ? BD.standings.teams.find(x => x.team === t) : null;
   const rated = r ? r.teams.findIndex(x => x.team === t) : -1;
   const rating = rated >= 0 ? r.teams[rated] : null;
   const rec = teamRecord(t);
   const facts = [
     rating ? `Point rating <b>${signed(rating.point, 1)}</b> a game (${rated + 1} of ${r.teams.length}), efficiency rating <b>${signed(rating.efficiency, 1)}</b> per 100 possessions.` : 'No ratings yet.',
     rec.won + rec.lost ? `<b>${rec.won}-${rec.lost}</b> this season.` : 'No games played yet this season.',
+    odds_ ? `Projected <b>${odds_.projected_wins.toFixed(1)}</b> wins; the playoffs <b>${chance(odds_.playoff_pct)}</b>, the play-in ${chance(odds_.playin_pct)}.` : 'Standings odds not simulated yet.',
   ];
   const games = teamGames(t).filter(g => g.status === 'final' || BD.picks[g.id]);
   const row = g => {
@@ -873,6 +894,7 @@ themeLabel();
 renderBoard();
 /* Stage 80 item 53: a star redraws the board with its team's games first. */
 installFavStars(renderBoard);
+renderStandings();
 renderRatings();
 renderTeams();
 renderAccuracy();

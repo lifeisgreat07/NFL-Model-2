@@ -206,6 +206,7 @@
   "tests/test_nba_schedule.py": "mixed",
   "tests/test_nba_ratings_page.py": "template/JS",
   "tests/test_nba_site.py": "template/JS",
+  "tests/test_nba_standings.py": "isolated behavioural",
   "tests/test_nba_sources_down.py": "isolated behavioural",
   "tests/test_nba_stage61_registry.py": "workflow/docs/tests-of-tests",
   "tests/test_nba_stage61_results.py": "isolated behavioural",
