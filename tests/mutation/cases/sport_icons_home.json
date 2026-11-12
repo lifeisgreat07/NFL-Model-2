@@ -5,7 +5,7 @@
     {
       "id": "home-card-drops-the-icon",
       "why": "the cards go back to bare names while every page's top left shows its sport's icon.",
-      "find": "<span class=\"home-sport\">${icon(sport)}${esc(name)}</span>",
+      "find": "<span class=\"home-sport\">${leagueMark(sport)}${esc(name)}</span>",
       "replace": "<span class=\"home-sport\">${esc(name)}</span>",
       "expect_caught_by": "test_the_card_puts_the_icon_beside_the_sport_name"
     },

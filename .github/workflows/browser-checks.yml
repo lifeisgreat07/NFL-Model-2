@@ -210,6 +210,16 @@ jobs:
         timeout-minutes: 30
         run: python tests/browser/check_side_column.py "$RUNNER_TEMP/states/nba.html" "$RUNNER_TEMP/states/nhl.html"
 
+      # Stage 102: every sport page's sidebar switcher fits its four pills with
+      # the league marks in them, at 1080, 1280 and 1440 px, both themes.
+      - name: Prove the switcher fit check can fail
+        timeout-minutes: 30
+        run: python tests/browser/check_switcher_fit.py --self-test --tmp "$RUNNER_TEMP/fit"
+
+      - name: Check the sport switcher fits with the league marks
+        timeout-minutes: 30
+        run: python tests/browser/check_switcher_fit.py index.html "$RUNNER_TEMP/states/nhl.html" "$RUNNER_TEMP/states/nba.html"
+
       # Stage 79 item 46: the NHL's Accuracy and the NBA's Checking the AI's
       # work draw the race, the trend and the calibration diagram.
       - name: Prove the accuracy check can fail

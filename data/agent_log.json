@@ -1,14 +1,14 @@
 {
-  "generated_utc": "2026-11-12T17:50:18Z",
+  "generated_utc": "2026-11-12T18:48:03Z",
   "note": "Every audit Booth has posted. Superseded runs are kept and flagged rather than deleted -- only the newest audit per pull request counts toward the totals. Reports predating the machine-readable verdict block are recorded as such.",
   "summary": {
-    "audits_total": 747,
+    "audits_total": 749,
     "audits_superseded": 142,
-    "pull_requests_audited": 605,
+    "pull_requests_audited": 607,
     "audits_without_a_verdict_block": 14,
-    "claims_checked": 4497,
+    "claims_checked": 4509,
     "discrepancies_found": 35,
-    "unverifiable": 471,
+    "unverifiable": 473,
     "pull_requests_with_a_discrepancy": 24,
     "reports_disagreeing_with_themselves": 41
   },
@@ -13206,9 +13206,78 @@
       "implicated": [],
       "inconsistencies": [],
       "superseded": false
+    },
+    {
+      "pr": 708,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/708#issuecomment-6832316401",
+      "posted_utc": "2026-11-12T18:27:14Z",
+      "head": "7fec9f1",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 6,
+      "confirmed": 4,
+      "discrepancies": 0,
+      "unverifiable": 2,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
+    },
+    {
+      "pr": 710,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/710#issuecomment-6832760403",
+      "posted_utc": "2026-11-12T18:46:28Z",
+      "head": "a840b6d",
+      "records_head": true,
+      "has_verdict_block": true,
+      "block_error": null,
+      "claims": 6,
+      "confirmed": 6,
+      "discrepancies": 0,
+      "unverifiable": 0,
+      "overall": "SAFE TO MERGE",
+      "implicated": [],
+      "inconsistencies": [],
+      "superseded": false
     }
   ],
   "recent": [
+    {
+      "agent": "Booth",
+      "pr": 710,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/710#issuecomment-6832760403",
+      "when": "2026-11-12T18:46:28Z",
+      "says": "SAFE TO MERGE: 6 of 6 claims confirmed, 0 wrong, 0 unverifiable"
+    },
+    {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43281843139",
+      "when": "2026-11-12T18:37:54Z",
+      "says": "found nothing to fix in the description"
+    },
+    {
+      "agent": "Booth",
+      "pr": 708,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/708#issuecomment-6832316401",
+      "when": "2026-11-12T18:27:14Z",
+      "says": "SAFE TO MERGE: 4 of 6 claims confirmed, 0 wrong, 2 unverifiable"
+    },
+    {
+      "pr": 708,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/708#issuecomment-6832180646",
+      "when": "2026-11-12T18:21:36Z",
+      "agent": "Spotter",
+      "says": "#### What changed **Home** (`home-1440x900-dark-head` vs `home-1440x900-dark-base`, and the three other viewport/theme pairs) - Head adds a small disclaimer at the foot of the page: \"Sportalytics is\u2026"
+    },
+    {
+      "agent": "Scout",
+      "pr": null,
+      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43278468675",
+      "when": "2026-11-12T18:18:35Z",
+      "says": "found nothing to fix in the description"
+    },
     {
       "agent": "Booth",
       "pr": 707,
@@ -13285,41 +13354,6 @@
       "when": "2026-11-12T04:00:44Z",
       "agent": "Spotter",
       "says": "#### What changed I opened all 16 pictures (NBA and NHL, 390x844 and 1440x900, light and dark, head and base)."
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43151668968",
-      "when": "2026-11-12T03:58:10Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Booth",
-      "pr": 701,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/701#issuecomment-6813763418",
-      "when": "2026-11-12T03:45:05Z",
-      "says": "SAFE TO MERGE: 6 of 6 claims confirmed, 0 wrong, 0 unverifiable"
-    },
-    {
-      "agent": "Scout",
-      "pr": null,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/actions/runs/43149308172",
-      "when": "2026-11-12T03:36:10Z",
-      "says": "found nothing to fix in the description"
-    },
-    {
-      "agent": "Booth",
-      "pr": 700,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/700#issuecomment-6813104651",
-      "when": "2026-11-12T03:02:13Z",
-      "says": "NEEDS HUMAN REVIEW: 4 of 5 claims confirmed, 0 wrong, 1 unverifiable"
-    },
-    {
-      "pr": 700,
-      "url": "https://github.com/lifeisgreat07/NFL-Model-2/pull/700#issuecomment-6813056039",
-      "when": "2026-11-12T02:58:59Z",
-      "agent": "Spotter",
-      "says": "#### What changed Only the NBA page was rendered (`nba`), at both sizes and both themes."
     }
   ]
 }

@@ -17,7 +17,7 @@
   "27_history": "A game in which either team is not one of the league's 30 codes (the Rising Stars game, an exhibition filed as regular season) is dropped from the history before anything is computed.",
   "28_neutral": "A neutral-site game (ESPN's neutral_site) gets no home edge: the fitted intercept is not added to its forecast. Its row still enters the fit as listed. A declared rule, not a tested win, as the NFL's (Stage 38).",
   "29_ingest": "A price whose two implied probabilities sum to under 1.00 or over 1.20 is marked and not used: the game counts as unpriced for Model B. A box score whose team minutes fall short of 240 (a regulation game) by more than half a minute for each player it lists is marked and not used for minutes or availability: each player's minutes are rounded to whole minutes, so a complete box can sum to a few under 240.",
-  "30_slates": "The 2020-03-01 slate lists GS in two games (401161536 at PHX, 401161543 against WSH). Each game is placed on the date ESPN's own record of that game gives, read when v2's history is built and before anything is fitted; v2's history refuses any slate on which a team still appears twice."
+  "30_slates": "The 2020-03-01 slate lists GS in two games (401161536 at PHX, 401161543 against WSH). Each game is placed on the date ESPN's own record of that game gives, read when v2's history is built and before anything is fitted; A game whose team still appears twice on its slate after that is dropped from v2's history, with every other game that shares the doubling, and the dropped ids are written into v2's results; no date is guessed."
  },
  "measurements": {
   "MV1": "v2 against the registered Model A and Model B on the confirmation seasons, log loss, paired, whole game days. Reported, not decided.",
@@ -45,6 +45,15 @@
   "Item 24's definition is the second of the two Claude sent Mark on 2026-11-11 (the first was to drop the term); Mark chose it the same day (\"Option 2 works\"). MV2 measures the first beside it, so the forward test shows what the term is worth.",
   "Item 29's box-score rule was first written as \"team minutes sum to under 240\". Before this registration was opened and before anything was fitted, a count of the committed history (every season on file, read-only) found that rule would discard 6,750 of 28,648 team box scores, almost all complete boxes whose players' rounded minutes sum to 238 or 239. The rule now allows the rounding: half a minute a listed player. 18 boxes fall short of that, 6 of them the All-Star games item 27 drops anyway. Only the count of boxes was read, no result."
  ],
- "amendments": [],
+ "amendments": [
+  {
+   "date": "2026-11-12",
+   "by": "Claude, under Mark's delegation of this registration's details (2026-11-11)",
+   "entry": "changes.30_slates",
+   "before_any_result": true,
+   "seen": "Written after the first build of v2's NBA history stopped on this rule, before any v2 model was fitted or scored: ESPN's own record (its summary and its scoreboard) puts both 401161536 (GS at PHX, 12:30 UTC, an hour no NBA game starts) and 401161543 (WSH at GS, 01:30 UTC on 03-02) on 2020-03-01 Eastern. No figure of any model had been computed.",
+   "change": "As registered, the history refused the doubled slate, so v2 could not be built at all. The two games (of about 14,300) are now dropped from v2's history and listed, rather than one being placed on a date no source gives."
+  }
+ ],
  "not_in_this_registration": "Any change to the registered models, picks, forward test, drift check or pages. Anything not named under changes."
 }
