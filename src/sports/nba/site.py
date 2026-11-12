@@ -12,8 +12,8 @@ was given; where a game had no price, it says "no price" and why.
 What it reads, all under the NBA's folders (`src.core.sport.sport_paths`):
 
 - `predictions/nba/<season>/*.json`: the saved picks, one per game;
-- `results/nba/schedule_<season>.json`, `graded_<season>.json` and
-  `drift_<season>.json`: what the daily run writes. Absent before its
+- `results/nba/schedule_<season>.json`, `graded_<season>.json`,
+  `drift_<season>.json` and `ratings_<season>.json`: what the daily run writes. Absent before its
   first run, which the board says rather than failing the build;
 - `experiments/nba/stage65/registry.json`: the forward test's rules;
 - `experiments/nba/stage61/registry.json`: the seasons and the level;
@@ -157,6 +157,8 @@ def board(season: int) -> dict[str, Any]:
         'teams': {abbr: {'name': name, 'logo': colours.logo(abbr, 'dark'), 'logo_light': colours.logo(abbr, 'light')}
                   for abbr, name in teams.NAMES.items()},
         'drift': _maybe(PATHS.results / f'drift_{season}.json'),
+        # Stage 104 item 3: the clubs' ratings, for Power Ratings and Teams.
+        'ratings': _maybe(PATHS.results / f'ratings_{season}.json'),
         # Stage 84 item 6: the registered rule, so the page can say where the check stands.
         'drift_rule': _maybe(PATHS.data / 'drift_baseline.json'),
         # Stage 85 item 3: the baseline's season-to-season spread (src/sports/nba/season_spread.py).

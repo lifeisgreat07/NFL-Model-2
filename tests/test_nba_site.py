@@ -82,13 +82,16 @@ def test_the_board_leads_and_the_no_picks_page_is_gone(built: tuple[dict, str]) 
 def test_every_page_is_on_both_menus_and_the_checker_can_open_it(built: tuple[dict, str]) -> None:
     _, html = built
     pages = re.findall(r'<section class="page[^"]*" id="page-([a-z]+)"', html)
-    assert pages == ['board', 'accuracy', 'modellab', 'method', 'reliability', 'changes']
+    assert pages == ['board', 'ratings', 'teams', 'accuracy', 'modellab', 'method', 'reliability', 'changes']
     side = re.findall(r'class="nav-btn[^"]*" data-page="([a-z]+)"', html)
     bottom = re.findall(r'class="bnav-btn[^"]*" data-page="([a-z]+)"', html)
     # Since Stage 77 item 22 the phone nav keeps Methodology and Checking the
     # AI's work under More, as the NHL's and the NFL's do.
     more = re.findall(r'class="bnav-more-item[^"]*" data-page="([a-z]+)"', html)
-    assert side == pages and bottom + more == pages and 'id="bnav-more-btn"' in html
+    # Stage 104 item 3: the bar holds Board, Ratings and Accuracy, as the NHL's
+    # does before its standings; every other page is under More, each once.
+    assert side == pages and sorted(bottom + more) == sorted(pages) and len(bottom + more) == len(pages)
+    assert bottom == ['board', 'ratings', 'accuracy'] and 'id="bnav-more-btn"' in html
     assert 'window.setActivePage = ' in html
 
 
@@ -127,7 +130,8 @@ def test_the_page_uses_the_nbas_own_names(built: tuple[dict, str]) -> None:
     keys = set(re.findall(r'''localStorage\.(?:get|set)Item\('([^']+)''', html))
     # site:cards: compact cards, chosen in the Settings sheet (Stage 80 item 57).
     # site:density: Compact spacing, the same sheet (Stage 80 item 64).
-    assert keys == {'site:theme', 'nba:theme', 'site:cards', 'site:density'}
+    # nba:team: the Teams page's club, as the NHL's nhl:team (Stage 104 item 3).
+    assert keys == {'site:theme', 'nba:theme', 'site:cards', 'site:density', 'nba:team'}
     css = (PAGES / 'nba.css').read_text(encoding='utf-8')
     green = [ln.strip() for ln in css.splitlines() if 'var(--good)' in ln]
     assert green == ['.nba-row-result.right{color:var(--good);}'], 'green means only a pick scored right'
