@@ -24,6 +24,14 @@
       "expect_caught_by": "test_each_sport_registers_its_own_audit_items"
     },
     {
+      "id": "v2-nhl-one-price-band",
+      "target": "experiments/nhl/stage95_v2/registry.json",
+      "why": "the NHL's three-way regulation prices are held to the two-way band, so every price before 2024-25 is dropped and Model B loses four seasons of market",
+      "find": "[0.75, 1.00] for the two sides of the three-way",
+      "replace": "[1.00, 1.20] for the two sides of the three-way",
+      "expect_caught_by": "test_each_sport_registers_its_own_audit_items"
+    },
+    {
       "id": "v2-nhl-grid-not-extended",
       "target": "experiments/nhl/stage95_v2/registry.json",
       "why": "the NHL's grid stops at K 2000, the top Stage 56 already chose, so v2 cannot move it",

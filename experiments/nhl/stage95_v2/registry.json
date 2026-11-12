@@ -15,7 +15,7 @@
  "changes": {
   "35_goalie": "The goalie term's shrinkage K_shots and the half-life H_days are chosen from the grid above, removal included, on the validation seasons only.",
   "28_neutral": "A neutral-site game gets no home edge: the fitted intercept is not added to its forecast. Its row still enters the fit as listed. A declared rule, not a tested win, as the NFL's (Stage 38).",
-  "29_ingest": "A price whose two implied probabilities sum to under 1.00 or over 1.20 is marked and not used: the game counts as unpriced for Model B. A box score without both teams' shots on goal is marked and not used for the ratings."
+  "29_ingest": "A price is marked and not used, and the game counts as unpriced for Model B, when its two implied probabilities sum outside their market's band: [1.00, 1.20] for a two-way moneyline (ESPN's native line, from 2024-25), [0.75, 1.00] for the two sides of the three-way regulation line (to 2023-24, converted as docs/nhl-data.md describes), whose third outcome, a regulation tie, is not in the sum. A box score without both teams' shots on goal is marked and not used for the ratings."
  },
  "measurements": {
   "MV1": "v2 against the registered Model A and Model B on the confirmation seasons, log loss, paired, whole game days. Reported, not decided."
@@ -38,7 +38,8 @@
   }
  },
  "disclosures": [
-  "Written on 2026-11-11, after both live seasons' first figures had been read (each sport's forward test and drift file) and after audit 7 had re-derived the backtests. The changes registered here were all named by the audit before then, and none was chosen by looking at the live figures; but they were chosen knowing the live figures exist, which is why the registered model is left untouched and v2 runs beside it as a shadow."
+  "Written on 2026-11-11, after both live seasons' first figures had been read (each sport's forward test and drift file) and after audit 7 had re-derived the backtests. The changes registered here were all named by the audit before then, and none was chosen by looking at the live figures; but they were chosen knowing the live figures exist, which is why the registered model is left untouched and v2 runs beside it as a shadow.",
+  "Item 29's price rule was first written as one band, [1.00, 1.20]. Before this registration was opened and before anything was fitted, a count of the committed prices (read-only, no result) found it would discard 4,794 of 7,427: every three-way regulation price to 2023-24 sums to about 0.83 by construction. The native two-way prices all sum between 1.03 and 1.06. The three-way band [0.75, 1.00] was set from that count; 9 three-way prices fall outside it, each summing above 1.00."
  ],
  "amendments": [],
  "not_in_this_registration": "Any change to the registered models, picks, forward test, drift check or pages. Anything not named under changes. Items 24, 27 and 30 are the NBA's only."
