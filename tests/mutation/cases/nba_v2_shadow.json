@@ -1,0 +1,34 @@
+{
+  "target": "src/sports/nba/v2_shadow.py",
+  "tests": "tests/test_nba_v2_shadow.py",
+  "cases": [
+    {
+      "id": "nba-v2-shadow-read-after-start",
+      "why": "a price read after the start enters the season market, so v2 trains on an in-game line.",
+      "find": "or not read or not start or read >= start:",
+      "replace": "or not read or not start:",
+      "expect_caught_by": "test_the_season_market_is_each_games_last_read_before_its_start"
+    },
+    {
+      "id": "nba-v2-shadow-kalshi-as-odds",
+      "why": "Kalshi's mids are read as American odds, so every Kalshi price fails item 29.",
+      "find": "total = h + a if price.get('source') == 'kalshi' else history.implied(h) + history.implied(a)",
+      "replace": "total = history.implied(h) + history.implied(a)",
+      "expect_caught_by": "test_item_29_judges_a_live_price_by_its_own_kind"
+    },
+    {
+      "id": "nba-v2-shadow-neutral-ignored",
+      "why": "a neutral-site game keeps the fitted home edge in the shadow, against item 28.",
+      "find": "    if neutral:\n        z -= float(model[-1].intercept_[0])\n",
+      "replace": "",
+      "expect_caught_by": "test_a_neutral_site_forecast_loses_exactly_the_intercept"
+    },
+    {
+      "id": "nba-v2-shadow-slate-always-read",
+      "why": "every doubled slate is read from ESPN again, so the run depends on a read the backtest already made.",
+      "find": "    return lambda gid: placed[gid] if gid in placed else v2.espn_slate(gid, get)",
+      "replace": "    return lambda gid: v2.espn_slate(gid, get)",
+      "expect_caught_by": "test_a_doubled_slate_is_placed_where_the_backtest_placed_it_without_a_read"
+    }
+  ]
+}

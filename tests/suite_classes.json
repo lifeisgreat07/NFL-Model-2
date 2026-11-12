@@ -223,6 +223,7 @@
   "tests/test_nba_stage65_registry.py": "workflow/docs/tests-of-tests",
   "tests/test_nba_tip_time.py": "template/JS",
   "tests/test_nba_v2.py": "isolated behavioural",
+  "tests/test_nba_v2_shadow.py": "isolated behavioural",
   "tests/test_nba_verdict_words.py": "template/JS",
   "tests/test_nba_workflows.py": "workflow/docs/tests-of-tests",
   "tests/test_neutral_site.py": "template/JS",
