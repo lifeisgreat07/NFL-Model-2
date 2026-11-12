@@ -703,6 +703,14 @@ function renderReliability(){
     <p class="nba-lede">A separate auditing agent, Booth, re-ran the confirmation on a Linux machine before the results were merged (PR #319): it matched the committed file to within 1e-12 though not bit for bit (its largest difference was 1.6e-16), and every published figure, interval and label agreed. Booth did not re-run the tuning grid; that the full backtest, tuning included, reproduces both files byte for byte was checked only on the Windows machine that wrote them.</p>`;
 }
 
+/* ---------- what's changed (Stage 104 item 2) ----------
+   As the NHL's page: src/sports/nba/pages/changes.json, newest first. */
+function renderChanges(){
+  const el = document.getElementById('changes-body');
+  el.innerHTML = (DATA.changes || []).map(c => `<div class="nba-change"><span class="nba-change-date">${escapeHtml(c.date)}</span><h3>${escapeHtml(c.title)}</h3><p class="nba-lede">${escapeHtml(c.text)}</p></div>`).join('')
+    || stateHtml('waiting', 'Nothing recorded yet', '');
+}
+
 /* ---------- pages, theme ----------
    As the NFL board and the NHL's pages do: every button for the page shown
    carries aria-current, the tab's title names the page, and a change the
@@ -710,7 +718,7 @@ function renderReliability(){
    bottom bar, so there is no More sheet. */
 const BASE_TITLE = document.title;
 /* The pages the phone nav keeps under More (Stage 77 item 22), as the NHL's does. */
-const OVERFLOW_PAGES = ['method', 'reliability'];
+const OVERFLOW_PAGES = ['method', 'reliability', 'changes'];
 function showPage(name, opts){
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'page-' + name));
   document.querySelectorAll('[data-page]').forEach(b => {
@@ -787,6 +795,7 @@ renderAccuracy();
 renderModelLab();
 renderMethod();
 renderReliability();
+renderChanges();
 /* Stage 76 item 7: #board/<day>. The bare address is the board as it
    opened (this week, today or its first day with games). */
 const HOME_WEEK = currentWeek, HOME_DAY = currentDay;
