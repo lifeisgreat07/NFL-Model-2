@@ -4,14 +4,14 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-12 (session 1112 wrap-up: #699, #700, #701, #703, #704 and #705 merged)
+Last updated: 2026-11-12 (session 1112b wrap-up: #707 to #720, less the closed #709, #712, #713 and #716)
 
 ---
 
 ## Right now
 
 **Suite:** run it before quoting it; CLAUDE.md's `Suite:` line is the checked figure, split five ways by `tests/suite_classes.json` (`session_wrapup --suite-line` writes it). NFL in `src/sports/nfl/`, shared modules in `src/core/`.
-**Sportalytics** (Stage 67) is live: home `/`, NFL `/nfl/` (Model **v2.6**), NHL `/nhl/`, NBA `/nba/` (picks saved twice a day).
+**Sportalytics** (Stage 67) is live: home `/`, NFL `/nfl/` (Model **v2.6**), NHL `/nhl/`, NBA `/nba/` (picks saved twice a day). MLB is being built (Stages 97 to 101), not shown.
 
 **Booth audits run one at a time**, and a diff of about a hundred files runs out of the 20-minute job time. Split a big change rather than re-running it. Do not change booth-pr-audit.yml until Mark decides.
 
@@ -21,31 +21,31 @@ every figure and mutation case by exact id, the suite (the session archive's pre
 A body that must change after opening: close the PR and open a new one from the same branch.
 **Mark: "you can handle merges"**: 0 discrepancies and all green merges even if Booth says NEEDS HUMAN REVIEW only for
 a claim it did not re-run. **Mutation scope = every case whose target or tests file the branch changes** (session
-archive scope_by_target.py; full_prep.ps1 -Scope); #702 missed two broken cases with a narrower list.
+archive scope_by_target.py; full_prep.ps1 -Scope).
 **Rules on main that bind every branch:** every workflow installs with `pip install --require-hashes -r requirements.lock`;
-every python or pip step of an alerting scheduled job has its own `timeout-minutes`; src/core, src/site, src/sports/nhl and
-src/sports/nba pass `mypy --strict`; **a new test file needs a line in `tests/suite_classes.json`** (#675); **no test skips on a
-missing node by hand**: `require_tool('node')`, or a `skipif(... and not in_ci())` (#678); **every mutation case names its
-real file**: the app.js parts, never `src/dashboard/app.js` (Stage 87 item 4, guarded by `test_no_mutation_case_names_the_whole_file_any_more`).
+every python or pip step of an alerting scheduled job has its own `timeout-minutes`; src/core, src/site, src/sports/nhl,
+src/sports/nba and src/sports/mlb pass `mypy --strict`; **a new test file needs a line in `tests/suite_classes.json`**, and two
+branches adding lines beside each other conflict there, so merge main before opening; **no test skips on a missing node by
+hand**: `require_tool('node')`; **every mutation case names its real file**.
 
-**Single next action:** open the v2 registration (`s95-v2-registry`) the same way (scoped prep, body, preflight, audit, merge), before any v2 fit.
+**Single next action:** the v2 shadow's daily writers (each sport's run saves v2's forecasts beside the registered pick, `experiments/nba/stage95_v2/registry.json`'s forward_test), or MLB Stage 99 (the history read from the Stats API, then Model A), Mark's choice of order.
 
-**The order of work (Mark, 2026-11-11):** the v2 shadow (registration first); 102; 97-101 (MLB); 103 (`docs/history/12-mlb-and-more-2026-11-11.md`). Stage 104 and Stage 95 items 31 to 34 are done.
+**The order of work (Mark, 2026-11-11):** the v2 shadow; 97-101 (MLB); 103 (`docs/history/12-mlb-and-more-2026-11-11.md`). Stages 102 and 104, Stage 95 items 31 to 35, Stage 97 and Stage 98 are done.
 
 ## Open work, and what each is waiting on
 
 | What | State | Waiting on |
 |---|---|---|
-| v2 shadow registration: `s95-v2-registry` (47e8acca, unpushed) | Built; two item 29 rules corrected before opening and disclosed (NBA short boxes allow whole-minute rounding; NHL three-way prices get their own band); body and ids in the session archive | Open it next, before any v2 fit. Then the NBA v2 code (`s95-v2-nba-backtest`, b63704dc, not run on real games): run it only after the registration merges. NHL v2 not started (its history has no neutral-site field for item 28) |
-| Stage 102 league logos: `s102-league-marks` (2814a0e1, unpushed) | Built: option B with sidebar fit 2 (Mark, 2026-11-11), tests/browser/check_switcher_fit.py; the Audit Response Log entry's text is in the session archive for Mark | The v2 registration merging (Mark's order) |
-| Stage 97 item 1: `s97-mlb-probe` (e3fa12b1) | Built: src/sports/mlb/data_probe.py and mlb-data-probe.yml; the PR's own check answers whether a runner reads the Stats API. Items 2-7's draft doc is in the session archive | Stage 102 merging |
+| v2 shadow, forward test | Registered (#707, #710); both backtests merged (#715 NBA, #718 NHL: the NHL's chose the goalie term removed). The neutral flag is the league's `neutralSite` (NHL) and ESPN's (NBA) | The daily writers: save v2's Model A and B per game beside the registered pick, never a pick |
+| MLB Stage 99 (model and backtest) | Registered (#714); schedule, canary, clubs, colours and starters merged (#717, #719, #720) | The history: Stats API box scores 2010-2026 checked against Retrosheet (2026's log not yet posted), then Model A |
+| MLB canary workflow, probables timing | Canary module only | Stage 101's daily run; probables timing measured in spring training 2027 |
 | `fix-home-theme-button`: tests/browser/check_theme.py presses the home page's theme button | Not opened | Rebase on main keeping only check_theme.py; NEEDS HUMAN REVIEW by nature, so Mark's call |
 | s83f `s83-credentials` (83.6) | Built | **Mark: the OAuth token's real expiry date** |
 | #582 Booth post job (Stage 82 item 4) | Green; Human review | Mark merges; then 82 item 5 |
-| #664's auto-merge | Merged, off | **Mark sets AUTO_MERGE_OVERRIDES=true** when he wants it; the workflow file is read from the PR on `pull_request` (disclosed) |
+| #664's auto-merge | Merged, off | **Mark sets AUTO_MERGE_OVERRIDES=true** when he wants it |
 | #570, #575 (Dependabot) | Fail tests and Booth | Mark: a Dependabot secret; which updates to take |
 | Stage 88 item 1 (actions): one dispatch of each writer | Not done | Mark (dispatching the Weekly update can lock a week) |
-| Leftover branches | `s96-require-tool` (local, with its worktree on the local Windows machine), `s96-require-tool-2` (local and on GitHub), `s87-app-targets-1` (local and on GitHub; its commit message carried a number, so the same tree shipped from `-1b`) | Mark: delete them (a force-push or branch deletion was refused to this session) |
+| Leftover branches | `s96-require-tool`, `s96-require-tool-2`, `s87-app-targets-1` | Mark: delete them |
 
 ## Known and deliberately not fixed
 

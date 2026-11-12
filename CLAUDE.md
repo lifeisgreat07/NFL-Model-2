@@ -48,9 +48,9 @@ Model v2.6 (`MODEL_VERSION` in `src/sports/nfl/config.py`). `TRAIN_SEASONS` 2020
 The drift check flags on Model A's log loss against the committed
 `data/nfl/drift_baseline.json` (Stage 33 R4); accuracy is printed, not flagged.
 
-Suite: **13076 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main`
+Suite: **13433 passing** (no skips; the `cross-sport-leak` baseline was recorded on 2026-10-08) — `python -B -m pytest -q -p no:cacheprovider` on `main`
 at ee216923 (2026-11-12, after #704), with HEAD level with origin, which is the order that makes the
-figure reproducible. The split (Stage 96 item 51, by `tests/suite_classes.json`): 7879 corpus checks, 1335 isolated behavioural, 1335 mixed, 1364 template/JS, 1163 workflow/docs/tests-of-tests. Each test file's class is in `tests/suite_classes.json`; `python -m src.agents.session_wrapup --suite-line` writes this sentence, and the wrap-up fails when the map misses a file. Level with origin is the order that makes the
+figure reproducible. The split (Stage 96 item 51, by `tests/suite_classes.json`): 8107 corpus checks, 1406 isolated behavioural, 1353 mixed, 1371 template/JS, 1196 workflow/docs/tests-of-tests. Each test file's class is in `tests/suite_classes.json`; `python -m src.agents.session_wrapup --suite-line` writes this sentence, and the wrap-up fails when the map misses a file. Level with origin is the order that makes the
 figure reproducible: one test skips while HEAD is not on a remote branch, so
 the same tree reports a different pair of numbers with work unpushed. Until
 2026-09-24 `main` also carried a standing skip that was NOT that one: the
