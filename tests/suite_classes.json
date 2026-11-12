@@ -146,6 +146,7 @@
   "tests/test_league_scenarios.py": "isolated behavioural",
   "tests/test_leak_free.py": "isolated behavioural",
   "tests/test_lessons_learned.py": "mixed",
+  "tests/test_leak_direction.py": "mixed",
   "tests/test_like_for_like.py": "template/JS",
   "tests/test_line_judge.py": "mixed",
   "tests/test_line_judge_diagnose.py": "mixed",

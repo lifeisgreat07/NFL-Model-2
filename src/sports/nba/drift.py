@@ -27,6 +27,9 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
+from src.core.day_drift import leak_direction as leak_direction
+from src.core.day_drift import leak_lines as leak_lines
+from src.core.day_drift import leaked_picks as leaked_picks
 from src.core.day_drift import look_value as look_value
 from src.core.day_drift import lower_bound as lower_bound
 from src.core.day_drift import next_look as next_look
@@ -101,3 +104,10 @@ def looks(losses: list[float], spec: dict[str, Any], baselines: list[float] | No
 def flags(losses: list[float], spec: dict[str, Any], baselines: list[float] | None = None) -> bool:
     """True when any look so far has flagged: a flag stands for the season."""
     return any(look['flagged'] for look in looks(losses, spec, baselines))
+
+
+def spread_range() -> float | None:
+    """Stage 95 item 33: how far Model A's backtest seasons differ from each other
+    (experiments/nba/stage61/results/model_a_by_season.json, `spread.range`)."""
+    path = sport_paths('nba').experiments / 'stage61' / 'results' / 'model_a_by_season.json'
+    return float(json.loads(path.read_text(encoding='utf-8'))['spread']['range']) if path.exists() else None
