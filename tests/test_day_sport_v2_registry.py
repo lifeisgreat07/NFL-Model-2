@@ -22,11 +22,21 @@ def reg(sport):
 @pytest.mark.parametrize('sport', SPORTS)
 def test_it_is_a_shadow_that_cites_the_registrations_it_sits_beside(sport):
     r = reg(sport)
-    assert r['status'] == 'shadow' and r['registered'] == '2026-11-11' and r['amendments'] == []
+    assert r['status'] == 'shadow' and r['registered'] == '2026-11-11'
+    # Every amendment so far was written before any v2 result existed, and says what it changed.
+    assert all(a['before_any_result'] is True and a['seen'] and a['change'] for a in r['amendments'])
+    assert [a['entry'] for a in r['amendments']] == (['changes.30_slates'] if sport == 'nba' else [])
     assert r['based_on'] == [f'experiments/{sport}/{s}/registry.json' for s in SPORTS[sport]]
     for path in r['based_on']:
         assert (ROOT / path).exists(), path
     assert 'never the board\'s pick' in r['forward_test']['shadow']['never_a_pick']
+
+
+def test_a_slate_still_doubled_is_dropped_and_listed_not_guessed():
+    """Item 30 as amended on 2026-11-12, before any v2 fit: ESPN's record keeps both 2020-03-01 games on one slate."""
+    text = reg('nba')['changes']['30_slates']
+    assert 'is dropped from' in text and 'dropped ids are written into' in text and 'no date is guessed' in text
+    assert 'refuses' not in text
 
 
 @pytest.mark.parametrize('sport', SPORTS)
