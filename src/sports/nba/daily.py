@@ -262,6 +262,17 @@ def drift_picks(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, i
     return [row for _, row in sorted(keyed, key=lambda kr: kr[0])]
 
 
+def drift_days(folder: Path, sched: pd.DataFrame) -> list[str]:
+    """Stage 95 item 32: each `drift_picks` row's slate day, in the same order."""
+    finals = sched[sched['status'] == GameStatus.FINAL.value].set_index('game_id')
+    keyed = []
+    for path in sorted(folder.glob('*.json')) if folder.exists() else []:
+        pick = json.loads(path.read_text(encoding='utf-8'))
+        if pick['game_id'] in finals.index:
+            keyed.append(((pick.get('start_utc') or '', pick['game_id']), str(pick['slate'])))
+    return [day for _, day in sorted(keyed, key=lambda kd: kd[0])]
+
+
 def drift_rows(folder: Path, sched: pd.DataFrame) -> list[tuple[float | None, int | None]]:
     """(Model A's home probability, home won) for every saved pick whose game is final."""
     return [(p, y) for p, y, _ in drift_picks(folder, sched)]
@@ -384,8 +395,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
     def write_drift() -> None:
         spec = drift.baseline()
         # Stage 85 item 2: each pick is held to the backtest of the model it ran.
-        losses, bases = drift.per_game(drift_picks(folder, sched), spec)
-        flagged = drift.flags(losses, spec, bases)
+        picks = drift_picks(folder, sched)
+        losses, bases = drift.per_game(picks, spec)
+        days = drift.kept_days(picks, drift_days(folder, sched))   # Stage 95 item 32
+        flagged = drift.flags(losses, spec, bases, days)
         without = sum(1 for b in bases if b == spec['baseline_no_availability']['value'])
         mean = (sum(losses) / len(losses)) if losses else None
         base = drift.look_baseline(spec, bases, len(bases)) if bases else spec['baseline']['value']
@@ -395,7 +408,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         (PATHS.results / f'drift_{season}.json').write_text(json.dumps(
             {'games': len(losses), 'mean_log_loss': mean, 'baseline': base,
              'without_availability': without, 'flagged': flagged,
-             'looks': drift.looks(losses, spec, bases), 'next_look': drift.next_look(len(losses), spec),
+             'looks': drift.looks(losses, spec, bases, days), 'next_look': drift.next_look(len(losses), spec),
              'leak': leak},
             indent=1) + '\n', encoding='utf-8')
         for line in drift.leak_lines(leak):

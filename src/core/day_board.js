@@ -278,7 +278,7 @@ function driftLooks(rule){
     : rule.baseline_no_availability
     ? `figure for those picks (${rule.baseline.value.toFixed(4)} for a pick made with the injury report, ${rule.baseline_no_availability.value.toFixed(4)} for one made without it)`
     : rule.baseline.value.toFixed(4);
-  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many is above the backtest&#39;s ${base}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
+  return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many, resampling whole game days, is above the backtest&#39;s ${base}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;
 }
 
 function setMoreSheetOpen(open){
