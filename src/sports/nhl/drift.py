@@ -20,6 +20,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from src.core.day_drift import look_value as look_value
 from src.core.day_drift import lower_bound as lower_bound
 from src.core.day_drift import next_look as next_look
 from src.core.day_drift import per_game_log_loss as per_game_log_loss
@@ -50,7 +51,9 @@ def looks(losses: list[float], spec: dict[str, Any]) -> list[dict[str, Any]]:
         if len(losses) < n:
             break
         bound = lower_bound(losses[:n], rule, rule['per_look_level'])
-        out.append({'games': n, 'lower_bound': bound, 'flagged': bool(bound > spec['baseline']['value'])})
+        # Stage 95 item 31: held to the backtest over a season's first n games.
+        base = look_value(spec, 'baseline', n)
+        out.append({'games': n, 'lower_bound': bound, 'baseline': base, 'flagged': bool(bound > base)})
     return out
 
 

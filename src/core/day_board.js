@@ -258,7 +258,11 @@ function driftLooks(rule){
   if (!rule || !rule.rule.checkpoints) return '';
   const r = rule.rule, cs = r.checkpoints.map(x => Number(x).toLocaleString('en-US'));
   const list = cs.length > 1 ? `${cs.slice(0, -1).join(', ')} and ${cs[cs.length - 1]}` : cs[0];
-  const base = rule.baseline_no_availability
+  // Stage 95 item 31: each look against the backtest over a season's first that many games.
+  const at = key => r.checkpoints.map(c => `${Number(c).toLocaleString('en-US')}, ${Number(rule[key + '_by_look'][String(c)]).toFixed(4)}`).join('; ');
+  const base = rule.baseline_by_look
+    ? `log loss over a season&#39;s first that many games, the confirmation seasons pooled (${at('baseline')}${rule.baseline_no_availability_by_look ? `; a pick made without the injury report against the model without it: ${at('baseline_no_availability')}` : ''})`
+    : rule.baseline_no_availability
     ? `figure for those picks (${rule.baseline.value.toFixed(4)} for a pick made with the injury report, ${rule.baseline_no_availability.value.toFixed(4)} for one made without it)`
     : rule.baseline.value.toFixed(4);
   return `it looks only at ${list} graded games, and at each flags when the one-sided ${pct(r.per_look_level)} lower bound of Model A&#39;s log loss over the first that many is above the backtest&#39;s ${base}. That is the one-sided ${pct(r.one_sided_level)} shared among the ${cs.length} looks, which holds the season&#39;s chance of a false flag near ${pct(1 - r.one_sided_level)}. A flag at any look stands for the season.`;

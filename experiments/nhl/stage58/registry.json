@@ -23,7 +23,8 @@
   "baseline": "Model A's log loss on Stage 56's confirmation seasons (experiments/nhl/stage56/results/confirmation.json).",
   "rule": "Flag when the lower end of a one-sided 95% bootstrap interval of mean per-game log loss is above the baseline, once 100 games are graded (the NFL's rule from Stage 33 R4, with 100 games in place of 30 because the NHL grades 6 to 15 games a day).",
   "known_break": "The backtest rated each game with its actual starting goalie; a live pick uses the projected one. M2 of Stage 56 measures that gap.",
-  "amended_2026_11_04": "Stage 85 item 1 (the 2026-11-02 review, Mark's approval): the check no longer tests at every daily run. It looks at five fixed checkpoints, after 100, 200, 400, 800 and 1,200 graded picks, each on the first that many graded picks in the order their games started, and flags when the lower end of the one-sided 99% bootstrap interval of mean per-game log loss is above the baseline. 99% is the one-sided 95% shared equally among the five looks (Bonferroni: 5% / 5 = 1% each), so the season's chance of a false flag is held to 5%, as nearly as each look's bootstrap bound holds its 1%; a look every day at 95% had no such limit. A flag at any look stands for the season. The baseline, the 5,000 resamples and the seed are unchanged; the registered 'rule' sentence above is kept as written and applies to runs before 2026-11-04."
+  "amended_2026_11_04": "Stage 85 item 1 (the 2026-11-02 review, Mark's approval): the check no longer tests at every daily run. It looks at five fixed checkpoints, after 100, 200, 400, 800 and 1,200 graded picks, each on the first that many graded picks in the order their games started, and flags when the lower end of the one-sided 99% bootstrap interval of mean per-game log loss is above the baseline. 99% is the one-sided 95% shared equally among the five looks (Bonferroni: 5% / 5 = 1% each), so the season's chance of a false flag is held to 5%, as nearly as each look's bootstrap bound holds its 1%; a look every day at 95% had no such limit. A flag at any look stands for the season. The baseline, the 5,000 resamples and the seed are unchanged; the registered 'rule' sentence above is kept as written and applies to runs before 2026-11-04.",
+  "amended_2026_11_11": "Stage 95 item 31 (audit 7, M4; Mark's approval of 2026-11-11, amendments now): each registered look at n graded picks is held to Model A's backtest log loss over a season's first n games, the confirmation seasons pooled (experiments/nhl/stage56/results/model_a_by_season.json, by_look), not to its log loss over whole seasons. A live look at n picks is a season's first n games, scored on ratings that have seen few of its games; the backtest's own first games score differently from its whole seasons, so the one figure was the wrong yardstick for every look. The checkpoints, the per-look level, the resamples and the seed are unchanged."
  },
  "measurements": [
   "Stage 56 M2: the projected starter against the actual one, printed once 50 games are graded."
@@ -99,6 +100,14 @@
    "before_any_result": false,
    "seen": "Written after audit 7 (2026-11-04) re-derived every saved pick's training record and every market read time, and after the forward test's figures had been read.",
    "change": "Two disclosures added: that every priced pick saved before 2026-11-05 came from a Model B fitted on earlier seasons only, and that the live market is the lock-time price while the backtest's is the closing price. No model, rule or figure changes."
+  },
+  {
+   "date": "2026-11-11",
+   "by": "Claude, under Mark's approval of 2026-11-11 (audit 7, Stage 95 item 31: amendments now)",
+   "entry": "drift",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-11, after the drift check had looked at 100 graded picks, lower bound 0.6026; 200 graded picks, lower bound 0.6203 (none flagged, against the whole-season baseline 0.6753) and after the backtest's per-look log losses had been computed. Indexed, those looks' baselines are 100 games 0.6736; 200 games 0.6768; every look made so far stays unflagged.",
+   "change": "drift.amended_2026_11_11: each look is held to the backtest over as many games into a season; data/nhl/drift_baseline.json gains the per-look baselines."
   }
  ],
  "disclosures": [
