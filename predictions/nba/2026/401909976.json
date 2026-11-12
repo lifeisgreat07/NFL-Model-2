@@ -1,0 +1,99 @@
+{
+ "game_id": "401909976",
+ "season": 2026,
+ "slate": "2026-11-12",
+ "start_utc": "2026-11-13T00:00:00Z",
+ "home": "PHI",
+ "away": "TOR",
+ "model_a": 0.5173,
+ "model_b": 0.704,
+ "pick": "PHI",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8622,
+  "away": 0.8594
+ },
+ "features": {
+  "point_matchup": -1.767229,
+  "efficiency_matchup": -1.46475,
+  "availability_matchup": 0.002748
+ },
+ "market": {
+  "game_id": "401909976",
+  "home": "PHI",
+  "away": "TOR",
+  "start_utc": "2026-11-13T00:00:00Z",
+  "read_utc": "2026-11-12T21:31:34Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -270.0,
+  "away_price": 221.0,
+  "home_prob": 0.7008
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-12T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "5105637",
+    "name": "Adem Bona",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4871141",
+    "name": "Ariel Hukporti",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4870562",
+    "name": "Dominick Barlow",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3059318",
+    "name": "Joel Embiid",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "1966",
+    "name": "LeBron James",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "6450",
+    "name": "Kawhi Leonard",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432586",
+    "name": "Nate Bittle",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433134",
+    "name": "Scottie Barnes",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4431684",
+    "name": "Trayce Jackson-Davis",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-12T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14228,
+  "training_games_priced": 14187,
+  "training_ids_sha256": "39f4900977689f1a73560e15e509c0187e7907ebf265047ae122d62b04a115a8"
+ },
+ "code_sha256": "f350a8ca582a32c6bc2eef39e49a65cd3e20ad46992d0265eda218fb610fb941",
+ "code_commit": "c71f59f384b3f7e1b328a129d4e06080041a41b0"
+}

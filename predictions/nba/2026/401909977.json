@@ -1,0 +1,89 @@
+{
+ "game_id": "401909977",
+ "season": 2026,
+ "slate": "2026-11-12",
+ "start_utc": "2026-11-13T00:00:00Z",
+ "home": "WSH",
+ "away": "DET",
+ "model_a": 0.1867,
+ "model_b": 0.217,
+ "pick": "DET",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8945,
+  "away": 0.916
+ },
+ "features": {
+  "point_matchup": -12.256367,
+  "efficiency_matchup": -11.977724,
+  "availability_matchup": -0.021554
+ },
+ "market": {
+  "game_id": "401909977",
+  "home": "WSH",
+  "away": "DET",
+  "start_utc": "2026-11-13T00:00:00Z",
+  "read_utc": "2026-11-12T21:31:34Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": 341.0,
+  "away_price": -438.0,
+  "home_prob": 0.2179
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-12T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "4606840",
+    "name": "Jamir Watkins",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432907",
+    "name": "Justin Champagnie",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4432187",
+    "name": "Reece Beekman",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4997537",
+    "name": "Tristan Vukcevic",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4395702",
+    "name": "Isaiah Joe",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4433621",
+    "name": "Jalen Duren",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5037878",
+    "name": "Ugonna Onyenso",
+    "status": "Day-To-Day"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-12T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14228,
+  "training_games_priced": 14187,
+  "training_ids_sha256": "39f4900977689f1a73560e15e509c0187e7907ebf265047ae122d62b04a115a8"
+ },
+ "code_sha256": "f350a8ca582a32c6bc2eef39e49a65cd3e20ad46992d0265eda218fb610fb941",
+ "code_commit": "c71f59f384b3f7e1b328a129d4e06080041a41b0"
+}

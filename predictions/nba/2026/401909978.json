@@ -1,0 +1,84 @@
+{
+ "game_id": "401909978",
+ "season": 2026,
+ "slate": "2026-11-12",
+ "start_utc": "2026-11-13T01:00:00Z",
+ "home": "MIN",
+ "away": "DAL",
+ "model_a": 0.6921,
+ "model_b": 0.6669,
+ "pick": "MIN",
+ "pick_model": "model_b",
+ "market_source": "espn",
+ "availability": {
+  "read": true,
+  "home": 0.8402,
+  "away": 0.9883
+ },
+ "features": {
+  "point_matchup": 5.181308,
+  "efficiency_matchup": 4.981261,
+  "availability_matchup": -0.148178
+ },
+ "market": {
+  "game_id": "401909978",
+  "home": "MIN",
+  "away": "DAL",
+  "start_utc": "2026-11-13T01:00:00Z",
+  "read_utc": "2026-11-12T21:31:34Z",
+  "source": "espn",
+  "provider": "Draft Kings",
+  "home_price": -223.0,
+  "away_price": 185.0,
+  "home_prob": 0.663
+ },
+ "injuries": {
+  "source": "espn_nba_injuries",
+  "read_utc": "2026-11-12T21:31:34Z",
+  "home": [
+   {
+    "athlete_id": "4594268",
+    "name": "Anthony Edwards",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "3934673",
+    "name": "Donte DiVincenzo",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "athlete_id": "4683688",
+    "name": "Dereck Lively II",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "4873153",
+    "name": "Morez Johnson Jr.",
+    "status": "Day-To-Day"
+   },
+   {
+    "athlete_id": "5279129",
+    "name": "Sergio de Larrea",
+    "status": "Out"
+   },
+   {
+    "athlete_id": "5148538",
+    "name": "Tarik Biberovic",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-12T21:31:34Z",
+ "code": "nba-stage61",
+ "training_through": "2026-11-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14228,
+  "training_games_priced": 14187,
+  "training_ids_sha256": "39f4900977689f1a73560e15e509c0187e7907ebf265047ae122d62b04a115a8"
+ },
+ "code_sha256": "f350a8ca582a32c6bc2eef39e49a65cd3e20ad46992d0265eda218fb610fb941",
+ "code_commit": "c71f59f384b3f7e1b328a129d4e06080041a41b0"
+}
