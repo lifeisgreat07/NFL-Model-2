@@ -144,6 +144,7 @@
   "tests/test_js_source.py": "template/JS",
   "tests/test_kickoff_order.py": "template/JS",
   "tests/test_late_copies.py": "mixed",
+  "tests/test_league_marks.py": "template/JS",
   "tests/test_league_postseason.py": "isolated behavioural",
   "tests/test_league_scenarios.py": "isolated behavioural",
   "tests/test_leak_free.py": "isolated behavioural",
