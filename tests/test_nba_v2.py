@@ -123,6 +123,7 @@ RESULTS = v2.RESULTS / 'backtest.json'
 
 def test_the_committed_run_was_tuned_on_validation_only_and_touched_what_the_rules_say():
     doc = json.loads(RESULTS.read_text(encoding='utf-8'))
+    assert doc['registry'] == 'experiments/nba/stage95_v2/registry.json'  # a repository path, not one machine's
     base = v2.backtest.registry()
     grid, p = base['models']['model_a']['grid'], base['protocol']
     assert doc['tuning']['seasons'] == p['validation_seasons']

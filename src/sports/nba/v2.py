@@ -249,7 +249,7 @@ def main(get: Callable[[str], bytes] = history.fetch) -> int:
     old['market_logit'] = np.log(old['home_prob'] / (1 - old['home_prob']))
     registered = {'model_a': backtest.walk_forward(old, A_COLUMNS, seasons),
                   'model_b': backtest.walk_forward(old, [*A_COLUMNS, 'market_logit'], seasons, needs_market=True)}
-    doc = {'registry': str(REGISTRY.as_posix()), 'family': reg['family'], 'touched': touched,
+    doc = {'registry': 'experiments/nba/stage95_v2/registry.json', 'family': reg['family'], 'touched': touched,
            'tuning': tuning, 'confirmation_seasons': seasons,
            'scores': {f'v2_{k}': scores(s, table) for k, s in v2.items()}
            | {'base_rate': scores(base_rate(table, seasons), table)},

@@ -1,5 +1,5 @@
 {
- "registry": "E:/nfl-wt/s95w/experiments/nba/stage95_v2/registry.json",
+ "registry": "experiments/nba/stage95_v2/registry.json",
  "family": "nba-day-sport-v2",
  "touched": {
   "exhibitions_dropped": [
