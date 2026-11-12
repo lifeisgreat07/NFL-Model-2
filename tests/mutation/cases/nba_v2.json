@@ -1,0 +1,62 @@
+{
+  "target": "src/sports/nba/v2.py",
+  "tests": "tests/test_nba_v2.py",
+  "cases": [
+    {
+      "id": "nba-v2-exhibitions-kept",
+      "why": "item 27 checks only the home side, so an All-Star game whose away side is a club stays in the history.",
+      "find": "    keep = games['home'].isin(known) & games['away'].isin(known)\n",
+      "replace": "    keep = games['home'].isin(known) | games['away'].isin(known)\n",
+      "expect_caught_by": "test_item_27_drops_a_game_with_a_side_that_is_not_a_club"
+    },
+    {
+      "id": "nba-v2-doubled-slate-left",
+      "why": "item 30 places the games but never checks the slate again, so a team can still play twice on one day.",
+      "find": "    if still:\n        raise ValueError",
+      "replace": "    if False:\n        raise ValueError",
+      "expect_caught_by": "test_item_30_places_a_doubled_slate_by_espns_record_and_refuses_one_still_doubled"
+    },
+    {
+      "id": "nba-v2-espn-date-in-utc",
+      "why": "ESPN's start is read as a UTC date, so an evening game in Eastern time is placed on the next day.",
+      "find": "    return str(pd.Timestamp(start).tz_convert(ET).date())\n",
+      "replace": "    return str(pd.Timestamp(start).date())\n",
+      "expect_caught_by": "test_espns_start_is_read_as_an_eastern_date"
+    },
+    {
+      "id": "nba-v2-price-ceiling-open",
+      "why": "item 29 has no ceiling, so a price with a 50% margin is read as a market.",
+      "find": "    ok = (total >= PRICE_SUM[0]) & (total <= PRICE_SUM[1])\n",
+      "replace": "    ok = total >= PRICE_SUM[0]\n",
+      "expect_caught_by": "test_item_29_drops_prices_outside_their_bounds"
+    },
+    {
+      "id": "nba-v2-box-rule-without-rounding",
+      "why": "any box under 240 minutes is dropped, which throws out about a quarter of complete boxes whose rounded minutes sum to 238 or 239.",
+      "find": "    short = t[REGULATION_MINUTES - t['total'] > ROUNDING_PER_PLAYER * t['players']]\n",
+      "replace": "    short = t[REGULATION_MINUTES - t['total'] > 0]\n",
+      "expect_caught_by": "test_item_29_allows_whole_minute_rounding_and_drops_a_box_short_beyond_it"
+    },
+    {
+      "id": "nba-v2-availability-reads-the-game-itself",
+      "why": "availability reads who played in the game being forecast, which the live run cannot know: the backtest and live would differ again.",
+      "find": "            avail[(gid, team)] = 1.0 if previous is None else ratings.availability(expected, previous)\n            rows = by_game_team.get((gid, team))\n",
+      "replace": "            rows = by_game_team.get((gid, team))\n            now = set() if rows is None else set(rows.loc[rows['minutes'] > 0, 'player_id'])\n            avail[(gid, team)] = 1.0 if previous is None else ratings.availability(expected, now)\n",
+      "expect_caught_by": "test_item_24_reads_who_played_in_the_previous_game_not_this_one"
+    },
+    {
+      "id": "nba-v2-unused-box-still-read",
+      "why": "a box item 29 does not use still says who played, so a box with missing players marks them out for the next game.",
+      "find": "            if rows is None or (gid, team) in unusable:\n",
+      "replace": "            if rows is None:\n",
+      "expect_caught_by": "test_item_24_a_box_not_used_tells_nothing_about_the_next_game"
+    },
+    {
+      "id": "nba-v2-neutral-keeps-home-edge",
+      "why": "a neutral-site game keeps the fitted home edge, which item 28 says it does not get.",
+      "find": "        z = np.where(neutral, z - float(model[-1].intercept_[0]), z)\n",
+      "replace": "",
+      "expect_caught_by": "test_item_28_a_neutral_game_gets_no_home_edge"
+    }
+  ]
+}
