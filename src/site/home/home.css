@@ -58,6 +58,13 @@ body{ flex-direction:column; }
 .home-card-top{ display:flex; justify-content:space-between; align-items:baseline; gap:var(--s2); flex-wrap:wrap; }
 .home-sport{ font-size:var(--fs-20); font-weight:800; display:inline-flex; align-items:center; gap:var(--s2); }
 .home-icon{ width:26px; height:26px; flex:none; overflow:visible; }
+/* Stage 102 (option B): the league marks, sized for the cards (the shared .lgm rules are in styles.css).
+   A mark that fails to load is hidden; on a card our own icon takes its place (home.js leagueMark). */
+.home-sport .lgm{ width:26px; height:26px; }
+.lgm .lgm-own{ display:none; }
+.lgm.lgm-failed img{ display:none; }
+.lgm.lgm-failed .lgm-own{ display:inline-flex; }
+.lgm-sm.lgm-failed{ display:none; }
 .home-status{ font-size:var(--fs-11); font-weight:700; letter-spacing:var(--track-label); text-transform:uppercase; color:var(--accent); }
 .home-status.is-live::before{ content:''; display:inline-block; width:7px; height:7px; border-radius:50%;
   background:var(--accent); margin-right:var(--s2); vertical-align:1px; }
@@ -68,6 +75,7 @@ body{ flex-direction:column; }
 .home-kv dd{ margin:0; color:var(--text); font-weight:700; font-variant-numeric:tabular-nums; text-align:right; }
 .home-go{ font-size:var(--fs-14); font-weight:700; color:var(--accent); }
 .home-foot{ margin:calc(-1 * var(--s3)) 0 0; font-size:var(--fs-12); color:var(--text-3); max-width:70ch; }
+.home-legal{ flex-basis:100%; margin:var(--s2) 0 0; font-size:var(--fs-12); color:var(--text-3); max-width:70ch; }
 /* Stage 77 item 30 (H2): when the page was made, as each sport's page says. */
 .home-updated{ margin:calc(-1 * var(--s4)) 0 0; font-size:var(--fs-12); color:var(--text-3); }
 .home-updated:empty{ display:none; }

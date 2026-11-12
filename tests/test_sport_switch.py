@@ -39,6 +39,9 @@ def test_each_page_has_the_sidebar_pills_and_the_phone_strip(sport):
 @pytest.mark.parametrize('sport', SPORTS)
 def test_each_switcher_links_home_and_every_sport_marking_its_own(sport):
     for _, body in NAV.findall(PAGES[sport]):
+        # Stage 102: each sport's pill leads with its league's mark (tests/test_league_marks.py holds it); the
+        # links and their names are read with the marks set aside.
+        body = re.sub(r'<span class="lgm lgm-sm" aria-hidden="true">.*?</span>', '', body)
         got = re.findall(r'<a href="([^"]+)"( aria-current="page")?>([^<]+)</a>', body)
         assert [(h, t) for h, _, t in got] == [('../', 'Home')] + [(f'../{s}/', s.upper()) for s in SPORTS]
         assert [t for _, cur, t in got if cur] == [sport.upper()], f'{sport}: the current sport is not marked'
