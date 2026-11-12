@@ -4,7 +4,7 @@
 One screen, present tense, no history; history lives in `memory/`.
 If this contradicts CLAUDE.md, this file wins.
 
-Last updated: 2026-11-11 (session 1111 wrap-up: #680 and #687 merged; #689, #694, #695 and #697 merged; #698 in its audit at the close)
+Last updated: 2026-11-11 (session 1111 wrap-up: #680, #687, #689, #694, #695, #697 and #698 merged)
 
 ---
 
@@ -26,7 +26,7 @@ src/sports/nba pass `mypy --strict`; **a new test file needs a line in `tests/su
 missing node by hand**: `require_tool('node')`, or a `skipif(... and not in_ci())` (#678); **every mutation case names its
 real file**: the app.js parts, never `src/dashboard/app.js` (Stage 87 item 4, guarded by `test_no_mutation_case_names_the_whole_file_any_more`).
 
-**Single next action:** #698 (Stage 104 item 2, What's Changed; branch `s104-nba-changes`, head f70691e2) was in its Booth audit when the session closed: read its result, re-run once if it failed or timed out, and merge on the rule (`merge_item.py 698 s104b s104-nba-changes "Stage 104 item 2: the NBA page gets What's Changed, as the NHL's has"`). Then 104c and 104d in turn, each: merge main, full suite, its ids by exact id, prechecks, fill its body, collection split, preflight, open, audit, merge.
+**Single next action:** open Stage 104 items 3-4 (`s104-nba-ratings`, Ratings + Teams): merge main, full suite, its ids by exact id (with `nba-chrome-checks-label` and `nba-accuracy-page-never-built`, both re-anchored on this branch), prechecks, fill its body (add the chrome test and the two case files to What changes), collection split, preflight, open, audit, merge. Then `s104-nba-standings` the same way.
 
 **The order of work (Mark, 2026-11-11):** Stage 87 item 4 steps two and three; Stage 104 (the NBA page gets the other
 sports' tabs); Stage 95 items 34, then 31 to 33 as amendments now, then the day-sport v2 shadow (95 item 35 with 94
@@ -37,7 +37,6 @@ items 24, 27 to 30); Stage 102 (league logos); Stages 97 to 101 (MLB, fully buil
 
 | What | State | Waiting on |
 |---|---|---|
-| #698 Stage 104 item 2 (`s104-nba-changes`, f70691e2) | Open; Booth audit running at the close | Its audit, then merge |
 | Stage 104 items 3-4: `s104-nba-ratings` (Ratings + Teams, eb284439), then `s104-nba-standings` (Standings with the play-in, e84bc8c9) | Built and stacked; More-menu test and anchors already fixed for both | #698 merging, then one at a time |
 | Stage 95 items 34, 31, 33, 32: `s95-drift-sidedness` (2cfc1b90), then `s95-drift-by-look` (8f273614), `s95-leak-line` (96c4085a), `s95-day-blocks` (c61912bf) | Built and stacked; bodies in the session archive (item 31's needs its per-look table and case count) | Stage 104 merging; one at a time |
 | `s95-v2-registry`: the day-sport v2 shadow's registration (741d2397) | Built, not opened; item 24 is option 2 (Mark, 2026-11-11) | Opens after the Stage 95 stack, before any v2 fit |
