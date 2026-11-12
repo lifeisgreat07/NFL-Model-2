@@ -1,0 +1,90 @@
+{
+ "game_id": "2026020299",
+ "season": 2026,
+ "slate": "2026-11-12",
+ "start_utc": "2026-11-13T00:00:00Z",
+ "home": "BOS",
+ "away": "MTL",
+ "model_a": 0.5634,
+ "model_b": 0.5168,
+ "pick": "BOS",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.332756,
+  "shot_matchup": -0.392116,
+  "goalie_matchup_2000": 0.000281
+ },
+ "market": {
+  "game_id": "2026020299",
+  "start_utc": "2026-11-13T00:00:00Z",
+  "home": "BOS",
+  "away": "MTL",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-11-12T21:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8480280,
+   "name": "Jeremy Swayman",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/jackstudley13/status/2120913189378650322?a=Q1jxu0AHFUu51RQaE5o&s=20"
+  },
+  "away": {
+   "player_id": 8484170,
+   "name": "Jacob Fowler",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/StuCowan1/status/2120571742905315526?a=vb5KDXimVspLHLTELsQ&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-12",
+  "read_utc": "2026-11-12T21:01:40Z",
+  "home": [
+   {
+    "name": "James Hagens",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Bryce Pickford",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Ivan Demidov",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Lucas Condotta",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Sam Montembeault",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-12T21:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14701,
+  "training_games_priced": 7671,
+  "training_ids_sha256": "c8c07a2cc9351fe6197e6c08024568a81c2008d523afe37e93eddaf835c879e7"
+ },
+ "code_sha256": "767e6e57557445fab36ffa13c9889025ac8bc7cd1914f030aef830e6758b86a2",
+ "code_commit": "5dccc89f827c11a6d36ecca34950c6f6076cef8d"
+}

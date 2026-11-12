@@ -1,0 +1,95 @@
+{
+ "game_id": "2026020308",
+ "season": 2026,
+ "slate": "2026-11-12",
+ "start_utc": "2026-11-13T03:00:00Z",
+ "home": "LAK",
+ "away": "NYI",
+ "model_a": 0.5186,
+ "model_b": 0.5448,
+ "pick": "LAK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.177693,
+  "shot_matchup": 1.248077,
+  "goalie_matchup_2000": -0.005205
+ },
+ "market": {
+  "game_id": "2026020308",
+  "start_utc": "2026-11-13T03:00:00Z",
+  "home": "LAK",
+  "away": "NYI",
+  "book": "DraftKings",
+  "home_price": -125.0,
+  "away_price": 105.0,
+  "home_prob": 0.5325,
+  "read_utc": "2026-11-12T21:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8475311,
+   "name": "Darcy Kuemper",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/DooleyLAK/status/2120948109991977373?a=xNUgXdu2iVBsh-h0Aps&s=20"
+  },
+  "away": {
+   "player_id": 8478009,
+   "name": "Ilya Sorokin",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/AGrossNewsday/status/2120952293948612880?a=9P6Y-Ugm1ksnedPnNr4&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-12",
+  "read_utc": "2026-11-12T21:01:40Z",
+  "home": [
+   {
+    "name": "Erik Gustafsson",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Jakub Dvorak",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Alexander Romanov",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Calum Ritchie",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Jean-Gabriel Pageau",
+    "position": "C",
+    "status": "Out"
+   },
+   {
+    "name": "Mathew Barzal",
+    "position": "C",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-12T21:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14701,
+  "training_games_priced": 7671,
+  "training_ids_sha256": "c8c07a2cc9351fe6197e6c08024568a81c2008d523afe37e93eddaf835c879e7"
+ },
+ "code_sha256": "767e6e57557445fab36ffa13c9889025ac8bc7cd1914f030aef830e6758b86a2",
+ "code_commit": "5dccc89f827c11a6d36ecca34950c6f6076cef8d"
+}

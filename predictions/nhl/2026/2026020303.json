@@ -1,0 +1,100 @@
+{
+ "game_id": "2026020303",
+ "season": 2026,
+ "slate": "2026-11-12",
+ "start_utc": "2026-11-13T00:00:00Z",
+ "home": "NJD",
+ "away": "WSH",
+ "model_a": 0.5948,
+ "model_b": 0.6355,
+ "pick": "NJD",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -0.090091,
+  "shot_matchup": 5.243007,
+  "goalie_matchup_2000": -0.00072
+ },
+ "market": {
+  "game_id": "2026020303",
+  "start_utc": "2026-11-13T00:00:00Z",
+  "home": "NJD",
+  "away": "WSH",
+  "book": "DraftKings",
+  "home_price": -162.0,
+  "away_price": 136.0,
+  "home_prob": 0.5934,
+  "read_utc": "2026-11-12T21:01:40Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8476945,
+   "name": "Connor Hellebuyck",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://www.nhl.com/news/preview-2026020303"
+  },
+  "away": {
+   "player_id": 8480313,
+   "name": "Logan Thompson",
+   "status": null,
+   "basis": "projected",
+   "report": null
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-12",
+  "read_utc": "2026-11-12T21:01:40Z",
+  "home": [
+   {
+    "name": "Anthony Mantha",
+    "position": "RW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Brett Pesce",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Johnathan Kovacevic",
+    "position": "D",
+    "status": "Out"
+   },
+   {
+    "name": "Seamus Casey",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Patrick Thomas",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Rasmus Sandin",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Vincent Desharnais",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-12T21:01:40Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14701,
+  "training_games_priced": 7671,
+  "training_ids_sha256": "c8c07a2cc9351fe6197e6c08024568a81c2008d523afe37e93eddaf835c879e7"
+ },
+ "code_sha256": "767e6e57557445fab36ffa13c9889025ac8bc7cd1914f030aef830e6758b86a2",
+ "code_commit": "5dccc89f827c11a6d36ecca34950c6f6076cef8d"
+}
