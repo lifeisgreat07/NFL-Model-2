@@ -60,7 +60,7 @@ def runs(workflow):
 
 
 TYPES = 'python -m mypy --ignore-missing-imports src/sports/nfl/weekly_update.py src/sports/nfl/ratings_engine.py src/sports/nfl/generate_dashboard.py src/sports/nfl/generate_picks_pdf.py'
-STRICT_TYPES = 'python -m mypy --strict --ignore-missing-imports src/core src/site src/sports/nhl src/sports/nba'
+STRICT_TYPES = 'python -m mypy --strict --ignore-missing-imports src/core src/site src/sports/nhl src/sports/nba src/sports/mlb'
 AGENT_TYPES = 'python -m mypy --strict --ignore-missing-imports --follow-imports=silent src/agents'
 
 
