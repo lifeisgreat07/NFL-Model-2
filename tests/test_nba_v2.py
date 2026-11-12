@@ -30,16 +30,17 @@ def test_item_27_drops_a_game_with_a_side_that_is_not_a_club():
     assert list(kept['game_id']) == ['2'] and dropped == ['1', '3', '4'], 'either side not a club drops the game'
 
 
-def test_item_30_places_a_doubled_slate_by_espns_record_and_refuses_one_still_doubled():
+def test_item_30_places_a_doubled_slate_by_espns_record_and_drops_one_still_doubled():
     g = games([('401161536', 2020, '2020-03-01', 'PHX', 'GS'), ('401161543', 2020, '2020-03-01', 'GS', 'WSH'),
                ('9', 2020, '2020-03-01', 'BOS', 'NY')])
     assert v2.doubled_slates(g) == {'2020-03-01': ['401161536', '401161543']}
-    placed, moved = v2.place_slates(g, {'401161536': '2020-02-29', '401161543': '2020-03-01'}.get)
+    placed, moved, dropped = v2.place_slates(g, {'401161536': '2020-02-29', '401161543': '2020-03-01'}.get)
     assert moved == {'401161536': '2020-02-29', '401161543': '2020-03-01'}
-    assert v2.doubled_slates(placed) == {}
+    assert v2.doubled_slates(placed) == {} and dropped == []
     assert placed.set_index('game_id').loc['9', 'slate'] == '2020-03-01', 'a game not doubled is not moved'
-    with pytest.raises(ValueError, match='still appears twice'):
-        v2.place_slates(g, lambda gid: '2020-03-01')
+    # As ESPN's record really reads (amended 2026-11-12): both games stay on one day, so both leave, listed.
+    kept, _, dropped = v2.place_slates(g, lambda gid: '2020-03-01')
+    assert dropped == ['401161536', '401161543'] and list(kept['game_id']) == ['9']
 
 
 def test_espns_start_is_read_as_an_eastern_date():

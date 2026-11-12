@@ -12,9 +12,9 @@
     {
       "id": "nba-v2-doubled-slate-left",
       "why": "item 30 places the games but never checks the slate again, so a team can still play twice on one day.",
-      "find": "    if still:\n        raise ValueError",
-      "replace": "    if False:\n        raise ValueError",
-      "expect_caught_by": "test_item_30_places_a_doubled_slate_by_espns_record_and_refuses_one_still_doubled"
+      "find": "    dropped = sorted(gid for gids in doubled_slates(g).values() for gid in gids)\n",
+      "replace": "    dropped = []\n",
+      "expect_caught_by": "test_item_30_places_a_doubled_slate_by_espns_record_and_drops_one_still_doubled"
     },
     {
       "id": "nba-v2-espn-date-in-utc",

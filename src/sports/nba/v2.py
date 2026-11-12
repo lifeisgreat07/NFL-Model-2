@@ -6,7 +6,8 @@ was fitted. Each change is one function, named for its item:
 - 27, `drop_exhibitions`: a game in which either team is not one of the league's 30 codes (the All-Star games,
   filed as regular season) leaves the history before anything is computed;
 - 30, `place_slates`: a slate that lists one team twice is mended by each such game's date in ESPN's own record of
-  it, read when the history is built; the history refuses a slate on which a team still appears twice;
+  it, read when the history is built; games ESPN's record still puts on one slate for one team are dropped and
+  listed, no date guessed (amended 2026-11-12, before any fit: ESPN keeps both 2020-03-01 GS games on that day);
 - 29, `drop_bad_prices` and `short_boxes`: a price whose two implied probabilities sum to under 1.00 or over 1.20
   is not used (the game counts as unpriced), and a box short of 240 minutes by more than half a minute a listed
   player is not used for minutes or availability (each player's minutes are rounded to whole minutes);
@@ -84,9 +85,9 @@ def espn_slate(gid: str, get: Callable[[str], bytes] = history.fetch) -> str:
     return str(pd.Timestamp(start).tz_convert(ET).date())
 
 
-def place_slates(games: pd.DataFrame, slate_of: Callable[[str], str]) -> tuple[pd.DataFrame, dict[str, str]]:
-    """Item 30: every game on a doubled slate is placed on the date `slate_of` gives; the history is refused if a
-    team still appears twice on one slate."""
+def place_slates(games: pd.DataFrame, slate_of: Callable[[str], str]) -> tuple[pd.DataFrame, dict[str, str], list[str]]:
+    """Item 30 as amended: every game on a doubled slate is placed on the date `slate_of` gives; games still
+    doubled after that are dropped. Returns the games, where each was placed, and the ids dropped."""
     g = games.copy()
     moved: dict[str, str] = {}
     for gids in doubled_slates(g).values():
@@ -94,10 +95,8 @@ def place_slates(games: pd.DataFrame, slate_of: Callable[[str], str]) -> tuple[p
             day = slate_of(gid)
             moved[gid] = day
             g.loc[g['game_id'].astype(str) == gid, 'slate'] = day
-    still = doubled_slates(g)
-    if still:
-        raise ValueError(f'a team still appears twice on a slate after placing by ESPN: {still}')
-    return g, moved
+    dropped = sorted(gid for gids in doubled_slates(g).values() for gid in gids)
+    return g[~g['game_id'].astype(str).isin(dropped)].copy(), moved, dropped
 
 
 def drop_bad_prices(market: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
@@ -180,12 +179,13 @@ def build(raw: pd.DataFrame, minutes: pd.DataFrame, market: pd.DataFrame,
     """v2's history: items 27 and 30 on the games, item 29 on the prices and the boxes. Returns the prepared games
     (with `home_prob` where a usable price exists), the boxes not used, and what each rule touched."""
     games, exhibitions = drop_exhibitions(raw)
-    games, moved = place_slates(games, slate_of)
+    games, moved, doubled = place_slates(games, slate_of)
     prices, bad = drop_bad_prices(market)
     games = games.drop(columns=['home_prob'], errors='ignore').merge(
         prices[['game_id', 'home_prob']], on='game_id', how='left')
     unusable = short_boxes(minutes[minutes['game_id'].isin(set(games['game_id']))])
-    touched = {'exhibitions_dropped': exhibitions, 'slates_placed': moved, 'prices_not_used': bad,
+    touched = {'exhibitions_dropped': exhibitions, 'slates_placed': moved, 'still_doubled_dropped': doubled,
+               'prices_not_used': bad,
                'boxes_not_used': sorted(f'{g} {t}' for g, t in unusable)}
     return ratings.prepare(games), unusable, touched
 
