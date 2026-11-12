@@ -114,3 +114,29 @@ def test_item_28_a_neutral_game_gets_no_home_edge():
     assert p[str(n - 2)] == pytest.approx(1 / (1 + np.exp(-z)))
     assert p[str(n - 1)] == pytest.approx(1 / (1 + np.exp(-(z - b)))), 'the neutral game loses exactly the intercept'
     assert p[str(n - 1)] < p[str(n - 2)], 'with a home edge fitted, the same matchup at a neutral site is less sure'
+
+
+# ---------------------------------------------------------------- the committed run (python -m src.sports.nba.v2)
+
+RESULTS = v2.RESULTS / 'backtest.json'
+
+
+def test_the_committed_run_was_tuned_on_validation_only_and_touched_what_the_rules_say():
+    doc = json.loads(RESULTS.read_text(encoding='utf-8'))
+    base = v2.backtest.registry()
+    grid, p = base['models']['model_a']['grid'], base['protocol']
+    assert doc['tuning']['seasons'] == p['validation_seasons']
+    assert {(r['H_days'], r['lambda']) for r in doc['tuning']['grid']} == {(h, lam) for h in grid['H_days'] for lam in grid['lambda']}
+    best = min(doc['tuning']['grid'], key=lambda r: r['log_loss'])
+    assert doc['tuning']['chosen'] == {'H_days': best['H_days'], 'lambda': best['lambda']}
+    assert doc['confirmation_seasons'] == p['confirmation_seasons']
+    touched = doc['touched']
+    assert touched['still_doubled_dropped'] == ['401161536', '401161543'], 'item 30 as amended on 2026-11-12'
+    assert len(touched['exhibitions_dropped']) == 3 and all(len(touched[k]) > 0 for k in ('prices_not_used', 'boxes_not_used'))
+
+
+def test_the_measurements_are_reported_not_decided():
+    doc = json.loads(RESULTS.read_text(encoding='utf-8'))
+    for key in ('MV1_model_a', 'MV1_model_b', 'MV2'):
+        m = doc['measurements'][key]
+        assert m['level'] == v2.MEASURE_LEVEL and m['low'] <= m['diff'] <= m['high'] and 'label' not in m, key
