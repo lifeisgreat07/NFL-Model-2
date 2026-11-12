@@ -38,6 +38,24 @@ function icon(sport){
     + 'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + parts + '</svg>' : '';
 }
 
+/* Stage 102 (Mark, 2026-11-11, option B): each card shows its league's own
+   mark, hot-linked from ESPN's image server as the team logos are, never
+   committed to this repository. Both the light and the dark version are on
+   the card and the theme shows one (home.css .lgm). If either fails to load,
+   the card falls back to our own icon (the listener below), so a refused
+   image never leaves a gap. The footer says the site is not affiliated. */
+const LEAGUE_MARKS = 'https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/';
+function leagueMark(sport){
+  if(!ICON_PARTS[sport]) return '';
+  const img = (v, cls) => `<img class="${cls}" src="${LEAGUE_MARKS}${v}/${sport}.png&amp;w=56&amp;h=56" alt="" width="26" height="26">`;
+  return `<span class="lgm" aria-hidden="true">${img('500', 'lgm-l')}${img('500-dark', 'lgm-d')}`
+    + `<span class="lgm-own">${icon(sport)}</span></span>`;
+}
+document.addEventListener('error', e => {
+  const box = e.target instanceof HTMLImageElement && e.target.closest('.lgm');
+  if(box) box.classList.add('lgm-failed');
+}, true);
+
 /* Stage 80 item 52 (the 2026-10-13 audit's F2): the best pick on each card,
    "COL 57% over DAL · 8:30 PM", from the slate the build hands over
    (home.py slate()): the strongest saved pick among `games` not started. */
@@ -53,7 +71,7 @@ function slateOf(sport){ return (HOME.slate || []).filter(r => r.s === sport); }
 function card(sport, name, href, status, big, rows, go){
   const kv = rows.length
     ? `<dl class="home-kv">${rows.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>` : '';
-  const inner = `<div class="home-card-top"><span class="home-sport">${icon(sport)}${esc(name)}</span>`
+  const inner = `<div class="home-card-top"><span class="home-sport">${leagueMark(sport)}${esc(name)}</span>`
     + `<span class="home-status${status.cls ? ' ' + status.cls : ''}">${esc(status.text)}</span></div>`
     + `<div class="home-big">${esc(big)}</div>${kv}`;
   // A sport with no page in this build gets a card that links nowhere.

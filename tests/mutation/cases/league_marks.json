@@ -1,0 +1,60 @@
+{
+  "target": "src/site/home/home.js",
+  "tests": "tests/test_league_marks.py",
+  "cases": [
+    {
+      "id": "league-mark-light-only",
+      "why": "a card carries only the light mark, so the dark theme shows a mark drawn for a white background, or none.",
+      "find": "  return `<span class=\"lgm\" aria-hidden=\"true\">${img('500', 'lgm-l')}${img('500-dark', 'lgm-d')}`\n",
+      "replace": "  return `<span class=\"lgm\" aria-hidden=\"true\">${img('500', 'lgm-l')}`\n",
+      "expect_caught_by": "test_each_card_mark_is_hot_linked_in_both_themes_with_our_icon_behind_it"
+    },
+    {
+      "id": "league-mark-no-fallback-listener",
+      "why": "a mark that fails to load is never noticed, so a refused image leaves an empty box where the sport's icon was.",
+      "find": "  if(box) box.classList.add('lgm-failed');\n",
+      "replace": "",
+      "expect_caught_by": "test_a_mark_that_fails_falls_back_and_the_theme_shows_one_version"
+    },
+    {
+      "id": "league-mark-failed-hides-our-icon",
+      "target": "src/site/home/home.css",
+      "why": "a card whose mark failed hides the mark and never shows our icon, so the card's sport goes unmarked.",
+      "find": ".lgm.lgm-failed .lgm-own{ display:inline-flex; }\n",
+      "replace": "",
+      "expect_caught_by": "test_a_mark_that_fails_falls_back_and_the_theme_shows_one_version"
+    },
+    {
+      "id": "league-mark-no-light-theme",
+      "target": "src/dashboard/styles.css",
+      "why": "the light theme never swaps to the light mark, so every page shows the dark-background mark on white.",
+      "find": "  [data-theme=\"light\"] .lgm .lgm-l{display:block;}\n",
+      "replace": "",
+      "expect_caught_by": "test_a_mark_that_fails_falls_back_and_the_theme_shows_one_version"
+    },
+    {
+      "id": "league-mark-sidebar-loose",
+      "target": "src/dashboard/styles.css",
+      "why": "the sidebar pills keep their old spacing, so with the marks in them NHL and NBA run out of the switcher.",
+      "find": "  .sidebar .sport-switch a{gap:3px; padding:0 var(--s1); font-size:var(--fs-12);}\n",
+      "replace": "",
+      "expect_caught_by": "test_the_sidebar_pills_tighten_so_four_fit"
+    },
+    {
+      "id": "league-mark-broken-image-on-a-sport-page",
+      "target": "src/sports/nhl/pages/body.html",
+      "why": "the NHL page's phone strip shows a broken-image glyph in its NFL pill when the mark fails, instead of hiding it.",
+      "find": "<nav class=\"sport-switch sport-strip\" aria-label=\"Sports\"><a href=\"../\">Home</a><a href=\"../nfl/\"><span class=\"lgm lgm-sm\" aria-hidden=\"true\"><img class=\"lgm-l\" src=\"https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/nfl.png&amp;w=36&amp;h=36\" alt=\"\" width=\"16\" height=\"16\" data-hide-on-error>",
+      "replace": "<nav class=\"sport-switch sport-strip\" aria-label=\"Sports\"><a href=\"../\">Home</a><a href=\"../nfl/\"><span class=\"lgm lgm-sm\" aria-hidden=\"true\"><img class=\"lgm-l\" src=\"https://a.espncdn.com/combiner/i?img=/i/teamlogos/leagues/500/nfl.png&amp;w=36&amp;h=36\" alt=\"\" width=\"16\" height=\"16\">",
+      "expect_caught_by": "test_every_sport_pages_switchers_carry_the_marks_and_hide_a_failed_one"
+    },
+    {
+      "id": "league-mark-no-affiliation-line",
+      "target": "src/site/home/page.html",
+      "why": "the leagues' marks are shown with nothing saying the site is not theirs, the reading the 2026-10-09 decline feared.",
+      "find": "    <p class=\"home-legal\">Sportalytics is an independent project, not affiliated with or endorsed by the NFL, the NHL, the NBA or MLB. League names and marks belong to their owners.</p>\n",
+      "replace": "",
+      "expect_caught_by": "test_the_footer_says_the_site_is_not_affiliated"
+    }
+  ]
+}
