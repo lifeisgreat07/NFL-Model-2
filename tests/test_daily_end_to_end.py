@@ -21,6 +21,7 @@ Run with: pytest tests/test_daily_end_to_end.py -v
 from __future__ import annotations
 
 import json
+import shutil
 from datetime import UTC, datetime
 from pathlib import Path
 from types import SimpleNamespace
@@ -110,6 +111,11 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
         assert rec['model_b'] is None and rec['price_used'] is False, 'no price in this test, so no Model B'
         assert 0 < rec['model_a'] < 1 and rec['training_through'] < rec['slate']
     assert f'v2 shadow: {len(picks)} saved' in first and 'v2 shadow: 0 saved' in second
+    # Audit 8 B2: a pick an earlier run saved never gets its shadow later, even when the shadow is missing.
+    shutil.rmtree(tmp_path / 'predictions' / f'{season}-v2')
+    assert daily.main(now=now, get=get) == 0
+    assert 'v2 shadow: 0 saved' in capsys.readouterr().out
+    assert not list((tmp_path / 'predictions' / f'{season}-v2').glob('*.json'))
     graded = json.loads((tmp_path / 'results' / f'graded_{season}.json').read_text(encoding='utf-8'))
     assert {r['game_id'] for r in graded} == {p.stem for p in picks}
     # Stage 85 item 1: the file says which registered looks were made and when the next is.
@@ -153,6 +159,11 @@ def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
         assert rec['model_b'] is None and rec['price_used'] is False, 'no price in this test, so no Model B'
         assert 0 < rec['model_a'] < 1 and rec['training_through'] < rec['slate']
     assert f'v2 shadow: {len(picks)} saved' in first and 'v2 shadow: 0 saved' in second
+    # Audit 8 B2: a pick an earlier run saved never gets its shadow later, even when the shadow is missing.
+    shutil.rmtree(tmp_path / 'predictions' / f'{season}-v2')
+    assert daily.main(now=now, get=get) == 0
+    assert 'v2 shadow: 0 saved' in capsys.readouterr().out
+    assert not list((tmp_path / 'predictions' / f'{season}-v2').glob('*.json'))
     assert (tmp_path / 'results' / f'graded_{season}.json').exists()
     # Stage 85 item 1: the file says which registered looks were made and when the next is.
     drift_file = json.loads((tmp_path / 'results' / f'drift_{season}.json').read_text(encoding='utf-8'))

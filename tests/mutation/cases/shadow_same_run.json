@@ -1,0 +1,33 @@
+{
+  "target": "src/sports/nhl/daily.py",
+  "tests": "tests/test_daily_end_to_end.py",
+  "cases": [
+    {
+      "id": "nhl-shadow-backfills-earlier-picks",
+      "target": "src/sports/nhl/daily.py",
+      "tests": "tests/test_daily_end_to_end.py",
+      "why": "audit 8's B2 put back: a game whose pick an earlier run saved gets its v2 shadow later, from a later price.",
+      "find": "            'v2 shadow', v2_shadow.save, locking[locking['game_id'].astype(str).isin(saved_now)], line_by_id,",
+      "replace": "            'v2 shadow', v2_shadow.save, locking, line_by_id,",
+      "expect_caught_by": "test_the_nhl_daily_run_end_to_end"
+    },
+    {
+      "id": "nba-shadow-backfills-earlier-picks",
+      "target": "src/sports/nba/daily.py",
+      "tests": "tests/test_daily_end_to_end.py",
+      "why": "audit 8's B2 put back on the NBA's run: an earlier run's pick gets its v2 shadow later.",
+      "find": "            'v2 shadow', v2_shadow.save, locking[locking['game_id'].astype(str).isin(saved_now)], prices,",
+      "replace": "            'v2 shadow', v2_shadow.save, locking, prices,",
+      "expect_caught_by": "test_the_nba_daily_run_end_to_end"
+    },
+    {
+      "id": "nhl-v2-late-records-not-excluded",
+      "target": "experiments/nhl/stage95_v2/registry.json",
+      "tests": "tests/test_day_sport_v2_registry.py",
+      "why": "one of the two shadow records written after its pick is left in V1 and V2.",
+      "find": "   \"2026020308\": \"shadow saved",
+      "replace": "   \"x2026020308\": \"shadow saved",
+      "expect_caught_by": "test_the_two_nhl_shadow_records_written_after_their_picks_are_kept_and_excluded"
+    }
+  ]
+}

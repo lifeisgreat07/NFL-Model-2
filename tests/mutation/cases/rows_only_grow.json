@@ -1,0 +1,24 @@
+{
+  "target": "src/core/rows_only_grow.py",
+  "tests": "tests/test_rows_only_grow.py",
+  "cases": [
+    {
+      "id": "rows-grow-removals-allowed",
+      "target": "src/core/rows_only_grow.py",
+      "tests": "tests/test_rows_only_grow.py",
+      "why": "a commit that rewrites a stored row passes, because only the file status is read.",
+      "find": "    bad = [(s, r, p) for s, r, p in found if s not in ('A', 'M') or r != '0']\n",
+      "replace": "    bad = [(s, r, p) for s, r, p in found if s not in ('A', 'M')]\n",
+      "expect_caught_by": "test_a_removed_or_rewritten_row_or_a_deleted_file_fails_naming_each"
+    },
+    {
+      "id": "rows-grow-unguarded-commit",
+      "target": ".github/workflows/ncaam-collect.yml",
+      "tests": "tests/test_rows_only_grow.py",
+      "why": "the collector's commit no longer checks that stored rows only grow.",
+      "find": "          python -m src.core.rows_only_grow data/ncaam/history\n",
+      "replace": "",
+      "expect_caught_by": "test_the_workflow_guards_the_history_before_committing_and_commits_after_a_listed_failure"
+    }
+  ]
+}

@@ -65,18 +65,45 @@ def load_history(first: int, last: int, folder: Path = history.HISTORY) -> tuple
     return games, lines
 
 
-def load_market(first: int, last: int, folder: Path = history.HISTORY) -> pd.DataFrame:
-    """(game_id, home_prob) for every priced game of seasons `first` to `last`; a season with no file has none."""
-    parts = [pd.read_csv(p, dtype={'game_id': str})[['game_id', 'home_prob']]
-             for s in range(first, last + 1) if (p := folder / f'market_{s}.csv').exists()]
+#: Audit 8 S3: a provider that publishes a model's output, not a book's price.
+NOT_A_BOOK = {'accuscore'}
+#: Audit 8 S3: a two-way price whose implied probabilities sum outside this band is not a moneyline (as v2's item 29).
+PRICE_SUM = (1.00, 1.20)
+
+
+def implied_sum(home_price: pd.Series, away_price: pd.Series) -> pd.Series:
+    def one(p: pd.Series) -> pd.Series:
+        return pd.Series(np.where(p > 0, 100.0 / (p + 100.0), -p / (-p + 100.0)), index=p.index)
+    return one(home_price.astype(float)) + one(away_price.astype(float))
+
+
+def load_market(first: int, last: int, folder: Path = history.HISTORY,
+                required: Sequence[int] = ()) -> pd.DataFrame:
+    """(game_id, home_prob) for every priced game of seasons `first` to `last`, without a provider in NOT_A_BOOK or a
+    price whose implied sum is outside PRICE_SUM. A season in `required` without a file raises."""
+    missing = [s for s in required if not (folder / f'market_{s}.csv').exists()]
+    if missing:
+        raise history.HistoryError(f'no market file for {missing}')
+    parts = []
+    for s in range(first, last + 1):
+        p = folder / f'market_{s}.csv'
+        if not p.exists():
+            continue
+        m = pd.read_csv(p, dtype={'game_id': str, 'provider': str})
+        if m.empty:
+            continue
+        total = implied_sum(m['home_price'], m['away_price'])
+        keep = ~m['provider'].fillna('').str.lower().isin(NOT_A_BOOK) & total.between(*PRICE_SUM)
+        parts.append(m.loc[keep, ['game_id', 'home_prob']])
     return pd.concat(parts, ignore_index=True) if parts else pd.DataFrame(columns=['game_id', 'home_prob'])
 
 
 def walk_forward(table: pd.DataFrame, columns: Sequence[str], seasons: Sequence[int],
                  needs_market: bool = False) -> pd.Series:
     """Out-of-sample home-win probabilities for every game of `seasons`, refitting before each game day on every
-    earlier row; a neutral-site game's forecast loses the fitted intercept. With `needs_market`, a game without a
-    price is neither trained on nor predicted."""
+    earlier row. With `needs_market` (Model B), a game without a price is neither trained on nor predicted, and a
+    neutral-site game keeps its intercept: its market price already carries the site (audit 8 S1). Otherwise (Model
+    A) a neutral-site game's forecast loses the fitted intercept."""
     table = table.dropna(subset=['home_win'])  # an official tie is neither trained on nor scored
     if needs_market:
         table = table.dropna(subset=['home_prob'])
@@ -87,7 +114,8 @@ def walk_forward(table: pd.DataFrame, columns: Sequence[str], seasons: Sequence[
         model = estimator().fit(train[list(columns)], train['home_win'])
         z = model.decision_function(today[list(columns)])
         neutral = today['neutral_site'].astype(bool).to_numpy()
-        z = np.where(neutral, z - float(model[-1].intercept_[0]), z)
+        if not needs_market:
+            z = np.where(neutral, z - float(model[-1].intercept_[0]), z)
         preds.update(zip(today['game_id'], 1.0 / (1.0 + np.exp(-z))))
     return pd.Series(preds, name='p')
 
@@ -165,10 +193,18 @@ def confirm(games: pd.DataFrame, lines: pd.DataFrame, market: pd.DataFrame, reg:
 def main_confirm() -> int:
     reg = registry()
     p = reg['protocol']
+    # Audit 8 note: the confirmation is run once. A result already on file is never overwritten, and the settings
+    # must be an entry of the registered grid.
+    if (RESULTS / 'confirmation.json').exists():
+        raise SystemExit('results/confirmation.json exists: the confirmation is run once and never rewritten')
     chosen = json.loads((RESULTS / 'tuning.json').read_text(encoding='utf-8'))['chosen']
+    grid = reg['models']['model_a']['grid']
+    if (chosen['H_days'] not in grid['H_days'] or chosen['lambda'] not in grid['lambda']
+            or chosen['K_outs'] not in grid['K_outs']):
+        raise SystemExit(f'tuning.json chose {chosen}, which is not in the registered grid')
     last = max(p['confirmation_seasons'])
     games, lines = load_history(p['training_from_season'], last)  # raises until every season is checked
-    market = load_market(p['training_from_season'], last)
+    market = load_market(p['training_from_season'], last, required=p['confirmation_seasons'])
     result = confirm(ratings.prepare(games), lines, market, reg, chosen)
     (RESULTS / 'confirmation.json').write_text(json.dumps(result, indent=1) + '\n', encoding='utf-8')
     for hid, q in result['questions'].items():

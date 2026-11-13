@@ -34,13 +34,26 @@
    },
    "rule": "Paired, resampling whole game days, 5,000 resamples, the registered forward test's seed; level 1 - 0.05/2 (97.5%), the backtests' alpha shared between the two comparisons. ACCEPT when the whole interval is below zero (v2 did better), REJECT when it is above zero, INCONCLUSIVE otherwise.",
    "consequence": "ACCEPT on V1 makes v2's Model A the registered Model A from the 2027-28 season, through a new registration that cites this one; never during the 2026 season. REJECT or INCONCLUSIVE keeps the registered model. V2 decides Model B the same way, independently.",
-   "budget": "Two confirmatory slots per sport, V1 and V2; each is spent by reaching its decision."
+   "budget": "Two confirmatory slots per sport, V1 and V2; each is spent by reaching its decision.",
+   "excluded": {
+    "2026020307": "shadow saved 2026-11-13T01:33:40Z, after its pick (2026-11-12T21:01:40Z), by a later run",
+    "2026020308": "shadow saved 2026-11-13T01:33:40Z, after its pick (2026-11-12T21:01:40Z), by a later run"
+   }
   }
  },
  "disclosures": [
   "Written on 2026-11-11, after both live seasons' first figures had been read (each sport's forward test and drift file) and after audit 7 had re-derived the backtests. The changes registered here were all named by the audit before then, and none was chosen by looking at the live figures; but they were chosen knowing the live figures exist, which is why the registered model is left untouched and v2 runs beside it as a shadow.",
   "Item 29's price rule was first written as one band, [1.00, 1.20]. Before this registration was opened and before anything was fitted, a count of the committed prices (read-only, no result) found it would discard 4,794 of 7,427: every three-way regulation price to 2023-24 sums to about 0.83 by construction. The native two-way prices all sum between 1.03 and 1.06. The three-way band [0.75, 1.00] was set from that count; 9 three-way prices fall outside it, each summing above 1.00."
  ],
- "amendments": [],
+ "amendments": [
+  {
+   "date": "2026-11-13",
+   "by": "Claude, under Mark's delegation, after audit 8 (Fable 5.2, 2026-11-13, finding B2), which Mark ran and sent",
+   "entry": "forward_test.shadow",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-13, after v2's backtests (results/backtest.json) and after the shadow's first records existed. No v2 forward-test comparison (V1, V2) had been computed; nothing here was chosen from a result.",
+   "change": "The daily run passed every locking game to the shadow, including games whose pick an earlier run had saved, so a shadow missing from that run (the shadow step failed, or the shadow did not exist yet) was written later, from a later price. From this amendment the run passes the shadow only the games whose pick it saved itself, as forward_test.shadow says (the same run, the same moment, nothing backfilled). Two records already written that way are kept, never rewritten, and excluded from V1 and V2: 2026020307 and 2026020308, whose picks were saved at 2026-11-12T21:01:40Z and whose shadow records at 2026-11-13T01:33:40Z, by the first run that carried the shadow's code."
+  }
+ ],
  "not_in_this_registration": "Any change to the registered models, picks, forward test, drift check or pages. Anything not named under changes. Items 24, 27 and 30 are the NBA's only."
 }
