@@ -118,6 +118,42 @@
       "find": "    table = table.dropna(subset=['home_win'])  # an official tie is neither trained on nor scored\n",
       "replace": "",
       "expect_caught_by": "test_the_walk_forward_takes_the_intercept_off_a_neutral_game"
+    },
+    {
+      "id": "mlb-bt-unpriced-in-model-b",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "Model B trains on and predicts games with no market price.",
+      "find": "    if needs_market:\n        table = table.dropna(subset=['home_prob'])\n",
+      "replace": "",
+      "expect_caught_by": "test_without_a_price_a_game_is_neither_trained_on_nor_predicted_by_model_b"
+    },
+    {
+      "id": "mlb-bt-games-not-days",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "the bootstrap resamples single games, not whole game days, so the interval is too narrow.",
+      "find": "    per_day = frame.groupby('day')['diff'].agg(['sum', 'count'])\n",
+      "replace": "    per_day = frame.groupby(frame.index)['diff'].agg(['sum', 'count'])\n",
+      "expect_caught_by": "test_the_interval_resamples_whole_days_and_is_zero_for_identical_forecasts"
+    },
+    {
+      "id": "mlb-bt-measurement-labelled",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "M1, a measurement that spends no slot, is given a decision label.",
+      "find": "        if hid != 'M1':\n            entry['label'] = label(iv)\n",
+      "replace": "        entry['label'] = label(iv)\n",
+      "expect_caught_by": "test_confirmation_answers_each_question_on_its_own_games"
+    },
+    {
+      "id": "mlb-bt-confirm-before-2026-checked",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "confirmation reads only through 2025, so it can run before 2026 is checked and score one season alone.",
+      "find": "    last = max(p['confirmation_seasons'])\n",
+      "replace": "    last = min(p['confirmation_seasons'])\n",
+      "expect_caught_by": "test_confirmation_reads_through_the_last_confirmation_season_and_so_waits_for_its_check"
     }
   ]
 }

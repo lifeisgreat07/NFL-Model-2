@@ -100,3 +100,65 @@ def test_tuning_reads_no_game_after_the_validation_seasons(monkeypatch):
     with pytest.raises(StopIteration):
         backtest.tune(g, pd.DataFrame(), backtest.registry())
     assert seen['max_season'] == 2024
+
+
+def synthetic(n_days=400, per_day=3, seed=11):
+    """A table as ratings.features returns it, over 2024 to 2026, with one feature that carries the outcome."""
+    rng = np.random.default_rng(seed)
+    days = pd.date_range('2024-03-01', periods=n_days, freq='2D')
+    rows = []
+    for d in days:
+        for j in range(per_day):
+            x = rng.normal()
+            rows.append({'game_id': f'{d:%Y%m%d}{j}', 'day': d, 'season': d.year, 'game_type': 'regular',
+                         'home': 'A', 'away': 'B', 'neutral_site': False,
+                         'run_matchup_10': x, 'starter_matchup_150': rng.normal(),
+                         'home_win': float(rng.random() < 1 / (1 + np.exp(-(0.2 + x))))})
+    return pd.DataFrame(rows)
+
+
+def test_without_a_price_a_game_is_neither_trained_on_nor_predicted_by_model_b():
+    t = synthetic()
+    t['home_prob'] = np.where(np.arange(len(t)) % 4 == 0, np.nan, 0.55)
+    p = backtest.walk_forward(t, ['run_matchup_10'], [2025], needs_market=True)
+    priced = set(t.loc[(t['season'] == 2025) & t['home_prob'].notna(), 'game_id'])
+    assert set(p.index) == priced
+
+
+def test_the_interval_resamples_whole_days_and_is_zero_for_identical_forecasts():
+    t = synthetic(n_days=60)
+    a = pd.Series(0.6, index=t['game_id'])
+    iv = backtest.day_block_interval(a, a, t, 0.9833, n=200)
+    assert iv['days'] == 60 and iv['games'] == 180
+    assert iv['diff'] == iv['low'] == iv['high'] == 0.0
+
+
+def test_confirmation_answers_each_question_on_its_own_games(monkeypatch):
+    t = synthetic()
+    t.loc[t.index[-1], 'home_win'] = np.nan  # an official tie: never scored
+    market = pd.DataFrame({'game_id': t['game_id'][::2], 'home_prob': 0.55})
+    monkeypatch.setattr(backtest.ratings, 'features', lambda g, lines, h, alphas, shrinks: t.copy())
+    reg = backtest.registry()
+    reg['protocol']['confirmation_seasons'] = [2025, 2026]
+    out = backtest.confirm(pd.DataFrame(), pd.DataFrame(), market, reg,
+                           {'H_days': 120, 'lambda': 10.0, 'K_outs': 150.0})
+    played = t[t['season'].isin([2025, 2026])].dropna(subset=['home_win'])
+    priced = played[played['game_id'].isin(market['game_id'])]
+    q = out['questions']
+    assert q['H1']['games'] == len(played) and q['M1']['games'] == len(played)
+    assert q['H2']['games'] == q['H3']['games'] == len(priced) == out['scores']['market']['games']
+    assert {k: v.get('label') for k, v in q.items()}['M1'] is None
+    assert all(q[h]['label'] in ('ACCEPT', 'REJECT', 'INCONCLUSIVE') for h in ('H1', 'H2', 'H3'))
+    assert q['H1']['level'] == 0.9833
+
+
+def test_confirmation_reads_through_the_last_confirmation_season_and_so_waits_for_its_check(monkeypatch):
+    seen = {}
+
+    def fake_load(first, last, folder=None):
+        seen['span'] = (first, last)
+        raise StopIteration
+    monkeypatch.setattr(backtest, 'load_history', fake_load)
+    with pytest.raises(StopIteration):
+        backtest.main(['confirm'])
+    assert seen['span'] == (2010, 2026)
