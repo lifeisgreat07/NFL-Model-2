@@ -1,0 +1,42 @@
+{
+  "target": "src/sports/nhl/v3.py",
+  "tests": "tests/test_nhl_v3.py",
+  "cases": [
+    {
+      "id": "nhl-v3-b2b-reversed",
+      "target": "src/sports/nhl/v3.py",
+      "tests": "tests/test_nhl_v3.py",
+      "why": "the flag is turned around, so the home club's back-to-back counts against the away club.",
+      "find": "    return pd.Series([a - h for a, h in zip(away, home)], index=rows.index, name=B2B, dtype=float)\n",
+      "replace": "    return pd.Series([h - a for a, h in zip(away, home)], index=rows.index, name=B2B, dtype=float)\n",
+      "expect_caught_by": "test_the_flag_is_the_away_clubs_back_to_back_minus_the_home_clubs"
+    },
+    {
+      "id": "nhl-v3-b2b-same-day",
+      "target": "src/sports/nhl/v3.py",
+      "tests": "tests/test_nhl_v3.py",
+      "why": "the flag reads the game's own day, so a club counts as tired by the game it is playing.",
+      "find": "    before = pd.to_datetime(rows['day']).dt.normalize() - pd.Timedelta(days=1)\n",
+      "replace": "    before = pd.to_datetime(rows['day']).dt.normalize()\n",
+      "expect_caught_by": "test_the_flag_is_the_away_clubs_back_to_back_minus_the_home_clubs"
+    },
+    {
+      "id": "nhl-v3-model-b-neutral-twice",
+      "target": "src/sports/nhl/v3_shadow.py",
+      "tests": "tests/test_nhl_v3.py",
+      "why": "Model B loses its intercept on a neutral site, against the v3 registration (audit 8 S1).",
+      "find": "    if neutral and drop_intercept:\n",
+      "replace": "    if neutral:\n",
+      "expect_caught_by": "test_on_a_neutral_site_model_a_loses_the_intercept_and_model_b_keeps_it"
+    },
+    {
+      "id": "nhl-v3-shadow-unwired",
+      "target": "src/sports/nhl/daily.py",
+      "tests": "tests/test_daily_end_to_end.py",
+      "why": "the daily run never calls v3's shadow, so v3 collects nothing.",
+      "find": "            'v3 shadow', v3_shadow.save,",
+      "replace": "            'v3 shadow', lambda *a, **k: [],",
+      "expect_caught_by": "test_the_nhl_daily_run_end_to_end"
+    }
+  ]
+}

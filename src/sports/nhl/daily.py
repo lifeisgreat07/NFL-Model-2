@@ -82,6 +82,7 @@ from src.sports.nhl import (
     roster,
     standings,
     v2_shadow,
+    v3_shadow,
 )
 from src.sports.nhl import schedule as nhl_schedule
 from src.sports.nhl.lock import GameLock
@@ -388,6 +389,15 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             PATHS.predictions / f'{season}-v2', now, first)
         if shadow is not None:
             print(f'v2 shadow: {len(shadow)} saved')
+        # Stage 105: v3's shadow forecasts beside v2's, for the same games, never a pick
+        # (experiments/nhl/stage105_v3/registry.json, forward_test.shadow).
+        v3s = after_save.guarded(
+            'v3 shadow', v3_shadow.save, locking[locking['game_id'].astype(str).isin(saved_now)], line_by_id,
+            goalie_ids, pd.concat([past, current], ignore_index=True),
+            v2_shadow.history_market(first, season - 1, PATHS.data / 'lines' / f'{season}.json'), sched,
+            PATHS.predictions / f'{season}-v3', now, first)
+        if v3s is not None:
+            print(f'v3 shadow: {len(v3s)} saved')
     def write_grades() -> list[dict[str, Any]]:
         graded = grade(folder, sched)
         out = PATHS.results / f'graded_{season}.json'
