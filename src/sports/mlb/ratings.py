@@ -29,6 +29,7 @@ MIN_TRAIN = 100
 #: The shrinkage toward the league, in outs, when none is given (the grid's lowest, the value first registered).
 SHRINK_OUTS = 150.0
 OUTS_PER_GAME = 27.0
+ET = 'America/New_York'
 
 
 def prepare(games: pd.DataFrame) -> pd.DataFrame:
@@ -36,7 +37,14 @@ def prepare(games: pd.DataFrame) -> pd.DataFrame:
     g = games.copy()
     for col in ('game_id', 'home', 'away', 'home_starter', 'away_starter'):
         g[col] = g[col].astype(str)
+    # Audit 8 B1: a game is dated on the day it was completed. A suspended game keeps its official date (`slate`,
+    # which the Retrosheet check matches on) but its result exists only from its resumption, the last listing's
+    # start; dated on `slate` it fed every rating between the two days.
     g['day'] = pd.to_datetime(g['slate'])
+    if 'start_utc' in g:
+        start = pd.to_datetime(g['start_utc'], utc=True, errors='coerce').dt.tz_convert(ET)
+        g['day'] = g['day'].where(start.isna() | (start.dt.tz_localize(None).dt.normalize() <= g['day']),
+                                  start.dt.tz_localize(None).dt.normalize())
     g['run_margin'] = (g['home_score'] - g['away_score']).astype(float)
     # An official tie has no winner: it rates with a margin of 0 and is never a training or scored row.
     g['home_win'] = np.where(g['home_score'] == g['away_score'], np.nan,
