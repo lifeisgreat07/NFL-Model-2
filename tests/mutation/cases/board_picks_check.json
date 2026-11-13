@@ -1,0 +1,15 @@
+{
+  "target": "tests/browser/check_board_picks.py",
+  "tests": "tests/test_board_picks_reads_picks_only.py",
+  "cases": [
+    {
+      "id": "board-check-reads-shadow-records",
+      "target": "tests/browser/check_board_picks.py",
+      "tests": "tests/test_board_picks_reads_picks_only.py",
+      "why": "the check reads any season folder, so a v2 or v3 shadow record, which has no pick, is read as the pick (KeyError on #738).",
+      "find": "    return [p for p in (pred / sport).glob(f'*/{gid}.json') if p.parent.name.isdigit()]\n",
+      "replace": "    return list((pred / sport).glob(f'*/{gid}.json'))\n",
+      "expect_caught_by": "test_a_pick_is_read_from_a_season_folder_only"
+    }
+  ]
+}
