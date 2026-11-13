@@ -1,0 +1,69 @@
+{
+  "target": "src/sports/ncaam/seeds.py",
+  "tests": "tests/test_ncaam_seeds.py",
+  "cases": [
+    {
+      "id": "ncaam-seeds-any-tournament",
+      "target": "src/sports/ncaam/seeds.py",
+      "tests": "tests/test_ncaam_seeds.py",
+      "why": "an NIT or other tournament game's AP rank is read as an NCAA seed.",
+      "find": "        if str(comp.get('tournamentId') or '') != NCAA:\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_the_seed_is_the_curated_rank_and_only_tournament_games_count"
+    },
+    {
+      "id": "ncaam-seeds-pair-unchecked",
+      "target": "src/sports/ncaam/seeds.py",
+      "tests": "tests/test_ncaam_seeds.py",
+      "why": "a first-round pair that does not add to seventeen, a sign the rank is not the seed, is stored.",
+      "find": "        if round_of_64(str(g.note), season) and h + a != 17:\n",
+      "replace": "        if False:\n",
+      "expect_caught_by": "test_a_first_round_pair_not_adding_to_seventeen_or_a_seed_outside_one_to_sixteen_stops_naming_each"
+    },
+    {
+      "id": "ncaam-seeds-old-round-name",
+      "target": "src/sports/ncaam/seeds.py",
+      "tests": "tests/test_ncaam_seeds.py",
+      "why": "2015's round of 64, then called the second round, is not recognised, so its pairs go unchecked.",
+      "find": "    name = '1st Round' if season >= 2015 else '2nd Round'\n",
+      "replace": "    name = '1st Round'\n",
+      "expect_caught_by": "test_the_round_of_64_is_named_by_its_era_and_counted"
+    },
+    {
+      "id": "ncaam-seeds-fill-anywhere",
+      "target": "src/sports/ncaam/seeds.py",
+      "tests": "tests/test_ncaam_seeds.py",
+      "why": "a missing seed is copied from the opponent in any round, where the two seeds are not equal.",
+      "find": "        if 'first four' in str(g.note).lower() and ok(h) != ok(a):\n",
+      "replace": "        if ok(h) != ok(a):\n",
+      "expect_caught_by": "test_a_first_four_side_espn_leaves_unranked_takes_its_opponents_seed_and_says_so"
+    },
+    {
+      "id": "ncaam-seeds-club-inconsistent",
+      "target": "src/sports/ncaam/seeds.py",
+      "tests": "tests/test_ncaam_seeds.py",
+      "why": "a club seeded differently in two games passes, so a misread seed is stored.",
+      "find": "            if club_seed.setdefault(str(club), seed) != seed:\n",
+      "replace": "            if False:\n",
+      "expect_caught_by": "test_a_club_seeded_differently_in_two_games_stops_the_run"
+    },
+    {
+      "id": "ncaam-seeds-missing-game-skipped",
+      "target": "src/sports/ncaam/seeds.py",
+      "tests": "tests/test_ncaam_seeds.py",
+      "why": "a tournament game the scoreboard does not list is silently left without seeds.",
+      "find": "            problems.append(f'game {gid}: not on the scoreboard')\n",
+      "replace": "            pass\n",
+      "expect_caught_by": "test_a_tournament_game_missing_from_the_scoreboard_is_named"
+    },
+    {
+      "id": "ncaam-seeds-first-round-uncounted",
+      "target": "src/sports/ncaam/seeds.py",
+      "tests": "tests/test_ncaam_seeds.py",
+      "why": "a finished tournament with first-round games missing is accepted.",
+      "find": "    if finished and first_round != expected:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_the_round_of_64_is_named_by_its_era_and_counted"
+    }
+  ]
+}
