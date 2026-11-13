@@ -162,3 +162,61 @@ def test_confirmation_reads_through_the_last_confirmation_season_and_so_waits_fo
     with pytest.raises(StopIteration):
         backtest.main(['confirm'])
     assert seen['span'] == (2010, 2026)
+
+
+def test_a_suspended_game_is_dated_on_the_day_it_was_completed():
+    g = pd.DataFrame([['746942', 2024, '2024-06-26', 'regular', '111', '141', 4, 1, False, 'p', 'q',
+                       '2024-08-26T18:05:00Z'],
+                      ['2', 2024, '2024-06-26', 'regular', '111', '141', 2, 3, False, 'p', 'q', '2024-06-26T23:10:00Z'],
+                      ['3', 2014, '2014-03-23', 'regular', '109', '119', 1, 3, True, 'p', 'q', '2014-03-23T02:00:00Z']],
+                     columns=['game_id', 'season', 'slate', 'game_type', 'home', 'away', 'home_score', 'away_score',
+                              'neutral_site', 'home_starter', 'away_starter', 'start_utc'])
+    day = ratings.prepare(g).set_index('game_id')['day'].dt.strftime('%Y-%m-%d')
+    assert day['746942'] == '2024-08-26', 'resumed and finished two months later'
+    assert day['2'] == '2024-06-26', 'a night game stays on its Eastern date'
+    assert day['3'] == '2014-03-23', 'a game started abroad before its official Eastern date keeps that date'
+
+
+def market_file(folder, season, rows):
+    pd.DataFrame(rows, columns=['game_id', 'season', 'espn_id', 'provider', 'home_price', 'away_price', 'closing',
+                                'swapped', 'home_prob']).to_csv(folder / f'market_{season}.csv', index=False)
+
+
+def test_a_model_output_or_an_incoherent_price_is_not_a_market(tmp_path):
+    market_file(tmp_path, 2012, [['1', 2012, 'a', 'accuscore', -122, 115, False, False, 0.54],
+                                 ['2', 2012, 'b', 'consensus', -150, 130, False, False, 0.59]])
+    market_file(tmp_path, 2013, [['3', 2013, 'c', 'ESPN BET', 185, 185, True, False, 0.5],
+                                 ['4', 2013, 'd', 'ESPN BET', -227, -286, True, False, 0.5],
+                                 ['5', 2013, 'e', 'ESPN BET', -110, -110, True, False, 0.5]])
+    assert list(backtest.load_market(2012, 2013, folder=tmp_path)['game_id']) == ['2', '5']
+    with pytest.raises(backtest.history.HistoryError, match=r'no market file for \[2014\]'):
+        backtest.load_market(2012, 2014, folder=tmp_path, required=[2013, 2014])
+
+
+def test_on_a_neutral_site_model_b_keeps_its_intercept_and_model_a_does_not():
+    t = synthetic()
+    t['home_prob'] = 0.5
+    t['market_logit'] = 0.0
+    t.loc[t.index[-1], 'neutral_site'] = True
+    last = t['game_id'].iloc[-1]
+    season = int(t['season'].iloc[-1])
+    with_site = backtest.walk_forward(t, ['run_matchup_10', 'market_logit'], [season], needs_market=True)
+    plain = t.copy()
+    plain['neutral_site'] = False
+    without = backtest.walk_forward(plain, ['run_matchup_10', 'market_logit'], [season], needs_market=True)
+    assert with_site[last] == pytest.approx(without[last]), 'Model B: the price carries the site'
+    a = backtest.walk_forward(t, ['run_matchup_10'], [season])
+    a_plain = backtest.walk_forward(plain, ['run_matchup_10'], [season])
+    assert a[last] < a_plain[last], 'Model A: the home edge comes off'
+
+
+def test_the_confirmation_runs_once_and_only_on_a_registered_setting(tmp_path, monkeypatch):
+    monkeypatch.setattr(backtest, 'RESULTS', tmp_path)
+    (tmp_path / 'confirmation.json').write_text('{}', encoding='utf-8')
+    with pytest.raises(SystemExit, match='run once and never rewritten'):
+        backtest.main(['confirm'])
+    (tmp_path / 'confirmation.json').unlink()
+    (tmp_path / 'tuning.json').write_text('{"chosen": {"H_days": 90, "lambda": 10.0, "K_outs": 150.0}}',
+                                          encoding='utf-8')
+    with pytest.raises(SystemExit, match='not in the registered grid'):
+        backtest.main(['confirm'])

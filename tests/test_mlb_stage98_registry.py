@@ -116,6 +116,11 @@ def test_it_was_registered_before_any_result_exists():
     if not (FOLDER / 'results').exists():
         assert all('result' not in h and 'label' not in h for h in reg['hypotheses'])
     assert reg['registered'] == '2026-11-12'
-    assert [a['entry'] for a in reg['amendments']] == ['models.model_a.grid', 'models.model_a.starter_matchup',
-                                                       'protocol.games']
-    assert all(a['before_any_result'] and a['date'] == '2026-11-12' for a in reg['amendments'])
+    first, audit8 = reg['amendments'][:3], reg['amendments'][3:]
+    assert [a['entry'] for a in first] == ['models.model_a.grid', 'models.model_a.starter_matchup', 'protocol.games']
+    assert all(a['before_any_result'] and a['date'] == '2026-11-12' for a in first)
+    # Audit 8's answers (2026-11-13) all came after the validation results, and say so.
+    assert [a['entry'] for a in audit8] == ['protocol.walk_forward', 'data.market', 'protocol.neutral_site',
+                                            'amendments', 'data.fallback_check', 'protocol.confirmation']
+    assert all(a['before_any_result'] is False and a['date'] == '2026-11-13' for a in audit8)
+    assert 'cannot be recovered' in audit8[3]['change'] and 'second half of 2025' in audit8[3]['change']

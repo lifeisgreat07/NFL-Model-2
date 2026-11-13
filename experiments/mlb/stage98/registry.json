@@ -103,6 +103,54 @@
    "before_any_result": true,
    "seen": "Written on 2026-11-12, after the history was read and checked against Retrosheet and before any MLB model, feature or rating was fitted or scored on it. A read-only review of this registration (next-registration proposals, 2026-11-12) had fitted a proxy of Model A on Retrosheet game logs for 2010-2022 only, training seasons, with no validation or confirmation season read; its figures prompted items 1 and 2. One figure had been printed before it: while timing the feature builder, Model A's walk-forward log loss on 2025's second half (a confirmation season) at the first-registered settings, with each feature alone. No validation-season figure had been computed. The changes come from the proxy's training-season figures and owe nothing to that print.",
    "change": "The history's first build stopped on gamePk 449244, an official 1-1 tie. The outcome is undefined for it, so it is neither trained on nor scored; as registered there was no rule for it."
+  },
+  {
+   "date": "2026-11-13",
+   "by": "Claude, under Mark's delegation, after audit 8 (Fable 5.2, 2026-11-13), which Mark ran and sent",
+   "entry": "protocol.walk_forward",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-13, after the validation tuning (results/tuning.json, #728) and before any confirmation-season result: `python -m src.sports.mlb.backtest confirm` has never run and refuses to until 2026 is checked. These changes come from audit 8's findings, not from any figure.",
+   "change": "Audit 8 B1. A game is dated on the Eastern date its last listing started, when that is later than its official date: a suspended game keeps its official date in the Stats API, but its result exists only once it is completed, and dated on the official date it fed every rating and refit in between (47 games in 2010-2025, one of them 61 days inside 2024). The Retrosheet check still matches on the official date. The tuning was re-run with this dating: it chose H 120, lambda 10, K_outs 150 (log loss 0.68056), against H 120, lambda 10, K_outs 150 (0.68057) before. The chosen setting is unchanged. The validation results had been seen, so this amendment is not before any result."
+  },
+  {
+   "date": "2026-11-13",
+   "by": "Claude, under Mark's delegation, after audit 8 (Fable 5.2, 2026-11-13), which Mark ran and sent",
+   "entry": "data.market",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-13, after the validation tuning (results/tuning.json, #728) and before any confirmation-season result: `python -m src.sports.mlb.backtest confirm` has never run and refuses to until 2026 is checked. These changes come from audit 8's findings, not from any figure.",
+   "change": "Audit 8 S3. A price from AccuScore (669 of 2012's 670 priced games) is a model's output, not a book's, and is not used, as ESPN's projection feeds were not. A two-way price whose implied probabilities sum outside 1.00-1.20 is not used (75 prices in 2013, 2017, 2018 and 2019), as the NBA's and NHL's v2 registrations already rule. Both are applied when the market file is read; the files stay as read. Model B's priced training games now start in 2013. The market is not used by the tuning."
+  },
+  {
+   "date": "2026-11-13",
+   "by": "Claude, under Mark's delegation, after audit 8 (Fable 5.2, 2026-11-13), which Mark ran and sent",
+   "entry": "protocol.neutral_site",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-13, after the validation tuning (results/tuning.json, #728) and before any confirmation-season result: `python -m src.sports.mlb.backtest confirm` has never run and refuses to until 2026 is checked. These changes come from audit 8's findings, not from any figure.",
+   "change": "Audit 8 S1. On a neutral-site game Model A's forecast loses the fitted intercept, as registered. Model B's no longer does: its estimator standardises the features, so the intercept is not the home edge, and the market price already carries the site; removing the intercept took the home edge off twice (Model B's intercept +0.137 against -0.015 with every feature at zero, on 2010-2024)."
+  },
+  {
+   "date": "2026-11-13",
+   "by": "Claude, under Mark's delegation, after audit 8 (Fable 5.2, 2026-11-13), which Mark ran and sent",
+   "entry": "amendments",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-13, after the validation tuning (results/tuning.json, #728) and before any confirmation-season result: `python -m src.sports.mlb.backtest confirm` has never run and refuses to until 2026 is checked. These changes come from audit 8's findings, not from any figure.",
+   "change": "Audit 8 S2, a correction of the record. The three amendments of 2026-11-12 say before_any_result: true. That is true of every validation and confirmation result the registration decides on, but not of everything: while timing the feature code, Model A's walk-forward log loss on the second half of 2025, a confirmation season, had been printed, with both features and with each alone, at the first registered settings. Those figures and the script that printed them were not kept and cannot be recovered, so they cannot be checked here. Amendment 1 widened the grid for the starter term, one of the components printed; the tuning then chose the first registered values of all three settings, so the widening changed nothing. Every amendment from this one on is marked as after a result."
+  },
+  {
+   "date": "2026-11-13",
+   "by": "Claude, under Mark's delegation, after audit 8 (Fable 5.2, 2026-11-13), which Mark ran and sent",
+   "entry": "data.fallback_check",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-13, after the validation tuning (results/tuning.json, #728) and before any confirmation-season result: `python -m src.sports.mlb.backtest confirm` has never run and refuses to until 2026 is checked. These changes come from audit 8's findings, not from any figure.",
+   "change": "Audit 8 S4, a disclosure. The Retrosheet check compares regular-season games only: the postseason, 32 to 53 games a season and 87 in 2025-2026, is stored and used unchecked. A game whose home and away are swapped always counts as agreeing, because neutral_site is itself defined as a venue not the home club's own; the number of such games is not recorded in checks.json."
+  },
+  {
+   "date": "2026-11-13",
+   "by": "Claude, under Mark's delegation, after audit 8 (Fable 5.2, 2026-11-13), which Mark ran and sent",
+   "entry": "protocol.confirmation",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-13, after the validation tuning (results/tuning.json, #728) and before any confirmation-season result: `python -m src.sports.mlb.backtest confirm` has never run and refuses to until 2026 is checked. These changes come from audit 8's findings, not from any figure.",
+   "change": "Audit 8 note. The confirmation is run once: the code refuses when results/confirmation.json exists, when tuning.json's setting is not an entry of the registered grid, or when a confirmation season has no market file."
   }
  ],
  "prerequisite": "The Stats API history (schedule, finals, venues and box scores) for 2010 to 2026, read once and checked against Retrosheet as fallback_check says, and the ESPN market history read once, both stored by the backtest's own code so a re-run reads the same inputs.",
@@ -116,7 +164,8 @@
   "This is the first MLB registration, written by Claude under delegation rather than approved by Mark question by question as the NFL's were.",
   "Openers. The starter is the first pitcher the box score lists, so in a bullpen game an opener with a short line stands for the start. This is kept as registered rather than replaced by a minimum-outs rule chosen now; a starter-definition change would be a later registration.",
   "Toronto 2020 and 2021. Under neutral_site, all 30 of Toronto's 2020 home games (Buffalo, and its games hosted in the opponents' parks) and 45 of its 81 in 2021 (Dunedin and Buffalo) are neutral, as are 90 games in all in 2020 (Toronto's and the postseason's neutral rounds) and 48 in 2021, against 1 to 11 in every other season from 2010 to 2026. They lose the fitted home edge and stay in training.",
-  "Market depth. ESPN's history carries no real pre-game moneyline before 2012 (a moneyline of 0 is no price), and only part of 2012 (about 670 games, all from one provider). Model B trains only on games with a price, so its training starts in 2012 in effect; Model A's training is unchanged."
+  "Market depth. ESPN's history carries no real pre-game moneyline before 2012 (a moneyline of 0 is no price), and only part of 2012 (about 670 games, all from one provider). Model B trains only on games with a price, so its training starts in 2012 in effect; Model A's training is unchanged.",
+  "Audit 8 (2026-11-13) found the code dating suspended games on their start, Model B's neutral-site rule removing the home edge twice, model outputs and incoherent prices in the market, a narrower Retrosheet check than registered, and an inaccurate before_any_result on the amendments of 2026-11-12. Each is answered by an amendment of 2026-11-13, all marked as after the validation results."
  ],
  "hypotheses": [
   {
