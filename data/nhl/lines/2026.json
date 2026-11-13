@@ -3406,5 +3406,29 @@
   "home_prob": 0.5325,
   "read_utc": "2026-11-12T21:01:40Z",
   "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020310",
+  "start_utc": "2026-11-14T02:00:00Z",
+  "home": "VAN",
+  "away": "NYR",
+  "book": "DraftKings",
+  "home_price": 185.0,
+  "away_price": -225.0,
+  "home_prob": 0.3364,
+  "read_utc": "2026-11-13T21:01:45Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ {
+  "game_id": "2026020311",
+  "start_utc": "2026-11-14T03:00:00Z",
+  "home": "VGK",
+  "away": "NSH",
+  "book": "DraftKings",
+  "home_price": -162.0,
+  "away_price": 136.0,
+  "home_prob": 0.5934,
+  "read_utc": "2026-11-13T21:01:45Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
  }
 ]

@@ -1,0 +1,75 @@
+{
+ "game_id": "2026020311",
+ "season": 2026,
+ "slate": "2026-11-13",
+ "start_utc": "2026-11-14T03:00:00Z",
+ "home": "VGK",
+ "away": "NSH",
+ "model_a": 0.6145,
+ "model_b": 0.6131,
+ "pick": "VGK",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": 0.330532,
+  "shot_matchup": 5.167168,
+  "goalie_matchup_2000": -0.003411
+ },
+ "market": {
+  "game_id": "2026020311",
+  "start_utc": "2026-11-14T03:00:00Z",
+  "home": "VGK",
+  "away": "NSH",
+  "book": "DraftKings",
+  "home_price": -162.0,
+  "away_price": 136.0,
+  "home_prob": 0.5934,
+  "read_utc": "2026-11-13T21:01:45Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8478499,
+   "name": "Adin Hill",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/JesseGranger_/status/2121324216989708531"
+  },
+  "away": {
+   "player_id": 8477424,
+   "name": "Juuse Saros",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/MaxHerzTalks/status/2121324144650522732?a=lRSn6eKfvEESe3zmqfc&s=20"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-13",
+  "read_utc": "2026-11-13T21:01:45Z",
+  "home": [
+   {
+    "name": "Noah Hanifin",
+    "position": "D",
+    "status": "Out"
+   }
+  ],
+  "away": [
+   {
+    "name": "Jonathan Marchessault",
+    "position": "RW",
+    "status": "Out"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-13T21:01:45Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14712,
+  "training_games_priced": 7681,
+  "training_ids_sha256": "ac67cf180313994cb4fcc0a1161257e31469826dc0167956fc36e8fccb33fda0"
+ },
+ "code_sha256": "5be72f17f6dd197602abd9c3f65295f11d17c5a3ea1582c8d0c5baa1326fe33f",
+ "code_commit": "b785d06bcba55041ce4e8a471eb2f71780d69976"
+}

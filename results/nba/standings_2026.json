@@ -1,5 +1,5 @@
 {
- "as_of": "2026-11-12",
+ "as_of": "2026-11-13",
  "simulations": 10000,
  "games_listed": [
   80,
@@ -12,8 +12,8 @@
    "wins_now": 10,
    "losses_now": 2,
    "projected_wins": 60.0,
-   "top6_pct": 0.9993,
-   "playin_pct": 0.0007,
+   "top6_pct": 0.9995,
+   "playin_pct": 0.0005,
    "playoff_pct": 1.0
   },
   {
@@ -21,7 +21,7 @@
    "conference": "East",
    "wins_now": 10,
    "losses_now": 2,
-   "projected_wins": 59.4,
+   "projected_wins": 59.3,
    "top6_pct": 1.0,
    "playin_pct": 0.0,
    "playoff_pct": 1.0
@@ -31,10 +31,10 @@
    "conference": "West",
    "wins_now": 8,
    "losses_now": 4,
-   "projected_wins": 58.6,
-   "top6_pct": 0.9982,
-   "playin_pct": 0.0018,
-   "playoff_pct": 1.0
+   "projected_wins": 58.4,
+   "top6_pct": 0.9972,
+   "playin_pct": 0.0028,
+   "playoff_pct": 0.9999
   },
   {
    "team": "NY",
@@ -42,19 +42,19 @@
    "wins_now": 6,
    "losses_now": 5,
    "projected_wins": 55.2,
-   "top6_pct": 0.9995,
-   "playin_pct": 0.0005,
+   "top6_pct": 0.9994,
+   "playin_pct": 0.0006,
    "playoff_pct": 1.0
   },
   {
    "team": "DET",
    "conference": "East",
-   "wins_now": 7,
+   "wins_now": 8,
    "losses_now": 3,
-   "projected_wins": 54.9,
-   "top6_pct": 0.9989,
-   "playin_pct": 0.0011,
-   "playoff_pct": 1.0
+   "projected_wins": 54.7,
+   "top6_pct": 0.9993,
+   "playin_pct": 0.0007,
+   "playoff_pct": 0.9999
   },
   {
    "team": "HOU",
@@ -62,19 +62,19 @@
    "wins_now": 9,
    "losses_now": 3,
    "projected_wins": 54.6,
-   "top6_pct": 0.9692,
-   "playin_pct": 0.0308,
-   "playoff_pct": 0.9963
+   "top6_pct": 0.9638,
+   "playin_pct": 0.0362,
+   "playoff_pct": 0.9966
   },
   {
    "team": "MIN",
    "conference": "West",
-   "wins_now": 8,
+   "wins_now": 9,
    "losses_now": 3,
-   "projected_wins": 51.1,
-   "top6_pct": 0.8221,
-   "playin_pct": 0.1773,
-   "playoff_pct": 0.9766
+   "projected_wins": 53.0,
+   "top6_pct": 0.9089,
+   "playin_pct": 0.091,
+   "playoff_pct": 0.9881
   },
   {
    "team": "LAL",
@@ -82,9 +82,9 @@
    "wins_now": 11,
    "losses_now": 2,
    "projected_wins": 50.8,
-   "top6_pct": 0.7993,
-   "playin_pct": 0.2005,
-   "playoff_pct": 0.9694
+   "top6_pct": 0.782,
+   "playin_pct": 0.2179,
+   "playoff_pct": 0.9627
   },
   {
    "team": "DEN",
@@ -92,29 +92,29 @@
    "wins_now": 6,
    "losses_now": 4,
    "projected_wins": 47.5,
-   "top6_pct": 0.4679,
-   "playin_pct": 0.5257,
-   "playoff_pct": 0.8785
+   "top6_pct": 0.457,
+   "playin_pct": 0.5397,
+   "playoff_pct": 0.8863
   },
   {
    "team": "POR",
    "conference": "West",
    "wins_now": 8,
    "losses_now": 3,
-   "projected_wins": 47.4,
-   "top6_pct": 0.4872,
-   "playin_pct": 0.508,
-   "playoff_pct": 0.8765
+   "projected_wins": 47.5,
+   "top6_pct": 0.4658,
+   "playin_pct": 0.5304,
+   "playoff_pct": 0.8767
   },
   {
    "team": "CLE",
    "conference": "East",
    "wins_now": 6,
    "losses_now": 6,
-   "projected_wins": 47.0,
-   "top6_pct": 0.8996,
-   "playin_pct": 0.1004,
-   "playoff_pct": 0.9838
+   "projected_wins": 47.1,
+   "top6_pct": 0.9016,
+   "playin_pct": 0.0984,
+   "playoff_pct": 0.984
   },
   {
    "team": "GS",
@@ -122,79 +122,69 @@
    "wins_now": 8,
    "losses_now": 4,
    "projected_wins": 46.9,
-   "top6_pct": 0.4336,
-   "playin_pct": 0.5595,
-   "playoff_pct": 0.8613
+   "top6_pct": 0.4083,
+   "playin_pct": 0.5853,
+   "playoff_pct": 0.859
   },
   {
    "team": "PHI",
    "conference": "East",
-   "wins_now": 9,
+   "wins_now": 10,
    "losses_now": 3,
-   "projected_wins": 43.0,
-   "top6_pct": 0.5974,
-   "playin_pct": 0.4011,
-   "playoff_pct": 0.8805
+   "projected_wins": 44.3,
+   "top6_pct": 0.7269,
+   "playin_pct": 0.2726,
+   "playoff_pct": 0.9262
   },
   {
    "team": "ATL",
    "conference": "East",
    "wins_now": 7,
    "losses_now": 5,
-   "projected_wins": 43.0,
-   "top6_pct": 0.5975,
-   "playin_pct": 0.4013,
-   "playoff_pct": 0.8943
+   "projected_wins": 42.9,
+   "top6_pct": 0.5875,
+   "playin_pct": 0.4119,
+   "playoff_pct": 0.8914
   },
   {
    "team": "TOR",
    "conference": "East",
    "wins_now": 5,
-   "losses_now": 6,
-   "projected_wins": 42.7,
-   "top6_pct": 0.563,
-   "playin_pct": 0.4353,
-   "playoff_pct": 0.8885
+   "losses_now": 7,
+   "projected_wins": 41.7,
+   "top6_pct": 0.4508,
+   "playin_pct": 0.5469,
+   "playoff_pct": 0.8478
   },
   {
    "team": "MIA",
    "conference": "East",
    "wins_now": 5,
    "losses_now": 6,
-   "projected_wins": 39.2,
-   "top6_pct": 0.2231,
-   "playin_pct": 0.7634,
-   "playoff_pct": 0.6429
+   "projected_wins": 39.3,
+   "top6_pct": 0.2212,
+   "playin_pct": 0.7664,
+   "playoff_pct": 0.6596
   },
   {
    "team": "PHX",
    "conference": "West",
-   "wins_now": 4,
+   "wins_now": 5,
    "losses_now": 6,
-   "projected_wins": 38.4,
-   "top6_pct": 0.0096,
-   "playin_pct": 0.657,
-   "playoff_pct": 0.1663
-  },
-  {
-   "team": "DAL",
-   "conference": "West",
-   "wins_now": 7,
-   "losses_now": 4,
-   "projected_wins": 37.7,
-   "top6_pct": 0.0098,
-   "playin_pct": 0.5845,
-   "playoff_pct": 0.1281
+   "projected_wins": 38.9,
+   "top6_pct": 0.0108,
+   "playin_pct": 0.7418,
+   "playoff_pct": 0.1961
   },
   {
    "team": "ORL",
    "conference": "East",
    "wins_now": 4,
    "losses_now": 7,
-   "projected_wins": 37.1,
-   "top6_pct": 0.0956,
-   "playin_pct": 0.861,
-   "playoff_pct": 0.4565
+   "projected_wins": 37.0,
+   "top6_pct": 0.0952,
+   "playin_pct": 0.863,
+   "playoff_pct": 0.4558
   },
   {
    "team": "LAC",
@@ -202,9 +192,19 @@
    "wins_now": 2,
    "losses_now": 8,
    "projected_wins": 36.3,
-   "top6_pct": 0.0024,
-   "playin_pct": 0.439,
-   "playoff_pct": 0.1007
+   "top6_pct": 0.0039,
+   "playin_pct": 0.4888,
+   "playoff_pct": 0.1105
+  },
+  {
+   "team": "DAL",
+   "conference": "West",
+   "wins_now": 7,
+   "losses_now": 5,
+   "projected_wins": 35.6,
+   "top6_pct": 0.0012,
+   "playin_pct": 0.3994,
+   "playoff_pct": 0.0637
   },
   {
    "team": "MEM",
@@ -212,38 +212,38 @@
    "wins_now": 7,
    "losses_now": 4,
    "projected_wins": 35.1,
-   "top6_pct": 0.0014,
-   "playin_pct": 0.3121,
-   "playoff_pct": 0.0461
+   "top6_pct": 0.0016,
+   "playin_pct": 0.3621,
+   "playoff_pct": 0.0602
   },
   {
    "team": "CHA",
    "conference": "East",
    "wins_now": 4,
-   "losses_now": 7,
-   "projected_wins": 34.2,
-   "top6_pct": 0.0253,
-   "playin_pct": 0.8358,
-   "playoff_pct": 0.2316
+   "losses_now": 8,
+   "projected_wins": 33.7,
+   "top6_pct": 0.0177,
+   "playin_pct": 0.8313,
+   "playoff_pct": 0.2155
   },
   {
    "team": "IND",
    "conference": "East",
    "wins_now": 4,
    "losses_now": 8,
-   "projected_wins": 27.8,
-   "top6_pct": 0.0001,
-   "playin_pct": 0.1489,
-   "playoff_pct": 0.0192
+   "projected_wins": 27.7,
+   "top6_pct": 0.0004,
+   "playin_pct": 0.1538,
+   "playoff_pct": 0.0161
   },
   {
    "team": "NO",
    "conference": "West",
    "wins_now": 4,
    "losses_now": 8,
-   "projected_wins": 25.6,
+   "projected_wins": 25.7,
    "top6_pct": 0.0,
-   "playin_pct": 0.0031,
+   "playin_pct": 0.0041,
    "playoff_pct": 0.0002
   },
   {
@@ -251,9 +251,9 @@
    "conference": "East",
    "wins_now": 3,
    "losses_now": 8,
-   "projected_wins": 23.6,
+   "projected_wins": 23.5,
    "top6_pct": 0.0,
-   "playin_pct": 0.0205,
+   "playin_pct": 0.0189,
    "playoff_pct": 0.0015
   },
   {
@@ -261,20 +261,20 @@
    "conference": "East",
    "wins_now": 1,
    "losses_now": 9,
-   "projected_wins": 23.4,
+   "projected_wins": 23.5,
    "top6_pct": 0.0,
-   "playin_pct": 0.0212,
-   "playoff_pct": 0.0007
+   "playin_pct": 0.0216,
+   "playoff_pct": 0.002
   },
   {
    "team": "WSH",
    "conference": "East",
    "wins_now": 4,
-   "losses_now": 8,
-   "projected_wins": 22.1,
+   "losses_now": 9,
+   "projected_wins": 22.3,
    "top6_pct": 0.0,
-   "playin_pct": 0.007,
-   "playoff_pct": 0.0003
+   "playin_pct": 0.0102,
+   "playoff_pct": 0.0002
   },
   {
    "team": "MIL",
@@ -283,8 +283,8 @@
    "losses_now": 11,
    "projected_wins": 20.4,
    "top6_pct": 0.0,
-   "playin_pct": 0.0025,
-   "playoff_pct": 0.0002
+   "playin_pct": 0.0037,
+   "playoff_pct": 0.0
   },
   {
    "team": "SAC",

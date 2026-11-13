@@ -1,0 +1,110 @@
+{
+ "game_id": "2026020310",
+ "season": 2026,
+ "slate": "2026-11-13",
+ "start_utc": "2026-11-14T02:00:00Z",
+ "home": "VAN",
+ "away": "NYR",
+ "model_a": 0.3695,
+ "model_b": 0.3273,
+ "pick": "NYR",
+ "pick_model": "model_b",
+ "features": {
+  "goal_matchup": -1.399615,
+  "shot_matchup": -3.382358,
+  "goalie_matchup_2000": -0.0042
+ },
+ "market": {
+  "game_id": "2026020310",
+  "start_utc": "2026-11-14T02:00:00Z",
+  "home": "VAN",
+  "away": "NYR",
+  "book": "DraftKings",
+  "home_price": 185.0,
+  "away_price": -225.0,
+  "home_prob": 0.3364,
+  "read_utc": "2026-11-13T21:01:45Z",
+  "source": "https://api-web.nhle.com/v1/partner-game/US/now"
+ },
+ "goalies": {
+  "home": {
+   "player_id": 8482447,
+   "name": "Leevi Merilainen",
+   "status": "Likely",
+   "basis": "projected",
+   "report": "https://x.com/patersonjeff/status/2121293185590927363?a=lM_q1sEobENlaGXzrtM&s=46"
+  },
+  "away": {
+   "player_id": 8482193,
+   "name": "Dylan Garand",
+   "status": "Confirmed",
+   "basis": "projected",
+   "report": "https://x.com/vzmercogliano/status/2121309661412380837"
+  }
+ },
+ "injuries": {
+  "source": "espn_nhl_injuries",
+  "as_of": "2026-11-13",
+  "read_utc": "2026-11-13T21:01:45Z",
+  "home": [
+   {
+    "name": "Filip Chytil",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Mackenzie MacEachern",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Thatcher Demko",
+    "position": "G",
+    "status": "Injured Reserve"
+   }
+  ],
+  "away": [
+   {
+    "name": "Adam Sykora",
+    "position": "LW",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Aidan Thompson",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Alberts Smits",
+    "position": "D",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Igor Shesterkin",
+    "position": "G",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Joe Veleno",
+    "position": "C",
+    "status": "Injured Reserve"
+   },
+   {
+    "name": "Sean Durzi",
+    "position": "D",
+    "status": "Injured Reserve"
+   }
+  ]
+ },
+ "saved_utc": "2026-11-13T21:01:45Z",
+ "code": "nhl-stage56",
+ "training_through": "2026-11-12",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14712,
+  "training_games_priced": 7681,
+  "training_ids_sha256": "ac67cf180313994cb4fcc0a1161257e31469826dc0167956fc36e8fccb33fda0"
+ },
+ "code_sha256": "5be72f17f6dd197602abd9c3f65295f11d17c5a3ea1582c8d0c5baa1326fe33f",
+ "code_commit": "b785d06bcba55041ce4e8a471eb2f71780d69976"
+}

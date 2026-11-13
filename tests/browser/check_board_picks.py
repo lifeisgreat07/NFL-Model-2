@@ -62,9 +62,15 @@ def whole(p):
     return math.floor(p * 100 + 0.5)
 
 
+def pick_files(pred, sport, gid):
+    """A game's saved registered pick: only a season folder (`2026`), never a shadow's (`2026-v2`, `2026-v3`), whose
+    records carry no pick."""
+    return [p for p in (pred / sport).glob(f'*/{gid}.json') if p.parent.name.isdigit()]
+
+
 def day_pick(pred, sport, gid):
     """(team, percent) a saved NHL or NBA pick should show, or None when none was saved."""
-    files = list((pred / sport).glob(f'*/{gid}.json'))
+    files = pick_files(pred, sport, gid)
     if not files:
         return None
     rec = json.loads(files[0].read_text(encoding='utf-8'))
@@ -161,7 +167,7 @@ async def self_test(pages, tmp):
 def swap(pred, sport, gid):
     """The other side of one saved pick, as an older file would have it."""
     if sport != 'nfl':
-        (path,) = (pred / sport).glob(f'*/{gid}.json')
+        (path,) = pick_files(pred, sport, gid)
         rec = json.loads(path.read_text(encoding='utf-8'))
         rec['pick'] = rec['away'] if rec['pick'] == rec['home'] else rec['home']
         for key in ('model_a', 'model_b'):
