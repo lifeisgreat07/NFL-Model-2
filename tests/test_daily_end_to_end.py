@@ -133,6 +133,16 @@ def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
         assert rec['market_source'] is None and rec['pick'] in (rec['home'], rec['away'])
         assert rec['start_utc'] > rec['saved_utc']
     assert not [ln for ln in second.splitlines() if ln.startswith('saved ')]
+    # Stage 95 item 36: v2's shadow beside every pick the run saved, never a pick itself, written once.
+    assert 'DEGRADED: v2 shadow' not in first, first[-2000:]
+    shadow = sorted((tmp_path / 'predictions' / f'{season}-v2').glob('*.json'))
+    assert [p.name for p in shadow] == [p.name for p in picks]
+    for p in shadow:
+        rec = json.loads(p.read_text(encoding='utf-8'))
+        assert 'pick' not in rec and rec['never_a_pick'] is True and rec['code'] == 'nba-day-sport-v2'
+        assert rec['model_b'] is None and rec['price_used'] is False, 'no price in this test, so no Model B'
+        assert 0 < rec['model_a'] < 1 and rec['training_through'] < rec['slate']
+    assert f'v2 shadow: {len(picks)} saved' in first and 'v2 shadow: 0 saved' in second
     assert (tmp_path / 'results' / f'graded_{season}.json').exists()
     # Stage 85 item 1: the file says which registered looks were made and when the next is.
     drift_file = json.loads((tmp_path / 'results' / f'drift_{season}.json').read_text(encoding='utf-8'))

@@ -29,6 +29,9 @@ in order:
 8. **Drift.** Model A's per-game log loss against the registered baseline
    (`results/nba/drift_<season>.json`); a flag prints a line the workflow
    turns into an alert.
+9. **v2 shadow.** After the picks are saved, v2's forecasts for the same games
+   (`src/sports/nba/v2_shadow.py`), in `predictions/nba/<season>-v2/`: never a
+   pick, never graded here.
 
 Run by hand: python -m src.sports.nba.daily
 """
@@ -67,6 +70,7 @@ from src.sports.nba import (
     page_inputs,
     ratings,
     standings,
+    v2_shadow,
 )
 from src.sports.nba import schedule as nba_schedule
 from src.sports.nba.lock import GameLock
@@ -377,6 +381,14 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         after_save.guarded('market record', market.record, prices, PATHS.data / 'lines' / f'{season}.json')
         # Stage 104 item 4: the standings odds, in a run that saves picks, as the NHL's.
         after_save.guarded('standings file', write_standings, sched, games, table, h, lam, first, today, season)
+        # Stage 95 item 36: v2's shadow forecasts for the games just saved, never a pick
+        # (experiments/nba/stage95_v2/registry.json, forward_test.shadow).
+        shadow = after_save.guarded(
+            'v2 shadow', v2_shadow.save, locking, prices, pd.concat([past_games, cur_games], ignore_index=True),
+            minutes, v2_shadow.history_market(first, season - 1, PATHS.data / 'lines' / f'{season}.json'),
+            PATHS.predictions / f'{season}-v2', now, first, get)
+        if shadow is not None:
+            print(f'v2 shadow: {len(shadow)} saved')
     PATHS.results.mkdir(parents=True, exist_ok=True)
     after_save.guarded('schedule file', lambda: page_inputs.write(PATHS.results / f'schedule_{season}.json',
                                                                   page_inputs.schedule_json(sched, str(today.date()))))
