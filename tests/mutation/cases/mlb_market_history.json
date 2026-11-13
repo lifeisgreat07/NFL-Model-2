@@ -1,0 +1,60 @@
+{
+  "target": "src/sports/mlb/market_history.py",
+  "tests": "tests/test_mlb_market_history.py",
+  "cases": [
+    {
+      "id": "mlb-mkt-unfinished-read",
+      "target": "src/sports/mlb/market_history.py",
+      "tests": "tests/test_mlb_market_history.py",
+      "why": "an event still in progress would be read as a final.",
+      "find": "        if not ((comp.get('status') or {}).get('type') or {}).get('completed'):\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_only_completed_events_are_read"
+    },
+    {
+      "id": "mlb-mkt-swap-ignored",
+      "target": "src/sports/mlb/market_history.py",
+      "tests": "tests/test_mlb_market_history.py",
+      "why": "a game ESPN lists with the sides the other way round would keep ESPN's home price as the Stats API home club's.",
+      "find": "        if swapped:\n            hp, ap = ap, hp\n",
+      "replace": "",
+      "expect_caught_by": "test_a_swapped_game_gets_the_stats_api_home_clubs_probability"
+    },
+    {
+      "id": "mlb-mkt-live-provider-used",
+      "target": "src/sports/mlb/market_history.py",
+      "tests": "tests/test_mlb_market_history.py",
+      "why": "a live, in-game price would be taken as the pre-game market.",
+      "find": "        if 'live' in provider.lower() or provider.lower() in PROJECTIONS:\n",
+      "replace": "        if provider.lower() in PROJECTIONS:\n",
+      "expect_caught_by": "test_the_closing_price_wins_and_a_live_provider_is_never_used"
+    },
+    {
+      "id": "mlb-mkt-opening-over-closing",
+      "target": "src/sports/mlb/market_history.py",
+      "tests": "tests/test_mlb_market_history.py",
+      "why": "the opening price would be kept when a closing price exists.",
+      "find": "        closing = close_h is not None and close_a is not None\n",
+      "replace": "        closing = False\n",
+      "expect_caught_by": "test_the_closing_price_wins_and_a_live_provider_is_never_used"
+    },
+    {
+      "id": "mlb-mkt-zero-price-kept",
+      "target": "src/sports/mlb/market_history.py",
+      "tests": "tests/test_mlb_market_history.py",
+      "why": "a moneyline of 0, which is no price, would be turned into a probability.",
+      "find": "        if hp is None or ap is None or abs(hp) < 100 or abs(ap) < 100:\n",
+      "replace": "        if hp is None or ap is None:\n",
+      "expect_caught_by": "test_no_usable_price_gives_no_row"
+    },
+    {
+      "id": "mlb-mkt-ambiguous-guessed",
+      "target": "src/sports/mlb/market_history.py",
+      "tests": "tests/test_mlb_market_history.py",
+      "why": "a final with no ESPN event would be matched to nothing instead of being named as missing.",
+      "find": "        if len(cands) != 1:\n",
+      "replace": "        if len(cands) > 1:\n",
+      "expect_caught_by": "test_a_final_espn_does_not_list_is_named_not_guessed"
+    }
+  ]
+}

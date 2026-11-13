@@ -7,7 +7,7 @@ means "works from a home connection". On 2026-11-12 the probe ran on a runner in
 
 ## Verdict
 
-**GO for the history, the backtest and a live run on GitHub's runners.** The MLB Stats API is the primary for schedule, results, probable pitchers and box scores, read from a runner (#711); Retrosheet's game logs are the checked fallback for history (section 2). ESPN's pre-game moneyline gives Model B a market for every season from 2010 (section 3), read from a runner too. Open before the live run: when the probable pitchers are published (section 4, measured in spring training).
+**GO for the history, the backtest and a live run on GitHub's runners.** The MLB Stats API is the primary for schedule, results, probable pitchers and box scores, read from a runner (#711); Retrosheet's game logs are the checked fallback for history (section 2). ESPN's pre-game moneyline gives Model B a market from 2013, and for part of 2012 (section 3), read from a runner too. Open before the live run: when the probable pitchers are published (section 4, measured in spring training).
 
 ## 1. Sources
 
@@ -45,17 +45,36 @@ venue on each game says where it was played.
 
 ## 3. A market for Model B
 
-ESPN's pre-game moneyline, both sides, sampled on six dates a season (four in 2020):
+ESPN's pre-game moneyline, both sides, read for every final game by `python -m src.sports.mlb.market_history 2010 2026`
+(`src/sports/mlb/market_history.py`): the closing price where ESPN gives one, the listed price before that, never a
+live provider's. Games priced, of the history's finals:
 
-| Season | Priced of sampled |
-|---|---|
-| 2010-2014 | 364 of 369 |
-| 2015-2019 | 388 of 397 |
-| 2020 | 58 of 62 |
-| 2021-2025 | 360 of 360 |
+| Season | Priced | Share |
+|---|---|---|
+| 2010 | 0 of 2,462 | 0% |
+| 2011 | 0 of 2,467 | 0% |
+| 2012 | 670 of 2,467 | 27% |
+| 2013 | 2,408 of 2,469 | 98% |
+| 2014 | 2,395 of 2,462 | 97% |
+| 2015 | 2,409 of 2,465 | 98% |
+| 2016 | 2,386 of 2,463 | 97% |
+| 2017 | 2,393 of 2,468 | 97% |
+| 2018 | 2,274 of 2,464 | 92% |
+| 2019 | 2,448 of 2,466 | 99% |
+| 2020 | 941 of 951 | 99% |
+| 2021 | 2,448 of 2,466 | 99% |
+| 2022 | 2,462 of 2,470 | 100% |
+| 2023 | 2,468 of 2,471 | 100% |
+| 2024 | 2,449 of 2,472 | 99% |
+| 2025 | 2,477 of 2,477 | 100% |
+| 2026 | 2,467 of 2,469 | 100% |
 
-So a market exists for the backtest's whole span, and Model B can be built and judged against it, as the NHL's and
-the NBA's were. Whether ESPN's odds answer a runner is the probe's question (the NBA's did, #357).
+There is no real moneyline before 2012. ESPN's odds for 2010 and 2011, and most of 2012, carry only a point spread
+and a moneyline of 0, which is no price; the probe in #711 counted those as priced, which this section corrects. Part of
+2012 (one provider, late in the season) is priced. From 2013 ESPN prices 92% to 100% of each season's
+finals; the rest have no usable ESPN price or cannot be matched to exactly one ESPN game (some doubleheaders), and
+are left unpriced rather than guessed. Model B trains only on games with a price (Stage 98), so its training starts in 2012 in
+effect, which is enough for the validation and confirmation seasons.
 
 ## 4. Starting pitchers
 
