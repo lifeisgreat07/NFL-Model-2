@@ -1540,5 +1540,17 @@
   "pick": "CAR",
   "result": "correct",
   "saved_utc": "2026-11-12T14:01:40Z"
+ },
+ {
+  "game_id": "2026020310",
+  "pick": "NYR",
+  "result": "pending",
+  "saved_utc": "2026-11-13T21:01:45Z"
+ },
+ {
+  "game_id": "2026020311",
+  "pick": "VGK",
+  "result": "pending",
+  "saved_utc": "2026-11-13T21:01:45Z"
  }
 ]
