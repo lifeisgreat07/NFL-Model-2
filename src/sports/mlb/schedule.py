@@ -22,7 +22,8 @@ The answer has `src.core.sport.SCHEDULE_COLUMNS`, with MLB's meanings:
 `season` is the calendar year; `slate` is the official date ('2026-04-01');
 `status` is a `GameStatus` value read from the Stats API's `codedGameState`
 (a 'Completed Early' game is final); `home_win` is 1 or 0 once final, extra
-innings included. Beside those: `game_type`, `game_number`, `double_header`,
+innings included, and <NA> for an official tie (the Stats API's `isTie`, such as
+2016-09-29's called Cubs-Pirates game): final, with no winner. Beside those: `game_type`, `game_number`, `double_header`,
 `venue_id`, `venue` and `neutral_site`.
 
 Anything this file does not recognise (a state, a game type, a missing
@@ -134,8 +135,8 @@ def raw_problems(g: Json) -> list[str]:
         hs, as_ = _side(g, 'home').get('score'), _side(g, 'away').get('score')
         if not isinstance(hs, int) or not isinstance(as_, int):
             out.append(f'game {gid}: final without both scores')
-        elif hs == as_:
-            out.append(f'game {gid}: final with a tied score {hs}-{as_}')
+        elif hs == as_ and not g.get('isTie'):
+            out.append(f'game {gid}: final with a tied score {hs}-{as_} and no isTie')
     return out
 
 
@@ -189,7 +190,7 @@ def to_schedule(games: list[Json], season: int, venues: Mapping[int, int]) -> pd
             'status': status.value,
             'home_score': hs,
             'away_score': as_,
-            'home_win': int(hs > as_) if final and hs is not None and as_ is not None else None,
+            'home_win': int(hs > as_) if final and hs is not None and as_ is not None and hs != as_ else None,
             'game_type': GAME_TYPES[g['gameType']],
             'game_number': int(g['gameNumber']),
             'double_header': str(g.get('doubleHeader') or 'N'),

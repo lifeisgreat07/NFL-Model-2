@@ -4,7 +4,7 @@
  "approved_by": "Claude, under Mark's delegation of 2026-10-05 ('Handle the decisions going forward until I say so') and his MLB plan of 2026-11-11, before any MLB model, feature or rating was fitted or scored.",
  "protocol": {
   "outcome": "home_win: the home club, the one the MLB Stats API lists as home and that bats last, wins, extra innings included.",
-  "games": "Every final regular-season and postseason game. Spring training, exhibition and All-Star games are never used. A postponed or cancelled game is never scored; a game the Stats API marks 'Completed Early' is final and scored. A suspended game is scored once, on the official date it was completed.",
+  "games": "Every final regular-season and postseason game. Spring training, exhibition and All-Star games are never used. A postponed or cancelled game is never scored; a game the Stats API marks 'Completed Early' is final and scored. A suspended game is scored once, on the official date it was completed. An official tie (the Stats API's isTie, one game in 2010-2026: 2016-09-29, CHC at PIT, 1-1) is final with no winner: it is never a training or scored row, and the run fit reads it as a margin of 0.",
   "game_key": "The Stats API's gamePk. A postponed game keeps its gamePk and is listed again on the day it was played: one row per gamePk, the last listing wins. Each game of a doubleheader has its own gamePk.",
   "neutral_site": "A game whose venue (the Stats API's venue on the game) is not the home club's own venue for that season (the Stats API's club record for the season) is neutral, and its forecast gets no fitted home edge. The Stats API's home club stays home.",
   "training_from_season": 2010,
@@ -43,7 +43,7 @@
    ],
    "estimator": "Logistic regression, L2, C=1.0, a StandardScaler fitted on each refit's own rows; the intercept is the home edge.",
    "run_matchup": "Home rating minus away rating, where each club's rating comes from a recency-weighted ridge regression of every earlier game's run margin (home minus away) on club indicators with a home term (zero for a neutral game). Weight 0.5^(days ago / H). Ridge strength lambda on the club terms only.",
-   "starter_matchup": "Away starter's rate minus home starter's rate, so a higher value favours home. A starter's rate is his runs allowed per 27 outs over his earlier appearances, recency-weighted with the same H and shrunk toward the league: (weighted runs + 150 x the league's runs per out) / (weighted outs + 150) x 27, the league's runs per out taken from the same earlier games. A starter with no earlier appearance gets the league rate. In the backtest the starter is the box score's; live it is the Stats API's probable pitcher.",
+   "starter_matchup": "Away starter's rate minus home starter's rate, so a higher value favours home. A starter's rate is his runs allowed per 27 outs over his earlier appearances, recency-weighted with the same H and shrunk toward the league by K_outs outs (tuned with H and lambda; 150 as first registered): (weighted runs + K_outs x the league's runs per out) / (weighted outs + K_outs) x 27, the league's runs per out taken from every pitcher's appearances in the same earlier games, starts and relief alike. His earlier appearances are every game he pitched in, as a starter or in relief. A starter with no earlier appearance gets the league rate. In the backtest the starter is the box score's; live it is the Stats API's probable pitcher.",
    "grid": {
     "H_days": [
      60,
@@ -55,7 +55,15 @@
      1.0,
      3.0,
      10.0,
-     30.0
+     30.0,
+     100.0
+    ],
+    "K_outs": [
+     150.0,
+     300.0,
+     600.0,
+     1200.0,
+     2400.0
     ]
    }
   },
@@ -71,7 +79,32 @@
   "market": "The market's home-win probability itself, not refitted.",
   "base_rate": "The home-win share of the games each refit trains on."
  },
- "amendments": [],
+ "amendments": [
+  {
+   "date": "2026-11-12",
+   "by": "Claude, under Mark's delegation of 2026-10-05 and his MLB plan of 2026-11-11",
+   "entry": "models.model_a.grid",
+   "before_any_result": true,
+   "seen": "Written on 2026-11-12, after the history was read and checked against Retrosheet and before any MLB model, feature or rating was fitted or scored on it. A read-only review of this registration (next-registration proposals, 2026-11-12) had fitted a proxy of Model A on Retrosheet game logs for 2010-2022 only, training seasons, with no validation or confirmation season read; its figures prompted items 1 and 2. One figure had been printed before it: while timing the feature builder, Model A's walk-forward log loss on 2025's second half (a confirmation season) at the first-registered settings, with each feature alone. No validation-season figure had been computed. The changes come from the proxy's training-season figures and owe nothing to that print.",
+   "change": "The starter's shrinkage, fixed at 150 outs, joins the grid as K_outs in {150, 300, 600, 1200, 2400}, and lambda gains 100. 150 outs is about eight starts; the proxy improved with every step up to 1200, and preferred lambda 100 to 30, the old top. The grid grows from 16 to 100 entries, searched the same way: validation seasons only, the lowest pooled log loss wins, ties to the earlier entry."
+  },
+  {
+   "date": "2026-11-12",
+   "by": "Claude, under Mark's delegation of 2026-10-05 and his MLB plan of 2026-11-11",
+   "entry": "models.model_a.starter_matchup",
+   "before_any_result": true,
+   "seen": "Written on 2026-11-12, after the history was read and checked against Retrosheet and before any MLB model, feature or rating was fitted or scored on it. A read-only review of this registration (next-registration proposals, 2026-11-12) had fitted a proxy of Model A on Retrosheet game logs for 2010-2022 only, training seasons, with no validation or confirmation season read; its figures prompted items 1 and 2. One figure had been printed before it: while timing the feature builder, Model A's walk-forward log loss on 2025's second half (a confirmation season) at the first-registered settings, with each feature alone. No validation-season figure had been computed. The changes come from the proxy's training-season figures and owe nothing to that print.",
+   "change": "Two sentences made explicit, as the code already read them: the league's runs per out comes from every pitcher's appearances, not starters' alone; and a pitcher's earlier appearances include relief. No figure changes."
+  },
+  {
+   "date": "2026-11-12",
+   "by": "Claude, under Mark's delegation of 2026-10-05 and his MLB plan of 2026-11-11",
+   "entry": "protocol.games",
+   "before_any_result": true,
+   "seen": "Written on 2026-11-12, after the history was read and checked against Retrosheet and before any MLB model, feature or rating was fitted or scored on it. A read-only review of this registration (next-registration proposals, 2026-11-12) had fitted a proxy of Model A on Retrosheet game logs for 2010-2022 only, training seasons, with no validation or confirmation season read; its figures prompted items 1 and 2. One figure had been printed before it: while timing the feature builder, Model A's walk-forward log loss on 2025's second half (a confirmation season) at the first-registered settings, with each feature alone. No validation-season figure had been computed. The changes come from the proxy's training-season figures and owe nothing to that print.",
+   "change": "The history's first build stopped on gamePk 449244, an official 1-1 tie. The outcome is undefined for it, so it is neither trained on nor scored; as registered there was no rule for it."
+  }
+ ],
  "prerequisite": "The Stats API history (schedule, finals, venues and box scores) for 2010 to 2026, read once and checked against Retrosheet as fallback_check says, and the ESPN market history read once, both stored by the backtest's own code so a re-run reads the same inputs.",
  "disclosures": [
   "Before this registration, MLB's data probe (docs/mlb-data.md, #711) compared the Stats API's finals with Retrosheet's for 2015, 2020, 2021 and 2025 and sampled ESPN's moneyline on six dates a season from 2010. Every disagreement it found was a game played away from the listed home club's park with home and away swapped. No model, feature or rating had been computed, and no market log loss had been measured.",
@@ -80,7 +113,10 @@
   "2020 was a 60-game season with no crowds for most of it, the universal designated hitter and relocated home games; it stays in training as it happened, and its relocated games are neutral under neutral_site where the venue says so.",
   "The backtest knows who started; the live pick knows only the probable pitcher. Measurement M2 sizes that gap once the forward test has games. When the probables are published before first pitch is measured in spring training 2027 (docs/mlb-data.md section 4), before the pick's lock time is set.",
   "Bullpens, lineups and park factors are not in Model A. A park's effect on runs scored falls into the clubs' ratings, which is why the home term is kept.",
-  "This is the first MLB registration, written by Claude under delegation rather than approved by Mark question by question as the NFL's were."
+  "This is the first MLB registration, written by Claude under delegation rather than approved by Mark question by question as the NFL's were.",
+  "Openers. The starter is the first pitcher the box score lists, so in a bullpen game an opener with a short line stands for the start. This is kept as registered rather than replaced by a minimum-outs rule chosen now; a starter-definition change would be a later registration.",
+  "Toronto 2020 and 2021. Under neutral_site, all 30 of Toronto's 2020 home games (Buffalo, and its games hosted in the opponents' parks) and 45 of its 81 in 2021 (Dunedin and Buffalo) are neutral, as are 90 games in all in 2020 (Toronto's and the postseason's neutral rounds) and 48 in 2021, against 1 to 11 in every other season from 2010 to 2026. They lose the fitted home edge and stay in training.",
+  "Market depth. ESPN's history carries no real pre-game moneyline before 2012 (a moneyline of 0 is no price), and only part of 2012 (about 670 games, all from one provider). Model B trains only on games with a price, so its training starts in 2012 in effect; Model A's training is unchanged."
  ],
  "hypotheses": [
   {

@@ -81,10 +81,16 @@ def test_postponed_suspended_and_cancelled_games_have_no_result():
 
 
 def test_a_tied_or_scoreless_final_stops_the_load():
-    with pytest.raises(s.MLBScheduleError, match='tied score 2-2'):
+    with pytest.raises(s.MLBScheduleError, match='tied score 2-2 and no isTie'):
         frame(game(hs=2, as_=2))
     with pytest.raises(s.MLBScheduleError, match='final without both scores'):
         frame(game(hs=None))
+
+
+def test_an_official_tie_is_final_with_no_winner():
+    df = frame(game(hs=1, as_=1, isTie=True))
+    assert df.iloc[0]['status'] == 'final' and pd.isna(df.iloc[0]['home_win'])
+    assert (df.iloc[0]['home_score'], df.iloc[0]['away_score']) == (1, 1)
 
 
 def test_a_game_away_from_the_home_clubs_own_venue_is_neutral_and_keeps_its_home_club():
