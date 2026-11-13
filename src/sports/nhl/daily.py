@@ -340,6 +340,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         injury_table = read_injuries(season, get)
         rated = ratings.day_ratings(games[games['day'] < today.tz_localize(None)], today.tz_localize(None), h)
         goalie_ids: dict[str, tuple[Any, Any]] = {}
+        saved_now: set[str] = set()
         for _, g in locking.iterrows():
             day = pd.Timestamp(str(g['slate']))
             if day not in fitted:
@@ -368,7 +369,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
                 injury_table.day, injury_table.table, g['home'], g['away'], now, injury_table.unknown)
             record = pick_record(g, feats, k, model_a, model_b, line_by_id.get(str(g['game_id'])), notes, now,
                                  injury_list) | trained
-            print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id'])
+            fresh = save_once(record, folder)
+            if fresh:
+                saved_now.add(str(record['game_id']))
+            print(('saved ' if fresh else 'already saved ') + record['game_id'])
         # Stage 91 item 3: from here on the picks are saved, and no step may lose them.
         standings = after_save.guarded('standings', write_standings, sched, games, rated, model_a, k,
                                        str(today.date()), season)
@@ -376,8 +380,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             print(f'standings: {standings}')
         # Stage 95 item 36: v2's shadow forecasts for the games just saved, never a pick
         # (experiments/nhl/stage95_v2/registry.json, forward_test.shadow).
+        # Audit 8 B2: only the games whose pick this run saved. A game an earlier run saved gets no shadow
+        # later, with a later price (the registration: the same run, the same moment, nothing backfilled).
         shadow = after_save.guarded(
-            'v2 shadow', v2_shadow.save, locking, line_by_id, goalie_ids, pd.concat([past, current], ignore_index=True),
+            'v2 shadow', v2_shadow.save, locking[locking['game_id'].astype(str).isin(saved_now)], line_by_id, goalie_ids, pd.concat([past, current], ignore_index=True),
             v2_shadow.history_market(first, season - 1, PATHS.data / 'lines' / f'{season}.json'), sched,
             PATHS.predictions / f'{season}-v2', now, first)
         if shadow is not None:

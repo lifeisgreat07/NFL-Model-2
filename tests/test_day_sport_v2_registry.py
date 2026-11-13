@@ -23,9 +23,10 @@ def reg(sport):
 def test_it_is_a_shadow_that_cites_the_registrations_it_sits_beside(sport):
     r = reg(sport)
     assert r['status'] == 'shadow' and r['registered'] == '2026-11-11'
-    # Every amendment so far was written before any v2 result existed, and says what it changed.
-    assert all(a['before_any_result'] is True and a['seen'] and a['change'] for a in r['amendments'])
-    assert [a['entry'] for a in r['amendments']] == (['changes.30_slates'] if sport == 'nba' else [])
+    # Every amendment says what it changed and what had been seen; audit 8's (B2) came after v2's backtests.
+    assert all(a['seen'] and a['change'] for a in r['amendments'])
+    entries = [(a['entry'], a['before_any_result']) for a in r['amendments']]
+    assert entries == ([('changes.30_slates', True)] if sport == 'nba' else []) + [('forward_test.shadow', False)]
     assert r['based_on'] == [f'experiments/{sport}/{s}/registry.json' for s in SPORTS[sport]]
     for path in r['based_on']:
         assert (ROOT / path).exists(), path
@@ -78,3 +79,11 @@ def test_item_24_is_the_same_rule_in_the_backtest_and_live():
     assert "did not appear in the team's previous game" in text
     assert 'stops reading who played in the game itself' in text and 'stops reading the injury report' in text
     assert 'MV2' in reg('nba')['measurements']
+
+
+def test_the_two_nhl_shadow_records_written_after_their_picks_are_kept_and_excluded():
+    excluded = reg('nhl')['forward_test']['decision']['excluded']
+    assert set(excluded) == {'2026020307', '2026020308'}
+    assert 'excluded' not in reg('nba')['forward_test']['decision']
+    for gid in excluded:
+        assert gid in reg('nhl')['amendments'][-1]['change']

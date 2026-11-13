@@ -351,6 +351,7 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         kalshi: dict[Any, Any] | None = None
         kalshi_read = False
         prices = []
+        saved_now: set[str] = set()
         for _, g in locking.iterrows():
             odds = read_espn_odds(str(g['game_id']), get)
             if market.espn_price(odds or {}) is None and not kalshi_read:
@@ -370,7 +371,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             if matchup is not None:
                 feats['availability_matchup'] = matchup
             record = pick_record(g, feats, models, price, avail, injury_list, now, why) | trained
-            print(('saved ' if save_once(record, folder) else 'already saved ') + record['game_id']
+            fresh = save_once(record, folder)
+            if fresh:
+                saved_now.add(str(record['game_id']))
+            print(('saved ' if fresh else 'already saved ') + record['game_id']
                   + f" (price: {record['market_source'] or 'none'})")
         # Stage 92 item 7: odds that answered but priced none of the locking games say so.
         unpriced = priced.unpriced_line(locking['game_id'],
@@ -383,8 +387,10 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
         after_save.guarded('standings file', write_standings, sched, games, table, h, lam, first, today, season)
         # Stage 95 item 36: v2's shadow forecasts for the games just saved, never a pick
         # (experiments/nba/stage95_v2/registry.json, forward_test.shadow).
+        # Audit 8 B2: only the games whose pick this run saved. A game an earlier run saved gets no shadow
+        # later, with a later price (the registration: the same run, the same moment, nothing backfilled).
         shadow = after_save.guarded(
-            'v2 shadow', v2_shadow.save, locking, prices, pd.concat([past_games, cur_games], ignore_index=True),
+            'v2 shadow', v2_shadow.save, locking[locking['game_id'].astype(str).isin(saved_now)], prices, pd.concat([past_games, cur_games], ignore_index=True),
             minutes, v2_shadow.history_market(first, season - 1, PATHS.data / 'lines' / f'{season}.json'),
             PATHS.predictions / f'{season}-v2', now, first, get)
         if shadow is not None:
