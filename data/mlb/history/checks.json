@@ -1,0 +1,122 @@
+{
+ "2010": {
+  "games": 2462,
+  "compared": 2430,
+  "agree": 2430,
+  "disagreements": [],
+  "checked": true
+ },
+ "2011": {
+  "games": 2467,
+  "compared": 2429,
+  "agree": 2429,
+  "disagreements": [],
+  "checked": true
+ },
+ "2012": {
+  "games": 2467,
+  "compared": 2430,
+  "agree": 2430,
+  "disagreements": [],
+  "checked": true
+ },
+ "2013": {
+  "games": 2469,
+  "compared": 2431,
+  "agree": 2431,
+  "disagreements": [],
+  "checked": true
+ },
+ "2014": {
+  "games": 2462,
+  "compared": 2430,
+  "agree": 2430,
+  "disagreements": [],
+  "checked": true
+ },
+ "2015": {
+  "games": 2465,
+  "compared": 2429,
+  "agree": 2429,
+  "disagreements": [],
+  "checked": true
+ },
+ "2016": {
+  "games": 2463,
+  "compared": 2428,
+  "agree": 2428,
+  "disagreements": [],
+  "checked": true
+ },
+ "2017": {
+  "games": 2468,
+  "compared": 2430,
+  "agree": 2430,
+  "disagreements": [],
+  "checked": true
+ },
+ "2018": {
+  "games": 2464,
+  "compared": 2431,
+  "agree": 2431,
+  "disagreements": [],
+  "checked": true
+ },
+ "2019": {
+  "games": 2466,
+  "compared": 2429,
+  "agree": 2429,
+  "disagreements": [],
+  "checked": true
+ },
+ "2020": {
+  "games": 951,
+  "compared": 898,
+  "agree": 898,
+  "disagreements": [],
+  "checked": true
+ },
+ "2021": {
+  "games": 2466,
+  "compared": 2429,
+  "agree": 2429,
+  "disagreements": [],
+  "checked": true
+ },
+ "2022": {
+  "games": 2470,
+  "compared": 2430,
+  "agree": 2430,
+  "disagreements": [],
+  "checked": true
+ },
+ "2023": {
+  "games": 2471,
+  "compared": 2430,
+  "agree": 2430,
+  "disagreements": [],
+  "checked": true
+ },
+ "2024": {
+  "games": 2472,
+  "compared": 2429,
+  "agree": 2429,
+  "disagreements": [],
+  "checked": true
+ },
+ "2025": {
+  "games": 2477,
+  "compared": 2430,
+  "agree": 2430,
+  "disagreements": [],
+  "checked": true
+ },
+ "2026": {
+  "games": 2469,
+  "compared": 0,
+  "agree": 0,
+  "disagreements": [],
+  "checked": false,
+  "note": "Retrosheet log not read"
+ }
+}
