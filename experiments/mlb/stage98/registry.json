@@ -85,7 +85,7 @@
    "by": "Claude, under Mark's delegation of 2026-10-05 and his MLB plan of 2026-11-11",
    "entry": "models.model_a.grid",
    "before_any_result": true,
-   "seen": "Written on 2026-11-12, after the history was read and checked against Retrosheet and before any MLB model, feature or rating was fitted or scored on it. A read-only review of this registration (next-registration proposals, 2026-11-12) had fitted a proxy of Model A on Retrosheet game logs for 2010-2022 only, training seasons, with no validation or confirmation season read; its figures prompted items 1 and 2.",
+   "seen": "Written on 2026-11-12, after the history was read and checked against Retrosheet and before any MLB model, feature or rating was fitted or scored on it. A read-only review of this registration (next-registration proposals, 2026-11-12) had fitted a proxy of Model A on Retrosheet game logs for 2010-2022 only, training seasons, with no validation or confirmation season read; its figures prompted items 1 and 2. One figure had been printed before it: while timing the feature builder, Model A's walk-forward log loss on 2025's second half (a confirmation season) at the first-registered settings, with each feature alone. No validation-season figure had been computed. The changes come from the proxy's training-season figures and owe nothing to that print.",
    "change": "The starter's shrinkage, fixed at 150 outs, joins the grid as K_outs in {150, 300, 600, 1200, 2400}, and lambda gains 100. 150 outs is about eight starts; the proxy improved with every step up to 1200, and preferred lambda 100 to 30, the old top. The grid grows from 16 to 100 entries, searched the same way: validation seasons only, the lowest pooled log loss wins, ties to the earlier entry."
   },
   {
@@ -93,7 +93,7 @@
    "by": "Claude, under Mark's delegation of 2026-10-05 and his MLB plan of 2026-11-11",
    "entry": "models.model_a.starter_matchup",
    "before_any_result": true,
-   "seen": "Written on 2026-11-12, after the history was read and checked against Retrosheet and before any MLB model, feature or rating was fitted or scored on it. A read-only review of this registration (next-registration proposals, 2026-11-12) had fitted a proxy of Model A on Retrosheet game logs for 2010-2022 only, training seasons, with no validation or confirmation season read; its figures prompted items 1 and 2.",
+   "seen": "Written on 2026-11-12, after the history was read and checked against Retrosheet and before any MLB model, feature or rating was fitted or scored on it. A read-only review of this registration (next-registration proposals, 2026-11-12) had fitted a proxy of Model A on Retrosheet game logs for 2010-2022 only, training seasons, with no validation or confirmation season read; its figures prompted items 1 and 2. One figure had been printed before it: while timing the feature builder, Model A's walk-forward log loss on 2025's second half (a confirmation season) at the first-registered settings, with each feature alone. No validation-season figure had been computed. The changes come from the proxy's training-season figures and owe nothing to that print.",
    "change": "Two sentences made explicit, as the code already read them: the league's runs per out comes from every pitcher's appearances, not starters' alone; and a pitcher's earlier appearances include relief. No figure changes."
   },
   {
@@ -101,7 +101,7 @@
    "by": "Claude, under Mark's delegation of 2026-10-05 and his MLB plan of 2026-11-11",
    "entry": "protocol.games",
    "before_any_result": true,
-   "seen": "Written on 2026-11-12, after the history was read and checked against Retrosheet and before any MLB model, feature or rating was fitted or scored on it. A read-only review of this registration (next-registration proposals, 2026-11-12) had fitted a proxy of Model A on Retrosheet game logs for 2010-2022 only, training seasons, with no validation or confirmation season read; its figures prompted items 1 and 2.",
+   "seen": "Written on 2026-11-12, after the history was read and checked against Retrosheet and before any MLB model, feature or rating was fitted or scored on it. A read-only review of this registration (next-registration proposals, 2026-11-12) had fitted a proxy of Model A on Retrosheet game logs for 2010-2022 only, training seasons, with no validation or confirmation season read; its figures prompted items 1 and 2. One figure had been printed before it: while timing the feature builder, Model A's walk-forward log loss on 2025's second half (a confirmation season) at the first-registered settings, with each feature alone. No validation-season figure had been computed. The changes come from the proxy's training-season figures and owe nothing to that print.",
    "change": "The history's first build stopped on gamePk 449244, an official 1-1 tie. The outcome is undefined for it, so it is neither trained on nor scored; as registered there was no rule for it."
   }
  ],
