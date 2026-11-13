@@ -138,5 +138,12 @@
     "home": "BAL",
     "away": "LAC",
     "spread_line": 4.5
+  },
+  {
+    "captured_date": "2026-11-13",
+    "captured_utc": "2026-11-13T05:17:28Z",
+    "home": "NYG",
+    "away": "WAS",
+    "spread_line": 1.5
   }
 ]

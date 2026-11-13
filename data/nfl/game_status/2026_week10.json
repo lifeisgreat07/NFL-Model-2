@@ -2,15 +2,15 @@
   "season": 2026,
   "week": 10,
   "source": "nflverse schedule, via nflreadpy.load_schedules",
-  "read_at": "2026-11-12T11:02:30Z",
+  "read_at": "2026-11-13T05:17:27Z",
   "games": [
     {
       "away": "WAS",
       "home": "NYG",
-      "status": "upcoming",
-      "away_score": null,
-      "home_score": null,
-      "spread_line": 2.5,
+      "status": "final",
+      "away_score": 24,
+      "home_score": 21,
+      "spread_line": 1.5,
       "neutral_site": false,
       "venue": "MetLife Stadium"
     },
