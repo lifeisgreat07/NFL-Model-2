@@ -1,7 +1,8 @@
 """Men's college basketball results, collected through the season (Stage 103 item 1).
 
 The bracket's ratings read the whole season's games, so they are collected as they finish: ESPN's men's
-college scoreboard (`site.api.espn.com`, Division I, `groups=50`), one day at a time. The season's games are the
+college scoreboard (`site.api.espn.com`, Division I, `groups=50`, and the NCAA tournament's board, `groups=100`,
+which holds tournament games the first can leave out), one day at a time. The season's games are the
 ratings' input only; no season picks are published.
 
 Each final game is one row in `data/ncaam/history/games_<season>.csv` (`GAME_FIELDS`): ESPN's event id, the Eastern
@@ -37,6 +38,9 @@ PATHS = sport_paths('ncaam')
 HISTORY = PATHS.data / 'history'
 SCOREBOARD = ('https://site.api.espn.com/apis/site/v2/sports/basketball/mens-college-basketball/scoreboard'
               '?dates={day}&groups=50&limit=500')
+#: ESPN's NCAA-tournament group. Its Division I board can leave a tournament game out (two of 2017's First Four), so
+#: each day is read from both, and a game on both is one row.
+TOURNAMENT_BOARD = SCOREBOARD.replace('groups=50', 'groups=100')
 GAME_FIELDS = ('game_id', 'season', 'day', 'start_utc', 'home_id', 'away_id', 'home', 'away', 'home_score',
                'away_score', 'neutral_site', 'tournament_id', 'note', 'conference_game', 'read_utc')
 ET = 'America/New_York'
@@ -142,11 +146,20 @@ def days_between(first: date, last: date) -> list[date]:
     return [first + timedelta(days=i) for i in range((last - first).days + 1)]
 
 
+def day_board(day: date, get: Callable[[str], bytes] = fetch) -> Json:
+    """One day's events from the Division I board and the tournament board, each event once."""
+    events: dict[str, Any] = {}
+    for url in (SCOREBOARD, TOURNAMENT_BOARD):
+        for e in json.loads(get(url.format(day=day.strftime('%Y%m%d')))).get('events') or []:
+            events.setdefault(str(e.get('id')), e)
+    return {'events': list(events.values())}
+
+
 def collect(days: Iterable[date], now: datetime, get: Callable[[str], bytes] = fetch,
             folder: Path = HISTORY, pause: float = 0.2) -> int:
     added = 0
     for d in days:
-        added += add(finals(json.loads(get(SCOREBOARD.format(day=d.strftime('%Y%m%d')))), d, now), folder)
+        added += add(finals(day_board(d, get), d, now), folder)
         if pause:
             time.sleep(pause)
     return added

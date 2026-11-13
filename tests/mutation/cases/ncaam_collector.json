@@ -36,6 +36,15 @@
       "find": "                     'tournament_id': str(comp.get('tournamentId') or ''), 'note': note,",
       "replace": "                     'tournament_id': '', 'note': note,",
       "expect_caught_by": "test_a_tournament_game_keeps_its_id_note_and_neutral_site"
+    },
+    {
+      "id": "ncaam-tournament-board-unread",
+      "target": "src/sports/ncaam/collector.py",
+      "tests": "tests/test_ncaam_collector.py",
+      "why": "only the Division I board is read, so a tournament game only ESPN's tournament board lists (2017's First Four) is never stored.",
+      "find": "    for url in (SCOREBOARD, TOURNAMENT_BOARD):\n",
+      "replace": "    for url in (SCOREBOARD,):\n",
+      "expect_caught_by": "test_a_tournament_game_only_on_the_tournament_board_is_kept_and_a_game_on_both_is_one_row"
     }
   ]
 }
