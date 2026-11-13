@@ -71,6 +71,7 @@ from src.sports.nba import (
     ratings,
     standings,
     v2_shadow,
+    v3_shadow,
 )
 from src.sports.nba import schedule as nba_schedule
 from src.sports.nba.lock import GameLock
@@ -395,6 +396,15 @@ def main(now: datetime | None = None, get: Callable[[str], bytes] = history.fetc
             PATHS.predictions / f'{season}-v2', now, first, get)
         if shadow is not None:
             print(f'v2 shadow: {len(shadow)} saved')
+        # Stage 105: v3's shadow forecasts beside v2's, for the same games, never a pick
+        # (experiments/nba/stage105_v3/registry.json, forward_test.shadow).
+        v3s = after_save.guarded(
+            'v3 shadow', v3_shadow.save, locking[locking['game_id'].astype(str).isin(saved_now)], prices,
+            pd.concat([past_games, cur_games], ignore_index=True), minutes,
+            v2_shadow.history_market(first, season - 1, PATHS.data / 'lines' / f'{season}.json'),
+            PATHS.predictions / f'{season}-v3', now, first, get)
+        if v3s is not None:
+            print(f'v3 shadow: {len(v3s)} saved')
     PATHS.results.mkdir(parents=True, exist_ok=True)
     after_save.guarded('schedule file', lambda: page_inputs.write(PATHS.results / f'schedule_{season}.json',
                                                                   page_inputs.schedule_json(sched, str(today.date()))))

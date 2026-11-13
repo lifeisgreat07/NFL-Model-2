@@ -159,6 +159,15 @@ def test_the_nba_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
         assert rec['model_b'] is None and rec['price_used'] is False, 'no price in this test, so no Model B'
         assert 0 < rec['model_a'] < 1 and rec['training_through'] < rec['slate']
     assert f'v2 shadow: {len(picks)} saved' in first and 'v2 shadow: 0 saved' in second
+    # Stage 105: v3's shadow beside v2's, for every pick the run saved, never a pick itself, written once.
+    assert 'DEGRADED: v3 shadow' not in first, first[-2000:]
+    v3 = sorted((tmp_path / 'predictions' / f'{season}-v3').glob('*.json'))
+    assert [p.name for p in v3] == [p.name for p in picks]
+    for p in v3:
+        rec = json.loads(p.read_text(encoding='utf-8'))
+        assert 'pick' not in rec and rec['never_a_pick'] is True and rec['code'] == 'nba-day-sport-v3'
+        assert 'b2b_matchup' in rec['features'] and 0 < rec['model_a'] < 1
+    assert f'v3 shadow: {len(picks)} saved' in first and 'v3 shadow: 0 saved' in second
     # Audit 8 B2: a pick an earlier run saved never gets its shadow later, even when the shadow is missing.
     shutil.rmtree(tmp_path / 'predictions' / f'{season}-v2')
     assert daily.main(now=now, get=get) == 0

@@ -229,6 +229,7 @@
   "tests/test_nba_tip_time.py": "template/JS",
   "tests/test_nba_v2.py": "isolated behavioural",
   "tests/test_nba_v2_shadow.py": "isolated behavioural",
+  "tests/test_nba_v3.py": "isolated behavioural",
   "tests/test_nba_verdict_words.py": "template/JS",
   "tests/test_nba_workflows.py": "workflow/docs/tests-of-tests",
   "tests/test_ncaam_collector.py": "isolated behavioural",
