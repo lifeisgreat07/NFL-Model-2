@@ -26,7 +26,8 @@ def test_it_is_a_shadow_that_cites_the_registrations_it_sits_beside(sport):
     # Every amendment says what it changed and what had been seen; audit 8's (B2) came after v2's backtests.
     assert all(a['seen'] and a['change'] for a in r['amendments'])
     entries = [(a['entry'], a['before_any_result']) for a in r['amendments']]
-    assert entries == ([('changes.30_slates', True)] if sport == 'nba' else []) + [('forward_test.shadow', False)]
+    assert entries == (([('changes.30_slates', True)] if sport == 'nba' else []) + [('forward_test.shadow', False)]
+                       + [('changes.28_neutral', False)] + ([('changes.29_ingest', False)] if sport == 'nba' else []))
     assert r['based_on'] == [f'experiments/{sport}/{s}/registry.json' for s in SPORTS[sport]]
     for path in r['based_on']:
         assert (ROOT / path).exists(), path
@@ -85,5 +86,6 @@ def test_the_two_nhl_shadow_records_written_after_their_picks_are_kept_and_exclu
     excluded = reg('nhl')['forward_test']['decision']['excluded']
     assert set(excluded) == {'2026020307', '2026020308'}
     assert 'excluded' not in reg('nba')['forward_test']['decision']
+    [b2] = [a for a in reg('nhl')['amendments'] if a['entry'] == 'forward_test.shadow']
     for gid in excluded:
-        assert gid in reg('nhl')['amendments'][-1]['change']
+        assert gid in b2['change']

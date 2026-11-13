@@ -114,3 +114,17 @@ def test_the_measurements_are_reported_not_decided():
     assert set(doc['measurements']) == {'MV1_model_a', 'MV1_model_b'}
     for m in doc['measurements'].values():
         assert m['level'] == 0.95 and 'label' not in m
+
+
+def test_on_a_neutral_site_model_b_keeps_its_intercept():
+    rng = np.random.default_rng(7)
+    n = 400
+    t = pd.DataFrame({'game_id': [str(i) for i in range(n)], 'season': [2024] * (n - 2) + [2025, 2025],
+                      'day': list(pd.date_range('2024-01-01', periods=n - 2)) + [pd.Timestamp('2025-06-01')] * 2,
+                      'x': rng.normal(size=n), 'home_prob': 0.55, 'neutral_site': [False] * (n - 1) + [True]})
+    t['home_win'] = (rng.random(n) < 1 / (1 + np.exp(-(0.6 + t['x'])))).astype(int)
+    t.loc[n - 1, 'x'] = t.loc[n - 2, 'x']
+    b = v2.walk_forward(t, ['x'], [2025], needs_market=True)
+    a = v2.walk_forward(t, ['x'], [2025])
+    assert b[str(n - 1)] == pytest.approx(b[str(n - 2)]), 'audit 8 S1: Model B is not moved by the site'
+    assert a[str(n - 1)] < a[str(n - 2)], 'Model A still loses the home edge'

@@ -25,7 +25,8 @@ def test_the_season_market_is_each_games_last_read_before_its_start():
          'home_price': -900.0, 'away_price': 600.0, 'home_prob': 0.88},
     ]
     m = v2_shadow.season_market(lines)
-    assert m.to_dict('records') == [{'game_id': '1', 'home_price': -160.0, 'away_price': 140.0, 'home_prob': 0.6}]
+    assert m.to_dict('records') == [{'game_id': '1', 'home_price': -160.0, 'away_price': 140.0, 'home_prob': 0.6,
+                                     'source': None}]
 
 
 def test_item_29_judges_a_live_price_by_its_own_kind():

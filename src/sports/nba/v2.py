@@ -100,8 +100,12 @@ def place_slates(games: pd.DataFrame, slate_of: Callable[[str], str]) -> tuple[p
 
 
 def drop_bad_prices(market: pd.DataFrame) -> tuple[pd.DataFrame, list[str]]:
-    """Item 29: the prices whose two implied probabilities sum within PRICE_SUM, and the ids of the rest."""
+    """Item 29: the prices whose two implied probabilities sum within PRICE_SUM, and the ids of the rest. A price
+    whose `source` is Kalshi is already two probabilities (each side's mid), summed as they are (audit 8, S6)."""
     total = market['home_price'].map(history.implied) + market['away_price'].map(history.implied)
+    if 'source' in market:
+        kalshi = market['source'].fillna('').eq('kalshi')
+        total = total.where(~kalshi, market['home_price'] + market['away_price'])
     ok = (total >= PRICE_SUM[0]) & (total <= PRICE_SUM[1])
     return market[ok].copy(), sorted(market.loc[~ok, 'game_id'].astype(str))
 
@@ -172,7 +176,8 @@ def walk_forward(table: pd.DataFrame, columns: Sequence[str], seasons: Sequence[
         model = estimator().fit(train[list(columns)], train['home_win'])
         z = model.decision_function(today[list(columns)])
         neutral = today['neutral_site'].fillna(False).astype(bool).to_numpy()
-        z = np.where(neutral, z - float(model[-1].intercept_[0]), z)
+        if not needs_market:  # Audit 8 S1: Model B's price already carries the site
+            z = np.where(neutral, z - float(model[-1].intercept_[0]), z)
         preds.update(zip(today['game_id'], 1.0 / (1.0 + np.exp(-z))))
     return pd.Series(preds, name='p')
 

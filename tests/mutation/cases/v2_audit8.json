@@ -1,0 +1,33 @@
+{
+  "target": "src/sports/nba/v2.py",
+  "tests": "tests/test_nba_v2.py",
+  "cases": [
+    {
+      "id": "v2-nba-model-b-neutral-twice",
+      "target": "src/sports/nba/v2.py",
+      "tests": "tests/test_nba_v2.py",
+      "why": "audit 8's S1 put back on the NBA: Model B loses its intercept on a neutral site, taking the home edge off twice.",
+      "find": "        if not needs_market:  # Audit 8 S1: Model B's price already carries the site\n",
+      "replace": "        if True:\n",
+      "expect_caught_by": "test_on_a_neutral_site_model_b_keeps_its_intercept"
+    },
+    {
+      "id": "v2-nhl-model-b-neutral-twice",
+      "target": "src/sports/nhl/v2.py",
+      "tests": "tests/test_nhl_v2.py",
+      "why": "audit 8's S1 put back on the NHL.",
+      "find": "        if not needs_market:  # Audit 8 S1: Model B's price already carries the site\n",
+      "replace": "        if True:\n",
+      "expect_caught_by": "test_on_a_neutral_site_model_b_keeps_its_intercept"
+    },
+    {
+      "id": "v2-nba-kalshi-as-american-odds",
+      "target": "src/sports/nba/v2.py",
+      "tests": "tests/test_nba_v2.py",
+      "why": "audit 8's S6 put back: a Kalshi price is read as American odds and dropped from Model B's history.",
+      "find": "        total = total.where(~kalshi, market['home_price'] + market['away_price'])\n",
+      "replace": "",
+      "expect_caught_by": "test_item_29_judges_a_kalshi_price_as_two_probabilities"
+    }
+  ]
+}

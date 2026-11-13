@@ -82,7 +82,8 @@ def price_ok(line: Mapping[str, Any] | None) -> bool:
 
 
 def forecast(model: Any, x: pd.DataFrame, neutral: bool) -> float:
-    """The model's home-win probability; item 28 takes the fitted intercept off a neutral-site game."""
+    """The model's home-win probability; item 28 takes the fitted intercept off a neutral-site game. Model B is
+    called with `neutral` False: its market price already carries the site (audit 8, finding S1)."""
     z = float(model.decision_function(x)[0])
     if neutral:
         z -= float(model[-1].intercept_[0])
@@ -125,7 +126,7 @@ def save(locking: pd.DataFrame, lines: Mapping[str, Mapping[str, Any]], goalie_i
         line = lines.get(gid)
         use = price_ok(line)
         p_b = forecast(model_b, x.assign(market_logit=np.log(line['home_prob'] / (1 - line['home_prob']))),
-                       is_neutral) if use and line is not None else None
+                       False) if use and line is not None else None
         record = {
             'game_id': gid, 'season': int(g['season']), 'slate': str(g['slate']),
             'start_utc': pd.Timestamp(g['start_utc']).strftime('%Y-%m-%dT%H:%M:%SZ'),
