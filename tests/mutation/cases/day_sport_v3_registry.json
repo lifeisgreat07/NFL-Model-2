@@ -1,0 +1,42 @@
+{
+  "target": "experiments/nba/stage105_v3/registry.json",
+  "tests": "tests/test_day_sport_v3_registry.py",
+  "cases": [
+    {
+      "id": "v3-star-power-tuned",
+      "target": "experiments/nba/stage105_v3/registry.json",
+      "tests": "tests/test_day_sport_v3_registry.py",
+      "why": "the star weighting's power becomes a free choice after registration.",
+      "find": "p = 2 is fixed here, not tuned.",
+      "replace": "p is tuned on the validation seasons.",
+      "expect_caught_by": "test_each_sport_registers_its_own_changes_and_nothing_tuned"
+    },
+    {
+      "id": "v3-nhl-gets-star-weighting",
+      "target": "experiments/nhl/stage105_v3/registry.json",
+      "tests": "tests/test_day_sport_v3_registry.py",
+      "why": "the NHL is given a change measured only for the NBA.",
+      "find": "  \"b2b\": \"b2b_matchup",
+      "replace": "  \"star_availability\": \"x\",\n  \"b2b\": \"b2b_matchup",
+      "expect_caught_by": "test_each_sport_registers_its_own_changes_and_nothing_tuned"
+    },
+    {
+      "id": "v3-decided-at-95",
+      "target": "experiments/nhl/stage105_v3/registry.json",
+      "tests": "tests/test_day_sport_v3_registry.py",
+      "why": "the decision's level drops to 95%, so two comparisons share an alpha that is no longer split.",
+      "find": "level 97.5%",
+      "replace": "level 95%",
+      "expect_caught_by": "test_it_is_decided_once_after_the_season_at_975_and_says_what_it_expects"
+    },
+    {
+      "id": "v3-shadow-feeds-v2-decision",
+      "target": "experiments/nba/stage105_v3/registry.json",
+      "tests": "tests/test_day_sport_v3_registry.py",
+      "why": "v3's forecasts may enter v2's decision, so one shadow could tip the other.",
+      "find": " or v2's decision.",
+      "replace": ".",
+      "expect_caught_by": "test_it_is_a_shadow_beside_v2_that_changes_nothing_registered"
+    }
+  ]
+}

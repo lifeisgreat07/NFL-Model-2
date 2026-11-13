@@ -96,6 +96,7 @@
   "tests/test_dive_off_def.py": "template/JS",
   "tests/test_drift_alert.py": "mixed",
   "tests/test_day_sport_v2_registry.py": "isolated behavioural",
+  "tests/test_day_sport_v3_registry.py": "workflow/docs/tests-of-tests",
   "tests/test_drift_day_blocks.py": "isolated behavioural",
   "tests/test_drift_looks.py": "template/JS",
   "tests/test_empty_week.py": "isolated behavioural",

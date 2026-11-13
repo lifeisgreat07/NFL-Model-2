@@ -1,0 +1,44 @@
+{
+ "family": "nhl-day-sport-v3",
+ "registered": "2026-11-13",
+ "approved_by": "Mark, 2026-11-13: \"The v3 draft recommendations look good to me. I don't think it would hurt to register now.\" The draft (E:\\Sportalytics\\docs\\v3_registration_draft.md, sent to him the same morning) is Claude's, under Mark's delegation; its two open choices were registering now and one season or two: he chose now, and the decision below is on one season, as v2's is, with the expected verdict written down.",
+ "status": "shadow",
+ "based_on": [
+  "experiments/nhl/stage95_v2/registry.json"
+ ],
+ "protocol": {
+  "models": "v3's Model A is v2's Model A with the changes below added as features (or, for the star weighting, in place of v2's availability term); v3's Model B is v3's Model A plus the market term, as v2's. Same estimator, refit rule, neutral-site rule, history and price rules as v2.",
+  "tuning": "H_days and lambda (and, for the NHL, K_shots) are v2's tuned values, not re-tuned: v3 adds parameter-free features only."
+ },
+ "changes": {
+  "b2b": "b2b_matchup = (1 if the away team played a game on the previous slate date, else 0) minus (the same for the home team). Slate dates are the dates the sport's schedule and bootstrap already use (the NBA's US Eastern slate; the NHL's league game date). A team's first game of a season is 0. Built from the schedule only, so the backtest and the live run read it the same way, days ahead."
+ },
+ "measurements": {
+  "MW0": "v3 against v2 on v2's confirmation seasons, log loss, paired, whole game days. Those seasons have been seen; reported once, decides nothing."
+ },
+ "forward_test": {
+  "shadow": {
+   "what": "From the first scheduled daily run that carries v3's code, the run that saves a game's registered pick also saves v3's Model A and Model B forecasts for the same game, at the same moment, from the same price and inputs, in predictions/nhl/2026-v3/<game_id>.json, never rewritten. Nothing is backfilled.",
+   "never_a_pick": "v3's forecasts are never the board's pick, never graded on the board, and never enter the registered forward test, the drift check, the standings or v2's decision.",
+   "fitted": "Refitted at every run on every final game strictly before the pick's slate day."
+  },
+  "decision": {
+   "when": "Once, on the first scheduled daily run's figures after the 2026 regular season's last game is final. No earlier look decides anything.",
+   "comparisons": {
+    "W1": "v3's Model A minus v2's Model A, log loss per game, on the games both forecast.",
+    "W2": "v3's Model B minus v2's Model B, log loss per game, on the priced games both forecast."
+   },
+   "rule": "Paired, resampling whole game days, 5,000 resamples, the registered forward test's seed; level 97.5%. ACCEPT when the whole interval is below zero, REJECT when above, INCONCLUSIVE otherwise.",
+   "expected": "INCONCLUSIVE on both, most likely. On the training seasons the effect was about 0.002 per game; one season's 97.5% interval is about 0.0034 either side.",
+   "consequence": "ACCEPT on W1 makes v3's Model A the candidate for the registered Model A from 2027-28, through a new registration that cites this one, and only if v2's own decision has not already replaced it; never during the 2026 season. W2 decides Model B the same way, independently.",
+   "budget": "Two confirmatory slots per sport, W1 and W2; each is spent by reaching its decision."
+  }
+ },
+ "disclosures": [
+  "The changes come from a read-only review of 2026-11-12 (Fable 5.2), which measured them on the training seasons only (2015-16 to 2021-22): no validation, confirmation, forward-test, drift or market figure was read. Its training-season effects (log loss per game, 95% day-block interval): back-to-back -0.0020 [-0.0033, -0.0007] on a v2-style base.",
+  "Six relatives of the back-to-back flag were looked at in that review (separate home and away flags, the rest difference, games in six days, three in four, travel, time zones); none beat the plain flag by more than noise, and only the plain flag is registered.",
+  "Written after both sports' live seasons had first figures, as v2 was; v3 changes nothing registered and runs beside v2 as a shadow for that reason."
+ ],
+ "amendments": [],
+ "not_in_this_registration": "Any change to the registered models, v2, picks, the forward test, the drift check or pages. Anything not named under changes. Travel, time zones, altitude, rest beyond the flag, goalie fatigue and goalie share."
+}
