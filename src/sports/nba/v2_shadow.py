@@ -62,8 +62,8 @@ def season_market(lines: Iterable[Mapping[str, Any]]) -> pd.DataFrame:
         if gid not in best or str(read) > str(best[gid]['read_utc']):
             best[gid] = r
     return pd.DataFrame([{'game_id': g, 'home_price': float(r['home_price']), 'away_price': float(r['away_price']),
-                          'home_prob': float(r['home_prob'])} for g, r in best.items()],
-                        columns=['game_id', 'home_price', 'away_price', 'home_prob'])
+                          'home_prob': float(r['home_prob']), 'source': r.get('source')} for g, r in best.items()],
+                        columns=['game_id', 'home_price', 'away_price', 'home_prob', 'source'])
 
 
 def history_market(first: int, last: int, lines: Path) -> pd.DataFrame:
@@ -125,7 +125,7 @@ def save(locking: pd.DataFrame, prices: Iterable[Mapping[str, Any]], raw: pd.Dat
         price = by_game.get(g['game_id'], {})
         use = price_ok(price)
         p_b = forecast(model_b, x.assign(market_logit=np.log(price['home_prob'] / (1 - price['home_prob']))),
-                       neutral) if use else None
+                       False) if use else None
         record = {
             'game_id': g['game_id'], 'season': int(g['season']), 'slate': str(g['slate']),
             'start_utc': pd.Timestamp(g['start_utc']).strftime('%Y-%m-%dT%H:%M:%SZ'),
@@ -146,7 +146,8 @@ def save(locking: pd.DataFrame, prices: Iterable[Mapping[str, Any]], raw: pd.Dat
 
 
 def forecast(model: Any, x: pd.DataFrame, neutral: bool) -> float:
-    """The model's home-win probability; item 28 takes the fitted intercept off a neutral-site game."""
+    """The model's home-win probability; item 28 takes the fitted intercept off a neutral-site game. Model B is
+    called with `neutral` False: its market price already carries the site (audit 8, finding S1)."""
     z = float(model.decision_function(x)[0])
     if neutral:
         z -= float(model[-1].intercept_[0])

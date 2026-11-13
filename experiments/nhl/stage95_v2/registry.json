@@ -53,6 +53,14 @@
    "before_any_result": false,
    "seen": "Written on 2026-11-13, after v2's backtests (results/backtest.json) and after the shadow's first records existed. No v2 forward-test comparison (V1, V2) had been computed; nothing here was chosen from a result.",
    "change": "The daily run passed every locking game to the shadow, including games whose pick an earlier run had saved, so a shadow missing from that run (the shadow step failed, or the shadow did not exist yet) was written later, from a later price. From this amendment the run passes the shadow only the games whose pick it saved itself, as forward_test.shadow says (the same run, the same moment, nothing backfilled). Two records already written that way are kept, never rewritten, and excluded from V1 and V2: 2026020307 and 2026020308, whose picks were saved at 2026-11-12T21:01:40Z and whose shadow records at 2026-11-13T01:33:40Z, by the first run that carried the shadow's code."
+  },
+  {
+   "date": "2026-11-13",
+   "by": "Claude, under Mark's delegation, after audit 8 (Fable 5.2, 2026-11-13), which Mark ran and sent",
+   "entry": "changes.28_neutral",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-13, after v2's backtests (results/backtest.json, MV1 included) and after the shadow's first records. No V1 or V2 comparison had been computed.",
+   "change": "Audit 8 S1. Item 28 is kept for Model A. Model B's forecast on a neutral-site game no longer loses the fitted intercept: the estimator standardises the features, so the intercept is not the home edge, and the market price already carries the site, so the rule took the home edge off twice (a market-only proxy: +0.159 against -0.006 with every feature at zero). From this amendment the shadow and the backtest code use the corrected rule. The committed backtest's MV1_model_b, a measurement that decides nothing, was computed under the old rule and is left as committed; any shadow record saved before this amendment keeps the forecast it was saved with."
   }
  ],
  "not_in_this_registration": "Any change to the registered models, picks, forward test, drift check or pages. Anything not named under changes. Items 24, 27 and 30 are the NBA's only."
