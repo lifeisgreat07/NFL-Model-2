@@ -353,6 +353,7 @@
   "tests/test_retired_card_css.py": "isolated behavioural",
   "tests/test_row_card_agree.py": "workflow/docs/tests-of-tests",
   "tests/test_row_links.py": "isolated behavioural",
+  "tests/test_rows_only_grow.py": "isolated behavioural",
   "tests/test_ruff.py": "workflow/docs/tests-of-tests",
   "tests/test_run_backtest_workflow.py": "workflow/docs/tests-of-tests",
   "tests/test_run_tests_workflow.py": "workflow/docs/tests-of-tests",

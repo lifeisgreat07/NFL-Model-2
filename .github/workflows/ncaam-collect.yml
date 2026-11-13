@@ -54,8 +54,11 @@ jobs:
         shell: bash
         run: python -m src.sports.ncaam.collector 2>&1 | tee ncaam-collect.log
 
+      # Audit 8 S5: a run that stops on an unusable final has still stored the day's other finals, so they are
+      # committed whatever the collect step's result; the failure still raises the alert below.
       - name: Pull before committing
         timeout-minutes: 5
+        if: ${{ !cancelled() }}
         run: |
           git -c user.name='github-actions[bot]' \
               -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
@@ -64,8 +67,11 @@ jobs:
 
       - name: Commit the collected results
         timeout-minutes: 5
+        if: ${{ !cancelled() }}
         run: |
           test -d data/ncaam && git add data/ncaam
+          # Audit 8 S5: a stored row is never rewritten or removed; a commit that would do either fails here.
+          python -m src.core.rows_only_grow data/ncaam/history
           if git diff --cached --quiet; then
             echo "nothing to commit"
             exit 0
