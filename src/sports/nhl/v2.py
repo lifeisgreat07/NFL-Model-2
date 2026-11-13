@@ -124,7 +124,8 @@ def walk_forward(table: pd.DataFrame, columns: Sequence[str], seasons: Sequence[
         model = estimator().fit(train[list(columns)], train['home_win'])
         z = model.decision_function(today[list(columns)])
         neutral = today['neutral_site'].fillna(False).astype(bool).to_numpy()
-        z = np.where(neutral, z - float(model[-1].intercept_[0]), z)
+        if not needs_market:  # Audit 8 S1: Model B's price already carries the site
+            z = np.where(neutral, z - float(model[-1].intercept_[0]), z)
         preds.update(zip(today['game_id'], 1.0 / (1.0 + np.exp(-z))))
     return pd.Series(preds, name='p')
 
