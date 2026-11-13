@@ -7,7 +7,7 @@ means "works from a home connection". On 2026-11-12 the probe ran on a runner in
 
 ## Verdict
 
-**GO for the history, the backtest and a live run on GitHub's runners.** The MLB Stats API is the primary for schedule, results, probable pitchers and box scores, read from a runner (#711); Retrosheet's game logs are the checked fallback for history (section 2). ESPN's pre-game moneyline gives Model B a market from 2013, and for part of 2012 (section 3), read from a runner too. Open before the live run: when the probable pitchers are published (section 4, measured in spring training).
+**GO for the history, the backtest and a live run on GitHub's runners.** The MLB Stats API is the primary for schedule, results, probable pitchers and box scores, read from a runner (#711); Retrosheet's game logs are the checked fallback for history (section 2). ESPN's pre-game moneyline gives Model B a market from 2013 (section 3), read from a runner too. Open before the live run: when the probable pitchers are published (section 4, measured in spring training).
 
 ## 1. Sources
 
@@ -71,9 +71,11 @@ live provider's. Games priced, of the history's finals:
 
 There is no real moneyline before 2012. ESPN's odds for 2010 and 2011, and most of 2012, carry only a point spread
 and a moneyline of 0, which is no price; the probe in #711 counted those as priced, which this section corrects. Part of
-2012 (one provider, late in the season) is priced. From 2013 ESPN prices 92% to 100% of each season's
+2012 (late in the season) is priced, but 669 of its 670 prices are AccuScore's, a model's output rather than a book's,
+and are not used (audit 8, finding S3; the Stage 98 amendment of 2026-11-13). Nor is a price whose two implied
+probabilities sum outside 1.00-1.20 (75 prices, in 2013 and 2017 to 2019). From 2013 ESPN prices 92% to 100% of each season's
 finals; the rest have no usable ESPN price or cannot be matched to exactly one ESPN game (some doubleheaders), and
-are left unpriced rather than guessed. Model B trains only on games with a price (Stage 98), so its training starts in 2012 in
+are left unpriced rather than guessed. Model B trains only on games with a usable price (Stage 98), so its training starts in 2013 in
 effect, which is enough for the validation and confirmation seasons.
 
 ## 4. Starting pitchers
