@@ -53,6 +53,14 @@
    "before_any_result": true,
    "seen": "Written after the first build of v2's NBA history stopped on this rule, before any v2 model was fitted or scored: ESPN's own record (its summary and its scoreboard) puts both 401161536 (GS at PHX, 12:30 UTC, an hour no NBA game starts) and 401161543 (WSH at GS, 01:30 UTC on 03-02) on 2020-03-01 Eastern. No figure of any model had been computed.",
    "change": "As registered, the history refused the doubled slate, so v2 could not be built at all. The two games (of about 14,300) are now dropped from v2's history and listed, rather than one being placed on a date no source gives."
+  },
+  {
+   "date": "2026-11-13",
+   "by": "Claude, under Mark's delegation, after audit 8 (Fable 5.2, 2026-11-13, finding B2), which Mark ran and sent",
+   "entry": "forward_test.shadow",
+   "before_any_result": false,
+   "seen": "Written on 2026-11-13, after v2's backtests (results/backtest.json) and after the shadow's first records existed. No v2 forward-test comparison (V1, V2) had been computed; nothing here was chosen from a result.",
+   "change": "The daily run passed every locking game to the shadow, including games whose pick an earlier run had saved, so a shadow missing from that run (the shadow step failed, or the shadow did not exist yet) was written later, from a later price. From this amendment the run passes the shadow only the games whose pick it saved itself, as forward_test.shadow says (the same run, the same moment, nothing backfilled). No NBA shadow record had been written when this was found."
   }
  ],
  "not_in_this_registration": "Any change to the registered models, picks, forward test, drift check or pages. Anything not named under changes."
