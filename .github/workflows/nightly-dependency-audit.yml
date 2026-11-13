@@ -102,6 +102,7 @@ jobs:
       # .github/credentials.json expires. By weekday, not by event: cron-job.org
       # starts this workflow as a workflow_dispatch every night.
       - name: Check credential expiry dates
+        timeout-minutes: 5
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
