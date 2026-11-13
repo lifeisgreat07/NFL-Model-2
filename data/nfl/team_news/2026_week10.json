@@ -1,11 +1,11 @@
 {
   "season": 2026,
   "week": 10,
-  "read_at": "2026-11-12T11:02:41Z",
+  "read_at": "2026-11-13T13:07:32Z",
   "sources": {
     "injuries": "nflverse injury report, via nflreadpy.load_injuries",
     "depth_chart": "nflverse depth charts, via nflreadpy.load_depth_charts",
-    "depth_chart_snapshot": "2026-11-12T07:01:31Z"
+    "depth_chart_snapshot": "2026-11-13T07:02:06Z"
   },
   "teams": {
     "NYG": {
@@ -37,7 +37,13 @@
         "changed_from": null
       },
       "injury_report": "published",
-      "out": [],
+      "out": [
+        {
+          "name": "D.J. Reed",
+          "position": "CB",
+          "injury": "Hip"
+        }
+      ],
       "doubtful": [],
       "questionable_starters": 0
     },
