@@ -98,6 +98,28 @@ jobs:
             printf 'pip-audit exited %s, so tonight'"'"'s audit says nothing either way.\n\nRun: %s\n' "$CODE" "$run_url" > audit-report.md
           fi
           python -m src.core.alerts --title "$title" --body-file audit-report.md
+      # Stage 83 item 6: every Monday, an issue 30 days before a credential in
+      # .github/credentials.json expires. By weekday, not by event: cron-job.org
+      # starts this workflow as a workflow_dispatch every night.
+      - name: Check credential expiry dates
+        timeout-minutes: 5
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if [ "$(date -u +%u)" != "1" ]; then
+            echo "Credentials are checked on Mondays (UTC)."
+            exit 0
+          fi
+          set +e
+          python -m src.core.credentials .github/credentials.json credentials-report.md
+          code=$?
+          set -e
+          if [ "$code" = "1" ]; then
+            python -m src.core.alerts --title "A credential expires within 30 days" --body-file credentials-report.md
+          elif [ "$code" != "0" ]; then
+            python -m src.core.alerts --title "Credentials register cannot be read" --body-file credentials-report.md
+          fi
       # Stage 83 item 1: a run that succeeds closes the failure issue below, if
       # one is open. continue-on-error: closing an issue must never fail a run.
       - name: Close the alert if this run recovered

@@ -51,6 +51,7 @@ WATCHED = {
     'nba-canary.yml': 'NBA nightly canary',
     'line-judge-digest.yml': 'Line Judge weekly digest',
     'browser-checks.yml': 'Nightly browser checks',
+    'ncaam-collect.yml': 'NCAAM results collector',
 }
 #: Watched workflows that also run on pull requests: only their timed runs are
 #: unattended, so only those are listed (Stage 81 item 6).

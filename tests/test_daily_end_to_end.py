@@ -100,6 +100,16 @@ def test_the_nhl_daily_run_end_to_end(tmp_path, monkeypatch, capsys):
         assert rec['start_utc'] > rec['saved_utc']
     assert not [ln for ln in second.splitlines() if ln.startswith('saved ')]
     assert second.count('already saved ') == len(picks)
+    # Stage 95 item 36: v2's shadow beside every pick the run saved, never a pick itself, written once.
+    assert 'DEGRADED: v2 shadow' not in first, first[-2000:]
+    shadow = sorted((tmp_path / 'predictions' / f'{season}-v2').glob('*.json'))
+    assert [p.name for p in shadow] == [p.name for p in picks]
+    for p in shadow:
+        rec = json.loads(p.read_text(encoding='utf-8'))
+        assert 'pick' not in rec and rec['never_a_pick'] is True and rec['code'] == 'nhl-day-sport-v2'
+        assert rec['model_b'] is None and rec['price_used'] is False, 'no price in this test, so no Model B'
+        assert 0 < rec['model_a'] < 1 and rec['training_through'] < rec['slate']
+    assert f'v2 shadow: {len(picks)} saved' in first and 'v2 shadow: 0 saved' in second
     graded = json.loads((tmp_path / 'results' / f'graded_{season}.json').read_text(encoding='utf-8'))
     assert {r['game_id'] for r in graded} == {p.stem for p in picks}
     # Stage 85 item 1: the file says which registered looks were made and when the next is.

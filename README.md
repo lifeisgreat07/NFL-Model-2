@@ -72,9 +72,9 @@ in [docs/operations.md](docs/operations.md).
   the work, and the one that audits each change starts cold, cannot push, and
   re-runs every claim before it reports (below).
 - **Tests that are themselves tested.** A committed mutation corpus
-  (`tests/mutation/`, over 500 case files, one per subject under test) breaks
+  (`tests/mutation/`, over 525 case files, one per subject under test) breaks
   the code in known ways and fails if the suite does not notice.
-- **Thirty-two CI workflows** in `.github/workflows/` run the tests, the
+- **Thirty-three CI workflows** in `.github/workflows/` run the tests, the
   scheduled picks and grading, the audits of every pull request, the nightly
   canaries and checks, and the site's build; [docs/operations.md](docs/operations.md)
   says what to do when one of them opens an alert.
