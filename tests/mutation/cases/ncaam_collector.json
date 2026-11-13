@@ -1,0 +1,41 @@
+{
+  "target": "src/sports/ncaam/collector.py",
+  "tests": "tests/test_ncaam_collector.py",
+  "cases": [
+    {
+      "id": "ncaam-stored-rewritten",
+      "why": "a game already stored is added again, so a rescored game sits beside its first read.",
+      "find": "        fresh = [r for r in new if r['game_id'] not in have]\n",
+      "replace": "        fresh = list(new)\n",
+      "expect_caught_by": "test_a_stored_game_is_never_written_twice"
+    },
+    {
+      "id": "ncaam-tie-stored",
+      "why": "a final with level scores is stored, so a game with no winner reaches the ratings.",
+      "find": "        if hs is None or as_ is None or hs == as_:\n",
+      "replace": "        if hs is None or as_ is None:\n",
+      "expect_caught_by": "test_a_final_without_a_winner_or_two_clubs_stops_the_run_naming_each"
+    },
+    {
+      "id": "ncaam-unfinished-stored",
+      "why": "a game still being played is stored with its running score.",
+      "find": "        if not ((comp.get('status') or {}).get('type') or {}).get('completed'):\n            continue\n",
+      "replace": "",
+      "expect_caught_by": "test_a_final_game_is_one_row_with_when_it_was_read"
+    },
+    {
+      "id": "ncaam-season-by-calendar",
+      "why": "January to April are labelled the next season, so one season is split in two files.",
+      "find": "    return day.year if day.month >= 8 else day.year - 1",
+      "replace": "    return day.year",
+      "expect_caught_by": "test_the_season_is_labelled_by_the_year_it_starts"
+    },
+    {
+      "id": "ncaam-tournament-note-dropped",
+      "why": "the NCAA tournament's id is not kept, so its games cannot be told from the season's.",
+      "find": "                     'tournament_id': str(comp.get('tournamentId') or ''), 'note': note,",
+      "replace": "                     'tournament_id': '', 'note': note,",
+      "expect_caught_by": "test_a_tournament_game_keeps_its_id_note_and_neutral_site"
+    }
+  ]
+}

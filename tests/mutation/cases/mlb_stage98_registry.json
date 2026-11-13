@@ -26,8 +26,8 @@
     {
       "id": "mlb98-grid-widened",
       "why": "the tuning grid grows after registration, so the validation search is wider than the one written down.",
-      "find": "\"lambda\": [\n     1.0,\n     3.0,\n     10.0,\n     30.0\n    ",
-      "replace": "\"lambda\": [\n     0.3,\n     1.0,\n     3.0,\n     10.0,\n     30.0\n    ",
+      "find": "\"lambda\": [\n     1.0,\n     3.0,\n     10.0,\n     30.0,\n     100.0\n    ",
+      "replace": "\"lambda\": [\n     0.3,\n     1.0,\n     3.0,\n     10.0,\n     30.0,\n     100.0\n    ",
       "expect_caught_by": "test_tuning_touches_only_the_validation_seasons"
     },
     {
@@ -61,7 +61,7 @@
     {
       "id": "mlb98-starter-not-shrunk",
       "why": "a starter's rate is no longer shrunk toward the league, so a pitcher with one bad start is rated on it alone.",
-      "find": "(weighted runs + 150 x the league's runs per out) / (weighted outs + 150) x 27",
+      "find": "(weighted runs + K_outs x the league's runs per out) / (weighted outs + K_outs) x 27",
       "replace": "weighted runs / weighted outs x 27",
       "expect_caught_by": "test_the_starter_term_reads_only_earlier_appearances_and_is_shrunk"
     },

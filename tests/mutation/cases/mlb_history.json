@@ -1,0 +1,123 @@
+{
+  "target": "src/sports/mlb/history.py",
+  "tests": "tests/test_mlb_history.py",
+  "cases": [
+    {
+      "id": "mlb-hist-last-pitcher-starts",
+      "target": "src/sports/mlb/history.py",
+      "tests": "tests/test_mlb_history.py",
+      "why": "the starter is taken as the box's last pitcher, the closer.",
+      "find": "        for order, pid in enumerate(pitchers):\n",
+      "replace": "        for order, pid in enumerate(reversed(pitchers)):\n",
+      "expect_caught_by": "test_each_clubs_pitchers_in_order_the_first_the_starter"
+    },
+    {
+      "id": "mlb-hist-missing-outs-guessed",
+      "target": "src/sports/mlb/history.py",
+      "tests": "tests/test_mlb_history.py",
+      "why": "a pitcher line without outs is stored as nothing, so his rate is guessed.",
+      "find": "            if not isinstance(outs, int) or not isinstance(runs, int):\n",
+      "replace": "            if False:\n",
+      "expect_caught_by": "test_a_box_with_no_pitcher_or_a_line_without_outs_stops_the_season"
+    },
+    {
+      "id": "mlb-hist-first-problem-only",
+      "target": "src/sports/mlb/history.py",
+      "tests": "tests/test_mlb_history.py",
+      "why": "a season stops at its first bad box, so one run names only one game.",
+      "find": "            problems.append(str(exc))\n",
+      "replace": "            raise\n",
+      "expect_caught_by": "test_every_unusable_game_of_a_season_is_named_at_once"
+    },
+    {
+      "id": "mlb-hist-wrong-score-agrees",
+      "target": "src/sports/mlb/history.py",
+      "tests": "tests/test_mlb_history.py",
+      "why": "a game whose scores differ still counts as agreeing.",
+      "find": "        if str(g['home']) == home and (g['home_score'], g['away_score']) == (r.home_score, r.away_score):\n",
+      "replace": "        if str(g['home']) in (home, away):\n",
+      "expect_caught_by": "test_a_wrong_score_is_listed_and_a_season_under_ninety_nine_percent_is_not_used"
+    },
+    {
+      "id": "mlb-hist-floor-lowered",
+      "target": "src/sports/mlb/history.py",
+      "tests": "tests/test_mlb_history.py",
+      "why": "the agreement floor drops, so a season with wrong scores is used.",
+      "find": "AGREEMENT = 0.99",
+      "replace": "AGREEMENT = 0.50",
+      "expect_caught_by": "test_a_wrong_score_is_listed_and_a_season_under_ninety_nine_percent_is_not_used"
+    },
+    {
+      "id": "mlb-ratings-neutral-home-term",
+      "target": "src/sports/mlb/ratings.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "a neutral game keeps the home term, so a relocated game is fitted as a home game.",
+      "find": "    x[:, 0] = np.where(train['neutral_site'].to_numpy(bool), 0.0, 1.0)\n",
+      "replace": "    x[:, 0] = 1.0\n",
+      "expect_caught_by": "test_a_neutral_game_carries_no_home_term_in_the_run_fit"
+    },
+    {
+      "id": "mlb-ratings-no-shrink",
+      "target": "src/sports/mlb/ratings.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "a starter's rate is not shrunk, so one start decides it.",
+      "find": "SHRINK_OUTS = 150.0",
+      "replace": "SHRINK_OUTS = 0.0",
+      "expect_caught_by": "test_a_starters_rate_is_shrunk_toward_the_league_by_150_outs"
+    },
+    {
+      "id": "mlb-ratings-same-day-read",
+      "target": "src/sports/mlb/ratings.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "a pitcher's outing on the day itself enters his rating.",
+      "find": "    earlier = lines[lines['game_id'].map(day_of) < day]\n",
+      "replace": "    earlier = lines[lines['game_id'].map(day_of) <= day]\n",
+      "expect_caught_by": "test_a_rating_reads_only_appearances_before_its_day"
+    },
+    {
+      "id": "mlb-ratings-starter-sign",
+      "target": "src/sports/mlb/ratings.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "starter_matchup is turned around, so a bad away starter counts against home.",
+      "find": "'starter_matchup': self.starter(away_starter) - self.starter(home_starter)}",
+      "replace": "'starter_matchup': self.starter(home_starter) - self.starter(away_starter)}",
+      "expect_caught_by": "test_starter_matchup_favours_home_when_the_away_starter_is_worse"
+    },
+    {
+      "id": "mlb-bt-neutral-keeps-edge",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "a neutral game keeps the fitted home edge in the backtest.",
+      "find": "        z = np.where(neutral, z - float(model[-1].intercept_[0]), z)\n",
+      "replace": "",
+      "expect_caught_by": "test_the_walk_forward_takes_the_intercept_off_a_neutral_game"
+    },
+    {
+      "id": "mlb-bt-unchecked-used",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "a season not checked against Retrosheet is read anyway.",
+      "find": "    if unchecked:\n",
+      "replace": "    if False:\n",
+      "expect_caught_by": "test_only_seasons_checked_against_retrosheet_are_read"
+    },
+    {
+      "id": "mlb-bt-tunes-on-confirmation",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "tuning reads the confirmation seasons too.",
+      "find": "    games = games[games['season'] <= max(seasons)]\n",
+      "replace": "",
+      "expect_caught_by": "test_tuning_reads_no_game_after_the_validation_seasons"
+    },
+    {
+      "id": "mlb-bt-tie-scored",
+      "target": "src/sports/mlb/backtest.py",
+      "tests": "tests/test_mlb_ratings.py",
+      "why": "an official tie enters the walk-forward, so a game with no winner is trained on and scored.",
+      "find": "    table = table.dropna(subset=['home_win'])  # an official tie is neither trained on nor scored\n",
+      "replace": "",
+      "expect_caught_by": "test_the_walk_forward_takes_the_intercept_off_a_neutral_game"
+    }
+  ]
+}

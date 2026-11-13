@@ -1,0 +1,41 @@
+{
+ "game_id": "2026020307",
+ "season": 2026,
+ "slate": "2026-11-12",
+ "start_utc": "2026-11-13T02:00:00Z",
+ "home": "UTA",
+ "away": "STL",
+ "model_a": 0.5847,
+ "model_b": 0.4409,
+ "neutral_site": false,
+ "price_used": true,
+ "price_note": null,
+ "features": {
+  "goal_matchup": 0.050581,
+  "shot_matchup": 3.514854
+ },
+ "goalies": {
+  "home": 8478872,
+  "away": 8480981,
+  "used": false
+ },
+ "market": {
+  "home_price": 110.0,
+  "away_price": -130.0,
+  "home_prob": 0.4573,
+  "read_utc": "2026-11-13T01:33:40Z"
+ },
+ "saved_utc": "2026-11-13T01:33:40Z",
+ "code": "nhl-day-sport-v2",
+ "registry": "experiments/nhl/stage95_v2/registry.json",
+ "H_days": 120.0,
+ "K_shots": null,
+ "never_a_pick": true,
+ "training_through": "2026-11-11",
+ "data_provenance": {
+  "training_from_season": 2015,
+  "training_games": 14701,
+  "training_games_priced": 7662,
+  "training_ids_sha256": "c8c07a2cc9351fe6197e6c08024568a81c2008d523afe37e93eddaf835c879e7"
+ }
+}

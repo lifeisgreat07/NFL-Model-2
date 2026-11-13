@@ -263,7 +263,10 @@ def test_the_writer_scan_finds_the_workflows_we_know_write():
 #: every sport, so "NHL daily run" is bridged like the NFL's writers. A sport
 #: whose run starts before its pages do goes here until they exist, and the
 #: test after the next one fails the moment the builder reads its folders.
-NOT_YET_ON_A_PAGE: dict[str, str] = {}
+NOT_YET_ON_A_PAGE: dict[str, str] = {
+    # Stage 103 item 1: the bracket's season results; its page comes in March (item 4).
+    'NCAAM results collector': 'ncaam',
+}
 
 
 def test_every_workflow_that_writes_a_dashboard_input_is_bridged_to_the_builder():
